@@ -78,11 +78,16 @@
  * TheBESKeys.
  */
 class TheBESKeys: public BESObj {
+
+friend class keysT;
+
 private:
 
     // TODO I don't think this needs to be a pointer - the code could be
     // redesigned. jhrg 3/7/18
-    std::ifstream * _keys_file;
+    // Dropping this member variable because as far as I can tell it never serves a purpose. - ndp 08/05/2020
+    // std::ifstream * _keys_file;
+
     std::string _keys_file_name;
     std::map<std::string, std::vector<std::string> > *_the_keys;
     bool _own_keys;
@@ -92,6 +97,8 @@ private:
 
     void clean();
     void initialize_keys();
+
+
 #if 0
     //void load_keys();
     //bool break_pair(const char* b, std::string& key, std::string &value, bool &addto);
@@ -99,8 +106,8 @@ private:
     //void load_include_files(const std::string &files);
     //void load_include_file(const std::string &file);
 #endif
-    TheBESKeys() :
-        _keys_file(0), _keys_file_name(""), _the_keys(0), _own_keys(false)
+
+    TheBESKeys() : _keys_file_name(""), _the_keys(0), _own_keys(false)
     {
     }
 

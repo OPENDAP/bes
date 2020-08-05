@@ -115,14 +115,14 @@ TheBESKeys *TheBESKeys::TheKeys()
  * key/value pair.
  */
 TheBESKeys::TheBESKeys(const string &keys_file_name) :
-    _keys_file(0), _keys_file_name(keys_file_name), _the_keys(0), _own_keys(true)
+    _keys_file_name(keys_file_name), _the_keys(0), _own_keys(true)
 {
     _the_keys = new map<string, vector<string> >;
     initialize_keys();
 }
 
 TheBESKeys::TheBESKeys(const string &keys_file_name, map<string, vector<string> > *keys) :
-    _keys_file(0), _keys_file_name(keys_file_name), _the_keys(keys), _own_keys(false)
+    _keys_file_name(keys_file_name), _the_keys(keys), _own_keys(false)
 {
     initialize_keys();
 }
@@ -138,51 +138,15 @@ void TheBESKeys::initialize_keys()
 {
     kvp::load_keys(KeyList, _keys_file_name, *_the_keys);
 
-#if 0
-    _keys_file = new ifstream(_keys_file_name.c_str());
-
-    if (!(*_keys_file)) {
-        char path[500];
-        getcwd(path, sizeof(path));
-        string s = string("Cannot open BES configuration file '") + _keys_file_name + "': ";
-        char *err = strerror(errno);
-        if (err)
-            s += err;
-        else
-            s += "Unknown error";
-
-        s += (string) ".\n" + "The current working directory is " + path;
-        throw BESInternalFatalError(s, __FILE__, __LINE__);
-    }
-
-    try {
-        load_keys();
-    }
-    catch (BESError &e) {
-        // be sure we're throwing a fatal error, since the BES can't run
-        // without the configuration file
-        clean();
-        throw BESInternalFatalError(e.get_message(), e.get_file(), e.get_line());
-    }
-    catch (...) {
-        clean();
-        string s = (string) "Undefined exception while trying to load keys from the BES configuration file '"
-            + _keys_file_name + "'";
-        throw BESInternalFatalError(s, __FILE__, __LINE__);
-    }
-#endif
 
 }
 
 void TheBESKeys::clean()
 {
-    if (_keys_file) {
-        _keys_file->close();
-        delete _keys_file;
-    }
 
     if (_the_keys && _own_keys) {
         delete _the_keys;
+        _the_keys = 0;
     }
 }
 
@@ -495,14 +459,18 @@ void TheBESKeys::dump(ostream &strm) const
     strm << BESIndent::LMarg << "BESKeys::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     strm << BESIndent::LMarg << "key file:" << _keys_file_name << endl;
+
+#if 0
     if (_keys_file && *_keys_file) {
         strm << BESIndent::LMarg << "key file is valid" << endl;
     }
     else {
         strm << BESIndent::LMarg << "key file is NOT valid" << endl;
     }
+#endif
+
     if (_the_keys && _the_keys->size()) {
-        strm << BESIndent::LMarg << "    keys:" << endl;
+        strm << BESIndent::LMarg << "  keys:" << endl;
         BESIndent::Indent();
         Keys_citer i = _the_keys->begin();
         Keys_citer ie = _the_keys->end();
