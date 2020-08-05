@@ -88,7 +88,7 @@ namespace kvp {
                         else {
                             if (pos != static_cast<int>(j - 1)) {
                                 string s = string("BES: Invalid entry ") + b +
-                                           " in configuration file "// + _keys_file_name
+                                           " in configuration file "// + d_keys_file_name
                                            + " '+' character found in variable name" + " or attempting '+=' with space"
                                            + " between the characters.\n";
                                 throw BESInternalFatalError(s, __FILE__, __LINE__);
@@ -101,7 +101,7 @@ namespace kvp {
                     }
                 }
                 if (!done) {
-                    string s = string("BES: Invalid entry ") + b + " in configuration file " //+ _keys_file_name + ": "
+                    string s = string("BES: Invalid entry ") + b + " in configuration file " //+ d_keys_file_name + ": "
                                + " '=' character not found.\n";
                     throw BESInternalFatalError(s, __FILE__, __LINE__);
                 }

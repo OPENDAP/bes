@@ -387,9 +387,9 @@ public:
         try {
             if(debug) cout << "Calling TheBESKeys()" << endl;
             TheBESKeys besKeys(bes_conf);
-            CPPUNIT_ASSERT(besKeys._the_keys->size() == 2);
+            CPPUNIT_ASSERT(besKeys.d_the_keys->size() == 2);
 
-            if(debug) cout << "Keys size: " << besKeys._the_keys->size() << endl;
+            if(debug) cout << "Keys size: " << besKeys.d_the_keys->size() << endl;
             if(debug) besKeys.dump(cout);
 
             vector<string> values;
@@ -422,9 +422,9 @@ public:
         try {
             if(debug) cout << "Calling TheBESKeys()" << endl;
             TheBESKeys besKeys(bes_conf);
-            CPPUNIT_ASSERT(besKeys._the_keys->size() == 2);
+            CPPUNIT_ASSERT(besKeys.d_the_keys->size() == 2);
 
-            if(debug) cout << "Keys size: " << besKeys._the_keys->size() << endl;
+            if(debug) cout << "Keys size: " << besKeys.d_the_keys->size() << endl;
             if(debug) besKeys.dump(cout);
 
             string map_key = "BES.TestMap";

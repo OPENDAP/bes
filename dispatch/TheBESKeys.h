@@ -88,11 +88,11 @@ private:
     // Dropping this member variable because as far as I can tell it never serves a purpose. - ndp 08/05/2020
     // std::ifstream * _keys_file;
 
-    std::string _keys_file_name;
-    std::map<std::string, std::vector<std::string> > *_the_keys;
-    bool _own_keys;
+    std::string d_keys_file_name;
+    std::map<std::string, std::vector<std::string> > *d_the_keys;
+    bool d_own_keys;
 
-    static std::set<std::string> KeyList;
+    static std::set<std::string> d_ingested_key_files;
     static bool LoadedKeys(const std::string &key_file);
 
     void clean();
@@ -107,7 +107,7 @@ private:
     //void load_include_file(const std::string &file);
 #endif
 
-    TheBESKeys() : _keys_file_name(""), _the_keys(0), _own_keys(false)
+    TheBESKeys() : d_keys_file_name(""), d_the_keys(0), d_own_keys(false)
     {
     }
 
@@ -117,12 +117,12 @@ protected:
     TheBESKeys(const std::string &keys_file_name);
 
 public:
-    static TheBESKeys *_instance;
+    static TheBESKeys *d_instance;
     virtual ~TheBESKeys();
 
     std::string keys_file_name() const
     {
-        return _keys_file_name;
+        return d_keys_file_name;
     }
 
     void set_key(const std::string &key, const std::string &val, bool addto = false);
@@ -142,12 +142,12 @@ public:
 
     Keys_citer keys_begin()
     {
-        return _the_keys->begin();
+        return d_the_keys->begin();
     }
 
     Keys_citer keys_end()
     {
-        return _the_keys->end();
+        return d_the_keys->end();
     }
 
     virtual void dump(std::ostream &strm) const;

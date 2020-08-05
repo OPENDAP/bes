@@ -58,42 +58,42 @@ using namespace std;
 #define MODULE "bes"
 #define prolog std::string("TheBESKeys::").append(__func__).append("() - ")
 
-set<string> TheBESKeys::KeyList;
+set<string> TheBESKeys::d_ingested_key_files;
 
-TheBESKeys *TheBESKeys::_instance = 0;
+TheBESKeys *TheBESKeys::d_instance = 0;
 string TheBESKeys::ConfigFile = "";
 
 TheBESKeys *TheBESKeys::TheKeys()
 {
-    if (_instance) return _instance;
+    if (d_instance) return d_instance;
 
     if (!TheBESKeys::ConfigFile.empty()) {
-        _instance = new TheBESKeys(TheBESKeys::ConfigFile);
-        return _instance;
+        d_instance = new TheBESKeys(TheBESKeys::ConfigFile);
+        return d_instance;
     }
 
-    // _instance is a nullptr and TheBESKeys::ConfigFile is ""
+    // d_instance is a nullptr and TheBESKeys::ConfigFile is ""
     // so lets try some obvious places...
 
     string try_ini = "/usr/local/etc/bes/bes.conf";
     if (access(try_ini.c_str(), R_OK) == 0) {
         TheBESKeys::ConfigFile = try_ini;
-        _instance = new TheBESKeys(TheBESKeys::ConfigFile);
-        return _instance;
+        d_instance = new TheBESKeys(TheBESKeys::ConfigFile);
+        return d_instance;
     }
 
     try_ini = "/etc/bes/bes.conf";
     if (access(try_ini.c_str(), R_OK) == 0) {
         TheBESKeys::ConfigFile = try_ini;
-        _instance = new TheBESKeys(TheBESKeys::ConfigFile);
-        return _instance;
+        d_instance = new TheBESKeys(TheBESKeys::ConfigFile);
+        return d_instance;
     }
 
     try_ini = "/usr/etc/bes/bes.conf";
     if (access(try_ini.c_str(), R_OK) == 0) {
         TheBESKeys::ConfigFile = try_ini;
-        _instance = new TheBESKeys(TheBESKeys::ConfigFile);
-        return _instance;
+        d_instance = new TheBESKeys(TheBESKeys::ConfigFile);
+        return d_instance;
     }
     throw BESInternalFatalError("Unable to locate a BES configuration file.", __FILE__, __LINE__);
 }
@@ -115,14 +115,14 @@ TheBESKeys *TheBESKeys::TheKeys()
  * key/value pair.
  */
 TheBESKeys::TheBESKeys(const string &keys_file_name) :
-    _keys_file_name(keys_file_name), _the_keys(0), _own_keys(true)
+        d_keys_file_name(keys_file_name), d_the_keys(0), d_own_keys(true)
 {
-    _the_keys = new map<string, vector<string> >;
+    d_the_keys = new map<string, vector<string> >;
     initialize_keys();
 }
 
 TheBESKeys::TheBESKeys(const string &keys_file_name, map<string, vector<string> > *keys) :
-    _keys_file_name(keys_file_name), _the_keys(keys), _own_keys(false)
+        d_keys_file_name(keys_file_name), d_the_keys(keys), d_own_keys(false)
 {
     initialize_keys();
 }
@@ -136,7 +136,7 @@ TheBESKeys::~TheBESKeys()
 
 void TheBESKeys::initialize_keys()
 {
-    kvp::load_keys(KeyList, _keys_file_name, *_the_keys);
+    kvp::load_keys(d_ingested_key_files, d_keys_file_name, *d_the_keys);
 
 
 }
@@ -144,9 +144,9 @@ void TheBESKeys::initialize_keys()
 void TheBESKeys::clean()
 {
 
-    if (_the_keys && _own_keys) {
-        delete _the_keys;
-        _the_keys = 0;
+    if (d_the_keys && d_own_keys) {
+        delete d_the_keys;
+        d_the_keys = 0;
     }
 }
 
@@ -160,17 +160,17 @@ void TheBESKeys::clean()
 bool TheBESKeys::LoadedKeys(const string &key_file)
 {
 #if 0
-    vector<string>::const_iterator i = TheBESKeys::KeyList.begin();
-    vector<string>::const_iterator e = TheBESKeys::KeyList.end();
+    vector<string>::const_iterator i = TheBESKeys::d_ingested_key_files.begin();
+    vector<string>::const_iterator e = TheBESKeys::d_ingested_key_files.end();
     for (; i != e; i++) {
         if ((*i) == key_file) {
             return true;
         }
     }
 #endif
-    set<string>::iterator it = KeyList.find(key_file);
+    set<string>::iterator it = d_ingested_key_files.find(key_file);
 
-    return it!=KeyList.end();
+    return it != d_ingested_key_files.end();
 }
 
 /** @brief allows the user to set key/value pairs from within the application.
@@ -192,14 +192,14 @@ bool TheBESKeys::LoadedKeys(const string &key_file)
 void TheBESKeys::set_key(const string &key, const string &val, bool addto)
 {
     map<string, vector<string> >::iterator i;
-    i = _the_keys->find(key);
-    if (i == _the_keys->end()) {
+    i = d_the_keys->find(key);
+    if (i == d_the_keys->end()) {
         vector<string> vals;
-        (*_the_keys)[key] = vals;
+        (*d_the_keys)[key] = vals;
     }
-    if (!addto) (*_the_keys)[key].clear();
+    if (!addto) (*d_the_keys)[key].clear();
     if (!val.empty()) {
-        (*_the_keys)[key].push_back(val);
+        (*d_the_keys)[key].push_back(val);
     }
 }
 
@@ -222,17 +222,17 @@ void TheBESKeys::set_key(const string &key, const string &val, bool addto)
 void TheBESKeys::set_keys(const string &key, const vector<string> &values, bool addto)
 {
     map<string, vector<string> >::iterator i;
-    i = _the_keys->find(key);
-    if (i == _the_keys->end()) {
+    i = d_the_keys->find(key);
+    if (i == d_the_keys->end()) {
         vector<string> vals;
-        (*_the_keys)[key] = vals;
+        (*d_the_keys)[key] = vals;
     }
-    if (!addto) (*_the_keys)[key].clear();
+    if (!addto) (*d_the_keys)[key].clear();
 
     size_t j;
     for(j = 0; j!=values.size(); j++){
         if (!values[j].empty()) {
-            (*_the_keys)[key].push_back(values[j]);
+            (*d_the_keys)[key].push_back(values[j]);
         }
     }
 }
@@ -261,13 +261,13 @@ void TheBESKeys::set_keys(
         const bool case_insensitive_map_keys, bool addto)
 {
     map<string, vector<string> >::iterator i;
-    i = _the_keys->find(key);
-    if (i == _the_keys->end()) {
+    i = d_the_keys->find(key);
+    if (i == d_the_keys->end()) {
         vector<string> vals;
-        (*_the_keys)[key] = vals;
+        (*d_the_keys)[key] = vals;
     }
     if (!addto) {
-        (*_the_keys)[key].clear();
+        (*d_the_keys)[key].clear();
     }
 
     map<string, string>::const_iterator mit;
@@ -280,7 +280,7 @@ void TheBESKeys::set_keys(
             map_key = BESUtil::lowercase(map_key);
         }
         string map_record=map_key+":"+mit->second;
-        (*_the_keys)[key].push_back(map_record);
+        (*d_the_keys)[key].push_back(map_record);
     }
 }
 
@@ -324,8 +324,8 @@ void TheBESKeys::get_value(const string &s, string &val, bool &found)
 {
     found = false;
     map<string, vector<string> >::iterator i;
-    i = _the_keys->find(s);
-    if (i != _the_keys->end()) {
+    i = d_the_keys->find(s);
+    if (i != d_the_keys->end()) {
         found = true;
         if ((*i).second.size() > 1) {
             string err = string("Multiple values for the key ") + s + " found, should only be one.";
@@ -355,8 +355,8 @@ void TheBESKeys::get_values(const string& s, vector<string> &vals, bool &found)
 {
     found = false;
     map<string, vector<string> >::iterator i;
-    i = _the_keys->find(s);
-    if (i != _the_keys->end()) {
+    i = d_the_keys->find(s);
+    if (i != d_the_keys->end()) {
         found = true;
         vector<string>::iterator j;
         for(j=(*i).second.begin(); j!=(*i).second.end(); j++){
@@ -458,7 +458,7 @@ void TheBESKeys::dump(ostream &strm) const
 {
     strm << BESIndent::LMarg << "BESKeys::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
-    strm << BESIndent::LMarg << "key file:" << _keys_file_name << endl;
+    strm << BESIndent::LMarg << "key file:" << d_keys_file_name << endl;
 
 #if 0
     if (_keys_file && *_keys_file) {
@@ -469,11 +469,11 @@ void TheBESKeys::dump(ostream &strm) const
     }
 #endif
 
-    if (_the_keys && _the_keys->size()) {
+    if (d_the_keys && d_the_keys->size()) {
         strm << BESIndent::LMarg << "  keys:" << endl;
         BESIndent::Indent();
-        Keys_citer i = _the_keys->begin();
-        Keys_citer ie = _the_keys->end();
+        Keys_citer i = d_the_keys->begin();
+        Keys_citer ie = d_the_keys->end();
         for (; i != ie; i++) {
             strm << BESIndent::LMarg << (*i).first << ": " /*<< endl*/;
             // BESIndent::Indent();
