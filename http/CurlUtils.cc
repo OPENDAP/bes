@@ -44,7 +44,12 @@
 #include "BESLog.h"
 
 
+#include <BESSyntaxUserError.h>
+#include <BESForbiddenError.h>
+#include <BESNotFoundError.h>
+#include <BESTimeoutError.h>
 #include <BESInternalError.h>
+
 #include <BESDebug.h>
 #include <BESRegex.h>
 #include "url_impl.h"
@@ -927,6 +932,13 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
                 BESDEBUG(MODULE, prolog << "CURLINFO_REDIRECT_URL: " << redirect_url << endl);
         }
 
+        stringstream msg;
+        if(http_code >= 400){
+            msg <<    "The HTTP request returned a status of " << http_code << " which means '" <<
+                http_status_to_string(http_code) << "'" << endl;
+            BESDEBUG(MODULE, prolog << "ERROR: " << msg.str() << endl);
+        }
+
         //  FIXME Expand the list of handled status to at least include the 4** stuff for authentication
         //  FIXME so that something sensible can be done.
         // Newer Apache servers return 206 for range requests. jhrg 8/8/18
@@ -936,6 +948,20 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
                 // cases 201-205 are things we should probably reject, unless we add more
                 // comprehensive HTTP/S processing here. jhrg 8/8/18
                 return true;
+
+            case 400: // Bad Request
+                throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+
+            case 401: // Unauthorized
+            case 402: // Payment Required
+            case 403: // Forbidden
+                throw BESForbiddenError(msg.str(), __FILE__, __LINE__);
+
+            case 404:
+                throw BESNotFoundError(msg.str(), __FILE__, __LINE__);
+
+            case 408:
+                throw BESTimeoutError(msg.str(), __FILE__, __LINE__);
 
             case 500: // Internal server error
             case 502: // Bad Gateway
