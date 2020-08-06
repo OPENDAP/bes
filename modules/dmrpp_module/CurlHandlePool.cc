@@ -341,13 +341,13 @@ void dmrpp_easy_handle::read_data() {
         unsigned int tries = 0;
         bool success = true;
         useconds_t retry_time = uone_second/4;
+        d_errbuf[0] = 0; // Initialize to empty string.
 
         // Perform the request
         do {
             BESDEBUG(DMRPP_CURL, prolog << "Requesting URL: " << d_url << endl);
             CURLcode curl_code = curl_easy_perform(d_handle);
             ++tries;
-            d_errbuf[0]=0; // Initialize to empty string.
 
             if (CURLE_OK != curl_code) {
                 stringstream msg;

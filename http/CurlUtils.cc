@@ -858,7 +858,6 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
             curlErrorBuf[0] = 0; // clear the error buffer with a null termination at index 0.
             curl_code = curl_easy_perform(c_handle); // Do the thing...
             ++tries;
-            curlErrorBuf[0]=0; // Initialize to empty string
 
             if (CURLE_OK != curl_code) { // Failure here is not an HTTP error, but a cURL error.
                 throw BESInternalError(
@@ -886,6 +885,16 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
             }
 
         } while (!success);
+    }
+
+    string getCookieFileName() {
+        bool found = false;
+        string cookie_filename;
+        TheBESKeys::TheKeys()->get_value(HTTP_COOKIES_FILE_KEY, cookie_filename, found);
+        if (!found) {
+            cookie_filename = HTTP_DEFAULT_COOKIES_FILE;
+        }
+        return cookie_filename;
     }
 
     /**
@@ -963,12 +972,13 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
             case 403: // Forbidden
                 throw BESForbiddenError(msg.str(), __FILE__, __LINE__);
 
-            case 404:
+            case 404: // Not Found
                 throw BESNotFoundError(msg.str(), __FILE__, __LINE__);
 
-            case 408:
+            case 408: // Request Timeout
                 throw BESTimeoutError(msg.str(), __FILE__, __LINE__);
 
+            case 422: // Unprocessable Entity
             case 500: // Internal server error
             case 502: // Bad Gateway
             case 503: // Service Unavailable
@@ -986,15 +996,6 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
     }
 
 
-    string getCookieFileName() {
-        bool found = false;
-        string cookie_filename;
-        TheBESKeys::TheKeys()->get_value(HTTP_COOKIES_FILE_KEY, cookie_filename, found);
-        if (!found) {
-            cookie_filename = HTTP_DEFAULT_COOKIES_FILE;
-        }
-        return cookie_filename;
-    }
 #if 0
     bool do_the_curl_perform_boogie(CURL *eh){
         CURLcode curl_code = curl_easy_perform(eh);
