@@ -23,6 +23,7 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 #include <curl/curl.h>
+#include <cstdio>
 #include <sstream>
 #include <map>
 #include <vector>
@@ -473,8 +474,8 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         curl_easy_setopt(curl, CURLOPT_NETRC, 1);
 
         // #TODO #FIXME Make these file names configuration based.
-        curl_easy_setopt(curl, CURLOPT_COOKIEFILE, curl::getCookieFileName().c_str());
-        curl_easy_setopt(curl, CURLOPT_COOKIEJAR, curl::getCookieFileName().c_str());
+        curl_easy_setopt(curl, CURLOPT_COOKIEFILE, curl::get_cookie_filename().c_str());
+        curl_easy_setopt(curl, CURLOPT_COOKIEJAR, curl::get_cookie_filename().c_str());
 
         curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1);
         curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
@@ -731,19 +732,19 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
      * @param response_buf The buffer into which to put the response.
      */
     void http_get(const std::string &target_url, char *response_buf) {
-        char name[] = "/tmp/ngap_cookiesXXXXXX";
-        string cookies = mktemp(name);
-        if (cookies.empty())
-            throw BESInternalError(string("Failed to make temporary file for HTTP cookies in module 'ngap' (").append(strerror(errno)).append(")"), __FILE__, __LINE__);
+        // char name[] = "/tmp/ngap_cookiesXXXXXX";
+        string cf_name = get_cookie_filename();
+        if (cf_name.empty())
+            throw BESInternalError(string(prolog + "Failed to make temporary file for HTTP cookies in module 'ngap' (").append(strerror(errno)).append(")"), __FILE__, __LINE__);
 
         try {
-            CURL *c_handle = curl::set_up_easy_handle(target_url, cookies, response_buf);
+            CURL *c_handle = curl::set_up_easy_handle(target_url, cf_name, response_buf);
             read_data(c_handle);
             curl_easy_cleanup(c_handle);
-            unlink(cookies.c_str());
+            unlink(cf_name.c_str());
         }
         catch(...) {
-            unlink(cookies.c_str());
+            unlink(cf_name.c_str());
             throw;
         }
     }
@@ -887,7 +888,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         } while (!success);
     }
 
-    string getCookieFileName() {
+    string get_cookie_file_base() {
         bool found = false;
         string cookie_filename;
         TheBESKeys::TheKeys()->get_value(HTTP_COOKIES_FILE_KEY, cookie_filename, found);
@@ -896,7 +897,22 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         }
         return cookie_filename;
     }
+    string get_cookie_filename() {
+        string cookie_file_base = get_cookie_file_base();
+        stringstream cf_with_pid;
+        cf_with_pid <<  cookie_file_base << "-" << getpid();
+        return cf_with_pid.str();
+    }
 
+    void clear_cookies(){
+        string cf = get_cookie_filename();
+        int ret = unlink(cf.c_str());
+        if(ret){
+            string msg = prolog + "() - Failed to unlink the cookie file: " + cf;
+            LOG(msg << endl);
+            BESDEBUG(MODULE, msg << endl);
+        }
+    }
     /**
      * Check the response for errors and such.
      * @param eh The cURL easy_handle to evaluate.
@@ -949,6 +965,8 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
 
         stringstream msg;
         if(http_code >= 400){
+
+
             msg << "The HTTP GET request for the source URL: " << requested_url << " FAILED."
                 << " The last accessed URL (CURLINFO_EFFECTIVE_URL) was: " << last_accessed_url
                 << " The response had an HTTP status of " << http_code

@@ -717,8 +717,8 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
 
         // Enabled cookies
         // #TODO #FIXME Make these file names configuration based.
-        curl_easy_setopt(handle->d_handle, CURLOPT_COOKIEFILE, "/tmp/.hyrax_cookies");
-        curl_easy_setopt(handle->d_handle, CURLOPT_COOKIEJAR, "/tmp/.hyrax_cookies");
+        curl_easy_setopt(handle->d_handle, CURLOPT_COOKIEFILE, curl::get_cookie_filename().c_str());
+        curl_easy_setopt(handle->d_handle, CURLOPT_COOKIEJAR, curl::get_cookie_filename().c_str());
 
         // Follow 302 (redirect) responses
         curl_easy_setopt(handle->d_handle, CURLOPT_FOLLOWLOCATION, 1);
