@@ -133,6 +133,9 @@ public:
     void get_value(const std::string& s, std::string &val, bool &found);
     void get_values(const std::string& s, std::vector<std::string> &vals, bool &found);
     void get_values(const std::string&, std::map<std::string,std::string> &map_values, const bool &case_insensitive_map_keys, bool &found);
+    void get_values(const std::string&, std::map< std::string, std::map<std::string, std::vector<std::string>>> &map, const bool &case_insensitive_map_keys, bool &found);
+
+
 
     bool read_bool_key(const std::string &key, bool default_value);
     std::string read_string_key(const std::string &key, const std::string &default_value);

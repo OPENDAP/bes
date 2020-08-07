@@ -52,8 +52,8 @@ namespace kvp {
 
     // Forward declaration, implementation at end of file..
     void load_keys(
-            set<string> &loaded_kvp_files,
             const std::string &keys_file_name,
+            set<string> &loaded_kvp_files,
             std::map<std::string, std::vector<std::string> > &keystore);
 
     bool only_blanks(const char *line) {
@@ -129,8 +129,8 @@ namespace kvp {
  * @param file name of the configuration file to load
  */
     void load_include_file(
-            set<string> &loaded_kvp_files,
             const string &file,
+            set<string> &loaded_kvp_files,
             std::map<std::string, std::vector<std::string> > &keystore
     ) {
         // make sure the file exists and is readable
@@ -141,7 +141,7 @@ namespace kvp {
         if (it == loaded_kvp_files.end()) {
             // Didn't find it, better load it...
             loaded_kvp_files.insert(file);
-            load_keys(loaded_kvp_files, file, keystore);
+            load_keys(file, loaded_kvp_files, keystore);
         }
     }
 
@@ -158,10 +158,10 @@ namespace kvp {
  * @param keystore The map into which the key value pairs will be placed.
 */
     void load_include_files(
-            set<string> &loaded_kvp_files,
+            const string &current_keys_file_name,
             const string &file_expr,
-            std::map<std::string, std::vector<std::string> > &keystore,
-            const string &current_keys_file_name
+            set<string> &loaded_kvp_files,
+            std::map<std::string, std::vector<std::string> > &keystore
     ) {
         string newdir = "";
         BESFSFile allfiles(file_expr);
@@ -196,7 +196,7 @@ namespace kvp {
         BESFSDir::fileIterator e = fsd.endOfFileList();
         for (; i != e; i++) {
             string include_file = (*i).getFullPath();
-            load_include_file(loaded_kvp_files, include_file, keystore);
+            load_include_file(include_file, loaded_kvp_files, keystore);
         }
     }
 
@@ -218,10 +218,10 @@ namespace kvp {
     }
 
     void load_keys(
-            set<string> &loaded_kvp_files,
+            const string &current_keys_file_name,
             std::ifstream &keys_file,
-            std::map<std::string, std::vector<std::string> > &keystore,
-            const string &current_keys_file_name) {
+            set<string> &loaded_kvp_files,
+            std::map<std::string, std::vector<std::string> > &keystore ) {
 
         string key, value, line;
         while (!keys_file.eof()) {
@@ -234,7 +234,7 @@ namespace kvp {
                     // files and their values for the admin interface.
                     set_key(key, value, true, keystore);
                     //load_include_files(kvp_files, value, keystore);
-                    load_include_files(loaded_kvp_files, value, keystore, current_keys_file_name);
+                    load_include_files(current_keys_file_name, value, loaded_kvp_files, keystore );
                 } else {
                     set_key(key, value, addto, keystore);
                 }
@@ -243,8 +243,8 @@ namespace kvp {
     }
 
     void load_keys(
-            set<string> &loaded_kvp_files,
             const std::string &keys_file_name,
+            set<string> &loaded_kvp_files,
             std::map<std::string, std::vector<std::string> > &keystore
     ) {
         std::ifstream keys_file(keys_file_name.c_str());
@@ -265,7 +265,7 @@ namespace kvp {
 
         try {
             loaded_kvp_files.insert(keys_file_name);
-            load_keys(loaded_kvp_files, keys_file, keystore, keys_file_name);
+            load_keys(keys_file_name, keys_file, loaded_kvp_files, keystore);
         }
         catch (BESError &e) {
             // be sure we're throwing a fatal error, since the BES can't run
@@ -287,7 +287,7 @@ namespace kvp {
             std::map<std::string, std::vector<std::string> > &keystore
     ) {
         set<string> loaded_kvp_files;
-        load_keys(loaded_kvp_files, keys_file_name, keystore);
+        load_keys(keys_file_name, loaded_kvp_files, keystore);
     }
 
 } // namespace kvp

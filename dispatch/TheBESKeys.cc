@@ -40,6 +40,8 @@
 #include <cstring>
 
 #include <string>
+#include <vector>
+#include <map>
 #include <sstream>
 
 #include "BESDebug.h"
@@ -136,7 +138,7 @@ TheBESKeys::~TheBESKeys()
 
 void TheBESKeys::initialize_keys()
 {
-    kvp::load_keys(d_ingested_key_files, d_keys_file_name, *d_the_keys);
+    kvp::load_keys(d_keys_file_name, d_ingested_key_files, *d_the_keys);
 
 
 }
@@ -494,6 +496,23 @@ void TheBESKeys::dump(ostream &strm) const
 }
 
 
+
+#define MAP_SEPARATOR ":"
+
+bool parse_map_record(const string &map_record, const bool &case_insensitive_map_keys, string &key, string &value) {
+    int primary_index = map_record.find(MAP_SEPARATOR);
+    if (primary_index > 0) {
+        key = map_record.substr(0, primary_index);
+        if (case_insensitive_map_keys)
+            key = BESUtil::lowercase(key);
+        value = map_record.substr(primary_index + 1);
+        BESDEBUG(MODULE, prolog << "key: '" << key << "'  value: " << value << endl);
+        return true;
+    }
+    return false;
+}
+
+
 /**
  *
  * @param key
@@ -515,25 +534,86 @@ void TheBESKeys::get_values(
 
     vector<string>::iterator it;
     for(it=values.begin();  it!=values.end(); it++){
-        string map_record = *it;
-        int index = map_record.find(":");
-        if(index>0){
-            string map_key = map_record.substr(0,index);
-            if(case_insensitive_map_keys)
-                map_key =  BESUtil::lowercase(map_key);
-            string map_value =  map_record.substr(index+1);
-            BESDEBUG(MODULE, prolog << "map_key: '" << map_key << "'  map_value: " << map_value << endl);
+        string map_key;
+        string map_value;
+        if(parse_map_record(*it,case_insensitive_map_keys,map_key,map_value)){
             map_values.insert( std::pair<string,string>(map_key,map_value));
         }
         else {
-            //throw BESInternalError(string("The configuration entry for the ") + SERVER_ADMINISTRATOR_KEY +
-            //    " was incorrectly formatted. entry: "+admin_info_entry, __FILE__,__LINE__);
-
             BESDEBUG(MODULE, prolog << string("The configuration entry for the ") << key << " was not " <<
-            "formatted as a map record. The offending entry: " << map_record << " HAS BEEN SKIPPED." << endl);
-            // return;
+                "formatted as a map record. The offending entry: " << *it << " HAS BEEN SKIPPED." << endl);
         }
     }
 
 }
+
+
+/**
+ *
+ * @param key
+ * @param map_values
+ * @param case_insensitive_map_keys
+ * @param found
+ */
+void TheBESKeys::get_values(
+        const std::string &key,
+        std::map< std::string, std::map<std::string,std::vector<std::string>>> &primary_map,
+        const bool &case_insensitive_map_keys,
+        bool &found){
+
+    vector<string> values;
+    get_values(key, values, found);
+    if(!found){
+        return;
+    }
+
+    vector<string>::iterator it;
+    for(it=values.begin();  it!=values.end(); it++){
+        string map_record = *it;
+        string primary_map_key;
+        string primary_map_value;
+        if(parse_map_record(map_record,case_insensitive_map_keys,primary_map_key,primary_map_value)){
+            string secondary_key;
+            string secondary_value;
+            if(parse_map_record(primary_map_value,case_insensitive_map_keys,secondary_key,secondary_value)){
+                map<string, map<string,vector<string>>>::iterator pit;
+                pit = primary_map.find(primary_map_key);
+                if(pit!=primary_map.end()){
+                    map<string,vector<string>>::iterator sit;
+                    sit = pit->second.find(secondary_key);
+                    if(sit!=pit->second.end()){
+                        sit->second.push_back(secondary_value);
+                    }
+                    else {
+                        // How to make a vector<string>> and poke in to the secondary_map??
+                        vector<string> secondary_map_entry_values;
+                        secondary_map_entry_values.push_back(secondary_value);
+                        pit->second.insert(pair<string,vector<string>>(secondary_key,secondary_map_entry_values));
+                    }
+                }
+                else {
+                    // How to make a map<string,vector<string>> and poke in to the primary_map??
+                    map<string,vector<string>> secondary_map_entry;
+                    vector<string> secondary_map_entry_values;
+                    secondary_map_entry_values.push_back(secondary_value);
+                    secondary_map_entry.insert(pair<string,vector<string>>(secondary_key,secondary_map_entry_values));
+                    primary_map.insert(pair<string, map<string,vector<string>>>(primary_map_key,secondary_map_entry));
+                }
+            }
+            else {
+                // Map entry improperly formatted.
+                BESDEBUG(MODULE, prolog << string("The configuration entry for the ") << key << " was not " <<
+                                        "formatted as a map record. The offending entry: " << map_record <<
+                                        " HAS BEEN SKIPPED." << endl);
+            }
+        }
+        else {
+            BESDEBUG(MODULE, prolog << string("The configuration entry for the ") << key << " was not " <<
+                                    "formatted as a map record. The offending entry: " << map_record <<
+                                    " HAS BEEN SKIPPED." << endl);
+        }
+    }
+
+}
+
 

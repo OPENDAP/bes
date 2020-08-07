@@ -382,14 +382,15 @@ public:
      */
     void vector_values_test() {
         if(debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
-        string bes_conf = (string) TEST_SRC_DIR + "/keys_test_maps.ini";
+        string bes_conf = (string) TEST_SRC_DIR + "/keys_test_vector.ini";
         if(debug) cout << "Using TheBESKeys::ConfigFile: " << bes_conf << endl;
         try {
             if(debug) cout << "Calling TheBESKeys()" << endl;
             TheBESKeys besKeys(bes_conf);
-            CPPUNIT_ASSERT(besKeys.d_the_keys->size() == 2);
 
             if(debug) cout << "Keys size: " << besKeys.d_the_keys->size() << endl;
+            CPPUNIT_ASSERT(besKeys.d_the_keys->size() == 1);
+
             if(debug) besKeys.dump(cout);
 
             vector<string> values;
@@ -417,14 +418,15 @@ public:
      */
     void map_values_test() {
         if(debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
-        string bes_conf = (string) TEST_SRC_DIR + "/keys_test_maps.ini";
+        string bes_conf = (string) TEST_SRC_DIR + "/keys_test_map.ini";
         if(debug) cout << "Using TheBESKeys::ConfigFile: " << bes_conf << endl;
         try {
             if(debug) cout << "Calling TheBESKeys()" << endl;
             TheBESKeys besKeys(bes_conf);
-            CPPUNIT_ASSERT(besKeys.d_the_keys->size() == 2);
 
             if(debug) cout << "Keys size: " << besKeys.d_the_keys->size() << endl;
+            CPPUNIT_ASSERT(besKeys.d_the_keys->size() == 1);
+
             if(debug) besKeys.dump(cout);
 
             string map_key = "BES.TestMap";
@@ -444,6 +446,114 @@ public:
                 CPPUNIT_ASSERT( it != values.end() );
                 CPPUNIT_ASSERT( it->second == expected_map_vals[i] );
             }
+
+        }
+        catch (BESError &e) {
+            //cerr << "Error: " << e.get_message() << endl;
+            cerr << "TheBESKeys::ConfigFile: " << TheBESKeys::ConfigFile << endl;
+            CPPUNIT_FAIL("Unable to create BESKeys: " + e.get_message());
+        }
+
+        if(debug) cout << __func__ << END << endl;
+    }
+
+
+
+    void check_map_map(
+            const map<string, map<string, vector<string>>> &primary_map,
+            const string &primary_key,
+            const map<string, vector<string>> &check_map){
+
+        map<string, map<string, vector<string>>>::const_iterator pit;
+        pit = primary_map.find(primary_key);
+        if(pit != primary_map.end()) {
+            if (debug) cout << "Found primary key '" << primary_key << "'" << endl;
+            CPPUNIT_ASSERT(pit->second.size() == check_map.size());
+
+            map<string, vector<string>>::const_iterator cmit;
+            map<string, vector<string>>::const_iterator sit;
+            for (cmit = check_map.begin(); cmit != check_map.end(); cmit++) {
+                sit = pit->second.find(cmit->first);
+                if (sit != pit->second.end()) {
+                    if (debug)
+                        cout << "Found secondary key '" << cmit->first << "' with " << sit->second.size() << " values."
+                             << endl;
+                    CPPUNIT_ASSERT(sit->second.size() == cmit->second.size());
+                    for (size_t i = 0; i < cmit->second.size(); i++) {
+                        if (debug)
+                            cout << "Expected value: '" << cmit->second[i] << "' Ingested value: " << sit->second[i]
+                                 << endl;
+                        CPPUNIT_ASSERT(sit->second[i] == cmit->second[i]);
+                    }
+                } else {
+                    CPPUNIT_FAIL("The expected secondary key '" + cmit->first + "' was not found");
+                }
+            }
+        }
+        else {
+            CPPUNIT_FAIL("The expected primary key '" + primary_key + "' was not found");
+        }
+
+    }
+
+    /**
+     * DynamicConfig+=data_services:regex:^some_reg(ular)?ex(pression)?$
+     * DynamicConfig+=data_services:config:H5.EnableDMR64bitInt=false
+     * DynamicConfig+=data_services:config:H5.EnableCF=false
+     * DynamicConfig+=data_services:config:FONc.ClassicModel=false
+     *
+     * DynamicConfig+=ghrc:regex:^some_OTHER_reg(ular)?ex(pression)?$
+     * DynamicConfig+=ghrc:config:H5.EnableDMR64bitInt=true
+     * DynamicConfig+=ghrc:config:H5.EnableCF=true
+     * DynamicConfig+=ghrc:config:FONc.ClassicModel=true
+     *
+     *
+     */
+    void map_map_test() {
+        if(debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
+
+        string regex_key("regex");
+        string config_key("config");
+        size_t primary_size = 2;
+
+        // Baseline values for DynamicConfiguration key 'data_services'
+        string data_services_key("data_services");
+        map<string, vector<string>> data_services_check_map;
+        vector<string>  data_services_regex_value = {"^some_reg(ular)?ex(pression)?$"};
+        data_services_check_map.insert(pair<string,vector<string>>(regex_key,data_services_regex_value));
+        vector<string>  data_services_config_values = {"H5.EnableDMR64bitInt=false", "H5.EnableCF=false", "FONc.ClassicModel=false"};
+        data_services_check_map.insert(pair<string,vector<string>>(config_key, data_services_config_values));
+
+        // Baseline values for DynamicConfiguration key 'ghrc'
+        string ghrc_key("ghrc");
+        map<string, vector<string>> ghrc_check_map;
+        vector<string> ghrc_regex_value = {"^some_OTHER_reg(ular)?ex(pression)?$"};
+        ghrc_check_map.insert(pair<string,vector<string>>(regex_key,ghrc_regex_value));
+        vector<string> ghrc_config_values = {"H5.EnableDMR64bitInt=true", "H5.EnableCF=true", "FONc.ClassicModel=true"};
+        ghrc_check_map.insert(pair<string,vector<string>>(config_key, ghrc_config_values));
+
+
+        string bes_conf = (string) TEST_SRC_DIR + "/keys_test_map_map.ini";
+        if(debug) cout << "Using TheBESKeys::ConfigFile: " << bes_conf << endl;
+        try {
+            if(debug) cout << "Calling TheBESKeys()" << endl;
+            TheBESKeys besKeys(bes_conf);
+
+            if(debug) cout << "Keys size: " << besKeys.d_the_keys->size() << endl;
+            CPPUNIT_ASSERT(besKeys.d_the_keys->size() == 1);
+
+            if(debug) besKeys.dump(cout);
+
+            string map_key = "DynamicConfig";
+            map<string, map<string, vector<string>>> primary_map;
+            bool found;
+            besKeys.get_values(map_key, primary_map, true, found);
+            CPPUNIT_ASSERT(found);
+            if(debug) cout << "Primary Map Size: " << primary_map.size() << endl;
+            CPPUNIT_ASSERT(primary_map.size() == primary_size);
+
+            check_map_map(primary_map, ghrc_key, ghrc_check_map);
+            check_map_map(primary_map, data_services_key, data_services_check_map);
         }
         catch (BESError &e) {
             //cerr << "Error: " << e.get_message() << endl;
@@ -477,6 +587,7 @@ CPPUNIT_TEST_SUITE( keysT );
     CPPUNIT_TEST(check_keys_test);
     CPPUNIT_TEST(vector_values_test);
     CPPUNIT_TEST(map_values_test);
+    CPPUNIT_TEST(map_map_test);
 
     CPPUNIT_TEST_SUITE_END();
 
