@@ -1019,14 +1019,14 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         CURLcode curl_code = curl_easy_perform(eh);
         if( curl_code == CURLE_SSL_CONNECT_ERROR ){
             stringstream msg;
-            msg << prolog << "cURL experienced a CURLE_SSL_CONNECT_ERROR error. Will retry (url: "<< url << " attempt:" << tries << ")." << endl;
+            msg << prolog << "cURL experienced a CURLE_SSL_CONNECT_ERROR error. Will retry (url: "<< url << " attempt: " << tries << ")." << endl;
             BESDEBUG(MODULE,msg.str());
             LOG(msg.str());
             return false;
         }
         else if( curl_code == CURLE_SSL_CACERT_BADFILE ){
             stringstream msg;
-            msg << prolog << "cURL experienced a CURLE_SSL_CACERT_BADFILE error. Will retry (url: " << url << " attempt:" << tries << ")." << endl;
+            msg << prolog << "cURL experienced a CURLE_SSL_CACERT_BADFILE error. Will retry (url: " << url << " attempt: " << tries << ")." << endl;
             BESDEBUG(MODULE,msg.str());
             LOG(msg.str());
             return false;
@@ -1134,14 +1134,14 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
                 CURLcode curl_code = curl_easy_perform(curl);
                 if( curl_code == CURLE_SSL_CONNECT_ERROR ){
                     stringstream msg;
-                    msg << prolog << "cURL experienced a CURLE_SSL_CONNECT_ERROR error. Will retry (url: "<< url << " attempt:" << tries << ")." << endl;
+                    msg << prolog << "cURL experienced a CURLE_SSL_CONNECT_ERROR error. Will retry (url: "<< url << " attempt: " << tries << ")." << endl;
                     BESDEBUG(MODULE,msg.str());
                     LOG(msg.str());
                     do_retry = true;
                 }
                 else if( curl_code == CURLE_SSL_CACERT_BADFILE ){
                     stringstream msg;
-                    msg << prolog << "cURL experienced a CURLE_SSL_CACERT_BADFILE error. Will retry (url: " << url << " attempt:" << tries << ")." << endl;
+                    msg << prolog << "cURL experienced a CURLE_SSL_CACERT_BADFILE error. Will retry (url: " << url << " attempt: " << tries << ")." << endl;
                     BESDEBUG(MODULE,msg.str());
                     LOG(msg.str());
                     do_retry = true;
@@ -1165,7 +1165,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
                         }
                         else {
                             LOG(prolog << "HTTP Range-GET failed. Will retry (url: " << url <<
-                                                                           " attempt:" << tries << ")." << endl);
+                                                                           " attempt: " << tries << ")." << endl);
                             do_retry = true;
                         }
                     }
