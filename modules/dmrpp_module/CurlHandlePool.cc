@@ -203,7 +203,7 @@ int curl_trace(CURL */*handle*/, curl_infotype type, char *data, size_t /*size*/
 }
 #endif
 
-dmrpp_easy_handle::dmrpp_easy_handle() : d_headers(0) {
+dmrpp_easy_handle::dmrpp_easy_handle() : d_request_headers(0) {
     d_handle = curl_easy_init();
     if (!d_handle) throw BESInternalError("Could not allocate CURL handle", __FILE__, __LINE__);
 
@@ -253,7 +253,7 @@ dmrpp_easy_handle::dmrpp_easy_handle() : d_headers(0) {
 
 dmrpp_easy_handle::~dmrpp_easy_handle() {
     if (d_handle) curl_easy_cleanup(d_handle);
-    if (d_headers) curl_slist_free_all(d_headers);
+    if (d_request_headers) curl_slist_free_all(d_request_headers);
 }
 
 #if 0 // Moved this to http/CurlUtils
@@ -374,8 +374,8 @@ void dmrpp_easy_handle::read_data() {
                 }
             }
 
-            curl_slist_free_all(d_headers);
-            d_headers = 0;
+            curl_slist_free_all(d_request_headers);
+            d_request_headers = 0;
         } while (!success);
     }
     else {
@@ -763,32 +763,32 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
             // passing nullptr for the first call allocates the curl_slist
             // The following code builds the slist that holds the headers. This slist is freed
             // once the URL is dereferenced in dmrpp_easy_handle::read_data(). jhrg 11/26/19
-            handle->d_headers = append_http_header(0, "Authorization:", auth_header);
-            if (!handle->d_headers)
+            handle->d_request_headers = append_http_header(0, "Authorization:", auth_header);
+            if (!handle->d_request_headers)
                 throw BESInternalError(
                         string("CURL Error setting Authorization header: ").append(
                                 curl::error_message(res, handle->d_errbuf)), __FILE__, __LINE__);
 
             // We pre-compute the sha256 hash of a null message body
-            curl_slist *temp = append_http_header(handle->d_headers, "x-amz-content-sha256:",
+            curl_slist *temp = append_http_header(handle->d_request_headers, "x-amz-content-sha256:",
                                                   "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
             if (!temp)
                 throw BESInternalError(
                         string("CURL Error setting x-amz-content-sha256: ").append(
                                 curl::error_message(res, handle->d_errbuf)),
                         __FILE__, __LINE__);
-            handle->d_headers = temp;
+            handle->d_request_headers = temp;
 
-            temp = append_http_header(handle->d_headers, "x-amz-date:", AWSV4::ISO8601_date(request_time));
+            temp = append_http_header(handle->d_request_headers, "x-amz-date:", AWSV4::ISO8601_date(request_time));
             if (!temp)
                 throw BESInternalError(
                         string("CURL Error setting x-amz-date header: ").append(
                                 curl::error_message(res, handle->d_errbuf)),
                         __FILE__, __LINE__);
-            handle->d_headers = temp;
+            handle->d_request_headers = temp;
 
 
-            if (CURLE_OK != (res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPHEADER, handle->d_headers)))
+            if (CURLE_OK != (res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPHEADER, handle->d_request_headers)))
                 throw BESInternalError(string("CURL Error setting HTTP headers for S3 authentication: ").append(
                         curl::error_message(res, handle->d_errbuf)), __FILE__, __LINE__);
         }

@@ -77,6 +77,8 @@ namespace ngap {
             BESContainer(sym_name, real_name, type),
             d_dmrpp_rresource(0) {
 
+        BESDEBUG(MODULE, prolog << "object address: "<< (void *) this << endl);
+
         bool found;
 
         NgapApi ngap_api;
@@ -110,6 +112,7 @@ namespace ngap {
                          + "can not create a copy of this container.";
             throw BESInternalError(err, __FILE__, __LINE__);
         }
+        BESDEBUG(MODULE, prolog << "object address: "<< (void *) this << endl);
     }
 
     void NgapContainer::_duplicate(NgapContainer &copy_to) {
@@ -178,7 +181,7 @@ namespace ngap {
      * @throws BESError if there is a problem making the remote request
      */
     string NgapContainer::access() {
-        BESDEBUG(MODULE, prolog << "BEGIN" << endl);
+        BESDEBUG(MODULE, prolog << "BEGIN   object address: "<< (void *) this << endl);
 
         // Since this the ngap we know that the real_name is a URL.
         string data_access_url_str = get_real_name();
