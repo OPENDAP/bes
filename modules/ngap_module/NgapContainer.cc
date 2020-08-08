@@ -129,10 +129,12 @@ namespace ngap {
     NgapContainer::ptr_duplicate() {
         NgapContainer *container = new NgapContainer;
         _duplicate(*container);
+        BESDEBUG(MODULE, prolog << "object address: "<< (void *) this << " to: " << (void *)container << endl);
         return container;
     }
 
     NgapContainer::~NgapContainer() {
+        BESDEBUG(MODULE, prolog << "object address: "<< (void *) this << endl);
         if (d_dmrpp_rresource) {
             release();
         }
