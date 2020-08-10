@@ -105,6 +105,7 @@ namespace ngap {
     NgapContainer::NgapContainer(const NgapContainer &copy_from) :
             BESContainer(copy_from),
             d_dmrpp_rresource(copy_from.d_dmrpp_rresource) {
+        BESDEBUG(MODULE, prolog << "BEGIN   object address: "<< (void *) this << " Copying from: " << (void *) &copy_from << endl);
         // we can not make a copy of this container once the request has
         // been made
         if (d_dmrpp_rresource) {
@@ -121,6 +122,7 @@ namespace ngap {
                          + "can not duplicate this resource.";
             throw BESInternalError(err, __FILE__, __LINE__);
         }
+        BESDEBUG(MODULE, prolog << "BEGIN   object address: "<< (void *) this << " Copying to: " << (void *) &copy_to << endl);
         copy_to.d_dmrpp_rresource = d_dmrpp_rresource;
         BESContainer::_duplicate(copy_to);
     }
@@ -133,6 +135,7 @@ namespace ngap {
     }
 
     NgapContainer::~NgapContainer() {
+        BESDEBUG(MODULE, prolog << "BEGIN   object address: "<< (void *) this <<  endl);
         if (d_dmrpp_rresource) {
             release();
         }

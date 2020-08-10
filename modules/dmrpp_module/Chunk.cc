@@ -107,7 +107,7 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
     size_t nbytes = size * nmemb;
     Chunk *chunk = reinterpret_cast<Chunk*>(data);
 
-    BESDEBUG(MODULE, prolog << "BEGIN: chunk->get_response_content_type(): " << chunk->get_response_content_type() << " chunk->get_data_url(): " << chunk->get_data_url() << endl);
+    BESDEBUG(MODULE, prolog << "BEGIN chunk->get_response_content_type():" << chunk->get_response_content_type() << " chunk->get_data_url(): " << chunk->get_data_url() << endl);
 
     // When Content-Type is 'application/xml,' that's an error. jhrg 6/9/20
     if (chunk->get_response_content_type().find("application/xml") != string::npos) {
@@ -120,7 +120,10 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
         // will be sad if that happens. jhrg 12/30/19
         try {
             string json_message = xml2json(xml_message.c_str());
-            VERBOSE("AWS S3 Access Error:" << json_message << endl);
+            stringstream aws_msg;
+            aws_msg << prolog << "AWS S3 Access Error:" << json_message;
+            BESDEBUG(MODULE,aws_msg.str() << endl);
+            VERBOSE(aws_msg.str() << endl);
 
             rapidjson::Document d;
             d.Parse(json_message.c_str());
@@ -130,13 +133,16 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
             // We might want to get the "Code" from the "Error" if these text messages
             // are not good enough. But the "Code" is not really suitable for normal humans...
             // jhrg 12/31/19
-            string msg;
-            msg.append("Error accessing object store data: ").append(message.GetString())
-                .append(" (while accessing: ").append(chunk->get_data_url().append(")"));
-            if (string(code.GetString()) == "AccessDenied")
-                throw BESForbiddenError(msg, __FILE__, __LINE__);
-            else
-                throw BESInternalError(msg, __FILE__, __LINE__);
+            stringstream msg;
+            msg << prolog << "Error accessing object store data. (Tried: " << chunk->get_data_url().append(")") <<
+                " Message " << message.GetString();
+            BESDEBUG(MODULE,msg.str() << endl);
+            if (string(code.GetString()) == "AccessDenied"){
+                throw BESForbiddenError(msg.str(), __FILE__, __LINE__);
+            }
+            else{
+                throw BESInternalError(msg.str(), __FILE__, __LINE__);
+            }
         }
         catch (BESError) {
             // re-throw any BESError - added for the future if we make BESError a child
@@ -144,7 +150,11 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
             throw;
         }
         catch(std::exception &e) {
-            throw BESSyntaxUserError(string("Error accessing object store data: ").append(e.what()), __FILE__, __LINE__);
+            stringstream msg;
+            msg << prolog << "Error accessing object store data. (Tried: " << chunk->get_data_url().append(")") <<
+            " Message " << e.what();
+            BESDEBUG(MODULE,msg.str() << endl);
+            throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
         }
     }
 
