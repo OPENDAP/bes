@@ -459,7 +459,6 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
 #else
         curl_easy_setopt(curl, CURLOPT_ACCEPT_ENCODING, "");
 #endif
-
         curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, error_buffer);
         // We have to set FailOnError to false for any of the non-Basic
         // authentication schemes to work. 07/28/03 jhrg
@@ -487,12 +486,8 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
         curl_easy_setopt(curl, CURLOPT_MAXREDIRS, 5);
 
-
-
-
         // Set the user agent to curls version response because, well, that's what command line curl does :)
         curl_easy_setopt(curl, CURLOPT_USERAGENT, curl_version());
-
 
 #if 0
         // If the user turns off SSL validation...
@@ -512,7 +507,6 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
     }
 #endif
 
-
         if (curl_trace) {
             BESDEBUG(MODULE,  prolog << "Curl version: " << curl_version() << endl);
             curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
@@ -520,19 +514,15 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
             curl_easy_setopt(curl, CURLOPT_DEBUGFUNCTION, curl_debug);
             BESDEBUG(MODULE,  prolog << "Curl debugging function installed." << endl);
         }
-
-
         BESDEBUG(MODULE,  prolog << "curl: " << curl << endl);
-
         return curl;
-
-
     }
 
     string get_range_arg_string(const unsigned long long &offset, const unsigned long long &size)
     {
         ostringstream range;   // range-get needs a string arg for the range
         range << offset << "-" << offset + size - 1;
+        BESDEBUG(MODULE,  prolog << " range: " << range.str() << endl);
         return range.str();
     }
 
