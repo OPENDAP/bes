@@ -43,6 +43,7 @@ using std::endl;
 
 #include "TheBESKeys.h"
 #include "BESError.h"
+#include "BESDebug.h"
 
 #include <GetOpt.h>
 #include <debug.h>
@@ -80,6 +81,7 @@ public:
 
     void setUp()
     {
+        if (debug_2) BESDebug::SetUp("cerr,bes");
     }
 
     void tearDown()
@@ -512,25 +514,23 @@ public:
     void map_map_test() {
         if(debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
 
-        string regex_key("regex");
-        string config_key("config");
         size_t primary_size = 2;
 
         // Baseline values for DynamicConfiguration key 'data_services'
         string data_services_key("data_services");
         map<string, vector<string>> data_services_check_map;
         vector<string>  data_services_regex_value = {"^some_reg(ular)?ex(pression)?$"};
-        data_services_check_map.insert(pair<string,vector<string>>(regex_key,data_services_regex_value));
+        data_services_check_map.insert(pair<string,vector<string>>(DC_REGEX_KEY,data_services_regex_value));
         vector<string>  data_services_config_values = {"H5.EnableDMR64bitInt=false", "H5.EnableCF=false", "FONc.ClassicModel=false"};
-        data_services_check_map.insert(pair<string,vector<string>>(config_key, data_services_config_values));
+        data_services_check_map.insert(pair<string,vector<string>>(DC_CONFIG_KEY, data_services_config_values));
 
         // Baseline values for DynamicConfiguration key 'ghrc'
         string ghrc_key("ghrc");
         map<string, vector<string>> ghrc_check_map;
         vector<string> ghrc_regex_value = {"^some_OTHER_reg(ular)?ex(pression)?$"};
-        ghrc_check_map.insert(pair<string,vector<string>>(regex_key,ghrc_regex_value));
+        ghrc_check_map.insert(pair<string,vector<string>>(DC_REGEX_KEY,ghrc_regex_value));
         vector<string> ghrc_config_values = {"H5.EnableDMR64bitInt=true", "H5.EnableCF=true", "FONc.ClassicModel=true"};
-        ghrc_check_map.insert(pair<string,vector<string>>(config_key, ghrc_config_values));
+        ghrc_check_map.insert(pair<string,vector<string>>(DC_CONFIG_KEY, ghrc_config_values));
 
 
         string bes_conf = (string) TEST_SRC_DIR + "/keys_test_map_map.ini";
@@ -564,6 +564,43 @@ public:
         if(debug) cout << __func__ << END << endl;
     }
 
+
+    void dynamic_config_test(){
+        if(debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
+
+        string bes_conf = (string) TEST_SRC_DIR + "/keys_test_map_map.ini";
+        if(debug) cout << "Using TheBESKeys::ConfigFile: " << bes_conf << endl;
+        try {
+            if(debug) cout << "Calling TheBESKeys()" << endl;
+            TheBESKeys besKeys(bes_conf);
+
+            if(debug) cout << "Keys size: " << besKeys.d_the_keys->size() << endl;
+            CPPUNIT_ASSERT(besKeys.d_the_keys->size() == 1);
+            if(debug) besKeys.dump(cout);
+
+
+            // Baseline values for DynamicConfiguration key 'ghrc'
+
+//          vector<string> ghrc_regex_value = {"^some_OTHER_reg(ular)?ex(pression)?$"};
+            besKeys.load_dynamic_config("some_OTHER_regex");
+
+            if(debug) besKeys.dump(cout);
+
+            besKeys.unload_dynamic_config();
+
+            if(debug) besKeys.dump(cout);
+
+        }
+        catch (BESError &e) {
+            //cerr << "Error: " << e.get_message() << endl;
+            cerr << "TheBESKeys::ConfigFile: " << TheBESKeys::ConfigFile << endl;
+            CPPUNIT_FAIL("Unable to create BESKeys: " + e.get_message());
+        }
+
+        if(debug) cout << __func__ << END << endl;
+
+    }
+
 CPPUNIT_TEST_SUITE( keysT );
 
     // I broke up the monolithic do_test() function, but
@@ -588,11 +625,9 @@ CPPUNIT_TEST_SUITE( keysT );
     CPPUNIT_TEST(vector_values_test);
     CPPUNIT_TEST(map_values_test);
     CPPUNIT_TEST(map_map_test);
+    CPPUNIT_TEST(dynamic_config_test);
 
     CPPUNIT_TEST_SUITE_END();
-
-
-
 
 
     void do_test() {

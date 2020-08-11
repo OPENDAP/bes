@@ -41,6 +41,11 @@
 
 #include "BESObj.h"
 
+#define DYNAMIC_CONFIG_KEY "DynamicConfig"
+#define DC_REGEX_KEY "regex"
+#define DC_CONFIG_KEY "config"
+
+
 /** @brief mapping of key/value pairs defining different behaviors of an
  * application.
  *
@@ -79,7 +84,7 @@
  */
 class TheBESKeys: public BESObj {
 
-friend class keysT;
+    friend class keysT;
 
 private:
 
@@ -90,12 +95,15 @@ private:
 
     std::string d_keys_file_name;
     std::map<std::string, std::vector<std::string> > *d_the_keys;
+    std::map<std::string, std::vector<std::string> > *d_the_backup_keys;
     bool d_own_keys;
 
     static std::set<std::string> d_ingested_key_files;
+
     static bool LoadedKeys(const std::string &key_file);
 
     void clean();
+
     void initialize_keys();
 
 
@@ -107,8 +115,7 @@ private:
     //void load_include_file(const std::string &file);
 #endif
 
-    TheBESKeys() : d_keys_file_name(""), d_the_keys(0), d_own_keys(false)
-    {
+    TheBESKeys() : d_keys_file_name(""), d_the_keys(0), d_own_keys(false) {
     }
 
     TheBESKeys(const std::string &keys_file_name, std::map<std::string, std::vector<std::string> > *keys);
@@ -118,38 +125,46 @@ protected:
 
 public:
     static TheBESKeys *d_instance;
+
     virtual ~TheBESKeys();
 
-    std::string keys_file_name() const
-    {
+    std::string keys_file_name() const {
         return d_keys_file_name;
     }
 
     void set_key(const std::string &key, const std::string &val, bool addto = false);
+
     void set_key(const std::string &pair);
+
     void set_keys(const std::string &key, const std::vector<std::string> &values, bool addto);
-    void set_keys(const std::string &key, const std::map<std::string, std::string> &values, const bool case_insensitive_map_keys, bool addto);
 
-    void get_value(const std::string& s, std::string &val, bool &found);
-    void get_values(const std::string& s, std::vector<std::string> &vals, bool &found);
-    void get_values(const std::string&, std::map<std::string,std::string> &map_values, const bool &case_insensitive_map_keys, bool &found);
-    void get_values(const std::string&, std::map< std::string, std::map<std::string, std::vector<std::string>>> &map, const bool &case_insensitive_map_keys, bool &found);
+    void set_keys(const std::string &key, const std::map<std::string, std::string> &values,
+                  const bool case_insensitive_map_keys, bool addto);
 
+    void get_value(const std::string &s, std::string &val, bool &found);
+
+    void get_values(const std::string &s, std::vector<std::string> &vals, bool &found);
+
+    void get_values(const std::string &, std::map<std::string, std::string> &map_values,
+                    const bool &case_insensitive_map_keys, bool &found);
+
+    void get_values(const std::string &, std::map<std::string, std::map<std::string, std::vector<std::string>>> &map,
+                    const bool &case_insensitive_map_keys, bool &found);
 
 
     bool read_bool_key(const std::string &key, bool default_value);
+
     std::string read_string_key(const std::string &key, const std::string &default_value);
+
     int read_int_key(const std::string &key, int default_value);
 
     typedef std::map<std::string, std::vector<std::string> >::const_iterator Keys_citer;
 
-    Keys_citer keys_begin()
-    {
+    Keys_citer keys_begin() {
         return d_the_keys->begin();
     }
 
-    Keys_citer keys_end()
-    {
+    Keys_citer keys_end() {
         return d_the_keys->end();
     }
 
@@ -165,6 +180,10 @@ public:
      * Access to the singleton.
      */
     static TheBESKeys *TheKeys();
+
+    void load_dynamic_config(std::string name);
+
+    void unload_dynamic_config();
 };
 
 #endif // TheBESKeys_h_

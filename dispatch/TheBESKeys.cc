@@ -48,6 +48,7 @@
 #include "TheBESKeys.h"
 #include "kvp_utils.h"
 #include "BESUtil.h"
+#include "BESRegex.h"
 #include "BESFSDir.h"
 #include "BESFSFile.h"
 #include "BESInternalFatalError.h"
@@ -117,14 +118,14 @@ TheBESKeys *TheBESKeys::TheKeys()
  * key/value pair.
  */
 TheBESKeys::TheBESKeys(const string &keys_file_name) :
-        d_keys_file_name(keys_file_name), d_the_keys(0), d_own_keys(true)
+        d_keys_file_name(keys_file_name), d_the_keys(0), d_the_backup_keys(0), d_own_keys(true)
 {
     d_the_keys = new map<string, vector<string> >;
     initialize_keys();
 }
 
 TheBESKeys::TheBESKeys(const string &keys_file_name, map<string, vector<string> > *keys) :
-        d_keys_file_name(keys_file_name), d_the_keys(keys), d_own_keys(false)
+        d_keys_file_name(keys_file_name), d_the_keys(keys), d_the_backup_keys(0), d_own_keys(false)
 {
     initialize_keys();
 }
@@ -149,6 +150,10 @@ void TheBESKeys::clean()
     if (d_the_keys && d_own_keys) {
         delete d_the_keys;
         d_the_keys = 0;
+    }
+    if(d_the_backup_keys){
+        delete d_the_backup_keys;
+        d_the_backup_keys = 0;
     }
 }
 
@@ -561,6 +566,7 @@ void TheBESKeys::get_values(
         const bool &case_insensitive_map_keys,
         bool &found){
 
+    BESDEBUG(MODULE, prolog << "BEGIN" << endl);
     vector<string> values;
     get_values(key, values, found);
     if(!found){
@@ -613,7 +619,98 @@ void TheBESKeys::get_values(
                                     " HAS BEEN SKIPPED." << endl);
         }
     }
+    BESDEBUG(MODULE, prolog << "END" << endl);
 
 }
 
 
+void TheBESKeys::load_dynamic_config(const string name){
+    map<string, map<string, vector<string>>> dynamic_confg;
+    bool found;
+    get_values(DYNAMIC_CONFIG_KEY, dynamic_confg, true, found);
+    if(!found){
+        BESDEBUG(MODULE, prolog << "Unable to locate " << DYNAMIC_CONFIG_KEY
+        << " in the configuration keys." << endl);
+        return;
+    }
+    BESDEBUG(MODULE, prolog << "Found a " << DYNAMIC_CONFIG_KEY << " in TheBESKeys." << endl);
+
+    long longest_match=0;
+    map<string, map<string, vector<string>>>::iterator best_matching_config=dynamic_confg.end();
+
+    map<string, map<string, vector<string>>>::iterator dcit;
+    for(dcit = dynamic_confg.begin(); dcit != dynamic_confg.end(); dcit++){
+        BESDEBUG(MODULE, prolog << "Processing " << DYNAMIC_CONFIG_KEY << "["<<dcit->first<< "]" << endl);
+
+        map<string, vector<string>>::iterator rit;
+        rit = dcit->second.find(DC_REGEX_KEY);
+        if(rit==dcit->second.end()){
+            BESDEBUG(MODULE, prolog << "Could not find a " << DC_REGEX_KEY << " (regular expression) for the "
+            << DYNAMIC_CONFIG_KEY << " named: " << dcit->first << " SKIPPING!" << endl);
+        }
+        else {
+            BESDEBUG(MODULE, prolog << "Found " << DC_REGEX_KEY << " vector for "
+            << DYNAMIC_CONFIG_KEY << "["<< dcit->first << "]" << endl);
+            vector<string>::iterator vit;
+            for(vit = rit->second.begin(); vit != rit->second.end(); vit ++){ // For all the regex expressions
+                BESDEBUG(MODULE, prolog << "Processing " << DC_REGEX_KEY << " value '" << *vit << "'" << endl);
+                BESRegex regex((*vit).c_str()); // make BESRegex
+                long match_length = regex.match(name.c_str(),name.size(),0); // Eval match
+
+                BESDEBUG(MODULE, prolog << "The name '"<< name << (match_length<0?"' does not match ":"' matches ")
+                << "the regular expression: '"<< *vit << "' (match_length: " << match_length << ")" << endl);
+                if(match_length>longest_match){ // Is is a better match?
+                    BESDEBUG(MODULE, prolog << "match_length of " << match_length
+                    << " is larger than the current longest_match of "<< longest_match << endl);
+
+                    map<string, vector<string>>::iterator cit;
+                    cit = dcit->second.find(DC_CONFIG_KEY);
+                    if(cit==dcit->second.end() || cit->second.empty()){ // does it have a config?
+                        BESDEBUG(MODULE, prolog << "There were no " << DC_CONFIG_KEY
+                        << " (configuration) values for the " << DYNAMIC_CONFIG_KEY << " named: "
+                        << dcit->first << " SKIPPING!" << endl);
+                    }
+                    else {
+                        BESDEBUG(MODULE, prolog << "Found new best " << DYNAMIC_CONFIG_KEY << " match for '" << name
+                        << "' " << DYNAMIC_CONFIG_KEY << ": " << dcit->first<< endl);
+                        best_matching_config = dcit;
+                        longest_match = match_length;
+                    }
+                }
+            }
+        }
+    }
+
+    if( longest_match==0 ||
+        best_matching_config==dynamic_confg.end()){
+        BESDEBUG(MODULE, prolog << "None of the " << DYNAMIC_CONFIG_KEY
+        << " regex patterns matched the name: " << name << endl);
+        return;
+    }
+    // New backup keys
+    d_the_backup_keys = new std::map<string, vector<string>>();
+    // Copy keys into backup keys
+    *d_the_backup_keys = *d_the_keys;
+
+    // Now load the keys from the dynamic config;
+    map<string, vector<string>>::iterator cit;
+    cit = best_matching_config->second.find(DC_CONFIG_KEY);
+    vector<string>::iterator vit;
+    for(vit=cit->second.begin(); vit != cit->second.end(); vit++){
+        // Each value of this vectpr should be a regular BESKeys kvp. i.e. "BES.LogName=./opendap.log"
+        // Which we just feed into the keys, since we just backed them up...
+        set_key(*vit);
+    }
+
+
+
+}
+
+void TheBESKeys::unload_dynamic_config(){
+    if(d_the_backup_keys && d_the_keys){
+        d_the_keys->clear();
+        *d_the_keys = *d_the_backup_keys;
+        delete d_the_backup_keys;
+        d_the_backup_keys = 0;
+    }
+}
