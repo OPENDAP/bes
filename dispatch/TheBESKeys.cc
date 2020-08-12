@@ -52,6 +52,7 @@
 #include "BESFSDir.h"
 #include "BESFSFile.h"
 #include "BESInternalFatalError.h"
+#include "BESInternalError.h"
 #include "BESSyntaxUserError.h"
 
 #define BES_INCLUDE_KEY "BES.Include"
@@ -625,6 +626,15 @@ void TheBESKeys::get_values(
 
 
 void TheBESKeys::load_dynamic_config(const string name){
+
+    if(d_the_backup_keys){
+        stringstream msg;
+        msg << prolog << "ERROR! Unable to load a dynamic configuration for '"<< name << "'. ";
+        msg << "There is already a dynamic configuration loaded, it must be unloaded before loading a new one.";
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+    }
+
     map<string, map<string, vector<string>>> dynamic_confg;
     bool found;
     get_values(DYNAMIC_CONFIG_KEY, dynamic_confg, true, found);
@@ -699,6 +709,7 @@ void TheBESKeys::load_dynamic_config(const string name){
     for(vit=cit->second.begin(); vit != cit->second.end(); vit++){
         // Each value of this vectpr should be a regular BESKeys kvp. i.e. "BES.LogName=./opendap.log"
         // Which we just feed into the keys, since we just backed them up...
+        BESDEBUG(MODULE, prolog << "Adding dynamic configuration BES Key: " << *vit << endl);
         set_key(*vit);
     }
 

@@ -565,8 +565,19 @@ public:
     }
 
 
+
+
+
     void dynamic_config_test(){
         if(debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
+
+        string fnoc_classic_model_key("FONc.ClassicModel");
+        string h5_enable_cf_key ("H5.EnableCF");
+        string h5_enable_dmr_64bit_int_key("H5.EnableDMR64bitInt");
+        bool found_fnoc_classic_model_key;
+        bool found_h5_enable_cf_key;
+        bool found_h5_enable_dmr_64bit_int_key;
+
 
         string bes_conf = (string) TEST_SRC_DIR + "/keys_test_map_map.ini";
         if(debug) cout << "Using TheBESKeys::ConfigFile: " << bes_conf << endl;
@@ -578,17 +589,77 @@ public:
             CPPUNIT_ASSERT(besKeys.d_the_keys->size() == 1);
             if(debug) besKeys.dump(cout);
 
+            string value = "";
+            bool found = false;
+            TheBESKeys::TheKeys()->get_value(fnoc_classic_model_key, value, found);
+            CPPUNIT_ASSERT(!found);
+            value = "";
+            TheBESKeys::TheKeys()->get_value(h5_enable_cf_key, value, found);
+            CPPUNIT_ASSERT(!found);
+            value = "";
+            TheBESKeys::TheKeys()->get_value(h5_enable_dmr_64bit_int_key, value, found);
+            CPPUNIT_ASSERT(!found);
 
-            // Baseline values for DynamicConfiguration key 'ghrc'
+            // Load the "ghrc" configuration.
 
 //          vector<string> ghrc_regex_value = {"^some_OTHER_reg(ular)?ex(pression)?$"};
             besKeys.load_dynamic_config("some_OTHER_regex");
-
             if(debug) besKeys.dump(cout);
+            CPPUNIT_ASSERT(besKeys.d_the_keys->size() == 4);
 
+            value = "";
+            besKeys.get_value(fnoc_classic_model_key, value, found_fnoc_classic_model_key);
+            CPPUNIT_ASSERT(found_fnoc_classic_model_key == true);
+            if(debug) cout << fnoc_classic_model_key << ": '" << value << "'" << endl;
+            CPPUNIT_ASSERT(value == "true");
+
+            value = "";
+            besKeys.get_value(h5_enable_cf_key, value, found_h5_enable_cf_key);
+            if(debug) cout << h5_enable_cf_key << ": '" << value << "'" << endl;
+            CPPUNIT_ASSERT(found_h5_enable_cf_key == true);
+            CPPUNIT_ASSERT(value == "true");
+
+            value = "";
+            besKeys.get_value(h5_enable_dmr_64bit_int_key, value, found_h5_enable_dmr_64bit_int_key);
+            if(debug) cout << h5_enable_dmr_64bit_int_key << ": '" << value << "'" << endl;
+            CPPUNIT_ASSERT(found_h5_enable_dmr_64bit_int_key == true);
+            CPPUNIT_ASSERT(value == "true");
+
+            // Reset the Keys
             besKeys.unload_dynamic_config();
-
             if(debug) besKeys.dump(cout);
+            CPPUNIT_ASSERT(besKeys.d_the_keys->size() == 1);
+            TheBESKeys::TheKeys()->get_value(fnoc_classic_model_key, value, found);
+            CPPUNIT_ASSERT(!found);
+            value = "";
+            TheBESKeys::TheKeys()->get_value(h5_enable_cf_key, value, found);
+            CPPUNIT_ASSERT(!found);
+            value = "";
+            TheBESKeys::TheKeys()->get_value(h5_enable_dmr_64bit_int_key, value, found);
+            CPPUNIT_ASSERT(!found);
+
+            // Load the "data_services" configuration.
+            besKeys.load_dynamic_config("some_regularex");
+            if(debug) besKeys.dump(cout);
+            CPPUNIT_ASSERT(besKeys.d_the_keys->size() == 4);
+
+            value = "";
+            besKeys.get_value(fnoc_classic_model_key, value, found_fnoc_classic_model_key);
+            CPPUNIT_ASSERT(found_fnoc_classic_model_key == true);
+            if(debug) cout << fnoc_classic_model_key << ": '" << value << "'" << endl;
+            CPPUNIT_ASSERT(value == "false");
+
+            value = "";
+            besKeys.get_value(h5_enable_cf_key, value, found_h5_enable_cf_key);
+            if(debug) cout << h5_enable_cf_key << ": '" << value << "'" << endl;
+            CPPUNIT_ASSERT(found_h5_enable_cf_key == true);
+            CPPUNIT_ASSERT(value == "false");
+
+            value = "";
+            besKeys.get_value(h5_enable_dmr_64bit_int_key, value, found_h5_enable_dmr_64bit_int_key);
+            if(debug) cout << h5_enable_dmr_64bit_int_key << ": '" << value << "'" << endl;
+            CPPUNIT_ASSERT(found_h5_enable_dmr_64bit_int_key == true);
+            CPPUNIT_ASSERT(value == "false");
 
         }
         catch (BESError &e) {
