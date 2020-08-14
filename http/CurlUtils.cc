@@ -927,6 +927,8 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
                 int match_length;
                 match_length = no_retry_regex.match(url.c_str(), url.size(), 0);
                 if(match_length == url.size()){
+                    BESDEBUG(MODULE, prolog << "The url: '"<< url << "' fully matched the "
+                    << HTTP_NO_RETRY_URL_REGEX_KEY << ": '" <<  *it << "'" <<  endl);
                     retryable = false;
                 }
             }
