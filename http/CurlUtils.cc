@@ -906,7 +906,8 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
 
 
     /**
-     * Checks to see if the entire url matches a "no retry" regex held in the TheBESKeys
+     * Checks to see if the entire url matches any of the  "no retry" regular expressions held in the TheBESKeys
+     * under the HTTP_NO_RETRY_URL_REGEX_KEY which atm, is set to "Http.No.Retry.Regex"
      * @param url The URL to be examined
      * @return True if the the url does not match a no retry regex, false if the entire url matches
      * a "no retry" regex.
@@ -914,24 +915,24 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
     bool is_retryable(std::string url)
     {
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
-        bool can_be_retried = true;
+        bool retryable = true;
 
         vector<string> nr_regexs;
         bool found;
         TheBESKeys::TheKeys()->get_values(HTTP_NO_RETRY_URL_REGEX_KEY,nr_regexs, found);
         if(found){
             vector<string>::iterator it;
-            for(it=nr_regexs.begin(); it != nr_regexs.end(); it++){
+            for(it=nr_regexs.begin(); it != nr_regexs.end() && retryable ; it++){
                 BESRegex no_retry_regex((*it).c_str(), (*it).size());
                 int match_length;
                 match_length = no_retry_regex.match(url.c_str(), url.size(), 0);
                 if(match_length == url.size()){
-                    can_be_retried = false;
+                    retryable = false;
                 }
             }
         }
-        BESDEBUG(MODULE, prolog << "END can_be_retried: "<< (can_be_retried?"true":"false") << endl);
-        return can_be_retried;
+        BESDEBUG(MODULE, prolog << "END retryable: "<< (retryable?"true":"false") << endl);
+        return retryable;
     }
 
     /**
