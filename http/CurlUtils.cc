@@ -989,13 +989,12 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
 
         stringstream msg;
         if(http_code >= 400){
-
-
             msg << "The HTTP GET request for the source URL: " << requested_url << " FAILED."
                 << " The last accessed URL (CURLINFO_EFFECTIVE_URL) was: " << last_accessed_url
                 << " The response had an HTTP status of " << http_code
                 << " which means '" << http_status_to_string(http_code) << "'. ";
             BESDEBUG(MODULE, prolog << "ERROR - " << msg.str() << endl);
+            LOG(msg.str());
         }
 
         // Newer Apache servers return 206 for range requests. jhrg 8/8/18
@@ -1026,9 +1025,9 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
             case 503: // Service Unavailable
             case 504: // Gateway Timeout
             {
-                LOG(msg.str());
                 if(!is_retryable(last_accessed_url)){
-                    msg << "The semantics of this particular last_accessed URL indicate that it should not be retried.";
+                    msg << "The semantics of this particular last accessed URL indicate that it should not be retried.";
+                    LOG(msg.str());
                     throw BESInternalError(msg.str(), __FILE__, __LINE__);
                 }
                 return false;
