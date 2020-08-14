@@ -57,6 +57,7 @@ namespace curl {
     std::string get_range_arg_string(const unsigned long long &offset, const unsigned long long &size);
     //void cache_final_redirect_url(const std::string &data_access_url_str);
     void cache_final_redirect_url(const std::string &data_access_url_str, BESRegex *no_redirects_regex_pattern);
+    bool is_retryable(std::string url);
 
 
 } // namespace curl

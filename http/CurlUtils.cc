@@ -900,9 +900,40 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         if(ret){
             string msg = prolog + "() - Failed to unlink the cookie file: " + cf;
             LOG(msg << endl);
-            BESDEBUG(MODULE, msg << endl);
+            BESDEBUG(MODULE, prolog << msg << endl);
         }
     }
+
+
+    /**
+     * Checks to see if the entire url matches a "no retry" regex held in the TheBESKeys
+     * @param url The URL to be examined
+     * @return True if the the url does not match a no retry regex, false if the entire url matches
+     * a "no retry" regex.
+     */
+    bool is_retryable(std::string url)
+    {
+        BESDEBUG(MODULE, prolog << "BEGIN" << endl);
+        bool can_be_retried = true;
+
+        vector<string> nr_regexs;
+        bool found;
+        TheBESKeys::TheKeys()->get_values(HTTP_NO_RETRY_URL_REGEX_KEY,nr_regexs, found);
+        if(found){
+            vector<string>::iterator it;
+            for(it=nr_regexs.begin(); it != nr_regexs.end(); it++){
+                BESRegex no_retry_regex((*it).c_str(), (*it).size());
+                int match_length;
+                match_length = no_retry_regex.match(url.c_str(), url.size(), 0);
+                if(match_length == url.size()){
+                    can_be_retried = false;
+                }
+            }
+        }
+        BESDEBUG(MODULE, prolog << "END can_be_retried: "<< (can_be_retried?"true":"false") << endl);
+        return can_be_retried;
+    }
+
     /**
      * Check the response for errors and such.
      * @param eh The cURL easy_handle to evaluate.
@@ -960,7 +991,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
             msg << "The HTTP GET request for the source URL: " << requested_url << " FAILED."
                 << " The last accessed URL (CURLINFO_EFFECTIVE_URL) was: " << last_accessed_url
                 << " The response had an HTTP status of " << http_code
-                << " which means '" << http_status_to_string(http_code) << "'" << endl;
+                << " which means '" << http_status_to_string(http_code) << "'. ";
             BESDEBUG(MODULE, prolog << "ERROR - " << msg.str() << endl);
         }
 
@@ -993,6 +1024,10 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
             case 504: // Gateway Timeout
             {
                 LOG(msg.str());
+                if(!is_retryable(last_accessed_url)){
+                    msg << "The semantics of this particular last_accessed URL indicate that it should not be retried.";
+                    throw BESInternalError(msg.str(), __FILE__, __LINE__);
+                }
                 return false;
             }
 

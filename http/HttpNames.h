@@ -51,6 +51,8 @@
 #define HTTP_URL_BASE_KEY "url_base"
 #define HTTP_INGEST_TIME_KEY "ingest_time"
 
+#define HTTP_NO_RETRY_URL_REGEX_KEY "Http.No.Retry.Regex"
+
 #define HTTP_MODULE "http"
 
 #endif // I_HTTP_NAME_H
