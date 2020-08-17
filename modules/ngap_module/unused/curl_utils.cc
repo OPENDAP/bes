@@ -39,7 +39,7 @@
 #include "TheBESKeys.h"
 #include "NgapNames.h"
 #include "NgapUtils.h"
-#include "WhiteList.h"
+#include "AllowedHosts.h"
 
 #include "curl_utils.h"
 
@@ -605,7 +605,7 @@ long read_url(CURL *curl,
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
     // Before we do anything, make sure that the URL is OK to pursue.
-    if (!bes::WhiteList::get_white_list()->is_white_listed(url)) {
+    if (!bes::AllowedHosts::get_white_list()->is_white_listed(url)) {
         string err = (string) "The specified URL " + url
                      + " does not match any of the accessible services in"
                      + " the white list.";

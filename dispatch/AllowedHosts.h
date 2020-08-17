@@ -34,7 +34,7 @@
 #include <string>
 #include <vector>
 
-#define REMOTE_ACCESS_WHITELIST "Gateway.Whitelist"
+#define ALLOWED_HOSTS_BES_KEY "AllowedHosts"
 
 namespace bes {
 
@@ -48,21 +48,21 @@ namespace bes {
  *
  * @note This class is a singleton
  */
-class WhiteList {
+class AllowedHosts {
 private:
-	static WhiteList *d_instance;
+	static AllowedHosts *d_instance;
 
     std::vector<std::string> d_white_list;
 
 protected:
-    WhiteList();
+    AllowedHosts();
 
 public:
-    virtual ~WhiteList() {}
+    virtual ~AllowedHosts() {}
 
-    static WhiteList *get_white_list();
+    static AllowedHosts *theHosts();
 
-    bool is_white_listed(const std::string &url);
+    bool is_allowed(const std::string &url);
 };
 
 } // namespace bes
