@@ -144,6 +144,9 @@ namespace ngap {
     }
 
 
+#if 0
+
+
     bool cache_terminal_urls(){
         bool found;
         string value;
@@ -151,7 +154,8 @@ namespace ngap {
         return found && BESUtil::lowercase(value)=="true";
     }
 
-#if 0
+
+
     void cache_final_redirect_url(string data_access_url_str) {
         // See if the data_access_url has already been processed into a terminal signed URL
         // in TheBESKeys
@@ -191,9 +195,11 @@ namespace ngap {
         // Since this the ngap we know that the real_name is a URL.
         string data_access_url_str = get_real_name();
 
+#if 0
         if(cache_terminal_urls()){
             curl::cache_final_redirect_url(data_access_url_str, 0);
         }
+#endif
 
         // And we know that the dmr++ file should "right next to it" (side-car)
         string dmrpp_url = data_access_url_str + ".dmrpp";

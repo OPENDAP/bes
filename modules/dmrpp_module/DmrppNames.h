@@ -37,8 +37,8 @@
 #define DMRPP_CURL  "dmrpp:curl"
 
 
-#define DMRPP_CACHE_LAST_ACCESSED_URLS "Dmrpp.cache.final.redirect.urls"
-#define DMRPP_NO_CACHE_REDIRECT_URLS_REGEX "Dmrpp.no.cache.redirect.urls.regex.pattern"
+#define DMRPP_CACHE_LAST_ACCESSED_URLS_KEY "Dmrpp.cache.final.redirect.urls"
+#define DMRPP_NO_CACHE_REDIRECT_URLS_REGEX_KEY "Dmrpp.no.cache.redirect.urls.regex.pattern"
 
 #endif // E_DmrppNames_H
 

@@ -107,15 +107,17 @@ static bool is_not(const char *name, const char *tag)
     return strcmp(name, tag) != 0;
 }
 
+#if 0
 bool DmrppParserSax2::load_use_last_accessed_urls()
 {
     bool found;
     string value;
-    TheBESKeys::TheKeys()->get_value(DMRPP_CACHE_LAST_ACCESSED_URLS,value,found);
+    TheBESKeys::TheKeys()->get_value(DMRPP_CACHE_LAST_ACCESSED_URLS_KEY, value, found);
     bool use_last_url =  found && BESUtil::lowercase(value)=="true";
-    BESDEBUG(MODULE, prolog << "DMRPP_CACHE_LAST_ACCESSED_URLS:" << (use_last_url?"true":"false") << endl);
+    BESDEBUG(MODULE, prolog << "DMRPP_CACHE_LAST_ACCESSED_URLS_KEY:" << (use_last_url?"true":"false") << endl);
     return use_last_url;
 }
+#endif
 
 bool DmrppParserSax2::use_last_accessed_urls()
 {
@@ -127,21 +129,22 @@ BESRegex *DmrppParserSax2::get_no_cache_redirect_urls_regex()
     return d_no_cache_regex;
 }
 
-
+#if 0
 BESRegex *DmrppParserSax2::load_no_cache_redirect_urls_regex()
 {
     BESRegex *result;
     result = NULL;
     bool found;
     string value;
-    TheBESKeys::TheKeys()->get_value(DMRPP_NO_CACHE_REDIRECT_URLS_REGEX,value,found);
+    TheBESKeys::TheKeys()->get_value(DMRPP_NO_CACHE_REDIRECT_URLS_REGEX_KEY, value, found);
     if(found && value.length()){
         result = new BESRegex(value.c_str());
     }
-    BESDEBUG(MODULE, prolog << "DMRPP_NO_CACHE_REDIRECT_URLS_REGEX:  " << (result?result->pattern():"<n/a>") << endl);
+    BESDEBUG(MODULE, prolog << DMRPP_NO_CACHE_REDIRECT_URLS_REGEX_KEY <<":  " << (result?result->pattern():"<n/a>") << endl);
 
     return result;
 }
+#endif
 
 /** @brief Return the current Enumeration definition
  * Allocate the Enumeration definition if needed and return it. Once parsing the current

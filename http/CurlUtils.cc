@@ -1231,6 +1231,18 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
      *
      * @param data_access_url_str
      */
+    void cache_final_redirect_url(const string &data_access_url_str) {
+        BESRegex *bes_regex = get_cache_effective_urls_skip_regex();
+        cache_final_redirect_url(data_access_url_str, bes_regex);
+        delete bes_regex;
+    }
+
+
+    /**
+     * Make a no-redirects-regex config and utilize.
+     *
+     * @param data_access_url_str
+     */
     void cache_final_redirect_url(const string &data_access_url_str, BESRegex *no_redirects_regex_pattern)
     {
         BESDEBUG(MODULE, prolog << "BEGIN url: " << data_access_url_str << endl);
@@ -1310,5 +1322,31 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         }
         BESDEBUG(MODULE, prolog << "END" << endl);
     }
+
+
+    bool cache_effective_urls()
+    {
+        bool found;
+        string value;
+        TheBESKeys::TheKeys()->get_value(HTTP_CACHE_EFFECTIVE_URLS_KEY,value,found);
+        return found && BESUtil::lowercase(value)=="true";
+    }
+
+    BESRegex *get_cache_effective_urls_skip_regex()
+    {
+        BESRegex *result;
+        result = NULL;
+        bool found;
+        string value;
+        TheBESKeys::TheKeys()->get_value(HTTP_CACHE_EFFECTIVE_URLS_SKIP_REGEX_KEY, value, found);
+        if(found && value.length()){
+            result = new BESRegex(value.c_str());
+        }
+        BESDEBUG(MODULE, prolog << HTTP_CACHE_EFFECTIVE_URLS_SKIP_REGEX_KEY <<":  " << (result?result->pattern():"<n/a>") << endl);
+
+        return result;
+    }
+
+
 
 } /* namespace curl */

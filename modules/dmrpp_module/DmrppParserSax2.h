@@ -40,6 +40,7 @@
 
 #include <Type.h>   // from libdap
 #include "BESRegex.h"
+#include "CurlUtils.h"
 
 #define CRLF "\r\n"
 #define D4_PARSE_BUFF_SIZE 1048576
@@ -285,9 +286,9 @@ public:
         dmrpp_sax_parser.startElementNs = &DmrppParserSax2::dmr_start_element;
         dmrpp_sax_parser.endElementNs = &DmrppParserSax2::dmr_end_element;
 
-        d_use_last_accessed_urls = load_use_last_accessed_urls();
+        d_use_last_accessed_urls = curl::cache_effective_urls();
         if(d_use_last_accessed_urls){
-            d_no_cache_regex = load_no_cache_redirect_urls_regex();
+            d_no_cache_regex = curl::get_cache_effective_urls_skip_regex();
         }
     }
 
