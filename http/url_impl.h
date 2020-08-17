@@ -34,6 +34,7 @@ public:
     url(const std::map<std::string,std::string> &kvp);
 
     ~url();
+    std::string str() { return d_source_url; }
 
     std::string protocol() const { return d_protocol; }
 
@@ -53,6 +54,10 @@ public:
     void query_parameter_values(const std::string &key, std::vector<std::string> &values) const;
 
     void kvp(std::map<std::string,std::string> &kvp);
+
+    bool is_expired();
+
+    std::string to_string();
 
 };
 

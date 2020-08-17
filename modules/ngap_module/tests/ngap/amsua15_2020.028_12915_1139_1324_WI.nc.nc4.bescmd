@@ -6,7 +6,9 @@
   <bes:setContext name="max_response_size">0</bes:setContext>
   <bes:setContainer name="ngapContainer" space="ngap">providers/GHRC_CLOUD/collections/Lightning Imaging Sensor (LIS) on TRMM Backgrounds V4/granules/TRMM_LIS_BG.04.3_2015.098.99100.nc</bes:setContainer>
   <bes:define name="d1" space="default">
-    <bes:container name="ngapContainer" />
+    <bes:container name="ngapContainer">
+        <constraint>bg_data_summary_address</constraint>
+    </bes:container>
   </bes:define>
-  <bes:get type="dds" definition="d1" />
+  <bes:get type="dods" definition="d1" returnAs="netcdf-4" />
 </bes:request>

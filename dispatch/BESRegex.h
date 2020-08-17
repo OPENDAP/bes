@@ -48,6 +48,7 @@ private:
     // would be cleaner to use a special class, but for one field that seems
     // like overkill.
     void *d_preg;
+    std::string d_pattern;
     void init(const char *t);
     
 public:
@@ -59,6 +60,7 @@ public:
     int match(const char* s, int len, int pos = 0);
     /// How much of the string does the pattern matche.
     int search(const char* s, int len, int& matchlen, int pos = 0);
+    std::string pattern(){ return d_pattern; }
 };
 
 #endif

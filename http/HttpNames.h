@@ -43,13 +43,17 @@
 #define HTTP_CACHE_SIZE_KEY "Http.Cache.size"
 
 #define HTTP_COOKIES_FILE_KEY "Http.Cookies.File"
-#define HTTP_DEFAULT_COOKIES_FILE "/tmp/.hyrax_cookies"
+#define HTTP_DEFAULT_COOKIES_FILE "/tmp/.hyrax-cookies"
 
 #define HTTP_TARGET_URL_KEY "target_url"
 #define HTTP_URL_BASE_KEY "url_base"
 #define HTTP_QUERY_STRING_KEY "query_string"
 #define HTTP_URL_BASE_KEY "url_base"
 #define HTTP_INGEST_TIME_KEY "ingest_time"
+
+#define HTTP_NO_RETRY_URL_REGEX_KEY "Http.No.Retry.Regex"
+#define HTTP_CACHE_EFFECTIVE_URLS_KEY "Http.cache.effective.urls"
+#define HTTP_CACHE_EFFECTIVE_URLS_SKIP_REGEX_KEY "Http.cache.effective.urls.skip.regex.pattern"
 
 #define HTTP_MODULE "http"
 

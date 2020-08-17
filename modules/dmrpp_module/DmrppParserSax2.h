@@ -39,6 +39,8 @@
 #include <libxml/parserInternals.h>
 
 #include <Type.h>   // from libdap
+#include "BESRegex.h"
+#include "CurlUtils.h"
 
 #define CRLF "\r\n"
 #define D4_PARSE_BUFF_SIZE 1048576
@@ -114,6 +116,9 @@ private:
     // This is passed into the parser using the intern() methods.
     libdap::DMR *d_dmr;   // dump DMR here
     libdap::DMR *dmr() const { return d_dmr; }
+
+
+
 
     // These stacks hold the state of the parse as it progresses.
     std::stack<ParseState> s; // Current parse state
@@ -250,6 +255,12 @@ private:
 
     friend class DmrppParserSax2Test;
 
+    bool d_use_last_accessed_urls;
+    bool load_use_last_accessed_urls();
+
+    BESRegex *d_no_cache_regex;
+    BESRegex *load_no_cache_redirect_urls_regex();
+
 public:
     DmrppParserSax2() :
         d_dmr(0), d_enum_def(0), d_dim_def(0),
@@ -257,7 +268,7 @@ public:
         error_msg(""), context(0),
         dods_attr_name(""), dods_attr_type(""),
         char_data(""), root_ns(""), d_strict(true),
-        dmrpp_dataset_href("")
+        dmrpp_dataset_href(""), d_use_last_accessed_urls(false), d_no_cache_regex(0)
     {
         //xmlSAXHandler ddx_sax_parser;
         memset(&dmrpp_sax_parser, 0, sizeof(xmlSAXHandler));
@@ -274,6 +285,18 @@ public:
         dmrpp_sax_parser.initialized = XML_SAX2_MAGIC;
         dmrpp_sax_parser.startElementNs = &DmrppParserSax2::dmr_start_element;
         dmrpp_sax_parser.endElementNs = &DmrppParserSax2::dmr_end_element;
+
+        d_use_last_accessed_urls = curl::cache_effective_urls();
+        if(d_use_last_accessed_urls){
+            d_no_cache_regex = curl::get_cache_effective_urls_skip_regex();
+        }
+    }
+
+    ~DmrppParserSax2(){
+        if(d_no_cache_regex){
+            delete d_no_cache_regex;
+            d_no_cache_regex = 0;
+        }
     }
 
     void intern(std::istream &f, libdap::DMR *dest_dmr);
@@ -317,7 +340,11 @@ public:
     static xmlEntityPtr dmr_get_entity(void *parser, const xmlChar *name);
     static void dmr_fatal_error(void *parser, const char *msg, ...);
     static void dmr_error(void *parser, const char *msg, ...);
-};
+
+    BESRegex *get_no_cache_redirect_urls_regex();
+    bool use_last_accessed_urls();
+
+    };
 
 } // namespace dmrpp
 
