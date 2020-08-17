@@ -331,9 +331,9 @@ namespace ngap {
                                     " (expires: " << expires << ")" << endl);
         }
         time_t remaining = expires - now;
-        BESDEBUG(MODULE, prolog << "expires: " << expires <<
-                                "  remaining: " << remaining <<
-                                " threshold: " << REFRESH_THRESHOLD << endl);
+        BESDEBUG(MODULE, prolog << "expires_time: " << expires <<
+                                "  remaining_time: " << remaining <<
+                                " refresh_threshold: " << REFRESH_THRESHOLD << endl);
 
         is_expired = remaining < REFRESH_THRESHOLD;
         BESDEBUG(MODULE, prolog << "is_expired: " << (is_expired?"true":"false") << endl);
