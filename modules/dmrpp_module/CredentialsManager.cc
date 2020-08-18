@@ -33,7 +33,7 @@
 #include <string>
 #include <sys/stat.h>
 
-#include <WhiteList.h>
+#include <AllowedHosts.h>
 #include <TheBESKeys.h>
 #include <kvp_utils.h>
 #include <BESInternalError.h>

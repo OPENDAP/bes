@@ -256,10 +256,7 @@ private:
     friend class DmrppParserSax2Test;
 
     bool d_use_effective_urls;
-    bool load_use_last_accessed_urls();
-
     BESRegex *d_effective_url_cache_skip_regex;
-    BESRegex *load_no_cache_redirect_urls_regex();
 
 public:
     DmrppParserSax2() :

@@ -140,8 +140,7 @@ H5.DiskCacheFloatOnlyComp=true
 H5.DiskCacheCompThreshold=2.0
 H5.DiskCacheCompVarSize=10000
 
-Gateway.Whitelist+=http://
-Gateway.Whitelist+=https://
+AllowedHosts+=^https?:\/\/
 
 EOF
   )
