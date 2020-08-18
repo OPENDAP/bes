@@ -1140,7 +1140,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
      * @param url The URL to follow
      * @param last_accessed_url The last accessed URL (CURLINFO_EFFECTIVE_URL), including the query string
      */
-    void find_last_redirect(const string &url, string &last_accessed_url) {
+    void retrieve_effective_url(const string &url, string &last_accessed_url) {
 
         unsigned int tries = 0;
         bool success = true;
@@ -1296,7 +1296,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         if(!found){
             BESDEBUG(MODULE, prolog << "Acquiring effective URL for  " << source_url << endl);
             string effective_url_str;
-            curl::find_last_redirect(source_url, effective_url_str);
+            curl::retrieve_effective_url(source_url, effective_url_str);
             BESDEBUG(MODULE, prolog << "last_accessed_url: " << effective_url_str << endl);
 
             // Make the target URL object.
