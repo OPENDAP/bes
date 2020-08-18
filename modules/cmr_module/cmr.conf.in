@@ -38,13 +38,12 @@ CMR.Facets=temporal
 
 # This is an optional configuration parameter.
 # The value of CMR.host.url defaults to https://cmr.earthdata.nasa.gov
-# If you make it different be sure to add the value to Gateway.Whitelist
+# If you make it different be sure to add the value to AllowedHosts
 # CMR.host.url=https://cmr.earthdata.nasa.gov
 # CMR.host.url=https://cmr.uat.earthdata.nasa.gov
 # CMR.host.url=https://cmr.sit.earthdata.nasa.gov
 
 # The CMR service needs to be on the whitelist
-Gateway.Whitelist+=https://cmr.earthdata.nasa.gov/search
-Gateway.Whitelist+=https://cmr.uat.earthdata.nasa.gov/search
-Gateway.Whitelist+=https://cmr.sit.earthdata.nasa.gov/search
+AllowedHosts+=^https:\/\/cmr.(uat\.|sit\.)?earthdata\.nasa\.gov.*$
+
 

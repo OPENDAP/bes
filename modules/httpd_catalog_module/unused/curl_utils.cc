@@ -34,7 +34,7 @@
 #include "BESSyntaxUserError.h"
 #include "BESInternalFatalError.h"
 #include "BESInternalError.h"
-#include "WhiteList.h"
+#include "AllowedHosts.h"
 
 #include "curl_utils.h"
 #include "HttpdCatalogUtils.h"
@@ -483,7 +483,7 @@ long read_url(CURL *curl, const string &url, int fd, vector<string> *resp_hdrs, 
     BESDEBUG(MODULE, prolog << "url: " << url << endl);
 
     // Before we do anything, make sure that the URL is OK to pursue.
-    if (!bes::WhiteList::get_white_list()->is_white_listed(url)) {
+    if (!bes::AllowedHosts::get_white_list()->is_white_listed(url)) {
         string err = string("The specified URL ") + url + " does not match any of the accessible services in the white list.";
         BESDEBUG(MODULE, prolog << err << endl);
         throw BESSyntaxUserError(err, __FILE__, __LINE__);

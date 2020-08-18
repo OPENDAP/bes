@@ -21,14 +21,13 @@ BES.module.gateway=@bes_modules_dir@/libgateway_module.so
 #-----------------------------------------------------------------------#
 # Gateway module specific parameters
 #-----------------------------------------------------------------------#
-# Gateway.Whitelist - provides a list of URL of the form
-#       protocol://host.domain:port
+# AllowedHosts - provides a list of URL regex patterns
 # that are allowed to be passed through the gateway module. 
 #
 # One URL per line, as in the example below.
 # example:
-# Gateway.Whitelist=http://test.opendap.org/opendap
-# Gateway.Whitelist+=http://opendap.rpi.edu/opendap
+# AllowedHosts=^http:\/\/test\.opendap\.org\/.*$
+# AllowedHosts+=^http:\/\/opendap\.rpi\.edu\/.*$
 #
 #
 #
