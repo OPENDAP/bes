@@ -129,7 +129,23 @@ public:
     }
 
 
-    void cmr_access_test() {
+    void compare_results(const string &granule_name, const string &data_access_url, const string &expected_data_access_url){
+        string prolog = string(__func__) + "() - ";
+        if (debug) cerr << prolog << "TEST: Is the URL longer than the granule name? " << endl;
+        CPPUNIT_ASSERT (data_access_url.length() > granule_name.length() );
+
+        if (debug) cerr << prolog << "TEST: Does the URL end with the granule name? " << endl;
+        bool endsWithGranuleName = data_access_url.substr(data_access_url.length()-granule_name.length(), granule_name.length()) == granule_name;
+        CPPUNIT_ASSERT( endsWithGranuleName == true );
+
+        if (debug) cerr << prolog << "TEST: Does the returned URL match the expected URL? " << endl;
+        if (debug) cerr << prolog << "CMR returned DataAccessURL: " << data_access_url << endl;
+        if (debug) cerr << prolog << "The expected DataAccessURL: " << expected_data_access_url << endl;
+        CPPUNIT_ASSERT (expected_data_access_url == data_access_url);
+
+    }
+
+    void cmr_access_entry_title_test() {
         string prolog = string(__func__) + "() - ";
         NgapApi ngapi;
         string provider_name;
@@ -149,32 +165,47 @@ public:
 
         try {
             data_access_url = ngapi.convert_ngap_resty_path_to_data_access_url(resty_path);
+            if (debug) cerr << prolog << "Found data_access_url: " << data_access_url << endl;
         }
-        catch(BESError e){
-            cerr << "Caught BESError: " << e.get_message() << endl;
+        catch(BESError &e){
+            cerr << "Caught BESError: " << e.get_message() << " File: " << e.get_file() << " Line: " << e.get_line() << endl;
             CPPUNIT_ASSERT(false);
         }
-        stringstream msg;
-
         string expected;
-        // OLD value.
-        // expected = "https://d1lpqa6z94hycl.cloudfront.net/ghrc-app-protected/amsua15sp__1/2020-01-28/amsua15_2020.028_12915_1139_1324_WI.nc";
-        // New value as of 4/24/2020
         expected = "https://d1sd4up8kynpk2.cloudfront.net/ghrcw-protected/amsua15sp/amsu-a/noaa-15/data/nc/2020/0128/amsua15_2020.028_12915_1139_1324_WI.nc";
+        compare_results(granule_name, data_access_url, expected);
 
-        if (debug) cerr << prolog << "TEST: Is the URL longer than the granule name? " << endl;
-        CPPUNIT_ASSERT (data_access_url.length() > granule_name.length() );
-
-        if (debug) cerr << prolog << "TEST: Does the URL end with the granule name? " << endl;
-        bool endsWithGranuleName = data_access_url.substr(data_access_url.length()-granule_name.length(), granule_name.length()).compare(granule_name) == 0;
-        CPPUNIT_ASSERT( endsWithGranuleName == true );
-
-        if (debug) cerr << prolog << "TEST: Does the returned URL match the expected URL? " << endl;
-        if (debug) cerr << prolog << "CMR returned DataAccessURL: " << data_access_url << endl;
-        if (debug) cerr << prolog << "The expected DataAccessURL: " << expected << endl;
-        CPPUNIT_ASSERT (expected == data_access_url);
     }
 
+    void cmr_access_concept_id_test() {
+        string prolog = string(__func__) + "() - ";
+        NgapApi ngapi;
+        string provider_name;
+        string concept_id;
+        string granule_name;
+        string data_access_url;
+
+        if ( debug  ) {
+            cout << endl;
+        }
+        provider_name = "GHRC_CLOUD";
+        concept_id ="G1685850108-GHRC_CLOUD";
+        granule_name = "amsua15_2020.028_12915_1139_1324_WI.nc";
+
+        string resty_path;
+        resty_path = "providers/"+provider_name+"/concepts/"+concept_id+"/granules/"+granule_name;
+        if (debug) cerr << prolog << "RestifiedPath: " << resty_path << endl;
+        try {
+            data_access_url = ngapi.convert_ngap_resty_path_to_data_access_url(resty_path);
+            if (debug) cerr << prolog << "Found data_access_url: " << data_access_url << endl;
+        }
+        catch(BESError &e){
+            cerr << "Caught BESError: " << e.get_message() << " File: " << e.get_file() << " Line: " << e.get_line() << endl;
+            CPPUNIT_ASSERT(false);
+        }
+        string expected = "https://d1sd4up8kynpk2.cloudfront.net/ghrcw-protected/amsua15sp/amsu-a/noaa-15/data/nc/2020/0128/amsua15_2020.028_12915_1139_1324_WI.nc";
+        compare_results(granule_name, data_access_url, expected);
+    }
 
 
     void signed_url_is_expired_test(){
@@ -214,7 +245,8 @@ public:
 
     CPPUNIT_TEST_SUITE( NgapApiTest );
 
-        CPPUNIT_TEST(cmr_access_test);
+        CPPUNIT_TEST(cmr_access_entry_title_test);
+        CPPUNIT_TEST(cmr_access_concept_id_test);
         CPPUNIT_TEST(signed_url_is_expired_test);
 
     CPPUNIT_TEST_SUITE_END();
