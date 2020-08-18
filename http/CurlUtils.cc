@@ -1140,7 +1140,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
      * @param url The URL to follow
      * @param last_accessed_url The last accessed URL (CURLINFO_EFFECTIVE_URL), including the query string
      */
-    void retrieve_effective_url(const string &url, string &effective_url) {
+    void find_last_redirect(const string &url, string &last_accessed_url) {
 
         unsigned int tries = 0;
         bool success = true;
@@ -1175,10 +1175,10 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
                 }
                 else if (CURLE_OK != curl_code) {
                     stringstream msg;
-                    msg << prolog << "Data transfer error: " << error_message(curl_code, error_buffer);
-                    char *e_url = 0;
-                    curl_easy_getinfo(curl, CURLINFO_EFFECTIVE_URL, &e_url);
-                    msg << " effective_url: " << e_url;
+                    msg << "Data transfer error: " << error_message(curl_code, error_buffer);
+                    char *effective_url = 0;
+                    curl_easy_getinfo(curl, CURLINFO_EFFECTIVE_URL, &effective_url);
+                    msg << " last_url: " << effective_url;
                     BESDEBUG(MODULE, prolog << msg.str() << endl);
                     throw BESInternalError(msg.str(), __FILE__, __LINE__);
                 }
@@ -1186,18 +1186,13 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
                     success = eval_get_response(curl, url);
                     if (!success) {
                         if (tries == retry_limit) {
-                            string msg = prolog + "Data transfer error: Number of re-tries exceeded: "+
-                                    error_message(curl_code, error_buffer);
-                            BESDEBUG(MODULE, prolog << msg << endl);
+                            string msg = prolog + "Data transfer error: Number of re-tries exceeded: "+ error_message(curl_code, error_buffer);
                             LOG(msg << endl);
                             throw BESInternalError(msg, __FILE__, __LINE__);
                         }
                         else {
-                            stringstream msg;
-                            msg << prolog << "HTTP Range-GET failed. Will retry (url: " << url
-                            << " attempt: " << tries << ")." << endl;
-                            BESDEBUG(MODULE, msg.str());
-                            LOG(msg.str());
+                            LOG(prolog << "HTTP Range-GET failed. Will retry (url: " << url <<
+                                                                           " attempt: " << tries << ")." << endl);
                             do_retry = true;
                         }
                     }
@@ -1210,12 +1205,12 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
 
             } while (!success);
 
-            char *e_url = 0;
-            curl_easy_getinfo(curl, CURLINFO_EFFECTIVE_URL, &e_url);
-            BESDEBUG(MODULE, prolog << " CURLINFO_EFFECTIVE_URL: " << e_url << endl);
-            effective_url = e_url;
+            char *effective_url = 0;
+            curl_easy_getinfo(curl, CURLINFO_EFFECTIVE_URL, &effective_url);
+            BESDEBUG(MODULE, prolog << " CURLINFO_EFFECTIVE_URL: " << effective_url << endl);
+            last_accessed_url = effective_url;
 
-            LOG(prolog << "Source URL: '" << url << "' Effective URL: '" << effective_url << "'" << endl);
+            LOG(prolog << "Source URL: '" << url << "' Last Accessed URL: '" << last_accessed_url << "'" << endl);
 
             if(curl){
                 curl_easy_cleanup(curl);
@@ -1236,41 +1231,41 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
      *
      * @param data_access_url_str
      */
-    void cache_effective_url(const string &data_access_url_str) {
+    void cache_final_redirect_url(const string &data_access_url_str) {
         BESRegex *bes_regex = get_cache_effective_urls_skip_regex();
-        cache_effective_url(data_access_url_str, bes_regex);
+        cache_final_redirect_url(data_access_url_str, bes_regex);
         delete bes_regex;
     }
 
 
     /**
-     * Find the terminal (effective) url for
+     * Make a no-redirects-regex config and utilize.
      *
      * @param data_access_url_str
      */
-    void cache_effective_url(const string &source_url, BESRegex *skip_regex)
+    void cache_final_redirect_url(const string &data_access_url_str, BESRegex *no_redirects_regex_pattern)
     {
-        BESDEBUG(MODULE, prolog << "BEGIN url: " << source_url << endl);
+        BESDEBUG(MODULE, prolog << "BEGIN url: " << data_access_url_str << endl);
 
         size_t match_length=0;
 
         // if it's not an HTTP url there is nothing to cache.
-        if (source_url.find("http://") != 0 && source_url.find("https://") != 0) {
+        if (data_access_url_str.find("http://") != 0 && data_access_url_str.find("https://") != 0) {
             BESDEBUG(MODULE, prolog << "END Not an HTTP request, SKIPPING." << endl);
             return;
         }
 
-        if(skip_regex ){
-            match_length = skip_regex->match(source_url.c_str(),source_url.length());
-            if(match_length == source_url.length() ){
+        if(no_redirects_regex_pattern ){
+            match_length = no_redirects_regex_pattern->match(data_access_url_str.c_str(),data_access_url_str.length());
+            if(match_length == data_access_url_str.length() ){
                 BESDEBUG(MODULE, prolog << "END Candidate url matches the "
-                                           "no_redirects_regex_pattern [" << skip_regex->pattern() <<
+                                           "no_redirects_regex_pattern [" << no_redirects_regex_pattern->pattern() <<
                                            "][match_length=" << match_length << "] SKIPPING." << endl);
                 return;
             }
         }
         BESDEBUG(MODULE, prolog << "Candidate url does NOT match the "
-                                   "no_redirects_regex_pattern [" << skip_regex->pattern() << "]"
+                                   "no_redirects_regex_pattern [" << no_redirects_regex_pattern->pattern() << "]"
                                     "[match_length="<<match_length << "]" << endl);
 
 
@@ -1279,9 +1274,9 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         // in TheBESKeys
         bool found;
         std::map<std::string,std::string> data_access_url_info;
-        TheBESKeys::TheKeys()->get_values(source_url, data_access_url_info, false, found);
+        TheBESKeys::TheKeys()->get_values(data_access_url_str, data_access_url_info, false, found);
         if(found){
-            BESDEBUG(MODULE, prolog << "Cache hit for: " << source_url << endl);
+            BESDEBUG(MODULE, prolog << "Cache hit for: " << data_access_url_str << endl);
 #if 0
             if(BESDebug::IsSet(MODULE)){
                 std::map<std::string,std::string>::iterator moot;
@@ -1300,9 +1295,9 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         }
         // It not found or expired, reload.
         if(!found){
-            BESDEBUG(MODULE, prolog << "Acquiring last accessed URL for  " << source_url << endl);
+            BESDEBUG(MODULE, prolog << "Acquiring last accessed URL for  " << data_access_url_str << endl);
             string last_accessed_url_str;
-            curl::retrieve_effective_url(source_url, last_accessed_url_str);
+            curl::find_last_redirect(data_access_url_str, last_accessed_url_str);
             BESDEBUG(MODULE, prolog << "last_accessed_url: " << last_accessed_url_str << endl);
 
             // Make the target URL object.
@@ -1312,7 +1307,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
             // Convert it's representation to a simple KVP list
             last_accessed_url.kvp(last_accessed_url_info);
 
-            BESDEBUG(MODULE, prolog << "data_access_url:   " << source_url << endl);
+            BESDEBUG(MODULE, prolog << "data_access_url:   " << data_access_url_str << endl);
             BESDEBUG(MODULE, prolog << "last_accessed_url: " << last_accessed_url.to_string() << endl);
 #if 0
             std::map<std::string,std::string>::iterator mit;
@@ -1323,7 +1318,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
             // Placing the last accessed URL information in TheBESKeys associated with the data_access_url as the
             // key allows allows other modules, such as dmrpp_module to access the crucial last accessed URL
             // information which eliminates any number of redirects during access operations.
-            TheBESKeys::TheKeys()->set_keys(source_url, last_accessed_url_info, false, false);
+            TheBESKeys::TheKeys()->set_keys(data_access_url_str, last_accessed_url_info, false, false);
         }
         BESDEBUG(MODULE, prolog << "END" << endl);
     }

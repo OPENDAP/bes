@@ -823,7 +823,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
             parser->dmrpp_dataset_href = parser->get_attribute_val("href", attributes, nb_attributes);
             if(parser->use_last_accessed_urls()){
                 BESDEBUG(PARSER, prolog << "Attempting to locate and cache last redirect URL for Dataset URL: " << parser->dmrpp_dataset_href << endl);
-                curl::cache_effective_url(parser->dmrpp_dataset_href, parser->get_no_cache_redirect_urls_regex());
+                curl::cache_final_redirect_url(parser->dmrpp_dataset_href, parser->get_no_cache_redirect_urls_regex());
             }
         }
         BESDEBUG(PARSER, prolog << "Dataset dmrpp:href is set to '" << parser->dmrpp_dataset_href << "'" << endl);
@@ -1033,7 +1033,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 // may be unique to this chunk.
                 if(parser->use_last_accessed_urls()){
                     BESDEBUG(PARSER, prolog << "Attempting to locate and cache last redirect URL for Chunk URL: " << parser->dmrpp_dataset_href << endl);
-                    curl::cache_effective_url(data_url, parser->get_no_cache_redirect_urls_regex());
+                    curl::cache_final_redirect_url(data_url,parser->get_no_cache_redirect_urls_regex());
                 }
             }
             else {
