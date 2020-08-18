@@ -527,7 +527,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
     }
 
 
-    CURL *init_redirect_handle(const string url, vector<string> &resp_hdrs, char error_buffer[]){
+    CURL *init_effective_url_retriever_handle(const string url, vector<string> &resp_hdrs, char *error_buffer){
         CURL *curl = 0;
         curl = init(error_buffer);
         string err_msg_base = "cURL Error setting ";
@@ -1151,7 +1151,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         CURL *curl = 0;
 
         try {
-            curl = init_redirect_handle( url, resp_hdrs,  error_buffer);
+            curl = init_effective_url_retriever_handle(url, resp_hdrs, error_buffer);
             do {
                 bool do_retry = false;
                 ++tries;

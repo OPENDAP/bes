@@ -51,7 +51,6 @@
 #include "TheBESKeys.h"
 
 using namespace std;
-using namespace curl;
 
 #define prolog std::string("RemoteResource::").append(__func__).append("() - ")
 #define MODULE "http"
@@ -350,7 +349,7 @@ namespace http {
         int status = -1;
         try {
             BESDEBUG(MODULE, prolog << "Saving resource " << d_remoteResourceUrl << " to cache file " << d_resourceCacheFileName << endl);
-            status = read_url(d_curl, d_remoteResourceUrl, fd, d_response_headers,
+            status = curl::read_url(d_curl, d_remoteResourceUrl, fd, d_response_headers,
                             d_request_headers, d_error_buffer); // Throws BESInternalError if there is a curl error.
 
             if (status >= 400) {
@@ -362,7 +361,7 @@ namespace http {
                     msg << "reqhdr[" << i << "]: \"" << (*d_request_headers)[i] << "\", ";
                 }
                 msg <<    "The HTTP request returned a status of " << status << " which means '" <<
-                    http_status_to_string(status) << "'" << endl;
+                    curl::http_status_to_string(status) << "'" << endl;
                 BESDEBUG(MODULE, prolog << "ERROR: HTTP request returned status: " << status << " message: " << msg.str() << endl);
                 switch(status) {
                     case 400:
