@@ -1232,21 +1232,23 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
     }
 
     /**
-     * Make a no-redirects-regex config and utilize.
+     * Get's the get_cache_effective_urls_skip_regex() (or NULL if not configured)
+     * and then calls cache_effective_url(source_url, skip_regex);
      *
-     * @param data_access_url_str
+     * @param source_url
      */
-    void cache_effective_url(const string &data_access_url_str) {
+    void cache_effective_url(const string &source_url) {
         BESRegex *bes_regex = get_cache_effective_urls_skip_regex();
-        cache_effective_url(data_access_url_str, bes_regex);
+        cache_effective_url(source_url, bes_regex);
         delete bes_regex;
     }
 
 
     /**
-     * Find the terminal (effective) url for
+     * Find the terminal (effective) url for the source_url. If the source_url matches the
+     * skip_regex then it will not be cached.
      *
-     * @param data_access_url_str
+     * @param source_url
      */
     void cache_effective_url(const string &source_url, BESRegex *skip_regex)
     {
@@ -1260,7 +1262,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
             return;
         }
 
-        if(skip_regex ){
+        if( skip_regex ){
             match_length = skip_regex->match(source_url.c_str(),source_url.length());
             if(match_length == source_url.length() ){
                 BESDEBUG(MODULE, prolog << "END Candidate url matches the "
