@@ -52,10 +52,13 @@
 #include <BESCatalogUtils.h>
 #include <BESCatalogList.h>
 #include <BESUtil.h>
+#include <TheBESKeys.h>
+#include <BESRegex.h>
 
 #include "DmrppParserSax2.h"
 #include "DmrppCommon.h"
 #include "DmrppNames.h"
+#include "CurlUtils.h"
 
 #define FIVE_12K  524288;
 #define ONE_MB   1048576;
@@ -102,6 +105,16 @@ static const char *states[] = { "parser_start",
 static bool is_not(const char *name, const char *tag)
 {
     return strcmp(name, tag) != 0;
+}
+
+bool DmrppParserSax2::use_effective_urls()
+{
+    return d_use_effective_urls;
+}
+
+BESRegex *DmrppParserSax2::get_cache_effective_urls_skip_regex()
+{
+    return d_effective_url_cache_skip_regex;
 }
 
 /** @brief Return the current Enumeration definition
@@ -779,6 +792,10 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
 
         if (parser->check_attribute("href", attributes, nb_attributes)) {
             parser->dmrpp_dataset_href = parser->get_attribute_val("href", attributes, nb_attributes);
+            if(parser->use_effective_urls()){
+                BESDEBUG(PARSER, prolog << "Attempting to locate and cache the effective URL for Dataset URL: " << parser->dmrpp_dataset_href << endl);
+                curl::cache_effective_url(parser->dmrpp_dataset_href, parser->get_cache_effective_urls_skip_regex());
+            }
         }
         BESDEBUG(PARSER, prolog << "Dataset dmrpp:href is set to '" << parser->dmrpp_dataset_href << "'" << endl);
 
@@ -983,12 +1000,20 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
 
                 data_url = parser->get_attribute_val("href", attributes, nb_attributes);
                 BESDEBUG(PARSER, prolog << "Processing 'href' value into data_url. href: " << data_url << endl);
+                // We may have to cache the last accessed/redirect URL for data_url here because this URL
+                // may be unique to this chunk.
+                if(parser->use_effective_urls()){
+                    BESDEBUG(PARSER, prolog << "Attempting to locate and cache the effective URL for Chunk URL: " << parser->dmrpp_dataset_href << endl);
+                    curl::cache_effective_url(data_url, parser->get_cache_effective_urls_skip_regex());
+                }
             }
             else {
                 BESDEBUG(PARSER, prolog << "No attribute 'href' located. Trying Dataset/@dmrpp:href..." << endl);
                 // This bit of magic sets the URL used to get the data and it's
                 // magic in part because it may be a file or an http URL
                 data_url = parser->dmrpp_dataset_href;
+                // We don't have to conditionally cache parser->dmrpp_dataset_href  here because that was
+                // done in the evaluation of the parser_start case.
                 BESDEBUG(PARSER, prolog << "Processing dmrpp:href into data_url. dmrpp:href='" << data_url << "'" << endl);
             }
             // First we see if it's an HTTP URL, and if not we

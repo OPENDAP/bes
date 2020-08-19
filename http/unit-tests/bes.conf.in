@@ -8,6 +8,10 @@ BES.LogName=/dev/null
 Http.Cache.dir=/tmp
 Http.Cache.prefix=http_unit_tests_
 Http.Cache.size=500
+
+Http.No.Retry.Regex=^https:\/\/.*\?code\=.*$
+Http.No.Retry.Regex+=^https:\/\/.*s3(\.|-).*\.amazonaws\.com\/.*$
+
 #-----------------------------------------------------------------------#
 
 # Allow access to src dir and test.opendap.org

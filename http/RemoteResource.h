@@ -87,13 +87,14 @@ namespace http {
         /// The HTTP response headers returned by the request for the remote resource and parsed into KVP
         std::map<std::string, std::string> *d_http_response_headers; // Response headers
 
-
+#if 0
+        // FIXME Not impl. jhrg 8/7/20
         /**
          * Determines the type of the remote resource. Looks at HTTP headers, and failing that compares the
          * basename in the resource URL to the data handlers TypeMatch.
          */
         void setType(const std::vector<std::string> *resp_hdrs);
-
+#endif
         /**
          * Makes the curl call to write the resource to a file, determines DAP type of the content, and rewinds
          * the file descriptor.
