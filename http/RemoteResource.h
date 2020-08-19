@@ -1,9 +1,8 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 
-// This file is part of gateway_module, A C++ module that can be loaded in to
-// the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
+// This file is part of the BES http package, part of the Hyrax data server.
 
-// Copyright (c) 2013 OPeNDAP, Inc.
+// Copyright (c) 2020 OPeNDAP, Inc.
 // Author: Nathan Potter <ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
