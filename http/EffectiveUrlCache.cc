@@ -190,7 +190,6 @@ http::url *EffectiveUrlCache::get(const std::string  &source_url){
 void EffectiveUrlCache::cache_effective_url(const string &source_url) {
     BESRegex *bes_regex = get_cache_effective_urls_skip_regex();
     cache_effective_url(source_url, bes_regex);
-    delete bes_regex;
 }
 
 
