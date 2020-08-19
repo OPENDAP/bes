@@ -63,12 +63,14 @@ namespace ngap {
 
     const string NGAP_PROVIDER_KEY("providers");
     const string NGAP_COLLECTIONS_KEY("collections");
+    const string NGAP_CONCEPTS_KEY("concepts");
     const string NGAP_GRANULES_KEY("granules");
     const string DEFAULT_CMR_ENDPOINT_URL("https://cmr.earthdata.nasa.gov");
     const string DEFAULT_CMR_SEARCH_ENDPOINT_PATH("/search/granules.umm_json_v1_4");
 
     const string CMR_PROVIDER("provider");
     const string CMR_ENTRY_TITLE("entry_title");
+    const string CMR_CONCEPT_ID("concept_id");
     const string CMR_GRANULE_UR("granule_ur");
     const string CMR_URL_TYPE_GET_DATA("GET DATA");
 
@@ -149,7 +151,9 @@ namespace ngap {
         }
 
         // Check to make sure all required tokens are present.
-        if (tokens[0] != NGAP_PROVIDER_KEY || tokens[2] != NGAP_COLLECTIONS_KEY || tokens[4] != NGAP_GRANULES_KEY) {
+        if (tokens[0] != NGAP_PROVIDER_KEY ||
+            (tokens[2] != NGAP_COLLECTIONS_KEY && tokens[2] != NGAP_CONCEPTS_KEY) ||
+            tokens[4] != NGAP_GRANULES_KEY) {
             throw BESSyntaxUserError(string("The specified path '") + restified_path +
                                      "' does not conform to the NGAP request interface API.", __FILE__, __LINE__);
         }
@@ -165,7 +169,17 @@ namespace ngap {
         curl_free(esc_url_content);
 
         esc_url_content = curl_easy_escape(curl, tokens[3].c_str(), tokens[3].size());
-        cmr_url += CMR_ENTRY_TITLE + "=" + esc_url_content + "&";
+        if (tokens[2] == NGAP_COLLECTIONS_KEY) {
+            cmr_url += CMR_ENTRY_TITLE + "=" + esc_url_content + "&";
+        }
+        else if(tokens[2] == NGAP_CONCEPTS_KEY){
+            cmr_url += CMR_CONCEPT_ID + "=" + esc_url_content + "&";
+        }
+        else {
+            curl_free(esc_url_content);
+            throw BESSyntaxUserError(string("The specified path '") + restified_path +
+                                     "' does not conform to the NGAP request interface API.", __FILE__, __LINE__);
+        }
         curl_free(esc_url_content);
 
         esc_url_content = curl_easy_escape(curl, tokens[5].c_str(), tokens[5].size());
