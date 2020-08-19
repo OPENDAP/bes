@@ -33,6 +33,18 @@
 
 #include "rapidjson/document.h"
 
+
+#include "BESSyntaxUserError.h"
+#include "BESForbiddenError.h"
+#include "BESNotFoundError.h"
+#include "BESTimeoutError.h"
+#include "BESInternalError.h"
+#include "BESDebug.h"
+#include "BESRegex.h"
+#include "TheBESKeys.h"
+#include "BESUtil.h"
+#include "BESLog.h"
+
 #include "util.h"
 #include "BESDebug.h"
 #include "BESSyntaxUserError.h"
@@ -40,19 +52,8 @@
 #include "HttpUtils.h"
 #include "AllowedHosts.h"
 #include "CurlUtils.h"
-#include "TheBESKeys.h"
-#include "BESUtil.h"
-#include "BESLog.h"
+#include "EffectiveUrlCache.h"
 
-
-#include <BESSyntaxUserError.h>
-#include <BESForbiddenError.h>
-#include <BESNotFoundError.h>
-#include <BESTimeoutError.h>
-#include <BESInternalError.h>
-
-#include <BESDebug.h>
-#include <BESRegex.h>
 #include "url_impl.h"
 
 #define MODULE "curl"
@@ -1226,125 +1227,6 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         }
     }
 
-    /**
-     * Get's the get_cache_effective_urls_skip_regex() (or NULL if not configured)
-     * and then calls cache_effective_url(source_url, skip_regex);
-     *
-     * @param source_url
-     */
-    void cache_effective_url(const string &source_url) {
-        BESRegex *bes_regex = get_cache_effective_urls_skip_regex();
-        cache_effective_url(source_url, bes_regex);
-        delete bes_regex;
-    }
-
-
-    /**
-     * Find the terminal (effective) url for the source_url. If the source_url matches the
-     * skip_regex then it will not be cached.
-     *
-     * @param source_url
-     */
-    void cache_effective_url(const string &source_url, BESRegex *skip_regex)
-    {
-        BESDEBUG(MODULE, prolog << "BEGIN url: " << source_url << endl);
-
-        size_t match_length=0;
-
-        // if it's not an HTTP url there is nothing to cache.
-        if (source_url.find("http://") != 0 && source_url.find("https://") != 0) {
-            BESDEBUG(MODULE, prolog << "END Not an HTTP request, SKIPPING." << endl);
-            return;
-        }
-
-        if( skip_regex ){
-            match_length = skip_regex->match(source_url.c_str(),source_url.length());
-            if(match_length == source_url.length() ){
-                BESDEBUG(MODULE, prolog << "END Candidate url matches the "
-                                           "no_redirects_regex_pattern [" << skip_regex->pattern() <<
-                                           "][match_length=" << match_length << "] SKIPPING." << endl);
-                return;
-            }
-        }
-        BESDEBUG(MODULE, prolog << "Candidate url: '" << source_url << "' does NOT match the "
-                                   "skip_regex pattern [" << skip_regex->pattern() << "]" << endl);
-
-        // See if the data_access_url has already been processed into a terminal signed URL
-        // in TheBESKeys
-        bool found;
-        std::map<std::string,std::string> data_access_url_info;
-        TheBESKeys::TheKeys()->get_values(source_url, data_access_url_info, false, found);
-        if(found){
-            BESDEBUG(MODULE, prolog << "Cache hit for: " << source_url << endl);
-#if 0
-            if(BESDebug::IsSet(MODULE)){
-                std::map<std::string,std::string>::iterator moot;
-                for(moot=data_access_url_info.begin(); moot != data_access_url_info.end(); moot++){
-                    BESDEBUG(MODULE, prolog << "Cached data_access_url_info[" << moot->first << "]: " << moot->second << endl);
-                }
-            }
-#endif
-            // Is it expired?
-            http::url target_url(data_access_url_info);
-            BESDEBUG(MODULE, prolog << "Cached URL: " << target_url.to_string() << endl);
-
-            found = !target_url.is_expired();
-            BESDEBUG(MODULE, prolog << "Cached target URL is " << (found?"not ":"") << "expired." << endl);
-
-        }
-        // It not found or expired, reload.
-        if(!found){
-            BESDEBUG(MODULE, prolog << "Acquiring effective URL for  " << source_url << endl);
-            string effective_url_str;
-            curl::retrieve_effective_url(source_url, effective_url_str);
-            BESDEBUG(MODULE, prolog << "last_accessed_url: " << effective_url_str << endl);
-
-            // Make the target URL object.
-            http::url effective_url(effective_url_str);
-
-            std::map<std::string,std::string> effective_url_info;
-            // Convert it's representation to a simple KVP list
-            effective_url.kvp(effective_url_info);
-
-            BESDEBUG(MODULE, prolog << "   source_url: " << source_url << endl);
-            BESDEBUG(MODULE, prolog << "effective_url: " << effective_url.to_string() << endl);
-#if 0
-            std::map<std::string,std::string>::iterator mit;
-            for(mit=last_accessed_url_info.begin(); mit != last_accessed_url_info.end(); mit++){
-                BESDEBUG(MODULE, prolog << " last_accessed_url_info[" << mit->first << "]: " << mit->second << endl);
-            }
-#endif
-            // Placing the last accessed URL information in TheBESKeys associated with the data_access_url as the
-            // key allows allows other modules, such as dmrpp_module to access the crucial last accessed URL
-            // information which eliminates any number of redirects during access operations.
-            TheBESKeys::TheKeys()->set_keys(source_url, effective_url_info, false, false);
-        }
-        BESDEBUG(MODULE, prolog << "END" << endl);
-    }
-
-
-    bool cache_effective_urls()
-    {
-        bool found;
-        string value;
-        TheBESKeys::TheKeys()->get_value(HTTP_CACHE_EFFECTIVE_URLS_KEY,value,found);
-        return found && BESUtil::lowercase(value)=="true";
-    }
-
-    BESRegex *get_cache_effective_urls_skip_regex()
-    {
-        BESRegex *result;
-        result = NULL;
-        bool found;
-        string value;
-        TheBESKeys::TheKeys()->get_value(HTTP_CACHE_EFFECTIVE_URLS_SKIP_REGEX_KEY, value, found);
-        if(found && value.length()){
-            result = new BESRegex(value.c_str());
-        }
-        BESDEBUG(MODULE, prolog << HTTP_CACHE_EFFECTIVE_URLS_SKIP_REGEX_KEY <<":  " << (result?result->pattern():"<n/a>") << endl);
-
-        return result;
-    }
 
 
 

@@ -119,14 +119,15 @@ TheBESKeys *TheBESKeys::TheKeys()
  * key/value pair.
  */
 TheBESKeys::TheBESKeys(const string &keys_file_name) :
-        d_keys_file_name(keys_file_name), d_the_keys(0), d_the_backup_keys(0), d_own_keys(true)
+        d_keys_file_name(keys_file_name), d_the_keys(0), d_the_original_keys(0), d_dynamic_config_in_use(false), d_own_keys(true)
 {
     d_the_keys = new map<string, vector<string> >;
+    d_the_original_keys = new map<string, vector<string> >;
     initialize_keys();
 }
 
 TheBESKeys::TheBESKeys(const string &keys_file_name, map<string, vector<string> > *keys) :
-        d_keys_file_name(keys_file_name), d_the_keys(keys), d_the_backup_keys(0), d_own_keys(false)
+        d_keys_file_name(keys_file_name), d_the_keys(keys), d_the_original_keys(0), d_dynamic_config_in_use(false), d_own_keys(false)
 {
     initialize_keys();
 }
@@ -141,8 +142,7 @@ TheBESKeys::~TheBESKeys()
 void TheBESKeys::initialize_keys()
 {
     kvp::load_keys(d_keys_file_name, d_ingested_key_files, *d_the_keys);
-
-
+    *d_the_original_keys = *d_the_keys;
 }
 
 void TheBESKeys::clean()
@@ -152,9 +152,9 @@ void TheBESKeys::clean()
         delete d_the_keys;
         d_the_keys = 0;
     }
-    if(d_the_backup_keys){
-        delete d_the_backup_keys;
-        d_the_backup_keys = 0;
+    if(d_the_original_keys){
+        delete d_the_original_keys;
+        d_the_original_keys = 0;
     }
 }
 
@@ -628,14 +628,20 @@ void TheBESKeys::get_values(
 }
 
 
+/**
+ *
+ * @param name
+ */
 void TheBESKeys::load_dynamic_config(const string name){
 
-    if(d_the_backup_keys){
-        stringstream msg;
-        msg << prolog << "ERROR! Unable to load a dynamic configuration for '"<< name << "'. ";
-        msg << "There is already a dynamic configuration loaded, it must be unloaded before loading a new one.";
-        BESDEBUG(MODULE, msg.str() << endl);
-        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+    BESDEBUG(MODULE, prolog << "BEGIN" << endl);
+
+    // Clear the active keys and copy the original keys into
+    // the active keys (resets the keys to 'as read from config files')
+    if( d_dynamic_config_in_use ){
+        d_the_keys->clear();
+        *d_the_keys = *d_the_original_keys;
+        d_dynamic_config_in_use =  false;
     }
 
     map<string, map<string, vector<string>>> dynamic_confg;
@@ -700,31 +706,19 @@ void TheBESKeys::load_dynamic_config(const string name){
         << " regex patterns matched the name: " << name << endl);
         return;
     }
-    // New backup keys
-    d_the_backup_keys = new std::map<string, vector<string>>();
-    // Copy keys into backup keys
-    *d_the_backup_keys = *d_the_keys;
 
-    // Now load the keys from the dynamic config;
+    // Now load the specific keys from the dynamic config;
     map<string, vector<string>>::iterator cit;
     cit = best_matching_config->second.find(DC_CONFIG_KEY);
     vector<string>::iterator vit;
     for(vit=cit->second.begin(); vit != cit->second.end(); vit++){
-        // Each value of this vectpr should be a regular BESKeys kvp. i.e. "BES.LogName=./opendap.log"
+        // Each value of this vector should be a regular BESKeys kvp. i.e. "BES.LogName=./opendap.log"
         // Which we just feed into the keys, since we just backed them up...
         BESDEBUG(MODULE, prolog << "Adding dynamic configuration BES Key: " << *vit << endl);
         set_key(*vit);
     }
+    d_dynamic_config_in_use = true;
 
-
-
+    BESDEBUG(MODULE, prolog << "END" << endl);
 }
 
-void TheBESKeys::unload_dynamic_config(){
-    if(d_the_backup_keys && d_the_keys){
-        d_the_keys->clear();
-        *d_the_keys = *d_the_backup_keys;
-        delete d_the_backup_keys;
-        d_the_backup_keys = 0;
-    }
-}

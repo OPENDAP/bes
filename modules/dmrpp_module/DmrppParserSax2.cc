@@ -107,15 +107,6 @@ static bool is_not(const char *name, const char *tag)
     return strcmp(name, tag) != 0;
 }
 
-bool DmrppParserSax2::use_effective_urls()
-{
-    return d_use_effective_urls;
-}
-
-BESRegex *DmrppParserSax2::get_cache_effective_urls_skip_regex()
-{
-    return d_effective_url_cache_skip_regex;
-}
 
 /** @brief Return the current Enumeration definition
  * Allocate the Enumeration definition if needed and return it. Once parsing the current
@@ -792,9 +783,9 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
 
         if (parser->check_attribute("href", attributes, nb_attributes)) {
             parser->dmrpp_dataset_href = parser->get_attribute_val("href", attributes, nb_attributes);
-            if(parser->use_effective_urls()){
+            if(EffectiveUrlCache::TheCache()->is_enabled()){
                 BESDEBUG(PARSER, prolog << "Attempting to locate and cache the effective URL for Dataset URL: " << parser->dmrpp_dataset_href << endl);
-                curl::cache_effective_url(parser->dmrpp_dataset_href, parser->get_cache_effective_urls_skip_regex());
+                EffectiveUrlCache::TheCache()->cache_effective_url(parser->dmrpp_dataset_href);
             }
         }
         BESDEBUG(PARSER, prolog << "Dataset dmrpp:href is set to '" << parser->dmrpp_dataset_href << "'" << endl);
@@ -1002,9 +993,9 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 BESDEBUG(PARSER, prolog << "Processing 'href' value into data_url. href: " << data_url << endl);
                 // We may have to cache the last accessed/redirect URL for data_url here because this URL
                 // may be unique to this chunk.
-                if(parser->use_effective_urls()){
+                if(EffectiveUrlCache::TheCache()->is_enabled()){
                     BESDEBUG(PARSER, prolog << "Attempting to locate and cache the effective URL for Chunk URL: " << parser->dmrpp_dataset_href << endl);
-                    curl::cache_effective_url(data_url, parser->get_cache_effective_urls_skip_regex());
+                    EffectiveUrlCache::TheCache()->cache_effective_url(data_url);
                 }
             }
             else {

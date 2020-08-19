@@ -1,10 +1,10 @@
 
 // -*- mode: c++; c-basic-offset:4 -*-
 
-// This file is part of cmr_module, A C++ MODULE that can be loaded in to
+// This file is part of the BES, A C++ MODULE that can be loaded in to
 // the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
 
-// Copyright (c) 2018 OPeNDAP, Inc.
+// Copyright (c) 2020 OPeNDAP, Inc.
 // Author: Nathan Potter <ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or

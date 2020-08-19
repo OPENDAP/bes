@@ -95,7 +95,8 @@ private:
 
     std::string d_keys_file_name;
     std::map<std::string, std::vector<std::string> > *d_the_keys;
-    std::map<std::string, std::vector<std::string> > *d_the_backup_keys;
+    std::map<std::string, std::vector<std::string> > *d_the_original_keys;
+    bool d_dynamic_config_in_use;
     bool d_own_keys;
 
     static std::set<std::string> d_ingested_key_files;
@@ -115,7 +116,7 @@ private:
     //void load_include_file(const std::string &file);
 #endif
 
-    TheBESKeys() : d_keys_file_name(""), d_the_keys(0), d_own_keys(false) {
+    TheBESKeys() : d_keys_file_name(""), d_the_keys(0), d_dynamic_config_in_use(false), d_own_keys(false) {
     }
 
     TheBESKeys(const std::string &keys_file_name, std::map<std::string, std::vector<std::string> > *keys);
@@ -183,7 +184,6 @@ public:
 
     void load_dynamic_config(std::string name);
 
-    void unload_dynamic_config();
 };
 
 #endif // TheBESKeys_h_

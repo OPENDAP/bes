@@ -35,7 +35,7 @@ using namespace std;
 
 namespace http {
 
-
+#if 0
 /**
  *
  * @param kvp
@@ -99,6 +99,7 @@ url::url(const map<string,string> &kvp)
     }
 
 }
+#endif
 
 /**
  *
@@ -202,6 +203,7 @@ void url::query_parameter_values(const string &key, vector<string> &values) cons
     }
 }
 
+#if 0
 
 /**
  *
@@ -225,6 +227,7 @@ void url::kvp(map<string,string>  &kvp){
         kvp.insert(pair<string,string>(it->first,(*it->second)[0]));
     }
 }
+#endif
 
 /**
  *

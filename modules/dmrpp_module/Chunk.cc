@@ -43,6 +43,7 @@
 #include "Chunk.h"
 #include "CurlUtils.h"
 #include "CurlHandlePool.h"
+#include "EffectiveUrlCache.h"
 #include "DmrppRequestHandler.h"
 #include "DmrppNames.h"
 
@@ -639,6 +640,16 @@ std::string Chunk::get_data_url() const
 {
     string data_url = d_data_url;
 
+    http::url *effective_url = EffectiveUrlCache::TheCache()->get(d_data_url);
+    BESDEBUG(MODULE, prolog << "The EffectiveUrlCache" << (effective_url?" contains ":" does not contain ") <<
+    "the d_data_url: " << d_data_url << endl);
+    if(effective_url){
+        data_url = effective_url->to_string();
+    }
+    BESDEBUG(MODULE, prolog << "Using data_url: " << data_url << endl);
+
+
+#if 0
     bool found = false;
     bool case_insensitive = true;
     map<string,string> target_url_info;
@@ -653,8 +664,11 @@ std::string Chunk::get_data_url() const
             data_url = tuit->second;
         }
 #endif
+
     }
     BESDEBUG(MODULE, prolog << "Using data_url: " << data_url << endl);
+
+#endif
 
     // A conditional call to void Chunk::add_tracking_query_param()
     // here for the NASA cost model work THG's doing. jhrg 8/7/18

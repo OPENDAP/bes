@@ -31,7 +31,8 @@ public:
         parse(url_s);
     }
 
-    url(const std::map<std::string,std::string> &kvp);
+    //url(const std::map<std::string,std::string> &kvp);
+//    url(const url &source_url);
 
     ~url();
     std::string str() { return d_source_url; }
@@ -53,7 +54,7 @@ public:
     std::string query_parameter_value(const std::string &key) const;
     void query_parameter_values(const std::string &key, std::vector<std::string> &values) const;
 
-    void kvp(std::map<std::string,std::string> &kvp);
+    //void get_as_kvp(std::map<std::string,std::string> &kvp);
 
     bool is_expired();
 

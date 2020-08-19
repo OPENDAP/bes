@@ -314,7 +314,6 @@ void BESXMLInterface::execute_data_request_plan()
 
         transmit_data();    // TODO move method body in here? jhrg 11/8/17
 
-        TheBESKeys::TheKeys()->unload_dynamic_config();
     }
 }
 
