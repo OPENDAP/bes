@@ -1,8 +1,7 @@
 
-// https://stackoverflow.com/questions/2616011/easy-way-to-parse-a-url-in-c-cross-platform
 
-#ifndef URL_HH_
-#define URL_HH_
+#ifndef BES_http_url_HH_
+#define BES_http_url_HH_
 #include <string>
 #include <map>
 #include <vector>
@@ -13,7 +12,7 @@ namespace http {
 
 
 
-    class  url {
+class  url {
 private:
     void parse(const std::string &source_url);
 
@@ -22,13 +21,13 @@ private:
     std::string d_host;
     std::string d_path;
     std::string d_query;
-    std::map<std::string, std::vector<std::string>* > d_query_kvp;
-    time_t d_ingest_time;
+    std::map<std::string, std::vector<std::string> * > d_query_kvp;
+    time_t d_ingest_time{};
 
 public:
 
     // omitted copy, ==, accessors, ...
-    explicit url(const std::string &url_s):d_source_url(url_s) {
+    explicit url(const std::string &url_s):d_source_url(url_s), d_ingest_time(0) {
         parse(url_s);
     }
 
@@ -59,4 +58,4 @@ public:
 };
 
 } // namespace http
-#endif /* URL_HH_ */
+#endif /* BES_http_url_HH_ */

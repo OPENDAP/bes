@@ -116,7 +116,7 @@ url::~url()
 
 
 /**
- *
+ * Tip of the hat to: https://stackoverflow.com/questions/2616011/easy-way-to-parse-a-url-in-c-cross-platform
  * @param source_url
  */
 void url::parse(const string &source_url) {

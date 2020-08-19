@@ -114,7 +114,7 @@ EffectiveUrlCache::~EffectiveUrlCache()
 {
     map<string , http::url *>::iterator it;
     for(it = d_effective_urls.begin(); it!= d_effective_urls.end(); it++){
-        delete (*it).second;
+        delete it->second;
     }
     d_effective_urls.clear();
 
