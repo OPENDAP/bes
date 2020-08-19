@@ -22,7 +22,7 @@ private:
     std::string d_path;
     std::string d_query;
     std::map<std::string, std::vector<std::string> * > d_query_kvp;
-    time_t d_ingest_time{};
+    time_t d_ingest_time;
 
 public:
 
