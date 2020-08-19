@@ -5,6 +5,7 @@
 #define URL_HH_
 #include <string>
 #include <map>
+#include <vector>
 #include <time.h>
 
 
