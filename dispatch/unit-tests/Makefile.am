@@ -32,7 +32,7 @@ if CPPUNIT
 TESTS = constraintT defT keysT pfileT plistT pvolT replistT		\
 reqhandlerT reqlistT resplistT infoT debugT utilT regexT scrubT		\
 checkT servicesT fsT urlT containerT uncompressT cacheT			\
-BESCatalogListTest WhiteListTest CatalogNodeTest CatalogItemTest \
+BESCatalogListTest AllowedHostsTest CatalogNodeTest CatalogItemTest \
 ServerAdministratorTest kvp_utils_test
 
 # This is tool to look at CatalogEntry objects. jhrg 3.5.18
@@ -153,8 +153,8 @@ scrubT_SOURCES = scrubT.cc
 
 checkT_SOURCES = checkT.cc
 
-WhiteListTest_SOURCES = WhiteListTest.cc
-WhiteListTest_LDADD = ../WhiteList.o $(LDADD)
+AllowedHostsTest_SOURCES = AllowedHostsTest.cc
+AllowedHostsTest_LDADD = ../AllowedHosts.o $(LDADD)
 
 CatalogNodeTest_SOURCES = test_utils.cc CatalogNodeTest.cc
 CatalogNodeTest_LDADD = ../CatalogNode.o $(LDADD)

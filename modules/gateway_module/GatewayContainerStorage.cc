@@ -27,7 +27,6 @@
 // Authors:
 //      pcw       Patrick West <pwest@ucar.edu>
 
-#include "config.h"
 
 #include <string>
 

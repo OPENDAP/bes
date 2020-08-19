@@ -36,7 +36,7 @@
 #include <curl/multi.h>
 #endif
 
-#include "curl_utils.h"
+#include "CurlUtils.h"
 
 #include <time.h>
 
@@ -47,10 +47,11 @@
 #include "BESInternalError.h"
 #include "BESForbiddenError.h"
 #include "TheBESKeys.h"
-#include "WhiteList.h"
+#include "AllowedHosts.h"
 
 #include "DmrppRequestHandler.h"
 #include "DmrppCommon.h"
+#include "DmrppNames.h"
 #include "awsv4.h"
 #include "CurlHandlePool.h"
 #include "Chunk.h"
@@ -76,7 +77,6 @@ using namespace dmrpp;
 using namespace std;
 using namespace bes;
 
-#define MODULE "dmrpp:curl"
 #define prolog std::string("CurlHandlePool::").append(__func__).append("() - ")
 
 Lock::Lock(pthread_mutex_t &lock) : m_mutex(lock) {
@@ -203,7 +203,7 @@ int curl_trace(CURL */*handle*/, curl_infotype type, char *data, size_t /*size*/
 }
 #endif
 
-dmrpp_easy_handle::dmrpp_easy_handle() : d_headers(0) {
+dmrpp_easy_handle::dmrpp_easy_handle() : d_request_headers(0) {
     d_handle = curl_easy_init();
     if (!d_handle) throw BESInternalError("Could not allocate CURL handle", __FILE__, __LINE__);
 
@@ -253,74 +253,7 @@ dmrpp_easy_handle::dmrpp_easy_handle() : d_headers(0) {
 
 dmrpp_easy_handle::~dmrpp_easy_handle() {
     if (d_handle) curl_easy_cleanup(d_handle);
-    if (d_headers) curl_slist_free_all(d_headers);
-}
-
-/**
- * Return true if the HTTP request worked, false if it should be re-tried;
- * throw an exception on error.
- *
- * @param eh The CURL easy_handle
- * @return True indicates success, false a failure that should be re-tried.
- * @exception BESInternalError indicates an unrecoverable error
- */
-static bool evaluate_curl_response(CURL *eh) {
-    long http_code = 0;
-    CURLcode res = curl_easy_getinfo(eh, CURLINFO_RESPONSE_CODE, &http_code);
-    if (res == CURLE_GOT_NOTHING) {
-        char *effective_url = 0;
-        curl_easy_getinfo(eh, CURLINFO_EFFECTIVE_URL, &effective_url);
-        LOG("Ouch. cURL returned CURLE_GOT_NOTHING, returning false.  CURLINFO_EFFECTIVE_URL: " << effective_url << endl);
-        return false;
-    }
-    else if(res != CURLE_OK) {
-        throw BESInternalError(
-                string("Error getting HTTP response code: ").append(curl::error_message(res, (char *) "")),
-                __FILE__, __LINE__);
-    }
-
-    if (BESDebug::IsSet(MODULE)) {
-        char *last_url = 0;
-        curl_easy_getinfo(eh, CURLINFO_EFFECTIVE_URL, &last_url);
-        BESDEBUG(MODULE, prolog << "Last Accessed URL(CURLINFO_EFFECTIVE_URL): " << last_url << endl);
-
-        long redirects;
-        curl_easy_getinfo(eh, CURLINFO_REDIRECT_COUNT, &redirects);
-        BESDEBUG(MODULE, prolog << "CURLINFO_REDIRECT_COUNT: " << redirects << endl);
-
-        char *redirect_url = 0;
-        curl_easy_getinfo(eh, CURLINFO_REDIRECT_URL, &redirect_url);
-        if (redirect_url)
-            BESDEBUG(MODULE, prolog << "CURLINFO_REDIRECT_URL: " << redirect_url << endl);
-    }
-
-    // Newer Apache servers return 206 for range requests. jhrg 8/8/18
-    switch (http_code) {
-        case 200: // OK
-        case 206: // Partial content - this is to be expected since we use range gets
-            // cases 201-205 are things we should probably reject, unless we add more
-            // comprehensive HTTP/S processing here. jhrg 8/8/18
-            return true;
-
-        case 500: // Internal server error
-        case 502: // Bad Gateway
-        case 503: // Service Unavailable
-        case 504: // Gateway Timeout
-        {
-            char *effective_url = 0;
-            curl_easy_getinfo(eh, CURLINFO_EFFECTIVE_URL, &effective_url);
-            LOG("HTTP transfer " << http_code << " error, returning false.  CURLINFO_EFFECTIVE_URL: " << effective_url << endl);
-            return false;
-        }
-
-        default: {
-            ostringstream oss;
-            char *effective_url = 0;
-            curl_easy_getinfo(eh, CURLINFO_EFFECTIVE_URL, &effective_url);
-            oss << prolog << "HTTP status error: Expected an OK status, but got: " << http_code  << " from (CURLINFO_EFFECTIVE_URL): " << effective_url;
-            throw BESInternalError(oss.str(), __FILE__, __LINE__);
-        }
-    }
+    if (d_request_headers) curl_slist_free_all(d_request_headers);
 }
 
 /**
@@ -335,10 +268,11 @@ void dmrpp_easy_handle::read_data() {
         unsigned int tries = 0;
         bool success = true;
         useconds_t retry_time = uone_second/4;
+        d_errbuf[0] = 0; // Initialize to empty string.
 
         // Perform the request
         do {
-            BESDEBUG(MODULE, prolog << "Requesting URL: " << d_url << endl);
+            BESDEBUG(DMRPP_CURL, prolog << "Requesting URL: " << d_url << endl);
             CURLcode curl_code = curl_easy_perform(d_handle);
             ++tries;
 
@@ -348,27 +282,27 @@ void dmrpp_easy_handle::read_data() {
                 char *effective_url = 0;
                 curl_easy_getinfo(d_handle, CURLINFO_EFFECTIVE_URL, &effective_url);
                 msg << " last_url: " << effective_url;
-                BESDEBUG(MODULE, prolog << msg.str() << endl);
+                BESDEBUG(DMRPP_CURL, prolog << msg.str() << endl);
                 throw BESInternalError(msg.str(), __FILE__, __LINE__);
             }
 
-            success = evaluate_curl_response(d_handle);
+            success = curl::eval_get_response(d_handle, d_url);
 
             if (!success) {
                 if (tries == retry_limit) {
-                    throw BESInternalError(
-                            string("Data transfer error: Number of re-tries exceeded: ").append(
-                                    curl::error_message(curl_code, d_errbuf)), __FILE__, __LINE__);
+                    string msg = prolog + "Data transfer error: Number of re-tries exceeded: "+ curl::error_message(curl_code, d_errbuf);
+                    LOG(msg << endl);
+                    throw BESInternalError(msg, __FILE__, __LINE__);
                 }
                 else {
-                    LOG("HTTP transfer 500 error, will retry (trial " << tries << " for: " << d_url << ")." << endl);
+                    LOG(prolog << "HTTP transfer 500 error, will retry (trial " << tries << " for: " << d_url << ")." << endl);
                     usleep(retry_time);
                     retry_time *= 2;
                 }
             }
 
-            curl_slist_free_all(d_headers);
-            d_headers = 0;
+            curl_slist_free_all(d_request_headers);
+            d_request_headers = 0;
         } while (!success);
     }
     else {
@@ -520,7 +454,7 @@ void dmrpp_multi_handle::read_data() {
                 // HTTP status code. If the protocol is not HTTP, we assume since msg->data.result
                 // returned CURLE_OK, that the transfer worked. jhrg 5/1/18
                 if (dmrpp_easy_handle->d_url.find("http://") == 0 || dmrpp_easy_handle->d_url.find("https://") == 0) {
-                    evaluate_curl_response(eh);
+                    bool success = curl::eval_get_response(eh,dmrpp_easy_handle->d_url);
                 }
 
                 // If we are here, the request was successful.
@@ -656,7 +590,7 @@ dmrpp_easy_handle *
 CurlHandlePool::get_easy_handle(Chunk *chunk) {
     // Here we check to make sure that the we are only going to
     // access an approved location with this easy_handle
-    if (!WhiteList::get_white_list()->is_white_listed(chunk->get_data_url())) {
+    if (!AllowedHosts::theHosts()->is_allowed(chunk->get_data_url())) {
         string msg = "ERROR!! The chunk url " + chunk->get_data_url() + " does not match any white-list rule. ";
         throw BESForbiddenError(msg, __FILE__, __LINE__);
     }
@@ -710,8 +644,8 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
 
         // Enabled cookies
         // #TODO #FIXME Make these file names configuration based.
-        curl_easy_setopt(handle->d_handle, CURLOPT_COOKIEFILE, "/tmp/.hyrax_cookies");
-        curl_easy_setopt(handle->d_handle, CURLOPT_COOKIEJAR, "/tmp/.hyrax_cookies");
+        curl_easy_setopt(handle->d_handle, CURLOPT_COOKIEFILE, curl::get_cookie_filename().c_str());
+        curl_easy_setopt(handle->d_handle, CURLOPT_COOKIEJAR, curl::get_cookie_filename().c_str());
 
         // Follow 302 (redirect) responses
         curl_easy_setopt(handle->d_handle, CURLOPT_FOLLOWLOCATION, 1);
@@ -739,7 +673,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
 
         AccessCredentials *credentials = CredentialsManager::theCM()->get(handle->d_url);
         if (credentials && credentials->isS3Cred()) {
-            BESDEBUG(MODULE, "Got AccessCredentials instance: " << endl << credentials->to_json() << endl);
+            BESDEBUG(DMRPP_CURL, prolog << "Got AccessCredentials instance: " << endl << credentials->to_json() << endl);
             // If there are available credentials, and they are S3 credentials then we need to sign
             // the request
             const std::time_t request_time = std::time(0);
@@ -751,38 +685,37 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
                             credentials->get(AccessCredentials::ID_KEY),
                             credentials->get(AccessCredentials::KEY_KEY),
                             credentials->get(AccessCredentials::REGION_KEY),
-                            "s3",
-                            BESDebug::IsSet(MODULE));
+                            "s3");
 
             // passing nullptr for the first call allocates the curl_slist
             // The following code builds the slist that holds the headers. This slist is freed
             // once the URL is dereferenced in dmrpp_easy_handle::read_data(). jhrg 11/26/19
-            handle->d_headers = append_http_header(0, "Authorization:", auth_header);
-            if (!handle->d_headers)
+            handle->d_request_headers = append_http_header(0, "Authorization:", auth_header);
+            if (!handle->d_request_headers)
                 throw BESInternalError(
                         string("CURL Error setting Authorization header: ").append(
                                 curl::error_message(res, handle->d_errbuf)), __FILE__, __LINE__);
 
             // We pre-compute the sha256 hash of a null message body
-            curl_slist *temp = append_http_header(handle->d_headers, "x-amz-content-sha256:",
+            curl_slist *temp = append_http_header(handle->d_request_headers, "x-amz-content-sha256:",
                                                   "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
             if (!temp)
                 throw BESInternalError(
                         string("CURL Error setting x-amz-content-sha256: ").append(
                                 curl::error_message(res, handle->d_errbuf)),
                         __FILE__, __LINE__);
-            handle->d_headers = temp;
+            handle->d_request_headers = temp;
 
-            temp = append_http_header(handle->d_headers, "x-amz-date:", AWSV4::ISO8601_date(request_time));
+            temp = append_http_header(handle->d_request_headers, "x-amz-date:", AWSV4::ISO8601_date(request_time));
             if (!temp)
                 throw BESInternalError(
                         string("CURL Error setting x-amz-date header: ").append(
                                 curl::error_message(res, handle->d_errbuf)),
                         __FILE__, __LINE__);
-            handle->d_headers = temp;
+            handle->d_request_headers = temp;
 
 
-            if (CURLE_OK != (res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPHEADER, handle->d_headers)))
+            if (CURLE_OK != (res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPHEADER, handle->d_request_headers)))
                 throw BESInternalError(string("CURL Error setting HTTP headers for S3 authentication: ").append(
                         curl::error_message(res, handle->d_errbuf)), __FILE__, __LINE__);
         }

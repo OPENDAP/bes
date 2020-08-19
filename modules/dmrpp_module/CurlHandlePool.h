@@ -66,7 +66,7 @@ class dmrpp_easy_handle {
     Chunk *d_chunk;     ///< This easy_handle reads the data for \arg chunk.
     char d_errbuf[CURL_ERROR_SIZE]; ///< raw error message info from libcurl
     CURL *d_handle;     ///< The libcurl handle object.
-    struct curl_slist *d_headers; ///< Holds the list of authorization headers, if needed.
+    struct curl_slist *d_request_headers; ///< Holds the list of authorization headers, if needed.
 
     friend class CurlHandlePool;
     friend class dmrpp_multi_handle;

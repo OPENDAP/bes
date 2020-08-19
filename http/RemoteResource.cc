@@ -1,9 +1,9 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 
-// This file is part of ngap_module, A C++ module that can be loaded in to
+// This file is part of gateway_Gateway_NAME,A C++ Gateway_NAME that can be loaded in to
 // the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
 
-// Copyright (c) 2020 OPeNDAP, Inc.
+// Copyright (c) 2013 OPeNDAP, Inc.
 // Author: Nathan Potter <ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
@@ -42,27 +42,27 @@
 
 #include "BESDebug.h"
 #include "BESUtil.h"
+
+#include "HttpCache.h"
+#include "HttpUtils.h"
+#include "CurlUtils.h"
+#include "HttpNames.h"
+#include "RemoteResource.h"
 #include "TheBESKeys.h"
 
-#include "NgapNames.h"
-#include "NgapCache.h"
-#include "NgapUtils.h"
-#include "curl_utils.h"
-#include "RemoteHttpResource.h"
-
 using namespace std;
-using namespace ngap;
 
-#define prolog std::string("RemoteHttpResource::").append(__func__).append("() - ")
+#define prolog std::string("RemoteResource::").append(__func__).append("() - ")
+#define MODULE "http"
 
-namespace ngap {
+namespace http {
 
-/**
-* Builds a RemoteHttpResource object associated with the passed \c url parameter.
-*
-* @param url Is a URL string that identifies the remote resource.
-*/
-    RemoteHttpResource::RemoteHttpResource(const std::string &url, const std::string &uid, const std::string &echo_token){
+    /**
+     * Builds a RemoteHttpResource object associated with the passed \c url parameter.
+     *
+     * @param url Is a URL string that identifies the remote resource.
+     */
+    RemoteResource::RemoteResource(const std::string &url, const std::string &uid, const std::string &echo_token) {
 
         d_fd = 0;
         d_initialized = false;
@@ -85,12 +85,12 @@ namespace ngap {
         BESDEBUG(MODULE, prolog << "URL: " << d_remoteResourceUrl << endl);
 
 
-        if(!d_uid.empty()){
+        if (!d_uid.empty()){
             string client_id_hdr = "User-Id: " + d_uid;
             BESDEBUG(MODULE, prolog << client_id_hdr << endl);
             d_request_headers->push_back(client_id_hdr);
         }
-        if(!d_echo_token.empty()){
+        if (!d_echo_token.empty()){
             string echo_token_hdr = "Echo-Token: " + d_echo_token;
             BESDEBUG(MODULE, prolog << echo_token_hdr << endl);
             d_request_headers->push_back(echo_token_hdr);
@@ -103,19 +103,19 @@ namespace ngap {
         // CURL *pvparam = 0;               // passed value parameter
         // result = www_lib_init(&pvparam); // the call to the method
 
-        d_curl = ngap_curl::init(d_error_buffer);  // This may throw either Error or InternalErr
+        d_curl = curl::init(d_error_buffer);  // This may throw either Error or InternalErr
 
-        ngap_curl::configureProxy(d_curl, d_remoteResourceUrl); // Configure the a proxy for this url (if appropriate).
+        curl::configureProxy(d_curl, d_remoteResourceUrl); // Configure the a proxy for this url (if appropriate).
 
         BESDEBUG(MODULE, prolog << "d_curl: " << d_curl << endl);
     }
 
-/**
- * Releases any memory resources and also any existing cache file locks for the cached resource.
- * ( Closes the file descriptor opened when retrieveResource() was called.)
- */
-    RemoteHttpResource::~RemoteHttpResource() {
-        BESDEBUG(MODULE, prolog << "BEGIN   resourceURL: " << d_remoteResourceUrl << endl);
+    /**
+     * Releases any memory resources and also any existing cache file locks for the cached resource.
+     * ( Closes the file descriptor opened when retrieveResource() was called.)
+     */
+    RemoteResource::~RemoteResource() {
+        BESDEBUG(MODULE, prolog << "BEGIN resourceURL: " << d_remoteResourceUrl << endl);
 
         delete d_response_headers;
         d_response_headers = 0;
@@ -125,21 +125,14 @@ namespace ngap {
         d_request_headers = 0;
         BESDEBUG(MODULE, prolog << "Deleted d_request_headers." << endl);
 
-        if(d_curl){
-            curl_easy_cleanup(d_curl);
-            d_curl = 0;
-            BESDEBUG(MODULE, prolog << "Cleaned up cURL easy handle." << endl);
+        if (!d_resourceCacheFileName.empty()) {
+            HttpCache *cache = HttpCache::get_instance();
+            if (cache) {
+                cache->unlock_and_close(d_resourceCacheFileName);
+                BESDEBUG(MODULE, prolog << "Closed and unlocked " << d_resourceCacheFileName << endl);
+                d_resourceCacheFileName.clear();
+            }
         }
-/*
-    if (!d_resourceCacheFileName.empty()) {
-        NgapCache *cache = NgapCache::get_instance();
-        if (cache) {
-            cache->unlock_and_close(d_resourceCacheFileName);
-            BESDEBUG(MODULE,  prolog << "Closed and unlocked "<< d_resourceCacheFileName << endl);
-            d_resourceCacheFileName.clear();
-        }
-    }
-*/
 
         if (d_curl) {
             curl_easy_cleanup(d_curl);
@@ -147,11 +140,16 @@ namespace ngap {
         }
         d_curl = 0;
 
-        BESDEBUG(MODULE, prolog << "END   resourceURL: " << d_remoteResourceUrl << endl);
+        BESDEBUG(MODULE, prolog << "Clearing resourceURL: " << d_remoteResourceUrl << endl);
         d_remoteResourceUrl.clear();
+        BESDEBUG(MODULE, prolog << "END" << endl);
     }
 
-    std::string RemoteHttpResource::getCacheFileName() {
+    /**
+     * Returns the (read-locked) cache file name on the local system in which the content of the remote
+     * resource is stored. Deleting of the instance of this class will release the read-lock.
+     */
+    std::string RemoteResource::getCacheFileName() {
         if (!d_initialized) {
             throw BESInternalError(prolog + "STATE ERROR: Remote Resource " + d_remoteResourceUrl +
                                    " has Not Been Retrieved.", __FILE__, __LINE__);
@@ -159,8 +157,14 @@ namespace ngap {
         return d_resourceCacheFileName;
     }
 
-
-    void RemoteHttpResource::retrieveResource() {
+    /**
+     * This method will check the cache for the resource. If it's not there then it will lock the cache and retrieve
+     * the remote resource content using HTTP GET.
+     *
+     * When this method returns the RemoteResource object is fully initialized and the cache file name for the resource
+     * is available along with an open file descriptor for the (now read-locked) cache file.
+     */
+    void RemoteResource::retrieveResource() {
         string template_key;
         string replace_value;
         retrieveResource(template_key,replace_value);
@@ -177,27 +181,29 @@ namespace ngap {
      * @param template_key
      * @param replace_value
      */
-    void RemoteHttpResource::retrieveResource(const string &template_key, const string &replace_value) {
+    void RemoteResource::retrieveResource(const string &template_key, const string &replace_value) {
         BESDEBUG(MODULE, prolog << "BEGIN   resourceURL: " << d_remoteResourceUrl << endl);
+        bool mangle = true;
 
         if (d_initialized) {
             BESDEBUG(MODULE, prolog << "END  Already initialized." << endl);
             return;
         }
         // Get a pointer to the singleton cache instance for this process.
-        NgapCache *cache = NgapCache::get_instance();
+        HttpCache *cache = HttpCache::get_instance();
         if (!cache) {
             ostringstream oss;
             oss << __func__ << "() - FAILED to get local cache."
                                " Unable to proceed with request for " << this->d_remoteResourceUrl
-                << " The ngap_module MUST have a valid cache configuration to operate." << endl;
+                << " The server MUST have a valid HTTP cache configuration to operate." << endl;
             BESDEBUG(MODULE, oss.str());
             throw BESInternalError(oss.str(), __FILE__, __LINE__);
         }
 
         // Get the name of the file in the cache (either the code finds this file or
         // or it makes it).
-        d_resourceCacheFileName = cache->get_cache_file_name(d_uid,d_remoteResourceUrl);
+        // FIXME THIS SHOULD USE THE uid,resourceURL version of the is function, and the cache name should be a hash
+        d_resourceCacheFileName = cache->get_cache_file_name(d_remoteResourceUrl, mangle);
         BESDEBUG(MODULE, prolog << "d_resourceCacheFileName: " << d_resourceCacheFileName << endl);
 
         // @TODO MAKE THIS RETRIEVE THE CACHED DATA TYPE IF THE CACHED RESPONSE IF FOUND
@@ -206,7 +212,7 @@ namespace ngap {
         // to subsequent accesses of the cached object. Since we have to have a type, for now we just set the type
         // from the url. If down below we DO an HTTP GET then the headers will be evaluated and the type set by setType()
         // But really - we gotta fix this.
-        NgapUtils::Get_type_from_url(d_remoteResourceUrl, d_type);
+        HttpUtils::Get_type_from_url(d_remoteResourceUrl, d_type);
         BESDEBUG(MODULE, prolog << "d_type: " << d_type << endl);
 
         try {
@@ -217,7 +223,7 @@ namespace ngap {
 
                 // #########################################################################################################
                 // I think in this if() is where we need to load the headers from the cache if we have them.
-                string hdr_filename = cache->get_cache_file_name(d_uid,d_remoteResourceUrl) + ".hdrs";
+                string hdr_filename = cache->get_cache_file_name(d_remoteResourceUrl,mangle) + ".hdrs";
                 std::ifstream hdr_ifs(hdr_filename.c_str());
                 try {
                     BESDEBUG(MODULE, prolog << "Reading response headers from: " << hdr_filename << endl);
@@ -257,17 +263,18 @@ namespace ngap {
                 // This is controlled by:
                 //  - The template_key string must not be empty.
                 if(!template_key.empty()){
-                        unsigned int count = filter_retrieved_resource(template_key,replace_value);
-                        BESDEBUG(MODULE, prolog << "Replaced  " << count <<
+                        unsigned int count = filter_retrieved_resource(template_key, replace_value);
+                        BESDEBUG(MODULE, prolog << "Replaced " << count <<
                         " instance(s) of template(" <<
-                        template_key << ") with "<< replace_value << " in cached RemoteResource" << endl);
+                        template_key << ") with " << replace_value << " in cached RemoteResource" << endl);
                 }
 
                 //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
                 // I think right here is where I would be able to cache the data type/response headers. While I have
                 // the exclusive lock I could open another cache file for metadata and write to it.
                 {
-                    string hdr_filename = cache->get_cache_file_name(d_uid,d_remoteResourceUrl) + ".hdrs";
+                    // FIXME THIS IS WHERE WE NEED TO USE NGAP HASH CACHE FILE NAMES NOT FLC NAMES.
+                    string hdr_filename = cache->get_cache_file_name(d_remoteResourceUrl, mangle) + ".hdrs";
                     std::ofstream hdr_out(hdr_filename.c_str());
                     try {
                         for (size_t i = 0; i < this->d_response_headers->size(); i++) {
@@ -315,7 +322,7 @@ namespace ngap {
 
             string msg = prolog + "Failed to acquire cache read lock for remote resource: '";
             msg += d_remoteResourceUrl + "\n";
-            throw BESInternalError(msg,__FILE__,__LINE__);
+            throw BESInternalError(msg, __FILE__, __LINE__);
 
         }
         catch (...) {
@@ -328,27 +335,25 @@ namespace ngap {
 
     }
 
-/**
- *
- * Retrieves the remote resource and write it the the open file associated with the open file
- * descriptor parameter 'fd'. In the process of caching the file a FILE * is fdopen'd from 'fd' and that is used buy
- * curl to write the content. At the end the stream is rewound and the FILE * pointer is returned.
- *
- * @param fd An open file descriptor the is associated with the target file.
- */
-    void RemoteHttpResource::writeResourceToFile(int fd) {
+    /**
+     *
+     * Retrieves the remote resource and write it the the open file associated with the open file
+     * descriptor parameter 'fd'. In the process of caching the file a FILE * is fdopen'd from 'fd' and that is used buy
+     * curl to write the content. At the end the stream is rewound and the FILE * pointer is returned.
+     *
+     * @param fd An open file descriptor the is associated with the target file.
+     */
+    void RemoteResource::writeResourceToFile(int fd) {
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
         int status = -1;
         try {
-            BESDEBUG(MODULE,
-                     "RemoteHttpResource::writeResourceToFile() - Saving resource " << d_remoteResourceUrl
-                         << " to cache file " << d_resourceCacheFileName << endl);
-            status = ngap_curl::read_url(d_curl, d_remoteResourceUrl, fd, d_response_headers, d_request_headers,
-                                         d_error_buffer); // Throws BESInternalError if there is a curl error.
+            BESDEBUG(MODULE, prolog << "Saving resource " << d_remoteResourceUrl << " to cache file " << d_resourceCacheFileName << endl);
+            status = curl::read_url(d_curl, d_remoteResourceUrl, fd, d_response_headers,
+                            d_request_headers, d_error_buffer); // Throws BESInternalError if there is a curl error.
 
             if (status >= 400) {
-                BESDEBUG(MODULE, prolog << "ERROR: HTTP request returned status: " << status << endl);
+                BESDEBUG(MODULE,prolog << "ERROR: HTTP request returned an error status of: " << status << endl);
                 // delete resp_hdrs; resp_hdrs = 0;
                 stringstream msg;
                 msg << prolog << "Error while reading the URL: \"" <<  d_remoteResourceUrl << "\", ";;
@@ -356,30 +361,24 @@ namespace ngap {
                     msg << "reqhdr[" << i << "]: \"" << (*d_request_headers)[i] << "\", ";
                 }
                 msg <<    "The HTTP request returned a status of " << status << " which means '" <<
-                    ngap_curl::http_status_to_string(status) << "'";
+                    curl::http_status_to_string(status) << "'" << endl;
+                BESDEBUG(MODULE, prolog << "ERROR: HTTP request returned status: " << status << " message: " << msg.str() << endl);
                 switch(status) {
-
                     case 400:
                         throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
-
-                    case 404:
-                        throw BESNotFoundError(msg.str(), __FILE__, __LINE__);
-
-                    case 408:
-                        throw BESTimeoutError(msg.str(), __FILE__, __LINE__);
-
                     case 401:
                     case 402:
                     case 403:
                         throw BESForbiddenError(msg.str(), __FILE__, __LINE__);
-
+                    case 404:
+                        throw BESNotFoundError(msg.str(), __FILE__, __LINE__);
+                    case 408:
+                        throw BESTimeoutError(msg.str(), __FILE__, __LINE__);
                     default:
                         throw BESInternalError(msg.str(), __FILE__, __LINE__);
                 }
             }
-            BESDEBUG(MODULE,
-                     prolog << "Resource " << d_remoteResourceUrl << " saved to cache file " << d_resourceCacheFileName
-                            << endl);
+            BESDEBUG(MODULE,  prolog << "Resource " << d_remoteResourceUrl << " saved to cache file " << d_resourceCacheFileName << endl);
 
             // rewind the file
             // FIXME I think the idea here is that we have the file open and we should just keep
@@ -390,6 +389,7 @@ namespace ngap {
                 throw BESError("Could not seek within the response.", BES_NOT_FOUND_ERROR, __FILE__, __LINE__);
             BESDEBUG(MODULE, prolog << "Reset file descriptor." << endl);
 
+            // @TODO CACHE THE DATA TYPE OR THE HTTP HEADERS SO WHEN WE ARE RETRIEVING THE CACHED OBJECT WE CAN GET THE CORRECT TYPE
             ingest_http_headers_and_type();
         }
         catch (BESError &e) {
@@ -398,62 +398,55 @@ namespace ngap {
         BESDEBUG(MODULE, prolog << "END" << endl);
     }
 
-
-    void RemoteHttpResource::ingest_http_headers_and_type() {
+    void RemoteResource::ingest_http_headers_and_type() {
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
         const string colon_space = ": ";
         for (size_t i = 0; i < this->d_response_headers->size(); i++) {
-            size_t colon_index = (*d_response_headers)[i].find(colon_space);
-            string key = BESUtil::lowercase((*d_response_headers)[i].substr(0, colon_index));
-            string value = (*d_response_headers)[i].substr(colon_index + colon_space.length());
-            BESDEBUG(MODULE, prolog << "key: " << key << " value: " << value << endl);
-            (*d_http_response_headers)[key] = value;
+            string header = (*d_response_headers)[i];
+            BESDEBUG(MODULE, prolog << "Processing header " << header << endl);
+            size_t colon_index = header.find(colon_space);
+            if(colon_index == string::npos){
+                BESDEBUG(MODULE, prolog << "Unable to locate the colon space \": \" delimiter in the header " <<
+                                        "string: '" << header << "' SKIPPING!" << endl);
+            }
+            else {
+                string key = BESUtil::lowercase(header.substr(0, colon_index));
+                string value = header.substr(colon_index + colon_space.length());
+                BESDEBUG(MODULE, prolog << "key: " << key << " value: " << value << endl);
+                (*d_http_response_headers)[key] = value;
+            }
         }
+        std::map<string, string>::iterator it;
         string type;
 
         // Try and figure out the file type first from the
         // Content-Disposition in the http header response.
-        string cdisp_hdr;
-        string ctype_hdr;
-        std::map<string, string>::iterator it;
 
-        it = d_http_response_headers->find("content-disposition");
-        if (it != d_http_response_headers->end()) {
-            cdisp_hdr = it->second;
-        }
-
-        it = d_http_response_headers->find("content-type");
-        if (it != d_http_response_headers->end()) {
-            ctype_hdr = it->second;
-        }
-
-        if (!cdisp_hdr.empty()) {
+        string content_disp_hdr;
+        content_disp_hdr = get_http_response_header("content-disposition");
+        if (!content_disp_hdr.empty()) {
             // Content disposition exists, grab the filename
             // attribute
-            NgapUtils::Get_type_from_disposition(cdisp_hdr, type);
-            BESDEBUG(MODULE,
-                     prolog << "Evaluated content-disposition '" << cdisp_hdr << "' matched type: \"" << type << "\""
-                            << endl);
+            HttpUtils::Get_type_from_disposition(content_disp_hdr, type);
+            BESDEBUG(MODULE,prolog << "Evaluated content-disposition '" << content_disp_hdr << "' matched type: \"" << type << "\"" << endl);
         }
 
         // still haven't figured out the type. Check the content-type
         // next, translate to the BES MODULE name. It's also possible
         // that even though Content-disposition was available, we could
         // not determine the type of the file.
-        if (type.empty() && !ctype_hdr.empty()) {
-            NgapUtils::Get_type_from_content_type(ctype_hdr, type);
-            BESDEBUG(MODULE,
-                     prolog << "Evaluated content-type '" << ctype_hdr << "' matched type \"" << type << "\"" << endl);
+        string content_type = get_http_response_header("content-type");
+        if (type.empty() && !content_type.empty()) {
+            HttpUtils::Get_type_from_content_type(content_type, type);
+            BESDEBUG(MODULE,prolog << "Evaluated content-type '" << content_type << "' matched type \"" << type << "\"" << endl);
         }
 
         // still haven't figured out the type. Now check the actual URL
         // and see if we can't match the URL to a MODULE name
         if (type.empty()) {
-            NgapUtils::Get_type_from_url(d_remoteResourceUrl, type);
-            BESDEBUG(MODULE,
-                     prolog << "Evaluated url '" << d_remoteResourceUrl << "' matched type: \"" << type << "\""
-                            << endl);
+            HttpUtils::Get_type_from_url(d_remoteResourceUrl, type);
+            BESDEBUG(MODULE, prolog << "Evaluated url '" << d_remoteResourceUrl << "' matched type: \"" << type << "\"" << endl);
         }
 
         // still couldn't figure it out, punt
@@ -474,7 +467,7 @@ namespace ngap {
      * If the requested header_name is not found the empty string is returned.
      */
     std::string
-    RemoteHttpResource::get_http_response_header(const std::string header_name) {
+    RemoteResource::get_http_response_header(const std::string header_name) {
         string value("");
         std::map<string, string>::iterator it;
         it = d_http_response_headers->find(BESUtil::lowercase(header_name));
@@ -494,7 +487,7 @@ namespace ngap {
      * @param update_str
      * @return
      */
-    unsigned int RemoteHttpResource::filter_retrieved_resource(const std::string &template_str, const std::string &update_str){
+    unsigned int RemoteResource::filter_retrieved_resource(const std::string &template_str, const std::string &update_str){
         unsigned int replace_count = 0;
 
         //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
@@ -531,17 +524,16 @@ namespace ngap {
         return replace_count;
     }
 
-
     /**
      * Returns cache file content in a string..
      */
-    std::string RemoteHttpResource::get_response_as_string(){
+    std::string RemoteResource::get_response_as_string() {
 
         if(!d_initialized){
             stringstream msg;
             msg << "ERROR. Internal state error. " << __PRETTY_FUNCTION__ << " was called prior to retrieving resource.";
             BESDEBUG(MODULE, prolog << msg.str() << endl);
-            throw BESInternalError(msg.str(),__FILE__,__LINE__);
+            throw BESInternalError(msg.str(), __FILE__, __LINE__);
         }
         string cache_file = getCacheFileName();
         //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
@@ -562,7 +554,7 @@ namespace ngap {
             stringstream msg;
             msg << "ERROR. Failed to open cache file " << cache_file << " for reading.";
             BESDEBUG(MODULE, prolog << msg.str() << endl);
-            throw BESInternalError(msg.str(),__FILE__,__LINE__);
+            throw BESInternalError(msg.str(), __FILE__, __LINE__);
         }
 
     }
@@ -574,7 +566,7 @@ namespace ngap {
      * @TODO Move this to ../curl_utils.cc (Requires moving the rapidjson lib too)
      * @return JSON document parsed from the response document returned by target_url
      */
-    rapidjson::Document RemoteHttpResource::get_as_json() {
+    rapidjson::Document RemoteResource::get_as_json() {
         string response = get_response_as_string();
         rapidjson::Document d;
         d.Parse(response.c_str());
@@ -582,6 +574,85 @@ namespace ngap {
     }
 
 
+#if 0
+    void RemoteResource::setType(const vector<string> *resp_hdrs) {
 
-}
+        BESDEBUG(MODULE, prolog << "BEGIN" << endl);
+
+        string type = "";
+
+        // Try and figure out the file type first from the
+        // Content-Disposition in the http header response.
+        string disp;
+        string ctype;
+
+        if (resp_hdrs) {
+            vector<string>::const_iterator i = resp_hdrs->begin();
+            vector<string>::const_iterator e = resp_hdrs->end();
+            for (; i != e; i++) {
+                string hdr_line = (*i);
+
+                BESDEBUG(MODULE, prolog << "Evaluating header: " << hdr_line << endl);
+
+                hdr_line = BESUtil::lowercase(hdr_line);
+
+                string colon_space = ": ";
+                int index = hdr_line.find(colon_space);
+                string hdr_name = hdr_line.substr(0, index);
+                string hdr_value = hdr_line.substr(index + colon_space.length());
+
+                BESDEBUG(MODULE, prolog << "hdr_name: '" << hdr_name << "'   hdr_value: '" << hdr_value  << "' " << endl);
+
+                if (hdr_name.find("content-disposition") != string::npos) {
+                    // Content disposition exists
+                    BESDEBUG(MODULE, prolog << "Located content-disposition header." << endl);
+                    disp = hdr_value;
+                }
+                if (hdr_name.find("content-type") != string::npos) {
+                    BESDEBUG(MODULE, prolog << "Located content-type header." << endl);
+                    ctype = hdr_value;
+                }
+            }
+        }
+
+        if (!disp.empty()) {
+            // Content disposition exists, grab the filename
+            // attribute
+            HttpUtils::Get_type_from_disposition(disp, type);
+            BESDEBUG(MODULE,prolog << "Evaluated content-disposition '" << disp << "' matched type: \""  << type << "\"" << endl);
+        }
+
+        // still haven't figured out the type. Check the content-type
+        // next, translate to the BES MODULE name. It's also possible
+        // that even though Content-disposition was available, we could
+        // not determine the type of the file.
+        if (type.empty() && !ctype.empty()) {
+            HttpUtils::Get_type_from_content_type(ctype, type);
+            BESDEBUG(MODULE,prolog << "Evaluated content-type '" << ctype << "' matched type \"" << type << "\"" << endl);
+        }
+
+        // still haven't figured out the type. Now check the actual URL
+        // and see if we can't match the URL to a MODULE name
+        if (type.empty()) {
+            HttpUtils::Get_type_from_url(d_remoteResourceUrl, type);
+            BESDEBUG(MODULE,prolog << "Evaluated url '" << d_remoteResourceUrl << "' matched type: \"" << type << "\"" << endl);
+        }
+
+        // still couldn't figure it out, punt
+        if (type.empty()) {
+            string err = prolog + "Unable to determine the type of data"
+                         + " returned from '" + d_remoteResourceUrl + "'  Setting type to 'unknown'";
+            BESDEBUG(MODULE, err << endl);
+            type = "unknown";
+            //throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;
+        }
+
+        // @TODO CACHE THE DATA TYPE OR THE HTTP HEADERS SO WHEN WE ARE RETRIEVING THE CACHED OBJECT WE CAN GET THE CORRECT TYPE
+
+        d_type = type;
+    }
+#endif
+
+
+} //  namespace http
 

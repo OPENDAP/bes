@@ -10,13 +10,14 @@ BES.Group=group_name
 BES.LogName=./bes.log
 BES.LogVerbose=no
 
-BES.modules=dap,cmd,dapreader,ngap,nc,dmrpp
+BES.modules=dap,cmd,dapreader,ngap,nc,dmrpp,fonc
 BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
 BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
 BES.module.dapreader=@abs_top_builddir@/dapreader/.libs//libdapreader_module.so
 BES.module.nc=@abs_top_builddir@/modules/netcdf_handler/.libs/libnc_module.so
 BES.module.dmrpp=@abs_top_builddir@/modules/dmrpp_module/.libs/libdmrpp_module.so
 BES.module.ngap=@abs_top_builddir@/modules/ngap_module/.libs/libngap_module.so
+BES.module.fonc=@abs_top_builddir@/modules/fileout_netcdf/.libs/libfonc_module.so
 
 BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/ngap_module
 BES.Data.RootDirectory=/dev/null
@@ -35,29 +36,30 @@ BES.UncompressCache.dir=/tmp
 BES.UncompressCache.prefix=uncompress_cache
 BES.UncompressCache.size=500
 
+Http.MimeTypes=nc:application/x-netcdf
+Http.MimeTypes+=h4:application/x-hdf
+Http.MimeTypes+=h5:application/x-hdf5
+
+Http.Cache.dir=/tmp
+Http.Cache.prefix=ngap_
+Http.Cache.size=500
+
 #-----------------------------------------------------------------------#
 #                                                                       #
 # Data Handler Specific key/value parameters                            #
 #                                                                       #
 #-----------------------------------------------------------------------#
-NGAP.MimeTypes=nc:application/x-netcdf
-NGAP.MimeTypes+=h4:application/x-hdf
-NGAP.MimeTypes+=h5:application/x-hdf5
-
-NGAP.Cache.dir=/tmp
-NGAP.Cache.prefix=ngap_
-NGAP.Cache.size=500
 
 # Inject Data URLs into the dmr++  documents.
 NGAP.inject_data_urls=true
 
 # Use this CMR endpopint URL for CMR queries.
-NGAP.cmr_host_url=https://cmr.uat.earthdata.nasa.gov
+NGAP.cmr_host_url=https://cmr.earthdata.nasa.gov
 
-Gateway.Whitelist = http://localhost:8080/
-Gateway.Whitelist+= http://test.opendap.org
-Gateway.Whitelist+= https://d1lpqa6z94hycl.cloudfront.net
-Gateway.Whitelist+= https://cmr.earthdata.nasa.gov/search
-Gateway.Whitelist+= https://cmr.uat.earthdata.nasa.gov/search
-Gateway.Whitelist+= https://d1jecqxxv88lkr.cloudfront.net
+AllowedHosts = ^https?:\/\/localhost(:8080)?\/.*$
+AllowedHosts+= ^http:\/\/test\.opendap\.org\/.*$
+AllowedHosts+= ^https:\/\/d1lpqa6z94hycl\.cloudfront\.net\/.*$
+AllowedHosts+= ^https:\/\/cmr\.(uat\.|sit\.)?earthdata\.nasa\.gov.*$
+AllowedHosts+= ^https:\/\/d1jecqxxv88lkr\.cloudfront\.net\/.*$
+AllowedHosts+= ^https:\/\/d1sd4up8kynpk2.cloudfront.net\/.*$
 

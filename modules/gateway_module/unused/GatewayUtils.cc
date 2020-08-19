@@ -37,7 +37,7 @@
 #include <curl/curl.h>
 
 #include "GatewayUtils.h"
-#include "GatewayResponseNames.h"
+#include "GatewayNames.h"
 
 #include <BESUtil.h>
 #include <BESCatalogUtils.h>
@@ -76,20 +76,6 @@ string GatewayUtils::NoProxyRegex;
 // and keys, like the white list, the MimeTypes translation.
 void GatewayUtils::Initialize()
 {
-#if 0
-    // Whitelist - list of domain that the gateway is allowed to
-    // communicate with.
-    bool found = false;
-    string key = Gateway_WHITELIST;
-    TheBESKeys::TheKeys()->get_values(key, WhiteList, found);
-    if (!found || WhiteList.size() == 0) {
-        string err = (string) "The parameter " + Gateway_WHITELIST + " is not set or has no values in the gateway"
-            + " configuration file";
-        throw BESSyntaxUserError(err, __FILE__, __LINE__);
-
-    }
-#endif
-
     // MimeTypes - translate from a mime type to a module name
     bool found = false;
     std::string key = Gateway_MIMELIST;

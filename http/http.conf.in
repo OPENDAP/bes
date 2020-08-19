@@ -1,0 +1,37 @@
+
+# These BES keys configure the behavior of the software in the 'bes_http'
+# library, a library of common HTTP functionality that the BES and its
+# modules share.
+#
+# This conf.in file can use the build-time variable @bes_modules_dir@
+# in the definitions that follow. If more parameters are needed, they
+# can be added by editing the build rule in Makefile.am in this directory.
+
+# Http.Cache.dir - defines which directory to use for caching web
+# resources retrieved by the gateway_module
+#
+# Http.Cache.prefix - defines the prefix for cache files so that
+# they will be easily identifiable.
+#
+# Http.Cache.size - The maxium size of the Gateway cache, in megabytes.
+
+Http.Cache.dir=/tmp/hyrax_http
+Http.Cache.prefix=http_
+Http.Cache.size=500
+Http.Cookies.File=/tmp/.hyrax-cookies
+
+Http.MimeTypes=nc:application/x-netcdf
+Http.MimeTypes+=h4:application/x-hdf
+Http.MimeTypes+=h5:application/x-hdf5
+
+# Http.ProxyProtocol, Http.ProxyHost and Http.ProxyPort -
+# provides a way to define a proxy server that must be used to make the
+# remote request, and the port to use.
+
+#Http.ProxyHost=warsaw.wonderproxy.com
+#Http.ProxyPort=8080
+#Http.ProxyUser=username
+#Http.ProxyPassword=password
+#Http.ProxyUserPW=username:password
+#Http.ProxyAuthType=basic
+

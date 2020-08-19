@@ -39,6 +39,7 @@
 #include <iostream>
 #include <sstream>
 
+
 #if 0
 #include <regex>
 #endif
@@ -46,9 +47,12 @@
 #include <openssl/sha.h>
 #include <openssl/hmac.h>
 
+#include "url_impl.h"
 #include "BESInternalError.h"
+#include "BESDebug.h"
+#include "DmrppNames.h"
 
-#include "url_parser.h"
+#define prolog std::string("AWSV4::").append(__func__).append("() - ")
 
 namespace AWSV4 {
 
@@ -250,8 +254,7 @@ namespace AWSV4 {
                                           const std::string secret,
                                           const std::string region,
                                           const std::string service,
-                                          const std::string string_to_sign,
-                                          const bool verbose) {
+                                          const std::string string_to_sign) {
 
         // These are used/re-used for the various signatures. jhrg 1/3/20
         unsigned char md[EVP_MAX_MD_SIZE+1];
@@ -263,49 +266,61 @@ namespace AWSV4 {
                 (const unsigned char *)yyyymmdd.c_str(), yyyymmdd.length(), md, &md_len);
         if (!kDate)
             throw BESInternalError("Could not compute AWS V4 requst signature." ,__FILE__, __LINE__);
-
+#if 0
         if (verbose) {
             std::cerr << "kDate: " << hmac_to_string(kDate) << std::endl;
             std::cerr << "md_len: " << md_len << std::endl;
             md[md_len] = '\0';
             std::cerr << "md: " << hmac_to_string(md) << std::endl;
         }
+#endif
+        md[md_len] = '\0';
+        BESDEBUG(CREDS, prolog << "kDate: " << hmac_to_string(kDate)  << " md_len: " << md_len  << " md: " << hmac_to_string(md)  << std::endl );
 
         unsigned char *kRegion = HMAC(EVP_sha256(), md, (size_t)md_len,
                                       (const unsigned char*)region.c_str(), region.length(), md, &md_len);
         if (!kRegion)
             throw BESInternalError("Could not compute AWS V4 requst signature." ,__FILE__, __LINE__);
-
+#if 0
         if (verbose) {
             std::cerr << "kRegion: " << hmac_to_string(kRegion) << std::endl;
             std::cerr << "md_len: " << md_len << std::endl;
             md[md_len] = '\0';
             std::cerr << "md: " << hmac_to_string(md) << std::endl;
         }
+#endif
+        md[md_len] = '\0';
+        BESDEBUG(CREDS, prolog << "kRegion: " << hmac_to_string(kRegion)  << " md_len: " << md_len  << " md: " << hmac_to_string(md)  << std::endl );
 
         unsigned char *kService = HMAC(EVP_sha256(), md, (size_t)md_len,
                         (const unsigned char*)service.c_str(), service.length(), md, &md_len);
         if (!kService)
             throw BESInternalError("Could not compute AWS V4 requst signature." ,__FILE__, __LINE__);
-
+#if 0
         if (verbose) {
             std::cerr << "kService: " << hmac_to_string(kService) << std::endl;
             std::cerr << "md_len: " << md_len << std::endl;
             md[md_len] = '\0';
             std::cerr << "md: " << hmac_to_string(md) << std::endl;
         }
+#endif
+        md[md_len] = '\0';
+        BESDEBUG(CREDS, prolog << "kService: " << hmac_to_string(kService)  << " md_len: " << md_len  << " md: " << hmac_to_string(md)  << std::endl );
 
         unsigned char *kSigning = HMAC(EVP_sha256(), md, (size_t)md_len,
                         (const unsigned char*)AWS4_REQUEST.c_str(), AWS4_REQUEST.length(), md, &md_len);
         if (!kSigning)
             throw BESInternalError("Could not compute AWS V4 requst signature." ,__FILE__, __LINE__);
-
+#if 0
         if (verbose) {
             std::cerr << "kSigning " << hmac_to_string(kSigning) << std::endl;
             std::cerr << "md_len: " << md_len << std::endl;
             md[md_len] = '\0';
             std::cerr << "md: " << hmac_to_string(md) << std::endl;
         }
+#endif
+        md[md_len] = '\0';
+        BESDEBUG(CREDS, prolog << "kSigning: " << hmac_to_string(kRegion)  << " md_len: " << md_len  << " md: " << hmac_to_string(md)  << std::endl );
 
         unsigned char *kSig = HMAC(EVP_sha256(), md, (size_t)md_len,
                     (const unsigned char*)string_to_sign.c_str(), string_to_sign.length(), md, &md_len);
@@ -314,6 +329,7 @@ namespace AWSV4 {
 
         md[md_len] = '\0';
         auto sig = hmac_to_string(md);
+        BESDEBUG(CREDS, prolog << "kSig: " << sig  << " md_len: " << md_len  << " md: " << hmac_to_string(md)  << std::endl );
         return sig;
     }
 
@@ -326,7 +342,6 @@ namespace AWSV4 {
     * @param secret_key The Secret key for this resource (the thing referenced by the URI).
     * @param region The AWS region where the request is being made (us-west-2 by default)
     * @param service The AWS service that is the target of the request (S3 by default)
-    * @pram verbose True, be chatty to stderr. False by default
     * @return The AWS V4 Signature string.
     */
 
@@ -336,10 +351,9 @@ namespace AWSV4 {
             const std::string &public_key,
             const std::string &secret_key,
             const std::string &region,
-            const std::string &service,
-            const bool &verbose) {
+            const std::string &service) {
 
-        url_parser uri(uri_str);
+        http::url uri(uri_str);
 
         // canonical_uri is the path component of the URL. Later we will need the host.
         const auto canonical_uri = uri.path(); // AWSV4::canonicalize_uri(uri);
@@ -373,8 +387,11 @@ namespace AWSV4 {
                                                             signed_headers,
                                                             sha256_empty_payload);
 
+#if 0
         if (verbose)
             std::cerr << "-- Canonical Request\n" << canonical_request << "\n--\n" << std::endl;
+#endif
+        BESDEBUG(CREDS, prolog << "Canonical Request: " << canonical_request <<  std::endl );
 
         auto hashed_canonical_request = sha256_base16(canonical_request);
         auto credential_scope = AWSV4::credential_scope(request_date,region,service);
@@ -382,24 +399,31 @@ namespace AWSV4 {
                                                     request_date,
                                                     credential_scope,
                                                     hashed_canonical_request);
-
+#if 0
         if (verbose)
             std::cerr << "-- String to Sign\n" << string_to_sign << "\n----\n" << std::endl;
+#endif
+        BESDEBUG(CREDS, prolog << "String to Sign: " << string_to_sign <<  std::endl );
 
         auto signature = calculate_signature(request_date,
                                                     secret_key,
                                                     region,
                                                     service,
-                                                    string_to_sign,
-                                                    verbose);
+                                                    string_to_sign);
+#if 0
         if (verbose)
             std::cerr << "-- signature\n" << signature << "\n----\n" << std::endl;
+#endif
+        BESDEBUG(CREDS, prolog << "signature: " << signature <<  std::endl );
 
         const std::string authorization_header = STRING_TO_SIGN_ALGO + " Credential=" + public_key + "/"
                 + credential_scope + ", SignedHeaders=" + signed_headers + ", Signature=" + signature;
 
+#if 0
         if (verbose)
             std::cerr << "-- authorization_header\n" << authorization_header << "\n----\n" << std::endl;
+#endif
+        BESDEBUG(CREDS, prolog << "authorization_header: " << authorization_header <<  std::endl );
 
         return authorization_header;
     }

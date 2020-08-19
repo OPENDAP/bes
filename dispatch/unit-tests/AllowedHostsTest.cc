@@ -43,7 +43,7 @@
 #include <BESDebug.h>
 
 #include "test_config.h"
-#include "WhiteList.h"
+#include "AllowedHosts.h"
 
 using namespace std;
 using namespace CppUnit;
@@ -121,7 +121,7 @@ public:
     bool can_access(string url)
     {
         if (debug) cout << "Checking remote access permission for url: '" << url << "' result: ";
-        bool result = bes::WhiteList::get_white_list()->is_white_listed(url);
+        bool result = bes::AllowedHosts::theHosts()->is_allowed(url);
         if (debug) cout << (result ? "true" : "false") << endl;
         return result;
     }
@@ -130,12 +130,14 @@ public:
     {
         CPPUNIT_ASSERT(!can_access("http://google.com"));
         CPPUNIT_ASSERT(can_access("http://test.opendap.org/opendap/data/nc/fnoc1.nc"));
+        CPPUNIT_ASSERT(!can_access("http://test.opendap.wrong.org/opendap/data/nc/fnoc1.nc"));
         CPPUNIT_ASSERT(can_access("https://s3.amazonaws.com/somewhereovertherainbow/data/nc/fnoc1.nc"));
         CPPUNIT_ASSERT(!can_access("http://s3.amazonaws.com/somewhereovertherainbow/data/nc/fnoc1.nc"));
         CPPUNIT_ASSERT(can_access("http://thredds.ucar.edu/thredds/dodsC/data/nc/fnoc1.nc"));
         CPPUNIT_ASSERT(!can_access("https://thredds.ucar.edu/thredds/dodsC/data/nc/fnoc1.nc"));
         CPPUNIT_ASSERT(
             can_access("http://cloudydap.opendap.org/opendap/Arch-2/ebs/samples/3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A.h5"));
+
 
     }
     void do_file_test()

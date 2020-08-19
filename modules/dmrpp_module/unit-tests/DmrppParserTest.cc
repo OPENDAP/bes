@@ -48,7 +48,7 @@
 #include "DmrppInt32.h"
 #include "DmrppInt64.h"
 #include "DmrppInt8.h"
-#include "DmrppModule.h"
+#include "DmrppNames.h"
 #include "DmrppStr.h"
 #include "DmrppStructure.h"
 #include "DmrppUInt16.h"
@@ -81,25 +81,31 @@ namespace dmrpp {
 
 class DmrppParserTest: public CppUnit::TestFixture {
 private:
-    DmrppParserSax2 parser;
+    DmrppParserSax2 *parser;
 
 public:
     // Called once before everything gets tested
-    DmrppParserTest() :parser()
+    DmrppParserTest() :parser(0)
     {
+        if (debug) BESDebug::SetUp("cerr,dmrpp,dmrpp:parser");
+        // Contains BES Log parameters but not cache names
+        TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
+        string val;
+        bool found;
+        TheBESKeys::TheKeys()->get_value("ff",val,found);
+        parser = new DmrppParserSax2();
     }
 
     // Called at the end of the test
     ~DmrppParserTest()
     {
+        if(parser)
+            delete parser;
     }
 
     // Called before each test
     void setUp()
     {
-        if (debug) BESDebug::SetUp("cerr,dmrpp");
-        // Contains BES Log parameters but not cache names
-        TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
     }
 
     // Called after each test
@@ -181,11 +187,11 @@ public:
         dmr->set_factory(&dtf);
 
         string int_h5 = string(TEST_DATA_DIR).append("/").append("t_int_scalar.h5.dmrpp");
-        BESDEBUG("dmrpp", "Opening: " << int_h5 << endl);
+        BESDEBUG(MODULE, "Opening: " << int_h5 << endl);
 
         ifstream in(int_h5.c_str());
-        parser.intern(in, dmr.get(), debug);
-        BESDEBUG("dmrpp", "Parsing complete"<< endl);
+        parser->intern(in, dmr.get());
+        BESDEBUG(MODULE, "Parsing complete"<< endl);
 
         D4Group *root = dmr->root();
 
@@ -212,10 +218,10 @@ public:
        dmr->set_factory(&dtf);
 
        string int_h5 = string(TEST_DATA_DIR).append("/").append("d_int.h5.dmrpp");
-       BESDEBUG("dmrpp", "Opening: " << int_h5 << endl);
+       BESDEBUG(MODULE, "Opening: " << int_h5 << endl);
 
        ifstream in(int_h5.c_str());
-       parser.intern(in, dmr.get(), debug);
+       parser->intern(in, dmr.get());
 
        D4Group *root = dmr->root();
        checkGroupsAndVars(root,"/",0,4);
@@ -267,10 +273,10 @@ public:
       dmr->set_factory(&dtf);
 
       string float_h5 = string(TEST_DATA_DIR).append("/").append("t_float.h5.dmrpp");
-      BESDEBUG("dmrpp", "Opening: " << float_h5 << endl);
+      BESDEBUG(MODULE, "Opening: " << float_h5 << endl);
 
       ifstream in(float_h5.c_str());
-      parser.intern(in, dmr.get(), debug);
+      parser->intern(in, dmr.get());
 
       D4Group *root = dmr->root();
 
@@ -324,10 +330,10 @@ public:
       dmr->set_factory(&dtf);
 
       string grid_2d = string(TEST_DATA_DIR).append("/").append("grid_1_2d.h5.dmrpp");
-      BESDEBUG("dmrpp", "Opening: " << grid_2d << endl);
+      BESDEBUG(MODULE, "Opening: " << grid_2d << endl);
 
       ifstream in(grid_2d.c_str());
-      parser.intern(in, dmr.get(), debug);
+      parser->intern(in, dmr.get());
 
       D4Group *root = dmr->root();
 
@@ -392,10 +398,10 @@ public:
       dmr->set_factory(&dtf);
 
       string nc4_group_atomic = string(TEST_DATA_DIR).append("/").append("nc4_group_atomic.h5.dmrpp");
-      BESDEBUG("dmrpp", "Opening: " << nc4_group_atomic << endl);
+      BESDEBUG(MODULE, "Opening: " << nc4_group_atomic << endl);
 
       ifstream in(nc4_group_atomic.c_str());
-      parser.intern(in, dmr.get(), debug);
+      parser->intern(in, dmr.get());
 
       D4Group *root = dmr->root();
 
