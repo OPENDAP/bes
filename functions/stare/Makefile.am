@@ -20,7 +20,8 @@ endif
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-bin_PROGRAMS = build_sidecar build_test_s_indices
+# Old programs used at the start of the STARE project. jhrg 8/20/20
+noinst_PROGRAMS = build_sidecar build_test_s_indices
 
 build_sidecar_SOURCES = build_sidecar.cc
 build_sidecar_LDADD = $(AM_LDADD)
