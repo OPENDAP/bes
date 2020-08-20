@@ -71,6 +71,7 @@ static const string dmrpp_namespace = "http://xml.opendap.org/dap/dmrpp/1.0.0#";
 
 using namespace libdap;
 using namespace std;
+using http::EffectiveUrlCache;
 
 namespace dmrpp {
 

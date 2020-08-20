@@ -48,6 +48,7 @@
 #include "DmrppNames.h"
 
 using namespace std;
+using http::EffectiveUrlCache;
 
 #define prolog std::string("Chunk::").append(__func__).append("() - ")
 
