@@ -626,7 +626,7 @@ public:
             CPPUNIT_ASSERT(value == "true");
 
             // Reset the Keys
-            besKeys.unload_dynamic_config();
+            besKeys.load_dynamic_config("I/do/not/match/your/regular_expressions.txt");
             if(debug) besKeys.dump(cout);
             CPPUNIT_ASSERT(besKeys.d_the_keys->size() == 1);
             TheBESKeys::TheKeys()->get_value(fnoc_classic_model_key, value, found);
