@@ -36,6 +36,8 @@
 #include "url_impl.h"
 
 
+namespace http {
+
 /**
  *
  */
@@ -75,6 +77,8 @@ public:
     BESRegex *get_cache_effective_urls_skip_regex();
 
 };
+
+} // namespace http
 
 #endif // BES_http_EffectiveUrlCache_h_
 

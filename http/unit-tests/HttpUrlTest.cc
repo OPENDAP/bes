@@ -44,6 +44,7 @@
 
 #include "test_config.h"
 
+
 using namespace std;
 
 static bool debug = false;
@@ -56,7 +57,7 @@ static bool purge_cache = false;
 
 namespace http {
 
-    class EffectiveUrlCacheTest: public CppUnit::TestFixture {
+    class HttpUrlTest: public CppUnit::TestFixture {
     private:
 
         /**
@@ -115,31 +116,20 @@ namespace http {
             return data_file_url;
         }
 
-        string purge_test_cache(){
-            if(Debug) cerr << "Purging cache!" << endl;
-            string cache_dir;
-            bool found;
-            TheBESKeys::TheKeys()->get_value(HTTP_CACHE_DIR_KEY,cache_dir,found);
-            if(found){
-                if(Debug) cerr << HTTP_CACHE_DIR_KEY << ": " <<  cache_dir << endl;
-                if(Debug) cerr << "Purging " << cache_dir << endl;
-                string cmd = "exec rm -r "+ BESUtil::assemblePath(cache_dir,"/*");
-                system(cmd.c_str());
-            }
-        }
+
 
     public:
         string d_data_dir;
 
         // Called once before everything gets tested
-        EffectiveUrlCacheTest()
+        HttpUrlTest()
         {
             d_data_dir = TEST_DATA_DIR;;
             cerr << "data_dir: " << d_data_dir << endl;
         }
 
         // Called at the end of the test
-        ~EffectiveUrlCacheTest()
+        ~HttpUrlTest()
         {
         }
 
@@ -154,7 +144,20 @@ namespace http {
 
             if (bes_debug) BESDebug::SetUp("cerr,wl,bes,http");
 
-            if(purge_cache) purge_test_cache();
+
+            if(purge_cache){
+                if(Debug) cerr << "Purging cache!" << endl;
+                string cache_dir;
+                bool found;
+                TheBESKeys::TheKeys()->get_value(HTTP_CACHE_DIR_KEY,cache_dir,found);
+                if(found){
+                    if(Debug) cerr << HTTP_CACHE_DIR_KEY << ": " <<  cache_dir << endl;
+                    if(Debug) cerr << "Purging " << cache_dir << endl;
+                    string cmd = "exec rm -r "+ BESUtil::assemblePath(cache_dir,"/*");
+                    system(cmd.c_str());
+                }
+            }
+
 
             if(Debug) cerr << "setUp() - END" << endl;
         }
@@ -164,30 +167,79 @@ namespace http {
         {
         }
 
+        /**
+         * Takes a time_t value dat_time and converts it into an X-Amz-Date header formatted string
+         * @param dat_time The time_t value to convert to an X-Amz_Date header formatted string.
+         * @return an X-Amz-Date header formatted string from dat_time
+         */
+        string get_amz_date(const time_t &da_time){
+            string amz_date_format("%Y%m%dT%H%M%SZ"); // "20200808T032623Z";
+            struct tm *dttm;
+            dttm = gmtime (&da_time);
+            int value;
+
+            stringstream amz_date;
+            value = dttm->tm_year + 1900 ;
+            amz_date << value;
+            value = dttm->tm_mon + 1 ;
+            amz_date << (value<10?"0":"") << value;
+            value = dttm->tm_mday;
+            amz_date << (value<10?"0":"") << value;
+
+            amz_date << "T";
+
+            value = dttm->tm_hour;
+            amz_date << (value<10?"0":"") << value;
+            value = dttm->tm_min;
+            amz_date << (value<10?"0":"") << value;
+            value = dttm->tm_sec;
+            amz_date << (value<10?"0":"") << value;
+            amz_date << "Z";
+
+            if(debug) cout << "Built amz_date: " << amz_date.str() << " from time: " << da_time << endl;
+            return amz_date.str();
+        }
 
 /*##################################################################################################*/
 /* TESTS BEGIN */
+        string expired_source_url = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc?A-userid=hyrax&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIASF4N-AWS-Creds-00808%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200808T032623Z&X-Amz-Expires=86400&X-Amz-Security-Token=FwoGZXIvYXdzE-AWS-Sec-Token-MWRLIZGYvDx1ONzd0ffK8VtxO8JP7thrGIQ%3D%3D&X-Amz-SignedHeaders=host&X-Amz-Signature=260a7c4dd4-AWS-SIGGY-0c7a39ee899";
+        string now_template_url="https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc?A-userid=hyrax&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIASF4N-AWS-Creds-00808%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=AMAZON_DATE_VALUE&X-Amz-Expires=86400&X-Amz-Security-Token=FwoGZXIvYXdzE-AWS-Sec-Token-MWRLIZGYvDx1ONzd0ffK8VtxO8JP7thrGIQ%3D%3D&X-Amz-SignedHeaders=host&X-Amz-Signature=260a7c4dd4-AWS-SIGGY-0c7a39ee899";
+        string amz_date_template="AMAZON_DATE_VALUE";
+
+        void url_ingest_test(){
+
+            http::url url(expired_source_url);
+            CPPUNIT_ASSERT(url.protocol() == "https");
+            CPPUNIT_ASSERT(url.host() == "ghrcwuat-protected.s3.us-west-2.amazonaws.com");
+            CPPUNIT_ASSERT(url.path() == "/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc");
+
+            CPPUNIT_ASSERT( url.query_parameter_value("A-userid") == "hyrax");
+            CPPUNIT_ASSERT( url.query_parameter_value("X-Amz-Signature") == "260a7c4dd4-AWS-SIGGY-0c7a39ee899");
+            // Verify the keys are case sensitive
+            CPPUNIT_ASSERT( url.query_parameter_value("x-amz-signature") != "260a7c4dd4-AWS-SIGGY-0c7a39ee899");
+        }
 
 
-        void cache_test_00() {
+        void url_is_expired_test() {
             if(debug) cerr << __func__ << "() - BEGIN" << endl;
             string source_url;
-            string value;
-            http::url *effective_url;
+
             try {
-                string src_url_00 = "https://d1jecqxxv88lkr.cloudfront.net/ghrcwuat-protected/rss_demo/rssmif16d__7/f16_ssmis_20040107v7.nc";
-                http::url *effective_url_00 = new http::url("https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc?A-userid=hyrax&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIASF4N-AWS-Creds-00808%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200808T032623Z&X-Amz-Expires=86400&X-Amz-Security-Token=FwoGZXIvYXdzE-AWS-Sec-Token-MWRLIZGYvDx1ONzd0ffK8VtxO8JP7thrGIQ%3D%3D&X-Amz-SignedHeaders=host&X-Amz-Signature=260a7c4dd4-AWS-SIGGY-0c7a39ee899");
-                EffectiveUrlCache::TheCache()->add(src_url_00,effective_url_00);
-                CPPUNIT_ASSERT( EffectiveUrlCache::TheCache()->d_effective_urls.size() == 1);
+                http::url old_url(expired_source_url);
+                if(debug) cerr << "old_url: " << old_url.str() << endl;
+                CPPUNIT_ASSERT( old_url.is_expired() );
 
-                string src_url_01 = "http://test.opendap.org/data/httpd_catalog/READTHIS";
-                http::url *effective_url_01 = new http::url("https://test.opendap.org/data/httpd_catalog/READTHIS");
-                EffectiveUrlCache::TheCache()->add(src_url_01,effective_url_01);
-                CPPUNIT_ASSERT( EffectiveUrlCache::TheCache()->d_effective_urls.size() == 2);
+                time_t now;
+                time ( &now );
+                string x_amz_date = get_amz_date(now);
 
-                effective_url = EffectiveUrlCache::TheCache()->get(src_url_00);
-                CPPUNIT_ASSERT(effective_url == effective_url_00);
-
+                source_url = now_template_url;
+                size_t index = source_url.find(amz_date_template);
+                source_url.erase(index,amz_date_template.length());
+                source_url.insert(index,x_amz_date);
+                http::url now_url(source_url);
+                if(debug) cerr << "now_url: " << now_url.str() << endl;
+                CPPUNIT_ASSERT( !now_url.is_expired() );
 
             }
             catch (BESError be){
@@ -199,52 +251,19 @@ namespace http {
 
         }
 
-        string get_amz_date(const time_t &da_time){
-            string amz_date_format("%Y%m%dT%H%M%SZ"); // "20200808T032623Z";
-            struct tm *dttm;
-            dttm = gmtime (&da_time);
-            int value;
-
-            stringstream amz_date;
-            value = dttm->tm_year + 1900 ;
-            amz_date << value;
-
-            value = dttm->tm_mon + 1 ;
-            amz_date << (value<10?"0":"") << value;
-
-            value = dttm->tm_mday;
-            amz_date << (value<10?"0":"") << value;
-
-            amz_date << "T";
-
-            value = dttm->tm_hour;
-            amz_date << (value<10?"0":"") << value;
-
-            value = dttm->tm_min;
-            amz_date << (value<10?"0":"") << value;
-
-            value = dttm->tm_sec;
-            amz_date << (value<10?"0":"") << value;
-
-            amz_date << "Z";
-
-            if(debug) cout << "amz_date: " << amz_date.str() << " len: " << amz_date.str().length() << endl;
-            return amz_date.str();
-        }
-
-
 /* TESTS END */
 /*##################################################################################################*/
 
 
-    CPPUNIT_TEST_SUITE( EffectiveUrlCacheTest );
+    CPPUNIT_TEST_SUITE( HttpUrlTest );
 
-        CPPUNIT_TEST(cache_test_00);
+            CPPUNIT_TEST(url_is_expired_test);
+            CPPUNIT_TEST(url_ingest_test);
 
-    CPPUNIT_TEST_SUITE_END();
-};
+        CPPUNIT_TEST_SUITE_END();
+    };
 
-    CPPUNIT_TEST_SUITE_REGISTRATION(EffectiveUrlCacheTest);
+    CPPUNIT_TEST_SUITE_REGISTRATION(HttpUrlTest);
 
 } // namespace httpd_catalog
 
@@ -287,7 +306,7 @@ int main(int argc, char*argv[])
     else {
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
-            test = http::EffectiveUrlCacheTest::suite()->getName().append("::").append(argv[i]);
+            test = http::HttpUrlTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
             ++i;
         }

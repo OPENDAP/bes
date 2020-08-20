@@ -52,9 +52,6 @@ using namespace std;
 #define SOURCE_URL_KEY  "http_url_target_url"
 #define INGEST_TIME_KEY  "http_url_ingest_time"
 
-#define AMS_EXPIRES_HEADER_KEY "X-Amz-Expires"
-#define AWS_DATE_HEADER_KEY "X-Amz-Date"
-#define CLOUDFRONT_EXPIRES_HEADER_KEY "Expires"
 #define REFRESH_THRESHOLD 3600
 
 namespace http {

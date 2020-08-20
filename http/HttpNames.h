@@ -57,6 +57,11 @@
 #define HTTP_CACHE_EFFECTIVE_URLS_KEY "Http.cache.effective.urls"
 #define HTTP_CACHE_EFFECTIVE_URLS_SKIP_REGEX_KEY "Http.cache.effective.urls.skip.regex.pattern"
 
+
+#define AMS_EXPIRES_HEADER_KEY "X-Amz-Expires"
+#define AWS_DATE_HEADER_KEY "X-Amz-Date"
+#define CLOUDFRONT_EXPIRES_HEADER_KEY "Expires"
+
 #define HTTP_MODULE "http"
 
 #endif // I_HTTP_NAME_H

@@ -49,6 +49,9 @@ using namespace std;
 #define MODULE "http"
 #define prolog std::string("EffectiveUrlCache::").append(__func__).append("() - ")
 
+namespace http {
+
+
 EffectiveUrlCache *EffectiveUrlCache::d_instance = 0;
 
 /** @brief Get the singleton BESCatalogList instance.
@@ -291,3 +294,5 @@ BESRegex *EffectiveUrlCache::get_cache_effective_urls_skip_regex()
     BESDEBUG(MODULE, prolog << "d_skip_regex:  " << (d_skip_regex?d_skip_regex->pattern():"Value has not been set.") << endl);
     return d_skip_regex;
 }
+
+} // namespace http
