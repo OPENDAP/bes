@@ -42,12 +42,13 @@
 #include <BESCatalogList.h>
 #include <BESDebug.h>
 #define HDF5_CATALOG "catalog"
-
+#define prolog std::string("HDF5RequestHandler::").append(__func__).append("() - ")
+#define HDF5_NAME "h5"
 using std::endl;
 
 void HDF5Module::initialize(const string & modname)
 {
-    BESDEBUG("h5", "Initializing HDF5 module " << modname << endl);
+    BESDEBUG(HDF5_NAME, prolog << "Initializing HDF5 module " << modname << endl);
 
     BESRequestHandler *handler = new HDF5RequestHandler(modname);
     BESRequestHandlerList::TheList()->add_handler(modname, handler);
@@ -65,12 +66,12 @@ void HDF5Module::initialize(const string & modname)
 
     BESDebug::Register("h5");
 
-    BESDEBUG("h5", "Done Initializing HDF5 " << modname << endl);
+    BESDEBUG(HDF5_NAME, prolog << "Done Initializing HDF5 " << modname << endl);
 }
 
 void HDF5Module::terminate(const string & modname)
 {
-    BESDEBUG("h5", "Cleaning HDF5 module " << modname << endl);
+    BESDEBUG(HDF5_NAME, prolog << "Cleaning HDF5 module " << modname << endl);
 
     BESRequestHandler *rh = BESRequestHandlerList::TheList()->remove_handler(modname);
     if (rh) delete rh;
@@ -79,7 +80,7 @@ void HDF5Module::terminate(const string & modname)
 
     BESCatalogList::TheCatalogList()->deref_catalog(HDF5_CATALOG);
 
-    BESDEBUG("h5", "Done Cleaning HDF5 module " << modname << endl);
+    BESDEBUG(HDF5_NAME, prolog << "Done Cleaning HDF5 module " << modname << endl);
 }
 
 /** @brief dumps information about this object

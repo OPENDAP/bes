@@ -58,6 +58,7 @@ class HDF5RequestHandler:public BESRequestHandler {
     HDF5RequestHandler(const std::string & name);
     virtual ~HDF5RequestHandler(void);
 
+
     static bool hdf5_build_das(BESDataHandlerInterface & dhi);
     static bool hdf5_build_dds(BESDataHandlerInterface & dhi);
     static bool hdf5_build_data(BESDataHandlerInterface & dhi);
@@ -139,7 +140,10 @@ class HDF5RequestHandler:public BESRequestHandler {
     void add_attributes(BESDataHandlerInterface &dhi);
 
   private:
-     //cache variables. 
+    // Loads configuration state from TheBESKeys
+    void static load_config();
+
+     //cache variables.
 
      static unsigned int _mdcache_entries;
      static unsigned int _lrdcache_entries;

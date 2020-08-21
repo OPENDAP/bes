@@ -68,6 +68,7 @@
 #include <BESInternalFatalError.h>
 #include <TheBESKeys.h>
 #include <BESDebug.h>
+#include <BESStopWatch.h>
 #include "h5get.h"
 #include "config_hdf5.h"
 
@@ -76,6 +77,8 @@
 
 using namespace std;
 using namespace libdap;
+
+#define prolog std::string("HDF5RequestHandler::").append(__func__).append("() - ")
 
 // The debug function to dump all the contents of a DAS table.
 void get_attr_contents(AttrTable* temp_table);
@@ -193,12 +196,11 @@ vector<string> HDF5RequestHandler::lrd_var_cache_file_list;
 //libdap::DDS*cache_dds;
 #endif
 
-
 HDF5RequestHandler::HDF5RequestHandler(const string & name)
     :BESRequestHandler(name)
 {
 
-    BESDEBUG(HDF5_NAME, "In HDF5RequestHandler::HDF5RequestHandler" << endl);
+    BESDEBUG(HDF5_NAME, prolog << "BEGIN" << endl);
 
     add_handler(DAS_RESPONSE, HDF5RequestHandler::hdf5_build_das);
     add_handler(DDS_RESPONSE, HDF5RequestHandler::hdf5_build_dds);
@@ -208,6 +210,32 @@ HDF5RequestHandler::HDF5RequestHandler(const string & name)
 
     add_handler(HELP_RESPONSE, HDF5RequestHandler::hdf5_build_help);
     add_handler(VERS_RESPONSE, HDF5RequestHandler::hdf5_build_version);
+
+    load_config();
+
+    BESDEBUG(HDF5_NAME, prolog << "END" << endl);
+}
+
+HDF5RequestHandler::~HDF5RequestHandler()
+{
+    // delete the cache.
+    delete das_cache;
+    delete dds_cache;
+    delete datadds_cache;
+    delete dmr_cache;
+    delete lrdata_mem_cache;
+    delete srdata_mem_cache;
+     
+}
+
+/**
+ * Loads configuration state from TheBESKeys
+ */
+void HDF5RequestHandler::load_config()
+{
+    BESDEBUG(HDF5_NAME, prolog << "BEGIN" << endl);
+    BESStopWatch sw;
+    sw.start(prolog,"ClockTheBESKeys");
 
     // Obtain the metadata cache entries and purge level.
     HDF5RequestHandler::_mdcache_entries     = get_uint_key("H5.MetaDataMemCacheEntries", 0);
@@ -267,15 +295,15 @@ HDF5RequestHandler::HDF5RequestHandler(const string & name)
             if(true == check_beskeys("H5.LargeDataMemCacheConfig")) {
                 _common_cache_dirs =obtain_lrd_common_cache_dirs();
 #if 0
-if(false == _common_cache_dirs) 
+                if(false == _common_cache_dirs)
 cerr<<"No specific cache info"<<endl;
 #endif
-             
+
             }
         }
         if(get_srdcache_entries()) {
 
-            BESDEBUG(HDF5_NAME, "Generate memory cache for smaller coordinate variables" << endl);
+            BESDEBUG(HDF5_NAME, prolog << "Generate memory cache for smaller coordinate variables" << endl);
             srdata_mem_cache = new ObjMemCache(get_srdcache_entries(),get_cache_purge_level());
 
         }
@@ -296,26 +324,15 @@ cerr<<"No specific cache info"<<endl;
         _stp_east_filename = get_beskeys("H5.STPEastFileName");
         _stp_north_filename = get_beskeys("H5.STPNorthFileName");
     }
-
-
-    BESDEBUG(HDF5_NAME, "Exiting HDF5RequestHandler::HDF5RequestHandler" << endl);
+    BESDEBUG(HDF5_NAME, prolog << "END" << endl);
 }
 
-HDF5RequestHandler::~HDF5RequestHandler()
-{
-    // delete the cache.
-    delete das_cache;
-    delete dds_cache;
-    delete datadds_cache;
-    delete dmr_cache;
-    delete lrdata_mem_cache;
-    delete srdata_mem_cache;
-     
-}
 
 // Build DAS
 bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
 {
+    BESDEBUG(HDF5_NAME, prolog << "BEGIN" << endl);
+    load_config();
 
     // For the time being, separate CF file ID from the default file ID(mainly for debugging)
     hid_t cf_fileid = -1;
@@ -346,7 +363,7 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
         if (true == use_das_cache) {
 
             // copy the cached DAS into the BES response object
-            BESDEBUG(HDF5_NAME, "DAS Cached hit for : " << filename << endl);
+            BESDEBUG(HDF5_NAME, prolog << "DAS Cached hit for : " << filename << endl);
             *das = *cached_das_ptr;
         }
         else {
@@ -372,7 +389,7 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
                 // If the memory cache is set, adding the DAS copy to the memory cache
                 if (das_cache) {
                     // add a copy
-                    BESDEBUG(HDF5_NAME, "HDF5 DAS reading DAS from the disk cache. For memory cache, DAS added to the cache for : " << filename << endl);
+                    BESDEBUG(HDF5_NAME, prolog << "HDF5 DAS reading DAS from the disk cache. For memory cache, DAS added to the cache for : " << filename << endl);
                     das_cache->add(new DAS(*das), filename);
                 }
             }
@@ -436,14 +453,14 @@ temp_table->print(cerr);
                 // If the memory cache is turned on
                 if(das_cache) {
                     // add a copy
-                    BESDEBUG(HDF5_NAME, "DAS added to the cache for : " << filename << endl);
+                    BESDEBUG(HDF5_NAME, prolog << "DAS added to the cache for : " << filename << endl);
                     das_cache->add(new DAS(*das), filename);
                 }
 
                 // DAS disk cache fname will be set only when the metadata disk cache is turned on
                 // So if it comes here, the das cache should be generated.
                 if(das_cache_fname!="") {
-                    BESDEBUG(HDF5_NAME, "HDF5 Build DAS: Write DAS to disk cache " << das_cache_fname << endl);
+                    BESDEBUG(HDF5_NAME, prolog << "HDF5 Build DAS: Write DAS to disk cache " << das_cache_fname << endl);
                     write_das_to_disk_cache(das_cache_fname,das);
                 }
             }
@@ -454,7 +471,7 @@ temp_table->print(cerr);
     catch(BESError & e) {
         if(cf_fileid !=-1)
             H5Fclose(cf_fileid);
-        BESDEBUG(HDF5_NAME, "Caught BESError! Message: " << e.get_message() << endl);
+        BESDEBUG(HDF5_NAME, prolog << "Caught BESError! Message: " << e.get_message() << endl);
         throw;
     }
     catch(InternalErr & e) {
@@ -479,6 +496,7 @@ temp_table->print(cerr);
         throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
 
+    BESDEBUG(HDF5_NAME, prolog << "END" << endl);
     return true;
 }
 
@@ -508,14 +526,14 @@ void HDF5RequestHandler::get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDS
         if (true == use_dds_cache) {
             // copy the cached DDS into the BES response object. Assume that any cached DDS
             // includes the DAS information.
-            BESDEBUG(HDF5_NAME, "DDS Metadata Cached hit for : " << filename << endl);
+            BESDEBUG(HDF5_NAME, prolog << "DDS Metadata Cached hit for : " << filename << endl);
             *dds = *cached_dds_ptr; // Copy the referenced object
         }
         else if (true ==dds_from_dc) {//Currently the dds_from_ds is always false by default. 
             read_dds_from_disk_cache(bdds,data_bdds,build_data,container_name,filename,dds_cache_fname,das_cache_fname,-1,das_from_dc);
         }
         else {
-            BESDEBUG(HDF5_NAME, "Build DDS from the HDF5 file. " << filename << endl);
+            BESDEBUG(HDF5_NAME, prolog << "Build DDS from the HDF5 file. " << filename << endl);
             H5Eset_auto2(H5E_DEFAULT,NULL,NULL);
             dds->filename(filename);
 
@@ -578,7 +596,7 @@ void HDF5RequestHandler::get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDS
             // Add memory cache if possible
             if (dds_cache) {
             	// add a copy
-                BESDEBUG(HDF5_NAME, "DDS added to the cache for : " << filename << endl);
+                BESDEBUG(HDF5_NAME, prolog << "DDS added to the cache for : " << filename << endl);
                 dds_cache->add(new DDS(*dds), filename);
             }
 
@@ -644,11 +662,11 @@ void HDF5RequestHandler::get_dds_without_attributes_datadds(BESDataDDSResponse*d
         if (true == use_datadds_cache) {
             // copy the cached DDS into the BES response object. 
             // The DAS information is not included.
-            BESDEBUG(HDF5_NAME, "DataDDS Metadata Cached hit for : " << filename << endl);
+            BESDEBUG(HDF5_NAME, prolog << "DataDDS Metadata Cached hit for : " << filename << endl);
             *dds = *cached_dds_ptr; // Copy the referenced object
         }
         else {
-            BESDEBUG(HDF5_NAME, "Build DDS from the HDF5 file. " << filename << endl);
+            BESDEBUG(HDF5_NAME, prolog << "Build DDS from the HDF5 file. " << filename << endl);
             H5Eset_auto2(H5E_DEFAULT,NULL,NULL);
             dds->filename(filename);
 
@@ -709,7 +727,7 @@ void HDF5RequestHandler::get_dds_without_attributes_datadds(BESDataDDSResponse*d
             // Add memory cache if possible
             if (datadds_cache) {
             	// add a copy
-                BESDEBUG(HDF5_NAME, "DataDDS added to the cache for : " << filename << endl);
+                BESDEBUG(HDF5_NAME, prolog << "DataDDS added to the cache for : " << filename << endl);
                 datadds_cache->add(new DDS(*dds), filename);
             }
 
@@ -719,7 +737,7 @@ void HDF5RequestHandler::get_dds_without_attributes_datadds(BESDataDDSResponse*d
                 H5Fclose(fileid);
  
         }
-        BESDEBUG(HDF5_NAME, "Data ACCESS build_data(): set the including attribute flag to false: "<<filename << endl);
+        BESDEBUG(HDF5_NAME, prolog << "Data ACCESS build_data(): set the including attribute flag to false: "<<filename << endl);
         data_bdds->set_ia_flag(false);
     
     }
@@ -774,7 +792,7 @@ void HDF5RequestHandler::get_dds_with_attributes(const string &filename, const s
         if (dds_cache && (cached_dds_ptr = static_cast<DDS*>(dds_cache->get(filename)))) {
             // copy the cached DDS into the BES response object. Assume that any cached DDS
             // includes the DAS information.
-            BESDEBUG(HDF5_NAME, "DDS Cached hit for : " << filename << endl);
+            BESDEBUG(HDF5_NAME, prolog << "DDS Cached hit for : " << filename << endl);
             *dds = *cached_dds_ptr; // Copy the referenced object
         }
 
@@ -865,7 +883,7 @@ cerr<<"after parsing "<<endl;
             DAS *das = 0 ;
 
             if (das_cache && (das = static_cast<DAS*>(das_cache->get(filename)))) {
-                BESDEBUG(HDF5_NAME, "DAS Cached hit for : " << filename << endl);
+                BESDEBUG(HDF5_NAME, prolog << "DAS Cached hit for : " << filename << endl);
                 dds->transfer_attributes(das); // no need to copy the cached DAS
             }
 
@@ -900,7 +918,7 @@ cerr<<"after parsing "<<endl;
                 // Only free the DAS if it's not added to the cache
                 if (das_cache) {
                     // add a copy
-                    BESDEBUG(HDF5_NAME, "DAS added to the cache for : " << filename << endl);
+                    BESDEBUG(HDF5_NAME, prolog << "DAS added to the cache for : " << filename << endl);
                     //das_cache->add(new DAS(*das), filename);
                     das_cache->add(das, filename);
                 }
@@ -911,7 +929,7 @@ cerr<<"after parsing "<<endl;
         
             if (dds_cache) {
             	// add a copy
-                BESDEBUG(HDF5_NAME, "DDS added to the cache for : " << filename << endl);
+                BESDEBUG(HDF5_NAME, prolog << "DDS added to the cache for : " << filename << endl);
                 dds_cache->add(new DDS(*dds), filename);
             }
  
@@ -958,6 +976,8 @@ cerr<<"after parsing "<<endl;
 // Build DDS
 bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
 {
+    BESDEBUG(HDF5_NAME, prolog << "BEGIN" << endl);
+    load_config();
 
     // Obtain the HDF5 file name.
     string filename = dhi.container->access();
@@ -977,12 +997,12 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
         string dds_cache_fname;
         string das_cache_fname;
 
-        if(_use_disk_meta_cache == true) {
+        if(_use_disk_meta_cache && !TheBESKeys::TheKeys()->is_dynamic_config()) {
 
             string base_filename   =  HDF5CFUtil::obtain_string_after_lastslash(filename);
 
             // The _use_disk_dds_cache is always set to false by default
-            if(_use_disk_dds_cache == true) {
+            if(_use_disk_dds_cache) {
                 dds_cache_fname = _disk_meta_cache_path+"/" +base_filename+"_dds";
                 if(access(dds_cache_fname.c_str(),F_OK) !=-1)
                     dds_from_dc = true;
@@ -1022,7 +1042,7 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
     
     }
     catch(BESError & e) {
-        BESDEBUG(HDF5_NAME, "Caught BESError! Message: " << e.get_message() << endl);
+        BESDEBUG(HDF5_NAME, prolog << "Caught BESError! Message: " << e.get_message() << endl);
         throw;
     }
     catch(InternalErr & e) {
@@ -1041,11 +1061,14 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
         throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
 
+    BESDEBUG(HDF5_NAME, prolog << "END" << endl);
     return true;
 }
 
 bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
 {
+    BESDEBUG(HDF5_NAME, prolog << "BEGIN" << endl);
+    load_config();
 
     if(true ==_usecf) { 
        
@@ -1090,7 +1113,7 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
     
     }
     catch(BESError & e) {
-        BESDEBUG(HDF5_NAME, "Caught BESError! Message: " << e.get_message() << endl);
+        BESDEBUG(HDF5_NAME, prolog << "Caught BESError! Message: " << e.get_message() << endl);
         throw;
     }
     catch(InternalErr & e) {
@@ -1109,14 +1132,17 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
         throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
 
+    BESDEBUG(HDF5_NAME, prolog << "END" << endl);
     return true;
 }
 
 // Obtain data when turning on the pass fileID key.The memory cache is not used.
 bool HDF5RequestHandler::hdf5_build_data_with_IDs(BESDataHandlerInterface & dhi)
 {
+    BESDEBUG(HDF5_NAME, prolog << "BEGIN" << endl);
+    load_config();
 
-    BESDEBUG("h5","Building DataDDS by passing file IDs. "<<endl);
+    BESDEBUG(HDF5_NAME,prolog << "Building DataDDS by passing file IDs. "<<endl);
     hid_t cf_fileid = -1;
 
     string filename = dhi.container->access();
@@ -1173,7 +1199,7 @@ bool HDF5RequestHandler::hdf5_build_data_with_IDs(BESDataHandlerInterface & dhi)
     catch(BESError & e) {
         if(cf_fileid !=-1)
             H5Fclose(cf_fileid);
-        BESDEBUG(HDF5_NAME, "Caught BESError! Message: " << e.get_message() << endl);
+        BESDEBUG(HDF5_NAME, prolog << "Caught BESError! Message: " << e.get_message() << endl);
         throw;
     }
     catch(InternalErr & e) {
@@ -1195,12 +1221,14 @@ bool HDF5RequestHandler::hdf5_build_data_with_IDs(BESDataHandlerInterface & dhi)
         throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
 
+    BESDEBUG(HDF5_NAME, prolog << "END" << endl);
     return true;
 }
 
 bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
 {
-
+    BESDEBUG(HDF5_NAME, prolog << "BEGIN" << endl);
+    load_config();
 
     // Extract the DMR Response object - this holds the DMR used by the
     // other parts of the framework.
@@ -1218,14 +1246,14 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
     try {
 
         DMR* cached_dmr_ptr = 0;
-        bool use_dmr_cache = false;
-        if (dmr_cache) 
+        if (dmr_cache && !TheBESKeys::TheKeys()->is_dynamic_config()){
+            BESDEBUG(HDF5_NAME, prolog << "Checking DMR cache for : " << filename << endl);
             cached_dmr_ptr = static_cast<DMR*>(dmr_cache->get(filename));
-        if (cached_dmr_ptr) 
-            use_dmr_cache = true;
-        if (true == use_dmr_cache) {
+        }
+
+        if (cached_dmr_ptr) {
             // copy the cached DMR into the BES response object
-            BESDEBUG(HDF5_NAME, "DMR Cached hit for : " << filename << endl);
+            BESDEBUG(HDF5_NAME, prolog << "DMR cache hit for : " << filename << endl);
             *dmr = *cached_dmr_ptr; // Copy the referenced object
             dmr->set_request_xml_base(bes_dmr_response.get_request_xml_base());
         }
@@ -1331,9 +1359,9 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
             }// else (default option)
 
             // If the cache is turned on, add the memory cache.
-            if (dmr_cache) {
+            if (dmr_cache && !TheBESKeys::TheKeys()->is_dynamic_config()) {
                 // add a copy
-                BESDEBUG(HDF5_NAME, "DMR added to the cache for : " << filename << endl);
+                BESDEBUG(HDF5_NAME, prolog << "DMR added to the cache for : " << filename << endl);
                 dmr_cache->add(new DMR(*dmr), filename);
             }
         }// else no cache
@@ -1343,7 +1371,7 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
             H5Fclose(cf_fileid);
         if(fileid !=-1)
             H5Fclose(fileid);
-        BESDEBUG(HDF5_NAME, "Caught BESError! Message: " << e.get_message() << endl);
+        BESDEBUG(HDF5_NAME, prolog << "Caught BESError! Message: " << e.get_message() << endl);
         throw;
     }
     catch(InternalErr & e) {
@@ -1386,12 +1414,15 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
     bes_dmr_response.set_dap4_function(dhi);
     dmr->set_factory(0);
 
+    BESDEBUG(HDF5_NAME, prolog << "END" << endl);
     return true;
 }
 
 // This function is only used when EnableCF is true.
 bool HDF5RequestHandler::hdf5_build_dmr_with_IDs(BESDataHandlerInterface & dhi)
 {
+    BESDEBUG(HDF5_NAME, prolog << "BEGIN" << endl);
+    load_config();
 
     BESDEBUG("h5","Building DMR with passing file IDs. "<<endl);
     string filename = dhi.container->access();
@@ -1443,7 +1474,7 @@ bool HDF5RequestHandler::hdf5_build_dmr_with_IDs(BESDataHandlerInterface & dhi)
     catch(BESError & e) {
         if(cf_fileid !=-1)
             H5Fclose(cf_fileid);
-        BESDEBUG(HDF5_NAME, "Caught BESError! Message: " << e.get_message() << endl);
+        BESDEBUG(HDF5_NAME, prolog << "Caught BESError! Message: " << e.get_message() << endl);
         throw;
     }
     catch(InternalErr & e) {
@@ -1500,6 +1531,7 @@ bool HDF5RequestHandler::hdf5_build_dmr_with_IDs(BESDataHandlerInterface & dhi)
     bes_dmr.set_dap4_function(dhi);
     hdf5_dmr->set_factory(0);
 
+    BESDEBUG(HDF5_NAME, prolog << "END" << endl);
     return true;
 }
 
@@ -1569,8 +1601,8 @@ bool HDF5RequestHandler::obtain_lrd_common_cache_dirs()
 
     // If the configuration file is not open, return false.
     if(mcache_config_file.is_open()==false){
-        BESDEBUG(HDF5_NAME,"The large data memory cache configure file "<<mcache_config_fname );
-        BESDEBUG(HDF5_NAME," cannot be opened."<<endl);
+        BESDEBUG(HDF5_NAME, prolog << "The large data memory cache configure file "<<mcache_config_fname );
+        BESDEBUG(HDF5_NAME, prolog << " cannot be opened."<<endl);
         return false;
     }
 
@@ -1659,7 +1691,7 @@ cerr<<"lrd var cache file list is "<<lrd_var_cache_file_list[i] <<endl;
 
 bool HDF5RequestHandler::read_das_from_disk_cache(const string & cache_filename,DAS *das_ptr) {
 
-    BESDEBUG(HDF5_NAME, "Coming to read_das_from_disk_cache() " << cache_filename << endl);
+    BESDEBUG(HDF5_NAME, prolog << "Coming to read_das_from_disk_cache() " << cache_filename << endl);
     bool ret_value = true;
     FILE *md_file = NULL;
     md_file = fopen(cache_filename.c_str(),"rb");
@@ -1693,7 +1725,7 @@ bool HDF5RequestHandler::read_das_from_disk_cache(const string & cache_filename,
                 
        
             size_t bytes_expected_read=(size_t)sb.st_size;
-            BESDEBUG(HDF5_NAME, "DAS Disk cache file size is " << bytes_expected_read << endl);
+            BESDEBUG(HDF5_NAME, prolog << "DAS Disk cache file size is " << bytes_expected_read << endl);
 
             vector<char> buf;
             buf.resize(bytes_expected_read);
@@ -1735,7 +1767,7 @@ bool HDF5RequestHandler::read_das_from_disk_cache(const string & cache_filename,
 // This fucntion will NOT be used by default. Leave here for future improvement.
 bool HDF5RequestHandler::write_dds_to_disk_cache(const string& dds_cache_fname,DDS *dds_ptr) {
 
-    BESDEBUG(HDF5_NAME, "Write DDS to disk cache " << dds_cache_fname << endl);
+    BESDEBUG(HDF5_NAME, prolog << "Write DDS to disk cache " << dds_cache_fname << endl);
     FILE *dds_file = fopen(dds_cache_fname.c_str(),"w");
 
     if(NULL == dds_file) {
@@ -1783,7 +1815,7 @@ bool HDF5RequestHandler::write_dds_to_disk_cache(const string& dds_cache_fname,D
 // Write DAS to a binary cached file on disk.
 bool HDF5RequestHandler::write_das_to_disk_cache(const string & das_cache_fname, DAS *das_ptr) {
 
-    BESDEBUG(HDF5_NAME, "Write DAS to disk cache " << das_cache_fname << endl);
+    BESDEBUG(HDF5_NAME, prolog << "Write DAS to disk cache " << das_cache_fname << endl);
     FILE *das_file = fopen(das_cache_fname.c_str(),"wb");
     if(NULL == das_file) {
         string bes_error = "An error occurred trying to open a metadata cache file  " + das_cache_fname;
@@ -1859,9 +1891,9 @@ void write_das_table_to_file(AttrTable*temp_table,FILE* das_file) {
             if(atype == Attr_unknown) 
                 throw InternalErr(__FILE__,__LINE__,"Unsupported DAS Attribute type");
             else if(atype!=Attr_container) {
-                BESDEBUG(HDF5_NAME, "DAS to the disk cache, attr name is: " 
+                BESDEBUG(HDF5_NAME, prolog << "DAS to the disk cache, attr name is: "
                                        << temp_table->get_name(top_it) << endl);
-                BESDEBUG(HDF5_NAME, "DAS to the disk cache, attr type is: " 
+                BESDEBUG(HDF5_NAME, prolog << "DAS to the disk cache, attr type is: "
                                        << temp_table->get_type(top_it) << endl);
                 // For the debugging purpose
                 //unsigned int num_attrs = temp_table->get_attr_num(temp_table->get_name(top_it));
@@ -1874,7 +1906,7 @@ void write_das_table_to_file(AttrTable*temp_table,FILE* das_file) {
                 write_das_attr_info(temp_table,temp_table->get_name(top_it),temp_table->get_type(top_it),das_file);
             }
             else {
-                BESDEBUG(HDF5_NAME, "DAS to the disk cache, attr container name is: " 
+                BESDEBUG(HDF5_NAME, prolog << "DAS to the disk cache, attr container name is: "
                                        << (*top_it)->name << endl);
                 // Write the container and then write the info. in this container
                 AttrTable* sub_table = temp_table->get_attr_table(top_it);
@@ -1969,7 +2001,7 @@ void HDF5RequestHandler::read_dds_from_disk_cache(BESDDSResponse* bdds, BESDataD
                               bool das_from_dc) {
 
      
-     BESDEBUG(HDF5_NAME, "Read DDS from disk cache " << dds_cache_fname << endl);
+     BESDEBUG(HDF5_NAME, prolog << "BEGIN dds_cache_fname: " << dds_cache_fname << endl);
 
      DDS *dds;
      if(true == build_data) 
@@ -2007,7 +2039,7 @@ cerr<<"after tdds "<<endl;
 
     if (dds_cache) {
         // add a copy
-        BESDEBUG(HDF5_NAME, "Reading DDS from Disk Cache routine, For memory cache, DDS added to the cache for : " << h5_fname << endl);
+        BESDEBUG(HDF5_NAME, prolog << "For memory cache, DDS added to the cache for : " << h5_fname << endl);
         dds_cache->add(new DDS(*cache_dds), h5_fname);
     }
 
@@ -2017,7 +2049,7 @@ cerr<<"after tdds "<<endl;
 void HDF5RequestHandler::add_das_to_dds(DDS *dds, const string &/*container_name*/, const string &filename,
     const string &das_cache_fname, hid_t h5_fd, bool das_from_dc) {
 
-    BESDEBUG(HDF5_NAME, "Coming to add_das_to_dds() "  << endl);
+    BESDEBUG(HDF5_NAME, prolog << "BEGIN"  << endl);
 
     // Check DAS memory cache
     DAS *das = 0 ;
@@ -2028,7 +2060,7 @@ void HDF5RequestHandler::add_das_to_dds(DDS *dds, const string &/*container_name
         use_das_cache = true;
  
     if (true == use_das_cache) {
-        BESDEBUG(HDF5_NAME, "DAS Cached hit for : " << filename << endl);
+        BESDEBUG(HDF5_NAME, prolog << "DAS Cached hit for : " << filename << endl);
         dds->transfer_attributes(das); // no need to copy the cached DAS
     }
 
@@ -2074,7 +2106,7 @@ void HDF5RequestHandler::add_das_to_dds(DDS *dds, const string &/*container_name
 
         if (das_cache) {
                     // add a copy
-            BESDEBUG(HDF5_NAME, "Reading DDS from Disk Cache routine, For memory cache, DAS added to the cache for : " << filename << endl);
+            BESDEBUG(HDF5_NAME, prolog << "For memory cache, DAS added to the cache for : " << filename << endl);
             das_cache->add(new DAS(*das), filename);
         }
         delete das;
@@ -2093,10 +2125,9 @@ bool check_beskeys(const string key) {
     TheBESKeys::TheKeys()->get_value( key, doset, found ) ;
     if( true == found ) {
         doset = BESUtil::lowercase( doset ) ;
-        if( dosettrue == doset  || dosetyes == doset )
-            return true;
     }
-    return false;
+    BESDEBUG(HDF5_NAME, prolog << "Key: " << key << (found?(" was found. value: "+doset):" was not found.") << endl);
+    return found && (dosettrue == doset  || dosetyes == doset);
 
 }
 
@@ -2195,7 +2226,7 @@ char* get_attr_info_from_dc(char*temp_pointer,DAS *das,AttrTable *at_par) {
     uint8_t flag =3;
     while(flag !=2) {
         flag = *((uint8_t*)(temp_pointer));
-        BESDEBUG(HDF5_NAME, "Build DAS from the disk cache file flag: "  
+        BESDEBUG(HDF5_NAME, prolog << "Build DAS from the disk cache file flag: "
                  <<" flag = 0, attribute; flag = 1, container; flag =2; end of container;"
                  <<" flag = 3; the initial value to get the attribute retrieval process started." 
                  <<" The flag value is "
@@ -2205,7 +2236,7 @@ char* get_attr_info_from_dc(char*temp_pointer,DAS *das,AttrTable *at_par) {
         if(flag ==1) {
             string container_name;
             temp_pointer = obtain_str(temp_pointer,container_name);
-            BESDEBUG(HDF5_NAME, "DAS from the disk cache, container name is " << container_name << endl);
+            BESDEBUG(HDF5_NAME, prolog << "DAS from the disk cache, container name is " << container_name << endl);
 
             // Remember the current Attribute table state
             AttrTable*temp_at_par = at_par;
@@ -2227,16 +2258,16 @@ char* get_attr_info_from_dc(char*temp_pointer,DAS *das,AttrTable *at_par) {
             // Attribute name
             string attr_name;
             temp_pointer = obtain_str(temp_pointer,attr_name);
-            BESDEBUG(HDF5_NAME, "DAS from the disk cache, attr name is: " << attr_name << endl);
+            BESDEBUG(HDF5_NAME, prolog << "DAS from the disk cache, attr name is: " << attr_name << endl);
 
             // Attribute type
             string attr_type;
             temp_pointer = obtain_str(temp_pointer,attr_type);
-            BESDEBUG(HDF5_NAME, "DAS from the disk cache, attr type is: " << attr_type << endl);
+            BESDEBUG(HDF5_NAME, prolog << "DAS from the disk cache, attr type is: " << attr_type << endl);
 
             // Attribute values
             unsigned int num_values = *((unsigned int*)(temp_pointer));
-            BESDEBUG(HDF5_NAME, "DAS from the disk cache, number of attribute values is: " << num_values << endl);
+            BESDEBUG(HDF5_NAME, prolog << "DAS from the disk cache, number of attribute values is: " << num_values << endl);
             temp_pointer+=sizeof(unsigned int);
 
             vector <string> attr_values;
@@ -2245,7 +2276,7 @@ char* get_attr_info_from_dc(char*temp_pointer,DAS *das,AttrTable *at_par) {
                 string attr_value;
                 temp_pointer = obtain_str(temp_pointer,attr_value);
                 attr_values.push_back(attr_value);
-                BESDEBUG(HDF5_NAME, "DAS from the disk cache,  attribute value is: " << attr_value << endl);
+                BESDEBUG(HDF5_NAME, prolog << "DAS from the disk cache,  attribute value is: " << attr_value << endl);
             }
 
             at_par->append_attr(attr_name,attr_type,&attr_values);
@@ -2302,7 +2333,7 @@ void HDF5RequestHandler::add_attributes(BESDataHandlerInterface &dhi) {
     string filename = dhi.container->access();
     DAS* das = 0;
     if (das_cache && (das = static_cast<DAS*>(das_cache->get(filename)))) {
-        BESDEBUG(HDF5_NAME, "DAS Cached hit for : " << filename << endl);
+        BESDEBUG(HDF5_NAME, prolog << "DAS Cached hit for : " << filename << endl);
         dds->transfer_attributes(das); // no need to cop the cached DAS
     }
     else {
@@ -2335,14 +2366,14 @@ void HDF5RequestHandler::add_attributes(BESDataHandlerInterface &dhi) {
         // Only free the DAS if it's not added to the cache
         if (das_cache) {
             // add a copy
-            BESDEBUG(HDF5_NAME, "DAS added to the cache for : " << filename << endl);
+            BESDEBUG(HDF5_NAME, prolog << "DAS added to the cache for : " << filename << endl);
             das_cache->add(das, filename);
         }
         else {
             delete das;
         }
     }
-    BESDEBUG(HDF5_NAME, "Data ACCESS in add_attributes(): set the including attribute flag to true: "<<filename << endl);
+    BESDEBUG(HDF5_NAME, prolog << "Data ACCESS in add_attributes(): set the including attribute flag to true: "<<filename << endl);
     bdds->set_ia_flag(true);
     return;
 
