@@ -488,7 +488,7 @@ add_executable(bes
     http/EffectiveUrlCache.cc
     http/EffectiveUrlCache.h
     http/unit-tests/EffectiveUrlCacheTest.cc
-
+    http/unit-tests/HttpUrlTest.cc
     functions/geo-functions/unused/NC_GOES_Dataset.cpp
     functions/geo-functions/unused/NC_GOES_Dataset.h
     functions/geo-functions/AbstractDataset.cpp
@@ -2072,4 +2072,4 @@ add_executable(bes
     xmlcommand/XMLSetContextsCommand.h
 
     standalone/besstandalone.cc
-        http/HttpUrlTest.cc)
+        )
