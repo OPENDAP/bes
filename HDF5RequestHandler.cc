@@ -235,7 +235,9 @@ void HDF5RequestHandler::load_config()
 {
     BESDEBUG(HDF5_NAME, prolog << "BEGIN" << endl);
     BESStopWatch sw;
-    sw.start(prolog,"ClockTheBESKeys");
+    if (BESISDEBUG(HDF5_NAME)){
+        sw.start(prolog,"ClockTheBESKeys");
+    }
 
     // Obtain the metadata cache entries and purge level.
     HDF5RequestHandler::_mdcache_entries     = get_uint_key("H5.MetaDataMemCacheEntries", 0);
