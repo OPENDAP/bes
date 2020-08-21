@@ -593,5 +593,10 @@ AT_BESCMD_RESPONSE_TEST_DEFAULT([t_group_scalar_attrs.h5.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_int8.h5.function.ddx.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST_DEFAULT([d_int8.h5.function.dods.bescmd])
 
+# These two tests check the dynamic configuration change.  The target files are identical
+# and the default configuration contains a DynamicConfig that matches the second file
+# and sets H5.EnableCF=true so that Groups are flattened.
+AT_BESCMD_RESPONSE_TEST_DEFAULT([dynaconf_default.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([dynaconf_dynamic.dmr.bescmd])
 
 

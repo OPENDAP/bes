@@ -284,3 +284,9 @@ H5.CacheEntries=100
 #H5.CachePurgeLevel=0.2
 #
 H5.DefaultHandleDimension=true
+
+# This defines a dynamjc configuration for all files beginning with
+# the string "dynamic_" and ending in ".h5" When this is encountered
+# the server will set TheBESKey H5.EnableCF=true for the transaction.
+DynamicConfig+=dynaconf:regex:^.*\/dynamic_.*\.h5$
+DynamicConfig+=dynaconf:config:H5.EnableCF=true

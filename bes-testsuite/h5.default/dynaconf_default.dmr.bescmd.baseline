@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="dynaconf_default.h5">
+    <Float32 name="wkt_length">
+        <Dim size="452"/>
+    </Float32>
+    <Group name="science">
+        <Group name="grids">
+            <Group name="data">
+                <Dimension name="latitude" size="180"/>
+                <Dimension name="longitude" size="360"/>
+                <Float32 name="amplitude">
+                    <Dim name="/science/grids/data/latitude"/>
+                    <Dim name="/science/grids/data/longitude"/>
+                </Float32>
+                <Float64 name="latitude">
+                    <Dim name="/science/grids/data/latitude"/>
+                </Float64>
+                <Float64 name="longitude">
+                    <Dim name="/science/grids/data/longitude"/>
+                </Float64>
+            </Group>
+        </Group>
+    </Group>
+</Dataset>
