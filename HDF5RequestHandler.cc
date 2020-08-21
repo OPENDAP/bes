@@ -997,7 +997,7 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
         string dds_cache_fname;
         string das_cache_fname;
 
-        if(_use_disk_meta_cache && !TheBESKeys::TheKeys()->is_dynamic_config()) {
+        if(_use_disk_meta_cache) {
 
             string base_filename   =  HDF5CFUtil::obtain_string_after_lastslash(filename);
 
@@ -1246,7 +1246,7 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
     try {
 
         DMR* cached_dmr_ptr = 0;
-        if (dmr_cache && !TheBESKeys::TheKeys()->is_dynamic_config()){
+        if (dmr_cache){
             BESDEBUG(HDF5_NAME, prolog << "Checking DMR cache for : " << filename << endl);
             cached_dmr_ptr = static_cast<DMR*>(dmr_cache->get(filename));
         }
@@ -1359,7 +1359,7 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
             }// else (default option)
 
             // If the cache is turned on, add the memory cache.
-            if (dmr_cache && !TheBESKeys::TheKeys()->is_dynamic_config()) {
+            if (dmr_cache) {
                 // add a copy
                 BESDEBUG(HDF5_NAME, prolog << "DMR added to the cache for : " << filename << endl);
                 dmr_cache->add(new DMR(*dmr), filename);
