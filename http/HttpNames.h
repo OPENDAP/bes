@@ -1,10 +1,9 @@
 // -*- mode: c++; c-basic-offset:4 -*-
-//
-// This file is part of httpd_catalog_module, A C++ module that can be loaded in to
-// the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
-//
-// Copyright (c) 2018 OPeNDAP, Inc.
-// Author: Nathan David Potter <ndp@opendap.org>
+
+// This file is part of the BES http package, part of the Hyrax data server.
+
+// Copyright (c) 2020 OPeNDAP, Inc.
+// Author: Nathan Potter <ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -21,6 +20,9 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+
+// Authors:
+//      ndp       Nathan Potter <ndp@opendap.org>
 
 #ifndef I_HTTP_NAME_H
 #define I_HTTP_NAME_H 1
@@ -54,6 +56,11 @@
 #define HTTP_NO_RETRY_URL_REGEX_KEY "Http.No.Retry.Regex"
 #define HTTP_CACHE_EFFECTIVE_URLS_KEY "Http.cache.effective.urls"
 #define HTTP_CACHE_EFFECTIVE_URLS_SKIP_REGEX_KEY "Http.cache.effective.urls.skip.regex.pattern"
+
+
+#define AMS_EXPIRES_HEADER_KEY "X-Amz-Expires"
+#define AWS_DATE_HEADER_KEY "X-Amz-Date"
+#define CLOUDFRONT_EXPIRES_HEADER_KEY "Expires"
 
 #define HTTP_MODULE "http"
 

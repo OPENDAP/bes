@@ -40,7 +40,7 @@
 
 #include <Type.h>   // from libdap
 #include "BESRegex.h"
-#include "CurlUtils.h"
+#include "EffectiveUrlCache.h"
 
 #define CRLF "\r\n"
 #define D4_PARSE_BUFF_SIZE 1048576
@@ -255,9 +255,6 @@ private:
 
     friend class DmrppParserSax2Test;
 
-    bool d_use_effective_urls;
-    BESRegex *d_effective_url_cache_skip_regex;
-
 public:
     DmrppParserSax2() :
             d_dmr(0), d_enum_def(0), d_dim_def(0),
@@ -265,7 +262,7 @@ public:
             error_msg(""), context(0),
             dods_attr_name(""), dods_attr_type(""),
             char_data(""), root_ns(""), d_strict(true),
-            dmrpp_dataset_href(""), d_use_effective_urls(false), d_effective_url_cache_skip_regex(0)
+            dmrpp_dataset_href("")
     {
         //xmlSAXHandler ddx_sax_parser;
         memset(&dmrpp_sax_parser, 0, sizeof(xmlSAXHandler));
@@ -282,19 +279,9 @@ public:
         dmrpp_sax_parser.initialized = XML_SAX2_MAGIC;
         dmrpp_sax_parser.startElementNs = &DmrppParserSax2::dmr_start_element;
         dmrpp_sax_parser.endElementNs = &DmrppParserSax2::dmr_end_element;
-
-        d_use_effective_urls = curl::cache_effective_urls();
-        if(d_use_effective_urls){
-            d_effective_url_cache_skip_regex = curl::get_cache_effective_urls_skip_regex();
-        }
     }
 
-    ~DmrppParserSax2(){
-        if(d_effective_url_cache_skip_regex){
-            delete d_effective_url_cache_skip_regex;
-            d_effective_url_cache_skip_regex = 0;
-        }
-    }
+    ~DmrppParserSax2(){}
 
     void intern(std::istream &f, libdap::DMR *dest_dmr);
     void intern(const std::string &document, libdap::DMR *dest_dmr);
@@ -337,9 +324,6 @@ public:
     static xmlEntityPtr dmr_get_entity(void *parser, const xmlChar *name);
     static void dmr_fatal_error(void *parser, const char *msg, ...);
     static void dmr_error(void *parser, const char *msg, ...);
-
-    BESRegex *get_cache_effective_urls_skip_regex();
-    bool use_effective_urls();
 
     };
 

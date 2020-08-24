@@ -63,7 +63,7 @@ bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
 #
 
 if CPPUNIT
-UNIT_TESTS =  HttpUtilsTest RemoteResourceTest CurlUtilsTest
+UNIT_TESTS =  HttpUtilsTest RemoteResourceTest CurlUtilsTest EffectiveUrlCacheTest HttpUrlTest
 else
 UNIT_TESTS =
 
@@ -87,3 +87,9 @@ RemoteResourceTest_LDADD = $(LIBADD)
 
 CurlUtilsTest_SOURCES = CurlUtilsTest.cc
 CurlUtilsTest_LDADD = $(LIBADD)
+
+EffectiveUrlCacheTest_SOURCES = EffectiveUrlCacheTest.cc
+EffectiveUrlCacheTest_LDADD = $(LIBADD)
+
+HttpUrlTest_SOURCES = HttpUrlTest.cc
+HttpUrlTest_LDADD = $(LIBADD)
