@@ -183,7 +183,7 @@ public:
     static TheBESKeys *TheKeys();
 
     void load_dynamic_config(std::string name);
-    bool is_dynamic_config();
+    bool using_dynamic_config();
 };
 
 #endif // TheBESKeys_h_

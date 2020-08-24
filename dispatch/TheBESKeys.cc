@@ -627,7 +627,7 @@ void TheBESKeys::get_values(
 
 }
 
-bool TheBESKeys::is_dynamic_config(){
+bool TheBESKeys::using_dynamic_config(){
     return d_dynamic_config_in_use;
 }
 
