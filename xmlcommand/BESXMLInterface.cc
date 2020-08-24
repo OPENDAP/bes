@@ -41,18 +41,22 @@ using namespace std;
 #include "BESXMLCommand.h"
 #include "BESXMLUtils.h"
 #include "BESDataNames.h"
+#include "BESResponseNames.h"
 #include "BESContextManager.h"
 
 #include "BESResponseHandler.h"
 #include "BESReturnManager.h"
 #include "BESInfo.h"
 #include "BESStopWatch.h"
+#include "TheBESKeys.h"
 
 #include "BESDebug.h"
 #include "BESLog.h"
 #include "BESSyntaxUserError.h"
 
 #define LOG_ONLY_GET_COMMANDS
+#define MODULE "bes"
+#define prolog std::string("BESXMLInterface::").append(__func__).append("() - ")
 
 BESXMLInterface::BESXMLInterface(const string &xml_doc, ostream *strm) :
     BESInterface(strm), d_xml_document(xml_doc)
@@ -71,8 +75,8 @@ BESXMLInterface::~BESXMLInterface()
  */
 void BESXMLInterface::build_data_request_plan()
 {
-    BESDEBUG("bes", "Entering: " << __PRETTY_FUNCTION__ << endl);
-    BESDEBUG("bes", "building request plan for xml document: " << endl << d_xml_document << endl);
+    BESDEBUG("bes", prolog << "BEGIN" << endl);
+    BESDEBUG("bes", prolog << "Building request plan for xml document: " << endl << d_xml_document << endl);
 
     // I do not know why, but uncommenting this macro breaks some tests
     // on Linux but not OSX (CentOS 6, Ubuntu 12 versus OSX 10.11) by
@@ -144,6 +148,15 @@ void BESXMLInterface::build_data_request_plan()
                 // given the name of this node we should be able to find a
                 // BESXMLCommand object
                 string node_name = (char *) current_node->name;
+
+                if(node_name == SETCONTAINER_STR){
+                    string name;
+                    string value;
+                    map<string,string> props;
+                    BESXMLUtils::GetNodeInfo(current_node, name, value, props);
+                    BESDEBUG(MODULE, prolog << "In "  << SETCONTAINER_STR << " element. Value: " << value << endl);
+                    TheBESKeys::TheKeys()->load_dynamic_config(value);
+                }
 
                 // The Command Builder scheme is a kind of factory, but which uses lists and
                 // a static method defined by each child of BESXMLCommand (called CommandBuilder).
@@ -300,6 +313,7 @@ void BESXMLInterface::execute_data_request_plan()
         d_dhi_ptr->response_handler->execute(*d_dhi_ptr);
 
         transmit_data();    // TODO move method body in here? jhrg 11/8/17
+
     }
 }
 

@@ -63,6 +63,7 @@ EXTRA_DIST = $(CACHE) catalog_test catalog_test_baselines bad_keys1.ini \
 	defT.ini empty.ini info_test.ini keys_test.ini \
 	keys_test_include.ini keys_test_m1.ini \
 	keys_test_m2.ini keys_test_m3.ini \
+	keys_test_map.ini keys_test_map_map.ini keys_test_vector.ini \
 	persistence_cgi_test.ini persistence_file_test.ini \
 	persistence_mysql_test.ini container01.file \
 	persistence_file1.txt persistence_file2.txt \

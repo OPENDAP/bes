@@ -43,6 +43,7 @@ SRCS = CurlUtils.cc \
     HttpCache.cc \
     RemoteResource.cc \
     HttpUtils.cc \
+    EffectiveUrlCache.cc \
     url_impl.cc
 
 HDRS = CurlUtils.h \
@@ -50,6 +51,7 @@ HDRS = CurlUtils.h \
     RemoteResource.h \
     HttpUtils.h \
     HttpNames.h \
+    EffectiveUrlCache.h \
     url_impl.h
 
 moduledir = $(sysconfdir)/bes/modules

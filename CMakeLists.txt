@@ -483,7 +483,12 @@ add_executable(bes
     http/HttpUtils.h
     http/RemoteResource.cc
     http/RemoteResource.h
-
+    http/unit-tests/HttpUtilsTest.cc
+    http/unit-tests/CurlUtilsTest.cc
+    http/EffectiveUrlCache.cc
+    http/EffectiveUrlCache.h
+    http/unit-tests/EffectiveUrlCacheTest.cc
+    http/unit-tests/HttpUrlTest.cc
     functions/geo-functions/unused/NC_GOES_Dataset.cpp
     functions/geo-functions/unused/NC_GOES_Dataset.h
     functions/geo-functions/AbstractDataset.cpp
@@ -601,6 +606,7 @@ add_executable(bes
     hello_world/SampleSayResponseHandler.h
     hello_world/SampleSayXMLCommand.cc
     hello_world/SampleSayXMLCommand.h
+
     modules/asciival/unit-tests/AsciiArrayTest.cc
     modules/asciival/unit-tests/AsciiOutputTest.cc
     modules/asciival/unit-tests/test_config.h
@@ -2066,4 +2072,4 @@ add_executable(bes
     xmlcommand/XMLSetContextsCommand.h
 
     standalone/besstandalone.cc
-        http/unit-tests/HttpUtilsTest.cc http/unit-tests/CurlUtilsTest.cc)
+        )
