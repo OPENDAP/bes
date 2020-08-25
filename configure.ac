@@ -282,43 +282,75 @@ dnl Checks for libraries.
 VL_LIB_READLINE
 AS_IF([test "$vl_cv_lib_readline" = "no"], [AC_MSG_ERROR([I could not find the readline library!])])
 
+AC_ARG_WITH(xml2,
+    [AC_HELP_STRING([--with-xml2=PFX],
+        [Prefix where libxml2 is installed (optional). This will override pkgconfig, etc.])],
+    [with_xml2_prefix="$withval"],
+    [with_xml2_prefix=""])
+
+AS_IF([test -n "$with_xml2_prefix" -a ! -x $with_xml2_prefix/bin/xml2-config],
+    [AC_MSG_ERROR([You set the libxml2 prefix directory to $with_xml2_prefix, but xml2-config is not there.])])
+
 xmlprivatereq=
 xmlprivatelibs=
-xml_required_version=2.6.16
-libdap_pkgconfig_libxml2=yes
-libdap_libxml2_module='libxml-2.0 >= $xml_required_version'
+xml_set=
 
-PKG_CHECK_MODULES([XML2],[$libdap_libxml2_module], [], [libdap_pkgconfig_libxml2=no])
- 
-AS_IF([test $libdap_pkgconfig_libxml2 = 'yes'],
+# I changed this code so that it searches for libxml2 using xml2-config
+# first, then pkg-config. This works more reliably when working on OSX
+# given Apple's penchant for moving the lib. jhrg 8/25/20
+
+AS_IF([test -n "$with_xml2_prefix" -a -x $with_xml2_prefix/bin/xml2-config],
     [
-    xmlprivatereq=$libdap_libxml2_module
-    XML2_STATIC_LIBS="`$PKG_CONFIG --static --libs libxml-2.0`"
-    AC_MSG_RESULT([yes; used pkg-config])
-    ],
-    [xml2-config --version > /dev/null 2>&1],
+    AC_MSG_NOTICE([Using $with_xml2_prefix as the libxml2 prefix directory.])
+    XML2_LIBS="`$with_xml2_prefix/bin/xml2-config --libs`"
+    XML2_CFLAGS="`$with_xml2_prefix/bin/xml2-config --cflags`"
+    xml_set="yes"
+    ])
+
+# Try using the xml2-config script.
+
+AS_IF([test -z "$xml_set" & xml2-config --version > /dev/null 2>&1],
     [
-    AC_MSG_RESULT([no; used pkg-config])
-    AC_MSG_CHECKING([for libxml2 version >= $xml_required_version])
-    version_libxml2=`xml2-config --version`
-    AS_VERSION_COMPARE(["$version_libxml2"], ["$xml_required_version"], 
+    AC_MSG_CHECKING([for libxml2])
+   	version_libxml2=`xml2-config --version`
+
+    AS_VERSION_COMPARE(["$version_libxml2"], ["2.7.0"],
+        [AC_MSG_ERROR([I could not find libxml2 2.7.0 or newer])])
+
+   	XML2_LIBS="`xml2-config --libs`"
+   	XML2_CFLAGS="`xml2-config --cflags`"
+   	XML2_CFLAGS=`echo $XML2_CFLAGS | sed "s@\(-I.*\)@\1/libxml2/@g"`
+   	AC_MSG_RESULT([yes; used xml2-config and found version $version_libxml2])
+   	xml_set=yes
+   	])
+
+# If not found, try pkg-config
+AS_IF([test -z "$xml_set"],
+    [
+    libdap_libxml2_module='libxml-2.0 >= 2.7.0'
+    PKG_CHECK_MODULES([XML2], [libdap_libxml2_module],
+        [libdap_pkgconfig_libxml2=yes],
+        [libdap_pkgconfig_libxml2=no])
+    AS_IF([test $libdap_pkgconfig_libxml2 = yes],
         [
-        AC_MSG_RESULT([no])
-        AC_MSG_ERROR([I could not find libxml2 $xml_required_version or newer, found $version_libxml2])
-        ])
-    XML2_LIBS="`xml2-config --libs`"
-    XML2_STATIC_LIBS=$XML2_LIBS
-    XML2_CFLAGS="`xml2-config --cflags`"
-    xmlprivatelibs="`xml2-config --libs`" # `
-    AC_MSG_RESULT([yes; used xml2-config])
+        XML2_LIBS="`$PKG_CONFIG --libs libxml-2.0`"
+        XML2_CFLAGS="`$PKG_CONFIG --cflags libxml-2.0`"
+        AC_MSG_RESULT([yes; used pkg-config])
+        xml_set=yes
+        ],
+        [
+	    AC_MSG_ERROR([I could not find xml2-config])
+	    ])
+    ])
+
+AS_IF([test -n "xml_set"],
+    [
+    AC_SUBST([XML2_LIBS])
+    AC_SUBST([XML2_CFLAGS])
     ],
-    [AC_MSG_ERROR([I could not find libxml2])])
-    
-AC_SUBST([xmlprivatereq])
-AC_SUBST([xmlprivatelibs])
-AC_SUBST([XML2_LIBS])
-AC_SUBST([XML2_STATIC_LIBS])
-AC_SUBST([XML2_CFLAGS])
+    [
+    AC_MSG_ERROR([I could not find xml2-config])
+    ])
 
 SIC_VAR_SYS_ERRLIST
 
