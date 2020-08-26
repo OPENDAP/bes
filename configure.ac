@@ -348,14 +348,13 @@ AS_IF([test -z "$xml_set"],
 	    ])
     ])
 
-AS_IF([test -n "xml_set"],
-    [
-    AC_SUBST([XML2_LIBS])
-    AC_SUBST([XML2_CFLAGS])
-    ],
+AS_IF([test -z "xml_set"],
     [
     AC_MSG_ERROR([I could not find xml2-config])
     ])
+
+AC_SUBST([XML2_LIBS])
+AC_SUBST([XML2_CFLAGS])
 
 SIC_VAR_SYS_ERRLIST
 
