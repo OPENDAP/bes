@@ -990,11 +990,11 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
 
         stringstream msg;
         if(http_code >= 400){
-            msg << "The HTTP GET request for the source URL: " << requested_url << " FAILED."
+            msg << "ERROR - The HTTP GET request for the source URL: " << requested_url << " FAILED."
                 << " The last accessed URL (CURLINFO_EFFECTIVE_URL) was: " << last_accessed_url
                 << " The response had an HTTP status of " << http_code
-                << " which means '" << http_status_to_string(http_code) << "'. ";
-            BESDEBUG(MODULE, prolog << "ERROR - " << msg.str() << endl);
+                << " which means '" << http_status_to_string(http_code) << "'. " << endl;
+            BESDEBUG(MODULE, prolog << msg.str());
             LOG(msg.str());
         }
 
