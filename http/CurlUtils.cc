@@ -33,8 +33,6 @@
 #include <algorithm>    // std::for_each
 #include <time.h>
 
-#include <util.h>       // from libdap
-
 #include "rapidjson/document.h"
 
 #include "BESSyntaxUserError.h"
@@ -86,15 +84,13 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
             "Unauthorized: Contact the server administrator.",
             "Payment Required.",
             "Forbidden: Contact the server administrator.",
-            "Not Found: The underlying data source or server could not be found.\n"
-            "Often this means that the OPeNDAP server is missing or needs attention.\n"
-            "Please contact the server administrator.",
+            "Not Found: The underlying data source or server could not be found.",
             "Method Not Allowed.",
             "Not Acceptable.",
             "Proxy Authentication Required.",
             "Request Time-out.",
             "Conflict.",
-            "Gone:.",
+            "Gone.",
             "Length Required.",
             "Precondition Failed.",
             "Request Entity Too Large.",
@@ -210,10 +206,9 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
 
         int *fd = (int *) userdata;
 
-        BESDEBUG(MODULE, prolog << "Bytes received " << libdap::long_to_string(nmemb)
-                                                                               << endl);
+        BESDEBUG(MODULE, prolog << "Bytes received " << nmemb << endl);
         int wrote = write(*fd, data, nmemb);
-        BESDEBUG(MODULE, prolog << "Bytes written " << libdap::long_to_string(wrote) << endl);
+        BESDEBUG(MODULE, prolog << "Bytes written " << wrote << endl);
 
         return wrote;
     }
@@ -445,7 +440,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         error_buffer[0]=0; // Null terminate this string for safety.
         CURL *curl = curl_easy_init();
         if (!curl)
-            throw libdap::InternalErr(__FILE__, __LINE__, "Could not initialize libcurl.");
+            throw BESInternalError("Could not initialize libcurl.",__FILE__, __LINE__);
 
             // Load in the default headers to send with a request. The empty Pragma
             // headers overrides libcurl's default Pragma: no-cache header (which
@@ -576,13 +571,12 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
     @return The HTTP status code.
     @exception Error Thrown if libcurl encounters a problem; the libcurl
     error message is stuffed into the Error object.
-*/
-    long read_url(CURL *curl,
+    */
+    void read_url(CURL *curl,
                   const string &url,
                   int fd,
                   vector<string> *resp_hdrs,
-                  const vector<string> *request_headers,
-                  char error_buffer[]) {
+                  const vector<string> *request_headers) {
 
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
@@ -615,13 +609,18 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         // value/result parameter to get the raw response header information .
         curl_easy_setopt(curl, CURLOPT_WRITEHEADER, resp_hdrs);
 
+#if 0
         // This call is the one that makes curl go get the thing.
         CURLcode res = curl_easy_perform(curl);
+#endif
+
+        read_data(curl);
 
         // Free the header list and null the value in d_curl.
         curl_slist_free_all(req_hdrs.get_headers());
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, 0);
 
+#if 0
         if (res != 0) {
             BESDEBUG(MODULE, prolog << "OUCH! CURL returned an error! curl msg:  " << curl_easy_strerror(res) << endl);
             BESDEBUG(MODULE, prolog << "OUCH! CURL returned an error! error_buffer:  " << error_buffer << endl);
@@ -632,18 +631,18 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         BESDEBUG(MODULE, prolog << "HTTP Status " << status << endl);
         if (res != CURLE_OK)
             throw libdap::Error(error_buffer);
-        BESDEBUG(MODULE, prolog << "END" << endl);
+#endif
 
-        return status;
+        BESDEBUG(MODULE, prolog << "END" << endl);
     }
 
     /**
- * Returns a cURL error message string based on the conents of the error_buf or, if the error_buf is empty, the
- * CURLcode code.
- * @param response_code
- * @param error_buf
- * @return
- */
+     * Returns a cURL error message string based on the conents of the error_buf or, if the error_buf is empty, the
+     * CURLcode code.
+     * @param response_code
+     * @param error_buf
+     * @return
+     */
     string error_message(const CURLcode response_code, char *error_buf) {
         std::ostringstream oss;
         size_t len = strlen(error_buf);
@@ -832,8 +831,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
     void read_data(CURL *c_handle) {
 
         unsigned int tries = 0;
-        unsigned int retry_limit = 3;
-        useconds_t retry_time = 1000;
+        useconds_t retry_time = uone_second / 4;
         bool success;
         CURLcode curl_code;
         char curlErrorBuf[CURL_ERROR_SIZE]; ///< raw error message info from libcurl
@@ -992,11 +990,11 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
 
         stringstream msg;
         if(http_code >= 400){
-            msg << "The HTTP GET request for the source URL: " << requested_url << " FAILED."
+            msg << "ERROR - The HTTP GET request for the source URL: " << requested_url << " FAILED."
                 << " The last accessed URL (CURLINFO_EFFECTIVE_URL) was: " << last_accessed_url
                 << " The response had an HTTP status of " << http_code
-                << " which means '" << http_status_to_string(http_code) << "'. ";
-            BESDEBUG(MODULE, prolog << "ERROR - " << msg.str() << endl);
+                << " which means '" << http_status_to_string(http_code) << "'" << endl;
+            BESDEBUG(MODULE, prolog << msg.str());
             LOG(msg.str());
         }
 

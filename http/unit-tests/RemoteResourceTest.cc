@@ -204,6 +204,8 @@ public:
      *
      */
     void get_file_url_test() {
+        bool debug_state = debug;
+        debug = true;
         if(debug) cerr << endl;
 
         string data_file_url = get_data_file_url("test_file");
@@ -218,10 +220,11 @@ public:
             string cache_filename = rhr.getCacheFileName();
             if(debug) cerr <<  __func__ << "() - cache_filename: " << cache_filename << endl;
 
-            string target("This a TEST. Move Along...\n");
-
-            string content = get_file_as_string(cache_filename);
-            CPPUNIT_ASSERT( !content.compare(target) );
+            string expected("This a TEST. Move Along...\n");
+            string retrieved = get_file_as_string(cache_filename);
+            if(debug) cerr <<  __func__ << "() - expected_content: '" << expected << "'" << endl;
+            if(debug) cerr <<  __func__ << "() - retrieved_content: '" << retrieved << "'" << endl;
+            CPPUNIT_ASSERT( retrieved == expected );
         }
         catch (BESError &besE){
             cerr << "Caught BESError! message: " << besE.get_verbose_message() << " type: " << besE.get_bes_error_type() << endl;
@@ -231,6 +234,7 @@ public:
             cerr << "Caught libdap::Error! message: " << le.get_error_message() << " code: "<< le.get_error_code() << endl;
             CPPUNIT_ASSERT(false);
         }
+        debug = debug_state;
     }
 
 /* TESTS END */

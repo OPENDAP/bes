@@ -470,8 +470,9 @@ add_executable(bes
     dispatch/ShowNodeResponseHandler.h
     dispatch/TheBESKeys.cc
     dispatch/TheBESKeys.h
-        dispatch/AllowedHosts.cc
-        dispatch/AllowedHosts.h
+    dispatch/AllowedHosts.cc
+    dispatch/AllowedHosts.h
+
     http/url_impl.cc
     http/url_impl.h
     http/CurlUtils.cc
@@ -489,6 +490,8 @@ add_executable(bes
     http/EffectiveUrlCache.h
     http/unit-tests/EffectiveUrlCacheTest.cc
     http/unit-tests/HttpUrlTest.cc
+    http/unit-tests/RemoteResourceTest.cc
+
     functions/geo-functions/unused/NC_GOES_Dataset.cpp
     functions/geo-functions/unused/NC_GOES_Dataset.h
     functions/geo-functions/AbstractDataset.cpp

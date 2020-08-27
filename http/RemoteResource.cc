@@ -344,39 +344,11 @@ namespace http {
      */
     void RemoteResource::writeResourceToFile(int fd) {
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
-
-        int status = -1;
         try {
             BESDEBUG(MODULE, prolog << "Saving resource " << d_remoteResourceUrl << " to cache file " << d_resourceCacheFileName << endl);
-            status = curl::read_url(d_curl, d_remoteResourceUrl, fd, d_response_headers,
-                            d_request_headers, d_error_buffer); // Throws BESInternalError if there is a curl error.
+            curl::read_url(d_curl, d_remoteResourceUrl, fd, d_response_headers,
+                            d_request_headers); // Throws BESInternalError if there is a curl error.
 
-            if (status >= 400) {
-                BESDEBUG(MODULE,prolog << "ERROR: HTTP request returned an error status of: " << status << endl);
-                // delete resp_hdrs; resp_hdrs = 0;
-                stringstream msg;
-                msg << prolog << "Error while reading the URL: \"" <<  d_remoteResourceUrl << "\", ";;
-                for(unsigned int i=0; i<d_request_headers->size() ;i++){
-                    msg << "reqhdr[" << i << "]: \"" << (*d_request_headers)[i] << "\", ";
-                }
-                msg <<    "The HTTP request returned a status of " << status << " which means '" <<
-                    curl::http_status_to_string(status) << "'" << endl;
-                BESDEBUG(MODULE, prolog << "ERROR: HTTP request returned status: " << status << " message: " << msg.str() << endl);
-                switch(status) {
-                    case 400:
-                        throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
-                    case 401:
-                    case 402:
-                    case 403:
-                        throw BESForbiddenError(msg.str(), __FILE__, __LINE__);
-                    case 404:
-                        throw BESNotFoundError(msg.str(), __FILE__, __LINE__);
-                    case 408:
-                        throw BESTimeoutError(msg.str(), __FILE__, __LINE__);
-                    default:
-                        throw BESInternalError(msg.str(), __FILE__, __LINE__);
-                }
-            }
             BESDEBUG(MODULE,  prolog << "Resource " << d_remoteResourceUrl << " saved to cache file " << d_resourceCacheFileName << endl);
 
             // rewind the file
@@ -397,6 +369,9 @@ namespace http {
         BESDEBUG(MODULE, prolog << "END" << endl);
     }
 
+    /**
+     *
+     */
     void RemoteResource::ingest_http_headers_and_type() {
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
