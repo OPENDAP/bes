@@ -42,8 +42,8 @@ namespace curl {
 
     bool configureProxy(CURL *curl, const std::string &url);
 
-    long read_url(CURL *curl, const std::string &url, int fd, std::vector<std::string> *resp_hdrs,
-                  const std::vector<std::string> *headers, char error_buffer[]);
+    void read_url(CURL *curl, const std::string &url, int fd, std::vector<std::string> *resp_hdrs,
+                  const std::vector<std::string> *headers);
 
     void http_get(const std::string &url, char *response_buf);
     std::string http_get_as_string(const std::string &url);
