@@ -33,8 +33,9 @@
 #include <algorithm>    // std::for_each
 #include <time.h>
 
-#include "rapidjson/document.h"
+#include <util.h>       // from libdap
 
+#include "rapidjson/document.h"
 
 #include "BESSyntaxUserError.h"
 #include "BESForbiddenError.h"
@@ -47,7 +48,6 @@
 #include "BESUtil.h"
 #include "BESLog.h"
 
-#include "util.h"
 #include "BESDebug.h"
 #include "BESSyntaxUserError.h"
 #include "HttpNames.h"
