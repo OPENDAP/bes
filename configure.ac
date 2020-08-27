@@ -291,7 +291,7 @@ AC_ARG_WITH(xml2,
 AS_IF([test -n "$with_xml2_prefix" -a ! -x $with_xml2_prefix/bin/xml2-config],
     [AC_MSG_ERROR([You set the libxml2 prefix directory to $with_xml2_prefix, but xml2-config is not there.])])
 
-xmlprivatereq=
+xmlprivatereq=xml2
 xmlprivatelibs=
 xml_set=
 
