@@ -86,15 +86,13 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
             "Unauthorized: Contact the server administrator.",
             "Payment Required.",
             "Forbidden: Contact the server administrator.",
-            "Not Found: The underlying data source or server could not be found.\n"
-            "Often this means that the OPeNDAP server is missing or needs attention.\n"
-            "Please contact the server administrator.",
+            "Not Found: The underlying data source or server could not be found.",
             "Method Not Allowed.",
             "Not Acceptable.",
             "Proxy Authentication Required.",
             "Request Time-out.",
             "Conflict.",
-            "Gone:.",
+            "Gone.",
             "Length Required.",
             "Precondition Failed.",
             "Request Entity Too Large.",
