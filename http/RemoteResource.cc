@@ -82,6 +82,10 @@ namespace http {
 
         if(url.find(FILE_PROTOCOL) == 0){
             d_resourceCacheFileName = url.substr(strlen(FILE_PROTOCOL));
+            while(BESUtil::endsWith(d_resourceCacheFileName,"/")){
+                // Strip trailing slashes, because this about files, not directories
+                d_resourceCacheFileName = d_resourceCacheFileName.substr(0,d_resourceCacheFileName.length()-1);
+            }
             d_initialized =true;
         }
         else if(url.find(HTTPS_PROTOCOL) == 0  || url.find(HTTP_PROTOCOL) == 0){
