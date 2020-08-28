@@ -51,6 +51,8 @@
 
 using namespace std;
 
+#define BES_CATALOG_ROOT_KEY "BES.Catalog.catalog.RootDirectory"
+
 #define prolog std::string("RemoteResource::").append(__func__).append("() - ")
 #define MODULE "http"
 
@@ -85,6 +87,16 @@ namespace http {
             while(BESUtil::endsWith(d_resourceCacheFileName,"/")){
                 // Strip trailing slashes, because this about files, not directories
                 d_resourceCacheFileName = d_resourceCacheFileName.substr(0,d_resourceCacheFileName.length()-1);
+            }
+            // Now we check that the data is in the BES_CATALOG_ROOT
+            string catalog_root;
+            bool found;
+            TheBESKeys::TheKeys()->get_value(BES_CATALOG_ROOT_KEY,catalog_root,found );
+            if(!found){
+                throw BESInternalError( prolog + "ERROR - "+ BES_CATALOG_ROOT_KEY + "is not set",__FILE__,__LINE__);
+            }
+            if(d_resourceCacheFileName.find(catalog_root) !=0 ){
+                d_resourceCacheFileName = BESUtil::pathConcat(catalog_root,d_resourceCacheFileName);
             }
             d_initialized =true;
         }

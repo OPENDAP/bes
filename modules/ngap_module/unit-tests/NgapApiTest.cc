@@ -43,7 +43,6 @@
 #include "BESUtil.h"
 #include "BESCatalogList.h"
 #include "TheBESKeys.h"
-#include "HttpCache.h"
 #include "HttpUtils.h"
 #include "HttpNames.h"
 #include "url_impl.h"

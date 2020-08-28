@@ -279,13 +279,14 @@ void HttpdDirScraper::createHttpdDirectoryPageMap(std::string url, std::map<std:
     http::RemoteResource rhr(url);
     rhr.retrieveResource();
     stringstream buffer;
-    ifstream cache_file_is(rhr.getCacheFileName().c_str());
 
+    ifstream cache_file_is(rhr.getCacheFileName().c_str());
     if(!cache_file_is.is_open()){
         string msg = prolog + "ERROR - Failed to open cache file: " + rhr.getCacheFileName();
         BESDEBUG(MODULE, msg << endl);
         throw BESInternalError(msg ,__FILE__, __LINE__ );
     }
+
     buffer << cache_file_is.rdbuf();
     string pageStr = buffer.str();
     BESDEBUG(MODULE, prolog << "Page Content: " << endl << pageStr << endl);

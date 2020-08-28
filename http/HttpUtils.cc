@@ -41,7 +41,6 @@
 #include <curl/curl.h>
 
 #include <GNURegex.h>
-#include <util.h>
 
 #include <BESUtil.h>
 #include <BESCatalogUtils.h>
@@ -59,7 +58,7 @@
 
 #define MODULE "http"
 
-using namespace libdap;
+using namespace std;
 using namespace http;
 
 // These are static class members
