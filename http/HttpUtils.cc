@@ -40,7 +40,7 @@
 
 #include <curl/curl.h>
 
-#include <GNURegex.h>
+// #include <GNURegex.h>
 
 #include <BESUtil.h>
 #include <BESCatalogUtils.h>
