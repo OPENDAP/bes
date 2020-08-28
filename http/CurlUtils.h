@@ -24,8 +24,8 @@
 // Authors:
 //      ndp       Nathan Potter <ndp@opendap.org>
 
-#ifndef _CURL_UTILS_H_
-#define _CURL_UTILS_H_ 1
+#ifndef  _bes_http_CURL_UTILS_H_
+#define  _bes_http_CURL_UTILS_H_ 1
 
 #include <string>
 #include <vector>
@@ -66,4 +66,4 @@ namespace curl {
 
 } // namespace curl
 
-#endif /* _CURL_UTILS_H_ */
+#endif /*  _bes_http_CURL_UTILS_H_ */

@@ -25,8 +25,8 @@
 // Authors:
 //      ndp       Nathan Potter <ndp@opendap.org>
 
-#ifndef _REMOTE_CACHE_H_
-#define _REMOTE_CACHE_H_ 1
+#ifndef  _bes_http_HTTP_CACHE_H_
+#define  _bes_http_HTTP_CACHE_H_ 1
 
 #include "BESFileLockingCache.h"
 
@@ -101,4 +101,4 @@ namespace http {
 
 } /* namespace http */
 
-#endif /* _REMOTE_CACHE_H */
+#endif /*  _bes_http_HTTP_CACHE_H_ */

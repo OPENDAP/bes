@@ -24,8 +24,8 @@
 // Authors:
 //      ndp       Nathan Potter <ndp@opendap.org>
 
-#ifndef BES_http_EffectiveUrlCache_h_
-#define BES_http_EffectiveUrlCache_h_ 1
+#ifndef _bes_http_EffectiveUrlCache_h_
+#define _bes_http_EffectiveUrlCache_h_ 1
 
 #include <map>
 #include <string>

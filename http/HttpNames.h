@@ -24,8 +24,8 @@
 // Authors:
 //      ndp       Nathan Potter <ndp@opendap.org>
 
-#ifndef I_HTTP_NAME_H
-#define I_HTTP_NAME_H 1
+#ifndef  _bes_http_HTTP_NAMES_H
+#define  _bes_http_HTTP_NAMES_H 1
 
 #define HTTP_PROTOCOL "http://"
 #define HTTPS_PROTOCOL "https://"
@@ -65,4 +65,4 @@
 
 #define HTTP_MODULE "http"
 
-#endif // I_HTTP_NAME_H
+#endif //  _bes_http_HTTP_NAMES_H

@@ -24,8 +24,8 @@
 // Authors:
 //      ndp       Nathan Potter <ndp@opendap.org>
 
-#ifndef _REMOTE_HTTP_RESOURCE_H_
-#define _REMOTE_HTTP_RESOURCE_H_ 1
+#ifndef  _bes_http_REMOTE_HTTP_RESOURCE_H_
+#define  _bes_http_REMOTE_HTTP_RESOURCE_H_ 1
 
 #include <curl/curl.h>
 #include <curl/easy.h>
@@ -168,4 +168,4 @@ namespace http {
 
 } /* namespace http */
 
-#endif /* _REMOTE_HTTP_RESOURCE_H_ */
+#endif /*  _bes_http_REMOTE_HTTP_RESOURCE_H_ */

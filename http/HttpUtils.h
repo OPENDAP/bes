@@ -36,8 +36,8 @@
  * the various static fields based on the values of the BES configuration
  * file(s).
  */
-#ifndef _REMOTE_UTILS_H_
-#define _REMOTE_UTILS_H_ 1
+#ifndef  _bes_http_HTTP_UTILS_H_
+#define  _bes_http_HTTP_UTILS_H_ 1
 
 #include <string>
 #include <map>
@@ -45,9 +45,6 @@
 
 namespace http {
 
-/** @brief utility class for the gateway remote request mechanism
- *
- */
     class HttpUtils {
     public:
         static std::map<std::string, std::string> MimeList;
@@ -75,5 +72,5 @@ namespace http {
 
 } // namespace http
 
-#endif // _REMOTE_UTILS_H_
+#endif //  _bes_http_HTTP_UTILS_H_
 

@@ -25,8 +25,8 @@
 // Authors:
 //      ndp       Nathan Potter <ndp@opendap.org>
 
-#ifndef BES_http_url_HH_
-#define BES_http_url_HH_
+#ifndef _bes_http_url_HH_
+#define _bes_http_url_HH_ 1
 #include <string>
 #include <map>
 #include <vector>
@@ -83,4 +83,4 @@ public:
 };
 
 } // namespace http
-#endif /* BES_http_url_HH_ */
+#endif /* _bes_http_url_HH_ */
