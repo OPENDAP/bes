@@ -122,9 +122,11 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
             return string(http_client_errors[status - CLIENT_ERR_MIN]);
         else if (status >= SERVER_ERR_MIN && status <= SERVER_ERR_MAX)
             return string(http_server_errors[status - SERVER_ERR_MIN]);
-        else
-            return string(
-                    "Unknown Error: This indicates a problem with libdap++.\nPlease report this to support@opendap.org.");
+        else{
+            stringstream msg;
+            msg << "Unknown HTTP Error: " << status;
+            return msg.str();
+        }
     }
 
     static string getCurlAuthTypeName(const int authType) {
@@ -991,11 +993,12 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         }
 
         stringstream msg;
+        msg << "ERROR - The HTTP GET request for the source URL: " << requested_url << " FAILED."
+            << " The last accessed URL (CURLINFO_EFFECTIVE_URL) was: " << last_accessed_url
+            << " The response had an HTTP status of " << http_code
+            << " which means '" << http_status_to_string(http_code) << "'" << endl;
+
         if(http_code >= 400){
-            msg << "ERROR - The HTTP GET request for the source URL: " << requested_url << " FAILED."
-                << " The last accessed URL (CURLINFO_EFFECTIVE_URL) was: " << last_accessed_url
-                << " The response had an HTTP status of " << http_code
-                << " which means '" << http_status_to_string(http_code) << "'" << endl;
             BESDEBUG(MODULE, prolog << msg.str());
             LOG(msg.str());
         }

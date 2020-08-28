@@ -52,6 +52,7 @@ static bool purge_cache = false;
 
 #undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
+#define prolog std::string("RemoteResourceTest::").append(__func__).append("() - ")
 
 namespace http {
 
@@ -94,9 +95,9 @@ private:
             return file_content;
         }
         else {
-            cerr << "FAILED TO OPEN FILE: " << filename << endl;
-            CPPUNIT_ASSERT(false);
-            return "";
+            stringstream msg;
+            msg << prolog << "FAILED TO OPEN FILE: " << filename << endl;
+            CPPUNIT_FAIL( msg.str());
         }
     }
 
@@ -104,7 +105,6 @@ private:
      *
      */
     string get_data_file_url(string name){
-        string prolog = string(__func__) + "() - ";
         string data_file = BESUtil::assemblePath(d_data_dir,name);
         if(debug) cerr << prolog << "data_file: " << data_file << endl;
         if(Debug) show_file(data_file);
@@ -134,9 +134,9 @@ public:
     // Called before each test
     void setUp()
     {
-        if(Debug) cerr << endl << "setUp() - BEGIN" << endl;
+        if(Debug) cerr << endl << prolog << "BEGIN" << endl;
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR,"bes.conf");
-        if(Debug) cerr << "setUp() - Using BES configuration: " << bes_conf << endl;
+        if(Debug) cerr << prolog << "Using BES configuration: " << bes_conf << endl;
         if (bes_debug) show_file(bes_conf);
         TheBESKeys::ConfigFile = bes_conf;
 
@@ -144,13 +144,13 @@ public:
 
 
         if(purge_cache){
-            if(Debug) cerr << "Purging cache!" << endl;
+            if(Debug) cerr << prolog << "Purging cache!" << endl;
             string cache_dir;
             bool found;
             TheBESKeys::TheKeys()->get_value(HTTP_CACHE_DIR_KEY,cache_dir,found);
             if(found){
-                if(Debug) cerr << HTTP_CACHE_DIR_KEY << ": " <<  cache_dir << endl;
-                if(Debug) cerr << "Purging " << cache_dir << endl;
+                if(Debug) cerr << prolog << HTTP_CACHE_DIR_KEY << ": " <<  cache_dir << endl;
+                if(Debug) cerr << prolog << "Purging " << cache_dir << endl;
                 string cmd = "exec rm -r "+ BESUtil::assemblePath(cache_dir,"/*");
                 system(cmd.c_str());
             }
@@ -173,31 +173,33 @@ public:
     void get_http_url_test() {
 
         string url = "http://test.opendap.org/data/httpd_catalog/READTHIS";
-        if(debug) cerr << __func__ << "() - url: " << url << endl;
+        if(debug) cerr << prolog << "url: " << url << endl;
         http::RemoteResource rhr(url);
         try {
             rhr.retrieveResource();
             vector<string> *hdrs = rhr.getResponseHeaders();
 
             for(size_t i=0; i<hdrs->size() && debug ; i++){
-                cerr << __func__ << "() - hdr["<< i << "]: " << (*hdrs)[i] << endl;
+                cerr << prolog << "hdr["<< i << "]: " << (*hdrs)[i] << endl;
             }
             string cache_filename = rhr.getCacheFileName();
-            if(debug) cerr <<  __func__ << "() - cache_filename: " << cache_filename << endl;
+            if(debug) cerr << prolog << "cache_filename: " << cache_filename << endl;
             string target("This is a test. If this was not a test you would have known the answer.\n");
-            if(debug) cerr << "target string: " << target << endl;
+            if(debug) cerr << prolog << "target string: " << target << endl;
             string content = get_file_as_string(cache_filename);
-            if(debug) cerr << "retrieved content: " << content << endl;
+            if(debug) cerr << prolog << "retrieved content: " << content << endl;
             CPPUNIT_ASSERT( !content.compare(target) );
         }
         catch (BESError &besE){
             cerr << "Caught BESError! message: " << besE.get_verbose_message() << " type: " << besE.get_bes_error_type() << endl;
             CPPUNIT_ASSERT(false);
         }
+#if 0
         catch (libdap::Error &le){
             cerr << "Caught libdap::Error! message: " << le.get_error_message() << " code: "<< le.get_error_code() << endl;
             CPPUNIT_ASSERT(false);
         }
+#endif
     }
 
     /**
@@ -215,25 +217,28 @@ public:
             vector<string> *hdrs = rhr.getResponseHeaders();
 
             for(size_t i=0; i<hdrs->size() && debug ; i++){
-                cerr <<  __func__ << "() - hdr["<< i << "]: " << (*hdrs)[i] << endl;
+                cerr << prolog << "hdr["<< i << "]: " << (*hdrs)[i] << endl;
             }
             string cache_filename = rhr.getCacheFileName();
-            if(debug) cerr <<  __func__ << "() - cache_filename: " << cache_filename << endl;
+            if(debug) cerr << prolog << "cache_filename: " << cache_filename << endl;
 
             string expected("This a TEST. Move Along...\n");
             string retrieved = get_file_as_string(cache_filename);
-            if(debug) cerr <<  __func__ << "() - expected_content: '" << expected << "'" << endl;
-            if(debug) cerr <<  __func__ << "() - retrieved_content: '" << retrieved << "'" << endl;
+            if(debug) cerr << prolog << "expected_content: '" << expected << "'" << endl;
+            if(debug) cerr << prolog << "retrieved_content: '" << retrieved << "'" << endl;
             CPPUNIT_ASSERT( retrieved == expected );
         }
         catch (BESError &besE){
-            cerr << "Caught BESError! message: " << besE.get_verbose_message() << " type: " << besE.get_bes_error_type() << endl;
-            CPPUNIT_ASSERT(false);
+            stringstream msg;
+            msg << prolog << "Caught BESError! message: '" << besE.get_message() << "' bes_error_type: " << besE.get_bes_error_type() << endl;
+            CPPUNIT_FAIL(msg.str());
         }
+#if 0
         catch (libdap::Error &le){
             cerr << "Caught libdap::Error! message: " << le.get_error_message() << " code: "<< le.get_error_code() << endl;
             CPPUNIT_ASSERT(false);
         }
+#endif
         debug = debug_state;
     }
 

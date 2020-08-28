@@ -29,6 +29,7 @@
 
 #define HTTP_PROTOCOL "http://"
 #define HTTPS_PROTOCOL "https://"
+#define FILE_PROTOCOL "file://"
 
 #define HTTP_MIMELIST_KEY "Http.MimeTypes"
 #define HTTP_PROXYPROTOCOL_KEY "Http.ProxyProtocol"

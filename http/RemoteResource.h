@@ -32,9 +32,10 @@
 
 #include <string>
 #include <vector>
-
+#if 0
 #include "InternalErr.h"
 #include "RCReader.h"
+#endif
 #include "RemoteResource.h"
 #include "rapidjson/document.h"
 
@@ -131,7 +132,7 @@ namespace http {
 
         void retrieveResource();
 
-        void retrieveResource(const string &template_key, const string &replace_value);
+        void retrieveResource(const std::string &template_key, const std::string &replace_value);
 
         /**
          * Returns the DAP type std::string of the RemoteHttpResource
@@ -153,17 +154,12 @@ namespace http {
         /**
          * Returns a std::vector of HTTP headers received along with the response from the request for the remote resource..
          */
-        std::vector<std::string> *getResponseHeaders() {
-            if (!d_initialized)
-                throw libdap::Error(
-                        "RemoteResource::getCacheFileName() - STATE ERROR: Remote Resource Has Not Been Retrieved.");
-            return d_response_headers;
-        }
+        std::vector<std::string> *getResponseHeaders();
 
 
-            /**
-            * Returns cache file content in a string..
-            */
+        /**
+         * Returns cache file content in a string..
+         */
         std::string get_response_as_string();
 
         rapidjson::Document get_as_json();
