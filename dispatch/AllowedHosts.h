@@ -42,7 +42,7 @@ namespace bes {
  * @brief Can a given URL be dereferenced given the BES's configuration?
  *
  * Embodies a configuration based remote access white list
- * and provides a simple API (Is_Whitelisted()) for determining which
+ * and provides a simple API, is_allowed() for determining which
  * resources may be accessed. This enables a system administrator to control
  * the remote systems a particular BES daemon can access.
  *
