@@ -108,7 +108,7 @@ BES.AnnotationServiceURL =
 #-----------------------------------------------------------------------#
 
 # Because the Hyrax is often tasked with accessing services using the 
-# internets we maintain a whitelist of services which Hyrax is allowed 
+# internets we maintain a list of allowed hosts which Hyrax is allowed
 # to access. By default, Hyrax is allowed to access itself. If additional
 # services are to be added to the whitelist do so by adding the new 
 # service URL to the site.conf file using += syntax like this:

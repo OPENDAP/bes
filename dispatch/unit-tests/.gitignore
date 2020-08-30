@@ -4,7 +4,7 @@ lockT
 uncompressT
 
 /RemoteAccessTest
-/WhiteListTest
+/AllowedHostsTest
 /CatalogNodeTest
 /CatalogItemTest
 /BESCatalogListTest

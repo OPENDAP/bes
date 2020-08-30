@@ -1,7 +1,7 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of the OPeNDAP Back-End Server (BES)
-// and embodies a whitelist of remote system that may be
+// and creqates an allowed hosts list od systems that may be
 // accessed by the server as part of it's routine operation.
 
 // Copyright (c) 2018 OPeNDAP, Inc.
