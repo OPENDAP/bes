@@ -312,7 +312,6 @@ void dmrpp_easy_handle::read_data() {
                                    __FILE__, __LINE__);
         }
     }
-
     d_chunk->set_is_read(true);
 }
 
