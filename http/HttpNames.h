@@ -45,6 +45,8 @@
 #define HTTP_CACHE_PREFIX_KEY "Http.Cache.prefix"
 #define HTTP_CACHE_SIZE_KEY "Http.Cache.size"
 
+#define HTTP_NETRC_FILE_KEY "Http.netrc.file"
+
 #define HTTP_COOKIES_FILE_KEY "Http.Cookies.File"
 #define HTTP_DEFAULT_COOKIES_FILE "/tmp/.hyrax-cookies"
 

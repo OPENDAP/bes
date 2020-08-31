@@ -466,6 +466,9 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         // authentication schemes to work. 07/28/03 jhrg
         curl_easy_setopt(curl, CURLOPT_FAILONERROR, 0);
 
+        // -  -  -  - -  -  -  - -  -  -  - -  -  -  - -  -  -  - -  -  -  - -  -  -  -
+        // Authentication config.
+        //
         // This means libcurl will use Basic, Digest, GSS Negotiate, or NTLM,
         // choosing the the 'safest' one supported by the server.
         // This requires curl 7.10.6 which is still in pre-release. 07/25/03 jhrg
@@ -474,9 +477,21 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         // I added these next three to support Hyrax accessing data held behind URS auth. ndp - 8/20/18
         curl_easy_setopt(curl, CURLOPT_NETRC, 1);
 
-        // #TODO #FIXME Make these file names configuration based.
+        // If the configuration specifies a particular .netrc credentials file, use it.
+        string netrc_file = get_netrc_filename();
+        if (!netrc_file.empty()) {
+            curl_easy_setopt(curl, CURLOPT_NETRC_FILE, netrc_file.c_str());
+        }
+        VERBOSE(__FILE__ << "::get_easy_handle() is using the netrc file '"
+                         << ((!netrc_file.empty()) ? netrc_file : "~/.netrc") << "'" << endl);
+
+
+        // -  -  -  - -  -  -  - -  -  -  - -  -  -  - -  -  -  - -  -  -  - -  -  -  -
+        // Cookies
+        //
         curl_easy_setopt(curl, CURLOPT_COOKIEFILE, curl::get_cookie_filename().c_str());
         curl_easy_setopt(curl, CURLOPT_COOKIEJAR, curl::get_cookie_filename().c_str());
+
 
         curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1);
         curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
@@ -1232,7 +1247,19 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         }
     }
 
-
+    string get_netrc_filename()
+    {
+        string netrc_filename;
+        bool found = false;
+        TheBESKeys::TheKeys()->get_value(HTTP_NETRC_FILE_KEY,netrc_filename,found);
+        if(found){
+            BESDEBUG(MODULE, prolog << "Using netrc file: " << netrc_filename << endl);
+        }
+        else {
+            BESDEBUG(MODULE, prolog << "Using default netrc file. (~/.netrc)" << endl);
+        }
+        return netrc_filename;
+    }
 
 
 } /* namespace curl */
