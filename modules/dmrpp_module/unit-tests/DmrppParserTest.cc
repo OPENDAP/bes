@@ -451,7 +451,7 @@ public:
         BESDEBUG("dmrpp", "Opening: " << grid_2d << endl);
 
         ifstream in(grid_2d.c_str());
-        parser.intern(in, dmr.get(), debug);
+        parser.intern(in, dmr.get());
 
         D4Group *root = dmr->root();
         checkGroupsAndVars(root,"/",0,4);
