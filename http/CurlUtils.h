@@ -62,6 +62,7 @@ namespace curl {
     void cache_effective_url(const std::string &data_access_url_str, BESRegex *no_redirects_regex_pattern);
     BESRegex *get_cache_effective_urls_skip_regex();
     bool is_retryable(std::string url);
+    std::string get_netrc_filename();
 
 
 } // namespace curl

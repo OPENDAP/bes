@@ -33,11 +33,12 @@
 #include <string>
 #include <sys/stat.h>
 
-#include <AllowedHosts.h>
-#include <TheBESKeys.h>
-#include <kvp_utils.h>
-#include <BESInternalError.h>
-#include <BESDebug.h>
+#include "AllowedHosts.h"
+#include "TheBESKeys.h"
+#include "kvp_utils.h"
+#include "BESInternalError.h"
+#include "BESDebug.h"
+#include "CurlUtils.h"
 
 #include "CredentialsManager.h"
 #include "NgapS3Credentials.h"
@@ -60,7 +61,6 @@ const string CredentialsManager::ENV_REGION_KEY="CMAC_REGION";
 //const string CredentialsManager::ENV_BUCKET_KEY="CMAC_BUCKET";
 const string CredentialsManager::ENV_URL_KEY="CMAC_URL";
 const string CredentialsManager::ENV_CREDS_KEY_VALUE="ENV_CREDS";
-const string CredentialsManager::NETRC_FILE_KEY="BES.netrc.file";
 
 
 /**
@@ -120,14 +120,7 @@ CredentialsManager::~CredentialsManager() {
  */
 CredentialsManager::CredentialsManager(): ngaps3CredentialsLoaded(false){
     bool found;
-    d_netrc_filename="";
-    TheBESKeys::TheKeys()->get_value(NETRC_FILE_KEY,d_netrc_filename,found);
-    if(found){
-        BESDEBUG(CREDS, prolog << "Using netrc file: " << d_netrc_filename << endl);
-    }
-    else {
-        BESDEBUG(CREDS, prolog << "Using ~/.netrc file." << endl);
-    }
+    d_netrc_filename = curl::get_netrc_filename();
 }
 
 /**

@@ -408,7 +408,8 @@ static void *easy_handle_read_data(void *handle) {
  * d_max_parallel_transfers are added to the 'multi' handle.
  */
 void dmrpp_multi_handle::read_data() {
-#if HAVE_CURL_MULTI_API
+#if 1 //HAVE_CURL_MULTI_API
+    useconds_t retry_time = uone_second/4;
     // Use the libcurl Multi API here. Alternate version follows...
     try {
         int still_running = 0;
@@ -453,7 +454,20 @@ void dmrpp_multi_handle::read_data() {
                 // HTTP status code. If the protocol is not HTTP, we assume since msg->data.result
                 // returned CURLE_OK, that the transfer worked. jhrg 5/1/18
                 if (dmrpp_easy_handle->d_url.find("http://") == 0 || dmrpp_easy_handle->d_url.find("https://") == 0) {
-                    bool success = curl::eval_get_response(eh,dmrpp_easy_handle->d_url);
+                    unsigned int attempts = 0;
+                    bool success = false;
+                    while(!success && attempts<retry_limit) {
+                        success = curl::eval_get_response(eh, dmrpp_easy_handle->d_url);
+                        LOG(prolog << "ERROR - HTTP transfer error, will retry (attempt: " << attempts << " for: " << dmrpp_easy_handle->d_url << ")." << endl);
+                        usleep(retry_time);
+                        retry_time *= 2;
+                        attempts++;
+                    }
+                    if (!success) {
+                        string msg = prolog + "Data transfer error: Number of re-tries exceeded.";
+                        LOG(msg << endl);
+                        throw BESInternalError(msg, __FILE__, __LINE__);
+                    }
                 }
 
                 // If we are here, the request was successful.
@@ -662,13 +676,13 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
         curl_easy_setopt(handle->d_handle, CURLOPT_NETRC, 1);
 
         // If the configuration specifies a particular .netrc credentials file, use it.
-        string netrc_file = CredentialsManager::theCM()->get_netrc_filename();
+        // TODO move this operation into constructor and stash the value.
+        string netrc_file = curl::get_netrc_filename();
         if (!netrc_file.empty()) {
             curl_easy_setopt(handle->d_handle, CURLOPT_NETRC_FILE, netrc_file.c_str());
         }
         VERBOSE(__FILE__ << "::get_easy_handle() is using the netrc file '"
                          << ((!netrc_file.empty()) ? netrc_file : "~/.netrc") << "'" << endl);
-
 
         AccessCredentials *credentials = CredentialsManager::theCM()->get(handle->d_url);
         if (credentials && credentials->isS3Cred()) {
