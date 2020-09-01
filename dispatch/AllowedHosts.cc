@@ -83,11 +83,11 @@ AllowedHosts::AllowedHosts()
  * if that has not already been done. This method should only be called from
  * the main thread of a multi-threaded application.
  *
- * @param url The URL to test
+ * @param candidate_url The URL to test
  * @return True if the URL may be dereferenced, given the BES's configuration,
  * false otherwise.
  */
-bool AllowedHosts::is_allowed(const std::string &url)
+bool AllowedHosts::is_allowed(const std::string &candidate_url)
 {
     bool isAllowed = false;
     const string file_url("file://");
@@ -96,10 +96,10 @@ bool AllowedHosts::is_allowed(const std::string &url)
 
     // Special case: This allows any file: URL to pass if the URL starts with the default
     // catalog's path.
-    if (url.compare(0, file_url.size(), file_url) == 0 /*equals a file url*/) {
+    if (candidate_url.compare(0, file_url.size(), file_url) == 0 /*equals a file url*/) {
 
         // Ensure that the file path starts with the catalog root dir.
-        string file_path = url.substr(file_url.size());
+        string file_path = candidate_url.substr(file_url.size());
         BESDEBUG(MODULE, prolog << "file_path: "<< file_path << endl);
 
         BESCatalog *bcat = BESCatalogList::TheCatalogList()->find_catalog(BES_DEFAULT_CATALOG);
@@ -168,12 +168,12 @@ bool AllowedHosts::is_allowed(const std::string &url)
         for (; it != end_it && !isAllowed; it++) {
             string a_regex_pattern = *it;
             BESRegex reg_expr(a_regex_pattern.c_str());
-            if (reg_expr.match(url.c_str(), url.length()) == url.length() ) {
-                BESDEBUG(MODULE, prolog << "FULL MATCH. pattern: "<< a_regex_pattern << " url: " << url << endl);
+            if (reg_expr.match(candidate_url.c_str(), candidate_url.length()) == candidate_url.length() ) {
+                BESDEBUG(MODULE, prolog << "FULL MATCH. pattern: "<< a_regex_pattern << " url: " << candidate_url << endl);
                 isAllowed = true;;
             }
             else {
-                BESDEBUG(MODULE, prolog << "No Match. pattern: "<< a_regex_pattern << " url: " << url << endl);
+                BESDEBUG(MODULE, prolog << "No Match. pattern: "<< a_regex_pattern << " url: " << candidate_url << endl);
             }
         }
         BESDEBUG(MODULE, prolog << "HTTP Access Allowed: "<< (isAllowed?"true ":"false ") << endl);
