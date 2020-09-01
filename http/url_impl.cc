@@ -326,6 +326,10 @@ bool url::is_expired()
     return is_expired;
 }
 
+/**
+ * Returns a string representation of the URL and its bits.
+ * @return the representation mentioned above.
+ */
 string url::dump(){
     stringstream ss;
     string indent_inc = "  ";
