@@ -89,6 +89,7 @@ AllowedHosts::AllowedHosts()
  */
 bool AllowedHosts::is_allowed(const std::string &candidate_url)
 {
+    BESDEBUG(MODULE, prolog << "BEGIN candidate_url: " << candidate_url << endl);
     bool isAllowed = false;
     const string file_url("file://");
     const string http_url("http://");
@@ -178,6 +179,7 @@ bool AllowedHosts::is_allowed(const std::string &candidate_url)
         }
         BESDEBUG(MODULE, prolog << "HTTP Access Allowed: "<< (isAllowed?"true ":"false ") << endl);
     }
+    BESDEBUG(MODULE, prolog << "END Access Allowed: "<< (isAllowed?"true ":"false ") << endl);
     return isAllowed;
 }
 
