@@ -162,12 +162,14 @@ bool AllowedHosts::is_allowed(const std::string &url)
         BESDEBUG(MODULE, prolog << "File Access Allowed: "<< (isAllowed?"true ":"false ") << endl);
     }
     else {
-        vector<string>::const_iterator i = d_allowed_hosts.begin();
-        vector<string>::const_iterator e = d_allowed_hosts.end();
-        for (; i != e && !isAllowed; i++) {
-            string reg = *i;
-            BESRegex reg_expr(reg.c_str());
-            if (reg_expr.match(url.c_str(), url.length()) > 0 ) {
+        // We assume it's an http(s) URL.
+        vector<string>::const_iterator it = d_allowed_hosts.begin();
+        vector<string>::const_iterator end_it = d_allowed_hosts.end();
+        for (; it != end_it && !isAllowed; it++) {
+            string a_regex_pattern = *it;
+            BESRegex reg_expr(a_regex_pattern.c_str());
+            if (reg_expr.match(url.c_str(), url.length()) == url.length() ) {
+                BESDEBUG(MODULE, prolog << "Full Match. pattern: "<< a_regex_pattern << " url: " << url << endl);
                 isAllowed = true;;
             }
         }
