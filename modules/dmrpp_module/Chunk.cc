@@ -645,7 +645,7 @@ std::string Chunk::get_data_url() const
     BESDEBUG(MODULE, prolog << "The EffectiveUrlCache" << (effective_url?" contains ":" does not contain ") <<
     "the d_data_url: " << d_data_url << endl);
     if(effective_url){
-        data_url = effective_url->to_string();
+        data_url = effective_url->str();
     }
     BESDEBUG(MODULE, prolog << "Using data_url: " << data_url << endl);
 

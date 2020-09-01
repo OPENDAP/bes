@@ -62,7 +62,7 @@ public:
 
     static AllowedHosts *theHosts();
 
-    bool is_allowed(const std::string &url);
+    bool is_allowed(const std::string &candidate_url);
 };
 
 } // namespace bes

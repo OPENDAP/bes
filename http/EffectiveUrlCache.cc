@@ -249,7 +249,7 @@ void EffectiveUrlCache::cache_effective_url(const string &source_url, BESRegex *
         effective_url = new http::url(effective_url_str);
 
         BESDEBUG(MODULE, prolog << "   source_url: " << source_url << endl);
-        BESDEBUG(MODULE, prolog << "effective_url: " << effective_url->to_string() << endl);
+        BESDEBUG(MODULE, prolog << "effective_url: " << effective_url->str() << endl);
 
         EffectiveUrlCache::TheCache()->add(source_url,effective_url);
     }
