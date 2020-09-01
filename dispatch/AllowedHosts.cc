@@ -169,8 +169,11 @@ bool AllowedHosts::is_allowed(const std::string &url)
             string a_regex_pattern = *it;
             BESRegex reg_expr(a_regex_pattern.c_str());
             if (reg_expr.match(url.c_str(), url.length()) == url.length() ) {
-                BESDEBUG(MODULE, prolog << "Full Match. pattern: "<< a_regex_pattern << " url: " << url << endl);
+                BESDEBUG(MODULE, prolog << "FULL MATCH. pattern: "<< a_regex_pattern << " url: " << url << endl);
                 isAllowed = true;;
+            }
+            else {
+                BESDEBUG(MODULE, prolog << "No Match. pattern: "<< a_regex_pattern << " url: " << url << endl);
             }
         }
         BESDEBUG(MODULE, prolog << "HTTP Access Allowed: "<< (isAllowed?"true ":"false ") << endl);
