@@ -762,6 +762,9 @@ public:
 
         DBG(cerr << "invoke_server_side_function_test() - END" << endl);
     }
+    void dummy_test(){
+
+    }
 
 CPPUNIT_TEST_SUITE( ResponseBuilderTest );
 
@@ -770,7 +773,8 @@ CPPUNIT_TEST_SUITE( ResponseBuilderTest );
     CPPUNIT_TEST(send_ddx_test);
 
     CPPUNIT_TEST(escape_code_test);
-    CPPUNIT_TEST(invoke_server_side_function_test);
+        CPPUNIT_TEST(invoke_server_side_function_test);
+        CPPUNIT_TEST(dummy_test);
 
 #if 0
     // FIXME These tests have baselines that rely on hash values that are

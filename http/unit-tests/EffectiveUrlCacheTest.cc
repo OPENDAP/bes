@@ -115,7 +115,7 @@ namespace http {
             return data_file_url;
         }
 
-        string purge_test_cache(){
+        void purge_test_cache(){
             if(Debug) cerr << "Purging cache!" << endl;
             string cache_dir;
             bool found;
