@@ -345,6 +345,7 @@ public:
 
     void send_das_test()
     {
+        DBG(cerr << endl << plog << "BEGIN" << endl);
         try {
             string baseline = read_test_baseline((string) TEST_SRC_DIR + "/input-files/send_das_baseline.txt");
             DBG(cerr << plog << "---- start baseline ----" << endl << baseline << "---- end baseline ----" << endl);
@@ -360,10 +361,12 @@ public:
         catch (Error &e) {
             CPPUNIT_FAIL(e.get_error_message());
         }
+        DBG(cerr << plog << "END" << endl);
     }
 
     void send_dds_test()
     {
+        DBG(cerr << endl << plog << "BEGIN" << endl);
         try {
             string baseline = read_test_baseline((string) TEST_SRC_DIR + "/input-files/send_dds_baseline.txt");
             DBG(cerr << plog << "---- start baseline ----" << endl << baseline << "---- end baseline ----" << endl);
@@ -381,10 +384,13 @@ public:
         catch (Error &e) {
             CPPUNIT_FAIL(e.get_error_message());
         }
+        DBG(cerr << plog << "END" << endl);
     }
 
     void send_ddx_test()
     {
+        DBG(cerr << endl << plog << "BEGIN" << endl);
+
         string baseline = read_test_baseline((string) TEST_SRC_DIR + "/input-files/response_builder_send_ddx_test.xml");
         Regex r1(baseline.c_str());
         ConstraintEvaluator ce;
@@ -399,6 +405,7 @@ public:
         catch (Error &e) {
             CPPUNIT_FAIL("Error: " + e.get_error_message());
         }
+        DBG(cerr << plog << "END" << endl);
     }
 
 #ifdef DAP2_STORED_RESULTS
@@ -521,7 +528,7 @@ public:
     void store_dap4_result_test()
     {
 
-        DBG(cerr << plog << "BEGIN" << endl);
+        DBG(cerr << endl << plog << "BEGIN" << endl);
 
         TheBESKeys::ConfigFile = (string) TEST_SRC_DIR + "/input-files/test.keys";
         TheBESKeys::TheKeys()->set_key(BES_CATALOG_ROOT, (string) TEST_SRC_DIR);
@@ -559,9 +566,9 @@ public:
 
         // Configure the StoredResultCache
 
-        TheBESKeys::TheKeys()->set_key(BESStoredDapResultCache::SUBDIR_KEY, d_stored_result_subdir);
-        TheBESKeys::TheKeys()->set_key(BESStoredDapResultCache::PREFIX_KEY, "my_result_");
-        TheBESKeys::TheKeys()->set_key(BESStoredDapResultCache::SIZE_KEY, "1100");
+        TheBESKeys::TheKeys()->set_key(DAP_STORED_RESULTS_CACHE_SUBDIR_KEY, d_stored_result_subdir);
+        TheBESKeys::TheKeys()->set_key(DAP_STORED_RESULTS_CACHE_PREFIX_KEY, "my_result_");
+        TheBESKeys::TheKeys()->set_key(DAP_STORED_RESULTS_CACHE_SIZE_KEY, "1100");
         TheBESKeys::TheKeys()->set_key(D4AsyncUtil::STYLESHEET_REFERENCE_KEY,
             "http://localhost:8080/opendap/xsl/asynResponse.xsl");
         DBG(cerr << plog << "BES Keys configured." << endl);
@@ -671,14 +678,15 @@ public:
         BESStoredDapResultCache *sdrc = BESStoredDapResultCache::get_instance();
         sdrc->delete_instance();
         TheBESKeys::TheKeys()->set_key(BES_CATALOG_ROOT, "");
-        TheBESKeys::TheKeys()->set_key(BESStoredDapResultCache::SUBDIR_KEY, "");
-        TheBESKeys::TheKeys()->set_key(BESStoredDapResultCache::PREFIX_KEY, "");
-        TheBESKeys::TheKeys()->set_key(BESStoredDapResultCache::SIZE_KEY, "");
+        TheBESKeys::TheKeys()->set_key(DAP_STORED_RESULTS_CACHE_SUBDIR_KEY, "");
+        TheBESKeys::TheKeys()->set_key(DAP_STORED_RESULTS_CACHE_PREFIX_KEY, "");
+        TheBESKeys::TheKeys()->set_key(DAP_STORED_RESULTS_CACHE_SIZE_KEY, "");
         TheBESKeys::TheKeys()->set_key(D4AsyncUtil::STYLESHEET_REFERENCE_KEY, "");
     }
 
     void escape_code_test()
     {
+        DBG(cerr << endl << plog << "BEGIN" << endl);
         // These should NOT be escaped.
         DBG(cerr << plog << drb3->get_dataset_name() << endl);
         DBG(cerr << plog << drb3->get_ce() << endl);
@@ -700,6 +708,7 @@ public:
 
         drb5->set_ce("Grid%20u%5B0%5D");
         CPPUNIT_ASSERT(drb5->get_ce() == "Grid%20u[0]");
+        DBG(cerr << plog << "END" << endl);
     }
 
     // This tests reading the timeout value from argv[].
@@ -711,7 +720,7 @@ public:
 
     void invoke_server_side_function_test()
     {
-        DBG(cerr << plog << "BEGIN" << endl);
+        DBG(cerr << endl << plog << "BEGIN" << endl);
 
         try {
             string baseline = read_test_baseline((string) TEST_SRC_DIR + "/input-files/simple_function_baseline.txt");
@@ -777,7 +786,7 @@ public:
 
 
     void dummy_test(){
-        DBG(cerr << plog << "BEGIN" << endl);
+        DBG(cerr << endl << plog << "BEGIN" << endl);
         DBG(cerr << plog << "NOTHING WILL BE DONE." << endl);
         DBG(cerr << plog << "END" << endl);
     }

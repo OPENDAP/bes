@@ -417,9 +417,9 @@ public:
 
         TheBESKeys::ConfigFile = (string) TEST_SRC_DIR + "/input-files/test.keys";
         TheBESKeys::TheKeys()->set_key(BES_CATALOG_ROOT, (string) TEST_SRC_DIR);
-        TheBESKeys::TheKeys()->set_key(BESStoredDapResultCache::SUBDIR_KEY, d_stored_result_subdir);
-        TheBESKeys::TheKeys()->set_key(BESStoredDapResultCache::PREFIX_KEY, "my_result_");
-        TheBESKeys::TheKeys()->set_key(BESStoredDapResultCache::SIZE_KEY, "1100");
+        TheBESKeys::TheKeys()->set_key(DAP_STORED_RESULTS_CACHE_SUBDIR_KEY, d_stored_result_subdir);
+        TheBESKeys::TheKeys()->set_key(DAP_STORED_RESULTS_CACHE_PREFIX_KEY, "my_result_");
+        TheBESKeys::TheKeys()->set_key(DAP_STORED_RESULTS_CACHE_SIZE_KEY, "1100");
         TheBESKeys::TheKeys()->set_key(D4AsyncUtil::STYLESHEET_REFERENCE_KEY,
             "http://localhost:8080/opendap/xsl/asynResponse.xsl");
 
