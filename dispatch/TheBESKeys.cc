@@ -718,7 +718,12 @@ void TheBESKeys::load_dynamic_config(const string name){
         return;
     }
 
-    LOG( "Using " << DYNAMIC_CONFIG_KEY << ":" << best_matching_config_name << " for: " << name << endl);
+    {
+        stringstream msg;
+        msg << prolog << "Using " << DYNAMIC_CONFIG_KEY << ":" << best_matching_config_name << " for: " << name << endl;
+        BESDEBUG(MODULE, msg.str());
+        LOG( msg.str());
+    }
 
     // Now load the specific keys from the dynamic config;
     map<string, vector<string>>::iterator cit;
