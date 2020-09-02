@@ -119,7 +119,9 @@ private:
     TheBESKeys() : d_keys_file_name(""), d_the_keys(0), d_dynamic_config_in_use(false), d_own_keys(false) {
     }
 
+#if 0
     TheBESKeys(const std::string &keys_file_name, std::map<std::string, std::vector<std::string> > *keys);
+#endif
 
 protected:
     TheBESKeys(const std::string &keys_file_name);

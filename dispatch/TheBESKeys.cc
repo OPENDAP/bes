@@ -127,11 +127,13 @@ TheBESKeys::TheBESKeys(const string &keys_file_name) :
     initialize_keys();
 }
 
+#if 0
 TheBESKeys::TheBESKeys(const string &keys_file_name, map<string, vector<string> > *keys) :
         d_keys_file_name(keys_file_name), d_the_keys(keys), d_the_original_keys(0), d_dynamic_config_in_use(false), d_own_keys(false)
 {
     initialize_keys();
 }
+#endif
 
 /** @brief cleans up the key/value pair mapping
  */
