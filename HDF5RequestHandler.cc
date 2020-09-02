@@ -240,9 +240,9 @@ void HDF5RequestHandler::load_config()
     }
 
     // Obtain the metadata cache entries and purge level.
-    HDF5RequestHandler::_mdcache_entries     = get_uint_key("H5.MetaDataMemCacheEntries", 0);
-    HDF5RequestHandler::_lrdcache_entries     = get_uint_key("H5.LargeDataMemCacheEntries", 0);
-    HDF5RequestHandler::_srdcache_entries     = get_uint_key("H5.SmallDataMemCacheEntries", 0);
+    HDF5RequestHandler::_mdcache_entries   = get_uint_key("H5.MetaDataMemCacheEntries", 0);
+    HDF5RequestHandler::_lrdcache_entries  = get_uint_key("H5.LargeDataMemCacheEntries", 0);
+    HDF5RequestHandler::_srdcache_entries  = get_uint_key("H5.SmallDataMemCacheEntries", 0);
     HDF5RequestHandler::_cache_purge_level = get_float_key("H5.CachePurgeLevel", 0.2);
 
     if (get_mdcache_entries()) {  // else it stays at its default of null
@@ -254,6 +254,7 @@ void HDF5RequestHandler::load_config()
 
     // Check if the EnableCF key is set.
     _usecf                       = check_beskeys("H5.EnableCF");
+    BESDEBUG(HDF5_NAME, prolog << "H5.EnableCF: " << (_usecf?"true":"false") << endl);
 
     // The following keys are only effective when usecf is true.
     _pass_fileid                 = check_beskeys("H5.EnablePassFileID");
