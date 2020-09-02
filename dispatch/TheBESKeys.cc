@@ -54,6 +54,7 @@
 #include "BESInternalFatalError.h"
 #include "BESInternalError.h"
 #include "BESSyntaxUserError.h"
+#include "BESLog.h"
 
 #define BES_INCLUDE_KEY "BES.Include"
 
@@ -660,6 +661,7 @@ void TheBESKeys::load_dynamic_config(const string name){
     }
     BESDEBUG(MODULE, prolog << "Found a " << DYNAMIC_CONFIG_KEY << " in TheBESKeys." << endl);
 
+    string best_matching_config_name;
     long longest_match=0;
     map<string, map<string, vector<string>>>::iterator best_matching_config=dynamic_confg.end();
 
@@ -696,22 +698,25 @@ void TheBESKeys::load_dynamic_config(const string name){
                         << dcit->first << " SKIPPING!" << endl);
                     }
                     else {
-                        BESDEBUG(MODULE, prolog << "Found new best " << DYNAMIC_CONFIG_KEY << " match for '" << name
-                        << "' " << DYNAMIC_CONFIG_KEY << ": " << dcit->first<< endl);
+
                         best_matching_config = dcit;
                         longest_match = match_length;
+                        best_matching_config_name = dcit->first;
+                        BESDEBUG(MODULE, prolog << "Found new best " << DYNAMIC_CONFIG_KEY << " match for '" << name
+                        << "' " << DYNAMIC_CONFIG_KEY << ": " << best_matching_config_name << endl);
                     }
                 }
             }
         }
     }
 
-    if( longest_match==0 ||
-        best_matching_config==dynamic_confg.end()){
+    if( longest_match==0 || best_matching_config==dynamic_confg.end() ){
         BESDEBUG(MODULE, prolog << "None of the " << DYNAMIC_CONFIG_KEY
         << " regex patterns matched the name: " << name << endl);
         return;
     }
+
+    LOG( "Using " << DYNAMIC_CONFIG_KEY << ":" << best_matching_config_name << " for: " << name << endl);
 
     // Now load the specific keys from the dynamic config;
     map<string, vector<string>>::iterator cit;

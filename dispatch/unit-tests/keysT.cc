@@ -571,22 +571,25 @@ public:
     void dynamic_config_test(){
         if(debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
 
+
         string fnoc_classic_model_key("FONc.ClassicModel");
         string h5_enable_cf_key ("H5.EnableCF");
         string h5_enable_dmr_64bit_int_key("H5.EnableDMR64bitInt");
         bool found_fnoc_classic_model_key;
         bool found_h5_enable_cf_key;
         bool found_h5_enable_dmr_64bit_int_key;
-
+        size_t primary_size = 6;
 
         string bes_conf = (string) TEST_SRC_DIR + "/keys_test_map_map.ini";
         if(debug) cout << "Using TheBESKeys::ConfigFile: '" << bes_conf << "'" << endl;
+        TheBESKeys::ConfigFile = bes_conf;
+        TheBESKeys::TheKeys()->set_key("BES.LogName","./bes.log", false);
         try {
-            if(debug) cout << "Calling TheBESKeys()" << endl;
+            if(debug) cout << "Calling TheBESKeys(config_file)" << endl;
             TheBESKeys besKeys(bes_conf);
 
             if(debug) cout << "Keys size: " << besKeys.d_the_keys->size() << endl;
-            CPPUNIT_ASSERT(besKeys.d_the_keys->size() == 6);
+            CPPUNIT_ASSERT(besKeys.d_the_keys->size() == primary_size);
             if(debug) besKeys.dump(cout);
 
             string value = "";
@@ -609,7 +612,7 @@ public:
             besKeys.load_dynamic_config("some_OTHER_regex");
             if(debug) cout << "Keys size: " << besKeys.d_the_keys->size() << endl;
             if(debug) besKeys.dump(cout);
-            CPPUNIT_ASSERT(besKeys.d_the_keys->size() == 9);
+            CPPUNIT_ASSERT(besKeys.d_the_keys->size() == (primary_size+3));
 
             value = "";
             besKeys.get_value(fnoc_classic_model_key, value, found_fnoc_classic_model_key);
@@ -633,7 +636,7 @@ public:
             besKeys.load_dynamic_config("I/do/not/match/your/regular_expressions.txt");
             if(debug) cout << "Keys size: " << besKeys.d_the_keys->size() << endl;
             if(debug) besKeys.dump(cout);
-            CPPUNIT_ASSERT(besKeys.d_the_keys->size() == 6);
+            CPPUNIT_ASSERT(besKeys.d_the_keys->size() == primary_size);
             besKeys.get_value(fnoc_classic_model_key, value, found);
             if(debug) cout << fnoc_classic_model_key << ": '" << value << "'" << endl;
             CPPUNIT_ASSERT(!found);
@@ -650,7 +653,7 @@ public:
             besKeys.load_dynamic_config("some_regularex");
             if(debug) cout << "Keys size: " << besKeys.d_the_keys->size() << endl;
             if(debug) besKeys.dump(cout);
-            CPPUNIT_ASSERT(besKeys.d_the_keys->size() == 9);
+            CPPUNIT_ASSERT(besKeys.d_the_keys->size() == (primary_size+3));
 
             value = "";
             besKeys.get_value(fnoc_classic_model_key, value, found_fnoc_classic_model_key);
@@ -688,7 +691,7 @@ public:
             besKeys.load_dynamic_config(resty_path);
             if(debug) cout << "Keys size: " << besKeys.d_the_keys->size() << endl;
             if(debug) besKeys.dump(cout);
-            CPPUNIT_ASSERT(besKeys.d_the_keys->size() == 7);
+            CPPUNIT_ASSERT(besKeys.d_the_keys->size() == (primary_size+1) );
 
             value = "";
             besKeys.get_value(h5_enable_cf_key, value, found_h5_enable_cf_key);
@@ -702,7 +705,7 @@ public:
         }
         catch (BESError &e) {
             //cerr << "Error: " << e.get_message() << endl;
-            cerr << "TheBESKeys::ConfigFile: " << TheBESKeys::ConfigFile << endl;
+            cerr << "TheBESKeys::ConfigFile: " << TheBESKeys::ConfigFile << e.get_file()<<":"<<e.get_line() << endl;
             CPPUNIT_FAIL("Unable to create BESKeys: " + e.get_message());
         }
 
