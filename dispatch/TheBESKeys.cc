@@ -648,6 +648,7 @@ void TheBESKeys::load_dynamic_config(const string name){
     // Clear the active keys and copy the original keys into
     // the active keys (resets the keys to 'as read from config files')
     if( d_dynamic_config_in_use ){
+        BESDEBUG(MODULE, prolog << "Unloading DynamicConfig." << endl);
         d_the_keys->clear();
         *d_the_keys = *d_the_original_keys;
         d_dynamic_config_in_use =  false;
