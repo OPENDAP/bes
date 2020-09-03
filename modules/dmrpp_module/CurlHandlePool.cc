@@ -46,7 +46,7 @@
 #include "BESDebug.h"
 #include "BESInternalError.h"
 #include "BESForbiddenError.h"
-#include "TheBESKeys.h"
+// #include "TheBESKeys.h"
 #include "AllowedHosts.h"
 
 #include "DmrppRequestHandler.h"
@@ -61,9 +61,11 @@
 #define KEEP_ALIVE 1   // Reuse libcurl easy handles (1) or not (0).
 #define CURL_VERBOSE 0  // Logs curl info to the bes.log
 
+#define prolog std::string("CurlHandlePool::").append(__func__).append("() - ")
+
 static const int MAX_WAIT_MSECS = 30 * 1000; // Wait max. 30 seconds
 static const unsigned int retry_limit = 10; // Amazon's suggestion
-static const useconds_t uone_second = 1000 * 1000; // one second
+static const useconds_t uone_second = 1000 * 1000; // one second, in microseconds
 
 namespace dmrpp {
 #if HAVE_CURL_MULTI_API
@@ -76,8 +78,6 @@ const bool have_curl_multi_api = false;
 using namespace dmrpp;
 using namespace std;
 using namespace bes;
-
-#define prolog std::string("CurlHandlePool::").append(__func__).append("() - ")
 
 Lock::Lock(pthread_mutex_t &lock) : m_mutex(lock) {
     int status = pthread_mutex_lock(&m_mutex);
