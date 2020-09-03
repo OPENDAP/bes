@@ -641,8 +641,11 @@ bool TheBESKeys::using_dynamic_config(){
  *
  * @param name
  */
-void TheBESKeys::load_dynamic_config(const string name){
-
+void TheBESKeys::load_dynamic_config(const string name)
+{
+#if 1
+    return;
+#else
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
     // Clear the active keys and copy the original keys into
@@ -739,5 +742,7 @@ void TheBESKeys::load_dynamic_config(const string name){
     d_dynamic_config_in_use = true;
 
     BESDEBUG(MODULE, prolog << "END" << endl);
+#endif
+
 }
 
