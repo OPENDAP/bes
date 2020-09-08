@@ -603,7 +603,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         if (!bes::AllowedHosts::theHosts()->is_allowed(url)) {
             string err = (string) "The specified URL " + url
                          + " does not match any of the accessible services in"
-                         + " the white list.";
+                         + " the allowed hosts list.";
             BESDEBUG(MODULE, prolog << err << endl);
             throw BESSyntaxUserError(err, __FILE__, __LINE__);
         }

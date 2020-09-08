@@ -176,11 +176,11 @@ public:
 
     }
 
-    void cmr_access_concept_id_test() {
+    void cmr_access_collection_concept_id_test() {
         string prolog = string(__func__) + "() - ";
         NgapApi ngapi;
         string provider_name;
-        string concept_id;
+        string collection_concept_id;
         string granule_name;
         string data_access_url;
 
@@ -188,11 +188,11 @@ public:
             cout << endl;
         }
         provider_name = "GHRC_CLOUD";
-        concept_id ="G1685850108-GHRC_CLOUD";
+        collection_concept_id ="C1625128931-GHRC_CLOUD";
         granule_name = "amsua15_2020.028_12915_1139_1324_WI.nc";
 
         string resty_path;
-        resty_path = "providers/"+provider_name+"/concepts/"+concept_id+"/granules/"+granule_name;
+        resty_path = "providers/" + provider_name + "/concepts/" + collection_concept_id + "/granules/" + granule_name;
         if (debug) cerr << prolog << "RestifiedPath: " << resty_path << endl;
         try {
             data_access_url = ngapi.convert_ngap_resty_path_to_data_access_url(resty_path);
@@ -245,7 +245,7 @@ public:
     CPPUNIT_TEST_SUITE( NgapApiTest );
 
         CPPUNIT_TEST(cmr_access_entry_title_test);
-        CPPUNIT_TEST(cmr_access_concept_id_test);
+        CPPUNIT_TEST(cmr_access_collection_concept_id_test);
         CPPUNIT_TEST(signed_url_is_expired_test);
 
     CPPUNIT_TEST_SUITE_END();
