@@ -335,7 +335,9 @@ cerr<<"No specific cache info"<<endl;
 bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
 {
     BESDEBUG(HDF5_NAME, prolog << "BEGIN" << endl);
+#if DYNAMIC_CONFIG_ENABLED
     load_config();
+#endif
 
     // For the time being, separate CF file ID from the default file ID(mainly for debugging)
     hid_t cf_fileid = -1;
@@ -980,7 +982,9 @@ cerr<<"after parsing "<<endl;
 bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
 {
     BESDEBUG(HDF5_NAME, prolog << "BEGIN" << endl);
+#if DYNAMIC_CONFIG_ENABLED
     load_config();
+#endif
 
     // Obtain the HDF5 file name.
     string filename = dhi.container->access();
@@ -1071,7 +1075,9 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
 bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
 {
     BESDEBUG(HDF5_NAME, prolog << "BEGIN" << endl);
+#if DYNAMIC_CONFIG_ENABLED
     load_config();
+#endif
 
     if(true ==_usecf) { 
        
@@ -1143,7 +1149,9 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
 bool HDF5RequestHandler::hdf5_build_data_with_IDs(BESDataHandlerInterface & dhi)
 {
     BESDEBUG(HDF5_NAME, prolog << "BEGIN" << endl);
+#if DYNAMIC_CONFIG_ENABLED
     load_config();
+#endif
 
     BESDEBUG(HDF5_NAME,prolog << "Building DataDDS by passing file IDs. "<<endl);
     hid_t cf_fileid = -1;
@@ -1231,7 +1239,9 @@ bool HDF5RequestHandler::hdf5_build_data_with_IDs(BESDataHandlerInterface & dhi)
 bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
 {
     BESDEBUG(HDF5_NAME, prolog << "BEGIN" << endl);
+#if DYNAMIC_CONFIG_ENABLED
     load_config();
+#endif
 
     // Extract the DMR Response object - this holds the DMR used by the
     // other parts of the framework.
@@ -1425,7 +1435,9 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
 bool HDF5RequestHandler::hdf5_build_dmr_with_IDs(BESDataHandlerInterface & dhi)
 {
     BESDEBUG(HDF5_NAME, prolog << "BEGIN" << endl);
+#if DYNAMIC_CONFIG_ENABLED
     load_config();
+#endif
 
     BESDEBUG("h5","Building DMR with passing file IDs. "<<endl);
     string filename = dhi.container->access();
