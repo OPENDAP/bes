@@ -44,7 +44,7 @@
 #define DYNAMIC_CONFIG_KEY "DynamicConfig"
 #define DC_REGEX_KEY "regex"
 #define DC_CONFIG_KEY "config"
-
+#define DYNAMIC_CONFIG_ENABLED 0
 
 /** @brief mapping of key/value pairs defining different behaviors of an
  * application.

@@ -47,7 +47,7 @@ BES.Catalog.catalog.TypeMatch=csv:.*\.csv$;nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$
 #                                                                       #
 #-----------------------------------------------------------------------#
 
-# Need to white list the test server so we can talk to it.
+# Need to add the test server to the ALlowHosts list so we can talk to it.
 AllowedHosts=^(http:\/\/)?localhost(:8080)?\/.*$
 AllowedHosts+=^http:\/\/test\.opendap\.org\/.*$
 

@@ -78,7 +78,7 @@ string HttpUtils::NoProxyRegex;
 #define prolog string("HttpUtils::").append(__func__).append("() - ")
 
 // Initialization routine for the httpd_catalog_HTTPD_CATALOG for certain parameters
-// and keys, like the white list, the MimeTypes translation.
+// and keys, like the AllowHosts list, the MimeTypes translation.
 void HttpUtils::Initialize()
 {
     // MimeTypes - translate from a mime type to a module name
