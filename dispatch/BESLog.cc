@@ -35,8 +35,11 @@
 #include <iostream>
 #include <time.h>
 #include <string>
+#include <sstream>
 
 #include "BESLog.h"
+#include "BESDebug.h"
+#include "BESUtil.h"
 #include "TheBESKeys.h"
 #include "BESInternalFatalError.h"
 
@@ -45,11 +48,14 @@
 #endif
 
 #define ISO8601_TIME_IN_LOGS
+#define MODULE "bes"
+#define prolog std::string("BESLog::").append(__func__).append("() - ")
 
 using namespace std;
 
 BESLog *BESLog::d_instance = 0;
 const string BESLog::mark = string("|&|");
+
 
 /** @brief constructor that sets up logging for the application.
  *
@@ -70,7 +76,7 @@ const string BESLog::mark = string("|&|");
  * @see BESKeys
  */
 BESLog::BESLog() :
-    d_flushed(1), d_file_buffer(0), d_suspended(0), d_verbose(false), d_use_local_time(false)
+    d_flushed(1), d_file_buffer(0), d_suspended(0), d_verbose(false), d_use_local_time(false), d_use_unix_time(false)
 {
     d_suspended = 0;
     bool found = false;
@@ -78,50 +84,66 @@ BESLog::BESLog() :
         TheBESKeys::TheKeys()->get_value("BES.LogName", d_file_name, found);
     }
     catch (BESInternalFatalError &bife) {
-        cerr << "BESInternalFatalError! Message: " << bife.get_message() << "  File: " << bife.get_file() << " Line: " << bife.get_line() << endl;
+        stringstream msg;
+        msg << prolog << "ERROR - Caught BESInternalFatalError! Will re-throw. Message: " << bife.get_message() << "  File: " << bife.get_file() << " Line: " << bife.get_line() << endl;
+        BESDEBUG(MODULE,msg.str());
+        cerr << msg.str();
         throw bife;
     }
     catch (...) {
-        string err ="Caught unknown exception! Unable to determine log file name. BES fatal error!";
-        cerr << err << endl;
-        throw BESInternalFatalError(err, __FILE__, __LINE__);
+        stringstream msg;
+        msg << prolog << "FATAL ERROR: Caught unknown exception! Unable to determine log file name." << endl;
+        BESDEBUG(MODULE,msg.str());
+        cerr << msg.str();
+        throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
     }
 
     // By default, use UTC in the logs.
     found = false;
-    string local_time = "no";
+    string local_time;
     try {
         TheBESKeys::TheKeys()->get_value("BES.LogTimeLocal", local_time, found);
-        if (local_time == "YES" || local_time == "Yes" || local_time == "yes") {
-            d_use_local_time = true;
-        }
-
+        d_use_local_time = found && (BESUtil::lowercase(local_time) == "yes");
+        BESDEBUG(MODULE, prolog << "d_use_local_time: " << (d_use_local_time?"true":"false") << endl);
     }
     catch (...) {
-        string err ="BES Fatal: Unable to read the value of BES.LogTimeUTC";
-        cerr << err << endl;
-        throw BESInternalFatalError(err, __FILE__, __LINE__);
+        stringstream err;
+        err << prolog << "FATAL ERROR: Caught unknown exception. Failed to read the value of BES.LogTimeLocal" << endl;
+        BESDEBUG(MODULE,err.str());
+        cerr << err.str() << endl;
+        throw BESInternalFatalError(err.str(), __FILE__, __LINE__);
     }
 
     if (d_file_name == "") {
-        string err = "BES Fatal: unable to determine log file name. Please set BES.LogName in your initialization file";
-        cerr << err << endl;
-        throw BESInternalFatalError(err, __FILE__, __LINE__);
+        stringstream err;
+        err << prolog << "FATAL ERROR: unable to determine log file name. ";
+        err << "Please set BES.LogName in your initialization file" << endl;
+        BESDEBUG(MODULE,err.str());
+        cerr << err.str() << endl;
+        throw BESInternalFatalError(err.str(), __FILE__, __LINE__);
     }
 
     d_file_buffer = new ofstream(d_file_name.c_str(), ios::out | ios::app);
     if (!(*d_file_buffer)) {
-        string err = "BES Fatal; cannot open log file " + d_file_name + ".";
-        cerr << err << endl;
-        throw BESInternalFatalError(err, __FILE__, __LINE__);
+        stringstream err;
+        err << prolog << "BES Fatal; cannot open log file " + d_file_name + "." << endl;
+        BESDEBUG(MODULE,err.str());
+        cerr << err.str() << endl;
+        throw BESInternalFatalError(err.str(), __FILE__, __LINE__);
     }
 
     found = false;
-    string verbose;
-    TheBESKeys::TheKeys()->get_value("BES.LogVerbose", verbose, found);
-    if (verbose == "YES" || verbose == "Yes" || verbose == "yes") {
-        d_verbose = true;
-    }
+    string s;
+    TheBESKeys::TheKeys()->get_value("BES.LogVerbose", s, found);
+    d_verbose = found && (BESUtil::lowercase(s) == "yes");
+    BESDEBUG(MODULE, prolog << "d_verbose: " << (d_verbose?"true":"false") << endl);
+
+    found = false;
+    s = "";
+    TheBESKeys::TheKeys()->get_value("BES.LogUnixTime", s, found);
+    d_use_unix_time = found && (BESUtil::lowercase(s)=="true");
+    BESDEBUG(MODULE, prolog << "d_use_unix_time: " << (d_use_unix_time?"true":"false") << endl);
+
 }
 
 /** @brief Cleans up the logging mechanism
@@ -147,6 +169,8 @@ void BESLog::dump_time()
 #ifdef ISO8601_TIME_IN_LOGS
     time_t now;
     time(&now);
+
+#if 0
     char buf[sizeof "YYYY-MM-DDTHH:MM:SSzone"];
     int status = 0;
 
@@ -160,8 +184,25 @@ void BESLog::dump_time()
         status = strftime(buf, sizeof buf, "%FT%T%Z", gmtime(&now));
     else
         status = strftime(buf, sizeof buf, "%FT%T%Z", localtime(&now));
+#endif
 
-    (*d_file_buffer) << buf;
+    char buf[sizeof "YYYY-MM-DDTHH:MM:SS zone"];
+    int status = 0;
+    if(d_use_unix_time){
+        (*d_file_buffer) << now;
+    }
+    else {
+        struct tm * dat_time;
+        if (!d_use_local_time){
+            dat_time = gmtime(&now);
+        }
+        else{
+            dat_time = localtime(&now);
+        }
+        status = strftime(buf, sizeof buf, "%FT%T %Z", dat_time);
+        (*d_file_buffer) << buf;
+    }
+
 
 #else
     const time_t sctime = time(NULL);
