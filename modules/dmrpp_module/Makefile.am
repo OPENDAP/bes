@@ -58,7 +58,7 @@ DmrppInt64.h DmrppInt8.h DmrppUInt16.h DmrppUInt32.h DmrppUInt64.h \
 DmrppStr.h DmrppStructure.h DmrppUrl.h DmrppD4Enum.h DmrppD4Group.h \
 DmrppD4Opaque.h DmrppD4Sequence.h DmrppTypeFactory.h DmrppParserSax2.h \
 CredentialsManager.h AccessCredentials.h NgapS3Credentials.h \
-DmrppMetadataStore.h awsv4.h DmrppNames.h
+DmrppMetadataStore.h awsv4.h DmrppNames.h byteswap_compat.h
 
 DMRPP_MODULE = DmrppModule.cc DmrppRequestHandler.cc DmrppModule.h DmrppRequestHandler.h
 
