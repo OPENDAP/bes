@@ -186,7 +186,7 @@ void BESLog::dump_time()
         status = strftime(buf, sizeof buf, "%FT%T%Z", localtime(&now));
 #endif
 
-    char buf[sizeof "YYYY-MM-DDTHH:MM:SS zone"];
+    char buf[sizeof "YYYY-MM-DDTHH:MM:SS zones"];
     int status = 0;
     if(d_use_unix_time){
         (*d_file_buffer) << now;
