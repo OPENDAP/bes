@@ -209,8 +209,7 @@ dmrpp_easy_handle::dmrpp_easy_handle() : d_request_headers(0) {
 
     CURLcode res;
 
-    if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_ERRORBUFFER, d_errbuf)))
-        throw BESInternalError(string("CURL Error: ").append(curl::error_message(res,d_errbuf)), __FILE__, __LINE__);
+    curl::set_error_buffer(d_handle, d_errbuf);
 
 #if CURL_VERBOSE
     if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_DEBUGFUNCTION, curl_trace)))

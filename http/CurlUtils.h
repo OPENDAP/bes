@@ -64,6 +64,8 @@ namespace curl {
     bool is_retryable(std::string url);
     std::string get_netrc_filename();
     std::string hyrax_user_agent();
+    void set_error_buffer(CURL *curl, char *error_buffer);
+    void unset_error_buffer(CURL *curl);
 
 } // namespace curl
 
