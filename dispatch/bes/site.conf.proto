@@ -63,22 +63,16 @@
 
 ###################################################################################
 # Because the Hyrax is often tasked with accessing services using the 
-# internets we maintain a whitelist of services which Hyrax is allowed 
-# to access. By default, Hyrax is allowed to access itself. If additional
-# services are to be added to the whitelist do so by adding the new 
-# service URL to the site.conf file using += syntax like this:
+# internets we maintain an allowed hosts list of services which Hyrax is allowed
+# to access. By default, Hyrax is allowed to access itself. Each entry on the
+# AllowedHosts  list must be a regular expression matching the target host. If
+# additional services are to be added to the allowed hosts list, do so by adding the new
+# service URL to the site.conf file using += syntax as below.
 #
-#     Gateway.Whitelist+=http://test.opendap.org/opendap
+# The following example matches everything at http://test.opendp.org/
 #
-#Gateway.Whitelist+=http://test.opendap.org
+#    AllowedHosts += ^http:\/\/test\.opendap\.org\/.*$
 #
-# Gateway operations (in which Hyrax reaches out across the web and 
-# grabs various data resources) utilize a cache. The cache size and location
-# can be adjusted with the following parameters.
-#
-#Gateway.Cache.dir = /tmp/hyrax_gw
-#Gateway.Cache.prefix = gw_
-#Gateway.Cache.size = 500
 #
 ###################################################################################
 

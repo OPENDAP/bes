@@ -287,7 +287,7 @@ add_executable(bes
     dispatch/unit-tests/uncompressT.cc
     dispatch/unit-tests/urlT.cc
     dispatch/unit-tests/utilT.cc
-    dispatch/unit-tests/WhiteListTest.cc
+        dispatch/unit-tests/AllowedHostsTest.cc
     dispatch/BESAbstractModule.h
     dispatch/BESApp.cc
     dispatch/BESApp.h
@@ -471,8 +471,13 @@ add_executable(bes
     dispatch/ShowNodeResponseHandler.h
     dispatch/TheBESKeys.cc
     dispatch/TheBESKeys.h
+<<<<<<< HEAD
     dispatch/WhiteList.cc
     dispatch/WhiteList.h
+=======
+    dispatch/AllowedHosts.cc
+    dispatch/AllowedHosts.h
+>>>>>>> master
 
     http/url_impl.cc
     http/url_impl.h
@@ -486,6 +491,14 @@ add_executable(bes
     http/RemoteResource.cc
     http/RemoteResource.h
     http/unit-tests/HttpUtilsTest.cc
+<<<<<<< HEAD
+=======
+    http/unit-tests/CurlUtilsTest.cc
+    http/EffectiveUrlCache.cc
+    http/EffectiveUrlCache.h
+    http/unit-tests/EffectiveUrlCacheTest.cc
+    http/unit-tests/HttpUrlTest.cc
+>>>>>>> master
     http/unit-tests/RemoteResourceTest.cc
 
     functions/geo-functions/unused/NC_GOES_Dataset.cpp

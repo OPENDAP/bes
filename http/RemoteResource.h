@@ -1,9 +1,8 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 
-// This file is part of gateway_module, A C++ module that can be loaded in to
-// the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
+// This file is part of the BES http package, part of the Hyrax data server.
 
-// Copyright (c) 2013 OPeNDAP, Inc.
+// Copyright (c) 2020 OPeNDAP, Inc.
 // Author: Nathan Potter <ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
@@ -25,17 +24,18 @@
 // Authors:
 //      ndp       Nathan Potter <ndp@opendap.org>
 
-#ifndef _REMOTE_HTTP_RESOURCE_H_
-#define _REMOTE_HTTP_RESOURCE_H_ 1
+#ifndef  _bes_http_REMOTE_HTTP_RESOURCE_H_
+#define  _bes_http_REMOTE_HTTP_RESOURCE_H_ 1
 
 #include <curl/curl.h>
 #include <curl/easy.h>
 
 #include <string>
 #include <vector>
-
+#if 0
 #include "InternalErr.h"
 #include "RCReader.h"
+#endif
 #include "RemoteResource.h"
 #include "rapidjson/document.h"
 
@@ -87,13 +87,14 @@ namespace http {
         /// The HTTP response headers returned by the request for the remote resource and parsed into KVP
         std::map<std::string, std::string> *d_http_response_headers; // Response headers
 
-
+#if 0
+        // FIXME Not impl. jhrg 8/7/20
         /**
          * Determines the type of the remote resource. Looks at HTTP headers, and failing that compares the
          * basename in the resource URL to the data handlers TypeMatch.
          */
         void setType(const std::vector<std::string> *resp_hdrs);
-
+#endif
         /**
          * Makes the curl call to write the resource to a file, determines DAP type of the content, and rewinds
          * the file descriptor.
@@ -131,7 +132,7 @@ namespace http {
 
         void retrieveResource();
 
-        void retrieveResource(const string &template_key, const string &replace_value);
+        void retrieveResource(const std::string &template_key, const std::string &replace_value);
 
         /**
          * Returns the DAP type std::string of the RemoteHttpResource
@@ -153,17 +154,12 @@ namespace http {
         /**
          * Returns a std::vector of HTTP headers received along with the response from the request for the remote resource..
          */
-        std::vector<std::string> *getResponseHeaders() {
-            if (!d_initialized)
-                throw libdap::Error(
-                        "RemoteResource::getCacheFileName() - STATE ERROR: Remote Resource Has Not Been Retrieved.");
-            return d_response_headers;
-        }
+        std::vector<std::string> *getResponseHeaders();
 
 
-            /**
-            * Returns cache file content in a string..
-            */
+        /**
+         * Returns cache file content in a string..
+         */
         std::string get_response_as_string();
 
         rapidjson::Document get_as_json();
@@ -172,4 +168,4 @@ namespace http {
 
 } /* namespace http */
 
-#endif /* _REMOTE_HTTP_RESOURCE_H_ */
+#endif /*  _bes_http_REMOTE_HTTP_RESOURCE_H_ */

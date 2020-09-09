@@ -42,7 +42,6 @@ public:
     //static const std::string ENV_BUCKET_KEY;
     static const std::string ENV_URL_KEY;
     static const std::string ENV_CREDS_KEY_VALUE;
-    static const std::string NETRC_FILE_KEY;
 
 private:
     CredentialsManager();
@@ -80,8 +79,6 @@ public:
     bool hasNgapS3Credentials(){
         return ngaps3CredentialsLoaded;
     }
-
-    std::string get_netrc_filename(){ return d_netrc_filename; }
 };
 
 

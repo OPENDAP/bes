@@ -213,8 +213,8 @@ public:
 
     void tearDown()
     {
-        delete TheBESKeys::_instance;
-        TheBESKeys::_instance = 0;
+        delete TheBESKeys::d_instance;
+        TheBESKeys::d_instance = 0;
     }
 
     CPPUNIT_TEST_SUITE( catT );

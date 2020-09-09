@@ -85,30 +85,35 @@
 #define BES_DATA_ROOT "BES.Data.RootDirectory"
 #define BES_CATALOG_ROOT "BES.Catalog.catalog.RootDirectory"
 
+
 using namespace std;
 using namespace libdap;
 
 BESStoredDapResultCache *BESStoredDapResultCache::d_instance = 0;
 bool BESStoredDapResultCache::d_enabled = true;
+
+#if 0
 const string BESStoredDapResultCache::SUBDIR_KEY = "DAP.StoredResultsCache.subdir";
 const string BESStoredDapResultCache::PREFIX_KEY = "DAP.StoredResultsCache.prefix";
 const string BESStoredDapResultCache::SIZE_KEY = "DAP.StoredResultsCache.size";
+#endif
 
 unsigned long BESStoredDapResultCache::getCacheSizeFromConfig()
 {
     bool found;
     string size;
     unsigned long size_in_megabytes = 0;
-    TheBESKeys::TheKeys()->get_value(SIZE_KEY, size, found);
+    TheBESKeys::TheKeys()->get_value(DAP_STORED_RESULTS_CACHE_SIZE_KEY, size, found);
     if (found) {
         istringstream iss(size);
         iss >> size_in_megabytes;
     }
     else {
-        string msg = "[ERROR] BESStoredDapResultCache::getCacheSize() - The BES Key " + SIZE_KEY
-            + " is not set! It MUST be set to utilize the Stored Result Caching system. ";
-        BESDEBUG("cache", msg << endl);
-        throw BESInternalError(msg, __FILE__, __LINE__);
+        stringstream msg;
+        msg << "[ERROR] BESStoredDapResultCache::getCacheSize() - The BES Key " << DAP_STORED_RESULTS_CACHE_SIZE_KEY;
+        msg << " is not set! It MUST be set to utilize the Stored Result Caching system. ";
+        BESDEBUG("cache", msg.str() << endl);
+        throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
     return size_in_megabytes;
 }
@@ -117,13 +122,14 @@ string BESStoredDapResultCache::getSubDirFromConfig()
 {
     bool found;
     string subdir = "";
-    TheBESKeys::TheKeys()->get_value(SUBDIR_KEY, subdir, found);
+    TheBESKeys::TheKeys()->get_value(DAP_STORED_RESULTS_CACHE_SUBDIR_KEY, subdir, found);
 
     if (!found) {
-        string msg = "[ERROR] BESStoredDapResultCache::getSubDirFromConfig() - The BES Key " + SUBDIR_KEY
-            + " is not set! It MUST be set to utilize the Stored Result Caching system. ";
-        BESDEBUG("cache", msg << endl);
-        throw BESInternalError(msg, __FILE__, __LINE__);
+        stringstream msg;
+        msg << "[ERROR] BESStoredDapResultCache::getSubDirFromConfig() - The BES Key " << DAP_STORED_RESULTS_CACHE_SUBDIR_KEY;
+        msg << " is not set! It MUST be set to utilize the Stored Result Caching system. ";
+        BESDEBUG("cache", msg.str() << endl);
+        throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
     else {
         while (*subdir.begin() == '/' && subdir.length() > 0) {
@@ -140,15 +146,16 @@ string BESStoredDapResultCache::getResultPrefixFromConfig()
 {
     bool found;
     string prefix = "";
-    TheBESKeys::TheKeys()->get_value(PREFIX_KEY, prefix, found);
+    TheBESKeys::TheKeys()->get_value(DAP_STORED_RESULTS_CACHE_PREFIX_KEY, prefix, found);
     if (found) {
         prefix = BESUtil::lowercase(prefix);
     }
     else {
-        string msg = "[ERROR] BESStoredDapResultCache::getResultPrefix() - The BES Key " + PREFIX_KEY
-            + " is not set! It MUST be set to utilize the Stored Result Caching system. ";
-        BESDEBUG("cache", msg << endl);
-        throw BESInternalError(msg, __FILE__, __LINE__);
+        stringstream msg;
+        msg << "[ERROR] BESStoredDapResultCache::getResultPrefix() - The BES Key " << DAP_STORED_RESULTS_CACHE_PREFIX_KEY;
+        msg << " is not set! It MUST be set to utilize the Stored Result Caching system. ";
+        BESDEBUG("cache", msg.str() << endl);
+        throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
 
     return prefix;

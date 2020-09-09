@@ -18,7 +18,27 @@
 Http.Cache.dir=/tmp/hyrax_http
 Http.Cache.prefix=http_
 Http.Cache.size=500
-Http.Cookies.File=/tmp/.hyrax_cookies
+
+# Cookie Files base (one file for each beslistener pid)
+Http.Cookies.File=/tmp/.hyrax-cookies
+
+# The Http.No.Retry.Regex is used to exclude certain URL patterns from retry attempts
+# This is useful for services, such as OAuth2 where certain redirect URLs contain
+# "one-time" codes that may not be reused. Retrying these URLs will never work and doing
+# so just makes the inevitable failure take much longer.
+#
+# Http.No.Retry.Regex=^https:\/\/.*\?code\=.*$
+#
+# Since many URLs result in a number of time consuming redirects (ex: OAuth2)
+# We cache the "effective URL" for each to improve speed and reduce authentication churn
+#
+# Http.cache.effective.urls=true
+#
+# But we also know that many URLs (ex: AWS S3) will never redirect so we can skip the caching
+# for those destinations. Any URL matching these patterns will not hae redirects followed
+# and cached.
+#
+# Http.cache.effective.urls.skip.regex.pattern=^https:\/\/.*s3(\.|-).*\.amazonaws\.com\/.*$
 
 Http.MimeTypes=nc:application/x-netcdf
 Http.MimeTypes+=h4:application/x-hdf
