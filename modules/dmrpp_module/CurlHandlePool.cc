@@ -210,7 +210,7 @@ dmrpp_easy_handle::dmrpp_easy_handle() : d_request_headers(0) {
     CURLcode res;
 
     if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_ERRORBUFFER, d_errbuf)))
-        throw BESInternalError(string("CURL Error: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
+        throw BESInternalError(string("CURL Error: ").append(curl::error_message(res,d_errbuf)), __FILE__, __LINE__);
 
 #if CURL_VERBOSE
     if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_DEBUGFUNCTION, curl_trace)))
@@ -440,7 +440,7 @@ void dmrpp_multi_handle::read_data() {
 
                 CURLcode res = msg->data.result;
                 if (res != CURLE_OK)
-                    throw BESInternalError(string("Error HTTP: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
+                    throw BESInternalError(string("Error HTTP: ").append(curl::error_message(res,"")), __FILE__, __LINE__);
 
                 // Note: 'eh' is the easy handle returned by culr_multi_info_read(),
                 // but in it's private field is our dmrpp_easy_handle object. We need
@@ -448,7 +448,7 @@ void dmrpp_multi_handle::read_data() {
                 dmrpp_easy_handle *dmrpp_easy_handle = 0;
                 res = curl_easy_getinfo(eh, CURLINFO_PRIVATE, &dmrpp_easy_handle);
                 if (res != CURLE_OK)
-                    throw BESInternalError(string("Could not access easy handle: ").append(curl_easy_strerror(res)), __FILE__, __LINE__);
+                    throw BESInternalError(string("Could not access easy handle: ").append(curl::error_message(res,"")), __FILE__, __LINE__);
 
                 // This code has to work with both http/s: and file: protocols. Here we check the
                 // HTTP status code. If the protocol is not HTTP, we assume since msg->data.result

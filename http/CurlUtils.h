@@ -38,7 +38,7 @@
 
 namespace curl {
 
-    CURL *init(char *error_buffer);
+    CURL *init();
 
     bool configureProxy(CURL *curl, const std::string &url);
 
