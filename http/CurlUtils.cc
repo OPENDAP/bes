@@ -70,6 +70,10 @@ using namespace http;
 
 #define prolog std::string("CurlUtils::").append(__func__).append("() - ")
 
+string hyrax_user_agent(){
+    // return curl_version();
+    return "Hyrax";
+}
 
 namespace curl {
 static const unsigned int retry_limit = 10; // Amazon's suggestion
@@ -559,7 +563,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         }
 
         // Set the user agent to curls version response because, well, that's what command line curl does :)
-        res = curl_easy_setopt(curl, CURLOPT_USERAGENT, curl_version());
+        res = curl_easy_setopt(curl, CURLOPT_USERAGENT,  hyrax_user_agent() );
         if(res!=CURLE_OK){
             throw BESInternalError(string("CURL Error: ").append(error_message(res,error_buffer)), __FILE__, __LINE__);
         }

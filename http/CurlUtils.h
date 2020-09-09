@@ -63,7 +63,7 @@ namespace curl {
     BESRegex *get_cache_effective_urls_skip_regex();
     bool is_retryable(std::string url);
     std::string get_netrc_filename();
-
+    std::string hyrax_user_agent();
 
 } // namespace curl
 

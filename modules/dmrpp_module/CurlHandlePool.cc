@@ -665,7 +665,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
         curl_easy_setopt(handle->d_handle, CURLOPT_MAXREDIRS, 20);
 
         // Set the user agent something otherwise TEA will never redirect to URS.
-        curl_easy_setopt(handle->d_handle, CURLOPT_USERAGENT, "Hyrax"/* curl_version()*/);
+        curl_easy_setopt(handle->d_handle, CURLOPT_USERAGENT, curl::hyrax_user_agent());
 
         // This means libcurl will use Basic, Digest, GSS Negotiate, or NTLM,
         // choosing the the 'safest' one supported by the server.
