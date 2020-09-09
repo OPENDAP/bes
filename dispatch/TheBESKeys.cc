@@ -571,7 +571,7 @@ void TheBESKeys::get_values(
  */
 void TheBESKeys::get_values(
         const std::string &key,
-        std::map< std::string, std::map<std::string,std::vector<std::string>>> &primary_map,
+        std::map< std::string, std::map<std::string,std::vector<std::string> > > &primary_map,
         const bool &case_insensitive_map_keys,
         bool &found){
 

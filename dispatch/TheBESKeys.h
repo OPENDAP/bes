@@ -151,7 +151,7 @@ public:
     void get_values(const std::string &, std::map<std::string, std::string> &map_values,
                     const bool &case_insensitive_map_keys, bool &found);
 
-    void get_values(const std::string &, std::map<std::string, std::map<std::string, std::vector<std::string>>> &map,
+    void get_values(const std::string &, std::map<std::string, std::map<std::string, std::vector<std::string> > > &map,
                     const bool &case_insensitive_map_keys, bool &found);
 
 
