@@ -454,6 +454,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         if (!curl)
             throw BESInternalError("Could not initialize libcurl.",__FILE__, __LINE__);
 
+        // Error Buffer (for use during this setup) --------------------------------------------------------------------
         res = curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, error_buffer);
         if(res!=CURLE_OK){
             throw BESInternalError(string("CURL Error: ").append(error_message(res,error_buffer)), __FILE__, __LINE__);
@@ -463,10 +464,8 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         // Load in the default headers to send with a request. The empty Pragma
         // headers overrides libcurl's default Pragma: no-cache header (which
         // will disable caching by Squid, etc.).
-
         // the empty Pragma never appears in the outgoing headers when this isn't present
         // d_request_headers->push_back(string("Pragma: no-cache"));
-
         // d_request_headers->push_back(string("Cache-Control: no-cache"));
 
         // Allow compressed responses. Sending an empty string enables all supported compression types.
@@ -563,7 +562,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         }
 
         // Set the user agent to curls version response because, well, that's what command line curl does :)
-        res = curl_easy_setopt(curl, CURLOPT_USERAGENT,  hyrax_user_agent() );
+        res = curl_easy_setopt(curl, CURLOPT_USERAGENT,  hyrax_user_agent().c_str() );
         if(res!=CURLE_OK){
             throw BESInternalError(string("CURL Error: ").append(error_message(res,error_buffer)), __FILE__, __LINE__);
         }
@@ -843,7 +842,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         if (!d_handle)
             throw BESInternalError(string("ERROR! Failed to acquire cURL Easy Handle! "), __FILE__, __LINE__);
 
-        // Error Buffer ------------------------------------------------------------------------------------------------
+        // Error Buffer (for use during this setup) --------------------------------------------------------------------
         if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_ERRORBUFFER, errbuf)))
             throw BESInternalError(string("CURL Error: ").append(error_message(res,errbuf)), __FILE__, __LINE__);
 
