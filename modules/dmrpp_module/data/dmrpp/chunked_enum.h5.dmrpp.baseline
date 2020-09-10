@@ -31,7 +31,7 @@
             <Value>UNKNOWN</Value>
             <Value>UNKNOWN</Value>
         </Attribute>
-        <dmrpp:chunks>
+        <dmrpp:chunks byteOrder="LE">
             <dmrpp:chunk offset="2144" nBytes="8"/>
         </dmrpp:chunks>
     </Int64>

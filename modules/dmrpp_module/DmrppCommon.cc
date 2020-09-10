@@ -42,6 +42,7 @@
 #include "DmrppRequestHandler.h"
 #include "DmrppCommon.h"
 #include "Chunk.h"
+#include "util.h"
 
 using namespace std;
 using namespace libdap;
@@ -147,24 +148,56 @@ void DmrppCommon::ingest_compression_type(string compression_type_string)
 }
 
 /**
+ * @brief Parses the text content of the XML element chunks:byteOrder.
+ *
+ * @param byte_order_string One of "LE", "BE"
+ */
+    void DmrppCommon::ingest_byte_order(string byte_order_string) {
+
+        if (byte_order_string.empty()) return;
+
+        // Process content
+        if (byte_order_string.compare("LE") == 0) {
+            d_byte_order = "LE";
+            d_twiddle_bytes = is_host_big_endian();
+        } else {
+            if (byte_order_string.compare("BE") == 0) {
+                d_byte_order = "BE";
+                d_twiddle_bytes = !(is_host_big_endian());
+            } else {
+                throw BESInternalError("Did not recognize byteOrder.", __FILE__, __LINE__);
+            }
+        }
+    }
+
+#if 0
+std::string DmrppCommon::get_byte_order()
+    {
+        return d_byte_order;
+    }
+#endif
+
+/**
  * @brief Add a new chunk as defined by an h4:byteStream element
  * @return The number of chunk refs (byteStreams) held.
  */
-unsigned long DmrppCommon::add_chunk(const string &data_url, unsigned long long size, unsigned long long offset,
-    string position_in_array)
-{
-    d_chunks.push_back(Chunk(data_url, size, offset, position_in_array));
+    unsigned long DmrppCommon::add_chunk(const string &data_url, const string &byte_order,
+                                         unsigned long long size, unsigned long long offset, string position_in_array)
 
-    return d_chunks.size();
-}
+    {
+        d_chunks.push_back(Chunk(data_url, byte_order, size, offset, position_in_array));
 
-unsigned long DmrppCommon::add_chunk(const string &data_url, unsigned long long size, unsigned long long offset,
-    const vector<unsigned int> &position_in_array)
-{
-    d_chunks.push_back(Chunk(data_url, size, offset, position_in_array));
+        return d_chunks.size();
+    }
 
-    return d_chunks.size();
-}
+    unsigned long DmrppCommon::add_chunk(const string &data_url, const string &byte_order,
+                                         unsigned long long size, unsigned long long offset,
+                                         const vector<unsigned int> &position_in_array)
+    {
+        d_chunks.push_back(Chunk(data_url, byte_order, size, offset, position_in_array));
+
+        return d_chunks.size();
+    }
 
 /**
  * @brief read method for the atomic types
@@ -219,6 +252,17 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
     if (!compression.empty())
         if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "compressionType", (const xmlChar*) compression.c_str()) < 0)
             throw BESInternalError("Could not write compression attribute.", __FILE__, __LINE__);
+
+    vector<Chunk>::iterator i = get_chunk_vec().begin();
+    if ( i != get_chunk_vec().end() ) {
+        Chunk &chunk = *i;
+        std::string byteOrder = chunk.get_byte_order();
+        if (!byteOrder.empty()) {
+            if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "byteOrder",
+                                            (const xmlChar *) byteOrder.c_str()) < 0)
+                throw BESInternalError("Could not write attribute byteOrder", __FILE__, __LINE__);
+        }
+    }
 
     if (d_chunk_dimension_sizes.size() > 0) {
         // Write element "chunkDimensionSizes" with dmrpp namespace:

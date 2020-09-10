@@ -155,7 +155,7 @@ public:
     void test_add_chunk_1()
     {
         CPPUNIT_ASSERT(d_dc.d_chunks.size() == 0);
-        int size = d_dc.add_chunk("url", 100, 200, "[10,20]");
+        int size = d_dc.add_chunk("url", "", 100, 200, "[10,20]");
 
         CPPUNIT_ASSERT(size == 1);
         CPPUNIT_ASSERT(d_dc.d_chunks.size() == 1);
@@ -174,7 +174,7 @@ public:
         pia.push_back(10);
         pia.push_back(20);
 
-        int size = d_dc.add_chunk("url", 100, 200, pia);
+        int size = d_dc.add_chunk("url", "", 100, 200, pia);
 
         CPPUNIT_ASSERT(size == 1);
         CPPUNIT_ASSERT(d_dc.d_chunks.size() == 1);
@@ -190,7 +190,7 @@ public:
     void test_print_chunks_element_1()
     {
         d_dc.parse_chunk_dimension_sizes("51 17");
-        d_dc.add_chunk("url", 100, 200, "[10,20]");
+        d_dc.add_chunk("url", "", 100, 200, "[10,20]");
 
         XMLWriter writer;
         d_dc.print_chunks_element(writer, "dmrpp");
@@ -203,8 +203,8 @@ public:
     void test_print_chunks_element_2()
     {
         d_dc.parse_chunk_dimension_sizes("51 17");
-        d_dc.add_chunk("url", 100, 200, "[10,20]");
-        int size = d_dc.add_chunk("url", 100, 300, "[20,30]");
+        d_dc.add_chunk("url", "", 100, 200, "[10,20]");
+        int size = d_dc.add_chunk("url", "", 100, 300, "[20,30]");
 
         CPPUNIT_ASSERT(size == 2);
 
@@ -220,8 +220,8 @@ public:
     {
         d_dc.d_deflate = true;
         d_dc.parse_chunk_dimension_sizes("51 17");
-        d_dc.add_chunk("url", 100, 200, "[10,20]");
-        int size = d_dc.add_chunk("url", 100, 300, "[20,30]");
+        d_dc.add_chunk("url", "", 100, 200, "[10,20]");
+        int size = d_dc.add_chunk("url", "", 100, 300, "[20,30]");
 
         CPPUNIT_ASSERT(size == 2);
 
@@ -238,8 +238,8 @@ public:
         d_dc.d_deflate = true;
         d_dc.d_shuffle = true;
         d_dc.parse_chunk_dimension_sizes("51 17");
-        d_dc.add_chunk("url", 100, 200, "[10,20]");
-        int size = d_dc.add_chunk("url", 100, 300, "[20,30]");
+        d_dc.add_chunk("url", "", 100, 200, "[10,20]");
+        int size = d_dc.add_chunk("url", "", 100, 300, "[20,30]");
 
         CPPUNIT_ASSERT(size == 2);
 
@@ -256,8 +256,8 @@ public:
         d_dc.d_deflate = false;
         d_dc.d_shuffle = true;
         d_dc.parse_chunk_dimension_sizes("51 17");
-        d_dc.add_chunk("url", 100, 200, "[10,20]");
-        int size = d_dc.add_chunk("url", 100, 300, "[20,30]");
+        d_dc.add_chunk("url", "", 100, 200, "[10,20]");
+        int size = d_dc.add_chunk("url", "", 100, 300, "[20,30]");
 
         CPPUNIT_ASSERT(size == 2);
 

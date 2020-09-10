@@ -49,6 +49,7 @@
 #include "BESInternalError.h"
 #include "BESDebug.h"
 
+#include "byteswap_compat.h"
 #include "CurlHandlePool.h"
 #include "Chunk.h"
 #include "DmrppArray.h"
@@ -402,6 +403,7 @@ void DmrppArray::read_contiguous()
 		// Use the original chunk's size and offset to evenly split it into smaller chunks
 		unsigned long long chunk_size = master_chunk_size / num_chunks;
 		unsigned long long chunk_offset = master_chunk.get_offset();
+		std::string chunk_byteorder = master_chunk.get_byte_order();
 
 		// If the size of the master chunk is not evenly divisible by num_chunks, capture
 		// the remainder here and increase the size of the last chunk by this number of bytes.
@@ -413,10 +415,10 @@ void DmrppArray::read_contiguous()
 		queue<Chunk *> chunks_to_read;
 
 		for (unsigned int i = 0; i < num_chunks-1; i++) {
-			chunks_to_read.push(new Chunk(chunk_url, chunk_size, (chunk_size * i) + chunk_offset));
+			chunks_to_read.push(new Chunk(chunk_url, chunk_byteorder, chunk_size, (chunk_size * i) + chunk_offset));
 		}
 		// See above for details about chunk_remainder. jhrg 9/21/19
-		chunks_to_read.push(new Chunk(chunk_url, chunk_size + chunk_remainder, (chunk_size * (num_chunks-1)) + chunk_offset));
+		chunks_to_read.push(new Chunk(chunk_url, chunk_byteorder, chunk_size + chunk_remainder, (chunk_size * (num_chunks-1)) + chunk_offset));
 
 		// Start the max number of processing pipelines
 		pthread_t threads[DmrppRequestHandler::d_max_parallel_transfers];
@@ -1240,22 +1242,57 @@ void DmrppArray::read_chunks_unconstrained()
  */
 bool DmrppArray::read()
 {
-    if (read_p()) return true;
+    if (!read_p())
+    {
+        // Single chunk and 'contiguous' are the same for this code.
 
-    // Single chunk and 'contiguous' are the same for this code.
-
-    if (get_immutable_chunks().size() == 1 || get_chunk_dimension_sizes().empty()) {
-        BESDEBUG(dmrpp_4, "Calling read_contiguous() for " << name() << endl);
-        read_contiguous();    // Throws on various errors
-    }
-    else {  // Handle the more complex case where the data is chunked.
-        if (!is_projected()) {
-            BESDEBUG(dmrpp_4, "Calling read_chunks_unconstrained() for " << name() << endl);
-            read_chunks_unconstrained();
+        if (get_immutable_chunks().size() == 1 || get_chunk_dimension_sizes().empty()) {
+            BESDEBUG(dmrpp_4, "Calling read_contiguous() for " << name() << endl);
+            read_contiguous();    // Throws on various errors
+        } else {  // Handle the more complex case where the data is chunked.
+            if (!is_projected()) {
+                BESDEBUG(dmrpp_4, "Calling read_chunks_unconstrained() for " << name() << endl);
+                read_chunks_unconstrained();
+            } else {
+                BESDEBUG(dmrpp_4, "Calling read_chunks() for " << name() << endl);
+                read_chunks();
+            }
         }
-        else {
-            BESDEBUG(dmrpp_4, "Calling read_chunks() for " << name() << endl);
-            read_chunks();
+    }
+
+    if (this->twiddle_bytes()) {
+        int num = this->length();
+        Type var_type = this->var()->type();
+
+        switch (var_type) {
+            case dods_int16_c:
+            case dods_uint16_c: {
+                dods_uint16 *local = reinterpret_cast<dods_uint16*>(this->get_buf());
+                while (num--) {
+                    *local = bswap_16(*local);
+                    local++;
+                }
+                break;
+            }
+            case dods_int32_c:
+            case dods_uint32_c: {
+                dods_uint32 *local = reinterpret_cast<dods_uint32*>(this->get_buf());;
+                while (num--) {
+                    *local = bswap_32(*local);
+                    local++;
+                }
+                break;
+            }
+            case dods_int64_c:
+            case dods_uint64_c: {
+                dods_uint64 *local = reinterpret_cast<dods_uint64*>(this->get_buf());;
+                while (num--) {
+                    *local = bswap_64(*local);
+                    local++;
+                }
+                break;
+            }
+            default: break; // Do nothing for all other types..
         }
     }
 
