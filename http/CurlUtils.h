@@ -38,7 +38,7 @@
 
 namespace curl {
 
-    CURL *init(char *error_buffer);
+    CURL *init();
 
     bool configureProxy(CURL *curl, const std::string &url);
 
@@ -63,7 +63,11 @@ namespace curl {
     BESRegex *get_cache_effective_urls_skip_regex();
     bool is_retryable(std::string url);
     std::string get_netrc_filename();
-
+    std::string hyrax_user_agent();
+    void set_error_buffer(CURL *curl, char *error_buffer);
+    void unset_error_buffer(CURL *curl);
+    void check_setopt_result(CURLcode result, std::string msg_base, std::string opt_name, char *ebuf, std::string file, unsigned int line );
+    unsigned long max_redirects();
 
 } // namespace curl
 

@@ -71,7 +71,7 @@ namespace http {
         d_uid = uid;
         d_echo_token = echo_token;
 
-        d_curl = curl::init(d_error_buffer);
+        d_curl = curl::init();
 
         d_resourceCacheFileName.clear();
         d_response_headers = new vector<string>();

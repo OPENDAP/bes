@@ -345,7 +345,7 @@ void TheBESKeys::get_value(const string &s, string &val, bool &found)
         found = true;
         if ((*i).second.size() > 1) {
             string err = string("Multiple values for the key ") + s + " found, should only be one.";
-            throw BESSyntaxUserError(err, __FILE__, __LINE__);
+            throw BESInternalError(err, __FILE__, __LINE__);
         }
         if ((*i).second.size() == 1) {
             val = (*i).second[0];

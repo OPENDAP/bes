@@ -160,33 +160,33 @@ namespace ngap {
         // Pick up the values of said tokens.
         string cmr_url = get_cmr_search_endpoint_url() + "?";
 
-        char error_buffer[CURL_ERROR_SIZE];
-        CURL *curl = curl::init(error_buffer);  // This may throw either Error or InternalErr
-        char *esc_url_content;
+        {
+            CURL *curl = curl_easy_init();
+            char *esc_url_content;
 
-        esc_url_content = curl_easy_escape(curl, tokens[1].c_str(), tokens[1].size());
-        cmr_url += CMR_PROVIDER + "=" + esc_url_content + "&";
-        curl_free(esc_url_content);
-
-        esc_url_content = curl_easy_escape(curl, tokens[3].c_str(), tokens[3].size());
-        if (tokens[2] == NGAP_COLLECTIONS_KEY) {
-            cmr_url += CMR_ENTRY_TITLE + "=" + esc_url_content + "&";
-        }
-        else if(tokens[2] == NGAP_CONCEPTS_KEY){
-            cmr_url += CMR_COLLECTION_CONCEPT_ID + "=" + esc_url_content + "&";
-        }
-        else {
+            esc_url_content = curl_easy_escape(curl, tokens[1].c_str(), tokens[1].size());
+            cmr_url += CMR_PROVIDER + "=" + esc_url_content + "&";
             curl_free(esc_url_content);
-            throw BESSyntaxUserError(string("The specified path '") + restified_path +
-                                     "' does not conform to the NGAP request interface API.", __FILE__, __LINE__);
+
+            esc_url_content = curl_easy_escape(curl, tokens[3].c_str(), tokens[3].size());
+            if (tokens[2] == NGAP_COLLECTIONS_KEY) {
+                cmr_url += CMR_ENTRY_TITLE + "=" + esc_url_content + "&";
+            }
+            else if(tokens[2] == NGAP_CONCEPTS_KEY){
+                cmr_url += CMR_COLLECTION_CONCEPT_ID + "=" + esc_url_content + "&";
+            }
+            else {
+                curl_free(esc_url_content);
+                throw BESSyntaxUserError(string("The specified path '") + restified_path +
+                                         "' does not conform to the NGAP request interface API.", __FILE__, __LINE__);
+            }
+            curl_free(esc_url_content);
+
+            esc_url_content = curl_easy_escape(curl, tokens[5].c_str(), tokens[5].size());
+            cmr_url += CMR_GRANULE_UR + "=" + esc_url_content;
+            curl_free(esc_url_content);
+            curl_easy_cleanup(curl);
         }
-        curl_free(esc_url_content);
-
-        esc_url_content = curl_easy_escape(curl, tokens[5].c_str(), tokens[5].size());
-        cmr_url += CMR_GRANULE_UR + "=" + esc_url_content;
-        curl_free(esc_url_content);
-        curl_easy_cleanup(curl);
-
 
         BESDEBUG(MODULE, prolog << "CMR Request URL: " << cmr_url << endl);
 #if 1
