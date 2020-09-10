@@ -67,6 +67,7 @@ class DmrppCommon {
 private:
 	bool d_deflate;
 	bool d_shuffle;
+	bool d_compact;
 	std::vector<unsigned int> d_chunk_dimension_sizes;
 	std::vector<Chunk> d_chunks;
 
@@ -74,6 +75,7 @@ protected:
     void m_duplicate_common(const DmrppCommon &dc) {
     	d_deflate = dc.d_deflate;
     	d_shuffle = dc.d_shuffle;
+    	d_compact = dc.d_compact;
     	d_chunk_dimension_sizes = dc.d_chunk_dimension_sizes;
     	d_chunks = dc.d_chunks;
     }
@@ -90,7 +92,7 @@ public:
     static std::string d_dmrpp_ns;       ///< The DMR++ XML namespace
     static std::string d_ns_prefix;      ///< The XML namespace prefix to use
 
-    DmrppCommon() : d_deflate(false), d_shuffle(false)
+    DmrppCommon() : d_deflate(false), d_shuffle(false). d_compact(false)
     {
     }
 
@@ -121,6 +123,16 @@ public:
     /// @brief Set the value of the shuffle property
     void set_shuffle(bool value) {
         d_shuffle = value;
+    }
+
+    /// @brief Returns true if this object utilizes COMPACT layout.
+    virtual bool is_compact_layout() const {
+        return d_compact;
+    }
+
+    /// @brief Set the value of the compact property
+    void set_compact(bool value) {
+        d_compact = value;
     }
 
     virtual const std::vector<Chunk> &get_immutable_chunks() const {
