@@ -643,10 +643,6 @@ bool TheBESKeys::using_dynamic_config(){
  */
 void TheBESKeys::load_dynamic_config(const string name)
 {
-    if(BESDebug::IsSet("bes:keys")){
-        dump(*BESDebug::GetStrm());
-    }
-
 #if DYNAMIC_CONFIG_ENABLED
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
@@ -746,6 +742,10 @@ void TheBESKeys::load_dynamic_config(const string name)
 
     BESDEBUG(MODULE, prolog << "END" << endl);
 #endif
+
+    if(BESDebug::IsSet("bes:keys")){
+        dump(*BESDebug::GetStrm());
+    }
 
 }
 
