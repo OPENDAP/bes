@@ -110,6 +110,7 @@ FONc.NoGlobalAttrs=true
 #
 H5.EnableDMR64bitInt=true
 H5.EnableCF=true
+H5.DefaultHandleDimension=true 
 H5.KeepVarLeadingUnderscore=false
 H5.EnableCheckNameClashing=true
 H5.EnableAddPathAttrs=true
