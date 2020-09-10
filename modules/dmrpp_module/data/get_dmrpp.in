@@ -169,7 +169,7 @@ show_usage() {
  -h: Show help
  -v: Verbose: Print the DMR too
  -V: Very Verbose: print the DMR, the command and the configuration
-     file used to build the DMR
+     file used to build the DMR, and do not remove temporary files.
  -r: Just print the DMR that will be used to build the DMR++
  -u: The binary object URL for use in the DMR++ file. If option '-u' is
      not used; then dap4:Dataset/@dmrpp:href attribute will contain the template string
