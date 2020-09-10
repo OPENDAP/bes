@@ -608,6 +608,8 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
                         case dods_uint64_c:
                             values.resize(memRequired);
                             get_data(dataset, reinterpret_cast<void *>(&values[0]));
+                            btp->var()->set_read_p(true);
+                            btp->var()->val2buf(reinterpret_cast<void *>(&values[0]));
                             break;
 
                         case dods_str_c:
@@ -617,10 +619,14 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
                                 read_vlen_string(dataset,1,NULL,NULL,NULL,finstrval);
                                 string strval = finstrval[0];
                                 //set_value(strval);
+                                btp->var()->set_read_p(true);
+                                btp->var()->val2buf(reinterpret_cast<void *>(&strval[0]));
                             } else {
                                 values.resize(dsize+1);
                                 get_data(dataset, reinterpret_cast<void *>(&values[0]));
                                 string str(values.begin(),values.end());
+                                btp->var()->set_read_p(true);
+                                btp->var()->val2buf(reinterpret_cast<void *>(&str[0]));
                                 //set_value(str);
                             }
                             break;
