@@ -643,6 +643,9 @@ bool TheBESKeys::using_dynamic_config(){
  */
 void TheBESKeys::load_dynamic_config(const string name)
 {
+    if(BESDebug::IsSet("bes:keys")){
+        dump(*BESDebug::GetStrm());
+    }
 
 #if DYNAMIC_CONFIG_ENABLED
 
