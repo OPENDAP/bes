@@ -433,7 +433,7 @@ void dmrpp_multi_handle::read_data() {
 
         CURLMsg *msg = 0;
         int msgs_left = 0;
-        char empty[1];
+        char empty[1]; // TODO Replace this with the actual error buffer that's in use in the CURL handle msg->easy_handle
         empty[0] = 0;
         while ((msg = curl_multi_info_read(p_impl->curlm, &msgs_left))) {
             if (msg->msg == CURLMSG_DONE) {
