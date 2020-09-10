@@ -372,13 +372,20 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
             }
 
             if (using_proxy) {
+                CURLcode res;
+                char error_buffer[CURL_ERROR_SIZE];
 
                 BESDEBUG(MODULE, prolog << "Setting up a proxy server." << endl);
                 BESDEBUG(MODULE, prolog << "Proxy host: " << proxyHost << endl);
                 BESDEBUG(MODULE, prolog << "Proxy port: " << proxyPort << endl);
 
-                curl_easy_setopt(curl, CURLOPT_PROXY, proxyHost.data());
-                curl_easy_setopt(curl, CURLOPT_PROXYPORT, proxyPort);
+                set_error_buffer(curl,error_buffer);
+
+                res = curl_easy_setopt(curl, CURLOPT_PROXY, proxyHost.data());
+                check_setopt_result(res, prolog, "CURLOPT_PROXY", error_buffer, __FILE__, __LINE__);
+
+                res = curl_easy_setopt(curl, CURLOPT_PROXYPORT, proxyPort);
+                check_setopt_result(res, prolog, "CURLOPT_PROXYPORT", error_buffer, __FILE__, __LINE__);
 
 // #ifdef CURLOPT_PROXYAUTH
 
@@ -388,40 +395,30 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
 
                 // According to http://curl.haxx.se/libcurl/c/curl_easy_setopt.html#CURLOPTPROXYAUTH As of 4/21/08 only NTLM, Digest and Basic work.
 
-#if 0
-            BESDEBUG(MODULE,  prolog << "CURLOPT_PROXYAUTH       = " << CURLOPT_PROXYAUTH << endl);
-            BESDEBUG(MODULE,  prolog << "CURLAUTH_BASIC          = " << CURLAUTH_BASIC << endl);
-            BESDEBUG(MODULE,  prolog << "CURLAUTH_DIGEST         = " << CURLAUTH_DIGEST << endl);
-            BESDEBUG(MODULE,  prolog << "CURLAUTH_DIGEST_IE      = " << CURLAUTH_DIGEST_IE << endl);
-            BESDEBUG(MODULE,  prolog << "CURLAUTH_GSSNEGOTIATE   = " << CURLAUTH_GSSNEGOTIATE << endl);
-            BESDEBUG(MODULE,  prolog << "CURLAUTH_NTLM           = " << CURLAUTH_NTLM << endl);
-            BESDEBUG(MODULE,  prolog << "CURLAUTH_ANY            = " << CURLAUTH_ANY << endl);
-            BESDEBUG(MODULE,  prolog << "CURLAUTH_ANYSAFE        = " << CURLAUTH_ANYSAFE << endl);
-            BESDEBUG(MODULE,  prolog << "CURLAUTH_ONLY           = " << CURLAUTH_ONLY << endl);
-            BESDEBUG(MODULE,  prolog << "Using CURLOPT_PROXYAUTH = " << proxyAuthType << endl);
-#endif
 
+                res = curl_easy_setopt(curl, CURLOPT_PROXYAUTH, proxyAuthType);
+                check_setopt_result(res, prolog, "CURLOPT_PROXYAUTH", error_buffer, __FILE__, __LINE__);
                 BESDEBUG(MODULE, prolog << "Using CURLOPT_PROXYAUTH = " << getCurlAuthTypeName(proxyAuthType) << endl);
-                curl_easy_setopt(curl, CURLOPT_PROXYAUTH, proxyAuthType);
 // #endif
 
 
 
                 if (!proxyUser.empty()) {
-                    curl_easy_setopt(curl, CURLOPT_PROXYUSERNAME, proxyUser.data());
-                    BESDEBUG(MODULE,  prolog << "CURLOPT_PROXYUSER : " << proxyUser << endl);
+                    res = curl_easy_setopt(curl, CURLOPT_PROXYUSERNAME, proxyUser.data());
+                    check_setopt_result(res, prolog, "CURLOPT_PROXYUSERNAME", error_buffer, __FILE__, __LINE__);
+                    BESDEBUG(MODULE,  prolog << "CURLOPT_PROXYUSERNAME : " << proxyUser << endl);
 
                     if (!proxyPassword.empty()) {
-                        curl_easy_setopt(curl, CURLOPT_PROXYPASSWORD, proxyPassword.data());
-                        BESDEBUG(MODULE,
-                                  prolog << "CURLOPT_PROXYPASSWORD: " << proxyPassword << endl);
+                        res = curl_easy_setopt(curl, CURLOPT_PROXYPASSWORD, proxyPassword.data());
+                        check_setopt_result(res, prolog, "CURLOPT_PROXYPASSWORD", error_buffer, __FILE__, __LINE__);
+                        BESDEBUG(MODULE, prolog << "CURLOPT_PROXYPASSWORD: " << proxyPassword << endl);
                     }
                 } else if (!proxyUserPW.empty()) {
-                    BESDEBUG(MODULE,
-                              prolog << "CURLOPT_PROXYUSERPWD : " << proxyUserPW << endl);
-                    curl_easy_setopt(curl, CURLOPT_PROXYUSERPWD, proxyUserPW.data());
+                    res = curl_easy_setopt(curl, CURLOPT_PROXYUSERPWD, proxyUserPW.data());
+                    check_setopt_result(res, prolog, "CURLOPT_PROXYUSERPWD", error_buffer, __FILE__, __LINE__);
+                    BESDEBUG(MODULE, prolog << "CURLOPT_PROXYUSERPWD : " << proxyUserPW << endl);
                 }
-
+                unset_error_buffer(curl);
             }
         }
         BESDEBUG(MODULE,  prolog << "END." << endl);
@@ -462,46 +459,46 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         // Allow compressed responses. Sending an empty string enables all supported compression types.
 #ifndef CURLOPT_ACCEPT_ENCODING
         res = curl_easy_setopt(curl, CURLOPT_ENCODING, "");
-        if(res!=CURLE_OK){
-            throw BESInternalError(string("CURL Error: ").append(error_message(res,error_buffer)), __FILE__, __LINE__);
-        }
+        check_setopt_result(res, prolog, "CURLOPT_ENCODING", error_buffer, __FILE__, __LINE__);
 #else
         res = curl_easy_setopt(curl, CURLOPT_ACCEPT_ENCODING, "");
-        if(res!=CURLE_OK){
-            throw BESInternalError(string("CURL Error: ").append(error_message(res,error_buffer)), __FILE__, __LINE__);
-        }
+        check_setopt_result(res, prolog, "CURLOPT_ACCEPT_ENCODING", error_buffer, __FILE__,__LINE__);
 #endif
-        // We have to set FailOnError to false for any of the non-Basic
-        // authentication schemes to work. 07/28/03 jhrg
-        res = curl_easy_setopt(curl, CURLOPT_FAILONERROR, 0);
-        if(res!=CURLE_OK){
-            throw BESInternalError(string("CURL Error: ").append(error_message(res,error_buffer)), __FILE__, __LINE__);
-        }
+        // Disable Progress Meter
+        res = curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
+        check_setopt_result(res, prolog, "CURLOPT_NOPROGRESS", error_buffer, __FILE__,__LINE__);
+
+        // Disable cURL signal handling
+        res = curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
+        check_setopt_result(res, prolog, "CURLOPT_NOSIGNAL", error_buffer, __FILE__,__LINE__);
+
+
 
         // -  -  -  - -  -  -  - -  -  -  - -  -  -  - -  -  -  - -  -  -  - -  -  -  -
         // Authentication config.
         //
-        // This means libcurl will use Basic, Digest, GSS Negotiate, or NTLM,
+
+        // We have to set FailOnError to false for any of the non-Basic
+        // authentication schemes to work. 07/28/03 jhrg
+        res = curl_easy_setopt(curl, CURLOPT_FAILONERROR, 0L);
+        check_setopt_result(res, prolog, "CURLOPT_FAILONERROR", error_buffer, __FILE__, __LINE__);
+
+
+        // CURLAUTH_ANY means libcurl will use Basic, Digest, GSS Negotiate, or NTLM,
         // choosing the the 'safest' one supported by the server.
         // This requires curl 7.10.6 which is still in pre-release. 07/25/03 jhrg
         res = curl_easy_setopt(curl, CURLOPT_HTTPAUTH, (long) CURLAUTH_ANY);
-        if(res!=CURLE_OK){
-            throw BESInternalError(string("CURL Error: ").append(error_message(res,error_buffer)), __FILE__, __LINE__);
-        }
+        check_setopt_result(res, prolog, "CURLOPT_HTTPAUTH", error_buffer, __FILE__, __LINE__);
 
-        // I added these next three to support Hyrax accessing data held behind URS auth. ndp - 8/20/18
-        res = curl_easy_setopt(curl, CURLOPT_NETRC, 1);
-        if(res!=CURLE_OK){
-            throw BESInternalError(string("CURL Error: ").append(error_message(res,error_buffer)), __FILE__, __LINE__);
-        }
+
+        res = curl_easy_setopt(curl, CURLOPT_NETRC, CURL_NETRC_OPTIONAL);
+        check_setopt_result(res, prolog, "CURLOPT_NETRC", error_buffer, __FILE__, __LINE__);
 
         // If the configuration specifies a particular .netrc credentials file, use it.
         string netrc_file = get_netrc_filename();
         if (!netrc_file.empty()) {
             res = curl_easy_setopt(curl, CURLOPT_NETRC_FILE, netrc_file.c_str());
-            if(res!=CURLE_OK){
-                throw BESInternalError(string("CURL Error: ").append(error_message(res,error_buffer)), __FILE__, __LINE__);
-            }
+            check_setopt_result(res, prolog, "CURLOPT_NETRC_FILE", error_buffer, __FILE__, __LINE__);
 
         }
         VERBOSE(__FILE__ << "::get_easy_handle() is using the netrc file '"
@@ -512,57 +509,37 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         // Cookies
         //
         res = curl_easy_setopt(curl, CURLOPT_COOKIEFILE, curl::get_cookie_filename().c_str());
-        if(res!=CURLE_OK){
-            throw BESInternalError(string("CURL Error: ").append(error_message(res,error_buffer)), __FILE__, __LINE__);
-        }
+        check_setopt_result(res, prolog, "CURLOPT_COOKIEFILE", error_buffer, __FILE__, __LINE__);
 
         res = curl_easy_setopt(curl, CURLOPT_COOKIEJAR, curl::get_cookie_filename().c_str());
-        if(res!=CURLE_OK){
-            throw BESInternalError(string("CURL Error: ").append(error_message(res,error_buffer)), __FILE__, __LINE__);
-        }
+        check_setopt_result(res, prolog, "CURLOPT_COOKIEJAR", error_buffer, __FILE__,__LINE__);
 
-
-        res = curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1);
-        if(res!=CURLE_OK){
-            throw BESInternalError(string("CURL Error: ").append(error_message(res,error_buffer)), __FILE__, __LINE__);
-        }
-
-        res = curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
-        if(res!=CURLE_OK){
-            throw BESInternalError(string("CURL Error: ").append(error_message(res,error_buffer)), __FILE__, __LINE__);
-        }
 
 
         res = curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, save_raw_http_headers);
-        if(res!=CURLE_OK){
-            throw BESInternalError(string("CURL Error: ").append(error_message(res,error_buffer)), __FILE__, __LINE__);
-        }
+        check_setopt_result(res, prolog, "CURLOPT_HEADERFUNCTION", error_buffer,__FILE__,__LINE__);
 
         // In read_url a call to CURLOPT_WRITEHEADER is used to set the fourth
         // param of save_raw_http_headers to a vector<string> object.
 
         // Follow 302 (redirect) responses
-        res = curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
-        if(res!=CURLE_OK){
-            throw BESInternalError(string("CURL Error: ").append(error_message(res,error_buffer)), __FILE__, __LINE__);
-        }
+        res = curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+        check_setopt_result(res, prolog, "CURLOPT_FOLLOWLOCATION", error_buffer, __FILE__, __LINE__);
 
-        res = curl_easy_setopt(curl, CURLOPT_MAXREDIRS, 5);
-        if(res!=CURLE_OK){
-            throw BESInternalError(string("CURL Error: ").append(error_message(res,error_buffer)), __FILE__, __LINE__);
-        }
+        res = curl_easy_setopt(curl, CURLOPT_MAXREDIRS, max_redirects());
+        check_setopt_result(res, prolog, "CURLOPT_MAXREDIRS", error_buffer, __FILE__, __LINE__);
 
-        // Set the user agent to curls version response because, well, that's what command line curl does :)
+        // Set the user agent to Hyrax's user agent value
         res = curl_easy_setopt(curl, CURLOPT_USERAGENT,  hyrax_user_agent().c_str() );
-        if(res!=CURLE_OK){
-            throw BESInternalError(string("CURL Error: ").append(error_message(res,error_buffer)), __FILE__, __LINE__);
-        }
+        check_setopt_result(res, prolog, "CURLOPT_USERAGENT", error_buffer, __FILE__, __LINE__);
 
 #if 0
         // If the user turns off SSL validation...
     if (!d_rcr->get_validate_ssl() == 0) {
-        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
-        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0);
+        res = curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
+        check_setopt_result(res, prolog, "CURLOPT_SSL_VERIFYPEER", error_buffer, __FILE__, __LINE__);
+        res = curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0);
+        check_setopt_result(res, prolog, "CURLOPT_SSL_VERIFYHOST", error_buffer, __FILE__, __LINE__);
     }
 
     // Look to see if cookies are turned on in the .dodsrc file. If so,
@@ -571,23 +548,21 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
     // expected.
     if (!d_cookie_jar.empty()) {
         BESDEBUG(cerr <<  prolog << "Setting the cookie jar to: " << d_cookie_jar << endl);
-        curl_easy_setopt(curl, CURLOPT_COOKIEJAR, d_cookie_jar.c_str());
-        curl_easy_setopt(curl, CURLOPT_COOKIESESSION, 1);
-    }
+        res = curl_easy_setopt(curl, CURLOPT_COOKIEJAR, d_cookie_jar.c_str());
+        check_setopt_result(res, prolog, "CURLOPT_COOKIEJAR", error_buffer, __FILE__, __LINE__);
+        res = curl_easy_setopt(curl, CURLOPT_COOKIESESSION, 1);
+        check_setopt_result(res, prolog, "CURLOPT_COOKIESESSION", error_buffer, __FILE__, __LINE__);
+   }
 #endif
 
         if (curl_trace) {
             BESDEBUG(MODULE,  prolog << "Curl version: " << curl_version() << endl);
             res = curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
-            if(res!=CURLE_OK){
-                throw BESInternalError(string("CURL Error: ").append(error_message(res,error_buffer)), __FILE__, __LINE__);
-            }
+            check_setopt_result(res, prolog, "CURLOPT_VERBOSE", error_buffer, __FILE__, __LINE__);
             BESDEBUG(MODULE,  prolog << "Curl in verbose mode." << endl);
 
             res = curl_easy_setopt(curl, CURLOPT_DEBUGFUNCTION, curl_debug);
-            if(res!=CURLE_OK){
-                throw BESInternalError(string("CURL Error: ").append(error_message(res,error_buffer)), __FILE__, __LINE__);
-            }
+            check_setopt_result(res, prolog, "CURLOPT_DEBUGFUNCTION", error_buffer, __FILE__, __LINE__);
             BESDEBUG(MODULE,  prolog << "Curl debugging function installed." << endl);
         }
 
@@ -607,7 +582,6 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
 
 
     CURL *init_effective_url_retriever_handle(const string url, vector<string> &resp_hdrs){
-        string err_msg_base = "cURL Error setting ";
         char error_buffer[CURL_ERROR_SIZE];
         CURLcode res;
         CURL *curl = 0;
@@ -620,27 +594,20 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
 
         // set target URL.
         res = curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-        if (res != CURLE_OK)
-            throw BESInternalError((err_msg_base + "CURLOPT_URL: ").append(error_message(res, error_buffer)), __FILE__, __LINE__);
+        check_setopt_result(res, prolog, "CURLOPT_URL", error_buffer, __FILE__, __LINE__);
 
         // get the offset to offset + size bytes
         res = curl_easy_setopt(curl, CURLOPT_RANGE, get_range_arg_string(0,4).c_str());
-        if (res != CURLE_OK)
-            throw BESInternalError((err_msg_base+"CURLOPT_RANGE: ").append(error_message(res, error_buffer)), __FILE__,
-                                   __LINE__);
+        check_setopt_result(res, prolog, "CURLOPT_RANGE", error_buffer, __FILE__, __LINE__);
 
         res = curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeNothing);
-        if (res != CURLE_OK)
-            throw BESInternalError((err_msg_base+"CURLOPT_WRITEFUNCTION: ").append(
-                    error_message(res, error_buffer)), __FILE__, __LINE__);
+        check_setopt_result(res, prolog, "CURLOPT_WRITEFUNCTION", error_buffer, __FILE__, __LINE__);
 
         // Pass save_raw_http_headers() a pointer to the vector<string> where the
         // response headers may be stored. Callers can use the resp_hdrs
         // value/result parameter to get the raw response header information .
         res = curl_easy_setopt(curl, CURLOPT_WRITEHEADER, &resp_hdrs);
-        if (res != CURLE_OK)
-            throw BESInternalError((err_msg_base+"CURLOPT_WRITEHEADER: ").append(
-                    error_message(res, error_buffer)), __FILE__, __LINE__);
+        check_setopt_result(res, prolog, "CURLOPT_WRITEHEADER", error_buffer, __FILE__, __LINE__);
 
         unset_error_buffer(curl);
 
@@ -671,7 +638,6 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
 
         CURLcode res;
         char error_buffer[CURL_ERROR_SIZE];
-        string curl_error_base("ERROR - cURL had an issue. Message: ");
 
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
@@ -687,26 +653,19 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         set_error_buffer(curl,error_buffer);
 
         res = curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-        if(res!=CURLE_OK){
-            throw BESInternalError(curl_error_base.append(error_message(res,error_buffer)), __FILE__, __LINE__);
-        }
+        check_setopt_result(res, prolog, "CURLOPT_URL", error_buffer, __FILE__, __LINE__);
 
         res = curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeToOpenfileDescriptor);
-        if(res!=CURLE_OK){
-            throw BESInternalError(curl_error_base.append(error_message(res,error_buffer)), __FILE__, __LINE__);
-        }
+        check_setopt_result(res, prolog, "CURLOPT_WRITEFUNCTION", error_buffer, __FILE__, __LINE__);
 
 
 #ifdef CURLOPT_WRITEDATA
         res = curl_easy_setopt(curl, CURLOPT_WRITEDATA, &fd);
-        if(res!=CURLE_OK){
-            throw BESInternalError(curl_error_base.append(error_message(res,error_buffer)), __FILE__, __LINE__);
-        }
+        check_setopt_result(res, prolog, "CURLOPT_WRITEDATA", error_buffer, __FILE__, __LINE__);
 #else
         res = curl_easy_setopt(curl, CURLOPT_FILE, &fd);
-        if(res!=CURLE_OK){
-            throw BESInternalError(curl_error_base.append(error_message(res,error_buffer)), __FILE__, __LINE__);
-        }
+        check_setopt_result(res, prolog, "CURLOPT_FILE", error_buffer, __FILE__, __LINE__);
+
 #endif
         //DBG(copy(d_request_headers.begin(), d_request_headers.end(), ostream_iterator<string>(cerr, "\n")));
         BuildHeaders req_hdrs;
@@ -715,17 +674,13 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
             req_hdrs = for_each(request_headers->begin(), request_headers->end(), req_hdrs);
 
         res = curl_easy_setopt(curl, CURLOPT_HTTPHEADER, req_hdrs.get_headers());
-        if(res!=CURLE_OK){
-            throw BESInternalError(curl_error_base.append(error_message(res,error_buffer)), __FILE__, __LINE__);
-        }
+        check_setopt_result(res, prolog, "CURLOPT_HTTPHEADER", error_buffer, __FILE__, __LINE__);
 
         // Pass save_raw_http_headers() a pointer to the vector<string> where the
         // response headers may be stored. Callers can use the resp_hdrs
         // value/result parameter to get the raw response header information .
         res = curl_easy_setopt(curl, CURLOPT_WRITEHEADER, resp_hdrs);
-        if(res!=CURLE_OK){
-            throw BESInternalError(curl_error_base.append(error_message(res,error_buffer)), __FILE__, __LINE__);
-        }
+        check_setopt_result(res, prolog, "CURLOPT_WRITEHEADER", error_buffer, __FILE__, __LINE__);
 
         unset_error_buffer(curl);
 
@@ -733,7 +688,8 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
 
         // Free the header list and null the value in d_curl.
         curl_slist_free_all(req_hdrs.get_headers());
-        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, 0);
+        res = curl_easy_setopt(curl, CURLOPT_HTTPHEADER, 0);
+        check_setopt_result(res, prolog, "CURLOPT_HTTPHEADER", error_buffer, __FILE__, __LINE__);
 
 
         BESDEBUG(MODULE, prolog << "END" << endl);
@@ -863,67 +819,47 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         set_error_buffer(d_handle,errbuf);
 
         // Target URL --------------------------------------------------------------------------------------------------
-        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_URL, target_url.c_str())))
-            throw BESInternalError(string("HTTP Error setting URL: ").append(error_message(res, errbuf)),
-                                   __FILE__, __LINE__);
+        res = curl_easy_setopt(d_handle, CURLOPT_URL, target_url.c_str());
+        check_setopt_result(res, prolog, "CURLOPT_URL", errbuf, __FILE__, __LINE__);
 
         // Pass all data to the 'write_data' function ------------------------------------------------------------------
-        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_WRITEFUNCTION, c_write_data)))
-            throw BESInternalError(string("CURL Error: ").append(error_message(res, errbuf)),
-                                   __FILE__, __LINE__);
+        res = curl_easy_setopt(d_handle, CURLOPT_WRITEFUNCTION, c_write_data);
+        check_setopt_result(res, prolog, "CURLOPT_WRITEFUNCTION", errbuf, __FILE__, __LINE__);
 
         // Pass this to write_data as the fourth argument --------------------------------------------------------------
-        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_WRITEDATA, reinterpret_cast<void *>(response_buff))))
-            throw BESInternalError(
-                    string("CURL Error setting chunk as data buffer: ").append(error_message(res, errbuf)),
-                    __FILE__, __LINE__);
+        res = curl_easy_setopt(d_handle, CURLOPT_WRITEDATA, reinterpret_cast<void *>(response_buff));
+        check_setopt_result(res, prolog, "CURLOPT_WRITEDATA", errbuf, __FILE__, __LINE__);
 
         // Follow redirects --------------------------------------------------------------------------------------------
-        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_FOLLOWLOCATION, 1L)))
-            throw BESInternalError(string("Error setting CURLOPT_FOLLOWLOCATION: ").append(
-                    error_message(res, errbuf)),
-                                   __FILE__, __LINE__);
-
+        res = curl_easy_setopt(d_handle, CURLOPT_FOLLOWLOCATION, 1L);
+        check_setopt_result(res, prolog, "CURLOPT_FOLLOWLOCATION", errbuf, __FILE__, __LINE__);
 
         // Use cookies -------------------------------------------------------------------------------------------------
-        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_COOKIEFILE, cookies_file.c_str())))
-            throw BESInternalError(
-                    string("Error setting CURLOPT_COOKIEFILE to '").append(cookies_file).append("' msg: ").append(
-                            error_message(res, errbuf)),
-                    __FILE__, __LINE__);
+        res = curl_easy_setopt(d_handle, CURLOPT_COOKIEFILE, cookies_file.c_str());
+        check_setopt_result(res, prolog, "CURLOPT_COOKIEFILE", errbuf, __FILE__, __LINE__);
 
-        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_COOKIEJAR, cookies_file.c_str())))
-            throw BESInternalError(string("Error setting CURLOPT_COOKIEJAR: ").append(
-                    error_message(res, errbuf)),
-                                   __FILE__, __LINE__);
-
+        res = curl_easy_setopt(d_handle, CURLOPT_COOKIEJAR, cookies_file.c_str());
+        check_setopt_result(res, prolog, "CURLOPT_COOKIEJAR", errbuf, __FILE__, __LINE__);
 
         // Authenticate using best available ---------------------------------------------------------------------------
-        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_HTTPAUTH, (long) CURLAUTH_ANY)))
-            throw BESInternalError(string("Error setting CURLOPT_HTTPAUTH to CURLAUTH_ANY msg: ").append(
-                    error_message(res, errbuf)),
-                                   __FILE__, __LINE__);
+        res = curl_easy_setopt(d_handle, CURLOPT_HTTPAUTH, (long) CURLAUTH_ANY);
+        check_setopt_result(res, prolog, "CURLOPT_HTTPAUTH", errbuf, __FILE__, __LINE__);
 
-#if 0
-        if(debug) cout << "uid: " << uid << endl;
-            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_USERNAME, uid.c_str())))
-                throw BESInternalError(string("Error setting CURLOPT_USERNAME: ").append(error_message(res, d_errbuf)),
-                                       __FILE__, __LINE__);
-
-            if(debug) cout << "pw: " << pw << endl;
-            if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_PASSWORD, pw.c_str())))
-                throw BESInternalError(string("Error setting CURLOPT_PASSWORD: ").append(error_message(res, d_errbuf)),
-                                       __FILE__, __LINE__);
-#else
         // Use .netrc for credentials ----------------------------------------------------------------------------------
-        if (CURLE_OK != (res = curl_easy_setopt(d_handle, CURLOPT_NETRC, CURL_NETRC_OPTIONAL)))
-            throw BESInternalError(string("Error setting CURLOPT_NETRC to CURL_NETRC_OPTIONAL: ").append(
-                    error_message(res, errbuf)), __FILE__, __LINE__);
-#endif
+        res = curl_easy_setopt(d_handle, CURLOPT_NETRC, CURL_NETRC_OPTIONAL);
+        check_setopt_result(res, prolog, "CURLOPT_NETRC", errbuf, __FILE__, __LINE__);
 
+        // If the configuration specifies a particular .netrc credentials file, use it.
+        string netrc_file = get_netrc_filename();
+        if (!netrc_file.empty()) {
+            res = curl_easy_setopt(d_handle, CURLOPT_NETRC_FILE, netrc_file.c_str());
+            check_setopt_result(res, prolog, "CURLOPT_NETRC_FILE", errbuf, __FILE__, __LINE__);
+        }
+
+        VERBOSE(__FILE__ << "::get_easy_handle() is using the netrc file '"
+                         << ((!netrc_file.empty()) ? netrc_file : "~/.netrc") << "'" << endl);
 
         unset_error_buffer(d_handle);
-
 
         return d_handle;
     }
@@ -1372,9 +1308,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
     {
         CURLcode res;
         res = curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, error_buffer);
-        if(res!=CURLE_OK){
-            throw BESInternalError(string("CURL Error: ").append(error_message(res,error_buffer)), __FILE__, __LINE__);
-        }
+        check_setopt_result(res, prolog, "CURLOPT_ERRORBUFFER", error_buffer, __FILE__, __LINE__);
     }
 
     /**
@@ -1397,5 +1331,18 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         return "Hyrax";
     }
 
+    void check_setopt_result(CURLcode result, string msg_base, string opt_name, char *ebuf, string file, unsigned int line )
+    {
+        if(result!=CURLE_OK){
+            stringstream msg;
+            msg << msg_base << "ERROR - cURL failed to set " << opt_name << " Message: " << error_message(result,ebuf);
+            throw BESInternalError(msg.str(), file, line);
+        }
+
+    }
+
+    unsigned long max_redirects(){
+        return 20;
+    }
 
 } /* namespace curl */

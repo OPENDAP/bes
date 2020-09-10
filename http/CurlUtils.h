@@ -66,6 +66,8 @@ namespace curl {
     std::string hyrax_user_agent();
     void set_error_buffer(CURL *curl, char *error_buffer);
     void unset_error_buffer(CURL *curl);
+    void check_setopt_result(CURLcode result, std::string msg_base, std::string opt_name, char *ebuf, std::string file, unsigned int line );
+    unsigned long max_redirects();
 
 } // namespace curl
 
