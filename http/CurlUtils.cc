@@ -491,6 +491,9 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         check_setopt_result(res, prolog, "CURLOPT_HTTPAUTH", error_buffer, __FILE__, __LINE__);
 
 
+        // CURLOPT_NETRC means to use the netrc file for credentials.
+        // CURL_NETRC_OPTIONAL Means that if the supplied URL contains a username
+        // and password to prefer that to using the content of the netrc file.
         res = curl_easy_setopt(curl, CURLOPT_NETRC, CURL_NETRC_OPTIONAL);
         check_setopt_result(res, prolog, "CURLOPT_NETRC", error_buffer, __FILE__, __LINE__);
 
@@ -541,23 +544,11 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         res = curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0);
         check_setopt_result(res, prolog, "CURLOPT_SSL_VERIFYHOST", error_buffer, __FILE__, __LINE__);
     }
-
-    // Look to see if cookies are turned on in the .dodsrc file. If so,
-    // activate here. We honor 'session cookies' (cookies without an
-    // expiration date) here so that session-base SSO systems will work as
-    // expected.
-    if (!d_cookie_jar.empty()) {
-        BESDEBUG(cerr <<  prolog << "Setting the cookie jar to: " << d_cookie_jar << endl);
-        res = curl_easy_setopt(curl, CURLOPT_COOKIEJAR, d_cookie_jar.c_str());
-        check_setopt_result(res, prolog, "CURLOPT_COOKIEJAR", error_buffer, __FILE__, __LINE__);
-        res = curl_easy_setopt(curl, CURLOPT_COOKIESESSION, 1);
-        check_setopt_result(res, prolog, "CURLOPT_COOKIESESSION", error_buffer, __FILE__, __LINE__);
-   }
 #endif
 
         if (curl_trace) {
             BESDEBUG(MODULE,  prolog << "Curl version: " << curl_version() << endl);
-            res = curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
+            res = curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
             check_setopt_result(res, prolog, "CURLOPT_VERBOSE", error_buffer, __FILE__, __LINE__);
             BESDEBUG(MODULE,  prolog << "Curl in verbose mode." << endl);
 
@@ -849,7 +840,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         res = curl_easy_setopt(d_handle, CURLOPT_NETRC, CURL_NETRC_OPTIONAL);
         check_setopt_result(res, prolog, "CURLOPT_NETRC", errbuf, __FILE__, __LINE__);
 
-        // If the configuration specifies a particular .netrc credentials file, use it.
+        // If the configuration specifies a particular .netrc credentials file, use it. --------------------------------
         string netrc_file = get_netrc_filename();
         if (!netrc_file.empty()) {
             res = curl_easy_setopt(d_handle, CURLOPT_NETRC_FILE, netrc_file.c_str());
