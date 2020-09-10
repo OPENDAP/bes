@@ -419,7 +419,7 @@ function make_bes_conf() {
 
   if test -n "${1}"; then
     if test -n "${verbose}"; then
-      echo "Using BES Configuration: \"${1}\""
+      echo "Using BES Configuration: \"${1}\"" >&2
     fi
     BES_CONF_DOC=$(cat ${1})
   else
