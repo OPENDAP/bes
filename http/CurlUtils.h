@@ -1,9 +1,8 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 
-// This file is part of cmr_module, A C++ module that can be loaded in to
-// the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
+// This file is part of the BES http package, part of the Hyrax data server.
 
-// Copyright (c) 2013 OPeNDAP, Inc.
+// Copyright (c) 2020 OPeNDAP, Inc.
 // Author: Nathan Potter <ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
@@ -22,8 +21,11 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-#ifndef _CURL_UTILS_H_
-#define _CURL_UTILS_H_ 1
+// Authors:
+//      ndp       Nathan Potter <ndp@opendap.org>
+
+#ifndef  _bes_http_CURL_UTILS_H_
+#define  _bes_http_CURL_UTILS_H_ 1
 
 #include <string>
 #include <vector>
@@ -32,6 +34,7 @@
 #include <curl/easy.h>
 
 #include "rapidjson/document.h"
+#include "BESRegex.h"
 
 namespace curl {
 
@@ -39,8 +42,8 @@ namespace curl {
 
     bool configureProxy(CURL *curl, const std::string &url);
 
-    long read_url(CURL *curl, const std::string &url, int fd, std::vector<std::string> *resp_hdrs,
-                  const std::vector<std::string> *headers, char error_buffer[]);
+    void read_url(CURL *curl, const std::string &url, int fd, std::vector<std::string> *resp_hdrs,
+                  const std::vector<std::string> *headers);
 
     void http_get(const std::string &url, char *response_buf);
     std::string http_get_as_string(const std::string &url);
@@ -49,13 +52,19 @@ namespace curl {
     std::string error_message(const CURLcode response_code, char *error_buf);
     size_t c_write_data(void *buffer, size_t size, size_t nmemb, void *data);
     CURL *set_up_easy_handle(const std::string &target_url, const std::string &cookies_file, char *response_buff);
-    bool eval_get_response(CURL *eh);
+    bool eval_get_response(CURL *eh, const std::string &requested_url);
     void read_data(CURL *c_handle);
-    std::string getCookieFileName();
-    void find_last_redirect(const std::string &url, std::string &last_accessed_url);
+    std::string get_cookie_filename();
+    void retrieve_effective_url(const std::string &url, std::string &last_accessed_url);
     std::string get_range_arg_string(const unsigned long long &offset, const unsigned long long &size);
+    //void cache_final_redirect_url(const std::string &data_access_url_str);
+    bool cache_effective_urls();
+    void cache_effective_url(const std::string &data_access_url_str, BESRegex *no_redirects_regex_pattern);
+    BESRegex *get_cache_effective_urls_skip_regex();
+    bool is_retryable(std::string url);
+    std::string get_netrc_filename();
 
 
 } // namespace curl
 
-#endif /* _CURL_UTILS_H_ */
+#endif /*  _bes_http_CURL_UTILS_H_ */

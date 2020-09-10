@@ -58,7 +58,7 @@ DmrppInt64.h DmrppInt8.h DmrppUInt16.h DmrppUInt32.h DmrppUInt64.h \
 DmrppStr.h DmrppStructure.h DmrppUrl.h DmrppD4Enum.h DmrppD4Group.h \
 DmrppD4Opaque.h DmrppD4Sequence.h DmrppTypeFactory.h DmrppParserSax2.h \
 CredentialsManager.h AccessCredentials.h NgapS3Credentials.h \
-DmrppMetadataStore.h awsv4.h DmrppNames.h
+DmrppMetadataStore.h awsv4.h DmrppNames.h byteswap_compat.h
 
 DMRPP_MODULE = DmrppModule.cc DmrppRequestHandler.cc DmrppModule.h DmrppRequestHandler.h
 
@@ -69,7 +69,7 @@ libdmrpp_module_la_LDFLAGS = -avoid-version -module
 libdmrpp_module_la_LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) \
 $(H5_LDFLAGS) $(H5_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) -ltest-types
 
-bin_PROGRAMS = build_dmrpp  check_dmrpp merge_dmrpp reduce_mdf
+bin_PROGRAMS = build_dmrpp check_dmrpp merge_dmrpp reduce_mdf
 
 # build_dmrpp config
 build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS)

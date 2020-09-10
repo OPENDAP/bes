@@ -32,7 +32,7 @@ if CPPUNIT
 TESTS = constraintT defT keysT pfileT plistT pvolT replistT		\
 reqhandlerT reqlistT resplistT infoT debugT utilT regexT scrubT		\
 checkT servicesT fsT urlT containerT uncompressT cacheT			\
-BESCatalogListTest WhiteListTest CatalogNodeTest CatalogItemTest \
+BESCatalogListTest AllowedHostsTest CatalogNodeTest CatalogItemTest \
 ServerAdministratorTest kvp_utils_test
 
 # This is tool to look at CatalogEntry objects. jhrg 3.5.18
@@ -63,6 +63,7 @@ EXTRA_DIST = $(CACHE) catalog_test catalog_test_baselines bad_keys1.ini \
 	defT.ini empty.ini info_test.ini keys_test.ini \
 	keys_test_include.ini keys_test_m1.ini \
 	keys_test_m2.ini keys_test_m3.ini \
+	keys_test_map.ini keys_test_map_map.ini keys_test_vector.ini \
 	persistence_cgi_test.ini persistence_file_test.ini \
 	persistence_mysql_test.ini container01.file \
 	persistence_file1.txt persistence_file2.txt \
@@ -153,8 +154,8 @@ scrubT_SOURCES = scrubT.cc
 
 checkT_SOURCES = checkT.cc
 
-WhiteListTest_SOURCES = WhiteListTest.cc
-WhiteListTest_LDADD = ../WhiteList.o $(LDADD)
+AllowedHostsTest_SOURCES = AllowedHostsTest.cc
+AllowedHostsTest_LDADD = ../AllowedHosts.o $(LDADD)
 
 CatalogNodeTest_SOURCES = test_utils.cc CatalogNodeTest.cc
 CatalogNodeTest_LDADD = ../CatalogNode.o $(LDADD)

@@ -73,7 +73,7 @@ bool GatewayUtils::useInternalCache = false;
 string GatewayUtils::NoProxyRegex;
 
 // Initialization routine for the gateway module for certain parameters
-// and keys, like the white list, the MimeTypes translation.
+// and keys, like the AllowHosts list, the MimeTypes translation.
 void GatewayUtils::Initialize()
 {
     // MimeTypes - translate from a mime type to a module name
@@ -228,7 +228,7 @@ char *
 GatewayUtils::Get_tempfile_template( char *file_template )
 {
 #ifdef WIN32
-    // white list for a WIN32 directory
+    // AllowHosts list for a WIN32 directory
     Regex directory("[-a-zA-Z0-9_\\]*");
 
     string c = getenv("TEMP") ? getenv("TEMP") : "";
@@ -239,7 +239,7 @@ GatewayUtils::Get_tempfile_template( char *file_template )
     if (!c.empty() && directory.match(c.c_str(), c.length()) && (access(c.c_str(), 6) == 0))
     goto valid_temp_directory;
 #else
-    // white list for a directory
+    // AllowHosts list for a directory
     Regex directory("[-a-zA-Z0-9_/]*");
 
     string c = getenv("TMPDIR") ? getenv("TMPDIR") : "";

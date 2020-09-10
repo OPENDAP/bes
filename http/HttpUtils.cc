@@ -1,10 +1,7 @@
-// HttpCatalogUtils.cc
 // -*- mode: c++; c-basic-offset:4 -*-
-//
-// This file is part of httpd_catalog_HTTPD_CATALOG, A C++ HTTPD_CATALOG that can be loaded in to
-// the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
-//
-// Copyright (c) 2018 OPeNDAP, Inc.
+// This file is part of the BES http package, part of the Hyrax data server.
+
+// Copyright (c) 2020 OPeNDAP, Inc.
 // Author: Nathan Potter <ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
@@ -23,6 +20,9 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
+// Authors:
+//      ndp       Nathan Potter <ndp@opendap.org>
+
 #include "config.h"
 
 #ifdef HAVE_UNISTD_H
@@ -40,8 +40,7 @@
 
 #include <curl/curl.h>
 
-#include <GNURegex.h>
-#include <util.h>
+// #include <GNURegex.h>
 
 #include <BESUtil.h>
 #include <BESCatalogUtils.h>
@@ -59,7 +58,7 @@
 
 #define MODULE "http"
 
-using namespace libdap;
+using namespace std;
 using namespace http;
 
 // These are static class members
@@ -79,7 +78,7 @@ string HttpUtils::NoProxyRegex;
 #define prolog string("HttpUtils::").append(__func__).append("() - ")
 
 // Initialization routine for the httpd_catalog_HTTPD_CATALOG for certain parameters
-// and keys, like the white list, the MimeTypes translation.
+// and keys, like the AllowHosts list, the MimeTypes translation.
 void HttpUtils::Initialize()
 {
     // MimeTypes - translate from a mime type to a module name

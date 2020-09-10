@@ -30,6 +30,8 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
 #include "BESContainerStorageVolatile.h"
 #include "BESFileContainer.h"
 #include "BESInternalError.h"
@@ -39,6 +41,11 @@
 #include "BESUtil.h"
 #include "BESServiceRegistry.h"
 #include "BESDebug.h"
+
+// FIXME This is a lie, but it will help with debugging/design for the RemoteResources
+// FIXME design/fix. Remove this once that's done. jhrg 8/7/20
+#define MODULE "ngap"
+#define prolog std::string("BESContainerStorageVolatile::").append(__func__).append("() - ")
 
 using std::endl;
 using std::string;
@@ -102,8 +109,12 @@ BESContainerStorageVolatile::look_for(const string &sym_name)
     BESContainerStorageVolatile::Container_citer i;
     i = _container_list.find(sym_name);
     if (i != _container_list.end()) {
+#if 1
         BESContainer *c = (*i).second;
         ret_container = c->ptr_duplicate();
+#else
+        ret_container = (*i).second;
+#endif
     }
 
     return ret_container;
@@ -207,16 +218,19 @@ void BESContainerStorageVolatile::add_container(BESContainer *c)
  */
 bool BESContainerStorageVolatile::del_container(const string &s_name)
 {
+    BESDEBUG(MODULE, prolog << "BEGIN: " << s_name <<  endl);
     bool ret = false;
     BESContainerStorageVolatile::Container_iter i = _container_list.find(s_name);
     if (i != _container_list.end()) {
         BESContainer *c = (*i).second;
         _container_list.erase(i);
         if (c) {
+            BESDEBUG(MODULE, prolog << "delete the container: "<< (void *) c <<  endl);
             delete c;
         }
         ret = true;
     }
+    BESDEBUG(MODULE, prolog << "END" <<  endl);
     return ret;
 }
 
@@ -229,14 +243,17 @@ bool BESContainerStorageVolatile::del_container(const string &s_name)
  */
 bool BESContainerStorageVolatile::del_containers()
 {
+    BESDEBUG(MODULE, prolog << "BEGIN" <<  endl);
     while (_container_list.size() != 0) {
         Container_iter ci = _container_list.begin();
         BESContainer *c = (*ci).second;
         _container_list.erase(ci);
         if (c) {
+            BESDEBUG(MODULE, prolog << "delete the container: "<< (void *) c <<  endl);
             delete c;
         }
     }
+    BESDEBUG(MODULE, prolog << "END" <<  endl);
     return true;
 }
 

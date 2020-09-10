@@ -19,7 +19,7 @@ Http.Cache.prefix=ngap_unit_tests_
 Http.Cache.size=500
 #-----------------------------------------------------------------------#
 
-Gateway.Whitelist= https://cmr.earthdata.nasa.gov/search
+AllowedHosts=^https:\/\/cmr\.(uat\.|sit\.)?earthdata\.nasa\.gov\/.*$
 
 NGAP.inject_data_urls=true
 

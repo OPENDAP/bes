@@ -1,9 +1,8 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 
-// This file is part of cmr_module, A C++ module that can be loaded in to
-// the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
+// This file is part of the BES http package, part of the Hyrax data server.
 
-// Copyright (c) 2013 OPeNDAP, Inc.
+// Copyright (c) 2020 OPeNDAP, Inc.
 // Author: Nathan Potter <ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
@@ -22,7 +21,11 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
+// Authors:
+//      ndp       Nathan Potter <ndp@opendap.org>
+
 #include <curl/curl.h>
+#include <cstdio>
 #include <sstream>
 #include <map>
 #include <vector>
@@ -32,23 +35,30 @@
 
 #include "rapidjson/document.h"
 
-#include "util.h"
-#include "BESDebug.h"
+
 #include "BESSyntaxUserError.h"
-#include "HttpNames.h"
-#include "HttpUtils.h"
-#include "WhiteList.h"
-#include "CurlUtils.h"
+#include "BESForbiddenError.h"
+#include "BESNotFoundError.h"
+#include "BESTimeoutError.h"
+#include "BESInternalError.h"
+#include "BESDebug.h"
+#include "BESRegex.h"
 #include "TheBESKeys.h"
 #include "BESUtil.h"
 #include "BESLog.h"
 
+// #include "util.h"
+#include "BESDebug.h"
+#include "BESSyntaxUserError.h"
+#include "HttpNames.h"
+#include "HttpUtils.h"
+#include "AllowedHosts.h"
+#include "CurlUtils.h"
+#include "EffectiveUrlCache.h"
 
-#include <BESInternalError.h>
-#include <BESDebug.h>
-#include <BESRegex.h>
+#include "url_impl.h"
 
-#define MODULE "http"
+#define MODULE "curl"
 
 using std::endl;
 using std::string;
@@ -58,7 +68,7 @@ using std::stringstream;
 using std::ostringstream;
 using namespace http;
 
-#define prolog std::string("CurlUtils - ").append(__func__).append("() - ")
+#define prolog std::string("CurlUtils::").append(__func__).append("() - ")
 
 
 namespace curl {
@@ -76,15 +86,13 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
             "Unauthorized: Contact the server administrator.",
             "Payment Required.",
             "Forbidden: Contact the server administrator.",
-            "Not Found: The data source or server could not be found.\n"
-            "Often this means that the OPeNDAP server is missing or needs attention.\n"
-            "Please contact the server administrator.",
+            "Not Found: The underlying data source or server could not be found.",
             "Method Not Allowed.",
             "Not Acceptable.",
             "Proxy Authentication Required.",
             "Request Time-out.",
             "Conflict.",
-            "Gone:.",
+            "Gone.",
             "Length Required.",
             "Precondition Failed.",
             "Request Entity Too Large.",
@@ -114,9 +122,11 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
             return string(http_client_errors[status - CLIENT_ERR_MIN]);
         else if (status >= SERVER_ERR_MIN && status <= SERVER_ERR_MAX)
             return string(http_server_errors[status - SERVER_ERR_MIN]);
-        else
-            return string(
-                    "Unknown Error: This indicates a problem with libdap++.\nPlease report this to support@opendap.org.");
+        else{
+            stringstream msg;
+            msg << "Unknown HTTP Error: " << status;
+            return msg.str();
+        }
     }
 
     static string getCurlAuthTypeName(const int authType) {
@@ -200,10 +210,9 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
 
         int *fd = (int *) userdata;
 
-        BESDEBUG(MODULE, prolog << "Bytes received " << libdap::long_to_string(nmemb)
-                                                                               << endl);
+        BESDEBUG(MODULE, prolog << "Bytes received " << nmemb << endl);
         int wrote = write(*fd, data, nmemb);
-        BESDEBUG(MODULE, prolog << "Bytes written " << libdap::long_to_string(wrote) << endl);
+        BESDEBUG(MODULE, prolog << "Bytes written " << wrote << endl);
 
         return wrote;
     }
@@ -432,10 +441,10 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
  *  @param url The url used to configure the proy.
  */
     CURL *init(char *error_buffer) {
-
+        error_buffer[0]=0; // Null terminate this string for safety.
         CURL *curl = curl_easy_init();
         if (!curl)
-            throw libdap::InternalErr(__FILE__, __LINE__, "Could not initialize libcurl.");
+            throw BESInternalError("Could not initialize libcurl.",__FILE__, __LINE__);
 
             // Load in the default headers to send with a request. The empty Pragma
             // headers overrides libcurl's default Pragma: no-cache header (which
@@ -452,12 +461,14 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
 #else
         curl_easy_setopt(curl, CURLOPT_ACCEPT_ENCODING, "");
 #endif
-
         curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, error_buffer);
         // We have to set FailOnError to false for any of the non-Basic
         // authentication schemes to work. 07/28/03 jhrg
         curl_easy_setopt(curl, CURLOPT_FAILONERROR, 0);
 
+        // -  -  -  - -  -  -  - -  -  -  - -  -  -  - -  -  -  - -  -  -  - -  -  -  -
+        // Authentication config.
+        //
         // This means libcurl will use Basic, Digest, GSS Negotiate, or NTLM,
         // choosing the the 'safest' one supported by the server.
         // This requires curl 7.10.6 which is still in pre-release. 07/25/03 jhrg
@@ -466,9 +477,21 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         // I added these next three to support Hyrax accessing data held behind URS auth. ndp - 8/20/18
         curl_easy_setopt(curl, CURLOPT_NETRC, 1);
 
-        // #TODO #FIXME Make these file names configuration based.
-        curl_easy_setopt(curl, CURLOPT_COOKIEFILE, curl::getCookieFileName().c_str());
-        curl_easy_setopt(curl, CURLOPT_COOKIEJAR, curl::getCookieFileName().c_str());
+        // If the configuration specifies a particular .netrc credentials file, use it.
+        string netrc_file = get_netrc_filename();
+        if (!netrc_file.empty()) {
+            curl_easy_setopt(curl, CURLOPT_NETRC_FILE, netrc_file.c_str());
+        }
+        VERBOSE(__FILE__ << "::get_easy_handle() is using the netrc file '"
+                         << ((!netrc_file.empty()) ? netrc_file : "~/.netrc") << "'" << endl);
+
+
+        // -  -  -  - -  -  -  - -  -  -  - -  -  -  - -  -  -  - -  -  -  - -  -  -  -
+        // Cookies
+        //
+        curl_easy_setopt(curl, CURLOPT_COOKIEFILE, curl::get_cookie_filename().c_str());
+        curl_easy_setopt(curl, CURLOPT_COOKIEJAR, curl::get_cookie_filename().c_str());
+
 
         curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1);
         curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
@@ -480,12 +503,8 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
         curl_easy_setopt(curl, CURLOPT_MAXREDIRS, 5);
 
-
-
-
         // Set the user agent to curls version response because, well, that's what command line curl does :)
         curl_easy_setopt(curl, CURLOPT_USERAGENT, curl_version());
-
 
 #if 0
         // If the user turns off SSL validation...
@@ -505,7 +524,6 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
     }
 #endif
 
-
         if (curl_trace) {
             BESDEBUG(MODULE,  prolog << "Curl version: " << curl_version() << endl);
             curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
@@ -513,24 +531,20 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
             curl_easy_setopt(curl, CURLOPT_DEBUGFUNCTION, curl_debug);
             BESDEBUG(MODULE,  prolog << "Curl debugging function installed." << endl);
         }
-
-
         BESDEBUG(MODULE,  prolog << "curl: " << curl << endl);
-
         return curl;
-
-
     }
 
     string get_range_arg_string(const unsigned long long &offset, const unsigned long long &size)
     {
         ostringstream range;   // range-get needs a string arg for the range
         range << offset << "-" << offset + size - 1;
+        BESDEBUG(MODULE,  prolog << " range: " << range.str() << endl);
         return range.str();
     }
 
 
-    CURL *init_redirect_handle(const string url, vector<string> &resp_hdrs, char error_buffer[]){
+    CURL *init_effective_url_retriever_handle(const string url, vector<string> &resp_hdrs, char *error_buffer){
         CURL *curl = 0;
         curl = init(error_buffer);
         string err_msg_base = "cURL Error setting ";
@@ -576,21 +590,20 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
     @return The HTTP status code.
     @exception Error Thrown if libcurl encounters a problem; the libcurl
     error message is stuffed into the Error object.
-*/
-    long read_url(CURL *curl,
+    */
+    void read_url(CURL *curl,
                   const string &url,
                   int fd,
                   vector<string> *resp_hdrs,
-                  const vector<string> *request_headers,
-                  char error_buffer[]) {
+                  const vector<string> *request_headers) {
 
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
         // Before we do anything, make sure that the URL is OK to pursue.
-        if (!bes::WhiteList::get_white_list()->is_white_listed(url)) {
+        if (!bes::AllowedHosts::theHosts()->is_allowed(url)) {
             string err = (string) "The specified URL " + url
                          + " does not match any of the accessible services in"
-                         + " the white list.";
+                         + " the allowed hosts list.";
             BESDEBUG(MODULE, prolog << err << endl);
             throw BESSyntaxUserError(err, __FILE__, __LINE__);
         }
@@ -615,13 +628,18 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         // value/result parameter to get the raw response header information .
         curl_easy_setopt(curl, CURLOPT_WRITEHEADER, resp_hdrs);
 
+#if 0
         // This call is the one that makes curl go get the thing.
         CURLcode res = curl_easy_perform(curl);
+#endif
+
+        read_data(curl);
 
         // Free the header list and null the value in d_curl.
         curl_slist_free_all(req_hdrs.get_headers());
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, 0);
 
+#if 0
         if (res != 0) {
             BESDEBUG(MODULE, prolog << "OUCH! CURL returned an error! curl msg:  " << curl_easy_strerror(res) << endl);
             BESDEBUG(MODULE, prolog << "OUCH! CURL returned an error! error_buffer:  " << error_buffer << endl);
@@ -632,18 +650,18 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         BESDEBUG(MODULE, prolog << "HTTP Status " << status << endl);
         if (res != CURLE_OK)
             throw libdap::Error(error_buffer);
-        BESDEBUG(MODULE, prolog << "END" << endl);
+#endif
 
-        return status;
+        BESDEBUG(MODULE, prolog << "END" << endl);
     }
 
     /**
- * Returns a cURL error message string based on the conents of the error_buf or, if the error_buf is empty, the
- * CURLcode code.
- * @param response_code
- * @param error_buf
- * @return
- */
+     * Returns a cURL error message string based on the conents of the error_buf or, if the error_buf is empty, the
+     * CURLcode code.
+     * @param response_code
+     * @param error_buf
+     * @return
+     */
     string error_message(const CURLcode response_code, char *error_buf) {
         std::ostringstream oss;
         size_t len = strlen(error_buf);
@@ -725,19 +743,19 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
      * @param response_buf The buffer into which to put the response.
      */
     void http_get(const std::string &target_url, char *response_buf) {
-        char name[] = "/tmp/ngap_cookiesXXXXXX";
-        string cookies = mktemp(name);
-        if (cookies.empty())
-            throw BESInternalError(string("Failed to make temporary file for HTTP cookies in module 'ngap' (").append(strerror(errno)).append(")"), __FILE__, __LINE__);
+        // char name[] = "/tmp/ngap_cookiesXXXXXX";
+        string cf_name = get_cookie_filename();
+        if (cf_name.empty())
+            throw BESInternalError(string(prolog + "Failed to make temporary file for HTTP cookies in module 'ngap' (").append(strerror(errno)).append(")"), __FILE__, __LINE__);
 
         try {
-            CURL *c_handle = curl::set_up_easy_handle(target_url, cookies, response_buf);
+            CURL *c_handle = curl::set_up_easy_handle(target_url, cf_name, response_buf);
             read_data(c_handle);
             curl_easy_cleanup(c_handle);
-            unlink(cookies.c_str());
+            unlink(cf_name.c_str());
         }
         catch(...) {
-            unlink(cookies.c_str());
+            unlink(cf_name.c_str());
             throw;
         }
     }
@@ -832,8 +850,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
     void read_data(CURL *c_handle) {
 
         unsigned int tries = 0;
-        unsigned int retry_limit = 3;
-        useconds_t retry_time = 1000;
+        useconds_t retry_time = uone_second / 4;
         bool success;
         CURLcode curl_code;
         char curlErrorBuf[CURL_ERROR_SIZE]; ///< raw error message info from libcurl
@@ -859,13 +876,13 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
                         __FILE__, __LINE__);
             }
 
-            success = eval_get_response(c_handle);
+            success = eval_get_response(c_handle, urlp);
             // if(debug) cout << ngap_curl::probe_easy_handle(c_handle) << endl;
             if (!success) {
                 if (tries == retry_limit) {
-                    throw BESInternalError(
-                            string("Data transfer error: Number of re-tries exceeded: ").append(
-                                    error_message(curl_code, curlErrorBuf)), __FILE__, __LINE__);
+                    string msg = prolog + "Data transfer error: Number of re-tries exceeded: "+ error_message(curl_code, curlErrorBuf);
+                    LOG(msg << endl);
+                    throw BESInternalError(msg, __FILE__, __LINE__);
                 }
                 else {
                     if (BESDebug::IsSet(MODULE)) {
@@ -881,45 +898,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         } while (!success);
     }
 
-    /**
-* Check the response for errors and such.
-* @param eh
-* @return
-*/
-    bool eval_get_response(CURL *eh) {
-        long http_code = 0;
-        CURLcode res = curl_easy_getinfo(eh, CURLINFO_RESPONSE_CODE, &http_code);
-        if (CURLE_OK != res) {
-            throw BESInternalError(
-                    string("Error getting HTTP response code: ").append(error_message(res, (char *) "")),
-                    __FILE__, __LINE__);
-        }
-
-        // FIXME Expand the list of handled status to at least include the 4** stuff for authentication so that something sensible can be done.
-        // Newer Apache servers return 206 for range requests. jhrg 8/8/18
-        switch (http_code) {
-            case 200: // OK
-            case 206: // Partial content - this is to be expected since we use range gets
-                // cases 201-205 are things we should probably reject, unless we add more
-                // comprehensive HTTP/S processing here. jhrg 8/8/18
-                return true;
-
-            case 500: // Internal server error
-            case 503: // Service Unavailable
-            case 504: // Gateway Timeout
-                return false;
-
-            default: {
-                ostringstream oss;
-                oss << "HTTP status error: Expected an OK status, but got: ";
-                oss << http_code;
-                throw BESInternalError(oss.str(), __FILE__, __LINE__);
-            }
-        }
-    }
-
-
-    string getCookieFileName() {
+    string get_cookie_file_base() {
         bool found = false;
         string cookie_filename;
         TheBESKeys::TheKeys()->get_value(HTTP_COOKIES_FILE_KEY, cookie_filename, found);
@@ -928,16 +907,261 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         }
         return cookie_filename;
     }
+    string get_cookie_filename() {
+        string cookie_file_base = get_cookie_file_base();
+        stringstream cf_with_pid;
+        cf_with_pid <<  cookie_file_base << "-" << getpid();
+        return cf_with_pid.str();
+    }
+
+    void clear_cookies(){
+        string cf = get_cookie_filename();
+        int ret = unlink(cf.c_str());
+        if(ret){
+            string msg = prolog + "() - Failed to unlink the cookie file: " + cf;
+            LOG(msg << endl);
+            BESDEBUG(MODULE, prolog << msg << endl);
+        }
+    }
 
 
     /**
- * @brief Performs a small (4 byte) range get on the target URL. If successfull the value of  last_accessed_url will
- * be set to the value of the last accessed URL (CURLINFO_EFFECTIVE_URL), including the query string.
- * are
- * @param url The URL to follow
- * @param last_accessed_url The last accessed URL (CURLINFO_EFFECTIVE_URL), including the query string
- */
-    void find_last_redirect(const string &url, string &last_accessed_url) {
+     * Checks to see if the entire url matches any of the  "no retry" regular expressions held in the TheBESKeys
+     * under the HTTP_NO_RETRY_URL_REGEX_KEY which atm, is set to "Http.No.Retry.Regex"
+     * @param url The URL to be examined
+     * @return True if the the url does not match a no retry regex, false if the entire url matches
+     * a "no retry" regex.
+     */
+    bool is_retryable(std::string url)
+    {
+        BESDEBUG(MODULE, prolog << "BEGIN" << endl);
+        bool retryable = true;
+
+        vector<string> nr_regexs;
+        bool found;
+        TheBESKeys::TheKeys()->get_values(HTTP_NO_RETRY_URL_REGEX_KEY,nr_regexs, found);
+        if(found){
+            vector<string>::iterator it;
+            for(it=nr_regexs.begin(); it != nr_regexs.end() && retryable ; it++){
+                BESRegex no_retry_regex((*it).c_str(), (*it).size());
+                int match_length;
+                match_length = no_retry_regex.match(url.c_str(), url.size(), 0);
+                if(match_length == url.size()){
+                    BESDEBUG(MODULE, prolog << "The url: '"<< url << "' fully matched the "
+                    << HTTP_NO_RETRY_URL_REGEX_KEY << ": '" <<  *it << "'" <<  endl);
+                    retryable = false;
+                }
+            }
+        }
+        BESDEBUG(MODULE, prolog << "END retryable: "<< (retryable?"true":"false") << endl);
+        return retryable;
+    }
+
+    /**
+     * Check the response for errors and such.
+     * @param eh The cURL easy_handle to evaluate.
+     * @return true if at all worked out, false if it didn't and a retry is reasonable.
+     * @throws BESInternalError When something really bad happens.
+    */
+    bool eval_get_response(CURL *eh, const string &requested_url) {
+        BESDEBUG(MODULE, prolog << "Requested URL: " << requested_url << endl);
+
+        char *last_accessed_url = 0;
+        CURLcode res =curl_easy_getinfo(eh, CURLINFO_EFFECTIVE_URL, &last_accessed_url);
+        if(res != CURLE_OK) {
+            stringstream msg;
+            msg << prolog << "Unable to determine CURLINFO_EFFECTIVE_URL! Requested URL: " << requested_url;
+            BESDEBUG(MODULE, msg.str() << endl);
+            throw BESInternalError(msg.str(), __FILE__, __LINE__);
+        }
+        BESDEBUG(MODULE, prolog << "Last Accessed URL(CURLINFO_EFFECTIVE_URL): " << last_accessed_url << endl);
+
+        long http_code = 0;
+        res = curl_easy_getinfo(eh, CURLINFO_RESPONSE_CODE, &http_code);
+        if (res == CURLE_GOT_NOTHING) {
+            // First we check to see if the response was empty. This is a cURL error, not an HTTP error
+            // so we have to handle it like this. And we do that because this is one of the failure modes
+            // we see in the AWS cloud and by trapping this and returning false we are able to be resilient and retry.
+            // We maye eventually need to check other CURLCode errors
+            stringstream msg;
+            msg << prolog << "Ouch. cURL returned CURLE_GOT_NOTHING, returning false.  CURLINFO_EFFECTIVE_URL: " << last_accessed_url << endl;
+            BESDEBUG(MODULE, msg.str());
+            LOG(msg.str());
+            return false;
+        }
+        else if(res != CURLE_OK) {
+            // Not an error we are trapping so it's fail time.
+            throw BESInternalError(
+                    string("Error acquiring HTTP response code: ").append(curl::error_message(res, (char *) "")),
+                    __FILE__, __LINE__);
+        }
+
+        if (BESDebug::IsSet(MODULE)) {
+            long redirects;
+            curl_easy_getinfo(eh, CURLINFO_REDIRECT_COUNT, &redirects);
+            BESDEBUG(MODULE, prolog << "CURLINFO_REDIRECT_COUNT: " << redirects << endl);
+
+            char *redirect_url = 0;
+            curl_easy_getinfo(eh, CURLINFO_REDIRECT_URL, &redirect_url);
+            if (redirect_url)
+                BESDEBUG(MODULE, prolog << "CURLINFO_REDIRECT_URL: " << redirect_url << endl);
+        }
+
+        stringstream msg;
+        msg << "ERROR - The HTTP GET request for the source URL: " << requested_url << " FAILED."
+            << " The last accessed URL (CURLINFO_EFFECTIVE_URL) was: " << last_accessed_url
+            << " The response had an HTTP status of " << http_code
+            << " which means '" << http_status_to_string(http_code) << "'" << endl;
+
+        if(http_code >= 400){
+            BESDEBUG(MODULE, prolog << msg.str());
+            LOG(msg.str());
+        }
+
+        // Newer Apache servers return 206 for range requests. jhrg 8/8/18
+        switch (http_code) {
+            case 200: // OK
+            case 206: // Partial content - this is to be expected since we use range gets
+                // cases 201-205 are things we should probably reject, unless we add more
+                // comprehensive HTTP/S processing here. jhrg 8/8/18
+                return true;
+
+            case 400: // Bad Request
+                throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+
+            case 401: // Unauthorized
+            case 402: // Payment Required
+            case 403: // Forbidden
+                throw BESForbiddenError(msg.str(), __FILE__, __LINE__);
+
+            case 404: // Not Found
+                throw BESNotFoundError(msg.str(), __FILE__, __LINE__);
+
+            case 408: // Request Timeout
+                throw BESTimeoutError(msg.str(), __FILE__, __LINE__);
+
+            case 422: // Unprocessable Entity
+            case 500: // Internal server error
+            case 502: // Bad Gateway
+            case 503: // Service Unavailable
+            case 504: // Gateway Timeout
+            {
+                if(!is_retryable(last_accessed_url)){
+                    msg << "The semantics of this particular last accessed URL indicate that it should not be retried.";
+                    LOG(msg.str());
+                    throw BESInternalError(msg.str(), __FILE__, __LINE__);
+                }
+                return false;
+            }
+
+            default: {
+                BESDEBUG(MODULE, msg.str() << endl);
+                throw BESInternalError(msg.str(), __FILE__, __LINE__);
+            }
+        }
+    }
+
+
+#if 0
+    bool do_the_curl_perform_boogie(CURL *eh){
+        CURLcode curl_code = curl_easy_perform(eh);
+        if( curl_code == CURLE_SSL_CONNECT_ERROR ){
+            stringstream msg;
+            msg << prolog << "cURL experienced a CURLE_SSL_CONNECT_ERROR error. Will retry (url: "<< url << " attempt: " << tries << ")." << endl;
+            BESDEBUG(MODULE,msg.str());
+            LOG(msg.str());
+            return false;
+        }
+        else if( curl_code == CURLE_SSL_CACERT_BADFILE ){
+            stringstream msg;
+            msg << prolog << "cURL experienced a CURLE_SSL_CACERT_BADFILE error. Will retry (url: " << url << " attempt: " << tries << ")." << endl;
+            BESDEBUG(MODULE,msg.str());
+            LOG(msg.str());
+            return false;
+        }
+        else if (CURLE_OK != curl_code) {
+            stringstream msg;
+            msg << "Data transfer error: " << error_message(curl_code, error_buffer);
+            char *effective_url = 0;
+            curl_easy_getinfo(curl, CURLINFO_EFFECTIVE_URL, &effective_url);
+            msg << " last_url: " << effective_url;
+            BESDEBUG(MODULE, prolog << msg.str() << endl);
+            throw BESInternalError(msg.str(), __FILE__, __LINE__);
+        }
+        long http_code = 0;
+        CURLcode res = curl_easy_getinfo(eh, CURLINFO_RESPONSE_CODE, &http_code);
+        if (res == CURLE_GOT_NOTHING) {
+            // First we check to see if the response was empty. This is a cURL error, not an HTTP error
+            // so we have to handle it like this. And we do that because this is one of the failure modes
+            // we see in the AWS cloud and by trapping this and returning false we are able to be resilient and retry.
+            // We maye eventually need to check other CURLCode errors
+            char *effective_url = 0;
+            curl_easy_getinfo(eh, CURLINFO_EFFECTIVE_URL, &effective_url);
+            stringstream msg;
+            msg << prolog << "Ouch. cURL returned CURLE_GOT_NOTHING, returning false.  CURLINFO_EFFECTIVE_URL: " << effective_url << endl;
+            BESDEBUG(MODULE, msg.str());
+            LOG(msg.str());
+            return false;
+        }
+        else if(res != CURLE_OK) {
+            // Not an error we are trapping so it's fail time.
+            throw BESInternalError(
+                    string("Error getting HTTP response code: ").append(curl::error_message(res, (char *) "")),
+                    __FILE__, __LINE__);
+        }
+        if (BESDebug::IsSet(MODULE)) {
+            char *last_url = 0;
+            curl_easy_getinfo(eh, CURLINFO_EFFECTIVE_URL, &last_url);
+            BESDEBUG(MODULE, prolog << "Last Accessed URL(CURLINFO_EFFECTIVE_URL): " << last_url << endl);
+            long redirects;
+            curl_easy_getinfo(eh, CURLINFO_REDIRECT_COUNT, &redirects);
+            BESDEBUG(MODULE, prolog << "CURLINFO_REDIRECT_COUNT: " << redirects << endl);
+            char *redirect_url = 0;
+            curl_easy_getinfo(eh, CURLINFO_REDIRECT_URL, &redirect_url);
+            if (redirect_url)
+                BESDEBUG(MODULE, prolog << "CURLINFO_REDIRECT_URL: " << redirect_url << endl);
+        }
+        //  FIXME Expand the list of handled status to at least include the 4** stuff for authentication
+        //  FIXME so that something sensible can be done.
+        // Newer Apache servers return 206 for range requests. jhrg 8/8/18
+        switch (http_code) {
+            case 200: // OK
+            case 206: // Partial content - this is to be expected since we use range gets
+                // cases 201-205 are things we should probably reject, unless we add more
+                // comprehensive HTTP/S processing here. jhrg 8/8/18
+                return true;
+            case 500: // Internal server error
+            case 502: // Bad Gateway
+            case 503: // Service Unavailable
+            case 504: // Gateway Timeout
+            {
+                char *effective_url = 0;
+                curl_easy_getinfo(eh, CURLINFO_EFFECTIVE_URL, &effective_url);
+                stringstream msg;
+                msg << prolog << "HTTP transfer " << http_code << " error, returning false.  CURLINFO_EFFECTIVE_URL: " << effective_url << endl;
+                BESDEBUG(MODULE, msg.str());
+                LOG(msg.str());
+                return false;
+            }
+            default: {
+                stringstream msg;
+                char *effective_url = 0;
+                curl_easy_getinfo(eh, CURLINFO_EFFECTIVE_URL, &effective_url);
+                msg << prolog << "HTTP status error: Expected an OK status, but got: " << http_code  << " from (CURLINFO_EFFECTIVE_URL): " << effective_url;
+                BESDEBUG(MODULE, msg.str() << endl);
+                throw BESInternalError(msg.str(), __FILE__, __LINE__);
+            }
+        }
+    }
+#endif
+    /**
+     * @brief Performs a small (4 byte) range get on the target URL. If successfull the value of  last_accessed_url will
+     * be set to the value of the last accessed URL (CURLINFO_EFFECTIVE_URL), including the query string.
+     * are
+     * @param url The URL to follow
+     * @param last_accessed_url The last accessed URL (CURLINFO_EFFECTIVE_URL), including the query string
+     */
+    void retrieve_effective_url(const string &url, string &last_accessed_url) {
 
         unsigned int tries = 0;
         bool success = true;
@@ -948,21 +1172,25 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         CURL *curl = 0;
 
         try {
-            curl = init_redirect_handle( url, resp_hdrs,  error_buffer);
+            curl = init_effective_url_retriever_handle(url, resp_hdrs, error_buffer);
             do {
                 bool do_retry = false;
                 ++tries;
+                error_buffer[0]=0; // Initialize to empty string
+
                 BESDEBUG(MODULE, prolog << "Requesting URL: " << url << " attempt: " << tries <<  endl);
                 CURLcode curl_code = curl_easy_perform(curl);
                 if( curl_code == CURLE_SSL_CONNECT_ERROR ){
                     stringstream msg;
-                    msg << "cURL experienced a CURLE_SSL_CONNECT_ERROR error. Will retry (url: "<< url << " attempt:" << tries << ")." << endl;
+                    msg << prolog << "cURL experienced a CURLE_SSL_CONNECT_ERROR error. Will retry (url: "<< url << " attempt: " << tries << ")." << endl;
+                    BESDEBUG(MODULE,msg.str());
                     LOG(msg.str());
                     do_retry = true;
                 }
                 else if( curl_code == CURLE_SSL_CACERT_BADFILE ){
                     stringstream msg;
-                    msg << "cURL experienced a CURLE_SSL_CACERT_BADFILE error. Will retry (url: " << url << " attempt:" << tries << ")." << endl;
+                    msg << prolog << "cURL experienced a CURLE_SSL_CACERT_BADFILE error. Will retry (url: " << url << " attempt: " << tries << ")." << endl;
+                    BESDEBUG(MODULE,msg.str());
                     LOG(msg.str());
                     do_retry = true;
                 }
@@ -976,17 +1204,16 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
                     throw BESInternalError(msg.str(), __FILE__, __LINE__);
                 }
                 else {
-                    success = eval_get_response(curl);
-
+                    success = eval_get_response(curl, url);
                     if (!success) {
                         if (tries == retry_limit) {
-                            throw BESInternalError(
-                                    string("Data transfer error: Number of re-tries exceeded: ").append(
-                                            error_message(curl_code, error_buffer)), __FILE__, __LINE__);
+                            string msg = prolog + "Data transfer error: Number of re-tries exceeded: "+ error_message(curl_code, error_buffer);
+                            LOG(msg << endl);
+                            throw BESInternalError(msg, __FILE__, __LINE__);
                         }
                         else {
-                            LOG("HTTP Range-GET failed. Will retry (url: " << url <<
-                                                                           " attempt:" << tries << ")." << endl);
+                            LOG(prolog << "HTTP Range-GET failed. Will retry (url: " << url <<
+                                                                           " attempt: " << tries << ")." << endl);
                             do_retry = true;
                         }
                     }
@@ -1020,6 +1247,19 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         }
     }
 
+    string get_netrc_filename()
+    {
+        string netrc_filename;
+        bool found = false;
+        TheBESKeys::TheKeys()->get_value(HTTP_NETRC_FILE_KEY,netrc_filename,found);
+        if(found){
+            BESDEBUG(MODULE, prolog << "Using netrc file: " << netrc_filename << endl);
+        }
+        else {
+            BESDEBUG(MODULE, prolog << "Using default netrc file. (~/.netrc)" << endl);
+        }
+        return netrc_filename;
+    }
 
 
 } /* namespace curl */

@@ -8,10 +8,14 @@ BES.LogName=/dev/null
 Http.Cache.dir=/tmp
 Http.Cache.prefix=http_unit_tests_
 Http.Cache.size=500
+
+Http.No.Retry.Regex=^https:\/\/.*\?code\=.*$
+Http.No.Retry.Regex+=^https:\/\/.*s3(\.|-).*\.amazonaws\.com\/.*$
+
 #-----------------------------------------------------------------------#
 
 # Allow access to src dir and test.opendap.org
-Gateway.Whitelist = file://@abs_top_srcdir@/http/
-Gateway.Whitelist += http://test.opendap.org/
+AllowedHosts = file://@abs_top_srcdir@/http/
+AllowedHosts = ^http:\/\/test\.opendap\.org\/.*$
 
 
