@@ -191,9 +191,9 @@ show_usage() {
  -p: The value to use for each missing variable's dmrpp:chunk/@dmrpp:href attribute.  If option '-p' is
      not used; the missing variable dmrpp:chunk/@dmrpp:href attributes will contain the template string
      OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL which can be replaced at runtime.
- -s: The path to the file providing missing_variable file information for sets of input_data_files that share
-     common missing variables.  The file will be created if it doesn't exist and then used in subsequent
-     invocations of get_dmrpp to identify the missing_variable file.
+ -s: The path to the file that contains missing_variable information for sets of input_data_files that share
+     common missing variables.  The file will be created if it doesn't exist and the result may be used in subsequent
+     invocations of get_dmrpp (using -s) to identify the missing_variable file.
 
  Limitations:
  * The name of the hdf5 file must be expressed relative to the BES_DATA_ROOT
