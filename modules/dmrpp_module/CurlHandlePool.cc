@@ -407,7 +407,7 @@ static void *easy_handle_read_data(void *handle) {
  * d_max_parallel_transfers are added to the 'multi' handle.
  */
 void dmrpp_multi_handle::read_data() {
-#if 1 //HAVE_CURL_MULTI_API
+#if HAVE_CURL_MULTI_API
     useconds_t retry_time = uone_second/4;
     // Use the libcurl Multi API here. Alternate version follows...
     try {
