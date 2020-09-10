@@ -40,8 +40,8 @@ void load_keys(
         std::vector<std::string> > &keystore);
 
 void load_keys(
-        std::set<std::string> &loaded_kvp_files,
         const std::string &keys_file_name,
+        std::set<std::string> &loaded_kvp_files,
         std::map<std::string, std::vector<std::string> > &keystore);
 
 void load_keys(

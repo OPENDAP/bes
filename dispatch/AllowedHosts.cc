@@ -3,7 +3,7 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of the OPeNDAP Back-End Server (BES)
-// and embodies a whitelist of remote system that may be
+// and creates an allowed hosts list of which systems that may be
 // accessed by the server as part of it's routine operation.
 
 // Copyright (c) 2018 OPeNDAP, Inc.
@@ -66,9 +66,9 @@ AllowedHosts::AllowedHosts()
 {
     bool found = false;
     string key = ALLOWED_HOSTS_BES_KEY;
-    TheBESKeys::TheKeys()->get_values(ALLOWED_HOSTS_BES_KEY, d_white_list, found);
+    TheBESKeys::TheKeys()->get_values(ALLOWED_HOSTS_BES_KEY, d_allowed_hosts, found);
     if(!found){
-        throw BESInternalError(string("The remote access whitelist, '") + ALLOWED_HOSTS_BES_KEY
+        throw BESInternalError(string("The allowed hosts key, '") + ALLOWED_HOSTS_BES_KEY
                                + "' has not been configured.", __FILE__, __LINE__);
     }
 }
@@ -76,19 +76,20 @@ AllowedHosts::AllowedHosts()
 /**
  * This method provides an access condition assessment for URLs and files
  * to be accessed by the BES. The http and https URLs are verified against a
- * whitelist assembled from configuration. All file URLs are checked to be
+ * allowed hosts list assembled from configuration. All file URLs are checked to be
  * sure that they reference a resource within the BES default catalog.
  *
  * @note AllowedHosts is a singleton. This method will instantiate the class
  * if that has not already been done. This method should only be called from
  * the main thread of a multi-threaded application.
  *
- * @param url The URL to test
+ * @param candidate_url The URL to test
  * @return True if the URL may be dereferenced, given the BES's configuration,
  * false otherwise.
  */
-bool AllowedHosts::is_allowed(const std::string &url)
+bool AllowedHosts::is_allowed(const std::string &candidate_url)
 {
+    BESDEBUG(MODULE, prolog << "BEGIN candidate_url: " << candidate_url << endl);
     bool isAllowed = false;
     const string file_url("file://");
     const string http_url("http://");
@@ -96,10 +97,10 @@ bool AllowedHosts::is_allowed(const std::string &url)
 
     // Special case: This allows any file: URL to pass if the URL starts with the default
     // catalog's path.
-    if (url.compare(0, file_url.size(), file_url) == 0 /*equals a file url*/) {
+    if (candidate_url.compare(0, file_url.size(), file_url) == 0 /*equals a file url*/) {
 
         // Ensure that the file path starts with the catalog root dir.
-        string file_path = url.substr(file_url.size());
+        string file_path = candidate_url.substr(file_url.size());
         BESDEBUG(MODULE, prolog << "file_path: "<< file_path << endl);
 
         BESCatalog *bcat = BESCatalogList::TheCatalogList()->find_catalog(BES_DEFAULT_CATALOG);
@@ -142,7 +143,7 @@ bool AllowedHosts::is_allowed(const std::string &url)
 
         // string::compare() returns 0 if the path strings match exactly.
         // And since we are just looking at the catalog.root as a prefix of the resource
-        // name we only allow to be white-listed for an exact match.
+        // name we only allow access to the resource for an exact match.
         if(isAllowed){
             // If we stop adding a '/' to file_path values that don't begin with one
             // then we need to detect the use of the relative path here
@@ -162,17 +163,23 @@ bool AllowedHosts::is_allowed(const std::string &url)
         BESDEBUG(MODULE, prolog << "File Access Allowed: "<< (isAllowed?"true ":"false ") << endl);
     }
     else {
-        vector<string>::const_iterator i = d_white_list.begin();
-        vector<string>::const_iterator e = d_white_list.end();
-        for (; i != e && !isAllowed; i++) {
-            string reg = *i;
-            BESRegex reg_expr(reg.c_str());
-            if (reg_expr.match(url.c_str(), url.length()) > 0 ) {
+        // We assume it's an http(s) URL.
+        vector<string>::const_iterator it = d_allowed_hosts.begin();
+        vector<string>::const_iterator end_it = d_allowed_hosts.end();
+        for (; it != end_it && !isAllowed; it++) {
+            string a_regex_pattern = *it;
+            BESRegex reg_expr(a_regex_pattern.c_str());
+            if (reg_expr.match(candidate_url.c_str(), candidate_url.length()) == candidate_url.length() ) {
+                BESDEBUG(MODULE, prolog << "FULL MATCH. pattern: "<< a_regex_pattern << " url: " << candidate_url << endl);
                 isAllowed = true;;
+            }
+            else {
+                BESDEBUG(MODULE, prolog << "No Match. pattern: "<< a_regex_pattern << " url: " << candidate_url << endl);
             }
         }
         BESDEBUG(MODULE, prolog << "HTTP Access Allowed: "<< (isAllowed?"true ":"false ") << endl);
     }
+    BESDEBUG(MODULE, prolog << "END Access Allowed: "<< (isAllowed?"true ":"false ") << endl);
     return isAllowed;
 }
 

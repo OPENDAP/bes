@@ -1,9 +1,8 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 
-// This file is part of gateway_Gateway_NAME,A C++ Gateway_NAME that can be loaded in to
-// the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
+// This file is part of the BES http package, part of the Hyrax data server.
 
-// Copyright (c) 2013 OPeNDAP, Inc.
+// Copyright (c) 2020 OPeNDAP, Inc.
 // Author: Nathan Potter <ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
@@ -21,9 +20,9 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+
 // Authors:
 //      ndp       Nathan Potter <ndp@opendap.org>
-
 
 #include "config.h"
 
@@ -52,13 +51,15 @@
 
 using namespace std;
 
+#define BES_CATALOG_ROOT_KEY "BES.Catalog.catalog.RootDirectory"
+
 #define prolog std::string("RemoteResource::").append(__func__).append("() - ")
 #define MODULE "http"
 
 namespace http {
 
     /**
-     * Builds a RemoteHttpResource object associated with the passed \c url parameter.
+     * Builds a RemoteHttpResource object associated with the passed url parameter.
      *
      * @param url Is a URL string that identifies the remote resource.
      */
@@ -70,42 +71,57 @@ namespace http {
         d_uid = uid;
         d_echo_token = echo_token;
 
-        d_curl = 0;
+        d_curl = curl::init();
+
         d_resourceCacheFileName.clear();
         d_response_headers = new vector<string>();
         d_request_headers = new vector<string>();
         d_http_response_headers = new map<string, string>();
 
         if (url.empty()) {
-            string err = "RemoteHttpResource(): Remote resource URL is empty";
+            throw BESInternalError(prolog + "Remote resource URL is empty.", __FILE__, __LINE__);
+        }
+
+        if(url.find(FILE_PROTOCOL) == 0){
+            d_resourceCacheFileName = url.substr(strlen(FILE_PROTOCOL));
+            while(BESUtil::endsWith(d_resourceCacheFileName,"/")){
+                // Strip trailing slashes, because this about files, not directories
+                d_resourceCacheFileName = d_resourceCacheFileName.substr(0,d_resourceCacheFileName.length()-1);
+            }
+            // Now we check that the data is in the BES_CATALOG_ROOT
+            string catalog_root;
+            bool found;
+            TheBESKeys::TheKeys()->get_value(BES_CATALOG_ROOT_KEY,catalog_root,found );
+            if(!found){
+                throw BESInternalError( prolog + "ERROR - "+ BES_CATALOG_ROOT_KEY + "is not set",__FILE__,__LINE__);
+            }
+            if(d_resourceCacheFileName.find(catalog_root) !=0 ){
+                d_resourceCacheFileName = BESUtil::pathConcat(catalog_root,d_resourceCacheFileName);
+            }
+            d_initialized =true;
+        }
+        else if(url.find(HTTPS_PROTOCOL) == 0  || url.find(HTTP_PROTOCOL) == 0){
+            d_remoteResourceUrl = url;
+            BESDEBUG(MODULE, prolog << "URL: " << d_remoteResourceUrl << endl);
+
+            if (!d_uid.empty()){
+                string client_id_hdr = "User-Id: " + d_uid;
+                BESDEBUG(MODULE, prolog << client_id_hdr << endl);
+                d_request_headers->push_back(client_id_hdr);
+            }
+            if (!d_echo_token.empty()){
+                string echo_token_hdr = "Echo-Token: " + d_echo_token;
+                BESDEBUG(MODULE, prolog << echo_token_hdr << endl);
+                d_request_headers->push_back(echo_token_hdr);
+            }
+            curl::configureProxy(d_curl, d_remoteResourceUrl); // Configure the a proxy for this url (if appropriate).
+        }
+        else {
+            string err = prolog + "Unsupported protocol: " + url;
             throw BESInternalError(err, __FILE__, __LINE__);
         }
 
-        d_remoteResourceUrl = url;
-        BESDEBUG(MODULE, prolog << "URL: " << d_remoteResourceUrl << endl);
 
-
-        if (!d_uid.empty()){
-            string client_id_hdr = "User-Id: " + d_uid;
-            BESDEBUG(MODULE, prolog << client_id_hdr << endl);
-            d_request_headers->push_back(client_id_hdr);
-        }
-        if (!d_echo_token.empty()){
-            string echo_token_hdr = "Echo-Token: " + d_echo_token;
-            BESDEBUG(MODULE, prolog << echo_token_hdr << endl);
-            d_request_headers->push_back(echo_token_hdr);
-        }
-
-        // EXAMPLE: returned value parameter for CURL *
-        //
-        // CURL *www_lib_init(CURL **curl); // function type signature
-        //
-        // CURL *pvparam = 0;               // passed value parameter
-        // result = www_lib_init(&pvparam); // the call to the method
-
-        d_curl = curl::init(d_error_buffer);  // This may throw either Error or InternalErr
-
-        curl::configureProxy(d_curl, d_remoteResourceUrl); // Configure the a proxy for this url (if appropriate).
 
         BESDEBUG(MODULE, prolog << "d_curl: " << d_curl << endl);
     }
@@ -193,9 +209,9 @@ namespace http {
         HttpCache *cache = HttpCache::get_instance();
         if (!cache) {
             ostringstream oss;
-            oss << __func__ << "() - FAILED to get local cache."
-                               " Unable to proceed with request for " << this->d_remoteResourceUrl
-                << " The server MUST have a valid HTTP cache configuration to operate." << endl;
+            oss << prolog << "FAILED to get local cache. ";
+            oss << "Unable to proceed with request for " << this->d_remoteResourceUrl;
+             oss << " The server MUST have a valid HTTP cache configuration to operate." << endl;
             BESDEBUG(MODULE, oss.str());
             throw BESInternalError(oss.str(), __FILE__, __LINE__);
         }
@@ -325,10 +341,16 @@ namespace http {
             throw BESInternalError(msg, __FILE__, __LINE__);
 
         }
+        catch (BESError &besError) {
+            BESDEBUG(MODULE, prolog << "Caught BESError. type: " << besError.get_bes_error_type() <<
+            " message: '" << besError.get_message() <<
+            "' file: " << besError.get_file() << " line: " << besError.get_line() <<
+            " Will unlock cache and re-throw." << endl);
+            cache->unlock_cache();
+            throw;
+        }
         catch (...) {
-            BESDEBUG(MODULE,
-                     "RemoteHttpResource::retrieveResource() - Caught exception, unlocking cache and re-throw."
-                             << endl);
+            BESDEBUG(MODULE, prolog << "Caught unknown exception. Will unlock cache and re-throw." << endl);
             cache->unlock_cache();
             throw;
         }
@@ -345,39 +367,11 @@ namespace http {
      */
     void RemoteResource::writeResourceToFile(int fd) {
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
-
-        int status = -1;
         try {
             BESDEBUG(MODULE, prolog << "Saving resource " << d_remoteResourceUrl << " to cache file " << d_resourceCacheFileName << endl);
-            status = curl::read_url(d_curl, d_remoteResourceUrl, fd, d_response_headers,
-                            d_request_headers, d_error_buffer); // Throws BESInternalError if there is a curl error.
+            curl::read_url(d_curl, d_remoteResourceUrl, fd, d_response_headers,
+                            d_request_headers); // Throws BESInternalError if there is a curl error.
 
-            if (status >= 400) {
-                BESDEBUG(MODULE,prolog << "ERROR: HTTP request returned an error status of: " << status << endl);
-                // delete resp_hdrs; resp_hdrs = 0;
-                stringstream msg;
-                msg << prolog << "Error while reading the URL: \"" <<  d_remoteResourceUrl << "\", ";;
-                for(unsigned int i=0; i<d_request_headers->size() ;i++){
-                    msg << "reqhdr[" << i << "]: \"" << (*d_request_headers)[i] << "\", ";
-                }
-                msg <<    "The HTTP request returned a status of " << status << " which means '" <<
-                    curl::http_status_to_string(status) << "'" << endl;
-                BESDEBUG(MODULE, prolog << "ERROR: HTTP request returned status: " << status << " message: " << msg.str() << endl);
-                switch(status) {
-                    case 400:
-                        throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
-                    case 401:
-                    case 402:
-                    case 403:
-                        throw BESForbiddenError(msg.str(), __FILE__, __LINE__);
-                    case 404:
-                        throw BESNotFoundError(msg.str(), __FILE__, __LINE__);
-                    case 408:
-                        throw BESTimeoutError(msg.str(), __FILE__, __LINE__);
-                    default:
-                        throw BESInternalError(msg.str(), __FILE__, __LINE__);
-                }
-            }
             BESDEBUG(MODULE,  prolog << "Resource " << d_remoteResourceUrl << " saved to cache file " << d_resourceCacheFileName << endl);
 
             // rewind the file
@@ -398,6 +392,9 @@ namespace http {
         BESDEBUG(MODULE, prolog << "END" << endl);
     }
 
+    /**
+     *
+     */
     void RemoteResource::ingest_http_headers_and_type() {
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
@@ -537,17 +534,15 @@ namespace http {
         }
         string cache_file = getCacheFileName();
         //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-        // Set up dmr input stream.
-        // If no valid dmr input file is provided the code tries to find a dmr in the mds.
-        std::ifstream dmr_istream(cache_file, std::ofstream::in);
+        // Set up cache file input stream.
+        std::ifstream file_istream(cache_file, std::ofstream::in);
 
-        // If the dmr_filename is not valid, the stream will not open. Empty is not valid.
-        if(dmr_istream.is_open()){
-            // If it's open we've got a valid filename.
+        // If the cache filename is not valid, the stream will not open. Empty is not valid.
+        if(file_istream.is_open()){
+            // If it's open we've got a valid input stream.
             BESDEBUG(MODULE, prolog << "Using cached file: " << cache_file << endl);
-            std::ifstream t(cache_file);
             std::stringstream buffer;
-            buffer << t.rdbuf();
+            buffer << file_istream.rdbuf();
             return buffer.str();
         }
         else {
@@ -571,6 +566,16 @@ namespace http {
         rapidjson::Document d;
         d.Parse(response.c_str());
         return d;
+    }
+
+    /**
+     * Returns a std::vector of HTTP headers received along with the response from the request for the remote resource..
+     */
+    vector<string> *RemoteResource::getResponseHeaders() {
+        if (!d_initialized){
+            throw BESInternalError(prolog +"STATE ERROR: Remote Resource Has Not Been Retrieved.",__FILE__,__LINE__);
+        }
+        return d_response_headers;
     }
 
 

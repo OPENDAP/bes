@@ -1,10 +1,9 @@
 // -*- mode: c++; c-basic-offset:4 -*-
-//
-// This file is part of httpd_catalog_module, A C++ module that can be loaded in to
-// the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
-//
-// Copyright (c) 2018 OPeNDAP, Inc.
-// Author: Nathan David Potter <ndp@opendap.org>
+
+// This file is part of the BES http package, part of the Hyrax data server.
+
+// Copyright (c) 2020 OPeNDAP, Inc.
+// Author: Nathan Potter <ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -22,11 +21,15 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-#ifndef I_HTTP_NAME_H
-#define I_HTTP_NAME_H 1
+// Authors:
+//      ndp       Nathan Potter <ndp@opendap.org>
+
+#ifndef  _bes_http_HTTP_NAMES_H
+#define  _bes_http_HTTP_NAMES_H 1
 
 #define HTTP_PROTOCOL "http://"
 #define HTTPS_PROTOCOL "https://"
+#define FILE_PROTOCOL "file://"
 
 #define HTTP_MIMELIST_KEY "Http.MimeTypes"
 #define HTTP_PROXYPROTOCOL_KEY "Http.ProxyProtocol"
@@ -42,6 +45,8 @@
 #define HTTP_CACHE_PREFIX_KEY "Http.Cache.prefix"
 #define HTTP_CACHE_SIZE_KEY "Http.Cache.size"
 
+#define HTTP_NETRC_FILE_KEY "Http.netrc.file"
+
 #define HTTP_COOKIES_FILE_KEY "Http.Cookies.File"
 #define HTTP_DEFAULT_COOKIES_FILE "/tmp/.hyrax-cookies"
 
@@ -55,6 +60,11 @@
 #define HTTP_CACHE_EFFECTIVE_URLS_KEY "Http.cache.effective.urls"
 #define HTTP_CACHE_EFFECTIVE_URLS_SKIP_REGEX_KEY "Http.cache.effective.urls.skip.regex.pattern"
 
+
+#define AMS_EXPIRES_HEADER_KEY "X-Amz-Expires"
+#define AWS_DATE_HEADER_KEY "X-Amz-Date"
+#define CLOUDFRONT_EXPIRES_HEADER_KEY "Expires"
+
 #define HTTP_MODULE "http"
 
-#endif // I_HTTP_NAME_H
+#endif //  _bes_http_HTTP_NAMES_H

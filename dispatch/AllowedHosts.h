@@ -1,9 +1,9 @@
-// RemoteAccess.h
+// AllowedHosts.h
 
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of the OPeNDAP Back-End Server (BES)
-// and embodies a whitelist of remote system that may be
+// and creates a set of allowed hosts that may be
 // accessed by the server as part of it's routine operation.
 
 // Copyright (c) 2018 OPeNDAP, Inc.
@@ -28,8 +28,8 @@
 // Authors:
 //      ndp       Nathan D. Potter <ndp@opendap.org>
 
-#ifndef I_RemoteAccess_H
-#define I_RemoteAccess_H 1
+#ifndef I_AllowedHosts_H
+#define I_AllowedHosts_H 1
 
 #include <string>
 #include <vector>
@@ -41,8 +41,8 @@ namespace bes {
 /**
  * @brief Can a given URL be dereferenced given the BES's configuration?
  *
- * Embodies a configuration based remote access white list
- * and provides a simple API (Is_Whitelisted()) for determining which
+ * Embodies a configuration based remote access allowed list
+ * and provides a simple API, is_allowed() for determining which
  * resources may be accessed. This enables a system administrator to control
  * the remote systems a particular BES daemon can access.
  *
@@ -52,7 +52,7 @@ class AllowedHosts {
 private:
 	static AllowedHosts *d_instance;
 
-    std::vector<std::string> d_white_list;
+    std::vector<std::string> d_allowed_hosts;
 
 protected:
     AllowedHosts();
@@ -62,10 +62,10 @@ public:
 
     static AllowedHosts *theHosts();
 
-    bool is_allowed(const std::string &url);
+    bool is_allowed(const std::string &candidate_url);
 };
 
 } // namespace bes
 
-#endif // I_RemoteAccess_H
+#endif // I_AllowedHosts_H
 

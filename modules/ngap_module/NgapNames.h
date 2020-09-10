@@ -31,7 +31,6 @@
 
 #define NGAP_NAME "ngap"
 
-#define NGAP_CACHE_TERMINAL_URLS_KEY "NGAP.cache.terminal.urls"
 
 #define DATA_ACCESS_URL_KEY "OPeNDAP_DMRpp_DATA_ACCESS_URL"
 #define NGAP_INJECT_DATA_URL_KEY "NGAP.inject_data_urls"

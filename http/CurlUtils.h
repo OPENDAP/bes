@@ -1,9 +1,8 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 
-// This file is part of cmr_module, A C++ module that can be loaded in to
-// the OPeNDAP Back-End Server (BES) and is able to handle remote requests.
+// This file is part of the BES http package, part of the Hyrax data server.
 
-// Copyright (c) 2013 OPeNDAP, Inc.
+// Copyright (c) 2020 OPeNDAP, Inc.
 // Author: Nathan Potter <ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
@@ -22,8 +21,11 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-#ifndef _CURL_UTILS_H_
-#define _CURL_UTILS_H_ 1
+// Authors:
+//      ndp       Nathan Potter <ndp@opendap.org>
+
+#ifndef  _bes_http_CURL_UTILS_H_
+#define  _bes_http_CURL_UTILS_H_ 1
 
 #include <string>
 #include <vector>
@@ -36,12 +38,12 @@
 
 namespace curl {
 
-    CURL *init(char *error_buffer);
+    CURL *init();
 
     bool configureProxy(CURL *curl, const std::string &url);
 
-    long read_url(CURL *curl, const std::string &url, int fd, std::vector<std::string> *resp_hdrs,
-                  const std::vector<std::string> *headers, char error_buffer[]);
+    void read_url(CURL *curl, const std::string &url, int fd, std::vector<std::string> *resp_hdrs,
+                  const std::vector<std::string> *headers);
 
     void http_get(const std::string &url, char *response_buf);
     std::string http_get_as_string(const std::string &url);
@@ -60,8 +62,13 @@ namespace curl {
     void cache_effective_url(const std::string &data_access_url_str, BESRegex *no_redirects_regex_pattern);
     BESRegex *get_cache_effective_urls_skip_regex();
     bool is_retryable(std::string url);
-
+    std::string get_netrc_filename();
+    std::string hyrax_user_agent();
+    void set_error_buffer(CURL *curl, char *error_buffer);
+    void unset_error_buffer(CURL *curl);
+    void check_setopt_result(CURLcode result, std::string msg_base, std::string opt_name, char *ebuf, std::string file, unsigned int line );
+    unsigned long max_redirects();
 
 } // namespace curl
 
-#endif /* _CURL_UTILS_H_ */
+#endif /*  _bes_http_CURL_UTILS_H_ */

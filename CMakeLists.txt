@@ -470,8 +470,9 @@ add_executable(bes
     dispatch/ShowNodeResponseHandler.h
     dispatch/TheBESKeys.cc
     dispatch/TheBESKeys.h
-        dispatch/AllowedHosts.cc
-        dispatch/AllowedHosts.h
+    dispatch/AllowedHosts.cc
+    dispatch/AllowedHosts.h
+
     http/url_impl.cc
     http/url_impl.h
     http/CurlUtils.cc
@@ -483,6 +484,13 @@ add_executable(bes
     http/HttpUtils.h
     http/RemoteResource.cc
     http/RemoteResource.h
+    http/unit-tests/HttpUtilsTest.cc
+    http/unit-tests/CurlUtilsTest.cc
+    http/EffectiveUrlCache.cc
+    http/EffectiveUrlCache.h
+    http/unit-tests/EffectiveUrlCacheTest.cc
+    http/unit-tests/HttpUrlTest.cc
+    http/unit-tests/RemoteResourceTest.cc
 
     functions/geo-functions/unused/NC_GOES_Dataset.cpp
     functions/geo-functions/unused/NC_GOES_Dataset.h
@@ -601,6 +609,7 @@ add_executable(bes
     hello_world/SampleSayResponseHandler.h
     hello_world/SampleSayXMLCommand.cc
     hello_world/SampleSayXMLCommand.h
+
     modules/asciival/unit-tests/AsciiArrayTest.cc
     modules/asciival/unit-tests/AsciiOutputTest.cc
     modules/asciival/unit-tests/test_config.h
@@ -2067,5 +2076,5 @@ add_executable(bes
 
     standalone/besstandalone.cc
 
-	functions/stare/unit-tests/build_test_s_indices.cc
+    functions/stare/unit-tests/build_test_s_indices.cc
     http/unit-tests/HttpUtilsTest.cc http/unit-tests/CurlUtilsTest.cc)

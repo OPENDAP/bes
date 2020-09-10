@@ -4,16 +4,8 @@ BES.Include=dap.conf
 BES.modules+=ngap
 BES.module.ngap=@bes_modules_dir@/libngap_module.so
 
-NGAP.Cache.dir=/tmp
-NGAP.Cache.prefix=ngap_
-NGAP.Cache.size=500
-
 # Inject Data URLs into the dmr++  documents.
 NGAP.inject_data_urls=true
-
-NGAP.cookies=/tmp/ngap_cookies
-
-NGAP.cache.terminal.urls=true
 
 # Use this CMR endpopint URL for CMR queries.
 # NGAP.cmr_host_url=https://cmr.uat.earthdata.nasa.gov

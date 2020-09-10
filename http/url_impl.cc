@@ -1,5 +1,29 @@
 
-// https://stackoverflow.com/questions/2616011/easy-way-to-parse-a-url-in-c-cross-platform
+// -*- mode: c++; c-basic-offset:4 -*-
+
+// This file is part of the BES http package, part of the Hyrax data server.
+
+// Copyright (c) 2020 OPeNDAP, Inc.
+// Author: Nathan Potter <ndp@opendap.org>
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+//
+// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+
+// Authors:
+//      ndp       Nathan Potter <ndp@opendap.org>
 
 #include <string>
 #include <sstream>
@@ -28,14 +52,11 @@ using namespace std;
 #define SOURCE_URL_KEY  "http_url_target_url"
 #define INGEST_TIME_KEY  "http_url_ingest_time"
 
-#define AMS_EXPIRES_HEADER_KEY "X-Amz-Expires"
-#define AWS_DATE_HEADER_KEY "X-Amz-Date"
-#define CLOUDFRONT_EXPIRES_HEADER_KEY "Expires"
 #define REFRESH_THRESHOLD 3600
 
 namespace http {
 
-
+#if 0
 /**
  *
  * @param kvp
@@ -99,6 +120,7 @@ url::url(const map<string,string> &kvp)
     }
 
 }
+#endif
 
 /**
  *
@@ -115,7 +137,7 @@ url::~url()
 
 
 /**
- *
+ * Tip of the hat to: https://stackoverflow.com/questions/2616011/easy-way-to-parse-a-url-in-c-cross-platform
  * @param source_url
  */
 void url::parse(const string &source_url) {
@@ -202,6 +224,7 @@ void url::query_parameter_values(const string &key, vector<string> &values) cons
     }
 }
 
+#if 0
 
 /**
  *
@@ -225,6 +248,7 @@ void url::kvp(map<string,string>  &kvp){
         kvp.insert(pair<string,string>(it->first,(*it->second)[0]));
     }
 }
+#endif
 
 /**
  *
@@ -302,8 +326,11 @@ bool url::is_expired()
     return is_expired;
 }
 
-
-string url::to_string(){
+/**
+ * Returns a string representation of the URL and its bits.
+ * @return the representation mentioned above.
+ */
+string url::dump(){
     stringstream ss;
     string indent_inc = "  ";
     string indent = indent_inc;
@@ -328,6 +355,7 @@ string url::to_string(){
     ss << indent << "d_ingest_time:      " << d_ingest_time << endl;
     return ss.str();
 }
+
 
 
 } // namespace http
