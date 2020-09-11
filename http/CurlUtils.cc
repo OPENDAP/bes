@@ -802,7 +802,8 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         CURL *d_handle;     ///< The libcurl handle object.
         CURLcode res;
 
-        d_handle = curl_easy_init();
+        //d_handle = curl_easy_init(); // switched to curl::init()
+        d_handle = curl::init();
         if (!d_handle)
             throw BESInternalError(string("ERROR! Failed to acquire cURL Easy Handle! "), __FILE__, __LINE__);
 
@@ -821,6 +822,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         res = curl_easy_setopt(d_handle, CURLOPT_WRITEDATA, reinterpret_cast<void *>(response_buff));
         check_setopt_result(res, prolog, "CURLOPT_WRITEDATA", errbuf, __FILE__, __LINE__);
 
+        /* // handled by curl::init() - SBL 9.10.20
         // Follow redirects --------------------------------------------------------------------------------------------
         res = curl_easy_setopt(d_handle, CURLOPT_FOLLOWLOCATION, 1L);
         check_setopt_result(res, prolog, "CURLOPT_FOLLOWLOCATION", errbuf, __FILE__, __LINE__);
@@ -847,8 +849,10 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
             check_setopt_result(res, prolog, "CURLOPT_NETRC_FILE", errbuf, __FILE__, __LINE__);
         }
 
+
         VERBOSE(__FILE__ << "::get_easy_handle() is using the netrc file '"
                          << ((!netrc_file.empty()) ? netrc_file : "~/.netrc") << "'" << endl);
+        */
 
         unset_error_buffer(d_handle);
 
