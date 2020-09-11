@@ -71,7 +71,7 @@ namespace http {
         d_uid = uid;
         d_echo_token = echo_token;
 
-        d_curl = curl::init();
+        // d_curl = curl::init(url);
 
         d_resourceCacheFileName.clear();
         d_response_headers = new vector<string>();
@@ -114,7 +114,6 @@ namespace http {
                 BESDEBUG(MODULE, prolog << echo_token_hdr << endl);
                 d_request_headers->push_back(echo_token_hdr);
             }
-            curl::configureProxy(d_curl, d_remoteResourceUrl); // Configure the a proxy for this url (if appropriate).
         }
         else {
             string err = prolog + "Unsupported protocol: " + url;
@@ -123,7 +122,7 @@ namespace http {
 
 
 
-        BESDEBUG(MODULE, prolog << "d_curl: " << d_curl << endl);
+        // BESDEBUG(MODULE, prolog << "d_curl: " << d_curl << endl);
     }
 
     /**
@@ -150,12 +149,13 @@ namespace http {
             }
         }
 
+#if 0
         if (d_curl) {
             curl_easy_cleanup(d_curl);
             BESDEBUG(MODULE, prolog << "Called curl_easy_cleanup()." << endl);
         }
         d_curl = 0;
-
+#endif
         BESDEBUG(MODULE, prolog << "Clearing resourceURL: " << d_remoteResourceUrl << endl);
         d_remoteResourceUrl.clear();
         BESDEBUG(MODULE, prolog << "END" << endl);
@@ -369,7 +369,7 @@ namespace http {
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
         try {
             BESDEBUG(MODULE, prolog << "Saving resource " << d_remoteResourceUrl << " to cache file " << d_resourceCacheFileName << endl);
-            curl::read_url(d_curl, d_remoteResourceUrl, fd, d_response_headers,
+            curl::read_url(d_remoteResourceUrl, fd, d_response_headers,
                             d_request_headers); // Throws BESInternalError if there is a curl error.
 
             BESDEBUG(MODULE,  prolog << "Resource " << d_remoteResourceUrl << " saved to cache file " << d_resourceCacheFileName << endl);

@@ -66,11 +66,11 @@ namespace http {
         /// Access/Authentication token for the requesting user.
         std::string d_echo_token;
 
-        /// An pointer to a CURL object to use for any HTTP transactions.
-        CURL *d_curl;
+        /// An pointer to a cURL easy handle to use for any HTTP transactions.
+        // CURL *d_curl;
 
         /// @TODO This variable fails to accumulate error message content when curl has problems. FIX.
-        char d_error_buffer[CURL_ERROR_SIZE]; // A human-readable message.
+        // char d_error_buffer[CURL_ERROR_SIZE]; // A human-readable message.
 
         /// The DAP type of the resource. See RemoteHttpResource::setType() for more.
         std::string d_type;
@@ -121,7 +121,7 @@ namespace http {
 
     protected:
         RemoteResource() :
-                d_fd(0), d_initialized(false), d_curl(0), d_resourceCacheFileName(""), d_request_headers(0),
+                d_fd(0), d_initialized(false), d_resourceCacheFileName(""), d_request_headers(0),
                 d_response_headers(0), d_http_response_headers(0) {
         }
 

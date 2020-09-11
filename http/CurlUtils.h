@@ -38,11 +38,11 @@
 
 namespace curl {
 
-    CURL *init();
+    CURL *init(const std::string url);
 
     bool configureProxy(CURL *curl, const std::string &url);
 
-    void read_url(CURL *curl, const std::string &url, int fd, std::vector<std::string> *resp_hdrs,
+    void read_url(const std::string &url, int fd, std::vector<std::string> *resp_hdrs,
                   const std::vector<std::string> *headers);
 
     void http_get(const std::string &url, char *response_buf);
@@ -51,7 +51,7 @@ namespace curl {
     std::string http_status_to_string(int status);
     std::string error_message(const CURLcode response_code, char *error_buf);
     size_t c_write_data(void *buffer, size_t size, size_t nmemb, void *data);
-    CURL *set_up_easy_handle(const std::string &target_url, const std::string &cookies_file, char *response_buff);
+    CURL *set_up_easy_handle(const std::string &target_url, char *response_buff);
     bool eval_get_response(CURL *eh, const std::string &requested_url);
     void read_data(CURL *c_handle);
     std::string get_cookie_filename();
