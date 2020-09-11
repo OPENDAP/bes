@@ -237,7 +237,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
      * @return The number of bytes processed. Must be equal to size * nmemb or
      * libcurl will report an error.
      */
-    static size_t save_raw_http_headers(void *ptr, size_t size, size_t nmemb, void *resp_hdrs) {
+    static size_t save_http_response_headers(void *ptr, size_t size, size_t nmemb, void *resp_hdrs) {
         BESDEBUG(MODULE, prolog << "Inside the header parser." << endl);
         vector<string> *hdrs = static_cast<vector<string> * >(resp_hdrs);
 
@@ -436,7 +436,10 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
  *
  *  @param url The url used to configure the proy.
  */
-    CURL *init(const string target_url) {
+    CURL *init(const string &target_url,
+               const struct curl_slist *http_request_headers,
+               vector<string> *http_response_hdrs
+        ) {
         char error_buffer[CURL_ERROR_SIZE];
         error_buffer[0]=0; // Null terminate this string for safety.
         CURL *curl;
@@ -521,13 +524,24 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         res = curl_easy_setopt(curl, CURLOPT_COOKIEJAR, curl::get_cookie_filename().c_str());
         check_setopt_result(res, prolog, "CURLOPT_COOKIEJAR", error_buffer, __FILE__,__LINE__);
 
+        // save_http_response_headers
 
+        if(http_response_hdrs){
+            res = curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, save_http_response_headers);
+            check_setopt_result(res, prolog, "CURLOPT_HEADERFUNCTION", error_buffer,__FILE__,__LINE__);
 
-        res = curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, save_raw_http_headers);
-        check_setopt_result(res, prolog, "CURLOPT_HEADERFUNCTION", error_buffer,__FILE__,__LINE__);
+            // Pass save_http_response_headers() a pointer to the vector<string> where the
+            // response headers may be stored. Callers can use the resp_hdrs
+            // value/result parameter to get the raw response header information .
+            res = curl_easy_setopt(curl, CURLOPT_WRITEHEADER, http_response_hdrs);
+            check_setopt_result(res, prolog, "CURLOPT_WRITEHEADER", error_buffer, __FILE__, __LINE__);
+        }
 
-        // In read_url a call to CURLOPT_WRITEHEADER is used to set the fourth
-        // param of save_raw_http_headers to a vector<string> object.
+        //req_hdrs = for_each(d_request_headers.begin(), d_request_headers.end(), req_hdrs);
+        if (http_request_headers){
+            res = curl_easy_setopt(curl, CURLOPT_HTTPHEADER, http_request_headers);
+            check_setopt_result(res, prolog, "CURLOPT_HTTPHEADER", error_buffer, __FILE__, __LINE__);
+        }
 
         // Follow 302 (redirect) responses
         res = curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
@@ -586,7 +600,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
 
         error_buffer[0]=0; // null terminate empty string
 
-        curl = init(url);
+        curl = curl::init(url, NULL, &resp_hdrs);
 
         set_error_buffer(curl, error_buffer);
 
@@ -617,8 +631,8 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
     will be the destination for the data; the caller can assume that when this
     method returns that the body of the response can be retrieved by reading
     from this file descriptor.
-    @param resp_hdrs Value/result parameter for the HTTP Response Headers.
-    @param request_headers A pointer to a vector of HTTP request headers. Default is
+    @param http_response_headers Value/result parameter for the HTTP Response Headers.
+    @param http_request_headers A pointer to a vector of HTTP request headers. Default is
     null. These headers will be appended to the list of default headers.
     @return The HTTP status code.
     @exception Error Thrown if libcurl encounters a problem; the libcurl
@@ -626,8 +640,8 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
     */
     void read_url(const string &url,
                   int fd,
-                  vector<string> *resp_hdrs,
-                  const vector<string> *request_headers) {
+                  vector<string> *http_response_headers,
+                  const vector<string> *http_request_headers) {
 
         char error_buffer[CURL_ERROR_SIZE];
         CURLcode res;
@@ -646,7 +660,10 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         }
 
         try {
-            curl = init(url);
+            if(http_request_headers)
+                curl_req_headers = for_each(http_request_headers->begin(), http_request_headers->end(), curl_req_headers);
+
+            curl = init(url, curl_req_headers.get_headers(), http_response_headers);
 
             set_error_buffer(curl,error_buffer);
             res = curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeToOpenfileDescriptor);
@@ -661,19 +678,20 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
             check_setopt_result(res, prolog, "CURLOPT_FILE", error_buffer, __FILE__, __LINE__);
 
 #endif
+#if 0
             //req_hdrs = for_each(d_request_headers.begin(), d_request_headers.end(), req_hdrs);
-            if (request_headers)
-                curl_req_headers = for_each(request_headers->begin(), request_headers->end(), curl_req_headers);
+            if (http_request_headers)
+                curl_req_headers = for_each(http_request_headers->begin(), http_request_headers->end(), curl_req_headers);
 
             res = curl_easy_setopt(curl, CURLOPT_HTTPHEADER, curl_req_headers.get_headers());
             check_setopt_result(res, prolog, "CURLOPT_HTTPHEADER", error_buffer, __FILE__, __LINE__);
 
             // Pass save_raw_http_headers() a pointer to the vector<string> where the
-            // response headers may be stored. Callers can use the resp_hdrs
+            // response headers may be stored. Callers can use the http_response_headers
             // value/result parameter to get the raw response header information .
-            res = curl_easy_setopt(curl, CURLOPT_WRITEHEADER, resp_hdrs);
+            res = curl_easy_setopt(curl, CURLOPT_WRITEHEADER, http_response_headers);
             check_setopt_result(res, prolog, "CURLOPT_WRITEHEADER", error_buffer, __FILE__, __LINE__);
-
+#endif
             unset_error_buffer(curl);
 
             read_data(curl);
@@ -802,7 +820,7 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
         CURLcode res;
 
         //d_handle = curl_easy_init(); // switched to curl::init()
-        d_handle = curl::init(target_url);
+        d_handle = curl::init(target_url,NULL,NULL);
         if (!d_handle)
             throw BESInternalError(string("ERROR! Failed to acquire cURL Easy Handle! "), __FILE__, __LINE__);
 

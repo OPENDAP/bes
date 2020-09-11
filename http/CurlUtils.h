@@ -38,12 +38,16 @@
 
 namespace curl {
 
-    CURL *init(const std::string url);
+    CURL *init(const std::string url,
+               const struct curl_slist *http_request_headers,
+               std::vector<std::string> &resp_hdrs );
 
     bool configureProxy(CURL *curl, const std::string &url);
 
-    void read_url(const std::string &url, int fd, std::vector<std::string> *resp_hdrs,
-                  const std::vector<std::string> *headers);
+    void read_url(const std::string &url,
+                  int fd,
+                  std::vector<std::string> *http_response_headers,
+                  const std::vector<std::string> *http_request_headers);
 
     void http_get(const std::string &url, char *response_buf);
     std::string http_get_as_string(const std::string &url);
