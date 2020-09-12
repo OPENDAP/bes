@@ -1448,8 +1448,8 @@ struct curl_slist *get_auth_headers(curl_slist *request_headers);
  *
  * From a bes command:
  *   <bes:setContext name="uid">ndp_opendap</bes:setContext>
- *   <bes:setContext name="edl_echo_token">92ce0f264ce3396800qCatYusFHg9Gb2PA</bes:setContext>
- *    <bes:setContext name="edl_auth_token">Bearer 92ce0f264c0ce8d09361db</bes:setContext>
+ *   <bes:setContext name="edl_echo_token">NOT_A_REAL_TOKEN:NOT_A_REAL_ID</bes:setContext>
+ *    <bes:setContext name="edl_auth_token">Bearer NOT_A_REAL_TOKEN</bes:setContext>
  *
  * @param request_headers
  * @return
