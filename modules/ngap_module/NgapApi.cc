@@ -137,9 +137,8 @@ namespace ngap {
      */
     string NgapApi::convert_ngap_resty_path_to_data_access_url(
             const std::string &restified_path,
-            const std::string &uid,
-            const std::string &access_token
-    ) {
+            const std::string &uid
+            ) {
 
         string data_access_url("");
 
@@ -161,6 +160,7 @@ namespace ngap {
         string cmr_url = get_cmr_search_endpoint_url() + "?";
 
         {
+            // This easy handle is only created so we can use the curl_easy_escape() on the tokens
             CURL *curl = curl_easy_init();
             char *esc_url_content;
 
@@ -191,7 +191,7 @@ namespace ngap {
         BESDEBUG(MODULE, prolog << "CMR Request URL: " << cmr_url << endl);
 #if 1
         BESDEBUG(MODULE, prolog << "Building new RemoteResource." << endl);
-        http::RemoteResource cmr_query(cmr_url, uid, access_token);
+        http::RemoteResource cmr_query(cmr_url, uid);
         cmr_query.retrieveResource();
         rapidjson::Document cmr_response = cmr_query.get_as_json();
 #else

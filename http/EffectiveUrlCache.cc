@@ -241,6 +241,7 @@ void EffectiveUrlCache::cache_effective_url(const string &source_url, BESRegex *
     // It not found or expired, reload.
     if(retrieve_and_cache){
         BESDEBUG(MODULE, prolog << "Acquiring effective URL for  " << source_url << endl);
+
         string effective_url_str;
         curl::retrieve_effective_url(source_url, effective_url_str);
         BESDEBUG(MODULE, prolog << "effective_url_str: " << effective_url_str << endl);

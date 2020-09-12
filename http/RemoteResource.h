@@ -64,7 +64,7 @@ namespace http {
         std::string d_uid;
 
         /// Access/Authentication token for the requesting user.
-        std::string d_echo_token;
+        //std::string d_echo_token;
 
         /// An pointer to a cURL easy handle to use for any HTTP transactions.
         // CURL *d_curl;
@@ -79,7 +79,7 @@ namespace http {
         std::string d_resourceCacheFileName;
 
         /// HTTP request headers added the curl HTTP GET request
-        std::vector<std::string> *d_request_headers; // Request headers
+        std::vector<std::string> d_request_headers; // Request headers
 
         /// The raw HTTP response headers returned by the request for the remote resource.
         std::vector<std::string> *d_response_headers; // Response headers
@@ -126,7 +126,8 @@ namespace http {
         }
 
     public:
-        RemoteResource(const std::string &url, const std::string &uid = "", const std::string &echo_token = "");
+        // RemoteResource(const std::string &url, const std::string &uid = "", const std::string &echo_token = "");
+        RemoteResource(const std::string &url, const std::string &uid = "");
 
         virtual ~RemoteResource();
 
