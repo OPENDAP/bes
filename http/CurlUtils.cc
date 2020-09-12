@@ -1467,21 +1467,24 @@ struct curl_slist *get_auth_headers(curl_slist *request_headers)
     if(found){
         string uid_header = "User-Id: " + s;
         temp = curl_slist_append(request_headers, uid_header.c_str());
-        request_headers = temp;
+        if(temp)
+            request_headers = temp;
     }
 
-    TheBESKeys::TheKeys()->get_value(EDL_ECHO_TOKEN_KEY,s,found);
+    TheBESKeys::TheKeys()->get_value(EDL_AUTH_TOKEN_KEY,s,found);
     if(found){
         string authorization_header = "Authorization: Bearer " + s;
         temp = curl_slist_append(request_headers, authorization_header.c_str());
-        request_headers = temp;
+        if(temp)
+            request_headers = temp;
     }
 
     TheBESKeys::TheKeys()->get_value(EDL_ECHO_TOKEN_KEY,s,found);
     if(found){
-        string echo_token_header = "Echo-Token: "+s;
+        string echo_token_header = "Echo-Token: " + s;
         temp = curl_slist_append(request_headers, echo_token_header.c_str());
-        request_headers = temp;
+        if(temp)
+            request_headers = temp;
     }
     return request_headers;
 }
