@@ -40,7 +40,9 @@
 #define HTTP_PROXYPASSWORD_KEY "Http.ProxyPassword"
 #define HTTP_PROXYUSERPW_KEY "Http.ProxyUserPW"
 #define HTTP_NO_PROXY_REGEX_KEY "Http.NoProxy"
-#define HTTP_USE_INTERNAL_CACHE_KEY "Http.UseInternalCache"
+
+#define HTTP_MAX_REDIRECTS_KEY "Http.MaxRedirects"
+#define HTTP_MAX_REDIRECTS_DEFAULT 20
 
 
 #define HTTP_CACHE_DIR_KEY "Http.Cache.dir"

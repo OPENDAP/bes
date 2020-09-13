@@ -1,7 +1,6 @@
 // -*- mode: c++; c-basic-offset:4 -*-
-
 // This file is part of the BES http package, part of the Hyrax data server.
-
+//
 // Copyright (c) 2020 OPeNDAP, Inc.
 // Author: Nathan Potter <ndp@opendap.org>
 //
@@ -20,7 +19,6 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-
 // Authors:
 //      ndp       Nathan Potter <ndp@opendap.org>
 
@@ -345,27 +343,35 @@ int curl_trace = 0;
      * The passed URL is the target URL. If the target URL matches the
      * HttpUtils::NoProxyRegex in the config file, then no proxying is done.
      *
-     * The proxy configuration is stored in the gateway_modules configuration file, gateway.conf. The allowed values are:
-     * Gateway.ProxyHost=warsaw.wonderproxy.com
-     * Gateway.ProxyPort=8080
-     * Gateway.ProxyUser=username
-     * Gateway.ProxyPassword=password
-     * Gateway.ProxyUserPW=username:password
-     * Gateway.ProxyAuthType=basic | digest | ntlm
+     * The proxy configuration is stored in the http configuration file, http.conf.
+     * The configuration utilizes the following keys. The:
+     * Http.ProxyHost=<hostname or ip address>
+     * Http.ProxyPort=<port number>
+     * Http.ProxyAuthType=<basic | digest | ntlm>
+     * Http.ProxyUser=<username>
+     * Http.ProxyPassword=<password>
+     * Http.ProxyUserPW=<username:password>
+     * Http.ProxyProtocol=< https | http >
+     * Http.NoProxy=<regex_to_match_no_proxy_urls>
      *
      * @param curl The cURL easy handle to configure.
      * @param target_url The url used to configure the proxy
      * @return
      */
-    bool configureProxy(CURL *ceh, const string &target_url) {
+    bool configure_curl_handle_for_proxy(CURL *ceh, const string &target_url) {
         BESDEBUG(MODULE,  prolog << "BEGIN." << endl);
 
         bool using_proxy = false;
+
+        if(!HttpUtils::ProxyConfigured){
+            HttpUtils::load_proxy_from_keys();
+        }
 
         // I pulled this because I could never find where it was applied
         // to the curl state in HTTPConnect
         //string proxyProtocol = GatewayUtils::ProxyProtocol;
 
+        // TODO remove these local variables (if possible) and pass the values into curl_easy_setopt() directly from HttpUtils
         string proxyHost = HttpUtils::ProxyHost;
         int proxyPort = HttpUtils::ProxyPort;
         string proxyPassword = HttpUtils::ProxyPassword;
@@ -616,10 +622,10 @@ int curl_trace = 0;
             BESDEBUG(MODULE,  prolog << "Curl debugging function installed." << endl);
         }
 
-        // We unset the error buffer here because we know that curl::configureProxy() wil use it's own.
+        // We unset the error buffer here because we know that curl::configure_curl_handle_for_proxy() will use it's own.
         unset_error_buffer(ceh);
         // Configure the a proxy for this url (if appropriate).
-        curl::configureProxy(ceh, target_url);
+         curl::configure_curl_handle_for_proxy(ceh, target_url);
 
         BESDEBUG(MODULE,  prolog << "curl: " << (void *) ceh << endl);
         return ceh;
@@ -1491,7 +1497,7 @@ bool eval_curl_easy_perform_code(
     }
 
     /**
-     * Set the cURL easy handle, curl error buffer to error_buffer
+     * Set the error buffer for the cURL easy handle ceh to error_buffer
      * @param ceh
      * @param error_buffer
      */
@@ -1504,7 +1510,7 @@ bool eval_curl_easy_perform_code(
 
     /**
      * Based on this thread: https://curl.haxx.se/mail/lib-2011-10/0078.html
-     * We "unset" the error buffer using a null pointer since it's going out of scope.
+     * We "unset" the error buffer using a null pointer.
      * @param ceh
      */
     void unset_error_buffer(CURL *ceh)
@@ -1553,7 +1559,8 @@ bool eval_curl_easy_perform_code(
     }
 
     unsigned long max_redirects(){
-        return 20;
+        HttpUtils::load_max_redirects_from_keys();
+        return HttpUtils::MaxRedirects;
     }
 
 #define EDL_AUTH_TOKEN_KEY "edl_auth_token"

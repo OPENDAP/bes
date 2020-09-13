@@ -38,14 +38,6 @@
 
 namespace curl {
 
-    CURL *init(const std::string &target_url,
-               const struct curl_slist *http_request_headers,
-               std::vector<std::string> *resp_hdrs );
-
-    CURL *set_up_easy_handle(const std::string &target_url, struct curl_slist *request_headers, char *response_buff);
-
-
-    bool configureProxy(CURL *ceh, const std::string &url);
 
     void http_get_and_write_resource(const std::string &url,
                                      const std::vector<std::string> &http_request_headers,
@@ -58,37 +50,22 @@ namespace curl {
 
     rapidjson::Document http_get_as_json(const std::string &target_url);
 
-    std::string http_status_to_string(int status);
-
-    std::string error_message(CURLcode response_code, char *error_buf);
-
-    size_t c_write_data(void *buffer, size_t size, size_t nmemb, void *data);
-
-
-    bool eval_http_get_response(CURL *ceh, const std::string &requested_url);
-
-    void read_data(CURL *c_handle);
-
-    std::string get_cookie_filename();
-
     void retrieve_effective_url(const std::string &url, std::string &last_accessed_url);
 
-    std::string get_range_arg_string(const unsigned long long &offset, const unsigned long long &size);
 
-    //void cache_final_redirect_url(const std::string &data_access_url_str);
-
-    bool cache_effective_urls();
-
-    void cache_effective_url(const std::string &data_access_url_str, BESRegex *no_redirects_regex_pattern);
-
-    BESRegex *get_cache_effective_urls_skip_regex();
+    std::string get_netrc_filename();
+    std::string get_cookie_filename();
 
     bool is_retryable(std::string url);
     unsigned long max_redirects();
 
-    std::string get_netrc_filename();
-
     std::string hyrax_user_agent();
+
+    CURL *init(const std::string &target_url,
+               const struct curl_slist *http_request_headers,
+               std::vector<std::string> *resp_hdrs );
+
+    bool configure_curl_handle_for_proxy(CURL *ceh, const std::string &url);
 
     void set_error_buffer(CURL *ceh, char *error_buffer);
 
@@ -112,6 +89,19 @@ namespace curl {
     void curl_super_easy_perform(CURL *ceh);
 
     std::string get_effective_url(CURL *ceh, std::string requested_url);
+
+    std::string get_range_arg_string(const unsigned long long &offset, const unsigned long long &size);
+
+    std::string http_status_to_string(int status);
+
+    std::string error_message(CURLcode response_code, char *error_buf);
+
+    size_t c_write_data(void *buffer, size_t size, size_t nmemb, void *data);
+
+    bool eval_http_get_response(CURL *ceh, const std::string &requested_url);
+
+    void read_data(CURL *c_handle);
+
 
 } // namespace curl
 
