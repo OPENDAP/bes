@@ -47,10 +47,10 @@ namespace curl {
 
     bool configureProxy(CURL *curl, const std::string &url);
 
-    void read_url(const std::string &url,
-                  const std::vector<std::string> &http_request_headers,
-                  const int fd,
-                  std::vector<std::string> *http_response_headers);
+    void http_get_and_write_resource(const std::string &url,
+                                     const std::vector<std::string> &http_request_headers,
+                                     const int fd,
+                                     std::vector<std::string> *http_response_headers);
 
     void http_get(const std::string &url, char *response_buf);
 
@@ -60,12 +60,12 @@ namespace curl {
 
     std::string http_status_to_string(int status);
 
-    std::string error_message(const CURLcode response_code, char *error_buf);
+    std::string error_message(CURLcode response_code, char *error_buf);
 
     size_t c_write_data(void *buffer, size_t size, size_t nmemb, void *data);
 
 
-    bool eval_get_response(CURL *eh, const std::string &requested_url);
+    bool eval_http_get_response(CURL *ceh, const std::string &requested_url);
 
     void read_data(CURL *c_handle);
 
@@ -84,6 +84,7 @@ namespace curl {
     BESRegex *get_cache_effective_urls_skip_regex();
 
     bool is_retryable(std::string url);
+    unsigned long max_redirects();
 
     std::string get_netrc_filename();
 
@@ -93,9 +94,24 @@ namespace curl {
 
     void unset_error_buffer(CURL *curl);
 
-    void check_setopt_result(CURLcode result, std::string msg_base, std::string opt_name, char *ebuf, std::string file, unsigned int line );
+    void eval_curl_easy_setopt_result(
+            CURLcode result,
+            std::string msg_base,
+            std::string opt_name,
+            char *ebuf, std::string file,
+            unsigned int line );
 
-    unsigned long max_redirects();
+
+    bool eval_curl_easy_perform_code(
+            CURL *curl,
+            std::string url,
+            CURLcode curl_code,
+            char *error_buffer,
+            unsigned int attempt );
+
+    void curl_super_easy_perform(CURL *c_handle);
+
+    std::string get_effective_url(CURL *curl, std::string requested_url);
 
 } // namespace curl
 
