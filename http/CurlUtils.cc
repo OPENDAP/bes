@@ -1556,33 +1556,39 @@ bool eval_curl_easy_perform_code(
         return 20;
     }
 
+#define EDL_AUTH_TOKEN_KEY "edl_auth_token"
+#define EDL_ECHO_TOKEN_KEY "edl_echo_token"
+#define EDL_UID_KEY "uid"
 /**
- * Adds the user id and/or the associated EDL auth token to the request
- * element. If either parameter is the empty string it is omitted.
+ * @brief Adds the user id and/or the associated EDL auth token
+ * to request_headers.
  *
- * Constructs the EDL/URS Echo-Token and Authorization headers for use
- * when connecting to NGAP infrstructure (like cumulus and CMR) The
- * Echo-Token is made from the
- * EDL access_token returned for the user and the server's EDL Application
- * Client-Id.
+ * Currently looks for 3 specific auth header values in the
+ * BESContextManager set by the OLFS.
  *
- *    Echo-Token: edl_access_token:Client-Id
+ *  - uid: The user id of the logged in user.
+ *
+ * - edl_auth_token: The EDL authentication token recovered
+ *  from EDL using the user's one time code. This may have
+ *  come from the user logging in via the OLFS and EDL or it
+ *  may have been transmitted from upstream as the header:
+ *      Authorization: Bearer <edl_auth_token>
+ *  from an upstream process.
  *
  * The Authorization header is made of the sting:
  *
  *    Authorization: Bearer edl_access_token
  *
- * From a bes command:
- *   <bes:setContext name="uid">ndp_opendap</bes:setContext>
- *   <bes:setContext name="edl_echo_token">NOT_A_REAL_TOKEN:NOT_A_REAL_ID</bes:setContext>
- *    <bes:setContext name="edl_auth_token">Bearer NOT_A_REAL_TOKEN</bes:setContext>
+ * - edl_echo_token: This soon to be legacy token is formed from
+ *  the edl_auth_token and the server's EDL client_application_id.
+ *     Echo-Token: edl_access_token:Client-Id
+ *
+ * If an aspirational auth header value is missing then that header
+ * will not be added to the request_headers list.
  *
  * @param request_headers
  * @return
  */
-#define EDL_AUTH_TOKEN_KEY "edl_auth_token"
-#define EDL_ECHO_TOKEN_KEY "edl_echo_token"
-#define EDL_UID_KEY "uid"
 struct curl_slist *get_auth_headers(curl_slist *request_headers)
 {
     struct curl_slist *temp=NULL;
@@ -1615,7 +1621,8 @@ struct curl_slist *get_auth_headers(curl_slist *request_headers)
 }
 
 /**
- * @brief Queries the cURL easy handle cceh for the value of CURLINFO_EFFECTIVE_URL and returns said value.
+ * @brief Queries the passed cURL easy handle, ceh, for the value of CURLINFO_EFFECTIVE_URL and returns said value.
+ *
  * @param ceh The cURL easy handle to query
  * @param requested_url The original URL that was set in the cURL handle prior to a call to curl_easy_perform.
  * @return  The value of CURLINFO_EFFECTIVE_URL from the cURL handle ceh.
@@ -1623,7 +1630,6 @@ struct curl_slist *get_auth_headers(curl_slist *request_headers)
 string get_effective_url(CURL *ceh, string requested_url)
 {
     char *effectve_url = NULL;
-    // After doing the thing with curl_super_easy_perform() we retrieve the effective URL form the cURL handle.
     CURLcode curl_code = curl_easy_getinfo(ceh, CURLINFO_EFFECTIVE_URL, &effectve_url);
     if(curl_code != CURLE_OK) {
         stringstream msg;
