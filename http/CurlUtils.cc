@@ -642,7 +642,7 @@ int curl_trace = 0;
      * at the end the cURL handles CURLINFO_EFFECTIVE_URL value will
      * be the place from which the 4 bytes were retrieved, the
      * terminus if the redirect sequence.
-     * @param url The URL to target
+     * @param target_url The URL to target
      * @param req_headers A curl_slist containing any necessary request headers
      * to be transmitted with the HTTP request.
      * @param resp_hdrs A vector into which any response headeres associated
@@ -685,7 +685,7 @@ int curl_trace = 0;
      * Use libcurl to dereference a URL. Read the information referenced by
      * url into the file pointed to by the open file descriptor fd.
      *
-     * @param url The URL to dereference.
+     * @param target_url The URL to dereference.
      * @param fd  An open file descriptor (as in 'open' as opposed to 'fopen') which
      * will be the destination for the data; the caller can assume that when this
      * method returns that the body of the response can be retrieved by reading
@@ -1140,11 +1140,11 @@ int curl_trace = 0;
     /**
      * Checks to see if the entire url matches any of the  "no retry" regular expressions held in the TheBESKeys
      * under the HTTP_NO_RETRY_URL_REGEX_KEY which atm, is set to "Http.No.Retry.Regex"
-     * @param url The URL to be examined
-     * @return True if the the url does not match a no retry regex, false if the entire url matches
+     * @param target_url The URL to be examined
+     * @return True if the target_url does not match a no retry regex, false if the entire target_url matches
      * a "no retry" regex.
      */
-    bool is_retryable(std::string url)
+    bool is_retryable(std::string target_url)
     {
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
         bool retryable = true;
@@ -1157,9 +1157,9 @@ int curl_trace = 0;
             for(it=nr_regexs.begin(); it != nr_regexs.end() && retryable ; it++){
                 BESRegex no_retry_regex((*it).c_str(), (*it).size());
                 int match_length;
-                match_length = no_retry_regex.match(url.c_str(), url.size(), 0);
-                if(match_length == url.size()){
-                    BESDEBUG(MODULE, prolog << "The url: '"<< url << "' fully matched the "
+                match_length = no_retry_regex.match(target_url.c_str(), target_url.size(), 0);
+                if(match_length == target_url.size()){
+                    BESDEBUG(MODULE, prolog << "The url: '"<< target_url << "' fully matched the "
                     << HTTP_NO_RETRY_URL_REGEX_KEY << ": '" <<  *it << "'" <<  endl);
                     retryable = false;
                 }
@@ -1357,7 +1357,7 @@ bool eval_curl_easy_perform_code(
      * @brief Performs a small (4 byte) range get on the target URL. If successfull the value of  last_accessed_url will
      * be set to the value of the last accessed URL (CURLINFO_EFFECTIVE_URL), including the query string.
      * are
-     * @param url The URL to follow
+     * @param target_url The URL to follow
      * @param last_accessed_url The last accessed URL (CURLINFO_EFFECTIVE_URL), including the query string
      */
     void retrieve_effective_url(const string &target_url, string &last_accessed_url) {
@@ -1377,7 +1377,7 @@ bool eval_curl_easy_perform_code(
             // After doing the thing with curl_super_easy_perform() we retrieve the effective URL form the cURL handle.
             last_accessed_url = get_effective_url(ceh,target_url);
             BESDEBUG(MODULE, prolog << "Last Accessed URL(CURLINFO_EFFECTIVE_URL): " << last_accessed_url << endl);
-            LOG(prolog << "Source URL: '" << url << "' Last Accessed URL: '" << last_accessed_url << "'" << endl);
+            LOG(prolog << "Source URL: '" << target_url << "' Last Accessed URL: '" << last_accessed_url << "'" << endl);
 
             if(request_headers)
                 curl_slist_free_all(request_headers);
@@ -1413,13 +1413,13 @@ bool eval_curl_easy_perform_code(
                     // bool do_retry;
                     error_buffer[0] = 0; // Initialize to empty string
                     ++attempts;
-                    BESDEBUG(MODULE, prolog << "Requesting URL: " << url << " attempt: " << attempts << endl);
+                    BESDEBUG(MODULE, prolog << "Requesting URL: " << target_url << " attempt: " << attempts << endl);
 
                     curl_code = curl_easy_perform(ceh);
-                    success = eval_curl_easy_perform_code(ceh, url, curl_code, error_buffer, attempts);
+                    success = eval_curl_easy_perform_code(ceh, target_url, curl_code, error_buffer, attempts);
                     if (success) {
                         // Nothing obvious went wrong with the curl_easy_perfom() so now we check the HTTP stuff
-                        success = eval_http_get_response(ceh, url);
+                        success = eval_http_get_response(ceh, target_url);
                         if (!success) {
                             if (attempts == retry_limit) {
                                 string msg = prolog +
@@ -1427,7 +1427,7 @@ bool eval_curl_easy_perform_code(
                                 LOG(msg << endl);
                                 throw BESInternalError(msg, __FILE__, __LINE__);
                             } else {
-                                LOG(prolog << "ERROR - Problem with data transfer. Will retry (url: " << url <<
+                                LOG(prolog << "ERROR - Problem with data transfer. Will retry (url: " << target_url <<
                                            " attempt: " << attempts << ")." << endl);
                             }
                         }
@@ -1444,7 +1444,7 @@ bool eval_curl_easy_perform_code(
                 BESDEBUG(MODULE, prolog << " CURLINFO_EFFECTIVE_URL: " << effective_url << endl);
                 last_accessed_url = effective_url;
 
-                LOG(prolog << "Source URL: '" << url << "' Last Accessed URL: '" << last_accessed_url << "'" << endl);
+                LOG(prolog << "Source URL: '" << target_url << "' Last Accessed URL: '" << last_accessed_url << "'" << endl);
 
                 unset_error_buffer(ceh);
 
