@@ -79,46 +79,51 @@ static const useconds_t uone_second = 1000*1000; // one second in micro seconds 
 struct curl_slist *get_auth_headers(curl_slist *request_headers);
 
 // Set this to 1 to turn on libcurl's verbose mode (for debugging).
-    int curl_trace = 0;
+int curl_trace = 0;
 
 #define CLIENT_ERR_MIN 400
 #define CLIENT_ERR_MAX 417
     const char *http_client_errors[CLIENT_ERR_MAX - CLIENT_ERR_MIN + 1] = {
-            "Bad Request:",
-            "Unauthorized: Contact the server administrator.",
-            "Payment Required.",
-            "Forbidden: Contact the server administrator.",
-            "Not Found: The underlying data source or server could not be found.",
-            "Method Not Allowed.",
-            "Not Acceptable.",
-            "Proxy Authentication Required.",
-            "Request Time-out.",
-            "Conflict.",
-            "Gone.",
-            "Length Required.",
-            "Precondition Failed.",
-            "Request Entity Too Large.",
-            "Request URI Too Large.",
-            "Unsupported Media Type.",
-            "Requested Range Not Satisfiable.",
-            "Expectation Failed."
+        "Bad Request:",
+        "Unauthorized: Contact the server administrator.",
+        "Payment Required.",
+        "Forbidden: Contact the server administrator.",
+        "Not Found: The underlying data source or server could not be found.",
+        "Method Not Allowed.",
+        "Not Acceptable.",
+        "Proxy Authentication Required.",
+        "Request Time-out.",
+        "Conflict.",
+        "Gone.",
+        "Length Required.",
+        "Precondition Failed.",
+        "Request Entity Too Large.",
+        "Request URI Too Large.",
+        "Unsupported Media Type.",
+        "Requested Range Not Satisfiable.",
+        "Expectation Failed."
     };
 
 #define SERVER_ERR_MIN 500
 #define SERVER_ERR_MAX 505
     const char *http_server_errors[SERVER_ERR_MAX - SERVER_ERR_MIN + 1] =
-            {
-                    "Internal Server Error.",
-                    "Not Implemented.",
-                    "Bad Gateway.",
-                    "Service Unavailable.",
-                    "Gateway Time-out.",
-                    "HTTP Version Not Supported."
-            };
+    {
+        "Internal Server Error.",
+        "Not Implemented.",
+        "Bad Gateway.",
+        "Service Unavailable.",
+        "Gateway Time-out.",
+        "HTTP Version Not Supported."
+    };
 
-
-/** This function translates an HTTP status code into an error message. It
-    works for those code greater than or equal to 400. */
+    /**
+     * @brief Translates an HTTP status code into an error message.
+     *
+     * It works for those code greater than or equal to 400.
+     *
+     * @param status The HTTP status to associate with an error message
+     * @return The error message assciated with status.
+     */
     string http_status_to_string(int status) {
         if (status >= CLIENT_ERR_MIN && status <= CLIENT_ERR_MAX)
             return string(http_client_errors[status - CLIENT_ERR_MIN]);
@@ -131,38 +136,43 @@ struct curl_slist *get_auth_headers(curl_slist *request_headers);
         }
     }
 
-    static string getCurlAuthTypeName(const int authType) {
+    /**
+     * @brief Translate a cURL authentication type value (int) into a human readable string.
+     * @param auth_type The cURL authentication type value to convert
+     * @return The human readable string associated with auth_type.
+     */
+    static string getCurlAuthTypeName(const int auth_type) {
 
         string authTypeString;
         int match;
 
-        match = authType & CURLAUTH_BASIC;
+        match = auth_type & CURLAUTH_BASIC;
         if (match) {
             authTypeString += "CURLAUTH_BASIC";
         }
 
-        match = authType & CURLAUTH_DIGEST;
+        match = auth_type & CURLAUTH_DIGEST;
         if (match) {
             if (!authTypeString.empty())
                 authTypeString += " ";
             authTypeString += "CURLAUTH_DIGEST";
         }
 
-        match = authType & CURLAUTH_DIGEST_IE;
+        match = auth_type & CURLAUTH_DIGEST_IE;
         if (match) {
             if (!authTypeString.empty())
                 authTypeString += " ";
             authTypeString += "CURLAUTH_DIGEST_IE";
         }
 
-        match = authType & CURLAUTH_GSSNEGOTIATE;
+        match = auth_type & CURLAUTH_GSSNEGOTIATE;
         if (match) {
             if (!authTypeString.empty())
                 authTypeString += " ";
             authTypeString += "CURLAUTH_GSSNEGOTIATE";
         }
 
-        match = authType & CURLAUTH_NTLM;
+        match = auth_type & CURLAUTH_NTLM;
         if (match) {
             if (!authTypeString.empty())
                 authTypeString += " ";
@@ -170,35 +180,35 @@ struct curl_slist *get_auth_headers(curl_slist *request_headers);
         }
 
 #if 0
-        match = authType & CURLAUTH_ANY;
-    if(match){
-        if(!authTypeString.empty())
-            authTypeString += " ";
-        authTypeString += "CURLAUTH_ANY";
-    }
+        match = auth_type & CURLAUTH_ANY;
+        if(match){
+            if(!authTypeString.empty())
+                authTypeString += " ";
+            authTypeString += "CURLAUTH_ANY";
+        }
 
 
-    match = authType & CURLAUTH_ANY;
-    if(match){
-        if(!authTypeString.empty())
-            authTypeString += " ";
-        authTypeString += "CURLAUTH_ANYSAFE";
-    }
+        match = auth_type & CURLAUTH_ANY;
+        if(match){
+            if(!authTypeString.empty())
+                authTypeString += " ";
+            authTypeString += "CURLAUTH_ANYSAFE";
+        }
 
 
-    match = authType & CURLAUTH_ANY;
-    if(match){
-        if(!authTypeString.empty())
-            authTypeString += " ";
-        authTypeString += "CURLAUTH_ONLY";
-    }
+        match = auth_type & CURLAUTH_ANY;
+        if(match){
+            if(!authTypeString.empty())
+                authTypeString += " ";
+            authTypeString += "CURLAUTH_ONLY";
+        }
 #endif
 
         return authTypeString;
     }
 
     /**
-     * libcurl call back function that ignores the data entirely. nothing is written. Ever.
+     * @brief A libcurl callback function that ignores the data entirely. nothing is written. Ever.
      */
     static size_t writeNothing(char */* data */, size_t /* size */, size_t nmemb, void * /* userdata */) {
         return nmemb;
@@ -222,6 +232,7 @@ struct curl_slist *get_auth_headers(curl_slist *request_headers);
 
     /**
      * @brief A libcurl callback function used to read response headers.
+     *
      * Read headers, line by line, from ptr.
      * The fourth param is really supposed to be a FILE,
      * but libcurl just holds the pointer and passes it to this function
@@ -308,8 +319,9 @@ struct curl_slist *get_auth_headers(curl_slist *request_headers);
 
 
     /**
-     * Functor to add a single string to a curl_slist. This is used to transfer
-     * a list of headers from a vector<string> object to a curl_slist.
+     * @brief Functor to add a single string to a curl_slist.
+     *
+     * This is used to transfer a list of headers from a vector<string> object to a curl_slist.
      */
     class BuildHeaders : public std::unary_function<const string &, void> {
         struct curl_slist *d_cl;
@@ -329,8 +341,9 @@ struct curl_slist *get_auth_headers(curl_slist *request_headers);
 
 
     /**
-     * Configure the proxy options for the passed curl object. The passed URL is the target URL. If the target URL
-     * matches the Gateway.NoProxyRegex in the config file, then no proxying is done.
+     * @brief Configure the proxy options for the passed curl object.
+     * The passed URL is the target URL. If the target URL matches the
+     * HttpUtils::NoProxyRegex in the config file, then no proxying is done.
      *
      * The proxy configuration is stored in the gateway_modules configuration file, gateway.conf. The allowed values are:
      * Gateway.ProxyHost=warsaw.wonderproxy.com
@@ -341,10 +354,10 @@ struct curl_slist *get_auth_headers(curl_slist *request_headers);
      * Gateway.ProxyAuthType=basic | digest | ntlm
      *
      * @param curl The cURL easy handle to configure.
-     * @param url The url used to configure the proxy
+     * @param target_url The url used to configure the proxy
      * @return
      */
-    bool configureProxy(CURL *curl, const string &url) {
+    bool configureProxy(CURL *ceh, const string &target_url) {
         BESDEBUG(MODULE,  prolog << "BEGIN." << endl);
 
         bool using_proxy = false;
@@ -380,8 +393,8 @@ struct curl_slist *get_auth_headers(curl_slist *request_headers);
             if (!HttpUtils::NoProxyRegex.empty()) {
                 BESDEBUG(MODULE,  prolog << "Found NoProxyRegex." << endl);
                 BESRegex r(HttpUtils::NoProxyRegex.c_str());
-                if (r.match(url.c_str(), url.length()) != -1) {
-                    BESDEBUG(MODULE, prolog << "Found NoProxy match. Regex: " << HttpUtils::NoProxyRegex << "; Url: " << url << endl);
+                if (r.match(target_url.c_str(), target_url.length()) != -1) {
+                    BESDEBUG(MODULE, prolog << "Found NoProxy match. Regex: " << HttpUtils::NoProxyRegex << "; Url: " << target_url << endl);
                     using_proxy = false;
                 }
             }
@@ -394,12 +407,12 @@ struct curl_slist *get_auth_headers(curl_slist *request_headers);
                 BESDEBUG(MODULE, prolog << "Proxy host: " << proxyHost << endl);
                 BESDEBUG(MODULE, prolog << "Proxy port: " << proxyPort << endl);
 
-                set_error_buffer(curl,error_buffer);
+                set_error_buffer(ceh,error_buffer);
 
-                res = curl_easy_setopt(curl, CURLOPT_PROXY, proxyHost.data());
+                res = curl_easy_setopt(ceh, CURLOPT_PROXY, proxyHost.data());
                 eval_curl_easy_setopt_result(res, prolog, "CURLOPT_PROXY", error_buffer, __FILE__, __LINE__);
 
-                res = curl_easy_setopt(curl, CURLOPT_PROXYPORT, proxyPort);
+                res = curl_easy_setopt(ceh, CURLOPT_PROXYPORT, proxyPort);
                 eval_curl_easy_setopt_result(res, prolog, "CURLOPT_PROXYPORT", error_buffer, __FILE__, __LINE__);
 
 // #ifdef CURLOPT_PROXYAUTH
@@ -411,7 +424,7 @@ struct curl_slist *get_auth_headers(curl_slist *request_headers);
                 // According to http://curl.haxx.se/libcurl/c/curl_easy_setopt.html#CURLOPTPROXYAUTH As of 4/21/08 only NTLM, Digest and Basic work.
 
 
-                res = curl_easy_setopt(curl, CURLOPT_PROXYAUTH, proxyAuthType);
+                res = curl_easy_setopt(ceh, CURLOPT_PROXYAUTH, proxyAuthType);
                 eval_curl_easy_setopt_result(res, prolog, "CURLOPT_PROXYAUTH", error_buffer, __FILE__, __LINE__);
                 BESDEBUG(MODULE, prolog << "Using CURLOPT_PROXYAUTH = " << getCurlAuthTypeName(proxyAuthType) << endl);
 // #endif
@@ -419,22 +432,22 @@ struct curl_slist *get_auth_headers(curl_slist *request_headers);
 
 
                 if (!proxyUser.empty()) {
-                    res = curl_easy_setopt(curl, CURLOPT_PROXYUSERNAME, proxyUser.data());
+                    res = curl_easy_setopt(ceh, CURLOPT_PROXYUSERNAME, proxyUser.data());
                     eval_curl_easy_setopt_result(res, prolog, "CURLOPT_PROXYUSERNAME", error_buffer, __FILE__, __LINE__);
                     BESDEBUG(MODULE,  prolog << "CURLOPT_PROXYUSERNAME : " << proxyUser << endl);
 
                     if (!proxyPassword.empty()) {
-                        res = curl_easy_setopt(curl, CURLOPT_PROXYPASSWORD, proxyPassword.data());
+                        res = curl_easy_setopt(ceh, CURLOPT_PROXYPASSWORD, proxyPassword.data());
                         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_PROXYPASSWORD", error_buffer, __FILE__,
                                                      __LINE__);
                         BESDEBUG(MODULE, prolog << "CURLOPT_PROXYPASSWORD: " << proxyPassword << endl);
                     }
                 } else if (!proxyUserPW.empty()) {
-                    res = curl_easy_setopt(curl, CURLOPT_PROXYUSERPWD, proxyUserPW.data());
+                    res = curl_easy_setopt(ceh, CURLOPT_PROXYUSERPWD, proxyUserPW.data());
                     eval_curl_easy_setopt_result(res, prolog, "CURLOPT_PROXYUSERPWD", error_buffer, __FILE__, __LINE__);
                     BESDEBUG(MODULE, prolog << "CURLOPT_PROXYUSERPWD : " << proxyUserPW << endl);
                 }
-                unset_error_buffer(curl);
+                unset_error_buffer(ceh);
             }
         }
         BESDEBUG(MODULE,  prolog << "END." << endl);
@@ -464,18 +477,18 @@ struct curl_slist *get_auth_headers(curl_slist *request_headers);
         ) {
         char error_buffer[CURL_ERROR_SIZE];
         error_buffer[0]=0; // Null terminate this string for safety.
-        CURL *curl;
+        CURL *ceh;
         CURLcode res;
 
-        curl = curl_easy_init();
-        if (!curl)
+         ceh = curl_easy_init();
+        if (!ceh)
             throw BESInternalError("Could not initialize libcurl.",__FILE__, __LINE__);
 
         // SET Error Buffer (for use during this setup) ----------------------------------------------------------------
-        set_error_buffer(curl,error_buffer);
+        set_error_buffer(ceh,error_buffer);
 
         // Target URL --------------------------------------------------------------------------------------------------
-        res = curl_easy_setopt(curl, CURLOPT_URL, target_url.c_str());
+        res = curl_easy_setopt(ceh, CURLOPT_URL, target_url.c_str());
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_URL", error_buffer, __FILE__, __LINE__);
 
         // Load in the default headers to send with a request. The empty Pragma
@@ -488,19 +501,19 @@ struct curl_slist *get_auth_headers(curl_slist *request_headers);
         //TODO Do we need this test? what if the pointer is null? Probably it's fine...
         if(http_request_headers){
             // Add the http_request_headers to the cURL handle.
-            res = curl_easy_setopt(curl, CURLOPT_HTTPHEADER, http_request_headers);
+            res = curl_easy_setopt(ceh, CURLOPT_HTTPHEADER, http_request_headers);
             eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HTTPHEADER", error_buffer, __FILE__, __LINE__);
         }
 
 
         if(http_response_hdrs){
-            res = curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, save_http_response_headers);
+            res = curl_easy_setopt(ceh, CURLOPT_HEADERFUNCTION, save_http_response_headers);
             eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HEADERFUNCTION", error_buffer, __FILE__, __LINE__);
 
             // Pass save_http_response_headers() a pointer to the vector<string> where the
             // response headers may be stored. Callers can use the resp_hdrs
             // value/result parameter to get the raw response header information .
-            res = curl_easy_setopt(curl, CURLOPT_WRITEHEADER, http_response_hdrs);
+            res = curl_easy_setopt(ceh, CURLOPT_WRITEHEADER, http_response_hdrs);
             eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEHEADER", error_buffer, __FILE__, __LINE__);
         }
 
@@ -509,18 +522,18 @@ struct curl_slist *get_auth_headers(curl_slist *request_headers);
 
         // Allow compressed responses. Sending an empty string enables all supported compression types.
 #ifndef CURLOPT_ACCEPT_ENCODING
-        res = curl_easy_setopt(curl, CURLOPT_ENCODING, "");
+        res = curl_easy_setopt(ceh, CURLOPT_ENCODING, "");
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_ENCODING", error_buffer, __FILE__, __LINE__);
 #else
         res = curl_easy_setopt(curl, CURLOPT_ACCEPT_ENCODING, "");
         check_setopt_result(res, prolog, "CURLOPT_ACCEPT_ENCODING", error_buffer, __FILE__,__LINE__);
 #endif
         // Disable Progress Meter
-        res = curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
+        res = curl_easy_setopt(ceh, CURLOPT_NOPROGRESS, 1L);
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_NOPROGRESS", error_buffer, __FILE__, __LINE__);
 
         // Disable cURL signal handling
-        res = curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
+        res = curl_easy_setopt(ceh, CURLOPT_NOSIGNAL, 1L);
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_NOSIGNAL", error_buffer, __FILE__, __LINE__);
 
 
@@ -531,27 +544,27 @@ struct curl_slist *get_auth_headers(curl_slist *request_headers);
 
         // We have to set FailOnError to false for any of the non-Basic
         // authentication schemes to work. 07/28/03 jhrg
-        res = curl_easy_setopt(curl, CURLOPT_FAILONERROR, 0L);
+        res = curl_easy_setopt(ceh, CURLOPT_FAILONERROR, 0L);
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_FAILONERROR", error_buffer, __FILE__, __LINE__);
 
 
         // CURLAUTH_ANY means libcurl will use Basic, Digest, GSS Negotiate, or NTLM,
         // choosing the the 'safest' one supported by the server.
         // This requires curl 7.10.6 which is still in pre-release. 07/25/03 jhrg
-        res = curl_easy_setopt(curl, CURLOPT_HTTPAUTH, (long) CURLAUTH_ANY);
+        res = curl_easy_setopt(ceh, CURLOPT_HTTPAUTH, (long) CURLAUTH_ANY);
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HTTPAUTH", error_buffer, __FILE__, __LINE__);
 
 
         // CURLOPT_NETRC means to use the netrc file for credentials.
         // CURL_NETRC_OPTIONAL Means that if the supplied URL contains a username
         // and password to prefer that to using the content of the netrc file.
-        res = curl_easy_setopt(curl, CURLOPT_NETRC, CURL_NETRC_OPTIONAL);
+        res = curl_easy_setopt(ceh, CURLOPT_NETRC, CURL_NETRC_OPTIONAL);
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_NETRC", error_buffer, __FILE__, __LINE__);
 
         // If the configuration specifies a particular .netrc credentials file, use it.
         string netrc_file = get_netrc_filename();
         if (!netrc_file.empty()) {
-            res = curl_easy_setopt(curl, CURLOPT_NETRC_FILE, netrc_file.c_str());
+            res = curl_easy_setopt(ceh, CURLOPT_NETRC_FILE, netrc_file.c_str());
             eval_curl_easy_setopt_result(res, prolog, "CURLOPT_NETRC_FILE", error_buffer, __FILE__, __LINE__);
 
         }
@@ -562,24 +575,24 @@ struct curl_slist *get_auth_headers(curl_slist *request_headers);
         // -  -  -  - -  -  -  - -  -  -  - -  -  -  - -  -  -  - -  -  -  - -  -  -  -
         // Cookies
         //
-        res = curl_easy_setopt(curl, CURLOPT_COOKIEFILE, curl::get_cookie_filename().c_str());
+        res = curl_easy_setopt(ceh, CURLOPT_COOKIEFILE, curl::get_cookie_filename().c_str());
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_COOKIEFILE", error_buffer, __FILE__, __LINE__);
 
-        res = curl_easy_setopt(curl, CURLOPT_COOKIEJAR, curl::get_cookie_filename().c_str());
+        res = curl_easy_setopt(ceh, CURLOPT_COOKIEJAR, curl::get_cookie_filename().c_str());
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_COOKIEJAR", error_buffer, __FILE__, __LINE__);
 
         // save_http_response_headers
 
 
         // Follow 302 (redirect) responses
-        res = curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+        res = curl_easy_setopt(ceh, CURLOPT_FOLLOWLOCATION, 1L);
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_FOLLOWLOCATION", error_buffer, __FILE__, __LINE__);
 
-        res = curl_easy_setopt(curl, CURLOPT_MAXREDIRS, max_redirects());
+        res = curl_easy_setopt(ceh, CURLOPT_MAXREDIRS, max_redirects());
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_MAXREDIRS", error_buffer, __FILE__, __LINE__);
 
         // Set the user agent to Hyrax's user agent value
-        res = curl_easy_setopt(curl, CURLOPT_USERAGENT,  hyrax_user_agent().c_str() );
+        res = curl_easy_setopt(ceh, CURLOPT_USERAGENT,  hyrax_user_agent().c_str() );
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_USERAGENT", error_buffer, __FILE__, __LINE__);
 
 #if 0
@@ -594,22 +607,22 @@ struct curl_slist *get_auth_headers(curl_slist *request_headers);
 
         if (curl_trace) {
             BESDEBUG(MODULE,  prolog << "Curl version: " << curl_version() << endl);
-            res = curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+            res = curl_easy_setopt(ceh, CURLOPT_VERBOSE, 1L);
             eval_curl_easy_setopt_result(res, prolog, "CURLOPT_VERBOSE", error_buffer, __FILE__, __LINE__);
             BESDEBUG(MODULE,  prolog << "Curl in verbose mode." << endl);
 
-            res = curl_easy_setopt(curl, CURLOPT_DEBUGFUNCTION, curl_debug);
+            res = curl_easy_setopt(ceh, CURLOPT_DEBUGFUNCTION, curl_debug);
             eval_curl_easy_setopt_result(res, prolog, "CURLOPT_DEBUGFUNCTION", error_buffer, __FILE__, __LINE__);
             BESDEBUG(MODULE,  prolog << "Curl debugging function installed." << endl);
         }
 
         // We unset the error buffer here because we know that curl::configureProxy() wil use it's own.
-        unset_error_buffer(curl);
+        unset_error_buffer(ceh);
         // Configure the a proxy for this url (if appropriate).
-        curl::configureProxy(curl, target_url);
+        curl::configureProxy(ceh, target_url);
 
-        BESDEBUG(MODULE,  prolog << "curl: " << curl << endl);
-        return curl;
+        BESDEBUG(MODULE,  prolog << "curl: " << (void *) ceh << endl);
+        return ceh;
     }
 
     string get_range_arg_string(const unsigned long long &offset, const unsigned long long &size)
@@ -636,38 +649,39 @@ struct curl_slist *get_auth_headers(curl_slist *request_headers);
      * the servers response will be placed.
      * @return A cURL easy handle configured as described above,
      */
-    CURL *init_effective_url_retriever_handle(const string &url, struct curl_slist *req_headers, vector<string> &resp_hdrs)
+    CURL *init_effective_url_retriever_handle(const string &target_url, struct curl_slist *req_headers, vector<string> &resp_hdrs)
     {
         char error_buffer[CURL_ERROR_SIZE];
         CURLcode res;
-        CURL *curl = 0;
+        CURL *ceh = 0;
 
         error_buffer[0]=0; // null terminate empty string
 
-        curl = curl::init(url, req_headers, &resp_hdrs);
+        ceh = curl::init(target_url, req_headers, &resp_hdrs);
 
-        set_error_buffer(curl, error_buffer);
+        set_error_buffer(ceh, error_buffer);
 
         // get the offset to offset + size bytes
-        res = curl_easy_setopt(curl, CURLOPT_RANGE, get_range_arg_string(0,4).c_str());
+        res = curl_easy_setopt(ceh, CURLOPT_RANGE, get_range_arg_string(0,4).c_str());
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_RANGE", error_buffer, __FILE__, __LINE__);
 
-        res = curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeNothing);
+        res = curl_easy_setopt(ceh, CURLOPT_WRITEFUNCTION, writeNothing);
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEFUNCTION", error_buffer, __FILE__, __LINE__);
 
         // Pass save_raw_http_headers() a pointer to the vector<string> where the
         // response headers may be stored. Callers can use the resp_hdrs
         // value/result parameter to get the raw response header information .
-        res = curl_easy_setopt(curl, CURLOPT_WRITEHEADER, &resp_hdrs);
+        res = curl_easy_setopt(ceh, CURLOPT_WRITEHEADER, &resp_hdrs);
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEHEADER", error_buffer, __FILE__, __LINE__);
 
-        unset_error_buffer(curl);
+        unset_error_buffer(ceh);
 
-        return curl;
+        return ceh;
     }
 
 
     /**
+     *
      * Use libcurl to dereference a URL. Read the information referenced by
      * url into the file pointed to by the open file descriptor fd.
      *
@@ -683,21 +697,21 @@ struct curl_slist *get_auth_headers(curl_slist *request_headers);
      * @exception Error Thrown if libcurl encounters a problem; the libcurl
      * error message is stuffed into the Error object.
      */
-    void http_get_and_write_resource(const string &url,
+    void http_get_and_write_resource(const string &target_url,
                                      const vector<string> &http_request_headers,
                                      const int fd,
                                      vector<string> *http_response_headers) {
 
         char error_buffer[CURL_ERROR_SIZE];
         CURLcode res;
-        CURL *curl = NULL;
+        CURL *ceh = NULL;
         struct curl_slist *req_headers = NULL;
         BuildHeaders header_builder;
 
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
         // Before we do anything, make sure that the URL is OK to pursue.
-        if (!bes::AllowedHosts::theHosts()->is_allowed(url)) {
-            string err = (string) "The specified URL " + url
+        if (!bes::AllowedHosts::theHosts()->is_allowed(target_url)) {
+            string err = (string) "The specified URL " + target_url
                          + " does not match any of the accessible services in"
                          + " the allowed hosts list.";
             BESDEBUG(MODULE, prolog << err << endl);
@@ -711,36 +725,36 @@ struct curl_slist *get_auth_headers(curl_slist *request_headers);
 
         try {
             // OK! Make the cURL handle
-            curl = init(url, req_headers, http_response_headers);
+            ceh = init(target_url, req_headers, http_response_headers);
 
-            set_error_buffer(curl,error_buffer);
+            set_error_buffer(ceh,error_buffer);
 
-            res = curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeToOpenfileDescriptor);
+            res = curl_easy_setopt(ceh, CURLOPT_WRITEFUNCTION, writeToOpenfileDescriptor);
             eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEFUNCTION", error_buffer, __FILE__, __LINE__);
 
 #ifdef CURLOPT_WRITEDATA
-            res = curl_easy_setopt(curl, CURLOPT_WRITEDATA, &fd);
+            res = curl_easy_setopt(ceh, CURLOPT_WRITEDATA, &fd);
             eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEDATA", error_buffer, __FILE__, __LINE__);
 #else
-            res = curl_easy_setopt(curl, CURLOPT_FILE, &fd);
+            res = curl_easy_setopt(ceh, CURLOPT_FILE, &fd);
             eval_curl_easy_setopt_result(res, prolog, "CURLOPT_FILE", error_buffer, __FILE__, __LINE__);
 #endif
-            unset_error_buffer(curl);
+            unset_error_buffer(ceh);
 
-            curl_super_easy_perform(curl);
+            curl_super_easy_perform(ceh);
 
             // Free the header list
             if(req_headers)
                 curl_slist_free_all(req_headers);
-            if(curl)
-                curl_easy_cleanup(curl);
+            if(ceh)
+                curl_easy_cleanup(ceh);
             BESDEBUG(MODULE, prolog << "Called curl_easy_cleanup()." << endl);
         }
         catch(...){
             if(req_headers)
                 curl_slist_free_all(req_headers);
-            if(curl)
-                curl_easy_cleanup(curl);
+            if(ceh)
+                curl_easy_cleanup(ceh);
             throw;
         }
         BESDEBUG(MODULE, prolog << "END" << endl);
@@ -967,11 +981,7 @@ struct curl_slist *get_auth_headers(curl_slist *request_headers);
 
         string empty_str;
         target_url = get_effective_url(c_handle,empty_str);
-        // curl_easy_getinfo(c_handle, CURLINFO_EFFECTIVE_URL, &target_url);
-        // Checking the curl_easy_getinfo return value in this case is pointless. If it's CURLE_OK then we
-        // still have to check the value of urlp to see if the URL was correctly set in the
-        // cURL handle. If it fails then it fails, and urlp is not set. If we just focus on the value of urlp then
-        // we can just check the one thing.
+        // We check the value of target_url to see if the URL was correctly set in the cURL handle.
         if (target_url.empty())
             throw BESInternalError("URL acquisition failed.", __FILE__, __LINE__);
 
@@ -1004,9 +1014,8 @@ struct curl_slist *get_auth_headers(curl_slist *request_headers);
                 }
             }
         } while (!success);
-
+        // Unset the buffer as it goes out of scope
         unset_error_buffer(c_handle);
-
     }
 
 #if 0
@@ -1308,7 +1317,7 @@ struct curl_slist *get_auth_headers(curl_slist *request_headers);
  * @throws BESInternalError When the curl_code is an error that should not be retried.
  */
 bool eval_curl_easy_perform_code(
-        CURL *curl,
+        CURL *ceh,
         const string requested_url,
         CURLcode curl_code,
         char *error_buffer,
@@ -1336,13 +1345,9 @@ bool eval_curl_easy_perform_code(
     else if (CURLE_OK != curl_code) {
         stringstream msg;
         msg << "ERROR - Problem with data transfer. Message: " << error_message(curl_code, error_buffer);
-        char *effective_url = 0;
-        string last_accessed_url = get_effective_url(curl,requested_url);
-#if 0
-        curl_easy_getinfo(curl, CURLINFO_EFFECTIVE_URL, &effective_url);
+        string effective_url = get_effective_url(ceh,requested_url);
         msg << " CURLINFO_EFFECTIVE_URL: " << effective_url;
         BESDEBUG(MODULE, prolog << msg.str() << endl);
-#endif
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
     return success;
@@ -1355,9 +1360,9 @@ bool eval_curl_easy_perform_code(
      * @param url The URL to follow
      * @param last_accessed_url The last accessed URL (CURLINFO_EFFECTIVE_URL), including the query string
      */
-    void retrieve_effective_url(const string &url, string &last_accessed_url) {
+    void retrieve_effective_url(const string &target_url, string &last_accessed_url) {
         vector<string> resp_hdrs;
-        CURL *curl = NULL;
+        CURL *ceh = NULL;
         CURLcode curl_code;
 
         struct curl_slist *request_headers=NULL;
@@ -1365,101 +1370,112 @@ bool eval_curl_easy_perform_code(
         request_headers = get_auth_headers(request_headers);
 
         try {
-            curl = init_effective_url_retriever_handle(url, request_headers, resp_hdrs);
+            ceh = init_effective_url_retriever_handle(target_url, request_headers, resp_hdrs);
 
-            curl_super_easy_perform(curl);
+            curl_super_easy_perform(ceh);
 
             // After doing the thing with curl_super_easy_perform() we retrieve the effective URL form the cURL handle.
-            last_accessed_url = get_effective_url(curl,url);
+            last_accessed_url = get_effective_url(ceh,target_url);
             BESDEBUG(MODULE, prolog << "Last Accessed URL(CURLINFO_EFFECTIVE_URL): " << last_accessed_url << endl);
             LOG(prolog << "Source URL: '" << url << "' Last Accessed URL: '" << last_accessed_url << "'" << endl);
 
             if(request_headers)
                 curl_slist_free_all(request_headers);
-            if(curl)
-                curl_easy_cleanup(curl);
+            if(ceh)
+                curl_easy_cleanup(ceh);
         }
         catch(...){
             if(request_headers)
                 curl_slist_free_all(request_headers);
-            if(curl)
-                curl_easy_cleanup(curl);
+            if(ceh)
+                curl_easy_cleanup(ceh);
             throw;
         }
 #if 0
-        unsigned int attempts = 0;
-        bool success = true;
-        useconds_t retry_time = uone_second / 4;
+        {
+            unsigned int attempts = 0;
+            bool success = true;
+            useconds_t retry_time = uone_second / 4;
 
-        char error_buffer[CURL_ERROR_SIZE];
-        vector<string> resp_hdrs;
-        CURL *curl = NULL;
-        CURLcode curl_code;
+            char error_buffer[CURL_ERROR_SIZE];
+            vector<string> resp_hdrs;
+            CURL *ceh = NULL;
+            CURLcode curl_code;
 
-        struct curl_slist *request_headers=NULL;
-        // Add the authorization headers
-        request_headers = get_auth_headers(request_headers);
+            struct curl_slist *request_headers = NULL;
+            // Add the authorization headers
+            request_headers = get_auth_headers(request_headers);
 
-        try {
-            curl = init_effective_url_retriever_handle(url, request_headers, resp_hdrs);
-            set_error_buffer(curl, error_buffer);
-            do {
-                // bool do_retry;
-                error_buffer[0]=0; // Initialize to empty string
-                ++attempts;
-                BESDEBUG(MODULE, prolog << "Requesting URL: " << url << " attempt: " << attempts <<  endl);
+            try {
+                ceh = init_effective_url_retriever_handle(url, request_headers, resp_hdrs);
+                set_error_buffer(ceh, error_buffer);
+                do {
+                    // bool do_retry;
+                    error_buffer[0] = 0; // Initialize to empty string
+                    ++attempts;
+                    BESDEBUG(MODULE, prolog << "Requesting URL: " << url << " attempt: " << attempts << endl);
 
-                curl_code = curl_easy_perform(curl);
-                success = eval_curl_easy_perform_code(curl, url, curl_code, error_buffer, attempts);
-                if(success){
-                    // Nothing obvious went wrong with the curl_easy_perfom() so now we check the HTTP stuff
-                    success = eval_http_get_response(curl, url);
-                    if (!success) {
-                        if (attempts == retry_limit) {
-                            string msg = prolog + "ERROR - Problem with data transfer. Number of re-tries exceeded. Giving up.";
-                            LOG(msg << endl);
-                            throw BESInternalError(msg, __FILE__, __LINE__);
-                        }
-                        else {
-                            LOG(prolog << "ERROR - Problem with data transfer. Will retry (url: " << url <<
-                                                                           " attempt: " << attempts << ")." << endl);
+                    curl_code = curl_easy_perform(ceh);
+                    success = eval_curl_easy_perform_code(ceh, url, curl_code, error_buffer, attempts);
+                    if (success) {
+                        // Nothing obvious went wrong with the curl_easy_perfom() so now we check the HTTP stuff
+                        success = eval_http_get_response(ceh, url);
+                        if (!success) {
+                            if (attempts == retry_limit) {
+                                string msg = prolog +
+                                             "ERROR - Problem with data transfer. Number of re-tries exceeded. Giving up.";
+                                LOG(msg << endl);
+                                throw BESInternalError(msg, __FILE__, __LINE__);
+                            } else {
+                                LOG(prolog << "ERROR - Problem with data transfer. Will retry (url: " << url <<
+                                           " attempt: " << attempts << ")." << endl);
+                            }
                         }
                     }
+                    // If it did not work we keep trying until we have exceeded the retry_limit.
+                    if (!success) {
+                        usleep(retry_time);
+                        retry_time *= 2;
+                    }
+                } while (!success);
+
+                char *effective_url = 0;
+                curl_easy_getinfo(ceh, CURLINFO_EFFECTIVE_URL, &effective_url);
+                BESDEBUG(MODULE, prolog << " CURLINFO_EFFECTIVE_URL: " << effective_url << endl);
+                last_accessed_url = effective_url;
+
+                LOG(prolog << "Source URL: '" << url << "' Last Accessed URL: '" << last_accessed_url << "'" << endl);
+
+                unset_error_buffer(ceh);
+
+                if (ceh) {
+                    curl_slist_free_all(request_headers);
+                    curl_easy_cleanup(ceh);
+                    ceh = 0;
                 }
-                // If it did not work we keep trying until we have exceeded the retry_limit.
-                if(!success){
-                    usleep(retry_time);
-                    retry_time *= 2;
+            }
+            catch (...) {
+                if (request_headers)
+                    curl_slist_free_all(request_headers);
+                if (ceh) {
+                    curl_easy_cleanup(ceh);
+                    ceh = 0;
                 }
-            } while (!success);
-
-            char *effective_url = 0;
-            curl_easy_getinfo(curl, CURLINFO_EFFECTIVE_URL, &effective_url);
-            BESDEBUG(MODULE, prolog << " CURLINFO_EFFECTIVE_URL: " << effective_url << endl);
-            last_accessed_url = effective_url;
-
-            LOG(prolog << "Source URL: '" << url << "' Last Accessed URL: '" << last_accessed_url << "'" << endl);
-
-            unset_error_buffer(curl);
-
-            if(curl){
-                curl_slist_free_all(request_headers);
-                curl_easy_cleanup(curl);
-                curl = 0;
+                throw;
             }
-        }
-        catch(...){
-            if(request_headers)
-                curl_slist_free_all(request_headers);
-            if(curl){
-                curl_easy_cleanup(curl);
-                curl = 0;
-            }
-            throw;
         }
 #endif
     }
 
+    /**
+     * @brief Return the location of the netrc file for Hyrax to utilize when
+     * making requests for remote resources.
+     *
+     * If no file is specifed an empty string is returned.
+     *
+     * @return The name of the netrc file specified in the configuration, possibly the empty
+     * string of none was specified.
+     */
     string get_netrc_filename()
     {
         string netrc_filename;
@@ -1476,24 +1492,24 @@ bool eval_curl_easy_perform_code(
 
     /**
      * Set the cURL easy handle, curl error buffer to error_buffer
-     * @param curl
+     * @param ceh
      * @param error_buffer
      */
-    void set_error_buffer(CURL *curl, char *error_buffer)
+    void set_error_buffer(CURL *ceh, char *error_buffer)
     {
         CURLcode res;
-        res = curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, error_buffer);
+        res = curl_easy_setopt(ceh, CURLOPT_ERRORBUFFER, error_buffer);
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_ERRORBUFFER", error_buffer, __FILE__, __LINE__);
     }
 
     /**
      * Based on this thread: https://curl.haxx.se/mail/lib-2011-10/0078.html
      * We "unset" the error buffer using a null pointer since it's going out of scope.
-     * @param curl
+     * @param ceh
      */
-    void unset_error_buffer(CURL *curl)
+    void unset_error_buffer(CURL *ceh)
     {
-        set_error_buffer(curl,NULL);
+        set_error_buffer(ceh,NULL);
     }
 
 
@@ -1598,11 +1614,17 @@ struct curl_slist *get_auth_headers(curl_slist *request_headers)
     return request_headers;
 }
 
-string get_effective_url(CURL *curl, string requested_url)
+/**
+ * @brief Queries the cURL easy handle cceh for the value of CURLINFO_EFFECTIVE_URL and returns said value.
+ * @param ceh The cURL easy handle to query
+ * @param requested_url The original URL that was set in the cURL handle prior to a call to curl_easy_perform.
+ * @return  The value of CURLINFO_EFFECTIVE_URL from the cURL handle ceh.
+ */
+string get_effective_url(CURL *ceh, string requested_url)
 {
     char *effectve_url = NULL;
     // After doing the thing with curl_super_easy_perform() we retrieve the effective URL form the cURL handle.
-    CURLcode curl_code = curl_easy_getinfo(curl, CURLINFO_EFFECTIVE_URL, &effectve_url);
+    CURLcode curl_code = curl_easy_getinfo(ceh, CURLINFO_EFFECTIVE_URL, &effectve_url);
     if(curl_code != CURLE_OK) {
         stringstream msg;
         msg << prolog << "Unable to determine CURLINFO_EFFECTIVE_URL! Requested URL: " << requested_url;
@@ -1610,7 +1632,6 @@ string get_effective_url(CURL *curl, string requested_url)
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
     return effectve_url;
-
 }
 
 

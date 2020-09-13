@@ -161,14 +161,14 @@ namespace ngap {
 
         {
             // This easy handle is only created so we can use the curl_easy_escape() on the tokens
-            CURL *curl = curl_easy_init();
+            CURL *ceh = curl_easy_init();
             char *esc_url_content;
 
-            esc_url_content = curl_easy_escape(curl, tokens[1].c_str(), tokens[1].size());
+            esc_url_content = curl_easy_escape(ceh, tokens[1].c_str(), tokens[1].size());
             cmr_url += CMR_PROVIDER + "=" + esc_url_content + "&";
             curl_free(esc_url_content);
 
-            esc_url_content = curl_easy_escape(curl, tokens[3].c_str(), tokens[3].size());
+            esc_url_content = curl_easy_escape(ceh, tokens[3].c_str(), tokens[3].size());
             if (tokens[2] == NGAP_COLLECTIONS_KEY) {
                 cmr_url += CMR_ENTRY_TITLE + "=" + esc_url_content + "&";
             }
@@ -182,10 +182,10 @@ namespace ngap {
             }
             curl_free(esc_url_content);
 
-            esc_url_content = curl_easy_escape(curl, tokens[5].c_str(), tokens[5].size());
+            esc_url_content = curl_easy_escape(ceh, tokens[5].c_str(), tokens[5].size());
             cmr_url += CMR_GRANULE_UR + "=" + esc_url_content;
             curl_free(esc_url_content);
-            curl_easy_cleanup(curl);
+            curl_easy_cleanup(ceh);
         }
 
         BESDEBUG(MODULE, prolog << "CMR Request URL: " << cmr_url << endl);

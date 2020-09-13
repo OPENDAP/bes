@@ -192,7 +192,7 @@ void HttpUtils::Initialize()
     }
     // Grab the value for the NoProxy regex; empty if there is none.
     found = false; // Not used
-    TheBESKeys::TheKeys()->get_value("Http.NoProxy", HttpUtils::NoProxyRegex, found);
+    TheBESKeys::TheKeys()->get_value(HTTP_NO_PROXY_REGEX_KEY, HttpUtils::NoProxyRegex, found);
 }
 
 // Not used. There's a better version of this that returns a string in libdap.

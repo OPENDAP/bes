@@ -45,7 +45,7 @@ namespace curl {
     CURL *set_up_easy_handle(const std::string &target_url, struct curl_slist *request_headers, char *response_buff);
 
 
-    bool configureProxy(CURL *curl, const std::string &url);
+    bool configureProxy(CURL *ceh, const std::string &url);
 
     void http_get_and_write_resource(const std::string &url,
                                      const std::vector<std::string> &http_request_headers,
@@ -90,9 +90,9 @@ namespace curl {
 
     std::string hyrax_user_agent();
 
-    void set_error_buffer(CURL *curl, char *error_buffer);
+    void set_error_buffer(CURL *ceh, char *error_buffer);
 
-    void unset_error_buffer(CURL *curl);
+    void unset_error_buffer(CURL *ceh);
 
     void eval_curl_easy_setopt_result(
             CURLcode result,
@@ -103,15 +103,15 @@ namespace curl {
 
 
     bool eval_curl_easy_perform_code(
-            CURL *curl,
+            CURL *ceh,
             std::string url,
             CURLcode curl_code,
             char *error_buffer,
             unsigned int attempt );
 
-    void curl_super_easy_perform(CURL *c_handle);
+    void curl_super_easy_perform(CURL *ceh);
 
-    std::string get_effective_url(CURL *curl, std::string requested_url);
+    std::string get_effective_url(CURL *ceh, std::string requested_url);
 
 } // namespace curl
 
