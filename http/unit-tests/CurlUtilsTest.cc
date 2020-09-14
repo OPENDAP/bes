@@ -158,7 +158,7 @@ namespace http {
 /* TESTS BEGIN */
 
         void is_retryable_test() {
-            if(debug) cerr << prolog << "BEGIN" << endl;
+            if(debug) cerr << endl << prolog << "BEGIN" << endl;
             bool isRetryable;
 
             try {
@@ -188,7 +188,7 @@ namespace http {
                 CPPUNIT_ASSERT(!isRetryable);
 
             }
-            catch (BESError be){
+            catch (BESError &be){
                 stringstream msg;
                 msg << prolog << "ERROR! Caught BESError. Message: " << be.get_message() << endl;
                 CPPUNIT_FAIL(msg.str());
@@ -197,15 +197,28 @@ namespace http {
 
         }
         void retrieve_effective_url_test(){
+            if(debug) cerr << endl << prolog << "BEGIN" << endl;
             string target_url = "http://test.opendap.org/opendap";
             string effective_url;
-            BESContextManager::TheManager()->set_context(EDL_UID_KEY, "big_bucky");
-            BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_KEY, "itsa_authy_token_time");
-            BESContextManager::TheManager()->set_context(EDL_ECHO_TOKEN_KEY, "echo_my_smokin_token");
+            //BESContextManager::TheManager()->set_context(EDL_UID_KEY, "big_bucky");
+            //BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_KEY, "itsa_authy_token_time");
+            //BESContextManager::TheManager()->set_context(EDL_ECHO_TOKEN_KEY, "echo_my_smokin_token");
 
-            if(debug) cerr << prolog << "target_url: " << target_url << endl;
-            curl::retrieve_effective_url(target_url,effective_url);
-            if(debug) cerr << prolog << "effective_url: " << effective_url << endl;
+            try {
+                if(debug) cerr << prolog << "target_url: " << target_url << endl;
+                curl::retrieve_effective_url(target_url,effective_url);
+                if(debug) cerr << prolog << "effective_url: " << effective_url << endl;
+            }
+            catch(BESError &be){
+                stringstream msg;
+                msg << "Caught BESError! Message: " << be.get_message() << " file: " << be.get_file() << " line: " << be.get_line()<< endl;
+                CPPUNIT_FAIL(msg.str());
+            }
+            catch(...){
+                stringstream msg;
+                msg << "Caught Unknown exception!. " << endl;
+                CPPUNIT_FAIL(msg.str());
+            }
         }
 
 

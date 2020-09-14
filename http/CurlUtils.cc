@@ -465,7 +465,8 @@ int curl_trace = 0;
                const struct curl_slist *http_request_headers,
                vector<string> *http_response_hdrs )
     {
-        init(curl_easy_init(), target_url, http_request_headers, http_response_hdrs);
+        CURL *swanky_new_curl_easy_handle = curl_easy_init();
+        init(swanky_new_curl_easy_handle, target_url, http_request_headers, http_response_hdrs);
     }
 
      /**
@@ -1609,6 +1610,7 @@ struct curl_slist *add_auth_headers(curl_slist *request_headers)
     s = BESContextManager::TheManager()->get_context(EDL_UID_KEY,found);
     if(found){
         string uid_header = "User-Id: " + s;
+        BESDEBUG(MODULE, prolog << "uid_header: " << uid_header << endl);
         temp = curl_slist_append(request_headers, uid_header.c_str());
         if(temp)
             request_headers = temp;
@@ -1617,6 +1619,7 @@ struct curl_slist *add_auth_headers(curl_slist *request_headers)
     s = BESContextManager::TheManager()->get_context(EDL_AUTH_TOKEN_KEY,found);
     if(found){
         string authorization_header = "Authorization: Bearer " + s;
+        BESDEBUG(MODULE, prolog << "authorization_header: " << authorization_header << endl);
         temp = curl_slist_append(request_headers, authorization_header.c_str());
         if(temp)
             request_headers = temp;
@@ -1625,6 +1628,7 @@ struct curl_slist *add_auth_headers(curl_slist *request_headers)
     s = BESContextManager::TheManager()->get_context(EDL_ECHO_TOKEN_KEY,found);
     if(found){
         string echo_token_header = "Echo-Token: " + s;
+        BESDEBUG(MODULE, prolog << "echo_token_header: " << echo_token_header << endl);
         temp = curl_slist_append(request_headers, echo_token_header.c_str());
         if(temp)
             request_headers = temp;
