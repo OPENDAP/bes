@@ -1199,10 +1199,10 @@ int curl_trace = 0;
      * This function will return false, indicating that there was a problem, but a retry
      * might be reasonable.
      *
-     * If another cURL error or different HTTP response error code is encounter a
+     * If another cURL error or different HTTP response error code is encountered a
      * BESInternalError is thrown.
      *
-     * This function true if the CURLINFO_RESPONSE_CODE response code 200 (OK) or
+     * This function returns true if the CURLINFO_RESPONSE_CODE response code is 200 (OK) or
      * 206 (Partial Content)
      *
      * @param ceh The cURL easy_handle to evaluate.
@@ -1310,7 +1310,7 @@ int curl_trace = 0;
  *  - CURLE_SSL_CACERT_BADFILE
  *  And for these values of curl_code the fundtion returns false.
  *
- *  The funtion returns success iff curl_code == CURLE_OK.
+ *  The function returns success iff curl_code == CURLE_OK.
  *
  *  If the curl_code is another value a BESInternalError is thrown.
  *
