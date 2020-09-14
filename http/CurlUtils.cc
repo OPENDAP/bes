@@ -466,7 +466,7 @@ int curl_trace = 0;
                vector<string> *http_response_hdrs )
     {
         CURL *swanky_new_curl_easy_handle = curl_easy_init();
-        init(swanky_new_curl_easy_handle, target_url, http_request_headers, http_response_hdrs);
+        return init(swanky_new_curl_easy_handle, target_url, http_request_headers, http_response_hdrs);
     }
 
      /**

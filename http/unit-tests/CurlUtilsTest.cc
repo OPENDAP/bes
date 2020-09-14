@@ -199,15 +199,20 @@ namespace http {
         void retrieve_effective_url_test(){
             if(debug) cerr << endl << prolog << "BEGIN" << endl;
             string target_url = "http://test.opendap.org/opendap";
+            string expected_url = "http://test.opendap.org/opendap/";
             string effective_url;
-            //BESContextManager::TheManager()->set_context(EDL_UID_KEY, "big_bucky");
-            //BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_KEY, "itsa_authy_token_time");
-            //BESContextManager::TheManager()->set_context(EDL_ECHO_TOKEN_KEY, "echo_my_smokin_token");
+            BESContextManager::TheManager()->set_context(EDL_UID_KEY, "big_bucky");
+            BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_KEY, "itsa_authy_token_time");
+            BESContextManager::TheManager()->set_context(EDL_ECHO_TOKEN_KEY, "echo_my_smokin_token");
 
             try {
                 if(debug) cerr << prolog << "target_url: " << target_url << endl;
                 curl::retrieve_effective_url(target_url,effective_url);
                 if(debug) cerr << prolog << "effective_url: " << effective_url << endl;
+                if(debug) cerr << prolog << " expected_url: " << expected_url << endl;
+
+                CPPUNIT_ASSERT( effective_url == expected_url );
+
             }
             catch(BESError &be){
                 stringstream msg;
