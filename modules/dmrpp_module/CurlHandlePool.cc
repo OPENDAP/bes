@@ -331,8 +331,8 @@ void dmrpp_easy_handle::read_data() {
 
         // FIXME I think this should only happen in the destructor in order
         //  to insure that retrying the dmrpp_easy_handle doesn't meet with the troubles.
-        curl_slist_free_all(d_request_headers);
-        d_request_headers = 0;
+        //curl_slist_free_all(d_request_headers);
+        //d_request_headers = 0;
     }
     else {
         CURLcode curl_code = curl_easy_perform(d_handle);
@@ -818,6 +818,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
                         __FILE__, __LINE__);
             handle->d_request_headers = temp;
 
+            handle->d_request_headers = curl::add_auth_headers(handle->d_request_headers)
 
             res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPHEADER, handle->d_request_headers);
             curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HTTPHEADER", handle->d_errbuf, __FILE__, __LINE__);
