@@ -485,6 +485,7 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
         unsigned int dataset_rank = H5Sget_simple_extent_ndims(fspace_id);
 
         hid_t dtypeid = H5Dget_type(dataset);
+
         size_t dsize = H5Tget_size(dtypeid);
 
         /* layout_type:  1 contiguous 2 chunk 3 compact */
@@ -586,6 +587,7 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
 
                 Array *btp = dynamic_cast<Array *>(dc);
                 if (btp != NULL) {
+                    dc->set_compact(true);
                     size_t memRequired = btp->length() * dsize;
 
                     if (comp_size != memRequired) {
@@ -608,8 +610,8 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
                         case dods_uint64_c:
                             values.resize(memRequired);
                             get_data(dataset, reinterpret_cast<void *>(&values[0]));
-                            btp->var()->set_read_p(true);
-                            btp->var()->val2buf(reinterpret_cast<void *>(&values[0]));
+                            btp->set_read_p(true);
+                            btp->val2buf(reinterpret_cast<void *>(&values[0]));
                             break;
 
                         case dods_str_c:
@@ -619,15 +621,16 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
                                 read_vlen_string(dataset,1,NULL,NULL,NULL,finstrval);
                                 string strval = finstrval[0];
                                 //set_value(strval);
-                                btp->var()->set_read_p(true);
-                                btp->var()->val2buf(reinterpret_cast<void *>(&strval[0]));
+                                btp->set_read_p(true);
+                                btp->val2buf(reinterpret_cast<void *>(&strval[0]));
                             } else {
                                 values.resize(dsize+1);
                                 get_data(dataset, reinterpret_cast<void *>(&values[0]));
                                 string str(values.begin(),values.end());
-                                btp->var()->set_read_p(true);
-                                btp->var()->val2buf(reinterpret_cast<void *>(&str[0]));
                                 //set_value(str);
+                                //btp->set_read_p(true);
+                                //btp->val2buf(reinterpret_cast<void *>(&str[0]));
+
                             }
                             break;
 
