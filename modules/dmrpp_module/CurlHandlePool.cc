@@ -818,7 +818,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
                         __FILE__, __LINE__);
             handle->d_request_headers = temp;
 
-            handle->d_request_headers = curl::add_auth_headers(handle->d_request_headers)
+            // handle->d_request_headers = curl::add_auth_headers(handle->d_request_headers);
 
             res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPHEADER, handle->d_request_headers);
             curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HTTPHEADER", handle->d_errbuf, __FILE__, __LINE__);
