@@ -107,7 +107,7 @@ namespace curl {
 
     void read_data(CURL *c_handle);
 
-    struct curl_slist *add_auth_headers(curl_slist *request_headers);
+    curl_slist *add_auth_headers(struct curl_slist *request_headers);
 
 
 } // namespace curl

@@ -158,7 +158,7 @@ namespace http {
 /* TESTS BEGIN */
 
         void is_retryable_test() {
-            if(debug) cerr << endl << prolog << "BEGIN" << endl;
+            if(debug) cerr << prolog << "BEGIN" << endl;
             bool isRetryable;
 
             try {
@@ -186,7 +186,6 @@ namespace http {
                 isRetryable = curl::is_retryable(url);
                 if(debug) cerr << prolog << "is_retryable('" << url << "'): " << (isRetryable ? "true" : "false") << endl;
                 CPPUNIT_ASSERT(!isRetryable);
-
             }
             catch (BESError &be){
                 stringstream msg;
@@ -194,19 +193,18 @@ namespace http {
                 CPPUNIT_FAIL(msg.str());
 
             }
-
+            if(debug)  cerr << prolog << "END" << endl;
         }
+
+
         void retrieve_effective_url_test(){
-            if(debug) cerr << endl << prolog << "BEGIN" << endl;
+            if(debug) cerr << prolog << "BEGIN" << endl;
             string target_url = "http://test.opendap.org/opendap";
             string expected_url = "http://test.opendap.org/opendap/";
             string effective_url;
-            BESContextManager::TheManager()->set_context(EDL_UID_KEY, "big_bucky");
-            BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_KEY, "itsa_authy_token_time");
-            BESContextManager::TheManager()->set_context(EDL_ECHO_TOKEN_KEY, "echo_my_smokin_token");
 
             try {
-                if(debug) cerr << prolog << "target_url: " << target_url << endl;
+                if(debug) cerr << prolog << "   target_url: " << target_url << endl;
                 curl::retrieve_effective_url(target_url,effective_url);
                 if(debug) cerr << prolog << "effective_url: " << effective_url << endl;
                 if(debug) cerr << prolog << " expected_url: " << expected_url << endl;
@@ -224,6 +222,45 @@ namespace http {
                 msg << "Caught Unknown exception!. " << endl;
                 CPPUNIT_FAIL(msg.str());
             }
+            if(debug) cerr << prolog << "END" << endl;
+        }
+
+        /**
+         * struct curl_slist {  char *data;  struct curl_slist *next;};
+         */
+        void add_auth_headers_test(){
+            if(debug) cerr << prolog << "BEGIN" << endl;
+            curl_slist *hdrs=NULL;
+            curl_slist *temp=NULL;
+            string tokens[]= {"big_bucky_ball","itsa_authy_token_time","echo_my_smo:kin_token"};
+            BESContextManager::TheManager()->set_context(EDL_UID_KEY, tokens[0]);
+            BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_KEY, tokens[1]);
+            BESContextManager::TheManager()->set_context(EDL_ECHO_TOKEN_KEY, tokens[2]);
+
+            try {
+                hdrs = curl::add_auth_headers(hdrs);
+                temp=hdrs;
+                size_t index = 0;
+                while(temp){
+                    string value(temp->data);
+                    if(debug) cerr << prolog << "header: " << value << endl;
+                    size_t found = value.find(tokens[index]);
+                    CPPUNIT_ASSERT( found != string::npos);
+                    temp = temp->next;
+                    index++;
+                }
+            }
+            catch(BESError &be){
+                stringstream msg;
+                msg << "Caught BESError! Message: " << be.get_message() << " file: " << be.get_file() << " line: " << be.get_line()<< endl;
+                CPPUNIT_FAIL(msg.str());
+            }
+            catch(...){
+                stringstream msg;
+                msg << "Caught Unknown exception!. " << endl;
+                CPPUNIT_FAIL(msg.str());
+            }
+            if(debug) cerr << prolog << "END" << endl;
         }
 
 
@@ -236,6 +273,7 @@ namespace http {
 
             CPPUNIT_TEST(is_retryable_test);
             CPPUNIT_TEST(retrieve_effective_url_test);
+            CPPUNIT_TEST(add_auth_headers_test);
 
         CPPUNIT_TEST_SUITE_END();
     };

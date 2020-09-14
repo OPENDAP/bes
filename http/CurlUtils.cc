@@ -74,7 +74,7 @@ static const unsigned int retry_limit = 10; // Amazon's suggestion
 static const useconds_t uone_second = 1000*1000; // one second in micro seconds (which is 1000
 
 // Forward declaration
-struct curl_slist *add_auth_headers(curl_slist *request_headers);
+curl_slist *add_auth_headers(struct curl_slist *request_headers);
 
 // Set this to 1 to turn on libcurl's verbose mode (for debugging).
 int curl_trace = 0;
@@ -529,9 +529,6 @@ int curl_trace = 0;
             eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEHEADER", error_buffer, __FILE__, __LINE__);
         }
 
-
-
-
         // Allow compressed responses. Sending an empty string enables all supported compression types.
 #ifndef CURLOPT_ACCEPT_ENCODING
         res = curl_easy_setopt(ceh, CURLOPT_ENCODING, "");
@@ -547,7 +544,6 @@ int curl_trace = 0;
         // Disable cURL signal handling
         res = curl_easy_setopt(ceh, CURLOPT_NOSIGNAL, 1L);
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_NOSIGNAL", error_buffer, __FILE__, __LINE__);
-
 
 
         // -  -  -  - -  -  -  - -  -  -  - -  -  -  - -  -  -  - -  -  -  - -  -  -  -
@@ -649,7 +645,7 @@ int curl_trace = 0;
     /**
      * @brief Returns an cURL easy handle for tracing redirects.
      *
-     * The returned cURL easy habdle is configured to make a 4 byte
+     * The returned cURL easy handle is configured to make a 4 byte
      * range get from the url. When theis cURL handle is "exercised"
      * at the end the cURL handles CURLINFO_EFFECTIVE_URL value will
      * be the place from which the 4 bytes were retrieved, the
@@ -716,7 +712,7 @@ int curl_trace = 0;
         char error_buffer[CURL_ERROR_SIZE];
         CURLcode res;
         CURL *ceh = NULL;
-        struct curl_slist *req_headers = NULL;
+        curl_slist *req_headers = NULL;
         BuildHeaders header_builder;
 
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
@@ -861,7 +857,7 @@ int curl_trace = 0;
         CURL *ceh=NULL;     ///< The libcurl handle object.
         CURLcode res;
 
-        struct curl_slist *request_headers=NULL;
+        curl_slist *request_headers=NULL;
         // Add the authorization headers
         request_headers = add_auth_headers(request_headers);
 
@@ -1379,7 +1375,7 @@ bool eval_curl_easy_perform_code(
         CURL *ceh = NULL;
         CURLcode curl_code;
 
-        struct curl_slist *request_headers=NULL;
+        curl_slist *request_headers=NULL;
         // Add the authorization headers
         request_headers = add_auth_headers(request_headers);
 
@@ -1601,9 +1597,9 @@ bool eval_curl_easy_perform_code(
  * @param request_headers
  * @return
  */
-struct curl_slist *add_auth_headers(curl_slist *request_headers)
+curl_slist *add_auth_headers(curl_slist *request_headers)
 {
-    struct curl_slist *temp=NULL;
+    curl_slist *temp=NULL;
     bool found;
     string s;
 
@@ -1633,6 +1629,7 @@ struct curl_slist *add_auth_headers(curl_slist *request_headers)
         if(temp)
             request_headers = temp;
     }
+
     return request_headers;
 }
 

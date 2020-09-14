@@ -211,7 +211,7 @@ dmrpp_easy_handle::dmrpp_easy_handle() : d_request_headers(0) {
     vector<string> d_response_headers;
     string target_url="foo";
 
-    d_handle = curl::in;
+    d_handle = curl::init();
 
     if (!d_handle) throw BESInternalError("Could not allocate CURL handle", __FILE__, __LINE__);
 
