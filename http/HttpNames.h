@@ -39,7 +39,11 @@
 #define HTTP_PROXYUSER_KEY "Http.ProxyUser"
 #define HTTP_PROXYPASSWORD_KEY "Http.ProxyPassword"
 #define HTTP_PROXYUSERPW_KEY "Http.ProxyUserPW"
-#define HTTP_USE_INTERNAL_CACHE_KEY "Http.UseInternalCache"
+#define HTTP_NO_PROXY_REGEX_KEY "Http.NoProxy"
+
+#define HTTP_MAX_REDIRECTS_KEY "Http.MaxRedirects"
+#define HTTP_MAX_REDIRECTS_DEFAULT 20
+
 
 #define HTTP_CACHE_DIR_KEY "Http.Cache.dir"
 #define HTTP_CACHE_PREFIX_KEY "Http.Cache.prefix"
@@ -59,7 +63,6 @@
 #define HTTP_NO_RETRY_URL_REGEX_KEY "Http.No.Retry.Regex"
 #define HTTP_CACHE_EFFECTIVE_URLS_KEY "Http.cache.effective.urls"
 #define HTTP_CACHE_EFFECTIVE_URLS_SKIP_REGEX_KEY "Http.cache.effective.urls.skip.regex.pattern"
-
 
 #define AMS_EXPIRES_HEADER_KEY "X-Amz-Expires"
 #define AWS_DATE_HEADER_KEY "X-Amz-Date"

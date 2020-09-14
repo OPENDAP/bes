@@ -221,11 +221,11 @@ dmrpp_easy_handle::dmrpp_easy_handle() : d_request_headers(0) {
 #endif
 
     res = curl_easy_setopt(d_handle, CURLOPT_HEADERFUNCTION, chunk_header_callback);
-    curl::check_setopt_result(res, prolog, "CURLOPT_HEADERFUNCTION", d_errbuf, __FILE__, __LINE__);
+    curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HEADERFUNCTION", d_errbuf, __FILE__, __LINE__);
 
     // Pass all data to the 'write_data' function
     res = curl_easy_setopt(d_handle, CURLOPT_WRITEFUNCTION, chunk_write_data);
-    curl::check_setopt_result(res, prolog, "CURLOPT_WRITEFUNCTION", d_errbuf, __FILE__, __LINE__);
+    curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEFUNCTION", d_errbuf, __FILE__, __LINE__);
 
 #ifdef CURLOPT_TCP_KEEPALIVE
     /* enable TCP keep-alive for this transfer */
@@ -271,9 +271,9 @@ void dmrpp_easy_handle::read_data() {
 
         // Perform the request
         do {
+            ++tries;
             BESDEBUG(DMRPP_CURL, prolog << "Requesting URL: " << d_url << endl);
             CURLcode curl_code = curl_easy_perform(d_handle);
-            ++tries;
 
             if (CURLE_OK != curl_code) {
                 stringstream msg;
@@ -285,16 +285,16 @@ void dmrpp_easy_handle::read_data() {
                 throw BESInternalError(msg.str(), __FILE__, __LINE__);
             }
 
-            success = curl::eval_get_response(d_handle, d_url);
+            success = curl::eval_http_get_response(d_handle, d_url);
 
             if (!success) {
                 if (tries == retry_limit) {
-                    string msg = prolog + "Data transfer error: Number of re-tries exceeded: "+ curl::error_message(curl_code, d_errbuf);
+                    string msg = prolog + "ERROR - Data transfer error: Number of re-tries exceeded: "+ curl::error_message(curl_code, d_errbuf);
                     LOG(msg << endl);
                     throw BESInternalError(msg, __FILE__, __LINE__);
                 }
                 else {
-                    LOG(prolog << "HTTP transfer 500 error, will retry (trial " << tries << " for: " << d_url << ")." << endl);
+                    LOG(prolog << "ERROR - HTTP transfer error, will retry (trial " << tries << " for: " << d_url << ")." << endl);
                     usleep(retry_time);
                     retry_time *= 2;
                 }
@@ -307,7 +307,8 @@ void dmrpp_easy_handle::read_data() {
     else {
         CURLcode curl_code = curl_easy_perform(d_handle);
         if (CURLE_OK != curl_code) {
-            throw BESInternalError(string("Data transfer error: ").append(curl::error_message(curl_code, d_errbuf)),
+            string msg = prolog + "ERROR - Data transfer error: ";
+            throw BESInternalError(msg.append(curl::error_message(curl_code, d_errbuf)),
                                    __FILE__, __LINE__);
         }
     }
@@ -414,23 +415,24 @@ void dmrpp_multi_handle::read_data() {
         int still_running = 0;
         CURLMcode mres = curl_multi_perform(p_impl->curlm, &still_running);
         if (mres != CURLM_OK)
-            throw BESInternalError(string("Could not initiate data read: ").append(curl_multi_strerror(mres)), __FILE__,
+            throw BESInternalError(string("ERROR - Could not initiate data read: ").append(curl_multi_strerror(mres)), __FILE__,
                 __LINE__);
 
         do {
             int numfds = 0;
             mres = curl_multi_wait(p_impl->curlm, NULL, 0, MAX_WAIT_MSECS, &numfds);
             if (mres != CURLM_OK)
-                throw BESInternalError(string("Could not wait on data read: ").append(curl_multi_strerror(mres)), __FILE__,
+                throw BESInternalError(string("ERROR - Could not wait on data read: ").append(curl_multi_strerror(mres)), __FILE__,
                     __LINE__);
 
             mres = curl_multi_perform(p_impl->curlm, &still_running);
             if (mres != CURLM_OK)
-                throw BESInternalError(string("Could not iterate data read: ").append(curl_multi_strerror(mres)), __FILE__,
+                throw BESInternalError(string("ERROR - Could not iterate data read: ").append(curl_multi_strerror(mres)), __FILE__,
                     __LINE__);
 
         } while (still_running);
 
+        CURLcode res;
         CURLMsg *msg = 0;
         int msgs_left = 0;
         char empty[1]; // TODO Replace this with the actual error buffer that's in use in the CURL handle msg->easy_handle
@@ -439,52 +441,47 @@ void dmrpp_multi_handle::read_data() {
             if (msg->msg == CURLMSG_DONE) {
                 CURL *eh = msg->easy_handle;
 
-                CURLcode res = msg->data.result;
-                if (res != CURLE_OK)
-                    throw BESInternalError(string("Error HTTP: ").append(curl::error_message(res,empty)), __FILE__, __LINE__);
-
-                // Note: 'eh' is the easy handle returned by culr_multi_info_read(),
+                // Note: 'eh' is the easy handle returned by curl_multi_info_read(),
                 // but in it's private field is our dmrpp_easy_handle object. We need
                 // both to mark this data read operation as complete.
-                dmrpp_easy_handle *dmrpp_easy_handle = 0;
-                res = curl_easy_getinfo(eh, CURLINFO_PRIVATE, &dmrpp_easy_handle);
+                dmrpp_easy_handle *deh = 0;
+                res = curl_easy_getinfo(eh, CURLINFO_PRIVATE, &deh);
                 if (res != CURLE_OK)
-                    throw BESInternalError(string("Could not access easy handle: ").append(curl::error_message(res,empty)), __FILE__, __LINE__);
+                    throw BESInternalError(string(prolog + "ERROR - Could not access easy handle: ").append(curl::error_message(res,empty)), __FILE__, __LINE__);
+
+                res = msg->data.result;
+                if (res != CURLE_OK)
+                    throw BESInternalError(string(prolog + "ERROR - cURL request failed. Message: ").append(curl::error_message(res,deh->d_errbuf)), __FILE__, __LINE__);
+
 
                 // This code has to work with both http/s: and file: protocols. Here we check the
                 // HTTP status code. If the protocol is not HTTP, we assume since msg->data.result
                 // returned CURLE_OK, that the transfer worked. jhrg 5/1/18
-                if (dmrpp_easy_handle->d_url.find("http://") == 0 || dmrpp_easy_handle->d_url.find("https://") == 0) {
-                    unsigned int attempts = 0;
-                    bool success = false;
-                    while(!success && attempts<retry_limit) {
-                        success = curl::eval_get_response(eh, dmrpp_easy_handle->d_url);
-                        LOG(prolog << "ERROR - HTTP transfer error, will retry (attempt: " << attempts << " for: " << dmrpp_easy_handle->d_url << ")." << endl);
-                        usleep(retry_time);
-                        retry_time *= 2;
-                        attempts++;
-                    }
+                if (deh->d_url.find("http://") == 0 || deh->d_url.find("https://") == 0) {
+                    bool success;
+                    success = curl::eval_http_get_response(eh, deh->d_url);
                     if (!success) {
-                        string msg = prolog + "Data transfer error: Number of re-tries exceeded.";
-                        LOG(msg << endl);
-                        throw BESInternalError(msg, __FILE__, __LINE__);
+                        stringstream msg;
+                        msg <<  prolog << "ERROR - Data transfer error: " << curl::error_message(res,deh->d_errbuf) << endl;
+                        LOG(msg.str());
+                        throw BESInternalError(msg.str(), __FILE__, __LINE__);
                     }
                 }
 
                 // If we are here, the request was successful.
-                dmrpp_easy_handle->d_chunk->set_is_read(true);  // Set the is_read() property for chunk here.
+                deh->d_chunk->set_is_read(true);  // Set the is_read() property for chunk here.
 
                 // NB: Remove the handle from the CURLM* and _then_ call release_handle()
                 // so that the KEEP_ALIVE 0 (off) works. Calling delete on the dmrpp_easy_handle
                 // will invalidate 'eh', so call that after removing 'eh'.
                 mres = curl_multi_remove_handle(p_impl->curlm, eh);
                 if (mres != CURLM_OK)
-                    throw BESInternalError(string("Could not remove libcurl handle: ").append(curl_multi_strerror(mres)),  __FILE__, __LINE__);
+                    throw BESInternalError(string("ERROR - Could not remove libcurl handle: ").append(curl_multi_strerror(mres)),  __FILE__, __LINE__);
 
-                DmrppRequestHandler::curl_handle_pool->release_handle(dmrpp_easy_handle);
+                DmrppRequestHandler::curl_handle_pool->release_handle(deh);
             }
             else {  // != CURLMSG_DONE
-                throw BESInternalError("Error getting HTTP or FILE responses.", __FILE__, __LINE__);
+                throw BESInternalError("ERROR - getting HTTP or FILE responses.", __FILE__, __LINE__);
             }
         }
     }
@@ -497,7 +494,7 @@ void dmrpp_multi_handle::read_data() {
                 e = DmrppRequestHandler::curl_handle_pool->d_easy_handles.end(); i != e; ++i) {
             CURLMcode mres = curl_multi_remove_handle(p_impl->curlm, (*i)->d_handle);
             if (mres != CURLM_OK)
-                LOG("While cleaning up from an error during a parallel data request, could not remove a CURL handle." << endl);
+                LOG("ERROR - While cleaning up from an error during a parallel data request, could not remove a CURL handle." << endl);
             DmrppRequestHandler::curl_handle_pool->release_handle(*i);
         }
 
@@ -630,58 +627,58 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
 
 
         res = curl_easy_setopt(handle->d_handle, CURLOPT_URL, chunk->get_data_url().c_str());
-        curl::check_setopt_result(res, prolog, "CURLOPT_URL", handle->d_errbuf, __FILE__, __LINE__);
+        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_URL", handle->d_errbuf, __FILE__, __LINE__);
 
         // get the offset to offset + size bytes
         res = curl_easy_setopt(handle->d_handle, CURLOPT_RANGE, chunk->get_curl_range_arg_string().c_str());
-        curl::check_setopt_result(res, prolog, "CURLOPT_RANGE", handle->d_errbuf, __FILE__, __LINE__);
+        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_RANGE", handle->d_errbuf, __FILE__, __LINE__);
 
         // Pass this to chunk_header_callback as the fourth argument
         res = curl_easy_setopt(handle->d_handle, CURLOPT_HEADERDATA, reinterpret_cast<void *>(chunk));
-        curl::check_setopt_result(res, prolog, "CURLOPT_HEADERDATA", handle->d_errbuf, __FILE__, __LINE__);
+        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HEADERDATA", handle->d_errbuf, __FILE__, __LINE__);
 
         // Pass this to chunk_write_data as the fourth argument
         res = curl_easy_setopt(handle->d_handle, CURLOPT_WRITEDATA, reinterpret_cast<void *>(chunk));
-        curl::check_setopt_result(res, prolog, "CURLOPT_WRITEDATA", handle->d_errbuf, __FILE__, __LINE__);
+        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEDATA", handle->d_errbuf, __FILE__, __LINE__);
 
         // store the easy_handle so that we can call release_handle in multi_handle::read_data()
         res = curl_easy_setopt(handle->d_handle, CURLOPT_PRIVATE, reinterpret_cast<void *>(handle));
-        curl::check_setopt_result(res, prolog, "CURLOPT_PRIVATE", handle->d_errbuf, __FILE__, __LINE__);
+        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_PRIVATE", handle->d_errbuf, __FILE__, __LINE__);
 
         // Enabled cookies
         res = curl_easy_setopt(handle->d_handle, CURLOPT_COOKIEFILE, curl::get_cookie_filename().c_str());
-        curl::check_setopt_result(res, prolog, "CURLOPT_COOKIEFILE", handle->d_errbuf, __FILE__, __LINE__);
+        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_COOKIEFILE", handle->d_errbuf, __FILE__, __LINE__);
 
         res  = curl_easy_setopt(handle->d_handle, CURLOPT_COOKIEJAR, curl::get_cookie_filename().c_str());
-        curl::check_setopt_result(res, prolog, "CURLOPT_COOKIEJAR", handle->d_errbuf, __FILE__, __LINE__);
+        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_COOKIEJAR", handle->d_errbuf, __FILE__, __LINE__);
 
         // Follow 302 (redirect) responses
         res = curl_easy_setopt(handle->d_handle, CURLOPT_FOLLOWLOCATION, 1);
-        curl::check_setopt_result(res, prolog, "CURLOPT_FOLLOWLOCATION", handle->d_errbuf, __FILE__, __LINE__);
+        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_FOLLOWLOCATION", handle->d_errbuf, __FILE__, __LINE__);
 
         res = curl_easy_setopt(handle->d_handle, CURLOPT_MAXREDIRS, curl::max_redirects());
-        curl::check_setopt_result(res, prolog, "CURLOPT_MAXREDIRS", handle->d_errbuf, __FILE__, __LINE__);
+        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_MAXREDIRS", handle->d_errbuf, __FILE__, __LINE__);
 
         // Set the user agent something otherwise TEA will never redirect to URS.
         res = curl_easy_setopt(handle->d_handle, CURLOPT_USERAGENT, curl::hyrax_user_agent().c_str());
-        curl::check_setopt_result(res, prolog, "CURLOPT_USERAGENT", handle->d_errbuf, __FILE__, __LINE__);
+        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_USERAGENT", handle->d_errbuf, __FILE__, __LINE__);
 
         // This means libcurl will use Basic, Digest, GSS Negotiate, or NTLM,
         // choosing the the 'safest' one supported by the server.
         // This requires curl 7.10.6 which is still in pre-release. 07/25/03 jhrg
         res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPAUTH, (long) CURLAUTH_ANY);
-        curl::check_setopt_result(res, prolog, "CURLOPT_HTTPAUTH", handle->d_errbuf, __FILE__, __LINE__);
+        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HTTPAUTH", handle->d_errbuf, __FILE__, __LINE__);
 
         // Enable using the .netrc credentials file.
         res = curl_easy_setopt(handle->d_handle, CURLOPT_NETRC, CURL_NETRC_OPTIONAL);
-        curl::check_setopt_result(res, prolog, "CURLOPT_NETRC", handle->d_errbuf, __FILE__, __LINE__);
+        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_NETRC", handle->d_errbuf, __FILE__, __LINE__);
 
         // If the configuration specifies a particular .netrc credentials file, use it.
         // TODO move this operation into constructor and stash the value.
         string netrc_file = curl::get_netrc_filename();
         if (!netrc_file.empty()) {
             res = curl_easy_setopt(handle->d_handle, CURLOPT_NETRC_FILE, netrc_file.c_str());
-            curl::check_setopt_result(res, prolog, "CURLOPT_NETRC_FILE", handle->d_errbuf, __FILE__, __LINE__);
+            curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_NETRC_FILE", handle->d_errbuf, __FILE__, __LINE__);
         }
         VERBOSE(__FILE__ << "::get_easy_handle() is using the netrc file '"
                          << ((!netrc_file.empty()) ? netrc_file : "~/.netrc") << "'" << endl);
@@ -731,7 +728,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
 
 
             res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPHEADER, handle->d_request_headers);
-            curl::check_setopt_result(res, prolog, "CURLOPT_HTTPHEADER", handle->d_errbuf, __FILE__, __LINE__);
+            curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HTTPHEADER", handle->d_errbuf, __FILE__, __LINE__);
         }
     }
 

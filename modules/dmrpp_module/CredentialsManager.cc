@@ -119,7 +119,6 @@ CredentialsManager::~CredentialsManager() {
  * Really it's the default constructor for now.
  */
 CredentialsManager::CredentialsManager(): ngaps3CredentialsLoaded(false){
-    bool found;
     d_netrc_filename = curl::get_netrc_filename();
 }
 
