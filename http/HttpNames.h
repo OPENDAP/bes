@@ -68,6 +68,12 @@
 #define AWS_DATE_HEADER_KEY "X-Amz-Date"
 #define CLOUDFRONT_EXPIRES_HEADER_KEY "Expires"
 
+
+#define EDL_AUTH_TOKEN_KEY "edl_auth_token"
+#define EDL_ECHO_TOKEN_KEY "edl_echo_token"
+#define EDL_UID_KEY "uid"
+
+
 #define HTTP_MODULE "http"
 
 #endif //  _bes_http_HTTP_NAMES_H

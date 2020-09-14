@@ -1570,9 +1570,6 @@ bool eval_curl_easy_perform_code(
         return HttpUtils::MaxRedirects;
     }
 
-#define EDL_AUTH_TOKEN_KEY "edl_auth_token"
-#define EDL_ECHO_TOKEN_KEY "edl_echo_token"
-#define EDL_UID_KEY "uid"
 /**
  * @brief Adds the user id and/or the associated EDL auth token
  * to request_headers.
@@ -1608,7 +1605,8 @@ struct curl_slist *add_auth_headers(curl_slist *request_headers)
     struct curl_slist *temp=NULL;
     bool found;
     string s;
-    TheBESKeys::TheKeys()->get_value(EDL_UID_KEY,s,found);
+
+    s = BESContextManager::TheManager()->get_context(EDL_UID_KEY,found);
     if(found){
         string uid_header = "User-Id: " + s;
         temp = curl_slist_append(request_headers, uid_header.c_str());
@@ -1616,7 +1614,7 @@ struct curl_slist *add_auth_headers(curl_slist *request_headers)
             request_headers = temp;
     }
 
-    TheBESKeys::TheKeys()->get_value(EDL_AUTH_TOKEN_KEY,s,found);
+    s = BESContextManager::TheManager()->get_context(EDL_AUTH_TOKEN_KEY,found);
     if(found){
         string authorization_header = "Authorization: Bearer " + s;
         temp = curl_slist_append(request_headers, authorization_header.c_str());
@@ -1624,7 +1622,7 @@ struct curl_slist *add_auth_headers(curl_slist *request_headers)
             request_headers = temp;
     }
 
-    TheBESKeys::TheKeys()->get_value(EDL_ECHO_TOKEN_KEY,s,found);
+    s = BESContextManager::TheManager()->get_context(EDL_ECHO_TOKEN_KEY,found);
     if(found){
         string echo_token_header = "Echo-Token: " + s;
         temp = curl_slist_append(request_headers, echo_token_header.c_str());

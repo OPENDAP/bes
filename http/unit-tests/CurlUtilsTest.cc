@@ -33,11 +33,12 @@
 #include <GetOpt.h>
 #include <util.h>
 
-#include <BESError.h>
-#include <BESDebug.h>
-#include <BESUtil.h>
-#include <BESCatalogList.h>
-#include <TheBESKeys.h>
+#include "BESError.h"
+#include "BESDebug.h"
+#include "BESUtil.h"
+#include "BESCatalogList.h"
+#include "TheBESKeys.h"
+#include "BESContextManager.h"
 #include "CurlUtils.h"
 #include "HttpNames.h"
 
@@ -52,6 +53,8 @@ static bool purge_cache = false;
 
 #undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
+
+#define prolog std::string("CurlUtilsTest::").append(__func__).append("() - ")
 
 namespace http {
 
@@ -104,7 +107,6 @@ namespace http {
          *
          */
         string get_data_file_url(string name){
-            string prolog = string(__func__) + "() - ";
             string data_file = BESUtil::assemblePath(d_data_dir,name);
             if(debug) cerr << prolog << "data_file: " << data_file << endl;
             if(Debug) show_file(data_file);
@@ -141,7 +143,7 @@ namespace http {
             if (bes_debug) show_file(bes_conf);
             TheBESKeys::ConfigFile = bes_conf;
 
-            if (bes_debug) BESDebug::SetUp("cerr,wl,bes,http");
+            if (bes_debug) BESDebug::SetUp("cerr,wl,bes,http,curl");
 
             if(Debug) cerr << "setUp() - END" << endl;
         }
@@ -155,46 +157,57 @@ namespace http {
 /*##################################################################################################*/
 /* TESTS BEGIN */
 
-
         void is_retryable_test() {
-            if(debug) cerr << __func__ << "() - BEGIN" << endl;
+            if(debug) cerr << prolog << "BEGIN" << endl;
             bool isRetryable;
 
             try {
                 string url = "http://test.opendap.org/data/httpd_catalog/READTHIS";
                 isRetryable = curl::is_retryable(url);
-                if(debug) cerr << __func__ << "() - is_retryable('" << url << "'): " << (isRetryable ? "true" : "false") << endl;
+                if(debug) cerr << prolog << "is_retryable('" << url << "'): " << (isRetryable ? "true" : "false") << endl;
                 CPPUNIT_ASSERT(isRetryable);
 
                 url = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc?A-userid=hyrax&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIASF4N-AWS-Creds-00808%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200808T032623Z&X-Amz-Expires=86400&X-Amz-Security-Token=FwoGZXIvYXdzE-AWS-Sec-Token-MWRLIZGYvDx1ONzd0ffK8VtxO8JP7thrGIQ%3D%3D&X-Amz-SignedHeaders=host&X-Amz-Signature=260a7c4dd4-AWS-SIGGY-0c7a39ee899";
                 isRetryable = curl::is_retryable(url);
-                if(debug) cerr << __func__ << "() - is_retryable('" << url << "'): " << (isRetryable ? "true" : "false") << endl;
+                if(debug) cerr << prolog << "is_retryable('" << url << "'): " << (isRetryable ? "true" : "false") << endl;
                 CPPUNIT_ASSERT(!isRetryable);
 
                 url = "https://d1jecqxxv88lkr.cloudfront.net/ghrcwuat-protected/rss_demo/rssmif16d__7/f16_ssmis_20040107v7.nc";
                 isRetryable = curl::is_retryable(url);
-                if(debug) cerr << __func__ << "() - is_retryable('" << url << "'): " << (isRetryable ? "true" : "false") << endl;
+                if(debug) cerr << prolog << "is_retryable('" << url << "'): " << (isRetryable ? "true" : "false") << endl;
                 CPPUNIT_ASSERT(isRetryable);
 
                 url = "https://data.ghrc.uat.earthdata.nasa.gov/login?code=8800da07f823dfce312ee85e44c9e89efdf6bd9d776b1cb8666029ba2c8d257e&state=%2Fghrcwuat%2Dprotected%2Frss_demo%2Frssmif16d__7%2Ff16_ssmis_20040107v7%2Enc";
                 isRetryable = curl::is_retryable(url);
-                if(debug) cerr << __func__ << "() - is_retryable('" << url << "'): " << (isRetryable ? "true" : "false") << endl;
+                if(debug) cerr << prolog << "is_retryable('" << url << "'): " << (isRetryable ? "true" : "false") << endl;
                 CPPUNIT_ASSERT(!isRetryable);
 
                 url = "https://data.ghrc.uat.earthdata.nasa.gov/login?code=46196589bfe26c4c298e1a74646b99005d20a022cabff6434a550283defa8153&state=%2Fghrcwuat%2Dprotected%2Frss_demo%2Frssmif16d__7%2Ff16_ssmis_20040115v7%2Enc";
                 isRetryable = curl::is_retryable(url);
-                if(debug) cerr << __func__ << "() - is_retryable('" << url << "'): " << (isRetryable ? "true" : "false") << endl;
+                if(debug) cerr << prolog << "is_retryable('" << url << "'): " << (isRetryable ? "true" : "false") << endl;
                 CPPUNIT_ASSERT(!isRetryable);
 
             }
             catch (BESError be){
                 stringstream msg;
-                msg << __func__ << "() - ERROR! Caught BESError. Message: " << be.get_message() << endl;
+                msg << prolog << "ERROR! Caught BESError. Message: " << be.get_message() << endl;
                 CPPUNIT_FAIL(msg.str());
 
             }
 
         }
+        void retrieve_effective_url_test(){
+            string target_url = "http://test.opendap.org/opendap";
+            string effective_url;
+            BESContextManager::TheManager()->set_context(EDL_UID_KEY, "big_bucky");
+            BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_KEY, "itsa_authy_token_time");
+            BESContextManager::TheManager()->set_context(EDL_ECHO_TOKEN_KEY, "echo_my_smokin_token");
+
+            if(debug) cerr << prolog << "target_url: " << target_url << endl;
+            curl::retrieve_effective_url(target_url,effective_url);
+            if(debug) cerr << prolog << "effective_url: " << effective_url << endl;
+        }
+
 
 
 /* TESTS END */
@@ -204,6 +217,7 @@ namespace http {
     CPPUNIT_TEST_SUITE( CurlUtilsTest );
 
             CPPUNIT_TEST(is_retryable_test);
+            CPPUNIT_TEST(retrieve_effective_url_test);
 
         CPPUNIT_TEST_SUITE_END();
     };
