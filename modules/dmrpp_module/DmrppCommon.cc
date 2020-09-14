@@ -270,6 +270,24 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
 }
 
 /**
+ * @brief Print the Compact base64-encoded information.
+ */
+void
+DmrppCommon::print_compact_element(XMLWriter &xml, const string &name_space, const std::string &encoded)
+{
+    // Write element "compact" with dmrpp namespace:
+    ostringstream oss;
+    copy(encoded.begin(), encoded.end(), ostream_iterator<unsigned int>(oss, " "));
+    string sizes = oss.str();
+    sizes.erase(sizes.size() - 1, 1);    // trim the trailing space
+
+    if (xmlTextWriterWriteElementNS(xml.get_writer(), (const xmlChar *) name_space.c_str(),
+                                    (const xmlChar *) "compact", NULL,
+                                    (const xmlChar *) sizes.c_str()) < 0)
+        throw BESInternalError("Could not write compact element.", __FILE__, __LINE__);
+}
+
+/**
  * @brief Print the DMR++ response for the Scalar types
  *
  * @note See DmrppArray::print_dap4() for a discussion about the design of

@@ -92,7 +92,7 @@ public:
     static std::string d_dmrpp_ns;       ///< The DMR++ XML namespace
     static std::string d_ns_prefix;      ///< The XML namespace prefix to use
 
-    DmrppCommon() : d_deflate(false), d_shuffle(false). d_compact(false)
+    DmrppCommon() : d_deflate(false), d_shuffle(false), d_compact(false)
     {
     }
 
@@ -159,6 +159,8 @@ public:
     }
 
     void print_chunks_element(libdap::XMLWriter &xml, const std::string &name_space = "");
+
+    void print_compact_element(libdap::XMLWriter &xml, const std::string &name_space = "", const std::string &encoded = "");
 
     void print_dmrpp(libdap::XMLWriter &writer, bool constrained = false);
 

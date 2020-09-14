@@ -53,6 +53,7 @@
 #include "Chunk.h"
 #include "DmrppArray.h"
 #include "DmrppRequestHandler.h"
+#include "Base64.h"
 
 // Used with BESDEBUG
 static const string dmrpp_3 = "dmrpp:3";
@@ -1403,6 +1404,12 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
     // Only print the chunks info if there. This is the code added to libdap::Array::print_dap4().
     // jhrg 5/10/18
     if (DmrppCommon::d_print_chunks && get_immutable_chunks().size() > 0) print_chunks_element(xml, DmrppCommon::d_ns_prefix);
+
+    if (DmrppCommon::d_print_chunks && is_compact_layout() && read_p()) {
+        vector<u_int8_t> values(width());
+        std::string encoded = base64::Base64::encode(&values[0],values.size());
+        print_compact_element( xml, DmrppCommon::d_ns_prefix, encoded);
+    }
 
     if (xmlTextWriterEndElement(xml.get_writer()) < 0) throw InternalErr(__FILE__, __LINE__, "Could not end " + type_name() + " element");
 }
