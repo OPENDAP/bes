@@ -432,10 +432,8 @@ namespace http {
     void RemoteResource::writeResourceToFile(int fd) {
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
         try {
-            vector<string> req_hdrs;
             BESDEBUG(MODULE, prolog << "Saving resource " << d_remoteResourceUrl << " to cache file " << d_resourceCacheFileName << endl);
-
-            curl::http_get_and_write_resource(d_remoteResourceUrl, req_hdrs, fd, d_response_headers); // Throws BESInternalError if there is a curl error.
+            curl::http_get_and_write_resource(d_remoteResourceUrl, fd, d_response_headers); // Throws BESInternalError if there is a curl error.
 
             BESDEBUG(MODULE,  prolog << "Resource " << d_remoteResourceUrl << " saved to cache file " << d_resourceCacheFileName << endl);
 

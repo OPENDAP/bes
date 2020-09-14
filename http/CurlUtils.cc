@@ -74,7 +74,7 @@ static const unsigned int retry_limit = 10; // Amazon's suggestion
 static const useconds_t uone_second = 1000*1000; // one second in micro seconds (which is 1000
 
 // Forward declaration
-struct curl_slist *get_auth_headers(curl_slist *request_headers);
+struct curl_slist *add_auth_headers(curl_slist *request_headers);
 
 // Set this to 1 to turn on libcurl's verbose mode (for debugging).
 int curl_trace = 0;
@@ -461,7 +461,12 @@ int curl_trace = 0;
         return using_proxy;
     }
 
-
+    CURL *init(const string &target_url,
+               const struct curl_slist *http_request_headers,
+               vector<string> *http_response_hdrs )
+    {
+        init(curl_easy_init(), target_url, http_request_headers, http_response_hdrs);
+    }
 
      /**
       * Get's a new instance of a cURL easy handle (CURL*) and performs
@@ -477,18 +482,18 @@ int curl_trace = 0;
       * @param http_response_hdrs
       * @return
       */
-    CURL *init(const string &target_url,
+    CURL *init(CURL *ceh,
+               const string &target_url,
                const struct curl_slist *http_request_headers,
                vector<string> *http_response_hdrs
-        ) {
+        )
+        {
         char error_buffer[CURL_ERROR_SIZE];
         error_buffer[0]=0; // Null terminate this string for safety.
-        CURL *ceh;
         CURLcode res;
 
-         ceh = curl_easy_init();
         if (!ceh)
-            throw BESInternalError("Could not initialize libcurl.",__FILE__, __LINE__);
+            throw BESInternalError("Could not initialize cURL easy handle.",__FILE__, __LINE__);
 
         // SET Error Buffer (for use during this setup) ----------------------------------------------------------------
         set_error_buffer(ceh,error_buffer);
@@ -704,7 +709,6 @@ int curl_trace = 0;
      * error message is stuffed into the Error object.
      */
     void http_get_and_write_resource(const string &target_url,
-                                     const vector<string> &http_request_headers,
                                      const int fd,
                                      vector<string> *http_response_headers) {
 
@@ -724,10 +728,8 @@ int curl_trace = 0;
             throw BESSyntaxUserError(err, __FILE__, __LINE__);
         }
 
-        // Build the curl_slist of request headers
-        req_headers = for_each(http_request_headers.begin(), http_request_headers.end(), header_builder).get_headers();
         // Add the authorization headers
-        req_headers = get_auth_headers(req_headers);
+        req_headers = add_auth_headers(req_headers);
 
         try {
             // OK! Make the cURL handle
@@ -747,7 +749,7 @@ int curl_trace = 0;
 #endif
             unset_error_buffer(ceh);
 
-            curl_super_easy_perform(ceh);
+            super_easy_perform(ceh);
 
             // Free the header list
             if(req_headers)
@@ -860,7 +862,7 @@ int curl_trace = 0;
 
         struct curl_slist *request_headers=NULL;
         // Add the authorization headers
-        request_headers = get_auth_headers(request_headers);
+        request_headers = add_auth_headers(request_headers);
 
         try {
 
@@ -881,7 +883,7 @@ int curl_trace = 0;
 
             unset_error_buffer(ceh);
 
-            curl_super_easy_perform(ceh);
+            super_easy_perform(ceh);
 
             if(request_headers)
                 curl_slist_free_all(request_headers);
@@ -965,18 +967,23 @@ int curl_trace = 0;
     /**
      * @brief Performs a curl_easy_perform(), retrying if certain types of errors are encountered.
      *
-     * Ths function contains the operational frame work and state checking for performing retries of
-     * failed requests as necessary. The code that contains the state assessment is held in the functions
-     * eval_curl_easy_perform_code(), eval_http_get_response(). These function have a three state behavior:
+     * This function contains the operational frame work and state checking for performing retries of
+     * failed requests as necessary.
+     *
+     * The code that contains the state assessment is held in the functions
+     * - curl::eval_curl_easy_perform_code()
+     * - curl::eval_http_get_response()
+     *
+     * These functions have a tri-state behavior:
      *   - If the assessed operation was a success they return true.
      *   - If the assessed operation had what is considered a retryable failure, they return false.
      *   - If the assessed operation had any other failure, a BESInternalError is thrown.
-     * These functions are used in the retry logic of this function to determine when to keep
-     * trying and when to give up.
+     * These functions are used in the retry logic of this curl::super_easy_perform() to
+     * determine when there was success, when to keep trying, and if to give up.
      *
      * @param c_handle The CURL easy handle on which to operate
      */
-    void curl_super_easy_perform(CURL *c_handle)
+    void super_easy_perform(CURL *c_handle)
     {
         unsigned int attempts = 0;
         useconds_t retry_time = uone_second / 4;
@@ -1373,14 +1380,14 @@ bool eval_curl_easy_perform_code(
 
         struct curl_slist *request_headers=NULL;
         // Add the authorization headers
-        request_headers = get_auth_headers(request_headers);
+        request_headers = add_auth_headers(request_headers);
 
         try {
             ceh = init_effective_url_retriever_handle(target_url, request_headers, resp_hdrs);
 
-            curl_super_easy_perform(ceh);
+            super_easy_perform(ceh);
 
-            // After doing the thing with curl_super_easy_perform() we retrieve the effective URL form the cURL handle.
+            // After doing the thing with super_easy_perform() we retrieve the effective URL form the cURL handle.
             last_accessed_url = get_effective_url(ceh,target_url);
             BESDEBUG(MODULE, prolog << "Last Accessed URL(CURLINFO_EFFECTIVE_URL): " << last_accessed_url << endl);
             LOG(prolog << "Source URL: '" << target_url << "' Last Accessed URL: '" << last_accessed_url << "'" << endl);
@@ -1596,7 +1603,7 @@ bool eval_curl_easy_perform_code(
  * @param request_headers
  * @return
  */
-struct curl_slist *get_auth_headers(curl_slist *request_headers)
+struct curl_slist *add_auth_headers(curl_slist *request_headers)
 {
     struct curl_slist *temp=NULL;
     bool found;
