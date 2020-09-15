@@ -172,12 +172,13 @@ void EffectiveUrlCache::add(const std::string &source_url, http::url *effective_
  * @param source_url
  */
 http::url *EffectiveUrlCache::get(const std::string  &source_url){
+    http::url *effective_url=NULL;
     std::map<std::string, http::url *>::iterator it;
     it = d_effective_urls.find(source_url);
     if(it!=d_effective_urls.end()){
-        return (*it).second;
+        effective_url = (*it).second;
     }
-    return NULL;
+    return effective_url;
 }
 
 
@@ -191,10 +192,11 @@ http::url *EffectiveUrlCache::get(const std::string  &source_url){
  * and then calls cache_effective_url(source_url, skip_regex);
  *
  * @param source_url
+ * @returns The effective URL
  */
-void EffectiveUrlCache::cache_effective_url(const string &source_url) {
+http::url *EffectiveUrlCache::cache_effective_url(const string &source_url) {
     BESRegex *bes_regex = get_cache_effective_urls_skip_regex();
-    cache_effective_url(source_url, bes_regex);
+    return cache_effective_url(source_url, bes_regex);
 }
 
 
@@ -203,8 +205,9 @@ void EffectiveUrlCache::cache_effective_url(const string &source_url) {
  * skip_regex then it will not be cached.
  *
  * @param source_url
- */
-void EffectiveUrlCache::cache_effective_url(const string &source_url, BESRegex *skip_regex)
+ * @returns The effective URL
+*/
+http::url *EffectiveUrlCache::cache_effective_url(const string &source_url, BESRegex *skip_regex)
 {
     BESDEBUG(MODULE, prolog << "BEGIN url: " << source_url << endl);
 
@@ -213,21 +216,24 @@ void EffectiveUrlCache::cache_effective_url(const string &source_url, BESRegex *
     // if it's not an HTTP url there is nothing to cache.
     if (source_url.find("http://") != 0 && source_url.find("https://") != 0) {
         BESDEBUG(MODULE, prolog << "END Not an HTTP request, SKIPPING." << endl);
-        return;
+        return NULL;
     }
 
-    if( skip_regex ){
-        match_length = skip_regex->match(source_url.c_str(),source_url.length());
-        if(match_length == source_url.length() ){
+    if( skip_regex ) {
+        match_length = skip_regex->match(source_url.c_str(), source_url.length());
+        if (match_length == source_url.length()) {
             BESDEBUG(MODULE, prolog << "END Candidate url matches the "
                                        "no_redirects_regex_pattern [" << skip_regex->pattern() <<
                                     "][match_length=" << match_length << "] SKIPPING." << endl);
-            return;
+            return NULL;
         }
+        BESDEBUG(MODULE, prolog << "Candidate url: '" << source_url << "' does NOT match the "
+                                                                       "skip_regex pattern [" << skip_regex->pattern() << "]" << endl);
     }
-    BESDEBUG(MODULE, prolog << "Candidate url: '" << source_url << "' does NOT match the "
-                                                                   "skip_regex pattern [" << skip_regex->pattern() << "]" << endl);
+    else {
+        BESDEBUG(MODULE, prolog << "The cache_effective_urls_skip_regex() was missing "<< endl);
 
+    }
     http::url *effective_url = EffectiveUrlCache::TheCache()->get(source_url);
 
     // See if the data_access_url has already been processed into a terminal signed URL
@@ -254,6 +260,7 @@ void EffectiveUrlCache::cache_effective_url(const string &source_url, BESRegex *
 
         EffectiveUrlCache::TheCache()->add(source_url,effective_url);
     }
+    return effective_url;
     BESDEBUG(MODULE, prolog << "END" << endl);
 }
 
@@ -270,10 +277,10 @@ bool EffectiveUrlCache::is_enabled()
         bool found;
         string value;
         TheBESKeys::TheKeys()->get_value(HTTP_CACHE_EFFECTIVE_URLS_KEY,value,found);
-        BESDEBUG(MODULE, prolog << HTTP_CACHE_EFFECTIVE_URLS_KEY <<":  " << value << endl);
+        BESDEBUG(MODULE, prolog << HTTP_CACHE_EFFECTIVE_URLS_KEY <<":  '" << value << "'" << endl);
         d_enabled = found && BESUtil::lowercase(value)=="true";
     }
-    BESDEBUG(MODULE, prolog << "d_enabled: " << d_enabled << endl);
+    BESDEBUG(MODULE, prolog << "d_enabled: " << (d_enabled?"ture":"false") << endl);
     return d_enabled;
 }
 

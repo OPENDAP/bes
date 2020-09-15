@@ -52,7 +52,7 @@ using namespace std;
 #define SOURCE_URL_KEY  "http_url_target_url"
 #define INGEST_TIME_KEY  "http_url_ingest_time"
 
-#define REFRESH_THRESHOLD 3600
+#define REFRESH_THRESHOLD 600
 
 namespace http {
 

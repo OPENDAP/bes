@@ -173,10 +173,12 @@ namespace http {
             if(debug) cerr << __func__ << "() - BEGIN" << endl;
             string source_url;
             string value;
-            http::url *effective_url;
+            http::url *result_url;
             try {
-                string src_url_00 = "https://d1jecqxxv88lkr.cloudfront.net/ghrcwuat-protected/rss_demo/rssmif16d__7/f16_ssmis_20040107v7.nc";
-                http::url *effective_url_00 = new http::url("https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc?A-userid=hyrax&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIASF4N-AWS-Creds-00808%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200808T032623Z&X-Amz-Expires=86400&X-Amz-Security-Token=FwoGZXIvYXdzE-AWS-Sec-Token-MWRLIZGYvDx1ONzd0ffK8VtxO8JP7thrGIQ%3D%3D&X-Amz-SignedHeaders=host&X-Amz-Signature=260a7c4dd4-AWS-SIGGY-0c7a39ee899");
+               // string src_url_00 = "https://d1jecqxxv88lkr.cloudfront.net/ghrcwuat-protected/rss_demo/rssmif16d__7/f16_ssmis_20040107v7.nc";
+                //http::url *effective_url_00 = new http::url("https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc?A-userid=hyrax&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIASF4N-AWS-Creds-00808%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200808T032623Z&X-Amz-Expires=86400&X-Amz-Security-Token=FwoGZXIvYXdzE-AWS-Sec-Token-MWRLIZGYvDx1ONzd0ffK8VtxO8JP7thrGIQ%3D%3D&X-Amz-SignedHeaders=host&X-Amz-Signature=260a7c4dd4-AWS-SIGGY-0c7a39ee899");
+                string src_url_00 = "http://test.opendap.org/opendap";
+                http::url *effective_url_00 = new http::url("http://test.opendap.org/opendap/");
                 EffectiveUrlCache::TheCache()->add(src_url_00,effective_url_00);
                 CPPUNIT_ASSERT( EffectiveUrlCache::TheCache()->d_effective_urls.size() == 1);
 
@@ -185,8 +187,8 @@ namespace http {
                 EffectiveUrlCache::TheCache()->add(src_url_01,effective_url_01);
                 CPPUNIT_ASSERT( EffectiveUrlCache::TheCache()->d_effective_urls.size() == 2);
 
-                effective_url = EffectiveUrlCache::TheCache()->get(src_url_00);
-                CPPUNIT_ASSERT(effective_url == effective_url_00);
+                result_url = EffectiveUrlCache::TheCache()->cache_effective_url(src_url_00);
+                CPPUNIT_ASSERT(result_url->str() == effective_url_00->str());
 
 
             }
