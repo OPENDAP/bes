@@ -338,6 +338,46 @@ m4_define([AT_BESCMD_DAP_FUNCTION_RESPONSE_TEST], [dnl
 
     AT_CLEANUP])
 
+dnl This macro is called using:
+dnl AT_BESCMD_BINARY_FILE_RESPONSE_TEST(bescmd, extension, expected)
+dnl E.G.: AT_...(mybescmd, tif, xfail)
+dnl and expects the baseline to be mybescmd.tif
+dnl
+
+m4_define([AT_BESCMD_BINARY_FILE_RESPONSE_TEST],
+    [_AT_BESCMD_BINARY_FILE_RESPONSE_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.$2], [$3])]
+)
+
+dnl Use this to test responses from handlers that build files like jpeg2000,
+dnl geoTIFF, etc.
+dnl
+dnl jhrg 2016
+
+m4_define([AT_BESCMD_BINARY_FILE_RESPONSE_TEST], [dnl
+
+    AT_SETUP([$1])
+    AT_KEYWORDS([file])
+
+    input=$abs_srcdir/$1
+    baseline=$abs_srcdir/$1.$2
+    expected=$3
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input], [], [stdout])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input], [], [stdout])
+        AT_CHECK([cmp $baseline stdout])
+        AT_XFAIL_IF([test expected = xfail])
+        ])
+
+    AT_CLEANUP
+])
+
 dnl Given a filename, remove any date-time string of the form "yyyy-mm-dd hh:mm:ss"
 dnl in that file and put "removed date-time" in its place. This hack keeps the baselines
 dnl more or less true to form without the obvious issue of baselines being broken 

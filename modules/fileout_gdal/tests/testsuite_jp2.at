@@ -1,6 +1,10 @@
 # Process with autom4te to create an -*- Autotest -*- test suite.
 
-m4_include([handler_tests_macros.m4])
+# m4_include([handler_tests_macros.m4])
+
+AT_INIT([bes/modules/fileout_gdal/tests ./testsuite_jp2])
+
+m4_include(AT_TOP_SRCDIR/modules/handler_tests_macros.m4)
 
 AT_BESCMD_BINARY_FILE_RESPONSE_TEST([gdal/coads_climatology.nc.2.bescmd], [jp2], [pass])
 AT_BESCMD_BINARY_FILE_RESPONSE_TEST([gdal/function_result_unwrap_jp2.bescmd], [jp2], [pass])
