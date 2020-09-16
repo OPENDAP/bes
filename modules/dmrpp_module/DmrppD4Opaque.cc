@@ -172,7 +172,7 @@ void DmrppD4Opaque::read_chunks_parallel()
 
 void DmrppD4Opaque::read_chunks()
 {
-    for (vector<Chunk>::iterator c = get_chunk_vec().begin(), e = get_chunk_vec().end(); c != e; ++c) {
+    for (vector<Chunk>::iterator c = get_chunks().begin(), e = get_chunks().end(); c != e; ++c) {
         (*c).read_chunk();
         (*c).inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(), 1 /*elem width*/);
         insert_chunk(&(*c));
