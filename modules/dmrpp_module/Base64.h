@@ -41,7 +41,7 @@ namespace base64 {
             encodedString.reserve(((size / 3) + (size % 3 > 0)) * 4);
             u_int64_t temp;
 
-            for (size_t idx = 0; idx < size / 3; idx++) {
+            for (int32_t idx = 0; idx < size / 3; idx++) {
                 temp = (*cursor++) << 16;
                 temp += (*cursor++) << 8;
                 temp += (*cursor++);
