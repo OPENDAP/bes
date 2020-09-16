@@ -57,7 +57,7 @@ namespace dmrpp {
  * different kinds of optimizations, we have implemented two different read()
  * methods, one for the 'no chunks' case and one for arrays 'with chunks.'
  */
-class DmrppArray: public libdap::Array, public DmrppCommon {
+class DmrppArray : public libdap::Array, public DmrppCommon {
 
 private:
     void _duplicate(const DmrppArray &ts);
@@ -66,8 +66,10 @@ private:
 
     DmrppArray::dimension get_dimension(unsigned int dim_num);
 
-    void insert_constrained_contiguous(Dim_iter p, unsigned long *target_index, std::vector<unsigned int> &subsetAddress,
-        const std::vector<unsigned int> &array_shape, char *data);
+    void
+    insert_constrained_contiguous(Dim_iter p, unsigned long *target_index, std::vector<unsigned int> &subsetAddress,
+                                  const std::vector<unsigned int> &array_shape, char *data);
+
     virtual void read_contiguous();
 
 #ifdef USE_READ_SERIAL
@@ -79,26 +81,33 @@ private:
     unsigned long long get_chunk_start(const dimension &thisDim, unsigned int chunk_origin_for_dim);
 
     Chunk *find_needed_chunks(unsigned int dim, std::vector<unsigned int> *target_element_address, Chunk *chunk);
-    void insert_chunk(unsigned int dim, std::vector<unsigned int> *target_element_address, std::vector<unsigned int> *chunk_element_address,
-        Chunk *chunk, const vector<unsigned int> &constrained_array_shape);
+
+    void insert_chunk(unsigned int dim, std::vector<unsigned int> *target_element_address,
+                      std::vector<unsigned int> *chunk_element_address,
+                      Chunk *chunk, const vector<unsigned int> &constrained_array_shape);
+
     void read_chunks();
 
     void insert_chunk_unconstrained(Chunk *chunk, unsigned int dim,
-        unsigned long long array_offset, const std::vector<unsigned int> &array_shape,
-        unsigned long long chunk_offset, const std::vector<unsigned int> &chunk_shape, const std::vector<unsigned int> &chunk_origin);
+                                    unsigned long long array_offset, const std::vector<unsigned int> &array_shape,
+                                    unsigned long long chunk_offset, const std::vector<unsigned int> &chunk_shape,
+                                    const std::vector<unsigned int> &chunk_origin);
+
     void read_chunks_unconstrained();
 
     // Called from read_chunks_unconstrained() and also using pthreads
-    friend void process_one_chunk_unconstrained(Chunk *chunk, DmrppArray *array, const vector<unsigned int> &array_shape,
-        const vector<unsigned int> &chunk_shape);
+    friend void
+    process_one_chunk_unconstrained(Chunk *chunk, DmrppArray *array, const vector<unsigned int> &array_shape,
+                                    const vector<unsigned int> &chunk_shape);
 
 public:
     DmrppArray(const std::string &n, libdap::BaseType *v);
+
     DmrppArray(const std::string &n, const std::string &d, libdap::BaseType *v);
+
     DmrppArray(const DmrppArray &rhs);
 
-    virtual ~DmrppArray()
-    {
+    virtual ~DmrppArray() {
     }
 
     DmrppArray &operator=(const DmrppArray &rhs);
@@ -108,11 +117,12 @@ public:
     virtual bool read();
 
     virtual unsigned long long get_size(bool constrained = false);
+
     virtual std::vector<unsigned int> get_shape(bool constrained);
 
     virtual void print_dap4(libdap::XMLWriter &writer, bool constrained = false);
 
-    virtual void dump(ostream & strm) const;
+    virtual void dump(ostream &strm) const;
 };
 
 /// Chunk data insert args for use with pthreads
@@ -124,8 +134,9 @@ struct one_chunk_unconstrained_args {
     const vector<unsigned int> &array_shape;
     const vector<unsigned int> &chunk_shape;
 
-    one_chunk_unconstrained_args(int *pipe, unsigned char id, Chunk *c, DmrppArray *a, const vector<unsigned int> &a_s, const vector<unsigned int> &c_s)
-        : fds(pipe), tid(id), chunk(c), array(a), array_shape(a_s), chunk_shape(c_s) {}
+    one_chunk_unconstrained_args(int *pipe, unsigned char id, Chunk *c, DmrppArray *a, const vector<unsigned int> &a_s,
+                                 const vector<unsigned int> &c_s)
+            : fds(pipe), tid(id), chunk(c), array(a), array_shape(a_s), chunk_shape(c_s) {}
 };
 
 /// Chunk data insert args for use with pthreads. Used for reading contiguous data
@@ -137,11 +148,11 @@ struct one_child_chunk_args {
     Chunk *master_chunk;    // this chunk gets the data; shared memory, managed by DmrppArray
 
     one_child_chunk_args(int *pipe, unsigned char id, Chunk *c_c, Chunk *m_c)
-        : fds(pipe), tid(id), child_chunk(c_c), master_chunk(m_c) {}
+            : fds(pipe), tid(id), child_chunk(c_c), master_chunk(m_c) {}
 
     ~one_child_chunk_args() {
         delete child_chunk;
-     }
+    }
 
 };
 
