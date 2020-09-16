@@ -25,7 +25,6 @@
 
 #include <string>
 #include <sstream>
-#include <iomanip>
 #include <vector>
 #include <queue>
 #include <iterator>
@@ -40,12 +39,10 @@
 #include <unistd.h>
 
 #include <D4Enum.h>
-#include <D4EnumDefs.h>
 #include <D4Attributes.h>
 #include <D4Maps.h>
 #include <D4Group.h>
 
-#include "BESLog.h"
 #include "BESInternalError.h"
 #include "BESDebug.h"
 
@@ -430,7 +427,7 @@ void DmrppArray::read_contiguous()
 
                 // thread number is 'i'
                 one_child_chunk_args *args = new one_child_chunk_args(fds, i, current_chunk, &master_chunk);
-                int status = pthread_create(&threads[i], NULL, dmrpp::one_child_chunk_thread, (void *) args);
+                status = pthread_create(&threads[i], NULL, dmrpp::one_child_chunk_thread, (void *) args);
 
                 if (status == 0) {
                     ++num_threads;
@@ -461,7 +458,7 @@ void DmrppArray::read_contiguous()
                 }
 
                 string *error;
-                int status = pthread_join(threads[tid], (void **) &error);
+                status = pthread_join(threads[tid], (void **) &error);
                 --num_threads;
                 BESDEBUG(dmrpp_3, "joined thread: " << (unsigned int) tid << ", there are: " << num_threads << endl);
 
