@@ -44,8 +44,6 @@ namespace http {
 class EffectiveUrlCache: public BESObj {
 private:
     static EffectiveUrlCache * d_instance;
-
-
     std::map<std::string , http::url *> d_effective_urls;
 
     // Things that match get skipped.
@@ -58,23 +56,22 @@ private:
 
     friend class EffectiveUrlCacheTest;
     http::url *get(const std::string  &source_url);
+    void add(const std::string  &source_url, http::url *effective_url);
+    BESRegex *get_skip_regex();
+
+    EffectiveUrlCache();
+
+    ~EffectiveUrlCache() override;
 
 public:
 
     static EffectiveUrlCache *TheCache();
-
-    EffectiveUrlCache();
-    virtual ~EffectiveUrlCache();
-
-    void add(const std::string  &source_url, http::url *effective_url);
-
-
-    virtual void dump(std::ostream &strm) const;
-
-    http::url *cache_effective_url(const std::string &source_url);
-    http::url *cache_effective_url(const std::string &source_url, BESRegex *skip_regex);
     bool is_enabled();
-    BESRegex *get_cache_effective_urls_skip_regex();
+
+    http::url *get_effective_url(const std::string &source_url);
+    http::url *get_effective_url(const std::string &source_url, BESRegex *skip_regex);
+
+    void dump(std::ostream &strm) const override;
 
 };
 
