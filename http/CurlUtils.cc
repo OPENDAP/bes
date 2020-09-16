@@ -1228,7 +1228,7 @@ int curl_trace = 0;
             // we see in the AWS cloud and by trapping this and returning false we are able to be resilient and retry.
             // We maye eventually need to check other CURLCode errors
             stringstream msg;
-            msg << prolog << "Ouch. cURL returned CURLE_GOT_NOTHING. Message: '" ;
+            msg << prolog << "ERROR - cURL returned CURLE_GOT_NOTHING. Message: '" ;
             msg << error_message(curl_code, error_buffer) << "' ";
             msg << "CURLINFO_EFFECTIVE_URL: " << last_accessed_url << " ";
             msg << "A retry may be possible for: "<< requested_url << ")." << endl;
@@ -1340,7 +1340,7 @@ bool eval_curl_easy_perform_code(
     string last_accessed_url = get_effective_url(ceh, requested_url);
     if( curl_code == CURLE_SSL_CONNECT_ERROR ){
         stringstream msg;
-        msg << prolog << "cURL experienced a CURLE_SSL_CONNECT_ERROR error. Message: '";
+        msg << prolog << "ERROR - cURL experienced a CURLE_SSL_CONNECT_ERROR error. Message: '";
         msg << error_message(curl_code, error_buffer) << "' ";
         msg << "CURLINFO_EFFECTIVE_URL: " << last_accessed_url << " ";
         msg << "A retry may be possible for: "<< requested_url << " (attempt: " << attempt << ")." << endl;
@@ -1364,7 +1364,7 @@ bool eval_curl_easy_perform_code(
             // we see in the AWS cloud and by trapping this and returning false we are able to be resilient and retry.
             // We maye eventually need to check other CURLCode errors
             stringstream msg;
-            msg << prolog << "Ouch. cURL returned CURLE_GOT_NOTHING. Message: " ;
+            msg << prolog << "ERROR - cURL returned CURLE_GOT_NOTHING. Message: " ;
             msg << error_message(curl_code, error_buffer) << "' ";
             msg << "CURLINFO_EFFECTIVE_URL: " << last_accessed_url << " ";
             msg << "A retry may be possible for: "<< requested_url << " (attempt: " << attempt << ")." << endl;
