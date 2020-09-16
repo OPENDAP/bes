@@ -1226,7 +1226,6 @@ int curl_trace = 0;
             // First we check to see if the response was empty. This is a cURL error, not an HTTP error
             // so we have to handle it like this. And we do that because this is one of the failure modes
             // we see in the AWS cloud and by trapping this and returning false we are able to be resilient and retry.
-            // We maye eventually need to check other CURLCode errors
             stringstream msg;
             msg << prolog << "ERROR - cURL returned CURLE_GOT_NOTHING. Message: '" ;
             msg << error_message(curl_code, error_buffer) << "' ";
@@ -1362,7 +1361,6 @@ bool eval_curl_easy_perform_code(
             // First we check to see if the response was empty. This is a cURL error, not an HTTP error
             // so we have to handle it like this. And we do that because this is one of the failure modes
             // we see in the AWS cloud and by trapping this and returning false we are able to be resilient and retry.
-            // We maye eventually need to check other CURLCode errors
             stringstream msg;
             msg << prolog << "ERROR - cURL returned CURLE_GOT_NOTHING. Message: " ;
             msg << error_message(curl_code, error_buffer) << "' ";
