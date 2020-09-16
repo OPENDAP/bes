@@ -242,7 +242,7 @@ http::url *EffectiveUrlCache::cache_effective_url(const string &source_url, BESR
     if(effective_url){
         BESDEBUG(MODULE, prolog << "Cache hit for: " << source_url << endl);
         retrieve_and_cache = effective_url->is_expired();
-        BESDEBUG(MODULE, prolog << "Cached target URL is " << (retrieve_and_cache?"not ":"") << "expired." << endl);
+        BESDEBUG(MODULE, prolog << "Cached target URL is " << (retrieve_and_cache?"":"not ") << "expired." << endl);
     }
     // It not found or expired, reload.
     if(retrieve_and_cache){
@@ -260,8 +260,8 @@ http::url *EffectiveUrlCache::cache_effective_url(const string &source_url, BESR
 
         EffectiveUrlCache::TheCache()->add(source_url,effective_url);
     }
-    return effective_url;
     BESDEBUG(MODULE, prolog << "END" << endl);
+    return effective_url;
 }
 
 
