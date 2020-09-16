@@ -551,7 +551,7 @@ void dmrpp_multi_handle::read_data() {
                 // returned CURLE_OK, that the transfer worked. jhrg 5/1/18
                 if (deh->d_url.find("http://") == 0 || deh->d_url.find("https://") == 0) {
                     bool success;
-                    success = curl::eval_http_get_response(eh, deh->d_url);
+                    success = curl::eval_http_get_response(eh, deh->d_errbuf, deh->d_url);
                     if (!success) {
                         stringstream msg;
                         msg <<  prolog << "ERROR - Data transfer error: " << curl::error_message(res,deh->d_errbuf) << endl;

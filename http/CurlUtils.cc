@@ -1006,7 +1006,7 @@ int curl_trace = 0;
             success = eval_curl_easy_perform_code(c_handle, target_url, curl_code, curlErrorBuf, attempts);
             if(success){
                 // Nothing obvious went wrong with the curl_easy_perform() so now we check the HTTP stuff
-                success = eval_http_get_response(c_handle, target_url);
+                success = eval_http_get_response(c_handle, curlErrorBuf, target_url);
             }
             // If the curl_easy_perform failed, or if the http request failed then
             // we keep trying until we have exceeded the retry_limit.
@@ -1213,7 +1213,7 @@ int curl_trace = 0;
      * @return true if at all worked out, false if it didn't and a retry is reasonable.
      * @throws BESInternalError When something really bad happens.
     */
-    bool eval_http_get_response(CURL *ceh, const string &requested_url) {
+    bool eval_http_get_response(CURL *ceh, char *error_buffer, const string &requested_url) {
         BESDEBUG(MODULE, prolog << "Requested URL: " << requested_url << endl);
         CURLcode curl_code;
         string last_accessed_url = get_effective_url(ceh, requested_url);
@@ -1228,7 +1228,10 @@ int curl_trace = 0;
             // we see in the AWS cloud and by trapping this and returning false we are able to be resilient and retry.
             // We maye eventually need to check other CURLCode errors
             stringstream msg;
-            msg << prolog << "Ouch. cURL returned CURLE_GOT_NOTHING, returning false.  CURLINFO_EFFECTIVE_URL: " << last_accessed_url << endl;
+            msg << prolog << "Ouch. cURL returned CURLE_GOT_NOTHING. Message: '" ;
+            msg << error_message(curl_code, error_buffer) << "' ";
+            msg << "CURLINFO_EFFECTIVE_URL: " << last_accessed_url << " ";
+            msg << "A retry may be possible for: "<< requested_url << ")." << endl;
             BESDEBUG(MODULE, msg.str());
             LOG(msg.str());
             return false;
@@ -1236,7 +1239,7 @@ int curl_trace = 0;
         else if(curl_code != CURLE_OK) {
             // Not an error we are trapping so it's fail time.
             throw BESInternalError(
-                    string("Error acquiring HTTP response code: ").append(curl::error_message(curl_code, (char *) "")),
+                    string("Error acquiring HTTP response code: ").append(curl::error_message(curl_code, error_buffer)),
                     __FILE__, __LINE__);
         }
 
@@ -1334,20 +1337,23 @@ bool eval_curl_easy_perform_code(
         const unsigned int attempt
         ){
     bool success = true;
+    string last_accessed_url = get_effective_url(ceh, requested_url);
     if( curl_code == CURLE_SSL_CONNECT_ERROR ){
         stringstream msg;
-        msg << prolog << "cURL experienced a CURLE_SSL_CONNECT_ERROR error. message: '"<<
-            error_message(curl_code, error_buffer) << "' Will retry (url: "<< requested_url <<
-            " attempt: " << attempt << ")." << endl;
+        msg << prolog << "cURL experienced a CURLE_SSL_CONNECT_ERROR error. Message: '";
+        msg << error_message(curl_code, error_buffer) << "' ";
+        msg << "CURLINFO_EFFECTIVE_URL: " << last_accessed_url << " ";
+        msg << "A retry may be possible for: "<< requested_url << " (attempt: " << attempt << ")." << endl;
         BESDEBUG(MODULE,msg.str());
         LOG(msg.str());
         success =  false;
     }
     else if( curl_code == CURLE_SSL_CACERT_BADFILE ){
         stringstream msg;
-        msg << prolog << "ERROR - cURL experienced a CURLE_SSL_CACERT_BADFILE error. message: '" <<
-            error_message(curl_code,error_buffer) << "'Will retry (url: " << requested_url <<
-            " attempt: " << attempt << ")." << endl;
+        msg << prolog << "ERROR - cURL experienced a CURLE_SSL_CACERT_BADFILE error. Message: '";
+        msg << error_message(curl_code, error_buffer) << "' ";
+        msg << "CURLINFO_EFFECTIVE_URL: " << last_accessed_url << " ";
+        msg << "A retry may be possible for: "<< requested_url << " (attempt: " << attempt << ")." << endl;
         BESDEBUG(MODULE,msg.str());
         LOG(msg.str());
         success =  false;
@@ -1358,9 +1364,10 @@ bool eval_curl_easy_perform_code(
             // we see in the AWS cloud and by trapping this and returning false we are able to be resilient and retry.
             // We maye eventually need to check other CURLCode errors
             stringstream msg;
-            msg << prolog << "Ouch. cURL returned CURLE_GOT_NOTHING, returning false. " << error_message(curl_code, error_buffer) << endl;
-            string effective_url = get_effective_url(ceh,requested_url);
-            msg << " CURLINFO_EFFECTIVE_URL: " << effective_url;
+            msg << prolog << "Ouch. cURL returned CURLE_GOT_NOTHING. Message: " ;
+            msg << error_message(curl_code, error_buffer) << "' ";
+            msg << "CURLINFO_EFFECTIVE_URL: " << last_accessed_url << " ";
+            msg << "A retry may be possible for: "<< requested_url << " (attempt: " << attempt << ")." << endl;
             BESDEBUG(MODULE, msg.str());
             LOG(msg.str());
             return false;
