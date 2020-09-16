@@ -1634,7 +1634,7 @@ curl_slist *add_auth_headers(curl_slist *request_headers)
 
     s = BESContextManager::TheManager()->get_context(EDL_AUTH_TOKEN_KEY,found);
     if(found && !s.empty()){
-        string authorization_header = "Authorization: Bearer " + s;
+        string authorization_header = "Authorization: " + s;
         BESDEBUG(MODULE, prolog << "authorization_header: " << authorization_header << endl);
         temp = curl_slist_append(request_headers, authorization_header.c_str());
         if(temp)
