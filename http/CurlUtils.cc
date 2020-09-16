@@ -1352,6 +1352,19 @@ bool eval_curl_easy_perform_code(
         LOG(msg.str());
         success =  false;
     }
+    else if (curl_code == CURLE_GOT_NOTHING) {
+            // First we check to see if the response was empty. This is a cURL error, not an HTTP error
+            // so we have to handle it like this. And we do that because this is one of the failure modes
+            // we see in the AWS cloud and by trapping this and returning false we are able to be resilient and retry.
+            // We maye eventually need to check other CURLCode errors
+            stringstream msg;
+            msg << prolog << "Ouch. cURL returned CURLE_GOT_NOTHING, returning false. " << error_message(curl_code, error_buffer) << endl;
+            string effective_url = get_effective_url(ceh,requested_url);
+            msg << " CURLINFO_EFFECTIVE_URL: " << effective_url;
+            BESDEBUG(MODULE, msg.str());
+            LOG(msg.str());
+            return false;
+    }
     else if (CURLE_OK != curl_code) {
         stringstream msg;
         msg << "ERROR - Problem with data transfer. Message: " << error_message(curl_code, error_buffer);
