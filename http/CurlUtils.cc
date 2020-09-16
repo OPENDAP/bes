@@ -1256,10 +1256,10 @@ int curl_trace = 0;
 
         stringstream msg;
         if(http_code >= 400){
-            msg << "ERROR - The HTTP GET request for the source URL: " << requested_url << " FAILED."
-                << " The last accessed URL (CURLINFO_EFFECTIVE_URL) was: " << last_accessed_url
-                << " The response had an HTTP status of " << http_code
-                << " which means '" << http_status_to_string(http_code) << "'";
+            msg << "ERROR - The HTTP GET request for the source URL: " << requested_url << " FAILED. ";
+            msg << "CURLINFO_EFFECTIVE_URL: " << last_accessed_url;
+            msg << " The response had an HTTP status of " << http_code;
+            msg << " which means '" << http_status_to_string(http_code) << "'";
             BESDEBUG(MODULE, prolog << msg.str() << endl);
             LOG(msg.str() << endl);
         }
@@ -1407,7 +1407,7 @@ bool eval_curl_easy_perform_code(
             // After doing the thing with super_easy_perform() we retrieve the effective URL form the cURL handle.
             last_accessed_url = get_effective_url(ceh,target_url);
             BESDEBUG(MODULE, prolog << "Last Accessed URL(CURLINFO_EFFECTIVE_URL): " << last_accessed_url << endl);
-            LOG(prolog << "Source URL: '" << target_url << "' Last Accessed URL: '" << last_accessed_url << "'" << endl);
+            LOG(prolog << "Source URL: '" << target_url << "' CURLINFO_EFFECTIVE_URL: '" << last_accessed_url << "'" << endl);
 
             if(request_headers)
                 curl_slist_free_all(request_headers);
