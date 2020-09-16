@@ -61,6 +61,8 @@
 #define KEEP_ALIVE 1   // Reuse libcurl easy handles (1) or not (0).
 #define CURL_VERBOSE 0  // Logs curl info to the bes.log
 
+#define NEW_WAY 1
+
 static const int MAX_WAIT_MSECS = 30 * 1000; // Wait max. 30 seconds
 static const unsigned int retry_limit = 10; // Amazon's suggestion
 static const useconds_t uone_second = 1000 * 1000; // one second
@@ -203,6 +205,64 @@ int curl_trace(CURL */*handle*/, curl_infotype type, char *data, size_t /*size*/
 }
 #endif
 
+
+#if 0
+dmrpp_easy_handle::dmrpp_easy_handle() : d_request_headers(0) {
+    vector<string> d_response_headers;
+    string target_url="foo";
+
+    d_handle = curl::init();
+
+    if (!d_handle) throw BESInternalError("Could not allocate CURL handle", __FILE__, __LINE__);
+
+    CURLcode res;
+
+    curl::set_error_buffer(d_handle, d_errbuf);
+
+#if CURL_VERBOSE
+    res = curl_easy_setopt(d_handle, CURLOPT_DEBUGFUNCTION, curl_trace);
+     curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_DEBUGFUNCTION", d_errbuf, __FILE__, __LINE__);
+    // Many tests fail with this option, but it's still useful to see how connections
+    // are treated. jhrg 10/2/18
+    res = curl_easy_setopt(d_handle, CURLOPT_VERBOSE, 1L);
+    curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_VERBOSE", d_errbuf, __FILE__, __LINE__);
+#endif
+
+    res = curl_easy_setopt(d_handle, CURLOPT_HEADERFUNCTION, chunk_header_callback);
+    curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HEADERFUNCTION", d_errbuf, __FILE__, __LINE__);
+
+    // Pass all data to the 'write_data' function
+    res = curl_easy_setopt(d_handle, CURLOPT_WRITEFUNCTION, chunk_write_data);
+    curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEFUNCTION", d_errbuf, __FILE__, __LINE__);
+
+#ifdef CURLOPT_TCP_KEEPALIVE
+    /* enable TCP keep-alive for this transfer */
+    res = curl_easy_setopt(d_handle, CURLOPT_TCP_KEEPALIVE, 1L);
+    curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_TCP_KEEPALIVE", d_errbuf, __FILE__, __LINE__);
+#endif
+
+#ifdef CURLOPT_TCP_KEEPIDLE
+    /* keep-alive idle time to 120 seconds */
+     res = curl_easy_setopt(d_handle, CURLOPT_TCP_KEEPIDLE, 120L);
+    curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_TCP_KEEPIDLE", d_errbuf, __FILE__, __LINE__);
+#endif
+
+#ifdef CURLOPT_TCP_KEEPINTVL
+    /* interval time between keep-alive probes: 120 seconds */
+    res = curl_easy_setopt(d_handle, CURLOPT_TCP_KEEPINTVL, 120L)
+    curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_TCP_KEEPINTVL", d_errbuf, __FILE__, __LINE__);
+#endif
+
+    d_in_use = false;
+    d_url = "";
+    d_chunk = 0;
+
+    curl::unset_error_buffer(d_handle);
+
+}
+
+#else
+
 dmrpp_easy_handle::dmrpp_easy_handle() : d_request_headers(0) {
     d_handle = curl_easy_init();
     if (!d_handle) throw BESInternalError("Could not allocate CURL handle", __FILE__, __LINE__);
@@ -249,12 +309,43 @@ dmrpp_easy_handle::dmrpp_easy_handle() : d_request_headers(0) {
     d_url = "";
     d_chunk = 0;
 }
+#endif
 
 dmrpp_easy_handle::~dmrpp_easy_handle() {
     if (d_handle) curl_easy_cleanup(d_handle);
     if (d_request_headers) curl_slist_free_all(d_request_headers);
 }
 
+#if NEW_WAY
+/**
+ * @brief This is the read_data() method for serial transfers.
+ *
+ * See below for the code used for parallel transfers. Note that
+ * this code is also used for the pthreads parallel transfers.
+ */
+void dmrpp_easy_handle::read_data() {
+    // Treat HTTP/S requests specially; retry some kinds of failures.
+    if (d_url.find("https://") == 0 || d_url.find("http://") == 0) {
+
+        curl::super_easy_perform(d_handle);
+
+        // FIXME I think this should only happen in the destructor in order
+        //  to insure that retrying the dmrpp_easy_handle doesn't meet with the troubles.
+        //curl_slist_free_all(d_request_headers);
+        //d_request_headers = 0;
+    }
+    else {
+        CURLcode curl_code = curl_easy_perform(d_handle);
+        if (CURLE_OK != curl_code) {
+            string msg = prolog + "ERROR - Data transfer error: ";
+            throw BESInternalError(msg.append(curl::error_message(curl_code, d_errbuf)),
+                                   __FILE__, __LINE__);
+        }
+    }
+    d_chunk->set_is_read(true);
+}
+
+#else
 /**
  * @brief This is the read_data() method for serial transfers.
  *
@@ -314,6 +405,7 @@ void dmrpp_easy_handle::read_data() {
     }
     d_chunk->set_is_read(true);
 }
+#endif
 
 /**
  * The implementation of the dmrpp_multi_handle field. It can be either
@@ -459,7 +551,7 @@ void dmrpp_multi_handle::read_data() {
                 // returned CURLE_OK, that the transfer worked. jhrg 5/1/18
                 if (deh->d_url.find("http://") == 0 || deh->d_url.find("https://") == 0) {
                     bool success;
-                    success = curl::eval_http_get_response(eh, deh->d_url);
+                    success = curl::eval_http_get_response(eh, deh->d_errbuf, deh->d_url);
                     if (!success) {
                         stringstream msg;
                         msg <<  prolog << "ERROR - Data transfer error: " << curl::error_message(res,deh->d_errbuf) << endl;
@@ -726,6 +818,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
                         __FILE__, __LINE__);
             handle->d_request_headers = temp;
 
+            // handle->d_request_headers = curl::add_auth_headers(handle->d_request_headers);
 
             res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPHEADER, handle->d_request_headers);
             curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HTTPHEADER", handle->d_errbuf, __FILE__, __LINE__);

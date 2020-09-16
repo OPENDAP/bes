@@ -40,7 +40,6 @@ namespace curl {
 
 
     void http_get_and_write_resource(const std::string &url,
-                                     const std::vector<std::string> &http_request_headers,
                                      const int fd,
                                      std::vector<std::string> *http_response_headers);
 
@@ -65,6 +64,12 @@ namespace curl {
                const struct curl_slist *http_request_headers,
                std::vector<std::string> *resp_hdrs );
 
+    CURL *init(CURL *ceh,
+               const std::string &target_url,
+               const struct curl_slist *http_request_headers,
+               std::vector<std::string> *http_response_hdrs
+    );
+
     bool configure_curl_handle_for_proxy(CURL *ceh, const std::string &url);
 
     void set_error_buffer(CURL *ceh, char *error_buffer);
@@ -86,7 +91,9 @@ namespace curl {
             char *error_buffer,
             unsigned int attempt );
 
-    void curl_super_easy_perform(CURL *ceh);
+    bool eval_http_get_response(CURL *ceh, char *error_buffer, const std::string &requested_url);
+
+    void super_easy_perform(CURL *ceh);
 
     std::string get_effective_url(CURL *ceh, std::string requested_url);
 
@@ -98,9 +105,10 @@ namespace curl {
 
     size_t c_write_data(void *buffer, size_t size, size_t nmemb, void *data);
 
-    bool eval_http_get_response(CURL *ceh, const std::string &requested_url);
 
     void read_data(CURL *c_handle);
+
+    curl_slist *add_auth_headers(struct curl_slist *request_headers);
 
 
 } // namespace curl
