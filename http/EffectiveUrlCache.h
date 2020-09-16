@@ -61,7 +61,7 @@ private:
 
     EffectiveUrlCache();
 
-    ~EffectiveUrlCache() override;
+    virtual ~EffectiveUrlCache();
 
 public:
 
@@ -71,7 +71,7 @@ public:
     http::url *get_effective_url(const std::string &source_url);
     http::url *get_effective_url(const std::string &source_url, BESRegex *skip_regex);
 
-    void dump(std::ostream &strm) const override;
+    virtual void dump(std::ostream &strm) const;
 
 };
 
