@@ -78,15 +78,10 @@ private:
     virtual void read_chunks_serial();
 #endif
 
-    unsigned long long get_chunk_start(const dimension &thisDim, unsigned int chunk_origin_for_dim);
-
-    Chunk *find_needed_chunks(unsigned int dim, std::vector<unsigned int> *target_element_address, Chunk *chunk);
-
-    void insert_chunk(unsigned int dim, std::vector<unsigned int> *target_element_address,
-                      std::vector<unsigned int> *chunk_element_address,
-                      Chunk *chunk, const vector<unsigned int> &constrained_array_shape);
-
-    void read_chunks();
+    // Called from read_chunks_unconstrained() and also using pthreads
+    friend void
+    process_one_chunk_unconstrained(Chunk *chunk, DmrppArray *array, const vector<unsigned int> &array_shape,
+                                    const vector<unsigned int> &chunk_shape);
 
     void insert_chunk_unconstrained(Chunk *chunk, unsigned int dim,
                                     unsigned long long array_offset, const std::vector<unsigned int> &array_shape,
@@ -95,13 +90,18 @@ private:
 
     void read_chunks_unconstrained();
 
-    // Called from read_chunks_unconstrained() and also using pthreads
-    friend void
-    process_one_chunk_unconstrained(Chunk *chunk, DmrppArray *array, const vector<unsigned int> &array_shape,
-                                    const vector<unsigned int> &chunk_shape);
+    unsigned long long get_chunk_start(const dimension &thisDim, unsigned int chunk_origin_for_dim);
+
+    Chunk *find_needed_chunks(unsigned int dim, std::vector<unsigned int> *target_element_address, Chunk *chunk);
+
+    void insert_chunk(unsigned int dim, std::vector<unsigned int> *target_element_address,
+                      std::vector<unsigned int> *chunk_element_address,
+                      Chunk *chunk, const vector<unsigned int> &constrained_array_shape);
 
     // Called from read_chunks()
     friend void process_one_chunk(Chunk *chunk, DmrppArray *array, const vector<unsigned int> &constrained_array_shape);
+
+    void read_chunks();
 
 public:
     DmrppArray(const std::string &n, libdap::BaseType *v);

@@ -684,8 +684,8 @@ void process_one_chunk_unconstrained(Chunk *chunk, DmrppArray *array, const vect
 void DmrppArray::read_chunks_unconstrained()
 {
     vector<Chunk> &chunk_refs = get_chunks();
-    if (chunk_refs.size() == 0)
-        throw BESInternalError(string("Expected one or more chunks for variable ") + name(), __FILE__, __LINE__);
+    if (chunk_refs.size() < 2)
+        throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
 
     reserve_value_capacity(get_size());
 
@@ -1069,8 +1069,8 @@ void process_one_chunk(Chunk *chunk, DmrppArray *array, const vector<unsigned in
 void DmrppArray::read_chunks()
 {
     vector<Chunk> &chunk_refs = get_chunks();
-    if (chunk_refs.size() == 0)
-        throw BESInternalError(string("Expected one or more chunks for variable ") + name(), __FILE__, __LINE__);
+    if (chunk_refs.size() < 2)
+        throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
 
     // Find all the chunks to read. I used a queue to preserve the chunk order, which
     // made using a debugger easier. However, order does not matter, AFAIK.
@@ -1086,7 +1086,7 @@ void DmrppArray::read_chunks()
     }
 
     reserve_value_capacity(get_size(true));
-    vector<unsigned int> constrained_array_shape = get_shape(true);
+    vector<unsigned int> array_shape = get_shape(true);
 
     BESDEBUG(dmrpp_3, "d_use_parallel_transfers: " << DmrppRequestHandler::d_use_parallel_transfers << endl);
     BESDEBUG(dmrpp_3, "d_max_parallel_transfers: " << DmrppRequestHandler::d_max_parallel_transfers << endl);
@@ -1098,19 +1098,23 @@ void DmrppArray::read_chunks()
             Chunk *chunk = chunks_to_read.front();
             chunks_to_read.pop();
 
-            process_one_chunk(chunk, this, constrained_array_shape);
+            process_one_chunk(chunk, this, array_shape);
         }
     }
     else {
+#if 0
         // temporary version
         while (chunks_to_read.size() > 0) {
             Chunk *chunk = chunks_to_read.front();
             chunks_to_read.pop();
 
-            process_one_chunk(chunk, this, constrained_array_shape);
+            process_one_chunk(chunk, this, array_shape);
         }
-#if 0
-        // Potential parallel version based on read_chunks_unconstrained()
+#endif
+        // Parallel version based on read_chunks_unconstrained(). There is
+        // substantial duplication of the code in read_chunks_unconstrained(), but
+        // wait to remove that when we move to C++11 which has threads integrated.
+
         // This pipe is used by the child threads to indicate completion
         int fds[2];
         if (pipe(fds) < 0)
@@ -1129,15 +1133,14 @@ void DmrppArray::read_chunks()
                 chunks_to_read.pop();
 
                 // thread number is 'i'
-                one_chunk_unconstrained_args *args = new one_chunk_unconstrained_args(fds, i, chunk, this, array_shape,
-                                                                                      chunk_shape);
-                int status = pthread_create(&threads[i], NULL, dmrpp::one_chunk_unconstrained_thread, (void *)args);
+                one_chunk_args *args = new one_chunk_args(fds, i, chunk, this, array_shape);
+                int status = pthread_create(&threads[i], NULL, dmrpp::one_chunk_thread, (void *)args);
                 if (0 == status) {
                     ++num_threads;
                     BESDEBUG(dmrpp_3, "started thread: " << i << endl);
                 }
                 else {
-                    ostringstream oss("Could not start process_one_chunk_unconstrained thread for chunk ", ios::ate);
+                    ostringstream oss("Could not start thread for chunk ", ios::ate);
                     oss << i << ": " << strerror(status);
                     BESDEBUG(dmrpp_3, oss.str());
                     throw BESInternalError(oss.str(), __FILE__, __LINE__);
@@ -1179,9 +1182,8 @@ void DmrppArray::read_chunks()
                     chunks_to_read.pop();
 
                     // thread number is 'tid,' the number of the thread that just completed
-                    one_chunk_unconstrained_args *args = new one_chunk_unconstrained_args(fds, tid, chunk, this,
-                                                                                          array_shape, chunk_shape);
-                    status = pthread_create(&threads[tid], NULL, dmrpp::one_chunk_unconstrained_thread, (void *) args);
+                    one_chunk_args *args = new one_chunk_args(fds, tid, chunk, this, array_shape);
+                    status = pthread_create(&threads[tid], NULL, dmrpp::one_chunk_thread, (void *)args);
                     if (status != 0) {
                         ostringstream oss("Could not start thread for chunk ", ios::ate);
                         oss << tid << ": " << strerror(status);
@@ -1206,76 +1208,7 @@ void DmrppArray::read_chunks()
             // re-throw the exception
             throw;
         }
-
-#endif
     }
-
-#if 0
-    if (!DmrppRequestHandler::d_use_parallel_transfers || !have_curl_multi_api) {
-        // This version is the 'serial' version of the code. It reads a chunk, inserts it,
-        // reads the next one, and so on.
-        while (chunks_to_read.size() > 0) {
-            Chunk *chunk = chunks_to_read.front();
-            chunks_to_read.pop();
-
-            BESDEBUG(dmrpp_3, "Reading: " << chunk->to_string() << endl);
-            chunk->read_chunk();
-
-            chunk->inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(),
-                                 var()->width());
-
-            vector<unsigned int> target_element_address = chunk->get_position_in_array();
-            vector<unsigned int> chunk_source_address(dimensions(), 0);
-
-            BESDEBUG(dmrpp_3, "Inserting: " << chunk->to_string() << endl);
-            insert_chunk(0 /* dimension */, &target_element_address, &chunk_source_address, chunk,
-                         constrained_array_shape);
-        }
-    }
-    else {
-        // This is the parallel version of the code. It reads a set of chunks in parallel
-        // using the multi curl API, then inserts them, then reads the next set, ... jhrg 5/1/18
-        unsigned int max_handles = DmrppRequestHandler::curl_handle_pool->get_max_handles();
-        dmrpp_multi_handle *mhandle = DmrppRequestHandler::curl_handle_pool->get_multi_handle();
-
-        // Look only at the chunks we need, found above. jhrg 4/30/18
-        while (chunks_to_read.size() > 0) {
-            queue<Chunk *> chunks_to_insert;
-            for (unsigned int i = 0; i < max_handles && chunks_to_read.size() > 0; ++i) {
-                Chunk *chunk = chunks_to_read.front();
-                chunks_to_read.pop();
-
-                chunk->set_rbuf_to_size();
-                dmrpp_easy_handle *handle = DmrppRequestHandler::curl_handle_pool->get_easy_handle(chunk);
-                if (!handle) {
-                    throw BESInternalError("No more libcurl handles.", __FILE__, __LINE__);
-                }
-
-                BESDEBUG(dmrpp_3, "Queuing: " << chunk->to_string() << endl);
-                mhandle->add_easy_handle(handle);
-
-                chunks_to_insert.push(chunk);
-            }
-
-            mhandle->read_data(); // read, then remove the easy_handles
-
-            while (chunks_to_insert.size() > 0) {
-                Chunk *chunk = chunks_to_insert.front();
-                chunks_to_insert.pop();
-
-                chunk->inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(),
-                                     var()->width());
-
-                vector<unsigned int> target_element_address = chunk->get_position_in_array();
-                vector<unsigned int> chunk_source_address(dimensions(), 0);
-
-                BESDEBUG(dmrpp_3, "Inserting: " << chunk->to_string() << endl);
-                insert_chunk(0 /* dimension */, &target_element_address, &chunk_source_address, chunk,
-                             constrained_array_shape);
-            }
-        }
-    }
-#endif
 
     set_read_p(true);
 }
