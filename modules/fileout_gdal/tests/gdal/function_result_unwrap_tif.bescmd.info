@@ -1,0 +1,25 @@
+Driver: GTiff/GeoTIFF
+Files: stdout
+Size is 180, 90
+Coordinate System is:
+GEOGCS["WGS 84",
+    DATUM["WGS_1984",
+        SPHEROID["WGS 84",6378137,298.257223563,
+            AUTHORITY["EPSG","7030"]],
+        AUTHORITY["EPSG","6326"]],
+    PRIMEM["Greenwich",0],
+    UNIT["degree",0.0174532925199433],
+    AUTHORITY["EPSG","4326"]]
+Origin = (21.000000000000000,89.000000000000000)
+Pixel Size = (1.988888888888889,-1.977777777777778)
+Metadata:
+  AREA_OR_POINT=Area
+Image Structure Metadata:
+  INTERLEAVE=BAND
+Corner Coordinates:
+Upper Left  (  21.0000000,  89.0000000) ( 21d 0' 0.00"E, 89d 0' 0.00"N)
+Lower Left  (  21.0000000, -89.0000000) ( 21d 0' 0.00"E, 89d 0' 0.00"S)
+Upper Right (     379.000,      89.000) (Invalid angle, 89d 0' 0.00"N)
+Lower Right (     379.000,     -89.000) (Invalid angle, 89d 0' 0.00"S)
+Center      (     200.000,       0.000) (200d 0' 0.00"E,  0d 0' 0.01"N)
+Band 1 Block=180x45 Type=Byte, ColorInterp=Gray

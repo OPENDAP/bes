@@ -344,16 +344,16 @@ dnl E.G.: AT_...(mybescmd, tif, xfail)
 dnl and expects the baseline to be mybescmd.tif
 dnl
 
-m4_define([AT_BESCMD_BINARY_FILE_RESPONSE_TEST],
-    [_AT_BESCMD_BINARY_FILE_RESPONSE_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.$2], [$3])]
-)
+dnl m4_define([AT_BESCMD_BINARY_FILE_RESPONSE_TEST],
+dnl     [_AT_BESCMD_BINARY_FILE_RESPONSE_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.$2], [$3])]
+dnl )
 
 dnl Use this to test responses from handlers that build files like jpeg2000,
 dnl geoTIFF, etc.
 dnl
 dnl jhrg 2016
 
-m4_define([AT_BESCMD_BINARY_FILE_RESPONSE_TEST], [dnl
+m4_define([AT_BESCMD_GDAL_BINARY_FILE_RESPONSE_TEST], [dnl
 
     AT_SETUP([$1])
     AT_KEYWORDS([file])
@@ -367,11 +367,14 @@ m4_define([AT_BESCMD_BINARY_FILE_RESPONSE_TEST], [dnl
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
         AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input], [], [stdout])
+        GET_GDAL_INFO([stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
         AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input], [], [stdout])
-        AT_CHECK([cmp $baseline stdout])
+        dnl AT_CHECK([cmp $baseline stdout])
+        GET_GDAL_INFO([stdout])
+        AT_CHECK([diff $baseline stdout])
         AT_XFAIL_IF([test expected = xfail])
         ])
 
@@ -449,5 +452,11 @@ dnl jhrg 8/1/18
  
 m4_define([PRINT_DAP4_DATA_RESPONSE], [dnl
     getdap4 -D -M -s $1 > $1.txt
+    mv $1.txt $1
+])
+
+m4_define([GET_GDAL_INFO], [dnl
+    gdalinfo $1 > $1.txt
+    AS_IF([test -z "$at_verbose"], [echo "gdalinfo: $1.txt"; more $1.txt])
     mv $1.txt $1
 ])
