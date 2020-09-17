@@ -616,21 +616,26 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
 
                         case dods_str_c:
                             if (H5Tis_variable_str(dtypeid) > 0) {
-                                vector<string>finstrval;
-                                finstrval.resize(1);
-                                read_vlen_string(dataset,1,NULL,NULL,NULL,finstrval);
-                                string strval = finstrval[0];
-                                //set_value(strval);
+                                vector<string> finstrval = {""};   // passed by reference to read_vlen_string
+                                read_vlen_string(dataset, 1, NULL, NULL, NULL, finstrval);
+                                btp->set_value(finstrval, finstrval.size());
                                 btp->set_read_p(true);
-                                btp->val2buf(reinterpret_cast<void *>(&strval[0]));
                             } else {
-                                values.resize(dsize+1);
+                                // For this case, the Array is really a single string - check for that
+                                // with the following assert - but is an Array because the string data
+                                // is stored as an array of chars (hello, FORTRAN). Read the chars, make
+                                // a string and load that into a vector<string> (which will be a vector
+                                // of length one). Set that as the value of the Array. Really, this
+                                // value could be stored as a scalar, but that's complicated and client
+                                // software might be expecting an array, so better to handle it this way.
+                                // jhrg 9/17/20
+                                assert(btp->length() == 1);
+                                values.resize(memRequired);
                                 get_data(dataset, reinterpret_cast<void *>(&values[0]));
-                                string str(values.begin(),values.end());
-                                //set_value(str);
-                                //btp->set_read_p(true);
-                                //btp->val2buf(reinterpret_cast<void *>(&str[0]));
-
+                                string str(values.begin(), values.end());
+                                vector<string> strings = {str};
+                                btp->set_value(strings, strings.size());
+                                btp->set_read_p(true);
                             }
                             break;
 

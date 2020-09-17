@@ -1406,7 +1406,7 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
     if (DmrppCommon::d_print_chunks && get_immutable_chunks().size() > 0) print_chunks_element(xml, DmrppCommon::d_ns_prefix);
 
     if (DmrppCommon::d_print_chunks && is_compact_layout() && read_p()) {
-        u_int8_t *values;
+        u_int8_t *values = 0;
         u_int8_t width = buf2val(reinterpret_cast<void**>(&values));
         std::string encoded = base64::Base64::encode(values,width);
         print_compact_element( xml, DmrppCommon::d_ns_prefix, encoded);
