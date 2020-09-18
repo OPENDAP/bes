@@ -17,10 +17,10 @@ Metadata:
 Image Structure Metadata:
   INTERLEAVE=PIXEL
 Corner Coordinates:
-Upper Left  (  21.0000000,  89.0000000) ( 21d 0' 0.00"E, 89d 0' 0.00"N)
-Lower Left  (  21.0000000, -89.0000000) ( 21d 0' 0.00"E, 89d 0' 0.00"S)
-Upper Right (     379.000,      89.000) (Invalid angle, 89d 0' 0.00"N)
-Lower Right (     379.000,     -89.000) (Invalid angle, 89d 0' 0.00"S)
-Center      (     200.000,       0.000) (200d 0' 0.00"E,  0d 0' 0.01"N)
+Upper Left  (  21.0000000,  89.0000000) 
+Lower Left  (  21.0000000, -89.0000000) 
+Upper Right (     379.000,      89.000) 
+Lower Right (     379.000,     -89.000) 
+Center      (     200.000,       0.000) 
 Band 1 Block=180x22 Type=Byte, ColorInterp=Gray
 Band 2 Block=180x22 Type=Byte, ColorInterp=Undefined
