@@ -141,7 +141,8 @@ void EffectiveUrlCache::dump(ostream &strm) const
 {
     strm << BESIndent::LMarg << prolog << "(this: " << (void *) this << ")" << endl;
     BESIndent::Indent();
-    if (d_effective_urls.size()) {
+    strm << BESIndent::LMarg << "d_skip_regex: " << (d_skip_regex?d_skip_regex->pattern():"WAS NOT SET") << endl;
+    if (!d_effective_urls.empty()) {
         strm << BESIndent::LMarg << "effective url list:" << endl;
         BESIndent::Indent();
         map<string , http::url *>::const_iterator it;
@@ -151,7 +152,7 @@ void EffectiveUrlCache::dump(ostream &strm) const
         BESIndent::UnIndent();
     }
     else {
-        strm << BESIndent::LMarg << "effective url list: empty" << endl;
+        strm << BESIndent::LMarg << "effective url list: EMPTY" << endl;
     }
     BESIndent::UnIndent();
 }
@@ -172,12 +173,13 @@ void EffectiveUrlCache::add(const std::string &source_url, http::url *effective_
  * @param source_url
  */
 http::url *EffectiveUrlCache::get(const std::string  &source_url){
+    http::url *effective_url=NULL;
     std::map<std::string, http::url *>::iterator it;
     it = d_effective_urls.find(source_url);
     if(it!=d_effective_urls.end()){
-        return (*it).second;
+        effective_url = (*it).second;
     }
-    return NULL;
+    return effective_url;
 }
 
 
@@ -187,14 +189,15 @@ http::url *EffectiveUrlCache::get(const std::string  &source_url){
 
 
 /**
- * Get's the get_cache_effective_urls_skip_regex() (or NULL if not configured)
- * and then calls cache_effective_url(source_url, skip_regex);
+ * Retrieves the skip regex (possibly NULL if not configured)
+ * and then calls get_effective_url(source_url, skip_regex);
  *
  * @param source_url
+ * @returns The effective URL
  */
-void EffectiveUrlCache::cache_effective_url(const string &source_url) {
-    BESRegex *bes_regex = get_cache_effective_urls_skip_regex();
-    cache_effective_url(source_url, bes_regex);
+http::url *EffectiveUrlCache::get_effective_url(const string &source_url) {
+    BESRegex *bes_regex = get_skip_regex();
+    return get_effective_url(source_url, bes_regex);
 }
 
 
@@ -203,57 +206,69 @@ void EffectiveUrlCache::cache_effective_url(const string &source_url) {
  * skip_regex then it will not be cached.
  *
  * @param source_url
- */
-void EffectiveUrlCache::cache_effective_url(const string &source_url, BESRegex *skip_regex)
+ * @returns The effective URL
+*/
+http::url *EffectiveUrlCache::get_effective_url(const string &source_url, BESRegex *skip_regex)
 {
     BESDEBUG(MODULE, prolog << "BEGIN url: " << source_url << endl);
 
-    size_t match_length=0;
+    http::url *effective_url = NULL;
 
-    // if it's not an HTTP url there is nothing to cache.
-    if (source_url.find("http://") != 0 && source_url.find("https://") != 0) {
-        BESDEBUG(MODULE, prolog << "END Not an HTTP request, SKIPPING." << endl);
-        return;
-    }
+    if(is_enabled()){
+        size_t match_length=0;
 
-    if( skip_regex ){
-        match_length = skip_regex->match(source_url.c_str(),source_url.length());
-        if(match_length == source_url.length() ){
-            BESDEBUG(MODULE, prolog << "END Candidate url matches the "
-                                       "no_redirects_regex_pattern [" << skip_regex->pattern() <<
-                                    "][match_length=" << match_length << "] SKIPPING." << endl);
-            return;
+        // if it's not an HTTP url there is nothing to cache.
+        if (source_url.find("http://") != 0 && source_url.find("https://") != 0) {
+            BESDEBUG(MODULE, prolog << "END Not an HTTP request, SKIPPING." << endl);
+            return NULL;
+        }
+
+        if( skip_regex ) {
+            match_length = skip_regex->match(source_url.c_str(), source_url.length());
+            if (match_length == source_url.length()) {
+                BESDEBUG(MODULE, prolog << "END Candidate url matches the "
+                                           "no_redirects_regex_pattern [" << skip_regex->pattern() <<
+                                        "][match_length=" << match_length << "] SKIPPING." << endl);
+                return NULL;
+            }
+            BESDEBUG(MODULE, prolog << "Candidate url: '" << source_url << "' does NOT match the "
+                                                                           "skip_regex pattern [" << skip_regex->pattern() << "]" << endl);
+        }
+        else {
+            BESDEBUG(MODULE, prolog << "The cache_effective_urls_skip_regex() was NOT SET "<< endl);
+        }
+
+        effective_url = get(source_url);
+
+        // See if the data_access_url has already been processed into a terminal URL
+        bool retrieve_and_cache = !effective_url; // If there's no effective_url we gotta go get it.
+        if(effective_url){
+            BESDEBUG(MODULE, prolog << "Cache hit for: " << source_url << endl);
+            retrieve_and_cache = effective_url->is_expired();
+            BESDEBUG(MODULE, prolog << "Cached target URL is " << (retrieve_and_cache?"":"not ") << "expired." << endl);
+        }
+        // It not found or expired, reload.
+        if(retrieve_and_cache){
+            BESDEBUG(MODULE, prolog << "Acquiring effective URL for  " << source_url << endl);
+
+            string effective_url_str;
+            curl::retrieve_effective_url(source_url, effective_url_str);
+            BESDEBUG(MODULE, prolog << "effective_url_str: " << effective_url_str << endl);
+
+            // Make the target URL object.
+            effective_url = new http::url(effective_url_str);
+
+            BESDEBUG(MODULE, prolog << "   source_url: " << source_url << endl);
+            BESDEBUG(MODULE, prolog << "effective_url: " << effective_url->str() << endl);
+
+            EffectiveUrlCache::TheCache()->add(source_url,effective_url);
         }
     }
-    BESDEBUG(MODULE, prolog << "Candidate url: '" << source_url << "' does NOT match the "
-                                                                   "skip_regex pattern [" << skip_regex->pattern() << "]" << endl);
-
-    http::url *effective_url = EffectiveUrlCache::TheCache()->get(source_url);
-
-    // See if the data_access_url has already been processed into a terminal signed URL
-    // in TheBESKeys
-    bool retrieve_and_cache = !effective_url; // If there's no effective_url we gotta go get it.
-    if(effective_url){
-        BESDEBUG(MODULE, prolog << "Cache hit for: " << source_url << endl);
-        retrieve_and_cache = effective_url->is_expired();
-        BESDEBUG(MODULE, prolog << "Cached target URL is " << (retrieve_and_cache?"not ":"") << "expired." << endl);
-    }
-    // It not found or expired, reload.
-    if(retrieve_and_cache){
-        BESDEBUG(MODULE, prolog << "Acquiring effective URL for  " << source_url << endl);
-        string effective_url_str;
-        curl::retrieve_effective_url(source_url, effective_url_str);
-        BESDEBUG(MODULE, prolog << "effective_url_str: " << effective_url_str << endl);
-
-        // Make the target URL object.
-        effective_url = new http::url(effective_url_str);
-
-        BESDEBUG(MODULE, prolog << "   source_url: " << source_url << endl);
-        BESDEBUG(MODULE, prolog << "effective_url: " << effective_url->str() << endl);
-
-        EffectiveUrlCache::TheCache()->add(source_url,effective_url);
+    else {
+        BESDEBUG(MODULE, prolog << "CACHE IS DISABLED." << endl);
     }
     BESDEBUG(MODULE, prolog << "END" << endl);
+    return effective_url;
 }
 
 
@@ -269,10 +284,10 @@ bool EffectiveUrlCache::is_enabled()
         bool found;
         string value;
         TheBESKeys::TheKeys()->get_value(HTTP_CACHE_EFFECTIVE_URLS_KEY,value,found);
-        BESDEBUG(MODULE, prolog << HTTP_CACHE_EFFECTIVE_URLS_KEY <<":  " << value << endl);
+        BESDEBUG(MODULE, prolog << HTTP_CACHE_EFFECTIVE_URLS_KEY <<":  '" << value << "'" << endl);
         d_enabled = found && BESUtil::lowercase(value)=="true";
     }
-    BESDEBUG(MODULE, prolog << "d_enabled: " << d_enabled << endl);
+    BESDEBUG(MODULE, prolog << "d_enabled: " << (d_enabled?"true":"false") << endl);
     return d_enabled;
 }
 
@@ -280,7 +295,7 @@ bool EffectiveUrlCache::is_enabled()
  *
  * @return
  */
-BESRegex *EffectiveUrlCache::get_cache_effective_urls_skip_regex()
+BESRegex *EffectiveUrlCache::get_skip_regex()
 {
     if(!d_skip_regex){
         bool found;

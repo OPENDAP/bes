@@ -70,7 +70,7 @@ GatewayContainer::GatewayContainer(const string &sym_name,
     if (!AllowedHosts::theHosts()->is_allowed(use_real_name)) {
         string err = (string) "The specified URL " + real_name
                 + " does not match any of the accessible services in"
-                + " the white list.";
+                + " the allowed hosts list.";
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 

@@ -567,8 +567,8 @@ public:
 
 
 
-
-    void dynamic_config_test(){
+#if DYNAMIC_CONFIG_ENABLED
+void dynamic_config_test(){
         if(debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
 
 
@@ -712,6 +712,7 @@ public:
         if(debug) cout << __func__ << END << endl;
 
     }
+#endif
 
 CPPUNIT_TEST_SUITE( keysT );
 
@@ -737,7 +738,10 @@ CPPUNIT_TEST_SUITE( keysT );
     CPPUNIT_TEST(vector_values_test);
     CPPUNIT_TEST(map_values_test);
     CPPUNIT_TEST(map_map_test);
+
+#if DYNAMIC_CONFIG_ENABLED
     CPPUNIT_TEST(dynamic_config_test);
+#endif
 
     CPPUNIT_TEST_SUITE_END();
 

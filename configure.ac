@@ -221,8 +221,9 @@ AC_SEARCH_LIBS([curl_multi_wait], [curl],
 
 dnl Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS_ONCE(fcntl.h float.h malloc.h stddef.h stdlib.h limits.h unistd.h pthread.h bzlib.h string.h strings.h)
 
+AC_CHECK_HEADERS_ONCE(fcntl.h float.h malloc.h stddef.h stdlib.h limits.h unistd.h)
+AC_CHECK_HEADERS_ONCE(pthread.h bzlib.h string.h strings.h byteswap.h)
 dnl AC_CHECK_HEADERS_ONCE([uuid/uuid.h uuid.h])
 dnl Do this because we have had a number of problems with the UUID header/library
 AC_CHECK_HEADERS([uuid/uuid.h],[found_uuid_uuid_h=true],[found_uuid_uuid_h=false])

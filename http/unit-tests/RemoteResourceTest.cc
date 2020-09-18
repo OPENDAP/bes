@@ -99,6 +99,7 @@ private:
             msg << prolog << "FAILED TO OPEN FILE: " << filename << endl;
             CPPUNIT_FAIL( msg.str());
         }
+        return "";
     }
 
     /**

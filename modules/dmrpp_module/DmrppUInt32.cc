@@ -29,6 +29,7 @@
 #include <BESError.h>
 #include <BESDebug.h>
 
+#include "byteswap_compat.h"
 #include "DmrppUInt32.h"
 
 using namespace libdap;
@@ -84,6 +85,9 @@ DmrppUInt32::read()
 
     set_value(*reinterpret_cast<dods_uint32*>(read_atomic(name())));
 
+    if ( this->twiddle_bytes() ) {
+        d_buf = bswap_32(d_buf);
+    }
     set_read_p(true);
 
     return true;

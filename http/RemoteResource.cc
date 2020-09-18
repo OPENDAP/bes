@@ -58,6 +58,71 @@ using namespace std;
 
 namespace http {
 
+
+
+    RemoteResource::RemoteResource(const std::string &url,const std::string &uid){
+        d_fd = 0;
+        d_initialized = false;
+
+        d_uid = uid;
+
+        d_resourceCacheFileName.clear();
+        d_response_headers = new vector<string>();
+        d_http_response_headers = new map<string, string>();
+
+        if (url.empty()) {
+            throw BESInternalError(prolog + "Remote resource URL is empty.", __FILE__, __LINE__);
+        }
+
+        if(url.find(FILE_PROTOCOL) == 0){
+            d_resourceCacheFileName = url.substr(strlen(FILE_PROTOCOL));
+            while(BESUtil::endsWith(d_resourceCacheFileName,"/")){
+                // Strip trailing slashes, because this about files, not directories
+                d_resourceCacheFileName = d_resourceCacheFileName.substr(0,d_resourceCacheFileName.length()-1);
+            }
+            // Now we check that the data is in the BES_CATALOG_ROOT
+            string catalog_root;
+            bool found;
+            TheBESKeys::TheKeys()->get_value(BES_CATALOG_ROOT_KEY,catalog_root,found );
+            if(!found){
+                throw BESInternalError( prolog + "ERROR - "+ BES_CATALOG_ROOT_KEY + "is not set",__FILE__,__LINE__);
+            }
+            if(d_resourceCacheFileName.find(catalog_root) !=0 ){
+                d_resourceCacheFileName = BESUtil::pathConcat(catalog_root,d_resourceCacheFileName);
+            }
+            d_initialized =true;
+        }
+        else if(url.find(HTTPS_PROTOCOL) == 0  || url.find(HTTP_PROTOCOL) == 0){
+            d_remoteResourceUrl = url;
+            BESDEBUG(MODULE, prolog << "URL: " << d_remoteResourceUrl << endl);
+#if 0
+
+            if (!d_uid.empty()){
+                string client_id_hdr = "User-Id: " + d_uid;
+                BESDEBUG(MODULE, prolog << client_id_hdr << endl);
+                d_request_headers.push_back(client_id_hdr);
+            }
+            if (!d_echo_token.empty()){
+                string echo_token_hdr = "Echo-Token: " + d_echo_token;
+                BESDEBUG(MODULE, prolog << echo_token_hdr << endl);
+                d_request_headers.push_back(echo_token_hdr);
+            }
+#endif
+
+        }
+        else {
+            string err = prolog + "Unsupported protocol: " + url;
+            throw BESInternalError(err, __FILE__, __LINE__);
+        }
+
+
+
+        // BESDEBUG(MODULE, prolog << "d_curl: " << d_curl << endl);
+
+    }
+
+
+#if 0
     /**
      * Builds a RemoteHttpResource object associated with the passed url parameter.
      *
@@ -71,7 +136,7 @@ namespace http {
         d_uid = uid;
         d_echo_token = echo_token;
 
-        d_curl = curl::init(d_error_buffer);
+        // d_curl = curl::init(url);
 
         d_resourceCacheFileName.clear();
         d_response_headers = new vector<string>();
@@ -114,7 +179,6 @@ namespace http {
                 BESDEBUG(MODULE, prolog << echo_token_hdr << endl);
                 d_request_headers->push_back(echo_token_hdr);
             }
-            curl::configureProxy(d_curl, d_remoteResourceUrl); // Configure the a proxy for this url (if appropriate).
         }
         else {
             string err = prolog + "Unsupported protocol: " + url;
@@ -123,8 +187,10 @@ namespace http {
 
 
 
-        BESDEBUG(MODULE, prolog << "d_curl: " << d_curl << endl);
+        // BESDEBUG(MODULE, prolog << "d_curl: " << d_curl << endl);
     }
+#endif
+
 
     /**
      * Releases any memory resources and also any existing cache file locks for the cached resource.
@@ -137,9 +203,6 @@ namespace http {
         d_response_headers = 0;
         BESDEBUG(MODULE, prolog << "Deleted d_response_headers." << endl);
 
-        delete d_request_headers;
-        d_request_headers = 0;
-        BESDEBUG(MODULE, prolog << "Deleted d_request_headers." << endl);
 
         if (!d_resourceCacheFileName.empty()) {
             HttpCache *cache = HttpCache::get_instance();
@@ -150,12 +213,13 @@ namespace http {
             }
         }
 
+#if 0
         if (d_curl) {
             curl_easy_cleanup(d_curl);
             BESDEBUG(MODULE, prolog << "Called curl_easy_cleanup()." << endl);
         }
         d_curl = 0;
-
+#endif
         BESDEBUG(MODULE, prolog << "Clearing resourceURL: " << d_remoteResourceUrl << endl);
         d_remoteResourceUrl.clear();
         BESDEBUG(MODULE, prolog << "END" << endl);
@@ -369,8 +433,7 @@ namespace http {
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
         try {
             BESDEBUG(MODULE, prolog << "Saving resource " << d_remoteResourceUrl << " to cache file " << d_resourceCacheFileName << endl);
-            curl::read_url(d_curl, d_remoteResourceUrl, fd, d_response_headers,
-                            d_request_headers); // Throws BESInternalError if there is a curl error.
+            curl::http_get_and_write_resource(d_remoteResourceUrl, fd, d_response_headers); // Throws BESInternalError if there is a curl error.
 
             BESDEBUG(MODULE,  prolog << "Resource " << d_remoteResourceUrl << " saved to cache file " << d_resourceCacheFileName << endl);
 

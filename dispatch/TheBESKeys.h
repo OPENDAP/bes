@@ -44,7 +44,7 @@
 #define DYNAMIC_CONFIG_KEY "DynamicConfig"
 #define DC_REGEX_KEY "regex"
 #define DC_CONFIG_KEY "config"
-
+#define DYNAMIC_CONFIG_ENABLED 0
 
 /** @brief mapping of key/value pairs defining different behaviors of an
  * application.
@@ -151,7 +151,7 @@ public:
     void get_values(const std::string &, std::map<std::string, std::string> &map_values,
                     const bool &case_insensitive_map_keys, bool &found);
 
-    void get_values(const std::string &, std::map<std::string, std::map<std::string, std::vector<std::string>>> &map,
+    void get_values(const std::string &, std::map<std::string, std::map<std::string, std::vector<std::string> > > &map,
                     const bool &case_insensitive_map_keys, bool &found);
 
 

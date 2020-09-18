@@ -48,10 +48,14 @@ Http.MimeTypes+=h5:application/x-hdf5
 # provides a way to define a proxy server that must be used to make the
 # remote request, and the port to use.
 
+#Http.ProxyProtocol=https
 #Http.ProxyHost=warsaw.wonderproxy.com
 #Http.ProxyPort=8080
+#Http.ProxyAuthType=basic
 #Http.ProxyUser=username
 #Http.ProxyPassword=password
 #Http.ProxyUserPW=username:password
-#Http.ProxyAuthType=basic
+#Http.NoProxy=^http:\/\/test\.opendap\.org\/.*$
+#Http.UseInternalCache=true
+
 

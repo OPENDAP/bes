@@ -345,7 +345,7 @@ void TheBESKeys::get_value(const string &s, string &val, bool &found)
         found = true;
         if ((*i).second.size() > 1) {
             string err = string("Multiple values for the key ") + s + " found, should only be one.";
-            throw BESSyntaxUserError(err, __FILE__, __LINE__);
+            throw BESInternalError(err, __FILE__, __LINE__);
         }
         if ((*i).second.size() == 1) {
             val = (*i).second[0];
@@ -571,7 +571,7 @@ void TheBESKeys::get_values(
  */
 void TheBESKeys::get_values(
         const std::string &key,
-        std::map< std::string, std::map<std::string,std::vector<std::string>>> &primary_map,
+        std::map< std::string, std::map<std::string,std::vector<std::string> > > &primary_map,
         const bool &case_insensitive_map_keys,
         bool &found){
 
@@ -641,13 +641,16 @@ bool TheBESKeys::using_dynamic_config(){
  *
  * @param name
  */
-void TheBESKeys::load_dynamic_config(const string name){
+void TheBESKeys::load_dynamic_config(const string name)
+{
+#if DYNAMIC_CONFIG_ENABLED
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
     // Clear the active keys and copy the original keys into
     // the active keys (resets the keys to 'as read from config files')
     if( d_dynamic_config_in_use ){
+        BESDEBUG(MODULE, prolog << "Unloading DynamicConfig." << endl);
         d_the_keys->clear();
         *d_the_keys = *d_the_original_keys;
         d_dynamic_config_in_use =  false;
@@ -718,7 +721,12 @@ void TheBESKeys::load_dynamic_config(const string name){
         return;
     }
 
-    LOG( "Using " << DYNAMIC_CONFIG_KEY << ":" << best_matching_config_name << " for: " << name << endl);
+    {
+        stringstream msg;
+        msg << prolog << "Using " << DYNAMIC_CONFIG_KEY << ":" << best_matching_config_name << " for: " << name << endl;
+        BESDEBUG(MODULE, msg.str());
+        LOG( msg.str());
+    }
 
     // Now load the specific keys from the dynamic config;
     map<string, vector<string>>::iterator cit;
@@ -733,5 +741,11 @@ void TheBESKeys::load_dynamic_config(const string name){
     d_dynamic_config_in_use = true;
 
     BESDEBUG(MODULE, prolog << "END" << endl);
+#endif
+
+    if(BESDebug::IsSet("bes:keys")){
+        dump(*BESDebug::GetStrm());
+    }
+
 }
 

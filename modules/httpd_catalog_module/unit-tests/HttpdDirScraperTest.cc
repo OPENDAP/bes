@@ -148,7 +148,7 @@ public:
 
         TheBESKeys::ConfigFile = bes_conf;
 
-        if (bes_debug) BESDebug::SetUp(string("cerr,").append(MODULE));
+        if (bes_debug) BESDebug::SetUp(string("cerr,http,").append(MODULE));
 
         if (bes_debug) show_file(bes_conf);
 

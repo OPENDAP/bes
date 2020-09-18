@@ -786,7 +786,10 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
             parser->dmrpp_dataset_href = parser->get_attribute_val("href", attributes, nb_attributes);
             if(EffectiveUrlCache::TheCache()->is_enabled()){
                 BESDEBUG(PARSER, prolog << "Attempting to locate and cache the effective URL for Dataset URL: " << parser->dmrpp_dataset_href << endl);
-                EffectiveUrlCache::TheCache()->cache_effective_url(parser->dmrpp_dataset_href);
+                http::url *effective_url = EffectiveUrlCache::TheCache()->get_effective_url(parser->dmrpp_dataset_href);
+
+                BESDEBUG(PARSER, prolog << "EffectiveUrlCache::get_effective_url() returned: "
+                << (effective_url?effective_url->str():"NULL") << endl);
             }
         }
         BESDEBUG(PARSER, prolog << "Dataset dmrpp:href is set to '" << parser->dmrpp_dataset_href << "'" << endl);
@@ -978,6 +981,17 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 BESDEBUG(PARSER, prolog << "There was no 'compressionType' attribute associated with the variable '"
                     << bt->type_name() << " " << bt->name() << "'" << endl);
             }
+
+            if (parser->check_attribute("byteOrder", attributes, nb_attributes)) {
+                string byte_order_string(parser->get_attribute_val("byteOrder", attributes, nb_attributes));
+                dc->ingest_byte_order(byte_order_string);
+
+                BESDEBUG(PARSER, prolog << "Processed attribute 'byteOrder=\"" << byte_order_string << "\"'" << endl);
+            }
+            else {
+                BESDEBUG(PARSER, prolog << "There was no 'byteOrder' attribute associated with the variable '" << bt->type_name()
+                         << " " << bt->name() << "'" << endl);
+            }
         }
         // Ingest an dmrpp:chunk element and its attributes
         else if (strcmp(localname, "chunk") == 0) {
@@ -996,7 +1010,9 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 // may be unique to this chunk.
                 if(EffectiveUrlCache::TheCache()->is_enabled()){
                     BESDEBUG(PARSER, prolog << "Attempting to locate and cache the effective URL for Chunk URL: " << parser->dmrpp_dataset_href << endl);
-                    EffectiveUrlCache::TheCache()->cache_effective_url(data_url);
+                    http::url *effective_url = EffectiveUrlCache::TheCache()->get_effective_url(data_url);
+                    BESDEBUG(PARSER, prolog << "EffectiveUrlCache::get_effective_url() returned: "
+                                            << (effective_url?effective_url->str():"NULL") << endl);
                 }
             }
             else {
@@ -1043,6 +1059,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
             unsigned long long offset = 0;
             unsigned long long size = 0;
             string chunk_position_in_array("");
+            std::string byte_order = dc->get_byte_order();
 
             if (parser->check_required_attribute("offset", attributes, nb_attributes)) {
                 istringstream offset_ss(parser->get_attribute_val("offset", attributes, nb_attributes));
@@ -1071,7 +1088,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 BESDEBUG(PARSER, prolog << "No attribute 'chunkPositionInArray' located" << endl);
             }
 
-            dc->add_chunk(data_url, size, offset, chunk_position_in_array);
+            dc->add_chunk(data_url, byte_order, size, offset, chunk_position_in_array);
         }
     }
         break;

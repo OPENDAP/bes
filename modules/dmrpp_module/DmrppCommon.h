@@ -30,7 +30,11 @@
 
 //#include <H5Ppublic.h>
 
+#include "dods-datatypes.h"
 #include "Chunk.h"
+
+#include "config.h"
+#include "byteswap_compat.h"
 
 namespace libdap {
 class DMR;
@@ -67,8 +71,10 @@ class DmrppCommon {
 private:
 	bool d_deflate;
 	bool d_shuffle;
+	std::string d_byte_order;
 	std::vector<unsigned int> d_chunk_dimension_sizes;
 	std::vector<Chunk> d_chunks;
+	bool d_twiddle_bytes;
 
 protected:
     void m_duplicate_common(const DmrppCommon &dc) {
@@ -76,6 +82,8 @@ protected:
     	d_shuffle = dc.d_shuffle;
     	d_chunk_dimension_sizes = dc.d_chunk_dimension_sizes;
     	d_chunks = dc.d_chunks;
+    	d_byte_order = dc.d_byte_order;
+    	d_twiddle_bytes = dc.d_twiddle_bytes;
     }
 
     /// @brief Returns a reference to the internal Chunk vector.
@@ -91,7 +99,7 @@ public:
     static std::string d_dmrpp_ns;       ///< The DMR++ XML namespace
     static std::string d_ns_prefix;      ///< The XML namespace prefix to use
 
-    DmrppCommon() : d_deflate(false), d_shuffle(false)
+    DmrppCommon() :  d_deflate(false), d_shuffle(false), d_byte_order(""), d_twiddle_bytes(false)
     {
     }
 
@@ -123,6 +131,9 @@ public:
     void set_shuffle(bool value) {
         d_shuffle = value;
     }
+
+    /// @brief Returns true if this object utilizes shuffle compression.
+    virtual bool twiddle_bytes() const { return d_twiddle_bytes; }
 
     /// @brief A const reference to the vector of chunks
     /// @see get_chunks()
@@ -168,11 +179,14 @@ public:
 
     virtual void ingest_compression_type(std::string compression_type_string);
 
-    virtual unsigned long add_chunk(const std::string &data_url, unsigned long long size, unsigned long long offset,
-        std::string position_in_array = "");
+    virtual void ingest_byte_order(std::string byte_order_string);
+    virtual std::string get_byte_order() const { return d_byte_order; }
 
-    virtual unsigned long add_chunk(const std::string &data_url, unsigned long long size, unsigned long long offset,
-        const std::vector<unsigned int> &position_in_array);
+    virtual unsigned long add_chunk(const std::string &data_url, const std::string &byte_order,
+            unsigned long long size, unsigned long long offset, std::string position_in_array = "");
+
+    virtual unsigned long add_chunk(const std::string &data_url, const std::string &byte_order,
+            unsigned long long size, unsigned long long offset, const std::vector<unsigned int> &position_in_array);
 
     virtual void dump(std::ostream & strm) const;
 };
