@@ -3,5 +3,5 @@ BESError
     Message: Failed to transform data to GeoTiff: GeoTiff responses can consist of two-dimensional variables only; use constraints to reduce the size of Grids as needed.
     Administrator: support@opendap.org
     Location
-        File: GeoTiffTransmitter.cc
-        Line: 242
+        removed file
+        removed line

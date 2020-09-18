@@ -433,13 +433,15 @@ dnl Given a filename, remove the <File> element of a response. Useful for testin
 dnl jhrg 10/23/19
 
 m4_define([REMOVE_ERROR_FILE], [dnl
-    sed 's@<File>[[0-9a-zA-Z/.]]*</File>@removed file@g' < $1 > $1.sed
+    sed -e 's@<File>[[0-9a-zA-Z/.]]*</File>@removed file@g' \
+        -e 's@File: *[[0-9a-zA-Z/.]]*@removed file@g' < $1 > $1.sed
     dnl '
     mv $1.sed $1
 ])
 
 m4_define([REMOVE_ERROR_LINE], [dnl
-    sed 's@<Line>[[0-9]]*</Line>@removed line@g' < $1 > $1.sed
+    sed -e 's@<Line>[[0-9]]*</Line>@removed line@g' \
+        -e 's@Line: *[[0-9]]*@removed line@g'< $1 > $1.sed
     dnl '
     mv $1.sed $1
 ])
@@ -456,10 +458,10 @@ m4_define([PRINT_DAP4_DATA_RESPONSE], [dnl
 
 dnl Filter these from the gdalinfo output since they vary by gdal version
 dnl Upper Left  (  21.0000000,  89.0000000) ( 21d 0' 0.00"E, 89d 0' 0.00"N)
+dnl sed -e 's@\(Upper\|Lower\|Center\)\+ *\(Left\|Right\)\? *\(([[0-9., ]]\+)\) *\(([[]0-9., A-Za-z]]\+)\)@\1 \2 \3 @g' -i $1.txt
 
 m4_define([GET_GDAL_INFO], [dnl
     gdalinfo $1 > $1.txt
-    sed -e 's@\(Upper\|Lower\|Center\)\+ *\(Left\|Right\)\? *\(([0-9., ]\+)\) *\(([0-9., A-Za-z]\+)\)@\1 \2 \3 @g' -i $1.txt
     AS_IF([test -z "$at_verbose"], [echo "gdalinfo: $1.txt"; more $1.txt])
     mv $1.txt $1
 ])
