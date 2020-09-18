@@ -366,15 +366,14 @@ m4_define([AT_BESCMD_GDAL_BINARY_FILE_RESPONSE_TEST], [dnl
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input], [], [stdout])
-        GET_GDAL_INFO([stdout])
-        AT_CHECK([mv stdout $baseline.tmp])
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input > tmp], [ignore], [ignore])
+        GET_GDAL_INFO([tmp])
+        AT_CHECK([mv tmp $baseline.tmp])
         ],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input], [], [stdout])
-        dnl AT_CHECK([cmp $baseline stdout])
-        GET_GDAL_INFO([stdout])
-        AT_CHECK([diff $baseline stdout])
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input > tmp], [0], [stdout])
+        GET_GDAL_INFO([tmp])
+        AT_CHECK([diff $baseline tmp])
         AT_XFAIL_IF([test expected = xfail])
         ])
 

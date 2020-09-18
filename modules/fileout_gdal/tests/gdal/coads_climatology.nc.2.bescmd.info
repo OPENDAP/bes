@@ -1,5 +1,5 @@
 Driver: JP2OpenJPEG/JPEG-2000 driver based on OpenJPEG library
-Files: stdout
+Files: tmp
 Size is 180, 90
 Coordinate System is:
 GEOGCS["WGS 84",

@@ -1,5 +1,5 @@
 Driver: GTiff/GeoTIFF
-Files: stdout
+Files: tmp
 Size is 180, 90
 Coordinate System is:
 GEOGCS["WGS 84",
