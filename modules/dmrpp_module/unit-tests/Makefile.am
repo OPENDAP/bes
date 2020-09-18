@@ -116,25 +116,26 @@ clean-local:
 # ../awsv4.o
 
 LIBADD += ../.libs/libdmrpp_module.a
+# $(OBJS)  <-- removed and used ^^
 
 ChunkTest_SOURCES = ChunkTest.cc
-ChunkTest_LDADD = $(OBJS) $(LIBADD)
+ChunkTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
 CredentialsManagerTest_SOURCES = CredentialsManagerTest.cc
-CredentialsManagerTest_LDADD = $(OBJS) $(LIBADD)
+CredentialsManagerTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
 NgapCredentialsTest_SOURCES = NgapCredentialsTest.cc
 NgapCredentialsTest_LDADD = ../AccessCredentials.o ../NgapS3Credentials.o $(LIBADD)
 
 awsv4_test_SOURCES = awsv4_test.cc
-awsv4_test_LDADD = $(OBJS) $(LIBADD)
+awsv4_test_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
 DmrppParserTest_CPPFLAGS = $(AM_CPPFLAGS) -I$(top_srcdir)/modules/hdf5_handler
 DmrppParserTest_SOURCES = DmrppParserTest.cc
-DmrppParserTest_LDADD = $(OBJS) $(LIBADD) 
+DmrppParserTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
 DmrppCommonTest_SOURCES = DmrppCommonTest.cc $(top_srcdir)/modules/read_test_baseline.cc
-DmrppCommonTest_LDADD = $(OBJS) $(LIBADD)
+DmrppCommonTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
 DmrppMetadataStoreTest_SOURCES = DmrppMetadataStoreTest.cc $(top_srcdir)/modules/read_test_baseline.cc
-DmrppMetadataStoreTest_LDADD = $(OBJS) $(LIBADD)
+DmrppMetadataStoreTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
