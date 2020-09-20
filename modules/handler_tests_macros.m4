@@ -434,14 +434,14 @@ dnl jhrg 10/23/19
 
 m4_define([REMOVE_ERROR_FILE], [dnl
     sed -e 's@<File>[[0-9a-zA-Z/.]]*</File>@removed file@g' \
-        -e 's@File: *[[0-9a-zA-Z/.]]*@removed file@g' < $1 > $1.sed
+        -e 's@File:.*@removed file@g' < $1 > $1.sed
     dnl '
     mv $1.sed $1
 ])
 
 m4_define([REMOVE_ERROR_LINE], [dnl
     sed -e 's@<Line>[[0-9]]*</Line>@removed line@g' \
-        -e 's@Line: *[[0-9]]*@removed line@g'< $1 > $1.sed
+        -e 's@Line:.*@removed line@g'< $1 > $1.sed
     dnl '
     mv $1.sed $1
 ])
