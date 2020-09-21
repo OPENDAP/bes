@@ -458,10 +458,9 @@ m4_define([PRINT_DAP4_DATA_RESPONSE], [dnl
 
 dnl Filter these from the gdalinfo output since they vary by gdal version
 dnl Upper Left  (  21.0000000,  89.0000000) ( 21d 0' 0.00"E, 89d 0' 0.00"N)
-dnl sed -e 's@\(Upper\|Lower\|Center\)\+ *\(Left\|Right\)\? *\(([[0-9., ]]\+)\) *\(([[]0-9., A-Za-z]]\+)\)@\1 \2 \3 @g' -i $1.txt
 
 m4_define([GET_GDAL_INFO], [dnl
-    gdalinfo $1 > $1.txt
+    gdalinfo $1 | sed 's@^\([[A-z ]]*(.*)\) (.*)@\1@g' > $1.txt
     AS_IF([test -z "$at_verbose"], [echo "gdalinfo: $1.txt"; more $1.txt])
     mv $1.txt $1
 ])
