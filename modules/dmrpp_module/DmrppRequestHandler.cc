@@ -55,6 +55,7 @@
 #include <BESServiceRegistry.h>
 #include <BESUtil.h>
 #include <TheBESKeys.h>
+#include <BESLog.h>
 
 #include <BESDapError.h>
 #include <BESInternalFatalError.h>
