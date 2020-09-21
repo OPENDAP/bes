@@ -5,7 +5,11 @@
 noinst_LIBRARIES = libGctp.a
 
 # Include the libGCTP include directory
-AM_CPPFLAGS=-fpic -I$(srcdir)/../include/
+AM_CPPFLAGS = -I$(srcdir)/../include/
+
+# Some of this code was translated from FORTRAN an is a little old. It
+# predates things like C99. jhrg 9/21/20
+AM_CFLAGS = -fpic -Wno-implicit-function-declaration
 
 # Library source files
 libGctp_a_SOURCES = gctp.c alberfor.c alberinv.c alconfor.c alconinv.c      \
