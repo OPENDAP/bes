@@ -1552,9 +1552,10 @@ void DmrppParserSax2::intern(istream &f, DMR *dest_dmr)
 {
     // Code example from libxml2 docs re: read from a stream.
 
-    if (!f.good()) throw Error("Input stream not open or read error");
-    if (!dest_dmr) throw InternalErr(__FILE__, __LINE__, "DMR object is null");
+    if (!f.good()) throw BESInternalError(prolog + "ERROR - Supplied istream instance not open or read error",__FILE__,__LINE__);
+    if (!dest_dmr) throw BESInternalError(prolog + "THe supplied DMR object pointer  is null", __FILE__, __LINE__);
 
+    Error foo;
     d_dmr = dest_dmr; // dump values here
 
     int line_num = 1;
@@ -1562,7 +1563,7 @@ void DmrppParserSax2::intern(istream &f, DMR *dest_dmr)
 
     // Get the XML prolog line (looks like: <?xml ... ?> )
     getline(f, line);
-    if (line.length() == 0) throw Error("No input found while parsing the DMR.");
+    if (line.length() == 0) throw BESInternalError(prolog + "ERROR - No input found when parsing the DMR++",__FILE__,__LINE__);
 
     BESDEBUG(PARSER, prolog << "line: (" << line_num << "): " << endl << line << endl << endl);
 
