@@ -1,5 +1,4 @@
-BES.ServerAdministrator=root@null.dev
-
+BES.ServerAdministrator=support@opendap.org
 BES.User=user_name
 BES.Group=group_name
 
