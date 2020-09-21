@@ -214,7 +214,7 @@ bool DmrppRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
 bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG) || BESLog::TheLog()->is_verbose()) sw.start(prolog + "timer" , dhi.data[REQUEST_ID]);
+    if (BESISDEBUG(TIMING_LOG)) sw.start(prolog + "timer" , dhi.data[REQUEST_ID]);
 
     BESDEBUG(module, "Entering dap_build_dap4data..." << endl);
 
@@ -267,7 +267,7 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
 bool DmrppRequestHandler::dap_build_dap2data(BESDataHandlerInterface & dhi)
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG) || BESLog::TheLog()->is_verbose()) sw.start(prolog + "timer" , dhi.data[REQUEST_ID]);
+    if (BESISDEBUG(TIMING_LOG)) sw.start(prolog + "timer" , dhi.data[REQUEST_ID]);
 
     BESDEBUG(module, __func__ << "() - BEGIN" << endl);
 

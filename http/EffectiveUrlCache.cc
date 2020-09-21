@@ -213,9 +213,12 @@ http::url *EffectiveUrlCache::get_effective_url(const string &source_url) {
 http::url *EffectiveUrlCache::get_effective_url(const string &source_url, BESRegex *skip_regex)
 {
     BESDEBUG(MODULE, prolog << "BEGIN url: " << source_url << endl);
-    BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG) || BESLog::TheLog()->is_verbose())
-        sw.start(prolog + "full method");
+
+#if 0
+    //BESStopWatch sw;
+    //if (BESISDEBUG(TIMING_LOG) || BESLog::TheLog()->is_verbose())
+    //    sw.start(prolog + "full method");
+#endif
 
     http::url *effective_url = NULL;
 
