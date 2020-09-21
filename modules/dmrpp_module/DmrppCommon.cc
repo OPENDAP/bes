@@ -219,7 +219,7 @@ std::string DmrppCommon::get_byte_order()
 char *
 DmrppCommon::read_atomic(const string &name)
 {
-    vector<Chunk> &chunk_refs = get_chunk_vec();
+    vector<Chunk> &chunk_refs = get_chunks();
 
     if (chunk_refs.size() != 1)
         throw BESInternalError(string("Expected only a single chunk for variable ") + name, __FILE__, __LINE__);
@@ -253,8 +253,8 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
         if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "compressionType", (const xmlChar*) compression.c_str()) < 0)
             throw BESInternalError("Could not write compression attribute.", __FILE__, __LINE__);
 
-    vector<Chunk>::iterator i = get_chunk_vec().begin();
-    if ( i != get_chunk_vec().end() ) {
+    vector<Chunk>::iterator i = get_chunks().begin();
+    if ( i != get_chunks().end() ) {
         Chunk &chunk = *i;
         std::string byteOrder = chunk.get_byte_order();
         if (!byteOrder.empty()) {
@@ -276,7 +276,7 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
     }
 
     // Start elements "chunk" with dmrpp namespace and attributes:
-    for (vector<Chunk>::iterator i = get_chunk_vec().begin(), e = get_chunk_vec().end(); i != e; ++i) {
+    for (vector<Chunk>::iterator i = get_chunks().begin(), e = get_chunks().end(); i != e; ++i) {
         Chunk &chunk = *i;
 
         if (xmlTextWriterStartElementNS(xml.get_writer(), (const xmlChar*)name_space.c_str(), (const xmlChar*) "chunk", NULL) < 0)

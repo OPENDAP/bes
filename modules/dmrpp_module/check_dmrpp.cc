@@ -116,6 +116,7 @@ cout<<"chunk_exist["<<i<<"]= "<<chunk_exist[i]<<endl;
     size_t last_missing_chunk_index = -1;
 
     // Check if there are any missing variable information.
+    // FIXME: 'i' is unsigned and thus will always be >= 0. jhrg 9/18/20
     for (size_t i =var_type.size()-1;i>=0;i--) {
         if(false == chunk_exist[i]){
             has_missing_info = true;

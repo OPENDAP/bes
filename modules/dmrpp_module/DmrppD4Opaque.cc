@@ -95,6 +95,8 @@ void DmrppD4Opaque::insert_chunk(Chunk *chunk)
     memcpy(target_buffer + chunk_origin[0], source_buffer, chunk_shape[0]);
 }
 
+#if 0
+// This is the old code based on DmrppArray. jhrg 9/15/20
 void DmrppD4Opaque::read_chunks_parallel()
 {
     vector<Chunk> &chunk_refs = get_chunk_vec();
@@ -166,7 +168,18 @@ void DmrppD4Opaque::read_chunks_parallel()
 
     set_read_p(true);
 }
+#endif
 
+void DmrppD4Opaque::read_chunks()
+{
+    for (vector<Chunk>::iterator c = get_chunks().begin(), e = get_chunks().end(); c != e; ++c) {
+        (*c).read_chunk();
+        (*c).inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(), 1 /*elem width*/);
+        insert_chunk(&(*c));
+    }
+
+    set_read_p(true);
+}
 
 /**
  * @brief Read opaque data
@@ -193,7 +206,7 @@ DmrppD4Opaque::read()
     }
     else {
         // Handle the more complex case where the data is chunked.
-        read_chunks_parallel();
+        read_chunks();
     }
 
     return true;
