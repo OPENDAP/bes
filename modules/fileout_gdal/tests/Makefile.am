@@ -5,13 +5,12 @@ noinst_DATA = bes.conf
 
 CLEANFILES = bes.conf
 
-EXTRA_DIST = $(TESTSUITE_TIF).at $(TESTSUITE_TIF) atlocal.in \
-$(TESTSUITE_JP2).at $(TESTSUITE_JP2) $(BES_CONF_IN) package.m4 gdal \
-handler_tests_macros.m4
+EXTRA_DIST = $(TESTSUITE).at $(TESTSUITE) atlocal.in \
+$(BES_CONF_IN) package.m4 gdal
 
 DISTCLEANFILES = atconfig
 
-BES_CONF_IN = bes.conf.modules.in
+BES_CONF_IN = bes.conf.in
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
@@ -25,26 +24,21 @@ bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
 
 AUTOM4TE = autom4te
 
-TESTSUITE_TIF = $(srcdir)/testsuite_tif
-TESTSUITE_JP2 = $(srcdir)/testsuite_jp2
+TESTSUITE = $(srcdir)/testsuite
 
-check-local: atconfig atlocal bes.conf $(TESTSUITE_TIF) $(TESTSUITE_JP2)
-	$(SHELL) '$(TESTSUITE_TIF)' $(TESTSUITE_TIFFLAGS)
-	test ! -f '$(TESTSUITE_JP2)' || $(SHELL) '$(TESTSUITE_JP2)' $(TESTSUITE_JP2FLAGS)
+check-local: atconfig atlocal bes.conf $(TESTSUITE)
+	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 
 clean-local:
-	test ! -f '$(TESTSUITE_TIF)' || $(SHELL) '$(TESTSUITE_TIF)' --clean
-	test ! -f '$(TESTSUITE_JP2)' || $(SHELL) '$(TESTSUITE_JP2)' --clean
-	-rm -f $(TESTSUITE_TIF) $(TESTSUITE_JP2) $(srcdir)/package.m4
+	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
+	-rm -f $(TESTSUITE) $(srcdir)/package.m4
 
-installcheck-local: $(TESTSUITE_TIF) $(TESTSUITE_JP2) atconfig atlocal
-	$(SHELL) '$(TESTSUITE_TIF)' AUTOTEST_PATH='$(bindir)' $(TESTSUITE_TIFFFLAGS)
-	$(SHELL) '$(TESTSUITE_JP2)' AUTOTEST_PATH='$(bindir)' $(TESTSUITE_JP2FLAGS)
+installcheck-local: $(TESTSUITE) atconfig atlocal
+	$(SHELL) '$(TESTSUITE)' AUTOTEST_PATH='$(bindir)' $(TESTSUITEFLAGS)
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
-$(TESTSUITE_TIF): $(TESTSUITE_TIF).at $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4
-$(TESTSUITE_JP2): $(TESTSUITE_JP2).at $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4
+$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
 
 %: %.at
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
@@ -58,5 +52,6 @@ $(srcdir)/package.m4: $(top_srcdir)/configure.ac
 	echo 'm4_define([AT_PACKAGE_VERSION],   [@PACKAGE_VERSION@])' && \
 	echo 'm4_define([AT_PACKAGE_STRING],    [@PACKAGE_STRING@])' && \
 	echo 'm4_define([AT_PACKAGE_BUGREPORT], [@PACKAGE_BUGREPORT@])'; \
+    echo 'm4_define([AT_TOP_SRCDIR], 		[@top_srcdir@])'; \
 	} >'$(srcdir)/package.m4'
 
