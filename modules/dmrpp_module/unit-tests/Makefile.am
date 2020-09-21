@@ -115,7 +115,7 @@ clean-local:
 # ../CredentialsManager.o ../AccessCredentials.o ../NgapS3Credentials.o \
 # ../awsv4.o
 
-LIBADD += ../.libs/libdmrpp_module.a
+# LIBADD += ../.libs/libdmrpp_module.a
 # $(OBJS)  <-- removed and used ^^
 
 ChunkTest_SOURCES = ChunkTest.cc
