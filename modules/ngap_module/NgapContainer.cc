@@ -34,6 +34,8 @@
 #include <streambuf>
 #include <time.h>
 
+#include "BESStopWatch.h"
+#include "BESLog.h"
 #include "BESSyntaxUserError.h"
 #include "BESNotFoundError.h"
 #include "BESInternalError.h"
@@ -219,8 +221,14 @@ namespace ngap {
                 replace_template = DATA_ACCESS_URL_KEY;
                 replace_value = data_access_url_str;
             }
-            d_dmrpp_rresource = new http::RemoteResource(dmrpp_url);
-            d_dmrpp_rresource->retrieveResource(replace_template, replace_value);
+            {
+                d_dmrpp_rresource = new http::RemoteResource(dmrpp_url);
+                BESStopWatch besTimer;
+                if(BESLog::TheLog()->is_verbose()){
+                    besTimer.start("DMR++ retrieval: "+ dmrpp_url);
+                }
+                d_dmrpp_rresource->retrieveResource(replace_template, replace_value);
+            }
         }
         BESDEBUG(MODULE, prolog << "Retrieved remote resource: " << dmrpp_url << endl);
 
