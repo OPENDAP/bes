@@ -46,7 +46,7 @@
 #include "BESDebug.h"
 #include "BESInternalError.h"
 #include "BESForbiddenError.h"
-#include "TheBESKeys.h"
+// #include "TheBESKeys.h"
 #include "AllowedHosts.h"
 
 #include "DmrppRequestHandler.h"
@@ -61,11 +61,13 @@
 #define KEEP_ALIVE 1   // Reuse libcurl easy handles (1) or not (0).
 #define CURL_VERBOSE 0  // Logs curl info to the bes.log
 
+#define prolog std::string("CurlHandlePool::").append(__func__).append("() - ")
 #define NEW_WAY 1
 
 static const int MAX_WAIT_MSECS = 30 * 1000; // Wait max. 30 seconds
+// FIXME retry_limit is not used. jhrg 9/18/20
 static const unsigned int retry_limit = 10; // Amazon's suggestion
-static const useconds_t uone_second = 1000 * 1000; // one second
+static const useconds_t uone_second = 1000 * 1000; // one second, in microseconds
 
 namespace dmrpp {
 #if HAVE_CURL_MULTI_API
@@ -78,8 +80,6 @@ const bool have_curl_multi_api = false;
 using namespace dmrpp;
 using namespace std;
 using namespace bes;
-
-#define prolog std::string("CurlHandlePool::").append(__func__).append("() - ")
 
 Lock::Lock(pthread_mutex_t &lock) : m_mutex(lock) {
     int status = pthread_mutex_lock(&m_mutex);
@@ -357,7 +357,7 @@ void dmrpp_easy_handle::read_data() {
     if (d_url.find("https://") == 0 || d_url.find("http://") == 0) {
         unsigned int tries = 0;
         bool success = true;
-        useconds_t retry_time = uone_second/4;
+        useconds_t retry_time = uone_second / 4;
         d_errbuf[0] = 0; // Initialize to empty string.
 
         // Perform the request
@@ -380,12 +380,14 @@ void dmrpp_easy_handle::read_data() {
 
             if (!success) {
                 if (tries == retry_limit) {
-                    string msg = prolog + "ERROR - Data transfer error: Number of re-tries exceeded: "+ curl::error_message(curl_code, d_errbuf);
+                    string msg = prolog + "Data transfer error: Number of re-tries exceeded: " +
+                                 curl::error_message(curl_code, d_errbuf);
                     LOG(msg << endl);
                     throw BESInternalError(msg, __FILE__, __LINE__);
                 }
                 else {
-                    LOG(prolog << "ERROR - HTTP transfer error, will retry (trial " << tries << " for: " << d_url << ")." << endl);
+                    LOG(prolog << "HTTP transfer 500 error, will retry (trial " << tries << " for: " << d_url << ")."
+                               << endl);
                     usleep(retry_time);
                     retry_time *= 2;
                 }
@@ -459,7 +461,7 @@ void dmrpp_multi_handle::remove_easy_handle(dmrpp_easy_handle *eh) {
         LOG("While cleaning up CURL multihandle during a parallel data request, could not remove a CURL handle.");
 #else
     for (vector<dmrpp_easy_handle *>::iterator i = p_impl->ehandles.begin(), e = p_impl->ehandles.end(); i != e; ++i) {
-        if (eh == *i)  {
+        if (eh == *i) {
             p_impl->ehandles.erase(i);
             break;
         }
@@ -776,8 +778,9 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
         //<< ((!netrc_file.empty()) ? netrc_file : "~/.netrc") << "'" << endl);
 
         AccessCredentials *credentials = CredentialsManager::theCM()->get(handle->d_url);
-        if (credentials && credentials->isS3Cred()) {
-            BESDEBUG(DMRPP_CURL, prolog << "Got AccessCredentials instance: " << endl << credentials->to_json() << endl);
+        if (credentials && credentials->is_s3_cred()) {
+            BESDEBUG(DMRPP_CURL,
+                     prolog << "Got AccessCredentials instance: " << endl << credentials->to_json() << endl);
             // If there are available credentials, and they are S3 credentials then we need to sign
             // the request
             const std::time_t request_time = std::time(0);

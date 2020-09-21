@@ -56,6 +56,7 @@
 #include <BESUtil.h>
 #include <BESLog.h>
 #include <TheBESKeys.h>
+#include <BESLog.h>
 
 #include <BESDapError.h>
 #include <BESInternalFatalError.h>
@@ -135,11 +136,18 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
     read_key_value("DMRPP.UseParallelTransfers", d_use_parallel_transfers);
     read_key_value("DMRPP.MaxParallelTransfers", d_max_parallel_transfers);
 
+#if !HAVE_CURL_MULTI_API
+    if (DmrppRequestHandler::d_use_parallel_transfers)
+        LOG("The DMR++ handler is configured to use parallel transfers, but the libcurl Multi API is not present, defaulting to serial transfers");
+#endif
+
     CredentialsManager::theCM()->load_credentials();
 
     if (!curl_handle_pool)
         curl_handle_pool = new CurlHandlePool();
 
+    // This and the matching cleanup function can be called many times as long as
+    // they are called in balanced pairs. jhrg 9/3/20
     curl_global_init(CURL_GLOBAL_DEFAULT);
 }
 

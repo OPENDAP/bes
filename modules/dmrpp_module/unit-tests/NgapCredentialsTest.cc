@@ -54,8 +54,7 @@
 #include "test_config.h"
 
 #include "CurlUtils.h"
-#include "../NgapS3Credentials.h"
-
+#include "NgapS3Credentials.h"
 
 
 using namespace libdap;
@@ -69,72 +68,79 @@ static bool bes_debug = false;
 namespace dmrpp {
 
 
-    class NgapCredentialsTest : public CppUnit::TestFixture {
+class NgapCredentialsTest : public CppUnit::TestFixture {
 
-    private:
-        string distribution_api_endpoint = "https://d33imu0z1ajyhj.cloudfront.net/s3credentials";
+private:
+    string distribution_api_endpoint = "https://d33imu0z1ajyhj.cloudfront.net/s3credentials";
 
-    public:
+public:
 
-        // Called once before everything gets tested
-        NgapCredentialsTest() = default;
+    // Called once before everything gets tested
+    NgapCredentialsTest() = default;
 
-        // Called at the end of the test
-        ~NgapCredentialsTest() = default;
+    // Called at the end of the test
+    ~NgapCredentialsTest() = default;
 
-        // Called before each test
-        void setUp() override {
-            if (debug) cout << endl;
-            if (bes_debug) BESDebug::SetUp("cerr,dmrpp,ngap,http,curl");
+    // Called before each test
+    void setUp() override {
+        if (debug) cout << endl;
+        if (bes_debug) BESDebug::SetUp("cerr,dmrpp,ngap,http,curl");
 
-            TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
+        TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
 
-            curl_global_init(CURL_GLOBAL_ALL);
+        curl_global_init(CURL_GLOBAL_ALL);
+    }
+
+    // Called after each test
+    void tearDown() override {
+        curl_global_cleanup();
+    }
+
+    void test_ngap_creds_object() {
+        try {
+            NgapS3Credentials nsc(distribution_api_endpoint, 600);
+            //nsc.get_temporary_credentials();
+
+
+
+            if (debug)
+                cout << "                  NgapS3Credentials::ID: " << nsc.get(NgapS3Credentials::ID_KEY) << endl;
+            if (debug)
+                cout << "                 NgapS3Credentials::KEY: " << nsc.get(NgapS3Credentials::KEY_KEY) << endl;
+            //if(debug) cout << "            NgapS3Credentials::BUCKET: " << nsc.get(NgapS3Credentials::BUCKET_KEY) << endl;
+            if (debug)
+                cout << "   NgapS3Credentials::AWS_SESSION_TOKEN: " << nsc.get(NgapS3Credentials::AWS_SESSION_TOKEN)
+                     << endl;
+            if (debug)
+                cout << "NgapS3Credentials::AWS_TOKEN_EXPIRATION: " << nsc.get(NgapS3Credentials::AWS_TOKEN_EXPIRATION)
+                     << endl;
+
+            time_t now = time(0);
+            if (debug) cout << "         now: " << now << endl;
+            if (debug) cout << "     expires: " << nsc.expires() << endl;
+            if (debug) cout << "needsRefresh: " << (nsc.needs_refresh() ? "true" : "false") << endl;
+
+            time_t diff = nsc.expires() - now;
+            if (debug)
+                cout << "AWS credentials expire in " << diff << " seconds. (" << diff / 60.0 << " minutes, "
+                     << diff / 60.0 / 60.0 << " hours)" << endl;
 
         }
-
-        // Called after each test
-        void tearDown() override {
-            curl_global_cleanup();
+        catch (BESError e) {
+            cerr << "Caught BESError. Message: " << e.get_message() << "  ";
+            cerr << "[" << e.get_file() << ":" << e.get_line() << "]" << endl;
+            CPPUNIT_ASSERT(false);
         }
-
-        void test_ngap_creds_object(){
-            try {
-                NgapS3Credentials nsc(distribution_api_endpoint,600);
-                //nsc.get_temporary_credentials();
+    }
 
 
+CPPUNIT_TEST_SUITE(NgapCredentialsTest);
+        CPPUNIT_TEST(test_ngap_creds_object);
+    CPPUNIT_TEST_SUITE_END();
 
-                if(debug) cout << "                  NgapS3Credentials::ID: " << nsc.get(NgapS3Credentials::ID_KEY) << endl;
-                if(debug) cout << "                 NgapS3Credentials::KEY: " << nsc.get(NgapS3Credentials::KEY_KEY) << endl;
-                //if(debug) cout << "            NgapS3Credentials::BUCKET: " << nsc.get(NgapS3Credentials::BUCKET_KEY) << endl;
-                if(debug) cout << "   NgapS3Credentials::AWS_SESSION_TOKEN: " << nsc.get(NgapS3Credentials::AWS_SESSION_TOKEN) << endl;
-                if(debug) cout << "NgapS3Credentials::AWS_TOKEN_EXPIRATION: " << nsc.get(NgapS3Credentials::AWS_TOKEN_EXPIRATION) << endl;
+};
 
-                time_t now = time(0);
-                if(debug) cout << "         now: " << now <<  endl;
-                if(debug) cout << "     expires: " << nsc.expires() <<  endl;
-                if(debug) cout << "needsRefresh: " << (nsc.needsRefresh()?"true":"false") <<  endl;
-
-                time_t diff = nsc.expires() - now;
-                if(debug) cout << "AWS credentials expire in " << diff << " seconds. (" << diff/60.0 << " minutes, " << diff/60.0/60.0 << " hours)" << endl;
-
-            }
-            catch (BESError e){
-                cerr << "Caught BESError. Message: " << e.get_message() << "  ";
-                cerr << "[" << e.get_file() << ":" << e.get_line() << "]" << endl;
-                CPPUNIT_ASSERT(false);
-            }
-        }
-
-
-        CPPUNIT_TEST_SUITE(NgapCredentialsTest);
-            CPPUNIT_TEST(test_ngap_creds_object);
-        CPPUNIT_TEST_SUITE_END();
-
-    };
-
-    CPPUNIT_TEST_SUITE_REGISTRATION(NgapCredentialsTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(NgapCredentialsTest);
 
 
 } // namespace dmrpp
@@ -162,12 +168,11 @@ int main(int argc, char *argv[]) {
     int i = getopt.optind;
 
 
-
-
     if (i == argc) {
         // run them all
         wasSuccessful = runner.run("");
-    } else {
+    }
+    else {
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
             string test = dmrpp::NgapCredentialsTest::suite()->getName().append("::").append(argv[i]);
