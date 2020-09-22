@@ -96,7 +96,7 @@ BESStopWatch::start(string name, string reqID)
         msg << "[" << BESDebug::GetPidStr() << "]["<< _log_name << "][" << _req_id << "]";
         msg << "[ERROR][" << _timer_name << "][" << err << "]" << endl;
 
-        if(BESDebug::GetStrm())
+        if(!BESLog::TheLog()->is_verbose() && BESDebug::GetStrm())
 		    *(BESDebug::GetStrm()) << msg.str();
         VERBOSE(msg.str());
         _started = false ;
@@ -110,7 +110,7 @@ BESStopWatch::start(string name, string reqID)
         std::stringstream msg;
         msg << "[" << BESDebug::GetPidStr() << "]["<< _log_name << "][" << _req_id << "]";
         msg << "[STARTED][" << starttime << " ms]["<< _timer_name << "]" << endl;
-        if(BESDebug::GetStrm())
+        if(!BESLog::TheLog()->is_verbose() && BESDebug::GetStrm())
     		*(BESDebug::GetStrm()) << msg.str();
         VERBOSE(msg.str());
 	}
@@ -154,7 +154,7 @@ BESStopWatch::~BESStopWatch()
             std::stringstream msg;
             msg << "[" << BESDebug::GetPidStr() << "][" << _log_name << "]";
             msg << "[" << _req_id << "][ERROR][" << _timer_name << "][" << err << "]" << endl;
-            if (BESDebug::GetStrm())
+            if (!BESLog::TheLog()->is_verbose() && BESDebug::GetStrm())
                 *(BESDebug::GetStrm()) << msg.str();
             VERBOSE(msg.str());
 
@@ -170,7 +170,7 @@ BESStopWatch::~BESStopWatch()
                 msg << "[" << BESDebug::GetPidStr() << "][" << _log_name << "]";
                 msg << "[" << _req_id << "][ERROR][" << _timer_name << "][Failed to get timing.]" << endl;
 
-                if (BESDebug::GetStrm())
+                if (!BESLog::TheLog()->is_verbose() && BESDebug::GetStrm())
                     *(BESDebug::GetStrm()) << msg.str();
                 VERBOSE(msg.str());
 
@@ -190,7 +190,7 @@ BESStopWatch::~BESStopWatch()
                 msg << "[" << _req_id << "][STOPPED][" << stoptime << " ms]";
                 msg << "[" << _timer_name << "][ELAPSED][" << elapsed << " ms]" << endl;
 
-                if (BESDebug::GetStrm())
+                if (!BESLog::TheLog()->is_verbose() && BESDebug::GetStrm())
                     *(BESDebug::GetStrm()) << msg.str();
                 VERBOSE(msg.str() );
             }
