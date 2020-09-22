@@ -194,10 +194,13 @@ namespace ngap {
 #if 1
         BESDEBUG(MODULE, prolog << "Building new RemoteResource." << endl);
         http::RemoteResource cmr_query(cmr_url, uid);
-        VERBOSE( prolog << "START CMR query" << endl);
-        cmr_query.retrieveResource();
-        VERBOSE( prolog << "END CMR query" << endl);
-
+        {
+            BESStopWatch besTimer;
+            if(BESLog::TheLog()->is_verbose()){
+                besTimer.start("CMR Query: " + cmr_url);
+            }
+            cmr_query.retrieveResource();
+        }
         rapidjson::Document cmr_response = cmr_query.get_as_json();
 #else
         rapidjson::Document cmr_response = ngap_curl::http_get_as_json(cmr_url);
