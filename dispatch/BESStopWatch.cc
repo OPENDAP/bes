@@ -92,9 +92,14 @@ BESStopWatch::start(string name, string reqID)
 			err += "unknown error" ;
 		}
 #endif
-		if(BESDebug::GetStrm())
-		    *(BESDebug::GetStrm()) << "[" << BESDebug::GetPidStr() << "]["<< _log_name << "][" << _req_id << "][ERROR][" << _timer_name << "][" << err << "]" << endl;
-		_started = false ;
+        std::stringstream msg;
+        msg << "[" << BESDebug::GetPidStr() << "]["<< _log_name << "][" << _req_id << "]";
+        msg << "[ERROR][" << _timer_name << "][" << err << "]" << endl;
+
+        if(BESDebug::GetStrm())
+		    *(BESDebug::GetStrm()) << msg.str();
+        VERBOSE(msg.str());
+        _started = false ;
 	}
 	else
 	{
@@ -102,8 +107,12 @@ BESStopWatch::start(string name, string reqID)
 		struct timeval &start = _start_usage.ru_utime ;
 		double starttime =  start.tv_sec*1000.0 + start.tv_usec/1000.0;
 
-		if(BESDebug::GetStrm())
-    		*(BESDebug::GetStrm()) << "[" << BESDebug::GetPidStr() << "]["<< _log_name << "][" << _req_id << "][STARTED][" << starttime << "][ms]["<< _timer_name << "]" << endl;
+        std::stringstream msg;
+        msg << "[" << BESDebug::GetPidStr() << "]["<< _log_name << "][" << _req_id << "]";
+        msg << "[STARTED][" << starttime << " ms]["<< _timer_name << "]" << endl;
+        if(BESDebug::GetStrm())
+    		*(BESDebug::GetStrm()) << msg.str();
+        VERBOSE(msg.str());
 	}
 
 	// either we started the stop watch, or failed to start it. Either way,

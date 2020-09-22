@@ -48,6 +48,8 @@
 #include "HttpNames.h"
 #include "RemoteResource.h"
 #include "TheBESKeys.h"
+#include "BESStopWatch.h"
+#include "BESLog.h"
 
 using namespace std;
 
@@ -430,8 +432,15 @@ namespace http {
      * @param fd An open file descriptor the is associated with the target file.
      */
     void RemoteResource::writeResourceToFile(int fd) {
+
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
         try {
+
+            BESStopWatch besTimer;
+            if(BESLog::TheLog()->is_verbose()){
+                besTimer.start(prolog + "source url: " + d_remoteResourceUrl);
+            }
+
             BESDEBUG(MODULE, prolog << "Saving resource " << d_remoteResourceUrl << " to cache file " << d_resourceCacheFileName << endl);
             curl::http_get_and_write_resource(d_remoteResourceUrl, fd, d_response_headers); // Throws BESInternalError if there is a curl error.
 

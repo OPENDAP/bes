@@ -227,7 +227,9 @@ namespace ngap {
                 if(BESLog::TheLog()->is_verbose()){
                     besTimer.start("DMR++ retrieval: "+ dmrpp_url);
                 }
+                VERBOSE(prolog << "START DMR++ retrieval");
                 d_dmrpp_rresource->retrieveResource(replace_template, replace_value);
+                VERBOSE(prolog << "END DMR++ retrieval");
             }
         }
         BESDEBUG(MODULE, prolog << "Retrieved remote resource: " << dmrpp_url << endl);
