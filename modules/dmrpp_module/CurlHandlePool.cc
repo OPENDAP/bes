@@ -774,8 +774,8 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
             res = curl_easy_setopt(handle->d_handle, CURLOPT_NETRC_FILE, netrc_file.c_str());
             curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_NETRC_FILE", handle->d_errbuf, __FILE__, __LINE__);
         }
-        VERBOSE(__FILE__ << "::get_easy_handle() is using the netrc file '"
-                         << ((!netrc_file.empty()) ? netrc_file : "~/.netrc") << "'" << endl);
+        //VERBOSE(__FILE__ << "::get_easy_handle() is using the netrc file '"
+        //<< ((!netrc_file.empty()) ? netrc_file : "~/.netrc") << "'" << endl);
 
         AccessCredentials *credentials = CredentialsManager::theCM()->get(handle->d_url);
         if (credentials && credentials->is_s3_cred()) {

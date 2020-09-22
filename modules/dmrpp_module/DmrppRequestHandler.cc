@@ -54,6 +54,7 @@
 #include <BESConstraintFuncs.h>
 #include <BESServiceRegistry.h>
 #include <BESUtil.h>
+#include <BESLog.h>
 #include <TheBESKeys.h>
 #include <BESLog.h>
 
@@ -73,6 +74,8 @@
 using namespace bes;
 using namespace libdap;
 using namespace std;
+
+#define prolog std::string("DmrppRequestHandler::").append(__func__).append("() - ")
 
 namespace dmrpp {
 
@@ -218,6 +221,9 @@ bool DmrppRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
 
 bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
 {
+    BESStopWatch sw;
+    if (BESISDEBUG(TIMING_LOG)) sw.start(prolog + "timer" , dhi.data[REQUEST_ID]);
+
     BESDEBUG(module, "Entering dap_build_dap4data..." << endl);
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
@@ -269,7 +275,7 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
 bool DmrppRequestHandler::dap_build_dap2data(BESDataHandlerInterface & dhi)
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("DmrppRequestHandler::dap_build_dap2data()", dhi.data[REQUEST_ID]);
+    if (BESISDEBUG(TIMING_LOG)) sw.start(prolog + "timer" , dhi.data[REQUEST_ID]);
 
     BESDEBUG(module, __func__ << "() - BEGIN" << endl);
 

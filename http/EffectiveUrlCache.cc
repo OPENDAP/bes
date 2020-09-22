@@ -40,7 +40,9 @@
 #include "BESSyntaxUserError.h"
 #include "TheBESKeys.h"
 #include "BESDebug.h"
+#include "BESStopWatch.h"
 #include "BESUtil.h"
+#include "BESLog.h"
 #include "CurlUtils.h"
 #include "HttpNames.h"
 
@@ -212,6 +214,12 @@ http::url *EffectiveUrlCache::get_effective_url(const string &source_url, BESReg
 {
     BESDEBUG(MODULE, prolog << "BEGIN url: " << source_url << endl);
 
+#if 0
+    //BESStopWatch sw;
+    //if (BESISDEBUG(TIMING_LOG) || BESLog::TheLog()->is_verbose())
+    //    sw.start(prolog + "full method");
+#endif
+
     http::url *effective_url = NULL;
 
     if(is_enabled()){
@@ -250,6 +258,10 @@ http::url *EffectiveUrlCache::get_effective_url(const string &source_url, BESReg
         // It not found or expired, reload.
         if(retrieve_and_cache){
             BESDEBUG(MODULE, prolog << "Acquiring effective URL for  " << source_url << endl);
+            BESStopWatch moo;
+            if (BESISDEBUG(TIMING_LOG) || BESLog::TheLog()->is_verbose())
+                moo.start(prolog + " Only Retrieve and Cache");
+
 
             string effective_url_str;
             curl::retrieve_effective_url(source_url, effective_url_str);

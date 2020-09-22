@@ -35,6 +35,7 @@
 #include <string>
 #include <iostream>
 #include <cstring>
+#include <sstream>
 
 using std::string ;
 using std::endl;
@@ -42,6 +43,7 @@ using std::ostream;
 
 #include "BESStopWatch.h"
 #include "BESDebug.h"
+#include "BESLog.h"
 
 namespace bes_timing {
 BESStopWatch *elapsedTimeToReadStart=0;
@@ -122,57 +124,69 @@ BESStopWatch::start(string name, string reqID)
  */
 BESStopWatch::~BESStopWatch()
 {
-	// if we have started, then stop and update the log.
-	if( _started )
-	{
-		// get timing for current usage
-		if( getrusage( RUSAGE_SELF, &_stop_usage ) != 0 )
-		{
-			int myerrno = errno ;
-			char *c_err = strerror( myerrno ) ;
-			string err = "getrusage failed in stop: " ;
-			err += (c_err != 0) ? c_err : "unknown error";
+    // if we have started, then stop and update the log.
+    if (_started) {
+        // get timing for current usage
+        if (getrusage(RUSAGE_SELF, &_stop_usage) != 0) {
+            int myerrno = errno;
+            char *c_err = strerror(myerrno);
+            string err = "getrusage failed in stop: ";
+            err += (c_err != 0) ? c_err : "unknown error";
 #if 0
-			if( c_err )
-			{
-				err += c_err ;
-			}
-			else
-			{
-				err += "unknown error" ;
-			}
+            if( c_err )
+            {
+                err += c_err ;
+            }
+            else
+            {
+                err += "unknown error" ;
+            }
 #endif
-		if(BESDebug::GetStrm())
-			*(BESDebug::GetStrm()) << "[" << BESDebug::GetPidStr() << "]["<< _log_name << "][" << _req_id << "][ERROR][" << _timer_name << "][" << err << "]" << endl;
-			_started = false ;
-			_stopped = false ;
-		}
-		else
-		{
-			// get the difference between the _start_usage and the
-			// _stop_usage and save the difference in _result.
-			bool success = timeval_subtract() ;
-			if( !success )
-			{
-				if(BESDebug::GetStrm())
-				    *(BESDebug::GetStrm()) << "[" << BESDebug::GetPidStr() << "]["<< _log_name << "][" << _req_id << "][ERROR][" << _timer_name << "][Failed to get timing.]" << endl;
-				_started = false ;
-				_stopped = false ;
-			}
-			else
-			{
-				_stopped = true ;
+            std::stringstream msg;
+            msg << "[" << BESDebug::GetPidStr() << "][" << _log_name << "]";
+            msg << "[" << _req_id << "][ERROR][" << _timer_name << "][" << err << "]" << endl;
+            if (BESDebug::GetStrm())
+                *(BESDebug::GetStrm()) << msg.str();
+            VERBOSE(msg.str());
 
-				struct timeval &stop = _stop_usage.ru_utime ;
-				double stoptime =  stop.tv_sec*1000.0 + stop.tv_usec/1000.0;
-				double elapsed =  _result.tv_sec*1000.0 + _result.tv_usec/1000.0;
+            _started = false;
+            _stopped = false;
+        } else {
+            // get the difference between the _start_usage and the
+            // _stop_usage and save the difference in _result.
+            bool success = timeval_subtract();
+            if (!success)
+            {
+                std::stringstream msg;
+                msg << "[" << BESDebug::GetPidStr() << "][" << _log_name << "]";
+                msg << "[" << _req_id << "][ERROR][" << _timer_name << "][Failed to get timing.]" << endl;
 
-				if(BESDebug::GetStrm())
-    				*(BESDebug::GetStrm()) << "[" << BESDebug::GetPidStr() << "]["<< _log_name << "][" << _req_id << "][STOPPED][" << stoptime << "][ms][" << _timer_name << "][ELAPSED][" << elapsed << "][ms]" << endl;
+                if (BESDebug::GetStrm())
+                    *(BESDebug::GetStrm()) << msg.str();
+                VERBOSE(msg.str());
 
-			}
-		}
-	}
+                _started = false;
+                _stopped = false;
+            }
+            else
+                {
+                _stopped = true;
+
+                struct timeval &stop = _stop_usage.ru_utime;
+                double stoptime = stop.tv_sec * 1000.0 + stop.tv_usec / 1000.0;
+                double elapsed = _result.tv_sec * 1000.0 + _result.tv_usec / 1000.0;
+
+                std::stringstream msg;
+                msg << "[" << BESDebug::GetPidStr() << "][" << _log_name << "]";
+                msg << "[" << _req_id << "][STOPPED][" << stoptime << " ms]";
+                msg << "[" << _timer_name << "][ELAPSED][" << elapsed << " ms]" << endl;
+
+                if (BESDebug::GetStrm())
+                    *(BESDebug::GetStrm()) << msg.str();
+                VERBOSE(msg.str() );
+            }
+        }
+    }
 }
 
 bool
