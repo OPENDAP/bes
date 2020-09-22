@@ -55,18 +55,18 @@ extern BESStopWatch *elapsedTimeToTransmitStart;
 class BESStopWatch : public BESObj
 {
  private:
-	std::string _timer_name;
-	std::string _req_id;
-	std::string _log_name;
-    bool _started ;
-    bool _stopped ;
+	std::string d_timer_name;
+	std::string d_req_id;
+	std::string d_log_name;
+    bool d_started ;
+    bool d_stopped ;
 #if 0
     struct rusage _start_usage ;
     struct rusage _stop_usage ;
 #endif
 	struct timeval d_start_usage;
 	struct timeval d_stop_usage;
-    struct timeval _result ;
+    struct timeval d_result ;
 
     bool timeval_subtract() ;
 
@@ -75,11 +75,11 @@ class BESStopWatch : public BESObj
     /**
      * Makes a new BESStopWatch with a logName of TIMING_LOG
      */
- BESStopWatch() : _timer_name(MISSING_LOG_PARAM),
-	_req_id(MISSING_LOG_PARAM),
-	_log_name(TIMING_LOG),
-	_started(false),
-	_stopped(false)
+ BESStopWatch() : d_timer_name(MISSING_LOG_PARAM),
+				  d_req_id(MISSING_LOG_PARAM),
+				  d_log_name(TIMING_LOG),
+				  d_started(false),
+				  d_stopped(false)
 { 
 }
 
@@ -88,11 +88,11 @@ class BESStopWatch : public BESObj
      *
      * @param logName The name of the log to use in the logging output.
      */
-    BESStopWatch(std::string logName)  : _timer_name(MISSING_LOG_PARAM),
-	_req_id(MISSING_LOG_PARAM),
-	_log_name(logName),
-	_started(false),
-	_stopped(false)
+    BESStopWatch(std::string logName)  : d_timer_name(MISSING_LOG_PARAM),
+										 d_req_id(MISSING_LOG_PARAM),
+										 d_log_name(logName),
+										 d_started(false),
+										 d_stopped(false)
 { 
 }
 
