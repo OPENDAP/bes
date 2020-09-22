@@ -60,9 +60,12 @@ class BESStopWatch : public BESObj
 	std::string _log_name;
     bool _started ;
     bool _stopped ;
-
+#if 0
     struct rusage _start_usage ;
     struct rusage _stop_usage ;
+#endif
+	struct timeval d_start_usage;
+	struct timeval d_stop_usage;
     struct timeval _result ;
 
     bool timeval_subtract() ;

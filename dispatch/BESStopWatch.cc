@@ -73,17 +73,176 @@ BESStopWatch::start(string name)
 bool
 BESStopWatch::start(string name, string reqID)
 {
-	_timer_name = name;
-	_req_id = reqID;
-	// get timing for current usage
-	if( getrusage( RUSAGE_SELF, &_start_usage ) != 0 )
-	{
-		int myerrno = errno ;
-		char *c_err = strerror( myerrno ) ;
-		string err = "getrusage failed in start: " ;
-		err += (c_err != 0) ? c_err : "unknown error";
+    _timer_name = name;
+    _req_id = reqID;
+    // get timing for current usage
+
+
+    if( gettimeofday(&d_start_usage, NULL) != 0 )
+    {
+        int myerrno = errno ;
+        char *c_err = strerror( myerrno ) ;
+        string err = "getrusage failed in start: " ;
+        err += (c_err != 0) ? c_err : "unknown error";
+
+        std::stringstream msg;
+        msg << "[" << BESDebug::GetPidStr() << "]["<< _log_name << "][" << _req_id << "]";
+        msg << "[ERROR][" << _timer_name << "][" << err << "]" << endl;
+
+        if(!BESLog::TheLog()->is_verbose() && BESDebug::GetStrm())
+            *(BESDebug::GetStrm()) << msg.str();
+        VERBOSE(msg.str());
+        _started = false ;
+    }
+    else
+    {
+        _started = true ;
+        // Convert to milliseconds. Multiply seconds by 1000, divide micro seconds by 1000
+        double starttime =  d_start_usage.tv_sec*1000.0 + d_start_usage.tv_usec/1000.0;
+
+        std::stringstream msg;
+        msg << "[" << BESDebug::GetPidStr() << "]["<< _log_name << "][" << _req_id << "]";
+        msg << "[STARTED][" << starttime << " ms]["<< _timer_name << "]" << endl;
+        if(!BESLog::TheLog()->is_verbose() && BESDebug::GetStrm())
+            *(BESDebug::GetStrm()) << msg.str();
+        VERBOSE(msg.str());
+    }
+
+    // either we started the stop watch, or failed to start it. Either way,
+    // no timings are available, so set stopped to false.
+    _stopped = false ;
+
+
+    return _started ;
+}
+
+
+/**
+ * This destructor is "special" in that it's execution signals the
+ * timer to stop if it has been started. Stopping the timer will
+ * initiate an attempt to write logging information to the
+ * BESDebug::GetStrm() stream. If the start method has not been called
+ * then the method exits silently.
+ */
+BESStopWatch::~BESStopWatch()
+{
+    // if we have started, then stop and update the log.
+    if (_started) {
+        // get timing for current usage
+
+        if( gettimeofday(&d_stop_usage, NULL) != 0 )
+        {
+            int myerrno = errno;
+            char *c_err = strerror(myerrno);
+            string err = "gettimeofday failed in stop: ";
+            err += (c_err != 0) ? c_err : "unknown error";
+
+            std::stringstream msg;
+            msg << "[" << BESDebug::GetPidStr() << "][" << _log_name << "]";
+            msg << "[" << _req_id << "][ERROR][" << _timer_name << "][" << err << "]" << endl;
+            if (!BESLog::TheLog()->is_verbose() && BESDebug::GetStrm())
+                *(BESDebug::GetStrm()) << msg.str();
+            VERBOSE(msg.str());
+
+            _started = false;
+            _stopped = false;
+        } else {
+            // get the difference between the _start_usage and the
+            // _stop_usage and save the difference in _result.
+            bool success = timeval_subtract();
+            if (!success)
+            {
+                std::stringstream msg;
+                msg << "[" << BESDebug::GetPidStr() << "][" << _log_name << "]";
+                msg << "[" << _req_id << "][ERROR][" << _timer_name << "][Failed to get timing.]" << endl;
+
+                if (!BESLog::TheLog()->is_verbose() && BESDebug::GetStrm())
+                    *(BESDebug::GetStrm()) << msg.str();
+                VERBOSE(msg.str());
+
+                _started = false;
+                _stopped = false;
+            }
+            else
+            {
+                _stopped = true;
+                // stoptime in milliseconds
+                double stoptime = d_stop_usage.tv_sec * 1000.0 + d_stop_usage.tv_usec / 1000.0;
+                double elapsed = _result.tv_sec * 1000.0 + _result.tv_usec / 1000.0;
+
+                std::stringstream msg;
+                msg << "[" << BESDebug::GetPidStr() << "][" << _log_name << "]";
+                msg << "[" << _req_id << "][STOPPED][" << stoptime << " ms]";
+                msg << "[" << _timer_name << "][ELAPSED][" << elapsed << " ms]" << endl;
+
+                if (!BESLog::TheLog()->is_verbose() && BESDebug::GetStrm())
+                    *(BESDebug::GetStrm()) << msg.str();
+                VERBOSE(msg.str() );
+            }
+        }
+    }
+}
+
+/**
+ * struct timeval {
+ *    time_t      tv_sec;   // Number of whole seconds of elapsed time
+ *    long int    tv_usec;  // Number of microseconds of rest of elapsed time minus tv_sec. Always less than one million
+ * };
+ * @return
+ */
+bool
+BESStopWatch::timeval_subtract()
+{
+    // struct
+    // time_t         tv_sec      seconds
+    // suseconds_t    tv_usec     microseconds
+
+    /* Perform the carry for the later subtraction by updating y. */
+    if( d_stop_usage.tv_usec < d_start_usage.tv_usec )
+    {
+        int nsec = (d_start_usage.tv_usec - d_stop_usage.tv_usec) / 1000000 + 1 ;
+        d_start_usage.tv_usec -= 1000000 * nsec ;
+        d_start_usage.tv_sec += nsec ;
+    }
+    if( d_stop_usage.tv_usec - d_start_usage.tv_usec > 1000000 )
+    {
+        int nsec = (d_start_usage.tv_usec - d_stop_usage.tv_usec) / 1000000 ;
+        d_start_usage.tv_usec += 1000000 * nsec ;
+        d_start_usage.tv_sec -= nsec ;
+    }
+
+    /* Compute the time remaining to wait.
+    tv_usec  is certainly positive. */
+    _result.tv_sec = d_stop_usage.tv_sec - d_start_usage.tv_sec ;
+    _result.tv_usec = d_stop_usage.tv_usec - d_start_usage.tv_usec ;
+
+    /* Return 1 if result is negative. */
+    return !(d_stop_usage.tv_sec < d_start_usage.tv_sec) ;
+}
+
 #if 0
-		if( c_err )
+/**
+ * Starts the timer.
+ * NB: This method will attempt to write logging
+ * information to the BESDebug::GetStrm() stream.
+ * @param name The name of the timer.
+ * @param reqID The client's request ID associated with this activity.
+ * Available from the DataHandlerInterfact object.
+ */
+bool
+BESStopWatch::start(string name, string reqID)
+{
+    _timer_name = name;
+    _req_id = reqID;
+    // get timing for current usage
+    if( getrusage( RUSAGE_SELF, &_start_usage ) != 0 )
+    {
+        int myerrno = errno ;
+        char *c_err = strerror( myerrno ) ;
+        string err = "getrusage failed in start: " ;
+        err += (c_err != 0) ? c_err : "unknown error";
+#if 0
+        if( c_err )
 		{
 			err += c_err ;
 		}
@@ -97,32 +256,31 @@ BESStopWatch::start(string name, string reqID)
         msg << "[ERROR][" << _timer_name << "][" << err << "]" << endl;
 
         if(!BESLog::TheLog()->is_verbose() && BESDebug::GetStrm())
-		    *(BESDebug::GetStrm()) << msg.str();
+            *(BESDebug::GetStrm()) << msg.str();
         VERBOSE(msg.str());
         _started = false ;
-	}
-	else
-	{
-		_started = true ;
-		struct timeval &start = _start_usage.ru_utime ;
-		double starttime =  start.tv_sec*1000.0 + start.tv_usec/1000.0;
+    }
+    else
+    {
+        _started = true ;
+        struct timeval &start = _start_usage.ru_utime ;
+        double starttime =  start.tv_sec*1000.0 + start.tv_usec/1000.0;
 
         std::stringstream msg;
         msg << "[" << BESDebug::GetPidStr() << "]["<< _log_name << "][" << _req_id << "]";
         msg << "[STARTED][" << starttime << " ms]["<< _timer_name << "]" << endl;
         if(!BESLog::TheLog()->is_verbose() && BESDebug::GetStrm())
-    		*(BESDebug::GetStrm()) << msg.str();
+            *(BESDebug::GetStrm()) << msg.str();
         VERBOSE(msg.str());
-	}
+    }
 
-	// either we started the stop watch, or failed to start it. Either way,
-	// no timings are available, so set stopped to false.
-	_stopped = false ;
+    // either we started the stop watch, or failed to start it. Either way,
+    // no timings are available, so set stopped to false.
+    _stopped = false ;
 
 
-	return _started ;
+    return _started ;
 }
-
 
 /**
  * This destructor is "special" in that it's execution signals the
@@ -198,11 +356,21 @@ BESStopWatch::~BESStopWatch()
     }
 }
 
+/**
+ * struct timeval {
+ *    time_t      tv_sec;   // Number of whole seconds of elapsed time
+ *    long int    tv_usec;  // Number of microseconds of rest of elapsed time minus tv_sec. Always less than one million
+ * };
+ * @return
+ */
 bool
 BESStopWatch::timeval_subtract()
 {
 	struct timeval &start = _start_usage.ru_utime ;
 	struct timeval &stop = _stop_usage.ru_utime ;
+    // struct
+	// time_t         tv_sec      seconds
+    // suseconds_t    tv_usec     microseconds
 
 	/* Perform the carry for the later subtraction by updating y. */
 	if( stop.tv_usec < start.tv_usec )
@@ -227,6 +395,7 @@ BESStopWatch::timeval_subtract()
 	return !(stop.tv_sec < start.tv_sec) ;
 }
 
+#endif
 /** @brief dumps information about this object
  *
  * Displays the pointer value of this instance
