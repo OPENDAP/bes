@@ -373,7 +373,7 @@ m4_define([AT_BESCMD_GDAL_BINARY_FILE_RESPONSE_TEST], [dnl
         [
         AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input > tmp], [0], [stdout])
         GET_GDAL_INFO([tmp])
-        AT_CHECK([diff $baseline tmp], [ignore], )
+        AT_CHECK([diff -b $baseline tmp], [ignore], )
         AT_XFAIL_IF([test expected = xfail])
         ])
 
