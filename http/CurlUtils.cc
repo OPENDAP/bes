@@ -45,6 +45,7 @@
 #include "TheBESKeys.h"
 #include "BESUtil.h"
 #include "BESLog.h"
+#include "BESStopWatch.h"
 
 // #include "util.h"
 #include "BESDebug.h"
@@ -1398,6 +1399,10 @@ bool eval_curl_easy_perform_code(
         request_headers = add_auth_headers(request_headers);
 
         try {
+            BESStopWatch sw;
+            if (BESISDEBUG(TIMING_LOG) || BESLog::TheLog()->is_verbose())
+                sw.start(prolog + " Following Redirects Starting With: " + target_url);
+
             ceh = init_effective_url_retriever_handle(target_url, request_headers, resp_hdrs);
 
             super_easy_perform(ceh);
