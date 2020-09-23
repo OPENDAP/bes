@@ -450,7 +450,7 @@ function make_bes_conf() {
   fi
 
   if test -n "$verbose"; then
-    if test -n "${verbose}"; then
+    if test -n "${2}"; then
       echo "      site_conf: ${2}" >&2
     fi
     echo "       bes_conf: ${TMP_CONF}" >&2
