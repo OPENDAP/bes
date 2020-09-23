@@ -435,9 +435,6 @@ function make_bes_conf() {
   TMP_CONF=$(mktemp -t conf_XXXX)
 
   if test -n "${2}"; then
-    if test -n "${verbose}"; then
-      echo "Appending BES Site-Conf: \"${2}\"" >&2
-    fi
     echo "${BES_CONF_DOC}" "$(cat ${2})" >${TMP_CONF}
   else
     echo "${BES_CONF_DOC}" >${TMP_CONF}
@@ -447,6 +444,13 @@ function make_bes_conf() {
     echo "TMP_CONF: ${TMP_CONF}" >&2
     ls -l ${TMP_CONF} >&2
     cat ${TMP_CONF} >&2
+  fi
+
+  if test -n "$verbose"; then
+    if test -n "${verbose}"; then
+      echo "      site_conf: ${2}" >&2
+    fi
+    echo "       bes_conf: ${TMP_CONF}" >&2
   fi
 
   echo "${TMP_CONF}"
