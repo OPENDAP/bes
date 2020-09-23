@@ -324,25 +324,27 @@ dmrpp_easy_handle::~dmrpp_easy_handle() {
  * this code is also used for the pthreads parallel transfers.
  */
 void dmrpp_easy_handle::read_data() {
-    // Treat HTTP/S requests specially; retry some kinds of failures.
-    if (d_url.find("https://") == 0 || d_url.find("http://") == 0) {
 
-        curl::super_easy_perform(d_handle);
-
-        // FIXME I think this should only happen in the destructor in order
-        //  to insure that retrying the dmrpp_easy_handle doesn't meet with the troubles.
-        //curl_slist_free_all(d_request_headers);
-        //d_request_headers = 0;
-    }
-    else {
-        CURLcode curl_code = curl_easy_perform(d_handle);
-        if (CURLE_OK != curl_code) {
-            string msg = prolog + "ERROR - Data transfer error: ";
-            throw BESInternalError(msg.append(curl::error_message(curl_code, d_errbuf)),
-                                   __FILE__, __LINE__);
+    try {
+        // Treat HTTP/S requests specially; retry some kinds of failures.
+        if (d_url.find("https://") == 0 || d_url.find("http://") == 0) {
+            curl::super_easy_perform(d_handle);
         }
+        else {
+            CURLcode curl_code = curl_easy_perform(d_handle);
+            if (CURLE_OK != curl_code) {
+                string msg = prolog + "ERROR - Data transfer error: ";
+                throw BESInternalError(msg.append(curl::error_message(curl_code, d_errbuf)), __FILE__, __LINE__);
+            }
+        }
+
+        d_chunk->set_is_read(true);
     }
-    d_chunk->set_is_read(true);
+    catch(...) {
+        // FIXME here is where we clean up all the handles in the SwinLane
+        // of the handle that caused the exception. jhrg 9/23/20
+        throw ;
+    }
 }
 
 #else
@@ -846,6 +848,8 @@ void CurlHandlePool::release_handle(dmrpp_easy_handle *handle) {
     // Timing tests indicate this lock does not cost anything that can be measured.
     // jhrg 8/21/18
     Lock lock(d_get_easy_handle_mutex);
+
+    // TODO Add a call to curl reset() here. jhrg 9/23/20
 
 #if KEEP_ALIVE
     handle->d_url = "";
