@@ -242,10 +242,17 @@ dmrpp_easy_handle::~dmrpp_easy_handle() {
 #if NEW_WAY
 
 /**
- * @brief This is the read_data() method for serial transfers.
+ * @brief This is the read_data() method for all transfers.
  *
- * See below for the code used for parallel transfers. Note that
- * this code is also used for the pthreads parallel transfers.
+ * This method is used by Chunk::read_data() which is used for all
+ * data transfers by the dmrpp module classes (DmrppArray, D4Opaque,
+ * and Common::read_atomic()). Whether a request is retired is
+ * determined by curl::super_easy_perform().
+ *
+ * If either the super_easy_perform() (our concoction) or easy_perform()
+ * throws, assume the transfer failed and clean up. This means that all
+ * handles that are part of the transaction that failed need to be returned
+ * to the pool.
  */
 void dmrpp_easy_handle::read_data() {
     // Treat HTTP/S requests specially; retry some kinds of failures.
@@ -327,28 +334,6 @@ void dmrpp_easy_handle::read_data() {
 }
 #endif
 
-#if 0
-// This is only used if we don't have the Multi API and have to use pthreads.
-// It is a callback used in dmrpp_multi_handle::read_data() below.
-// jhrg 8/27/18
-#if !HAVE_CURL_MULTI_API
-
-static void *easy_handle_read_data(void *handle) {
-    dmrpp_easy_handle *eh = reinterpret_cast<dmrpp_easy_handle *>(handle);
-
-    try {
-        eh->read_data();
-        pthread_exit(0);
-    }
-    catch (BESError &e) {
-        string *error = new string(e.get_verbose_message());
-        pthread_exit(error);
-    }
-}
-
-#endif
-#endif
-
 CurlHandlePool::CurlHandlePool() {
     d_max_easy_handles = DmrppRequestHandler::d_max_parallel_transfers;
 
@@ -420,10 +405,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
 
         handle->d_chunk = chunk;
 
-        CURLcode res;
-
-
-        res = curl_easy_setopt(handle->d_handle, CURLOPT_URL, chunk->get_data_url().c_str());
+        CURLcode res = curl_easy_setopt(handle->d_handle, CURLOPT_URL, chunk->get_data_url().c_str());
         curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_URL", handle->d_errbuf, __FILE__, __LINE__);
 
         // get the offset to offset + size bytes

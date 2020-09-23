@@ -121,6 +121,35 @@ public:
     void release_all_handles();
 };
 
+/**
+ * How a collection of dmrpp_easy_handles that are being used together on
+ * a single logical transfer. By definition, if one of these fails, they all
+ * fail, are stopped and the easy handles reset and returned to the pool.
+ * This class is used to portect leaking handles when one thread of a
+ * parallel transfer fails and an exception is thrown taking the flow of
+ * control out of the handler to the command processor loop.
+ */
+class SwinLane {
+    CurlHandlePool &d_pool;
+    std::vector<dmrpp_easy_handle *> d_handles;
+public:
+    SwinLane(CurlHandlePool &pool) : d_pool(pool) {}
+
+    SwinLane(CurlHandlePool &pool, dmrpp_easy_handle *h) : d_pool(pool) {
+        d_handles.push_back(h);
+    }
+
+    virtual ~SwinLane() {
+        for(auto i = d_handles.begin(), e = d_handles.end(); i != e; ++i) {
+            d_pool.release_handle(*i);
+        }
+    }
+
+    void add_handle(dmrpp_easy_handle *h) {
+        d_handles.push_back(h);
+    }
+};
+
 } // namespace dmrpp
 
 #endif // _HandlePool_h
