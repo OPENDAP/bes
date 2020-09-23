@@ -1433,11 +1433,11 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
                 try {
                     size_t size = buf2val(reinterpret_cast<void **>(&values));
                     string encoded = base64::Base64::encode(values, size);
-                    delete values;
+                    delete[] values;
                     print_compact_element(xml, DmrppCommon::d_ns_prefix, encoded);
                 }
                 catch (...) {
-                    delete values;
+                    delete[] values;
                     throw;
                 }
                 break;
@@ -1445,20 +1445,20 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
 
             case dods_str_c:
             case dods_url_c: {
-                string *values;
+                string *values = 0;
                 try {
-                    // size is the number of strings.
-                    size_t size = buf2val(reinterpret_cast<void **>(&values));
+                    // discard the return value of buf2val()
+                    buf2val(reinterpret_cast<void **>(&values));
                     string str;
-                    for (int i = 0; i < size; ++i) {
+                    for (int i = 0; i < length(); ++i) {
                         str = (*(static_cast<string *> (values) + i));
                         string encoded = base64::Base64::encode(reinterpret_cast<const u_int8_t *>(str.c_str()), str.size());
                         print_compact_element(xml, DmrppCommon::d_ns_prefix, encoded);
                     }
-                    delete values;
+                    delete[] values;
                 }
                 catch (...) {
-                    delete values;
+                    delete[] values;
                     throw;
                 }
                 break;
@@ -1466,13 +1466,7 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
 
             default:
                 throw InternalErr(__FILE__, __LINE__, "Vector::val2buf: bad type");
-
         }
-
-        u_int8_t *values = 0;
-        u_int8_t width = buf2val(reinterpret_cast<void**>(&values));
-        std::string encoded = base64::Base64::encode(values,width);
-        print_compact_element( xml, DmrppCommon::d_ns_prefix, encoded);
     }
 
     if (xmlTextWriterEndElement(xml.get_writer()) < 0) throw InternalErr(__FILE__, __LINE__, "Could not end " + type_name() + " element");
