@@ -239,8 +239,6 @@ dmrpp_easy_handle::~dmrpp_easy_handle() {
     if (d_request_headers) curl_slist_free_all(d_request_headers);
 }
 
-#if NEW_WAY
-
 /**
  * @brief This is the read_data() method for all transfers.
  *
@@ -269,70 +267,6 @@ void dmrpp_easy_handle::read_data() {
 
     d_chunk->set_is_read(true);
 }
-
-#else
-/**
- * @brief This is the read_data() method for serial transfers.
- *
- * See below for the code used for parallel transfers. Note that
- * this code is also used for the pthreads parallel transfers.
- */
-void dmrpp_easy_handle::read_data() {
-    // Treat HTTP/S requests specially; retry some kinds of failures.
-    if (d_url.find("https://") == 0 || d_url.find("http://") == 0) {
-        unsigned int tries = 0;
-        bool success = true;
-        useconds_t retry_time = uone_second / 4;
-        d_errbuf[0] = 0; // Initialize to empty string.
-
-        // Perform the request
-        do {
-            ++tries;
-            BESDEBUG(DMRPP_CURL, prolog << "Requesting URL: " << d_url << endl);
-            CURLcode curl_code = curl_easy_perform(d_handle);
-
-            if (CURLE_OK != curl_code) {
-                stringstream msg;
-                msg << "Data transfer error: " << curl::error_message(curl_code, d_errbuf);
-                char *effective_url = 0;
-                curl_easy_getinfo(d_handle, CURLINFO_EFFECTIVE_URL, &effective_url);
-                msg << " last_url: " << effective_url;
-                BESDEBUG(DMRPP_CURL, prolog << msg.str() << endl);
-                throw BESInternalError(msg.str(), __FILE__, __LINE__);
-            }
-
-            success = curl::eval_http_get_response(d_handle, d_url);
-
-            if (!success) {
-                if (tries == retry_limit) {
-                    string msg = prolog + "Data transfer error: Number of re-tries exceeded: " +
-                                 curl::error_message(curl_code, d_errbuf);
-                    LOG(msg << endl);
-                    throw BESInternalError(msg, __FILE__, __LINE__);
-                }
-                else {
-                    LOG(prolog << "HTTP transfer 500 error, will retry (trial " << tries << " for: " << d_url << ")."
-                               << endl);
-                    usleep(retry_time);
-                    retry_time *= 2;
-                }
-            }
-
-            curl_slist_free_all(d_request_headers);
-            d_request_headers = 0;
-        } while (!success);
-    }
-    else {
-        CURLcode curl_code = curl_easy_perform(d_handle);
-        if (CURLE_OK != curl_code) {
-            string msg = prolog + "ERROR - Data transfer error: ";
-            throw BESInternalError(msg.append(curl::error_message(curl_code, d_errbuf)),
-                                   __FILE__, __LINE__);
-        }
-    }
-    d_chunk->set_is_read(true);
-}
-#endif
 
 CurlHandlePool::CurlHandlePool() {
     d_max_easy_handles = DmrppRequestHandler::d_max_parallel_transfers;

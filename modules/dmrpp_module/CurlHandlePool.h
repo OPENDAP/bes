@@ -129,17 +129,17 @@ public:
  * parallel transfer fails and an exception is thrown taking the flow of
  * control out of the handler to the command processor loop.
  */
-class SwinLane {
+class SwimLane {
     CurlHandlePool &d_pool;
     std::vector<dmrpp_easy_handle *> d_handles;
 public:
-    SwinLane(CurlHandlePool &pool) : d_pool(pool) {}
+    SwimLane(CurlHandlePool &pool) : d_pool(pool) {}
 
-    SwinLane(CurlHandlePool &pool, dmrpp_easy_handle *h) : d_pool(pool) {
+    SwimLane(CurlHandlePool &pool, dmrpp_easy_handle *h) : d_pool(pool) {
         d_handles.push_back(h);
     }
 
-    virtual ~SwinLane() {
+    virtual ~SwimLane() {
         for(auto i = d_handles.begin(), e = d_handles.end(); i != e; ++i) {
             d_pool.release_handle(*i);
         }
