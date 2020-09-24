@@ -1338,7 +1338,9 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
             DmrppParserSax2::dmr_error(parser, "Expected an end value tag; found '%s' instead.", localname);
         parser->pop_state();
         string data(parser->char_data);
+        BESDEBUG(PARSER, prolog << "Read compact element text: '" << data << "'" << endl);
         parser->char_data = ""; // Null this after use.
+        BESDEBUG(PARSER, prolog << "End of compact element." << endl);
         break;
     }
 
