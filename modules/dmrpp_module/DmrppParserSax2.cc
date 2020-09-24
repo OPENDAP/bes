@@ -57,6 +57,7 @@
 
 #include "DmrppParserSax2.h"
 #include "DmrppCommon.h"
+#include "DmrppStr.h"
 #include "DmrppNames.h"
 #include "CurlUtils.h"
 
@@ -1344,7 +1345,6 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
         std::vector <u_int8_t> decoded = base64::Base64::decode(data);
 
         BaseType *bt = parser->top_basetype();
-        DmrppCommon *dc = dynamic_cast<DmrppCommon *>(bt);   // Get the Dmrpp common info
         BESDEBUG(PARSER, prolog << "BaseType: " << bt->type_name() << " " << bt->name() << endl);
 
         switch (bt->type()) {
@@ -1384,8 +1384,8 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
                 // jhrg 9/17/20
                 try {
                     std::string str(decoded.begin(), decoded.end());
-                    std::vector <std::string> strings = {str};
-                    bt->set_value(strings, strings.size());
+                    DmrppStr *st = dynamic_cast<DmrppStr *>(bt);
+                    st->set_value(str);
                     bt->set_read_p(true);
                 }
                 catch (...) {
