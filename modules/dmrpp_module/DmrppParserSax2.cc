@@ -1332,10 +1332,17 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
         parser->pop_state();
         break;
 
-    case inside_dmrpp_object:
+    case inside_dmrpp_object: {
+        // Ingest the dmrpp:chunks element and it attributes
+        if (strcmp(localname, "compact") == 0) {
+            BESDEBUG(PARSER, prolog << "DMR++ compact element. localname: " << localname << endl);
+            std::string value = parser->char_data;
+            int i = 1;
+        }
         BESDEBUG(PARSER, prolog << "End of dmrpp namespace element: " << localname << endl);
         parser->pop_state();
         break;
+    }
 
     case inside_dmrpp_chunkDimensionSizes_element: {
         BESDEBUG(PARSER, prolog << "End of chunkDimensionSizes element. localname: " << localname << endl);
