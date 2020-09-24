@@ -33,8 +33,6 @@
 
 namespace dmrpp {
 
-extern const bool have_curl_multi_api;
-
 class Chunk;
 
 /**
@@ -53,12 +51,11 @@ public:
 };
 
 /**
- * @brief Bundle a libcurl easy handle to other information.
+ * @brief Bundle a libcurl easy handle with other information.
  *
  * Provide an object that encapsulates a libcurl easy handle, a URL and
  * a DMR++ handler 'chunk.' This can be used with the libcurl 'easy' API
- * for serial data access or with the 'multi' API and a libcurl multi
- * handle for parallel (round robin) data transfers.
+ * for serial data access or parallel (round robin) data transfers.
  */
 class dmrpp_easy_handle {
     bool d_in_use;      ///< Is this easy_handle in use?
@@ -69,37 +66,10 @@ class dmrpp_easy_handle {
     struct curl_slist *d_request_headers; ///< Holds the list of authorization headers, if needed.
 
     friend class CurlHandlePool;
-    friend class dmrpp_multi_handle;
 
 public:
     dmrpp_easy_handle();
     ~dmrpp_easy_handle();
-
-    void read_data();
-};
-
-
-/**
- * @brief Encapsulate a libcurl multi handle.
- */
-class dmrpp_multi_handle {
-    // This struct can be a vector<dmrpp_easy_handle*> or a CURLM *, depending
-    // on whether the curl lib support the Multi API. ...commonly known as the
-    // 'pointer to an implementation' pattern which has the unfortunate acronym
-    // 'pimpl.' jhrg 8/27/18
-    struct multi_handle;
-
-    multi_handle *p_impl;
-
-    friend class CurlHandlePool;
-
-public:
-    dmrpp_multi_handle();
-
-    ~dmrpp_multi_handle();
-
-    void add_easy_handle(dmrpp_easy_handle *eh);
-    void remove_easy_handle(dmrpp_easy_handle *eh);
 
     void read_data();
 };
@@ -119,15 +89,10 @@ public:
 class CurlHandlePool {
 private:
     unsigned int d_max_easy_handles;
-
     std::vector<dmrpp_easy_handle *> d_easy_handles;
-
-    dmrpp_multi_handle *d_multi_handle;
-
     pthread_mutex_t d_get_easy_handle_mutex;
 
     friend class Lock;
-    friend class dmrpp_multi_handle;
 
 public:
     CurlHandlePool();
@@ -144,24 +109,45 @@ public:
             delete d_easy_handle;
         }
 #endif
-        delete d_multi_handle;
     }
 
-    unsigned int get_max_handles() const
-    {
-        return d_max_easy_handles;
-    }
-
-    dmrpp_multi_handle *get_multi_handle()
-    {
-        return d_multi_handle;
-    }
+    /// @brief Get the number of handles in the pool.
+    unsigned int get_max_handles() const {  return d_max_easy_handles; }
 
     dmrpp_easy_handle *get_easy_handle(Chunk *chunk);
 
     void release_handle(dmrpp_easy_handle *h);
     void release_handle(Chunk *chunk);
     void release_all_handles();
+};
+
+/**
+ * How a collection of dmrpp_easy_handles that are being used together on
+ * a single logical transfer. By definition, if one of these fails, they all
+ * fail, are stopped and the easy handles reset and returned to the pool.
+ * This class is used to portect leaking handles when one thread of a
+ * parallel transfer fails and an exception is thrown taking the flow of
+ * control out of the handler to the command processor loop.
+ */
+class SwimLane {
+    CurlHandlePool &d_pool;
+    std::vector<dmrpp_easy_handle *> d_handles;
+public:
+    SwimLane(CurlHandlePool &pool) : d_pool(pool) {}
+
+    SwimLane(CurlHandlePool &pool, dmrpp_easy_handle *h) : d_pool(pool) {
+        d_handles.push_back(h);
+    }
+
+    virtual ~SwimLane() {
+        for(auto i = d_handles.begin(), e = d_handles.end(); i != e; ++i) {
+            d_pool.release_handle(*i);
+        }
+    }
+
+    void add_handle(dmrpp_easy_handle *h) {
+        d_handles.push_back(h);
+    }
 };
 
 } // namespace dmrpp
