@@ -967,12 +967,10 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
         if (strcmp(localname, "compact") == 0) {
             BESDEBUG(PARSER, prolog << "DMR++ compact element. localname: " << localname << endl);
             dc->set_compact(true);
-            std::string value = parser->char_data;
-            int i = 1;
+            parser->push_state(inside_dmrpp_compact_element);
         }
-
+        else if (strcmp(localname, "chunks") == 0) {
             // Ingest the dmrpp:chunks element and it attributes
-        if (strcmp(localname, "chunks") == 0) {
             BESDEBUG(PARSER, prolog << "DMR++ chunks element. localname: " << localname << endl);
 
             if (parser->check_attribute("compressionType", attributes, nb_attributes)) {
@@ -1332,13 +1330,17 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
         parser->pop_state();
         break;
 
+    case inside_dmrpp_compact_element: {
+        if (is_not(localname, "compact"))
+            DmrppParserSax2::dmr_error(parser, "Expected an end value tag; found '%s' instead.", localname);
+
+        parser->pop_state();
+        string data(parser->char_data);
+        parser->char_data = ""; // Null this after use.
+        break;
+    }
+
     case inside_dmrpp_object: {
-        // Ingest the dmrpp:chunks element and it attributes
-        if (strcmp(localname, "compact") == 0) {
-            BESDEBUG(PARSER, prolog << "DMR++ compact element. localname: " << localname << endl);
-            std::string value = parser->char_data;
-            int i = 1;
-        }
         BESDEBUG(PARSER, prolog << "End of dmrpp namespace element: " << localname << endl);
         parser->pop_state();
         break;

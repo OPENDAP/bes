@@ -100,6 +100,7 @@ private:
         not_dap4_element,
         inside_dmrpp_object,
         inside_dmrpp_chunkDimensionSizes_element,
+        inside_dmrpp_compact_element,
 
         parser_unknown,
         parser_error,
