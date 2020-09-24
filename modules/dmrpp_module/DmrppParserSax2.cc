@@ -1336,11 +1336,17 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
     case inside_dmrpp_compact_element: {
         if (is_not(localname, "compact"))
             DmrppParserSax2::dmr_error(parser, "Expected an end value tag; found '%s' instead.", localname);
-        parser->pop_state();
         string data(parser->char_data);
         BESDEBUG(PARSER, prolog << "Read compact element text: '" << data << "'" << endl);
+
+        BaseType *bt = parser->top_basetype();
+        DmrppCommon *dc = dynamic_cast<DmrppCommon*>(bt);   // Get the Dmrpp common info
+        BESDEBUG(PARSER, prolog << "BaseType: " << bt->type_name() << " " << bt->name() << endl);
+
         parser->char_data = ""; // Null this after use.
+
         BESDEBUG(PARSER, prolog << "End of compact element." << endl);
+        parser->pop_state();
         break;
     }
 
