@@ -32,10 +32,6 @@
 
 #include <curl/curl.h>
 
-#if HAVE_CURL_MULTI_H
-#include <curl/multi.h>
-#endif
-
 #include "CurlUtils.h"
 
 #include <time.h>
@@ -46,7 +42,6 @@
 #include "BESDebug.h"
 #include "BESInternalError.h"
 #include "BESForbiddenError.h"
-// #include "TheBESKeys.h"
 #include "AllowedHosts.h"
 
 #include "DmrppRequestHandler.h"
@@ -70,11 +65,7 @@ static const unsigned int retry_limit = 10; // Amazon's suggestion
 static const useconds_t uone_second = 1000 * 1000; // one second, in microseconds
 
 namespace dmrpp {
-#if HAVE_CURL_MULTI_API
-const bool have_curl_multi_api = true;
-#else
 const bool have_curl_multi_api = false;
-#endif
 }
 
 using namespace dmrpp;
@@ -182,21 +173,12 @@ int curl_trace(CURL */*handle*/, curl_infotype type, char *data, size_t /*size*/
         case CURLINFO_HEADER_IN:
             LOG("libcurl == Recv header: " << text << endl);
             break;
-#if 0
+
         // Only print these if we're desperate and the above code has been hacked to match
         case CURLINFO_DATA_OUT:
-            LOG("libcurl == Send data" << text << endl);
-            break;
         case CURLINFO_SSL_DATA_OUT:
-            LOG("libcurl == Send SSL data" << text << endl);
-            break;
         case CURLINFO_DATA_IN:
-            LOG("libcurl == Recv data" << text << endl);
-            break;
         case CURLINFO_SSL_DATA_IN:
-            LOG("libcurl == Recv SSL data" << text << endl);
-            break;
-#endif
         default:
             break;
      }
@@ -204,64 +186,6 @@ int curl_trace(CURL */*handle*/, curl_infotype type, char *data, size_t /*size*/
      return 0;
 }
 #endif
-
-
-#if 0
-dmrpp_easy_handle::dmrpp_easy_handle() : d_request_headers(0) {
-    vector<string> d_response_headers;
-    string target_url="foo";
-
-    d_handle = curl::init();
-
-    if (!d_handle) throw BESInternalError("Could not allocate CURL handle", __FILE__, __LINE__);
-
-    CURLcode res;
-
-    curl::set_error_buffer(d_handle, d_errbuf);
-
-#if CURL_VERBOSE
-    res = curl_easy_setopt(d_handle, CURLOPT_DEBUGFUNCTION, curl_trace);
-     curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_DEBUGFUNCTION", d_errbuf, __FILE__, __LINE__);
-    // Many tests fail with this option, but it's still useful to see how connections
-    // are treated. jhrg 10/2/18
-    res = curl_easy_setopt(d_handle, CURLOPT_VERBOSE, 1L);
-    curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_VERBOSE", d_errbuf, __FILE__, __LINE__);
-#endif
-
-    res = curl_easy_setopt(d_handle, CURLOPT_HEADERFUNCTION, chunk_header_callback);
-    curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HEADERFUNCTION", d_errbuf, __FILE__, __LINE__);
-
-    // Pass all data to the 'write_data' function
-    res = curl_easy_setopt(d_handle, CURLOPT_WRITEFUNCTION, chunk_write_data);
-    curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEFUNCTION", d_errbuf, __FILE__, __LINE__);
-
-#ifdef CURLOPT_TCP_KEEPALIVE
-    /* enable TCP keep-alive for this transfer */
-    res = curl_easy_setopt(d_handle, CURLOPT_TCP_KEEPALIVE, 1L);
-    curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_TCP_KEEPALIVE", d_errbuf, __FILE__, __LINE__);
-#endif
-
-#ifdef CURLOPT_TCP_KEEPIDLE
-    /* keep-alive idle time to 120 seconds */
-     res = curl_easy_setopt(d_handle, CURLOPT_TCP_KEEPIDLE, 120L);
-    curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_TCP_KEEPIDLE", d_errbuf, __FILE__, __LINE__);
-#endif
-
-#ifdef CURLOPT_TCP_KEEPINTVL
-    /* interval time between keep-alive probes: 120 seconds */
-    res = curl_easy_setopt(d_handle, CURLOPT_TCP_KEEPINTVL, 120L)
-    curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_TCP_KEEPINTVL", d_errbuf, __FILE__, __LINE__);
-#endif
-
-    d_in_use = false;
-    d_url = "";
-    d_chunk = 0;
-
-    curl::unset_error_buffer(d_handle);
-
-}
-
-#else
 
 dmrpp_easy_handle::dmrpp_easy_handle() : d_request_headers(0) {
     d_handle = curl_easy_init();
@@ -272,12 +196,12 @@ dmrpp_easy_handle::dmrpp_easy_handle() : d_request_headers(0) {
     curl::set_error_buffer(d_handle, d_errbuf);
 
 #if CURL_VERBOSE
-     res = curl_easy_setopt(d_handle, CURLOPT_DEBUGFUNCTION, curl_trace);
-     curl::check_setopt_result(res, prolog, "CURLOPT_DEBUGFUNCTION", d_errbuf, __FILE__, __LINE__);
-    // Many tests fail with this option, but it's still useful to see how connections
-    // are treated. jhrg 10/2/18
-    res = curl_easy_setopt(d_handle, CURLOPT_VERBOSE, 1L);
-    curl::check_setopt_result(res, prolog, "CURLOPT_VERBOSE", d_errbuf, __FILE__, __LINE__);
+    res = curl_easy_setopt(d_handle, CURLOPT_DEBUGFUNCTION, curl_trace);
+    curl::check_setopt_result(res, prolog, "CURLOPT_DEBUGFUNCTION", d_errbuf, __FILE__, __LINE__);
+   // Many tests fail with this option, but it's still useful to see how connections
+   // are treated. jhrg 10/2/18
+   res = curl_easy_setopt(d_handle, CURLOPT_VERBOSE, 1L);
+   curl::check_setopt_result(res, prolog, "CURLOPT_VERBOSE", d_errbuf, __FILE__, __LINE__);
 #endif
 
     res = curl_easy_setopt(d_handle, CURLOPT_HEADERFUNCTION, chunk_header_callback);
@@ -309,19 +233,24 @@ dmrpp_easy_handle::dmrpp_easy_handle() : d_request_headers(0) {
     d_url = "";
     d_chunk = 0;
 }
-#endif
 
 dmrpp_easy_handle::~dmrpp_easy_handle() {
     if (d_handle) curl_easy_cleanup(d_handle);
     if (d_request_headers) curl_slist_free_all(d_request_headers);
 }
 
-#if NEW_WAY
 /**
- * @brief This is the read_data() method for serial transfers.
+ * @brief This is the read_data() method for all transfers.
  *
- * See below for the code used for parallel transfers. Note that
- * this code is also used for the pthreads parallel transfers.
+ * This method is used by Chunk::read_data() which is used for all
+ * data transfers by the dmrpp module classes (DmrppArray, D4Opaque,
+ * and Common::read_atomic()). Whether a request is retired is
+ * determined by curl::super_easy_perform().
+ *
+ * If either the super_easy_perform() (our concoction) or easy_perform()
+ * throws, assume the transfer failed and clean up. This means that all
+ * handles that are part of the transaction that failed need to be returned
+ * to the pool.
  */
 void dmrpp_easy_handle::read_data() {
 
@@ -347,309 +276,8 @@ void dmrpp_easy_handle::read_data() {
     }
 }
 
-#else
-/**
- * @brief This is the read_data() method for serial transfers.
- *
- * See below for the code used for parallel transfers. Note that
- * this code is also used for the pthreads parallel transfers.
- */
-void dmrpp_easy_handle::read_data() {
-    // Treat HTTP/S requests specially; retry some kinds of failures.
-    if (d_url.find("https://") == 0 || d_url.find("http://") == 0) {
-        unsigned int tries = 0;
-        bool success = true;
-        useconds_t retry_time = uone_second / 4;
-        d_errbuf[0] = 0; // Initialize to empty string.
-
-        // Perform the request
-        do {
-            ++tries;
-            BESDEBUG(DMRPP_CURL, prolog << "Requesting URL: " << d_url << endl);
-            CURLcode curl_code = curl_easy_perform(d_handle);
-
-            if (CURLE_OK != curl_code) {
-                stringstream msg;
-                msg << "Data transfer error: " << curl::error_message(curl_code, d_errbuf);
-                char *effective_url = 0;
-                curl_easy_getinfo(d_handle, CURLINFO_EFFECTIVE_URL, &effective_url);
-                msg << " last_url: " << effective_url;
-                BESDEBUG(DMRPP_CURL, prolog << msg.str() << endl);
-                throw BESInternalError(msg.str(), __FILE__, __LINE__);
-            }
-
-            success = curl::eval_http_get_response(d_handle, d_url);
-
-            if (!success) {
-                if (tries == retry_limit) {
-                    string msg = prolog + "Data transfer error: Number of re-tries exceeded: " +
-                                 curl::error_message(curl_code, d_errbuf);
-                    LOG(msg << endl);
-                    throw BESInternalError(msg, __FILE__, __LINE__);
-                }
-                else {
-                    LOG(prolog << "HTTP transfer 500 error, will retry (trial " << tries << " for: " << d_url << ")."
-                               << endl);
-                    usleep(retry_time);
-                    retry_time *= 2;
-                }
-            }
-
-            curl_slist_free_all(d_request_headers);
-            d_request_headers = 0;
-        } while (!success);
-    }
-    else {
-        CURLcode curl_code = curl_easy_perform(d_handle);
-        if (CURLE_OK != curl_code) {
-            string msg = prolog + "ERROR - Data transfer error: ";
-            throw BESInternalError(msg.append(curl::error_message(curl_code, d_errbuf)),
-                                   __FILE__, __LINE__);
-        }
-    }
-    d_chunk->set_is_read(true);
-}
-#endif
-
-/**
- * The implementation of the dmrpp_multi_handle field. It can be either
- * a CURLM* or a vector of dmrpp_easy_handle*, depending on whether libcurl
- * has the CULRM* interface.
- *
- * @note This uses the pimpl pattern.
- */
-struct dmrpp_multi_handle::multi_handle {
-#if HAVE_CURL_MULTI_API
-    CURLM *curlm;
-#else
-    std::vector<dmrpp_easy_handle *> ehandles;
-#endif
-};
-
-dmrpp_multi_handle::dmrpp_multi_handle() {
-    p_impl = new multi_handle;
-#if HAVE_CURL_MULTI_API
-    p_impl->curlm = curl_multi_init();
-#endif
-}
-
-dmrpp_multi_handle::~dmrpp_multi_handle() {
-#if HAVE_CURL_MULTI_API
-    curl_multi_cleanup(p_impl->curlm);
-#endif
-    delete p_impl;
-}
-
-/**
- * @brief Add an Easy Handle to a Multi Handle object.
- *
- * @note It is the responsibility of the caller to make sure there are not
- * too many handles added to the 'multi handle' object.
- *
- * @param eh The CURL easy handle to add
- */
-void dmrpp_multi_handle::add_easy_handle(dmrpp_easy_handle *eh) {
-#if HAVE_CURL_MULTI_API
-    curl_multi_add_handle(p_impl->curlm, eh->d_handle);
-#else
-    p_impl->ehandles.push_back(eh);
-#endif
-}
-
-void dmrpp_multi_handle::remove_easy_handle(dmrpp_easy_handle *eh) {
-#if HAVE_CURL_MULTI_API
-    CURLMcode mres = curl_multi_remove_handle(p_impl->curlm, eh);
-    if (mres != CURLM_OK)
-        LOG("While cleaning up CURL multihandle during a parallel data request, could not remove a CURL handle.");
-#else
-    for (vector<dmrpp_easy_handle *>::iterator i = p_impl->ehandles.begin(), e = p_impl->ehandles.end(); i != e; ++i) {
-        if (eh == *i) {
-            p_impl->ehandles.erase(i);
-            break;
-        }
-    }
-#endif
-}
-
-// This is only used if we don't have the Multi API and have to use pthreads.
-// It is a callback used in dmrpp_multi_handle::read_data() below.
-// jhrg 8/27/18
-#if !HAVE_CURL_MULTI_API
-
-static void *easy_handle_read_data(void *handle) {
-    dmrpp_easy_handle *eh = reinterpret_cast<dmrpp_easy_handle *>(handle);
-
-    try {
-        eh->read_data();
-        pthread_exit(0);
-    }
-    catch (BESError &e) {
-        string *error = new string(e.get_verbose_message());
-        pthread_exit(error);
-    }
-}
-
-#endif
-
-/**
- * @brief The read_data() method for parallel transfers
- *
- * This uses either the CURL Multi API or pthreads to read N
- * dmrpp_easy_handle instances in parallel.
- *
- * @todo This has to be fixed to restart 500 HTTP errors and to clean up
- * after threads if there's an exception.
- *
- * @note It's the responsibility of the caller to make sure that no more than
- * d_max_parallel_transfers are added to the 'multi' handle.
- */
-void dmrpp_multi_handle::read_data() {
-#if HAVE_CURL_MULTI_API
-    useconds_t retry_time = uone_second/4;
-    // Use the libcurl Multi API here. Alternate version follows...
-    try {
-        int still_running = 0;
-        CURLMcode mres = curl_multi_perform(p_impl->curlm, &still_running);
-        if (mres != CURLM_OK)
-            throw BESInternalError(string("ERROR - Could not initiate data read: ").append(curl_multi_strerror(mres)), __FILE__,
-                __LINE__);
-
-        do {
-            int numfds = 0;
-            mres = curl_multi_wait(p_impl->curlm, NULL, 0, MAX_WAIT_MSECS, &numfds);
-            if (mres != CURLM_OK)
-                throw BESInternalError(string("ERROR - Could not wait on data read: ").append(curl_multi_strerror(mres)), __FILE__,
-                    __LINE__);
-
-            mres = curl_multi_perform(p_impl->curlm, &still_running);
-            if (mres != CURLM_OK)
-                throw BESInternalError(string("ERROR - Could not iterate data read: ").append(curl_multi_strerror(mres)), __FILE__,
-                    __LINE__);
-
-        } while (still_running);
-
-        CURLcode res;
-        CURLMsg *msg = 0;
-        int msgs_left = 0;
-        char empty[1]; // TODO Replace this with the actual error buffer that's in use in the CURL handle msg->easy_handle
-        empty[0] = 0;
-        while ((msg = curl_multi_info_read(p_impl->curlm, &msgs_left))) {
-            if (msg->msg == CURLMSG_DONE) {
-                CURL *eh = msg->easy_handle;
-
-                // Note: 'eh' is the easy handle returned by curl_multi_info_read(),
-                // but in it's private field is our dmrpp_easy_handle object. We need
-                // both to mark this data read operation as complete.
-                dmrpp_easy_handle *deh = 0;
-                res = curl_easy_getinfo(eh, CURLINFO_PRIVATE, &deh);
-                if (res != CURLE_OK)
-                    throw BESInternalError(string(prolog + "ERROR - Could not access easy handle: ").append(curl::error_message(res,empty)), __FILE__, __LINE__);
-
-                res = msg->data.result;
-                if (res != CURLE_OK)
-                    throw BESInternalError(string(prolog + "ERROR - cURL request failed. Message: ").append(curl::error_message(res,deh->d_errbuf)), __FILE__, __LINE__);
-
-
-                // This code has to work with both http/s: and file: protocols. Here we check the
-                // HTTP status code. If the protocol is not HTTP, we assume since msg->data.result
-                // returned CURLE_OK, that the transfer worked. jhrg 5/1/18
-                if (deh->d_url.find("http://") == 0 || deh->d_url.find("https://") == 0) {
-                    bool success;
-                    success = curl::eval_http_get_response(eh, deh->d_errbuf, deh->d_url);
-                    if (!success) {
-                        stringstream msg;
-                        msg <<  prolog << "ERROR - Data transfer error: " << curl::error_message(res,deh->d_errbuf) << endl;
-                        LOG(msg.str());
-                        throw BESInternalError(msg.str(), __FILE__, __LINE__);
-                    }
-                }
-
-                // If we are here, the request was successful.
-                deh->d_chunk->set_is_read(true);  // Set the is_read() property for chunk here.
-
-                // NB: Remove the handle from the CURLM* and _then_ call release_handle()
-                // so that the KEEP_ALIVE 0 (off) works. Calling delete on the dmrpp_easy_handle
-                // will invalidate 'eh', so call that after removing 'eh'.
-                mres = curl_multi_remove_handle(p_impl->curlm, eh);
-                if (mres != CURLM_OK)
-                    throw BESInternalError(string("ERROR - Could not remove libcurl handle: ").append(curl_multi_strerror(mres)),  __FILE__, __LINE__);
-
-                DmrppRequestHandler::curl_handle_pool->release_handle(deh);
-            }
-            else {  // != CURLMSG_DONE
-                throw BESInternalError("ERROR - getting HTTP or FILE responses.", __FILE__, __LINE__);
-            }
-        }
-    }
-    catch (...) {
-        // If we throw here, remove all of the easy handles from this multihandle
-        // That will prevent old URLs part that were part of a failed request from
-        // being part of a subsequent request.
-        // With C++11 this could be for (auto &i: DmrppRequestHandler::curl_handle_pool->d_easy_handles) { ... }
-        for (std::vector<dmrpp_easy_handle *>::iterator i = DmrppRequestHandler::curl_handle_pool->d_easy_handles.begin(),
-                e = DmrppRequestHandler::curl_handle_pool->d_easy_handles.end(); i != e; ++i) {
-            CURLMcode mres = curl_multi_remove_handle(p_impl->curlm, (*i)->d_handle);
-            if (mres != CURLM_OK)
-                LOG("ERROR - While cleaning up from an error during a parallel data request, could not remove a CURL handle." << endl);
-            DmrppRequestHandler::curl_handle_pool->release_handle(*i);
-        }
-
-        throw;  // re-throw the exception
-    }
-#else
-    // Start the processing pipelines using pthreads - there is no Multi API
-
-    pthread_t threads[p_impl->ehandles.size()];
-    unsigned int num_threads = 0;
-    try {
-        for (unsigned int i = 0; i < p_impl->ehandles.size(); ++i) {
-            int status = pthread_create(&threads[i], NULL, easy_handle_read_data, (void *) p_impl->ehandles[i]);
-            if (status == 0) {
-                ++num_threads;
-            }
-            else {
-                ostringstream oss("Could not start process_one_chunk_unconstrained thread for chunk ", std::ios::ate);
-                oss << i << ": " << strerror(status);
-                throw BESInternalError(oss.str(), __FILE__, __LINE__);
-            }
-        }
-
-        // Now join the child threads.
-        for (unsigned int i = 0; i < num_threads; ++i) {
-            string *error;
-            int status = pthread_join(threads[i], (void **) &error);
-            if (status != 0) {
-                ostringstream oss("Could not join process_one_chunk_unconstrained thread for chunk ", std::ios::ate);
-                oss << i << ": " << strerror(status);
-                throw BESInternalError(oss.str(), __FILE__, __LINE__);
-            }
-            else if (error != 0) {
-                BESInternalError e(*error, __FILE__, __LINE__);
-                delete error;
-                throw e;
-            }
-        }
-        // Now remove the easy_handles, mimicking the behavior when using the real Multi API
-        p_impl->ehandles.clear();
-    }
-    catch (...) {
-        // Returning all the easy handles to the pool is handled for the 'no HAVE_CURL_MULTI_API
-        // case in Chunk's chunk_write_data() libcurl callback.
-        DmrppRequestHandler::curl_handle_pool->release_all_handles();
-
-        // Now remove the easy_handles, mimicking the behavior when using the real Multi API
-        p_impl->ehandles.clear();
-
-        join_threads(threads, num_threads);
-
-        throw;
-    }
-#endif
-}
-
-CurlHandlePool::CurlHandlePool() : d_multi_handle(0) {
+CurlHandlePool::CurlHandlePool() {
     d_max_easy_handles = DmrppRequestHandler::d_max_parallel_transfers;
-    d_multi_handle = new dmrpp_multi_handle();
 
     for (unsigned int i = 0; i < d_max_easy_handles; ++i) {
         d_easy_handles.push_back(new dmrpp_easy_handle());
@@ -719,10 +347,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
 
         handle->d_chunk = chunk;
 
-        CURLcode res;
-
-
-        res = curl_easy_setopt(handle->d_handle, CURLOPT_URL, chunk->get_data_url().c_str());
+        CURLcode res = curl_easy_setopt(handle->d_handle, CURLOPT_URL, chunk->get_data_url().c_str());
         curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_URL", handle->d_errbuf, __FILE__, __LINE__);
 
         // get the offset to offset + size bytes
@@ -745,7 +370,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
         res = curl_easy_setopt(handle->d_handle, CURLOPT_COOKIEFILE, curl::get_cookie_filename().c_str());
         curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_COOKIEFILE", handle->d_errbuf, __FILE__, __LINE__);
 
-        res  = curl_easy_setopt(handle->d_handle, CURLOPT_COOKIEJAR, curl::get_cookie_filename().c_str());
+        res = curl_easy_setopt(handle->d_handle, CURLOPT_COOKIEJAR, curl::get_cookie_filename().c_str());
         curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_COOKIEJAR", handle->d_errbuf, __FILE__, __LINE__);
 
         // Follow 302 (redirect) responses

@@ -1104,15 +1104,6 @@ void DmrppArray::read_chunks()
         }
     }
     else {
-#if 0
-        // temporary version
-        while (chunks_to_read.size() > 0) {
-            Chunk *chunk = chunks_to_read.front();
-            chunks_to_read.pop();
-
-            process_one_chunk(chunk, this, array_shape);
-        }
-#endif
         // Parallel version based on read_chunks_unconstrained(). There is
         // substantial duplication of the code in read_chunks_unconstrained(), but
         // wait to remove that when we move to C++11 which has threads integrated.
