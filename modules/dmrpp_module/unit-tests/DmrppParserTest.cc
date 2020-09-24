@@ -261,6 +261,37 @@ public:
 
     }
 
+/******************************************************
+     *
+     */
+    void test_string_compact()
+    {
+
+        auto_ptr<DMR> dmr(new DMR);
+        DmrppTypeFactory dtf;
+        dmr->set_factory(&dtf);
+
+        string int_h5 = string(TEST_DATA_DIR).append("/").append("t_string_compact.h5.dmrpp");
+        BESDEBUG(MODULE, "Opening: " << int_h5 << endl);
+
+        ifstream in(int_h5.c_str());
+        parser->intern(in, dmr.get());
+        BESDEBUG(MODULE, "Parsing complete"<< endl);
+
+        D4Group *root = dmr->root();
+
+        checkGroupsAndVars(root,"/",0,1);
+
+        D4Group::Vars_iter v = root->var_begin();
+
+        checkDmrppVariableWithCompact(*v,
+                                      "scalar",
+                                      2144,
+                                      4,
+                                      "1ebc4541e985d612a5ff7ed2ee92bf3d",
+                                      "6609c41e-0feb-4c00-a11b-48ae9a493542");
+
+    }
 
    /******************************************************
     *
@@ -500,14 +531,15 @@ public:
 
     CPPUNIT_TEST_SUITE( DmrppParserTest );
 
-    CPPUNIT_TEST(test_integer_scalar);
+    //CPPUNIT_TEST(test_integer_scalar);
     //CPPUNIT_TEST(test_integer_arrays);
     //CPPUNIT_TEST(test_float_arrays);
 
     //CPPUNIT_TEST(test_grid_1_2d);
     //CPPUNIT_TEST(test_nc4_group_atomic);
 
-    CPPUNIT_TEST(test_integer_scalar_compact);
+    //CPPUNIT_TEST(test_integer_scalar_compact);
+    CPPUNIT_TEST(test_string_compact);
 
 #if 0
     CPPUNIT_TEST(test_chunked_dmr_print);

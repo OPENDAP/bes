@@ -60,6 +60,8 @@
 #include "DmrppNames.h"
 #include "CurlUtils.h"
 
+#include "Base64.h"
+
 #define FIVE_12K  524288;
 #define ONE_MB   1048576;
 #define MAX_INPUT_LINE_LENGTH ONE_MB;
@@ -1336,12 +1338,65 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
     case inside_dmrpp_compact_element: {
         if (is_not(localname, "compact"))
             DmrppParserSax2::dmr_error(parser, "Expected an end value tag; found '%s' instead.", localname);
-        string data(parser->char_data);
+        std::string data(parser->char_data);
         BESDEBUG(PARSER, prolog << "Read compact element text: '" << data << "'" << endl);
 
+        std::vector <u_int8_t> decoded = base64::Base64::decode(data);
+
         BaseType *bt = parser->top_basetype();
-        DmrppCommon *dc = dynamic_cast<DmrppCommon*>(bt);   // Get the Dmrpp common info
+        DmrppCommon *dc = dynamic_cast<DmrppCommon *>(bt);   // Get the Dmrpp common info
         BESDEBUG(PARSER, prolog << "BaseType: " << bt->type_name() << " " << bt->name() << endl);
+
+        switch (bt->type()) {
+            case dods_byte_c:
+            case dods_char_c:
+            case dods_int8_c:
+            case dods_uint8_c:
+            case dods_int16_c:
+            case dods_uint16_c:
+            case dods_int32_c:
+            case dods_uint32_c:
+            case dods_int64_c:
+            case dods_uint64_c:
+
+            case dods_enum_c:
+
+            case dods_float32_c:
+            case dods_float64_c:
+                try {
+                    bt->val2buf(reinterpret_cast<void *>(&decoded[0]));
+                    bt->set_read_p(true);
+                }
+                catch (...) {
+                    throw;
+                }
+                break;
+
+            case dods_str_c:
+            case dods_url_c:
+                // For this case, the Array is really a single string - check for that
+                // with the following assert - but is an Array because the string data
+                // is stored as an array of chars (hello, FORTRAN). Read the chars, make
+                // a string and load that into a vector<string> (which will be a vector
+                // of length one). Set that as the value of the Array. Really, this
+                // value could be stored as a scalar, but that's complicated and client
+                // software might be expecting an array, so better to handle it this way.
+                // jhrg 9/17/20
+                try {
+                    std::string str(decoded.begin(), decoded.end());
+                    std::vector <std::string> strings = {str};
+                    bt->set_value(strings, strings.size());
+                    bt->set_read_p(true);
+                }
+                catch (...) {
+                    throw;
+                }
+                break;
+
+            default:
+                throw BESInternalError("Unsupported COMPACT storage variable type in the drmpp handler.", __FILE__, __LINE__);
+                break;
+        }
 
         parser->char_data = ""; // Null this after use.
 
