@@ -948,6 +948,9 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 << this_element_ns_name << endl);
         break;
 
+    case inside_dmrpp_compact_element:
+        break;
+
     case inside_dmrpp_object: {
         BESDEBUG(PARSER, prolog << "Inside dmrpp namespaced element. localname: " << localname << endl);
         assert(this_element_ns_name == dmrpp_namespace);
@@ -969,8 +972,8 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
             dc->set_compact(true);
             parser->push_state(inside_dmrpp_compact_element);
         }
+        // Ingest the dmrpp:chunks element and it attributes
         else if (strcmp(localname, "chunks") == 0) {
-            // Ingest the dmrpp:chunks element and it attributes
             BESDEBUG(PARSER, prolog << "DMR++ chunks element. localname: " << localname << endl);
 
             if (parser->check_attribute("compressionType", attributes, nb_attributes)) {
@@ -1333,7 +1336,6 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
     case inside_dmrpp_compact_element: {
         if (is_not(localname, "compact"))
             DmrppParserSax2::dmr_error(parser, "Expected an end value tag; found '%s' instead.", localname);
-
         parser->pop_state();
         string data(parser->char_data);
         parser->char_data = ""; // Null this after use.
@@ -1388,6 +1390,7 @@ void DmrppParserSax2::dmr_get_characters(void * p, const xmlChar * ch, int len)
     switch (parser->get_state()) {
     case inside_attribute_value:
     case inside_dmrpp_chunkDimensionSizes_element:
+    case inside_dmrpp_compact_element:
         parser->char_data.append((const char *) (ch), len);
         BESDEBUG(PARSER, prolog << "Characters[" << parser->char_data.size() << "]" << parser->char_data << "'" << endl);
         break;
@@ -1526,12 +1529,12 @@ void DmrppParserSax2::cleanup_parse()
     }
 
     if (!wellFormed)
-        throw Error("The DMR was not well formed. " + error_msg);
+        throw BESInternalError("The DMR was not well formed. " + error_msg,__FILE__,__LINE__);
     else if (!valid)
-        throw Error("The DMR was not valid." + error_msg);
+        throw BESInternalError("The DMR was not valid." + error_msg,__FILE__,__LINE__);
     else if (get_state() == parser_error)
-        throw Error(error_msg);
-    else if (get_state() == parser_fatal_error) throw InternalErr(error_msg);
+        throw BESInternalError(error_msg,__FILE__,__LINE__);
+    else if (get_state() == parser_fatal_error) throw BESInternalError(error_msg,__FILE__,__LINE__);
 }
 
 /**
