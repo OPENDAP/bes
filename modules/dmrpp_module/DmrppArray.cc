@@ -1042,7 +1042,22 @@ void *one_chunk_thread(void *arg_list)
     pthread_exit(NULL);
 }
 
-
+/**
+ * This function may be called by a thread in a multi-threaded access scenario
+ * or by a DmrppArray method in the serial access case. The Chunk::read_chunk()
+ * method may throw an exception. In the multi-threaded case, that exception
+ * will only be part of the thread's execution context, not "main()'s" context.
+ * The code in the thread task one_chuck_thread above will catch that exception
+ * and return an error code using pthread_exit(). That, in turn, will be read
+ * by the main thread and turned into an exception that propagates to the top
+ * of the BES call stack.
+ *
+ * @param chunk The chunk to process
+ * @param array The DmrppArray instance that called this function
+ * @param constrained_array_shape How the DAP Array this chunk is part of was
+ * constrained - used to determine where/how to add the chunk's data to the
+ * whole array.
+ */
 void process_one_chunk(Chunk *chunk, DmrppArray *array, const vector<unsigned int> &constrained_array_shape)
 {
     chunk->read_chunk();
@@ -1150,7 +1165,7 @@ void DmrppArray::read_chunks()
                                            __LINE__);
 
                 if (tid >= DmrppRequestHandler::d_max_parallel_transfers) {
-                    ostringstream oss("Invalid thread id read after thread exit: ", std::ios::ate);
+                    ostringstream oss("Invalid thread id read after thread exit: ", ios::ate);
                     oss << tid;
                     throw BESInternalError(oss.str(), __FILE__, __LINE__);
                 }

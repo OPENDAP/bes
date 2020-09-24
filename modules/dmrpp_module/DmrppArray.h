@@ -83,7 +83,7 @@ private:
     process_one_chunk_unconstrained(Chunk *chunk, DmrppArray *array, const vector<unsigned int> &array_shape,
                                     const vector<unsigned int> &chunk_shape);
 
-    void insert_chunk_unconstrained(Chunk *chunk, unsigned int dim,
+    virtual void insert_chunk_unconstrained(Chunk *chunk, unsigned int dim,
                                     unsigned long long array_offset, const std::vector<unsigned int> &array_shape,
                                     unsigned long long chunk_offset, const std::vector<unsigned int> &chunk_shape,
                                     const std::vector<unsigned int> &chunk_origin);
@@ -94,7 +94,7 @@ private:
 
     Chunk *find_needed_chunks(unsigned int dim, std::vector<unsigned int> *target_element_address, Chunk *chunk);
 
-    void insert_chunk(unsigned int dim, std::vector<unsigned int> *target_element_address,
+    virtual void insert_chunk(unsigned int dim, std::vector<unsigned int> *target_element_address,
                       std::vector<unsigned int> *chunk_element_address,
                       Chunk *chunk, const vector<unsigned int> &constrained_array_shape);
 

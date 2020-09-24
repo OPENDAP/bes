@@ -270,7 +270,7 @@ void dmrpp_easy_handle::read_data() {
         d_chunk->set_is_read(true);
     }
     catch(...) {
-        // FIXME here is where we clean up all the handles in the SwinLane
+        // FIXME here is where we clean up all the handles in the SwimLane
         // of the handle that caused the exception. jhrg 9/23/20
         throw ;
     }
