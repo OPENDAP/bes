@@ -964,6 +964,14 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
             throw BESInternalError("Could not cast BaseType to DmrppType in the drmpp handler.", __FILE__, __LINE__);
 
         // Ingest the dmrpp:chunks element and it attributes
+        if (strcmp(localname, "compact") == 0) {
+            BESDEBUG(PARSER, prolog << "DMR++ compact element. localname: " << localname << endl);
+            dc->set_compact(true);
+            std::string value = parser->char_data;
+            int i = 1;
+        }
+
+            // Ingest the dmrpp:chunks element and it attributes
         if (strcmp(localname, "chunks") == 0) {
             BESDEBUG(PARSER, prolog << "DMR++ chunks element. localname: " << localname << endl);
 
