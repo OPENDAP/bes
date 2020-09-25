@@ -6,6 +6,7 @@
     dmrVersion="1.0"
     name="t_int_scalar.h5"
     dmrpp:href="data/dmrpp/t_int_scalar.h5">
+    <Dimension name="ancillary_data_calibrations_ds_channel" size="20"/>
     <Int64 name="ancillary_data_calibrations_low_link_impulse_response_gt1r_total_events">
         <Dim name="/ancillary_data_calibrations_ds_channel"/>
         <Attribute name="contentType" type="String">
