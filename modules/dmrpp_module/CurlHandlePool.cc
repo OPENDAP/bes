@@ -248,32 +248,23 @@ dmrpp_easy_handle::~dmrpp_easy_handle() {
  * determined by curl::super_easy_perform().
  *
  * If either the super_easy_perform() (our concoction) or easy_perform()
- * throws, assume the transfer failed and clean up. This means that all
- * handles that are part of the transaction that failed need to be returned
- * to the pool.
+ * throws, assume the transfer failed. The caller of this method must handle
+ * all cleanup.
  */
 void dmrpp_easy_handle::read_data() {
-
-    try {
-        // Treat HTTP/S requests specially; retry some kinds of failures.
-        if (d_url.find("https://") == 0 || d_url.find("http://") == 0) {
-            curl::super_easy_perform(d_handle);
-        }
-        else {
-            CURLcode curl_code = curl_easy_perform(d_handle);
-            if (CURLE_OK != curl_code) {
-                string msg = prolog + "ERROR - Data transfer error: ";
-                throw BESInternalError(msg.append(curl::error_message(curl_code, d_errbuf)), __FILE__, __LINE__);
-            }
-        }
-
-        d_chunk->set_is_read(true);
+    // Treat HTTP/S requests specially; retry some kinds of failures.
+    if (d_url.find("https://") == 0 || d_url.find("http://") == 0) {
+        curl::super_easy_perform(d_handle);
     }
-    catch(...) {
-        // FIXME here is where we clean up all the handles in the SwimLane
-        // of the handle that caused the exception. jhrg 9/23/20
-        throw ;
+    else {
+        CURLcode curl_code = curl_easy_perform(d_handle);
+        if (CURLE_OK != curl_code) {
+            string msg = prolog + "ERROR - Data transfer error: ";
+            throw BESInternalError(msg.append(curl::error_message(curl_code, d_errbuf)), __FILE__, __LINE__);
+        }
     }
+
+    d_chunk->set_is_read(true);
 }
 
 CurlHandlePool::CurlHandlePool() {

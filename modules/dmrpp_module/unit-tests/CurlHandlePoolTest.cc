@@ -35,10 +35,13 @@
 
 #include "BESInternalError.h"
 #include "TheBESKeys.h"
+#include "BESDebug.h"
 
 #include "Chunk.h"
 #include "DmrppArray.h"
 #include "CurlHandlePool.h"
+
+#define THREAD_SLEEP_TIME 1 // sleep time in seconds
 
 using namespace std;
 
@@ -104,7 +107,7 @@ public:
             // handle->read_data();  // throws if error
             time_t t;
             srandom(time(&t));
-            sleep(2);
+            sleep(THREAD_SLEEP_TIME);
 
             if (d_sim_err)
                 throw BESInternalError("Simulated error", __FILE__, __LINE__);
@@ -169,6 +172,8 @@ public:
     {
         chp = new CurlHandlePool(4);
         TheBESKeys::ConfigFile = "curl_handle_pool_keys.conf";
+        // The following will show threads joined after an exception was thrown by a thread
+        if (bes_debug) BESDebug::SetUp("cerr,dmrpp:3");
     }
 
     // Called after each test
@@ -201,7 +206,7 @@ public:
             CPPUNIT_FAIL("Exception");
         }
 
-        int num2 = chp->get_handles_available();
+        unsigned int num2 = chp->get_handles_available();
         CPPUNIT_ASSERT(num2 == num);
     }
 
@@ -321,7 +326,8 @@ public:
         dmrpp_array_thread_control(chunks_to_read, array, array_shape);
         CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
     }
-    
+
+    // One of the threads throw an exception
     void process_one_chunk_threaded_test_1()
     {
         queue<Chunk *> chunks_to_read;
@@ -344,6 +350,7 @@ public:
         CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
     }
 
+    // One thread not in the initial batch of threads throws.
     void process_one_chunk_threaded_test_2()
     {
         queue<Chunk *> chunks_to_read;
@@ -369,6 +376,7 @@ public:
         CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
     }
 
+    // Two threads in the initial set throw
     void process_one_chunk_threaded_test_3()
     {
         queue<Chunk *> chunks_to_read;
@@ -394,13 +402,96 @@ public:
         CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
     }
 
-CPPUNIT_TEST_SUITE(CurlHandlePoolTest);
+    // two in the second set throw
+    void process_one_chunk_threaded_test_4()
+    {
+        queue<Chunk *> chunks_to_read;
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, true));
+        chunks_to_read.push(new MockChunk(chp, true));
+        chunks_to_read.push(new MockChunk(chp, false));
+
+        MockDmrppArray *array = new MockDmrppArray;
+        vector<unsigned int> array_shape = {1};
+
+        try {
+            dmrpp_array_thread_control(chunks_to_read, array, array_shape);
+            CPPUNIT_FAIL("dmrpp_array_thread_control() should have thrown an exception");
+        }
+        catch(BESInternalError &e) {
+            DBG(cerr << "BESInternalError: " << e.get_verbose_message() << endl);
+        }
+
+        CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
+    }
+
+    // One in the first set and one in the second set throw
+    void process_one_chunk_threaded_test_5()
+    {
+        queue<Chunk *> chunks_to_read;
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, true));
+        chunks_to_read.push(new MockChunk(chp, true));
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, false));
+
+        MockDmrppArray *array = new MockDmrppArray;
+        vector<unsigned int> array_shape = {1};
+
+        try {
+            dmrpp_array_thread_control(chunks_to_read, array, array_shape);
+            CPPUNIT_FAIL("dmrpp_array_thread_control() should have thrown an exception");
+        }
+        catch(BESInternalError &e) {
+            DBG(cerr << "BESInternalError: " << e.get_verbose_message() << endl);
+        }
+
+        CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
+    }
+
+    // Make sure the curl handle pool doesn't leak with multiple failures
+    void process_one_chunk_threaded_test_6()
+    {
+        queue<Chunk *> chunks_to_read;
+        for (int i = 0; i < 5; ++i) {
+            chunks_to_read.push(new MockChunk(chp, false));
+            chunks_to_read.push(new MockChunk(chp, false));
+            chunks_to_read.push(new MockChunk(chp, false));
+            chunks_to_read.push(new MockChunk(chp, true));
+            chunks_to_read.push(new MockChunk(chp, true));
+            chunks_to_read.push(new MockChunk(chp, false));
+            chunks_to_read.push(new MockChunk(chp, false));
+
+            MockDmrppArray *array = new MockDmrppArray;
+            vector<unsigned int> array_shape = {1};
+
+            try {
+                dmrpp_array_thread_control(chunks_to_read, array, array_shape);
+                CPPUNIT_FAIL("dmrpp_array_thread_control() should have thrown an exception");
+            }
+            catch (BESInternalError &e) {
+                DBG(cerr << "BESInternalError: " << e.get_verbose_message() << endl);
+            }
+        }
+
+        CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
+    }
+
+    CPPUNIT_TEST_SUITE(CurlHandlePoolTest);
 
     CPPUNIT_TEST(process_one_chunk_test);
     CPPUNIT_TEST(process_one_chunk_threaded_test_0);
     CPPUNIT_TEST(process_one_chunk_threaded_test_1);
     CPPUNIT_TEST(process_one_chunk_threaded_test_2);
     CPPUNIT_TEST(process_one_chunk_threaded_test_3);
+    CPPUNIT_TEST(process_one_chunk_threaded_test_4);
+    CPPUNIT_TEST(process_one_chunk_threaded_test_5);
+    CPPUNIT_TEST(process_one_chunk_threaded_test_6);
 
     CPPUNIT_TEST_SUITE_END();
 };

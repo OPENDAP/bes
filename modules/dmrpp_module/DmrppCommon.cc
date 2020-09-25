@@ -72,9 +72,12 @@ void join_threads(pthread_t threads[], unsigned int num_threads)
     int status;
     for (unsigned int i = 0; i < num_threads; ++i) {
         if (threads[i]) {
-            BESDEBUG(dmrpp_3, "Join thread " << i << " after an exception was caught.");
-            if ((status = pthread_join(threads[i], NULL)) < 0)
-            LOG("Failed to join thread " << i << "during clean up from an exception: " << strerror(status) << endl);
+            BESDEBUG(dmrpp_3, "Join thread " << i << " after an exception was caught." << endl);
+            if ((status = pthread_join(threads[i], NULL)) < 0) {
+                BESDEBUG(dmrpp_3, "Could not join thread " << i << ", " << strerror(status)<< endl);
+                LOG("Failed to join thread " << i << "during clean up from an exception: " << strerror(status) << endl);
+            }
+
         }
     }
 }
