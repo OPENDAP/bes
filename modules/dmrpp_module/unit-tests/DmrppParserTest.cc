@@ -307,7 +307,7 @@ public:
             D4Group::Vars_iter v = root->var_begin();
 
             checkDmrppVariableWithCompact(*v,
-                                          "scalar",
+                                          "ancillary_data_calibrations_low_link_impulse_response_gt1r_total_events",
                                           2144,
                                           4,
                                           "1ebc4541e985d612a5ff7ed2ee92bf3d",
