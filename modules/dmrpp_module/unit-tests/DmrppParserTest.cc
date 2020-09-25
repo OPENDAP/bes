@@ -76,6 +76,7 @@
 using namespace libdap;
 
 static bool debug = false;
+#define prolog std::string("DmrppParserTest::").append(__func__).append("() - ")
 
 namespace dmrpp {
 
@@ -243,23 +244,31 @@ public:
         //string int_h5 = string(TEST_DATA_DIR).append("/").append("ATL03_20181228015957_13810110_003_01.h5.dmrpp");
         BESDEBUG(MODULE, "Opening: " << int_h5 << endl);
 
-        ifstream in(int_h5.c_str());
-        parser->intern(in, dmr.get());
-        BESDEBUG(MODULE, "Parsing complete"<< endl);
+        try {
+            ifstream in(int_h5.c_str());
+            parser->intern(in, dmr.get());
+            BESDEBUG(MODULE, "Parsing complete"<< endl);
 
-        D4Group *root = dmr->root();
+            D4Group *root = dmr->root();
 
-        checkGroupsAndVars(root,"/",0,2);
+            checkGroupsAndVars(root,"/",0,2);
 
-        D4Group::Vars_iter v = root->var_begin();
+            D4Group::Vars_iter v = root->var_begin();
 
-        checkDmrppVariableWithCompact(*v,
+            checkDmrppVariableWithCompact(*v,
                                           "scalar",
                                           2144,
                                           4,
                                           "1ebc4541e985d612a5ff7ed2ee92bf3d",
                                           "6609c41e-0feb-4c00-a11b-48ae9a493542");
 
+        }
+        catch(BESError &error){
+            stringstream msg;
+            msg << prolog << "Caught BESError. Message: "<< error.get_message() << " file: " << error.get_file() << " line: "<< error.get_line();
+            cerr << msg.str();
+            CPPUNIT_FAIL(msg.str());
+        }
     }
 
 /******************************************************
