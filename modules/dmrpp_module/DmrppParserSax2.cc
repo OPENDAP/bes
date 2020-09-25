@@ -394,7 +394,7 @@ bool DmrppParserSax2::process_compact_start(const char *name){
     }
 }
 
-bool DmrppParserSax2::process_compact_end(const char *localname)
+void DmrppParserSax2::process_compact_end(const char *localname)
 {
     BESDEBUG(PARSER, prolog << "BEGIN" << endl);
     if (is_not(localname, "compact"))
