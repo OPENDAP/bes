@@ -1071,8 +1071,11 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
             throw BESInternalError("Could not cast BaseType to DmrppType in the drmpp handler.", __FILE__, __LINE__);
 
         // Ingest the dmrpp:chunks element and it attributes
-        if (parser->process_dmrpp_compact_start(localname))
-            parser->push_state(inside_dmrpp_compact_element);
+        if (parser->process_dmrpp_compact_start(localname)){
+//            parser->push_state(inside_dmrpp_compact_element);
+            BESDEBUG(PARSER, prolog << "Call to parser->process_dmrpp_compact_start() completed." << endl);
+
+        }
         else if (strcmp(localname, "chunks") == 0) {
             BESDEBUG(PARSER, prolog << "DMR++ chunks element. localname: " << localname << endl);
 
