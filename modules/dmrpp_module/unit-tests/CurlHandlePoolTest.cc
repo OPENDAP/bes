@@ -51,8 +51,9 @@
 
 using namespace std;
 
-static bool debug = false;
-static bool bes_debug = false;
+// FIXME Reset these to false before merging this code to master. jhrg 9/25/20
+static bool debug = true;
+static bool bes_debug = true;
 
 #undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
@@ -329,8 +330,16 @@ public:
         MockDmrppArray *array = new MockDmrppArray;
         vector<unsigned int> array_shape = {1};
 
-        dmrpp_array_thread_control(chunks_to_read, array, array_shape);
-        CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
+        try {
+            dmrpp_array_thread_control(chunks_to_read, array, array_shape);
+            CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
+        }
+        catch(BESError &e) {
+            CPPUNIT_FAIL(string("Caught BESError: ").append(e.get_verbose_message()));
+        }
+        catch(std::exception &e) {
+            CPPUNIT_FAIL(string("Caught std::exception: ").append(e.what()));
+        }
     }
 
     // One of the threads throw an exception
