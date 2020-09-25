@@ -12,4 +12,9 @@
     </Attribute>
     <dmrpp:compact>LQAAAA==</dmrpp:compact>
   </Int32>
+    <Int32 name="another">
+    <Attribute name="value" type="Int32">
+      <Value>45</Value>
+    </Attribute>
+    </Int32>
 </Dataset>

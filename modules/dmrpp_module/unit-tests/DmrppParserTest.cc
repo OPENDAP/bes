@@ -240,6 +240,7 @@ public:
         dmr->set_factory(&dtf);
 
         string int_h5 = string(TEST_DATA_DIR).append("/").append("t_int_scalar_compact.h5.dmrpp");
+        //string int_h5 = string(TEST_DATA_DIR).append("/").append("ATL03_20181228015957_13810110_003_01.h5.dmrpp");
         BESDEBUG(MODULE, "Opening: " << int_h5 << endl);
 
         ifstream in(int_h5.c_str());
@@ -531,14 +532,14 @@ public:
 
     CPPUNIT_TEST_SUITE( DmrppParserTest );
 
-    CPPUNIT_TEST(test_integer_scalar);
-    CPPUNIT_TEST(test_integer_arrays);
-    CPPUNIT_TEST(test_float_arrays);
+    //CPPUNIT_TEST(test_integer_scalar);
+    //CPPUNIT_TEST(test_integer_arrays);
+    //CPPUNIT_TEST(test_float_arrays);
 
-    CPPUNIT_TEST(test_grid_1_2d);
-    CPPUNIT_TEST(test_nc4_group_atomic);
+    //CPPUNIT_TEST(test_grid_1_2d);
+    //CPPUNIT_TEST(test_nc4_group_atomic);
 
-    //CPPUNIT_TEST(test_integer_scalar_compact);
+    CPPUNIT_TEST(test_integer_scalar_compact);
     //CPPUNIT_TEST(test_string_compact);
 
 #if 0
