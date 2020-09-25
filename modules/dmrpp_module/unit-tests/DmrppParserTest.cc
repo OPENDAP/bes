@@ -88,6 +88,16 @@ public:
     // Called once before everything gets tested
     DmrppParserTest() :parser(0)
     {
+    }
+
+    // Called at the end of the test
+    ~DmrppParserTest()
+    {
+    }
+
+    // Called before each test
+    void setUp()
+    {
         if (debug) BESDebug::SetUp("cerr,dmrpp,dmrpp:parser");
         // Contains BES Log parameters but not cache names
         TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
@@ -95,23 +105,14 @@ public:
         bool found;
         TheBESKeys::TheKeys()->get_value("ff",val,found);
         parser = new DmrppParserSax2();
-    }
 
-    // Called at the end of the test
-    ~DmrppParserTest()
-    {
-        if(parser)
-            delete parser;
-    }
-
-    // Called before each test
-    void setUp()
-    {
     }
 
     // Called after each test
     void tearDown()
     {
+        if(parser)
+            delete parser;
     }
 
     /**
