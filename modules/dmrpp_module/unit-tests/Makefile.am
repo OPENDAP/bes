@@ -46,7 +46,8 @@ noinst_HEADERS = test_config.h
 
 noinst_DATA = bes.conf bes_ngap_s3_creds.conf $(CREDS_CONF) input-files/weak.conf
 
-EXTRA_DIST = bes.conf.in bes_ngap_s3_creds.conf.in test_config.h.in baselines input-files awsv4
+EXTRA_DIST = bes.conf.in bes_ngap_s3_creds.conf.in test_config.h.in curl_handle_pool_keys.conf \
+baselines input-files awsv4
 
 CLEANFILES = *.gcda *.gcno *.strm *.file test_config.h tmp.txt
 
