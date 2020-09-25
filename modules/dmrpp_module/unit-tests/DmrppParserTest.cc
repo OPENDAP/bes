@@ -264,9 +264,15 @@ public:
                                           "6609c41e-0feb-4c00-a11b-48ae9a493542");
 
         }
-        catch(BESError &error){
+        catch(BESError &e){
             stringstream msg;
-            msg << prolog << "Caught BESError. Message: "<< error.get_message() << " file: " << error.get_file() << " line: "<< error.get_line();
+            msg << prolog << "Caught BESError. Message: "<< e.get_message() << " file: " << e.get_file() << " line: "<< e.get_line();
+            cerr << msg.str();
+            CPPUNIT_FAIL(msg.str());
+        }
+        catch(libdap::Error &e){
+            stringstream msg;
+            msg << prolog << "Caught libdap::Error. Message: "<< e.get_error_message() << " file: " << e.get_file() << " line: "<< e.get_line();
             cerr << msg.str();
             CPPUNIT_FAIL(msg.str());
         }
@@ -281,27 +287,45 @@ public:
         auto_ptr<DMR> dmr(new DMR);
         DmrppTypeFactory dtf;
         dmr->set_factory(&dtf);
-
-        string int_h5 = string(TEST_DATA_DIR).append("/").append("t_int_array_compact.h5.dmrpp");
+//t_int_scalar_compact.h5.dmrpp
+        string int_h5 = string(TEST_DATA_DIR).append("/").append("t_int64_array_compact.h5.dmrpp");
         //string int_h5 = string(TEST_DATA_DIR).append("/").append("ATL03_20181228015957_13810110_003_01.h5.dmrpp");
         BESDEBUG(MODULE, "Opening: " << int_h5 << endl);
 
-        ifstream in(int_h5.c_str());
-        parser->intern(in, dmr.get());
-        BESDEBUG(MODULE, "Parsing complete"<< endl);
+        try {
+            ifstream in(int_h5.c_str());
+            CPPUNIT_ASSERT(in.is_open());
 
-        D4Group *root = dmr->root();
 
-        checkGroupsAndVars(root,"/",0,1);
+            parser->intern(in, dmr.get());
+            BESDEBUG(MODULE, "Parsing complete"<< endl);
 
-        D4Group::Vars_iter v = root->var_begin();
+            D4Group *root = dmr->root();
 
-        checkDmrppVariableWithCompact(*v,
-                                      "scalar",
-                                      2144,
-                                      4,
-                                      "1ebc4541e985d612a5ff7ed2ee92bf3d",
-                                      "6609c41e-0feb-4c00-a11b-48ae9a493542");
+            checkGroupsAndVars(root,"/",0,1);
+
+            D4Group::Vars_iter v = root->var_begin();
+
+            checkDmrppVariableWithCompact(*v,
+                                          "scalar",
+                                          2144,
+                                          4,
+                                          "1ebc4541e985d612a5ff7ed2ee92bf3d",
+                                          "6609c41e-0feb-4c00-a11b-48ae9a493542");
+        }
+        catch(BESError &e){
+            stringstream msg;
+            msg << prolog << "Caught BESError. Message: "<< e.get_message() << " file: " << e.get_file() << " line: "<< e.get_line();
+            cerr << msg.str();
+            CPPUNIT_FAIL(msg.str());
+        }
+        catch(libdap::Error &e){
+            stringstream msg;
+            msg << prolog << "Caught libdap::Error. Message: "<< e.get_error_message() << " file: " << e.get_file() << " line: "<< e.get_line();
+            cerr << msg.str();
+            CPPUNIT_FAIL(msg.str());
+        }
+
 
     }
 

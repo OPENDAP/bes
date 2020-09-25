@@ -78,33 +78,34 @@ using http::EffectiveUrlCache;
 
 namespace dmrpp {
 
-static const char *states[] = { "parser_start",
-
-"inside_dataset",
-
-// inside_group is the state just after parsing the start of a Group
-// element.
-    "inside_group",
-
-    "inside_attribute_container", "inside_attribute", "inside_attribute_value", "inside_other_xml_attribute",
-
-    "inside_enum_def", "inside_enum_const",
-
-    "inside_dim_def",
-
-    // This covers Byte, ..., Url, Opaque
-    "inside_simple_type",
-
-    // "inside_array",
-    "inside_dim", "inside_map",
-
-    "inside_constructor",
-
-    "not_dap4_element", "inside_dmrpp_object", "inside_dmrpp_chunkDimensionSizes_element",
-
-    "parser_unknown", "parser_error", "parser_fatal_error",
-
-    "parser_end" };
+static const char *states[] = {
+        "parser_start",
+        "inside_dataset",
+        // inside_group is the state just after parsing the start of a Group
+        // element.
+        "inside_group",
+        "inside_attribute_container",
+        "inside_attribute",
+        "inside_attribute_value",
+        "inside_other_xml_attribute",
+        "inside_enum_def",
+        "inside_enum_const",
+        "inside_dim_def",
+        // This covers Byte, ..., Url, Opaque
+        "inside_simple_type",
+        // "inside_array",
+        "inside_dim",
+        "inside_map",
+        "inside_constructor",
+        "not_dap4_element",
+        "inside_dmrpp_object",
+        "inside_dmrpp_chunkDimensionSizes_element",
+        "inside_dmrpp_compact_element",
+        "parser_unknown",
+        "parser_error",
+        "parser_fatal_error",
+        "parser_end"
+    };
 
 static bool is_not(const char *name, const char *tag)
 {
@@ -1490,6 +1491,7 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
         break;
     }
 
+    BESDEBUG(PARSER, prolog << "parser->get_state(): " << parser->get_state() << endl);
     BESDEBUG(PARSER, prolog << "End element exit state: " << states[parser->get_state()] << endl);
 }
 
