@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Dataset 
+    xmlns="http://xml.opendap.org/ns/DAP/4.0#" 
+    xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#"
+    dapVersion="4.0" 
+    dmrVersion="1.0"
+    name="t_int_scalar.h5"
+    dmrpp:href="data/dmrpp/t_int_scalar.h5">
+    <Int64 name="ancillary_data_calibrations_low_link_impulse_response_gt1r_total_events">
+        <Dim name="/ancillary_data_calibrations_ds_channel"/>
+        <Attribute name="contentType" type="String">
+            <Value>auxiliaryInformation</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Number of events used in constructing the per-channel histogram</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Total Events</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>CAL20</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="DIMENSION_LIST" type="null">
+            <Value>UNKNOWN</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>total_events</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/ancillary_data/calibrations/low_link_impulse_response/gt1r/total_events</Value>
+        </Attribute>
+        <dmrpp:compact>lLACAAAAAAB9GwMAAAAAAIEmAwAAAAAAP8ECAAAAAACHBwMAAAAAAFV1AwAAAAAAAnMDAAAAAAAXGAMAAAAAAP4uAwAAAAAAuH8DAAAAAAAI\
+hAMAAAAAAHYiAwAAAAAAV74CAAAAAABOHQMAAAAAAGkdAwAAAAAA0ckCAAAAAACioQIAAAAAAKeuAgAAAAAAwuUCAAAAAACGyAIAAAAAAA==</dmrpp:compact>
+    </Int64>
+</Dataset>
