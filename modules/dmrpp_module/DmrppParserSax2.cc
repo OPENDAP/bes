@@ -383,7 +383,7 @@ bool DmrppParserSax2::process_dmrpp_compact_start(const char *name){
     if ( strcmp(name, "compact") == 0) {
         BESDEBUG(PARSER, prolog << "DMR++ compact element. localname: " << name << endl);
         BaseType *bt = top_basetype();
-        if (!bt) throw BESInternalError("Could locate parent BaseType during parse operation.", __FILE__, __LINE__);
+        if (!bt) throw BESInternalError("Could not locate parent BaseType during parse operation.", __FILE__, __LINE__);
         DmrppCommon *dc = dynamic_cast<DmrppCommon*>(bt);   // Get the Dmrpp common info
         if (!dc)
             throw BESInternalError("Could not cast BaseType to DmrppType in the drmpp handler.", __FILE__, __LINE__);
@@ -419,7 +419,9 @@ void DmrppParserSax2::process_dmrpp_compact_end(const char *localname)
 {
     BESDEBUG(PARSER, prolog << "BEGIN" << endl);
     if (is_not(localname, "compact"))
-        DmrppParserSax2::dmr_error(this, "Expected an end value tag; found '%s' instead.", localname);
+        return;
+
+    //    DmrppParserSax2::dmr_error(this, "Expected an end value tag; found '%s' instead.", localname);
 
     std::string data(char_data);
     BESDEBUG(PARSER, prolog << "Read compact element text: '" << data << "'" << endl);
@@ -846,12 +848,15 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 BESDEBUG(PARSER, prolog << "Found dmrpp:chunkDimensionSizes element. Pushing state." << endl);
                 parser->push_state(inside_dmrpp_chunkDimensionSizes_element);
             }
-            else {
-                BESDEBUG(PARSER, prolog << "Start of element in dmrpp namespace: " << localname << " detected." << endl);
-                parser->push_state(inside_dmrpp_object);
-                // Ingest the dmrpp namespaced element text content
+            else if (strcmp(localname, "compact") == 0) {
+                BESDEBUG(PARSER, prolog << "Found dmrpp:compact element. Pushing state." << endl);
+                parser->push_state(inside_dmrpp_compact_element);
             }
-
+            else {
+                BESDEBUG(PARSER,
+                         prolog << "Start of element in dmrpp namespace: " << localname << " detected." << endl);
+                parser->push_state(inside_dmrpp_object);
+            }
         }
         else if (this_element_ns_name != dap4_ns_name) {
             BESDEBUG(PARSER, prolog << "Start of non DAP4 element: " << localname << " detected." << endl);
@@ -1057,6 +1062,9 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
         break;
 
     case inside_dmrpp_compact_element:
+        if (parser->process_dmrpp_compact_start(localname)) {
+            BESDEBUG(PARSER, prolog << "Call to parser->process_dmrpp_compact_start() completed." << endl);
+        }
         break;
 
     case inside_dmrpp_object: {
@@ -1075,12 +1083,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
             throw BESInternalError("Could not cast BaseType to DmrppType in the drmpp handler.", __FILE__, __LINE__);
 
         // Ingest the dmrpp:chunks element and it attributes
-        if (parser->process_dmrpp_compact_start(localname)){
-//            parser->push_state(inside_dmrpp_compact_element);
-            BESDEBUG(PARSER, prolog << "Call to parser->process_dmrpp_compact_start() completed." << endl);
-
-        }
-        else if (strcmp(localname, "chunks") == 0) {
+        if (strcmp(localname, "chunks") == 0) {
             BESDEBUG(PARSER, prolog << "DMR++ chunks element. localname: " << localname << endl);
 
             if (parser->check_attribute("compressionType", attributes, nb_attributes)) {
@@ -1204,7 +1207,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
             dc->add_chunk(data_url, byte_order, size, offset, chunk_position_in_array);
         }
     }
-        break;
+    break;
 
     case inside_dmrpp_chunkDimensionSizes_element:
         // The dmrpp:chunkDimensionSizes value is processed by the end element code.
@@ -1466,12 +1469,14 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
         parser->pop_state();
         break;
 
+#if 1
     case inside_dmrpp_compact_element: {
-        BESDEBUG(PARSER, prolog << "End of dmrpp compact element: " << localname << endl);
         parser->process_dmrpp_compact_end(localname);
         parser->pop_state();
+        BESDEBUG(PARSER, prolog << "End of dmrpp compact element: " << localname << endl);
         break;
     }
+#endif
 
     case inside_dmrpp_object: {
         BESDEBUG(PARSER, prolog << "End of dmrpp namespace element: " << localname << endl);
@@ -1508,8 +1513,9 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
         break;
     }
 
-    BESDEBUG(PARSER, prolog << "parser->get_state(): " << parser->get_state() << endl);
-    BESDEBUG(PARSER, prolog << "End element exit state: " << states[parser->get_state()] << endl);
+
+    BESDEBUG(PARSER, prolog << "End element exit state: " << states[parser->get_state()] <<
+    " ("<<parser->get_state()<<")"<< endl);
 }
 
 /** Process/accumulate character data. This may be called more than once for
