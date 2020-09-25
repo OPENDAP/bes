@@ -377,6 +377,79 @@ bool DmrppParserSax2::process_dimension(const char *name, const xmlChar **attrs,
     return false;
 }
 
+
+bool DmrppParserSax2::process_compact_start(const char *name){
+    if ( strcmp(name, "compact") == 0) {
+        BESDEBUG(PARSER, prolog << "DMR++ compact element. localname: " << name << endl);
+        BaseType *bt = top_basetype();
+        if (!bt) throw BESInternalError("Could locate parent BaseType during parse operation.", __FILE__, __LINE__);
+        DmrppCommon *dc = dynamic_cast<DmrppCommon*>(bt);   // Get the Dmrpp common info
+        if (!dc)
+            throw BESInternalError("Could not cast BaseType to DmrppType in the drmpp handler.", __FILE__, __LINE__);
+        dc->set_compact(true);
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+bool DmrppParserSax2::process_compact_end(const char *localname)
+{
+    BESDEBUG(PARSER, prolog << "BEGIN" << endl);
+    if (is_not(localname, "compact"))
+        DmrppParserSax2::dmr_error(this, "Expected an end value tag; found '%s' instead.", localname);
+
+    std::string data(char_data);
+    BESDEBUG(PARSER, prolog << "Read compact element text: '" << data << "'" << endl);
+
+    std::vector <u_int8_t> decoded = base64::Base64::decode(data);
+
+    BaseType *bt = top_basetype();
+    BESDEBUG(PARSER, prolog << "BaseType: " << bt->type_name() << " " << bt->name() << endl);
+
+    switch (bt->type()) {
+        case dods_array_c:
+
+        case dods_byte_c:
+        case dods_char_c:
+        case dods_int8_c:
+        case dods_uint8_c:
+        case dods_int16_c:
+        case dods_uint16_c:
+        case dods_int32_c:
+        case dods_uint32_c:
+        case dods_int64_c:
+        case dods_uint64_c:
+
+        case dods_enum_c:
+
+        case dods_float32_c:
+        case dods_float64_c:
+            bt->val2buf(reinterpret_cast<void *>(&decoded[0]));
+            bt->set_read_p(true);
+            break;
+
+        case dods_str_c:
+        case dods_url_c:
+            try {
+                std::string str(decoded.begin(), decoded.end());
+                DmrppStr *st = dynamic_cast<DmrppStr *>(bt);
+                st->set_value(str);
+                bt->set_read_p(true);
+            }
+            catch (...) { throw; }
+            break;
+
+        default:
+            throw BESInternalError("Unsupported COMPACT storage variable type in the drmpp handler.", __FILE__, __LINE__);
+            break;
+    }
+    char_data = ""; // Null this after use.
+
+    BESDEBUG(PARSER, prolog << "END" << endl);
+}
+
 bool DmrppParserSax2::process_map(const char *name, const xmlChar **attrs, int nb_attributes)
 {
     if (is_not(name, "Map")) return false;
@@ -926,6 +999,8 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
             parser->push_state(inside_dim);
         else if (parser->process_map(localname, attributes, nb_attributes))
             parser->push_state(inside_map);
+        else if (parser->process_compact_start(localname))
+            parser->push_state(inside_dmrpp_compact_element);
         else
             dmr_error(parser, "Expected an 'Attribute', 'Dim' or 'Map' element; found '%s' instead.", localname);
         break;
@@ -970,13 +1045,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
             throw BESInternalError("Could not cast BaseType to DmrppType in the drmpp handler.", __FILE__, __LINE__);
 
         // Ingest the dmrpp:chunks element and it attributes
-        if (strcmp(localname, "compact") == 0) {
-            BESDEBUG(PARSER, prolog << "DMR++ compact element. localname: " << localname << endl);
-            dc->set_compact(true);
-            parser->push_state(inside_dmrpp_compact_element);
-        }
-        // Ingest the dmrpp:chunks element and it attributes
-        else if (strcmp(localname, "chunks") == 0) {
+        if (strcmp(localname, "chunks") == 0) {
             BESDEBUG(PARSER, prolog << "DMR++ chunks element. localname: " << localname << endl);
 
             if (parser->check_attribute("compressionType", attributes, nb_attributes)) {
@@ -1337,57 +1406,8 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
         break;
 
     case inside_dmrpp_compact_element: {
-        if (is_not(localname, "compact"))
-            DmrppParserSax2::dmr_error(parser, "Expected an end value tag; found '%s' instead.", localname);
-        std::string data(parser->char_data);
-        BESDEBUG(PARSER, prolog << "Read compact element text: '" << data << "'" << endl);
-
-        std::vector <u_int8_t> decoded = base64::Base64::decode(data);
-
-        BaseType *bt = parser->top_basetype();
-        BESDEBUG(PARSER, prolog << "BaseType: " << bt->type_name() << " " << bt->name() << endl);
-
-        switch (bt->type()) {
-            case dods_array_c:
-
-            case dods_byte_c:
-            case dods_char_c:
-            case dods_int8_c:
-            case dods_uint8_c:
-            case dods_int16_c:
-            case dods_uint16_c:
-            case dods_int32_c:
-            case dods_uint32_c:
-            case dods_int64_c:
-            case dods_uint64_c:
-
-            case dods_enum_c:
-
-            case dods_float32_c:
-            case dods_float64_c:
-                bt->val2buf(reinterpret_cast<void *>(&decoded[0]));
-                bt->set_read_p(true);
-                break;
-
-            case dods_str_c:
-            case dods_url_c:
-                try {
-                    std::string str(decoded.begin(), decoded.end());
-                    DmrppStr *st = dynamic_cast<DmrppStr *>(bt);
-                    st->set_value(str);
-                    bt->set_read_p(true);
-                }
-                catch (...) { throw; }
-                break;
-
-            default:
-                throw BESInternalError("Unsupported COMPACT storage variable type in the drmpp handler.", __FILE__, __LINE__);
-                break;
-        }
-
-        parser->char_data = ""; // Null this after use.
-
-        BESDEBUG(PARSER, prolog << "End of compact element." << endl);
+        BESDEBUG(PARSER, prolog << "End of dmrpp compact element: " << localname << endl);
+        parser->process_compact_end(localname);
         parser->pop_state();
         break;
     }
