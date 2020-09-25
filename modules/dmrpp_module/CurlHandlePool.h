@@ -100,16 +100,21 @@ private:
 public:
     CurlHandlePool();
 
-    ~CurlHandlePool() {
+    CurlHandlePool(unsigned int max_handles);
+
+    ~CurlHandlePool()
+    {
         for (auto i = d_easy_handles.begin(), e = d_easy_handles.end(); i != e; ++i) {
             delete *i;
         }
     }
 
     /// @brief Get the number of handles in the pool.
-    unsigned int get_max_handles() const { return d_max_easy_handles; }
+    unsigned int get_max_handles() const
+    { return d_max_easy_handles; }
 
-    unsigned int get_handles_available() const {
+    unsigned int get_handles_available() const
+    {
         unsigned int n = 0;
         for (auto i = d_easy_handles.begin(), e = d_easy_handles.end(); i != e; ++i) {
             if (!(*i)->d_in_use) {
@@ -141,19 +146,23 @@ class SwimLane {
     CurlHandlePool &d_pool;
     std::vector<dmrpp_easy_handle *> d_handles;
 public:
-    SwimLane(CurlHandlePool &pool) : d_pool(pool) {}
+    SwimLane(CurlHandlePool &pool) : d_pool(pool)
+    {}
 
-    SwimLane(CurlHandlePool &pool, dmrpp_easy_handle *h) : d_pool(pool) {
+    SwimLane(CurlHandlePool &pool, dmrpp_easy_handle *h) : d_pool(pool)
+    {
         d_handles.push_back(h);
     }
 
-    virtual ~SwimLane() {
+    virtual ~SwimLane()
+    {
         for (auto i = d_handles.begin(), e = d_handles.end(); i != e; ++i) {
             d_pool.release_handle(*i);
         }
     }
 
-    void add_handle(dmrpp_easy_handle *h) {
+    void add_handle(dmrpp_easy_handle *h)
+    {
         d_handles.push_back(h);
     }
 };

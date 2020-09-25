@@ -129,6 +129,15 @@ public:
 };
 
 /**
+ * Read one chunk in a thread. Uses pthreads.
+ *
+ * @param arg_list A pointer to a one_chunk_args instance
+ * @return NULL on success; a pointer to string on failure. The string holds
+ * an error message.
+ */
+void *one_chunk_thread(void *arg_list);
+
+/**
  * Args for threads that process chunks for constrianed arrays.
  */
 struct one_chunk_args {

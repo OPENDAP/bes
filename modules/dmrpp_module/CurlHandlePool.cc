@@ -287,6 +287,15 @@ CurlHandlePool::CurlHandlePool() {
         throw BESInternalError("Could not initialize mutex in CurlHandlePool", __FILE__, __LINE__);
 }
 
+CurlHandlePool::CurlHandlePool(unsigned int max_handles) : d_max_easy_handles(max_handles) {
+    for (unsigned int i = 0; i < d_max_easy_handles; ++i) {
+        d_easy_handles.push_back(new dmrpp_easy_handle());
+    }
+
+    if (pthread_mutex_init(&d_get_easy_handle_mutex, 0) != 0)
+        throw BESInternalError("Could not initialize mutex in CurlHandlePool", __FILE__, __LINE__);
+}
+
 /**
  * @brief Add the given header & value to the curl slist.
  *

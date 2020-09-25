@@ -1075,11 +1075,6 @@ void process_one_chunk(Chunk *chunk, DmrppArray *array, const vector<unsigned in
 /**
  * @brief Read chunked data
  *
- * @todo This code could be made faster if it moved handling the multiple curl
- * easy_handles here (either using pthreads or the multi api or multi sockets
- * api). This would enable reading and inserting chunks in parallel. Right now
- * we just read in parallel, then insert, then read, ...
- *
  * Read chunked data, using either parallel or serial data transfers, depending on
  * the DMR++ handler configuration parameters.
  */

@@ -25,6 +25,8 @@
 #include <unistd.h>
 #include <time.h>
 
+#include <queue>
+
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
@@ -53,25 +55,41 @@ class MockChunk : public Chunk {
     bool d_sim_err; // simulate and err
 
 public:
-    MockChunk(CurlHandlePool *chp, bool sim_err) : Chunk(), d_chp(chp), d_sim_err(sim_err) {}
+    MockChunk(CurlHandlePool *chp, bool sim_err) : Chunk(), d_chp(chp), d_sim_err(sim_err)
+    {}
 
-    void inflate_chunk(bool, bool, unsigned int, unsigned int) {
+    void inflate_chunk(bool, bool, unsigned int, unsigned int)
+    {
         return;
     }
 
-    virtual std::string get_data_url() const {
+    virtual std::string get_data_url() const
+    {
         return "https://httpbin.org/";
+    }
+
+    virtual unsigned long long get_bytes_read() const
+    {
+        return 2;
+    }
+
+    virtual unsigned long long get_size() const
+    {
+        return 2;
     }
 
     std::vector<unsigned int> mock_pia = {1};
 
-    virtual const std::vector<unsigned int> &get_position_in_array() const {
+    virtual const std::vector<unsigned int> &get_position_in_array() const
+    {
         return mock_pia;
     }
 
-    // void read_chunk() { return; }
-
-    void read_chunk() {
+    // This is very close to the real read_chunk with only the call to d_handle->read_data()
+    // replaced by code that throws (or not) depending on the value of 'sim_err' in the
+    // constructor.
+    void read_chunk()
+    {
         if (d_is_read) {
             return;
         }
@@ -86,25 +104,25 @@ public:
             // handle->read_data();  // throws if error
             time_t t;
             srandom(time(&t));
-            sleep(3);
+            sleep(2);
 
             if (d_sim_err)
                 throw BESInternalError("Simulated error", __FILE__, __LINE__);
 
             d_chp->release_handle(handle);
         }
-        catch(...) {
+        catch (...) {
             d_chp->release_handle(handle);
             throw;
         }
-#if 0
+
         // If the expected byte count was not read, it's an error.
         if (get_size() != get_bytes_read()) {
             ostringstream oss;
             oss << "Wrong number of bytes read for chunk; read: " << get_bytes_read() << ", expected: " << get_size();
             throw BESInternalError(oss.str(), __FILE__, __LINE__);
         }
-#endif
+
         d_is_read = true;
     }
 
@@ -112,23 +130,20 @@ public:
 
 class MockDmrppArray : public DmrppArray {
 public:
-    MockDmrppArray() : DmrppArray("mock_array", new libdap::Byte("mock_array")) {
+    MockDmrppArray() : DmrppArray("mock_array", new libdap::Byte("mock_array"))
+    {
         append_dim(10, "mock_dim");
     }
 
-#if 0
-    MockDmrppArray(const std::string &n, libdap::BaseType *v) : DmrppArray(n, v) {}
-    MockDmrppArray(const std::string &n, const std::string &d, libdap::BaseType *v) : DmrppArray(n, d, v) {}
-    MockDmrppArray(const DmrppArray &rhs) : DmrppArray(rhs) {}
-#endif
+    bool is_deflate_compression() const
+    { return false; }
 
-    bool is_deflate_compression() const { return false; }
+    bool is_shuffle_compression() const
+    { return false; }
 
-    bool is_shuffle_compression() const { return false; }
-
-    virtual void insert_chunk(unsigned int dim, vector<unsigned int> *target_element_address,
-                      vector<unsigned int> *chunk_element_address,
-                      Chunk *chunk, const vector<unsigned int> &constrained_array_shape) {
+    virtual void insert_chunk(unsigned int, vector<unsigned int> *, vector<unsigned int> *,
+                              Chunk *, const vector<unsigned int> &)
+    {
         return;
     }
 
@@ -140,45 +155,49 @@ private:
 
 public:
     // Called once before everything gets tested
-    CurlHandlePoolTest() {
+    CurlHandlePoolTest()
+    {
     }
 
     // Called at the end of the test
-    ~CurlHandlePoolTest() {
+    ~CurlHandlePoolTest()
+    {
     }
 
     // Called before each test
-    void setUp() {
-        chp = new CurlHandlePool;
+    void setUp()
+    {
+        chp = new CurlHandlePool(4);
         TheBESKeys::ConfigFile = "curl_handle_pool_keys.conf";
-        //TheBESKeys();
     }
 
     // Called after each test
-    void tearDown() {
+    void tearDown()
+    {
         delete chp;
         chp = 0;
     }
 
-    void empty_test() {
+    void process_one_chunk_test()
+    {
         CPPUNIT_ASSERT(true);
 
         MockChunk *chunk = new MockChunk(chp, true);
-        MockDmrppArray *array = new MockDmrppArray; //("mock_array", new libdap::Byte("mock_array"));
+        MockDmrppArray *array = new MockDmrppArray;
         vector<unsigned int> array_shape = {1};
 
-        int num = chp->get_handles_available();
-        CPPUNIT_ASSERT(num ==  chp->get_max_handles());
+        unsigned int num = chp->get_handles_available();
+        CPPUNIT_ASSERT(num == chp->get_max_handles());
 
         try {
             process_one_chunk(chunk, array, array_shape);
         }
         catch (BESError &e) {
-            cerr << "BES Exception: " << e.get_verbose_message() << endl;
-            CPPUNIT_FAIL("BES Exception");
+            DBG(cerr << "BES Exception: " << e.get_verbose_message() << endl);
+            CPPUNIT_ASSERT("BES Exception caught");
         }
         catch (std::exception &e) {
-            cerr << "Exception: " << e.what() << endl;
+            DBG(cerr << "Exception: " << e.what() << endl);
             CPPUNIT_FAIL("Exception");
         }
 
@@ -186,9 +205,202 @@ public:
         CPPUNIT_ASSERT(num2 == num);
     }
 
+    // This is a general proxy for the DmrppArray code that controls the parallel transfers.
+    void dmrpp_array_thread_control(queue<Chunk *> &chunks_to_read, MockDmrppArray *array,
+                                    const vector<unsigned int> &array_shape) {
+        // This pipe is used by the child threads to indicate completion
+        int fds[2];
+        if (pipe(fds) < 0)
+            throw BESInternalError(string("Could not open a pipe for thread communication: ").append(strerror(errno)),
+                                   __FILE__, __LINE__);
+
+        // Start the max number of processing pipelines
+        //pthread_t threads[chp->get_max_handles()];
+        vector<pthread_t> threads(chp->get_max_handles());
+        memset(&threads[0], 0, sizeof(pthread_t) * chp->get_max_handles());
+
+        try {
+            unsigned int num_threads = 0;
+            for (unsigned int i = 0;
+                 i < (unsigned int) chp->get_max_handles() && chunks_to_read.size() > 0; ++i) {
+                Chunk *chunk = chunks_to_read.front();
+                chunks_to_read.pop();
+
+                // thread number is 'i'
+                one_chunk_args *args = new one_chunk_args(fds, i, chunk, array, array_shape);
+                int status = pthread_create(&threads[i], NULL, dmrpp::one_chunk_thread, (void *) args);
+                if (0 == status) {
+                    ++num_threads;
+                    DBG(cerr << "started thread: " << i << endl);
+                }
+                else {
+                    ostringstream oss("Could not start thread for chunk ", ios::ate);
+                    oss << i << ": " << strerror(status);
+                    DBG(cerr << oss.str());
+                    throw BESInternalError(oss.str(), __FILE__, __LINE__);
+                }
+            }
+
+            // Now join the child threads, creating replacement threads if needed
+            while (num_threads > 0) {
+                unsigned char tid;   // bytes can be written atomically
+                // Block here until a child thread writes to the pipe, then read the byte
+                int bytes = ::read(fds[0], &tid, sizeof(tid));
+                if (bytes != sizeof(tid))
+                    throw BESInternalError(string("Could not read the thread id: ").append(strerror(errno)), __FILE__,
+                                           __LINE__);
+
+                if (tid >= chp->get_max_handles()) {
+                    ostringstream oss("Invalid thread id read after thread exit: ", ios::ate);
+                    oss << tid;
+                    throw BESInternalError(oss.str(), __FILE__, __LINE__);
+                }
+
+                string *error;
+                int status = pthread_join(threads[tid], (void **) &error);
+                --num_threads;
+                DBG(cerr << "joined thread: " << (unsigned int) tid << ", there are: " << num_threads << endl);
+
+                if (status != 0) {
+                    ostringstream oss("Could not join thread for chunk ", ios::ate);
+                    oss << tid << ": " << strerror(status);
+                    throw BESInternalError(oss.str(), __FILE__, __LINE__);
+                }
+                else if (error != 0) {
+                    DBG(cerr << "Thread exception: " << (unsigned int) tid << endl);
+                    BESInternalError e(*error, __FILE__, __LINE__);
+                    delete error;
+                    throw e;
+                }
+                else if (chunks_to_read.size() > 0) {
+                    Chunk *chunk = chunks_to_read.front();
+                    chunks_to_read.pop();
+
+                    // thread number is 'tid,' the number of the thread that just completed
+                    one_chunk_args *args = new one_chunk_args(fds, tid, chunk, array, array_shape);
+                    status = pthread_create(&threads[tid], NULL, dmrpp::one_chunk_thread, (void *) args);
+                    if (status != 0) {
+                        ostringstream oss("Could not start thread for chunk ", ios::ate);
+                        oss << tid << ": " << strerror(status);
+                        throw BESInternalError(oss.str(), __FILE__, __LINE__);
+                    }
+                    ++num_threads;
+                    DBG(cerr << "started thread: " << (unsigned int) tid << ", there are: " << num_threads << endl);
+                }
+            }
+
+            // Once done with the threads, close the communication pipe.
+            close(fds[0]);
+            close(fds[1]);
+        }
+        catch (...) {
+            // cancel all the threads, otherwise we'll have threads out there using up resources
+            // defined in DmrppCommon.cc
+            join_threads(&threads[0], chp->get_max_handles());
+            // close the pipe used to communicate with the child threads
+            close(fds[0]);
+            close(fds[1]);
+            // re-throw the exception
+            throw;
+        }
+    }
+
+    // This replicates the code in DmrppArray::read_chunks() to orgainize and process_one_chunk()
+    // using several threads.
+    void process_one_chunk_threaded_test_0()
+    {
+        queue<Chunk *> chunks_to_read;
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, false));
+
+        MockDmrppArray *array = new MockDmrppArray;
+        vector<unsigned int> array_shape = {1};
+
+        dmrpp_array_thread_control(chunks_to_read, array, array_shape);
+        CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
+    }
+    
+    void process_one_chunk_threaded_test_1()
+    {
+        queue<Chunk *> chunks_to_read;
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, true));
+        chunks_to_read.push(new MockChunk(chp, false));
+
+        MockDmrppArray *array = new MockDmrppArray;
+        vector<unsigned int> array_shape = {1};
+
+        try {
+            dmrpp_array_thread_control(chunks_to_read, array, array_shape);
+            CPPUNIT_FAIL("dmrpp_array_thread_control() should have thrown an exception");
+        }
+        catch(BESInternalError &e) {
+            DBG(cerr << "BESInternalError: " << e.get_verbose_message() << endl);
+        }
+
+        CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
+    }
+
+    void process_one_chunk_threaded_test_2()
+    {
+        queue<Chunk *> chunks_to_read;
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, true));
+        chunks_to_read.push(new MockChunk(chp, false));
+
+        MockDmrppArray *array = new MockDmrppArray;
+        vector<unsigned int> array_shape = {1};
+
+        try {
+            dmrpp_array_thread_control(chunks_to_read, array, array_shape);
+            CPPUNIT_FAIL("dmrpp_array_thread_control() should have thrown an exception");
+        }
+        catch(BESInternalError &e) {
+            DBG(cerr << "BESInternalError: " << e.get_verbose_message() << endl);
+        }
+
+        CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
+    }
+
+    void process_one_chunk_threaded_test_3()
+    {
+        queue<Chunk *> chunks_to_read;
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, true));
+        chunks_to_read.push(new MockChunk(chp, true));
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, false));
+
+        MockDmrppArray *array = new MockDmrppArray;
+        vector<unsigned int> array_shape = {1};
+
+        try {
+            dmrpp_array_thread_control(chunks_to_read, array, array_shape);
+            CPPUNIT_FAIL("dmrpp_array_thread_control() should have thrown an exception");
+        }
+        catch(BESInternalError &e) {
+            DBG(cerr << "BESInternalError: " << e.get_verbose_message() << endl);
+        }
+
+        CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
+    }
+
 CPPUNIT_TEST_SUITE(CurlHandlePoolTest);
 
-        CPPUNIT_TEST(empty_test);
+    CPPUNIT_TEST(process_one_chunk_test);
+    CPPUNIT_TEST(process_one_chunk_threaded_test_0);
+    CPPUNIT_TEST(process_one_chunk_threaded_test_1);
+    CPPUNIT_TEST(process_one_chunk_threaded_test_2);
+    CPPUNIT_TEST(process_one_chunk_threaded_test_3);
 
     CPPUNIT_TEST_SUITE_END();
 };
@@ -197,7 +409,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(CurlHandlePoolTest);
 
 } // namespace dmrpp
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
