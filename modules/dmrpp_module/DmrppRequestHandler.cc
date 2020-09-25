@@ -54,7 +54,9 @@
 #include <BESConstraintFuncs.h>
 #include <BESServiceRegistry.h>
 #include <BESUtil.h>
+#include <BESLog.h>
 #include <TheBESKeys.h>
+#include <BESLog.h>
 
 #include <BESDapError.h>
 #include <BESInternalFatalError.h>
@@ -72,6 +74,8 @@
 using namespace bes;
 using namespace libdap;
 using namespace std;
+
+#define prolog std::string("DmrppRequestHandler::").append(__func__).append("() - ")
 
 namespace dmrpp {
 
@@ -132,11 +136,18 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
     read_key_value("DMRPP.UseParallelTransfers", d_use_parallel_transfers);
     read_key_value("DMRPP.MaxParallelTransfers", d_max_parallel_transfers);
 
+#if !HAVE_CURL_MULTI_API
+    if (DmrppRequestHandler::d_use_parallel_transfers)
+        LOG("The DMR++ handler is configured to use parallel transfers, but the libcurl Multi API is not present, defaulting to serial transfers");
+#endif
+
     CredentialsManager::theCM()->load_credentials();
 
     if (!curl_handle_pool)
         curl_handle_pool = new CurlHandlePool();
 
+    // This and the matching cleanup function can be called many times as long as
+    // they are called in balanced pairs. jhrg 9/3/20
     curl_global_init(CURL_GLOBAL_DEFAULT);
 }
 
@@ -210,6 +221,9 @@ bool DmrppRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
 
 bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
 {
+    BESStopWatch sw;
+    if (BESISDEBUG(TIMING_LOG)) sw.start(prolog + "timer" , dhi.data[REQUEST_ID]);
+
     BESDEBUG(module, "Entering dap_build_dap4data..." << endl);
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
@@ -261,7 +275,7 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
 bool DmrppRequestHandler::dap_build_dap2data(BESDataHandlerInterface & dhi)
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("DmrppRequestHandler::dap_build_dap2data()", dhi.data[REQUEST_ID]);
+    if (BESISDEBUG(TIMING_LOG)) sw.start(prolog + "timer" , dhi.data[REQUEST_ID]);
 
     BESDEBUG(module, __func__ << "() - BEGIN" << endl);
 

@@ -114,7 +114,9 @@ private:
     // Flag to indicate whether to log verbose messages
     bool d_verbose;
 
-    bool d_use_local_time; ///< Use UTC by default
+    bool d_use_local_time; // Use UTC by default
+
+    bool d_use_unix_time; // Use the UNIX time value as the log time.
 
 protected:
     BESLog();

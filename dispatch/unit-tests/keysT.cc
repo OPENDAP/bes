@@ -514,7 +514,7 @@ public:
     void map_map_test() {
         if(debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
 
-        size_t primary_size = 2;
+        size_t primary_size = 3;
 
         // Baseline values for DynamicConfiguration key 'data_services'
         string data_services_key("data_services");
@@ -540,7 +540,7 @@ public:
             TheBESKeys besKeys(bes_conf);
 
             if(debug) cout << "Keys size: " << besKeys.d_the_keys->size() << endl;
-            CPPUNIT_ASSERT(besKeys.d_the_keys->size() == 1);
+            CPPUNIT_ASSERT(besKeys.d_the_keys->size() == 6);
 
             if(debug) besKeys.dump(cout);
 
@@ -567,9 +567,10 @@ public:
 
 
 
-
-    void dynamic_config_test(){
+#if DYNAMIC_CONFIG_ENABLED
+void dynamic_config_test(){
         if(debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
+
 
         string fnoc_classic_model_key("FONc.ClassicModel");
         string h5_enable_cf_key ("H5.EnableCF");
@@ -577,100 +578,141 @@ public:
         bool found_fnoc_classic_model_key;
         bool found_h5_enable_cf_key;
         bool found_h5_enable_dmr_64bit_int_key;
-
+        size_t primary_size = 6;
 
         string bes_conf = (string) TEST_SRC_DIR + "/keys_test_map_map.ini";
-        if(debug) cout << "Using TheBESKeys::ConfigFile: " << bes_conf << endl;
+        if(debug) cout << "Using TheBESKeys::ConfigFile: '" << bes_conf << "'" << endl;
+        TheBESKeys::ConfigFile = bes_conf;
+        TheBESKeys::TheKeys()->set_key("BES.LogName","./bes.log", false);
         try {
-            if(debug) cout << "Calling TheBESKeys()" << endl;
+            if(debug) cout << "Calling TheBESKeys(config_file)" << endl;
             TheBESKeys besKeys(bes_conf);
 
             if(debug) cout << "Keys size: " << besKeys.d_the_keys->size() << endl;
-            CPPUNIT_ASSERT(besKeys.d_the_keys->size() == 1);
+            CPPUNIT_ASSERT(besKeys.d_the_keys->size() == primary_size);
             if(debug) besKeys.dump(cout);
 
             string value = "";
             bool found = false;
-            TheBESKeys::TheKeys()->get_value(fnoc_classic_model_key, value, found);
+            besKeys.get_value(fnoc_classic_model_key, value, found);
+            if(debug) cout << fnoc_classic_model_key << ": '" << value << "'" << endl;
             CPPUNIT_ASSERT(!found);
             value = "";
-            TheBESKeys::TheKeys()->get_value(h5_enable_cf_key, value, found);
+            besKeys.get_value(h5_enable_cf_key, value, found);
+            if(debug) cout << h5_enable_cf_key << ": '" << value << "'" << endl;
             CPPUNIT_ASSERT(!found);
             value = "";
-            TheBESKeys::TheKeys()->get_value(h5_enable_dmr_64bit_int_key, value, found);
+            besKeys.get_value(h5_enable_dmr_64bit_int_key, value, found);
+            if(debug) cout << h5_enable_dmr_64bit_int_key << ": '" << value << "'" << endl;
             CPPUNIT_ASSERT(!found);
 
             // Load the "ghrc" configuration.
 
 //          vector<string> ghrc_regex_value = {"^some_OTHER_reg(ular)?ex(pression)?$"};
             besKeys.load_dynamic_config("some_OTHER_regex");
+            if(debug) cout << "Keys size: " << besKeys.d_the_keys->size() << endl;
             if(debug) besKeys.dump(cout);
-            CPPUNIT_ASSERT(besKeys.d_the_keys->size() == 4);
+            CPPUNIT_ASSERT(besKeys.d_the_keys->size() == (primary_size+3));
 
             value = "";
             besKeys.get_value(fnoc_classic_model_key, value, found_fnoc_classic_model_key);
-            CPPUNIT_ASSERT(found_fnoc_classic_model_key == true);
+            CPPUNIT_ASSERT(found_fnoc_classic_model_key);
             if(debug) cout << fnoc_classic_model_key << ": '" << value << "'" << endl;
             CPPUNIT_ASSERT(value == "true");
 
             value = "";
             besKeys.get_value(h5_enable_cf_key, value, found_h5_enable_cf_key);
             if(debug) cout << h5_enable_cf_key << ": '" << value << "'" << endl;
-            CPPUNIT_ASSERT(found_h5_enable_cf_key == true);
+            CPPUNIT_ASSERT(found_h5_enable_cf_key);
             CPPUNIT_ASSERT(value == "true");
 
             value = "";
             besKeys.get_value(h5_enable_dmr_64bit_int_key, value, found_h5_enable_dmr_64bit_int_key);
             if(debug) cout << h5_enable_dmr_64bit_int_key << ": '" << value << "'" << endl;
-            CPPUNIT_ASSERT(found_h5_enable_dmr_64bit_int_key == true);
+            CPPUNIT_ASSERT(found_h5_enable_dmr_64bit_int_key);
             CPPUNIT_ASSERT(value == "true");
 
             // Reset the Keys
             besKeys.load_dynamic_config("I/do/not/match/your/regular_expressions.txt");
+            if(debug) cout << "Keys size: " << besKeys.d_the_keys->size() << endl;
             if(debug) besKeys.dump(cout);
-            CPPUNIT_ASSERT(besKeys.d_the_keys->size() == 1);
-            TheBESKeys::TheKeys()->get_value(fnoc_classic_model_key, value, found);
+            CPPUNIT_ASSERT(besKeys.d_the_keys->size() == primary_size);
+            besKeys.get_value(fnoc_classic_model_key, value, found);
+            if(debug) cout << fnoc_classic_model_key << ": '" << value << "'" << endl;
             CPPUNIT_ASSERT(!found);
             value = "";
-            TheBESKeys::TheKeys()->get_value(h5_enable_cf_key, value, found);
+            besKeys.get_value(h5_enable_cf_key, value, found);
+            if(debug) cout << h5_enable_cf_key << ": '" << value << "'" << endl;
             CPPUNIT_ASSERT(!found);
             value = "";
-            TheBESKeys::TheKeys()->get_value(h5_enable_dmr_64bit_int_key, value, found);
+            besKeys.get_value(h5_enable_dmr_64bit_int_key, value, found);
+            if(debug) cout << h5_enable_dmr_64bit_int_key << ": '" << value << "'" << endl;
             CPPUNIT_ASSERT(!found);
 
             // Load the "data_services" configuration.
             besKeys.load_dynamic_config("some_regularex");
+            if(debug) cout << "Keys size: " << besKeys.d_the_keys->size() << endl;
             if(debug) besKeys.dump(cout);
-            CPPUNIT_ASSERT(besKeys.d_the_keys->size() == 4);
+            CPPUNIT_ASSERT(besKeys.d_the_keys->size() == (primary_size+3));
 
             value = "";
             besKeys.get_value(fnoc_classic_model_key, value, found_fnoc_classic_model_key);
-            CPPUNIT_ASSERT(found_fnoc_classic_model_key == true);
+            CPPUNIT_ASSERT(found_fnoc_classic_model_key);
             if(debug) cout << fnoc_classic_model_key << ": '" << value << "'" << endl;
             CPPUNIT_ASSERT(value == "false");
 
             value = "";
             besKeys.get_value(h5_enable_cf_key, value, found_h5_enable_cf_key);
             if(debug) cout << h5_enable_cf_key << ": '" << value << "'" << endl;
-            CPPUNIT_ASSERT(found_h5_enable_cf_key == true);
+            CPPUNIT_ASSERT(found_h5_enable_cf_key);
             CPPUNIT_ASSERT(value == "false");
 
             value = "";
             besKeys.get_value(h5_enable_dmr_64bit_int_key, value, found_h5_enable_dmr_64bit_int_key);
             if(debug) cout << h5_enable_dmr_64bit_int_key << ": '" << value << "'" << endl;
-            CPPUNIT_ASSERT(found_h5_enable_dmr_64bit_int_key == true);
+            CPPUNIT_ASSERT(found_h5_enable_dmr_64bit_int_key);
             CPPUNIT_ASSERT(value == "false");
+
+            // Load the "data_services" configuration.
+            besKeys.load_dynamic_config("some_regularex");
+            if(debug) cout << "Keys size: " << besKeys.d_the_keys->size() << endl;
+            value = "";
+            besKeys.get_value(h5_enable_cf_key, value, found_h5_enable_cf_key);
+            if(debug) cout << h5_enable_cf_key << ": '" << value << "'" << endl;
+            CPPUNIT_ASSERT(found_h5_enable_cf_key);
+            CPPUNIT_ASSERT(value == "false");
+
+            // DynamicConfig+=atlas:regex:^.*\/EEDTEST-ATL[0-9]{2}-[0-9]{3}-ATL[0-9]{2}_.*$
+            //DynamicConfig+=atlas:config:H5.EnableCF=false
+
+
+            string resty_path = "/providers/EEDTEST/collections/ATLAS-ICESat-2%20L2A%20Global%20Geolocated%20Photon%20Data%20V003/granules/EEDTEST-ATL03-003-ATL03_20181228015957";
+            // Load the "data_services" configuration.
+            besKeys.load_dynamic_config(resty_path);
+            if(debug) cout << "Keys size: " << besKeys.d_the_keys->size() << endl;
+            if(debug) besKeys.dump(cout);
+            CPPUNIT_ASSERT(besKeys.d_the_keys->size() == (primary_size+1) );
+
+            value = "";
+            besKeys.get_value(h5_enable_cf_key, value, found_h5_enable_cf_key);
+            if(debug) cout << h5_enable_cf_key << ": '" << value << "'" << endl;
+            CPPUNIT_ASSERT(found_h5_enable_cf_key);
+            CPPUNIT_ASSERT(value == "false");
+
+
+
 
         }
         catch (BESError &e) {
             //cerr << "Error: " << e.get_message() << endl;
-            cerr << "TheBESKeys::ConfigFile: " << TheBESKeys::ConfigFile << endl;
+            cerr << "TheBESKeys::ConfigFile: " << TheBESKeys::ConfigFile << e.get_file()<<":"<<e.get_line() << endl;
             CPPUNIT_FAIL("Unable to create BESKeys: " + e.get_message());
         }
 
         if(debug) cout << __func__ << END << endl;
 
     }
+#endif
 
 CPPUNIT_TEST_SUITE( keysT );
 
@@ -696,7 +738,10 @@ CPPUNIT_TEST_SUITE( keysT );
     CPPUNIT_TEST(vector_values_test);
     CPPUNIT_TEST(map_values_test);
     CPPUNIT_TEST(map_map_test);
+
+#if DYNAMIC_CONFIG_ENABLED
     CPPUNIT_TEST(dynamic_config_test);
+#endif
 
     CPPUNIT_TEST_SUITE_END();
 

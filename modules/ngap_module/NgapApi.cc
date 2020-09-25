@@ -46,6 +46,8 @@
 #include "BESSyntaxUserError.h"
 #include "BESDebug.h"
 #include "BESUtil.h"
+#include "BESStopWatch.h"
+#include "BESLog.h"
 #include "TheBESKeys.h"
 #include "CurlUtils.h"
 #include "url_impl.h"
@@ -70,7 +72,7 @@ namespace ngap {
 
     const string CMR_PROVIDER("provider");
     const string CMR_ENTRY_TITLE("entry_title");
-    const string CMR_CONCEPT_ID("concept_id");
+    const string CMR_COLLECTION_CONCEPT_ID("collection_concept_id");
     const string CMR_GRANULE_UR("granule_ur");
     const string CMR_URL_TYPE_GET_DATA("GET DATA");
 
@@ -137,9 +139,8 @@ namespace ngap {
      */
     string NgapApi::convert_ngap_resty_path_to_data_access_url(
             const std::string &restified_path,
-            const std::string &uid,
-            const std::string &access_token
-    ) {
+            const std::string &uid
+            ) {
 
         string data_access_url("");
 
@@ -160,39 +161,46 @@ namespace ngap {
         // Pick up the values of said tokens.
         string cmr_url = get_cmr_search_endpoint_url() + "?";
 
-        char error_buffer[CURL_ERROR_SIZE];
-        CURL *curl = curl::init(error_buffer);  // This may throw either Error or InternalErr
-        char *esc_url_content;
+        {
+            // This easy handle is only created so we can use the curl_easy_escape() on the tokens
+            CURL *ceh = curl_easy_init();
+            char *esc_url_content;
 
-        esc_url_content = curl_easy_escape(curl, tokens[1].c_str(), tokens[1].size());
-        cmr_url += CMR_PROVIDER + "=" + esc_url_content + "&";
-        curl_free(esc_url_content);
-
-        esc_url_content = curl_easy_escape(curl, tokens[3].c_str(), tokens[3].size());
-        if (tokens[2] == NGAP_COLLECTIONS_KEY) {
-            cmr_url += CMR_ENTRY_TITLE + "=" + esc_url_content + "&";
-        }
-        else if(tokens[2] == NGAP_CONCEPTS_KEY){
-            cmr_url += CMR_CONCEPT_ID + "=" + esc_url_content + "&";
-        }
-        else {
+            esc_url_content = curl_easy_escape(ceh, tokens[1].c_str(), tokens[1].size());
+            cmr_url += CMR_PROVIDER + "=" + esc_url_content + "&";
             curl_free(esc_url_content);
-            throw BESSyntaxUserError(string("The specified path '") + restified_path +
-                                     "' does not conform to the NGAP request interface API.", __FILE__, __LINE__);
+
+            esc_url_content = curl_easy_escape(ceh, tokens[3].c_str(), tokens[3].size());
+            if (tokens[2] == NGAP_COLLECTIONS_KEY) {
+                cmr_url += CMR_ENTRY_TITLE + "=" + esc_url_content + "&";
+            }
+            else if(tokens[2] == NGAP_CONCEPTS_KEY){
+                cmr_url += CMR_COLLECTION_CONCEPT_ID + "=" + esc_url_content + "&";
+            }
+            else {
+                curl_free(esc_url_content);
+                throw BESSyntaxUserError(string("The specified path '") + restified_path +
+                                         "' does not conform to the NGAP request interface API.", __FILE__, __LINE__);
+            }
+            curl_free(esc_url_content);
+
+            esc_url_content = curl_easy_escape(ceh, tokens[5].c_str(), tokens[5].size());
+            cmr_url += CMR_GRANULE_UR + "=" + esc_url_content;
+            curl_free(esc_url_content);
+            curl_easy_cleanup(ceh);
         }
-        curl_free(esc_url_content);
-
-        esc_url_content = curl_easy_escape(curl, tokens[5].c_str(), tokens[5].size());
-        cmr_url += CMR_GRANULE_UR + "=" + esc_url_content;
-        curl_free(esc_url_content);
-        curl_easy_cleanup(curl);
-
 
         BESDEBUG(MODULE, prolog << "CMR Request URL: " << cmr_url << endl);
 #if 1
         BESDEBUG(MODULE, prolog << "Building new RemoteResource." << endl);
-        http::RemoteResource cmr_query(cmr_url, uid, access_token);
-        cmr_query.retrieveResource();
+        http::RemoteResource cmr_query(cmr_url, uid);
+        {
+            BESStopWatch besTimer;
+            if(BESLog::TheLog()->is_verbose()){
+                besTimer.start("CMR Query: " + cmr_url);
+            }
+            cmr_query.retrieveResource();
+        }
         rapidjson::Document cmr_response = cmr_query.get_as_json();
 #else
         rapidjson::Document cmr_response = ngap_curl::http_get_as_json(cmr_url);

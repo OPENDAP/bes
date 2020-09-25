@@ -27,7 +27,7 @@
 #include "AccessCredentials.h"
 #include <string>
 
-class NgapS3Credentials: public AccessCredentials {
+class NgapS3Credentials : public AccessCredentials {
 public:
     // These are the string keys used to express the normative key names
     // for the credentials components.
@@ -43,22 +43,23 @@ private:
     std::string distribution_api_endpoint;
 
 public:
-    NgapS3Credentials():
-        d_expiration_time(0), refresh_margin(600), distribution_api_endpoint("") {}
+    NgapS3Credentials() :
+            d_expiration_time(0), refresh_margin(600), distribution_api_endpoint("") {}
 
-    NgapS3Credentials(const std::string &credentials_endpoint, long refresh_margin):
-        d_expiration_time(0), refresh_margin(refresh_margin), distribution_api_endpoint(credentials_endpoint) {}
+    NgapS3Credentials(const std::string &credentials_endpoint, long refresh_margin) :
+            d_expiration_time(0), refresh_margin(refresh_margin), distribution_api_endpoint(credentials_endpoint) {}
 
     void get_temporary_credentials();
 
-    time_t expires(){
+    time_t expires() const {
         return d_expiration_time;
     }
-    bool needsRefresh(){
+
+    bool needs_refresh() const {
         return (d_expiration_time - time(0)) < refresh_margin;
     }
 
-    bool isS3Cred();
+    virtual bool is_s3_cred();
 
     std::string get(const std::string &key);
 

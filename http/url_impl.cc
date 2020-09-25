@@ -52,7 +52,7 @@ using namespace std;
 #define SOURCE_URL_KEY  "http_url_target_url"
 #define INGEST_TIME_KEY  "http_url_ingest_time"
 
-#define REFRESH_THRESHOLD 3600
+#define REFRESH_THRESHOLD 600
 
 namespace http {
 
@@ -326,8 +326,11 @@ bool url::is_expired()
     return is_expired;
 }
 
-
-string url::to_string(){
+/**
+ * Returns a string representation of the URL and its bits.
+ * @return the representation mentioned above.
+ */
+string url::dump(){
     stringstream ss;
     string indent_inc = "  ";
     string indent = indent_inc;
@@ -352,6 +355,7 @@ string url::to_string(){
     ss << indent << "d_ingest_time:      " << d_ingest_time << endl;
     return ss.str();
 }
+
 
 
 } // namespace http

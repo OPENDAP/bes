@@ -78,7 +78,7 @@ public:
 
     bool is_expired();
 
-    std::string to_string();
+    std::string dump();
 
 };
 

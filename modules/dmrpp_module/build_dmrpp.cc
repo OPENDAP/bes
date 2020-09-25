@@ -476,11 +476,32 @@ static void set_filter_information(hid_t dataset_id, DmrppCommon *dc) {
  * @exception BESError is thrown on error.
  */
 static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
+    std::string byteOrder = "";
+    H5T_order_t byte_order = H5T_ORDER_ERROR;
+
     try {
         hid_t dcpl = H5Dget_create_plist(dataset);
         uint8_t layout_type = H5Pget_layout(dcpl);
 
         hid_t fspace_id = H5Dget_space(dataset);
+        hid_t ftype_id = H5Dget_type(dataset);
+
+        byte_order = H5Tget_order(ftype_id);
+        switch (byte_order) {
+            case H5T_ORDER_LE:
+                byteOrder = "LE";
+                break;
+            case H5T_ORDER_BE:
+                byteOrder = "BE";
+                break;
+            case H5T_ORDER_NONE:
+                break;
+            default:
+                ostringstream oss("Unsupported HDF5 dataset byteOrder: ", std::ios::ate);
+                oss << byte_order << ".";
+                BESInternalError(oss.str(), __FILE__, __LINE__);
+                break; // unsupported enumerations: H5T_ORDER_[ERROR,VAX,MIXED,NONE]
+        }
 
         unsigned int dataset_rank = H5Sget_simple_extent_ndims(fspace_id);
 
@@ -494,8 +515,8 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
             case H5D_CONTIGUOUS: { /* Contiguous storage */
                 haddr_t cont_addr = 0;
                 hsize_t cont_size = 0;
-                VERBOSE(cerr << "Storage: contiguous" << endl);
 
+                VERBOSE(cerr << "Storage:   contiguous" << endl);
 
                 cont_addr = H5Dget_offset(dataset);
                 /* if statement never less than zero due to cont_addr being unsigned int. SBL 1.29.20
@@ -507,14 +528,17 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
                 if (cont_size < 0) {
                         throw BESInternalError("Cannot obtain the storage size.", __FILE__, __LINE__);
                 }*/
-                VERBOSE(cerr << "    Addr: " << cont_addr << endl);
-                VERBOSE(cerr << "    Size: " << cont_size << endl);
+
+
+                VERBOSE(cerr << "     Addr: " << cont_addr << endl);
+                VERBOSE(cerr << "     Size: " << cont_size << endl);
+                VERBOSE(cerr << "byteOrder: " << byteOrder << endl);
+
                 if (cont_size > 0) {
-                    if (dc) dc->add_chunk("", cont_size, cont_addr, "" /*pos in array*/);
+                    if (dc) dc->add_chunk("", byteOrder, cont_size, cont_addr, "" /*pos in array*/);
                 }
                 break;
             }
-
             case H5D_CHUNKED: { /*chunking storage */
                 hsize_t num_chunks = 0;
                 herr_t status = H5Dget_num_chunks(dataset, fspace_id, &num_chunks);
@@ -523,15 +547,15 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
                                            __FILE__, __LINE__);
                 }
 
-                VERBOSE(cerr << "storage: chunked." << endl);
-                VERBOSE(cerr << "Number of chunks is " << num_chunks << endl);
+                VERBOSE(cerr << "Storage:   chunked." << endl);
+                VERBOSE(cerr << "Number of chunks is: " << num_chunks << endl);
 
                 if (dc)
                     set_filter_information(dataset, dc);
 
                 // Get chunking information: rank and dimensions
-                vector <size_t> chunk_dims(dataset_rank);
-                unsigned int chunk_rank = H5Pget_chunk(dcpl, dataset_rank, (hsize_t * ) & chunk_dims[0]);
+                vector<size_t> chunk_dims(dataset_rank);
+                unsigned int chunk_rank = H5Pget_chunk(dcpl, dataset_rank, (hsize_t *) &chunk_dims[0]);
                 if (chunk_rank != dataset_rank)
                     throw BESNotFoundError(
                             "Found a chunk with rank different than the dataset's (aka variables's) rank", __FILE__,
@@ -541,7 +565,7 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
 
                 for (unsigned int i = 0; i < num_chunks; ++i) {
 
-                    vector <hsize_t> temp_coords(dataset_rank);
+                    vector<hsize_t> temp_coords(dataset_rank);
                     vector<unsigned int> chunk_coords(dataset_rank); //FIXME - see below
 
                     haddr_t addr = 0;
@@ -565,7 +589,7 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
                     // FIXME Modify add_chunk so that it takes a vector<unsigned long long> or <unsined long>
                     // (depending on the machine/OS/compiler). Limiting the offset to 32-bits won't work
                     // for large files. jhrg 5/21/19
-                    if (dc) dc->add_chunk("", size, addr, chunk_coords);
+                    if (dc) dc->add_chunk("", byteOrder, size, addr, chunk_coords);
                 }
 
                 break;
@@ -607,14 +631,16 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
                         case dods_float32_c:
                         case dods_float64_c:
                         case dods_int64_c:
-                        case dods_uint64_c:
+                        case dods_uint64_c: {
                             values.resize(memRequired);
                             get_data(dataset, reinterpret_cast<void *>(&values[0]));
                             btp->set_read_p(true);
                             btp->val2buf(reinterpret_cast<void *>(&values[0]));
                             break;
 
-                        case dods_str_c:
+                        }
+
+                        case dods_str_c: {
                             if (H5Tis_variable_str(dtypeid) > 0) {
                                 vector<string> finstrval = {""};   // passed by reference to read_vlen_string
                                 read_vlen_string(dataset, 1, NULL, NULL, NULL, finstrval);
@@ -638,12 +664,12 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
                                 btp->set_read_p(true);
                             }
                             break;
+                        }
 
                         default:
-                            throw BESInternalError("Unsupported compact storage variable type.",
-                                                   __FILE__, __LINE__);
-                            break;
+                            throw BESInternalError("Unsupported compact storage variable type.", __FILE__, __LINE__);
                     }
+
                 } else {
                     throw BESInternalError("Compact storage variable is not a D4Array.",
                                            __FILE__, __LINE__);
@@ -655,8 +681,9 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
                 ostringstream oss("Unsupported HDF5 dataset layout type: ", std::ios::ate);
                 oss << layout_type << ".";
                 BESInternalError(oss.str(), __FILE__, __LINE__);
+                break;
             }
-        } // end switch
+        }
     }
     catch (...) {
         H5Dclose(dataset);
@@ -685,13 +712,13 @@ static void get_chunks_for_all_variables(hid_t file, D4Group *group) {
 
         // Look for the full name path for this variable
         // If one was not given via an attribute, use BaseType::FQN() which
-        // relies on the varaible's position in the DAP dataset hierarchy.
+        // relies on the variable's position in the DAP dataset hierarchy.
         D4Attribute *attr = d4_attrs->get("fullnamepath");
         string FQN;
-        // I believe the logic is more clear in this way: 
+        // I believe the logic is more clear in this way:
         // If fullnamepath exists and the H5Dopen2 fails to open, it should throw an error.
         // If fullnamepath doesn't exist, we should ignore the error as the reason described below:
-        // (However, we should supress the HDF5 dataset open error message.)  KY 2019-12-02
+        // (However, we should suppress the HDF5 dataset open error message.)  KY 2019-12-02
         // It's not an error if a DAP variable in a DMR from the hdf5 handler
         // doesn't exist in the file _if_ there's no 'fullnamepath' because
         // that variable was synthesized (likely for CF compliance)
@@ -745,7 +772,6 @@ static void get_chunks_for_all_variables(hid_t file, D4Group *group) {
     while (g != ge)
         get_chunks_for_all_variables(file, *g++);
 }
-
 
 
 int main(int argc, char *argv[]) {
@@ -804,7 +830,7 @@ int main(int argc, char *argv[]) {
         // given HDF5 dataset
         if (!dmr_name.empty()) {
             // Get dmr:
-            unique_ptr <DMRpp> dmrpp(new DMRpp);
+            unique_ptr<DMRpp> dmrpp(new DMRpp);
             DmrppTypeFactory dtf;
             dmrpp->set_factory(&dtf);
 
@@ -858,7 +884,7 @@ int main(int argc, char *argv[]) {
             bes::DmrppMetadataStore::MDSReadLock lock = mds->is_dmr_available(h5_file_path, h5_file_name, "h5");
             if (lock()) {
                 // parse the DMR into a DMRpp (that uses the DmrppTypes)
-                unique_ptr <DMRpp> dmrpp(dynamic_cast<DMRpp *>(mds->get_dmr_object(h5_file_name /*h5_file_path*/)));
+                unique_ptr<DMRpp> dmrpp(dynamic_cast<DMRpp *>(mds->get_dmr_object(h5_file_name /*h5_file_path*/)));
                 if (!dmrpp.get()) {
                     cerr << "Expected a DMR++ object from the DmrppMetadataStore." << endl;
                     return 1;

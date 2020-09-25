@@ -54,6 +54,7 @@
 #include "BESInternalFatalError.h"
 #include "BESInternalError.h"
 #include "BESSyntaxUserError.h"
+#include "BESLog.h"
 
 #define BES_INCLUDE_KEY "BES.Include"
 
@@ -126,11 +127,13 @@ TheBESKeys::TheBESKeys(const string &keys_file_name) :
     initialize_keys();
 }
 
+#if 0
 TheBESKeys::TheBESKeys(const string &keys_file_name, map<string, vector<string> > *keys) :
         d_keys_file_name(keys_file_name), d_the_keys(keys), d_the_original_keys(0), d_dynamic_config_in_use(false), d_own_keys(false)
 {
     initialize_keys();
 }
+#endif
 
 /** @brief cleans up the key/value pair mapping
  */
@@ -143,6 +146,8 @@ void TheBESKeys::initialize_keys()
 {
     kvp::load_keys(d_keys_file_name, d_ingested_key_files, *d_the_keys);
     *d_the_original_keys = *d_the_keys;
+    BESDEBUG(MODULE, prolog << "         d_the_keys.size(): " << d_the_keys->size() << endl);
+    BESDEBUG(MODULE, prolog << "d_the_original_keys.size(): " << d_the_original_keys->size() << endl);
 }
 
 void TheBESKeys::clean()
@@ -340,7 +345,7 @@ void TheBESKeys::get_value(const string &s, string &val, bool &found)
         found = true;
         if ((*i).second.size() > 1) {
             string err = string("Multiple values for the key ") + s + " found, should only be one.";
-            throw BESSyntaxUserError(err, __FILE__, __LINE__);
+            throw BESInternalError(err, __FILE__, __LINE__);
         }
         if ((*i).second.size() == 1) {
             val = (*i).second[0];
@@ -566,7 +571,7 @@ void TheBESKeys::get_values(
  */
 void TheBESKeys::get_values(
         const std::string &key,
-        std::map< std::string, std::map<std::string,std::vector<std::string>>> &primary_map,
+        std::map< std::string, std::map<std::string,std::vector<std::string> > > &primary_map,
         const bool &case_insensitive_map_keys,
         bool &found){
 
@@ -636,13 +641,16 @@ bool TheBESKeys::using_dynamic_config(){
  *
  * @param name
  */
-void TheBESKeys::load_dynamic_config(const string name){
+void TheBESKeys::load_dynamic_config(const string name)
+{
+#if DYNAMIC_CONFIG_ENABLED
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
     // Clear the active keys and copy the original keys into
     // the active keys (resets the keys to 'as read from config files')
     if( d_dynamic_config_in_use ){
+        BESDEBUG(MODULE, prolog << "Unloading DynamicConfig." << endl);
         d_the_keys->clear();
         *d_the_keys = *d_the_original_keys;
         d_dynamic_config_in_use =  false;
@@ -658,6 +666,7 @@ void TheBESKeys::load_dynamic_config(const string name){
     }
     BESDEBUG(MODULE, prolog << "Found a " << DYNAMIC_CONFIG_KEY << " in TheBESKeys." << endl);
 
+    string best_matching_config_name;
     long longest_match=0;
     map<string, map<string, vector<string>>>::iterator best_matching_config=dynamic_confg.end();
 
@@ -694,21 +703,29 @@ void TheBESKeys::load_dynamic_config(const string name){
                         << dcit->first << " SKIPPING!" << endl);
                     }
                     else {
-                        BESDEBUG(MODULE, prolog << "Found new best " << DYNAMIC_CONFIG_KEY << " match for '" << name
-                        << "' " << DYNAMIC_CONFIG_KEY << ": " << dcit->first<< endl);
+
                         best_matching_config = dcit;
                         longest_match = match_length;
+                        best_matching_config_name = dcit->first;
+                        BESDEBUG(MODULE, prolog << "Found new best " << DYNAMIC_CONFIG_KEY << " match for '" << name
+                        << "' " << DYNAMIC_CONFIG_KEY << ": " << best_matching_config_name << endl);
                     }
                 }
             }
         }
     }
 
-    if( longest_match==0 ||
-        best_matching_config==dynamic_confg.end()){
+    if( longest_match==0 || best_matching_config==dynamic_confg.end() ){
         BESDEBUG(MODULE, prolog << "None of the " << DYNAMIC_CONFIG_KEY
         << " regex patterns matched the name: " << name << endl);
         return;
+    }
+
+    {
+        stringstream msg;
+        msg << prolog << "Using " << DYNAMIC_CONFIG_KEY << ":" << best_matching_config_name << " for: " << name << endl;
+        BESDEBUG(MODULE, msg.str());
+        LOG( msg.str());
     }
 
     // Now load the specific keys from the dynamic config;
@@ -724,5 +741,11 @@ void TheBESKeys::load_dynamic_config(const string name){
     d_dynamic_config_in_use = true;
 
     BESDEBUG(MODULE, prolog << "END" << endl);
+#endif
+
+    if(BESDebug::IsSet("bes:keys")){
+        dump(*BESDebug::GetStrm());
+    }
+
 }
 

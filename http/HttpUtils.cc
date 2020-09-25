@@ -37,6 +37,7 @@
 #include <vector>
 #include <sstream>
 #include <time.h>
+#include <sstream>
 
 #include <curl/curl.h>
 
@@ -63,23 +64,23 @@ using namespace http;
 
 // These are static class members
 map<string, string> HttpUtils::MimeList;
+
 string HttpUtils::ProxyProtocol;
 string HttpUtils::ProxyHost;
+int HttpUtils::ProxyPort = 0;
+int HttpUtils::ProxyAuthType = 0;
 string HttpUtils::ProxyUser;
 string HttpUtils::ProxyPassword;
 string HttpUtils::ProxyUserPW;
-
-int HttpUtils::ProxyPort = 0;
-int HttpUtils::ProxyAuthType = 0;
-bool HttpUtils::useInternalCache = false;
-
 string HttpUtils::NoProxyRegex;
+bool HttpUtils::ProxyConfigured = false;
+int HttpUtils::MaxRedirects = HTTP_MAX_REDIRECTS_DEFAULT;
 
 #define prolog string("HttpUtils::").append(__func__).append("() - ")
 
 // Initialization routine for the httpd_catalog_HTTPD_CATALOG for certain parameters
-// and keys, like the white list, the MimeTypes translation.
-void HttpUtils::Initialize()
+// and keys, like the AllowHosts list, the MimeTypes translation.
+void HttpUtils::load_proxy_from_keys()
 {
     // MimeTypes - translate from a mime type to a module name
     bool found = false;
@@ -177,22 +178,9 @@ void HttpUtils::Initialize()
         }
     }
 
-    found = false;
-    string use_cache;
-    TheBESKeys::TheKeys()->get_value(HTTP_USE_INTERNAL_CACHE_KEY, use_cache, found);
-    if (found) {
-        if (use_cache == "true" || use_cache == "TRUE" || use_cache == "True" || use_cache == "yes" ||
-            use_cache == "YES" || use_cache == "Yes")
-            HttpUtils::useInternalCache = true;
-        else
-            HttpUtils::useInternalCache = false;
-    } else {
-        // If not set, default to false. Assume squid or ...
-        HttpUtils::useInternalCache = false;
-    }
     // Grab the value for the NoProxy regex; empty if there is none.
     found = false; // Not used
-    TheBESKeys::TheKeys()->get_value("Http.NoProxy", HttpUtils::NoProxyRegex, found);
+    TheBESKeys::TheKeys()->get_value(HTTP_NO_PROXY_REGEX_KEY, HttpUtils::NoProxyRegex, found);
 }
 
 // Not used. There's a better version of this that returns a string in libdap.
@@ -277,6 +265,22 @@ void HttpUtils::Get_type_from_url(const string &url, string &type) {
     const BESCatalogUtils *utils = BESCatalogList::TheCatalogList()->find_catalog("catalog")->get_catalog_utils();
 
     type = utils->get_handler_name(url);
+}
+
+/**
+ * Loads the value of Http.MaxRedirects from TheBESKeys.
+ * If the value is not found, then it is set to the default, HTTP_MAX_REDIRECTS_DEFAULT
+ */
+void HttpUtils::load_max_redirects_from_keys(){
+    bool found = false;
+    string max_redirects;
+    TheBESKeys::TheKeys()->get_value(HTTP_MAX_REDIRECTS_KEY, max_redirects, found);
+    if (found && !max_redirects.empty()) {
+        std::istringstream(max_redirects) >> HttpUtils::MaxRedirects; // Returns 0 if the parse fails.
+    }
+    if(!HttpUtils::MaxRedirects){
+        HttpUtils::MaxRedirects = HTTP_MAX_REDIRECTS_DEFAULT;
+    }
 }
 
 #if 0

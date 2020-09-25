@@ -1,4 +1,7 @@
-Type: 1001
+BESError
+    Type: 1
     Message: Failed to transform data to GeoTiff: GeoTiff responses can consist of two-dimensional variables only; use constraints to reduce the size of Grids as needed.
-    Administrator: root@null.dev
+    Administrator: support@opendap.org
     Location
+        removed file
+        removed line

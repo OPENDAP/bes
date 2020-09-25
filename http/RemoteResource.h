@@ -63,15 +63,6 @@ namespace http {
         /// User id associated with this request
         std::string d_uid;
 
-        /// Access/Authentication token for the requesting user.
-        std::string d_echo_token;
-
-        /// An pointer to a CURL object to use for any HTTP transactions.
-        CURL *d_curl;
-
-        /// @TODO This variable fails to accumulate error message content when curl has problems. FIX.
-        char d_error_buffer[CURL_ERROR_SIZE]; // A human-readable message.
-
         /// The DAP type of the resource. See RemoteHttpResource::setType() for more.
         std::string d_type;
 
@@ -79,7 +70,7 @@ namespace http {
         std::string d_resourceCacheFileName;
 
         /// HTTP request headers added the curl HTTP GET request
-        std::vector<std::string> *d_request_headers; // Request headers
+        // std::vector<std::string> d_request_headers; // Request headers not used, maybe later
 
         /// The raw HTTP response headers returned by the request for the remote resource.
         std::vector<std::string> *d_response_headers; // Response headers
@@ -121,12 +112,13 @@ namespace http {
 
     protected:
         RemoteResource() :
-                d_fd(0), d_initialized(false), d_curl(0), d_resourceCacheFileName(""), d_request_headers(0),
+                d_fd(0), d_initialized(false), d_resourceCacheFileName(""),
                 d_response_headers(0), d_http_response_headers(0) {
         }
 
     public:
-        RemoteResource(const std::string &url, const std::string &uid = "", const std::string &echo_token = "");
+        // RemoteResource(const std::string &url, const std::string &uid = "", const std::string &echo_token = "");
+        RemoteResource(const std::string &url, const std::string &uid = "");
 
         virtual ~RemoteResource();
 

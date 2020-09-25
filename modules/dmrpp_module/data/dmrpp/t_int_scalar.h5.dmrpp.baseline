@@ -10,7 +10,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/scalar</Value>
         </Attribute>
-        <dmrpp:chunks>
+        <dmrpp:chunks byteOrder="LE">
             <dmrpp:chunk offset="2144" nBytes="4"/>
         </dmrpp:chunks>
     </Int32>
