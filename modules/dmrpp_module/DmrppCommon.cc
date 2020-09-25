@@ -279,7 +279,6 @@ DmrppCommon::print_compact_element(XMLWriter &xml, const string &name_space, con
     ostringstream oss;
     copy(encoded.begin(), encoded.end(), ostream_iterator<char>(oss, ""));
     string sizes = oss.str();
-    sizes.erase(sizes.size() - 1, 1);    // trim the trailing space
 
     if (xmlTextWriterWriteElementNS(xml.get_writer(), (const xmlChar *) name_space.c_str(),
                                     (const xmlChar *) "compact", NULL,

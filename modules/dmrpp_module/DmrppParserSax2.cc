@@ -1363,34 +1363,19 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
 
             case dods_float32_c:
             case dods_float64_c:
-                try {
-                    bt->val2buf(reinterpret_cast<void *>(&decoded[0]));
-                    bt->set_read_p(true);
-                }
-                catch (...) {
-                    throw;
-                }
+                bt->val2buf(reinterpret_cast<void *>(&decoded[0]));
+                bt->set_read_p(true);
                 break;
 
             case dods_str_c:
             case dods_url_c:
-                // For this case, the Array is really a single string - check for that
-                // with the following assert - but is an Array because the string data
-                // is stored as an array of chars (hello, FORTRAN). Read the chars, make
-                // a string and load that into a vector<string> (which will be a vector
-                // of length one). Set that as the value of the Array. Really, this
-                // value could be stored as a scalar, but that's complicated and client
-                // software might be expecting an array, so better to handle it this way.
-                // jhrg 9/17/20
                 try {
                     std::string str(decoded.begin(), decoded.end());
                     DmrppStr *st = dynamic_cast<DmrppStr *>(bt);
                     st->set_value(str);
                     bt->set_read_p(true);
                 }
-                catch (...) {
-                    throw;
-                }
+                catch (...) { throw; }
                 break;
 
             default:
