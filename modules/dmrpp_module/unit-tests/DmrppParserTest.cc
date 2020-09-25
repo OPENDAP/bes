@@ -721,7 +721,7 @@ public:
         CPPUNIT_TEST(test_grid_1_2d);
         CPPUNIT_TEST(test_nc4_group_atomic);
 
-        // CPPUNIT_TEST(test_string_compact);
+        CPPUNIT_TEST(test_string_compact);
 
         // CPPUNIT_TEST(test_flattened_grid_1_2d);
 #if 0
