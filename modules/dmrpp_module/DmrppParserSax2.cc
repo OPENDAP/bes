@@ -1348,6 +1348,8 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
         BESDEBUG(PARSER, prolog << "BaseType: " << bt->type_name() << " " << bt->name() << endl);
 
         switch (bt->type()) {
+            case dods_array_c:
+
             case dods_byte_c:
             case dods_char_c:
             case dods_int8_c:
