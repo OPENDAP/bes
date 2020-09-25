@@ -378,7 +378,7 @@ bool DmrppParserSax2::process_dimension(const char *name, const xmlChar **attrs,
 }
 
 
-bool DmrppParserSax2::process_compact_start(const char *name){
+bool DmrppParserSax2::process_dmrpp_compact_start(const char *name){
     if ( strcmp(name, "compact") == 0) {
         BESDEBUG(PARSER, prolog << "DMR++ compact element. localname: " << name << endl);
         BaseType *bt = top_basetype();
@@ -414,7 +414,7 @@ BaseType *DmrppParserSax2::get_parent_bt(const char *localname)
     return parent;
 }
 
-void DmrppParserSax2::process_compact_end(const char *localname)
+void DmrppParserSax2::process_dmrpp_compact_end(const char *localname)
 {
     BESDEBUG(PARSER, prolog << "BEGIN" << endl);
     if (is_not(localname, "compact"))
@@ -433,7 +433,6 @@ void DmrppParserSax2::process_compact_end(const char *localname)
         return;
 
     BaseType *target=bt;
-
     if (parent->type() == dods_array_c)
         target = parent;
 
@@ -1028,7 +1027,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
             parser->push_state(inside_dim);
         else if (parser->process_map(localname, attributes, nb_attributes))
             parser->push_state(inside_map);
-        else if (parser->process_compact_start(localname))
+        else if (parser->process_dmrpp_compact_start(localname))
             parser->push_state(inside_dmrpp_compact_element);
         else
             dmr_error(parser, "Expected an 'Attribute', 'Dim' or 'Map' element; found '%s' instead.", localname);
@@ -1448,7 +1447,7 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
 
     case inside_dmrpp_compact_element: {
         BESDEBUG(PARSER, prolog << "End of dmrpp compact element: " << localname << endl);
-        parser->process_compact_end(localname);
+        parser->process_dmrpp_compact_end(localname);
         parser->pop_state();
         break;
     }
