@@ -242,8 +242,8 @@ private:
     void process_enum_const_helper(const xmlChar **attrs, int nb_attributes);
     void process_enum_def_helper(const xmlChar **attrs, int nb_attributes);
 
-        bool process_compact_end(const char *localname);
-        bool process_compact_start(const char *name);
+    bool process_compact_start(const char *name);
+    void process_compact_end(const char *localname);
     bool process_dimension(const char *name, const xmlChar **attrs, int nb_attrs);
     bool process_dimension_def(const char *name, const xmlChar **attrs, int nb_attrs);
     bool process_map(const char *name, const xmlChar **attrs, int nb_attributes);
