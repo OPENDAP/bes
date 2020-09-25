@@ -25,6 +25,10 @@
 #include <unistd.h>
 #include <time.h>
 
+#include <cstring>
+#include <cassert>
+#include <cerrno>
+
 #include <queue>
 
 #include <cppunit/TextTestRunner.h>
@@ -40,6 +44,8 @@
 #include "Chunk.h"
 #include "DmrppArray.h"
 #include "CurlHandlePool.h"
+
+#include "test_config.h"
 
 #define THREAD_SLEEP_TIME 1 // sleep time in seconds
 
@@ -171,7 +177,7 @@ public:
     void setUp()
     {
         chp = new CurlHandlePool(4);
-        TheBESKeys::ConfigFile = "curl_handle_pool_keys.conf";
+        TheBESKeys::ConfigFile = string(TEST_SRC_DIR) + "/curl_handle_pool_keys.conf";
         // The following will show threads joined after an exception was thrown by a thread
         if (bes_debug) BESDebug::SetUp("cerr,dmrpp:3");
     }
