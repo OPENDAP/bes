@@ -394,6 +394,26 @@ bool DmrppParserSax2::process_compact_start(const char *name){
     }
 }
 
+BaseType *DmrppParserSax2::get_parent_bt(const char *localname)
+{
+    BaseType *btp = top_basetype();
+    pop_basetype();
+    pop_attributes();
+
+    BaseType *parent = NULL;
+    if (!empty_basetype())
+        parent = top_basetype();
+    else if (!empty_group())
+        parent = top_group();
+    else {
+        dmr_fatal_error(this, "Both the Variable and Groups stacks are empty while closing a %s element.",
+                        localname);
+        delete btp;
+        pop_state();
+    }
+    return parent;
+}
+
 void DmrppParserSax2::process_compact_end(const char *localname)
 {
     BESDEBUG(PARSER, prolog << "BEGIN" << endl);
@@ -407,6 +427,15 @@ void DmrppParserSax2::process_compact_end(const char *localname)
 
     BaseType *bt = top_basetype();
     BESDEBUG(PARSER, prolog << "BaseType: " << bt->type_name() << " " << bt->name() << endl);
+
+    BaseType *parent = get_parent_bt(localname);
+    if(!parent)
+        return;
+
+    BaseType *target=bt;
+
+    if (parent->type() == dods_array_c)
+        target = parent;
 
     switch (bt->type()) {
         case dods_array_c:
@@ -426,15 +455,15 @@ void DmrppParserSax2::process_compact_end(const char *localname)
 
         case dods_float32_c:
         case dods_float64_c:
-            bt->val2buf(reinterpret_cast<void *>(&decoded[0]));
-            bt->set_read_p(true);
+            target->val2buf(reinterpret_cast<void *>(&decoded[0]));
+            target->set_read_p(true);
             break;
 
         case dods_str_c:
         case dods_url_c:
             try {
                 std::string str(decoded.begin(), decoded.end());
-                DmrppStr *st = dynamic_cast<DmrppStr *>(bt);
+                DmrppStr *st = dynamic_cast<DmrppStr *>(target);
                 st->set_value(str);
                 bt->set_read_p(true);
             }
@@ -1174,6 +1203,9 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
     BESDEBUG(PARSER, prolog << "Start element exit state: " << states[parser->get_state()] << endl);
 }
 
+
+
+
 void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *prefix, const xmlChar *URI)
 {
     DmrppParserSax2 *parser = static_cast<DmrppParserSax2*>(p);
@@ -1329,6 +1361,7 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
     case inside_simple_type:
         if (is_simple_type(get_type(localname))) {
             BaseType *btp = parser->top_basetype();
+#if 0
             parser->pop_basetype();
             parser->pop_attributes();
 
@@ -1344,6 +1377,10 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
                 parser->pop_state();
                 break;
             }
+#endif
+            BaseType *parent = parser->get_parent_bt(localname);
+            if(!parent)
+                break;
 
             if (parent->type() == dods_array_c)
                 static_cast<Array*>(parent)->prototype()->add_var_nocopy(btp);
@@ -1375,8 +1412,8 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
             DmrppParserSax2::dmr_error(parser, "Expected an end tag for a constructor; found '%s' instead.", localname);
             return;
         }
-
         BaseType *btp = parser->top_basetype();
+#if 0
         parser->pop_basetype();
         parser->pop_attributes();
 
@@ -1392,6 +1429,10 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
             parser->pop_state();
             break;
         }
+#endif
+        BaseType *parent = parser->get_parent_bt(localname);
+        if(!parent)
+            break;
 
         // TODO Why doesn't this code mirror the simple_var case and test
         // for the parent being an array? jhrg 10/13/13

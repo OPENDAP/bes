@@ -249,7 +249,7 @@ public:
 
         D4Group *root = dmr->root();
 
-        checkGroupsAndVars(root,"/",0,1);
+        checkGroupsAndVars(root,"/",0,2);
 
         D4Group::Vars_iter v = root->var_begin();
 

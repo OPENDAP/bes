@@ -256,6 +256,7 @@ private:
 
     void finish_variable(const char *tag, libdap::Type t, const char *expected);
     //@}
+    libdap::BaseType *get_parent_bt(const char *localname);
 
     friend class DmrppParserSax2Test;
 
