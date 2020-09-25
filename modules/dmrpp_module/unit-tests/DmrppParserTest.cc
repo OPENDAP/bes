@@ -262,7 +262,41 @@ public:
 
     }
 
-/******************************************************
+    /******************************************************
+     *
+     */
+    void test_integer_array_compact()
+    {
+
+        auto_ptr<DMR> dmr(new DMR);
+        DmrppTypeFactory dtf;
+        dmr->set_factory(&dtf);
+
+        string int_h5 = string(TEST_DATA_DIR).append("/").append("t_int_array_compact.h5.dmrpp");
+        //string int_h5 = string(TEST_DATA_DIR).append("/").append("ATL03_20181228015957_13810110_003_01.h5.dmrpp");
+        BESDEBUG(MODULE, "Opening: " << int_h5 << endl);
+
+        ifstream in(int_h5.c_str());
+        parser->intern(in, dmr.get());
+        BESDEBUG(MODULE, "Parsing complete"<< endl);
+
+        D4Group *root = dmr->root();
+
+        checkGroupsAndVars(root,"/",0,1);
+
+        D4Group::Vars_iter v = root->var_begin();
+
+        checkDmrppVariableWithCompact(*v,
+                                      "scalar",
+                                      2144,
+                                      4,
+                                      "1ebc4541e985d612a5ff7ed2ee92bf3d",
+                                      "6609c41e-0feb-4c00-a11b-48ae9a493542");
+
+    }
+
+
+    /******************************************************
      *
      */
     void test_string_compact()
@@ -540,6 +574,7 @@ public:
     //CPPUNIT_TEST(test_nc4_group_atomic);
 
     CPPUNIT_TEST(test_integer_scalar_compact);
+    CPPUNIT_TEST(test_integer_array_compact);
     //CPPUNIT_TEST(test_string_compact);
 
 #if 0
