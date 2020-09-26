@@ -407,11 +407,11 @@ void DmrppParserSax2::process_dmrpp_compact_end(const char *localname)
         throw BESInternalError("Could not locate parent BaseType during parse operation.", __FILE__, __LINE__);
     BESDEBUG(PARSER, prolog << "BaseType: " << bt->type_name() << " " << bt->name() << endl);
 
-    pop_basetype();
-    if (empty_basetype())
-        throw BESInternalError("The BaseType stack is empty and should contain a parent array for the dmrpp:compact element",__FILE__,__LINE__);
+    //pop_basetype();
+    //if (empty_basetype())
+    //    throw BESInternalError("The BaseType stack is empty and should contain a parent array for the dmrpp:compact element",__FILE__,__LINE__);
     BaseType *target = top_basetype();
-    push_basetype(bt);
+    //push_basetype(bt);
 
     if (target->type() != dods_array_c)
         throw BESInternalError("The dmrpp::compact element must be the child of an array variable",__FILE__,__LINE__);
@@ -419,13 +419,13 @@ void DmrppParserSax2::process_dmrpp_compact_end(const char *localname)
     DmrppCommon *dc = dynamic_cast<DmrppCommon*>(target);   // Get the Dmrpp common info
     if (!dc)
         throw BESInternalError("Could not cast BaseType to DmrppType in the drmpp handler.", __FILE__, __LINE__);
-#if 0
+#if 1
     dc->set_compact(true);
 
     //    DmrppParserSax2::dmr_error(this, "Expected an end value tag; found '%s' instead.", localname);
 
     std::string data(char_data);
-    BESDEBUG(PARSER, prolog << "Read compact element text: '" << data << "'" << endl);
+    BESDEBUG(PARSER, prolog << "Read compact element text. size: " << data.size() << " length: " << data.length() << " value: '" << data << "'" << endl);
 
     std::vector <u_int8_t> decoded = base64::Base64::decode(data);
 
@@ -1452,6 +1452,7 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
     case inside_dmrpp_compact_element: {
         parser->process_dmrpp_compact_end(localname);
         BESDEBUG(PARSER, prolog << "End of dmrpp compact element: " << localname << endl);
+        parser->pop_state();
         break;
     }
 #endif
