@@ -405,8 +405,13 @@ void DmrppParserSax2::process_dmrpp_compact_end(const char *localname)
     BaseType *bt = top_basetype();
     BESDEBUG(PARSER, prolog << "BaseType: " << bt->type_name() << " " << bt->name() << endl);
     pop_basetype();
-    BaseType *parent = top_basetype();
-    push_basetype(parent);
+    BaseType *parent = NULL;
+    if (!empty_basetype())
+        parent = top_basetype();
+    else if (!empty_group())
+        parent = top_group();
+
+    push_basetype(bt);
 
     BaseType *target=bt;
     if (parent->type() == dods_array_c)
