@@ -1451,7 +1451,6 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
 #if 1
     case inside_dmrpp_compact_element: {
         parser->process_dmrpp_compact_end(localname);
-        parser->pop_state();
         BESDEBUG(PARSER, prolog << "End of dmrpp compact element: " << localname << endl);
         break;
     }
