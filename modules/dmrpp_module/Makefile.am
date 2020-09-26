@@ -75,14 +75,14 @@ bin_PROGRAMS = build_dmrpp check_dmrpp merge_dmrpp reduce_mdf
 # build_dmrpp config
 build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS) -I../hdf5_handler
 
-build_dmrpp_SOURCES = $(BES_SRCS) $(BES_HDRS) $(BUILD_DMRPP) build_dmrpp.cc ../hdf5_handler/h5common.cc
+build_dmrpp_SOURCES = $(BES_SRCS) $(BES_HDRS) $(BUILD_DMRPP) build_dmrpp.cc $(srcdir)/../hdf5_handler/h5common.cc
 
 build_dmrpp_LDADD =   $(BES_DAP_LIB) $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) \
 $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) \
 $(OPENSSL_LIBS) $(XML2_LIBS) $(BYTESWAP_LIBS) -lz
 
 # check_dmrpp config
-check_dmrpp_CPPFLAGS = $(AM_CPPFLAGS)
+check_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS) -I$(srcdir)/../hdf5_handler
 check_dmrpp_SOURCES = check_dmrpp.cc
 
 # merge_dmrpp config
