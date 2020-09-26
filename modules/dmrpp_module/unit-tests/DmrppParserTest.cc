@@ -299,15 +299,12 @@ public:
         auto_ptr<DMR> dmr(new DMR);
         DmrppTypeFactory dtf;
         dmr->set_factory(&dtf);
-//t_int_scalar_compact.h5.dmrpp
         string int_h5 = string(TEST_DATA_DIR).append("/").append("t_int64_array_compact.h5.dmrpp");
-        //string int_h5 = string(TEST_DATA_DIR).append("/").append("ATL03_20181228015957_13810110_003_01.h5.dmrpp");
         BESDEBUG(MODULE, "Opening: " << int_h5 << endl);
 
         try {
             ifstream in(int_h5.c_str());
             CPPUNIT_ASSERT(in.is_open());
-
 
             parser->intern(in, dmr.get());
             BESDEBUG(MODULE, "Parsing complete"<< endl);
@@ -711,9 +708,9 @@ public:
 
     CPPUNIT_TEST_SUITE( DmrppParserTest );
 
-        CPPUNIT_TEST(test_integer_scalar_compact);
+        //CPPUNIT_TEST(test_integer_scalar_compact);
         CPPUNIT_TEST(test_integer_array_compact);
-        CPPUNIT_TEST(test_string_compact);
+        //CPPUNIT_TEST(test_string_compact);
 
         CPPUNIT_TEST(test_integer_scalar);
         CPPUNIT_TEST(test_integer_arrays);
