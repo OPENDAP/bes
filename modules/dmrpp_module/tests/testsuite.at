@@ -160,7 +160,8 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([new_types/nc4_group_atomic.h5.dap])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([new_types/nc4_group_atomic.h5.dods])
 
 
-AT_BESCMD_RESPONSE_TEST([compact/ATL03_compact.dds])
-AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([compact/ATL03_compact.dods])
+dnl AT_BESCMD_RESPONSE_TEST([compact/ATL03_compact.dds])
+dnl AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([compact/ATL03_compact.dods])
+
 AT_BESCMD_RESPONSE_TEST([compact/ATL03_compact.dmr])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([compact/ATL03_compact.dap])
