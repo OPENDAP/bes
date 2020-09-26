@@ -395,21 +395,6 @@ bool DmrppParserSax2::process_dmrpp_compact_start(const char *name){
     }
 }
 
-BaseType *DmrppParserSax2::get_parent_bt(BaseType *btp, const char *localname)
-{
-    BaseType *parent = NULL;
-    if (!empty_basetype())
-        parent = top_basetype();
-    else if (!empty_group())
-        parent = top_group();
-    else {
-        dmr_fatal_error(this, "Both the Variable and Groups stacks are empty while closing a %s element.",
-                        localname);
-        delete btp;
-        pop_state();
-    }
-    return parent;
-}
 
 void DmrppParserSax2::process_dmrpp_compact_end(const char *localname)
 {
@@ -419,11 +404,13 @@ void DmrppParserSax2::process_dmrpp_compact_end(const char *localname)
 
     BaseType *bt = top_basetype();
     BESDEBUG(PARSER, prolog << "BaseType: " << bt->type_name() << " " << bt->name() << endl);
-    BaseType *parent = get_parent_bt(bt, localname);
-    if(!parent)
-        return;
-    BESDEBUG(PARSER, prolog << "Parent BaseType: " << parent->type_name() << " " << parent->name() << endl);
+    pop_basetype();
+    BaseType *parent = top_basetype();
+    push_basetype(parent);
 
+    BaseType *target=bt;
+    if (parent->type() == dods_array_c)
+        target = parent;
 
     if (!bt) throw BESInternalError("Could not locate parent BaseType during parse operation.", __FILE__, __LINE__);
     DmrppCommon *dc = dynamic_cast<DmrppCommon*>(bt);   // Get the Dmrpp common info
@@ -439,9 +426,6 @@ void DmrppParserSax2::process_dmrpp_compact_end(const char *localname)
     std::vector <u_int8_t> decoded = base64::Base64::decode(data);
 
 
-    BaseType *target=bt;
-    if (parent->type() == dods_array_c)
-        target = parent;
 
     switch (bt->type()) {
         case dods_array_c:
@@ -1390,7 +1374,6 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
             BaseType *btp = parser->top_basetype();
             parser->pop_basetype();
             parser->pop_attributes();
-#if OLDWAY
             BaseType *parent = 0;
             if (!parser->empty_basetype())
                 parent = parser->top_basetype();
@@ -1403,11 +1386,6 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
                 parser->pop_state();
                 break;
             }
-#else
-            BaseType *parent = parser->get_parent_bt(btp,localname);
-            if(!parent)
-                break;
-#endif
             if (parent->type() == dods_array_c)
                 static_cast<Array*>(parent)->prototype()->add_var_nocopy(btp);
             else
@@ -1441,8 +1419,6 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
         BaseType *btp = parser->top_basetype();
         parser->pop_basetype();
         parser->pop_attributes();
-
-#if OLDWAY
         BaseType *parent = 0;
         if (!parser->empty_basetype())
             parent = parser->top_basetype();
@@ -1455,11 +1431,6 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
             parser->pop_state();
             break;
         }
-#else
-        BaseType *parent = parser->get_parent_bt(btp,localname);
-        if(!parent)
-            break;
-#endif
         // TODO Why doesn't this code mirror the simple_var case and test
         // for the parent being an array? jhrg 10/13/13
         parent->add_var_nocopy(btp);
