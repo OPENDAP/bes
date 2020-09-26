@@ -403,24 +403,23 @@ void DmrppParserSax2::process_dmrpp_compact_end(const char *localname)
         return;
 
     BaseType *bt = top_basetype();
+    if (!bt)
+        throw BESInternalError("Could not locate parent BaseType during parse operation.", __FILE__, __LINE__);
     BESDEBUG(PARSER, prolog << "BaseType: " << bt->type_name() << " " << bt->name() << endl);
-    pop_basetype();
-    BaseType *parent = NULL;
-    if (!empty_basetype())
-        parent = top_basetype();
-    else if (!empty_group())
-        parent = top_group();
 
+    pop_basetype();
+    if (empty_basetype())
+        throw BESInternalError("The BaseType stack is empty and should contain a parent array for the dmrpp:compact element",__FILE__,__LINE__);
+    BaseType *target = top_basetype();
     push_basetype(bt);
 
-    BaseType *target=bt;
-    if (parent->type() == dods_array_c)
-        target = parent;
+    if (target->type() != dods_array_c)
+        throw BESInternalError("The dmrpp::compact element must be the child of an array variable",__FILE__,__LINE__);
 
-    if (!bt) throw BESInternalError("Could not locate parent BaseType during parse operation.", __FILE__, __LINE__);
-    DmrppCommon *dc = dynamic_cast<DmrppCommon*>(bt);   // Get the Dmrpp common info
+    DmrppCommon *dc = dynamic_cast<DmrppCommon*>(target);   // Get the Dmrpp common info
     if (!dc)
         throw BESInternalError("Could not cast BaseType to DmrppType in the drmpp handler.", __FILE__, __LINE__);
+#if 0
     dc->set_compact(true);
 
     //    DmrppParserSax2::dmr_error(this, "Expected an end value tag; found '%s' instead.", localname);
@@ -430,10 +429,10 @@ void DmrppParserSax2::process_dmrpp_compact_end(const char *localname)
 
     std::vector <u_int8_t> decoded = base64::Base64::decode(data);
 
-
-
-    switch (bt->type()) {
+    switch (target->var()->type()) {
         case dods_array_c:
+            throw BESInternalError("Parser state has been corrupted. An Array may not be the template for an Array.", __FILE__, __LINE__);
+            break;
 
         case dods_byte_c:
         case dods_char_c:
@@ -470,6 +469,7 @@ void DmrppParserSax2::process_dmrpp_compact_end(const char *localname)
             break;
     }
     char_data = ""; // Null this after use.
+#endif
 
     BESDEBUG(PARSER, prolog << "END" << endl);
 }
