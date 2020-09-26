@@ -469,7 +469,7 @@ void DmrppParserSax2::process_dmrpp_compact_end(const char *localname)
             break;
     }
     char_data = ""; // Null this after use.
-    
+
     BESDEBUG(PARSER, prolog << "END" << endl);
 }
 
