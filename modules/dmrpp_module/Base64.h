@@ -27,16 +27,21 @@
 #include <string>
 #include <vector>
 
+#define BASE64_ENCODE_LOOKUP "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+#define BASE64_PAD_CHARACTER '='
+
 namespace base64 {
 
     class Base64 {
 
         // Lookup table for encoding, if you want to use an alternate alphabet, change the characters here
-        constexpr static char encodeLookup[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-        constexpr static char padCharacter = '=';
+        //constexpr static char encodeLookup[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+        //constexpr static char padCharacter = '=';
 
     public:
         static std::string encode(const u_int8_t *cursor, int32_t size) {
+            char encodeLookup[] = BASE64_ENCODE_LOOKUP;
+            char padCharacter = BASE64_PAD_CHARACTER;
             std::string encodedString;
             encodedString.reserve(((size / 3) + (size % 3 > 0)) * 4);
             u_int64_t temp;
@@ -71,6 +76,8 @@ namespace base64 {
         }
 
         static std::vector <u_int8_t> decode(const std::string &input) {
+            char padCharacter = BASE64_PAD_CHARACTER;
+
             if (input.length() % 4) //Sanity check
                 throw std::runtime_error("Non-Valid base64!");
 
