@@ -419,7 +419,7 @@ void DmrppParserSax2::process_dmrpp_compact_end(const char *localname)
     DmrppCommon *dc = dynamic_cast<DmrppCommon*>(target);   // Get the Dmrpp common info
     if (!dc)
         throw BESInternalError("Could not cast BaseType to DmrppType in the drmpp handler.", __FILE__, __LINE__);
-#if 1
+
     dc->set_compact(true);
 
     //    DmrppParserSax2::dmr_error(this, "Expected an end value tag; found '%s' instead.", localname);
@@ -469,8 +469,7 @@ void DmrppParserSax2::process_dmrpp_compact_end(const char *localname)
             break;
     }
     char_data = ""; // Null this after use.
-#endif
-
+    
     BESDEBUG(PARSER, prolog << "END" << endl);
 }
 
