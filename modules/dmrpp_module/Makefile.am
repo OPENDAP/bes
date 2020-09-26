@@ -80,7 +80,8 @@ $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS
 $(OPENSSL_LIBS) $(XML2_LIBS) $(BYTESWAP_LIBS) -lz
 
 # check_dmrpp config
-check_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS) -I$(srcdir)/../hdf5_handler
+check_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS)
+ # -I$(srcdir)/../hdf5_handler
 check_dmrpp_SOURCES = check_dmrpp.cc
 
 # merge_dmrpp config
