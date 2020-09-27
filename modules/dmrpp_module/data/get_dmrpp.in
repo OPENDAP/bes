@@ -436,11 +436,13 @@ function make_bes_conf() {
   fi
 
   TMP_CONF=$(mktemp -t conf_XXXX)
+  echo "${BES_CONF_DOC}" > ${TMP_CONF}
 
   if test -n "${2}"; then
-    echo "${BES_CONF_DOC}" "$(cat ${2})" >${TMP_CONF}
-  else
-    echo "${BES_CONF_DOC}" >${TMP_CONF}
+    if test -n "${verbose}"; then
+      echo "Adding additional BES configuration from: ${2}" >&2
+    fi
+    cat "${2}" >> ${TMP_CONF}
   fi
 
   if test -n "$very_verbose"; then
@@ -1077,7 +1079,7 @@ if test -n "${merge_missing_vars}"; then
     MISSING_FILE_BESCMD=$(mkDapRequest "${input_data_file}" dods "${MISSING_VARS}" "${sidecar_missing_file}")
     source_data_path="${sidecar_missing_file}"
 
-    BES_CONF=$(make_bes_conf "${bes_conf_file}")  # reset bes_conf_file; removing additional H5 parameters
+    BES_CONF=$(make_bes_conf "${bes_conf_file}" "${site_conf_file}")  # reset bes_conf_file; removing additional H5 parameters
 
     SOURCE_DMR=$(mkDapRequest "${sidecar_missing_file}" dmr)  # use besstandalone to generate dmr for sidecar_missing_file
     master_dmrpp_file="${output_file}"  # save original dmrpp filename
