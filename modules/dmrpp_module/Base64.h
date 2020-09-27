@@ -24,6 +24,7 @@
 // This class based on implementation described at http://vorbrodt.blog/2019/03/23/base64-encoding
 // and http://en.wikibooks.org/wiki/Algorithm_Implementation/Miscellaneous/Base64.
 
+#include <stdexcept>
 #include <string>
 #include <vector>
 
