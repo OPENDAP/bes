@@ -9,7 +9,7 @@
  <bes:setContainer name="catalogContainer" space="catalog">/data/dmrpp/ATL03_compact.dmrpp</bes:setContainer>
  <bes:define name="d1" space="default">
   <bes:container name="catalogContainer">
-   <bes:constraint>ancillary_data_data_start_utc</bes:constraint>
+   <bes:dap4constraint>/ancillary_data_calibrations_low_link_impulse_response_gt1r_total_events</bes:dap4constraint>
   </bes:container>
  </bes:define>
  <bes:get type="dmr" definition="d1" />
