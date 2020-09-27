@@ -59,6 +59,8 @@
 #include "DmrppCommon.h"
 #include "DmrppStr.h"
 #include "DmrppNames.h"
+#include "DmrppArray.h"
+
 #include "CurlUtils.h"
 
 #include "Base64.h"
@@ -402,16 +404,10 @@ void DmrppParserSax2::process_dmrpp_compact_end(const char *localname)
     if (is_not(localname, "compact"))
         return;
 
-    BaseType *bt = top_basetype();
-    if (!bt)
-        throw BESInternalError("Could not locate parent BaseType during parse operation.", __FILE__, __LINE__);
-    BESDEBUG(PARSER, prolog << "BaseType: " << bt->type_name() << " " << bt->name() << endl);
-
-    //pop_basetype();
-    //if (empty_basetype())
-    //    throw BESInternalError("The BaseType stack is empty and should contain a parent array for the dmrpp:compact element",__FILE__,__LINE__);
     BaseType *target = top_basetype();
-    //push_basetype(bt);
+    if (!target)
+        throw BESInternalError("Could not locate parent BaseType during parse operation.", __FILE__, __LINE__);
+    BESDEBUG(PARSER, prolog << "BaseType: " << target->type_name() << " " << target->name() << endl);
 
     if (target->type() != dods_array_c)
         throw BESInternalError("The dmrpp::compact element must be the child of an array variable",__FILE__,__LINE__);
@@ -455,13 +451,18 @@ void DmrppParserSax2::process_dmrpp_compact_end(const char *localname)
 
         case dods_str_c:
         case dods_url_c:
-            try {
+            {
                 std::string str(decoded.begin(), decoded.end());
-                DmrppStr *st = dynamic_cast<DmrppStr *>(target);
-                st->set_value(str);
-                bt->set_read_p(true);
+                DmrppArray *st = dynamic_cast<DmrppArray *>(target);
+                if(!st){
+                    stringstream msg;
+                    msg << prolog << "The target BaseType MUST be an array. and it's a " << target->type_name();
+                    BESDEBUG(MODULE, msg.str() << endl);
+                    throw BESInternalError(msg.str(),__FILE__,__LINE__);
+                }
+                st->val2buf(&str);
+                st->set_read_p(true);
             }
-            catch (...) { throw; }
             break;
 
         default:
