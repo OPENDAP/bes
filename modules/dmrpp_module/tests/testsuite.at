@@ -160,16 +160,50 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([new_types/nc4_group_atomic.h5.dap])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([new_types/nc4_group_atomic.h5.dods])
 
 
-dnl AT_BESCMD_RESPONSE_TEST([compact/ATL03_compact.dds])
-dnl AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([compact/ATL03_compact.dods])
+dnl - Compact layout tests ------------------------------------------
 
+dnl DAP4
 AT_BESCMD_RESPONSE_TEST([compact/ATL03_compact.dmr])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([compact/ATL03_compact.dap])
 
+dnl DAP4 + DAP2
 AT_BESCMD_RESPONSE_TEST([compact/string_array_compact.dmr])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([compact/string_array_compact.dap])
 AT_BESCMD_RESPONSE_TEST([compact/string_array_compact.dds])
 AT_BESCMD_RESPONSE_TEST([compact/string_array_compact.das])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([compact/string_array_compact.dods])
 
+dnl !!!!!!!!!!    START HERE    !!!!!!!!!!!!!!!
+
+dnl AT_BESCMD_RESPONSE_TEST([compact/int8_array_compact.dmr])
+
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([compact/int8_array_compact.dap])
+
+dnl AT_BESCMD_RESPONSE_TEST([compact/int32_array_compact.dmr])
+dnl AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([compact/int32_array_compact.dap])
+dnl AT_BESCMD_RESPONSE_TEST([compact/int32_array_compact.dds])
+dnl AT_BESCMD_RESPONSE_TEST([compact/int32_array_compact.das])
+dnl AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([compact/int32_array_compact.dods])
+
+dnl AT_BESCMD_RESPONSE_TEST([compact/int64_array_compact.dmr])
+dnl AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([compact/int64_array_compact.dap])
+
+dnl AT_BESCMD_RESPONSE_TEST([compact/float32_array_compact.dmr])
+dnl AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([compact/float32_array_compact.dap])
+dnl AT_BESCMD_RESPONSE_TEST([compact/float32_array_compact.dds])
+dnl AT_BESCMD_RESPONSE_TEST([compact/float32_array_compact.das])
+dnl AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([compact/float32_array_compact.dods])
+
+dnl AT_BESCMD_RESPONSE_TEST([compact/float64_array_compact.dmr])
+dnl AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([compact/float64_array_compact.dap])
+dnl AT_BESCMD_RESPONSE_TEST([compact/float64_array_compact.dds])
+dnl AT_BESCMD_RESPONSE_TEST([compact/float64_array_compact.das])
+dnl AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([compact/float64_array_compact.dods])
+
+dnl AT_BESCMD_RESPONSE_TEST([compact/string_array_compact.dmr])
+dnl AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([compact/float64_array_compact.dap])
+dnl AT_BESCMD_RESPONSE_TEST([compact/float64_array_compact.dds])
+dnl AT_BESCMD_RESPONSE_TEST([compact/float64_array_compact.das])
+dnl AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([compact/float64_array_compact.dods])
+
+
