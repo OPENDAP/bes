@@ -51,6 +51,7 @@
 #include "Chunk.h"
 #include "DmrppArray.h"
 #include "DmrppRequestHandler.h"
+#include "Base64.h"
 
 // Used with BESDEBUG
 #define dmrpp_3 "dmrpp:3"
@@ -1570,6 +1571,69 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
     if (DmrppCommon::d_print_chunks && get_immutable_chunks().size() > 0)
         print_chunks_element(xml, DmrppCommon::d_ns_prefix);
 
+    // If this variable uses the COMPACT layout, encode the values for
+    // the array using base64. Note that strings are a special case; each
+    // element of the array is a string and is encoded in its own base64
+    // xml element. So, wghile an array of 10 int32 will be encoded in a
+    // single base64 element, an array of 10 strings will use 10 base64
+    // elements. This is because the size of each string's value is different.
+    // Not so for an int32.
+    if (DmrppCommon::d_print_chunks && is_compact_layout() && read_p()) {
+        switch (var()->type()) {
+            case dods_byte_c:
+            case dods_char_c:
+            case dods_int8_c:
+            case dods_uint8_c:
+            case dods_int16_c:
+            case dods_uint16_c:
+            case dods_int32_c:
+            case dods_uint32_c:
+            case dods_int64_c:
+            case dods_uint64_c:
+
+            case dods_enum_c:
+
+            case dods_float32_c:
+            case dods_float64_c: {
+                u_int8_t *values = 0;
+                try {
+                    size_t size = buf2val(reinterpret_cast<void **>(&values));
+                    string encoded = base64::Base64::encode(values, size);
+                    delete[] values;
+                    print_compact_element(xml, DmrppCommon::d_ns_prefix, encoded);
+                }
+                catch (...) {
+                    delete[] values;
+                    throw;
+                }
+                break;
+            }
+
+            case dods_str_c:
+            case dods_url_c: {
+                string *values = 0;
+                try {
+                    // discard the return value of buf2val()
+                    buf2val(reinterpret_cast<void **>(&values));
+                    string str;
+                    for (int i = 0; i < length(); ++i) {
+                        str = (*(static_cast<string *> (values) + i));
+                        string encoded = base64::Base64::encode(reinterpret_cast<const u_int8_t *>(str.c_str()), str.size());
+                        print_compact_element(xml, DmrppCommon::d_ns_prefix, encoded);
+                    }
+                    delete[] values;
+                }
+                catch (...) {
+                    delete[] values;
+                    throw;
+                }
+                break;
+            }
+
+            default:
+                throw InternalErr(__FILE__, __LINE__, "Vector::val2buf: bad type");
+        }
+    }
     if (xmlTextWriterEndElement(xml.get_writer()) < 0)
         throw InternalErr(__FILE__, __LINE__, "Could not end " + type_name() + " element");
 }

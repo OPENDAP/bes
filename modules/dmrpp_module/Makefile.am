@@ -58,7 +58,8 @@ DmrppInt64.h DmrppInt8.h DmrppUInt16.h DmrppUInt32.h DmrppUInt64.h \
 DmrppStr.h DmrppStructure.h DmrppUrl.h DmrppD4Enum.h DmrppD4Group.h \
 DmrppD4Opaque.h DmrppD4Sequence.h DmrppTypeFactory.h DmrppParserSax2.h \
 CredentialsManager.h AccessCredentials.h NgapS3Credentials.h \
-DmrppMetadataStore.h awsv4.h DmrppNames.h byteswap_compat.h
+DmrppMetadataStore.h awsv4.h DmrppNames.h byteswap_compat.h \
+Base64.h
 
 DMRPP_MODULE = DmrppModule.cc DmrppRequestHandler.cc DmrppModule.h DmrppRequestHandler.h
 
@@ -72,16 +73,15 @@ $(H5_LDFLAGS) $(H5_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) -ltest-types
 bin_PROGRAMS = build_dmrpp check_dmrpp merge_dmrpp reduce_mdf
 
 # build_dmrpp config
-build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS)
-
-build_dmrpp_SOURCES = $(BES_SRCS) $(BES_HDRS) $(BUILD_DMRPP) build_dmrpp.cc
-
+build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS) -I$(srcdir)/../hdf5_handler
+build_dmrpp_SOURCES = $(BES_SRCS) $(BES_HDRS) $(BUILD_DMRPP) build_dmrpp.cc $(srcdir)/../hdf5_handler/h5common.cc
 build_dmrpp_LDADD =   $(BES_DAP_LIB) $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) \
 $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) \
 $(OPENSSL_LIBS) $(XML2_LIBS) $(BYTESWAP_LIBS) -lz
 
 # check_dmrpp config
-check_dmrpp_CPPFLAGS = $(AM_CPPFLAGS)
+check_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS)
+ # -I$(srcdir)/../hdf5_handler
 check_dmrpp_SOURCES = check_dmrpp.cc
 
 # merge_dmrpp config
