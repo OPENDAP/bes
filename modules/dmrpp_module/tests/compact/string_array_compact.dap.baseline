@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="t_int_scalar.h5">
+    <String name="version">
+        <Dim size="1"/>
+        <Attribute name="contentType" type="String">
+            <Value>auxiliaryInformation</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Version number of this granule within the release. It is a sequential number corresponding to the number of times the granule has been reprocessed for the current release.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Version</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Operations</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </String>
+</Dataset>
+
+The data:
+String version[1] = {"01                                                                              "};
+
