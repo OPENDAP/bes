@@ -171,3 +171,5 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([compact/string_array_compact.dap])
 AT_BESCMD_RESPONSE_TEST([compact/string_array_compact.dds])
 AT_BESCMD_RESPONSE_TEST([compact/string_array_compact.das])
 AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([compact/string_array_compact.dods])
+
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([compact/int8_array_compact.dap])

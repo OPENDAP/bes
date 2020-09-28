@@ -6,12 +6,11 @@
  <bes:setContext name="errors">xml</bes:setContext>
  <bes:setContext name="max_response_size">0</bes:setContext>
  <bes:setContext name="uid">not_logged_in</bes:setContext>
- <bes:setContainer name="catalogContainer" space="catalog">/data/dmrpp/ATL03_compact.dmrpp</bes:setContainer>
+ <bes:setContainer name="catalogContainer" space="catalog">/data/dmrpp/t_compact_layout_test_data.dmrpp</bes:setContainer>
  <bes:define name="d1" space="default">
   <bes:container name="catalogContainer">
-   <bes:constraint>ancillary_data_data_start_utc</bes:constraint>
+   <bes:dap4constraint>/tep_valid_spot</bes:dap4constraint>
   </bes:container>
  </bes:define>
- <bes:get type="dds" definition="d1" />
+ <bes:get type="dap" definition="d1" />
 </bes:request>
-
