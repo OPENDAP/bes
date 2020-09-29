@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="t_int_scalar.h5">
+    <Float32 name="tep_bin_size">
+        <Dim size="1"/>
+        <Attribute name="contentType" type="String">
+            <Value>auxiliaryInformation</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Size of each TEP histogram bin.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>TEP Bin Size</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Derived</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </Float32>
+</Dataset>
+
+The data:
+Float32 tep_bin_size[1] = {5e-11};
+

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="t_int_scalar.h5">
+    <String name="data_end_utc">
+        <Dim size="1"/>
+        <Attribute name="contentType" type="String">
+            <Value>auxiliaryInformation</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>UTC (in CCSDS-A format) of the last data point within the granule.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>End UTC Time of Granule (CCSDS-A, Actual)</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Derived</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </String>
+</Dataset>
+
+The data:
+String data_end_utc[1] = {"removed date-time"};
+

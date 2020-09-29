@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response reqID="[thread:http-nio-8080-exec-8-33][bes_client:/-1]" xmlns="http://xml.opendap.org/ns/bes/1.0#">
+    <getDMR>
+        <BESError>
+            <Type>3</Type>
+            <Message>libdap error transmitting DMR: The constraint expression referenced a variable that was not found in the dataset.</Message>
+            <Administrator>support@opendap.org</Administrator>
+            <Location>
+                <File>BESDapTransmit.cc</File>
+                <Line>91</Line>
+            </Location>
+        </BESError>
+    </getDMR>
+</response>
