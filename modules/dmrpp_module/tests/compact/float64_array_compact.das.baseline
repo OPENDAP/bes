@@ -58,8 +58,4 @@ Attributes {
             String dap4:type "Int64";
         }
     }
-    ancillary_data {
-        calibrations {
-        }
-    }
 }
