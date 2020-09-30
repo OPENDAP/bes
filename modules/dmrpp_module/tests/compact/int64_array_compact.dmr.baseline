@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<response reqID="[thread:http-nio-8080-exec-8-33][bes_client:/-1]" xmlns="http://xml.opendap.org/ns/bes/1.0#">
-    <getDMR>
-        <BESError>
-            <Type>3</Type>
-            <Message>libdap error transmitting DMR: The constraint expression referenced a variable that was not found in the dataset.</Message>
-            <Administrator>support@opendap.org</Administrator>
-            <Location>
-                <File>BESDapTransmit.cc</File>
-                <Line>91</Line>
-            </Location>
-        </BESError>
-    </getDMR>
-</response>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="t_int_scalar.h5">
+    <Int64 name="total_events">
+        <Dim name="/ancillary_data/calibrations/ds_channel"/>
+        <Attribute name="contentType" type="String">
+            <Value>auxiliaryInformation</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Number of events used in constructing the per-channel histogram</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Total Events</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>CAL20</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+    </Int64>
+</Dataset>
