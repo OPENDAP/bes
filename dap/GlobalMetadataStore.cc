@@ -432,7 +432,7 @@ static void dump_time(ostream &os, bool use_local_time)
         status = strftime(buf, sizeof buf, "%FT%T%Z", localtime(&now));
 
     if (!status)
-        ERROR("Error getting time for Metadata Store ledger.");
+        ERROR_LOG("Error getting time for Metadata Store ledger.");
 
     os << buf;
 }
@@ -461,7 +461,7 @@ GlobalMetadataStore::write_ledger()
 	    }
         }
         else {
-            ERROR("Warning: Metadata store could not write to its ledger file.");
+            ERROR_LOG("Warning: Metadata store could not write to its ledger file.");
             unlock_and_close(d_ledger_name);
         }
     }
@@ -606,7 +606,7 @@ GlobalMetadataStore::store_dap_response(StreamDAP &writer, const string &key, co
         BESDEBUG(DEBUG_KEY,__FUNCTION__ << " Found " << item_name << " in the store already." << endl);
         unlock_and_close(item_name);
 
-        ERROR("Metadata store: unable to store the " << response_name << " response for '" << name << "'." << endl);
+        ERROR_LOG("Metadata store: unable to store the " << response_name << " response for '" << name << "'." << endl);
 
         return false;
     }
@@ -742,9 +742,9 @@ GlobalMetadataStore::get_read_lock_helper(const string &name, const string &suff
     BESDEBUG(DEBUG_KEY, __func__ << "() MDS lock for " << item_name << ": " << lock() <<  endl);
 
     if (lock())
-        LOG("MDS Cache hit for '" << name << "' and response " << object_name << endl);
+        INFO_LOG("MDS Cache hit for '" << name << "' and response " << object_name << endl);
     else
-        LOG("MDS Cache miss for '" << name << "' and response " << object_name << endl);
+        INFO_LOG("MDS Cache miss for '" << name << "' and response " << object_name << endl);
 
     return lock;
  }
@@ -1159,7 +1159,7 @@ GlobalMetadataStore::remove_response_helper(const string& name, const string &su
         return true;
     }
     else {
-        ERROR("Metadata store: unable to remove the " << object_name << " response for '" << name << "' (" << strerror(errno) << ")."<< endl);
+        ERROR_LOG("Metadata store: unable to remove the " << object_name << " response for '" << name << "' (" << strerror(errno) << ")."<< endl);
     }
 
     return false;

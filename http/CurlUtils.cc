@@ -1004,11 +1004,11 @@ void super_easy_perform(CURL *c_handle) {
         if (!success) {
             if (attempts == retry_limit) {
                 string msg = prolog + "ERROR - Problem with data transfer. Number of re-tries exceeded. Giving up.";
-                ERROR(msg << endl);
+                ERROR_LOG(msg << endl);
                 throw BESInternalError(msg, __FILE__, __LINE__);
             }
             else {
-                ERROR(prolog << "ERROR - Problem with data transfer. Will retry (url: " << target_url <<
+                ERROR_LOG(prolog << "ERROR - Problem with data transfer. Will retry (url: " << target_url <<
                            " attempt: " << attempts << ")." << endl);
                 usleep(retry_time);
                 retry_time *= 2;
@@ -1133,7 +1133,7 @@ void clear_cookies() {
     int ret = unlink(cf.c_str());
     if (ret) {
         string msg = prolog + "Failed to unlink the cookie file: " + cf;
-        ERROR(msg << endl);
+        ERROR_LOG(msg << endl);
         BESDEBUG(MODULE, prolog << msg << endl);
     }
 }
@@ -1223,7 +1223,7 @@ bool eval_http_get_response(CURL *ceh, char *error_buffer, const string &request
         msg << "CURLINFO_EFFECTIVE_URL: " << last_accessed_url << " ";
         msg << "A retry may be possible for: " << requested_url << ")." << endl;
         BESDEBUG(MODULE, msg.str());
-        ERROR(msg.str());
+        ERROR_LOG(msg.str());
         return false;
     }
     else if (curl_code != CURLE_OK) {
@@ -1262,21 +1262,21 @@ bool eval_http_get_response(CURL *ceh, char *error_buffer, const string &request
             return true;
 
         case 400: // Bad Request
-            ERROR(msg.str() << endl);
+            ERROR_LOG(msg.str() << endl);
             throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
 
         case 401: // Unauthorized
         case 402: // Payment Required
         case 403: // Forbidden
-            ERROR(msg.str() << endl);
+            ERROR_LOG(msg.str() << endl);
             throw BESForbiddenError(msg.str(), __FILE__, __LINE__);
 
         case 404: // Not Found
-            ERROR(msg.str() << endl);
+            ERROR_LOG(msg.str() << endl);
             throw BESNotFoundError(msg.str(), __FILE__, __LINE__);
 
         case 408: // Request Timeout
-            ERROR(msg.str() << endl);
+            ERROR_LOG(msg.str() << endl);
             throw BESTimeoutError(msg.str(), __FILE__, __LINE__);
 
         case 422: // Unprocessable Entity
@@ -1287,15 +1287,14 @@ bool eval_http_get_response(CURL *ceh, char *error_buffer, const string &request
         {
             if (!is_retryable(last_accessed_url)) {
                 msg << " The semantics of this particular last accessed URL indicate that it should not be retried.";
-                ERROR(msg.str() << endl);
+                ERROR_LOG(msg.str() << endl);
                 throw BESInternalError(msg.str(), __FILE__, __LINE__);
             }
             return false;
         }
 
         default: {
-            BESDEBUG(MODULE, msg.str() << endl);
-            ERROR(msg.str() << endl);
+            ERROR_LOG(msg.str() << endl);
             throw BESInternalError(msg.str(), __FILE__, __LINE__);
         }
     }
@@ -1338,7 +1337,7 @@ bool eval_curl_easy_perform_code(
         msg << "CURLINFO_EFFECTIVE_URL: " << last_accessed_url << " ";
         msg << "A retry may be possible for: " << requested_url << " (attempt: " << attempt << ")." << endl;
         BESDEBUG(MODULE, msg.str());
-        ERROR(msg.str());
+        ERROR_LOG(msg.str());
         success = false;
     }
     else if (curl_code == CURLE_SSL_CACERT_BADFILE) {
@@ -1348,7 +1347,7 @@ bool eval_curl_easy_perform_code(
         msg << "CURLINFO_EFFECTIVE_URL: " << last_accessed_url << " ";
         msg << "A retry may be possible for: " << requested_url << " (attempt: " << attempt << ")." << endl;
         BESDEBUG(MODULE, msg.str());
-        ERROR(msg.str());
+        ERROR_LOG(msg.str());
         success = false;
     }
     else if (curl_code == CURLE_GOT_NOTHING) {
@@ -1361,7 +1360,7 @@ bool eval_curl_easy_perform_code(
         msg << "CURLINFO_EFFECTIVE_URL: " << last_accessed_url << " ";
         msg << "A retry may be possible for: " << requested_url << " (attempt: " << attempt << ")." << endl;
         BESDEBUG(MODULE, msg.str());
-        ERROR(msg.str());
+        ERROR_LOG(msg.str());
         return false;
     }
     else if (CURLE_OK != curl_code) {
@@ -1370,7 +1369,7 @@ bool eval_curl_easy_perform_code(
         string effective_url = get_effective_url(ceh, requested_url);
         msg << " CURLINFO_EFFECTIVE_URL: " << effective_url;
         BESDEBUG(MODULE, prolog << msg.str() << endl);
-        ERROR(msg.str() << endl);
+        ERROR_LOG(msg.str() << endl);
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
     return success;
@@ -1404,8 +1403,8 @@ void retrieve_effective_url(const string &target_url, string &last_accessed_url)
         // After doing the thing with super_easy_perform() we retrieve the effective URL form the cURL handle.
         last_accessed_url = get_effective_url(ceh, target_url);
         BESDEBUG(MODULE, prolog << "Last Accessed URL(CURLINFO_EFFECTIVE_URL): " << last_accessed_url << endl);
-        LOG(prolog << "Source URL: '" << target_url << "' CURLINFO_EFFECTIVE_URL: '" << last_accessed_url << "'"
-                   << endl);
+        INFO_LOG(prolog << "Source URL: '" << target_url << "' CURLINFO_EFFECTIVE_URL: '" << last_accessed_url << "'"
+                        << endl);
 
         if (request_headers)
             curl_slist_free_all(request_headers);

@@ -110,7 +110,7 @@ volatile int bes_timeout = 0;
 static void catch_sig_alarm(int sig)
 {
     if (sig == SIGALRM) {
-        LOG("BES timeout after " << bes_timeout << " seconds." << endl);
+        INFO_LOG("BES timeout after " << bes_timeout << " seconds." << endl);
 
         // Causes setjmp() below to return 1; see the call to
         // execute_data_request_plan() in execute_request() below.
@@ -187,10 +187,10 @@ static void log_error(BESError &e)
     }
 
     if (TheBESKeys::TheKeys()->read_bool_key(EXCLUDE_FILE_INFO_FROM_LOG, false)) {
-        ERROR("ERROR: " << error_name << ": " << e.get_message() << endl);
+        ERROR_LOG("ERROR: " << error_name << ": " << e.get_message() << endl);
     }
     else {
-        ERROR("ERROR: " << error_name << ": " << e.get_message() << " (" << e.get_file() << ":" << e.get_line() << ")" << endl);
+        ERROR_LOG("ERROR: " << error_name << ": " << e.get_message() << " (" << e.get_file() << ":" << e.get_line() << ")" << endl);
     }
 
 #if 0
@@ -605,10 +605,10 @@ int BESInterface::finish(int status)
         end_request();
     }
     catch (BESError &ex) {
-        ERROR("Problem logging status or running end of request cleanup: " << ex.get_message() << endl);
+        ERROR_LOG("Problem logging status or running end of request cleanup: " << ex.get_message() << endl);
     }
     catch (...) {
-        ERROR("Unknown problem logging status or running end of request cleanup" << endl);
+        ERROR_LOG("Unknown problem logging status or running end of request cleanup" << endl);
     }
 
     return status;

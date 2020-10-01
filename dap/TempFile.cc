@@ -57,7 +57,7 @@ void TempFile::sigpipe_handler(int sig)
         std::map<string, int>::iterator it;
         for (it = open_files->begin(); it != open_files->end(); ++it) {
             if (unlink((it->first).c_str()) == -1)
-                ERROR(string("Error unlinking temporary file: '").append(it->first).append("': ").append(strerror(errno)).append("\n"));
+                ERROR_LOG(string("Error unlinking temporary file: '").append(it->first).append("': ").append(strerror(errno)).append("\n"));
         }
         // Files cleaned up? Sweet! Time to bail...
         sigaction(SIGPIPE, &cached_sigpipe_handler, 0);
@@ -122,11 +122,11 @@ TempFile::~TempFile()
 {
     try {
         if (close(d_fd) == -1) {
-            ERROR(string("Error closing temporary file: '").append(d_fname).append("': ").append(strerror(errno)).append("\n"));
+            ERROR_LOG(string("Error closing temporary file: '").append(d_fname).append("': ").append(strerror(errno)).append("\n"));
         }
         if (!d_keep_temps) {
             if (unlink(d_fname.c_str()) == -1) {
-                ERROR(string("Error unlinking temporary file: '").append(d_fname).append("': ").append(strerror(errno)).append("\n"));
+                ERROR_LOG(string("Error unlinking temporary file: '").append(d_fname).append("': ").append(strerror(errno)).append("\n"));
             }
         }
     }
@@ -143,7 +143,7 @@ TempFile::~TempFile()
 
     if (open_files->size() == 0) {
         if (sigaction(SIGPIPE, &cached_sigpipe_handler, 0)) {
-            ERROR(string("Could not register a handler to catch SIGPIPE. ").append("(").append(strerror(errno)).append(")"));
+            ERROR_LOG(string("Could not register a handler to catch SIGPIPE. ").append("(").append(strerror(errno)).append(")"));
         }
     }
 }

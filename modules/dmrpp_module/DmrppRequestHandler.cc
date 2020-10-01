@@ -138,7 +138,7 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
 
 #if !HAVE_CURL_MULTI_API
     if (DmrppRequestHandler::d_use_parallel_transfers)
-        ERROR("The DMR++ handler is configured to use parallel transfers, but the libcurl Multi API is not present, defaulting to serial transfers");
+        ERROR_LOG("The DMR++ handler is configured to use parallel transfers, but the libcurl Multi API is not present, defaulting to serial transfers");
 #endif
 
     CredentialsManager::theCM()->load_credentials();

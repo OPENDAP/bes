@@ -91,11 +91,11 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
                 if (control_heap == "yes") {
                     unsigned int max = atol(mhs.c_str());
 
-                    LOG("Initialize emergency heap size to " << (unsigned long)emergency << " and heap size to " << (unsigned long)(max + 1) << " MB" << endl);
+                    INFO_LOG("Initialize emergency heap size to " << (unsigned long)emergency << " and heap size to " << (unsigned long)(max + 1) << " MB" << endl);
                     if (emergency > max) {
                         string s = string("BES: ") + "unable to start since the emergency "
                             + "pool is larger than the maximum size of " + "the heap.\n";
-                        ERROR(s);
+                        ERROR_LOG(s);
                         throw BESInternalFatalError(s, __FILE__, __LINE__);
                     }
                     log_limits("before setting limits: ");
@@ -108,7 +108,7 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
                             s = s + "Attempting to increase the soft/hard " + "limit above the current hard limit, "
                                 + "must be superuser\n";
                         }
-                        ERROR(s);
+                        ERROR_LOG(s);
                         throw BESInternalFatalError(s, __FILE__, __LINE__);
                     }
                     log_limits("after setting limits: ");
@@ -116,7 +116,7 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
                     _buffer = malloc(megabytes(max));
                     if (!_buffer) {
                         string s = string("BES: ") + "cannot get heap of size " + mhs + " to start running";
-                        ERROR(s);
+                        ERROR_LOG(s);
                         throw BESInternalFatalError(s, __FILE__, __LINE__);
                     }
                     free(_buffer);
@@ -133,7 +133,7 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
                 _buffer = malloc(_size);
                 if (!_buffer) {
                     string s = (string) "BES: cannot expand heap to " + eps + " to start running";
-                    ERROR(s << endl);
+                    ERROR_LOG(s << endl);
                     throw BESInternalFatalError(s, __FILE__, __LINE__);
                 }
             }
@@ -162,20 +162,20 @@ BESMemoryGlobalArea::~BESMemoryGlobalArea()
 inline void BESMemoryGlobalArea::log_limits(const string &msg)
 {
     if (getrlimit( RLIMIT_DATA, &limit) < 0) {
-        LOG(msg << "Could not get limits because " << strerror( errno) << endl);
+        INFO_LOG(msg << "Could not get limits because " << strerror(errno) << endl);
         _counter--;
         throw BESInternalFatalError(strerror( errno), __FILE__, __LINE__);
     }
     if (limit.rlim_cur == RLIM_INFINITY)
-        LOG(msg << "BES heap size soft limit is infinite" << endl);
+        INFO_LOG(msg << "BES heap size soft limit is infinite" << endl);
     else
-        LOG(msg << "BES heap size soft limit is " << (long int) limit.rlim_cur << " bytes ("
-            << (long int) (limit.rlim_cur) / (MEGABYTE) << " MB - may be rounded up)" << endl);
+        INFO_LOG(msg << "BES heap size soft limit is " << (long int) limit.rlim_cur << " bytes ("
+                     << (long int) (limit.rlim_cur) / (MEGABYTE) << " MB - may be rounded up)" << endl);
     if (limit.rlim_max == RLIM_INFINITY)
-        LOG(msg << "BES heap size hard limit is infinite" << endl);
+        INFO_LOG(msg << "BES heap size hard limit is infinite" << endl);
     else
-        LOG("BES heap size hard limit is " << (long int) limit.rlim_max << " bytes ("
-            << (long int) (limit.rlim_max) / (MEGABYTE) << " MB - may be rounded up)" << endl);
+        INFO_LOG("BES heap size hard limit is " << (long int) limit.rlim_max << " bytes ("
+                                                << (long int) (limit.rlim_max) / (MEGABYTE) << " MB - may be rounded up)" << endl);
 }
 
 void BESMemoryGlobalArea::release_memory()

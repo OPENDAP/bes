@@ -1105,7 +1105,7 @@ string BESUtil::get_time(time_t the_time, bool use_local_time)
         status = strftime(buf, sizeof buf, "%FT%T%Z", localtime(&the_time));
 
     if (!status) {
-        ERROR(prolog + "Error formatting time value!");
+        ERROR_LOG(prolog + "Error formatting time value!");
         return "date-format-error";
     }
 

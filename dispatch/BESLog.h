@@ -48,14 +48,18 @@
 #define LOG(x) do { *(BESLog::TheLog()) << __FILE__ << ":" << __LINE__ << " - " << x ; BESLog::TheLog()->flush_me() ; } while( 0 )
 #define VERBOSE(x) do { if (BESLog::TheLog()->is_verbose()) *(BESLog::TheLog()) << __FILE__ << ":" << __LINE__ << " - " << x ; BESLog::TheLog()->flush_me() ; } while( 0 )
 #else
-#define LOG(x) do { *(BESLog::TheLog()) << x ; BESLog::TheLog()->flush_me() ; } while( 0 )
-#define VERBOSE(x) do { if (BESLog::TheLog()->is_verbose()) *(BESLog::TheLog()) << x ; BESLog::TheLog()->flush_me() ; } while( 0 )
+#define REQUEST_LOG(x) do { *(BESLog::TheLog()) << "request" << x ; BESLog::TheLog()->flush_me() ; } while( 0 )
+#define INFO_LOG(x) do { *(BESLog::TheLog()) << "info" << BESLog::mark << x ; BESLog::TheLog()->flush_me() ; } while( 0 )
+#define ERROR_LOG(x) do { *(BESLog::TheLog()) << "error" << BESLog::mark << x ; BESLog::TheLog()->flush_me() ; } while( 0 )
+#define VERBOSE(x) do { if (BESLog::TheLog()->is_verbose()) *(BESLog::TheLog()) << "verbose" << x ; BESLog::TheLog()->flush_me() ; } while( 0 )
+#define TIMING(x) do { if (BESLog::TheLog()->is_verbose()) *(BESLog::TheLog()) << "timing" << x ; BESLog::TheLog()->flush_me() ; } while( 0 )
 #endif
 
 // Pretty silly - for now ERROR is the same as LOG, but I suspect that we might
 // want to treat errors differently in the near future given the special logging
-// needs of the 'Hyrax in the Cloud' project. jhrg 11/16/17
-#define ERROR(x) LOG(x)
+// needs of the 'Hyrax in the Cloud' project. jhrg 11/
+// 16/17
+//#define ERROR(x) REQUEST_LOG(x)
 
 #include "BESObj.h"
 

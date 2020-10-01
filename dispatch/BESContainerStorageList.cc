@@ -289,12 +289,10 @@ BESContainerStorageList::look_for(const string &sym_name)
         }
     }
     if (!ret_container) {
-        if (isnice()) {
-            LOG("Could not find the symbolic name " << sym_name << endl);
-        }
-        else {
-            string s = (string) "Could not find the symbolic name " + sym_name;
-            throw BESSyntaxUserError(s, __FILE__, __LINE__);
+        string msg = (string) "Could not find the symbolic name " + sym_name;
+        ERROR_LOG(msg << endl);
+        if (!isnice()) {
+            throw BESSyntaxUserError(msg, __FILE__, __LINE__);
         }
     }
 

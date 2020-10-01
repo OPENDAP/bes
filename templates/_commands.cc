@@ -33,8 +33,7 @@ using std::endl ;
 static bool
 OPENDAP_CLASSCmdInit(int, char**)
 {
-    if( BESLog::TheLog()->is_verbose() )
-	LOG("Initializing OPENDAP_CLASS Commands:" << endl );
+	VERBOSE("Initializing OPENDAP_CLASS Commands:" << endl );
 
     string cmd_name ;
 

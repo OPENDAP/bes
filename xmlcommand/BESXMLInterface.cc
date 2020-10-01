@@ -281,10 +281,10 @@ void BESXMLInterface::execute_data_request_plan()
                 }
             }
 
-            LOG(new_log_info << endl);
+            REQUEST_LOG(new_log_info << endl);
 
             if (d_dhi_ptr->containers.size() > 1)
-                ERROR("The previous command had multiple containers defined, but only the was logged.");
+                ERROR_LOG("The previous command had multiple containers defined, but only the was logged.");
         }
 #else
         if (!BESLog::TheLog()->is_verbose()) {
@@ -338,7 +338,7 @@ void BESXMLInterface::transmit_data()
 
         ostringstream strm;
         d_dhi_ptr->error_info->print(strm);
-        LOG("Transmitting error content: " << strm.str() << endl);
+        INFO_LOG("Transmitting error content: " << strm.str() << endl);
 
         d_dhi_ptr->error_info->transmit(d_transmitter, *d_dhi_ptr);
     }
