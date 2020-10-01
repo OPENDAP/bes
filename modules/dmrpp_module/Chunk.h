@@ -64,6 +64,7 @@ private:
 
     friend class ChunkTest;
     friend class DmrppCommonTest;
+    friend class MockChunk;
 
 protected:
 

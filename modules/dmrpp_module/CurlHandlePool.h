@@ -40,13 +40,15 @@ class Chunk;
  */
 class Lock {
 private:
-    pthread_mutex_t& m_mutex;
+    pthread_mutex_t &m_mutex;
 
     Lock();
+
     Lock(const Lock &rhs);
 
 public:
     Lock(pthread_mutex_t &lock);
+
     virtual ~Lock();
 };
 
@@ -69,6 +71,7 @@ class dmrpp_easy_handle {
 
 public:
     dmrpp_easy_handle();
+
     ~dmrpp_easy_handle();
 
     void read_data();
@@ -97,27 +100,37 @@ private:
 public:
     CurlHandlePool();
 
+    CurlHandlePool(unsigned int max_handles);
+
     ~CurlHandlePool()
     {
-#if 1
-        for (std::vector<dmrpp_easy_handle *>::iterator i = d_easy_handles.begin(), e = d_easy_handles.end();
-             i != e; ++i) {
+        for (auto i = d_easy_handles.begin(), e = d_easy_handles.end(); i != e; ++i) {
             delete *i;
         }
-#else
-        for (auto &d_easy_handle: d_easy_handles) {
-            delete d_easy_handle;
-        }
-#endif
     }
 
     /// @brief Get the number of handles in the pool.
-    unsigned int get_max_handles() const {  return d_max_easy_handles; }
+    unsigned int get_max_handles() const
+    { return d_max_easy_handles; }
+
+    unsigned int get_handles_available() const
+    {
+        unsigned int n = 0;
+        for (auto i = d_easy_handles.begin(), e = d_easy_handles.end(); i != e; ++i) {
+            if (!(*i)->d_in_use) {
+                n++;
+
+            }
+        }
+        return n;
+    }
 
     dmrpp_easy_handle *get_easy_handle(Chunk *chunk);
 
     void release_handle(dmrpp_easy_handle *h);
+
     void release_handle(Chunk *chunk);
+
     void release_all_handles();
 };
 
@@ -133,19 +146,23 @@ class SwimLane {
     CurlHandlePool &d_pool;
     std::vector<dmrpp_easy_handle *> d_handles;
 public:
-    SwimLane(CurlHandlePool &pool) : d_pool(pool) {}
+    SwimLane(CurlHandlePool &pool) : d_pool(pool)
+    {}
 
-    SwimLane(CurlHandlePool &pool, dmrpp_easy_handle *h) : d_pool(pool) {
+    SwimLane(CurlHandlePool &pool, dmrpp_easy_handle *h) : d_pool(pool)
+    {
         d_handles.push_back(h);
     }
 
-    virtual ~SwimLane() {
-        for(auto i = d_handles.begin(), e = d_handles.end(); i != e; ++i) {
+    virtual ~SwimLane()
+    {
+        for (auto i = d_handles.begin(), e = d_handles.end(); i != e; ++i) {
             d_pool.release_handle(*i);
         }
     }
 
-    void add_handle(dmrpp_easy_handle *h) {
+    void add_handle(dmrpp_easy_handle *h)
+    {
         d_handles.push_back(h);
     }
 };
