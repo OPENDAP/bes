@@ -29,15 +29,15 @@ BES.UncompressCache.dir=/tmp/hyrax_ux
 BES.UncompressCache.prefix=ux_
 BES.UncompressCache.size=500
 
-Gateway.Whitelist = *
-Gateway.Whitelist += https://s3.amazonaws.com/cloudyopendap/
-Gateway.Whitelist += https://s3.amazonaws.com/cloudydap/
-Gateway.Whitelist += http://s3.amazonaws.com/cloudydap/
+AllowedHosts = *
+#BESRegex error: repetition-operator operand invalid
+AllowedHosts = ^https:\/\/s3\.amazonaws\.com\/cloudy(open)?dap\/.*$
+
 # This is needed even if the tests are local because the whitelist check
 # if performed on local files too. Thus, the whitelist needs to be configured.
-Gateway.Whitelist += http://localhost:8080/
-Gateway.Whitelist += http://test.opendap.org
-Gateway.Whitelist += https://ngap-ssmis.s3.amazonaws.com
+AllowedHosts += ^https?:\/\/localhost(:8080)?\/.*$
+AllowedHosts += ^http:\/\/test\.opendap\.org\/.*$
+AllowedHosts += ^https:\/\/ngap-ssmis\.s3\.amazonaws\.com\/.*$
 
 # The default for DMRPP.UseParallelTransfers is true
 # DMRPP.UseParallelTransfers = true

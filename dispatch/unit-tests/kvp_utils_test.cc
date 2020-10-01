@@ -1,9 +1,8 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of the OPeNDAP Back-End Server (BES)
-// and embodies a whitelist of remote system that may be
-// accessed by the server as part of it's routine operation.
-
+// and provides unit-test capabilities for the kvp_utils
+//
 // Copyright (c) 2020 OPeNDAP, Inc.
 // Author: Nathan D. Potter <ndp@opendap.org>
 //

@@ -38,6 +38,12 @@ BES.LogName=@prefix@/var/bes.log
 # Regular mode only records 'get' commands.
 BES.LogVerbose=no
 
+# By setting BES.LogUnixTime to true the server will make loge entries using
+# the value of UNIX time (seconds since 1970-01-01T00:00:00 UTC). Any other
+# value, or omitting the key wil cause the server to ouput times as in
+# ISO-8601 date format
+BES.LogUnixTime=false
+
 # Set to 'yes' to use local time in the bes log. UTC is used by default.
 # BES.LogTimeLocal=yes
 
@@ -108,15 +114,15 @@ BES.AnnotationServiceURL =
 #-----------------------------------------------------------------------#
 
 # Because the Hyrax is often tasked with accessing services using the 
-# internets we maintain a whitelist of services which Hyrax is allowed 
+# internets we maintain a list of allowed hosts which Hyrax is allowed
 # to access. By default, Hyrax is allowed to access itself. If additional
 # services are to be added to the whitelist do so by adding the new 
 # service URL to the site.conf file using += syntax like this:
 #
-#     Gateway.Whitelist+=http://test.opendap.org/opendap
+#     AllowedHosts+=^http:\/\/test\.opendap\.org\/.*$
 # 
 #
-Gateway.Whitelist=http://localhost
+AllowedHosts=^https?:\/\/localhost(:8080)?\/.*$
 
 # If you intend to use the BES as a standalone server, set the value
 # of BES.Data.RootDirectory to point to your data and disregard the

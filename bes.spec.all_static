@@ -200,8 +200,9 @@ exit 0
 %{_bindir}/get_dmrpp
 %{_bindir}/ingest_filesystem
 %{_bindir}/ingest_s3bucket
-# TODO Change build_sidecar to a better name, like build_stare_sidecar. jhrg 10/29/19
-%{_bindir}/build_sidecar
+# There is now a separate project for a new build_sidecar program. This should not
+# be installed. jhrg 8/20/20
+# %{_bindir}/build_sidecar
 
 %{_libdir}/*.so.*
 %{_libdir}/bes/

@@ -26,7 +26,7 @@
 #include <BESInternalError.h>
 #include <kvp_utils.h>
 #include <TheBESKeys.h>
-#include <WhiteList.h>
+#include <AllowedHosts.h>
 #include <sys/stat.h>
 #include <string>
 #include <locale>

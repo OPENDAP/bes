@@ -1,7 +1,7 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 
 // This file is part of the OPeNDAP Back-End Server (BES)
-// and embodies a whitelist of remote system that may be
+// and creqates an allowed hosts list od systems that may be
 // accessed by the server as part of it's routine operation.
 
 // Copyright (c) 2018 OPeNDAP, Inc.
@@ -43,7 +43,7 @@
 #include <BESDebug.h>
 
 #include "test_config.h"
-#include "WhiteList.h"
+#include "AllowedHosts.h"
 
 using namespace std;
 using namespace CppUnit;
@@ -121,7 +121,7 @@ public:
     bool can_access(string url)
     {
         if (debug) cout << "Checking remote access permission for url: '" << url << "' result: ";
-        bool result = bes::WhiteList::get_white_list()->is_white_listed(url);
+        bool result = bes::AllowedHosts::theHosts()->is_allowed(url);
         if (debug) cout << (result ? "true" : "false") << endl;
         return result;
     }
@@ -130,12 +130,16 @@ public:
     {
         CPPUNIT_ASSERT(!can_access("http://google.com"));
         CPPUNIT_ASSERT(can_access("http://test.opendap.org/opendap/data/nc/fnoc1.nc"));
+        CPPUNIT_ASSERT(!can_access("http://test.opendap.wrong.org/opendap/data/nc/fnoc1.nc"));
         CPPUNIT_ASSERT(can_access("https://s3.amazonaws.com/somewhereovertherainbow/data/nc/fnoc1.nc"));
         CPPUNIT_ASSERT(!can_access("http://s3.amazonaws.com/somewhereovertherainbow/data/nc/fnoc1.nc"));
         CPPUNIT_ASSERT(can_access("http://thredds.ucar.edu/thredds/dodsC/data/nc/fnoc1.nc"));
         CPPUNIT_ASSERT(!can_access("https://thredds.ucar.edu/thredds/dodsC/data/nc/fnoc1.nc"));
         CPPUNIT_ASSERT(
             can_access("http://cloudydap.opendap.org/opendap/Arch-2/ebs/samples/3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A.h5"));
+
+        string ghrc_uat_s3 = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss/rssmif16d__7/f16_ssmis_20200512v7.nc?A-userid=hyrax&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIASF4AWSMOOMOO0200901%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200901T153129Z&X-Amz-Expires=86400&X-Amz-Security-Token=FwoGZXAWSMOOMOOMOOMOOKHf6ew%3D%3D&X-Amz-SignedHeaders=host&X-Amz-Signature=10e80b9876AWSMOOMOOMOOOO9f26174bca4fab";
+        CPPUNIT_ASSERT(can_access(ghrc_uat_s3));
 
     }
     void do_file_test()
