@@ -1,0 +1,61 @@
+Attributes {
+    delta_t_lin_fit {
+        String contentType "auxiliaryInformation";
+        String description "Time span over which to perform a running linear fit to identified signal photon events when editing outliers. Surface type dependent.";
+        String long_name "Linear fit time increment";
+        String source "ATL03, Section 5, _t_linfit_edit";
+        String units "seconds";
+    }
+    tep_bin_size {
+        String contentType "auxiliaryInformation";
+        String description "Size of each TEP histogram bin.";
+        String long_name "TEP Bin Size";
+        String source "Derived";
+        String units "seconds";
+    }
+    nbin_min {
+        String contentType "auxiliaryInformation";
+        String description "Minimum number of bins in a histogram required for the algorithm to be able to process the histogram.";
+        String long_name "Minimum number of bins";
+        String source "ATL03, Section 5, Nbinmin";
+        String units "counts";
+    }
+    tep_valid_spot {
+        String contentType "referenceInformation";
+        String description "A 6x1 array indicating which TEP to use for each spot that does not have a TEP associated with it (e.g. which TEP to use to characterize spots 2, 4, 5, and 6).";
+        String flag_meanings "pce1_spot1 pce2_spot3";
+        Byte flag_values 1, 2;
+        String long_name "Index of TEP Spot";
+        String source "ATL03 ATBD";
+        String units "1";
+        Byte valid_max 2;
+        Byte valid_min 1;
+    }
+    release {
+        String contentType "auxiliaryInformation";
+        String description "Release number of the granule. The release number is incremented when the software or ancillary data used to create the granule has been changed.";
+        String long_name "Release Number";
+        String source "Operations";
+        String units "1";
+    }
+    version {
+        String contentType "auxiliaryInformation";
+        String description "Version number of this granule within the release. It is a sequential number corresponding to the number of times the granule has been reprocessed for the current release.";
+        String long_name "Version";
+        String source "Operations";
+        String units "1";
+    }
+    data_end_utc {
+        String contentType "auxiliaryInformation";
+        String description "UTC (in CCSDS-A format) of the last data point within the granule.";
+        String long_name "End UTC Time of Granule (CCSDS-A, Actual)";
+        String source "Derived";
+        String units "1";
+    }
+    dap4:dropped_members {
+        total_events {
+            UInt32 array_dimensions 20;
+            String dap4:type "Int64";
+        }
+    }
+}

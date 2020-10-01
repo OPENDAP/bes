@@ -30,12 +30,5 @@
         <Attribute name="valid_min" type="Int8">
             <Value>1</Value>
         </Attribute>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
-        </Attribute>
     </Int8>
 </Dataset>
-
-The data:
-Int8 tep_valid_spot[6] = {2, 1, 1, 2, 2, 1};
-

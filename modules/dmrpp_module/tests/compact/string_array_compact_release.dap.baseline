@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="t_compact_layout_test_data.dmrpp">
+    <String name="release">
+        <Dim size="1"/>
+        <Attribute name="contentType" type="String">
+            <Value>auxiliaryInformation</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Release number of the granule. The release number is incremented when the software or ancillary data used to create the granule has been changed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Release Number</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Operations</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </String>
+</Dataset>
+
+The data:
+String release[1] = {"003                                                                             "};
+
