@@ -100,6 +100,7 @@ private:
         not_dap4_element,
         inside_dmrpp_object,
         inside_dmrpp_chunkDimensionSizes_element,
+        inside_dmrpp_compact_element,
 
         parser_unknown,
         parser_error,
@@ -116,6 +117,7 @@ private:
     // This is passed into the parser using the intern() methods.
     libdap::DMR *d_dmr;   // dump DMR here
     libdap::DMR *dmr() const { return d_dmr; }
+
 
 
 
@@ -240,6 +242,8 @@ private:
     void process_enum_const_helper(const xmlChar **attrs, int nb_attributes);
     void process_enum_def_helper(const xmlChar **attrs, int nb_attributes);
 
+    bool process_dmrpp_compact_start(const char *name);
+    void process_dmrpp_compact_end(const char *localname);
     bool process_dimension(const char *name, const xmlChar **attrs, int nb_attrs);
     bool process_dimension_def(const char *name, const xmlChar **attrs, int nb_attrs);
     bool process_map(const char *name, const xmlChar **attrs, int nb_attributes);

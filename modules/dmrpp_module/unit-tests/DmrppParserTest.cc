@@ -76,6 +76,7 @@
 using namespace libdap;
 
 static bool debug = false;
+#define prolog std::string("DmrppParserTest::").append(__func__).append("() - ")
 
 namespace dmrpp {
 
@@ -87,6 +88,16 @@ public:
     // Called once before everything gets tested
     DmrppParserTest() :parser(0)
     {
+    }
+
+    // Called at the end of the test
+    ~DmrppParserTest()
+    {
+    }
+
+    // Called before each test
+    void setUp()
+    {
         if (debug) BESDebug::SetUp("cerr,dmrpp,dmrpp:parser");
         // Contains BES Log parameters but not cache names
         TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
@@ -94,23 +105,14 @@ public:
         bool found;
         TheBESKeys::TheKeys()->get_value("ff",val,found);
         parser = new DmrppParserSax2();
-    }
 
-    // Called at the end of the test
-    ~DmrppParserTest()
-    {
-        if(parser)
-            delete parser;
-    }
-
-    // Called before each test
-    void setUp()
-    {
     }
 
     // Called after each test
     void tearDown()
     {
+        if(parser)
+            delete parser;
     }
 
     /**
@@ -157,6 +159,27 @@ public:
     }
 
     /**
+     * Evaluates a BaseType pointer believed to be an instance of DrmppCommon
+     * with a single "chunk" (Chunk) member.
+     * This checks the variables name, offset, size, md5, and uuid attributes
+     * against expected values passed as parameters.
+     */
+    void checkDmrppVariableWithCompact(BaseType *bt, string name, unsigned long long offset,
+                                           unsigned long long size, string /*md5*/, string /*uuid*/)
+    {
+        CPPUNIT_ASSERT(bt);
+
+        BESDEBUG("dmrpp", "Looking at variable: " << bt->name() << endl);
+        CPPUNIT_ASSERT(bt->name() == name);
+        DmrppCommon *dc = dynamic_cast<DmrppCommon*>(bt);
+        CPPUNIT_ASSERT(dc);
+
+        /*const vector<Chunk> &chunks = dc->get_immutable_chunks();
+        CPPUNIT_ASSERT(chunks.size() == 1);
+        checkByteStream(bt->name(), chunks[0], offset, size, "", "");*/
+    }
+
+    /**
      * Evaluates a D4Group against exected values for the name, number of child
      * groups and the number of child variables.
      */
@@ -179,8 +202,7 @@ public:
     /******************************************************
      *
      */
-   void test_integer_scalar()
-    {
+   void test_integer_scalar() {
 
         auto_ptr<DMR> dmr(new DMR);
         DmrppTypeFactory dtf;
@@ -188,23 +210,178 @@ public:
 
         string int_h5 = string(TEST_DATA_DIR).append("/").append("t_int_scalar.h5.dmrpp");
         BESDEBUG(MODULE, "Opening: " << int_h5 << endl);
+        try {
+            ifstream in(int_h5.c_str());
+            parser->intern(in, dmr.get());
+            BESDEBUG(MODULE, "Parsing complete" << endl);
 
-        ifstream in(int_h5.c_str());
-        parser->intern(in, dmr.get());
-        BESDEBUG(MODULE, "Parsing complete"<< endl);
+            D4Group *root = dmr->root();
 
-        D4Group *root = dmr->root();
+            checkGroupsAndVars(root, "/", 0, 1);
 
-        checkGroupsAndVars(root,"/",0,1);
+            D4Group::Vars_iter v = root->var_begin();
 
-        D4Group::Vars_iter v = root->var_begin();
+            checkDmrppVariableWithSingleChunk(*v,
+                                              "scalar",
+                                              2144,
+                                              4,
+                                              "1ebc4541e985d612a5ff7ed2ee92bf3d",
+                                              "6609c41e-0feb-4c00-a11b-48ae9a493542");
 
-        checkDmrppVariableWithSingleChunk(*v,
-        		"scalar",
-        		2144,
-        		4,
-        		"1ebc4541e985d612a5ff7ed2ee92bf3d",
-        		"6609c41e-0feb-4c00-a11b-48ae9a493542");
+        }
+        catch (BESError &e) {
+            stringstream msg;
+            msg << prolog << "Caught BESError. Message: " << e.get_message() << " file: " << e.get_file() << " line: "
+                << e.get_line();
+            cerr << msg.str();
+            CPPUNIT_FAIL(msg.str());
+        }
+        catch (libdap::Error &kip) {
+            stringstream msg;
+            msg << prolog << "Caught libdap::Error. Message: " << kip.get_error_message();
+            cerr << msg.str();
+            CPPUNIT_FAIL(msg.str());
+        }
+    }
+    /******************************************************
+     *
+     */
+    void test_integer_scalar_compact()
+    {
+
+        auto_ptr<DMR> dmr(new DMR);
+        DmrppTypeFactory dtf;
+        dmr->set_factory(&dtf);
+
+        string int_h5 = string(TEST_DATA_DIR).append("/").append("t_int_scalar_compact.h5.dmrpp");
+        //string int_h5 = string(TEST_DATA_DIR).append("/").append("ATL03_20181228015957_13810110_003_01.h5.dmrpp");
+        BESDEBUG(MODULE, "Opening: " << int_h5 << endl);
+
+        try {
+            ifstream in(int_h5.c_str());
+            parser->intern(in, dmr.get());
+            BESDEBUG(MODULE, "Parsing complete"<< endl);
+
+            D4Group *root = dmr->root();
+
+            checkGroupsAndVars(root,"/",0,2);
+
+            D4Group::Vars_iter v = root->var_begin();
+
+            checkDmrppVariableWithCompact(*v,
+                                          "scalar",
+                                          2144,
+                                          4,
+                                          "1ebc4541e985d612a5ff7ed2ee92bf3d",
+                                          "6609c41e-0feb-4c00-a11b-48ae9a493542");
+
+        }
+        catch(BESError &e){
+            stringstream msg;
+            msg << prolog << "Caught BESError. Message: "<< e.get_message() << " file: " << e.get_file() << " line: "<< e.get_line();
+            cerr << msg.str();
+            CPPUNIT_FAIL(msg.str());
+        }
+        catch(libdap::Error &kip){
+            stringstream msg;
+            msg << prolog << "Caught libdap::Error. Message: "<< kip.get_error_message() ;
+            cerr << msg.str();
+            CPPUNIT_FAIL(msg.str());
+        }
+    }
+
+    /******************************************************
+     *
+     */
+    void test_integer_array_compact()
+    {
+
+        auto_ptr<DMR> dmr(new DMR);
+        DmrppTypeFactory dtf;
+        dmr->set_factory(&dtf);
+        string int_h5 = string(TEST_DATA_DIR).append("/").append("t_int64_array_compact.h5.dmrpp");
+        BESDEBUG(MODULE, "Opening: " << int_h5 << endl);
+
+        try {
+            ifstream in(int_h5.c_str());
+            CPPUNIT_ASSERT(in.is_open());
+
+            parser->intern(in, dmr.get());
+            BESDEBUG(MODULE, "Parsing complete"<< endl);
+
+            D4Group *root = dmr->root();
+
+            checkGroupsAndVars(root,"/",0,1);
+
+            D4Group::Vars_iter v = root->var_begin();
+
+            checkDmrppVariableWithCompact(*v,
+                                          "ancillary_data_calibrations_low_link_impulse_response_gt1r_total_events",
+                                          2144,
+                                          4,
+                                          "1ebc4541e985d612a5ff7ed2ee92bf3d",
+                                          "6609c41e-0feb-4c00-a11b-48ae9a493542");
+        }
+        catch(BESError &e){
+            stringstream msg;
+            msg << prolog << "Caught BESError. Message: "<< e.get_message() << " file: " << e.get_file() << " line: "<< e.get_line();
+            cerr << msg.str();
+            CPPUNIT_FAIL(msg.str());
+        }
+        catch(libdap::Error &kip){
+            stringstream msg;
+            msg << prolog << "Caught libdap::Error. Message: "<< kip.get_error_message() ;
+            cerr << msg.str();
+            CPPUNIT_FAIL(msg.str());
+        }
+
+
+    }
+
+
+    /******************************************************
+     *
+     */
+    void test_string_compact()
+    {
+
+        auto_ptr<DMR> dmr(new DMR);
+        DmrppTypeFactory dtf;
+        dmr->set_factory(&dtf);
+
+        string int_h5 = string(TEST_DATA_DIR).append("/").append("t_string_compact.h5.dmrpp");
+        BESDEBUG(MODULE, "Opening: " << int_h5 << endl);
+
+        try {
+            ifstream in(int_h5.c_str());
+            parser->intern(in, dmr.get());
+            BESDEBUG(MODULE, "Parsing complete"<< endl);
+
+            D4Group *root = dmr->root();
+
+            checkGroupsAndVars(root,"/",0,1);
+
+            D4Group::Vars_iter v = root->var_begin();
+
+            checkDmrppVariableWithCompact(*v,
+                                          "scalar",
+                                          2144,
+                                          4,
+                                          "1ebc4541e985d612a5ff7ed2ee92bf3d",
+                                          "6609c41e-0feb-4c00-a11b-48ae9a493542");
+        }
+        catch(BESError &e){
+            stringstream msg;
+            msg << prolog << "Caught BESError. Message: "<< e.get_message() << " file: " << e.get_file() << " line: "<< e.get_line();
+            cerr << msg.str();
+            CPPUNIT_FAIL(msg.str());
+        }
+        catch(libdap::Error &kip){
+            stringstream msg;
+            msg << prolog << "Caught libdap::Error. Message: "<< kip.get_error_message() ;
+            cerr << msg.str();
+            CPPUNIT_FAIL(msg.str());
+        }
 
     }
 
@@ -444,15 +621,106 @@ public:
     		  "62569081-e56e-47b5-ab10-ea9132cc8ef2");
   }
 
+    /******************************************************
+     *
+     */
+    void test_flattened_grid_1_2d()
+    {
+        auto_ptr<DMR> dmr(new DMR);
+        DmrppTypeFactory dtf;
+        dmr->set_factory(&dtf);
+
+        string grid_2d = string(TEST_DATA_DIR).append("/").append("flattened_grid_1_2d.h5.dmrpp");
+        BESDEBUG("dmrpp", "Opening: " << grid_2d << endl);
+
+        try {
+            ifstream in(grid_2d.c_str());
+            parser->intern(in, dmr.get());
+
+            D4Group *root = dmr->root();
+            checkGroupsAndVars(root,"/",0,4);
+
+            D4Group::Vars_iter v = root->var_begin();
+
+            /*D4Group::groupsIter top_level_grp_itr = root->grp_begin();
+
+            D4Group *hdfeos_grp = (*top_level_grp_itr);
+
+            checkGroupsAndVars(hdfeos_grp,"HDFEOS",2,0);
+
+
+            D4Group::groupsIter hdfeos_child_grp_itr = hdfeos_grp->grp_begin();
+
+            checkGroupsAndVars(*hdfeos_child_grp_itr,"ADDITIONAL",1,0);
+
+            hdfeos_child_grp_itr++;
+
+            D4Group *grids_grp = *hdfeos_child_grp_itr;
+
+            checkGroupsAndVars(*hdfeos_child_grp_itr,"GRIDS",1,0);
+
+            D4Group *geogrid_grp = *(grids_grp->grp_begin());
+
+            checkGroupsAndVars(geogrid_grp,"GeoGrid",1,0);
+
+            D4Group *datafields_grp = *(geogrid_grp->grp_begin());
+
+            checkGroupsAndVars(datafields_grp,"Data Fields",0,1);
+
+            D4Group::Vars_iter v = datafields_grp->var_begin();
+    */
+            checkDmrppVariableWithSingleChunk(*v,
+                                              "temperature",
+                                              40672,
+                                              128,
+                                              "3b37566bd3a2587a88e4787820e0d36f",
+                                              "3fd2c024-4934-4732-ad47-063539472602");
+
+            /*top_level_grp_itr++;
+            D4Group *hdfeos_info_grp = *top_level_grp_itr;
+
+            checkGroupsAndVars(hdfeos_info_grp,"HDFEOS INFORMATION",0,1);
+
+            v = hdfeos_info_grp->var_begin();
+
+            checkDmrppVariableWithSingleChunk(*v,
+                                              "StructMetadata.0",
+                                              5304,
+                                              32000,
+                                              "a1d84a9da910f58677226bf71fa9d1dd",
+                                              "1721dd71-90df-4781-af2f-4098eb28baca");*/
+
+        }
+        catch(BESError &e){
+            stringstream msg;
+            msg << prolog << "Caught BESError. Message: "<< e.get_message() << " file: " << e.get_file() << " line: "<< e.get_line();
+            cerr << msg.str();
+            CPPUNIT_FAIL(msg.str());
+        }
+        catch(libdap::Error &kip){
+            stringstream msg;
+            msg << prolog << "Caught libdap::Error. Message: "<< kip.get_error_message() ;
+            cerr << msg.str();
+            CPPUNIT_FAIL(msg.str());
+        }
+
+    }
+
     CPPUNIT_TEST_SUITE( DmrppParserTest );
 
-    CPPUNIT_TEST(test_integer_scalar);
-    CPPUNIT_TEST(test_integer_arrays);
-    CPPUNIT_TEST(test_float_arrays);
+        //CPPUNIT_TEST(test_integer_scalar_compact);
+        CPPUNIT_TEST(test_integer_array_compact);
+        //CPPUNIT_TEST(test_string_compact);
 
-    CPPUNIT_TEST(test_grid_1_2d);
-    CPPUNIT_TEST(test_nc4_group_atomic);
+        CPPUNIT_TEST(test_integer_scalar);
+        CPPUNIT_TEST(test_integer_arrays);
+        CPPUNIT_TEST(test_float_arrays);
 
+        CPPUNIT_TEST(test_grid_1_2d);
+        CPPUNIT_TEST(test_nc4_group_atomic);
+
+
+        // CPPUNIT_TEST(test_flattened_grid_1_2d);
 #if 0
     CPPUNIT_TEST(test_chunked_dmr_print);
     CPPUNIT_TEST(test_chunked_hdf5);

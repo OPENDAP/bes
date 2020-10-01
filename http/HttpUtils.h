@@ -55,11 +55,13 @@ namespace http {
         static std::string ProxyPassword;
         static int ProxyPort;
         static int ProxyAuthType;
-        static bool useInternalCache;
-
         static std::string NoProxyRegex;
+        static bool ProxyConfigured;
 
-        static void Initialize();
+        static int MaxRedirects;
+
+        static void load_proxy_from_keys();
+        static void load_max_redirects_from_keys();
 
         static void Get_type_from_disposition(const std::string &disp, std::string &type);
 

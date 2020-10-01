@@ -150,6 +150,7 @@ add_executable(bes
     cmdln/CmdClient.h
     cmdln/CmdTranslation.cc
     cmdln/CmdTranslation.h
+
     dap/unit-tests/unused/SequenceAggregationServerTest.cc
     dap/unit-tests/FunctionResponseCacheTest.cc
     dap/unit-tests/GlobalMetadataStoreTest.cc
@@ -232,6 +233,7 @@ add_executable(bes
     dap/ShowPathInfoResponseHandler.h
     dap/TempFile.cc
     dap/TempFile.h
+
     dapreader/DapModule.cc
     dapreader/DapModule.h
     dapreader/DapRequestHandler.cc
@@ -243,7 +245,6 @@ add_executable(bes
     dispatch/PicoSHA2/picosha2.h
     dispatch/tests/FileLockingCacheTest.cc
     dispatch/tests/test_config.h
-
     dispatch/unit-tests/agglistT.cc
     dispatch/unit-tests/BESCatalogListTest.cc
     dispatch/unit-tests/cacheT.cc
@@ -782,14 +783,18 @@ add_executable(bes
     modules/dmrpp_module/DmrppUInt64.cc
     modules/dmrpp_module/DmrppUInt64.h
     modules/dmrpp_module/DmrppUrl.cc
+    modules/dmrpp_module/DmrppUrl.h
+    modules/dmrpp_module/check_dmrpp.cc
+    modules/dmrpp_module/merge_dmrpp.cc
     modules/dmrpp_module/DmrppNames.h
     modules/dmrpp_module/unit-tests/awsv4_test.cc
     modules/dmrpp_module/AccessCredentials.cc
     modules/dmrpp_module/AccessCredentials.h
     modules/dmrpp_module/NgapS3Credentials.cc
     modules/dmrpp_module/NgapS3Credentials.h
-
     modules/dmrpp_module/unit-tests/NgapCredentialsTest.cc
+    modules/dmrpp_module/byteswap_compat.h
+    modules/dmrpp_module/reduce_mdf.cc
 
     modules/fileout_covjson/unit-tests/FoCovJsonTest.cc
     modules/fileout_covjson/unit-tests/test_config.h
@@ -805,6 +810,7 @@ add_executable(bes
     modules/fileout_covjson/FoDapCovJsonTransmitter.h
     modules/fileout_covjson/StreamString.cc
     modules/fileout_covjson/StreamString.h
+
     modules/fileout_gdal/FONgGrid.cc
     modules/fileout_gdal/FONgGrid.h
     modules/fileout_gdal/FONgModule.cc
@@ -819,6 +825,7 @@ add_executable(bes
     modules/fileout_gdal/GeoTiffTransmitter.h
     modules/fileout_gdal/JPEG2000Transmitter.cc
     modules/fileout_gdal/JPEG2000Transmitter.h
+
     modules/fileout_json/unit-tests/FoJsonTest.cc
     modules/fileout_json/unit-tests/test_config.h
     modules/fileout_json/FoDapJsonTransform.cc
@@ -837,6 +844,7 @@ add_executable(bes
     modules/fileout_json/FoJsonRequestHandler.h
     modules/fileout_json/StreamString.cc
     modules/fileout_json/StreamString.h
+
     modules/fileout_netcdf/data/build_test_data/arrayT.cc
     modules/fileout_netcdf/data/build_test_data/arrayT01.cc
     modules/fileout_netcdf/data/build_test_data/attrT.cc
@@ -854,25 +862,6 @@ add_executable(bes
     modules/fileout_netcdf/data/build_test_data/structT02.cc
     modules/fileout_netcdf/data/build_test_data/test_send_data.cc
     modules/fileout_netcdf/data/build_test_data/test_send_data.h
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     modules/fileout_netcdf/FONcArray.cc
     modules/fileout_netcdf/FONcArray.h
     modules/fileout_netcdf/FONcAttributes.cc
@@ -911,6 +900,7 @@ add_executable(bes
     modules/fileout_netcdf/FONcTransmitter.h
     modules/fileout_netcdf/FONcUtils.cc
     modules/fileout_netcdf/FONcUtils.h
+
     modules/fits_handler/BESAutoPtr.h
     modules/fits_handler/fits_read_attributes.cc
     modules/fits_handler/fits_read_attributes.h
@@ -921,6 +911,7 @@ add_executable(bes
     modules/fits_handler/FitsRequestHandler.cc
     modules/fits_handler/FitsRequestHandler.h
     modules/fits_handler/version.h
+
     modules/freeform_handler/FFND/afm2bfm.c
     modules/freeform_handler/FFND/avl.h
     modules/freeform_handler/FFND/avlfree.c
@@ -1627,6 +1618,7 @@ add_executable(bes
     modules/ncml_module/VariableElement.h
     modules/ncml_module/XMLHelpers.cc
     modules/ncml_module/XMLHelpers.h
+
     modules/netcdf_handler/data/nc4_test_files/make_nc4_strings_hacked.c
     modules/netcdf_handler/data/nc4_test_files/make_nc4_unsigned_types.c
     modules/netcdf_handler/ugrid_project/gridfields_functions.cc
@@ -2079,4 +2071,3 @@ add_executable(bes
     functions/stare/unit-tests/build_test_s_indices.cc
     http/unit-tests/HttpUtilsTest.cc
 	http/unit-tests/CurlUtilsTest.cc)
-

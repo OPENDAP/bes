@@ -71,8 +71,7 @@ const std::string Chunk::tracking_context = "cloudydap";
  * @param data Pointer to the user data, configured using
  * @return The number of bytes read
  */
-size_t chunk_header_callback(char *buffer, size_t /*size*/, size_t nitems, void *data)
-{
+size_t chunk_header_callback(char *buffer, size_t /*size*/, size_t nitems, void *data) {
     // received header is nitems * size long in 'buffer' NOT ZERO TERMINATED
     // 'userdata' is set with CURLOPT_HEADERDATA
     // 'size' is always 1
@@ -84,8 +83,8 @@ size_t chunk_header_callback(char *buffer, size_t /*size*/, size_t nitems, void 
     string::size_type pos;
     if ((pos = header.find("Content-Type")) != string::npos) {
         // Header format 'Content-Type: <value>'
-        Chunk *c_ptr = reinterpret_cast<Chunk*>(data);
-        c_ptr->set_response_content_type(header.substr(header.find_last_of(' ')+1));
+        Chunk *c_ptr = reinterpret_cast<Chunk *>(data);
+        c_ptr->set_response_content_type(header.substr(header.find_last_of(' ') + 1));
     }
 
     return nitems;
@@ -104,12 +103,12 @@ size_t chunk_header_callback(char *buffer, size_t /*size*/, size_t nitems, void 
  * @param data Pointer to this
  * @return The number of bytes read
  */
-size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
-{
+size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
     size_t nbytes = size * nmemb;
-    Chunk *chunk = reinterpret_cast<Chunk*>(data);
+    Chunk *chunk = reinterpret_cast<Chunk *>(data);
 
-    BESDEBUG(MODULE, prolog << "BEGIN chunk->get_response_content_type():" << chunk->get_response_content_type() << " chunk->get_data_url(): " << chunk->get_data_url() << endl);
+    BESDEBUG(MODULE, prolog << "BEGIN chunk->get_response_content_type():" << chunk->get_response_content_type()
+                            << " chunk->get_data_url(): " << chunk->get_data_url() << endl);
 
     // When Content-Type is 'application/xml,' that's an error. jhrg 6/9/20
     if (chunk->get_response_content_type().find("application/xml") != string::npos) {
@@ -124,7 +123,7 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
             string json_message = xml2json(xml_message.c_str());
             stringstream aws_msg;
             aws_msg << prolog << "AWS S3 Access Error:" << json_message;
-            BESDEBUG(MODULE,aws_msg.str() << endl);
+            BESDEBUG(MODULE, aws_msg.str() << endl);
             VERBOSE(aws_msg.str() << endl);
 
             rapidjson::Document d;
@@ -136,13 +135,13 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
             // are not good enough. But the "Code" is not really suitable for normal humans...
             // jhrg 12/31/19
             stringstream msg;
-            msg << prolog << "Error accessing object store data. (Tried: " << chunk->get_data_url().append(")") <<
+            msg << prolog << "Error accessing object store data. (Tried: " << chunk->get_data_url() << ")" <<
                 " Message " << message.GetString();
-            BESDEBUG(MODULE,msg.str() << endl);
-            if (string(code.GetString()) == "AccessDenied"){
+            BESDEBUG(MODULE, msg.str() << endl);
+            if (string(code.GetString()) == "AccessDenied") {
                 throw BESForbiddenError(msg.str(), __FILE__, __LINE__);
             }
-            else{
+            else {
                 throw BESInternalError(msg.str(), __FILE__, __LINE__);
             }
         }
@@ -151,11 +150,11 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
             // of std::exception as it should be. jhrg 12/30/19
             throw;
         }
-        catch(std::exception &e) {
+        catch (std::exception &e) {
             stringstream msg;
-            msg << prolog << "Error accessing object store data. (Tried: " << chunk->get_data_url().append(")") <<
-            " Message " << e.what();
-            BESDEBUG(MODULE,msg.str() << endl);
+            msg << prolog << "Error accessing object store data. (Tried: " << chunk->get_data_url() << ")" <<
+                " Message " << e.what();
+            BESDEBUG(MODULE, msg.str() << endl);
             throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
         }
     }
@@ -173,13 +172,13 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
             << nbytes << " is larger than the target buffer size: " << chunk->get_rbuf_size();
         BESDEBUG(MODULE, msg.str() << endl);
         DmrppRequestHandler::curl_handle_pool->release_all_handles();
-        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+        throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
 
     memcpy(chunk->get_rbuf() + bytes_read, buffer, nbytes);
     chunk->set_bytes_read(bytes_read + nbytes);
 
-    BESDEBUG(MODULE, prolog << "END" << endl );
+    BESDEBUG(MODULE, prolog << "END" << endl);
 
     return nbytes;
 }
@@ -194,8 +193,7 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data)
  * @param src Compressed data
  * @param src_len Size of the compressed data
  */
-void inflate(char *dest, unsigned int dest_len, char *src, unsigned int src_len)
-{
+void inflate(char *dest, unsigned int dest_len, char *src, unsigned int src_len) {
     /* Sanity check */
     assert(src_len > 0);
     assert(src);
@@ -236,9 +234,10 @@ void inflate(char *dest, unsigned int dest_len, char *src, unsigned int src_len)
              * this handler, we always know the size of the uncompressed chunk.
              */
             if (0 == z_strm.avail_out) {
-                throw BESError("Data buffer is not big enough for uncompressed data.", BES_INTERNAL_ERROR, __FILE__, __LINE__);
+                throw BESError("Data buffer is not big enough for uncompressed data.", BES_INTERNAL_ERROR, __FILE__,
+                               __LINE__);
 #if 0
-                /* Here's how to extend the buffer if needed. This might be useful someday... */
+                /* Here's how to extend the buffer if needed. This might be useful some day... */
                 void *new_outbuf; /* Pointer to new output buffer */
 
                 /* Allocate a buffer twice as big */
@@ -288,17 +287,16 @@ void inflate(char *dest, unsigned int dest_len, char *src, unsigned int src_len)
  * @param src_size Number of bytes in both src and dest
  * @param width Number of bytes in an element
  */
-void unshuffle(char *dest, const char *src, unsigned int src_size, unsigned int width)
-{
+void unshuffle(char *dest, const char *src, unsigned int src_size, unsigned int width) {
     unsigned int elems = src_size / width;  // int division rounds down
 
     /* Don't do anything for 1-byte elements, or "fractional" elements */
     if (!(width > 1 && elems > 1)) {
-        memcpy(dest, const_cast<char*>(src), src_size);
+        memcpy(dest, const_cast<char *>(src), src_size);
     }
     else {
         /* Get the pointer to the source buffer (Alias for source buffer) */
-        char *_src = const_cast<char*>(src);
+        char *_src = const_cast<char *>(src);
         char *_dest = 0;   // Alias for destination buffer
 
         /* Input; unshuffle */
@@ -316,30 +314,30 @@ void unshuffle(char *dest, const char *src, unsigned int src_size, unsigned int 
             {
                 size_t duffs_index = (elems + 7) / 8;   /* Counting index for Duff's device */
                 switch (elems % 8) {
-                default:
-                    assert(0 && "This Should never be executed!");
-                    break;
-                case 0:
-                    do {
-                        // This macro saves repeating the same line 8 times
+                    default:
+                        assert(0 && "This Should never be executed!");
+                        break;
+                    case 0:
+                        do {
+                            // This macro saves repeating the same line 8 times
 #define DUFF_GUTS       *_dest = *_src++; _dest += width;
 
-                        DUFF_GUTS
-                        case 7:
-                        DUFF_GUTS
-                        case 6:
-                        DUFF_GUTS
-                        case 5:
-                        DUFF_GUTS
-                        case 4:
-                        DUFF_GUTS
-                        case 3:
-                        DUFF_GUTS
-                        case 2:
-                        DUFF_GUTS
-                        case 1:
-                        DUFF_GUTS
-                    } while (--duffs_index > 0);
+                            DUFF_GUTS
+                            case 7:
+                            DUFF_GUTS
+                            case 6:
+                            DUFF_GUTS
+                            case 5:
+                            DUFF_GUTS
+                            case 4:
+                            DUFF_GUTS
+                            case 3:
+                            DUFF_GUTS
+                            case 2:
+                            DUFF_GUTS
+                            case 1:
+                            DUFF_GUTS
+                        } while (--duffs_index > 0);
                 } /* end switch */
             } /* end block */
 #endif /* DUFFS_DEVICE */
@@ -353,7 +351,7 @@ void unshuffle(char *dest, const char *src, unsigned int src_size, unsigned int 
         if (leftover > 0) {
             /* Adjust back to end of shuffled bytes */
             _dest -= (width - 1); /*lint !e794 _dest is initialized */
-            memcpy((void*) _dest, (void*) _src, leftover);
+            memcpy((void *) _dest, (void *) _src, leftover);
         }
     } /* end if width and elems both > 1 */
 }
@@ -371,8 +369,7 @@ void unshuffle(char *dest, const char *src, unsigned int src_size, unsigned int 
  *
  * @param pia The chunk position string. Syntax parsed: "[1,2,3,4]"
  */
-void Chunk::set_position_in_array(const string &pia)
-{
+void Chunk::set_position_in_array(const string &pia) {
     if (pia.empty()) return;
 
     if (d_chunk_position_in_array.size()) d_chunk_position_in_array.clear();
@@ -385,12 +382,12 @@ void Chunk::set_position_in_array(const string &pia)
     if (pia.find_first_not_of("[]1234567890,") != string::npos)
         throw BESInternalError("while parsing a DMR++, chunk position string illegal character(s)", __FILE__, __LINE__);
 
-    // string off []; iss holds x,y,...,z
-    istringstream iss(pia.substr(1, pia.length()-2));
+    // strip off []; iss holds x,y,...,z
+    istringstream iss(pia.substr(1, pia.length() - 2));
 
     char c;
     unsigned int i;
-    while (!iss.eof() ) {
+    while (!iss.eof()) {
         iss >> i; // read an integer
         d_chunk_position_in_array.push_back(i);
         iss >> c; // read a separator (,)
@@ -405,8 +402,7 @@ void Chunk::set_position_in_array(const string &pia)
  * @see Chunk::set_position_in_array(const string &pia)
  * @param pia A vector of unsigned ints.
  */
-void Chunk::set_position_in_array(const std::vector<unsigned int> &pia)
-{
+void Chunk::set_position_in_array(const std::vector<unsigned int> &pia) {
     if (pia.size() == 0) return;
 
     if (d_chunk_position_in_array.size()) d_chunk_position_in_array.clear();
@@ -421,9 +417,8 @@ void Chunk::set_position_in_array(const std::vector<unsigned int> &pia)
  * for this byteStream.
  *
  */
-string Chunk::get_curl_range_arg_string()
-{
-    return curl::get_range_arg_string(d_offset,d_size);
+string Chunk::get_curl_range_arg_string() {
+    return curl::get_range_arg_string(d_offset, d_size);
 }
 
 /**
@@ -437,8 +432,7 @@ string Chunk::get_curl_range_arg_string()
  *
  * @note This is only added to data URLs that reference S3.
  */
-void Chunk::add_tracking_query_param()
-{
+void Chunk::add_tracking_query_param() {
     /** - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
      * Cloudydap test hack where we tag the S3 URLs with a query string for the S3 log
      * in order to track S3 requests. The tag is submitted as a BESContext with the
@@ -507,8 +501,7 @@ void *inflate_chunk(void *arg_list)
  * @param chunk_size The _expected_ chunk size, in elements; used to allocate storage
  * @param elem_width The number of bytes per element
  */
-void Chunk::inflate_chunk(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width)
-{
+void Chunk::inflate_chunk(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width) {
     // This code is pretty naive - there are apparently a number of
     // different ways HDF5 can compress data, and it does also use a scheme
     // where several algorithms can be applied in sequence. For now, get
@@ -576,8 +569,7 @@ void Chunk::inflate_chunk(bool deflate, bool shuffle, unsigned int chunk_size, u
  * @param chunk_size
  * @param elem_width
  */
-void Chunk::read_chunk()
-{
+void Chunk::read_chunk() {
     if (d_is_read) {
         BESDEBUG(MODULE, prolog << "Already been read! Returning." << endl);
         return;
@@ -589,10 +581,14 @@ void Chunk::read_chunk()
     if (!handle)
         throw BESInternalError(prolog + "No more libcurl handles.", __FILE__, __LINE__);
 
-    // FIXME ? Trap exceptions from this call to make sure that we release the handle. jhrg 6/19/20
-    handle->read_data();  // throws if error
-
-    DmrppRequestHandler::curl_handle_pool->release_handle(handle);
+    try {
+        handle->read_data();  // throws if error
+        DmrppRequestHandler::curl_handle_pool->release_handle(handle);
+    }
+    catch(...) {
+        DmrppRequestHandler::curl_handle_pool->release_handle(handle);
+        throw;
+    }
 
     // If the expected byte count was not read, it's an error.
     if (get_size() != get_bytes_read()) {
@@ -613,10 +609,9 @@ void Chunk::read_chunk()
  *  std::vector<unsigned int> d_chunk_position_in_array;
  *
  */
-void Chunk::dump(ostream &oss) const
-{
+void Chunk::dump(ostream &oss) const {
     oss << "Chunk";
-    oss << "[ptr='" << (void *)this << "']";
+    oss << "[ptr='" << (void *) this << "']";
     oss << "[data_url='" << d_data_url << "']";
     oss << "[offset=" << d_offset << "]";
     oss << "[size=" << d_size << "]";
@@ -630,22 +625,20 @@ void Chunk::dump(ostream &oss) const
     oss << "[is_inflated=" << d_is_inflated << "]";
 }
 
-string Chunk::to_string() const
-{
+string Chunk::to_string() const {
     std::ostringstream oss;
     dump(oss);
     return oss.str();
 }
 
 
-std::string Chunk::get_data_url() const
-{
+std::string Chunk::get_data_url() const {
     string data_url = d_data_url;
 
-    http::url *effective_url = EffectiveUrlCache::TheCache()->get(d_data_url);
-    BESDEBUG(MODULE, prolog << "The EffectiveUrlCache" << (effective_url?" contains ":" does not contain ") <<
-    "the d_data_url: " << d_data_url << endl);
-    if(effective_url){
+    http::url *effective_url = EffectiveUrlCache::TheCache()->get_effective_url(d_data_url);
+    BESDEBUG(MODULE, prolog << "The EffectiveUrlCache" << (effective_url ? " contains " : " does not contain ") <<
+                            "the d_data_url: " << d_data_url << endl);
+    if (effective_url) {
         data_url = effective_url->str();
     }
     BESDEBUG(MODULE, prolog << "Using data_url: " << data_url << endl);
@@ -669,7 +662,6 @@ std::string Chunk::get_data_url() const
 
     }
     BESDEBUG(MODULE, prolog << "Using data_url: " << data_url << endl);
-
 #endif
 
     // A conditional call to void Chunk::add_tracking_query_param()
@@ -680,7 +672,6 @@ std::string Chunk::get_data_url() const
 
     return data_url;
 }
-
 
 } // namespace dmrpp
 

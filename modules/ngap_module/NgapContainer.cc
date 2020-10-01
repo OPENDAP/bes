@@ -34,6 +34,8 @@
 #include <streambuf>
 #include <time.h>
 
+#include "BESStopWatch.h"
+#include "BESLog.h"
 #include "BESSyntaxUserError.h"
 #include "BESNotFoundError.h"
 #include "BESInternalError.h"
@@ -58,6 +60,7 @@ using namespace bes;
 
 #define UID_CONTEXT "uid"
 #define AUTH_TOKEN_CONTEXT "edl_auth_token"
+#define EDL_ECHO_TOKEN_CONTEXT "edl_echo_token"
 
 namespace ngap {
 
@@ -89,9 +92,8 @@ namespace ngap {
         string access_token = BESContextManager::TheManager()->get_context(AUTH_TOKEN_CONTEXT, found);
 
         BESDEBUG(MODULE, prolog << "UID_CONTEXT(" << UID_CONTEXT << "): " << uid << endl);
-        BESDEBUG(MODULE, prolog << "AUTH_TOKEN_CONTEXT(" << AUTH_TOKEN_CONTEXT << "): " << access_token << endl);
 
-        string data_access_url = ngap_api.convert_ngap_resty_path_to_data_access_url(real_name, uid, access_token);
+        string data_access_url = ngap_api.convert_ngap_resty_path_to_data_access_url(real_name, uid);
 
         set_real_name(data_access_url);
         // Because we know the name is really a URL, then we know the "relative_name" is meaningless
@@ -219,8 +221,14 @@ namespace ngap {
                 replace_template = DATA_ACCESS_URL_KEY;
                 replace_value = data_access_url_str;
             }
-            d_dmrpp_rresource = new http::RemoteResource(dmrpp_url);
-            d_dmrpp_rresource->retrieveResource(replace_template, replace_value);
+            {
+                d_dmrpp_rresource = new http::RemoteResource(dmrpp_url);
+                BESStopWatch besTimer;
+                if(BESLog::TheLog()->is_verbose()){
+                    besTimer.start("DMR++ retrieval: "+ dmrpp_url);
+                }
+                d_dmrpp_rresource->retrieveResource(replace_template, replace_value);
+            }
         }
         BESDEBUG(MODULE, prolog << "Retrieved remote resource: " << dmrpp_url << endl);
 

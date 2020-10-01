@@ -42,6 +42,7 @@
 #include "DmrppRequestHandler.h"
 #include "DmrppCommon.h"
 #include "Chunk.h"
+#include "util.h"
 
 using namespace std;
 using namespace libdap;
@@ -71,9 +72,19 @@ void join_threads(pthread_t threads[], unsigned int num_threads)
     int status;
     for (unsigned int i = 0; i < num_threads; ++i) {
         if (threads[i]) {
-            BESDEBUG(dmrpp_3, "Join thread " << i << " after an exception was caught.");
-            if ((status = pthread_join(threads[i], NULL)) < 0)
-            LOG("Failed to join thread " << i << "during clean up from an exception: " << strerror(status) << endl);
+            BESDEBUG(dmrpp_3, "Join thread " << i << " after an exception was caught." << endl);
+            string *error = NULL;
+            if ((status = pthread_join(threads[i], (void **) &error)) < 0) {
+                BESDEBUG(dmrpp_3, "Could not join thread " << i << ", " << strerror(status)<< endl);
+                // LOG("Failed to join thread " << i << "during clean up from an exception: " << strerror(status) << endl);
+            }
+            else if (error != NULL) {
+                BESDEBUG(dmrpp_3, "Joined thread " << i << ", error exit: " << *error << endl);
+                // LOG("Joined thread " << i << ", error exit" << *error << endl);
+            }
+            else {
+                BESDEBUG(dmrpp_3, "Joined thread " << i << ", successful exit." << endl);
+            }
         }
     }
 }
@@ -147,24 +158,56 @@ void DmrppCommon::ingest_compression_type(string compression_type_string)
 }
 
 /**
+ * @brief Parses the text content of the XML element chunks:byteOrder.
+ *
+ * @param byte_order_string One of "LE", "BE"
+ */
+    void DmrppCommon::ingest_byte_order(string byte_order_string) {
+
+        if (byte_order_string.empty()) return;
+
+        // Process content
+        if (byte_order_string.compare("LE") == 0) {
+            d_byte_order = "LE";
+            d_twiddle_bytes = is_host_big_endian();
+        } else {
+            if (byte_order_string.compare("BE") == 0) {
+                d_byte_order = "BE";
+                d_twiddle_bytes = !(is_host_big_endian());
+            } else {
+                throw BESInternalError("Did not recognize byteOrder.", __FILE__, __LINE__);
+            }
+        }
+    }
+
+#if 0
+std::string DmrppCommon::get_byte_order()
+    {
+        return d_byte_order;
+    }
+#endif
+
+/**
  * @brief Add a new chunk as defined by an h4:byteStream element
  * @return The number of chunk refs (byteStreams) held.
  */
-unsigned long DmrppCommon::add_chunk(const string &data_url, unsigned long long size, unsigned long long offset,
-    string position_in_array)
-{
-    d_chunks.push_back(Chunk(data_url, size, offset, position_in_array));
+    unsigned long DmrppCommon::add_chunk(const string &data_url, const string &byte_order,
+                                         unsigned long long size, unsigned long long offset, string position_in_array)
 
-    return d_chunks.size();
-}
+    {
+        d_chunks.push_back(Chunk(data_url, byte_order, size, offset, position_in_array));
 
-unsigned long DmrppCommon::add_chunk(const string &data_url, unsigned long long size, unsigned long long offset,
-    const vector<unsigned int> &position_in_array)
-{
-    d_chunks.push_back(Chunk(data_url, size, offset, position_in_array));
+        return d_chunks.size();
+    }
 
-    return d_chunks.size();
-}
+    unsigned long DmrppCommon::add_chunk(const string &data_url, const string &byte_order,
+                                         unsigned long long size, unsigned long long offset,
+                                         const vector<unsigned int> &position_in_array)
+    {
+        d_chunks.push_back(Chunk(data_url, byte_order, size, offset, position_in_array));
+
+        return d_chunks.size();
+    }
 
 /**
  * @brief read method for the atomic types
@@ -186,7 +229,7 @@ unsigned long DmrppCommon::add_chunk(const string &data_url, unsigned long long 
 char *
 DmrppCommon::read_atomic(const string &name)
 {
-    vector<Chunk> &chunk_refs = get_chunk_vec();
+    vector<Chunk> &chunk_refs = get_chunks();
 
     if (chunk_refs.size() != 1)
         throw BESInternalError(string("Expected only a single chunk for variable ") + name, __FILE__, __LINE__);
@@ -220,6 +263,17 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
         if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "compressionType", (const xmlChar*) compression.c_str()) < 0)
             throw BESInternalError("Could not write compression attribute.", __FILE__, __LINE__);
 
+    vector<Chunk>::iterator i = get_chunks().begin();
+    if ( i != get_chunks().end() ) {
+        Chunk &chunk = *i;
+        std::string byteOrder = chunk.get_byte_order();
+        if (!byteOrder.empty()) {
+            if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "byteOrder",
+                                            (const xmlChar *) byteOrder.c_str()) < 0)
+                throw BESInternalError("Could not write attribute byteOrder", __FILE__, __LINE__);
+        }
+    }
+
     if (d_chunk_dimension_sizes.size() > 0) {
         // Write element "chunkDimensionSizes" with dmrpp namespace:
         ostringstream oss;
@@ -232,7 +286,7 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
     }
 
     // Start elements "chunk" with dmrpp namespace and attributes:
-    for (vector<Chunk>::iterator i = get_chunk_vec().begin(), e = get_chunk_vec().end(); i != e; ++i) {
+    for (vector<Chunk>::iterator i = get_chunks().begin(), e = get_chunks().end(); i != e; ++i) {
         Chunk &chunk = *i;
 
         if (xmlTextWriterStartElementNS(xml.get_writer(), (const xmlChar*)name_space.c_str(), (const xmlChar*) "chunk", NULL) < 0)
@@ -267,6 +321,23 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
     }
 
     if (xmlTextWriterEndElement(xml.get_writer()) < 0) throw BESInternalError("Could not end chunks element", __FILE__, __LINE__);
+}
+
+/**
+ * @brief Print the Compact base64-encoded information.
+ */
+void
+DmrppCommon::print_compact_element(XMLWriter &xml, const string &name_space, const std::string &encoded)
+{
+    // Write element "compact" with dmrpp namespace:
+    ostringstream oss;
+    copy(encoded.begin(), encoded.end(), ostream_iterator<char>(oss, ""));
+    string sizes = oss.str();
+
+    if (xmlTextWriterWriteElementNS(xml.get_writer(), (const xmlChar *) name_space.c_str(),
+                                    (const xmlChar *) "compact", NULL,
+                                    (const xmlChar *) sizes.c_str()) < 0)
+        throw BESInternalError("Could not write compact element.", __FILE__, __LINE__);
 }
 
 /**
