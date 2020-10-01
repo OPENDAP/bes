@@ -432,7 +432,7 @@ static void dump_time(ostream &os, bool use_local_time)
         status = strftime(buf, sizeof buf, "%FT%T%Z", localtime(&now));
 
     if (!status)
-        LOG("Error getting time for Metadata Store ledger.");
+        ERROR("Error getting time for Metadata Store ledger.");
 
     os << buf;
 }
@@ -461,7 +461,7 @@ GlobalMetadataStore::write_ledger()
 	    }
         }
         else {
-            LOG("Warning: Metadata store could not write to its ledger file.");
+            ERROR("Warning: Metadata store could not write to its ledger file.");
             unlock_and_close(d_ledger_name);
         }
     }
@@ -606,7 +606,7 @@ GlobalMetadataStore::store_dap_response(StreamDAP &writer, const string &key, co
         BESDEBUG(DEBUG_KEY,__FUNCTION__ << " Found " << item_name << " in the store already." << endl);
         unlock_and_close(item_name);
 
-        LOG("Metadata store: unable to store the " << response_name << " response for '" << name << "'." << endl);
+        ERROR("Metadata store: unable to store the " << response_name << " response for '" << name << "'." << endl);
 
         return false;
     }
@@ -1159,7 +1159,7 @@ GlobalMetadataStore::remove_response_helper(const string& name, const string &su
         return true;
     }
     else {
-        LOG("Metadata store: unable to remove the " << object_name << " response for '" << name << "' (" << strerror(errno) << ")."<< endl);
+        ERROR("Metadata store: unable to remove the " << object_name << " response for '" << name << "' (" << strerror(errno) << ")."<< endl);
     }
 
     return false;

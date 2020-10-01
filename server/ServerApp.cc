@@ -366,7 +366,7 @@ int ServerApp::initialize(int argc, char **argv)
         catch (BESError &e) {
             string err = string("FAILED: ") + e.get_message();
             cerr << err << endl;
-            LOG(err << endl);
+            ERROR(err << endl);
             exit(SERVER_EXIT_FATAL_CANNOT_START);
         }
         if (found) {
@@ -386,7 +386,7 @@ int ServerApp::initialize(int argc, char **argv)
         catch (BESError &e) {
             string err = string("FAILED: ") + e.get_message();
             cerr << err << endl;
-            LOG(err << endl);
+            ERROR(err << endl);
             exit(SERVER_EXIT_FATAL_CANNOT_START);
         }
 
@@ -404,7 +404,7 @@ int ServerApp::initialize(int argc, char **argv)
         catch (BESError &e) {
             string err = string("FAILED: ") + e.get_message();
             cerr << err << endl;
-            LOG(err << endl);
+            ERROR(err << endl);
             exit(SERVER_EXIT_FATAL_CANNOT_START);
         }
     }
@@ -415,7 +415,7 @@ int ServerApp::initialize(int argc, char **argv)
         msg += " and/or -u <unix_socket>\n";
         msg += "Or specify in the bes configuration file with " + port_key + " and/or " + socket_key + "\n";
         cout << endl << msg;
-        LOG(msg << endl);
+        ERROR(msg << endl);
         BESServerUtils::show_usage(BESApp::TheApplication()->appName());
     }
 
@@ -429,7 +429,7 @@ int ServerApp::initialize(int argc, char **argv)
         catch (BESError &e) {
             string err = string("FAILED: ") + e.get_message();
             cerr << err << endl;
-            LOG(err << endl);
+            ERROR(err << endl);
             exit(SERVER_EXIT_FATAL_CANNOT_START);
         }
         if (isSecure == "Yes" || isSecure == "YES" || isSecure == "yes") {
@@ -494,7 +494,7 @@ int ServerApp::run()
             int res = write(BESLISTENER_PIPE_FD, &status, sizeof(status));
 
             if (res == -1) {
-                LOG("Master listener could not send status to daemon: " << strerror(errno) << endl);
+                ERROR("Master listener could not send status to daemon: " << strerror(errno) << endl);
                 ::exit(SERVER_EXIT_FATAL_CANNOT_START);
             }
         }
@@ -567,14 +567,14 @@ int ServerApp::run()
     catch (BESError &se) {
         BESDEBUG("beslistener", "beslistener: caught BESError (" << se.get_message() << ")" << endl);
 
-        LOG(se.get_message() << endl);
+        ERROR(se.get_message() << endl);
         int status = SERVER_EXIT_FATAL_CANNOT_START;
         write(BESLISTENER_PIPE_FD, &status, sizeof(status));
         close(BESLISTENER_PIPE_FD);
         return 1;
     }
     catch (...) {
-        LOG("caught unknown exception initializing sockets" << endl);
+        ERROR("caught unknown exception initializing sockets" << endl);
         int status = SERVER_EXIT_FATAL_CANNOT_START;
         write(BESLISTENER_PIPE_FD, &status, sizeof(status));
         close(BESLISTENER_PIPE_FD);

@@ -223,7 +223,7 @@ void BESServerHandler::execute(Connection *c)
             // continue, wait for the next request.
             switch (status) {
             case BES_INTERNAL_FATAL_ERROR:
-                LOG("BES Internal Fatal Error; child returning "
+                ERROR("BES Internal Fatal Error; child returning "
                     << SERVER_EXIT_ABNORMAL_TERMINATION << " to the master listener." << endl);
 
                 c->closeConnection();
@@ -234,7 +234,7 @@ void BESServerHandler::execute(Connection *c)
             case BES_INTERNAL_ERROR:
                 // This should be an option. The default is to not exit. jhrg 10/4/18
                 if (TheBESKeys::TheKeys()->read_bool_key(EXIT_ON_INTERNAL_ERROR, false)) {
-                    LOG("BES Internal Error; child returning "
+                    ERROR("BES Internal Error; child returning "
                         << SERVER_EXIT_ABNORMAL_TERMINATION << " to the master listener." << endl);
 
                     c->closeConnection();

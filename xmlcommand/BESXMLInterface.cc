@@ -284,7 +284,7 @@ void BESXMLInterface::execute_data_request_plan()
             LOG(new_log_info << endl);
 
             if (d_dhi_ptr->containers.size() > 1)
-                LOG("Warning: The previous command had multiple containers defined, but only the was logged.");
+                ERROR("The previous command had multiple containers defined, but only the was logged.");
         }
 #else
         if (!BESLog::TheLog()->is_verbose()) {
@@ -338,7 +338,7 @@ void BESXMLInterface::transmit_data()
 
         ostringstream strm;
         d_dhi_ptr->error_info->print(strm);
-        LOG("Transmitting error: " << strm.str() << endl);
+        LOG("Transmitting error content: " << strm.str() << endl);
 
         d_dhi_ptr->error_info->transmit(d_transmitter, *d_dhi_ptr);
     }
@@ -379,7 +379,7 @@ void BESXMLInterface::log_status()
             string result = (!d_dhi_ptr->error_info) ? "completed" : "failed";
 
             // This is only printed for verbose logging.
-            LOG(d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] " << result << endl);
+            VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] " << result << endl);
         }
     }
 }

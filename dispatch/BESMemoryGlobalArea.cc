@@ -95,7 +95,7 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
                     if (emergency > max) {
                         string s = string("BES: ") + "unable to start since the emergency "
                             + "pool is larger than the maximum size of " + "the heap.\n";
-                        LOG(s);
+                        ERROR(s);
                         throw BESInternalFatalError(s, __FILE__, __LINE__);
                     }
                     log_limits("before setting limits: ");
@@ -108,7 +108,7 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
                             s = s + "Attempting to increase the soft/hard " + "limit above the current hard limit, "
                                 + "must be superuser\n";
                         }
-                        LOG(s);
+                        ERROR(s);
                         throw BESInternalFatalError(s, __FILE__, __LINE__);
                     }
                     log_limits("after setting limits: ");
@@ -116,7 +116,7 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
                     _buffer = malloc(megabytes(max));
                     if (!_buffer) {
                         string s = string("BES: ") + "cannot get heap of size " + mhs + " to start running";
-                        LOG(s);
+                        ERROR(s);
                         throw BESInternalFatalError(s, __FILE__, __LINE__);
                     }
                     free(_buffer);
@@ -133,7 +133,7 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
                 _buffer = malloc(_size);
                 if (!_buffer) {
                     string s = (string) "BES: cannot expand heap to " + eps + " to start running";
-                    LOG(s << endl);
+                    ERROR(s << endl);
                     throw BESInternalFatalError(s, __FILE__, __LINE__);
                 }
             }

@@ -187,10 +187,10 @@ static void log_error(BESError &e)
     }
 
     if (TheBESKeys::TheKeys()->read_bool_key(EXCLUDE_FILE_INFO_FROM_LOG, false)) {
-        LOG("ERROR: " << error_name << ": " << e.get_message() << endl);
+        ERROR("ERROR: " << error_name << ": " << e.get_message() << endl);
     }
     else {
-        LOG("ERROR: " << error_name << ": " << e.get_message() << " (" << e.get_file() << ":" << e.get_line() << ")" << endl);
+        ERROR("ERROR: " << error_name << ": " << e.get_message() << " (" << e.get_file() << ":" << e.get_line() << ")" << endl);
     }
 
 #if 0
@@ -605,10 +605,10 @@ int BESInterface::finish(int status)
         end_request();
     }
     catch (BESError &ex) {
-        LOG("Problem logging status or running end of request cleanup: " << ex.get_message() << endl);
+        ERROR("Problem logging status or running end of request cleanup: " << ex.get_message() << endl);
     }
     catch (...) {
-        LOG("Unknown problem logging status or running end of request cleanup" << endl);
+        ERROR("Unknown problem logging status or running end of request cleanup" << endl);
     }
 
     return status;
