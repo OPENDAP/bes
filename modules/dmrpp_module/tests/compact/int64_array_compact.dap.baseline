@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="t_compact_layout_test_data.dmrpp">
+    <Int64 name="total_events">
+        <Dim size="20"/>
+        <Attribute name="contentType" type="String">
+            <Value>auxiliaryInformation</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Number of events used in constructing the per-channel histogram</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Total Events</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>CAL20</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </Int64>
+</Dataset>
+
+The data:
+Int64 total_events[20] = {109330, 116665, 116464, 109769, 113522, 123771, 124276, 120370, 119959, 121929, 118719, 114991, 110217, 113841, 121091, 111731, 104240, 108850, 113765, 116798};
+

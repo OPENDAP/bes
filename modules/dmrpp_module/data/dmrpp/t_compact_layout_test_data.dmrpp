@@ -3,8 +3,8 @@
         xmlns="http://xml.opendap.org/ns/DAP/4.0#"
         xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#"
         dapVersion="4.0" dmrVersion="1.0"
-        name="t_int_scalar.h5"
-        dmrpp:href="data/dmrpp/t_int_scalar.h5">
+        name="t_compact_layout_test_data.dmrpp"
+        dmrpp:href="data/dmrpp/t_compact_layout_test_data.dmrpp">
 
 
     <!-- Float64   - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -52,13 +52,8 @@
 
 
     <!-- Int64   - - - - - - - - - - - - - - - - - - - - - - - - -->
-    <Group name="ancillary_data">
-        <Group name="calibrations">
-            <Dimension name="ds_channel" size="20"/>
-        </Group>
-    </Group>
     <Int64 name="total_events">
-        <Dim name="/ancillary_data/calibrations/ds_channel"/>
+        <Dim size="20"/>
         <Attribute name="contentType" type="String">
             <Value>auxiliaryInformation</Value>
         </Attribute>
