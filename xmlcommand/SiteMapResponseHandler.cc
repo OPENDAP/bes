@@ -75,7 +75,7 @@ SiteMapResponseHandler::~SiteMapResponseHandler()
 void SiteMapResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("SiteMapResponseHandler::execute", dhi.data[REQUEST_ID]);
+    if (BESISDEBUG(TIMING_LOG_KEY)) sw.start("SiteMapResponseHandler::execute", dhi.data[REQUEST_ID]);
 
     // Force this command to use a TextInfo object. The default Info object type
     // is set using a key in bes.conf. jheg 11/27/18

@@ -125,7 +125,7 @@ bool ArrayAggregateOnOuterDimension::serialize(libdap::ConstraintEvaluator &eval
 {
 
 	BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("ArrayAggregateOnOuterDimension::serialize", "");
+    if (BESISDEBUG(TIMING_LOG_KEY)) sw.start("ArrayAggregateOnOuterDimension::serialize", "");
 
     // Only continue if we are supposed to serialize this object at all.
     if (!(send_p() || is_in_selection())) {
@@ -270,7 +270,7 @@ void ArrayAggregateOnOuterDimension::transferOutputConstraintsIntoGranuleTemplat
 void ArrayAggregateOnOuterDimension::readConstrainedGranuleArraysAndAggregateDataHook()
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG))
+    if (BESISDEBUG(TIMING_LOG_KEY))
         sw.start("ArrayAggregateOnOuterDimension::readConstrainedGranuleArraysAndAggregateDataHook", "");
 
     // outer one is the first in iteration

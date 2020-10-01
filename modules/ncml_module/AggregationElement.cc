@@ -161,7 +161,7 @@ void AggregationElement::handleBegin()
 {
 #if 0
     BESStopWatch sw;
-    if (BESISDEBUG( TIMING_LOG ))
+    if (BESISDEBUG( TIMING_LOG_KEY ))
     sw.start("AggregationElement::handleBegin", "");
 #endif
 
@@ -203,7 +203,7 @@ void AggregationElement::handleEnd()
 {
 #if 1
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("AggregationElement::handleEnd", "");
+    if (BESISDEBUG(TIMING_LOG_KEY)) sw.start("AggregationElement::handleEnd", "");
 #endif
     // Handle the actual processing!!
     BESDEBUG("ncml", "AggregationElement::handleEnd() - Processing the aggregation!!" << endl);
@@ -379,7 +379,7 @@ void AggregationElement::processUnion()
 void AggregationElement::processJoinNew()
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("AggregationElement::processJoinNew", "");
+    if (BESISDEBUG(TIMING_LOG_KEY)) sw.start("AggregationElement::processJoinNew", "");
 
     // This will run any child <scan> elements to prepare them.
     processAnyScanElements();
@@ -627,7 +627,7 @@ void AggregationElement::fillDimensionCacheForJoinExistingDimension(AMDList& gra
     else // look for cached dimension file or load dimensionalities from granules
     {
     	BESStopWatch sw;
-        if (BESISDEBUG(TIMING_LOG)) sw.start("LOAD_AGGREGATION_DIMENSIONS_CACHE", "");
+        if (BESISDEBUG(TIMING_LOG_KEY)) sw.start("LOAD_AGGREGATION_DIMENSIONS_CACHE", "");
 
     	agg_util::AggMemberDatasetDimensionCache *aggDimCache = agg_util::AggMemberDatasetDimensionCache::get_instance();
 
@@ -788,7 +788,7 @@ void AggregationElement::getParamsForJoinAggOnVariable(JoinAggParams* pOutParams
 void AggregationElement::processJoinNewOnAggVar(DDS* pAggDDS, const std::string& varName, const DDS& templateDDS)
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("AggregationElement::processJoinNewOnAggVar", "");
+    if (BESISDEBUG(TIMING_LOG_KEY)) sw.start("AggregationElement::processJoinNewOnAggVar", "");
 
     // Get the params we need to factory the actual aggregation subclass
     JoinAggParams joinAggParams;
@@ -817,7 +817,7 @@ void AggregationElement::processJoinExistingOnAggVar(DDS* pAggDDS, const std::st
 {
 
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("AggregationElement::processJoinExistingOnAggVar", "");
+    if (BESISDEBUG(TIMING_LOG_KEY)) sw.start("AggregationElement::processJoinExistingOnAggVar", "");
 
     // Get the params we need to factory the actual aggregation subclass
     JoinAggParams joinAggParams;
@@ -846,7 +846,7 @@ void AggregationElement::processAggVarJoinNewForArray(DDS& aggDDS, const libdap:
     const agg_util::Dimension& dim, const AMDList& memberDatasets)
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("AggregationElement::processJoinExistingOnAggVar", "");
+    if (BESISDEBUG(TIMING_LOG_KEY)) sw.start("AggregationElement::processJoinExistingOnAggVar", "");
 
     // Use the basic array getter to read adn get from top level DDS.
     auto_ptr<agg_util::ArrayGetterInterface> arrayGetter(new agg_util::TopLevelArrayGetter());
@@ -880,7 +880,7 @@ void AggregationElement::processAggVarJoinNewForGrid(DDS& aggDDS, const Grid& gr
     const agg_util::Dimension& dim, const AMDList& memberDatasets)
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("AggregationElement::processAggVarJoinNewForGrid", "");
+    if (BESISDEBUG(TIMING_LOG_KEY)) sw.start("AggregationElement::processAggVarJoinNewForGrid", "");
 
     auto_ptr<GridAggregateOnOuterDimension> pAggGrid(
         new GridAggregateOnOuterDimension(gridTemplate, dim, memberDatasets, _parser->getDDSLoader()));
@@ -905,7 +905,7 @@ void AggregationElement::processAggVarJoinExistingForArray(DDS& aggDDS, const li
 {
 
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("AggregationElement::processAggVarJoinExistingForArray", "");
+    if (BESISDEBUG(TIMING_LOG_KEY)) sw.start("AggregationElement::processAggVarJoinExistingForArray", "");
 
     // Use the basic array getter to read adn get from top level DDS.
     auto_ptr<agg_util::ArrayGetterInterface> arrayGetter(new agg_util::TopLevelArrayGetter());
@@ -935,7 +935,7 @@ void AggregationElement::processAggVarJoinExistingForGrid(DDS& aggDDS, const Gri
 {
 
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("AggregationElement::processAggVarJoinExistingForGrid", "");
+    if (BESISDEBUG(TIMING_LOG_KEY)) sw.start("AggregationElement::processAggVarJoinExistingForGrid", "");
 
     auto_ptr<GridJoinExistingAggregation> pAggGrid(
         new GridJoinExistingAggregation(gridTemplate, memberDatasets, _parser->getDDSLoader(), dim));
@@ -953,7 +953,7 @@ void AggregationElement::processAggVarJoinExistingForGrid(DDS& aggDDS, const Gri
 void AggregationElement::processParentDatasetCompleteForJoinNew()
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("AggregationElement::processParentDatasetCompleteForJoinNew", "");
+    if (BESISDEBUG(TIMING_LOG_KEY)) sw.start("AggregationElement::processParentDatasetCompleteForJoinNew", "");
 
     NetcdfElement* pParentDataset = getParentDataset();
     VALID_PTR(pParentDataset);
@@ -1021,7 +1021,7 @@ void AggregationElement::processParentDatasetCompleteForJoinNew()
 void AggregationElement::processParentDatasetCompleteForJoinExisting()
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("AggregationElement::processParentDatasetCompleteForJoinExisting", "");
+    if (BESISDEBUG(TIMING_LOG_KEY)) sw.start("AggregationElement::processParentDatasetCompleteForJoinExisting", "");
 
     NetcdfElement* pParentDataset = getParentDataset();
     VALID_PTR(pParentDataset);

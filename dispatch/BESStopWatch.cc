@@ -45,6 +45,10 @@ using std::ostream;
 #include "BESDebug.h"
 #include "BESLog.h"
 
+#define TIMING_LOG(x) MR_LOG(TIMING_LOG_KEY, x)
+
+#define prolog string("BESStopWatch::").append(__func__).append("() - ")
+
 namespace bes_timing {
 BESStopWatch *elapsedTimeToReadStart=0;
 BESStopWatch *elapsedTimeToTransmitStart=0;
@@ -82,7 +86,7 @@ BESStopWatch::start(string name, string reqID)
     {
         int myerrno = errno ;
         char *c_err = strerror( myerrno ) ;
-        string err = "getrusage failed in start: " ;
+        string err = prolog + "gettimeofday() failed. Message: " ;
         err += (c_err != 0) ? c_err : "unknown error";
 
         std::stringstream msg;
@@ -91,7 +95,8 @@ BESStopWatch::start(string name, string reqID)
 
         if(!BESLog::TheLog()->is_verbose() && BESDebug::GetStrm())
             *(BESDebug::GetStrm()) << msg.str();
-        VERBOSE(msg.str());
+        else
+            ERROR_LOG(msg.str());
         d_started = false ;
     }
     else
@@ -105,7 +110,8 @@ BESStopWatch::start(string name, string reqID)
         msg << "[STARTED][" << starttime << " ms][" << d_timer_name << "]" << endl;
         if(!BESLog::TheLog()->is_verbose() && BESDebug::GetStrm())
             *(BESDebug::GetStrm()) << msg.str();
-        VERBOSE(msg.str());
+        else
+            TIMING_LOG(msg.str());
     }
 
     // either we started the stop watch, or failed to start it. Either way,
@@ -140,9 +146,11 @@ BESStopWatch::~BESStopWatch()
             std::stringstream msg;
             msg << "[" << BESDebug::GetPidStr() << "][" << d_log_name << "]";
             msg << "[" << d_req_id << "][ERROR][" << d_timer_name << "][" << err << "]" << endl;
+
             if (!BESLog::TheLog()->is_verbose() && BESDebug::GetStrm())
                 *(BESDebug::GetStrm()) << msg.str();
-            VERBOSE(msg.str());
+            else
+                ERROR_LOG(msg.str());
 
             d_started = false;
             d_stopped = false;
@@ -158,7 +166,8 @@ BESStopWatch::~BESStopWatch()
 
                 if (!BESLog::TheLog()->is_verbose() && BESDebug::GetStrm())
                     *(BESDebug::GetStrm()) << msg.str();
-                VERBOSE(msg.str());
+                else
+                    ERROR_LOG(msg.str());
 
                 d_started = false;
                 d_stopped = false;
@@ -177,7 +186,8 @@ BESStopWatch::~BESStopWatch()
 
                 if (!BESLog::TheLog()->is_verbose() && BESDebug::GetStrm())
                     *(BESDebug::GetStrm()) << msg.str();
-                VERBOSE(msg.str() );
+                else
+                    TIMING_LOG(msg.str());
             }
         }
     }

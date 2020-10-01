@@ -227,7 +227,7 @@ void StandAloneClient::executeCommand(const string & cmd, int repeat)
 			BESDEBUG( "standalone", "StandAloneClient::executeCommand sending: " << cmd << endl );
 
 	        BESStopWatch sw;
-	        if (BESISDEBUG(TIMING_LOG)) sw.start("StandAloneClient::executeCommand");
+	        if (BESISDEBUG(TIMING_LOG_KEY)) sw.start("StandAloneClient::executeCommand");
 
 			BESXMLInterface *interface = 0;
 			if (show_stream) {

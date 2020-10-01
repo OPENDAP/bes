@@ -44,23 +44,33 @@
 
 #undef TRACE_LOGGING
 
+#if 1 // NEW WAY is better way.  ndp - 10/1/2020
+#ifdef TRACE_LOGGING
+#define MR_LOG(tag, msg) do { *(BESLog::TheLog()) << "trace-" << tag << BESLog::mark << __FILE__  << BESLog::mark << __LINE__ << BESLog::mark << msg ; BESLog::TheLog()->flush_me() ; } while( 0 )
+#else
+#define MR_LOG(tag, msg) do { *(BESLog::TheLog()) << tag << BESLog::mark << msg ; BESLog::TheLog()->flush_me() ; } while( 0 )
+#endif
+
+#define REQUEST_LOG(x) MR_LOG("request", x)
+#define INFO_LOG(x) MR_LOG("info", x)
+#define ERROR_LOG(x) MR_LOG("error", x)
+#define VERBOSE(x) MR_LOG("verbose", x)
+
+#else // OLD WAY
 #ifdef TRACE_LOGGING
 #define LOG(x) do { *(BESLog::TheLog()) << __FILE__ << ":" << __LINE__ << " - " << x ; BESLog::TheLog()->flush_me() ; } while( 0 )
 #define VERBOSE(x) do { if (BESLog::TheLog()->is_verbose()) *(BESLog::TheLog()) << __FILE__ << ":" << __LINE__ << " - " << x ; BESLog::TheLog()->flush_me() ; } while( 0 )
 #else
-#define REQUEST_LOG(x) do { *(BESLog::TheLog()) << "request" << x ; BESLog::TheLog()->flush_me() ; } while( 0 )
-#define INFO_LOG(x) do { *(BESLog::TheLog()) << "info" << BESLog::mark << x ; BESLog::TheLog()->flush_me() ; } while( 0 )
-#define ERROR_LOG(x) do { *(BESLog::TheLog()) << "error" << BESLog::mark << x ; BESLog::TheLog()->flush_me() ; } while( 0 )
-#define VERBOSE(x) do { if (BESLog::TheLog()->is_verbose()) *(BESLog::TheLog()) << "verbose" << x ; BESLog::TheLog()->flush_me() ; } while( 0 )
-#define TIMING(x) do { if (BESLog::TheLog()->is_verbose()) *(BESLog::TheLog()) << "timing" << x ; BESLog::TheLog()->flush_me() ; } while( 0 )
+#define LOG(x) do { *(BESLog::TheLog()) << x ; BESLog::TheLog()->flush_me() ; } while( 0 )
+#define VERBOSE(x) do { if (BESLog::TheLog()->is_verbose()) *(BESLog::TheLog()) << x ; BESLog::TheLog()->flush_me() ; } while( 0 )
 #endif
 
 // Pretty silly - for now ERROR is the same as LOG, but I suspect that we might
 // want to treat errors differently in the near future given the special logging
-// needs of the 'Hyrax in the Cloud' project. jhrg 11/
-// 16/17
-//#define ERROR(x) REQUEST_LOG(x)
+// needs of the 'Hyrax in the Cloud' project. jhrg 11/16/17
+#define ERROR(x) LOG(x)
 
+#endif
 #include "BESObj.h"
 
 /** @brief Provides a mechanism for applications to log information to an

@@ -346,7 +346,7 @@ void BESXMLInterface::transmit_data()
         VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] transmitting" << endl);
 
         BESStopWatch sw;
-        if (BESISDEBUG(TIMING_LOG)) sw.start(d_dhi_ptr->data[LOG_INFO] + " transmitting", d_dhi_ptr->data[REQUEST_ID]);
+        if (BESISDEBUG(TIMING_LOG_KEY)) sw.start(d_dhi_ptr->data[LOG_INFO] + " transmitting", d_dhi_ptr->data[REQUEST_ID]);
 
         string return_as = d_dhi_ptr->data[RETURN_CMD];
         if (!return_as.empty()) {

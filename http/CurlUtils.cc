@@ -1393,7 +1393,7 @@ void retrieve_effective_url(const string &target_url, string &last_accessed_url)
 
     try {
         BESStopWatch sw;
-        if (BESISDEBUG(TIMING_LOG) || BESLog::TheLog()->is_verbose())
+        if (BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose())
             sw.start(prolog + " Following Redirects Starting With: " + target_url);
 
         ceh = init_effective_url_retriever_handle(target_url, request_headers, resp_hdrs);

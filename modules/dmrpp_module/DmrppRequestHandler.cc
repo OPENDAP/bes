@@ -222,7 +222,7 @@ bool DmrppRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
 bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start(prolog + "timer" , dhi.data[REQUEST_ID]);
+    if (BESISDEBUG(TIMING_LOG_KEY)) sw.start(prolog + "timer" , dhi.data[REQUEST_ID]);
 
     BESDEBUG(module, "Entering dap_build_dap4data..." << endl);
 
@@ -275,7 +275,7 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
 bool DmrppRequestHandler::dap_build_dap2data(BESDataHandlerInterface & dhi)
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start(prolog + "timer" , dhi.data[REQUEST_ID]);
+    if (BESISDEBUG(TIMING_LOG_KEY)) sw.start(prolog + "timer" , dhi.data[REQUEST_ID]);
 
     BESDEBUG(module, __func__ << "() - BEGIN" << endl);
 
@@ -368,7 +368,7 @@ bool DmrppRequestHandler::dap_build_dap2data(BESDataHandlerInterface & dhi)
 bool DmrppRequestHandler::dap_build_dds(BESDataHandlerInterface & dhi)
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("DmrppRequestHandler::dap_build_dds()", dhi.data[REQUEST_ID]);
+    if (BESISDEBUG(TIMING_LOG_KEY)) sw.start("DmrppRequestHandler::dap_build_dds()", dhi.data[REQUEST_ID]);
 
     BESDEBUG(module, __func__ << "() - BEGIN" << endl);
 
@@ -447,7 +447,7 @@ bool DmrppRequestHandler::dap_build_dds(BESDataHandlerInterface & dhi)
 bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi)
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("DmrppRequestHandler::dap_build_das()", dhi.data[REQUEST_ID]);
+    if (BESISDEBUG(TIMING_LOG_KEY)) sw.start("DmrppRequestHandler::dap_build_das()", dhi.data[REQUEST_ID]);
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESDASResponse *bdas = dynamic_cast<BESDASResponse *>(response);

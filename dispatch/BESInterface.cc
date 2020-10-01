@@ -110,7 +110,7 @@ volatile int bes_timeout = 0;
 static void catch_sig_alarm(int sig)
 {
     if (sig == SIGALRM) {
-        INFO_LOG("BES timeout after " << bes_timeout << " seconds." << endl);
+        ERROR_LOG("BES timeout after " << bes_timeout << " seconds." << endl);
 
         // Causes setjmp() below to return 1; see the call to
         // execute_data_request_plan() in execute_request() below.
@@ -453,7 +453,7 @@ int BESInterface::execute_request(const string &from)
     }
 
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) {
+    if (BESISDEBUG(TIMING_LOG_KEY)) {
         // It would be great to have more info to put here, but that is buried in
         // BESXMLInterface::build_data_request_plan() where the XML document is
         // parsed. jhrg 11/9/17

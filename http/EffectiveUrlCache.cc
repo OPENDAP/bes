@@ -216,7 +216,7 @@ http::url *EffectiveUrlCache::get_effective_url(const string &source_url, BESReg
 
 #if 0
     //BESStopWatch sw;
-    //if (BESISDEBUG(TIMING_LOG) || BESLog::TheLog()->is_verbose())
+    //if (BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose())
     //    sw.start(prolog + "full method");
 #endif
 

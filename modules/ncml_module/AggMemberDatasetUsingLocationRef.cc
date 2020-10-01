@@ -84,7 +84,7 @@ AggMemberDatasetUsingLocationRef::getDDS()
 void AggMemberDatasetUsingLocationRef::loadDDS()
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("AggMemberDatasetUsingLocationRef::loadDDS", "");
+    if (BESISDEBUG(TIMING_LOG_KEY)) sw.start("AggMemberDatasetUsingLocationRef::loadDDS", "");
 
     // We cannot load an empty location, so avoid the exception later.
     if (getLocation().empty()) {
