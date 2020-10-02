@@ -33,6 +33,7 @@
 #include "config.h"
 
 #include <iostream>
+#include <sstream>
 #include <cstdlib>
 #include <cstring>
 #include <cerrno>
@@ -164,19 +165,21 @@ BESMemoryGlobalArea::~BESMemoryGlobalArea()
 inline void BESMemoryGlobalArea::log_limits(const string &msg)
 {
     if (getrlimit( RLIMIT_DATA, &limit) < 0) {
-        ERROR_LOG(msg << "Could not get limits because " << strerror(errno) << endl);
+        std::stringstream moo;
+        moo << prolog << msg << "Could not get limits because " << strerror(errno) << endl;
+        ERROR_LOG(moo.str());
         _counter--;
-        throw BESInternalFatalError(strerror( errno), __FILE__, __LINE__);
+        throw BESInternalFatalError(moo.str(), __FILE__, __LINE__);
     }
     if (limit.rlim_cur == RLIM_INFINITY)
-        INFO_LOG(msg << "BES heap size soft limit is infinite" << endl);
+        INFO_LOG(prolog << msg << "BES heap size soft limit is infinite" << endl);
     else
-        INFO_LOG(msg << "BES heap size soft limit is " << (long int) limit.rlim_cur << " bytes ("
+        INFO_LOG(prolog << msg << "BES heap size soft limit is " << (long int) limit.rlim_cur << " bytes ("
                      << (long int) (limit.rlim_cur) / (MEGABYTE) << " MB - may be rounded up)" << endl);
     if (limit.rlim_max == RLIM_INFINITY)
-        INFO_LOG(msg << "BES heap size hard limit is infinite" << endl);
+        INFO_LOG(prolog << msg << "BES heap size hard limit is infinite" << endl);
     else
-        INFO_LOG("BES heap size hard limit is " << (long int) limit.rlim_max << " bytes ("
+        INFO_LOG(prolog << "BES heap size hard limit is " << (long int) limit.rlim_max << " bytes ("
                                                 << (long int) (limit.rlim_max) / (MEGABYTE) << " MB - may be rounded up)" << endl);
 }
 
