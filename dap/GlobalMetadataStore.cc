@@ -85,6 +85,8 @@
 /// in the DMR (DAP4) but not the DDS (DAP2). jhrg 3/20/18
 #undef SYMETRIC_ADD_RESPONSES
 
+#define prolog std::string("GlobalMetadataStore::").append(__func__).append("() - ")
+
 using namespace std;
 using namespace libdap;
 using namespace bes;
@@ -162,7 +164,7 @@ void GlobalMetadataStore::insert_xml_base(int fd, ostream &os, const string &xml
     int status = posix_fadvise(fd, 0, 0, POSIX_FADV_SEQUENTIAL);
     if (status != 0){
         char *status_str = strerror(status);
-        ERROR("Error calling posix_advise() in the GlobalMetadataStore: " << status_str << endl);
+        ERROR(prolog << "Error calling posix_advise() in the GlobalMetadataStore: " << status_str << endl);
     }
 #endif
 
