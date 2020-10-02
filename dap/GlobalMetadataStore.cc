@@ -28,6 +28,7 @@
 #include <unistd.h>
 
 #include <cerrno>
+#include <errno.h>
 #include <cstring>
 
 #include <iostream>
