@@ -160,8 +160,10 @@ void GlobalMetadataStore::insert_xml_base(int fd, ostream &os, const string &xml
 #if _POSIX_C_SOURCE >= 200112L
     /* Advise the kernel of our access pattern.  */
     int status = posix_fadvise(fd, 0, 0, POSIX_FADV_SEQUENTIAL);
-    if (status != 0)
-        ERROR("Error calling posix_advise() in the GlobalMetadataStore: " << strerror(status) << endl);
+    if (status != 0){
+        char *status_str = strerror(status);
+        ERROR("Error calling posix_advise() in the GlobalMetadataStore: " << status_str << endl);
+    }
 #endif
 
     char buf[BUFFER_SIZE + 1];
