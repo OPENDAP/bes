@@ -54,7 +54,7 @@
 #define REQUEST_LOG(x) MR_LOG("request", x)
 #define INFO_LOG(x) MR_LOG("info", x)
 #define ERROR_LOG(x) MR_LOG("error", x)
-#define VERBOSE(x) MR_LOG("verbose", x)
+#define VERBOSE(x) do { if (BESLog::TheLog()->is_verbose()) MR_LOG("verbose", x); } while( 0 )
 
 #else // OLD WAY
 #ifdef TRACE_LOGGING

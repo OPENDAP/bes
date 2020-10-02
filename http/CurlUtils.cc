@@ -1386,15 +1386,23 @@ void retrieve_effective_url(const string &target_url, string &last_accessed_url)
     vector<string> resp_hdrs;
     CURL *ceh = NULL;
     CURLcode curl_code;
-
     curl_slist *request_headers = NULL;
+
+    BESDEBUG(MODULE, prolog << "BEGIN" <<  endl);
+
     // Add the authorization headers
     request_headers = add_auth_headers(request_headers);
 
     try {
         BESStopWatch sw;
-        if (BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose())
+        BESDEBUG(MODULE, prolog << "BESDebug::IsSet("<< MODULE << "): " << (BESDebug::IsSet(MODULE)?"true":"false") << endl);
+        BESDEBUG(MODULE, prolog << "BESDebug::IsSet("<< TIMING_LOG_KEY << "): " << (BESDebug::IsSet(TIMING_LOG_KEY)?"true":"false") << endl);
+        BESDEBUG(MODULE, prolog << "BESLog::TheLog()->is_verbose(): " << (BESLog::TheLog()->is_verbose()?"true":"false") << endl);
+
+        if (BESDebug::IsSet(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()){
+            std::cerr << "STARTED TIMER *********************************************************************" << endl;
             sw.start(prolog + " Following Redirects Starting With: " + target_url);
+        }
 
         ceh = init_effective_url_retriever_handle(target_url, request_headers, resp_hdrs);
 
