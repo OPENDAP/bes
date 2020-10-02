@@ -164,7 +164,7 @@ BESMemoryGlobalArea::~BESMemoryGlobalArea()
 inline void BESMemoryGlobalArea::log_limits(const string &msg)
 {
     if (getrlimit( RLIMIT_DATA, &limit) < 0) {
-        INFO_LOG(msg << "Could not get limits because " << strerror(errno) << endl);
+        ERROR_LOG(msg << "Could not get limits because " << strerror(errno) << endl);
         _counter--;
         throw BESInternalFatalError(strerror( errno), __FILE__, __LINE__);
     }
