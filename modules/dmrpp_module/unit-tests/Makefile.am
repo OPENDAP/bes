@@ -19,7 +19,6 @@ LIBADD = $(BES_DISPATCH_LIB) $(BES_DAP_LIB_STATIC) $(BES_HTTP_LIB) $(BES_EXTRA_L
 $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) \
 $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) -lz
 
-
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS) 
 LIBADD += $(CPPUNIT_LIBS)
@@ -47,7 +46,8 @@ noinst_HEADERS = test_config.h
 
 noinst_DATA = bes.conf bes_ngap_s3_creds.conf $(CREDS_CONF) input-files/weak.conf
 
-EXTRA_DIST = bes.conf.in bes_ngap_s3_creds.conf.in test_config.h.in baselines input-files awsv4
+EXTRA_DIST = bes.conf.in bes_ngap_s3_creds.conf.in test_config.h.in curl_handle_pool_keys.conf \
+baselines input-files awsv4
 
 CLEANFILES = *.gcda *.gcno *.strm *.file test_config.h tmp.txt
 
@@ -88,8 +88,8 @@ $(CREDS_CONF):
 #
 
 if CPPUNIT
-UNIT_TESTS = NgapCredentialsTest ChunkTest DmrppParserTest DmrppCommonTest DmrppMetadataStoreTest \
-    CredentialsManagerTest awsv4_test
+UNIT_TESTS = NgapCredentialsTest ChunkTest DmrppParserTest DmrppCommonTest \
+DmrppMetadataStoreTest CredentialsManagerTest awsv4_test CurlHandlePoolTest
 else
 UNIT_TESTS =
 
@@ -105,18 +105,8 @@ endif
 clean-local:
 	-rm -rf mds mds_ledger.txt
 
-# OBJS = ../DMRpp.o ../DmrppCommon.o ../Chunk.o ../CurlHandlePool.o	\
-# ../DmrppByte.o ../DmrppArray.o ../DmrppFloat32.o ../DmrppFloat64.o	\
-# ../DmrppInt16.o ../DmrppInt32.o ../DmrppInt64.o ../DmrppInt8.o		\
-# ../DmrppUInt16.o ../DmrppUInt32.o ../DmrppUInt64.o ../DmrppStr.o	\
-# ../DmrppStructure.o ../DmrppUrl.o ../DmrppD4Enum.o ../DmrppD4Group.o	\
-# ../DmrppD4Opaque.o ../DmrppD4Sequence.o ../DmrppTypeFactory.o		\
-# ../DmrppParserSax2.o ../DmrppMetadataStore.o ../DmrppRequestHandler.o \
-# ../CredentialsManager.o ../AccessCredentials.o ../NgapS3Credentials.o \
-# ../awsv4.o
-
-# LIBADD += ../.libs/libdmrpp_module.a
-# $(OBJS)  <-- removed and used ^^
+CurlHandlePoolTest_SOURCES = CurlHandlePoolTest.cc
+CurlHandlePoolTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
 ChunkTest_SOURCES = ChunkTest.cc
 ChunkTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)

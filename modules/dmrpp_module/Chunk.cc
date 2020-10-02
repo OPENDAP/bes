@@ -581,9 +581,14 @@ void Chunk::read_chunk() {
     if (!handle)
         throw BESInternalError(prolog + "No more libcurl handles.", __FILE__, __LINE__);
 
-    handle->read_data();  // throws if error
-    // FIXME Make this catch and release the handle if it throws above
-    DmrppRequestHandler::curl_handle_pool->release_handle(handle);
+    try {
+        handle->read_data();  // throws if error
+        DmrppRequestHandler::curl_handle_pool->release_handle(handle);
+    }
+    catch(...) {
+        DmrppRequestHandler::curl_handle_pool->release_handle(handle);
+        throw;
+    }
 
     // If the expected byte count was not read, it's an error.
     if (get_size() != get_bytes_read()) {

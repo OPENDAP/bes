@@ -248,9 +248,8 @@ dmrpp_easy_handle::~dmrpp_easy_handle() {
  * determined by curl::super_easy_perform().
  *
  * If either the super_easy_perform() (our concoction) or easy_perform()
- * throws, assume the transfer failed and clean up. This means that all
- * handles that are part of the transaction that failed need to be returned
- * to the pool.
+ * throws, assume the transfer failed. The caller of this method must handle
+ * all cleanup.
  */
 void dmrpp_easy_handle::read_data() {
     // Treat HTTP/S requests specially; retry some kinds of failures.
@@ -271,6 +270,15 @@ void dmrpp_easy_handle::read_data() {
 CurlHandlePool::CurlHandlePool() {
     d_max_easy_handles = DmrppRequestHandler::d_max_parallel_transfers;
 
+    for (unsigned int i = 0; i < d_max_easy_handles; ++i) {
+        d_easy_handles.push_back(new dmrpp_easy_handle());
+    }
+
+    if (pthread_mutex_init(&d_get_easy_handle_mutex, 0) != 0)
+        throw BESInternalError("Could not initialize mutex in CurlHandlePool", __FILE__, __LINE__);
+}
+
+CurlHandlePool::CurlHandlePool(unsigned int max_handles) : d_max_easy_handles(max_handles) {
     for (unsigned int i = 0; i < d_max_easy_handles; ++i) {
         d_easy_handles.push_back(new dmrpp_easy_handle());
     }
@@ -465,6 +473,8 @@ void CurlHandlePool::release_handle(dmrpp_easy_handle *handle) {
     // Timing tests indicate this lock does not cost anything that can be measured.
     // jhrg 8/21/18
     Lock lock(d_get_easy_handle_mutex);
+
+    // TODO Add a call to curl reset() here. jhrg 9/23/20
 
 #if KEEP_ALIVE
     handle->d_url = "";

@@ -22,27 +22,17 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-//#include <memory>
-//#include <cstdlib>
 # include <unistd.h>
 
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <GetOpt.h>
-//#include <util.h>
-//#include <debug.h>
-
-//#include "BESContextManager.h"
-//#include "BESError.h"
 #include "BESDebug.h"
-//#include "TheBESKeys.h"
 
 #include "awsv4.h"
 #include "test_config.h"
 
-//using namespace libdap;
 using namespace std;
 
 static bool debug = false;
