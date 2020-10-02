@@ -65,7 +65,10 @@ class BESStopWatch : public BESObj
 	struct timeval d_stop_usage;
     struct timeval d_result ;
 
-    bool timeval_subtract() ;
+    // bool timeval_subtract() ;
+    unsigned long int get_elapsed_us();
+    unsigned long int get_start_us();
+    unsigned long int get_stop_us();
 
  public:
 
