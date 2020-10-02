@@ -180,7 +180,7 @@ void parser_driver(DAS & das)
 
     parser_arg arg(at);
     if (hdfeosparse(&arg) != 0)
-        (*BESLog::TheLog()) << "HDF-EOS parse error !" <<endl;
+        ERROR_LOG("HDF-EOS parse error !" << endl);
 
     das.print(stdout);
 }

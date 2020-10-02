@@ -55,7 +55,7 @@ dhdferr::dhdferr(const string & msg, const string & file, int line)
     ostringstream strm;
     strm << get_error_message() << endl
         << "Location: \"" << file << "\", line " << line;
-    (*BESLog::TheLog()) << strm.str() << endl ;
+    ERROR_LOG(strm.str() << endl );
 }
 
 dhdferr_hcerr::dhdferr_hcerr(const string & msg, const string & file, int line)
@@ -66,6 +66,6 @@ dhdferr_hcerr::dhdferr_hcerr(const string & msg, const string & file, int line)
         << "Location: \"" << file << "\", line " << line;
     for (int i = 0; i < 5; ++i)
         strm << i << ") " << HEstring((hdf_err_code_t) HEvalue(i)) << endl;
-    (*BESLog::TheLog()) << strm.str() << endl ;
+    ERROR_LOG(strm.str() << endl);
 }
 
