@@ -30,6 +30,8 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
 #include <unistd.h>    // for getpid fork sleep
 #include <sys/types.h>
 #include <sys/socket.h>

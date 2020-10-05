@@ -30,6 +30,8 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
 #include <unistd.h>  // for getopt fork setsid execvp access geteuid
 
 #include <grp.h>    // for getgrnam
@@ -62,7 +64,6 @@ using std::map;
 using std::ostringstream;
 using std::vector;
 
-#include "config.h"
 #include "ServerExitConditions.h"
 #include "SocketListener.h"
 #include "TcpSocket.h"

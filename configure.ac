@@ -88,6 +88,20 @@ AM_COND_IF([WITH_CMR],
     [AC_MSG_NOTICE([Building support for the CMR Module])],
     [AC_MSG_NOTICE([Disabled support for the CMR Module])]
 )
+
+dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+dnl Enable/Disable new categorized logging output
+dnl
+AC_ARG_WITH([newlog],
+    [AS_HELP_STRING([--without-newlog],
+    [Disable support for the new categorized logging output. (Built by default)])]
+)
+AM_CONDITIONAL([USE_LOG_TYPES], [test "x$with_newlog" != "xno"])
+AM_COND_IF([USE_LOG_TYPES],
+    [AC_MSG_NOTICE([Building support for categorized logging output])],
+    [AC_MSG_NOTICE([Disabled support for categorized logging output])]
+)
+
 dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 dnl Build NGAP support by default or if the user provides --with-ngap. Do not build the
 dnl module if the user supplies --without-ngap or --with-ngap=no. jhrg 3/31/20

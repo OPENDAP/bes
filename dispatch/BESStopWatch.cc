@@ -30,6 +30,7 @@
 //      ndp         Nathan Potter <ndp@opendap.org>
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
+#include "config.h"
 
 #include <cerrno>
 #include <string>
@@ -81,7 +82,12 @@ BESStopWatch::start(string name, string reqID)
     d_req_id = reqID;
     // get timing for current usage
 
+    if(!get_time_of_day(d_start_usage)){
+        d_started = false;
+        return d_started;
+    }
 
+#if 0
     if( gettimeofday(&d_start_usage, NULL) != 0 )
     {
         int myerrno = errno ;
@@ -102,6 +108,8 @@ BESStopWatch::start(string name, string reqID)
     }
     else
     {
+    }
+#endif
         d_started = true ;
         // Convert to milliseconds. Multiply seconds by 1000, divide micro seconds by 1000
         // double starttime =  d_start_usage.tv_sec*1000.0 + d_start_usage.tv_usec/1000.0;
@@ -125,7 +133,7 @@ BESStopWatch::start(string name, string reqID)
             *(BESDebug::GetStrm()) << msg.str();
         }
 
-    }
+    // }
     // either we started the stop watch, or failed to start it. Either way,
     // no timings are available, so set stopped to false.
     d_stopped = false ;
@@ -140,13 +148,6 @@ bool BESStopWatch::get_time_of_day(struct timeval &time_val)
         int myerrno = errno;
         char *c_err = strerror(myerrno);
         string errno_msg = (c_err != 0) ? c_err : "unknown error";
-
-#if 0
-        std::stringstream msg;
-            msg << "[" << BESDebug::GetPidStr() << "][" << d_log_name << "]";
-            msg << "[" << d_req_id << "][ERROR][" << d_timer_name << "][" << errno_msg << "]" << endl;
-#endif
-
         if (BESDebug::GetStrm()){
             std::stringstream msg;
             msg << "[" << BESDebug::GetPidStr() << "][" << d_log_name << "][" << d_req_id << "][ERROR]";
@@ -157,10 +158,6 @@ bool BESStopWatch::get_time_of_day(struct timeval &time_val)
         std::stringstream msg;
         msg << prolog << "gettimeofday() failed. errno_msg: " << errno_msg << endl;
         ERROR_LOG(msg.str());
-
-        //d_started = false;
-        //d_stopped = false;
-
         retval = false;
     }
     return retval;
@@ -180,6 +177,12 @@ BESStopWatch::~BESStopWatch()
     if (d_started) {
         // get timing for current usage
 
+        if(!get_time_of_day(d_stop_usage)){
+            d_started = false;
+            d_stopped = false;
+            return;
+        }
+#if 0
         if( gettimeofday(&d_stop_usage, NULL) != 0 )
         {
             int myerrno = errno;
@@ -207,6 +210,7 @@ BESStopWatch::~BESStopWatch()
             d_stopped = false;
         }
         else {
+#endif
             d_stopped = true;
             if (BESDebug::GetStrm()) {
                 std::stringstream msg;
@@ -227,7 +231,7 @@ BESStopWatch::~BESStopWatch()
             msg << d_timer_name << endl;
             TIMING_LOG(msg.str());
 
-        }
+        //}
     }
 }
 /**
