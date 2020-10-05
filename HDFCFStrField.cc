@@ -5,6 +5,9 @@
 // Copyright (c) 2010-2012 The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 
+#include "config.h"
+#include "config_hdf.h"
+
 #include <iostream>
 #include <sstream>
 #include <cassert>

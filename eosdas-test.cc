@@ -28,6 +28,7 @@
 
 // Test the HDF-EOS attribute parser. 3/30/2000 jhrg
 
+#include "config.h"
 #include "config_hdf.h"
 
 #include <cstdlib>

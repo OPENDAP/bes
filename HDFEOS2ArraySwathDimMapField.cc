@@ -14,6 +14,8 @@
 // KY 2014-02-19
 
 #ifdef USE_HDFEOS2_LIB
+#include "config.h"
+#include "config_hdf.h"
 
 #include <iostream>
 #include <sstream>

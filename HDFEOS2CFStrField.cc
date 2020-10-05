@@ -6,6 +6,9 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef USE_HDFEOS2_LIB
+#include "config.h"
+#include "config_hdf.h"
+
 #include <iostream>
 #include <sstream>
 #include <cassert>
