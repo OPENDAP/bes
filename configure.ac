@@ -105,14 +105,6 @@ AM_COND_IF([WITH_NEWLOG],
     AC_MSG_NOTICE([Support for categorized logging output is DISABLED.])]
 )
 
-
-
-
-
-
-
-
-
 dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 dnl Build NGAP support by default or if the user provides --with-ngap. Do not build the
 dnl module if the user supplies --without-ngap or --with-ngap=no. jhrg 3/31/20
