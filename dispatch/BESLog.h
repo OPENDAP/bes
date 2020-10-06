@@ -33,6 +33,8 @@
 #ifndef BESLog_h_
 #define BESLog_h_ 1
 
+#include "config.h"
+
 #include <fstream>
 #include <string>
 
@@ -50,7 +52,7 @@
 #ifdef TRACE_LOGGING
 #define MR_LOG(tag, msg) do { *(BESLog::TheLog()) << "trace-" << tag << BESLog::mark << __FILE__  << BESLog::mark << __LINE__ << BESLog::mark << msg ; BESLog::TheLog()->flush_me() ; } while( 0 )
 #else
-#if USE_LOG_TYPES
+#if USE_LOG_CATEGORIES
 #define MR_LOG(tag, msg) do { *(BESLog::TheLog()) << tag << BESLog::mark << msg ; BESLog::TheLog()->flush_me() ; } while( 0 )
 #else
 #define MR_LOG(tag, msg) do { *(BESLog::TheLog()) << msg ; BESLog::TheLog()->flush_me() ; } while( 0 )
