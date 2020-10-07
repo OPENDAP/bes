@@ -266,6 +266,10 @@ namespace HDFEOS2
                 name ="";
                 rank =-1;
                 type =-1;
+                ll_dim0_offset = 0;
+                ll_dim0_inc = 0;
+                ll_dim1_offset = 0;
+                ll_dim1_inc = 0;
                 coordinates="";
                 newname = "";
                 units="";
@@ -395,6 +399,27 @@ namespace HDFEOS2
                 return this->filler;
             }
 
+            /// Obtain swath the dimension map offset of the first dimenion.
+            /// Only apply to Latitude/Longitude(fieldtype=1,or 2) when
+            /// the file contains multiple swath dimension maps(multi_dimmap =true).
+            const int getLLDim0Offset () const
+            {
+                return this->ll_dim0_offset;
+            }
+            const int getLLDim0Inc () const
+            {
+                return this->ll_dim0_inc;
+            }
+            const int getLLDim1Offset () const
+            {
+                return this->ll_dim1_offset;
+            }
+            const int getLLDim1Inc () const
+            {
+                return this->ll_dim1_inc;
+            }
+
+
             /// Obtain the ydimmajor info.
             bool getYDimMajor () const
             {
@@ -514,6 +539,11 @@ namespace HDFEOS2
             // We add the fillvalue to ensure the netCDF client can successfully display the data.
             // haveaddedfv and addedfv are to check if having added fillvalues.
             bool haveaddedfv;
+            int ll_dim0_offset;
+            int ll_dim0_inc;
+            int ll_dim1_offset;
+            int ll_dim1_inc;
+             
             float addedfv;
 
             // Check if this swath uses the dimension map. 
@@ -673,6 +703,7 @@ namespace HDFEOS2
             /// MODIS_DIV_SCALE: raw_data = (data-offset)/scale
             void SetScaleType(const std::string EOS2ObjName) throw(Exception);
 
+            int obtain_dimsize_with_dimname(const std::string& dimname);
         protected:
             /// Grid and Swath ID
             int32 datasetid;
@@ -987,6 +1018,7 @@ namespace HDFEOS2
 
                 class DimensionMap
                 {
+              
                     public:
                         const std::string & getGeoDimension () const
                         {
@@ -1085,7 +1117,7 @@ namespace HDFEOS2
 
             private:
                  explicit SwathDataset (const std::string & swath_name)
-                    : Dataset (swath_name),num_map(0) {
+                    : Dataset (swath_name),num_map(0),GeoDim_in_vars(false) {
                  }
 
 
@@ -1093,10 +1125,15 @@ namespace HDFEOS2
                 /// The number of maps will return for future subsetting
                 int ReadDimensionMaps (std::vector < DimensionMap * >&dimmaps) throw (Exception);
 
+                bool obtain_dmap_offset_inc(const std::string& o_dimname,const std::string& n_dimmname,int&,int&) ;
+
                 /// Not used.
                 void ReadIndexMaps (std::vector < IndexMap * >&indexmaps) throw (Exception);
 
-
+                /// TODO: may move the check of GeoDim_in_vars(check_dm_geo_dims_in_vars) for
+                ///  every swath here. 
+                /// void check_dm_geo_dims_in_vars();
+                
                 /// dimension map list.
                 std::vector < DimensionMap * >dimmaps;
 
@@ -1112,6 +1149,8 @@ namespace HDFEOS2
                 /// Return the number of dimension map to correctly handle the subsetting case 
                 ///  without dimension map.
                 int num_map;
+
+                bool GeoDim_in_vars;
 
             friend class File;
         };
@@ -1177,6 +1216,10 @@ namespace HDFEOS2
                     return this->swaths;
                 }
 
+                const bool getMultiDimMaps() const 
+                {
+                    return this->multi_dimmap;
+                }
                 const std::vector < PointDataset * >&getPoints () const
                 {
                     return this->points;
@@ -1197,7 +1240,7 @@ namespace HDFEOS2
 
             protected:
                 explicit File (const char *eos2_file_path)
-                    : path (eos2_file_path), onelatlon (false), iscoard (false), gridfd (-1), swathfd (-1)
+                    : path (eos2_file_path), onelatlon (false), iscoard (false), handle_swath_dimmap(false),backward_handle_swath_dimmap(false),multi_dimmap(false),gridfd (-1), swathfd (-1)
                 {
                 }
 
@@ -1225,6 +1268,22 @@ namespace HDFEOS2
 
                 /// If this file should follow COARDS, this is necessary to cover one pair lat/lon grids case.
                 bool iscoard;
+
+                /// The bool to indicate that the dimension maps are not supported.
+                /// We currently only support a pair of dimension maps.
+                /// That is: dimension maps should be applied to 2-D latitude and longitude and the 
+                /// dimension maps should appy to both latitude and longitude. This is what we know
+                ///  the current NASA MODIS uses. 
+                /// When this bool is set to true, the swath will be mapped to DAP2 as there are no dimension maps.
+                bool handle_swath_dimmap;
+                
+                /// Handle swath dimmap backward compatible with the old way
+                /// For MODIS level 1B and swaths that have 2 dimension maps and variables that only use
+                /// dimension data dimensions.
+                bool backward_handle_swath_dimmap;
+
+                /// The flag to handle multiple dimension maps, need to export for Data reading.
+                bool multi_dimmap;
 
             protected:
                 /* 
@@ -1318,25 +1377,55 @@ namespace HDFEOS2
                 // Special handling SOM(Space Oblique Mercator) projection files
                 void handle_grid_SOM_projection() throw(Exception);
 
-                // Obtain the number of dimension maps in this file. The input parameter is the number of swath.
-                int  obtain_dimmap_num(int numswath) throw(Exception);
+                bool find_dim_in_dims(const std::vector<Dimension*>&dims,const std::string &dim_name);
+
+                // Check if we need to handle dim. map and set handle_swath_dimmap if necessary.
+                // The input parameter is the number of swath.
+                void check_swath_dimmap(int numswath) throw(Exception);
+
+                void check_swath_dimmap_bk_compat(int numswath);
 
                 // Create the dimension name to coordinate variable name map for lat/lon. 
                 // The input parameter is the number of dimension maps in this file.
-                void create_swath_latlon_dim_cvar_map(int numdm) throw(Exception);
+                void create_swath_latlon_dim_cvar_map() throw(Exception);
 
                 // Create the dimension name to coordinate variable name map for non lat/lon coordinate variables.
                 void create_swath_nonll_dim_cvar_map() throw(Exception);
 
                 // Handle swath dimension name to coordinate variable name maps. 
                 // The input parameter is the number of dimension maps in this file.
-                void handle_swath_dim_cvar_maps(int numdm) throw(Exception);
+                void handle_swath_dim_cvar_maps() throw(Exception);
 
                 // Handle CF attributes for swaths. 
                 // The CF attributes include "coordinates", "units" for coordinate variables and "_FillValue". 
                 void handle_swath_cf_attrs() throw(Exception);
 
-bool check_ll_in_coords(const std::string& vname) throw(Exception);
+                bool check_ll_in_coords(const std::string& vname) throw(Exception);
+
+                /// Check if GeoDim is used by variables when dimension maps are present.
+                /// This is necessary on whether to keep the original latitude/longitude.
+                /// Although we can keep the latitude/longitude, the original support back in 2008
+                //  is not to keep original latitude/longitude. Now some MODIS files 
+                //  have the variables that still use the low resolution. See HFRHANDLER-332.
+                void check_dm_geo_dims_in_vars();
+
+                /// Create dim to cvar maps when swath dimension map needs to be handled.
+                void create_swath_latlon_dim_cvar_map_for_dimmap(SwathDataset*,Field*,Field*) throw(Exception);
+
+                void create_geo_varnames_list(std::vector<std::string> &,const std::string &, 
+                                              const std::string &,int,bool);
+
+                void create_geo_dim_var_maps(SwathDataset*, Field*, const std::vector<std::string>&,
+                                         const std::vector<std::string>&,
+                                         std::vector<Dimension*>&, std::vector<Dimension*>&);
+                void create_geo_vars(SwathDataset*,Field*,Field*,const std::vector<std::string>&,const std::vector<std::string>&,
+                                     std::vector<Dimension*>&, std::vector<Dimension*>&) throw(Exception);
+
+                void update_swath_dims_for_dimmap(SwathDataset*,
+                                     const std::vector<Dimension*>&, const std::vector<Dimension*>&);
+
+
+
              private:
 
                 // HDF-EOS2 Grid File ID. Notice this ID is not an individual grid ID but the grid file ID returned by 

@@ -138,7 +138,7 @@
 #include "HDFEOS2ArraySwathGeoField.h"
 #include "HDFEOS2ArrayMissField.h"
 #include "HDFEOS2ArraySwathDimMapField.h"
-//#include "HDFEOS2ArraySwathGeoDimMapField.h"
+#include "HDFEOS2ArraySwathGeoMultiDimMapField.h"
 #include "HDFEOS2ArraySwathGeoDimMapExtraField.h"
 #include "HDFEOS2CFStr.h"
 #include "HDFEOS2CFStrField.h"
@@ -251,7 +251,7 @@ int read_das_hdfeos2(DAS & das, const string & filename,int32 sdfd,int32 fileid,
 
 
 // read_dds for one grid or swath
-void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Dataset *dataset, int grid_or_swath,bool ownll, SOType sotype,
+void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Dataset *dataset, int grid_or_swath,bool ownll, SOType sotype,bool multi_dmap,
                                  int32 sdfd, int32 /*fileid //unused SBL 2/7/20 */, int32 gridfd,int32 swathfd)
 {
 
@@ -429,8 +429,8 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
 
                     string tempfieldname = (*it_f)->getName();
 
-                    // This swath uses the dimension map
-                    if((*it_f)->UseDimMap()) {
+                    // This swath uses the dimension map,but not the multi-dim. map we can handle.
+                    if((*it_f)->UseDimMap() && false == multi_dmap) {
                         // We also find that a separate geolocation file exists
 
                         if (!modis_geofilename.empty()) {
@@ -619,35 +619,85 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                        
                 else if(grid_or_swath ==1) {
 
-                    // Use Swath dimension map
-                    if((*it_f)->UseDimMap()) {
+                    if(true == multi_dmap) {
+                        if((*it_f)->getRank() !=2) 
+                            throw InternalErr(__FILE__, __LINE__, "For the multi-dimmap case, the field rank must be 2.");
+                        int dim0size = (dims[0])->getSize();
+                        int dim1size = (dims[1])->getSize();
+                        int dim0offset = (*it_f)->getLLDim0Offset();
+                        int dim1offset = (*it_f)->getLLDim1Offset();
+                        int dim0inc = (*it_f)->getLLDim0Inc();
+                        int dim1inc = (*it_f)->getLLDim1Inc();
+                        string fieldname;
+                        if(fieldtype == 1)
+                            fieldname = "Latitude";
+                        else
+                            fieldname = "Longitude";
+#if 0                        
+cerr<<"hdfdesc: newfieldname is "<<(*it_f)->getNewName() <<endl;
+cerr<<"hdfdesc: dim0size "<<dim0size <<endl;
+cerr<<"hdfdesc: dim1size "<<dim1size <<endl;
+cerr<<"hdfdesc: dim0offset "<<dim0offset <<endl;
+cerr<<"hdfdesc: dim1offset "<<dim1offset <<endl;
+cerr<<"hdfdesc: dim0inc "<<dim0inc <<endl;
+cerr<<"hdfdesc: dim1inc "<<dim1inc <<endl;
+#endif
 
-                        // Have an extra HDF-EOS file for latitude and longtiude
-                        if(!modis_geofilename.empty()) {
+                        HDFEOS2ArraySwathGeoMultiDimMapField * ar = NULL;
 
-                            if (false == geofile_has_dimmap) {
-                                HDFEOS2ArraySwathGeoDimMapExtraField *ar = NULL;
-                                ar = new HDFEOS2ArraySwathGeoDimMapExtraField(
+                        ar = new HDFEOS2ArraySwathGeoMultiDimMapField(
+                                                        (*it_f)->getRank(),
+                                                        filename,
+                                                        swathfd,
+                                                        (dataset)->getName(),
+                                                        fieldname, 
+                                                        dim0size,
+                                                        dim0offset,
+                                                        dim0inc,
+                                                        dim1size,
+                                                        dim1offset,
+                                                        dim1inc,
+                                                        (*it_f)->getNewName(), 
+                                                        bt);
+
+                        for(it_d = dims.begin(); it_d != dims.end(); it_d++)
+                            ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
+
+                        dds.add_var(ar);
+                        delete bt;
+                        delete ar;
+                    }
+                    else {
+
+                        // Use Swath dimension map
+                        if((*it_f)->UseDimMap()) {
+
+                            // Have an extra HDF-EOS file for latitude and longtiude
+                            if(!modis_geofilename.empty()) {
+
+                                if (false == geofile_has_dimmap) {
+                                    HDFEOS2ArraySwathGeoDimMapExtraField *ar = NULL;
+                                    ar = new HDFEOS2ArraySwathGeoDimMapExtraField(
                                                                               (*it_f)->getRank(),
                                                                               modis_geofilename,
                                                                               (*it_f)->getName(),
                                                                               (*it_f)->getNewName(),
                                                                               bt);
-                                for(it_d = dims.begin(); it_d != dims.end(); it_d++)
-                                    ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
-                                dds.add_var(ar);
-                                delete bt;
-                                delete ar;
-                            }
-                            else {
+                                    for(it_d = dims.begin(); it_d != dims.end(); it_d++)
+                                        ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
+                                    dds.add_var(ar);
+                                    delete bt;
+                                    delete ar;
+                                }
+                                else {
                                 
-                                HDFEOS2ArraySwathDimMapField * ar = NULL;
+                                    HDFEOS2ArraySwathDimMapField * ar = NULL;
 
-                                // SET dimmaps to empty. 
-                                // This is essential since we are using the geolocation file for the new information. 
-                                // The dimension map info. will be obtained when the data is read. KY 2013-03-13
-                                dimmaps.clear();
-                                ar = new HDFEOS2ArraySwathDimMapField(
+                                    // SET dimmaps to empty. 
+                                    // This is essential since we are using the geolocation file for the new information. 
+                                    // The dimension map info. will be obtained when the data is read. KY 2013-03-13
+                                    dimmaps.clear();
+                                    ar = new HDFEOS2ArraySwathDimMapField(
                                                                       (*it_f)->getRank(), 
                                                                       modis_geofilename, 
                                                                       true,
@@ -660,16 +710,16 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                                                                       sotype,
                                                                       (*it_f)->getNewName(),
                                                                       bt);
-                                for(it_d = dims.begin(); it_d != dims.end(); it_d++)
-                                    ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
+                                    for(it_d = dims.begin(); it_d != dims.end(); it_d++)
+                                        ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
 
-                                dds.add_var(ar);
-                                delete bt;
-                                delete ar;
+                                    dds.add_var(ar);
+                                    delete bt;
+                                    delete ar;
+                                }
                             }
-                        }
-                        // Will interpolate by the handler
-                        else {
+                            // Will interpolate by the handler
+                            else {
 
                                 HDFEOS2ArraySwathDimMapField * ar = NULL;
                                 ar = new HDFEOS2ArraySwathDimMapField(
@@ -691,12 +741,12 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                                 dds.add_var(ar);
                                 delete bt;
                                 delete ar;
+                            }
                         }
-                    }
-                    else {// No Dimension map
+                        else {// No Dimension map
  
-                        HDFEOS2ArraySwathGeoField * ar = NULL;
-                        ar = new HDFEOS2ArraySwathGeoField(
+                            HDFEOS2ArraySwathGeoField * ar = NULL;
+                            ar = new HDFEOS2ArraySwathGeoField(
                                                            (*it_f)->getRank(),
                                                            filename,
                                                            swathfd,
@@ -705,11 +755,12 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                                                            (*it_f)->getNewName(), 
                                                            bt);
 
-                        for(it_d = dims.begin(); it_d != dims.end(); it_d++)
-                            ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
-                        dds.add_var(ar);
-                        delete bt;
-                        delete ar;
+                            for(it_d = dims.begin(); it_d != dims.end(); it_d++)
+                                ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
+                            dds.add_var(ar);
+                            delete bt;
+                            delete ar;
+                        }
                     }
                 }
                 else {
@@ -834,7 +885,7 @@ int read_dds_hdfeos2(DDS & dds, const string & filename,int32 sdfd,int32 fileid,
         sotype = (*it_g)->getScaleType();
         try {
             read_dds_hdfeos2_grid_swath(
-                dds, filename, static_cast<HDFEOS2::Dataset*>(*it_g), 0,ownll,sotype,sdfd,fileid,gridfd,swathfd);
+                dds, filename, static_cast<HDFEOS2::Dataset*>(*it_g), 0,ownll,sotype,false,sdfd,fileid,gridfd,swathfd);
             // Add 1-D CF grid projection required coordinate variables. 
             // Currently only supports sinusoidal projection.
             HDFCFUtil::add_cf_grid_cvs(dds,*it_g);
@@ -845,6 +896,10 @@ int read_dds_hdfeos2(DDS & dds, const string & filename,int32 sdfd,int32 fileid,
         }
     }
 
+    // Obtain the multi dimmap flag.
+    bool multi_dmap = f->getMultiDimMaps();
+
+
     // Iterate all the swaths of this file and map them to DAP DDS.
     const vector<HDFEOS2::SwathDataset *>& swaths= f->getSwaths();
     vector<HDFEOS2::SwathDataset *>::const_iterator it_s;
@@ -853,8 +908,9 @@ int read_dds_hdfeos2(DDS & dds, const string & filename,int32 sdfd,int32 fileid,
         // Obtain Scale and offset type. This is for MODIS products who use non-CF scale/offset rules.
         sotype = (*it_s)->getScaleType();
         try {
+            //No global lat/lon for multiple swaths
             read_dds_hdfeos2_grid_swath(
-                dds, filename, static_cast<HDFEOS2::Dataset*>(*it_s), 1,false,sotype,sdfd,fileid,gridfd,swathfd);//No global lat/lon for multiple swaths
+                dds, filename, static_cast<HDFEOS2::Dataset*>(*it_s), 1,false,sotype,multi_dmap,sdfd,fileid,gridfd,swathfd);
         }
         catch(...) {
             //delete f;
