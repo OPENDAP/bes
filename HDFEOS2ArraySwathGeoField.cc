@@ -10,6 +10,8 @@
 
 #ifdef USE_HDFEOS2_LIB
 
+#include "config.h"
+
 #include "HDFEOS2ArraySwathGeoField.h"
 #include <iostream>
 #include <sstream>

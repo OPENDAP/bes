@@ -12,6 +12,7 @@
 // general HDF-EOS2 field. 
 
 #ifdef USE_HDFEOS2_LIB
+#include "config.h"
 #include "HDFEOS2ArraySwathGeoDimMapExtraField.h"
 #include <iostream>
 #include <sstream>

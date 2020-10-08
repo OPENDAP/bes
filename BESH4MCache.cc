@@ -5,6 +5,8 @@
 // Copyright (c) 2014 The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 
+#include "config.h"
+
 #include <sys/stat.h>
 #include <iostream>
 #include  <sstream>
