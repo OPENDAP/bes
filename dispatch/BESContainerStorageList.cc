@@ -29,13 +29,10 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
+
 #include "config.h"
 
 #include <iostream>
-
-using std::endl;
-using std::string;
-using std::ostream;
 
 #include "BESContainerStorageList.h"
 #include "BESContainerStorage.h"
@@ -46,6 +43,11 @@ using std::ostream;
 #include "BESInfo.h"
 
 #include "BESDebug.h"
+
+
+using std::endl;
+using std::string;
+using std::ostream;
 
 BESContainerStorageList *BESContainerStorageList::_instance = 0;
 

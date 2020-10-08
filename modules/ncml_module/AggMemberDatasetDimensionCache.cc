@@ -5,6 +5,8 @@
  *      Author: ndp
  */
 
+#include "config.h"
+
 #include "AggMemberDatasetDimensionCache.h"
 #include "AggMemberDataset.h"
 #include <string>

@@ -25,6 +25,8 @@
 // Authors:
 //      ndp       Nathan Potter <ndp@opendap.org>
 
+#include "config.h"
+
 #include <string>
 #include <sstream>
 #include <map>

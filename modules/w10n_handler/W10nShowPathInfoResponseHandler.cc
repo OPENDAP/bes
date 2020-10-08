@@ -25,6 +25,8 @@
 // Please read the full copyright statement in the file COPYRIGHT_URI.
 //
 
+#include "config.h"
+
 #include "W10nShowPathInfoResponseHandler.h"
 #include "W10nShowPathInfoCommand.h"
 #include "W10NNames.h"

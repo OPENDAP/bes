@@ -43,7 +43,6 @@
 #include "BESResponseNames.h"
 #include "BESDataHandlerInterface.h"
 
-#include "BESDebug.h"
 
 using namespace std;
 

@@ -30,6 +30,8 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
 #include <unistd.h>
 #include <signal.h>
 #include <sys/wait.h> // for wait
@@ -52,8 +54,6 @@ using std::ostringstream;
 using std::ofstream;
 using std::ostream;
 using std::string;
-
-#include "config.h"
 
 #include "ServerApp.h"
 #include "ServerExitConditions.h"

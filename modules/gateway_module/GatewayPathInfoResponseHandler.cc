@@ -25,6 +25,8 @@
 // Please read the full copyright statement in the file COPYRIGHT_URI.
 //
 
+#include "config.h"
+
 #include <sstream>
 #include <fstream>
 #include <time.h>

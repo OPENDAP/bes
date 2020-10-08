@@ -48,8 +48,6 @@
 #include "BESLog.h"
 #include "BESStopWatch.h"
 
-// #include "util.h"
-#include "BESDebug.h"
 #include "BESSyntaxUserError.h"
 #include "HttpNames.h"
 #include "HttpUtils.h"
@@ -1401,7 +1399,6 @@ void retrieve_effective_url(const string &target_url, string &last_accessed_url)
         BESDEBUG(MODULE, prolog << "BESLog::TheLog()->is_verbose(): " << (BESLog::TheLog()->is_verbose()?"true":"false") << endl);
 
         if (BESDebug::IsSet(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()){
-            std::cerr << "STARTED TIMER *********************************************************************" << endl;
             sw.start(prolog + " Following Redirects Starting With: " + target_url);
         }
 

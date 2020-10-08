@@ -29,6 +29,7 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
+#include "config.h"
 
 #include <DDS.h>
 #include <DAS.h>

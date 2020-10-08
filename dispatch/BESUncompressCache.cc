@@ -19,7 +19,8 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
-#include "BESUncompressCache.h"
+#include "config.h"
+
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -29,6 +30,7 @@
 #include "BESUtil.h"
 #include "BESDebug.h"
 #include "TheBESKeys.h"
+#include "BESUncompressCache.h"
 
 using std::endl;
 using std::string;

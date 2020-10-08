@@ -29,11 +29,9 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 
-#include <iostream>
+#include "config.h"
 
-using std::endl ;
-using std::ostream;
-using std::string;
+#include <iostream>
 
 #include "BESUsageModule.h"
 
@@ -55,6 +53,11 @@ using std::string;
 #include "BESTransmitterNames.h"
 
 #include "BESDebug.h"
+
+
+using std::endl ;
+using std::ostream;
+using std::string;
 
 
 void

@@ -44,15 +44,6 @@
 #include <iostream>
 #include <map>
 
-using std::ostringstream;
-using std::cout;
-using std::endl;
-using std::cerr;
-using std::flush;
-using std::map;
-using std::ostream;
-using std::string;
-
 #include "BESServerHandler.h"
 #include "Connection.h"
 #include "Socket.h"
@@ -66,6 +57,16 @@ using std::string;
 #include "BESLog.h"
 #include "BESDebug.h"
 #include "BESStopWatch.h"
+
+using std::ostringstream;
+using std::cout;
+using std::endl;
+using std::cerr;
+using std::flush;
+using std::map;
+using std::ostream;
+using std::string;
+
 
 // Default is to not exit on internal error. A bad idea, but the original
 // behavior of the server. jhrg 10/4/18

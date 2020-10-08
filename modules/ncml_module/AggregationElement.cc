@@ -26,6 +26,8 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 /////////////////////////////////////////////////////////////////////////////
+#include "config.h"
+
 #include <sstream>
 #include <fstream>
 #include <sys/stat.h>
@@ -39,8 +41,6 @@
 #include "GridAggregateOnOuterDimension.h" // agg_util
 #include "GridJoinExistingAggregation.h" // agg_util
 #include "AggMemberDatasetDimensionCache.h"
-
-#include "config.h"
 
 #include <AttrTable.h> // libdap
 #include <Array.h> // libdap
