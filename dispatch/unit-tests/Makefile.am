@@ -9,7 +9,10 @@ AUTOMAKE_OPTIONS = foreign
 
 # Arrange to build with the backward compatibility mode enabled.
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
-LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(DAP_LIBS) 
+# Linking against the static library explicitly forces the local version of the
+# library to be used, which streamlines code-compile-test cycles.
+LDADD = $(DAP_LIBS) $(top_builddir)/dispatch/.libs/libbes_dispatch.a $(BES_BZ2_LIBS)
+AM_LDFLAGS = -no-install
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
@@ -117,7 +120,6 @@ containerT_SOURCES = containerT.cc
 defT_SOURCES = defT.cc
 
 keysT_SOURCES = keysT.cc
-# keysT_LDADD = ../TheBESKeys.o $(LDADD)
 
 pfileT_SOURCES = pfileT.cc
 
@@ -183,8 +185,6 @@ BESCatalogListTest_CPPFLAGS = $(AM_CPPFLAGS) -Wno-deprecated
 # complete_catalog_lister_OBJ = ../BESCatalogResponseHandler.o
 # complete_catalog_lister_CPPFLAGS =  $(AM_CPPFLAGS) $(XML2_CFLAGS)
 # complete_catalog_lister_LDADD = $(complete_catalog_lister_OBJ) $(LDADD)
-
-
 
 ServerAdministratorTest_SOURCES = ServerAdministratorTest.cc
 ServerAdministratorTest_LDADD = ../ServerAdministrator.o $(LDADD)
