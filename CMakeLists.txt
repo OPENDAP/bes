@@ -2067,4 +2067,7 @@ add_executable(bes
     xmlcommand/XMLSetContextsCommand.h
 
     standalone/besstandalone.cc
-)
+
+    functions/stare/unit-tests/build_test_s_indices.cc
+    http/unit-tests/HttpUtilsTest.cc
+	http/unit-tests/CurlUtilsTest.cc)

@@ -140,7 +140,7 @@ public:
     /**
      * Evaluates a BaseType pointer believed to be an instance of DrmppCommon
      * with a single "chunk" (Chunk) member.
-     * This checks the variables name, offset, size, md5, and uuid attributes
+     * This checks the variable's name, offset, size, md5, and uuid attributes
      * against expected values passed as parameters.
      */
     void checkDmrppVariableWithSingleChunk(BaseType *bt, string name, unsigned long long offset,

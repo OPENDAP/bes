@@ -1003,7 +1003,7 @@ void DmrppArray::insert_chunk(unsigned int dim, vector<unsigned int> *target_ele
                 (*chunk_element_address)[dim] = chunk_index;
 
                 // These calls to get_index() can be removed as with the insert...unconstrained() code.
-                unsigned int target_char_start_index =
+               unsigned int target_char_start_index =
                         get_index(*target_element_address, constrained_array_shape) * elem_width;
                 unsigned int chunk_char_start_index = get_index(*chunk_element_address, chunk_shape) * elem_width;
 
