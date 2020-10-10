@@ -11,7 +11,7 @@ AUTOMAKE_OPTIONS = foreign
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
 # Linking against the static library explicitly forces the local version of the
 # library to be used, which streamlines code-compile-test cycles.
-LDADD = $(DAP_LIBS) $(top_builddir)/dispatch/.libs/libbes_dispatch.a $(BES_BZ2_LIBS) $(ES_ZLIB_LIBS)
+LDADD = $(DAP_LIBS) $(top_builddir)/dispatch/.libs/libbes_dispatch.a $(BES_BZ2_LIBS) $(BES_ZLIB_LIBS)
 AM_LDFLAGS = -no-install
 
 if CPPUNIT
