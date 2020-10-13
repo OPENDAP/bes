@@ -368,7 +368,7 @@ public:
             sprintf(key, "BES.KEY%d", i);
             char val[32];
             if (i == 5 || i == 6)
-                sprintf(val, "");
+                sprintf(val, "%s", "");
             else
                 sprintf(val, "val%d", i);
             if(debug) cout << "Looking for " << key << " with value '" << val << "'" << endl;
