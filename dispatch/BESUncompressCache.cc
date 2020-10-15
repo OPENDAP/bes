@@ -223,10 +223,7 @@ BESUncompressCache::get_instance()
     return d_instance;
 }
 
-BESUncompressCache::~BESUncompressCache()
-{
-    delete_instance();
-}
+BESUncompressCache::~BESUncompressCache() {}
 
 /**
  * Is the item named by cache_entry_name valid? This code tests that the
