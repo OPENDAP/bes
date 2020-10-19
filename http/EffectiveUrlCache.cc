@@ -48,7 +48,7 @@
 
 using namespace std;
 
-#define MODULE "http"
+#define MODULE "euc"
 #define prolog std::string("EffectiveUrlCache::").append(__func__).append("() - ")
 
 namespace http {
@@ -113,7 +113,7 @@ EffectiveUrlCache::EffectiveUrlCache(): d_skip_regex(NULL), d_enabled(-1)
 
 }
 
-/** @brief list destructor deletes all registered catalogs
+/** @brief list destructor deletes all cached http::urls
  *
  * @see BESCatalog
  */
@@ -159,6 +159,20 @@ void EffectiveUrlCache::dump(ostream &strm) const
     BESIndent::UnIndent();
 }
 
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with the catalogs
+ * registered in this list.
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+string EffectiveUrlCache::dump() const
+{
+    stringstream sstrm;
+    dump(sstrm);
+    return sstrm.str();
+}
+
 /**
  *
  * @param source_url
@@ -166,8 +180,18 @@ void EffectiveUrlCache::dump(ostream &strm) const
  */
 void EffectiveUrlCache::add(const std::string &source_url, http::url *effective_url)
 {
-    d_effective_urls.insert(pair<string,http::url *>(source_url,effective_url));
+    pair<map<string,http::url *>::iterator , bool> previously = d_effective_urls.insert(pair<string,http::url *>(source_url,effective_url));
+    if(previously.second){
+        BESDEBUG(MODULE, prolog << "The effective URL for " << source_url << " was has been added to the cache. "<<
+        "(EUC size: " << d_effective_urls.size() << ")" << endl);
+    }
+    else {
+        BESDEBUG(MODULE, prolog << "The effective URL for " << source_url << " was NOT added to the cache. "<<
+        "The URL was already set to " << previously.first->second->str() << endl);
+    }
+
 }
+
 
 
 /**
@@ -213,6 +237,8 @@ http::url *EffectiveUrlCache::get_effective_url(const string &source_url) {
 http::url *EffectiveUrlCache::get_effective_url(const string &source_url, BESRegex *skip_regex)
 {
     BESDEBUG(MODULE, prolog << "BEGIN url: " << source_url << endl);
+    BESDEBUG(MODULE, prolog << "dump: " << endl << dump() << endl);
+
 
 #if 0
     //BESStopWatch sw;
@@ -275,7 +301,8 @@ http::url *EffectiveUrlCache::get_effective_url(const string &source_url, BESReg
     else {
         BESDEBUG(MODULE, prolog << "CACHE IS DISABLED." << endl);
     }
-    BESDEBUG(MODULE, prolog << "END" << endl);
+        BESDEBUG(MODULE, prolog << "dump: " << endl << dump() << endl);
+        BESDEBUG(MODULE, prolog << "END" << endl);
     return effective_url;
 }
 
@@ -317,5 +344,9 @@ BESRegex *EffectiveUrlCache::get_skip_regex()
     BESDEBUG(MODULE, prolog << "d_skip_regex:  " << (d_skip_regex?d_skip_regex->pattern():"Value has not been set.") << endl);
     return d_skip_regex;
 }
+
+
+
+
 
 } // namespace http

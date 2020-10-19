@@ -72,6 +72,7 @@ public:
     http::url *get_effective_url(const std::string &source_url, BESRegex *skip_regex);
 
     virtual void dump(std::ostream &strm) const;
+    virtual std::string dump() const;
 
 };
 
