@@ -56,7 +56,7 @@ using namespace std;
 #define BES_CATALOG_ROOT_KEY "BES.Catalog.catalog.RootDirectory"
 
 #define prolog std::string("RemoteResource::").append(__func__).append("() - ")
-#define MODULE "http"
+#define MODULE "rr"
 
 namespace http {
 
