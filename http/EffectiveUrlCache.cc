@@ -286,7 +286,11 @@ http::url *EffectiveUrlCache::get_effective_url(const string &source_url, BESReg
             BESDEBUG(MODULE, prolog << "Acquiring effective URL for  " << source_url << endl);
 
             string effective_url_str;
-            curl::retrieve_effective_url(source_url, effective_url_str);
+            {
+                BESStopWatch sw;
+                if(BESDebug::IsSet(MODULE)) sw.start(prolog+" retrieve and cache effective url for source url: "+source_url);
+                curl::retrieve_effective_url(source_url, effective_url_str);
+            }
             BESDEBUG(MODULE, prolog << "effective_url_str: " << effective_url_str << endl);
 
             // Make the target URL object.
