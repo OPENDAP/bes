@@ -52,8 +52,12 @@ AC_ARG_ENABLE([developer],
     [Developer mode: Won't override CXXFLAGS on the command line])]
 )
 AM_CONDITIONAL([BES_DEVELOPER], [test "x$enable_developer" = "xyes"])
+dnl
+dnl Removed "-Wall -W -Wcast-align" from cxx_debug_flags while working on the HDF4 handler.
+dnl jhrg 10/19/20
+dnl
 AM_COND_IF([BES_DEVELOPER],
-    [cxx_debug_flags="-g3 -O0  -Wall -W -Wcast-align"
+    [cxx_debug_flags="-g3 -O0 -Wall"
       AC_MSG_NOTICE([Developer Mode is enabled.]) ],
     [AC_DEFINE([NDEBUG], [1], [Define this to suppress assert() statements.])
       AC_MSG_NOTICE([Developer Mode is disabled.])]
