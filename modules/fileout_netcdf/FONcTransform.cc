@@ -638,8 +638,8 @@ void FONcTransform::gen_included_grp_list(D4Group*grp)
 
             for (; vi != ve; vi++) {
                 if ((*vi)->send_p()) {
-                    BaseType *v = *vi;
-                    BESDEBUG("fonc", "FONcTransform::obtaining the group list that has variable '" << v->name() << "'" << endl);
+                    //BaseType *v = *vi;
+                    //BESDEBUG("fonc", "FONcTransform::obtaining the group list that has variable '" << v->name() << "'" << endl);
                     grp_has_var = true;
                     //If a var in this group is selected, we need to include this group in the netcdf-4 file.
                     if(grp->FQN()!="/")  
