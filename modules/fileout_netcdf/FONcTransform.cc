@@ -322,6 +322,13 @@ void FONcTransform::transform_dap4()
         
         D4Group* root_grp = _dmr->root();
         map<string,int>fdimname_to_id;
+
+        // Generate a list of the groups in the final netCDF file. The attributes of these groups should be included.
+        gen_included_grp_list(root_grp);
+#if 0
+        for (std::set<string>::iterator it=_included_grp_names.begin(); it!=_included_grp_names.end(); ++it)
+            BESDEBUG("fonc","included group list name is: "<<*it<<endl);
+#endif
         transform_dap4_group(root_grp,true,_ncid,fdimname_to_id);
         stax = nc_close(_ncid);
         if (stax != NC_NOERR)
@@ -467,14 +474,35 @@ void FONcTransform::transform_dap4_no_group() {
 
 void FONcTransform::transform_dap4_group(D4Group* grp,bool is_root_grp,int par_grp_id,map<string,int>&fdimname_to_id ) {
 
+    bool included_grp = false;
+    // Always include the root attributes.
+    if(is_root_grp == true)  
+        included_grp = true;
+    else {
+        // Check if this group is in the group list kept in the file.
+        set<string>::iterator iset;
+        if(_included_grp_names.find(grp->FQN())!=_included_grp_names.end())
+            included_grp = true;
+    }
+     
+    // If this group is not in the group list, we know all its subgroups are also not in the list, just stop and return.
+    if(included_grp == true) 
+        transform_dap4_group_internal(grp,is_root_grp,par_grp_id,fdimname_to_id);
+    return;
+}
+
+void FONcTransform::transform_dap4_group_internal(D4Group* grp,bool is_root_grp,int par_grp_id,map<string,int>&fdimname_to_id ) {
+
     int grp_id = -1;
     int stax = -1;
-    if(is_root_grp == true) 
+    if(is_root_grp == true)  {
         grp_id = _ncid;
+    }
     else {
         stax = nc_def_grp(par_grp_id,(*grp).name().c_str(),&grp_id);
         if (stax != NC_NOERR)
             FONcUtils::handle_error(stax, "File out netcdf, unable to define group: " + _localfile, __FILE__, __LINE__);
+        
     }
      
     D4Dimensions *root_dims = grp->dims();
@@ -551,10 +579,12 @@ void FONcTransform::transform_dap4_group(D4Group* grp,bool is_root_grp,int par_g
  
 
         bool add_attr = true;
-        if(FONcRequestHandler::no_global_attrs == false && is_root_grp == true) 
+        if(FONcRequestHandler::no_global_attrs == true && is_root_grp == true) 
             add_attr= false;
         if(true == add_attr) {
             D4Attributes*d4_attrs = grp->attributes();
+//if(true == is_root_grp)
+//    BESDEBUG("fonc", "FONcTransform::This is root group." << endl) ;
             BESDEBUG("fonc", "FONcTransform::transform_dap4_group() - Adding Group Attributes" << endl) ;
             FONcAttributes::add_dap4_attributes(grp_id, NC_GLOBAL, d4_attrs, "", "",is_netCDF_enhanced);
         }
@@ -582,6 +612,8 @@ void FONcTransform::transform_dap4_group(D4Group* grp,bool is_root_grp,int par_g
 
 }
 
+
+
 // Group support is only on when netCDF-4 is in enhanced model and there are groups in the DMR.
 bool FONcTransform::check_group_support() {
     if(RETURNAS_NETCDF4 == FONcTransform::_returnAs && false == FONcRequestHandler::classic_model && 
@@ -591,6 +623,54 @@ bool FONcTransform::check_group_support() {
         return false;
 }
 
+// Generate the final group list in the netCDF-4 file. Empty groups and their attributes will be removed.
+void FONcTransform::gen_included_grp_list(D4Group*grp) 
+{
+    bool grp_has_var = false;
+    if(grp) {
+        BESDEBUG("fnoc", "<coming to the D4 group  has name " << grp->name()<<endl);
+        BESDEBUG("fnoc", "<coming to the D4 group  has fullpath " << grp->FQN()<<endl);
+        //We always include root attributes, so no need to obtain grp_names for the root.
+        if(grp->var_begin()!=grp->var_end()) {
+            BESDEBUG("fnoc", "<has the vars  " << endl);
+            Constructor::Vars_iter vi = grp->var_begin();
+            Constructor::Vars_iter ve = grp->var_end();
+
+            for (; vi != ve; vi++) {
+                if ((*vi)->send_p()) {
+                    //BaseType *v = *vi;
+                    //BESDEBUG("fonc", "FONcTransform::obtaining the group list that has variable '" << v->name() << "'" << endl);
+                    grp_has_var = true;
+                    //If a var in this group is selected, we need to include this group in the netcdf-4 file.
+                    if(grp->FQN()!="/")  
+                        _included_grp_names.insert(grp->FQN());
+                    break;
+                }
+            }
+        }
+        // Loop through the subgroups to build up the list.
+        for (D4Group::groupsIter gi = grp->grp_begin(), ge = grp->grp_end(); gi != ge; ++gi) {
+             BESDEBUG("fonc", "obtain included groups  - group name:  " << (*gi)->name() << endl);
+             gen_included_grp_list(*gi);
+        }
+    }
+        
+    // If this group is in the final list, all its ancestors(except root, since it is always selected),should also be included. 
+    //
+    if(grp_has_var == true) {
+        D4Group *temp_grp   = grp;
+        while(temp_grp) {
+            if(temp_grp->get_parent()){
+                temp_grp = static_cast<D4Group*>(temp_grp->get_parent());
+                if(temp_grp->FQN()!="/")  
+                    _included_grp_names.insert(temp_grp->FQN());
+            }
+            else 
+            temp_grp = 0;
+        }
+    }
+
+}
 
 /** @brief dumps information about this transformation object for debugging
  * purposes

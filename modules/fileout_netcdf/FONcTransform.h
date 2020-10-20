@@ -37,6 +37,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <set>
 
 #include <DDS.h>
 #include <DMR.h>
@@ -65,6 +66,7 @@ private:
 	string _returnAs;
 	vector<FONcBaseType *> _fonc_vars;
 	vector<FONcBaseType *> _total_fonc_vars_in_grp;
+    set<string> _included_grp_names;
     
 
 public:
@@ -89,7 +91,9 @@ public:
 private:
     virtual void transform_dap4_no_group();
     virtual void transform_dap4_group(D4Group*,bool is_root, int par_grp_id,std::map<std::string,int>&);
+    virtual void transform_dap4_group_internal(D4Group*,bool is_root, int par_grp_id,std::map<std::string,int>&);
     virtual bool check_group_support();
+    virtual void gen_included_grp_list(D4Group*grp);
 
 
 };
