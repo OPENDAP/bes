@@ -1,0 +1,19 @@
+netcdf test {
+dimensions:
+        y = 2 ;
+        x = 2 ;
+variables:
+        ushort data(x, y) ;
+
+group: grp2 {
+  dimensions:
+        y = 3 ;
+
+  group: grp3 {
+    dimensions:
+        z = 2 ;
+    variables:
+        float grp3_data(x, /y, z) ;
+    } // group grp3
+  } // group grp2
+}
