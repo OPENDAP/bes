@@ -349,62 +349,62 @@ bool DmrppParserSax2::process_dimension(const char *name, const xmlChar **attrs,
         return false;
     }
 #endif
-        bool has_size = check_attribute("size", attrs, nb_attributes);
-        bool has_name = check_attribute("name", attrs, nb_attributes);
-        if (has_size && has_name) {
-            dmr_error(this, "Only one of 'size' and 'name' are allowed in a Dim element, but both were used.");
-            return false;
-        }
-        if (!has_size && !has_name) {
-            dmr_error(this, "Either 'size' or 'name' must be used in a Dim element.");
-            return false;
-        }
-
-
-        if (!top_basetype()->is_vector_type()) {
-        // Make the top BaseType* an array
-            BaseType *b = top_basetype();
-            pop_basetype();
-
-            Array *a = static_cast<Array*>(dmr()->factory()->NewVariable(dods_array_c, b->name()));
-            a->set_is_dap4(true);
-            a->add_var_nocopy(b);
-            a->set_attributes_nocopy(b->attributes());
-            // trick: instead of popping b's attributes, copying them and then pushing
-            // a's copy, just move the pointer (but make sure there's only one object that
-            // references that pointer).
-            b->set_attributes_nocopy(0);
-
-            push_basetype(a);
-        }
-
-        assert(top_basetype()->is_vector_type());
-
-        Array *a = static_cast<Array*>(top_basetype());
-        if (has_size) {
-            size_t dim_size = stoi(get_attribute_val("size", attrs, nb_attributes));
-            BESDEBUG(PARSER, prolog << "Processing nameless Dim of size: " << dim_size << endl);
-            a->append_dim(dim_size); // low budget code for now. jhrg 8/20/13, modified to use new function. kln 9/7/19
-            return true;
-        }
-        else if (has_name) {
-            string name = get_attribute_val("name", attrs, nb_attributes);
-            BESDEBUG(PARSER, prolog << "Processing Dim with named Dimension reference: " << name << endl);
-
-            D4Dimension *dim = 0;
-            if (name[0] == '/')		// lookup the Dimension in the root group
-                dim = dmr()->root()->find_dim(name);
-            else
-                // get enclosing Group and lookup Dimension there
-                dim = top_group()->find_dim(name);
-
-            if (!dim)
-                throw BESInternalError("The dimension '" + name + "' was not found while parsing the variable '" + a->name() + "'.",__FILE__,__LINE__);
-            a->append_dim(dim);
-            return true;
-        }
+    bool has_size = check_attribute("size", attrs, nb_attributes);
+    bool has_name = check_attribute("name", attrs, nb_attributes);
+    if (has_size && has_name) {
+        dmr_error(this, "Only one of 'size' and 'name' are allowed in a Dim element, but both were used.");
         return false;
     }
+    if (!has_size && !has_name) {
+        dmr_error(this, "Either 'size' or 'name' must be used in a Dim element.");
+        return false;
+    }
+
+
+    if (!top_basetype()->is_vector_type()) {
+    // Make the top BaseType* an array
+        BaseType *b = top_basetype();
+        pop_basetype();
+
+        Array *a = static_cast<Array*>(dmr()->factory()->NewVariable(dods_array_c, b->name()));
+        a->set_is_dap4(true);
+        a->add_var_nocopy(b);
+        a->set_attributes_nocopy(b->attributes());
+        // trick: instead of popping b's attributes, copying them and then pushing
+        // a's copy, just move the pointer (but make sure there's only one object that
+        // references that pointer).
+        b->set_attributes_nocopy(0);
+
+        push_basetype(a);
+    }
+
+    assert(top_basetype()->is_vector_type());
+
+    Array *a = static_cast<Array*>(top_basetype());
+    if (has_size) {
+        size_t dim_size = stoi(get_attribute_val("size", attrs, nb_attributes));
+        BESDEBUG(PARSER, prolog << "Processing nameless Dim of size: " << dim_size << endl);
+        a->append_dim(dim_size); // low budget code for now. jhrg 8/20/13, modified to use new function. kln 9/7/19
+        return true;
+    }
+    else if (has_name) {
+        string name = get_attribute_val("name", attrs, nb_attributes);
+        BESDEBUG(PARSER, prolog << "Processing Dim with named Dimension reference: " << name << endl);
+
+        D4Dimension *dim = 0;
+        if (name[0] == '/')		// lookup the Dimension in the root group
+            dim = dmr()->root()->find_dim(name);
+        else
+            // get enclosing Group and lookup Dimension there
+            dim = top_group()->find_dim(name);
+
+        if (!dim)
+            throw BESInternalError("The dimension '" + name + "' was not found while parsing the variable '" + a->name() + "'.",__FILE__,__LINE__);
+        a->append_dim(dim);
+        return true;
+    }
+    return false;
+}
 
 
 bool DmrppParserSax2::process_dmrpp_compact_start(const char *name){
@@ -1389,7 +1389,7 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
             DmrppParserSax2::dmr_error(parser,
                 "Expected a Group to be the current item, while finishing up an Dimension.");
 
-        parser->top_group()->dims()->add_dim_nocopy(parser->dim_def());
+        parser->top_group()->dims()->add_dim(parser->dim_def());
         // Set the dim_def to null; next call to dim_def() will
         // allocate a new object. Calling 'clear' is important because
         // the cleanup method will free dim_def if it's not null and
