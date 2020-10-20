@@ -1389,7 +1389,7 @@ void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *
             DmrppParserSax2::dmr_error(parser,
                 "Expected a Group to be the current item, while finishing up an Dimension.");
 
-        parser->top_group()->dims()->add_dim(parser->dim_def());
+        parser->top_group()->dims()->add_dim_nocopy(parser->dim_def());
         // Set the dim_def to null; next call to dim_def() will
         // allocate a new object. Calling 'clear' is important because
         // the cleanup method will free dim_def if it's not null and
