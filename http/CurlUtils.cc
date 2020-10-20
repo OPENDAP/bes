@@ -51,7 +51,7 @@
 #include "BESSyntaxUserError.h"
 #include "HttpNames.h"
 #include "HttpUtils.h"
-#include "HttpProxy.h"
+#include "ProxyConfig.h"
 #include "AllowedHosts.h"
 #include "CurlUtils.h"
 #include "EffectiveUrlCache.h"
@@ -338,121 +338,211 @@ public:
     }
 };
 
-/**
- * @brief Configure the proxy options for the passed curl object.
- * The passed URL is the target URL. If the target URL matches the
- * Http.NoProxy in the config file, then no proxying is done.
- *
- * The proxy configuration is stored in the http configuration file, http.conf.
- * The configuration utilizes the following keys. The:
- * Http.ProxyHost=<hostname or ip address>
- * Http.ProxyPort=<port number>
- * Http.ProxyAuthType=<basic | digest | ntlm>
- * Http.ProxyUser=<username>
- * Http.ProxyPassword=<password>
- * Http.ProxyUserPW=<username:password>
- * Http.ProxyProtocol=< https | http >
- * Http.NoProxy=<regex_to_match_no_proxy_urls>
- *
- * @param curl The cURL easy handle to configure.
- * @param target_url The url used to configure the proxy
- * @return
- */
-bool configure_curl_handle_for_proxy(CURL *ceh, const string &target_url) {
-    BESDEBUG(MODULE, prolog << "BEGIN." << endl);
+    /**
+     * @brief Configure the proxy options for the passed curl object.
+     * The passed URL is the target URL. If the target URL matches the
+     * HttpUtils::NoProxyRegex in the config file, then no proxying is done.
+     *
+     * The proxy configuration is stored in the http configuration file, http.conf.
+     * The configuration utilizes the following keys. The:
+     * Http.ProxyHost=<hostname or ip address>
+     * Http.ProxyPort=<port number>
+     * Http.ProxyAuthType=<basic | digest | ntlm>
+     * Http.ProxyUser=<username>
+     * Http.ProxyPassword=<password>
+     * Http.ProxyUserPW=<username:password>
+     * Http.ProxyProtocol=< https | http >
+     * Http.NoProxy=<regex_to_match_no_proxy_urls>
+     *
+     * @param curl The cURL easy handle to configure.
+     * @param target_url The url used to configure the proxy
+     * @return
+     */
+    bool configure_curl_handle_for_proxy(CURL *ceh, const string &target_url) {
+        BESDEBUG(MODULE, prolog << "BEGIN." << endl);
 
-    bool using_proxy = false;
-
-    HttpProxy *proxy = HttpProxy::TheProxy();
-
-    // TODO remove these local variables (if possible) and pass the values into curl_easy_setopt() directly from HttpUtils
-    string proxyHost = proxy->host();
-    int proxyPort = proxy->port();
-    string proxyPassword = proxy->proxy_password();
-    string proxyUser = proxy->user();
-    string proxyUserPW = proxy->password();
-    int proxyAuthType = proxy->auth_type();
-    string no_proxy_regex = proxy->no_proxy_regex();
-
-    if (!proxyHost.empty()) {
-        using_proxy = true;
-        if (proxyPort == 0)
-            proxyPort = 8080;
-
-        // Apparently we don't need this...
-        //if(proxyProtocol.empty())
-        // proxyProtocol = "http";
-
-    }
-    if (using_proxy) {
-        BESDEBUG(MODULE, prolog << "Found proxy configuration." << endl);
-
-        // Don't set up the proxy server for URLs that match the 'NoProxy'
-        // regex set in the gateway.conf file.
-
-        // Don't create the regex if the string is empty
-        if (!no_proxy_regex.empty()) {
-            BESDEBUG(MODULE, prolog << "Found NoProxyRegex." << endl);
-            BESRegex r(no_proxy_regex.c_str());
-            if (r.match(target_url.c_str(), target_url.length()) != -1) {
-                BESDEBUG(MODULE,
-                         prolog << "Found NoProxy match. Regex: " << no_proxy_regex << "; Url: " << target_url
-                                << endl);
-                using_proxy = false;
-            }
-        }
-
+        bool using_proxy = http::ProxyConfig::theOne()->is_configured();
         if (using_proxy) {
-            CURLcode res;
-            char error_buffer[CURL_ERROR_SIZE];
 
-            BESDEBUG(MODULE, prolog << "Setting up a proxy server." << endl);
-            BESDEBUG(MODULE, prolog << "Proxy host: " << proxyHost << endl);
-            BESDEBUG(MODULE, prolog << "Proxy port: " << proxyPort << endl);
+            BESDEBUG(MODULE, prolog << "Proxy has been configured..." << endl);
 
-            set_error_buffer(ceh, error_buffer);
+            http::ProxyConfig *proxy = http::ProxyConfig::theOne();
 
-            res = curl_easy_setopt(ceh, CURLOPT_PROXY, proxyHost.data());
-            eval_curl_easy_setopt_result(res, prolog, "CURLOPT_PROXY", error_buffer, __FILE__, __LINE__);
+            // TODO remove these local variables (if possible) and pass the values into curl_easy_setopt() directly from HttpUtils
+            string proxyHost = proxy->host();
+            int proxyPort = proxy->port();
+            string proxyPassword = proxy->proxy_password();
+            string proxyUser = proxy->user();
+            string proxyUserPW = proxy->password();
+            int proxyAuthType = proxy->auth_type();
+            string no_proxy_regex = proxy->no_proxy_regex();
 
-            res = curl_easy_setopt(ceh, CURLOPT_PROXYPORT, proxyPort);
-            eval_curl_easy_setopt_result(res, prolog, "CURLOPT_PROXYPORT", error_buffer, __FILE__, __LINE__);
 
-            // oddly "#ifdef CURLOPT_PROXYAUTH" doesn't work - even though CURLOPT_PROXYAUTH is defined and valued at 111 it
-            // fails the test. Eclipse hover over the CURLOPT_PROXYAUTH symbol shows: "CINIT(PROXYAUTH, LONG, 111)",
-            // for what that's worth
+            // Don't set up the proxy server for URLs that match the 'NoProxy'
+            // regex set in the gateway.conf file.
 
-            // According to http://curl.haxx.se/libcurl/c/curl_easy_setopt.html#CURLOPTPROXYAUTH
-            // As of 4/21/08 only NTLM, Digest and Basic work.
-
-            res = curl_easy_setopt(ceh, CURLOPT_PROXYAUTH, proxyAuthType);
-            eval_curl_easy_setopt_result(res, prolog, "CURLOPT_PROXYAUTH", error_buffer, __FILE__, __LINE__);
-            BESDEBUG(MODULE, prolog << "Using CURLOPT_PROXYAUTH = " << getCurlAuthTypeName(proxyAuthType) << endl);
-
-            if (!proxyUser.empty()) {
-                res = curl_easy_setopt(ceh, CURLOPT_PROXYUSERNAME, proxyUser.data());
-                eval_curl_easy_setopt_result(res, prolog, "CURLOPT_PROXYUSERNAME", error_buffer, __FILE__, __LINE__);
-                BESDEBUG(MODULE, prolog << "CURLOPT_PROXYUSERNAME : " << proxyUser << endl);
-
-                if (!proxyPassword.empty()) {
-                    res = curl_easy_setopt(ceh, CURLOPT_PROXYPASSWORD, proxyPassword.data());
-                    eval_curl_easy_setopt_result(res, prolog, "CURLOPT_PROXYPASSWORD", error_buffer, __FILE__,
-                                                 __LINE__);
-                    BESDEBUG(MODULE, prolog << "CURLOPT_PROXYPASSWORD: " << proxyPassword << endl);
+            // Don't create the regex if the string is empty
+            if (!no_proxy_regex.empty()) {
+                BESDEBUG(MODULE, prolog << "Found NoProxyRegex." << endl);
+                BESRegex r(no_proxy_regex.c_str());
+                if (r.match(target_url.c_str(), target_url.length()) != -1) {
+                    BESDEBUG(MODULE,
+                             prolog << "Found NoProxy match. Regex: " << no_proxy_regex << "; Url: " << target_url
+                                    << endl);
+                    using_proxy = false;
                 }
             }
-            else if (!proxyUserPW.empty()) {
-                res = curl_easy_setopt(ceh, CURLOPT_PROXYUSERPWD, proxyUserPW.data());
-                eval_curl_easy_setopt_result(res, prolog, "CURLOPT_PROXYUSERPWD", error_buffer, __FILE__, __LINE__);
-                BESDEBUG(MODULE, prolog << "CURLOPT_PROXYUSERPWD : " << proxyUserPW << endl);
-            }
-            unset_error_buffer(ceh);
-        }
-    }
-    BESDEBUG(MODULE, prolog << "END." << endl);
 
-    return using_proxy;
-}
+            if (using_proxy) {
+                CURLcode res;
+                char error_buffer[CURL_ERROR_SIZE];
+
+                BESDEBUG(MODULE, prolog << "Setting up a proxy server." << endl);
+                BESDEBUG(MODULE, prolog << "Proxy host: " << proxyHost << endl);
+                BESDEBUG(MODULE, prolog << "Proxy port: " << proxyPort << endl);
+
+                set_error_buffer(ceh, error_buffer);
+
+                res = curl_easy_setopt(ceh, CURLOPT_PROXY, proxyHost.data());
+                eval_curl_easy_setopt_result(res, prolog, "CURLOPT_PROXY", error_buffer, __FILE__, __LINE__);
+
+                res = curl_easy_setopt(ceh, CURLOPT_PROXYPORT, proxyPort);
+                eval_curl_easy_setopt_result(res, prolog, "CURLOPT_PROXYPORT", error_buffer, __FILE__, __LINE__);
+
+                // oddly "#ifdef CURLOPT_PROXYAUTH" doesn't work - even though CURLOPT_PROXYAUTH is defined and valued at 111 it
+                // fails the test. Eclipse hover over the CURLOPT_PROXYAUTH symbol shows: "CINIT(PROXYAUTH, LONG, 111)",
+                // for what that's worth
+
+                // According to http://curl.haxx.se/libcurl/c/curl_easy_setopt.html#CURLOPTPROXYAUTH
+                // As of 4/21/08 only NTLM, Digest and Basic work.
+
+                res = curl_easy_setopt(ceh, CURLOPT_PROXYAUTH, proxyAuthType);
+                eval_curl_easy_setopt_result(res, prolog, "CURLOPT_PROXYAUTH", error_buffer, __FILE__, __LINE__);
+                BESDEBUG(MODULE, prolog << "Using CURLOPT_PROXYAUTH = " << getCurlAuthTypeName(proxyAuthType) << endl);
+
+                if (!proxyUser.empty()) {
+                    res = curl_easy_setopt(ceh, CURLOPT_PROXYUSERNAME, proxyUser.data());
+                    eval_curl_easy_setopt_result(res, prolog, "CURLOPT_PROXYUSERNAME", error_buffer, __FILE__,
+                                                 __LINE__);
+                    BESDEBUG(MODULE, prolog << "CURLOPT_PROXYUSERNAME : " << proxyUser << endl);
+
+                    if (!proxyPassword.empty()) {
+                        res = curl_easy_setopt(ceh, CURLOPT_PROXYPASSWORD, proxyPassword.data());
+                        eval_curl_easy_setopt_result(res, prolog, "CURLOPT_PROXYPASSWORD", error_buffer, __FILE__,
+                                                     __LINE__);
+                        BESDEBUG(MODULE, prolog << "CURLOPT_PROXYPASSWORD: " << proxyPassword << endl);
+                    }
+                } else if (!proxyUserPW.empty()) {
+                    res = curl_easy_setopt(ceh, CURLOPT_PROXYUSERPWD, proxyUserPW.data());
+                    eval_curl_easy_setopt_result(res, prolog, "CURLOPT_PROXYUSERPWD", error_buffer, __FILE__, __LINE__);
+                    BESDEBUG(MODULE, prolog << "CURLOPT_PROXYUSERPWD : " << proxyUserPW << endl);
+                }
+                unset_error_buffer(ceh);
+            }
+        }
+        BESDEBUG(MODULE, prolog << "END. using_proxy: " << (using_proxy ? "true" : "false") << endl);
+        return using_proxy;
+    }
+
+#if 0
+        bool configure_curl_handle_for_proxy(CURL *ceh, const string &target_url) {
+        BESDEBUG(MODULE, prolog << "BEGIN." << endl);
+
+        bool using_proxy = false;
+
+        http::ProxyConfig *proxy = http::ProxyConfig::TheConfig();
+
+        // TODO remove these local variables (if possible) and pass the values into curl_easy_setopt() directly from HttpUtils
+        string proxyHost = proxy->host();
+        int proxyPort = proxy->port();
+        string proxyPassword = proxy->proxy_password();
+        string proxyUser = proxy->user();
+        string proxyUserPW = proxy->password();
+        int proxyAuthType = proxy->auth_type();
+        string no_proxy_regex = proxy->no_proxy_regex();
+
+        if (!proxyHost.empty()) {
+            using_proxy = true;
+            if (proxyPort == 0)
+                proxyPort = 8080;
+
+            // Apparently we don't need this...
+            //if(proxyProtocol.empty())
+            // proxyProtocol = "http";
+
+        }
+        if (using_proxy) {
+            BESDEBUG(MODULE, prolog << "Found proxy configuration." << endl);
+
+            // Don't set up the proxy server for URLs that match the 'NoProxy'
+            // regex set in the gateway.conf file.
+
+            // Don't create the regex if the string is empty
+            if (!no_proxy_regex.empty()) {
+                BESDEBUG(MODULE, prolog << "Found NoProxyRegex." << endl);
+                BESRegex r(no_proxy_regex.c_str());
+                if (r.match(target_url.c_str(), target_url.length()) != -1) {
+                    BESDEBUG(MODULE,
+                             prolog << "Found NoProxy match. Regex: " << no_proxy_regex << "; Url: " << target_url
+                                    << endl);
+                    using_proxy = false;
+                }
+            }
+
+            if (using_proxy) {
+                CURLcode res;
+                char error_buffer[CURL_ERROR_SIZE];
+
+                BESDEBUG(MODULE, prolog << "Setting up a proxy server." << endl);
+                BESDEBUG(MODULE, prolog << "Proxy host: " << proxyHost << endl);
+                BESDEBUG(MODULE, prolog << "Proxy port: " << proxyPort << endl);
+
+                set_error_buffer(ceh, error_buffer);
+
+                res = curl_easy_setopt(ceh, CURLOPT_PROXY, proxyHost.data());
+                eval_curl_easy_setopt_result(res, prolog, "CURLOPT_PROXY", error_buffer, __FILE__, __LINE__);
+
+                res = curl_easy_setopt(ceh, CURLOPT_PROXYPORT, proxyPort);
+                eval_curl_easy_setopt_result(res, prolog, "CURLOPT_PROXYPORT", error_buffer, __FILE__, __LINE__);
+
+                // oddly "#ifdef CURLOPT_PROXYAUTH" doesn't work - even though CURLOPT_PROXYAUTH is defined and valued at 111 it
+                // fails the test. Eclipse hover over the CURLOPT_PROXYAUTH symbol shows: "CINIT(PROXYAUTH, LONG, 111)",
+                // for what that's worth
+
+                // According to http://curl.haxx.se/libcurl/c/curl_easy_setopt.html#CURLOPTPROXYAUTH
+                // As of 4/21/08 only NTLM, Digest and Basic work.
+
+                res = curl_easy_setopt(ceh, CURLOPT_PROXYAUTH, proxyAuthType);
+                eval_curl_easy_setopt_result(res, prolog, "CURLOPT_PROXYAUTH", error_buffer, __FILE__, __LINE__);
+                BESDEBUG(MODULE, prolog << "Using CURLOPT_PROXYAUTH = " << getCurlAuthTypeName(proxyAuthType) << endl);
+
+                if (!proxyUser.empty()) {
+                    res = curl_easy_setopt(ceh, CURLOPT_PROXYUSERNAME, proxyUser.data());
+                    eval_curl_easy_setopt_result(res, prolog, "CURLOPT_PROXYUSERNAME", error_buffer, __FILE__, __LINE__);
+                    BESDEBUG(MODULE, prolog << "CURLOPT_PROXYUSERNAME : " << proxyUser << endl);
+
+                    if (!proxyPassword.empty()) {
+                        res = curl_easy_setopt(ceh, CURLOPT_PROXYPASSWORD, proxyPassword.data());
+                        eval_curl_easy_setopt_result(res, prolog, "CURLOPT_PROXYPASSWORD", error_buffer, __FILE__,
+                                                     __LINE__);
+                        BESDEBUG(MODULE, prolog << "CURLOPT_PROXYPASSWORD: " << proxyPassword << endl);
+                    }
+                }
+                else if (!proxyUserPW.empty()) {
+                    res = curl_easy_setopt(ceh, CURLOPT_PROXYUSERPWD, proxyUserPW.data());
+                    eval_curl_easy_setopt_result(res, prolog, "CURLOPT_PROXYUSERPWD", error_buffer, __FILE__, __LINE__);
+                    BESDEBUG(MODULE, prolog << "CURLOPT_PROXYUSERPWD : " << proxyUserPW << endl);
+                }
+                unset_error_buffer(ceh);
+            }
+        }
+        BESDEBUG(MODULE, prolog << "END." << endl);
+
+        return using_proxy;
+    }
+#endif
+
+
 
 CURL *init(const string &target_url,
            const struct curl_slist *http_request_headers,

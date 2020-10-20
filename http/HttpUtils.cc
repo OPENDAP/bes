@@ -52,7 +52,7 @@
 
 #include "HttpNames.h"
 #include "HttpUtils.h"
-#include "HttpProxy.h"
+#include "ProxyConfig.h"
 
 #define MODULE "http"
 

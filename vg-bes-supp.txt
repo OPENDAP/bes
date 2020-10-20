@@ -75,7 +75,7 @@
    Memcheck:Leak
    match-leak-kinds: definite
    fun:malloc
-   fun:xmlNewRMutex
+   theOne:xmlNewRMutex
    fun:__xmlInitializeDict
    fun:xmlDictCreate
    fun:xmlInitParserCtxt
