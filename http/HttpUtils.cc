@@ -26,22 +26,18 @@
 #include "config.h"
 
 #ifdef HAVE_UNISTD_H
-
 #include <unistd.h>
-
 #endif
 
 #include <cstdlib>
 #include <cstring>
+#include <string>
 #include <map>
 #include <vector>
 #include <sstream>
 #include <time.h>
-#include <sstream>
 
 #include <curl/curl.h>
-
-// #include <GNURegex.h>
 
 #include <BESUtil.h>
 #include <BESCatalogUtils.h>
@@ -56,6 +52,7 @@
 
 #include "HttpNames.h"
 #include "HttpUtils.h"
+#include "HttpProxy.h"
 
 #define MODULE "http"
 
@@ -63,24 +60,15 @@ using namespace std;
 using namespace http;
 
 // These are static class members
-map<string, string> HttpUtils::MimeList;
-
-string HttpUtils::ProxyProtocol;
-string HttpUtils::ProxyHost;
-int HttpUtils::ProxyPort = 0;
-int HttpUtils::ProxyAuthType = 0;
-string HttpUtils::ProxyUser;
-string HttpUtils::ProxyPassword;
-string HttpUtils::ProxyUserPW;
-string HttpUtils::NoProxyRegex;
-bool HttpUtils::ProxyConfigured = false;
-int HttpUtils::MaxRedirects = HTTP_MAX_REDIRECTS_DEFAULT;
 
 #define prolog string("HttpUtils::").append(__func__).append("() - ")
 
-// Initialization routine for the httpd_catalog_HTTPD_CATALOG for certain parameters
-// and keys, like the AllowHosts list, the MimeTypes translation.
-void HttpUtils::load_proxy_from_keys()
+namespace http {
+/**
+ * Loads the passed
+ * @param mime_list
+ */
+void load_mime_list_from_keys(map<string, string> &mime_list)
 {
     // MimeTypes - translate from a mime type to a module name
     bool found = false;
@@ -98,93 +86,12 @@ void HttpUtils::load_proxy_from_keys()
             }
             string mod = (*i).substr(0, colon);
             string mime = (*i).substr(colon + 1);
-            MimeList[mod] = mime;
+            mime_list[mod] = mime;
         }
     }
-
-    found = false;
-    TheBESKeys::TheKeys()->get_value(HTTP_PROXYHOST_KEY, HttpUtils::ProxyHost, found);
-    if (found && !HttpUtils::ProxyHost.empty()) {
-        // if the proxy host is set, then check to see if the port is
-        // set. Does not need to be.
-        found = false;
-        string port;
-        TheBESKeys::TheKeys()->get_value(HTTP_PROXYPORT_KEY, port, found);
-        if (found && !port.empty()) {
-            HttpUtils::ProxyPort = atoi(port.c_str());
-            if (!HttpUtils::ProxyPort) {
-                string err = (string) "httpd catalog proxy host is specified, but specified port is absent";
-                throw BESSyntaxUserError(err, __FILE__, __LINE__);
-            }
-        }
-
-        // @TODO Either use this or remove it - right now this variable is never used downstream
-        // find the protocol to use for the proxy server. If none set, default to http
-        found = false;
-        TheBESKeys::TheKeys()->get_value(HTTP_PROXYPROTOCOL_KEY, HttpUtils::ProxyProtocol, found);
-        if (!found || HttpUtils::ProxyProtocol.empty()) {
-            HttpUtils::ProxyProtocol = "http";
-        }
-
-        // find the user to use for authenticating with the proxy server. If none set,
-        // default to ""
-        found = false;
-        TheBESKeys::TheKeys()->get_value(HTTP_PROXYUSER_KEY, HttpUtils::ProxyUser, found);
-        if (!found) {
-            HttpUtils::ProxyUser = "";
-        }
-
-        // find the password to use for authenticating with the proxy server. If none set,
-        // default to ""
-        found = false;
-        TheBESKeys::TheKeys()->get_value(HTTP_PROXYPASSWORD_KEY, HttpUtils::ProxyPassword, found);
-        if (!found) {
-            HttpUtils::ProxyPassword = "";
-        }
-
-        // find the user:password string to use for authenticating with the proxy server. If none set,
-        // default to ""
-        found = false;
-        TheBESKeys::TheKeys()->get_value(HTTP_PROXYUSERPW_KEY, HttpUtils::ProxyUserPW, found);
-        if (!found) {
-            HttpUtils::ProxyUserPW = "";
-        }
-
-        // find the authentication mechanism to use with the proxy server. If none set,
-        // default to BASIC authentication.
-        found = false;
-        string authType;
-        TheBESKeys::TheKeys()->get_value(HTTP_PROXYAUTHTYPE_KEY, authType, found);
-        if (found) {
-            authType = BESUtil::lowercase(authType);
-            if (authType == "basic") {
-                HttpUtils::ProxyAuthType = CURLAUTH_BASIC;
-                BESDEBUG(MODULE, prolog << "ProxyAuthType BASIC set." << endl);
-            } else if (authType == "digest") {
-                HttpUtils::ProxyAuthType = CURLAUTH_DIGEST;
-                BESDEBUG(MODULE, prolog << "ProxyAuthType DIGEST set." << endl);
-            } else if (authType == "ntlm") {
-                HttpUtils::ProxyAuthType = CURLAUTH_NTLM;
-                BESDEBUG(MODULE, prolog << "ProxyAuthType NTLM set." << endl);
-            } else {
-                HttpUtils::ProxyAuthType = CURLAUTH_BASIC;
-                BESDEBUG(MODULE,
-                         prolog << "User supplied an invalid value '" << authType
-                                << "'  for Gateway.ProxyAuthType. Falling back to BASIC authentication scheme."
-                                << endl);
-            }
-        } else {
-            HttpUtils::ProxyAuthType = CURLAUTH_BASIC;
-        }
-    }
-
-    // Grab the value for the NoProxy regex; empty if there is none.
-    found = false; // Not used
-    TheBESKeys::TheKeys()->get_value(HTTP_NO_PROXY_REGEX_KEY, HttpUtils::NoProxyRegex, found);
 }
 
-// Not used. There's a better version of this that returns a string in libdap.
-// jhrg 3/24/11
+
 
 /**
  * Look for the type of handler that can read the filename found in the \arg disp.
@@ -199,7 +106,7 @@ void HttpUtils::load_proxy_from_keys()
  * @param type The type of the handler that can read this file or the empty
  * string if the BES Catalog Utils cannot find a handler to read it.
  */
-void HttpUtils::Get_type_from_disposition(const string &disp, string &type)
+void get_type_from_disposition(const string &disp, string &type)
 {
     // If this function extracts a filename from disp and it matches a handler's
     // regex using the Catalog Utils, this will be set to a non-empty value.
@@ -243,11 +150,13 @@ void HttpUtils::Get_type_from_disposition(const string &disp, string &type)
     }
 }
 
-void HttpUtils::Get_type_from_content_type(const string &ctype, string &type)
+void get_type_from_content_type(const string &ctype, string &type)
 {
     BESDEBUG(MODULE, prolog << "BEGIN content-type: " << ctype << endl);
-    map<string, string>::iterator i = MimeList.begin();
-    map<string, string>::iterator e = MimeList.end();
+    map<string,string> mime_list;
+    load_mime_list_from_keys(mime_list);
+    map<string, string>::iterator i = mime_list.begin();
+    map<string, string>::iterator e = mime_list.end();
     bool done = false;
     for (; i != e && !done; i++) {
         BESDEBUG(MODULE, prolog << "Comparing content type '" << ctype << "' against mime list element '" << (*i).second << "'" << endl);
@@ -261,7 +170,7 @@ void HttpUtils::Get_type_from_content_type(const string &ctype, string &type)
     BESDEBUG(MODULE, prolog << "END" << endl);
 }
 
-void HttpUtils::Get_type_from_url(const string &url, string &type) {
+void get_type_from_url(const string &url, string &type) {
     const BESCatalogUtils *utils = BESCatalogList::TheCatalogList()->find_catalog("catalog")->get_catalog_utils();
 
     type = utils->get_handler_name(url);
@@ -271,78 +180,80 @@ void HttpUtils::Get_type_from_url(const string &url, string &type) {
  * Loads the value of Http.MaxRedirects from TheBESKeys.
  * If the value is not found, then it is set to the default, HTTP_MAX_REDIRECTS_DEFAULT
  */
-void HttpUtils::load_max_redirects_from_keys(){
+size_t load_max_redirects_from_keys(){
+    size_t max_redirects=0;
     bool found = false;
-    string max_redirects;
-    TheBESKeys::TheKeys()->get_value(HTTP_MAX_REDIRECTS_KEY, max_redirects, found);
-    if (found && !max_redirects.empty()) {
-        std::istringstream(max_redirects) >> HttpUtils::MaxRedirects; // Returns 0 if the parse fails.
+    string value;
+    TheBESKeys::TheKeys()->get_value(HTTP_MAX_REDIRECTS_KEY, value, found);
+    if (found && !value.empty()) {
+        std::istringstream(value) >> max_redirects; // Returns 0 if the parse fails.
     }
-    if(!HttpUtils::MaxRedirects){
-        HttpUtils::MaxRedirects = HTTP_MAX_REDIRECTS_DEFAULT;
+    if(!max_redirects){
+        max_redirects = HTTP_MAX_REDIRECTS_DEFAULT;
     }
+    return max_redirects;
 }
 
 #if 0
-/**
- * [UTC Sun Jun 21 16:17:47 2020 id: 14314][dmrpp:curl] CurlHandlePool::evaluate_curl_response() - Last Accessed URL(CURLINFO_EFFECTIVE_URL):
- *     https://ghrcw-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc?
- *         A-userid=hyrax&
- *         X-Amz-Algorithm=AWS4-HMAC-SHA256&
- *         X-Amz-Credential=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing&
- *         X-Amz-Date=20200621T161746Z&
- *         X-Amz-Expires=86400&
- *         X-Amz-Security-Token=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing&
- *         X-Amz-SignedHeaders=host&
- *         X-Amz-Signature=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing
- * @param source_url
- * @param data_access_url_info
- */
+    /**
+     * [UTC Sun Jun 21 16:17:47 2020 id: 14314][dmrpp:curl] CurlHandlePool::evaluate_curl_response() - Last Accessed URL(CURLINFO_EFFECTIVE_URL):
+     *     https://ghrcw-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc?
+     *         A-userid=hyrax&
+     *         X-Amz-Algorithm=AWS4-HMAC-SHA256&
+     *         X-Amz-Credential=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing&
+     *         X-Amz-Date=20200621T161746Z&
+     *         X-Amz-Expires=86400&
+     *         X-Amz-Security-Token=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing&
+     *         X-Amz-SignedHeaders=host&
+     *         X-Amz-Signature=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing
+     * @param source_url
+     * @param data_access_url_info
+     */
 
 
-void HttpUtils::decompose_url(const string target_url, map<string,string> &url_info)
-{
-    string url_base;
-    string query_string;
+    void HttpUtils::decompose_url(const string target_url, map<string,string> &url_info)
+    {
+        string url_base;
+        string query_string;
 
-    size_t query_index = target_url.find_first_of("?");
-    BESDEBUG(MODULE, prolog << "query_index: " << query_index << endl);
-    if(query_index != string::npos){
-        query_string = target_url.substr(query_index+1);
-        url_base = target_url.substr(0,query_index);
-    }
-    else {
-        url_base = target_url;
-    }
-    url_info.insert( std::pair<string,string>(HTTP_TARGET_URL_KEY,target_url));
-    BESDEBUG(MODULE, prolog << HTTP_TARGET_URL_KEY << ": " << target_url << endl);
-    url_info.insert( std::pair<string,string>(HTTP_URL_BASE_KEY,url_base));
-    BESDEBUG(MODULE, prolog << HTTP_URL_BASE_KEY <<": " << url_base << endl);
-    url_info.insert( std::pair<string,string>(HTTP_QUERY_STRING_KEY,query_string));
-    BESDEBUG(MODULE, prolog << HTTP_QUERY_STRING_KEY << ": " << query_string << endl);
-    if(!query_string.empty()){
-        vector<string> records;
-        string delimiters = "&";
-        BESUtil::tokenize(query_string,records, delimiters);
-        vector<string>::iterator i = records.begin();
-        for(; i!=records.end(); i++){
-            size_t index = i->find('=');
-            if(index != string::npos) {
-                string key = i->substr(0, index);
-                string value = i->substr(index+1);
-                BESDEBUG(MODULE, prolog << "key: " << key << " value: " << value << endl);
-                url_info.insert( std::pair<string,string>(key,value));
+        size_t query_index = target_url.find_first_of("?");
+        BESDEBUG(MODULE, prolog << "query_index: " << query_index << endl);
+        if(query_index != string::npos){
+            query_string = target_url.substr(query_index+1);
+            url_base = target_url.substr(0,query_index);
+        }
+        else {
+            url_base = target_url;
+        }
+        url_info.insert( std::pair<string,string>(HTTP_TARGET_URL_KEY,target_url));
+        BESDEBUG(MODULE, prolog << HTTP_TARGET_URL_KEY << ": " << target_url << endl);
+        url_info.insert( std::pair<string,string>(HTTP_URL_BASE_KEY,url_base));
+        BESDEBUG(MODULE, prolog << HTTP_URL_BASE_KEY <<": " << url_base << endl);
+        url_info.insert( std::pair<string,string>(HTTP_QUERY_STRING_KEY,query_string));
+        BESDEBUG(MODULE, prolog << HTTP_QUERY_STRING_KEY << ": " << query_string << endl);
+        if(!query_string.empty()){
+            vector<string> records;
+            string delimiters = "&";
+            BESUtil::tokenize(query_string,records, delimiters);
+            vector<string>::iterator i = records.begin();
+            for(; i!=records.end(); i++){
+                size_t index = i->find('=');
+                if(index != string::npos) {
+                    string key = i->substr(0, index);
+                    string value = i->substr(index+1);
+                    BESDEBUG(MODULE, prolog << "key: " << key << " value: " << value << endl);
+                    url_info.insert( std::pair<string,string>(key,value));
+                }
             }
         }
+        time_t now;
+        time(&now);  /* get current time; same as: timer = time(NULL)  */
+        stringstream unix_time;
+        unix_time << now;
+        url_info.insert( std::pair<string,string>(HTTP_INGEST_TIME_KEY,unix_time.str()));
     }
-    time_t now;
-    time(&now);  /* get current time; same as: timer = time(NULL)  */
-    stringstream unix_time;
-    unix_time << now;
-    url_info.insert( std::pair<string,string>(HTTP_INGEST_TIME_KEY,unix_time.str()));
-}
 
 #endif
 
-
+}
 

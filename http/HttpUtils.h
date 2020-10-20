@@ -45,32 +45,14 @@
 
 namespace http {
 
-    class HttpUtils {
-    public:
-        static std::map<std::string, std::string> MimeList;
-        static std::string ProxyProtocol;
-        static std::string ProxyHost;
-        static std::string ProxyUserPW;
-        static std::string ProxyUser;
-        static std::string ProxyPassword;
-        static int ProxyPort;
-        static int ProxyAuthType;
-        static std::string NoProxyRegex;
-        static bool ProxyConfigured;
+    void load_mime_list_from_keys(std::map<std::string, std::string> &mime_list);
+    void load_proxy_from_keys();
+    size_t load_max_redirects_from_keys();
 
-        static int MaxRedirects;
+    void get_type_from_disposition(const std::string &disp, std::string &type);
+    void get_type_from_content_type(const std::string &ctype, std::string &type);
+    void get_type_from_url(const std::string &url, std::string &type);
 
-        static void load_proxy_from_keys();
-        static void load_max_redirects_from_keys();
-
-        static void Get_type_from_disposition(const std::string &disp, std::string &type);
-
-        static void Get_type_from_content_type(const std::string &ctype, std::string &type);
-
-        static void Get_type_from_url(const std::string &url, std::string &type);
-
-        // static void decompose_url(const std::string target_url, std::map<std::string,std::string> &url_info);
-    };
 
 } // namespace http
 

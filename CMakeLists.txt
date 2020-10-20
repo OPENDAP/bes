@@ -483,6 +483,8 @@ add_executable(bes
     http/HttpNames.h
     http/HttpUtils.cc
     http/HttpUtils.h
+    http/HttpProxy.cc
+    http/HttpProxy.h
     http/RemoteResource.cc
     http/RemoteResource.h
     http/unit-tests/HttpUtilsTest.cc

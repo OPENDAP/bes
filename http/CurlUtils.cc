@@ -51,6 +51,7 @@
 #include "BESSyntaxUserError.h"
 #include "HttpNames.h"
 #include "HttpUtils.h"
+#include "HttpProxy.h"
 #include "AllowedHosts.h"
 #include "CurlUtils.h"
 #include "EffectiveUrlCache.h"
@@ -340,7 +341,7 @@ public:
 /**
  * @brief Configure the proxy options for the passed curl object.
  * The passed URL is the target URL. If the target URL matches the
- * HttpUtils::NoProxyRegex in the config file, then no proxying is done.
+ * Http.NoProxy in the config file, then no proxying is done.
  *
  * The proxy configuration is stored in the http configuration file, http.conf.
  * The configuration utilizes the following keys. The:
@@ -362,21 +363,16 @@ bool configure_curl_handle_for_proxy(CURL *ceh, const string &target_url) {
 
     bool using_proxy = false;
 
-    if (!HttpUtils::ProxyConfigured) {
-        HttpUtils::load_proxy_from_keys();
-    }
-
-    // I pulled this because I could never find where it was applied
-    // to the curl state in HTTPConnect
-    //string proxyProtocol = GatewayUtils::ProxyProtocol;
+    HttpProxy *proxy = HttpProxy::TheProxy();
 
     // TODO remove these local variables (if possible) and pass the values into curl_easy_setopt() directly from HttpUtils
-    string proxyHost = HttpUtils::ProxyHost;
-    int proxyPort = HttpUtils::ProxyPort;
-    string proxyPassword = HttpUtils::ProxyPassword;
-    string proxyUser = HttpUtils::ProxyUser;
-    string proxyUserPW = HttpUtils::ProxyUserPW;
-    int proxyAuthType = HttpUtils::ProxyAuthType;
+    string proxyHost = proxy->host();
+    int proxyPort = proxy->port();
+    string proxyPassword = proxy->proxy_password();
+    string proxyUser = proxy->user();
+    string proxyUserPW = proxy->password();
+    int proxyAuthType = proxy->auth_type();
+    string no_proxy_regex = proxy->no_proxy_regex();
 
     if (!proxyHost.empty()) {
         using_proxy = true;
@@ -395,12 +391,12 @@ bool configure_curl_handle_for_proxy(CURL *ceh, const string &target_url) {
         // regex set in the gateway.conf file.
 
         // Don't create the regex if the string is empty
-        if (!HttpUtils::NoProxyRegex.empty()) {
+        if (!no_proxy_regex.empty()) {
             BESDEBUG(MODULE, prolog << "Found NoProxyRegex." << endl);
-            BESRegex r(HttpUtils::NoProxyRegex.c_str());
+            BESRegex r(no_proxy_regex.c_str());
             if (r.match(target_url.c_str(), target_url.length()) != -1) {
                 BESDEBUG(MODULE,
-                         prolog << "Found NoProxy match. Regex: " << HttpUtils::NoProxyRegex << "; Url: " << target_url
+                         prolog << "Found NoProxy match. Regex: " << no_proxy_regex << "; Url: " << target_url
                                 << endl);
                 using_proxy = false;
             }
@@ -1384,7 +1380,7 @@ bool eval_curl_easy_perform_code(
 void retrieve_effective_url(const string &target_url, string &last_accessed_url) {
     vector<string> resp_hdrs;
     CURL *ceh = NULL;
-    CURLcode curl_code;
+    // CURLcode curl_code;
     curl_slist *request_headers = NULL;
 
     BESDEBUG(MODULE, prolog << "BEGIN" <<  endl);
@@ -1582,8 +1578,7 @@ void eval_curl_easy_setopt_result(
 }
 
 unsigned long max_redirects() {
-    HttpUtils::load_max_redirects_from_keys();
-    return HttpUtils::MaxRedirects;
+    return http::load_max_redirects_from_keys();
 }
 
 /**

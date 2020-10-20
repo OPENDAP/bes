@@ -43,6 +43,7 @@ SRCS = CurlUtils.cc \
     HttpCache.cc \
     RemoteResource.cc \
     HttpUtils.cc \
+    HttpProxy.cc \
     EffectiveUrlCache.cc \
     url_impl.cc
 
@@ -50,6 +51,7 @@ HDRS = CurlUtils.h \
     HttpCache.h \
     RemoteResource.h \
     HttpUtils.h \
+    HttpProxy.h \
     HttpNames.h \
     EffectiveUrlCache.h \
     url_impl.h
