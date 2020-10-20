@@ -40,7 +40,6 @@ HttpProxy *HttpProxy::TheProxy()
  */
 void HttpProxy::load_proxy_from_keys()
 {
-    // MimeTypes - translate from a mime type to a module name
     bool found = false;
     vector<string> vals;
     string key;

@@ -13,8 +13,6 @@ class HttpProxy {
 private:
     static HttpProxy *d_instance;
 
-    std::map<std::string, std::string> d_mime_list;
-
     std::string d_protocol;
     std::string d_host;
     std::string d_user_password;
@@ -44,18 +42,13 @@ private:
 public:
     static HttpProxy *TheProxy();
     std::string protocol(){return d_protocol;}
-    std::string host();
-    std::string password();
-    std::string user();
-    std::string proxy_password();
-    int port();
-    int auth_type();
-    std::string no_proxy_regex();
-
-    void load_max_redirects_from_keys();
-
-    std::map<std::string, std::string>  get_mime_list();
-
+    std::string host() {return d_host;}
+    std::string password(){return d_user_password;}
+    std::string user(){return d_user_id;}
+    std::string proxy_password(){return d_proxy_password;}
+    int port(){return d_port;}
+    int auth_type(){return d_auth_type;}
+    std::string no_proxy_regex(){return d_no_proxy_regex;}
 
 };
 
