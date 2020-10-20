@@ -285,8 +285,20 @@ bool DmrppParserSax2::process_dimension_def(const char *name, const xmlChar **at
     transfer_xml_attrs(attrs, nb_attributes);
 #endif
 
+#if 0
     if (!(check_required_attribute("name", attrs, nb_attributes) && check_required_attribute("size", attrs, nb_attributes))) {
         dmr_error(this, "The required attribute 'name' or 'size' was missing from a Dimension element.");
+        return false;
+    }
+#endif
+
+    if (!check_required_attribute("name", attrs, nb_attributes)) {
+        dmr_error(this, "The required attribute 'name' was missing from a Dimension element.");
+        return false;
+    }
+
+    if (!check_required_attribute("size", attrs, nb_attributes)) {
+        dmr_error(this, "The required attribute 'size' was missing from a Dimension element.");
         return false;
     }
 
@@ -327,7 +339,7 @@ bool DmrppParserSax2::process_dimension(const char *name, const xmlChar **attrs,
 #if 0
     transfer_xml_attrs(attrs, nb_attributes);
 #endif
-
+#if 0
     if (check_attribute("size", attrs, nb_attributes) && check_attribute("name", attrs, nb_attributes)) {
         dmr_error(this, "Only one of 'size' and 'name' are allowed in a Dim element, but both were used.");
         return false;
@@ -336,49 +348,60 @@ bool DmrppParserSax2::process_dimension(const char *name, const xmlChar **attrs,
         dmr_error(this, "Either 'size' or 'name' must be used in a Dim element.");
         return false;
     }
+#endif
+        bool has_size = check_attribute("size", attrs, nb_attributes);
+        bool has_name = check_attribute("name", attrs, nb_attributes);
+        if (has_size && has_name) {
+            dmr_error(this, "Only one of 'size' and 'name' are allowed in a Dim element, but both were used.");
+            return false;
+        }
+        if (!has_size && !has_name) {
+            dmr_error(this, "Either 'size' or 'name' must be used in a Dim element.");
+            return false;
+        }
 
-    if (!top_basetype()->is_vector_type()) {
+
+        if (!top_basetype()->is_vector_type()) {
         // Make the top BaseType* an array
-        BaseType *b = top_basetype();
-        pop_basetype();
+            BaseType *b = top_basetype();
+            pop_basetype();
 
-        Array *a = static_cast<Array*>(dmr()->factory()->NewVariable(dods_array_c, b->name()));
-        a->set_is_dap4(true);
-        a->add_var_nocopy(b);
-        a->set_attributes_nocopy(b->attributes());
-        // trick: instead of popping b's attributes, copying them and then pushing
-        // a's copy, just move the pointer (but make sure there's only one object that
-        // references that pointer).
-        b->set_attributes_nocopy(0);
+            Array *a = static_cast<Array*>(dmr()->factory()->NewVariable(dods_array_c, b->name()));
+            a->set_is_dap4(true);
+            a->add_var_nocopy(b);
+            a->set_attributes_nocopy(b->attributes());
+            // trick: instead of popping b's attributes, copying them and then pushing
+            // a's copy, just move the pointer (but make sure there's only one object that
+            // references that pointer).
+            b->set_attributes_nocopy(0);
 
-        push_basetype(a);
-    }
+            push_basetype(a);
+        }
 
-    assert(top_basetype()->is_vector_type());
+        assert(top_basetype()->is_vector_type());
 
-    Array *a = static_cast<Array*>(top_basetype());
-    if (check_attribute("size", attrs, nb_attributes)) {
-        a->append_dim(stoi(get_attribute_val("size", attrs, nb_attributes))); // low budget code for now. jhrg 8/20/13, modified to use new function. kln 9/7/19
-        return true;
-    }
-    else if (check_attribute("name", attrs, nb_attributes)) {
-        string name = get_attribute_val("name", attrs, nb_attributes);
+        Array *a = static_cast<Array*>(top_basetype());
+        if (has_size) {
+            a->append_dim(stoi(get_attribute_val("size", attrs, nb_attributes))); // low budget code for now. jhrg 8/20/13, modified to use new function. kln 9/7/19
+            return true;
+        }
+        else if (has_name) {
+            string name = get_attribute_val("name", attrs, nb_attributes);
 
-        D4Dimension *dim = 0;
-        if (name[0] == '/')		// lookup the Dimension in the root group
-            dim = dmr()->root()->find_dim(name);
-        else
-            // get enclosing Group and lookup Dimension there
-            dim = top_group()->find_dim(name);
+            D4Dimension *dim = 0;
+            if (name[0] == '/')		// lookup the Dimension in the root group
+                dim = dmr()->root()->find_dim(name);
+            else
+                // get enclosing Group and lookup Dimension there
+                dim = top_group()->find_dim(name);
 
-        if (!dim)
-            throw Error("The dimension '" + name + "' was not found while parsing the variable '" + a->name() + "'.");
-        a->append_dim(dim);
-        return true;
-    }
+            if (!dim)
+                throw BESInternalError("The dimension '" + name + "' was not found while parsing the variable '" + a->name() + "'.",__FILE__,__LINE__);
+            a->append_dim(dim);
+            return true;
+        }
         return false;
-
-}
+    }
 
 
 bool DmrppParserSax2::process_dmrpp_compact_start(const char *name){
@@ -526,7 +549,7 @@ bool DmrppParserSax2::process_map(const char *name, const xmlChar **attrs, int n
     // Arrays that include Maps that do not also include the Map(s) in the request.
     // See https://opendap.atlassian.net/browse/HYRAX-98. jhrg 4/13/16
     if (!map_source && d_strict)
-        throw Error("The Map '" + map_name + "' was not found while parsing the variable '" + a->name() + "'.");
+        throw BESInternalError("The Map '" + map_name + "' was not found while parsing the variable '" + a->name() + "'.",__FILE__,__LINE__);
 
     a->maps()->add_map(new D4Map(map_name, map_source));
 
@@ -1621,7 +1644,7 @@ void DmrppParserSax2::dmr_error(void *p, const char *msg, ...)
 //@}
 
 /** Clean up after a parse operation. If the parser encountered an error,
- * throw either an Error or InternalErr object.
+ * throw an BESInternalError object.
  */
 void DmrppParserSax2::cleanup_parse()
 {
@@ -1665,8 +1688,7 @@ void DmrppParserSax2::cleanup_parse()
  * boundary is found.
  * @param debug If true, ouput helpful debugging messages, False by default.
  *
- * @exception Error Thrown if the XML document could not be read or parsed.
- * @exception InternalErr Thrown if an internal error is found.
+ * @exception BESInternalError Thrown if the XML document could not be read or parsed.
  */
 void DmrppParserSax2::intern(istream &f, DMR *dest_dmr)
 {
@@ -1675,7 +1697,6 @@ void DmrppParserSax2::intern(istream &f, DMR *dest_dmr)
     if (!f.good()) throw BESInternalError(prolog + "ERROR - Supplied istream instance not open or read error",__FILE__,__LINE__);
     if (!dest_dmr) throw BESInternalError(prolog + "THe supplied DMR object pointer  is null", __FILE__, __LINE__);
 
-    Error foo;
     d_dmr = dest_dmr; // dump values here
 
     int line_num = 1;
@@ -1729,8 +1750,7 @@ void DmrppParserSax2::intern(istream &f, DMR *dest_dmr)
  * @param dest_dmr Value/result parameter; dumps the information to this DMR
  * instance.
  *
- * @exception Error Thrown if the XML document could not be read or parsed.
- * @exception InternalErr Thrown if an internal error is found.
+ * @exception BESInternalError Thrown if the XML document could not be read or parsed.
  */
 void DmrppParserSax2::intern(const string &document, DMR *dest_dmr)
 {
@@ -1743,8 +1763,7 @@ void DmrppParserSax2::intern(const string &document, DMR *dest_dmr)
  * @param dest_dmr Value/result parameter; dumps the information to this DMR
  * instance.
  *
- * @exception Error Thrown if the XML document could not be read or parsed.
- * @exception InternalErr Thrown if an internal error is found.
+ * @exception BESInternalError Thrown if the XML document could not be read or parsed.
  */
 void DmrppParserSax2::intern(const char *buffer, int size, DMR *dest_dmr)
 {
