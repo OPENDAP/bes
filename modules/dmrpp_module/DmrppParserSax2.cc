@@ -382,11 +382,14 @@ bool DmrppParserSax2::process_dimension(const char *name, const xmlChar **attrs,
 
         Array *a = static_cast<Array*>(top_basetype());
         if (has_size) {
-            a->append_dim(stoi(get_attribute_val("size", attrs, nb_attributes))); // low budget code for now. jhrg 8/20/13, modified to use new function. kln 9/7/19
+            size_t dim_size = stoi(get_attribute_val("size", attrs, nb_attributes));
+            BESDEBUG(PARSER, prolog << "Processing nameless Dim of size: " << dim_size << endl);
+            a->append_dim(dim_size); // low budget code for now. jhrg 8/20/13, modified to use new function. kln 9/7/19
             return true;
         }
         else if (has_name) {
             string name = get_attribute_val("name", attrs, nb_attributes);
+            BESDEBUG(PARSER, prolog << "Processing Dim with named Dimension reference: " << name << endl);
 
             D4Dimension *dim = 0;
             if (name[0] == '/')		// lookup the Dimension in the root group
