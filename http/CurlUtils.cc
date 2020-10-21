@@ -1484,7 +1484,7 @@ void retrieve_effective_url(const string &target_url, string &last_accessed_url)
         BESDEBUG(MODULE, prolog << "BESDebug::IsSet("<< TIMING_LOG_KEY << "): " << (BESDebug::IsSet(TIMING_LOG_KEY)?"true":"false") << endl);
         BESDEBUG(MODULE, prolog << "BESLog::TheLog()->is_verbose(): " << (BESLog::TheLog()->is_verbose()?"true":"false") << endl);
 
-        if (BESDebug::IsSet(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()){
+        if (BESDebug::IsSet("euc") || BESDebug::IsSet(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()){
             sw.start(prolog + " Following Redirects Starting With: " + target_url);
         }
 
