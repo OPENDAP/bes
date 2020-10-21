@@ -154,7 +154,7 @@ namespace http {
             if (bes_debug) show_file(bes_conf);
             TheBESKeys::ConfigFile = bes_conf;
 
-            if (bes_debug) BESDebug::SetUp("cerr,wl,bes,http");
+            if (bes_debug) BESDebug::SetUp("cerr,bes,euc,http");
 
             if(purge_cache) purge_test_cache();
 
@@ -239,11 +239,13 @@ namespace http {
                 // This one actually does the thing
                 string src_url_02 = "http://test.opendap.org/opendap";
                 http::url *effective_url_02 = new http::url("http://test.opendap.org/opendap/");
+
+                if(debug) cerr << prolog << "Retrieving effective URL for: " << src_url_02 << endl;
                 result_url =EffectiveUrlCache::TheCache()->get_effective_url(src_url_02);
                 CPPUNIT_ASSERT( EffectiveUrlCache::TheCache()->d_effective_urls.size() == 3);
 
-                if(debug) cerr << prolog << "EffectiveUrlCache::TheCache()->get_effective_url():" <<
-                (result_url?result_url->str():"NULL") << endl;
+                if(debug) cerr << prolog << "EffectiveUrlCache::TheCache()->get_effective_url() returned: " <<
+                               (result_url?result_url->str():"NULL") << endl;
                 CPPUNIT_ASSERT(result_url);
                 CPPUNIT_ASSERT(result_url->str() == effective_url_02->str());
 
@@ -254,9 +256,43 @@ namespace http {
                 CPPUNIT_FAIL(msg.str());
 
             }
-
+            if(debug) cerr << prolog << "END" << endl;
         }
 
+        void cache_test_01() {
+            if(debug) cerr << prolog << "BEGIN" << endl;
+            string source_url;
+            string value;
+            http::url *result_url;
+            try {
+                // The cache is disabled in bes.conf so we need to turn it on.
+                EffectiveUrlCache::TheCache()->d_enabled = true;
+                string thing1 = "https://harmony.uat.earthdata.nasa.gov/service-results/harmony-uat-staging/public/"
+                                "sds/staged/ATL03_20200714235814_03000802_003_01.h5";
+                string thing1_effective_url_prefix = "https://djpip0737hawz.cloudfront.net/s3";
+
+                if(debug) cerr << prolog << "Retrieving effective URL for: " << thing1 << endl;
+                result_url = EffectiveUrlCache::TheCache()->get_effective_url(thing1);
+                CPPUNIT_ASSERT( EffectiveUrlCache::TheCache()->d_effective_urls.size() == 1);
+
+                if(debug) cerr << prolog << "EffectiveUrlCache::TheCache()->get_effective_url() returned: " <<
+                               (result_url?result_url->str():"NULL") << endl;
+                CPPUNIT_ASSERT(result_url);
+                CPPUNIT_ASSERT( result_url->str().rfind(thing1_effective_url_prefix, 0) == 0);
+
+
+
+
+            }
+            catch (BESError be){
+                stringstream msg;
+                msg << __func__ << "() - ERROR! Caught BESError. Message: " << be.get_message() << endl;
+                CPPUNIT_FAIL(msg.str());
+
+            }
+            if(debug) cerr << prolog << "END" << endl;
+        }
+#if 0
         string get_amz_date(const time_t &da_time){
             string amz_date_format("%Y%m%dT%H%M%SZ"); // "20200808T032623Z";
             struct tm *dttm;
@@ -289,7 +325,7 @@ namespace http {
             if(debug) cout << "amz_date: " << amz_date.str() << " len: " << amz_date.str().length() << endl;
             return amz_date.str();
         }
-
+#endif
 
 /* TESTS END */
 /*##################################################################################################*/
@@ -300,6 +336,7 @@ namespace http {
             CPPUNIT_TEST(is_cache_disabled_test);
             CPPUNIT_TEST(cache_test_00);
             CPPUNIT_TEST(skip_regex_test);
+            CPPUNIT_TEST(cache_test_01);
 
     CPPUNIT_TEST_SUITE_END();
 };

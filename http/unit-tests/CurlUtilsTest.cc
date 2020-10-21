@@ -145,7 +145,7 @@ namespace http {
             if (bes_debug) show_file(bes_conf);
             TheBESKeys::ConfigFile = bes_conf;
 
-            if (bes_debug) BESDebug::SetUp("cerr,wl,bes,http,curl");
+            if (bes_debug) BESDebug::SetUp("cerr,bes,http,curl");
 
             if(Debug) cerr << "setUp() - END" << endl;
         }
