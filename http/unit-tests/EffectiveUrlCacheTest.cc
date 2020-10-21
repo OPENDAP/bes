@@ -269,7 +269,8 @@ namespace http {
                 EffectiveUrlCache::TheCache()->d_enabled = true;
                 string thing1 = "https://harmony.uat.earthdata.nasa.gov/service-results/harmony-uat-staging/public/"
                                 "sds/staged/ATL03_20200714235814_03000802_003_01.h5";
-                string thing1_effective_url_prefix = "https://djpip0737hawz.cloudfront.net/s3";
+                string thing1_out_of_region_effective_url_prefix = "https://djpip0737hawz.cloudfront.net/s3";
+                string thing1_in_region_effective_url_prefix = "https://harmony-uat-staging.s3.us-west-2.amazonaws.com/public/";
 
                 if(debug) cerr << prolog << "Retrieving effective URL for: " << thing1 << endl;
                 result_url = EffectiveUrlCache::TheCache()->get_effective_url(thing1);
@@ -278,7 +279,11 @@ namespace http {
                 if(debug) cerr << prolog << "EffectiveUrlCache::TheCache()->get_effective_url() returned: " <<
                                (result_url?result_url->str():"NULL") << endl;
                 CPPUNIT_ASSERT(result_url);
-                CPPUNIT_ASSERT( result_url->str().rfind(thing1_effective_url_prefix, 0) == 0);
+
+                CPPUNIT_ASSERT(
+                        result_url->str().rfind(thing1_in_region_effective_url_prefix, 0) == 0 ||
+                                result_url->str().rfind(thing1_out_of_region_effective_url_prefix, 0) == 0
+                );
 
 
 
