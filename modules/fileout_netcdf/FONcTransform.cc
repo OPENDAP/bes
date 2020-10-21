@@ -329,6 +329,24 @@ void FONcTransform::transform_dap4()
         for (std::set<string>::iterator it=_included_grp_names.begin(); it!=_included_grp_names.end(); ++it)
             BESDEBUG("fonc","included group list name is: "<<*it<<endl);
 #endif
+        // Build a global dimension name table for all variables if
+        // the constraint is not empty!
+        check_and_obtain_dimensions(root_grp,true);
+//#if 0
+    map<string,unsigned long>:: iterator it;
+    for(it=GFQN_dimname_to_dimsize.begin();it!=GFQN_dimname_to_dimsize.end();++it) {
+        BESDEBUG("fonc", "GFQN dim name is: "<<it->first<<endl);
+        BESDEBUG("fonc", "GFQN dim size is: "<<it->second<<endl);
+    }
+
+    for(it=VFQN_dimname_to_dimsize.begin();it!=VFQN_dimname_to_dimsize.end();++it) {
+        BESDEBUG("fonc", "VFQN dim name is: "<<it->first<<endl);
+        BESDEBUG("fonc", "VFQN dim size is: "<<it->second<<endl);
+    }
+
+    // STTOPP: update GFQN to use VFQN's dim size if they are different.
+//#endif
+
         transform_dap4_group(root_grp,true,_ncid,fdimname_to_id);
         stax = nc_close(_ncid);
         if (stax != NC_NOERR)
@@ -671,6 +689,107 @@ void FONcTransform::gen_included_grp_list(D4Group*grp)
     }
 
 }
+
+void FONcTransform::check_and_obtain_dimensions(D4Group*grp,bool is_root_grp) {
+
+    // We may not need to do this way,it may overkill.
+    bool included_grp = false;
+    // Always include the root attributes.
+    if(is_root_grp == true)  
+        included_grp = true;
+    else {
+        // Check if this group is in the group list kept in the file.
+        set<string>::iterator iset;
+        if(_included_grp_names.find(grp->FQN())!=_included_grp_names.end())
+            included_grp = true;
+    }
+
+    if(included_grp == true) 
+        check_and_obtain_dimensions_internal(grp);
+}
+
+void FONcTransform::check_and_obtain_dimensions_internal(D4Group*grp) {
+
+    D4Dimensions *grp_dims = grp->dims();
+    if(grp_dims) {
+        for(D4Dimensions::D4DimensionsIter di = grp_dims->dim_begin(), de = grp_dims->dim_end(); di != de; ++di) {
+#if 0
+        BESDEBUG("fonc", "transform_dap4() - check dimensions"<< endl);
+        BESDEBUG("fonc", "transform_dap4() - dim name is: "<<(*di)->name()<<endl);
+        BESDEBUG("fonc", "transform_dap4() - dim size is: "<<(*di)->size()<<endl);
+        BESDEBUG("fonc", "transform_dap4() - fully_qualfied_dim name is: "<<(*di)->fully_qualified_name()<<endl);
+#endif
+            unsigned long dimsize = (*di)->size();
+            if((*di)->constrained()) {
+                dimsize = ((*di)->c_stop() -(*di)->c_start())/(*di)->c_stride() +1;
+
+            }
+            GFQN_dimname_to_dimsize[(*di)->fully_qualified_name()] = dimsize;
+        }
+    }
+
+    Constructor::Vars_iter vi = grp->var_begin();
+    Constructor::Vars_iter ve = grp->var_end();
+    for (; vi != ve; vi++) {
+        if ((*vi)->send_p()) {
+            if((*vi)->is_vector_type()) {
+                Array *t_a = dynamic_cast<Array*>(*vi);
+                Array::Dim_iter dim_i = t_a->dim_begin();
+                Array::Dim_iter dim_e = t_a->dim_end();
+                for(;dim_i !=dim_e;dim_i++) {
+                    if((*dim_i).name!="") {
+                        D4Dimension* d4dim = t_a->dimension_D4dim(dim_i);
+                        if(d4dim) {
+                            BESDEBUG("fonc", "transform_dap4() check dim- dim name is: "<<d4dim->name()<<endl);
+                            BESDEBUG("fonc", "transform_dap4() check dim- dim size is: "<<d4dim->size()<<endl);
+                            BESDEBUG("fonc", "transform_dap4() check dim- fully_qualfied_dim name is: "<<d4dim->fully_qualified_name()<<endl);
+                            unsigned long dimsize = d4dim->size();
+                            if(d4dim->constrained()) 
+                                dimsize = (d4dim->c_stop() -d4dim->c_start())/d4dim->c_stride() +1;
+                            BESDEBUG("fonc", "transform_dap4() check dim- final dim size is: "<<d4dim->size()<<endl);
+                            pair<map<string,unsigned long>::iterator,bool> ret_it;
+                            ret_it = VFQN_dimname_to_dimsize.insert(pair<string,unsigned long>(d4dim->fully_qualified_name(),dimsize));
+                            if(ret_it.second == false && ret_it.first->second!=dimsize) {
+                                string err = "fileout_netcdf-4: dimension found with the same name, but different size";
+                                throw BESInternalError(err, __FILE__, __LINE__);
+                            }
+                    //VFQN_dimname_to_dimsize[d4dim->fully_qualified_name()] = dimsize;
+                        }
+                        else 
+                            throw BESInternalError("Has dimension name but D4 dimension is NULL",__FILE__,__LINE__); 
+                    }
+                    else {
+                        // Don't do anything now dimension names.
+
+
+                    }
+                }
+            }
+
+        }
+    }
+
+//#if 0
+    map<string,unsigned long>:: iterator it;
+    for(it=GFQN_dimname_to_dimsize.begin();it!=GFQN_dimname_to_dimsize.end();++it) {
+        BESDEBUG("fonc", "GFQN dim name is: "<<it->first<<endl);
+        BESDEBUG("fonc", "GFQN dim size is: "<<it->second<<endl);
+    }
+
+    for(it=VFQN_dimname_to_dimsize.begin();it!=VFQN_dimname_to_dimsize.end();++it) {
+        BESDEBUG("fonc", "VFQN dim name is: "<<it->first<<endl);
+        BESDEBUG("fonc", "VFQN dim size is: "<<it->second<<endl);
+    }
+
+//#endif
+
+    for (D4Group::groupsIter gi = grp->grp_begin(), ge = grp->grp_end(); gi != ge; ++gi) {
+            BESDEBUG("fonc", "FONcTransform::check_and_obtain_dimensions() in group  - group name:  " << (*gi)->name() << endl);
+            check_and_obtain_dimensions(*gi,false);
+    }
+
+}
+
 
 /** @brief dumps information about this transformation object for debugging
  * purposes
