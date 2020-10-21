@@ -1479,18 +1479,19 @@ void retrieve_effective_url(const string &target_url, string &last_accessed_url)
     request_headers = add_auth_headers(request_headers);
 
     try {
-        BESStopWatch sw;
         BESDEBUG(MODULE, prolog << "BESDebug::IsSet("<< MODULE << "): " << (BESDebug::IsSet(MODULE)?"true":"false") << endl);
         BESDEBUG(MODULE, prolog << "BESDebug::IsSet("<< TIMING_LOG_KEY << "): " << (BESDebug::IsSet(TIMING_LOG_KEY)?"true":"false") << endl);
         BESDEBUG(MODULE, prolog << "BESLog::TheLog()->is_verbose(): " << (BESLog::TheLog()->is_verbose()?"true":"false") << endl);
 
-        if (BESDebug::IsSet("euc") || BESDebug::IsSet(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()){
-            sw.start(prolog + " Following Redirects Starting With: " + target_url);
-        }
-
         ceh = init_effective_url_retriever_handle(target_url, request_headers, resp_hdrs);
 
-        super_easy_perform(ceh);
+        {
+            BESStopWatch sw;
+            if (BESDebug::IsSet("euc") || BESDebug::IsSet(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()){
+                sw.start(prolog + " Following Redirects Starting With: " + target_url);
+            }
+            super_easy_perform(ceh);
+        }
 
         // After doing the thing with super_easy_perform() we retrieve the effective URL form the cURL handle.
         last_accessed_url = get_effective_url(ceh, target_url);
