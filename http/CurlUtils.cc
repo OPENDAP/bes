@@ -748,8 +748,8 @@ CURL *init_effective_url_retriever_handle(const string &target_url, struct curl_
     set_error_buffer(ceh, error_buffer);
 
     // get the offset to offset + size bytes
-    //res = curl_easy_setopt(ceh, CURLOPT_RANGE, get_range_arg_string(0, 4).c_str());
-    //eval_curl_easy_setopt_result(res, prolog, "CURLOPT_RANGE", error_buffer, __FILE__, __LINE__);
+    res = curl_easy_setopt(ceh, CURLOPT_RANGE, get_range_arg_string(0, 4).c_str());
+    eval_curl_easy_setopt_result(res, prolog, "CURLOPT_RANGE", error_buffer, __FILE__, __LINE__);
 
     res = curl_easy_setopt(ceh, CURLOPT_WRITEFUNCTION, writeNothing);
     eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEFUNCTION", error_buffer, __FILE__, __LINE__);
