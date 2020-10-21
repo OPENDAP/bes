@@ -1265,19 +1265,10 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
         }
 
         if (cached_dmr_ptr) {
-#if 0
             // copy the cached DMR into the BES response object
             BESDEBUG(HDF5_NAME, prolog << "DMR cache hit for : " << filename << endl);
             *dmr = *cached_dmr_ptr; // Copy the referenced object
             dmr->set_request_xml_base(bes_dmr_response.get_request_xml_base());
-#endif
-
-            DMR * new_dmr = new DMR(*cached_dmr_ptr);
-            new_dmr->set_request_xml_base(bes_dmr_response.get_request_xml_base());
-            bes_dmr_response.set_dmr(new_dmr);
-            delete dmr;
-            dmr = new_dmr;
-
         }
         else {// No cache
 
