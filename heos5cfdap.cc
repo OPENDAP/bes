@@ -29,8 +29,7 @@
 /// \author Muqun Yang <myang6@hdfgroup.org>
 ///
 ////////////////////////////////////////////////////////////////////////////////
-
-#include "config.h"
+#include "config_hdf5.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
