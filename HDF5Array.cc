@@ -1528,7 +1528,7 @@ BESDEBUG("h5", "<FInd dimension name " << (*d).name<<endl);
                 D4Dimensions * dims = grp->dims();
 
     BESDEBUG("h5", "<Just before adding D4 dimension to group" << endl);
-                dims->add_dim(d4_dim);
+                dims->add_dim_nocopy(d4_dim);
                 (*d).dim = d4_dim;
             }
         }

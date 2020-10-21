@@ -1662,7 +1662,7 @@ BaseType* HDF5CFArray::h5cfdims_transform_to_dap4(D4Group *grp) {
 
                 d4_dim = new D4Dimension((*d).name, (*d).size);
                 D4Dimensions * dims = grp->dims();
-                dims->add_dim(d4_dim);
+                dims->add_dim_nocopy(d4_dim);
                 (*d).dim = d4_dim;
             }
         }
