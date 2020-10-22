@@ -335,14 +335,37 @@ void FONcTransform::transform_dap4()
 //#if 0
     map<string,unsigned long>:: iterator it;
     for(it=GFQN_dimname_to_dimsize.begin();it!=GFQN_dimname_to_dimsize.end();++it) {
-        BESDEBUG("fonc", "GFQN dim name is: "<<it->first<<endl);
-        BESDEBUG("fonc", "GFQN dim size is: "<<it->second<<endl);
+        BESDEBUG("fonc", "Final GFQN dim name is: "<<it->first<<endl);
+        BESDEBUG("fonc", "Final GFQN dim size is: "<<it->second<<endl);
     }
 
     for(it=VFQN_dimname_to_dimsize.begin();it!=VFQN_dimname_to_dimsize.end();++it) {
-        BESDEBUG("fonc", "VFQN dim name is: "<<it->first<<endl);
-        BESDEBUG("fonc", "VFQN dim size is: "<<it->second<<endl);
+        BESDEBUG("fonc", "Final VFQN dim name is: "<<it->first<<endl);
+        BESDEBUG("fonc", "Final VFQN dim size is: "<<it->second<<endl);
     }
+
+    map<string,unsigned long>:: iterator git,vit;
+    for(git=GFQN_dimname_to_dimsize.begin();git!=GFQN_dimname_to_dimsize.end();++git) {
+        for(vit=VFQN_dimname_to_dimsize.begin();vit!=VFQN_dimname_to_dimsize.end();++vit) {
+            if(git->first == vit->first) {
+                if(git->second != vit->second) 
+                    git->second = vit->second;
+                break;
+            }
+        }
+    }
+
+    for(it=GFQN_dimname_to_dimsize.begin();it!=GFQN_dimname_to_dimsize.end();++it) {
+        BESDEBUG("fonc", "RFinal GFQN dim name is: "<<it->first<<endl);
+        BESDEBUG("fonc", "RFinal GFQN dim size is: "<<it->second<<endl);
+    }
+
+    for(it=VFQN_dimname_to_dimsize.begin();it!=VFQN_dimname_to_dimsize.end();++it) {
+        BESDEBUG("fonc", "RFinal VFQN dim name is: "<<it->first<<endl);
+        BESDEBUG("fonc", "RFinal VFQN dim size is: "<<it->second<<endl);
+    }
+
+
 
     // STTOPP: update GFQN to use VFQN's dim size if they are different.
 //#endif
@@ -743,10 +766,14 @@ void FONcTransform::check_and_obtain_dimensions_internal(D4Group*grp) {
                             BESDEBUG("fonc", "transform_dap4() check dim- dim name is: "<<d4dim->name()<<endl);
                             BESDEBUG("fonc", "transform_dap4() check dim- dim size is: "<<d4dim->size()<<endl);
                             BESDEBUG("fonc", "transform_dap4() check dim- fully_qualfied_dim name is: "<<d4dim->fully_qualified_name()<<endl);
+                            
+#if 0
                             unsigned long dimsize = d4dim->size();
                             if(d4dim->constrained()) 
                                 dimsize = (d4dim->c_stop() -d4dim->c_start())/d4dim->c_stride() +1;
                             BESDEBUG("fonc", "transform_dap4() check dim- final dim size is: "<<d4dim->size()<<endl);
+#endif
+                            unsigned long dimsize = t_a->dimension_size(dim_i,true);
                             pair<map<string,unsigned long>::iterator,bool> ret_it;
                             ret_it = VFQN_dimname_to_dimsize.insert(pair<string,unsigned long>(d4dim->fully_qualified_name(),dimsize));
                             if(ret_it.second == false && ret_it.first->second!=dimsize) {
