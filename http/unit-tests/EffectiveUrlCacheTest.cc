@@ -268,7 +268,7 @@ namespace http {
                 EffectiveUrlCache::TheCache()->d_enabled = true;
                 string thing1 = "https://d1jecqxxv88lkr.cloudfront.net/ghrcwuat-protected/rss_demo/rssmif16d__7/f16_ssmis_20031026v7.nc";
                 string thing1_out_of_region_effective_url_prefix = "https://d1jecqxxv88lkr.cloudfront.net/s3";
-                string thing1_in_region_effective_url_prefix = "https://harmony-uat-staging.s3.us-west-2.amazonaws.com/public/";
+                string thing1_in_region_effective_url_prefix = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/";
 
                 if(debug) cerr << prolog << "Retrieving effective URL for: " << thing1 << endl;
                 result_url = EffectiveUrlCache::TheCache()->get_effective_url(thing1);
