@@ -136,7 +136,6 @@ namespace http {
         EffectiveUrlCacheTest()
         {
             d_data_dir = TEST_DATA_DIR;;
-            cerr << "data_dir: " << d_data_dir << endl;
         }
 
         // Called at the end of the test
@@ -149,9 +148,10 @@ namespace http {
         {
             if(debug) cerr << endl;
             if(Debug) cerr << prolog << "BEGIN" << endl;
+            if(debug) cerr << prolog << "data_dir: " << d_data_dir << endl;
             string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR,"bes.conf");
-            if(Debug) cerr << "setUp() - Using BES configuration: " << bes_conf << endl;
-            if (bes_debug) show_file(bes_conf);
+            if(Debug) cerr << prolog << "Using BES configuration: " << bes_conf << endl;
+            if (Debug) show_file(bes_conf);
             TheBESKeys::ConfigFile = bes_conf;
 
             if (bes_debug) BESDebug::SetUp("cerr,bes,euc,http");
@@ -258,8 +258,45 @@ namespace http {
             }
             if(debug) cerr << prolog << "END" << endl;
         }
+        void euc_ghrc_tea_url_test() {
+            if(debug) cerr << prolog << "BEGIN" << endl;
+            string source_url;
+            string value;
+            http::url *result_url;
+            try {
+                // The cache is disabled in bes.conf so we need to turn it on.
+                EffectiveUrlCache::TheCache()->d_enabled = true;
+                string thing1 = "https://d1jecqxxv88lkr.cloudfront.net/ghrcwuat-protected/rss_demo/rssmif16d__7/f16_ssmis_20031026v7.nc";
+                string thing1_out_of_region_effective_url_prefix = "https://d1jecqxxv88lkr.cloudfront.net/s3";
+                string thing1_in_region_effective_url_prefix = "https://harmony-uat-staging.s3.us-west-2.amazonaws.com/public/";
 
-        void cache_test_01() {
+                if(debug) cerr << prolog << "Retrieving effective URL for: " << thing1 << endl;
+                result_url = EffectiveUrlCache::TheCache()->get_effective_url(thing1);
+                CPPUNIT_ASSERT( EffectiveUrlCache::TheCache()->d_effective_urls.size() == 1);
+
+                if(debug) cerr << prolog << "EffectiveUrlCache::TheCache()->get_effective_url() returned: " <<
+                               (result_url?result_url->str():"NULL") << endl;
+                CPPUNIT_ASSERT(result_url);
+
+                CPPUNIT_ASSERT(
+                        result_url->str().rfind(thing1_in_region_effective_url_prefix, 0) == 0 ||
+                        result_url->str().rfind(thing1_out_of_region_effective_url_prefix, 0) == 0
+                );
+
+
+
+
+            }
+            catch (BESError be){
+                stringstream msg;
+                msg << __func__ << "() - ERROR! Caught BESError. Message: " << be.get_message() << endl;
+                CPPUNIT_FAIL(msg.str());
+
+            }
+            if(debug) cerr << prolog << "END" << endl;
+        }
+
+        void euc_harmony_url_test() {
             if(debug) cerr << prolog << "BEGIN" << endl;
             string source_url;
             string value;
@@ -341,7 +378,8 @@ namespace http {
             CPPUNIT_TEST(is_cache_disabled_test);
             CPPUNIT_TEST(cache_test_00);
             CPPUNIT_TEST(skip_regex_test);
-            CPPUNIT_TEST(cache_test_01);
+            CPPUNIT_TEST(euc_ghrc_tea_url_test);
+            CPPUNIT_TEST(euc_harmony_url_test);
 
     CPPUNIT_TEST_SUITE_END();
 };

@@ -18,6 +18,7 @@ Http.No.Retry.Regex+=^https:\/\/.*s3(\.|-).*\.amazonaws\.com\/.*$
 AllowedHosts = file://@abs_top_srcdir@/http/
 AllowedHosts += ^http:\/\/test\.opendap\.org\/.*$
 AllowedHosts += ^https:\/\/harmony(\.uat)?\.earthdata\.nasa\.gov\/.*$
+AllowedHosts += ^https:\/\/d1jecqxxv88lkr\.cloudfront\.net\/.*$
 
 # https://harmony.uat.earthdata.nasa.gov
 ###############################################################################

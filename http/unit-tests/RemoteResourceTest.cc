@@ -198,48 +198,63 @@ public:
             cerr << "Caught BESError! message: " << besE.get_verbose_message() << " type: " << besE.get_bes_error_type() << endl;
             CPPUNIT_ASSERT(false);
         }
-#if 0
-        catch (libdap::Error &le){
-            cerr << "Caught libdap::Error! message: " << le.get_error_message() << " code: "<< le.get_error_code() << endl;
-            CPPUNIT_ASSERT(false);
-        }
-#endif
     }
 
-        void get_ngap_url_test() {
-
-            string url = "https://harmony.uat.earthdata.nasa.gov/service-results/harmony-uat-staging/public/"
-                            "sds/staged/ATL03_20200714235814_03000802_003_01.h5.dmrpp";
-
-            if(debug) cerr << prolog << "url: " << url << endl;
-            http::RemoteResource rhr(url);
-            try {
-                rhr.retrieveResource();
-                vector<string> *hdrs = rhr.getResponseHeaders();
-                for(size_t i=0; i<hdrs->size() && debug ; i++){
-                    cerr << prolog << "hdr["<< i << "]: " << (*hdrs)[i] << endl;
-                }
-                string cache_filename = rhr.getCacheFileName();
-                if(debug) cerr << prolog << "cache_filename: " << cache_filename << endl;
-                string expected_content("This is a test. If this was not a test you would have known the answer.\n");
-                if(debug) cerr << prolog << "target string: " << expected_content << endl;
-                string content = get_file_as_string(cache_filename);
-                if(debug) cerr << prolog << "retrieved content: " << content << endl;
-                // CPPUNIT_ASSERT( content == expected_content );
+    void get_ngap_ghrc_tea_url_test() {
+        string url = "https://d1jecqxxv88lkr.cloudfront.net/ghrcwuat-protected/rss_demo/rssmif16d__7/f16_ssmis_20031026v7.nc.dmrpp";
+        if(debug) cerr << prolog << "url: " << url << endl;
+        http::RemoteResource rhr(url);
+        try {
+            rhr.retrieveResource();
+            vector<string> *hdrs = rhr.getResponseHeaders();
+            for(size_t i=0; i<hdrs->size() && debug ; i++){
+                cerr << prolog << "hdr["<< i << "]: " << (*hdrs)[i] << endl;
             }
-            catch (BESError &besE){
-                stringstream msg;
-                msg << "Caught BESError! message: " << besE.get_verbose_message() << " type: " << besE.get_bes_error_type() << endl;
-                cerr << msg.str();
-                CPPUNIT_FAIL(msg.str());
+            string cache_filename = rhr.getCacheFileName();
+            if(debug) cerr << prolog << "cache_filename: " << cache_filename << endl;
+            //string expected_content("This is a test. If this was not a test you would have known the answer.\n");
+            //if(debug) cerr << prolog << "expected_content string: " << expected_content << endl;
+            string content = get_file_as_string(cache_filename);
+            if(debug) cerr << prolog << "retrieved content: " << content << endl;
+            // CPPUNIT_ASSERT( content == expected_content );
+        }
+        catch (BESError &besE){
+            stringstream msg;
+            msg << "Caught BESError! message: " << besE.get_verbose_message() << " type: " << besE.get_bes_error_type() << endl;
+            cerr << msg.str();
+            CPPUNIT_FAIL(msg.str());
+        }
+
+    }
+
+
+
+    void get_ngap_harmony_url_test() {
+
+        string url = "https://harmony.uat.earthdata.nasa.gov/service-results/harmony-uat-staging/public/"
+                        "sds/staged/ATL03_20200714235814_03000802_003_01.h5.dmrpp";
+
+        if(debug) cerr << prolog << "url: " << url << endl;
+        http::RemoteResource rhr(url);
+        try {
+            rhr.retrieveResource();
+            vector<string> *hdrs = rhr.getResponseHeaders();
+            for(size_t i=0; i<hdrs->size() && debug ; i++){
+                cerr << prolog << "hdr["<< i << "]: " << (*hdrs)[i] << endl;
             }
-#if 0
-            catch (libdap::Error &le){
-            cerr << "Caught libdap::Error! message: " << le.get_error_message() << " code: "<< le.get_error_code() << endl;
-            CPPUNIT_ASSERT(false);
+            string cache_filename = rhr.getCacheFileName();
+            if(debug) cerr << prolog << "cache_filename: " << cache_filename << endl;
+            string content = get_file_as_string(cache_filename);
+            if(debug) cerr << prolog << "retrieved content: " << content << endl;
+            // CPPUNIT_ASSERT( content == expected_content );
         }
-#endif
+        catch (BESError &besE){
+            stringstream msg;
+            msg << "Caught BESError! message: " << besE.get_verbose_message() << " type: " << besE.get_bes_error_type() << endl;
+            cerr << msg.str();
+            CPPUNIT_FAIL(msg.str());
         }
+    }
 
         /**
      *
@@ -287,7 +302,8 @@ public:
 
     CPPUNIT_TEST_SUITE( RemoteResourceTest );
 
-    CPPUNIT_TEST(get_ngap_url_test);
+    CPPUNIT_TEST(get_ngap_ghrc_tea_url_test);
+    CPPUNIT_TEST(get_ngap_harmony_url_test);
     CPPUNIT_TEST(get_http_url_test);
     CPPUNIT_TEST(get_file_url_test);
 
