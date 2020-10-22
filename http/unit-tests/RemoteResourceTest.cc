@@ -124,7 +124,6 @@ public:
     RemoteResourceTest()
     {
         d_data_dir = TEST_DATA_DIR;;
-        cerr << "data_dir: " << d_data_dir << endl;
     }
 
     // Called at the end of the test
@@ -135,13 +134,14 @@ public:
     // Called before each test
     void setUp()
     {
+        if(debug) cerr << "data_dir: " << d_data_dir << endl;
         if(Debug) cerr << endl << prolog << "BEGIN" << endl;
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR,"bes.conf");
         if(Debug) cerr << prolog << "Using BES configuration: " << bes_conf << endl;
         if (bes_debug) show_file(bes_conf);
         TheBESKeys::ConfigFile = bes_conf;
 
-        if (bes_debug) BESDebug::SetUp("cerr,wl,bes,http");
+        if (bes_debug) BESDebug::SetUp("cerr,rr,bes,http");
 
 
         if(purge_cache){
@@ -152,8 +152,11 @@ public:
             if(found){
                 if(Debug) cerr << prolog << HTTP_CACHE_DIR_KEY << ": " <<  cache_dir << endl;
                 if(Debug) cerr << prolog << "Purging " << cache_dir << endl;
-                string cmd = "exec rm -r "+ BESUtil::assemblePath(cache_dir,"/*");
-                system(cmd.c_str());
+                string sys_cmd = "mkdir -p "+ cache_dir;
+                system(sys_cmd.c_str());
+                sys_cmd = "exec rm -rf "+ BESUtil::assemblePath(cache_dir,"/*");
+                system(sys_cmd.c_str());
+                if(Debug) cerr << prolog << cache_dir  << " has been purged." << endl;
             }
         }
 
@@ -185,11 +188,11 @@ public:
             }
             string cache_filename = rhr.getCacheFileName();
             if(debug) cerr << prolog << "cache_filename: " << cache_filename << endl;
-            string target("This is a test. If this was not a test you would have known the answer.\n");
-            if(debug) cerr << prolog << "target string: " << target << endl;
+            string expected_content("This is a test. If this was not a test you would have known the answer.\n");
+            if(debug) cerr << prolog << "expected_content string: " << expected_content << endl;
             string content = get_file_as_string(cache_filename);
             if(debug) cerr << prolog << "retrieved content: " << content << endl;
-            CPPUNIT_ASSERT( !content.compare(target) );
+            CPPUNIT_ASSERT( content == expected_content );
         }
         catch (BESError &besE){
             cerr << "Caught BESError! message: " << besE.get_verbose_message() << " type: " << besE.get_bes_error_type() << endl;
@@ -203,7 +206,42 @@ public:
 #endif
     }
 
-    /**
+        void get_ngap_url_test() {
+
+            string url = "https://harmony.uat.earthdata.nasa.gov/service-results/harmony-uat-staging/public/"
+                            "sds/staged/ATL03_20200714235814_03000802_003_01.h5.dmrpp";
+
+            if(debug) cerr << prolog << "url: " << url << endl;
+            http::RemoteResource rhr(url);
+            try {
+                rhr.retrieveResource();
+                vector<string> *hdrs = rhr.getResponseHeaders();
+                for(size_t i=0; i<hdrs->size() && debug ; i++){
+                    cerr << prolog << "hdr["<< i << "]: " << (*hdrs)[i] << endl;
+                }
+                string cache_filename = rhr.getCacheFileName();
+                if(debug) cerr << prolog << "cache_filename: " << cache_filename << endl;
+                string expected_content("This is a test. If this was not a test you would have known the answer.\n");
+                if(debug) cerr << prolog << "target string: " << expected_content << endl;
+                string content = get_file_as_string(cache_filename);
+                if(debug) cerr << prolog << "retrieved content: " << content << endl;
+                // CPPUNIT_ASSERT( content == expected_content );
+            }
+            catch (BESError &besE){
+                stringstream msg;
+                msg << "Caught BESError! message: " << besE.get_verbose_message() << " type: " << besE.get_bes_error_type() << endl;
+                cerr << msg.str();
+                CPPUNIT_FAIL(msg.str());
+            }
+#if 0
+            catch (libdap::Error &le){
+            cerr << "Caught libdap::Error! message: " << le.get_error_message() << " code: "<< le.get_error_code() << endl;
+            CPPUNIT_ASSERT(false);
+        }
+#endif
+        }
+
+        /**
      *
      */
     void get_file_url_test() {
@@ -249,6 +287,7 @@ public:
 
     CPPUNIT_TEST_SUITE( RemoteResourceTest );
 
+    CPPUNIT_TEST(get_ngap_url_test);
     CPPUNIT_TEST(get_http_url_test);
     CPPUNIT_TEST(get_file_url_test);
 

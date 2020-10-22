@@ -5,7 +5,7 @@ BES.Catalog.catalog.TypeMatch+=nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$
 
 BES.LogName=/dev/null
 
-Http.Cache.dir=/tmp
+Http.Cache.dir=/tmp/hyrax_tests
 Http.Cache.prefix=http_unit_tests_
 Http.Cache.size=500
 
@@ -16,8 +16,10 @@ Http.No.Retry.Regex+=^https:\/\/.*s3(\.|-).*\.amazonaws\.com\/.*$
 
 # Allow access to src dir and test.opendap.org
 AllowedHosts = file://@abs_top_srcdir@/http/
-AllowedHosts = ^http:\/\/test\.opendap\.org\/.*$
+AllowedHosts += ^http:\/\/test\.opendap\.org\/.*$
+AllowedHosts += ^https:\/\/harmony(\.uat)?\.earthdata\.nasa\.gov\/.*$
 
+# https://harmony.uat.earthdata.nasa.gov
 ###############################################################################
 #
 # EffectiveUrlCache(Test) configuration.

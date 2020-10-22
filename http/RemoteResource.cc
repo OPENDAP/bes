@@ -437,7 +437,7 @@ namespace http {
         try {
 
             BESStopWatch besTimer;
-            if (BESISDEBUG(MODULE) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()){
+            if (BESISDEBUG("rr") || BESISDEBUG(MODULE) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()){
                 besTimer.start(prolog + "source url: " + d_remoteResourceUrl);
             }
 
