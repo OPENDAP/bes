@@ -34,13 +34,15 @@
 #include <GetOpt.h>
 #include <util.h>
 
-#include <BESError.h>
-#include <BESDebug.h>
-#include <BESUtil.h>
-#include <BESCatalogList.h>
-#include <TheBESKeys.h>
-#include "EffectiveUrlCache.h"
+#include "BESError.h"
+#include "BESDebug.h"
+#include "BESUtil.h"
+#include "BESCatalogList.h"
+#include "TheBESKeys.h"
+#include "BESContextManager.h"
+
 #include "HttpNames.h"
+#include "EffectiveUrlCache.h"
 
 #include "test_config.h"
 
@@ -50,6 +52,7 @@ static bool debug = false;
 static bool Debug = false;
 static bool bes_debug = false;
 static bool purge_cache = false;
+static std::string token;
 
 #undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
@@ -161,6 +164,10 @@ namespace http {
             // Clear the cache for the next test.
             EffectiveUrlCache::TheCache()->delete_instance();
 
+            if(!token.empty()){
+                if(debug) cerr << "Setting BESContext " << EDL_AUTH_TOKEN_KEY<< " to: '"<< token << "'" << endl;
+                BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_KEY,token);
+            }
             if(Debug) cerr << prolog << "END" << endl;
         }
 
@@ -393,7 +400,7 @@ int main(int argc, char*argv[])
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    GetOpt getopt(argc, argv, "dbDP");
+    GetOpt getopt(argc, argv, "dbDPt:");
     int option_char;
     while ((option_char = getopt()) != -1)
         switch (option_char) {
@@ -412,6 +419,10 @@ int main(int argc, char*argv[])
             case 'P':
                 purge_cache = true;  // purge_cache is a static global
                 cerr << "purge_cache enabled" << endl;
+                break;
+            case 't':
+                token = getopt.optarg; // token is a static global
+                cerr << "Authorization header value: " << token << endl;
                 break;
             default:
                 break;

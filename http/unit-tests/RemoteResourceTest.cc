@@ -33,11 +33,13 @@
 #include <GetOpt.h>
 #include <util.h>
 
-#include <BESError.h>
-#include <BESDebug.h>
-#include <BESUtil.h>
-#include <BESCatalogList.h>
-#include <TheBESKeys.h>
+#include "BESError.h"
+#include "BESDebug.h"
+#include "BESUtil.h"
+#include "BESCatalogList.h"
+#include "TheBESKeys.h"
+#include "BESContextManager.h"
+
 #include "RemoteResource.h"
 #include "HttpNames.h"
 
@@ -49,6 +51,7 @@ static bool debug = false;
 static bool Debug = false;
 static bool bes_debug = false;
 static bool purge_cache = false;
+static std::string token;
 
 #undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
@@ -143,6 +146,10 @@ public:
 
         if (bes_debug) BESDebug::SetUp("cerr,rr,bes,http");
 
+        if(!token.empty()){
+            if(debug) cerr << "Setting BESContext " << EDL_AUTH_TOKEN_KEY<< " to: '"<< token << "'" << endl;
+            BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_KEY,token);
+        }
 
         if(purge_cache){
             if(Debug) cerr << prolog << "Purging cache!" << endl;
@@ -338,6 +345,10 @@ int main(int argc, char*argv[])
         case 'P':
             purge_cache = true;  // debug is a static global
             cerr << "purge_cache enabled" << endl;
+            break;
+        case 't':
+            token = getopt.optarg; // token is a static global
+            cerr << "Authorization header value: " << token << endl;
             break;
         default:
             break;
