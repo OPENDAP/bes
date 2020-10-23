@@ -554,11 +554,22 @@ void FONcTransform::transform_dap4_group_internal(D4Group* grp,bool is_root_grp,
         BESDEBUG("fonc", "transform_dap4() - dim size is: "<<(*di)->size()<<endl);
         BESDEBUG("fonc", "transform_dap4() - fully_qualfied_dim name is: "<<(*di)->fully_qualified_name()<<endl);
 #endif
+
+#if 0
         unsigned long dimsize = (*di)->size();
         if((*di)->constrained()) {
             dimsize = ((*di)->c_stop() -(*di)->c_start())/(*di)->c_stride() +1;
 
         }
+#endif
+        unsigned long dimsize =(*di)->size();
+
+        map<string,unsigned long>:: iterator it;
+        for(it=GFQN_dimname_to_dimsize.begin();it!=GFQN_dimname_to_dimsize.end();++it) {
+            if(it->first == (*di)->fully_qualified_name())
+                dimsize = it->second;
+        }
+
         int g_dimid = -1;
         stax = nc_def_dim(grp_id,(*di)->name().c_str(),dimsize,&g_dimid);
         if (stax != NC_NOERR)
