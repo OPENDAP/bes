@@ -899,7 +899,7 @@ int main(int argc, char *argv[]) {
                 unique_ptr<vector<coord> > coords = build_coords(stare, dims, lat, lon);
 
                 if (compute_resolution)
-                    VERBOSE("STARE index resolution is not available for algorithm one.");
+                    VERBOSE(cerr << "STARE index resolution is not available for algorithm one.");
 
                 writeHDF5(newName, tmpStorage, coords.get());
                 break;
