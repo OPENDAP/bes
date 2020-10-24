@@ -489,6 +489,8 @@ add_executable(bes
     http/RemoteResource.h
     http/unit-tests/HttpUtilsTest.cc
     http/unit-tests/CurlUtilsTest.cc
+        http/EffectiveUrl.cc
+        http/EffectiveUrl.h
     http/EffectiveUrlCache.cc
     http/EffectiveUrlCache.h
     http/unit-tests/EffectiveUrlCacheTest.cc
@@ -2070,5 +2072,4 @@ add_executable(bes
 
     standalone/besstandalone.cc
 
-    http/unit-tests/HttpUtilsTest.cc
-    http/unit-tests/CurlUtilsTest.cc)
+   )

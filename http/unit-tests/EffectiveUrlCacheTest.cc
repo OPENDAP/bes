@@ -187,13 +187,14 @@ namespace http {
 
 
             string src_url_00 = "http://started_here.com";
-            http::url *effective_url_00 = new http::url("https://ended_here.com");
+            http::EffectiveUrl *effective_url_00 = new http::EffectiveUrl("https://ended_here.com");
+
             EffectiveUrlCache::TheCache()->add(src_url_00,effective_url_00);
             CPPUNIT_ASSERT( EffectiveUrlCache::TheCache()->d_effective_urls.size() == 1);
 
 
             // This one does not add the URL or even check it because it _should_ be matching the skip regex.
-            http::url *result_url =EffectiveUrlCache::TheCache()->get_effective_url(src_url_00);
+            http::EffectiveUrl *result_url =EffectiveUrlCache::TheCache()->get_effective_url(src_url_00);
             CPPUNIT_ASSERT( !result_url );
 
 
@@ -204,7 +205,7 @@ namespace http {
             if(debug) cerr << prolog << "BEGIN" << endl;
             string source_url;
             string value;
-            http::url *result_url;
+            http::EffectiveUrl *result_url;
             try {
 
                 // This one does not add the URL or even check it because it _should_ be matching the skip regex
@@ -228,27 +229,27 @@ namespace http {
             if(debug) cerr << prolog << "BEGIN" << endl;
             string source_url;
             string value;
-            http::url *result_url;
+            http::EffectiveUrl *result_url;
             try {
                 // The cache is disabled in bes.conf so we need to turn it on.
                 EffectiveUrlCache::TheCache()->d_enabled = true;
 
                 string src_url_00 = "https://d1jecqxxv88lkr.cloudfront.net/ghrcwuat-protected/rss_demo/rssmif16d__7/f16_ssmis_20040107v7.nc";
-                http::url *effective_url_00 = new http::url("https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc?A-userid=hyrax&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIASF4N-AWS-Creds-00808%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200808T032623Z&X-Amz-Expires=86400&X-Amz-Security-Token=FwoGZXIvYXdzE-AWS-Sec-Token-MWRLIZGYvDx1ONzd0ffK8VtxO8JP7thrGIQ%3D%3D&X-Amz-SignedHeaders=host&X-Amz-Signature=260a7c4dd4-AWS-SIGGY-0c7a39ee899");
+                auto *effective_url_00 = new http::EffectiveUrl("https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc?A-userid=hyrax&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIASF4N-AWS-Creds-00808%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200808T032623Z&X-Amz-Expires=86400&X-Amz-Security-Token=FwoGZXIvYXdzE-AWS-Sec-Token-MWRLIZGYvDx1ONzd0ffK8VtxO8JP7thrGIQ%3D%3D&X-Amz-SignedHeaders=host&X-Amz-Signature=260a7c4dd4-AWS-SIGGY-0c7a39ee899");
                 EffectiveUrlCache::TheCache()->add(src_url_00,effective_url_00);
                 CPPUNIT_ASSERT( EffectiveUrlCache::TheCache()->d_effective_urls.size() == 1);
 
                 string src_url_01 = "http://test.opendap.org/data/httpd_catalog/READTHIS";
-                http::url *effective_url_01 = new http::url("https://test.opendap.org/data/httpd_catalog/READTHIS");
+                auto *effective_url_01 = new http::EffectiveUrl("https://test.opendap.org/data/httpd_catalog/READTHIS");
                 EffectiveUrlCache::TheCache()->add(src_url_01,effective_url_01);
                 CPPUNIT_ASSERT( EffectiveUrlCache::TheCache()->d_effective_urls.size() == 2);
 
                 // This one actually does the thing
                 string src_url_02 = "http://test.opendap.org/opendap";
-                http::url *effective_url_02 = new http::url("http://test.opendap.org/opendap/");
+                auto *effective_url_02 = new http::EffectiveUrl("http://test.opendap.org/opendap/");
 
                 if(debug) cerr << prolog << "Retrieving effective URL for: " << src_url_02 << endl;
-                result_url =EffectiveUrlCache::TheCache()->get_effective_url(src_url_02);
+                result_url = EffectiveUrlCache::TheCache()->get_effective_url(src_url_02);
                 CPPUNIT_ASSERT( EffectiveUrlCache::TheCache()->d_effective_urls.size() == 3);
 
                 if(debug) cerr << prolog << "EffectiveUrlCache::TheCache()->get_effective_url() returned: " <<
@@ -269,7 +270,7 @@ namespace http {
             if(debug) cerr << prolog << "BEGIN" << endl;
             string source_url;
             string value;
-            http::url *result_url;
+            http::EffectiveUrl *result_url;
             try {
                 // The cache is disabled in bes.conf so we need to turn it on.
                 EffectiveUrlCache::TheCache()->d_enabled = true;
@@ -290,8 +291,7 @@ namespace http {
                         result_url->str().rfind(thing1_out_of_region_effective_url_prefix, 0) == 0
                 );
 
-
-
+                result_url = EffectiveUrlCache::TheCache()->get_effective_url(thing1);
 
             }
             catch (BESError be){
@@ -307,7 +307,7 @@ namespace http {
             if(debug) cerr << prolog << "BEGIN" << endl;
             string source_url;
             string value;
-            http::url *result_url;
+            http::EffectiveUrl *result_url;
             try {
                 // The cache is disabled in bes.conf so we need to turn it on.
                 EffectiveUrlCache::TheCache()->d_enabled = true;
@@ -330,6 +330,7 @@ namespace http {
                 );
 
 
+                result_url = EffectiveUrlCache::TheCache()->get_effective_url(thing1);
 
 
             }

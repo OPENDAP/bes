@@ -71,6 +71,7 @@ using namespace http;
 #define prolog std::string("CurlUtils::").append(__func__).append("() - ")
 
 namespace curl {
+
 static const unsigned int retry_limit = 10; // Amazon's suggestion
 static const useconds_t uone_second = 1000 * 1000; // one second in micro seconds (which is 1000
 
@@ -1460,6 +1461,7 @@ bool eval_curl_easy_perform_code(
     return success;
 }
 
+#if 0
 /**
  * @brief Performs a small (4 byte) range get on the target URL. If successfull the value of  last_accessed_url will
  * be set to the value of the last accessed URL (CURLINFO_EFFECTIVE_URL), including the query string.
@@ -1467,125 +1469,199 @@ bool eval_curl_easy_perform_code(
  * @param target_url The URL to follow
  * @param last_accessed_url The last accessed URL (CURLINFO_EFFECTIVE_URL), including the query string
  */
-void retrieve_effective_url(const string &target_url, string &last_accessed_url) {
-    vector<string> resp_hdrs;
-    CURL *ceh = NULL;
-    // CURLcode curl_code;
-    curl_slist *request_headers = NULL;
-
-    BESDEBUG(MODULE, prolog << "BEGIN" <<  endl);
-
-    // Add the authorization headers
-    request_headers = add_auth_headers(request_headers);
-
-    try {
-        BESDEBUG(MODULE, prolog << "BESDebug::IsSet("<< MODULE << "): " << (BESDebug::IsSet(MODULE)?"true":"false") << endl);
-        BESDEBUG(MODULE, prolog << "BESDebug::IsSet("<< TIMING_LOG_KEY << "): " << (BESDebug::IsSet(TIMING_LOG_KEY)?"true":"false") << endl);
-        BESDEBUG(MODULE, prolog << "BESLog::TheLog()->is_verbose(): " << (BESLog::TheLog()->is_verbose()?"true":"false") << endl);
-
-        ceh = init_effective_url_retriever_handle(target_url, request_headers, resp_hdrs);
-
-        {
-            BESStopWatch sw;
-            if (BESDebug::IsSet("euc") || BESDebug::IsSet(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()){
-                sw.start(prolog + " Following Redirects Starting With: " + target_url);
-            }
-            super_easy_perform(ceh);
-        }
-
-        // After doing the thing with super_easy_perform() we retrieve the effective URL form the cURL handle.
-        last_accessed_url = get_effective_url(ceh, target_url);
-        BESDEBUG(MODULE, prolog << "Last Accessed URL(CURLINFO_EFFECTIVE_URL): " << last_accessed_url << endl);
-        INFO_LOG(prolog << "Source URL: '" << target_url << "' CURLINFO_EFFECTIVE_URL: '" << last_accessed_url << "'"
-                        << endl);
-
-        if (request_headers)
-            curl_slist_free_all(request_headers);
-        if (ceh)
-            curl_easy_cleanup(ceh);
-    }
-    catch (...) {
-        if (request_headers)
-            curl_slist_free_all(request_headers);
-        if (ceh)
-            curl_easy_cleanup(ceh);
-        throw;
-    }
-#if 0
-    {
-        unsigned int attempts = 0;
-        bool success = true;
-        useconds_t retry_time = uone_second / 4;
-
-        char error_buffer[CURL_ERROR_SIZE];
+    void retrieve_effective_url(const string &target_url, string &last_accessed_url) {
         vector<string> resp_hdrs;
         CURL *ceh = NULL;
-        CURLcode curl_code;
+        // CURLcode curl_code;
+        curl_slist *request_headers = NULL;
 
-        struct curl_slist *request_headers = NULL;
+        BESDEBUG(MODULE, prolog << "BEGIN" << endl);
+
         // Add the authorization headers
-        request_headers = get_auth_headers(request_headers);
+        request_headers = add_auth_headers(request_headers);
 
         try {
-            ceh = init_effective_url_retriever_handle(url, request_headers, resp_hdrs);
-            set_error_buffer(ceh, error_buffer);
-            do {
-                // bool do_retry;
-                error_buffer[0] = 0; // Initialize to empty string
-                ++attempts;
-                BESDEBUG(MODULE, prolog << "Requesting URL: " << target_url << " attempt: " << attempts << endl);
+            BESDEBUG(MODULE,
+                     prolog << "BESDebug::IsSet(" << MODULE << "): " << (BESDebug::IsSet(MODULE) ? "true" : "false")
+                            << endl);
+            BESDEBUG(MODULE, prolog << "BESDebug::IsSet(" << TIMING_LOG_KEY << "): "
+                                    << (BESDebug::IsSet(TIMING_LOG_KEY) ? "true" : "false") << endl);
+            BESDEBUG(MODULE,
+                     prolog << "BESLog::TheLog()->is_verbose(): " << (BESLog::TheLog()->is_verbose() ? "true" : "false")
+                            << endl);
 
-                curl_code = curl_easy_perform(ceh);
-                success = eval_curl_easy_perform_code(ceh, target_url, curl_code, error_buffer, attempts);
-                if (success) {
-                    // Nothing obvious went wrong with the curl_easy_perfom() so now we check the HTTP stuff
-                    success = eval_http_get_response(ceh, target_url);
-                    if (!success) {
-                        if (attempts == retry_limit) {
-                            string msg = prolog +
-                                         "ERROR - Problem with data transfer. Number of re-tries exceeded. Giving up.";
-                            LOG(msg << endl);
-                            throw BESInternalError(msg, __FILE__, __LINE__);
-                        } else {
-                            LOG(prolog << "ERROR - Problem with data transfer. Will retry (url: " << target_url <<
-                                       " attempt: " << attempts << ")." << endl);
-                        }
-                    }
+            ceh = init_effective_url_retriever_handle(target_url, request_headers, resp_hdrs);
+
+            {
+                BESStopWatch sw;
+                if (BESDebug::IsSet("euc") || BESDebug::IsSet(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) ||
+                    BESLog::TheLog()->is_verbose()) {
+                    sw.start(prolog + " Following Redirects Starting With: " + target_url);
                 }
-                // If it did not work we keep trying until we have exceeded the retry_limit.
-                if (!success) {
-                    usleep(retry_time);
-                    retry_time *= 2;
-                }
-            } while (!success);
-
-            char *effective_url = 0;
-            curl_easy_getinfo(ceh, CURLINFO_EFFECTIVE_URL, &effective_url);
-            BESDEBUG(MODULE, prolog << " CURLINFO_EFFECTIVE_URL: " << effective_url << endl);
-            last_accessed_url = effective_url;
-
-            LOG(prolog << "Source URL: '" << target_url << "' Last Accessed URL: '" << last_accessed_url << "'" << endl);
-
-            unset_error_buffer(ceh);
-
-            if (ceh) {
-                curl_slist_free_all(request_headers);
-                curl_easy_cleanup(ceh);
-                ceh = 0;
+                super_easy_perform(ceh);
             }
+
+            // After doing the thing with super_easy_perform() we retrieve the effective URL form the cURL handle.
+            last_accessed_url = get_effective_url(ceh, target_url);
+            BESDEBUG(MODULE, prolog << "Last Accessed URL(CURLINFO_EFFECTIVE_URL): " << last_accessed_url << endl);
+            INFO_LOG(
+                    prolog << "Source URL: '" << target_url << "' CURLINFO_EFFECTIVE_URL: '" << last_accessed_url << "'"
+                           << endl);
+
+            if (request_headers)
+                curl_slist_free_all(request_headers);
+            if (ceh)
+                curl_easy_cleanup(ceh);
         }
         catch (...) {
             if (request_headers)
                 curl_slist_free_all(request_headers);
-            if (ceh) {
+            if (ceh)
                 curl_easy_cleanup(ceh);
-                ceh = 0;
-            }
             throw;
         }
     }
 #endif
-}
+
+    /**
+     * @brief Performs a small (4 byte) range get on the target URL. If successful the value of  returende EffectiveUrl
+     * will be set to the value of the last accessed URL (CURLINFO_EFFECTIVE_URL), including the query string and the
+     * accumulated response headers from the journey, in the order recieved.
+     *
+     * @param target_url The URL to follow
+     * @return A 'new' EffectiveUrl which will need to be deleted bye the caller.
+     */
+    http::EffectiveUrl *retrieve_effective_url(const string &target_url) {
+
+        vector<string> resp_hdrs;
+        CURL *ceh = NULL;
+        // CURLcode curl_code;
+        curl_slist *request_headers = NULL;
+
+        BESDEBUG(MODULE, prolog << "BEGIN" << endl);
+
+        // Add the authorization headers
+        request_headers = add_auth_headers(request_headers);
+
+        try {
+            BESDEBUG(MODULE,
+                     prolog << "BESDebug::IsSet(" << MODULE << "): " << (BESDebug::IsSet(MODULE) ? "true" : "false")
+                            << endl);
+            BESDEBUG(MODULE, prolog << "BESDebug::IsSet(" << TIMING_LOG_KEY << "): "
+                                    << (BESDebug::IsSet(TIMING_LOG_KEY) ? "true" : "false") << endl);
+            BESDEBUG(MODULE, prolog << "BESLog::TheLog()->is_verbose(): "
+                                    << (BESLog::TheLog()->is_verbose() ? "true" : "false") << endl);
+
+            ceh = init_effective_url_retriever_handle(target_url, request_headers, resp_hdrs);
+
+            {
+                BESStopWatch sw;
+                if (BESDebug::IsSet("euc") || BESDebug::IsSet(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) ||
+                    BESLog::TheLog()->is_verbose()) {
+                    sw.start(prolog + " Following Redirects Starting With: " + target_url);
+                }
+                super_easy_perform(ceh);
+            }
+
+            // After doing the thing with super_easy_perform() we retrieve the effective URL form the cURL handle.
+            string effective_url_str = get_effective_url(ceh, target_url);
+            BESDEBUG(MODULE, prolog << "Last Accessed URL(CURLINFO_EFFECTIVE_URL): " << effective_url_str << endl);
+            INFO_LOG(prolog << "Source URL: '" << target_url << "' CURLINFO_EFFECTIVE_URL: '" << effective_url_str
+                            << "'"
+                            << endl);
+
+            auto *eurl = new EffectiveUrl(effective_url_str, resp_hdrs);
+
+            if (request_headers)
+                curl_slist_free_all(request_headers);
+            if (ceh)
+                curl_easy_cleanup(ceh);
+
+            return eurl;
+        }
+        catch (...) {
+            if (request_headers)
+                curl_slist_free_all(request_headers);
+            if (ceh)
+                curl_easy_cleanup(ceh);
+            throw;
+        }
+
+#if 0
+        {
+            unsigned int attempts = 0;
+            bool success = true;
+            useconds_t retry_time = uone_second / 4;
+
+            char error_buffer[CURL_ERROR_SIZE];
+            vector<string> resp_hdrs;
+            CURL *ceh = NULL;
+            CURLcode curl_code;
+
+            struct curl_slist *request_headers = NULL;
+            // Add the authorization headers
+            request_headers = get_auth_headers(request_headers);
+
+            try {
+                ceh = init_effective_url_retriever_handle(url, request_headers, resp_hdrs);
+                set_error_buffer(ceh, error_buffer);
+                do {
+                    // bool do_retry;
+                    error_buffer[0] = 0; // Initialize to empty string
+                    ++attempts;
+                    BESDEBUG(MODULE, prolog << "Requesting URL: " << target_url << " attempt: " << attempts << endl);
+
+                    curl_code = curl_easy_perform(ceh);
+                    success = eval_curl_easy_perform_code(ceh, target_url, curl_code, error_buffer, attempts);
+                    if (success) {
+                        // Nothing obvious went wrong with the curl_easy_perfom() so now we check the HTTP stuff
+                        success = eval_http_get_response(ceh, target_url);
+                        if (!success) {
+                            if (attempts == retry_limit) {
+                                string msg = prolog +
+                                             "ERROR - Problem with data transfer. Number of re-tries exceeded. Giving up.";
+                                LOG(msg << endl);
+                                throw BESInternalError(msg, __FILE__, __LINE__);
+                            } else {
+                                LOG(prolog << "ERROR - Problem with data transfer. Will retry (url: " << target_url <<
+                                           " attempt: " << attempts << ")." << endl);
+                            }
+                        }
+                    }
+                    // If it did not work we keep trying until we have exceeded the retry_limit.
+                    if (!success) {
+                        usleep(retry_time);
+                        retry_time *= 2;
+                    }
+                } while (!success);
+
+                char *effective_url = 0;
+                curl_easy_getinfo(ceh, CURLINFO_EFFECTIVE_URL, &effective_url);
+                BESDEBUG(MODULE, prolog << " CURLINFO_EFFECTIVE_URL: " << effective_url << endl);
+                last_accessed_url = effective_url;
+
+                LOG(prolog << "Source URL: '" << target_url << "' Last Accessed URL: '" << last_accessed_url << "'" << endl);
+
+                unset_error_buffer(ceh);
+
+                if (ceh) {
+                    curl_slist_free_all(request_headers);
+                    curl_easy_cleanup(ceh);
+                    ceh = 0;
+                }
+            }
+            catch (...) {
+                if (request_headers)
+                    curl_slist_free_all(request_headers);
+                if (ceh) {
+                    curl_easy_cleanup(ceh);
+                    ceh = 0;
+                }
+                throw;
+            }
+        }
+#endif
+    }
 
 /**
  * @brief Return the location of the netrc file for Hyrax to utilize when
@@ -1617,7 +1693,7 @@ string get_netrc_filename() {
 void set_error_buffer(CURL *ceh, char *error_buffer) {
     CURLcode res;
     res = curl_easy_setopt(ceh, CURLOPT_ERRORBUFFER, error_buffer);
-    eval_curl_easy_setopt_result(res, prolog, "CURLOPT_ERRORBUFFER", error_buffer, __FILE__, __LINE__);
+    curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_ERRORBUFFER", error_buffer, __FILE__, __LINE__);
 }
 
 /**
@@ -1663,7 +1739,7 @@ void eval_curl_easy_setopt_result(
         unsigned int line) {
     if (curl_code != CURLE_OK) {
         stringstream msg;
-        msg << msg_base << "ERROR - cURL failed to set " << opt_name << " Message: " << error_message(curl_code, ebuf);
+        msg << msg_base << "ERROR - cURL failed to set " << opt_name << " Message: " << curl::error_message(curl_code, ebuf);
         throw BESInternalError(msg.str(), file, line);
     }
 }

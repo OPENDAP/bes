@@ -45,6 +45,7 @@
 #include "BESLog.h"
 #include "CurlUtils.h"
 #include "HttpNames.h"
+#include "EffectiveUrl.h"
 
 using namespace std;
 
@@ -119,7 +120,7 @@ EffectiveUrlCache::EffectiveUrlCache(): d_skip_regex(NULL), d_enabled(-1)
  */
 EffectiveUrlCache::~EffectiveUrlCache()
 {
-    map<string , http::url *>::iterator it;
+    map<string , http::EffectiveUrl *>::iterator it;
     for(it = d_effective_urls.begin(); it!= d_effective_urls.end(); it++){
         delete it->second;
     }
@@ -147,9 +148,10 @@ void EffectiveUrlCache::dump(ostream &strm) const
     if (!d_effective_urls.empty()) {
         strm << BESIndent::LMarg << "effective url list:" << endl;
         BESIndent::Indent();
-        map<string , http::url *>::const_iterator it;
-        for(it = d_effective_urls.begin(); it!= d_effective_urls.end(); it++){
+        auto it = d_effective_urls.begin();
+        while( it!= d_effective_urls.end()){
             strm << BESIndent::LMarg << (*it).first << " --> " << (*it).second->str();
+            it++;
         }
         BESIndent::UnIndent();
     }
@@ -178,9 +180,9 @@ string EffectiveUrlCache::dump() const
  * @param source_url
  * @param effective_url
  */
-void EffectiveUrlCache::add(const std::string &source_url, http::url *effective_url)
+void EffectiveUrlCache::add(const std::string &source_url, http::EffectiveUrl *effective_url)
 {
-    pair<map<string,http::url *>::iterator , bool> previously = d_effective_urls.insert(pair<string,http::url *>(source_url,effective_url));
+    pair<map<string,http::EffectiveUrl *>::iterator , bool> previously = d_effective_urls.insert(pair<string,http::EffectiveUrl *>(source_url, effective_url));
     if(previously.second){
         BESDEBUG(MODULE, prolog << "The effective URL for " << source_url << " was has been added to the cache. "<<
         "(EUC size: " << d_effective_urls.size() << ")" << endl);
@@ -198,10 +200,9 @@ void EffectiveUrlCache::add(const std::string &source_url, http::url *effective_
  *
  * @param source_url
  */
-http::url *EffectiveUrlCache::get(const std::string  &source_url){
-    http::url *effective_url=NULL;
-    std::map<std::string, http::url *>::iterator it;
-    it = d_effective_urls.find(source_url);
+http::EffectiveUrl *EffectiveUrlCache::get(const std::string  &source_url){
+    http::EffectiveUrl *effective_url=NULL;
+    auto it = d_effective_urls.find(source_url);
     if(it!=d_effective_urls.end()){
         effective_url = (*it).second;
     }
@@ -221,7 +222,7 @@ http::url *EffectiveUrlCache::get(const std::string  &source_url){
  * @param source_url
  * @returns The effective URL
  */
-http::url *EffectiveUrlCache::get_effective_url(const string &source_url) {
+http::EffectiveUrl *EffectiveUrlCache::get_effective_url(const string &source_url) {
     BESRegex *bes_regex = get_skip_regex();
     return get_effective_url(source_url, bes_regex);
 }
@@ -234,19 +235,12 @@ http::url *EffectiveUrlCache::get_effective_url(const string &source_url) {
  * @param source_url
  * @returns The effective URL
 */
-http::url *EffectiveUrlCache::get_effective_url(const string &source_url, BESRegex *skip_regex)
+http::EffectiveUrl *EffectiveUrlCache::get_effective_url(const string &source_url, BESRegex *skip_regex)
 {
     BESDEBUG(MODULE, prolog << "BEGIN url: " << source_url << endl);
     BESDEBUG(MODULE, prolog << "dump: " << endl << dump() << endl);
 
-
-#if 0
-    //BESStopWatch sw;
-    //if (BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose())
-    //    sw.start(prolog + "full method");
-#endif
-
-    http::url *effective_url = NULL;
+    http::EffectiveUrl *effective_url = NULL;
 
     if(is_enabled()){
         size_t match_length=0;
@@ -285,19 +279,13 @@ http::url *EffectiveUrlCache::get_effective_url(const string &source_url, BESReg
         if(retrieve_and_cache){
             BESDEBUG(MODULE, prolog << "Acquiring effective URL for  " << source_url << endl);
 
-            string effective_url_str;
             {
                 BESStopWatch sw;
-                if(BESDebug::IsSet(MODULE)) sw.start(prolog+" retrieve and cache effective url for source url: "+source_url);
-                curl::retrieve_effective_url(source_url, effective_url_str);
+                if(BESDebug::IsSet(MODULE)) sw.start(prolog + " retrieve and cache effective url for source url: " + source_url);
+                effective_url = curl::retrieve_effective_url(source_url);
             }
-            BESDEBUG(MODULE, prolog << "effective_url_str: " << effective_url_str << endl);
-
-            // Make the target URL object.
-            effective_url = new http::url(effective_url_str);
-
             BESDEBUG(MODULE, prolog << "   source_url: " << source_url << endl);
-            BESDEBUG(MODULE, prolog << "effective_url: " << effective_url->str() << endl);
+            BESDEBUG(MODULE, prolog << "effective_url: " << effective_url->dump() << endl);
 
             EffectiveUrlCache::TheCache()->add(source_url,effective_url);
         }
