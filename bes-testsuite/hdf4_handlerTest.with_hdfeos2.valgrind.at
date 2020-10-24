@@ -341,6 +341,11 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([swath_2_3d_2x2yz_fv_t_mis.hdf.data.bescmd])
 AT_BESCMD_RESPONSE_TEST([swath_2_3d_2x2yz_fv_t_mis.hdf.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST([swath_2_3d_2x2yz_fv_t_mis.hdf.ddx.bescmd])
 
+#Test Swath with multiple dimension maps.
+AT_BESCMD_RESPONSE_TEST([swath_3_3d_dimmap.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_3_3d_dimmap.dds.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([swath_3_3d_dimmap.data.bescmd])
+
 # Test Hybrid files.
 AT_BESCMD_RESPONSE_TEST([h_grid.hdf.das.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([h_grid.hdf.data.bescmd])

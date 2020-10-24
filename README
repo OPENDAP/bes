@@ -1,3 +1,48 @@
+What's new for Hyrax 1.16.3
+----------------------------
+CF option:
+1. Enhance the support of handling HDF-EOS2 swath multiple dimension map pairs.
+The enhancement includes the support of multiple swaths.
+This fix solves the MOD09/MYD09 issue docoumented in HFRHANDLER-332.
+
+Note for this enhancement:
+1) Limitations
+  (1) The Latitude and Longitude must be 2 dimensional arrays.
+  (2) The number of dimension maps must be an even number in a swath.
+  (3) The handling of MODIS level 1B is still kept as the old way.
+  (4) When there is a one pair of dimension maps in a swath and the
+      the geo-dimensions defined in the dimension maps are only used
+      by 2-D Latitude and Longitude fields, we still keep the old way.
+
+2) Variable/dimension name conventions
+  (1) The HDF-EOS2 file contains only one swath
+      The swath name is not included in the variable names.
+      For Latitude and Longitude, the interpolated Latitude and Longitude variable
+      names are named as "Latitude_1","Latitude_2","Longitude_1","Longitude_2".
+      The dimension and other variable names are just modified by following the 
+      CF conventions. 
+      A DDS example can be found under https://github.com/OPENDAP/hdf4_handler/
+      Go to the following directory: 
+      /bes-testsuite/h4.nasa.with_hdfeos2/MYD09.dds.bescmd.baseline
+      
+  (2) The HDF-EOS2 file contains multiple swaths
+      The swath name are included in the variable and dimension names to
+      avoid name clashings. 
+      The swath names are added as suffix for variable and dimension names.
+      Examples are like:
+      "temperature_swath1","Latitude_swath1","Latitude_swath1_1" etc.
+      A DDS example can be found under https://github.com/OPENDAP/hdf4_handler/
+      Go to the following directory: 
+      /bes-testsuite/h4.with_hdfeos2/swath_3_3d_dimmap.dds.bescmd.baseline
+
+3) For applications that don't want to handle dimension maps, one can change
+   the BES key "H4.DisableSwathDimMap=false" at h4.conf.in to
+   "H4.DisableSwathDimMap= true".
+      
+
+2. Add a BES key to turn off the handling of HDF-EOS2 swath dimension map.
+
+
 What's new for Hyrax 1.16.2
 ----------------------------
 

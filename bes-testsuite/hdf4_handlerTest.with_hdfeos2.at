@@ -38,7 +38,7 @@ m4_define([_AT_BESCMD_TEST],
 [AT_SETUP([BESCMD $1])
 AT_KEYWORDS([bescmd])
 # Use the following AT_CHECK to generate baseline file.
-# AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 > $2 || true], [], [stdout], [stderr])
+#AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 > $2 || true], [], [stdout], [stderr])
 
 # This is the original.
 AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 || true], [], [stdout], [stderr])
@@ -49,7 +49,7 @@ m4_define([_AT_BESCMD_BINARYDATA_TEST],
 [AT_SETUP([BESCMD $1])
 AT_KEYWORDS([bescmd])
 # Use the following AT_CHECK to generate baseline file.
-# AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 | getdap -M - > $2 || true], [], [stdout], [stderr])
+#AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 | getdap -M - > $2 || true], [], [stdout], [stderr])
 
 # This is the original.
 AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 | getdap -M - || true], [], [stdout], [stderr])
@@ -410,6 +410,12 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([swath_1_4d_2x2yzt.hdf.s.data.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([swath_2_2d_xyz.hdf.s.data.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([swath_2_3d_2x2yz.hdf.s.data.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([swath_2_3d_2x2yz_fv_t_mis.hdf.s.data.bescmd])
+
+#Test Swath with multiple dimension maps.
+AT_BESCMD_RESPONSE_TEST([swath_3_3d_dimmap.das.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_3_3d_dimmap.dds.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([swath_3_3d_dimmap.data.bescmd])
+
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([testan1.hdf.s.data.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([testdfp1.hdf.s.data.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([testdfr1.hdf.s.data.bescmd])

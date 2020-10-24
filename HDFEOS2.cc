@@ -1899,21 +1899,31 @@ void File::handle_grid_SOM_projection() throw(Exception) {
     }
 }
 
-//  Obtain the number of dimension maps in this file. The input parameter is the number of swath.
-int File::obtain_dimmap_num(int numswath) throw(Exception) {
+// Check if we need to handle dim. map and set handle_swath_dimmap if necessary.
+// The input parameter is the number of swath.
+void File::check_swath_dimmap(int numswath) throw(Exception) {
 
     if(HDF4RequestHandler::get_disable_swath_dim_map() == true) 
-        return 0;
-    // S(wath)0. Check if there are dimension maps in this case.
+        return;
+
+    // Check if there are dimension maps and if the num of dim. maps is odd in this case.
     int tempnumdm = 0;
+    int temp_num_map = 0;
+    bool odd_num_map = false;
     for (vector<SwathDataset *>::const_iterator i = this->swaths.begin();
         i != this->swaths.end(); ++i){
-        tempnumdm += (*i)->get_num_map();
-//cerr<<"num_map is "<<tempnumdm<<endl;
-        if (tempnumdm >0) 
+        temp_num_map = (*i)->get_num_map();
+        tempnumdm += temp_num_map;
+        if(temp_num_map%2!=0) { 
+            odd_num_map =true;
             break;
+        }
     }
 
+    // We only handle even number of dimension maps like MODIS(2-D lat/lon) 
+    if(tempnumdm != 0 && odd_num_map == false) 
+        handle_swath_dimmap = true;
+       
     // MODATML2 and MYDATML2 in year 2010 include dimension maps. But the dimension map
     // is not used. Furthermore, they provide additional latitude/longtiude 
     // for 10 KM under the data field. So we have to handle this differently.
@@ -2001,19 +2011,102 @@ int File::obtain_dimmap_num(int numswath) throw(Exception) {
         }
     }// End of special atml2 handling
 
-    // Although this file includes dimension map, it doesn't use it at all. So change
-    // tempnumdm to 0.
+    // Although this file includes dimension maps, it doesn't use it at all. So set
+    // handle_swath_dimmap to 0.
     if(true == fakedimmap) 
-        tempnumdm = 0;
- 
-    return tempnumdm;
+        handle_swath_dimmap = false;
+    return;
 
+}
+
+// If dim. map needs to be handled, we need to check if we fall into the case
+// that backward compatibility of MODIS Level 1B etc. should be supported.
+void File::check_swath_dimmap_bk_compat(int numswath){ 
+
+    if(true == handle_swath_dimmap) {
+
+        if(numswath == 1 && (((this->swaths)[0])->name== "MODIS_SWATH_Type_L1B"))
+            backward_handle_swath_dimmap = true;
+        else {
+            // If the number of dimmaps is 2 for every swath 
+            // and latitude/longitude need to be interpolated,
+            // this also falls back to the backward compatibility case.
+            // GeoDim_in_vars needs to be checked first.
+            bool all_2_dimmaps_no_geodim = true;
+            for (vector<SwathDataset *>::const_iterator i = this->swaths.begin();
+                 i != this->swaths.end(); ++i) {
+                if((*i)->get_num_map() !=2 || (*i)->GeoDim_in_vars == true)  {                    
+                    all_2_dimmaps_no_geodim = false;
+                    break;
+                }
+            }
+            if (true == all_2_dimmaps_no_geodim)
+                backward_handle_swath_dimmap = true;
+        }
+    }
+    return;
 }
 
 // Create the dimension name to coordinate variable name map for lat/lon. 
 // The input parameter is the number of dimension maps in this file.
-void File::create_swath_latlon_dim_cvar_map(int numdm) throw(Exception){
+void File::create_swath_latlon_dim_cvar_map() throw(Exception){
 
+    vector<Field*> ori_lats;
+    vector<Field*> ori_lons;
+    if(handle_swath_dimmap == true && backward_handle_swath_dimmap == false) {
+
+        // We need to check if "Latitude and Longitude" both exist in all swaths under GeoFields.
+        // The latitude and longitude must be 2-D arrays.
+        // This is the basic requirement to handle our defined multiple dimension map case.
+        multi_dimmap = true;
+
+        for (vector<SwathDataset *>::const_iterator i = this->swaths.begin();
+            i != this->swaths.end(); ++i){
+
+            bool has_cf_lat = false;
+            bool has_cf_lon = false;
+
+            for (vector<Field *>::const_iterator j =
+                 (*i)->getGeoFields().begin();
+                 j != (*i)->getGeoFields().end(); ++j) {
+
+                // Here we assume it is always lat[f0][f1] and lon [f0][f1]. 
+                // lat[f0][f1] and lon[f1][f0] should not occur.
+                // So far only "Latitude" and "Longitude" are used as standard names of lat and lon for swath.
+                if((*j)->getName()=="Latitude" && (*j)->getRank() == 2){
+                    has_cf_lat = true;
+                    ori_lats.push_back(*j);
+                }
+                else if((*j)->getName()=="Longitude" && (*j)->getRank() == 2){
+                    has_cf_lon = true;
+                    ori_lons.push_back(*j);
+                }
+                if(has_cf_lat == true && has_cf_lon == true) 
+                    break;
+            }
+            if(has_cf_lat == false || has_cf_lon == false) {
+                multi_dimmap = false;
+                break;
+            }
+        }
+    }
+
+    // By our best knowledge so far, we know we come to a multiple dimension map case
+    // that we can handle. We will create dim to coordinate variable map for lat and lon
+    // with the following block and finish this function.
+    if( true == multi_dimmap) {
+
+        int ll_count = 0;
+        for (vector<SwathDataset *>::const_iterator i = this->swaths.begin();
+            i != this->swaths.end(); ++i){
+            create_swath_latlon_dim_cvar_map_for_dimmap(*i,ori_lats[ll_count],ori_lons[ll_count]);
+            ll_count++;
+        }
+        return;
+
+    }
+
+    // For the cases that multi_dimmap is not true, do the following:
     // 1. Prepare the right dimension name and the dimension field list for each swath. 
     // The assumption is that within a swath, the dimension name is unique.
     // The dimension field name(even with the added Z-like field) is unique. 
@@ -2056,20 +2149,25 @@ void File::create_swath_latlon_dim_cvar_map(int numdm) throw(Exception){
                 HDFCFUtil::insert_map((*i)->dimcvarlist, (((*j)->getDimensions())[0])->getName(), "Latitude");
 
                 // Have dimension map, we want to remember the dimension and remove it from the list.
-                if(numdm >0) {                    
+                if(handle_swath_dimmap == true) {
 
-                    // We have to loop through the dimension map
-                    for(vector<SwathDataset::DimensionMap *>::const_iterator 
-                        l=(*i)->getDimensionMaps().begin(); l!=(*i)->getDimensionMaps().end();++l){
+                    // We need to keep the backward compatibility when handling MODIS level 1B etc. 
+                    if(true == backward_handle_swath_dimmap) {
 
-                        // This dimension name will be replaced by the mapped dimension name, 
-                        // the mapped dimension name can be obtained from the getDataDimension() method.
-                        if(((*j)->getDimensions()[0])->getName() == (*l)->getGeoDimension()) {
-                            HDFCFUtil::insert_map((*i)->dimcvarlist, (*l)->getDataDimension(), "Latitude");
-                            break;
+                        // We have to loop through the dimension map
+                        for(vector<SwathDataset::DimensionMap *>::const_iterator 
+                            l=(*i)->getDimensionMaps().begin(); l!=(*i)->getDimensionMaps().end();++l){
+
+                            // This dimension name will be replaced by the mapped dimension name, 
+                            // the mapped dimension name can be obtained from the getDataDimension() method.
+                            if(((*j)->getDimensions()[0])->getName() == (*l)->getGeoDimension()) {
+                                HDFCFUtil::insert_map((*i)->dimcvarlist, (*l)->getDataDimension(), "Latitude");
+                                break;
+                            }
                         }
                     }
                 }
+                
                 (*j)->fieldtype = 1;
                 tempgeocount ++;
             }
@@ -2093,20 +2191,22 @@ void File::create_swath_latlon_dim_cvar_map(int numdm) throw(Exception){
                 // Save this information in the dimensiion name and coordinate variable map.
                 HDFCFUtil::insert_map((*i)->dimcvarlist, 
                                       (((*j)->getDimensions())[1])->getName(), "Longitude");
-                if(numdm >0) {
+                if(handle_swath_dimmap == true) {
+                    if(true == backward_handle_swath_dimmap) {
 
-                    // We have to loop through the dimension map
-                    for(vector<SwathDataset::DimensionMap *>::const_iterator 
-                        l=(*i)->getDimensionMaps().begin(); l!=(*i)->getDimensionMaps().end();++l){
+                        // We have to loop through the dimension map
+                        for(vector<SwathDataset::DimensionMap *>::const_iterator 
+                            l=(*i)->getDimensionMaps().begin(); l!=(*i)->getDimensionMaps().end();++l){
 
-                        // This dimension name will be replaced by the mapped dimension name,
-                        // This name can be obtained by getDataDimension() fuction of 
-                        // dimension map class. 
-                        if(((*j)->getDimensions()[1])->getName() == 
-                            (*l)->getGeoDimension()) {
-                            HDFCFUtil::insert_map((*i)->dimcvarlist, 
-                                                  (*l)->getDataDimension(), "Longitude");
-                            break;
+                            // This dimension name will be replaced by the mapped dimension name,
+                            // This name can be obtained by getDataDimension() fuction of 
+                            // dimension map class. 
+                            if(((*j)->getDimensions()[1])->getName() == 
+                                (*l)->getGeoDimension()) {
+                                HDFCFUtil::insert_map((*i)->dimcvarlist, 
+                                                      (*l)->getDataDimension(), "Longitude");
+                                break;
+                            }
                         }
                     }
                 }
@@ -2157,18 +2257,18 @@ void File::create_swath_latlon_dim_cvar_map(int numdm) throw(Exception){
                     HDFCFUtil::insert_map((*i)->dimcvarlist, 
                                           (((*j)->getDimensions())[0])->getName(), "Latitude");
 
-                    // Have dimension map, we want to remember the dimension and remove it from the list.
-                    if(numdm >0) {                    
+                    if(handle_swath_dimmap == true) {
+                        if(true == backward_handle_swath_dimmap) {
+                            // We have to loop through the dimension map
+                            for(vector<SwathDataset::DimensionMap *>::const_iterator 
+                                l=(*i)->getDimensionMaps().begin(); l!=(*i)->getDimensionMaps().end();++l){
 
-                        // We have to loop through the dimension map
-                        for(vector<SwathDataset::DimensionMap *>::const_iterator 
-                            l=(*i)->getDimensionMaps().begin(); l!=(*i)->getDimensionMaps().end();++l){
-
-                            // This dimension name will be replaced by the mapped dimension name, 
-                            // the mapped dimension name can be obtained from the getDataDimension() method.
-                            if(((*j)->getDimensions()[0])->getName() == (*l)->getGeoDimension()) {
-                                HDFCFUtil::insert_map((*i)->dimcvarlist, (*l)->getDataDimension(), "Latitude");
-                                break;
+                                // This dimension name will be replaced by the mapped dimension name, 
+                                // the mapped dimension name can be obtained from the getDataDimension() method.
+                                if(((*j)->getDimensions()[0])->getName() == (*l)->getGeoDimension()) {
+                                    HDFCFUtil::insert_map((*i)->dimcvarlist, (*l)->getDataDimension(), "Latitude");
+                                    break;
+                                }
                             }
                         }
                     }
@@ -2197,16 +2297,18 @@ void File::create_swath_latlon_dim_cvar_map(int numdm) throw(Exception){
                     // Save this information in the dimensiion name and coordinate variable map.
                     HDFCFUtil::insert_map((*i)->dimcvarlist, 
                                                       (((*j)->getDimensions())[1])->getName(), "Longitude");
-                    if(numdm >0) {
-                        // We have to loop through the dimension map
-                        for(vector<SwathDataset::DimensionMap *>::const_iterator 
-                            l=(*i)->getDimensionMaps().begin(); l!=(*i)->getDimensionMaps().end();++l){
-                            // This dimension name will be replaced by the mapped dimension name,
-                            // This name can be obtained by getDataDimension() fuction of dimension map class. 
-                            if(((*j)->getDimensions()[1])->getName() == (*l)->getGeoDimension()) {
-                                HDFCFUtil::insert_map((*i)->dimcvarlist, 
-                                                      (*l)->getDataDimension(), "Longitude");
-                                break;
+                    if(handle_swath_dimmap == true) {
+                       if(true == backward_handle_swath_dimmap) {
+                            // We have to loop through the dimension map
+                            for(vector<SwathDataset::DimensionMap *>::const_iterator 
+                                l=(*i)->getDimensionMaps().begin(); l!=(*i)->getDimensionMaps().end();++l){
+                                // This dimension name will be replaced by the mapped dimension name,
+                                // This name can be obtained by getDataDimension() fuction of dimension map class. 
+                                if(((*j)->getDimensions()[1])->getName() == (*l)->getGeoDimension()) {
+                                    HDFCFUtil::insert_map((*i)->dimcvarlist, 
+                                                          (*l)->getDataDimension(), "Longitude");
+                                    break;
+                                }
                             }
                         }
                     }
@@ -2333,7 +2435,6 @@ void File:: create_swath_nonll_dim_cvar_map() throw(Exception)
 
         for (vector<Dimension *>::const_iterator j =
             (*i)->getDimensions().begin(); j!= (*i)->getDimensions().end();++j){
-
             if(((*i)->nonmisscvdimlist.find((*j)->getName())) == (*i)->nonmisscvdimlist.end()){// This dimension needs a field
                       
                 // Need to create a new data field vector element with the name and dimension as above.
@@ -2346,10 +2447,20 @@ void File:: create_swath_nonll_dim_cvar_map() throw(Exception)
                 // KY 2010-7-21
                 // netCDF-Java now first follows COARDS, change back
                 // missingfield->name = (*j)->getName()+"_d";
-                missingfield->name = (*j)->getName();
+                Dimension *dim;
+                // When we can handle multiple dimension maps and the
+                // number of swath is >1, we add the swath name as suffix to
+                // avoid the name clashing.
+                if(true == multi_dimmap && (this->swaths.size() != 1)) {
+                    missingfield->name = (*j)->getName()+"_"+(*i)->name;
+                    dim = new Dimension(missingfield->name,(*j)->getSize());
+                }
+                else {
+                    missingfield->name = (*j)->getName();
+                    dim = new Dimension((*j)->getName(),(*j)->getSize());
+                }
                 missingfield->rank = 1;
                 missingfield->type = DFNT_INT32;//This is an HDF constant.the data type is always integer.
-                Dimension *dim = new Dimension((*j)->getName(),(*j)->getSize());
 
                 // only 1 dimension
                 missingfield->dims.push_back(dim);
@@ -2412,7 +2523,7 @@ void File:: create_swath_nonll_dim_cvar_map() throw(Exception)
 
 // Handle swath dimension name to coordinate variable name maps. 
 // The input parameter is the number of dimension maps in this file.
-void File::handle_swath_dim_cvar_maps(int tempnumdm) throw(Exception) {
+void File::handle_swath_dim_cvar_maps() throw(Exception) {
 
     // Start handling name clashing
     vector <string> tempfieldnamelist;
@@ -2423,12 +2534,28 @@ void File::handle_swath_dim_cvar_maps(int tempnumdm) throw(Exception) {
         for (vector<Field *>::const_iterator j =
             (*i)->getGeoFields().begin();
             j != (*i)->getGeoFields().end(); ++j) {
-            tempfieldnamelist.push_back(HDFCFUtil::get_CF_string((*j)->name));   
+            if((*j)->fieldtype == 0 && (this->swaths.size() !=1) &&
+               (true == handle_swath_dimmap) && 
+               (backward_handle_swath_dimmap == false)){
+                string new_field_name = (*j)->name+"_"+(*i)->name;
+                tempfieldnamelist.push_back(HDFCFUtil::get_CF_string(new_field_name));   
+            }
+            else 
+                tempfieldnamelist.push_back(HDFCFUtil::get_CF_string((*j)->name));   
         }
 
         for (vector<Field *>::const_iterator j = (*i)->getDataFields().begin();
             j!= (*i)->getDataFields().end(); ++j) {
-            tempfieldnamelist.push_back(HDFCFUtil::get_CF_string((*j)->name));
+            if((*j)->fieldtype == 0 && (this->swaths.size() !=1) &&
+                true == multi_dimmap){
+                // If we can handle multi dim. maps fro multi swaths, we 
+                // create the field name with the swath name as suffix to 
+                // avoid name clashing.
+                string new_field_name = (*j)->name+"_"+(*i)->name;
+                tempfieldnamelist.push_back(HDFCFUtil::get_CF_string(new_field_name));   
+            }
+            else 
+                tempfieldnamelist.push_back(HDFCFUtil::get_CF_string((*j)->name));
         }
     }
 
@@ -2513,7 +2640,8 @@ void File::handle_swath_dim_cvar_maps(int tempnumdm) throw(Exception) {
 
                 map<string,string>::iterator tempmapit;
 
-                if(tempnumdm == 0) { // No dimension map, just obtain the new dimension name.
+                // No dimension map or dimension names were handled. just obtain the new dimension name.
+                if(handle_swath_dimmap == false || multi_dimmap == true) {
 
                     // Find the new name of this field
                     tempmapit = (*i)->ndimnamelist.find((*k)->getName());
@@ -2594,7 +2722,8 @@ void File::handle_swath_dim_cvar_maps(int tempnumdm) throw(Exception) {
             for(vector<Dimension *>::const_iterator k=
                 (*j)->getDimensions().begin();k!=(*j)->getDimensions().end();++k){
 
-                if(tempnumdm == 0) {
+                if((handle_swath_dimmap == false) || multi_dimmap == true) {
+                  //(handle_swath_dimmap == true && backward_handle_swath_dimmap == false)){
 
                     map<string,string>::iterator tempmapit;
                     // Find the new name of this field
@@ -2697,8 +2826,12 @@ void File::handle_swath_cf_attrs() throw(Exception) {
                 string tempcorrectedfieldname="";
                 int tempcount = 0;
                 bool has_ll_coord = false;
-                if(HDF4RequestHandler::get_disable_swath_dim_map() == false)
+                if((*i)->get_num_map() == 0)
                     has_ll_coord = true;
+                else if(handle_swath_dimmap == true) {
+                    if(backward_handle_swath_dimmap == true || multi_dimmap == true) 
+                        has_ll_coord = true;
+                }
                 for(vector<Dimension *>::const_iterator 
                     k=(*j)->getDimensions().begin();k!=(*j)->getDimensions().end();++k){
 
@@ -2722,10 +2855,8 @@ void File::handle_swath_cf_attrs() throw(Exception) {
                         throw4("cannot find the corrected dimension field name",
                                 (*i)->getName(),(*j)->getName(),(*k)->getName());
 
-//cerr<<"tempcorrectedfieldname is "<<tempcorrectedfieldname <<endl;
-if(false == has_ll_coord) 
-has_ll_coord= check_ll_in_coords(tempcorrectedfieldname);
-
+                    if(false == has_ll_coord) 
+                        has_ll_coord= check_ll_in_coords(tempcorrectedfieldname);
 
                     if(tempcount == 0) 
                         tempcoordinates= tempcorrectedfieldname;
@@ -2733,6 +2864,7 @@ has_ll_coord= check_ll_in_coords(tempcorrectedfieldname);
                         tempcoordinates = tempcoordinates +" "+tempcorrectedfieldname;
                     tempcount++;
                 }
+                if(true == has_ll_coord)
                 (*j)->setCoordinates(tempcoordinates);
             }
 
@@ -2781,16 +2913,19 @@ has_ll_coord= check_ll_in_coords(tempcorrectedfieldname);
             (*i)->getDataFields().begin();
             j != (*i)->getDataFields().end(); ++j) {
                  
-            // Real fields: adding coordinate attributesinate attributes
+            // Real fields: adding coordinate attributes
             if((*j)->fieldtype == 0)  {// currently it is always true.
                 string tempcoordinates="";
                 string tempfieldname="";
                 string tempcorrectedfieldname="";
                 int tempcount = 0;
                 bool has_ll_coord = false;
-                if(HDF4RequestHandler::get_disable_swath_dim_map() == false)
+                if((*i)->get_num_map() == 0)
                     has_ll_coord = true;
-
+                else if(handle_swath_dimmap == true) {
+                    if(backward_handle_swath_dimmap == true || multi_dimmap == true) 
+                        has_ll_coord = true;
+                }
                 for(vector<Dimension *>::const_iterator k
                     =(*j)->getDimensions().begin();k!=(*j)->getDimensions().end();++k){
 
@@ -2814,9 +2949,8 @@ has_ll_coord= check_ll_in_coords(tempcorrectedfieldname);
                         throw4("cannot find the corrected dimension field name",
                                (*i)->getName(),(*j)->getName(),(*k)->getName());
 
-//cerr<<"tempcorrectedfieldname is "<<tempcorrectedfieldname <<endl;
-if(false == has_ll_coord) 
-has_ll_coord= check_ll_in_coords(tempcorrectedfieldname);
+                    if(false == has_ll_coord) 
+                        has_ll_coord= check_ll_in_coords(tempcorrectedfieldname);
 
                     if(tempcount == 0) 
                         tempcoordinates= tempcorrectedfieldname;
@@ -2852,6 +2986,474 @@ has_ll_coord= check_ll_in_coords(tempcorrectedfieldname);
             }
         }
     }
+}
+
+// Find dimension that has the dimension name.
+bool File::find_dim_in_dims(const std::vector<Dimension*>&dims,const std::string &dim_name) {
+
+    bool ret_value = false;
+    for (int i = 0; i <dims.size(); i++) {
+        if((dims[i])->name == dim_name) {
+            ret_value = true;
+            break;
+        }
+    }
+    return ret_value;
+}
+
+// Check if the original dimension names in Lat/lon that holds the dimension maps are used by data fields.
+void File::check_dm_geo_dims_in_vars() {
+
+    if(handle_swath_dimmap == false) 
+        return;
+    for (vector<SwathDataset *>::const_iterator i = this->swaths.begin();
+        i != this->swaths.end(); ++i){
+
+        // Currently we only support swath that has 2-D lat/lon(MODIS).
+        if((*i)->get_num_map() > 0) {
+
+            for (vector<Field *>::const_iterator j =
+                (*i)->getDataFields().begin();
+                j != (*i)->getDataFields().end(); ++j) {
+
+                int match_dims = 0;
+                // We will only check the variables >=2D since lat/lon are 2D.
+                if((*j)->rank >=2) {
+                    for(vector<Dimension *>::const_iterator k=
+                        (*j)->getDimensions().begin();k!=(*j)->getDimensions().end();++k){
+
+                        // There may be multiple dimension maps that hold the same geo-dimension.
+                        // We should not count this duplicately.
+                        bool not_match_geo_dim = true;
+                        for(vector<SwathDataset::DimensionMap *>::const_iterator l=
+                            (*i)->getDimensionMaps().begin(); l!=(*i)->getDimensionMaps().end();++l){
+
+                            if(((*k)->getName() == (*l)->getGeoDimension()) && not_match_geo_dim){ 
+                                match_dims++;
+                                not_match_geo_dim = false;
+                            }
+                        }
+                    }
+                }
+                // This variable holds the GeoDimensions,this swath 
+                if(match_dims == 2) {
+                    (*i)->GeoDim_in_vars = true;
+                    break;
+                }
+            }
+
+            if((*i)->GeoDim_in_vars == false) {
+                for (vector<Field *>::const_iterator j =
+                    (*i)->getGeoFields().begin();
+                    j != (*i)->getGeoFields().end(); ++j) {
+
+                    int match_dims = 0;
+                    // We will only check the variables >=2D since lat/lon are 2D.
+                    if((*j)->rank >=2 && ((*j)->name != "Latitude" && (*j)->name != "Longitude")) {
+                        for(vector<Dimension *>::const_iterator k=
+                            (*j)->getDimensions().begin();k!=(*j)->getDimensions().end();++k){
+
+                             // There may be multiple dimension maps that hold the same geo-dimension.
+                             // We should not count this duplicately.
+                             bool not_match_geo_dim = true;
+ 
+                            for(vector<SwathDataset::DimensionMap *>::const_iterator l=
+                                (*i)->getDimensionMaps().begin(); l!=(*i)->getDimensionMaps().end();++l){
+
+                                if(((*k)->getName() == (*l)->getGeoDimension()) && not_match_geo_dim){
+                                    match_dims++;
+                                    not_match_geo_dim = false;
+                                }
+                            }
+                        }
+                    }
+                    // This variable holds the GeoDimensions,this swath 
+                    if(match_dims == 2){
+                        (*i)->GeoDim_in_vars = true;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    return;
+}
+
+// Based on the dimension name and the mapped dimension name,obtain the offset and increment.
+// return false if there is no match.
+bool SwathDataset::obtain_dmap_offset_inc(const string& ori_dimname, const string & mapped_dimname,int &offset,int&inc) {
+    bool ret_value = false;
+    for(vector<DimensionMap *>::const_iterator 
+        i=this->dimmaps.begin(); i!=this->dimmaps.end();++i){
+        if((*i)->geodim==ori_dimname && (*i)->datadim == mapped_dimname){
+            offset = (*i)->offset;
+            inc = (*i)->increment;
+            ret_value = true;
+            break;
+        }
+    }
+    return ret_value;
+}
+ 
+// For the multi-dimension map case, generate all the lat/lon names. The original lat/lon
+// names should be used. 
+// For one swath, we don't need to provide the swath name. Yes, swath name is missed. However. this is
+// what users want. For multi swaths, swath names are added.
+void File::create_geo_varnames_list(vector<string> & geo_varnames,const string & swathname, 
+                                    const string & fieldname,int extra_ll_pairs,bool oneswath) {
+    // We will always keep Latitude and Longitude 
+    if(true == oneswath)
+        geo_varnames.push_back(fieldname);
+    else {
+        string nfieldname = fieldname+"_"+swathname;
+        geo_varnames.push_back(nfieldname);
+    }
+    for (int i = 0; i <extra_ll_pairs;i++) {
+        string nfieldname;
+        stringstream si;
+        si << (i+1);
+        if( true == oneswath) // No swath name is needed.
+            nfieldname = fieldname+"_"+si.str();
+        else 
+            nfieldname = fieldname+"_"+swathname+"_"+si.str();
+        geo_varnames.push_back(nfieldname);
+    }
+#if 0
+cerr<<"ll_pairs is "<<extra_ll_pairs <<endl;
+for(int i =0;i<geo_varnames.size();i++)
+    cerr<<"geo_varnames["<<i<<"]= " <<geo_varnames[i] <<endl;
+#endif
+}
+
+// Make just one routine for both latitude and longtitude dimmaps.
+// In longitude part, we just ignore ..
+void File::create_geo_dim_var_maps(SwathDataset*sd, Field*fd,const vector<string>& lat_names, 
+                                   const vector<string>& lon_names,vector<Dimension*>& geo_var_dim1,
+                                   vector<Dimension*>& geo_var_dim2) {
+    string field_lat_dim1_name =(fd->dims)[0]->name;
+    string field_lat_dim2_name =(fd->dims)[1]->name;
+
+    // Keep the original Latitude/Longitude and the dimensions when GeoDim_in_vars is true.
+    if(sd->GeoDim_in_vars == true) {
+        if((this->swaths).size() >1) {
+            (fd->dims)[0]->name = field_lat_dim1_name+"_"+sd->name;
+            (fd->dims)[1]->name = field_lat_dim2_name+"_"+sd->name;
+        }
+        geo_var_dim1.push_back((fd->dims)[0]);
+        geo_var_dim2.push_back((fd->dims)[1]);
+    }
+
+    // Create dimension list for the lats and lons.
+    // Consider the multi-swath case and if the dimension names of orig. lat/lon
+    // are used.
+    // We also need to consider one geo-dim can map to multiple data dim.
+    // One caveat for the current approach is that we don't consider 
+    // two dimension maps are not created in order. HDFEOS2 API implies
+    // the dimension maps are created in order.
+    short dim1_map_count = 0;
+    short dim2_map_count = 0;
+    for(vector<SwathDataset::DimensionMap *>::const_iterator 
+        i=sd->getDimensionMaps().begin(); i!=sd->getDimensionMaps().end();++i){
+        if((*i)->getGeoDimension()==field_lat_dim1_name){
+            string data_dim1_name = (*i)->getDataDimension();
+            int dim1_size = sd->obtain_dimsize_with_dimname(data_dim1_name);
+            if((this->swaths).size() > 1)
+                data_dim1_name = data_dim1_name+"_"+sd->name;
+
+            if(sd->GeoDim_in_vars == false && dim1_map_count == 0) {
+                (fd->dims)[0]->name = data_dim1_name;          
+                (fd->dims)[0]->dimsize = dim1_size;          
+                geo_var_dim1.push_back((fd->dims)[0]);
+            }
+            else {
+                Dimension *lat_dim = new Dimension(data_dim1_name,dim1_size);
+                geo_var_dim1.push_back(lat_dim);
+            }
+            dim1_map_count++;
+        }
+        else if((*i)->getGeoDimension()==field_lat_dim2_name){
+            string data_dim2_name = (*i)->getDataDimension();
+            int dim2_size = sd->obtain_dimsize_with_dimname(data_dim2_name);
+            if((this->swaths).size() > 1)
+                data_dim2_name = data_dim2_name+"_"+sd->name;
+            if(sd->GeoDim_in_vars == false && dim2_map_count == 0) {
+                (fd->dims)[1]->name = data_dim2_name;          
+                (fd->dims)[1]->dimsize = dim2_size;          
+                geo_var_dim2.push_back((fd->dims)[1]);
+            }
+            else {
+                Dimension *lon_dim = new Dimension(data_dim2_name,dim2_size);
+                geo_var_dim2.push_back(lon_dim);
+            }
+            dim2_map_count++;
+        }
+    }
+
+    // Build up dimension names to coordinate var lists.
+    for(int i = 0; i<lat_names.size();i++) {
+        HDFCFUtil::insert_map(sd->dimcvarlist, (geo_var_dim1[i])->name,lat_names[i]);
+        HDFCFUtil::insert_map(sd->dimcvarlist, (geo_var_dim2[i])->name,lon_names[i]);
+    }
+     
+    return;
+}
+
+// Generate lat/lon variables for the multi-dimension map case for this swath.
+// Original lat/lon variable information is provided.
+void File::create_geo_vars(SwathDataset* sd,Field *orig_lat,Field*orig_lon,
+                           const vector<string>& lat_names,const vector<string>& lon_names,
+                          vector<Dimension*>&geo_var_dim1,vector<Dimension*>&geo_var_dim2) throw(Exception){
+
+#if 0
+    // Handle existing latitude and longitude. 
+    // If we don't need to keep GeoDim in the latitude and longitude,
+    // dimensions of latitude and longitude need to be updated.
+    Field* orig_lat;
+    Field* orig_lon;
+
+    // Here we don't need to search the data fields, 
+    // we only support the standard Swath:lat/lon under /geolocation fields.
+    for (vector<Field *>::iterator i = sd->geofields.begin(); 
+                                           i!=sd->geofields.end();++i) {
+        if((*i)->name == "Latitude")
+            orig_lat =(*i);
+        else if((*i)->name == "Longitude")
+            orig_lon =(*i);
+    }
+#endif
+
+    // Need to have ll dimension names to obtain the dimension maps
+    string ll_ori_dim0_name = (orig_lon->dims)[0]->name;
+    string ll_ori_dim1_name = (orig_lon->dims)[1]->name;
+    int dmap_offset = 0;
+    int dmap_inc = 0;
+    if(sd->GeoDim_in_vars == false) {
+
+        
+#if 0
+        (orig_lat->dims)[0]->name = geo_var_dim1[0]->name;
+        (orig_lat->dims)[0]->dimsize = geo_var_dim1[0]->dimsize;
+        (orig_lat->dims)[1]->name = geo_var_dim2[0]->name;
+        (orig_lat->dims)[1]->dimsize = geo_var_dim2[0]->dimsize;
+#endif
+        // The original lat's dim has been updated in create_geo_dim_var_maps
+        // In theory , it should be reasonable to do it here. Later. 
+        (orig_lon->dims)[0]->name = geo_var_dim1[0]->name;
+        (orig_lon->dims)[0]->dimsize = geo_var_dim1[0]->dimsize;
+        (orig_lon->dims)[1]->name = geo_var_dim2[0]->name;
+        (orig_lon->dims)[1]->dimsize = geo_var_dim2[0]->dimsize;
+        string ll_datadim0_name = geo_var_dim1[0]->name;
+        string ll_datadim1_name = geo_var_dim2[0]->name;
+        if(this->swaths.size() >1) {
+            string prefix_remove = "_"+sd->name;
+            ll_datadim0_name = ll_datadim0_name.substr(0,ll_datadim0_name.size()-prefix_remove.size());
+            ll_datadim1_name = ll_datadim1_name.substr(0,ll_datadim1_name.size()-prefix_remove.size());
+        }
+
+        // dimension map offset and inc should be retrieved.
+        if(false == sd->obtain_dmap_offset_inc(ll_ori_dim0_name,ll_datadim0_name,dmap_offset,dmap_inc)){
+            throw5("Cannot retrieve dimension map offset and inc ",sd->name,
+                    orig_lon->name,ll_ori_dim0_name,ll_datadim0_name);
+        }
+        orig_lon->ll_dim0_inc = dmap_inc;
+        orig_lon->ll_dim0_offset = dmap_offset;
+        orig_lat->ll_dim0_inc = dmap_inc;
+        orig_lat->ll_dim0_offset = dmap_offset;
+
+        if(false == sd->obtain_dmap_offset_inc(ll_ori_dim1_name,ll_datadim1_name,dmap_offset,dmap_inc)){
+            throw5("Cannot retrieve dimension map offset and inc ",sd->name,
+                    orig_lon->name,ll_ori_dim1_name,ll_datadim1_name);
+        }
+        orig_lon->ll_dim1_inc = dmap_inc;
+        orig_lon->ll_dim1_offset = dmap_offset;
+        orig_lat->ll_dim1_inc = dmap_inc;
+        orig_lat->ll_dim1_offset = dmap_offset;
+#if 0
+cerr<<"orig_lon "<<orig_lon->name <<endl;
+cerr<<"orig_lon dim1 inc "<<orig_lon->ll_dim1_inc<<endl;
+cerr<<"orig_lon dim1 offset  "<<orig_lon->ll_dim1_offset<<endl;
+cerr<<"orig_lon dim0 inc "<<orig_lon->ll_dim0_inc<<endl;
+cerr<<"orig_lon dim0 offset  "<<orig_lon->ll_dim0_offset<<endl;
+#endif
+
+       
+    }
+    else {
+        // if GeoDim is used, we still need to update longitude's dimension names
+        // if multiple swaths. Latitude was done in create_geo_dim_var_maps().
+        if((this->swaths).size() >1) {
+            (orig_lon->dims)[0]->name = (orig_lon->dims)[0]->name + "_" + sd->name;
+            (orig_lon->dims)[1]->name = (orig_lon->dims)[1]->name + "_" + sd->name;
+        }
+    }
+
+    // We also need to update the latitude and longitude names when num_swath is not 1. 
+    if((this->swaths).size()>1) { 
+        orig_lat->name = lat_names[0];
+        orig_lon->name = lon_names[0];
+    }
+
+    // Mark the original lat/lon as coordinate variables.
+    orig_lat->fieldtype = 1;
+    orig_lon->fieldtype = 2;
+
+    // The added fields.
+    for (int i = 1; i <lat_names.size();i++) {
+        Field * newlat = new Field();
+        newlat->name = lat_names[i];
+        (newlat->dims).push_back(geo_var_dim1[i]);
+        (newlat->dims).push_back(geo_var_dim2[i]);
+        newlat->fieldtype = 1;
+        newlat->rank = 2;
+        newlat->type = orig_lat->type;
+        Field * newlon = new Field();
+        newlon->name = lon_names[i];
+        // Here we need to create new Dimensions 
+        // for Longitude.
+        Dimension* lon_dim1= 
+           new Dimension(geo_var_dim1[i]->name,geo_var_dim1[i]->dimsize);
+        Dimension* lon_dim2= 
+           new Dimension(geo_var_dim2[i]->name,geo_var_dim2[i]->dimsize);
+        (newlon->dims).push_back(lon_dim1);
+        (newlon->dims).push_back(lon_dim2);
+        newlon->fieldtype = 2;
+        newlon->rank = 2;
+        newlon->type = orig_lon->type;
+
+        string ll_datadim0_name = geo_var_dim1[i]->name;
+        string ll_datadim1_name = geo_var_dim2[i]->name;
+        if(this->swaths.size() >1) {
+            string prefix_remove = "_"+sd->name;
+            ll_datadim0_name = ll_datadim0_name.substr(0,ll_datadim0_name.size()-prefix_remove.size());
+            ll_datadim1_name = ll_datadim1_name.substr(0,ll_datadim1_name.size()-prefix_remove.size());
+        }
+
+        // Obtain dimension map offset and inc for the new lat/lon.
+        if(false == sd->obtain_dmap_offset_inc(ll_ori_dim0_name,ll_datadim0_name,dmap_offset,dmap_inc)){
+            throw5("Cannot retrieve dimension map offset and inc ",sd->name,
+                    newlon->name,ll_ori_dim0_name,ll_datadim0_name);
+        }
+        newlon->ll_dim0_inc = dmap_inc;
+        newlon->ll_dim0_offset = dmap_offset;
+        newlat->ll_dim0_inc = dmap_inc;
+        newlat->ll_dim0_offset = dmap_offset;
+        if(false == sd->obtain_dmap_offset_inc(ll_ori_dim1_name,ll_datadim1_name,dmap_offset,dmap_inc)){
+            throw5("Cannot retrieve dimension map offset and inc ",sd->name,
+                    newlon->name,ll_ori_dim0_name,ll_datadim1_name);
+        }
+        newlon->ll_dim1_inc = dmap_inc;
+        newlon->ll_dim1_offset = dmap_offset;
+        newlat->ll_dim1_inc = dmap_inc;
+        newlat->ll_dim1_offset = dmap_offset;
+#if 0
+cerr<<"newlon "<<newlon->name <<endl;
+cerr<<"newlon dim1 inc "<<newlon->ll_dim1_inc<<endl;
+cerr<<"newlon dim1 offset  "<<newlon->ll_dim1_offset<<endl;
+cerr<<"newlon dim0 inc "<<newlon->ll_dim0_inc<<endl;
+cerr<<"newlon dim0 offset  "<<newlon->ll_dim0_offset<<endl;
+#endif
+        sd->geofields.push_back(newlat);
+        sd->geofields.push_back(newlon);
+    }
+#if 0
+//cerr<<"Latlon under swath: "<<sd->name<<endl;
+for (vector<Field *>::const_iterator j =
+     sd->getGeoFields().begin();
+     j != sd->getGeoFields().end(); ++j) {
+cerr<<"Field name: "<<(*j)->name <<endl;
+cerr<<"Dimension name and size: "<<endl;
+   for(vector<Dimension *>::const_iterator k=
+      (*j)->getDimensions().begin();k!=(*j)->getDimensions().end();++k)
+cerr<<(*k)->getName() <<": "<<(*k)->getSize() <<endl;
+}
+#endif
+
+}
+
+// We need to update the dimensions for all the swath and all the fields when
+// we can handle the multi-dimension map case. This only applies to >1 swath.
+// For one swath, dimension names are not needed to be updated.
+void File::update_swath_dims_for_dimmap(SwathDataset* sd,const std::vector<Dimension*>&geo_var_dim1, 
+                                        const std::vector<Dimension*>&geo_var_dim2) {
+
+    // Loop through each field under geofields and data fields. update dimensions.
+    // Obtain each dimension name + _+swath_name, if match with geo_var_dim1 or geo_var_dim2;
+    // Update the dimension names with the matched one.
+    for (vector<Field *>::const_iterator j = sd->getGeoFields().begin(); 
+        j != sd->getGeoFields().end(); ++j) {
+        // No need to update latitude/longitude 
+        if((*j)->fieldtype == 1 || (*j)->fieldtype == 2) 
+            continue;
+        for(vector<Dimension *>::const_iterator k=
+            (*j)->getDimensions().begin();k!=(*j)->getDimensions().end();++k) {
+            string new_dim_name = (*k)->name +"_"+sd->name;
+            if(find_dim_in_dims(geo_var_dim1,new_dim_name) || 
+               find_dim_in_dims(geo_var_dim2,new_dim_name)) 
+                (*k)->name = new_dim_name;
+        }
+    }
+
+    for (vector<Field *>::const_iterator j = sd->getDataFields().begin(); 
+        j != sd->getDataFields().end(); ++j) {
+        for(vector<Dimension *>::const_iterator k=
+            (*j)->getDimensions().begin();k!=(*j)->getDimensions().end();++k) {
+            string new_dim_name = (*k)->name +"_"+sd->name;
+            if(find_dim_in_dims(geo_var_dim1,new_dim_name) || 
+               find_dim_in_dims(geo_var_dim2,new_dim_name)) 
+                (*k)->name = new_dim_name;
+        }
+    }
+
+    // We also need to update the dimension name of this swath.
+    for (vector<Dimension *>::const_iterator k = sd->getDimensions().begin(); 
+        k!= sd->getDimensions().end(); ++k) {
+        string new_dim_name = (*k)->name +"_"+sd->name;
+        if(find_dim_in_dims(geo_var_dim1,new_dim_name) || 
+           find_dim_in_dims(geo_var_dim2,new_dim_name)) 
+            (*k)->name = new_dim_name;
+    }
+
+    return;
+
+}
+
+// This is the main function to handle the multi-dimension map case.
+// It creates the lat/lon lists, handle dimension names and then
+// provide the dimension name to coordinate variable map.
+void File::create_swath_latlon_dim_cvar_map_for_dimmap(SwathDataset* sd, Field* ori_lat, Field* ori_lon) throw(Exception) {
+
+    bool one_swath = ((this->swaths).size() == 1);
+
+    int num_extra_lat_lon_pairs = 0;
+
+#if 0    
+if(sd->GeoDim_in_vars == true) 
+ cerr<<" swath name is "<<sd->name <<endl;
+#endif
+
+    // Since the original lat/lon will be kept for lat/lon with the first  dimension map..
+    if(sd->GeoDim_in_vars == false) 
+        num_extra_lat_lon_pairs--;
+
+    num_extra_lat_lon_pairs += (sd->num_map)/2;
+
+    vector<string> lat_names;
+    create_geo_varnames_list(lat_names,sd->name,ori_lat->name,num_extra_lat_lon_pairs,one_swath);
+    vector<string>lon_names;
+    create_geo_varnames_list(lon_names,sd->name,ori_lon->name,num_extra_lat_lon_pairs,one_swath);
+    vector<Dimension*> geo_var_dim1;
+    vector<Dimension*> geo_var_dim2;
+
+    // Define dimensions or obtain dimensions for new field.
+    create_geo_dim_var_maps(sd, ori_lat,lat_names,lon_names,geo_var_dim1,geo_var_dim2);
+    create_geo_vars(sd,ori_lat,ori_lon,lat_names,lon_names,geo_var_dim1,geo_var_dim2);
+
+    // Update dims for vars,this is only necessary when there are multiple swaths 
+    // Dimension names need to be updated to include swath names.
+    if((this->swaths).size() >1) 
+        update_swath_dims_for_dimmap(sd,geo_var_dim1,geo_var_dim2);
+    
 }
 
 /// Read and prepare. This is the main method to make the DAP output CF-compliant.
@@ -2943,17 +3545,23 @@ void File::Prepare(const char *eosfile_path) throw(Exception)
         // Now we handle swath case. 
         if (numswath > 0) {
 
-           // Obtain the number of dimension maps in this file. 
-           int tempnumdm = obtain_dimmap_num(numswath);
+           // Check if we need to handle dimension maps in this file. 
+           check_swath_dimmap(numswath);
+
+           // Check if GeoDim is used by variables when dimension maps are present.
+           check_dm_geo_dims_in_vars();
+
+           // If we need to handle dimension maps,check if we need to keep the old way.
+           check_swath_dimmap_bk_compat(numswath);
 
            // Create the dimension name to coordinate variable name map for lat/lon. 
-           create_swath_latlon_dim_cvar_map(tempnumdm);
+           create_swath_latlon_dim_cvar_map();
 
            // Create the dimension name to coordinate variable name map for non lat/lon coordinate variables.
            create_swath_nonll_dim_cvar_map();
 
            // Handle swath dimension name to coordinate variable name maps. 
-           handle_swath_dim_cvar_maps(tempnumdm);
+           handle_swath_dim_cvar_maps();
 
            // Handle CF attributes for swaths. 
            // The CF attributes include "coordinates", "units" for coordinate variables and "_FillValue". 
@@ -2968,6 +3576,8 @@ void File::Prepare(const char *eosfile_path) throw(Exception)
     }// End of handling swath
    
 }
+
+
 
 #if 0
 void correct_unlimited_missing_zdim(GridDataset* gdset) throw(Exception) {
@@ -3214,7 +3824,17 @@ void Dataset::SetScaleType(const string EOS2ObjName) throw(Exception) {
         scaletype = MODIS_DIV_SCALE;
 }
 
-
+int Dataset::obtain_dimsize_with_dimname(const string & dimname) {
+    int ret_value = -1;
+    for(vector<Dimension *>::const_iterator k=
+        this->getDimensions().begin();k!=this->getDimensions().end();++k){
+        if((*k)->name == dimname){
+            ret_value = (*k)->dimsize;
+            break;
+        }
+    }
+    return ret_value;
+}
 
 // Release resources
 Field::~Field()

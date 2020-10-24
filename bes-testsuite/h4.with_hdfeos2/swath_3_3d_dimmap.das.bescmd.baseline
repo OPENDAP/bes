@@ -1,0 +1,100 @@
+Attributes {
+    pressure {
+        String long_name "Swath1:pressure";
+    }
+    Latitude_Swath1 {
+        String units "degrees_north";
+        String long_name "Swath1:Latitude_Swath1";
+    }
+    Longitude_Swath1 {
+        String units "degrees_east";
+        String long_name "Swath1:Longitude_Swath1";
+    }
+    Latitude_Swath1_1 {
+        String units "degrees_north";
+        String long_name "Swath1:Latitude_Swath1_1";
+    }
+    Longitude_Swath1_1 {
+        String units "degrees_east";
+        String long_name "Swath1:Longitude_Swath1_1";
+    }
+    Latitude_Swath1_2 {
+        String units "degrees_north";
+        String long_name "Swath1:Latitude_Swath1_2";
+    }
+    Longitude_Swath1_2 {
+        String units "degrees_east";
+        String long_name "Swath1:Longitude_Swath1_2";
+    }
+    temperature_l_Swath1 {
+        String coordinates "pressure Latitude_Swath1 Longitude_Swath1";
+        Float32 _FillValue -9999.000000;
+        String long_name "Swath1:temperature_l";
+    }
+    temperature_m_Swath1 {
+        String coordinates "pressure Latitude_Swath1_1 Longitude_Swath1_1";
+        Float32 _FillValue -9999.000000;
+        String long_name "Swath1:temperature_m";
+    }
+    temperature_h_Swath1 {
+        String coordinates "pressure Latitude_Swath1_2 Longitude_Swath1_2";
+        Float32 _FillValue -9999.000000;
+        String long_name "Swath1:temperature_h";
+    }
+    pressure_1 {
+        String long_name "Swath2:pressure";
+    }
+    Latitude_Swath2 {
+        String units "degrees_north";
+        String long_name "Swath2:Latitude_Swath2";
+    }
+    Longitude_Swath2 {
+        String units "degrees_east";
+        String long_name "Swath2:Longitude_Swath2";
+    }
+    Latitude_Swath2_1 {
+        String units "degrees_north";
+        String long_name "Swath2:Latitude_Swath2_1";
+    }
+    Longitude_Swath2_1 {
+        String units "degrees_east";
+        String long_name "Swath2:Longitude_Swath2_1";
+    }
+    temperature_l_Swath2 {
+        String coordinates "pressure_1 Latitude_Swath2 Longitude_Swath2";
+        Float32 _FillValue -9999.000000;
+        String long_name "Swath2:temperature_l";
+    }
+    temperature_m_Swath2 {
+        String coordinates "pressure_1 Latitude_Swath2_1 Longitude_Swath2_1";
+        Float32 _FillValue -9999.000000;
+        String long_name "Swath2:temperature_m";
+    }
+    pressure_2 {
+        String long_name "Swath3:pressure";
+    }
+    Latitude_Swath3 {
+        String units "degrees_north";
+        String long_name "Swath3:Latitude_Swath3";
+    }
+    Longitude_Swath3 {
+        String units "degrees_east";
+        String long_name "Swath3:Longitude_Swath3";
+    }
+    xtrack_l_Swath3 {
+        String units "level";
+        String long_name "Swath3:xtrack_l_Swath3(fake)";
+    }
+    ytrack_l_Swath3 {
+        String units "level";
+        String long_name "Swath3:ytrack_l_Swath3(fake)";
+    }
+    temperature_m_Swath3 {
+        String coordinates "pressure_2 Latitude_Swath3 Longitude_Swath3";
+        Float32 _FillValue -9999.000000;
+        String long_name "Swath3:temperature_m";
+    }
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.19";
+    }
+}

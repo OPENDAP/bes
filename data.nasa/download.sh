@@ -52,4 +52,5 @@ $GET ftp://gamma.hdfgroup.org/pub/outgoing/opendap/data/HDF4/NASA1/OBPG/T2010001
 $GET ftp://gamma.hdfgroup.org/pub/outgoing/opendap/data/HDF4/NASA1/PODAAC/2006001-2006005.s0454pfrt-bsst.hdf
 
 $GET ftp://gamma.hdfgroup.org/pub/outgoing/opendap/data/HDF4/NASA1/GHRC/LISOTD_HRAC_V2.2.hdf
+$GET ftp://gamma.hdfgroup.org/pub/outgoing/opendap/data/HDF4/NASA1/LAADS/MYD09.A2019003.2040.006.2019005020913.hdf
 
