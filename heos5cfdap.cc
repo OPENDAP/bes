@@ -29,6 +29,7 @@
 /// \author Muqun Yang <myang6@hdfgroup.org>
 ///
 ////////////////////////////////////////////////////////////////////////////////
+#include "config_hdf5.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -905,8 +906,8 @@ if(other_str!="") "h5","Final othermetadata "<<other_str <<endl;
             if (he5dasparse(&arg) != 0
                 || false == arg.status()){
 
-                (*BESLog::TheLog())<< "HDF-EOS5 parse error while processing a "
-                    << "StructMetadata " << " HDFEOS attribute" << endl;
+                ERROR_LOG("HDF-EOS5 parse error while processing a "
+                    << "StructMetadata " << " HDFEOS attribute" << endl);
             }
             
             he5daslex_destroy();
@@ -923,8 +924,8 @@ if(other_str!="") "h5","Final othermetadata "<<other_str <<endl;
         if (he5dasparse(&arg) != 0
                 || false == arg.status()){
 
-            (*BESLog::TheLog())<< "HDF-EOS5 parse error while processing a "
-                    << "CoreMetadata " << " HDFEOS attribute" << endl;
+            ERROR_LOG("HDF-EOS5 parse error while processing a "
+                    << "CoreMetadata " << " HDFEOS attribute" << endl);
         }
 
         he5daslex_destroy();
@@ -938,8 +939,8 @@ if(other_str!="") "h5","Final othermetadata "<<other_str <<endl;
         if (he5dasparse(&arg) != 0
             || false == arg.status()){
 
-             (*BESLog::TheLog())<< "HDF-EOS5 parse error while processing a "
-                    << "ArchiveMetadata " << " HDFEOS attribute" << endl;
+            ERROR_LOG("HDF-EOS5 parse error while processing a "
+                    << "ArchiveMetadata " << " HDFEOS attribute" << endl);
         }
         he5daslex_destroy();
     }
@@ -967,8 +968,8 @@ if(other_str!="") "h5","Final othermetadata "<<other_str <<endl;
         if (he5dasparse(&arg) != 0
                 || false == arg.status()) {
 
-            (*BESLog::TheLog())<< "HDF-EOS5 parse error while processing a "
-                    << "SubsetMetadata " << " HDFEOS attribute" << endl;
+            ERROR_LOG("HDF-EOS5 parse error while processing a "
+                    << "SubsetMetadata " << " HDFEOS attribute" << endl);
         }
         he5daslex_destroy();
     }
@@ -980,8 +981,8 @@ if(other_str!="") "h5","Final othermetadata "<<other_str <<endl;
         he5das_scan_string((const char*) product_str.c_str());
         if (he5dasparse(&arg) != 0
                 || false == arg.status()){
-            (*BESLog::TheLog())<< "HDF-EOS5 parse error while processing a "
-                    << "ProductMetadata " << " HDFEOS attribute" << endl;
+            ERROR_LOG("HDF-EOS5 parse error while processing a "
+                    << "ProductMetadata " << " HDFEOS attribute" << endl);
         }
         he5daslex_destroy();
     }
