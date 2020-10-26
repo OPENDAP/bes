@@ -594,7 +594,7 @@ public:
         day = "";
         expected_granule_count = 31;
         granules_found = gct_helper(collection, year, month, day);
-        if(debug) cerr << prolog << collection << "/" << year << "/" << month << (day.empty()?"":"/") << day
+        if(debug) cerr << prolog << collection << "/" << year << (month.empty()?"":"/") << month << (day.empty()?"":"/") << day
                        << " returned: " << granules_found << " expected: " << expected_granule_count << endl;
         CPPUNIT_ASSERT(granules_found ==  expected_granule_count);
 
@@ -604,7 +604,7 @@ public:
         day = "";
         expected_granule_count = 365;
         granules_found = gct_helper(collection, year, month, day);
-        if(debug) cerr << prolog << collection << "/" << year << "/" << month << (day.empty()?"":"/") << day
+        if(debug) cerr << prolog << collection << "/" << year << (month.empty()?"":"/") << month << (day.empty()?"":"/") << day
                        << " returned: " << granules_found << " expected: " << expected_granule_count << endl;
         CPPUNIT_ASSERT(granules_found ==  expected_granule_count);
 
@@ -614,7 +614,7 @@ public:
         day = "";
         expected_granule_count = 366; // 2000 is a leap year
         granules_found = gct_helper(collection, year, month, day);
-        if(debug) cerr << prolog << collection << "/" << year << "/" << month << (day.empty()?"":"/") << day
+        if(debug) cerr << prolog << collection << "/" << year << (month.empty()?"":"/") << month << (day.empty()?"":"/") << day
                        << " returned: " << granules_found << " expected: " << expected_granule_count << endl;
         CPPUNIT_ASSERT(granules_found ==  expected_granule_count);
 
