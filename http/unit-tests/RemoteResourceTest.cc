@@ -51,6 +51,7 @@ static bool debug = false;
 static bool Debug = false;
 static bool bes_debug = false;
 static bool purge_cache = false;
+static bool ngap_tests = false;
 static std::string token;
 
 #undef DBG
@@ -208,6 +209,10 @@ public:
     }
 
     void get_ngap_ghrc_tea_url_test() {
+        if(!ngap_tests){
+            if(debug) cerr << prolog << "SKIPPING." << endl;
+            return;
+        }
         string url = "https://d1jecqxxv88lkr.cloudfront.net/ghrcwuat-protected/rss_demo/rssmif16d__7/f16_ssmis_20031026v7.nc.dmrpp";
         if(debug) cerr << prolog << "url: " << url << endl;
         http::RemoteResource rhr(url);
@@ -237,7 +242,10 @@ public:
 
 
     void get_ngap_harmony_url_test() {
-
+        if(!ngap_tests){
+            if(debug) cerr << prolog << "SKIPPING." << endl;
+            return;
+        }
         string url = "https://harmony.uat.earthdata.nasa.gov/service-results/harmony-uat-staging/public/"
                         "sds/staged/ATL03_20200714235814_03000802_003_01.h5.dmrpp";
 
@@ -326,7 +334,7 @@ int main(int argc, char*argv[])
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    GetOpt getopt(argc, argv, "dbDP");
+    GetOpt getopt(argc, argv, "dbDPN");
     int option_char;
     while ((option_char = getopt()) != -1)
         switch (option_char) {
@@ -341,6 +349,10 @@ int main(int argc, char*argv[])
         case 'b':
             bes_debug = true;  // debug is a static global
             cerr << "bes_debug enabled" << endl;
+            break;
+        case 'N':
+            ngap_tests = true;  // debug is a static global
+            cerr << "NGAP Tests Enabled." << endl;
             break;
         case 'P':
             purge_cache = true;  // debug is a static global

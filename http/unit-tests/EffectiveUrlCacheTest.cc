@@ -52,6 +52,7 @@ static bool debug = false;
 static bool Debug = false;
 static bool bes_debug = false;
 static bool purge_cache = false;
+static bool ngap_tests = false;
 static std::string token;
 
 #undef DBG
@@ -267,6 +268,10 @@ namespace http {
             if(debug) cerr << prolog << "END" << endl;
         }
         void euc_ghrc_tea_url_test() {
+            if(!ngap_tests){
+                if(debug) cerr << prolog << "SKIPPING." << endl;
+                return;
+            }
             if(debug) cerr << prolog << "BEGIN" << endl;
             string source_url;
             string value;
@@ -304,6 +309,10 @@ namespace http {
         }
 
         void euc_harmony_url_test() {
+            if(!ngap_tests){
+                if(debug) cerr << prolog << "SKIPPING." << endl;
+                return;
+            }
             if(debug) cerr << prolog << "BEGIN" << endl;
             string source_url;
             string value;
@@ -401,7 +410,7 @@ int main(int argc, char*argv[])
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    GetOpt getopt(argc, argv, "dbDPt:");
+    GetOpt getopt(argc, argv, "dbDPt:N");
     int option_char;
     while ((option_char = getopt()) != -1)
         switch (option_char) {
@@ -416,6 +425,10 @@ int main(int argc, char*argv[])
             case 'b':
                 bes_debug = true;  // debug is a static global
                 cerr << "bes_debug enabled" << endl;
+                break;
+            case 'N':
+                ngap_tests = true; // token is a static global
+                cerr << "NGAP Tests Enabled." << token << endl;
                 break;
             case 'P':
                 purge_cache = true;  // purge_cache is a static global
