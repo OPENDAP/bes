@@ -42,9 +42,12 @@ namespace http {
      */
     class EffectiveUrl : public url {
     private:
+
+        // We need order so we use two vectors instead of a map to hold the header "map"
         std::vector<std::string> d_response_header_names;
         std::vector<std::string> d_response_header_values;
-        //std::map<std::string, std::string> d_response_headers;
+
+        // Raw headers
         std::vector<std::string> d_resp_hdr_lines;
 
     public:
