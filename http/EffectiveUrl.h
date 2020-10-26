@@ -46,7 +46,7 @@ namespace http {
     public:
 
         explicit EffectiveUrl(const std::string &url_s, const std::vector<std::string> &resp_hdrs) : http::url(url_s) {
-            set_response_headers(resp_hdrs);
+            ingest_response_headers(resp_hdrs);
         };
 
         explicit EffectiveUrl(const std::string &url_s) : http::url(url_s), d_response_header_names(), d_response_header_values() {};
@@ -58,7 +58,7 @@ namespace http {
 
         void get_header(const std::string &name, std::string &value, bool &found );
 
-        void set_response_headers(const std::vector<std::string> &resp_hdrs);
+        void ingest_response_headers(const std::vector<std::string> &resp_hdrs);
 
         void url(std::string url){
             parse(url);

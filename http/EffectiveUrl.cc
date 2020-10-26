@@ -58,6 +58,12 @@ using std::stringstream;
 namespace http {
 
 
+    /**
+     * @brief Returns true if URL is reusable, false otherwise.
+     *
+     * @return Returns true if the query string parameters or response headers received with the EffectiveUrl indicate
+     *  that the URL may be reused. False otherwise
+     */
     bool EffectiveUrl::is_expired() {
 
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
@@ -99,6 +105,13 @@ namespace http {
 
 
 
+    /**
+     * @brief get the value of the named header
+     * @param name Name of header value to retrieve
+     * @param value A return value parameter into which the value will be written.
+     * @param found A returned value parameter set to true if a value associated wit the header name
+     * is located, false otherwise.
+     */
     void EffectiveUrl::get_header(const std::string &name, std::string &value, bool &found ) {
         found = false;
         string lc_name = BESUtil::lowercase(name);
@@ -115,6 +128,10 @@ namespace http {
         }
     }
 
+    /**
+     * @brief A string dump of the instance
+     * @return A string containing readable instance state.
+     */
     string EffectiveUrl::dump(){
         stringstream ss;
         string indent_inc = "  ";
@@ -132,7 +149,11 @@ namespace http {
     }
 
 
-    void EffectiveUrl::set_response_headers(const vector<string> &resp_hdrs)
+    /**
+     * @brief Ingests the passed response hedaers.
+     * @param resp_hdrs The reponse headers to ingest.
+     */
+    void EffectiveUrl::ingest_response_headers(const vector<string> &resp_hdrs)
     {
         d_resp_hdr_lines.clear();
         d_resp_hdr_lines = resp_hdrs;
