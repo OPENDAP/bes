@@ -36,6 +36,10 @@
 
 namespace http {
 
+    /**
+     * An EffectiveUrl is always acquired by following redirects and so may include response
+     * headers received with the final redirect response.
+     */
     class EffectiveUrl : public url {
     private:
         std::vector<std::string> d_response_header_names;
