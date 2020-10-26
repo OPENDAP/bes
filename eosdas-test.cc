@@ -28,6 +28,7 @@
 
 // Test the HDF-EOS attribute parser. 3/30/2000 jhrg
 
+#include "config.h"
 #include "config_hdf.h"
 
 #include <cstdlib>
@@ -180,7 +181,7 @@ void parser_driver(DAS & das)
 
     parser_arg arg(at);
     if (hdfeosparse(&arg) != 0)
-        (*BESLog::TheLog()) << "HDF-EOS parse error !" <<endl;
+        ERROR_LOG("HDF-EOS parse error !" << endl);
 
     das.print(stdout);
 }

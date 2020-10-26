@@ -1,3 +1,6 @@
+#include "config.h"
+#include "config_hdf.h"
+
 #include "HDFCFUtil.h"
 #include <BESDebug.h>
 #include <BESLog.h>

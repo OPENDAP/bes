@@ -213,7 +213,7 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
 
 
     BESStopWatch sw;
-    if (BESISDEBUG( TIMING_LOG ))
+    if (BESISDEBUG(TIMING_LOG_KEY ))
         sw.start("HDF4RequestHandler::hdf4_build_das", dhi.data[REQUEST_ID]);
 
     if(true == _usecf) {
@@ -375,7 +375,7 @@ bool HDF4RequestHandler::hdf4_build_dds(BESDataHandlerInterface & dhi) {
 
 
     BESStopWatch sw;
-        if (BESISDEBUG( TIMING_LOG ))
+        if (BESISDEBUG(TIMING_LOG_KEY ))
                 sw.start("HDF4RequestHandler::hdf4_build_das", dhi.data[REQUEST_ID]);
 
 
@@ -563,7 +563,7 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
 
 
     BESStopWatch sw;
-    if (BESISDEBUG( TIMING_LOG ))
+    if (BESISDEBUG(TIMING_LOG_KEY ))
         sw.start("HDF4RequestHandler::hdf4_build_data", dhi.data[REQUEST_ID]);
 
 
@@ -763,7 +763,7 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
 bool HDF4RequestHandler::hdf4_build_data_with_IDs(BESDataHandlerInterface & dhi) {
 
     BESStopWatch sw;
-    if (BESISDEBUG( TIMING_LOG ))
+    if (BESISDEBUG(TIMING_LOG_KEY ))
         sw.start("HDF4RequestHandler::hdf4_build_data_with_IDs", dhi.data[REQUEST_ID]);
 
     int32 sdfd   = -1;
@@ -1458,7 +1458,7 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
 {
 
     BESStopWatch sw;
-    if (BESISDEBUG( TIMING_LOG ))
+    if (BESISDEBUG(TIMING_LOG_KEY ))
         sw.start("HDF4RequestHandler::hdf4_build_dmr", dhi.data[REQUEST_ID]);
 
     // Because this code does not yet know how to build a DMR directly, use
@@ -1661,7 +1661,7 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
 bool HDF4RequestHandler::hdf4_build_dmr_with_IDs(BESDataHandlerInterface & dhi) {
 
     BESStopWatch sw;
-        if (BESISDEBUG( TIMING_LOG ))
+        if (BESISDEBUG(TIMING_LOG_KEY ))
                 sw.start("HDF4RequestHandler::hdf4_build_dmr_with_IDs", dhi.data[REQUEST_ID]);
 
     // Because this code does not yet know how to build a DMR directly, use

@@ -5,6 +5,8 @@
 // Copyright (c) 2010-2012 The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 #ifdef USE_HDFEOS2_LIB
+#include "config.h"
+#include "config_hdf.h"
 
 #include <iostream>
 #include <sstream>
