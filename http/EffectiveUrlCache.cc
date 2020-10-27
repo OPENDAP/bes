@@ -261,7 +261,7 @@ http::EffectiveUrl *EffectiveUrlCache::get_effective_url(const string &source_ur
     if(is_enabled()){
 
         // This lock will block until the mutex is available.
-        EucLock(this->d_get_effective_url_cache_mutex);
+        EucLock dat_lock(this->d_get_effective_url_cache_mutex);
 
         BESDEBUG(MODULE, prolog << "dump: " << endl << dump() << endl);
 
