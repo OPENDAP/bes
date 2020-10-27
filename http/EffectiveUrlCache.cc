@@ -111,6 +111,8 @@ void EffectiveUrlCache::delete_instance()
  */
 EffectiveUrlCache::EffectiveUrlCache(): d_skip_regex(NULL), d_enabled(-1)
 {
+    if (pthread_mutex_init(&d_get_effective_url_cache_mutex, 0) != 0)
+        throw BESInternalError("Could not initialize mutex in CurlHandlePool", __FILE__, __LINE__);
 
 }
 
@@ -243,6 +245,8 @@ http::EffectiveUrl *EffectiveUrlCache::get_effective_url(const string &source_ur
     http::EffectiveUrl *effective_url = NULL;
 
     if(is_enabled()){
+        EucLock(this->d_get_effective_url_cache_mutex);
+
         size_t match_length=0;
 
         // if it's not an HTTP url there is nothing to cache.
