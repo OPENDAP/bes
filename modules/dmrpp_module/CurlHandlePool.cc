@@ -72,15 +72,55 @@ using namespace dmrpp;
 using namespace std;
 using namespace bes;
 
+string pthread_error(unsigned int err){
+    string error_msg;
+    switch(err){
+        case EINVAL:
+            error_msg = "The mutex was either created with the "
+                        "protocol attribute having the value "
+                        "PTHREAD_PRIO_PROTECT and the calling "
+                        "thread's priority is higher than the "
+                        "mutex's current priority ceiling."
+                        "OR The value specified by mutex does not "
+                        "refer to an initialized mutex object.";
+            break;
+
+        case EBUSY:
+            error_msg = "The mutex could not be acquired "
+                        "because it was already locked.";
+            break;
+
+        case EAGAIN:
+            error_msg = "The mutex could not be acquired because "
+                        "the maximum number of recursive locks "
+                        "for mutex has been exceeded.";
+            break;
+
+        case EDEADLK:
+            error_msg = "The current thread already owns the mutex";
+            break;
+
+        case EPERM:
+            error_msg = "The current thread does not own the mutex.";
+            break;
+
+        default:
+            error_msg = "Unknown pthread error type.";
+            break;
+    }
+
+
+}
 Lock::Lock(pthread_mutex_t &lock) : m_mutex(lock) {
     int status = pthread_mutex_lock(&m_mutex);
-    if (status != 0) throw BESInternalError("Could not lock in CurlHandlePool", __FILE__, __LINE__);
+    if (status != 0)
+        throw BESInternalError(prolog + "Failed to acquire mutex lock. msg: "+ pthread_error(status), __FILE__, __LINE__);
 }
 
 Lock::~Lock() {
     int status = pthread_mutex_unlock(&m_mutex);
     if (status != 0)
-        ERROR_LOG("Could not unlock in CurlHandlePool");
+        ERROR_LOG(prolog + "Failed to release mutex lock. msg: "+ pthread_error(status));
 }
 
 /**
@@ -273,9 +313,9 @@ CurlHandlePool::CurlHandlePool() {
     for (unsigned int i = 0; i < d_max_easy_handles; ++i) {
         d_easy_handles.push_back(new dmrpp_easy_handle());
     }
-
-    if (pthread_mutex_init(&d_get_easy_handle_mutex, 0) != 0)
-        throw BESInternalError("Could not initialize mutex in CurlHandlePool", __FILE__, __LINE__);
+    unsigned int status = pthread_mutex_init(&d_get_easy_handle_mutex, 0);
+    if (status != 0)
+        throw BESInternalError("Could not initialize mutex in CurlHandlePool. msg: " + pthread_error(status), __FILE__, __LINE__);
 }
 
 CurlHandlePool::CurlHandlePool(unsigned int max_handles) : d_max_easy_handles(max_handles) {
@@ -283,8 +323,9 @@ CurlHandlePool::CurlHandlePool(unsigned int max_handles) : d_max_easy_handles(ma
         d_easy_handles.push_back(new dmrpp_easy_handle());
     }
 
-    if (pthread_mutex_init(&d_get_easy_handle_mutex, 0) != 0)
-        throw BESInternalError("Could not initialize mutex in CurlHandlePool", __FILE__, __LINE__);
+    unsigned int status = pthread_mutex_init(&d_get_easy_handle_mutex, 0);
+    if (status != 0)
+        throw BESInternalError("Could not initialize mutex in CurlHandlePool. msg: " + pthread_error(status), __FILE__, __LINE__);
 }
 
 /**

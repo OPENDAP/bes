@@ -59,7 +59,7 @@ EffectiveUrlCache *EffectiveUrlCache::d_instance = 0;
 EucLock::EucLock(pthread_mutex_t &lock) : m_mutex(lock) {
     int status = pthread_mutex_lock(&m_mutex);
     if (status != 0){
-        throw BESInternalError("Could not lock in EffectiveUrlCache", __FILE__, __LINE__);
+        throw BESInternalError(prolog  + "Could not acquire mutex lock.", __FILE__, __LINE__);
     }
     BESDEBUG(MODULE,prolog << "Locked. (thread: " << pthread_self() << ")"  << endl);
 }
@@ -67,7 +67,7 @@ EucLock::EucLock(pthread_mutex_t &lock) : m_mutex(lock) {
 EucLock::~EucLock() {
     int status = pthread_mutex_unlock(&m_mutex);
     if (status != 0){
-        ERROR_LOG("Could not unlock in EffectiveUrlCache");
+        ERROR_LOG(prolog + "Failed to release mutex lock.");
     }
     BESDEBUG(MODULE,prolog << "Unlocked. (thread: " << pthread_self() << ")" << endl);
 }
