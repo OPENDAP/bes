@@ -256,13 +256,14 @@ http::EffectiveUrl *EffectiveUrlCache::get_effective_url(const string &source_ur
 http::EffectiveUrl *EffectiveUrlCache::get_effective_url(const string &source_url, BESRegex *skip_regex)
 {
     BESDEBUG(MODULE, prolog << "BEGIN url: " << source_url << endl);
-    BESDEBUG(MODULE, prolog << "dump: " << endl << dump() << endl);
-
+    // TODO - maybe we should initialize this to source_url so the caller does not have to check the return.
     http::EffectiveUrl *effective_url = NULL;
-
     if(is_enabled()){
+
         // This lock will block until the mutex is available.
         EucLock(this->d_get_effective_url_cache_mutex);
+
+        BESDEBUG(MODULE, prolog << "dump: " << endl << dump() << endl);
 
         size_t match_length=0;
 
