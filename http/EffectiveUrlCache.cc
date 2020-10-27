@@ -311,11 +311,11 @@ http::EffectiveUrl *EffectiveUrlCache::get_effective_url(const string &source_ur
 
             EffectiveUrlCache::TheCache()->add(source_url,effective_url);
         }
+        BESDEBUG(MODULE, prolog << "dump: " << endl << dump() << endl);
     }
     else {
         BESDEBUG(MODULE, prolog << "CACHE IS DISABLED." << endl);
     }
-        BESDEBUG(MODULE, prolog << "dump: " << endl << dump() << endl);
         BESDEBUG(MODULE, prolog << "END" << endl);
     return effective_url;
 }
