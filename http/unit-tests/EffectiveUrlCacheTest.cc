@@ -427,7 +427,7 @@ int main(int argc, char*argv[])
                 cerr << "bes_debug enabled" << endl;
                 break;
             case 'N':
-                ngap_tests = true; // token is a static global
+                ngap_tests = true; // ngap_tests is a static global
                 cerr << "NGAP Tests Enabled." << token << endl;
                 break;
             case 'P':
