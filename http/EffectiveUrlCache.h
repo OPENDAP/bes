@@ -45,24 +45,16 @@ namespace http {
  * RAII. Lock access to the get_easy_handle() and release_handle() methods.
  */
 class EucLock {
-    private:
-        pthread_mutex_t &m_mutex;
-        EucLock();
-        EucLock(const EucLock &rhs);
-    public:
-
-    EucLock(pthread_mutex_t &lock) : m_mutex(lock) {
-        int status = pthread_mutex_lock(&m_mutex);
-        if (status != 0)
-            throw BESInternalError("Could not lock in EffectiveUrlCache", __FILE__, __LINE__);
-    }
-
-    ~EucLock() {
-        int status = pthread_mutex_unlock(&m_mutex);
-        if (status != 0)
-            ERROR_LOG("Could not unlock in EffectiveUrlCache");
-    }
+private:
+    pthread_mutex_t &m_mutex;
+    EucLock();
+    EucLock(const EucLock &rhs);
+public:
+    EucLock(pthread_mutex_t &lock);
+    ~EucLock();
 };
+
+
     /**
  *
  */

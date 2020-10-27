@@ -54,8 +54,24 @@ using namespace std;
 
 namespace http {
 
-
 EffectiveUrlCache *EffectiveUrlCache::d_instance = 0;
+
+EucLock::EucLock(pthread_mutex_t &lock) : m_mutex(lock) {
+    int status = pthread_mutex_lock(&m_mutex);
+    if (status != 0){
+        throw BESInternalError("Could not lock in EffectiveUrlCache", __FILE__, __LINE__);
+    }
+    BESDEBUG(MODULE,prolog << "Locked. (thread: " << pthread_self() << ")"  << endl);
+}
+
+EucLock::~EucLock() {
+    int status = pthread_mutex_unlock(&m_mutex);
+    if (status != 0){
+        ERROR_LOG("Could not unlock in EffectiveUrlCache");
+    }
+    BESDEBUG(MODULE,prolog << "Unlocked. (thread: " << pthread_self() << ")" << endl);
+}
+
 
 /** @brief Get the singleton BESCatalogList instance.
  *
@@ -245,6 +261,7 @@ http::EffectiveUrl *EffectiveUrlCache::get_effective_url(const string &source_ur
     http::EffectiveUrl *effective_url = NULL;
 
     if(is_enabled()){
+        // This lock will block until the mutex is available.
         EucLock(this->d_get_effective_url_cache_mutex);
 
         size_t match_length=0;
