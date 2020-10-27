@@ -33,7 +33,7 @@
 #include "BESObj.h"
 #include "BESDataHandlerInterface.h"
 #include "BESRegex.h"
-#include "url_impl.h"
+#include "EffectiveUrl.h"
 
 
 namespace http {
@@ -44,7 +44,7 @@ namespace http {
 class EffectiveUrlCache: public BESObj {
 private:
     static EffectiveUrlCache * d_instance;
-    std::map<std::string , http::url *> d_effective_urls;
+    std::map<std::string , http::EffectiveUrl *> d_effective_urls;
 
     // Things that match get skipped.
     BESRegex *d_skip_regex;
@@ -55,8 +55,8 @@ private:
     static void delete_instance();
 
     friend class EffectiveUrlCacheTest;
-    http::url *get(const std::string  &source_url);
-    void add(const std::string  &source_url, http::url *effective_url);
+    http::EffectiveUrl *get(const std::string  &source_url);
+    void add(const std::string  &source_url, http::EffectiveUrl *effective_url);
     BESRegex *get_skip_regex();
 
     EffectiveUrlCache();
@@ -68,10 +68,11 @@ public:
     static EffectiveUrlCache *TheCache();
     bool is_enabled();
 
-    http::url *get_effective_url(const std::string &source_url);
-    http::url *get_effective_url(const std::string &source_url, BESRegex *skip_regex);
+    http::EffectiveUrl *get_effective_url(const std::string &source_url);
+    http::EffectiveUrl *get_effective_url(const std::string &source_url, BESRegex *skip_regex);
 
     virtual void dump(std::ostream &strm) const;
+    virtual std::string dump() const;
 
 };
 

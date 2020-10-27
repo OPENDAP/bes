@@ -45,9 +45,9 @@ private:
 	SocketListener * _listener;
 	bool _secure;
 	int _securePort;
-	string _cfile;
-	string _cafile;
-	string _kfile;
+	std::string _cfile;
+	std::string _cafile;
+	std::string _kfile;
 
 	volatile int d_num_children;
 

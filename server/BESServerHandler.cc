@@ -30,6 +30,8 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
 #include <unistd.h>    // for getpid fork sleep
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -41,15 +43,6 @@
 #include <sstream>
 #include <iostream>
 #include <map>
-
-using std::ostringstream;
-using std::cout;
-using std::endl;
-using std::cerr;
-using std::flush;
-using std::map;
-using std::ostream;
-using std::string;
 
 #include "BESServerHandler.h"
 #include "Connection.h"
@@ -64,6 +57,16 @@ using std::string;
 #include "BESLog.h"
 #include "BESDebug.h"
 #include "BESStopWatch.h"
+
+using std::ostringstream;
+using std::cout;
+using std::endl;
+using std::cerr;
+using std::flush;
+using std::map;
+using std::ostream;
+using std::string;
+
 
 // Default is to not exit on internal error. A bad idea, but the original
 // behavior of the server. jhrg 10/4/18
@@ -166,7 +169,7 @@ void BESServerHandler::execute(Connection *c)
             BESDEBUG("beslistener",
                 "BESServerHandler::execute() - Calling exit(CHILD_SUBPROCESS_READY) which has a value of " << CHILD_SUBPROCESS_READY << endl);
 
-            LOG("Received exit command." << endl);
+            INFO_LOG("Received exit command." << endl);
 
             exit(CHILD_SUBPROCESS_READY);
         }
@@ -181,7 +184,7 @@ void BESServerHandler::execute(Connection *c)
         BESDEBUG("server", "BESServerHandler::execute - command ... " << cmd_str << endl);
 
         BESStopWatch sw;
-        if (BESISDEBUG(TIMING_LOG)) sw.start("BESServerHandler::execute");
+        if (BESISDEBUG(TIMING_LOG_KEY)) sw.start("BESServerHandler::execute");
 
         // Tie the cout stream to the PPTStreamBuf and save the cout buffer so that
         // it can be reset once the command is complete. jhrg 1/25/17
@@ -223,7 +226,7 @@ void BESServerHandler::execute(Connection *c)
             // continue, wait for the next request.
             switch (status) {
             case BES_INTERNAL_FATAL_ERROR:
-                LOG("BES Internal Fatal Error; child returning "
+                ERROR_LOG("BES Internal Fatal Error; child returning "
                     << SERVER_EXIT_ABNORMAL_TERMINATION << " to the master listener." << endl);
 
                 c->closeConnection();
@@ -234,7 +237,7 @@ void BESServerHandler::execute(Connection *c)
             case BES_INTERNAL_ERROR:
                 // This should be an option. The default is to not exit. jhrg 10/4/18
                 if (TheBESKeys::TheKeys()->read_bool_key(EXIT_ON_INTERNAL_ERROR, false)) {
-                    LOG("BES Internal Error; child returning "
+                    ERROR_LOG("BES Internal Error; child returning "
                         << SERVER_EXIT_ABNORMAL_TERMINATION << " to the master listener." << endl);
 
                     c->closeConnection();

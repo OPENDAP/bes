@@ -29,11 +29,9 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 
-#include <iostream>
+#include "config.h"
 
-using std::endl;
-using std::ostream;
-using std::string;
+#include <iostream>
 
 #include "BESAsciiModule.h"
 #include "BESDebug.h"
@@ -60,6 +58,11 @@ using std::string;
 #define ASCII_SERVICE "ascii"
 #define ASCII_RESPONSE_STR "getAscii"
 #endif
+
+using std::endl;
+using std::ostream;
+using std::string;
+
 
 void BESAsciiModule::initialize(const string &modname)
 {

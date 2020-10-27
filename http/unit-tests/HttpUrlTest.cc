@@ -142,7 +142,7 @@ namespace http {
             if (bes_debug) show_file(bes_conf);
             TheBESKeys::ConfigFile = bes_conf;
 
-            if (bes_debug) BESDebug::SetUp("cerr,wl,bes,http");
+            if (bes_debug) BESDebug::SetUp("cerr,bes,http");
 
 
             if(purge_cache){

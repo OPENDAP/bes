@@ -272,7 +272,7 @@ bool CmdClient::executeCommand(const string &cmd, int repeat)
             BESDEBUG("cmdln", "cmdclient sending " << cmd << endl);
 
             BESStopWatch sw;
-			if( BESISDEBUG( TIMING_LOG ) )
+			if( BESISDEBUG(TIMING_LOG_KEY ) )
 				sw.start("CmdClient::executeCommand","command_line_client");
 
             map<string, string> extensions;

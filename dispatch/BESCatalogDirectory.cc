@@ -289,7 +289,7 @@ static string get_time(time_t the_time, bool use_local_time = false)
         status = strftime(buf, sizeof buf, "%FT%T%Z", localtime(&the_time));
 
     if (!status)
-        LOG("Error getting last modified time time for a leaf item in BESCatalogDirectory.");
+        ERROR_LOG("Error getting last modified time time for a leaf item in BESCatalogDirectory.");
 
     return buf;
 }

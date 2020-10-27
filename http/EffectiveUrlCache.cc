@@ -45,10 +45,11 @@
 #include "BESLog.h"
 #include "CurlUtils.h"
 #include "HttpNames.h"
+#include "EffectiveUrl.h"
 
 using namespace std;
 
-#define MODULE "http"
+#define MODULE "euc"
 #define prolog std::string("EffectiveUrlCache::").append(__func__).append("() - ")
 
 namespace http {
@@ -113,13 +114,13 @@ EffectiveUrlCache::EffectiveUrlCache(): d_skip_regex(NULL), d_enabled(-1)
 
 }
 
-/** @brief list destructor deletes all registered catalogs
+/** @brief list destructor deletes all cached http::urls
  *
  * @see BESCatalog
  */
 EffectiveUrlCache::~EffectiveUrlCache()
 {
-    map<string , http::url *>::iterator it;
+    map<string , http::EffectiveUrl *>::iterator it;
     for(it = d_effective_urls.begin(); it!= d_effective_urls.end(); it++){
         delete it->second;
     }
@@ -147,9 +148,10 @@ void EffectiveUrlCache::dump(ostream &strm) const
     if (!d_effective_urls.empty()) {
         strm << BESIndent::LMarg << "effective url list:" << endl;
         BESIndent::Indent();
-        map<string , http::url *>::const_iterator it;
-        for(it = d_effective_urls.begin(); it!= d_effective_urls.end(); it++){
+        auto it = d_effective_urls.begin();
+        while( it!= d_effective_urls.end()){
             strm << BESIndent::LMarg << (*it).first << " --> " << (*it).second->str();
+            it++;
         }
         BESIndent::UnIndent();
     }
@@ -159,25 +161,48 @@ void EffectiveUrlCache::dump(ostream &strm) const
     BESIndent::UnIndent();
 }
 
+/** @brief dumps information about this object
+ *
+ * Displays the pointer value of this instance along with the catalogs
+ * registered in this list.
+ *
+ * @param strm C++ i/o stream to dump the information to
+ */
+string EffectiveUrlCache::dump() const
+{
+    stringstream sstrm;
+    dump(sstrm);
+    return sstrm.str();
+}
+
 /**
  *
  * @param source_url
  * @param effective_url
  */
-void EffectiveUrlCache::add(const std::string &source_url, http::url *effective_url)
+void EffectiveUrlCache::add(const std::string &source_url, http::EffectiveUrl *effective_url)
 {
-    d_effective_urls.insert(pair<string,http::url *>(source_url,effective_url));
+    pair<map<string,http::EffectiveUrl *>::iterator , bool> previously = d_effective_urls.insert(pair<string,http::EffectiveUrl *>(source_url, effective_url));
+    if(previously.second){
+        BESDEBUG(MODULE, prolog << "The effective URL for " << source_url << " was has been added to the cache. "<<
+        "(EUC size: " << d_effective_urls.size() << ")" << endl);
+    }
+    else {
+        BESDEBUG(MODULE, prolog << "The effective URL for " << source_url << " was NOT added to the cache. "<<
+        "The URL was already set to " << previously.first->second->str() << endl);
+    }
+
 }
+
 
 
 /**
  *
  * @param source_url
  */
-http::url *EffectiveUrlCache::get(const std::string  &source_url){
-    http::url *effective_url=NULL;
-    std::map<std::string, http::url *>::iterator it;
-    it = d_effective_urls.find(source_url);
+http::EffectiveUrl *EffectiveUrlCache::get(const std::string  &source_url){
+    http::EffectiveUrl *effective_url=NULL;
+    auto it = d_effective_urls.find(source_url);
     if(it!=d_effective_urls.end()){
         effective_url = (*it).second;
     }
@@ -197,7 +222,7 @@ http::url *EffectiveUrlCache::get(const std::string  &source_url){
  * @param source_url
  * @returns The effective URL
  */
-http::url *EffectiveUrlCache::get_effective_url(const string &source_url) {
+http::EffectiveUrl *EffectiveUrlCache::get_effective_url(const string &source_url) {
     BESRegex *bes_regex = get_skip_regex();
     return get_effective_url(source_url, bes_regex);
 }
@@ -210,17 +235,12 @@ http::url *EffectiveUrlCache::get_effective_url(const string &source_url) {
  * @param source_url
  * @returns The effective URL
 */
-http::url *EffectiveUrlCache::get_effective_url(const string &source_url, BESRegex *skip_regex)
+http::EffectiveUrl *EffectiveUrlCache::get_effective_url(const string &source_url, BESRegex *skip_regex)
 {
     BESDEBUG(MODULE, prolog << "BEGIN url: " << source_url << endl);
+    BESDEBUG(MODULE, prolog << "dump: " << endl << dump() << endl);
 
-#if 0
-    //BESStopWatch sw;
-    //if (BESISDEBUG(TIMING_LOG) || BESLog::TheLog()->is_verbose())
-    //    sw.start(prolog + "full method");
-#endif
-
-    http::url *effective_url = NULL;
+    http::EffectiveUrl *effective_url = NULL;
 
     if(is_enabled()){
         size_t match_length=0;
@@ -259,15 +279,13 @@ http::url *EffectiveUrlCache::get_effective_url(const string &source_url, BESReg
         if(retrieve_and_cache){
             BESDEBUG(MODULE, prolog << "Acquiring effective URL for  " << source_url << endl);
 
-            string effective_url_str;
-            curl::retrieve_effective_url(source_url, effective_url_str);
-            BESDEBUG(MODULE, prolog << "effective_url_str: " << effective_url_str << endl);
-
-            // Make the target URL object.
-            effective_url = new http::url(effective_url_str);
-
+            {
+                BESStopWatch sw;
+                if(BESDebug::IsSet(MODULE)) sw.start(prolog + " retrieve and cache effective url for source url: " + source_url);
+                effective_url = curl::retrieve_effective_url(source_url);
+            }
             BESDEBUG(MODULE, prolog << "   source_url: " << source_url << endl);
-            BESDEBUG(MODULE, prolog << "effective_url: " << effective_url->str() << endl);
+            BESDEBUG(MODULE, prolog << "effective_url: " << effective_url->dump() << endl);
 
             EffectiveUrlCache::TheCache()->add(source_url,effective_url);
         }
@@ -275,7 +293,8 @@ http::url *EffectiveUrlCache::get_effective_url(const string &source_url, BESReg
     else {
         BESDEBUG(MODULE, prolog << "CACHE IS DISABLED." << endl);
     }
-    BESDEBUG(MODULE, prolog << "END" << endl);
+        BESDEBUG(MODULE, prolog << "dump: " << endl << dump() << endl);
+        BESDEBUG(MODULE, prolog << "END" << endl);
     return effective_url;
 }
 
@@ -317,5 +336,9 @@ BESRegex *EffectiveUrlCache::get_skip_regex()
     BESDEBUG(MODULE, prolog << "d_skip_regex:  " << (d_skip_regex?d_skip_regex->pattern():"Value has not been set.") << endl);
     return d_skip_regex;
 }
+
+
+
+
 
 } // namespace http

@@ -68,7 +68,7 @@
    SAX_1
    Memcheck:Leak
    match-leak-kinds: definite
-   fun:malloc
+   theOne:malloc
    fun:xmlInitCharEncodingHandlers
    fun:xmlGetCharEncodingHandler
    fun:xmlAllocParserInputBuffer

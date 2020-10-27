@@ -38,13 +38,15 @@ using namespace std;
 
 #define DAP_CATALOG "catalog"
 
+#define prolog string("DmrppModule::").append(__func__).append("() - ")
+
 namespace dmrpp {
 
 void DmrppModule::initialize(const string &modname)
 {
     BESDebug::Register(modname);
 
-    BESDEBUG(modname, "Initializing DMR++ Reader Module " << modname << endl);
+    BESDEBUG(modname, prolog << "Initializing DMR++ Reader Module " << modname << endl);
 
     BESRequestHandlerList::TheList()->add_handler(modname, new DmrppRequestHandler(modname));
 
@@ -59,12 +61,12 @@ void DmrppModule::initialize(const string &modname)
         BESContainerStorageList::TheList()->add_persistence(csc);
     }
 
-    BESDEBUG(modname, "Done Initializing DMR++ Reader Module " << modname << endl);
+    BESDEBUG(modname, prolog << "Done Initializing DMR++ Reader Module " << modname << endl);
 }
 
 void DmrppModule::terminate(const string &modname)
 {
-    BESDEBUG(modname, "Cleaning DMR++ Reader Module " << modname << endl);
+    BESDEBUG(modname, prolog << "Cleaning DMR++ Reader Module " << modname << endl);
 
     BESRequestHandler *rh = BESRequestHandlerList::TheList()->remove_handler(modname);
     delete rh;
@@ -73,7 +75,7 @@ void DmrppModule::terminate(const string &modname)
 
     BESCatalogList::TheCatalogList()->deref_catalog(DAP_CATALOG);
 
-    BESDEBUG(modname, "Done Cleaning DMR++ Reader Module " << modname << endl);
+    BESDEBUG(modname, prolog << "Done Cleaning DMR++ Reader Module " << modname << endl);
 }
 
 extern "C" {

@@ -29,9 +29,10 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 
+#include "config.h"
+
 #include <iostream>
 
-using std::endl;
 
 #include "BESDapModule.h"
 
@@ -75,6 +76,8 @@ using std::endl;
 #include "DapFunctionUtils.h"
 #include "ServerFunctionsList.h"
 #include "ShowPathInfoResponseHandler.h"
+
+using std::endl;
 
 
 void BESDapModule::initialize(const string &modname)

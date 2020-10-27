@@ -86,7 +86,7 @@
    L4
    Memcheck:Leak
    match-leak-kinds: possible
-   fun:malloc
+   theOne:malloc
    ...
    fun:_ZN11ImageLoader23recursiveInitializationERKNS_11LinkContextEjRNS_21InitializerTimingListERNS_15UninitedUpwardsE
 }

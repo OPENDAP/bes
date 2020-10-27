@@ -22,7 +22,7 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-
+#include "config.h"
 
 #include <cstdio>
 #include <cstring>
@@ -196,7 +196,7 @@ namespace ngap {
         http::RemoteResource cmr_query(cmr_url, uid);
         {
             BESStopWatch besTimer;
-            if(BESLog::TheLog()->is_verbose()){
+            if (BESISDEBUG(MODULE) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()){
                 besTimer.start("CMR Query: " + cmr_url);
             }
             cmr_query.retrieveResource();

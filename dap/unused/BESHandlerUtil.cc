@@ -21,6 +21,7 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+#include "config.h"
 
 #include <sys/stat.h>
 #include <unistd.h>
@@ -49,9 +50,9 @@ TemporaryFile::~TemporaryFile()
 {
     try {
         if (!close(d_fd))
-            ERROR("Error closing temporary file: " << d_name << ": " << strerror(errno) << endl);
+            ERROR_LOG("Error closing temporary file: " << d_name << ": " << strerror(errno) << endl);
         if (!unlink(&d_name[0]))
-            ERROR("Error closing temporary file: " << d_name << ": " << strerror(errno) << endl);
+            ERROR_LOG("Error closing temporary file: " << d_name << ": " << strerror(errno) << endl);
     }
     catch (...) {
         // Do nothing. This just protects against BESLog (i.e., ERROR)

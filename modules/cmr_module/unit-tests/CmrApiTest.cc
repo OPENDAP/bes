@@ -579,9 +579,45 @@ public:
     void granule_count_test() {
         string prolog = string(__func__) + "() - ";
         stringstream msg;
-        CPPUNIT_ASSERT(gct_helper("C1276812863-GES_DISC", "1985", "03", "") ==  31);
-        CPPUNIT_ASSERT(gct_helper("C1276812863-GES_DISC", "1985",   "", "") == 365);
-        CPPUNIT_ASSERT(gct_helper("C1276812822-GES_DISC", "2000",   "", "") == 366); // 2000 is a leap year
+
+        string collection;
+        string year;
+        string month;
+        string day;
+
+        unsigned int expected_granule_count;
+        unsigned int granules_found;
+
+        collection = "C1276812863-GES_DISC";
+        year = "1985";
+        month = "03";
+        day = "";
+        expected_granule_count = 31;
+        granules_found = gct_helper(collection, year, month, day);
+        if(debug) cerr << prolog << collection << "/" << year << (month.empty()?"":"/") << month << (day.empty()?"":"/") << day
+                       << " returned: " << granules_found << " expected: " << expected_granule_count << endl;
+        CPPUNIT_ASSERT(granules_found ==  expected_granule_count);
+
+        collection = "C1276812863-GES_DISC";
+        year = "1985";
+        month = "";
+        day = "";
+        expected_granule_count = 365;
+        granules_found = gct_helper(collection, year, month, day);
+        if(debug) cerr << prolog << collection << "/" << year << (month.empty()?"":"/") << month << (day.empty()?"":"/") << day
+                       << " returned: " << granules_found << " expected: " << expected_granule_count << endl;
+        CPPUNIT_ASSERT(granules_found ==  expected_granule_count);
+
+        collection = "C1276812822-GES_DISC";
+        year = "2000";
+        month = "";
+        day = "";
+        expected_granule_count = 366; // 2000 is a leap year
+        granules_found = gct_helper(collection, year, month, day);
+        if(debug) cerr << prolog << collection << "/" << year << (month.empty()?"":"/") << month << (day.empty()?"":"/") << day
+                       << " returned: " << granules_found << " expected: " << expected_granule_count << endl;
+        CPPUNIT_ASSERT(granules_found ==  expected_granule_count);
+
     }
 
 

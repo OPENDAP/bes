@@ -29,7 +29,7 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <BESLog.h>
+
 #include <BESInternalError.h>
 #include <BESDebug.h>
 

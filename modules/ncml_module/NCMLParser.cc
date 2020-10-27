@@ -161,7 +161,7 @@ auto_ptr<BESDapResponse> NCMLParser::parse(const string& ncmlFilename, DDSLoader
 void NCMLParser::parseInto(const string& ncmlFilename, DDSLoader::ResponseType responseType, BESDapResponse* response)
 {
     BESStopWatch sw2;
-    if (BESISDEBUG(TIMING_LOG)) sw2.start("NCMLParser::parseInto", ncmlFilename);
+    if (BESISDEBUG(TIMING_LOG_KEY)) sw2.start("NCMLParser::parseInto", ncmlFilename);
 
     VALID_PTR(response);
     NCML_ASSERT_MSG(DDSLoader::checkResponseIsValidType(responseType, response),

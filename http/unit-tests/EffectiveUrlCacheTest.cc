@@ -34,13 +34,15 @@
 #include <GetOpt.h>
 #include <util.h>
 
-#include <BESError.h>
-#include <BESDebug.h>
-#include <BESUtil.h>
-#include <BESCatalogList.h>
-#include <TheBESKeys.h>
-#include "EffectiveUrlCache.h"
+#include "BESError.h"
+#include "BESDebug.h"
+#include "BESUtil.h"
+#include "BESCatalogList.h"
+#include "TheBESKeys.h"
+#include "BESContextManager.h"
+
 #include "HttpNames.h"
+#include "EffectiveUrlCache.h"
 
 #include "test_config.h"
 
@@ -50,6 +52,8 @@ static bool debug = false;
 static bool Debug = false;
 static bool bes_debug = false;
 static bool purge_cache = false;
+static bool ngap_tests = false;
+static std::string token;
 
 #undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
@@ -136,7 +140,6 @@ namespace http {
         EffectiveUrlCacheTest()
         {
             d_data_dir = TEST_DATA_DIR;;
-            cerr << "data_dir: " << d_data_dir << endl;
         }
 
         // Called at the end of the test
@@ -149,18 +152,23 @@ namespace http {
         {
             if(debug) cerr << endl;
             if(Debug) cerr << prolog << "BEGIN" << endl;
+            if(debug) cerr << prolog << "data_dir: " << d_data_dir << endl;
             string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR,"bes.conf");
-            if(Debug) cerr << "setUp() - Using BES configuration: " << bes_conf << endl;
-            if (bes_debug) show_file(bes_conf);
+            if(Debug) cerr << prolog << "Using BES configuration: " << bes_conf << endl;
+            if (Debug) show_file(bes_conf);
             TheBESKeys::ConfigFile = bes_conf;
 
-            if (bes_debug) BESDebug::SetUp("cerr,wl,bes,http");
+            if (bes_debug) BESDebug::SetUp("cerr,bes,euc,http");
 
             if(purge_cache) purge_test_cache();
 
             // Clear the cache for the next test.
             EffectiveUrlCache::TheCache()->delete_instance();
 
+            if(!token.empty()){
+                if(debug) cerr << "Setting BESContext " << EDL_AUTH_TOKEN_KEY<< " to: '"<< token << "'" << endl;
+                BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_KEY,token);
+            }
             if(Debug) cerr << prolog << "END" << endl;
         }
 
@@ -180,13 +188,14 @@ namespace http {
 
 
             string src_url_00 = "http://started_here.com";
-            http::url *effective_url_00 = new http::url("https://ended_here.com");
+            http::EffectiveUrl *effective_url_00 = new http::EffectiveUrl("https://ended_here.com");
+
             EffectiveUrlCache::TheCache()->add(src_url_00,effective_url_00);
             CPPUNIT_ASSERT( EffectiveUrlCache::TheCache()->d_effective_urls.size() == 1);
 
 
             // This one does not add the URL or even check it because it _should_ be matching the skip regex.
-            http::url *result_url =EffectiveUrlCache::TheCache()->get_effective_url(src_url_00);
+            http::EffectiveUrl *result_url =EffectiveUrlCache::TheCache()->get_effective_url(src_url_00);
             CPPUNIT_ASSERT( !result_url );
 
 
@@ -197,7 +206,7 @@ namespace http {
             if(debug) cerr << prolog << "BEGIN" << endl;
             string source_url;
             string value;
-            http::url *result_url;
+            http::EffectiveUrl *result_url;
             try {
 
                 // This one does not add the URL or even check it because it _should_ be matching the skip regex
@@ -221,29 +230,31 @@ namespace http {
             if(debug) cerr << prolog << "BEGIN" << endl;
             string source_url;
             string value;
-            http::url *result_url;
+            http::EffectiveUrl *result_url;
             try {
                 // The cache is disabled in bes.conf so we need to turn it on.
                 EffectiveUrlCache::TheCache()->d_enabled = true;
 
                 string src_url_00 = "https://d1jecqxxv88lkr.cloudfront.net/ghrcwuat-protected/rss_demo/rssmif16d__7/f16_ssmis_20040107v7.nc";
-                http::url *effective_url_00 = new http::url("https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc?A-userid=hyrax&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIASF4N-AWS-Creds-00808%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200808T032623Z&X-Amz-Expires=86400&X-Amz-Security-Token=FwoGZXIvYXdzE-AWS-Sec-Token-MWRLIZGYvDx1ONzd0ffK8VtxO8JP7thrGIQ%3D%3D&X-Amz-SignedHeaders=host&X-Amz-Signature=260a7c4dd4-AWS-SIGGY-0c7a39ee899");
+                auto *effective_url_00 = new http::EffectiveUrl("https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc?A-userid=hyrax&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIASF4N-AWS-Creds-00808%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200808T032623Z&X-Amz-Expires=86400&X-Amz-Security-Token=FwoGZXIvYXdzE-AWS-Sec-Token-MWRLIZGYvDx1ONzd0ffK8VtxO8JP7thrGIQ%3D%3D&X-Amz-SignedHeaders=host&X-Amz-Signature=260a7c4dd4-AWS-SIGGY-0c7a39ee899");
                 EffectiveUrlCache::TheCache()->add(src_url_00,effective_url_00);
                 CPPUNIT_ASSERT( EffectiveUrlCache::TheCache()->d_effective_urls.size() == 1);
 
                 string src_url_01 = "http://test.opendap.org/data/httpd_catalog/READTHIS";
-                http::url *effective_url_01 = new http::url("https://test.opendap.org/data/httpd_catalog/READTHIS");
+                auto *effective_url_01 = new http::EffectiveUrl("https://test.opendap.org/data/httpd_catalog/READTHIS");
                 EffectiveUrlCache::TheCache()->add(src_url_01,effective_url_01);
                 CPPUNIT_ASSERT( EffectiveUrlCache::TheCache()->d_effective_urls.size() == 2);
 
                 // This one actually does the thing
                 string src_url_02 = "http://test.opendap.org/opendap";
-                http::url *effective_url_02 = new http::url("http://test.opendap.org/opendap/");
-                result_url =EffectiveUrlCache::TheCache()->get_effective_url(src_url_02);
+                auto *effective_url_02 = new http::EffectiveUrl("http://test.opendap.org/opendap/");
+
+                if(debug) cerr << prolog << "Retrieving effective URL for: " << src_url_02 << endl;
+                result_url = EffectiveUrlCache::TheCache()->get_effective_url(src_url_02);
                 CPPUNIT_ASSERT( EffectiveUrlCache::TheCache()->d_effective_urls.size() == 3);
 
-                if(debug) cerr << prolog << "EffectiveUrlCache::TheCache()->get_effective_url():" <<
-                (result_url?result_url->str():"NULL") << endl;
+                if(debug) cerr << prolog << "EffectiveUrlCache::TheCache()->get_effective_url() returned: " <<
+                               (result_url?result_url->str():"NULL") << endl;
                 CPPUNIT_ASSERT(result_url);
                 CPPUNIT_ASSERT(result_url->str() == effective_url_02->str());
 
@@ -254,9 +265,93 @@ namespace http {
                 CPPUNIT_FAIL(msg.str());
 
             }
+            if(debug) cerr << prolog << "END" << endl;
+        }
+        void euc_ghrc_tea_url_test() {
+            if(!ngap_tests){
+                if(debug) cerr << prolog << "SKIPPING." << endl;
+                return;
+            }
+            if(debug) cerr << prolog << "BEGIN" << endl;
+            string source_url;
+            string value;
+            http::EffectiveUrl *result_url;
+            try {
+                // The cache is disabled in bes.conf so we need to turn it on.
+                EffectiveUrlCache::TheCache()->d_enabled = true;
+                string thing1 = "https://d1jecqxxv88lkr.cloudfront.net/ghrcwuat-protected/rss_demo/rssmif16d__7/f16_ssmis_20031026v7.nc";
+                string thing1_out_of_region_effective_url_prefix = "https://d1jecqxxv88lkr.cloudfront.net/s3";
+                string thing1_in_region_effective_url_prefix = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/";
 
+                if(debug) cerr << prolog << "Retrieving effective URL for: " << thing1 << endl;
+                result_url = EffectiveUrlCache::TheCache()->get_effective_url(thing1);
+                CPPUNIT_ASSERT( EffectiveUrlCache::TheCache()->d_effective_urls.size() == 1);
+
+                if(debug) cerr << prolog << "EffectiveUrlCache::TheCache()->get_effective_url() returned: " <<
+                               (result_url?result_url->str():"NULL") << endl;
+                CPPUNIT_ASSERT(result_url);
+
+                CPPUNIT_ASSERT(
+                        result_url->str().rfind(thing1_in_region_effective_url_prefix, 0) == 0 ||
+                        result_url->str().rfind(thing1_out_of_region_effective_url_prefix, 0) == 0
+                );
+
+                result_url = EffectiveUrlCache::TheCache()->get_effective_url(thing1);
+
+            }
+            catch (BESError be){
+                stringstream msg;
+                msg << __func__ << "() - ERROR! Caught BESError. Message: " << be.get_message() << endl;
+                CPPUNIT_FAIL(msg.str());
+
+            }
+            if(debug) cerr << prolog << "END" << endl;
         }
 
+        void euc_harmony_url_test() {
+            if(!ngap_tests){
+                if(debug) cerr << prolog << "SKIPPING." << endl;
+                return;
+            }
+            if(debug) cerr << prolog << "BEGIN" << endl;
+            string source_url;
+            string value;
+            http::EffectiveUrl *result_url;
+            try {
+                // The cache is disabled in bes.conf so we need to turn it on.
+                EffectiveUrlCache::TheCache()->d_enabled = true;
+                string thing1 = "https://harmony.uat.earthdata.nasa.gov/service-results/harmony-uat-staging/public/"
+                                "sds/staged/ATL03_20200714235814_03000802_003_01.h5";
+                string thing1_out_of_region_effective_url_prefix = "https://djpip0737hawz.cloudfront.net/s3";
+                string thing1_in_region_effective_url_prefix = "https://harmony-uat-staging.s3.us-west-2.amazonaws.com/public/";
+
+                if(debug) cerr << prolog << "Retrieving effective URL for: " << thing1 << endl;
+                result_url = EffectiveUrlCache::TheCache()->get_effective_url(thing1);
+                CPPUNIT_ASSERT( EffectiveUrlCache::TheCache()->d_effective_urls.size() == 1);
+
+                if(debug) cerr << prolog << "EffectiveUrlCache::TheCache()->get_effective_url() returned: " <<
+                               (result_url?result_url->str():"NULL") << endl;
+                CPPUNIT_ASSERT(result_url);
+
+                CPPUNIT_ASSERT(
+                        result_url->str().rfind(thing1_in_region_effective_url_prefix, 0) == 0 ||
+                                result_url->str().rfind(thing1_out_of_region_effective_url_prefix, 0) == 0
+                );
+
+
+                result_url = EffectiveUrlCache::TheCache()->get_effective_url(thing1);
+
+
+            }
+            catch (BESError be){
+                stringstream msg;
+                msg << __func__ << "() - ERROR! Caught BESError. Message: " << be.get_message() << endl;
+                CPPUNIT_FAIL(msg.str());
+
+            }
+            if(debug) cerr << prolog << "END" << endl;
+        }
+#if 0
         string get_amz_date(const time_t &da_time){
             string amz_date_format("%Y%m%dT%H%M%SZ"); // "20200808T032623Z";
             struct tm *dttm;
@@ -289,7 +384,7 @@ namespace http {
             if(debug) cout << "amz_date: " << amz_date.str() << " len: " << amz_date.str().length() << endl;
             return amz_date.str();
         }
-
+#endif
 
 /* TESTS END */
 /*##################################################################################################*/
@@ -300,6 +395,8 @@ namespace http {
             CPPUNIT_TEST(is_cache_disabled_test);
             CPPUNIT_TEST(cache_test_00);
             CPPUNIT_TEST(skip_regex_test);
+            CPPUNIT_TEST(euc_ghrc_tea_url_test);
+            CPPUNIT_TEST(euc_harmony_url_test);
 
     CPPUNIT_TEST_SUITE_END();
 };
@@ -313,7 +410,7 @@ int main(int argc, char*argv[])
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    GetOpt getopt(argc, argv, "dbDP");
+    GetOpt getopt(argc, argv, "dbDPt:N");
     int option_char;
     while ((option_char = getopt()) != -1)
         switch (option_char) {
@@ -329,9 +426,17 @@ int main(int argc, char*argv[])
                 bes_debug = true;  // debug is a static global
                 cerr << "bes_debug enabled" << endl;
                 break;
+            case 'N':
+                ngap_tests = true; // token is a static global
+                cerr << "NGAP Tests Enabled." << token << endl;
+                break;
             case 'P':
                 purge_cache = true;  // purge_cache is a static global
                 cerr << "purge_cache enabled" << endl;
+                break;
+            case 't':
+                token = getopt.optarg; // token is a static global
+                cerr << "Authorization header value: " << token << endl;
                 break;
             default:
                 break;

@@ -359,7 +359,7 @@ int fits_handler::process_hdu_ascii_table(fitsfile *fptr, DDS &dds, const string
     if (fits_read_keys_str(fptr, "TTYPE", 1, ncols, ttype, &nfound, &status))
         return status;
 
-    // wasn't that fun ? :)
+    // wasn't that theOne ? :)
 
 
     unique_ptr<Structure> table(new Structure(str, datasetname));

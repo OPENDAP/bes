@@ -25,6 +25,8 @@
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
 
+#include "config.h"
+
 #include <sstream>
 
 using std::istringstream;
