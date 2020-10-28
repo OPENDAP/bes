@@ -50,6 +50,7 @@
 using namespace std;
 
 #define MODULE "euc"
+#define MODULE_DUMPER "euc:dump"
 #define prolog std::string("EffectiveUrlCache::").append(__func__).append("() - ")
 
 namespace http {
@@ -262,7 +263,7 @@ http::EffectiveUrl *EffectiveUrlCache::get_effective_url(const string &source_ur
         // This lock will block until the mutex is available.
         EucLock dat_lock(this->d_get_effective_url_cache_mutex);
 
-        BESDEBUG(MODULE, prolog << "dump: " << endl << dump() << endl);
+        BESDEBUG(MODULE_DUMPER, prolog << "dump: " << endl << dump() << endl);
 
         size_t match_length=0;
 
@@ -310,7 +311,7 @@ http::EffectiveUrl *EffectiveUrlCache::get_effective_url(const string &source_ur
 
             d_effective_urls[source_url] = effective_url;
         }
-        BESDEBUG(MODULE, prolog << "dump: " << endl << dump() << endl);
+        BESDEBUG(MODULE_DUMPER, prolog << "dump: " << endl << dump() << endl);
     } // Lock released when the point of execution reaches this brace and dat_lock goes out of scope.
     else {
         BESDEBUG(MODULE, prolog << "CACHE IS DISABLED." << endl);
