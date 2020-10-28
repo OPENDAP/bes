@@ -30,6 +30,8 @@
 #include <map>
 #include <string>
 
+#include <pthread.h>
+
 #include "BESObj.h"
 #include "BESDataHandlerInterface.h"
 #include "BESRegex.h"
@@ -38,13 +40,28 @@
 
 namespace http {
 
-/**
+    /**
+ * RAII. Lock access to the get_easy_handle() and release_handle() methods.
+ */
+class EucLock {
+private:
+    pthread_mutex_t &m_mutex;
+    EucLock();
+    EucLock(const EucLock &rhs);
+public:
+    EucLock(pthread_mutex_t &lock);
+    ~EucLock();
+};
+
+
+    /**
  *
  */
 class EffectiveUrlCache: public BESObj {
 private:
     static EffectiveUrlCache * d_instance;
     std::map<std::string , http::EffectiveUrl *> d_effective_urls;
+    pthread_mutex_t d_get_effective_url_cache_mutex;
 
     // Things that match get skipped.
     BESRegex *d_skip_regex;
@@ -56,7 +73,6 @@ private:
 
     friend class EffectiveUrlCacheTest;
     http::EffectiveUrl *get(const std::string  &source_url);
-    void add(const std::string  &source_url, http::EffectiveUrl *effective_url);
     BESRegex *get_skip_regex();
 
     EffectiveUrlCache();

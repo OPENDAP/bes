@@ -138,6 +138,7 @@ public:
     // Called before each test
     void setUp()
     {
+        if(debug) cerr << endl;
         if(debug) cerr << "data_dir: " << d_data_dir << endl;
         if(Debug) cerr << endl << prolog << "BEGIN" << endl;
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR,"bes.conf");
@@ -183,6 +184,7 @@ public:
 
 
     void get_http_url_test() {
+        if(debug) cerr << prolog << "BEGIN" << endl;
 
         string url = "http://test.opendap.org/data/httpd_catalog/READTHIS";
         if(debug) cerr << prolog << "url: " << url << endl;
@@ -206,6 +208,7 @@ public:
             cerr << "Caught BESError! message: " << besE.get_verbose_message() << " type: " << besE.get_bes_error_type() << endl;
             CPPUNIT_ASSERT(false);
         }
+        if(debug) cerr << prolog << "END" << endl;
     }
 
     void get_ngap_ghrc_tea_url_test() {
@@ -213,6 +216,7 @@ public:
             if(debug) cerr << prolog << "SKIPPING." << endl;
             return;
         }
+        if(debug) cerr << prolog << "BEGIN" << endl;
         string url = "https://d1jecqxxv88lkr.cloudfront.net/ghrcwuat-protected/rss_demo/rssmif16d__7/f16_ssmis_20031026v7.nc.dmrpp";
         if(debug) cerr << prolog << "url: " << url << endl;
         http::RemoteResource rhr(url);
@@ -237,6 +241,7 @@ public:
             CPPUNIT_FAIL(msg.str());
         }
 
+        if(debug) cerr << prolog << "END" << endl;
     }
 
 
@@ -246,6 +251,8 @@ public:
             if(debug) cerr << prolog << "SKIPPING." << endl;
             return;
         }
+        if(debug) cerr << prolog << "BEGIN" << endl;
+
         string url = "https://harmony.uat.earthdata.nasa.gov/service-results/harmony-uat-staging/public/"
                         "sds/staged/ATL03_20200714235814_03000802_003_01.h5.dmrpp";
 
@@ -269,15 +276,14 @@ public:
             cerr << msg.str();
             CPPUNIT_FAIL(msg.str());
         }
+        if(debug) cerr << prolog << "END" << endl;
     }
 
         /**
      *
      */
     void get_file_url_test() {
-        bool debug_state = debug;
-        debug = true;
-        if(debug) cerr << endl;
+        if(debug) cerr << prolog << "BEGIN" << endl;
 
         string data_file_url = get_data_file_url("test_file");
         http::RemoteResource rhr(data_file_url);
@@ -302,13 +308,7 @@ public:
             msg << prolog << "Caught BESError! message: '" << besE.get_message() << "' bes_error_type: " << besE.get_bes_error_type() << endl;
             CPPUNIT_FAIL(msg.str());
         }
-#if 0
-        catch (libdap::Error &le){
-            cerr << "Caught libdap::Error! message: " << le.get_error_message() << " code: "<< le.get_error_code() << endl;
-            CPPUNIT_ASSERT(false);
-        }
-#endif
-        debug = debug_state;
+        if(debug) cerr << prolog << "END" << endl;
     }
 
 /* TESTS END */
@@ -317,10 +317,10 @@ public:
 
     CPPUNIT_TEST_SUITE( RemoteResourceTest );
 
-    CPPUNIT_TEST(get_ngap_ghrc_tea_url_test);
-    CPPUNIT_TEST(get_ngap_harmony_url_test);
     CPPUNIT_TEST(get_http_url_test);
     CPPUNIT_TEST(get_file_url_test);
+    CPPUNIT_TEST(get_ngap_ghrc_tea_url_test);
+    CPPUNIT_TEST(get_ngap_harmony_url_test);
 
     CPPUNIT_TEST_SUITE_END();
 };

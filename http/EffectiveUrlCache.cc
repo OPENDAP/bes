@@ -50,12 +50,29 @@
 using namespace std;
 
 #define MODULE "euc"
+#define MODULE_DUMPER "euc:dump"
 #define prolog std::string("EffectiveUrlCache::").append(__func__).append("() - ")
 
 namespace http {
 
-
 EffectiveUrlCache *EffectiveUrlCache::d_instance = 0;
+
+EucLock::EucLock(pthread_mutex_t &lock) : m_mutex(lock) {
+    int status = pthread_mutex_lock(&m_mutex);
+    if (status != 0){
+        throw BESInternalError(prolog  + "Could not acquire mutex lock.", __FILE__, __LINE__);
+    }
+    BESDEBUG(MODULE,prolog << "Locked. (thread: " << pthread_self() << ")"  << endl);
+}
+
+EucLock::~EucLock() {
+    int status = pthread_mutex_unlock(&m_mutex);
+    if (status != 0){
+        ERROR_LOG(prolog + "Failed to release mutex lock.");
+    }
+    BESDEBUG(MODULE,prolog << "Unlocked. (thread: " << pthread_self() << ")" << endl);
+}
+
 
 /** @brief Get the singleton BESCatalogList instance.
  *
@@ -111,6 +128,8 @@ void EffectiveUrlCache::delete_instance()
  */
 EffectiveUrlCache::EffectiveUrlCache(): d_skip_regex(NULL), d_enabled(-1)
 {
+    if (pthread_mutex_init(&d_get_effective_url_cache_mutex, 0) != 0)
+        throw BESInternalError("Could not initialize mutex in CurlHandlePool", __FILE__, __LINE__);
 
 }
 
@@ -175,26 +194,6 @@ string EffectiveUrlCache::dump() const
     return sstrm.str();
 }
 
-/**
- *
- * @param source_url
- * @param effective_url
- */
-void EffectiveUrlCache::add(const std::string &source_url, http::EffectiveUrl *effective_url)
-{
-    pair<map<string,http::EffectiveUrl *>::iterator , bool> previously = d_effective_urls.insert(pair<string,http::EffectiveUrl *>(source_url, effective_url));
-    if(previously.second){
-        BESDEBUG(MODULE, prolog << "The effective URL for " << source_url << " was has been added to the cache. "<<
-        "(EUC size: " << d_effective_urls.size() << ")" << endl);
-    }
-    else {
-        BESDEBUG(MODULE, prolog << "The effective URL for " << source_url << " was NOT added to the cache. "<<
-        "The URL was already set to " << previously.first->second->str() << endl);
-    }
-
-}
-
-
 
 /**
  *
@@ -238,11 +237,15 @@ http::EffectiveUrl *EffectiveUrlCache::get_effective_url(const string &source_ur
 http::EffectiveUrl *EffectiveUrlCache::get_effective_url(const string &source_url, BESRegex *skip_regex)
 {
     BESDEBUG(MODULE, prolog << "BEGIN url: " << source_url << endl);
-    BESDEBUG(MODULE, prolog << "dump: " << endl << dump() << endl);
-
+    // TODO - maybe we should initialize this to source_url so the caller does not have to check the return.
     http::EffectiveUrl *effective_url = NULL;
-
     if(is_enabled()){
+
+        // This lock will block until the mutex is available.
+        EucLock dat_lock(this->d_get_effective_url_cache_mutex);
+
+        BESDEBUG(MODULE_DUMPER, prolog << "dump: " << endl << dump() << endl);
+
         size_t match_length=0;
 
         // if it's not an HTTP url there is nothing to cache.
@@ -287,14 +290,16 @@ http::EffectiveUrl *EffectiveUrlCache::get_effective_url(const string &source_ur
             BESDEBUG(MODULE, prolog << "   source_url: " << source_url << endl);
             BESDEBUG(MODULE, prolog << "effective_url: " << effective_url->dump() << endl);
 
-            EffectiveUrlCache::TheCache()->add(source_url,effective_url);
+            d_effective_urls[source_url] = effective_url;
+
+            BESDEBUG(MODULE, prolog << "Updated record for "<< source_url << " cache size: " << d_effective_urls.size() << endl);
         }
-    }
+        BESDEBUG(MODULE_DUMPER, prolog << "dump: " << endl << dump() << endl);
+    } // EucLock dat_lock is released when the point of execution reaches this brace and dat_lock goes out of scope.
     else {
         BESDEBUG(MODULE, prolog << "CACHE IS DISABLED." << endl);
     }
-        BESDEBUG(MODULE, prolog << "dump: " << endl << dump() << endl);
-        BESDEBUG(MODULE, prolog << "END" << endl);
+    BESDEBUG(MODULE, prolog << "END" << endl);
     return effective_url;
 }
 

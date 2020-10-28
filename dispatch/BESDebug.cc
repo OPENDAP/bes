@@ -39,6 +39,8 @@
 #include <iostream>
 #include <sstream>
 
+#include <pthread.h>
+
 #include "BESDebug.h"
 #include "BESInternalError.h"
 #include "BESLog.h"
@@ -124,16 +126,23 @@ void BESDebug::SetUp(const string &values)
 string BESDebug::GetPidStr()
 {
     ostringstream strm;
+    // Time Field
     const time_t sctime = time(NULL);
     const struct tm *sttime = localtime(&sctime);
     char zone_name[10];
     strftime(zone_name, sizeof(zone_name), "%Z", sttime);
     char *b = asctime(sttime);
-    strm << zone_name << " ";
+    strm << "[" << zone_name << " ";
     for (register int j = 0; b[j] != '\n'; j++)
         strm << b[j];
+    strm << "]";
+
+    // PID field
     pid_t thepid = getpid();
-    strm << " id: " << thepid;
+    strm << "[pid: " << thepid <<"]";
+    
+    // Thread field
+    strm << "[thread: " << pthread_self() <<"]";
     return strm.str();
 }
 

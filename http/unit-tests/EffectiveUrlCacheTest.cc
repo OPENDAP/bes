@@ -190,7 +190,7 @@ namespace http {
             string src_url_00 = "http://started_here.com";
             http::EffectiveUrl *effective_url_00 = new http::EffectiveUrl("https://ended_here.com");
 
-            EffectiveUrlCache::TheCache()->add(src_url_00,effective_url_00);
+            EffectiveUrlCache::TheCache()->d_effective_urls.insert(pair<string,EffectiveUrl *>(src_url_00,effective_url_00));
             CPPUNIT_ASSERT( EffectiveUrlCache::TheCache()->d_effective_urls.size() == 1);
 
 
@@ -237,12 +237,12 @@ namespace http {
 
                 string src_url_00 = "https://d1jecqxxv88lkr.cloudfront.net/ghrcwuat-protected/rss_demo/rssmif16d__7/f16_ssmis_20040107v7.nc";
                 auto *effective_url_00 = new http::EffectiveUrl("https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc?A-userid=hyrax&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIASF4N-AWS-Creds-00808%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200808T032623Z&X-Amz-Expires=86400&X-Amz-Security-Token=FwoGZXIvYXdzE-AWS-Sec-Token-MWRLIZGYvDx1ONzd0ffK8VtxO8JP7thrGIQ%3D%3D&X-Amz-SignedHeaders=host&X-Amz-Signature=260a7c4dd4-AWS-SIGGY-0c7a39ee899");
-                EffectiveUrlCache::TheCache()->add(src_url_00,effective_url_00);
+                EffectiveUrlCache::TheCache()->d_effective_urls.insert(pair<string,EffectiveUrl *>(src_url_00,effective_url_00));
                 CPPUNIT_ASSERT( EffectiveUrlCache::TheCache()->d_effective_urls.size() == 1);
 
                 string src_url_01 = "http://test.opendap.org/data/httpd_catalog/READTHIS";
                 auto *effective_url_01 = new http::EffectiveUrl("https://test.opendap.org/data/httpd_catalog/READTHIS");
-                EffectiveUrlCache::TheCache()->add(src_url_01,effective_url_01);
+                EffectiveUrlCache::TheCache()->d_effective_urls.insert(pair<string,EffectiveUrl *>(src_url_01,effective_url_01));
                 CPPUNIT_ASSERT( EffectiveUrlCache::TheCache()->d_effective_urls.size() == 2);
 
                 // This one actually does the thing
@@ -267,6 +267,44 @@ namespace http {
             }
             if(debug) cerr << prolog << "END" << endl;
         }
+
+
+        void cache_test_01() {
+            if(debug) cerr << prolog << "BEGIN" << endl;
+            string source_url;
+            string value;
+            http::EffectiveUrl *result_url;
+            try {
+                std::map<std::string , http::EffectiveUrl *> d_effective_urls;
+                string source_url = "http://someURL";
+
+                http::EffectiveUrl first_eu("http://someOtherUrl");
+                d_effective_urls[source_url] = &first_eu;
+                if(debug) cerr << prolog << "source_url: " << source_url << endl;
+                if(debug) cerr << prolog << "first_eu: " << first_eu.str() << endl;
+
+                CPPUNIT_ASSERT( d_effective_urls[source_url] == &first_eu);
+
+                http::EffectiveUrl second_eu("http://someMoreUrlLovin");
+                d_effective_urls[source_url] = &second_eu;
+                if(debug) cerr << prolog << "source_url: " << source_url << endl;
+                if(debug) cerr << prolog << "second_eu: " << second_eu.str() << endl;
+
+                CPPUNIT_ASSERT( d_effective_urls[source_url] == &second_eu);
+
+            }
+            catch (BESError be){
+                stringstream msg;
+                msg << __func__ << "() - ERROR! Caught BESError. Message: " << be.get_message() << endl;
+                CPPUNIT_FAIL(msg.str());
+
+            }
+            if(debug) cerr << prolog << "END" << endl;
+        }
+
+
+
+
         void euc_ghrc_tea_url_test() {
             if(!ngap_tests){
                 if(debug) cerr << prolog << "SKIPPING." << endl;
@@ -307,6 +345,9 @@ namespace http {
             }
             if(debug) cerr << prolog << "END" << endl;
         }
+
+
+
 
         void euc_harmony_url_test() {
             if(!ngap_tests){
@@ -394,6 +435,7 @@ namespace http {
 
             CPPUNIT_TEST(is_cache_disabled_test);
             CPPUNIT_TEST(cache_test_00);
+            CPPUNIT_TEST(cache_test_01);
             CPPUNIT_TEST(skip_regex_test);
             CPPUNIT_TEST(euc_ghrc_tea_url_test);
             CPPUNIT_TEST(euc_harmony_url_test);
