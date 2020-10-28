@@ -35,7 +35,6 @@
 #include "BESObj.h"
 #include "BESDataHandlerInterface.h"
 #include "BESRegex.h"
-#include "BESLog.h"
 #include "EffectiveUrl.h"
 
 

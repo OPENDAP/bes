@@ -114,13 +114,13 @@ string pthread_error(unsigned int err){
 Lock::Lock(pthread_mutex_t &lock) : m_mutex(lock) {
     int status = pthread_mutex_lock(&m_mutex);
     if (status != 0)
-        throw BESInternalError(prolog + "Failed to acquire mutex lock. msg: "+ pthread_error(status), __FILE__, __LINE__);
+        throw BESInternalError(prolog + "Failed to acquire mutex lock. msg: " + pthread_error(status), __FILE__, __LINE__);
 }
 
 Lock::~Lock() {
     int status = pthread_mutex_unlock(&m_mutex);
     if (status != 0)
-        ERROR_LOG(prolog + "Failed to release mutex lock. msg: "+ pthread_error(status));
+        ERROR_LOG(prolog + "Failed to release mutex lock. msg: " + pthread_error(status));
 }
 
 /**

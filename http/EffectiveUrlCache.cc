@@ -312,11 +312,11 @@ http::EffectiveUrl *EffectiveUrlCache::get_effective_url(const string &source_ur
             EffectiveUrlCache::TheCache()->add(source_url,effective_url);
         }
         BESDEBUG(MODULE, prolog << "dump: " << endl << dump() << endl);
-    } // Lock released is when the point of execution reaches this brace and dat_lock goes out of scope.
+    } // Lock released when the point of execution reaches this brace and dat_lock goes out of scope.
     else {
         BESDEBUG(MODULE, prolog << "CACHE IS DISABLED." << endl);
     }
-        BESDEBUG(MODULE, prolog << "END" << endl);
+    BESDEBUG(MODULE, prolog << "END" << endl);
     return effective_url;
 }
 
