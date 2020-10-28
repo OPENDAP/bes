@@ -267,6 +267,44 @@ namespace http {
             }
             if(debug) cerr << prolog << "END" << endl;
         }
+
+
+        void cache_test_01() {
+            if(debug) cerr << prolog << "BEGIN" << endl;
+            string source_url;
+            string value;
+            http::EffectiveUrl *result_url;
+            try {
+                std::map<std::string , http::EffectiveUrl *> d_effective_urls;
+                string source_url = "http://someURL";
+
+                http::EffectiveUrl first_eu("http://someOtherUrl");
+                d_effective_urls[source_url] = &first_eu;
+                if(debug) cerr << prolog << "source_url: " << source_url << endl;
+                if(debug) cerr << prolog << "first_eu: " << first_eu.str() << endl;
+
+                CPPUNIT_ASSERT( d_effective_urls[source_url] == &first_eu);
+
+                http::EffectiveUrl second_eu("http://someMoreUrlLovin");
+                d_effective_urls[source_url] = &second_eu;
+                if(debug) cerr << prolog << "source_url: " << source_url << endl;
+                if(debug) cerr << prolog << "second_eu: " << second_eu.str() << endl;
+
+                CPPUNIT_ASSERT( d_effective_urls[source_url] == &second_eu);
+
+            }
+            catch (BESError be){
+                stringstream msg;
+                msg << __func__ << "() - ERROR! Caught BESError. Message: " << be.get_message() << endl;
+                CPPUNIT_FAIL(msg.str());
+
+            }
+            if(debug) cerr << prolog << "END" << endl;
+        }
+
+
+
+
         void euc_ghrc_tea_url_test() {
             if(!ngap_tests){
                 if(debug) cerr << prolog << "SKIPPING." << endl;
@@ -307,6 +345,9 @@ namespace http {
             }
             if(debug) cerr << prolog << "END" << endl;
         }
+
+
+
 
         void euc_harmony_url_test() {
             if(!ngap_tests){
@@ -394,6 +435,7 @@ namespace http {
 
             CPPUNIT_TEST(is_cache_disabled_test);
             CPPUNIT_TEST(cache_test_00);
+            CPPUNIT_TEST(cache_test_01);
             CPPUNIT_TEST(skip_regex_test);
             CPPUNIT_TEST(euc_ghrc_tea_url_test);
             CPPUNIT_TEST(euc_harmony_url_test);

@@ -209,7 +209,6 @@ void EffectiveUrlCache::add(const std::string &source_url, http::EffectiveUrl *e
         BESDEBUG(MODULE, prolog << "The effective URL for " << source_url << " was NOT added to the cache. "<<
         "The URL was already set to " << previously.first->second->str() << endl);
     }
-
 }
 
 
@@ -309,7 +308,7 @@ http::EffectiveUrl *EffectiveUrlCache::get_effective_url(const string &source_ur
             BESDEBUG(MODULE, prolog << "   source_url: " << source_url << endl);
             BESDEBUG(MODULE, prolog << "effective_url: " << effective_url->dump() << endl);
 
-            EffectiveUrlCache::TheCache()->add(source_url,effective_url);
+            d_effective_urls[source_url] = effective_url;
         }
         BESDEBUG(MODULE, prolog << "dump: " << endl << dump() << endl);
     } // Lock released when the point of execution reaches this brace and dat_lock goes out of scope.
