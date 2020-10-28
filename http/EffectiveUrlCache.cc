@@ -194,25 +194,6 @@ string EffectiveUrlCache::dump() const
     return sstrm.str();
 }
 
-/**
- *
- * @param source_url
- * @param effective_url
- */
-void EffectiveUrlCache::add(const std::string &source_url, http::EffectiveUrl *effective_url)
-{
-    pair<map<string,http::EffectiveUrl *>::iterator , bool> previously = d_effective_urls.insert(pair<string,http::EffectiveUrl *>(source_url, effective_url));
-    if(previously.second){
-        BESDEBUG(MODULE, prolog << "The effective URL for " << source_url << " was has been added to the cache. "<<
-        "(EUC size: " << d_effective_urls.size() << ")" << endl);
-    }
-    else {
-        BESDEBUG(MODULE, prolog << "The effective URL for " << source_url << " was NOT added to the cache. "<<
-        "The URL was already set to " << previously.first->second->str() << endl);
-    }
-}
-
-
 
 /**
  *
@@ -310,9 +291,11 @@ http::EffectiveUrl *EffectiveUrlCache::get_effective_url(const string &source_ur
             BESDEBUG(MODULE, prolog << "effective_url: " << effective_url->dump() << endl);
 
             d_effective_urls[source_url] = effective_url;
+
+            BESDEBUG(MODULE, prolog << "Updated record for "<< source_url << " cache size: " << d_effective_urls.size() << endl);
         }
         BESDEBUG(MODULE_DUMPER, prolog << "dump: " << endl << dump() << endl);
-    } // Lock released when the point of execution reaches this brace and dat_lock goes out of scope.
+    } // EucLock dat_lock is released when the point of execution reaches this brace and dat_lock goes out of scope.
     else {
         BESDEBUG(MODULE, prolog << "CACHE IS DISABLED." << endl);
     }

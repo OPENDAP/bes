@@ -73,7 +73,6 @@ private:
 
     friend class EffectiveUrlCacheTest;
     http::EffectiveUrl *get(const std::string  &source_url);
-    void add(const std::string  &source_url, http::EffectiveUrl *effective_url);
     BESRegex *get_skip_regex();
 
     EffectiveUrlCache();
