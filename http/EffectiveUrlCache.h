@@ -85,7 +85,6 @@ public:
     bool is_enabled();
 
     http::EffectiveUrl *get_effective_url(const std::string &source_url);
-    http::EffectiveUrl *get_effective_url(const std::string &source_url, BESRegex *skip_regex);
 
     virtual void dump(std::ostream &strm) const;
     virtual std::string dump() const;

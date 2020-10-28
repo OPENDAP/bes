@@ -215,26 +215,13 @@ http::EffectiveUrl *EffectiveUrlCache::get(const std::string  &source_url){
 
 
 /**
- * Retrieves the skip regex (possibly NULL if not configured)
- * and then calls get_effective_url(source_url, skip_regex);
- *
- * @param source_url
- * @returns The effective URL
- */
-http::EffectiveUrl *EffectiveUrlCache::get_effective_url(const string &source_url) {
-    BESRegex *bes_regex = get_skip_regex();
-    return get_effective_url(source_url, bes_regex);
-}
-
-
-/**
  * Find the terminal (effective) url for the source_url. If the source_url matches the
  * skip_regex then it will not be cached.
  *
  * @param source_url
  * @returns The effective URL
 */
-http::EffectiveUrl *EffectiveUrlCache::get_effective_url(const string &source_url, BESRegex *skip_regex)
+http::EffectiveUrl *EffectiveUrlCache::get_effective_url(const string &source_url)
 {
     BESDEBUG(MODULE, prolog << "BEGIN url: " << source_url << endl);
     // TODO - maybe we should initialize this to source_url so the caller does not have to check the return.
@@ -243,6 +230,7 @@ http::EffectiveUrl *EffectiveUrlCache::get_effective_url(const string &source_ur
 
         // This lock will block until the mutex is available.
         EucLock dat_lock(this->d_get_effective_url_cache_mutex);
+
 
         BESDEBUG(MODULE_DUMPER, prolog << "dump: " << endl << dump() << endl);
 
@@ -254,6 +242,7 @@ http::EffectiveUrl *EffectiveUrlCache::get_effective_url(const string &source_ur
             return NULL;
         }
 
+        BESRegex *skip_regex = get_skip_regex();
         if( skip_regex ) {
             match_length = skip_regex->match(source_url.c_str(), source_url.length());
             if (match_length == source_url.length()) {
