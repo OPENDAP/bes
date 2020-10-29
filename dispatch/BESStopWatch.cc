@@ -151,9 +151,9 @@ bool BESStopWatch::get_time_of_day(struct timeval &time_val)
         char *c_err = strerror(myerrno);
         string errno_msg = (c_err != 0) ? c_err : "unknown error";
         std::stringstream msg;
-        msg <<  prolog << "The gettimeofday() function failed. errno_msg: " << errno_msg << endl;
+        msg <<  prolog << "ERROR The gettimeofday() function failed. errno_msg: " << errno_msg << endl;
         if ( BESDebug::GetStrm()) {
-            *(BESDebug::GetStrm()) << get_bes_debug_log_line_prefix() <<msg.str();
+            *(BESDebug::GetStrm()) << get_bes_debug_log_line_prefix() << msg.str();
         }
         ERROR_LOG(msg.str());
         retval = false;
