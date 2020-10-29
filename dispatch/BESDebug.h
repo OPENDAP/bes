@@ -40,6 +40,9 @@
 #include <map>
 #include <string>
 
+// Helper function fr writing log lines
+std::string get_bes_debug_log_line_prefix();
+
 #ifdef NDEBUG
 #define BESDEBUG( x, y )
 #else
@@ -56,7 +59,7 @@
  * @param x the debug context to check
  * @param y information to send to the output stream
  */
-#define BESDEBUG( x, y ) do { if( BESDebug::IsSet( x ) ) *(BESDebug::GetStrm()) << BESDebug::GetPidStr() << "["<< x << "] " << y ; } while( 0 )
+#define BESDEBUG( x, y ) do { if( BESDebug::IsSet( x ) ) *(BESDebug::GetStrm()) << get_bes_debug_log_line_prefix() << "["<< x << "] " << y ; } while( 0 )
 #endif
 
 #ifdef NDEBUG

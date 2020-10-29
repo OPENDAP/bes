@@ -38,16 +38,18 @@
 #include <cstring>
 #include <sstream>
 
-using std::string ;
-using std::endl;
-using std::ostream;
-
 #include "BESStopWatch.h"
 #include "BESDebug.h"
 #include "BESLog.h"
 
+using std::string ;
+using std::endl;
+using std::ostream;
+
+
 #define TIMING_LOG(x) MR_LOG(TIMING_LOG_KEY, x)
 
+#define MODULE TIMING_LOG_KEY
 #define prolog string("BESStopWatch::").append(__func__).append("() - ")
 
 namespace bes_timing {
@@ -125,7 +127,7 @@ BESStopWatch::start(string name, string reqID)
             TIMING_LOG(msg.str());
         }
         if ( BESDebug::GetStrm()) {
-            msg << BESDebug::GetPidStr();
+            msg << get_bes_debug_log_line_prefix();
             msg << "[" << d_log_name << "]";
             msg << "[STARTED][" << get_start_us() << " us]";
             msg << "[" << d_req_id << "]";
@@ -148,15 +150,11 @@ bool BESStopWatch::get_time_of_day(struct timeval &time_val)
         int myerrno = errno;
         char *c_err = strerror(myerrno);
         string errno_msg = (c_err != 0) ? c_err : "unknown error";
-        if (BESDebug::GetStrm()){
-            std::stringstream msg;
-            msg << BESDebug::GetPidStr() << "[" << d_log_name << "][" << d_req_id << "][ERROR]";
-            msg << "["<< d_timer_name << "]";
-            msg << "[" << prolog << "gettimeofday() failed. errno_msg: " <<  errno_msg << "]" << endl;
-            *(BESDebug::GetStrm()) << msg.str();
-        }
         std::stringstream msg;
-        msg << prolog << "gettimeofday() failed. errno_msg: " << errno_msg << endl;
+        msg <<  prolog << "The gettimeofday() function failed. errno_msg: " << errno_msg << endl;
+        if ( BESDebug::GetStrm()) {
+            *(BESDebug::GetStrm()) << get_bes_debug_log_line_prefix() <<msg.str();
+        }
         ERROR_LOG(msg.str());
         retval = false;
     }
@@ -214,7 +212,7 @@ BESStopWatch::~BESStopWatch()
             d_stopped = true;
             if (BESDebug::GetStrm()) {
                 std::stringstream msg;
-                msg << BESDebug::GetPidStr();
+                msg << get_bes_debug_log_line_prefix();
                 msg << "[" << d_log_name << "]";
                 msg << "[ELAPSED][" << get_elapsed_us() << " us]";
                 msg << "[STARTED][" << get_start_us() << " us]";
