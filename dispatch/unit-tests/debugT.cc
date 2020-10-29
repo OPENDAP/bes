@@ -165,6 +165,8 @@ CPPUNIT_TEST_SUITE( debugT );
             BESDebug::SetStrm(&nc, false);
             string debug_str = "Testing nc debug";
             BESDEBUG("nc", debug_str);
+
+            cerr << "source: " << debug_str << "  result: " << nc.str() << endl;
             compare_debug(nc.str(), debug_str);
 
             cout << "*****************************************" << endl;
@@ -173,6 +175,7 @@ CPPUNIT_TEST_SUITE( debugT );
             BESDebug::SetStrm(&hdf4, false);
             debug_str = "Testing hdf4 debug";
             BESDEBUG("hdf4", debug_str);
+            cerr << "source: " << debug_str << "  result: " << hdf4.str() << endl;
             compare_debug(hdf4.str(), debug_str);
 
             cout << "*****************************************" << endl;
@@ -181,6 +184,7 @@ CPPUNIT_TEST_SUITE( debugT );
             BESDebug::SetStrm(&ff, false);
             debug_str = "Testing ff debug";
             BESDEBUG("ff", debug_str);
+            cerr << "source: " << debug_str << "  result: " << ff.str() << endl;
             compare_debug(ff.str(), debug_str);
 
             cout << "*****************************************" << endl;
@@ -189,17 +193,19 @@ CPPUNIT_TEST_SUITE( debugT );
             CPPUNIT_ASSERT(!BESDebug::IsSet("ff"));
             ostringstream ff2;
             BESDebug::SetStrm(&ff2, false);
-            debug_str = "";
+            debug_str = "should not produce debug output";
             BESDEBUG("ff", debug_str);
-            compare_debug(ff2.str(), debug_str);
+            cerr << "source: " << debug_str << "  result: " << ff2.str() << endl;
+            compare_debug(ff2.str(), "");
 
             cout << "*****************************************" << endl;
             cout << "try debugging to cdf" << endl;
             ostringstream cdf;
             BESDebug::SetStrm(&cdf, false);
-            debug_str = "";
+            debug_str = "should not produce debug output";
             BESDEBUG("cdf", debug_str);
-            compare_debug(cdf.str(), debug_str);
+            cerr << "source: " << debug_str << "  result: " << cdf.str() << endl;
+            compare_debug(cdf.str(), "");
         }
 
         cout << "*****************************************" << endl;
