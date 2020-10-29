@@ -60,6 +60,8 @@ public:
 class EffectiveUrlCache: public BESObj {
 private:
     static EffectiveUrlCache * d_instance;
+    static pthread_once_t d_init_control;
+
     std::map<std::string , http::EffectiveUrl *> d_effective_urls;
     pthread_mutex_t d_get_effective_url_cache_mutex;
 
@@ -74,6 +76,7 @@ private:
     friend class EffectiveUrlCacheTest;
     http::EffectiveUrl *get(const std::string  &source_url);
     BESRegex *get_skip_regex();
+    bool is_enabled();
 
     EffectiveUrlCache();
 
@@ -82,9 +85,8 @@ private:
 public:
 
     static EffectiveUrlCache *TheCache();
-    bool is_enabled();
 
-    http::EffectiveUrl *get_effective_url(const std::string &source_url);
+    std::string get_effective_url(const std::string &source_url);
 
     virtual void dump(std::ostream &strm) const;
     virtual std::string dump() const;

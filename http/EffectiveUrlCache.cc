@@ -56,6 +56,7 @@ using namespace std;
 namespace http {
 
 EffectiveUrlCache *EffectiveUrlCache::d_instance = 0;
+pthread_once_t EffectiveUrlCache::d_init_control = PTHREAD_ONCE_INIT;
 
 EucLock::EucLock(pthread_mutex_t &lock) : m_mutex(lock) {
     int status = pthread_mutex_lock(&m_mutex);
@@ -95,7 +96,9 @@ EucLock::~EucLock() {
 EffectiveUrlCache *
 EffectiveUrlCache::TheCache()
 {
-    if (d_instance == 0) initialize_instance();
+    if (d_instance == 0) {
+        pthread_once(&d_init_control,EffectiveUrlCache::initialize_instance);
+    }
 
     return d_instance;
 }
@@ -106,6 +109,7 @@ EffectiveUrlCache::TheCache()
  */
 void EffectiveUrlCache::initialize_instance()
 {
+
     d_instance = new EffectiveUrlCache;
 #ifdef HAVE_ATEXIT
     atexit(delete_instance);
@@ -221,16 +225,16 @@ http::EffectiveUrl *EffectiveUrlCache::get(const std::string  &source_url){
  * @param source_url
  * @returns The effective URL
 */
-http::EffectiveUrl *EffectiveUrlCache::get_effective_url(const string &source_url)
+string EffectiveUrlCache::get_effective_url(const string &source_url)
 {
+
+    // This lock will block until the mutex is available.
+    EucLock dat_lock(this->d_get_effective_url_cache_mutex);
+
     BESDEBUG(MODULE, prolog << "BEGIN url: " << source_url << endl);
-    // TODO - maybe we should initialize this to source_url so the caller does not have to check the return.
-    http::EffectiveUrl *effective_url = NULL;
+    string effective_url_str = source_url;
+
     if(is_enabled()){
-
-        // This lock will block until the mutex is available.
-        EucLock dat_lock(this->d_get_effective_url_cache_mutex);
-
 
         BESDEBUG(MODULE_DUMPER, prolog << "dump: " << endl << dump() << endl);
 
@@ -258,7 +262,7 @@ http::EffectiveUrl *EffectiveUrlCache::get_effective_url(const string &source_ur
             BESDEBUG(MODULE, prolog << "The cache_effective_urls_skip_regex() was NOT SET "<< endl);
         }
 
-        effective_url = get(source_url);
+        http::EffectiveUrl *effective_url = get(source_url);
 
         // See if the data_access_url has already been processed into a terminal URL
         bool retrieve_and_cache = !effective_url; // If there's no effective_url we gotta go get it.
@@ -283,13 +287,14 @@ http::EffectiveUrl *EffectiveUrlCache::get_effective_url(const string &source_ur
 
             BESDEBUG(MODULE, prolog << "Updated record for "<< source_url << " cache size: " << d_effective_urls.size() << endl);
         }
+        effective_url_str = effective_url->str();
         BESDEBUG(MODULE_DUMPER, prolog << "dump: " << endl << dump() << endl);
     } // EucLock dat_lock is released when the point of execution reaches this brace and dat_lock goes out of scope.
     else {
         BESDEBUG(MODULE, prolog << "CACHE IS DISABLED." << endl);
     }
     BESDEBUG(MODULE, prolog << "END" << endl);
-    return effective_url;
+    return effective_url_str;
 }
 
 

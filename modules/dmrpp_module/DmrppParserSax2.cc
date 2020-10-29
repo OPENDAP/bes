@@ -913,13 +913,9 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
 
         if (parser->check_attribute("href", attributes, nb_attributes)) {
             parser->dmrpp_dataset_href = parser->get_attribute_val("href", attributes, nb_attributes);
-            if(EffectiveUrlCache::TheCache()->is_enabled()){
-                BESDEBUG(PARSER, prolog << "Attempting to locate and cache the effective URL for Dataset URL: " << parser->dmrpp_dataset_href << endl);
-                http::EffectiveUrl *effective_url = EffectiveUrlCache::TheCache()->get_effective_url(parser->dmrpp_dataset_href);
-
-                BESDEBUG(PARSER, prolog << "EffectiveUrlCache::get_effective_url() returned: "
-                << (effective_url?effective_url->str():"NULL") << endl);
-            }
+            BESDEBUG(PARSER, prolog << "Attempting to locate and cache the effective URL for Dataset URL: " << parser->dmrpp_dataset_href << endl);
+            string effective_url = EffectiveUrlCache::TheCache()->get_effective_url(parser->dmrpp_dataset_href);
+            BESDEBUG(PARSER, prolog << "EffectiveUrlCache::get_effective_url() returned: " << effective_url << endl);
         }
         BESDEBUG(PARSER, prolog << "Dataset dmrpp:href is set to '" << parser->dmrpp_dataset_href << "'" << endl);
 
@@ -1143,12 +1139,9 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 BESDEBUG(PARSER, prolog << "Processing 'href' value into data_url. href: " << data_url << endl);
                 // We may have to cache the last accessed/redirect URL for data_url here because this URL
                 // may be unique to this chunk.
-                if(EffectiveUrlCache::TheCache()->is_enabled()){
-                    BESDEBUG(PARSER, prolog << "Attempting to locate and cache the effective URL for Chunk URL: " << parser->dmrpp_dataset_href << endl);
-                    http::EffectiveUrl *effective_url = EffectiveUrlCache::TheCache()->get_effective_url(data_url);
-                    BESDEBUG(PARSER, prolog << "EffectiveUrlCache::get_effective_url() returned: "
-                                            << (effective_url?effective_url->str():"NULL") << endl);
-                }
+                BESDEBUG(PARSER, prolog << "Attempting to locate and cache the effective URL for Chunk URL: " << parser->dmrpp_dataset_href << endl);
+                string effective_url = EffectiveUrlCache::TheCache()->get_effective_url(data_url);
+                BESDEBUG(PARSER, prolog << "EffectiveUrlCache::get_effective_url() returned: " << effective_url << endl);
             }
             else {
                 BESDEBUG(PARSER, prolog << "No attribute 'href' located. Trying Dataset/@dmrpp:href..." << endl);
