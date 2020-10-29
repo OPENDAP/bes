@@ -243,7 +243,7 @@ string EffectiveUrlCache::get_effective_url(const string &source_url)
         // if it's not an HTTP url there is nothing to cache.
         if (source_url.find("http://") != 0 && source_url.find("https://") != 0) {
             BESDEBUG(MODULE, prolog << "END Not an HTTP request, SKIPPING." << endl);
-            return NULL;
+            return effective_url_str;
         }
 
         BESRegex *skip_regex = get_skip_regex();
@@ -253,7 +253,7 @@ string EffectiveUrlCache::get_effective_url(const string &source_url)
                 BESDEBUG(MODULE, prolog << "END Candidate url matches the "
                                            "no_redirects_regex_pattern [" << skip_regex->pattern() <<
                                         "][match_length=" << match_length << "] SKIPPING." << endl);
-                return NULL;
+                return effective_url_str;
             }
             BESDEBUG(MODULE, prolog << "Candidate url: '" << source_url << "' does NOT match the "
                                                                            "skip_regex pattern [" << skip_regex->pattern() << "]" << endl);

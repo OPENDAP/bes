@@ -163,7 +163,8 @@ namespace http {
             if(purge_cache) purge_test_cache();
 
             // Clear the cache for the next test.
-            EffectiveUrlCache::TheCache()->delete_instance();
+            EffectiveUrlCache *theCache = EffectiveUrlCache::TheCache();
+            theCache->d_effective_urls.clear();
 
             if(!token.empty()){
                 if(debug) cerr << "Setting BESContext " << EDL_AUTH_TOKEN_KEY<< " to: '"<< token << "'" << endl;
@@ -195,8 +196,8 @@ namespace http {
 
 
             // This one does not add the URL or even check it because it _should_ be matching the skip regex.
-            http::EffectiveUrl *result_url =EffectiveUrlCache::TheCache()->get_effective_url(src_url_00);
-            CPPUNIT_ASSERT( !result_url );
+            string result_url = EffectiveUrlCache::TheCache()->get_effective_url(src_url_00);
+            CPPUNIT_ASSERT( result_url ==  src_url_00);
 
 
         }
@@ -206,15 +207,14 @@ namespace http {
             if(debug) cerr << prolog << "BEGIN" << endl;
             string source_url;
             string value;
-            http::EffectiveUrl *result_url;
             try {
 
                 // This one does not add the URL or even check it because it _should_ be matching the skip regex
                 // in the bes.conf
                 string src_url_03 = "https://foobar.com/opendap/data/nc/fnoc1.nc?dap4.ce=u;v";
-                result_url =EffectiveUrlCache::TheCache()->get_effective_url(src_url_03);
+                string result_url =EffectiveUrlCache::TheCache()->get_effective_url(src_url_03);
                 CPPUNIT_ASSERT( EffectiveUrlCache::TheCache()->d_effective_urls.size() == 0);
-                CPPUNIT_ASSERT( !result_url );
+                CPPUNIT_ASSERT( result_url == src_url_03 );
 
             }
             catch (BESError be){
@@ -230,7 +230,6 @@ namespace http {
             if(debug) cerr << prolog << "BEGIN" << endl;
             string source_url;
             string value;
-            http::EffectiveUrl *result_url;
             try {
                 // The cache is disabled in bes.conf so we need to turn it on.
                 EffectiveUrlCache::TheCache()->d_enabled = true;
@@ -250,13 +249,11 @@ namespace http {
                 auto *effective_url_02 = new http::EffectiveUrl("http://test.opendap.org/opendap/");
 
                 if(debug) cerr << prolog << "Retrieving effective URL for: " << src_url_02 << endl;
-                result_url = EffectiveUrlCache::TheCache()->get_effective_url(src_url_02);
+                string result_url = EffectiveUrlCache::TheCache()->get_effective_url(src_url_02);
                 CPPUNIT_ASSERT( EffectiveUrlCache::TheCache()->d_effective_urls.size() == 3);
 
-                if(debug) cerr << prolog << "EffectiveUrlCache::TheCache()->get_effective_url() returned: " <<
-                               (result_url?result_url->str():"NULL") << endl;
-                CPPUNIT_ASSERT(result_url);
-                CPPUNIT_ASSERT(result_url->str() == effective_url_02->str());
+                if(debug) cerr << prolog << "EffectiveUrlCache::TheCache()->get_effective_url() returned: " << result_url << endl;
+                CPPUNIT_ASSERT(result_url == effective_url_02->str());
 
             }
             catch (BESError be){
@@ -273,7 +270,7 @@ namespace http {
             if(debug) cerr << prolog << "BEGIN" << endl;
             string source_url;
             string value;
-            http::EffectiveUrl *result_url;
+            string result_url;
             try {
                 std::map<std::string , http::EffectiveUrl *> d_effective_urls;
                 string source_url = "http://someURL";
@@ -313,7 +310,7 @@ namespace http {
             if(debug) cerr << prolog << "BEGIN" << endl;
             string source_url;
             string value;
-            http::EffectiveUrl *result_url;
+            string result_url;
             try {
                 // The cache is disabled in bes.conf so we need to turn it on.
                 EffectiveUrlCache::TheCache()->d_enabled = true;
@@ -325,13 +322,10 @@ namespace http {
                 result_url = EffectiveUrlCache::TheCache()->get_effective_url(thing1);
                 CPPUNIT_ASSERT( EffectiveUrlCache::TheCache()->d_effective_urls.size() == 1);
 
-                if(debug) cerr << prolog << "EffectiveUrlCache::TheCache()->get_effective_url() returned: " <<
-                               (result_url?result_url->str():"NULL") << endl;
-                CPPUNIT_ASSERT(result_url);
-
+                if(debug) cerr << prolog << "EffectiveUrlCache::TheCache()->get_effective_url() returned: " << result_url << endl;
                 CPPUNIT_ASSERT(
-                        result_url->str().rfind(thing1_in_region_effective_url_prefix, 0) == 0 ||
-                        result_url->str().rfind(thing1_out_of_region_effective_url_prefix, 0) == 0
+                        result_url.rfind(thing1_in_region_effective_url_prefix, 0) == 0 ||
+                                result_url.rfind(thing1_out_of_region_effective_url_prefix, 0) == 0
                 );
 
                 result_url = EffectiveUrlCache::TheCache()->get_effective_url(thing1);
@@ -357,7 +351,7 @@ namespace http {
             if(debug) cerr << prolog << "BEGIN" << endl;
             string source_url;
             string value;
-            http::EffectiveUrl *result_url;
+            string result_url;
             try {
                 // The cache is disabled in bes.conf so we need to turn it on.
                 EffectiveUrlCache::TheCache()->d_enabled = true;
@@ -370,13 +364,11 @@ namespace http {
                 result_url = EffectiveUrlCache::TheCache()->get_effective_url(thing1);
                 CPPUNIT_ASSERT( EffectiveUrlCache::TheCache()->d_effective_urls.size() == 1);
 
-                if(debug) cerr << prolog << "EffectiveUrlCache::TheCache()->get_effective_url() returned: " <<
-                               (result_url?result_url->str():"NULL") << endl;
-                CPPUNIT_ASSERT(result_url);
+                if(debug) cerr << prolog << "EffectiveUrlCache::TheCache()->get_effective_url() returned: " << result_url << endl;
 
                 CPPUNIT_ASSERT(
-                        result_url->str().rfind(thing1_in_region_effective_url_prefix, 0) == 0 ||
-                                result_url->str().rfind(thing1_out_of_region_effective_url_prefix, 0) == 0
+                        result_url.rfind(thing1_in_region_effective_url_prefix, 0) == 0 ||
+                                result_url.rfind(thing1_out_of_region_effective_url_prefix, 0) == 0
                 );
 
 
