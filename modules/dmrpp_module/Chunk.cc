@@ -633,36 +633,9 @@ string Chunk::to_string() const {
 
 
 std::string Chunk::get_data_url() const {
-    string data_url = d_data_url;
 
-    http::EffectiveUrl *effective_url = EffectiveUrlCache::TheCache()->get_effective_url(d_data_url);
-    BESDEBUG(MODULE, prolog << "The EffectiveUrlCache" << (effective_url ? " contains " : " does not contain ") <<
-                            "the d_data_url: " << d_data_url << endl);
-    if (effective_url) {
-        data_url = effective_url->str();
-    }
+    string data_url = EffectiveUrlCache::TheCache()->get_effective_url(d_data_url);
     BESDEBUG(MODULE, prolog << "Using data_url: " << data_url << endl);
-
-
-#if 0
-    bool found = false;
-    bool case_insensitive = true;
-    map<string,string> target_url_info;
-    TheBESKeys::TheKeys()->get_values(d_data_url, target_url_info, case_insensitive, found);
-    BESDEBUG(MODULE, prolog << "TheBESKeys " << (found?"":"does not ") << " contain the d_data_url: " << d_data_url << endl);
-    if(found){
-        http::url target_url(target_url_info);
-        data_url = target_url.str();
-#if 0
-        map<string,string>::iterator tuit = target_url_info.find("target_url");
-        if(tuit != target_url_info.end()){
-            data_url = tuit->second;
-        }
-#endif
-
-    }
-    BESDEBUG(MODULE, prolog << "Using data_url: " << data_url << endl);
-#endif
 
     // A conditional call to void Chunk::add_tracking_query_param()
     // here for the NASA cost model work THG's doing. jhrg 8/7/18

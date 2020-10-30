@@ -33,10 +33,17 @@ BUILT_SOURCES = test_config.h bes.conf
 if CPPUNIT
 # This determines what gets run by 'make check.'
 TESTS = constraintT defT keysT pfileT plistT pvolT replistT		\
-reqhandlerT reqlistT resplistT infoT debugT utilT regexT scrubT		\
+reqhandlerT reqlistT resplistT infoT utilT regexT scrubT		\
 checkT servicesT fsT urlT containerT uncompressT cacheT			\
 BESCatalogListTest AllowedHostsTest CatalogNodeTest CatalogItemTest \
 ServerAdministratorTest kvp_utils_test
+
+# Debugging code is compiled if the project when
+# BES_DEVELOPER is not set, and so running the debugT tests
+# produces no useful result.
+if BES_DEVELOPER
+TESTS += debugT
+endif
 
 # This is tool to look at CatalogEntry objects. jhrg 3.5.18
 # complete_catalog_lister agglistT 
