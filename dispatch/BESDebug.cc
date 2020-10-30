@@ -56,7 +56,7 @@ map<string, bool> BESDebug::_debug_map;
  *
  * @return The debug log line prefix containing date&time, pid, and thread id.
  */
-string get_bes_debug_log_line_prefix()
+string get_debug_log_line_prefix()
 {
     ostringstream strm;
     // Time Field

@@ -127,7 +127,7 @@ BESStopWatch::start(string name, string reqID)
             TIMING_LOG(msg.str());
         }
         if ( BESDebug::GetStrm()) {
-            msg << get_bes_debug_log_line_prefix();
+            msg << get_debug_log_line_prefix();
             msg << "[" << d_log_name << "]";
             msg << "[STARTED][" << get_start_us() << " us]";
             msg << "[" << d_req_id << "]";
@@ -153,7 +153,7 @@ bool BESStopWatch::get_time_of_day(struct timeval &time_val)
         std::stringstream msg;
         msg <<  prolog << "ERROR The gettimeofday() function failed. errno_msg: " << errno_msg << endl;
         if ( BESDebug::GetStrm()) {
-            *(BESDebug::GetStrm()) << get_bes_debug_log_line_prefix() << msg.str();
+            *(BESDebug::GetStrm()) << get_debug_log_line_prefix() << msg.str();
         }
         ERROR_LOG(msg.str());
         retval = false;
@@ -212,7 +212,7 @@ BESStopWatch::~BESStopWatch()
             d_stopped = true;
             if (BESDebug::GetStrm()) {
                 std::stringstream msg;
-                msg << get_bes_debug_log_line_prefix();
+                msg << get_debug_log_line_prefix();
                 msg << "[" << d_log_name << "]";
                 msg << "[ELAPSED][" << get_elapsed_us() << " us]";
                 msg << "[STARTED][" << get_start_us() << " us]";
