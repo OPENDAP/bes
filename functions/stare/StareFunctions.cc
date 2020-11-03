@@ -554,7 +554,7 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
 {
     if (args->size() != 2) {
         ostringstream oss;
-        oss << "stare_intersection(): Expected two arguments, but got " << args->size();
+        oss << "stare_subset(): Expected two arguments, but got " << args->size();
         throw BESSyntaxUserError(oss.str(), __FILE__, __LINE__);
     }
 
@@ -617,7 +617,7 @@ StareSubsetArrayFunction::stare_subset_array_dap4_function(D4RValueList *args, D
 {
     if (args->size() != 3) {
         ostringstream oss;
-        oss << "stare_intersection(): Expected three arguments, but got " << args->size();
+        oss << "stare_subset_array(): Expected three arguments, but got " << args->size();
         throw BESSyntaxUserError(oss.str(), __FILE__, __LINE__);
     }
 
