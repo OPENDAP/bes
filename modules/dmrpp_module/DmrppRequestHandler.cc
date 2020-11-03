@@ -221,7 +221,7 @@ bool DmrppRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
 bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG_KEY)) sw.start(prolog + "timer" , dhi.data[REQUEST_ID]);
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + "timer" , dhi.data[REQUEST_ID]);
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
@@ -274,7 +274,7 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
 bool DmrppRequestHandler::dap_build_dap2data(BESDataHandlerInterface & dhi)
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG_KEY)) sw.start(prolog + "timer" , dhi.data[REQUEST_ID]);
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + "timer" , dhi.data[REQUEST_ID]);
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
@@ -367,7 +367,7 @@ bool DmrppRequestHandler::dap_build_dap2data(BESDataHandlerInterface & dhi)
 bool DmrppRequestHandler::dap_build_dds(BESDataHandlerInterface & dhi)
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG_KEY)) sw.start(prolog + "timer" , dhi.data[REQUEST_ID]);
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + "timer" , dhi.data[REQUEST_ID]);
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
@@ -446,7 +446,7 @@ bool DmrppRequestHandler::dap_build_dds(BESDataHandlerInterface & dhi)
 bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi)
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG_KEY)) sw.start(prolog + "timer" , dhi.data[REQUEST_ID]);
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + "timer" , dhi.data[REQUEST_ID]);
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESDASResponse *bdas = dynamic_cast<BESDASResponse *>(response);
