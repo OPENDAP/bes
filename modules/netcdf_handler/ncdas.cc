@@ -48,6 +48,8 @@
 #include <iomanip>
 #include <vector>
 
+#include <cmath>
+
 #include <netcdf.h>
 
 #include <util.h>
