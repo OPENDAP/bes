@@ -45,6 +45,7 @@
 
 #include "BESInternalError.h"
 #include "BESDebug.h"
+#include "BESStopWatch.h"
 
 #include "byteswap_compat.h"
 #include "CurlHandlePool.h"
@@ -61,6 +62,7 @@ using namespace libdap;
 using namespace std;
 
 #define MB (1024*1024)
+#define prolog std::string("DmrppArray::").append(__func__).append("() - ")
 
 namespace dmrpp {
 
@@ -355,6 +357,9 @@ void *one_child_chunk_thread(void *arg_list)
  */
 void DmrppArray::read_contiguous()
 {
+    BESStopWatch sw;
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + "Timer", "");
+
     // These first four lines reproduce DmrppCommon::read_atomic(). The call
     // to Chunk::inflate_chunk() handles 'contiguous' data that are compressed.
     // And since we need the chunk, I copied the read_atomic code here.
@@ -686,6 +691,9 @@ void process_one_chunk_unconstrained(Chunk *chunk, DmrppArray *array, const vect
  */
 void DmrppArray::read_chunks_unconstrained()
 {
+    BESStopWatch sw;
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + "Timer", "");
+
     vector<Chunk> &chunk_refs = get_chunks();
     if (chunk_refs.size() < 2)
         throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
@@ -1081,6 +1089,9 @@ void process_one_chunk(Chunk *chunk, DmrppArray *array, const vector<unsigned in
  */
 void DmrppArray::read_chunks()
 {
+    BESStopWatch sw;
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + "Timer", "");
+
     vector<Chunk> &chunk_refs = get_chunks();
     if (chunk_refs.size() < 2)
         throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
