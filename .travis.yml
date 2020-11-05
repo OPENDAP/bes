@@ -7,8 +7,10 @@
 #
 # Now uses hyrax-dependencies and libdap binaries stored in an AWS S3 bucket
 # that were built using other builds. jhrg 2.24.18
+#
+# Try using Ubuntu Focal
 
-dist: xenial
+dist: focal
 
 language: cpp
 
