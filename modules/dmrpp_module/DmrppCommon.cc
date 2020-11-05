@@ -20,6 +20,7 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+#include "config.h"
 
 #include <string>
 #include <sstream>
@@ -76,11 +77,11 @@ void join_threads(pthread_t threads[], unsigned int num_threads)
             string *error = NULL;
             if ((status = pthread_join(threads[i], (void **) &error)) < 0) {
                 BESDEBUG(dmrpp_3, "Could not join thread " << i << ", " << strerror(status)<< endl);
-                // LOG("Failed to join thread " << i << "during clean up from an exception: " << strerror(status) << endl);
+                // ERROR_LOG("Failed to join thread " << i << "during clean up from an exception: " << strerror(status) << endl);
             }
             else if (error != NULL) {
                 BESDEBUG(dmrpp_3, "Joined thread " << i << ", error exit: " << *error << endl);
-                // LOG("Joined thread " << i << ", error exit" << *error << endl);
+                // ERROR_LOG("Joined thread " << i << ", error exit" << *error << endl);
             }
             else {
                 BESDEBUG(dmrpp_3, "Joined thread " << i << ", successful exit." << endl);

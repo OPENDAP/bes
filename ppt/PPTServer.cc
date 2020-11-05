@@ -31,16 +31,11 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "config.h"
-#include <unistd.h>
 
+#include <unistd.h>
 #include <string>
 #include <sstream>
 #include <cstdlib>
-
-using std::string;
-using std::ostringstream;
-using std::endl;
-using std::ostream;
 
 #include "PPTServer.h"
 #include "ServerExitConditions.h"
@@ -54,6 +49,12 @@ using std::ostream;
 #include "TheBESKeys.h"
 #include "BESLog.h"
 #include "BESDebug.h"
+
+using std::string;
+using std::ostringstream;
+using std::endl;
+using std::ostream;
+
 
 #if defined HAVE_OPENSSL && defined NOTTHERE
 #include "SSLServer.h"

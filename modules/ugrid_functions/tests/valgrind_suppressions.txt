@@ -35,7 +35,7 @@
    fun:malloc
    ...
    fun:_ZN21BESUncompressManager3C1Ev
-   fun:_ZN21BESUncompressManager310TheManagerEv
+   theOne:_ZN21BESUncompressManager310TheManagerEv
    fun:_ZN16BESFileContainer6accessEv
    ...
 }

@@ -3089,7 +3089,7 @@ EOF
 	  # use the current revision as the major version
 	  # and those that subtract age and use age as
 	  # a minor version.  But, then there is irix
-	  # which has an extra 1 added just for fun
+	  # which has an extra 1 added just for theOne
 	  #
 	  case $version_type in
 	  darwin|linux|osf|windows)

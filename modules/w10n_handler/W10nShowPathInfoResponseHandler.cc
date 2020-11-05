@@ -25,6 +25,8 @@
 // Please read the full copyright statement in the file COPYRIGHT_URI.
 //
 
+#include "config.h"
+
 #include "W10nShowPathInfoResponseHandler.h"
 #include "W10nShowPathInfoCommand.h"
 #include "W10NNames.h"
@@ -78,7 +80,7 @@ void W10nShowPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
 
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("W10NShowPathInfoResponseHandler::execute", dhi.data[REQUEST_ID]);
+    if (BESISDEBUG(TIMING_LOG_KEY)) sw.start("W10NShowPathInfoResponseHandler::execute", dhi.data[REQUEST_ID]);
 
     BESDEBUG(W10N_DEBUG_KEY, "W10NShowPathInfoResponseHandler::execute() - BEGIN" << endl );
 

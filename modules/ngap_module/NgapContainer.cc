@@ -26,6 +26,8 @@
 // Authors:
 //      ndp       Nathan Potter <ndp@opendap.org>
 
+#include "config.h"
+
 #include <cstdio>
 #include <map>
 #include <sstream>
@@ -224,7 +226,7 @@ namespace ngap {
             {
                 d_dmrpp_rresource = new http::RemoteResource(dmrpp_url);
                 BESStopWatch besTimer;
-                if(BESLog::TheLog()->is_verbose()){
+                if (BESISDEBUG(MODULE) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()){
                     besTimer.start("DMR++ retrieval: "+ dmrpp_url);
                 }
                 d_dmrpp_rresource->retrieveResource(replace_template, replace_value);

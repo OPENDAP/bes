@@ -30,6 +30,8 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
 #include "BESXMLCatalogCommand.h"
 #include "BESContainerStorageList.h"
 #include "BESNames.h"

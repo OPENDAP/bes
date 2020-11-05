@@ -285,8 +285,20 @@ bool DmrppParserSax2::process_dimension_def(const char *name, const xmlChar **at
     transfer_xml_attrs(attrs, nb_attributes);
 #endif
 
+#if 0
     if (!(check_required_attribute("name", attrs, nb_attributes) && check_required_attribute("size", attrs, nb_attributes))) {
         dmr_error(this, "The required attribute 'name' or 'size' was missing from a Dimension element.");
+        return false;
+    }
+#endif
+
+    if (!check_required_attribute("name", attrs, nb_attributes)) {
+        dmr_error(this, "The required attribute 'name' was missing from a Dimension element.");
+        return false;
+    }
+
+    if (!check_required_attribute("size", attrs, nb_attributes)) {
+        dmr_error(this, "The required attribute 'size' was missing from a Dimension element.");
         return false;
     }
 
@@ -327,7 +339,7 @@ bool DmrppParserSax2::process_dimension(const char *name, const xmlChar **attrs,
 #if 0
     transfer_xml_attrs(attrs, nb_attributes);
 #endif
-
+#if 0
     if (check_attribute("size", attrs, nb_attributes) && check_attribute("name", attrs, nb_attributes)) {
         dmr_error(this, "Only one of 'size' and 'name' are allowed in a Dim element, but both were used.");
         return false;
@@ -336,9 +348,21 @@ bool DmrppParserSax2::process_dimension(const char *name, const xmlChar **attrs,
         dmr_error(this, "Either 'size' or 'name' must be used in a Dim element.");
         return false;
     }
+#endif
+    bool has_size = check_attribute("size", attrs, nb_attributes);
+    bool has_name = check_attribute("name", attrs, nb_attributes);
+    if (has_size && has_name) {
+        dmr_error(this, "Only one of 'size' and 'name' are allowed in a Dim element, but both were used.");
+        return false;
+    }
+    if (!has_size && !has_name) {
+        dmr_error(this, "Either 'size' or 'name' must be used in a Dim element.");
+        return false;
+    }
+
 
     if (!top_basetype()->is_vector_type()) {
-        // Make the top BaseType* an array
+    // Make the top BaseType* an array
         BaseType *b = top_basetype();
         pop_basetype();
 
@@ -357,12 +381,15 @@ bool DmrppParserSax2::process_dimension(const char *name, const xmlChar **attrs,
     assert(top_basetype()->is_vector_type());
 
     Array *a = static_cast<Array*>(top_basetype());
-    if (check_attribute("size", attrs, nb_attributes)) {
-        a->append_dim(stoi(get_attribute_val("size", attrs, nb_attributes))); // low budget code for now. jhrg 8/20/13, modified to use new function. kln 9/7/19
+    if (has_size) {
+        size_t dim_size = stoi(get_attribute_val("size", attrs, nb_attributes));
+        BESDEBUG(PARSER, prolog << "Processing nameless Dim of size: " << dim_size << endl);
+        a->append_dim(dim_size); // low budget code for now. jhrg 8/20/13, modified to use new function. kln 9/7/19
         return true;
     }
-    else if (check_attribute("name", attrs, nb_attributes)) {
+    else if (has_name) {
         string name = get_attribute_val("name", attrs, nb_attributes);
+        BESDEBUG(PARSER, prolog << "Processing Dim with named Dimension reference: " << name << endl);
 
         D4Dimension *dim = 0;
         if (name[0] == '/')		// lookup the Dimension in the root group
@@ -372,12 +399,11 @@ bool DmrppParserSax2::process_dimension(const char *name, const xmlChar **attrs,
             dim = top_group()->find_dim(name);
 
         if (!dim)
-            throw Error("The dimension '" + name + "' was not found while parsing the variable '" + a->name() + "'.");
+            throw BESInternalError("The dimension '" + name + "' was not found while parsing the variable '" + a->name() + "'.",__FILE__,__LINE__);
         a->append_dim(dim);
         return true;
     }
-        return false;
-
+    return false;
 }
 
 
@@ -526,7 +552,7 @@ bool DmrppParserSax2::process_map(const char *name, const xmlChar **attrs, int n
     // Arrays that include Maps that do not also include the Map(s) in the request.
     // See https://opendap.atlassian.net/browse/HYRAX-98. jhrg 4/13/16
     if (!map_source && d_strict)
-        throw Error("The Map '" + map_name + "' was not found while parsing the variable '" + a->name() + "'.");
+        throw BESInternalError("The Map '" + map_name + "' was not found while parsing the variable '" + a->name() + "'.",__FILE__,__LINE__);
 
     a->maps()->add_map(new D4Map(map_name, map_source));
 
@@ -887,13 +913,9 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
 
         if (parser->check_attribute("href", attributes, nb_attributes)) {
             parser->dmrpp_dataset_href = parser->get_attribute_val("href", attributes, nb_attributes);
-            if(EffectiveUrlCache::TheCache()->is_enabled()){
-                BESDEBUG(PARSER, prolog << "Attempting to locate and cache the effective URL for Dataset URL: " << parser->dmrpp_dataset_href << endl);
-                http::url *effective_url = EffectiveUrlCache::TheCache()->get_effective_url(parser->dmrpp_dataset_href);
-
-                BESDEBUG(PARSER, prolog << "EffectiveUrlCache::get_effective_url() returned: "
-                << (effective_url?effective_url->str():"NULL") << endl);
-            }
+            BESDEBUG(PARSER, prolog << "Attempting to locate and cache the effective URL for Dataset URL: " << parser->dmrpp_dataset_href << endl);
+            string effective_url = EffectiveUrlCache::TheCache()->get_effective_url(parser->dmrpp_dataset_href);
+            BESDEBUG(PARSER, prolog << "EffectiveUrlCache::get_effective_url() returned: " << effective_url << endl);
         }
         BESDEBUG(PARSER, prolog << "Dataset dmrpp:href is set to '" << parser->dmrpp_dataset_href << "'" << endl);
 
@@ -1117,12 +1139,9 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 BESDEBUG(PARSER, prolog << "Processing 'href' value into data_url. href: " << data_url << endl);
                 // We may have to cache the last accessed/redirect URL for data_url here because this URL
                 // may be unique to this chunk.
-                if(EffectiveUrlCache::TheCache()->is_enabled()){
-                    BESDEBUG(PARSER, prolog << "Attempting to locate and cache the effective URL for Chunk URL: " << parser->dmrpp_dataset_href << endl);
-                    http::url *effective_url = EffectiveUrlCache::TheCache()->get_effective_url(data_url);
-                    BESDEBUG(PARSER, prolog << "EffectiveUrlCache::get_effective_url() returned: "
-                                            << (effective_url?effective_url->str():"NULL") << endl);
-                }
+                BESDEBUG(PARSER, prolog << "Attempting to locate and cache the effective URL for Chunk URL: " << parser->dmrpp_dataset_href << endl);
+                string effective_url = EffectiveUrlCache::TheCache()->get_effective_url(data_url);
+                BESDEBUG(PARSER, prolog << "EffectiveUrlCache::get_effective_url() returned: " << effective_url << endl);
             }
             else {
                 BESDEBUG(PARSER, prolog << "No attribute 'href' located. Trying Dataset/@dmrpp:href..." << endl);
@@ -1621,7 +1640,7 @@ void DmrppParserSax2::dmr_error(void *p, const char *msg, ...)
 //@}
 
 /** Clean up after a parse operation. If the parser encountered an error,
- * throw either an Error or InternalErr object.
+ * throw an BESInternalError object.
  */
 void DmrppParserSax2::cleanup_parse()
 {
@@ -1665,8 +1684,7 @@ void DmrppParserSax2::cleanup_parse()
  * boundary is found.
  * @param debug If true, ouput helpful debugging messages, False by default.
  *
- * @exception Error Thrown if the XML document could not be read or parsed.
- * @exception InternalErr Thrown if an internal error is found.
+ * @exception BESInternalError Thrown if the XML document could not be read or parsed.
  */
 void DmrppParserSax2::intern(istream &f, DMR *dest_dmr)
 {
@@ -1675,7 +1693,6 @@ void DmrppParserSax2::intern(istream &f, DMR *dest_dmr)
     if (!f.good()) throw BESInternalError(prolog + "ERROR - Supplied istream instance not open or read error",__FILE__,__LINE__);
     if (!dest_dmr) throw BESInternalError(prolog + "THe supplied DMR object pointer  is null", __FILE__, __LINE__);
 
-    Error foo;
     d_dmr = dest_dmr; // dump values here
 
     int line_num = 1;
@@ -1729,8 +1746,7 @@ void DmrppParserSax2::intern(istream &f, DMR *dest_dmr)
  * @param dest_dmr Value/result parameter; dumps the information to this DMR
  * instance.
  *
- * @exception Error Thrown if the XML document could not be read or parsed.
- * @exception InternalErr Thrown if an internal error is found.
+ * @exception BESInternalError Thrown if the XML document could not be read or parsed.
  */
 void DmrppParserSax2::intern(const string &document, DMR *dest_dmr)
 {
@@ -1743,8 +1759,7 @@ void DmrppParserSax2::intern(const string &document, DMR *dest_dmr)
  * @param dest_dmr Value/result parameter; dumps the information to this DMR
  * instance.
  *
- * @exception Error Thrown if the XML document could not be read or parsed.
- * @exception InternalErr Thrown if an internal error is found.
+ * @exception BESInternalError Thrown if the XML document could not be read or parsed.
  */
 void DmrppParserSax2::intern(const char *buffer, int size, DMR *dest_dmr)
 {

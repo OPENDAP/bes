@@ -19,6 +19,7 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI.
 // 02874-0112.
+#include "config.h"
 #include <iostream>
 
 using std::endl ;
@@ -33,11 +34,9 @@ using std::endl ;
 static bool
 OPENDAP_CLASSInit(int, char**)
 {
-    if( BESLog::TheLog()->is_verbose() )
-	LOG("Initializing OPENDAP_CLASS Handler:" << endl );
+	VERBOSE("Initializing OPENDAP_CLASS Handler:" << endl );
 
-    if( BESLog::TheLog()->is_verbose() )
-	LOG("    adding " << OPENDAP_CLASS_NAME << " request handler" << endl );
+    VERBOSE("    adding " << OPENDAP_CLASS_NAME << " request handler" << endl );
     BESRequestHandlerList::TheList()->add_handler( OPENDAP_CLASS_NAME, new OPENDAP_CLASSRequestHandler( OPENDAP_CLASS_NAME ) ) ;
 
     return true ;
@@ -46,8 +45,7 @@ OPENDAP_CLASSInit(int, char**)
 static bool
 OPENDAP_CLASSTerm(void)
 {
-    if( BESLog::TheLog()->is_verbose() )
-	LOG("Removing OPENDAP_CLASS Handlers" << endl);
+    VERBOSE("Removing OPENDAP_CLASS Handlers" << endl);
     BESRequestHandler *rh = BESRequestHandlerList::TheList()->remove_handler( OPENDAP_CLASS_NAME ) ;
     if( rh ) delete rh ;
     return true ;

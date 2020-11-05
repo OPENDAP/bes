@@ -42,7 +42,7 @@
 
 #include "BESObj.h"
 
-#define TIMING_LOG "timing"
+#define TIMING_LOG_KEY "timing"
 #define MISSING_LOG_PARAM ""
 
 class BESStopWatch;
@@ -60,24 +60,25 @@ class BESStopWatch : public BESObj
 	std::string d_log_name;
     bool d_started ;
     bool d_stopped ;
-#if 0
-    struct rusage _start_usage ;
-    struct rusage _stop_usage ;
-#endif
+
 	struct timeval d_start_usage;
 	struct timeval d_stop_usage;
     struct timeval d_result ;
 
-    bool timeval_subtract() ;
+    // bool timeval_subtract() ;
+    unsigned long int get_elapsed_us();
+    unsigned long int get_start_us();
+    unsigned long int get_stop_us();
+    bool get_time_of_day(struct timeval &time_val);
 
  public:
 
     /**
-     * Makes a new BESStopWatch with a logName of TIMING_LOG
+     * Makes a new BESStopWatch with a logName of TIMING_LOG_KEY
      */
  BESStopWatch() : d_timer_name(MISSING_LOG_PARAM),
 				  d_req_id(MISSING_LOG_PARAM),
-				  d_log_name(TIMING_LOG),
+				  d_log_name(TIMING_LOG_KEY),
 				  d_started(false),
 				  d_stopped(false)
 { 

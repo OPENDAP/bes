@@ -28,6 +28,8 @@
  *  Created on: July, 13 2018
  *      Author: ndp
  */
+#include "config.h"
+
 #include <stdlib.h>     /* atol */
 
 #include "rjson_utils.h"

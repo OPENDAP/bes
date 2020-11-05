@@ -31,6 +31,8 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 
+#include "config.h"
+
 #include <unistd.h>
 #include <getopt.h>
 #include <signal.h>

@@ -25,8 +25,6 @@
 #ifndef NDIMENSIONALARRAY_H_
 #define NDIMENSIONALARRAY_H_
 
-#include "BESDebug.h"
-
 #include "Array.h"
 
 namespace libdap {

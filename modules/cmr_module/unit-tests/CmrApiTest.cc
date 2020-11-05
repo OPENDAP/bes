@@ -60,6 +60,7 @@ static bool bes_debug = false;
 
 #undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
+#define prolog std::string("CmrApiTest::").append(__func__).append("() - ")
 
 namespace cmr {
 
@@ -97,6 +98,7 @@ public:
     // Called before each test
     void setUp()
     {
+        if(debug) cerr << endl;
         if(Debug) cerr << "setUp() - BEGIN" << endl;
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR,"bes.conf");
         if(Debug) cerr << "setUp() - Using BES configuration: " << bes_conf << endl;
@@ -119,7 +121,6 @@ public:
 
 
     void get_years_test() {
-        string prolog = string(__func__) + "() - ";
 
         string collection_name = "C179003030-ORNL_DAAC";
         string expected[] = { string("1984"), string("1985"), string("1986"),
@@ -161,7 +162,6 @@ public:
     }
 
     void get_months_test() {
-        string prolog = string(__func__) + "() - ";
 
         string collection_name = "C179003030-ORNL_DAAC";
         string expected[] = {
@@ -216,7 +216,6 @@ public:
     }
 
     void get_days_test() {
-        string prolog = string(__func__) + "() - ";
 
         //string collection_name = "C179003030-ORNL_DAAC";
         string collection_name = "C1276812863-GES_DISC";
@@ -266,7 +265,6 @@ public:
     }
 
     void get_granule_ids_day_test() {
-        string prolog = string(__func__) + "() - ";
 
         //string collection_name = "C179003030-ORNL_DAAC";
         string collection_name = "C1276812863-GES_DISC";
@@ -318,7 +316,6 @@ public:
 
     }
     void get_granule_ids_month_test() {
-        string prolog = string(__func__) + "() - ";
         //string collection_name = "C179003030-ORNL_DAAC";
         string collection_name = "C1276812863-GES_DISC";
 
@@ -394,7 +391,6 @@ public:
     }
 
     void get_granules_month_test() {
-        string prolog = string(__func__) + "() - ";
         //string collection_name = "C179003030-ORNL_DAAC";
         string collection_name = "C1276812863-GES_DISC";
 
@@ -480,7 +476,6 @@ public:
     }
 
     void get_granules_data_access_urls_month_test() {
-        string prolog = string(__func__) + "() - ";
         string collection_name = "C1276812863-GES_DISC";
 
         string expected[] = {
@@ -566,7 +561,6 @@ public:
     }
 
     unsigned long gct_helper(string collection, string year, string month, string day){
-        string prolog = string(__func__) + "() - ";
         stringstream msg;
         CmrApi cmr;
         msg << prolog << "Checking granule count for " << collection << "[" << year << " / " << month << "/"  << day << "]";
@@ -577,11 +571,46 @@ public:
     }
 
     void granule_count_test() {
-        string prolog = string(__func__) + "() - ";
         stringstream msg;
-        CPPUNIT_ASSERT(gct_helper("C1276812863-GES_DISC", "1985", "03", "") ==  31);
-        CPPUNIT_ASSERT(gct_helper("C1276812863-GES_DISC", "1985",   "", "") == 365);
-        CPPUNIT_ASSERT(gct_helper("C1276812822-GES_DISC", "2000",   "", "") == 366); // 2000 is a leap year
+
+        string collection;
+        string year;
+        string month;
+        string day;
+
+        unsigned int expected_granule_count;
+        unsigned int granules_found;
+
+        collection = "C1276812863-GES_DISC";
+        year = "1985";
+        month = "03";
+        day = "";
+        expected_granule_count = 31;
+        granules_found = gct_helper(collection, year, month, day);
+        if(debug) cerr << prolog << collection << "/" << year << (month.empty()?"":"/") << month << (day.empty()?"":"/") << day
+                       << " returned: " << granules_found << " expected: " << expected_granule_count << endl;
+        CPPUNIT_ASSERT(granules_found ==  expected_granule_count);
+
+        collection = "C1276812863-GES_DISC";
+        year = "1985";
+        month = "";
+        day = "";
+        expected_granule_count = 365;
+        granules_found = gct_helper(collection, year, month, day);
+        if(debug) cerr << prolog << collection << "/" << year << (month.empty()?"":"/") << month << (day.empty()?"":"/") << day
+                       << " returned: " << granules_found << " expected: " << expected_granule_count << endl;
+        CPPUNIT_ASSERT(granules_found ==  expected_granule_count);
+
+        collection = "C1276812822-GES_DISC";
+        year = "2000";
+        month = "";
+        day = "";
+        expected_granule_count = 366; // 2000 is a leap year
+        granules_found = gct_helper(collection, year, month, day);
+        if(debug) cerr << prolog << collection << "/" << year << (month.empty()?"":"/") << month << (day.empty()?"":"/") << day
+                       << " returned: " << granules_found << " expected: " << expected_granule_count << endl;
+        CPPUNIT_ASSERT(granules_found ==  expected_granule_count);
+
     }
 
 

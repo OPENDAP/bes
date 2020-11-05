@@ -39,7 +39,6 @@ namespace http {
 
 class  url {
 private:
-    void parse(const std::string &source_url);
 
     std::string d_source_url;
     std::string d_protocol;
@@ -49,7 +48,15 @@ private:
     std::map<std::string, std::vector<std::string> * > d_query_kvp;
     time_t d_ingest_time;
 
+protected:
+
 public:
+
+    void parse(const std::string &source_url);
+
+    explicit url():d_source_url(""), d_ingest_time(0) {
+    }
+
 
     // omitted copy, ==, accessors, ...
     explicit url(const std::string &url_s):d_source_url(url_s), d_ingest_time(0) {
@@ -57,28 +64,28 @@ public:
     }
 
     ~url();
-    std::string str() const { return d_source_url; }
+    virtual std::string str() const { return d_source_url; }
 
-    std::string protocol() const { return d_protocol; }
+    virtual std::string protocol() const { return d_protocol; }
 
-    std::string host() const { return d_host; }
+    virtual std::string host() const { return d_host; }
 
-    std::string path() const { return d_path; }
+    virtual std::string path() const { return d_path; }
 
-    std::string query() const { return d_query; }
+    virtual std::string query() const { return d_query; }
 
-    time_t ingest_time() const { return d_ingest_time; }
+    virtual time_t ingest_time() const { return d_ingest_time; }
 
-    void set_ingest_time(const time_t itime){
+    virtual void set_ingest_time(const time_t itime){
         d_ingest_time = itime;
     }
 
-    std::string query_parameter_value(const std::string &key) const;
-    void query_parameter_values(const std::string &key, std::vector<std::string> &values) const;
+    virtual std::string query_parameter_value(const std::string &key) const;
+    virtual void query_parameter_values(const std::string &key, std::vector<std::string> &values) const;
 
-    bool is_expired();
+    virtual bool is_expired();
 
-    std::string dump();
+    virtual std::string dump();
 
 };
 

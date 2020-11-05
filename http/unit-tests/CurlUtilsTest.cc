@@ -21,6 +21,8 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
+#include "config.h"
+
 #include <memory>
 #include <cstdio>
 #include <cstring>
@@ -143,7 +145,7 @@ namespace http {
             if (bes_debug) show_file(bes_conf);
             TheBESKeys::ConfigFile = bes_conf;
 
-            if (bes_debug) BESDebug::SetUp("cerr,wl,bes,http,curl");
+            if (bes_debug) BESDebug::SetUp("cerr,bes,http,curl");
 
             if(Debug) cerr << "setUp() - END" << endl;
         }
@@ -201,15 +203,15 @@ namespace http {
             if(debug) cerr << prolog << "BEGIN" << endl;
             string target_url = "http://test.opendap.org/opendap";
             string expected_url = "http://test.opendap.org/opendap/";
-            string effective_url;
+            EffectiveUrl *effective_url;
 
             try {
                 if(debug) cerr << prolog << "   target_url: " << target_url << endl;
-                curl::retrieve_effective_url(target_url,effective_url);
-                if(debug) cerr << prolog << "effective_url: " << effective_url << endl;
+                effective_url = curl::retrieve_effective_url(target_url);
+                if(debug) cerr << prolog << "effective_url: " << effective_url->str() << endl;
                 if(debug) cerr << prolog << " expected_url: " << expected_url << endl;
 
-                CPPUNIT_ASSERT( effective_url == expected_url );
+                CPPUNIT_ASSERT( effective_url->str() == expected_url );
 
             }
             catch(BESError &be){

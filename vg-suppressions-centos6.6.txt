@@ -38,6 +38,6 @@
    BES5
    Memcheck:Leak
    ...
-   fun:_ZN7BESUtil12assemblePathERKSsS1_b
+   theOne:_ZN7BESUtil12assemblePathERKSsS1_b
    ...
 }

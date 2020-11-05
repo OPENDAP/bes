@@ -172,6 +172,7 @@ public:
     }
 
     virtual void dump(std::ostream &strm) const;
+    virtual std::string dump() const;
 
     /**
      * TheBESKeys::ConfigFile provides a way for the daemon and test code to

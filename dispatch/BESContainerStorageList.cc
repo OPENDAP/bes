@@ -30,11 +30,9 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <iostream>
+#include "config.h"
 
-using std::endl;
-using std::string;
-using std::ostream;
+#include <iostream>
 
 #include "BESContainerStorageList.h"
 #include "BESContainerStorage.h"
@@ -45,6 +43,11 @@ using std::ostream;
 #include "BESInfo.h"
 
 #include "BESDebug.h"
+
+
+using std::endl;
+using std::string;
+using std::ostream;
 
 BESContainerStorageList *BESContainerStorageList::_instance = 0;
 
@@ -289,12 +292,10 @@ BESContainerStorageList::look_for(const string &sym_name)
         }
     }
     if (!ret_container) {
-        if (isnice()) {
-            LOG("Could not find the symbolic name " << sym_name << endl);
-        }
-        else {
-            string s = (string) "Could not find the symbolic name " + sym_name;
-            throw BESSyntaxUserError(s, __FILE__, __LINE__);
+        string msg = (string) "Could not find the symbolic name " + sym_name;
+        ERROR_LOG(msg << endl);
+        if (!isnice()) {
+            throw BESSyntaxUserError(msg, __FILE__, __LINE__);
         }
     }
 

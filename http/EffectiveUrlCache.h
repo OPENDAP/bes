@@ -30,21 +30,40 @@
 #include <map>
 #include <string>
 
+#include <pthread.h>
+
 #include "BESObj.h"
 #include "BESDataHandlerInterface.h"
 #include "BESRegex.h"
-#include "url_impl.h"
+#include "EffectiveUrl.h"
 
 
 namespace http {
 
-/**
+    /**
+ * RAII. Lock access to the get_easy_handle() and release_handle() methods.
+ */
+class EucLock {
+private:
+    pthread_mutex_t &m_mutex;
+    EucLock();
+    EucLock(const EucLock &rhs);
+public:
+    EucLock(pthread_mutex_t &lock);
+    ~EucLock();
+};
+
+
+    /**
  *
  */
 class EffectiveUrlCache: public BESObj {
 private:
     static EffectiveUrlCache * d_instance;
-    std::map<std::string , http::url *> d_effective_urls;
+    static pthread_once_t d_init_control;
+
+    std::map<std::string , http::EffectiveUrl *> d_effective_urls;
+    pthread_mutex_t d_get_effective_url_cache_mutex;
 
     // Things that match get skipped.
     BESRegex *d_skip_regex;
@@ -55,9 +74,9 @@ private:
     static void delete_instance();
 
     friend class EffectiveUrlCacheTest;
-    http::url *get(const std::string  &source_url);
-    void add(const std::string  &source_url, http::url *effective_url);
+    http::EffectiveUrl *get(const std::string  &source_url);
     BESRegex *get_skip_regex();
+    bool is_enabled();
 
     EffectiveUrlCache();
 
@@ -66,12 +85,11 @@ private:
 public:
 
     static EffectiveUrlCache *TheCache();
-    bool is_enabled();
 
-    http::url *get_effective_url(const std::string &source_url);
-    http::url *get_effective_url(const std::string &source_url, BESRegex *skip_regex);
+    std::string get_effective_url(const std::string &source_url);
 
     virtual void dump(std::ostream &strm) const;
+    virtual std::string dump() const;
 
 };
 

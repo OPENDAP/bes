@@ -25,6 +25,8 @@
 // Please read the full copyright statement in the file COPYRIGHT_URI.
 //
 
+#include "config.h"
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -73,7 +75,7 @@ void ShowBesKeyResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
 
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("ShowBesKeyResponseHandler::execute", dhi.data[REQUEST_ID]);
+    if (BESISDEBUG(TIMING_LOG_KEY)) sw.start("ShowBesKeyResponseHandler::execute", dhi.data[REQUEST_ID]);
 
     BESInfo *info = BESInfoList::TheList()->build_info();
     d_response_object = info;

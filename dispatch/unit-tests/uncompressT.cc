@@ -30,6 +30,8 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
@@ -43,12 +45,6 @@ using namespace CppUnit;
 #include <dirent.h>
 #include <GetOpt.h>
 
-using std::cerr;
-using std::endl;
-using std::ifstream;
-using std::string;
-
-#include "config.h"
 #include "BESUncompressManager3.h"
 #include "BESUncompressCache.h"
 #include "BESError.h"
@@ -57,8 +53,13 @@ using std::string;
 #include "BESUtil.h"
 #include <test_config.h>
 
-#define BES_CACHE_CHAR '#' 
+using std::cerr;
+using std::endl;
+using std::ifstream;
+using std::string;
 
+
+#define BES_CACHE_CHAR '#'
 static bool debug = false;
 static bool bes_debug = false;
 

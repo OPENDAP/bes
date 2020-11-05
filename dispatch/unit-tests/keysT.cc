@@ -30,6 +30,8 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
@@ -366,7 +368,7 @@ public:
             sprintf(key, "BES.KEY%d", i);
             char val[32];
             if (i == 5 || i == 6)
-                sprintf(val, "");
+                sprintf(val, "%s", "");
             else
                 sprintf(val, "val%d", i);
             if(debug) cout << "Looking for " << key << " with value '" << val << "'" << endl;

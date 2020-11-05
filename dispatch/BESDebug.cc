@@ -39,6 +39,8 @@
 #include <iostream>
 #include <sstream>
 
+#include <pthread.h>
+
 #include "BESDebug.h"
 #include "BESInternalError.h"
 #include "BESLog.h"
@@ -48,6 +50,35 @@ using namespace std;
 ostream *BESDebug::_debug_strm = NULL;
 bool BESDebug::_debug_strm_created = false;
 map<string, bool> BESDebug::_debug_map;
+
+
+/** @brief Returns debug log line prefix containing date&time, pid, and thread id.
+ *
+ * @return The debug log line prefix containing date&time, pid, and thread id.
+ */
+string get_debug_log_line_prefix()
+{
+    ostringstream strm;
+    // Time Field
+    const time_t sctime = time(NULL);
+    const struct tm *sttime = localtime(&sctime);
+    char zone_name[10];
+    strftime(zone_name, sizeof(zone_name), "%Z", sttime);
+    char *b = asctime(sttime);
+    strm << "[" << zone_name << " ";
+    for (register int j = 0; b[j] != '\n'; j++)
+        strm << b[j];
+    strm << "]";
+
+    // PID field
+    pid_t thepid = getpid();
+    strm << "[pid:" << thepid <<"]";
+
+    // Thread field
+    strm << "[thread:" << pthread_self() <<"]";
+    return strm.str();
+}
+
 
 /** @brief Sets up debugging for the bes.
  *
@@ -84,7 +115,7 @@ void BESDebug::SetUp(const string &values)
     }
     else {
         strm = new ofstream(s_strm.c_str(), ios::out);
-        if (strm && !(*strm)) {
+        if (strm && strm->fail()) {
             delete strm;
             strm = 0;
             string err = "Unable to open the debug file: " + s_strm;
@@ -115,26 +146,6 @@ void BESDebug::SetUp(const string &values)
     else {
         BESDebug::Set(flagName, true);
     }
-}
-
-/** @brief return the pid as a string
- *
- * @return the pid as a string
- */
-string BESDebug::GetPidStr()
-{
-    ostringstream strm;
-    const time_t sctime = time(NULL);
-    const struct tm *sttime = localtime(&sctime);
-    char zone_name[10];
-    strftime(zone_name, sizeof(zone_name), "%Z", sttime);
-    char *b = asctime(sttime);
-    strm << zone_name << " ";
-    for (register int j = 0; b[j] != '\n'; j++)
-        strm << b[j];
-    pid_t thepid = getpid();
-    strm << " id: " << thepid;
-    return strm.str();
 }
 
 /** @brief Writes help information for so that developers know what can

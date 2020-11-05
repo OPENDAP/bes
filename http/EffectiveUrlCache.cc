@@ -45,16 +45,35 @@
 #include "BESLog.h"
 #include "CurlUtils.h"
 #include "HttpNames.h"
+#include "EffectiveUrl.h"
 
 using namespace std;
 
-#define MODULE "http"
+#define MODULE "euc"
+#define MODULE_DUMPER "euc:dump"
 #define prolog std::string("EffectiveUrlCache::").append(__func__).append("() - ")
 
 namespace http {
 
-
 EffectiveUrlCache *EffectiveUrlCache::d_instance = 0;
+pthread_once_t EffectiveUrlCache::d_init_control = PTHREAD_ONCE_INIT;
+
+EucLock::EucLock(pthread_mutex_t &lock) : m_mutex(lock) {
+    int status = pthread_mutex_lock(&m_mutex);
+    if (status != 0){
+        throw BESInternalError(prolog  + "Could not acquire mutex lock.", __FILE__, __LINE__);
+    }
+    BESDEBUG(MODULE,prolog << "Locked. (thread: " << pthread_self() << ")"  << endl);
+}
+
+EucLock::~EucLock() {
+    int status = pthread_mutex_unlock(&m_mutex);
+    if (status != 0){
+        ERROR_LOG(prolog + "Failed to release mutex lock.");
+    }
+    BESDEBUG(MODULE,prolog << "Unlocked. (thread: " << pthread_self() << ")" << endl);
+}
+
 
 /** @brief Get the singleton BESCatalogList instance.
  *
@@ -77,7 +96,9 @@ EffectiveUrlCache *EffectiveUrlCache::d_instance = 0;
 EffectiveUrlCache *
 EffectiveUrlCache::TheCache()
 {
-    if (d_instance == 0) initialize_instance();
+    if (d_instance == 0) {
+        pthread_once(&d_init_control,EffectiveUrlCache::initialize_instance);
+    }
 
     return d_instance;
 }
@@ -88,6 +109,7 @@ EffectiveUrlCache::TheCache()
  */
 void EffectiveUrlCache::initialize_instance()
 {
+
     d_instance = new EffectiveUrlCache;
 #ifdef HAVE_ATEXIT
     atexit(delete_instance);
@@ -110,16 +132,18 @@ void EffectiveUrlCache::delete_instance()
  */
 EffectiveUrlCache::EffectiveUrlCache(): d_skip_regex(NULL), d_enabled(-1)
 {
+    if (pthread_mutex_init(&d_get_effective_url_cache_mutex, 0) != 0)
+        throw BESInternalError("Could not initialize mutex in CurlHandlePool", __FILE__, __LINE__);
 
 }
 
-/** @brief list destructor deletes all registered catalogs
+/** @brief list destructor deletes all cached http::urls
  *
  * @see BESCatalog
  */
 EffectiveUrlCache::~EffectiveUrlCache()
 {
-    map<string , http::url *>::iterator it;
+    map<string , http::EffectiveUrl *>::iterator it;
     for(it = d_effective_urls.begin(); it!= d_effective_urls.end(); it++){
         delete it->second;
     }
@@ -147,9 +171,10 @@ void EffectiveUrlCache::dump(ostream &strm) const
     if (!d_effective_urls.empty()) {
         strm << BESIndent::LMarg << "effective url list:" << endl;
         BESIndent::Indent();
-        map<string , http::url *>::const_iterator it;
-        for(it = d_effective_urls.begin(); it!= d_effective_urls.end(); it++){
+        auto it = d_effective_urls.begin();
+        while( it!= d_effective_urls.end()){
             strm << BESIndent::LMarg << (*it).first << " --> " << (*it).second->str();
+            it++;
         }
         BESIndent::UnIndent();
     }
@@ -159,14 +184,18 @@ void EffectiveUrlCache::dump(ostream &strm) const
     BESIndent::UnIndent();
 }
 
-/**
+/** @brief dumps information about this object
  *
- * @param source_url
- * @param effective_url
+ * Displays the pointer value of this instance along with the catalogs
+ * registered in this list.
+ *
+ * @param strm C++ i/o stream to dump the information to
  */
-void EffectiveUrlCache::add(const std::string &source_url, http::url *effective_url)
+string EffectiveUrlCache::dump() const
 {
-    d_effective_urls.insert(pair<string,http::url *>(source_url,effective_url));
+    stringstream sstrm;
+    dump(sstrm);
+    return sstrm.str();
 }
 
 
@@ -174,10 +203,9 @@ void EffectiveUrlCache::add(const std::string &source_url, http::url *effective_
  *
  * @param source_url
  */
-http::url *EffectiveUrlCache::get(const std::string  &source_url){
-    http::url *effective_url=NULL;
-    std::map<std::string, http::url *>::iterator it;
-    it = d_effective_urls.find(source_url);
+http::EffectiveUrl *EffectiveUrlCache::get(const std::string  &source_url){
+    http::EffectiveUrl *effective_url=NULL;
+    auto it = d_effective_urls.find(source_url);
     if(it!=d_effective_urls.end()){
         effective_url = (*it).second;
     }
@@ -191,53 +219,41 @@ http::url *EffectiveUrlCache::get(const std::string  &source_url){
 
 
 /**
- * Retrieves the skip regex (possibly NULL if not configured)
- * and then calls get_effective_url(source_url, skip_regex);
- *
- * @param source_url
- * @returns The effective URL
- */
-http::url *EffectiveUrlCache::get_effective_url(const string &source_url) {
-    BESRegex *bes_regex = get_skip_regex();
-    return get_effective_url(source_url, bes_regex);
-}
-
-
-/**
  * Find the terminal (effective) url for the source_url. If the source_url matches the
  * skip_regex then it will not be cached.
  *
  * @param source_url
  * @returns The effective URL
 */
-http::url *EffectiveUrlCache::get_effective_url(const string &source_url, BESRegex *skip_regex)
+string EffectiveUrlCache::get_effective_url(const string &source_url)
 {
+
+    // This lock will block until the mutex is available.
+    EucLock dat_lock(this->d_get_effective_url_cache_mutex);
+
     BESDEBUG(MODULE, prolog << "BEGIN url: " << source_url << endl);
-
-#if 0
-    //BESStopWatch sw;
-    //if (BESISDEBUG(TIMING_LOG) || BESLog::TheLog()->is_verbose())
-    //    sw.start(prolog + "full method");
-#endif
-
-    http::url *effective_url = NULL;
+    string effective_url_str = source_url;
 
     if(is_enabled()){
+
+        BESDEBUG(MODULE_DUMPER, prolog << "dump: " << endl << dump() << endl);
+
         size_t match_length=0;
 
         // if it's not an HTTP url there is nothing to cache.
         if (source_url.find("http://") != 0 && source_url.find("https://") != 0) {
             BESDEBUG(MODULE, prolog << "END Not an HTTP request, SKIPPING." << endl);
-            return NULL;
+            return effective_url_str;
         }
 
+        BESRegex *skip_regex = get_skip_regex();
         if( skip_regex ) {
             match_length = skip_regex->match(source_url.c_str(), source_url.length());
             if (match_length == source_url.length()) {
                 BESDEBUG(MODULE, prolog << "END Candidate url matches the "
                                            "no_redirects_regex_pattern [" << skip_regex->pattern() <<
                                         "][match_length=" << match_length << "] SKIPPING." << endl);
-                return NULL;
+                return effective_url_str;
             }
             BESDEBUG(MODULE, prolog << "Candidate url: '" << source_url << "' does NOT match the "
                                                                            "skip_regex pattern [" << skip_regex->pattern() << "]" << endl);
@@ -246,7 +262,7 @@ http::url *EffectiveUrlCache::get_effective_url(const string &source_url, BESReg
             BESDEBUG(MODULE, prolog << "The cache_effective_urls_skip_regex() was NOT SET "<< endl);
         }
 
-        effective_url = get(source_url);
+        http::EffectiveUrl *effective_url = get(source_url);
 
         // See if the data_access_url has already been processed into a terminal URL
         bool retrieve_and_cache = !effective_url; // If there's no effective_url we gotta go get it.
@@ -259,24 +275,26 @@ http::url *EffectiveUrlCache::get_effective_url(const string &source_url, BESReg
         if(retrieve_and_cache){
             BESDEBUG(MODULE, prolog << "Acquiring effective URL for  " << source_url << endl);
 
-            string effective_url_str;
-            curl::retrieve_effective_url(source_url, effective_url_str);
-            BESDEBUG(MODULE, prolog << "effective_url_str: " << effective_url_str << endl);
-
-            // Make the target URL object.
-            effective_url = new http::url(effective_url_str);
-
+            {
+                BESStopWatch sw;
+                if(BESDebug::IsSet(MODULE)) sw.start(prolog + " retrieve and cache effective url for source url: " + source_url);
+                effective_url = curl::retrieve_effective_url(source_url);
+            }
             BESDEBUG(MODULE, prolog << "   source_url: " << source_url << endl);
-            BESDEBUG(MODULE, prolog << "effective_url: " << effective_url->str() << endl);
+            BESDEBUG(MODULE, prolog << "effective_url: " << effective_url->dump() << endl);
 
-            EffectiveUrlCache::TheCache()->add(source_url,effective_url);
+            d_effective_urls[source_url] = effective_url;
+
+            BESDEBUG(MODULE, prolog << "Updated record for "<< source_url << " cache size: " << d_effective_urls.size() << endl);
         }
-    }
+        effective_url_str = effective_url->str();
+        BESDEBUG(MODULE_DUMPER, prolog << "dump: " << endl << dump() << endl);
+    } // EucLock dat_lock is released when the point of execution reaches this brace and dat_lock goes out of scope.
     else {
         BESDEBUG(MODULE, prolog << "CACHE IS DISABLED." << endl);
     }
     BESDEBUG(MODULE, prolog << "END" << endl);
-    return effective_url;
+    return effective_url_str;
 }
 
 
@@ -317,5 +335,9 @@ BESRegex *EffectiveUrlCache::get_skip_regex()
     BESDEBUG(MODULE, prolog << "d_skip_regex:  " << (d_skip_regex?d_skip_regex->pattern():"Value has not been set.") << endl);
     return d_skip_regex;
 }
+
+
+
+
 
 } // namespace http

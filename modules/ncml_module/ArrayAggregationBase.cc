@@ -27,6 +27,8 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 /////////////////////////////////////////////////////////////////////////////
 
+#include "config.h"
+
 #include "ArrayAggregationBase.h"
 #include "NCMLDebug.h"
 #include "BESDebug.h"
@@ -94,7 +96,7 @@ ArrayAggregationBase::ptr_duplicate()
 bool ArrayAggregationBase::read()
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("ArrayAggregationBase::read", "");
+    if (BESISDEBUG(TIMING_LOG_KEY)) sw.start("ArrayAggregationBase::read", "");
 
     BESDEBUG_FUNC(DEBUG_CHANNEL, " function entered..." << endl);
 

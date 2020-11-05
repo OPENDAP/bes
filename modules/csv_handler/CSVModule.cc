@@ -31,6 +31,7 @@
 //	zednik      Stephan Zednik <zednik@ucar.edu>
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
+#include "config.h"
 
 #include <iostream>
 

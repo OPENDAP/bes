@@ -472,9 +472,20 @@ int TheBESKeys::read_int_key(const string &key, int default_value)
  */
 void TheBESKeys::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESKeys::dump - (" << (void *) this << ")" << endl;
+    strm << dump();
+}
+
+/** @brief dumps information about this object
+ *
+ * @return A string containing the dump from this instance of TheBESKeys object.
+ *
+ */
+string TheBESKeys::dump() const
+{
+    stringstream ss;
+    ss << BESIndent::LMarg << "BESKeys::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
-    strm << BESIndent::LMarg << "key file:" << d_keys_file_name << endl;
+    ss << BESIndent::LMarg << "key file:" << d_keys_file_name << endl;
 
 #if 0
     if (_keys_file && *_keys_file) {
@@ -486,27 +497,28 @@ void TheBESKeys::dump(ostream &strm) const
 #endif
 
     if (d_the_keys && d_the_keys->size()) {
-        strm << BESIndent::LMarg << "  keys:" << endl;
+        ss << BESIndent::LMarg << "  keys:" << endl;
         BESIndent::Indent();
         Keys_citer i = d_the_keys->begin();
         Keys_citer ie = d_the_keys->end();
         for (; i != ie; i++) {
-            strm << BESIndent::LMarg << (*i).first << ": " /*<< endl*/;
+            ss << BESIndent::LMarg << (*i).first << ": " /*<< endl*/;
             // BESIndent::Indent();
             vector<string>::const_iterator v = (*i).second.begin();
             vector<string>::const_iterator ve = (*i).second.end();
             for (; v != ve; v++) {
-                strm << (*v) << " "; //endl;
+                ss << (*v) << " "; //endl;
             }
-            strm << endl;
+            ss << endl;
             //BESIndent::UnIndent();
         }
         BESIndent::UnIndent();
     }
     else {
-        strm << BESIndent::LMarg << "keys: none" << endl;
+        ss << BESIndent::LMarg << "keys: none" << endl;
     }
     BESIndent::UnIndent();
+    return ss.str();
 }
 
 
@@ -743,9 +755,7 @@ void TheBESKeys::load_dynamic_config(const string name)
     BESDEBUG(MODULE, prolog << "END" << endl);
 #endif
 
-    if(BESDebug::IsSet("bes:keys")){
-        dump(*BESDebug::GetStrm());
-    }
+    BESDEBUG("bes:keys",dump());
 
 }
 

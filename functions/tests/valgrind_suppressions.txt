@@ -61,6 +61,6 @@
    Memcheck:Leak
    fun:malloc
    ...
-   fun:_ZN7BESUtil30removeLeadingAndTrailingBlanksERSs
+   theOne:_ZN7BESUtil30removeLeadingAndTrailingBlanksERSs
    ...
 }

@@ -19,6 +19,7 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI.
 // 02874-0112.
+#include "config.h"
 #include <iostream>
 
 using std::endl ;
@@ -33,8 +34,7 @@ using std::endl ;
 static bool
 OPENDAP_CLASSCmdInit(int, char**)
 {
-    if( BESLog::TheLog()->is_verbose() )
-	LOG("Initializing OPENDAP_CLASS Commands:" << endl );
+	VERBOSE("Initializing OPENDAP_CLASS Commands:" << endl );
 
     string cmd_name ;
 
