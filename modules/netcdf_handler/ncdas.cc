@@ -175,7 +175,7 @@ static string print_attr(nc_type type, int loc, void *vals)
         rep << std::showpoint;
         rep << std::setprecision(9);
 
-        if (::isnan(valAtLoc)) {
+        if (isnan(valAtLoc)) {
             rep << "NaN";
         }
         else {
@@ -199,7 +199,7 @@ static string print_attr(nc_type type, int loc, void *vals)
         rep << std::showpoint;
         rep << std::setprecision(16);
 
-        if (::isnan(valAtLoc)) {
+        if (isnan(valAtLoc)) {
             rep << "NaN";
         }
         else {
