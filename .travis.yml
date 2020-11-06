@@ -10,7 +10,7 @@
 #
 # Try using Ubuntu Focal
 
-dist: focal
+dist: xenial
 
 language: cpp
 
