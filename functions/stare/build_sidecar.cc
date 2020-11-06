@@ -779,7 +779,7 @@ static void usage() {
     cerr << "-b STARE Build Level: \tHigher levels -> longer initialization time. (default is 5)" << endl;
     cerr << "-s STARE default Level: \tHigher levels -> finer resolution. (default is 27)" << endl;
     cerr << "-a Algotithm: \t1, 2 or 3 (default is 3)" << endl;
-    cerr << "-r Include resolution inforamtion in the indices. Works for algorithm 2 and 3 only" << endl;
+    cerr << "-r Include resolution information in the indices. Works for algorithm 2 and 3 only" << endl;
 }
 
 static string
