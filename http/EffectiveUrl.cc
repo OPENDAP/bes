@@ -71,8 +71,8 @@ namespace http {
         bool found = false;
         string cc_hdr_val;
 
-        get_header(CACHE_CONTROL_HEADER_KEY,cc_hdr_val,found);
-        if(found){
+        get_header(CACHE_CONTROL_HEADER_KEY, cc_hdr_val, found);
+        if (found) {
             BESDEBUG(MODULE, prolog << CACHE_CONTROL_HEADER_KEY << " '" << cc_hdr_val << "'" << endl);
             time_t now;
             time(&now);  /* get current time; same as: timer = time(NULL)  */
@@ -81,7 +81,7 @@ namespace http {
             // Example: 'Cache-Control: private, max-age=600'
             string max_age_key("max-age=");
             size_t max_age_index = cc_hdr_val.find(max_age_key);
-            if(max_age_index != cc_hdr_val.npos){
+            if (max_age_index != cc_hdr_val.npos) {
                 string max_age_str = cc_hdr_val.substr(max_age_index + max_age_key.size());
                 time_t max_age;
                 std::istringstream(max_age_str) >> max_age; // Returns 0 if the parse fails.
@@ -92,15 +92,15 @@ namespace http {
                                         " threshold: " << REFRESH_THRESHOLD << endl);
 
                 expired = remaining < REFRESH_THRESHOLD;
-                BESDEBUG(MODULE, prolog << "expired: " << (expired?"true":"false") << endl);
+                BESDEBUG(MODULE, prolog << "expired: " << (expired ? "true" : "false") << endl);
             }
         }
-        if(!expired){
+        if (!expired) {
             expired = url::is_expired();
         }
-        BESDEBUG(MODULE, prolog << "END expired: " << (expired?"true":"false") << endl);
+        BESDEBUG(MODULE, prolog << "END expired: " << (expired ? "true" : "false") << endl);
         return expired;
-    };
+    }
 
 
 
