@@ -218,16 +218,16 @@ static size_t writeNothing(char */* data */, size_t /* size */, size_t nmemb, vo
  * libcurl call back function that is used to write data to a passed open file descriptor (that would
  * be instead of the default open FILE *)
  */
-static size_t writeToOpenfileDescriptor(char *data, size_t /* size */, size_t nmemb, void *userdata) {
+    static size_t writeToOpenFileDescriptor(char *data, size_t /* size */, size_t nmemb, void *userdata) {
 
-    int *fd = (int *) userdata;
+        int *fd = (int *) userdata;
 
-    BESDEBUG(MODULE, prolog << "Bytes received " << nmemb << endl);
-    int wrote = write(*fd, data, nmemb);
-    BESDEBUG(MODULE, prolog << "Bytes written " << wrote << endl);
+        BESDEBUG(MODULE, prolog << "Bytes received " << nmemb << endl);
+        int wrote = write(*fd, data, nmemb);
+        BESDEBUG(MODULE, prolog << "Bytes written " << wrote << endl);
 
-    return wrote;
-}
+        return wrote;
+    }
 
 
 /**
@@ -812,7 +812,7 @@ void http_get_and_write_resource(const string &target_url,
 
         set_error_buffer(ceh, error_buffer);
 
-        res = curl_easy_setopt(ceh, CURLOPT_WRITEFUNCTION, writeToOpenfileDescriptor);
+        res = curl_easy_setopt(ceh, CURLOPT_WRITEFUNCTION, writeToOpenFileDescriptor);
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEFUNCTION", error_buffer, __FILE__, __LINE__);
 
 #ifdef CURLOPT_WRITEDATA

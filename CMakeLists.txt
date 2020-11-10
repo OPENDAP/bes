@@ -797,6 +797,8 @@ add_executable(bes
     modules/dmrpp_module/NgapS3Credentials.cc
     modules/dmrpp_module/NgapS3Credentials.h
     modules/dmrpp_module/unit-tests/NgapCredentialsTest.cc
+    modules/dmrpp_module/unit-tests/CurlHandlePoolTest.cc
+    modules/dmrpp_module/retriever.cc
     modules/dmrpp_module/byteswap_compat.h
     modules/dmrpp_module/reduce_mdf.cc
 
@@ -2071,5 +2073,4 @@ add_executable(bes
     xmlcommand/XMLSetContextsCommand.h
 
     standalone/besstandalone.cc
-
-   )
+)

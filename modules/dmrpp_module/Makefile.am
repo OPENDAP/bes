@@ -70,7 +70,7 @@ libdmrpp_module_la_LDFLAGS = -avoid-version -module
 libdmrpp_module_la_LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) \
 $(H5_LDFLAGS) $(H5_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) -ltest-types
 
-bin_PROGRAMS = build_dmrpp check_dmrpp merge_dmrpp reduce_mdf
+bin_PROGRAMS = build_dmrpp check_dmrpp merge_dmrpp reduce_mdf retriever
 
 # build_dmrpp config
 build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS) -I$(srcdir)/../hdf5_handler
@@ -92,6 +92,14 @@ merge_dmrpp_SOURCES = merge_dmrpp.cc
 reduce_mdf_CPPFLAGS = $(AM_CPPFLAGS)
 reduce_mdf_SOURCES = reduce_mdf.cc
 reduce_mdf_LDADD =   $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) -lz
+
+# retriever config
+retriever_CPPFLAGS = $(AM_CPPFLAGS)
+retriever_SOURCES = $(BES_SRCS) $(BES_HDRS) $(BUILD_DMRPP) retriever.cc
+retriever_LDADD =   $(BES_DAP_LIB) $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) \
+$(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) \
+$(OPENSSL_LIBS) $(XML2_LIBS) $(BYTESWAP_LIBS) -lz
+
 
 #ngap_build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS)  -I$(top_srcdir)/standalone
 #
