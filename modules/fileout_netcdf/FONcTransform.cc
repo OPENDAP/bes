@@ -355,6 +355,47 @@ void FONcTransform::transform_dap4()
         }
     }
 
+    // Obtain the dim. names under the root group
+    vector<string> root_d4_dimname_list;
+    for(git=GFQN_dimname_to_dimsize.begin();git!=GFQN_dimname_to_dimsize.end();++git) {
+        string d4_temp_dimname = git->first.substr(1);
+        BESDEBUG("fonc", "d4_temp_dimname: "<<d4_temp_dimname<<endl);
+        if(d4_temp_dimname.find('/')==string::npos)
+            root_d4_dimname_list.push_back(d4_temp_dimname);
+    }
+
+    for(unsigned int i = 0; i <root_d4_dimname_list.size();i++)
+        BESDEBUG("fonc", "root_d4 dim name is: "<<root_d4_dimname_list[i]<<endl);
+
+    vector<int> root_dim_suffix_nums;
+    for(unsigned int i = 0; i <root_d4_dimname_list.size();i++){
+        if(root_d4_dimname_list[i].size()<4)
+            continue;
+        else if(root_d4_dimname_list[i].substr(0,3)!="dim")
+            continue;
+        else {//STOP here
+            string temp_suffix = root_d4_dimname_list[i].substr(3);
+
+        //BESDEBUG("fonc", "temp_suffix: "<<temp_suffix<<endl);
+            bool ignored_suffix = false;
+            for (unsigned int j = 0; j<temp_suffix.size();j++) {
+                if(!isdigit(temp_suffix[j])) {
+                    ignored_suffix = true;
+                    break;
+                }
+            }
+            if(ignored_suffix==true) 
+                continue;
+            else  
+                root_dim_suffix_nums.push_back(atoi(temp_suffix.c_str()));
+        }
+
+    }
+
+    for(unsigned int i = 0; i <root_dim_suffix_nums.size();i++)
+        BESDEBUG("fonc", "root_dim_suffix_nums: "<<root_dim_suffix_nums[i]<<endl);
+
+
     for(it=GFQN_dimname_to_dimsize.begin();it!=GFQN_dimname_to_dimsize.end();++it) {
         BESDEBUG("fonc", "RFinal GFQN dim name is: "<<it->first<<endl);
         BESDEBUG("fonc", "RFinal GFQN dim size is: "<<it->second<<endl);
@@ -365,12 +406,9 @@ void FONcTransform::transform_dap4()
         BESDEBUG("fonc", "RFinal VFQN dim size is: "<<it->second<<endl);
     }
 
-
-
-    // STTOPP: update GFQN to use VFQN's dim size if they are different.
 //#endif
 
-        transform_dap4_group(root_grp,true,_ncid,fdimname_to_id);
+        transform_dap4_group(root_grp,true,_ncid,fdimname_to_id,root_dim_suffix_nums);
         stax = nc_close(_ncid);
         if (stax != NC_NOERR)
             FONcUtils::handle_error(stax, "File out netcdf, unable to close: " + _localfile, __FILE__, __LINE__);
@@ -513,7 +551,7 @@ void FONcTransform::transform_dap4_no_group() {
 
 }
 
-void FONcTransform::transform_dap4_group(D4Group* grp,bool is_root_grp,int par_grp_id,map<string,int>&fdimname_to_id ) {
+void FONcTransform::transform_dap4_group(D4Group* grp,bool is_root_grp,int par_grp_id,map<string,int>&fdimname_to_id,vector<int>&root_dim_suffix_nums ) {
 
     bool included_grp = false;
     // Always include the root attributes.
@@ -528,11 +566,11 @@ void FONcTransform::transform_dap4_group(D4Group* grp,bool is_root_grp,int par_g
      
     // If this group is not in the group list, we know all its subgroups are also not in the list, just stop and return.
     if(included_grp == true) 
-        transform_dap4_group_internal(grp,is_root_grp,par_grp_id,fdimname_to_id);
+        transform_dap4_group_internal(grp,is_root_grp,par_grp_id,fdimname_to_id,root_dim_suffix_nums);
     return;
 }
 
-void FONcTransform::transform_dap4_group_internal(D4Group* grp,bool is_root_grp,int par_grp_id,map<string,int>&fdimname_to_id ) {
+void FONcTransform::transform_dap4_group_internal(D4Group* grp,bool is_root_grp,int par_grp_id,map<string,int>&fdimname_to_id,vector<int>& rds_nums ) {
 
     int grp_id = -1;
     int stax = -1;
@@ -589,7 +627,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group* grp,bool is_root_grp,
 
             // This is a factory class call, and 'fg' is specialized for 'v'
             //FONcBaseType *fb = FONcUtils::convert(v,FONcTransform::_returnAs,FONcRequestHandler::classic_model);
-            FONcBaseType *fb = FONcUtils::convert(v,RETURNAS_NETCDF4,false,fdimname_to_id);
+            FONcBaseType *fb = FONcUtils::convert(v,RETURNAS_NETCDF4,false,fdimname_to_id,rds_nums);
 
             //_fonc_vars.push_back(fb);
             fonc_vars_in_grp.push_back(fb);
@@ -653,7 +691,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group* grp,bool is_root_grp,
 
         for (D4Group::groupsIter gi = grp->grp_begin(), ge = grp->grp_end(); gi != ge; ++gi) {
             BESDEBUG("fonc", "FONcTransform::transform_dap4() in group  - group name:  " << (*gi)->name() << endl);
-            transform_dap4_group(*gi,false,grp_id,fdimname_to_id);
+            transform_dap4_group(*gi,false,grp_id,fdimname_to_id,rds_nums);
         }
 
     }

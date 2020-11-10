@@ -92,8 +92,8 @@ public:
 	virtual void dump(ostream &strm) const;
 private:
     virtual void transform_dap4_no_group();
-    virtual void transform_dap4_group(D4Group*,bool is_root, int par_grp_id,std::map<std::string,int>&);
-    virtual void transform_dap4_group_internal(D4Group*,bool is_root, int par_grp_id,std::map<std::string,int>&);
+    virtual void transform_dap4_group(D4Group*,bool is_root, int par_grp_id,std::map<std::string,int>&,std::vector<int>&);
+    virtual void transform_dap4_group_internal(D4Group*,bool is_root, int par_grp_id,std::map<std::string,int>&,std::vector<int>&);
     virtual void check_and_obtain_dimensions(D4Group*grp,bool);
     virtual void check_and_obtain_dimensions_internal(D4Group*grp);
     virtual bool check_group_support();

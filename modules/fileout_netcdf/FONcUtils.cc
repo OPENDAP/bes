@@ -223,7 +223,8 @@ string FONcUtils::gen_name(const vector<string> &embed, const string &name, stri
 FONcBaseType *
 FONcUtils::convert(BaseType *v,const string &ncdf_version, const bool is_classic_model) {
     map<string,int>fdimname_to_id;
-    return convert(v,ncdf_version, is_classic_model,fdimname_to_id);
+    vector<int>rds_nums;
+    return convert(v,ncdf_version, is_classic_model,fdimname_to_id,rds_nums);
 }
 
 /** @brief Creates a FONc object for the given DAP object
@@ -239,7 +240,7 @@ FONcUtils::convert(BaseType *v,const string &ncdf_version, const bool is_classic
  * @throws BESInternalError if the DAP object is not an expected type
  */
 FONcBaseType *
-FONcUtils::convert(BaseType *v,const string &ncdf_version, const bool is_classic_model, map<string,int>&fdimname_to_id)
+FONcUtils::convert(BaseType *v,const string &ncdf_version, const bool is_classic_model, map<string,int>&fdimname_to_id,vector<int>&rbs_nums)
 {
     FONcBaseType *b = 0;
     bool is_netcdf4_enhanced = false;
@@ -340,7 +341,7 @@ FONcUtils::convert(BaseType *v,const string &ncdf_version, const bool is_classic
                 }
 
             }
-            b = new FONcArray(v,dim_ids,use_d4_dim_ids);
+            b = new FONcArray(v,dim_ids,use_d4_dim_ids,rbs_nums);
 
         }
         else {
