@@ -282,6 +282,7 @@ int main(int argc, char *argv[])
     try {
         TheBESKeys::ConfigFile = bes_conf;
         TheBESKeys::TheKeys()->set_key("BES.LogName",log_file);
+        TheBESKeys::TheKeys()->set_key("AllowedHosts","^https?:\\/\\/.*$");
         if(bes_debug) BESDebug::SetUp("cerr,bes,http,curl,dmrpp");
         dmrpp::DmrppRequestHandler *dmrppRH = new dmrpp::DmrppRequestHandler("Chaos");
 
