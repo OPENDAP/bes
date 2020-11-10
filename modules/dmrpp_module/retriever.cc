@@ -151,6 +151,13 @@ void simple_get(const string target_url, const string output_file_base) {
 }
 
 
+/**
+ *
+ * @param target_url
+ * @param target_size
+ * @param chunk_count
+ * @param chunks
+ */
 void make_chunks(const string target_url, const size_t target_size, unsigned chunk_count, vector<dmrpp::Chunk *> &chunks){
     size_t chunk_size = target_size/chunk_count;
     size_t chunk_start = 0;
@@ -171,7 +178,6 @@ void make_chunks(const string target_url, const size_t target_size, unsigned chu
         auto last_chunk = new dmrpp::Chunk(target_url, "LE", last_chunk_size, chunk_start,position_in_array);
         chunks.push_back(last_chunk);
     }
-
 }
 
 
@@ -283,7 +289,7 @@ int main(int argc, char *argv[])
 
         if(debug) cerr << prolog << "Remote resource is " << target_size << " bytes." << endl;
 
-        // simple_get(target_url, output_file_base);
+        simple_get(target_url, output_file_base);
 
         serial_chunky_get( target_url,  target_size, 1000, output_file_base);
 
