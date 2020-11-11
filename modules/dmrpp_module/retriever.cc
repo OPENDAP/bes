@@ -98,6 +98,41 @@ string get_errno()
         return "Unknown error.";
 }
 
+
+
+/**
+ *
+ * @param bes_config_file
+ * @param bes_log_file
+ * @param bes_debug_log_file
+ * @param bes_debug_keys
+ * @param http_netrc_file
+ * @return
+ */
+dmrpp::DmrppRequestHandler *bes_setup(
+        const string &bes_config_file,
+        const string &bes_log_file,
+        const string &bes_debug_log_file,
+        const string &bes_debug_keys,
+        const string &http_netrc_file
+){
+    TheBESKeys::ConfigFile = bes_config_file; // Set the config file for TheBESKeys
+    TheBESKeys::TheKeys()->set_key("BES.LogName",bes_log_file); // Set the log file so it goes where we say.
+    TheBESKeys::TheKeys()->set_key("AllowedHosts","^https?:\\/\\/.*$", false); // Set AllowedHosts to allow any URL
+    TheBESKeys::TheKeys()->set_key("AllowedHosts","^file:\\/\\/\\/.*$", true); // Set AllowedHosts to allow any file
+
+    if(bes_debug) BESDebug::SetUp(bes_debug_log_file+","+bes_debug_keys); // Enable BESDebug settings
+
+
+    if(!http_netrc_file.empty()){
+        TheBESKeys::TheKeys()->set_key(HTTP_NETRC_FILE_KEY,http_netrc_file, false); // Set the netrc file
+    }
+
+    // Initialize the dmr++ goodness.
+    return new dmrpp::DmrppRequestHandler("Chaos");
+}
+
+
 #if 0
 void curl_stuff(const string target_url, vector<string> request_headers){
     AccessCredentials *credentials = CredentialsManager::theCM()->get(target_url);
@@ -370,6 +405,7 @@ void array_get(const string &target_url, const size_t &target_size, const size_t
 
     dmrpp::DmrppTypeFactory factory;
     dmrpp::DMRpp dmr(&factory);
+    dmr.set_href(target_url);
     dmrpp::DmrppD4Group *root = dynamic_cast<dmrpp::DmrppD4Group *>(dmr.root());
     root->add_var(target_array);
 
@@ -397,38 +433,6 @@ void array_get(const string &target_url, const size_t &target_size, const size_t
 
 
 
-
-/**
- *
- * @param bes_config_file
- * @param bes_log_file
- * @param bes_debug_log_file
- * @param bes_debug_keys
- * @param http_netrc_file
- * @return
- */
-dmrpp::DmrppRequestHandler *bes_setup(
-        const string &bes_config_file,
-        const string &bes_log_file,
-        const string &bes_debug_log_file,
-        const string &bes_debug_keys,
-        const string &http_netrc_file
-        ){
-    TheBESKeys::ConfigFile = bes_config_file; // Set the config file for TheBESKeys
-    TheBESKeys::TheKeys()->set_key("BES.LogName",bes_log_file); // Set the log file so it goes where we say.
-    TheBESKeys::TheKeys()->set_key("AllowedHosts","^https?:\\/\\/.*$", false); // Set AllowedHosts to allow any URL
-    TheBESKeys::TheKeys()->set_key("AllowedHosts","^file:\\/\\/\\/.*$", true); // Set AllowedHosts to allow any file
-
-    if(bes_debug) BESDebug::SetUp(bes_debug_log_file+","+bes_debug_keys); // Enable BESDebug settings
-
-
-    if(!http_netrc_file.empty()){
-        TheBESKeys::TheKeys()->set_key(HTTP_NETRC_FILE_KEY,http_netrc_file, false); // Set the netrc file
-    }
-
-    // Initialize the dmr++ goodness.
-    return new dmrpp::DmrppRequestHandler("Chaos");
-}
 
 
 
