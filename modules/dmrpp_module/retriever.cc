@@ -537,13 +537,10 @@ int main(int argc, char *argv[])
                                                         bes_debug_keys, http_netrc_file);
         dmrpp::DmrppRequestHandler::d_use_parallel_transfers=parallel_reads;
 
+        string effectiveUrl = curl::retrieve_effective_url(target_url)->str();
+        if(debug) cerr << prolog << "curl::retrieve_effective_url() returned:  " << effectiveUrl << endl;
 
-        http::EffectiveUrl *effectiveUrl;
-        effectiveUrl = curl::retrieve_effective_url(target_url);
-        if(debug) cerr << prolog << "curl::retrieve_effective_url() returned:  " << effectiveUrl->str() << endl;
-
-
-        size_t target_size = get_remote_size(effectiveUrl->str());
+        size_t target_size = get_remote_size(effectiveUrl);
         if(target_size < max_target_size || max_target_size==0){
             max_target_size = target_size;
         }
@@ -553,7 +550,7 @@ int main(int argc, char *argv[])
         simple_get(target_url, output_file_base);
         serial_chunky_get( target_url,  max_target_size, number_o_chunks, output_file_base);
 #endif
-        array_get(effectiveUrl->str(), max_target_size, number_o_chunks, output_file_base);
+        array_get(effectiveUrl, max_target_size, number_o_chunks, output_file_base);
 
         delete dmrppRH;
     }
