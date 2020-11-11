@@ -158,7 +158,7 @@ void simple_get(const string target_url, const string output_file_base) {
  * @param chunk_count
  * @param chunks
  */
-void make_chunks(const string &target_url, const size_t &target_size, const size_t &chunk_count, vector<dmrpp::Chunk *> &chunks){
+size_t make_chunks(const string &target_url, const size_t &target_size, const size_t &chunk_count, vector<dmrpp::Chunk *> &chunks){
     size_t chunk_size = target_size/chunk_count;
     size_t chunk_start = 0;
     size_t chunk_index;
@@ -184,7 +184,7 @@ void make_chunks(const string &target_url, const size_t &target_size, const size
         }
     }
     if(debug) cerr << prolog << "Built " << chunks.size() << " Chunk objects." << endl;
-
+    return chunk_size;
 }
 
 
@@ -198,22 +198,25 @@ void serial_chunky_get(const string target_url, const size_t target_size, const 
 
     string output_file = output_file_base + "_serial_chunky_get.out";
     vector<dmrpp::Chunk *> chunks;
-    make_chunks(target_url, target_size, chunk_count, chunks);
+    size_t chunk_size = make_chunks(target_url, target_size, chunk_count, chunks);
 
     std::ofstream fs;
     fs.open (output_file, std::fstream::in | std::fstream::out | std::ofstream::trunc | std::ofstream::binary);
     if(fs.fail())
         throw BESInternalError(prolog + "Failed to open file: "+output_file, __FILE__, __LINE__);
 
-    for(size_t i=0; i<chunks.size(); i++){
+    for(size_t i=0; i<chunks.size(); i++) {
         stringstream ss;
-        ss << prolog << "chunk[" << i <<  "]";
+        ss << prolog << "chunk={index: " << i << ", offset: " << chunks[i]->get_offset() << ", size: "
+           << chunks[i]->get_size() << "}";
+
         {
             BESStopWatch sw;
             sw.start(ss.str());
             chunks[i]->read_chunk();
         }
-        if(debug) cerr << ss.str() << " has been read from: " << target_url << endl;
+
+        if(debug) cerr << "Timed retrieval of " << ss.str() << " from: " << target_url << " completed." <<  endl;
         fs.write(chunks[i]->get_rbuf(),chunks[i]->get_rbuf_size());
         if(debug) cerr << ss.str() << " has been written to: " << output_file << endl;
     }
@@ -257,6 +260,7 @@ int main(int argc, char *argv[])
     string target_url = "https://www.opendap.org/pub/binary/hyrax-1.16/centos-7.x/bes-debuginfo-3.20.7-1.static.el7.x86_64.rpm";
     string output_file_base("retriever");
     string prefix;
+    size_t number_o_chunks = 100;
 
     char *prefixCstr = getenv("prefix");
     if(prefixCstr){
@@ -268,7 +272,7 @@ int main(int argc, char *argv[])
     auto bes_config_file = BESUtil::assemblePath(prefix, "/etc/bes/bes.conf", true);
 
 
-    GetOpt getopt(argc, argv, "c:o:u:l:dbD");
+    GetOpt getopt(argc, argv, "C:c:o:u:l:dbD");
     int option_char;
     while ((option_char = getopt()) != -1) {
         switch (option_char) {
@@ -294,6 +298,10 @@ int main(int argc, char *argv[])
             case 'o':
                 output_file_base = getopt.optarg;
                 break;
+            case 'C':
+                number_o_chunks = atol(getopt.optarg);
+                break;
+
             default:
                 break;
         }
@@ -306,10 +314,11 @@ int main(int argc, char *argv[])
     cerr << "debug: " << (debug?"true":"false") << endl;
     cerr << "Debug: " << (Debug?"true":"false") << endl;
     cerr << "bes_debug: " << (bes_debug?"true":"false") << endl;
+    cerr << "output_file_base: '" << output_file_base << "'" << endl;
     cerr << "bes_config_file: " << bes_config_file << endl;
     cerr << "bes_log_file: " << bes_log_file << endl;
     cerr << "target_url: '" << target_url << "'" << endl;
-    cerr << "output_file_base: '" << output_file_base << "'" << endl;
+    cerr << "number_o_chunks: '" << number_o_chunks << "'" << endl;
 
 
     try {
@@ -321,7 +330,7 @@ int main(int argc, char *argv[])
 
         // simple_get(target_url, output_file_base);
 
-        serial_chunky_get( target_url,  100000, 100, output_file_base);
+        serial_chunky_get( target_url,  target_size, number_o_chunks, output_file_base);
 
 
         delete dmrppRH;
