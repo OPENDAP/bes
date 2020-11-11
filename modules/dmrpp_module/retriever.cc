@@ -313,7 +313,8 @@ void array_get(const string &target_url, const size_t &target_size, const size_t
 
     {
         stringstream timer_msg;
-        timer_msg << prolog << "DmrppArray.read() for " << target_size << " bytes in " << chunk_count << " chunks.";
+        timer_msg << prolog << "DmrppArray.read() for " << target_size << " bytes in " << chunk_count <<
+        " chunks, parallel transfers are " << (dmrpp::DmrppRequestHandler::d_use_parallel_transfers?"enabled":"disabled");
         BESStopWatch sw;
         sw.start(timer_msg.str());
         // target_array->intern_data();
