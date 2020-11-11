@@ -253,7 +253,7 @@ int main(int argc, char *argv[])
 {
 
     int result = 0;
-    string bes_log_file = "retriever_bes.log";
+    string bes_log_file;
     string target_url = "https://www.opendap.org/pub/binary/hyrax-1.16/centos-7.x/bes-debuginfo-3.20.7-1.static.el7.x86_64.rpm";
     string output_file_base("retriever");
     string prefix;
@@ -274,12 +274,12 @@ int main(int argc, char *argv[])
         switch (option_char) {
             case 'D':
                 Debug = true;
+                debug = true;
                 break;
             case 'd':
                 debug = true;
                 break;
             case 'b':
-                debug = true;
                 bes_debug = true;
                 break;
             case 'c':
@@ -289,7 +289,7 @@ int main(int argc, char *argv[])
                 target_url = getopt.optarg;
                 break;
             case 'l':
-                bes_config_file = getopt.optarg;
+                bes_log_file = getopt.optarg;
                 break;
             case 'o':
                 output_file_base = getopt.optarg;
@@ -297,6 +297,10 @@ int main(int argc, char *argv[])
             default:
                 break;
         }
+    }
+
+    if(bes_log_file.empty()){
+        bes_log_file = output_file_base.append("_bes.log");
     }
 
     cerr << "debug: " << (debug?"true":"false") << endl;
