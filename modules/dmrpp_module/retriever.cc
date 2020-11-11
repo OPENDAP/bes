@@ -138,7 +138,7 @@ void simple_get(const string target_url, const string output_file_base) {
     }
     {
         BESStopWatch sw;
-        sw.start(prolog + "  url: " + target_url);
+        sw.start(prolog + "url: " + target_url);
         curl::http_get_and_write_resource(target_url, fd, &resp_hdrs); // Throws BESInternalError if there is a curl error.
     }
     close(fd);
@@ -206,9 +206,9 @@ void serial_chunky_get(const string target_url, const size_t target_size, unsign
             sw.start(ss.str());
             chunks[i]->read_chunk();
         }
-        if(debug) cerr << prolog << "chunks["<<i<<"] has been read from: " << target_url << endl;
+        if(debug) cerr << ss.str() << " has been read from: " << target_url << endl;
         fs.write(chunks[i]->get_rbuf(),chunks[i]->get_rbuf_size());
-        if(debug) cerr << prolog << "chunks["<<i<<"] has been written to: " << target_file << endl;
+        if(debug) cerr << ss.str() << " has been written to: " << target_file << endl;
     }
 
     auto itr = chunks.begin();
