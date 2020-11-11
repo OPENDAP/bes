@@ -129,11 +129,11 @@ size_t get_size(string url){
  */
 void simple_get(const string target_url, const string output_file_base) {
 
-    string target_file = output_file_base + "_simple_get.log";
+    string output_file = output_file_base + "_simple_get.log";
     vector<string> resp_hdrs;
     mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
     int fd;
-    if ((fd = open(target_file.c_str(), O_WRONLY | O_CREAT | O_TRUNC , mode)) < 0) {
+    if ((fd = open(output_file.c_str(), O_WRONLY | O_CREAT | O_TRUNC , mode)) < 0) {
         throw BESInternalError(get_errno(), __FILE__, __LINE__);
     }
     {
@@ -170,14 +170,18 @@ void make_chunks(const string target_url, const size_t target_size, unsigned chu
         chunk_start += chunk_size;
         chunks.push_back(chunk);
     }
-    size_t last_chunk_size = target_size - chunk_start;
-    if(debug) cerr << prolog << "target_size: "<<target_size<<"  last_chunk_start: " << chunk_start << " last_chunk_size: " << last_chunk_size << endl;
-    if(last_chunk_size>0){
-        vector<unsigned int> position_in_array;
-        position_in_array.push_back(chunk_index);
-        if(debug) cerr << prolog << "chunks["<<chunk_index<<"]  chunk_start: " << chunk_start << " chunk_size: " << last_chunk_size << endl;
-        auto last_chunk = new dmrpp::Chunk(target_url, "LE", last_chunk_size, chunk_start,position_in_array);
-        chunks.push_back(last_chunk);
+    if(target_size%chunk_size){
+        // So there's a remainder and we should make a final chunk for it too.
+        size_t last_chunk_size = target_size - chunk_start;
+        if(debug) cerr << prolog << "Remainder chunk. chunk[" << chunks.size() << "] last_chunk_size: " << last_chunk_size << endl;
+        if(debug) cerr << prolog << "Remainder chunk! target_size: "<<target_size<<"  index: "<< chunk_index << " last_chunk_start: " << chunk_start << " last_chunk_size: " << last_chunk_size << endl;
+        if(last_chunk_size>0){
+            vector<unsigned int> position_in_array;
+            position_in_array.push_back(chunk_index);
+            if(debug) cerr << prolog << "chunks["<<chunk_index<<"]  chunk_start: " << chunk_start << " chunk_size: " << last_chunk_size << endl;
+            auto last_chunk = new dmrpp::Chunk(target_url, "LE", last_chunk_size, chunk_start,position_in_array);
+            chunks.push_back(last_chunk);
+        }
     }
     if(debug) cerr << prolog << "Built " << chunks.size() << " Chunk objects." << endl;
 
@@ -192,14 +196,14 @@ void make_chunks(const string target_url, const size_t target_size, unsigned chu
  */
 void serial_chunky_get(const string target_url, const size_t target_size, unsigned chunk_count, string output_file_base){
 
-    string target_file = output_file_base + "_serial_chunky_get.log";
+    string output_file = output_file_base + "_serial_chunky_get.log";
     vector<dmrpp::Chunk *> chunks;
     make_chunks(target_url, target_size, chunk_count, chunks);
 
     std::ofstream fs;
-    fs.open (target_file, std::fstream::in | std::fstream::out | std::ofstream::trunc | std::ofstream::binary);
+    fs.open (output_file, std::fstream::in | std::fstream::out | std::ofstream::trunc | std::ofstream::binary);
     if(fs.fail())
-        throw BESInternalError(prolog + "Failed to open file: "+target_file, __FILE__, __LINE__);
+        throw BESInternalError(prolog + "Failed to open file: "+output_file, __FILE__, __LINE__);
 
     for(size_t i=0; i<chunks.size(); i++){
         stringstream ss;
@@ -211,18 +215,30 @@ void serial_chunky_get(const string target_url, const size_t target_size, unsign
         }
         if(debug) cerr << ss.str() << " has been read from: " << target_url << endl;
         fs.write(chunks[i]->get_rbuf(),chunks[i]->get_rbuf_size());
-        if(debug) cerr << ss.str() << " has been written to: " << target_file << endl;
+        if(debug) cerr << ss.str() << " has been written to: " << output_file << endl;
     }
 
     auto itr = chunks.begin();
     while(itr != chunks.end()){
         delete *itr;
+        *itr=0;
+        itr++;
     }
 
 }
 
 
+dmrpp::DmrppRequestHandler *setup_bes_machine(const string bes_config_file, const string bes_log_file){
+    TheBESKeys::ConfigFile = bes_config_file; // Set the config file for TheBESKeys
+    TheBESKeys::TheKeys()->set_key("BES.LogName",bes_log_file); // Set the log file so it goes where we say.
+    TheBESKeys::TheKeys()->set_key("AllowedHosts","^https?:\\/\\/.*$", false); // Set AllowedHosts to allow any URL
+    TheBESKeys::TheKeys()->set_key("AllowedHosts","^file:\\/\\/\\/.*$", true); // Set AllowedHosts to allow any file
+    if(bes_debug) BESDebug::SetUp("cerr,bes,http,curl,dmrpp"); // Enable BESDebug settings
 
+    // Initialize the dmr++ goodness.
+     return new dmrpp::DmrppRequestHandler("Chaos");
+
+}
 
 
 
@@ -237,8 +253,8 @@ int main(int argc, char *argv[])
 {
 
     int result = 0;
-    string log_file="retriever.log";
-    string target_url="https://www.opendap.org/pub/binary/hyrax-1.16/centos-7.x/bes-debuginfo-3.20.7-1.static.el7.x86_64.rpm";
+    string bes_log_file = "retriever.log";
+    string target_url = "https://www.opendap.org/pub/binary/hyrax-1.16/centos-7.x/bes-debuginfo-3.20.7-1.static.el7.x86_64.rpm";
     string output_file_base("retriever");
     string prefix;
 
@@ -249,7 +265,7 @@ int main(int argc, char *argv[])
     else {
         prefix = "/";
     }
-    auto bes_conf = BESUtil::assemblePath(prefix, "/etc/bes/bes.conf", true);
+    auto bes_config_file = BESUtil::assemblePath(prefix, "/etc/bes/bes.conf", true);
 
 
     GetOpt getopt(argc, argv, "c:o:u:l:dbD");
@@ -267,13 +283,13 @@ int main(int argc, char *argv[])
                 bes_debug = true;
                 break;
             case 'c':
-                bes_conf = getopt.optarg;
+                bes_config_file = getopt.optarg;
                 break;
             case 'u':
                 target_url = getopt.optarg;
                 break;
             case 'l':
-                log_file = getopt.optarg;
+                bes_config_file = getopt.optarg;
                 break;
             case 'o':
                 output_file_base = getopt.optarg;
@@ -284,20 +300,16 @@ int main(int argc, char *argv[])
     }
 
     cerr << "debug: " << (debug?"true":"false") << endl;
+    cerr << "Debug: " << (Debug?"true":"false") << endl;
     cerr << "bes_debug: " << (bes_debug?"true":"false") << endl;
-    cerr << "bes.conf: " << bes_conf << endl;
+    cerr << "bes_config_file: " << bes_config_file << endl;
+    cerr << "bes_log_file: " << bes_log_file << endl;
     cerr << "target_url: '" << target_url << "'" << endl;
     cerr << "output_file_base: '" << output_file_base << "'" << endl;
 
 
     try {
-        TheBESKeys::ConfigFile = bes_conf; // Set the config file for TheBESKeys
-        TheBESKeys::TheKeys()->set_key("BES.LogName",log_file); // Set the log file so it goes where we say.
-        TheBESKeys::TheKeys()->set_key("AllowedHosts","^https?:\\/\\/.*$"); // Disable AllowedHosts
-        if(bes_debug) BESDebug::SetUp("cerr,bes,http,curl,dmrpp"); // Enable BESDebug settings
-
-        // Initialize the dmr++ goodness.
-        dmrpp::DmrppRequestHandler *dmrppRH = new dmrpp::DmrppRequestHandler("Chaos");
+        dmrpp::DmrppRequestHandler *dmrppRH = setup_bes_machine(bes_config_file, bes_log_file);
 
         size_t target_size = get_size(target_url);
 
@@ -305,7 +317,7 @@ int main(int argc, char *argv[])
 
         // simple_get(target_url, output_file_base);
 
-        serial_chunky_get( target_url,  target_size, 1000, output_file_base);
+        serial_chunky_get( target_url,  100000, 100, output_file_base);
 
 
         delete dmrppRH;
