@@ -199,7 +199,13 @@ void serial_chunky_get(const string target_url, const size_t target_size, unsign
         throw BESInternalError(prolog + "Failed to open file: "+target_file, __FILE__, __LINE__);
 
     for(size_t i=0; i<chunk_count; i++){
-        chunks[i]->read_chunk();
+        stringstream ss;
+        ss << prolog << "chunk[" << i <<  "]";
+        {
+            BESStopWatch sw;
+            sw.start(ss.str());
+            chunks[i]->read_chunk();
+        }
         if(debug) cerr << prolog << "chunks["<<i<<"] has been read from: " << target_url << endl;
         fs.write(chunks[i]->get_rbuf(),chunks[i]->get_rbuf_size());
         if(debug) cerr << prolog << "chunks["<<i<<"] has been written to: " << target_file << endl;
