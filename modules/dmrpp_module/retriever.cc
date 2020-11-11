@@ -129,7 +129,7 @@ size_t get_size(string url){
  */
 void simple_get(const string target_url, const string output_file_base) {
 
-    string output_file = output_file_base + "_simple_get.log";
+    string output_file = output_file_base + "_simple_get.out";
     vector<string> resp_hdrs;
     mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
     int fd;
@@ -158,7 +158,7 @@ void simple_get(const string target_url, const string output_file_base) {
  * @param chunk_count
  * @param chunks
  */
-void make_chunks(const string target_url, const size_t target_size, unsigned chunk_count, vector<dmrpp::Chunk *> &chunks){
+void make_chunks(const string &target_url, const size_t &target_size, const size_t &chunk_count, vector<dmrpp::Chunk *> &chunks){
     size_t chunk_size = target_size/chunk_count;
     size_t chunk_start = 0;
     size_t chunk_index;
@@ -194,9 +194,9 @@ void make_chunks(const string target_url, const size_t target_size, unsigned chu
  * @param target_size
  * @param chunk_count
  */
-void serial_chunky_get(const string target_url, const size_t target_size, unsigned chunk_count, string output_file_base){
+void serial_chunky_get(const string target_url, const size_t target_size, const unsigned long chunk_count, const string output_file_base){
 
-    string output_file = output_file_base + "_serial_chunky_get.log";
+    string output_file = output_file_base + "_serial_chunky_get.out";
     vector<dmrpp::Chunk *> chunks;
     make_chunks(target_url, target_size, chunk_count, chunks);
 
@@ -300,7 +300,7 @@ int main(int argc, char *argv[])
     }
 
     if(bes_log_file.empty()){
-        bes_log_file = output_file_base.append("_bes.log");
+        bes_log_file = output_file_base + "_bes.log";
     }
 
     cerr << "debug: " << (debug?"true":"false") << endl;
