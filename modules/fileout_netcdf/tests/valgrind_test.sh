@@ -139,5 +139,6 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/simple_nc4.nc.h
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/simple_nc4.nc_constraint.h5.2.bescmd >test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/simple_nc4.nc_constraint_2.h5.2.bescmd >test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/dim_scale_smix.h5_local_constraint.2.bescmd >test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/dim_scale_dim_name_clash.h5_local_constraint.2.bescmd >test.nc
 
 rm -rf test.nc
