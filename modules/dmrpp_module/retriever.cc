@@ -159,7 +159,7 @@ void simple_get(const string target_url, const string output_file_base) {
  * @param chunks
  */
 void make_chunks(const string target_url, const size_t target_size, unsigned chunk_count, vector<dmrpp::Chunk *> &chunks){
-    size_t chunk_size = target_size/chunk_count;
+    size_t chunk_size = target_size/(chunk_count-1);
     size_t chunk_start = 0;
     size_t chunk_index;
     for(chunk_index=0; chunk_index<chunk_count; chunk_index++){
@@ -178,6 +178,8 @@ void make_chunks(const string target_url, const size_t target_size, unsigned chu
         auto last_chunk = new dmrpp::Chunk(target_url, "LE", last_chunk_size, chunk_start,position_in_array);
         chunks.push_back(last_chunk);
     }
+    if(debug) cerr << prolog << "Built " << chunks.size() << " Chunk objects." << endl;
+
 }
 
 
@@ -198,7 +200,7 @@ void serial_chunky_get(const string target_url, const size_t target_size, unsign
     if(fs.fail())
         throw BESInternalError(prolog + "Failed to open file: "+target_file, __FILE__, __LINE__);
 
-    for(size_t i=0; i<chunk_count; i++){
+    for(size_t i=0; i<chunks.size(); i++){
         stringstream ss;
         ss << prolog << "chunk[" << i <<  "]";
         {
@@ -232,8 +234,10 @@ void serial_chunky_get(const string target_url, const size_t target_size, unsign
  */
 int main(int argc, char *argv[])
 {
+
+    int result = 0;
     string log_file="retriever.log";
-    string target_url;
+    string target_url="https://www.opendap.org/pub/binary/hyrax-1.16/centos-7.x/bes-debuginfo-3.20.7-1.static.el7.x86_64.rpm";
     string output_file_base("retriever");
     string prefix;
 
@@ -286,10 +290,12 @@ int main(int argc, char *argv[])
 
 
     try {
-        TheBESKeys::ConfigFile = bes_conf;
-        TheBESKeys::TheKeys()->set_key("BES.LogName",log_file);
-        TheBESKeys::TheKeys()->set_key("AllowedHosts","^https?:\\/\\/.*$");
-        if(bes_debug) BESDebug::SetUp("cerr,bes,http,curl,dmrpp");
+        TheBESKeys::ConfigFile = bes_conf; // Set the config file for TheBESKeys
+        TheBESKeys::TheKeys()->set_key("BES.LogName",log_file); // Set the log file so it goes where we say.
+        TheBESKeys::TheKeys()->set_key("AllowedHosts","^https?:\\/\\/.*$"); // Disable AllowedHosts
+        if(bes_debug) BESDebug::SetUp("cerr,bes,http,curl,dmrpp"); // Enable BESDebug settings
+
+        // Initialize the dmr++ goodness.
         dmrpp::DmrppRequestHandler *dmrppRH = new dmrpp::DmrppRequestHandler("Chaos");
 
         size_t target_size = get_size(target_url);
@@ -304,13 +310,13 @@ int main(int argc, char *argv[])
         delete dmrppRH;
     }
     catch(BESError e){
-        cerr << "Caught BESError. Message: " << e.get_message() << " File: " << e.get_file() << " Line: "<< e.get_line() << endl;
+        cerr << "Caught BESError. Message: " << e.get_message() << "  " << e.get_file() << ":"<< e.get_line() << endl;
+        result = 1;
     }
     catch(...){
         cerr << "Caught Unknown Exception." << endl;
+        result =  2;
     }
 
-
-
-    return 0;
+    return result;
 }
