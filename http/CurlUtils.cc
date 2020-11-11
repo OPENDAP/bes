@@ -1529,7 +1529,7 @@ bool eval_curl_easy_perform_code(
      * accumulated response headers from the journey, in the order recieved.
      *
      * @param target_url The URL to follow
-     * @return A 'new' EffectiveUrl which will need to be deleted bye the caller.
+     * @return A 'new' EffectiveUrl which will need to be deleted by the caller.
      */
     http::EffectiveUrl *retrieve_effective_url(const string &target_url) {
 

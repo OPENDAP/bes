@@ -51,8 +51,13 @@
 #include "BESDebug.h"
 #include "BESStopWatch.h"
 
+#include "awsv4.h"
 #include "HttpNames.h"
+#include "EffectiveUrl.h"
+
 #include "Chunk.h"
+#include "CredentialsManager.h"
+#include "AccessCredentials.h"
 #include "CredentialsManager.h"
 #include "CurlHandlePool.h"
 #include "DmrppCommon.h"
@@ -93,8 +98,57 @@ string get_errno()
         return "Unknown error.";
 }
 
+#if 0
+void curl_stuff(const string target_url, vector<string> request_headers){
+    AccessCredentials *credentials = CredentialsManager::theCM()->get(target_url);
+    if (credentials && credentials->is_s3_cred()) {
+        if(debug) cerr << prolog << "Got AccessCredentials instance: " << endl << credentials->to_json() << endl);
+        // If there are available credentials, and they are S3 credentials then we need to sign
+        // the request
+        const std::time_t request_time = std::time(0);
 
+        const std::string auth_header =
+                AWSV4::compute_awsv4_signature(
+                        target_url,
+                        request_time,
+                        credentials->get(AccessCredentials::ID_KEY),
+                        credentials->get(AccessCredentials::KEY_KEY),
+                        credentials->get(AccessCredentials::REGION_KEY),
+                        "s3");
 
+        // passing nullptr for the first call allocates the curl_slist
+        // The following code builds the slist that holds the headers. This slist is freed
+        // once the URL is dereferenced in dmrpp_easy_handle::read_data(). jhrg 11/26/19
+        request_headers = append_http_header(0, "Authorization:", auth_header);
+        if (!handle->d_request_headers)
+            throw BESInternalError(
+                    string("CURL Error setting Authorization header: ").append(
+                            curl::error_message(res, handle->d_errbuf)), __FILE__, __LINE__);
+
+        // We pre-compute the sha256 hash of a null message body
+        curl_slist *temp = append_http_header(handle->d_request_headers, "x-amz-content-sha256:",
+                                              "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
+        if (!temp)
+            throw BESInternalError(
+                    string("CURL Error setting x-amz-content-sha256: ").append(
+                            curl::error_message(res, handle->d_errbuf)),
+                    __FILE__, __LINE__);
+        handle->d_request_headers = temp;
+
+        temp = append_http_header(handle->d_request_headers, "x-amz-date:", AWSV4::ISO8601_date(request_time));
+        if (!temp)
+            throw BESInternalError(
+                    string("CURL Error setting x-amz-date header: ").append(
+                            curl::error_message(res, handle->d_errbuf)),
+                    __FILE__, __LINE__);
+        handle->d_request_headers = temp;
+
+        // handle->d_request_headers = curl::add_auth_headers(handle->d_request_headers);
+
+        res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPHEADER, handle->d_request_headers);
+        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HTTPHEADER", handle->d_errbuf, __FILE__, __LINE__);
+}
+#endif
 
 /**
  *
@@ -105,30 +159,44 @@ size_t get_remote_size(string url){
     // TODO Use cURL to perform a HEAD on the URL and figure out how big the thing is.
     char error_buffer[CURL_ERROR_SIZE];
     std::vector<std::string> resp_hdrs;
-    CURL *ceh = curl::init(url, NULL, &resp_hdrs);
+    curl_slist *request_headers = NULL;
 
+    request_headers = curl::add_auth_headers(request_headers);
+    CURL *ceh = curl::init(url, request_headers, &resp_hdrs);
     curl::set_error_buffer(ceh, error_buffer);
 
+    // In cURLville, CURLOPT_NOBODY means a HEAD request i.e. "Don't send the response body a.k.a. NoBody"
     CURLcode curl_status = curl_easy_setopt(ceh, CURLOPT_NOBODY, 1L);
     curl::eval_curl_easy_setopt_result(curl_status, prolog, "CURLOPT_NOBODY", error_buffer, __FILE__, __LINE__);
 
     if(Debug) cerr << prolog << "HEAD request is configured" << endl;
 
+
     curl::super_easy_perform(ceh);
+    if (request_headers)
+        curl_slist_free_all(request_headers);
+    if (ceh)
+        curl_easy_cleanup(ceh);
+
     bool done = false;
+    size_t ret_val = 0;
     string content_length_hdr_key("content-length: ");
-    for(size_t i=0; i<resp_hdrs.size() ;i++){
+    for(size_t i=0; !done && i<resp_hdrs.size() ;i++){
         if(Debug) cerr << prolog << "HEADER["<<i<<"]: " << resp_hdrs[i] << endl;
         string lc_header = BESUtil::lowercase(resp_hdrs[i]);
         size_t index = lc_header.find(content_length_hdr_key);
         if(index==0){
             string value = lc_header.substr(content_length_hdr_key.size());
-            size_t ret_val = stol(value);
-            return ret_val;
+            ret_val = stol(value);
+            done = true;
         }
     }
-    throw BESInternalError(prolog + "Failed to determine size of target resource: " + url, __FILE__, __LINE__);
 
+
+    if(!done)
+        throw BESInternalError(prolog + "Failed to determine size of target resource: " + url, __FILE__, __LINE__);
+
+    return ret_val;
 }
 
 /**
@@ -250,6 +318,8 @@ void add_chunks(const string &target_url, const size_t &target_size, const size_
     if(debug) cerr << prolog << "BEGIN" << endl;
 
     size_t chunk_size = target_size/chunk_count;
+    if(chunk_size==0)
+        throw BESInternalError(prolog + "Chunk size was zero.", __FILE__, __LINE__);
     stringstream chunk_dim_size;
     chunk_dim_size << chunk_size;
     target_array->parse_chunk_dimension_sizes(chunk_dim_size.str());
@@ -296,7 +366,7 @@ void array_get(const string &target_url, const size_t &target_size, const size_t
     //auto *dim = new libdap::D4Dimension("data",target_size);
     target_array->append_dim(target_size);
     add_chunks(target_url, target_size, chunk_count, target_array);
-    target_array->set_send_p(true);
+    target_array->set_send_p(true); // Mark it to be sent so that it will be read.
 
     dmrpp::DmrppTypeFactory factory;
     dmrpp::DMRpp dmr(&factory);
@@ -313,7 +383,7 @@ void array_get(const string &target_url, const size_t &target_size, const size_t
 
     {
         stringstream timer_msg;
-        timer_msg << prolog << "DmrppArray.read() for " << target_size << " bytes in " << chunk_count <<
+        timer_msg << prolog << "DmrppD4Group.intern_data() for " << target_size << " bytes in " << chunk_count <<
         " chunks, parallel transfers are " << (dmrpp::DmrppRequestHandler::d_use_parallel_transfers?"enabled":"disabled");
         BESStopWatch sw;
         sw.start(timer_msg.str());
@@ -338,11 +408,11 @@ void array_get(const string &target_url, const size_t &target_size, const size_t
  * @return
  */
 dmrpp::DmrppRequestHandler *bes_setup(
-        const string bes_config_file,
-        const string bes_log_file,
-        const string bes_debug_log_file,
-        const string bes_debug_keys,
-        const string http_netrc_file
+        const string &bes_config_file,
+        const string &bes_log_file,
+        const string &bes_debug_log_file,
+        const string &bes_debug_keys,
+        const string &http_netrc_file
         ){
     TheBESKeys::ConfigFile = bes_config_file; // Set the config file for TheBESKeys
     TheBESKeys::TheKeys()->set_key("BES.LogName",bes_log_file); // Set the log file so it goes where we say.
@@ -352,7 +422,7 @@ dmrpp::DmrppRequestHandler *bes_setup(
     if(bes_debug) BESDebug::SetUp(bes_debug_log_file+","+bes_debug_keys); // Enable BESDebug settings
 
 
-    if(http_netrc_file.empty()){
+    if(!http_netrc_file.empty()){
         TheBESKeys::TheKeys()->set_key(HTTP_NETRC_FILE_KEY,http_netrc_file, false); // Set the netrc file
     }
 
@@ -380,6 +450,7 @@ int main(int argc, char *argv[])
     string output_file_base("retriever");
     string prefix;
     size_t number_o_chunks = 100;
+    size_t max_target_size = 0;
     string http_netrc_file;
     bool parallel_reads = false;
 
@@ -393,7 +464,7 @@ int main(int argc, char *argv[])
     auto bes_config_file = BESUtil::assemblePath(prefix, "/etc/bes/bes.conf", true);
 
 
-    GetOpt getopt(argc, argv, "n:C:c:o:u:l:dbDP");
+    GetOpt getopt(argc, argv, "n:C:c:o:u:l:S:dbDP");
     int option_char;
     while ((option_char = getopt()) != -1) {
         switch (option_char) {
@@ -428,6 +499,9 @@ int main(int argc, char *argv[])
             case 'C':
                 number_o_chunks = atol(getopt.optarg);
                 break;
+            case 'S':
+                max_target_size = atol(getopt.optarg);
+                break;
 
             default:
                 break;
@@ -459,15 +533,23 @@ int main(int argc, char *argv[])
                                                         bes_debug_keys, http_netrc_file);
         dmrpp::DmrppRequestHandler::d_use_parallel_transfers=parallel_reads;
 
-        size_t target_size = get_remote_size(target_url);
 
-        if(debug) cerr << prolog << "Remote resource is " << target_size << " bytes." << endl;
+        http::EffectiveUrl *effectiveUrl;
+        effectiveUrl = curl::retrieve_effective_url(target_url);
+        if(debug) cerr << prolog << "curl::retrieve_effective_url() returned:  " << effectiveUrl->str() << endl;
+
+
+        size_t target_size = get_remote_size(effectiveUrl->str());
+        if(target_size < max_target_size || max_target_size==0){
+            max_target_size = target_size;
+        }
+        if(debug) cerr << prolog << "Remote resource is " << target_size << " bytes.  max_target_size: " << max_target_size << endl;
 
 #if 0 // these work but are parked a.t.m.
         simple_get(target_url, output_file_base);
-        serial_chunky_get( target_url,  target_size, number_o_chunks, output_file_base);
+        serial_chunky_get( target_url,  max_target_size, number_o_chunks, output_file_base);
 #endif
-        array_get(target_url,target_size,number_o_chunks,output_file_base);
+        array_get(effectiveUrl->str(), max_target_size, number_o_chunks, output_file_base);
 
         delete dmrppRH;
     }
