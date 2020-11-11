@@ -159,7 +159,7 @@ void simple_get(const string target_url, const string output_file_base) {
  * @param chunks
  */
 void make_chunks(const string target_url, const size_t target_size, unsigned chunk_count, vector<dmrpp::Chunk *> &chunks){
-    size_t chunk_size = target_size/(chunk_count);
+    size_t chunk_size = target_size/chunk_count;
     size_t chunk_start = 0;
     size_t chunk_index;
     for(chunk_index=0; chunk_index<chunk_count; chunk_index++){
