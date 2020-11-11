@@ -171,6 +171,7 @@ void make_chunks(const string target_url, const size_t target_size, unsigned chu
         chunks.push_back(chunk);
     }
     size_t last_chunk_size = target_size - chunk_start;
+    if(debug) cerr << prolog << "target_size: "<<target_size<<"  last_chunk_start: " << chunk_start << " last_chunk_size: " << last_chunk_size << endl;
     if(last_chunk_size>0){
         vector<unsigned int> position_in_array;
         position_in_array.push_back(chunk_index);
@@ -302,7 +303,7 @@ int main(int argc, char *argv[])
 
         if(debug) cerr << prolog << "Remote resource is " << target_size << " bytes." << endl;
 
-        simple_get(target_url, output_file_base);
+        // simple_get(target_url, output_file_base);
 
         serial_chunky_get( target_url,  target_size, 1000, output_file_base);
 
