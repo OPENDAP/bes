@@ -533,6 +533,7 @@ int main(int argc, char *argv[])
     cerr  << prolog << "bes_debug_keys: '" << bes_debug_keys << "'" << endl;
     cerr  << prolog << "http_netrc_file: '" << http_netrc_file << "'" << endl;
     cerr  << prolog << "target_url: '" << target_url << "'" << endl;
+    cerr  << prolog << "max_target_size: '" << max_target_size << "'" << endl;
     cerr  << prolog << "number_o_chunks: '" << number_o_chunks << "'" << endl;
     cerr  << prolog << "parallel_reads: '" << (parallel_reads?"true":"false") << "'" << endl;
     cerr  << prolog << " -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --" << endl;
