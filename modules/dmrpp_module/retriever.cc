@@ -396,7 +396,8 @@ void array_get(const string &target_url, const size_t &target_size, const size_t
 
     auto *tmplt = new dmrpp::DmrppByte("data");
     auto *target_array = new dmrpp::DmrppArray("data",tmplt);
-    //auto *dim = new libdap::D4Dimension("data",target_size);
+    delete tmplt; // Because the Vector() constructior made a copy and it's our problem...
+
     target_array->append_dim(target_size);
     add_chunks(target_url, target_size, chunk_count, target_array);
     target_array->set_send_p(true); // Mark it to be sent so that it will be read.
