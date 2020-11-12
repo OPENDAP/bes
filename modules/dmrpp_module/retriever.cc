@@ -419,7 +419,8 @@ void array_get(const string &target_url, const size_t &target_size, const size_t
     {
         stringstream timer_msg;
         timer_msg << prolog << "DmrppD4Group.intern_data() for " << target_size << " bytes in " << chunk_count <<
-        " chunks, parallel transfers are " << (dmrpp::DmrppRequestHandler::d_use_parallel_transfers?"enabled":"disabled");
+        " chunks, parallel transfers are "
+        << (dmrpp::DmrppRequestHandler::d_use_parallel_transfers?"enabled":"disabled") << " (max: " << dmrpp::DmrppRequestHandler::d_max_parallel_transfers << ")";
         BESStopWatch sw;
         sw.start(timer_msg.str());
         // target_array->intern_data();
