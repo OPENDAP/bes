@@ -559,7 +559,7 @@ int main(int argc, char *argv[])
         serial_chunky_get( effectiveUrl,  max_target_size, number_o_chunks, output_file_base);
 #endif
         array_get(effectiveUrl, max_target_size, number_o_chunks, output_file_base);
-
+        curl_global_cleanup();
         delete dmrppRH;
     }
     catch(BESError e){
