@@ -42,6 +42,7 @@
 
 
 #include "D4Dimensions.h"
+#include "D4StreamMarshaller.h"
 
 #include "BESInternalError.h"
 #include "BESUtil.h"
@@ -306,9 +307,9 @@ void serial_chunky_get(const string target_url, const size_t target_size, const 
     vector<dmrpp::Chunk *> chunks;
     make_chunks(target_url, target_size, chunk_count, chunks);
 
-    std::ofstream fs;
-    fs.open (output_file, std::fstream::in | std::fstream::out | std::ofstream::trunc | std::ofstream::binary);
-    if(fs.fail())
+    std::ofstream ofs;
+    ofs.open (output_file, std::fstream::in | std::fstream::out | std::ofstream::trunc | std::ofstream::binary);
+    if(ofs.fail())
         throw BESInternalError(prolog + "Failed to open file: "+output_file, __FILE__, __LINE__);
 
     for(size_t i=0; i<chunks.size(); i++) {
@@ -323,7 +324,7 @@ void serial_chunky_get(const string target_url, const size_t target_size, const 
         }
 
         if(debug) cerr << ss.str() << " retrieval from: " << target_url << " completed, timing finished." <<  endl;
-        fs.write(chunks[i]->get_rbuf(),chunks[i]->get_rbuf_size());
+        ofs.write(chunks[i]->get_rbuf(),chunks[i]->get_rbuf_size());
         if(debug) cerr << ss.str() << " has been written to: " << output_file << endl;
     }
     auto itr = chunks.begin();
@@ -388,7 +389,10 @@ void array_get(const string &target_url, const size_t &target_size, const size_t
 
     if(debug) cerr << prolog << "BEGIN" << endl;
     string output_file = output_file_base + "_array_get.out";
-
+    std::ofstream ofs;
+    ofs.open (output_file, std::fstream::in | std::fstream::out | std::ofstream::trunc | std::ofstream::binary);
+    if(ofs.fail())
+        throw BESInternalError(prolog + "Failed to open file: "+output_file, __FILE__, __LINE__);
 
     auto *tmplt = new dmrpp::DmrppByte("data");
     auto *target_array = new dmrpp::DmrppArray("data",tmplt);
@@ -401,7 +405,7 @@ void array_get(const string &target_url, const size_t &target_size, const size_t
     dmrpp::DMRpp dmr(&factory);
     dmr.set_href(target_url);
     dmrpp::DmrppD4Group *root = dynamic_cast<dmrpp::DmrppD4Group *>(dmr.root());
-    root->add_var(target_array);
+    root->add_var_nocopy(target_array);
 
     if(debug){
         cerr << prolog << "Built dataset: " << endl ;
@@ -421,7 +425,11 @@ void array_get(const string &target_url, const size_t &target_size, const size_t
         root->set_in_selection(true);
         root->intern_data();
     }
-    delete target_array;
+
+    libdap::D4StreamMarshaller streamMarshaller(ofs);
+    root->serialize(streamMarshaller,dmr);
+
+    // delete target_array; // Don't have to delete this because we added it to the DMR using add_var_nocopy()
     if(debug) cerr << prolog << "END" << endl;
 }
 
