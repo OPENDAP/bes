@@ -411,7 +411,7 @@ void array_get(const string &target_url, const size_t &target_size, const size_t
         cerr << prolog << "Built dataset: " << endl ;
         dmrpp::DmrppCommon::d_print_chunks=true;
         libdap::XMLWriter xmlWriter;
-        dmr.print_dap4(xmlWriter);
+        dmr.print_dmrpp(xmlWriter,dmr.get_href());
         cerr << xmlWriter.get_doc() << endl;
     }
 
