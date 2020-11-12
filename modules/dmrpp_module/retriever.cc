@@ -548,11 +548,11 @@ int main(int argc, char *argv[])
         string effectiveUrl = http::EffectiveUrlCache::TheCache()->get_effective_url(target_url);
         if(debug) cerr << prolog << "curl::retrieve_effective_url() returned:  " << effectiveUrl << endl;
 
-        size_t target_size = 10000000; // 10MB (broken? -> get_remote_size(effectiveUrl, aws_sign_request_url);)
-        if(target_size < max_target_size || max_target_size==0){
-            max_target_size = target_size;
+        if(max_target_size==0){
+            max_target_size =  get_remote_size(effectiveUrl, aws_sign_request_url);
+            if(debug) cerr << prolog << "Remote resource size is " << max_target_size << " bytes.  " <<  endl;
         }
-        if(debug) cerr << prolog << "Remote resource is " << target_size << " bytes.  max_target_size: " << max_target_size << endl;
+
 
 #if 0 // these work but are parked a.t.m.
         simple_get(effectiveUrl, output_file_base);
