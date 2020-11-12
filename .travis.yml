@@ -10,6 +10,7 @@
 #
 # Try using Ubuntu Focal
 
+# dist: trusty
 dist: xenial
 
 language: cpp
