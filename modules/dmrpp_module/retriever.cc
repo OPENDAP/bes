@@ -453,7 +453,7 @@ int main(int argc, char *argv[])
     int result = 0;
     string bes_log_file;
     string bes_debug_log_file = "cerr";
-    string bes_debug_keys = "bes,http,curl,dmrpp";
+    string bes_debug_keys = "bes,http,curl,dmrpp,dmrpp:4";
     string target_url = "https://www.opendap.org/pub/binary/hyrax-1.16/centos-7.x/bes-debuginfo-3.20.7-1.static.el7.x86_64.rpm";
     string output_file_base("retriever");
     string prefix;
@@ -538,6 +538,7 @@ int main(int argc, char *argv[])
     cerr  << prolog << "max_target_size: '" << max_target_size << "'" << endl;
     cerr  << prolog << "number_o_chunks: '" << number_o_chunks << "'" << endl;
     cerr  << prolog << "parallel_reads: '" << (parallel_reads?"true":"false") << "'" << endl;
+    cerr << prolog << "max_parallel_transfers = " << dmrpp::DmrppRequestHandler::d_max_parallel_transfers << endl;
     cerr  << prolog << " -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --" << endl;
 
 
@@ -545,10 +546,6 @@ int main(int argc, char *argv[])
         dmrpp::DmrppRequestHandler *dmrppRH = bes_setup(bes_config_file, bes_log_file, bes_debug_log_file,
                                                         bes_debug_keys, http_netrc_file);
         dmrpp::DmrppRequestHandler::d_use_parallel_transfers=parallel_reads;
-        if(debug)
-            cerr << prolog << "dmrpp::DmrppRequestHandler::d_max_parallel_transfers = "
-            << dmrpp::DmrppRequestHandler::d_max_parallel_transfers << endl;
-
 
         string effectiveUrl = http::EffectiveUrlCache::TheCache()->get_effective_url(target_url);
         if(debug) cerr << prolog << "curl::retrieve_effective_url() returned:  " << effectiveUrl << endl;
