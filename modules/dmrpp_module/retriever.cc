@@ -396,7 +396,7 @@ void array_get(const string &target_url, const size_t &target_size, const size_t
 
     auto *tmplt = new dmrpp::DmrppByte("data");
     auto *target_array = new dmrpp::DmrppArray("data",tmplt);
-    delete tmplt; // Because the Vector() constructior made a copy and it's our problem...
+    delete tmplt; // Because the Vector() constructor made a copy and it's our problem...
 
     target_array->append_dim(target_size);
     add_chunks(target_url, target_size, chunk_count, target_array);
@@ -451,8 +451,8 @@ int main(int argc, char *argv[])
 
     int result = 0;
     string bes_log_file;
-    string bes_debug_log_file="cerr";
-    string bes_debug_keys="bes,http,curl,dmrpp";
+    string bes_debug_log_file = "cerr";
+    string bes_debug_keys = "bes,http,curl,dmrpp";
     string target_url = "https://www.opendap.org/pub/binary/hyrax-1.16/centos-7.x/bes-debuginfo-3.20.7-1.static.el7.x86_64.rpm";
     string output_file_base("retriever");
     string prefix;
@@ -544,6 +544,9 @@ int main(int argc, char *argv[])
         dmrpp::DmrppRequestHandler *dmrppRH = bes_setup(bes_config_file, bes_log_file, bes_debug_log_file,
                                                         bes_debug_keys, http_netrc_file);
         dmrpp::DmrppRequestHandler::d_use_parallel_transfers=parallel_reads;
+        if(debug)
+            cerr << prolog << "dmrpp::DmrppRequestHandler::d_max_parallel_transfers = "
+            << dmrpp::DmrppRequestHandler::d_max_parallel_transfers << endl;
 
 
         string effectiveUrl = http::EffectiveUrlCache::TheCache()->get_effective_url(target_url);
