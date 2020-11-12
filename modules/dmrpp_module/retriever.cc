@@ -193,11 +193,11 @@ size_t get_remote_size(string url, bool aws_signing){
     CURL *ceh = curl::init(url, request_headers, &resp_hdrs);
     curl::set_error_buffer(ceh, error_buffer);
 
-    // In cURLville, CURLOPT_NOBODY means a HEAD request i.e. "Don't send the response body a.k.a. NoBody"
+    // In cURLville, CURLOPT_NOBODY means a HEAD request i.e. Don't send the response body a.k.a. "NoBody"
     CURLcode curl_status = curl_easy_setopt(ceh, CURLOPT_NOBODY, 1L);
     curl::eval_curl_easy_setopt_result(curl_status, prolog, "CURLOPT_NOBODY", error_buffer, __FILE__, __LINE__);
 
-    if(Debug) cerr << prolog << "HEAD request is configured" << endl;
+    if(Debug) cerr << prolog << "cURL HEAD request is configured" << endl;
 
     curl::super_easy_perform(ceh);
 
@@ -539,7 +539,7 @@ int main(int argc, char *argv[])
         string effectiveUrl = http::EffectiveUrlCache::TheCache()->get_effective_url(target_url);
         if(debug) cerr << prolog << "curl::retrieve_effective_url() returned:  " << effectiveUrl << endl;
 
-        size_t target_size = get_remote_size(effectiveUrl, aws_sign_request_url);
+        size_t target_size = 10000000; // 10MB (broken? -> get_remote_size(effectiveUrl, aws_sign_request_url);)
         if(target_size < max_target_size || max_target_size==0){
             max_target_size = target_size;
         }
