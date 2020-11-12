@@ -54,6 +54,7 @@
 #include "awsv4.h"
 #include "HttpNames.h"
 #include "EffectiveUrl.h"
+#include "EffectiveUrlCache.h"
 
 #include "Chunk.h"
 #include "CredentialsManager.h"
@@ -83,6 +84,7 @@ using std::string;
 
 #define prolog std::string("retriever::").append(__func__).append("() - ")
 
+#define NULL_BODY_HASH "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 
 /**
@@ -116,28 +118,34 @@ dmrpp::DmrppRequestHandler *bes_setup(
         const string &bes_debug_keys,
         const string &http_netrc_file
 ){
+    if (debug) cerr << prolog << "BEGIN" << endl;
+
     TheBESKeys::ConfigFile = bes_config_file; // Set the config file for TheBESKeys
-    TheBESKeys::TheKeys()->set_key("BES.LogName",bes_log_file); // Set the log file so it goes where we say.
-    TheBESKeys::TheKeys()->set_key("AllowedHosts","^https?:\\/\\/.*$", false); // Set AllowedHosts to allow any URL
-    TheBESKeys::TheKeys()->set_key("AllowedHosts","^file:\\/\\/\\/.*$", true); // Set AllowedHosts to allow any file
+    TheBESKeys::TheKeys()->set_key("BES.LogName", bes_log_file); // Set the log file so it goes where we say.
+    TheBESKeys::TheKeys()->set_key("AllowedHosts", "^https?:\\/\\/.*$", false); // Set AllowedHosts to allow any URL
+    TheBESKeys::TheKeys()->set_key("AllowedHosts", "^file:\\/\\/\\/.*$", true); // Set AllowedHosts to allow any file
 
-    if(bes_debug) BESDebug::SetUp(bes_debug_log_file+","+bes_debug_keys); // Enable BESDebug settings
+    if (bes_debug) BESDebug::SetUp(bes_debug_log_file + "," + bes_debug_keys); // Enable BESDebug settings
 
 
-    if(!http_netrc_file.empty()){
-        TheBESKeys::TheKeys()->set_key(HTTP_NETRC_FILE_KEY,http_netrc_file, false); // Set the netrc file
+    if (!http_netrc_file.empty()) {
+        TheBESKeys::TheKeys()->set_key(HTTP_NETRC_FILE_KEY, http_netrc_file, false); // Set the netrc file
     }
 
     // Initialize the dmr++ goodness.
-    return new dmrpp::DmrppRequestHandler("Chaos");
+    auto foo = new dmrpp::DmrppRequestHandler("Chaos");
+
+    if (debug) cerr << prolog << "END" << endl;
+    return foo;
 }
 
+curl_slist *aws_sign_request_url(const string &target_url, curl_slist *request_headers){
 
-#if 0
-void curl_stuff(const string target_url, vector<string> request_headers){
+    if (debug) cerr << prolog << "BEGIN" << endl;
+
     AccessCredentials *credentials = CredentialsManager::theCM()->get(target_url);
     if (credentials && credentials->is_s3_cred()) {
-        if(debug) cerr << prolog << "Got AccessCredentials instance: " << endl << credentials->to_json() << endl);
+        if (debug) cerr << prolog << "Got AWS S3 AccessCredentials instance: " << endl << credentials->to_json() << endl;
         // If there are available credentials, and they are S3 credentials then we need to sign
         // the request
         const std::time_t request_time = std::time(0);
@@ -154,49 +162,34 @@ void curl_stuff(const string target_url, vector<string> request_headers){
         // passing nullptr for the first call allocates the curl_slist
         // The following code builds the slist that holds the headers. This slist is freed
         // once the URL is dereferenced in dmrpp_easy_handle::read_data(). jhrg 11/26/19
-        request_headers = append_http_header(0, "Authorization:", auth_header);
-        if (!handle->d_request_headers)
-            throw BESInternalError(
-                    string("CURL Error setting Authorization header: ").append(
-                            curl::error_message(res, handle->d_errbuf)), __FILE__, __LINE__);
+        request_headers = curl::append_http_header(request_headers, "Authorization", auth_header);
 
         // We pre-compute the sha256 hash of a null message body
-        curl_slist *temp = append_http_header(handle->d_request_headers, "x-amz-content-sha256:",
-                                              "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
-        if (!temp)
-            throw BESInternalError(
-                    string("CURL Error setting x-amz-content-sha256: ").append(
-                            curl::error_message(res, handle->d_errbuf)),
-                    __FILE__, __LINE__);
-        handle->d_request_headers = temp;
+        request_headers = curl::append_http_header(request_headers, "x-amz-content-sha256", NULL_BODY_HASH);
+        request_headers = curl::append_http_header(request_headers, "x-amz-date", AWSV4::ISO8601_date(request_time));
 
-        temp = append_http_header(handle->d_request_headers, "x-amz-date:", AWSV4::ISO8601_date(request_time));
-        if (!temp)
-            throw BESInternalError(
-                    string("CURL Error setting x-amz-date header: ").append(
-                            curl::error_message(res, handle->d_errbuf)),
-                    __FILE__, __LINE__);
-        handle->d_request_headers = temp;
-
-        // handle->d_request_headers = curl::add_auth_headers(handle->d_request_headers);
-
-        res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPHEADER, handle->d_request_headers);
-        curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HTTPHEADER", handle->d_errbuf, __FILE__, __LINE__);
+    }
+    if (debug) cerr << prolog << "END" << endl;
+    return request_headers;
 }
-#endif
 
 /**
  *
  * @param url
  * @return
  */
-size_t get_remote_size(string url){
-    // TODO Use cURL to perform a HEAD on the URL and figure out how big the thing is.
+size_t get_remote_size(string url, bool aws_signing){
+    if (debug) cerr << prolog << "BEGIN" << endl;
+
     char error_buffer[CURL_ERROR_SIZE];
     std::vector<std::string> resp_hdrs;
     curl_slist *request_headers = NULL;
 
     request_headers = curl::add_auth_headers(request_headers);
+
+    if (aws_signing)
+        request_headers = aws_sign_request_url(url,request_headers);
+
     CURL *ceh = curl::init(url, request_headers, &resp_hdrs);
     curl::set_error_buffer(ceh, error_buffer);
 
@@ -206,15 +199,16 @@ size_t get_remote_size(string url){
 
     if(Debug) cerr << prolog << "HEAD request is configured" << endl;
 
-
     curl::super_easy_perform(ceh);
+
+    curl::unset_error_buffer(ceh);
     if (request_headers)
         curl_slist_free_all(request_headers);
     if (ceh)
         curl_easy_cleanup(ceh);
 
     bool done = false;
-    size_t ret_val = 0;
+    size_t how_big_it_is = 0;
     string content_length_hdr_key("content-length: ");
     for(size_t i=0; !done && i<resp_hdrs.size() ;i++){
         if(Debug) cerr << prolog << "HEADER["<<i<<"]: " << resp_hdrs[i] << endl;
@@ -222,16 +216,16 @@ size_t get_remote_size(string url){
         size_t index = lc_header.find(content_length_hdr_key);
         if(index==0){
             string value = lc_header.substr(content_length_hdr_key.size());
-            ret_val = stol(value);
+            how_big_it_is = stol(value);
             done = true;
         }
     }
-
-
     if(!done)
         throw BESInternalError(prolog + "Failed to determine size of target resource: " + url, __FILE__, __LINE__);
 
-    return ret_val;
+    if (debug) cerr << prolog << "END" << endl;
+
+    return how_big_it_is;
 }
 
 /**
@@ -457,6 +451,7 @@ int main(int argc, char *argv[])
     size_t max_target_size = 0;
     string http_netrc_file;
     bool parallel_reads = false;
+    bool aws_sign_request_url = false;
 
     char *prefixCstr = getenv("prefix");
     if(prefixCstr){
@@ -468,7 +463,7 @@ int main(int argc, char *argv[])
     auto bes_config_file = BESUtil::assemblePath(prefix, "/etc/bes/bes.conf", true);
 
 
-    GetOpt getopt(argc, argv, "n:C:c:o:u:l:S:dbDP");
+    GetOpt getopt(argc, argv, "n:C:c:o:u:l:S:dbDPA");
     int option_char;
     while ((option_char = getopt()) != -1) {
         switch (option_char) {
@@ -484,6 +479,9 @@ int main(int argc, char *argv[])
                 break;
             case 'P':
                 parallel_reads = true;
+                break;
+            case 'A':
+                aws_sign_request_url = true;
                 break;
             case 'c':
                 bes_config_file = getopt.optarg;
@@ -537,18 +535,19 @@ int main(int argc, char *argv[])
                                                         bes_debug_keys, http_netrc_file);
         dmrpp::DmrppRequestHandler::d_use_parallel_transfers=parallel_reads;
 
-        string effectiveUrl = curl::retrieve_effective_url(target_url)->str();
+
+        string effectiveUrl = http::EffectiveUrlCache::TheCache()->get_effective_url(target_url);
         if(debug) cerr << prolog << "curl::retrieve_effective_url() returned:  " << effectiveUrl << endl;
 
-        size_t target_size = get_remote_size(effectiveUrl);
+        size_t target_size = get_remote_size(effectiveUrl, aws_sign_request_url);
         if(target_size < max_target_size || max_target_size==0){
             max_target_size = target_size;
         }
         if(debug) cerr << prolog << "Remote resource is " << target_size << " bytes.  max_target_size: " << max_target_size << endl;
 
 #if 0 // these work but are parked a.t.m.
-        simple_get(target_url, output_file_base);
-        serial_chunky_get( target_url,  max_target_size, number_o_chunks, output_file_base);
+        simple_get(effectiveUrl, output_file_base);
+        serial_chunky_get( effectiveUrl,  max_target_size, number_o_chunks, output_file_base);
 #endif
         array_get(effectiveUrl, max_target_size, number_o_chunks, output_file_base);
 
