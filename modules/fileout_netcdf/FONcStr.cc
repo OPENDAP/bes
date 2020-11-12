@@ -29,12 +29,14 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <sstream>
 #include <Str.h>
 
 #include <BESInternalError.h>
 #include <BESDebug.h>
 
 #include "FONcStr.h"
+#include "FONcDim.h"
 #include "FONcUtils.h"
 #include "FONcAttributes.h"
 
@@ -86,7 +88,15 @@ void FONcStr::define(int ncid)
         _str->buf2val((void**) &_data);
         int size = _data->size() + 1;
 
-        string dimname = _varname + "_len";
+        string dimname;
+        if(is_dap4_group == true) {
+            ostringstream dim_suffix_strm;
+            dim_suffix_strm <<"_len"<<FONcDim::DimNameNum +1;
+            FONcDim::DimNameNum++;
+            dimname = _varname+dim_suffix_strm.str();
+        }
+        else 
+            dimname = _varname + "_len";
         int stax = nc_def_dim(ncid, dimname.c_str(), size, &_dimid);
         if (stax != NC_NOERR) {
             string err = (string) "fileout.netcdf - " + "Failed to define dim " + dimname + " for " + _varname;

@@ -29,7 +29,7 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-
+#include <sstream>
 #include <BESInternalError.h>
 #include <BESDebug.h>
 
@@ -219,7 +219,18 @@ void FONcArray::convert(vector<string> embed,bool is_dap4_group)
         }
         max_length++;
         vector<string> empty_embed;
-        string lendim_name = _varname + "_len";
+        string lendim_name;
+        if(is_dap4_group == true) {
+            //lendim_name = _varname + "_len";
+            ostringstream dim_suffix_strm;
+            dim_suffix_strm <<"_len"<<FONcDim::DimNameNum +1;
+            FONcDim::DimNameNum++;
+            lendim_name = _varname+dim_suffix_strm.str();
+
+        }
+        else 
+            lendim_name = _varname + "_len";
+
 
         FONcDim *use_dim = find_dim(empty_embed, lendim_name, max_length, true);
         // Added static_cast to suppress warning. 12.27.2011 jhrg
