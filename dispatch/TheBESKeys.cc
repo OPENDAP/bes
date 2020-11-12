@@ -68,15 +68,13 @@ set<string> TheBESKeys::d_ingested_key_files;
 TheBESKeys *TheBESKeys::d_instance = 0;
 string TheBESKeys::ConfigFile = "";
 
-
-void TheBESKeys::initialize_instance(){
-    #ifdef HAVE_ATEXIT
-        atexit(delete_instance);
-    #endif
+TheBESKeys *TheBESKeys::TheKeys()
+{
+    if (d_instance) return d_instance;
 
     if (!TheBESKeys::ConfigFile.empty()) {
         d_instance = new TheBESKeys(TheBESKeys::ConfigFile);
-        return;
+        return d_instance;
     }
 
     // d_instance is a nullptr and TheBESKeys::ConfigFile is ""
@@ -86,36 +84,23 @@ void TheBESKeys::initialize_instance(){
     if (access(try_ini.c_str(), R_OK) == 0) {
         TheBESKeys::ConfigFile = try_ini;
         d_instance = new TheBESKeys(TheBESKeys::ConfigFile);
-        return;
+        return d_instance;
     }
 
     try_ini = "/etc/bes/bes.conf";
     if (access(try_ini.c_str(), R_OK) == 0) {
         TheBESKeys::ConfigFile = try_ini;
         d_instance = new TheBESKeys(TheBESKeys::ConfigFile);
-        return;
+        return d_instance;
     }
 
     try_ini = "/usr/etc/bes/bes.conf";
     if (access(try_ini.c_str(), R_OK) == 0) {
         TheBESKeys::ConfigFile = try_ini;
         d_instance = new TheBESKeys(TheBESKeys::ConfigFile);
-        return;
-    }
-    throw BESInternalFatalError("Unable to locate a BES configuration file.", __FILE__, __LINE__);
-
-}
-void TheBESKeys::delete_instance() {
-    delete d_instance;
-    d_instance = 0;
-}
-
-TheBESKeys *TheBESKeys::TheKeys()
-{
-    if (d_instance == 0) {
-        initialize_instance();
-    }
     return d_instance;
+}
+    throw BESInternalFatalError("Unable to locate a BES configuration file.", __FILE__, __LINE__);
 }
 
 /** @brief default constructor that reads loads key/value pairs from the
