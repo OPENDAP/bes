@@ -101,6 +101,10 @@ short update_sha256_file(char* m_dmrpp_fname,char* m_h5_fname,char* m_sha256_fna
     // If the recording file that stores thesha256 doesn't exist, 
     // just create this file and write the sha256 etc information to the file.
 
+    /* removed 11.10.20 SBL
+     * removed due to sonarcloud claiming that having the following before the if statement on ln 126
+     * causes a race condition and a security vulnerability
+    */
     //if(access(m_sha256_fname,F_OK)==-1)
     //    return write_sha256_file(m_dmrpp_fname,m_h5_fname,m_sha256_fname,sha256_buf);
 
@@ -115,6 +119,10 @@ short update_sha256_file(char* m_dmrpp_fname,char* m_h5_fname,char* m_sha256_fna
     short ret_value = 1;
     ifstream sha_fstream;
     sha_fstream.open(m_sha256_fname,ifstream::in);
+    /* added 11.10.20 SBL
+     * added check to fix race condition vulnerability detected by SonarCloud
+     * checks if stream was opened correctly and if not creates the file and opens again
+     */
     if (!sha_fstream.is_open()){
         write_sha256_file(m_dmrpp_fname,m_h5_fname,m_sha256_fname,sha256_buf);
         sha_fstream.open(m_sha256_fname,ifstream::in);
