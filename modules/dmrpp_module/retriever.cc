@@ -419,8 +419,13 @@ void array_get(const string &target_url, const size_t &target_size, const size_t
     {
         stringstream timer_msg;
         timer_msg << prolog << "DmrppD4Group.intern_data() for " << target_size << " bytes in " << chunk_count <<
-        " chunks, parallel transfers are "
-        << (dmrpp::DmrppRequestHandler::d_use_parallel_transfers?"enabled":"disabled") << " (max: " << dmrpp::DmrppRequestHandler::d_max_parallel_transfers << ")";
+        " chunks, parallel transfers ";
+        if(dmrpp::DmrppRequestHandler::d_use_parallel_transfers){
+            timer_msg << "enabled.  (max: " << dmrpp::DmrppRequestHandler::d_max_parallel_transfers << ")";
+        }
+        else {
+            timer_msg << "disabled.";
+        }
         BESStopWatch sw;
         sw.start(timer_msg.str());
         // target_array->intern_data();
@@ -460,7 +465,7 @@ int main(int argc, char *argv[])
     size_t number_o_chunks = 100;
     size_t max_target_size = 0;
     string http_netrc_file;
-    bool parallel_reads = false;
+    unsigned  parallel_reads = 0;
     bool aws_sign_request_url = false;
 
     char *prefixCstr = getenv("prefix");
@@ -473,7 +478,7 @@ int main(int argc, char *argv[])
     auto bes_config_file = BESUtil::assemblePath(prefix, "/etc/bes/bes.conf", true);
 
 
-    GetOpt getopt(argc, argv, "n:C:c:o:u:l:S:dbDPA");
+    GetOpt getopt(argc, argv, "n:C:c:o:u:l:S:dbDp:A");
     int option_char;
     while ((option_char = getopt()) != -1) {
         switch (option_char) {
@@ -486,9 +491,6 @@ int main(int argc, char *argv[])
                 break;
             case 'b':
                 bes_debug = true;
-                break;
-            case 'P':
-                parallel_reads = true;
                 break;
             case 'A':
                 aws_sign_request_url = true;
@@ -514,6 +516,9 @@ int main(int argc, char *argv[])
             case 'S':
                 max_target_size = atol(getopt.optarg);
                 break;
+            case 'p':
+                parallel_reads = atol(getopt.optarg);
+                break;
 
             default:
                 break;
@@ -537,15 +542,20 @@ int main(int argc, char *argv[])
     cerr  << prolog << "target_url: '" << target_url << "'" << endl;
     cerr  << prolog << "max_target_size: '" << max_target_size << "'" << endl;
     cerr  << prolog << "number_o_chunks: '" << number_o_chunks << "'" << endl;
-    cerr  << prolog << "parallel_reads: '" << (parallel_reads?"true":"false") << "'" << endl;
-    cerr << prolog << "max_parallel_transfers = " << dmrpp::DmrppRequestHandler::d_max_parallel_transfers << endl;
+    if(parallel_reads)
+        cerr  << prolog << "parallel_reads: ENABLED (max_threads: " << parallel_reads << ")" << endl;
+    else
+        cerr  << prolog << "parallel_reads: DISABLED"  << endl;
     cerr  << prolog << " -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --" << endl;
 
 
     try {
         dmrpp::DmrppRequestHandler *dmrppRH = bes_setup(bes_config_file, bes_log_file, bes_debug_log_file,
                                                         bes_debug_keys, http_netrc_file);
-        dmrpp::DmrppRequestHandler::d_use_parallel_transfers=parallel_reads;
+        if(parallel_reads) {
+            dmrpp::DmrppRequestHandler::d_use_parallel_transfers = true;
+            dmrpp::DmrppRequestHandler::d_max_parallel_transfers = parallel_reads;
+        }
 
         string effectiveUrl = http::EffectiveUrlCache::TheCache()->get_effective_url(target_url);
         if(debug) cerr << prolog << "curl::retrieve_effective_url() returned:  " << effectiveUrl << endl;
