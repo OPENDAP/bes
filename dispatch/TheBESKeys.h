@@ -106,6 +106,9 @@ private:
     void clean();
 
     void initialize_keys();
+    static void initialize_instance();
+    static void  delete_instance();
+
 
 
 #if 0
