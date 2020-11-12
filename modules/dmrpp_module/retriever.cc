@@ -529,7 +529,7 @@ int main(int argc, char *argv[])
         bes_log_file = output_file_base + "_bes.log";
     }
 
-    cerr  << prolog << "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --" << endl;
+    cerr  << prolog << "-- - -- - -- - -- - -- - -- - -- - -- - -- - -- - -- - -- - -- - -- - -- - " << endl;
     cerr  << prolog << "debug: " << (debug?"true":"false") << endl;
     cerr  << prolog << "Debug: " << (Debug?"true":"false") << endl;
     cerr  << prolog << "bes_debug: " << (bes_debug?"true":"false") << endl;
@@ -546,7 +546,7 @@ int main(int argc, char *argv[])
         cerr  << prolog << "parallel_reads: ENABLED (max_threads: " << parallel_reads << ")" << endl;
     else
         cerr  << prolog << "parallel_reads: DISABLED"  << endl;
-    cerr  << prolog << " -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --" << endl;
+    cerr  << prolog << "-- - -- - -- - -- - -- - -- - -- - -- - -- - -- - -- - -- - -- - -- - -- - " << endl;
 
 
     try {
