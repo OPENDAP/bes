@@ -556,6 +556,9 @@ int main(int argc, char *argv[])
             dmrpp::DmrppRequestHandler::d_use_parallel_transfers = true;
             dmrpp::DmrppRequestHandler::d_max_parallel_transfers = parallel_reads;
         }
+        else {
+            dmrpp::DmrppRequestHandler::d_use_parallel_transfers = false;
+        }
 
         string effectiveUrl = http::EffectiveUrlCache::TheCache()->get_effective_url(target_url);
         if(debug) cerr << prolog << "curl::retrieve_effective_url() returned:  " << effectiveUrl << endl;
