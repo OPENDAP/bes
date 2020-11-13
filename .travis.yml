@@ -88,7 +88,7 @@ stages:
   - name: build
     if:  branch = master
   - name: scan
-    if:  branch = master AND NOT type = pull_request
+    if:  branch = master
   - name: package
     if:  branch = master OR branch = travis
 
