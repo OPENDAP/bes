@@ -70,6 +70,7 @@ class BESStopWatch : public BESObj
     unsigned long int get_start_us();
     unsigned long int get_stop_us();
     bool get_time_of_day(struct timeval &time_val);
+	void report();
 
  public:
 

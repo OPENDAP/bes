@@ -196,7 +196,7 @@ namespace ngap {
         http::RemoteResource cmr_query(cmr_url, uid);
         {
             BESStopWatch besTimer;
-            if (BESISDEBUG(MODULE) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()){
+            if (BESISDEBUG(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()){
                 besTimer.start("CMR Query: " + cmr_url);
             }
             cmr_query.retrieveResource();

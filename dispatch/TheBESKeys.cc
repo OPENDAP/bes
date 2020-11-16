@@ -98,8 +98,8 @@ TheBESKeys *TheBESKeys::TheKeys()
     if (access(try_ini.c_str(), R_OK) == 0) {
         TheBESKeys::ConfigFile = try_ini;
         d_instance = new TheBESKeys(TheBESKeys::ConfigFile);
-        return d_instance;
-    }
+    return d_instance;
+}
     throw BESInternalFatalError("Unable to locate a BES configuration file.", __FILE__, __LINE__);
 }
 

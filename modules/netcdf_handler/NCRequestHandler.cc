@@ -247,7 +247,7 @@ NCRequestHandler::~NCRequestHandler()
 bool NCRequestHandler::nc_build_das(BESDataHandlerInterface & dhi)
 {
 	BESStopWatch sw;
-	if (BESISDEBUG(TIMING_LOG_KEY ))
+	if (BESDebug::IsSet(TIMING_LOG_KEY))
 		sw.start("NCRequestHandler::nc_build_das", dhi.data[REQUEST_ID]);
 
     BESDEBUG(NC_NAME, prolog << "BEGIN" << endl);
@@ -394,7 +394,7 @@ bool NCRequestHandler::nc_build_dds(BESDataHandlerInterface & dhi)
 {
 
 	BESStopWatch sw;
-	if (BESISDEBUG(TIMING_LOG_KEY ))
+	if (BESDebug::IsSet(TIMING_LOG_KEY))
 		sw.start("NCRequestHandler::nc_build_dds", dhi.data[REQUEST_ID]);
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
@@ -456,7 +456,7 @@ bool NCRequestHandler::nc_build_dds(BESDataHandlerInterface & dhi)
 bool NCRequestHandler::nc_build_data(BESDataHandlerInterface & dhi)
 {
 	BESStopWatch sw;
-	if (BESISDEBUG(TIMING_LOG_KEY ))
+	if (BESDebug::IsSet(TIMING_LOG_KEY))
 		sw.start("NCRequestHandler::nc_build_data", dhi.data[REQUEST_ID]);
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
@@ -516,7 +516,7 @@ bool NCRequestHandler::nc_build_data(BESDataHandlerInterface & dhi)
 bool NCRequestHandler::nc_build_dmr(BESDataHandlerInterface &dhi)
 {
 	BESStopWatch sw;
-	if (BESISDEBUG(TIMING_LOG_KEY ))
+	if (BESDebug::IsSet(TIMING_LOG_KEY))
 		sw.start("NCRequestHandler::nc_build_dmr", dhi.data[REQUEST_ID]);
 
     // Extract the DMR Response object - this holds the DMR used by the
@@ -615,7 +615,7 @@ bool NCRequestHandler::nc_build_dmr(BESDataHandlerInterface &dhi)
 bool NCRequestHandler::nc_build_help(BESDataHandlerInterface & dhi)
 {
 	BESStopWatch sw;
-	if (BESISDEBUG(TIMING_LOG_KEY ))
+	if (BESDebug::IsSet(TIMING_LOG_KEY))
 		sw.start("NCRequestHandler::nc_build_help", dhi.data[REQUEST_ID]);
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
@@ -645,7 +645,7 @@ bool NCRequestHandler::nc_build_help(BESDataHandlerInterface & dhi)
 bool NCRequestHandler::nc_build_version(BESDataHandlerInterface & dhi)
 {
 	BESStopWatch sw;
-	if (BESISDEBUG(TIMING_LOG_KEY ))
+	if (BESDebug::IsSet(TIMING_LOG_KEY))
 		sw.start("NCRequestHandler::nc_build_version", dhi.data[REQUEST_ID]);
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
