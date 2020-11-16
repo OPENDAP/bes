@@ -366,116 +366,6 @@ void serial_chunky_get(const string &target_url, const size_t target_size, const
 }
 
 
-/**
- *
- * @param target_url
- * @param target_size
- * @param chunk_count
- */
-void add_chunks(const string &target_url, const size_t &target_size, const size_t &chunk_count,
-                dmrpp::DmrppArray *target_array) {
-
-    if (debug) cerr << prolog << "BEGIN" << endl;
-
-    size_t chunk_size = target_size / chunk_count;
-    if (chunk_size == 0)
-        throw BESInternalError(prolog + "Chunk size was zero.", __FILE__, __LINE__);
-    stringstream chunk_dim_size;
-    chunk_dim_size << chunk_size;
-    target_array->parse_chunk_dimension_sizes(chunk_dim_size.str());
-
-    size_t chunk_start = 0;
-    size_t chunk_index;
-    for (chunk_index = 0; chunk_index < chunk_count; chunk_index++) {
-        vector<unsigned int> position_in_array;
-        position_in_array.push_back(chunk_start);
-        if (debug)
-            cerr << prolog << "chunks[" << chunk_index << "]  chunk_start: " << chunk_start << " chunk_size: "
-                 << chunk_size << " chunk_poa: " << position_in_array[0] << endl;
-        target_array->add_chunk(target_url, "LE", chunk_size, chunk_start, position_in_array);
-        chunk_start += chunk_size;
-    }
-    if (target_size % chunk_size) {
-        // So there's a remainder and we should make a final chunk for it too.
-        size_t last_chunk_size = target_size - chunk_start;
-        if (debug)
-            cerr << prolog << "Remainder chunk! target_size: " << target_size << "  index: " << chunk_index
-                 << " last_chunk_start: " << chunk_start << " last_chunk_size: " << last_chunk_size << endl;
-        if (last_chunk_size > 0) {
-            vector<unsigned int> position_in_array;
-            position_in_array.push_back(chunk_start);
-            if (debug)
-                cerr << prolog << "chunks[" << chunk_index << "]  chunk_start: " << chunk_start << " chunk_size: "
-                     << last_chunk_size << " chunk_poa: " << position_in_array[0] << endl;
-            target_array->add_chunk(target_url, "LE", last_chunk_size, chunk_start, position_in_array);
-        }
-    }
-    if (debug) cerr << prolog << "END" << endl;
-}
-
-
-/**
- *
- * @param target_url
- * @param target_size
- * @param chunk_count
- * @param output_file_base
- */
-void array_get(const string &target_url, const size_t &target_size, const size_t &chunk_count,
-               const string &output_file_base) {
-
-    if (debug) cerr << prolog << "BEGIN" << endl;
-    string output_file = output_file_base + "_array_get.out";
-    std::ofstream ofs;
-    ofs.open(output_file, std::fstream::in | std::fstream::out | std::ofstream::trunc | std::ofstream::binary);
-    if (ofs.fail())
-        throw BESInternalError(prolog + "Failed to open file: " + output_file, __FILE__, __LINE__);
-
-    auto *tmplt = new dmrpp::DmrppByte("data");
-    auto *target_array = new dmrpp::DmrppArray("data", tmplt);
-    delete tmplt; // Because the Vector() constructor made a copy and it's our problem...
-
-    target_array->append_dim(target_size);
-    add_chunks(target_url, target_size, chunk_count, target_array);
-    target_array->set_send_p(true); // Mark it to be sent so that it will be read.
-
-    dmrpp::DmrppTypeFactory factory;
-    dmrpp::DMRpp dmr(&factory);
-    dmr.set_href(target_url);
-    dmrpp::DmrppD4Group *root = dynamic_cast<dmrpp::DmrppD4Group *>(dmr.root());
-    root->add_var_nocopy(target_array);
-    root->set_in_selection(true);
-
-    if (debug) {
-        cerr << prolog << "Built dataset: " << endl;
-        dmrpp::DmrppCommon::d_print_chunks = true;
-        libdap::XMLWriter xmlWriter;
-        dmr.print_dmrpp(xmlWriter, dmr.get_href());
-        cerr << xmlWriter.get_doc() << endl;
-    }
-
-    {
-        stringstream timer_msg;
-        timer_msg << prolog << "DmrppD4Group.intern_data() for " << target_size << " bytes in " << chunk_count <<
-                  " chunks, parallel transfers ";
-        if (dmrpp::DmrppRequestHandler::d_use_parallel_transfers) {
-            timer_msg << "enabled.  (max: " << dmrpp::DmrppRequestHandler::d_max_parallel_transfers << ")";
-        } else {
-            timer_msg << "disabled.";
-        }
-        BESStopWatch sw;
-        sw.start(timer_msg.str());
-        root->intern_data();
-    }
-
-    libdap::D4StreamMarshaller streamMarshaller(ofs);
-    root->serialize(streamMarshaller, dmr);
-
-    // delete target_array; // Don't have to delete this because we added it to the DMR using add_var_nocopy()
-    if (debug) cerr << prolog << "END" << endl;
-}
-
-
 void parse_dmrpp(const string &dmrpp_filename_url){
     if(debug)  cerr << prolog << "BEGIN"  << endl;
 
@@ -535,6 +425,124 @@ void parse_dmrpp(const string &dmrpp_filename_url){
 
 }
 
+
+
+/**
+ *
+ * @param target_url
+ * @param target_size
+ * @param chunk_count
+ */
+void add_chunks(const string &target_url, const size_t &target_size, const size_t &chunk_count,
+                dmrpp::DmrppArray *target_array) {
+
+    if (debug) cerr << prolog << "BEGIN" << endl;
+
+    size_t chunk_size = target_size / chunk_count;
+    if (chunk_size == 0)
+        throw BESInternalError(prolog + "Chunk size was zero.", __FILE__, __LINE__);
+    stringstream chunk_dim_size;
+    chunk_dim_size << chunk_size;
+    target_array->parse_chunk_dimension_sizes(chunk_dim_size.str());
+
+    size_t chunk_start = 0;
+    size_t chunk_index;
+    for (chunk_index = 0; chunk_index < chunk_count; chunk_index++) {
+        vector<unsigned int> position_in_array;
+        position_in_array.push_back(chunk_start);
+        if (debug)
+            cerr << prolog << "chunks[" << chunk_index << "]  chunk_start: " << chunk_start << " chunk_size: "
+                 << chunk_size << " chunk_poa: " << position_in_array[0] << endl;
+        target_array->add_chunk(target_url, "LE", chunk_size, chunk_start, position_in_array);
+        chunk_start += chunk_size;
+    }
+    if (target_size % chunk_size) {
+        // So there's a remainder and we should make a final chunk for it too.
+        size_t last_chunk_size = target_size - chunk_start;
+        if (debug)
+            cerr << prolog << "Remainder chunk! target_size: " << target_size << "  index: " << chunk_index
+                 << " last_chunk_start: " << chunk_start << " last_chunk_size: " << last_chunk_size << endl;
+        if (last_chunk_size > 0) {
+            vector<unsigned int> position_in_array;
+            position_in_array.push_back(chunk_start);
+            if (debug)
+                cerr << prolog << "chunks[" << chunk_index << "]  chunk_start: " << chunk_start << " chunk_size: "
+                     << last_chunk_size << " chunk_poa: " << position_in_array[0] << endl;
+            target_array->add_chunk(target_url, "LE", last_chunk_size, chunk_start, position_in_array);
+        }
+    }
+    if (debug) cerr << prolog << "END" << endl;
+}
+
+
+
+/**
+ *
+ * @param target_url
+ * @param target_size
+ * @param chunk_count
+ * @param output_file_base
+ */
+size_t array_get(const string &target_url, const size_t &target_size, const size_t &chunk_count,
+                 const string &output_file_base) {
+
+    if (debug) cerr << prolog << "BEGIN" << endl;
+    string output_file = output_file_base + "_array_get.out";
+    std::ofstream ofs;
+    ofs.open(output_file, std::fstream::in | std::fstream::out | std::ofstream::trunc | std::ofstream::binary);
+    if (ofs.fail())
+        throw BESInternalError(prolog + "Failed to open file: " + output_file, __FILE__, __LINE__);
+
+    auto *tmplt = new dmrpp::DmrppByte("data");
+    auto *target_array = new dmrpp::DmrppArray("data", tmplt);
+    delete tmplt; // Because the Vector() constructor made a copy and it's our problem...
+
+    target_array->append_dim(target_size);
+    add_chunks(target_url, target_size, chunk_count, target_array);
+    target_array->set_send_p(true); // Mark it to be sent so that it will be read.
+
+    dmrpp::DmrppTypeFactory factory;
+    dmrpp::DMRpp dmr(&factory);
+    dmr.set_href(target_url);
+    dmrpp::DmrppD4Group *root = dynamic_cast<dmrpp::DmrppD4Group *>(dmr.root());
+    root->add_var_nocopy(target_array);
+    root->set_in_selection(true);
+
+    if (debug) {
+        cerr << prolog << "Built dataset: " << endl;
+        dmrpp::DmrppCommon::d_print_chunks = true;
+        libdap::XMLWriter xmlWriter;
+        dmr.print_dmrpp(xmlWriter, dmr.get_href());
+        cerr << xmlWriter.get_doc() << endl;
+    }
+
+    {
+        stringstream timer_msg;
+        timer_msg << prolog << "DmrppD4Group.intern_data() for " << target_size << " bytes in " << chunk_count <<
+                  " chunks, parallel transfers ";
+        if (dmrpp::DmrppRequestHandler::d_use_parallel_transfers) {
+            timer_msg << "enabled.  (max: " << dmrpp::DmrppRequestHandler::d_max_parallel_transfers << ")";
+        } else {
+            timer_msg << "disabled.";
+        }
+        BESStopWatch sw;
+        sw.start(timer_msg.str());
+        root->intern_data();
+    }
+
+    size_t started = ofs.tellp();
+    libdap::D4StreamMarshaller streamMarshaller(ofs);
+    root->serialize(streamMarshaller, dmr);
+
+    size_t stopped = ofs.tellp();
+    size_t numberOfBytesWritten = stopped - started;
+    if (debug) cerr << prolog << "target_size: " << target_size << "  numberOfBytesWritten: " << numberOfBytesWritten << endl;
+
+    // delete target_array; // Don't have to delete this because we added it to the DMR using add_var_nocopy()
+    if (debug) cerr << prolog << "END" << endl;
+    return numberOfBytesWritten;
+
+}
 
 
 
@@ -734,9 +742,8 @@ int main(int argc, char *argv[]) {
         dmrpp::DmrppRequestHandler *dmrppRH = bes_setup(bes_config_file, bes_log_file, bes_debug_log_file,
                                                         bes_debug_keys, http_netrc_file,http_cache_dir);
 
-        parse_dmrpp(target_url);
 
-        /*
+
         result = test_plan_01(
                 target_url,
                 output_file_base,
@@ -745,12 +752,13 @@ int main(int argc, char *argv[]) {
                 pwr2_number_o_chunks,
                 pwr2_parallel_reads,
                 output_file_base) ;
-*/
+
 
 #if 0 // these work but are parked a.t.m.
         simple_get(effectiveUrl, output_file_base);
         serial_chunky_get( effectiveUrl,  max_target_size, pwr2_number_o_chunks, output_file_base);
 
+        parse_dmrpp(target_url);
 
 
         string effectiveUrl = http::EffectiveUrlCache::TheCache()->get_effective_url(target_url);
