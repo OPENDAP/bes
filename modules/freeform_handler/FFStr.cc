@@ -92,8 +92,8 @@ FFStr::read()
             if (!isspace(*(ptr + j))) break;
 
         sLength = i - j + 1;
-		strncpy(&TmpBuf[0], ptr + j, sLength);
-		TmpBuf[sLength] = '\0';
+		strncpy(&TmpBuf[0], ptr + j, i - j + 1);
+		TmpBuf[i - j + 1] = '\0';
 
 		// Use set_value() jhrg 8/19/14
 		set_value(&TmpBuf[0]);
