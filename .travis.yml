@@ -112,14 +112,28 @@ jobs:
     addons:
       sonarcloud: true
     script:
-    - export BES_BUILD=sonar-bes-modules
-    # Adding this 'fetch --unshallow' since I think sonar is excluding the hdf handlers
-    # because they are submodules.
-    # - git fetch --unshallow
-    # - git submodule foreach git checkout master
-    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-    - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
-    - sonar-scanner -Dproject.settings=sonar-bes-modules.properties -Dsonar.login=$SONAR_MODULES_LOGIN
+      - export BES_BUILD=sonar-bes-modules
+      # Adding this 'fetch --unshallow' since I think sonar is excluding the hdf handlers
+      # because they are submodules.
+      # - git fetch --unshallow
+      # - git submodule foreach git checkout master
+      - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+      - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
+      - sonar-scanner -Dproject.settings=sonar-bes-modules.properties -Dsonar.login=$SONAR_MODULES_LOGIN
+
+  - stage: scan
+    name: "scan bes-submodules"
+    addons:
+      sonarcloud: true
+    script:
+      - export BES_BUILD=sonar-bes-submodules
+      # Adding this 'fetch --unshallow' since I think sonar is excluding the hdf handlers
+      # because they are submodules.
+      # - git fetch --unshallow
+      # - git submodule foreach git checkout master
+      - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+      - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
+      - sonar-scanner -Dproject.settings=sonar-bes-submodules.properties -Dsonar.login=$SONAR_MODULES_LOGIN
 
   - stage: build
     name: "check"
