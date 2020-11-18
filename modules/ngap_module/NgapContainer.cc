@@ -226,7 +226,7 @@ namespace ngap {
             {
                 d_dmrpp_rresource = new http::RemoteResource(dmrpp_url);
                 BESStopWatch besTimer;
-                if (BESISDEBUG(MODULE) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()){
+                if (BESISDEBUG(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()){
                     besTimer.start("DMR++ retrieval: "+ dmrpp_url);
                 }
                 d_dmrpp_rresource->retrieveResource(replace_template, replace_value);

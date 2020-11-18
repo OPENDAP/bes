@@ -209,7 +209,7 @@ BESStopWatch::~BESStopWatch()
         }
         else {
 #endif
-            d_stopped = true;
+        d_stopped = true;
             if (BESDebug::GetStrm()) {
                 std::stringstream msg;
                 msg << get_debug_log_line_prefix();

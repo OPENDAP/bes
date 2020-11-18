@@ -277,7 +277,7 @@ string EffectiveUrlCache::get_effective_url(const string &source_url)
 
             {
                 BESStopWatch sw;
-                if(BESDebug::IsSet(MODULE)) sw.start(prolog + " retrieve and cache effective url for source url: " + source_url);
+                if(BESDebug::IsSet(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + "Retrieve and cache effective url for source url: " + source_url);
                 effective_url = curl::retrieve_effective_url(source_url);
             }
             BESDEBUG(MODULE, prolog << "   source_url: " << source_url << endl);

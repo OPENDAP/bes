@@ -453,7 +453,7 @@ int BESInterface::execute_request(const string &from)
     }
 
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG_KEY)) {
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) {
         // It would be great to have more info to put here, but that is buried in
         // BESXMLInterface::build_data_request_plan() where the XML document is
         // parsed. jhrg 11/9/17
