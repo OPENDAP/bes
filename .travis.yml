@@ -134,7 +134,8 @@ jobs:
       # - git submodule foreach git checkout master
       - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
       - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
-      - sonar-scanner  -Dsonar.cfamily.build-wrapper-output=bw-output -Dproject.settings=sonar-bes-submodules.properties -Dsonar.login=$SONAR_SUBMODULES_LOGIN
+      # - sonar-scanner  -Dsonar.cfamily.build-wrapper-output=bw-output -Dproject.settings=sonar-bes-submodules.properties -Dsonar.login=$SONAR_SUBMODULES_LOGIN
+      - sonar-scanner -Dproject.settings=sonar-bes-submodules.properties -Dsonar.login=$SONAR_SUBMODULES_LOGIN
 
   - stage: build
     name: "check"
