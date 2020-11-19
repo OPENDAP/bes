@@ -748,8 +748,7 @@ int main(int argc, char *argv[]) {
 
 
         string effectiveUrl = http::EffectiveUrlCache::TheCache()->get_effective_url(target_url);
-        if (debug)
-            cerr << prolog << "curl::retrieve_effective_url() returned:  " << effectiveUrl << endl;
+        if (debug)  cerr << prolog << "curl::retrieve_effective_url() returned:  " << effectiveUrl << endl;
         size_t target_size =  get_max_retrival_size(max_target_size, effectiveUrl);
         array_get(effectiveUrl, target_size, pwr2_number_o_chunks, output_file_base);
 
