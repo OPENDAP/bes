@@ -748,12 +748,24 @@ int main(int argc, char *argv[]) {
 
 
 
+
+
         string effectiveUrl = http::EffectiveUrlCache::TheCache()->get_effective_url(target_url);
         if (debug)  cerr << prolog << "curl::retrieve_effective_url() returned:  " << effectiveUrl << endl;
         size_t target_size =  get_max_retrival_size(max_target_size, effectiveUrl);
 
         unsigned long long int chunks = 1ULL << pwr2_number_o_chunks;
         if (debug)  cerr << prolog << "Dividing target into " << chunks << " chunks." << endl;
+
+
+        if(pwr2_parallel_reads){
+            unsigned long long int max_threads = 1ULL << pwr2_parallel_reads;
+            dmrpp::DmrppRequestHandler::d_use_parallel_transfers = true;
+            dmrpp::DmrppRequestHandler::d_max_parallel_transfers = max_threads;
+        }else {
+            dmrpp::DmrppRequestHandler::d_use_parallel_transfers = false;
+            dmrpp::DmrppRequestHandler::d_max_parallel_transfers = 1;
+        }
 
         array_get(effectiveUrl, target_size, chunks, output_file_base);
 
