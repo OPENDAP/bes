@@ -574,6 +574,7 @@ size_t array_get(const string &target_url, const size_t &target_size, const size
 }
 
  */
+#if 0
 int test_plan_01(const string &target_url,
                   const string &output_prefix,
                   const unsigned int reps,
@@ -629,7 +630,7 @@ int test_plan_01(const string &target_url,
     cerr << prolog << "END" << endl;
     return result;
 }
-
+#endif
 
 /**
  *
