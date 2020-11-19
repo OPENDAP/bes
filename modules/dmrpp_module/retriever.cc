@@ -583,6 +583,8 @@ int test_plan_01(const string &target_url,
                   const string &output_file_base
                   ) {
     int result = 0;
+    if (debug)
+        cerr << prolog << "BEGIN" << endl;
 
     try {
         string effectiveUrl = http::EffectiveUrlCache::TheCache()->get_effective_url(target_url);
@@ -624,6 +626,7 @@ int test_plan_01(const string &target_url,
              endl;
         result = 2;
     }
+    cerr << prolog << "END" << endl;
     return result;
 }
 
@@ -644,7 +647,7 @@ int main(int argc, char *argv[]) {
     string output_file_base("retriever");
     string http_cache_dir;
     string prefix;
-    size_t pwr2_number_o_chunks = 100;
+    size_t pwr2_number_o_chunks = 18;
     size_t max_target_size = 0;
     string http_netrc_file;
     unsigned int reps=10;
@@ -744,6 +747,14 @@ int main(int argc, char *argv[]) {
 
 
 
+        string effectiveUrl = http::EffectiveUrlCache::TheCache()->get_effective_url(target_url);
+        if (debug)
+            cerr << prolog << "curl::retrieve_effective_url() returned:  " << effectiveUrl << endl;
+        size_t target_size =  get_max_retrival_size(max_target_size, effectiveUrl);
+        array_get(effectiveUrl, target_size, pwr2_number_o_chunks, output_file_base);
+
+
+#if 0 // these work but are parked a.t.m.
         result = test_plan_01(
                 target_url,
                 output_file_base,
@@ -753,8 +764,6 @@ int main(int argc, char *argv[]) {
                 pwr2_parallel_reads,
                 output_file_base) ;
 
-
-#if 0 // these work but are parked a.t.m.
         simple_get(effectiveUrl, output_file_base);
         serial_chunky_get( effectiveUrl,  max_target_size, pwr2_number_o_chunks, output_file_base);
 
