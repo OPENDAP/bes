@@ -833,9 +833,9 @@ void ff_register_functions()
         // A usage/syntax statement
         "date(date_1[, date_2])",
         // A URL that points two a web page describing the function
-        "http://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
+        "https://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
         // A URI that defines the role of the function
-        "http://services.opendap.org/dap4/freeform-function/date",
+        "https://services.opendap.org/dap4/freeform-function/date",
         // A pointer to the helloWorld() function
         func_date
     );
