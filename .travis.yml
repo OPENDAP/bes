@@ -90,7 +90,7 @@ before_script:
 # but do not run the scan.
 stages:
   - name: scan
-    if:  branch = master AND NOT type = pull_request
+    if:  branch = master
   - name: build
     if:  branch = master
   - name: package
@@ -114,10 +114,6 @@ jobs:
       sonarcloud: true
     script:
       - export BES_BUILD=sonar-bes-modules
-      # Adding this 'fetch --unshallow' since I think sonar is excluding the hdf handlers
-      # because they are submodules.
-      # - git fetch --unshallow
-      # - git submodule foreach git checkout master
       - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
       - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
       - sonar-scanner -Dproject.settings=sonar-bes-modules.properties -Dsonar.login=$SONAR_MODULES_LOGIN
@@ -128,13 +124,8 @@ jobs:
       sonarcloud: true
     script:
       - export BES_BUILD=sonar-bes-submodules
-      # Adding this 'fetch --unshallow' since I think sonar is excluding the hdf handlers
-      # because they are submodules.
-      # - git fetch --unshallow
-      # - git submodule foreach git checkout master
       - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
       - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
-      # - sonar-scanner  -Dsonar.cfamily.build-wrapper-output=bw-output -Dproject.settings=sonar-bes-submodules.properties -Dsonar.login=$SONAR_SUBMODULES_LOGIN
       - sonar-scanner -Dproject.settings=sonar-bes-submodules.properties -Dsonar.login=$SONAR_SUBMODULES_LOGIN
 
   - stage: build

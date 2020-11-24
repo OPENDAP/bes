@@ -833,9 +833,9 @@ void ff_register_functions()
         // A usage/syntax statement
         "date(date_1[, date_2])",
         // A URL that points two a web page describing the function
-        "http://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
+        "https://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
         // A URI that defines the role of the function
-        "http://services.opendap.org/dap4/freeform-function/date",
+        "https://services.opendap.org/dap4/freeform-function/date",
         // A pointer to the helloWorld() function
         func_date
     );
@@ -847,8 +847,8 @@ void ff_register_functions()
         string("Compares the current sequence instance with the passed date range. Return true if the instance is within the range. ")+
         "If only single date parameter is used as a start date to now.",
         "date_range(startDate, endDate)",
-        "http://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
-        "http://services.opendap.org/dap4/freeform-function/date_range",
+        "https://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
+        "https://services.opendap.org/dap4/freeform-function/date_range",
         func_date_range
     );
     libdap::ServerFunctionsList::TheList()->add_function(ff_dap_function);
@@ -859,8 +859,8 @@ void ff_register_functions()
         string("The current sequence instance is compared, as a start date, to the single passed parameter. Returns true if they're the same date. ")+
         "If two parameters are passed they are considered a date range. True is returned if the current variable falls into the range.",
         "start_date(date[, endDate])",
-        "http://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
-        "http://services.opendap.org/dap4/freeform-function/start_date",
+        "https://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
+        "https://services.opendap.org/dap4/freeform-function/start_date",
         func_startdate
     );
     libdap::ServerFunctionsList::TheList()->add_function(ff_dap_function);
@@ -871,8 +871,8 @@ void ff_register_functions()
         string("The current sequence instance is compared, as an end date, to the single passed parameter. Returns true if they're the same date. ") +
         "If two parameters are passed they are considered a date range. True is returned if the current variable falls into the range.",
         "end_date(date[, endDate])",
-        "http://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
-        "http://services.opendap.org/dap4/freeform-function/end_date",
+        "https://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
+        "https://services.opendap.org/dap4/freeform-function/end_date",
         func_enddate
     );
     libdap::ServerFunctionsList::TheList()->add_function(ff_dap_function);
@@ -882,8 +882,8 @@ void ff_register_functions()
         "1.0",
         "Compares the current variable with the passed time range. Return true if the sequence instance is within the range.",
         "time( time[, endTime] )",
-        "http://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
-        "http://services.opendap.org/dap4/freeform-function/time",
+        "https://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
+        "https://services.opendap.org/dap4/freeform-function/time",
         func_time
     );
     libdap::ServerFunctionsList::TheList()->add_function(ff_dap_function);
@@ -893,8 +893,8 @@ void ff_register_functions()
         "1.0",
         "Compares the current variable with the passed time range. Return true if the sequence instance is within the range.",
         "start_time( time[, endTime] )",
-        "http://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
-        "http://services.opendap.org/dap4/freeform-function/start_time",
+        "https://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
+        "https://services.opendap.org/dap4/freeform-function/start_time",
         func_starttime
     );
     libdap::ServerFunctionsList::TheList()->add_function(ff_dap_function);
@@ -904,8 +904,8 @@ void ff_register_functions()
         "1.0",
         "Compares the current variable with the passed time range. Return true if the sequence instance is within the range.",
         "end_time( time[, endTime] )",
-        "http://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
-        "http://services.opendap.org/dap4/freeform-function/end_time",
+        "https://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
+        "https://services.opendap.org/dap4/freeform-function/end_time",
         func_endtime
     );
     libdap::ServerFunctionsList::TheList()->add_function(ff_dap_function);
@@ -915,8 +915,8 @@ void ff_register_functions()
         "1.0",
         "Compares the current sequence instance with the passed date/time range. Return true if the instance is within the range.",
         "date_time( date/time [, end date/time] )",
-        "http://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
-        "http://services.opendap.org/dap4/freeform-function/date_time",
+        "https://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
+        "https://services.opendap.org/dap4/freeform-function/date_time",
         func_date_time
     );
     libdap::ServerFunctionsList::TheList()->add_function(ff_dap_function);
@@ -926,8 +926,8 @@ void ff_register_functions()
         "1.0",
         "Compares the current sequence instance with the passed date/time range. Return true if the instance is within the range.",
         "start_date_time( date/time [, end date/time] )",
-        "http://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
-        "http://services.opendap.org/dap4/freeform-function/start_date_time",
+        "https://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
+        "https://services.opendap.org/dap4/freeform-function/start_date_time",
         func_startdate_time
     );
     libdap::ServerFunctionsList::TheList()->add_function(ff_dap_function);
@@ -937,8 +937,8 @@ void ff_register_functions()
         "1.0",
         "Compares the current sequence instance with the passed date/time range. Return true if the instance is within the range.",
         "end_date_time(date/time [, end date/time] )",
-        "http://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
-        "http://services.opendap.org/dap4/freeform-function/end_date_time",
+        "https://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
+        "https://services.opendap.org/dap4/freeform-function/end_date_time",
         func_enddate_time
     );
     libdap::ServerFunctionsList::TheList()->add_function(ff_dap_function);
@@ -953,8 +953,8 @@ void ff_register_functions()
         "1.0",
         "Adds a variable named DODS_Time that is an ISO 8601 time string to the dataset.",
         "DODS_Time( [Sequence or Structure] )",
-        "http://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
-        "http://services.opendap.org/dap4/freeform-function/DODS_Time",
+        "https://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
+        "https://services.opendap.org/dap4/freeform-function/DODS_Time",
         proj_dods_time
     );
     libdap::ServerFunctionsList::TheList()->add_function(ff_dap_function);
@@ -964,8 +964,8 @@ void ff_register_functions()
         "1.0",
         "Adds a variable named DODS_StartTime that is an ISO 8601 time string to the dataset.",
         "DODS_StartTime( [Sequence or Structure] )",
-        "http://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
-        "http://services.opendap.org/dap4/freeform-function/DODS_StartTime",
+        "https://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
+        "https://services.opendap.org/dap4/freeform-function/DODS_StartTime",
         proj_dods_starttime
     );
     libdap::ServerFunctionsList::TheList()->add_function(ff_dap_function);
@@ -975,8 +975,8 @@ void ff_register_functions()
         "1.0",
         "Adds a variable named DODS_EndTime that is an ISO 8601 time string to the dataset.",
         "DODS_EndTime( [Sequence or Structure] )",
-        "http://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
-        "http://services.opendap.org/dap4/freeform-function/DODS_EndTime",
+        "https://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
+        "https://services.opendap.org/dap4/freeform-function/DODS_EndTime",
         proj_dods_endtime
     );
     libdap::ServerFunctionsList::TheList()->add_function(ff_dap_function);
@@ -986,8 +986,8 @@ void ff_register_functions()
         "1.0",
         "Adds a variable named DODS_JDate that is the Julian day number to the dataset.",
         "DODS_JDate( [Sequence or Structure variable] )",
-        "http://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
-        "http://services.opendap.org/dap4/freeform-function/DODS_JDATE",
+        "https://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
+        "https://services.opendap.org/dap4/freeform-function/DODS_JDATE",
         proj_dods_jdate
     );
     libdap::ServerFunctionsList::TheList()->add_function(ff_dap_function);
@@ -997,8 +997,8 @@ void ff_register_functions()
         "1.0",
         string("Adds a variable named DODS_Date that is an ISO 8601 date string to the dataset."),
         "DODS_Date( [Sequence or Structure] )",
-        "http://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
-        "http://services.opendap.org/dap4/freeform-function/DODS_Date",
+        "https://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
+        "https://services.opendap.org/dap4/freeform-function/DODS_Date",
         proj_dods_date
     );
     libdap::ServerFunctionsList::TheList()->add_function(ff_dap_function);
@@ -1008,8 +1008,8 @@ void ff_register_functions()
         "1.0",
         string("Adds a variable named DODS_StartDate that is an ISO 8601 date string to the dataset."),
         "DODS_StartDate( [Sequence or Structure] )",
-        "http://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
-        "http://services.opendap.org/dap4/freeform-function/DODS_StartDate",
+        "https://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
+        "https://services.opendap.org/dap4/freeform-function/DODS_StartDate",
         proj_dods_startdate
     );
     libdap::ServerFunctionsList::TheList()->add_function(ff_dap_function);
@@ -1019,8 +1019,8 @@ void ff_register_functions()
         "1.0",
         string("Adds a variable named DODS_EndDate that is an ISO 8601 date string to the dataset."),
         "DODS_EndDate( [Sequence or Structure] )",
-        "http://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
-        "http://services.opendap.org/dap4/freeform-function/DODS_EndDate",
+        "https://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
+        "https://services.opendap.org/dap4/freeform-function/DODS_EndDate",
         proj_dods_enddate
     );
     libdap::ServerFunctionsList::TheList()->add_function(ff_dap_function);
@@ -1029,8 +1029,8 @@ void ff_register_functions()
         "1.0",
         "Adds a variable named DODS_Date_Time that is an ISO 8601 date/time string to the dataset.",
         "DODS_Date_Time( [Sequence or Structure] )",
-        "http://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
-        "http://services.opendap.org/dap4/freeform-function/DODS_Date_Time",
+        "https://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
+        "https://services.opendap.org/dap4/freeform-function/DODS_Date_Time",
         proj_dods_date_time
     );
     libdap::ServerFunctionsList::TheList()->add_function(ff_dap_function);
@@ -1040,8 +1040,8 @@ void ff_register_functions()
         "1.0",
         "Adds a variable named DODS_StartDate_Time that is an ISO 8601 date/time string to the dataset.",
         "DODS_StartDate_Time( [Sequence or Structure] )",
-        "http://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
-        "http://services.opendap.org/dap4/freeform-function/DODS_StartDate_Time",
+        "https://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
+        "https://services.opendap.org/dap4/freeform-function/DODS_StartDate_Time",
         proj_dods_startdate_time
     );
     libdap::ServerFunctionsList::TheList()->add_function(ff_dap_function);
@@ -1051,8 +1051,8 @@ void ff_register_functions()
         "1.0",
         "Adds a variable named DODS_EndDate_Time that is an ISO 8601 date/time string to the dataset.",
         "DODS_EndDate_Time( [Sequence or Structure] )",
-        "http://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
-        "http://services.opendap.org/dap4/freeform-function/DODS_EndDate_Time",
+        "https://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
+        "https://services.opendap.org/dap4/freeform-function/DODS_EndDate_Time",
         proj_dods_enddate_time
     );
     libdap::ServerFunctionsList::TheList()->add_function(ff_dap_function);
@@ -1062,8 +1062,8 @@ void ff_register_functions()
         "1.0",
         "Adds a variable named DODS_Decimal_Year that is date as a decimal year/day value string to the dataset.",
         "DODS_Decimal_Year( [Sequence or Structure] )",
-        "http://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
-        "http://services.opendap.org/dap4/freeform-function/DODS_Decimal_Year",
+        "https://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
+        "https://services.opendap.org/dap4/freeform-function/DODS_Decimal_Year",
         proj_dods_decimal_year
     );
     libdap::ServerFunctionsList::TheList()->add_function(ff_dap_function);
@@ -1073,8 +1073,8 @@ void ff_register_functions()
         "1.0",
         "Adds a variable named DODS_StartDecimal_Year that is date as a decimal year/day value string to the dataset.",
         "DODS_StartDecimal_Year( [Sequence or Structure] )",
-        "http://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
-        "http://services.opendap.org/dap4/freeform-function/DODS_StartDecimal_Year",
+        "https://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
+        "https://services.opendap.org/dap4/freeform-function/DODS_StartDecimal_Year",
         proj_dods_startdecimal_year
     );
     libdap::ServerFunctionsList::TheList()->add_function(ff_dap_function);
@@ -1084,8 +1084,8 @@ void ff_register_functions()
         "1.0",
         "Adds a variable named DODS_EndDecimal_Year that is date as a decimal year/day value string to the dataset.",
         "DODS_EndDecimal_Year( [Sequence or Structure] )",
-        "http://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
-        "http://services.opendap.org/dap4/freeform-function/DODS_EndDecimal_Year",
+        "https://docs.opendap.org/index.php/Server_Side_Processing_Functions#FreeForm_Functions",
+        "https://services.opendap.org/dap4/freeform-function/DODS_EndDecimal_Year",
         proj_dods_enddecimal_year
     );
     libdap::ServerFunctionsList::TheList()->add_function(ff_dap_function);

@@ -91,7 +91,7 @@ bool FONgRequestHandler::build_help(BESDataHandlerInterface &dhi)
     string ref;
     TheBESKeys::TheKeys()->get_value(key, ref, found);
     if (ref.empty())
-        ref = "http://docs.opendap.org/index.php/BES_-_Modules_-_FileOut_GDAL";
+        ref = "https://docs.opendap.org/index.php/BES_-_Modules_-_FileOut_GDAL";
 
     map<string, string> attrs;
     attrs["name"] = MODULE_NAME ;
