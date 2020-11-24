@@ -85,7 +85,7 @@ W10nJsonRequestHandler::build_help( BESDataHandlerInterface &dhi )
     string ref ;
     TheBESKeys::TheKeys()->get_value( key, ref, found ) ;
     if( ref.empty() )
-	ref = "http://docs.opendap.org/index.php/BES_-_Modules_-_w10n_JSON" ;
+	ref = "https://docs.opendap.org/index.php/BES_-_Modules_-_w10n_JSON" ;
     map<string,string> attrs ;
     attrs["name"] = MODULE_NAME ;
     attrs["version"] = MODULE_VERSION ;
