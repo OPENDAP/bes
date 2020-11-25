@@ -521,14 +521,14 @@ namespace rapidxml
         Ch * xmlns_xml(std::size_t & xmlns_size)
         {
             if (!m_xmlns_xml)
-                m_xmlns_xml = allocate_string("http://www.w3.org/XML/1998/namespace");
+                m_xmlns_xml = allocate_string("https://www.w3.org/XML/1998/namespace");
             xmlns_size = internal::measure(m_xmlns_xml);
             return m_xmlns_xml;
         }
         Ch * xmlns_xmlns(std::size_t & xmlns_size)
         {
             if (!m_xmlns_xmlns)
-                m_xmlns_xmlns = allocate_string("http://www.w3.org/2000/xmlns/");
+                m_xmlns_xmlns = allocate_string("https://www.w3.org/2000/xmlns/");
             xmlns_size = internal::measure(m_xmlns_xmlns);
             return m_xmlns_xmlns;
         }

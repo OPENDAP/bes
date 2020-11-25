@@ -181,6 +181,7 @@ exit 0
 %{_bindir}/get_dmrpp
 %{_bindir}/ingest_filesystem
 %{_bindir}/ingest_s3bucket
+%{_bindir}/retriever
 # TODO Change build_sidecar to a better name, like build_stare_sidecar. jhrg 10/29/19
 %{_bindir}/build_sidecar
 

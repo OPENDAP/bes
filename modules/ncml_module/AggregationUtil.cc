@@ -99,7 +99,7 @@ TopLevelArrayGetter::readAndGetArray(const std::string& name, const libdap::DDS&
 {
 
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG_KEY)) sw.start("TopLevelArrayGetter::readAndGetArray", "");
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("TopLevelArrayGetter::readAndGetArray", "");
 
     // First, look up the BaseType
     BaseType* pBT = AggregationUtil::getVariableNoRecurse(dds, name);
@@ -164,7 +164,7 @@ TopLevelGridDataArrayGetter::readAndGetArray(const std::string& name, const libd
     const libdap::Array* const pConstraintTemplate, const std::string& debugChannel) const
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG_KEY)) sw.start("TopLevelGridDataArrayGetter::readAndGetArray", "");
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("TopLevelGridDataArrayGetter::readAndGetArray", "");
 
     // First, look up the BaseType
     BaseType* pBT = AggregationUtil::getVariableNoRecurse(dds, name);
@@ -248,7 +248,7 @@ TopLevelGridMapArrayGetter::readAndGetArray(const std::string& arrayName, const 
 {
 
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG_KEY)) sw.start("TopLevelGridMapArrayGetter::readAndGetArray", "");
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("TopLevelGridMapArrayGetter::readAndGetArray", "");
 
     // First, look up the Grid the map is in
     BaseType* pBT = AggregationUtil::getVariableNoRecurse(dds, _gridName);
@@ -873,7 +873,7 @@ Array* AggregationUtil::readDatasetArrayDataForAggregation(const Array& constrai
     const std::string& debugChannel)
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG_KEY)) sw.start("AggregationUtil::readDatasetArrayDataForAggregation", "");
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("AggregationUtil::readDatasetArrayDataForAggregation", "");
 
     const libdap::DDS* pDDS = dataset.getDDS();
     NCML_ASSERT_MSG(pDDS, "GridAggregateOnOuterDimension::read(): Got a null DataDDS "
@@ -924,7 +924,7 @@ void AggregationUtil::addDatasetArrayDataToAggregationOutputArray(libdap::Array&
     const ArrayGetterInterface& arrayGetter, const std::string& debugChannel)
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG_KEY)) sw.start("AggregationUtil::addDatasetArrayDataToAggregationOutputArray", "");
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("AggregationUtil::addDatasetArrayDataToAggregationOutputArray", "");
 
     libdap::Array* pDatasetArray = readDatasetArrayDataForAggregation(constrainedTemplateArray, varName, dataset, arrayGetter,
         debugChannel);

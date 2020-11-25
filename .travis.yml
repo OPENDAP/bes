@@ -10,6 +10,7 @@
 #
 # Try using Ubuntu Focal
 
+# dist: trusty
 dist: xenial
 
 language: cpp
@@ -36,6 +37,9 @@ addons:
     # - build-essential
     # - sshpass Only used for ssh access to www.o.o (also not done anymore)
 
+git:
+  depth: false
+
 env:
   global:
     # NB: This value of $prefix must be shared between the hyrax-deps, libdap and bes builds.
@@ -48,7 +52,8 @@ env:
     - secure: "TmoFcgeIyAEjFyrlqB6rhdUhDqPJfxVZmT5fewgVHj0xm767VZ6DU21mM6ZHgNGyk99TzX0Gx/dwSqbsUj18hSSAvEa7fJQSKJ5IBJvTeMKhXn1DPPG9VpuZ4ti5afRDiNr6EJKbVxwBTkz+3798S8LajPuXGupYupir8IJQCt8="
     # SONAR_MODULES_LOGIN, using "travis encrypt --org -r OPENDAP/bes SONAR_MODULES_LOGIN=42ba..."
     - secure: "V3fMZgzMRRB0xFQMTvXf2fFPHIdwvg2y6bNFKqSGI5HP2sZEtc7XqSC4hjboR9RjnyZY/H1L/EuYQCS45gmJMsmtzo4g1Cn0oTfuPRJzDSi00jRlB1wUl5p1pU0Fdv2ffrGF4m6/SRfYFT0KkR/Tp8hdIoYx5/8R4MajysABMT4="
-    # AWS_ACCESS_KEY_ID
+    # SONAR_SUBMODULES_LOGIN, using "travis encrypt --org -r OPENDAP/bes SONAR_SUBMODULES_LOGIN=Q4aWrvS..."
+    - secure: "Q4aWrvSlKUY7413FNI6tHlWJdhVtjJxrtSBApJRe5fGTn/HEmod5n3O4o0elFhuYh0O57aYsYclD7t0lriKMPvPdY/s8CFAaIPSANhNRkD44MWYWCPyivl83BBUlhWgkqgWFcCEaTqCpF/8A0HlOF1TsE1KKyQSns7snqgWTfSA="    # AWS_ACCESS_KEY_ID
     # user == travis-bes
     - secure: "ZfL1IPX5zab1HWkJTlNPHroyUOp2lhAlcCH6UXDEL/yXpKoRCNkSo/CILM20DsjBckGys/7chom6uIoOilLu9Tp/6nPwkYlOe5DjgDt/qqKutclk9QBfrwU7WHRUOiEOESZl3Knd6B+GzuBZe8nrJzJhZWT54VFiOlEAGeIiFwo="
     # AWS_SECRET_ACCESS_KEY
@@ -84,17 +89,18 @@ before_script:
 # Build all the stages for 'master'. For a PR, run the 'build' and 'package' stages,
 # but do not run the scan.
 stages:
+  - name: scan
+    if:  branch = master
   - name: build
     if:  branch = master
-  - name: scan
-    if:  branch = master AND NOT type = pull_request
   - name: package
     if:  branch = master OR branch = travis
 
 jobs:
   include:
   - stage: scan
-    addons: 
+    name: "scan bes"
+    addons:
       sonarcloud:  true
     script:
     - export BES_BUILD=sonar-bes-framework
@@ -103,24 +109,34 @@ jobs:
     - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.login=$SONAR_LOGIN
 
   - stage: scan
-    addons: 
+    name: "scan bes-modules"
+    addons:
       sonarcloud: true
     script:
-    - export BES_BUILD=sonar-bes-modules
-    # Adding this 'fetch --unshallow' since I think sonar is excluding the hdf handlers
-    # because they are submodules.
-    - git fetch --unshallow
-    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-    - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
-    - sonar-scanner -Dproject.settings=sonar-bes-modules.properties -Dsonar.login=$SONAR_MODULES_LOGIN
+      - export BES_BUILD=sonar-bes-modules
+      - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+      - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
+      - sonar-scanner -Dproject.settings=sonar-bes-modules.properties -Dsonar.login=$SONAR_MODULES_LOGIN
+
+  - stage: scan
+    name: "scan bes-submodules"
+    addons:
+      sonarcloud: true
+    script:
+      - export BES_BUILD=sonar-bes-submodules
+      - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+      - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
+      - sonar-scanner -Dproject.settings=sonar-bes-submodules.properties -Dsonar.login=$SONAR_SUBMODULES_LOGIN
 
   - stage: build
+    name: "check"
     script: 
     - export BES_BUILD=main
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
     - make -j7 && make install && besctl start && make check -j7 && besctl stop
 
   - stage: build
+    name: "distcheck"
     script:
     - export BES_BUILD=distcheck
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
@@ -142,6 +158,7 @@ jobs:
 #                 opendap/centos6_hyrax_builder:1.3 /root/travis/build-rpm.sh ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}
 
   - stage: package
+    name: "CentOS-7 RPMs"
     script: 
     - export BES_BUILD=centos7
     - mkdir -p $prefix/rpmbuild
@@ -152,6 +169,7 @@ jobs:
                  opendap/centos7_hyrax_builder:1.2 /root/travis/build-rpm.sh ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}
 
   - stage: package
+    name: "dist"
     script:
     - export BES_BUILD=srcdist
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 

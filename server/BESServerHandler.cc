@@ -184,7 +184,7 @@ void BESServerHandler::execute(Connection *c)
         BESDEBUG("server", "BESServerHandler::execute - command ... " << cmd_str << endl);
 
         BESStopWatch sw;
-        if (BESISDEBUG(TIMING_LOG_KEY)) sw.start("BESServerHandler::execute");
+        if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("BESServerHandler::execute");
 
         // Tie the cout stream to the PPTStreamBuf and save the cout buffer so that
         // it can be reset once the command is complete. jhrg 1/25/17

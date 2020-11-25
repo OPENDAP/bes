@@ -228,12 +228,17 @@ int curl_trace(CURL */*handle*/, curl_infotype type, char *data, size_t /*size*/
 #endif
 
 dmrpp_easy_handle::dmrpp_easy_handle() : d_request_headers(0) {
-    d_handle = curl_easy_init();
-    if (!d_handle) throw BESInternalError("Could not allocate CURL handle", __FILE__, __LINE__);
 
     CURLcode res;
 
+    d_handle = curl_easy_init();
+    if (!d_handle) throw BESInternalError("Could not allocate CURL handle", __FILE__, __LINE__);
+
     curl::set_error_buffer(d_handle, d_errbuf);
+
+    res =  curl_easy_setopt(d_handle, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
+    curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_SSLVERSION", d_errbuf, __FILE__, __LINE__);
+
 
 #if CURL_VERBOSE
     res = curl_easy_setopt(d_handle, CURLOPT_DEBUGFUNCTION, curl_trace);

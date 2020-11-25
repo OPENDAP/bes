@@ -96,7 +96,7 @@ ArrayAggregationBase::ptr_duplicate()
 bool ArrayAggregationBase::read()
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG_KEY)) sw.start("ArrayAggregationBase::read", "");
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("ArrayAggregationBase::read", "");
 
     BESDEBUG_FUNC(DEBUG_CHANNEL, " function entered..." << endl);
 
