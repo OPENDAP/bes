@@ -27,12 +27,6 @@
                 <Dimension name="nTimes" size="1151"/>
                 <Float32 name="nLats">
                     <Dim name="/HDFEOS/ZAS/HIRDLS/nLats"/>
-                    <Attribute name="CLASS" type="String">
-                        <Value>DIMENSION_SCALE</Value>
-                    </Attribute>
-                    <Attribute name="NAME" type="String">
-                        <Value>nLats</Value>
-                    </Attribute>
                     <Attribute name="MissingValue" type="Float32">
                         <Value>-999.</Value>
                     </Attribute>
@@ -48,12 +42,6 @@
                 </Float32>
                 <Float32 name="nLevels">
                     <Dim name="/HDFEOS/ZAS/HIRDLS/nLevels"/>
-                    <Attribute name="CLASS" type="String">
-                        <Value>DIMENSION_SCALE</Value>
-                    </Attribute>
-                    <Attribute name="NAME" type="String">
-                        <Value>nLevels</Value>
-                    </Attribute>
                     <Attribute name="MissingValue" type="Float32">
                         <Value>-999.</Value>
                     </Attribute>
@@ -69,12 +57,6 @@
                 </Float32>
                 <Float64 name="nTimes">
                     <Dim name="/HDFEOS/ZAS/HIRDLS/nTimes"/>
-                    <Attribute name="CLASS" type="String">
-                        <Value>DIMENSION_SCALE</Value>
-                    </Attribute>
-                    <Attribute name="NAME" type="String">
-                        <Value>nTimes</Value>
-                    </Attribute>
                     <Attribute name="Units" type="String">
                         <Value>seconds since 1993-01-01</Value>
                     </Attribute>

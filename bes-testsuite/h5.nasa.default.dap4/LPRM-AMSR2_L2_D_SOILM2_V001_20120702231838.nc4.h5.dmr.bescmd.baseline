@@ -119,15 +119,6 @@
             <Value>0.</Value>
         </Attribute>
     </Int16>
-    <Float32 name="nscan">
-        <Dim name="/nscan"/>
-        <Attribute name="CLASS" type="String">
-            <Value>DIMENSION_SCALE</Value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <Value>This is a netCDF dimension but not a netCDF variable.      2015</Value>
-        </Attribute>
-    </Float32>
     <Float32 name="Longitude">
         <Dim name="/nscan"/>
         <Dim name="/npix"/>
@@ -163,15 +154,6 @@
             <Value>0.</Value>
         </Attribute>
     </Int16>
-    <Float32 name="npix">
-        <Dim name="/npix"/>
-        <Attribute name="CLASS" type="String">
-            <Value>DIMENSION_SCALE</Value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <Value>This is a netCDF dimension but not a netCDF variable.       243</Value>
-        </Attribute>
-    </Float32>
     <Int16 name="opt_depth_c1">
         <Dim name="/nscan"/>
         <Dim name="/npix"/>
@@ -369,9 +351,6 @@
             <Value>0.</Value>
         </Attribute>
     </Int16>
-    <Attribute name="_nc3_strict" type="Int32">
-        <Value>1</Value>
-    </Attribute>
     <Attribute name="Conventions" type="String">
         <Value>CF-1.0</Value>
     </Attribute>

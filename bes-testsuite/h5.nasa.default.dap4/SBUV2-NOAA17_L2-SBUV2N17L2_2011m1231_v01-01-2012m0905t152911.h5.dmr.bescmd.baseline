@@ -14,12 +14,6 @@
     <Dimension name="nTimes" size="1051"/>
     <Float32 name="nChannels03">
         <Dim name="/nChannels03"/>
-        <Attribute name="CLASS" type="String">
-            <Value>DIMENSION_SCALE</Value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <Value>nChannels03</Value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <Value>Wavelength (Channels 10-12)</Value>
         </Attribute>
@@ -32,12 +26,6 @@
     </Float32>
     <Float32 name="nChannels08">
         <Dim name="/nChannels08"/>
-        <Attribute name="CLASS" type="String">
-            <Value>DIMENSION_SCALE</Value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <Value>nChannels08</Value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <Value>Wavelength (Channels 5-12)</Value>
         </Attribute>
@@ -50,12 +38,6 @@
     </Float32>
     <Float32 name="nChannels10">
         <Dim name="/nChannels10"/>
-        <Attribute name="CLASS" type="String">
-            <Value>DIMENSION_SCALE</Value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <Value>nChannels10</Value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <Value>Wavelength (Channels 1-10)</Value>
         </Attribute>
@@ -68,12 +50,6 @@
     </Float32>
     <Float32 name="nChannels12">
         <Dim name="/nChannels12"/>
-        <Attribute name="CLASS" type="String">
-            <Value>DIMENSION_SCALE</Value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <Value>nChannels12</Value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <Value>Wavelength (Channels 1-12)</Value>
         </Attribute>
@@ -86,12 +62,6 @@
     </Float32>
     <Float32 name="nChannels13">
         <Dim name="/nChannels13"/>
-        <Attribute name="CLASS" type="String">
-            <Value>DIMENSION_SCALE</Value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <Value>nChannels13</Value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <Value>Wavelength (All Channels)</Value>
         </Attribute>
@@ -104,12 +74,6 @@
     </Float32>
     <Float32 name="nLayers11">
         <Dim name="/nLayers11"/>
-        <Attribute name="CLASS" type="String">
-            <Value>DIMENSION_SCALE</Value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <Value>nLayers11</Value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <Value>Pressure (Umkehr Layers 0 to 9 and Layers 10 Plus)</Value>
         </Attribute>
@@ -122,12 +86,6 @@
     </Float32>
     <Float32 name="nLayers13">
         <Dim name="/nLayers13"/>
-        <Attribute name="CLASS" type="String">
-            <Value>DIMENSION_SCALE</Value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <Value>nLayers13</Value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <Value>Pressure (Umkehr Layer 12 Plus to Layer 0)</Value>
         </Attribute>
@@ -140,12 +98,6 @@
     </Float32>
     <Float32 name="nLevels15">
         <Dim name="/nLevels15"/>
-        <Attribute name="CLASS" type="String">
-            <Value>DIMENSION_SCALE</Value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <Value>nLevels15</Value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <Value>Pressure (for Mixing Ratio)</Value>
         </Attribute>
@@ -158,12 +110,6 @@
     </Float32>
     <Float32 name="nLevels20">
         <Dim name="/nLevels20"/>
-        <Attribute name="CLASS" type="String">
-            <Value>DIMENSION_SCALE</Value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <Value>nLevels20</Value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <Value>Pressure (Levels 1-20)</Value>
         </Attribute>
@@ -176,12 +122,6 @@
     </Float32>
     <Float32 name="nLevels20b">
         <Dim name="/nLevels20b"/>
-        <Attribute name="CLASS" type="String">
-            <Value>DIMENSION_SCALE</Value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <Value>nLevels20b</Value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <Value>Copy of Pressure (Levels 1-20)</Value>
         </Attribute>
@@ -194,12 +134,6 @@
     </Float32>
     <Float32 name="nLevels21">
         <Dim name="/nLevels21"/>
-        <Attribute name="CLASS" type="String">
-            <Value>DIMENSION_SCALE</Value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <Value>nLevels21</Value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <Value>Pressure (All Levels)</Value>
         </Attribute>
@@ -212,12 +146,6 @@
     </Float32>
     <Float64 name="nTimes">
         <Dim name="/nTimes"/>
-        <Attribute name="CLASS" type="String">
-            <Value>DIMENSION_SCALE</Value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <Value>nTimes</Value>
-        </Attribute>
         <Attribute name="long_name" type="String">
             <Value>Time</Value>
         </Attribute>

@@ -884,33 +884,7 @@
             <Group name="Temperature">
                 <Dimension name="nLevels" size="55"/>
                 <Dimension name="nTimes" size="3495"/>
-                <Float32 name="nLevels">
-                    <Dim name="/HDFEOS/SWATHS/Temperature/nLevels"/>
-                    <Attribute name="CLASS" type="String">
-                        <Value>DIMENSION_SCALE</Value>
-                    </Attribute>
-                    <Attribute name="NAME" type="String">
-                        <Value>This is a netCDF dimension but not a netCDF variable.</Value>
-                    </Attribute>
-                </Float32>
-                <Float32 name="nTimes">
-                    <Dim name="/HDFEOS/SWATHS/Temperature/nTimes"/>
-                    <Attribute name="CLASS" type="String">
-                        <Value>DIMENSION_SCALE</Value>
-                    </Attribute>
-                    <Attribute name="NAME" type="String">
-                        <Value>This is a netCDF dimension but not a netCDF variable.</Value>
-                    </Attribute>
-                </Float32>
-                <Float32 name="nTimesTotal">
-                    <Dim size="3495"/>
-                    <Attribute name="CLASS" type="String">
-                        <Value>DIMENSION_SCALE</Value>
-                    </Attribute>
-                    <Attribute name="NAME" type="String">
-                        <Value>This is a netCDF dimension but not a netCDF variable.</Value>
-                    </Attribute>
-                </Float32>
+                <Dimension name="nTimesTotal" size="3495"/>
                 <Attribute name="Pressure" type="Float32">
                     <Value>1000.</Value>
                     <Value>825.4041748</Value>
@@ -1248,24 +1222,7 @@
             </Group>
             <Group name="WMOTPPressure-GEOS5">
                 <Dimension name="nTimes" size="3495"/>
-                <Float32 name="nTimes">
-                    <Dim name="/HDFEOS/SWATHS/WMOTPPressure-GEOS5/nTimes"/>
-                    <Attribute name="CLASS" type="String">
-                        <Value>DIMENSION_SCALE</Value>
-                    </Attribute>
-                    <Attribute name="NAME" type="String">
-                        <Value>This is a netCDF dimension but not a netCDF variable.</Value>
-                    </Attribute>
-                </Float32>
-                <Float32 name="nTimesTotal">
-                    <Dim size="3495"/>
-                    <Attribute name="CLASS" type="String">
-                        <Value>DIMENSION_SCALE</Value>
-                    </Attribute>
-                    <Attribute name="NAME" type="String">
-                        <Value>This is a netCDF dimension but not a netCDF variable.</Value>
-                    </Attribute>
-                </Float32>
+                <Dimension name="nTimesTotal" size="3495"/>
                 <Attribute name="Pressure" type="Float32">
                     <Value>-999.9899902</Value>
                 </Attribute>
@@ -1529,24 +1486,7 @@
             </Group>
             <Group name="WMOTPPressure-MLS">
                 <Dimension name="nTimes" size="3495"/>
-                <Float32 name="nTimes">
-                    <Dim name="/HDFEOS/SWATHS/WMOTPPressure-MLS/nTimes"/>
-                    <Attribute name="CLASS" type="String">
-                        <Value>DIMENSION_SCALE</Value>
-                    </Attribute>
-                    <Attribute name="NAME" type="String">
-                        <Value>This is a netCDF dimension but not a netCDF variable.</Value>
-                    </Attribute>
-                </Float32>
-                <Float32 name="nTimesTotal">
-                    <Dim size="3495"/>
-                    <Attribute name="CLASS" type="String">
-                        <Value>DIMENSION_SCALE</Value>
-                    </Attribute>
-                    <Attribute name="NAME" type="String">
-                        <Value>This is a netCDF dimension but not a netCDF variable.</Value>
-                    </Attribute>
-                </Float32>
+                <Dimension name="nTimesTotal" size="3495"/>
                 <Attribute name="Pressure" type="Float32">
                     <Value>-999.9899902</Value>
                 </Attribute>

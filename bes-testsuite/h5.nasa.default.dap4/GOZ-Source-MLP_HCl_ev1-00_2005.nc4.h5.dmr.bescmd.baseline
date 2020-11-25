@@ -129,12 +129,6 @@
         </Float32>
         <Int32 name="time">
             <Dim name="/HALOE/time"/>
-            <Attribute name="CLASS" type="String">
-                <Value>DIMENSION_SCALE</Value>
-            </Attribute>
-            <Attribute name="NAME" type="String">
-                <Value>time</Value>
-            </Attribute>
             <Attribute name="long_name" type="String">
                 <Value>Time</Value>
             </Attribute>
@@ -264,12 +258,6 @@
         </Float32>
         <Float32 name="lat">
             <Dim name="/HALOE/lat"/>
-            <Attribute name="CLASS" type="String">
-                <Value>DIMENSION_SCALE</Value>
-            </Attribute>
-            <Attribute name="NAME" type="String">
-                <Value>lat</Value>
-            </Attribute>
             <Attribute name="long_name" type="String">
                 <Value>Latitude</Value>
             </Attribute>
@@ -430,23 +418,8 @@
                 <Value>-999</Value>
             </Attribute>
         </Int32>
-        <Float32 name="dayInBin">
-            <Dim name="/HALOE/dayInBin"/>
-            <Attribute name="CLASS" type="String">
-                <Value>DIMENSION_SCALE</Value>
-            </Attribute>
-            <Attribute name="NAME" type="String">
-                <Value>This is a netCDF dimension but not a netCDF variable.        31</Value>
-            </Attribute>
-        </Float32>
         <Float32 name="lev">
             <Dim name="/HALOE/lev"/>
-            <Attribute name="CLASS" type="String">
-                <Value>DIMENSION_SCALE</Value>
-            </Attribute>
-            <Attribute name="NAME" type="String">
-                <Value>lev</Value>
-            </Attribute>
             <Attribute name="long_name" type="String">
                 <Value>Pressure</Value>
             </Attribute>
@@ -500,12 +473,6 @@
         </Float32>
         <Int32 name="time">
             <Dim name="/ACE-FTS/time"/>
-            <Attribute name="CLASS" type="String">
-                <Value>DIMENSION_SCALE</Value>
-            </Attribute>
-            <Attribute name="NAME" type="String">
-                <Value>time</Value>
-            </Attribute>
             <Attribute name="long_name" type="String">
                 <Value>Time</Value>
             </Attribute>
@@ -635,12 +602,6 @@
         </Float32>
         <Float32 name="lat">
             <Dim name="/ACE-FTS/lat"/>
-            <Attribute name="CLASS" type="String">
-                <Value>DIMENSION_SCALE</Value>
-            </Attribute>
-            <Attribute name="NAME" type="String">
-                <Value>lat</Value>
-            </Attribute>
             <Attribute name="long_name" type="String">
                 <Value>Latitude</Value>
             </Attribute>
@@ -801,23 +762,8 @@
                 <Value>-999</Value>
             </Attribute>
         </Int32>
-        <Float32 name="dayInBin">
-            <Dim name="/ACE-FTS/dayInBin"/>
-            <Attribute name="CLASS" type="String">
-                <Value>DIMENSION_SCALE</Value>
-            </Attribute>
-            <Attribute name="NAME" type="String">
-                <Value>This is a netCDF dimension but not a netCDF variable.        31</Value>
-            </Attribute>
-        </Float32>
         <Float32 name="lev">
             <Dim name="/ACE-FTS/lev"/>
-            <Attribute name="CLASS" type="String">
-                <Value>DIMENSION_SCALE</Value>
-            </Attribute>
-            <Attribute name="NAME" type="String">
-                <Value>lev</Value>
-            </Attribute>
             <Attribute name="long_name" type="String">
                 <Value>Pressure</Value>
             </Attribute>
@@ -871,12 +817,6 @@
         </Float32>
         <Int32 name="time">
             <Dim name="/Aura MLS/time"/>
-            <Attribute name="CLASS" type="String">
-                <Value>DIMENSION_SCALE</Value>
-            </Attribute>
-            <Attribute name="NAME" type="String">
-                <Value>time</Value>
-            </Attribute>
             <Attribute name="long_name" type="String">
                 <Value>Time</Value>
             </Attribute>
@@ -1006,12 +946,6 @@
         </Float32>
         <Float32 name="lat">
             <Dim name="/Aura MLS/lat"/>
-            <Attribute name="CLASS" type="String">
-                <Value>DIMENSION_SCALE</Value>
-            </Attribute>
-            <Attribute name="NAME" type="String">
-                <Value>lat</Value>
-            </Attribute>
             <Attribute name="long_name" type="String">
                 <Value>Latitude</Value>
             </Attribute>
@@ -1172,23 +1106,8 @@
                 <Value>-999</Value>
             </Attribute>
         </Int32>
-        <Float32 name="dayInBin">
-            <Dim name="/Aura MLS/dayInBin"/>
-            <Attribute name="CLASS" type="String">
-                <Value>DIMENSION_SCALE</Value>
-            </Attribute>
-            <Attribute name="NAME" type="String">
-                <Value>This is a netCDF dimension but not a netCDF variable.        31</Value>
-            </Attribute>
-        </Float32>
         <Float32 name="lev">
             <Dim name="/Aura MLS/lev"/>
-            <Attribute name="CLASS" type="String">
-                <Value>DIMENSION_SCALE</Value>
-            </Attribute>
-            <Attribute name="NAME" type="String">
-                <Value>lev</Value>
-            </Attribute>
             <Attribute name="long_name" type="String">
                 <Value>Pressure</Value>
             </Attribute>

@@ -11,9 +11,6 @@
         <Attribute name="coordinates" type="String">
             <Value>Longitude Latitude</Value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <Value>0</Value>
-        </Attribute>
     </Int16>
     <Int16 name="opt_depth_c2">
         <Dim name="/Longitude"/>
@@ -32,9 +29,6 @@
         </Attribute>
         <Attribute name="add_offset" type="Float32">
             <Value>0.</Value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <Value>0</Value>
         </Attribute>
     </Int16>
     <Int16 name="frequency_map">
@@ -58,9 +52,6 @@
         <Attribute name="add_offset" type="Float32">
             <Value>0.</Value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <Value>0</Value>
-        </Attribute>
     </Int16>
     <Int16 name="soil_moisture_c2">
         <Dim name="/Longitude"/>
@@ -82,9 +73,6 @@
         </Attribute>
         <Attribute name="add_offset" type="Float32">
             <Value>0.</Value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <Value>0</Value>
         </Attribute>
     </Int16>
     <Int16 name="soil_moisture_c1">
@@ -108,21 +96,9 @@
         <Attribute name="add_offset" type="Float32">
             <Value>0.</Value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <Value>0</Value>
-        </Attribute>
     </Int16>
     <Float32 name="Longitude">
         <Dim name="/Longitude"/>
-        <Attribute name="CLASS" type="String">
-            <Value>DIMENSION_SCALE</Value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <Value>Longitude</Value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <Value>0</Value>
-        </Attribute>
         <Attribute name="units" type="String">
             <Value>degrees_east</Value>
         </Attribute>
@@ -160,9 +136,6 @@
         <Attribute name="add_offset" type="Float32">
             <Value>0.</Value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <Value>0</Value>
-        </Attribute>
     </Int16>
     <Int16 name="opt_depth_c1">
         <Dim name="/Longitude"/>
@@ -182,9 +155,6 @@
         <Attribute name="add_offset" type="Float32">
             <Value>0.</Value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <Value>0</Value>
-        </Attribute>
     </Int16>
     <Float64 name="scantime">
         <Dim name="/Longitude"/>
@@ -201,21 +171,9 @@
         <Attribute name="_FillValue" type="Float64">
             <Value>0.</Value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <Value>0</Value>
-        </Attribute>
     </Float64>
     <Float32 name="Latitude">
         <Dim name="/Latitude"/>
-        <Attribute name="CLASS" type="String">
-            <Value>DIMENSION_SCALE</Value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <Value>Latitude</Value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="units" type="String">
             <Value>degrees_north</Value>
         </Attribute>
@@ -250,9 +208,6 @@
         <Attribute name="add_offset" type="Float32">
             <Value>0.</Value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <Value>0</Value>
-        </Attribute>
     </Int16>
     <Int16 name="soil_moisture_c1_error">
         <Dim name="/Longitude"/>
@@ -274,9 +229,6 @@
         </Attribute>
         <Attribute name="add_offset" type="Float32">
             <Value>0.</Value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <Value>0</Value>
         </Attribute>
     </Int16>
     <Int16 name="ts">
@@ -300,9 +252,6 @@
         <Attribute name="add_offset" type="Float32">
             <Value>0.</Value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <Value>0</Value>
-        </Attribute>
     </Int16>
     <Int16 name="soil_moisture_x">
         <Dim name="/Longitude"/>
@@ -324,9 +273,6 @@
         </Attribute>
         <Attribute name="add_offset" type="Float32">
             <Value>0.</Value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <Value>0</Value>
         </Attribute>
     </Int16>
     <Int16 name="soil_moisture_x_error">
@@ -350,13 +296,7 @@
         <Attribute name="add_offset" type="Float32">
             <Value>0.</Value>
         </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <Value>0</Value>
-        </Attribute>
     </Int16>
-    <Attribute name="_nc3_strict" type="Int32">
-        <Value>1</Value>
-    </Attribute>
     <Attribute name="Conventions" type="String">
         <Value>CF-1.0</Value>
     </Attribute>

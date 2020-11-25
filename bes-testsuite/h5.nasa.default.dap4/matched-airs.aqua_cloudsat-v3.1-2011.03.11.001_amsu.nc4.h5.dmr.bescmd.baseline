@@ -2,24 +2,6 @@
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="matched-airs.aqua_cloudsat-v3.1-2011.03.11.001_amsu.nc4.h5">
     <Dimension name="amsu_idx" size="46"/>
     <Dimension name="amsu_track_idx" size="45"/>
-    <Float32 name="amsu_idx">
-        <Dim name="/amsu_idx"/>
-        <Attribute name="CLASS" type="String">
-            <Value>DIMENSION_SCALE</Value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <Value>This is a netCDF dimension but not a netCDF variable.        46</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="amsu_track_idx">
-        <Dim name="/amsu_track_idx"/>
-        <Attribute name="CLASS" type="String">
-            <Value>DIMENSION_SCALE</Value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <Value>This is a netCDF dimension but not a netCDF variable.        45</Value>
-        </Attribute>
-    </Float32>
     <Attribute name="title" type="String">
         <Value>AIRS-CloudSat matchups for AIRS granule AIRS.2011.03.11.001.L2.RetStd.v5.2.2.0.G11070231943.hdf (AMSU vars)</Value>
     </Attribute>
@@ -56,24 +38,6 @@
     <Group name="CloudSat">
         <Dimension name="cs_idx" size="51"/>
         <Dimension name="cs_nbin" size="125"/>
-        <Float32 name="cs_idx">
-            <Dim name="/CloudSat/cs_idx"/>
-            <Attribute name="CLASS" type="String">
-                <Value>DIMENSION_SCALE</Value>
-            </Attribute>
-            <Attribute name="NAME" type="String">
-                <Value>This is a netCDF dimension but not a netCDF variable.        51</Value>
-            </Attribute>
-        </Float32>
-        <Float32 name="cs_nbin">
-            <Dim name="/CloudSat/cs_nbin"/>
-            <Attribute name="CLASS" type="String">
-                <Value>DIMENSION_SCALE</Value>
-            </Attribute>
-            <Attribute name="NAME" type="String">
-                <Value>This is a netCDF dimension but not a netCDF variable.       125</Value>
-            </Attribute>
-        </Float32>
         <Group name="GEOPROF">
             <Int32 name="Data_quality">
                 <Dim name="/amsu_idx"/>
@@ -730,18 +694,10 @@
     </Group>
     <Group name="AIRS">
         <Dimension name="HingeSurf" size="100"/>
-        <Float32 name="HingeSurf">
-            <Dim name="/AIRS/HingeSurf"/>
-            <Attribute name="CLASS" type="String">
-                <Value>DIMENSION_SCALE</Value>
-            </Attribute>
-            <Attribute name="NAME" type="String">
-                <Value>This is a netCDF dimension but not a netCDF variable.       100</Value>
-            </Attribute>
-        </Float32>
         <Group name="RetStd">
             <Dimension name="O3Func" size="9"/>
             <Dimension name="StdPressureLev" size="28"/>
+            <Dimension name="StdPressureLay" size="28"/>
             <Dimension name="COFunc" size="9"/>
             <Dimension name="H2OPressureLay" size="14"/>
             <Dimension name="CH4Func" size="7"/>
@@ -752,29 +708,11 @@
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
-            </Float32>
-            <Float32 name="O3Func">
-                <Dim name="/AIRS/RetStd/O3Func"/>
-                <Attribute name="CLASS" type="String">
-                    <Value>DIMENSION_SCALE</Value>
-                </Attribute>
-                <Attribute name="NAME" type="String">
-                    <Value>This is a netCDF dimension but not a netCDF variable.         9</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>2</Value>
-                </Attribute>
             </Float32>
             <Float32 name="Press_mid_top_bndry">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </Float32>
             <Float32 name="totH2OStd">
@@ -782,17 +720,11 @@
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Float32>
             <Float32 name="olr">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </Float32>
             <Float32 name="TotCld_4_CCfinal">
@@ -800,17 +732,11 @@
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Float32>
             <Float64 name="Time">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="Float64">
                     <Value>-9999.</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </Float64>
             <Float32 name="TSurfStd">
@@ -818,17 +744,11 @@
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Float32>
             <Float32 name="totCldH2OStdErr">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </Float32>
             <Float32 name="TAirStd">
@@ -837,29 +757,11 @@
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
-            </Float32>
-            <Float32 name="StdPressureLay">
-                <Dim size="28"/>
-                <Attribute name="CLASS" type="String">
-                    <Value>DIMENSION_SCALE</Value>
-                </Attribute>
-                <Attribute name="NAME" type="String">
-                    <Value>This is a netCDF dimension but not a netCDF variable.        28</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>4</Value>
-                </Attribute>
             </Float32>
             <Float32 name="totH2OMWOnlyStd">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </Float32>
             <Float32 name="TSurfStdErr">
@@ -867,29 +769,11 @@
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
-            </Float32>
-            <Float32 name="COFunc">
-                <Dim name="/AIRS/RetStd/COFunc"/>
-                <Attribute name="CLASS" type="String">
-                    <Value>DIMENSION_SCALE</Value>
-                </Attribute>
-                <Attribute name="NAME" type="String">
-                    <Value>This is a netCDF dimension but not a netCDF variable.         9</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>3</Value>
-                </Attribute>
             </Float32>
             <Float32 name="landFrac">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </Float32>
             <Float64 name="Longitude">
@@ -897,38 +781,17 @@
                 <Attribute name="_FillValue" type="Float64">
                     <Value>-9999.</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Float64>
             <UInt16 name="Qual_Surf">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="UInt16">
                     <Value>65534</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </UInt16>
-            <Float32 name="H2OPressureLay">
-                <Dim name="/AIRS/RetStd/H2OPressureLay"/>
-                <Attribute name="CLASS" type="String">
-                    <Value>DIMENSION_SCALE</Value>
-                </Attribute>
-                <Attribute name="NAME" type="String">
-                    <Value>This is a netCDF dimension but not a netCDF variable.        14</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>6</Value>
-                </Attribute>
-            </Float32>
             <UInt16 name="Qual_Temp_Profile_Mid">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="UInt16">
                     <Value>65534</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </UInt16>
             <Float32 name="CH4_verticality">
@@ -937,53 +800,26 @@
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Float32>
             <UInt16 name="Qual_Cloud_OLR">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="UInt16">
                     <Value>65534</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </UInt16>
             <Float64 name="glintlon">
                 <Dim name="/amsu_track_idx"/>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>1</Value>
-                </Attribute>
             </Float64>
             <Int16 name="nGoodStd">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="Int16">
                     <Value>-9999</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Int16>
-            <Float32 name="Cloud">
-                <Dim name="/AIRS/RetStd/Cloud"/>
-                <Attribute name="CLASS" type="String">
-                    <Value>DIMENSION_SCALE</Value>
-                </Attribute>
-                <Attribute name="NAME" type="String">
-                    <Value>This is a netCDF dimension but not a netCDF variable.         2</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>7</Value>
-                </Attribute>
-            </Float32>
             <Float32 name="olr_err">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </Float32>
             <Float32 name="T_Tropopause">
@@ -991,26 +827,17 @@
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Float32>
             <Int32 name="nSurfStd">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="Int32">
                     <Value>-9999</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Int32>
             <Int16 name="nStd_bot_mid_bndry">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="Int16">
                     <Value>-9999</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </Int16>
             <Float32 name="PCldTopStdErr">
@@ -1019,30 +846,12 @@
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Float32>
             <Float32 name="emisIRStdErr">
                 <Dim name="/amsu_idx"/>
                 <Dim name="/AIRS/HingeSurf"/>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
-            </Float32>
-            <Float32 name="H2OFunc">
-                <Dim name="/AIRS/RetStd/H2OFunc"/>
-                <Attribute name="CLASS" type="String">
-                    <Value>DIMENSION_SCALE</Value>
-                </Attribute>
-                <Attribute name="NAME" type="String">
-                    <Value>This is a netCDF dimension but not a netCDF variable.        11</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>5</Value>
                 </Attribute>
             </Float32>
             <Float32 name="H2O_verticality">
@@ -1051,38 +860,17 @@
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
-            </Float32>
-            <Float32 name="CH4Func">
-                <Dim name="/AIRS/RetStd/CH4Func"/>
-                <Attribute name="CLASS" type="String">
-                    <Value>DIMENSION_SCALE</Value>
-                </Attribute>
-                <Attribute name="NAME" type="String">
-                    <Value>This is a netCDF dimension but not a netCDF variable.         7</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>8</Value>
-                </Attribute>
             </Float32>
             <Int16 name="nBestStd">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="Int16">
                     <Value>-9999</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Int16>
             <Float32 name="solazi">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </Float32>
             <Float32 name="TAirStdErr">
@@ -1091,18 +879,12 @@
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Float32>
             <Float32 name="O3VMRStdErr">
                 <Dim name="/amsu_idx"/>
                 <Dim name="/AIRS/RetStd/StdPressureLev"/>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </Float32>
             <Float32 name="O3VMRStd">
@@ -1111,17 +893,11 @@
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Float32>
             <UInt16 name="Qual_CO">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="UInt16">
                     <Value>65534</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </UInt16>
             <Float32 name="totCldH2OStd">
@@ -1129,15 +905,9 @@
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Float32>
             <Float64 name="glintlat">
                 <Dim name="/amsu_track_idx"/>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>1</Value>
-                </Attribute>
             </Float64>
             <Float32 name="TAirMWOnlyStd">
                 <Dim name="/amsu_idx"/>
@@ -1145,17 +915,11 @@
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Float32>
             <UInt16 name="Qual_H2O">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="UInt16">
                     <Value>65534</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </UInt16>
             <Float32 name="CO_VMR_eff">
@@ -1164,17 +928,11 @@
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Float32>
             <Float32 name="CO_dof">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </Float32>
             <UInt16 name="Qual_Temp_Profile_Top">
@@ -1182,17 +940,11 @@
                 <Attribute name="_FillValue" type="UInt16">
                     <Value>65534</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </UInt16>
             <Float32 name="clrolr">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </Float32>
             <Float32 name="clrolr_err">
@@ -1200,26 +952,17 @@
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Float32>
             <UInt16 name="RetQAFlag">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="UInt16">
                     <Value>65534</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </UInt16>
             <Float64 name="Latitude">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="Float64">
                     <Value>-9999.</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </Float64>
             <Float32 name="TCldTopStdErr">
@@ -1228,17 +971,11 @@
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Float32>
             <Float32 name="totO3StdErr">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </Float32>
             <Int8 name="retrieval_type">
@@ -1250,17 +987,11 @@
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Float32>
             <Float32 name="TSurfAirErr">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </Float32>
             <Float32 name="H2OMMRStd">
@@ -1269,17 +1000,11 @@
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Float32>
             <Float32 name="PTropopause">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </Float32>
             <Float32 name="totH2OStdErr">
@@ -1287,26 +1012,17 @@
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Float32>
             <Int32 name="numCloud">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="Int32">
                     <Value>-9999</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Int32>
             <Float32 name="Press_bot_mid_bndry">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </Float32>
             <Float32 name="H2OMMRSat_liquid">
@@ -1315,17 +1031,11 @@
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Float32>
             <UInt16 name="Qual_Temp_Profile_Bot">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="UInt16">
                     <Value>65534</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </UInt16>
             <Float32 name="PGood">
@@ -1333,17 +1043,11 @@
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Float32>
             <Int16 name="nStd_mid_top_bndry">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="Int16">
                     <Value>-9999</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </Int16>
             <Float32 name="totO3Std">
@@ -1351,17 +1055,11 @@
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Float32>
             <Float32 name="satzen">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </Float32>
             <UInt16 name="Qual_clrolr">
@@ -1369,17 +1067,11 @@
                 <Attribute name="_FillValue" type="UInt16">
                     <Value>65534</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </UInt16>
             <Float32 name="PBest">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </Float32>
             <Float32 name="GP_Height">
@@ -1388,17 +1080,11 @@
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Float32>
             <Float32 name="CH4_total_column">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </Float32>
             <Int16 name="num_clear_spectral_indicator">
@@ -1406,17 +1092,11 @@
                 <Attribute name="_FillValue" type="Int16">
                     <Value>-9999</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Int16>
             <Float32 name="solzen">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </Float32>
             <Float32 name="PSurfStd">
@@ -1424,17 +1104,11 @@
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Float32>
             <Float32 name="satazi">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </Float32>
             <Float32 name="CO_verticality">
@@ -1443,29 +1117,11 @@
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
-            </Float32>
-            <Float32 name="StdPressureLev">
-                <Dim name="/AIRS/RetStd/StdPressureLev"/>
-                <Attribute name="CLASS" type="String">
-                    <Value>DIMENSION_SCALE</Value>
-                </Attribute>
-                <Attribute name="NAME" type="String">
-                    <Value>This is a netCDF dimension but not a netCDF variable.        28</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>9</Value>
-                </Attribute>
             </Float32>
             <Int16 name="numHingeSurf">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="Int16">
                     <Value>-9999</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </Int16>
             <Float32 name="H2OMMRStdErr">
@@ -1474,17 +1130,11 @@
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Float32>
             <Float32 name="CO_total_column">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </Float32>
             <Float32 name="emisIRStd">
@@ -1493,17 +1143,11 @@
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Float32>
             <Float32 name="Cloud_Resid_Ratio">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </Float32>
             <Float32 name="O3_verticality">
@@ -1512,9 +1156,6 @@
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Float32>
             <Float32 name="freqEmis">
                 <Dim name="/amsu_idx"/>
@@ -1522,17 +1163,11 @@
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Float32>
             <Float32 name="TSurfAir">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </Float32>
             <Float32 name="TCldTopStd">
@@ -1541,9 +1176,6 @@
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Float32>
             <Float32 name="PCldTopStd">
                 <Dim name="/amsu_idx"/>
@@ -1551,17 +1183,11 @@
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Float32>
             <Float32 name="landFrac_err">
                 <Dim name="/amsu_idx"/>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </Float32>
             <Float32 name="H2OMMRSat">
@@ -1570,18 +1196,12 @@
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Float32>
             <Float32 name="CO_VMR_eff_err">
                 <Dim name="/amsu_idx"/>
                 <Dim name="/AIRS/RetStd/COFunc"/>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </Float32>
         </Group>

@@ -285,9 +285,6 @@
         <Attribute name="long_name" type="String">
             <Value>wavelength bands over land</Value>
         </Attribute>
-        <Attribute name="CLASS" type="String">
-            <Value>DIMENSION_SCALE</Value>
-        </Attribute>
     </Float32>
     <Float32 name="latitude">
         <Dim name="/latitude"/>
@@ -303,9 +300,6 @@
         <Attribute name="valid_range" type="Float32">
             <Value>-90.</Value>
             <Value>90.</Value>
-        </Attribute>
-        <Attribute name="CLASS" type="String">
-            <Value>DIMENSION_SCALE</Value>
         </Attribute>
     </Float32>
     <Float32 name="longitude">
@@ -323,9 +317,6 @@
             <Value>-180.</Value>
             <Value>180.</Value>
         </Attribute>
-        <Attribute name="CLASS" type="String">
-            <Value>DIMENSION_SCALE</Value>
-        </Attribute>
     </Float32>
     <Float32 name="ocean_bands">
         <Dim name="/ocean_bands"/>
@@ -334,9 +325,6 @@
         </Attribute>
         <Attribute name="long_name" type="String">
             <Value>wavelength bands over ocean</Value>
-        </Attribute>
-        <Attribute name="CLASS" type="String">
-            <Value>DIMENSION_SCALE</Value>
         </Attribute>
     </Float32>
     <Float32 name="relative_azimuth_angle">

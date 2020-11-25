@@ -132,9 +132,6 @@
         <Dimension name="lat" size="720"/>
         <Float64 name="lon">
             <Dim name="/OMI_Column_Amount_O3/lon"/>
-            <Attribute name="CLASS" type="String">
-                <Value>DIMENSION_SCALE</Value>
-            </Attribute>
             <Attribute name="long_name" type="String">
                 <Value>longitude</Value>
             </Attribute>
@@ -144,9 +141,6 @@
         </Float64>
         <Float64 name="lat">
             <Dim name="/OMI_Column_Amount_O3/lat"/>
-            <Attribute name="CLASS" type="String">
-                <Value>DIMENSION_SCALE</Value>
-            </Attribute>
             <Attribute name="long_name" type="String">
                 <Value>latitude</Value>
             </Attribute>

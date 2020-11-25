@@ -35,12 +35,6 @@
                 <Dimension name="nTimes" size="5434"/>
                 <Float32 name="nLevels">
                     <Dim name="/HDFEOS/SWATHS/HIRDLS/nLevels"/>
-                    <Attribute name="CLASS" type="String">
-                        <Value>DIMENSION_SCALE</Value>
-                    </Attribute>
-                    <Attribute name="NAME" type="String">
-                        <Value>nLevels</Value>
-                    </Attribute>
                     <Attribute name="_FillValue" type="Float32">
                         <Value>-999.</Value>
                     </Attribute>
@@ -56,12 +50,6 @@
                 </Float32>
                 <Float64 name="nTimes">
                     <Dim name="/HDFEOS/SWATHS/HIRDLS/nTimes"/>
-                    <Attribute name="CLASS" type="String">
-                        <Value>DIMENSION_SCALE</Value>
-                    </Attribute>
-                    <Attribute name="NAME" type="String">
-                        <Value>nTimes</Value>
-                    </Attribute>
                     <Attribute name="MissingValue" type="Float64">
                         <Value>-999.</Value>
                     </Attribute>

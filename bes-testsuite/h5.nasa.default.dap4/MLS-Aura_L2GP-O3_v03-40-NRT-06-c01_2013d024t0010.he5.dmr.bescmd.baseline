@@ -674,33 +674,7 @@
             <Group name="O3">
                 <Dimension name="nLevels" size="55"/>
                 <Dimension name="nTimes" size="46"/>
-                <Float32 name="nLevels">
-                    <Dim name="/HDFEOS/SWATHS/O3/nLevels"/>
-                    <Attribute name="CLASS" type="String">
-                        <Value>DIMENSION_SCALE</Value>
-                    </Attribute>
-                    <Attribute name="NAME" type="String">
-                        <Value>This is a netCDF dimension but not a netCDF variable.</Value>
-                    </Attribute>
-                </Float32>
-                <Float32 name="nTimes">
-                    <Dim name="/HDFEOS/SWATHS/O3/nTimes"/>
-                    <Attribute name="CLASS" type="String">
-                        <Value>DIMENSION_SCALE</Value>
-                    </Attribute>
-                    <Attribute name="NAME" type="String">
-                        <Value>This is a netCDF dimension but not a netCDF variable.</Value>
-                    </Attribute>
-                </Float32>
-                <Float32 name="nTimesTotal">
-                    <Dim size="46"/>
-                    <Attribute name="CLASS" type="String">
-                        <Value>DIMENSION_SCALE</Value>
-                    </Attribute>
-                    <Attribute name="NAME" type="String">
-                        <Value>This is a netCDF dimension but not a netCDF variable.</Value>
-                    </Attribute>
-                </Float32>
+                <Dimension name="nTimesTotal" size="46"/>
                 <Attribute name="Pressure" type="Float32">
                     <Value>1000.</Value>
                     <Value>825.4041748</Value>

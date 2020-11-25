@@ -4,54 +4,6 @@
     <Dimension name="columns" size="4320"/>
     <Dimension name="rgb" size="3"/>
     <Dimension name="eightbitcolor" size="256"/>
-    <Float32 name="rows">
-        <Dim name="/rows"/>
-        <Attribute name="CLASS" type="String">
-            <Value>DIMENSION_SCALE</Value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <Value>This is a netCDF dimension but not a netCDF variable.      2160</Value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <Value>0</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="columns">
-        <Dim name="/columns"/>
-        <Attribute name="CLASS" type="String">
-            <Value>DIMENSION_SCALE</Value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <Value>This is a netCDF dimension but not a netCDF variable.      4320</Value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <Value>1</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="rgb">
-        <Dim name="/rgb"/>
-        <Attribute name="CLASS" type="String">
-            <Value>DIMENSION_SCALE</Value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <Value>This is a netCDF dimension but not a netCDF variable.         3</Value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <Value>2</Value>
-        </Attribute>
-    </Float32>
-    <Float32 name="eightbitcolor">
-        <Dim name="/eightbitcolor"/>
-        <Attribute name="CLASS" type="String">
-            <Value>DIMENSION_SCALE</Value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <Value>This is a netCDF dimension but not a netCDF variable.       256</Value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <Value>3</Value>
-        </Attribute>
-    </Float32>
     <String name="palette">
         <Dim name="/rgb"/>
         <Dim name="/eightbitcolor"/>

@@ -400,15 +400,20 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
         }
         else {
             vector<char> value;
+            // TODO: I think the second line is right. Will check this later. 
             value.resize(attr_inst.need + sizeof(char));
+            //value.resize(attr_inst.need);
             BESDEBUG("h5", "arttr_inst.need=" << attr_inst.need << endl);
 
+            hid_t memtype = H5Tget_native_type(ty_id, H5T_DIR_ASCEND);
             // Read HDF5 attribute data.
-            if (H5Aread(attr_id, ty_id, (void *) (&value[0])) < 0) {
+            //if (H5Aread(attr_id, ty_id, (void *) (&value[0])) < 0) {
+            if (H5Aread(attr_id, memtype, (void *) (&value[0])) < 0) {
                 // value is deleted in the catch block below so
                 // shouldn't be deleted here. pwest Mar 18, 2009
                 throw InternalErr(__FILE__, __LINE__, "unable to read HDF5 attribute data");
             }
+            H5Aclose(memtype);
 
             // For scalar data, just read data once.
             if (attr_inst.ndims == 0) {

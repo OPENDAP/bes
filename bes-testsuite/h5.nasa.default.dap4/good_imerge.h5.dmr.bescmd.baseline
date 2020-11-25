@@ -21,15 +21,6 @@
     </Int16>
     <Float32 name="lon">
         <Dim name="/lon"/>
-        <Attribute name="CLASS" type="String">
-            <Value>DIMENSION_SCALE</Value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <Value>lon</Value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <Value>0</Value>
-        </Attribute>
         <Attribute name="units" type="String">
             <Value>degrees_east</Value>
         </Attribute>
@@ -88,15 +79,6 @@
     </Float32>
     <Float32 name="lat">
         <Dim name="/lat"/>
-        <Attribute name="CLASS" type="String">
-            <Value>DIMENSION_SCALE</Value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <Value>lat</Value>
-        </Attribute>
-        <Attribute name="_Netcdf4Dimid" type="Int32">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="units" type="String">
             <Value>degrees_north</Value>
         </Attribute>
@@ -157,9 +139,6 @@
             <Value>nlon,nlat</Value>
         </Attribute>
     </Int16>
-    <Attribute name="_nc3_strict" type="Int32">
-        <Value>1</Value>
-    </Attribute>
     <Attribute name="FileHeader" type="String">
         <Value>AlgorithmID=3IMERGHH;
 AlgorithmVersion=3IMERGH_1.0                                                                                                                                                                                                                                                     ;

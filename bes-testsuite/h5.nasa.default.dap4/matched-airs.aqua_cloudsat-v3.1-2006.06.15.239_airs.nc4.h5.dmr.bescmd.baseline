@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="matched-airs.aqua_cloudsat-v3.1-2006.06.15.239_airs.nc4.h5">
     <Dimension name="airs_idx" size="141"/>
-    <Float32 name="airs_idx">
-        <Dim name="/airs_idx"/>
-        <Attribute name="CLASS" type="String">
-            <Value>DIMENSION_SCALE</Value>
-        </Attribute>
-        <Attribute name="NAME" type="String">
-            <Value>This is a netCDF dimension but not a netCDF variable.       141</Value>
-        </Attribute>
-    </Float32>
     <Attribute name="title" type="String">
         <Value>AIRS-CloudSat matchups for AIRS granule AIRS.2006.06.15.239.L2.RetStd.v5.0.14.0.G07346074153.hdf (AIRS vars)</Value>
     </Attribute>
@@ -45,63 +36,19 @@
     </Attribute>
     <Group name="AIRS">
         <Group name="RetStd">
+            <Dimension name="O3Func" size="9"/>
+            <Dimension name="StdPressureLay" size="28"/>
+            <Dimension name="COFunc" size="9"/>
+            <Dimension name="H2OPressureLay" size="14"/>
             <Dimension name="Cloud" size="2"/>
-            <Float32 name="O3Func">
-                <Dim size="9"/>
-                <Attribute name="CLASS" type="String">
-                    <Value>DIMENSION_SCALE</Value>
-                </Attribute>
-                <Attribute name="NAME" type="String">
-                    <Value>This is a netCDF dimension but not a netCDF variable.         9</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>1</Value>
-                </Attribute>
-            </Float32>
-            <Float32 name="StdPressureLay">
-                <Dim size="28"/>
-                <Attribute name="CLASS" type="String">
-                    <Value>DIMENSION_SCALE</Value>
-                </Attribute>
-                <Attribute name="NAME" type="String">
-                    <Value>This is a netCDF dimension but not a netCDF variable.        28</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>3</Value>
-                </Attribute>
-            </Float32>
-            <Float32 name="COFunc">
-                <Dim size="9"/>
-                <Attribute name="CLASS" type="String">
-                    <Value>DIMENSION_SCALE</Value>
-                </Attribute>
-                <Attribute name="NAME" type="String">
-                    <Value>This is a netCDF dimension but not a netCDF variable.         9</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>2</Value>
-                </Attribute>
-            </Float32>
-            <Float32 name="H2OPressureLay">
-                <Dim size="14"/>
-                <Attribute name="CLASS" type="String">
-                    <Value>DIMENSION_SCALE</Value>
-                </Attribute>
-                <Attribute name="NAME" type="String">
-                    <Value>This is a netCDF dimension but not a netCDF variable.        14</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>5</Value>
-                </Attribute>
-            </Float32>
+            <Dimension name="H2OFunc" size="11"/>
+            <Dimension name="CH4Func" size="7"/>
+            <Dimension name="StdPressureLev" size="28"/>
             <Float32 name="CldFrcStdErr">
                 <Dim name="/airs_idx"/>
                 <Dim name="/AIRS/RetStd/Cloud"/>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </Float32>
             <Int16 name="dust_flag">
@@ -109,53 +56,11 @@
                 <Attribute name="_FillValue" type="Int16">
                     <Value>-9999</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Int16>
-            <Float32 name="Cloud">
-                <Dim name="/AIRS/RetStd/Cloud"/>
-                <Attribute name="CLASS" type="String">
-                    <Value>DIMENSION_SCALE</Value>
-                </Attribute>
-                <Attribute name="NAME" type="String">
-                    <Value>This is a netCDF dimension but not a netCDF variable.         2</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>6</Value>
-                </Attribute>
-            </Float32>
-            <Float32 name="H2OFunc">
-                <Dim size="11"/>
-                <Attribute name="CLASS" type="String">
-                    <Value>DIMENSION_SCALE</Value>
-                </Attribute>
-                <Attribute name="NAME" type="String">
-                    <Value>This is a netCDF dimension but not a netCDF variable.        11</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>4</Value>
-                </Attribute>
-            </Float32>
-            <Float32 name="CH4Func">
-                <Dim size="7"/>
-                <Attribute name="CLASS" type="String">
-                    <Value>DIMENSION_SCALE</Value>
-                </Attribute>
-                <Attribute name="NAME" type="String">
-                    <Value>This is a netCDF dimension but not a netCDF variable.         7</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>7</Value>
-                </Attribute>
-            </Float32>
             <Float32 name="latAIRS">
                 <Dim name="/airs_idx"/>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </Float32>
             <Float32 name="lonAIRS">
@@ -164,35 +69,17 @@
                     <Value>-9999.</Value>
                 </Attribute>
             </Float32>
-            <Float32 name="StdPressureLev">
-                <Dim size="28"/>
-                <Attribute name="CLASS" type="String">
-                    <Value>DIMENSION_SCALE</Value>
-                </Attribute>
-                <Attribute name="NAME" type="String">
-                    <Value>This is a netCDF dimension but not a netCDF variable.        28</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>8</Value>
-                </Attribute>
-            </Float32>
             <Float32 name="CldFrcStd">
                 <Dim name="/airs_idx"/>
                 <Dim name="/AIRS/RetStd/Cloud"/>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
                 </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
-                </Attribute>
             </Float32>
             <Int16 name="spectral_clear_indicator">
                 <Dim name="/airs_idx"/>
                 <Attribute name="_FillValue" type="Int16">
                     <Value>-9999</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>0</Value>
                 </Attribute>
             </Int16>
         </Group>
@@ -232,15 +119,6 @@
                 <Dim name="/airs_idx"/>
                 <Attribute name="_FillValue" type="Float32">
                     <Value>-9999.</Value>
-                </Attribute>
-            </Float32>
-            <Float32 name="Channel:L1B_AIRS_Science">
-                <Dim name="/AIRS/Radiances/Channel:L1B_AIRS_Science"/>
-                <Attribute name="CLASS" type="String">
-                    <Value>DIMENSION_SCALE</Value>
-                </Attribute>
-                <Attribute name="NAME" type="String">
-                    <Value>This is a netCDF dimension but not a netCDF variable.      2378</Value>
                 </Attribute>
             </Float32>
             <Float64 name="Latitude">
@@ -300,30 +178,6 @@
             <Dimension name="SubTrack:L1B_VIS_Science" size="9"/>
             <Dimension name="Channel:L1B_VIS_Science" size="4"/>
             <Dimension name="SubXTrack:L1B_VIS_Science" size="8"/>
-            <Float32 name="SubTrack:L1B_VIS_Science">
-                <Dim name="/AIRS/VIS.Radiances/SubTrack:L1B_VIS_Science"/>
-                <Attribute name="CLASS" type="String">
-                    <Value>DIMENSION_SCALE</Value>
-                </Attribute>
-                <Attribute name="NAME" type="String">
-                    <Value>This is a netCDF dimension but not a netCDF variable.         9</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>10</Value>
-                </Attribute>
-            </Float32>
-            <Float32 name="Channel:L1B_VIS_Science">
-                <Dim name="/AIRS/VIS.Radiances/Channel:L1B_VIS_Science"/>
-                <Attribute name="CLASS" type="String">
-                    <Value>DIMENSION_SCALE</Value>
-                </Attribute>
-                <Attribute name="NAME" type="String">
-                    <Value>This is a netCDF dimension but not a netCDF variable.         4</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>11</Value>
-                </Attribute>
-            </Float32>
             <Float32 name="radiances">
                 <Dim name="/airs_idx"/>
                 <Dim name="/AIRS/VIS.Radiances/Channel:L1B_VIS_Science"/>
@@ -333,41 +187,11 @@
                     <Value>-9999.</Value>
                 </Attribute>
             </Float32>
-            <Float32 name="SubXTrack:L1B_VIS_Science">
-                <Dim name="/AIRS/VIS.Radiances/SubXTrack:L1B_VIS_Science"/>
-                <Attribute name="CLASS" type="String">
-                    <Value>DIMENSION_SCALE</Value>
-                </Attribute>
-                <Attribute name="NAME" type="String">
-                    <Value>This is a netCDF dimension but not a netCDF variable.         8</Value>
-                </Attribute>
-                <Attribute name="_Netcdf4Dimid" type="Int32">
-                    <Value>12</Value>
-                </Attribute>
-            </Float32>
         </Group>
     </Group>
     <Group name="CloudSat">
         <Dimension name="cs_idx" size="17"/>
         <Dimension name="cs_nbin" size="125"/>
-        <Float32 name="cs_idx">
-            <Dim name="/CloudSat/cs_idx"/>
-            <Attribute name="CLASS" type="String">
-                <Value>DIMENSION_SCALE</Value>
-            </Attribute>
-            <Attribute name="NAME" type="String">
-                <Value>This is a netCDF dimension but not a netCDF variable.        17</Value>
-            </Attribute>
-        </Float32>
-        <Float32 name="cs_nbin">
-            <Dim name="/CloudSat/cs_nbin"/>
-            <Attribute name="CLASS" type="String">
-                <Value>DIMENSION_SCALE</Value>
-            </Attribute>
-            <Attribute name="NAME" type="String">
-                <Value>This is a netCDF dimension but not a netCDF variable.       125</Value>
-            </Attribute>
-        </Float32>
         <Group name="GEOPROF">
             <Int32 name="Data_quality">
                 <Dim name="/airs_idx"/>

@@ -1486,6 +1486,7 @@ BaseType* HDF5Array::h5dims_transform_to_dap4(D4Group *grp,const vector<string> 
 
     int k = 0;
     for (Array::Dim_iter d = dest->dim_begin(), e = dest->dim_end(); d != e; ++d) {
+
     BESDEBUG("h5", "<coming to the dimension loop" << endl);
         if (false == (*d).name.empty()) {
     BESDEBUG("h5", "<coming to the dimension loop, has name " << (*d).name<<endl);
@@ -1494,20 +1495,42 @@ BaseType* HDF5Array::h5dims_transform_to_dap4(D4Group *grp,const vector<string> 
 
             D4Group *temp_grp   = grp;
             D4Dimension *d4_dim = NULL;
+            bool is_dim_nonc4_grp = false;
+
             while(temp_grp) {
     BESDEBUG("h5", "<coming to the group  has name " << temp_grp->name()<<endl);
     BESDEBUG("h5", "<coming to the group  has fullpath " << temp_grp->FQN()<<endl);
 
+                //Obtain all the dimensions of this group.
                 D4Dimensions *temp_dims = temp_grp->dims();
 
-                // Check if the dimension is defined in this group
+                // Check if this dimension is defined in this group
                 d4_dim = temp_dims->find_dim((*d).name);
+
+                // Need the full path of the dimension name
                 string d4_dim_path = dimpath[k].substr(0,dimpath[k].find_last_of("/")+1);
+BESDEBUG("h5", "d4_dim_path is " << d4_dim_path<<endl);
+                
+                bool ancestor_grp = false;
+
+                // If the dim_path is within this group or its ancestor, this is valid.
+                if(d4_dim_path.find(temp_grp->FQN())==0 || temp_grp->FQN().find(d4_dim_path)==0) 
+                    ancestor_grp = true;
+
+                // If we find this dimension and the dimension is on the ancestral path, 
+                // this follows the netCDF-4/DAP4 dimension model, break.
                 if(d4_dim && (temp_grp->FQN() == d4_dim_path)) { 
-                //if(d4_dim) { 
 BESDEBUG("h5", "<FInd dimension name " << (*d).name<<endl);
-                  (*d).dim = d4_dim;
-                  break;
+                    (*d).dim = d4_dim;
+                    is_dim_nonc4_grp = false;
+                    break;
+                }
+                // If the dimension name is not on the ancestral path, this
+                // dimension must be on another path, mark it.
+                //else if( ancestor_grp == false && is_dim_nonc4_grp == false) {
+                else if( ancestor_grp == false) {
+                    is_dim_nonc4_grp = true;
+                    break;
                 }
                 else
                     d4_dim = NULL;
@@ -1522,6 +1545,13 @@ BESDEBUG("h5", "<FInd dimension name " << (*d).name<<endl);
             // Not find this dimension in any of the ancestor groups, add it to this group.
             // The following block is fine, but to avoid the complaint from sonarcloud.
             // Use a bool.
+            if(true == is_dim_nonc4_grp) {
+                 string err= "The variable " + var_path +" has dimension ";
+                 err += dimpath[k] + ". This dimension is not under its ancestor or the current group.";
+                 err += " This is not supported.";
+                 delete dest;
+                 throw InternalErr(__FILE__,__LINE__,err); 
+            }
             bool d4_dim_null = ((d4_dim==NULL)?true:false);
             if(d4_dim_null == true) {
                 d4_dim = new D4Dimension((*d).name, (*d).size);

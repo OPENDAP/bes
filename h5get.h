@@ -65,7 +65,10 @@ libdap::Structure *Get_structure(const std::string &varname,const std::string &v
                                 hid_t datatype,bool is_dap4);
 
 bool check_dimscale(hid_t fid);
+bool has_dimscale_attr(hid_t dataset);
 void obtain_dimnames(hid_t dset,int, DS_t*dt_inst_ptr);
 
 void write_vlen_str_attrs(hid_t attr_id,hid_t ty_id, DSattr_t *, libdap::D4Attribute *d4_attr, libdap::AttrTable* d2_attr,bool is_dap4);
+
+bool check_str_attr_value(hid_t attr_id,hid_t atype_id,const string & value_to_compare,bool is_substr);
 #endif                          //_H5GET_H

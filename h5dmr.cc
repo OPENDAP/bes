@@ -415,31 +415,39 @@ bool breadth_first(hid_t pid, char *gname, D4Group* par_grp, const char *fname,b
             get_dataset(pid, full_path_name, &dt_inst,use_dimscale,is_pure_dim);
                
             if(false == is_pure_dim) {
-            hid_t dset_id = -1;
-            if((dset_id = H5Dopen(pid,full_path_name.c_str(),H5P_DEFAULT)) <0) {
-                string msg = "cannot open the HDF5 dataset  ";
-                msg += full_path_name;
-                throw InternalErr(__FILE__, __LINE__, msg);
-            }
+                hid_t dset_id = -1;
+                if((dset_id = H5Dopen(pid,full_path_name.c_str(),H5P_DEFAULT)) <0) {
+                    string msg = "cannot open the HDF5 dataset  ";
+                    msg += full_path_name;
+                    throw InternalErr(__FILE__, __LINE__, msg);
+                }
 
-            try {
-                read_objects(par_grp, full_path_name, fname,dset_id);
-            }
-            catch(...) {
-                H5Dclose(dset_id);
-                throw;
-            }
-            if(H5Dclose(dset_id)<0) {
-                string msg = "cannot close the HDF5 dataset  ";
-                msg += full_path_name;
-                throw InternalErr(__FILE__, __LINE__, msg);
-            }
+                try {
+                    read_objects(par_grp, full_path_name, fname,dset_id);
+                }
+                catch(...) {
+                    H5Dclose(dset_id);
+                    throw;
+                }
+                if(H5Dclose(dset_id)<0) {
+                    string msg = "cannot close the HDF5 dataset  ";
+                    msg += full_path_name;
+                    throw InternalErr(__FILE__, __LINE__, msg);
+                }
             }
             else {
+                //Need to add this pure dimension to the corresponding DAP4 group
+                D4Dimensions *d4_dims = par_grp->dims();
+                string d4dim_name = string(oname.begin(),oname.end()-1);   
+                D4Dimension *d4_dim = d4_dims->find_dim(d4dim_name);
+                if(d4_dim == NULL) {
+                    d4_dim = new D4Dimension(d4dim_name,dt_inst.nelmts);
+                    d4_dims->add_dim_nocopy(d4_dim);
+                }
+                BESDEBUG("h5", "<h5dmr.cc: pure dimension: dataset name." << d4dim_name << endl);
                 if(H5Tclose(dt_inst.type)<0) {
                       throw InternalErr(__FILE__, __LINE__, "Cannot close the HDF5 datatype.");       
                 }
-
             }
  
         } 
@@ -703,7 +711,14 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
         }
 
         // We need to transform dimension info. to DAP4 group
-        BaseType* new_var = ar->h5dims_transform_to_dap4(d4_grp,dt_inst.dimnames_path);
+        BaseType* new_var = NULL;
+        try {
+            new_var = ar->h5dims_transform_to_dap4(d4_grp,dt_inst.dimnames_path);
+        }
+        catch(...) {
+            delete ar;
+            throw;
+        }
 
         // clear DAP4 dimnames_path vector
         dt_inst.dimnames_path.clear();
@@ -886,6 +901,11 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
         //hid_t ty_id = attr_inst.type;
 #endif
         hid_t ty_id = H5Aget_type(attr_id);
+        if(ty_id <0) {
+            H5Aclose(attr_id);
+            throw InternalErr(__FILE__, __LINE__, "Cannot retrieve HDF5 attribute datatype successfully.");
+        }
+
         string dap_type = get_dap_type(ty_id,true);
 
         // Need to have DAP4 representation of the attribute type
@@ -899,6 +919,7 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
         }
 
         string attr_name = attr_inst.name;
+        BESDEBUG("h5", "arttr_name= " << attr_name << endl);
 
         // Create the DAP4 attribute mapped from HDF5
         D4Attribute *d4_attr = new D4Attribute(attr_name,dap4_attr_type);
@@ -969,12 +990,17 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
 
             vector<char> value;
             value.resize(attr_inst.need + sizeof(char));
+            //value.resize(attr_inst.need);
             BESDEBUG("h5", "arttr_inst.need=" << attr_inst.need << endl);
   
+            // Need to obtain the memtype since we still find BE data.
+            hid_t memtype = H5Tget_native_type(ty_id, H5T_DIR_ASCEND);
             // Read HDF5 attribute data.
-            if (H5Aread(attr_id, ty_id, (void *) (&value[0])) < 0) {
+            //if (H5Aread(attr_id, ty_id, (void *) (&value[0])) < 0) {
+            if (H5Aread(attr_id, memtype, (void *) (&value[0])) < 0) {
                 throw InternalErr(__FILE__, __LINE__, "unable to read HDF5 attribute data");
             }
+            H5Aclose(memtype);
 
             // For scalar data, just read data once.
             if (attr_inst.ndims == 0) {
@@ -1003,13 +1029,16 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
                 // Write this value. the "loc" can always be set to 0 since
                 // tempvalue will be moved to the next value.
                 for( hsize_t temp_index = 0; temp_index < attr_inst.nelmts; temp_index ++) {
+                     //print_rep = print_attr(ty_id, 0, (void*)&value[0]);
                      print_rep = print_attr(ty_id, 0, tempvalue);
                     if (print_rep.c_str() != NULL) {
+
+            BESDEBUG("h5", "print_rep= " << print_rep << endl);
 
                         d4_attr->add_value(print_rep);
                         tempvalue = tempvalue + elesize;
                         BESDEBUG("h5",
-                                 "tempvalue=" << tempvalue
+                                 "tempvalue= " << tempvalue
                                  << "elesize=" << elesize
                                  << endl);
 

@@ -27,9 +27,6 @@
                 <Dimension name="nTimes" size="1151"/>
                 <Float32 name="XDim">
                     <Dim name="/HDFEOS/GRIDS/HIRDLS/XDim"/>
-                    <Attribute name="CLASS" type="String">
-                        <Value>DIMENSION_SCALE</Value>
-                    </Attribute>
                     <Attribute name="long_name" type="String">
                         <Value>longitude</Value>
                     </Attribute>
@@ -39,9 +36,6 @@
                 </Float32>
                 <Float32 name="YDim">
                     <Dim name="/HDFEOS/GRIDS/HIRDLS/YDim"/>
-                    <Attribute name="CLASS" type="String">
-                        <Value>DIMENSION_SCALE</Value>
-                    </Attribute>
                     <Attribute name="long_name" type="String">
                         <Value>latitude</Value>
                     </Attribute>
@@ -51,12 +45,6 @@
                 </Float32>
                 <Float32 name="nTimes">
                     <Dim name="/HDFEOS/GRIDS/HIRDLS/nTimes"/>
-                    <Attribute name="CLASS" type="String">
-                        <Value>DIMENSION_SCALE</Value>
-                    </Attribute>
-                    <Attribute name="NAME" type="String">
-                        <Value>nTimes</Value>
-                    </Attribute>
                     <Attribute name="_FillValue" type="Float64">
                         <Value>-999.</Value>
                     </Attribute>

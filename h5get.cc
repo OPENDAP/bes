@@ -62,7 +62,7 @@ visit_obj_cb(hid_t o_id, const char *name, const H5O_info_t *oinfo,
     void *_op_data);
 
 // H5Aiterate2 call back function, check if having the dimension scale attributes.
-static herr_t attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata);
+static herr_t attr_info_dimscale(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata);
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -586,10 +586,31 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr,bool use_dim
         // Dimension scales must be 1-D.
         if(1 == ndims) {
 
-            int count = 0;
+            bool has_ds_attr = false;
 
-            // This will check if Dimension scale attributes present.
-            herr_t ret = H5Aiterate2(dset, H5_INDEX_NAME, H5_ITER_INC, NULL, attr_info, &count);
+            try{
+                has_ds_attr = has_dimscale_attr(dset);
+            }
+            catch(...) {
+                H5Tclose(dtype);
+                H5Sclose(dspace);
+                H5Dclose(dset);
+                throw InternalErr(__FILE__, __LINE__, "Fail to check dim. scale.");
+            }
+
+            if(true == has_ds_attr) {
+
+            //int count = 0;
+            //vector<bool>dim_attr_mark;
+            //dim_attr_mark.resize(4);
+            //bool dim_attr_mark[4];
+                int dim_attr_mark[3];
+                for(int i = 0;i<3;i++)
+                    dim_attr_mark[i] = 0;
+
+            // This will check if "NAME" and "REFERENCE_LIST" exists.
+            //herr_t ret = H5Aiterate2(dset, H5_INDEX_NAME, H5_ITER_INC, NULL, attr_info, &dim_attr_mark[0]);
+                herr_t ret = H5Aiterate2(dset, H5_INDEX_NAME, H5_ITER_INC, NULL, attr_info_dimscale, dim_attr_mark);
             if(ret < 0) {
                 string msg = "cannot interate the attributes of the dataset ";
                 msg += dname;
@@ -599,13 +620,24 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr,bool use_dim
                 throw InternalErr(__FILE__, __LINE__, msg);
             }
 
-            // Find the dimension scale.
-            if (2==count) 
+            for (int i = 0; i<3;i++)
+                BESDEBUG("h5","dim_attr_mark is "<<dim_attr_mark[i] <<endl);
+            // Find the dimension scale. DIM*SCALE is a must. Then NAME=VARIABLE or (REFERENCE_LIST and not PURE DIM)
+            // Here a little bias towards files created by the netCDF-4 APIs. 
+            // If we don't have RERERENCE_LIST in a dataset that has CLASS=DIMENSION_SCALE attribute,
+            // we will ignore this orphage dimension sale since it is not associated with other datasets.
+            // However, it is an orphage dimension scale created by the netCDF-4 APIs, we think
+            // it must have a purpose to do this way by data creator. So keep this as a dimension scale.
+            //
+            if (((dim_attr_mark[0] && !dim_attr_mark[1]) || dim_attr_mark[2])) 
                 is_dimscale =true;
-
+            else if(dim_attr_mark[1])
+                is_pure_dim = true;
+            }
         }
  
          if(true == is_dimscale) {
+            BESDEBUG("h5", "<h5get.cc: dname is " << dname << endl);
             BESDEBUG("h5", "<h5get.cc: get_dataset() this is  dim scale." << endl);
             BESDEBUG("h5", "<h5get.cc: dataset storage size is: " <<H5Dget_storage_size(dset)<< endl);
             //if(H5Dget_storage_size(dset)!=0) { 
@@ -621,7 +653,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr,bool use_dim
             is_pure_dim = false;
          }
 
-         else // We need to save all dimension names in this dimension. 
+         else if(false == is_pure_dim) // Except pure dimension,we need to save all dimension names in this dimension. 
             obtain_dimnames(dset,ndims,dt_inst_ptr);
     }
     
@@ -1306,6 +1338,7 @@ visit_obj_cb(hid_t  group_id, const char *name, const H5O_info_t *oinfo,
     void *_op_data)
 {
 
+    int ret_value = 0;
     if(oinfo->type == H5O_TYPE_DATASET) {
 
         hid_t dataset = -1;
@@ -1322,33 +1355,103 @@ visit_obj_cb(hid_t  group_id, const char *name, const H5O_info_t *oinfo,
 
         // We only support netCDF-4 like dimension scales, that is the dimension scale dataset is 1-D dimension.
         if(H5Sget_simple_extent_ndims(dspace) == 1) {
+            try {
+                if(true == has_dimscale_attr(dataset)) 
+                    ret_value = 1;
+            }
+            catch(...) {
+                H5Sclose(dspace);
+                H5Dclose(dataset);
+                throw;
+            }
 
-            int count = 0;
+#if 0
+            //vector<bool>dim_attr_mark;
+            //dim_attr_mark.resize(4);
+            //bool dim_attr_mark[4];
+            int dim_attr_mark[4];
+            for(int i =0;i<4;i++)
+                dim_attr_mark[i] = 0;
+            //int count = 0;
             // Check if having "class = DIMENSION_SCALE" and REFERENCE_LIST attributes.
-            herr_t ret = H5Aiterate2(dataset, H5_INDEX_NAME, H5_ITER_INC, NULL, attr_info, &count);
+            //herr_t ret = H5Aiterate2(dataset, H5_INDEX_NAME, H5_ITER_INC, NULL, attr_info, &count);
+            //herr_t ret = H5Aiterate2(dataset, H5_INDEX_NAME, H5_ITER_INC, NULL, attr_info, &dim_attr_mark[0]);
+            herr_t ret = H5Aiterate2(dataset, H5_INDEX_NAME, H5_ITER_INC, NULL, attr_info, dim_attr_mark);
             if(ret < 0) {
                 H5Sclose(dspace);
                 H5Dclose(dataset);
                 throw InternalErr(__FILE__, __LINE__, "H5Aiterate2 fails in the H5Ovisit call back function.");
             }
 
+    BESDEBUG("h5", "<dset name is " << name <<endl);
+    //BESDEBUG("h5", "<count is " << count <<endl);
             // Find it.
-            if (2==count) {
+            if (dim_attr_mark[0] && dim_attr_mark[1]){
+            //if (2==count || 3==count) {
                 if(dspace != -1)
                     H5Sclose(dspace);
                 if(dataset != -1)
                     H5Dclose(dataset);
                 return 1;
+            //}
             }
-
+#endif
         }
         if(dspace != -1)
             H5Sclose(dspace);
         if(dataset != -1)
             H5Dclose(dataset);
     }
-    return 0;
+    return ret_value;
 }
+
+bool has_dimscale_attr(hid_t dataset) {
+
+    bool ret_value = false;
+    string dimscale_attr_name="CLASS";
+    string dimscale_attr_value="DIMENSION_SCALE";
+    htri_t dimscale_attr_exist = H5Aexists_by_name(dataset,".",dimscale_attr_name.c_str(),H5P_DEFAULT);
+    if(dimscale_attr_exist <0) 
+        throw InternalErr(__FILE__, __LINE__, "H5Aexists_by_name fails when checking the CLASS attribute.");
+    else if(dimscale_attr_exist > 0) {//Attribute CLASS exists
+
+        hid_t attr_id =   -1;
+        hid_t atype_id =  -1;
+
+        // Open the attribute
+        attr_id = H5Aopen(dataset,dimscale_attr_name.c_str(), H5P_DEFAULT);
+        if(attr_id < 0) 
+            throw InternalErr(__FILE__, __LINE__, "H5Aopen fails in the attr_info call back function.");
+
+        // Get attribute datatype and dataspace
+        atype_id  = H5Aget_type(attr_id);
+        if(atype_id < 0) {
+            H5Aclose(attr_id);
+            throw InternalErr(__FILE__, __LINE__, "H5Aget_type fails in the attr_info call back function.");
+        }
+
+        try {
+            // Check if finding the attribute CLASS and the value is "DIMENSION_SCALE".
+            if (H5T_STRING == H5Tget_class(atype_id)) 
+                ret_value = check_str_attr_value(attr_id,atype_id,dimscale_attr_value,false);
+        }
+        catch(...) {
+            if(atype_id != -1)
+                H5Tclose(atype_id);
+            if(attr_id != -1)
+                H5Aclose(attr_id);
+            throw;
+        }
+        // Close IDs.
+        if(atype_id != -1)
+            H5Tclose(atype_id);
+        if(attr_id != -1)
+            H5Aclose(attr_id);
+    }
+    return ret_value;
+
+}
+#if 0
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn attr_info(hid_t loc_id, const char* name, const H5A_info_t* void*opdata)
 ///
@@ -1363,9 +1466,9 @@ visit_obj_cb(hid_t  group_id, const char *name, const H5O_info_t *oinfo,
 ///////////////////////////////////////////////////////////////////////////////
 
 static herr_t
-attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
+attr_info_dimscale(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
 {
-    int *count = (int*)opdata;
+    int *countp = (int*)opdata;
 
     hid_t attr_id =   -1;
     hid_t atype_id =  -1;
@@ -1384,14 +1487,136 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
 
     try {
 
-        // If finding the "REFERENCE_LIST", increases the count.
+#if 0
+        // If finding the "REFERENCE_LIST", increases the countp.
         if ((H5T_COMPOUND == H5Tget_class(atype_id)) && (strcmp(name,"REFERENCE_LIST")==0)) {
-             (*count)++;
+             //(*countp)++;
+             *dimattr_p = 1;
+             //*dimattr_p = true;
+        }
+#endif
+        // Check if finding the attribute CLASS and the value is "DIMENSION_SCALE".
+        if (H5T_STRING == H5Tget_class(atype_id)) {
+            if (strcmp(name,"CLASS") == 0) {
+                string dim_scale_mark = "DIMENSION_SCALE";
+                bool is_dim_scale = check_str_attr_value(attr_id,atype_id,dim_scale_mark,false);
+                if(true == is_dim_scale)
+                    (*countp)++;
+            }
+        }
+    }
+    catch(...) {
+        if(atype_id != -1)
+            H5Tclose(atype_id);
+        if(attr_id != -1)
+            H5Aclose(attr_id);
+        throw;
+    }
+
+    // Close IDs.
+    if(atype_id != -1)
+        H5Tclose(atype_id);
+    if(attr_id != -1)
+        H5Aclose(attr_id);
+
+    return 0;
+}
+
+#endif
+///////////////////////////////////////////////////////////////////////////////
+/// \fn attr_info(hid_t loc_id, const char* name, const H5A_info_t* void*opdata)
+///
+/// This function is the call back function for H5Aiterate2 to see if having the dimension scale attributes.
+///
+/// \param[in]  loc_id  object id for iterating the attributes of this object
+/// \param[in]  name HDF5 attribute name returned by H5Aiterate2
+/// \param[in]  ainfo pointer to the HDF5 attribute's info struct
+/// \param[in] opdata pointer to the operator data passed to H5Aiterate2
+/// \return returns a non-negative value if successful
+/// \throw InternalError 
+///////////////////////////////////////////////////////////////////////////////
+
+static herr_t
+attr_info_dimscale(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
+{
+    //bool *countp = (bool*)opdata;
+    //bool *dimattr_p = (bool*)opdata;
+    int *dimattr_p = (int*)opdata;
+
+#if 0
+    bool has_reference_list = false;
+    bool has_dimscale = false;
+    bool has_name_as_var = false;
+    bool has_name_as_nc4_purdim = false;
+#endif
+
+
+    hid_t attr_id =   -1;
+    hid_t atype_id =  -1;
+
+    // Open the attribute
+    attr_id = H5Aopen(loc_id, name, H5P_DEFAULT);
+    if(attr_id < 0) 
+        throw InternalErr(__FILE__, __LINE__, "H5Aopen fails in the attr_info call back function.");
+
+    // Get attribute datatype and dataspace
+    atype_id  = H5Aget_type(attr_id);
+    if(atype_id < 0) {
+        H5Aclose(attr_id);
+        throw InternalErr(__FILE__, __LINE__, "H5Aget_type fails in the attr_info call back function.");
+    }
+
+    try {
+
+//#if 0
+        // If finding the "REFERENCE_LIST", increases the countp.
+        if ((H5T_COMPOUND == H5Tget_class(atype_id)) && (strcmp(name,"REFERENCE_LIST")==0)) {
+             //(*countp)++;
+             *dimattr_p = 1;
+             //*dimattr_p = true;
+        }
+//#endif
+        // Check if finding the CLASS attribute.
+        if (H5T_STRING == H5Tget_class(atype_id)) {
+            if (strcmp(name,"NAME") == 0) {
+
+                string pure_dimname_mark = "This is a netCDF dimension but not a netCDF variable";
+                bool is_pure_dim = check_str_attr_value(attr_id,atype_id,pure_dimname_mark,true);
+
+                BESDEBUG("h5","pure dimension name yes" << is_pure_dim <<endl);
+                if(true == is_pure_dim)
+                    *(dimattr_p+1) =1;
+                    //*(dimattr_p+2) =true;
+                else {
+                    // netCDF save the variable name in the "NAME" attribute.
+                    // We need to retrieve the variable name first.
+                    ssize_t objnamelen = -1;
+                    if ((objnamelen= H5Iget_name(loc_id,NULL,0))<=0) {
+                        string msg = "Cannot obtain the variable name length." ;
+                        throw InternalErr(__FILE__,__LINE__,msg);
+                    }
+                    vector<char> objname;
+                    objname.resize(objnamelen+1);
+                    if ((objnamelen= H5Iget_name(loc_id,&objname[0],objnamelen+1))<=0) {
+                        string msg = "Cannot obtain the variable name." ;
+                        throw InternalErr(__FILE__,__LINE__,msg);
+                    }
+
+                    string objname_str = string(objname.begin(),objname.end());
+
+                    // Must trim the string delimter.
+                    objname_str = objname_str.substr(0,objnamelen);
+                    // Remove the path
+                    string normal_dimname_mark = objname_str.substr(objname_str.find_last_of("/")+1);
+                    bool is_normal_dim = check_str_attr_value(attr_id,atype_id,normal_dimname_mark,false);
+                    if(true == is_normal_dim)
+                        *(dimattr_p+2) = 1;
+                        //*(dimattr_p+3) = true;
+                }
+            }
         }
 
-        // Check if finding the CLASS attribute.
-        if ((H5T_STRING == H5Tget_class(atype_id)) && (strcmp(name,"CLASS") == 0)) {
-
+#if 0
             H5T_str_t str_pad = H5Tget_strpad(atype_id);
 
             hid_t aspace_id = -1;
@@ -1490,9 +1715,10 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
             if(aspace_id != -1)
                 H5Sclose(aspace_id);
             if(total_vstring == "DIMENSION_SCALE"){
-                (*count)++;
+                (*countp)++;
             }
-        }
+#endif
+        
     }
     catch(...) {
         if(atype_id != -1)
@@ -1507,10 +1733,6 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata)
         H5Tclose(atype_id);
     if(attr_id != -1)
         H5Aclose(attr_id);
-
-    //find both class=DIMENSION_SCALE and REFERENCE_LIST, just return 1.
-    if((*count)==2) 
-        return 1;
 
     return 0;
 }
@@ -1716,4 +1938,118 @@ void write_vlen_str_attrs(hid_t attr_id,hid_t ty_id, DSattr_t * attr_inst_ptr,D4
         temp_buf.clear();
     }
     H5Sclose(temp_space_id);
+}
+
+bool check_str_attr_value(hid_t attr_id,hid_t atype_id,const string & value_to_compare,bool check_substr) {
+
+    bool ret_value = false;
+
+    H5T_str_t str_pad = H5Tget_strpad(atype_id);
+    if(str_pad == H5T_STR_ERROR) 
+        throw InternalErr(__FILE__, __LINE__, "Fail to obtain string pad.");
+
+    hid_t aspace_id = -1;
+    aspace_id = H5Aget_space(attr_id);
+    if(aspace_id < 0) 
+        throw InternalErr(__FILE__, __LINE__, "Fail to obtain attribute space.");
+
+    int ndims = H5Sget_simple_extent_ndims(aspace_id);
+    if(ndims < 0) {
+        H5Sclose(aspace_id);
+        throw InternalErr(__FILE__, __LINE__, "Fail to obtain number of dimensions.");
+    }
+
+    hsize_t nelmts = 1;
+
+    // if it is a scalar attribute, just define number of elements to be 1.
+    if (ndims != 0) {
+
+        vector<hsize_t> asize;
+        asize.resize(ndims);
+        if (H5Sget_simple_extent_dims(aspace_id, &asize[0], NULL)<0) {
+            H5Sclose(aspace_id);
+            throw InternalErr(__FILE__, __LINE__, "Fail to obtain the dimension info.");
+        }
+
+        // Return ndims and size[ndims]. 
+        for (int j = 0; j < ndims; j++)
+            nelmts *= asize[j];
+    } // if(ndims != 0)
+
+    size_t ty_size = H5Tget_size(atype_id);
+    if (0 == ty_size) {
+        H5Sclose(aspace_id);
+        throw InternalErr(__FILE__, __LINE__, "Fail to obtain the type size.");
+    }
+
+    size_t total_bytes = nelmts * ty_size;
+    string total_vstring ="";
+    if(H5Tis_variable_str(atype_id) > 0) {
+
+        // Variable length string attribute values only store pointers of the actual string value.
+        vector<char> temp_buf;
+        temp_buf.resize(total_bytes);
+
+        if (H5Aread(attr_id, atype_id, &temp_buf[0]) < 0){
+            H5Sclose(aspace_id);
+            throw InternalErr(__FILE__,__LINE__,"Fail to read the attribute.");
+        }
+
+        char *temp_bp = NULL;
+        temp_bp = &temp_buf[0];
+        char* onestring = NULL;
+
+        for (unsigned int temp_i = 0; temp_i <nelmts; temp_i++) {
+
+            // This line will assure that we get the real variable length string value.
+            onestring =*(char **)temp_bp;
+
+            if(onestring!= NULL) 
+                total_vstring +=string(onestring);
+
+            // going to the next value.
+            temp_bp +=ty_size;
+        }
+
+        if ((&temp_buf[0]) != NULL) {
+            // Reclaim any VL memory if necessary.
+            if (H5Dvlen_reclaim(atype_id,aspace_id,H5P_DEFAULT,&temp_buf[0]) < 0) {
+                H5Sclose(aspace_id);
+                throw InternalErr(__FILE__,__LINE__,"Fail to reclaim VL memory.");
+            }
+        }
+
+    }
+    else {// Fixed-size string, need to retrieve the string value.
+
+        // string attribute values 
+        vector<char> temp_buf;
+        temp_buf.resize(total_bytes);
+        if (H5Aread(attr_id, atype_id, &temp_buf[0]) < 0){
+            H5Sclose(aspace_id);
+            throw InternalErr(__FILE__,__LINE__,"Fail to read the attribute.");
+        }
+        string temp_buf_string(temp_buf.begin(),temp_buf.end());
+        total_vstring = temp_buf_string.substr(0,total_bytes);
+
+        // Note: we need to remove the string pad or term to find DIMENSION_SCALE.
+        if(str_pad != H5T_STR_ERROR) 
+            total_vstring = total_vstring.substr(0,total_vstring.size()-1);
+    }
+           
+    // Close attribute data space ID.
+    if(aspace_id != -1)
+        H5Sclose(aspace_id);
+
+    if(false == check_substr) {
+        if(total_vstring == value_to_compare)
+            ret_value = true;
+    }
+    else {
+        if(total_vstring.size()>=value_to_compare.size()) {
+            if( 0 == total_vstring.compare(0,value_to_compare.size(),value_to_compare))
+                ret_value = true;
+        }
+    }
+    return ret_value;
 }
