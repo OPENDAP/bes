@@ -106,7 +106,7 @@ jobs:
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
     - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
     - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.login=$SONAR_LOGIN
-    - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=OPENDAP-bes | grep "BES QUALITY GATE PASS"
+    - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes | grep "BES QUALITY GATE PASS"
 
   - stage: scan
     name: "scan bes-modules"
@@ -115,7 +115,7 @@ jobs:
       - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
       - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
       - sonar-scanner -Dproject.settings=sonar-bes-modules.properties -Dsonar.login=$SONAR_MODULES_LOGIN
-      - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=OPENDAP-bes-modules | grep "BES MODULES QUALITY GATE PASS"
+      - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-modules | grep "BES MODULES QUALITY GATE PASS"
 
   - stage: scan
     name: "scan bes-submodules"
@@ -124,7 +124,7 @@ jobs:
       - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
       - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
       - sonar-scanner -Dproject.settings=sonar-bes-submodules.properties -Dsonar.login=$SONAR_SUBMODULES_LOGIN
-      - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=OPENDAP-bes-submodules | grep "BES SUB-MODULES QUALITY GATE PASS"
+      - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-submodules | grep "BES SUB-MODULES QUALITY GATE PASS"
 
   - stage: build
     name: "check"
