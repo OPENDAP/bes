@@ -3,15 +3,12 @@ dimensions:
 	y = 4 ;
 	x = 2 ;
 variables:
-	float y(y) ;
 	ushort data(x, y) ;
-	float x(x) ;
 
 group: grp1 {
   dimensions:
   	y = 3 ;
   variables:
-  	float y(y) ;
   	uint64 grp1_data(x, y) ;
   } // group grp1
 
@@ -25,7 +22,6 @@ group: grp2 {
     dimensions:
     	z = 4 ;
     variables:
-    	float z(z) ;
     	float grp3_data(x, /y, z) ;
     } // group grp3
   } // group grp2
