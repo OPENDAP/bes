@@ -321,9 +321,12 @@ void FONcTransform::transform_dap4()
             FONcUtils::handle_error(stax, "File out netcdf, unable to open: " + _localfile, __FILE__, __LINE__);
         
         D4Group* root_grp = _dmr->root();
+
+        // Declare the dimname to dimid map to handle netCDF-4 dimensions
         map<string,int>fdimname_to_id;
 
-        // Generate a list of the groups in the final netCDF file. The attributes of these groups should be included.
+        // Generate a list of the groups in the final netCDF file. 
+        // The attributes of these groups should be included.
         gen_included_grp_list(root_grp);
 #if 0
         for (std::set<string>::iterator it=_included_grp_names.begin(); it!=_included_grp_names.end(); ++it)
@@ -332,8 +335,11 @@ void FONcTransform::transform_dap4()
         // Build a global dimension name table for all variables if
         // the constraint is not empty!
         check_and_obtain_dimensions(root_grp,true);
-//#if 0
+
+        // Don't remove the following code, they are for debugging.
+#if 0
     map<string,unsigned long>:: iterator it;
+
     for(it=GFQN_dimname_to_dimsize.begin();it!=GFQN_dimname_to_dimsize.end();++it) {
         BESDEBUG("fonc", "Final GFQN dim name is: "<<it->first<<endl);
         BESDEBUG("fonc", "Final GFQN dim size is: "<<it->second<<endl);
@@ -343,55 +349,70 @@ void FONcTransform::transform_dap4()
         BESDEBUG("fonc", "Final VFQN dim name is: "<<it->first<<endl);
         BESDEBUG("fonc", "Final VFQN dim size is: "<<it->second<<endl);
     }
+#endif
 
-    map<string,unsigned long>:: iterator git,vit;
-    for(git=GFQN_dimname_to_dimsize.begin();git!=GFQN_dimname_to_dimsize.end();++git) {
-        for(vit=VFQN_dimname_to_dimsize.begin();vit!=VFQN_dimname_to_dimsize.end();++vit) {
-            if(git->first == vit->first) {
-                if(git->second != vit->second) 
-                    git->second = vit->second;
-                break;
-            }
-        }
-    }
-
-    // Obtain the dim. names under the root group
-    vector<string> root_d4_dimname_list;
-    for(git=GFQN_dimname_to_dimsize.begin();git!=GFQN_dimname_to_dimsize.end();++git) {
-        string d4_temp_dimname = git->first.substr(1);
-        BESDEBUG("fonc", "d4_temp_dimname: "<<d4_temp_dimname<<endl);
-        if(d4_temp_dimname.find('/')==string::npos)
-            root_d4_dimname_list.push_back(d4_temp_dimname);
-    }
-
-    for(unsigned int i = 0; i <root_d4_dimname_list.size();i++)
-        BESDEBUG("fonc", "root_d4 dim name is: "<<root_d4_dimname_list[i]<<endl);
-
-    vector<int> root_dim_suffix_nums;
-    for(unsigned int i = 0; i <root_d4_dimname_list.size();i++){
-        if(root_d4_dimname_list[i].size()<4)
-            continue;
-        else if(root_d4_dimname_list[i].substr(0,3)!="dim")
-            continue;
-        else {//STOP here
-            string temp_suffix = root_d4_dimname_list[i].substr(3);
-
-        //BESDEBUG("fonc", "temp_suffix: "<<temp_suffix<<endl);
-            bool ignored_suffix = false;
-            for (unsigned int j = 0; j<temp_suffix.size();j++) {
-                if(!isdigit(temp_suffix[j])) {
-                    ignored_suffix = true;
+        // DAP4 requires the DAP4 dimension sizes defined in the group should be changed
+        // according to the corresponding variable sizes. Check section 8.6.2 at
+        // https://docs.opendap.org/index.php/DAP4:_Specification_Volume_1
+        //
+        map<string,unsigned long>:: iterator git,vit;
+        for(git=GFQN_dimname_to_dimsize.begin();git!=GFQN_dimname_to_dimsize.end();++git) {
+            for(vit=VFQN_dimname_to_dimsize.begin();vit!=VFQN_dimname_to_dimsize.end();++vit) {
+                if(git->first == vit->first) {
+                    if(git->second != vit->second) 
+                        git->second = vit->second;
                     break;
                 }
             }
-            if(ignored_suffix==true) 
-                continue;
-            else  
-                root_dim_suffix_nums.push_back(atoi(temp_suffix.c_str()));
         }
 
-    }
+        // Thie part of code is to address the possible dimension name confliction
+        // when variables in the constraint don't have dimension names. Fileout netCDF
+        // adds the fake dimensions such as dim1, dim2...to these variables.
+        // If these dimension names are used by
+        // the file to be handled, the dimension confliction will corrupt the final output.
+        // The idea is to find if there are any dimension names like dim1, dim2 ... 
+        // under the root group.
+        // We will remember them and not use these names as fake dimension names.
+        //
+        // Obtain the dim. names under the root group
+        vector<string> root_d4_dimname_list;
+        for(git=GFQN_dimname_to_dimsize.begin();git!=GFQN_dimname_to_dimsize.end();++git) {
+            string d4_temp_dimname = git->first.substr(1);
+            //BESDEBUG("fonc", "d4_temp_dimname: "<<d4_temp_dimname<<endl);
+            if(d4_temp_dimname.find('/')==string::npos)
+                root_d4_dimname_list.push_back(d4_temp_dimname);
+        }
 
+#if 0
+        for(unsigned int i = 0; i <root_d4_dimname_list.size();i++)
+            BESDEBUG("fonc", "root_d4 dim name is: "<<root_d4_dimname_list[i]<<endl);
+#endif
+
+        vector<int> root_dim_suffix_nums;
+        for(unsigned int i = 0; i <root_d4_dimname_list.size();i++){
+            if(root_d4_dimname_list[i].size()<4)
+                continue;
+            else if(root_d4_dimname_list[i].substr(0,3)!="dim")
+                continue;
+            else {
+                string temp_suffix = root_d4_dimname_list[i].substr(3);
+                //BESDEBUG("fonc", "temp_suffix: "<<temp_suffix<<endl);
+                bool ignored_suffix = false;
+                for (unsigned int j = 0; j<temp_suffix.size();j++) {
+                    if(!isdigit(temp_suffix[j])) {
+                        ignored_suffix = true;
+                        break;
+                    }
+                }
+                if(ignored_suffix==true) 
+                    continue;
+                else  
+                    root_dim_suffix_nums.push_back(atoi(temp_suffix.c_str()));
+            }
+        }
+
+#if 0
     for(unsigned int i = 0; i <root_dim_suffix_nums.size();i++)
         BESDEBUG("fonc", "root_dim_suffix_nums: "<<root_dim_suffix_nums[i]<<endl);
 
@@ -405,8 +426,8 @@ void FONcTransform::transform_dap4()
         BESDEBUG("fonc", "RFinal VFQN dim name is: "<<it->first<<endl);
         BESDEBUG("fonc", "RFinal VFQN dim size is: "<<it->second<<endl);
     }
+#endif
 
-//#endif
 
         transform_dap4_group(root_grp,true,_ncid,fdimname_to_id,root_dim_suffix_nums);
         stax = nc_close(_ncid);

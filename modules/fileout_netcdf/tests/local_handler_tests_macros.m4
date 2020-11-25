@@ -277,4 +277,49 @@ m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP],  [dnl
     AT_CLEANUP
 ])
 
+dnl This is similar to the "binary data" macro above, but instead assumes the
+dnl output of besstandalone is a netcdf3 file. The binary stream is read using
+dnl ncdump and the output of that is compared to a baseline. Of course, this
+dnl requires ncdump be accessible.
+
+m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR],  [dnl
+
+    AT_SETUP([$1])
+    AT_KEYWORDS([nc4 enhanced binary ncdump])
+
+    input=$abs_srcdir/$1
+    baseline=$abs_srcdir/$1.baseline
+    pass=$2
+    repeat=$3
+
+    AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+         [
+         AT_CHECK([besstandalone -c $abs_builddir/bes.nc4.grp.conf -i $input > test.nc])
+
+         dnl first get the version number, then the header, then the data
+         dnl AT_CHECK([ncdump -k test.nc > $baseline.ver.tmp])
+         AT_CHECK([ncdump -h test.nc > $baseline.header.tmp])
+         dnl REMOVE_DATE_TIME([$baseline.header.tmp])
+         ],
+         [
+         AT_CHECK([besstandalone -c $abs_builddir/bes.nc4.grp.conf -i $input > test.nc])
+        
+         dnl AT_CHECK([ncdump -k test.nc > tmp])
+         dnl AT_CHECK([diff -b -B $baseline.ver tmp])
+        
+         AT_CHECK([ncdump -h test.nc > tmp])
+         dnl REMOVE_DATE_TIME([tmp])
+         AT_CHECK([diff -b -B $baseline.header tmp])
+        
+        
+         AT_XFAIL_IF([test z$2 = zxfail])
+         ])
+
+    AT_CLEANUP
+])
+
 

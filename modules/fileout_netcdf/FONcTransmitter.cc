@@ -493,6 +493,8 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
         // Note that 'RETURN_CMD' is the same as the string that determines the file type:
         // netcdf 3 or netcdf 4. Hack. jhrg 9/7/16
         FONcTransform ft(loaded_dmr, dhi, temp_file.get_name(), dhi.data[RETURN_CMD]);
+
+        // Call the transform function for DAP4.
         ft.transform_dap4();
 
         ostream &strm = dhi.get_output_stream();
