@@ -174,7 +174,6 @@ curl_slist *aws_sign_request_url(const string &target_url, curl_slist *request_h
         // We pre-compute the sha256 hash of a null message body
         request_headers = curl::append_http_header(request_headers, "x-amz-content-sha256", NULL_BODY_HASH);
         request_headers = curl::append_http_header(request_headers, "x-amz-date", AWSV4::ISO8601_date(request_time));
-
     }
     if (debug) cerr << prolog << "END" << endl;
     return request_headers;
