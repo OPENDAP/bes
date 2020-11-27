@@ -344,6 +344,7 @@ CurlHandlePool::CurlHandlePool(unsigned int max_handles) : d_max_easy_handles(ma
  * @param value The value
  * @return The modified slist pointer or nullptr if an error occurred.
  */
+#if 0
 static struct curl_slist *append_http_header(curl_slist *slist, const string &header, const string &value) {
     string full_header = header;
     full_header.append(" ").append(value);
@@ -351,6 +352,8 @@ static struct curl_slist *append_http_header(curl_slist *slist, const string &he
     struct curl_slist *temp = curl_slist_append(slist, full_header.c_str());
     return temp;
 }
+#endif
+
 
 /**
  * Get a CURL easy handle to transfer data from \arg url into the given \arg chunk.
@@ -467,7 +470,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
                             "s3");
 
 
-            handle->d_request_headers = curl::append_http_header(handle->d_request_headers, "Authorization", auth_header);
+            handle->d_request_headers = curl::append_http_header((curl_slist *)0, "Authorization", auth_header);
             handle->d_request_headers = curl::append_http_header(handle->d_request_headers, "x-amz-content-sha256",
                                                   "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
 

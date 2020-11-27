@@ -104,9 +104,9 @@ size_t c_write_data(void *buffer, size_t size, size_t nmemb, void *data);
 
 void read_data(CURL *c_handle);
 
-struct curl_slist *append_http_header(curl_slist *slist, const std::string &header_name, const std::string &value);
+curl_slist *append_http_header(curl_slist *slist, const std::string &header_name, const std::string &value);
 
-curl_slist *add_auth_headers(struct curl_slist *request_headers);
+curl_slist *add_auth_headers(curl_slist *request_headers);
 
 
 } // namespace curl

@@ -1759,7 +1759,7 @@ unsigned long max_redirects() {
  * @param value The value
  * @return The modified slist pointer or nullptr if an error occurred.
  */
-struct curl_slist *append_http_header(curl_slist *slist, const string &header_name, const string &value)
+curl_slist *append_http_header(curl_slist *slist, const string &header_name, const string &value)
 {
 
     string full_header = header_name;
