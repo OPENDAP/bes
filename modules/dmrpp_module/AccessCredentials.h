@@ -26,13 +26,16 @@ public:
 #endif
 private:
     std::map<std::string, std::string> kvp;
-    bool s3_tested, is_s3;
     std::string d_config_name;
+    bool d_s3_tested;
+    bool d_is_s3;
 public:
     AccessCredentials() = default;
 
-    AccessCredentials(const std::string &config_name)
-        :d_config_name(config_name),s3_tested(false), is_s3(false) { }
+    explicit AccessCredentials(const std::string &config_name) :
+        d_config_name(config_name),
+        d_s3_tested(false),
+        d_is_s3(false) { }
 
     AccessCredentials(const AccessCredentials &ac) = default;
 

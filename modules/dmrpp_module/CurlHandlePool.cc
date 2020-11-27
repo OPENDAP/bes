@@ -344,8 +344,7 @@ CurlHandlePool::CurlHandlePool(unsigned int max_handles) : d_max_easy_handles(ma
  * @param value The value
  * @return The modified slist pointer or nullptr if an error occurred.
  */
-static struct curl_slist *
-append_http_header(curl_slist *slist, const string &header, const string &value) {
+static struct curl_slist *append_http_header(curl_slist *slist, const string &header, const string &value) {
     string full_header = header;
     full_header.append(" ").append(value);
 
@@ -467,6 +466,14 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
                             credentials->get(AccessCredentials::REGION_KEY),
                             "s3");
 
+
+            handle->d_request_headers = curl::append_http_header(handle->d_request_headers, "Authorization", auth_header);
+            handle->d_request_headers = curl::append_http_header(handle->d_request_headers, "x-amz-content-sha256",
+                                                  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
+
+            handle->d_request_headers = curl::append_http_header(handle->d_request_headers, "x-amz-date:", AWSV4::ISO8601_date(request_time));
+#if 0
+
             // passing nullptr for the first call allocates the curl_slist
             // The following code builds the slist that holds the headers. This slist is freed
             // once the URL is dereferenced in dmrpp_easy_handle::read_data(). jhrg 11/26/19
@@ -493,6 +500,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
                                 curl::error_message(res, handle->d_errbuf)),
                         __FILE__, __LINE__);
             handle->d_request_headers = temp;
+#endif
 
             // handle->d_request_headers = curl::add_auth_headers(handle->d_request_headers);
 
