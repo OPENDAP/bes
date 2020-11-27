@@ -473,8 +473,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
             handle->d_request_headers = curl::append_http_header((curl_slist *)0, "Authorization", auth_header);
             handle->d_request_headers = curl::append_http_header(handle->d_request_headers, "x-amz-content-sha256",
                                                   "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
-
-            handle->d_request_headers = curl::append_http_header(handle->d_request_headers, "x-amz-date:", AWSV4::ISO8601_date(request_time));
+            handle->d_request_headers = curl::append_http_header(handle->d_request_headers, "x-amz-date", AWSV4::ISO8601_date(request_time));
 #if 0
 
             // passing nullptr for the first call allocates the curl_slist
