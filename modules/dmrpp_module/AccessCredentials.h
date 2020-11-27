@@ -32,7 +32,7 @@ public:
     AccessCredentials() = default;
 
     AccessCredentials(const std::string &config_name)
-        :d_config_name(config_name) { }
+        :d_config_name(config_name),s3_tested(false), is_s3(false) { }
 
     AccessCredentials(const AccessCredentials &ac) = default;
 
