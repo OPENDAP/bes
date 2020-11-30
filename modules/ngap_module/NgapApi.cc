@@ -147,14 +147,31 @@ namespace ngap {
         vector<string> tokens;
         BESUtil::tokenize(restified_path, tokens);
         if (tokens.empty()) {
-            throw BESSyntaxUserError(string("The specified path '") + restified_path +
-                                     "' does not conform to the NGAP request interface API.", __FILE__, __LINE__);
+            throw BESSyntaxUserError(string("The specified NGAP API path '") + restified_path +
+                                     "' failed to tokenize: No tokens were returned.", __FILE__, __LINE__);
+        }
+        if(tokens.size()!=6){
+            stringstream msg;
+            msg << prolog << "The specified NGAP API path '" << restified_path << "' was tokenized, but ";
+            msg << tokens.size() << " token(s) were found where 6 are required.";
+            throw BESSyntaxUserError(msg.str() , __FILE__, __LINE__);
         }
 
         // Check to make sure all required tokens are present.
-        if (tokens[0] != NGAP_PROVIDER_KEY ||
-            (tokens[2] != NGAP_COLLECTIONS_KEY && tokens[2] != NGAP_CONCEPTS_KEY) ||
-            tokens[4] != NGAP_GRANULES_KEY) {
+        if (tokens[0] != NGAP_PROVIDER_KEY ) {
+            stringstream msg;
+            msg << prolog << "The specified path '" << restified_path << "'";
+            msg << "does not contain the expected path element '" << NGAP_PROVIDER_KEY << "'";
+            throw BESSyntaxUserError(string("The specified path '") + restified_path +
+                                     "' does not contain the expected .", __FILE__, __LINE__);
+        }
+        // Check to make sure all required tokens are present.
+        if ((tokens[2] != NGAP_COLLECTIONS_KEY && tokens[2] != NGAP_CONCEPTS_KEY)) {
+            throw BESSyntaxUserError(string("The specified path '") + restified_path +
+                                     "' does not conform to the NGAP request interface API.", __FILE__, __LINE__);
+        }
+        // Check to make sure all required tokens are present.
+        if (tokens[4] != NGAP_GRANULES_KEY) {
             throw BESSyntaxUserError(string("The specified path '") + restified_path +
                                      "' does not conform to the NGAP request interface API.", __FILE__, __LINE__);
         }

@@ -45,6 +45,7 @@
 
 #include "BESInternalError.h"
 #include "BESDebug.h"
+#include "BESLog.h"
 #include "BESStopWatch.h"
 
 #include "byteswap_compat.h"
@@ -647,7 +648,10 @@ void *one_chunk_unconstrained_thread(void *arg_list)
     catch (BESError &error) {
         write(args->fds[1], &args->tid, sizeof(args->tid));
         delete args;
-        pthread_exit(new string(error.get_verbose_message()));
+        stringstream  msg;
+        msg << prolog << error.get_verbose_message() << endl;
+        ERROR_LOG(msg.str());
+        pthread_exit(new string(msg.str()));
     }
 
     // tid is a char and thus us written atomically. Writing this tells the parent
