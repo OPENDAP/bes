@@ -653,6 +653,14 @@ void *one_chunk_unconstrained_thread(void *arg_list)
         delete args;
         pthread_exit(new string(msg.str()));
     }
+    catch (...){
+        stringstream  msg;
+        msg << prolog << "ERROR. tid: " << +(args->tid) << " message: " << error.get_verbose_message() << endl;
+        ERROR_LOG(msg.str());
+        write(args->fds[1], &args->tid, sizeof(args->tid));
+        delete args;
+        pthread_exit(new string(msg.str()));
+    }
 
     // tid is a char and thus us written atomically. Writing this tells the parent
     // thread the child is complete and it should call pthread_join(tid, ...)
