@@ -646,11 +646,11 @@ void *one_chunk_unconstrained_thread(void *arg_list)
         process_one_chunk_unconstrained(args->chunk, args->array, args->array_shape, args->chunk_shape);
     }
     catch (BESError &error) {
-        write(args->fds[1], &args->tid, sizeof(args->tid));
-        delete args;
         stringstream  msg;
         msg << prolog << "ERROR. tid: " << args->tid << " message: " << error.get_verbose_message() << endl;
         ERROR_LOG(msg.str());
+        write(args->fds[1], &args->tid, sizeof(args->tid));
+        delete args;
         pthread_exit(new string(msg.str()));
     }
 
