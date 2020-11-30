@@ -157,47 +157,58 @@ namespace ngap {
             throw BESSyntaxUserError(msg.str() , __FILE__, __LINE__);
         }
 
-        // Check to make sure all required tokens are present.
+        // Check that the NGAP_PROVIDER_KEY token is present.
         if (tokens[0] != NGAP_PROVIDER_KEY ) {
             stringstream msg;
             msg << prolog << "The specified path '" << restified_path << "'";
-            msg << "does not contain the expected path element '" << NGAP_PROVIDER_KEY << "'";
-            throw BESSyntaxUserError(string("The specified path '") + restified_path +
-                                     "' does not contain the expected .", __FILE__, __LINE__);
+            msg << "does not contain the required path element '" << NGAP_PROVIDER_KEY << "'";
+            throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
         }
-        // Check to make sure all required tokens are present.
+        // Check that the NGAP_COLLECTIONS_KEY or  NGAP_CONCEPTS_KEY token is present.
         if ((tokens[2] != NGAP_COLLECTIONS_KEY && tokens[2] != NGAP_CONCEPTS_KEY)) {
-            throw BESSyntaxUserError(string("The specified path '") + restified_path +
-                                     "' does not conform to the NGAP request interface API.", __FILE__, __LINE__);
+            stringstream msg;
+            msg << prolog << "The specified path '" << restified_path << "'";
+            msg << "does not contain the expected path element '" << NGAP_COLLECTIONS_KEY << "' or it's alternate, '";
+            msg << NGAP_CONCEPTS_KEY << "'. One of these is required";
+            throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
         }
-        // Check to make sure all required tokens are present.
+        // Check that the NGAP_GRANULES_KEY token is present.
         if (tokens[4] != NGAP_GRANULES_KEY) {
-            throw BESSyntaxUserError(string("The specified path '") + restified_path +
-                                     "' does not conform to the NGAP request interface API.", __FILE__, __LINE__);
+            stringstream msg;
+            msg << prolog << "The specified path '" << restified_path << "'";
+            msg << "does not contain the required path element '" << NGAP_GRANULES_KEY << "'.";
+            throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
         }
-        // Pick up the values of said tokens.
-        string cmr_url = get_cmr_search_endpoint_url() + "?";
 
+        // Build the CMR query URL for the dataset
+        string cmr_url = get_cmr_search_endpoint_url() + "?";
         {
             // This easy handle is only created so we can use the curl_easy_escape() on the tokens
             CURL *ceh = curl_easy_init();
             char *esc_url_content;
 
+            // Add provider
             esc_url_content = curl_easy_escape(ceh, tokens[1].c_str(), tokens[1].size());
             cmr_url += CMR_PROVIDER + "=" + esc_url_content + "&";
             curl_free(esc_url_content);
 
             esc_url_content = curl_easy_escape(ceh, tokens[3].c_str(), tokens[3].size());
             if (tokens[2] == NGAP_COLLECTIONS_KEY) {
+                // Add entry_title
                 cmr_url += CMR_ENTRY_TITLE + "=" + esc_url_content + "&";
             }
             else if(tokens[2] == NGAP_CONCEPTS_KEY){
+                // Add collection_concept_id
                 cmr_url += CMR_COLLECTION_CONCEPT_ID + "=" + esc_url_content + "&";
             }
             else {
+                // Bad inputs throw an exception.
                 curl_free(esc_url_content);
-                throw BESSyntaxUserError(string("The specified path '") + restified_path +
-                                         "' does not conform to the NGAP request interface API.", __FILE__, __LINE__);
+                stringstream msg;
+                msg << prolog << "The specified path '" << restified_path << "'";
+                msg << "does not contain the expected path element '" << NGAP_COLLECTIONS_KEY << "' or it's alternate '";
+                msg << NGAP_CONCEPTS_KEY << "'. One of these is required";
+                throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
             }
             curl_free(esc_url_content);
 

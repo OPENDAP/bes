@@ -642,7 +642,7 @@ int main(int argc, char *argv[]) {
     int result = 0;
     string bes_log_file;
     string bes_debug_log_file = "cerr";
-    string bes_debug_keys = "bes,http,curl,dmrpp,dmrpp:4,rr";
+    string bes_debug_keys = "bes,http,curl,dmrpp,dmrpp:3,dmrpp:4,rr";
     string target_url = "https://www.opendap.org/pub/binary/hyrax-1.16/centos-7.x/bes-debuginfo-3.20.7-1.static.el7.x86_64.rpm";
     string output_file_base("retriever");
     string http_cache_dir;
