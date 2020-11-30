@@ -653,9 +653,20 @@ void *one_chunk_unconstrained_thread(void *arg_list)
         delete args;
         pthread_exit(new string(msg.str()));
     }
+    catch (std::exception &e){
+        stringstream  msg;
+        msg << prolog << "ERROR. tid: " << +(args->tid) << " process_one_chunk_unconstrained() "
+                                                           "failed. Message: " << e.what() << endl;
+        ERROR_LOG(msg.str());
+        write(args->fds[1], &args->tid, sizeof(args->tid));
+        delete args;
+        pthread_exit(new string(msg.str()));
+
+    }
     catch (...){
         stringstream  msg;
-        msg << prolog << "ERROR. tid: " << +(args->tid) << " message: " << error.get_verbose_message() << endl;
+        msg << prolog << "ERROR. tid: " << +(args->tid) << " process_one_chunk_unconstrained() "
+                                                           "failed for an unknown reason." << endl;
         ERROR_LOG(msg.str());
         write(args->fds[1], &args->tid, sizeof(args->tid));
         delete args;
