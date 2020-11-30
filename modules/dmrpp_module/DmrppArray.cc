@@ -649,7 +649,7 @@ void *one_chunk_unconstrained_thread(void *arg_list)
         write(args->fds[1], &args->tid, sizeof(args->tid));
         delete args;
         stringstream  msg;
-        msg << prolog << error.get_verbose_message() << endl;
+        msg << prolog << "ERROR. tid: " << args->tid << " message: " << error.get_verbose_message() << endl;
         ERROR_LOG(msg.str());
         pthread_exit(new string(msg.str()));
     }
