@@ -742,13 +742,19 @@ int main(int argc, char *argv[]) {
 
 
     try {
+        if(pwr2_parallel_reads){
+            unsigned long long int max_threads = 1ULL << pwr2_parallel_reads;
+            dmrpp::DmrppRequestHandler::d_use_parallel_transfers = true;
+            dmrpp::DmrppRequestHandler::d_max_parallel_transfers = max_threads;
+        }
+        else {
+            dmrpp::DmrppRequestHandler::d_use_parallel_transfers = false;
+            dmrpp::DmrppRequestHandler::d_max_parallel_transfers = 1;
+        }
+
         dmrpp::DmrppRequestHandler *dmrppRH = bes_setup(bes_config_file, bes_log_file, bes_debug_log_file,
                                                         bes_debug_keys, http_netrc_file,http_cache_dir);
-
-
-
-
-
+        
         string effectiveUrl = http::EffectiveUrlCache::TheCache()->get_effective_url(target_url);
         if (debug)  cerr << prolog << "curl::retrieve_effective_url() returned:  " << effectiveUrl << endl;
         size_t target_size =  get_max_retrival_size(max_target_size, effectiveUrl);
@@ -757,14 +763,6 @@ int main(int argc, char *argv[]) {
         if (debug)  cerr << prolog << "Dividing target into " << chunks << " chunks." << endl;
 
 
-        if(pwr2_parallel_reads){
-            unsigned long long int max_threads = 1ULL << pwr2_parallel_reads;
-            dmrpp::DmrppRequestHandler::d_use_parallel_transfers = true;
-            dmrpp::DmrppRequestHandler::d_max_parallel_transfers = max_threads;
-        }else {
-            dmrpp::DmrppRequestHandler::d_use_parallel_transfers = false;
-            dmrpp::DmrppRequestHandler::d_max_parallel_transfers = 1;
-        }
 
         array_get(effectiveUrl, target_size, chunks, output_file_base);
 
