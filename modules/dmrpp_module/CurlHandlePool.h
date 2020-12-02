@@ -96,11 +96,11 @@ private:
     pthread_mutex_t d_get_easy_handle_mutex;
 
     friend class Lock;
-
-public:
     CurlHandlePool();
 
-    CurlHandlePool(unsigned int max_handles);
+public:
+
+    explicit CurlHandlePool(unsigned int max_handles);
 
     ~CurlHandlePool()
     {

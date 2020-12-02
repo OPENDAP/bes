@@ -44,7 +44,6 @@
 #include "BESForbiddenError.h"
 #include "AllowedHosts.h"
 
-#include "DmrppRequestHandler.h"
 #include "DmrppCommon.h"
 #include "DmrppNames.h"
 #include "awsv4.h"
@@ -312,6 +311,17 @@ void dmrpp_easy_handle::read_data() {
     d_chunk->set_is_read(true);
 }
 
+#if 0
+// This implmentation of the default constructor should have:
+// a) Utilized the other constructor:
+//        CurlHandlePool::CurlHandlePool() { CurlHandlePool(DmrppRequestHandler::d_max_parallel_transfers); }
+//    rather than duplicating the logic.
+// b) Skipped because the only code that called it in the first place was DmrppRequestHandler::DmrppRequestHandler()
+//    which is already owns DmrppRequestHandler::d_max_parallel_transfers and can pass it in.
+//
+//
+// Old default constructor. Duplicates logic.
+//
 CurlHandlePool::CurlHandlePool() {
     d_max_easy_handles = DmrppRequestHandler::d_max_parallel_transfers;
 
@@ -322,6 +332,15 @@ CurlHandlePool::CurlHandlePool() {
     if (status != 0)
         throw BESInternalError("Could not initialize mutex in CurlHandlePool. msg: " + pthread_error(status), __FILE__, __LINE__);
 }
+//
+// One alternate would be to do this for the default constructor:
+CurlHandlePool::CurlHandlePool() {
+    CurlHandlePool(8);
+}
+//
+// - ndp 12/02/20
+#endif
+
 
 CurlHandlePool::CurlHandlePool(unsigned int max_handles) : d_max_easy_handles(max_handles) {
     for (unsigned int i = 0; i < d_max_easy_handles; ++i) {
