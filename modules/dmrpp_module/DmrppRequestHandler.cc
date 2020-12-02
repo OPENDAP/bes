@@ -143,7 +143,7 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
     CredentialsManager::theCM()->load_credentials();
 
     if (!curl_handle_pool)
-        curl_handle_pool = new CurlHandlePool();
+        curl_handle_pool = new CurlHandlePool(d_max_parallel_transfers);
 
     // This and the matching cleanup function can be called many times as long as
     // they are called in balanced pairs. jhrg 9/3/20

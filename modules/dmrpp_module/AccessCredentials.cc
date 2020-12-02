@@ -91,15 +91,15 @@ AccessCredentials::add(const string &key, const string &value) {
  * @return True
  */
 bool AccessCredentials::is_s3_cred() {
-    if (!s3_tested) {
-        is_s3 = get(URL_KEY).length() > 0 &&
+    if (!d_s3_tested) {
+        d_is_s3 = get(URL_KEY).length() > 0 &&
                 get(ID_KEY).length() > 0 &&
                 get(KEY_KEY).length() > 0 &&
                 get(REGION_KEY).length() > 0; //&&
         //get(BUCKET_KEY).length()>0;
-        s3_tested = true;
+        d_s3_tested = true;
     }
-    return is_s3;
+    return d_is_s3;
 }
 
 string AccessCredentials::to_json() {
