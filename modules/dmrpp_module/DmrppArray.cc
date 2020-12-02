@@ -497,7 +497,7 @@ void DmrppArray::read_contiguous()
                         throw BESInternalError(oss.str(), __FILE__, __LINE__);
                     }
                     ++num_threads;
-                    BESDEBUG(dmrpp_3, "started thread: " << (unsigned int) tid << ", there are: " << threads << endl);
+                    BESDEBUG(dmrpp_3, "started thread: " << (unsigned int) tid << ", there are: " << num_threads << endl);
                 }
             }
 
@@ -822,7 +822,7 @@ void DmrppArray::read_chunks_unconstrained()
                         throw BESInternalError(oss.str(), __FILE__, __LINE__);
                     }
                     ++num_threads;
-                    BESDEBUG(dmrpp_3, "started thread: " << (unsigned int) tid << ", there are: " << threads << endl);
+                    BESDEBUG(dmrpp_3, "started thread: " << (unsigned int) tid << ", there are: " << num_threads << endl);
                 }
             }
 
@@ -1228,7 +1228,7 @@ void DmrppArray::read_chunks()
                         throw BESInternalError(oss.str(), __FILE__, __LINE__);
                     }
                     ++num_threads;
-                    BESDEBUG(dmrpp_3, "started thread: " << (unsigned int) tid << ", there are: " << threads << endl);
+                    BESDEBUG(dmrpp_3, "started thread: " << (unsigned int) tid << ", there are: " << num_threads << endl);
                 }
             }
 
