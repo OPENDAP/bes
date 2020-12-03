@@ -14,8 +14,9 @@
 #include <vector>
 #include <map>
 #include <set>
-#include<math.h>
-#include<sys/stat.h>
+#include <cfloat>
+#include <math.h>
+#include <sys/stat.h>
 
 #include "HDFCFUtil.h"
 #include "HDFEOS2.h"
@@ -1766,7 +1767,7 @@ void File::handle_grid_cf_attrs() throw(Exception) {
             // We may find such cases for other products and will tackle them also.
             if (true == (*i)->addfvalueattr) {
                 if((((*j)->getFillValue()).empty()) && ((*j)->getType()==DFNT_FLOAT32 )) {
-                    float tempfillvalue = MAXFLOAT;
+                    float tempfillvalue = FLT_MAX;  // Replaced HUGE with FLT_MAX. jhrg 12/3/20
                     (*j)->addFillValue(tempfillvalue);
                     (*j)->setAddedFillValue(true);
                 }
