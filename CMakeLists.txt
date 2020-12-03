@@ -1,6 +1,6 @@
 
 # bes CMakeLists.txt file for use with CLion. This is not intended to be
-# a replacement for the autotols build. But it does provide information that
+# a replacement for the autotools build. But it does provide information that
 # CLion needs to navigate the Hyrax code. jhrg 12/5/19
 
 # Comment/Remove this if it's problematic. jhrg 5/13/20
