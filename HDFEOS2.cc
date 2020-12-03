@@ -1766,7 +1766,7 @@ void File::handle_grid_cf_attrs() throw(Exception) {
             // We may find such cases for other products and will tackle them also.
             if (true == (*i)->addfvalueattr) {
                 if((((*j)->getFillValue()).empty()) && ((*j)->getType()==DFNT_FLOAT32 )) {
-                    float tempfillvalue = HUGE;
+                    float tempfillvalue = MAXFLOAT;
                     (*j)->addFillValue(tempfillvalue);
                     (*j)->setAddedFillValue(true);
                 }
