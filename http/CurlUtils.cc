@@ -1333,11 +1333,11 @@ bool eval_http_get_response(CURL *ceh, char *error_buffer, const string &request
     stringstream msg;
     if (http_code >= 400) {
         msg << "ERROR - The HTTP GET request for the source URL: " << requested_url << " FAILED. ";
-        msg << "CURLINFO_EFFECTIVE_URL: " << last_accessed_url;
-        msg << " The response had an HTTP status of " << http_code;
-        msg << " which means '" << http_status_to_string(http_code) << "'";
+        msg << "CURLINFO_EFFECTIVE_URL: " << last_accessed_url << " ";
         BESDEBUG(MODULE, prolog << msg.str() << endl);
     }
+    msg << "The response had an HTTP status of " << http_code;
+    msg << " which means '" << http_status_to_string(http_code) << "'";
 
     // Newer Apache servers return 206 for range requests. jhrg 8/8/18
     switch (http_code) {

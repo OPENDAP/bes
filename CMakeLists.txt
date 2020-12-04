@@ -2073,4 +2073,4 @@ add_executable(bes
     xmlcommand/XMLSetContextsCommand.h
 
     standalone/besstandalone.cc
-        modules/dmrpp_module/SuperChunky.cc modules/dmrpp_module/SuperChunky.h)
+        modules/dmrpp_module/SuperChunky.cc modules/dmrpp_module/SuperChunky.h modules/dmrpp_module/SuperChunk.cc modules/dmrpp_module/SuperChunk.h)
