@@ -24,7 +24,7 @@ DODS_GCOV_VALGRIND
 AC_CONFIG_AUX_DIR([conf])
 AC_CONFIG_MACRO_DIR([conf])
 
-AM_INIT_AUTOMAKE([1.10 tar-pax])
+AM_INIT_AUTOMAKE([1.10 tar-pax subdir-objects])
 LT_INIT
 
 dnl flags for the compilers and linkers - set these before locating the
