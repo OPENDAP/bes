@@ -28,6 +28,7 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
+//      Kent Yang <myang6@hdfgroup.org> (for DAP4/netCDF-4 enhancement)
 
 #include <sstream>
 #include <BESInternalError.h>
@@ -174,9 +175,7 @@ void FONcArray::convert(vector<string> embed,bool is_dap4_group)
         BESDEBUG("fonc", "FONcArray::convert() - dim num: " << dimnum << ", dim size: " << size << ", chunk size: " << d_chunksizes[dimnum] << endl);
         BESDEBUG("fonc", "FONcArray::convert() - dim name: " << d_a->dimension_name(di) << endl);
 
-        //TODO: Here is the place that we need to evaluate if the dimension size is the same as the size when the local constraint is used.
-        // If the local constraint is used, the dimension name should be set to empty and the find_dim() in the else { }should be used.
-        // The real implementation may be more complicated but here is the idea. KY 2020/06/17
+        // If this dimension is a D4 dimension defined in its group, just obtain the dimension ID.
         if(true == d4_def_dim && use_d4_dim_ids[dimnum]== true) {
             d_dim_ids[dimnum] = d4_dim_ids[dimnum];
             BESDEBUG("fonc", "FONcArray::convert() - has dap4 group"  << endl);
@@ -221,7 +220,9 @@ void FONcArray::convert(vector<string> embed,bool is_dap4_group)
         vector<string> empty_embed;
         string lendim_name;
         if(is_dap4_group == true) {
-            //lendim_name = _varname + "_len";
+            // Here is a quick implementation. 
+            // We just append the DimNameNum(globally defined)
+            // and then increase the number by 1.
             ostringstream dim_suffix_strm;
             dim_suffix_strm <<"_len"<<FONcDim::DimNameNum +1;
             FONcDim::DimNameNum++;
@@ -361,34 +362,31 @@ void FONcArray::define(int ncid)
         }
         else {
 #endif
-
-     if(false == d4_def_dim) {
-        vector<FONcDim *>::iterator i = d_dims.begin();
-        vector<FONcDim *>::iterator e = d_dims.end();
-        int dimnum = 0;
-        for (; i != e; i++) {
-            FONcDim *fd = *i;
-            fd->define(ncid);
-            //d_dim_ids.at(dimnum) = fd->dimid();
-            d_dim_ids[dimnum] = fd->dimid();
-            BESDEBUG("fonc", "FONcArray::define() - dim_id: " << fd->dimid() << " size:" << fd->size() << endl);
-            dimnum++;
-        }
-     }
-     else {// This else block may be general enough to cover all cases. In case there are issues for the new features, still keep it. 
-        int j = 0;
-        for(unsigned int i = 0; i< use_d4_dim_ids.size();i++) {
-            if(use_d4_dim_ids[i] == false) {
-                FONcDim *fd = d_dims[j];
+     // If not defined DAP4 dimensions(mostly DAP2 or DAP4 no groups)
+        if(false == d4_def_dim) {
+            vector<FONcDim *>::iterator i = d_dims.begin();
+            vector<FONcDim *>::iterator e = d_dims.end();
+            int dimnum = 0;
+            for (; i != e; i++) {
+                FONcDim *fd = *i;
                 fd->define(ncid);
-                d_dim_ids[i] = fd->dimid();
-                j++;
+                //d_dim_ids.at(dimnum) = fd->dimid();
+                d_dim_ids[dimnum] = fd->dimid();
+                BESDEBUG("fonc", "FONcArray::define() - dim_id: " << fd->dimid() << " size:" << fd->size() << endl);
+                dimnum++;
             }
         }
-
-
-     }
-        //}
+        else {// Maybe some dimensions are not DAP4 dimensions, will still generate those dimensions.
+            int j = 0;
+            for(unsigned int i = 0; i< use_d4_dim_ids.size();i++) {
+                if(use_d4_dim_ids[i] == false) {
+                    FONcDim *fd = d_dims[j];
+                    fd->define(ncid);
+                    d_dim_ids[i] = fd->dimid();
+                    j++;
+                }
+            }
+        }
 
         int stax = nc_def_var(ncid, _varname.c_str(), d_array_type, d_ndims, &d_dim_ids[0], &_varid);
         if (stax != NC_NOERR) {
@@ -433,6 +431,7 @@ void FONcArray::define(int ncid)
         //
         // Question: Are there other cases where an unsigned type is 'promoted' and thus
         // the type of the fill value attribute should be too? jhrg 10/12/15
+        // TODO: The following code is a hack. We may need to review all cases and re-implement it. KY 12/4/2020
         AttrTable &attrs = d_a->get_attr_table();
         if (attrs.get_size()) {
             for (AttrTable::Attr_iter iter = attrs.attr_begin(); iter != attrs.attr_end(); iter++) {
@@ -448,7 +447,6 @@ void FONcArray::define(int ncid)
         BESDEBUG("fonc", "FONcArray::define() - Adding attributes " << endl);
         FONcAttributes::add_variable_attributes(ncid, _varid, d_a,isNetCDF4_ENHANCED(),is_dap4);
         FONcAttributes::add_original_name(ncid, _varid, _varname, _orig_varname);
-
         _defined = true;
     }
     else {
@@ -704,8 +702,8 @@ void FONcArray::dump(ostream &strm) const
 
 /** @brief write the data to netCDF-4 datatype
  *
- * The netCDF-4 supports unsigned 8-bit,16-bit and 32-bit integer
- * datatypes also provided by DAP2. So makes the exact mapping
+ * The netCDF-4 supports unsigned 8-bit,16-bit,32-bit,64-bit integer
+ * datatypes. So makes the exact mapping
  * when users specify the netCDF-4 enhanced output.
  * 
  *
@@ -864,6 +862,7 @@ void FONcArray::write_for_nc4_types(int ncid) {
 
 }
 
+// This function is only used for handling _FillValue. TODO: review all cases and generalize it.
 libdap::AttrType FONcArray::getAttrType(nc_type nct) {
     switch (nct)
     {
