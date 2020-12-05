@@ -68,6 +68,8 @@ static bool bes_debug = false;
 #undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
 
+#define prolog std::string("NgapApiTest::").append(__func__).append("() - ")
+
 namespace ngap {
 
 class NgapApiTest: public CppUnit::TestFixture {
@@ -104,6 +106,7 @@ public:
     // Called before each test
     void setUp()
     {
+        if(debug) cerr << endl;
         if(Debug) cerr << "setUp() - BEGIN" << endl;
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR,"bes.conf");
         if(Debug) cerr << "setUp() - Using BES configuration: " << bes_conf << endl;
@@ -131,7 +134,6 @@ public:
 
 
     void compare_results(const string &granule_name, const string &data_access_url, const string &expected_data_access_url){
-        string prolog = string(__func__) + "() - ";
         if (debug) cerr << prolog << "TEST: Is the URL longer than the granule name? " << endl;
         CPPUNIT_ASSERT (data_access_url.length() > granule_name.length() );
 
@@ -145,18 +147,43 @@ public:
         CPPUNIT_ASSERT (expected_data_access_url == data_access_url);
 
     }
+    void resty_path_to_cmr_query_test_01() {
+        NgapApi ngapi;
+
+        string resty_path("providers/POCLOUD"
+              "/collections/Sentinel-6A MF/Jason-CS L2 Advanced Microwave Radiometer (AMR-C) NRT Geophysical Parameters"
+              "/granules/S6A_MW_2__AMR_____NR_001_227_20201130T133814_20201130T153340_F00");
+        if(debug) cerr << prolog << "resty_path: " << resty_path << endl;
+
+        string expected_cmr_url(
+            "https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4"
+            "?provider=POCLOUD"
+            "&entry_title=Sentinel-6A%20MF%2FJason-CS%20L2%20Advanced%20Microwave%20Radiometer%20%28AMR-C%29%20NRT%20Geophysical%20Parameters"
+            "&granule_ur=S6A_MW_2__AMR_____NR_001_227_20201130T133814_20201130T153340_F00"
+            );
+        try {
+            string cmr_query_url;
+            cmr_query_url = ngapi.convert_restified_path_to_cmr_query_url(resty_path);
+            if(debug) cerr << prolog << "expected_cmr_url: " << expected_cmr_url << endl;
+            if(debug) cerr << prolog << "   cmr_query_url: " << cmr_query_url << endl;
+            CPPUNIT_ASSERT( cmr_query_url == expected_cmr_url );
+        }
+        catch(BESError e){
+            stringstream msg;
+            msg << prolog << "Caught BESError! Message: " << e.get_verbose_message() << endl;
+            CPPUNIT_FAIL(msg.str());
+        }
+
+    }
+
 
     void cmr_access_entry_title_test() {
-        string prolog = string(__func__) + "() - ";
         NgapApi ngapi;
         string provider_name;
         string collection_name;
         string granule_name;
         string data_access_url;
 
-        if ( debug  ) {
-            cout << endl;
-        }
         provider_name = "GHRC_CLOUD";
         collection_name ="ADVANCED MICROWAVE SOUNDING UNIT-A (AMSU-A) SWATH FROM NOAA-15 V1";
         granule_name = "amsua15_2020.028_12915_1139_1324_WI.nc";
@@ -179,16 +206,12 @@ public:
     }
 
     void cmr_access_collection_concept_id_test() {
-        string prolog = string(__func__) + "() - ";
         NgapApi ngapi;
         string provider_name;
         string collection_concept_id;
         string granule_name;
         string data_access_url;
 
-        if ( debug  ) {
-            cout << endl;
-        }
         provider_name = "GHRC_CLOUD";
         collection_concept_id ="C1625128931-GHRC_CLOUD";
         granule_name = "amsua15_2020.028_12915_1139_1324_WI.nc";
@@ -210,8 +233,6 @@ public:
 
 
     void signed_url_is_expired_test(){
-        string prolog = string(__func__) + "() - ";
-
         string signed_url_str;
         std::map<std::string,std::string> url_info;
         bool is_expired;
@@ -246,6 +267,7 @@ public:
 
     CPPUNIT_TEST_SUITE( NgapApiTest );
 
+        CPPUNIT_TEST(resty_path_to_cmr_query_test_01);
         CPPUNIT_TEST(cmr_access_entry_title_test);
         CPPUNIT_TEST(cmr_access_collection_concept_id_test);
         CPPUNIT_TEST(signed_url_is_expired_test);

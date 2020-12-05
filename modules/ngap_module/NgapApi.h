@@ -52,14 +52,19 @@ private:
     std::string d_cmr_search_endpoint_path;
 
     std::string get_cmr_search_endpoint_url();
+
+
+
 public:
 
     NgapApi();
+
 
     std::string convert_ngap_resty_path_to_data_access_url(
             const std::string &restified_path,
             const std::string &uid="");
 
+    std::string convert_restified_path_to_cmr_query_url(const std::string &restified_path);
     static bool signed_url_is_expired(const http::url &signed_url) ;
 
 #if 0
