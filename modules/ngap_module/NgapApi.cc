@@ -207,7 +207,8 @@ namespace ngap {
         string CONCEPTS_KEY("/concepts/");
         string GRANULES_KEY("/granules/");
 
-        string r_path = (restified_path[0]!='/'?"/":"") + restified_path;
+        // Make sure it starts with a '/' (see key strings above)
+        string r_path = ( restified_path[0] != '/' ? "/" : "") + restified_path;
 
         size_t provider_index  = r_path.find(PROVIDERS_KEY);
         if(provider_index == string::npos){
@@ -228,26 +229,22 @@ namespace ngap {
         bool use_collection_concept_id = false;
         size_t collection_index  = r_path.find(COLLECTIONS_KEY);
         if(collection_index == string::npos) {
-            collection_index = r_path.find(CONCEPTS_KEY);
-            if (collection_index == string::npos) {
+            size_t concepts_index = r_path.find(CONCEPTS_KEY);
+            if (concepts_index == string::npos) {
                 stringstream msg;
                 msg << prolog << "The specified path '" << r_path << "'";
-                msg << " does not contain the required path element '" << CONCEPTS_KEY << "'";
+                msg << " contains neither the '" << COLLECTIONS_KEY << "'";
+                msg << " nor the '" << CONCEPTS_KEY << "'";
+                msg << " one must be provided.";
                 throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
             }
-            if(collection_index <= provider_index+1){
-                stringstream msg;
-                msg << prolog << "The specified path '" << r_path << "'";
-                msg << " has the path element '" << CONCEPTS_KEY << "' located in the incorrect position (";
-                msg << collection_index << ") expected at least " << provider_index+1;
-                throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
-            }
+            collection_index = concepts_index;
             use_collection_concept_id = true;
         }
-        if(collection_index <= provider_index+1){
+        if(collection_index <= provider_index+1){  // The value of provider has to be at least 1 character
             stringstream msg;
             msg << prolog << "The specified path '" << r_path << "'";
-            msg << " has the path element '" << COLLECTIONS_KEY << "' located in the incorrect position (";
+            msg << " has the path element '" << (use_collection_concept_id?CONCEPTS_KEY:COLLECTIONS_KEY) << "' located in the incorrect position (";
             msg << collection_index << ") expected at least " << provider_index+1;
             throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
         }
@@ -262,7 +259,7 @@ namespace ngap {
             msg << " does not contain the required path element '" << GRANULES_KEY << "'";
             throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
         }
-        if(granule_index <= collection_index+1){
+        if(granule_index <= collection_index+1){ // The value of collection must have at least one character.
             stringstream msg;
             msg << prolog << "The specified path '" << r_path << "'";
             msg << " has the path element '" << GRANULES_KEY << "' located in the incorrect position (";
@@ -272,12 +269,13 @@ namespace ngap {
         string collection = r_path.substr(collection_index,granule_index - collection_index);
         granule_index += GRANULES_KEY.length();
 
+        // The granule value is the path terminus so it's every thing after the key
         string granule = r_path.substr(granule_index);
 
         // Build the CMR query URL for the dataset
         string cmr_url = get_cmr_search_endpoint_url() + "?";
         {
-            // This easy handle is only created so we can use the curl_easy_escape() on the tokens
+            // This easy handle is only created so we can use the curl_easy_escape() on the token values
             CURL *ceh = curl_easy_init();
             char *esc_url_content;
 
