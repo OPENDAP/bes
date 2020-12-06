@@ -53,7 +53,7 @@ AC_ARG_ENABLE([developer],
 )
 AM_CONDITIONAL([BES_DEVELOPER], [test "x$enable_developer" = "xyes"])
 AM_COND_IF([BES_DEVELOPER],
-    [cxx_debug_flags="-g3 -O0  -Wall -W -Wcast-align $CXXFLAGS"
+    [cxx_debug_flags="-g3 -O0  -Wall -W -Wcast-align"
       AC_MSG_NOTICE([Developer Mode is enabled.]) ],
     [AC_DEFINE([NDEBUG], [1], [Define this to suppress assert() statements.])
       AC_MSG_NOTICE([Developer Mode is disabled.])]
