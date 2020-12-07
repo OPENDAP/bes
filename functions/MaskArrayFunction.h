@@ -53,7 +53,7 @@ public:
         setDescriptionString("The mask_array() function applies a mask to an array.");
         setUsageString("mask_array(array, mask)");
         setRole("http://services.opendap.org/dap4/server-side-function/mask_array");
-        setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#mask_array");
+        setDocUrl("https://docs.opendap.org/index.php/Server_Side_Processing_Functions#mask_array");
         setFunction(function_mask_dap2_array);
         setFunction(function_mask_dap4_array);
         setVersion("1.0");
