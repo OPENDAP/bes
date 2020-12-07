@@ -1759,14 +1759,14 @@ unsigned long max_redirects() {
  * @param value The value
  * @return The modified slist pointer or nullptr if an error occurred.
  */
-struct curl_slist *append_http_header(curl_slist *slist, const string &header_name, const string &value)
+curl_slist *append_http_header(curl_slist *slist, const string &header_name, const string &value)
 {
 
     string full_header = header_name;
     full_header.append(": ").append(value);
 
     BESDEBUG(MODULE, prolog << full_header << endl);
-    std::cerr << prolog << full_header << endl;
+    // std::cerr << prolog << full_header << endl;
 
     struct curl_slist *temp = curl_slist_append(slist, full_header.c_str());
     if (!temp){

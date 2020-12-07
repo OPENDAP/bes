@@ -174,7 +174,6 @@ curl_slist *aws_sign_request_url(const string &target_url, curl_slist *request_h
         // We pre-compute the sha256 hash of a null message body
         request_headers = curl::append_http_header(request_headers, "x-amz-content-sha256", NULL_BODY_HASH);
         request_headers = curl::append_http_header(request_headers, "x-amz-date", AWSV4::ISO8601_date(request_time));
-
     }
     if (debug) cerr << prolog << "END" << endl;
     return request_headers;
@@ -574,6 +573,7 @@ size_t array_get(const string &target_url, const size_t &target_size, const size
 }
 
  */
+#if 0
 int test_plan_01(const string &target_url,
                   const string &output_prefix,
                   const unsigned int reps,
@@ -583,6 +583,8 @@ int test_plan_01(const string &target_url,
                   const string &output_file_base
                   ) {
     int result = 0;
+    if (debug)
+        cerr << prolog << "BEGIN" << endl;
 
     try {
         string effectiveUrl = http::EffectiveUrlCache::TheCache()->get_effective_url(target_url);
@@ -624,9 +626,10 @@ int test_plan_01(const string &target_url,
              endl;
         result = 2;
     }
+    cerr << prolog << "END" << endl;
     return result;
 }
-
+#endif
 
 /**
  *
@@ -639,12 +642,12 @@ int main(int argc, char *argv[]) {
     int result = 0;
     string bes_log_file;
     string bes_debug_log_file = "cerr";
-    string bes_debug_keys = "bes,http,curl,dmrpp,dmrpp:4,rr";
+    string bes_debug_keys = "bes,http,curl,dmrpp,dmrpp:3,dmrpp:4,rr";
     string target_url = "https://www.opendap.org/pub/binary/hyrax-1.16/centos-7.x/bes-debuginfo-3.20.7-1.static.el7.x86_64.rpm";
     string output_file_base("retriever");
     string http_cache_dir;
     string prefix;
-    size_t pwr2_number_o_chunks = 100;
+    size_t pwr2_number_o_chunks = 18;
     size_t max_target_size = 0;
     string http_netrc_file;
     unsigned int reps=10;
@@ -739,11 +742,32 @@ int main(int argc, char *argv[]) {
 
 
     try {
+        if(pwr2_parallel_reads){
+            unsigned long long int max_threads = 1ULL << pwr2_parallel_reads;
+            dmrpp::DmrppRequestHandler::d_use_parallel_transfers = true;
+            dmrpp::DmrppRequestHandler::d_max_parallel_transfers = max_threads;
+        }
+        else {
+            dmrpp::DmrppRequestHandler::d_use_parallel_transfers = false;
+            dmrpp::DmrppRequestHandler::d_max_parallel_transfers = 1;
+        }
+
         dmrpp::DmrppRequestHandler *dmrppRH = bes_setup(bes_config_file, bes_log_file, bes_debug_log_file,
                                                         bes_debug_keys, http_netrc_file,http_cache_dir);
+        
+        string effectiveUrl = http::EffectiveUrlCache::TheCache()->get_effective_url(target_url);
+        if (debug)  cerr << prolog << "curl::retrieve_effective_url() returned:  " << effectiveUrl << endl;
+        size_t target_size =  get_max_retrival_size(max_target_size, effectiveUrl);
+
+        unsigned long long int chunks = 1ULL << pwr2_number_o_chunks;
+        if (debug)  cerr << prolog << "Dividing target into " << chunks << " chunks." << endl;
 
 
 
+        array_get(effectiveUrl, target_size, chunks, output_file_base);
+
+
+#if 0 // these work but are parked a.t.m.
         result = test_plan_01(
                 target_url,
                 output_file_base,
@@ -753,8 +777,6 @@ int main(int argc, char *argv[]) {
                 pwr2_parallel_reads,
                 output_file_base) ;
 
-
-#if 0 // these work but are parked a.t.m.
         simple_get(effectiveUrl, output_file_base);
         serial_chunky_get( effectiveUrl,  max_target_size, pwr2_number_o_chunks, output_file_base);
 

@@ -44,7 +44,6 @@
 #include "BESForbiddenError.h"
 #include "AllowedHosts.h"
 
-#include "DmrppRequestHandler.h"
 #include "DmrppCommon.h"
 #include "DmrppNames.h"
 #include "awsv4.h"
@@ -312,6 +311,17 @@ void dmrpp_easy_handle::read_data() {
     d_chunk->set_is_read(true);
 }
 
+#if 0
+// This implmentation of the default constructor should have:
+// a) Utilized the other constructor:
+//        CurlHandlePool::CurlHandlePool() { CurlHandlePool(DmrppRequestHandler::d_max_parallel_transfers); }
+//    rather than duplicating the logic.
+// b) Skipped because the only code that called it in the first place was DmrppRequestHandler::DmrppRequestHandler()
+//    which is already owns DmrppRequestHandler::d_max_parallel_transfers and can pass it in.
+//
+//
+// Old default constructor. Duplicates logic.
+//
 CurlHandlePool::CurlHandlePool() {
     d_max_easy_handles = DmrppRequestHandler::d_max_parallel_transfers;
 
@@ -322,6 +332,15 @@ CurlHandlePool::CurlHandlePool() {
     if (status != 0)
         throw BESInternalError("Could not initialize mutex in CurlHandlePool. msg: " + pthread_error(status), __FILE__, __LINE__);
 }
+//
+// One alternate would be to do this for the default constructor:
+CurlHandlePool::CurlHandlePool() {
+    CurlHandlePool(8);
+}
+//
+// - ndp 12/02/20
+#endif
+
 
 CurlHandlePool::CurlHandlePool(unsigned int max_handles) : d_max_easy_handles(max_handles) {
     for (unsigned int i = 0; i < d_max_easy_handles; ++i) {
@@ -344,14 +363,16 @@ CurlHandlePool::CurlHandlePool(unsigned int max_handles) : d_max_easy_handles(ma
  * @param value The value
  * @return The modified slist pointer or nullptr if an error occurred.
  */
-static struct curl_slist *
-append_http_header(curl_slist *slist, const string &header, const string &value) {
+#if 0
+static struct curl_slist *append_http_header(curl_slist *slist, const string &header, const string &value) {
     string full_header = header;
     full_header.append(" ").append(value);
 
     struct curl_slist *temp = curl_slist_append(slist, full_header.c_str());
     return temp;
 }
+#endif
+
 
 /**
  * Get a CURL easy handle to transfer data from \arg url into the given \arg chunk.
@@ -467,6 +488,13 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
                             credentials->get(AccessCredentials::REGION_KEY),
                             "s3");
 
+
+            handle->d_request_headers = curl::append_http_header((curl_slist *)0, "Authorization", auth_header);
+            handle->d_request_headers = curl::append_http_header(handle->d_request_headers, "x-amz-content-sha256",
+                                                  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
+            handle->d_request_headers = curl::append_http_header(handle->d_request_headers, "x-amz-date", AWSV4::ISO8601_date(request_time));
+#if 0
+
             // passing nullptr for the first call allocates the curl_slist
             // The following code builds the slist that holds the headers. This slist is freed
             // once the URL is dereferenced in dmrpp_easy_handle::read_data(). jhrg 11/26/19
@@ -493,6 +521,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
                                 curl::error_message(res, handle->d_errbuf)),
                         __FILE__, __LINE__);
             handle->d_request_headers = temp;
+#endif
 
             // handle->d_request_headers = curl::add_auth_headers(handle->d_request_headers);
 

@@ -45,6 +45,7 @@
 
 #include "BESInternalError.h"
 #include "BESDebug.h"
+#include "BESLog.h"
 #include "BESStopWatch.h"
 
 #include "byteswap_compat.h"
@@ -496,7 +497,7 @@ void DmrppArray::read_contiguous()
                         throw BESInternalError(oss.str(), __FILE__, __LINE__);
                     }
                     ++num_threads;
-                    BESDEBUG(dmrpp_3, "started thread: " << (unsigned int) tid << ", there are: " << threads << endl);
+                    BESDEBUG(dmrpp_3, "started thread: " << (unsigned int) tid << ", there are: " << num_threads << endl);
                 }
             }
 
@@ -645,9 +646,31 @@ void *one_chunk_unconstrained_thread(void *arg_list)
         process_one_chunk_unconstrained(args->chunk, args->array, args->array_shape, args->chunk_shape);
     }
     catch (BESError &error) {
+        stringstream  msg;
+        msg << prolog << "ERROR. tid: " << +(args->tid) << " message: " << error.get_verbose_message() << endl;
+        ERROR_LOG(msg.str());
         write(args->fds[1], &args->tid, sizeof(args->tid));
         delete args;
-        pthread_exit(new string(error.get_verbose_message()));
+        pthread_exit(new string(msg.str()));
+    }
+    catch (std::exception &e){
+        stringstream  msg;
+        msg << prolog << "ERROR. tid: " << +(args->tid) << " process_one_chunk_unconstrained() "
+                                                           "failed. Message: " << e.what() << endl;
+        ERROR_LOG(msg.str());
+        write(args->fds[1], &args->tid, sizeof(args->tid));
+        delete args;
+        pthread_exit(new string(msg.str()));
+
+    }
+    catch (...){
+        stringstream  msg;
+        msg << prolog << "ERROR. tid: " << +(args->tid) << " process_one_chunk_unconstrained() "
+                                                           "failed for an unknown reason." << endl;
+        ERROR_LOG(msg.str());
+        write(args->fds[1], &args->tid, sizeof(args->tid));
+        delete args;
+        pthread_exit(new string(msg.str()));
     }
 
     // tid is a char and thus us written atomically. Writing this tells the parent
@@ -799,7 +822,7 @@ void DmrppArray::read_chunks_unconstrained()
                         throw BESInternalError(oss.str(), __FILE__, __LINE__);
                     }
                     ++num_threads;
-                    BESDEBUG(dmrpp_3, "started thread: " << (unsigned int) tid << ", there are: " << threads << endl);
+                    BESDEBUG(dmrpp_3, "started thread: " << (unsigned int) tid << ", there are: " << num_threads << endl);
                 }
             }
 
@@ -1205,7 +1228,7 @@ void DmrppArray::read_chunks()
                         throw BESInternalError(oss.str(), __FILE__, __LINE__);
                     }
                     ++num_threads;
-                    BESDEBUG(dmrpp_3, "started thread: " << (unsigned int) tid << ", there are: " << threads << endl);
+                    BESDEBUG(dmrpp_3, "started thread: " << (unsigned int) tid << ", there are: " << num_threads << endl);
                 }
             }
 
