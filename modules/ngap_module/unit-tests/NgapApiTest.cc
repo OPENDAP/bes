@@ -163,7 +163,7 @@ public:
             );
         try {
             string cmr_query_url;
-            cmr_query_url = ngapi.convert_restified_path_to_cmr_query_url(resty_path);
+            cmr_query_url = ngapi.build_cmr_query_url(resty_path);
             if(debug) cerr << prolog << "expected_cmr_url: " << expected_cmr_url << endl;
             if(debug) cerr << prolog << "   cmr_query_url: " << cmr_query_url << endl;
             CPPUNIT_ASSERT( cmr_query_url == expected_cmr_url );
