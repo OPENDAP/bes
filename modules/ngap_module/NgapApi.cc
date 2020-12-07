@@ -119,7 +119,7 @@ namespace ngap {
 #if 0
     // OLD WAY (tokenization on '/' delimiter)
     std::string
-    NgapApi::convert_restified_path_to_cmr_query_url(const std::string &restified_path) {
+    NgapApi::build_cmr_query_url(const std::string &restified_path) {
         string data_access_url("");
 
         vector<string> tokens;
@@ -206,7 +206,7 @@ namespace ngap {
  * @return The CMR query URL that will return the granules.umm_json_v1_4 from CMR for the
  * granule specified in the restified path.
  */
-std::string NgapApi::convert_restified_path_to_cmr_query_url(const std::string &restified_path) {
+std::string NgapApi::build_cmr_query_url(const std::string &restified_path) {
     string PROVIDERS_KEY("/providers/");
     string COLLECTIONS_KEY("/collections/");
     string CONCEPTS_KEY("/concepts/");
@@ -317,11 +317,11 @@ std::string NgapApi::convert_restified_path_to_cmr_query_url(const std::string &
  * A single granule query is built by convert_restified_path_to_cmr_query_url() from the
  * NGAP API restified path. This method will parse the CMR response to the query and extract the
  * granule's "GET DATA" URL and return it.
- * @param restified_path
- * @param cmr_granules
- * @return
+ * @param restified_path THe restified path used to form the CMR query
+ * @param cmr_granules The CMR response (granules.umm_json_v1_4) to evaluate
+ * @return  The "GET DATA" URL for the granule.
  */
-std::string NgapApi::get_data_access_url_from_cmr_json(const std::string &restified_path, rapidjson::Document &cmr_granule_response)
+std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::string &restified_path, rapidjson::Document &cmr_granule_response)
 {
 
     string data_access_url("");
@@ -435,6 +435,7 @@ std::string NgapApi::get_data_access_url_from_cmr_json(const std::string &restif
             const std::string &restified_path,
             const std::string &uid
             ) {
+        BESDEBUG(MODULE, prolog << "BEGIN" << endl);
         string data_access_url("");
 
         string cmr_query_url = build_cmr_query_url(restified_path);
@@ -452,9 +453,9 @@ std::string NgapApi::get_data_access_url_from_cmr_json(const std::string &restif
         }
         rapidjson::Document cmr_response = cmr_query.get_as_json();
 
-        data_access_url = get_data_access_url_from_cmr_json(restified_path, cmr_response);
+        data_access_url = find_get_data_url_in_granules_umm_json_v1_4(restified_path, cmr_response);
 
-        BESDEBUG(MODULE, prolog << "Following data_access_url redirects..." << endl);
+        BESDEBUG(MODULE, prolog << "END (data_access_url: "<< data_access_url << ")" << endl);
 
         return data_access_url;
     }
