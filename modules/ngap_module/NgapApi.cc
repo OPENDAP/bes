@@ -200,111 +200,214 @@ namespace ngap {
 #else
 
 
-    std::string
-    NgapApi::convert_restified_path_to_cmr_query_url(const std::string &restified_path) {
-        string PROVIDERS_KEY("/providers/");
-        string COLLECTIONS_KEY("/collections/");
-        string CONCEPTS_KEY("/concepts/");
-        string GRANULES_KEY("/granules/");
+/**
+ * @brief Converts an NGAP restified path into the corresponding CMR query URL.
+ * @param restified_path The resitified path to convert
+ * @return The CMR query URL that will return the granules.umm_json_v1_4 from CMR for the
+ * granule specified in the restified path.
+ */
+std::string NgapApi::convert_restified_path_to_cmr_query_url(const std::string &restified_path) {
+    string PROVIDERS_KEY("/providers/");
+    string COLLECTIONS_KEY("/collections/");
+    string CONCEPTS_KEY("/concepts/");
+    string GRANULES_KEY("/granules/");
 
-        // Make sure it starts with a '/' (see key strings above)
-        string r_path = ( restified_path[0] != '/' ? "/" : "") + restified_path;
+    // Make sure it starts with a '/' (see key strings above)
+    string r_path = ( restified_path[0] != '/' ? "/" : "") + restified_path;
 
-        size_t provider_index  = r_path.find(PROVIDERS_KEY);
-        if(provider_index == string::npos){
-            stringstream msg;
-            msg << prolog << "The specified path '" << r_path << "'";
-            msg << " does not contain the required path element '" << NGAP_PROVIDER_KEY << "'";
-            throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
-        }
-        if(provider_index != 0){
-            stringstream msg;
-            msg << prolog << "The specified path '" << r_path << "'";
-            msg << " has the path element '" << NGAP_PROVIDER_KEY << "' located in the incorrect position (";
-            msg << provider_index << ") expected 0.";
-            throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
-        }
-        provider_index += PROVIDERS_KEY.length();
-
-        bool use_collection_concept_id = false;
-        size_t collection_index  = r_path.find(COLLECTIONS_KEY);
-        if(collection_index == string::npos) {
-            size_t concepts_index = r_path.find(CONCEPTS_KEY);
-            if (concepts_index == string::npos) {
-                stringstream msg;
-                msg << prolog << "The specified path '" << r_path << "'";
-                msg << " contains neither the '" << COLLECTIONS_KEY << "'";
-                msg << " nor the '" << CONCEPTS_KEY << "'";
-                msg << " one must be provided.";
-                throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
-            }
-            collection_index = concepts_index;
-            use_collection_concept_id = true;
-        }
-        if(collection_index <= provider_index+1){  // The value of provider has to be at least 1 character
-            stringstream msg;
-            msg << prolog << "The specified path '" << r_path << "'";
-            msg << " has the path element '" << (use_collection_concept_id?CONCEPTS_KEY:COLLECTIONS_KEY) << "' located in the incorrect position (";
-            msg << collection_index << ") expected at least " << provider_index+1;
-            throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
-        }
-        string provider = r_path.substr(provider_index,collection_index - provider_index);
-        collection_index += use_collection_concept_id?CONCEPTS_KEY.length():COLLECTIONS_KEY.length();
-
-
-        size_t granule_index  = r_path.find(GRANULES_KEY);
-        if(granule_index == string::npos){
-            stringstream msg;
-            msg << prolog << "The specified path '" << r_path << "'";
-            msg << " does not contain the required path element '" << GRANULES_KEY << "'";
-            throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
-        }
-        if(granule_index <= collection_index+1){ // The value of collection must have at least one character.
-            stringstream msg;
-            msg << prolog << "The specified path '" << r_path << "'";
-            msg << " has the path element '" << GRANULES_KEY << "' located in the incorrect position (";
-            msg << granule_index << ") expected at least " << collection_index+1;
-            throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
-        }
-        string collection = r_path.substr(collection_index,granule_index - collection_index);
-        granule_index += GRANULES_KEY.length();
-
-        // The granule value is the path terminus so it's every thing after the key
-        string granule = r_path.substr(granule_index);
-
-        // Build the CMR query URL for the dataset
-        string cmr_url = get_cmr_search_endpoint_url() + "?";
-        {
-            // This easy handle is only created so we can use the curl_easy_escape() on the token values
-            CURL *ceh = curl_easy_init();
-            char *esc_url_content;
-
-            // Add provider
-            esc_url_content = curl_easy_escape(ceh, provider.c_str(), provider.size());
-            cmr_url += CMR_PROVIDER + "=" + esc_url_content + "&";
-            curl_free(esc_url_content);
-
-            esc_url_content = curl_easy_escape(ceh, collection.c_str(), collection.size());
-            if(use_collection_concept_id){
-                // Add collection_concept_id
-                cmr_url += CMR_COLLECTION_CONCEPT_ID + "=" + esc_url_content + "&";
-            }
-            else {
-                // Add entry_title
-                cmr_url += CMR_ENTRY_TITLE + "=" + esc_url_content + "&";
-
-            }
-            curl_free(esc_url_content);
-
-            esc_url_content = curl_easy_escape(ceh, granule.c_str(), granule.size());
-            cmr_url += CMR_GRANULE_UR + "=" + esc_url_content;
-            curl_free(esc_url_content);
-
-            curl_easy_cleanup(ceh);
-        }
-        return cmr_url;
+    size_t provider_index  = r_path.find(PROVIDERS_KEY);
+    if(provider_index == string::npos){
+        stringstream msg;
+        msg << prolog << "The specified path '" << r_path << "'";
+        msg << " does not contain the required path element '" << NGAP_PROVIDER_KEY << "'";
+        throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
     }
+    if(provider_index != 0){
+        stringstream msg;
+        msg << prolog << "The specified path '" << r_path << "'";
+        msg << " has the path element '" << NGAP_PROVIDER_KEY << "' located in the incorrect position (";
+        msg << provider_index << ") expected 0.";
+        throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+    }
+    provider_index += PROVIDERS_KEY.length();
+
+    bool use_collection_concept_id = false;
+    size_t collection_index  = r_path.find(COLLECTIONS_KEY);
+    if(collection_index == string::npos) {
+        size_t concepts_index = r_path.find(CONCEPTS_KEY);
+        if (concepts_index == string::npos) {
+            stringstream msg;
+            msg << prolog << "The specified path '" << r_path << "'";
+            msg << " contains neither the '" << COLLECTIONS_KEY << "'";
+            msg << " nor the '" << CONCEPTS_KEY << "'";
+            msg << " one must be provided.";
+            throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+        }
+        collection_index = concepts_index;
+        use_collection_concept_id = true;
+    }
+    if(collection_index <= provider_index+1){  // The value of provider has to be at least 1 character
+        stringstream msg;
+        msg << prolog << "The specified path '" << r_path << "'";
+        msg << " has the path element '" << (use_collection_concept_id?CONCEPTS_KEY:COLLECTIONS_KEY) << "' located in the incorrect position (";
+        msg << collection_index << ") expected at least " << provider_index+1;
+        throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+    }
+    string provider = r_path.substr(provider_index,collection_index - provider_index);
+    collection_index += use_collection_concept_id?CONCEPTS_KEY.length():COLLECTIONS_KEY.length();
+
+
+    size_t granule_index  = r_path.find(GRANULES_KEY);
+    if(granule_index == string::npos){
+        stringstream msg;
+        msg << prolog << "The specified path '" << r_path << "'";
+        msg << " does not contain the required path element '" << GRANULES_KEY << "'";
+        throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+    }
+    if(granule_index <= collection_index+1){ // The value of collection must have at least one character.
+        stringstream msg;
+        msg << prolog << "The specified path '" << r_path << "'";
+        msg << " has the path element '" << GRANULES_KEY << "' located in the incorrect position (";
+        msg << granule_index << ") expected at least " << collection_index+1;
+        throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+    }
+    string collection = r_path.substr(collection_index,granule_index - collection_index);
+    granule_index += GRANULES_KEY.length();
+
+    // The granule value is the path terminus so it's every thing after the key
+    string granule = r_path.substr(granule_index);
+
+    // Build the CMR query URL for the dataset
+    string cmr_url = get_cmr_search_endpoint_url() + "?";
+    {
+        // This easy handle is only created so we can use the curl_easy_escape() on the token values
+        CURL *ceh = curl_easy_init();
+        char *esc_url_content;
+
+        // Add provider
+        esc_url_content = curl_easy_escape(ceh, provider.c_str(), provider.size());
+        cmr_url += CMR_PROVIDER + "=" + esc_url_content + "&";
+        curl_free(esc_url_content);
+
+        esc_url_content = curl_easy_escape(ceh, collection.c_str(), collection.size());
+        if(use_collection_concept_id){
+            // Add collection_concept_id
+            cmr_url += CMR_COLLECTION_CONCEPT_ID + "=" + esc_url_content + "&";
+        }
+        else {
+            // Add entry_title
+            cmr_url += CMR_ENTRY_TITLE + "=" + esc_url_content + "&";
+
+        }
+        curl_free(esc_url_content);
+
+        esc_url_content = curl_easy_escape(ceh, granule.c_str(), granule.size());
+        cmr_url += CMR_GRANULE_UR + "=" + esc_url_content;
+        curl_free(esc_url_content);
+
+        curl_easy_cleanup(ceh);
+    }
+    return cmr_url;
+}
 #endif
+
+/**
+ * @brief  Locates the "GET DATA" URL for a granule in the granules.umm_json_v1_4 document.
+ *
+ * A single granule query is built by convert_restified_path_to_cmr_query_url() from the
+ * NGAP API restified path. This method will parse the CMR response to the query and extract the
+ * granule's "GET DATA" URL and return it.
+ * @param restified_path
+ * @param cmr_granules
+ * @return
+ */
+std::string NgapApi::get_data_access_url_from_cmr_json(const std::string &restified_path, rapidjson::Document &cmr_granule_response)
+{
+
+    string data_access_url("");
+
+    rapidjson::Value &val = cmr_granule_response["hits"];
+    int hits = val.GetInt();
+    if (hits < 1) {
+        throw BESNotFoundError(string("The specified path '").append(restified_path).append(
+                "' does not identify a granule in CMR."), __FILE__, __LINE__);
+    }
+
+    rapidjson::Value &items = cmr_granule_response["items"];
+    if (items.IsArray()) {
+        stringstream ss;
+        for (rapidjson::SizeType i = 0; i < items.Size(); i++) // Uses SizeType instead of size_t
+            ss << "items[" << i << "]: " << RJ_TYPE_NAMES[items[i].GetType()] << endl;
+
+        BESDEBUG(MODULE, prolog << "items size: " << items.Size() << endl << ss.str() << endl);
+
+        rapidjson::Value &items_obj = items[0];
+        rapidjson::GenericMemberIterator<false, rapidjson::UTF8<char>, rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator>> mitr = items_obj.FindMember(
+                "umm");
+
+        rapidjson::Value &umm = mitr->value;
+        mitr = umm.FindMember("RelatedUrls");
+        if (mitr == umm.MemberEnd()) {
+            throw BESInternalError("Error! The umm/RelatedUrls object was not located!", __FILE__, __LINE__);
+        }
+        rapidjson::Value &related_urls = mitr->value;
+
+        if (!related_urls.IsArray()) {
+            throw BESNotFoundError("Error! The RelatedUrls object in the CMR response is not an array!", __FILE__,
+                                   __LINE__);
+        }
+
+        BESDEBUG(MODULE, prolog << " Found RelatedUrls array in CMR response." << endl);
+
+        bool noSubtype;
+        for (rapidjson::SizeType i = 0; i < related_urls.Size() && data_access_url.empty(); i++) {
+            rapidjson::Value &obj = related_urls[i];
+            mitr = obj.FindMember("URL");
+            if (mitr == obj.MemberEnd()) {
+                stringstream err;
+                err << "Error! The umm/RelatedUrls[" << i << "] does not contain the URL object";
+                throw BESInternalError(err.str(), __FILE__, __LINE__);
+            }
+            rapidjson::Value &r_url = mitr->value;
+
+            mitr = obj.FindMember("Type");
+            if (mitr == obj.MemberEnd()) {
+                stringstream err;
+                err << "Error! The umm/RelatedUrls[" << i << "] does not contain the Type object";
+                throw BESInternalError(err.str(), __FILE__, __LINE__);
+            }
+            rapidjson::Value &r_type = mitr->value;
+
+            noSubtype = obj.FindMember("Subtype") == obj.MemberEnd();
+#if 0
+            mitr = obj.FindMember("Description");
+                if(mitr == obj.MemberEnd()){
+                    stringstream  err;
+                    err << "Error! The umm/RelatedUrls[" << i << "] does not contain the Description object";
+                    throw BESInternalError(err.str(), __FILE__, __LINE__);
+                }
+                rapidjson::Value& r_desc = mitr->value;
+#endif
+            BESDEBUG(MODULE, prolog << "RelatedUrl Object:" <<
+                                    " URL: '" << r_url.GetString() << "'" <<
+                                    " Type: '" << r_type.GetString() << "'" <<
+                                    " SubType: '" << (noSubtype ? "Absent" : "Present") << "'" << endl);
+
+            if ((r_type.GetString() == CMR_URL_TYPE_GET_DATA) && noSubtype) {
+                data_access_url = r_url.GetString();
+            }
+        }
+    }
+
+    if (data_access_url.empty()) {
+        throw BESInternalError(string("ERROR! Failed to locate a data access URL for the path: ") + restified_path,
+                               __FILE__, __LINE__);
+    }
+
+    return data_access_url;
+}
+
+
 
     /**
      * @brief Converts an NGAP restified granule path into a CMR metadata query for the granule.
@@ -334,10 +437,10 @@ namespace ngap {
             ) {
         string data_access_url("");
 
-        string cmr_query_url = convert_restified_path_to_cmr_query_url(restified_path);
+        string cmr_query_url = build_cmr_query_url(restified_path);
 
         BESDEBUG(MODULE, prolog << "CMR Request URL: " << cmr_query_url << endl);
-#if 1
+
         BESDEBUG(MODULE, prolog << "Building new RemoteResource." << endl);
         http::RemoteResource cmr_query(cmr_query_url, uid);
         {
@@ -348,87 +451,8 @@ namespace ngap {
             cmr_query.retrieveResource();
         }
         rapidjson::Document cmr_response = cmr_query.get_as_json();
-#else
-        rapidjson::Document cmr_response = ngap_curl::http_get_as_json(cmr_url);
-#endif
 
-        rapidjson::Value &val = cmr_response["hits"];
-        int hits = val.GetInt();
-        if (hits < 1) {
-            throw BESNotFoundError(string("The specified path '").append(restified_path).append(
-                    "' does not identify a granule in CMR."), __FILE__, __LINE__);
-        }
-
-        rapidjson::Value &items = cmr_response["items"];
-        if (items.IsArray()) {
-            stringstream ss;
-            for (rapidjson::SizeType i = 0; i < items.Size(); i++) // Uses SizeType instead of size_t
-                ss << "items[" << i << "]: " << RJ_TYPE_NAMES[items[i].GetType()] << endl;
-
-            BESDEBUG(MODULE, prolog << "items size: " << items.Size() << endl << ss.str() << endl);
-
-            rapidjson::Value &items_obj = items[0];
-            rapidjson::GenericMemberIterator<false, rapidjson::UTF8<char>, rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator>> mitr = items_obj.FindMember(
-                    "umm");
-
-            rapidjson::Value &umm = mitr->value;
-            mitr = umm.FindMember("RelatedUrls");
-            if (mitr == umm.MemberEnd()) {
-                throw BESInternalError("Error! The umm/RelatedUrls object was not located!", __FILE__, __LINE__);
-            }
-            rapidjson::Value &related_urls = mitr->value;
-
-            if (!related_urls.IsArray()) {
-                throw BESNotFoundError("Error! The RelatedUrls object in the CMR response is not an array!", __FILE__,
-                                       __LINE__);
-            }
-
-            BESDEBUG(MODULE, prolog << " Found RelatedUrls array in CMR response." << endl);
-
-            bool noSubtype;
-            for (rapidjson::SizeType i = 0; i < related_urls.Size() && data_access_url.empty(); i++) {
-                rapidjson::Value &obj = related_urls[i];
-                mitr = obj.FindMember("URL");
-                if (mitr == obj.MemberEnd()) {
-                    stringstream err;
-                    err << "Error! The umm/RelatedUrls[" << i << "] does not contain the URL object";
-                    throw BESInternalError(err.str(), __FILE__, __LINE__);
-                }
-                rapidjson::Value &r_url = mitr->value;
-
-                mitr = obj.FindMember("Type");
-                if (mitr == obj.MemberEnd()) {
-                    stringstream err;
-                    err << "Error! The umm/RelatedUrls[" << i << "] does not contain the Type object";
-                    throw BESInternalError(err.str(), __FILE__, __LINE__);
-                }
-                rapidjson::Value &r_type = mitr->value;
-
-                noSubtype = obj.FindMember("Subtype") == obj.MemberEnd();
-#if 0
-                mitr = obj.FindMember("Description");
-                if(mitr == obj.MemberEnd()){
-                    stringstream  err;
-                    err << "Error! The umm/RelatedUrls[" << i << "] does not contain the Description object";
-                    throw BESInternalError(err.str(), __FILE__, __LINE__);
-                }
-                rapidjson::Value& r_desc = mitr->value;
-#endif
-                BESDEBUG(MODULE, prolog << "RelatedUrl Object:" <<
-                                        " URL: '" << r_url.GetString() << "'" <<
-                                        " Type: '" << r_type.GetString() << "'" <<
-                                        " SubType: '" << (noSubtype ? "Absent" : "Present") << "'" << endl);
-
-                if ((r_type.GetString() == CMR_URL_TYPE_GET_DATA) && noSubtype) {
-                    data_access_url = r_url.GetString();
-                }
-            }
-        }
-
-        if (data_access_url.empty()) {
-            throw BESInternalError(string("ERROR! Failed to locate a data access URL for the path: ") + restified_path,
-                                   __FILE__, __LINE__);
-        }
+        data_access_url = get_data_access_url_from_cmr_json(restified_path, cmr_response);
 
         BESDEBUG(MODULE, prolog << "Following data_access_url redirects..." << endl);
 

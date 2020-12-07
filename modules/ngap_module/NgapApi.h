@@ -52,7 +52,8 @@ private:
     std::string d_cmr_search_endpoint_path;
 
     std::string get_cmr_search_endpoint_url();
-
+    std::string get_data_access_url_from_cmr_json(const std::string &restified_path, rapidjson::Document &cmr_granules);
+    std::string build_cmr_query_url(const std::string &restified_path);
 
 
 public:
@@ -64,7 +65,6 @@ public:
             const std::string &restified_path,
             const std::string &uid="");
 
-    std::string convert_restified_path_to_cmr_query_url(const std::string &restified_path);
     static bool signed_url_is_expired(const http::url &signed_url) ;
 
 #if 0
