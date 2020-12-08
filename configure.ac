@@ -738,7 +738,6 @@ if test  -n "$HDFEOS2_DIR"; then
       choke me
 #endif
   ]])], [AC_MSG_ERROR([HDFEOS2 library must be version 2.19, not version 2.20.])], [])
-  AC_MSG_RESULT([$hdfeos2_20])
   CPPFLAGS=$OLD_CPPFLAGS  
 fi
 
