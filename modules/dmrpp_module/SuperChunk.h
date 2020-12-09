@@ -25,7 +25,7 @@ namespace dmrpp {
         unsigned long long  read_contiguous(unsigned char *r_buff);
 
     public:
-        explicit SuperChunk(DmrppArray *parent): d_parent(parent), d_offset(0), d_size(0){};
+        explicit SuperChunk(DmrppArray *parent);
         ~SuperChunk() = default;;
         virtual bool add_chunk(const dmrpp::Chunk &chunk);
 

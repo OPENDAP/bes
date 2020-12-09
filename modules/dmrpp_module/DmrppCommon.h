@@ -32,6 +32,7 @@
 
 #include "dods-datatypes.h"
 #include "Chunk.h"
+#include "SuperChunk.h"
 
 #include "config.h"
 #include "byteswap_compat.h"
@@ -74,7 +75,8 @@ private:
 	bool d_compact;
 	std::string d_byte_order;
 	std::vector<unsigned int> d_chunk_dimension_sizes;
-	std::vector<Chunk> d_chunks;
+    std::vector<Chunk> d_chunks;
+    std::vector<SuperChunk *> d_super_chunks;
 	bool d_twiddle_bytes;
 
 protected:
@@ -110,9 +112,7 @@ public:
         m_duplicate_common(dc);
     }
 
-    virtual ~DmrppCommon()
-    {
-    }
+    virtual ~DmrppCommon(){}
 
     /// @brief Returns true if this object utilizes deflate compression.
     virtual bool is_deflate_compression() const {

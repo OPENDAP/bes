@@ -48,7 +48,11 @@
 using namespace std;
 using namespace libdap;
 
+#define prolog std::string("DmrppCommon::").append(__func__).append("() - ")
+
+
 namespace dmrpp {
+
 
 // Used with BESDEBUG
 static const string dmrpp_3 = "dmrpp:3";
@@ -57,6 +61,7 @@ static const string dmrpp_4 = "dmrpp:4";
 bool DmrppCommon::d_print_chunks = false;
 string DmrppCommon::d_dmrpp_ns = "http://xml.opendap.org/dap/dmrpp/1.0.0#";
 string DmrppCommon::d_ns_prefix = "dmrpp";
+
 
 /**
  * @brief Join with all the 'outstanding' threads
@@ -192,19 +197,61 @@ std::string DmrppCommon::get_byte_order()
  * @brief Add a new chunk as defined by an h4:byteStream element
  * @return The number of chunk refs (byteStreams) held.
  */
-    unsigned long DmrppCommon::add_chunk(const string &data_url, const string &byte_order,
-                                         unsigned long long size, unsigned long long offset, string position_in_array)
+    unsigned long DmrppCommon::add_chunk(
+            const string &data_url,
+            const string &byte_order,
+            unsigned long long size,
+            unsigned long long offset,
+            string position_in_array){
 
-    {
+        SuperChunk *currentSuperChunk;
+        bool chunk_was_added = false;
+        auto *array = dynamic_cast<DmrppArray *>(this);
+
+        if(!array){
+            // TODO Ouch Exception
+        }
+
+        if(d_super_chunks.empty())
+            d_super_chunks.push_back(new SuperChunk(array));
+
+        currentSuperChunk = d_super_chunks.back();
+        chunk_was_added = currentSuperChunk->add_chunk(Chunk(data_url, byte_order, size, offset, position_in_array));
+        if(!chunk_was_added){
+            if(currentSuperChunk->empty()){
+                // TODO Ouch Exception
+            }
+            currentSuperChunk = new SuperChunk(array);
+            chunk_was_added = currentSuperChunk->add_chunk(Chunk(data_url, byte_order, size, offset, position_in_array));
+            if(!chunk_was_added) {
+                // TODO Ouch Exception
+            }
+            d_super_chunks.push_back(new SuperChunk(array));
+        }
+
+
+
+
+
+
+
+
+
         d_chunks.push_back(Chunk(data_url, byte_order, size, offset, position_in_array));
+
+
+
 
         return d_chunks.size();
     }
 
-    unsigned long DmrppCommon::add_chunk(const string &data_url, const string &byte_order,
-                                         unsigned long long size, unsigned long long offset,
-                                         const vector<unsigned int> &position_in_array)
-    {
+    unsigned long DmrppCommon::add_chunk(
+            const string &data_url,
+            const string &byte_order,
+            unsigned long long size,
+            unsigned long long offset,
+            const vector<unsigned int> &position_in_array){
+
         d_chunks.push_back(Chunk(data_url, byte_order, size, offset, position_in_array));
 
         return d_chunks.size();

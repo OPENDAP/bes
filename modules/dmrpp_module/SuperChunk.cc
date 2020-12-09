@@ -21,7 +21,11 @@ using std::vector;
 
 namespace dmrpp {
 
-bool SuperChunk::add_chunk(const dmrpp::Chunk &chunk) {
+    SuperChunk::SuperChunk(DmrppArray *parent): d_parent(parent), d_offset(0), d_size(0){
+
+    }
+
+    bool SuperChunk::add_chunk(const dmrpp::Chunk &chunk) {
     bool chunk_was_added = false;
     if(d_chunks.empty()){
         this->d_chunks.push_back(&chunk);

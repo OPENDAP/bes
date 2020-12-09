@@ -56,83 +56,87 @@
 namespace dmrpp {
 
 bool debug = false;
-
-void compute_super_chunks(libdap::BaseType *var, bool only_constrained, vector<SuperChunk *> &super_chunks){
-    if(var->is_simple_type())
+void compute_super_chunks(libdap::BaseType *var, bool only_constrained, vector<SuperChunk *> &super_chunks) {
+    if (var->is_simple_type())
         return;
-    if(var->is_constructor_type())
+    if (var->is_constructor_type())
         return;
-    if(var->is_vector_type()){
-        auto *array = dynamic_cast<DmrppArray*>(var);
-        if(array){
-            // Now we get the chunkyness
-            auto &chunk_dim_sizes = array->get_chunk_dimension_sizes();
-            //unsigned int chunk_size_in_elements = array->get_chunk_size_in_elements();
-            auto &chunks = array->get_immutable_chunks();
-
-            //unsigned long long super_chunk_index = 0;
-            auto *currentSuperChunk = new SuperChunk(array);
-            super_chunks.push_back(currentSuperChunk); // first super chunk...
-            if(debug) cout << "SuperChunking array: "<< array->name() << endl;
-
-            for(auto &chunk:chunks){
-                bool was_added = currentSuperChunk->add_chunk(chunk);
-                if(!was_added){
-                    if(true) {
-                        unsigned long long next_contiguous_chunk_offset = currentSuperChunk->offset() + currentSuperChunk->size();
-                        unsigned long long gap_size;
-                        bool is_behind = false;
-                        if(chunk.get_offset() > next_contiguous_chunk_offset){
-                            gap_size = chunk.get_offset() - next_contiguous_chunk_offset;
-                        }
-                        else {
-                            is_behind = true;
-                            gap_size = next_contiguous_chunk_offset - chunk.get_offset();
-                        }
-                        stringstream msg;
-                        msg << "FOUND GAP chunk(offset: " << chunk.get_offset();
-                        msg << " size: " << chunk.get_size() << ")";
-                        msg << " SuperChunk(ptr: " << (void *) currentSuperChunk;
-                        msg << " offset: " << currentSuperChunk->offset();
-                        msg << " size: " << currentSuperChunk->size();
-                        msg << " next_contiguous_chunk_offset: " << next_contiguous_chunk_offset << ") ";
-                        msg << " gap_size: " << gap_size;
-                        msg << " bytes" << (is_behind?" behind":" beyond") << " target offset";
-                        msg << endl;
-                        cerr << msg.str();
-                    }
-                    // If we were working on a SuperChunk (i.e. the current SuperChunk contains chunks)
-                    // then we need to start a new one.
-                    if(!currentSuperChunk->empty()){
-                        currentSuperChunk = new SuperChunk(array);
-                        super_chunks.push_back(currentSuperChunk); // next super chunk...
-                    }
-                    bool add_first_successful = currentSuperChunk->add_chunk(chunk);
-                    if(!add_first_successful)
-                        throw BESInternalError("ERROR: Failed to add first Chunk to a new SuperChunk."+
-                                chunk.to_string() ,__FILE__,__LINE__);
-
-                }
-            }
-            // Dump the currentSuperChunk if it doesn't have anything in it.
-            if(currentSuperChunk->empty()) {
-                super_chunks.pop_back();
-                delete currentSuperChunk;
-            }
-            if(false){
-                cout << "SuperChunk Inventory For Array: " << array->name() << endl;
-                unsigned long long sc_count=0;
-                for(auto *super_chunk: super_chunks) {
-                    cout << super_chunk->to_string(true) << endl;
-                }
-            }
+    if (var->is_vector_type()) {
+        auto *array = dynamic_cast<DmrppArray *>(var);
+        if (array) {
+            compute_super_chunks(array, only_constrained, super_chunks);
         }
         else {
-            cerr << prolog << " ERROR! The variable: "<< var->name()
-                 << " is not an instance of DmrppArray. SKIPPING"<< endl;
+            BESDEBUG(MODULE, prolog << "The variable: "<< var->name()
+                 << " is not an instance of DmrppArray. SKIPPING"<< endl);
         }
-
     }
+}
+
+
+void compute_super_chunks(DmrppArray *array, bool only_constrained, vector<SuperChunk *> &super_chunks){
+
+        // Now we get the chunkyness
+        auto &chunk_dim_sizes = array->get_chunk_dimension_sizes();
+        //unsigned int chunk_size_in_elements = array->get_chunk_size_in_elements();
+        auto &chunks = array->get_immutable_chunks();
+
+        //unsigned long long super_chunk_index = 0;
+        auto *currentSuperChunk = new SuperChunk(array);
+        super_chunks.push_back(currentSuperChunk); // first super chunk...
+        if(debug) cout << "SuperChunking array: "<< array->name() << endl;
+
+        for(auto &chunk:chunks){
+            bool was_added = currentSuperChunk->add_chunk(chunk);
+            if(!was_added){
+                if(true) {
+                    unsigned long long next_contiguous_chunk_offset = currentSuperChunk->offset() + currentSuperChunk->size();
+                    unsigned long long gap_size;
+                    bool is_behind = false;
+                    if(chunk.get_offset() > next_contiguous_chunk_offset){
+                        gap_size = chunk.get_offset() - next_contiguous_chunk_offset;
+                    }
+                    else {
+                        is_behind = true;
+                        gap_size = next_contiguous_chunk_offset - chunk.get_offset();
+                    }
+                    stringstream msg;
+                    msg << "FOUND GAP chunk(offset: " << chunk.get_offset();
+                    msg << " size: " << chunk.get_size() << ")";
+                    msg << " SuperChunk(ptr: " << (void *) currentSuperChunk;
+                    msg << " offset: " << currentSuperChunk->offset();
+                    msg << " size: " << currentSuperChunk->size();
+                    msg << " next_contiguous_chunk_offset: " << next_contiguous_chunk_offset << ") ";
+                    msg << " gap_size: " << gap_size;
+                    msg << " bytes" << (is_behind?" behind":" beyond") << " target offset";
+                    msg << endl;
+                    cerr << msg.str();
+                }
+                // If we were working on a SuperChunk (i.e. the current SuperChunk contains chunks)
+                // then we need to start a new one.
+                if(!currentSuperChunk->empty()){
+                    currentSuperChunk = new SuperChunk(array);
+                    super_chunks.push_back(currentSuperChunk); // next super chunk...
+                }
+                bool add_first_successful = currentSuperChunk->add_chunk(chunk);
+                if(!add_first_successful)
+                    throw BESInternalError("ERROR: Failed to add first Chunk to a new SuperChunk."+
+                            chunk.to_string() ,__FILE__,__LINE__);
+
+            }
+        }
+        // Dump the currentSuperChunk if it doesn't have anything in it.
+        if(currentSuperChunk->empty()) {
+            super_chunks.pop_back();
+            delete currentSuperChunk;
+        }
+        if(false){
+            cout << "SuperChunk Inventory For Array: " << array->name() << endl;
+            unsigned long long sc_count=0;
+            for(auto *super_chunk: super_chunks) {
+                cout << super_chunk->to_string(true) << endl;
+            }
+        }
 }
 
 #if 0
