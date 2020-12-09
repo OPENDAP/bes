@@ -89,6 +89,8 @@ void FONcStr::define(int ncid)
         int size = _data->size() + 1;
 
         string dimname;
+
+        // For DAP4, we need to ensure the dimension name is unique.
         if(is_dap4_group == true) {
             ostringstream dim_suffix_strm;
             dim_suffix_strm <<"_len"<<FONcDim::DimNameNum +1;
