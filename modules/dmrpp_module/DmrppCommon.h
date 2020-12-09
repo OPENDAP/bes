@@ -112,9 +112,9 @@ public:
 
     virtual ~DmrppCommon()
     {
-        //for(auto chunk:d_chunks){
-        //    delete chunk;
-        //}
+        for(auto chunk:d_chunks){
+            delete chunk;
+        }
 
     }
 
