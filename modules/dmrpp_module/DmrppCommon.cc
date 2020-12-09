@@ -266,12 +266,13 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
         if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "compressionType", (const xmlChar*) compression.c_str()) < 0)
             throw BESInternalError("Could not write compression attribute.", __FILE__, __LINE__);
 
-    for(auto chunk: get_chunks()){
-        std::string byteOrder = chunk->get_byte_order();
-        if (!byteOrder.empty()) {
+
+    if(!get_chunks().empty()){
+        Chunk *first_chunk = get_chunks().front();
+        if (!first_chunk->get_byte_order().empty()) {
             if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "byteOrder",
-                                            (const xmlChar *) byteOrder.c_str()) < 0)
-                throw BESInternalError("Could not write attribute byteOrder", __FILE__, __LINE__);
+                                        (const xmlChar *) first_chunk->get_byte_order().c_str()) < 0)
+            throw BESInternalError("Could not write attribute byteOrder", __FILE__, __LINE__);
         }
     }
 
