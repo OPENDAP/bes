@@ -159,13 +159,13 @@ public:
 
         CPPUNIT_ASSERT(size == 1);
         CPPUNIT_ASSERT(d_dc.d_chunks.size() == 1);
-        Chunk &c = d_dc.d_chunks[0];
-        CPPUNIT_ASSERT(c.d_data_url == "url");
-        CPPUNIT_ASSERT(c.d_size == 100);
-        CPPUNIT_ASSERT(c.d_offset = 200);
-        CPPUNIT_ASSERT(c.d_chunk_position_in_array.size() == 2);
-        CPPUNIT_ASSERT(c.d_chunk_position_in_array.at(0) == 10);
-        CPPUNIT_ASSERT(c.d_chunk_position_in_array.at(1) == 20);
+        Chunk *c = d_dc.d_chunks[0];
+        CPPUNIT_ASSERT(c->d_data_url == "url");
+        CPPUNIT_ASSERT(c->d_size == 100);
+        CPPUNIT_ASSERT(c->d_offset = 200);
+        CPPUNIT_ASSERT(c->d_chunk_position_in_array.size() == 2);
+        CPPUNIT_ASSERT(c->d_chunk_position_in_array.at(0) == 10);
+        CPPUNIT_ASSERT(c->d_chunk_position_in_array.at(1) == 20);
     }
 
     void test_add_chunk_2()
@@ -178,13 +178,13 @@ public:
 
         CPPUNIT_ASSERT(size == 1);
         CPPUNIT_ASSERT(d_dc.d_chunks.size() == 1);
-        Chunk &c = d_dc.d_chunks[0];
-        CPPUNIT_ASSERT(c.d_data_url == "url");
-        CPPUNIT_ASSERT(c.d_size == 100);
-        CPPUNIT_ASSERT(c.d_offset = 200);
-        CPPUNIT_ASSERT(c.d_chunk_position_in_array.size() == 2);
-        CPPUNIT_ASSERT(c.d_chunk_position_in_array.at(0) == 10);
-        CPPUNIT_ASSERT(c.d_chunk_position_in_array.at(1) == 20);
+        Chunk *c = d_dc.d_chunks[0];
+        CPPUNIT_ASSERT(c->d_data_url == "url");
+        CPPUNIT_ASSERT(c->d_size == 100);
+        CPPUNIT_ASSERT(c->d_offset = 200);
+        CPPUNIT_ASSERT(c->d_chunk_position_in_array.size() == 2);
+        CPPUNIT_ASSERT(c->d_chunk_position_in_array.at(0) == 10);
+        CPPUNIT_ASSERT(c->d_chunk_position_in_array.at(1) == 20);
     }
 
     void test_print_chunks_element_1()

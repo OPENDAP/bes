@@ -74,7 +74,7 @@ private:
 	bool d_compact;
 	std::string d_byte_order;
 	std::vector<unsigned int> d_chunk_dimension_sizes;
-	std::vector<Chunk> d_chunks;
+	std::vector<Chunk *> d_chunks;
 	bool d_twiddle_bytes;
 
 protected:
@@ -90,7 +90,7 @@ protected:
 
     /// @brief Returns a reference to the internal Chunk vector.
     /// @see get_immutable_chunks()
-    virtual std::vector<Chunk> &get_chunks() {
+    virtual std::vector<Chunk *> &get_chunks() {
     	return d_chunks;
     }
 
@@ -112,6 +112,10 @@ public:
 
     virtual ~DmrppCommon()
     {
+        //for(auto chunk:d_chunks){
+        //    delete chunk;
+        //}
+
     }
 
     /// @brief Returns true if this object utilizes deflate compression.
@@ -149,7 +153,7 @@ public:
 
     /// @brief A const reference to the vector of chunks
     /// @see get_chunks()
-    virtual const std::vector<Chunk> &get_immutable_chunks() const {
+    virtual const std::vector<Chunk *> &get_immutable_chunks() const {
     	return d_chunks;
     }
 

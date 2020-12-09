@@ -120,13 +120,13 @@ public:
      * This checks the offset, size, md5, and uuid attributes
      * against expected values passed as parameters.
      */
-    void checkByteStream(string name, Chunk h4bs, unsigned long long offset, unsigned long long size,
+    void checkByteStream(string name, Chunk *h4bs, unsigned long long offset, unsigned long long size,
         string /*md5*/, string /*uuid*/)
     {
 
-        CPPUNIT_ASSERT(h4bs.get_offset() == offset);
+        CPPUNIT_ASSERT(h4bs->get_offset() == offset);
         BESDEBUG("dmrpp", name << " offset: " << offset << endl);
-        CPPUNIT_ASSERT(h4bs.get_size() == size);
+        CPPUNIT_ASSERT(h4bs->get_size() == size);
         BESDEBUG("dmrpp", name << " size: " << size << endl);
 #if 0
         CPPUNIT_ASSERT(h4bs.get_md5() == md5);
@@ -153,7 +153,7 @@ public:
         DmrppCommon *dc = dynamic_cast<DmrppCommon*>(bt);
         CPPUNIT_ASSERT(dc);
 
-        const vector<Chunk> &chunks = dc->get_immutable_chunks();
+        auto chunks = dc->get_immutable_chunks();
         CPPUNIT_ASSERT(chunks.size() == 1);
         checkByteStream(bt->name(), chunks[0], offset, size, "", "");
     }
