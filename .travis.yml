@@ -23,6 +23,7 @@ branches:
   - travis
 
 addons:
+  sonarcloud: true
   apt:
     packages:
     - uuid-dev
@@ -89,44 +90,41 @@ before_script:
 # Build all the stages for 'master'. For a PR, run the 'build' and 'package' stages,
 # but do not run the scan.
 stages:
-  - name: scan
-    if:  branch = master
   - name: build
-    if:  branch = master
+    if: branch = master
   - name: package
     if:  branch = master OR branch = travis
+  - name: scan
+    if:  branch = master
 
 jobs:
   include:
   - stage: scan
     name: "scan bes"
-    addons:
-      sonarcloud:  true
     script:
     - export BES_BUILD=sonar-bes-framework
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
     - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
     - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.login=$SONAR_LOGIN
+    - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes | grep "QUALITY GATE PASS"
 
   - stage: scan
     name: "scan bes-modules"
-    addons:
-      sonarcloud: true
     script:
       - export BES_BUILD=sonar-bes-modules
       - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
       - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
       - sonar-scanner -Dproject.settings=sonar-bes-modules.properties -Dsonar.login=$SONAR_MODULES_LOGIN
+      - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-modules | grep "QUALITY GATE PASS"
 
   - stage: scan
     name: "scan bes-submodules"
-    addons:
-      sonarcloud: true
     script:
       - export BES_BUILD=sonar-bes-submodules
       - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
       - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
       - sonar-scanner -Dproject.settings=sonar-bes-submodules.properties -Dsonar.login=$SONAR_SUBMODULES_LOGIN
+      - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-submodules | grep "QUALITY GATE PASS"
 
   - stage: build
     name: "check"
