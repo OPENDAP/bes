@@ -13,5 +13,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        submodues : true 
     - name: configure
       run: autoreconf -i
