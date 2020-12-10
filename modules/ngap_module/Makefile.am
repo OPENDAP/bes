@@ -2,7 +2,6 @@
 #
 # 07/25/18
 #
-
 AUTOMAKE_OPTIONS = foreign
 
 ACLOCAL_AMFLAGS = -I conf
