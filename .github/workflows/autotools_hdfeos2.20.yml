@@ -1,0 +1,70 @@
+name: Autotools ubuntu-latest HDFEOS2.20
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04,  ubuntu-20.04]
+
+    env:
+      PWD_DIR: /home/runner
+      CPPFLAGS: "-I/usr/include -I/usr/local/include -I/home/runner/hdf4/include -I/home/runner/stare/include -I/home/runner/hdfeos2/include"
+      LDFLAGS: "-L/home/runner/hdf4/lib -L/home/runner/stare/lib -L/home/runner/hdfeos2/lib"
+        
+    steps:
+    - uses: actions/checkout@v2
+    - name: Installs
+      run: |
+        set -x
+        sudo apt-get install -o Acquire::Retries=3 netcdf-bin libnetcdf-dev doxygen graphviz wget gfortran libjpeg-dev libz-dev
+    - name: cache-hdf4
+      id: cache-hdf4
+      uses: actions/cache@v2
+      with:
+        path: ~/hdf4
+        key: hdf4-${{ runner.os }}-fPIC-4.2.13
+
+    - name: build-hdf4
+      if: steps.cache-hdf4.outputs.cache-hit != 'true'
+      run: |
+        set -x
+        wget https://support.hdfgroup.org/ftp/HDF/HDF_Current/src/hdf-4.2.13.tar.gz &> /dev/null
+        tar zxf hdf-4.2.13.tar.gz
+        cd hdf-4.2.13
+        export CFLAGS=-fPIC
+        ./configure --disable-netcdf --prefix=${PWD_DIR}/hdf4 
+        make all 
+        sudo make install clean
+        cd ..
+    - name: cache-hdfeos2
+      id: cache-hdfeos2
+      uses: actions/cache@v2
+      with:
+        path: ~/hdfeos2
+        key: hdfeos2-${{ runner.os }}-fPIC-20v1.00
+
+    - name: build-hdfeos2
+      if: steps.cache-hdfeos2.outputs.cache-hit != 'true'
+      run: |
+        set -x
+        wget https://observer.gsfc.nasa.gov/ftp/edhs/hdfeos/latest_release/HDF-EOS2.20v1.00.tar.Z  &> /dev/null
+        tar zxf HDF-EOS2.20v1.00.tar.Z
+        cd hdfeos
+        CFLAGS=-fPIC ./configure  --enable-install-include --prefix=${PWD_DIR}/hdfeos2
+        make
+        sudo make install clean
+        cd ..
+        
+    - name: build bes
+      run: autoreconf -i
+
+
+
