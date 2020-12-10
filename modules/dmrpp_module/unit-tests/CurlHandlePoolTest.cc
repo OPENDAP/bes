@@ -111,7 +111,7 @@ public:
 
         dmrpp_easy_handle *handle = d_chp->get_easy_handle(this);
         if (!handle)
-            throw BESInternalError("No more libcurl handles.", __FILE__, __LINE__);
+            throw BESInternalError(prolog + "No more libcurl handles.", __FILE__, __LINE__);
 
         try {
             // handle->read_data();  // throws if error
@@ -120,7 +120,7 @@ public:
             sleep(THREAD_SLEEP_TIME);
 
             if (d_sim_err)
-                throw BESInternalError("Simulated error", __FILE__, __LINE__);
+                throw BESInternalError(prolog + "Simulated error", __FILE__, __LINE__);
 
             d_chp->release_handle(handle);
         }
@@ -132,7 +132,7 @@ public:
         // If the expected byte count was not read, it's an error.
         if (get_size() != get_bytes_read()) {
             ostringstream oss;
-            oss << "Wrong number of bytes read for chunk; read: " << get_bytes_read() << ", expected: " << get_size();
+            oss << prolog <<  "Wrong number of bytes read for chunk; read: " << get_bytes_read() << ", expected: " << get_size();
             throw BESInternalError(oss.str(), __FILE__, __LINE__);
         }
 
@@ -390,7 +390,7 @@ public:
         chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, true)));
         chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
 
-        MockDmrppArray *array = new MockDmrppArray;
+        auto array = new MockDmrppArray;
         vector<unsigned int> array_shape = {1};
 
         try {
@@ -418,7 +418,7 @@ public:
         chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
         chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
 
-        MockDmrppArray *array = new MockDmrppArray;
+        auto array = new MockDmrppArray;
         vector<unsigned int> array_shape = {1};
 
         try {
@@ -446,7 +446,7 @@ public:
         chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, true)));
         chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
 
-        MockDmrppArray *array = new MockDmrppArray;
+        auto array = new MockDmrppArray;
         vector<unsigned int> array_shape = {1};
 
         try {
@@ -474,7 +474,7 @@ public:
         chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
         chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
 
-        MockDmrppArray *array = new MockDmrppArray;
+        auto array = new MockDmrppArray;
         vector<unsigned int> array_shape = {1};
 
         try {
@@ -503,7 +503,7 @@ public:
             chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
             chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
 
-            MockDmrppArray *array = new MockDmrppArray;
+            auto array = new MockDmrppArray;
             vector<unsigned int> array_shape = {1};
 
             try {
