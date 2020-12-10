@@ -71,29 +71,29 @@ public:
     MockChunk(CurlHandlePool *chp, bool sim_err) : Chunk(), d_chp(chp), d_sim_err(sim_err)
     {}
 
-    void inflate_chunk(bool, bool, unsigned int, unsigned int)
+    void inflate_chunk(bool, bool, unsigned int, unsigned int) override
     {
         return;
     }
 
-    virtual std::string get_data_url() const
+    virtual std::string get_data_url() const  override
     {
         return "https://httpbin.org/";
     }
 
-    virtual unsigned long long get_bytes_read() const
+    virtual unsigned long long get_bytes_read() const  override
     {
         return 2;
     }
 
-    virtual unsigned long long get_size() const
+    virtual unsigned long long get_size() const  override
     {
         return 2;
     }
 
     std::vector<unsigned int> mock_pia = {1};
 
-    virtual const std::vector<unsigned int> &get_position_in_array() const
+    virtual const std::vector<unsigned int> &get_position_in_array() const  override
     {
         return mock_pia;
     }
@@ -101,7 +101,7 @@ public:
     // This is very close to the real read_chunk with only the call to d_handle->read_data()
     // replaced by code that throws (or not) depending on the value of 'sim_err' in the
     // constructor.
-    void read_chunk()
+    void read_chunk() override
     {
         if (d_is_read) {
             return;
@@ -168,17 +168,13 @@ private:
 
 public:
     // Called once before everything gets tested
-    CurlHandlePoolTest()
-    {
-    }
+    CurlHandlePoolTest(): chp(0){ }
 
     // Called at the end of the test
-    ~CurlHandlePoolTest()
-    {
-    }
+    ~CurlHandlePoolTest(){}
 
     // Called before each test
-    void setUp()
+    void setUp() override
     {
         DBG(cerr << endl);
         chp = new CurlHandlePool(4);
@@ -188,7 +184,7 @@ public:
     }
 
     // Called after each test
-    void tearDown()
+    void tearDown() override
     {
         delete chp;
         chp = 0;
@@ -241,13 +237,12 @@ public:
 
         try {
             unsigned int num_threads = 0;
-            for (unsigned int i = 0;
-                 i < (unsigned int) chp->get_max_handles() && chunks_to_read.size() > 0; ++i) {
+            for (unsigned int i = 0; i < (unsigned int) chp->get_max_handles() && !chunks_to_read.empty(); ++i) {
                 auto chunk = chunks_to_read.front();
                 chunks_to_read.pop();
 
                 // thread number is 'i'
-                one_chunk_args *args = new one_chunk_args(fds, i, chunk, array, array_shape);
+                auto args = new one_chunk_args(fds, i, chunk, array, array_shape);
                 int status = pthread_create(&threads[i], NULL, dmrpp::one_chunk_thread, (void *) args);
                 if (0 == status) {
                     ++num_threads;
@@ -261,11 +256,13 @@ public:
                 }
             }
 
+            DBG(cerr << prolog << "Gathering threads..." << endl);
             // Now join the child threads, creating replacement threads if needed
             while (num_threads > 0) {
+                DBG(cerr << prolog << num_threads << " threads to process..." << endl);
                 unsigned char tid;   // bytes can be written atomically
                 // Block here until a child thread writes to the pipe, then read the byte
-                int bytes = ::read(fds[0], &tid, sizeof(tid));
+                int bytes = read(fds[0], &tid, sizeof(tid));
                 if (bytes != sizeof(tid))
                     throw BESInternalError(string("Could not read the thread id: ").append(strerror(errno)), __FILE__,
                                            __LINE__);
@@ -292,12 +289,12 @@ public:
                     delete error;
                     throw e;
                 }
-                else if (chunks_to_read.size() > 0) {
+                else if (!chunks_to_read.empty()) {
                     auto chunk = chunks_to_read.front();
                     chunks_to_read.pop();
 
                     // thread number is 'tid,' the number of the thread that just completed
-                    one_chunk_args *args = new one_chunk_args(fds, tid, chunk, array, array_shape);
+                    auto args = new one_chunk_args(fds, tid, chunk, array, array_shape);
                     status = pthread_create(&threads[tid], NULL, dmrpp::one_chunk_thread, (void *) args);
                     if (status != 0) {
                         ostringstream oss("Could not start thread for chunk ", ios::ate);
@@ -339,7 +336,6 @@ public:
 
         auto array = new MockDmrppArray;
         vector<unsigned int> array_shape = {1};
-
         try {
             dmrpp_array_thread_control(chunks_to_read, array, array_shape);
             CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
