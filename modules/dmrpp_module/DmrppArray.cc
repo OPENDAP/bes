@@ -26,6 +26,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <memory>
 #include <queue>
 #include <iterator>
 

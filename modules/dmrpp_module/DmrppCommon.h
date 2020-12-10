@@ -27,6 +27,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 //#include <H5Ppublic.h>
 

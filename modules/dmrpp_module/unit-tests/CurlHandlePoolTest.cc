@@ -30,6 +30,7 @@
 #include <cstring>
 #include <cassert>
 #include <cerrno>
+#include <memory>
 
 #include <queue>
 
