@@ -120,7 +120,7 @@ public:
      * This checks the offset, size, md5, and uuid attributes
      * against expected values passed as parameters.
      */
-    void checkByteStream(string name, Chunk *h4bs, unsigned long long offset, unsigned long long size,
+    void checkByteStream(string name, shared_ptr<Chunk> h4bs, unsigned long long offset, unsigned long long size,
         string /*md5*/, string /*uuid*/)
     {
 

@@ -59,6 +59,7 @@ static bool bes_debug = false;
 
 #undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
+#define prolog std::string("CurlHandlePoolTest::").append(__func__).append("() - ")
 
 namespace dmrpp {
 
@@ -179,6 +180,7 @@ public:
     // Called before each test
     void setUp()
     {
+        DBG(cerr << endl);
         chp = new CurlHandlePool(4);
         TheBESKeys::ConfigFile = string(TEST_SRC_DIR) + "/curl_handle_pool_keys.conf";
         // The following will show threads joined after an exception was thrown by a thread
@@ -194,10 +196,12 @@ public:
 
     void process_one_chunk_test()
     {
+        DBG(cerr << prolog << "BEGIN" << endl);
+
         CPPUNIT_ASSERT(true);
 
-        MockChunk *chunk = new MockChunk(chp, true);
-        MockDmrppArray *array = new MockDmrppArray;
+        shared_ptr<Chunk> chunk(new MockChunk(chp, true));
+        auto array = new MockDmrppArray;
         vector<unsigned int> array_shape = {1};
 
         unsigned int num = chp->get_handles_available();
@@ -217,11 +221,13 @@ public:
 
         unsigned int num2 = chp->get_handles_available();
         CPPUNIT_ASSERT(num2 == num);
+        DBG(cerr << prolog << "END" << endl);
     }
 
     // This is a general proxy for the DmrppArray code that controls the parallel transfers.
-    void dmrpp_array_thread_control(queue<Chunk *> &chunks_to_read, MockDmrppArray *array,
+    void dmrpp_array_thread_control(queue<shared_ptr<Chunk>> &chunks_to_read, MockDmrppArray *array,
                                     const vector<unsigned int> &array_shape) {
+        DBG(cerr << prolog << "BEGIN" << endl);
         // This pipe is used by the child threads to indicate completion
         int fds[2];
         if (pipe(fds) < 0)
@@ -237,7 +243,7 @@ public:
             unsigned int num_threads = 0;
             for (unsigned int i = 0;
                  i < (unsigned int) chp->get_max_handles() && chunks_to_read.size() > 0; ++i) {
-                Chunk *chunk = chunks_to_read.front();
+                auto chunk = chunks_to_read.front();
                 chunks_to_read.pop();
 
                 // thread number is 'i'
@@ -287,7 +293,7 @@ public:
                     throw e;
                 }
                 else if (chunks_to_read.size() > 0) {
-                    Chunk *chunk = chunks_to_read.front();
+                    auto chunk = chunks_to_read.front();
                     chunks_to_read.pop();
 
                     // thread number is 'tid,' the number of the thread that just completed
@@ -317,19 +323,21 @@ public:
             // re-throw the exception
             throw;
         }
+        DBG(cerr << prolog << "END" << endl);
     }
 
     // This replicates the code in DmrppArray::read_chunks() to orgainize and process_one_chunk()
     // using several threads.
     void process_one_chunk_threaded_test_0()
     {
-        queue<Chunk *> chunks_to_read;
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, false));
+        DBG(cerr << prolog << "BEGIN" << endl);
+        queue<shared_ptr<Chunk>> chunks_to_read;
+        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
 
-        MockDmrppArray *array = new MockDmrppArray;
+        auto array = new MockDmrppArray;
         vector<unsigned int> array_shape = {1};
 
         try {
@@ -342,18 +350,20 @@ public:
         catch(std::exception &e) {
             CPPUNIT_FAIL(string("Caught std::exception: ").append(e.what()));
         }
+        DBG(cerr << prolog << "END" << endl);
     }
 
     // One of the threads throw an exception
     void process_one_chunk_threaded_test_1()
     {
-        queue<Chunk *> chunks_to_read;
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, true));
-        chunks_to_read.push(new MockChunk(chp, false));
+        DBG(cerr << prolog << "BEGIN" << endl);
+        queue<shared_ptr<Chunk>> chunks_to_read;
+        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, true)));
+        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
 
-        MockDmrppArray *array = new MockDmrppArray;
+        auto array = new MockDmrppArray;
         vector<unsigned int> array_shape = {1};
 
         try {
@@ -365,19 +375,20 @@ public:
         }
 
         CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
+        DBG(cerr << prolog << "END" << endl);
     }
 
     // One thread not in the initial batch of threads throws.
     void process_one_chunk_threaded_test_2()
     {
-        queue<Chunk *> chunks_to_read;
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, true));
-        chunks_to_read.push(new MockChunk(chp, false));
+        DBG(cerr << prolog << "BEGIN" << endl);
+        queue<shared_ptr<Chunk>> chunks_to_read;
+        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, true)));
+        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
 
         MockDmrppArray *array = new MockDmrppArray;
         vector<unsigned int> array_shape = {1};
@@ -391,19 +402,21 @@ public:
         }
 
         CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
+        DBG(cerr << prolog << "END" << endl);
     }
 
     // Two threads in the initial set throw
     void process_one_chunk_threaded_test_3()
     {
-        queue<Chunk *> chunks_to_read;
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, true));
-        chunks_to_read.push(new MockChunk(chp, true));
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, false));
+        DBG(cerr << prolog << "BEGIN" << endl);
+        queue<shared_ptr<Chunk>> chunks_to_read;
+        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, true)));
+        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, true)));
+        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
 
         MockDmrppArray *array = new MockDmrppArray;
         vector<unsigned int> array_shape = {1};
@@ -417,19 +430,21 @@ public:
         }
 
         CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
+        DBG(cerr << prolog << "END" << endl);
     }
 
     // two in the second set throw
     void process_one_chunk_threaded_test_4()
     {
-        queue<Chunk *> chunks_to_read;
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, true));
-        chunks_to_read.push(new MockChunk(chp, true));
-        chunks_to_read.push(new MockChunk(chp, false));
+        DBG(cerr << prolog << "BEGIN" << endl);
+        queue<shared_ptr<Chunk>> chunks_to_read;
+        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, true)));
+        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, true)));
+        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
 
         MockDmrppArray *array = new MockDmrppArray;
         vector<unsigned int> array_shape = {1};
@@ -443,19 +458,21 @@ public:
         }
 
         CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
+        DBG(cerr << prolog << "END" << endl);
     }
 
     // One in the first set and one in the second set throw
     void process_one_chunk_threaded_test_5()
     {
-        queue<Chunk *> chunks_to_read;
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, true));
-        chunks_to_read.push(new MockChunk(chp, true));
-        chunks_to_read.push(new MockChunk(chp, false));
-        chunks_to_read.push(new MockChunk(chp, false));
+        DBG(cerr << prolog << "BEGIN" << endl);
+        queue<shared_ptr<Chunk>> chunks_to_read;
+        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, true)));
+        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, true)));
+        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
+        chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
 
         MockDmrppArray *array = new MockDmrppArray;
         vector<unsigned int> array_shape = {1};
@@ -469,20 +486,22 @@ public:
         }
 
         CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
+        DBG(cerr << prolog << "END" << endl);
     }
 
     // Make sure the curl handle pool doesn't leak with multiple failures
     void process_one_chunk_threaded_test_6()
     {
-        queue<Chunk *> chunks_to_read;
+        DBG(cerr << prolog << "BEGIN" << endl);
+        queue<shared_ptr<Chunk>> chunks_to_read;
         for (int i = 0; i < 5; ++i) {
-            chunks_to_read.push(new MockChunk(chp, false));
-            chunks_to_read.push(new MockChunk(chp, false));
-            chunks_to_read.push(new MockChunk(chp, false));
-            chunks_to_read.push(new MockChunk(chp, true));
-            chunks_to_read.push(new MockChunk(chp, true));
-            chunks_to_read.push(new MockChunk(chp, false));
-            chunks_to_read.push(new MockChunk(chp, false));
+            chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
+            chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
+            chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
+            chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, true)));
+            chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, true)));
+            chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
+            chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
 
             MockDmrppArray *array = new MockDmrppArray;
             vector<unsigned int> array_shape = {1};
@@ -497,6 +516,7 @@ public:
         }
 
         CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
+        DBG(cerr << prolog << "END" << endl);
     }
 
     CPPUNIT_TEST_SUITE(CurlHandlePoolTest);

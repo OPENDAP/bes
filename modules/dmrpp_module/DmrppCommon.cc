@@ -196,7 +196,8 @@ std::string DmrppCommon::get_byte_order()
                                          unsigned long long size, unsigned long long offset, string position_in_array)
 
     {
-        Chunk *chunk = new Chunk(data_url, byte_order, size, offset, position_in_array);
+        // Chunk *chunk = new Chunk(data_url, byte_order, size, offset, position_in_array);
+        std::shared_ptr<Chunk> chunk(new Chunk(data_url, byte_order, size, offset, position_in_array));
         d_chunks.push_back(chunk);
 
         return d_chunks.size();
@@ -206,7 +207,8 @@ std::string DmrppCommon::get_byte_order()
                                          unsigned long long size, unsigned long long offset,
                                          const vector<unsigned int> &position_in_array)
     {
-        Chunk *chunk = new Chunk(data_url, byte_order, size, offset, position_in_array);
+        // Chunk *chunk = new Chunk(data_url, byte_order, size, offset, position_in_array);
+        std::shared_ptr<Chunk> chunk(new Chunk(data_url, byte_order, size, offset, position_in_array));
         d_chunks.push_back(chunk);
 
         return d_chunks.size();
@@ -237,7 +239,7 @@ DmrppCommon::read_atomic(const string &name)
     if (chunk_refs.size() != 1)
         throw BESInternalError(string("Expected only a single chunk for variable ") + name, __FILE__, __LINE__);
 
-    Chunk *chunk = chunk_refs[0];
+    auto chunk = chunk_refs[0];
 
     chunk->read_chunk();
 
@@ -268,7 +270,7 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
 
 
     if(!get_chunks().empty()){
-        Chunk *first_chunk = get_chunks().front();
+        auto first_chunk = get_chunks().front();
         if (!first_chunk->get_byte_order().empty()) {
             if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "byteOrder",
                                         (const xmlChar *) first_chunk->get_byte_order().c_str()) < 0)

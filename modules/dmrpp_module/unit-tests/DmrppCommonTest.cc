@@ -159,7 +159,7 @@ public:
 
         CPPUNIT_ASSERT(size == 1);
         CPPUNIT_ASSERT(d_dc.d_chunks.size() == 1);
-        Chunk *c = d_dc.d_chunks[0];
+        auto c = d_dc.d_chunks[0];
         CPPUNIT_ASSERT(c->d_data_url == "url");
         CPPUNIT_ASSERT(c->d_size == 100);
         CPPUNIT_ASSERT(c->d_offset = 200);
@@ -178,7 +178,7 @@ public:
 
         CPPUNIT_ASSERT(size == 1);
         CPPUNIT_ASSERT(d_dc.d_chunks.size() == 1);
-        Chunk *c = d_dc.d_chunks[0];
+        auto c = d_dc.d_chunks[0];
         CPPUNIT_ASSERT(c->d_data_url == "url");
         CPPUNIT_ASSERT(c->d_size == 100);
         CPPUNIT_ASSERT(c->d_offset = 200);

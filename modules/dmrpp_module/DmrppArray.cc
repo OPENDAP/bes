@@ -412,14 +412,14 @@ void DmrppArray::read_contiguous()
         string chunk_url = master_chunk->get_data_url();
 
         // Setup a queue to break up the original master_chunk and keep track of the pieces
-        queue<Chunk *> chunks_to_read;
+        queue<shared_ptr<Chunk>> chunks_to_read;
 
         for (unsigned int i = 0; i < num_chunks - 1; i++) {
-            chunks_to_read.push(new Chunk(chunk_url, chunk_byteorder, chunk_size, (chunk_size * i) + chunk_offset));
+            chunks_to_read.push(shared_ptr<Chunk>(new Chunk(chunk_url, chunk_byteorder, chunk_size, (chunk_size * i) + chunk_offset)));
         }
         // See above for details about chunk_remainder. jhrg 9/21/19
-        chunks_to_read.push(new Chunk(chunk_url, chunk_byteorder, chunk_size + chunk_remainder,
-                                      (chunk_size * (num_chunks - 1)) + chunk_offset));
+        chunks_to_read.push(shared_ptr<Chunk>(new Chunk(chunk_url, chunk_byteorder, chunk_size + chunk_remainder,
+                                      (chunk_size * (num_chunks - 1)) + chunk_offset)));
 
         // Start the max number of processing pipelines
         pthread_t threads[DmrppRequestHandler::d_max_parallel_transfers];
@@ -430,8 +430,8 @@ void DmrppArray::read_contiguous()
 
             // start initial set of threads
             for (unsigned int i = 0;
-                 i < (unsigned int) DmrppRequestHandler::d_max_parallel_transfers && chunks_to_read.size() > 0; ++i) {
-                Chunk *current_chunk = chunks_to_read.front();
+                 i < (unsigned int) DmrppRequestHandler::d_max_parallel_transfers && !chunks_to_read.empty(); ++i) {
+                shared_ptr<Chunk> current_chunk = chunks_to_read.front();
                 chunks_to_read.pop();
 
                 // thread number is 'i'
@@ -483,7 +483,7 @@ void DmrppArray::read_contiguous()
                     throw e;
                 }
                 else if (chunks_to_read.size() > 0) {
-                    Chunk *current_chunk = chunks_to_read.front();
+                    auto current_chunk = chunks_to_read.front();
                     chunks_to_read.pop();
 
                     // thread number is 'tid,' the number of the thread that just completed
@@ -589,7 +589,7 @@ static unsigned long multiplier(const vector<unsigned int> &shape, unsigned int 
  * @param chunk_shape The size of the chunk's dimensions
  * @param chunk_origin Where this chunk fits into the Array
  */
-void DmrppArray::insert_chunk_unconstrained(Chunk *chunk, unsigned int dim, unsigned long long array_offset,
+void DmrppArray::insert_chunk_unconstrained(shared_ptr<Chunk> chunk, unsigned int dim, unsigned long long array_offset,
                                             const vector<unsigned int> &array_shape,
                                             unsigned long long chunk_offset, const vector<unsigned int> &chunk_shape,
                                             const vector<unsigned int> &chunk_origin)
@@ -688,7 +688,7 @@ void *one_chunk_unconstrained_thread(void *arg_list)
  * thread function one_chunk_unconstrained_thread() uses it. It's a
  * friend so that it can get access to the class' private info.
  */
-void process_one_chunk_unconstrained(Chunk *chunk, DmrppArray *array, const vector<unsigned int> &array_shape,
+void process_one_chunk_unconstrained(shared_ptr<Chunk> chunk, DmrppArray *array, const vector<unsigned int> &array_shape,
                                      const vector<unsigned int> &chunk_shape)
 {
     chunk->read_chunk();
@@ -738,7 +738,7 @@ void DmrppArray::read_chunks_unconstrained()
         }
     }
     else {      // Parallel transfers
-        queue<Chunk *> chunks_to_read;
+        queue<shared_ptr<Chunk>> chunks_to_read;
 
         // Queue all of the chunks
         for(auto chunk: get_chunks()) {
@@ -758,7 +758,7 @@ void DmrppArray::read_chunks_unconstrained()
             unsigned int num_threads = 0;
             for (unsigned int i = 0;
                  i < (unsigned int) DmrppRequestHandler::d_max_parallel_transfers && !chunks_to_read.empty(); ++i) {
-                Chunk *chunk = chunks_to_read.front();
+                auto chunk = chunks_to_read.front();
                 chunks_to_read.pop();
 
                 // thread number is 'i'
@@ -808,7 +808,7 @@ void DmrppArray::read_chunks_unconstrained()
                     throw e;
                 }
                 else if (chunks_to_read.size() > 0) {
-                    Chunk *chunk = chunks_to_read.front();
+                    auto chunk = chunks_to_read.front();
                     chunks_to_read.pop();
 
                     // thread number is 'tid,' the number of the thread that just completed
@@ -903,8 +903,8 @@ unsigned long long DmrppArray::get_chunk_start(const dimension &thisDim, unsigne
  * in the array where data should be written.
  * @param chunk This is the chunk.
  */
-Chunk *
-DmrppArray::find_needed_chunks(unsigned int dim, vector<unsigned int> *target_element_address, Chunk *chunk)
+shared_ptr<Chunk>
+DmrppArray::find_needed_chunks(unsigned int dim, vector<unsigned int> *target_element_address, shared_ptr<Chunk> chunk)
 {
     BESDEBUG(dmrpp_3, __func__ << " BEGIN, dim: " << dim << endl);
 
@@ -948,7 +948,7 @@ DmrppArray::find_needed_chunks(unsigned int dim, vector<unsigned int> *target_el
             (*target_element_address)[dim] = (chunk_index + chunk_origin[dim] - thisDim.start) / thisDim.stride;
 
             // Re-entry here:
-            Chunk *needed = find_needed_chunks(dim + 1, target_element_address, chunk);
+            auto needed = find_needed_chunks(dim + 1, target_element_address, chunk);
             if (needed) return needed;
         }
     }
@@ -977,7 +977,7 @@ DmrppArray::find_needed_chunks(unsigned int dim, vector<unsigned int> *target_el
  */
 void DmrppArray::insert_chunk(unsigned int dim, vector<unsigned int> *target_element_address,
                               vector<unsigned int> *chunk_element_address,
-                              Chunk *chunk, const vector<unsigned int> &constrained_array_shape)
+                              shared_ptr<Chunk> chunk, const vector<unsigned int> &constrained_array_shape)
 {
     // The size, in elements, of each of the chunk's dimensions.
     const vector<unsigned int> &chunk_shape = get_chunk_dimension_sizes();
@@ -1089,7 +1089,7 @@ void *one_chunk_thread(void *arg_list)
  * constrained - used to determine where/how to add the chunk's data to the
  * whole array.
  */
-void process_one_chunk(Chunk *chunk, DmrppArray *array, const vector<unsigned int> &constrained_array_shape)
+void process_one_chunk(shared_ptr<Chunk> chunk, DmrppArray *array, const vector<unsigned int> &constrained_array_shape)
 {
     chunk->read_chunk();
 
@@ -1120,12 +1120,12 @@ void DmrppArray::read_chunks()
 
     // Find all the chunks to read. I used a queue to preserve the chunk order, which
     // made using a debugger easier. However, order does not matter, AFAIK.
-    queue<Chunk *> chunks_to_read;
+    queue<shared_ptr<Chunk>> chunks_to_read;
 
     // Look at all the chunks
     for(auto chunk: get_chunks()){
         vector<unsigned int> target_element_address = chunk->get_position_in_array();
-        Chunk *needed = find_needed_chunks(0 /* dimension */, &target_element_address, chunk);
+        auto needed = find_needed_chunks(0 /* dimension */, &target_element_address, chunk);
         if (needed) chunks_to_read.push(needed);
     }
 
@@ -1139,7 +1139,7 @@ void DmrppArray::read_chunks()
         // This version is the 'serial' version of the code. It reads a chunk, inserts it,
         // reads the next one, and so on.
         while (chunks_to_read.size() > 0) {
-            Chunk *chunk = chunks_to_read.front();
+            auto chunk = chunks_to_read.front();
             chunks_to_read.pop();
 
             process_one_chunk(chunk, this, array_shape);
@@ -1164,7 +1164,7 @@ void DmrppArray::read_chunks()
             unsigned int num_threads = 0;
             for (unsigned int i = 0;
                  i < (unsigned int) DmrppRequestHandler::d_max_parallel_transfers && chunks_to_read.size() > 0; ++i) {
-                Chunk *chunk = chunks_to_read.front();
+                auto chunk = chunks_to_read.front();
                 chunks_to_read.pop();
 
                 // thread number is 'i'
@@ -1213,7 +1213,7 @@ void DmrppArray::read_chunks()
                     throw e;
                 }
                 else if (chunks_to_read.size() > 0) {
-                    Chunk *chunk = chunks_to_read.front();
+                    auto chunk = chunks_to_read.front();
                     chunks_to_read.pop();
 
                     // thread number is 'tid,' the number of the thread that just completed
