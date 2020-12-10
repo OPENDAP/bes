@@ -211,11 +211,11 @@ public:
             process_one_chunk(chunk, array, array_shape);
         }
         catch (BESError &e) {
-            DBG(cerr << "BES Exception: " << e.get_verbose_message() << endl);
+            DBG(cerr << prolog << "BES Exception: " << e.get_verbose_message() << endl);
             CPPUNIT_ASSERT("BES Exception caught");
         }
         catch (std::exception &e) {
-            DBG(cerr << "Exception: " << e.what() << endl);
+            DBG(cerr << prolog << "Exception: " << e.what() << endl);
             CPPUNIT_FAIL("Exception");
         }
 
@@ -251,12 +251,12 @@ public:
                 int status = pthread_create(&threads[i], NULL, dmrpp::one_chunk_thread, (void *) args);
                 if (0 == status) {
                     ++num_threads;
-                    DBG(cerr << "started thread: " << i << endl);
+                    DBG(cerr << prolog << "started thread: " << i << endl);
                 }
                 else {
                     ostringstream oss("Could not start thread for chunk ", ios::ate);
                     oss << i << ": " << strerror(status);
-                    DBG(cerr << oss.str());
+                    DBG(cerr << prolog << oss.str());
                     throw BESInternalError(oss.str(), __FILE__, __LINE__);
                 }
             }
@@ -279,7 +279,7 @@ public:
                 string *error;
                 int status = pthread_join(threads[tid], (void **) &error);
                 --num_threads;
-                DBG(cerr << "joined thread: " << (unsigned int) tid << ", there are: " << num_threads << endl);
+                DBG(cerr << prolog << "joined thread: " << (unsigned int) tid << ", there are: " << num_threads << endl);
 
                 if (status != 0) {
                     ostringstream oss("Could not join thread for chunk ", ios::ate);
@@ -287,7 +287,7 @@ public:
                     throw BESInternalError(oss.str(), __FILE__, __LINE__);
                 }
                 else if (error != 0) {
-                    DBG(cerr << "Thread exception: " << (unsigned int) tid << endl);
+                    DBG(cerr << prolog << "Thread exception: " << (unsigned int) tid << endl);
                     BESInternalError e(*error, __FILE__, __LINE__);
                     delete error;
                     throw e;
@@ -305,7 +305,7 @@ public:
                         throw BESInternalError(oss.str(), __FILE__, __LINE__);
                     }
                     ++num_threads;
-                    DBG(cerr << "started thread: " << (unsigned int) tid << ", there are: " << num_threads << endl);
+                    DBG(cerr << prolog << "started thread: " << (unsigned int) tid << ", there are: " << num_threads << endl);
                 }
             }
 
@@ -371,7 +371,7 @@ public:
             CPPUNIT_FAIL("dmrpp_array_thread_control() should have thrown an exception");
         }
         catch(BESInternalError &e) {
-            DBG(cerr << "BESInternalError: " << e.get_verbose_message() << endl);
+            DBG(cerr << prolog << "BESInternalError: " << e.get_verbose_message() << endl);
         }
 
         CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
@@ -398,7 +398,7 @@ public:
             CPPUNIT_FAIL("dmrpp_array_thread_control() should have thrown an exception");
         }
         catch(BESInternalError &e) {
-            DBG(cerr << "BESInternalError: " << e.get_verbose_message() << endl);
+            DBG(cerr << prolog << "BESInternalError: " << e.get_verbose_message() << endl);
         }
 
         CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
@@ -426,7 +426,7 @@ public:
             CPPUNIT_FAIL("dmrpp_array_thread_control() should have thrown an exception");
         }
         catch(BESInternalError &e) {
-            DBG(cerr << "BESInternalError: " << e.get_verbose_message() << endl);
+            DBG(cerr << prolog << "BESInternalError: " << e.get_verbose_message() << endl);
         }
 
         CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
@@ -454,7 +454,7 @@ public:
             CPPUNIT_FAIL("dmrpp_array_thread_control() should have thrown an exception");
         }
         catch(BESInternalError &e) {
-            DBG(cerr << "BESInternalError: " << e.get_verbose_message() << endl);
+            DBG(cerr << prolog << "BESInternalError: " << e.get_verbose_message() << endl);
         }
 
         CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
@@ -482,7 +482,7 @@ public:
             CPPUNIT_FAIL("dmrpp_array_thread_control() should have thrown an exception");
         }
         catch(BESInternalError &e) {
-            DBG(cerr << "BESInternalError: " << e.get_verbose_message() << endl);
+            DBG(cerr << prolog << "BESInternalError: " << e.get_verbose_message() << endl);
         }
 
         CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
@@ -511,7 +511,7 @@ public:
                 CPPUNIT_FAIL("dmrpp_array_thread_control() should have thrown an exception");
             }
             catch (BESInternalError &e) {
-                DBG(cerr << "BESInternalError: " << e.get_verbose_message() << endl);
+                DBG(cerr << prolog << "BESInternalError: " << e.get_verbose_message() << endl);
             }
         }
 
@@ -568,7 +568,7 @@ int main(int argc, char *argv[])
     else {
         int i = 0;
         while (i < argc) {
-            if (debug) cerr << "Running " << argv[i] << endl;
+            if (debug) cerr << prolog << "Running " << argv[i] << endl;
             string test = dmrpp::CurlHandlePoolTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
             ++i;
