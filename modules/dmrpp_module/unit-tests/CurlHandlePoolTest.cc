@@ -149,14 +149,14 @@ public:
         append_dim(10, "mock_dim");
     }
 
-    bool is_deflate_compression() const
+    bool is_deflate_compression() const override
     { return false; }
 
-    bool is_shuffle_compression() const
+    bool is_shuffle_compression() const override
     { return false; }
 
     virtual void insert_chunk(unsigned int, vector<unsigned int> *, vector<unsigned int> *,
-                              Chunk *, const vector<unsigned int> &)
+                              shared_ptr<Chunk>, const vector<unsigned int> &) override
     {
         return;
     }
