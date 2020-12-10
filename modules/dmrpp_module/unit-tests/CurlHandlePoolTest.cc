@@ -329,14 +329,25 @@ public:
     void process_one_chunk_threaded_test_0()
     {
         DBG(cerr << prolog << "BEGIN" << endl);
+#if 0
+        queue<Chunk *> chunks_to_read;
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, false));
+#endif
         queue<shared_ptr<Chunk>> chunks_to_read;
         chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
         chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
         chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
         chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
 
+        //MockDmrppArray *array = new MockDmrppArray;
         auto array = new MockDmrppArray;
         vector<unsigned int> array_shape = {1};
+        vector<size_t> chunk_dim_sizes = {1};
+        array->set_chunk_dimension_sizes(chunk_dim_sizes);
+
         try {
             dmrpp_array_thread_control(chunks_to_read, array, array_shape);
             CPPUNIT_ASSERT(chp->get_handles_available() == chp->get_max_handles());
@@ -353,6 +364,13 @@ public:
     // One of the threads throw an exception
     void process_one_chunk_threaded_test_1()
     {
+#if 0
+        queue<Chunk *> chunks_to_read;
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, true));
+        chunks_to_read.push(new MockChunk(chp, false));
+#endif
         DBG(cerr << prolog << "BEGIN" << endl);
         queue<shared_ptr<Chunk>> chunks_to_read;
         chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
@@ -378,6 +396,16 @@ public:
     // One thread not in the initial batch of threads throws.
     void process_one_chunk_threaded_test_2()
     {
+#if 0
+        queue<Chunk *> chunks_to_read;
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, true));
+        chunks_to_read.push(new MockChunk(chp, false));
+#endif
         DBG(cerr << prolog << "BEGIN" << endl);
         queue<shared_ptr<Chunk>> chunks_to_read;
         chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
@@ -405,6 +433,17 @@ public:
     // Two threads in the initial set throw
     void process_one_chunk_threaded_test_3()
     {
+#if 0
+        queue<Chunk *> chunks_to_read;
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, true));
+        chunks_to_read.push(new MockChunk(chp, true));
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, false));
+#endif
+
         DBG(cerr << prolog << "BEGIN" << endl);
         queue<shared_ptr<Chunk>> chunks_to_read;
         chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
@@ -433,6 +472,16 @@ public:
     // two in the second set throw
     void process_one_chunk_threaded_test_4()
     {
+#if 0
+        queue<Chunk *> chunks_to_read;
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, true));
+        chunks_to_read.push(new MockChunk(chp, true));
+        chunks_to_read.push(new MockChunk(chp, false));
+#endif
         DBG(cerr << prolog << "BEGIN" << endl);
         queue<shared_ptr<Chunk>> chunks_to_read;
         chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
@@ -461,6 +510,16 @@ public:
     // One in the first set and one in the second set throw
     void process_one_chunk_threaded_test_5()
     {
+#if 0
+        queue<Chunk *> chunks_to_read;
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, true));
+        chunks_to_read.push(new MockChunk(chp, true));
+        chunks_to_read.push(new MockChunk(chp, false));
+        chunks_to_read.push(new MockChunk(chp, false));
+#endif
         DBG(cerr << prolog << "BEGIN" << endl);
         queue<shared_ptr<Chunk>> chunks_to_read;
         chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
@@ -492,6 +551,15 @@ public:
         DBG(cerr << prolog << "BEGIN" << endl);
         queue<shared_ptr<Chunk>> chunks_to_read;
         for (int i = 0; i < 5; ++i) {
+#if 0
+            chunks_to_read.push(new MockChunk(chp, false));
+            chunks_to_read.push(new MockChunk(chp, false));
+            chunks_to_read.push(new MockChunk(chp, false));
+            chunks_to_read.push(new MockChunk(chp, true));
+            chunks_to_read.push(new MockChunk(chp, true));
+            chunks_to_read.push(new MockChunk(chp, false));
+            chunks_to_read.push(new MockChunk(chp, false));
+#endif
             chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
             chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
             chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));

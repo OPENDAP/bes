@@ -976,10 +976,13 @@ DmrppArray::find_needed_chunks(unsigned int dim, vector<unsigned int> *target_el
  * @param chunk_element_address
  * @param chunk
  */
-void DmrppArray::insert_chunk(unsigned int dim, vector<unsigned int> *target_element_address,
-                              vector<unsigned int> *chunk_element_address,
-                              shared_ptr<Chunk> chunk, const vector<unsigned int> &constrained_array_shape)
-{
+void DmrppArray::insert_chunk(
+        unsigned int dim,
+        vector<unsigned int> *target_element_address,
+        vector<unsigned int> *chunk_element_address,
+        shared_ptr<Chunk> chunk,
+        const vector<unsigned int> &constrained_array_shape){
+
     // The size, in elements, of each of the chunk's dimensions.
     const vector<unsigned int> &chunk_shape = get_chunk_dimension_sizes();
 
