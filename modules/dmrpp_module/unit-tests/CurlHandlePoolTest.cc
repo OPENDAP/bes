@@ -345,6 +345,7 @@ public:
         //MockDmrppArray *array = new MockDmrppArray;
         auto array = new MockDmrppArray;
         vector<unsigned int> array_shape = {1};
+
         vector<size_t> chunk_dim_sizes = {1};
         array->set_chunk_dimension_sizes(chunk_dim_sizes);
 
