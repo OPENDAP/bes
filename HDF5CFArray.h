@@ -98,7 +98,7 @@ class HDF5CFArray:public HDF5BaseArray {
         bool islatlon;
         float comp_ratio;
         bool valid_disk_cache();
-        bool valid_disk_cache_for_compressed_data(short dtype_size);
+        bool valid_disk_cache_for_compressed_data(short dtype_size) const;
         bool obtain_cached_data(HDF5DiskCache*,const std::string&,int, std::vector<int>&,std::vector<int>&,size_t,short);
         void write_data_to_cache(hid_t dset_id, hid_t dspace_id,hid_t mspace_id,hid_t memtype, const std::string& cache_fpath,short dtype_size,const std::vector<char> &buf, int nelms);
 };

@@ -1890,6 +1890,8 @@ void write_vlen_str_attrs(hid_t attr_id,hid_t ty_id, DSattr_t * attr_inst_ptr,D4
     if(temp_space_id <0) {
         H5Tclose(ty_id);
         H5Aclose(attr_id);
+        if(d4_attr)
+            delete d4_attr;
         throw InternalErr(__FILE__, __LINE__, "unable to read HDF5 attribute data");
     }
 
@@ -1901,6 +1903,8 @@ void write_vlen_str_attrs(hid_t attr_id,hid_t ty_id, DSattr_t * attr_inst_ptr,D4
         H5Tclose(ty_id);
         H5Aclose(attr_id);
         H5Sclose(temp_space_id);
+        if(d4_attr)
+            delete d4_attr;
         throw InternalErr(__FILE__, __LINE__, "unable to read HDF5 attribute data");
     }
 
@@ -1918,7 +1922,7 @@ void write_vlen_str_attrs(hid_t attr_id,hid_t ty_id, DSattr_t * attr_inst_ptr,D4
             if(true == is_dap4)
                 d4_attr->add_value(tempstring);
 	    else 
-		d2_attr->append_attr(attr_inst_ptr->name,"String",tempstring);
+		    d2_attr->append_attr(attr_inst_ptr->name,"String",tempstring);
         }
 
         temp_bp +=H5Tget_size(ty_id);
@@ -1932,6 +1936,8 @@ void write_vlen_str_attrs(hid_t attr_id,hid_t ty_id, DSattr_t * attr_inst_ptr,D4
             H5Tclose(ty_id);
             H5Aclose(attr_id);
             H5Sclose(temp_space_id);
+            if(d4_attr)
+                delete d4_attr;
             throw InternalErr(__FILE__, __LINE__, "Cannot reclaim the memory buffer of the HDF5 variable length string.");
         }
                  

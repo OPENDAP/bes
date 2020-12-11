@@ -374,8 +374,6 @@ void File::Retrieve_H5_Obj(hid_t grp_id, const char*gname, bool include_attr)
                 if (!this->unsupported_var_dspace && temp_unsup_var_dspace) this->unsupported_var_dspace = true;
 
                 hsize_t d_storage_size = H5Dget_storage_size(cdset);
-                if(d_storage_size < 0)
-                    throw2("Error obtaining the HDF5 dataset storage size ",full_path_name);
                 var->zero_storage_size =(d_storage_size ==0);
                 var->comp_ratio = Retrieve_H5_VarCompRatio(var, cdset);
 
@@ -2513,7 +2511,7 @@ bool File::Check_DropLongStr(Var *var, Attribute * attr)
 // Check if a long string dataset should be dropped. Users can turn on a BES key not to drop the long string.
 // However, the Java clients may not access.
 //
-bool File::Check_VarDropLongStr(const string & varpath, const vector<Dimension *>& dims, H5DataType dtype)
+bool File::Check_VarDropLongStr(const string & varpath, const vector<Dimension *>& dims, H5DataType dtype) const
     
 {
 

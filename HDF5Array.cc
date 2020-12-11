@@ -71,7 +71,8 @@ int HDF5Array::format_constraint(int *offset, int *step, int *count) {
     if(length() == 0)
         return 0;
 
-    long nels = 1;
+    //long nels = 1;
+    int nels = 1;
     int id = 0;
 
     Dim_iter p = dim_begin();
@@ -1477,7 +1478,7 @@ BaseType* HDF5Array::h5dims_transform_to_dap4(D4Group *grp,const vector<string> 
 
     if(grp == NULL)
         return NULL;
-    BESDEBUG("h5", "<h5dims_transform_to_dap4 again" << endl);
+
     Array *dest = static_cast<HDF5Array*>(ptr_duplicate());
 
     // If there is just a size, don't make
@@ -1487,19 +1488,19 @@ BaseType* HDF5Array::h5dims_transform_to_dap4(D4Group *grp,const vector<string> 
     int k = 0;
     for (Array::Dim_iter d = dest->dim_begin(), e = dest->dim_end(); d != e; ++d) {
 
-    BESDEBUG("h5", "<coming to the dimension loop" << endl);
         if (false == (*d).name.empty()) {
-    BESDEBUG("h5", "<coming to the dimension loop, has name " << (*d).name<<endl);
-    BESDEBUG("h5", "<coming to the dimension loop, has dimpath " << dimpath[k] <<endl);
-    BESDEBUG("h5", "<coming to the dimension loop, has dimpath group " << dimpath[k].substr(0,dimpath[k].find_last_of("/")+1) <<endl);
+            BESDEBUG("h5", "<coming to the dimension loop, has name " << (*d).name<<endl);
+            BESDEBUG("h5", "<coming to the dimension loop, has dimpath " << dimpath[k] <<endl);
+            BESDEBUG("h5", "<coming to the dimension loop, has dimpath group " << dimpath[k].substr(0,dimpath[k].find_last_of("/")+1) <<endl);
 
             D4Group *temp_grp   = grp;
             D4Dimension *d4_dim = NULL;
             bool is_dim_nonc4_grp = false;
 
             while(temp_grp) {
-    BESDEBUG("h5", "<coming to the group  has name " << temp_grp->name()<<endl);
-    BESDEBUG("h5", "<coming to the group  has fullpath " << temp_grp->FQN()<<endl);
+
+                BESDEBUG("h5", "<coming to the group  has name " << temp_grp->name()<<endl);
+                BESDEBUG("h5", "<coming to the group  has fullpath " << temp_grp->FQN()<<endl);
 
                 //Obtain all the dimensions of this group.
                 D4Dimensions *temp_dims = temp_grp->dims();
@@ -1509,7 +1510,7 @@ BaseType* HDF5Array::h5dims_transform_to_dap4(D4Group *grp,const vector<string> 
 
                 // Need the full path of the dimension name
                 string d4_dim_path = dimpath[k].substr(0,dimpath[k].find_last_of("/")+1);
-BESDEBUG("h5", "d4_dim_path is " << d4_dim_path<<endl);
+                BESDEBUG("h5", "d4_dim_path is " << d4_dim_path<<endl);
                 
                 bool ancestor_grp = false;
 
@@ -1520,7 +1521,7 @@ BESDEBUG("h5", "d4_dim_path is " << d4_dim_path<<endl);
                 // If we find this dimension and the dimension is on the ancestral path, 
                 // this follows the netCDF-4/DAP4 dimension model, break.
                 if(d4_dim && (temp_grp->FQN() == d4_dim_path)) { 
-BESDEBUG("h5", "<FInd dimension name " << (*d).name<<endl);
+                    BESDEBUG("h5", "<FInd dimension name " << (*d).name<<endl);
                     (*d).dim = d4_dim;
                     is_dim_nonc4_grp = false;
                     break;
@@ -1552,12 +1553,12 @@ BESDEBUG("h5", "<FInd dimension name " << (*d).name<<endl);
                  delete dest;
                  throw InternalErr(__FILE__,__LINE__,err); 
             }
+
             bool d4_dim_null = ((d4_dim==NULL)?true:false);
             if(d4_dim_null == true) {
                 d4_dim = new D4Dimension((*d).name, (*d).size);
                 D4Dimensions * dims = grp->dims();
-
-    BESDEBUG("h5", "<Just before adding D4 dimension to group" << endl);
+                BESDEBUG("h5", "<Just before adding D4 dimension to group" << endl);
                 dims->add_dim_nocopy(d4_dim);
                 (*d).dim = d4_dim;
             }

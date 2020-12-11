@@ -927,64 +927,6 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
         // We have to handle variable length string differently. 
         if (H5Tis_variable_str(ty_id)) { 
             write_vlen_str_attrs(attr_id,ty_id,&attr_inst,d4_attr,NULL,true);
-#if 0
-            BESDEBUG("h5","attribute name " << attr_name <<endl);
-            BESDEBUG("h5","attribute size " <<attr_inst.need <<endl);
-            //BESDEBUG("h5","attribute type size " <<(int)(H5Tget_size(attr_inst.type))<<endl); 
-            BESDEBUG("h5","attribute type size " <<(int)(H5Tget_size(ty_id))<<endl); 
-
-            hid_t temp_space_id = H5Aget_space(attr_id);
-            //BESDEBUG("h5","attribute calculated size "<<(int)(H5Tget_size(attr_inst.type)) *(int)(H5Sget_simple_extent_npoints(temp_space_id)) <<endl);
-            BESDEBUG("h5","attribute calculated size "<<(int)(H5Tget_size(ty_id)) *(int)(H5Sget_simple_extent_npoints(temp_space_id)) <<endl);
-            if(temp_space_id <0) {
-                H5Tclose(ty_id);
-                H5Aclose(attr_id);
-                throw InternalErr(__FILE__, __LINE__, "unable to read HDF5 attribute data");
-            }
-
-            // Variable length string attribute values only store pointers of the actual string value.
-            temp_buf.resize((size_t)attr_inst.need);
-                
-            if (H5Aread(attr_id, ty_id, &temp_buf[0]) < 0) {
-                H5Sclose(temp_space_id);
-                H5Tclose(ty_id);
-                H5Aclose(attr_id);
-                throw InternalErr(__FILE__, __LINE__, "unable to read HDF5 attribute data");
-            }
-
-            char *temp_bp;
-            temp_bp = &temp_buf[0];
-            char* onestring;
-            for (unsigned int temp_i = 0; temp_i <attr_inst.nelmts; temp_i++) {
-
-                // This line will assure that we get the real variable length string value.
-                onestring =*(char **)temp_bp;
-
-                // Change the C-style string to C++ STD string just for easy appending the attributes in DAP.
-                if (onestring !=NULL) {
-                    string tempstring(onestring);
-                    d4_attr->add_value(tempstring);
-                }
-
-                // going to the next value.
-                //temp_bp +=H5Tget_size(attr_inst.type);
-                temp_bp +=H5Tget_size(ty_id);
-            }
-            if (temp_buf.empty() != true) {
-
-                // Reclaim any VL memory if necessary.
-                herr_t ret_vlen_claim;
-                //ret_vlen_claim = H5Dvlen_reclaim(attr_inst.type,temp_space_id,H5P_DEFAULT,&temp_buf[0]);
-                ret_vlen_claim = H5Dvlen_reclaim(ty_id,temp_space_id,H5P_DEFAULT,&temp_buf[0]);
-                if(ret_vlen_claim < 0){
-                   H5Sclose(temp_space_id);
-                   throw InternalErr(__FILE__, __LINE__, "Cannot reclaim the memory buffer of the HDF5 variable length string.");
-                }
-                 
-                temp_buf.clear();
-            }
-            H5Sclose(temp_space_id);
-#endif
         }// if (H5Tis_variable_str(ty_id)
         else {
 
@@ -996,8 +938,8 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
             // Need to obtain the memtype since we still find BE data.
             hid_t memtype = H5Tget_native_type(ty_id, H5T_DIR_ASCEND);
             // Read HDF5 attribute data.
-            //if (H5Aread(attr_id, ty_id, (void *) (&value[0])) < 0) {
             if (H5Aread(attr_id, memtype, (void *) (&value[0])) < 0) {
+                delete d4_attr;
                 throw InternalErr(__FILE__, __LINE__, "unable to read HDF5 attribute data");
             }
             H5Aclose(memtype);
@@ -1019,6 +961,7 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
                 if (elesize == 0) {
                     H5Tclose(ty_id);
                     H5Aclose(attr_id); 
+                    delete d4_attr;
                     throw InternalErr(__FILE__, __LINE__, "unable to get attibute size");
                 }
 
@@ -1033,7 +976,7 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
                      print_rep = print_attr(ty_id, 0, tempvalue);
                     if (print_rep.c_str() != NULL) {
 
-            BESDEBUG("h5", "print_rep= " << print_rep << endl);
+                        BESDEBUG("h5", "print_rep= " << print_rep << endl);
 
                         d4_attr->add_value(print_rep);
                         tempvalue = tempvalue + elesize;
@@ -1046,6 +989,7 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
                     else {
                         H5Tclose(ty_id);
                         H5Aclose(attr_id);
+                        delete d4_attr;
                         throw InternalErr(__FILE__, __LINE__, "unable to convert attibute value to DAP");
                     }
                 }//for(hsize_t temp_index=0; .....
@@ -1053,9 +997,11 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
         }
         if(H5Tclose(ty_id) < 0) {
             H5Aclose(attr_id);
+            delete d4_attr;
             throw InternalErr(__FILE__, __LINE__, "unable to close HDF5 type id");
         }
         if (H5Aclose(attr_id) < 0) {
+            delete d4_attr;
             throw InternalErr(__FILE__, __LINE__, "unable to close attibute id");
         }
 

@@ -365,7 +365,7 @@ public:
         cvartype(CV_UNSUPPORTED)
     {
     }
-    ~CVar()
+    virtual ~CVar()
     {
     }
     /// Get the coordinate variable type of this variable
@@ -396,7 +396,7 @@ public:
     {
     }
     explicit GMSPVar(Var *var);
-    ~GMSPVar()
+    virtual ~GMSPVar()
     {
     }
     H5DataType getOriginalType() const
@@ -431,7 +431,7 @@ public:
     {
     }
     explicit GMCVar(Var*var);
-    ~GMCVar()
+    virtual ~GMCVar()
     {
     }
 
@@ -461,7 +461,7 @@ public:
     ;
     explicit EOS5CVar(Var *);
 
-    ~EOS5CVar()
+    virtual ~EOS5CVar()
     {
     }
 
@@ -774,7 +774,7 @@ protected:
     void add_ignored_var_longstr_info(Var*var, Attribute *attr) ;
     void add_ignored_grp_longstr_info(const std::string& grp_path, const std::string& attr_name);
     void add_ignored_droplongstr_hdr();
-    bool Check_VarDropLongStr(const std::string &varpath, const std::vector<Dimension *>&, H5DataType) ;
+    bool Check_VarDropLongStr(const std::string &varpath, const std::vector<Dimension *>&, H5DataType) const;
 
     void release_standalone_var_vector(std::vector<Var*>&vars);
 
@@ -851,24 +851,24 @@ public:
     }
 
     /// Retrieve DDS information from the HDF5 file; real implementation for general HDF5 products.
-    void Retrieve_H5_Info(const char *path, hid_t file_id, bool include_attr);
+    virtual void Retrieve_H5_Info(const char *path, hid_t file_id, bool include_attr);
 
     /// Retrieve attribute values for the supported HDF5 datatypes for general HDF5 products.
-    void Retrieve_H5_Supported_Attr_Values();
+    virtual void Retrieve_H5_Supported_Attr_Values();
 
-    void Retrieve_H5_CVar_Supported_Attr_Values();
+    virtual void Retrieve_H5_CVar_Supported_Attr_Values();
 
     /// Adjust attribute values for general HDF5 products.
     void Adjust_H5_Attr_Value(Attribute *attr) ;
 
     /// Handle unsupported HDF5 datatypes for general HDF5 products.
-    void Handle_Unsupported_Dtype(bool) ;
+    virtual void Handle_Unsupported_Dtype(bool) ;
 
     /// Handle unsupported HDF5 dataspaces for general HDF5 products
-    void Handle_Unsupported_Dspace(bool) ;
+    virtual void Handle_Unsupported_Dspace(bool) ;
 
     /// Handle other unmapped objects/attributes for general HDF5 products
-    void Handle_Unsupported_Others(bool) ;
+    virtual void Handle_Unsupported_Others(bool) ;
 
     /// Remove unneeded objects 
     void Remove_Unneeded_Objects();
@@ -877,43 +877,43 @@ public:
     void Add_Dim_Name() ;
 
     /// Handle coordinate variables for general NASA HDF5 products
-    void Handle_CVar() ;
+    virtual void Handle_CVar() ;
 
     /// Handle special variables for general NASA HDF5 products
-    void Handle_SpVar() ;
+    virtual void Handle_SpVar() ;
 
     /// Handle special variable attributes for general NASA HDF5 products
-    void Handle_SpVar_Attr() ;
+    virtual void Handle_SpVar_Attr() ;
 
     /// Adjust object names based on different general NASA HDF5 products
-    void Adjust_Obj_Name() ;
+    virtual void Adjust_Obj_Name() ;
 
     /// Flatten the object name for general NASA HDF5 products
-    void Flatten_Obj_Name(bool include_attr) ;
+    virtual void Flatten_Obj_Name(bool include_attr) ;
 
     /// Handle object name clashing for general NASA HDF5 products
     void Handle_Obj_NameClashing(bool) ;
 
     /// Adjust dimension name for general NASA HDF5 products
-    void Adjust_Dim_Name() ;
+    virtual void Adjust_Dim_Name() ;
 
-    void Handle_DimNameClashing() ;
+    virtual void Handle_DimNameClashing() ;
 
     /// Add supplemental attributes such as fullpath and original name for general NASA HDF5 products
-    void Add_Supplement_Attrs(bool) ;
+    virtual void Add_Supplement_Attrs(bool) ;
 
     /// Check if having Grid Mapping Attrs
-    bool Have_Grid_Mapping_Attrs();
+    virtual bool Have_Grid_Mapping_Attrs();
     
     /// Handle Grid Mapping Vars
-    void Handle_Grid_Mapping_Vars();
+    virtual void Handle_Grid_Mapping_Vars();
 
     //
     bool Is_Hybrid_EOS5();
     void Handle_Hybrid_EOS5();
  
     /// Handle "coordinates" attributes for general HDF5 products
-    void Handle_Coor_Attr();
+    virtual void Handle_Coor_Attr();
 
     /// Unsupported datatype array may generate FakeDim. Remove them.
     void Remove_Unused_FakeDimVars();
@@ -928,13 +928,13 @@ public:
     void Add_Path_Coord_Attr();
 
     /// Obtain ignored info. flag
-    bool Get_IgnoredInfo_Flag()
+    virtual bool Get_IgnoredInfo_Flag()
     {
         return check_ignored;
     }
 
     /// Get the message that contains the ignored obj. info
-    const std::string& Get_Ignored_Msg()
+    virtual const std::string& Get_Ignored_Msg()
     {
         return ignored_msg;
     }
@@ -1010,7 +1010,7 @@ protected:
     template<typename T> void GMHandle_General_NameClashing(std::set<std::string>&objnameset, std::vector<T*>& objvec)
         ;
 
-    std::string get_CF_string(std::string s);
+    virtual std::string get_CF_string(std::string s);
 
     // The following routines are for generating coordinates attributes for netCDF-4 like 2D-latlon cases.
     bool Check_Var_2D_CVars(Var*) ;
@@ -1032,10 +1032,10 @@ protected:
 
     bool Is_netCDF_Dimension(Var *var) ;
 
-    void Gen_Unsupported_Dtype_Info(bool);
-    void Gen_VarAttr_Unsupported_Dtype_Info() ;
+    virtual void Gen_Unsupported_Dtype_Info(bool);
+    virtual void Gen_VarAttr_Unsupported_Dtype_Info() ;
     void Gen_GM_VarAttr_Unsupported_Dtype_Info();
-    void Gen_Unsupported_Dspace_Info() ;
+    virtual void Gen_Unsupported_Dspace_Info() ;
     void Handle_GM_Unsupported_Dtype(bool) ;
     void Handle_GM_Unsupported_Dspace(bool) ;
 
@@ -1201,25 +1201,25 @@ public:
     }
 
     /// Retrieve DDS information from the HDF5 file; a real implementation for HDF-EOS5 products
-    void Retrieve_H5_Info(const char *path, hid_t file_id, bool include_attr);
+    virtual void Retrieve_H5_Info(const char *path, hid_t file_id, bool include_attr);
 
     /// Retrieve attribute values for the supported HDF5 datatypes for HDF-EOS5 products.
-    void Retrieve_H5_Supported_Attr_Values() ;
+    virtual void Retrieve_H5_Supported_Attr_Values() ;
 
     /// Retrieve coordinate variable attributes.
-    void Retrieve_H5_CVar_Supported_Attr_Values();
+    virtual void Retrieve_H5_CVar_Supported_Attr_Values();
 
     /// Handle unsupported HDF5 datatypes for HDF-EOS5 products.
-    void Handle_Unsupported_Dtype(bool) ;
+    virtual void Handle_Unsupported_Dtype(bool) ;
 
     /// Handle unsupported HDF5 dataspaces for HDF-EOS5 products.
-    void Handle_Unsupported_Dspace(bool);
+    virtual void Handle_Unsupported_Dspace(bool);
 
     /// Handle other unmapped objects/attributes for HDF-EOS5 products
-    void Handle_Unsupported_Others(bool) ;
+    virtual void Handle_Unsupported_Others(bool) ;
 
     /// Adjust HDF-EOS5 dimension information
-    void Adjust_EOS5Dim_Info(HE5Parser*strmeta_info) ;
+    virtual void Adjust_EOS5Dim_Info(HE5Parser*strmeta_info) ;
 
     /// Add HDF-EOS5 dimension and coordinate variable related info. to EOS5Grid,EOS5Swath etc.
     void Add_EOS5File_Info(HE5Parser*, bool) ;
@@ -1228,7 +1228,7 @@ public:
     void Adjust_Var_NewName_After_Parsing() ;
 
     /// This method is a no-op operation. Leave here since the method in the base class is pure virtual.
-    void Adjust_Obj_Name() ;
+    virtual void Adjust_Obj_Name() ;
 
     /// Add the dimension name for HDF-EOS5 files
     void Add_Dim_Name(HE5Parser *) ;
@@ -1237,19 +1237,19 @@ public:
     void Check_Aura_Product_Status() ;
 
     /// Handle coordinate variable for HDF-EOS5 files
-    void Handle_CVar() ;
+    virtual void Handle_CVar() ;
 
     /// Handle special variables for HDF-EOS5 files
-    void Handle_SpVar() ;
+    virtual void Handle_SpVar() ;
 
     /// Handle special variables for HDF-EOS5 files
-    void Handle_SpVar_Attr() ;
+    virtual void Handle_SpVar_Attr() ;
 
     /// Adjust variable dimension names before the flattening for HDF-EOS5 files.
     void Adjust_Var_Dim_NewName_Before_Flattening() ;
 
     /// Flatten the object name for HDF-EOS5 files
-    void Flatten_Obj_Name(bool include_attr) ;
+    virtual void Flatten_Obj_Name(bool include_attr) ;
 
     /// Set COARDS flag
     void Set_COARDS_Status() ;
@@ -1261,29 +1261,29 @@ public:
     void Handle_Obj_NameClashing(bool) ;
 
     /// Add the supplemental attributes for HDF-EOS5 products
-    void Add_Supplement_Attrs(bool) ;
+    virtual void Add_Supplement_Attrs(bool) ;
 
     /// Handle the coordinates attribute for HDF-EOS5 products
-    void Handle_Coor_Attr();
+    virtual void Handle_Coor_Attr();
 
     /// Adjust the dimension name for HDF-EOS5 products
-    void Adjust_Dim_Name() ;
+    virtual void Adjust_Dim_Name() ;
 
-    void Handle_DimNameClashing() ;
+    virtual void Handle_DimNameClashing() ;
 
     /// Check if having Grid Mapping Attrs
-    bool Have_Grid_Mapping_Attrs();
+    virtual bool Have_Grid_Mapping_Attrs();
     
     /// Handle Grid Mapping Vars
-    void Handle_Grid_Mapping_Vars();
+    virtual void Handle_Grid_Mapping_Vars();
 
 
-    bool Get_IgnoredInfo_Flag()
+    virtual bool Get_IgnoredInfo_Flag()
     {
         return check_ignored;
     }
 
-    const std::string& Get_Ignored_Msg()
+    virtual const std::string& Get_Ignored_Msg()
     {
         return ignored_msg;
     }
@@ -1353,7 +1353,7 @@ protected:
     void Add_EOS5_Grid_CF_Attr() ;
     void Handle_Aura_Special_Attr() ;
 
-    std::string get_CF_string(std::string s);
+    virtual std::string get_CF_string(std::string s);
     void Replace_Var_Info(EOS5CVar *src, EOS5CVar *target);
     void Replace_Var_Attrs(EOS5CVar *src, EOS5CVar *target);
     void Handle_EOS5CVar_NameClashing(std::set<std::string> &) ;
@@ -1366,11 +1366,11 @@ protected:
     void Handle_EOS5_Unsupported_Dtype(bool) ;
     void Handle_EOS5_Unsupported_Dspace(bool) ;
 
-    void Gen_Unsupported_Dtype_Info(bool);
-    void Gen_VarAttr_Unsupported_Dtype_Info() ;
+    virtual void Gen_Unsupported_Dtype_Info(bool);
+    virtual void Gen_VarAttr_Unsupported_Dtype_Info() ;
     void Gen_EOS5_VarAttr_Unsupported_Dtype_Info() ;
 
-    void Gen_Unsupported_Dspace_Info() ;
+    virtual void Gen_Unsupported_Dspace_Info() ;
 
 private:
     std::vector<EOS5CVar *> cvars;

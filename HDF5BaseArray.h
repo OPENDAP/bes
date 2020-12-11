@@ -73,7 +73,7 @@ protected:
     void read_data_from_mem_cache(H5DataType h5type, const std::vector<size_t> &h5_dimsizes, void*buf);
     virtual void read_data_NOT_from_mem_cache(bool add_cache, void*buf) = 0;
 
-    size_t INDEX_nD_TO_1D(const std::vector<size_t> &dims, const std::vector<size_t> &pos);
+    size_t INDEX_nD_TO_1D(const std::vector<size_t> &dims, const std::vector<size_t> &pos) const;
 
     template<typename T> int subset(    void* input,
                                         int rank,
@@ -85,8 +85,8 @@ protected:
                                         std::vector<size_t>& pos,
                                         int index);
     
-    std::string check_str_sect_in_list(const std::vector<string> &, const std::string &, char);
-    bool check_var_cache_files(const std::vector<string>&, const std::string &, const std::string &);
+    std::string check_str_sect_in_list(const std::vector<string> &, const std::string &, char) const;
+    bool check_var_cache_files(const std::vector<string>&, const std::string &, const std::string &) const;
     void handle_data_with_mem_cache(H5DataType, size_t t_elems, const short cache_case, const std::string & key);
 };
 

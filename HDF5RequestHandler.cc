@@ -2347,11 +2347,17 @@ void HDF5RequestHandler::add_attributes(BESDataHandlerInterface &dhi) {
     string container_name = bdds->get_explicit_containers() ? dhi.container->get_symbolic_name(): "";
     string filename = dhi.container->access();
     DAS* das = 0;
-    if (das_cache && (das = static_cast<DAS*>(das_cache->get(filename)))) {
-        BESDEBUG(HDF5_NAME, prolog << "DAS Cached hit for : " << filename << endl);
-        dds->transfer_attributes(das); // no need to cop the cached DAS
+    bool das_from_mcache = false;
+    if(das_cache) {
+        das = static_cast<DAS*>(das_cache->get(filename));
+        if(das) {
+            BESDEBUG(HDF5_NAME, prolog << "DAS Cached hit for : " << filename << endl);
+            dds->transfer_attributes(das); // no need to copy the cached DAS
+            das_from_mcache = true;
+        }
     }
-    else {
+
+    if(false == das_from_mcache) {
         das = new DAS;
         // This looks at the 'use explicit containers' prop, and if true
         // sets the current container for the DAS.

@@ -421,7 +421,7 @@ int HDF5BaseArray::subset(
 } // end of template<typename T> static int subset
 
 size_t HDF5BaseArray::INDEX_nD_TO_1D (const std::vector < size_t > &dims,
-                                 const std::vector < size_t > &pos){
+                                 const std::vector < size_t > &pos) const {
     //
     //  "int a[10][20][30]  // & a[1][2][3] == a + (20*30+1 + 30*2 + 1 *3)"
     //  "int b[10][2] // &b[1][1] == b + (2*1 + 1)"
@@ -445,7 +445,7 @@ size_t HDF5BaseArray::INDEX_nD_TO_1D (const std::vector < size_t > &dims,
 // This routine will check if any section(separated by sep) of string cur_str is inside the vector str_list. 
 // The first found string will be returned or empty string will return if not found in the whole cur_str.
 string HDF5BaseArray::
-check_str_sect_in_list(const vector<string>&str_list, const string &cur_str,const char sep) {
+check_str_sect_in_list(const vector<string>&str_list, const string &cur_str,const char sep) const {
 
     string ret_str;
     string::size_type start = 0;
@@ -479,7 +479,7 @@ check_str_sect_in_list(const vector<string>&str_list, const string &cur_str,cons
 // Examples: slist contains { /foo1/foovar foovar2 } fname is /temp/myfile/foo1/ varname is foovar. The rotuine will return true. 
 //                                                   fname is /myfile/foo2/  varname is foovar. The routine will return false.
 bool HDF5BaseArray::
-check_var_cache_files(const vector<string>&slist, const string &fname,const string &varname) {
+check_var_cache_files(const vector<string>&slist, const string &fname,const string &varname) const {
 
     bool ret_value = false;
     if(fname=="" || varname=="")

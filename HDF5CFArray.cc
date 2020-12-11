@@ -866,7 +866,7 @@ bool HDF5CFArray::valid_disk_cache() {
     return ret_value;
 }
 
-bool HDF5CFArray:: valid_disk_cache_for_compressed_data(short dtype_size) {
+bool HDF5CFArray:: valid_disk_cache_for_compressed_data(short dtype_size) const {
 
     bool ret_value = false;
     // The compression ratio should be smaller then the threshold(hard to compress)
