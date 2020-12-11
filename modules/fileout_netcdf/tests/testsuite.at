@@ -152,7 +152,11 @@ dnl Add response that supports group(HDF5 default response et al.)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/nc4_group_atomic.h5.2.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/t_cf_grp.h5.2.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/simple_nc4.nc.h5.2.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/t_group_scalar.h5.2.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/t_grp_string.h5.2.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/simple_nc4.nc_constraint.h5.2.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/simple_nc4.nc_constraint_2.h5.2.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/dim_scale_smix.h5_local_constraint.2.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/dim_scale_dim_name_clash.h5_local_constraint.2.bescmd)
  
 

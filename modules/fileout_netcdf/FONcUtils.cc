@@ -28,6 +28,7 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
+//      kyang       Kent Yang <myang6@hdfgroup.org> (for netCDF-4 enhancement)
 
 #include "config.h"
 
@@ -223,7 +224,8 @@ string FONcUtils::gen_name(const vector<string> &embed, const string &name, stri
 FONcBaseType *
 FONcUtils::convert(BaseType *v,const string &ncdf_version, const bool is_classic_model) {
     map<string,int>fdimname_to_id;
-    return convert(v,ncdf_version, is_classic_model,fdimname_to_id);
+    vector<int>rds_nums;
+    return convert(v,ncdf_version, is_classic_model,fdimname_to_id,rds_nums);
 }
 
 /** @brief Creates a FONc object for the given DAP object
@@ -239,12 +241,15 @@ FONcUtils::convert(BaseType *v,const string &ncdf_version, const bool is_classic
  * @throws BESInternalError if the DAP object is not an expected type
  */
 FONcBaseType *
-FONcUtils::convert(BaseType *v,const string &ncdf_version, const bool is_classic_model, map<string,int>&fdimname_to_id)
+FONcUtils::convert(BaseType *v,const string &ncdf_version, const bool is_classic_model, map<string,int>&fdimname_to_id,vector<int>&rbs_nums)
 {
     FONcBaseType *b = 0;
+
+    // We need to handle netCDF-4 enhanced differently. More datatypes are supported.
     bool is_netcdf4_enhanced = false;
     if(ncdf_version == RETURNAS_NETCDF4 && is_classic_model == false)
         is_netcdf4_enhanced = true;
+
     switch (v->type()) {
     case dods_str_c:
     case dods_url_c:
@@ -310,6 +315,8 @@ FONcUtils::convert(BaseType *v,const string &ncdf_version, const bool is_classic
         b = new FONcGrid(v);
         break;
     case dods_array_c:
+
+        // This if block will only be true with netCDF-4 enhanced.
         if(fdimname_to_id.size()>0) {
             vector<int> dim_ids;
             vector<bool> use_d4_dim_ids;
@@ -317,7 +324,10 @@ FONcUtils::convert(BaseType *v,const string &ncdf_version, const bool is_classic
             Array::Dim_iter di = t_a->dim_begin();
             Array::Dim_iter de = t_a->dim_end();
             // Here we want to check if a dimension fully_qualified name is the same as the dim. name in the dimname to dim id map.
-            // The dimname to dim id is obtained from the dimensions of the group. KY 2020/06/17
+            // The dimname to dim id is obtained from the DAP4 dimensions of the group the var belongs to. KY 2020/06/17
+            // Then we find all the netCDF-4 dimension IDs that are associated with the dimensions of this array.
+            // Note: we need to use a flag to mark if this dimension is defined by groups this var belongs to.
+            // DAP4 doesn't require a dimension of a variable has dimension names. 
             for (; di != de; di++) {
                 D4Dimension * d4_dim = t_a->dimension_D4dim(di);
                 if(d4_dim) {
@@ -331,7 +341,6 @@ FONcUtils::convert(BaseType *v,const string &ncdf_version, const bool is_classic
                     else {
                         dim_ids.push_back(0);
                         use_d4_dim_ids.push_back(false);
-
                     }
                 }
                 else {
@@ -340,7 +349,7 @@ FONcUtils::convert(BaseType *v,const string &ncdf_version, const bool is_classic
                 }
 
             }
-            b = new FONcArray(v,dim_ids,use_d4_dim_ids);
+            b = new FONcArray(v,dim_ids,use_d4_dim_ids,rbs_nums);
 
         }
         else {
@@ -358,6 +367,7 @@ FONcUtils::convert(BaseType *v,const string &ncdf_version, const bool is_classic
         throw BESInternalError(err, __FILE__, __LINE__);
 
     }
+    // The following code may be combined with other related code. TODO: later.
     b->setVersion(ncdf_version);
     if(ncdf_version == RETURNAS_NETCDF4) {
         if(is_classic_model)

@@ -60,7 +60,7 @@ FONcUInt::FONcUInt( BaseType *b )
 
 /** @brief Destructor that cleans up the instance
  *
- * The DAP UInt32 instance does not belong to the FONcByte
+ * The DAP UInt32 instance does not belong to the FONcInt
  * instance, so it is not deleted.
  */
 FONcUInt::~FONcUInt()
