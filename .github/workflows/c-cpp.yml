@@ -11,6 +11,9 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    env:
+      PWD_DIR: /home/runner
+
     steps:
     - uses: actions/checkout@v2
       with:
@@ -55,6 +58,9 @@ jobs:
         unzip hdfeos2_19.zip
         cd hdfeos2_19/hdfeos2.19/hdfeos
         chmod ug+x configure
+        export CPPFLAGS="-I/home/runner/hdf4/include"
+        export LDFLAGS="-L/home/runner/hdf4/lib"
+
         CFLAGS=-fPIC ./configure  --enable-install-include --prefix=${PWD_DIR}/hdfeos2
         make
         sudo make install clean
