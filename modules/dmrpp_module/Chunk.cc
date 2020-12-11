@@ -57,7 +57,7 @@ namespace dmrpp {
 // This is used to track access to 'cloudydap' accesses in the S3 logs
 // by adding a query string that will show up in those logs. This is
 // activated by using a special BES context with the name 'cloudydap.'
-const std::string Chunk::tracking_context = "cloudydap";
+// const std::string Chunk::tracking_context = "cloudydap";
 
 /**
  * @brief Read the response headers, save the Content-Type header
@@ -83,7 +83,7 @@ size_t chunk_header_callback(char *buffer, size_t /*size*/, size_t nitems, void 
     string::size_type pos;
     if ((pos = header.find("Content-Type")) != string::npos) {
         // Header format 'Content-Type: <value>'
-        Chunk *c_ptr = reinterpret_cast<Chunk *>(data);
+        auto c_ptr = reinterpret_cast<Chunk *>(data);
         c_ptr->set_response_content_type(header.substr(header.find_last_of(' ') + 1));
     }
 
@@ -105,7 +105,7 @@ size_t chunk_header_callback(char *buffer, size_t /*size*/, size_t nitems, void 
  */
 size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
     size_t nbytes = size * nmemb;
-    Chunk *chunk = reinterpret_cast<Chunk *>(data);
+    auto chunk = reinterpret_cast<Chunk *>(data);
 
     BESDEBUG(MODULE, prolog << "BEGIN chunk->get_response_content_type():" << chunk->get_response_content_type()
                             << " chunk->get_data_url(): " << chunk->get_data_url() << endl);
@@ -356,6 +356,33 @@ void unshuffle(char *dest, const char *src, unsigned int src_size, unsigned int 
     } /* end if width and elems both > 1 */
 }
 
+
+void Chunk::parse_chunk_position_in_array_string(const string &pia, vector<unsigned int> &cpia_vect){
+    if (pia.empty()) return;
+
+    if (!cpia_vect.empty()) cpia_vect.clear();
+
+    // Assume input is [x,y,...,z] where x, ..., are integers; modest syntax checking
+    // [1] is a minimal 'position in array' string.
+    if (pia.find('[') == string::npos || pia.find(']') == string::npos || pia.length() < 3)
+        throw BESInternalError("while parsing a DMR++, chunk position string malformed", __FILE__, __LINE__);
+
+    if (pia.find_first_not_of("[]1234567890,") != string::npos)
+        throw BESInternalError("while parsing a DMR++, chunk position string illegal character(s)", __FILE__, __LINE__);
+
+    // strip off []; iss holds x,y,...,z
+    istringstream iss(pia.substr(1, pia.length() - 2));
+
+    char c;
+    unsigned int i;
+    while (!iss.eof()) {
+        iss >> i; // read an integer
+        cpia_vect.push_back(i);
+        iss >> c; // read a separator (,)
+    }
+}
+
+
 /**
  * @brief parse the chunk position string
  *
@@ -370,6 +397,7 @@ void unshuffle(char *dest, const char *src, unsigned int src_size, unsigned int 
  * @param pia The chunk position string. Syntax parsed: "[1,2,3,4]"
  */
 void Chunk::set_position_in_array(const string &pia) {
+#if 0
     if (pia.empty()) return;
 
     if (d_chunk_position_in_array.size()) d_chunk_position_in_array.clear();
@@ -392,6 +420,8 @@ void Chunk::set_position_in_array(const string &pia) {
         d_chunk_position_in_array.push_back(i);
         iss >> c; // read a separator (,)
     }
+#endif
+    parse_chunk_position_in_array_string(pia,d_chunk_position_in_array);
 }
 
 /**
@@ -403,9 +433,9 @@ void Chunk::set_position_in_array(const string &pia) {
  * @param pia A vector of unsigned ints.
  */
 void Chunk::set_position_in_array(const std::vector<unsigned int> &pia) {
-    if (pia.size() == 0) return;
+    if (pia.empty()) return;
 
-    if (d_chunk_position_in_array.size()) d_chunk_position_in_array.clear();
+    if (!d_chunk_position_in_array.empty()) d_chunk_position_in_array.clear();
 
     d_chunk_position_in_array = pia;
 }
@@ -454,9 +484,9 @@ void Chunk::add_tracking_query_param() {
     if (d_data_url.find(aws_s3_url_https) == 0 || d_data_url.find(aws_s3_url_http) == 0) {
         // Yup, headed to S3.
         bool found = false;
-        string cloudydap_context_value = BESContextManager::TheManager()->get_context(tracking_context, found);
+        string cloudydap_context_value = BESContextManager::TheManager()->get_context(S3_TRACKING_CONTEXT, found);
         if (found) {
-            d_query_marker.append("?").append(tracking_context).append("=").append(cloudydap_context_value);
+            d_query_marker.append("?").append(S3_TRACKING_CONTEXT).append("=").append(cloudydap_context_value);
         }
     }
 }

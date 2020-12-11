@@ -10,36 +10,36 @@
 #include <memory>
 
 
-#include <Chunk.h>
+#include "Chunk.h"
 #include "DmrppArray.h"
 
 
 namespace dmrpp {
 
-    class SuperChunk {
-    private:
-        DmrppArray *d_parent;
-        std::vector<const std::shared_ptr<Chunk>> d_chunks;
-        unsigned long long d_offset;
-        unsigned long long d_size;
+class SuperChunk {
+private:
+    DmrppArray *d_parent;
+    std::vector<const std::shared_ptr<Chunk>> d_chunks;
+    unsigned long long d_offset;
+    unsigned long long d_size;
 
-        bool is_contiguous(const std::shared_ptr<Chunk> chunk);
-        void map_chunks_to_buffer(unsigned char *r_buff);
-        unsigned long long  read_contiguous(unsigned char *r_buff);
+    bool is_contiguous(const std::shared_ptr<Chunk> &chunk);
+    void map_chunks_to_buffer(unsigned char *r_buff);
+    unsigned long long  read_contiguous(unsigned char *r_buff);
 
-    public:
-        explicit SuperChunk(DmrppArray *parent);
-        ~SuperChunk() = default;;
-        virtual bool add_chunk(const std::shared_ptr<Chunk> chunk);
+public:
+    explicit SuperChunk(DmrppArray *parent): d_parent(parent), d_offset(0), d_size(0){}
+    ~SuperChunk() = default;;
+    virtual bool add_chunk(const std::shared_ptr<Chunk> &chunk);
 
-        virtual unsigned long long offset(){ return d_offset; };
-        virtual unsigned long long size(){ return d_size; }
+    virtual unsigned long long offset(){ return d_offset; };
+    virtual unsigned long long size(){ return d_size; }
 
-        virtual void read();
-        virtual bool empty(){ return d_chunks.empty(); };
+    virtual void read();
+    virtual bool empty(){ return d_chunks.empty(); };
 
-        std::string to_string(bool verbose);
-    };
+    std::string to_string(bool verbose);
+};
 
 }// namespace dmrpp
 

@@ -28,6 +28,8 @@
 #include <vector>
 #include "util.h"
 
+#define S3_TRACKING_CONTEXT "cloudydap"
+
 namespace dmrpp {
 
 // Callback functions used by chunk readers
@@ -60,7 +62,7 @@ private:
     bool d_is_inflated;
     std::string d_response_content_type;
 
-    static const std::string tracking_context;
+    // static const std::string tracking_context;
 
     friend class ChunkTest;
     friend class DmrppCommonTest;
@@ -295,6 +297,8 @@ public:
     virtual void set_is_inflated(bool state) { d_is_inflated = state; }
 
     virtual std::string get_curl_range_arg_string();
+
+    static void parse_chunk_position_in_array_string(const std::string &pia, std::vector<unsigned int> &pia_vect);
 
     virtual void dump(std::ostream & strm) const;
 

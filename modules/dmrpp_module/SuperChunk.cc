@@ -10,7 +10,6 @@
 #include "BESInternalError.h"
 
 #include "Chunk.h"
-
 #include "SuperChunk.h"
 
 #define prolog std::string("SuperChunk::").append(__func__).append("() - ")
@@ -21,11 +20,8 @@ using std::vector;
 
 namespace dmrpp {
 
-    SuperChunk::SuperChunk(DmrppArray *parent): d_parent(parent), d_offset(0), d_size(0){
 
-    }
-
-    bool SuperChunk::add_chunk(const const std::shared_ptr<Chunk> chunk) {
+bool SuperChunk::add_chunk(const std::shared_ptr<Chunk> &chunk) {
     bool chunk_was_added = false;
     if(d_chunks.empty()){
         this->d_chunks.push_back(chunk);
@@ -49,21 +45,21 @@ namespace dmrpp {
  * @param chunk The Chunk to evaluate for contiguousness with this SuperChunk.
  * @return True if chunk isdeemed contiguous, false otherwise.
  */
-bool SuperChunk::is_contiguous(const std::shared_ptr<Chunk> chunk) {
+bool SuperChunk::is_contiguous(const std::shared_ptr<Chunk> &chunk) {
     return (d_offset + d_size) == chunk->get_offset();
 }
 
 
-void SuperChunk::map_chunks_to_buffer(unsigned char *r_buff)
+void SuperChunk::map_chunks_to_buffer(unsigned char * /*r_buff*/)
 {
     unsigned long long bindex = 0;
-    for(auto chunk : d_chunks){
+    for(const auto &chunk : d_chunks){
         //chunk->set_rbuf(r_buff+bindex, chunk->get_size());
         bindex += chunk->get_size();
     }
 }
 
-unsigned long long  SuperChunk::read_contiguous(unsigned char *r_buff)
+unsigned long long  SuperChunk::read_contiguous(unsigned char * /*r_buff*/)
 {
     return 0;
 }

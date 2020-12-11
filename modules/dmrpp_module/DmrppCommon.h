@@ -33,6 +33,7 @@
 
 #include "dods-datatypes.h"
 #include "Chunk.h"
+//#include "SuperChunk.h"
 
 #include "config.h"
 #include "byteswap_compat.h"
@@ -76,6 +77,7 @@ private:
 	bool d_compact;
 	std::string d_byte_order;
 	std::vector<unsigned int> d_chunk_dimension_sizes;
+	//std::vector<shared_ptr<SuperChunk>> d_super_chunks;
 	std::vector<std::shared_ptr<Chunk>> d_chunks;
 	bool d_twiddle_bytes;
 
@@ -112,7 +114,7 @@ public:
         m_duplicate_common(dc);
     }
 
-    virtual ~DmrppCommon(){}
+    virtual ~DmrppCommon()= default;
 
     /// @brief Returns true if this object utilizes deflate compression.
     virtual bool is_deflate_compression() const {
@@ -164,9 +166,8 @@ public:
      */
     virtual unsigned int get_chunk_size_in_elements() const {
         unsigned int elements = 1;
-        for (std::vector<unsigned int>::const_iterator i = d_chunk_dimension_sizes.begin(),
-                e = d_chunk_dimension_sizes.end(); i != e; ++i) {
-            elements *= *i;
+        for (unsigned int d_chunk_dimension_size : d_chunk_dimension_sizes) {
+            elements *= d_chunk_dimension_size;
         }
 
         return elements;
@@ -184,16 +185,16 @@ public:
     {
         // tried using copy(chunk_dims.begin(), chunk_dims.end(), d_chunk_dimension_sizes.begin())
         // it didn't work, maybe because of the differing element types?
-        for (std::vector<size_t>::const_iterator i = chunk_dims.begin(), e = chunk_dims.end(); i != e; ++i) {
-            d_chunk_dimension_sizes.push_back(*i);
+        for (unsigned long chunk_dim : chunk_dims) {
+            d_chunk_dimension_sizes.push_back(chunk_dim);
         }
     }
 
-    virtual void parse_chunk_dimension_sizes(std::string chunk_dim_sizes_string);
+    virtual void parse_chunk_dimension_sizes(const std::string &chunk_dim_sizes_string);
 
-    virtual void ingest_compression_type(std::string compression_type_string);
+    virtual void ingest_compression_type(const std::string &compression_type_string);
 
-    virtual void ingest_byte_order(std::string byte_order_string);
+    virtual void ingest_byte_order(const std::string &byte_order_string);
     virtual std::string get_byte_order() const { return d_byte_order; }
 
     virtual unsigned long add_chunk(const std::string &data_url, const std::string &byte_order,

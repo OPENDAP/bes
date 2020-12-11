@@ -102,12 +102,13 @@ void join_threads(pthread_t threads[], unsigned int num_threads)
  *
  * @param chunk_dims The sizes as a list of integers separated by spaces, e.g., '50 50'
  */
-void DmrppCommon::parse_chunk_dimension_sizes(string chunk_dims)
+void DmrppCommon::parse_chunk_dimension_sizes(const string &chunk_dims_string)
 {
     d_chunk_dimension_sizes.clear();
 
-    if (chunk_dims.empty()) return;
+    if (chunk_dims_string.empty()) return;
 
+    string chunk_dims = chunk_dims_string;
     // If the input is anything other than integers and spaces, throw
     if (chunk_dims.find_first_not_of("1234567890 ") != string::npos)
         throw BESInternalError("while processing chunk dimension information, illegal character(s)", __FILE__, __LINE__);
@@ -140,7 +141,7 @@ void DmrppCommon::parse_chunk_dimension_sizes(string chunk_dims)
  *
  * @param compression_type_string One of "deflate" or "shuffle."
  */
-void DmrppCommon::ingest_compression_type(string compression_type_string)
+void DmrppCommon::ingest_compression_type(const string &compression_type_string)
 {
     if (compression_type_string.empty()) return;
 
@@ -166,7 +167,7 @@ void DmrppCommon::ingest_compression_type(string compression_type_string)
  *
  * @param byte_order_string One of "LE", "BE"
  */
-    void DmrppCommon::ingest_byte_order(string byte_order_string) {
+    void DmrppCommon::ingest_byte_order(const string &byte_order_string) {
 
         if (byte_order_string.empty()) return;
 
@@ -200,47 +201,91 @@ std::string DmrppCommon::get_byte_order()
 
     {
 #if 0
+        auto array = dynamic_cast<dmrpp::DmrppArray *>(this);
         if(!array){
-            // TODO Ouch Exception
+            stringstream msg;
+            msg << prolog << "ERROR! DmrppCommon::add_chunk() was called on a variable ";
+            msg << "that is not an instance of DmrppArray.";
+            throw BESInternalError(msg.str(),__FILE__,__LINE__);
         }
-
-        if(d_super_chunks.empty())
-            d_super_chunks.push_back(new SuperChunk(array));
-
-        currentSuperChunk = d_super_chunks.back();
-
         std::shared_ptr<Chunk> chunk(new Chunk(data_url, byte_order, size, offset, position_in_array));
 
-        chunk_was_added = currentSuperChunk->add_chunk(chunk);
+        if(d_super_chunks.empty())
+            d_super_chunks.push_back( shared_ptr<SuperChunk>(new SuperChunk(array)));
+
+        auto currentSuperChunk = d_super_chunks.back();
+
+        bool chunk_was_added = currentSuperChunk->add_chunk(chunk);
         if(!chunk_was_added){
             if(currentSuperChunk->empty()){
-                // TODO Ouch Exception
+                stringstream msg;
+                msg << prolog << "ERROR! Failed to add a Chunk to an empty SuperChunk. This should not happen.";
+                throw BESInternalError(msg.str(),__FILE__,__LINE__);
             }
-            currentSuperChunk = new SuperChunk(array);
+            currentSuperChunk = shared_ptr<SuperChunk>(new SuperChunk(array);
             chunk_was_added = currentSuperChunk->add_chunk(chunk);
             if(!chunk_was_added) {
-                // TODO Ouch Exception
+                stringstream msg;
+                msg << prolog << "ERROR! Failed to add a Chunk to an empty SuperChunk. This should not happen.";
+                throw BESInternalError(msg.str(),__FILE__,__LINE__);
             }
-            d_super_chunks.push_back(new SuperChunk(array));
+            d_super_chunks.push_back(currentSuperChunk);
         }
-#endif
-
+        d_chunks.push_back(chunk);
+        return d_chunks.size();
+#else
         // Chunk *chunk = new Chunk(data_url, byte_order, size, offset, position_in_array);
         std::shared_ptr<Chunk> chunk(new Chunk(data_url, byte_order, size, offset, position_in_array));
         d_chunks.push_back(chunk);
 
         return d_chunks.size();
+#endif
     }
 
     unsigned long DmrppCommon::add_chunk(const string &data_url, const string &byte_order,
                                          unsigned long long size, unsigned long long offset,
                                          const vector<unsigned int> &position_in_array)
     {
+#if 0
+        auto array = dynamic_cast<dmrpp::DmrppArray *>(this);
+        if(!array){
+            stringstream msg;
+            msg << prolog << "ERROR! DmrppCommon::add_chunk() was called on a variable ";
+            msg << "that is not an instance of DmrppArray.";
+            throw BESInternalError(msg.str(),__FILE__,__LINE__);
+        }
+        std::shared_ptr<Chunk> chunk(new Chunk(data_url, byte_order, size, offset, position_in_array));
+
+        if(d_super_chunks.empty())
+            d_super_chunks.push_back( shared_ptr<SuperChunk>(new SuperChunk(array)));
+
+        auto currentSuperChunk = d_super_chunks.back();
+
+        bool chunk_was_added = currentSuperChunk->add_chunk(chunk);
+        if(!chunk_was_added){
+            if(currentSuperChunk->empty()){
+                stringstream msg;
+                msg << prolog << "ERROR! Failed to add a Chunk to an empty SuperChunk. This should not happen.";
+                throw BESInternalError(msg.str(),__FILE__,__LINE__);
+            }
+            currentSuperChunk = shared_ptr<SuperChunk>(new SuperChunk(array);
+            chunk_was_added = currentSuperChunk->add_chunk(chunk);
+            if(!chunk_was_added) {
+                stringstream msg;
+                msg << prolog << "ERROR! Failed to add a Chunk to an empty SuperChunk. This should not happen.";
+                throw BESInternalError(msg.str(),__FILE__,__LINE__);
+            }
+            d_super_chunks.push_back(currentSuperChunk);
+        }
+        d_chunks.push_back(chunk);
+        return d_chunks.size();
+#else
         // Chunk *chunk = new Chunk(data_url, byte_order, size, offset, position_in_array);
         std::shared_ptr<Chunk> chunk(new Chunk(data_url, byte_order, size, offset, position_in_array));
         d_chunks.push_back(chunk);
 
         return d_chunks.size();
+#endif
     }
 
 /**
