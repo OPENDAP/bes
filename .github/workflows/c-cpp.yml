@@ -70,4 +70,4 @@ jobs:
         set -x
         autoreconf -i
         ./configure --with-hdf4=/home/runner/hdf4 --with-hdfeos2=/home/runner/hdfeos2
-        make -j
+        make 
