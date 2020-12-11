@@ -9,6 +9,8 @@
 
 #include "BESInternalError.h"
 
+#include "DmrppCommon.h"
+#include "DmrppArray.h"
 #include "Chunk.h"
 #include "SuperChunk.h"
 

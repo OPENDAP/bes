@@ -11,10 +11,11 @@
 
 
 #include "Chunk.h"
-#include "DmrppArray.h"
 
 
 namespace dmrpp {
+
+class DmrppArray;
 
 class SuperChunk {
 private:
