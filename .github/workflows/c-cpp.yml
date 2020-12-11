@@ -66,4 +66,8 @@ jobs:
         sudo make install clean
         cd ..
     - name: configure
-      run: autoreconf -i
+      run: |
+        set -x
+        autoreconf -i
+        ./configure --with-hdf4=/home/runner/hdf4 --with-hdfeos2=/home/runner/hdfeos2
+        
