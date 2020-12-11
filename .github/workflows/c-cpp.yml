@@ -15,5 +15,48 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules : true 
+    - name: Installs
+      run: |
+        set -x
+        sudo apt-get install -o Acquire::Retries=3 netcdf-bin libnetcdf-dev doxygen graphviz wget gfortran libjpeg-dev libz-dev
+    - name: cache-hdf4
+      id: cache-hdf4
+      uses: actions/cache@v2
+      with:
+        path: ~/hdf4
+        key: hdf4-${{ runner.os }}-fPIC-4.2.13
+
+    - name: build-hdf4
+      if: steps.cache-hdf4.outputs.cache-hit != 'true'
+      run: |
+        set -x
+        wget https://support.hdfgroup.org/ftp/HDF/HDF_Current/src/hdf-4.2.13.tar.gz &> /dev/null
+        tar zxf hdf-4.2.13.tar.gz
+        cd hdf-4.2.13
+        export CFLAGS=-fPIC
+        ./configure --disable-netcdf --prefix=${PWD_DIR}/hdf4 
+        make all 
+        sudo make install clean
+        cd ..
+    - name: cache-hdfeos2
+      id: cache-hdfeos2
+      uses: actions/cache@v2
+      with:
+        path: ~/hdfeos2
+        key: hdfeos2-${{ runner.os }}-fPIC-19v1.00
+
+    - name: build-hdfeos2
+      if: steps.cache-hdfeos2.outputs.cache-hit != 'true'
+      run: |
+        set -x
+        wget -O hdfeos2_19.zip https://git.earthdata.nasa.gov/rest/git-lfs/storage/DAS/hdfeos/ce2beacbb1ab8471a9a207def005d559f0ab725b9a4f1b1525cbee3d20aab5b0?response-content-disposition=attachment%3B%20filename%3D%22hdfeos2_19.zip%22%3B%20filename*%3Dutf-8%27%27hdfeos2_19.zip &> /dev/null
+        ls -l
+        unzip hdfeos2_19.zip
+        cd hdfeos2_19/hdfeos2.19/hdfeos
+        chmod ug+x configure
+        CFLAGS=-fPIC ./configure  --enable-install-include --prefix=${PWD_DIR}/hdfeos2
+        make
+        sudo make install clean
+        cd ..
     - name: configure
       run: autoreconf -i
