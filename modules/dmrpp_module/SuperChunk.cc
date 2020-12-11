@@ -25,17 +25,17 @@ namespace dmrpp {
 
     }
 
-    bool SuperChunk::add_chunk(const dmrpp::Chunk &chunk) {
+    bool SuperChunk::add_chunk(const const std::shared_ptr<Chunk> chunk) {
     bool chunk_was_added = false;
     if(d_chunks.empty()){
-        this->d_chunks.push_back(&chunk);
-        d_offset = chunk.get_offset();
-        d_size = chunk.get_size();
+        this->d_chunks.push_back(chunk);
+        d_offset = chunk->get_offset();
+        d_size = chunk->get_size();
         chunk_was_added =  true;
     }
     else if(is_contiguous(chunk)){
-        this->d_chunks.push_back(&chunk);
-        d_size += chunk.get_size();
+        this->d_chunks.push_back(chunk);
+        d_size += chunk->get_size();
         chunk_was_added =  true;
     }
     return chunk_was_added;
@@ -49,8 +49,8 @@ namespace dmrpp {
  * @param chunk The Chunk to evaluate for contiguousness with this SuperChunk.
  * @return True if chunk isdeemed contiguous, false otherwise.
  */
-bool SuperChunk::is_contiguous(const dmrpp::Chunk &chunk) {
-    return (d_offset + d_size) == chunk.get_offset();
+bool SuperChunk::is_contiguous(const std::shared_ptr<Chunk> chunk) {
+    return (d_offset + d_size) == chunk->get_offset();
 }
 
 
@@ -110,7 +110,7 @@ string SuperChunk::to_string(bool verbose) {
     msg << "]";
     if (verbose) {
         msg << endl;
-        for (auto *chunk: d_chunks) {
+        for (auto chunk: d_chunks) {
             msg << "        " << chunk->to_string() << endl;
         }
     }

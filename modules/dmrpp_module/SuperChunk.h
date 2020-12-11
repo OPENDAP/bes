@@ -7,6 +7,9 @@
 
 
 #include <vector>
+#include <memory>
+
+
 #include <Chunk.h>
 #include "DmrppArray.h"
 
@@ -16,18 +19,18 @@ namespace dmrpp {
     class SuperChunk {
     private:
         DmrppArray *d_parent;
-        std::vector<const dmrpp::Chunk *> d_chunks;
+        std::vector<const std::shared_ptr<Chunk>> d_chunks;
         unsigned long long d_offset;
         unsigned long long d_size;
 
-        bool is_contiguous(const dmrpp::Chunk &chunk);
+        bool is_contiguous(const std::shared_ptr<Chunk> chunk);
         void map_chunks_to_buffer(unsigned char *r_buff);
         unsigned long long  read_contiguous(unsigned char *r_buff);
 
     public:
         explicit SuperChunk(DmrppArray *parent);
         ~SuperChunk() = default;;
-        virtual bool add_chunk(const dmrpp::Chunk &chunk);
+        virtual bool add_chunk(const std::shared_ptr<Chunk> chunk);
 
         virtual unsigned long long offset(){ return d_offset; };
         virtual unsigned long long size(){ return d_size; }
