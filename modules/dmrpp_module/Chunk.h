@@ -28,6 +28,9 @@
 #include <vector>
 #include "util.h"
 
+// This is used to track access to 'cloudydap' accesses in the S3 logs
+// by adding a query string that will show up in those logs. This is
+// activated by using a special BES context with the name 'cloudydap.'
 #define S3_TRACKING_CONTEXT "cloudydap"
 
 namespace dmrpp {

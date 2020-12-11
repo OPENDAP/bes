@@ -54,10 +54,6 @@ using http::EffectiveUrlCache;
 
 namespace dmrpp {
 
-// This is used to track access to 'cloudydap' accesses in the S3 logs
-// by adding a query string that will show up in those logs. This is
-// activated by using a special BES context with the name 'cloudydap.'
-// const std::string Chunk::tracking_context = "cloudydap";
 
 /**
  * @brief Read the response headers, save the Content-Type header
