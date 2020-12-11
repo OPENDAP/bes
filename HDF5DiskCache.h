@@ -31,7 +31,7 @@ public:
     static std::string getCachePrefixFromConfig(const std::string&);
     static std::string getCacheDirFromConfig(const std::string&);
 
-    bool is_valid(const std::string & cache_file_name, const int expected_file_size);
+    bool is_valid(const std::string & cache_file_name, const int expected_file_size) const;
     static HDF5DiskCache *get_instance(const long, const std::string&, const std::string&);
     bool get_data_from_cache(const std::string &cache_file_name, const int expected_file_size,int &fd);
     bool write_cached_data(const std::string &cache_file_name,const int expected_file_size,const std::vector<double> &val);

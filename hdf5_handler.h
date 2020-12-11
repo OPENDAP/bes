@@ -58,6 +58,7 @@
 #include <InternalErr.h>
 #include <hdf5.h>
 
+
 /// Maximum number of dimensions in an array(default option only).
 const int DODS_MAX_RANK=30;
 /// Maximum length of variable or attribute name(default option only).
@@ -143,7 +144,6 @@ static const char COMPOUND[] = "Structure";
 static const char ARRAY[] = "Array";   
 /// An abstract respresntation of DAP Url type.
 static const char URL[] = "Url";       
-
 
 #include "h5das.h"
 #include "h5dds.h"

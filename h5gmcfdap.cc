@@ -484,7 +484,7 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
         // Currently there is no way for DAP to present the unlimited dimension info.
         // when there are no dimension names. So don't create DODS_EXTRA even if
         // there is an unlimited dimension in the file. KY 2016-02-18
-        if(cvars.size() >0){
+        if(cvars.empty()==false ){
 
             // First check if we do have unlimited dimension in the coordinate variables.
             // Since unsupported fakedims are removed, we may not have unlimited dimensions.
@@ -606,7 +606,7 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
             dimsizes[i] = (dims[i])->getSize();
 
 
-        if(dims.size() == 0) 
+        if(dims.empty()) 
             throw InternalErr(__FILE__,__LINE__,"the coordinate variable cannot be a scalar");
             
         switch(cvar->getCVType()) {
@@ -830,7 +830,7 @@ void gen_dap_onegmspvar_dds(DDS &dds,const HDF5CF::GMSPVar* spvar, const hid_t f
         const vector<HDF5CF::Dimension *>& dims = spvar->getDimensions();
         vector <HDF5CF::Dimension*>:: const_iterator it_d;
 
-        if(dims.size() == 0)
+        if(dims.empty())
             throw InternalErr(__FILE__,__LINE__,"Currently don't support scalar special variables. ");
 
         HDF5GMSPCFArray *ar = NULL;

@@ -150,8 +150,8 @@ void HDF5GMCFMissLLArray::obtain_aqu_obpg_l3_ll(int* offset, int* step, int nelm
         }
 
         // The first number of the latitude is at the north west corner
-        LL_first_point = Lat_SWP + (Num_lines - 1) * Lat_step;
-        LL_step = Lat_step * (-1.0);
+        LL_first_point = (float)(Lat_SWP + (Num_lines - 1) * Lat_step);
+        LL_step = (float)(Lat_step * (-1.0));
         LL_total_num = Num_lines;
     }
 
@@ -431,7 +431,7 @@ void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t /*file_id*/, hid_t s_root_i
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
-    int num_elm = H5Sget_simple_extent_npoints(attr_space);
+    hssize_t num_elm = H5Sget_simple_extent_npoints(attr_space);
 
     if (0 == num_elm) {
         string msg = "cannot get the number for the attribute ";

@@ -199,6 +199,7 @@ void EOS5File::Retrieve_H5_Supported_Attr_Values()
 // Adjust attribute value
 void EOS5File::Adjust_H5_Attr_Value(Attribute *attr) 
 {
+    // For future usage.
 
 }
 
@@ -286,7 +287,7 @@ void EOS5File::Gen_EOS5_VarAttr_Unsupported_Dtype_Info()
                         // is okay to ignore if the variable has another attribute
                         // CLASS="DIMENSION_SCALE"
                         if (("DIMENSION_LIST" != (*ira)->name)
-                            && (("REFERENCE_LIST" != (*ira)->name || true == is_ignored)))
+                            && ("REFERENCE_LIST" != (*ira)->name || true == is_ignored))
                             this->add_ignored_info_attrs(false, (*irv)->fullpath, (*ira)->name);
                     }
                 }

@@ -67,8 +67,7 @@ void HE5Parser::print()
             HE5Var v = z.data_var_list.at(j);
             cout << "ZA Var Name=" << v.name << endl;
             cout << "ZA Var Dim Size=" << v.dim_list.size() << endl;
-            unsigned int k = 0;
-            for(k=0; k < v.dim_list.size(); k++) {
+            for(unsigned int k=0; k < v.dim_list.size(); k++) {
                 HE5Dim d = v.dim_list.at(k);
                 cout << "ZA Var Dim Name=" << d.name << endl;
             }
@@ -93,8 +92,7 @@ void HE5Parser::print()
             HE5Var v = s.geo_var_list.at(j);
             cout << "Swath Geo Var Name=" << v.name << endl;
             cout << "Swath Geo Var Dim Size=" << v.dim_list.size() << endl;
-            unsigned int k = 0;
-            for(k=0; k < v.dim_list.size(); k++) {
+            for(unsigned int k=0; k < v.dim_list.size(); k++) {
                 HE5Dim d = v.dim_list.at(k);
                 cout << "Swath Geo Var Dim Name=" << d.name;
                 cout << " Size=" << d.size << endl;
@@ -107,8 +105,7 @@ void HE5Parser::print()
             HE5Var v = s.data_var_list.at(j);
             cout << "Swath Data Var Name=" << v.name << endl;
             cout << "Swath Data Var Number Dim =" << v.dim_list.size() << endl;
-            unsigned int k = 0;
-            for(k=0; k < v.dim_list.size(); k++) {
+            for(unsigned int k=0; k < v.dim_list.size(); k++) {
                 HE5Dim d = v.dim_list.at(k);
                 cout << "Swath Data Var Dim Name=" << d.name << endl;
                 cout <<"Swath Data Var Dim Size= "<< d.size<<endl;
@@ -149,8 +146,7 @@ void HE5Parser::print()
             HE5Var v = g.data_var_list.at(j);
             cout << "Grid Var Name=" << v.name << endl;
             cout << "Grid Var Dim Size=" << v.dim_list.size() << endl;
-            unsigned int k = 0;
-            for(k=0; k < v.dim_list.size(); k++) {
+            for(unsigned int k=0; k < v.dim_list.size(); k++) {
                 HE5Dim d = v.dim_list.at(k);
                 cout << "Grid Var Dim Name=" << d.name << endl;
             }

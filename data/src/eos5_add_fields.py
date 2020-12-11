@@ -11,13 +11,10 @@ def add_extra_field(fname,varname,varsize):
                                      dtype=numpy.int32)
     
     file.close
-    return
+
 def add_grid_dim_info(fname,xdim,ydim,var1name,var2name):
     
     file = h5py.File (fname, 'a')
-    
-    #obtain temperature array
-    v1dset = file[var1name]
     
     file[xdim].dims.create_scale(file[xdim])
     file[ydim].dims.create_scale(file[ydim])
@@ -27,7 +24,6 @@ def add_grid_dim_info(fname,xdim,ydim,var1name,var2name):
     file[var2name].dims[1].attach_scale(file[xdim])
     
     file.close
-    return
 
 def add_grid_mapping_info(fname,v1path,v1name,projv1name,v2path,v2name,projv2name):
     file = h5py.File (fname, 'a')
@@ -40,7 +36,6 @@ def add_grid_mapping_info(fname,v1path,v1name,projv1name,v2path,v2name,projv2nam
     v2dset = grp2[v2name];
     v2dset.attrs["grid_mapping"]=v2path+"/"+projv2name;
     file.close
-    return
 
 def add_swath_dim_info(file,fname,xdimname,ydimname,zdimname,v1name):
     
@@ -62,19 +57,11 @@ def add_swath_dim_info(file,fname,xdimname,ydimname,zdimname,v1name):
     file[v1name].dims[1].attach_scale(file[ydimname])
     file[v1name].dims[2].attach_scale(file[xdimname])
     
-    return
-
-
-def add_swath_coordinates(file,v1path,v1name,v2path,v2name,geo1path,geo2path):
-    grp1 = file[v1path]
-    grp2 = file[v2path];
-    return
 
 def attach_2d_scales(file,swath_geov_2d_list,dim0name,dim1name):
     for varname in swath_geov_2d_list:
         file[varname].dims[0].attach_scale(file[dim0name])
         file[varname].dims[1].attach_scale(file[dim1name])
-    return
 
 shutil.copyfile("../grid_2_2d.h5","grid_2_2d_ef.h5");
 shutil.copyfile("../swath_2_3d_2x2yz.h5","swath_2_3d_2x2yz_ef.h5");
@@ -94,6 +81,5 @@ swath_geov_2d_list =[grp1_path+"Latitude",grp1_path+"Longitude"]
 attach_2d_scales(file,swath_geov_2d_list,"/HDFEOS/SWATHS/Swath1/YDim","/HDFEOS/SWATHS/Swath1/XDim")
 swath_geov_2d_list=[grp2_path+"Latitude",grp2_path+"Longitude"]
 attach_2d_scales(file,swath_geov_2d_list,"/HDFEOS/SWATHS/Swath2/YDim","/HDFEOS/SWATHS/Swath2/XDim")
-add_swath_coordinates(file,"/HDFEOS/SWATHS/Swath1/Data Fields","Temperature","/HDFEOS/SWATHS/Swath2/Data Fields","Temperature","/HDFEOS/SWATHS/Swath1/Geolocation Fields","/HDFEOS/SWATHS/Swath2/Geolocation Fields");
 file.close
 add_extra_field("za_1_2d_yz_ef.h5","/HDFEOS/ZAS/1dummy_extra",2);

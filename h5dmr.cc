@@ -37,6 +37,7 @@
 /// \author Muqun Yang    <myang6@hdfgroup.org>
 ///
 
+#include <sstream>
 #include "config_hdf5.h"
 
 #include <InternalErr.h>
@@ -1011,6 +1012,14 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
             d4b->attributes()->add_attribute_nocopy(d4_attr);
         else if ( 2 == flag) // HDF5 dataset with compound datatype
             d4s->attributes()->add_attribute_nocopy(d4_attr);
+        else {
+            stringstream sflag;
+            sflag << flag;
+            string msg ="The add_dap4_attr flag has to be either 0,1 or 2.";
+            msg+="The current flag is "+sflag.str();
+            delete d4_attr;
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
     } // for (int j = 0; j < num_attr; j++)
 
     return;

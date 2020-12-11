@@ -75,10 +75,9 @@ HE5Checker::check_grids_unknown_parameters(HE5Parser* p)
 void
 HE5Checker::set_grids_missing_pixreg_orig(HE5Parser* p)
 {
-    unsigned int i = 0;
     BESDEBUG("h5", "HE5Checker::set_missing_values(Grid Size=" 
          << p->grid_list.size() << ")" << endl);
-    for(i=0; i < p->grid_list.size(); i++) {
+    for(unsigned int i=0; i < p->grid_list.size(); i++) {
 #if 0 
 // Unnecessary 
         unsigned int j = 0;
@@ -129,8 +128,7 @@ HE5Checker::check_grids_multi_latlon_coord_vars(HE5Parser* p)
     // This is not unusual since typically for grid since XDim and YDim are default for any EOS5 grid.
     for(i=0; i < p->grid_list.size(); i++) {
         HE5Grid g = p->grid_list.at(i);
-        unsigned int j = 0;
-        for(j=0; j < g.dim_list.size(); j++) {
+        for(unsigned int j=0; j < g.dim_list.size(); j++) {
             HE5Dim d = g.dim_list.at(j);
             Dimmap::iterator iter = dim_map.find(d.name);
             if(iter != dim_map.end()){

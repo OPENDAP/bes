@@ -1048,7 +1048,6 @@ void GMFile::Add_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(Var *var,Attribute*
                Insert_One_NameSizeMap_Element((*ird)->name,(*ird)->size,(*ird)->unlimited_dim);
             (*ird)->newname = (*ird)->name;
             H5Dclose(ref_dset);
-            ref_dset = -1;
             objname.clear();
             vlbuf_index++;
         }// for (vector<Dimension *>::iterator ird = var->dims.begin()
@@ -1228,7 +1227,7 @@ void GMFile::Add_Dim_Name_Mea_Ozonel3z() {
 }
 
 // This is a special helper function for MeaSURES ozone products
-bool GMFile::check_cv(string & varname)  {
+bool GMFile::check_cv(const string & varname) const {
 
      BESDEBUG("h5", "Coming to check_cv()"<<endl);
      const string lat_name ="Latitude";

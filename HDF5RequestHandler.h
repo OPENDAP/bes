@@ -55,7 +55,7 @@ namespace libdap {
 /// \author James Gallagher <jgallagher@opendap.org>
 class HDF5RequestHandler:public BESRequestHandler {
   public:
-    HDF5RequestHandler(const std::string & name);
+    explicit HDF5RequestHandler(const std::string & name);
     virtual ~HDF5RequestHandler(void);
 
 
@@ -137,7 +137,7 @@ class HDF5RequestHandler:public BESRequestHandler {
     // This handler supports the "not including attributes" in
     // the data access feature. Attributes are generated only
     // if necessary. KY 10/30/19
-    void add_attributes(BESDataHandlerInterface &dhi);
+    virtual void add_attributes(BESDataHandlerInterface &dhi);
 
   private:
     // Loads configuration state from TheBESKeys

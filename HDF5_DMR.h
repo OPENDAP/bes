@@ -47,7 +47,7 @@ private:
     }
 
 public:
-    HDF5DMR(libdap::DMR *dmr) : libdap::DMR(*dmr), fileid(-1) {}
+    explicit HDF5DMR(libdap::DMR *dmr) : libdap::DMR(*dmr), fileid(-1) {}
     HDF5DMR(libdap::D4BaseTypeFactory *factory,const string &name):libdap::DMR(factory,name),fileid(-1) {}
 
     HDF5DMR(const HDF5DMR &rhs) : libdap::DMR(rhs) {
@@ -64,7 +64,7 @@ public:
         return *this;
     }
 
-    ~HDF5DMR() {
+    virtual ~HDF5DMR() {
 
         if (fileid != -1)
             H5Fclose(fileid);

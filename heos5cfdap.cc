@@ -546,7 +546,7 @@ void gen_dap_oneeos5cvar_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar, const hid_t 
             dimsizes[i] = (dims[i])->getSize();
 
 
-        if(dims.size() == 0)
+        if(dims.empty())
             throw InternalErr(__FILE__,__LINE__,"the coordinate variables cannot be scalar.");
         switch(cvar->getCVType()) {
 

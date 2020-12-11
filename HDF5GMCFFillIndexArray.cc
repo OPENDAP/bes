@@ -99,7 +99,7 @@ cerr<<"file name " <<filename <<endl;
             val.resize(nelms);
 
             for (int i = 0; i < count[0]; i++)
-                val[i] = offset[0] + step[0] * i;
+                val[i] = (unsigned char)(offset[0] + step[0] * i);
 
             set_value ((dods_byte *) &val[0], nelms);
         } // case H5UCHAR
@@ -115,7 +115,7 @@ cerr<<"file name " <<filename <<endl;
             val.resize(nelms);
 
             for (int i = 0; i < count[0]; i++)
-                val[i] = offset[0] + step[0] * i;
+                val[i] = (short)(offset[0] + step[0] * i);
                
             set_value ((dods_int16 *) &val[0], nelms);
         }// H5CHAR and H5INT16
@@ -128,7 +128,7 @@ cerr<<"file name " <<filename <<endl;
             val.resize(nelms);
 
             for (int i = 0; i < count[0]; i++)
-                val[i] = offset[0] + step[0] * i;
+                val[i] = (unsigned short)(offset[0] + step[0] * i);
                 
             set_value ((dods_uint16 *) &val[0], nelms);
         } // H5UINT16
@@ -166,7 +166,7 @@ cerr<<"file name " <<filename <<endl;
             val.resize(nelms);
 
             for (int i = 0; i < count[0]; i++)
-                val[i] = offset[0] + step[0] * i;
+                val[i] = (float)(offset[0] + step[0] * i);
 
             set_value ((dods_float32 *) &val[0], nelms);
         }

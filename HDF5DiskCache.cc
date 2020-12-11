@@ -119,7 +119,7 @@ HDF5DiskCache::get_instance(const long _cache_size, const string &_cache_dir, co
 }
 
 // Check whether the real lat/lon file size is the same as the expected lat/lon size. If not, return false. 
-bool HDF5DiskCache::is_valid(const string & cache_file_name, const int expected_file_size)
+bool HDF5DiskCache::is_valid(const string & cache_file_name, const int expected_file_size) const
 {
 
     struct stat st;

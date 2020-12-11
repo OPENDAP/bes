@@ -947,7 +947,7 @@ protected:
     void Add_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(Var *, Attribute*) ;
 
     void Add_Dim_Name_Mea_Ozonel3z() ;
-    bool check_cv(std::string & varname) ;
+    bool check_cv(const std::string & varname) const;
 
     void Add_Dim_Name_Aqu_L3() ;
     void Add_Dim_Name_OBPG_L3() ;

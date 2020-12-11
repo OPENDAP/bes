@@ -1837,7 +1837,7 @@ void obtain_dimnames(hid_t dset,int ndims, DS_t *dt_inst_ptr) {
                 }
                 objname.clear();
             }// for (vector<Dimension *>::iterator ird is var->dims.begin()
-            if(vlbuf.size()!= 0) {
+            if(vlbuf.empty()== false) {
 
                 if ((aspace_id = H5Aget_space(attr_id)) < 0) {
                     string msg = "Cannot close the HDF5 attribute space successfully for <DIMENSION_LIST> of the variable "+string(dt_inst_ptr->name);

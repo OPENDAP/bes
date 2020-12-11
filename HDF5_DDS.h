@@ -44,7 +44,7 @@ private:
     }
 
 public:
-    HDF5DDS(libdap::DDS *ddsIn) : libdap::DDS(*ddsIn), fileid(-1) {}
+    explicit HDF5DDS(libdap::DDS *ddsIn) : libdap::DDS(*ddsIn), fileid(-1) {}
 
     HDF5DDS(const HDF5DDS &rhs) : libdap::DDS(rhs) {
         m_duplicate(rhs);
@@ -59,7 +59,7 @@ public:
         return *this;
     }
 
-    ~HDF5DDS() {
+    virtual ~HDF5DDS() {
 
         if (fileid != -1)
             H5Fclose(fileid);

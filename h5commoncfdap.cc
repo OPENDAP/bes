@@ -71,7 +71,7 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
     BESDEBUG("h5", "Coming to gen_dap_onevar_dds()  "<<endl);
     const vector<HDF5CF::Dimension *>& dims = var->getDimensions();
 
-    if (0 == dims.size()) {
+    if (dims.empty()) {
         // Adding 64-bit integer support for DMR 
         if (H5INT64 == var->getType() || H5UINT64 == var->getType()){
             DMR * dmr = HDF5RequestHandler::get_dmr_64bit_int();

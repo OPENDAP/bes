@@ -975,7 +975,6 @@ void obtain_gm_attr_value(hid_t s_root_id, const char* s_attr_name, string & s_a
                 string tempstring(onestring);
         }
 
-        temp_bp +=H5Tget_size(attr_type);
     
         if (temp_buf.empty() != true) {
 
