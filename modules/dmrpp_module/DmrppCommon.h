@@ -33,7 +33,7 @@
 
 #include "dods-datatypes.h"
 #include "Chunk.h"
-// #include "SuperChunk.h"
+#include "SuperChunk.h"
 
 #include "config.h"
 #include "byteswap_compat.h"
@@ -77,7 +77,7 @@ private:
 	bool d_compact;
 	std::string d_byte_order;
 	std::vector<unsigned int> d_chunk_dimension_sizes;
-	//std::vector<shared_ptr<SuperChunk>> d_super_chunks;
+	// std::vector<shared_ptr<SuperChunk>> d_super_chunks;
 	std::vector<std::shared_ptr<Chunk>> d_chunks;
 	bool d_twiddle_bytes;
 
