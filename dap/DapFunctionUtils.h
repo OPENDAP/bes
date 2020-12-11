@@ -55,7 +55,7 @@ public:
             ((string)"This function returns a Structure whose name will invoke the '_unwrap' content activity"));
         setUsageString("wrapitup()");
         setRole("http://services.opendap.org/dap4/server-side-function/dap_function_utils/wrapitup");
-        setDocUrl("http://docs.opendap.org/index.php/DapUtilFunctions");
+        setDocUrl("https://docs.opendap.org/index.php/DapUtilFunctions");
         setFunction(function_dap2_wrapitup);
         setFunction(function_dap4_wrapitup);
         setVersion("1.0");

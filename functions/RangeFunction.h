@@ -76,7 +76,7 @@ public:
         setDescriptionString("The range() function evaluates the passed variable and returns an array of size 2 containing the min and max values of the variable.");
         setUsageString("range(var)");
         setRole("http://services.opendap.org/dap4/server-side-function/range");
-        setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#range");
+        setDocUrl("https://docs.opendap.org/index.php/Server_Side_Processing_Functions#range");
         setFunction(function_dap2_range);
         setFunction(function_dap4_range);
         setVersion("1.0b1");

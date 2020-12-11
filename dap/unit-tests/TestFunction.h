@@ -69,7 +69,7 @@ public:
         setDescriptionString("The test() function returns a new array.");
         setUsageString("test()");
         setRole("http://services.opendap.org/dap4/server-side-function/");
-        setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions");
+        setDocUrl("https://docs.opendap.org/index.php/Server_Side_Processing_Functions");
         setFunction(TestFunction::function_dap2_test);
         // setFunction(TestFunction::function_dap4_tabular);
         setVersion("1.0");
