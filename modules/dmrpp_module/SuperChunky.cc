@@ -55,26 +55,10 @@
 
 namespace dmrpp {
 
-bool debug = false;
-void compute_super_chunks(libdap::BaseType *var, bool only_constrained, vector<SuperChunk *> &super_chunks) {
-    if (var->is_simple_type())
-        return;
-    if (var->is_constructor_type())
-        return;
-    if (var->is_vector_type()) {
-        auto array = dynamic_cast<DmrppArray *>(var);
-        if (array) {
-            compute_super_chunks(array, only_constrained, super_chunks);
-        }
-        else {
-            BESDEBUG(MODULE, prolog << "The variable: "<< var->name()
-                 << " is not an instance of DmrppArray. SKIPPING"<< endl);
-        }
-    }
-}
+bool debug = true;
 
 
-void compute_super_chunks(DmrppArray *array, bool only_constrained, vector<SuperChunk *> &super_chunks){
+void compute_super_chunks(dmrpp::DmrppArray *array, bool only_constrained, vector<SuperChunk *> &super_chunks){
 
         // Now we get the chunkyness
         auto chunk_dim_sizes = array->get_chunk_dimension_sizes();
@@ -137,6 +121,23 @@ void compute_super_chunks(DmrppArray *array, bool only_constrained, vector<Super
                 cout << super_chunk->to_string(true) << endl;
             }
         }
+}
+void compute_super_chunks(libdap::BaseType *var, bool only_constrained, vector<SuperChunk *> &super_chunks) {
+    if (var->is_simple_type())
+        return;
+    if (var->is_constructor_type())
+        return;
+    if (var->is_vector_type()) {
+        auto array = dynamic_cast<dmrpp::DmrppArray *>(var);
+        if (array) {
+            if(debug) cout << "Found DmrppArray: "<< array->name() << endl;
+            compute_super_chunks(array, only_constrained, super_chunks);
+        }
+        else {
+            BESDEBUG(MODULE, prolog << "The variable: "<< var->name()
+                                    << " is not an instance of DmrppArray. SKIPPING"<< endl);
+        }
+    }
 }
 
 #if 0
@@ -222,12 +223,14 @@ void inventory_super_chunks(libdap::BaseType *var, bool only_constrained, vector
         // Process Groups - RECURSION HAPPENS HERE.
         auto gtr = group->grp_begin();
         while(gtr!=group->grp_end()){
+            if(debug) cout << "Found Group: "<< (*gtr)->name() << endl;
             inventory_super_chunks(*gtr++, only_constrained, super_chunks);
         }
 
         // Process Vars
         auto vtr = group->var_begin();
         while(vtr!=group->var_end()){
+            if(debug) cout << "Found Variable: "<< (*vtr)->type_name() << " " << (*vtr)->name() << endl;
             compute_super_chunks(*vtr++, only_constrained, super_chunks);
             //inventory_super_chunks(*vtr++, only_constrained);
         }
@@ -275,20 +278,12 @@ void inventory_super_chunks(libdap::BaseType *var, bool only_constrained, vector
 } // namespace dmrpp
 
 int main(int argc, char *argv[]) {
-    int result = 0;
     string bes_log_file("superchunky_bes.log");
-    string bes_debug_log_file("cerr");
-    string bes_debug_keys( "bes,http,curl,dmrpp,dmrpp:3,dmrpp:4,rr");
-    string target_url("https://www.opendap.org/pub/binary/hyrax-1.16/centos-7.x/bes-debuginfo-3.20.7-1.static.el7.x86_64.rpm");
-    string output_file_base("retriever");
-    string http_cache_dir;
+    //string bes_debug_log_file("cerr");
+    //string bes_debug_keys( "bes,http,curl,dmrpp,dmrpp:3,dmrpp:4,rr");
+    //string http_cache_dir;
     string prefix;
-    size_t pwr2_number_o_chunks = 18;
-    size_t max_target_size = 0;
-    string http_netrc_file;
-    unsigned int reps=10;
-    unsigned pwr2_parallel_reads = 0;
-    bool aws_sign_request_url = false;
+    //string http_netrc_file;
     string cache_effective_urls("false");
     char *prefixCstr = getenv("prefix");
     if (prefixCstr) {
