@@ -110,4 +110,4 @@ jobs:
         export CPPFLAGS="-I/home/runner/stare/include"
         export LDFLAGS="-L/home/runner/stare/lib"
         ./configure --with-hdf4=/home/runner/hdf4 --with-hdfeos2=/home/runner/hdfeos2 --with-hdf5=/home/runner/hdf5
-        make -j 
+        make 
