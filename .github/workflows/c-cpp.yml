@@ -83,9 +83,31 @@ jobs:
         make
         sudo make install
         popd
+    - name: cache-stare
+      id: cache-stare
+      uses: actions/cache@v2
+      with:
+        path: ~/stare
+        key: stare-${{ runner.os }}-0.16.3
+
+    - name: build-stare
+      if: steps.cache-stare.outputs.cache-hit != 'true'
+      run: |
+        set -x
+        wget https://github.com/SpatioTemporal/STARE/archive/0.16.3-beta.tar.gz  &> /dev/null
+        tar zxf 0.16.3-beta.tar.gz
+        cd STARE-0.16.3-beta/
+        mkdir build
+        cd build
+        cmake -DCMAKE_INSTALL_PREFIX=~/stare ..
+        make all
+        sudo make install
+        cd ../..
     - name: configure
       run: |
         set -x
         autoreconf -i
+        export CPPFLAGS="-I/home/runner/stare/include"
+        export LDFLAGS="-L/home/runner/stare/lib"
         ./configure --with-hdf4=/home/runner/hdf4 --with-hdfeos2=/home/runner/hdfeos2 --with-hdf5=/home/runner/hdf5
-        make -j check
+        make -j 
