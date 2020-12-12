@@ -22,7 +22,7 @@ jobs:
       run: |
         set -x
         sudo apt-get update
-        sudo apt-get install -o Acquire::Retries=3 netcdf-bin libnetcdf-dev doxygen graphviz wget gfortran libjpeg-dev libz-dev
+        sudo apt-get install -o Acquire::Retries=3 netcdf-bin libnetcdf-dev doxygen graphviz wget gfortran libjpeg-dev libz-dev libdap-dev
     - name: cache-hdf4
       id: cache-hdf4
       uses: actions/cache@v2
@@ -88,3 +88,4 @@ jobs:
         set -x
         autoreconf -i
         ./configure --with-hdf4=/home/runner/hdf4 --with-hdfeos2=/home/runner/hdfeos2 --with-hdf5=/home/runner/hdf5
+        make
