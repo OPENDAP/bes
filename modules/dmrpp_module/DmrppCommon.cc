@@ -217,8 +217,6 @@ std::string DmrppCommon::get_byte_order()
             unsigned long long offset,
             const vector<unsigned int> &position_in_array)
     {
-#if 1
-
         std::shared_ptr<Chunk> chunk(new Chunk(data_url, byte_order, size, offset, position_in_array));
 
         if(d_super_chunks.empty())
@@ -244,13 +242,6 @@ std::string DmrppCommon::get_byte_order()
         }
         d_chunks.push_back(chunk);
         return d_chunks.size();
-#else
-        // Chunk *chunk = new Chunk(data_url, byte_order, size, offset, position_in_array);
-        std::shared_ptr<Chunk> chunk(new Chunk(data_url, byte_order, size, offset, position_in_array));
-        d_chunks.push_back(chunk);
-
-        return d_chunks.size();
-#endif
     }
 
 /**

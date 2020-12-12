@@ -152,7 +152,13 @@ public:
     /// @brief A const reference to the vector of chunks
     /// @see get_chunks()
     virtual const std::vector< std::shared_ptr<Chunk>> &get_immutable_chunks() const {
-    	return d_chunks;
+        return d_chunks;
+    }
+
+    /// @brief A const reference to the vector of SuperChunks
+    /// @see get_chunks()
+    virtual const std::vector< std::shared_ptr<SuperChunk>> &get_immutable_super_chunks() const {
+        return d_super_chunks;
     }
 
     virtual const std::vector<unsigned int> &get_chunk_dimension_sizes() const {
