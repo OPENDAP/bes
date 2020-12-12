@@ -22,7 +22,7 @@ jobs:
       run: |
         set -x
         sudo apt-get update
-        sudo apt-get install -o Acquire::Retries=3 netcdf-bin libnetcdf-dev doxygen graphviz wget gfortran libjpeg-dev libz-dev libdap-dev
+        sudo apt-get install -o Acquire::Retries=3 netcdf-bin libnetcdf-dev doxygen graphviz wget gfortran libjpeg-dev libz-dev libdap-dev libgdal-dev
     - name: cache-hdf4
       id: cache-hdf4
       uses: actions/cache@v2
