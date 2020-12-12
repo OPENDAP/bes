@@ -88,4 +88,4 @@ jobs:
         set -x
         autoreconf -i
         ./configure --with-hdf4=/home/runner/hdf4 --with-hdfeos2=/home/runner/hdfeos2 --with-hdf5=/home/runner/hdf5
-        make
+        make -j check
