@@ -98,9 +98,9 @@ void SuperChunk::read() {
 
 }
 
-string SuperChunk::to_string(bool verbose) {
+string SuperChunk::to_string(bool verbose) const {
     stringstream msg;
-    msg << d_parent->name() << "[SuperChunk: " << (void **)this;
+    msg << "[SuperChunk: " << (void **)this;
     msg << " offset: " << d_offset;
     msg << " size: " << d_size ;
     msg << " chunk_count: " << d_chunks.size();
@@ -109,11 +109,14 @@ string SuperChunk::to_string(bool verbose) {
     if (verbose) {
         msg << endl;
         for (auto chunk: d_chunks) {
-            msg << "        " << chunk->to_string() << endl;
+            msg << chunk->to_string() << endl;
         }
     }
     return msg.str();
 }
 
+    void SuperChunk::dump(ostream & strm) const {
+        strm << to_string(false) ;
+    }
 
 } // namespace dmrpp

@@ -40,6 +40,7 @@
 #include "TheBESKeys.h"
 #include "BESLog.h"
 #include "BESStopWatch.h"
+#include "BESIndent.h"
 
 #include "DmrppNames.h"
 #include "DMRpp.h"
@@ -66,14 +67,14 @@ void compute_super_chunks(dmrpp::DmrppArray *array, bool only_constrained, vecto
         auto chunks = array->get_immutable_chunks();
 
         //unsigned long long super_chunk_index = 0;
-        auto currentSuperChunk = new SuperChunk(array);
+        auto currentSuperChunk = new SuperChunk();
         super_chunks.push_back(currentSuperChunk); // first super chunk...
         if(debug) cout << "SuperChunking array: "<< array->name() << endl;
 
-        for(auto chunk:chunks){
+        for(const auto &chunk:chunks){
             bool was_added = currentSuperChunk->add_chunk(chunk);
             if(!was_added){
-                if(true) {
+                if(debug) {
                     unsigned long long next_contiguous_chunk_offset = currentSuperChunk->offset() + currentSuperChunk->size();
                     unsigned long long gap_size;
                     bool is_behind = false;
@@ -99,7 +100,7 @@ void compute_super_chunks(dmrpp::DmrppArray *array, bool only_constrained, vecto
                 // If we were working on a SuperChunk (i.e. the current SuperChunk contains chunks)
                 // then we need to start a new one.
                 if(!currentSuperChunk->empty()){
-                    currentSuperChunk = new SuperChunk(array);
+                    currentSuperChunk = new SuperChunk();
                     super_chunks.push_back(currentSuperChunk); // next super chunk...
                 }
                 bool add_first_successful = currentSuperChunk->add_chunk(chunk);
@@ -116,7 +117,6 @@ void compute_super_chunks(dmrpp::DmrppArray *array, bool only_constrained, vecto
         }
         if(false){
             cout << "SuperChunk Inventory For Array: " << array->name() << endl;
-            unsigned long long sc_count=0;
             for(auto super_chunk: super_chunks) {
                 cout << super_chunk->to_string(true) << endl;
             }
@@ -242,34 +242,65 @@ void inventory_super_chunks(libdap::BaseType *var, bool only_constrained, vector
     }
 
 
-    void inventory_super_chunks(const string dmrpp_filename){
+    dmrpp::DMRpp *get_dmrpp(const string dmrpp_filename){
         ifstream dmrpp_ifs (dmrpp_filename);
         if (dmrpp_ifs.is_open())
         {
             dmrpp::DmrppParserSax2  parser;
             dmrpp::DmrppTypeFactory factory;
-            dmrpp::DMRpp dmr(&factory,dmrpp_filename);
-            vector<SuperChunk *> super_chunks;
-            parser.intern(dmrpp_ifs, &dmr);
-
-            {
-                BESStopWatch sw;
-                sw.start(prolog);
-                dmrpp::inventory_super_chunks(dmr, false, super_chunks);
-            }
-
-            cout << "DMR++ file:  " << dmrpp_filename << endl;
-            cout << "Produced " << super_chunks.size() << " SuperChunks." << endl;
-            for(auto super_chunk: super_chunks) {
-                cout << super_chunk->to_string(true) << endl;
-            }
+            auto dmr = new DMRpp(&factory,dmrpp_filename);
+            parser.intern(dmrpp_ifs, dmr);
+            return dmr;
         }
         else {
             throw BESInternalFatalError("The provided file could not be opened. filename: '"+dmrpp_filename+"'",__FILE__,__LINE__);
         }
-
     }
 
+
+    void inventory_super_chunks(const string dmrpp_filename){
+        cout << "DMR++ file:  " << dmrpp_filename << endl;
+        dmrpp::DMRpp *dmr = get_dmrpp(dmrpp_filename);
+
+        vector<SuperChunk *> super_chunks;
+
+        {
+            BESStopWatch sw;
+            sw.start(prolog);
+            dmrpp::inventory_super_chunks(*dmr, false, super_chunks);
+        }
+
+        cout << "DMR++ file:  " << dmrpp_filename << endl;
+        cout << "Produced " << super_chunks.size() << " SuperChunks." << endl;
+        for(auto super_chunk: super_chunks) {
+            cout << super_chunk->to_string(true) << endl;
+        }
+
+        delete dmr;
+    }
+
+
+
+    void dump_vars(libdap::D4Group *group){
+        // Process Groups - RECURSION HAPPENS HERE.
+        auto gtr = group->grp_begin();
+        while(gtr!=group->grp_end()){
+            if(debug) cout << "Found Group: "<< (*gtr)->name() << endl;
+            dump_vars(*gtr++);
+        }
+
+        // Process Vars
+        auto vtr = group->var_begin();
+        while(vtr!=group->var_end()){
+            libdap::BaseType *bt = *vtr++;
+            bt->dump(cout);
+            cout << endl;
+        }
+
+    }
+    void dump_vars(DMRpp &dmr){
+        dump_vars(dmr.root());
+    }
 
 
 
@@ -305,10 +336,14 @@ int main(int argc, char *argv[]) {
     // if (bes_debug) BESDebug::SetUp(bes_debug_log_file + "," + bes_debug_keys); // Enable BESDebug settings
 
 
+    BESIndent::SetIndent("");
 
-    for(unsigned i=1; i<argc; i++){
+    for(auto i=1; i<argc; i++){
         string dmrpp_filename(argv[i]);
-        dmrpp::inventory_super_chunks(dmrpp_filename);
+        //dmrpp::inventory_super_chunks(dmrpp_filename);
+
+        dmrpp::DMRpp *dmrpp = dmrpp::get_dmrpp( dmrpp_filename);
+        dump_vars(*dmrpp);
     }
     return 0;
 }

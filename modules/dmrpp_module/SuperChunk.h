@@ -15,11 +15,10 @@
 
 namespace dmrpp {
 
-class DmrppArray;
+class DmrppCommon;
 
 class SuperChunk {
 private:
-    DmrppArray *d_parent;
     std::vector<const std::shared_ptr<Chunk>> d_chunks;
     unsigned long long d_offset;
     unsigned long long d_size;
@@ -29,7 +28,7 @@ private:
     unsigned long long  read_contiguous(unsigned char *r_buff);
 
 public:
-    explicit SuperChunk(DmrppArray *parent): d_parent(parent), d_offset(0), d_size(0){}
+    explicit SuperChunk(): d_offset(0), d_size(0){}
     ~SuperChunk() = default;;
     virtual bool add_chunk(const std::shared_ptr<Chunk> &chunk);
 
@@ -39,7 +38,8 @@ public:
     virtual void read();
     virtual bool empty(){ return d_chunks.empty(); };
 
-    std::string to_string(bool verbose);
+    std::string to_string(bool verbose) const;
+    virtual void dump(std::ostream & strm) const;
 };
 
 }// namespace dmrpp
