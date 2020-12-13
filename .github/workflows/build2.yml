@@ -43,4 +43,4 @@ jobs:
       run: |
         set -x
         autoreconf -i
-        make
+
