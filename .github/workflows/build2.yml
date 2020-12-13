@@ -28,7 +28,7 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ~/hyrax-dependencies
-        key: hyrax-dependencies-${{ runner.os }}
+        key: hyrax-dependencies-${{ runner.os }}-actions-build
 
     - name: build-hyrax-dependencies
       if: steps.cache-hyrax-dependencies.outputs.cache-hit != 'true'
@@ -37,9 +37,10 @@ jobs:
         git clone https://github.com/OPENDAP/hyrax-dependencies.git
         cd hyrax-dependencies
         export prefix=/home/runner/hd1
-        make 
+        make actions-build
         cd ..
     - name: configure
       run: |
         set -x
         autoreconf -i
+        make
