@@ -43,4 +43,6 @@ jobs:
       run: |
         set -x
         autoreconf -i
+        ./configure --with-dependencies=/home/runner/hd1/dep
+        make
 
