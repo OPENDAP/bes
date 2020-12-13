@@ -22,7 +22,7 @@ jobs:
       run: |
         set -x
         sudo apt-get update
-        sudo apt-get install -o Acquire::Retries=3 doxygen graphviz wget gfortran
+        sudo apt-get install -o Acquire::Retries=3 doxygen graphviz wget gfortran libcurl4-openssl-dev
     - name: cache-hyrax-dependencies
       id: cache-hyrax-dependencies
       uses: actions/cache@v2
