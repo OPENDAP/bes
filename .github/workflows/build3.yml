@@ -1,0 +1,36 @@
+name: ubuntu-latest with hyrax-dependencies
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    env:
+      PWD_DIR: /home/runner
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules : true 
+    - name: Installs
+      run: |
+        set -x
+        sudo apt-get update
+        sudo apt-get install -o Acquire::Retries=3 doxygen graphviz wget gfortran libcurl4-openssl-dev
+    - uses: actions/download-artifact@v2
+      with:
+        name: hyrax-deps-ubuntu.tar.gz
+    
+    - name: Display structure of downloaded files
+      run: ls -R
+    - name: configure
+      run: |
+        set -x
+        autoreconf -i
+
