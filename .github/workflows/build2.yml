@@ -1,0 +1,29 @@
+name: ubuntu-latest build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    env:
+      PWD_DIR: /home/runner
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules : true 
+    - name: Installs
+      run: |
+        set -x
+        sudo apt-get update
+        sudo apt-get install -o Acquire::Retries=3 doxygen graphviz wget gfortran
+    - name: configure
+      run: |
+        set -x
+        autoreconf -i
