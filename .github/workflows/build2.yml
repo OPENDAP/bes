@@ -1,4 +1,4 @@
-name: ubuntu-latest build
+name: ubuntu-latest with hyrax-dependencies
 
 on:
   push:
@@ -34,7 +34,7 @@ jobs:
       if: steps.cache-hyrax-dependencies.outputs.cache-hit != 'true'
       run: |
         set -x
-        git clone git@github.com:OPENDAP/hyrax-dependencies.git
+        git clone https://github.com/OPENDAP/hyrax-dependencies.git
         cd hyrax-dependencies
         export prefix=/home/runner/hd1
         make 
