@@ -37,7 +37,7 @@ jobs:
         git clone https://github.com/OPENDAP/hyrax-dependencies.git
         cd hyrax-dependencies
         export prefix=/home/runner/hd1
-        make actions-build
+        make
         cd ..
     - name: configure
       run: |
