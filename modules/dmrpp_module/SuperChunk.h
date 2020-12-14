@@ -43,6 +43,7 @@ private:
     unsigned long long d_offset;
     unsigned long long d_size;
     bool d_is_read;
+    std::string d_byte_order;
 
     bool is_contiguous(const std::shared_ptr<Chunk> &chunk);
     void map_chunks_to_buffer(char *r_buff);

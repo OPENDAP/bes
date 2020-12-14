@@ -60,9 +60,14 @@ bool SuperChunk::add_chunk(const std::shared_ptr<Chunk> &chunk) {
         d_offset = chunk->get_offset();
         d_size = chunk->get_size();
         d_data_url = chunk->get_data_url();
+        d_byte_order = chunk->get_byte_order();
         chunk_was_added =  true;
     }
-    else if(is_contiguous(chunk) && chunk->get_data_url() == d_data_url){
+    else if(
+            is_contiguous(chunk) &&
+            d_byte_order == chunk->get_byte_order() &&
+            chunk->get_data_url() == d_data_url ){
+
         this->d_chunks.push_back(chunk);
         d_size += chunk->get_size();
         chunk_was_added =  true;
@@ -99,9 +104,10 @@ unsigned long long  SuperChunk::read_contiguous(char *r_buff)
         return d_size;
     }
 
+    Chunk chunk(d_data_url,d_byte_order,d_size,d_offset);
 
     // If we make SuperChunk a child of Chunk then this goes...
-    dmrpp_easy_handle *handle = DmrppRequestHandler::curl_handle_pool->get_easy_handle(this);
+    dmrpp_easy_handle *handle = DmrppRequestHandler::curl_handle_pool->get_easy_handle(&chunk);
     if (!handle)
         throw BESInternalError(prolog + "No more libcurl handles.", __FILE__, __LINE__);
 
@@ -115,9 +121,9 @@ unsigned long long  SuperChunk::read_contiguous(char *r_buff)
     }
 
     // If the expected byte count was not read, it's an error.
-    if (d_size != get_bytes_read()) {
+    if (d_size != chunk.get_bytes_read()) {
         ostringstream oss;
-        oss << "Wrong number of bytes read for chunk; read: " << get_bytes_read() << ", expected: " << get_size();
+        oss << "Wrong number of bytes read for chunk; read: " << chunk.get_bytes_read() << ", expected: " << d_size();
         throw BESInternalError(oss.str(), __FILE__, __LINE__);
     }
 
