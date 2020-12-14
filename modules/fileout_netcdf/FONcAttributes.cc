@@ -38,6 +38,7 @@ using std::istringstream;
 #include <BESDebug.h>
 #include <BESInternalError.h>
 #include <BESUtil.h>
+#include <cstdlib>
 
 #include "DapFunctionUtils.h"
 
@@ -384,9 +385,11 @@ void FONcAttributes::add_attributes_worker(int ncid, int varid, const string &va
                 float vals[num_vals];
                 for (attri = 0; attri < num_vals; attri++) {
                     string val = attrs.get_attr(attr, attri);
-                    istringstream is(val);
+                    const char *cval = val.c_str();
+                    //istringstream is(val);
                     float fval = 0;
-                    is >> fval;
+                    fval = strtod(cval,NULL);
+                    //is >> fval;
                     vals[attri] = fval;
                 }
                 stax = nc_put_att_float(ncid, varid, new_name.c_str(), NC_FLOAT,
@@ -403,9 +406,11 @@ void FONcAttributes::add_attributes_worker(int ncid, int varid, const string &va
                 double vals[num_vals];
                 for (attri = 0; attri < num_vals; attri++) {
                     string val = attrs.get_attr(attr, attri);
-                    istringstream is(val);
+                    const char *cval = val.c_str();
+                    //istringstream is(val);
                     double dval = 0;
-                    is >> dval;
+                    dval = strtod(cval,NULL);
+                    //is >> dval;
                     vals[attri] = dval;
                 }
                 stax = nc_put_att_double(ncid, varid, new_name.c_str(), NC_DOUBLE,
@@ -704,9 +709,11 @@ void FONcAttributes::add_dap4_attributes_worker(int ncid, int varid, const strin
                 attri = 0;
                 for (D4Attribute::D4AttributeIter vi = attr->value_begin(), ve = attr->value_end(); vi != ve; vi++) {
                     string val = *vi;
-                    istringstream is(val);
+                    const char *cval = val.c_str();
+                    //istringstream is(val);
                     float sval = 0;
-                    is >> sval;
+                    sval = strtod(cval,NULL);
+                    //is >> sval;
                     vals[attri] = sval;
                     ++attri;
                 }
@@ -732,9 +739,11 @@ void FONcAttributes::add_dap4_attributes_worker(int ncid, int varid, const strin
                 attri = 0;
                 for (D4Attribute::D4AttributeIter vi = attr->value_begin(), ve = attr->value_end(); vi != ve; vi++) {
                     string val = *vi;
-                    istringstream is(val);
+                    const char *cval = val.c_str();
+                    //istringstream is(val);
                     double sval = 0;
-                    is >> sval;
+                    sval = strtod(cval,NULL);
+                    //is >> sval;
                     vals[attri] = sval;
                     ++attri;
                 }
@@ -1025,9 +1034,11 @@ FONcAttributes::write_attrs_for_nc4_types(int ncid, int varid, const string &var
             vals.resize(num_vals);
             for (attri = 0; attri < num_vals; attri++) {
                 string val = attrs.get_attr(attr, attri);
-                istringstream is(val);
+                const char *cval = val.c_str();
+                //istringstream is(val);
                 float fval = 0;
-                is >> fval;
+                fval = strtod(cval,NULL);
+                //is >> fval;
                 vals[attri] = fval;
             }
             stax = nc_put_att_float(ncid, varid, var_attr_name.c_str(), NC_FLOAT, num_vals, &vals[0]);
@@ -1050,9 +1061,11 @@ FONcAttributes::write_attrs_for_nc4_types(int ncid, int varid, const string &var
             vals.resize(num_vals);
             for (attri = 0; attri < num_vals; attri++) {
                 string val = attrs.get_attr(attr, attri);
-                istringstream is(val);
+                const char *cval = val.c_str();
+                //istringstream is(val);
                 double dval = 0;
-                is >> dval;
+                dval = strtod(cval,NULL);
+                //is >> dval;
                 vals[attri] = dval;
             }
             stax = nc_put_att_double(ncid, varid, var_attr_name.c_str(), NC_DOUBLE, num_vals, &vals[0]);
@@ -1430,9 +1443,11 @@ FONcAttributes::write_dap4_attrs_for_nc4_types(int ncid, int varid, const string
             attri = 0;
             for (D4Attribute::D4AttributeIter vi = attr->value_begin(), ve = attr->value_end(); vi != ve; vi++) {
                 string val = *vi;
-                istringstream is(val);
+                const char *cval = val.c_str();
+                //istringstream is(val);
                 float sval = 0;
-                is >> sval;
+                sval = strtod(cval,NULL);
+                //is >> sval;
                 vals[attri] = sval;
                 ++attri;
             }
@@ -1463,9 +1478,11 @@ FONcAttributes::write_dap4_attrs_for_nc4_types(int ncid, int varid, const string
             attri = 0;
             for (D4Attribute::D4AttributeIter vi = attr->value_begin(), ve = attr->value_end(); vi != ve; vi++) {
                 string val = *vi;
-                istringstream is(val);
+                const char *cval = val.c_str();
+                //istringstream is(val);
                 double sval = 0;
-                is >> sval;
+                sval = strtod(cval,NULL);
+                //is >> sval;
                 vals[attri] = sval;
                 ++attri;
             }
@@ -1692,9 +1709,11 @@ FONcAttributes::write_dap4_attrs_for_nc4_types(int ncid, int varid, const string
             vals.resize(num_vals);
             for (attri = 0; attri < num_vals; attri++) {
                 string val = attrs.get_attr(attr, attri);
-                istringstream is(val);
+                const char *cval = val.c_str();
+                //istringstream is(val);
                 float fval = 0;
-                is >> fval;
+                fval = strtod(cval,NULL);
+                //is >> fval;
                 vals[attri] = fval;
             }
             stax = nc_put_att_float(ncid, varid, var_attr_name.c_str(), NC_FLOAT,
@@ -1713,9 +1732,11 @@ FONcAttributes::write_dap4_attrs_for_nc4_types(int ncid, int varid, const string
             vals.resize(num_vals);
             for (attri = 0; attri < num_vals; attri++) {
                 string val = attrs.get_attr(attr, attri);
-                istringstream is(val);
+                const char *cval = val.c_str();
+                //istringstream is(val);
                 double dval = 0;
-                is >> dval;
+                dval = strtod(cval,NULL);
+                //is >> dval;
                 vals[attri] = dval;
             }
             stax = nc_put_att_double(ncid, varid, var_attr_name.c_str(), NC_DOUBLE,
