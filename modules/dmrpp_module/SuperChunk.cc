@@ -8,9 +8,14 @@
 #include <string>
 
 #include "BESInternalError.h"
+#include "BESDebug.h"
+#include "CurlUtils.h"
 
+#include "DmrppRequestHandler.h"
+#include "CurlHandlePool.h"
 #include "DmrppCommon.h"
 #include "DmrppArray.h"
+#include "DmrppNames.h"
 #include "Chunk.h"
 #include "SuperChunk.h"
 
@@ -22,16 +27,21 @@ using std::vector;
 
 namespace dmrpp {
 
+    string SuperChunk::get_curl_range_arg_string() {
+        return curl::get_range_arg_string(get_offset(), get_size());
+    }
 
-bool SuperChunk::add_chunk(const std::shared_ptr<Chunk> &chunk) {
+
+    bool SuperChunk::add_chunk(const std::shared_ptr<Chunk> &chunk) {
     bool chunk_was_added = false;
     if(d_chunks.empty()){
         this->d_chunks.push_back(chunk);
-        d_offset = chunk->get_offset();
-        d_size = chunk->get_size();
+        set_offset(chunk->get_offset());
+        set_size(chunk->get_size());
+        set_data_url(chunk->get_data_url());
         chunk_was_added =  true;
     }
-    else if(is_contiguous(chunk)){
+    else if(is_contiguous(chunk) && chunk->get_data_url() == d_data_url){
         this->d_chunks.push_back(chunk);
         d_size += chunk->get_size();
         chunk_was_added =  true;
@@ -52,27 +62,55 @@ bool SuperChunk::is_contiguous(const std::shared_ptr<Chunk> &chunk) {
 }
 
 
-void SuperChunk::map_chunks_to_buffer(unsigned char * /*r_buff*/)
+void SuperChunk::map_chunks_to_buffer(char * r_buff)
 {
     unsigned long long bindex = 0;
     for(const auto &chunk : d_chunks){
-        //chunk->set_rbuf(r_buff+bindex, chunk->get_size());
+        chunk->set_rbuf(r_buff+bindex, chunk->get_size());
         bindex += chunk->get_size();
     }
 }
 
-unsigned long long  SuperChunk::read_contiguous(unsigned char * /*r_buff*/)
+unsigned long long  SuperChunk::read_contiguous(char *r_buff)
 {
+    if (d_is_read) {
+        BESDEBUG(MODULE, prolog << "Already been read! Returning." << endl);
+        return d_size;
+    }
+
+
+    // If we make SuperChunk a child of Chunk then this goes...
+    dmrpp_easy_handle *handle = DmrppRequestHandler::curl_handle_pool->get_easy_handle(this);
+    if (!handle)
+        throw BESInternalError(prolog + "No more libcurl handles.", __FILE__, __LINE__);
+
+    try {
+        handle->read_data();  // throws if error
+        DmrppRequestHandler::curl_handle_pool->release_handle(handle);
+    }
+    catch(...) {
+        DmrppRequestHandler::curl_handle_pool->release_handle(handle);
+        throw;
+    }
+
+    // If the expected byte count was not read, it's an error.
+    if (get_size() != get_bytes_read()) {
+        ostringstream oss;
+        oss << "Wrong number of bytes read for chunk; read: " << get_bytes_read() << ", expected: " << get_size();
+        throw BESInternalError(oss.str(), __FILE__, __LINE__);
+    }
+
+    d_is_read = true;
     return 0;
 }
 
 void SuperChunk::read() {
 
     // Allocate memory for SuperChunk receive buffer.
-    unsigned char read_buff[d_size];
+    char read_buff[get_size()];
 
     // Massage the chunks so that their read/receive/intern data buffer
-    // points to the correct section of the memory allocated into d_buffer.
+    // points to the correct section of the memory allocated into read_buff.
     // "Slice it up!"
     map_chunks_to_buffer(read_buff);
 
@@ -80,8 +118,9 @@ void SuperChunk::read() {
     // Use one (or possibly more) thread(s) depending on d_size
     // and utilize our friend cURL to stuff the bytes into read_buff
     unsigned long long bytes_read = read_contiguous(read_buff);
-    if(bytes_read != size())
+    if(bytes_read != get_size())
         throw BESInternalError(prolog + "Failed to read super chunk."+to_string(false),__FILE__,__LINE__);
+
 
     // Process the raw bytes from the chunk and into the target array
     // memory space.
@@ -91,7 +130,7 @@ void SuperChunk::read() {
     //      read buffer into the variables data space.
     //   }
     for(auto chunk : d_chunks){
-        //chunk->set_is_read(true);
+        chunk->set_is_read(true);
         //chunk->raw_to_var();
     }
     // release memory as needed.

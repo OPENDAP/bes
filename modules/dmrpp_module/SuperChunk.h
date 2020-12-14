@@ -19,21 +19,35 @@ class DmrppCommon;
 
 class SuperChunk {
 private:
+    std::string d_data_url;
     std::vector<const std::shared_ptr<Chunk>> d_chunks;
     unsigned long long d_offset;
     unsigned long long d_size;
+    bool d_is_read;
 
     bool is_contiguous(const std::shared_ptr<Chunk> &chunk);
-    void map_chunks_to_buffer(unsigned char *r_buff);
-    unsigned long long  read_contiguous(unsigned char *r_buff);
+    void map_chunks_to_buffer(char *r_buff);
+    unsigned long long  read_contiguous(char *r_buff);
 
 public:
-    explicit SuperChunk(): d_offset(0), d_size(0){}
+    explicit SuperChunk(): d_data_url(""), d_offset(0), d_size(0), d_is_read(false){}
     ~SuperChunk() = default;;
     virtual bool add_chunk(const std::shared_ptr<Chunk> &chunk);
 
-    virtual unsigned long long offset(){ return d_offset; };
-    virtual unsigned long long size(){ return d_size; }
+    virtual void set_offset(unsigned long long offset){
+        d_offset = offset;
+    }
+    virtual unsigned long long get_offset(){ return d_offset; };
+
+    virtual void set_size(unsigned long long size){ d_size = size; }
+    virtual unsigned long long get_size(){ return d_size; }
+
+    std::string get_curl_range_arg_string();
+
+    virtual void set_data_url(const std::string &url){
+        d_data_url = url;
+    }
+    virtual std::string get_data_url(){  return d_data_url; }
 
     virtual void read();
     virtual bool empty(){ return d_chunks.empty(); };
