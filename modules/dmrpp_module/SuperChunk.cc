@@ -53,6 +53,14 @@ string SuperChunk::get_curl_range_arg_string() {
 }
 #endif
 
+/**
+ * @brief Attempts to add a new Chunk to this SuperChunk.
+ *
+ * If the passed chunk has the same data url, byte order, and is it is contiguous with the
+ * current end if the SuperChunk the Chunk is added, otherwise it is skipped.
+ * @param chunk The Chunk to add.
+ * @return True when the chunk is added, false otherwise.
+ */
 bool SuperChunk::add_chunk(const std::shared_ptr<Chunk> &chunk) {
     bool chunk_was_added = false;
     if(d_chunks.empty()){
@@ -87,16 +95,28 @@ bool SuperChunk::is_contiguous(const std::shared_ptr<Chunk> &chunk) {
     return (d_offset + d_size) == chunk->get_offset();
 }
 
-
+/**
+ * Assigns each Chunk held by the SuperChunk a read buffer that is the appriate part of the SuperChunk's
+ * enclosing read buffer.
+ * @param r_buff
+ */
 void SuperChunk::map_chunks_to_buffer(char * r_buff)
 {
     unsigned long long bindex = 0;
     for(const auto &chunk : d_chunks){
+        // FIXME - This next call has issues - it will try to delete rbuf when ~Chunk() is called.
+        //  Maybe utilize shared_ptr for r_buff both here and in Chunk????
         chunk->set_rbuf(r_buff+bindex, chunk->get_size());
         bindex += chunk->get_size();
     }
 }
 
+
+/**
+ * @brief Reads the bytes associated with the SUperCHunk from the data URL.
+ * @param r_buff The buffer into which to place the bytes
+ * @param r_buff_size THe number of bytes
+ */
 void SuperChunk::read_contiguous(char *r_buff, unsigned long long r_buff_size)
 {
     if (d_is_read) {
@@ -133,6 +153,11 @@ void SuperChunk::read_contiguous(char *r_buff, unsigned long long r_buff_size)
     d_is_read = true;
 }
 
+
+/**
+ * @brief Cause the SuperChunk and all of it's subordinate Chunks to be read and processed back into the
+ * parent DmrppCommon object's internal value array.
+ */
 void SuperChunk::read() {
 
     // Allocate memory for SuperChunk receive buffer.
