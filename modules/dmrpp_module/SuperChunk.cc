@@ -128,7 +128,7 @@ unsigned long long  SuperChunk::read_contiguous(char *r_buff)
 void SuperChunk::read() {
 
     // Allocate memory for SuperChunk receive buffer.
-    char read_buff[get_size()];
+    char read_buff[d_size];
 
     // Massage the chunks so that their read/receive/intern data buffer
     // points to the correct section of the memory allocated into read_buff.
@@ -139,7 +139,7 @@ void SuperChunk::read() {
     // Use one (or possibly more) thread(s) depending on d_size
     // and utilize our friend cURL to stuff the bytes into read_buff
     unsigned long long bytes_read = read_contiguous(read_buff);
-    if(bytes_read != get_size())
+    if(bytes_read != d_size)
         throw BESInternalError(prolog + "Failed to read super chunk."+to_string(false),__FILE__,__LINE__);
 
 
