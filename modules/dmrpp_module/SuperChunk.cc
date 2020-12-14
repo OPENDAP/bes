@@ -97,14 +97,18 @@ void SuperChunk::map_chunks_to_buffer(char * r_buff)
     }
 }
 
-unsigned long long  SuperChunk::read_contiguous(char *r_buff)
+void SuperChunk::read_contiguous(char *r_buff, unsigned long long r_buff_size)
 {
     if (d_is_read) {
-        BESDEBUG(MODULE, prolog << "Already been read! Returning." << endl);
-        return d_size;
+        BESDEBUG(MODULE, prolog << "SuperChunk (" << (void **) this << ") has already been read! Returning." << endl);
+        return;
     }
 
     Chunk chunk(d_data_url,d_byte_order,d_size,d_offset);
+
+    // FIXME - This next call has issues - it will try to delete rbuf when ~Chunk() is called.
+    //  Maybe utilize shared_ptr for r_buff both here and in Chunk????
+    chunk.set_rbuf(r_buff,r_buff_size);
 
     // If we make SuperChunk a child of Chunk then this goes...
     dmrpp_easy_handle *handle = DmrppRequestHandler::curl_handle_pool->get_easy_handle(&chunk);
@@ -126,9 +130,7 @@ unsigned long long  SuperChunk::read_contiguous(char *r_buff)
         oss << "Wrong number of bytes read for chunk; read: " << chunk.get_bytes_read() << ", expected: " << d_size();
         throw BESInternalError(oss.str(), __FILE__, __LINE__);
     }
-
     d_is_read = true;
-    return 0;
 }
 
 void SuperChunk::read() {
@@ -158,6 +160,9 @@ void SuperChunk::read() {
     //   }
     for(auto chunk : d_chunks){
         chunk->set_is_read(true);
+
+        // TODO - Refactor Chunk so that the post read activities (shuffle, deflate, etc)
+        // happen in a separate method so we can call it here.
         //chunk->raw_to_var();
     }
     // release memory as needed.

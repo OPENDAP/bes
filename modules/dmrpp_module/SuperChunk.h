@@ -47,7 +47,7 @@ private:
 
     bool is_contiguous(const std::shared_ptr<Chunk> &chunk);
     void map_chunks_to_buffer(char *r_buff);
-    unsigned long long  read_contiguous(char *r_buff);
+    void read_contiguous(char *r_buff, unsigned long long r_buff_size);
 
 public:
     explicit SuperChunk(): d_data_url(""), d_offset(0), d_size(0), d_is_read(false){}
