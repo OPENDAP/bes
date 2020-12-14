@@ -53,6 +53,7 @@ public:
     ~SuperChunk() = default;;
     virtual bool add_chunk(const std::shared_ptr<Chunk> &chunk);
 
+#if 0
     virtual void set_offset(unsigned long long offset){
         d_offset = offset;
     }
@@ -67,6 +68,8 @@ public:
         d_data_url = url;
     }
     virtual std::string get_data_url(){  return d_data_url; }
+
+#endif
 
     virtual void read();
     virtual bool empty(){ return d_chunks.empty(); };

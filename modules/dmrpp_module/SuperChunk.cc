@@ -47,18 +47,19 @@ using std::vector;
 
 namespace dmrpp {
 
-    string SuperChunk::get_curl_range_arg_string() {
-        return curl::get_range_arg_string(get_offset(), get_size());
-    }
+#if 0
+string SuperChunk::get_curl_range_arg_string() {
+    return curl::get_range_arg_string(d_offset, d_size);
+}
+#endif
 
-
-    bool SuperChunk::add_chunk(const std::shared_ptr<Chunk> &chunk) {
+bool SuperChunk::add_chunk(const std::shared_ptr<Chunk> &chunk) {
     bool chunk_was_added = false;
     if(d_chunks.empty()){
-        this->d_chunks.push_back(chunk);
-        set_offset(chunk->get_offset());
-        set_size(chunk->get_size());
-        set_data_url(chunk->get_data_url());
+        d_chunks.push_back(chunk);
+        d_offset = chunk->get_offset();
+        d_size = chunk->get_size();
+        d_data_url = chunk->get_data_url();
         chunk_was_added =  true;
     }
     else if(is_contiguous(chunk) && chunk->get_data_url() == d_data_url){
@@ -114,7 +115,7 @@ unsigned long long  SuperChunk::read_contiguous(char *r_buff)
     }
 
     // If the expected byte count was not read, it's an error.
-    if (get_size() != get_bytes_read()) {
+    if (d_size != get_bytes_read()) {
         ostringstream oss;
         oss << "Wrong number of bytes read for chunk; read: " << get_bytes_read() << ", expected: " << get_size();
         throw BESInternalError(oss.str(), __FILE__, __LINE__);
