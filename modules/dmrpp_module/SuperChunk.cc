@@ -106,9 +106,7 @@ void SuperChunk::map_chunks_to_buffer(char * r_buff)
 {
     unsigned long long bindex = 0;
     for(const auto &chunk : d_chunks){
-        // FIXME - This next call has issues - it will try to delete rbuf when ~Chunk() is called.
-        //  Maybe utilize shared_ptr for r_buff both here and in Chunk????
-        chunk->set_rbuf(r_buff+bindex, chunk->get_size());
+        chunk->set_read_buffer(r_buff+bindex, chunk->get_size(),0, true);
         bindex += chunk->get_size();
     }
 }
