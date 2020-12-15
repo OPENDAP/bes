@@ -723,7 +723,8 @@ add_executable(bes
     modules/dmrpp_module/unit-tests/unused/DmrppHttpReadTest.cc
     modules/dmrpp_module/unit-tests/unused/DmrppTypeReadTest.cc
     modules/dmrpp_module/unit-tests/unused/DmrppUtilTest.cc
-    modules/dmrpp_module/unit-tests/ChunkTest.cc
+        modules/dmrpp_module/unit-tests/ChunkTest.cc
+        modules/dmrpp_module/unit-tests/SuperChunkTest.cc
     modules/dmrpp_module/unit-tests/CredentialsManagerTest.cc
     modules/dmrpp_module/unit-tests/DmrppCommonTest.cc
     modules/dmrpp_module/unit-tests/DmrppMetadataStoreTest.cc
