@@ -1,0 +1,93 @@
+netcdf test {
+dimensions:
+	rows = 4320 ;
+	columns = 8640 ;
+	rgb = 3 ;
+	eightbitcolor = 256 ;
+	palette_len1 = 2 ;
+variables:
+	char palette(rgb, eightbitcolor, palette_len1) ;
+
+// global attributes:
+		:product_name = "A20030602003090.L3m_MO_AT108_CHL_chlor_a_4km.nc" ;
+		:instrument = "MODIS" ;
+		:title = "MODIS Level-3 Standard Mapped Image" ;
+		:project = "Ocean Biology Processing Group (NASA/GSFC/OBPG)" ;
+		:platform = "Aqua" ;
+		:temporalResolution = "other" ;
+		:processing_version = "2013.2NCDF" ;
+		:date_created = "2014122133058000" ;
+		:history = "smigen par=A20030602003090.L3m_MO_AT108_CHL_chlor_a_4km.nc.param" ;
+		:l2_flag_names = "ATMFAIL,LAND,HILT,HISATZEN,STRAYLIGHT,CLDICE,COCCOLITH,LOWLW,CHLWARN,CHLFAIL,NAVWARN,MAXAERITER,ATMWARN,HISOLZEN,NAVFAIL,FILTER,HIGLINT" ;
+		:time_coverage_start = "2003-03-01T00:30:06Z" ;
+		:time_coverage_end = "2003-04-01T02:25:04Z" ;
+		:orbit_number = 4606 ;
+		:start_orbit_number = 4380 ;
+		:end_orbit_numer = 4833 ;
+		:map_projection = "Equidistant Cylindrical" ;
+		:latitude_units = "degrees North" ;
+		:longitude_units = "degrees East" ;
+		:northernmost_latitude = 90.f ;
+		:southernmost_latitude = -90.f ;
+		:easternmost_longitude = -180.f ;
+		:westernmost_longitude = 180.f ;
+		:geospatial_lat_max = 90.f ;
+		:geospatial_lat_min = -90.f ;
+		:geospatial_lon_max = -180.f ;
+		:geospatial_lon_min = 180.f ;
+		:grid_mapping_name = "latitude_longitude" ;
+		:latitude_step = 0.04166667f ;
+		:longitude_step = 0.04166667f ;
+		:sw_point_latitude = -89.97916f ;
+		:sw_point_longitude = -179.9792f ;
+		:geospatial_lon_resolution = 4 ;
+		:geospatial_lat_resolution = 4 ;
+		:geospatial_lat_units = "km" ;
+		:spatialResolution = "4 km" ;
+		:data_bins = 14119177 ;
+		:number_of_lines = 4320 ;
+		:number_of_columns = 8640 ;
+		:measure = "Mean" ;
+		:data_minimum = 0.000573f ;
+		:data_maximum = 99.30266f ;
+		:suggested_image_scaling_minimum = 0.01f ;
+		:suggested_image_scaling_maximum = 20.f ;
+		:suggested_image_scaling_type = "LOG" ;
+		:suggested_image_scaling_applied = "No" ;
+		:_lastModified = "2014122133058000" ;
+		:Conventions = "CF-1.6" ;
+		:institution = "NASA/GSFC OBPG" ;
+		:standard_name_vocabulary = "NetCDF Climate and Forecast (CF) Metadata Convenention" ;
+		:Metadata_Conventions = "Unidata Dataset Discovery v1.0" ;
+		:naming_authority = "gov.nasa.gsfc.sci.oceandata" ;
+		:license = "http://science.nasa.gov/earth-science/earth-science-data/data-information-policy/" ;
+		:creator_name = "NASA/GSFC/OBPG" ;
+		:publisher_name = "NASA/GSFC/OBPG" ;
+		:creator_email = "data@oceancolor.gsfc.nasa.gov" ;
+		:publisher_email = "data@oceancolor.gsfc.nasa.gov" ;
+		:creator_url = "http://oceandata.sci.gsfc.nasa.gov" ;
+		:publisher_url = "http://oceandata.sci.gsfc.nasa.gov" ;
+		:processing_level = "L3 Mapped" ;
+		:cdm_data_type = "grid" ;
+		:identifier_product_doi_authority = "http://dx.doi.org" ;
+		:identifier_product_doi = "10.5067/AQUA/MODIS_OC.2014.0" ;
+		:keywords = "Oceans > Ocean Chemistry > Chlorophyll; Oceans > Ocean Optics > Ocean Color" ;
+		:keywords_vocabulary = "NASA Global Change Master Directory (GCMD) Science Keywords" ;
+
+group: geophysical_data {
+  variables:
+  	float chlor_a(rows, columns) ;
+  		chlor_a:long_name = "Chlorophyll Concentration, OC3 Algorithm" ;
+  		chlor_a:units = "mg m^-3" ;
+  		chlor_a:standard_name = "mass_concentration_chlorophyll_concentration_in_sea_water" ;
+  		chlor_a:_FillValue = -32767.f ;
+  		chlor_a:valid_min = 0.001f ;
+  		chlor_a:valid_max = 100.f ;
+  		chlor_a:display_scale = "log" ;
+  		chlor_a:display_min = 0.01 ;
+  		chlor_a:display_max = 20. ;
+  		chlor_a:scale_factor = 1.f ;
+  		chlor_a:add_offset = 0.f ;
+  		chlor_a:reference = "O\'Reilly, J.E., and 24 Coauthors, 2000: SeaWiFS Postlaunch Calibration and Validation Analyses, Part 3. NASA Tech. Memo. 2000-206892, Vol. 11, S.B. Hooker and E.R. Firestone, Eds., NASA Goddard Space Flight Center, 49 pp.\\n\n                http://oceancolor.gsfc.nasa.gov/REPROCESSING/R2009/ocv6/" ;
+  } // group geophysical_data
+}

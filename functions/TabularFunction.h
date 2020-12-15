@@ -72,7 +72,7 @@ public:
         setDescriptionString("The tabular() function transforms one or more arrays into a sequence.");
         setUsageString("tabular()");
         setRole("http://services.opendap.org/dap4/server-side-function/tabular");
-        setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#tabular");
+        setDocUrl("https://docs.opendap.org/index.php/Server_Side_Processing_Functions#tabular");
         setFunction(TabularFunction::function_dap2_tabular);
         // FIXME setFunction(libdap::TabularFunction::function_dap4_tabular);
         setVersion("1.0");

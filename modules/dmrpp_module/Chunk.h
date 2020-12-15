@@ -146,6 +146,7 @@ public:
     virtual ~Chunk()
     {
         delete[] d_read_buffer;
+        d_read_buffer = 0;
     }
 
     /// I think this is broken. vector<Chunk> assignment fails

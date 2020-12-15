@@ -27,6 +27,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 //#include <H5Ppublic.h>
 
@@ -66,7 +67,8 @@ void join_threads(pthread_t threads[], unsigned int num_threads);
 class DmrppCommon {
 
 	friend class DmrppCommonTest;
-	friend class DmrppParserTest;
+    friend class DmrppParserTest;
+    friend class DmrppTypeReadTest;
 
 private:
 	bool d_deflate;
@@ -74,7 +76,7 @@ private:
 	bool d_compact;
 	std::string d_byte_order;
 	std::vector<unsigned int> d_chunk_dimension_sizes;
-	std::vector<Chunk> d_chunks;
+	std::vector<std::shared_ptr<Chunk>> d_chunks;
 	bool d_twiddle_bytes;
 
 protected:
@@ -90,7 +92,7 @@ protected:
 
     /// @brief Returns a reference to the internal Chunk vector.
     /// @see get_immutable_chunks()
-    virtual std::vector<Chunk> &get_chunks() {
+    virtual std::vector<std::shared_ptr<Chunk>> &get_chunks() {
     	return d_chunks;
     }
 
@@ -149,7 +151,7 @@ public:
 
     /// @brief A const reference to the vector of chunks
     /// @see get_chunks()
-    virtual const std::vector<Chunk> &get_immutable_chunks() const {
+    virtual const std::vector< std::shared_ptr<Chunk>> &get_immutable_chunks() const {
     	return d_chunks;
     }
 

@@ -39,7 +39,7 @@ namespace dmrpp {
 class DmrppD4Opaque: public libdap::D4Opaque, public DmrppCommon {
     void _duplicate(const DmrppD4Opaque &ts);
 
-    void insert_chunk(Chunk *chunk);
+    void insert_chunk(std::shared_ptr<Chunk>  chunk);
     void read_chunks();
 
 public:

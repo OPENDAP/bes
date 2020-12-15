@@ -1,0 +1,133 @@
+netcdf test {
+dimensions:
+	dim4 = 1 ;
+	InputFileNames_len1 = 31357 ;
+	dim5 = 1 ;
+	InputAlgorithmVersions_len2 = 5617 ;
+	dim6 = 1 ;
+	InputGenerationDateTimes_len3 = 11701 ;
+variables:
+	char InputFileNames(dim4, InputFileNames_len1) ;
+	char InputAlgorithmVersions(dim5, InputAlgorithmVersions_len2) ;
+	char InputGenerationDateTimes(dim6, InputGenerationDateTimes_len3) ;
+
+// global attributes:
+		:FileHeader = "DOI=10.5067/GPM/GMI/MONTH/3A;\nAlgorithmID=3GPROF;\nAlgorithmVersion=GRID2014R1;\nFileName=3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A.HDF5;\nSatelliteName=GPM;\nInstrumentName=GMI;\nGenerationDateTime=2014-07-02T23:16:24.000Z;\nStartGranuleDateTime=2014-06-01T00:00:00.000Z;\nStopGranuleDateTime=2014-06-30T23:59:59.999Z;\nGranuleNumber=;\nNumberOfSwaths=0;\nNumberOfGrids=1;\nGranuleStart=;\nTimeInterval=MONTH;\nProcessingSystem=PPS;\nProductVersion=V03A;\nEmptyGranule=NOT_EMPTY;\nMissingData=;\n" ;
+		:FileInfo = "DataFormatVersion=am;\nTKCodeBuildVersion=1;\nMetadataVersion=am;\nFormatPackage=HDF5-1.8.9;\nBlueprintFilename=GPM.V1.3GPROF.blueprint.xml;\nBlueprintVersion=BV_34;\nTKIOVersion=3.60.2;\nMetadataStyle=PVL;\nEndianType=LITTLE_ENDIAN;\n" ;
+
+group: Grid {
+  dimensions:
+  	dim7 = 1440 ;
+  	dim8 = 720 ;
+  	dim9 = 1440 ;
+  	dim10 = 720 ;
+  	dim11 = 28 ;
+  	dim12 = 1440 ;
+  	dim13 = 720 ;
+  	dim14 = 1440 ;
+  	dim15 = 720 ;
+  	dim16 = 1440 ;
+  	dim17 = 720 ;
+  	dim18 = 1440 ;
+  	dim19 = 720 ;
+  	dim20 = 1440 ;
+  	dim21 = 720 ;
+  	dim22 = 1440 ;
+  	dim23 = 720 ;
+  	dim24 = 1440 ;
+  	dim25 = 720 ;
+  	dim26 = 1440 ;
+  	dim27 = 720 ;
+  	dim28 = 28 ;
+  	dim29 = 1440 ;
+  	dim30 = 720 ;
+  	dim31 = 28 ;
+  	dim32 = 1440 ;
+  	dim33 = 720 ;
+  	dim34 = 28 ;
+  	dim35 = 1440 ;
+  	dim36 = 720 ;
+  	dim37 = 1440 ;
+  	dim38 = 720 ;
+  	dim39 = 1440 ;
+  	dim40 = 720 ;
+  	dim41 = 1440 ;
+  	dim42 = 720 ;
+  	dim43 = 1440 ;
+  	dim44 = 720 ;
+  	dim45 = 28 ;
+  	dim46 = 1440 ;
+  	dim47 = 720 ;
+  variables:
+  	float fractionQuality2(dim7, dim8) ;
+  		fractionQuality2:DimensionNames = "nlon,nlat" ;
+  		fractionQuality2:Units = "percent" ;
+  		fractionQuality2:CodeMissingValue = "-9999.900391" ;
+  	float fractionQuality1(dim9, dim10) ;
+  		fractionQuality1:DimensionNames = "nlon,nlat" ;
+  		fractionQuality1:Units = "percent" ;
+  		fractionQuality1:CodeMissingValue = "-9999.900391" ;
+  	float mixedWater(dim11, dim12, dim13) ;
+  		mixedWater:DimensionNames = "nlayer,nlon,nlat" ;
+  		mixedWater:Units = "g/m^3" ;
+  		mixedWater:CodeMissingValue = "-9999.900391" ;
+  	float iceWaterPath(dim14, dim15) ;
+  		iceWaterPath:DimensionNames = "nlon,nlat" ;
+  		iceWaterPath:Units = "kg/m^2" ;
+  		iceWaterPath:CodeMissingValue = "-9999.900391" ;
+  	float surfacePrecipitation(dim16, dim17) ;
+  		surfacePrecipitation:DimensionNames = "nlon,nlat" ;
+  		surfacePrecipitation:Units = "mm/hr" ;
+  		surfacePrecipitation:CodeMissingValue = "-9999.900391" ;
+  	float fractionQuality0(dim18, dim19) ;
+  		fractionQuality0:DimensionNames = "nlon,nlat" ;
+  		fractionQuality0:Units = "percent" ;
+  		fractionQuality0:CodeMissingValue = "-9999.900391" ;
+  	int npixTotal(dim20, dim21) ;
+  		npixTotal:DimensionNames = "nlon,nlat" ;
+  		npixTotal:CodeMissingValue = "-9999" ;
+  	float cloudWaterPath(dim22, dim23) ;
+  		cloudWaterPath:DimensionNames = "nlon,nlat" ;
+  		cloudWaterPath:Units = "kg/m^2" ;
+  		cloudWaterPath:CodeMissingValue = "-9999.900391" ;
+  	int npixPrecipitation(dim24, dim25) ;
+  		npixPrecipitation:DimensionNames = "nlon,nlat" ;
+  		npixPrecipitation:CodeMissingValue = "-9999" ;
+  	float mixedWaterPath(dim26, dim27) ;
+  		mixedWaterPath:DimensionNames = "nlon,nlat" ;
+  		mixedWaterPath:Units = "kg/m^2" ;
+  		mixedWaterPath:CodeMissingValue = "-9999.900391" ;
+  	float rainWater(dim28, dim29, dim30) ;
+  		rainWater:DimensionNames = "nlayer,nlon,nlat" ;
+  		rainWater:Units = "g/m^3" ;
+  		rainWater:CodeMissingValue = "-9999.900391" ;
+  	float cloudWater(dim31, dim32, dim33) ;
+  		cloudWater:DimensionNames = "nlayer,nlon,nlat" ;
+  		cloudWater:Units = "g/m^3" ;
+  		cloudWater:CodeMissingValue = "-9999.900391" ;
+  	float iceWater(dim34, dim35, dim36) ;
+  		iceWater:DimensionNames = "nlayer,nlon,nlat" ;
+  		iceWater:Units = "g/m^3" ;
+  		iceWater:CodeMissingValue = "-9999.900391" ;
+  	int surfaceTypeIndex(dim37, dim38) ;
+  		surfaceTypeIndex:DimensionNames = "nlon,nlat" ;
+  		surfaceTypeIndex:CodeMissingValue = "-9999" ;
+  	float liquidPrecipFraction(dim39, dim40) ;
+  		liquidPrecipFraction:DimensionNames = "nlon,nlat" ;
+  		liquidPrecipFraction:CodeMissingValue = "-9999.900391" ;
+  	float rainWaterPath(dim41, dim42) ;
+  		rainWaterPath:DimensionNames = "nlon,nlat" ;
+  		rainWaterPath:Units = "kg/m^2" ;
+  		rainWaterPath:CodeMissingValue = "-9999.900391" ;
+  	float convectPrecipFraction(dim43, dim44) ;
+  		convectPrecipFraction:DimensionNames = "nlon,nlat" ;
+  		convectPrecipFraction:CodeMissingValue = "-9999.900391" ;
+  	float latentHeat(dim45, dim46, dim47) ;
+  		latentHeat:DimensionNames = "nlayer,nlon,nlat" ;
+  		latentHeat:Units = "C/hr" ;
+  		latentHeat:CodeMissingValue = "-9999.900391" ;
+
+  // group attributes:
+  		:GridHeader = "BinMethod=ARITHMETIC_MEAN;\nRegistration=CENTER;\nLatitudeResolution=0.25;\nLongitudeResolution=0.25;\nNorthBoundingCoordinate=90;\nSouthBoundingCoordinate=-90;\nEastBoundingCoordinate=180;\nWestBoundingCoordinate=-180;\nOrigin=SOUTHWEST;\n" ;
+  } // group Grid
+}
