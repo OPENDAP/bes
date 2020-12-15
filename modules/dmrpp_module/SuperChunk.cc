@@ -98,11 +98,11 @@ bool SuperChunk::is_contiguous(const std::shared_ptr<Chunk> &chunk) {
  * enclosing read buffer.
  * @param r_buff
  */
-void SuperChunk::map_chunks_to_buffer(char * r_buff)
+void SuperChunk::map_chunks_to_buffer(shared_ptr<char> r_buff)
 {
     unsigned long long bindex = 0;
     for(const auto &chunk : d_chunks){
-        chunk->set_read_buffer(r_buff+bindex, chunk->get_size(),0, true);
+        chunk->set_read_buffer(r_buff.get() + bindex, chunk->get_size(),0, true);
         bindex += chunk->get_size();
     }
     d_chunks_mapped = true;
@@ -114,7 +114,7 @@ void SuperChunk::map_chunks_to_buffer(char * r_buff)
  * @param r_buff The buffer into which to place the bytes
  * @param r_buff_size THe number of bytes
  */
-void SuperChunk::read_contiguous(char *r_buff, unsigned long long r_buff_size)
+void SuperChunk::read_contiguous(shared_ptr<char> r_buff, unsigned long long r_buff_size)
 {
     if (d_is_read) {
         BESDEBUG(MODULE, prolog << "SuperChunk (" << (void **) this << ") has already been read! Returning." << endl);
@@ -126,9 +126,8 @@ void SuperChunk::read_contiguous(char *r_buff, unsigned long long r_buff_size)
     // and moving the results into the DmrppCommon object.
     Chunk chunk(d_data_url, "NOT_USED", d_size, d_offset);
 
-    chunk.set_read_buffer(r_buff,r_buff_size,0,false);
+    chunk.set_read_buffer(r_buff.get(), r_buff_size,0,false);
 
-    // If we make SuperChunk a child of Chunk then this goes...
     dmrpp_easy_handle *handle = DmrppRequestHandler::curl_handle_pool->get_easy_handle(&chunk);
     if (!handle)
         throw BESInternalError(prolog + "No more libcurl handles.", __FILE__, __LINE__);
@@ -145,6 +144,7 @@ void SuperChunk::read_contiguous(char *r_buff, unsigned long long r_buff_size)
 
     // If the expected byte count was not read, it's an error.
     if (d_size != chunk.get_bytes_read()) {
+        chunk.set_read_buffer(nullptr,0,0,false);
         ostringstream oss;
         oss << "Wrong number of bytes read for chunk; read: " << chunk.get_bytes_read() << ", expected: " << d_size;
         throw BESInternalError(oss.str(), __FILE__, __LINE__);
@@ -159,19 +159,25 @@ void SuperChunk::read_contiguous(char *r_buff, unsigned long long r_buff_size)
  * @brief Cause the SuperChunk and all of it's subordinate Chunks to be read.
  */
 void SuperChunk::read() {
+    if (d_is_read) {
+        BESDEBUG(MODULE, prolog << "SuperChunk (" << (void **) this << ") has already been read! Returning." << endl);
+        return;
+    }
 
-    // Allocate memory for SuperChunk receive buffer.
-    char read_buff[d_size];
+    if(!d_read_buffer){
+        // Allocate memory for SuperChunk receive buffer.
+        d_read_buffer = shared_ptr<char>(new char[d_size]);
+    }
 
     // Massage the chunks so that their read/receive/intern data buffer
     // points to the correct section of the memory allocated into read_buff.
     // "Slice it up!"
-    map_chunks_to_buffer(read_buff);
+    map_chunks_to_buffer(d_read_buffer);
 
     // Read the bytes from the target URL. (pthreads, maybe depends on size...)
     // Use one (or possibly more) thread(s) depending on d_size
     // and utilize our friend cURL to stuff the bytes into read_buff
-    read_contiguous(read_buff, d_size);
+    read_contiguous(d_read_buffer, d_size);
 
     // Process the raw bytes from the chunk and into the target array
     // memory space.
