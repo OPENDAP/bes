@@ -39,7 +39,7 @@ class DmrppArray;
 class SuperChunk {
 private:
     std::string d_data_url;
-    std::vector< std::shared_ptr<Chunk>> d_chunks;
+    std::vector<std::shared_ptr<Chunk>> d_chunks;
     unsigned long long d_offset;
     unsigned long long d_size;
     bool d_is_read;
@@ -60,7 +60,7 @@ public:
                 chunk->set_read_buffer(nullptr,0,0,false);
         }
     }
-    virtual bool add_chunk(const std::shared_ptr<Chunk> chunk);
+    virtual bool add_chunk(std::shared_ptr<Chunk> chunk);
 
 #if 0
     // These setter methods are not needed as these values are set by the processing of
@@ -83,7 +83,7 @@ public:
     virtual bool empty(){ return d_chunks.empty(); };
 
 
-    const std::vector< std::shared_ptr<Chunk>> get_chunks(){ return d_chunks; }
+    std::vector<std::shared_ptr<Chunk>> get_chunks(){ return d_chunks; }
 
 
     std::string to_string(bool verbose) const;
