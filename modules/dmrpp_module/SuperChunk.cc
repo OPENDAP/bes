@@ -61,7 +61,7 @@ string SuperChunk::get_curl_range_arg_string() {
  * @param chunk The Chunk to add.
  * @return True when the chunk is added, false otherwise.
  */
-bool SuperChunk::add_chunk(const std::shared_ptr<Chunk> &chunk) {
+bool SuperChunk::add_chunk(const std::shared_ptr<Chunk> chunk) {
     bool chunk_was_added = false;
     if(d_chunks.empty()){
         d_chunks.push_back(chunk);
@@ -89,7 +89,7 @@ bool SuperChunk::add_chunk(const std::shared_ptr<Chunk> &chunk) {
  * @param chunk The Chunk to evaluate for contiguousness with this SuperChunk.
  * @return True if chunk isdeemed contiguous, false otherwise.
  */
-bool SuperChunk::is_contiguous(const std::shared_ptr<Chunk> &chunk) {
+bool SuperChunk::is_contiguous(const std::shared_ptr<Chunk> chunk) {
     return (d_offset + d_size) == chunk->get_offset();
 }
 

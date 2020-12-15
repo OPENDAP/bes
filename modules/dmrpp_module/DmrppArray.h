@@ -161,12 +161,12 @@ struct one_chunk_args {
 struct one_super_chunk_args {
     int *fds;               // pipe back to parent
     unsigned char tid;      // thread id as a byte
-    std::shared_ptr<SuperChunk> &super_chunk;
+    std::shared_ptr<SuperChunk> super_chunk;
     DmrppArray *array;
     const vector<unsigned int> &array_shape;
 
-    one_super_chunk_args(int *pipe, unsigned char id, std::shared_ptr<SuperChunk> &c, DmrppArray *a, const vector<unsigned int> &a_s)
-            : fds(pipe), tid(id), super_chunk(c), array(a), array_shape(a_s) {}
+    one_super_chunk_args(int *pipe, unsigned char id, std::shared_ptr<SuperChunk> sc, DmrppArray *a, const vector<unsigned int> &a_s)
+            : fds(pipe), tid(id), super_chunk(sc), array(a), array_shape(a_s) {}
 };
 
 /**

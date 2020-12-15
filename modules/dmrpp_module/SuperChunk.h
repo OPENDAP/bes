@@ -46,7 +46,7 @@ private:
     bool d_chunks_mapped;
     shared_ptr<char> d_read_buffer;
 
-    bool is_contiguous(const std::shared_ptr<Chunk> &chunk);
+    bool is_contiguous(const std::shared_ptr<Chunk> chunk);
     void map_chunks_to_buffer(shared_ptr<char> r_buff);
     void read_contiguous(shared_ptr<char> r_buff, unsigned long long r_buff_size);
 
@@ -60,7 +60,7 @@ public:
                 chunk->set_read_buffer(nullptr,0,0,false);
         }
     }
-    virtual bool add_chunk(const std::shared_ptr<Chunk> &chunk);
+    virtual bool add_chunk(const std::shared_ptr<Chunk> chunk);
 
 #if 0
     // These setter methods are not needed as these values are set by the processing of
@@ -83,7 +83,7 @@ public:
     virtual bool empty(){ return d_chunks.empty(); };
 
 
-    const std::vector<const std::shared_ptr<Chunk>> &get_chunks(){ return d_chunks; }
+    std::vector<const std::shared_ptr<Chunk>> get_chunks(){ return d_chunks; }
 
 
     std::string to_string(bool verbose) const;

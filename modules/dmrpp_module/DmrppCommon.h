@@ -94,7 +94,7 @@ protected:
 
     /// @brief Returns a reference to the internal Chunk vector.
     /// @see get_immutable_chunks()
-    virtual std::vector<std::shared_ptr<Chunk>> &get_chunks() {
+    virtual std::vector<std::shared_ptr<Chunk>> get_chunks() {
     	return d_chunks;
     }
 
@@ -151,7 +151,7 @@ public:
 
     /// @brief A const reference to the vector of chunks
     /// @see get_chunks()
-    virtual const std::vector< std::shared_ptr<Chunk>> &get_immutable_chunks() const {
+    virtual std::vector< std::shared_ptr<Chunk>> get_immutable_chunks() const {
         return d_chunks;
     }
 
