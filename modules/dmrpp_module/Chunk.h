@@ -25,7 +25,9 @@
 #define _Chunk_h 1
 
 #include <string>
+#include <utility>
 #include <vector>
+#include <memory>
 #include "util.h"
 
 // This is used to track access to 'cloudydap' accesses in the S3 logs
@@ -60,6 +62,7 @@ private:
     // operator.
     unsigned long long d_bytes_read;
     char *d_read_buffer;
+    shared_ptr<char> dat_read_buffer;
     unsigned long long d_read_buffer_size;
     bool d_is_read;
     bool d_is_inflated;
@@ -256,18 +259,43 @@ public:
      * allocated buffer and take control of the one passed in with this method.
      * The size and number of bytes read are set to the value of 'size.'
      *
+     * FIXME Is the assumption here is that the buffer has been populated with values prior to calling this method?
+     *
      * @param buf The new buffer to be used by this instance.
      * @param size The size of the new buffer.
      */
-    virtual void set_rbuf(char *buf, unsigned int size)
+    virtual void set_rbuf(char *buf, unsigned int buf_size)
     {
         delete[] d_read_buffer;
 
         d_read_buffer = buf;
-        d_read_buffer_size = size;
+        d_read_buffer_size = buf_size;
 
-        set_bytes_read(size);
+        set_bytes_read(buf_size);
     }
+
+    /**
+     * @brief Set the target read buffer for this chunk
+     *
+     * @param buf The new buffer to install into the Chunk.
+     * @param buf_size The size of the passed buffer.
+     * @param delete_existing Delete the exisiting memory (if any) held by the Chunk
+     */
+    virtual void set_read_buffer(
+            char *buf,
+            unsigned long long buf_size,
+            unsigned long long bytes_read = 0,
+            bool delete_existing = true ){
+
+        if(delete_existing)
+            delete[] d_read_buffer;
+
+        d_read_buffer = buf;
+        d_read_buffer_size = buf_size;
+
+        set_bytes_read(bytes_read);
+    }
+
 
     /**
      * Returns the size, in bytes, of the read buffer for this Chunk.

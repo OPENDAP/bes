@@ -73,6 +73,8 @@ bool SuperChunk::add_chunk(const std::shared_ptr<Chunk> &chunk) {
     }
     else if(
             is_contiguous(chunk) &&
+            // TODO - Checking byte_order may be a red herring.  I added it to the mix because it's a (possibly
+            //  unchecked) param for Chunk() which is used in read_contiguous
             d_byte_order == chunk->get_byte_order() &&
             chunk->get_data_url() == d_data_url ){
 
@@ -171,10 +173,7 @@ void SuperChunk::read() {
     // Read the bytes from the target URL. (pthreads, maybe depends on size...)
     // Use one (or possibly more) thread(s) depending on d_size
     // and utilize our friend cURL to stuff the bytes into read_buff
-    unsigned long long bytes_read = read_contiguous(read_buff);
-    if(bytes_read != d_size)
-        throw BESInternalError(prolog + "Failed to read super chunk."+to_string(false),__FILE__,__LINE__);
-
+    read_contiguous(read_buff, d_size);
 
     // Process the raw bytes from the chunk and into the target array
     // memory space.
@@ -189,6 +188,7 @@ void SuperChunk::read() {
         // TODO - Refactor Chunk so that the post read activities (shuffle, deflate, etc)
         // happen in a separate method so we can call it here.
         //chunk->raw_to_var();
+        chunk->set_read_buffer(0,0,0,false);
     }
     // release memory as needed.
 
