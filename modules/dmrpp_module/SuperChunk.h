@@ -39,7 +39,7 @@ class DmrppArray;
 class SuperChunk {
 private:
     std::string d_data_url;
-    std::vector<const std::shared_ptr<Chunk>> d_chunks;
+    std::vector< std::shared_ptr<Chunk>> d_chunks;
     unsigned long long d_offset;
     unsigned long long d_size;
     bool d_is_read;
@@ -83,7 +83,7 @@ public:
     virtual bool empty(){ return d_chunks.empty(); };
 
 
-    std::vector<const std::shared_ptr<Chunk>> get_chunks(){ return d_chunks; }
+    const std::vector< std::shared_ptr<Chunk>> get_chunks(){ return d_chunks; }
 
 
     std::string to_string(bool verbose) const;
