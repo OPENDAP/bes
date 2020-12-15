@@ -68,14 +68,10 @@ bool SuperChunk::add_chunk(const std::shared_ptr<Chunk> &chunk) {
         d_offset = chunk->get_offset();
         d_size = chunk->get_size();
         d_data_url = chunk->get_data_url();
-        d_byte_order = chunk->get_byte_order();
         chunk_was_added =  true;
     }
     else if(
             is_contiguous(chunk) &&
-            // TODO - Checking byte_order may be a red herring.  I added it to the mix because it's a (possibly
-            //  unchecked) param for Chunk() which is used in read_contiguous
-            d_byte_order == chunk->get_byte_order() &&
             chunk->get_data_url() == d_data_url ){
 
         this->d_chunks.push_back(chunk);
@@ -109,6 +105,7 @@ void SuperChunk::map_chunks_to_buffer(char * r_buff)
         chunk->set_read_buffer(r_buff+bindex, chunk->get_size(),0, true);
         bindex += chunk->get_size();
     }
+    d_chunks_mapped = true;
 }
 
 
@@ -127,11 +124,9 @@ void SuperChunk::read_contiguous(char *r_buff, unsigned long long r_buff_size)
     // Since we already have a good infrastructure for reading Chunks, we just make a big-ol-Chunk to
     // use for grabbing bytes. Then, once read, we'll use the child Chunks to do the dirty work of inflating
     // and moving the results into the DmrppCommon object.
-    Chunk chunk(d_data_url,d_byte_order,d_size,d_offset);
+    Chunk chunk(d_data_url, "NOT_USED", d_size, d_offset);
 
-    // FIXME - This next call has issues - it will try to delete rbuf when ~Chunk() is called.
-    //  Maybe utilize shared_ptr for r_buff both here and in Chunk????
-    chunk.set_rbuf(r_buff,r_buff_size);
+    chunk.set_read_buffer(r_buff,r_buff_size);
 
     // If we make SuperChunk a child of Chunk then this goes...
     dmrpp_easy_handle *handle = DmrppRequestHandler::curl_handle_pool->get_easy_handle(&chunk);
@@ -150,7 +145,7 @@ void SuperChunk::read_contiguous(char *r_buff, unsigned long long r_buff_size)
     // If the expected byte count was not read, it's an error.
     if (d_size != chunk.get_bytes_read()) {
         ostringstream oss;
-        oss << "Wrong number of bytes read for chunk; read: " << chunk.get_bytes_read() << ", expected: " << d_size();
+        oss << "Wrong number of bytes read for chunk; read: " << chunk.get_bytes_read() << ", expected: " << d_size;
         throw BESInternalError(oss.str(), __FILE__, __LINE__);
     }
     d_is_read = true;
@@ -186,23 +181,30 @@ void SuperChunk::read() {
     for(auto chunk : d_chunks){
         chunk->set_is_read(true);
 
+#if 0  // Pretty much moved this all into DmrppArray]
         // TODO - Refactor Chunk so that the post read activities (shuffle, deflate, etc)
         //  happen in a separate method so we can call it here.
         // chunk->raw_to_var();
 
-#if 0 // TODO This is how DmrppArray handles it, but the call stack needs to be re worked to allow it to happen here.
-      //  Maybe SuperChunk should hold a pointer to the array??
-        if (array->is_deflate_compression() || array->is_shuffle_compression())
-            chunk->inflate_chunk(array->is_deflate_compression(), array->is_shuffle_compression(),
-                                 array->get_chunk_size_in_elements(), array->var()->width());
+        // This is how DmrppArray handles it, but the call stack needs to be re worked to allow it to happen here.
+        // Maybe SuperChunk should hold a pointer to the array??
+        // That and making this method, SuperChunk::read(), a friend method in DmrppArray.
+
+        if (d_parent->is_deflate_compression() || d_parent->is_shuffle_compression())
+            chunk->inflate_chunk(d_parent->is_deflate_compression(), d_parent->is_shuffle_compression(),
+                                 d_parent->get_chunk_size_in_elements(), d_parent->var()->width());
 
         vector<unsigned int> target_element_address = chunk->get_position_in_array();
-        vector<unsigned int> chunk_source_address(array->dimensions(), 0);
+        vector<unsigned int> chunk_source_address(d_parent->dimensions(), 0);
 
-        array->insert_chunk(0 /* dimension */, &target_element_address, &chunk_source_address, chunk, constrained_array_shape);
+        d_parent->insert_chunk(0 /* dimension */,
+                &target_element_address,
+                &chunk_source_address,
+                chunk,
+                d_parent->get_shape(true));
+
+        chunk->set_read_buffer(nullptr,0,0,false);
 #endif
-
-        chunk->set_read_buffer(0,0,0,false);
     }
     // release memory as needed.
 

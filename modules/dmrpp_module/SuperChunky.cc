@@ -75,7 +75,7 @@ void compute_super_chunks(dmrpp::DmrppArray *array, bool only_constrained, vecto
             bool was_added = currentSuperChunk->add_chunk(chunk);
             if(!was_added){
                 if(debug) {
-                    unsigned long long next_contiguous_chunk_offset = currentSuperChunk->offset() + currentSuperChunk->size();
+                    unsigned long long next_contiguous_chunk_offset = currentSuperChunk->get_offset() + currentSuperChunk->get_size();
                     unsigned long long gap_size;
                     bool is_behind = false;
                     if(chunk->get_offset() > next_contiguous_chunk_offset){
@@ -89,8 +89,8 @@ void compute_super_chunks(dmrpp::DmrppArray *array, bool only_constrained, vecto
                     msg << "FOUND GAP chunk(offset: " << chunk->get_offset();
                     msg << " size: " << chunk->get_size() << ")";
                     msg << " SuperChunk(ptr: " << (void *) currentSuperChunk;
-                    msg << " offset: " << currentSuperChunk->offset();
-                    msg << " size: " << currentSuperChunk->size();
+                    msg << " offset: " << currentSuperChunk->get_offset();
+                    msg << " size: " << currentSuperChunk->get_size();
                     msg << " next_contiguous_chunk_offset: " << next_contiguous_chunk_offset << ") ";
                     msg << " gap_size: " << gap_size;
                     msg << " bytes" << (is_behind?" behind":" beyond") << " target offset";

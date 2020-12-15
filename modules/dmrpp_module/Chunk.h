@@ -62,7 +62,6 @@ private:
     // operator.
     unsigned long long d_bytes_read;
     char *d_read_buffer;
-    shared_ptr<char> dat_read_buffer;
     unsigned long long d_read_buffer_size;
     bool d_is_read;
     bool d_is_inflated;
@@ -80,7 +79,7 @@ protected:
     {
         // See above
         d_bytes_read = 0;
-        d_read_buffer = 0;
+        d_read_buffer = nullptr;
         d_read_buffer_size = 0;
         d_is_read = false;
         d_is_inflated = false;
@@ -120,7 +119,7 @@ public:
      * @param pia_str A string that provides the logical position of this chunk
      * in an Array. Has the syntax '[1,2,3,4]'.
      */
-    Chunk(const std::string &data_url, const std::string &order, unsigned long long size, unsigned long long offset, std::string pia_str = "") :
+    Chunk(const std::string &data_url, const std::string &order, unsigned long long size, unsigned long long offset, const std::string &pia_str = "") :
             d_data_url(data_url), d_query_marker(""), d_byte_order(order), d_size(size), d_offset(offset), d_bytes_read(0), d_read_buffer(0),
             d_read_buffer_size(0), d_is_read(false), d_is_inflated(false)
     {
@@ -322,6 +321,7 @@ public:
 
     virtual void inflate_chunk(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width);
 
+    virtual bool get_is_read() { return d_is_read; }
     virtual void set_is_read(bool state) { d_is_read = state; }
 
     virtual bool get_is_inflated() const { return d_is_inflated; }

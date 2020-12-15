@@ -218,6 +218,23 @@ std::string DmrppCommon::get_byte_order()
             const vector<unsigned int> &position_in_array)
     {
         std::shared_ptr<Chunk> chunk(new Chunk(data_url, byte_order, size, offset, position_in_array));
+#if 0
+        auto array = dynamic_cast<dmrpp::DmrppArray *>(this);
+        if(!array){
+            stringstream msg;
+            msg << prolog << "ERROR  DmrrpCommon::add_chunk() may only be called on an instance of DmrppArray. ";
+            msg << "The variable";
+            auto bt = dynamic_cast<libdap::BaseType *>(this);
+            if(bt){
+                msg  << " " << bt->type_name() << " " << bt->name();
+            }
+            msg << " is not an instance of DmrppArray.";
+            msg << "this: " << (void **) this << " ";
+            msg << "byte_order: " << byte_order << " ";
+            msg << "size: " << size << " ";
+            msg << "offset: " << offset << " ";
+            throw BESInternalError(msg.str(),__FILE__, __LINE__);
+        }
 
         if(d_super_chunks.empty())
             d_super_chunks.push_back( shared_ptr<SuperChunk>(new SuperChunk()));
@@ -231,6 +248,7 @@ std::string DmrppCommon::get_byte_order()
                 msg << prolog << "ERROR! Failed to add a Chunk to an empty SuperChunk. This should not happen.";
                 throw BESInternalError(msg.str(),__FILE__,__LINE__);
             }
+            // This means that the chunk was not contiguous with the currentSuperChunk
             currentSuperChunk = shared_ptr<SuperChunk>(new SuperChunk());
             chunk_was_added = currentSuperChunk->add_chunk(chunk);
             if(!chunk_was_added) {
@@ -240,6 +258,8 @@ std::string DmrppCommon::get_byte_order()
             }
             d_super_chunks.push_back(currentSuperChunk);
         }
+#endif
+
         d_chunks.push_back(chunk);
         return d_chunks.size();
     }
@@ -433,7 +453,7 @@ void DmrppCommon::dump(ostream & strm) const
         chunk_ref->dump(strm);
         strm << endl;
     }
-
+#if 0
     strm << BESIndent::LMarg << "SuperChunks:" << (d_super_chunks.size() ? "" : "None Found.") << endl;
     BESIndent::Indent();
     for (auto &super_chunk : d_super_chunks) {
@@ -442,6 +462,7 @@ void DmrppCommon::dump(ostream & strm) const
         strm << endl;
     }
     BESIndent::UnIndent();
+#endif
 }
 
 } // namepsace dmrpp

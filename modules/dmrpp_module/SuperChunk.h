@@ -34,7 +34,7 @@
 
 namespace dmrpp {
 
-class DmrppCommon;
+class DmrppArray;
 
 class SuperChunk {
 private:
@@ -43,37 +43,45 @@ private:
     unsigned long long d_offset;
     unsigned long long d_size;
     bool d_is_read;
-    std::string d_byte_order;
+    bool d_chunks_mapped;
 
     bool is_contiguous(const std::shared_ptr<Chunk> &chunk);
     void map_chunks_to_buffer(char *r_buff);
     void read_contiguous(char *r_buff, unsigned long long r_buff_size);
 
 public:
-    explicit SuperChunk(): d_data_url(""), d_offset(0), d_size(0), d_is_read(false){}
-    ~SuperChunk() = default;;
+    explicit SuperChunk(): d_data_url(""), d_offset(0), d_size(0), d_is_read(false), d_chunks_mapped(false){}
+    ~SuperChunk(){
+        for(auto chunk:d_chunks){
+            if(d_chunks_mapped)
+                chunk->set_read_buffer(nullptr,0,0,false);
+        }
+    }
     virtual bool add_chunk(const std::shared_ptr<Chunk> &chunk);
 
 #if 0
+    // These setter methods are not needed as these values are set by the processing of
+    // adding Chunks to the SuperChunk. In fact setter methods for this members would
+    // be ill advised based on the class operations.
     virtual void set_offset(unsigned long long offset){
         d_offset = offset;
     }
-    virtual unsigned long long get_offset(){ return d_offset; };
-
     virtual void set_size(unsigned long long size){ d_size = size; }
-    virtual unsigned long long get_size(){ return d_size; }
-
-    std::string get_curl_range_arg_string();
 
     virtual void set_data_url(const std::string &url){
         d_data_url = url;
     }
-    virtual std::string get_data_url(){  return d_data_url; }
-
 #endif
+    virtual std::string get_data_url(){  return d_data_url; }
+    virtual unsigned long long get_size(){ return d_size; }
+    virtual unsigned long long get_offset(){ return d_offset; };
 
     virtual void read();
     virtual bool empty(){ return d_chunks.empty(); };
+
+
+    const std::vector<const std::shared_ptr<Chunk>> &get_chunks(){ return d_chunks; }
+
 
     std::string to_string(bool verbose) const;
     virtual void dump(std::ostream & strm) const;
