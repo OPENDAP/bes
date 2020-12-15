@@ -156,8 +156,7 @@ void SuperChunk::read_contiguous(char *r_buff, unsigned long long r_buff_size)
 
 
 /**
- * @brief Cause the SuperChunk and all of it's subordinate Chunks to be read and processed back into the
- * parent DmrppCommon object's internal value array.
+ * @brief Cause the SuperChunk and all of it's subordinate Chunks to be read.
  */
 void SuperChunk::read() {
 

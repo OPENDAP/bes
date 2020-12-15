@@ -104,7 +104,7 @@ public:
      * @see Chunk::add_tracking_query_param()
      */
     Chunk() :
-        d_data_url(""), d_query_marker(""), d_byte_order(""), d_size(0), d_offset(0), d_bytes_read(0), d_read_buffer(0),
+        d_data_url(""), d_query_marker(""), d_byte_order(""), d_size(0), d_offset(0), d_bytes_read(0), d_read_buffer(nullptr),
         d_read_buffer_size(0), d_is_read(false), d_is_inflated(false)
     {
     }
@@ -294,7 +294,6 @@ public:
 
         set_bytes_read(bytes_read);
     }
-
 
     /**
      * Returns the size, in bytes, of the read buffer for this Chunk.

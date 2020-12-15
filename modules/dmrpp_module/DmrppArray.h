@@ -32,7 +32,7 @@
 #include <Array.h>
 
 #include "DmrppCommon.h"
-#include "SuperChunk.h"
+// #include "SuperChunk.h"
 
 // The 'read_serial()' method is more closely related to the original code
 // used to read data when the DMR++ handler was initially developed for NASA.
@@ -49,6 +49,7 @@ class XMLWriter;
 
 namespace dmrpp {
 
+    class SuperChunk;
 /**
  * @brief Extend libdap::Array so that a handler can read data using a DMR++ file.
  *
@@ -83,10 +84,9 @@ private:
 
     // Called from read_chunks_unconstrained() and also using pthreads
     friend void
-    process_one_chunk_unconstrained(std::shared_ptr<Chunk> &chunk, DmrppArray *array, const vector<unsigned int> &array_shape,
-                                    const vector<unsigned int> &chunk_shape);
+    process_one_chunk_unconstrained(std::shared_ptr<Chunk> chunk, DmrppArray *array, const vector<unsigned int> &array_shape,const vector<unsigned int> &chunk_shape);
 
-    virtual void insert_chunk_unconstrained(std::shared_ptr<Chunk> &chunk, unsigned int dim,
+    virtual void insert_chunk_unconstrained(std::shared_ptr<Chunk> chunk, unsigned int dim,
                                     unsigned long long array_offset, const std::vector<unsigned int> &array_shape,
                                     unsigned long long chunk_offset, const std::vector<unsigned int> &chunk_shape,
                                     const std::vector<unsigned int> &chunk_origin);
@@ -101,18 +101,14 @@ private:
             unsigned int dim,
             std::vector<unsigned int> *target_element_address,
             std::vector<unsigned int> *chunk_element_address,
-            const std::shared_ptr<Chunk> &chunk,
+            std::shared_ptr<Chunk> chunk,
             const vector<unsigned int> &constrained_array_shape);
 
     // Called from read_chunks()
-    friend void process_one_chunk(std::shared_ptr<Chunk> &chunk, DmrppArray *array, const vector<unsigned int> &constrained_array_shape);
-    friend void process_one_chunk_unconstrained(shared_ptr<Chunk> &chunk, DmrppArray *array, const vector<unsigned int> &array_shape, const vector<unsigned int> &chunk_shape);
+    friend void process_one_chunk(std::shared_ptr<Chunk> chunk, DmrppArray *array, const vector<unsigned int> &constrained_array_shape);
     friend void process_super_chunk(std::shared_ptr<SuperChunk> &super_chunk, DmrppArray *array, const vector<unsigned int> &constrained_array_shape);
 
     void read_chunks();
-
-    friend void SuperChunk::read();
-
 
     public:
     DmrppArray(const std::string &n, libdap::BaseType *v);
@@ -154,11 +150,11 @@ void *one_chunk_thread(void *arg_list);
 struct one_chunk_args {
     int *fds;               // pipe back to parent
     unsigned char tid;      // thread id as a byte
-    std::shared_ptr<Chunk> &chunk;
+    std::shared_ptr<Chunk> chunk;
     DmrppArray *array;
     const vector<unsigned int> &array_shape;
 
-    one_chunk_args(int *pipe, unsigned char id, std::shared_ptr<Chunk> &c, DmrppArray *a, const vector<unsigned int> &a_s)
+    one_chunk_args(int *pipe, unsigned char id, std::shared_ptr<Chunk> c, DmrppArray *a, const vector<unsigned int> &a_s)
             : fds(pipe), tid(id), chunk(c), array(a), array_shape(a_s) {}
 };
 

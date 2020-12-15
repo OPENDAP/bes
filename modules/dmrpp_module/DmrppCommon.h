@@ -155,12 +155,6 @@ public:
         return d_chunks;
     }
 
-    /// @brief A const reference to the vector of SuperChunks
-    /// @see get_chunks()
-    //virtual const std::vector< std::shared_ptr<SuperChunk>> &get_immutable_super_chunks() const {
-    //    return d_super_chunks;
-    //}
-
     virtual const std::vector<unsigned int> &get_chunk_dimension_sizes() const {
     	return d_chunk_dimension_sizes;
     }
@@ -172,7 +166,7 @@ public:
      */
     virtual unsigned int get_chunk_size_in_elements() const {
         unsigned int elements = 1;
-        for (unsigned int d_chunk_dimension_size : d_chunk_dimension_sizes) {
+        for (auto d_chunk_dimension_size : d_chunk_dimension_sizes) {
             elements *= d_chunk_dimension_size;
         }
 
@@ -191,7 +185,7 @@ public:
     {
         // tried using copy(chunk_dims.begin(), chunk_dims.end(), d_chunk_dimension_sizes.begin())
         // it didn't work, maybe because of the differing element types?
-        for (unsigned long chunk_dim : chunk_dims) {
+        for (auto chunk_dim : chunk_dims) {
             d_chunk_dimension_sizes.push_back(chunk_dim);
         }
     }

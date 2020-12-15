@@ -51,7 +51,6 @@ using namespace libdap;
 
 #define prolog std::string("DmrppCommon::").append(__func__).append("() - ")
 
-
 namespace dmrpp {
 
 // Used with BESDEBUG
