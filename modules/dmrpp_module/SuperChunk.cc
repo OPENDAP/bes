@@ -186,8 +186,21 @@ void SuperChunk::read() {
         chunk->set_is_read(true);
 
         // TODO - Refactor Chunk so that the post read activities (shuffle, deflate, etc)
-        // happen in a separate method so we can call it here.
-        //chunk->raw_to_var();
+        //  happen in a separate method so we can call it here.
+        // chunk->raw_to_var();
+
+#if 0 // TODO This is how DmrppArray handles it, but the call stack needs to be re worked to allow it to happen here.
+      //  Maybe SuperChunk should hold a pointer to the array??
+        if (array->is_deflate_compression() || array->is_shuffle_compression())
+            chunk->inflate_chunk(array->is_deflate_compression(), array->is_shuffle_compression(),
+                                 array->get_chunk_size_in_elements(), array->var()->width());
+
+        vector<unsigned int> target_element_address = chunk->get_position_in_array();
+        vector<unsigned int> chunk_source_address(array->dimensions(), 0);
+
+        array->insert_chunk(0 /* dimension */, &target_element_address, &chunk_source_address, chunk, constrained_array_shape);
+#endif
+
         chunk->set_read_buffer(0,0,0,false);
     }
     // release memory as needed.
