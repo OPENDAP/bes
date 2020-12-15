@@ -124,6 +124,9 @@ void SuperChunk::read_contiguous(char *r_buff, unsigned long long r_buff_size)
         return;
     }
 
+    // Since we already have a good infrastructure for reading Chunks, we just make a big-ol-Chunk to
+    // use for grabbing bytes. Then, once read, we'll use the child Chunks to do the dirty work of inflating
+    // and moving the results into the DmrppCommon object.
     Chunk chunk(d_data_url,d_byte_order,d_size,d_offset);
 
     // FIXME - This next call has issues - it will try to delete rbuf when ~Chunk() is called.
