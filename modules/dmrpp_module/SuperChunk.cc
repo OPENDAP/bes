@@ -126,7 +126,7 @@ void SuperChunk::read_contiguous(char *r_buff, unsigned long long r_buff_size)
     // and moving the results into the DmrppCommon object.
     Chunk chunk(d_data_url, "NOT_USED", d_size, d_offset);
 
-    chunk.set_read_buffer(r_buff,r_buff_size);
+    chunk.set_read_buffer(r_buff,r_buff_size,0,false);
 
     // If we make SuperChunk a child of Chunk then this goes...
     dmrpp_easy_handle *handle = DmrppRequestHandler::curl_handle_pool->get_easy_handle(&chunk);
@@ -139,6 +139,7 @@ void SuperChunk::read_contiguous(char *r_buff, unsigned long long r_buff_size)
     }
     catch(...) {
         DmrppRequestHandler::curl_handle_pool->release_handle(handle);
+        chunk.set_read_buffer(nullptr,0,0,false);
         throw;
     }
 
@@ -148,6 +149,8 @@ void SuperChunk::read_contiguous(char *r_buff, unsigned long long r_buff_size)
         oss << "Wrong number of bytes read for chunk; read: " << chunk.get_bytes_read() << ", expected: " << d_size;
         throw BESInternalError(oss.str(), __FILE__, __LINE__);
     }
+    // Clean up the chunk so when it goes out of scope it won't try to delete the memory we just populated.
+    chunk.set_read_buffer(nullptr,0,0,false);
     d_is_read = true;
 }
 

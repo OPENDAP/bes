@@ -154,23 +154,23 @@ void *one_chunk_thread(void *arg_list);
 struct one_chunk_args {
     int *fds;               // pipe back to parent
     unsigned char tid;      // thread id as a byte
-    std::shared_ptr<Chunk> chunk;
+    std::shared_ptr<Chunk> &chunk;
     DmrppArray *array;
     const vector<unsigned int> &array_shape;
 
-    one_chunk_args(int *pipe, unsigned char id, std::shared_ptr<Chunk> c, DmrppArray *a, const vector<unsigned int> &a_s)
-            : fds(pipe), tid(id), chunk(std::move(c)), array(a), array_shape(a_s) {}
+    one_chunk_args(int *pipe, unsigned char id, std::shared_ptr<Chunk> &c, DmrppArray *a, const vector<unsigned int> &a_s)
+            : fds(pipe), tid(id), chunk(c), array(a), array_shape(a_s) {}
 };
 
 struct one_super_chunk_args {
     int *fds;               // pipe back to parent
     unsigned char tid;      // thread id as a byte
-    std::shared_ptr<SuperChunk> super_chunk;
+    std::shared_ptr<SuperChunk> &super_chunk;
     DmrppArray *array;
     const vector<unsigned int> &array_shape;
 
-    one_super_chunk_args(int *pipe, unsigned char id, std::shared_ptr<SuperChunk> c, DmrppArray *a, const vector<unsigned int> &a_s)
-            : fds(pipe), tid(id), super_chunk(std::move(c)), array(a), array_shape(a_s) {}
+    one_super_chunk_args(int *pipe, unsigned char id, std::shared_ptr<SuperChunk> &c, DmrppArray *a, const vector<unsigned int> &a_s)
+            : fds(pipe), tid(id), super_chunk(c), array(a), array_shape(a_s) {}
 };
 
 /**
