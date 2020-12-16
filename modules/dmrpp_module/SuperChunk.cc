@@ -195,6 +195,7 @@ void SuperChunk::read() {
     //   }
     for(auto chunk : d_chunks){
         chunk->set_is_read(true);
+        chunk->set_bytes_read(chunk->get_size());
 
 #if 0  // Pretty much moved this all into DmrppArray]
         // TODO - Refactor Chunk so that the post read activities (shuffle, deflate, etc)

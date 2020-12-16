@@ -81,9 +81,8 @@ public:
         string val;
         bool found;
         TheBESKeys::TheKeys()->get_value("ff",val,found);
-        TheBESKeys::TheKeys()->set_key("Http.cache.effective.urls.skip.regex.pattern","^.*$");
 
-        if (debug) BESDebug::SetUp("cerr,bes,http,curl,dmrpp");
+        if (bes_debug) BESDebug::SetUp("cerr,bes,http,curl,dmrpp");
 
         unsigned long long int max_threads = 8;
         dmrpp::DmrppRequestHandler::d_use_parallel_transfers = true;
@@ -100,6 +99,7 @@ public:
     void sc_one_chunk_test() {
         DBG(cerr << prolog << "BEGIN" << endl);
 
+        // chunked_gzipped_fourD.h5 is 2,870,087 bytes (2.9 MB on disk)
         string data_url = string("file://").append(TEST_DATA_DIR).append("/").append("chunked_gzipped_fourD.h5");
         DBG(cerr << prolog << "data_url: " << data_url << endl);
 
@@ -133,25 +133,175 @@ public:
         }
         DBG( cerr << prolog << "END" << endl);
     }
-    void sc_two_chunks_test() {
+    void sc_chunks_test_01() {
         DBG(cerr << prolog << "BEGIN" << endl);
 
+        // chunked_gzipped_fourD.h5 is 2,870,087 bytes (2.9 MB on disk)
         string data_url = string("file://").append(TEST_DATA_DIR).append("/").append("chunked_gzipped_fourD.h5");
         DBG(cerr << prolog << "data_url: " << data_url << endl);
 
         string chunk_position_in_array = "[0]";
         try  {
-            DBG( cerr << prolog << "Creating: shared_ptr<Chunk> c1" << endl);
-            shared_ptr<Chunk> c1(new Chunk(data_url, "", 1000,0,chunk_position_in_array));
-            shared_ptr<Chunk> c2(new Chunk(data_url, "", 1000,1000,chunk_position_in_array));
+            DBG( cerr << prolog << "Creating: shared_ptr<Chunk> c1, c2, c3, c4" << endl);
+            shared_ptr<Chunk> c1(new Chunk(data_url, "", 100000,0,chunk_position_in_array));
+            shared_ptr<Chunk> c2(new Chunk(data_url, "", 100000,100000,chunk_position_in_array));
+            shared_ptr<Chunk> c3(new Chunk(data_url, "", 100000,200000,chunk_position_in_array));
+            shared_ptr<Chunk> c4(new Chunk(data_url, "", 100000,300000,chunk_position_in_array));
+
             {
                 SuperChunk sc;
-                DBG( cerr << prolog << "Adding c1 to SuperChunk" << endl);
-                sc.add_chunk(c1);
-                DBG( cerr << prolog << "Adding c2 to SuperChunk" << endl);
-                sc.add_chunk(c2);
-                DBG( cerr << prolog << "Calling SuperChunk::read()" << endl);
+                bool chunk_was_added;
+                chunk_was_added = sc.add_chunk(c1);
+                DBG( cerr << prolog << "Chunk c1 was "<< (chunk_was_added?"":"NOT ") << "added to SuperChunk" << endl);
+                CPPUNIT_ASSERT(chunk_was_added);
+
+                chunk_was_added = sc.add_chunk(c2);
+                DBG( cerr << prolog << "Chunk c2 was "<< (chunk_was_added?"":"NOT ") << "added to SuperChunk" << endl);
+                CPPUNIT_ASSERT(chunk_was_added);
+
+                chunk_was_added = sc.add_chunk(c3);
+                DBG( cerr << prolog << "Chunk c3 was "<< (chunk_was_added?"":"NOT ") << "added to SuperChunk" << endl);
+                CPPUNIT_ASSERT(chunk_was_added);
+
+                chunk_was_added = sc.add_chunk(c4);
+                DBG( cerr << prolog << "Chunk c4 was "<< (chunk_was_added?"":"NOT ") << "added to SuperChunk" << endl);
+                CPPUNIT_ASSERT(chunk_was_added);
+
+                // Read the data
                 sc.read();
+
+                for(auto chunk:sc.get_chunks()){
+
+                }
+
+
+            }
+
+        }
+        catch( BESError be){
+            stringstream msg;
+            msg << prolog << "CAUGHT BESError: " << be.get_verbose_message() << endl;
+            cerr << msg.str();
+            CPPUNIT_FAIL(msg.str());
+        }
+        catch( std::exception se ){
+            stringstream msg;
+            msg << "CAUGHT std::exception: " << se.what() << endl;
+            cerr << msg.str();
+            CPPUNIT_FAIL(msg.str());
+        }
+        catch( ... ){
+            cerr << "CAUGHT Unknown Exception." << endl;
+        }
+        DBG( cerr << prolog << "END" << endl);
+    }
+
+    void sc_chunks_test_02() {
+        DBG(cerr << prolog << "BEGIN" << endl);
+
+        // chunked_gzipped_fourD.h5 is 2,870,087 bytes (2.9 MB on disk)
+        string data_url = string("file://").append(TEST_DATA_DIR).append("/").append("this_is_a_test.txt");
+        DBG(cerr << prolog << "data_url: " << data_url << endl);
+
+        string chunk_position_in_array = "[0]";
+        try  {
+            DBG( cerr << prolog << "Creating shared_ptr<Chunk> l1, c2, c3, c4" << endl);
+            shared_ptr<Chunk> T0(new Chunk(data_url, "", 100, 0, chunk_position_in_array));
+            shared_ptr<Chunk> h0(new Chunk(data_url, "", 100, 100, chunk_position_in_array));
+            shared_ptr<Chunk> i0(new Chunk(data_url, "", 100, 200, chunk_position_in_array));
+            shared_ptr<Chunk> s0(new Chunk(data_url, "", 100, 300, chunk_position_in_array));
+
+            shared_ptr<Chunk> i1(new Chunk(data_url, "", 100, 402, chunk_position_in_array));
+            shared_ptr<Chunk> s1(new Chunk(data_url, "", 100, 502, chunk_position_in_array));
+
+            shared_ptr<Chunk> a0(new Chunk(data_url, "", 100, 604, chunk_position_in_array));
+#if 0
+            // Don't need these yet but, i typed them...
+            shared_ptr<Chunk> t0(new Chunk(data_url, "", 100, 706, chunk_position_in_array));
+            shared_ptr<Chunk> e0(new Chunk(data_url, "", 100, 806, chunk_position_in_array));
+            shared_ptr<Chunk> s3(new Chunk(data_url, "", 100, 906, chunk_position_in_array));
+            shared_ptr<Chunk> t2(new Chunk(data_url, "", 100, 1006, chunk_position_in_array));
+#endif
+            {
+                SuperChunk word_a;
+                SuperChunk word_test;
+
+
+                bool chunk_was_added;
+
+                SuperChunk word_this;
+                chunk_was_added = word_this.add_chunk(T0);
+                DBG( cerr << prolog << "Chunk T0 was "<< (chunk_was_added?"":"NOT ") << "added to SuperChunk word_this" << endl);
+                CPPUNIT_ASSERT(chunk_was_added);
+
+                chunk_was_added = word_this.add_chunk(h0);
+                DBG( cerr << prolog << "Chunk h0 was "<< (chunk_was_added?"":"NOT ") << "added to SuperChunk word_this" << endl);
+                CPPUNIT_ASSERT(chunk_was_added);
+
+                chunk_was_added = word_this.add_chunk(i0);
+                DBG( cerr << prolog << "Chunk i0 was "<< (chunk_was_added?"":"NOT ") << "added to SuperChunk word_this" << endl);
+                CPPUNIT_ASSERT(chunk_was_added);
+
+                chunk_was_added = word_this.add_chunk(s0);
+                DBG( cerr << prolog << "Chunk s0 was "<< (chunk_was_added?"":"NOT ") << "added to SuperChunk word_this" << endl);
+                CPPUNIT_ASSERT(chunk_was_added);
+
+                // The i1 chunk is not contiguous with s0 and should be rejected by the word_this SuperChunk.
+                chunk_was_added = word_this.add_chunk(i1);
+                DBG( cerr << prolog << "Chunk i1 was "<< (chunk_was_added?"":"NOT ") << "added to SuperChunk word_this" << endl);
+                CPPUNIT_ASSERT(!chunk_was_added);
+
+                word_this.read();
+                char target_this[] = "This";
+                size_t letter_index=0;
+                for(const auto& chunk: word_this.get_chunks()) {
+                    DBG(cerr << prolog << "Checking chunk for target char '"<< target_this[letter_index] << "'" << endl);
+                    DBG(cerr << prolog << "chunk->get_is_read(): "<< (chunk->get_is_read()?"true":"false") << endl);
+                    CPPUNIT_ASSERT(chunk->get_is_read());
+                    DBG(cerr << prolog << "chunk->get_bytes_read(): "<< chunk->get_bytes_read() << endl);
+                    CPPUNIT_ASSERT(chunk->get_bytes_read() == 100);
+                    char *rbuf = chunk->get_rbuf();
+                    for (size_t i = 0; i < 100; i++) {
+                        // DBG( cerr << prolog << "rbuf["<<i<<"]: '"<< rbuf[i] << "'" << endl);
+                        CPPUNIT_ASSERT(rbuf[i] == target_this[letter_index]);
+                    }
+                    letter_index++;
+                }
+
+                SuperChunk word_is;
+                chunk_was_added = word_is.add_chunk(i1);
+                DBG( cerr << prolog << "Chunk i1 was "<< (chunk_was_added?"":"NOT ") << "added to SuperChunk word_is" << endl);
+                CPPUNIT_ASSERT(chunk_was_added);
+
+                chunk_was_added = word_is.add_chunk(s1);
+                DBG( cerr << prolog << "Chunk s1 was "<< (chunk_was_added?"":"NOT ") << "added to SuperChunk word_is" << endl);
+                CPPUNIT_ASSERT(chunk_was_added);
+
+                // The a0 chunk is not contiguous with s1 and should be rejected by the word_is SuperChunk.
+                chunk_was_added = word_is.add_chunk(a0);
+                DBG( cerr << prolog << "Chunk a0 was "<< (chunk_was_added?"":"NOT ") << "added to SuperChunk word_is" << endl);
+                CPPUNIT_ASSERT(!chunk_was_added);
+
+                word_is.read();
+                char target_is[] = "is";
+                letter_index=0;
+                for(const auto& chunk: word_is.get_chunks()) {
+                    DBG(cerr << prolog << "Checking chunk for target char '"<< target_is[letter_index] << "'" << endl);
+                    DBG(cerr << prolog << "chunk->get_is_read(): "<< (chunk->get_is_read()?"true":"false") << endl);
+                    CPPUNIT_ASSERT(chunk->get_is_read());
+                    DBG(cerr << prolog << "chunk->get_bytes_read(): "<< chunk->get_bytes_read() << endl);
+                    CPPUNIT_ASSERT(chunk->get_bytes_read() == 100);
+                    char *rbuf = chunk->get_rbuf();
+                    for (size_t i = 0; i < 100; i++) {
+                        // DBG( cerr << prolog << "rbuf["<<i<<"]: '"<< rbuf[i] << "'" << endl);
+                        CPPUNIT_ASSERT(rbuf[i] == target_is[letter_index]);
+                    }
+                    letter_index++;
+                }
+
+                //char target_a[] = "a";
+                //char target_test[] = "test";
+
             }
 
         }
@@ -176,7 +326,8 @@ public:
     CPPUNIT_TEST_SUITE( SuperChunkTest );
 
         CPPUNIT_TEST(sc_one_chunk_test);
-        CPPUNIT_TEST(sc_two_chunks_test);
+        CPPUNIT_TEST(sc_chunks_test_01);
+        CPPUNIT_TEST(sc_chunks_test_02);
 
     CPPUNIT_TEST_SUITE_END();
 };
