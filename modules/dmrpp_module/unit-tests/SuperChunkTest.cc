@@ -199,7 +199,7 @@ public:
     void sc_chunks_test_02() {
         DBG(cerr << prolog << "BEGIN" << endl);
 
-        // this_is_a_test.txt is 1106 bytes and contains human readable chunk values
+        // this_is_a_test.txt is 1106 bytes and contains human readable text chunk content.
         string data_url = string("file://").append(TEST_DATA_DIR).append("/").append("this_is_a_test.txt");
         DBG(cerr << prolog << "data_url: " << data_url << endl);
 

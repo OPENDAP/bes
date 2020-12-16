@@ -55,8 +55,7 @@ public:
         d_data_url(""), d_offset(0), d_size(0), d_is_read(false), d_chunks_mapped(false), d_read_buffer(nullptr){}
 
     ~SuperChunk(){
-        if(d_read_buffer)
-            delete[] d_read_buffer;
+        delete[] d_read_buffer;
     }
     virtual bool add_chunk(std::shared_ptr<Chunk> chunk);
 
