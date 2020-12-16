@@ -1,0 +1,68 @@
+netcdf test {
+
+// global attributes:
+		:OrbitNumber = 7510, 7511, 7512, 7513, 7514, 7515, 7516, 7517, 7518, 7519, 7520, 7521, 7522, 7523, 7524, 7525, 7526, 7527, 7528, 7529, 7530, 7531, 7532, 7533, 7534, 7535, 7536, 7537, 7538, 7539, 7540, 7541, 7542, 7543, 7544, 7545, 7546, 7547, 7548, 7549, 7550, 7551, 7552, 7553, 7554 ;
+		:OrbitPeriod = 5933., 5933., 5933., 5932., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5932., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933. ;
+		:InstrumentName = "OMI" ;
+		:ProcessLevel = "3e" ;
+		:GranuleMonth = 12 ;
+		:GranuleDay = 14 ;
+		:GranuleYear = 2005 ;
+		:GranuleDayOfYear = 348 ;
+		:TAI93At0zOfGranule = 408672005. ;
+		:PGEVersion = "0.9.26" ;
+		:StartUTC = "2005-12-13T18:00:00.000000Z" ;
+		:EndUTC = "2005-12-15T06:00:00.000000Z" ;
+		:Period = "Daily" ;
+
+group: OMI_Column_Amount_O3 {
+  dimensions:
+  	lon = 1440 ;
+  	lat = 720 ;
+  variables:
+  	double lon(lon) ;
+  		lon:long_name = "longitude" ;
+  		lon:units = "degrees_east" ;
+  	double lat(lat) ;
+  		lat:long_name = "latitude" ;
+  		lat:units = "degrees_north" ;
+
+  // group attributes:
+  		:GCTPProjectionCode = 0 ;
+  		:Projection = "Geographic" ;
+  		:GridOrigin = "Center" ;
+  		:NumberOfLongitudesInGrid = 1440 ;
+  		:NumberOfLatitudesInGrid = 720 ;
+
+  group: Data_Fields {
+    variables:
+    	float ColumnAmountO3(lat, lon) ;
+    		ColumnAmountO3:_FillValue = -1.267651e+30f ;
+    		ColumnAmountO3:Units = "DU" ;
+    		ColumnAmountO3:Title = "Best Total Ozone Solution" ;
+    		ColumnAmountO3:UniqueFieldDefinition = "TOMS-OMI-Shared" ;
+    		ColumnAmountO3:ScaleFactor = 1. ;
+    		ColumnAmountO3:Offset = 0. ;
+    		ColumnAmountO3:ValidRange = 50.f, 700.f ;
+    		ColumnAmountO3:MissingValue = -1.267651e+30f ;
+    	float Reflectivity331(lat, lon) ;
+    		Reflectivity331:_FillValue = -1.267651e+30f ;
+    		Reflectivity331:Units = "%" ;
+    		Reflectivity331:Title = "Effective Surface Reflectivity at 331 nm" ;
+    		Reflectivity331:UniqueFieldDefinition = "TOMS-OMI-Shared" ;
+    		Reflectivity331:ScaleFactor = 1. ;
+    		Reflectivity331:Offset = 0. ;
+    		Reflectivity331:ValidRange = -15.f, 115.f ;
+    		Reflectivity331:MissingValue = -1.267651e+30f ;
+    	float UVAerosolIndex(lat, lon) ;
+    		UVAerosolIndex:_FillValue = -1.267651e+30f ;
+    		UVAerosolIndex:Title = "UV Aerosol Index" ;
+    		UVAerosolIndex:UniqueFieldDefinition = "TOMS-OMI-Shared" ;
+    		UVAerosolIndex:ScaleFactor = 1. ;
+    		UVAerosolIndex:Offset = 0. ;
+    		UVAerosolIndex:ValidRange = -30.f, 30.f ;
+    		UVAerosolIndex:MissingValue = -1.267651e+30f ;
+    		UVAerosolIndex:Units = "NoUnits" ;
+    } // group Data_Fields
+  } // group OMI_Column_Amount_O3
+}

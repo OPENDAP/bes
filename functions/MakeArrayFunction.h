@@ -49,7 +49,7 @@ public:
         setDescriptionString("The make_array() function reads a number of values and builds a DAP Array object.");
         setUsageString("make_array(type,shape,value0,value1,...,valueN)");
         setRole("http://services.opendap.org/dap4/server-side-function/make_array");
-        setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#make_array");
+        setDocUrl("https://docs.opendap.org/index.php/Server_Side_Processing_Functions#make_array");
         setFunction(function_make_dap2_array);
         setFunction(function_make_dap4_array);
         setVersion("1.0");

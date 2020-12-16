@@ -34,10 +34,11 @@
 #include "FONcBaseType.h"
 #include "FONcUtils.h"
 
-void FONcBaseType::convert(vector<string> embed,bool is_dap4_group)
+void FONcBaseType::convert(vector<string> embed,bool dap4_group)
 {
     _embed = embed;
     _varname = name();
+    is_dap4_group = dap4_group;
 }
 
 /** @brief Define the variable in the netcdf file

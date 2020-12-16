@@ -44,7 +44,7 @@ public:
 		setDescriptionString("The version function provides a list of the server-side processing functions available on a given server along with their versions.");
 		setUsageString("version()");
 		setRole("http://services.opendap.org/dap4/server-side-function/version");
-		setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#version");
+		setDocUrl("https://docs.opendap.org/index.php/Server_Side_Processing_Functions#version");
 		setFunction(function_dap2_version);
 		setFunction(function_dap4_version);
 		setVersion("1.0");

@@ -43,7 +43,7 @@ public:
         setDescriptionString("Subsets a grid by the values of it's geo-located map variables.");
         setUsageString("grid(...)");
         setRole("http://services.opendap.org/dap4/server-side-function/grid");
-        setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#grid");
+        setDocUrl("https://docs.opendap.org/index.php/Server_Side_Processing_Functions#grid");
         setFunction(function_grid);
         setVersion("1.0");
     }

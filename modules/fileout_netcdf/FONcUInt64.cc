@@ -60,7 +60,7 @@ FONcUInt64::FONcUInt64( BaseType *b )
 
 /** @brief Destructor that cleans up the instance
  *
- * The DAP UInt64 instance does not belong to the FONcByte
+ * The DAP UInt64 instance does not belong to the FONcUInt64
  * instance, so it is not deleted.
  */
 FONcUInt64::~FONcUInt64()
@@ -110,8 +110,8 @@ FONcUInt64::write( int ncid )
     int stax = nc_put_var1_ulonglong( ncid, _varid, var_index, data ) ;
     if( stax != NC_NOERR )
     {
-	string err = (string)"fileout.netcdf - "
-		     + "Failed to write unsigned int data for "
+	string err = (string)"fileout.netcdf4 - "
+		     + "Failed to write unsigned long long data for "
 		     + _varname ;
 	FONcUtils::handle_error( stax, err, __FILE__, __LINE__ ) ;
     }
@@ -131,7 +131,7 @@ FONcUInt64::name()
 
 /** @brief returns the netcdf type of the DAP object
  *
- * @returns The nc_type of NC_UINT
+ * @returns The nc_type of NC_UINT64
  */
 nc_type
 FONcUInt64::type()
