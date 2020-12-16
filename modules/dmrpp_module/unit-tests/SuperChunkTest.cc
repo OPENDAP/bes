@@ -199,7 +199,7 @@ public:
     void sc_chunks_test_02() {
         DBG(cerr << prolog << "BEGIN" << endl);
 
-        // chunked_gzipped_fourD.h5 is 2,870,087 bytes (2.9 MB on disk)
+        // this_is_a_test.txt is 1106 bytes and contains human readable chunk values
         string data_url = string("file://").append(TEST_DATA_DIR).append("/").append("this_is_a_test.txt");
         DBG(cerr << prolog << "data_url: " << data_url << endl);
 
@@ -225,8 +225,6 @@ public:
             {
                 SuperChunk word_a;
                 SuperChunk word_test;
-
-
                 bool chunk_was_added;
 
                 SuperChunk word_this;

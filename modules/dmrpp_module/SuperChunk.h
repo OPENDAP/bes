@@ -56,8 +56,8 @@ public:
 
     ~SuperChunk(){
         for(auto chunk:d_chunks){
-            if(d_chunks_mapped)
-                chunk->set_read_buffer(nullptr,0,0,false);
+            //if(d_chunks_mapped)
+                //chunk->set_read_buffer(nullptr,0,0,false);
         }
     }
     virtual bool add_chunk(std::shared_ptr<Chunk> chunk);

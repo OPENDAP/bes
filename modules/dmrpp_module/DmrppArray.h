@@ -85,6 +85,14 @@ private:
     // Called from read_chunks_unconstrained() and also using pthreads
     friend void
     process_one_chunk_unconstrained(std::shared_ptr<Chunk> chunk, DmrppArray *array, const vector<unsigned int> &array_shape,const vector<unsigned int> &chunk_shape);
+    friend void
+    process_super_chunk_unconstrained(std::shared_ptr<SuperChunk> super_chunk, DmrppArray *array);
+
+    // Called from read_chunks()
+    friend void
+    process_one_chunk(std::shared_ptr<Chunk> chunk, DmrppArray *array, const vector<unsigned int> &constrained_array_shape);
+    friend
+    void process_super_chunk(std::shared_ptr<SuperChunk> super_chunk, DmrppArray *array);
 
     virtual void insert_chunk_unconstrained(std::shared_ptr<Chunk> chunk, unsigned int dim,
                                     unsigned long long array_offset, const std::vector<unsigned int> &array_shape,
@@ -104,9 +112,6 @@ private:
             std::shared_ptr<Chunk> chunk,
             const vector<unsigned int> &constrained_array_shape);
 
-    // Called from read_chunks()
-    friend void process_one_chunk(std::shared_ptr<Chunk> chunk, DmrppArray *array, const vector<unsigned int> &constrained_array_shape);
-    friend void process_super_chunk(std::shared_ptr<SuperChunk> &super_chunk, DmrppArray *array, const vector<unsigned int> &constrained_array_shape);
 
     void read_chunks();
 
@@ -142,7 +147,8 @@ private:
  * @return NULL on success; a pointer to string on failure. The string holds
  * an error message.
  */
-void *one_chunk_thread(void *arg_list);
+    void *one_chunk_thread(void *arg_list);
+    void *one_super_chunk_unconstrained_thread(void *arg_list);
 
 /**
  * Args for threads that process chunks for constrianed arrays.
@@ -155,7 +161,7 @@ struct one_chunk_args {
     const vector<unsigned int> &array_shape;
 
     one_chunk_args(int *pipe, unsigned char id, std::shared_ptr<Chunk> c, DmrppArray *a, const vector<unsigned int> &a_s)
-            : fds(pipe), tid(id), chunk(c), array(a), array_shape(a_s) {}
+            : fds(pipe), tid(id), chunk(std::move(c)), array(a), array_shape(a_s) {}
 };
 
 struct one_super_chunk_args {
@@ -163,10 +169,9 @@ struct one_super_chunk_args {
     unsigned char tid;      // thread id as a byte
     std::shared_ptr<SuperChunk> super_chunk;
     DmrppArray *array;
-    const vector<unsigned int> &array_shape;
 
-    one_super_chunk_args(int *pipe, unsigned char id, std::shared_ptr<SuperChunk> sc, DmrppArray *a, const vector<unsigned int> &a_s)
-            : fds(pipe), tid(id), super_chunk(sc), array(a), array_shape(a_s) {}
+    one_super_chunk_args(int *pipe, unsigned char id, std::shared_ptr<SuperChunk> sc, DmrppArray *a)
+            : fds(pipe), tid(id), super_chunk(std::move(sc)), array(a) {}
 };
 
 /**
@@ -174,18 +179,28 @@ struct one_super_chunk_args {
  * The \arg chunk_shape is part of an optimization for the unconstrained
  * array case.
  */
-struct one_chunk_unconstrained_args {
-    int *fds;               // pipe back to parent
-    unsigned char tid;      // thread id as a byte
-    std::shared_ptr<Chunk> chunk;
-    DmrppArray *array;
-    const vector<unsigned int> &array_shape;
-    const vector<unsigned int> &chunk_shape;
+    struct one_chunk_unconstrained_args {
+        int *fds;               // pipe back to parent
+        unsigned char tid;      // thread id as a byte
+        std::shared_ptr<Chunk> chunk;
+        DmrppArray *array;
+        const vector<unsigned int> &array_shape;
+        const vector<unsigned int> &chunk_shape;
 
-    one_chunk_unconstrained_args(int *pipe, unsigned char id, std::shared_ptr<Chunk> c, DmrppArray *a, const vector<unsigned int> &a_s,
-                                 const vector<unsigned int> &c_s)
-            : fds(pipe), tid(id), chunk(c), array(a), array_shape(a_s), chunk_shape(c_s) {}
-};
+        one_chunk_unconstrained_args(int *pipe, unsigned char id, std::shared_ptr<Chunk> c, DmrppArray *a, const vector<unsigned int> &a_s,
+                                     const vector<unsigned int> &c_s)
+                : fds(pipe), tid(id), chunk(std::move(c)), array(a), array_shape(a_s), chunk_shape(c_s) {}
+    };
+
+    struct one_super_chunk_unconstrained_args {
+        int *fds;               // pipe back to parent
+        unsigned char tid;      // thread id as a byte
+        std::shared_ptr<SuperChunk> super_chunk;
+        DmrppArray *array;
+
+        one_super_chunk_unconstrained_args( int *pipe, unsigned char id, std::shared_ptr<SuperChunk> sc, DmrppArray *a)
+                : fds(pipe), tid(id), super_chunk(std::move(sc)), array(a) {}
+    };
 
 /**
  * Chunk data insert args for use with pthreads. Used for reading contiguous data

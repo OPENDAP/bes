@@ -102,7 +102,7 @@ void SuperChunk::map_chunks_to_buffer()
 {
     unsigned long long bindex = 0;
     for(const auto &chunk : d_chunks){
-        chunk->set_read_buffer(d_read_buffer + bindex, chunk->get_size(),0, true);
+        chunk->set_read_buffer(d_read_buffer + bindex, chunk->get_size(),0, false);
         bindex += chunk->get_size();
         if(bindex>d_size){
             stringstream msg;
@@ -145,19 +145,19 @@ void SuperChunk::read_contiguous()
     }
     catch(...) {
         DmrppRequestHandler::curl_handle_pool->release_handle(handle);
-        chunk.set_read_buffer(nullptr,0,0,false);
+        //chunk.set_read_buffer(nullptr,0,0,false);
         throw;
     }
 
     // If the expected byte count was not read, it's an error.
     if (d_size != chunk.get_bytes_read()) {
-        chunk.set_read_buffer(nullptr,0,0,false);
+        //chunk.set_read_buffer(nullptr,0,0,false);
         ostringstream oss;
         oss << "Wrong number of bytes read for chunk; read: " << chunk.get_bytes_read() << ", expected: " << d_size;
         throw BESInternalError(oss.str(), __FILE__, __LINE__);
     }
     // Clean up the chunk so when it goes out of scope it won't try to delete the memory we just populated.
-    chunk.set_read_buffer(nullptr,0,0,false);
+    //chunk.set_read_buffer(nullptr,0,0,false);
     d_is_read = true;
 }
 

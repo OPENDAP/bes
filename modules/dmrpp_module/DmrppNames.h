@@ -36,6 +36,8 @@
 #define CREDS  "dmrpp:creds"
 #define DMRPP_CURL  "dmrpp:curl"
 
+#define USE_SUPER_CHUNKS 1
+
 #endif // E_DmrppNames_H
 
 

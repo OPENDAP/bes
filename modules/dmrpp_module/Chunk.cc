@@ -549,7 +549,11 @@ void Chunk::inflate_chunk(bool deflate, bool shuffle, unsigned int chunk_size, u
         try {
             inflate(dest, chunk_size, get_rbuf(), get_rbuf_size());
             // This replaces (and deletes) the original read_buffer with dest.
+#if USE_SUPER_CHUNKS
+            set_read_buffer(dest,chunk_size,chunk_size, true);
+#else
             set_rbuf(dest, chunk_size);
+#endif
         }
         catch (...) {
             delete[] dest;
@@ -562,7 +566,11 @@ void Chunk::inflate_chunk(bool deflate, bool shuffle, unsigned int chunk_size, u
         char *dest = new char[get_rbuf_size()];
         try {
             unshuffle(dest, get_rbuf(), get_rbuf_size(), elem_width);
+#if USE_SUPER_CHUNKS
+            set_read_buffer(dest,get_rbuf_size(),get_rbuf_size(), true);
+#else
             set_rbuf(dest, get_rbuf_size());
+#endif
         }
         catch (...) {
             delete[] dest;

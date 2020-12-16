@@ -60,6 +60,7 @@ private:
     // These are used only during the libcurl callback;
     // they are not duplicated by the copy ctor or assignment
     // operator.
+    bool d_read_buffer_is_mine;
     unsigned long long d_bytes_read;
     char *d_read_buffer;
     unsigned long long d_read_buffer_size;
@@ -78,6 +79,7 @@ protected:
     void _duplicate(const Chunk &bs)
     {
         // See above
+        d_read_buffer_is_mine = true;
         d_bytes_read = 0;
         d_read_buffer = nullptr;
         d_read_buffer_size = 0;
@@ -104,7 +106,8 @@ public:
      * @see Chunk::add_tracking_query_param()
      */
     Chunk() :
-        d_data_url(""), d_query_marker(""), d_byte_order(""), d_size(0), d_offset(0), d_bytes_read(0), d_read_buffer(nullptr),
+        d_data_url(""), d_query_marker(""), d_byte_order(""), d_size(0), d_offset(0),
+        d_read_buffer_is_mine(true), d_bytes_read(0), d_read_buffer(nullptr),
         d_read_buffer_size(0), d_is_read(false), d_is_inflated(false)
     {
     }
@@ -119,8 +122,11 @@ public:
      * @param pia_str A string that provides the logical position of this chunk
      * in an Array. Has the syntax '[1,2,3,4]'.
      */
-    Chunk(const std::string &data_url, const std::string &order, unsigned long long size, unsigned long long offset, const std::string &pia_str = "") :
-            d_data_url(data_url), d_query_marker(""), d_byte_order(order), d_size(size), d_offset(offset), d_bytes_read(0), d_read_buffer(0),
+    Chunk(std::string data_url, std::string order, unsigned long long size, unsigned long long offset,
+            const std::string &pia_str = "") :
+            d_data_url(std::move(data_url)), d_query_marker(""),
+            d_byte_order(std::move(order)), d_size(size), d_offset(offset),
+            d_read_buffer_is_mine(true), d_bytes_read(0), d_read_buffer(nullptr),
             d_read_buffer_size(0), d_is_read(false), d_is_inflated(false)
     {
         add_tracking_query_param();
@@ -137,8 +143,10 @@ public:
      * @param pia_vec The logical position of this chunk in an Array; a std::vector
      * of unsigned ints.
      */
-    Chunk(const std::string &data_url, const std::string &order, unsigned long long size, unsigned long long offset, const std::vector<unsigned int> &pia_vec) :
-            d_data_url(data_url), d_query_marker(""), d_byte_order(order), d_size(size), d_offset(offset), d_bytes_read(0), d_read_buffer(0),
+    Chunk(std::string data_url, std::string order, unsigned long long size,
+            unsigned long long offset, const std::vector<unsigned int> &pia_vec) :
+            d_data_url(std::move(data_url)), d_query_marker(""), d_byte_order(std::move(order)), d_size(size), d_offset(offset),
+            d_read_buffer_is_mine(true), d_bytes_read(0), d_read_buffer(nullptr),
             d_read_buffer_size(0), d_is_read(false), d_is_inflated(false)
     {
         add_tracking_query_param();
@@ -152,8 +160,9 @@ public:
 
     virtual ~Chunk()
     {
-        delete[] d_read_buffer;
-        d_read_buffer = 0;
+        if(d_read_buffer_is_mine)
+            delete[] d_read_buffer;
+        d_read_buffer = nullptr;
     }
 
     /// I think this is broken. vector<Chunk> assignment fails
@@ -234,10 +243,12 @@ public:
      */
     virtual void set_rbuf_to_size()
     {
-        delete[] d_read_buffer;
+        if(d_read_buffer_is_mine)
+            delete[] d_read_buffer;
 
         d_read_buffer = new char[d_size];
         d_read_buffer_size = d_size;
+        d_read_buffer_is_mine = true;
         set_bytes_read(0);
     }
 
@@ -265,7 +276,8 @@ public:
      */
     virtual void set_rbuf(char *buf, unsigned int buf_size)
     {
-        delete[] d_read_buffer;
+        if(d_read_buffer_is_mine)
+            delete[] d_read_buffer;
 
         d_read_buffer = buf;
         d_read_buffer_size = buf_size;
@@ -280,15 +292,16 @@ public:
      * @param buf_size The size of the passed buffer.
      * @param delete_existing Delete the exisiting memory (if any) held by the Chunk
      */
-    virtual void set_read_buffer(
+     void set_read_buffer(
             char *buf,
             unsigned long long buf_size,
             unsigned long long bytes_read = 0,
-            bool delete_existing = true ){
+            bool assume_ownership = true ){
 
-        if(delete_existing)
+        if(d_read_buffer_is_mine)
             delete[] d_read_buffer;
 
+        d_read_buffer_is_mine = assume_ownership;
         d_read_buffer = buf;
         d_read_buffer_size = buf_size;
 
@@ -311,10 +324,10 @@ public:
         return d_chunk_position_in_array;
     }
 
-    virtual void add_tracking_query_param();
+    void add_tracking_query_param();
 
-    virtual void set_position_in_array(const std::string &pia);
-    virtual void set_position_in_array(const std::vector<unsigned int> &pia);
+    void set_position_in_array(const std::string &pia);
+    void set_position_in_array(const std::vector<unsigned int> &pia);
 
     virtual void read_chunk();
 
@@ -323,8 +336,8 @@ public:
     virtual bool get_is_read() { return d_is_read; }
     virtual void set_is_read(bool state) { d_is_read = state; }
 
-    virtual bool get_is_inflated() const { return d_is_inflated; }
-    virtual void set_is_inflated(bool state) { d_is_inflated = state; }
+    //virtual bool get_is_inflated() const { return d_is_inflated; }
+    //virtual void set_is_inflated(bool state) { d_is_inflated = state; }
 
     virtual std::string get_curl_range_arg_string();
 
