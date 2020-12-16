@@ -49,7 +49,6 @@
 #include "DmrppParserSax2.h"
 #include "DmrppTypeFactory.h"
 
-#include "SuperChunky.h"
 #include "SuperChunk.h"
 
 #define prolog std::string("superchunky::").append(__func__).append("() - ")
