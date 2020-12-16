@@ -98,12 +98,19 @@ bool SuperChunk::is_contiguous(const std::shared_ptr<Chunk> chunk) {
  * enclosing read buffer.
  * @param r_buff
  */
-void SuperChunk::map_chunks_to_buffer(shared_ptr<char> r_buff)
+void SuperChunk::map_chunks_to_buffer()
 {
     unsigned long long bindex = 0;
     for(const auto &chunk : d_chunks){
-        chunk->set_read_buffer(r_buff.get() + bindex, chunk->get_size(),0, true);
+        chunk->set_read_buffer(d_read_buffer + bindex, chunk->get_size(),0, true);
         bindex += chunk->get_size();
+        if(bindex>d_size){
+            stringstream msg;
+            msg << "ERROR The computed buffer index, " << bindex << " is larger than expected size of the SuperChunk. ";
+            msg << "d_size: " << d_size;
+            throw BESInternalError(msg.str(), __FILE__, __LINE__);
+
+        }
     }
     d_chunks_mapped = true;
 }
@@ -114,7 +121,7 @@ void SuperChunk::map_chunks_to_buffer(shared_ptr<char> r_buff)
  * @param r_buff The buffer into which to place the bytes
  * @param r_buff_size THe number of bytes
  */
-void SuperChunk::read_contiguous(shared_ptr<char> r_buff, unsigned long long r_buff_size)
+void SuperChunk::read_contiguous()
 {
     if (d_is_read) {
         BESDEBUG(MODULE, prolog << "SuperChunk (" << (void **) this << ") has already been read! Returning." << endl);
@@ -126,7 +133,7 @@ void SuperChunk::read_contiguous(shared_ptr<char> r_buff, unsigned long long r_b
     // and moving the results into the DmrppCommon object.
     Chunk chunk(d_data_url, "NOT_USED", d_size, d_offset);
 
-    chunk.set_read_buffer(r_buff.get(), r_buff_size,0,false);
+    chunk.set_read_buffer(d_read_buffer, d_size,0,false);
 
     dmrpp_easy_handle *handle = DmrppRequestHandler::curl_handle_pool->get_easy_handle(&chunk);
     if (!handle)
@@ -166,18 +173,18 @@ void SuperChunk::read() {
 
     if(!d_read_buffer){
         // Allocate memory for SuperChunk receive buffer.
-        d_read_buffer = shared_ptr<char>(new char[d_size]);
+        d_read_buffer = new char[d_size];
     }
 
     // Massage the chunks so that their read/receive/intern data buffer
     // points to the correct section of the memory allocated into read_buff.
     // "Slice it up!"
-    map_chunks_to_buffer(d_read_buffer);
+    map_chunks_to_buffer();
 
     // Read the bytes from the target URL. (pthreads, maybe depends on size...)
     // Use one (or possibly more) thread(s) depending on d_size
     // and utilize our friend cURL to stuff the bytes into read_buff
-    read_contiguous(d_read_buffer, d_size);
+    read_contiguous();
 
     // Process the raw bytes from the chunk and into the target array
     // memory space.

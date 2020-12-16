@@ -15,3 +15,5 @@ Http.cache.effective.urls=true
 # For these tests we don't want to tyry to cache the effective url of a fictious
 # s3 bucket so we exclude it.
 Http.cache.effective.urls.skip.regex.pattern=^https?:\/\/s3\.amazonaws\.com\/.*$
+
+AllowedHosts=^(file|https?):\/\/.*$

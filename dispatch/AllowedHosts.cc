@@ -103,7 +103,10 @@ bool AllowedHosts::is_allowed(const std::string &candidate_url)
         string file_path = candidate_url.substr(file_url.size());
         BESDEBUG(MODULE, prolog << "file_path: "<< file_path << endl);
 
-        BESCatalog *bcat = BESCatalogList::TheCatalogList()->find_catalog(BES_DEFAULT_CATALOG);
+        BESCatalogList *bcl =  BESCatalogList::TheCatalogList();
+        string default_catalog_name = bcl->default_catalog_name();
+        BESDEBUG(MODULE, prolog << "Searching for  catalog: "<< default_catalog_name << endl);
+        BESCatalog *bcat = bcl->find_catalog(default_catalog_name);
         if (bcat) {
             BESDEBUG(MODULE, prolog << "Found catalog: "<< bcat->get_catalog_name() << endl);
         }

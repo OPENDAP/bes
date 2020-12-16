@@ -44,11 +44,11 @@ private:
     unsigned long long d_size;
     bool d_is_read;
     bool d_chunks_mapped;
-    shared_ptr<char> d_read_buffer;
+    char *d_read_buffer;
 
-    bool is_contiguous(const std::shared_ptr<Chunk> chunk);
-    void map_chunks_to_buffer(shared_ptr<char> r_buff);
-    void read_contiguous(shared_ptr<char> r_buff, unsigned long long r_buff_size);
+    bool is_contiguous(std::shared_ptr<Chunk> chunk);
+    void map_chunks_to_buffer();
+    void read_contiguous();
 
 public:
     explicit SuperChunk():
