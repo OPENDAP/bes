@@ -55,26 +55,11 @@ public:
         d_data_url(""), d_offset(0), d_size(0), d_is_read(false), d_chunks_mapped(false), d_read_buffer(nullptr){}
 
     ~SuperChunk(){
-        for(auto chunk:d_chunks){
-            //if(d_chunks_mapped)
-                //chunk->set_read_buffer(nullptr,0,0,false);
-        }
+        if(d_read_buffer)
+            delete[] d_read_buffer;
     }
     virtual bool add_chunk(std::shared_ptr<Chunk> chunk);
 
-#if 0
-    // These setter methods are not needed as these values are set by the processing of
-    // adding Chunks to the SuperChunk. In fact setter methods for this members would
-    // be ill advised based on the class operations.
-    virtual void set_offset(unsigned long long offset){
-        d_offset = offset;
-    }
-    virtual void set_size(unsigned long long size){ d_size = size; }
-
-    virtual void set_data_url(const std::string &url){
-        d_data_url = url;
-    }
-#endif
     virtual std::string get_data_url(){  return d_data_url; }
     virtual unsigned long long get_size(){ return d_size; }
     virtual unsigned long long get_offset(){ return d_offset; };

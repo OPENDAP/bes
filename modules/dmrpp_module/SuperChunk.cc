@@ -83,7 +83,8 @@ bool SuperChunk::add_chunk(const std::shared_ptr<Chunk> chunk) {
 
 
 /**
- * @brief Returns true if the implemented rule for contiguousity
+ * @brief Returns true if chunk is contiguous with the end of the SuperChunk instance.
+ * Returns true if the implemented rule for contiguousity
  * determines that the chunk is contiguous with this SuperChunk
  * and false otherwise.
  * @param chunk The Chunk to evaluate for contiguousness with this SuperChunk.
@@ -94,8 +95,7 @@ bool SuperChunk::is_contiguous(const std::shared_ptr<Chunk> chunk) {
 }
 
 /**
- * Assigns each Chunk held by the SuperChunk a read buffer that is the appriate part of the SuperChunk's
- * enclosing read buffer.
+ * @brief  Assigns each Chunk held by the SuperChunk a read buffer that is the cooresponding section of the SuperChunk's enclosing read buffer.
  * @param r_buff
  */
 void SuperChunk::map_chunks_to_buffer()
@@ -117,9 +117,7 @@ void SuperChunk::map_chunks_to_buffer()
 
 
 /**
- * @brief Reads the bytes associated with the SUperCHunk from the data URL.
- * @param r_buff The buffer into which to place the bytes
- * @param r_buff_size THe number of bytes
+ * @brief Reads the contiguous range of bytes associated with the SuperChunk from the data URL.
  */
 void SuperChunk::read_contiguous()
 {
@@ -127,6 +125,8 @@ void SuperChunk::read_contiguous()
         BESDEBUG(MODULE, prolog << "SuperChunk (" << (void **) this << ") has already been read! Returning." << endl);
         return;
     }
+    if(!d_read_buffer)
+        throw BESInternalError("Read buffer not allocated. This is profoundly unfortunate.", __FILE__, __LINE__);
 
     // Since we already have a good infrastructure for reading Chunks, we just make a big-ol-Chunk to
     // use for grabbing bytes. Then, once read, we'll use the child Chunks to do the dirty work of inflating
@@ -145,19 +145,16 @@ void SuperChunk::read_contiguous()
     }
     catch(...) {
         DmrppRequestHandler::curl_handle_pool->release_handle(handle);
-        //chunk.set_read_buffer(nullptr,0,0,false);
         throw;
     }
 
     // If the expected byte count was not read, it's an error.
     if (d_size != chunk.get_bytes_read()) {
-        //chunk.set_read_buffer(nullptr,0,0,false);
         ostringstream oss;
         oss << "Wrong number of bytes read for chunk; read: " << chunk.get_bytes_read() << ", expected: " << d_size;
         throw BESInternalError(oss.str(), __FILE__, __LINE__);
     }
     // Clean up the chunk so when it goes out of scope it won't try to delete the memory we just populated.
-    //chunk.set_read_buffer(nullptr,0,0,false);
     d_is_read = true;
 }
 
@@ -196,31 +193,6 @@ void SuperChunk::read() {
     for(auto chunk : d_chunks){
         chunk->set_is_read(true);
         chunk->set_bytes_read(chunk->get_size());
-
-#if 0  // Pretty much moved this all into DmrppArray]
-        // TODO - Refactor Chunk so that the post read activities (shuffle, deflate, etc)
-        //  happen in a separate method so we can call it here.
-        // chunk->raw_to_var();
-
-        // This is how DmrppArray handles it, but the call stack needs to be re worked to allow it to happen here.
-        // Maybe SuperChunk should hold a pointer to the array??
-        // That and making this method, SuperChunk::read(), a friend method in DmrppArray.
-
-        if (d_parent->is_deflate_compression() || d_parent->is_shuffle_compression())
-            chunk->inflate_chunk(d_parent->is_deflate_compression(), d_parent->is_shuffle_compression(),
-                                 d_parent->get_chunk_size_in_elements(), d_parent->var()->width());
-
-        vector<unsigned int> target_element_address = chunk->get_position_in_array();
-        vector<unsigned int> chunk_source_address(d_parent->dimensions(), 0);
-
-        d_parent->insert_chunk(0 /* dimension */,
-                &target_element_address,
-                &chunk_source_address,
-                chunk,
-                d_parent->get_shape(true));
-
-        chunk->set_read_buffer(nullptr,0,0,false);
-#endif
     }
     // release memory as needed.
 
