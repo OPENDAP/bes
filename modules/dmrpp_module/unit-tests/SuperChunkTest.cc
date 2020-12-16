@@ -97,7 +97,7 @@ public:
     {
     }
 
-    void sc_test_01() {
+    void sc_one_chunk_test() {
         DBG(cerr << prolog << "BEGIN" << endl);
 
         string data_url = string("file://").append(TEST_DATA_DIR).append("/").append("chunked_gzipped_fourD.h5");
@@ -133,10 +133,50 @@ public:
         }
         DBG( cerr << prolog << "END" << endl);
     }
+    void sc_two_chunks_test() {
+        DBG(cerr << prolog << "BEGIN" << endl);
+
+        string data_url = string("file://").append(TEST_DATA_DIR).append("/").append("chunked_gzipped_fourD.h5");
+        DBG(cerr << prolog << "data_url: " << data_url << endl);
+
+        string chunk_position_in_array = "[0]";
+        try  {
+            DBG( cerr << prolog << "Creating: shared_ptr<Chunk> c1" << endl);
+            shared_ptr<Chunk> c1(new Chunk(data_url, "", 1000,0,chunk_position_in_array));
+            shared_ptr<Chunk> c2(new Chunk(data_url, "", 1000,1000,chunk_position_in_array));
+            {
+                SuperChunk sc;
+                DBG( cerr << prolog << "Adding c1 to SuperChunk" << endl);
+                sc.add_chunk(c1);
+                DBG( cerr << prolog << "Adding c2 to SuperChunk" << endl);
+                sc.add_chunk(c2);
+                DBG( cerr << prolog << "Calling SuperChunk::read()" << endl);
+                sc.read();
+            }
+
+        }
+        catch( BESError be){
+            stringstream msg;
+            msg << prolog << "CAUGHT BESError: " << be.get_verbose_message() << endl;
+            cerr << msg.str();
+            CPPUNIT_FAIL(msg.str());
+        }
+        catch( std::exception se ){
+            stringstream msg;
+            msg << "CAUGHT std::exception: " << se.what() << endl;
+            cerr << msg.str();
+            CPPUNIT_FAIL(msg.str());
+        }
+        catch( ... ){
+            cerr << "CAUGHT Unknown Exception." << endl;
+        }
+        DBG( cerr << prolog << "END" << endl);
+    }
 
     CPPUNIT_TEST_SUITE( SuperChunkTest );
 
-    CPPUNIT_TEST(sc_test_01);
+        CPPUNIT_TEST(sc_one_chunk_test);
+        CPPUNIT_TEST(sc_two_chunks_test);
 
     CPPUNIT_TEST_SUITE_END();
 };

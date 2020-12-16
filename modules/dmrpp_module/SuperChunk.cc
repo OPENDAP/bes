@@ -177,7 +177,7 @@ void SuperChunk::read() {
     }
 
     // Massage the chunks so that their read/receive/intern data buffer
-    // points to the correct section of the memory allocated into read_buff.
+    // points to the correct section of the d_read_buffer memory.
     // "Slice it up!"
     map_chunks_to_buffer();
 
