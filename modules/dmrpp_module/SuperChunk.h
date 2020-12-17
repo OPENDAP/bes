@@ -69,6 +69,7 @@ public:
 
     std::vector<std::shared_ptr<Chunk>> get_chunks(){ return d_chunks; }
 
+    virtual void intern(DmrppArray *target_array);
 
     std::string to_string(bool verbose) const;
     virtual void dump(std::ostream & strm) const;

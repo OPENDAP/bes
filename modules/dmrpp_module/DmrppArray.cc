@@ -1274,6 +1274,7 @@ void *one_chunk_thread(void *arg_list)
 
         try {
             process_super_chunk(args->super_chunk, args->array);
+            // args->super_chunk->intern(args->array);
         }
         catch (BESError &error) {
             write(args->fds[1], &args->tid, sizeof(args->tid));
@@ -1418,6 +1419,7 @@ void DmrppArray::read_chunks()
             super_chunks.pop();
             BESDEBUG(dmrpp_3, prolog << super_chunk->to_string(true) << endl );
             process_super_chunk(super_chunk, this);
+            // super_chunk->intern(this);
         }
     }
     else {

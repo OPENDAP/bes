@@ -32,7 +32,7 @@
 #include <Array.h>
 
 #include "DmrppCommon.h"
-// #include "SuperChunk.h"
+#include "SuperChunk.h"
 
 // The 'read_serial()' method is more closely related to the original code
 // used to read data when the DMR++ handler was initially developed for NASA.
@@ -93,6 +93,8 @@ private:
     process_one_chunk(std::shared_ptr<Chunk> chunk, DmrppArray *array, const vector<unsigned int> &constrained_array_shape);
     friend
     void process_super_chunk(std::shared_ptr<SuperChunk> super_chunk, DmrppArray *array);
+    friend
+    void SuperChunk::intern(DmrppArray *array);
 
     virtual void insert_chunk_unconstrained(std::shared_ptr<Chunk> chunk, unsigned int dim,
                                     unsigned long long array_offset, const std::vector<unsigned int> &array_shape,

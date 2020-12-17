@@ -171,6 +171,7 @@ void SuperChunk::read() {
 
     if(!d_read_buffer){
         // Allocate memory for SuperChunk receive buffer.
+        // release memory in destructor.
         d_read_buffer = new char[d_size];
     }
 
@@ -181,23 +182,45 @@ void SuperChunk::read() {
 
     // Read the bytes from the target URL. (pthreads, maybe depends on size...)
     // Use one (or possibly more) thread(s) depending on d_size
-    // and utilize our friend cURL to stuff the bytes into read_buff
+    // and utilize our friend cURL to stuff the bytes into d_read_buffer
     read_contiguous();
 
-    // Process the raw bytes from the chunk and into the target array
-    // memory space.
-    //
-    //   for(chunk : chunks){ // more pthreads.
-    //      Have each chunk process data from its section of the
-    //      read buffer into the variables data space.
-    //   }
+    // Set each Chunk's read state to true.
+    // Set each chunks byte count to the expected
+    // size for the chunk - because upstream events
+    // have assured this to be true.
     for(auto chunk : d_chunks){
         chunk->set_is_read(true);
         chunk->set_bytes_read(chunk->get_size());
     }
-    // release memory as needed.
 
 }
+
+
+
+/**
+ * @brief Reads SuperChunk, processes child Chunks and writes data in to array.
+ * @param array The array into which to write the data.
+ */
+void SuperChunk::intern(DmrppArray *target_array) {
+    BESDEBUG(MODULE, prolog << "BEGIN" << endl );
+    read();
+
+    vector<unsigned int> constrained_array_shape = target_array->get_shape(true);
+
+    for(auto &chunk :d_chunks){
+        if (target_array->is_deflate_compression() || target_array->is_shuffle_compression())
+            chunk->inflate_chunk(target_array->is_deflate_compression(), target_array->is_shuffle_compression(),
+                                 target_array->get_chunk_size_in_elements(), target_array->var()->width());
+
+        vector<unsigned int> target_element_address = chunk->get_position_in_array();
+        vector<unsigned int> chunk_source_address(target_array->dimensions(), 0);
+
+        target_array->insert_chunk(0 /* dimension */, &target_element_address, &chunk_source_address, chunk, constrained_array_shape);
+    }
+    BESDEBUG(MODULE, prolog << "END" << endl );
+}
+
 
 string SuperChunk::to_string(bool verbose) const {
     stringstream msg;
