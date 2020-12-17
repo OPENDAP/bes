@@ -1243,7 +1243,7 @@ bool is_retryable(std::string target_url) {
         vector<string>::iterator it;
         for (it = nr_regexs.begin(); it != nr_regexs.end() && retryable; it++) {
             BESRegex no_retry_regex((*it).c_str(), (*it).size());
-            int match_length;
+            size_t match_length;
             match_length = no_retry_regex.match(target_url.c_str(), target_url.size(), 0);
             if (match_length == target_url.size()) {
                 BESDEBUG(MODULE, prolog << "The url: '" << target_url << "' fully matched the "
@@ -1809,7 +1809,6 @@ curl_slist *append_http_header(curl_slist *slist, const string &header_name, con
  * @return
  */
 curl_slist *add_auth_headers(curl_slist *request_headers) {
-    curl_slist *temp = NULL;
     bool found;
     string s;
 

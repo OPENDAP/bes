@@ -70,9 +70,7 @@ bool SuperChunk::add_chunk(const std::shared_ptr<Chunk> candidate_chunk) {
         d_data_url = candidate_chunk->get_data_url();
         chunk_was_added =  true;
     }
-    else if(is_contiguous(candidate_chunk) &&
-            candidate_chunk->get_data_url() == d_data_url ){
-
+    else if(is_contiguous(candidate_chunk) ){
         this->d_chunks.push_back(candidate_chunk);
         d_size += candidate_chunk->get_size();
         chunk_was_added =  true;
@@ -88,13 +86,19 @@ bool SuperChunk::add_chunk(const std::shared_ptr<Chunk> candidate_chunk) {
  * contiguous with this SuperChunk and false otherwise.
  *
  * Currently the rule is that the offset of the candidate_chunk must be the same as the current
- * offset + size of the SuperChunk.
+ * offset + size of the SuperChunk, and the data_url is the same as the one in the SuperChunk.
  *
  * @param candidate_chunk The Chunk to evaluate for contiguousness with this SuperChunk.
  * @return True if chunk isdeemed contiguous, false otherwise.
  */
 bool SuperChunk::is_contiguous(const std::shared_ptr<Chunk> candidate_chunk) {
-    return (d_offset + d_size) == candidate_chunk->get_offset();
+    // Are the URLs the same?
+    bool contiguous  = candidate_chunk->get_data_url() == d_data_url;
+    if(contiguous){
+        // If the URLs match the see if the locations are matching
+        contiguous = (d_offset + d_size) == candidate_chunk->get_offset();
+    }
+    return contiguous;
 }
 
 /**
