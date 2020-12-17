@@ -62,7 +62,9 @@ private:
     // operator.
 
     /**
-     *  d_read_buffer_is_mine -  controls if the currently
+     *  d_read_buffer_is_mine
+     *
+     *  This flag controls if the currently
      *  held read buffer memory is released (via a call to 'delete[]')
      *  when an instance is destroyed or when Chunk::set_rbuf_to_size()
      *  or Chunk::set_read_buffer() are invoked. This way, memory can be
@@ -71,9 +73,9 @@ private:
      *  is not deleted during the chunks lifecycle. THis includes when
      *  when the chunk is inflating data - if the result won't fit in
      *  the current buffer and the chunk doesn't own it, then the chunk
-     *  just make new memory for the result and install it. Dropping the
-     *  old pointer (no delete[]) and taking possesion of the new memory
-     *  so it is correctly released as described here.
+     *  just allocates new memory for the result and installs it, Dropping
+     *  the old pointer (no delete[]) and taking possession of the new
+     *  memory so it is correctly released as described here.
      */
     bool d_read_buffer_is_mine;
     unsigned long long d_bytes_read;

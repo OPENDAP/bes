@@ -56,7 +56,7 @@ string SuperChunk::get_curl_range_arg_string() {
 /**
  * @brief Attempts to add a new Chunk to this SuperChunk.
  *
- * If the passed chunk has the same data url, byte order, and is it is contiguous with the
+ * If the passed chunk has the same data url, and is it is contiguous with the
  * current end if the SuperChunk the Chunk is added, otherwise it is skipped.
  * @param chunk The Chunk to add.
  * @return True when the chunk is added, false otherwise.
@@ -84,6 +84,7 @@ bool SuperChunk::add_chunk(const std::shared_ptr<Chunk> chunk) {
 
 /**
  * @brief Returns true if chunk is contiguous with the end of the SuperChunk instance.
+ *
  * Returns true if the implemented rule for contiguousity
  * determines that the chunk is contiguous with this SuperChunk
  * and false otherwise.
@@ -95,7 +96,7 @@ bool SuperChunk::is_contiguous(const std::shared_ptr<Chunk> chunk) {
 }
 
 /**
- * @brief  Assigns each Chunk held by the SuperChunk a read buffer that is the cooresponding section of the SuperChunk's enclosing read buffer.
+ * @brief  Assigns each Chunk held by the SuperChunk a read buffer that is the corresponding section of the SuperChunk's enclosing read buffer.
  * @param r_buff
  */
 void SuperChunk::map_chunks_to_buffer()
