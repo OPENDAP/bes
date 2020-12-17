@@ -1365,7 +1365,7 @@ void process_super_chunk(shared_ptr<SuperChunk> super_chunk, DmrppArray *array)
 
 #if USE_SUPER_CHUNKS
     /**
- * @brief Read chunked data
+ * @brief Read chunked data by building SuperChunks from the required chunks and reading the SuperChunks
  *
  * Read chunked data, using either parallel or serial data transfers, depending on
  * the DMR++ handler configuration parameters.
@@ -1385,6 +1385,10 @@ void DmrppArray::read_chunks()
     auto current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk()) ;
     super_chunks.push(current_super_chunk);
 
+    // TODO We know that non-contiguous chunks may be forward or backward in the file from
+    //  the current offset. When an add_chunk() call fails, prior to making a new SuperChunk
+    //  we might want to offer the rejected Chunk to the other existing SuperChunks to see
+    //  if it's contiguous there.
     // Find the required Chunks and put them into SuperChunks.
     for(auto chunk: get_chunks()){
         vector<unsigned int> target_element_address = chunk->get_position_in_array();

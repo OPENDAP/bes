@@ -67,15 +67,15 @@ private:
      *  This flag controls if the currently
      *  held read buffer memory is released (via a call to 'delete[]')
      *  when an instance is destroyed or when Chunk::set_rbuf_to_size()
-     *  or Chunk::set_read_buffer() are invoked. This way, memory can be
-     *  assigned to a chunk that was read elsewhere and the chunk can be
-     *  used to process the bytes (inflate etc) and the assigned memory
-     *  is not deleted during the chunks lifecycle. THis includes when
-     *  when the chunk is inflating data - if the result won't fit in
-     *  the current buffer and the chunk doesn't own it, then the chunk
-     *  just allocates new memory for the result and installs it, Dropping
-     *  the old pointer (no delete[]) and taking possession of the new
-     *  memory so it is correctly released as described here.
+     *  or Chunk::set_read_buffer() are invoked. This way, memory
+     *  allocated elsewhere can be assigned to a chunk and the chunk
+     *  can be used to process the bytes (inflate etc) and the assigned
+     *  memory is not deleted during the chunks lifecycle. This includes
+     *  when when the chunk is inflating data - if the result won't fit
+     *  in the current buffer and the chunk doesn't own it, then the
+     *  chunk just allocates new memory for the result and installs it,
+     *  dropping the old pointer (no delete[]) and taking possession of
+     *  the new memory so it is correctly released as described here.
      */
     bool d_read_buffer_is_mine;
     unsigned long long d_bytes_read;
