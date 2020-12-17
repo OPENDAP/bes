@@ -122,7 +122,7 @@ void SuperChunk::map_chunks_to_buffer()
 /**
  * @brief Reads the contiguous range of bytes associated with the SuperChunk from the data URL.
  */
-void SuperChunk::read_contiguous()
+void SuperChunk::read_aggregate_bytes()
 {
     // Since we already have a good infrastructure for reading Chunks, we just make a big-ol-Chunk to
     // use for grabbing bytes. Then, once read, we'll use the child Chunks to do the dirty work of inflating
@@ -178,7 +178,7 @@ void SuperChunk::read() {
     // Read the bytes from the target URL. (pthreads, maybe depends on size...)
     // Use one (or possibly more) thread(s) depending on d_size
     // and utilize our friend cURL to stuff the bytes into d_read_buffer
-    read_contiguous();
+    read_aggregate_bytes();
 
     // Set each Chunk's read state to true.
     // Set each chunks byte count to the expected
@@ -195,7 +195,7 @@ void SuperChunk::read() {
  * @brief Reads SuperChunk, processes subordinate Chunks and writes data in to target_array.
  * @param target_array The array into which to write the data.
  */
-void SuperChunk::intern(DmrppArray *target_array) {
+void SuperChunk::chunks_to_array_values(DmrppArray *target_array) {
     BESDEBUG(MODULE, prolog << "BEGIN" << endl );
 
     read();
