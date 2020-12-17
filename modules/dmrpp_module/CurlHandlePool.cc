@@ -108,8 +108,9 @@ string pthread_error(unsigned int err){
             break;
     }
 
-
+    return error_msg;
 }
+
 Lock::Lock(pthread_mutex_t &lock) : m_mutex(lock) {
     int status = pthread_mutex_lock(&m_mutex);
     if (status != 0)
