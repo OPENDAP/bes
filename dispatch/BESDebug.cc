@@ -68,7 +68,7 @@ string get_debug_log_line_prefix()
     char b[32]; // The linux man-page for asctime_r() says "at least 26 bytes".
     asctime_r(sttime,b);
     strm << "[" << zone_name << " ";
-    for (size_t j = 0; b[j] != '\n'; j++)
+    for (size_t j = 0; b[j] != '\n' && j<32; j++)
         strm << b[j];
     strm << "]";
 
