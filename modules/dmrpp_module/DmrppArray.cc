@@ -715,19 +715,19 @@ void process_super_chunk_unconstrained(shared_ptr<SuperChunk> super_chunk, Dmrpp
 }
 
 void process_one_chunk_unconstrained(shared_ptr<Chunk> chunk, DmrppArray *array, const vector<unsigned int> &array_shape,
-                                         const vector<unsigned int> &chunk_shape)
-    {
-        BESDEBUG(dmrpp_3, prolog << "BEGIN" << endl );
-        chunk->read_chunk();
+                                     const vector<unsigned int> &chunk_shape)
+{
+    BESDEBUG(dmrpp_3, prolog << "BEGIN" << endl );
+    chunk->read_chunk();
 
-        if (array->is_deflate_compression() || array->is_shuffle_compression())
-            chunk->inflate_chunk(array->is_deflate_compression(), array->is_shuffle_compression(),
-                                 array->get_chunk_size_in_elements(),
-                                 array->var()->width());
+    if (array->is_deflate_compression() || array->is_shuffle_compression())
+        chunk->inflate_chunk(array->is_deflate_compression(), array->is_shuffle_compression(),
+                             array->get_chunk_size_in_elements(),
+                             array->var()->width());
 
-        array->insert_chunk_unconstrained(chunk, 0, 0, array_shape, 0, chunk_shape, chunk->get_position_in_array());
-        BESDEBUG(dmrpp_3, prolog << "END" << endl );
-    }
+    array->insert_chunk_unconstrained(chunk, 0, 0, array_shape, 0, chunk_shape, chunk->get_position_in_array());
+    BESDEBUG(dmrpp_3, prolog << "END" << endl );
+}
 
 #if USE_SUPER_CHUNKS
 /**
@@ -1268,46 +1268,46 @@ void *one_chunk_thread(void *arg_list)
     pthread_exit(NULL);
 }
 
-    void *one_super_chunk_thread(void *arg_list)
-    {
-        auto *args = reinterpret_cast<one_super_chunk_args *>(arg_list);
+void *one_super_chunk_thread(void *arg_list)
+{
+    auto *args = reinterpret_cast<one_super_chunk_args *>(arg_list);
 
-        try {
-            process_super_chunk(args->super_chunk, args->array);
-            // args->super_chunk->intern(args->array);
-        }
-        catch (BESError &error) {
-            write(args->fds[1], &args->tid, sizeof(args->tid));
-            delete args;
-            pthread_exit(new string(error.get_verbose_message()));
-        }
-
-        // tid is a char and thus us written atomically. Writing this tells the parent
-        // thread the child is complete and it should call pthread_join(tid, ...)
+    try {
+        process_super_chunk(args->super_chunk, args->array);
+        // args->super_chunk->intern(args->array);
+    }
+    catch (BESError &error) {
         write(args->fds[1], &args->tid, sizeof(args->tid));
         delete args;
-        pthread_exit(NULL);
+        pthread_exit(new string(error.get_verbose_message()));
     }
 
-    void *one_super_chunk_unconstrained_thread(void *arg_list)
-    {
-        auto args = reinterpret_cast<one_super_chunk_unconstrained_args *>(arg_list);
+    // tid is a char and thus us written atomically. Writing this tells the parent
+    // thread the child is complete and it should call pthread_join(tid, ...)
+    write(args->fds[1], &args->tid, sizeof(args->tid));
+    delete args;
+    pthread_exit(NULL);
+}
 
-        try {
-            process_super_chunk_unconstrained(args->super_chunk, args->array);
-        }
-        catch (BESError &error) {
-            write(args->fds[1], &args->tid, sizeof(args->tid));
-            delete args;
-            pthread_exit(new string(error.get_verbose_message()));
-        }
+void *one_super_chunk_unconstrained_thread(void *arg_list)
+{
+    auto args = reinterpret_cast<one_super_chunk_unconstrained_args *>(arg_list);
 
-        // tid is a char and thus us written atomically. Writing this tells the parent
-        // thread the child is complete and it should call pthread_join(tid, ...)
+    try {
+        process_super_chunk_unconstrained(args->super_chunk, args->array);
+    }
+    catch (BESError &error) {
         write(args->fds[1], &args->tid, sizeof(args->tid));
         delete args;
-        pthread_exit(NULL);
+        pthread_exit(new string(error.get_verbose_message()));
     }
+
+    // tid is a char and thus us written atomically. Writing this tells the parent
+    // thread the child is complete and it should call pthread_join(tid, ...)
+    write(args->fds[1], &args->tid, sizeof(args->tid));
+    delete args;
+    pthread_exit(NULL);
+}
 
 /**
  * This function may be called by a thread in a multi-threaded access scenario
@@ -1360,11 +1360,12 @@ void process_super_chunk(shared_ptr<SuperChunk> super_chunk, DmrppArray *array)
 
         array->insert_chunk(0 /* dimension */, &target_element_address, &chunk_source_address, chunk, constrained_array_shape);
     }
+
     BESDEBUG(dmrpp_3, prolog << "END" << endl );
 }
 
 #if USE_SUPER_CHUNKS
-    /**
+/**
  * @brief Read chunked data by building SuperChunks from the required chunks and reading the SuperChunks
  *
  * Read chunked data, using either parallel or serial data transfers, depending on
@@ -1412,8 +1413,6 @@ void DmrppArray::read_chunks()
     BESDEBUG(dmrpp_3, prolog << "d_use_parallel_transfers: " << DmrppRequestHandler::d_use_parallel_transfers << endl);
     BESDEBUG(dmrpp_3, prolog << "d_max_parallel_transfers: " << DmrppRequestHandler::d_max_parallel_transfers << endl);
     BESDEBUG(dmrpp_3, prolog << "SuperChunks.size(): " << super_chunks.size() << endl);
-
-
 
     if (!DmrppRequestHandler::d_use_parallel_transfers) {
         // This version is the 'serial' version of the code. It reads a chunk, inserts it,

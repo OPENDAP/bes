@@ -2,7 +2,7 @@
 
 // This file is part of the BES
 
-// Copyright (c) 2018 OPeNDAP, Inc.
+// Copyright (c) 2020 OPeNDAP, Inc.
 // Author: Nathan Potter<ndp@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
@@ -43,28 +43,28 @@ private:
     unsigned long long d_offset;
     unsigned long long d_size;
     bool d_is_read;
-    bool d_chunks_mapped;
     char *d_read_buffer;
 
-    bool is_contiguous(std::shared_ptr<Chunk> chunk);
+    bool is_contiguous(std::shared_ptr<Chunk> candidate_chunk);
     void map_chunks_to_buffer();
     void read_contiguous();
 
 public:
     explicit SuperChunk():
-        d_data_url(""), d_offset(0), d_size(0), d_is_read(false), d_chunks_mapped(false), d_read_buffer(nullptr){}
+        d_data_url(""), d_offset(0), d_size(0), d_is_read(false), d_read_buffer(nullptr){}
 
     ~SuperChunk(){
         delete[] d_read_buffer;
     }
+
     virtual bool add_chunk(std::shared_ptr<Chunk> candidate_chunk);
 
-    virtual std::string get_data_url(){  return d_data_url; }
+    virtual std::string get_data_url(){ return d_data_url; }
     virtual unsigned long long get_size(){ return d_size; }
-    virtual unsigned long long get_offset(){ return d_offset; };
+    virtual unsigned long long get_offset(){ return d_offset; }
 
     virtual void read();
-    virtual bool empty(){ return d_chunks.empty(); };
+    virtual bool empty(){ return d_chunks.empty(); }
 
 
     std::vector<std::shared_ptr<Chunk>> get_chunks(){ return d_chunks; }

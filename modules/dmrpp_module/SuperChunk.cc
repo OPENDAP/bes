@@ -58,24 +58,23 @@ string SuperChunk::get_curl_range_arg_string() {
  *
  * If the passed chunk has the same data url, and is it is contiguous with the
  * current end if the SuperChunk the Chunk is added, otherwise it is skipped.
- * @param chunk The Chunk to add.
+ * @param candidate_chunk The Chunk to add.
  * @return True when the chunk is added, false otherwise.
  */
-bool SuperChunk::add_chunk(const std::shared_ptr<Chunk> chunk) {
+bool SuperChunk::add_chunk(const std::shared_ptr<Chunk> candidate_chunk) {
     bool chunk_was_added = false;
     if(d_chunks.empty()){
-        d_chunks.push_back(chunk);
-        d_offset = chunk->get_offset();
-        d_size = chunk->get_size();
-        d_data_url = chunk->get_data_url();
+        d_chunks.push_back(candidate_chunk);
+        d_offset = candidate_chunk->get_offset();
+        d_size = candidate_chunk->get_size();
+        d_data_url = candidate_chunk->get_data_url();
         chunk_was_added =  true;
     }
-    else if(
-            is_contiguous(chunk) &&
-            chunk->get_data_url() == d_data_url ){
+    else if(is_contiguous(candidate_chunk) &&
+            candidate_chunk->get_data_url() == d_data_url ){
 
-        this->d_chunks.push_back(chunk);
-        d_size += chunk->get_size();
+        this->d_chunks.push_back(candidate_chunk);
+        d_size += candidate_chunk->get_size();
         chunk_was_added =  true;
     }
     return chunk_was_added;
@@ -99,8 +98,10 @@ bool SuperChunk::is_contiguous(const std::shared_ptr<Chunk> candidate_chunk) {
 }
 
 /**
- * @brief  Assigns each Chunk held by the SuperChunk a read buffer that is the corresponding section of the SuperChunk's enclosing read buffer.
- * @param r_buff
+ * @brief  Assigns each Chunk held by the SuperChunk a read buffer.
+ *
+ * Each Chunks read buffer is mapped to the corresponding section of the SuperChunk's
+ * enclosing read buffer.
  */
 void SuperChunk::map_chunks_to_buffer()
 {
@@ -116,22 +117,13 @@ void SuperChunk::map_chunks_to_buffer()
 
         }
     }
-    d_chunks_mapped = true;
 }
-
 
 /**
  * @brief Reads the contiguous range of bytes associated with the SuperChunk from the data URL.
  */
 void SuperChunk::read_contiguous()
 {
-    if (d_is_read) {
-        BESDEBUG(MODULE, prolog << "SuperChunk (" << (void **) this << ") has already been read! Returning." << endl);
-        return;
-    }
-    if(!d_read_buffer)
-        throw BESInternalError("Read buffer not allocated. This is profoundly unfortunate.", __FILE__, __LINE__);
-
     // Since we already have a good infrastructure for reading Chunks, we just make a big-ol-Chunk to
     // use for grabbing bytes. Then, once read, we'll use the child Chunks to do the dirty work of inflating
     // and moving the results into the DmrppCommon object.
@@ -158,7 +150,7 @@ void SuperChunk::read_contiguous()
         oss << "Wrong number of bytes read for chunk; read: " << chunk.get_bytes_read() << ", expected: " << d_size;
         throw BESInternalError(oss.str(), __FILE__, __LINE__);
     }
-    // Clean up the chunk so when it goes out of scope it won't try to delete the memory we just populated.
+
     d_is_read = true;
 }
 
@@ -199,8 +191,6 @@ void SuperChunk::read() {
 
 }
 
-
-
 /**
  * @brief Reads SuperChunk, processes subordinate Chunks and writes data in to target_array.
  * @param target_array The array into which to write the data.
@@ -227,6 +217,7 @@ void SuperChunk::intern(DmrppArray *target_array) {
                 chunk,
                 constrained_array_shape);
     }
+
     BESDEBUG(MODULE, prolog << "END" << endl );
 }
 
