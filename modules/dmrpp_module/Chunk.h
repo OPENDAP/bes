@@ -60,6 +60,21 @@ private:
     // These are used only during the libcurl callback;
     // they are not duplicated by the copy ctor or assignment
     // operator.
+
+    /**
+     *  d_read_buffer_is_mine -  controls if the currently
+     *  held read buffer memory is released (via a call to 'delete[]')
+     *  when an instance is destroyed or when Chunk::set_rbuf_to_size()
+     *  or Chunk::set_read_buffer() are invoked. This way, memory can be
+     *  assigned to a chunk that was read elsewhere and the chunk can be
+     *  used to process the bytes (inflate etc) and the assigned memory
+     *  is not deleted during the chunks lifecycle. THis includes when
+     *  when the chunk is inflating data - if the result won't fit in
+     *  the current buffer and the chunk doesn't own it, then the chunk
+     *  just make new memory for the result and install it. Dropping the
+     *  old pointer (no delete[]) and taking possesion of the new memory
+     *  so it is correctly released as described here.
+     */
     bool d_read_buffer_is_mine;
     unsigned long long d_bytes_read;
     char *d_read_buffer;
@@ -237,8 +252,14 @@ public:
      * @brief Allocates the internal read buffer to be d_size bytes
      *
      * The memory of the read buffer is managed internally by this method.
-     * Calling this method will release any previously allocated read buffer
-     * memory and then allocate a new memory block. The bytes_read counter is
+     *
+     * The class maintains an internal flag, d_read_buffer_is_mine, which
+     * controls if the currently held read buffer memory is released
+     * (via a call to 'delete[]') when an this method is invoked.
+     *
+     * If the CHunk owns the read buffer, then calling this method
+     * will release any previously allocated read buffer memory and then
+     * allocate a new memory block. The bytes_read counter is
      * reset to zero.
      */
     virtual void set_rbuf_to_size()
@@ -261,6 +282,7 @@ public:
         return d_read_buffer;
     }
 
+#if 0  // Superseded by Chunk::set_read_buffer(); - ndp 12/17/20
     /**
      * @brief Set the read buffer
      *
@@ -284,13 +306,18 @@ public:
 
         set_bytes_read(buf_size);
     }
+#endif
 
     /**
-     * @brief Set the target read buffer for this chunk
+     * @brief Set the target read buffer for this chunk.
      *
      * @param buf The new buffer to install into the Chunk.
      * @param buf_size The size of the passed buffer.
-     * @param delete_existing Delete the exisiting memory (if any) held by the Chunk
+     * @param bytes_read The number of bytes that have been read into buf. In practice
+     * this is the offset in buf at which new bytes should be added, (default: 0)
+     * @param assume_ownership If true, then the memory pointed to by buf will be deleted (using delete[])
+     * when the Chunk object's destructor is called. If false then the Chunk's destructor will not attempt to
+     * free/delete the memory pointed to by buf. (default: true)
      */
      void set_read_buffer(
             char *buf,
@@ -309,7 +336,7 @@ public:
     }
 
     /**
-     * Returns the size, in bytes, of the read buffer for this Chunk.
+     * Returns the size, in bytes, of the current read buffer for this Chunk.
      */
     virtual unsigned long long get_rbuf_size() const
     {
