@@ -785,6 +785,7 @@ void DmrppArray::read_chunks_unconstrained()
             auto super_chunk = super_chunks.front();
             super_chunks.pop();
             process_super_chunk_unconstrained(super_chunk, this);
+            // args->super_chunk->chunks_to_array_values_unconstrained(args->array);
         }
     }
     else {      // Parallel transfers
@@ -1295,6 +1296,7 @@ void *one_super_chunk_unconstrained_thread(void *arg_list)
 
     try {
         process_super_chunk_unconstrained(args->super_chunk, args->array);
+        // args->super_chunk->chunks_to_array_values_unconstrained(args->array);
     }
     catch (BESError &error) {
         write(args->fds[1], &args->tid, sizeof(args->tid));
@@ -1388,7 +1390,7 @@ void DmrppArray::read_chunks()
 
     // TODO We know that non-contiguous chunks may be forward or backward in the file from
     //  the current offset. When an add_chunk() call fails, prior to making a new SuperChunk
-    //  we might want to offer the rejected Chunk to the other existing SuperChunks to see
+    //  we might want want try adding the rejected Chunk to the other existing SuperChunks to see
     //  if it's contiguous there.
     // Find the required Chunks and put them into SuperChunks.
     for(auto chunk: get_chunks()){

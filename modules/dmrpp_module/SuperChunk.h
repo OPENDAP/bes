@@ -53,7 +53,7 @@ public:
     explicit SuperChunk():
         d_data_url(""), d_offset(0), d_size(0), d_is_read(false), d_read_buffer(nullptr){}
 
-    ~SuperChunk(){
+    virtual ~SuperChunk(){
         delete[] d_read_buffer;
     }
 
@@ -70,6 +70,7 @@ public:
     std::vector<std::shared_ptr<Chunk>> get_chunks(){ return d_chunks; }
 
     virtual void chunks_to_array_values(DmrppArray *target_array);
+    virtual void chunks_to_array_values_unconstrained(DmrppArray *target_array);
 
     std::string to_string(bool verbose) const;
     virtual void dump(std::ostream & strm) const;

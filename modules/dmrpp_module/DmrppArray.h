@@ -95,6 +95,7 @@ private:
     void process_super_chunk(std::shared_ptr<SuperChunk> super_chunk, DmrppArray *array);
     friend
     void SuperChunk::chunks_to_array_values(DmrppArray *array);
+    friend void SuperChunk::chunks_to_array_values_unconstrained(DmrppArray *target_array);
 
     virtual void insert_chunk_unconstrained(std::shared_ptr<Chunk> chunk, unsigned int dim,
                                     unsigned long long array_offset, const std::vector<unsigned int> &array_shape,
