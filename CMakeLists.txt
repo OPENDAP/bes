@@ -483,14 +483,14 @@ add_executable(bes
     http/HttpNames.h
     http/HttpUtils.cc
     http/HttpUtils.h
-        http/ProxyConfig.cc
-        http/ProxyConfig.h
+    http/ProxyConfig.cc
+    http/ProxyConfig.h
     http/RemoteResource.cc
     http/RemoteResource.h
     http/unit-tests/HttpUtilsTest.cc
     http/unit-tests/CurlUtilsTest.cc
-        http/EffectiveUrl.cc
-        http/EffectiveUrl.h
+    http/EffectiveUrl.cc
+    http/EffectiveUrl.h
     http/EffectiveUrlCache.cc
     http/EffectiveUrlCache.h
     http/unit-tests/EffectiveUrlCacheTest.cc
@@ -723,8 +723,7 @@ add_executable(bes
     modules/dmrpp_module/unit-tests/unused/DmrppHttpReadTest.cc
     modules/dmrpp_module/unit-tests/unused/DmrppTypeReadTest.cc
     modules/dmrpp_module/unit-tests/unused/DmrppUtilTest.cc
-        modules/dmrpp_module/unit-tests/ChunkTest.cc
-        modules/dmrpp_module/unit-tests/SuperChunkTest.cc
+    modules/dmrpp_module/unit-tests/ChunkTest.cc
     modules/dmrpp_module/unit-tests/CredentialsManagerTest.cc
     modules/dmrpp_module/unit-tests/DmrppCommonTest.cc
     modules/dmrpp_module/unit-tests/DmrppMetadataStoreTest.cc
@@ -802,6 +801,10 @@ add_executable(bes
     modules/dmrpp_module/retriever.cc
     modules/dmrpp_module/byteswap_compat.h
     modules/dmrpp_module/reduce_mdf.cc
+    modules/dmrpp_module/unit-tests/SuperChunkTest.cc
+    modules/dmrpp_module/SuperChunky.cc
+    modules/dmrpp_module/SuperChunk.cc
+    modules/dmrpp_module/SuperChunk.h
 
     modules/fileout_covjson/unit-tests/FoCovJsonTest.cc
     modules/fileout_covjson/unit-tests/test_config.h
@@ -2074,4 +2077,4 @@ add_executable(bes
     xmlcommand/XMLSetContextsCommand.h
 
     standalone/besstandalone.cc
-        modules/dmrpp_module/SuperChunky.cc modules/dmrpp_module/SuperChunky.h modules/dmrpp_module/SuperChunk.cc modules/dmrpp_module/SuperChunk.h)
+)
