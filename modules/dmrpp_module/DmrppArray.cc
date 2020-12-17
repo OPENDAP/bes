@@ -690,6 +690,7 @@ void *one_chunk_unconstrained_thread(void *arg_list)
  * This is a private 'friend function.' It's a function because the
  * thread function one_chunk_unconstrained_thread() uses it. It's a
  * friend so that it can get access to the class' private info.
+ * @deprecated Use SuperChunk::chunks_to_array_values_unconstrained()
  */
 void process_super_chunk_unconstrained(shared_ptr<SuperChunk> super_chunk, DmrppArray *array)
 {
@@ -1345,6 +1346,13 @@ void process_one_chunk(shared_ptr<Chunk> chunk, DmrppArray *array, const vector<
 }
 
 
+/**
+ * @brief reads the super chunk, inflates/deshuffles chunks as required and copies the values into array
+ *
+ * @param super_chunk
+ * @param array
+ * @deprecated Use SuperChunk::chunks_to_array_values()
+ */
 void process_super_chunk(shared_ptr<SuperChunk> super_chunk, DmrppArray *array)
 {
     BESDEBUG(dmrpp_3, prolog << "BEGIN" << endl );

@@ -102,6 +102,8 @@ bool SuperChunk::is_contiguous(const std::shared_ptr<Chunk> candidate_chunk) {
  *
  * Each Chunks read buffer is mapped to the corresponding section of the SuperChunk's
  * enclosing read buffer.
+ *
+ * This is a convenience/helper function for SuperChunk::read()
  */
 void SuperChunk::map_chunks_to_buffer()
 {
@@ -121,6 +123,7 @@ void SuperChunk::map_chunks_to_buffer()
 
 /**
  * @brief Reads the contiguous range of bytes associated with the SuperChunk from the data URL.
+ * This is a convenience/helper function for SuperChunk::read()
  */
 void SuperChunk::read_aggregate_bytes()
 {
@@ -192,7 +195,7 @@ void SuperChunk::read() {
 }
 
 /**
- * @brief Reads SuperChunk, processes subordinate Chunks and writes data in to target_array.
+ * @brief Reads the SuperChunk, inflates/deshuffles the subordinate chunks as required and copies the values into array
  * @param target_array The array into which to write the data.
  */
     void SuperChunk::chunks_to_array_values(DmrppArray *target_array) {
@@ -220,35 +223,34 @@ void SuperChunk::read() {
 
         BESDEBUG(MODULE, prolog << "END" << endl );
     }
-
-    /**
- * @brief Reads SuperChunk, processes subordinate Chunks and writes data in to target_array.
+/**
+ * @brief Reads the SuperChunk, inflates/deshuffles the subordinate chunks as required and copies the values into array
  * @param target_array The array into which to write the data.
  */
-    void SuperChunk::chunks_to_array_values_unconstrained(DmrppArray *target_array) {
-        BESDEBUG(MODULE, prolog << "BEGIN" << endl );
+void SuperChunk::chunks_to_array_values_unconstrained(DmrppArray *target_array) {
+    BESDEBUG(MODULE, prolog << "BEGIN" << endl );
 
-        read();
+    read();
 
-        // The size in element of each of the array's dimensions
-        const vector<unsigned int> array_shape = target_array->get_shape(true);
-        // The size, in elements, of each of the chunk's dimensions
-        const vector<unsigned int> chunk_shape = target_array->get_chunk_dimension_sizes();
+    // The size in element of each of the array's dimensions
+    const vector<unsigned int> array_shape = target_array->get_shape(true);
+    // The size, in elements, of each of the chunk's dimensions
+    const vector<unsigned int> chunk_shape = target_array->get_chunk_dimension_sizes();
 
 
-        for(auto &chunk :d_chunks){
-            if (target_array->is_deflate_compression() || target_array->is_shuffle_compression())
-                chunk->inflate_chunk(target_array->is_deflate_compression(), target_array->is_shuffle_compression(),
-                                     target_array->get_chunk_size_in_elements(), target_array->var()->width());
+    for(auto &chunk :d_chunks){
+        if (target_array->is_deflate_compression() || target_array->is_shuffle_compression())
+            chunk->inflate_chunk(target_array->is_deflate_compression(), target_array->is_shuffle_compression(),
+                                 target_array->get_chunk_size_in_elements(), target_array->var()->width());
 
-            vector<unsigned int> target_element_address = chunk->get_position_in_array();
-            vector<unsigned int> chunk_source_address(target_array->dimensions(), 0);
+        vector<unsigned int> target_element_address = chunk->get_position_in_array();
+        vector<unsigned int> chunk_source_address(target_array->dimensions(), 0);
 
-            target_array->insert_chunk_unconstrained(chunk, 0, 0, array_shape, 0, chunk_shape, chunk->get_position_in_array());
-        }
-
-        BESDEBUG(MODULE, prolog << "END" << endl );
+        target_array->insert_chunk_unconstrained(chunk, 0, 0, array_shape, 0, chunk_shape, chunk->get_position_in_array());
     }
+
+    BESDEBUG(MODULE, prolog << "END" << endl );
+}
 
 /**
  * @brief Makes a string representation of the SuperChunk.
