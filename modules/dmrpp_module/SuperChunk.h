@@ -57,7 +57,7 @@ public:
     ~SuperChunk(){
         delete[] d_read_buffer;
     }
-    virtual bool add_chunk(std::shared_ptr<Chunk> chunk);
+    virtual bool add_chunk(std::shared_ptr<Chunk> candidate_chunk);
 
     virtual std::string get_data_url(){  return d_data_url; }
     virtual unsigned long long get_size(){ return d_size; }

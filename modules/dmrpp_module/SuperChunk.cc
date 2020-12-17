@@ -83,16 +83,19 @@ bool SuperChunk::add_chunk(const std::shared_ptr<Chunk> chunk) {
 
 
 /**
- * @brief Returns true if chunk is contiguous with the end of the SuperChunk instance.
+ * @brief Returns true if candidate_chunk is "contiguous" with the end of the SuperChunk instance.
  *
- * Returns true if the implemented rule for contiguousity
- * determines that the chunk is contiguous with this SuperChunk
- * and false otherwise.
- * @param chunk The Chunk to evaluate for contiguousness with this SuperChunk.
+ * Returns true if the implemented rule for contiguousity determines that the candidate_chunk is
+ * contiguous with this SuperChunk and false otherwise.
+ *
+ * Currently the rule is that the offset of the candidate_chunk must be the same as the current
+ * offset + size of the SuperChunk.
+ *
+ * @param candidate_chunk The Chunk to evaluate for contiguousness with this SuperChunk.
  * @return True if chunk isdeemed contiguous, false otherwise.
  */
-bool SuperChunk::is_contiguous(const std::shared_ptr<Chunk> chunk) {
-    return (d_offset + d_size) == chunk->get_offset();
+bool SuperChunk::is_contiguous(const std::shared_ptr<Chunk> candidate_chunk) {
+    return (d_offset + d_size) == candidate_chunk->get_offset();
 }
 
 /**
@@ -199,11 +202,12 @@ void SuperChunk::read() {
 
 
 /**
- * @brief Reads SuperChunk, processes child Chunks and writes data in to array.
- * @param array The array into which to write the data.
+ * @brief Reads SuperChunk, processes subordinate Chunks and writes data in to target_array.
+ * @param target_array The array into which to write the data.
  */
 void SuperChunk::intern(DmrppArray *target_array) {
     BESDEBUG(MODULE, prolog << "BEGIN" << endl );
+
     read();
 
     vector<unsigned int> constrained_array_shape = target_array->get_shape(true);
@@ -216,13 +220,22 @@ void SuperChunk::intern(DmrppArray *target_array) {
         vector<unsigned int> target_element_address = chunk->get_position_in_array();
         vector<unsigned int> chunk_source_address(target_array->dimensions(), 0);
 
-        target_array->insert_chunk(0 /* dimension */, &target_element_address, &chunk_source_address, chunk, constrained_array_shape);
+        target_array->insert_chunk(
+                0 /* dimension */,
+                &target_element_address,
+                &chunk_source_address,
+                chunk,
+                constrained_array_shape);
     }
     BESDEBUG(MODULE, prolog << "END" << endl );
 }
 
-
-string SuperChunk::to_string(bool verbose) const {
+/**
+ * @brief Makes a string representation of the SuperChunk.
+ * @param verbose If set true then details of the subordinate Chunks will be included.
+ * @return  A string representation of the SuperChunk.
+ */
+string SuperChunk::to_string(bool verbose=false) const {
     stringstream msg;
     msg << "[SuperChunk: " << (void **)this;
     msg << " offset: " << d_offset;
@@ -239,8 +252,12 @@ string SuperChunk::to_string(bool verbose) const {
     return msg.str();
 }
 
-    void SuperChunk::dump(ostream & strm) const {
-        strm << to_string(false) ;
-    }
+/**
+ * @brief Writes the to_string() output to the stream strm.
+ * @param strm
+ */
+void SuperChunk::dump(ostream & strm) const {
+    strm << to_string(false) ;
+}
 
 } // namespace dmrpp
