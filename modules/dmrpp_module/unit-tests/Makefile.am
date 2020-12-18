@@ -88,7 +88,7 @@ $(CREDS_CONF):
 #
 
 if CPPUNIT
-UNIT_TESTS = NgapCredentialsTest ChunkTest DmrppParserTest DmrppCommonTest \
+UNIT_TESTS = NgapCredentialsTest SuperChunkTest ChunkTest DmrppParserTest DmrppCommonTest \
 DmrppMetadataStoreTest CredentialsManagerTest awsv4_test CurlHandlePoolTest
 else
 UNIT_TESTS =
@@ -110,6 +110,9 @@ CurlHandlePoolTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
 ChunkTest_SOURCES = ChunkTest.cc
 ChunkTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
+
+SuperChunkTest_SOURCES = SuperChunkTest.cc
+SuperChunkTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
 CredentialsManagerTest_SOURCES = CredentialsManagerTest.cc
 CredentialsManagerTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)

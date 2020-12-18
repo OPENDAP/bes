@@ -92,10 +92,10 @@ before_script:
 stages:
   - name: build
     if: branch = master
-  - name: package
-    if:  branch = master OR branch = travis
   - name: scan
     if:  branch = master
+  - name: package
+    if:  branch = master OR branch = travis
 
 jobs:
   include:

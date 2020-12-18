@@ -33,6 +33,7 @@
 
 #include "dods-datatypes.h"
 #include "Chunk.h"
+#include "SuperChunk.h"
 
 #include "config.h"
 #include "byteswap_compat.h"
@@ -92,7 +93,7 @@ protected:
 
     /// @brief Returns a reference to the internal Chunk vector.
     /// @see get_immutable_chunks()
-    virtual std::vector<std::shared_ptr<Chunk>> &get_chunks() {
+    virtual std::vector<std::shared_ptr<Chunk>> get_chunks() {
     	return d_chunks;
     }
 
@@ -112,9 +113,7 @@ public:
         m_duplicate_common(dc);
     }
 
-    virtual ~DmrppCommon()
-    {
-    }
+    virtual ~DmrppCommon()= default;
 
     /// @brief Returns true if this object utilizes deflate compression.
     virtual bool is_deflate_compression() const {
@@ -151,8 +150,8 @@ public:
 
     /// @brief A const reference to the vector of chunks
     /// @see get_chunks()
-    virtual const std::vector< std::shared_ptr<Chunk>> &get_immutable_chunks() const {
-    	return d_chunks;
+    virtual std::vector< std::shared_ptr<Chunk>> get_immutable_chunks() const {
+        return d_chunks;
     }
 
     virtual const std::vector<unsigned int> &get_chunk_dimension_sizes() const {
@@ -166,9 +165,8 @@ public:
      */
     virtual unsigned int get_chunk_size_in_elements() const {
         unsigned int elements = 1;
-        for (std::vector<unsigned int>::const_iterator i = d_chunk_dimension_sizes.begin(),
-                e = d_chunk_dimension_sizes.end(); i != e; ++i) {
-            elements *= *i;
+        for (auto d_chunk_dimension_size : d_chunk_dimension_sizes) {
+            elements *= d_chunk_dimension_size;
         }
 
         return elements;
@@ -186,23 +184,23 @@ public:
     {
         // tried using copy(chunk_dims.begin(), chunk_dims.end(), d_chunk_dimension_sizes.begin())
         // it didn't work, maybe because of the differing element types?
-        for (std::vector<size_t>::const_iterator i = chunk_dims.begin(), e = chunk_dims.end(); i != e; ++i) {
-            d_chunk_dimension_sizes.push_back(*i);
+        for (auto chunk_dim : chunk_dims) {
+            d_chunk_dimension_sizes.push_back(chunk_dim);
         }
     }
 
-    virtual void parse_chunk_dimension_sizes(std::string chunk_dim_sizes_string);
+    virtual void parse_chunk_dimension_sizes(const std::string &chunk_dim_sizes_string);
 
-    virtual void ingest_compression_type(std::string compression_type_string);
+    virtual void ingest_compression_type(const std::string &compression_type_string);
 
-    virtual void ingest_byte_order(std::string byte_order_string);
+    virtual void ingest_byte_order(const std::string &byte_order_string);
     virtual std::string get_byte_order() const { return d_byte_order; }
 
     virtual unsigned long add_chunk(const std::string &data_url, const std::string &byte_order,
-            unsigned long long size, unsigned long long offset, std::string position_in_array = "");
+            unsigned long long size,  unsigned long long offset, const std::string &position_in_array = "");
 
     virtual unsigned long add_chunk(const std::string &data_url, const std::string &byte_order,
-            unsigned long long size, unsigned long long offset, const std::vector<unsigned int> &position_in_array);
+            unsigned long long size, const unsigned long long offset, const std::vector<unsigned int> &position_in_array);
 
     virtual void dump(std::ostream & strm) const;
 };

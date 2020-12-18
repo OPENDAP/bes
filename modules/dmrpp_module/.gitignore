@@ -9,3 +9,14 @@
 /ngap_build_dmrpp
 /bes_default_conf.h
 /foo.dmrpp
+
+
+
+/merge_dmrpp
+/reduce_mdf
+/retriever
+/superchunky
+/check_dmrpp
+/unit-tests/Chunk.Tpo
+/unit-tests/CredentialsManager.Tpo
+/unit-tests/DmrppRequestHandler.Tpo

@@ -67,8 +67,8 @@ namespace AWSV4 {
             return "";
 
         std::stringstream sstream;
-        const auto l = ss.size() - 1;
-        for (auto i = 0; i < l; i++) {
+        const size_t l = ss.size() - 1;
+        for (size_t i = 0; i < l; i++) {
             sstream << ss[i] << delim;
         }
         sstream << ss.back();
