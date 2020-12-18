@@ -786,7 +786,11 @@ void DmrppArray::read_chunks_unconstrained()
             auto super_chunk = super_chunks.front();
             super_chunks.pop();
             process_super_chunk_unconstrained(super_chunk, this);
-            // args->super_chunk->chunks_to_array_values_unconstrained(args->array);
+
+            // SuperChunk::read_and_copy_unconstrained() (currently disabled)
+            // does exactly the same thing as process_super_chunk_unconstrained()
+            // in a class method.
+            // args->super_chunk->read_and_copy_unconstrained(args->array);
         }
     }
     else {      // Parallel transfers
@@ -1276,7 +1280,11 @@ void *one_super_chunk_thread(void *arg_list)
 
     try {
         process_super_chunk(args->super_chunk, args->array);
-        // args->super_chunk->chunks_to_array_values(args->array);
+
+        // SuperChunk::read_and_copy() (currently disabled)
+        // does exactly the same thing as process_super_chunk()
+        // in a class method.
+        // args->super_chunk->read_and_copy(args->array);
     }
     catch (BESError &error) {
         write(args->fds[1], &args->tid, sizeof(args->tid));
@@ -1297,7 +1305,10 @@ void *one_super_chunk_unconstrained_thread(void *arg_list)
 
     try {
         process_super_chunk_unconstrained(args->super_chunk, args->array);
-        // args->super_chunk->chunks_to_array_values_unconstrained(args->array);
+        // SuperChunk::read_and_copy_unconstrained() (currently disabled)
+        // does exactly the same thing as process_super_chunk_unconstrained()
+        // in a class method.
+        // args->super_chunk->read_and_copy_unconstrained(args->array);
     }
     catch (BESError &error) {
         write(args->fds[1], &args->tid, sizeof(args->tid));
@@ -1432,6 +1443,9 @@ void DmrppArray::read_chunks()
             super_chunks.pop();
             BESDEBUG(dmrpp_3, prolog << super_chunk->to_string(true) << endl );
             process_super_chunk(super_chunk, this);
+            // SuperChunk::read_and_copy() (currently disabled)
+            // does exactly the same thing as process_super_chunk()
+            // in a class method.
             // super_chunk->chunks_to_array_values(this);
         }
     }
