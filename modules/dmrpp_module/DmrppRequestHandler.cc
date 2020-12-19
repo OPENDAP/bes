@@ -62,6 +62,7 @@
 #include <BESDebug.h>
 #include <BESStopWatch.h>
 
+#include "DmrppNames.h"
 #include "DMRpp.h"
 #include "DmrppTypeFactory.h"
 #include "DmrppParserSax2.h"
@@ -75,7 +76,6 @@ using namespace libdap;
 using namespace std;
 
 #define prolog std::string("DmrppRequestHandler::").append(__func__).append("() - ")
-#define MODULE "dmrpp"
 
 namespace dmrpp {
 
@@ -123,17 +123,17 @@ static void read_key_value(const std::string &key_name, unsigned int &key_value)
 DmrppRequestHandler::DmrppRequestHandler(const string &name) :
     BESRequestHandler(name)
 {
-    add_method(DMR_RESPONSE, dap_build_dmr);
-    add_method(DAP4DATA_RESPONSE, dap_build_dap4data);
-    add_method(DAS_RESPONSE, dap_build_das);
-    add_method(DDS_RESPONSE, dap_build_dds);
-    add_method(DATA_RESPONSE, dap_build_dap2data);
+    BESRequestHandler::add_method(DMR_RESPONSE, dap_build_dmr);
+    BESRequestHandler::add_method(DAP4DATA_RESPONSE, dap_build_dap4data);
+    BESRequestHandler::add_method(DAS_RESPONSE, dap_build_das);
+    BESRequestHandler::add_method(DDS_RESPONSE, dap_build_dds);
+    BESRequestHandler::add_method(DATA_RESPONSE, dap_build_dap2data);
 
-    add_method(VERS_RESPONSE, dap_build_vers);
-    add_method(HELP_RESPONSE, dap_build_help);
+    BESRequestHandler::add_method(VERS_RESPONSE, dap_build_vers);
+    BESRequestHandler::add_method(HELP_RESPONSE, dap_build_help);
 
-    read_key_value("DMRPP.UseParallelTransfers", d_use_parallel_transfers);
-    read_key_value("DMRPP.MaxParallelTransfers", d_max_parallel_transfers);
+    read_key_value(DMRPP_ENABLE_THREADS_KEY, d_use_parallel_transfers);
+    read_key_value(DMRPP_MAX_THREADS_KEY, d_max_parallel_transfers);
 
 #if !HAVE_CURL_MULTI_API
     if (DmrppRequestHandler::d_use_parallel_transfers)

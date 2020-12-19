@@ -38,6 +38,10 @@
 
 #define USE_SUPER_CHUNKS 1
 
+#define DMRPP_ENABLE_THREADS_KEY "DMRPP.UseParallelTransfers"
+#define DMRPP_MAX_THREADS_KEY "DMRPP.MaxParallelTransfers"
+
+
 #endif // E_DmrppNames_H
 
 
