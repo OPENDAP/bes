@@ -80,13 +80,13 @@ using namespace std;
 namespace dmrpp {
 
 
-ObjMemCache *DmrppRequestHandler::das_cache = 0;
-ObjMemCache *DmrppRequestHandler::dds_cache = 0;
-ObjMemCache *DmrppRequestHandler::dmr_cache = 0;
+ObjMemCache *DmrppRequestHandler::das_cache = nullptr;
+ObjMemCache *DmrppRequestHandler::dds_cache = nullptr;
+ObjMemCache *DmrppRequestHandler::dmr_cache = nullptr;
 
 // This is used to maintain a pool of reusable curl handles that enable connection
 // reuse. jhrg
-CurlHandlePool *DmrppRequestHandler::curl_handle_pool = 0;
+CurlHandlePool *DmrppRequestHandler::curl_handle_pool = nullptr;
 
 bool DmrppRequestHandler::d_use_parallel_transfers = true;
 unsigned int DmrppRequestHandler::d_max_parallel_transfers = 8;
@@ -134,6 +134,10 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
 
     read_key_value(DMRPP_ENABLE_THREADS_KEY, d_use_parallel_transfers);
     read_key_value(DMRPP_MAX_THREADS_KEY, d_max_parallel_transfers);
+    INFO_LOG(string("DMR++ threads (parallel transfers) are ") + (d_use_parallel_transfers?"enabled.":"disabled."));
+    if(d_use_parallel_transfers){
+        INFO_LOG("Max threads (parallel transfers): " + to_string(d_max_parallel_transfers));
+    }
 
 #if !HAVE_CURL_MULTI_API
     if (DmrppRequestHandler::d_use_parallel_transfers)
@@ -191,7 +195,7 @@ bool DmrppRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
-    BESDMRResponse *bdmr = dynamic_cast<BESDMRResponse *>(response);
+    auto bdmr = dynamic_cast<BESDMRResponse *>(response);
     if (!bdmr) throw BESInternalError("Cast error, expected a BESDDSResponse object.", __FILE__, __LINE__);
 
     try {
@@ -226,7 +230,7 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
-    BESDMRResponse *bdmr = dynamic_cast<BESDMRResponse *>(response);
+    auto bdmr = dynamic_cast<BESDMRResponse *>(response);
     if (!bdmr) throw BESInternalError("Cast error, expected a BESDMRResponse object.", __FILE__, __LINE__);
 
     try {
@@ -279,7 +283,7 @@ bool DmrppRequestHandler::dap_build_dap2data(BESDataHandlerInterface & dhi)
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
-    BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *>(response);
+    auto bdds = dynamic_cast<BESDataDDSResponse *>(response);
     if (!bdds) throw BESInternalError("Cast error, expected a BESDataDDSResponse object.", __FILE__, __LINE__);
 
     try {
@@ -372,7 +376,7 @@ bool DmrppRequestHandler::dap_build_dds(BESDataHandlerInterface & dhi)
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
-    BESDDSResponse *bdds = dynamic_cast<BESDDSResponse *>(response);
+    auto bdds = dynamic_cast<BESDDSResponse *>(response);
     if (!bdds) throw BESInternalError("Cast error, expected a BESDDSResponse object.", __FILE__, __LINE__);
 
     try {
@@ -449,7 +453,7 @@ bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi)
     if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + "timer" , dhi.data[REQUEST_ID]);
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
-    BESDASResponse *bdas = dynamic_cast<BESDASResponse *>(response);
+    auto bdas = dynamic_cast<BESDASResponse *>(response);
     if (!bdas) throw BESInternalError("Cast error, expected a BESDASResponse object.", __FILE__, __LINE__);
 
     try {
@@ -518,7 +522,7 @@ bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi)
 
 bool DmrppRequestHandler::dap_build_vers(BESDataHandlerInterface &dhi)
 {
-    BESVersionInfo *info = dynamic_cast<BESVersionInfo *>(dhi.response_handler->get_response_object());
+    auto info = dynamic_cast<BESVersionInfo *>(dhi.response_handler->get_response_object());
     if (!info) throw BESInternalFatalError("Expected a BESVersionInfo instance.", __FILE__, __LINE__);
 
     info->add_module(MODULE_NAME, MODULE_VERSION);
@@ -527,7 +531,7 @@ bool DmrppRequestHandler::dap_build_vers(BESDataHandlerInterface &dhi)
 
 bool DmrppRequestHandler::dap_build_help(BESDataHandlerInterface &dhi)
 {
-    BESInfo *info = dynamic_cast<BESInfo *>(dhi.response_handler->get_response_object());
+    auto info = dynamic_cast<BESInfo *>(dhi.response_handler->get_response_object());
     if (!info) throw BESInternalFatalError("Expected a BESVersionInfo instance.", __FILE__, __LINE__);
 
     // This is an example. If you had a help file you could load it like
