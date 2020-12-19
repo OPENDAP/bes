@@ -134,9 +134,9 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
 
     read_key_value(DMRPP_ENABLE_THREADS_KEY, d_use_parallel_transfers);
     read_key_value(DMRPP_MAX_THREADS_KEY, d_max_parallel_transfers);
-    INFO_LOG(string("DMR++ threads (parallel transfers) are ") + (d_use_parallel_transfers?"enabled.":"disabled."));
+    INFO_LOG("DMR++ threads (parallel transfers) are " <<  (d_use_parallel_transfers?"enabled.":"disabled.") << endl);
     if(d_use_parallel_transfers){
-        INFO_LOG("Max threads (parallel transfers): " + to_string(d_max_parallel_transfers));
+        INFO_LOG("Max threads (parallel transfers): "  <<  to_string(d_max_parallel_transfers) << endl);
     }
 
 #if !HAVE_CURL_MULTI_API
