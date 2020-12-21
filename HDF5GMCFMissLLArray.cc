@@ -224,6 +224,17 @@ void HDF5GMCFMissLLArray::obtain_gpm_l3_ll(int* offset, int* step, int nelms, bo
         }
     }
 
+    vector<char> grid_info_value;
+    float lat_start = 0;
+    float lon_start = 0.;
+    float lat_res = 0.;
+    float lon_res = 0.;
+
+    int latsize = 0;
+    int lonsize = 0;
+
+
+if(GPMM_L3 == product_type || GPMS_L3 == product_type) {
     hid_t grid_grp_id = -1;
 
     string grid_grp_name;
@@ -285,6 +296,7 @@ void HDF5GMCFMissLLArray::obtain_gpm_l3_ll(int* offset, int* step, int nelms, bo
     }
 #endif
 
+   
     if ((grid_grp_id = H5Gopen(fileid, grid_grp_name.c_str(), H5P_DEFAULT)) < 0) {
         HDF5CFUtil::close_fileid(fileid, check_pass_fileid_key);
         ostringstream eherr;
@@ -298,17 +310,39 @@ void HDF5GMCFMissLLArray::obtain_gpm_l3_ll(int* offset, int* step, int nelms, bo
         grid_info_name = "G1_" + grid_info_name;
     else if (name() == "lnH" || name() == "ltH") grid_info_name = "G2_" + grid_info_name;
 
-    vector<char> grid_info_value;
     float dummy_value = 0.0;
     try {
         obtain_ll_attr_value(fileid, grid_grp_id, grid_info_name, dummy_value, grid_info_value);
+        HDF5CFUtil::parser_gpm_l3_gridheader(grid_info_value, latsize, lonsize, lat_start, lon_start, lat_res, lon_res,
+        false);
+
+       H5Gclose(grid_grp_id);
     }
     catch (...) {
-        HDF5CFUtil::close_fileid(fileid, check_pass_fileid_key);
+        H5Gclose(grid_grp_id);
+        H5Fclose(fileid);
         throw;
 
     }
+    
 
+}
+    else {
+        vector<char> grid_info_value1;
+        vector<char> grid_info_value2;
+        obtain_gpm_l3_new_grid_info(fileid,grid_info_value1,grid_info_value2);
+        obtain_lat_lon_info(grid_info_value1,grid_info_value2,latsize,lonsize,lat_start,lon_start,lat_res,lon_res);
+    }
+
+    HDF5CFUtil::close_fileid(fileid, check_pass_fileid_key);
+
+    try {
+        send_gpm_l3_ll_to_dap(latsize,lonsize,lat_start,lon_start,lat_res,lon_res,offset,step,nelms,add_cache, buf);
+    }
+    catch (...) {
+        throw;
+    }
+#if 0
     float lat_start = 0;
     float lon_start = 0.;
     float lat_res = 0.;
@@ -373,6 +407,7 @@ void HDF5GMCFMissLLArray::obtain_gpm_l3_ll(int* offset, int* step, int nelms, bo
 
     H5Gclose(grid_grp_id);
     HDF5CFUtil::close_fileid(fileid, check_pass_fileid_key);
+#endif
 
 #if 0
 
@@ -395,6 +430,8 @@ void HDF5GMCFMissLLArray::obtain_gpm_l3_ll(int* offset, int* step, int nelms, bo
 #endif
 
 }
+
+
 // Obtain latitude/longitude attribute values
 //template<class T>
 template<typename T>
@@ -504,6 +541,379 @@ void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t /*file_id*/, hid_t s_root_i
     H5Aclose(s_attr_id);
 }
 
+void HDF5GMCFMissLLArray::obtain_gpm_l3_new_grid_info(hid_t file,vector<char>& grid_info_value1, vector<char>& grid_info_value2){
+
+   typedef struct {
+       char* name;
+       char* value;
+   } attr_info_t;
+
+   attr_info_t attr_na;
+   attr_na.name = NULL;
+   attr_na.value = NULL;
+
+   herr_t ret_o= H5Ovisit(file, H5_INDEX_NAME, H5_ITER_INC, visit_obj_cb, (void*)&attr_na);
+   //herr_t ret_o= H5Ovisit3(file, H5_INDEX_NAME, H5_ITER_INC, visit_obj_cb, (void*)&attr_na,H5O_INFO_BASIC);
+   //
+   if(ret_o < 0){
+        H5Fclose(file);
+        throw InternalErr(__FILE__, __LINE__, "H5Ovisit failed. ");
+   }
+   else if(ret_o >0) {
+        //printf("Found the attribute.\n");
+        BESDEBUG("h5","Found the GPM level 3 Grid_info attribute."<<endl);
+        //string grid_info_name_1(attr_na.name);
+        //string grid_info_name_2;
+
+        //string grid_info_value_1(attr_na.value);
+
+#if 0
+        vector<char> grid_info_value_1(attr_na.value,attr_na.value+strlen(attr_na.value));
+        vector<char> grid_info_value_2;
+#endif
+        //grid_info_value1(attr_na.value,attr_na.value+strlen(attr_na.value));
+        grid_info_value1.resize(strlen(attr_na.value));
+        memcpy(&grid_info_value1[0],attr_na.value,strlen(attr_na.value));
+string tv(grid_info_value1.begin(),grid_info_value1.end());
+//cerr<<"grid_info_value1 is "<<tv <<endl;
+#if 0
+            printf("attr_name 1st is %s\n",attr_na.name);
+            printf("attr_value 1st is %s\n",attr_na.value);
+#endif
+        herr_t ret_o2= H5Ovisit(file, H5_INDEX_NAME, H5_ITER_INC, visit_obj_cb, (void*)&attr_na);
+
+        if(ret_o2 < 0) {
+            H5Fclose(file);
+            throw InternalErr(__FILE__, __LINE__, "H5Ovisit failed again. ");
+        }
+        else if(ret_o2>0) {
+
+        if(attr_na.name) {
+            //printf("attr_name second is %s\n",attr_na.name);
+            free(attr_na.name);
+        }
+        if(attr_na.value) {
+            //printf("attr_value second is %s\n",attr_na.value);
+            //grid_info_value2(attr_na.value,attr_na.value+strlen(attr_na.value));
+            grid_info_value2.resize(strlen(attr_na.value));
+            memcpy(&grid_info_value2[0],attr_na.value,strlen(attr_na.value));
+string tv(grid_info_value2.begin(),grid_info_value2.end());
+//cerr<<"grid_info_value2 is "<<tv <<endl;
+            free(attr_na.value);
+        }
+        }
+    }
+
+
+}
+void HDF5GMCFMissLLArray::obtain_lat_lon_info(const vector<char>& grid_info_value1,
+                                              const vector<char>& grid_info_value2,
+                                              int& latsize,int& lonsize,
+                                              float& lat_start,float& lon_start,
+                                              float& lat_res,float& lon_res){
+
+    float lat1_start = 0;
+    float lon1_start = 0.;
+    float lat1_res = 0.;
+    float lon1_res = 0.;
+    int lat1size = 0;
+    int lon1size = 0;
+
+    float lat2_start = 0;
+    float lon2_start = 0.;
+    float lat2_res = 0.;
+    float lon2_res = 0.;
+    int lat2size = 0;
+    int lon2size = 0;
+
+    HDF5CFUtil::parser_gpm_l3_gridheader(grid_info_value1, lat1size, lon1size, lat1_start, lon1_start, 
+                                         lat1_res, lon1_res,false);
+
+    HDF5CFUtil::parser_gpm_l3_gridheader(grid_info_value2, lat2size, lon2size, lat2_start, lon2_start, 
+                                         lat2_res, lon2_res,false);
+
+    bool pick_gv1 = true;
+    if (name() == "lnL" || name() == "ltL") {
+        if(lat1_res <lat2_res) 
+            pick_gv1 = false;
+    }
+    else if (name() == "lnH" || name() == "ltH") {
+        if(lat1_res >lat2_res) 
+            pick_gv1 = false;
+    }
+
+    if(true == pick_gv1) {
+        
+        latsize = lat1size;
+        lonsize = lon1size;
+        lat_start = lat1_start;
+        lon_start = lon1_start;
+        lat_res = lat1_res;
+        lon_res = lon1_res;
+
+    }
+    else {
+        latsize = lat2size;
+        lonsize = lon2size;
+        lat_start = lat2_start;
+        lon_start = lon2_start;
+        lat_res = lat2_res;
+        lon_res = lon2_res;
+
+    }
+
+}
+/*
+ * Operator function.
+ */
+static herr_t
+attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *_op_data)
+{
+
+   typedef struct {
+       char* name;
+       char* value;
+   } attr_info_t;
+
+    /* avoid warnings */
+    herr_t ret = 0;
+    attr_info_t *op_data = (attr_info_t *)_op_data;
+    //printf("attribute name is %s\n",name);
+    if(strstr(name,GPM_ATTR2_NAME)!=NULL)  {
+    //if(strstr(name,"GridHeader")!=NULL)  {
+
+        hid_t attr, atype, aspace;  /* Attribute, datatype and dataspace identifiers */
+        attr = H5Aopen(loc_id, name, H5P_DEFAULT);
+        if(attr<0) 
+            return -1;
+            //printf("attribute cannot be opened\n");
+        atype  = H5Aget_type(attr);
+        if(atype <0)
+            return -1;
+            //printf("attribute type cannot be retrieved");
+        if(H5T_STRING == H5Tget_class(atype)){
+            if(op_data->name) {
+                //obtain_attr_value(attr,atype,(void*)&op_data->value);
+                if(strncmp(name,op_data->name,strlen(name))!=0) {
+                hid_t aspace = H5Aget_space(attr);
+                hsize_t num_elms = H5Tget_size(atype)*H5Sget_simple_extent_npoints(aspace);
+#if 0
+                char *attr_value = op_data->value;
+                attr_value = malloc(num_elms+1);
+                H5Aread(attr,atype,attr_value);
+                printf("attr_value is %s\n",attr_value);
+#endif
+                //*((char *)value) = (char*) malloc(num_elms+1);
+                char *cur_attr_value = (char*)malloc(num_elms+1);
+                 H5Aread(attr,atype,(void*)cur_attr_value);
+                 if(strncmp(cur_attr_value,op_data->value,strlen(op_data->value))!=0) {
+                     
+                    free(op_data->name);
+                    op_data->name = NULL;
+                    op_data->name = (char*)malloc(strlen(name)+1);
+                //attr_name = malloc(strlen(name)+1);
+                    strncpy(op_data->name,name,strlen(name));
+                // Get the new attribute value,
+                    if(op_data->value)
+                        free(op_data->value);
+                    op_data->value = NULL;
+                    op_data->value=(char*)malloc(num_elms+1);
+                    //printf("attr value is %s\n",cur_attr_value);
+                    strncpy(op_data->value,cur_attr_value,strlen(cur_attr_value));
+                    //printf("op_data attr value is %s\n",op_data->value);
+
+                    ret = 1;
+                 }
+                 free(cur_attr_value);
+                H5Sclose(aspace);
+                }
+            }
+            else {
+                op_data->name = (char*)malloc(strlen(name)+1);
+                //attr_name = malloc(strlen(name)+1);
+                strncpy(op_data->name,name,strlen(name));
+                //obtain_attr_value(attr,atype,(void*)&op_data->value);
+                hid_t aspace = H5Aget_space(attr);
+                hsize_t num_elms = H5Tget_size(atype)*H5Sget_simple_extent_npoints(aspace);
+#if 0
+                char *attr_value = op_data->value;
+                attr_value = malloc(num_elms+1);
+                H5Aread(attr,atype,attr_value);
+                printf("attr_value is %s\n",attr_value);
+#endif
+                //*((char *)value) = (char*) malloc(num_elms+1);
+                op_data->value = (char*)malloc(num_elms+1);
+                H5Aread(attr,atype,(void*)op_data->value);
+                H5Sclose(aspace);
+                ret =1;
+
+            }
+            
+            //printf("Selected attribute name is %s\n",name);
+        }
+        H5Tclose(atype);
+        H5Aclose(attr);
+    }
+    return ret;
+#if 0
+    attr = H5Aopen(loc_id, name, H5P_DEFAULT);
+
+    /*
+     * Display attribute name.
+     */
+    printf("\nName : %s\n", name);
+
+    /*
+     * Get attribute datatype, dataspace, rank, and dimensions.
+     */
+    atype  = H5Aget_type(attr);
+    aspace = H5Aget_space(attr);
+    rank = H5Sget_simple_extent_ndims(aspace);
+    ret = H5Sget_simple_extent_dims(aspace, sdim, NULL);
+
+    /*
+     *  Display rank and dimension sizes for the array attribute.
+     */
+
+    if(rank > 0) {
+        printf("Rank : %d \n", rank);
+        printf("Dimension sizes : ");
+        for (i=0; i< rank; i++)
+            printf("%d ", (int)sdim[i]);
+        printf("\n");
+    }
+
+    /*
+     * Read array attribute and display its type and values.
+     */
+
+    if (H5T_FLOAT == H5Tget_class(atype)) {
+        printf("Type : FLOAT \n");
+        npoints = H5Sget_simple_extent_npoints(aspace);
+        float_array = (float *)malloc(sizeof(float)*(int)npoints);
+        ret = H5Aread(attr, atype, float_array);
+        printf("Values : ");
+        for( i = 0; i < (int)npoints; i++)
+            printf("%f ", float_array[i]);
+        printf("\n");
+        free(float_array);
+    }
+
+    /*
+     * Release all identifiers.
+     */
+    H5Tclose(atype);
+    H5Sclose(aspace);
+    H5Aclose(attr);
+#endif
+
+}
+
+
+static int 
+visit_obj_cb(hid_t  group_id, const char *name, const H5O_info_t *oinfo,
+    void *_op_data)
+{
+   typedef struct {
+       char* name;
+       char* value;
+   } attr_info_t;
+
+
+    //lvisit_ud_t *op_data = (lvisit_ud_t *)_op_data;
+    attr_info_t *op_data = (attr_info_t *)_op_data;
+    herr_t ret = 0;
+
+    if(oinfo->type == H5O_TYPE_GROUP) {
+
+        hid_t grp = -1;
+        grp = H5Gopen2(group_id,name,H5P_DEFAULT);
+
+    //printf("link name is %s\n",name); 
+    ret = H5Aiterate2(grp, H5_INDEX_NAME, H5_ITER_INC, NULL, attr_info, op_data);
+#if 0
+    if(ret > 0) {
+    printf("object: attr name is %s\n",op_data->name);
+    printf("object: attr value is %s\n",op_data->value);
+    }
+#endif
+    if(ret <0) 
+        return -1;
+        //printf("H5Aiterate2 failed\n");
+    H5Gclose(grp);
+    }
+    return ret;
+ 
+}
+
+
+
+#if 0
+void HDF5GMCFMissLLArray::send_gpm_l3_ll_to_dap(const vector<char>& grid_info_value,int* offset,int* step,
+                                                int nelms,bool add_cache, void*buf) {
+
+    float lat_start = 0;
+    float lon_start = 0.;
+    float lat_res = 0.;
+    float lon_res = 0.;
+
+    int latsize = 0;
+    int lonsize = 0;
+#endif
+
+void HDF5GMCFMissLLArray::send_gpm_l3_ll_to_dap(const int latsize,const int lonsize,const float lat_start,const float lon_start,
+                                                const float lat_res,const float lon_res, const int* offset,const int* step,
+                                                const int nelms,const bool add_cache, void*buf) {
+
+
+    if (0 == latsize || 0 == lonsize) {
+        throw InternalErr(__FILE__, __LINE__, "Either latitude or longitude size is 0. ");
+    }
+
+    vector<float> val;
+    val.resize(nelms);
+
+    if (CV_LAT_MISS == cvartype) {
+
+        if (nelms > latsize) {
+            throw InternalErr(__FILE__, __LINE__, "The number of elements exceeds the total number of  Latitude ");
+
+        }
+        for (int i = 0; i < nelms; ++i)
+            val[i] = lat_start + offset[0] * lat_res + lat_res / 2 + i * lat_res * step[0];
+
+        if (add_cache == true) {
+            vector<float> total_val;
+            total_val.resize(latsize);
+            for (int total_i = 0; total_i < latsize; total_i++)
+                total_val[total_i] = lat_start + lat_res / 2 + total_i * lat_res;
+            memcpy(buf, &total_val[0], 4 * latsize);
+        }
+    }
+    else if (CV_LON_MISS == cvartype) {
+//cerr<<"nelms is "<<nelms <<endl;
+//cerr<<"lonsize is "<<lonsize <<endl;
+        if (nelms > lonsize) {
+            throw InternalErr(__FILE__, __LINE__, "The number of elements exceeds the total number of  Longitude");
+        }
+
+        for (int i = 0; i < nelms; ++i)
+            val[i] = lon_start + offset[0] * lon_res + lon_res / 2 + i * lon_res * step[0];
+
+        if (add_cache == true) {
+            vector<float> total_val;
+            total_val.resize(lonsize);
+            for (int total_i = 0; total_i < lonsize; total_i++)
+                total_val[total_i] = lon_start + lon_res / 2 + total_i * lon_res;
+            memcpy(buf, &total_val[0], 4 * lonsize);
+        }
+
+    }
+
+    set_value((dods_float32 *) &val[0], nelms);
+
+}
+
 void HDF5GMCFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache, void*buf)
 {
 
@@ -521,10 +931,10 @@ void HDF5GMCFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache, void*buf)
 
     int nelms = format_constraint(&offset[0], &step[0], &count[0]);
 
-    if (GPMM_L3 == product_type || GPMS_L3 == product_type)
+    if (GPMM_L3 == product_type || GPMS_L3 == product_type || GPM_L3_New == product_type)
         obtain_gpm_l3_ll(&offset[0], &step[0], nelms, add_cache, buf);
     else if (Aqu_L3 == product_type || OBPG_L3 == product_type) // Aquarious level 3 
-    obtain_aqu_obpg_l3_ll(&offset[0], &step[0], nelms, add_cache, buf);
+        obtain_aqu_obpg_l3_ll(&offset[0], &step[0], nelms, add_cache, buf);
 
     return;
 

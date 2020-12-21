@@ -370,135 +370,135 @@ void HDF5CFUtil::parser_gpm_l3_gridheader(const vector<char>& value,
      
     // The number of elements in the GridHeader is 9. The string vector will add a leftover. So the size should be 10.
     if(ind_elems.size()!=10)
-        throw InternalErr(__FILE__,__LINE__,"The number of elements in the TRMM level 3 GridHeader is not right.");
+        throw InternalErr(__FILE__,__LINE__,"The number of elements in the GPM level 3 GridHeader is not right.");
 
     if(false == check_reg_orig) {
         if (0 != ind_elems[1].find("Registration=CENTER"))        
-            throw InternalErr(__FILE__,__LINE__,"The TRMM grid registration is not center.");
+            throw InternalErr(__FILE__,__LINE__,"The GPM grid registration is not center.");
     }
         
     if (0 == ind_elems[2].find("LatitudeResolution")){ 
 
         size_t equal_pos = ind_elems[2].find_first_of('=');
         if(string::npos == equal_pos)
-            throw InternalErr(__FILE__,__LINE__,"Cannot find latitude resolution for TRMM level 3 products");
+            throw InternalErr(__FILE__,__LINE__,"Cannot find latitude resolution for GPM level 3 products");
            
         size_t scolon_pos = ind_elems[2].find_first_of(';');
         if(string::npos == scolon_pos)
-            throw InternalErr(__FILE__,__LINE__,"Cannot find latitude resolution for TRMM level 3 products");
+            throw InternalErr(__FILE__,__LINE__,"Cannot find latitude resolution for GPM level 3 products");
         if (equal_pos < scolon_pos){
 
             string latres_str = ind_elems[2].substr(equal_pos+1,scolon_pos-equal_pos-1);
             lat_res = strtof(latres_str.c_str(),NULL);
         }
         else 
-            throw InternalErr(__FILE__,__LINE__,"latitude resolution is not right for TRMM level 3 products");
+            throw InternalErr(__FILE__,__LINE__,"latitude resolution is not right for GPM level 3 products");
     }
     else
-        throw InternalErr(__FILE__,__LINE__,"The TRMM grid LatitudeResolution doesn't exist.");
+        throw InternalErr(__FILE__,__LINE__,"The GPM grid LatitudeResolution doesn't exist.");
 
     if (0 == ind_elems[3].find("LongitudeResolution")){ 
 
         size_t equal_pos = ind_elems[3].find_first_of('=');
         if(string::npos == equal_pos)
-            throw InternalErr(__FILE__,__LINE__,"Cannot find longitude resolution for TRMM level 3 products");
+            throw InternalErr(__FILE__,__LINE__,"Cannot find longitude resolution for GPM level 3 products");
            
         size_t scolon_pos = ind_elems[3].find_first_of(';');
         if(string::npos == scolon_pos)
-            throw InternalErr(__FILE__,__LINE__,"Cannot find longitude resolution for TRMM level 3 products");
+            throw InternalErr(__FILE__,__LINE__,"Cannot find longitude resolution for GPM level 3 products");
         if (equal_pos < scolon_pos){
             string lonres_str = ind_elems[3].substr(equal_pos+1,scolon_pos-equal_pos-1);
             lon_res = strtof(lonres_str.c_str(),NULL);
         }
         else 
-            throw InternalErr(__FILE__,__LINE__,"longitude resolution is not right for TRMM level 3 products");
+            throw InternalErr(__FILE__,__LINE__,"longitude resolution is not right for GPM level 3 products");
     }
     else
-        throw InternalErr(__FILE__,__LINE__,"The TRMM grid LongitudeResolution doesn't exist.");
+        throw InternalErr(__FILE__,__LINE__,"The GPM grid LongitudeResolution doesn't exist.");
 
     if (0 == ind_elems[4].find("NorthBoundingCoordinate")){ 
 
         size_t equal_pos = ind_elems[4].find_first_of('=');
         if(string::npos == equal_pos)
-            throw InternalErr(__FILE__,__LINE__,"Cannot find latitude resolution for TRMM level 3 products");
+            throw InternalErr(__FILE__,__LINE__,"Cannot find latitude resolution for GPM level 3 products");
            
         size_t scolon_pos = ind_elems[4].find_first_of(';');
         if(string::npos == scolon_pos)
-            throw InternalErr(__FILE__,__LINE__,"Cannot find latitude resolution for TRMM level 3 products");
+            throw InternalErr(__FILE__,__LINE__,"Cannot find latitude resolution for GPM level 3 products");
         if (equal_pos < scolon_pos){
             string north_bounding_str = ind_elems[4].substr(equal_pos+1,scolon_pos-equal_pos-1);
             lat_north = strtof(north_bounding_str.c_str(),NULL);
         }
         else 
-            throw InternalErr(__FILE__,__LINE__,"NorthBoundingCoordinate is not right for TRMM level 3 products");
+            throw InternalErr(__FILE__,__LINE__,"NorthBoundingCoordinate is not right for GPM level 3 products");
  
     }
      else
-        throw InternalErr(__FILE__,__LINE__,"The TRMM grid NorthBoundingCoordinate doesn't exist.");
+        throw InternalErr(__FILE__,__LINE__,"The GPM grid NorthBoundingCoordinate doesn't exist.");
 
     if (0 == ind_elems[5].find("SouthBoundingCoordinate")){ 
 
             size_t equal_pos = ind_elems[5].find_first_of('=');
             if(string::npos == equal_pos)
-                throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for TRMM level 3 products");
+                throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for GPM level 3 products");
            
             size_t scolon_pos = ind_elems[5].find_first_of(';');
             if(string::npos == scolon_pos)
-                throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for TRMM level 3 products");
+                throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for GPM level 3 products");
             if (equal_pos < scolon_pos){
                 string lat_south_str = ind_elems[5].substr(equal_pos+1,scolon_pos-equal_pos-1);
                 lat_south = strtof(lat_south_str.c_str(),NULL);
             }
             else 
-                throw InternalErr(__FILE__,__LINE__,"south bound coordinate is not right for TRMM level 3 products");
+                throw InternalErr(__FILE__,__LINE__,"south bound coordinate is not right for GPM level 3 products");
  
     }
     else
-        throw InternalErr(__FILE__,__LINE__,"The TRMM grid SouthBoundingCoordinate doesn't exist.");
+        throw InternalErr(__FILE__,__LINE__,"The GPM grid SouthBoundingCoordinate doesn't exist.");
 
     if (0 == ind_elems[6].find("EastBoundingCoordinate")){ 
 
         size_t equal_pos = ind_elems[6].find_first_of('=');
         if(string::npos == equal_pos)
-            throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for TRMM level 3 products");
+            throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for GPM level 3 products");
            
         size_t scolon_pos = ind_elems[6].find_first_of(';');
         if(string::npos == scolon_pos)
-            throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for TRMM level 3 products");
+            throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for GPM level 3 products");
         if (equal_pos < scolon_pos){
             string lon_east_str = ind_elems[6].substr(equal_pos+1,scolon_pos-equal_pos-1);
             lon_east = strtof(lon_east_str.c_str(),NULL);
         }
         else 
-            throw InternalErr(__FILE__,__LINE__,"south bound coordinate is not right for TRMM level 3 products");
+            throw InternalErr(__FILE__,__LINE__,"south bound coordinate is not right for GPM level 3 products");
  
     }
     else
-        throw InternalErr(__FILE__,__LINE__,"The TRMM grid EastBoundingCoordinate doesn't exist.");
+        throw InternalErr(__FILE__,__LINE__,"The GPM grid EastBoundingCoordinate doesn't exist.");
 
     if (0 == ind_elems[7].find("WestBoundingCoordinate")){ 
 
         size_t equal_pos = ind_elems[7].find_first_of('=');
         if(string::npos == equal_pos)
-            throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for TRMM level 3 products");
+            throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for GPM level 3 products");
            
         size_t scolon_pos = ind_elems[7].find_first_of(';');
         if(string::npos == scolon_pos)
-            throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for TRMM level 3 products");
+            throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for GPM level 3 products");
         if (equal_pos < scolon_pos){
             string lon_west_str = ind_elems[7].substr(equal_pos+1,scolon_pos-equal_pos-1);
             lon_west = strtof(lon_west_str.c_str(),NULL);
         }
         else 
-            throw InternalErr(__FILE__,__LINE__,"south bound coordinate is not right for TRMM level 3 products");
+            throw InternalErr(__FILE__,__LINE__,"south bound coordinate is not right for GPM level 3 products");
  
     }
     else
-        throw InternalErr(__FILE__,__LINE__,"The TRMM grid WestBoundingCoordinate doesn't exist.");
+        throw InternalErr(__FILE__,__LINE__,"The GPM grid WestBoundingCoordinate doesn't exist.");
 
     if (false == check_reg_orig) {
         if (0 != ind_elems[8].find("Origin=SOUTHWEST")) 
-            throw InternalErr(__FILE__,__LINE__,"The TRMM grid origin is not SOUTHWEST.");
+            throw InternalErr(__FILE__,__LINE__,"The GPM grid origin is not SOUTHWEST.");
     }
 
     // Since we only treat the case when the Registration is center, so the size should be the 

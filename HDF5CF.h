@@ -940,6 +940,7 @@ public:
     }
 
 protected:
+    bool Check_And_Update_New_GPM_L3();
     void Remove_OMPSNPP_InputPointers();
     void Add_Dim_Name_GPM() ;
     void Add_Dim_Name_Mea_SeaWiFS() ;

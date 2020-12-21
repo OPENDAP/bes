@@ -39,7 +39,7 @@
 
 
 enum H5GCFProduct
-{ General_Product,GPM_L1, GPMS_L3,GPMM_L3,Mea_SeaWiFS_L2, Mea_SeaWiFS_L3,Mea_Ozone,Aqu_L3,OBPG_L3,ACOS_L2S_OR_OCO2_L1B,OSMAPL2S};
+{ General_Product,GPM_L1, GPMS_L3,GPMM_L3,GPM_L3_New,Mea_SeaWiFS_L2, Mea_SeaWiFS_L3,Mea_Ozone,Aqu_L3,OBPG_L3,ACOS_L2S_OR_OCO2_L1B,OSMAPL2S};
 
 // Currently we only need to support four NASA generic HDF5 products for
 // the access of NASA data via CF-compliant vis. tools(IDV and Panoply) 

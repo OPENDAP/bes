@@ -241,7 +241,8 @@ void GMFile::Update_Product_Type()  {
     if(GPMS_L3 == this->product_type || GPMM_L3 == this->product_type) {
 
         // Check Dimscale attributes 
-        Check_General_Product_Pattern();
+        //Check_General_Product_Pattern();
+        Check_Dimscale_General_Product_Pattern();
         if(GENERAL_DIMSCALE == this->gproduct_pattern){
             if(GPMS_L3 == this->product_type) {
                 for (vector<Var *>::iterator irv = this->vars.begin();
@@ -288,6 +289,18 @@ void GMFile::Remove_Unneeded_Objects()  {
 
         if(nc4_non_coord_set.size()!=0)
             this->have_nc4_non_coord = true;
+    }
+    else if(GPM_L3_New == this->product_type) {
+        for (vector<Group *>::iterator irg = this->groups.begin();
+            irg != this->groups.end(); ) {
+            if((*irg)->attrs.empty()) {
+                delete(*irg);
+                irg = this->groups.erase(irg);
+
+            }
+            else 
+                ++irg;
+        }
     }
 }
 
@@ -836,6 +849,7 @@ void GMFile::Add_Dim_Name() {
         case GPMS_L3:
         case GPMM_L3:
         case GPM_L1:
+        case GPM_L3_New:
             Add_Dim_Name_GPM();
             break;
         case OBPG_L3:
@@ -1491,6 +1505,8 @@ void GMFile::Check_General_Product_Pattern()  {
 
     BESDEBUG("h5", "Coming to Check_General_Product_Pattern()"<<endl);
     if(false == Check_Dimscale_General_Product_Pattern()) {
+        //HERE add a check for the GPM. (choose 5 variables equally distance for the attribute)
+        if(false == Check_And_Update_New_GPM_L3()) 
         if(false == Check_LatLon2D_General_Product_Pattern()) 
             if(false == Check_LatLon1D_General_Product_Pattern())
                 Check_LatLon_With_Coordinate_Attr_General_Product_Pattern();
@@ -1607,6 +1623,69 @@ bool GMFile::Check_Dimscale_General_Product_Pattern()  {
     }
 
     return ret_value;
+}
+
+bool GMFile::Check_And_Update_New_GPM_L3() {
+
+    bool is_new_gpm_l3 = false;
+    unsigned int num_vars = this->vars.size();
+    unsigned sel_steps = num_vars/5;
+    string dim_name="DimensionNames";
+    bool has_dim_name = false;
+    if(sel_steps == 0)
+        sel_steps = 1;
+
+    // Given DimensionNames exists in almost every variable in the new GPM product,
+    // We will check the existence of this attribute for at most 5 variables. 
+//#if 0
+    vector<Var *>::iterator it_var_end;
+
+    if(sel_steps ==1)
+        it_var_end = this->vars.end();
+    else 
+        it_var_end = this->vars.begin()+5*sel_steps;
+        
+    for (vector<Var *>::iterator irv = this->vars.begin();
+        irv != it_var_end; irv+=sel_steps) {
+        //irv != this->vars.end(); irv+=sel_steps) {
+        for(vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
+          ira != (*irv)->attrs.end();ira++) {
+            if(H5FSTRING == (*ira)->getType()) {
+                if((*ira)->name == dim_name){
+                    has_dim_name = true;
+                    break;
+                }
+            }
+        }
+        if(true == has_dim_name) 
+            break;
+    }
+//#endif
+
+
+
+    // Files that can go to this step should be a small subset, now
+    // we will check the "??GridHeader" for all the groups. 
+    if(true == has_dim_name) {
+        string attr_name_subset = "GridHeader";
+        BESDEBUG("h5", "GMFile::Check_And_Update_New_GPM_L3() has attribute <DimensionNames>. "<<endl);
+        for (vector<Group *>::iterator irg = this->groups.begin();
+            irg != this->groups.end(); ++ irg) {
+            for(vector<Attribute *>::iterator ira = (*irg)->attrs.begin();
+                ira != (*irg)->attrs.end();ira++) {
+                string attr_name = (*ira)->name;
+                // We identify this as a new GPM level 3 product.
+                if(attr_name.find(attr_name_subset)!=string::npos) {
+                    this->product_type = GPM_L3_New;
+                    is_new_gpm_l3 = true;
+                    break;
+                }
+            }
+            if(true == is_new_gpm_l3)
+                break;
+        }
+    }
+    return is_new_gpm_l3;
 }
 
 // If having 2-D latitude/longitude,set the general product pattern.
@@ -2866,7 +2945,8 @@ void GMFile::Handle_CVar() {
         Handle_CVar_OSMAPL2S();
     else if (Mea_Ozone == this->product_type) 
         Handle_CVar_Mea_Ozone();
-    else if (GPMS_L3 == this->product_type || GPMM_L3 == this->product_type) 
+    else if (GPMS_L3 == this->product_type || GPMM_L3 == this->product_type 
+            || GPM_L3_New == this->product_type ) 
         Handle_CVar_GPM_L3();
     else if (GPM_L1 == this->product_type)
         Handle_CVar_GPM_L1();
@@ -4728,7 +4808,7 @@ void GMFile::Handle_SpVar() {
     }
 
     // GPM level-3 These variables need to be removed.
-    else if(GPMM_L3 == product_type || GPMS_L3 == product_type) {
+    else if(GPMM_L3 == product_type || GPMS_L3 == product_type || GPM_L3_New==product_type) {
 
         for (vector<Var *>::iterator irv = this->vars.begin();
                     irv != this->vars.end(); ) {
