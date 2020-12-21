@@ -6,4 +6,4 @@ Dataset {
         Float64 northing[northing = 929];
         Float64 easting[easting = 699];
     } band_1;
-} SP27GTIF.TIF;
+} UTM2GTIF.TIF;
