@@ -71,7 +71,7 @@ bool DapFunctionsRequestHandler::build_help(BESDataHandlerInterface &dhi)
     string key = "BES.functions.Reference";
     string ref;
     TheBESKeys::TheKeys()->get_value(key, ref, found);
-    if (ref.empty()) ref = "http://docs.opendap.org/index.php/Server_Side_Processing_Functions";
+    if (ref.empty()) ref = "https://docs.opendap.org/index.php/Server_Side_Processing_Functions";
 
     map<string, string> attrs;
     attrs["name"] = MODULE_NAME;

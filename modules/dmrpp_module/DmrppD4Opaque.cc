@@ -80,7 +80,7 @@ DmrppD4Opaque::operator=(const DmrppD4Opaque &rhs)
     return *this;
 }
 
-void DmrppD4Opaque::insert_chunk(Chunk *chunk)
+void DmrppD4Opaque::insert_chunk(shared_ptr<Chunk>  chunk)
 {
     // The size, in elements, of each of the chunk's dimensions.
     const vector<unsigned int> &chunk_shape = get_chunk_dimension_sizes();
@@ -172,10 +172,10 @@ void DmrppD4Opaque::read_chunks_parallel()
 
 void DmrppD4Opaque::read_chunks()
 {
-    for (vector<Chunk>::iterator c = get_chunks().begin(), e = get_chunks().end(); c != e; ++c) {
-        (*c).read_chunk();
-        (*c).inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(), 1 /*elem width*/);
-        insert_chunk(&(*c));
+    for (auto chunk : get_chunks()) {
+        chunk->read_chunk();
+        chunk->inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(), 1 /*elem width*/);
+        insert_chunk(chunk);
     }
 
     set_read_p(true);

@@ -74,7 +74,7 @@ int main(int argc,char **argv ) {
     // Store the sha256 if necessary to a file.
     short ret_value = update_sha256_file(argv[1],argv[2],argv[3],argv[4],sha256_buf);
     //return ret_value;
-    return 0;
+    return ret_value;
 }
 
 // Append the sha256 to a file.
@@ -129,7 +129,7 @@ short update_sha256_file(char* m_dmrpp_fname,char* m_h5_fname,char* m_sha256_fna
     }
     string sha_line;
     char space_char=' ';
-    char end_line='\n';
+    //char end_line='\n';
     bool space_fname_ret = true;
     bool need_add_sha256 = true;
 
@@ -192,7 +192,7 @@ string retrieve_data_sha256(FILE*fp,const vector<size_t> &offsets,const vector<s
     unsigned char hash[SHA256_DIGEST_LENGTH];
 
     // This is the buffer size
-    for(int i = 0; i <nbytes.size();i++) 
+    for(size_t i = 0; i <nbytes.size();i++)
         fSize+=nbytes[i];
 
     // Read in the offset and byte information.
@@ -200,7 +200,7 @@ string retrieve_data_sha256(FILE*fp,const vector<size_t> &offsets,const vector<s
     buf.resize(fSize);
     
     size_t cur_size = 0;
-    for(int i = 0; i<offsets.size();i++) {
+    for(size_t i = 0; i<offsets.size();i++) {
         // Seek according to offset
         if(fseek(fp,offsets[i],SEEK_SET)!=0)
             return ret_str;
@@ -223,7 +223,7 @@ string retrieve_data_sha256(FILE*fp,const vector<size_t> &offsets,const vector<s
 // Retrieve the offsets and number of bytes of variable values.
 bool retrieve_chunk_info(FILE*fp,vector<size_t> &offsets,vector<size_t> &nbytes) {
 
-    long fSize = 0;
+    size_t fSize = 0;
 
     // Read in the offset and byte information.
     if(fseek(fp,0,SEEK_END)!=0) 
@@ -279,12 +279,12 @@ bool obtain_offset_nbytes(const vector<string>& str_vec, vector<size_t>& offsets
     vector<size_t> unfiltered_nbytes;
 
     // Pick up the line that includes chunk offset and save them to a vector.
-    for(int i = 0; i <str_vec.size(); i++)
+    for(size_t i = 0; i <str_vec.size(); i++)
         if(str_vec[i].find(delim1)!=string::npos)
             chunk_info_str.push_back(str_vec[i]);
 
     // Obtain the offsets and number of bytes and save them to vectors.
-    for(int i = 0; i<chunk_info_str.size();i++) {
+    for(size_t i = 0; i<chunk_info_str.size();i++) {
         size_t co_spos = chunk_info_str[i].find(delim1);
         size_t co_epos = chunk_info_str[i].find(delim3,co_spos+delim1.size());
         if(co_epos==string::npos) {
@@ -308,7 +308,7 @@ bool obtain_offset_nbytes(const vector<string>& str_vec, vector<size_t>& offsets
     // Remove nbyte = 0 case. This is a bug caused by build_dmrpp. Before that is fixed, we
     // remove this case since this fortuately doesn't affect our purpose and the patch_dmrpp program.
     if(true == ret) {
-        for(int i = 0; i<unfiltered_nbytes.size();i++) {
+        for(size_t i = 0; i<unfiltered_nbytes.size();i++) {
             if(unfiltered_nbytes[i] != 0) {
                 offsets.push_back(unfiltered_offsets[i]);
                 nbytes.push_back(unfiltered_nbytes[i]);

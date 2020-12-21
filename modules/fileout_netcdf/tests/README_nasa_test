@@ -1,0 +1,6 @@
+One can manually test the fileout-netCDF-4 for DAP4 with some sample NASA files. To do this:
+1) copy testsuite_nasa.at testsuite.at
+2) Go to the HDF5 handler, cd /data.nasa, run download_dap4.sh.
+3) copy all the HDF5 files to the /data of the filenetcdf module.
+4) cd to the top directory of the filenetcdf module.
+5) Run 'make check', you should see the testing of filenetCDF-4 with the NASA files.

@@ -42,11 +42,14 @@
 
 #include "DmrppRequestHandler.h"
 #include "DmrppCommon.h"
+#include "DmrppArray.h"
 #include "Chunk.h"
 #include "util.h"
 
 using namespace std;
 using namespace libdap;
+
+#define prolog std::string("DmrppCommon::").append(__func__).append("() - ")
 
 namespace dmrpp {
 
@@ -99,12 +102,13 @@ void join_threads(pthread_t threads[], unsigned int num_threads)
  *
  * @param chunk_dims The sizes as a list of integers separated by spaces, e.g., '50 50'
  */
-void DmrppCommon::parse_chunk_dimension_sizes(string chunk_dims)
+void DmrppCommon::parse_chunk_dimension_sizes(const string &chunk_dims_string)
 {
     d_chunk_dimension_sizes.clear();
 
-    if (chunk_dims.empty()) return;
+    if (chunk_dims_string.empty()) return;
 
+    string chunk_dims = chunk_dims_string;
     // If the input is anything other than integers and spaces, throw
     if (chunk_dims.find_first_not_of("1234567890 ") != string::npos)
         throw BESInternalError("while processing chunk dimension information, illegal character(s)", __FILE__, __LINE__);
@@ -137,7 +141,7 @@ void DmrppCommon::parse_chunk_dimension_sizes(string chunk_dims)
  *
  * @param compression_type_string One of "deflate" or "shuffle."
  */
-void DmrppCommon::ingest_compression_type(string compression_type_string)
+void DmrppCommon::ingest_compression_type(const string &compression_type_string)
 {
     if (compression_type_string.empty()) return;
 
@@ -163,7 +167,7 @@ void DmrppCommon::ingest_compression_type(string compression_type_string)
  *
  * @param byte_order_string One of "LE", "BE"
  */
-    void DmrppCommon::ingest_byte_order(string byte_order_string) {
+    void DmrppCommon::ingest_byte_order(const string &byte_order_string) {
 
         if (byte_order_string.empty()) return;
 
@@ -192,23 +196,72 @@ std::string DmrppCommon::get_byte_order()
  * @brief Add a new chunk as defined by an h4:byteStream element
  * @return The number of chunk refs (byteStreams) held.
  */
-    unsigned long DmrppCommon::add_chunk(const string &data_url, const string &byte_order,
-                                         unsigned long long size, unsigned long long offset, string position_in_array)
+unsigned long DmrppCommon::add_chunk(
+        const string &data_url,
+        const string &byte_order,
+        unsigned long long size,
+        unsigned long long offset,
+        const string &position_in_array)
 
-    {
-        d_chunks.push_back(Chunk(data_url, byte_order, size, offset, position_in_array));
+{
+    vector<unsigned int> cpia_vector;
+    Chunk::parse_chunk_position_in_array_string(position_in_array, cpia_vector);
+    return add_chunk(data_url, byte_order, size, offset, cpia_vector);
+}
 
-        return d_chunks.size();
+unsigned long DmrppCommon::add_chunk(
+        const string &data_url,
+        const string &byte_order,
+        unsigned long long size,
+        unsigned long long offset,
+        const vector<unsigned int> &position_in_array)
+{
+    std::shared_ptr<Chunk> chunk(new Chunk(data_url, byte_order, size, offset, position_in_array));
+#if 0
+    auto array = dynamic_cast<dmrpp::DmrppArray *>(this);
+    if(!array){
+        stringstream msg;
+        msg << prolog << "ERROR  DmrrpCommon::add_chunk() may only be called on an instance of DmrppArray. ";
+        msg << "The variable";
+        auto bt = dynamic_cast<libdap::BaseType *>(this);
+        if(bt){
+            msg  << " " << bt->type_name() << " " << bt->name();
+        }
+        msg << " is not an instance of DmrppArray.";
+        msg << "this: " << (void **) this << " ";
+        msg << "byte_order: " << byte_order << " ";
+        msg << "size: " << size << " ";
+        msg << "offset: " << offset << " ";
+        throw BESInternalError(msg.str(),__FILE__, __LINE__);
     }
 
-    unsigned long DmrppCommon::add_chunk(const string &data_url, const string &byte_order,
-                                         unsigned long long size, unsigned long long offset,
-                                         const vector<unsigned int> &position_in_array)
-    {
-        d_chunks.push_back(Chunk(data_url, byte_order, size, offset, position_in_array));
+    if(d_super_chunks.empty())
+        d_super_chunks.push_back( shared_ptr<SuperChunk>(new SuperChunk()));
 
-        return d_chunks.size();
+    auto currentSuperChunk = d_super_chunks.back();
+
+    bool chunk_was_added = currentSuperChunk->add_chunk(chunk);
+    if(!chunk_was_added){
+        if(currentSuperChunk->empty()){
+            stringstream msg;
+            msg << prolog << "ERROR! Failed to add a Chunk to an empty SuperChunk. This should not happen.";
+            throw BESInternalError(msg.str(),__FILE__,__LINE__);
+        }
+        // This means that the chunk was not contiguous with the currentSuperChunk
+        currentSuperChunk = shared_ptr<SuperChunk>(new SuperChunk());
+        chunk_was_added = currentSuperChunk->add_chunk(chunk);
+        if(!chunk_was_added) {
+            stringstream msg;
+            msg << prolog << "ERROR! Failed to add a Chunk to an empty SuperChunk. This should not happen.";
+            throw BESInternalError(msg.str(),__FILE__,__LINE__);
+        }
+        d_super_chunks.push_back(currentSuperChunk);
     }
+#endif
+
+    d_chunks.push_back(chunk);
+    return d_chunks.size();
+}
 
 /**
  * @brief read method for the atomic types
@@ -230,16 +283,16 @@ std::string DmrppCommon::get_byte_order()
 char *
 DmrppCommon::read_atomic(const string &name)
 {
-    vector<Chunk> &chunk_refs = get_chunks();
+    auto chunk_refs = get_chunks();
 
     if (chunk_refs.size() != 1)
         throw BESInternalError(string("Expected only a single chunk for variable ") + name, __FILE__, __LINE__);
 
-    Chunk &chunk = chunk_refs[0];
+    auto chunk = chunk_refs[0];
 
-    chunk.read_chunk();
+    chunk->read_chunk();
 
-    return chunk.get_rbuf();
+    return chunk->get_rbuf();
 }
 
 /**
@@ -264,14 +317,13 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
         if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "compressionType", (const xmlChar*) compression.c_str()) < 0)
             throw BESInternalError("Could not write compression attribute.", __FILE__, __LINE__);
 
-    vector<Chunk>::iterator i = get_chunks().begin();
-    if ( i != get_chunks().end() ) {
-        Chunk &chunk = *i;
-        std::string byteOrder = chunk.get_byte_order();
-        if (!byteOrder.empty()) {
+
+    if(!get_chunks().empty()){
+        auto first_chunk = get_chunks().front();
+        if (!first_chunk->get_byte_order().empty()) {
             if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "byteOrder",
-                                            (const xmlChar *) byteOrder.c_str()) < 0)
-                throw BESInternalError("Could not write attribute byteOrder", __FILE__, __LINE__);
+                                        (const xmlChar *) first_chunk->get_byte_order().c_str()) < 0)
+            throw BESInternalError("Could not write attribute byteOrder", __FILE__, __LINE__);
         }
     }
 
@@ -287,27 +339,28 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
     }
 
     // Start elements "chunk" with dmrpp namespace and attributes:
-    for (vector<Chunk>::iterator i = get_chunks().begin(), e = get_chunks().end(); i != e; ++i) {
-        Chunk &chunk = *i;
+    // for (vector<Chunk>::iterator i = get_chunks().begin(), e = get_chunks().end(); i != e; ++i) {
+
+    for(auto chunk: get_chunks()){
 
         if (xmlTextWriterStartElementNS(xml.get_writer(), (const xmlChar*)name_space.c_str(), (const xmlChar*) "chunk", NULL) < 0)
             throw BESInternalError("Could not start element chunk", __FILE__, __LINE__);
 
         // Get offset string:
         ostringstream offset;
-        offset << chunk.get_offset();
+        offset << chunk->get_offset();
         if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "offset", (const xmlChar*) offset.str().c_str()) < 0)
             throw BESInternalError("Could not write attribute offset", __FILE__, __LINE__);
 
         // Get nBytes string:
         ostringstream nBytes;
-        nBytes << chunk.get_size();
+        nBytes << chunk->get_size();
         if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "nBytes", (const xmlChar*) nBytes.str().c_str()) < 0)
             throw BESInternalError("Could not write attribute nBytes", __FILE__, __LINE__);
 
-        if (chunk.get_position_in_array().size() > 0) {
+        if (chunk->get_position_in_array().size() > 0) {
             // Get position in array string:
-            vector<unsigned int> pia = chunk.get_position_in_array();
+            vector<unsigned int> pia = chunk->get_position_in_array();
             ostringstream oss;
             oss << "[";
             copy(pia.begin(), pia.end(), ostream_iterator<unsigned int>(oss, ","));
@@ -391,16 +444,14 @@ void DmrppCommon::dump(ostream & strm) const
     }
     strm << "]" << endl;
 
-    const vector<Chunk> &chunk_refs = get_immutable_chunks();
+    auto chunk_refs = get_immutable_chunks();
     strm << BESIndent::LMarg << "Chunks (aka chunks):" << (chunk_refs.size() ? "" : "None Found.") << endl;
     BESIndent::Indent();
-    for (unsigned int i = 0; i < chunk_refs.size(); i++) {
+    for (auto & chunk_ref : chunk_refs) {
         strm << BESIndent::LMarg;
-        chunk_refs[i].dump(strm);
+        chunk_ref->dump(strm);
         strm << endl;
     }
-
-    BESIndent::UnIndent();
 }
 
 } // namepsace dmrpp

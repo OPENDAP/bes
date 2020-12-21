@@ -108,8 +108,9 @@ string pthread_error(unsigned int err){
             break;
     }
 
-
+    return error_msg;
 }
+
 Lock::Lock(pthread_mutex_t &lock) : m_mutex(lock) {
     int status = pthread_mutex_lock(&m_mutex);
     if (status != 0)
@@ -393,7 +394,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
     // Here we check to make sure that the we are only going to
     // access an approved location with this easy_handle
     if (!AllowedHosts::theHosts()->is_allowed(chunk->get_data_url())) {
-        string msg = "ERROR!! The chunk url " + chunk->get_data_url() + " does not match any white-list rule. ";
+        string msg = "ERROR!! The chunk url " + chunk->get_data_url() + " does not match any of the AllowedHost rules. ";
         throw BESForbiddenError(msg, __FILE__, __LINE__);
     }
 
