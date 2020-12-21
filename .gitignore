@@ -22,6 +22,8 @@ lex.*.cc
 *.log
 *.trs
 *.Po
+*.gcda
+*.gcno
 set_ec.sh
 
 ## OS-X Finder spoo

@@ -31,7 +31,10 @@ endif
 # These are not used by automake but are often useful for certain types of
 # debugging. Set CXXFLAGS to this in the nightly build using export ...
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -Wcast-align
-TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
+
+AM_CXXFLAGS=
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
 
 # This determines what gets built by make check
 check_PROGRAMS = $(UNIT_TESTS)

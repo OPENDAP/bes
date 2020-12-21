@@ -16,7 +16,10 @@ LIBADD = $(GF_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 #     export CXXFLAGS='...'; ./configure --disable-shared
 # the --disable-shared is not required, but it seems to help with debuggers.
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -Wcast-align
-TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
+
+AM_CXXFLAGS=
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
 
 SUBDIRS =  . unit-tests tests
 # DIST_SUBDIRS = unit-tests tests

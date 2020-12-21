@@ -20,7 +20,10 @@ AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 # These are not used by automak but are often useful for certain types of
 # debugging.
 CXXFLAGS_DEBUG = -g3 -O0 -Wall 
-TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
+
+AM_CXXFLAGS=
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libwww_module.la
