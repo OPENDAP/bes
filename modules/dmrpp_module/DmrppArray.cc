@@ -30,6 +30,7 @@
 #include <queue>
 #include <iterator>
 #include <thread>
+#include <future>
 
 #include <cstring>
 #include <cassert>
@@ -125,36 +126,40 @@ void *one_super_chunk_unconstrained_thread(void *arg_list)
 std::mutex thread_pool_mtx;  // mutex for critical section
 atomic_uint thread_counter(0);
 
-bool start_super_chunk_thread(thread &result_thread, one_super_chunk_args *args) {
-    std::unique_lock<std::mutex> lck (thread_pool_mtx);
-    lck.lock();
-    try {
-        if (thread_counter < DmrppRequestHandler::d_max_parallel_transfers) {
-            thread_counter++;
-            result_thread = thread(dmrpp::one_super_chunk_thread, (void *) args);
-            lck.unlock();
-            return true;
-        }
+bool get_next_future(queue<std::future<void *>> &futures) {
+    bool joined = false;
+    if (!futures.empty()) {
+        futures.front().get();
+        futures.pop();
+        thread_counter--;
+        joined = true;
+        BESDEBUG(dmrpp_3, prolog << "Called future::get() on one future. Popped future from queue, futures.size(): " << futures.size() << endl);
     }
-    catch(...) {
-        lck.unlock();
-    }
-    return false;
+    return joined;
 }
-bool start_super_chunk_unconstrained_thread(thread &result_thread, one_super_chunk_args *args) {
+
+    bool start_super_chunk_thread(queue<std::future<void *>> &futures, one_super_chunk_args *args) {
+    bool retval = false;
     std::unique_lock<std::mutex> lck (thread_pool_mtx);
-    try {
-        if(thread_counter < DmrppRequestHandler::d_max_parallel_transfers) {
-            thread_counter++;
-            result_thread = thread(dmrpp::one_super_chunk_unconstrained_thread, (void *)args);
-            lck.unlock();
-            return true;
-        }
+    if (thread_counter < DmrppRequestHandler::d_max_parallel_transfers) {
+        thread_counter++;
+        futures.push(std::async(dmrpp::one_super_chunk_thread, (void *) args));
+        retval = true;
+        BESDEBUG(dmrpp_3, prolog << "Got std::future from std::async for " << args->super_chunk->to_string(false) << endl);
     }
-    catch(...) {
-        lck.unlock();
+    return retval;
+}
+
+bool start_super_chunk_unconstrained_thread(queue<std::future<void *>> &futures, one_super_chunk_args *args) {
+    bool retval = false;
+    std::unique_lock<std::mutex> lck (thread_pool_mtx);
+    if(thread_counter < DmrppRequestHandler::d_max_parallel_transfers) {
+        thread_counter++;
+        futures.push(std::async(dmrpp::one_super_chunk_unconstrained_thread, (void *)args));
+        retval = true;
+        BESDEBUG(dmrpp_3, prolog << "Got std::future from std::async for " << args->super_chunk->to_string(false) << endl);
     }
-    return false;
+    return retval;
 }
 
 
@@ -888,7 +893,7 @@ void DmrppArray::read_chunks_unconstrained()
 
         // Start the max allowed # of processing pipelines
         // vector<thread> thread_vector;
-        queue<thread> thread_q;
+        queue<std::future<void *>> futures;
 
         try {
             // The second condition in this while loop controls the total number active threads. After this initial
@@ -896,26 +901,23 @@ void DmrppArray::read_chunks_unconstrained()
             // and the new thread replaces the joined thread in thead_vector
             // while(!super_chunks.empty() && thread_vector.size() < DmrppRequestHandler::d_max_parallel_transfers) {
             bool thread_started = true;
-            while(thread_started && !super_chunks.empty()) {
+            while (thread_started && !super_chunks.empty()) {
                 auto super_chunk = super_chunks.front();
                 super_chunks.pop();
-                BESDEBUG(dmrpp_3, prolog << "Starting thread for " << super_chunk->to_string(false) << endl );
+                BESDEBUG(dmrpp_3, prolog << "Starting thread for " << super_chunk->to_string(false) << endl);
 
                 auto *args = new one_super_chunk_args(super_chunk, this);
                 //thread super_chunk_thread(dmrpp::one_super_chunk_thread, (void *)args);
                 //thread_vector.emplace_back(std::move(super_chunk_thread));
                 thread sc_thread;
-                thread_started = start_super_chunk_unconstrained_thread(sc_thread, args);
-                if(thread_started) {
-                    thread_q.push(std::move(sc_thread));
-                    thread::id tid = thread_q.back().get_id();
-                    BESDEBUG(dmrpp_3, prolog << "Started thread(" << tid << ")" << endl);
-                }
-                else {
+                thread_started = start_super_chunk_unconstrained_thread(futures, args);
+                if (thread_started) {
+                    BESDEBUG(dmrpp_3, prolog << "Started thread for " << super_chunk->to_string(false) << endl);
+                } else {
                     // Well catch it later.
                     super_chunks.push(super_chunk);
                     BESDEBUG(dmrpp_3, prolog << "Thread not started, Returned SuperChunk to queue. " <<
-                    "thread_count: " << thread_counter << endl );
+                                             "thread_count: " << thread_counter << endl);
                 }
             }
 
@@ -933,17 +935,10 @@ void DmrppArray::read_chunks_unconstrained()
                 //  - How can we avoid repeatedly calling thread::is_joinable() on threads that have already tested
                 //    false.
                 //
-                bool joined=false;
-                size_t tindex;
-                while(!thread_q.empty() && !joined ) {
-                    if(thread_q.front().joinable()) {
-                        thread_q.join();
-                        thread_q.pop();
-                        joined = true;
-                    }
-                }
+#if 1
+                bool joined = get_next_future(futures);
 
-
+#else
                 for(tindex=0; !joined && tindex<thread_vector.size(); tindex++){
                     if(thread_vector[tindex].joinable()) {
                         auto tid = thread_vector[tindex].get_id();
@@ -959,34 +954,32 @@ void DmrppArray::read_chunks_unconstrained()
                         BESDEBUG(dmrpp_3, prolog << "Joined thread: " << tid  << " joined: set to " << (joined?"true":"false") << endl);
                     }
                 }
+#endif
+
                 // We do this until the SuperChunks have all been read.
                 // But we only add a new thread if on has been joined.
-                if (joined){
-                    if(!super_chunks.empty() ) {
+                if (joined) {
+                    if (!super_chunks.empty()) {
                         auto super_chunk = super_chunks.front();
                         super_chunks.pop();
-                        BESDEBUG(dmrpp_3, prolog << "Starting thread for " << super_chunk->to_string(false) << endl );
+                        BESDEBUG(dmrpp_3, prolog << "Starting thread for " << super_chunk->to_string(false) << endl);
 
                         auto *args = new one_super_chunk_args(super_chunk, this);
                         //thread super_chunk_thread(dmrpp::one_super_chunk_thread, (void *)args);
                         //(*joined_thread_itr) = std::move(super_chunk_thread);
-                        thread sct;
-                        bool started = start_super_chunk_unconstrained_thread(sct, args);
-                        if(started) {
+                        bool started = start_super_chunk_unconstrained_thread(futures, args);
+                        if (started) {
                             // thread_vector[tindex] = std::move(sct);
-                            thread_vector.emplace_back(std::move(sct));
-                            BESDEBUG(dmrpp_3, prolog << "Thread(" << thread_vector[tindex].get_id() <<
-                                                     ") STARTED. There are: " << thread_vector.size() << " threads." << endl);
-                        }
-                        else {
+                            BESDEBUG(dmrpp_3, prolog << "Retrieved future for " << super_chunk->to_string(false) <<
+                                                     " There are: " << futures.size() << " futures." << endl);
+                        } else {
                             // Didn't start, so put the SuperChunk back so we can try again.
                             super_chunks.push(super_chunk);
                             BESDEBUG(dmrpp_3, prolog << "Thread not started, Returned SuperChunk to queue. " <<
-                                                     "There are: " << thread_counter << " threads." << endl );
+                                                     "There are: " << thread_counter << " threads." << endl);
                         }
                     }
-                }
-                else if(!super_chunks.empty()){
+                } else if (!super_chunks.empty()) {
                     // TODO I can't see how this should happen (that there are super chunks left and yet we failed to
                     //  join prior to arriving here, so I laid a trap. If I'm wrong then maybe we add a thread to the
                     //  thread_vector here?
@@ -994,8 +987,7 @@ void DmrppArray::read_chunks_unconstrained()
                     stringstream msg;
                     msg << prolog << "No threads joined, yet " << super_chunks.size() << " SuperChunks remain unread.";
                     throw BESInternalError(msg.str(), __FILE__, __LINE__);
-                }
-                else {
+                } else {
                     // No more SuperChunks and no joinable threads means we're done here.
                     done = true;
                 }
@@ -1004,8 +996,9 @@ void DmrppArray::read_chunks_unconstrained()
         catch (...) {
             // cancel all the threads, otherwise we'll have threads out there using up resources
             // defined in DmrppCommon.cc
-            for(auto &t:thread_vector){
-                t.join();
+            while (!futures.empty()) {
+                futures.front().get();
+                futures.pop();
             }
             // re-throw the exception
             throw;
@@ -1106,9 +1099,7 @@ void DmrppArray::read_chunks_unconstrained()
             throw;
         }
 #endif
-
     }
-
     set_read_p(true);
 }
 #else
@@ -1628,7 +1619,7 @@ void DmrppArray::read_chunks()
 
 #if 1
         // Start the max allowed # of processing pipelines
-        vector<thread> thread_vector;
+        queue<future<void *>> futures;
         try {
             // The second condition in this while loop controls the total number active threads. After this initial
             // while, if more SuperChunks remain a thread is not spawned for them until another thread has been joined
@@ -1643,12 +1634,10 @@ void DmrppArray::read_chunks()
                 auto *args = new one_super_chunk_args(super_chunk, this);
                 //thread super_chunk_thread(dmrpp::one_super_chunk_thread, (void *)args);
                 //thread_vector.emplace_back(std::move(super_chunk_thread));
-                thread sc_thread;
-                thread_started = start_super_chunk_thread(sc_thread, args);
+                future<void *> sc_future;
+                thread_started = start_super_chunk_thread(futures, args);
                 if(thread_started) {
-                    thread_vector.emplace_back( std::move(sc_thread));
-                    thread::id tid = thread_vector.back().get_id();
-                    BESDEBUG(dmrpp_3, prolog << "Started thread(" << tid << ")" << endl);
+                    BESDEBUG(dmrpp_3, prolog << "STARTED thread for" << super_chunk->to_string(false) << endl);
                 }
                 else {
                     // Well catch it later.
@@ -1673,10 +1662,17 @@ void DmrppArray::read_chunks()
                 //  - How can we avoid repeatedly calling thread::is_joinable() on threads that have already tested
                 //    false.
                 //
+
+#if 1
+                bool joined = get_next_future(futures);
+#else
                 bool joined=false;
                 size_t tindex;
-                for(tindex=0; !joined && tindex<thread_vector.size(); tindex++){
-                    if(thread_vector[tindex].joinable()) {
+                for(auto sc_future: futures){
+
+                    sc_future.get();
+
+                    if(sc_future.joinable()) {
                         auto tid = thread_vector[tindex].get_id();
                         BESDEBUG(dmrpp_3, prolog << "Thread: " << tid << " is joinable." << endl);
                         thread_vector[tindex].join();
@@ -1690,6 +1686,7 @@ void DmrppArray::read_chunks()
                         BESDEBUG(dmrpp_3, prolog << "Joined thread: " << tid  << " joined: set to " << (joined?"true":"false") << endl);
                     }
                 }
+#endif
                 // We do this until the SuperChunks have all been read.
                 // But we only add a new thread if on has been joined.
                 if (joined){
@@ -1700,13 +1697,10 @@ void DmrppArray::read_chunks()
                         auto *args = new one_super_chunk_args(super_chunk, this);
                         //thread super_chunk_thread(dmrpp::one_super_chunk_thread, (void *)args);
                         //(*joined_thread_itr) = std::move(super_chunk_thread);
-                        thread sct;
-                        bool started = start_super_chunk_thread(sct, args);
+                        bool started = start_super_chunk_thread(futures, args);
                         if(started) {
-                            // thread_vector[tindex] = std::move(sct);
-                            thread_vector.emplace_back(std::move(sct));
-                            BESDEBUG(dmrpp_3, prolog << "started thread(" << thread_vector[tindex].get_id() <<
-                                                     ") There are: " << thread_vector.size() << " threads." << endl);
+                            BESDEBUG(dmrpp_3, prolog << "Retrieved future for " << super_chunk->to_string(false) <<
+                                                     " There are: " << futures.size() << " futures." << endl);
                         }
                         else {
                             // Didn't start, so put it back so we can try again.
@@ -1733,8 +1727,9 @@ void DmrppArray::read_chunks()
         catch (...) {
             // cancel all the threads, otherwise we'll have threads out there using up resources
             // defined in DmrppCommon.cc
-            for(auto &t:thread_vector){
-                t.join();
+            while(!futures.empty()){
+                futures.front().get();
+                futures.pop();
             }
             // re-throw the exception
             throw;
