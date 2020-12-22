@@ -11,6 +11,10 @@ AM_CPPFLAGS = -I$(srcdir)/../include/
 # predates things like C99. jhrg 9/21/20
 AM_CFLAGS = -fpic -Wno-implicit-function-declaration
 
+AM_CXXFLAGS=
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
+
 # Library source files
 libGctp_a_SOURCES = gctp.c alberfor.c alberinv.c alconfor.c alconinv.c      \
           azimfor.c aziminv.c bceafor.c bceainv.c br_gctp.c ceafor.c         \
