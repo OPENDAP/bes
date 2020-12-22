@@ -31,6 +31,10 @@ endif
 
 AM_CPPFLAGS += -DUSE_DAP4 -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
+AM_CXXFLAGS=
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
+
 SUBDIRS = hdfclass . bes-testsuite
 # DIST_SUBDIRS = hdfclass bes-testsuite
 
