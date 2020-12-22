@@ -29,6 +29,7 @@
 #include <memory>
 #include <queue>
 #include <iterator>
+#include <thread>
 
 #include <cstring>
 #include <cassert>
@@ -1287,16 +1288,17 @@ void *one_super_chunk_thread(void *arg_list)
         // args->super_chunk->read_and_copy(args->array);
     }
     catch (BESError &error) {
-        write(args->fds[1], &args->tid, sizeof(args->tid));
+        //write(args->fds[1], &args->tid, sizeof(args->tid));
         delete args;
-        pthread_exit(new string(error.get_verbose_message()));
+        //pthread_exit(new string(error.get_verbose_message()));
     }
 
     // tid is a char and thus us written atomically. Writing this tells the parent
     // thread the child is complete and it should call pthread_join(tid, ...)
-    write(args->fds[1], &args->tid, sizeof(args->tid));
+    //write(args->fds[1], &args->tid, sizeof(args->tid));
     delete args;
-    pthread_exit(NULL);
+    //pthread_exit(NULL);
+    return nullptr;
 }
 
 void *one_super_chunk_unconstrained_thread(void *arg_list)
@@ -1311,16 +1313,17 @@ void *one_super_chunk_unconstrained_thread(void *arg_list)
         // args->super_chunk->read_and_copy_unconstrained(args->array);
     }
     catch (BESError &error) {
-        write(args->fds[1], &args->tid, sizeof(args->tid));
+        //write(args->fds[1], &args->tid, sizeof(args->tid));
         delete args;
-        pthread_exit(new string(error.get_verbose_message()));
+        //pthread_exit(new string(error.get_verbose_message()));
     }
 
     // tid is a char and thus us written atomically. Writing this tells the parent
     // thread the child is complete and it should call pthread_join(tid, ...)
-    write(args->fds[1], &args->tid, sizeof(args->tid));
+    //write(args->fds[1], &args->tid, sizeof(args->tid));
     delete args;
-    pthread_exit(NULL);
+    //pthread_exit(NULL);
+    return nullptr;
 }
 
 /**
@@ -1460,14 +1463,82 @@ void DmrppArray::read_chunks()
             throw BESInternalError(string("Could not open a pipe for thread communication: ").append(strerror(errno)),
                                    __FILE__, __LINE__);
 
+
+#if 1
+        // Start the max number of processing pipelines
+        vector<thread> thread_vector;
+        std::atomic_uint thread_pool(DmrppRequestHandler::d_max_parallel_transfers);
+
+        try {
+            while(!super_chunks.empty() && thread_vector.size() < DmrppRequestHandler::d_max_parallel_transfers) {
+                auto super_chunk = super_chunks.front();
+                super_chunks.pop();
+
+                BESDEBUG(dmrpp_3, prolog << super_chunk->to_string(true) << endl );
+
+                // thread number is 'i'
+                auto *args = new one_super_chunk_args(fds, 0, super_chunk, this);
+                thread_vector.emplace_back(dmrpp::one_super_chunk_thread, (void *)args);
+                thread::id tid = thread_vector.back().get_id();
+                BESDEBUG(dmrpp_3, prolog << "Started thread: " << tid << endl);
+            }
+
+
+            // Now join the child threads, creating replacement threads if needed
+            bool done = false;
+            while (!thread_vector.empty()) {
+                // unsigned char tid;   // bytes can be written atomically
+                // Block here until a child thread writes to the pipe, then read the byte
+                bool joined=false;
+                auto thrd = thread_vector.begin();
+                for(; !joined && thrd!=thread_vector.end() ; thrd++){
+                    if((*thrd).joinable()) {
+                        BESDEBUG(dmrpp_3, prolog << "Thread: " << (*thrd).get_id() << " is joinable." << endl);
+                        (*thrd).join();
+                        joined=true;
+                        BESDEBUG(dmrpp_3, prolog << "Joined thread: " << (*thrd).get_id() << endl);
+                    }
+                }
+                if(!joined){
+                }
+
+                if (!super_chunks.empty()) {
+                    auto super_chunk = super_chunks.front();
+                    super_chunks.pop();
+
+                    // thread number is 'tid,' the number of the thread that just completed
+                    auto *args = new one_super_chunk_args(fds, 0, super_chunk, this);
+                    thread_vector.emplace_back(thread(dmrpp::one_super_chunk_thread, (void *)args));
+                    thread::id tid = thread_vector.back().get_id();
+                    BESDEBUG(dmrpp_3, "started thread: " << tid << ", there are: " << thread_vector.size() << " threads." << endl);
+                }
+            }
+        }
+        catch (...) {
+            // cancel all the threads, otherwise we'll have threads out there using up resources
+            // defined in DmrppCommon.cc
+            for(auto &t:thread_vector){
+                t.join();
+            }
+            // close the pipe used to communicate with the child threads
+            close(fds[0]);
+            close(fds[1]);
+            // re-throw the exception
+            throw;
+        }
+    }
+#else
         // Start the max number of processing pipelines
         pthread_t threads[DmrppRequestHandler::d_max_parallel_transfers];
+
         memset(&threads[0], 0, sizeof(pthread_t) * DmrppRequestHandler::d_max_parallel_transfers);
+
+        unsigned char tid;
 
         try {
             unsigned int num_threads = 0;
             for (unsigned int i = 0;
-                 i < (unsigned int) DmrppRequestHandler::d_max_parallel_transfers && super_chunks.size() > 0; ++i) {
+                 i < (unsigned int) DmrppRequestHandler::d_max_parallel_transfers && !super_chunks.empty(); ++i) {
                 auto super_chunk = super_chunks.front();
                 super_chunks.pop();
 
@@ -1550,6 +1621,7 @@ void DmrppArray::read_chunks()
             throw;
         }
     }
+#endif
 
     set_read_p(true);
 }
