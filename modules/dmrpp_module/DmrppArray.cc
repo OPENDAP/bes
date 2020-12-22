@@ -1388,6 +1388,31 @@ void process_super_chunk(shared_ptr<SuperChunk> super_chunk, DmrppArray *array)
     BESDEBUG(dmrpp_3, prolog << "END" << endl );
 }
 
+std::mutex thread_pool_mtx;  // mutex for critical section
+atomic_uint thread_counter;
+
+bool start_super_chunk_thread(thread &result_thread, one_super_chunk_args *args) {
+    std::unique_lock<std::mutex> lck (thread_pool_mtx);
+    if(thread_counter < DmrppRequestHandler::d_max_parallel_transfers) {
+        thread_counter++;
+        result_thread = thread(dmrpp::one_super_chunk_thread, (void *)args);
+        return true;
+    }
+    return false;
+}
+
+void join_thread(thread foo) {
+    if(foo.joinable()) {
+        foo.join();
+        // std::unique_lock<std::mutex> lck (thread_pool_mtx);
+        thread_counter--;
+    }
+}
+
+
+
+
+
 #if USE_SUPER_CHUNKS
 /**
  * @brief Read chunked data by building SuperChunks from the required chunks and reading the SuperChunks
@@ -1464,15 +1489,26 @@ void DmrppArray::read_chunks()
             // The second condition in this while loop controls the total number active threads. After this initial
             // while, if more SuperChunks remain a thread is not spawned for them until another thread has been joined
             // and the new thread replaces the joined thread in thead_vector
-            while(!super_chunks.empty() && thread_vector.size() < DmrppRequestHandler::d_max_parallel_transfers) {
+            // while(!super_chunks.empty() && thread_vector.size() < DmrppRequestHandler::d_max_parallel_transfers) {
+            while(!super_chunks.empty()) {
                 auto super_chunk = super_chunks.front();
                 super_chunks.pop();
                 BESDEBUG(dmrpp_3, prolog << super_chunk->to_string(true) << endl );
 
                 auto *args = new one_super_chunk_args(super_chunk, this);
-                thread_vector.emplace_back(dmrpp::one_super_chunk_thread, (void *)args);
-                thread::id tid = thread_vector.back().get_id();
-                BESDEBUG(dmrpp_3, prolog << "Started thread(" << tid << ")" << endl);
+                //thread super_chunk_thread(dmrpp::one_super_chunk_thread, (void *)args);
+                //thread_vector.emplace_back(std::move(super_chunk_thread));
+                thread sc_thread;
+                bool started = start_super_chunk_thread(sc_thread, args);
+                if(started) {
+                    thread_vector.emplace_back( std::move(sc_thread));
+                    thread::id tid = thread_vector.back().get_id();
+                    BESDEBUG(dmrpp_3, prolog << "Started thread(" << tid << ")" << endl);
+                }
+                else {
+                    // Well catch it later.
+                    super_chunks.push(super_chunk);
+                }
 
             }
 
@@ -1495,8 +1531,14 @@ void DmrppArray::read_chunks()
                 for(; !joined && joined_thread_itr!=thread_vector.end() ; joined_thread_itr++){
                     if((*joined_thread_itr).joinable()) {
                         BESDEBUG(dmrpp_3, prolog << "Thread: " << (*joined_thread_itr).get_id() << " is joinable." << endl);
-                        (*joined_thread_itr).join();
-                        joined=true;
+                        //(*joined_thread_itr).join();
+                        join_thread(std::move(*joined_thread_itr));
+
+                        // We only need to  drop through for a joined thread if there are more
+                        // SuperChunks to process
+                        if(!super_chunks.empty()) {
+                            joined = true;
+                        }
                         BESDEBUG(dmrpp_3, prolog << "Joined thread: " << (*joined_thread_itr).get_id() << endl);
                     }
                 }
@@ -1508,10 +1550,20 @@ void DmrppArray::read_chunks()
                         super_chunks.pop();
 
                         auto *args = new one_super_chunk_args(super_chunk, this);
-                        thread super_chunk_thread(dmrpp::one_super_chunk_thread, (void *)args);
-                        (*joined_thread_itr) = std::move(super_chunk_thread);
-                        BESDEBUG(dmrpp_3, "started thread(" << (*joined_thread_itr).get_id() <<
-                        ") There are: " << thread_vector.size() << " threads." << endl);
+                        //thread super_chunk_thread(dmrpp::one_super_chunk_thread, (void *)args);
+                        //(*joined_thread_itr) = std::move(super_chunk_thread);
+                        thread sct;
+                        bool started = start_super_chunk_thread(sct, args);
+                        if(started) {
+                            (*joined_thread_itr) = std::move(sct);
+                            BESDEBUG(dmrpp_3, prolog << "started thread(" << (*joined_thread_itr).get_id() <<
+                                                     ") There are: " << thread_vector.size() << " threads." << endl);
+                        }
+                        else {
+                            // Didn't start, so put it back so we can try again.
+                            super_chunks.push(super_chunk);
+                            BESDEBUG(dmrpp_3, prolog << "Thread did not start." << endl);
+                        }
                     }
                 }
                 else if(!super_chunks.empty()){
