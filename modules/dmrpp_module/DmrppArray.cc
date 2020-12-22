@@ -1461,9 +1461,9 @@ void DmrppArray::read_chunks()
         // Start the max allowed # of processing pipelines
         vector<thread> thread_vector;
         try {
-            // The second condition in this while controls the total number active threads. After this initial while, if
-            // more SuperChunks remain a thread is not spawned for them until another thread has been joined and
-            // the new thread replaces the joined thread in thead_vector
+            // The second condition in this while loop controls the total number active threads. After this initial
+            // while, if more SuperChunks remain a thread is not spawned for them until another thread has been joined
+            // and the new thread replaces the joined thread in thead_vector
             while(!super_chunks.empty() && thread_vector.size() < DmrppRequestHandler::d_max_parallel_transfers) {
                 auto super_chunk = super_chunks.front();
                 super_chunks.pop();
