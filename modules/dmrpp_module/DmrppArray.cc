@@ -1457,18 +1457,9 @@ void DmrppArray::read_chunks()
         // substantial duplication of the code in read_chunks_unconstrained(), but
         // wait to remove that when we move to C++11 which has threads integrated.
 
-        // This pipe is used by the child threads to indicate completion
-        //int fds[2];
-        //if (pipe(fds) < 0)
-        //    throw BESInternalError(string("Could not open a pipe for thread communication: ").append(strerror(errno)),
-        //                           __FILE__, __LINE__);
-
-
 #if 1
-        // Start the max number of processing pipelines
+        // Start the max allowed # of processing pipelines
         vector<thread> thread_vector;
-        std::atomic_uint thread_pool(DmrppRequestHandler::d_max_parallel_transfers);
-
         try {
             while(!super_chunks.empty() && thread_vector.size() < DmrppRequestHandler::d_max_parallel_transfers) {
                 auto super_chunk = super_chunks.front();
@@ -1482,7 +1473,6 @@ void DmrppArray::read_chunks()
                 thread::id tid = thread_vector.back().get_id();
                 BESDEBUG(dmrpp_3, prolog << "Started thread: " << tid << endl);
             }
-
 
             // Now join the child threads, creating replacement threads if needed
             bool done = false;
@@ -1499,12 +1489,7 @@ void DmrppArray::read_chunks()
                         BESDEBUG(dmrpp_3, prolog << "Joined thread: " << (*thrd).get_id() << endl);
                     }
                 }
-                if(!joined){
-                    //thread::id tid = (*thrd).get_id();
-                    //BESDEBUG(dmrpp_3, prolog << "Dropping thread: " << tid << endl);
-                    //thread_vector.erase(thrd);
-                   // BESDEBUG(dmrpp_3, prolog << "DROPPED thread: " << tid << endl);
-                }
+                // It seems like we should "erase" the thread from the thread_vector here, but that causes seg-fault
 
                 if (!super_chunks.empty()) {
                     auto super_chunk = super_chunks.front();
@@ -1519,7 +1504,6 @@ void DmrppArray::read_chunks()
                 else if(!joined){
                     done = true;
                 }
-
             }
         }
         catch (...) {
@@ -1528,14 +1512,17 @@ void DmrppArray::read_chunks()
             for(auto &t:thread_vector){
                 t.join();
             }
-            // close the pipe used to communicate with the child threads
-            //close(fds[0]);
-            //close(fds[1]);
             // re-throw the exception
             throw;
         }
     }
 #else
+        // This pipe is used by the child threads to indicate completion
+        //int fds[2];
+        //if (pipe(fds) < 0)
+        //    throw BESInternalError(string("Could not open a pipe for thread communication: ").append(strerror(errno)),
+        //                           __FILE__, __LINE__);
+
         // Start the max number of processing pipelines
         pthread_t threads[DmrppRequestHandler::d_max_parallel_transfers];
 
