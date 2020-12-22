@@ -1313,17 +1313,17 @@ void *one_super_chunk_unconstrained_thread(void *arg_list)
         // args->super_chunk->read_and_copy_unconstrained(args->array);
     }
     catch (BESError &error) {
-        //write(args->fds[1], &args->tid, sizeof(args->tid));
+        write(args->fds[1], &args->tid, sizeof(args->tid));
         delete args;
-        //pthread_exit(new string(error.get_verbose_message()));
+        pthread_exit(new string(error.get_verbose_message()));
     }
 
     // tid is a char and thus us written atomically. Writing this tells the parent
     // thread the child is complete and it should call pthread_join(tid, ...)
-    //write(args->fds[1], &args->tid, sizeof(args->tid));
+    write(args->fds[1], &args->tid, sizeof(args->tid));
     delete args;
-    //pthread_exit(NULL);
-    return nullptr;
+    pthread_exit(NULL);
+    //return nullptr;
 }
 
 /**
@@ -1458,10 +1458,10 @@ void DmrppArray::read_chunks()
         // wait to remove that when we move to C++11 which has threads integrated.
 
         // This pipe is used by the child threads to indicate completion
-        int fds[2];
-        if (pipe(fds) < 0)
-            throw BESInternalError(string("Could not open a pipe for thread communication: ").append(strerror(errno)),
-                                   __FILE__, __LINE__);
+        //int fds[2];
+        //if (pipe(fds) < 0)
+        //    throw BESInternalError(string("Could not open a pipe for thread communication: ").append(strerror(errno)),
+        //                           __FILE__, __LINE__);
 
 
 #if 1
@@ -1477,7 +1477,7 @@ void DmrppArray::read_chunks()
                 BESDEBUG(dmrpp_3, prolog << super_chunk->to_string(true) << endl );
 
                 // thread number is 'i'
-                auto *args = new one_super_chunk_args(fds, 0, super_chunk, this);
+                auto *args = new one_super_chunk_args(super_chunk, this);
                 thread_vector.emplace_back(dmrpp::one_super_chunk_thread, (void *)args);
                 thread::id tid = thread_vector.back().get_id();
                 BESDEBUG(dmrpp_3, prolog << "Started thread: " << tid << endl);
@@ -1486,7 +1486,7 @@ void DmrppArray::read_chunks()
 
             // Now join the child threads, creating replacement threads if needed
             bool done = false;
-            while (!thread_vector.empty()) {
+            while (!done) {
                 // unsigned char tid;   // bytes can be written atomically
                 // Block here until a child thread writes to the pipe, then read the byte
                 bool joined=false;
@@ -1500,6 +1500,10 @@ void DmrppArray::read_chunks()
                     }
                 }
                 if(!joined){
+                    //thread::id tid = (*thrd).get_id();
+                    //BESDEBUG(dmrpp_3, prolog << "Dropping thread: " << tid << endl);
+                    //thread_vector.erase(thrd);
+                   // BESDEBUG(dmrpp_3, prolog << "DROPPED thread: " << tid << endl);
                 }
 
                 if (!super_chunks.empty()) {
@@ -1507,11 +1511,15 @@ void DmrppArray::read_chunks()
                     super_chunks.pop();
 
                     // thread number is 'tid,' the number of the thread that just completed
-                    auto *args = new one_super_chunk_args(fds, 0, super_chunk, this);
+                    auto *args = new one_super_chunk_args(super_chunk, this);
                     thread_vector.emplace_back(thread(dmrpp::one_super_chunk_thread, (void *)args));
                     thread::id tid = thread_vector.back().get_id();
                     BESDEBUG(dmrpp_3, "started thread: " << tid << ", there are: " << thread_vector.size() << " threads." << endl);
                 }
+                else if(!joined){
+                    done = true;
+                }
+
             }
         }
         catch (...) {
@@ -1521,8 +1529,8 @@ void DmrppArray::read_chunks()
                 t.join();
             }
             // close the pipe used to communicate with the child threads
-            close(fds[0]);
-            close(fds[1]);
+            //close(fds[0]);
+            //close(fds[1]);
             // re-throw the exception
             throw;
         }
