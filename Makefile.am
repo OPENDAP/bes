@@ -15,7 +15,6 @@
 
 AUTOMAKE_OPTIONS = foreign check-news subdir-objects
 ACLOCAL_AMFLAGS = -I conf
-AM_CXXFLAGS = 
 
 AM_DISTCHECK_CONFIGURE_FLAGS=
 
@@ -25,6 +24,10 @@ if WITH_DEPENDENCIES
 # of automake don't support this. jhrg 6/5/17
 AM_DISTCHECK_CONFIGURE_FLAGS += --with-dependencies=@ac_bes_dependencies_prefix@ --enable-developer
 endif
+
+AM_CXXFLAGS=
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
 
 SUBDIRS = http dispatch xmlcommand ppt server cmdln standalone docs bin templates hello_world
 

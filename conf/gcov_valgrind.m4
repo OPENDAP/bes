@@ -3,20 +3,6 @@
  
 AC_DEFUN([DODS_GCOV_VALGRIND],
 [
-               
-coverage=no
-AC_ARG_ENABLE(coverage,
-[  --enable-coverage       Enable coverage testing. ],
-[ coverage=yes ])
-              
-if [[ "$coverage" = "yes" ]]; then
-    if [[ "$GCC" = "yes" ]]; then
-        CFLAGS="-fprofile-arcs -ftest-coverage $CFLAGS"
-    else
-        AC_MSG_ERROR([Can only enable coverage when using gcc.])
-    fi
-fi
-               
 # Support for running test cases using valgrind:
                
 use_valgrind=false

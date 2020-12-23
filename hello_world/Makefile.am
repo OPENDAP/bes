@@ -11,11 +11,13 @@ AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/xmlcommand $(XML2_CFLAGS)
 AM_CXXFLAGS =
 
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align 
-TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 if BES_DEVELOPER
 AM_CXXFLAGS += $(CXXFLAGS_DEBUG)
 endif
+
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libsample_module.la
