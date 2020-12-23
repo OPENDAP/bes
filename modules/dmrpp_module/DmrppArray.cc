@@ -107,13 +107,14 @@ bool get_next_future(list<std::future<void *>> &futures, unsigned long timeout) 
             else {
                 futr++;
                 BESDEBUG(dmrpp_3, prolog << "future::wait_for() timed out. (timeout: "<<
-                timeout << " ms)(futures.size(): "<< futures.size() << ")" << endl);
+                timeout << " ms) There are currently "<< futures.size() << " futures in process." << endl);
             }
         }
         if (joined) {
             futures.erase(futr);
             thread_counter--;
-            BESDEBUG(dmrpp_3, prolog <<  "Erased future from futures list, futures.size(): " << futures.size() << endl);
+            BESDEBUG(dmrpp_3, prolog << "Erased future from futures list. There are currently " <<
+            futures.size() << " futures in process." << endl);
         }
         done = joined || futures.empty();
     }
@@ -139,6 +140,27 @@ bool start_super_chunk_thread(list<std::future<void *>> &futures, one_super_chun
     }
     return retval;
 }
+
+
+/**
+ * @brief Asynchronously starts the super_chunk_thread function using async and places the returned future in the queue futures.
+ * @param futures The queue into which to place the future returned by async.
+ * @param args The arguments for the super_chunk_thread function
+ * @return Returns true if the async call was made and a future was returned, false if the thread_counter has
+ * reached the maximum allowable size.
+ */
+bool start_async_thread(list<std::future<void *>> &futures, one_super_chunk_args *args) {
+    bool retval = false;
+    std::unique_lock<std::mutex> lck (thread_pool_mtx);
+    if (thread_counter < DmrppRequestHandler::d_max_parallel_transfers) {
+        thread_counter++;
+        futures.push_back(std::async(std::launch::async, one_super_chunk_thread, args));
+        retval = true;
+        BESDEBUG(dmrpp_3, prolog << "Got std::future '"<< futures.size() << "' from std::async" << endl);
+    }
+    return retval;
+}
+
 
 void *one_super_chunk_thread(void *arg_list)
 {
@@ -826,7 +848,7 @@ void *one_chunk_unconstrained_thread(void *arg_list)
  * friend so that it can get access to the class' private info.
  * @deprecated Use SuperChunk::chunks_to_array_values_unconstrained()
  */
-void process_super_chunk_unconstrained(shared_ptr<SuperChunk> super_chunk, DmrppArray *array)
+void process_super_chunk_unconstrained(const shared_ptr<SuperChunk>& super_chunk, DmrppArray *array)
 {
     BESDEBUG(dmrpp_3, prolog << "BEGIN" << endl );
     super_chunk->read();
@@ -1290,7 +1312,7 @@ void process_one_chunk(shared_ptr<Chunk> chunk, DmrppArray *array, const vector<
  * @param array
  * @deprecated Use SuperChunk::chunks_to_array_values()
  */
-void process_super_chunk(shared_ptr<SuperChunk> super_chunk, DmrppArray *array)
+void process_super_chunk(const shared_ptr<SuperChunk>& super_chunk, DmrppArray *array)
 {
     BESDEBUG(dmrpp_3, prolog << "BEGIN" << endl );
     super_chunk->read();
@@ -1309,6 +1331,84 @@ void process_super_chunk(shared_ptr<SuperChunk> super_chunk, DmrppArray *array)
     }
 
     BESDEBUG(dmrpp_3, prolog << "END" << endl );
+}
+
+
+
+/**
+ * @brief Read chunked data by building SuperChunks from the required chunks and reading the SuperChunks
+ *
+ * Read chunked data, using either parallel or serial data transfers, depending on
+ * the DMR++ handler configuration parameters.
+ */
+void read_chunks_concurrent(DmrppArray *array, queue<shared_ptr<SuperChunk>> &super_chunks)
+{
+    BESStopWatch sw;
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + "Timer name: "+prolog, "");
+
+    // Parallel version based on read_chunks_unconstrained(). There is
+    // substantial duplication of the code in read_chunks_unconstrained(), but
+    // wait to remove that when we move to C++11 which has threads integrated.
+
+    // We maintain a list  of futures to track our parallel activities.
+    list<future<void *>> futures;
+    try {
+        bool done = false;
+        bool joined = true;
+        while (!done) {
+            // Returns true when it "get"s a future (joins a thread).
+            // We do this until the futures have been "got".
+            if(!futures.empty())
+                joined = get_next_future(futures, WAIT_FOR_FUTURE_MS);
+
+            // If joined is true this means that the thread_count has been decremented (because future::get()
+            // has been called)
+
+            // Next we check to see if there are still SuperChunks in the queue and we create new futures until
+            // all the SuperChunks have been processed.
+            if (joined){
+                bool thread_started = true;
+                while(thread_started && !super_chunks.empty()) {
+                    auto super_chunk = super_chunks.front();
+                    BESDEBUG(dmrpp_3, prolog << "Starting thread for " << super_chunk->to_string(false) << endl);
+
+                    auto *args = new one_super_chunk_args(super_chunk, array);
+                    thread_started = start_super_chunk_thread(futures, args);
+
+                    if (thread_started) {
+                        super_chunks.pop();
+                        BESDEBUG(dmrpp_3, prolog << "STARTED thread for" << super_chunk->to_string(false) << endl);
+                    } else {
+                        // Thread did not start, ownership of the arguments was not passed to the thread.
+                        delete args;
+                        BESDEBUG(dmrpp_3, prolog << "Thread not started, Returned SuperChunk to queue. " <<
+                                                 "thread_count: " << thread_counter << endl);
+                    }
+                }
+            }
+            else if(!super_chunks.empty()){
+                // TODO I can't see how this should happen (that there are super chunks left and yet we failed to
+                //  join prior to arriving here, so I laid a trap.
+                stringstream msg;
+                msg << prolog << "No threads joined, yet " << super_chunks.size() << " SuperChunks remain unread.";
+                throw BESInternalError(msg.str(), __FILE__, __LINE__);
+            }
+            else {
+                // No more SuperChunks and no joinable threads means we're done here.
+                done = true;
+            }
+            joined = false;
+        }
+    }
+    catch (...) {
+        // Complete all of the futures, otherwise we'll have threads out there using up resources
+        while(!futures.empty()){
+            futures.back().get();
+            futures.pop_back();
+        }
+        // re-throw the exception
+        throw;
+    }
 }
 
 /**
@@ -1376,6 +1476,9 @@ void DmrppArray::read_chunks()
         }
     }
     else {
+
+        read_chunks_concurrent(this, super_chunks);
+#if 0
         // Parallel version based on read_chunks_unconstrained(). There is
         // substantial duplication of the code in read_chunks_unconstrained(), but
         // wait to remove that when we move to C++11 which has threads integrated.
@@ -1465,11 +1568,10 @@ void DmrppArray::read_chunks()
             // re-throw the exception
             throw;
         }
+#endif
     }
     set_read_p(true);
 }
-
-
 
 
 #ifdef USE_READ_SERIAL

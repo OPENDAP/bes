@@ -86,13 +86,13 @@ private:
     friend void
     process_one_chunk_unconstrained(std::shared_ptr<Chunk> chunk, DmrppArray *array, const vector<unsigned int> &array_shape,const vector<unsigned int> &chunk_shape);
     friend void
-    process_super_chunk_unconstrained(std::shared_ptr<SuperChunk> super_chunk, DmrppArray *array);
+    process_super_chunk_unconstrained(const std::shared_ptr<SuperChunk>& super_chunk, DmrppArray *array);
 
     // Called from read_chunks()
     friend void
     process_one_chunk(std::shared_ptr<Chunk> chunk, DmrppArray *array, const vector<unsigned int> &constrained_array_shape);
     friend
-    void process_super_chunk(std::shared_ptr<SuperChunk> super_chunk, DmrppArray *array);
+    void process_super_chunk(const std::shared_ptr<SuperChunk>& super_chunk, DmrppArray *array);
 
     // friend void SuperChunk::chunks_to_array_values(DmrppArray *array);
     // friend void SuperChunk::chunks_to_array_values_unconstrained(DmrppArray *target_array);
