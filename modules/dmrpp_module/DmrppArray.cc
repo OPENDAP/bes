@@ -69,7 +69,7 @@ using namespace std;
 
 #define MB (1024*1024)
 #define prolog std::string("DmrppArray::").append(__func__).append("() - ")
-#define WAIT_FOR_FUTURE_MS 10
+#define WAIT_FOR_FUTURE_MS 1
 
 namespace dmrpp {
 
@@ -146,19 +146,21 @@ bool get_next_future(queue<std::future<void *>> &futures) {
 bool get_next_future(list<std::future<void *>> &futures, unsigned long timeout) {
     bool joined = false;
     bool done = false;
-    std::chrono::milliseconds ten_ms (timeout);
+    std::chrono::milliseconds timeout_ms (timeout);
 
     while(!done){
         auto futr = futures.begin();
         auto fend = futures.end();
         while(!joined && futr != fend){
-            if((*futr).wait_for(ten_ms) != std::future_status::timeout){
+            if((*futr).wait_for(timeout_ms) != std::future_status::timeout){
                 (*futr).get();
                 joined = true;
                 BESDEBUG(dmrpp_3, prolog << "Called future::get() on a ready future." << endl);
             }
             else {
-                BESDEBUG(dmrpp_3, prolog << "future::wait_for() timed out." << endl);
+                futr++;
+                BESDEBUG(dmrpp_3, prolog << "future::wait_for() timed out. (timeout: "<<
+                timeout << " ms)(futures.size(): "<< futures.size() << ")" << endl);
             }
         }
         if (joined) {
@@ -185,7 +187,8 @@ bool start_super_chunk_thread(list<std::future<void *>> &futures, one_super_chun
         thread_counter++;
         futures.push_back(std::async(std::launch::async, dmrpp::one_super_chunk_thread, (void *) args));
         retval = true;
-        BESDEBUG(dmrpp_3, prolog << "Got std::future from std::async for " << args->super_chunk->to_string(false) << endl);
+        BESDEBUG(dmrpp_3, prolog << "Got std::future '"<< futures.size() <<
+        "' from std::async for " << args->super_chunk->to_string(false) << endl);
     }
     return retval;
 }
@@ -204,7 +207,8 @@ bool start_super_chunk_unconstrained_thread(list<std::future<void *>> &futures, 
         thread_counter++;
         futures.push_back(std::async(std::launch::async, dmrpp::one_super_chunk_unconstrained_thread, (void *)args));
         retval = true;
-        BESDEBUG(dmrpp_3, prolog << "Got std::future from std::async for " << args->super_chunk->to_string(false) << endl);
+        BESDEBUG(dmrpp_3, prolog << "Got std::future '"<< futures.size() <<
+        "' from std::async for " << args->super_chunk->to_string(false) << endl);
     }
     return retval;
 }
@@ -1324,7 +1328,6 @@ void process_super_chunk(shared_ptr<SuperChunk> super_chunk, DmrppArray *array)
     BESDEBUG(dmrpp_3, prolog << "END" << endl );
 }
 
-
 /**
  * @brief Read chunked data by building SuperChunks from the required chunks and reading the SuperChunks
  *
@@ -1382,6 +1385,7 @@ void DmrppArray::read_chunks()
             super_chunks.pop();
             BESDEBUG(dmrpp_3, prolog << super_chunk->to_string(true) << endl );
             process_super_chunk(super_chunk, this);
+
             // SuperChunk::read_and_copy() (currently disabled)
             // does exactly the same thing as process_super_chunk()
             // in a class method.
@@ -1414,7 +1418,7 @@ void DmrppArray::read_chunks()
                     BESDEBUG(dmrpp_3, prolog << "STARTED thread for" << super_chunk->to_string(false) << endl);
                 }
                 else {
-                    // Well catch it later.
+                    // We'll catch it later.
                     super_chunks.push(super_chunk);
                     BESDEBUG(dmrpp_3, prolog << "Thread not started, Returned SuperChunk to queue. " <<
                                              "thread_count: " << thread_counter << endl );
@@ -1442,7 +1446,7 @@ void DmrppArray::read_chunks()
                                                      " There are: " << futures.size() << " futures." << endl);
                         }
                         else {
-                            // Didn't start, so put it back so we can try again.
+                            // Didn't start, so put it back and we can try again.
                             super_chunks.push(super_chunk);
                             BESDEBUG(dmrpp_3, prolog << "Thread did not start." <<
                             " There are: " << futures.size() << " futures." << endl);
