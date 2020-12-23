@@ -73,11 +73,12 @@ using namespace std;
 
 namespace dmrpp {
 
+// Forward Declarations
 void *one_super_chunk_thread(void *arg_list);
 void *one_super_chunk_unconstrained_thread(void *arg_list);
 
-
-std::mutex thread_pool_mtx;  // mutex for critical section
+// ThreadPool state variables.
+std::mutex thread_pool_mtx;     // mutex for critical section
 atomic_uint thread_counter(0);
 
 
