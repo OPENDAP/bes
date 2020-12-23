@@ -174,12 +174,14 @@ exit 0
 %{_bindir}/build_dmrpp
 %{_bindir}/check_dmrpp
 %{_bindir}/merge_dmrpp
-%{_bindir}/ngap_build_dmrpp
+%{_bindir}/reduce_mdf
+#%{_bindir}/ngap_build_dmrpp
 %{_bindir}/localBesGetDap
 %{_bindir}/populateMDS
 %{_bindir}/get_dmrpp
 %{_bindir}/ingest_filesystem
 %{_bindir}/ingest_s3bucket
+%{_bindir}/retriever
 # TODO Change build_sidecar to a better name, like build_stare_sidecar. jhrg 10/29/19
 %{_bindir}/build_sidecar
 
@@ -192,7 +194,9 @@ exit 0
 %{bespkidir}/
 
 %attr (-,%{besuser},%{besgroup}) %{beslogdir}
-%attr (-,%{besuser},%{besgroup}) %{bespiddir}
+# The directory bespiddir was specific to the bes, but it became a system directory.
+# Thus, its bad form to change the owner and group to the 'bes.' jhrg 7/8/20
+# %attr (-,%{besuser},%{besgroup}) %{bespiddir}
 %attr (-,%{besuser},%{besgroup}) %{bescachedir}
 
 # Make sure that the BES, once running, can write to the MDS directory. jhrg 11/7/18

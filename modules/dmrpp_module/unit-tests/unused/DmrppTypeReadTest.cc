@@ -129,7 +129,7 @@ public:
     void set_data_url_in_chunks(DmrppCommon *dc)
     {
         // Get the chunks and make sure there's at least one
-        vector<Chunk> &chunks = dc->get_chunk_vec();
+        auto chunks = dc->get_chunks();
         CPPUNIT_ASSERT(chunks.size() > 0);
         // Tweak the data URLs for the test
         for (unsigned int i = 0; i < chunks.size(); i++) {

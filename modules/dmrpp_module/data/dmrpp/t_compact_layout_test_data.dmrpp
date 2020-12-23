@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Dataset
+        xmlns="http://xml.opendap.org/ns/DAP/4.0#"
+        xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#"
+        dapVersion="4.0" dmrVersion="1.0"
+        name="t_compact_layout_test_data.dmrpp"
+        dmrpp:href="data/dmrpp/t_compact_layout_test_data.dmrpp">
+
+
+    <!-- Float64   - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <Float64 name="delta_t_lin_fit">
+        <Dim size="5"/>
+        <Attribute name="contentType" type="String">
+            <Value>auxiliaryInformation</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Time span over which to perform a running linear fit to identified signal photon events when editing outliers. Surface type dependent.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Linear fit time increment</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>ATL03, Section 5, _t_linfit_edit</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds</Value>
+        </Attribute>
+        <dmrpp:compact>rUz4pX7eyD/h0cYRa/HFP6yt2F92T8Y/xT2WPnRBrT/FPZY+dEGtPw==</dmrpp:compact>
+    </Float64>
+
+
+    <!-- Float32   - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <Float32 name="tep_bin_size">
+        <Dim size="1"/>
+        <Attribute name="contentType" type="String">
+            <Value>auxiliaryInformation</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Size of each TEP histogram bin.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>TEP Bin Size</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Derived</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds</Value>
+        </Attribute>
+        <dmrpp:compact>/+ZbLg==</dmrpp:compact>
+    </Float32>
+
+
+    <!-- Int64   - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <Int64 name="total_events">
+        <Dim size="20"/>
+        <Attribute name="contentType" type="String">
+            <Value>auxiliaryInformation</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Number of events used in constructing the per-channel histogram</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Total Events</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>CAL20</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <dmrpp:compact>EqsBAAAAAAC5xwEAAAAAAPDGAQAAAAAAyawBAAAAAAByuwEAAAAAAHvjAQAAAAAAdOUBAAAAAAAy1gEAAAAAAJfUAQAAAAAASdwBAAAAAAC/zwEAAAAAAC/BAQAAAAAAia4BAAAAAACxvAEAAAAAAAPZAQAAAAAAc7QBAAAAAAAwlwEAAAAAADKpAQAAAAAAZbwBAAAAAAA+yAEAAAAAAA==</dmrpp:compact>
+    </Int64>
+
+
+    <!-- Int32   - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <Int32 name="nbin_min">
+        <Dim size="5"/>
+        <Attribute name="contentType" type="String">
+            <Value>auxiliaryInformation</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Minimum number of bins in a histogram required for the algorithm to be able to process the histogram.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Minimum number of bins</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>ATL03, Section 5, Nbinmin</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>counts</Value>
+        </Attribute>
+        <dmrpp:compact>BQAAAAUAAAAFAAAABQAAAAUAAAA=</dmrpp:compact>
+    </Int32>
+
+    <!-- Int8   - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <Int8 name="tep_valid_spot">
+        <Dim size="6"/>
+        <Attribute name="contentType" type="String">
+            <Value>referenceInformation</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>A 6x1 array indicating which TEP to use for each spot that does not have a TEP associated with it (e.g. which TEP to use to characterize spots 2, 4, 5, and 6).</Value>
+        </Attribute>
+        <Attribute name="flag_meanings" type="String">
+            <Value>pce1_spot1 pce2_spot3</Value>
+        </Attribute>
+        <Attribute name="flag_values" type="Int8">
+            <Value>1</Value>
+            <Value>2</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Index of TEP Spot</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>ATL03 ATBD</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>2</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>1</Value>
+        </Attribute>
+        <dmrpp:compact>AgEBAgIB</dmrpp:compact>
+    </Int8>
+
+    <!-- String   - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <String name="release">
+        <Dim size="1"/>
+        <Attribute name="contentType" type="String">
+            <Value>auxiliaryInformation</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Release number of the granule. The release number is incremented when the software or ancillary data used to create the granule has been changed.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Release Number</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Operations</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <dmrpp:compact>MDAzICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA=</dmrpp:compact>
+    </String>
+
+    <!-- String  - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <String name="version">
+        <Dim size="1"/>
+        <Attribute name="contentType" type="String">
+            <Value>auxiliaryInformation</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Version number of this granule within the release. It is a sequential number corresponding to the number of times the granule has been reprocessed for the current release.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Version</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Operations</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <dmrpp:compact>MDEgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA=</dmrpp:compact>
+    </String>
+  
+    <!-- String  - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <String name="data_end_utc">
+        <Dim size="1"/>
+        <Attribute name="contentType" type="String">
+            <Value>auxiliaryInformation</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>UTC (in CCSDS-A format) of the last data point within the granule.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>End UTC Time of Granule (CCSDS-A, Actual)</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>Derived</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <dmrpp:compact>MjAxOC0xMi0yOFQwMjowNzozOC43MTMwMDBa</dmrpp:compact>
+    </String>
+    
+</Dataset>

@@ -1,0 +1,9 @@
+Attributes {
+    version {
+        String contentType "auxiliaryInformation";
+        String description "Version number of this granule within the release. It is a sequential number corresponding to the number of times the granule has been reprocessed for the current release.";
+        String long_name "Version";
+        String source "Operations";
+        String units "1";
+    }
+}

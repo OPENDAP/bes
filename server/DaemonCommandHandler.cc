@@ -27,6 +27,8 @@
 // (c) COPYRIGHT OPeNDAP
 // Please read the full copyright statement in the file COPYING.
 
+#include "config.h"
+
 #include <unistd.h>    // for getpid fork sleep
 #include <sys/types.h>
 #include <sys/socket.h>

@@ -1,9 +1,7 @@
-
 # Automake file for cmr_module
 #
 # 07/25/18
 #
-
 AUTOMAKE_OPTIONS = foreign
 
 ACLOCAL_AMFLAGS = -I conf
@@ -12,10 +10,15 @@ ACLOCAL_AMFLAGS = -I conf
 M_NAME=cmr_module
 M_VER=1.0.4
 
-AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
-LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS) -I$(top_srcdir)/http
+LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+#LIBADD = $(BES_DISPATCH_LIB) $(BES_DAP_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
+
+AM_CXXFLAGS=
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
 
 SUBDIRS = . unit-tests tests
 
@@ -27,12 +30,13 @@ libcmr_module_la_LDFLAGS = -avoid-version -module
 libcmr_module_la_LIBADD = $(LIBADD)
 
 CMR_SRC = CmrApi.cc CmrCatalog.cc Granule.cc \
-	CmrCache.cc curl_utils.cc rjson_utils.cc RemoteHttpResource.cc \
-	CmrModule.cc CmrUtils.cc CmrContainer.cc CmrContainerStorage.cc
+	rjson_utils.cc \
+	CmrModule.cc CmrContainer.cc CmrContainerStorage.cc
 
-CMR_HDR = CmrApi.h CmrError.h CmrCatalog.h Granule.h \
-	CmrCache.h curl_utils.h rjson_utils.h RemoteHttpResource.h \
-	CmrModule.h CmrUtils.h CmrContainer.h CmrContainerStorage.h CmrNames.h
+
+CMR_HDR = CmrApi.h CmrNames.h CmrError.h CmrCatalog.h Granule.h \
+	rjson_utils.h \
+	CmrModule.h CmrContainer.h CmrContainerStorage.h
 
 EXTRA_DIST = cmr.conf.in data
 

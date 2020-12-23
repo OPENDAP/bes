@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="t_compact_layout_test_data.dmrpp">
+    <Float64 name="delta_t_lin_fit">
+        <Dim size="5"/>
+        <Attribute name="contentType" type="String">
+            <Value>auxiliaryInformation</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Time span over which to perform a running linear fit to identified signal photon events when editing outliers. Surface type dependent.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Linear fit time increment</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>ATL03, Section 5, _t_linfit_edit</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds</Value>
+        </Attribute>
+    </Float64>
+</Dataset>

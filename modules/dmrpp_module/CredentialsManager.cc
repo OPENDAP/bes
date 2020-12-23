@@ -33,18 +33,19 @@
 #include <string>
 #include <sys/stat.h>
 
-#include <WhiteList.h>
-#include <TheBESKeys.h>
-#include <kvp_utils.h>
-#include <BESInternalError.h>
-#include <BESDebug.h>
+#include "AllowedHosts.h"
+#include "TheBESKeys.h"
+#include "kvp_utils.h"
+#include "BESInternalError.h"
+#include "BESDebug.h"
+#include "CurlUtils.h"
 
 #include "CredentialsManager.h"
 #include "NgapS3Credentials.h"
+#include "DmrppNames.h"
 
 using namespace std;
 
-#define MODULE "dmrpp:creds"
 
 #define prolog std::string("CredentialsManager::").append(__func__).append("() - ")
 
@@ -60,7 +61,6 @@ const string CredentialsManager::ENV_REGION_KEY="CMAC_REGION";
 //const string CredentialsManager::ENV_BUCKET_KEY="CMAC_BUCKET";
 const string CredentialsManager::ENV_URL_KEY="CMAC_URL";
 const string CredentialsManager::ENV_CREDS_KEY_VALUE="ENV_CREDS";
-const string CredentialsManager::NETRC_FILE_KEY="BES.netrc.file";
 
 
 /**
@@ -76,7 +76,7 @@ std::string get_env_value(const string &key){
     const char *cstr = getenv(key.c_str());
     if(cstr){
         value.assign(cstr);
-        BESDEBUG(MODULE, __FILE__ << " " << __LINE__ << " From system environment - " << key << ": " << value << endl);
+        BESDEBUG(CREDS, prolog << "From system environment - " << key << ": " << value << endl);
     }
     else {
         value.clear();
@@ -97,7 +97,7 @@ std::string get_config_value(const string &key){
     bool key_found=false;
     TheBESKeys::TheKeys()->get_value(key, value, key_found);
     if (key_found) {
-        BESDEBUG(MODULE, __FILE__ << " " << __LINE__ << " Using " << key << " from TheBESKeys" << endl);
+        BESDEBUG(CREDS, prolog << "Using " << key << " from TheBESKeys" << endl);
     }
     else {
         value.clear();
@@ -119,15 +119,7 @@ CredentialsManager::~CredentialsManager() {
  * Really it's the default constructor for now.
  */
 CredentialsManager::CredentialsManager(): ngaps3CredentialsLoaded(false){
-    bool found;
-    d_netrc_filename="";
-    TheBESKeys::TheKeys()->get_value(NETRC_FILE_KEY,d_netrc_filename,found);
-    if(found){
-        BESDEBUG(MODULE, prolog << "Using netrc file: " << d_netrc_filename << endl);
-    }
-    else {
-        BESDEBUG(MODULE, prolog << "Using ~/.netrc file." << endl);
-    }
+    d_netrc_filename = curl::get_netrc_filename();
 }
 
 /**
@@ -160,7 +152,7 @@ void CredentialsManager::delete_instance()
 void
 CredentialsManager::add(const std::string &key, AccessCredentials *ac){
     creds.insert(std::pair<std::string,AccessCredentials *>(key, ac));
-    BESDEBUG(MODULE, "Added AccessCredentials to CredentialsManager. credentials: " << endl <<  ac->to_json() << endl);
+    BESDEBUG(CREDS, prolog << "Added AccessCredentials to CredentialsManager. credentials: " << endl <<  ac->to_json() << endl);
 }
 
 /**
@@ -239,7 +231,7 @@ bool file_is_secured(const string &filename) {
             (perm & S_IROTH) ||
             (perm & S_IWOTH) ||
             (perm & S_IXOTH));
-    BESDEBUG(MODULE, "file_is_secured() " << filename << " secured: " << (status ? "true" : "false") << endl);
+    BESDEBUG(CREDS, prolog << "file_is_secured() " << filename << " secured: " << (status ? "true" : "false") << endl);
     return status;
 }
 
@@ -282,7 +274,7 @@ void CredentialsManager::load_credentials( ) {
     string config_file;
     TheBESKeys::TheKeys()->get_value(CATALOG_MANAGER_CREDENTIALS, config_file, found_key);
     if(!found_key){
-        BESDEBUG(MODULE, "The BES key " << CATALOG_MANAGER_CREDENTIALS
+        BESDEBUG(CREDS, prolog << "The BES key " << CATALOG_MANAGER_CREDENTIALS
         << " was not found in the BES configuration tree. No AccessCredentials were loaded" << endl);
         return;
     }
@@ -306,7 +298,7 @@ void CredentialsManager::load_credentials( ) {
     theCM()->load_ngap_s3_credentials();
 
     if(!file_exists(config_file)){
-        BESDEBUG(MODULE, "The file specified by the BES key " << CATALOG_MANAGER_CREDENTIALS
+        BESDEBUG(CREDS, prolog << "The file specified by the BES key " << CATALOG_MANAGER_CREDENTIALS
         << " does not exist. No Access Credentials were loaded." << endl);
         return;
     }
@@ -319,7 +311,7 @@ void CredentialsManager::load_credentials( ) {
         err.append("Set the access permissions to -rw------- (600) and try again.");
         throw BESInternalError(err, __FILE__, __LINE__);
     }
-    BESDEBUG(MODULE, "CredentialsManager config file '" << config_file << "' is secured." << endl);
+    BESDEBUG(CREDS, prolog << "The config file '" << config_file << "' is secured." << endl);
 
     map <string, vector<string>> keystore;
 
@@ -344,12 +336,12 @@ void CredentialsManager::load_credentials( ) {
             if (index > 0) {
                 string key_name = credentials_entry.substr(0, index);
                 string value = credentials_entry.substr(index + 1);
-                BESDEBUG(MODULE, creds_name << ":" << key_name << "=" << value << endl);
+                BESDEBUG(CREDS, prolog << creds_name << ":" << key_name << "=" << value << endl);
                 accessCredentials->add(key_name, value);
             }
         }
     }
-    BESDEBUG(MODULE, "CredentialsManager loaded " << credential_sets.size()  << " AccessCredentials" << endl);
+    BESDEBUG(CREDS, prolog << "Loaded " << credential_sets.size()  << " AccessCredentials" << endl);
     vector<AccessCredentials *> bad_creds;
     map<string,AccessCredentials *>::iterator acit;
 
@@ -377,7 +369,7 @@ void CredentialsManager::load_credentials( ) {
         }
         throw BESInternalError( ss.str(), __FILE__, __LINE__);
     }
-    BESDEBUG(MODULE, "CredentialsManager has successfully ingested " << theCM()->size()  << " AccessCredentials" << endl);
+    BESDEBUG(CREDS, prolog << "Successfully ingested " << theCM()->size()  << " AccessCredentials" << endl);
 
 }
 
@@ -449,8 +441,7 @@ void  CredentialsManager::load_ngap_s3_credentials( ){
 
     }
     else {
-        BESDEBUG(MODULE,
-                "WARNING: The BES configuration did not contain an instance of " <<
+        BESDEBUG(CREDS,prolog << "WARNING: The BES configuration did not contain an instance of " <<
                 NgapS3Credentials::BES_CONF_S3_ENDPOINT_KEY <<
                 " NGAP S3 Credentials NOT loaded." << endl);
     }

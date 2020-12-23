@@ -1,0 +1,81 @@
+netcdf test {
+dimensions:
+	string_len1 = 31 ;
+variables:
+	char string(string_len1) ;
+		string:string = "Parting is such sweet sorrow." ;
+
+// global attributes:
+		:string = "Parting is such sweet sorrow." ;
+		:uint16 = 65535US ;
+		:uint32 = 4294967295U ;
+		:float = -1.12f ;
+		:double = 44.55 ;
+		:char = 65b ;
+		:signed_char = -128b ;
+		:unsigned_char = 127UB ;
+		:int16 = 32676s ;
+		:int32 = 2147483647 ;
+data:
+
+ string = "Parting is such sweet sorrow." ;
+
+group: g {
+  dimensions:
+  	gstring_len2 = 31 ;
+  variables:
+  	byte char ;
+  		char:char = 65b ;
+  	double double ;
+  		double:double = 44.55 ;
+  	float float ;
+  		float:float = -1.12f ;
+  	char gstring(gstring_len2) ;
+  		gstring:gstring = "Parting is such sweet sorrow." ;
+  	short int16 ;
+  		int16:int16 = 32676s ;
+  	int int32 ;
+  		int32:int32 = 2147483647 ;
+  	byte signed_char ;
+  		signed_char:signed_char = -128b ;
+  	ushort uint16 ;
+  		uint16:uint16 = 65535US ;
+  	uint uint32 ;
+  		uint32:uint32 = 4294967295U ;
+  	byte unsigned_char ;
+  		unsigned_char:unsigned_char = 127b ;
+
+  // group attributes:
+  		:string = "Parting is such sweet sorrow." ;
+  		:uint16 = 65535US ;
+  		:uint32 = 4294967295U ;
+  		:float = -1.12f ;
+  		:double = 44.55 ;
+  		:char = 65b ;
+  		:signed_char = -128b ;
+  		:unsigned_char = 127UB ;
+  		:int16 = 32676s ;
+  		:int32 = 2147483647 ;
+  data:
+
+   char = 65 ;
+
+   double = 44.55 ;
+
+   float = -1.12 ;
+
+   gstring = "Parting is such sweet sorrow." ;
+
+   int16 = 32676 ;
+
+   int32 = 2147483647 ;
+
+   signed_char = -128 ;
+
+   uint16 = _ ;
+
+   uint32 = _ ;
+
+   unsigned_char = 127 ;
+  } // group g
+}

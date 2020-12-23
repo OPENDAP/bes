@@ -13,7 +13,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Dataset2</Value>
         </Attribute>
-        <dmrpp:chunks>
+        <dmrpp:chunks byteOrder="LE">
             <dmrpp:chunk offset="3632536" nBytes="100"/>
         </dmrpp:chunks>
     </Byte>
@@ -26,7 +26,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/atomic_type_1</Value>
         </Attribute>
-        <dmrpp:chunks>
+        <dmrpp:chunks byteOrder="BE">
             <dmrpp:chunk offset="2144" nBytes="80000"/>
         </dmrpp:chunks>
     </Int32>
@@ -80,7 +80,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/vlstr_type</Value>
         </Attribute>
-        <dmrpp:chunks>
+        <dmrpp:chunks byteOrder="LE">
             <dmrpp:chunk offset="3632448" nBytes="64"/>
         </dmrpp:chunks>
     </String>

@@ -18,7 +18,7 @@ AC_SUBST(PACKAGE_MAJOR_VERSION)
 AC_SUBST(PACKAGE_MINOR_VERSION)
 AC_SUBST(PACKAGE_SUBMINOR_VERSION)
 
-dnl Add valgrind options
+dnl Add valgrind options - no longer include gcov, see --enable-coverage jhrg 12/18/20
 DODS_GCOV_VALGRIND
 
 AC_CONFIG_AUX_DIR([conf])
@@ -74,6 +74,29 @@ AM_COND_IF([USE_ASAN],
         AC_MSG_NOTICE([Address Sanitizer (ASAN) is enabled.])],
     [AC_MSG_NOTICE([Address Sanitizer (ASAN) is disabled.])]
 )
+
+AC_ARG_ENABLE([coverage],
+    [AS_HELP_STRING([--enable-coverage], [Build so tests emit coverage data and enable coverage target (default: no)])])
+
+AC_CHECK_LIB([gcov], [gcov_open], [GCOV_LIBS="-lgcov"], [GCOV_LIBS=])
+
+AS_IF([test x$enable_coverage = xyes && which gcov],
+      [AC_MSG_NOTICE([Building coverage version])
+       AM_CONDITIONAL([ENABLE_COVERAGE], [true])
+       AS_IF([gcov -help | grep LLVM],
+       	     [GCOVR_FLAGS=],
+	         [GCOVR_FLAGS="-k -e '.*Test.cc' -e '.*T.cc' -e '.*-test.cc'"
+	          LIBS="-lgcov $LIBS"])],
+      [AC_MSG_NOTICE([Not building coverage version])
+       AS_IF([test x$enable_coverage = xyes],
+             [AC_MSG_NOTICE([Check that gcov is on your PATH])])
+       AM_CONDITIONAL([ENABLE_COVERAGE], [false])])
+
+# --xml-pretty -o gcovr_ouput.xml
+
+AC_SUBST([GCOVR_FLAGS])
+
+
 dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 dnl AC_ARG_WITH([cmr], [AS_HELP_STRING([--with-cmr], [Build the CMR Module (built by default in developer mode)])],
 dnl    [AM_CONDITIONAL([WITH_CMR], [true])],
@@ -88,6 +111,23 @@ AM_COND_IF([WITH_CMR],
     [AC_MSG_NOTICE([Building support for the CMR Module])],
     [AC_MSG_NOTICE([Disabled support for the CMR Module])]
 )
+
+dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+dnl Enable/Disable new categorized logging output
+dnl
+
+AC_ARG_WITH([newlog],
+    [AS_HELP_STRING([--without-newlog],
+    [Disable support for the new categorized logging output. (Enabled by default)])]
+)
+AM_CONDITIONAL([WITH_NEWLOG], [test "x$with_newlog" != "xno"])
+AM_COND_IF([WITH_NEWLOG],
+    [AC_DEFINE([USE_LOG_CATEGORIES], [1], [Set this to 0 to disable categorized log output.])
+    AC_MSG_NOTICE([Support for categorized logging output is ENABLED.]) ],
+    [AC_DEFINE([USE_LOG_CATEGORIES], [0], [Set this to 1 to enable categorized log output.])
+    AC_MSG_NOTICE([Support for categorized logging output is DISABLED.])]
+)
+
 dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 dnl Build NGAP support by default or if the user provides --with-ngap. Do not build the
 dnl module if the user supplies --without-ngap or --with-ngap=no. jhrg 3/31/20
@@ -203,7 +243,6 @@ AC_SEARCH_LIBS([uuid_generate], [uuid],
 AC_CHECK_PROG(VALGRIND, valgrind, [valgrind --logfile=memcheck])
 
 dnl Perl is used by www-interface during the build
-dnl TODO: Really? jhrg 11/28/17
 AC_CHECK_PROG([PERL], [perl], [`which perl`])
 
 dnl We need the *-config scripts to build, so the AC_CHECK_LIB 
@@ -221,8 +260,9 @@ AC_SEARCH_LIBS([curl_multi_wait], [curl],
 
 dnl Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS_ONCE(fcntl.h float.h malloc.h stddef.h stdlib.h limits.h unistd.h pthread.h bzlib.h string.h strings.h)
 
+AC_CHECK_HEADERS_ONCE(fcntl.h float.h malloc.h stddef.h stdlib.h limits.h unistd.h)
+AC_CHECK_HEADERS_ONCE(pthread.h bzlib.h string.h strings.h byteswap.h)
 dnl AC_CHECK_HEADERS_ONCE([uuid/uuid.h uuid.h])
 dnl Do this because we have had a number of problems with the UUID header/library
 AC_CHECK_HEADERS([uuid/uuid.h],[found_uuid_uuid_h=true],[found_uuid_uuid_h=false])
@@ -400,6 +440,8 @@ BES_DAP_LIB="-L\$(top_builddir)/dap -ldap_module"
 AC_SUBST(BES_DAP_LIB)
 BES_EXTRA_LIBS="$LIBS $openssl_libs"
 AC_SUBST(BES_EXTRA_LIBS)
+BES_HTTP_LIB="-L\$(top_builddir)/http -lbes_http"
+AC_SUBST(BES_HTTP_LIB)
 
 dnl These tests are for the dependecies of specific handlers. Added jhrg 11/17/13
 
@@ -661,7 +703,7 @@ AS_IF([test "$ac_cfits_ok" = 'no' -o "$ac_cfits_h" = 'no'],
   [m4_if([$1], [], [:], [$1])]
 )
 
-])
+])  dnl AC_DEFUN([AC_CHECK_CFITS],
 
 AC_CHECK_CFITS(
    [AM_CONDITIONAL([BUILD_FITS],[true])],
@@ -790,7 +832,7 @@ AS_IF([test "x$libgf_ok" = "xno" -a "x$enable_gridfields" = "xyes"],
         AS_VERSION_COMPARE($version_libgf, $libgf_needed, [libgf_ok=no], [libgf_ok=yes], [libgf_ok=yes])
         AS_IF([test x$libgf_ok = xno],
             [
-            AC_MSG_ERROR([FIXME must have libgf $libgf_needed or greater, found $version_libgf])
+            AC_MSG_ERROR([Must have libgf $libgf_needed or greater, found $version_libgf])
             ])
 
         GF_LIBS="`gridfields-config --libs`"
@@ -888,7 +930,10 @@ AC_CONFIG_FILES([Makefile
 		 hello_world/Makefile
 		 hello_world/tests/Makefile
 		 hello_world/tests/atlocal
-		  
+
+		 http/Makefile
+		 http/unit-tests/Makefile
+
 		 docs/Makefile
 		 
 		 xmlcommand/Makefile

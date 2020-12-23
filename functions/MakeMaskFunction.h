@@ -64,7 +64,7 @@ public:
         setDescriptionString("The make_mask() function reads a number of dim_names, followed by a set of dim value tuples and builds a DAP Array object.");
         //setUsageString("make_mask(type,dim0,dim1,..dimN,dim0_value,dim1_value,...,dimN_value)");
         setRole("http://services.opendap.org/dap4/server-side-function/make_mask");
-        setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#make_mask");
+        setDocUrl("https://docs.opendap.org/index.php/Server_Side_Processing_Functions#make_mask");
         setFunction(function_dap2_make_mask);
         //setFunction(function_make_dap4_mask);
         setVersion("1.0");

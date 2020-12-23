@@ -41,18 +41,22 @@ using namespace std;
 #include "BESXMLCommand.h"
 #include "BESXMLUtils.h"
 #include "BESDataNames.h"
+#include "BESResponseNames.h"
 #include "BESContextManager.h"
 
 #include "BESResponseHandler.h"
 #include "BESReturnManager.h"
 #include "BESInfo.h"
 #include "BESStopWatch.h"
+#include "TheBESKeys.h"
 
 #include "BESDebug.h"
 #include "BESLog.h"
 #include "BESSyntaxUserError.h"
 
 #define LOG_ONLY_GET_COMMANDS
+#define MODULE "bes"
+#define prolog std::string("BESXMLInterface::").append(__func__).append("() - ")
 
 BESXMLInterface::BESXMLInterface(const string &xml_doc, ostream *strm) :
     BESInterface(strm), d_xml_document(xml_doc)
@@ -71,8 +75,8 @@ BESXMLInterface::~BESXMLInterface()
  */
 void BESXMLInterface::build_data_request_plan()
 {
-    BESDEBUG("bes", "Entering: " << __PRETTY_FUNCTION__ << endl);
-    BESDEBUG("bes", "building request plan for xml document: " << endl << d_xml_document << endl);
+    BESDEBUG("bes", prolog << "BEGIN" << endl);
+    BESDEBUG("bes", prolog << "Building request plan for xml document: " << endl << d_xml_document << endl);
 
     // I do not know why, but uncommenting this macro breaks some tests
     // on Linux but not OSX (CentOS 6, Ubuntu 12 versus OSX 10.11) by
@@ -144,6 +148,15 @@ void BESXMLInterface::build_data_request_plan()
                 // given the name of this node we should be able to find a
                 // BESXMLCommand object
                 string node_name = (char *) current_node->name;
+
+                if(node_name == SETCONTAINER_STR){
+                    string name;
+                    string value;
+                    map<string,string> props;
+                    BESXMLUtils::GetNodeInfo(current_node, name, value, props);
+                    BESDEBUG(MODULE, prolog << "In "  << SETCONTAINER_STR << " element. Value: " << value << endl);
+                    TheBESKeys::TheKeys()->load_dynamic_config(value);
+                }
 
                 // The Command Builder scheme is a kind of factory, but which uses lists and
                 // a static method defined by each child of BESXMLCommand (called CommandBuilder).
@@ -268,10 +281,10 @@ void BESXMLInterface::execute_data_request_plan()
                 }
             }
 
-            LOG(new_log_info << endl);
+            REQUEST_LOG(new_log_info << endl);
 
             if (d_dhi_ptr->containers.size() > 1)
-                LOG("Warning: The previous command had multiple containers defined, but only the was logged.");
+                ERROR_LOG("The previous command had multiple containers defined, but only the was logged.");
         }
 #else
         if (!BESLog::TheLog()->is_verbose()) {
@@ -300,6 +313,7 @@ void BESXMLInterface::execute_data_request_plan()
         d_dhi_ptr->response_handler->execute(*d_dhi_ptr);
 
         transmit_data();    // TODO move method body in here? jhrg 11/8/17
+
     }
 }
 
@@ -324,7 +338,7 @@ void BESXMLInterface::transmit_data()
 
         ostringstream strm;
         d_dhi_ptr->error_info->print(strm);
-        LOG("Transmitting error: " << strm.str() << endl);
+        INFO_LOG("Transmitting error content: " << strm.str() << endl);
 
         d_dhi_ptr->error_info->transmit(d_transmitter, *d_dhi_ptr);
     }
@@ -332,7 +346,7 @@ void BESXMLInterface::transmit_data()
         VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] transmitting" << endl);
 
         BESStopWatch sw;
-        if (BESISDEBUG(TIMING_LOG)) sw.start(d_dhi_ptr->data[LOG_INFO] + " transmitting", d_dhi_ptr->data[REQUEST_ID]);
+        if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(d_dhi_ptr->data[LOG_INFO] + " transmitting", d_dhi_ptr->data[REQUEST_ID]);
 
         string return_as = d_dhi_ptr->data[RETURN_CMD];
         if (!return_as.empty()) {
@@ -365,7 +379,7 @@ void BESXMLInterface::log_status()
             string result = (!d_dhi_ptr->error_info) ? "completed" : "failed";
 
             // This is only printed for verbose logging.
-            LOG(d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] " << result << endl);
+            VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << " [" << d_dhi_ptr->data[LOG_INFO] << "] " << result << endl);
         }
     }
 }

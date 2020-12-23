@@ -338,6 +338,48 @@ m4_define([AT_BESCMD_DAP_FUNCTION_RESPONSE_TEST], [dnl
 
     AT_CLEANUP])
 
+dnl This macro is called using:
+dnl AT_BESCMD_BINARY_FILE_RESPONSE_TEST(bescmd, extension, expected)
+dnl E.G.: AT_...(mybescmd, tif, xfail)
+dnl and expects the baseline to be mybescmd.tif
+dnl
+
+dnl m4_define([AT_BESCMD_BINARY_FILE_RESPONSE_TEST],
+dnl     [_AT_BESCMD_BINARY_FILE_RESPONSE_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.$2], [$3])]
+dnl )
+
+dnl Use this to test responses from handlers that build files like jpeg2000,
+dnl geoTIFF, etc.
+dnl
+dnl jhrg 2016
+
+m4_define([AT_BESCMD_GDAL_BINARY_FILE_RESPONSE_TEST], [dnl
+
+    AT_SETUP([$1])
+    AT_KEYWORDS([file])
+
+    input=$abs_srcdir/$1
+    baseline=$abs_srcdir/$1.$2
+    expected=$3
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input > tmp], [ignore], [ignore])
+        GET_GDAL_INFO([tmp])
+        AT_CHECK([mv tmp $baseline.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input > tmp], [0], [stdout])
+        GET_GDAL_INFO([tmp])
+        AT_CHECK([diff -b $baseline tmp], [ignore], )
+        AT_XFAIL_IF([test expected = xfail])
+        ])
+
+    AT_CLEANUP
+])
+
 dnl Given a filename, remove any date-time string of the form "yyyy-mm-dd hh:mm:ss"
 dnl in that file and put "removed date-time" in its place. This hack keeps the baselines
 dnl more or less true to form without the obvious issue of baselines being broken 
@@ -391,13 +433,15 @@ dnl Given a filename, remove the <File> element of a response. Useful for testin
 dnl jhrg 10/23/19
 
 m4_define([REMOVE_ERROR_FILE], [dnl
-    sed 's@<File>[[0-9a-zA-Z/.]]*</File>@removed file@g' < $1 > $1.sed
+    sed -e 's@<File>[[0-9a-zA-Z/.]]*</File>@removed file@g' \
+        -e 's@File:.*@removed file@g' < $1 > $1.sed
     dnl '
     mv $1.sed $1
 ])
 
 m4_define([REMOVE_ERROR_LINE], [dnl
-    sed 's@<Line>[[0-9]]*</Line>@removed line@g' < $1 > $1.sed
+    sed -e 's@<Line>[[0-9]]*</Line>@removed line@g' \
+        -e 's@Line:.*@removed line@g'< $1 > $1.sed
     dnl '
     mv $1.sed $1
 ])
@@ -409,5 +453,14 @@ dnl jhrg 8/1/18
  
 m4_define([PRINT_DAP4_DATA_RESPONSE], [dnl
     getdap4 -D -M -s $1 > $1.txt
+    mv $1.txt $1
+])
+
+dnl Filter these from the gdalinfo output since they vary by gdal version
+dnl Upper Left  (  21.0000000,  89.0000000) ( 21d 0' 0.00"E, 89d 0' 0.00"N)
+
+m4_define([GET_GDAL_INFO], [dnl
+    gdalinfo $1 | sed 's@^\([[A-z ]]*(.*)\) (.*)@\1@g' > $1.txt
+    AS_IF([test -z "$at_verbose"], [echo "gdalinfo: $1.txt"; more $1.txt])
     mv $1.txt $1
 ])

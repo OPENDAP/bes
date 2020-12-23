@@ -22,6 +22,8 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
+#include "config.h"
+
 #include <memory>
 
 #include <cppunit/TextTestRunner.h>
@@ -49,6 +51,7 @@ static string bes_conf_file = "/bes.conf";
 
 #undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
+#define prolog std::string("ChunkTest::").append(__func__).append("() - ")
 
 namespace dmrpp {
 
@@ -71,7 +74,8 @@ public:
     void setUp()
     {
         TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append(bes_conf_file);
-        if (bes_debug) BESDebug::SetUp("cerr,dmrpp");
+        if (bes_debug) BESDebug::SetUp("cerr,http,curl,dmrpp");
+        DBG(cerr << endl);
     }
 
     // Called after each test
@@ -81,7 +85,7 @@ public:
 
     void set_position_in_array_test()
     {
-        DBG(cerr << endl << __func__ << "() BEGIN" << endl);
+        DBG(cerr << prolog << "BEGIN" << endl);
         d_chunk.set_position_in_array("[1,2,3,4]");
         vector<unsigned int> pia = d_chunk.get_position_in_array();
         CPPUNIT_ASSERT(pia.size() == 4);
@@ -93,7 +97,7 @@ public:
 
     void set_position_in_array_test_2()
     {
-        DBG(cerr << endl << __func__ << "() BEGIN" << endl);
+        DBG(cerr << prolog << "BEGIN" << endl);
         d_chunk.set_position_in_array("[5]");
         vector<unsigned int> pia = d_chunk.get_position_in_array();
         CPPUNIT_ASSERT(pia.size() == 1);
@@ -102,21 +106,21 @@ public:
 
     void set_position_in_array_test_3()
     {
-        DBG(cerr << endl << __func__ << "() BEGIN" << endl);
+        DBG(cerr << prolog << "BEGIN" << endl);
         d_chunk.set_position_in_array("[]");
         CPPUNIT_FAIL("set_position_in_array() should throw on missing values");
     }
 
     void set_position_in_array_test_4()
     {
-        DBG(cerr << endl << __func__ << "() BEGIN" << endl);
+        DBG(cerr << prolog << "BEGIN" << endl);
         d_chunk.set_position_in_array("[1,2,3,4");
         CPPUNIT_FAIL("set_position_in_array() should throw on a missing bracket");
     }
 
     void set_position_in_array_test_5()
     {
-        DBG(cerr << endl << __func__ << "() BEGIN" << endl);
+        DBG(cerr << prolog << "BEGIN" << endl);
         d_chunk.set_position_in_array("[1,x]");
         CPPUNIT_FAIL("set_position_in_array() should throw on bad values");
     }
@@ -124,98 +128,139 @@ public:
     // This test fails
     void set_position_in_array_test_6()
     {
-        DBG(cerr << endl << __func__ << "() BEGIN" << endl);
+        DBG(cerr << prolog << "BEGIN" << endl);
         d_chunk.set_position_in_array("[1,2,]");
         CPPUNIT_FAIL("set_position_in_array() should throw on bad values");
     }
 
     void add_tracking_query_param_test()
     {
-        DBG(cerr << endl << __func__ << "() BEGIN" << endl);
+        DBG(cerr << prolog << "BEGIN" << endl);
         CPPUNIT_ASSERT(d_chunk.d_query_marker.empty());
     }
 
     void add_tracking_query_param_test_2()
     {
-        DBG(cerr << endl << __func__ << "() BEGIN" << endl);
-        CPPUNIT_ASSERT(Chunk::tracking_context == "cloudydap");
+        DBG(cerr << prolog << "BEGIN" << endl);
+        CPPUNIT_ASSERT(S3_TRACKING_CONTEXT == "cloudydap");
     }
 
     void add_tracking_query_param_test_3()
     {
-        DBG(cerr << endl << __func__ << "() BEGIN" << endl);
-        BESContextManager::TheManager()->set_context("cloudydap", "request_id");
-        // add_tracking_query_param() only works with S3 URLs. Bug? jhrg 8/9/18
-        d_chunk.set_data_url("http://s3.amazonaws.com/somewhereovertherainbow");
+        DBG(cerr << prolog << "BEGIN" << endl);
+        try {
+            BESContextManager::TheManager()->set_context(S3_TRACKING_CONTEXT, "request_id");
+            // add_tracking_query_param() only works with S3 URLs. Bug? jhrg 8/9/18
+            d_chunk.set_data_url("http://s3.amazonaws.com/somewhereovertherainbow");
 
-        d_chunk.add_tracking_query_param();
+            d_chunk.add_tracking_query_param();
 
-        CPPUNIT_ASSERT(!d_chunk.d_query_marker.empty());
-        DBG(cerr << "d_chunk.d_query_marker: " << d_chunk.d_query_marker << endl);
-        CPPUNIT_ASSERT(d_chunk.d_query_marker == "?cloudydap=request_id");
+            CPPUNIT_ASSERT(!d_chunk.d_query_marker.empty());
+            DBG(cerr << prolog << "d_chunk.d_query_marker: " << d_chunk.d_query_marker << endl);
+            CPPUNIT_ASSERT(d_chunk.d_query_marker == "?cloudydap=request_id");
+
+        }
+        catch(BESError &be){
+            CPPUNIT_FAIL(prolog + be.get_message());
+        }
+        catch(...){
+            CPPUNIT_FAIL("Caught unknown exception.");
+        }
     }
 
     void add_tracking_query_param_test_4()
     {
-        DBG(cerr << endl << __func__ << "() BEGIN" << endl);
-        BESContextManager::TheManager()->set_context("cloudydap", "request_id");
+        DBG(cerr << prolog << "BEGIN" << endl);
+        try {
+            BESContextManager::TheManager()->set_context(S3_TRACKING_CONTEXT, "request_id");
 
-        // add_tracking_query_param() only works with S3 URLs. Bug? jhrg 8/9/18
-        d_chunk.set_data_url("http://s3.amazonaws.com/somewhereovertherainbow");
+            // add_tracking_query_param() only works with S3 URLs. Bug? jhrg 8/9/18
+            d_chunk.set_data_url("http://s3.amazonaws.com/somewhereovertherainbow");
 
-        d_chunk.add_tracking_query_param();
+            d_chunk.add_tracking_query_param();
 
-        string data_url = d_chunk.get_data_url();
+            string data_url = d_chunk.get_data_url();
 
-        DBG(cerr << "data_url: " << data_url << endl);
-        CPPUNIT_ASSERT(!data_url.empty());
-        CPPUNIT_ASSERT(data_url == "http://s3.amazonaws.com/somewhereovertherainbow?cloudydap=request_id");
+            DBG(cerr << prolog << "data_url: " << data_url << endl);
+            CPPUNIT_ASSERT(!data_url.empty());
+            CPPUNIT_ASSERT(data_url == "http://s3.amazonaws.com/somewhereovertherainbow?cloudydap=request_id");
+        }
+        catch(BESError &be){
+            CPPUNIT_FAIL(prolog + be.get_message());
+        }
+        catch(...){
+            CPPUNIT_FAIL(prolog + "Caught unknown exception.");
+        }
     }
 
-    void add_tracking_query_param_test_4_1()
-    {
-        DBG(cerr << endl << __func__ << "() BEGIN" << endl);
-        // An S3 URL, but no context.
-        BESContextManager::TheManager()->unset_context("cloudydap");   //>set_context("cloudydap", "request_id");
-        d_chunk.set_data_url("http://s3.amazonaws.com/somewhereovertherainbow");
-        d_chunk.add_tracking_query_param();
+    void add_tracking_query_param_test_4_1() {
+        DBG(cerr << prolog << "BEGIN" << endl);
+        try {
+            // An S3 URL, but no context.
+            BESContextManager::TheManager()->unset_context(S3_TRACKING_CONTEXT);   //>set_context("cloudydap", "request_id");
+            d_chunk.set_data_url("http://s3.amazonaws.com/somewhereovertherainbow");
+            d_chunk.add_tracking_query_param();
+        }
+        catch(BESError &be){
+            CPPUNIT_FAIL(prolog + be.get_message());
+        }
+        catch(...){
+            CPPUNIT_FAIL(prolog + "Caught unknown exception.");
+        }
 
-        CPPUNIT_ASSERT(d_chunk.d_query_marker.empty());
+    CPPUNIT_ASSERT(d_chunk.d_query_marker.empty());
     }
 
     // Test the non-default ctor
     void add_tracking_query_param_test_5()
     {
-        DBG(cerr << endl << __func__ << "() BEGIN" << endl);
-        BESContextManager::TheManager()->set_context("cloudydap", "request_id");
+        DBG(cerr << prolog << "BEGIN" << endl);
+        try {
+            BESContextManager::TheManager()->set_context(S3_TRACKING_CONTEXT, "request_id");
 
-        auto_ptr<Chunk> l_chunk(new Chunk("http://s3.amazonaws.com/somewhereovertherainbow", 100, 10, ""));
+            auto_ptr<Chunk> l_chunk(new Chunk("http://s3.amazonaws.com/somewhereovertherainbow", "", 100, 10, ""));
 
-        CPPUNIT_ASSERT(!l_chunk->d_query_marker.empty());
-        DBG(cerr << "l_chunk->d_query_marker: " << l_chunk->d_query_marker << endl);
-        CPPUNIT_ASSERT(l_chunk->d_query_marker == "?cloudydap=request_id");
+            CPPUNIT_ASSERT(!l_chunk->d_query_marker.empty());
+            DBG(cerr << prolog << "l_chunk->d_query_marker: " << l_chunk->d_query_marker << endl);
+            CPPUNIT_ASSERT(l_chunk->d_query_marker == "?cloudydap=request_id");
 
-        string data_url = l_chunk->get_data_url();
+            string data_url = l_chunk->get_data_url();
 
-        DBG(cerr << "data_url: " << data_url << endl);
-        CPPUNIT_ASSERT(!data_url.empty());
-        CPPUNIT_ASSERT(data_url == "http://s3.amazonaws.com/somewhereovertherainbow?cloudydap=request_id");
+            DBG(cerr << prolog << "data_url: " << data_url << endl);
+            CPPUNIT_ASSERT(!data_url.empty());
+            CPPUNIT_ASSERT(data_url == "http://s3.amazonaws.com/somewhereovertherainbow?cloudydap=request_id");
+        }
+        catch(BESError &be){
+            CPPUNIT_FAIL(prolog + be.get_message());
+        }
+        catch(...){
+            CPPUNIT_FAIL(prolog + "Caught unknown exception.");
+        }
     }
 
     void add_tracking_query_param_test_5_1()
     {
-        DBG(cerr << endl << __func__ << "() BEGIN" << endl);
-        // No context, S3 URL, non-default ctor
-        BESContextManager::TheManager()->unset_context("cloudydap");
-        auto_ptr<Chunk> l_chunk(new Chunk("http://s3.amazonaws.com/somewhereovertherainbow", 100, 10, ""));
+        DBG(cerr << prolog << "BEGIN" << endl);
+        try {
+            // No context, S3 URL, non-default ctor
+            BESContextManager::TheManager()->unset_context(S3_TRACKING_CONTEXT);
+            auto_ptr<Chunk> l_chunk(new Chunk("http://s3.amazonaws.com/somewhereovertherainbow", "", 100, 10, ""));
 
-        CPPUNIT_ASSERT(l_chunk->d_query_marker.empty());
+            CPPUNIT_ASSERT(l_chunk->d_query_marker.empty());
 
-        string data_url = l_chunk->get_data_url();
+            string data_url = l_chunk->get_data_url();
 
-        DBG(cerr << "data_url: " << data_url << endl);
-        CPPUNIT_ASSERT(!data_url.empty());
-        CPPUNIT_ASSERT(data_url == "http://s3.amazonaws.com/somewhereovertherainbow");
+            DBG(cerr << prolog << "data_url: " << data_url << endl);
+            CPPUNIT_ASSERT(!data_url.empty());
+            CPPUNIT_ASSERT(data_url == "http://s3.amazonaws.com/somewhereovertherainbow");
+        }
+        catch(BESError &be){
+            CPPUNIT_FAIL(prolog + be.get_message());
+        }
+        catch(...){
+            CPPUNIT_FAIL(prolog + "Caught unknown exception.");
+        }
+
     }
 
    CPPUNIT_TEST_SUITE( ChunkTest );

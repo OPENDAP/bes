@@ -243,8 +243,8 @@ void DDSLoader::loadInto(const std::string& location, ResponseType type, BESDapR
         ensureClean();
     }
     catch (BESError &e) {
-        *(BESLog::TheLog()) << "WARNING - " << string(__PRETTY_FUNCTION__) << ": " << e.get_file() << ":" << e.get_line() << ": "
-                            << e.get_message() << " (the exception was re-thrown)."<< endl;
+        ERROR_LOG("WARNING - " << string(__PRETTY_FUNCTION__) << ": " << e.get_file() << ":" << e.get_line() << ": "
+                            << e.get_message() << " (the exception was re-thrown)."<< endl);
 
         // We should be clean here too.
         ensureClean();
@@ -332,8 +332,8 @@ void DDSLoader::removeContainerFromStorage()
             _store->del_container(_containerSymbol);
         }
         catch (BESError& besErr) {
-            *(BESLog::TheLog()) << "WARNING: tried to remove symbol " << _containerSymbol
-                << " from singleton but unexpectedly it was not there." << endl;
+            ERROR_LOG("WARNING: tried to remove symbol " << _containerSymbol
+                << " from singleton but unexpectedly it was not there." << endl);
         }
         _containerSymbol = "";
         _store = 0;

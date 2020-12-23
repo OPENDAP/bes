@@ -61,6 +61,9 @@
 using namespace libdap;
 using namespace std;
 
+#define prolog string("DmrppTypeFactory::").append(__func__).append("() - ")
+#define MODULE "dmrpp"
+
 namespace dmrpp {
 
 BaseType *DmrppTypeFactory::NewVariable(Type t, const string &name) const
@@ -166,7 +169,7 @@ DmrppTypeFactory::NewUInt16(const string &n) const
 Int32 *
 DmrppTypeFactory::NewInt32(const string &n) const
 {
-	BESDEBUG("dmrpp", "Inside DAP4BaseTypeFactory::NewInt32" << endl);
+	BESDEBUG(MODULE, prolog << "Making a new DmrppInt32 object named: " << n << endl);
 	return new DmrppInt32(n);
 }
 
@@ -179,7 +182,7 @@ DmrppTypeFactory::NewUInt32(const string &n) const
 Int64 *
 DmrppTypeFactory::NewInt64(const string &n) const
 {
-    BESDEBUG("dmrpp", "Inside DAP4BaseTypeFactory::NewInt64" << endl);
+    BESDEBUG(MODULE, prolog << "Making a new DmrppInt64 object named: " << n << endl);
 	return new DmrppInt64(n);
 }
 

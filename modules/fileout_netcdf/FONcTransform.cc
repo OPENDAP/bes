@@ -28,6 +28,7 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
+//      kyang       Kent Yang <myang6@hdfgroup.org> (for DAP4/netCDF-4 enhancement)
 
 #include "config.h"
 
@@ -312,8 +313,11 @@ void FONcTransform::transform_dap4()
     
     BESDEBUG("fonc", "Coming into transform_dap4() "<< endl);
 
+    // First check if this DMR has groups etc.
     bool support_group = check_group_support();
+
     if(true == support_group) {
+
         int stax = -1;
         BESDEBUG("fonc", "FONcTransform::transform_dap4() - Opening NetCDF-4 cache file. fileName:  " << _localfile << endl);
         stax = nc_create(_localfile.c_str(), NC_CLOBBER|NC_NETCDF4, &_ncid);
@@ -321,20 +325,131 @@ void FONcTransform::transform_dap4()
             FONcUtils::handle_error(stax, "File out netcdf, unable to open: " + _localfile, __FILE__, __LINE__);
         
         D4Group* root_grp = _dmr->root();
+
+        // Declare the dimname to dimid map to handle netCDF-4 dimensions
         map<string,int>fdimname_to_id;
-        transform_dap4_group(root_grp,true,_ncid,fdimname_to_id);
+
+        // Generate a list of the groups in the final netCDF file. 
+        // The attributes of these groups should be included.
+        gen_included_grp_list(root_grp);
+#if 0
+        for (std::set<string>::iterator it=_included_grp_names.begin(); it!=_included_grp_names.end(); ++it)
+            BESDEBUG("fonc","included group list name is: "<<*it<<endl);
+#endif
+        // Build a global dimension name table for all variables if
+        // the constraint is not empty!
+        check_and_obtain_dimensions(root_grp,true);
+
+        // Don't remove the following code, they are for debugging.
+#if 0
+    map<string,unsigned long>:: iterator it;
+
+    for(it=GFQN_dimname_to_dimsize.begin();it!=GFQN_dimname_to_dimsize.end();++it) {
+        BESDEBUG("fonc", "Final GFQN dim name is: "<<it->first<<endl);
+        BESDEBUG("fonc", "Final GFQN dim size is: "<<it->second<<endl);
+    }
+
+    for(it=VFQN_dimname_to_dimsize.begin();it!=VFQN_dimname_to_dimsize.end();++it) {
+        BESDEBUG("fonc", "Final VFQN dim name is: "<<it->first<<endl);
+        BESDEBUG("fonc", "Final VFQN dim size is: "<<it->second<<endl);
+    }
+#endif
+
+        // DAP4 requires the DAP4 dimension sizes defined in the group should be changed
+        // according to the corresponding variable sizes. Check section 8.6.2 at
+        // https://docs.opendap.org/index.php/DAP4:_Specification_Volume_1
+        //
+        map<string,unsigned long>:: iterator git,vit;
+        for(git=GFQN_dimname_to_dimsize.begin();git!=GFQN_dimname_to_dimsize.end();++git) {
+            for(vit=VFQN_dimname_to_dimsize.begin();vit!=VFQN_dimname_to_dimsize.end();++vit) {
+                if(git->first == vit->first) {
+                    if(git->second != vit->second) 
+                        git->second = vit->second;
+                    break;
+                }
+            }
+        }
+
+        // Thie part of code is to address the possible dimension name confliction
+        // when variables in the constraint don't have dimension names. Fileout netCDF
+        // adds the fake dimensions such as dim1, dim2...to these variables.
+        // If these dimension names are used by
+        // the file to be handled, the dimension confliction will corrupt the final output.
+        // The idea is to find if there are any dimension names like dim1, dim2 ... 
+        // under the root group.
+        // We will remember them and not use these names as fake dimension names.
+        //
+        // Obtain the dim. names under the root group
+        vector<string> root_d4_dimname_list;
+        for(git=GFQN_dimname_to_dimsize.begin();git!=GFQN_dimname_to_dimsize.end();++git) {
+            string d4_temp_dimname = git->first.substr(1);
+            //BESDEBUG("fonc", "d4_temp_dimname: "<<d4_temp_dimname<<endl);
+            if(d4_temp_dimname.find('/')==string::npos)
+                root_d4_dimname_list.push_back(d4_temp_dimname);
+        }
+
+#if 0
+        for(unsigned int i = 0; i <root_d4_dimname_list.size();i++)
+            BESDEBUG("fonc", "root_d4 dim name is: "<<root_d4_dimname_list[i]<<endl);
+#endif
+
+        // Only remember the root dimension names that are like "dim1,dim2,..."
+        vector<int> root_dim_suffix_nums;
+        for(unsigned int i = 0; i <root_d4_dimname_list.size();i++){
+            if(root_d4_dimname_list[i].size()<4)
+                continue;
+            else if(root_d4_dimname_list[i].substr(0,3)!="dim")
+                continue;
+            else {
+                string temp_suffix = root_d4_dimname_list[i].substr(3);
+                //BESDEBUG("fonc", "temp_suffix: "<<temp_suffix<<endl);
+                bool ignored_suffix = false;
+                for (unsigned int j = 0; j<temp_suffix.size();j++) {
+                    if(!isdigit(temp_suffix[j])) {
+                        ignored_suffix = true;
+                        break;
+                    }
+                }
+                if(ignored_suffix==true) 
+                    continue;
+                else  
+                    root_dim_suffix_nums.push_back(atoi(temp_suffix.c_str()));
+            }
+        }
+
+#if 0
+    for(unsigned int i = 0; i <root_dim_suffix_nums.size();i++)
+        BESDEBUG("fonc", "root_dim_suffix_nums: "<<root_dim_suffix_nums[i]<<endl);
+
+
+    for(it=GFQN_dimname_to_dimsize.begin();it!=GFQN_dimname_to_dimsize.end();++it) {
+        BESDEBUG("fonc", "RFinal GFQN dim name is: "<<it->first<<endl);
+        BESDEBUG("fonc", "RFinal GFQN dim size is: "<<it->second<<endl);
+    }
+
+    for(it=VFQN_dimname_to_dimsize.begin();it!=VFQN_dimname_to_dimsize.end();++it) {
+        BESDEBUG("fonc", "RFinal VFQN dim name is: "<<it->first<<endl);
+        BESDEBUG("fonc", "RFinal VFQN dim size is: "<<it->second<<endl);
+    }
+#endif
+
+        // Now we transform all the objects(including groups) to netCDF-4
+        transform_dap4_group(root_grp,true,_ncid,fdimname_to_id,root_dim_suffix_nums);
         stax = nc_close(_ncid);
         if (stax != NC_NOERR)
             FONcUtils::handle_error(stax, "File out netcdf, unable to close: " + _localfile, __FILE__, __LINE__);
 
     }
-    else 
+    else // No group, handle as the classic way
         transform_dap4_no_group();
 
     return;
 
 }
 
+// Transform the DMR to a netCDF-4 file when there are no DAP4 groups.
+// This routine is similar to transform() that handles DAP2 objects.  However, DAP4 routines are needed. 
+// So still keep a separate function. May combine this function with the tranform()  in the future. 
 void FONcTransform::transform_dap4_no_group() {
 
     D4Group* root_grp = _dmr->root();
@@ -420,6 +535,7 @@ void FONcTransform::transform_dap4_no_group() {
             // Add any global attributes to the netcdf file
             D4Group* root_grp=_dmr->root();
             D4Attributes*d4_attrs = root_grp->attributes();
+
             BESDEBUG("fonc", "FONcTransform::transform_dap4_no_group() handle GLOBAL DAP4 attributes "<< d4_attrs <<endl);
 #if 0
             for (D4Attributes::D4AttributesIter ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end(); ii != ee; ++ii) {
@@ -427,8 +543,6 @@ void FONcTransform::transform_dap4_no_group() {
                 BESDEBUG("fonc", "FONcTransform::transform_dap4() GLOBAL attribute name is "<<name <<endl);
             }
 #endif
-            //    AttrTable &globals = root_grp->get_attr_table();
-            BESDEBUG("fonc", "FONcTransform::transform_dap4_no_group() - Adding Global Attributes" << endl) ;
             bool is_netCDF_enhanced = false;
             if(FONcTransform::_returnAs == RETURNAS_NETCDF4 && FONcRequestHandler::classic_model==false)
                 is_netCDF_enhanced = true;
@@ -465,35 +579,79 @@ void FONcTransform::transform_dap4_no_group() {
 
 }
 
-void FONcTransform::transform_dap4_group(D4Group* grp,bool is_root_grp,int par_grp_id,map<string,int>&fdimname_to_id ) {
+// Transform the DMR to a netCDF-4 file when there are DAP4 groups.
+void FONcTransform::transform_dap4_group(D4Group* grp,
+                                         bool is_root_grp,
+                                         int par_grp_id,map<string,int>&fdimname_to_id,
+                                         vector<int>&root_dim_suffix_nums ) {
+
+    bool included_grp = false;
+
+    // Always include the root and its attributes.
+    if(is_root_grp == true)  
+        included_grp = true;
+    else {
+        // Check if this group is in the group list kept in the file.
+        set<string>::iterator iset;
+        if(_included_grp_names.find(grp->FQN())!=_included_grp_names.end())
+            included_grp = true;
+    }
+     
+    // Call the internal routine to transform the DMR that has groups if this group is in the group list.. 
+    // If this group is not in the group list, we know all its subgroups are also not in the list, just stop and return.
+    if(included_grp == true) 
+        transform_dap4_group_internal(grp,is_root_grp,par_grp_id,fdimname_to_id,root_dim_suffix_nums);
+    return;
+}
+
+// The internal routine to transform DMR to netCDF-4 when there are gorups.
+void FONcTransform::transform_dap4_group_internal(D4Group* grp,
+                                                  bool is_root_grp,
+                                                  int par_grp_id,map<string,int>&fdimname_to_id,
+                                                  vector<int>& rds_nums ) {
 
     int grp_id = -1;
-    int stax = -1;
-    if(is_root_grp == true) 
+    int stax   = -1;
+    if(is_root_grp == true)  
         grp_id = _ncid;
     else {
         stax = nc_def_grp(par_grp_id,(*grp).name().c_str(),&grp_id);
         if (stax != NC_NOERR)
             FONcUtils::handle_error(stax, "File out netcdf, unable to define group: " + _localfile, __FILE__, __LINE__);
+        
     }
      
-    D4Dimensions *root_dims = grp->dims();
-    for(D4Dimensions::D4DimensionsIter di = root_dims->dim_begin(), de = root_dims->dim_end(); di != de; ++di) {
+    D4Dimensions *grp_dims = grp->dims();
+    for(D4Dimensions::D4DimensionsIter di = grp_dims->dim_begin(), de = grp_dims->dim_end(); di != de; ++di) {
 #if 0
         BESDEBUG("fonc", "transform_dap4() - check dimensions"<< endl);
         BESDEBUG("fonc", "transform_dap4() - dim name is: "<<(*di)->name()<<endl);
         BESDEBUG("fonc", "transform_dap4() - dim size is: "<<(*di)->size()<<endl);
         BESDEBUG("fonc", "transform_dap4() - fully_qualfied_dim name is: "<<(*di)->fully_qualified_name()<<endl);
 #endif
+
+#if 0
         unsigned long dimsize = (*di)->size();
         if((*di)->constrained()) {
             dimsize = ((*di)->c_stop() -(*di)->c_start())/(*di)->c_stride() +1;
 
         }
+#endif
+        unsigned long dimsize =(*di)->size();
+
+        // The dimension size may need to be updated because of the expression constraint.
+        map<string,unsigned long>:: iterator it;
+        for(it=GFQN_dimname_to_dimsize.begin();it!=GFQN_dimname_to_dimsize.end();++it) {
+            if(it->first == (*di)->fully_qualified_name())
+                dimsize = it->second;
+        }
+
+        // Define dimension. 
         int g_dimid = -1;
         stax = nc_def_dim(grp_id,(*di)->name().c_str(),dimsize,&g_dimid);
         if (stax != NC_NOERR)
             FONcUtils::handle_error(stax, "File out netcdf, unable to define dimension: " + _localfile, __FILE__, __LINE__);
+        // Save this dimension ID in a map.
         fdimname_to_id[(*di)->fully_qualified_name()] = g_dimid; 
     }
 
@@ -509,9 +667,8 @@ void FONcTransform::transform_dap4_group(D4Group* grp,bool is_root_grp,int par_g
 
             // This is a factory class call, and 'fg' is specialized for 'v'
             //FONcBaseType *fb = FONcUtils::convert(v,FONcTransform::_returnAs,FONcRequestHandler::classic_model);
-            FONcBaseType *fb = FONcUtils::convert(v,RETURNAS_NETCDF4,false,fdimname_to_id);
+            FONcBaseType *fb = FONcUtils::convert(v,RETURNAS_NETCDF4,false,fdimname_to_id,rds_nums);
 
-            //_fonc_vars.push_back(fb);
             fonc_vars_in_grp.push_back(fb);
 
             // This is needed to avoid the memory leak.
@@ -533,7 +690,6 @@ void FONcTransform::transform_dap4_group(D4Group* grp,bool is_root_grp,int par_g
     try {
         // Here we will be defining the variables of the netcdf and
         // adding attributes. To do this we must be in define mode.
-        // TO CHECK: for netCDF4 group, this may NOT be necessary.
         //nc_redef(_ncid);
 
         vector<FONcBaseType *>::iterator i = fonc_vars_in_grp.begin();
@@ -551,15 +707,19 @@ void FONcTransform::transform_dap4_group(D4Group* grp,bool is_root_grp,int par_g
  
 
         bool add_attr = true;
-        if(FONcRequestHandler::no_global_attrs == false && is_root_grp == true) 
+
+        // Only the root attribute may be ignored.
+        if(FONcRequestHandler::no_global_attrs == true && is_root_grp == true) 
             add_attr= false;
+
         if(true == add_attr) {
             D4Attributes*d4_attrs = grp->attributes();
             BESDEBUG("fonc", "FONcTransform::transform_dap4_group() - Adding Group Attributes" << endl) ;
+            // add dap4 group attributes.
             FONcAttributes::add_dap4_attributes(grp_id, NC_GLOBAL, d4_attrs, "", "",is_netCDF_enhanced);
         }
 
-        // Write everything out
+        // Write every variable in this group. 
         i = fonc_vars_in_grp.begin();
         e = fonc_vars_in_grp.end();
         for (; i != e; i++) {
@@ -569,9 +729,10 @@ void FONcTransform::transform_dap4_group(D4Group* grp,bool is_root_grp,int par_g
             fbt->write(grp_id);
         }
 
+        // Now handle all the child groups.
         for (D4Group::groupsIter gi = grp->grp_begin(), ge = grp->grp_end(); gi != ge; ++gi) {
             BESDEBUG("fonc", "FONcTransform::transform_dap4() in group  - group name:  " << (*gi)->name() << endl);
-            transform_dap4_group(*gi,false,grp_id,fdimname_to_id);
+            transform_dap4_group(*gi,false,grp_id,fdimname_to_id,rds_nums);
         }
 
     }
@@ -582,6 +743,8 @@ void FONcTransform::transform_dap4_group(D4Group* grp,bool is_root_grp,int par_g
 
 }
 
+
+
 // Group support is only on when netCDF-4 is in enhanced model and there are groups in the DMR.
 bool FONcTransform::check_group_support() {
     if(RETURNAS_NETCDF4 == FONcTransform::_returnAs && false == FONcRequestHandler::classic_model && 
@@ -589,6 +752,162 @@ bool FONcTransform::check_group_support() {
         return true; 
     else 
         return false;
+}
+
+// Generate the final group list in the netCDF-4 file. Empty groups and their attributes will be removed.
+void FONcTransform::gen_included_grp_list(D4Group*grp) 
+{
+    bool grp_has_var = false;
+    if(grp) {
+        BESDEBUG("fnoc", "<coming to the D4 group  has name " << grp->name()<<endl);
+        BESDEBUG("fnoc", "<coming to the D4 group  has fullpath " << grp->FQN()<<endl);
+
+        if(grp->var_begin()!=grp->var_end()) {
+
+            BESDEBUG("fnoc", "<has the vars  " << endl);
+            Constructor::Vars_iter vi = grp->var_begin();
+            Constructor::Vars_iter ve = grp->var_end();
+
+            for (; vi != ve; vi++) {
+
+                // This variable is selected(in the local constraints).
+                if ((*vi)->send_p()) {
+                    grp_has_var = true;
+
+                    //If a var in this group is selected, we need to include this group in the netcdf-4 file.
+                    //We always include root attributes, so no need to obtain grp_names for the root.
+                    if(grp->FQN()!="/")  
+                        _included_grp_names.insert(grp->FQN());
+                    break;
+                }
+            }
+        }
+        // Loop through the subgroups to build up the list.
+        for (D4Group::groupsIter gi = grp->grp_begin(), ge = grp->grp_end(); gi != ge; ++gi) {
+             BESDEBUG("fonc", "obtain included groups  - group name:  " << (*gi)->name() << endl);
+             gen_included_grp_list(*gi);
+        }
+    }
+        
+    // If this group is in the final list, all its ancestors(except root, since it is always selected),should also be included. 
+    if(grp_has_var == true) {
+        D4Group *temp_grp   = grp;
+        while(temp_grp) {
+            if(temp_grp->get_parent()){
+                temp_grp = static_cast<D4Group*>(temp_grp->get_parent());
+                if(temp_grp->FQN()!="/")  
+                    _included_grp_names.insert(temp_grp->FQN());
+            }
+            else 
+                temp_grp = 0;
+        }
+    }
+
+}
+
+void FONcTransform::check_and_obtain_dimensions(D4Group*grp,bool is_root_grp) {
+
+    // We may not need to do this way,it may overkill.
+    bool included_grp = false;
+    // Always include the root attributes.
+    if(is_root_grp == true)  
+        included_grp = true;
+    else {
+        // Check if this group is in the group list kept in the file.
+        set<string>::iterator iset;
+        if(_included_grp_names.find(grp->FQN())!=_included_grp_names.end())
+            included_grp = true;
+    }
+
+    if(included_grp == true) 
+        check_and_obtain_dimensions_internal(grp);
+}
+
+void FONcTransform::check_and_obtain_dimensions_internal(D4Group*grp) {
+
+    // Remember the Group Fully Qualified dimension Name and the corresponding dimension size.
+    D4Dimensions *grp_dims = grp->dims();
+    if(grp_dims) {
+        for(D4Dimensions::D4DimensionsIter di = grp_dims->dim_begin(), de = grp_dims->dim_end(); di != de; ++di) {
+#if 0
+        BESDEBUG("fonc", "transform_dap4() - check dimensions"<< endl);
+        BESDEBUG("fonc", "transform_dap4() - dim name is: "<<(*di)->name()<<endl);
+        BESDEBUG("fonc", "transform_dap4() - dim size is: "<<(*di)->size()<<endl);
+        BESDEBUG("fonc", "transform_dap4() - fully_qualfied_dim name is: "<<(*di)->fully_qualified_name()<<endl);
+#endif
+            unsigned long dimsize = (*di)->size();
+            if((*di)->constrained()) {
+                dimsize = ((*di)->c_stop() -(*di)->c_start())/(*di)->c_stride() +1;
+
+            }
+            GFQN_dimname_to_dimsize[(*di)->fully_qualified_name()] = dimsize;
+        }
+    }
+
+    // The size of DAP4 dimension needs to be updated if the dimension size of a variable with the same dimension is 
+    // different. So we also need to remember the Variable FQN dimension name and size. 
+    // Check section 8.6.2 of DAP4 specification(https://docs.opendap.org/index.php/DAP4:_Specification_Volume_1)
+    Constructor::Vars_iter vi = grp->var_begin();
+    Constructor::Vars_iter ve = grp->var_end();
+    for (; vi != ve; vi++) {
+        if ((*vi)->send_p()) {
+            if((*vi)->is_vector_type()) {
+                Array *t_a = dynamic_cast<Array*>(*vi);
+                Array::Dim_iter dim_i = t_a->dim_begin();
+                Array::Dim_iter dim_e = t_a->dim_end();
+                for(;dim_i !=dim_e;dim_i++) {
+                    if((*dim_i).name!="") {
+                        D4Dimension* d4dim = t_a->dimension_D4dim(dim_i);
+                        if(d4dim) {
+                            BESDEBUG("fonc", "transform_dap4() check dim- dim name is: "<<d4dim->name()<<endl);
+                            BESDEBUG("fonc", "transform_dap4() check dim- dim size is: "<<d4dim->size()<<endl);
+                            BESDEBUG("fonc", "transform_dap4() check dim- fully_qualfied_dim name is: "<<d4dim->fully_qualified_name()<<endl);
+                            
+#if 0
+                            unsigned long dimsize = d4dim->size();
+                            if(d4dim->constrained()) 
+                                dimsize = (d4dim->c_stop() -d4dim->c_start())/d4dim->c_stride() +1;
+                            BESDEBUG("fonc", "transform_dap4() check dim- final dim size is: "<<d4dim->size()<<endl);
+#endif
+                            unsigned long dimsize = t_a->dimension_size(dim_i,true);
+                            pair<map<string,unsigned long>::iterator,bool> ret_it;
+                            ret_it = VFQN_dimname_to_dimsize.insert(pair<string,unsigned long>(d4dim->fully_qualified_name(),dimsize));
+                            if(ret_it.second == false && ret_it.first->second!=dimsize) {
+                                string err = "fileout_netcdf-4: dimension found with the same name, but different size";
+                                throw BESInternalError(err, __FILE__, __LINE__);
+                            }
+                    //VFQN_dimname_to_dimsize[d4dim->fully_qualified_name()] = dimsize;
+                        }
+                        else 
+                            throw BESInternalError("Has dimension name but D4 dimension is NULL",__FILE__,__LINE__); 
+                    }
+                    // No need to handle the case when the dimension name doesn't exist. This will be handled in FONcArray.cc.
+                    // else { } 
+                }
+            }
+        }
+    }
+
+#if 0
+    map<string,unsigned long>:: iterator it;
+    for(it=GFQN_dimname_to_dimsize.begin();it!=GFQN_dimname_to_dimsize.end();++it) {
+        BESDEBUG("fonc", "GFQN dim name is: "<<it->first<<endl);
+        BESDEBUG("fonc", "GFQN dim size is: "<<it->second<<endl);
+    }
+
+    for(it=VFQN_dimname_to_dimsize.begin();it!=VFQN_dimname_to_dimsize.end();++it) {
+        BESDEBUG("fonc", "VFQN dim name is: "<<it->first<<endl);
+        BESDEBUG("fonc", "VFQN dim size is: "<<it->second<<endl);
+    }
+
+#endif
+
+    // Go through all the descendent groups.
+    for (D4Group::groupsIter gi = grp->grp_begin(), ge = grp->grp_end(); gi != ge; ++gi) {
+            BESDEBUG("fonc", "FONcTransform::check_and_obtain_dimensions() in group  - group name:  " << (*gi)->name() << endl);
+            check_and_obtain_dimensions(*gi,false);
+    }
+
 }
 
 

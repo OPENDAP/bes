@@ -67,30 +67,31 @@ FFStr::read()
 		return true;
 
 	if (BufVal) { // Data in cache
-		char *ptr = BufVal + BufPtr;
+        char *ptr = BufVal + BufPtr;
 
 #if 0
-		// TODO Use vector? jhrg 8/19/14
-		char *TmpBuf = new char[length() + 1];
+        // TODO Use vector? jhrg 8/19/14
+        char *TmpBuf = new char[length() + 1];
 #endif
-		vector<char> TmpBuf(length() + 1);
+        vector<char> TmpBuf(length() + 1);
 
-		// This code prunes both trailing and leading spaces from strings.
-		// Spaces are often added to URLs in file server data sets since the
-		// URL length can vary but in FF a field is a fixed size. However, if
-		// you want the FF handler to return _exactly_ the string data, this
-		// should be turned off. Once the subject of much debate... jhrg
+        // This code prunes both trailing and leading spaces from strings.
+        // Spaces are often added to URLs in file server data sets since the
+        // URL length can vary but in FF a field is a fixed size. However, if
+        // you want the FF handler to return _exactly_ the string data, this
+        // should be turned off. Once the subject of much debate... jhrg
 
-		int i, j;
+        int i, j, sLength;
 
-		//remove trailing white space
-		for (i = length() - 1; i >= 0; i--)
-			if (!isspace(*(ptr + i))) break;
+        //remove trailing white space
+        for (i = length() - 1; i >= 0; i--)
+            if (!isspace(*(ptr + i))) break;
 
-		//remove leading white space
-		for (j = 0; j < i; j++)
-			if (!isspace(*(ptr + j))) break;
+        //remove leading white space
+        for (j = 0; j < i; j++)
+            if (!isspace(*(ptr + j))) break;
 
+        sLength = i - j + 1;
 		strncpy(&TmpBuf[0], ptr + j, i - j + 1);
 		TmpBuf[i - j + 1] = '\0';
 

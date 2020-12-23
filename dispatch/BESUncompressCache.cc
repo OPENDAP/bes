@@ -19,7 +19,8 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
-#include "BESUncompressCache.h"
+#include "config.h"
+
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -29,6 +30,7 @@
 #include "BESUtil.h"
 #include "BESDebug.h"
 #include "TheBESKeys.h"
+#include "BESUncompressCache.h"
 
 using std::endl;
 using std::string;
@@ -39,6 +41,9 @@ bool BESUncompressCache::d_enabled = true;
 const string BESUncompressCache::DIR_KEY = "BES.UncompressCache.dir";
 const string BESUncompressCache::PREFIX_KEY = "BES.UncompressCache.prefix";
 const string BESUncompressCache::SIZE_KEY = "BES.UncompressCache.size";
+
+#define MODULE "cache"
+#define prolog std::string("BESUncompressCache::").append(__func__).append("() - ")
 
 unsigned long BESUncompressCache::getCacheSizeFromConfig()
 {
@@ -51,9 +56,9 @@ unsigned long BESUncompressCache::getCacheSizeFromConfig()
         iss >> size_in_megabytes;
     }
     else {
-        string msg = "[ERROR] BESUncompressCache::getCacheSize() - The BES Key " + SIZE_KEY
+        string msg = prolog+ "The BES Key " + SIZE_KEY
             + " is not set! It MUST be set to utilize the decompression cache. ";
-        BESDEBUG("cache", msg << endl);
+        BESDEBUG( MODULE, msg << endl);
         throw BESInternalError(msg, __FILE__, __LINE__);
     }
     return size_in_megabytes;
@@ -66,9 +71,9 @@ string BESUncompressCache::getCacheDirFromConfig()
     TheBESKeys::TheKeys()->get_value(DIR_KEY, subdir, found);
 
     if (!found) {
-        string msg = "[ERROR] BESUncompressCache::getSubDirFromConfig() - The BES Key " + DIR_KEY
+        string msg = prolog + "The BES Key " + DIR_KEY
             + " is not set! It MUST be set to utilize the decompression cache. ";
-        BESDEBUG("cache", msg << endl);
+        BESDEBUG( MODULE, msg << endl);
         throw BESInternalError(msg, __FILE__, __LINE__);
     }
 
@@ -84,9 +89,9 @@ string BESUncompressCache::getCachePrefixFromConfig()
         prefix = BESUtil::lowercase(prefix);
     }
     else {
-        string msg = "[ERROR] BESUncompressCache::getResultPrefix() - The BES Key " + PREFIX_KEY
+        string msg = prolog + "The BES Key " + PREFIX_KEY
             + " is not set! It MUST be set to utilize the decompression cache. ";
-        BESDEBUG("cache", msg << endl);
+        BESDEBUG( MODULE, msg << endl);
         throw BESInternalError(msg, __FILE__, __LINE__);
     }
 
@@ -122,42 +127,41 @@ string BESUncompressCache::getCachePrefixFromConfig()
  */
 string BESUncompressCache::get_cache_file_name(const string &src, bool mangle)
 {
-    string target = src;
+    string cache_file_name = src;
 
     if (mangle) {
-        string::size_type last_dot = target.rfind('.');
+        string::size_type last_dot = cache_file_name.rfind('.');
         if (last_dot != string::npos) {
-            target = target.substr(0, last_dot);
+            cache_file_name = cache_file_name.substr(0, last_dot);
         }
     }
-    target = BESFileLockingCache::get_cache_file_name(target);
+    cache_file_name = BESFileLockingCache::get_cache_file_name(cache_file_name);
 
-    BESDEBUG("cache", "BESFileLockingCache::get_cache_file_name - target:      '" << target << "'" << endl);
+    BESDEBUG( MODULE, prolog << "cache_file_name:      '" << cache_file_name << "'" << endl);
 
-    return target;
+    return cache_file_name;
 }
 
 BESUncompressCache::BESUncompressCache()
 {
-    BESDEBUG("cache", "BESUncompressCache::BESUncompressCache() -  BEGIN" << endl);
+    BESDEBUG( MODULE, prolog << "BEGIN" << endl);
 
     d_enabled = true;
     d_dimCacheDir = getCacheDirFromConfig();
     d_dimCacheFilePrefix = getCachePrefixFromConfig();
     d_maxCacheSize = getCacheSizeFromConfig();
 
-    BESDEBUG("cache",
-        "BESUncompressCache() - Cache configuration params: " << d_dimCacheDir << ", " << d_dimCacheFilePrefix << ", " << d_maxCacheSize << endl);
+    BESDEBUG( MODULE, prolog << "Cache configuration params: " << d_dimCacheDir << ", " << d_dimCacheFilePrefix << ", " << d_maxCacheSize << endl);
 
     initialize(d_dimCacheDir, d_dimCacheFilePrefix, d_maxCacheSize);
 
-    BESDEBUG("cache", "BESUncompressCache::BESUncompressCache() -  END" << endl);
+    BESDEBUG( MODULE, prolog << "END" << endl);
 
 }
 BESUncompressCache::BESUncompressCache(const string &data_root_dir, const string &cache_dir, const string &prefix,
     unsigned long long size)
 {
-    BESDEBUG("cache", "BESUncompressCache::BESUncompressCache() -  BEGIN" << endl);
+    BESDEBUG( MODULE, prolog << "BEGIN" << endl);
     d_enabled = true;
 
     d_dataRootDir = data_root_dir;
@@ -167,7 +171,7 @@ BESUncompressCache::BESUncompressCache(const string &data_root_dir, const string
 
     initialize(d_dimCacheDir, d_dimCacheFilePrefix, d_maxCacheSize);
 
-    BESDEBUG("cache", "BESUncompressCache::BESUncompressCache() -  END" << endl);
+    BESDEBUG( MODULE, prolog << "END" << endl);
 }
 
 BESUncompressCache *
@@ -181,15 +185,13 @@ BESUncompressCache::get_instance(const string &data_root_dir, const string &cach
             if(!d_enabled){
                 delete d_instance;
                 d_instance = NULL;
-                BESDEBUG("cache", "BESUncompressCache::"<<__func__ << "() - " <<
-                    "Cache is DISABLED"<< endl);
+                BESDEBUG( MODULE, prolog <<  "Cache is DISABLED"<< endl);
            }
             else {
     #ifdef HAVE_ATEXIT
                 atexit(delete_instance);
     #endif
-                BESDEBUG("cache", "BESUncompressCache::"<<__func__ << "() - " <<
-                    "Cache is ENABLED"<< endl);
+                BESDEBUG( MODULE, prolog << "Cache is ENABLED"<< endl);
            }
         }
     }
@@ -208,25 +210,20 @@ BESUncompressCache::get_instance()
         if(!d_enabled){
             delete d_instance;
             d_instance = NULL;
-            BESDEBUG("cache", "BESUncompressCache::"<<__func__ << "() - " <<
-                "Cache is DISABLED"<< endl);
+            BESDEBUG( MODULE, prolog << "Cache is DISABLED"<< endl);
         }
         else {
 #ifdef HAVE_ATEXIT
             atexit(delete_instance);
 #endif
-            BESDEBUG("cache", "BESUncompressCache::"<<__func__ << "() - " <<
-                "Cache is ENABLED"<< endl);
+            BESDEBUG( MODULE, prolog << "Cache is ENABLED"<< endl);
         }
     }
 
     return d_instance;
 }
 
-BESUncompressCache::~BESUncompressCache()
-{
-    delete_instance();
-}
+BESUncompressCache::~BESUncompressCache() {}
 
 /**
  * Is the item named by cache_entry_name valid? This code tests that the

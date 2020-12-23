@@ -27,10 +27,16 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 //#include <H5Ppublic.h>
 
+#include "dods-datatypes.h"
 #include "Chunk.h"
+#include "SuperChunk.h"
+
+#include "config.h"
+#include "byteswap_compat.h"
 
 namespace libdap {
 class DMR;
@@ -62,24 +68,32 @@ void join_threads(pthread_t threads[], unsigned int num_threads);
 class DmrppCommon {
 
 	friend class DmrppCommonTest;
-	friend class DmrppParserTest;
+    friend class DmrppParserTest;
+    friend class DmrppTypeReadTest;
 
 private:
 	bool d_deflate;
 	bool d_shuffle;
+	bool d_compact;
+	std::string d_byte_order;
 	std::vector<unsigned int> d_chunk_dimension_sizes;
-	std::vector<Chunk> d_chunks;
+	std::vector<std::shared_ptr<Chunk>> d_chunks;
+	bool d_twiddle_bytes;
 
 protected:
     void m_duplicate_common(const DmrppCommon &dc) {
     	d_deflate = dc.d_deflate;
     	d_shuffle = dc.d_shuffle;
+    	d_compact = dc.d_compact;
     	d_chunk_dimension_sizes = dc.d_chunk_dimension_sizes;
     	d_chunks = dc.d_chunks;
+    	d_byte_order = dc.d_byte_order;
+    	d_twiddle_bytes = dc.d_twiddle_bytes;
     }
 
     /// @brief Returns a reference to the internal Chunk vector.
-    virtual std::vector<Chunk> &get_chunk_vec() {
+    /// @see get_immutable_chunks()
+    virtual std::vector<std::shared_ptr<Chunk>> get_chunks() {
     	return d_chunks;
     }
 
@@ -90,7 +104,7 @@ public:
     static std::string d_dmrpp_ns;       ///< The DMR++ XML namespace
     static std::string d_ns_prefix;      ///< The XML namespace prefix to use
 
-    DmrppCommon() : d_deflate(false), d_shuffle(false)
+    DmrppCommon() : d_deflate(false), d_shuffle(false), d_compact(false),d_byte_order(""), d_twiddle_bytes(false)
     {
     }
 
@@ -99,9 +113,7 @@ public:
         m_duplicate_common(dc);
     }
 
-    virtual ~DmrppCommon()
-    {
-    }
+    virtual ~DmrppCommon()= default;
 
     /// @brief Returns true if this object utilizes deflate compression.
     virtual bool is_deflate_compression() const {
@@ -123,8 +135,23 @@ public:
         d_shuffle = value;
     }
 
-    virtual const std::vector<Chunk> &get_immutable_chunks() const {
-    	return d_chunks;
+    /// @brief Returns true if this object utilizes COMPACT layout.
+    virtual bool is_compact_layout() const {
+        return d_compact;
+    }
+
+    /// @brief Set the value of the compact property
+    void set_compact(bool value) {
+        d_compact = value;
+    }
+
+    /// @brief Returns true if this object utilizes shuffle compression.
+    virtual bool twiddle_bytes() const { return d_twiddle_bytes; }
+
+    /// @brief A const reference to the vector of chunks
+    /// @see get_chunks()
+    virtual std::vector< std::shared_ptr<Chunk>> get_immutable_chunks() const {
+        return d_chunks;
     }
 
     virtual const std::vector<unsigned int> &get_chunk_dimension_sizes() const {
@@ -138,15 +165,16 @@ public:
      */
     virtual unsigned int get_chunk_size_in_elements() const {
         unsigned int elements = 1;
-        for (std::vector<unsigned int>::const_iterator i = d_chunk_dimension_sizes.begin(),
-                e = d_chunk_dimension_sizes.end(); i != e; ++i) {
-            elements *= *i;
+        for (auto d_chunk_dimension_size : d_chunk_dimension_sizes) {
+            elements *= d_chunk_dimension_size;
         }
 
         return elements;
     }
 
     void print_chunks_element(libdap::XMLWriter &xml, const std::string &name_space = "");
+
+    void print_compact_element(libdap::XMLWriter &xml, const std::string &name_space = "", const std::string &encoded = "");
 
     void print_dmrpp(libdap::XMLWriter &writer, bool constrained = false);
 
@@ -156,20 +184,23 @@ public:
     {
         // tried using copy(chunk_dims.begin(), chunk_dims.end(), d_chunk_dimension_sizes.begin())
         // it didn't work, maybe because of the differing element types?
-        for (std::vector<size_t>::const_iterator i = chunk_dims.begin(), e = chunk_dims.end(); i != e; ++i) {
-            d_chunk_dimension_sizes.push_back(*i);
+        for (auto chunk_dim : chunk_dims) {
+            d_chunk_dimension_sizes.push_back(chunk_dim);
         }
     }
 
-    virtual void parse_chunk_dimension_sizes(std::string chunk_dim_sizes_string);
+    virtual void parse_chunk_dimension_sizes(const std::string &chunk_dim_sizes_string);
 
-    virtual void ingest_compression_type(std::string compression_type_string);
+    virtual void ingest_compression_type(const std::string &compression_type_string);
 
-    virtual unsigned long add_chunk(const std::string &data_url, unsigned long long size, unsigned long long offset,
-        std::string position_in_array = "");
+    virtual void ingest_byte_order(const std::string &byte_order_string);
+    virtual std::string get_byte_order() const { return d_byte_order; }
 
-    virtual unsigned long add_chunk(const std::string &data_url, unsigned long long size, unsigned long long offset,
-        const std::vector<unsigned int> &position_in_array);
+    virtual unsigned long add_chunk(const std::string &data_url, const std::string &byte_order,
+            unsigned long long size,  unsigned long long offset, const std::string &position_in_array = "");
+
+    virtual unsigned long add_chunk(const std::string &data_url, const std::string &byte_order,
+            unsigned long long size, const unsigned long long offset, const std::vector<unsigned int> &position_in_array);
 
     virtual void dump(std::ostream & strm) const;
 };

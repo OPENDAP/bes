@@ -70,7 +70,7 @@ public:
             ((string)"This function can subset the range variables of a two dimensional triangular mesh unstructured grid ") +
             "by applying a filter expression to the values of the grid associated with the nodes.");
         setUsageString("ugnr(node_var [,node_var_2,...,node_var_n], 'relational query over domain')");
-        setRole("http://services.opendap.org/dap4/server-side-function/unstructured_grids/ugrid_restrict");
+        setRole("https://services.opendap.org/dap4/server-side-function/unstructured_grids/ugrid_restrict");
         setDocUrl("https://docs.opendap.org/index.php?title=OPULS:_UGrid_Subsetting#ugnr:_Subset_by_node_value.");
         setFunction(ugrid::ugnr);
         setVersion("1.0");
@@ -92,7 +92,7 @@ public:
             ((string)"This function can subset the range variables of a two dimensional triangular mesh unstructured grid ") +
             "by applying a filter expression to the values of the grid associated with the edges.");
         setUsageString("uger(node_var [,node_var_2,...,node_var_n], 'relational query over domain')");
-        setRole("http://services.opendap.org/dap4/server-side-function/unstructured_grids/ugrid_restrict");
+        setRole("https://services.opendap.org/dap4/server-side-function/unstructured_grids/ugrid_restrict");
         setDocUrl("https://docs.opendap.org/index.php?title=OPULS:_UGrid_Subsetting#uger:_Subset_by_edge_value.");
         setFunction(ugrid::uger);
         setVersion("1.0");
@@ -114,7 +114,7 @@ public:
             ((string)"This function can subset the range variables of a two dimensional triangular mesh unstructured grid ") +
             "by applying a filter expression to the values of the grid associated with the faces.");
         setUsageString("ugfr(node_var [,node_var_2,...,node_var_n], 'relational query over domain')");
-        setRole("http://services.opendap.org/dap4/server-side-function/unstructured_grids/ugrid_restrict");
+        setRole("https://services.opendap.org/dap4/server-side-function/unstructured_grids/ugrid_restrict");
         setDocUrl("https://docs.opendap.org/index.php?title=OPULS:_UGrid_Subsetting#ugfr:_Subset_by_face_value.");
         setFunction(ugrid::ugfr);
         setVersion("1.0");

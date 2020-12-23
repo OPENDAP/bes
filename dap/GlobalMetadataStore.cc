@@ -84,6 +84,8 @@
 /// in the DMR (DAP4) but not the DDS (DAP2). jhrg 3/20/18
 #undef SYMETRIC_ADD_RESPONSES
 
+#define prolog std::string("GlobalMetadataStore::").append(__func__).append("() - ")
+
 using namespace std;
 using namespace libdap;
 using namespace bes;
@@ -124,7 +126,7 @@ void GlobalMetadataStore::transfer_bytes(int fd, ostream &os)
     /* Advise the kernel of our access pattern.  */
     int status = posix_fadvise(fd, 0, 0, POSIX_FADV_SEQUENTIAL);
     if (status != 0)
-        ERROR("Error calling posix_advise() in the GlobalMetadataStore: " << strerror(status) << endl);
+        ERROR_LOG(prolog << "Error calling posix_advise() in the GlobalMetadataStore: " << strerror(status) << endl);
 #endif
 
     char buf[BUFFER_SIZE + 1];
@@ -160,7 +162,7 @@ void GlobalMetadataStore::insert_xml_base(int fd, ostream &os, const string &xml
     /* Advise the kernel of our access pattern.  */
     int status = posix_fadvise(fd, 0, 0, POSIX_FADV_SEQUENTIAL);
     if (status != 0)
-        ERROR("Error calling posix_advise() in the GlobalMetadataStore: " << strerror(status) << endl);
+        ERROR_LOG(prolog << "Error calling posix_advise() in the GlobalMetadataStore: " << strerror(status) << endl);
 #endif
 
     char buf[BUFFER_SIZE + 1];
@@ -432,7 +434,7 @@ static void dump_time(ostream &os, bool use_local_time)
         status = strftime(buf, sizeof buf, "%FT%T%Z", localtime(&now));
 
     if (!status)
-        LOG("Error getting time for Metadata Store ledger.");
+        ERROR_LOG(prolog << "Error getting time for Metadata Store ledger.");
 
     os << buf;
 }
@@ -461,7 +463,7 @@ GlobalMetadataStore::write_ledger()
 	    }
         }
         else {
-            LOG("Warning: Metadata store could not write to its ledger file.");
+            ERROR_LOG(prolog << "Warning: Metadata store could not write to its ledger file.");
             unlock_and_close(d_ledger_name);
         }
     }
@@ -606,7 +608,7 @@ GlobalMetadataStore::store_dap_response(StreamDAP &writer, const string &key, co
         BESDEBUG(DEBUG_KEY,__FUNCTION__ << " Found " << item_name << " in the store already." << endl);
         unlock_and_close(item_name);
 
-        LOG("Metadata store: unable to store the " << response_name << " response for '" << name << "'." << endl);
+        ERROR_LOG(prolog << "Metadata store: unable to store the " << response_name << " response for '" << name << "'." << endl);
 
         return false;
     }
@@ -742,9 +744,9 @@ GlobalMetadataStore::get_read_lock_helper(const string &name, const string &suff
     BESDEBUG(DEBUG_KEY, __func__ << "() MDS lock for " << item_name << ": " << lock() <<  endl);
 
     if (lock())
-        LOG("MDS Cache hit for '" << name << "' and response " << object_name << endl);
+        INFO_LOG(prolog << "MDS Cache hit for '" << name << "' and response " << object_name << endl);
     else
-        LOG("MDS Cache miss for '" << name << "' and response " << object_name << endl);
+        INFO_LOG(prolog << "MDS Cache miss for '" << name << "' and response " << object_name << endl);
 
     return lock;
  }
@@ -1159,7 +1161,7 @@ GlobalMetadataStore::remove_response_helper(const string& name, const string &su
         return true;
     }
     else {
-        LOG("Metadata store: unable to remove the " << object_name << " response for '" << name << "' (" << strerror(errno) << ")."<< endl);
+        ERROR_LOG(prolog << "Metadata store: unable to remove the " << object_name << " response for '" << name << "' (" << strerror(errno) << ")."<< endl);
     }
 
     return false;

@@ -26,6 +26,8 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 /////////////////////////////////////////////////////////////////////////////
+#include "config.h"
+
 #include "AggMemberDatasetUsingLocationRef.h"
 
 #include "BESDataDDSResponse.h" // bes
@@ -84,7 +86,7 @@ AggMemberDatasetUsingLocationRef::getDDS()
 void AggMemberDatasetUsingLocationRef::loadDDS()
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("AggMemberDatasetUsingLocationRef::loadDDS", "");
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("AggMemberDatasetUsingLocationRef::loadDDS", "");
 
     // We cannot load an empty location, so avoid the exception later.
     if (getLocation().empty()) {

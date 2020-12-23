@@ -18,7 +18,10 @@ DIST_SUBDIRS = unit-tests # tests
 #     export CXXFLAGS='...'; ./configure --disable-shared
 # the --disable-shared is not required, but it seems to help with debuggers.
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
-TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
+
+AM_CXXFLAGS=
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
 
 noinst_LTLIBRARIES = libswath2grid.la
 

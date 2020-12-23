@@ -10,6 +10,8 @@
     <Attribute name="value" type="Int32">
       <Value>45</Value>
     </Attribute>
-    <dmrpp:chunk offset="2144"   nBytes="4"/>
+    <dmrpp:chunks byteOrder="LE">
+      <dmrpp:chunk offset="2144"   nBytes="4"/>
+    </dmrpp:chunks>
   </Int32>
 </Dataset>

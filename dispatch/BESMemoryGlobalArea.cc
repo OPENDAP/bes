@@ -33,6 +33,7 @@
 #include "config.h"
 
 #include <iostream>
+#include <sstream>
 #include <cstdlib>
 #include <cstring>
 #include <cerrno>
@@ -49,6 +50,8 @@ using std::ostream;
 #include "BESDebug.h"
 #include "BESLog.h"
 #include "TheBESKeys.h"
+
+#define prolog std::string("BESMemoryGlobalArea::").append(__func__).append("() - ")
 
 int BESMemoryGlobalArea::_counter = 0;
 unsigned long BESMemoryGlobalArea::_size = 0;
@@ -91,39 +94,39 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
                 if (control_heap == "yes") {
                     unsigned int max = atol(mhs.c_str());
 
-                    LOG("Initialize emergency heap size to " << (unsigned long)emergency << " and heap size to " << (unsigned long)(max + 1) << " MB" << endl);
+                    INFO_LOG(prolog << "Initialize emergency heap size to " << (unsigned long)emergency << " and heap size to " << (unsigned long)(max + 1) << " MB" << endl);
                     if (emergency > max) {
-                        string s = string("BES: ") + "unable to start since the emergency "
+                        string s = prolog + "Unable to start since the emergency "
                             + "pool is larger than the maximum size of " + "the heap.\n";
-                        LOG(s);
+                        ERROR_LOG(s);
                         throw BESInternalFatalError(s, __FILE__, __LINE__);
                     }
                     log_limits("before setting limits: ");
                     limit.rlim_cur = megabytes(max + 1);
                     limit.rlim_max = megabytes(max + 1);
                     if (setrlimit( RLIMIT_DATA, &limit) < 0) {
-                        string s = string("BES: ") + "Could not set limit for the heap " + "because " + strerror(errno)
+                        string s =  prolog + "Could not set limit for the heap " + "because " + strerror(errno)
                             + "\n";
                         if ( errno == EPERM) {
                             s = s + "Attempting to increase the soft/hard " + "limit above the current hard limit, "
                                 + "must be superuser\n";
                         }
-                        LOG(s);
+                        ERROR_LOG(s);
                         throw BESInternalFatalError(s, __FILE__, __LINE__);
                     }
                     log_limits("after setting limits: ");
                     _buffer = 0;
                     _buffer = malloc(megabytes(max));
                     if (!_buffer) {
-                        string s = string("BES: ") + "cannot get heap of size " + mhs + " to start running";
-                        LOG(s);
+                        string s =  prolog + "Cannot get heap of size " + mhs + " to start running";
+                        ERROR_LOG(s);
                         throw BESInternalFatalError(s, __FILE__, __LINE__);
                     }
                     free(_buffer);
                 }
                 else {
                     if (emergency > 10) {
-                        string s = "Emergency pool is larger than 10 Megabytes";
+                        string s =  prolog + "Emergency pool is larger than 10 Megabytes";
                         throw BESInternalFatalError(s, __FILE__, __LINE__);
                     }
                 }
@@ -132,8 +135,8 @@ BESMemoryGlobalArea::BESMemoryGlobalArea()
                 _buffer = 0;
                 _buffer = malloc(_size);
                 if (!_buffer) {
-                    string s = (string) "BES: cannot expand heap to " + eps + " to start running";
-                    LOG(s << endl);
+                    string s =  prolog + "Cannot expand heap to " + eps + " to start running";
+                    ERROR_LOG(s << endl);
                     throw BESInternalFatalError(s, __FILE__, __LINE__);
                 }
             }
@@ -162,20 +165,22 @@ BESMemoryGlobalArea::~BESMemoryGlobalArea()
 inline void BESMemoryGlobalArea::log_limits(const string &msg)
 {
     if (getrlimit( RLIMIT_DATA, &limit) < 0) {
-        LOG(msg << "Could not get limits because " << strerror( errno) << endl);
+        std::stringstream moo;
+        moo << prolog << msg << "Could not get limits because " << strerror(errno) << endl;
+        ERROR_LOG(moo.str());
         _counter--;
-        throw BESInternalFatalError(strerror( errno), __FILE__, __LINE__);
+        throw BESInternalFatalError(moo.str(), __FILE__, __LINE__);
     }
     if (limit.rlim_cur == RLIM_INFINITY)
-        LOG(msg << "BES heap size soft limit is infinite" << endl);
+        INFO_LOG(prolog << msg << "BES heap size soft limit is infinite" << endl);
     else
-        LOG(msg << "BES heap size soft limit is " << (long int) limit.rlim_cur << " bytes ("
-            << (long int) (limit.rlim_cur) / (MEGABYTE) << " MB - may be rounded up)" << endl);
+        INFO_LOG(prolog << msg << "BES heap size soft limit is " << (long int) limit.rlim_cur << " bytes ("
+                     << (long int) (limit.rlim_cur) / (MEGABYTE) << " MB - may be rounded up)" << endl);
     if (limit.rlim_max == RLIM_INFINITY)
-        LOG(msg << "BES heap size hard limit is infinite" << endl);
+        INFO_LOG(prolog << msg << "BES heap size hard limit is infinite" << endl);
     else
-        LOG("BES heap size hard limit is " << (long int) limit.rlim_max << " bytes ("
-            << (long int) (limit.rlim_max) / (MEGABYTE) << " MB - may be rounded up)" << endl);
+        INFO_LOG(prolog << "BES heap size hard limit is " << (long int) limit.rlim_max << " bytes ("
+                                                << (long int) (limit.rlim_max) / (MEGABYTE) << " MB - may be rounded up)" << endl);
 }
 
 void BESMemoryGlobalArea::release_memory()

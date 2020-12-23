@@ -2,7 +2,6 @@
 #
 # 07/25/18
 #
-
 AUTOMAKE_OPTIONS = foreign
 
 ACLOCAL_AMFLAGS = -I conf
@@ -11,10 +10,14 @@ ACLOCAL_AMFLAGS = -I conf
 M_NAME=ngap_module
 M_VER=1.0.4
 
-AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/xmlcommand $(DAP_CFLAGS)
-LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/xmlcommand -I$(top_srcdir)/http $(DAP_CFLAGS)
+LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
+
+AM_CXXFLAGS=
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
 
 SUBDIRS = . unit-tests tests
 
@@ -25,11 +28,19 @@ libngap_module_la_SOURCES = $(NGAP_SRC) $(NGAP_HDR)
 libngap_module_la_LDFLAGS = -avoid-version -module 
 libngap_module_la_LIBADD = $(LIBADD)
 
-NGAP_SRC = NgapRequestHandler.cc NgapModule.cc NgapContainer.cc NgapContainerStorage.cc \
-	NgapApi.cc NgapCache.cc NgapUtils.cc RemoteHttpResource.cc curl_utils.cc
+NGAP_SRC =  NgapRequestHandler.cc \
+            NgapModule.cc \
+            NgapContainer.cc \
+            NgapContainerStorage.cc \
+            NgapApi.cc
 
-NGAP_HDR = NgapNames.h NgapRequestHandler.h NgapModule.h NgapContainer.h NgapContainerStorage.h \
-           	NgapApi.h NgapCache.h NgapUtils.h NgapError.h RemoteHttpResource.h curl_utils.h
+NGAP_HDR =  NgapNames.h \
+            NgapRequestHandler.h \
+            NgapModule.h \
+            NgapContainer.h \
+            NgapContainerStorage.h \
+            NgapError.h \
+            NgapApi.h
 
 EXTRA_DIST = ngap.conf.in data
 

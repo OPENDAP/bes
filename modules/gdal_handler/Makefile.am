@@ -28,7 +28,9 @@ endif
 #     export CXXFLAGS='...'; ./configure --disable-shared
 # the --disable-shared is not required, but it seems to help with debuggers.
 CXXFLAGS_DEBUG = -g3 -O0 -Wall -W -Wcast-align 
-TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
+
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
 
 # Now set using configure. jhrg 11/28/17
 # if BES_DEVELOPER

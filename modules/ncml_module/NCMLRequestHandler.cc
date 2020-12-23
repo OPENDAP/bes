@@ -161,7 +161,7 @@ bool NCMLRequestHandler::ncml_build_redirect(BESDataHandlerInterface &dhi, const
 bool NCMLRequestHandler::ncml_build_das(BESDataHandlerInterface &dhi)
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("NCMLRequestHandler::ncml_build_das", dhi.data[REQUEST_ID]);
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("NCMLRequestHandler::ncml_build_das", dhi.data[REQUEST_ID]);
 
     string filename = dhi.container->access();
 
@@ -196,7 +196,7 @@ bool NCMLRequestHandler::ncml_build_dds(BESDataHandlerInterface &dhi)
 #if 0
     // original version 8/13/15
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("NCMLRequestHandler::ncml_build_dds", dhi.data[REQUEST_ID]);
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("NCMLRequestHandler::ncml_build_dds", dhi.data[REQUEST_ID]);
 
     string filename = dhi.container->access();
 
@@ -244,7 +244,7 @@ bool NCMLRequestHandler::ncml_build_dds(BESDataHandlerInterface &dhi)
 #endif
 
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("NCMLRequestHandler::ncml_build_dds", dhi.data[REQUEST_ID]);
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("NCMLRequestHandler::ncml_build_dds", dhi.data[REQUEST_ID]);
 
     string filename = dhi.container->access();
 
@@ -281,7 +281,7 @@ bool NCMLRequestHandler::ncml_build_dds(BESDataHandlerInterface &dhi)
 bool NCMLRequestHandler::ncml_build_data(BESDataHandlerInterface &dhi)
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("NCMLRequestHandler::ncml_build_data", dhi.data[REQUEST_ID]);
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("NCMLRequestHandler::ncml_build_data", dhi.data[REQUEST_ID]);
 
     string filename = dhi.container->access();
 
@@ -318,7 +318,7 @@ bool NCMLRequestHandler::ncml_build_data(BESDataHandlerInterface &dhi)
 bool NCMLRequestHandler::ncml_build_dmr(BESDataHandlerInterface &dhi)
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("NCMLRequestHandler::ncml_build_dmr", dhi.data[REQUEST_ID]);
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("NCMLRequestHandler::ncml_build_dmr", dhi.data[REQUEST_ID]);
 
     // Because this code does not yet know how to build a DMR directly, use
     // the DMR ctor that builds a DMR using a 'full DDS' (a DDS with attributes).

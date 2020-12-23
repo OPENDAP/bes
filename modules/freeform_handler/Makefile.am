@@ -22,6 +22,10 @@ LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) FFND/libfreeform.la
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
+AM_CXXFLAGS=
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
+
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libff_module.la
 

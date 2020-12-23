@@ -189,7 +189,7 @@ void W10nJsonTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterf
 {
 #ifndef NDEBUG
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("W10nJsonTransmitter::send_data", dhi.data[REQUEST_ID]);
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("W10nJsonTransmitter::send_data", dhi.data[REQUEST_ID]);
 #endif
 
     BESDEBUG(W10N_DEBUG_KEY, "W10nJsonTransmitter::send_data() - BEGIN." << endl);
@@ -259,7 +259,7 @@ void W10nJsonTransmitter::send_metadata(BESResponseObject *obj, BESDataHandlerIn
 {
 #ifndef NDEBUG
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("W10nJsonTransmitter::send_metadata", dhi.data[REQUEST_ID]);
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("W10nJsonTransmitter::send_metadata", dhi.data[REQUEST_ID]);
 #endif
 
     ContextCleanup cleanup;

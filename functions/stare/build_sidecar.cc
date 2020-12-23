@@ -10,6 +10,10 @@
  *      															*
  ********************************************************************/
 
+// This is a simple application that additionally can read data from
+// OPeNDAP servers (Hyrax, TDS, ...). It does not use the BES framework.
+// jhrg 6/17/20
+
 #include <unistd.h>
 #include <string>
 #include <memory>
@@ -19,16 +23,15 @@
 
 #include <hdf5.h>
 
-#include "STARE.h"
+#include <STARE.h>
 
 #include <D4Connect.h>
 #include <Connect.h>
 #include <Array.h>
 #include <Error.h>
 
-#include <BESSyntaxUserError.h>
-
 using namespace std;
+using namespace libdap;
 
 static bool verbose = false;
 #define VERBOSE(x) do { if (verbose) x; } while(false)
@@ -206,16 +209,16 @@ vector<hsize_t> read_lat_lon(const string &filename, const string &lat_name, con
     //Read the file and store the datasets
     hid_t file = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
     if (file < 0)
-        throw BESSyntaxUserError(string("Could not open the file '").append(filename).append("'"), __FILE__, __LINE__);
+        throw Error(string("Could not open the file '").append(filename).append("'"), __FILE__, __LINE__);
 
     hid_t latDataset = H5Dopen(file, lat_name.c_str(), H5P_DEFAULT);
     if (latDataset < 0)
-        throw BESSyntaxUserError(string("Could not open the HDF5 dataset '").append(lat_name).append("'"), __FILE__,
+        throw Error(string("Could not open the HDF5 dataset '").append(lat_name).append("'"), __FILE__,
                                  __LINE__);
 
     hid_t lonDataset = H5Dopen(file, lon_name.c_str(), H5P_DEFAULT);
     if (lonDataset < 0)
-        throw BESSyntaxUserError(string("Could not open the HDF5 dataset '").append(lon_name).append("'"), __FILE__,
+        throw Error(string("Could not open the HDF5 dataset '").append(lon_name).append("'"), __FILE__,
                                  __LINE__);
 
     //Get the number of dimensions
@@ -223,12 +226,12 @@ vector<hsize_t> read_lat_lon(const string &filename, const string &lat_name, con
     //that way I don't have to go back and figure it all out again kln 10/17/19
     hid_t dspace = H5Dget_space(latDataset);
     if (dspace < 0)
-        throw BESSyntaxUserError(string("Could not open the HDF5 data space for '").append(lat_name).append("'"),
+        throw Error(string("Could not open the HDF5 data space for '").append(lat_name).append("'"),
                                  __FILE__, __LINE__);
 
     const int ndims = H5Sget_simple_extent_ndims(dspace);
     if (ndims != 2)
-        throw BESSyntaxUserError(string("The latitude variable '").append(lat_name).append("' should be a 2D array"),
+        throw Error(string("The latitude variable '").append(lat_name).append("' should be a 2D array"),
                                  __FILE__, __LINE__);
 
     vector<hsize_t> dims(ndims);
@@ -240,12 +243,12 @@ vector<hsize_t> read_lat_lon(const string &filename, const string &lat_name, con
     //We need to get the filespace and memspace before reading the values from each dataset
     hid_t latFilespace = H5Dget_space(latDataset);
     if (latFilespace < 0)
-        throw BESSyntaxUserError(string("Could not open the HDF5 file space for '").append(lat_name).append("'"),
+        throw Error(string("Could not open the HDF5 file space for '").append(lat_name).append("'"),
                                  __FILE__, __LINE__);
 
     hid_t lonFilespace = H5Dget_space(lonDataset);
     if (lonFilespace < 0)
-        throw BESSyntaxUserError(string("Could not open the HDF5 file space for '").append(lon_name).append("'"),
+        throw Error(string("Could not open the HDF5 file space for '").append(lon_name).append("'"),
                                  __FILE__, __LINE__);
 
     //The filespace will tell us what the size of the vectors need to be for reading in the
@@ -256,7 +259,7 @@ vector<hsize_t> read_lat_lon(const string &filename, const string &lat_name, con
     VERBOSE(cerr << "\n\tlon dataspace size: " << lonSize << endl);
 
     if (latSize != lonSize)
-        throw BESSyntaxUserError(
+        throw Error(
                 string("The size of the Latitude and Longitude arrays must be equal in '").append(filename).append("'"),
                 __FILE__, __LINE__);
 
@@ -265,7 +268,7 @@ vector<hsize_t> read_lat_lon(const string &filename, const string &lat_name, con
 
     hid_t memspace = H5Screate_simple(ndims, &dims[0], NULL);
     if (memspace < 0)
-        throw BESSyntaxUserError(
+        throw Error(
                 string("Could not make an HDF5 memory space while working with '").append(filename).append("'"),
                 __FILE__, __LINE__);
 
@@ -273,12 +276,12 @@ vector<hsize_t> read_lat_lon(const string &filename, const string &lat_name, con
     // was H5T_NATIVE_FLOAT. jhrg 4/17/20
     herr_t status = H5Dread(latDataset, H5T_NATIVE_DOUBLE, memspace, latFilespace, H5P_DEFAULT, &lat[0]);
     if (status < 0)
-        throw BESSyntaxUserError(string("Could not read data for '").append(lat_name).append("'"), __FILE__, __LINE__);
+        throw Error(string("Could not read data for '").append(lat_name).append("'"), __FILE__, __LINE__);
 
 
     status = H5Dread(lonDataset, H5T_NATIVE_DOUBLE, memspace, lonFilespace, H5P_DEFAULT, &lon[0]);
     if (status < 0)
-        throw BESSyntaxUserError(string("Could not read data for '").append(lon_name).append("'"), __FILE__, __LINE__);
+        throw Error(string("Could not read data for '").append(lon_name).append("'"), __FILE__, __LINE__);
 
     VERBOSE(cerr << "\tsize of lat array: " << lat.size() << endl);
     VERBOSE(cerr << "\tsize of lon array: " << lon.size() << endl);
@@ -298,16 +301,16 @@ void read_lat_lon(const string &filename, const string &lat_name, const string &
     //Read the file and store the datasets
     hid_t file = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
     if (file < 0)
-        throw BESSyntaxUserError(string("Could not open the file '").append(filename).append("'"), __FILE__, __LINE__);
+        throw Error(string("Could not open the file '").append(filename).append("'"), __FILE__, __LINE__);
 
     hid_t latDataset = H5Dopen(file, lat_name.c_str(), H5P_DEFAULT);
     if (latDataset < 0)
-        throw BESSyntaxUserError(string("Could not open the HDF5 dataset '").append(lat_name).append("'"), __FILE__,
+        throw Error(string("Could not open the HDF5 dataset '").append(lat_name).append("'"), __FILE__,
                                  __LINE__);
 
     hid_t lonDataset = H5Dopen(file, lon_name.c_str(), H5P_DEFAULT);
     if (lonDataset < 0)
-        throw BESSyntaxUserError(string("Could not open the HDF5 dataset '").append(lon_name).append("'"), __FILE__,
+        throw Error(string("Could not open the HDF5 dataset '").append(lon_name).append("'"), __FILE__,
                                  __LINE__);
 
     //Get the number of dimensions
@@ -315,12 +318,12 @@ void read_lat_lon(const string &filename, const string &lat_name, const string &
     //that way I don't have to go back and figure it all out again kln 10/17/19
     hid_t dspace = H5Dget_space(latDataset);
     if (dspace < 0)
-        throw BESSyntaxUserError(string("Could not open the HDF5 data space for '").append(lat_name).append("'"),
+        throw Error(string("Could not open the HDF5 data space for '").append(lat_name).append("'"),
                                  __FILE__, __LINE__);
 
     const int ndims = H5Sget_simple_extent_ndims(dspace);
     if (ndims != 2)
-        throw BESSyntaxUserError(string("The latitude variable '").append(lat_name).append("' should be a 2D array"),
+        throw Error(string("The latitude variable '").append(lat_name).append("' should be a 2D array"),
                                  __FILE__, __LINE__);
 
     c->dims.resize(ndims);
@@ -332,12 +335,12 @@ void read_lat_lon(const string &filename, const string &lat_name, const string &
     //We need to get the filespace and memspace before reading the values from each dataset
     hid_t latFilespace = H5Dget_space(latDataset);
     if (latFilespace < 0)
-        throw BESSyntaxUserError(string("Could not open the HDF5 file space for '").append(lat_name).append("'"),
+        throw Error(string("Could not open the HDF5 file space for '").append(lat_name).append("'"),
                                  __FILE__, __LINE__);
 
     hid_t lonFilespace = H5Dget_space(lonDataset);
     if (lonFilespace < 0)
-        throw BESSyntaxUserError(string("Could not open the HDF5 file space for '").append(lon_name).append("'"),
+        throw Error(string("Could not open the HDF5 file space for '").append(lon_name).append("'"),
                                  __FILE__, __LINE__);
 
     //The filespace will tell us what the size of the vectors need to be for reading in the
@@ -348,7 +351,7 @@ void read_lat_lon(const string &filename, const string &lat_name, const string &
     VERBOSE(cerr << "\n\tlon dataspace size: " << lonSize << endl);
 
     if (latSize != lonSize)
-        throw BESSyntaxUserError(
+        throw Error(
                 string("The size of the Latitude and Longitude arrays must be equal in '").append(filename).append("'"),
                 __FILE__, __LINE__);
 
@@ -356,7 +359,7 @@ void read_lat_lon(const string &filename, const string &lat_name, const string &
 
     hid_t memspace = H5Screate_simple(ndims, c->get_dims(), NULL);
     if (memspace < 0)
-        throw BESSyntaxUserError(
+        throw Error(
                 string("Could not make an HDF5 memory space while working with '").append(filename).append("'"),
                 __FILE__, __LINE__);
 
@@ -364,12 +367,12 @@ void read_lat_lon(const string &filename, const string &lat_name, const string &
     // was H5T_NATIVE_FLOAT. jhrg 4/17/20
     herr_t status = H5Dread(latDataset, H5T_NATIVE_DOUBLE, memspace, latFilespace, H5P_DEFAULT, c->get_lat());
     if (status < 0)
-        throw BESSyntaxUserError(string("Could not read data for '").append(lat_name).append("'"), __FILE__, __LINE__);
+        throw Error(string("Could not read data for '").append(lat_name).append("'"), __FILE__, __LINE__);
 
 
     status = H5Dread(lonDataset, H5T_NATIVE_DOUBLE, memspace, lonFilespace, H5P_DEFAULT, c->get_lon());
     if (status < 0)
-        throw BESSyntaxUserError(string("Could not read data for '").append(lon_name).append("'"), __FILE__, __LINE__);
+        throw Error(string("Could not read data for '").append(lon_name).append("'"), __FILE__, __LINE__);
 
     VERBOSE(cerr << "\tsize of lat array: " << c->lat.size() << endl);
     VERBOSE(cerr << "\tsize of lon array: " << c->lon.size() << endl);
@@ -776,7 +779,7 @@ static void usage() {
     cerr << "-b STARE Build Level: \tHigher levels -> longer initialization time. (default is 5)" << endl;
     cerr << "-s STARE default Level: \tHigher levels -> finer resolution. (default is 27)" << endl;
     cerr << "-a Algotithm: \t1, 2 or 3 (default is 3)" << endl;
-    cerr << "-r Include resolution inforamtion in the indices. Works for algorithm 2 and 3 only" << endl;
+    cerr << "-r Include resolution information in the indices. Works for algorithm 2 and 3 only" << endl;
 }
 
 static string
@@ -896,7 +899,7 @@ int main(int argc, char *argv[]) {
                 unique_ptr<vector<coord> > coords = build_coords(stare, dims, lat, lon);
 
                 if (compute_resolution)
-                    VERBOSE("STARE index resolution is not available for algorithm one.");
+                    VERBOSE(cerr << "STARE index resolution is not available for algorithm one.");
 
                 writeHDF5(newName, tmpStorage, coords.get());
                 break;
@@ -942,8 +945,8 @@ int main(int argc, char *argv[]) {
         cerr << "Error: " << e.get_error_message() << endl;
         exit(EXIT_FAILURE);
     }
-    catch (BESError &e) {
-        cerr << "Error: " << e.get_message() << endl;
+    catch (exception &e) {
+        cerr << "C++ Error: " << e.what() << endl;
         exit(EXIT_FAILURE);
     }
 

@@ -49,6 +49,7 @@ static bool bes_debug = false;
 
 #undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
+#define prolog std::string("DmrppCommonTest::").append(__func__).append("() - ")
 
 namespace dmrpp {
 
@@ -155,17 +156,17 @@ public:
     void test_add_chunk_1()
     {
         CPPUNIT_ASSERT(d_dc.d_chunks.size() == 0);
-        int size = d_dc.add_chunk("url", 100, 200, "[10,20]");
+        int size = d_dc.add_chunk("url", "", 100, 200, "[10,20]");
 
         CPPUNIT_ASSERT(size == 1);
         CPPUNIT_ASSERT(d_dc.d_chunks.size() == 1);
-        Chunk &c = d_dc.d_chunks[0];
-        CPPUNIT_ASSERT(c.d_data_url == "url");
-        CPPUNIT_ASSERT(c.d_size == 100);
-        CPPUNIT_ASSERT(c.d_offset = 200);
-        CPPUNIT_ASSERT(c.d_chunk_position_in_array.size() == 2);
-        CPPUNIT_ASSERT(c.d_chunk_position_in_array.at(0) == 10);
-        CPPUNIT_ASSERT(c.d_chunk_position_in_array.at(1) == 20);
+        auto c = d_dc.d_chunks[0];
+        CPPUNIT_ASSERT(c->d_data_url == "url");
+        CPPUNIT_ASSERT(c->d_size == 100);
+        CPPUNIT_ASSERT(c->d_offset = 200);
+        CPPUNIT_ASSERT(c->d_chunk_position_in_array.size() == 2);
+        CPPUNIT_ASSERT(c->d_chunk_position_in_array.at(0) == 10);
+        CPPUNIT_ASSERT(c->d_chunk_position_in_array.at(1) == 20);
     }
 
     void test_add_chunk_2()
@@ -173,24 +174,33 @@ public:
         vector<unsigned int> pia;
         pia.push_back(10);
         pia.push_back(20);
+        try {
+            int size = d_dc.add_chunk("url", "", 100, 200, pia);
 
-        int size = d_dc.add_chunk("url", 100, 200, pia);
+            CPPUNIT_ASSERT(size == 1);
+            CPPUNIT_ASSERT(d_dc.d_chunks.size() == 1);
+            auto c = d_dc.d_chunks[0];
+            CPPUNIT_ASSERT(c->d_data_url == "url");
+            CPPUNIT_ASSERT(c->d_size == 100);
+            CPPUNIT_ASSERT(c->d_offset = 200);
+            CPPUNIT_ASSERT(c->d_chunk_position_in_array.size() == 2);
+            CPPUNIT_ASSERT(c->d_chunk_position_in_array.at(0) == 10);
+            CPPUNIT_ASSERT(c->d_chunk_position_in_array.at(1) == 20);
 
-        CPPUNIT_ASSERT(size == 1);
-        CPPUNIT_ASSERT(d_dc.d_chunks.size() == 1);
-        Chunk &c = d_dc.d_chunks[0];
-        CPPUNIT_ASSERT(c.d_data_url == "url");
-        CPPUNIT_ASSERT(c.d_size == 100);
-        CPPUNIT_ASSERT(c.d_offset = 200);
-        CPPUNIT_ASSERT(c.d_chunk_position_in_array.size() == 2);
-        CPPUNIT_ASSERT(c.d_chunk_position_in_array.at(0) == 10);
-        CPPUNIT_ASSERT(c.d_chunk_position_in_array.at(1) == 20);
+        }
+        catch(BESError &be){
+            CPPUNIT_FAIL(prolog + be.get_message());
+        }
+        catch(...){
+            CPPUNIT_FAIL(prolog + "Caught unknown exception.");
+        }
+
     }
 
     void test_print_chunks_element_1()
     {
         d_dc.parse_chunk_dimension_sizes("51 17");
-        d_dc.add_chunk("url", 100, 200, "[10,20]");
+        d_dc.add_chunk("url", "", 100, 200, "[10,20]");
 
         XMLWriter writer;
         d_dc.print_chunks_element(writer, "dmrpp");
@@ -203,8 +213,8 @@ public:
     void test_print_chunks_element_2()
     {
         d_dc.parse_chunk_dimension_sizes("51 17");
-        d_dc.add_chunk("url", 100, 200, "[10,20]");
-        int size = d_dc.add_chunk("url", 100, 300, "[20,30]");
+        d_dc.add_chunk("url", "", 100, 200, "[10,20]");
+        int size = d_dc.add_chunk("url", "", 100, 300, "[20,30]");
 
         CPPUNIT_ASSERT(size == 2);
 
@@ -220,8 +230,8 @@ public:
     {
         d_dc.d_deflate = true;
         d_dc.parse_chunk_dimension_sizes("51 17");
-        d_dc.add_chunk("url", 100, 200, "[10,20]");
-        int size = d_dc.add_chunk("url", 100, 300, "[20,30]");
+        d_dc.add_chunk("url", "", 100, 200, "[10,20]");
+        int size = d_dc.add_chunk("url", "", 100, 300, "[20,30]");
 
         CPPUNIT_ASSERT(size == 2);
 
@@ -238,8 +248,8 @@ public:
         d_dc.d_deflate = true;
         d_dc.d_shuffle = true;
         d_dc.parse_chunk_dimension_sizes("51 17");
-        d_dc.add_chunk("url", 100, 200, "[10,20]");
-        int size = d_dc.add_chunk("url", 100, 300, "[20,30]");
+        d_dc.add_chunk("url", "", 100, 200, "[10,20]");
+        int size = d_dc.add_chunk("url", "", 100, 300, "[20,30]");
 
         CPPUNIT_ASSERT(size == 2);
 
@@ -256,8 +266,8 @@ public:
         d_dc.d_deflate = false;
         d_dc.d_shuffle = true;
         d_dc.parse_chunk_dimension_sizes("51 17");
-        d_dc.add_chunk("url", 100, 200, "[10,20]");
-        int size = d_dc.add_chunk("url", 100, 300, "[20,30]");
+        d_dc.add_chunk("url", "", 100, 200, "[10,20]");
+        int size = d_dc.add_chunk("url", "", 100, 300, "[20,30]");
 
         CPPUNIT_ASSERT(size == 2);
 

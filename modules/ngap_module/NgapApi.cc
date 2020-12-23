@@ -22,7 +22,7 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-
+#include "config.h"
 
 #include <cstdio>
 #include <cstring>
@@ -32,27 +32,30 @@
 #include <time.h>
 #include <curl/curl.h>
 
+#include <util.h>
+#include <debug.h>
+
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/prettywriter.h"
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/filereadstream.h"
 
-#include <util.h>
-#include <debug.h>
-
-#include <BESError.h>
-#include <BESNotFoundError.h>
-#include <BESSyntaxUserError.h>
-#include <BESDebug.h>
-#include <BESUtil.h>
-#include <TheBESKeys.h>
+#include "BESError.h"
+#include "BESNotFoundError.h"
+#include "BESSyntaxUserError.h"
+#include "BESDebug.h"
+#include "BESUtil.h"
+#include "BESStopWatch.h"
+#include "BESLog.h"
+#include "TheBESKeys.h"
+#include "CurlUtils.h"
+#include "url_impl.h"
+#include "RemoteResource.h"
 
 #include "NgapApi.h"
 #include "NgapNames.h"
-#include "RemoteHttpResource.h"
 #include "NgapError.h"
-#include "curl_utils.h"
 
 using namespace std;
 
@@ -60,18 +63,20 @@ using namespace std;
 
 namespace ngap {
 
-    string NGAP_PROVIDER_KEY("providers");
-    string NGAP_COLLECTIONS_KEY("collections");
-    string NGAP_GRANULES_KEY("granules");
-    string DEFAULT_CMR_ENDPOINT_URL("https://cmr.earthdata.nasa.gov");
-    string DEFAULT_CMR_SEARCH_ENDPOINT_PATH("/search/granules.umm_json_v1_4");
+    const string NGAP_PROVIDER_KEY("providers");
+    const string NGAP_COLLECTIONS_KEY("collections");
+    const string NGAP_CONCEPTS_KEY("concepts");
+    const string NGAP_GRANULES_KEY("granules");
+    const string DEFAULT_CMR_ENDPOINT_URL("https://cmr.earthdata.nasa.gov");
+    const string DEFAULT_CMR_SEARCH_ENDPOINT_PATH("/search/granules.umm_json_v1_4");
 
-    string CMR_PROVIDER("provider");
-    string CMR_ENTRY_TITLE("entry_title");
-    string CMR_GRANULE_UR("granule_ur");
-    string CMR_URL_TYPE_GET_DATA("GET DATA");
+    const string CMR_PROVIDER("provider");
+    const string CMR_ENTRY_TITLE("entry_title");
+    const string CMR_COLLECTION_CONCEPT_ID("collection_concept_id");
+    const string CMR_GRANULE_UR("granule_ur");
+    const string CMR_URL_TYPE_GET_DATA("GET DATA");
 
-    string rjtype_names[] = {
+    const string RJ_TYPE_NAMES[] = {
             "kNullType",
             "kFalseType",
             "kTrueType",
@@ -80,6 +85,13 @@ namespace ngap {
             "kStringType",
             "kNumberType"
     };
+
+    const string AMS_EXPIRES_HEADER_KEY("X-Amz-Expires");
+    const string AWS_DATE_HEADER_KEY("X-Amz-Date");
+    // const string AWS_DATE_FORMAT("%Y%m%dT%H%MS"); // 20200624T175046Z
+    const string CLOUDFRONT_EXPIRES_HEADER_KEY("Expires");
+    const string INGEST_TIME_KEY("ingest_time");
+    const unsigned int REFRESH_THRESHOLD = 3600; // An hour
 
 
     NgapApi::NgapApi() : d_cmr_hostname(DEFAULT_CMR_ENDPOINT_URL), d_cmr_search_endpoint_path(DEFAULT_CMR_SEARCH_ENDPOINT_PATH) {
@@ -102,6 +114,300 @@ namespace ngap {
     std::string NgapApi::get_cmr_search_endpoint_url(){
         return BESUtil::assemblePath(d_cmr_hostname , d_cmr_search_endpoint_path);
     }
+
+
+#if 0
+    // OLD WAY (tokenization on '/' delimiter)
+    std::string
+    NgapApi::build_cmr_query_url(const std::string &restified_path) {
+        string data_access_url("");
+
+        vector<string> tokens;
+        BESUtil::tokenize(restified_path, tokens);
+        if (tokens.empty()) {
+            throw BESSyntaxUserError(string("The specified NGAP API path '") + restified_path +
+                                     "' failed to tokenize: No tokens were returned.", __FILE__, __LINE__);
+        }
+        if(tokens.size()!=6){
+            stringstream msg;
+            msg << prolog << "The specified NGAP API path '" << restified_path << "' was tokenized, but ";
+            msg << tokens.size() << " token(s) were found where 6 are required.";
+            throw BESSyntaxUserError(msg.str() , __FILE__, __LINE__);
+        }
+
+        // Check that the NGAP_PROVIDER_KEY token is present.
+        if (tokens[0] != NGAP_PROVIDER_KEY ) {
+            stringstream msg;
+            msg << prolog << "The specified path '" << restified_path << "'";
+            msg << "does not contain the required path element '" << NGAP_PROVIDER_KEY << "'";
+            throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+        }
+        // Check that the NGAP_COLLECTIONS_KEY or  NGAP_CONCEPTS_KEY token is present.
+        if ((tokens[2] != NGAP_COLLECTIONS_KEY && tokens[2] != NGAP_CONCEPTS_KEY)) {
+            stringstream msg;
+            msg << prolog << "The specified path '" << restified_path << "'";
+            msg << "does not contain the expected path element '" << NGAP_COLLECTIONS_KEY << "' or it's alternate, '";
+            msg << NGAP_CONCEPTS_KEY << "'. One of these is required";
+            throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+        }
+        // Check that the NGAP_GRANULES_KEY token is present.
+        if (tokens[4] != NGAP_GRANULES_KEY) {
+            stringstream msg;
+            msg << prolog << "The specified path '" << restified_path << "'";
+            msg << "does not contain the required path element '" << NGAP_GRANULES_KEY << "'.";
+            throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+        }
+
+        // Build the CMR query URL for the dataset
+        string cmr_url = get_cmr_search_endpoint_url() + "?";
+        {
+            // This easy handle is only created so we can use the curl_easy_escape() on the tokens
+            CURL *ceh = curl_easy_init();
+            char *esc_url_content;
+
+            // Add provider
+            esc_url_content = curl_easy_escape(ceh, tokens[1].c_str(), tokens[1].size());
+            cmr_url += CMR_PROVIDER + "=" + esc_url_content + "&";
+            curl_free(esc_url_content);
+
+            esc_url_content = curl_easy_escape(ceh, tokens[3].c_str(), tokens[3].size());
+            if (tokens[2] == NGAP_COLLECTIONS_KEY) {
+                // Add entry_title
+                cmr_url += CMR_ENTRY_TITLE + "=" + esc_url_content + "&";
+            }
+            else if(tokens[2] == NGAP_CONCEPTS_KEY){
+                // Add collection_concept_id
+                cmr_url += CMR_COLLECTION_CONCEPT_ID + "=" + esc_url_content + "&";
+            }
+            else {
+                // Bad inputs throw an exception.
+                curl_free(esc_url_content);
+                stringstream msg;
+                msg << prolog << "The specified path '" << restified_path << "'";
+                msg << "does not contain the expected path element '" << NGAP_COLLECTIONS_KEY << "' or it's alternate '";
+                msg << NGAP_CONCEPTS_KEY << "'. One of these is required";
+                throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+            }
+            curl_free(esc_url_content);
+
+            esc_url_content = curl_easy_escape(ceh, tokens[5].c_str(), tokens[5].size());
+            cmr_url += CMR_GRANULE_UR + "=" + esc_url_content;
+            curl_free(esc_url_content);
+            curl_easy_cleanup(ceh);
+        }
+        return cmr_url;
+    }
+#else
+
+
+/**
+ * @brief Converts an NGAP restified path into the corresponding CMR query URL.
+ * @param restified_path The resitified path to convert
+ * @return The CMR query URL that will return the granules.umm_json_v1_4 from CMR for the
+ * granule specified in the restified path.
+ */
+std::string NgapApi::build_cmr_query_url(const std::string &restified_path) {
+    string PROVIDERS_KEY("/providers/");
+    string COLLECTIONS_KEY("/collections/");
+    string CONCEPTS_KEY("/concepts/");
+    string GRANULES_KEY("/granules/");
+
+    // Make sure it starts with a '/' (see key strings above)
+    string r_path = ( restified_path[0] != '/' ? "/" : "") + restified_path;
+
+    size_t provider_index  = r_path.find(PROVIDERS_KEY);
+    if(provider_index == string::npos){
+        stringstream msg;
+        msg << prolog << "The specified path '" << r_path << "'";
+        msg << " does not contain the required path element '" << NGAP_PROVIDER_KEY << "'";
+        throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+    }
+    if(provider_index != 0){
+        stringstream msg;
+        msg << prolog << "The specified path '" << r_path << "'";
+        msg << " has the path element '" << NGAP_PROVIDER_KEY << "' located in the incorrect position (";
+        msg << provider_index << ") expected 0.";
+        throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+    }
+    provider_index += PROVIDERS_KEY.length();
+
+    bool use_collection_concept_id = false;
+    size_t collection_index  = r_path.find(COLLECTIONS_KEY);
+    if(collection_index == string::npos) {
+        size_t concepts_index = r_path.find(CONCEPTS_KEY);
+        if (concepts_index == string::npos) {
+            stringstream msg;
+            msg << prolog << "The specified path '" << r_path << "'";
+            msg << " contains neither the '" << COLLECTIONS_KEY << "'";
+            msg << " nor the '" << CONCEPTS_KEY << "'";
+            msg << " one must be provided.";
+            throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+        }
+        collection_index = concepts_index;
+        use_collection_concept_id = true;
+    }
+    if(collection_index <= provider_index+1){  // The value of provider has to be at least 1 character
+        stringstream msg;
+        msg << prolog << "The specified path '" << r_path << "'";
+        msg << " has the path element '" << (use_collection_concept_id?CONCEPTS_KEY:COLLECTIONS_KEY) << "' located in the incorrect position (";
+        msg << collection_index << ") expected at least " << provider_index+1;
+        throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+    }
+    string provider = r_path.substr(provider_index,collection_index - provider_index);
+    collection_index += use_collection_concept_id?CONCEPTS_KEY.length():COLLECTIONS_KEY.length();
+
+
+    size_t granule_index  = r_path.find(GRANULES_KEY);
+    if(granule_index == string::npos){
+        stringstream msg;
+        msg << prolog << "The specified path '" << r_path << "'";
+        msg << " does not contain the required path element '" << GRANULES_KEY << "'";
+        throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+    }
+    if(granule_index <= collection_index+1){ // The value of collection must have at least one character.
+        stringstream msg;
+        msg << prolog << "The specified path '" << r_path << "'";
+        msg << " has the path element '" << GRANULES_KEY << "' located in the incorrect position (";
+        msg << granule_index << ") expected at least " << collection_index+1;
+        throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+    }
+    string collection = r_path.substr(collection_index,granule_index - collection_index);
+    granule_index += GRANULES_KEY.length();
+
+    // The granule value is the path terminus so it's every thing after the key
+    string granule = r_path.substr(granule_index);
+
+    // Build the CMR query URL for the dataset
+    string cmr_url = get_cmr_search_endpoint_url() + "?";
+    {
+        // This easy handle is only created so we can use the curl_easy_escape() on the token values
+        CURL *ceh = curl_easy_init();
+        char *esc_url_content;
+
+        // Add provider
+        esc_url_content = curl_easy_escape(ceh, provider.c_str(), provider.size());
+        cmr_url += CMR_PROVIDER + "=" + esc_url_content + "&";
+        curl_free(esc_url_content);
+
+        esc_url_content = curl_easy_escape(ceh, collection.c_str(), collection.size());
+        if(use_collection_concept_id){
+            // Add collection_concept_id
+            cmr_url += CMR_COLLECTION_CONCEPT_ID + "=" + esc_url_content + "&";
+        }
+        else {
+            // Add entry_title
+            cmr_url += CMR_ENTRY_TITLE + "=" + esc_url_content + "&";
+
+        }
+        curl_free(esc_url_content);
+
+        esc_url_content = curl_easy_escape(ceh, granule.c_str(), granule.size());
+        cmr_url += CMR_GRANULE_UR + "=" + esc_url_content;
+        curl_free(esc_url_content);
+
+        curl_easy_cleanup(ceh);
+    }
+    return cmr_url;
+}
+#endif
+
+/**
+ * @brief  Locates the "GET DATA" URL for a granule in the granules.umm_json_v1_4 document.
+ *
+ * A single granule query is built by convert_restified_path_to_cmr_query_url() from the
+ * NGAP API restified path. This method will parse the CMR response to the query and extract the
+ * granule's "GET DATA" URL and return it.
+ * @param restified_path THe restified path used to form the CMR query
+ * @param cmr_granules The CMR response (granules.umm_json_v1_4) to evaluate
+ * @return  The "GET DATA" URL for the granule.
+ */
+std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::string &restified_path, rapidjson::Document &cmr_granule_response)
+{
+
+    string data_access_url("");
+
+    rapidjson::Value &val = cmr_granule_response["hits"];
+    int hits = val.GetInt();
+    if (hits < 1) {
+        throw BESNotFoundError(string("The specified path '").append(restified_path).append(
+                "' does not identify a granule in CMR."), __FILE__, __LINE__);
+    }
+
+    rapidjson::Value &items = cmr_granule_response["items"];
+    if (items.IsArray()) {
+        stringstream ss;
+        for (rapidjson::SizeType i = 0; i < items.Size(); i++) // Uses SizeType instead of size_t
+            ss << "items[" << i << "]: " << RJ_TYPE_NAMES[items[i].GetType()] << endl;
+
+        BESDEBUG(MODULE, prolog << "items size: " << items.Size() << endl << ss.str() << endl);
+
+        rapidjson::Value &items_obj = items[0];
+        rapidjson::GenericMemberIterator<false, rapidjson::UTF8<char>, rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator>> mitr = items_obj.FindMember(
+                "umm");
+
+        rapidjson::Value &umm = mitr->value;
+        mitr = umm.FindMember("RelatedUrls");
+        if (mitr == umm.MemberEnd()) {
+            throw BESInternalError("Error! The umm/RelatedUrls object was not located!", __FILE__, __LINE__);
+        }
+        rapidjson::Value &related_urls = mitr->value;
+
+        if (!related_urls.IsArray()) {
+            throw BESNotFoundError("Error! The RelatedUrls object in the CMR response is not an array!", __FILE__,
+                                   __LINE__);
+        }
+
+        BESDEBUG(MODULE, prolog << " Found RelatedUrls array in CMR response." << endl);
+
+        bool noSubtype;
+        for (rapidjson::SizeType i = 0; i < related_urls.Size() && data_access_url.empty(); i++) {
+            rapidjson::Value &obj = related_urls[i];
+            mitr = obj.FindMember("URL");
+            if (mitr == obj.MemberEnd()) {
+                stringstream err;
+                err << "Error! The umm/RelatedUrls[" << i << "] does not contain the URL object";
+                throw BESInternalError(err.str(), __FILE__, __LINE__);
+            }
+            rapidjson::Value &r_url = mitr->value;
+
+            mitr = obj.FindMember("Type");
+            if (mitr == obj.MemberEnd()) {
+                stringstream err;
+                err << "Error! The umm/RelatedUrls[" << i << "] does not contain the Type object";
+                throw BESInternalError(err.str(), __FILE__, __LINE__);
+            }
+            rapidjson::Value &r_type = mitr->value;
+
+            noSubtype = obj.FindMember("Subtype") == obj.MemberEnd();
+#if 0
+            mitr = obj.FindMember("Description");
+                if(mitr == obj.MemberEnd()){
+                    stringstream  err;
+                    err << "Error! The umm/RelatedUrls[" << i << "] does not contain the Description object";
+                    throw BESInternalError(err.str(), __FILE__, __LINE__);
+                }
+                rapidjson::Value& r_desc = mitr->value;
+#endif
+            BESDEBUG(MODULE, prolog << "RelatedUrl Object:" <<
+                                    " URL: '" << r_url.GetString() << "'" <<
+                                    " Type: '" << r_type.GetString() << "'" <<
+                                    " SubType: '" << (noSubtype ? "Absent" : "Present") << "'" << endl);
+
+            if ((r_type.GetString() == CMR_URL_TYPE_GET_DATA) && noSubtype) {
+                data_access_url = r_url.GetString();
+            }
+        }
+    }
+
+    if (data_access_url.empty()) {
+        throw BESInternalError(string("ERROR! Failed to locate a data access URL for the path: ") + restified_path,
+                               __FILE__, __LINE__);
+    }
+
+    return data_access_url;
+}
+
+
 
     /**
      * @brief Converts an NGAP restified granule path into a CMR metadata query for the granule.
@@ -127,204 +433,37 @@ namespace ngap {
      */
     string NgapApi::convert_ngap_resty_path_to_data_access_url(
             const std::string &restified_path,
-            const std::string &uid,
-            const std::string &access_token
-    ) {
-
+            const std::string &uid
+            ) {
+        BESDEBUG(MODULE, prolog << "BEGIN" << endl);
         string data_access_url("");
 
-        vector<string> tokens;
-        BESUtil::tokenize(restified_path, tokens);
-        if (tokens.empty()) {
-            throw BESSyntaxUserError(string("The specified path '") + restified_path +
-                                     "' does not conform to the NGAP request interface API.", __FILE__, __LINE__);
-        }
+        string cmr_query_url = build_cmr_query_url(restified_path);
 
-        // Check to make sure all required tokens are present.
-        if (tokens[0] != NGAP_PROVIDER_KEY || tokens[2] != NGAP_COLLECTIONS_KEY || tokens[4] != NGAP_GRANULES_KEY) {
-            throw BESSyntaxUserError(string("The specified path '") + restified_path +
-                                     "' does not conform to the NGAP request interface API.", __FILE__, __LINE__);
-        }
-        // Pick up the values of said tokens.
-        string cmr_url = get_cmr_search_endpoint_url() + "?";
+        BESDEBUG(MODULE, prolog << "CMR Request URL: " << cmr_query_url << endl);
 
-        char error_buffer[CURL_ERROR_SIZE];
-        CURL *curl = ngap_curl::init(error_buffer);  // This may throw either Error or InternalErr
-        char *esc_url_content;
-
-        esc_url_content = curl_easy_escape(curl, tokens[1].c_str(), tokens[1].size());
-        cmr_url += CMR_PROVIDER + "=" + esc_url_content + "&";
-        curl_free(esc_url_content);
-
-        esc_url_content = curl_easy_escape(curl, tokens[3].c_str(), tokens[3].size());
-        cmr_url += CMR_ENTRY_TITLE + "=" + esc_url_content + "&";
-        curl_free(esc_url_content);
-
-        esc_url_content = curl_easy_escape(curl, tokens[5].c_str(), tokens[5].size());
-        cmr_url += CMR_GRANULE_UR + "=" + esc_url_content;
-        curl_free(esc_url_content);
-        curl_easy_cleanup(curl);
-
-
-        BESDEBUG(MODULE, prolog << "CMR Request URL: " << cmr_url << endl);
-#if 1
         BESDEBUG(MODULE, prolog << "Building new RemoteResource." << endl);
-        RemoteHttpResource cmr_query(cmr_url, uid, access_token);
-        cmr_query.retrieveResource();
+        http::RemoteResource cmr_query(cmr_query_url, uid);
+        {
+            BESStopWatch besTimer;
+            if (BESISDEBUG(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()){
+                besTimer.start("CMR Query: " + cmr_query_url);
+            }
+            cmr_query.retrieveResource();
+        }
         rapidjson::Document cmr_response = cmr_query.get_as_json();
-#else
-        rapidjson::Document cmr_response = ngap_curl::http_get_as_json(cmr_url);
-#endif
 
-        rapidjson::Value &val = cmr_response["hits"];
-        int hits = val.GetInt();
-        if (hits < 1) {
-            throw BESNotFoundError(string("The specified path '").append(restified_path).append(
-                    "' does not identify a granule in CMR."), __FILE__, __LINE__);
-        }
+        data_access_url = find_get_data_url_in_granules_umm_json_v1_4(restified_path, cmr_response);
 
-        rapidjson::Value &items = cmr_response["items"];
-        if (items.IsArray()) {
-            stringstream ss;
-            for (rapidjson::SizeType i = 0; i < items.Size(); i++) // Uses SizeType instead of size_t
-                ss << "items[" << i << "]: " << rjtype_names[items[i].GetType()] << endl;
-
-            BESDEBUG(MODULE, prolog << "items size: " << items.Size() << endl << ss.str() << endl);
-
-            rapidjson::Value &items_obj = items[0];
-            rapidjson::GenericMemberIterator<false, rapidjson::UTF8<char>, rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator>> mitr = items_obj.FindMember(
-                    "umm");
-
-            rapidjson::Value &umm = mitr->value;
-            mitr = umm.FindMember("RelatedUrls");
-            if (mitr == umm.MemberEnd()) {
-                throw BESInternalError("Error! The umm/RelatedUrls object was not located!", __FILE__, __LINE__);
-            }
-            rapidjson::Value &related_urls = mitr->value;
-
-            if (!related_urls.IsArray()) {
-                throw BESNotFoundError("Error! The RelatedUrls object in the CMR response is not an array!", __FILE__,
-                                       __LINE__);
-            }
-
-            BESDEBUG(MODULE, prolog << " Found RelatedUrls array in CMR response." << endl);
-
-            bool noSubtype;
-            for (rapidjson::SizeType i = 0; i < related_urls.Size() && data_access_url.empty(); i++) {
-                rapidjson::Value &obj = related_urls[i];
-                mitr = obj.FindMember("URL");
-                if (mitr == obj.MemberEnd()) {
-                    stringstream err;
-                    err << "Error! The umm/RelatedUrls[" << i << "] does not contain the URL object";
-                    throw BESInternalError(err.str(), __FILE__, __LINE__);
-                }
-                rapidjson::Value &r_url = mitr->value;
-
-                mitr = obj.FindMember("Type");
-                if (mitr == obj.MemberEnd()) {
-                    stringstream err;
-                    err << "Error! The umm/RelatedUrls[" << i << "] does not contain the Type object";
-                    throw BESInternalError(err.str(), __FILE__, __LINE__);
-                }
-                rapidjson::Value &r_type = mitr->value;
-
-                noSubtype = obj.FindMember("Subtype") == obj.MemberEnd();
-#if 0
-                mitr = obj.FindMember("Description");
-                if(mitr == obj.MemberEnd()){
-                    stringstream  err;
-                    err << "Error! The umm/RelatedUrls[" << i << "] does not contain the Description object";
-                    throw BESInternalError(err.str(), __FILE__, __LINE__);
-                }
-                rapidjson::Value& r_desc = mitr->value;
-#endif
-                BESDEBUG(MODULE, prolog << "RelatedUrl Object:" <<
-                                        " URL: '" << r_url.GetString() << "'" <<
-                                        " Type: '" << r_type.GetString() << "'" <<
-                                        " SubType: '" << (noSubtype ? "Absent" : "Present") << "'" << endl);
-
-                if ((r_type.GetString() == CMR_URL_TYPE_GET_DATA) && noSubtype) {
-                    data_access_url = r_url.GetString();
-                }
-            }
-        }
-
-        if (data_access_url.empty()) {
-            throw BESInternalError(string("ERROR! Failed to locate a data access URL for the path: ") + restified_path,
-                                   __FILE__, __LINE__);
-        }
-
-        BESDEBUG(MODULE, prolog << "Following data_access_url redirects..." << endl);
+        BESDEBUG(MODULE, prolog << "END (data_access_url: "<< data_access_url << ")" << endl);
 
         return data_access_url;
     }
 
 
-    /**
-     * [UTC Sun Jun 21 16:17:47 2020 id: 14314][dmrpp:curl] CurlHandlePool::evaluate_curl_response() - Last Accessed URL(CURLINFO_EFFECTIVE_URL):
-     *     https://ghrcw-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc?
-     *         A-userid=hyrax&
-     *         X-Amz-Algorithm=AWS4-HMAC-SHA256&
-     *         X-Amz-Credential=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing&
-     *         X-Amz-Date=20200621T161746Z&
-     *         X-Amz-Expires=86400&
-     *         X-Amz-Security-Token=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing&
-     *         X-Amz-SignedHeaders=host&
-     *         X-Amz-Signature=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing
-     * @param source_url
-     * @param data_access_url_info
-     */
-    void NgapApi::decompose_url(const string target_url, map<string,string> &url_info)
-    {
 
-        string url_base;
-        string query_string;
 
-        size_t query_index = target_url.find_first_of("?");
-        BESDEBUG(MODULE, prolog << "query_index: " << query_index << endl);
-        if(query_index != string::npos){
-            query_string = target_url.substr(query_index+1);
-            url_base = target_url.substr(0,query_index);
-        }
-        else {
-            url_base = target_url;
-        }
-        url_info.insert( std::pair<string,string>("target_url",target_url));
-        BESDEBUG(MODULE, prolog << "target_url: " << target_url << endl);
-        url_info.insert( std::pair<string,string>("url_base",url_base));
-        BESDEBUG(MODULE, prolog << "url_base: " << url_base << endl);
-        url_info.insert( std::pair<string,string>("query_string",query_string));
-        BESDEBUG(MODULE, prolog << "query_string: " << query_string << endl);
-        if(!query_string.empty()){
-            vector<string> records;
-            string delimiters = "&";
-            BESUtil::tokenize(query_string,records, delimiters);
-            vector<string>::iterator i = records.begin();
-            for(; i!=records.end(); i++){
-                size_t index = i->find('=');
-                if(index != string::npos) {
-                    string key = i->substr(0, index);
-                    string value = i->substr(index+1);
-                    BESDEBUG(MODULE, prolog << "key: " << key << " value: " << value << endl);
-                    url_info.insert( std::pair<string,string>(key,value));
-                }
-            }
-        }
-        time_t now;
-        time(&now);  /* get current time; same as: timer = time(NULL)  */
-        stringstream unix_time;
-        unix_time << now;
-        url_info.insert( std::pair<string,string>("ingest_time",unix_time.str()));
-    }
-
-    const string AMS_EXPIRES_HEADER_KEY = "X-Amz-Expires";
-    const string AWS_DATE_HEADER_KEY = "X-Amz-Date";
-    // const string AWS_DATE_FORMAT = "%Y%m%dT%H%MS"; // 20200624T175046Z
-    const string CLOUDFRONT_EXPIRES_HEADER_KEY = "Expires";
-    const string INGEST_TIME_KEY = "ingest_time";
-    const unsigned int REFRESH_THRESHOLD = 3600; // An hour
-
-    bool NgapApi::signed_url_is_expired(const std::map<std::string,std::string> &ngap_url_info)
+    bool NgapApi::signed_url_is_expired(const http::url &signed_url)
     {
         bool is_expired;
         time_t now;
@@ -332,24 +471,24 @@ namespace ngap {
         BESDEBUG(MODULE, prolog << "now: " << now << endl);
 
         time_t expires = now;
-        std::map<string,string>::const_iterator cfexpires_it = ngap_url_info.find(CLOUDFRONT_EXPIRES_HEADER_KEY);
-        std::map<string,string>::const_iterator awsexpires_it = ngap_url_info.find(AMS_EXPIRES_HEADER_KEY);
-        std::map<string,string>::const_iterator ingest_time_it = ngap_url_info.find(INGEST_TIME_KEY);
+        string cf_expires = signed_url.query_parameter_value(CLOUDFRONT_EXPIRES_HEADER_KEY);
+        string aws_expires = signed_url.query_parameter_value(AMS_EXPIRES_HEADER_KEY);
+        time_t ingest_time = signed_url.ingest_time();
 
-        if(cfexpires_it != ngap_url_info.end()){ // CloudFront expires header?
-            expires = stoll(cfexpires_it->second);
+        if(!cf_expires.empty()){ // CloudFront expires header?
+            expires = stoll(cf_expires);
             BESDEBUG(MODULE, prolog << "Using "<< CLOUDFRONT_EXPIRES_HEADER_KEY << ": " << expires << endl);
         }
-        else if(awsexpires_it != ngap_url_info.end() && ingest_time_it != ngap_url_info.end()){
+        else if(!aws_expires.empty()){
             // AWS Expires header?
             //
-            // By default we'll use the time we read the probe response, ingest_time
-            time_t start_time = stoll(ingest_time_it->second);
+            // By default we'll use the time we made the URL object, ingest_time
+            time_t start_time = ingest_time;
             // But if there's an AWS Date we'll parse that and compute the time
             // @TODO move to NgapApi::decompose_url() and add the result to the map
-            std::map<string,string>::const_iterator awsdate_it = ngap_url_info.find(AWS_DATE_HEADER_KEY);
-            if(awsdate_it != ngap_url_info.end()){
-                string date = awsdate_it->second; // 20200624T175046Z
+            string aws_date = signed_url.query_parameter_value(AWS_DATE_HEADER_KEY);
+            if(!aws_date.empty()){
+                string date = aws_date; // 20200624T175046Z
                 string year = date.substr(0,4);
                 string month = date.substr(4,2);
                 string day = date.substr(6,2);
@@ -361,8 +500,8 @@ namespace ngap {
                                         " year: " << year << " month: " << month << " day: " << day <<
                                         " hour: " << hour << " minute: " << minute  << " second: " << second << endl);
 
-                struct tm * ti = gmtime(&now);
-                ti->tm_year = stoll(year);
+                struct tm *ti = gmtime(&now);
+                ti->tm_year = stoll(year) - 1900;
                 ti->tm_mon = stoll(month) - 1;
                 ti->tm_mday = stoll(day);
                 ti->tm_hour = stoll(hour);
@@ -377,17 +516,17 @@ namespace ngap {
                                         " ti->tm_sec: " << ti->tm_sec << endl);
 
 
-               // start_time = mktime(&ti);
-               //  BESDEBUG(MODULE, prolog << "AWS (computed) start_time: "<< start_time << endl);
+                start_time = mktime(ti);
+                BESDEBUG(MODULE, prolog << "AWS (computed) start_time: "<< start_time << endl);
             }
-            expires = start_time + stoll(awsexpires_it->second);
-            BESDEBUG(MODULE, prolog << "Using "<< AMS_EXPIRES_HEADER_KEY << ": " << awsexpires_it->second <<
+            expires = start_time + stoll(aws_expires);
+            BESDEBUG(MODULE, prolog << "Using "<< AMS_EXPIRES_HEADER_KEY << ": " << aws_expires <<
                                     " (expires: " << expires << ")" << endl);
         }
         time_t remaining = expires - now;
-        BESDEBUG(MODULE, prolog << "expires: " << expires <<
-                                "  remaining: " << remaining <<
-                                " threshold: " << REFRESH_THRESHOLD << endl);
+        BESDEBUG(MODULE, prolog << "expires_time: " << expires <<
+                                "  remaining_time: " << remaining <<
+                                " refresh_threshold: " << REFRESH_THRESHOLD << endl);
 
         is_expired = remaining < REFRESH_THRESHOLD;
         BESDEBUG(MODULE, prolog << "is_expired: " << (is_expired?"true":"false") << endl);

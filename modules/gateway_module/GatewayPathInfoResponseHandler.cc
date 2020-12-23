@@ -25,6 +25,8 @@
 // Please read the full copyright statement in the file COPYRIGHT_URI.
 //
 
+#include "config.h"
+
 #include <sstream>
 #include <fstream>
 #include <time.h>
@@ -92,7 +94,7 @@ GatewayPathInfoResponseHandler::~GatewayPathInfoResponseHandler()
 void GatewayPathInfoResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("GatewayPathInfoResponseHandler::execute", dhi.data[REQUEST_ID]);
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("GatewayPathInfoResponseHandler::execute", dhi.data[REQUEST_ID]);
 
     BESDEBUG(SPI_DEBUG_KEY, "GatewayPathInfoResponseHandler::execute() - BEGIN" << endl );
 

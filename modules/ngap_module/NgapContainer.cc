@@ -26,6 +26,8 @@
 // Authors:
 //      ndp       Nathan Potter <ndp@opendap.org>
 
+#include "config.h"
+
 #include <cstdio>
 #include <map>
 #include <sstream>
@@ -34,21 +36,24 @@
 #include <streambuf>
 #include <time.h>
 
+#include "BESStopWatch.h"
+#include "BESLog.h"
 #include "BESSyntaxUserError.h"
 #include "BESNotFoundError.h"
 #include "BESInternalError.h"
 #include "BESDebug.h"
 #include "BESUtil.h"
 #include "TheBESKeys.h"
-#include "WhiteList.h"
+#include "AllowedHosts.h"
 #include "BESContextManager.h"
+#include "CurlUtils.h"
+#include "HttpUtils.h"
+#include "RemoteResource.h"
+#include "url_impl.h"
 
 #include "NgapContainer.h"
 #include "NgapApi.h"
-#include "NgapUtils.h"
 #include "NgapNames.h"
-#include "RemoteHttpResource.h"
-#include "curl_utils.h"
 
 #define prolog std::string("NgapContainer::").append(__func__).append("() - ")
 
@@ -57,6 +62,7 @@ using namespace bes;
 
 #define UID_CONTEXT "uid"
 #define AUTH_TOKEN_CONTEXT "edl_auth_token"
+#define EDL_ECHO_TOKEN_CONTEXT "edl_echo_token"
 
 namespace ngap {
 
@@ -76,6 +82,8 @@ namespace ngap {
             BESContainer(sym_name, real_name, type),
             d_dmrpp_rresource(0) {
 
+        BESDEBUG(MODULE, prolog << "object address: "<< (void *) this << endl);
+
         bool found;
 
         NgapApi ngap_api;
@@ -86,9 +94,8 @@ namespace ngap {
         string access_token = BESContextManager::TheManager()->get_context(AUTH_TOKEN_CONTEXT, found);
 
         BESDEBUG(MODULE, prolog << "UID_CONTEXT(" << UID_CONTEXT << "): " << uid << endl);
-        BESDEBUG(MODULE, prolog << "AUTH_TOKEN_CONTEXT(" << AUTH_TOKEN_CONTEXT << "): " << access_token << endl);
 
-        string data_access_url = ngap_api.convert_ngap_resty_path_to_data_access_url(real_name, uid, access_token);
+        string data_access_url = ngap_api.convert_ngap_resty_path_to_data_access_url(real_name, uid);
 
         set_real_name(data_access_url);
         // Because we know the name is really a URL, then we know the "relative_name" is meaningless
@@ -102,6 +109,7 @@ namespace ngap {
     NgapContainer::NgapContainer(const NgapContainer &copy_from) :
             BESContainer(copy_from),
             d_dmrpp_rresource(copy_from.d_dmrpp_rresource) {
+        BESDEBUG(MODULE, prolog << "BEGIN   object address: "<< (void *) this << " Copying from: " << (void *) &copy_from << endl);
         // we can not make a copy of this container once the request has
         // been made
         if (d_dmrpp_rresource) {
@@ -109,6 +117,7 @@ namespace ngap {
                          + "can not create a copy of this container.";
             throw BESInternalError(err, __FILE__, __LINE__);
         }
+        BESDEBUG(MODULE, prolog << "object address: "<< (void *) this << endl);
     }
 
     void NgapContainer::_duplicate(NgapContainer &copy_to) {
@@ -117,6 +126,7 @@ namespace ngap {
                          + "can not duplicate this resource.";
             throw BESInternalError(err, __FILE__, __LINE__);
         }
+        BESDEBUG(MODULE, prolog << "BEGIN   object address: "<< (void *) this << " Copying to: " << (void *) &copy_to << endl);
         copy_to.d_dmrpp_rresource = d_dmrpp_rresource;
         BESContainer::_duplicate(copy_to);
     }
@@ -125,14 +135,20 @@ namespace ngap {
     NgapContainer::ptr_duplicate() {
         NgapContainer *container = new NgapContainer;
         _duplicate(*container);
+        BESDEBUG(MODULE, prolog << "object address: "<< (void *) this << " to: " << (void *)container << endl);
         return container;
     }
 
     NgapContainer::~NgapContainer() {
+        BESDEBUG(MODULE, prolog << "BEGIN  object address: "<< (void *) this <<  endl);
         if (d_dmrpp_rresource) {
             release();
         }
+        BESDEBUG(MODULE, prolog << "END  object address: "<< (void *) this <<  endl);
     }
+
+
+#if 0
 
 
     bool cache_terminal_urls(){
@@ -142,42 +158,57 @@ namespace ngap {
         return found && BESUtil::lowercase(value)=="true";
     }
 
+
+
+    void cache_final_redirect_url(string data_access_url_str) {
+        // See if the data_access_url has already been processed into a terminal signed URL
+        // in TheBESKeys
+        bool found;
+        std::map<std::string,std::string> data_access_url_info;
+        TheBESKeys::TheKeys()->get_values(data_access_url_str, data_access_url_info, false, found);
+        if(found){
+            // Is it expired?
+            http::url target_url(data_access_url_info);
+            found = NgapApi::signed_url_is_expired(target_url);
+        }
+        // It not found or expired, reload.
+        if(!found){
+            string last_accessed_url_str;
+            curl::find_last_redirect(data_access_url_str, last_accessed_url_str);
+            BESDEBUG(MODULE, prolog << "last_accessed_url: " << last_accessed_url_str << endl);
+
+            http::url last_accessed_url(last_accessed_url_str);
+            last_accessed_url.kvp(data_access_url_info);
+
+            // Placing the last accessed URL information in TheBESKeys associated with the data_access_url as the
+            // key allows allows other modules, such as dmrpp_module to access the crucial last accessed URL
+            // information which eliminates any number of redirects during access operations.
+            TheBESKeys::TheKeys()->set_keys(data_access_url_str, data_access_url_info, false, false);
+        }
+    }
+#endif
+
     /** @brief access the remote target response by making the remote request
      *
      * @return full path to the remote request response data file
      * @throws BESError if there is a problem making the remote request
      */
     string NgapContainer::access() {
-        BESDEBUG(MODULE, prolog << "BEGIN" << endl);
+        BESDEBUG(MODULE, prolog << "BEGIN   object address: "<< (void *) this << endl);
 
         // Since this the ngap we know that the real_name is a URL.
-        string data_access_url = get_real_name();
+        string data_access_url_str = get_real_name();
 
+#if 0
         if(cache_terminal_urls()){
-            // See if the data_access_url has already been processed into a terminal signed URL
-            // in TheBESKeys
-            bool found;
-            std::map<std::string,std::string> data_access_url_info;
-            TheBESKeys::TheKeys()->get_values(data_access_url,data_access_url_info, false, found);
-            if(found){
-                // Is it expired?
-                found = NgapApi::signed_url_is_expired(data_access_url_info);
-            }
-            // It not found or expired, reload.
-            if(!found){
-                string last_accessed_url;
-                ngap_curl::find_last_redirect(data_access_url,last_accessed_url);
-                BESDEBUG(MODULE, prolog << "last_accessed_url: " << last_accessed_url << endl);
-                data_access_url_info.clear();
-                NgapApi::decompose_url(last_accessed_url,data_access_url_info);
-                TheBESKeys::TheKeys()->set_keys(data_access_url,data_access_url_info, false, false);
-            }
+            curl::cache_final_redirect_url(data_access_url_str, 0);
         }
+#endif
 
         // And we know that the dmr++ file should "right next to it" (side-car)
-        string dmrpp_url = data_access_url + ".dmrpp";
+        string dmrpp_url = data_access_url_str + ".dmrpp";
 
-        BESDEBUG(MODULE, prolog << "data_access_url: " << data_access_url << endl);
+        BESDEBUG(MODULE, prolog << "data_access_url: " << data_access_url_str << endl);
         BESDEBUG(MODULE, prolog << "dmrpp_url: " << dmrpp_url << endl);
 
         string type = get_container_type();
@@ -190,10 +221,16 @@ namespace ngap {
             string replace_value;
             if (inject_data_url()) {
                 replace_template = DATA_ACCESS_URL_KEY;
-                replace_value = data_access_url;
+                replace_value = data_access_url_str;
             }
-            d_dmrpp_rresource = new ngap::RemoteHttpResource(dmrpp_url);
-            d_dmrpp_rresource->retrieveResource(replace_template, replace_value);
+            {
+                d_dmrpp_rresource = new http::RemoteResource(dmrpp_url);
+                BESStopWatch besTimer;
+                if (BESISDEBUG(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()){
+                    besTimer.start("DMR++ retrieval: "+ dmrpp_url);
+                }
+                d_dmrpp_rresource->retrieveResource(replace_template, replace_value);
+            }
         }
         BESDEBUG(MODULE, prolog << "Retrieved remote resource: " << dmrpp_url << endl);
 

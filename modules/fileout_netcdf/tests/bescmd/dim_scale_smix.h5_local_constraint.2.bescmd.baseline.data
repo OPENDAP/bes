@@ -1,0 +1,34 @@
+netcdf test {
+dimensions:
+        mydim1 = 2 ;
+        dim1 = 3 ;
+        dim2 = 2 ;
+variables:
+        int v(mydim1) ;
+        int v_mdim(dim1, dim2) ;
+data:
+
+ v = 1, 2 ;
+
+ v_mdim =
+  0, 1,
+  2, 3,
+  4, 5 ;
+
+group: g {
+  dimensions:
+        mydim2 = 2 ;
+        dim3 = 2 ;
+        dim4 = 2 ;
+  variables:
+        int vg(mydim2) ;
+        int vg_mdim(dim3, dim4) ;
+  data:
+
+   vg = 0, 1 ;
+
+   vg_mdim =
+  2, 3,
+  4, 5 ;
+  } // group g
+}

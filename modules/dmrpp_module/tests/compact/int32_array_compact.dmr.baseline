@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="t_compact_layout_test_data.dmrpp">
+    <Int32 name="nbin_min">
+        <Dim size="5"/>
+        <Attribute name="contentType" type="String">
+            <Value>auxiliaryInformation</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>Minimum number of bins in a histogram required for the algorithm to be able to process the histogram.</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Minimum number of bins</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>ATL03, Section 5, Nbinmin</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>counts</Value>
+        </Attribute>
+    </Int32>
+</Dataset>

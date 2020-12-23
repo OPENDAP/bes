@@ -1,0 +1,61 @@
+
+# These BES keys configure the behavior of the software in the 'bes_http'
+# library, a library of common HTTP functionality that the BES and its
+# modules share.
+#
+# This conf.in file can use the build-time variable @bes_modules_dir@
+# in the definitions that follow. If more parameters are needed, they
+# can be added by editing the build rule in Makefile.am in this directory.
+
+# Http.Cache.dir - defines which directory to use for caching web
+# resources retrieved by the gateway_module
+#
+# Http.Cache.prefix - defines the prefix for cache files so that
+# they will be easily identifiable.
+#
+# Http.Cache.size - The maxium size of the Gateway cache, in megabytes.
+
+Http.Cache.dir=/tmp/hyrax_http
+Http.Cache.prefix=http_
+Http.Cache.size=500
+
+# Cookie Files base (one file for each beslistener pid)
+Http.Cookies.File=/tmp/.hyrax-cookies
+
+# The Http.No.Retry.Regex is used to exclude certain URL patterns from retry attempts
+# This is useful for services, such as OAuth2 where certain redirect URLs contain
+# "one-time" codes that may not be reused. Retrying these URLs will never work and doing
+# so just makes the inevitable failure take much longer.
+#
+# Http.No.Retry.Regex=^https:\/\/.*\?code\=.*$
+#
+# Since many URLs result in a number of time consuming redirects (ex: OAuth2)
+# We cache the "effective URL" for each to improve speed and reduce authentication churn
+#
+# Http.cache.effective.urls=true
+#
+# But we also know that many URLs (ex: AWS S3) will never redirect so we can skip the caching
+# for those destinations. Any URL matching these patterns will not hae redirects followed
+# and cached.
+#
+# Http.cache.effective.urls.skip.regex.pattern=^https:\/\/.*s3(\.|-).*\.amazonaws\.com\/.*$
+
+Http.MimeTypes=nc:application/x-netcdf
+Http.MimeTypes+=h4:application/x-hdf
+Http.MimeTypes+=h5:application/x-hdf5
+
+# Http.ProxyProtocol, Http.ProxyHost and Http.ProxyPort -
+# provides a way to define a proxy server that must be used to make the
+# remote request, and the port to use.
+
+#Http.ProxyProtocol=https
+#Http.ProxyHost=warsaw.wonderproxy.com
+#Http.ProxyPort=8080
+#Http.ProxyAuthType=basic
+#Http.ProxyUser=username
+#Http.ProxyPassword=password
+#Http.ProxyUserPW=username:password
+#Http.NoProxy=^http:\/\/test\.opendap\.org\/.*$
+#Http.UseInternalCache=true
+
+

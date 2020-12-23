@@ -30,6 +30,8 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
 #include <poll.h>
 
 #include <cerrno>
@@ -38,6 +40,12 @@
 #include <sstream>
 #include <iomanip>
 #include <map>
+
+#include "PPTConnection.h"
+#include "PPTProtocol.h"
+#include "Socket.h"
+#include "BESDebug.h"
+#include "BESInternalError.h"
 
 using std::cout;
 using std::cerr;
@@ -52,11 +60,6 @@ using std::map;
 using std::ostream;
 using std::string;
 
-#include "PPTConnection.h"
-#include "PPTProtocol.h"
-#include "Socket.h"
-#include "BESDebug.h"
-#include "BESInternalError.h"
 
 #define MODULE "ppt"
 #define prolog string("PPTConnection::").append(__func__).append("() - ")

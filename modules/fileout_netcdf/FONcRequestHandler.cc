@@ -194,7 +194,7 @@ bool FONcRequestHandler::build_help(BESDataHandlerInterface &dhi)
     string key = "FONc.Reference";
     string ref;
     TheBESKeys::TheKeys()->get_value(key, ref, found);
-    if (ref.empty()) ref = "http://docs.opendap.org/index.php/BES_-_Modules_-_FileOut_Netcdf";
+    if (ref.empty()) ref = "https://docs.opendap.org/index.php/BES_-_Modules_-_FileOut_Netcdf";
     map<string, string> attrs;
     attrs["name"] = MODULE_NAME;
     attrs["version"] = MODULE_VERSION;

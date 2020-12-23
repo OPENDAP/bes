@@ -13,7 +13,7 @@
                         <Attribute name="units" type="String">
                             <Value>K</Value>
                         </Attribute>
-                        <dmrpp:chunks>
+                        <dmrpp:chunks byteOrder="LE">
                             <dmrpp:chunk offset="40672" nBytes="128"/>
                         </dmrpp:chunks>
                     </Float32>
@@ -27,7 +27,7 @@
                         <Attribute name="units" type="String">
                             <Value>K</Value>
                         </Attribute>
-                        <dmrpp:chunks>
+                        <dmrpp:chunks byteOrder="LE">
                             <dmrpp:chunk offset="40800" nBytes="128"/>
                         </dmrpp:chunks>
                     </Float32>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="t_compact_layout_test_data.dmrpp">
+    <Int8 name="tep_valid_spot">
+        <Dim size="6"/>
+        <Attribute name="contentType" type="String">
+            <Value>referenceInformation</Value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <Value>A 6x1 array indicating which TEP to use for each spot that does not have a TEP associated with it (e.g. which TEP to use to characterize spots 2, 4, 5, and 6).</Value>
+        </Attribute>
+        <Attribute name="flag_meanings" type="String">
+            <Value>pce1_spot1 pce2_spot3</Value>
+        </Attribute>
+        <Attribute name="flag_values" type="Int8">
+            <Value>1</Value>
+            <Value>2</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Index of TEP Spot</Value>
+        </Attribute>
+        <Attribute name="source" type="String">
+            <Value>ATL03 ATBD</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int8">
+            <Value>2</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int8">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </Int8>
+</Dataset>
+
+The data:
+Int8 tep_valid_spot[6] = {2, 1, 1, 2, 2, 1};
+
