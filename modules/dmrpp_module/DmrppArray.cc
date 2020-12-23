@@ -142,26 +142,6 @@ bool start_super_chunk_thread(list<std::future<void *>> &futures, one_super_chun
 }
 
 
-/**
- * @brief Asynchronously starts the super_chunk_thread function using async and places the returned future in the queue futures.
- * @param futures The queue into which to place the future returned by async.
- * @param args The arguments for the super_chunk_thread function
- * @return Returns true if the async call was made and a future was returned, false if the thread_counter has
- * reached the maximum allowable size.
- */
-bool start_async_thread(list<std::future<void *>> &futures, one_super_chunk_args *args) {
-    bool retval = false;
-    std::unique_lock<std::mutex> lck (thread_pool_mtx);
-    if (thread_counter < DmrppRequestHandler::d_max_parallel_transfers) {
-        thread_counter++;
-        futures.push_back(std::async(std::launch::async, one_super_chunk_thread, args));
-        retval = true;
-        BESDEBUG(dmrpp_3, prolog << "Got std::future '"<< futures.size() << "' from std::async" << endl);
-    }
-    return retval;
-}
-
-
 void *one_super_chunk_thread(void *arg_list)
 {
     auto *args = reinterpret_cast<one_super_chunk_args *>(arg_list);
@@ -886,6 +866,84 @@ void process_one_chunk_unconstrained(shared_ptr<Chunk> chunk, DmrppArray *array,
     BESDEBUG(dmrpp_3, prolog << "END" << endl );
 }
 
+
+/**
+ * @brief Read chunked data by building SuperChunks from the required chunks and reading the SuperChunks
+ *
+ * Read chunked data, using either parallel or serial data transfers, depending on
+ * the DMR++ handler configuration parameters.
+ */
+void read_chunks_unconstrained_concurrent(DmrppArray *array, queue<shared_ptr<SuperChunk>> &super_chunks)
+{
+    BESStopWatch sw;
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + "Timer name: "+prolog, "");
+
+    // Parallel version based on read_chunks_unconstrained(). There is
+    // substantial duplication of the code in read_chunks_unconstrained(), but
+    // wait to remove that when we move to C++11 which has threads integrated.
+
+    // We maintain a list  of futures to track our parallel activities.
+    list<future<void *>> futures;
+    try {
+        bool done = false;
+        bool joined = true;
+        while (!done) {
+            // Returns true when it "get"s a future (joins a thread).
+            // We do this until the futures have been "got".
+            if(!futures.empty())
+                joined = get_next_future(futures, WAIT_FOR_FUTURE_MS);
+
+            // If joined is true this means that the thread_count has been decremented (because future::get()
+            // has been called)
+
+            // Next we check to see if there are still SuperChunks in the queue and we create new futures until
+            // all the SuperChunks have been processed.
+            if (joined){
+                bool thread_started = true;
+                while(thread_started && !super_chunks.empty()) {
+                    auto super_chunk = super_chunks.front();
+                    BESDEBUG(dmrpp_3, prolog << "Starting thread for " << super_chunk->to_string(false) << endl);
+
+                    auto *args = new one_super_chunk_args(super_chunk, array);
+                    thread_started = start_super_chunk_unconstrained_thread(futures, args);
+
+                    if (thread_started) {
+                        super_chunks.pop();
+                        BESDEBUG(dmrpp_3, prolog << "STARTED thread for" << super_chunk->to_string(false) << endl);
+                    } else {
+                        // Thread did not start, ownership of the arguments was not passed to the thread.
+                        delete args;
+                        BESDEBUG(dmrpp_3, prolog << "Thread not started, Returned SuperChunk to queue. " <<
+                                                 "thread_count: " << thread_counter << endl);
+                    }
+                }
+            }
+            else if(!super_chunks.empty()){
+                // TODO I can't see how this should happen (that there are super chunks left and yet we failed to
+                //  join prior to arriving here, so I laid a trap.
+                stringstream msg;
+                msg << prolog << "No threads joined, yet " << super_chunks.size() << " SuperChunks remain unread.";
+                throw BESInternalError(msg.str(), __FILE__, __LINE__);
+            }
+            else {
+                // No more SuperChunks and no joinable threads means we're done here.
+                done = true;
+            }
+            joined = false;
+        }
+    }
+    catch (...) {
+        // Complete all of the futures, otherwise we'll have threads out there using up resources
+        while(!futures.empty()){
+            futures.back().get();
+            futures.pop_back();
+        }
+        // re-throw the exception
+        throw;
+    }
+}
+
+
 /**
  * @brief Read data for a chunked array
  *
@@ -949,84 +1007,7 @@ void DmrppArray::read_chunks_unconstrained()
         }
     }
     else {      // Parallel transfers
-
-        list<std::future<void *>> futures;
-
-        try {
-            // If there are more SuperChunks than threads available then this loop will launch all a thread per
-            // SuperChunk until the threads are exhausted. When the threads (or SuperChunks) are used up
-            // the loop drops through and in the section down below the "futures" are retrieved and if SuperChunks
-            // remain a thread for them is spwaned as each future is retrieved.
-            bool thread_started = true;
-            while (thread_started && !super_chunks.empty()) {
-                auto super_chunk = super_chunks.front();
-                BESDEBUG(dmrpp_3, prolog << "Starting thread for " << super_chunk->to_string(false) << endl);
-
-                auto *args = new one_super_chunk_args(super_chunk, this);
-                thread_started = start_super_chunk_unconstrained_thread(futures, args);
-                if (thread_started) {
-                    super_chunks.pop();
-                    BESDEBUG(dmrpp_3, prolog << "Started thread for " << super_chunk->to_string(false) <<
-                                                                   " thread_count: " << thread_counter << endl);
-                } else {
-                    // Thread did not start, ownership of the arguments was not passed to the thread.
-                    delete args;
-                    BESDEBUG(dmrpp_3, prolog << "Thread not started, Returned SuperChunk to queue. " <<
-                                             "thread_count: " << thread_counter << endl);
-                }
-            }
-
-            // Now join the child threads, creating replacement threads if needed
-            bool done = false;
-            while (!done) {
-
-                bool joined = get_next_future(futures,WAIT_FOR_FUTURE_MS);
-
-                // We do this until the remaining SuperChunks have been read.
-                // But we only add a new thread if on has been joined.
-                if (joined) {
-                    if (!super_chunks.empty()) {
-                        auto super_chunk = super_chunks.front();
-                        BESDEBUG(dmrpp_3, prolog << "Starting thread for " << super_chunk->to_string(false) << endl);
-
-                        auto *args = new one_super_chunk_args(super_chunk, this);
-                        bool started = start_super_chunk_unconstrained_thread(futures, args);
-                        if (started) {
-                            super_chunks.pop();
-                            BESDEBUG(dmrpp_3, prolog << "Retrieved future for " << super_chunk->to_string(false) <<
-                                                     " There are: " << futures.size() << " futures." << endl);
-                        } else {
-                            // Thread did not start, ownership of the arguments was not passed to the thread.
-                            delete args;
-                            BESDEBUG(dmrpp_3, prolog << "Thread not started, Returned SuperChunk to queue. " <<
-                                                     "There are: " << thread_counter << " threads." << endl);
-                        }
-                    }
-                } else if (!super_chunks.empty()) {
-                    // TODO I can't see how this should happen (that there are super chunks left and yet we failed to
-                    //  join prior to arriving here, so I laid a trap. If I'm wrong then maybe we add a thread to the
-                    //  thread_vector here?
-
-                    stringstream msg;
-                    msg << prolog << "No threads joined, yet " << super_chunks.size() << " SuperChunks remain unread.";
-                    throw BESInternalError(msg.str(), __FILE__, __LINE__);
-                } else {
-                    // No more SuperChunks and no joinable threads means we're done here.
-                    done = true;
-                }
-            }
-        }
-        catch (...) {
-            // cancel all the threads, otherwise we'll have threads out there using up resources
-            // defined in DmrppCommon.cc
-            while (!futures.empty()) {
-                futures.back().get();
-                futures.pop_back();
-            }
-            // re-throw the exception
-            throw;
-        }
-
+        read_chunks_unconstrained_concurrent(this,super_chunks);
     }
     set_read_p(true);
 }
@@ -1437,13 +1418,13 @@ void DmrppArray::read_chunks()
     //  we might want want try adding the rejected Chunk to the other existing SuperChunks to see
     //  if it's contiguous there.
     // Find the required Chunks and put them into SuperChunks.
-    for(auto chunk: get_chunks()){
+    for(const auto& chunk: get_chunks()){
         vector<unsigned int> target_element_address = chunk->get_position_in_array();
         auto needed = find_needed_chunks(0 /* dimension */, &target_element_address, chunk);
         if (needed){
             bool added = current_super_chunk->add_chunk(chunk);
             if(!added){
-                auto current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk());
+                current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk());
                 super_chunks.push(current_super_chunk);
                 if(!current_super_chunk->add_chunk(chunk)){
                     stringstream msg ;
@@ -1476,99 +1457,7 @@ void DmrppArray::read_chunks()
         }
     }
     else {
-
         read_chunks_concurrent(this, super_chunks);
-#if 0
-        // Parallel version based on read_chunks_unconstrained(). There is
-        // substantial duplication of the code in read_chunks_unconstrained(), but
-        // wait to remove that when we move to C++11 which has threads integrated.
-
-        // We maintain a list  of futures to track our parallel activities.
-        list<future<void *>> futures;
-        try {
-            // If there are more SuperChunks than threads available then this loop will launch all a thread per
-            // SuperChunk until the threads are exhausted. When the threads (or SuperChunks) are used up
-            // the loop drops through and in the section down below the "futures" are retrieved and if SuperChunks
-            // remain, a thread for them is spawned as each new future is retrieved.
-            bool thread_started = true;
-            while(thread_started && !super_chunks.empty()) {
-                auto super_chunk = super_chunks.front();
-                BESDEBUG(dmrpp_3, prolog << "Starting thread for " << super_chunk->to_string(false) << endl );
-
-                auto *args = new one_super_chunk_args(super_chunk, this);
-                thread_started = start_super_chunk_thread(futures, args);
-
-                if(thread_started) {
-                    super_chunks.pop();
-                    BESDEBUG(dmrpp_3, prolog << "STARTED thread for" << super_chunk->to_string(false) << endl);
-                }
-                else {
-                    // Thread did not start, ownership of the arguments was not passed to the thread.
-                    delete args;
-                    BESDEBUG(dmrpp_3, prolog << "Thread not started, Returned SuperChunk to queue. " <<
-                                             "thread_count: " << thread_counter << endl );
-                }
-
-            }
-
-            // Now process the async futures, as futures are "got" new async calls and futures are made
-            // for each of the remaining SuperChunks.
-            bool done = false;
-            while (!done) {
-
-                // Returns true when it "get"s a future (joins a thread).
-                // We do this until the futures have been "got".
-                bool joined = get_next_future(futures, WAIT_FOR_FUTURE_MS);
-
-                // If joined is true this means that the thread_count has been decremented (because future::get()
-                // has been called)
-
-                // Next we check to see if there are still SuperChunks in the queue and we create new futures until
-                // all the SuperChunks have been processed.
-                if (joined){
-                    if(!super_chunks.empty() ) {
-                        auto super_chunk = super_chunks.front();
-                        BESDEBUG(dmrpp_3, prolog << "Starting thread for " << super_chunk->to_string(false) << endl );
-
-                        auto *args = new one_super_chunk_args(super_chunk, this);
-                        bool started = start_super_chunk_thread(futures, args);
-
-                        if(started) {
-                            super_chunks.pop();
-                            BESDEBUG(dmrpp_3, prolog << "Retrieved future for " << super_chunk->to_string(false) <<
-                                                     " There are: " << futures.size() << " futures." << endl);
-                        }
-                        else {
-                            // Thread did not start, ownership of the arguments was not passed to the thread.
-                            delete args;
-\                            BESDEBUG(dmrpp_3, prolog << "Thread did not start." <<
-                            " There are: " << futures.size() << " futures." << endl);
-                        }
-                    }
-                }
-                else if(!super_chunks.empty()){
-                    // TODO I can't see how this should happen (that there are super chunks left and yet we failed to
-                    //  join prior to arriving here, so I laid a trap.
-                    stringstream msg;
-                    msg << prolog << "No threads joined, yet " << super_chunks.size() << " SuperChunks remain unread.";
-                    throw BESInternalError(msg.str(), __FILE__, __LINE__);
-                }
-                else {
-                    // No more SuperChunks and no joinable threads means we're done here.
-                    done = true;
-                }
-            }
-        }
-        catch (...) {
-            // Complete all of the futures, otherwise we'll have threads out there using up resources
-            while(!futures.empty()){
-                futures.back().get();
-                futures.pop_back();
-            }
-            // re-throw the exception
-            throw;
-        }
-#endif
     }
     set_read_p(true);
 }
