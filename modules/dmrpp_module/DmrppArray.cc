@@ -30,7 +30,8 @@
 #include <queue>
 #include <iterator>
 #include <thread>
-#include <future>
+#include <future>         // std::async, std::future
+#include <chrono>         // std::chrono::milliseconds
 
 #include <cstring>
 #include <cassert>
@@ -68,7 +69,7 @@ using namespace std;
 
 #define MB (1024*1024)
 #define prolog std::string("DmrppArray::").append(__func__).append("() - ")
-
+#define WAIT_FOR_FUTURE_MS 10
 
 namespace dmrpp {
 
@@ -126,6 +127,7 @@ void *one_super_chunk_unconstrained_thread(void *arg_list)
 std::mutex thread_pool_mtx;  // mutex for critical section
 atomic_uint thread_counter(0);
 
+#if 0
 /**
  * @brief Calls future::get() on the first future in the queue.
  * Once future::get() returns the the thread_counter is decremented and true is returned.
@@ -141,7 +143,43 @@ bool get_next_future(queue<std::future<void *>> &futures) {
         thread_counter--;
         joined = true;
         BESDEBUG(dmrpp_3, prolog << "Called future::get() on one future. " <<
-                                    "Popped future from queue, futures.size(): " << futures.size() << endl);
+                                 "Popped future from queue, futures.size(): " << futures.size() << endl);
+    }
+    return joined;
+}
+#endif
+
+/**
+ * @brief Uses future::wait_for() to scan the futures for a ready future. When found future::get() is called and the thead_count is decremented.
+ *
+ * @param futures The list of futures to scan
+ * @param timeout The number of milliseconds to wait for each future to complete.
+ * @return Returns true if future::get() was called on a ready future, false otherwise.
+ */
+bool get_next_future(list<std::future<void *>> &futures, unsigned long timeout) {
+    bool joined = false;
+    bool done = false;
+    std::chrono::milliseconds ten_ms (timeout);
+
+    while(!done){
+        auto futr = futures.begin();
+        auto fend = futures.end();
+        while(!joined && futr != fend){
+            if((*futr).wait_for(ten_ms) != std::future_status::timeout){
+                (*futr).get();
+                joined = true;
+                BESDEBUG(dmrpp_3, prolog << "Called future::get() on one future." << endl);
+            }
+            else {
+                BESDEBUG(dmrpp_3, prolog << "future::wait_for() timed out." << endl);
+            }
+        }
+        if (joined) {
+            futures.erase(futr);
+            thread_counter--;
+            BESDEBUG(dmrpp_3, prolog <<  "Erased future from futures list, futures.size(): " << futures.size() << endl);
+        }
+        done = joined || futures.empty();
     }
     return joined;
 }
@@ -150,15 +188,15 @@ bool get_next_future(queue<std::future<void *>> &futures) {
  * @brief Asynchronously starts the super_chunk_thread function using async and places the returned future in the queue futures.
  * @param futures The queue into which to place the future returned by async.
  * @param args The arguments for the super_chunk_thread function
- * @return Returns true of the async call was made and a future was returned, false if the thread_counter has
+ * @return Returns true if the async call was made and a future was returned, false if the thread_counter has
  * reached the maximum allowable size.
  */
-bool start_super_chunk_thread(queue<std::future<void *>> &futures, one_super_chunk_args *args) {
+bool start_super_chunk_thread(list<std::future<void *>> &futures, one_super_chunk_args *args) {
     bool retval = false;
     std::unique_lock<std::mutex> lck (thread_pool_mtx);
     if (thread_counter < DmrppRequestHandler::d_max_parallel_transfers) {
         thread_counter++;
-        futures.push(std::async(std::launch::async, dmrpp::one_super_chunk_thread, (void *) args));
+        futures.push_back(std::async(std::launch::async, dmrpp::one_super_chunk_thread, (void *) args));
         retval = true;
         BESDEBUG(dmrpp_3, prolog << "Got std::future from std::async for " << args->super_chunk->to_string(false) << endl);
     }
@@ -169,15 +207,15 @@ bool start_super_chunk_thread(queue<std::future<void *>> &futures, one_super_chu
  * @brief Asyncronously starts the super_chunk_unconstrained_thread function using async and places the returned future in the queue futures.
  * @param futures The queue into which to place the future returned by async.
  * @param args The arguments for the super_chunk_thread function
- * @return Returns true of the async call was made and a future was returned, false if the thread_counter has
+ * @return Returns true if the async call was made and a future was returned, false if the thread_counter has
  * reached the maximum allowable size.
  */
-bool start_super_chunk_unconstrained_thread(queue<std::future<void *>> &futures, one_super_chunk_args *args) {
+bool start_super_chunk_unconstrained_thread(list<std::future<void *>> &futures, one_super_chunk_args *args) {
     bool retval = false;
     std::unique_lock<std::mutex> lck (thread_pool_mtx);
     if(thread_counter < DmrppRequestHandler::d_max_parallel_transfers) {
         thread_counter++;
-        futures.push(std::async(std::launch::async, dmrpp::one_super_chunk_unconstrained_thread, (void *)args));
+        futures.push_back(std::async(std::launch::async, dmrpp::one_super_chunk_unconstrained_thread, (void *)args));
         retval = true;
         BESDEBUG(dmrpp_3, prolog << "Got std::future from std::async for " << args->super_chunk->to_string(false) << endl);
     }
@@ -914,7 +952,7 @@ void DmrppArray::read_chunks_unconstrained()
     }
     else {      // Parallel transfers
 
-        queue<std::future<void *>> futures;
+        list<std::future<void *>> futures;
 
         try {
             // If more SuperChunks remain a thread is not spawned for them until another thread has been
@@ -943,7 +981,7 @@ void DmrppArray::read_chunks_unconstrained()
             bool done = false;
             while (!done) {
 
-                bool joined = get_next_future(futures);
+                bool joined = get_next_future(futures,WAIT_FOR_FUTURE_MS);
 
                 // We do this until the SuperChunks have all been read.
                 // But we only add a new thread if on has been joined.
@@ -986,8 +1024,8 @@ void DmrppArray::read_chunks_unconstrained()
             // cancel all the threads, otherwise we'll have threads out there using up resources
             // defined in DmrppCommon.cc
             while (!futures.empty()) {
-                futures.front().get();
-                futures.pop();
+                futures.back().get();
+                futures.pop_back();
             }
             // re-throw the exception
             throw;
@@ -1369,7 +1407,7 @@ void DmrppArray::read_chunks()
         // wait to remove that when we move to C++11 which has threads integrated.
 
         // Start the max allowed # of processing pipelines
-        queue<future<void *>> futures;
+        list<future<void *>> futures;
         try {
             // If more SuperChunks remain a thread is not spawned for them until another thread has been
             // joined/completed. A and the new furute replaces the joined thread in thead_vector
@@ -1402,7 +1440,7 @@ void DmrppArray::read_chunks()
             bool done = false;
             while (!done) {
 
-                bool joined = get_next_future(futures);
+                bool joined = get_next_future(futures, WAIT_FOR_FUTURE_MS);
                 // We do this until the futures have been "got".
                 // We only add a new future/async if one has been joined/completed, i.e. it's future has been got.
                 if (joined){
@@ -1440,8 +1478,8 @@ void DmrppArray::read_chunks()
         catch (...) {
             // Complete all of the futures, otherwise we'll have threads out there using up resources
             while(!futures.empty()){
-                futures.front().get();
-                futures.pop();
+                futures.back().get();
+                futures.pop_back();
             }
             // re-throw the exception
             throw;
