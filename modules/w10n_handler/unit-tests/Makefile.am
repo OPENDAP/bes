@@ -14,7 +14,10 @@ endif
 # These are not used by automake but are often useful for certain types of
 # debugging. Set CXXFLAGS to this in the nightly build using export ...
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
-TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
+
+AM_CXXFLAGS=
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
 
 DISTCLEANFILES =
 
@@ -44,7 +47,7 @@ test_config.h: $(srcdir)/test_config.h.in Makefile
 
 tmp:
 	test -d tmp || mkdir tmp
-	
+
 # If 'testdir' does not exist, replicate it here.
 # tar (used to make the source dist) dereferences symbolic links, so
 # we make them this way to get distcheck to work.
@@ -52,7 +55,7 @@ testdir:
 	test -d testdir || mkdir -p testdir/nc
 	(cd testdir/nc && touch testfile.txt && ln -s testfile.txt link_to_testfile.txt && ln -s nothing bad_link)
 	(cd testdir && ln -s nc link_to_nc)
-	
+
 clean-local:
 	-rm -rf tmp
 	-rm -rf testdir

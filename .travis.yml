@@ -31,6 +31,7 @@ addons:
     - libcurl4-openssl-dev
     - libcppunit-dev
     - libicu-dev
+    - gcovr
     # - debhelper These packages were used only for debian builds
     # - devscripts
     # - lintian
@@ -103,8 +104,12 @@ jobs:
     name: "scan bes"
     script:
     - export BES_BUILD=sonar-bes-framework
-    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer --enable-coverage
     - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
+
+    - make check -j7
+    - make coverage
+
     - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.login=$SONAR_LOGIN
     - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes | grep "QUALITY GATE PASS"
 
@@ -112,8 +117,12 @@ jobs:
     name: "scan bes-modules"
     script:
       - export BES_BUILD=sonar-bes-modules
-      - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+      - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer  --enable-coverage
       - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
+
+      - make check -j7
+      - make coverage
+
       - sonar-scanner -Dproject.settings=sonar-bes-modules.properties -Dsonar.login=$SONAR_MODULES_LOGIN
       - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-modules | grep "QUALITY GATE PASS"
 
@@ -121,8 +130,12 @@ jobs:
     name: "scan bes-submodules"
     script:
       - export BES_BUILD=sonar-bes-submodules
-      - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+      - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer  --enable-coverage
       - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
+
+      - make check -j7
+      - make coverage
+
       - sonar-scanner -Dproject.settings=sonar-bes-submodules.properties -Dsonar.login=$SONAR_SUBMODULES_LOGIN
       - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-submodules | grep "QUALITY GATE PASS"
 

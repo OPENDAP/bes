@@ -4,11 +4,14 @@
 AUTOMAKE_OPTIONS = foreign subdir-objects
 
 AM_CPPFLAGS = -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch $(XML2_CFLAGS)
-AM_CXXFLAGS = 
 
 if BES_DEVELOPER
 AM_CPPFLAGS += -DBES_DEVELOPER
 endif
+
+AM_CXXFLAGS=
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
 
 SUBDIRS = . unit-tests tests
 
@@ -47,7 +50,7 @@ SRCS = BESXMLInterface.cc BESXMLCommand.cc BESXMLUtils.cc		\
 	BESXMLDeleteDefinitionCommand.cc BESXMLDeleteDefinitionsCommand.cc \
 	ShowPathInfoCommand.cc SetContextsResponseHandler.cc XMLSetContextsCommand.cc \
 	ShowBesKeyCommand.cc ShowBesKeyResponseHandler.cc ShowNodeCommand.cc
-	
+
 HDRS = BESXMLInterface.h BESXMLCommand.h BESXMLUtils.h			\
 	BESXMLDefaultCommands.h BESXMLShowCommand.h			\
 	BESXMLShowErrorCommand.h					\
@@ -64,7 +67,7 @@ DAP_SRCS = BESXMLDapCommandModule.cc BESXMLCatalogCommand.cc SiteMapCommand.cc \
 
 DAP_HDRS = BESXMLDapCommandModule.h BESXMLCatalogCommand.h SiteMapCommand.h \
 	SiteMapResponseHandler.h 
-	
+
 # SiteMapCommandNames.h
 
 C4_DIR=./cccc

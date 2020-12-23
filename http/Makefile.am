@@ -6,7 +6,6 @@
 AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch $(DAP_CFLAGS)
-AM_CXXFLAGS =
 
 # FIXME Remove this hack. Set these with configure. jhrg 11/25/19
 OPENSSL_LIBS=-lcrypto
@@ -18,6 +17,10 @@ AM_CPPFLAGS += $(OPENSSL_INC) -I$(top_srcdir)
 if BES_DEVELOPER
 AM_CPPFLAGS += -DBES_DEVELOPER
 endif
+
+AM_CXXFLAGS=
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
 
 SUBDIRS = . unit-tests #tests
 

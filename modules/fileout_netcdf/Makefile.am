@@ -18,6 +18,10 @@ LIBADD = $(NC_LDFLAGS) $(NC_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
+AM_CXXFLAGS=
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
+
 SUBDIRS = . data/build_test_data tests 
 # I'm switching from the older tests in 'unit-tests' to the newer ones in 'tests'
 # jhrg 6/2/17 DIST_SUBDIRS = data/build_test_data tests unit-tests 

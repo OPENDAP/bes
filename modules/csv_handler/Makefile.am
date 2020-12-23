@@ -20,6 +20,10 @@ AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libcsv_module.la
 
+AM_CXXFLAGS=
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
+
 SUBDIRS = . tests
 
 CSV_SRCS = \
