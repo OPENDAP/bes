@@ -86,16 +86,9 @@ void *one_super_chunk_thread(void *arg_list)
         // args->super_chunk->read_and_copy(args->array);
     }
     catch (BESError &error) {
-        //write(args->fds[1], &args->tid, sizeof(args->tid));
         delete args;
-        //pthread_exit(new string(error.get_verbose_message()));
     }
-
-    // tid is a char and thus us written atomically. Writing this tells the parent
-    // thread the child is complete and it should call pthread_join(tid, ...)
-    //write(args->fds[1], &args->tid, sizeof(args->tid));
     delete args;
-    //pthread_exit(NULL);
     return nullptr;
 }
 
@@ -105,22 +98,16 @@ void *one_super_chunk_unconstrained_thread(void *arg_list)
 
     try {
         process_super_chunk_unconstrained(args->super_chunk, args->array);
+
         // SuperChunk::read_and_copy_unconstrained() (currently disabled)
         // does exactly the same thing as process_super_chunk_unconstrained()
         // in a class method.
         // args->super_chunk->read_and_copy_unconstrained(args->array);
     }
     catch (BESError &error) {
-        // write(args->fds[1], &args->tid, sizeof(args->tid));
         delete args;
-        //pthread_exit(new string(error.get_verbose_message()));
     }
-
-    // tid is a char and thus us written atomically. Writing this tells the parent
-    // thread the child is complete and it should call pthread_join(tid, ...)
-    //write(args->fds[1], &args->tid, sizeof(args->tid));
     delete args;
-    // pthread_exit(NULL);
     return nullptr;
 }
 
@@ -168,7 +155,7 @@ bool get_next_future(list<std::future<void *>> &futures, unsigned long timeout) 
             if((*futr).wait_for(ten_ms) != std::future_status::timeout){
                 (*futr).get();
                 joined = true;
-                BESDEBUG(dmrpp_3, prolog << "Called future::get() on one future." << endl);
+                BESDEBUG(dmrpp_3, prolog << "Called future::get() on a ready future." << endl);
             }
             else {
                 BESDEBUG(dmrpp_3, prolog << "future::wait_for() timed out." << endl);
