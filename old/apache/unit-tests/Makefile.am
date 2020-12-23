@@ -9,7 +9,10 @@ AM_CPPFLAGS = -I$(top_srcdir) $(BES_CPPFLAGS)
 # These are not used by automake but are often useful for certain types of
 # debugging. 
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
-TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
+
+AM_CXXFLAGS=
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
 
 check_PROGRAMS = $(TESTS)
 
