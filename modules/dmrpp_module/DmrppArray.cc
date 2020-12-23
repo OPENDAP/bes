@@ -73,71 +73,16 @@ using namespace std;
 
 namespace dmrpp {
 
-void *one_super_chunk_thread(void *arg_list)
-{
-    auto *args = reinterpret_cast<one_super_chunk_args *>(arg_list);
+void *one_super_chunk_thread(void *arg_list);
+void *one_super_chunk_unconstrained_thread(void *arg_list);
 
-    try {
-        process_super_chunk(args->super_chunk, args->array);
-
-        // SuperChunk::read_and_copy() (currently disabled)
-        // does exactly the same thing as process_super_chunk()
-        // in a class method.
-        // args->super_chunk->read_and_copy(args->array);
-    }
-    catch (BESError &error) {
-        delete args;
-    }
-    delete args;
-    return nullptr;
-}
-
-void *one_super_chunk_unconstrained_thread(void *arg_list)
-{
-    auto args = reinterpret_cast<one_super_chunk_args *>(arg_list);
-
-    try {
-        process_super_chunk_unconstrained(args->super_chunk, args->array);
-
-        // SuperChunk::read_and_copy_unconstrained() (currently disabled)
-        // does exactly the same thing as process_super_chunk_unconstrained()
-        // in a class method.
-        // args->super_chunk->read_and_copy_unconstrained(args->array);
-    }
-    catch (BESError &error) {
-        delete args;
-    }
-    delete args;
-    return nullptr;
-}
 
 std::mutex thread_pool_mtx;  // mutex for critical section
 atomic_uint thread_counter(0);
 
-#if 0
-/**
- * @brief Calls future::get() on the first future in the queue.
- * Once future::get() returns the the thread_counter is decremented and true is returned.
- * False is returned when the queue is empty.
- * @param futures The queue of future objects to process.
- * @return True if the were futures to "get()" and false of the queue was empty.
- */
-bool get_next_future(queue<std::future<void *>> &futures) {
-    bool joined = false;
-    if (!futures.empty()) {
-        futures.front().get();
-        futures.pop();
-        thread_counter--;
-        joined = true;
-        BESDEBUG(dmrpp_3, prolog << "Called future::get() on one future. " <<
-                                 "Popped future from queue, futures.size(): " << futures.size() << endl);
-    }
-    return joined;
-}
-#endif
 
 /**
- * @brief Uses future::wait_for() to scan the futures for a ready future. When found future::get() is called and the thead_count is decremented.
+ * @brief Uses future::wait_for() to scan the futures for a ready future. When found future::get() is called and the thead_counter is decremented.
  *
  * @param futures The list of futures to scan
  * @param timeout The number of milliseconds to wait for each future to complete.
@@ -193,6 +138,25 @@ bool start_super_chunk_thread(list<std::future<void *>> &futures, one_super_chun
     return retval;
 }
 
+void *one_super_chunk_thread(void *arg_list)
+{
+    auto *args = reinterpret_cast<one_super_chunk_args *>(arg_list);
+
+    try {
+        process_super_chunk(args->super_chunk, args->array);
+
+        // SuperChunk::read_and_copy() (currently disabled)
+        // does exactly the same thing as process_super_chunk()
+        // in a class method.
+        // args->super_chunk->read_and_copy(args->array);
+    }
+    catch (BESError &error) {
+        delete args;
+    }
+    delete args;
+    return nullptr;
+}
+
 /**
  * @brief Asyncronously starts the super_chunk_unconstrained_thread function using async and places the returned future in the queue futures.
  * @param futures The queue into which to place the future returned by async.
@@ -211,6 +175,25 @@ bool start_super_chunk_unconstrained_thread(list<std::future<void *>> &futures, 
         "' from std::async for " << args->super_chunk->to_string(false) << endl);
     }
     return retval;
+}
+
+void *one_super_chunk_unconstrained_thread(void *arg_list)
+{
+    auto args = reinterpret_cast<one_super_chunk_args *>(arg_list);
+
+    try {
+        process_super_chunk_unconstrained(args->super_chunk, args->array);
+
+        // SuperChunk::read_and_copy_unconstrained() (currently disabled)
+        // does exactly the same thing as process_super_chunk_unconstrained()
+        // in a class method.
+        // args->super_chunk->read_and_copy_unconstrained(args->array);
+    }
+    catch (BESError &error) {
+        delete args;
+    }
+    delete args;
+    return nullptr;
 }
 
 //#####################################################################################################################
