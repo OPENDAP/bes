@@ -23,6 +23,9 @@ lex.*.cc
 
 .dirstamp
 
+# The version_updated file is created and/or modified by the release process
+version_updated
+
 Makefile
 Makefile.in
 conf/compile
