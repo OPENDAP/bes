@@ -1,3 +1,101 @@
+2020-12-21  James Gallagher  <jgallagher@opendap.org>
+
+	Added support for code coverage
+
+2020-12-03  James Gallagher  <jgallagher@opendap.org>
+
+	HUGE/MAXFLOAT --> FLT_MAX
+	Fixes compiler issues.
+
+2020-12-02  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #11 from captainkirk99/ejh_fix_huge
+	changed HUGE to MAXFLOAT
+
+2020-12-02  Edward Hartnett  <Edward.Hartnett@noaa.gov>
+
+	changed HUGE to MAXFLOAT
+
+2020-11-10  ndp-opendap  <ndp@opendap.org>
+
+	Replacing timing triggers so that the stopwatch code 
+	runs when the server is built with out developer mode.
+
+2020-10-26  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #9 from OPENDAP/logging_mods
+	Switch to logging macros and TIMING_LOG_KEY
+
+2020-10-24  ndp-opendap  <ndp@opendap.org>
+
+	Merge branch 'master' into logging_mods
+
+2020-10-08  ndp-opendap  <ndp@opendap.org>
+
+	Adding include config.h to files that include BESDebug.h
+
+2020-10-07  Muqun (Kent) Yang  <myang6@hdfgroup.org>
+
+	HFRHANDLER-332, update README to reflect the handling of 
+	multiple dimension maps.
+
+2020-10-07  Muqun Yang  <myang6@hdfgroup.org>
+
+	HFRHANDLER-332, support the HDFEOS2 multiple dimension map 
+	case.  This check-in includes the multiple swath cases. 
+	More information will be provided at README.
+
+2020-10-05  ndp-opendap  <ndp@opendap.org>
+
+	Making new log style compile time switch. Making sure all 
+	files that include BESLog.h also include config.h
+
+2020-10-02  ndp-opendap  <ndp@opendap.org>
+
+	Switch to logging macros and TIMING_LOG_KEY
+
+2020-09-09  Muqun Yang  <myang6@hdfgroup.org>
+
+	HFRHANDLER-332, add a C source code to generate 3 HDF-EOS2 
+	swaths that have different dimension map settings.
+
+2020-06-12  Muqun Yang  <myang6@hdfgroup.org>
+
+	HFRHANDLER-331, Add a BES key to turn off the swath 
+	dimension map. This is a partial fix for MYD09 products. 
+	It contains three resolution variables under one swath. 
+	The current handler just handles one resolution variables 
+	for one swath.
+
+2020-05-13  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes for automake 1.16 and distcheck.
+
+2020-05-09  James Gallagher  <jgallagher@opendap.org>
+
+	Spelling error fixed
+
+2020-05-08  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes for automake 1.16. distcheck
+
+2020-04-20  Muqun Yang  <myang6@hdfgroup.org>
+
+	ESDIS-573, update documents for Hyrax 1.16.2.
+
+2020-02-20  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #8 from OPENDAP/OPeNDAP_warning_cleanup
+	Opendap warning cleanup
+
+2020-02-19  Muqun Yang  <myang6@hdfgroup.org>
+
+	Ready for pull request. Merge branch 'master' into 
+	OPeNDAP_warning_cleanup
+
+2020-02-10  slloyd  <slloyd@localhost>
+
+	2/10/19 - OPeNDAP HK-544 - (In Progress) warnings fixed, passes make
 2020-02-10 slloyd  <slloyd@localhost>
 
 	HK-544,cleaned up some compiler warnings.

@@ -1,3 +1,9 @@
+News for version 1.16.3
+* Updates to
+* Swath dimension processing controls
+* Compiler compatibility.
+* Log usage and internal timing metrics.
+
 News for version 1.16.2
 Updates since 2020-02-06, mainly clean up compiler warnings.
 
