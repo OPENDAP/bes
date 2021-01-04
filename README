@@ -37,11 +37,17 @@ client tools such as IDV, Panoply, GrADS, Ferret, NCL, MATLAB, and IDL.
 available on the next section.
 
 What's new for Hyrax 1.16.3
+Default option:
+1. Significantly enhance the handling of netCDF-4 like HDF5 files for the DAP4(DMR) response.
+   1) Correctly handle the pure netCDF-4 dimensions.
+   2) Remove the pre-defined netCDF-4 attributes.
+   3) Update the testsuite that tests NASA DAP4 response.
 CF option:
 1. ICESat-2 ATL03 and ATL08 support: 
    Add the group path and make the variable names follow the CF naming 
    conventions for "coordinates" attributes of ATL03-like variables.
 2. Ensure the unsupported objects are removed in the DMR response.
+3. Add the support of the new GPM DPR level 3 version product. 
 
 
 What's new for Hyrax 1.16.2
