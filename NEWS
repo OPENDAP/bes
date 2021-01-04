@@ -1,3 +1,72 @@
+### News for 3.20.8
+
+#### NGAP & DMR++ Improvements
+* The dmr++ production chain: get_dmrpp, build_dmrpp, check_dmrpp, merge_dmrpp, and
+  reduce_mdf received the following updates:
+  - Support for injecting configuration modifications to allow fine tuning of the
+    dataset representation in the produced dmr++ file.
+  - Support for HDF5 COMPACT layout data.
+  - Optional creation and injection of missing (domain coordinate) data as needed.
+  - Endian information carried in Chunks
+  - Int64 support
+  - Updated command line options and help page.
+
+* Improved S3 reliability by adding retry efforts for common S3 error responses that
+  indicate a retry is worth pursuing (because S3 just fails sometimes and a retry
+  is suggested).
+
+* Improved and more transparent error handling for remote access issues.
+
+* Migrated the service implementation making parallel requests using multi-cURL to
+  the c++11 std:async and std:future mechanism.
+
+* Added caching of S3 “effective” URLs obtained from NGAP service chain.
+
+* Implemented support for EDL token chaining.
+
+* New implementation of ngap restified path parser that is (almost) impervious to
+  the the key value content in the path.
+
+* Implemented the SuperChunk optimization for mass acquisition of required, consecutive
+  chunks.
+
+#### BALTO
+* Updated JSON-LD content of the server’s Data Request Form pages so that it is (once
+  again) in keeping with the (evolving) rules enforced by the Rich Results page which
+  is part of Google’s Dataset Search
+
+#### DAP4
+* AsciiTransmit supports DAP4 functions
+* Group support in fileout netcdf-4
+
+#### General
+* End Of Life for CentOS-6 Support - It’s been a long road CentOS-6, but NASA has
+  given us the OK to drop support for you just days before your nominal end of
+  life. On to the next std::future.
+
+* Dropped the “longest matching” Whitelist configuration key in favor of a multiple
+  regular expressions configuration using the new AllowedHosts key.
+
+* Consolidation of internal HTTP code and caching for all services. This means more
+  consistent behavior and error handling everywhere the server has to reach out for
+  something.
+
+* Introduced log message types: request, error, info, verbose, and timing which all
+  log to BES.LogName/. Each type is identified in the log and has a “fixed” format
+  that can be reliably parsed by downstream software.
+
+* Updated GDAL handler.
+
+* SonarCloud and /or Snyk is now a blocking step for all Hyrax component PRs
+
+* Our Docker images have been updated to utilize ncWMS-2.4.2 which is compatible
+  with current Tomcat security measures. This means ncWMS2 is working again…
+
+* Dynamic Configuration - This feature is currently a proof-of-concept idea and is
+  disabled with a compiler macro. To become an actual feature it will need to be
+  implemented in a much more thoughtful and efficient manner. Which we will be happy
+  to do so if there is sufficient interest!
+
 ### News for 3.20.7
 
 * Hyrax can generate signed S3 requests when processing dmr++

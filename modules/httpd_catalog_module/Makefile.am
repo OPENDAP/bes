@@ -10,12 +10,16 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=httpd_catalog_module
-M_VER=0.9.3
+M_VER=0.9.4
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/http -I$(top_srcdir)/dap $(DAP_CFLAGS)
 LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
+
+AM_CXXFLAGS=
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
 
 SUBDIRS = . unit-tests tests
 
@@ -29,7 +33,7 @@ libhttpd_catalog_module_la_LIBADD = $(LIBADD)
 HTTP_CAT_SRC = HttpdCatalogModule.cc HttpdCatalog.cc \
 	HttpdCatalogContainer.cc HttpdCatalogContainerStorage.cc \
 	HttpdDirScraper.cc
-	
+
 HTTP_CAT_HDR = HttpdCatalog.h HttpdCatalogNames.h \
 	HttpdCatalogModule.h \
 	HttpdCatalogContainer.h HttpdCatalogContainerStorage.h \
