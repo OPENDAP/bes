@@ -36,6 +36,12 @@
 #define CREDS  "dmrpp:creds"
 #define DMRPP_CURL  "dmrpp:curl"
 
+#define DMRPP_USE_TRANSFER_THREADS_KEY "DMRPP.UseParallelTransfers"
+#define DMRPP_MAX_TRANSFER_THREADS_KEY "DMRPP.MaxParallelTransfers"
+
+#define DMRPP_USE_COMPUTE_THREADS_KEY "DMRPP.UseComputeThreads"
+#define DMRPP_MAX_COMPUTE_THREADS_KEY "DMRPP.MaxComputeThreads"
+
 #define USE_SUPER_CHUNKS 1
 
 #endif // E_DmrppNames_H

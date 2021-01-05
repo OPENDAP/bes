@@ -91,6 +91,7 @@ private:
     // Called from read_chunks()
     friend void
     process_one_chunk(std::shared_ptr<Chunk> chunk, DmrppArray *array, const vector<unsigned int> &constrained_array_shape);
+
     friend
     void process_super_chunk(const std::shared_ptr<SuperChunk>& super_chunk, DmrppArray *array);
 
@@ -151,7 +152,7 @@ private:
  * an error message.
  */
     void *one_chunk_thread(void *arg_list);
-    //bool one_super_chunk_unconstrained_thread(void *arg_list);
+    //bool one_super_chunk_unconstrained_transfer_thread(void *arg_list);
 
 /**
  * Args for threads that process chunks for constrianed arrays.
