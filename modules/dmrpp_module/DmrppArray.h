@@ -151,7 +151,7 @@ private:
  * an error message.
  */
     void *one_chunk_thread(void *arg_list);
-    void *one_super_chunk_unconstrained_thread(void *arg_list);
+    //bool one_super_chunk_unconstrained_thread(void *arg_list);
 
 /**
  * Args for threads that process chunks for constrianed arrays.
@@ -168,8 +168,6 @@ struct one_chunk_args {
 };
 
 struct one_super_chunk_args {
-    //int *fds;               // pipe back to parent
-    //unsigned char tid;      // thread id as a byte
     std::shared_ptr<SuperChunk> super_chunk;
     DmrppArray *array;
 

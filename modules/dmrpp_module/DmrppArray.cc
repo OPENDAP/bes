@@ -73,9 +73,6 @@ using namespace std;
 
 namespace dmrpp {
 
-// Forward Declarations
-void *one_super_chunk_thread(void *arg_list);
-void *one_super_chunk_unconstrained_thread(void *arg_list);
 
 // ThreadPool state variables.
 std::mutex thread_pool_mtx;     // mutex for critical section
@@ -89,7 +86,7 @@ atomic_uint thread_counter(0);
  * @param timeout The number of milliseconds to wait for each future to complete.
  * @return Returns true if future::get() was called on a ready future, false otherwise.
  */
-bool get_next_future(list<std::future<void *>> &futures, unsigned long timeout) {
+bool get_next_future(list<std::future<bool>> &futures, unsigned long timeout) {
     bool joined = false;
     bool done = false;
     std::chrono::milliseconds timeout_ms (timeout);
@@ -100,9 +97,9 @@ bool get_next_future(list<std::future<void *>> &futures, unsigned long timeout) 
         while(!joined && futr != fend){
             // FIXME What happens if wait_for() always returns future_status::timeout for a stuck thread?
             if((*futr).wait_for(timeout_ms) != std::future_status::timeout){
-                (*futr).get();
+                bool retval = (*futr).get();
                 joined = true;
-                BESDEBUG(dmrpp_3, prolog << "Called future::get() on a ready future." << endl);
+                BESDEBUG(dmrpp_3, prolog << "Called future::get() on a ready future. retval: " << (retval?"true":"false") << endl);
             }
             else {
                 futr++;
@@ -121,6 +118,32 @@ bool get_next_future(list<std::future<void *>> &futures, unsigned long timeout) 
     return joined;
 }
 
+
+/**
+ *
+ * @param arg_list
+ * @return
+ */
+bool one_super_chunk_thread(void *arg_list)
+{
+    auto *args = reinterpret_cast<one_super_chunk_args *>(arg_list);
+
+    try {
+        process_super_chunk(args->super_chunk, args->array);
+        delete args;
+        return true;
+
+        // SuperChunk::read_and_copy() (currently disabled)
+        // does exactly the same thing as process_super_chunk()
+        // in a class method.
+        // args->super_chunk->read_and_copy(args->array);
+    }
+    catch (BESError &error) {
+        delete args;
+    }
+    return false;
+}
+
 /**
  * @brief Asynchronously starts the super_chunk_thread function using async and places the returned future in the queue futures.
  * @param futures The queue into which to place the future returned by async.
@@ -128,7 +151,7 @@ bool get_next_future(list<std::future<void *>> &futures, unsigned long timeout) 
  * @return Returns true if the async call was made and a future was returned, false if the thread_counter has
  * reached the maximum allowable size.
  */
-bool start_super_chunk_thread(list<std::future<void *>> &futures, one_super_chunk_args *args) {
+bool start_super_chunk_thread(list<std::future<bool>> &futures, one_super_chunk_args *args) {
     bool retval = false;
     std::unique_lock<std::mutex> lck (thread_pool_mtx);
     if (thread_counter < DmrppRequestHandler::d_max_parallel_transfers) {
@@ -142,23 +165,24 @@ bool start_super_chunk_thread(list<std::future<void *>> &futures, one_super_chun
 }
 
 
-void *one_super_chunk_thread(void *arg_list)
+bool one_super_chunk_unconstrained_thread(void *arg_list)
 {
-    auto *args = reinterpret_cast<one_super_chunk_args *>(arg_list);
+    auto args = reinterpret_cast<one_super_chunk_args *>(arg_list);
 
     try {
-        process_super_chunk(args->super_chunk, args->array);
+        process_super_chunk_unconstrained(args->super_chunk, args->array);
+        delete args;
+        return true;
 
-        // SuperChunk::read_and_copy() (currently disabled)
-        // does exactly the same thing as process_super_chunk()
+        // SuperChunk::read_and_copy_unconstrained() (currently disabled)
+        // does exactly the same thing as process_super_chunk_unconstrained()
         // in a class method.
-        // args->super_chunk->read_and_copy(args->array);
+        // args->super_chunk->read_and_copy_unconstrained(args->array);
     }
     catch (BESError &error) {
         delete args;
     }
-    delete args;
-    return nullptr;
+    return false;
 }
 
 /**
@@ -168,7 +192,7 @@ void *one_super_chunk_thread(void *arg_list)
  * @return Returns true if the async call was made and a future was returned, false if the thread_counter has
  * reached the maximum allowable size.
  */
-bool start_super_chunk_unconstrained_thread(list<std::future<void *>> &futures, one_super_chunk_args *args) {
+bool start_super_chunk_unconstrained_thread(list<std::future<bool>> &futures, one_super_chunk_args *args) {
     bool retval = false;
     std::unique_lock<std::mutex> lck (thread_pool_mtx);
     if(thread_counter < DmrppRequestHandler::d_max_parallel_transfers) {
@@ -181,24 +205,6 @@ bool start_super_chunk_unconstrained_thread(list<std::future<void *>> &futures, 
     return retval;
 }
 
-void *one_super_chunk_unconstrained_thread(void *arg_list)
-{
-    auto args = reinterpret_cast<one_super_chunk_args *>(arg_list);
-
-    try {
-        process_super_chunk_unconstrained(args->super_chunk, args->array);
-
-        // SuperChunk::read_and_copy_unconstrained() (currently disabled)
-        // does exactly the same thing as process_super_chunk_unconstrained()
-        // in a class method.
-        // args->super_chunk->read_and_copy_unconstrained(args->array);
-    }
-    catch (BESError &error) {
-        delete args;
-    }
-    delete args;
-    return nullptr;
-}
 
 //#####################################################################################################################
 //#####################################################################################################################
@@ -883,7 +889,7 @@ void read_chunks_unconstrained_concurrent(DmrppArray *array, queue<shared_ptr<Su
     // wait to remove that when we move to C++11 which has threads integrated.
 
     // We maintain a list  of futures to track our parallel activities.
-    list<future<void *>> futures;
+    list<future<bool>> futures;
     try {
         bool done = false;
         bool joined = true;
@@ -1332,7 +1338,7 @@ void read_chunks_concurrent(DmrppArray *array, queue<shared_ptr<SuperChunk>> &su
     // wait to remove that when we move to C++11 which has threads integrated.
 
     // We maintain a list  of futures to track our parallel activities.
-    list<future<void *>> futures;
+    list<future<bool>> futures;
     try {
         bool done = false;
         bool joined = true;
