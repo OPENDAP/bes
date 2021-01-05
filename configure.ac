@@ -64,6 +64,27 @@ AC_FUNC_STAT
 AC_FUNC_STRTOD
 AC_CHECK_FUNCS([isascii])
 
+AC_ARG_ENABLE([coverage],
+    [AS_HELP_STRING([--enable-coverage], [Build so tests emit coverage data and enable coverage target (default: no)])])
+
+AC_CHECK_LIB([gcov], [gcov_open], [GCOV_LIBS="-lgcov"], [GCOV_LIBS=])
+
+AS_IF([test x$enable_coverage = xyes && which gcov],
+      [AC_MSG_NOTICE([Building coverage version])
+       AM_CONDITIONAL([ENABLE_COVERAGE], [true])
+       AS_IF([gcov -help | grep LLVM],
+       	     [GCOVR_FLAGS=],
+	         [GCOVR_FLAGS="-k -e '.*Test.cc' -e '.*T.cc' -e '.*-test.cc'"
+	          LIBS="-lgcov $LIBS"])],
+      [AC_MSG_NOTICE([Not building coverage version])
+       AS_IF([test x$enable_coverage = xyes],
+             [AC_MSG_NOTICE([Check that gcov is on your PATH])])
+       AM_CONDITIONAL([ENABLE_COVERAGE], [false])])
+
+# --xml-pretty -o gcovr_ouput.xml
+
+AC_SUBST([GCOVR_FLAGS])
+
 dnl Checks for specific libraries
 AC_CHECK_LIBDAP([3.13.0],
  [
