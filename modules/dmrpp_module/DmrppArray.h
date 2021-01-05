@@ -28,6 +28,9 @@
 #include <utility>
 #include <vector>
 #include <memory>
+#include <queue>
+#include <future>
+#include <list>
 
 #include <Array.h>
 
@@ -145,16 +148,6 @@ private:
 };
 
 /**
- * Read one chunk in a thread. Uses pthreads.
- *
- * @param arg_list A pointer to a one_chunk_args instance
- * @return NULL on success; a pointer to string on failure. The string holds
- * an error message.
- */
-    void *one_chunk_thread(void *arg_list);
-    //bool one_super_chunk_unconstrained_transfer_thread(void *arg_list);
-
-/**
  * Args for threads that process chunks for constrianed arrays.
  */
 struct one_chunk_args {
@@ -166,6 +159,8 @@ struct one_chunk_args {
 
     one_chunk_args(int *pipe, unsigned char id, std::shared_ptr<Chunk> c, DmrppArray *a, const vector<unsigned int> &a_s)
             : fds(pipe), tid(id), chunk(std::move(c)), array(a), array_shape(a_s) {}
+    one_chunk_args(std::shared_ptr<Chunk> c, DmrppArray *a, const vector<unsigned int> &a_s)
+            : fds(nullptr), tid(0), chunk(std::move(c)), array(a), array_shape(a_s) {}
 };
 
 struct one_super_chunk_args {
@@ -182,16 +177,14 @@ struct one_super_chunk_args {
  * array case.
  */
 struct one_chunk_unconstrained_args {
-    int *fds;               // pipe back to parent
-    unsigned char tid;      // thread id as a byte
     std::shared_ptr<Chunk> chunk;
     DmrppArray *array;
     const vector<unsigned int> &array_shape;
     const vector<unsigned int> &chunk_shape;
 
-    one_chunk_unconstrained_args(int *pipe, unsigned char id, std::shared_ptr<Chunk> c, DmrppArray *a, const vector<unsigned int> &a_s,
+    one_chunk_unconstrained_args(std::shared_ptr<Chunk> c, DmrppArray *a, const vector<unsigned int> &a_s,
                                  const vector<unsigned int> &c_s)
-            : fds(pipe), tid(id), chunk(std::move(c)), array(a), array_shape(a_s), chunk_shape(c_s) {}
+            : chunk(std::move(c)), array(a), array_shape(a_s), chunk_shape(c_s) {}
 };
 
 /**
@@ -211,6 +204,21 @@ struct one_child_chunk_args {
     // Done! ndp
     ~one_child_chunk_args() { }
 };
+
+/**
+ * Read one chunk in a thread. Uses pthreads.
+ *
+ * @param arg_list A pointer to a one_chunk_args instance
+ * @return NULL on success; a pointer to string on failure. The string holds
+ * an error message.
+ */
+// void *one_chunk_thread(void *arg_list);
+// bool one_super_chunk_unconstrained_transfer_thread(void *arg_list);
+// bool get_next_future(std::list<std::future<bool>> &futures, unsigned long timeout);
+// bool start_one_chunk_compute_thread(list<std::future<bool>> &futures, one_chunk_args *args);
+void process_chunks_concurrent( DmrppArray *array, std::queue<shared_ptr<Chunk>> &chunks, const std::vector<unsigned int> &shape );
+
+
 
 } // namespace dmrpp
 

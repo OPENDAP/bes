@@ -30,9 +30,14 @@
 #include <cstring>
 #include <cassert>
 #include <cerrno>
+#include <list>
 #include <memory>
 
 #include <queue>
+#include <iterator>
+#include <thread>
+#include <future>         // std::async, std::future
+#include <chrono>         // std::chrono::milliseconds
 
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
@@ -45,6 +50,7 @@
 #include "BESDebug.h"
 
 #include "Chunk.h"
+#include "DmrppNames.h"
 #include "DmrppArray.h"
 #include "CurlHandlePool.h"
 
@@ -225,6 +231,15 @@ public:
     void dmrpp_array_thread_control(queue<shared_ptr<Chunk>> &chunks_to_read, MockDmrppArray *array,
                                     const vector<unsigned int> &array_shape) {
         DBG(cerr << prolog << "BEGIN" << endl);
+        process_chunks_concurrent(array,chunks_to_read, array_shape);
+        DBG(cerr << prolog << "END" << endl);
+    }
+
+#if 0
+    // This is a general proxy for the DmrppArray code that controls the parallel transfers.
+    void dmrpp_array_pthread_control(queue<shared_ptr<Chunk>> &chunks_to_read, MockDmrppArray *array,
+                                    const vector<unsigned int> &array_shape) {
+        DBG(cerr << prolog << "BEGIN" << endl);
         // This pipe is used by the child threads to indicate completion
         int fds[2];
         if (pipe(fds) < 0)
@@ -323,6 +338,7 @@ public:
         }
         DBG(cerr << prolog << "END" << endl);
     }
+#endif
 
     // This replicates the code in DmrppArray::read_chunks() to orgainize and process_one_chunk()
     // using several threads.

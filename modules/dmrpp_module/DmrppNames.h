@@ -42,6 +42,8 @@
 #define DMRPP_USE_COMPUTE_THREADS_KEY "DMRPP.UseComputeThreads"
 #define DMRPP_MAX_COMPUTE_THREADS_KEY "DMRPP.MaxComputeThreads"
 
+#define DMRPP_WAIT_FOR_FUTURE_MS 1
+
 #define USE_SUPER_CHUNKS 1
 
 #endif // E_DmrppNames_H
