@@ -103,15 +103,20 @@ bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_count
             if(future_is_valid){
                 // FIXME What happens if wait_for() always returns future_status::timeout for a stuck thread?
                 if((*futr).wait_for(timeout_ms) != std::future_status::timeout){
-                    bool retval = (*futr).get();
+                    bool success = (*futr).get();
                     joined = true;
-                    BESDEBUG(dmrpp_3, prolog << "Called future::get() on a ready future. retval: " <<
-                    (retval?"true":"false") << endl);
+                    BESDEBUG(dmrpp_3, prolog << "Called future::get() on a ready future. success: " <<
+                    (success?"true":"false") << endl);
+                    if(!success){
+                        stringstream msg;
+                        msg << prolog << "The std::future has failed! thread_counter: " << thread_counter;
+                        throw BESInternalError(msg.str(), __FILE__, __LINE__);
+                    }
                 }
                 else {
                     futr++;
                     BESDEBUG(dmrpp_3, prolog << "future::wait_for() timed out. (timeout: "<<
-                     timeout << " ms) There are currently "<< futures.size() << " futures in process." << endl);
+                     timeout << " ms) There are currently "<< futures.size() << " futures in process. thread_counter: " << thread_counter <<  endl);
                 }
             }
             else {
@@ -553,13 +558,13 @@ void process_super_chunk(const shared_ptr<SuperChunk> &super_chunk, DmrppArray *
     BESDEBUG(dmrpp_3, prolog << "d_max_compute_threads: " << DmrppRequestHandler::d_max_compute_threads << endl);
 
     if(!DmrppRequestHandler::d_use_compute_threads){
-        for(auto &chunk :super_chunk->get_chunks()){
+        for(const auto &chunk :super_chunk->get_chunks()){
             process_one_chunk(chunk,array,constrained_array_shape);
         }
     }
     else {
         queue<shared_ptr<Chunk>> chunks_to_process;
-        for(auto &chunk:super_chunk->get_chunks())
+        for(const auto &chunk:super_chunk->get_chunks())
             chunks_to_process.push(chunk);
 
         process_chunks_concurrent(array,chunks_to_process, constrained_array_shape);
@@ -593,6 +598,7 @@ bool one_super_chunk_transfer_thread(void *arg_list)
     }
     catch (BESError &error) {
         delete args;
+        throw;
     }
     return false;
 }
@@ -618,6 +624,7 @@ bool one_super_chunk_unconstrained_transfer_thread(void *arg_list)
     }
     catch (BESError &error) {
         delete args;
+        throw;
     }
     return false;
 }
@@ -1424,9 +1431,8 @@ void DmrppArray::read_chunks_unconstrained()
     const vector<unsigned int> chunk_shape = get_chunk_dimension_sizes();
 
 
-    BESDEBUG(dmrpp_3, __func__ << endl);
-    BESDEBUG(dmrpp_3, "d_use_transfer_threads: " << (DmrppRequestHandler::d_use_transfer_threads?"true":"false") << endl);
-    BESDEBUG(dmrpp_3, "d_max_transfer_threads: " << DmrppRequestHandler::d_max_transfer_threads << endl);
+    BESDEBUG(dmrpp_3, prolog << "d_use_transfer_threads: " << (DmrppRequestHandler::d_use_transfer_threads?"true":"false") << endl);
+    BESDEBUG(dmrpp_3, prolog << "d_max_transfer_threads: " << DmrppRequestHandler::d_max_transfer_threads << endl);
 
     if (!DmrppRequestHandler::d_use_transfer_threads) {  // Serial transfers
         while(!super_chunks.empty()) {
