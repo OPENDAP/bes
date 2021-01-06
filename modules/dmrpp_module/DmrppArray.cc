@@ -97,23 +97,32 @@ bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_count
     while(!done){
         auto futr = futures.begin();
         auto fend = futures.end();
+        bool future_is_valid = true;
         while(!joined && futr != fend){
-            // FIXME What happens if wait_for() always returns future_status::timeout for a stuck thread?
-            if((*futr).wait_for(timeout_ms) != std::future_status::timeout){
-                bool retval = (*futr).get();
-                joined = true;
-                BESDEBUG(dmrpp_3, prolog << "Called future::get() on a ready future. retval: " << (retval?"true":"false") << endl);
+            future_is_valid = (*futr).valid();
+            if(future_is_valid){
+                // FIXME What happens if wait_for() always returns future_status::timeout for a stuck thread?
+                if((*futr).wait_for(timeout_ms) != std::future_status::timeout){
+                    bool retval = (*futr).get();
+                    joined = true;
+                    BESDEBUG(dmrpp_3, prolog << "Called future::get() on a ready future. retval: " <<
+                    (retval?"true":"false") << endl);
+                }
+                else {
+                    futr++;
+                    BESDEBUG(dmrpp_3, prolog << "future::wait_for() timed out. (timeout: "<<
+                     timeout << " ms) There are currently "<< futures.size() << " futures in process." << endl);
+                }
             }
             else {
-                futr++;
-                BESDEBUG(dmrpp_3, prolog << "future::wait_for() timed out. (timeout: "<<
-                timeout << " ms) There are currently "<< futures.size() << " futures in process." << endl);
+                BESDEBUG(dmrpp_3, prolog << "The future was not valid. Dumping... " << endl);
             }
         }
-        if (joined) {
+        if (futr!=fend && (joined || !future_is_valid)) {
             futures.erase(futr);
             thread_counter--;
-            BESDEBUG(dmrpp_3, prolog << "Erased future from futures list. There are currently " <<
+            BESDEBUG(dmrpp_3, prolog << "Erased future from futures list. (Erased future was "
+            << (future_is_valid?"":"not ") << "valid at start.) There are currently " <<
             futures.size() << " futures in process." << endl);
         }
         done = joined || futures.empty();
@@ -153,6 +162,21 @@ void process_one_chunk(shared_ptr<Chunk> chunk, DmrppArray *array, const vector<
     vector<unsigned int> chunk_source_address(array->dimensions(), 0);
 
     array->insert_chunk(0 /* dimension */, &target_element_address, &chunk_source_address, chunk, constrained_array_shape);
+    BESDEBUG(dmrpp_3, prolog << "END" << endl );
+}
+
+void process_one_chunk_unconstrained(shared_ptr<Chunk> chunk, DmrppArray *array, const vector<unsigned int> &array_shape,
+                                     const vector<unsigned int> &chunk_shape)
+{
+    BESDEBUG(dmrpp_3, prolog << "BEGIN" << endl );
+    chunk->read_chunk();
+
+    if (array->is_deflate_compression() || array->is_shuffle_compression())
+        chunk->inflate_chunk(array->is_deflate_compression(), array->is_shuffle_compression(),
+                             array->get_chunk_size_in_elements(),
+                             array->var()->width());
+
+    array->insert_chunk_unconstrained(chunk, 0, 0, array_shape, 0, chunk_shape, chunk->get_position_in_array());
     BESDEBUG(dmrpp_3, prolog << "END" << endl );
 }
 
@@ -271,12 +295,12 @@ void process_chunks_concurrent(
 
                     if (thread_started) {
                         chunks.pop();
-                        BESDEBUG(dmrpp_3, prolog << "STARTED thread for" << chunk->to_string() << endl);
+                        BESDEBUG(dmrpp_3, prolog << "STARTED thread for " << chunk->to_string() << endl);
                     } else {
                         // Thread did not start, ownership of the arguments was not passed to the thread.
                         delete args;
                         BESDEBUG(dmrpp_3, prolog << "Thread not started, args deleted, Chunk remains in queue. " <<
-                                                 "thread_count: " << transfer_thread_counter << endl);
+                                                 "compute_thread_counter: " << compute_thread_counter << endl);
                     }
                 }
             }
@@ -350,12 +374,12 @@ void process_chunks_unconstrained_concurrent(
 
                     if (thread_started) {
                         chunks.pop();
-                        BESDEBUG(dmrpp_3, prolog << "STARTED thread for" << chunk->to_string() << endl);
+                        BESDEBUG(dmrpp_3, prolog << "STARTED thread for " << chunk->to_string() << endl);
                     } else {
                         // Thread did not start, ownership of the arguments was not passed to the thread.
                         delete args;
                         BESDEBUG(dmrpp_3, prolog << "Thread not started, args deleted, Chunk remains in queue. " <<
-                                                 "thread_count: " << transfer_thread_counter << endl);
+                                                 "compute_thread_counter: " << compute_thread_counter << endl);
                     }
                 }
             }
@@ -525,6 +549,8 @@ void process_super_chunk(const shared_ptr<SuperChunk>& super_chunk, DmrppArray *
     super_chunk->read();
 
     vector<unsigned int> constrained_array_shape = array->get_shape(true);
+    BESDEBUG(dmrpp_3, prolog << "d_use_compute_threads: " << (DmrppRequestHandler::d_use_compute_threads?"true":"false") << endl);
+    BESDEBUG(dmrpp_3, prolog << "d_max_compute_threads: " << DmrppRequestHandler::d_max_compute_threads << endl);
 
     if(!DmrppRequestHandler::d_use_compute_threads){
         for(auto &chunk :super_chunk->get_chunks()){
@@ -544,20 +570,6 @@ void process_super_chunk(const shared_ptr<SuperChunk>& super_chunk, DmrppArray *
 
 
 
-void process_one_chunk_unconstrained(shared_ptr<Chunk> chunk, DmrppArray *array, const vector<unsigned int> &array_shape,
-                                     const vector<unsigned int> &chunk_shape)
-{
-    BESDEBUG(dmrpp_3, prolog << "BEGIN" << endl );
-    chunk->read_chunk();
-
-    if (array->is_deflate_compression() || array->is_shuffle_compression())
-        chunk->inflate_chunk(array->is_deflate_compression(), array->is_shuffle_compression(),
-                             array->get_chunk_size_in_elements(),
-                             array->var()->width());
-
-    array->insert_chunk_unconstrained(chunk, 0, 0, array_shape, 0, chunk_shape, chunk->get_position_in_array());
-    BESDEBUG(dmrpp_3, prolog << "END" << endl );
-}
 
 
 /**
@@ -693,12 +705,12 @@ void read_super_chunks_unconstrained_concurrent(DmrppArray *array, queue<shared_
 
                     if (thread_started) {
                         super_chunks.pop();
-                        BESDEBUG(dmrpp_3, prolog << "STARTED thread for" << super_chunk->to_string(false) << endl);
+                        BESDEBUG(dmrpp_3, prolog << "STARTED thread for " << super_chunk->to_string(false) << endl);
                     } else {
                         // Thread did not start, ownership of the arguments was not passed to the thread.
                         delete args;
                         BESDEBUG(dmrpp_3, prolog << "Thread not started, args deleted, SuperChunk remains in queue. " <<
-                                                 "thread_count: " << transfer_thread_counter << endl);
+                                                 "transfer_thread_counter: " << transfer_thread_counter << endl);
                     }
                 }
             }
@@ -772,12 +784,12 @@ void read_super_chunks_concurrent(DmrppArray *array, queue<shared_ptr<SuperChunk
 
                     if (thread_started) {
                         super_chunks.pop();
-                        BESDEBUG(dmrpp_3, prolog << "STARTED thread for" << super_chunk->to_string(false) << endl);
+                        BESDEBUG(dmrpp_3, prolog << "STARTED thread for " << super_chunk->to_string(false) << endl);
                     } else {
                         // Thread did not start, ownership of the arguments was not passed to the thread.
                         delete args;
                         BESDEBUG(dmrpp_3, prolog << "Thread not started, args deleted, SuperChunk remains in queue. " <<
-                                                 "thread_count: " << transfer_thread_counter << endl);
+                                                 "transfer_thread_counter: " << transfer_thread_counter << endl);
                     }
                 }
             }
@@ -1413,7 +1425,7 @@ void DmrppArray::read_chunks_unconstrained()
 
 
     BESDEBUG(dmrpp_3, __func__ << endl);
-    BESDEBUG(dmrpp_3, "d_use_transfer_threads: " << DmrppRequestHandler::d_use_transfer_threads << endl);
+    BESDEBUG(dmrpp_3, "d_use_transfer_threads: " << (DmrppRequestHandler::d_use_transfer_threads?"true":"false") << endl);
     BESDEBUG(dmrpp_3, "d_max_transfer_threads: " << DmrppRequestHandler::d_max_transfer_threads << endl);
 
     if (!DmrppRequestHandler::d_use_transfer_threads) {  // Serial transfers
@@ -1701,8 +1713,10 @@ void DmrppArray::read_chunks()
 
     reserve_value_capacity(get_size(true));
 
-    BESDEBUG(dmrpp_3, prolog << "d_use_transfer_threads: " << DmrppRequestHandler::d_use_transfer_threads << endl);
+    BESDEBUG(dmrpp_3, prolog << "d_use_transfer_threads: " << (DmrppRequestHandler::d_use_transfer_threads?"true":"false") << endl);
     BESDEBUG(dmrpp_3, prolog << "d_max_transfer_threads: " << DmrppRequestHandler::d_max_transfer_threads << endl);
+    BESDEBUG(dmrpp_3, prolog << "d_use_compute_threads: " << (DmrppRequestHandler::d_use_compute_threads?"true":"false") << endl);
+    BESDEBUG(dmrpp_3, prolog << "d_max_compute_threads: " << DmrppRequestHandler::d_max_compute_threads << endl);
     BESDEBUG(dmrpp_3, prolog << "SuperChunks.size(): " << super_chunks.size() << endl);
 
     if (!DmrppRequestHandler::d_use_transfer_threads) {

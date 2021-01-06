@@ -167,8 +167,8 @@ struct one_super_chunk_args {
     std::shared_ptr<SuperChunk> super_chunk;
     DmrppArray *array;
 
-    one_super_chunk_args(/*int *pipe, unsigned char id,*/ std::shared_ptr<SuperChunk> sc, DmrppArray *a)
-            : /* fds(pipe), tid(id), */ super_chunk(std::move(sc)), array(a) {}
+    one_super_chunk_args(std::shared_ptr<SuperChunk> sc, DmrppArray *a)
+            :super_chunk(std::move(sc)), array(a) {}
 };
 
 /**
