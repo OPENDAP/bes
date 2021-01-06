@@ -89,14 +89,14 @@ private:
     friend void
     process_one_chunk_unconstrained(std::shared_ptr<Chunk> chunk, DmrppArray *array, const vector<unsigned int> &array_shape,const vector<unsigned int> &chunk_shape);
     friend void
-    process_super_chunk_unconstrained(const std::shared_ptr<SuperChunk>& super_chunk, DmrppArray *array);
+    process_super_chunk_unconstrained(const std::shared_ptr<SuperChunk> &super_chunk, DmrppArray *array);
 
     // Called from read_chunks()
     friend void
     process_one_chunk(std::shared_ptr<Chunk> chunk, DmrppArray *array, const vector<unsigned int> &constrained_array_shape);
 
     friend
-    void process_super_chunk(const std::shared_ptr<SuperChunk>& super_chunk, DmrppArray *array);
+    void process_super_chunk(const std::shared_ptr<SuperChunk> &super_chunk, DmrppArray *array);
 
     // friend void SuperChunk::chunks_to_array_values(DmrppArray *array);
     // friend void SuperChunk::chunks_to_array_values_unconstrained(DmrppArray *target_array);
@@ -148,27 +148,26 @@ private:
 };
 
 /**
- * Args for threads that process chunks for constrianed arrays.
+ * Args for threads that process SuperChunks, constrained or not.
  */
-struct one_chunk_args {
-    int *fds;               // pipe back to parent
-    unsigned char tid;      // thread id as a byte
-    std::shared_ptr<Chunk> chunk;
-    DmrppArray *array;
-    const vector<unsigned int> &array_shape;
-
-    one_chunk_args(int *pipe, unsigned char id, std::shared_ptr<Chunk> c, DmrppArray *a, const vector<unsigned int> &a_s)
-            : fds(pipe), tid(id), chunk(std::move(c)), array(a), array_shape(a_s) {}
-    one_chunk_args(std::shared_ptr<Chunk> c, DmrppArray *a, const vector<unsigned int> &a_s)
-            : fds(nullptr), tid(0), chunk(std::move(c)), array(a), array_shape(a_s) {}
-};
-
 struct one_super_chunk_args {
     std::shared_ptr<SuperChunk> super_chunk;
     DmrppArray *array;
 
     one_super_chunk_args(std::shared_ptr<SuperChunk> sc, DmrppArray *a)
             :super_chunk(std::move(sc)), array(a) {}
+};
+
+/**
+ * Args for threads that process Chunks for constrained arrays.
+ */
+struct one_chunk_args {
+    std::shared_ptr<Chunk> chunk;
+    DmrppArray *array;
+    const vector<unsigned int> &array_shape;
+
+    one_chunk_args(std::shared_ptr<Chunk> c, DmrppArray *a, const vector<unsigned int> &a_s)
+            :  chunk(std::move(c)), array(a), array_shape(a_s) {}
 };
 
 /**
@@ -200,8 +199,6 @@ struct one_child_chunk_args {
     one_child_chunk_args(int *pipe, unsigned char id, std::shared_ptr<Chunk> c_c, std::shared_ptr<Chunk> m_c)
             : fds(pipe), tid(id), child_chunk(c_c), master_chunk(m_c) {}
 
-    // FIXME Use smart pointers here. jhrg 9/16/20
-    // Done! ndp
     ~one_child_chunk_args() { }
 };
 

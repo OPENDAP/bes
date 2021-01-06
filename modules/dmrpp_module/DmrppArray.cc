@@ -543,7 +543,7 @@ void *one_chunk_unconstrained_thread(void *arg_list)
  * @param array
  * @deprecated Use SuperChunk::chunks_to_array_values()
  */
-void process_super_chunk(const shared_ptr<SuperChunk>& super_chunk, DmrppArray *array)
+void process_super_chunk(const shared_ptr<SuperChunk> &super_chunk, DmrppArray *array)
 {
     BESDEBUG(dmrpp_3, prolog << "BEGIN" << endl );
     super_chunk->read();
@@ -830,7 +830,7 @@ void read_super_chunks_concurrent(DmrppArray *array, queue<shared_ptr<SuperChunk
  * friend so that it can get access to the class' private info.
  * @deprecated Use SuperChunk::chunks_to_array_values_unconstrained()
  */
-void process_super_chunk_unconstrained(const shared_ptr<SuperChunk>& super_chunk, DmrppArray *array)
+void process_super_chunk_unconstrained(const shared_ptr<SuperChunk> &super_chunk, DmrppArray *array)
 {
     BESDEBUG(dmrpp_3, prolog << "BEGIN" << endl );
     super_chunk->read();
