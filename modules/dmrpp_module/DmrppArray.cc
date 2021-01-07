@@ -199,34 +199,16 @@ void process_one_chunk_unconstrained(shared_ptr<Chunk> chunk, DmrppArray *array,
     BESDEBUG(dmrpp_3, prolog << "END" << endl );
 }
 
-bool one_chunk_compute_thread(void *arg_list)
+bool one_chunk_compute_thread(unique_ptr<one_chunk_args> args)
 {
-    one_chunk_args *args = reinterpret_cast<one_chunk_args *>(arg_list);
-    try {
         process_one_chunk(args->chunk, args->array, args->array_shape);
-        delete args;
         return true;
-    }
-    catch (...) {
-        delete args;
-        throw;
-    }
-    return false;
 }
 
-bool one_chunk_unconstrained_compute_thread(void *arg_list)
+bool one_chunk_unconstrained_compute_thread(unique_ptr<one_chunk_unconstrained_args> args)
 {
-    one_chunk_unconstrained_args *args = reinterpret_cast<one_chunk_unconstrained_args *>(arg_list);
-    try {
         process_one_chunk_unconstrained(args->chunk, args->array, args->array_shape, args->chunk_shape);
-        delete args;
         return true;
-    }
-    catch (...) {
-        delete args;
-        throw;
-    }
-    return false;
 }
 
 /**
@@ -236,16 +218,16 @@ bool one_chunk_unconstrained_compute_thread(void *arg_list)
  * @return Returns true if the async call was made and a future was returned, false if the transfer_thread_counter has
  * reached the maximum allowable size.
  */
-bool start_one_chunk_compute_thread(list<std::future<bool>> &futures, one_chunk_args *args) {
+bool start_one_chunk_compute_thread(list<std::future<bool>> &futures, unique_ptr<one_chunk_args> args) {
     bool retval = false;
     std::unique_lock<std::mutex> lck (compute_thread_pool_mtx);
     BESDEBUG(dmrpp_3, prolog << "d_max_compute_threads: " << DmrppRequestHandler::d_max_compute_threads << " compute_thread_counter: " << compute_thread_counter << endl);
     if (compute_thread_counter < DmrppRequestHandler::d_max_compute_threads) {
         compute_thread_counter++;
-        futures.push_back(std::async(std::launch::async, one_chunk_compute_thread, (void *) args));
+        futures.push_back(std::async(std::launch::async, one_chunk_compute_thread, std::move(args)));
         retval = true;
         BESDEBUG(dmrpp_3, prolog << "Got std::future '"<< futures.size() <<
-                                 "' from std::async for " << args->chunk->to_string() << endl);
+        "' from std::async, compute_thread_counter: " << compute_thread_counter << endl);
     }
     return retval;
 }
@@ -257,14 +239,15 @@ bool start_one_chunk_compute_thread(list<std::future<bool>> &futures, one_chunk_
  * @return Returns true if the async call was made and a future was returned, false if the transfer_thread_counter has
  * reached the maximum allowable size.
  */
-bool start_one_chunk_unconstrained_compute_thread(list<std::future<bool>> &futures, one_chunk_unconstrained_args *args) {
+bool start_one_chunk_unconstrained_compute_thread(list<std::future<bool>> &futures, unique_ptr<one_chunk_unconstrained_args> args) {
     bool retval = false;
     std::unique_lock<std::mutex> lck (compute_thread_pool_mtx);
     if (compute_thread_counter < DmrppRequestHandler::d_max_compute_threads) {
-        futures.push_back(std::async(std::launch::async, one_chunk_unconstrained_compute_thread, (void *) args));
+        futures.push_back(std::async(std::launch::async, one_chunk_unconstrained_compute_thread, std::move(args)));
         compute_thread_counter++;
         retval = true;
-        BESDEBUG(dmrpp_3, prolog << "Got std::future '"<< futures.size() << "' from std::async, compute_thread_counter: " << compute_thread_counter << endl);
+        BESDEBUG(dmrpp_3, prolog << "Got std::future '"<< futures.size() <<
+        "' from std::async, compute_thread_counter: " << compute_thread_counter << endl);
     }
     return retval;
 }
@@ -308,15 +291,14 @@ void process_chunks_concurrent(
                     auto chunk = chunks.front();
                     BESDEBUG(dmrpp_3, prolog << "Starting thread for " << chunk->to_string() << endl);
 
-                    auto *args = new one_chunk_args(chunk, array, constrained_array_shape);
-                    thread_started = start_one_chunk_compute_thread(futures, args);
+                    auto args = unique_ptr<one_chunk_args>(new one_chunk_args(chunk, array, constrained_array_shape));
+                    thread_started = start_one_chunk_compute_thread(futures, std::move(args));
 
                     if (thread_started) {
                         chunks.pop();
                         BESDEBUG(dmrpp_3, prolog << "STARTED thread for " << chunk->to_string() << endl);
                     } else {
                         // Thread did not start, ownership of the arguments was not passed to the thread.
-                        delete args;
                         BESDEBUG(dmrpp_3, prolog << "Thread not started. args deleted, Chunk remains in queue.) " <<
                         "compute_thread_counter: " << compute_thread_counter << " futures.size(): " << futures.size() << endl);
                     }
@@ -381,17 +363,18 @@ void process_chunks_unconstrained_concurrent(
                     auto chunk = chunks.front();
                     BESDEBUG(dmrpp_3, prolog << "Starting thread for " << chunk->to_string() << endl);
 
-                    auto *args = new one_chunk_unconstrained_args(chunk, array, array_shape, chunk_shape);
-                    thread_started = start_one_chunk_unconstrained_compute_thread(futures, args);
+                    auto args = unique_ptr<one_chunk_unconstrained_args>(
+                            new one_chunk_unconstrained_args(chunk, array, array_shape, chunk_shape) );
+                    thread_started = start_one_chunk_unconstrained_compute_thread(futures, std::move(args));
 
                     if (thread_started) {
                         chunks.pop();
                         BESDEBUG(dmrpp_3, prolog << "STARTED thread for " << chunk->to_string() << endl);
                     } else {
                         // Thread did not start, ownership of the arguments was not passed to the thread.
-                        delete args;
-                        BESDEBUG(dmrpp_3, prolog << "Thread not started. args deleted, Chunk remains in queue.) " <<
-                                                 "compute_thread_counter: " << compute_thread_counter << " futures.size(): " << futures.size() << endl);
+                        BESDEBUG(dmrpp_3, prolog << "Thread not started. args deleted, Chunk remains in queue.)" <<
+                        " compute_thread_counter: " << compute_thread_counter <<
+                        " futures.size(): " << futures.size() << endl);
                     }
                 }
             }
@@ -583,25 +566,10 @@ void process_super_chunk(const shared_ptr<SuperChunk> &super_chunk, DmrppArray *
  * @param arg_list
  * @return
  */
-bool one_super_chunk_transfer_thread(void *arg_list)
+bool one_super_chunk_transfer_thread(unique_ptr<one_super_chunk_args> args)
 {
-    auto *args = reinterpret_cast<one_super_chunk_args *>(arg_list);
-
-    try {
-        process_super_chunk(args->super_chunk, args->array);
-        delete args;
-        return true;
-
-        // SuperChunk::read_and_copy() (currently disabled)
-        // does exactly the same thing as process_super_chunk()
-        // in a class method.
-        // args->super_chunk->read_and_copy(args->array);
-    }
-    catch (BESError &error) {
-        delete args;
-        throw;
-    }
-    return false;
+    process_super_chunk(args->super_chunk, args->array);
+    return true;
 }
 
 /**
@@ -609,25 +577,10 @@ bool one_super_chunk_transfer_thread(void *arg_list)
  * @param arg_list
  * @return
  */
-bool one_super_chunk_unconstrained_transfer_thread(void *arg_list)
+bool one_super_chunk_unconstrained_transfer_thread(unique_ptr<one_super_chunk_args> args)
 {
-    auto args = reinterpret_cast<one_super_chunk_args *>(arg_list);
-
-    try {
-        process_super_chunk_unconstrained(args->super_chunk, args->array);
-        delete args;
-        return true;
-
-        // SuperChunk::read_and_copy_unconstrained() (currently disabled)
-        // does exactly the same thing as process_super_chunk_unconstrained()
-        // in a class method.
-        // args->super_chunk->read_and_copy_unconstrained(args->array);
-    }
-    catch (BESError &error) {
-        delete args;
-        throw;
-    }
-    return false;
+    process_super_chunk_unconstrained(args->super_chunk, args->array);
+    return true;
 }
 
 
@@ -638,12 +591,12 @@ bool one_super_chunk_unconstrained_transfer_thread(void *arg_list)
  * @return Returns true if the async call was made and a future was returned, false if the transfer_thread_counter has
  * reached the maximum allowable size.
  */
-bool start_super_chunk_transfer_thread(list<std::future<bool>> &futures, one_super_chunk_args *args) {
+bool start_super_chunk_transfer_thread(list<std::future<bool>> &futures, unique_ptr<one_super_chunk_args> args) {
     bool retval = false;
     std::unique_lock<std::mutex> lck (transfer_thread_pool_mtx);
     if (transfer_thread_counter < DmrppRequestHandler::d_max_transfer_threads) {
         transfer_thread_counter++;
-        futures.push_back(std::async(std::launch::async, one_super_chunk_transfer_thread, (void *) args));
+        futures.push_back(std::async(std::launch::async, one_super_chunk_transfer_thread, std::move(args)));
         retval = true;
         BESDEBUG(dmrpp_3, prolog << "Got std::future '"<< futures.size() <<
                                  "' from std::async for " << args->super_chunk->to_string(false) << endl);
@@ -658,15 +611,15 @@ bool start_super_chunk_transfer_thread(list<std::future<bool>> &futures, one_sup
  * @return Returns true if the async call was made and a future was returned, false if the transfer_thread_counter has
  * reached the maximum allowable size.
  */
-bool start_super_chunk_unconstrained_transfer_thread(list<std::future<bool>> &futures, one_super_chunk_args *args) {
+bool start_super_chunk_unconstrained_transfer_thread(list<std::future<bool>> &futures, unique_ptr<one_super_chunk_args> args) {
     bool retval = false;
     std::unique_lock<std::mutex> lck (transfer_thread_pool_mtx);
     if(transfer_thread_counter < DmrppRequestHandler::d_max_transfer_threads) {
         transfer_thread_counter++;
-        futures.push_back(std::async(std::launch::async, one_super_chunk_unconstrained_transfer_thread, (void *) args));
+        futures.push_back(std::async(std::launch::async, one_super_chunk_unconstrained_transfer_thread, std::move(args)));
         retval = true;
         BESDEBUG(dmrpp_3, prolog << "Got std::future '"<< futures.size() <<
-                                 "' from std::async for " << args->super_chunk->to_string(false) << endl);
+                                 "' from std::async, transfer_thread_counter: " << transfer_thread_counter << endl);
     }
     return retval;
 }
@@ -708,17 +661,17 @@ void read_super_chunks_unconstrained_concurrent(DmrppArray *array, queue<shared_
                     auto super_chunk = super_chunks.front();
                     BESDEBUG(dmrpp_3, prolog << "Starting thread for " << super_chunk->to_string(false) << endl);
 
-                    auto *args = new one_super_chunk_args(super_chunk, array);
-                    thread_started = start_super_chunk_unconstrained_transfer_thread(futures, args);
+                    auto args = unique_ptr<one_super_chunk_args>(new one_super_chunk_args(super_chunk, array));
+                    thread_started = start_super_chunk_unconstrained_transfer_thread(futures, std::move(args));
 
                     if (thread_started) {
                         super_chunks.pop();
                         BESDEBUG(dmrpp_3, prolog << "STARTED thread for " << super_chunk->to_string(false) << endl);
                     } else {
                         // Thread did not start, ownership of the arguments was not passed to the thread.
-                        delete args;
-                        BESDEBUG(dmrpp_3, prolog << "Thread not started. args deleted, Chunk remains in queue.) " <<
-                                                 "compute_thread_counter: " << compute_thread_counter << " futures.size(): " << futures.size() << endl);
+                        BESDEBUG(dmrpp_3, prolog << "Thread not started. args deleted, Chunk remains in queue.)" <<
+                         " transfer_thread_counter: " << transfer_thread_counter <<
+                         " futures.size(): " << futures.size() << endl);
                     }
                 }
             }
@@ -823,17 +776,17 @@ void read_super_chunks_concurrent(DmrppArray *array, queue<shared_ptr<SuperChunk
                     auto super_chunk = super_chunks.front();
                     BESDEBUG(dmrpp_3, prolog << "Starting thread for " << super_chunk->to_string(false) << endl);
 
-                    auto *args = new one_super_chunk_args(super_chunk, array);
-                    thread_started = start_super_chunk_transfer_thread(futures, args);
+                    auto args = unique_ptr<one_super_chunk_args>(new one_super_chunk_args(super_chunk, array));
+                    thread_started = start_super_chunk_transfer_thread(futures, std::move(args));
 
                     if (thread_started) {
                         super_chunks.pop();
                         BESDEBUG(dmrpp_3, prolog << "STARTED thread for " << super_chunk->to_string(false) << endl);
                     } else {
                         // Thread did not start, ownership of the arguments was not passed to the thread.
-                        delete args;
-                        BESDEBUG(dmrpp_3, prolog << "Thread not started. args deleted, Chunk remains in queue.) " <<
-                                                 "compute_thread_counter: " << compute_thread_counter << " futures.size(): " << futures.size() << endl);
+                        BESDEBUG(dmrpp_3, prolog << "Thread not started. args deleted, Chunk remains in queue.)" <<
+                        " transfer_thread_counter: " << transfer_thread_counter <<
+                        " futures.size(): " << futures.size() << endl);
                     }
                 }
             }
