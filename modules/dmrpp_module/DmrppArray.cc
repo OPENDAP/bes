@@ -261,11 +261,10 @@ bool start_one_chunk_unconstrained_compute_thread(list<std::future<bool>> &futur
     bool retval = false;
     std::unique_lock<std::mutex> lck (compute_thread_pool_mtx);
     if (compute_thread_counter < DmrppRequestHandler::d_max_compute_threads) {
-        compute_thread_counter++;
         futures.push_back(std::async(std::launch::async, one_chunk_unconstrained_compute_thread, (void *) args));
+        compute_thread_counter++;
         retval = true;
-        BESDEBUG(dmrpp_3, prolog << "Got std::future '"<< futures.size() <<
-                                 "' from std::async for " << args->chunk->to_string() << endl);
+        BESDEBUG(dmrpp_3, prolog << "Got std::future '"<< futures.size() << "' from std::async, compute_thread_counter: " << compute_thread_counter << endl);
     }
     return retval;
 }
