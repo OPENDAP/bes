@@ -9,7 +9,6 @@ AUTOMAKE_OPTIONS = foreign check-news
 
 AM_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch
 ACLOCAL_AMFLAGS = -I conf
-AM_CXXFLAGS = 
 
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:
@@ -17,7 +16,10 @@ AM_CXXFLAGS =
 # or ./configure --enable-developer --disable-shared
 # the --disable-shared is not required, but it seems to help with debuggers.
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align 
-TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
+
+AM_CXXFLAGS=
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
 
 SUBDIRS = . tests
 

@@ -11,7 +11,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=ncml_moddule
-M_VER=1.5.1
+M_VER=1.5.2
 
 AM_CPPFLAGS = $(ICU_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
 -I$(top_srcdir)/xmlcommand $(DAP_CFLAGS)
@@ -21,6 +21,10 @@ AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libncml_module.la
+
+AM_CXXFLAGS=
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
 
 SUBDIRS = . tests
 

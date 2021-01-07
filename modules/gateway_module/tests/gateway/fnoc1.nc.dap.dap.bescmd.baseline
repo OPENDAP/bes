@@ -33,10 +33,10 @@
             <Value>&quot;http://localhost/junk&quot;</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>27ce2f38</Value>
+            removed checksum
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>8174cad9</Value>
+            removed checksum
         </Attribute>
     </Int16>
     <Int16 name="v">
@@ -59,10 +59,10 @@
             <Value>VWind</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>74832eab</Value>
+            removed checksum
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>8174cad9</Value>
+            removed checksum
         </Attribute>
     </Int16>
     <Float32 name="lat">
@@ -71,10 +71,10 @@
             <Value>degree North</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>7a46fda5</Value>
+            removed checksum
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>faa9f195</Value>
+            removed checksum
         </Attribute>
     </Float32>
     <Float32 name="lon">
@@ -83,10 +83,10 @@
             <Value>degree East</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>7c0a7931</Value>
+            removed checksum
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>aed1b8c3</Value>
+            removed checksum
         </Attribute>
     </Float32>
     <Float32 name="time">
@@ -95,10 +95,10 @@
             <Value>hours from base_time</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>9eb60397</Value>
+            removed checksum
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>46e7e186</Value>
+            removed checksum
         </Attribute>
     </Float32>
     <Attribute name="NC_GLOBAL" type="Container">

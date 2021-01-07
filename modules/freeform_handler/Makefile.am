@@ -12,7 +12,7 @@ SUBDIRS = FFND . tests
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=freeform_handler
-M_VER=3.10.3
+M_VER=3.10.4
 
 # There are some defines which must be set when you build code which uses
 # FreeForm.h. Add them here. 4/17/98 jhrg
@@ -21,6 +21,10 @@ AM_CPPFLAGS = -DFREEFORM  $(FF_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir
 LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) FFND/libfreeform.la
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
+
+AM_CXXFLAGS=
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libff_module.la

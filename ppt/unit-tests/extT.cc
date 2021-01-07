@@ -103,6 +103,7 @@ CPPUNIT_TEST_SUITE( extT );
             cout << "var " << var << " = " << (*f).second << ", should be " << val << endl;
             CPPUNIT_ASSERT( (*f).second == val );
         }
+	return 0;
     }
 
     void do_try_list()
