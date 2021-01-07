@@ -83,14 +83,16 @@ atomic_uint compute_thread_counter(0);
 
 
 /**
- * @brief Uses future::wait_for() to scan the futures for a ready future. When found future::get() is called and the thead_counter is decremented.
- *
+ * @brief Uses future::wait_for() to scan the futures for a ready future, returning true when once get() has been called.
+ * When a valid, ready future is found future::get() is called and the thead_counter is decremented.
+ * Returns true when it "get"s a future (joins a thread).
+
  * @param futures The list of futures to scan
  * @param timeout The number of milliseconds to wait for each future to complete.
  * @return Returns true if future::get() was called on a ready future, false otherwise.
  */
-bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_counter, unsigned long timeout) {
-    bool joined = false;
+bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_counter, unsigned long timeout, string parent) {
+    bool future_finished = false;
     bool done = false;
     std::chrono::milliseconds timeout_ms (timeout);
 
@@ -98,41 +100,53 @@ bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_count
         auto futr = futures.begin();
         auto fend = futures.end();
         bool future_is_valid = true;
-        while(!joined && futr != fend){
+        while(!future_finished && future_is_valid && futr != fend){
             future_is_valid = (*futr).valid();
             if(future_is_valid){
                 // FIXME What happens if wait_for() always returns future_status::timeout for a stuck thread?
                 if((*futr).wait_for(timeout_ms) != std::future_status::timeout){
-                    bool success = (*futr).get();
-                    joined = true;
-                    BESDEBUG(dmrpp_3, prolog << "Called future::get() on a ready future. success: " <<
-                    (success?"true":"false") << endl);
-                    if(!success){
-                        stringstream msg;
-                        msg << prolog << "The std::future has failed! thread_counter: " << thread_counter;
-                        throw BESInternalError(msg.str(), __FILE__, __LINE__);
+                    try {
+                        bool success = (*futr).get();
+                        future_finished = true;
+                        BESDEBUG(dmrpp_3, parent << prolog << "Called future::get() on a ready future. success: " <<
+                                                 (success?"true":"false") << endl);
+                        if(!success){
+                            stringstream msg;
+                            msg << parent << prolog << "The std::future has failed! thread_counter: " << thread_counter;
+                            throw BESInternalError(msg.str(), __FILE__, __LINE__);
+                        }
+                    }
+                    catch(...){
+                        // I had to add this to make the thread counting work when there's errors
+                        // But I think it's primitive because it trashes everything - there's
+                        // surely a way to handle the situation on a per thread basis and maybe even
+                        // retry?
+                        futures.clear();
+                        thread_counter=0;
+                        throw;
                     }
                 }
                 else {
                     futr++;
-                    BESDEBUG(dmrpp_3, prolog << "future::wait_for() timed out. (timeout: "<<
+                    BESDEBUG(dmrpp_3, parent << prolog << "future::wait_for() timed out. (timeout: "<<
                      timeout << " ms) There are currently "<< futures.size() << " futures in process. thread_counter: " << thread_counter <<  endl);
                 }
             }
             else {
-                BESDEBUG(dmrpp_3, prolog << "The future was not valid. Dumping... " << endl);
+                BESDEBUG(dmrpp_3, parent << prolog << "The future was not valid. Dumping... " << endl);
+                future_finished = true;
             }
         }
-        if (futr!=fend && (joined || !future_is_valid)) {
+        if (futr!=fend && future_finished) {
             futures.erase(futr);
             thread_counter--;
-            BESDEBUG(dmrpp_3, prolog << "Erased future from futures list. (Erased future was "
+            BESDEBUG(dmrpp_3, parent << prolog << "Erased future from futures list. (Erased future was "
             << (future_is_valid?"":"not ") << "valid at start.) There are currently " <<
-            futures.size() << " futures in process." << endl);
+            futures.size() << " futures in process. thread_counter: " << thread_counter << endl);
         }
-        done = joined || futures.empty();
+        done = future_finished || futures.empty();
     }
-    return joined;
+    return future_finished;
 }
 
 
@@ -225,6 +239,7 @@ bool one_chunk_unconstrained_compute_thread(void *arg_list)
 bool start_one_chunk_compute_thread(list<std::future<bool>> &futures, one_chunk_args *args) {
     bool retval = false;
     std::unique_lock<std::mutex> lck (compute_thread_pool_mtx);
+    BESDEBUG(dmrpp_3, prolog << "d_max_compute_threads: " << DmrppRequestHandler::d_max_compute_threads << " compute_thread_counter: " << compute_thread_counter << endl);
     if (compute_thread_counter < DmrppRequestHandler::d_max_compute_threads) {
         compute_thread_counter++;
         futures.push_back(std::async(std::launch::async, one_chunk_compute_thread, (void *) args));
@@ -257,8 +272,7 @@ bool start_one_chunk_unconstrained_compute_thread(list<std::future<bool>> &futur
 
 
 /**
- * @brief Read chunked data by building SuperChunks from the required chunks and reading the SuperChunks
- *
+ * @brief Process thge queue of Chunks by spawning a compute thread for each chunk to perform the various "inflation" steps.
  * Read chunked data, using either parallel or serial data transfers, depending on
  * the DMR++ handler configuration parameters.
  */
@@ -278,18 +292,18 @@ void process_chunks_concurrent(
     list<future<bool>> futures;
     try {
         bool done = false;
-        bool joined = true;
+        bool future_finished = true;
         while (!done) {
-            // Returns true when it "get"s a future (joins a thread).
-            // We do this until the futures have been "got".
-            if(!futures.empty())
-                joined = get_next_future(futures, compute_thread_counter, DMRPP_WAIT_FOR_FUTURE_MS);
 
-            if (joined){
-                // If joined is true this means that the compute_thread_counter has been decremented,
-                // because future::get() was called.
-                // Next we check to see if there are still Chunks in the queue and we create new futures until
-                // all the Chunks have been processed.
+            if(!futures.empty())
+                future_finished = get_next_future(futures, compute_thread_counter, DMRPP_WAIT_FOR_FUTURE_MS, prolog);
+
+            // If future_finished is true this means that the compute_thread_counter has been decremented,
+            // because future::get() was called or a call to future::valid() returned false.
+            BESDEBUG(dmrpp_3, prolog << "future_finished: " << (future_finished?"true":"false") << endl);
+
+            if (!chunks.empty()){
+                // Next we try to add a new Chunk compute thread if we can - there might be room.
                 bool thread_started = true;
                 while(thread_started && !chunks.empty()) {
                     auto chunk = chunks.front();
@@ -304,23 +318,17 @@ void process_chunks_concurrent(
                     } else {
                         // Thread did not start, ownership of the arguments was not passed to the thread.
                         delete args;
-                        BESDEBUG(dmrpp_3, prolog << "Thread not started, args deleted, Chunk remains in queue. " <<
-                                                 "compute_thread_counter: " << compute_thread_counter << endl);
+                        BESDEBUG(dmrpp_3, prolog << "Thread not started. args deleted, Chunk remains in queue.) " <<
+                        "compute_thread_counter: " << compute_thread_counter << " futures.size(): " << futures.size() << endl);
                     }
                 }
             }
-            else if(!chunks.empty()){
-                // TODO I can't see how this should happen (that there are Chunks left in the queue and yet we failed to
-                //  join prior to arriving here, so I laid a trap.
-                stringstream msg;
-                msg << prolog << "No threads joined, yet " << chunks.size() << " SuperChunks remain unread.";
-                throw BESInternalError(msg.str(), __FILE__, __LINE__);
-            }
             else {
-                // No more SuperChunks and no joinable threads means we're done here.
-                done = true;
+                // No more Chunks and no futures means we're done here.
+                if(futures.empty())
+                    done = true;
             }
-            joined = false;
+            future_finished = false;
         }
     }
     catch (...) {
@@ -357,18 +365,18 @@ void process_chunks_unconstrained_concurrent(
     list<future<bool>> futures;
     try {
         bool done = false;
-        bool joined = true;
+        bool future_finished = true;
         while (!done) {
-            // Returns true when it "get"s a future (joins a thread).
-            // We do this until the futures have been "got".
-            if(!futures.empty())
-                joined = get_next_future(futures, compute_thread_counter, DMRPP_WAIT_FOR_FUTURE_MS);
 
-            if (joined){
-                // If joined is true this means that the compute_thread_counter has been decremented,
-                // because future::get() was called.
-                // Next we check to see if there are still SuperChunks in the queue and we create new futures until
-                // all the SuperChunks have been processed.
+            if(!futures.empty())
+                future_finished = get_next_future(futures, compute_thread_counter, DMRPP_WAIT_FOR_FUTURE_MS, prolog);
+
+            // If future_finished is true this means that the compute_thread_counter has been decremented,
+            // because future::get() was called or a call to future::valid() returned false.
+            BESDEBUG(dmrpp_3, prolog << "future_finished: " << (future_finished?"true":"false") << endl);
+
+            if (!chunks.empty()){
+                // Next we try to add a new Chunk compute thread if we can - there might be room.
                 bool thread_started = true;
                 while(thread_started && !chunks.empty()) {
                     auto chunk = chunks.front();
@@ -383,23 +391,17 @@ void process_chunks_unconstrained_concurrent(
                     } else {
                         // Thread did not start, ownership of the arguments was not passed to the thread.
                         delete args;
-                        BESDEBUG(dmrpp_3, prolog << "Thread not started, args deleted, Chunk remains in queue. " <<
-                                                 "compute_thread_counter: " << compute_thread_counter << endl);
+                        BESDEBUG(dmrpp_3, prolog << "Thread not started. args deleted, Chunk remains in queue.) " <<
+                                                 "compute_thread_counter: " << compute_thread_counter << " futures.size(): " << futures.size() << endl);
                     }
                 }
             }
-            else if(!chunks.empty()){
-                // TODO I can't see how this should happen (that there are Chunks left and yet we failed to
-                //  join prior to arriving here, so I laid a trap.
-                stringstream msg;
-                msg << prolog << "No threads joined, yet " << chunks.size() << " SuperChunks remain unread.";
-                throw BESInternalError(msg.str(), __FILE__, __LINE__);
-            }
             else {
-                // No more SuperChunks and no joinable threads means we're done here.
-                done = true;
+                // No more Chunks and no futures means we're done here.
+                if(futures.empty())
+                    done = true;
             }
-            joined = false;
+            future_finished = false;
         }
     }
     catch (...) {
@@ -690,14 +692,52 @@ void read_super_chunks_unconstrained_concurrent(DmrppArray *array, queue<shared_
     list<future<bool>> futures;
     try {
         bool done = false;
-        bool joined = true;
+        bool future_finished = true;
+        while (!done) {
+
+            if(!futures.empty())
+                future_finished = get_next_future(futures, transfer_thread_counter, DMRPP_WAIT_FOR_FUTURE_MS, prolog);
+
+            // If future_finished is true this means that the compute_thread_counter has been decremented,
+            // because future::get() was called or a call to future::valid() returned false.
+            BESDEBUG(dmrpp_3, prolog << "future_finished: " << (future_finished?"true":"false") << endl);
+
+            if (!super_chunks.empty()){
+                // Next we try to add a new Chunk compute thread if we can - there might be room.
+                bool thread_started = true;
+                while(thread_started && !super_chunks.empty()) {
+                    auto super_chunk = super_chunks.front();
+                    BESDEBUG(dmrpp_3, prolog << "Starting thread for " << super_chunk->to_string(false) << endl);
+
+                    auto *args = new one_super_chunk_args(super_chunk, array);
+                    thread_started = start_super_chunk_unconstrained_transfer_thread(futures, args);
+
+                    if (thread_started) {
+                        super_chunks.pop();
+                        BESDEBUG(dmrpp_3, prolog << "STARTED thread for " << super_chunk->to_string(false) << endl);
+                    } else {
+                        // Thread did not start, ownership of the arguments was not passed to the thread.
+                        delete args;
+                        BESDEBUG(dmrpp_3, prolog << "Thread not started. args deleted, Chunk remains in queue.) " <<
+                                                 "compute_thread_counter: " << compute_thread_counter << " futures.size(): " << futures.size() << endl);
+                    }
+                }
+            }
+            else {
+                // No more Chunks and no futures means we're done here.
+                if(futures.empty())
+                    done = true;
+            }
+            future_finished = false;
+        }
+#if 0
         while (!done) {
             // Returns true when it "get"s a future (joins a thread).
             // We do this until the futures have been "got".
             if(!futures.empty())
-                joined = get_next_future(futures, transfer_thread_counter, DMRPP_WAIT_FOR_FUTURE_MS);
+                future_finished = get_next_future(futures, transfer_thread_counter, DMRPP_WAIT_FOR_FUTURE_MS, prolog);
 
-            if (joined){
+            if (future_finished){
                 // If joined is true this means that the transfer_thread_counter has been decremented,
                 // because future::get() was called.
                 // Next we check to see if there are still SuperChunks in the queue and we create new futures until
@@ -722,18 +762,16 @@ void read_super_chunks_unconstrained_concurrent(DmrppArray *array, queue<shared_
                 }
             }
             else if(!super_chunks.empty()){
-                // TODO I can't see how this should happen (that there are SuperChunks left in the queue
-                //  and yet we failed to join prior to arriving here, so I laid a trap.
-                stringstream msg;
-                msg << prolog << "No threads joined, yet " << super_chunks.size() << " SuperChunks remain unread.";
-                throw BESInternalError(msg.str(), __FILE__, __LINE__);
+                // This happens when there when future::valid()==false
+                BESDEBUG(dmrpp_3, prolog << "No threads joined, yet " << super_chunks.size() << " SuperChunks remain unread."<<endl);
             }
             else {
                 // No more SuperChunks and no joinable threads means we're done here.
                 done = true;
             }
-            joined = false;
+            future_finished = false;
         }
+#endif
     }
     catch (...) {
         // Complete all of the futures, otherwise we'll have threads out there using up resources
@@ -769,14 +807,53 @@ void read_super_chunks_concurrent(DmrppArray *array, queue<shared_ptr<SuperChunk
     list<future<bool>> futures;
     try {
         bool done = false;
-        bool joined = true;
+        bool future_finished = true;
+        while (!done) {
+
+            if(!futures.empty())
+                future_finished = get_next_future(futures, transfer_thread_counter, DMRPP_WAIT_FOR_FUTURE_MS, prolog);
+
+            // If future_finished is true this means that the compute_thread_counter has been decremented,
+            // because future::get() was called or a call to future::valid() returned false.
+            BESDEBUG(dmrpp_3, prolog << "future_finished: " << (future_finished?"true":"false") << endl);
+
+            if (!super_chunks.empty()){
+                // Next we try to add a new Chunk compute thread if we can - there might be room.
+                bool thread_started = true;
+                while(thread_started && !super_chunks.empty()) {
+                    auto super_chunk = super_chunks.front();
+                    BESDEBUG(dmrpp_3, prolog << "Starting thread for " << super_chunk->to_string(false) << endl);
+
+                    auto *args = new one_super_chunk_args(super_chunk, array);
+                    thread_started = start_super_chunk_transfer_thread(futures, args);
+
+                    if (thread_started) {
+                        super_chunks.pop();
+                        BESDEBUG(dmrpp_3, prolog << "STARTED thread for " << super_chunk->to_string(false) << endl);
+                    } else {
+                        // Thread did not start, ownership of the arguments was not passed to the thread.
+                        delete args;
+                        BESDEBUG(dmrpp_3, prolog << "Thread not started. args deleted, Chunk remains in queue.) " <<
+                                                 "compute_thread_counter: " << compute_thread_counter << " futures.size(): " << futures.size() << endl);
+                    }
+                }
+            }
+            else {
+                // No more Chunks and no futures means we're done here.
+                if(futures.empty())
+                    done = true;
+            }
+            future_finished = false;
+        }
+
+#if 0
         while (!done) {
             // Returns true when it "get"s a future (joins a thread).
             // We do this until the futures have been "got".
             if(!futures.empty())
-                joined = get_next_future(futures, transfer_thread_counter, DMRPP_WAIT_FOR_FUTURE_MS);
+                future_finished = get_next_future(futures, transfer_thread_counter, DMRPP_WAIT_FOR_FUTURE_MS, prolog);
 
-            if (joined){
+            if (future_finished){
                 // If joined is true this means that the transfer_thread_counter has been decremented,
                 // because future::get() was called.
                 // Next we check to see if there are still SuperChunks in the queue and we create new futures until
@@ -801,18 +878,17 @@ void read_super_chunks_concurrent(DmrppArray *array, queue<shared_ptr<SuperChunk
                 }
             }
             else if(!super_chunks.empty()){
-                // TODO I can't see how this should happen (that there are SuperChunks left in the queue
-                //  and yet we failed to join prior to arriving here, so I laid a trap.
-                stringstream msg;
-                msg << prolog << "No threads joined, yet " << super_chunks.size() << " SuperChunks remain unread.";
-                throw BESInternalError(msg.str(), __FILE__, __LINE__);
+                // This happens when there when future::valid()==false
+                BESDEBUG(dmrpp_3, prolog << "No threads joined, yet " << super_chunks.size() << " SuperChunks remain unread."<<endl);
             }
             else {
                 // No more SuperChunks and no joinable threads means we're done here.
                 done = true;
             }
-            joined = false;
+            future_finished = false;
         }
+#endif
+
     }
     catch (...) {
         // Complete all of the futures, otherwise we'll have threads out there using up resources
