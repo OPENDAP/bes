@@ -152,12 +152,6 @@ bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_count
 }
 
 
-
-
-
-
-
-
 /**
  * @brief Manage parallel transfer for contiguous data
  *
@@ -277,8 +271,6 @@ bool one_super_chunk_transfer_thread(unique_ptr<one_super_chunk_args> args)
 {
     //BESStopWatch sw("dmrpp:threads");
     //sw.start(prolog);
-    // process_super_chunk(args->super_chunk, args->array);
-
     args->super_chunk->read();
     return true;
 }
@@ -292,7 +284,6 @@ bool one_super_chunk_unconstrained_transfer_thread(unique_ptr<one_super_chunk_ar
 {
     //BESStopWatch sw("dmrpp:threads");
     //sw.start(prolog);
-    //process_super_chunk_unconstrained(args->super_chunk, args->array);
     args->super_chunk->read_unconstrained();
     return true;
 }
@@ -1088,14 +1079,8 @@ void DmrppArray::read_chunks_unconstrained()
         while(!super_chunks.empty()) {
             auto super_chunk = super_chunks.front();
             super_chunks.pop();
-            // process_super_chunk_unconstrained(super_chunk, this);
-            super_chunk->retrieve_data();
-            super_chunk->process_child_chunks_unconstrained();
-
-            // SuperChunk::read_and_copy_unconstrained() (currently disabled)
-            // does exactly the same thing as process_super_chunk_unconstrained()
-            // in a class method.
-            // args->super_chunk->read_and_copy_unconstrained(args->array);
+            BESDEBUG(dmrpp_3, prolog << super_chunk->to_string(true) << endl );
+            super_chunk->read();
         }
     }
     else {      // Parallel transfers
@@ -1387,14 +1372,7 @@ void DmrppArray::read_chunks()
             auto super_chunk = super_chunks.front();
             super_chunks.pop();
             BESDEBUG(dmrpp_3, prolog << super_chunk->to_string(true) << endl );
-            super_chunk->retrieve_data();
-            super_chunk->process_child_chunks();
-            // process_super_chunk(super_chunk, this);
-
-            // SuperChunk::read_and_copy() (currently disabled)
-            // does exactly the same thing as process_super_chunk()
-            // in a class method.
-            // super_chunk->chunks_to_array_values(this);
+            super_chunk->read();
         }
     }
     else {
