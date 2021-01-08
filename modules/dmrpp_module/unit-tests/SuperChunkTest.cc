@@ -39,6 +39,8 @@
 #include "BESDebug.h"
 #include "TheBESKeys.h"
 
+#include "DmrppArray.h"
+#include "DmrppByte.h"
 #include "DmrppRequestHandler.h"
 #include "Chunk.h"
 #include "SuperChunk.h"
@@ -111,8 +113,8 @@ public:
                 SuperChunk sc;
                 DBG( cerr << prolog << "Adding c1 to SuperChunk" << endl);
                 sc.add_chunk(c1);
-                DBG( cerr << prolog << "Calling SuperChunk::read()" << endl);
-                sc.read();
+                DBG( cerr << prolog << "Calling SuperChunk::retrieve_data()" << endl);
+                sc.retrieve_data();
             }
 
         }
@@ -133,6 +135,7 @@ public:
         }
         DBG( cerr << prolog << "END" << endl);
     }
+
     void sc_chunks_test_01() {
         DBG(cerr << prolog << "BEGIN" << endl);
 
@@ -168,13 +171,8 @@ public:
                 CPPUNIT_ASSERT(chunk_was_added);
 
                 // Read the data
-                sc.read();
-
-                for(auto chunk:sc.get_chunks()){
-
-                }
-
-
+                sc.retrieve_data();
+                
             }
 
         }
@@ -223,6 +221,7 @@ public:
             shared_ptr<Chunk> t2(new Chunk(data_url, "", 100, 1006, chunk_position_in_array));
 #endif
             {
+
                 SuperChunk word_a;
                 SuperChunk word_test;
                 bool chunk_was_added;
@@ -249,7 +248,7 @@ public:
                 DBG( cerr << prolog << "Chunk i1 was "<< (chunk_was_added?"":"NOT ") << "added to SuperChunk word_this" << endl);
                 CPPUNIT_ASSERT(!chunk_was_added);
 
-                word_this.read();
+                word_this.retrieve_data();
                 char target_this[] = "This";
                 size_t letter_index=0;
                 for(const auto& chunk: word_this.get_chunks()) {
@@ -265,7 +264,6 @@ public:
                     }
                     letter_index++;
                 }
-
                 SuperChunk word_is;
                 chunk_was_added = word_is.add_chunk(i1);
                 DBG( cerr << prolog << "Chunk i1 was "<< (chunk_was_added?"":"NOT ") << "added to SuperChunk word_is" << endl);
@@ -280,7 +278,7 @@ public:
                 DBG( cerr << prolog << "Chunk a0 was "<< (chunk_was_added?"":"NOT ") << "added to SuperChunk word_is" << endl);
                 CPPUNIT_ASSERT(!chunk_was_added);
 
-                word_is.read();
+                word_is.retrieve_data();
                 char target_is[] = "is";
                 letter_index=0;
                 for(const auto& chunk: word_is.get_chunks()) {

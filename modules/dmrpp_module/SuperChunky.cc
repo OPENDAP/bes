@@ -66,7 +66,7 @@ void compute_super_chunks(dmrpp::DmrppArray *array, bool only_constrained, vecto
         auto chunks = array->get_immutable_chunks();
 
         //unsigned long long super_chunk_index = 0;
-        auto currentSuperChunk = new SuperChunk();
+        auto currentSuperChunk = new SuperChunk(array);
         super_chunks.push_back(currentSuperChunk); // first super chunk...
         if(debug) cout << "SuperChunking array: "<< array->name() << endl;
 
@@ -99,7 +99,7 @@ void compute_super_chunks(dmrpp::DmrppArray *array, bool only_constrained, vecto
                 // If we were working on a SuperChunk (i.e. the current SuperChunk contains chunks)
                 // then we need to start a new one.
                 if(!currentSuperChunk->empty()){
-                    currentSuperChunk = new SuperChunk();
+                    currentSuperChunk = new SuperChunk(array);
                     super_chunks.push_back(currentSuperChunk); // next super chunk...
                 }
                 bool add_first_successful = currentSuperChunk->add_chunk(chunk);
