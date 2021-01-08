@@ -202,18 +202,8 @@ struct one_child_chunk_args {
     ~one_child_chunk_args() { }
 };
 
-/**
- * Read one chunk in a thread. Uses pthreads.
- *
- * @param arg_list A pointer to a one_chunk_args instance
- * @return NULL on success; a pointer to string on failure. The string holds
- * an error message.
- */
-// void *one_chunk_thread(void *arg_list);
-// bool one_super_chunk_unconstrained_transfer_thread(void *arg_list);
-// bool get_next_future(std::list<std::future<bool>> &futures, unsigned long timeout);
-// bool start_one_chunk_compute_thread(list<std::future<bool>> &futures, one_chunk_args *args);
-void process_chunks_concurrent( DmrppArray *array, std::queue<shared_ptr<Chunk>> &chunks, const std::vector<unsigned int> &shape );
+
+void process_chunks_concurrent( std::queue<shared_ptr<Chunk>> &chunks, DmrppArray *array,  const std::vector<unsigned int> &shape );
 
 
 

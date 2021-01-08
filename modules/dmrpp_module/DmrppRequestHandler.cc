@@ -76,7 +76,6 @@ using namespace libdap;
 using namespace std;
 
 #define prolog std::string("DmrppRequestHandler::").append(__func__).append("() - ")
-#define MODULE "dmrpp"
 
 namespace dmrpp {
 
