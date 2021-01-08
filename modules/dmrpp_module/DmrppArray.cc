@@ -201,14 +201,18 @@ void process_one_chunk_unconstrained(shared_ptr<Chunk> chunk, DmrppArray *array,
 
 bool one_chunk_compute_thread(unique_ptr<one_chunk_args> args)
 {
-        process_one_chunk(args->chunk, args->array, args->array_shape);
-        return true;
+    //BESStopWatch sw("dmrpp:threads");
+    //sw.start(prolog);
+    process_one_chunk(args->chunk, args->array, args->array_shape);
+    return true;
 }
 
 bool one_chunk_unconstrained_compute_thread(unique_ptr<one_chunk_unconstrained_args> args)
 {
-        process_one_chunk_unconstrained(args->chunk, args->array, args->array_shape, args->chunk_shape);
-        return true;
+    //BESStopWatch sw("dmrpp:threads");
+    //sw.start(prolog);
+    process_one_chunk_unconstrained(args->chunk, args->array, args->array_shape, args->chunk_shape);
+    return true;
 }
 
 /**
@@ -263,8 +267,8 @@ void process_chunks_concurrent(
         queue<shared_ptr<Chunk>> &chunks,
         const vector<unsigned int> &constrained_array_shape ){
 
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + "Timer name: "+prolog, "");
+    //BESStopWatch sw;
+    //if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + "Timer name: "+prolog, "");
 
     // Parallel version based on read_chunks_unconstrained(). There is
     // substantial duplication of the code in read_chunks_unconstrained(), but
@@ -335,8 +339,8 @@ void process_chunks_unconstrained_concurrent(
         const vector<unsigned int> &array_shape,
         const vector<unsigned int> &chunk_shape){
 
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + "Timer name: "+prolog, "");
+    //BESStopWatch sw;
+    //if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + "Timer name: "+prolog, "");
 
     // Parallel version based on read_chunks_unconstrained(). There is
     // substantial duplication of the code in read_chunks_unconstrained(), but
@@ -542,11 +546,18 @@ void process_super_chunk(const shared_ptr<SuperChunk> &super_chunk, DmrppArray *
     BESDEBUG(dmrpp_3, prolog << "d_max_compute_threads: " << DmrppRequestHandler::d_max_compute_threads << endl);
 
     if(!DmrppRequestHandler::d_use_compute_threads){
+        BESStopWatch sw(dmrpp_3);
+        sw.start(prolog+"Serial Chunk Processing.");
         for(const auto &chunk :super_chunk->get_chunks()){
             process_one_chunk(chunk,array,constrained_array_shape);
         }
     }
     else {
+        stringstream timer_name;
+        timer_name << prolog << "Concurrent Chunk Processing. d_max_compute_threads: " << DmrppRequestHandler::d_max_compute_threads;
+        BESStopWatch sw(dmrpp_3);
+        sw.start(timer_name.str());
+
         queue<shared_ptr<Chunk>> chunks_to_process;
         for(const auto &chunk:super_chunk->get_chunks())
             chunks_to_process.push(chunk);
@@ -568,6 +579,8 @@ void process_super_chunk(const shared_ptr<SuperChunk> &super_chunk, DmrppArray *
  */
 bool one_super_chunk_transfer_thread(unique_ptr<one_super_chunk_args> args)
 {
+    //BESStopWatch sw("dmrpp:threads");
+    //sw.start(prolog);
     process_super_chunk(args->super_chunk, args->array);
     return true;
 }
@@ -579,6 +592,8 @@ bool one_super_chunk_transfer_thread(unique_ptr<one_super_chunk_args> args)
  */
 bool one_super_chunk_unconstrained_transfer_thread(unique_ptr<one_super_chunk_args> args)
 {
+    //BESStopWatch sw("dmrpp:threads");
+    //sw.start(prolog);
     process_super_chunk_unconstrained(args->super_chunk, args->array);
     return true;
 }
@@ -876,11 +891,18 @@ void process_super_chunk_unconstrained(const shared_ptr<SuperChunk> &super_chunk
     const vector<unsigned int> chunk_shape = array->get_chunk_dimension_sizes();
 
     if(!DmrppRequestHandler::d_use_compute_threads){
+        BESStopWatch sw(dmrpp_3);
+        sw.start(prolog+"Serial Chunk Processing.");
         for(auto &chunk :super_chunk->get_chunks()){
             process_one_chunk_unconstrained(chunk, array, array_shape, chunk_shape);
         }
     }
     else {
+        stringstream timer_name;
+        timer_name << prolog << "Concurrent Chunk Processing. d_max_compute_threads: " << DmrppRequestHandler::d_max_compute_threads;
+        BESStopWatch sw(dmrpp_3);
+        sw.start(timer_name.str());
+
         queue<shared_ptr<Chunk>> chunks_to_process;
         for(auto &chunk:super_chunk->get_chunks())
             chunks_to_process.push(chunk);
@@ -1426,8 +1448,6 @@ void DmrppArray::insert_chunk_unconstrained(shared_ptr<Chunk> chunk, unsigned in
  */
 void DmrppArray::read_chunks_unconstrained()
 {
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + "Timer name: "+name(), "");
 
     auto chunk_refs = get_chunks();
     if (chunk_refs.size() < 2)
@@ -1463,6 +1483,8 @@ void DmrppArray::read_chunks_unconstrained()
     BESDEBUG(dmrpp_3, prolog << "d_max_transfer_threads: " << DmrppRequestHandler::d_max_transfer_threads << endl);
 
     if (!DmrppRequestHandler::d_use_transfer_threads) {  // Serial transfers
+        BESStopWatch sw(dmrpp_3);
+        sw.start(prolog+"Serial SuperChunk Processing.");
         while(!super_chunks.empty()) {
             auto super_chunk = super_chunks.front();
             super_chunks.pop();
@@ -1475,6 +1497,10 @@ void DmrppArray::read_chunks_unconstrained()
         }
     }
     else {      // Parallel transfers
+        stringstream timer_name;
+        timer_name << prolog << "Concurrent SuperChunk Processing. d_max_transfer_threads: " << DmrppRequestHandler::d_max_transfer_threads;
+        BESStopWatch sw(dmrpp_3);
+        sw.start(timer_name.str());
         read_super_chunks_unconstrained_concurrent(this, super_chunks);
     }
     set_read_p(true);
@@ -1710,9 +1736,6 @@ void DmrppArray::insert_chunk(
  */
 void DmrppArray::read_chunks()
 {
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + "Timer name: "+name(), "");
-
     auto chunk_refs = get_chunks();
     if (chunk_refs.size() < 2)
         throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
@@ -1756,6 +1779,8 @@ void DmrppArray::read_chunks()
     if (!DmrppRequestHandler::d_use_transfer_threads) {
         // This version is the 'serial' version of the code. It reads a chunk, inserts it,
         // reads the next one, and so on.
+        BESStopWatch sw(dmrpp_3);
+        sw.start(prolog+"Serial SuperChunk Processing.");
         while (!super_chunks.empty()) {
             auto super_chunk = super_chunks.front();
             super_chunks.pop();
@@ -1769,6 +1794,10 @@ void DmrppArray::read_chunks()
         }
     }
     else {
+        stringstream timer_name;
+        timer_name << prolog << "Concurrent SuperChunk Processing. d_max_transfer_threads: " << DmrppRequestHandler::d_max_transfer_threads;
+        BESStopWatch sw(dmrpp_3);
+        sw.start(timer_name.str());
         read_super_chunks_concurrent(this, super_chunks);
     }
     set_read_p(true);

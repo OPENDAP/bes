@@ -48,6 +48,7 @@
 #include "BESInternalError.h"
 #include "TheBESKeys.h"
 #include "BESDebug.h"
+#include "BESLog.h"
 
 #include "Chunk.h"
 #include "DmrppNames.h"
