@@ -204,14 +204,14 @@ void process_one_chunk(shared_ptr<Chunk> chunk, DmrppArray *array, const vector<
  * of the BES call stack.
  *
  * @param chunk The chunk to process
+ * @param chunk_shape The chunk shape
  * @param array The DmrppArray instance that called this function
- * @param constrained_array_shape How the DAP Array this chunk is part of was
+ * @param array_shape How the DAP Array this chunk is part of was
  * constrained - used to determine where/how to add the chunk's data to the
  * whole array.
- * @param chunk_shape
  */
-void process_one_chunk_unconstrained(shared_ptr<Chunk> chunk, DmrppArray *array, const vector<unsigned int> &array_shape,
-                                     const vector<unsigned int> &chunk_shape)
+void process_one_chunk_unconstrained(shared_ptr<Chunk> chunk, const vector<unsigned int> &chunk_shape,
+        DmrppArray *array, const vector<unsigned int> &array_shape)
 {
     BESDEBUG(dmrpp_3, prolog << "BEGIN" << endl );
     chunk->read_chunk();
@@ -247,7 +247,7 @@ bool one_chunk_unconstrained_compute_thread(unique_ptr<one_chunk_unconstrained_a
 {
     //BESStopWatch sw("dmrpp:threads");
     //sw.start(prolog);
-    process_one_chunk_unconstrained(args->chunk, args->array, args->array_shape, args->chunk_shape);
+    process_one_chunk_unconstrained(args->chunk, args->chunk_shape, args->array, args->array_shape);
     return true;
 }
 
@@ -601,6 +601,7 @@ bool one_super_chunk_transfer_thread(unique_ptr<one_super_chunk_args> args)
     //BESStopWatch sw("dmrpp:threads");
     //sw.start(prolog);
     process_super_chunk(args->super_chunk, args->array);
+    // args->super_chunk->read_and_copy(args->array)
     return true;
 }
 
@@ -869,7 +870,7 @@ void process_super_chunk_unconstrained(const shared_ptr<SuperChunk> &super_chunk
         BESStopWatch sw(dmrpp_3);
         sw.start(prolog+"Serial Chunk Processing.");
         for(auto &chunk :super_chunk->get_chunks()){
-            process_one_chunk_unconstrained(chunk, array, array_shape, chunk_shape);
+            process_one_chunk_unconstrained(chunk, chunk_shape, array, array_shape);
         }
     }
     else {

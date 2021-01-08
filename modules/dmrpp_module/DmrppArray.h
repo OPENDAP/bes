@@ -87,7 +87,10 @@ private:
 
     // Called from read_chunks_unconstrained() and also using pthreads
     friend void
-    process_one_chunk_unconstrained(std::shared_ptr<Chunk> chunk, DmrppArray *array, const vector<unsigned int> &array_shape,const vector<unsigned int> &chunk_shape);
+    process_one_chunk_unconstrained(std::shared_ptr<Chunk> chunk, const vector<unsigned int> &chunk_shape,
+            DmrppArray *array, const vector<unsigned int> &array_shape);
+
+
     friend void
     process_super_chunk_unconstrained(const std::shared_ptr<SuperChunk> &super_chunk, DmrppArray *array);
 
@@ -205,6 +208,11 @@ struct one_child_chunk_args {
 
 void process_chunks_concurrent( std::queue<shared_ptr<Chunk>> &chunks, DmrppArray *array,  const std::vector<unsigned int> &shape );
 
+void process_chunks_unconstrained_concurrent(
+        queue<shared_ptr<Chunk>> &chunks,
+        const vector<unsigned int> &chunk_shape,
+        DmrppArray *array,
+        const vector<unsigned int> &array_shape);
 
 
 } // namespace dmrpp

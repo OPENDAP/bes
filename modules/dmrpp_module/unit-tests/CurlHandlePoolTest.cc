@@ -232,7 +232,7 @@ public:
     void dmrpp_array_thread_control(queue<shared_ptr<Chunk>> &chunks_to_read, MockDmrppArray *array,
                                     const vector<unsigned int> &array_shape) {
         DBG(cerr << prolog << "BEGIN" << endl);
-        process_chunks_concurrent(array,chunks_to_read, array_shape);
+        process_chunks_concurrent(chunks_to_read, array, array_shape);
         DBG(cerr << prolog << "END" << endl);
     }
 

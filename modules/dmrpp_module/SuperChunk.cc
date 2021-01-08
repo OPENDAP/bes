@@ -29,6 +29,7 @@
 
 #include "BESInternalError.h"
 #include "BESDebug.h"
+#include "BESStopWatch.h"
 #include "CurlUtils.h"
 
 #include "DmrppRequestHandler.h"
@@ -203,37 +204,44 @@ void SuperChunk::read() {
  * @param target_array The array into which to write the data.
  */
 void SuperChunk::read_and_copy(DmrppArray *target_array) {
-    BESDEBUG(MODULE, prolog << "BEGIN" << endl );
-
+    string dmrpp_3("superchunk");
+    BESDEBUG(dmrpp_3, prolog << "BEGIN" << endl );
     read();
 
     vector<unsigned int> constrained_array_shape = target_array->get_shape(true);
+    BESDEBUG(dmrpp_3, prolog << "d_use_compute_threads: " << (DmrppRequestHandler::d_use_compute_threads?"true":"false") << endl);
+    BESDEBUG(dmrpp_3, prolog << "d_max_compute_threads: " << DmrppRequestHandler::d_max_compute_threads << endl);
 
-    for(auto &chunk :d_chunks){
-        if (target_array->is_deflate_compression() || target_array->is_shuffle_compression())
-            chunk->inflate_chunk(target_array->is_deflate_compression(), target_array->is_shuffle_compression(),
-                                 target_array->get_chunk_size_in_elements(), target_array->var()->width());
-
-        vector<unsigned int> target_element_address = chunk->get_position_in_array();
-        vector<unsigned int> chunk_source_address(target_array->dimensions(), 0);
-
-        target_array->insert_chunk(
-                0 /* dimension */,
-                &target_element_address,
-                &chunk_source_address,
-                chunk,
-                constrained_array_shape);
+    if(!DmrppRequestHandler::d_use_compute_threads){
+        BESStopWatch sw(dmrpp_3);
+        sw.start(prolog+"Serial Chunk Processing.");
+        for(const auto &chunk :get_chunks()){
+            process_one_chunk(chunk,target_array,constrained_array_shape);
+        }
     }
+    else {
+        stringstream timer_name;
+        timer_name << prolog << "Concurrent Chunk Processing. d_max_compute_threads: " << DmrppRequestHandler::d_max_compute_threads;
+        BESStopWatch sw(dmrpp_3);
+        sw.start(timer_name.str());
 
-    BESDEBUG(MODULE, prolog << "END" << endl );
+        queue<shared_ptr<Chunk>> chunks_to_process;
+        for(const auto &chunk:get_chunks())
+            chunks_to_process.push(chunk);
+
+        process_chunks_concurrent(chunks_to_process, target_array, constrained_array_shape);
+
+    }
+    BESDEBUG(dmrpp_3, prolog << "END" << endl );
 }
 /**
  * @brief Reads the SuperChunk, inflates/deshuffles the subordinate chunks as required and copies the values into array
  * @param target_array The array into which to write the data.
  */
 void SuperChunk::read_and_copy_unconstrained(DmrppArray *target_array) {
-    BESDEBUG(MODULE, prolog << "BEGIN" << endl );
 
+    string dmrpp_3("foo");
+    BESDEBUG(dmrpp_3, prolog << "BEGIN" << endl );
     read();
 
     // The size in element of each of the array's dimensions
@@ -241,19 +249,27 @@ void SuperChunk::read_and_copy_unconstrained(DmrppArray *target_array) {
     // The size, in elements, of each of the chunk's dimensions
     const vector<unsigned int> chunk_shape = target_array->get_chunk_dimension_sizes();
 
+    if(!DmrppRequestHandler::d_use_compute_threads){
+        BESStopWatch sw(dmrpp_3);
+        sw.start(prolog+"Serial Chunk Processing.");
+        for(auto &chunk :get_chunks()){
+            process_one_chunk_unconstrained(chunk, chunk_shape, target_array, array_shape);
+        }
+    }
+    else {
+        stringstream timer_name;
+        timer_name << prolog << "Concurrent Chunk Processing. d_max_compute_threads: "
+                   << DmrppRequestHandler::d_max_compute_threads;
+        BESStopWatch sw(dmrpp_3);
+        sw.start(timer_name.str());
 
-    for(auto &chunk :d_chunks){
-        if (target_array->is_deflate_compression() || target_array->is_shuffle_compression())
-            chunk->inflate_chunk(target_array->is_deflate_compression(), target_array->is_shuffle_compression(),
-                                 target_array->get_chunk_size_in_elements(), target_array->var()->width());
+        queue<shared_ptr<Chunk>> chunks_to_process;
+        for (auto &chunk:get_chunks())
+            chunks_to_process.push(chunk);
 
-        vector<unsigned int> target_element_address = chunk->get_position_in_array();
-        vector<unsigned int> chunk_source_address(target_array->dimensions(), 0);
-
-        target_array->insert_chunk_unconstrained(chunk, 0, 0, array_shape, 0, chunk_shape, chunk->get_position_in_array());
+        process_chunks_unconstrained_concurrent(chunks_to_process, chunk_shape, target_array, array_shape);
     }
 
-    BESDEBUG(MODULE, prolog << "END" << endl );
 }
 #endif
 
