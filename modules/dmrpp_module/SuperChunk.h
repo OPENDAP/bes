@@ -38,6 +38,7 @@ class DmrppArray;
 
 class SuperChunk {
 private:
+    DmrppArray *d_parent_array;
     std::string d_data_url;
     std::vector<std::shared_ptr<Chunk>> d_chunks;
     unsigned long long d_offset;
@@ -50,8 +51,8 @@ private:
     void read_aggregate_bytes();
 
 public:
-    explicit SuperChunk():
-        d_data_url(""), d_offset(0), d_size(0), d_is_read(false), d_read_buffer(nullptr){}
+    explicit SuperChunk(DmrppArray *parent=nullptr): d_parent_array(parent), d_data_url(""),
+             d_offset(0), d_size(0), d_is_read(false), d_read_buffer(nullptr){}
 
     virtual ~SuperChunk(){
         delete[] d_read_buffer;
@@ -63,14 +64,22 @@ public:
     virtual unsigned long long get_size(){ return d_size; }
     virtual unsigned long long get_offset(){ return d_offset; }
 
-    virtual void read();
+    virtual void read(){
+        retrieve_data();
+        process_child_chunks();
+    }
+    virtual void read_unconstrained(){
+        retrieve_data();
+        process_child_chunks_unconstrained();
+    }
+
+    virtual void retrieve_data();
+    virtual void process_child_chunks();
+    virtual void process_child_chunks_unconstrained();
+
     virtual bool empty(){ return d_chunks.empty(); }
 
-
     std::vector<std::shared_ptr<Chunk>> get_chunks(){ return d_chunks; }
-
-    //virtual void read_and_copy(DmrppArray *target_array);
-    //virtual void read_and_copy_unconstrained(DmrppArray *target_array);
 
     std::string to_string(bool verbose) const;
     virtual void dump(std::ostream & strm) const;

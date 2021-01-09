@@ -650,7 +650,7 @@ bool TheBESKeys::using_dynamic_config(){
 
 
 /**
- *
+ * @brief Loads the the applicable dynamic configuration or nothing if no configuration is applicable.
  * @param name
  */
 void TheBESKeys::load_dynamic_config(const string name)
