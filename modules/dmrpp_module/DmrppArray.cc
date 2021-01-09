@@ -369,7 +369,7 @@ void read_super_chunks_unconstrained_concurrent(queue<shared_ptr<SuperChunk>> &s
             if(!futures.empty())
                 future_finished = get_next_future(futures, transfer_thread_counter, DMRPP_WAIT_FOR_FUTURE_MS, prolog);
 
-            // If future_finished is true this means that the compute_thread_counter has been decremented,
+            // If future_finished is true this means that the chunk_processing_thread_counter has been decremented,
             // because future::get() was called or a call to future::valid() returned false.
             BESDEBUG(dmrpp_3, prolog << "future_finished: " << (future_finished?"true":"false") << endl);
 
@@ -456,7 +456,7 @@ void read_super_chunks_concurrent(queue<shared_ptr<SuperChunk>> &super_chunks, D
             if(!futures.empty())
                 future_finished = get_next_future(futures, transfer_thread_counter, DMRPP_WAIT_FOR_FUTURE_MS, prolog);
 
-            // If future_finished is true this means that the compute_thread_counter has been decremented,
+            // If future_finished is true this means that the chunk_processing_thread_counter has been decremented,
             // because future::get() was called or a call to future::valid() returned false.
             BESDEBUG(dmrpp_3, prolog << "future_finished: " << (future_finished?"true":"false") << endl);
 
@@ -501,12 +501,86 @@ void read_super_chunks_concurrent(queue<shared_ptr<SuperChunk>> &super_chunks, D
     }
 }
 
+/**
+ * @brief Compute the index of the address_in_target for an an array of target_shape.
+ *
+ * Internally we store N-dimensional arrays using a one dimensional array (i.e., a
+ * vector). Compute the offset in that vector that corresponds to a location in
+ * the N-dimensional array. For example, for three dimensional array of size
+ * 2 x 3 x 4, the data values are stored in a 24 element vector and the item at
+ * location 1,1,1 (zero-based indexing) would be at offset 1*1 + 1*4 + 1 * 4*3 == 15.
+ *
+ * @note When getting the whole AIRS file, the profiler shows that the code spends
+ * about 1s here. There is a better performing replacement for this function. See
+ * multiplier(const vector<unsigned int> &shape, unsigned int k) below in
+ * read_chunk_unconstrained() and elsewhere in this file.
+ *
+ * @param address_in_target N-tuple zero-based index of an element in N-space
+ * @param target_shape N-tuple of the array's dimension sizes.
+ * @return The offset into the vector used to store the values.
+ */
+static unsigned long long
+get_index(const vector<unsigned int> &address_in_target, const vector<unsigned int> &target_shape)
+{
+    assert(address_in_target.size() == target_shape.size());    // ranks must be equal
+
+    auto shape_index = target_shape.rbegin();
+    auto index = address_in_target.rbegin(), index_end = address_in_target.rend();
+
+    unsigned long long multiplier_var = *shape_index++;
+    unsigned long long offset = *index++;
+
+    while (index != index_end) {
+        assert(*index < *shape_index); // index < shape for each dim
+
+        offset += multiplier_var * *index++;
+        multiplier_var *= *shape_index++;
+    }
+
+    return offset;
+}
+
+/// Read data for a chunked array when the whole array is to be returned.
+/// See below for the most general case - when chunked data are constrained.
+
+/**
+ * For dimension \arg k, compute the multiplier needed for the row-major array
+ * offset formula. The formula is:
+ *
+ * Given an Array A has dimension sizes N0, N1, N2, ..., Nd-1
+ *
+ * for k = 0 to d-1 sum ( for l = k+1 to d-1 product ( Nl ) nk )
+ *                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ *                                    multiplier
+ *
+ * @param shape The sizes of the dimensions of the array
+ * @param k The dimension in question
+ */
+static unsigned long multiplier(const vector<unsigned int> &shape, unsigned int k)
+{
+    assert(shape.size() > 1);
+    assert(shape.size() > k + 1);
+
+    vector<unsigned int>::const_iterator i = shape.begin(), e = shape.end();
+    advance(i, k + 1);
+    unsigned long multiplier = *i++;
+    while (i != e) {
+        multiplier *= *i++;
+    }
+
+    return multiplier;
+}
+
+
 
 
 //#####################################################################################################################
 //#####################################################################################################################
-// DmrppArray begins here.
+//#####################################################################################################################
 //
+// DmrppArray code begins here.
+//
+// = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
 
 void DmrppArray::_duplicate(const DmrppArray &)
@@ -560,44 +634,6 @@ bool DmrppArray::is_projected()
     return false;
 }
 
-/**
- * @brief Compute the index of the address_in_target for an an array of target_shape.
- *
- * Internally we store N-dimensional arrays using a one dimensional array (i.e., a
- * vector). Compute the offset in that vector that corresponds to a location in
- * the N-dimensional array. For example, for three dimensional array of size
- * 2 x 3 x 4, the data values are stored in a 24 element vector and the item at
- * location 1,1,1 (zero-based indexing) would be at offset 1*1 + 1*4 + 1 * 4*3 == 15.
- *
- * @note When getting the whole AIRS file, the profiler shows that the code spends
- * about 1s here. There is a better performing replacement for this function. See
- * multiplier(const vector<unsigned int> &shape, unsigned int k) below in
- * read_chunk_unconstrained() and elsewhere in this file.
- *
- * @param address_in_target N-tuple zero-based index of an element in N-space
- * @param target_shape N-tuple of the array's dimension sizes.
- * @return The offset into the vector used to store the values.
- */
-static unsigned long long
-get_index(const vector<unsigned int> &address_in_target, const vector<unsigned int> &target_shape)
-{
-    assert(address_in_target.size() == target_shape.size());    // ranks must be equal
-
-    auto shape_index = target_shape.rbegin();
-    auto index = address_in_target.rbegin(), index_end = address_in_target.rend();
-
-    unsigned long long multiplier = *shape_index++;
-    unsigned long long offset = *index++;
-
-    while (index != index_end) {
-        assert(*index < *shape_index); // index < shape for each dim
-
-        offset += multiplier * *index++;
-        multiplier *= *shape_index++;
-    }
-
-    return offset;
-}
 
 /**
  * @brief Return the total number of elements in this Array
@@ -932,36 +968,6 @@ void DmrppArray::read_contiguous()
     set_read_p(true);
 }
 
-/// Read data for a chunked array when the whole array is to be returned.
-/// See below for the most general case - when chunked data are constrained.
-
-/**
- * For dimension \arg k, compute the multiplier needed for the row-major array
- * offset formula. The formula is:
- *
- * Given an Array A has dimension sizes N0, N1, N2, ..., Nd-1
- *
- * for k = 0 to d-1 sum ( for l = k+1 to d-1 product ( Nl ) nk )
- *                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
- *                                    multiplier
- *
- * @param shape The sizes of the dimensions of the array
- * @param k The dimension in question
- */
-static unsigned long multiplier(const vector<unsigned int> &shape, unsigned int k)
-{
-    assert(shape.size() > 1);
-    assert(shape.size() > k + 1);
-
-    vector<unsigned int>::const_iterator i = shape.begin(), e = shape.end();
-    advance(i, k + 1);
-    unsigned long multiplier = *i++;
-    while (i != e) {
-        multiplier *= *i++;
-    }
-
-    return multiplier;
-}
 
 /**
  * @brief Insert a chunk into an unconstrained Array

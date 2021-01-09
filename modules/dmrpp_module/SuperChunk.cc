@@ -50,8 +50,8 @@ using std::vector;
 namespace dmrpp {
 
 // ThreadPool state variables.
-std::mutex compute_thread_pool_mtx;     // mutex for critical section
-atomic_uint compute_thread_counter(0);
+std::mutex chunk_processing_thread_pool_mtx;     // mutex for critical section
+atomic_uint chunk_processing_thread_counter(0);
 
 /**
  * @brief Reads the Chunk (as needed) and performs the inflate/shuffle/etc. processing after which the values are inserted into the array.
@@ -162,18 +162,18 @@ bool one_chunk_unconstrained_compute_thread(unique_ptr<one_chunk_unconstrained_a
  * @param futures The queue into which to place the future returned by async.
  * @param args The arguments for the one_chunk_compute_thread function
  * @return Returns true if the std::async() call was made and a future was returned, false if the
- * compute_thread_counter has reached the maximum allowable size.
+ * chunk_processing_thread_counter has reached the maximum allowable size.
  */
 bool start_one_chunk_compute_thread(list<std::future<bool>> &futures, unique_ptr<one_chunk_args> args) {
     bool retval = false;
-    std::unique_lock<std::mutex> lck (compute_thread_pool_mtx);
-    BESDEBUG(dmrpp_3, prolog << "d_max_compute_threads: " << DmrppRequestHandler::d_max_compute_threads << " compute_thread_counter: " << compute_thread_counter << endl);
-    if (compute_thread_counter < DmrppRequestHandler::d_max_compute_threads) {
-        compute_thread_counter++;
+    std::unique_lock<std::mutex> lck (chunk_processing_thread_pool_mtx);
+    BESDEBUG(dmrpp_3, prolog << "d_max_compute_threads: " << DmrppRequestHandler::d_max_compute_threads << " chunk_processing_thread_counter: " << chunk_processing_thread_counter << endl);
+    if (chunk_processing_thread_counter < DmrppRequestHandler::d_max_compute_threads) {
+        chunk_processing_thread_counter++;
         futures.push_back(std::async(std::launch::async, one_chunk_compute_thread, std::move(args)));
         retval = true;
-        BESDEBUG(dmrpp_3, prolog << "Got std::future '"<< futures.size() <<
-                                 "' from std::async, compute_thread_counter: " << compute_thread_counter << endl);
+        BESDEBUG(dmrpp_3, prolog << "Got std::future '" << futures.size() <<
+                                 "' from std::async, chunk_processing_thread_counter: " << chunk_processing_thread_counter << endl);
     }
     return retval;
 }
@@ -186,17 +186,17 @@ bool start_one_chunk_compute_thread(list<std::future<bool>> &futures, unique_ptr
  * @param futures The queue into which to place the future returned by async.
  * @param args The arguments for the one_chunk_compute_thread function
  * @return Returns true if the std::async() call was made and a future was returned, false if the
- * compute_thread_counter has reached the maximum allowable size.
+ * chunk_processing_thread_counter has reached the maximum allowable size.
  */
 bool start_one_chunk_unconstrained_compute_thread(list<std::future<bool>> &futures, unique_ptr<one_chunk_unconstrained_args> args) {
     bool retval = false;
-    std::unique_lock<std::mutex> lck (compute_thread_pool_mtx);
-    if (compute_thread_counter < DmrppRequestHandler::d_max_compute_threads) {
+    std::unique_lock<std::mutex> lck (chunk_processing_thread_pool_mtx);
+    if (chunk_processing_thread_counter < DmrppRequestHandler::d_max_compute_threads) {
         futures.push_back(std::async(std::launch::async, one_chunk_unconstrained_compute_thread, std::move(args)));
-        compute_thread_counter++;
+        chunk_processing_thread_counter++;
         retval = true;
-        BESDEBUG(dmrpp_3, prolog << "Got std::future '"<< futures.size() <<
-                                 "' from std::async, compute_thread_counter: " << compute_thread_counter << endl);
+        BESDEBUG(dmrpp_3, prolog << "Got std::future '" << futures.size() <<
+                                 "' from std::async, chunk_processing_thread_counter: " << chunk_processing_thread_counter << endl);
     }
     return retval;
 }
@@ -243,9 +243,9 @@ void process_chunks_concurrent(
         while (!done) {
 
             if(!futures.empty())
-                future_finished = get_next_future(futures, compute_thread_counter, DMRPP_WAIT_FOR_FUTURE_MS, prolog);
+                future_finished = get_next_future(futures, chunk_processing_thread_counter, DMRPP_WAIT_FOR_FUTURE_MS, prolog);
 
-            // If future_finished is true this means that the compute_thread_counter has been decremented,
+            // If future_finished is true this means that the chunk_processing_thread_counter has been decremented,
             // because future::get() was called or a call to future::valid() returned false.
             BESDEBUG(dmrpp_3, prolog << "future_finished: " << (future_finished?"true":"false") << endl);
 
@@ -265,7 +265,7 @@ void process_chunks_concurrent(
                     } else {
                         // Thread did not start, ownership of the arguments was not passed to the thread.
                         BESDEBUG(dmrpp_3, prolog << "Thread not started. args deleted, Chunk remains in queue.) " <<
-                                                 "compute_thread_counter: " << compute_thread_counter << " futures.size(): " << futures.size() << endl);
+                                                 "chunk_processing_thread_counter: " << chunk_processing_thread_counter << " futures.size(): " << futures.size() << endl);
                     }
                 }
             }
@@ -335,9 +335,9 @@ void process_chunks_unconstrained_concurrent(
         while (!done) {
 
             if(!futures.empty())
-                future_finished = get_next_future(futures, compute_thread_counter, DMRPP_WAIT_FOR_FUTURE_MS, prolog);
+                future_finished = get_next_future(futures, chunk_processing_thread_counter, DMRPP_WAIT_FOR_FUTURE_MS, prolog);
 
-            // If future_finished is true this means that the compute_thread_counter has been decremented,
+            // If future_finished is true this means that the chunk_processing_thread_counter has been decremented,
             // because future::get() was called or a call to future::valid() returned false.
             BESDEBUG(dmrpp_3, prolog << "future_finished: " << (future_finished?"true":"false") << endl);
 
@@ -358,7 +358,7 @@ void process_chunks_unconstrained_concurrent(
                     } else {
                         // Thread did not start, ownership of the arguments was not passed to the thread.
                         BESDEBUG(dmrpp_3, prolog << "Thread not started. args deleted, Chunk remains in queue.)" <<
-                                                 " compute_thread_counter: " << compute_thread_counter <<
+                                                 " chunk_processing_thread_counter: " << chunk_processing_thread_counter <<
                                                  " futures.size(): " << futures.size() << endl);
                     }
                 }
@@ -386,7 +386,7 @@ void process_chunks_unconstrained_concurrent(
 //#####################################################################################################################
 //#####################################################################################################################
 //
-// SuperChunk Begins Here
+// SuperChunk Code Begins Here
 //
 // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
