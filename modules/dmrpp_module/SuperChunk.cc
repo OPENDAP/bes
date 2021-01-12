@@ -41,7 +41,7 @@
 #include "SuperChunk.h"
 
 #define prolog std::string("SuperChunk::").append(__func__).append("() - ")
-#define dmrpp_3 "dmrpp:3"
+#define SUPER_CHUNK_MODULE "dmrpp:3"
 
 using std::stringstream;
 using std::string;
@@ -73,7 +73,7 @@ atomic_uint chunk_processing_thread_counter(0);
  */
 void process_one_chunk(shared_ptr<Chunk> chunk, DmrppArray *array, const vector<unsigned int> &constrained_array_shape)
 {
-    BESDEBUG(dmrpp_3, prolog << "BEGIN" << endl );
+    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl );
 
     chunk->read_chunk();
 
@@ -88,7 +88,7 @@ void process_one_chunk(shared_ptr<Chunk> chunk, DmrppArray *array, const vector<
         array->insert_chunk(0 /* dimension */, &target_element_address, &chunk_source_address, chunk,
                             constrained_array_shape);
     }
-    BESDEBUG(dmrpp_3, prolog << "END" << endl );
+    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "END" << endl );
 }
 
 /**
@@ -113,7 +113,7 @@ void process_one_chunk(shared_ptr<Chunk> chunk, DmrppArray *array, const vector<
 void process_one_chunk_unconstrained(shared_ptr<Chunk> chunk, const vector<unsigned int> &chunk_shape,
                                      DmrppArray *array, const vector<unsigned int> &array_shape)
 {
-    BESDEBUG(dmrpp_3, prolog << "BEGIN" << endl );
+    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl );
 
     chunk->read_chunk();
 
@@ -124,7 +124,7 @@ void process_one_chunk_unconstrained(shared_ptr<Chunk> chunk, const vector<unsig
                                  array->var()->width());
         array->insert_chunk_unconstrained(chunk, 0, 0, array_shape, 0, chunk_shape, chunk->get_position_in_array());
     }
-    BESDEBUG(dmrpp_3, prolog << "END" << endl );
+    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "END" << endl );
 }
 
 
@@ -167,13 +167,13 @@ bool one_chunk_unconstrained_compute_thread(unique_ptr<one_chunk_unconstrained_a
 bool start_one_chunk_compute_thread(list<std::future<bool>> &futures, unique_ptr<one_chunk_args> args) {
     bool retval = false;
     std::unique_lock<std::mutex> lck (chunk_processing_thread_pool_mtx);
-    BESDEBUG(dmrpp_3, prolog << "d_max_compute_threads: " << DmrppRequestHandler::d_max_compute_threads << " chunk_processing_thread_counter: " << chunk_processing_thread_counter << endl);
+    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "d_max_compute_threads: " << DmrppRequestHandler::d_max_compute_threads << " chunk_processing_thread_counter: " << chunk_processing_thread_counter << endl);
     if (chunk_processing_thread_counter < DmrppRequestHandler::d_max_compute_threads) {
         chunk_processing_thread_counter++;
         futures.push_back(std::async(std::launch::async, one_chunk_compute_thread, std::move(args)));
         retval = true;
-        BESDEBUG(dmrpp_3, prolog << "Got std::future '" << futures.size() <<
-                                 "' from std::async, chunk_processing_thread_counter: " << chunk_processing_thread_counter << endl);
+        BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Got std::future '" << futures.size() <<
+                                            "' from std::async, chunk_processing_thread_counter: " << chunk_processing_thread_counter << endl);
     }
     return retval;
 }
@@ -195,8 +195,8 @@ bool start_one_chunk_unconstrained_compute_thread(list<std::future<bool>> &futur
         futures.push_back(std::async(std::launch::async, one_chunk_unconstrained_compute_thread, std::move(args)));
         chunk_processing_thread_counter++;
         retval = true;
-        BESDEBUG(dmrpp_3, prolog << "Got std::future '" << futures.size() <<
-                                 "' from std::async, chunk_processing_thread_counter: " << chunk_processing_thread_counter << endl);
+        BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Got std::future '" << futures.size() <<
+                                            "' from std::async, chunk_processing_thread_counter: " << chunk_processing_thread_counter << endl);
     }
     return retval;
 }
@@ -247,25 +247,25 @@ void process_chunks_concurrent(
 
             // If future_finished is true this means that the chunk_processing_thread_counter has been decremented,
             // because future::get() was called or a call to future::valid() returned false.
-            BESDEBUG(dmrpp_3, prolog << "future_finished: " << (future_finished?"true":"false") << endl);
+            BESDEBUG(SUPER_CHUNK_MODULE, prolog << "future_finished: " << (future_finished ? "true" : "false") << endl);
 
             if (!chunks.empty()){
                 // Next we try to add a new Chunk compute thread if we can - there might be room.
                 bool thread_started = true;
                 while(thread_started && !chunks.empty()) {
                     auto chunk = chunks.front();
-                    BESDEBUG(dmrpp_3, prolog << "Starting thread for " << chunk->to_string() << endl);
+                    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Starting thread for " << chunk->to_string() << endl);
 
                     auto args = unique_ptr<one_chunk_args>(new one_chunk_args(chunk, array, constrained_array_shape));
                     thread_started = start_one_chunk_compute_thread(futures, std::move(args));
 
                     if (thread_started) {
                         chunks.pop();
-                        BESDEBUG(dmrpp_3, prolog << "STARTED thread for " << chunk->to_string() << endl);
+                        BESDEBUG(SUPER_CHUNK_MODULE, prolog << "STARTED thread for " << chunk->to_string() << endl);
                     } else {
                         // Thread did not start, ownership of the arguments was not passed to the thread.
-                        BESDEBUG(dmrpp_3, prolog << "Thread not started. args deleted, Chunk remains in queue.) " <<
-                                                 "chunk_processing_thread_counter: " << chunk_processing_thread_counter << " futures.size(): " << futures.size() << endl);
+                        BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Thread not started. args deleted, Chunk remains in queue.) " <<
+                                                            "chunk_processing_thread_counter: " << chunk_processing_thread_counter << " futures.size(): " << futures.size() << endl);
                     }
                 }
             }
@@ -339,14 +339,14 @@ void process_chunks_unconstrained_concurrent(
 
             // If future_finished is true this means that the chunk_processing_thread_counter has been decremented,
             // because future::get() was called or a call to future::valid() returned false.
-            BESDEBUG(dmrpp_3, prolog << "future_finished: " << (future_finished?"true":"false") << endl);
+            BESDEBUG(SUPER_CHUNK_MODULE, prolog << "future_finished: " << (future_finished ? "true" : "false") << endl);
 
             if (!chunks.empty()){
                 // Next we try to add a new Chunk compute thread if we can - there might be room.
                 bool thread_started = true;
                 while(thread_started && !chunks.empty()) {
                     auto chunk = chunks.front();
-                    BESDEBUG(dmrpp_3, prolog << "Starting thread for " << chunk->to_string() << endl);
+                    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Starting thread for " << chunk->to_string() << endl);
 
                     auto args = unique_ptr<one_chunk_unconstrained_args>(
                             new one_chunk_unconstrained_args(chunk, array, array_shape, chunk_shape) );
@@ -354,12 +354,12 @@ void process_chunks_unconstrained_concurrent(
 
                     if (thread_started) {
                         chunks.pop();
-                        BESDEBUG(dmrpp_3, prolog << "STARTED thread for " << chunk->to_string() << endl);
+                        BESDEBUG(SUPER_CHUNK_MODULE, prolog << "STARTED thread for " << chunk->to_string() << endl);
                     } else {
                         // Thread did not start, ownership of the arguments was not passed to the thread.
-                        BESDEBUG(dmrpp_3, prolog << "Thread not started. args deleted, Chunk remains in queue.)" <<
-                                                 " chunk_processing_thread_counter: " << chunk_processing_thread_counter <<
-                                                 " futures.size(): " << futures.size() << endl);
+                        BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Thread not started. args deleted, Chunk remains in queue.)" <<
+                                                            " chunk_processing_thread_counter: " << chunk_processing_thread_counter <<
+                                                            " futures.size(): " << futures.size() << endl);
                     }
                 }
             }
@@ -503,7 +503,7 @@ void SuperChunk::read_aggregate_bytes()
  */
 void SuperChunk::retrieve_data() {
     if (d_is_read) {
-        BESDEBUG(MODULE, prolog << "SuperChunk (" << (void **) this << ") has already been read! Returning." << endl);
+        BESDEBUG(SUPER_CHUNK_MODULE, prolog << "SuperChunk (" << (void **) this << ") has already been read! Returning." << endl);
         return;
     }
 
@@ -539,15 +539,15 @@ void SuperChunk::retrieve_data() {
  * @param target_array The array into which to write the data.
  */
 void SuperChunk::process_child_chunks() {
-    BESDEBUG(dmrpp_3, prolog << "BEGIN" << endl );
+    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl );
     retrieve_data();
 
     vector<unsigned int> constrained_array_shape = d_parent_array->get_shape(true);
-    BESDEBUG(dmrpp_3, prolog << "d_use_compute_threads: " << (DmrppRequestHandler::d_use_compute_threads?"true":"false") << endl);
-    BESDEBUG(dmrpp_3, prolog << "d_max_compute_threads: " << DmrppRequestHandler::d_max_compute_threads << endl);
+    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "d_use_compute_threads: " << (DmrppRequestHandler::d_use_compute_threads ? "true" : "false") << endl);
+    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "d_max_compute_threads: " << DmrppRequestHandler::d_max_compute_threads << endl);
 
     if(!DmrppRequestHandler::d_use_compute_threads){
-        BESStopWatch sw(dmrpp_3);
+        BESStopWatch sw(SUPER_CHUNK_MODULE);
         sw.start(prolog+"Serial Chunk Processing.");
         for(const auto &chunk :get_chunks()){
             process_one_chunk(chunk,d_parent_array,constrained_array_shape);
@@ -556,7 +556,7 @@ void SuperChunk::process_child_chunks() {
     else {
         stringstream timer_name;
         timer_name << prolog << "Concurrent Chunk Processing. d_max_compute_threads: " << DmrppRequestHandler::d_max_compute_threads;
-        BESStopWatch sw(dmrpp_3);
+        BESStopWatch sw(SUPER_CHUNK_MODULE);
         sw.start(timer_name.str());
 
         queue<shared_ptr<Chunk>> chunks_to_process;
@@ -565,7 +565,7 @@ void SuperChunk::process_child_chunks() {
 
         process_chunks_concurrent(chunks_to_process, d_parent_array, constrained_array_shape);
     }
-    BESDEBUG(dmrpp_3, prolog << "END" << endl );
+    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "END" << endl );
 }
 
 
@@ -575,7 +575,7 @@ void SuperChunk::process_child_chunks() {
  */
 void SuperChunk::process_child_chunks_unconstrained() {
 
-    BESDEBUG(dmrpp_3, prolog << "BEGIN" << endl );
+    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl );
     retrieve_data();
 
     // The size in element of each of the array's dimensions
@@ -584,7 +584,7 @@ void SuperChunk::process_child_chunks_unconstrained() {
     const vector<unsigned int> chunk_shape = d_parent_array->get_chunk_dimension_sizes();
 
     if(!DmrppRequestHandler::d_use_compute_threads){
-        BESStopWatch sw(dmrpp_3);
+        BESStopWatch sw(SUPER_CHUNK_MODULE);
         sw.start(prolog+"Serial Chunk Processing.");
         for(auto &chunk :get_chunks()){
             process_one_chunk_unconstrained(chunk, chunk_shape, d_parent_array, array_shape);
@@ -594,7 +594,7 @@ void SuperChunk::process_child_chunks_unconstrained() {
         stringstream timer_name;
         timer_name << prolog << "Concurrent Chunk Processing. d_max_compute_threads: "
                    << DmrppRequestHandler::d_max_compute_threads;
-        BESStopWatch sw(dmrpp_3);
+        BESStopWatch sw(SUPER_CHUNK_MODULE);
         sw.start(timer_name.str());
 
         queue<shared_ptr<Chunk>> chunks_to_process;
