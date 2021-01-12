@@ -135,8 +135,31 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
     add_method(VERS_RESPONSE, dap_build_vers);
     add_method(HELP_RESPONSE, dap_build_help);
 
+    stringstream msg;
     read_key_value(DMRPP_USE_TRANSFER_THREADS_KEY, d_use_transfer_threads);
     read_key_value(DMRPP_MAX_TRANSFER_THREADS_KEY, d_max_transfer_threads);
+    msg << prolog << "Concurrent Transfer Threads: ";
+    if(DmrppRequestHandler::d_use_transfer_threads){
+        msg << "Enabled. max_transfer_threads: " << DmrppRequestHandler::d_max_transfer_threads << endl;
+    }
+    else{
+        msg << "Disabled." << endl;
+    }
+    BESDEBUG(MODULE, msg.str());
+    INFO_LOG(msg.str() );
+    msg.clear();
+
+    msg << prolog << "Concurrent Compute Threads: ";
+    if(DmrppRequestHandler::d_use_compute_threads){
+        msg << "Enabled. max_compute_threads: " << DmrppRequestHandler::d_max_compute_threads << endl;
+    }
+    else{
+        msg << "Disabled." << endl;
+    }
+    BESDEBUG(MODULE, msg.str());
+    INFO_LOG(msg.str() );
+    msg.clear();
+
 
     read_key_value(DMRPP_USE_COMPUTE_THREADS_KEY, d_use_compute_threads);
     read_key_value(DMRPP_MAX_COMPUTE_THREADS_KEY, d_max_compute_threads);
