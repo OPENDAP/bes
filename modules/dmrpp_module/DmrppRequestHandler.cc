@@ -149,6 +149,8 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
     INFO_LOG(msg.str() );
     msg.str(std::string());
 
+    read_key_value(DMRPP_USE_COMPUTE_THREADS_KEY, d_use_compute_threads);
+    read_key_value(DMRPP_MAX_COMPUTE_THREADS_KEY, d_max_compute_threads);
     msg << prolog << "Concurrent Compute Threads: ";
     if(DmrppRequestHandler::d_use_compute_threads){
         msg << "Enabled. max_compute_threads: " << DmrppRequestHandler::d_max_compute_threads << endl;
@@ -161,8 +163,6 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
     msg.str(std::string());
 
 
-    read_key_value(DMRPP_USE_COMPUTE_THREADS_KEY, d_use_compute_threads);
-    read_key_value(DMRPP_MAX_COMPUTE_THREADS_KEY, d_max_compute_threads);
 
 #if !HAVE_CURL_MULTI_API
     if (DmrppRequestHandler::d_use_transfer_threads)
