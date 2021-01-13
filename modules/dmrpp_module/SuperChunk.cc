@@ -138,7 +138,7 @@ void process_one_chunk_unconstrained(shared_ptr<Chunk> chunk, const vector<unsig
 bool one_chunk_compute_thread(unique_ptr<one_chunk_args> args)
 {
     stringstream timer_tag;
-    timer_tag << prolog << std::hex << std::this_thread::get_id();
+    timer_tag << prolog << "0x" << std::hex << std::this_thread::get_id();
     BESStopWatch sw(COMPUTE_THREADS);
     sw.start(timer_tag.str());
     process_one_chunk(args->chunk, args->array, args->array_shape);
@@ -153,7 +153,7 @@ bool one_chunk_compute_thread(unique_ptr<one_chunk_args> args)
 bool one_chunk_unconstrained_compute_thread(unique_ptr<one_chunk_unconstrained_args> args)
 {
     stringstream timer_tag;
-    timer_tag << prolog << std::hex << std::this_thread::get_id();
+    timer_tag << prolog << "0x" << std::hex << std::this_thread::get_id();
     BESStopWatch sw(COMPUTE_THREADS);
     sw.start(timer_tag.str());
     process_one_chunk_unconstrained(args->chunk, args->chunk_shape, args->array, args->array_shape);
