@@ -206,13 +206,7 @@ struct one_child_chunk_args {
 };
 
 
-void process_chunks_concurrent( std::queue<shared_ptr<Chunk>> &chunks, DmrppArray *array,  const std::vector<unsigned int> &shape );
 
-void process_chunks_unconstrained_concurrent(
-        queue<shared_ptr<Chunk>> &chunks,
-        const vector<unsigned int> &chunk_shape,
-        DmrppArray *array,
-        const vector<unsigned int> &array_shape);
 
 bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_counter, unsigned long timeout, string debug_prefix);
 

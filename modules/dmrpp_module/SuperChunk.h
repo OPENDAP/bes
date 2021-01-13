@@ -27,6 +27,7 @@
 
 #include <vector>
 #include <memory>
+#include <queue>
 
 
 #include "Chunk.h"
@@ -35,6 +36,14 @@
 namespace dmrpp {
 
 class DmrppArray;
+
+void process_chunks_concurrent( std::queue<shared_ptr<Chunk>> &chunks, DmrppArray *array,  const std::vector<unsigned int> &shape );
+
+void process_chunks_unconstrained_concurrent(
+        std::queue<std::shared_ptr<Chunk>> &chunks,
+        const std::vector<unsigned int> &chunk_shape,
+        DmrppArray *array,
+        const std::vector<unsigned int> &array_shape);
 
 class SuperChunk {
 private:
@@ -76,6 +85,7 @@ public:
     virtual void retrieve_data();
     virtual void process_child_chunks();
     virtual void process_child_chunks_unconstrained();
+
 
     virtual bool empty(){ return d_chunks.empty(); }
 
