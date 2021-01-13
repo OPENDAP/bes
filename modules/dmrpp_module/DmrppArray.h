@@ -90,19 +90,11 @@ private:
     process_one_chunk_unconstrained(std::shared_ptr<Chunk> chunk, const vector<unsigned int> &chunk_shape,
             DmrppArray *array, const vector<unsigned int> &array_shape);
 
-
-    friend void
-    process_super_chunk_unconstrained(const std::shared_ptr<SuperChunk> &super_chunk, DmrppArray *array);
-
     // Called from read_chunks()
     friend void
     process_one_chunk(std::shared_ptr<Chunk> chunk, DmrppArray *array, const vector<unsigned int> &constrained_array_shape);
 
-    friend
-    void process_super_chunk(const std::shared_ptr<SuperChunk> &super_chunk, DmrppArray *array);
 
-    // friend void SuperChunk::chunks_to_array_values(DmrppArray *array);
-    // friend void SuperChunk::chunks_to_array_values_unconstrained(DmrppArray *target_array);
 
     virtual void insert_chunk_unconstrained(std::shared_ptr<Chunk> chunk, unsigned int dim,
                                     unsigned long long array_offset, const std::vector<unsigned int> &array_shape,
@@ -154,40 +146,14 @@ private:
  * Args for threads that process SuperChunks, constrained or not.
  */
 struct one_super_chunk_args {
+    __thread_id parent_thread_id;
     std::shared_ptr<SuperChunk> super_chunk;
     DmrppArray *array;
 
     one_super_chunk_args(std::shared_ptr<SuperChunk> sc, DmrppArray *a)
-            :super_chunk(std::move(sc)), array(a) {}
+            : parent_thread_id(std::this_thread::get_id()), super_chunk(std::move(sc)), array(a) {}
 };
 
-/**
- * Args for threads that process Chunks for constrained arrays.
- */
-struct one_chunk_args {
-    std::shared_ptr<Chunk> chunk;
-    DmrppArray *array;
-    const vector<unsigned int> &array_shape;
-
-    one_chunk_args(std::shared_ptr<Chunk> c, DmrppArray *a, const vector<unsigned int> &a_s)
-            :  chunk(std::move(c)), array(a), array_shape(a_s) {}
-};
-
-/**
- * Args passed to threads that work with unconstrained array data.
- * The \arg chunk_shape is part of an optimization for the unconstrained
- * array case.
- */
-struct one_chunk_unconstrained_args {
-    std::shared_ptr<Chunk> chunk;
-    DmrppArray *array;
-    const vector<unsigned int> &array_shape;
-    const vector<unsigned int> &chunk_shape;
-
-    one_chunk_unconstrained_args(std::shared_ptr<Chunk> c, DmrppArray *a, const vector<unsigned int> &a_s,
-                                 const vector<unsigned int> &c_s)
-            : chunk(std::move(c)), array(a), array_shape(a_s), chunk_shape(c_s) {}
-};
 
 /**
  * Chunk data insert args for use with pthreads. Used for reading contiguous data
@@ -204,8 +170,6 @@ struct one_child_chunk_args {
 
     ~one_child_chunk_args() { }
 };
-
-
 
 
 bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_counter, unsigned long timeout, string debug_prefix);

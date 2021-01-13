@@ -35,16 +35,12 @@
 
 namespace dmrpp {
 
+// Forward Declaration;
 class DmrppArray;
 
-void process_chunks_concurrent( std::queue<shared_ptr<Chunk>> &chunks, DmrppArray *array,  const std::vector<unsigned int> &shape );
-
-void process_chunks_unconstrained_concurrent(
-        std::queue<std::shared_ptr<Chunk>> &chunks,
-        const std::vector<unsigned int> &chunk_shape,
-        DmrppArray *array,
-        const std::vector<unsigned int> &array_shape);
-
+/**
+ *
+ */
 class SuperChunk {
 private:
     DmrppArray *d_parent_array;
@@ -94,6 +90,47 @@ public:
     std::string to_string(bool verbose) const;
     virtual void dump(std::ostream & strm) const;
 };
+
+/**
+ * Args for threads that process Chunks for constrained arrays.
+ */
+struct one_chunk_args {
+    __thread_id parent_thread_id;
+    std::shared_ptr<Chunk> chunk;
+    DmrppArray *array;
+    const vector<unsigned int> &array_shape;
+
+    one_chunk_args(std::shared_ptr<Chunk> c, DmrppArray *a, const vector<unsigned int> &a_s)
+            : parent_thread_id(std::this_thread::get_id()), chunk(std::move(c)), array(a), array_shape(a_s) {}
+};
+
+/**
+ * Args passed to threads that work with unconstrained array data.
+ * The \arg chunk_shape is part of an optimization for the unconstrained
+ * array case.
+ */
+struct one_chunk_unconstrained_args {
+    __thread_id parent_thread_id;
+    std::shared_ptr<Chunk> chunk;
+    DmrppArray *array;
+    const vector<unsigned int> &array_shape;
+    const vector<unsigned int> &chunk_shape;
+
+    one_chunk_unconstrained_args(std::shared_ptr<Chunk> c, DmrppArray *a, const vector<unsigned int> &a_s,
+                                 const vector<unsigned int> &c_s)
+            : parent_thread_id(std::this_thread::get_id()), chunk(std::move(c)), array(a), array_shape(a_s), chunk_shape(c_s) {}
+};
+
+
+void process_chunks_concurrent( std::queue<shared_ptr<Chunk>> &chunks, DmrppArray *array,  const std::vector<unsigned int> &shape );
+
+void process_chunks_unconstrained_concurrent(
+        std::queue<std::shared_ptr<Chunk>> &chunks,
+        const std::vector<unsigned int> &chunk_shape,
+        DmrppArray *array,
+        const std::vector<unsigned int> &array_shape);
+
+
 
 }// namespace dmrpp
 
