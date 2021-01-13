@@ -270,8 +270,10 @@ void process_super_chunk(const shared_ptr<SuperChunk> &super_chunk, DmrppArray *
  */
 bool one_super_chunk_transfer_thread(unique_ptr<one_super_chunk_args> args)
 {
+    stringstream timer_tag;
+    timer_tag << prolog << std::this_thread::get_id();
     BESStopWatch sw(TRANSFER_THREADS);
-    sw.start(prolog);
+    sw.start(timer_tag.str());
     args->super_chunk->read();
     return true;
 }
@@ -283,8 +285,10 @@ bool one_super_chunk_transfer_thread(unique_ptr<one_super_chunk_args> args)
  */
 bool one_super_chunk_unconstrained_transfer_thread(unique_ptr<one_super_chunk_args> args)
 {
+    stringstream timer_tag;
+    timer_tag << prolog << std::this_thread::get_id();
     BESStopWatch sw(TRANSFER_THREADS);
-    sw.start(prolog);
+    sw.start(timer_tag.str());
     args->super_chunk->read_unconstrained();
     return true;
 }
