@@ -138,7 +138,8 @@ void process_one_chunk_unconstrained(shared_ptr<Chunk> chunk, const vector<unsig
 bool one_chunk_compute_thread(unique_ptr<one_chunk_args> args)
 {
     stringstream timer_tag;
-    timer_tag << prolog << "tid: 0x" << std::hex << std::this_thread::get_id() << " parent_tid: 0x" << std::hex << args->parent_thread_id;
+    timer_tag << prolog << "tid: 0x" << std::hex << std::this_thread::get_id() <<
+        " parent_tid: 0x" << std::hex << args->parent_thread_id << " parent_sc: " << args->parent_super_chunk_id;
     BESStopWatch sw(COMPUTE_THREADS);
     sw.start(timer_tag.str());
     process_one_chunk(args->chunk, args->array, args->array_shape);
@@ -153,7 +154,8 @@ bool one_chunk_compute_thread(unique_ptr<one_chunk_args> args)
 bool one_chunk_unconstrained_compute_thread(unique_ptr<one_chunk_unconstrained_args> args)
 {
     stringstream timer_tag;
-    timer_tag << prolog << "tid: 0x" << std::hex << std::this_thread::get_id() << " parent_tid: 0x" << std::hex << args->parent_thread_id;
+    timer_tag << prolog << "tid: 0x" << std::hex << std::this_thread::get_id() <<
+          " parent_tid: 0x" << std::hex << args->parent_thread_id << " parent_sc: " << args->parent_super_chunk_id;
     BESStopWatch sw(COMPUTE_THREADS);
     sw.start(timer_tag.str());
     process_one_chunk_unconstrained(args->chunk, args->chunk_shape, args->array, args->array_shape);
@@ -230,6 +232,7 @@ bool start_one_chunk_unconstrained_compute_thread(list<std::future<bool>> &futur
  * @param array_shape The shape of the DmrppArray (passing is faster than recomputing this value)
  */
 void process_chunks_concurrent(
+        const string &super_chunk_id,
         queue<shared_ptr<Chunk>> &chunks,
         DmrppArray *array,
         const vector<unsigned int> &constrained_array_shape ){
@@ -262,7 +265,7 @@ void process_chunks_concurrent(
                     auto chunk = chunks.front();
                     BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Starting thread for " << chunk->to_string() << endl);
 
-                    auto args = unique_ptr<one_chunk_args>(new one_chunk_args(chunk, array, constrained_array_shape));
+                    auto args = unique_ptr<one_chunk_args>(new one_chunk_args(super_chunk_id, chunk, array, constrained_array_shape));
                     thread_started = start_one_chunk_compute_thread(futures, std::move(args));
 
                     if (thread_started) {
@@ -321,6 +324,7 @@ void process_chunks_concurrent(
  * @param array_shape The shape of the DmrppArray (passing is faster than recomputing this value)
  */
 void process_chunks_unconstrained_concurrent(
+        const string &super_chunk_id,
         queue<shared_ptr<Chunk>> &chunks,
         const vector<unsigned int> &chunk_shape,
         DmrppArray *array,
@@ -355,7 +359,7 @@ void process_chunks_unconstrained_concurrent(
                     BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Starting thread for " << chunk->to_string() << endl);
 
                     auto args = unique_ptr<one_chunk_unconstrained_args>(
-                            new one_chunk_unconstrained_args(chunk, array, array_shape, chunk_shape) );
+                            new one_chunk_unconstrained_args(super_chunk_id, chunk, array, array_shape, chunk_shape) );
                     thread_started = start_one_chunk_unconstrained_compute_thread(futures, std::move(args));
 
                     if (thread_started) {
@@ -569,7 +573,7 @@ void SuperChunk::process_child_chunks() {
         for(const auto &chunk:get_chunks())
             chunks_to_process.push(chunk);
 
-        process_chunks_concurrent(chunks_to_process, d_parent_array, constrained_array_shape);
+        process_chunks_concurrent(d_id, chunks_to_process, d_parent_array, constrained_array_shape);
     }
     BESDEBUG(SUPER_CHUNK_MODULE, prolog << "END" << endl );
 }
@@ -607,7 +611,7 @@ void SuperChunk::process_child_chunks_unconstrained() {
         for (auto &chunk:get_chunks())
             chunks_to_process.push(chunk);
 
-        process_chunks_unconstrained_concurrent(chunks_to_process, chunk_shape, d_parent_array, array_shape);
+        process_chunks_unconstrained_concurrent(d_id,chunks_to_process, chunk_shape, d_parent_array, array_shape);
     }
 
 }

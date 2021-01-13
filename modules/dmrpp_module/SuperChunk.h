@@ -29,6 +29,7 @@
 #include <memory>
 #include <thread>
 #include <queue>
+#include <sstream>
 
 
 #include "Chunk.h"
@@ -44,6 +45,7 @@ class DmrppArray;
  */
 class SuperChunk {
 private:
+    std::string d_id;
     DmrppArray *d_parent_array;
     std::string d_data_url;
     std::vector<std::shared_ptr<Chunk>> d_chunks;
@@ -58,7 +60,14 @@ private:
 
 public:
     explicit SuperChunk(DmrppArray *parent=nullptr): d_parent_array(parent), d_data_url(""),
-             d_offset(0), d_size(0), d_is_read(false), d_read_buffer(nullptr){}
+             d_offset(0), d_size(0), d_is_read(false), d_read_buffer(nullptr){
+
+        // Thanks: https://stackoverflow.com/questions/7850125/convert-this-pointer-to-string
+        const void *addr = static_cast<const void*>(this);
+        std::stringstream ss;
+        ss << addr;
+        d_id = ss.str();
+    }
 
     virtual ~SuperChunk(){
         delete[] d_read_buffer;
@@ -97,12 +106,13 @@ public:
  */
 struct one_chunk_args {
     std::thread::id parent_thread_id;
+    std::string parent_super_chunk_id;
     std::shared_ptr<Chunk> chunk;
     DmrppArray *array;
     const vector<unsigned int> &array_shape;
 
-    one_chunk_args(std::shared_ptr<Chunk> c, DmrppArray *a, const vector<unsigned int> &a_s)
-            : parent_thread_id(std::this_thread::get_id()), chunk(std::move(c)), array(a), array_shape(a_s) {}
+    one_chunk_args(const string sc_id, std::shared_ptr<Chunk> c, DmrppArray *a, const vector<unsigned int> &a_s)
+            : parent_thread_id(std::this_thread::get_id()), parent_super_chunk_id(sc_id), chunk(std::move(c)), array(a), array_shape(a_s) {}
 };
 
 /**
@@ -112,20 +122,27 @@ struct one_chunk_args {
  */
 struct one_chunk_unconstrained_args {
     std::thread::id parent_thread_id;
+    std::string parent_super_chunk_id;
     std::shared_ptr<Chunk> chunk;
     DmrppArray *array;
     const vector<unsigned int> &array_shape;
     const vector<unsigned int> &chunk_shape;
 
-    one_chunk_unconstrained_args(std::shared_ptr<Chunk> c, DmrppArray *a, const vector<unsigned int> &a_s,
+    one_chunk_unconstrained_args(const string sc_id, std::shared_ptr<Chunk> c, DmrppArray *a, const vector<unsigned int> &a_s,
                                  const vector<unsigned int> &c_s)
-            : parent_thread_id(std::this_thread::get_id()), chunk(std::move(c)), array(a), array_shape(a_s), chunk_shape(c_s) {}
+            : parent_thread_id(std::this_thread::get_id()), parent_super_chunk_id(sc_id), chunk(std::move(c)),
+            array(a), array_shape(a_s), chunk_shape(c_s) {}
 };
 
 
-void process_chunks_concurrent( std::queue<shared_ptr<Chunk>> &chunks, DmrppArray *array,  const std::vector<unsigned int> &shape );
+void process_chunks_concurrent(
+        const string &super_chunk_id,
+        std::queue<shared_ptr<Chunk>> &chunks,
+        DmrppArray *array,
+        const std::vector<unsigned int> &shape );
 
 void process_chunks_unconstrained_concurrent(
+        const string &super_chunk_id,
         std::queue<std::shared_ptr<Chunk>> &chunks,
         const std::vector<unsigned int> &chunk_shape,
         DmrppArray *array,
