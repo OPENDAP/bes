@@ -286,7 +286,7 @@ void make_chunks(const string &target_url, const size_t &target_size, const size
     size_t chunk_start = 0;
     size_t chunk_index;
     for (chunk_index = 0; chunk_index < chunk_count; chunk_index++) {
-        vector<unsigned int> position_in_array;
+        vector<unsigned long long> position_in_array;
         position_in_array.push_back(chunk_index);
         if (debug)
             cerr << prolog << "chunks[" << chunk_index << "]  chunk_start: " << chunk_start << " chunk_size: "
@@ -305,7 +305,7 @@ void make_chunks(const string &target_url, const size_t &target_size, const size
             cerr << prolog << "Remainder chunk! target_size: " << target_size << "  index: " << chunk_index
                  << " last_chunk_start: " << chunk_start << " last_chunk_size: " << last_chunk_size << endl;
         if (last_chunk_size > 0) {
-            vector<unsigned int> position_in_array;
+            vector<unsigned long long> position_in_array;
             position_in_array.push_back(chunk_index);
             if (debug)
                 cerr << prolog << "chunks[" << chunk_index << "]  chunk_start: " << chunk_start << " chunk_size: "
@@ -447,7 +447,7 @@ void add_chunks(const string &target_url, const size_t &target_size, const size_
     size_t chunk_start = 0;
     size_t chunk_index;
     for (chunk_index = 0; chunk_index < chunk_count; chunk_index++) {
-        vector<unsigned int> position_in_array;
+        vector<unsigned long long> position_in_array;
         position_in_array.push_back(chunk_start);
         if (debug)
             cerr << prolog << "chunks[" << chunk_index << "]  chunk_start: " << chunk_start << " chunk_size: "
@@ -462,7 +462,7 @@ void add_chunks(const string &target_url, const size_t &target_size, const size_
             cerr << prolog << "Remainder chunk! target_size: " << target_size << "  index: " << chunk_index
                  << " last_chunk_start: " << chunk_start << " last_chunk_size: " << last_chunk_size << endl;
         if (last_chunk_size > 0) {
-            vector<unsigned int> position_in_array;
+            vector<unsigned long long> position_in_array;
             position_in_array.push_back(chunk_start);
             if (debug)
                 cerr << prolog << "chunks[" << chunk_index << "]  chunk_start: " << chunk_start << " chunk_size: "

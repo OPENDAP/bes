@@ -71,8 +71,8 @@ private:
     DmrppArray::dimension get_dimension(unsigned int dim_num);
 
     void insert_constrained_contiguous(Dim_iter dim_iter, unsigned long *target_index,
-                                       std::vector<unsigned int> &subset_addr,
-                                       const std::vector<unsigned int> &array_shape, char *data);
+                                       std::vector<unsigned long long> &subset_addr,
+                                       const std::vector<unsigned long long> &array_shape, char *data);
 
     void read_contiguous();
 
@@ -84,13 +84,13 @@ private:
 
     // Called from read_chunks_unconstrained() and also using pthreads
     friend void
-    process_one_chunk_unconstrained(std::shared_ptr<Chunk> chunk, DmrppArray *array, const vector<unsigned int> &array_shape,const vector<unsigned int> &chunk_shape);
+    process_one_chunk_unconstrained(std::shared_ptr<Chunk> chunk, DmrppArray *array, const vector<unsigned long long> &array_shape,const vector<unsigned long long> &chunk_shape);
     friend void
     process_super_chunk_unconstrained(const std::shared_ptr<SuperChunk>& super_chunk, DmrppArray *array);
 
     // Called from read_chunks()
     friend void
-    process_one_chunk(std::shared_ptr<Chunk> chunk, DmrppArray *array, const vector<unsigned int> &constrained_array_shape);
+    process_one_chunk(std::shared_ptr<Chunk> chunk, DmrppArray *array, const vector<unsigned long long> &constrained_array_shape);
     friend
     void process_super_chunk(const std::shared_ptr<SuperChunk>& super_chunk, DmrppArray *array);
 
@@ -98,22 +98,22 @@ private:
     // friend void SuperChunk::chunks_to_array_values_unconstrained(DmrppArray *target_array);
 
     virtual void insert_chunk_unconstrained(std::shared_ptr<Chunk> chunk, unsigned int dim,
-                                    unsigned long long array_offset, const std::vector<unsigned int> &array_shape,
-                                    unsigned long long chunk_offset, const std::vector<unsigned int> &chunk_shape,
-                                    const std::vector<unsigned int> &chunk_origin);
+                                    unsigned long long array_offset, const std::vector<unsigned long long> &array_shape,
+                                    unsigned long long chunk_offset, const std::vector<unsigned long long> &chunk_shape,
+                                    const std::vector<unsigned long long> &chunk_origin);
 
     void read_chunks_unconstrained();
 
     unsigned long long get_chunk_start(const dimension &thisDim, unsigned int chunk_origin_for_dim);
 
-    std::shared_ptr<Chunk> find_needed_chunks(unsigned int dim, std::vector<unsigned int> *target_element_address, std::shared_ptr<Chunk> chunk);
+    std::shared_ptr<Chunk> find_needed_chunks(unsigned int dim, std::vector<unsigned long long> *target_element_address, std::shared_ptr<Chunk> chunk);
 
     virtual void insert_chunk(
             unsigned int dim,
-            std::vector<unsigned int> *target_element_address,
-            std::vector<unsigned int> *chunk_element_address,
+            std::vector<unsigned long long> *target_element_address,
+            std::vector<unsigned long long> *chunk_element_address,
             std::shared_ptr<Chunk> chunk,
-            const vector<unsigned int> &constrained_array_shape);
+            const vector<unsigned long long> &constrained_array_shape);
 
 
     void read_chunks();
@@ -136,7 +136,7 @@ private:
 
     virtual unsigned long long get_size(bool constrained = false);
 
-    virtual std::vector<unsigned int> get_shape(bool constrained);
+    virtual std::vector<unsigned long long> get_shape(bool constrained);
 
     virtual void print_dap4(libdap::XMLWriter &writer, bool constrained = false);
 
@@ -161,9 +161,9 @@ struct one_chunk_args {
     unsigned char tid;      // thread id as a byte
     std::shared_ptr<Chunk> chunk;
     DmrppArray *array;
-    const vector<unsigned int> &array_shape;
+    const vector<unsigned long long> &array_shape;
 
-    one_chunk_args(int *pipe, unsigned char id, std::shared_ptr<Chunk> c, DmrppArray *a, const vector<unsigned int> &a_s)
+    one_chunk_args(int *pipe, unsigned char id, std::shared_ptr<Chunk> c, DmrppArray *a, const vector<unsigned long long> &a_s)
             : fds(pipe), tid(id), chunk(std::move(c)), array(a), array_shape(a_s) {}
 };
 
@@ -187,11 +187,11 @@ struct one_chunk_unconstrained_args {
     unsigned char tid;      // thread id as a byte
     std::shared_ptr<Chunk> chunk;
     DmrppArray *array;
-    const vector<unsigned int> &array_shape;
-    const vector<unsigned int> &chunk_shape;
+    const vector<unsigned long long> &array_shape;
+    const vector<unsigned long long> &chunk_shape;
 
-    one_chunk_unconstrained_args(int *pipe, unsigned char id, std::shared_ptr<Chunk> c, DmrppArray *a, const vector<unsigned int> &a_s,
-                                 const vector<unsigned int> &c_s)
+    one_chunk_unconstrained_args(int *pipe, unsigned char id, std::shared_ptr<Chunk> c, DmrppArray *a, const vector<unsigned long long> &a_s,
+                                 const vector<unsigned long long> &c_s)
             : fds(pipe), tid(id), chunk(std::move(c)), array(a), array_shape(a_s), chunk_shape(c_s) {}
 };
 

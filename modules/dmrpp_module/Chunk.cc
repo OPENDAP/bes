@@ -189,7 +189,7 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
  * @param src Compressed data
  * @param src_len Size of the compressed data
  */
-void inflate(char *dest, unsigned int dest_len, char *src, unsigned int src_len) {
+void inflate(char *dest, unsigned long long dest_len, char *src, unsigned long long src_len) {
     /* Sanity check */
     assert(src_len > 0);
     assert(src);
@@ -283,8 +283,8 @@ void inflate(char *dest, unsigned int dest_len, char *src, unsigned int src_len)
  * @param src_size Number of bytes in both src and dest
  * @param width Number of bytes in an element
  */
-void unshuffle(char *dest, const char *src, unsigned int src_size, unsigned int width) {
-    unsigned int elems = src_size / width;  // int division rounds down
+void unshuffle(char *dest, const char *src, unsigned long long src_size, unsigned long long width) {
+    unsigned long long elems = src_size / width;  // int division rounds down
 
     /* Don't do anything for 1-byte elements, or "fractional" elements */
     if (!(width > 1 && elems > 1)) {
@@ -353,7 +353,7 @@ void unshuffle(char *dest, const char *src, unsigned int src_size, unsigned int 
 }
 
 
-void Chunk::parse_chunk_position_in_array_string(const string &pia, vector<unsigned int> &cpia_vect){
+void Chunk::parse_chunk_position_in_array_string(const string &pia, vector<unsigned long long> &cpia_vect){
     if (pia.empty()) return;
 
     if (!cpia_vect.empty()) cpia_vect.clear();
@@ -423,12 +423,12 @@ void Chunk::set_position_in_array(const string &pia) {
 /**
  * @brief Set the chunk's position in the Array
  *
- * Use this method when the vector<unsigned int> is known.
+ * Use this method when the vector<unsigned long long> is known.
  *
  * @see Chunk::set_position_in_array(const string &pia)
  * @param pia A vector of unsigned ints.
  */
-void Chunk::set_position_in_array(const std::vector<unsigned int> &pia) {
+void Chunk::set_position_in_array(const std::vector<unsigned long long> &pia) {
     if (pia.empty()) return;
 
     if (!d_chunk_position_in_array.empty()) d_chunk_position_in_array.clear();
@@ -527,7 +527,7 @@ void *inflate_chunk(void *arg_list)
  * @param chunk_size The _expected_ chunk size, in elements; used to allocate storage
  * @param elem_width The number of bytes per element
  */
-void Chunk::inflate_chunk(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width) {
+void Chunk::inflate_chunk(bool deflate, bool shuffle, unsigned long long chunk_size, unsigned long long elem_width) {
     // This code is pretty naive - there are apparently a number of
     // different ways HDF5 can compress data, and it does also use a scheme
     // where several algorithms can be applied in sequence. For now, get
