@@ -41,6 +41,7 @@
 #include "SuperChunk.h"
 
 #define prolog std::string("SuperChunk::").append(__func__).append("() - ")
+
 #define SUPER_CHUNK_MODULE "dmrpp:3"
 
 using std::stringstream;
@@ -52,6 +53,7 @@ namespace dmrpp {
 // ThreadPool state variables.
 std::mutex chunk_processing_thread_pool_mtx;     // mutex for critical section
 atomic_uint chunk_processing_thread_counter(0);
+#define COMPUTE_THREADS "compute_threads"
 
 /**
  * @brief Reads the Chunk (as needed) and performs the inflate/shuffle/etc. processing after which the values are inserted into the array.
@@ -135,8 +137,8 @@ void process_one_chunk_unconstrained(shared_ptr<Chunk> chunk, const vector<unsig
  */
 bool one_chunk_compute_thread(unique_ptr<one_chunk_args> args)
 {
-    //BESStopWatch sw("dmrpp:threads");
-    //sw.start(prolog);
+    BESStopWatch sw(COMPUTE_THREADS);
+    sw.start(prolog);
     process_one_chunk(args->chunk, args->array, args->array_shape);
     return true;
 }
@@ -148,8 +150,8 @@ bool one_chunk_compute_thread(unique_ptr<one_chunk_args> args)
  */
 bool one_chunk_unconstrained_compute_thread(unique_ptr<one_chunk_unconstrained_args> args)
 {
-    //BESStopWatch sw("dmrpp:threads");
-    //sw.start(prolog);
+    BESStopWatch sw(COMPUTE_THREADS);
+    sw.start(prolog);
     process_one_chunk_unconstrained(args->chunk, args->chunk_shape, args->array, args->array_shape);
     return true;
 }
