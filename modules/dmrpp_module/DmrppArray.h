@@ -27,6 +27,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <thread>
 #include <memory>
 #include <queue>
 #include <future>
@@ -146,7 +147,7 @@ private:
  * Args for threads that process SuperChunks, constrained or not.
  */
 struct one_super_chunk_args {
-    __thread_id parent_thread_id;
+    std::thread::id parent_thread_id;
     std::shared_ptr<SuperChunk> super_chunk;
     DmrppArray *array;
 

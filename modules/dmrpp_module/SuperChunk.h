@@ -27,6 +27,7 @@
 
 #include <vector>
 #include <memory>
+#include <thread>
 #include <queue>
 
 
@@ -95,7 +96,7 @@ public:
  * Args for threads that process Chunks for constrained arrays.
  */
 struct one_chunk_args {
-    __thread_id parent_thread_id;
+    std::thread::id parent_thread_id;
     std::shared_ptr<Chunk> chunk;
     DmrppArray *array;
     const vector<unsigned int> &array_shape;
@@ -110,7 +111,7 @@ struct one_chunk_args {
  * array case.
  */
 struct one_chunk_unconstrained_args {
-    __thread_id parent_thread_id;
+    std::thread::id parent_thread_id;
     std::shared_ptr<Chunk> chunk;
     DmrppArray *array;
     const vector<unsigned int> &array_shape;
