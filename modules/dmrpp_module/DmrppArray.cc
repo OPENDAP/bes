@@ -271,7 +271,8 @@ void process_super_chunk(const shared_ptr<SuperChunk> &super_chunk, DmrppArray *
 bool one_super_chunk_transfer_thread(unique_ptr<one_super_chunk_args> args)
 {
     stringstream timer_tag;
-    timer_tag << prolog << "tid: 0x" << std::hex << std::this_thread::get_id() << " parent_tid: 0x" << std::hex << args->parent_thread_id;
+    timer_tag << prolog << "tid: 0x" << std::hex << std::this_thread::get_id() <<
+    " parent_tid: 0x" << std::hex << args->parent_thread_id << " sc_id: " << args->super_chunk->id();
     BESStopWatch sw(TRANSFER_THREADS);
     sw.start(timer_tag.str());
     args->super_chunk->read();
@@ -286,7 +287,8 @@ bool one_super_chunk_transfer_thread(unique_ptr<one_super_chunk_args> args)
 bool one_super_chunk_unconstrained_transfer_thread(unique_ptr<one_super_chunk_args> args)
 {
     stringstream timer_tag;
-    timer_tag << prolog << "tid: 0x" << std::hex << std::this_thread::get_id() << " parent_tid: 0x" << std::hex << args->parent_thread_id;
+    timer_tag << prolog << "tid: 0x" << std::hex << std::this_thread::get_id() <<
+    " parent_tid: 0x" << std::hex << args->parent_thread_id  << " sc_id: " << args->super_chunk->id();
     BESStopWatch sw(TRANSFER_THREADS);
     sw.start(timer_tag.str());
     args->super_chunk->read_unconstrained();
@@ -1057,15 +1059,21 @@ void DmrppArray::read_chunks_unconstrained()
 
     // Find all the required chunks to read. I used a queue to preserve the chunk order, which
     // made using a debugger easier. However, order does not matter, AFAIK.
+
+    unsigned long long sc_count=0;
+    stringstream sc_id;
+    sc_id << name() << "-" << sc_count++;
     queue<shared_ptr<SuperChunk>> super_chunks;
-    auto current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk(this)) ;
+    auto current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk(sc_id.str(),this)) ;
     super_chunks.push(current_super_chunk);
 
     // Make the SuperChunks using all the chunks.
     for(const auto& chunk: get_chunks()){
         bool added = current_super_chunk->add_chunk(chunk);
         if(!added){
-            current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk(this));
+            sc_id.str(std::string());
+            sc_id << name() << "-" << sc_count++;
+            current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk(sc_id.str(),this));
             super_chunks.push(current_super_chunk);
             if(!current_super_chunk->add_chunk(chunk)){
                 stringstream msg ;
@@ -1340,8 +1348,11 @@ void DmrppArray::read_chunks()
 
     // Find all the required chunks to read. I used a queue to preserve the chunk order, which
     // made using a debugger easier. However, order does not matter, AFAIK.
+    unsigned long long sc_count=0;
+    stringstream sc_id;
+    sc_id << name() << "-" << sc_count++;
     queue<shared_ptr<SuperChunk>> super_chunks;
-    auto current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk(this)) ;
+    auto current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk(sc_id.str(), this)) ;
     super_chunks.push(current_super_chunk);
 
     // TODO We know that non-contiguous chunks may be forward or backward in the file from
@@ -1355,7 +1366,9 @@ void DmrppArray::read_chunks()
         if (needed){
             bool added = current_super_chunk->add_chunk(chunk);
             if(!added){
-                current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk(this));
+                sc_id.str(std::string()); // Clears stringstream.
+                sc_id << name() << "-" << sc_count++;
+                current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk(sc_id.str(),this));
                 super_chunks.push(current_super_chunk);
                 if(!current_super_chunk->add_chunk(chunk)){
                     stringstream msg ;

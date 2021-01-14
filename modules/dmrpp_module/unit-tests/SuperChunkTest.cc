@@ -110,7 +110,7 @@ public:
             DBG( cerr << prolog << "Creating: shared_ptr<Chunk> c1" << endl);
             shared_ptr<Chunk> c1(new Chunk(data_url, "", 1000,0,chunk_position_in_array));
             {
-                SuperChunk sc;
+                SuperChunk sc(prolog);
                 DBG( cerr << prolog << "Adding c1 to SuperChunk" << endl);
                 sc.add_chunk(c1);
                 DBG( cerr << prolog << "Calling SuperChunk::retrieve_data()" << endl);
@@ -152,7 +152,7 @@ public:
             shared_ptr<Chunk> c4(new Chunk(data_url, "", 100000,300000,chunk_position_in_array));
 
             {
-                SuperChunk sc;
+                SuperChunk sc(prolog);
                 bool chunk_was_added;
                 chunk_was_added = sc.add_chunk(c1);
                 DBG( cerr << prolog << "Chunk c1 was "<< (chunk_was_added?"":"NOT ") << "added to SuperChunk" << endl);
@@ -222,11 +222,11 @@ public:
 #endif
             {
 
-                SuperChunk word_a;
-                SuperChunk word_test;
+                SuperChunk word_a(prolog+"word_a");
+                SuperChunk word_test(prolog+"word_test");
                 bool chunk_was_added;
 
-                SuperChunk word_this;
+                SuperChunk word_this(prolog+"word_this");
                 chunk_was_added = word_this.add_chunk(T0);
                 DBG( cerr << prolog << "Chunk T0 was "<< (chunk_was_added?"":"NOT ") << "added to SuperChunk word_this" << endl);
                 CPPUNIT_ASSERT(chunk_was_added);
@@ -264,7 +264,7 @@ public:
                     }
                     letter_index++;
                 }
-                SuperChunk word_is;
+                SuperChunk word_is(prolog+"word_is");
                 chunk_was_added = word_is.add_chunk(i1);
                 DBG( cerr << prolog << "Chunk i1 was "<< (chunk_was_added?"":"NOT ") << "added to SuperChunk word_is" << endl);
                 CPPUNIT_ASSERT(chunk_was_added);

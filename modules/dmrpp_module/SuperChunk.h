@@ -59,19 +59,15 @@ private:
     void read_aggregate_bytes();
 
 public:
-    explicit SuperChunk(DmrppArray *parent=nullptr): d_parent_array(parent), d_data_url(""),
-             d_offset(0), d_size(0), d_is_read(false), d_read_buffer(nullptr){
 
-        // Thanks: https://stackoverflow.com/questions/7850125/convert-this-pointer-to-string
-        const void *addr = static_cast<const void*>(this);
-        std::stringstream ss;
-        ss << addr;
-        d_id = ss.str();
-    }
+    explicit SuperChunk(const std::string sc_id, DmrppArray *parent=nullptr):
+    d_id(sc_id), d_parent_array(parent), d_data_url(""), d_offset(0), d_size(0), d_is_read(false), d_read_buffer(nullptr){}
 
     virtual ~SuperChunk(){
         delete[] d_read_buffer;
     }
+
+    virtual std::string id(){ return d_id; }
 
     virtual bool add_chunk(std::shared_ptr<Chunk> candidate_chunk);
 
