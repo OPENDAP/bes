@@ -45,6 +45,7 @@
 #define DMRPP_WAIT_FOR_FUTURE_MS 1
 
 #define USE_SUPER_CHUNKS 1
+#define DMRPP_ENABLE_THREAD_TIMERS 0
 
 #endif // E_DmrppNames_H
 
