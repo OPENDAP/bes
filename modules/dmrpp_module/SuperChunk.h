@@ -41,6 +41,7 @@ namespace dmrpp {
 class DmrppArray;
 
 /**
+ * @brief A SuperChunk is a collection of contiguous Chunk objects along with optimized methods for data retrieval and inflation.
  *
  */
 class SuperChunk {
@@ -98,7 +99,8 @@ public:
 };
 
 /**
- * Args for threads that process Chunks for constrained arrays.
+ * @brief Single argument structure for a thread that will process a single Chunk for a constrained array.
+ * Utilized as an argument to std::async()
  */
 struct one_chunk_args {
     std::thread::id parent_thread_id;
@@ -112,9 +114,9 @@ struct one_chunk_args {
 };
 
 /**
- * Args passed to threads that work with unconstrained array data.
- * The \arg chunk_shape is part of an optimization for the unconstrained
- * array case.
+ * @brief Single argument structure for a thread that will process a single Chunk for an unconstrained array.
+ * Utilized as an argument to std::async()
+ * The \arg chunk_shape is part of an optimization for the unconstrained array case.
  */
 struct one_chunk_unconstrained_args {
     std::thread::id parent_thread_id;
@@ -129,7 +131,6 @@ struct one_chunk_unconstrained_args {
             : parent_thread_id(std::this_thread::get_id()), parent_super_chunk_id(sc_id), chunk(std::move(c)),
             array(a), array_shape(a_s), chunk_shape(c_s) {}
 };
-
 
 void process_chunks_concurrent(
         const string &super_chunk_id,

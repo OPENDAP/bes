@@ -990,7 +990,7 @@ void DmrppArray::insert_chunk_unconstrained(shared_ptr<Chunk> chunk, unsigned in
 }
 
 /**
- * @brief Read data for a chunked array
+ * @brief Read data for an unconstrained chunked array
  *
  * Read data for an array when those data are split across multiple
  * chunks. This is virtually always HDF5 data, but it could be any
@@ -1044,7 +1044,6 @@ void DmrppArray::read_chunks_unconstrained()
 
     if (!DmrppRequestHandler::d_use_transfer_threads) {  // Serial transfers
 #if DMRPP_ENABLE_THREAD_TIMERS
-
         BESStopWatch sw(dmrpp_3);
         sw.start(prolog + "Serial SuperChunk Processing.");
 #endif

@@ -244,13 +244,6 @@ void process_chunks_concurrent(
         DmrppArray *array,
         const vector<unsigned int> &constrained_array_shape ){
 
-    //BESStopWatch sw;
-    //if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + "Timer name: "+prolog, "");
-
-    // Parallel version based on read_chunks_unconstrained(). There is
-    // substantial duplication of the code in read_chunks_unconstrained(), but
-    // wait to remove that when we move to C++11 which has threads integrated.
-
     // We maintain a list  of futures to track our parallel activities.
     list<future<bool>> futures;
     try {
@@ -336,13 +329,6 @@ void process_chunks_unconstrained_concurrent(
         const vector<unsigned int> &chunk_shape,
         DmrppArray *array,
         const vector<unsigned int> &array_shape){
-
-    //BESStopWatch sw;
-    //if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + "Timer name: "+prolog, "");
-
-    // Parallel version based on read_chunks_unconstrained(). There is
-    // substantial duplication of the code in read_chunks_unconstrained(), but
-    // wait to remove that when we move to C++11 which has threads integrated.
 
     // We maintain a list  of futures to track our parallel activities.
     list<future<bool>> futures;
