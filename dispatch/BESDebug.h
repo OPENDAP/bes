@@ -39,9 +39,12 @@
 #include <iostream>
 #include <map>
 #include <string>
+#include <mutex>
 
 // Helper function for writing debug log lines
 std::string get_debug_log_line_prefix();
+
+static std::mutex bes_debug_log_mutex;
 
 #ifdef NDEBUG
 #define BESDEBUG( x, y )
@@ -59,8 +62,13 @@ std::string get_debug_log_line_prefix();
  * @param x the debug context to check
  * @param y information to send to the output stream
  */
+#if 0
+#define BESDEBUG( x, y ) do { std::unique_lock<std::mutex> lck (bes_debug_log_mutex); if( BESDebug::IsSet( x ) ) {  *(BESDebug::GetStrm()) << get_debug_log_line_prefix() << "["<< x << "] " << y; } } while( 0 )
+#else
 #define BESDEBUG( x, y ) do { if( BESDebug::IsSet( x ) ) *(BESDebug::GetStrm()) << get_debug_log_line_prefix() << "["<< x << "] " << y ; } while( 0 )
 #endif
+
+#endif // NDEBUG
 
 #ifdef NDEBUG
 #define BESISDEBUG( x ) (false)
