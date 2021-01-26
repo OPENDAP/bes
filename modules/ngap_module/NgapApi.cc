@@ -63,183 +63,102 @@ using namespace std;
 
 namespace ngap {
 
-    const string NGAP_PROVIDER_KEY("providers");
-    const string NGAP_COLLECTIONS_KEY("collections");
-    const string NGAP_CONCEPTS_KEY("concepts");
-    const string NGAP_GRANULES_KEY("granules");
-    const string DEFAULT_CMR_ENDPOINT_URL("https://cmr.earthdata.nasa.gov");
-    const string DEFAULT_CMR_SEARCH_ENDPOINT_PATH("/search/granules.umm_json_v1_4");
+#if 1
 
-    const string CMR_PROVIDER("provider");
-    const string CMR_ENTRY_TITLE("entry_title");
-    const string CMR_COLLECTION_CONCEPT_ID("collection_concept_id");
-    const string CMR_GRANULE_UR("granule_ur");
-    const string CMR_URL_TYPE_GET_DATA("GET DATA");
-
-    const string RJ_TYPE_NAMES[] = {
-            "kNullType",
-            "kFalseType",
-            "kTrueType",
-            "kObjectType",
-            "kArrayType",
-            "kStringType",
-            "kNumberType"
-    };
-
-    const string AMS_EXPIRES_HEADER_KEY("X-Amz-Expires");
-    const string AWS_DATE_HEADER_KEY("X-Amz-Date");
-    // const string AWS_DATE_FORMAT("%Y%m%dT%H%MS"); // 20200624T175046Z
-    const string CLOUDFRONT_EXPIRES_HEADER_KEY("Expires");
-    const string INGEST_TIME_KEY("ingest_time");
-    const unsigned int REFRESH_THRESHOLD = 3600; // An hour
-
-
-    NgapApi::NgapApi() : d_cmr_hostname(DEFAULT_CMR_ENDPOINT_URL), d_cmr_search_endpoint_path(DEFAULT_CMR_SEARCH_ENDPOINT_PATH) {
-        bool found;
-        string cmr_hostnamer;
-        TheBESKeys::TheKeys()->get_value(NGAP_CMR_HOSTNAME_KEY, cmr_hostnamer, found);
-        if (found) {
-            d_cmr_hostname = cmr_hostnamer;
-        }
-
-        string cmr_search_endpoint_path;
-        TheBESKeys::TheKeys()->get_value(NGAP_CMR_SEARCH_ENDPOINT_PATH_KEY, cmr_search_endpoint_path, found);
-        if (found) {
-            d_cmr_search_endpoint_path = cmr_search_endpoint_path;
-        }
-
-
-    }
-
-    std::string NgapApi::get_cmr_search_endpoint_url(){
-        return BESUtil::assemblePath(d_cmr_hostname , d_cmr_search_endpoint_path);
-    }
-
-
-#if 0
-    // OLD WAY (tokenization on '/' delimiter)
-    std::string
-    NgapApi::build_cmr_query_url(const std::string &restified_path) {
-        string data_access_url("");
-
-        vector<string> tokens;
-        BESUtil::tokenize(restified_path, tokens);
-        if (tokens.empty()) {
-            throw BESSyntaxUserError(string("The specified NGAP API path '") + restified_path +
-                                     "' failed to tokenize: No tokens were returned.", __FILE__, __LINE__);
-        }
-        if(tokens.size()!=6){
-            stringstream msg;
-            msg << prolog << "The specified NGAP API path '" << restified_path << "' was tokenized, but ";
-            msg << tokens.size() << " token(s) were found where 6 are required.";
-            throw BESSyntaxUserError(msg.str() , __FILE__, __LINE__);
-        }
-
-        // Check that the NGAP_PROVIDER_KEY token is present.
-        if (tokens[0] != NGAP_PROVIDER_KEY ) {
-            stringstream msg;
-            msg << prolog << "The specified path '" << restified_path << "'";
-            msg << "does not contain the required path element '" << NGAP_PROVIDER_KEY << "'";
-            throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
-        }
-        // Check that the NGAP_COLLECTIONS_KEY or  NGAP_CONCEPTS_KEY token is present.
-        if ((tokens[2] != NGAP_COLLECTIONS_KEY && tokens[2] != NGAP_CONCEPTS_KEY)) {
-            stringstream msg;
-            msg << prolog << "The specified path '" << restified_path << "'";
-            msg << "does not contain the expected path element '" << NGAP_COLLECTIONS_KEY << "' or it's alternate, '";
-            msg << NGAP_CONCEPTS_KEY << "'. One of these is required";
-            throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
-        }
-        // Check that the NGAP_GRANULES_KEY token is present.
-        if (tokens[4] != NGAP_GRANULES_KEY) {
-            stringstream msg;
-            msg << prolog << "The specified path '" << restified_path << "'";
-            msg << "does not contain the required path element '" << NGAP_GRANULES_KEY << "'.";
-            throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
-        }
-
-        // Build the CMR query URL for the dataset
-        string cmr_url = get_cmr_search_endpoint_url() + "?";
-        {
-            // This easy handle is only created so we can use the curl_easy_escape() on the tokens
-            CURL *ceh = curl_easy_init();
-            char *esc_url_content;
-
-            // Add provider
-            esc_url_content = curl_easy_escape(ceh, tokens[1].c_str(), tokens[1].size());
-            cmr_url += CMR_PROVIDER + "=" + esc_url_content + "&";
-            curl_free(esc_url_content);
-
-            esc_url_content = curl_easy_escape(ceh, tokens[3].c_str(), tokens[3].size());
-            if (tokens[2] == NGAP_COLLECTIONS_KEY) {
-                // Add entry_title
-                cmr_url += CMR_ENTRY_TITLE + "=" + esc_url_content + "&";
-            }
-            else if(tokens[2] == NGAP_CONCEPTS_KEY){
-                // Add collection_concept_id
-                cmr_url += CMR_COLLECTION_CONCEPT_ID + "=" + esc_url_content + "&";
-            }
-            else {
-                // Bad inputs throw an exception.
-                curl_free(esc_url_content);
-                stringstream msg;
-                msg << prolog << "The specified path '" << restified_path << "'";
-                msg << "does not contain the expected path element '" << NGAP_COLLECTIONS_KEY << "' or it's alternate '";
-                msg << NGAP_CONCEPTS_KEY << "'. One of these is required";
-                throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
-            }
-            curl_free(esc_url_content);
-
-            esc_url_content = curl_easy_escape(ceh, tokens[5].c_str(), tokens[5].size());
-            cmr_url += CMR_GRANULE_UR + "=" + esc_url_content;
-            curl_free(esc_url_content);
-            curl_easy_cleanup(ceh);
-        }
-        return cmr_url;
-    }
 #else
+const string NGAP_PROVIDERS_KEY("/providers/");
+const string NGAP_COLLECTIONS_KEY("/collections/");
+const string NGAP_CONCEPTS_KEY("/concepts/");
+const string NGAP_GRANULES_KEY("/granules/");
+const string DEFAULT_CMR_ENDPOINT_URL("https://cmr.earthdata.nasa.gov");
+const string DEFAULT_CMR_SEARCH_ENDPOINT_PATH("/search/granules.umm_json_v1_4");
+
+const string CMR_PROVIDER("provider");
+const string CMR_ENTRY_TITLE("entry_title");
+const string CMR_COLLECTION_CONCEPT_ID("collection_concept_id");
+const string CMR_GRANULE_UR("granule_ur");
+const string CMR_URL_TYPE_GET_DATA("GET DATA");
+
+const string AMS_EXPIRES_HEADER_KEY("X-Amz-Expires");
+const string AWS_DATE_HEADER_KEY("X-Amz-Date");
+// const string AWS_DATE_FORMAT("%Y%m%dT%H%MS"); // 20200624T175046Z
+const string CLOUDFRONT_EXPIRES_HEADER_KEY("Expires");
+const string INGEST_TIME_KEY("ingest_time");
+
+#endif
+const string RJ_TYPE_NAMES[] = {
+        string("kNullType"),
+        string("kFalseType"),
+        string("kTrueType"),
+        string("kObjectType"),
+        string("kArrayType"),
+        string("kStringType"),
+        string("kNumberType")
+};
+
+const unsigned int REFRESH_THRESHOLD = 3600; // An hour
+
+
+NgapApi::NgapApi() : d_cmr_hostname(DEFAULT_CMR_ENDPOINT_URL), d_cmr_search_endpoint_path(DEFAULT_CMR_SEARCH_ENDPOINT_PATH) {
+    bool found;
+    string cmr_hostname;
+    TheBESKeys::TheKeys()->get_value(NGAP_CMR_HOSTNAME_KEY, cmr_hostname, found);
+    if (found) {
+        d_cmr_hostname = cmr_hostname;
+    }
+
+    string cmr_search_endpoint_path;
+    TheBESKeys::TheKeys()->get_value(NGAP_CMR_SEARCH_ENDPOINT_PATH_KEY, cmr_search_endpoint_path, found);
+    if (found) {
+        d_cmr_search_endpoint_path = cmr_search_endpoint_path;
+    }
+
+
+}
+
+std::string NgapApi::get_cmr_search_endpoint_url(){
+    return BESUtil::assemblePath(d_cmr_hostname , d_cmr_search_endpoint_path);
+}
+
 
 
 /**
  * @brief Converts an NGAP restified path into the corresponding CMR query URL.
+ *
  * @param restified_path The resitified path to convert
  * @return The CMR query URL that will return the granules.umm_json_v1_4 from CMR for the
  * granule specified in the restified path.
  */
-std::string NgapApi::build_cmr_query_url(const std::string &restified_path) {
-    string PROVIDERS_KEY("/providers/");
-    string COLLECTIONS_KEY("/collections/");
-    string CONCEPTS_KEY("/concepts/");
-    string GRANULES_KEY("/granules/");
+std::string NgapApi::build_cmr_query_url_old_rpath_format(const std::string &restified_path) {
 
     // Make sure it starts with a '/' (see key strings above)
     string r_path = ( restified_path[0] != '/' ? "/" : "") + restified_path;
 
-    size_t provider_index  = r_path.find(PROVIDERS_KEY);
+    size_t provider_index  = r_path.find(NGAP_PROVIDERS_KEY);
     if(provider_index == string::npos){
         stringstream msg;
         msg << prolog << "The specified path '" << r_path << "'";
-        msg << " does not contain the required path element '" << NGAP_PROVIDER_KEY << "'";
+        msg << " does not contain the required path element '" << NGAP_PROVIDERS_KEY << "'";
         throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
     }
     if(provider_index != 0){
         stringstream msg;
         msg << prolog << "The specified path '" << r_path << "'";
-        msg << " has the path element '" << NGAP_PROVIDER_KEY << "' located in the incorrect position (";
+        msg << " has the path element '" << NGAP_PROVIDERS_KEY << "' located in the incorrect position (";
         msg << provider_index << ") expected 0.";
         throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
     }
-    provider_index += PROVIDERS_KEY.length();
+    provider_index += string(NGAP_PROVIDERS_KEY).length();
 
     bool use_collection_concept_id = false;
-    size_t collection_index  = r_path.find(COLLECTIONS_KEY);
+    size_t collection_index  = r_path.find(NGAP_COLLECTIONS_KEY);
     if(collection_index == string::npos) {
-        size_t concepts_index = r_path.find(CONCEPTS_KEY);
+        size_t concepts_index = r_path.find(NGAP_CONCEPTS_KEY);
         if (concepts_index == string::npos) {
             stringstream msg;
             msg << prolog << "The specified path '" << r_path << "'";
-            msg << " contains neither the '" << COLLECTIONS_KEY << "'";
-            msg << " nor the '" << CONCEPTS_KEY << "'";
+            msg << " contains neither the '" << NGAP_COLLECTIONS_KEY << "'";
+            msg << " nor the '" << NGAP_CONCEPTS_KEY << "'";
             msg << " one must be provided.";
             throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
         }
@@ -249,30 +168,30 @@ std::string NgapApi::build_cmr_query_url(const std::string &restified_path) {
     if(collection_index <= provider_index+1){  // The value of provider has to be at least 1 character
         stringstream msg;
         msg << prolog << "The specified path '" << r_path << "'";
-        msg << " has the path element '" << (use_collection_concept_id?CONCEPTS_KEY:COLLECTIONS_KEY) << "' located in the incorrect position (";
+        msg << " has the path element '" << (use_collection_concept_id?NGAP_CONCEPTS_KEY:NGAP_COLLECTIONS_KEY) << "' located in the incorrect position (";
         msg << collection_index << ") expected at least " << provider_index+1;
         throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
     }
     string provider = r_path.substr(provider_index,collection_index - provider_index);
-    collection_index += use_collection_concept_id?CONCEPTS_KEY.length():COLLECTIONS_KEY.length();
+    collection_index += use_collection_concept_id?string(NGAP_CONCEPTS_KEY).length():string(NGAP_COLLECTIONS_KEY).length();
 
 
-    size_t granule_index  = r_path.find(GRANULES_KEY);
+    size_t granule_index  = r_path.find(NGAP_GRANULES_KEY);
     if(granule_index == string::npos){
         stringstream msg;
         msg << prolog << "The specified path '" << r_path << "'";
-        msg << " does not contain the required path element '" << GRANULES_KEY << "'";
+        msg << " does not contain the required path element '" << NGAP_GRANULES_KEY << "'";
         throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
     }
     if(granule_index <= collection_index+1){ // The value of collection must have at least one character.
         stringstream msg;
         msg << prolog << "The specified path '" << r_path << "'";
-        msg << " has the path element '" << GRANULES_KEY << "' located in the incorrect position (";
+        msg << " has the path element '" << NGAP_GRANULES_KEY << "' located in the incorrect position (";
         msg << granule_index << ") expected at least " << collection_index+1;
         throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
     }
     string collection = r_path.substr(collection_index,granule_index - collection_index);
-    granule_index += GRANULES_KEY.length();
+    granule_index += string(NGAP_GRANULES_KEY).length();
 
     // The granule value is the path terminus so it's every thing after the key
     string granule = r_path.substr(granule_index);
@@ -286,30 +205,132 @@ std::string NgapApi::build_cmr_query_url(const std::string &restified_path) {
 
         // Add provider
         esc_url_content = curl_easy_escape(ceh, provider.c_str(), provider.size());
-        cmr_url += CMR_PROVIDER + "=" + esc_url_content + "&";
+        cmr_url += string(CMR_PROVIDER).append("=").append(esc_url_content).append("&");
         curl_free(esc_url_content);
 
         esc_url_content = curl_easy_escape(ceh, collection.c_str(), collection.size());
         if(use_collection_concept_id){
             // Add collection_concept_id
-            cmr_url += CMR_COLLECTION_CONCEPT_ID + "=" + esc_url_content + "&";
+            cmr_url += string(CMR_COLLECTION_CONCEPT_ID).append("=").append(esc_url_content).append("&");
         }
         else {
             // Add entry_title
-            cmr_url += CMR_ENTRY_TITLE + "=" + esc_url_content + "&";
+            cmr_url += string(CMR_ENTRY_TITLE).append("=").append(esc_url_content).append("&");
 
         }
         curl_free(esc_url_content);
 
         esc_url_content = curl_easy_escape(ceh, granule.c_str(), granule.size());
-        cmr_url += CMR_GRANULE_UR + "=" + esc_url_content;
+        cmr_url += string(CMR_GRANULE_UR).append("=").append(esc_url_content);
         curl_free(esc_url_content);
 
         curl_easy_cleanup(ceh);
     }
     return cmr_url;
 }
-#endif
+
+/**
+ * @brief Converts an NGAP restified path into the corresponding CMR query URL.
+ *
+ * There are two mandatory and one optional query parameters in the URL
+ *   MANDATORY: " /collections/UMM-C:{concept-id} "
+ *   OPTIONAL:  "/UMM-C:{ShortName} '.' UMM-C:{Version} "
+ *   MANDATORY: "/granules/UMM-G:{GranuleUR}"
+ * Example:
+ * https://opendap.earthdata.nasa.gov/collections/C1443727145-LAADS/MOD08_D3.v6.1/granules/MOD08_D3.A2020308.061.2020309092644.hdf.nc
+ *
+ * More Info Here: https://wiki.earthdata.nasa.gov/display/DUTRAIN/Feature+analysis%3A+Restified+URL+for+OPENDAP+Data+Access
+ *
+ * @param restified_path The resitified path to convert
+ * @return The CMR query URL that will return the granules.umm_json_v1_4 from CMR for the
+ * granule specified in the restified path.
+ */
+std::string NgapApi::build_cmr_query_url(const std::string &restified_path) {
+
+    // Make sure it starts with a '/' (see key strings above)
+    string r_path = ( restified_path[0] != '/' ? "/" : "") + restified_path;
+
+    size_t provider_index  = r_path.find(NGAP_PROVIDERS_KEY);
+    if(provider_index != string::npos){
+        return build_cmr_query_url_old_rpath_format(restified_path);
+    }
+
+    size_t collections_key_index  = r_path.find(NGAP_COLLECTIONS_KEY);
+    if(collections_key_index == string::npos) {
+        stringstream msg;
+        msg << prolog << "The specified path '" << r_path << "'";
+        msg << " contains neither the '" << NGAP_COLLECTIONS_KEY << "'";
+        msg << " nor the '" << NGAP_CONCEPTS_KEY << "'";
+        msg << " one must be provided.";
+        throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+    }
+    if(collections_key_index != 0){  // The COLLECTIONS_KEY comes first
+        stringstream msg;
+        msg << prolog << "The specified path '" << r_path << "'";
+        msg << " has the path element '" << NGAP_COLLECTIONS_KEY << "' located in the incorrect position (";
+        msg << collections_key_index << ") expected at least " << provider_index + 1;
+        throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+    }
+    // This is now the beginning of the collection_concept_id value.
+    size_t collections_index =  collections_key_index + string(NGAP_COLLECTIONS_KEY).length();
+
+    size_t granules_key_index  = r_path.find(NGAP_GRANULES_KEY);
+    if(granules_key_index == string::npos){
+        stringstream msg;
+        msg << prolog << "The specified path '" << r_path << "'";
+        msg << " does not contain the required path element '" << NGAP_GRANULES_KEY << "'";
+        throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+    }
+
+    // The collection key must precede the granules key in the path,
+    // and the collection name must have at least one character.
+    if(granules_key_index <= collections_index + 1){
+        stringstream msg;
+        msg << prolog << "The specified path '" << r_path << "'";
+        msg << " has the path element '" << NGAP_GRANULES_KEY << "' located in the incorrect position (";
+        msg << granules_key_index << ") expected at least " << collections_index + 1;
+        throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+    }
+    size_t granules_index =  granules_key_index + string(NGAP_GRANULES_KEY).length();
+    // The granule_name value is the path terminus so it's every thing after the key
+    string granule_name = r_path.substr(granules_index);
+
+    // Now we need to work on the collections value to eliminate the optional parts.
+    // This is the entire collections string including any optional components.
+    string collection_name = r_path.substr(collections_index, granules_key_index - collections_index);
+
+    // Since there may be optional parameters we need to strip them off to get the collection_concept_id
+    // And, since we know that collection_concept_id will never contain a '/', and we know that the optional
+    // part is separated from the collection_concept_id by a '/' we look for that and of we find it we truncate
+    // the value at that spot.
+    string optional_part;
+    size_t slash_pos  = collection_name.find('/');
+    if(slash_pos != string::npos){
+        optional_part = collection_name.substr(slash_pos);
+        BESDEBUG(MODULE, prolog << "Found optional collections name component: " << optional_part << endl);
+        collection_name = collection_name.substr(0,slash_pos);
+    }
+    BESDEBUG(MODULE, prolog << "Found collection_name (aka collection_concept_id): " << collection_name << endl);
+
+    // Build the CMR query URL for the dataset
+    string cmr_url = get_cmr_search_endpoint_url() + "?";
+    {
+        // This easy handle is only created so we can use the curl_easy_escape() on the token values
+        CURL *ceh = curl_easy_init();
+        char *esc_url_content;
+
+        esc_url_content = curl_easy_escape(ceh, collection_name.c_str(), collection_name.size());
+        cmr_url += string(CMR_COLLECTION_CONCEPT_ID).append("=").append(esc_url_content).append("&");
+        curl_free(esc_url_content);
+
+        esc_url_content = curl_easy_escape(ceh, granule_name.c_str(), granule_name.size());
+        cmr_url += string(CMR_GRANULE_UR).append("=").append(esc_url_content);
+        curl_free(esc_url_content);
+
+        curl_easy_cleanup(ceh);
+    }
+    return cmr_url;
+}
 
 /**
  * @brief  Locates the "GET DATA" URL for a granule in the granules.umm_json_v1_4 document.
@@ -324,7 +345,7 @@ std::string NgapApi::build_cmr_query_url(const std::string &restified_path) {
 std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::string &restified_path, rapidjson::Document &cmr_granule_response)
 {
 
-    string data_access_url("");
+    string data_access_url;
 
     rapidjson::Value &val = cmr_granule_response["hits"];
     int hits = val.GetInt();
@@ -393,7 +414,7 @@ std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::stri
                                     " Type: '" << r_type.GetString() << "'" <<
                                     " SubType: '" << (noSubtype ? "Absent" : "Present") << "'" << endl);
 
-            if ((r_type.GetString() == CMR_URL_TYPE_GET_DATA) && noSubtype) {
+            if ((r_type.GetString() == string(CMR_URL_TYPE_GET_DATA)) && noSubtype) {
                 data_access_url = r_url.GetString();
             }
         }
@@ -436,7 +457,7 @@ std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::stri
             const std::string &uid
             ) {
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
-        string data_access_url("");
+        string data_access_url;
 
         string cmr_query_url = build_cmr_query_url(restified_path);
 
@@ -542,7 +563,7 @@ std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::stri
 
     vector<string> tokens;
     BESUtil::tokenize(real_name,tokens);
-    if( tokens[0]!= NGAP_PROVIDER_KEY || tokens[2]!=NGAP_DATASETS_KEY || tokens[4]!=NGAP_GRANULES_KEY){
+    if( tokens[0]!= NGAP_PROVIDERS_KEY || tokens[2]!=NGAP_DATASETS_KEY || tokens[4]!=NGAP_GRANULES_KEY){
         string err = (string) "The specified path " + real_name
                      + " does not conform to the NGAP request interface API.";
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
