@@ -165,9 +165,9 @@ public:
 
         string expected_cmr_url(
                 "https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4"
-                "?provider=POCLOUD"
-                "&entry_title=Sentinel-6A%20MF%2FJason-CS%20L2%20Advanced%20Microwave%20Radiometer%20%28AMR-C%29%20NRT%20Geophysical%20Parameters"
-                "&granule_ur=S6A_MW_2__AMR_____NR_001_227_20201130T133814_20201130T153340_F00"
+                "?" CMR_PROVIDER "=POCLOUD"
+                "&" CMR_ENTRY_TITLE "=Sentinel-6A%20MF%2FJason-CS%20L2%20Advanced%20Microwave%20Radiometer%20%28AMR-C%29%20NRT%20Geophysical%20Parameters"
+                "&" CMR_GRANULE_UR "=S6A_MW_2__AMR_____NR_001_227_20201130T133814_20201130T153340_F00"
         );
         try {
             string cmr_query_url;
