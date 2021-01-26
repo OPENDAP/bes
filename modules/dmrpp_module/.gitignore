@@ -20,3 +20,5 @@
 /unit-tests/Chunk.Tpo
 /unit-tests/CredentialsManager.Tpo
 /unit-tests/DmrppRequestHandler.Tpo
+
+/tests_build_dmrpp/testsuite_dmrpp_tests
