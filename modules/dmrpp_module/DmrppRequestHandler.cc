@@ -146,7 +146,7 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
         msg << "Disabled." << endl;
     }
     // BESDEBUG(MODULE, msg.str());
-    // INFO_LOG(msg.str() );
+    INFO_LOG(msg.str() );
     msg.str(std::string());
 
     read_key_value(DMRPP_USE_COMPUTE_THREADS_KEY, d_use_compute_threads);
@@ -159,7 +159,7 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
         msg << "Disabled." << endl;
     }
     // BESDEBUG(MODULE, msg.str());
-    // INFO_LOG(msg.str() );
+    INFO_LOG(msg.str() );
     msg.str(std::string());
 
 

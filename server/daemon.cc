@@ -1116,6 +1116,17 @@ int main(int argc, char *argv[])
 
         store_daemon_id(getpid());
 
+        if (curr_euid == 0) {
+#ifdef BES_DEVELOPER
+            cerr << "Developer Mode: Running as root - setting group and user ids" << endl;
+#endif
+            set_group_id();
+            set_user_id();
+        }
+        else {
+            cerr << "Developer Mode: Not setting group or user ids" << endl;
+        }
+
         register_signal_handlers();
 
         // Load the modules in the conf file(s) so that the debug (log) contexts
@@ -1132,16 +1143,6 @@ int main(int argc, char *argv[])
         BESDebug::Register("server");
         BESDebug::Register("ppt");
 
-        if (curr_euid == 0) {
-#ifdef BES_DEVELOPER
-            cerr << "Developer Mode: Running as root - setting group and user ids" << endl;
-#endif
-            set_group_id();
-            set_user_id();
-        }
-        else {
-            cerr << "Developer Mode: Not setting group or user ids" << endl;
-        }
 
         // The stuff in global_args is used whenever a call to start_master_beslistener()
         // is made, so any time the BESDebug contexts are changed, a change to the
