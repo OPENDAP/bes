@@ -650,7 +650,7 @@ bool TheBESKeys::using_dynamic_config(){
 
 
 /**
- *
+ * @brief Loads the the applicable dynamic configuration or nothing if no configuration is applicable.
  * @param name
  */
 void TheBESKeys::load_dynamic_config(const string name)
@@ -737,7 +737,7 @@ void TheBESKeys::load_dynamic_config(const string name)
         stringstream msg;
         msg << prolog << "Using " << DYNAMIC_CONFIG_KEY << ":" << best_matching_config_name << " for: " << name << endl;
         BESDEBUG(MODULE, msg.str());
-        LOG( msg.str());
+        INFO_LOG( msg.str());
     }
 
     // Now load the specific keys from the dynamic config;

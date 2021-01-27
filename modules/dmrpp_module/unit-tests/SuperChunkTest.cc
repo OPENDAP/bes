@@ -39,6 +39,8 @@
 #include "BESDebug.h"
 #include "TheBESKeys.h"
 
+#include "DmrppArray.h"
+#include "DmrppByte.h"
 #include "DmrppRequestHandler.h"
 #include "Chunk.h"
 #include "SuperChunk.h"
@@ -85,8 +87,8 @@ public:
         if (bes_debug) BESDebug::SetUp("cerr,bes,http,curl,dmrpp");
 
         unsigned long long int max_threads = 8;
-        dmrpp::DmrppRequestHandler::d_use_parallel_transfers = true;
-        dmrpp::DmrppRequestHandler::d_max_parallel_transfers = max_threads;
+        dmrpp::DmrppRequestHandler::d_use_transfer_threads = true;
+        dmrpp::DmrppRequestHandler::d_max_transfer_threads = max_threads;
         auto foo = new dmrpp::DmrppRequestHandler("Chaos");
 
     }
@@ -108,11 +110,11 @@ public:
             DBG( cerr << prolog << "Creating: shared_ptr<Chunk> c1" << endl);
             shared_ptr<Chunk> c1(new Chunk(data_url, "", 1000,0,chunk_position_in_array));
             {
-                SuperChunk sc;
+                SuperChunk sc(prolog);
                 DBG( cerr << prolog << "Adding c1 to SuperChunk" << endl);
                 sc.add_chunk(c1);
-                DBG( cerr << prolog << "Calling SuperChunk::read()" << endl);
-                sc.read();
+                DBG( cerr << prolog << "Calling SuperChunk::retrieve_data()" << endl);
+                sc.retrieve_data();
             }
 
         }
@@ -133,6 +135,7 @@ public:
         }
         DBG( cerr << prolog << "END" << endl);
     }
+
     void sc_chunks_test_01() {
         DBG(cerr << prolog << "BEGIN" << endl);
 
@@ -149,7 +152,7 @@ public:
             shared_ptr<Chunk> c4(new Chunk(data_url, "", 100000,300000,chunk_position_in_array));
 
             {
-                SuperChunk sc;
+                SuperChunk sc(prolog);
                 bool chunk_was_added;
                 chunk_was_added = sc.add_chunk(c1);
                 DBG( cerr << prolog << "Chunk c1 was "<< (chunk_was_added?"":"NOT ") << "added to SuperChunk" << endl);
@@ -168,12 +171,7 @@ public:
                 CPPUNIT_ASSERT(chunk_was_added);
 
                 // Read the data
-                sc.read();
-
-                for(auto chunk:sc.get_chunks()){
-
-                }
-
+                sc.retrieve_data();
 
             }
 
@@ -223,11 +221,12 @@ public:
             shared_ptr<Chunk> t2(new Chunk(data_url, "", 100, 1006, chunk_position_in_array));
 #endif
             {
-                SuperChunk word_a;
-                SuperChunk word_test;
+
+                SuperChunk word_a(prolog+"word_a");
+                SuperChunk word_test(prolog+"word_test");
                 bool chunk_was_added;
 
-                SuperChunk word_this;
+                SuperChunk word_this(prolog+"word_this");
                 chunk_was_added = word_this.add_chunk(T0);
                 DBG( cerr << prolog << "Chunk T0 was "<< (chunk_was_added?"":"NOT ") << "added to SuperChunk word_this" << endl);
                 CPPUNIT_ASSERT(chunk_was_added);
@@ -249,7 +248,7 @@ public:
                 DBG( cerr << prolog << "Chunk i1 was "<< (chunk_was_added?"":"NOT ") << "added to SuperChunk word_this" << endl);
                 CPPUNIT_ASSERT(!chunk_was_added);
 
-                word_this.read();
+                word_this.retrieve_data();
                 char target_this[] = "This";
                 size_t letter_index=0;
                 for(const auto& chunk: word_this.get_chunks()) {
@@ -265,8 +264,7 @@ public:
                     }
                     letter_index++;
                 }
-
-                SuperChunk word_is;
+                SuperChunk word_is(prolog+"word_is");
                 chunk_was_added = word_is.add_chunk(i1);
                 DBG( cerr << prolog << "Chunk i1 was "<< (chunk_was_added?"":"NOT ") << "added to SuperChunk word_is" << endl);
                 CPPUNIT_ASSERT(chunk_was_added);
@@ -280,7 +278,7 @@ public:
                 DBG( cerr << prolog << "Chunk a0 was "<< (chunk_was_added?"":"NOT ") << "added to SuperChunk word_is" << endl);
                 CPPUNIT_ASSERT(!chunk_was_added);
 
-                word_is.read();
+                word_is.retrieve_data();
                 char target_is[] = "is";
                 letter_index=0;
                 for(const auto& chunk: word_is.get_chunks()) {

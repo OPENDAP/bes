@@ -211,6 +211,7 @@ BESStopWatch::~BESStopWatch()
 #endif
         d_stopped = true;
             if (BESDebug::GetStrm()) {
+                std::unique_lock<std::mutex> lck (bes_debug_log_mutex);
                 std::stringstream msg;
                 msg << get_debug_log_line_prefix();
                 msg << "[" << d_log_name << "]";
