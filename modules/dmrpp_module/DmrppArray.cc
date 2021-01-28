@@ -723,7 +723,7 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
     }
 }
 
-void DmrppArray::read_contiguous_sc() {
+void DmrppArray::read_contiguous() {
     BESStopWatch sw;
     if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+name(), "");
 
@@ -791,7 +791,21 @@ void DmrppArray::read_contiguous_sc() {
                 super_chunk.add_chunk(last_chunk);
             }
         }
-        super_chunk.read_unconstrained();
+
+        if (!is_projected()) {  // if there is no projection constraint
+            // Reserve space in this array for the constrained size of the data request
+            reserve_value_capacity(get_size(true));
+            super_chunk.read_unconstrained();      // yes, it's not type-safe
+        }
+        else {
+            vector<unsigned int> array_shape = get_shape(false);
+            // Reserve space in this array for the constrained size of the data request
+            reserve_value_capacity(get_size(true));
+            unsigned long target_index = 0;
+            vector<unsigned int> subset;
+            super_chunk.read();
+        }
+
         master_chunk->set_is_read(true);
         set_read_p(true);
     }
@@ -820,7 +834,7 @@ void DmrppArray::read_contiguous_sc() {
  *
  * @return Always returns true, matching the libdap::Array::read() behavior.
  */
-void DmrppArray::read_contiguous()
+void DmrppArray::read_contiguous_sc()
 {
     BESStopWatch sw;
     if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+name(), "");

@@ -108,6 +108,7 @@ public:
         tiat.append_dim(target_file_size,"test_dim");
         tiat.set_shuffle(false);
         tiat.set_deflate(false);
+
         vector<size_t> chunk_dim_sizes = {1};
         tiat.set_chunk_dimension_sizes(chunk_dim_sizes);
         vector<unsigned int> position_in_array;
