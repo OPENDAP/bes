@@ -753,6 +753,19 @@ void DmrppArray::read_contiguous_sc() {
     if (!DmrppRequestHandler::d_use_transfer_threads || master_chunk_size <= DmrppRequestHandler::d_contiguous_concurrent_threshold) {
         // Else read the master_chunk as is. This is the non-parallel I/O case
         master_chunk->read_chunk();
+        // 'master_chunk' now holds the data. Transfer it to the Array.
+        if (!is_projected()) {  // if there is no projection constraint
+            val2buf(master_chunk->get_rbuf());      // yes, it's not type-safe
+        }
+        else {                  // apply the constraint
+            vector<unsigned int> array_shape = get_shape(false);
+
+            // Reserve space in this array for the constrained size of the data request
+            reserve_value_capacity(get_size(true));
+            unsigned long target_index = 0;
+            vector<unsigned int> subset;
+            insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, master_chunk->get_rbuf());
+        }
     }
     else {
 
@@ -804,6 +817,7 @@ void DmrppArray::read_contiguous_sc() {
             // Reserve space in this array for the constrained size of the data request
             reserve_value_capacity(get_size(true));
             super_chunk.read_unconstrained();      // yes, it's not type-safe
+            master_chunk->set_is_read(true);
         }
         else {
             vector<unsigned int> array_shape = get_shape(false);
@@ -812,9 +826,8 @@ void DmrppArray::read_contiguous_sc() {
             unsigned long target_index = 0;
             vector<unsigned int> subset;
             super_chunk.read();
+            master_chunk->set_is_read(true);
         }
-
-        master_chunk->set_is_read(true);
         set_read_p(true);
     }
 
