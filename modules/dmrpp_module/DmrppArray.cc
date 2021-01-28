@@ -731,7 +731,7 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
  * And it does so using a SuperChunk object populated with programatically
  * created child chunks, braking up the variable for concurrent retrieval.
  */
-void DmrppArray::read_contiguous() {
+void DmrppArray::read_contiguous_sc() {
     BESStopWatch sw;
     if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+name(), "");
 
@@ -842,7 +842,7 @@ void DmrppArray::read_contiguous() {
  *
  * @return Always returns true, matching the libdap::Array::read() behavior.
  */
-void DmrppArray::read_contiguous_sc()
+void DmrppArray::read_contiguous()
 {
     BESStopWatch sw;
     if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+name(), "");
@@ -1632,7 +1632,7 @@ bool DmrppArray::read()
 
     if (get_immutable_chunks().size() == 1) { // Removed: || get_chunk_dimension_sizes().empty()) {
         BESDEBUG(dmrpp_4, "Calling read_contiguous() for " << name() << endl);
-        read_contiguous();    // Throws on various errors
+        read_contiguous_sc();    // Throws on various errors
     }
     else {  // Handle the more complex case where the data is chunked.
         if (!is_projected()) {
