@@ -79,6 +79,7 @@ private:
                                        const std::vector<unsigned int> &array_shape, char *data);
 
     void read_contiguous();
+    void read_contiguous_sc();
 
 #ifdef USE_READ_SERIAL
     virtual void insert_chunk_serial(unsigned int dim, std::vector<unsigned int> *target_element_address,
@@ -86,6 +87,7 @@ private:
     virtual void read_chunks_serial();
 #endif
 
+    friend class DmrppArrayTest;
     // Called from read_chunks_unconstrained() and also using pthreads
     friend void
     process_one_chunk_unconstrained(std::shared_ptr<Chunk> chunk, const vector<unsigned int> &chunk_shape,
