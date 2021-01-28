@@ -723,6 +723,14 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
     }
 }
 
+
+
+/**
+ * @brief Reads the data for an array in HDF5_CONTIGUOUS layout.
+ *
+ * And it does so using a SuperChunk object populated with programatically
+ * created child chunks, braking up the variable for concurrent retrieval.
+ */
 void DmrppArray::read_contiguous() {
     BESStopWatch sw;
     if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+name(), "");
@@ -758,7 +766,7 @@ void DmrppArray::read_contiguous() {
         }
         master_chunk->set_rbuf_to_size();
 
-        unsigned long long chunk_start = master_chunk->get_offset();
+        unsigned long long current_chunk_start = master_chunk->get_offset();
         unsigned long long chunk_size = master_chunk_size / DmrppRequestHandler::d_max_transfer_threads;
 
         SuperChunk super_chunk(prolog,this);
@@ -766,28 +774,28 @@ void DmrppArray::read_contiguous() {
         for(chunk_index=0; chunk_index< DmrppRequestHandler::d_max_transfer_threads; chunk_index++){
             vector<unsigned int> position_in_array;
             position_in_array.push_back(chunk_index);
-            BESDEBUG(dmrpp_3, prolog << "chunks[" << chunk_index << "]  chunk_start: " << chunk_start << " chunk_size: "
-                     << chunk_size << endl);
-            std::shared_ptr<Chunk> chunk(new Chunk(master_chunk->get_data_url(), master_chunk->get_byte_order(), chunk_size, chunk_start, position_in_array));
+            BESDEBUG(dmrpp_3, prolog << "chunks[" << chunk_index << "]  current_chunk_start: " << current_chunk_start << " chunk_size: "
+                                     << chunk_size << endl);
+            std::shared_ptr<Chunk> chunk(new Chunk(master_chunk->get_data_url(), master_chunk->get_byte_order(), chunk_size, current_chunk_start, position_in_array));
             super_chunk.add_chunk(chunk);
-            chunk_start += chunk_size;
+            current_chunk_start += chunk_size;
         }
 
         if (master_chunk->get_size() % chunk_size) {
             // So there's a remainder and we should make a final chunk for it too.
-            size_t last_chunk_size = master_chunk->get_size() - chunk_start;
+            size_t last_chunk_size = master_chunk->get_size() - current_chunk_start;
 
             BESDEBUG(dmrpp_3, prolog << "Remainder chunk! target_size: " << chunk_size << "  index: " << chunk_index
-                     << " last_chunk_start: " << chunk_start << " last_chunk_size: " << last_chunk_size << endl);
+                                     << " last_chunk_start: " << current_chunk_start << " last_chunk_size: " << last_chunk_size << endl);
 
             if (last_chunk_size > 0) {
                 vector<unsigned int> position_in_array;
                 position_in_array.push_back(chunk_index);
 
-               BESDEBUG(dmrpp_3, prolog << "chunks[" << chunk_index << "]  chunk_start: " << chunk_start <<
-               " chunk_size: " << last_chunk_size << endl);
+               BESDEBUG(dmrpp_3, prolog << "chunks[" << chunk_index << "]  current_chunk_start: " << current_chunk_start <<
+                                        " chunk_size: " << last_chunk_size << endl);
 
-                std::shared_ptr<Chunk> last_chunk(new Chunk(master_chunk->get_data_url(), master_chunk->get_byte_order(), last_chunk_size, chunk_start, position_in_array));
+                std::shared_ptr<Chunk> last_chunk(new Chunk(master_chunk->get_data_url(), master_chunk->get_byte_order(), last_chunk_size, current_chunk_start, position_in_array));
                 super_chunk.add_chunk(last_chunk);
             }
         }
