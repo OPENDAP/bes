@@ -163,8 +163,8 @@ public:
      *
      * @return The number of elements; multiply by element size to get the number of bytes.
      */
-    virtual unsigned long long get_chunk_size_in_elements() const {
-        unsigned long long elements = 1;
+    virtual unsigned int get_chunk_size_in_elements() const {
+        unsigned int elements = 1;
         for (auto d_chunk_dimension_size : d_chunk_dimension_sizes) {
             elements *= d_chunk_dimension_size;
         }
