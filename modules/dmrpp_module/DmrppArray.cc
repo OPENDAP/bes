@@ -838,7 +838,7 @@ void DmrppArray::read_contiguous() {
             master_chunk->set_is_read(true);
         }
         else {
-            vector<unsigned int> array_shape = get_shape(false);
+            vector<unsigned int> array_shape = get_shape(true);
             // Reserve space in this array for the constrained size of the data request
             reserve_value_capacity(get_size(true));
             unsigned long target_index = 0;
