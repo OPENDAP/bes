@@ -723,6 +723,7 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
     }
 }
 
+# if 1
 
 /**
  * @brief Read an array that is stored using one 'chunk' (HDF5_CONTIGUOUS layout)
@@ -784,7 +785,7 @@ void DmrppArray::read_contiguous() {
     else {
         // This is the parallel processing case.
 
-        // We know that HDF CONTIGUOUS layout arrays may never be shuffled or compressed, but we check just in
+        // We know that HDF5 CONTIGUOUS layout arrays may never be shuffled or compressed, but we check just in
         // case because if either is true the result will be super sad.
         if(is_deflate_compression() || is_shuffle_compression()){
             stringstream msg;
@@ -833,7 +834,7 @@ void DmrppArray::read_contiguous() {
         if (!is_projected()) {  // if there is no projection constraint
             // Reserve space in this array for the constrained size of the data request
             reserve_value_capacity(get_size(true));
-            super_chunk.read_unconstrained();      // yes, it's not type-safe
+            super_chunk.read_unconstrained();
             master_chunk->set_is_read(true);
         }
         else {
@@ -850,7 +851,7 @@ void DmrppArray::read_contiguous() {
 
 }
 
-#if 0
+#else
 /**
  * @brief Read an array that is stored using one 'chunk.'
  *
