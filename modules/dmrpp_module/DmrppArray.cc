@@ -777,156 +777,8 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
     }
 }
 
-#if 0
-// The SuperChunk version that did not work.
-/**
- * @brief Read an array that is stored using one 'chunk' (HDF5_CONTIGUOUS layout)
- *
- * If parallel transfers are enabled in the BES configuration files, this
- * method will split a contiguous (hdf5) variable, which the DMR++ describes
- * as using one chunk, into a number of 'child' chunks. It will transfer those in
- * parallel. Once all of the chunks have been received they are assembeled into
- * the array value. There is no need for decompress or shu]ffle step because these
- * HDF5 filters are forbidden for the HDF5_CONTIGUOUS layout.
- *
- * If the size of the contiguous variable is < 2MB, or if parallel transfers are
- * not enabled, the chunk is transferred in one I/O operation.
- *
- * @todo This code should be tested to make sure that an access that requires
- * authentication which then fails is properly handled. All the threads will
- * need to be stopped. Also, an auth that succeeds _may_ need to be restarted.
- *
- * @return Always returns true, matching the libdap::Array::read() behavior.
- */
-void DmrppArray::read_contiguous() {
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+name(), "");
-
-    // These first four lines reproduce DmrppCommon::read_atomic(). The call
-    // to Chunk::inflate_chunk() handles 'contiguous' data that are compressed.
-    // And since we need the chunk, I copied the read_atomic code here.
-
-    auto chunk_refs = get_chunks();
-
-    if (chunk_refs.size() != 1)
-        throw BESInternalError(string("Expected only a single chunk for variable ") + name(), __FILE__, __LINE__);
-
-    // This is the original chunk for this 'contiguous' variable.
-    auto master_chunk = chunk_refs[0];
-
-    unsigned long long master_chunk_size = master_chunk->get_size();
-
-
-    DmrppArray *download_target = this;
-
-
-    if(is_projected()){
-        master_chunk->set_rbuf_to_size();
-        download_target = new DmrppArray("dummy_download_array",prototype());
-        download_target->set_deflate(false);
-        download_target->set_shuffle(false);
-        Dim_iter ditr = dim_begin();
-        while(ditr!=dim_end()){
-            download_target->append_dim(ditr->size,ditr->name);
-        }
-        download_target->reserve_value_capacity(get_size(true));
-        master_chunk->se
-    }
-
-
-
-    // Do we want to read the chunk in parallel?
-    if (!DmrppRequestHandler::d_use_transfer_threads || master_chunk_size <= DmrppRequestHandler::d_contiguous_concurrent_threshold) {
-        // Nope, now we're just going to read the master_chunk as is. This is the non-parallel I/O case
-        master_chunk->read_chunk();
-
-        // 'master_chunk' now holds the data. Transfer it to the Array.
-        if (!is_projected()) {  // if there is no projection constraint
-            val2buf(master_chunk->get_rbuf());      // yes, it's not type-safe
-        }
-        else {
-            // apply the constraint
-            vector<unsigned int> array_shape = get_shape(false);
-
-            // Reserve space in this array for the constrained size of the data request
-            reserve_value_capacity(get_size(true));
-            unsigned long target_index = 0;
-            vector<unsigned int> subset;
-            insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, master_chunk->get_rbuf());
-        }
-    }
-    else {
-        // This is the parallel processing case.
-
-        // We know that HDF5 CONTIGUOUS layout arrays may never be shuffled or compressed, but we check just in
-        // case because if either is true the result will be super sad.
-        if(is_deflate_compression() || is_shuffle_compression()){
-            stringstream msg;
-            msg << prolog << "The DmrppArray " << name() << " is marked as a CONTIGUOUS storage type and is also ";
-            msg << "marked with deflate_compression: " << (is_deflate_compression()?"true":"false") << " and";
-            msg << " shuffle_compression: " << (is_shuffle_compression()?"true":"false") ;
-            msg << " This is an unsupported state and is FORBIDDEN.";
-            throw BESInternalError(msg.str(), __FILE__, __LINE__);
-        }
-
-        unsigned long long current_chunk_start = master_chunk->get_offset();
-        unsigned long long chunk_size = master_chunk_size / DmrppRequestHandler::d_max_transfer_threads;
-
-        SuperChunk super_chunk(prolog+name(),download_target);
-        unsigned int chunk_index;
-        for(chunk_index=0; chunk_index< DmrppRequestHandler::d_max_transfer_threads; chunk_index++){
-            vector<unsigned int> position_in_array;
-            position_in_array.push_back(chunk_index);
-            BESDEBUG(dmrpp_3, prolog << "chunks[" << chunk_index << "]  current_chunk_start: " << current_chunk_start << " chunk_size: "
-                                     << chunk_size << endl);
-            std::shared_ptr<Chunk> chunk(new Chunk(master_chunk->get_data_url(), master_chunk->get_byte_order(), chunk_size, current_chunk_start, position_in_array));
-            super_chunk.add_chunk(chunk);
-            current_chunk_start += chunk_size;
-        }
-
-        // Deal with the remainder chunk if there is one
-        if (master_chunk->get_size() % chunk_size) {
-            // So there's a remainder and we should make a final chunk for it too.
-            size_t last_chunk_size = master_chunk->get_size() - current_chunk_start;
-
-            BESDEBUG(dmrpp_3, prolog << "Remainder chunk! target_size: " << chunk_size << "  index: " << chunk_index
-                                     << " last_chunk_start: " << current_chunk_start << " last_chunk_size: " << last_chunk_size << endl);
-
-            if (last_chunk_size > 0) {
-                vector<unsigned int> position_in_array;
-                position_in_array.push_back(chunk_index);
-
-               BESDEBUG(dmrpp_3, prolog << "chunks[" << chunk_index << "]  current_chunk_start: " << current_chunk_start <<
-                                        " chunk_size: " << last_chunk_size << endl);
-
-                std::shared_ptr<Chunk> last_chunk(new Chunk(master_chunk->get_data_url(), master_chunk->get_byte_order(), last_chunk_size, current_chunk_start, position_in_array));
-                super_chunk.add_chunk(last_chunk);
-            }
-        }
-
-        if (!is_projected()) {  // if there is no projection constraint
-            // Reserve space in this array for the unconstrained size of the data request
-            reserve_value_capacity(get_size(true));
-            super_chunk.read_unconstrained();
-            master_chunk->set_is_read(true);
-        }
-        else {
-            vector<unsigned int> array_shape = get_shape(false);
-            // Reserve space in this array for the constrained size of the data request
-            reserve_value_capacity(get_size(true));
-            unsigned long target_index = 0;
-            vector<unsigned int> subset;
-            super_chunk.read();
-            master_chunk->set_is_read(true);
-        }
-    }
-    set_read_p(true);
-
-}
-#endif
-
 #if 1
-// New read_contiguous(), now with std::async() and std::future !!
+// New read_contiguous(), now with std::async() and std::future
 /**
  * @brief Read an array that is stored using one 'chunk.'
  *
@@ -1007,11 +859,12 @@ void DmrppArray::read_contiguous()
         // Setup a queue to break up the original master_chunk and keep track of the pieces
         queue<shared_ptr<Chunk>> chunks_to_read;
 
+        // Make the Chunk objects
         for (unsigned int i = 0; i < num_chunks - 1; i++) {
             chunks_to_read.push(shared_ptr<Chunk>(
                     new Chunk(chunk_url, chunk_byteorder, chunk_size, (chunk_size * i) + chunk_offset)));
         }
-        // See above for details about chunk_remainder. jhrg 9/21/19
+        // Make the the remainder Chunk, see above for details about chunk_remainder. jhrg 9/21/19
         chunks_to_read.push(shared_ptr<Chunk>(new Chunk(chunk_url, chunk_byteorder, chunk_size + chunk_remainder,
                                                         (chunk_size * (num_chunks - 1)) + chunk_offset)));
 
@@ -1069,7 +922,7 @@ void DmrppArray::read_contiguous()
         }
     }
 
-    // 'master_chunk' now holds the data. Transfer it to the Array.
+    // The 'master_chunk' now holds the data values. Transfer it to the Array.
     if (!is_projected()) {  // if there is no projection constraint
         val2buf(master_chunk->get_rbuf());      // yes, it's not type-safe
     }
