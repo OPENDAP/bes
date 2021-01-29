@@ -845,8 +845,8 @@ void DmrppArray::read_contiguous() {
             super_chunk.read();
             master_chunk->set_is_read(true);
         }
-        set_read_p(true);
     }
+    set_read_p(true);
 
 }
 
