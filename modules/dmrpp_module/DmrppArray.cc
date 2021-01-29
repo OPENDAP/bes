@@ -724,14 +724,26 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
 }
 
 
-
 /**
- * @brief Reads the data for an array in HDF5_CONTIGUOUS layout.
+ * @brief Read an array that is stored using one 'chunk' (HDF5_CONTIGUOUS layout)
  *
- * And it does so using a SuperChunk object populated with programatically
- * created child chunks, braking up the variable for concurrent retrieval.
+ * If parallel transfers are enabled in the BES configuration files, this
+ * method will split a contiguous (hdf5) variable, which the DMR++ describes
+ * as using one chunk, into a number of 'child' chunks. It will transfer those in
+ * parallel. Once all of the chunks have been received they are assembeled into
+ * the array value. There is no need for decompress or shu]ffle step because these
+ * HDF5 filters are forbidden for the HDF5_CONTIGUOUS layout.
+ *
+ * If the size of the contiguous variable is < 2MB, or if parallel transfers are
+ * not enabled, the chunk is transferred in one I/O operation.
+ *
+ * @todo This code should be tested to make sure that an access that requires
+ * authentication which then fails is properly handled. All the threads will
+ * need to be stopped. Also, an auth that succeeds _may_ need to be restarted.
+ *
+ * @return Always returns true, matching the libdap::Array::read() behavior.
  */
-void DmrppArray::read_contiguous_sc() {
+void DmrppArray::read_contiguous() {
     BESStopWatch sw;
     if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+name(), "");
 
@@ -749,15 +761,17 @@ void DmrppArray::read_contiguous_sc() {
 
     unsigned long long master_chunk_size = master_chunk->get_size();
 
-    // If we want to read the chunk in parallel.
+    // Do we want to read the chunk in parallel?
     if (!DmrppRequestHandler::d_use_transfer_threads || master_chunk_size <= DmrppRequestHandler::d_contiguous_concurrent_threshold) {
-        // Else read the master_chunk as is. This is the non-parallel I/O case
+        // Nope, now we're just going to read the master_chunk as is. This is the non-parallel I/O case
         master_chunk->read_chunk();
+
         // 'master_chunk' now holds the data. Transfer it to the Array.
         if (!is_projected()) {  // if there is no projection constraint
             val2buf(master_chunk->get_rbuf());      // yes, it's not type-safe
         }
-        else {                  // apply the constraint
+        else {
+            // apply the constraint
             vector<unsigned int> array_shape = get_shape(false);
 
             // Reserve space in this array for the constrained size of the data request
@@ -768,7 +782,10 @@ void DmrppArray::read_contiguous_sc() {
         }
     }
     else {
+        // This is the parallel processing case.
 
+        // We know that HDF CONTIGUOUS layout arrays may never be shuffled or compressed, but we check just in
+        // case because if either is true the result will be super sad.
         if(is_deflate_compression() || is_shuffle_compression()){
             stringstream msg;
             msg << prolog << "The DmrppArray " << name() << " is marked as a CONTIGUOUS storage type and is also ";
@@ -777,12 +794,11 @@ void DmrppArray::read_contiguous_sc() {
             msg << " This is an unsupported state and is FORBIDDEN.";
             throw BESInternalError(msg.str(), __FILE__, __LINE__);
         }
-        master_chunk->set_rbuf_to_size();
 
         unsigned long long current_chunk_start = master_chunk->get_offset();
         unsigned long long chunk_size = master_chunk_size / DmrppRequestHandler::d_max_transfer_threads;
 
-        SuperChunk super_chunk(prolog,this);
+        SuperChunk super_chunk(prolog+name(),this);
         unsigned int chunk_index;
         for(chunk_index=0; chunk_index< DmrppRequestHandler::d_max_transfer_threads; chunk_index++){
             vector<unsigned int> position_in_array;
@@ -794,6 +810,7 @@ void DmrppArray::read_contiguous_sc() {
             current_chunk_start += chunk_size;
         }
 
+        // Deal with the remainder chunk if there is one
         if (master_chunk->get_size() % chunk_size) {
             // So there's a remainder and we should make a final chunk for it too.
             size_t last_chunk_size = master_chunk->get_size() - current_chunk_start;
@@ -833,10 +850,7 @@ void DmrppArray::read_contiguous_sc() {
 
 }
 
-
-
-
-
+#if 0
 /**
  * @brief Read an array that is stored using one 'chunk.'
  *
@@ -1037,6 +1051,7 @@ void DmrppArray::read_contiguous()
 
     set_read_p(true);
 }
+#endif
 
 
 /**
@@ -1645,7 +1660,7 @@ bool DmrppArray::read()
 
     if (get_immutable_chunks().size() == 1) { // Removed: || get_chunk_dimension_sizes().empty()) {
         BESDEBUG(dmrpp_4, "Calling read_contiguous() for " << name() << endl);
-        read_contiguous_sc();    // Throws on various errors
+        read_contiguous();    // Throws on various errors
     }
     else {  // Handle the more complex case where the data is chunked.
         if (!is_projected()) {

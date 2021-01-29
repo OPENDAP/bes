@@ -98,7 +98,7 @@ public:
     {
     }
 
-    void read_contiguous_test_01() {
+    void read_contiguous_sc_test() {
         DBG(cerr << prolog << "BEGIN" << endl);
         // string target_file_name= string(TEST_DATA_DIR).append("contiguous/d_int.h5.dap");
         string data_url = string("file://").append(TEST_DATA_DIR).append("/").append("big_ole_chunky_test.txt");
@@ -116,7 +116,55 @@ public:
         tiat.add_chunk(data_url,"LE",target_file_size,0,position_in_array);
 
         try {
-            tiat.read_contiguous_sc();
+            tiat.read_contiguous();
+        }
+        catch(BESError &be){
+            CPPUNIT_FAIL("Caught BESError. Message: " + be.get_verbose_message() );
+        }
+        catch(libdap::Error &lde){
+            CPPUNIT_FAIL("Caught libdap::Error. Message: " + lde.get_error_message() );
+        }
+        catch(std::exception &e){
+            CPPUNIT_FAIL(string("Caught libdap::Error. Message: ").append(e.what()));
+        }
+        catch(...){
+            CPPUNIT_FAIL("Caught unkown exception.");
+        }
+
+        char expected[] = {'T', 'h', 'i', 's', 'I', 's', 'A', 'T', 'e','s','t'};
+        unsigned int expected_size = 11;
+        unsigned long long num_bytes = tiat.width();
+        char *result = tiat.get_buf();
+
+        /*
+        unsigned long long  expected_index=0;
+        for(unsigned long long index=0; index <num_bytes; index++){
+            CPPUNIT_ASSERT(result[index] == expected[expected_index++ % 11]);
+        }
+*/
+
+
+        DBG(cerr << prolog << "END" << endl);
+    }
+    void read_contiguous_test() {
+        DBG(cerr << prolog << "BEGIN" << endl);
+        // string target_file_name= string(TEST_DATA_DIR).append("contiguous/d_int.h5.dap");
+        string data_url = string("file://").append(TEST_DATA_DIR).append("/").append("big_ole_chunky_test.txt");
+        unsigned long long target_file_size = 4194300;
+
+        DmrppArray tiat(string("foo"), new libdap::Byte("foo"));
+        tiat.append_dim(target_file_size,"test_dim");
+        tiat.set_shuffle(false);
+        tiat.set_deflate(false);
+
+        vector<size_t> chunk_dim_sizes = {1};
+        tiat.set_chunk_dimension_sizes(chunk_dim_sizes);
+        vector<unsigned int> position_in_array;
+        position_in_array.push_back(0);
+        tiat.add_chunk(data_url,"LE",target_file_size,0,position_in_array);
+
+        try {
+            tiat.read_contiguous();
         }
         catch(BESError &be){
             CPPUNIT_FAIL("Caught BESError. Message: " + be.get_verbose_message() );
@@ -148,7 +196,8 @@ public:
     }
 
     CPPUNIT_TEST_SUITE( DmrppArrayTest );
-        CPPUNIT_TEST(read_contiguous_test_01);
+        CPPUNIT_TEST(read_contiguous_sc_test);
+        CPPUNIT_TEST(read_contiguous_test);
 
     CPPUNIT_TEST_SUITE_END();
 };
