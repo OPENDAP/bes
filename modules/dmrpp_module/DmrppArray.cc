@@ -802,8 +802,7 @@ void DmrppArray::read_contiguous()
     BESStopWatch sw;
     if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+name(), "");
 
-    // These first four lines reproduce DmrppCommon::read_atomic(). The call
-    // to Chunk::inflate_chunk() handles 'contiguous' data that are compressed.
+    // These first four lines reproduce DmrppCommon::read_atomic().
 
     auto chunk_refs = get_chunks();
 
@@ -813,12 +812,13 @@ void DmrppArray::read_contiguous()
     // This is the original chunk for this 'contiguous' variable.
     auto master_chunk = chunk_refs[0];
 
+    unsigned long long master_chunk_offset = master_chunk->get_offset();
     unsigned long long master_chunk_size = master_chunk->get_size();
 
     // If we want to read the chunk in parallel. Only read in parallel above some threshold. jhrg 9/21/19
     // Only use parallel read if the chunk is over 2MB, otherwise it is easier to just read it as is kln 9/23/19
     if (!DmrppRequestHandler::d_use_transfer_threads || master_chunk_size <= DmrppRequestHandler::d_contiguous_concurrent_threshold) {
-        // Else read the master_chunk as is. This is the non-parallel I/O case
+        // Read the master_chunk as is. This is the non-parallel I/O case
         master_chunk->read_chunk();
     }
     else {
@@ -841,18 +841,17 @@ void DmrppArray::read_contiguous()
         // The number of child chunks are determined based on the size of the data.
         // If the size of the master chunk is 3MB then 3 chunks will be made. We will round down
         //  when necessary and handle the remainder later on (3.3MB = 3 chunks, 4.2MB = 4 chunks, etc.) kln 9/23/19
-        unsigned int num_chunks = floor(master_chunk_size / MB);
+        unsigned long long num_chunks = floor(master_chunk_size / MB);
         if (num_chunks >= DmrppRequestHandler::d_max_transfer_threads)
             num_chunks = DmrppRequestHandler::d_max_transfer_threads;
 
         // Use the original chunk's size and offset to evenly split it into smaller chunks
         unsigned long long chunk_size = master_chunk_size / num_chunks;
-        unsigned long long chunk_offset = master_chunk->get_offset();
         std::string chunk_byteorder = master_chunk->get_byte_order();
 
         // If the size of the master chunk is not evenly divisible by num_chunks, capture
         // the remainder here and increase the size of the last chunk by this number of bytes.
-        unsigned int chunk_remainder = master_chunk->get_size() % num_chunks;
+        unsigned long long chunk_remainder = master_chunk->get_size() % num_chunks;
 
         string chunk_url = master_chunk->get_data_url();
 
@@ -860,13 +859,13 @@ void DmrppArray::read_contiguous()
         queue<shared_ptr<Chunk>> chunks_to_read;
 
         // Make the Chunk objects
+        unsigned long long chunk_offset = master_chunk_offset;
         for (unsigned int i = 0; i < num_chunks - 1; i++) {
-            chunks_to_read.push(shared_ptr<Chunk>(
-                    new Chunk(chunk_url, chunk_byteorder, chunk_size, (chunk_size * i) + chunk_offset)));
+            chunks_to_read.push(shared_ptr<Chunk>(new Chunk(chunk_url, chunk_byteorder, chunk_size, chunk_offset)));
+            chunk_offset += chunk_size;
         }
         // Make the the remainder Chunk, see above for details about chunk_remainder. jhrg 9/21/19
-        chunks_to_read.push(shared_ptr<Chunk>(new Chunk(chunk_url, chunk_byteorder, chunk_size + chunk_remainder,
-                                                        (chunk_size * (num_chunks - 1)) + chunk_offset)));
+        chunks_to_read.push(shared_ptr<Chunk>(new Chunk(chunk_url, chunk_byteorder, chunk_size + chunk_remainder, chunk_offset)));
 
         // We maintain a list  of futures to track our parallel activities.
         list<future<bool>> futures;
