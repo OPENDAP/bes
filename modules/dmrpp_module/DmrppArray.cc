@@ -923,6 +923,7 @@ void DmrppArray::read_contiguous()
 
     // The 'master_chunk' now holds the data values. Transfer it to the Array.
     if (!is_projected()) {  // if there is no projection constraint
+        reserve_value_capacity(get_size(false));
         val2buf(master_chunk->get_rbuf());      // yes, it's not type-safe
     }
     else {                  // apply the constraint
