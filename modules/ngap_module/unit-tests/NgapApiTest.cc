@@ -261,7 +261,7 @@ public:
         string granule_name;
         string data_access_url;
 
-        provider_name = "GHRC_DAAC";
+        provider_name = "GHRC_CLOUD";
         collection_name ="ADVANCED MICROWAVE SOUNDING UNIT-A (AMSU-A) SWATH FROM NOAA-15 V1";
         granule_name = "amsua15_2020.028_12915_1139_1324_WI.nc";
 
@@ -277,7 +277,7 @@ public:
             CPPUNIT_ASSERT(false);
         }
         string expected;
-        expected = "https://data.ghrc.earthdata.nasa.gov/ghrcw-protected/amsua15sp__1/amsu-a/noaa-15/data/nc/2020/0128/amsua15_2020.028_12915_1139_1324_WI.nc";
+        expected = "https://d1sd4up8kynpk2.cloudfront.net/ghrcw-protected/amsua15sp/amsu-a/noaa-15/data/nc/2020/0128/amsua15_2020.028_12915_1139_1324_WI.nc";
         compare_results(granule_name, data_access_url, expected);
         if(debug) cerr << prolog << "END" << endl;
     }
@@ -290,8 +290,8 @@ public:
         string granule_name;
         string data_access_url;
 
-        provider_name = "GHRC_DAAC";
-        collection_concept_id ="C1996541017-GHRC_DAAC";
+        provider_name = "GHRC_CLOUD";
+        collection_concept_id ="C1625128931-GHRC_CLOUD";
         granule_name = "amsua15_2020.028_12915_1139_1324_WI.nc";
 
         string resty_path;
@@ -305,7 +305,7 @@ public:
             cerr << "Caught BESError: " << e.get_message() << " File: " << e.get_file() << " Line: " << e.get_line() << endl;
             CPPUNIT_ASSERT(false);
         }
-        string expected = "https://data.ghrc.earthdata.nasa.gov/ghrcw-protected/amsua15sp__1/amsu-a/noaa-15/data/nc/2020/0128/amsua15_2020.028_12915_1139_1324_WI.nc";
+        string expected = "https://d1sd4up8kynpk2.cloudfront.net/ghrcw-protected/amsua15sp/amsu-a/noaa-15/data/nc/2020/0128/amsua15_2020.028_12915_1139_1324_WI.nc";
         compare_results(granule_name, data_access_url, expected);
         if(debug) cerr << prolog << "END" << endl;
     }
