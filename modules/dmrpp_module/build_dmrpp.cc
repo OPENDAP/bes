@@ -566,7 +566,7 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
                 for (unsigned int i = 0; i < num_chunks; ++i) {
 
                     vector<hsize_t> temp_coords(dataset_rank);
-                    vector<unsigned int> chunk_coords(dataset_rank); //FIXME - see below
+                    vector<unsigned long long> chunk_coords(dataset_rank); //FIXME - see below
 
                     haddr_t addr = 0;
                     hsize_t size = 0;
