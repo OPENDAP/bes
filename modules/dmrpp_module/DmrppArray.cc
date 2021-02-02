@@ -477,7 +477,7 @@ void read_super_chunks_concurrent(queue<shared_ptr<SuperChunk>> &super_chunks, D
  * @return The offset into the vector used to store the values.
  */
 static unsigned long long
-get_index(const vector<unsigned int> &address_in_target, const vector<unsigned int> &target_shape)
+get_index(const vector<unsigned long long> &address_in_target, const vector<unsigned long long> &target_shape)
 {
     assert(address_in_target.size() == target_shape.size());    // ranks must be equal
 
@@ -513,12 +513,12 @@ get_index(const vector<unsigned int> &address_in_target, const vector<unsigned i
  * @param shape The sizes of the dimensions of the array
  * @param k The dimension in question
  */
-static unsigned long multiplier(const vector<unsigned int> &shape, unsigned int k)
+static unsigned long multiplier(const vector<unsigned long long> &shape, unsigned int k)
 {
     assert(shape.size() > 1);
     assert(shape.size() > k + 1);
 
-    vector<unsigned int>::const_iterator i = shape.begin(), e = shape.end();
+    vector<unsigned long long>::const_iterator i = shape.begin(), e = shape.end();
     advance(i, k + 1);
     unsigned long multiplier = *i++;
     while (i != e) {
@@ -614,10 +614,10 @@ unsigned long long DmrppArray::get_size(bool constrained)
  * @param constrained If true, return the shape of the constrained array.
  * @return A vector<int> that describes the shape of the array.
  */
-vector<unsigned int> DmrppArray::get_shape(bool constrained)
+vector<unsigned long long> DmrppArray::get_shape(bool constrained)
 {
     Dim_iter dim = dim_begin(), edim = dim_end();
-    vector<unsigned int> shape;
+    vector<unsigned long long> shape;
 
     // For a 3d array, this method took 14ms without reserve(), 5ms with
     // (when called many times).
@@ -655,8 +655,8 @@ DmrppArray::dimension DmrppArray::get_dimension(unsigned int i)
  * and read_contiguous().
  */
 void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long *target_index,
-                                               vector<unsigned int> &subset_addr,
-                                               const vector<unsigned int> &array_shape, char /*Chunk*/*src_buf)
+                                               vector<unsigned long long> &subset_addr,
+                                               const vector<unsigned long long> &array_shape, char /*Chunk*/*src_buf)
 {
     BESDEBUG("dmrpp", "DmrppArray::" << __func__ << "() - subsetAddress.size(): " << subset_addr.size() << endl);
 
@@ -675,11 +675,11 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
     if (dim_iter == dim_end() && stride == 1) {
         // For the start and stop indexes of the subset, get the matching indexes in the whole array.
         subset_addr.push_back(start);
-        unsigned long start_index = get_index(subset_addr, array_shape);
+        unsigned long long start_index = get_index(subset_addr, array_shape);
         subset_addr.pop_back();
 
         subset_addr.push_back(stop);
-        unsigned long stop_index = get_index(subset_addr, array_shape);
+        unsigned long long stop_index = get_index(subset_addr, array_shape);
         subset_addr.pop_back();
 
         // Copy data block from start_index to stop_index
@@ -912,12 +912,12 @@ void DmrppArray::read_contiguous()
         val2buf(master_chunk->get_rbuf());      // yes, it's not type-safe
     }
     else {                  // apply the constraint
-        vector<unsigned int> array_shape = get_shape(false);
+        vector<unsigned long long> array_shape = get_shape(false);
 
         // Reserve space in this array for the constrained size of the data request
         reserve_value_capacity(get_size(true));
         unsigned long target_index = 0;
-        vector<unsigned int> subset;
+        vector<unsigned long long> subset;
 
         insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, master_chunk->get_rbuf());
     }
@@ -946,9 +946,9 @@ void DmrppArray::read_contiguous()
  * @param chunk_origin Where this chunk fits into the Array
  */
 void DmrppArray::insert_chunk_unconstrained(shared_ptr<Chunk> chunk, unsigned int dim, unsigned long long array_offset,
-                                            const vector<unsigned int> &array_shape,
-                                            unsigned long long chunk_offset, const vector<unsigned int> &chunk_shape,
-                                            const vector<unsigned int> &chunk_origin)
+                                            const vector<unsigned long long> &array_shape,
+                                            unsigned long long chunk_offset, const vector<unsigned long long> &chunk_shape,
+                                            const vector<unsigned long long> &chunk_origin)
 {
     // Now we figure out the correct last element. It's possible that a
     // chunk 'extends beyond' the Array bounds. Here 'end_element' is the
@@ -1034,9 +1034,9 @@ void DmrppArray::read_chunks_unconstrained()
     }
     reserve_value_capacity(get_size());
     // The size in element of each of the array's dimensions
-    const vector<unsigned int> array_shape = get_shape(true);
+    const vector<unsigned long long> array_shape = get_shape(true);
     // The size, in elements, of each of the chunk's dimensions
-    const vector<unsigned int> chunk_shape = get_chunk_dimension_sizes();
+    const vector<unsigned long long> chunk_shape = get_chunk_dimension_sizes();
 
 
     BESDEBUG(dmrpp_3, prolog << "d_use_transfer_threads: " << (DmrppRequestHandler::d_use_transfer_threads ? "true" : "false") << endl);
@@ -1127,15 +1127,15 @@ unsigned long long DmrppArray::get_chunk_start(const dimension &thisDim, unsigne
  * @param chunk This is the chunk.
  */
 shared_ptr<Chunk>
-DmrppArray::find_needed_chunks(unsigned int dim, vector<unsigned int> *target_element_address, shared_ptr<Chunk> chunk)
+DmrppArray::find_needed_chunks(unsigned int dim, vector<unsigned long long> *target_element_address, shared_ptr<Chunk> chunk)
 {
     BESDEBUG(dmrpp_3, prolog << " BEGIN, dim: " << dim << endl);
 
     // The size, in elements, of each of the chunk's dimensions.
-    const vector<unsigned int> &chunk_shape = get_chunk_dimension_sizes();
+    const vector<unsigned long long> &chunk_shape = get_chunk_dimension_sizes();
 
     // The chunk's origin point a.k.a. its "position in array".
-    const vector<unsigned int> &chunk_origin = chunk->get_position_in_array();
+    const vector<unsigned long long> &chunk_origin = chunk->get_position_in_array();
 
     dimension thisDim = this->get_dimension(dim);
 
@@ -1206,16 +1206,16 @@ DmrppArray::find_needed_chunks(unsigned int dim, vector<unsigned int> *target_el
  */
 void DmrppArray::insert_chunk(
         unsigned int dim,
-        vector<unsigned int> *target_element_address,
-        vector<unsigned int> *chunk_element_address,
+        vector<unsigned long long> *target_element_address,
+        vector<unsigned long long> *chunk_element_address,
         shared_ptr<Chunk> chunk,
-        const vector<unsigned int> &constrained_array_shape){
+        const vector<unsigned long long> &constrained_array_shape){
 
     // The size, in elements, of each of the chunk's dimensions.
-    const vector<unsigned int> &chunk_shape = get_chunk_dimension_sizes();
+    const vector<unsigned long long> &chunk_shape = get_chunk_dimension_sizes();
 
     // The chunk's origin point a.k.a. its "position in array".
-    const vector<unsigned int> &chunk_origin = chunk->get_position_in_array();
+    const vector<unsigned long long> &chunk_origin = chunk->get_position_in_array();
 
     dimension thisDim = this->get_dimension(dim);
 
@@ -1248,9 +1248,9 @@ void DmrppArray::insert_chunk(
             (*chunk_element_address)[dim] = chunk_start;
 
             // See below re get_index()
-            unsigned int target_char_start_index =
+            unsigned long long target_char_start_index =
                     get_index(*target_element_address, constrained_array_shape) * elem_width;
-            unsigned int chunk_char_start_index = get_index(*chunk_element_address, chunk_shape) * elem_width;
+            unsigned long long chunk_char_start_index = get_index(*chunk_element_address, chunk_shape) * elem_width;
 
             memcpy(target_buffer + target_char_start_index, source_buffer + chunk_char_start_index,
                    chunk_constrained_inner_dim_bytes);
@@ -1315,7 +1315,7 @@ void DmrppArray::read_chunks()
     //  if it's contiguous there.
     // Find the required Chunks and put them into SuperChunks.
     for(const auto& chunk: get_chunks()){
-        vector<unsigned int> target_element_address = chunk->get_position_in_array();
+        vector<unsigned long long> target_element_address = chunk->get_position_in_array();
         auto needed = find_needed_chunks(0 /* dimension */, &target_element_address, chunk);
         if (needed){
             bool added = current_super_chunk->add_chunk(chunk);
