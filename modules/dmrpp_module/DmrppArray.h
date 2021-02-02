@@ -180,9 +180,9 @@ struct one_child_chunk_args {
  */
 struct one_child_chunk_args_new {
     std::shared_ptr<Chunk> child_chunk;     // this chunk reads data; temporary allocation
-    std::shared_ptr<Chunk> master_chunk;    // this chunk gets the data; shared memory, managed by DmrppArray
+    std::shared_ptr<Chunk> the_one_chunk;    // this chunk gets the data; shared memory, managed by DmrppArray
 
-    one_child_chunk_args_new(std::shared_ptr<Chunk> c_c, std::shared_ptr<Chunk> m_c) : child_chunk(c_c), master_chunk(m_c) {}
+    one_child_chunk_args_new(std::shared_ptr<Chunk> c_c, std::shared_ptr<Chunk> m_c) : child_chunk(c_c), the_one_chunk(m_c) {}
 
     ~one_child_chunk_args_new() { }
 };

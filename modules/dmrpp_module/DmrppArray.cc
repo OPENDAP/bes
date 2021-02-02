@@ -220,24 +220,24 @@ bool one_child_chunk_thread_new(unique_ptr<one_child_chunk_args_new> args)
 
     args->child_chunk->read_chunk();
 
-    assert(args->master_chunk->get_rbuf());
+    assert(args->the_one_chunk->get_rbuf());
     assert(args->child_chunk->get_rbuf());
     assert(args->child_chunk->get_bytes_read() == args->child_chunk->get_size());
 
-    // master offset \/
-    // master chunk:  mmmmmmmmmmmmmmmm
-    // child chunks:  1111222233334444 (there are four child chunks)
-    // child offsets: ^   ^   ^   ^
-    // For this example, child_1_offset - master_offset == 0 (that's always true)
-    // child_2_offset - master_offset == 4; child_2_offset - master_offset == 8
-    // and child_3_offset - master_offset == 12.
-    // Those are the starting locations with in the data buffer of the master chunk
+    // the_one_chunk offset \/
+    // the_one_chunk:  mmmmmmmmmmmmmmmm
+    // child chunks:   1111222233334444 (there are four child chunks)
+    // child offsets:  ^   ^   ^   ^
+    // For this example, child_1_offset - the_one_chunk_offset == 0 (that's always true)
+    // child_2_offset - the_one_chunk_offset == 4; child_2_offset - the_one_chunk_offset == 8
+    // and child_3_offset - the_one_chunk_offset == 12.
+    // Those are the starting locations with in the data buffer of the the_one_chunk
     // where that child chunk should be written.
-    // Note: all of the offset values start at the begining of the file.
+    // Note: all of the offset values start at the beginning of the file.
 
-    unsigned long long  offset_within_master_chunk = args->child_chunk->get_offset() - args->master_chunk->get_offset();
+    unsigned long long  offset_within_the_one_chunk = args->child_chunk->get_offset() - args->the_one_chunk->get_offset();
 
-    memcpy(args->master_chunk->get_rbuf() + offset_within_master_chunk, args->child_chunk->get_rbuf(),
+    memcpy(args->the_one_chunk->get_rbuf() + offset_within_the_one_chunk, args->child_chunk->get_rbuf(),
            args->child_chunk->get_bytes_read());
 
     return true;
@@ -791,14 +791,13 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
  * If the size of the contiguous variable is < 2MB, or if parallel transfers are
  * not enabled, the chunk is transferred in one I/O operation.
  *
- * @todo This code should be tested to make sure that an access that requires
- * authentication which then fails is properly handled. All the threads will
- * need to be stopped. Also, an auth that succeeds _may_ need to be restarted.
- *
  * @return Always returns true, matching the libdap::Array::read() behavior.
  */
 void DmrppArray::read_contiguous()
 {
+    // @TODO This code should be tested to make sure that an access that requires
+    //  authentication which then fails is properly handled. All the threads will
+    //  need to be stopped. Also, an auth that succeeds _may_ need to be restarted.
     BESStopWatch sw;
     if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+name(), "");
 
@@ -810,16 +809,16 @@ void DmrppArray::read_contiguous()
         throw BESInternalError(string("Expected only a single chunk for variable ") + name(), __FILE__, __LINE__);
 
     // This is the original chunk for this 'contiguous' variable.
-    auto master_chunk = chunk_refs[0];
+    auto the_one_chunk = chunk_refs[0];
 
-    unsigned long long master_chunk_offset = master_chunk->get_offset();
-    unsigned long long master_chunk_size = master_chunk->get_size();
+    unsigned long long the_one_chunk_offset = the_one_chunk->get_offset();
+    unsigned long long the_one_chunk_size = the_one_chunk->get_size();
 
-    // If we want to read the chunk in parallel. Only read in parallel above some threshold. jhrg 9/21/19
-    // Only use parallel read if the chunk is over 2MB, otherwise it is easier to just read it as is kln 9/23/19
-    if (!DmrppRequestHandler::d_use_transfer_threads || master_chunk_size <= DmrppRequestHandler::d_contiguous_concurrent_threshold) {
-        // Read the master_chunk as is. This is the non-parallel I/O case
-        master_chunk->read_chunk();
+    // If we only want to read in the Chunk concurrently if it's size is above the
+    // threshold value held in DmrppRequestHandler::d_contiguous_concurrent_threshold
+    if (!DmrppRequestHandler::d_use_transfer_threads || the_one_chunk_size <= DmrppRequestHandler::d_contiguous_concurrent_threshold) {
+        // Read the the_one_chunk as is. This is the non-parallel I/O case
+        the_one_chunk->read_chunk();
     }
     else {
 
@@ -834,32 +833,32 @@ void DmrppArray::read_contiguous()
             throw BESInternalError(msg.str(), __FILE__, __LINE__);
         }
 
-        // Allocated memory for the 'master chunk' so the threads can transfer data
+        // Allocated memory for the 'the_one_chunk' so the threads can transfer data
         // from the child chunks to it.
-        master_chunk->set_rbuf_to_size();
+        the_one_chunk->set_rbuf_to_size();
 
         // The number of child chunks are determined based on the size of the data.
-        // If the size of the master chunk is 3MB then 3 chunks will be made. We will round down
+        // If the size of the the_one_chunk is 3MB then 3 chunks will be made. We will round down
         //  when necessary and handle the remainder later on (3.3MB = 3 chunks, 4.2MB = 4 chunks, etc.) kln 9/23/19
-        unsigned long long num_chunks = floor(master_chunk_size / MB);
+        unsigned long long num_chunks = floor(the_one_chunk_size / MB);
         if (num_chunks >= DmrppRequestHandler::d_max_transfer_threads)
             num_chunks = DmrppRequestHandler::d_max_transfer_threads;
 
         // Use the original chunk's size and offset to evenly split it into smaller chunks
-        unsigned long long chunk_size = master_chunk_size / num_chunks;
-        std::string chunk_byteorder = master_chunk->get_byte_order();
+        unsigned long long chunk_size = the_one_chunk_size / num_chunks;
+        std::string chunk_byteorder = the_one_chunk->get_byte_order();
 
-        // If the size of the master chunk is not evenly divisible by num_chunks, capture
+        // If the size of the the_one_chunk is not evenly divisible by num_chunks, capture
         // the remainder here and increase the size of the last chunk by this number of bytes.
-        unsigned long long chunk_remainder = master_chunk->get_size() % num_chunks;
+        unsigned long long chunk_remainder = the_one_chunk_size % num_chunks;
 
-        string chunk_url = master_chunk->get_data_url();
+        string chunk_url = the_one_chunk->get_data_url();
 
-        // Setup a queue to break up the original master_chunk and keep track of the pieces
+        // Setup a queue to break up the original the_one_chunk and keep track of the pieces
         queue<shared_ptr<Chunk>> chunks_to_read;
 
         // Make the Chunk objects
-        unsigned long long chunk_offset = master_chunk_offset;
+        unsigned long long chunk_offset = the_one_chunk_offset;
         for (unsigned int i = 0; i < num_chunks - 1; i++) {
             chunks_to_read.push(shared_ptr<Chunk>(new Chunk(chunk_url, chunk_byteorder, chunk_size, chunk_offset)));
             chunk_offset += chunk_size;
@@ -888,7 +887,7 @@ void DmrppArray::read_contiguous()
                         auto current_chunk = chunks_to_read.front();
                         BESDEBUG(dmrpp_3, prolog << "Starting thread for " << current_chunk->to_string() << endl);
 
-                        auto args = unique_ptr<one_child_chunk_args_new>(new one_child_chunk_args_new(current_chunk, master_chunk));
+                        auto args = unique_ptr<one_child_chunk_args_new>(new one_child_chunk_args_new(current_chunk, the_one_chunk));
                         thread_started = start_one_child_chunk_thread(futures, std::move(args));
 
                         if (thread_started) {
@@ -921,20 +920,20 @@ void DmrppArray::read_contiguous()
         }
     }
 
-    // The 'master_chunk' now holds the data values. Transfer it to the Array.
+    // The 'the_one_chunk' now holds the data values. Transfer it to the Array.
     if (!is_projected()) {  // if there is no projection constraint
         reserve_value_capacity(get_size(false));
-        val2buf(master_chunk->get_rbuf());      // yes, it's not type-safe
+        val2buf(the_one_chunk->get_rbuf());      // yes, it's not type-safe
     }
     else {                  // apply the constraint
-        vector<unsigned int> array_shape = get_shape(false);
+        vector<unsigned long long> array_shape = get_shape(false);
 
         // Reserve space in this array for the constrained size of the data request
         reserve_value_capacity(get_size(true));
         unsigned long target_index = 0;
-        vector<unsigned int> subset;
+        vector<unsigned long long> subset;
 
-        insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, master_chunk->get_rbuf());
+        insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, the_one_chunk->get_rbuf());
     }
 
     set_read_p(true);
