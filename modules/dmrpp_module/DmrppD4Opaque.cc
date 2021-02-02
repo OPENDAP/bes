@@ -83,11 +83,11 @@ DmrppD4Opaque::operator=(const DmrppD4Opaque &rhs)
 void DmrppD4Opaque::insert_chunk(shared_ptr<Chunk>  chunk)
 {
     // The size, in elements, of each of the chunk's dimensions.
-    const vector<unsigned int> &chunk_shape = get_chunk_dimension_sizes();
+    const vector<unsigned long long> &chunk_shape = get_chunk_dimension_sizes();
     if (chunk_shape.size() != 1) throw BESInternalError("Opaque variables' chunks can only have one dimension.", __FILE__, __LINE__);
 
     // The chunk's origin point a.k.a. its "position in array".
-    const vector<unsigned int> &chunk_origin = chunk->get_position_in_array();
+    const vector<unsigned long long> &chunk_origin = chunk->get_position_in_array();
 
     char *source_buffer = chunk->get_rbuf();
     unsigned char *target_buffer = get_buf();

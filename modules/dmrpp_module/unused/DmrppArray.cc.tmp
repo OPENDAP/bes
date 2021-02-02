@@ -227,9 +227,9 @@ void DmrppArray::read_constrained_no_chunks(Dim_iter dimIter, unsigned long *tar
     }
 }
 
-vector<unsigned int> DmrppArray::get_shape(bool constrained)
+vector<unsigned long long> DmrppArray::get_shape(bool constrained)
 {
-    vector<unsigned int> array_shape;
+    vector<unsigned long long> array_shape;
     for (Dim_iter dim = dim_begin(); dim != dim_end(); dim++) {
         array_shape.push_back(dimension_size(dim, constrained));
     }

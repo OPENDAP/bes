@@ -171,7 +171,7 @@ public:
 
     void test_add_chunk_2()
     {
-        vector<unsigned int> pia;
+        vector<unsigned long long> pia;
         pia.push_back(10);
         pia.push_back(20);
         try {

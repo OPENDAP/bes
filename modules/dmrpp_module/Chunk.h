@@ -55,7 +55,7 @@ private:
     unsigned long long d_size;
     unsigned long long d_offset;
 
-    std::vector<unsigned int> d_chunk_position_in_array;
+    std::vector<unsigned long long> d_chunk_position_in_array;
 
     // These are used only during the libcurl callback;
     // they are not duplicated by the copy ctor or assignment
@@ -161,7 +161,7 @@ public:
      * of unsigned ints.
      */
     Chunk(std::string data_url, std::string order, unsigned long long size,
-            unsigned long long offset, const std::vector<unsigned int> &pia_vec) :
+            unsigned long long offset, const std::vector<unsigned long long> &pia_vec) :
             d_data_url(std::move(data_url)), d_query_marker(""), d_byte_order(std::move(order)), d_size(size), d_offset(offset),
             d_read_buffer_is_mine(true), d_bytes_read(0), d_read_buffer(nullptr),
             d_read_buffer_size(0), d_is_read(false), d_is_inflated(false)
@@ -348,7 +348,7 @@ public:
     /**
      * @return The chunk's position in the array, as a vector of ints.
      */
-    virtual const std::vector<unsigned int> &get_position_in_array() const
+    virtual const std::vector<unsigned long long> &get_position_in_array() const
     {
         return d_chunk_position_in_array;
     }
@@ -356,11 +356,11 @@ public:
     void add_tracking_query_param();
 
     void set_position_in_array(const std::string &pia);
-    void set_position_in_array(const std::vector<unsigned int> &pia);
+    void set_position_in_array(const std::vector<unsigned long long> &pia);
 
     virtual void read_chunk();
 
-    virtual void inflate_chunk(bool deflate, bool shuffle, unsigned int chunk_size, unsigned int elem_width);
+    virtual void inflate_chunk(bool deflate, bool shuffle, unsigned long long chunk_size, unsigned long long elem_width);
 
     virtual bool get_is_read() { return d_is_read; }
     virtual void set_is_read(bool state) { d_is_read = state; }
@@ -370,7 +370,7 @@ public:
 
     virtual std::string get_curl_range_arg_string();
 
-    static void parse_chunk_position_in_array_string(const std::string &pia, std::vector<unsigned int> &pia_vect);
+    static void parse_chunk_position_in_array_string(const std::string &pia, std::vector<unsigned long long> &pia_vect);
 
     virtual void dump(std::ostream & strm) const;
 
