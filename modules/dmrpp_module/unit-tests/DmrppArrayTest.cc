@@ -111,7 +111,7 @@ public:
 
         vector<size_t> chunk_dim_sizes = {1};
         tiat.set_chunk_dimension_sizes(chunk_dim_sizes);
-        vector<unsigned int> position_in_array;
+        vector<unsigned long long> position_in_array;
         position_in_array.push_back(0);
         tiat.add_chunk(data_url,"LE",target_file_size,0,position_in_array);
 
@@ -159,7 +159,7 @@ public:
 
         vector<size_t> chunk_dim_sizes = {1};
         tiat.set_chunk_dimension_sizes(chunk_dim_sizes);
-        vector<unsigned int> position_in_array;
+        vector<unsigned long long> position_in_array;
         position_in_array.push_back(0);
         tiat.add_chunk(data_url,"LE",target_file_size,0,position_in_array);
 
