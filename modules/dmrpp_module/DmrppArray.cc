@@ -783,13 +783,15 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
  * @brief Read an array that is stored using one 'chunk.'
  *
  * If parallel transfers are enabled in the BES configuration files, this
- * method will split a contiguous (hdf5) variable, which the DMR++ describes
- * as using one chunk, into a number of 'child' chunks. It will transfer those in
- * parallel. Once all of the chunks have been received, they are assembeled, the
- * result is decompressed and then inserted into the variable's memory.
+ * method will take the one chunk that holds the variables data into a
+ * number of 'child' chunks. It will transfer those child chunks in
+ * parallel. Once all of the child chunks have been received, they are
+ * assembled, into the on chunk and result is decompressed and then inserted
+ * into the variable's memory.
  *
- * If the size of the contiguous variable is < 2MB, or if parallel transfers are
- * not enabled, the chunk is transferred in one I/O operation.
+ * If the size of the contiguous variable is < the value of
+ * DmrppRequestHandler::d_contiguous_concurrent_threshold, or if parallel
+ * transfers are not enabled, the chunk is transferred in one I/O operation.
  *
  * @return Always returns true, matching the libdap::Array::read() behavior.
  */
@@ -908,9 +910,9 @@ void DmrppArray::read_contiguous()
         }
     }
 
+    // Now that the_one_chunk has been read, we do the needful...
     if (is_deflate_compression() || is_shuffle_compression())
        the_one_chunk->inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(),var()->width());
-
 
     // The 'the_one_chunk' now holds the data values. Transfer it to the Array.
     if (!is_projected()) {  // if there is no projection constraint
