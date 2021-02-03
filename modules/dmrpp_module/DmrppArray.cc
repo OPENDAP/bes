@@ -796,15 +796,13 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
 void DmrppArray::read_contiguous()
 {
     // @TODO This code should be tested to make sure that an access that requires
-    //  authentication which then fails is properly handled. All the threads will
-    //  need to be stopped. Also, an auth that succeeds _may_ need to be restarted.
+    //   authentication which then fails is properly handled. All the threads will
+    //   need to be stopped. Also, an auth that succeeds _may_ need to be restarted.
     BESStopWatch sw;
     if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+name(), "");
 
-    // These first four lines reproduce DmrppCommon::read_atomic().
-
+    // Get the single chunk that makes up this CONTIGUOUS variable.
     auto chunk_refs = get_chunks();
-
     if (chunk_refs.size() != 1)
         throw BESInternalError(string("Expected only a single chunk for variable ") + name(), __FILE__, __LINE__);
 
@@ -814,8 +812,9 @@ void DmrppArray::read_contiguous()
     unsigned long long the_one_chunk_offset = the_one_chunk->get_offset();
     unsigned long long the_one_chunk_size = the_one_chunk->get_size();
 
-    // If we only want to read in the Chunk concurrently if it's size is above the
-    // threshold value held in DmrppRequestHandler::d_contiguous_concurrent_threshold
+    // We only want to read in the Chunk concurrently if:
+    // - Concurrent transfers are enabled (DmrppRequestHandler::d_use_transfer_threads)
+    // - The variables size is above the threshold value held in DmrppRequestHandler::d_contiguous_concurrent_threshold
     if (!DmrppRequestHandler::d_use_transfer_threads || the_one_chunk_size <= DmrppRequestHandler::d_contiguous_concurrent_threshold) {
         // Read the the_one_chunk as is. This is the non-parallel I/O case
         the_one_chunk->read_chunk();
@@ -823,7 +822,7 @@ void DmrppArray::read_contiguous()
     else {
 
         // We know that HDF5 CONTIGUOUS layout arrays may never be shuffled or compressed, but we check just in
-        // case because if either is true and we continue the result will be super sad.
+        // case because if either flag is true and we continue the result will be super sad.
         if(is_deflate_compression() || is_shuffle_compression()){
             stringstream msg;
             msg << prolog << "The DmrppArray " << name() << " is marked as a CONTIGUOUS storage type and is also ";
@@ -833,13 +832,13 @@ void DmrppArray::read_contiguous()
             throw BESInternalError(msg.str(), __FILE__, __LINE__);
         }
 
-        // Allocated memory for the 'the_one_chunk' so the threads can transfer data
+        // Allocate memory for the 'the_one_chunk' so the transfer threads can transfer data
         // from the child chunks to it.
         the_one_chunk->set_rbuf_to_size();
 
         // The number of child chunks are determined based on the size of the data.
         // If the size of the the_one_chunk is 3MB then 3 chunks will be made. We will round down
-        //  when necessary and handle the remainder later on (3.3MB = 3 chunks, 4.2MB = 4 chunks, etc.) kln 9/23/19
+        // when necessary and handle the remainder later on (3.3MB = 3 chunks, 4.2MB = 4 chunks, etc.)
         unsigned long long num_chunks = floor(the_one_chunk_size / MB);
         if (num_chunks >= DmrppRequestHandler::d_max_transfer_threads)
             num_chunks = DmrppRequestHandler::d_max_transfer_threads;
@@ -863,7 +862,7 @@ void DmrppArray::read_contiguous()
             chunks_to_read.push(shared_ptr<Chunk>(new Chunk(chunk_url, chunk_byteorder, chunk_size, chunk_offset)));
             chunk_offset += chunk_size;
         }
-        // Make the the remainder Chunk, see above for details about chunk_remainder. jhrg 9/21/19
+        // Make the the remainder Chunk, see above for details.
         chunks_to_read.push(shared_ptr<Chunk>(new Chunk(chunk_url, chunk_byteorder, chunk_size + chunk_remainder, chunk_offset)));
 
         // We maintain a list  of futures to track our parallel activities.
