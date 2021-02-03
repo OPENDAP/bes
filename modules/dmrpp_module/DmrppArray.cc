@@ -821,17 +821,6 @@ void DmrppArray::read_contiguous()
     }
     else {
 
-        // We know that HDF5 CONTIGUOUS layout arrays may never be shuffled or compressed, but we check just in
-        // case because if either flag is true and we continue the result will be super sad.
-        if(is_deflate_compression() || is_shuffle_compression()){
-            stringstream msg;
-            msg << prolog << "The DmrppArray " << name() << " is marked as a CONTIGUOUS storage type and is also ";
-            msg << "marked with deflate_compression: " << (is_deflate_compression()?"true":"false") << " and";
-            msg << " shuffle_compression: " << (is_shuffle_compression()?"true":"false") ;
-            msg << " This is an unsupported state and is FORBIDDEN.";
-            throw BESInternalError(msg.str(), __FILE__, __LINE__);
-        }
-
         // Allocate memory for the 'the_one_chunk' so the transfer threads can transfer data
         // from the child chunks to it.
         the_one_chunk->set_rbuf_to_size();
@@ -918,6 +907,10 @@ void DmrppArray::read_contiguous()
             throw;
         }
     }
+
+    if (is_deflate_compression() || is_shuffle_compression())
+       the_one_chunk->inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(),var()->width());
+
 
     // The 'the_one_chunk' now holds the data values. Transfer it to the Array.
     if (!is_projected()) {  // if there is no projection constraint
