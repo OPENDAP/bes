@@ -73,10 +73,9 @@ using namespace std;
 namespace dmrpp {
 
 
-// ThreadPool state variables.
+// Transfer Thread Pool state variables.
 std::mutex transfer_thread_pool_mtx;     // mutex for critical section
 atomic_uint transfer_thread_counter(0);
-#define TRANSFER_THREADS "transfer_threads"
 
 
 
@@ -111,11 +110,12 @@ bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_count
                     try {
                         bool success = (*futr).get();
                         future_finished = true;
-                        BESDEBUG(dmrpp_3, debug_prefix << prolog << "Called future::get() on a ready future. success: " <<
-                                                                  (success?"true":"false") << endl);
+                        BESDEBUG(dmrpp_3, debug_prefix << prolog << "Called future::get() on a ready future."
+                            << " success: " << success?"true":"false") << endl);
                         if(!success){
                             stringstream msg;
-                            msg << debug_prefix << prolog << "The std::future has failed! thread_counter: " << thread_counter;
+                            msg << debug_prefix << prolog << "The std::future has failed!";
+                            msg << " thread_counter: " << thread_counter;
                             throw BESInternalError(msg.str(), __FILE__, __LINE__);
                         }
                     }
@@ -132,7 +132,8 @@ bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_count
                 else {
                     futr++;
                     BESDEBUG(dmrpp_3, debug_prefix << prolog << "future::wait_for() timed out. (timeout: " <<
-                        timeout << " ms) There are currently " << futures.size() << " futures in process. thread_counter: " << thread_counter << endl);
+                        timeout << " ms) There are currently " << futures.size() << " futures in process."
+                        << " thread_counter: " << thread_counter << endl);
                 }
             }
             else {
@@ -144,8 +145,8 @@ bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_count
             futures.erase(futr);
             thread_counter--;
             BESDEBUG(dmrpp_3, debug_prefix << prolog << "Erased future from futures list. (Erased future was "
-                                                      << (future_is_valid?"":"not ") << "valid at start.) There are currently " <<
-                                                      futures.size() << " futures in process. thread_counter: " << thread_counter << endl);
+                                  << (future_is_valid?"":"not ") << "valid at start.) There are currently " <<
+                                  futures.size() << " futures in process. thread_counter: " << thread_counter << endl);
         }
         done = future_finished || futures.empty();
     }
@@ -250,11 +251,11 @@ bool start_one_child_chunk_thread(list<std::future<bool>> &futures, unique_ptr<o
 
 
 /**
- * @brief Asynchronously starts the super_chunk_thread function using async and places the returned future in the queue futures.
- * @param futures The queue into which to place the future returned by async.
+ * @brief Starts the super_chunk_thread function using std::async() and places the returned future in the queue futures.
+ * @param futures The queue into which to place the std::future returned by std::async().
  * @param args The arguments for the super_chunk_thread function
- * @return Returns true if the async call was made and a future was returned, false if the transfer_thread_counter has
- * reached the maximum allowable size.
+ * @return Returns true if the std::async() call was made and a future was returned, false if the
+ * transfer_thread_counter has reached the maximum allowable size.
  */
 bool start_super_chunk_transfer_thread(list<std::future<bool>> &futures, unique_ptr<one_super_chunk_args> args) {
     bool retval = false;
@@ -270,8 +271,8 @@ bool start_super_chunk_transfer_thread(list<std::future<bool>> &futures, unique_
 }
 
 /**
- * @brief Asynchronously starts the one_super_chunk_unconstrained_transfer_thread function using async and places the returned future in the queue futures.
- * @param futures The queue into which to place the future returned by async.
+ * @brief Starts the one_super_chunk_unconstrained_transfer_thread function using std::async() and places the returned future in the queue futures.
+ * @param futures The queue into which to place the future returned by std::async().
  * @param args The arguments for the super_chunk_thread function
  * @return Returns true if the async call was made and a future was returned, false if the transfer_thread_counter has
  * reached the maximum allowable size.
@@ -291,7 +292,7 @@ bool start_super_chunk_unconstrained_transfer_thread(list<std::future<bool>> &fu
 
 
 /**
- * @brief Uses std::async and std::future to process the SuperChunks in super_chunks into the DmrppArray array.
+ * @brief Uses std::async() and std::future to process the SuperChunks in super_chunks into the DmrppArray array.
  *
  * For each SuperChunk in the queue, retrive the chunked data by using std::async() to generate a std::future which will
  * perform the data retrieval and subsequent computational steps(inflate/shuffle/etc) and finally insertion into the
