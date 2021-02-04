@@ -111,7 +111,7 @@ bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_count
                         bool success = (*futr).get();
                         future_finished = true;
                         BESDEBUG(dmrpp_3, debug_prefix << prolog << "Called future::get() on a ready future."
-                            << " success: " << success?"true":"false") << endl);
+                            << " success: " << (success?"true":"false") << endl);
                         if(!success){
                             stringstream msg;
                             msg << debug_prefix << prolog << "The std::future has failed!";
