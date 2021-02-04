@@ -73,10 +73,9 @@ using namespace std;
 namespace dmrpp {
 
 
-// ThreadPool state variables.
+// Transfer Thread Pool state variables.
 std::mutex transfer_thread_pool_mtx;     // mutex for critical section
 atomic_uint transfer_thread_counter(0);
-#define TRANSFER_THREADS "transfer_threads"
 
 
 
@@ -111,11 +110,12 @@ bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_count
                     try {
                         bool success = (*futr).get();
                         future_finished = true;
-                        BESDEBUG(dmrpp_3, debug_prefix << prolog << "Called future::get() on a ready future. success: " <<
-                                                                  (success?"true":"false") << endl);
+                        BESDEBUG(dmrpp_3, debug_prefix << prolog << "Called future::get() on a ready future."
+                            << " success: " << (success?"true":"false") << endl);
                         if(!success){
                             stringstream msg;
-                            msg << debug_prefix << prolog << "The std::future has failed! thread_counter: " << thread_counter;
+                            msg << debug_prefix << prolog << "The std::future has failed!";
+                            msg << " thread_counter: " << thread_counter;
                             throw BESInternalError(msg.str(), __FILE__, __LINE__);
                         }
                     }
@@ -132,7 +132,8 @@ bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_count
                 else {
                     futr++;
                     BESDEBUG(dmrpp_3, debug_prefix << prolog << "future::wait_for() timed out. (timeout: " <<
-                                                              timeout << " ms) There are currently " << futures.size() << " futures in process. thread_counter: " << thread_counter << endl);
+                        timeout << " ms) There are currently " << futures.size() << " futures in process."
+                        << " thread_counter: " << thread_counter << endl);
                 }
             }
             else {
@@ -144,13 +145,14 @@ bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_count
             futures.erase(futr);
             thread_counter--;
             BESDEBUG(dmrpp_3, debug_prefix << prolog << "Erased future from futures list. (Erased future was "
-                                                      << (future_is_valid?"":"not ") << "valid at start.) There are currently " <<
-                                                      futures.size() << " futures in process. thread_counter: " << thread_counter << endl);
+                                  << (future_is_valid?"":"not ") << "valid at start.) There are currently " <<
+                                  futures.size() << " futures in process. thread_counter: " << thread_counter << endl);
         }
         done = future_finished || futures.empty();
     }
     return future_finished;
 }
+
 
 
 /**
@@ -163,44 +165,32 @@ bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_count
  *
  * @param arg_list A pointer to a one_child_chunk_args
  */
-void *one_child_chunk_thread(void *arg_list)
+bool one_child_chunk_thread_new(unique_ptr<one_child_chunk_args_new> args)
 {
-    one_child_chunk_args *args = reinterpret_cast<one_child_chunk_args *>(arg_list);
 
-    try {
-        args->child_chunk->read_chunk();
+    args->child_chunk->read_chunk();
 
-        assert(args->master_chunk->get_rbuf());
-        assert(args->child_chunk->get_rbuf());
-        assert(args->child_chunk->get_bytes_read() == args->child_chunk->get_size());
+    assert(args->the_one_chunk->get_rbuf());
+    assert(args->child_chunk->get_rbuf());
+    assert(args->child_chunk->get_bytes_read() == args->child_chunk->get_size());
 
-        // master offset \/
-        // master chunk:  mmmmmmmmmmmmmmmm
-        // child chunks:  1111222233334444 (there are four child chunks)
-        // child offsets: ^   ^   ^   ^
-        // For this example, child_1_offset - master_offset == 0 (that's always true)
-        // child_2_offset - master_offset == 4; child_2_offset - master_offset == 8
-        // and child_3_offset - master_offset == 12.
-        // Those are the starting locations with in the data buffer of the master chunk
-        // where that child chunk should be written.
-        // Note: all of the offset values start at the begining of the file.
+    // the_one_chunk offset \/
+    // the_one_chunk:  mmmmmmmmmmmmmmmm
+    // child chunks:   1111222233334444 (there are four child chunks)
+    // child offsets:  ^   ^   ^   ^
+    // For this example, child_1_offset - the_one_chunk_offset == 0 (that's always true)
+    // child_2_offset - the_one_chunk_offset == 4; child_2_offset - the_one_chunk_offset == 8
+    // and child_3_offset - the_one_chunk_offset == 12.
+    // Those are the starting locations with in the data buffer of the the_one_chunk
+    // where that child chunk should be written.
+    // Note: all of the offset values start at the beginning of the file.
 
-        unsigned int offset_within_master_chunk = args->child_chunk->get_offset() - args->master_chunk->get_offset();
+    unsigned long long  offset_within_the_one_chunk = args->child_chunk->get_offset() - args->the_one_chunk->get_offset();
 
-        memcpy(args->master_chunk->get_rbuf() + offset_within_master_chunk, args->child_chunk->get_rbuf(),
-               args->child_chunk->get_bytes_read());
-    }
-    catch (BESError &error) {
-        write(args->fds[1], &args->tid, sizeof(args->tid));
-        delete args;
-        pthread_exit(new string(error.get_verbose_message()));
-    }
+    memcpy(args->the_one_chunk->get_rbuf() + offset_within_the_one_chunk, args->child_chunk->get_rbuf(),
+           args->child_chunk->get_bytes_read());
 
-    // tid is a char and thus us written atomically. Writing this tells the parent
-    // thread the child is complete and it should call pthread_join(tid, ...)
-    write(args->fds[1], &args->tid, sizeof(args->tid));
-    delete args;
-    pthread_exit(NULL);
+    return true;
 }
 
 
@@ -246,12 +236,26 @@ bool one_super_chunk_unconstrained_transfer_thread(unique_ptr<one_super_chunk_ar
 }
 
 
+bool start_one_child_chunk_thread(list<std::future<bool>> &futures, unique_ptr<one_child_chunk_args_new> args) {
+    bool retval = false;
+    std::unique_lock<std::mutex> lck (transfer_thread_pool_mtx);
+    if (transfer_thread_counter < DmrppRequestHandler::d_max_transfer_threads) {
+        transfer_thread_counter++;
+        futures.push_back( std::async(std::launch::async, one_child_chunk_thread_new, std::move(args)));
+        retval = true;
+        BESDEBUG(dmrpp_3, prolog << "Got std::future '" << futures.size() <<
+                                 "' from std::async for " << args->child_chunk->to_string() << endl);
+    }
+    return retval;
+}
+
+
 /**
- * @brief Asynchronously starts the super_chunk_thread function using async and places the returned future in the queue futures.
- * @param futures The queue into which to place the future returned by async.
+ * @brief Starts the super_chunk_thread function using std::async() and places the returned future in the queue futures.
+ * @param futures The queue into which to place the std::future returned by std::async().
  * @param args The arguments for the super_chunk_thread function
- * @return Returns true if the async call was made and a future was returned, false if the transfer_thread_counter has
- * reached the maximum allowable size.
+ * @return Returns true if the std::async() call was made and a future was returned, false if the
+ * transfer_thread_counter has reached the maximum allowable size.
  */
 bool start_super_chunk_transfer_thread(list<std::future<bool>> &futures, unique_ptr<one_super_chunk_args> args) {
     bool retval = false;
@@ -267,8 +271,8 @@ bool start_super_chunk_transfer_thread(list<std::future<bool>> &futures, unique_
 }
 
 /**
- * @brief Asynchronously starts the one_super_chunk_unconstrained_transfer_thread function using async and places the returned future in the queue futures.
- * @param futures The queue into which to place the future returned by async.
+ * @brief Starts the one_super_chunk_unconstrained_transfer_thread function using std::async() and places the returned future in the queue futures.
+ * @param futures The queue into which to place the future returned by std::async().
  * @param args The arguments for the super_chunk_thread function
  * @return Returns true if the async call was made and a future was returned, false if the transfer_thread_counter has
  * reached the maximum allowable size.
@@ -288,7 +292,7 @@ bool start_super_chunk_unconstrained_transfer_thread(list<std::future<bool>> &fu
 
 
 /**
- * @brief Uses std::async and std::future to process the SuperChunks in super_chunks into the DmrppArray array.
+ * @brief Uses std::async() and std::future to process the SuperChunks in super_chunks into the DmrppArray array.
  *
  * For each SuperChunk in the queue, retrive the chunked data by using std::async() to generate a std::future which will
  * perform the data retrieval and subsequent computational steps(inflate/shuffle/etc) and finally insertion into the
@@ -693,6 +697,7 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
             }
             (*target_index)++;
         }
+
     }
     else {
         for (unsigned int myDimIndex = start; myDimIndex <= stop; myDimIndex += stride) {
@@ -723,22 +728,19 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
     }
 }
 
-
 /**
  * @brief Read an array that is stored using one 'chunk.'
  *
  * If parallel transfers are enabled in the BES configuration files, this
- * method will split a contiguous (hdf5) variable, which the DMR++ describes
- * as using one chunk, into a number of 'child' chunks. It will transfer those in
- * parallel. Once all of the chunks have been received, they are assembeled, the
- * result is decompressed and then inserted into the variable's memory.
+ * method will take the one chunk that holds the variables data into a
+ * number of 'child' chunks. It will transfer those child chunks in
+ * parallel. Once all of the child chunks have been received, they are
+ * assembled, into the on chunk and result is decompressed and then inserted
+ * into the variable's memory.
  *
- * If the size of the contiguous variable is < 2MB, or if parallel transfers are
- * not enabled, the chunk is transferred in one I/O operation.
- *
- * @todo This code should be tested to make sure that an access that requires
- * authentication which then fails is properly handled. All the threads will
- * need to be stopped. Also, an auth that succeeds _may_ need to be restarted.
+ * If the size of the contiguous variable is < the value of
+ * DmrppRequestHandler::d_contiguous_concurrent_threshold, or if parallel
+ * transfers are not enabled, the chunk is transferred in one I/O operation.
  *
  * @return Always returns true, matching the libdap::Array::read() behavior.
  */
@@ -747,169 +749,121 @@ void DmrppArray::read_contiguous()
     BESStopWatch sw;
     if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+name(), "");
 
-    // These first four lines reproduce DmrppCommon::read_atomic(). The call
-    // to Chunk::inflate_chunk() handles 'contiguous' data that are compressed.
-    // And since we need the chunk, I copied the read_atomic code here.
-
+    // Get the single chunk that makes up this CONTIGUOUS variable.
     auto chunk_refs = get_chunks();
-
     if (chunk_refs.size() != 1)
         throw BESInternalError(string("Expected only a single chunk for variable ") + name(), __FILE__, __LINE__);
 
     // This is the original chunk for this 'contiguous' variable.
-    auto master_chunk = chunk_refs[0];
+    auto the_one_chunk = chunk_refs[0];
 
-    unsigned long long master_chunk_size = master_chunk->get_size();
+    unsigned long long the_one_chunk_offset = the_one_chunk->get_offset();
+    unsigned long long the_one_chunk_size = the_one_chunk->get_size();
 
-    // If we want to read the chunk in parallel. Only read in parallel above some threshold. jhrg 9/21/19
-    // Only use parallel read if the chunk is over 2MB, otherwise it is easier to just read it as is kln 9/23/19
-    if (!DmrppRequestHandler::d_use_transfer_threads || master_chunk_size <= DmrppRequestHandler::d_min_size) {
-        // Else read the master_chunk as is. This is the non-parallel I/O case
-        master_chunk->read_chunk();
+    // We only want to read in the Chunk concurrently if:
+    // - Concurrent transfers are enabled (DmrppRequestHandler::d_use_transfer_threads)
+    // - The variables size is above the threshold value held in DmrppRequestHandler::d_contiguous_concurrent_threshold
+    if (!DmrppRequestHandler::d_use_transfer_threads || the_one_chunk_size <= DmrppRequestHandler::d_contiguous_concurrent_threshold) {
+        // Read the the_one_chunk as is. This is the non-parallel I/O case
+        the_one_chunk->read_chunk();
     }
     else {
-        // Allocated memory for the 'master chunk' so the threads can transfer data
+
+        // Allocate memory for the 'the_one_chunk' so the transfer threads can transfer data
         // from the child chunks to it.
-        master_chunk->set_rbuf_to_size();
+        the_one_chunk->set_rbuf_to_size();
 
         // The number of child chunks are determined based on the size of the data.
-        // If the size of the master chunk is 3MB then 3 chunks will be made. We will round down
-        //  when necessary and handle the remainder later on (3.3MB = 3 chunks, 4.2MB = 4 chunks, etc.) kln 9/23/19
-        unsigned int num_chunks = floor(master_chunk_size / MB);
+        // If the size of the the_one_chunk is 3MB then 3 chunks will be made. We will round down
+        // when necessary and handle the remainder later on (3.3MB = 3 chunks, 4.2MB = 4 chunks, etc.)
+        unsigned long long num_chunks = floor(the_one_chunk_size / MB);
         if (num_chunks >= DmrppRequestHandler::d_max_transfer_threads)
             num_chunks = DmrppRequestHandler::d_max_transfer_threads;
 
-        // This pipe is used by the child threads to indicate completion
-        int fds[2];
-        int status = pipe(fds);
-        if (status < 0)
-            throw BESInternalError(string("Could not open a pipe for thread communication: ").append(strerror(errno)),
-                                   __FILE__, __LINE__);
-
         // Use the original chunk's size and offset to evenly split it into smaller chunks
-        unsigned long long chunk_size = master_chunk_size / num_chunks;
-        unsigned long long chunk_offset = master_chunk->get_offset();
-        std::string chunk_byteorder = master_chunk->get_byte_order();
+        unsigned long long chunk_size = the_one_chunk_size / num_chunks;
+        std::string chunk_byteorder = the_one_chunk->get_byte_order();
 
-        // If the size of the master chunk is not evenly divisible by num_chunks, capture
+        // If the size of the the_one_chunk is not evenly divisible by num_chunks, capture
         // the remainder here and increase the size of the last chunk by this number of bytes.
-        unsigned int chunk_remainder = master_chunk->get_size() % num_chunks;
+        unsigned long long chunk_remainder = the_one_chunk_size % num_chunks;
 
-        string chunk_url = master_chunk->get_data_url();
+        string chunk_url = the_one_chunk->get_data_url();
 
-        // Setup a queue to break up the original master_chunk and keep track of the pieces
+        // Setup a queue to break up the original the_one_chunk and keep track of the pieces
         queue<shared_ptr<Chunk>> chunks_to_read;
 
+        // Make the Chunk objects
+        unsigned long long chunk_offset = the_one_chunk_offset;
         for (unsigned int i = 0; i < num_chunks - 1; i++) {
-            chunks_to_read.push(shared_ptr<Chunk>(new Chunk(chunk_url, chunk_byteorder, chunk_size, (chunk_size * i) + chunk_offset)));
+            chunks_to_read.push(shared_ptr<Chunk>(new Chunk(chunk_url, chunk_byteorder, chunk_size, chunk_offset)));
+            chunk_offset += chunk_size;
         }
-        // See above for details about chunk_remainder. jhrg 9/21/19
-        chunks_to_read.push(shared_ptr<Chunk>(new Chunk(chunk_url, chunk_byteorder, chunk_size + chunk_remainder,
-                                      (chunk_size * (num_chunks - 1)) + chunk_offset)));
+        // Make the the remainder Chunk, see above for details.
+        chunks_to_read.push(shared_ptr<Chunk>(new Chunk(chunk_url, chunk_byteorder, chunk_size + chunk_remainder, chunk_offset)));
 
-        // Start the max number of processing pipelines
-        pthread_t threads[DmrppRequestHandler::d_max_transfer_threads];
-        memset(&threads[0], 0, sizeof(pthread_t) * DmrppRequestHandler::d_max_transfer_threads);
-
+        // We maintain a list  of futures to track our parallel activities.
+        list<future<bool>> futures;
         try {
-            unsigned int num_threads = 0;
+            bool done = false;
+            bool future_finished = true;
+            while (!done) {
 
-            // start initial set of threads
-            for (unsigned int i = 0;
-                 i < (unsigned int) DmrppRequestHandler::d_max_transfer_threads && !chunks_to_read.empty(); ++i) {
-                shared_ptr<Chunk> current_chunk = chunks_to_read.front();
-                chunks_to_read.pop();
+                if (!futures.empty())
+                    future_finished = get_next_future(futures, transfer_thread_counter, DMRPP_WAIT_FOR_FUTURE_MS, prolog);
 
-                // thread number is 'i'
-                one_child_chunk_args *args = new one_child_chunk_args(fds, i, current_chunk, master_chunk);
-                status = pthread_create(&threads[i], NULL, dmrpp::one_child_chunk_thread, (void *) args);
+                // If future_finished is true this means that the chunk_processing_thread_counter has been decremented,
+                // because future::get() was called or a call to future::valid() returned false.
+                BESDEBUG(dmrpp_3, prolog << "future_finished: " << (future_finished ? "true" : "false") << endl);
 
-                if (status == 0) {
-                    ++num_threads;
-                    BESDEBUG(dmrpp_3, "started thread: " << i << endl);
-                }
-                else {
-                    ostringstream oss("Could not start process_one_chunk_unconstrained thread for master_chunk ",
-                                      std::ios::ate);
-                    oss << i << ": " << strerror(status);
-                    BESDEBUG(dmrpp_3, oss.str());
-                    throw BESInternalError(oss.str(), __FILE__, __LINE__);
-                }
-            }
+                if (!chunks_to_read.empty()) {
+                    // Next we try to add a new Chunk compute thread if we can - there might be room.
+                    bool thread_started = true;
+                    while (thread_started && !chunks_to_read.empty()) {
+                        auto current_chunk = chunks_to_read.front();
+                        BESDEBUG(dmrpp_3, prolog << "Starting thread for " << current_chunk->to_string() << endl);
 
-            // Now join the child threads, creating replacement threads if needed
-            while (num_threads > 0) {
-                unsigned char tid;   // bytes can be written atomically
-                // Block here until a child thread writes to the pipe, then read the byte
-                int bytes = ::read(fds[0], &tid, sizeof(tid));
-                if (bytes != sizeof(tid))
-                    throw BESInternalError(string("Could not read the thread id: ").append(strerror(errno)), __FILE__,
-                                           __LINE__);
+                        auto args = unique_ptr<one_child_chunk_args_new>(new one_child_chunk_args_new(current_chunk, the_one_chunk));
+                        thread_started = start_one_child_chunk_thread(futures, std::move(args));
 
-                if (tid >= DmrppRequestHandler::d_max_transfer_threads) {
-                    ostringstream oss("Invalid thread id read after thread exit: ", std::ios::ate);
-                    oss << tid;
-                    throw BESInternalError(oss.str(), __FILE__, __LINE__);
-                }
-
-                string *error;
-                status = pthread_join(threads[tid], (void **) &error);
-                --num_threads;
-                BESDEBUG(dmrpp_3, "joined thread: " << (unsigned int) tid << ", there are: " << num_threads << endl);
-
-                if (status != 0) {
-                    ostringstream oss("Could not join process_one_chunk_unconstrained thread for master_chunk ",
-                                      std::ios::ate);
-                    oss << tid << ": " << strerror(status);
-                    throw BESInternalError(oss.str(), __FILE__, __LINE__);
-                }
-                else if (error != 0) {
-                    BESInternalError e(*error, __FILE__, __LINE__);
-                    delete error;
-                    throw e;
-                }
-                else if (chunks_to_read.size() > 0) {
-                    auto current_chunk = chunks_to_read.front();
-                    chunks_to_read.pop();
-
-                    // thread number is 'tid,' the number of the thread that just completed
-                    one_child_chunk_args *args = new one_child_chunk_args(fds, tid, current_chunk, master_chunk);
-                    int status = pthread_create(&threads[tid], NULL, dmrpp::one_child_chunk_thread, (void *) args);
-
-                    if (status != 0) {
-                        ostringstream oss;
-                        oss << "Could not start process_one_chunk_unconstrained thread for master_chunk " << tid << ": "
-                            << strerror(status);
-                        throw BESInternalError(oss.str(), __FILE__, __LINE__);
+                        if (thread_started) {
+                            chunks_to_read.pop();
+                            BESDEBUG(dmrpp_3, prolog << "STARTED thread for " << current_chunk->to_string() << endl);
+                        } else {
+                            // Thread did not start, ownership of the arguments was not passed to the thread.
+                            BESDEBUG(dmrpp_3, prolog << "Thread not started. args deleted, Chunk remains in queue.)" <<
+                                                     " transfer_thread_counter: " << transfer_thread_counter <<
+                                                     " futures.size(): " << futures.size() << endl);
+                        }
                     }
-                    ++num_threads;
-                    BESDEBUG(dmrpp_3, "started thread: " << (unsigned int) tid << ", there are: " << num_threads << endl);
+                } else {
+                    // No more Chunks and no futures means we're done here.
+                    if (futures.empty())
+                        done = true;
                 }
+                future_finished = false;
             }
-
-            // Once done with the threads, close the communication pipe.
-            close(fds[0]);
-            close(fds[1]);
         }
         catch (...) {
-            // cancel all the threads, otherwise we'll have threads out there using up resources
-            // defined in DmrppCommon.cc
-            join_threads(threads, DmrppRequestHandler::d_max_transfer_threads);
-            // close the pipe used to communicate with the child threads
-            close(fds[0]);
-            close(fds[1]);
+            // Complete all of the futures, otherwise we'll have threads out there using up resources
+            while (!futures.empty()) {
+                if (futures.back().valid())
+                    futures.back().get();
+                futures.pop_back();
+            }
             // re-throw the exception
             throw;
         }
     }
 
-    // Now decompress the master chunk
-    master_chunk->inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(),
-                               var()->width());
+    // Now that the_one_chunk has been read, we do the needful...
+    if (is_deflate_compression() || is_shuffle_compression())
+       the_one_chunk->inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(),var()->width());
 
-    // 'master_chunk' now holds the data. Transfer it to the Array.
+    // The 'the_one_chunk' now holds the data values. Transfer it to the Array.
     if (!is_projected()) {  // if there is no projection constraint
-        val2buf(master_chunk->get_rbuf());      // yes, it's not type-safe
+        reserve_value_capacity(get_size(false));
+        val2buf(the_one_chunk->get_rbuf());      // yes, it's not type-safe
     }
     else {                  // apply the constraint
         vector<unsigned long long> array_shape = get_shape(false);
@@ -919,12 +873,11 @@ void DmrppArray::read_contiguous()
         unsigned long target_index = 0;
         vector<unsigned long long> subset;
 
-        insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, master_chunk->get_rbuf());
+        insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, the_one_chunk->get_rbuf());
     }
 
     set_read_p(true);
 }
-
 
 /**
  * @brief Insert a chunk into an unconstrained Array

@@ -95,7 +95,7 @@ bool DmrppRequestHandler::d_use_compute_threads = true;
 unsigned int DmrppRequestHandler::d_max_compute_threads = 8;
 
 // Default minimum value is 2MB: 2 * (1024*1024)
-unsigned int DmrppRequestHandler::d_min_size = 2097152;
+unsigned long long DmrppRequestHandler::d_contiguous_concurrent_threshold = DMRPP_DEFAULT_CONTIGUOUS_CONCURRENT_THRESHOLD;
 
 static void read_key_value(const std::string &key_name, bool &key_value)
 {
@@ -109,6 +109,16 @@ static void read_key_value(const std::string &key_name, bool &key_value)
 }
 
 static void read_key_value(const std::string &key_name, unsigned int &key_value)
+{
+    bool key_found = false;
+    string value;
+    TheBESKeys::TheKeys()->get_value(key_name, value, key_found);
+    if (key_found) {
+        istringstream iss(value);
+        iss >> key_value;
+    }
+}
+static void read_key_value(const std::string &key_name, unsigned long long &key_value)
 {
     bool key_found = false;
     string value;
@@ -162,6 +172,10 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
     INFO_LOG(msg.str() );
     msg.str(std::string());
 
+    // DMRPP_CONTIGUOUS_CONCURRENT_THRESHOLD_KEY
+    read_key_value(DMRPP_CONTIGUOUS_CONCURRENT_THRESHOLD_KEY, d_contiguous_concurrent_threshold);
+    msg << prolog << "Contiguous Concurrency Threshold: " << d_contiguous_concurrent_threshold << " bytes." << endl;
+    INFO_LOG(msg.str() );
 
 
 #if !HAVE_CURL_MULTI_API
