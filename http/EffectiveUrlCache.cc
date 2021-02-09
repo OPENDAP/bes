@@ -175,7 +175,7 @@ string EffectiveUrlCache::dump() const
  * @param source_url
  */
 http::EffectiveUrl *EffectiveUrlCache::get(const std::string  &source_url){
-    http::EffectiveUrl *effective_url=NULL;
+    http::EffectiveUrl *effective_url=nullptr;
     auto it = d_effective_urls.find(source_url);
     if(it!=d_effective_urls.end()){
         effective_url = (*it).second;
