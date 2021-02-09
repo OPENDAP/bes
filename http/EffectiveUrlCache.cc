@@ -58,23 +58,13 @@ namespace http {
 EffectiveUrlCache *EffectiveUrlCache::d_instance = nullptr;
 static std::once_flag d_euc_init_once;
 
-/** @brief Get the singleton BESCatalogList instance.
+/** @brief Get the singleton EffectiveUrlCache instance.
  *
- * This static method returns the instance of this singleton class. It
- * uses the protected constructor below to read the name of the default
- * catalog from the BES's configuration file, using the key "BES.Catalog.Default".
- * If the key is not found or the key lookup fails for any reason, it
- * uses the the value of BES_DEFAULT_CATALOG as defined in this class'
- * header file (currently the confusing name "catalog").
- *
- * The implementation will only build one instance of CatalogList and
+ * This static method returns the instance of this singleton class.
+ * The implementation will only build one instance of EffectiveUrlCache and
  * thereafter simple return that pointer.
  *
- * For this code, the default catalog is implemented suing CatalogDirectory,
- * which exposes the BES's local POSIX file system, rooted at a place set in
- * the BES configuration file.
- *
- * @return A pointer to the CatalogList singleton
+ * @return A pointer to the EffectiveUrlCache singleton
  */
 EffectiveUrlCache *
 EffectiveUrlCache::TheCache()
@@ -85,8 +75,8 @@ EffectiveUrlCache::TheCache()
 }
 
 /**
- * private static that only get's called once by using pthread_once and
- * pthread_once_t mutex.
+ * private static that only get's called once by using std::call_once() and
+ * std::mutex.
  */
 void EffectiveUrlCache::initialize_instance()
 {
@@ -99,7 +89,7 @@ void EffectiveUrlCache::initialize_instance()
 }
 
 /**
- * Private static function can only be called by friends and pThreads code.
+ * Private static function can only be called by friends.
  */
 void EffectiveUrlCache::delete_instance()
 {
