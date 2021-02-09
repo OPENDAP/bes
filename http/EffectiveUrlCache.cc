@@ -55,7 +55,7 @@ using namespace std;
 
 namespace http {
 
-EffectiveUrlCache *EffectiveUrlCache::d_instance = 0;
+EffectiveUrlCache *EffectiveUrlCache::d_instance = nullptr;
 static std::once_flag d_euc_init_once;
 
 /** @brief Get the singleton BESCatalogList instance.
@@ -107,16 +107,6 @@ void EffectiveUrlCache::delete_instance()
     d_instance = 0;
 }
 
-/** @brief construct a catalog list
- *
- * @see BESCatalog
- */
-EffectiveUrlCache::EffectiveUrlCache(): d_skip_regex(nullptr), d_enabled(-1)
-{
-    //if (pthread_mutex_init(&d_get_effective_url_cache_mutex, 0) != 0)
-    //    throw BESInternalError("Could not initialize mutex in CurlHandlePool", __FILE__, __LINE__);
-
-}
 
 /** @brief list destructor deletes all cached http::urls
  *

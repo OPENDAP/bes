@@ -50,7 +50,7 @@ namespace http {
 class EffectiveUrlCache: public BESObj {
 private:
     static EffectiveUrlCache * d_instance;
-    std::mutex d_euc_cache_lock_mutex;
+    std::mutex d_euc_cache_lock_mutex{};
 
     std::map<std::string , http::EffectiveUrl *> d_effective_urls;
 
@@ -67,9 +67,9 @@ private:
     BESRegex *get_skip_regex();
     bool is_enabled();
 
-    EffectiveUrlCache();
+    EffectiveUrlCache(): d_skip_regex(nullptr), d_enabled(-1){}
 
-    virtual ~EffectiveUrlCache();
+    ~EffectiveUrlCache() override;
 
 public:
 
@@ -77,7 +77,7 @@ public:
 
     std::string get_effective_url(const std::string &source_url);
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
     virtual std::string dump() const;
 
 };
