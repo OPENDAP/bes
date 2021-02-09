@@ -29,8 +29,7 @@
 
 #include <map>
 #include <string>
-
-#include <pthread.h>
+#include <mutex>
 
 #include "BESObj.h"
 #include "BESDataHandlerInterface.h"
@@ -40,30 +39,20 @@
 
 namespace http {
 
-    /**
- * RAII. Lock access to the get_easy_handle() and release_handle() methods.
- */
-class EucLock {
-private:
-    pthread_mutex_t &m_mutex;
-    EucLock();
-    EucLock(const EucLock &rhs);
-public:
-    EucLock(pthread_mutex_t &lock);
-    ~EucLock();
-};
 
-
-    /**
- *
+/**
+ * This is a singleton class. It is used to associate a URL with its "effective" URL.  This means that
+ * when a URL is dereferenced the request may go through a potentially large number of redirect actions
+ * before the requested resource is retrieved. This final location, from which the requested bytes are transmitted,
+ * is termed the "effective url" and that is stored in an in memory cache (std::map) so that later requests may
+ * skip the redirects and just get required bytes from the actual source.
  */
 class EffectiveUrlCache: public BESObj {
 private:
     static EffectiveUrlCache * d_instance;
-    static pthread_once_t d_init_control;
+    std::mutex d_euc_cache_lock_mutex;
 
     std::map<std::string , http::EffectiveUrl *> d_effective_urls;
-    pthread_mutex_t d_get_effective_url_cache_mutex;
 
     // Things that match get skipped.
     BESRegex *d_skip_regex;

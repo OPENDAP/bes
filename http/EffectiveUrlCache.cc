@@ -30,7 +30,7 @@
 #include <stdlib.h>
 #endif
 
-#include <pthread.h>
+#include <mutex>
 
 #include <sstream>
 #include <string>
@@ -56,24 +56,7 @@ using namespace std;
 namespace http {
 
 EffectiveUrlCache *EffectiveUrlCache::d_instance = 0;
-pthread_once_t EffectiveUrlCache::d_init_control = PTHREAD_ONCE_INIT;
-
-EucLock::EucLock(pthread_mutex_t &lock) : m_mutex(lock) {
-    int status = pthread_mutex_lock(&m_mutex);
-    if (status != 0){
-        throw BESInternalError(prolog  + "Could not acquire mutex lock.", __FILE__, __LINE__);
-    }
-    BESDEBUG(MODULE,prolog << "Locked. (thread: " << pthread_self() << ")"  << endl);
-}
-
-EucLock::~EucLock() {
-    int status = pthread_mutex_unlock(&m_mutex);
-    if (status != 0){
-        ERROR_LOG(prolog + "Failed to release mutex lock.");
-    }
-    BESDEBUG(MODULE,prolog << "Unlocked. (thread: " << pthread_self() << ")" << endl);
-}
-
+static std::once_flag d_euc_init_once;
 
 /** @brief Get the singleton BESCatalogList instance.
  *
@@ -96,9 +79,7 @@ EucLock::~EucLock() {
 EffectiveUrlCache *
 EffectiveUrlCache::TheCache()
 {
-    if (d_instance == 0) {
-        pthread_once(&d_init_control,EffectiveUrlCache::initialize_instance);
-    }
+    std::call_once(d_euc_init_once,EffectiveUrlCache::initialize_instance);
 
     return d_instance;
 }
@@ -130,10 +111,10 @@ void EffectiveUrlCache::delete_instance()
  *
  * @see BESCatalog
  */
-EffectiveUrlCache::EffectiveUrlCache(): d_skip_regex(NULL), d_enabled(-1)
+EffectiveUrlCache::EffectiveUrlCache(): d_skip_regex(nullptr), d_enabled(-1)
 {
-    if (pthread_mutex_init(&d_get_effective_url_cache_mutex, 0) != 0)
-        throw BESInternalError("Could not initialize mutex in CurlHandlePool", __FILE__, __LINE__);
+    //if (pthread_mutex_init(&d_get_effective_url_cache_mutex, 0) != 0)
+    //    throw BESInternalError("Could not initialize mutex in CurlHandlePool", __FILE__, __LINE__);
 
 }
 
@@ -228,8 +209,9 @@ http::EffectiveUrl *EffectiveUrlCache::get(const std::string  &source_url){
 string EffectiveUrlCache::get_effective_url(const string &source_url)
 {
 
-    // This lock will block until the mutex is available.
-    EucLock dat_lock(this->d_get_effective_url_cache_mutex);
+    // This lock is a RAII implementation. It will block until the mutex is available
+    // the lock will be released when the instance of std::lock_guard is destroyed.
+    std::lock_guard<std::mutex> lock_me(d_euc_cache_lock_mutex);
 
     BESDEBUG(MODULE, prolog << "BEGIN url: " << source_url << endl);
     string effective_url_str = source_url;
