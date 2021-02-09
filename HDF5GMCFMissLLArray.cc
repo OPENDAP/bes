@@ -212,7 +212,7 @@ void HDF5GMCFMissLLArray::obtain_gpm_l3_ll(int* offset, int* step, int nelms, bo
 {
 
     if (1 != rank)
-        throw InternalErr(__FILE__, __LINE__, "The number of dimension for Aquarius Level 3 map data must be 1");
+        throw InternalErr(__FILE__, __LINE__, "The number of dimension for GPM Level 3 map data must be 1");
 
     bool check_pass_fileid_key = HDF5RequestHandler::get_pass_fileid();
 
@@ -234,10 +234,9 @@ void HDF5GMCFMissLLArray::obtain_gpm_l3_ll(int* offset, int* step, int nelms, bo
     int lonsize = 0;
 
 
-if(GPMM_L3 == product_type || GPMS_L3 == product_type) {
-    hid_t grid_grp_id = -1;
-
-    string grid_grp_name;
+    if(GPMM_L3 == product_type || GPMS_L3 == product_type) {
+        hid_t grid_grp_id = -1;
+        string grid_grp_name;
 
     if ((name() == "nlat") || (name() == "nlon")) {
 
@@ -295,7 +294,6 @@ if(GPMM_L3 == product_type || GPMS_L3 == product_type) {
 
     }
 #endif
-
    
     if ((grid_grp_id = H5Gopen(fileid, grid_grp_name.c_str(), H5P_DEFAULT)) < 0) {
         HDF5CFUtil::close_fileid(fileid, check_pass_fileid_key);
@@ -541,7 +539,9 @@ void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t /*file_id*/, hid_t s_root_i
     H5Aclose(s_attr_id);
 }
 
-void HDF5GMCFMissLLArray::obtain_gpm_l3_new_grid_info(hid_t file,vector<char>& grid_info_value1, vector<char>& grid_info_value2){
+void HDF5GMCFMissLLArray::obtain_gpm_l3_new_grid_info(hid_t file,
+                                                      vector<char>& grid_info_value1, 
+                                                      vector<char>& grid_info_value2){
 
    typedef struct {
        char* name;
@@ -553,59 +553,60 @@ void HDF5GMCFMissLLArray::obtain_gpm_l3_new_grid_info(hid_t file,vector<char>& g
    attr_na.value = NULL;
 
    herr_t ret_o= H5Ovisit(file, H5_INDEX_NAME, H5_ITER_INC, visit_obj_cb, (void*)&attr_na);
-   //herr_t ret_o= H5Ovisit3(file, H5_INDEX_NAME, H5_ITER_INC, visit_obj_cb, (void*)&attr_na,H5O_INFO_BASIC);
-   //
    if(ret_o < 0){
         H5Fclose(file);
         throw InternalErr(__FILE__, __LINE__, "H5Ovisit failed. ");
    }
    else if(ret_o >0) {
+#if 0
         //printf("Found the attribute.\n");
-        BESDEBUG("h5","Found the GPM level 3 Grid_info attribute."<<endl);
         //string grid_info_name_1(attr_na.name);
         //string grid_info_name_2;
 
         //string grid_info_value_1(attr_na.value);
 
-#if 0
         vector<char> grid_info_value_1(attr_na.value,attr_na.value+strlen(attr_na.value));
         vector<char> grid_info_value_2;
-#endif
         //grid_info_value1(attr_na.value,attr_na.value+strlen(attr_na.value));
+#endif
+        BESDEBUG("h5","Found the GPM level 3 Grid_info attribute."<<endl);
         grid_info_value1.resize(strlen(attr_na.value));
         memcpy(&grid_info_value1[0],attr_na.value,strlen(attr_na.value));
-string tv(grid_info_value1.begin(),grid_info_value1.end());
-//cerr<<"grid_info_value1 is "<<tv <<endl;
 #if 0
-            printf("attr_name 1st is %s\n",attr_na.name);
-            printf("attr_value 1st is %s\n",attr_na.value);
+        string tv(grid_info_value1.begin(),grid_info_value1.end());
+        cerr<<"grid_info_value1 is "<<tv <<endl;
+        printf("attr_name 1st is %s\n",attr_na.name);
+        printf("attr_value 1st is %s\n",attr_na.value);
 #endif
+        // Find the grid_info_value of the second grid.
+        // Note: the memory allocated for the first grid info is released 
+        // by the attribute callback function.
+        // In this round, we need to release the memory allocated for the second grid info.
         herr_t ret_o2= H5Ovisit(file, H5_INDEX_NAME, H5_ITER_INC, visit_obj_cb, (void*)&attr_na);
-
         if(ret_o2 < 0) {
             H5Fclose(file);
             throw InternalErr(__FILE__, __LINE__, "H5Ovisit failed again. ");
         }
         else if(ret_o2>0) {
-
-        if(attr_na.name) {
-            //printf("attr_name second is %s\n",attr_na.name);
-            free(attr_na.name);
-        }
-        if(attr_na.value) {
-            //printf("attr_value second is %s\n",attr_na.value);
-            //grid_info_value2(attr_na.value,attr_na.value+strlen(attr_na.value));
-            grid_info_value2.resize(strlen(attr_na.value));
-            memcpy(&grid_info_value2[0],attr_na.value,strlen(attr_na.value));
-string tv(grid_info_value2.begin(),grid_info_value2.end());
-//cerr<<"grid_info_value2 is "<<tv <<endl;
-            free(attr_na.value);
-        }
+            if(attr_na.name) {
+                //printf("attr_name second is %s\n",attr_na.name);
+                free(attr_na.name);
+            }
+            if(attr_na.value) {
+                //printf("attr_value second is %s\n",attr_na.value);
+                //grid_info_value2(attr_na.value,attr_na.value+strlen(attr_na.value));
+                grid_info_value2.resize(strlen(attr_na.value));
+                memcpy(&grid_info_value2[0],attr_na.value,strlen(attr_na.value));
+#if 0
+            string tv(grid_info_value2.begin(),grid_info_value2.end());
+            //cerr<<"grid_info_value2 is "<<tv <<endl;
+#endif 
+                free(attr_na.value);
+            }
         }
     }
-
-
 }
+
 void HDF5GMCFMissLLArray::obtain_lat_lon_info(const vector<char>& grid_info_value1,
                                               const vector<char>& grid_info_value2,
                                               int& latsize,int& lonsize,
@@ -633,6 +634,8 @@ void HDF5GMCFMissLLArray::obtain_lat_lon_info(const vector<char>& grid_info_valu
                                          lat2_res, lon2_res,false);
 
     bool pick_gv1 = true;
+
+    // We use the resolution (the smaller value is high resolution) to distinguish the two lat/lons.
     if (name() == "lnL" || name() == "ltL") {
         if(lat1_res <lat2_res) 
             pick_gv1 = false;
@@ -643,14 +646,12 @@ void HDF5GMCFMissLLArray::obtain_lat_lon_info(const vector<char>& grid_info_valu
     }
 
     if(true == pick_gv1) {
-        
         latsize = lat1size;
         lonsize = lon1size;
         lat_start = lat1_start;
         lon_start = lon1_start;
         lat_res = lat1_res;
         lon_res = lon1_res;
-
     }
     else {
         latsize = lat2size;
@@ -659,13 +660,10 @@ void HDF5GMCFMissLLArray::obtain_lat_lon_info(const vector<char>& grid_info_valu
         lon_start = lon2_start;
         lat_res = lat2_res;
         lon_res = lon2_res;
-
     }
-
 }
-/*
- * Operator function.
- */
+
+//Callback function to retrieve the grid information.
 static herr_t
 attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *_op_data)
 {
@@ -675,141 +673,107 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *_op_dat
        char* value;
    } attr_info_t;
 
-    /* avoid warnings */
     herr_t ret = 0;
     attr_info_t *op_data = (attr_info_t *)_op_data;
-    //printf("attribute name is %s\n",name);
-    if(strstr(name,GPM_ATTR2_NAME)!=NULL)  {
-    //if(strstr(name,"GridHeader")!=NULL)  {
 
-        hid_t attr, atype, aspace;  /* Attribute, datatype and dataspace identifiers */
+    // Attribute name is GridHeader
+    if(strstr(name,GPM_ATTR2_NAME)!=NULL)  {
+        hid_t attr, atype, aspace;  
         attr = H5Aopen(loc_id, name, H5P_DEFAULT);
         if(attr<0) 
             return -1;
-            //printf("attribute cannot be opened\n");
         atype  = H5Aget_type(attr);
-        if(atype <0)
+        if(atype <0) {
+            H5Aclose(attr);
             return -1;
-            //printf("attribute type cannot be retrieved");
+        }
         if(H5T_STRING == H5Tget_class(atype)){
+            // Note here: we find that the HDF5 API H5Tis_variable_str() causes seg. fault
+            // when checking if this is a variable length string. A ticket has been submitted
+            // to the HDF group. For GPM, only the fixed-size string is used. So it won't affect
+            // here. When the bug is fixed. We should add a check here to avoid the crash of the prog.
             if(op_data->name) {
-                //obtain_attr_value(attr,atype,(void*)&op_data->value);
                 if(strncmp(name,op_data->name,strlen(name))!=0) {
-                hid_t aspace = H5Aget_space(attr);
-                hsize_t num_elms = H5Tget_size(atype)*H5Sget_simple_extent_npoints(aspace);
+                    hid_t aspace = H5Aget_space(attr);
+                    if(aspace <0) {
+                        H5Aclose(attr);
+                        H5Tclose(atype);
+                        return -1;
+                    }
+                    hsize_t num_elms = H5Tget_size(atype)*H5Sget_simple_extent_npoints(aspace);
 #if 0
                 char *attr_value = op_data->value;
                 attr_value = malloc(num_elms+1);
                 H5Aread(attr,atype,attr_value);
                 printf("attr_value is %s\n",attr_value);
 #endif
-                //*((char *)value) = (char*) malloc(num_elms+1);
-                char *cur_attr_value = (char*)malloc(num_elms+1);
-                 H5Aread(attr,atype,(void*)cur_attr_value);
-                 if(strncmp(cur_attr_value,op_data->value,strlen(op_data->value))!=0) {
-                     
-                    free(op_data->name);
-                    op_data->name = NULL;
-                    op_data->name = (char*)malloc(strlen(name)+1);
-                //attr_name = malloc(strlen(name)+1);
-                    strncpy(op_data->name,name,strlen(name));
-                // Get the new attribute value,
-                    if(op_data->value)
-                        free(op_data->value);
-                    op_data->value = NULL;
-                    op_data->value=(char*)malloc(num_elms+1);
-                    //printf("attr value is %s\n",cur_attr_value);
-                    strncpy(op_data->value,cur_attr_value,strlen(cur_attr_value));
-                    //printf("op_data attr value is %s\n",op_data->value);
+                    char *cur_attr_value = (char*)malloc(num_elms+1);
+                    if(H5Aread(attr,atype,(void*)cur_attr_value)<0) {
+                        H5Aclose(attr);
+                        H5Sclose(aspace);
+                        H5Tclose(atype);
+                        free(cur_attr_value);
+                        return -1;
+                    }
 
-                    ret = 1;
-                 }
-                 free(cur_attr_value);
-                H5Sclose(aspace);
+                    // There are two grids in the file. This "if clause" is for the second one.
+                    if(strncmp(cur_attr_value,op_data->value,strlen(op_data->value))!=0) {
+                        free(op_data->name);
+                        op_data->name = NULL;
+                        op_data->name = (char*)malloc(strlen(name)+1);
+                        strncpy(op_data->name,name,strlen(name));
+                        if(op_data->value)
+                            free(op_data->value);
+                        op_data->value = NULL;
+                        op_data->value=(char*)malloc(num_elms+1);
+                        strncpy(op_data->value,cur_attr_value,strlen(cur_attr_value));
+                        ret = 1;
+                    }
+                    free(cur_attr_value);
+                    H5Sclose(aspace);
                 }
             }
             else {
-                op_data->name = (char*)malloc(strlen(name)+1);
-                //attr_name = malloc(strlen(name)+1);
-                strncpy(op_data->name,name,strlen(name));
-                //obtain_attr_value(attr,atype,(void*)&op_data->value);
                 hid_t aspace = H5Aget_space(attr);
+                if(aspace <0) {
+                    H5Aclose(attr);
+                    H5Tclose(atype);
+                    return -1;
+                }
+ 
                 hsize_t num_elms = H5Tget_size(atype)*H5Sget_simple_extent_npoints(aspace);
+                op_data->name = (char*)malloc(strlen(name)+1);
+                strncpy(op_data->name,name,strlen(name));
+               
 #if 0
                 char *attr_value = op_data->value;
                 attr_value = malloc(num_elms+1);
                 H5Aread(attr,atype,attr_value);
                 printf("attr_value is %s\n",attr_value);
 #endif
-                //*((char *)value) = (char*) malloc(num_elms+1);
                 op_data->value = (char*)malloc(num_elms+1);
-                H5Aread(attr,atype,(void*)op_data->value);
+                if(H5Aread(attr,atype,(void*)op_data->value)<0) {
+                        H5Aclose(attr);
+                        H5Sclose(aspace);
+                        H5Tclose(atype);
+                        free(op_data->value);
+                }
                 H5Sclose(aspace);
                 ret =1;
-
             }
-            
-            //printf("Selected attribute name is %s\n",name);
         }
         H5Tclose(atype);
         H5Aclose(attr);
     }
     return ret;
-#if 0
-    attr = H5Aopen(loc_id, name, H5P_DEFAULT);
-
-    /*
-     * Display attribute name.
-     */
-    printf("\nName : %s\n", name);
-
-    /*
-     * Get attribute datatype, dataspace, rank, and dimensions.
-     */
-    atype  = H5Aget_type(attr);
-    aspace = H5Aget_space(attr);
-    rank = H5Sget_simple_extent_ndims(aspace);
-    ret = H5Sget_simple_extent_dims(aspace, sdim, NULL);
-
-    /*
-     *  Display rank and dimension sizes for the array attribute.
-     */
-
-    if(rank > 0) {
-        printf("Rank : %d \n", rank);
-        printf("Dimension sizes : ");
-        for (i=0; i< rank; i++)
-            printf("%d ", (int)sdim[i]);
-        printf("\n");
-    }
-
-    /*
-     * Read array attribute and display its type and values.
-     */
-
-    if (H5T_FLOAT == H5Tget_class(atype)) {
-        printf("Type : FLOAT \n");
-        npoints = H5Sget_simple_extent_npoints(aspace);
-        float_array = (float *)malloc(sizeof(float)*(int)npoints);
-        ret = H5Aread(attr, atype, float_array);
-        printf("Values : ");
-        for( i = 0; i < (int)npoints; i++)
-            printf("%f ", float_array[i]);
-        printf("\n");
-        free(float_array);
-    }
-
-    /*
-     * Release all identifiers.
-     */
-    H5Tclose(atype);
-    H5Sclose(aspace);
-    H5Aclose(attr);
-#endif
 
 }
 
-
+// The callback function to iterate every HDF5 object(including groups and datasets)
+// Checked the internal HDF5 functions. The object type is used to obtain different
+// objects in the internal function. So performance-wise, this routine should be
+// the same as the routine that uses the H5Literate.
+//
 static int 
 visit_obj_cb(hid_t  group_id, const char *name, const H5O_info_t *oinfo,
     void *_op_data)
@@ -828,19 +792,20 @@ visit_obj_cb(hid_t  group_id, const char *name, const H5O_info_t *oinfo,
 
         hid_t grp = -1;
         grp = H5Gopen2(group_id,name,H5P_DEFAULT);
-
-    //printf("link name is %s\n",name); 
-    ret = H5Aiterate2(grp, H5_INDEX_NAME, H5_ITER_INC, NULL, attr_info, op_data);
+        if(grp < 0) 
+            return -1;
+        ret = H5Aiterate2(grp, H5_INDEX_NAME, H5_ITER_INC, NULL, attr_info, op_data);
 #if 0
     if(ret > 0) {
     printf("object: attr name is %s\n",op_data->name);
     printf("object: attr value is %s\n",op_data->value);
     }
 #endif
-    if(ret <0) 
-        return -1;
-        //printf("H5Aiterate2 failed\n");
-    H5Gclose(grp);
+        if(ret <0){ 
+            H5Gclose(grp);
+            return -1;
+        }
+        H5Gclose(grp);
     }
     return ret;
  
