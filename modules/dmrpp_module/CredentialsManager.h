@@ -28,6 +28,7 @@
 
 #include <string>
 #include <vector>
+#include <mutex>
 #include "AccessCredentials.h"
 
 
@@ -44,17 +45,19 @@ public:
     static const std::string ENV_CREDS_KEY_VALUE;
 
 private:
-    CredentialsManager();
-
-    std::map<std::string, AccessCredentials* > creds;
-    static void initialize_instance();
-    static void delete_instance();
+    std::mutex d_euc_cache_lock_mutex{};
+    std::string d_netrc_filename;
     bool ngaps3CredentialsLoaded;
 
+    std::map<std::string, AccessCredentials* > creds;
+
+    CredentialsManager();
+
+    static void initialize_instance();
+    static void delete_instance();
     AccessCredentials *load_credentials_from_env( );
     void load_ngap_s3_credentials( );
 
-    std::string d_netrc_filename;
 
 public:
     static CredentialsManager *theMngr;
