@@ -211,7 +211,9 @@ HDF5RequestHandler::HDF5RequestHandler(const string & name)
     add_handler(HELP_RESPONSE, HDF5RequestHandler::hdf5_build_help);
     add_handler(VERS_RESPONSE, HDF5RequestHandler::hdf5_build_version);
 
+#if !(DYNAMIC_CONFIG_ENABLED)
     load_config();
+#endif
 
     BESDEBUG(HDF5_NAME, prolog << "END" << endl);
 }
