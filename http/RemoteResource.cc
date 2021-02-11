@@ -303,25 +303,25 @@ namespace http {
                          prolog << "Remote resource is already in cache. cache_file_name: " << d_resourceCacheFileName
                                 << endl);
 
-                if (cached_resource_is_expired(d_resourceCacheFileName, "")){
-                    update_file_and_headers(template_key,replace_value);
+                if (cached_resource_is_expired(d_resourceCacheFileName, d_uid)) {
+                    update_file_and_headers(template_key, replace_value);
                     cache->exclusive_to_shared_lock(d_fd);
+                } else {
+                    cache->exclusive_to_shared_lock(d_fd);
+                    load_hdrs_from_file();
                 }
-            }
-            else {
-                cache->exclusive_to_shared_lock(d_fd);
-                load_hdrs_from_file();
                 return;
-            }
-
-            // Now we actually need to reach out across the interwebs and retrieve the remote resource and put it's
-            // content into a local cache file, given that it's not in the cache.
-            // First make an empty file and get an exclusive lock on it.
-            if (cache->create_and_lock(d_resourceCacheFileName, d_fd)) {
-                update_file_and_headers(template_key,replace_value);
             } else {
-                cache->get_read_lock(d_resourceCacheFileName, d_fd);
-                load_hdrs_from_file();
+                // Now we actually need to reach out across the interwebs and retrieve the remote resource and put it's
+                // content into a local cache file, given that it's not in the cache.
+                // First make an empty file and get an exclusive lock on it.
+                if (cache->create_and_lock(d_resourceCacheFileName, d_fd)) {
+                    update_file_and_headers(template_key, replace_value);
+                } else {
+                    cache->get_read_lock(d_resourceCacheFileName, d_fd);
+                    load_hdrs_from_file();
+                }
+                return;
             }
 
             string msg = prolog + "Failed to acquire cache read lock for remote resource: '";
