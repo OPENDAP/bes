@@ -191,7 +191,7 @@ string EffectiveUrlCache::get_effective_url(const string &source_url)
 
     // This lock is a RAII implementation. It will block until the mutex is
     // available and the lock will be released when the instance is destroyed.
-    std::lock_guard<std::mutex> lock_me(d_euc_cache_lock_mutex);
+    std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
 
     BESDEBUG(MODULE, prolog << "BEGIN url: " << source_url << endl);
     string effective_url_str = source_url;
