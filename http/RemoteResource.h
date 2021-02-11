@@ -110,6 +110,10 @@ namespace http {
         */
         unsigned int filter_retrieved_resource(const std::string &template_str, const std::string &update_str);
 
+        bool cached_resource_is_expired(const std::string &filename, const std::string &uid);
+        void update_file_and_headers(const std::string &template_key, const std::string &replace_value);
+        void load_hdrs_from_file();
+
     protected:
         RemoteResource() :
                 d_fd(0), d_initialized(false), d_resourceCacheFileName(""),

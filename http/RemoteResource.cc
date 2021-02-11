@@ -289,117 +289,39 @@ namespace http {
         BESDEBUG(MODULE, prolog << "d_resourceCacheFileName: " << d_resourceCacheFileName << endl);
 
         // @TODO MAKE THIS RETRIEVE THE CACHED DATA TYPE IF THE CACHED RESPONSE IF FOUND
-        // We need to know the type of the resource. HTTP headers are the preferred  way to determine the type.
-        // Unfortunately, the current code losses both the HTTP headers sent from the request and the derived type
-        // to subsequent accesses of the cached object. Since we have to have a type, for now we just set the type
-        // from the url. If down below we DO an HTTP GET then the headers will be evaluated and the type set by setType()
-        // But really - we gotta fix this.
+        //   We need to know the type of the resource. HTTP headers are the preferred  way to determine the type.
+        //   Unfortunately, the current code losses both the HTTP headers sent from the request and the derived type
+        //   to subsequent accesses of the cached object. Since we have to have a type, for now we just set the type
+        //   from the url. If down below we DO an HTTP GET then the headers will be evaluated and the type set by setType()
+        //   But really - we gotta fix this.
         http::get_type_from_url(d_remoteResourceUrl, d_type);
         BESDEBUG(MODULE, prolog << "d_type: " << d_type << endl);
 
         try {
-            if (cache->get_read_lock(d_resourceCacheFileName, d_fd)) {
+            if (cache->get_exclusive_lock(d_resourceCacheFileName, d_fd)) {
                 BESDEBUG(MODULE,
                          prolog << "Remote resource is already in cache. cache_file_name: " << d_resourceCacheFileName
                                 << endl);
 
-                // #########################################################################################################
-                // I think in this if() is where we need to load the headers from the cache if we have them.
-                string hdr_filename = cache->get_cache_file_name(d_remoteResourceUrl,mangle) + ".hdrs";
-                std::ifstream hdr_ifs(hdr_filename.c_str());
-                try {
-                    BESDEBUG(MODULE, prolog << "Reading response headers from: " << hdr_filename << endl);
-                    for (std::string line; std::getline(hdr_ifs, line);) {
-                        (*d_response_headers).push_back(line);
-                        BESDEBUG(MODULE, prolog << "header:   " << line << endl);
-                    }
+                if (cached_resource_is_expired(d_resourceCacheFileName, "")){
+                    update_file_and_headers(template_key,replace_value);
+                    cache->exclusive_to_shared_lock(d_fd);
                 }
-                catch (...) {
-                    hdr_ifs.close();
-                    throw;
-                }
-                ingest_http_headers_and_type();
-                d_initialized = true;
+            }
+            else {
+                cache->exclusive_to_shared_lock(d_fd);
+                load_hdrs_from_file();
                 return;
-                // #########################################################################################################
             }
 
             // Now we actually need to reach out across the interwebs and retrieve the remote resource and put it's
             // content into a local cache file, given that it's not in the cache.
             // First make an empty file and get an exclusive lock on it.
             if (cache->create_and_lock(d_resourceCacheFileName, d_fd)) {
-
-                // Write the remote resource to the cache file.
-                try {
-                    writeResourceToFile(d_fd);
-                }
-                catch (...) {
-                    // If things went south then we need to dump the file because we'll end up with an empty/bogus file clogging the cache
-                    unlink(d_resourceCacheFileName.c_str());
-                    throw;
-                }
-
-                //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-                // If we are filtering the response (for example to inject data URL into a dmr++ file),
-                // The file is locked and we have the information required to make the substitution.
-                // This is controlled by:
-                //  - The template_key string must not be empty.
-                if(!template_key.empty()){
-                        unsigned int count = filter_retrieved_resource(template_key, replace_value);
-                        BESDEBUG(MODULE, prolog << "Replaced " << count <<
-                        " instance(s) of template(" <<
-                        template_key << ") with " << replace_value << " in cached RemoteResource" << endl);
-                }
-
-                //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-                // I think right here is where I would be able to cache the data type/response headers. While I have
-                // the exclusive lock I could open another cache file for metadata and write to it.
-                {
-                    // FIXME THIS IS WHERE WE NEED TO USE NGAP HASH CACHE FILE NAMES NOT FLC NAMES.
-                    string hdr_filename = cache->get_cache_file_name(d_remoteResourceUrl, mangle) + ".hdrs";
-                    std::ofstream hdr_out(hdr_filename.c_str());
-                    try {
-                        for (size_t i = 0; i < this->d_response_headers->size(); i++) {
-                            hdr_out << (*d_response_headers)[i] << endl;
-                        }
-                    }
-                    catch (...) {
-                        // If this fails for any reason we:
-                        hdr_out.close(); // Close the stream
-                        unlink(hdr_filename.c_str()); // unlink the file
-                        unlink(d_resourceCacheFileName.c_str()); // unlink the primary cache file.
-                        throw;
-                    }
-                }
-                // #########################################################################################################
-
-                // Change the exclusive lock on the new file to a shared lock. This keeps
-                // other processes from purging the new file and ensures that the reading
-                // process can use it.
-                cache->exclusive_to_shared_lock(d_fd);
-                BESDEBUG(MODULE, prolog << "Converted exclusive cache lock to shared lock." << endl);
-
-                // Now update the total cache size info and purge if needed. The new file's
-                // name is passed into the purge method because this process cannot detect its
-                // own lock on the file.
-                unsigned long long size = cache->update_cache_info(d_resourceCacheFileName);
-                BESDEBUG(MODULE, prolog << "Updated cache info" << endl);
-
-                if (cache->cache_too_big(size)) {
-                    cache->update_and_purge(d_resourceCacheFileName);
-                    BESDEBUG(MODULE, prolog << "Updated and purged cache." << endl);
-                }
-                BESDEBUG(MODULE, prolog << "END" << endl);
-                d_initialized = true;
-                return;
+                update_file_and_headers(template_key,replace_value);
             } else {
-                if (cache->get_read_lock(d_resourceCacheFileName, d_fd)) {
-                    BESDEBUG(MODULE,
-                             prolog << "Remote resource is in cache. cache_file_name: " << d_resourceCacheFileName
-                                    << endl);
-                    d_initialized = true;
-                    return;
-                }
+                cache->get_read_lock(d_resourceCacheFileName, d_fd);
+                load_hdrs_from_file();
             }
 
             string msg = prolog + "Failed to acquire cache read lock for remote resource: '";
@@ -421,7 +343,105 @@ namespace http {
             throw;
         }
 
-    }
+    } //end RemoteResource::retrieveResource()
+
+    void RemoteResource::update_file_and_headers(const string &template_key, const string &replace_value){
+
+        // Get a pointer to the singleton cache instance for this process.
+        HttpCache *cache = HttpCache::get_instance();
+        if (!cache) {
+            ostringstream oss;
+            oss << prolog << "FAILED to get local cache. ";
+            oss << "Unable to proceed with request for " << this->d_remoteResourceUrl;
+            oss << " The server MUST have a valid HTTP cache configuration to operate." << endl;
+            BESDEBUG(MODULE, oss.str());
+            throw BESInternalError(oss.str(), __FILE__, __LINE__);
+        }
+
+        // Write the remote resource to the cache file.
+        try {
+            writeResourceToFile(d_fd);
+        }
+        catch (...) {
+            // If things went south then we need to dump the file because we'll end up with an empty/bogus file clogging the cache
+            unlink(d_resourceCacheFileName.c_str());
+            throw;
+        }
+
+        //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+        // If we are filtering the response (for example to inject data URL into a dmr++ file),
+        // The file is locked and we have the information required to make the substitution.
+        // This is controlled by:
+        //  - The template_key string must not be empty.
+        if(!template_key.empty()){
+            unsigned int count = filter_retrieved_resource(template_key, replace_value);
+            BESDEBUG(MODULE, prolog << "Replaced " << count <<
+                                    " instance(s) of template(" <<
+                                    template_key << ") with " << replace_value << " in cached RemoteResource" << endl);
+        }
+
+        //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+        // I think right here is where I would be able to cache the data type/response headers. While I have
+        // the exclusive lock I could open another cache file for metadata and write to it.
+        {
+            // FIXME THIS IS WHERE WE NEED TO USE NGAP HASH CACHE FILE NAMES NOT FLC NAMES.
+            string hdr_filename = d_resourceCacheFileName + ".hdrs";
+            std::ofstream hdr_out(hdr_filename.c_str());
+            try {
+                for (size_t i = 0; i < this->d_response_headers->size(); i++) {
+                    hdr_out << (*d_response_headers)[i] << endl;
+                }
+            }
+            catch (...) {
+                // If this fails for any reason we:
+                hdr_out.close(); // Close the stream
+                unlink(hdr_filename.c_str()); // unlink the file
+                unlink(d_resourceCacheFileName.c_str()); // unlink the primary cache file.
+                throw;
+            }
+        }
+        // #########################################################################################################
+
+        // Change the exclusive lock on the new file to a shared lock. This keeps
+        // other processes from purging the new file and ensures that the reading
+        // process can use it.
+        cache->exclusive_to_shared_lock(d_fd);
+        BESDEBUG(MODULE, prolog << "Converted exclusive cache lock to shared lock." << endl);
+
+        // Now update the total cache size info and purge if needed. The new file's
+        // name is passed into the purge method because this process cannot detect its
+        // own lock on the file.
+        unsigned long long size = cache->update_cache_info(d_resourceCacheFileName);
+        BESDEBUG(MODULE, prolog << "Updated cache info" << endl);
+
+        if (cache->cache_too_big(size)) {
+            cache->update_and_purge(d_resourceCacheFileName);
+            BESDEBUG(MODULE, prolog << "Updated and purged cache." << endl);
+        }
+        BESDEBUG(MODULE, prolog << "END" << endl);
+        d_initialized = true;
+        return;
+    } //end RemoteResource::update_file_and_headers()
+
+    void RemoteResource::load_hdrs_from_file(){
+        string hdr_filename = d_resourceCacheFileName + ".hdrs";
+        std::ifstream hdr_ifs(hdr_filename.c_str());
+
+        BESDEBUG(MODULE, prolog << "Reading response headers from: " << hdr_filename << endl);
+        for (std::string line; std::getline(hdr_ifs, line);) {
+            (*d_response_headers).push_back(line);
+            BESDEBUG(MODULE, prolog << "header:   " << line << endl);
+        }
+
+        ingest_http_headers_and_type();
+        d_initialized = true;
+        return;
+    } //end RemoteResource::load_hdrs_from_file()
+
+    bool RemoteResource::cached_resource_is_expired(const std::string &filename, const std::string &uid){
+        //TODO cache file time check go here
+        return false; //for now
+    } //end RemoteResource::cache_resource_is_expired()
 
     /**
      *
