@@ -30,6 +30,7 @@
 #include <fstream>
 #include <string>
 #include <iostream>
+#include <sys/stat.h>
 
 #include "rapidjson/document.h"
 
@@ -284,8 +285,7 @@ namespace http {
 
         // Get the name of the file in the cache (either the code finds this file or
         // or it makes it).
-        // FIXME THIS SHOULD USE THE uid,resourceURL version of the is function, and the cache name should be a hash
-        d_resourceCacheFileName = cache->get_cache_file_name(d_remoteResourceUrl, mangle);
+        d_resourceCacheFileName = cache->get_cache_file_name(d_uid, d_remoteResourceUrl, mangle);
         BESDEBUG(MODULE, prolog << "d_resourceCacheFileName: " << d_resourceCacheFileName << endl);
 
         // @TODO MAKE THIS RETRIEVE THE CACHED DATA TYPE IF THE CACHED RESPONSE IF FOUND
@@ -438,10 +438,24 @@ namespace http {
         return;
     } //end RemoteResource::load_hdrs_from_file()
 
-    bool RemoteResource::cached_resource_is_expired(const std::string &filename, const std::string &uid){
-        //TODO cache file time check go here
-        return false; //for now
-    } //end RemoteResource::cache_resource_is_expired()
+    bool RemoteResource::is_cached_resource_expired(const std::string &filename, const std::string &uid){
+
+        struct stat statbuf;
+        if (stat(filename.c_str(), &statbuf) == -1){
+            throw BESNotFoundError(strerror(errno), __FILE__, __LINE__);
+        }//end if
+
+        time_t cacheTime = statbuf.st_ctime;
+        time_t nowTime = time(0);
+        double diffSeconds = difftime(cacheTime,nowTime);
+
+        if (diffSeconds > 3600){ //60 secs * 60 mins = 3600 seconds/1 hour
+            return true;
+        }
+        else{
+            return false;
+        }
+    } //end RemoteResource::is_cache_resource_expired()
 
     /**
      *
