@@ -303,7 +303,7 @@ namespace http {
                          prolog << "Remote resource is already in cache. cache_file_name: " << d_resourceCacheFileName
                                 << endl);
 
-                if (cached_resource_is_expired(d_resourceCacheFileName, d_uid)) {
+                if (is_cached_resource_expired(d_resourceCacheFileName, d_uid)) {
                     update_file_and_headers(template_key, replace_value);
                     cache->exclusive_to_shared_lock(d_fd);
                 } else {
