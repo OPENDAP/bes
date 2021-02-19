@@ -55,6 +55,7 @@
 using namespace std;
 
 #define BES_CATALOG_ROOT_KEY "BES.Catalog.catalog.RootDirectory"
+#define expiredInterval 3600
 
 #define prolog std::string("RemoteResource::").append(__func__).append("() - ")
 #define MODULE "rr"
@@ -449,7 +450,7 @@ namespace http {
         time_t nowTime = time(0);
         double diffSeconds = difftime(cacheTime,nowTime);
 
-        if (diffSeconds > 3600){ //60 secs * 60 mins = 3600 seconds/1 hour
+        if (diffSeconds > expiredInterval){ //60 secs * 60 mins = 3600 seconds/1 hour
             return true;
         }
         else{
