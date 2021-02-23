@@ -79,7 +79,7 @@ public:
     MockChunk(CurlHandlePool *chp, bool sim_err) : Chunk(), d_chp(chp), d_sim_err(sim_err)
     {}
 
-    void inflate_chunk(bool, bool, unsigned int, unsigned int) override
+    void inflate_chunk(bool, bool, unsigned int, unsigned int)
     {
         return;
     }
@@ -99,9 +99,9 @@ public:
         return 2;
     }
 
-    std::vector<unsigned int> mock_pia = {1};
+    std::vector<unsigned long long> mock_pia = {1};
 
-    virtual const std::vector<unsigned int> &get_position_in_array() const  override
+    virtual const std::vector<unsigned long long> &get_position_in_array() const  override
     {
         return mock_pia;
     }
@@ -162,8 +162,8 @@ public:
     bool is_shuffle_compression() const override
     { return false; }
 
-    virtual void insert_chunk(unsigned int, vector<unsigned int> *, vector<unsigned int> *,
-                              shared_ptr<Chunk>, const vector<unsigned int> &) override
+    virtual void insert_chunk(unsigned int, vector<unsigned long long> *, vector<unsigned long long> *,
+                              shared_ptr<Chunk>, const vector<unsigned long long> &) override
     {
         return;
     }
@@ -206,7 +206,7 @@ public:
 
         shared_ptr<Chunk> chunk(new MockChunk(chp, true));
         auto array = new MockDmrppArray;
-        vector<unsigned int> array_shape = {1};
+        vector<unsigned long long> array_shape = {1};
 
         unsigned int num = chp->get_handles_available();
         CPPUNIT_ASSERT(num == chp->get_max_handles());
@@ -230,7 +230,7 @@ public:
 
     // This is a general proxy for the DmrppArray code that controls the parallel transfers.
     void dmrpp_array_thread_control(queue<shared_ptr<Chunk>> &chunks_to_read, MockDmrppArray *array,
-                                    const vector<unsigned int> &array_shape) {
+                                    const vector<unsigned long long> &array_shape) {
         DBG(cerr << prolog << "BEGIN" << endl);
         process_chunks_concurrent("AnImaginarySuperChunk", chunks_to_read, array, array_shape);
         DBG(cerr << prolog << "END" << endl);
@@ -361,7 +361,7 @@ public:
 
         //MockDmrppArray *array = new MockDmrppArray;
         auto array = new MockDmrppArray;
-        vector<unsigned int> array_shape = {1};
+        vector<unsigned long long> array_shape = {1};
 
         vector<size_t> chunk_dim_sizes = {1};
         array->set_chunk_dimension_sizes(chunk_dim_sizes);
@@ -397,7 +397,7 @@ public:
         chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
 
         auto array = new MockDmrppArray;
-        vector<unsigned int> array_shape = {1};
+        vector<unsigned long long> array_shape = {1};
 
         try {
             dmrpp_array_thread_control(chunks_to_read, array, array_shape);
@@ -434,7 +434,7 @@ public:
         chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
 
         auto array = new MockDmrppArray;
-        vector<unsigned int> array_shape = {1};
+        vector<unsigned long long> array_shape = {1};
 
         try {
             dmrpp_array_thread_control(chunks_to_read, array, array_shape);
@@ -473,7 +473,7 @@ public:
         chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
 
         auto array = new MockDmrppArray;
-        vector<unsigned int> array_shape = {1};
+        vector<unsigned long long> array_shape = {1};
 
         try {
             dmrpp_array_thread_control(chunks_to_read, array, array_shape);
@@ -511,7 +511,7 @@ public:
         chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
 
         auto array = new MockDmrppArray;
-        vector<unsigned int> array_shape = {1};
+        vector<unsigned long long> array_shape = {1};
 
         try {
             dmrpp_array_thread_control(chunks_to_read, array, array_shape);
@@ -549,7 +549,7 @@ public:
         chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
 
         auto array = new MockDmrppArray;
-        vector<unsigned int> array_shape = {1};
+        vector<unsigned long long> array_shape = {1};
 
         try {
             dmrpp_array_thread_control(chunks_to_read, array, array_shape);
@@ -587,7 +587,7 @@ public:
             chunks_to_read.push(shared_ptr<Chunk>(new MockChunk(chp, false)));
 
             auto array = new MockDmrppArray;
-            vector<unsigned int> array_shape = {1};
+            vector<unsigned long long> array_shape = {1};
 
             try {
                 dmrpp_array_thread_control(chunks_to_read, array, array_shape);

@@ -87,7 +87,7 @@ public:
     {
         DBG(cerr << prolog << "BEGIN" << endl);
         d_chunk.set_position_in_array("[1,2,3,4]");
-        vector<unsigned int> pia = d_chunk.get_position_in_array();
+        vector<unsigned long long> pia = d_chunk.get_position_in_array();
         CPPUNIT_ASSERT(pia.size() == 4);
         CPPUNIT_ASSERT(pia.at(0) == 1);
         CPPUNIT_ASSERT(pia.at(1) == 2);
@@ -99,7 +99,7 @@ public:
     {
         DBG(cerr << prolog << "BEGIN" << endl);
         d_chunk.set_position_in_array("[5]");
-        vector<unsigned int> pia = d_chunk.get_position_in_array();
+        vector<unsigned long long> pia = d_chunk.get_position_in_array();
         CPPUNIT_ASSERT(pia.size() == 1);
         CPPUNIT_ASSERT(pia.at(0) == 5);
     }

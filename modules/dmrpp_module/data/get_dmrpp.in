@@ -1045,9 +1045,9 @@ if [ -n "${just_dmr}" ]; then
     cat ${SOURCE_DMR} >&2
   else
     cat ${SOURCE_DMR} >${output_file};
-    if test -z "${verbose}"; then
+  fi
+  if test -z "${verbose}"; then
       rm -f ${SOURCE_DMR}
-    fi
   fi
   exit 0
 fi
@@ -1164,6 +1164,8 @@ if test -z "${verbose}"; then
     echo "       main:TEMPSTORE_FILE: ${tempstore_file}"
     rm -f ${missing_vars_file} ${temp_sidecar_file} ${temp_sidecar_dmrpp} ${tempstore_file}
   fi
+  #echo " main:SOURCE_DMR: ${SOURCE_DMR}"
+  rm -f ${SOURCE_DMR}
 fi
 
 #echo "retval: ${retval}";

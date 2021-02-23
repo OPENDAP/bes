@@ -73,7 +73,7 @@ atomic_uint chunk_processing_thread_counter(0);
  * constrained - used to determine where/how to add the chunk's data to the
  * whole array.
  */
-void process_one_chunk(shared_ptr<Chunk> chunk, DmrppArray *array, const vector<unsigned int> &constrained_array_shape)
+void process_one_chunk(shared_ptr<Chunk> chunk, DmrppArray *array, const vector<unsigned long long> &constrained_array_shape)
 {
     BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl );
 
@@ -84,8 +84,8 @@ void process_one_chunk(shared_ptr<Chunk> chunk, DmrppArray *array, const vector<
             chunk->inflate_chunk(array->is_deflate_compression(), array->is_shuffle_compression(),
                                  array->get_chunk_size_in_elements(), array->var()->width());
 
-        vector<unsigned int> target_element_address = chunk->get_position_in_array();
-        vector<unsigned int> chunk_source_address(array->dimensions(), 0);
+        vector<unsigned long long> target_element_address = chunk->get_position_in_array();
+        vector<unsigned long long> chunk_source_address(array->dimensions(), 0);
 
         array->insert_chunk(0 /* dimension */, &target_element_address, &chunk_source_address, chunk,
                             constrained_array_shape);
@@ -112,8 +112,8 @@ void process_one_chunk(shared_ptr<Chunk> chunk, DmrppArray *array, const vector<
  * constrained - used to determine where/how to add the chunk's data to the
  * whole array.
  */
-void process_one_chunk_unconstrained(shared_ptr<Chunk> chunk, const vector<unsigned int> &chunk_shape,
-                                     DmrppArray *array, const vector<unsigned int> &array_shape)
+void process_one_chunk_unconstrained(shared_ptr<Chunk> chunk, const vector<unsigned long long> &chunk_shape,
+                                     DmrppArray *array, const vector<unsigned long long> &array_shape)
 {
     BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl );
 
@@ -242,7 +242,7 @@ void process_chunks_concurrent(
         const string &super_chunk_id,
         queue<shared_ptr<Chunk>> &chunks,
         DmrppArray *array,
-        const vector<unsigned int> &constrained_array_shape ){
+        const vector<unsigned long long> &constrained_array_shape ){
 
     // We maintain a list  of futures to track our parallel activities.
     list<future<bool>> futures;
@@ -326,9 +326,9 @@ void process_chunks_concurrent(
 void process_chunks_unconstrained_concurrent(
         const string &super_chunk_id,
         queue<shared_ptr<Chunk>> &chunks,
-        const vector<unsigned int> &chunk_shape,
+        const vector<unsigned long long> &chunk_shape,
         DmrppArray *array,
-        const vector<unsigned int> &array_shape){
+        const vector<unsigned long long> &array_shape){
 
     // We maintain a list  of futures to track our parallel activities.
     list<future<bool>> futures;
@@ -546,7 +546,7 @@ void SuperChunk::process_child_chunks() {
     BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl );
     retrieve_data();
 
-    vector<unsigned int> constrained_array_shape = d_parent_array->get_shape(true);
+    vector<unsigned long long> constrained_array_shape = d_parent_array->get_shape(true);
     BESDEBUG(SUPER_CHUNK_MODULE, prolog << "d_use_compute_threads: " << (DmrppRequestHandler::d_use_compute_threads ? "true" : "false") << endl);
     BESDEBUG(SUPER_CHUNK_MODULE, prolog << "d_max_compute_threads: " << DmrppRequestHandler::d_max_compute_threads << endl);
 
@@ -586,9 +586,9 @@ void SuperChunk::process_child_chunks_unconstrained() {
     retrieve_data();
 
     // The size in element of each of the array's dimensions
-    const vector<unsigned int> array_shape = d_parent_array->get_shape(true);
+    const vector<unsigned long long> array_shape = d_parent_array->get_shape(true);
     // The size, in elements, of each of the chunk's dimensions
-    const vector<unsigned int> chunk_shape = d_parent_array->get_chunk_dimension_sizes();
+    const vector<unsigned long long> chunk_shape = d_parent_array->get_chunk_dimension_sizes();
 
     if(!DmrppRequestHandler::d_use_compute_threads){
 #if DMRPP_ENABLE_THREAD_TIMERS

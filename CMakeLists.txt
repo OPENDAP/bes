@@ -35,7 +35,7 @@ include_directories(cmdln)
 include_directories(cmdln/unit-tests)
 include_directories(dap)
 include_directories(dap/unit-tests)
-include_directories(dap/unused)
+#include_directories(dap/unused)
 include_directories(dapreader)
 include_directories(dispatch)
 include_directories(http)
@@ -47,14 +47,14 @@ include_directories(dispatch/tests)
 include_directories(dispatch/unit-tests)
 include_directories(functions)
 include_directories(functions/geo-functions)
-include_directories(functions/geo-functions/unused)
+#include_directories(functions/geo-functions/unused)
 include_directories(functions/unit-tests)
 
 include_directories(functions/stare)
 include_directories(functions/stare/unit-tests)
 
 include_directories(functions/unit-tests)
-include_directories(functions/unused_ArrayGeoConstraint_code)
+#include_directories(functions/unused_ArrayGeoConstraint_code)
 
 include_directories(hello_world)
 include_directories(hello_world/not_used)
@@ -65,7 +65,7 @@ include_directories(modules/asciival/unit-tests)
 
 include_directories(modules/cmr_module)
 include_directories(modules/cmr_module/unit-tests)
-include_directories(modules/cmr_module/unused)
+#include_directories(modules/cmr_module/unused)
 include_directories(modules/csv_handler)
 include_directories(modules/debug_functions)
 
@@ -73,7 +73,7 @@ include_directories(modules/debug_functions/unit-tests)
 include_directories(modules/dmrpp_module)
 include_directories(modules/dmrpp_module/unit-tests)
 
-include_directories(modules/dmrpp_module/unused)
+#include_directories(modules/dmrpp_module/unused)
 include_directories(modules/fileout_covjson)
 include_directories(modules/fileout_covjson/unit-tests)
 include_directories(modules/fileout_gdal)
@@ -87,7 +87,7 @@ include_directories(modules/freeform_handler)
 include_directories(modules/freeform_handler/FFND)
 include_directories(modules/freeform_handler/win32)
 include_directories(modules/gateway_module)
-include_directories(modules/gateway_module/unused)
+#include_directories(modules/gateway_module/unused)
 include_directories(modules/gdal_handler)
 include_directories(modules/hdf4_handler)
 include_directories(modules/hdf4_handler/grammarfiles)
@@ -137,7 +137,7 @@ include_directories(xmlcommand)
 include_directories(xmlcommand/not_used)
 include_directories(xmlcommand/tests)
 include_directories(xmlcommand/unit-tests)
-include_directories(xmlcommand/unused)
+#include_directories(xmlcommand/unused)
 
 
 add_executable(bes
@@ -151,7 +151,7 @@ add_executable(bes
     cmdln/CmdTranslation.cc
     cmdln/CmdTranslation.h
 
-    dap/unit-tests/unused/SequenceAggregationServerTest.cc
+#    dap/unit-tests/unused/SequenceAggregationServerTest.cc
     dap/unit-tests/FunctionResponseCacheTest.cc
     dap/unit-tests/GlobalMetadataStoreTest.cc
     dap/unit-tests/ObjMemCacheTest.cc
@@ -164,14 +164,14 @@ add_executable(bes
     dap/unit-tests/test_utils.cc
     dap/unit-tests/test_utils.h
     dap/unit-tests/TestFunction.h
-    dap/unused/BESDapNullAggregationServer.cc
-    dap/unused/BESDapNullAggregationServer.h
-    dap/unused/BESDapResponseCache.cc
-    dap/unused/BESDapResponseCache.h
-    dap/unused/BESDapSequenceAggregationServer.cc
-    dap/unused/BESDapSequenceAggregationServer.h
-    dap/unused/BESHandlerUtil.cc
-    dap/unused/BESHandlerUtil.h
+#    dap/unused/BESDapNullAggregationServer.cc
+#    dap/unused/BESDapNullAggregationServer.h
+#    dap/unused/BESDapResponseCache.cc
+#    dap/unused/BESDapResponseCache.h
+#    dap/unused/BESDapSequenceAggregationServer.cc
+#    dap/unused/BESDapSequenceAggregationServer.h
+#    dap/unused/BESHandlerUtil.cc
+#    dap/unused/BESHandlerUtil.h
     dap/BESDap4ResponseHandler.cc
     dap/BESDap4ResponseHandler.h
     dap/BESDapError.cc
@@ -497,8 +497,8 @@ add_executable(bes
     http/unit-tests/HttpUrlTest.cc
     http/unit-tests/RemoteResourceTest.cc
 
-    functions/geo-functions/unused/NC_GOES_Dataset.cpp
-    functions/geo-functions/unused/NC_GOES_Dataset.h
+#    functions/geo-functions/unused/NC_GOES_Dataset.cpp
+#    functions/geo-functions/unused/NC_GOES_Dataset.h
     functions/geo-functions/AbstractDataset.cpp
     functions/geo-functions/AbstractDataset.h
     functions/geo-functions/BoundingBox.cpp
@@ -666,8 +666,8 @@ add_executable(bes
     modules/cmr_module/unit-tests/CmrCatalogTest.cc
     modules/cmr_module/unit-tests/GranuleTest.cc
     modules/cmr_module/unit-tests/test_config.h
-    modules/cmr_module/unused/CmrInfoCmd.cc
-    modules/cmr_module/unused/CmrInfoCmd.h
+#    modules/cmr_module/unused/CmrInfoCmd.cc
+#    modules/cmr_module/unused/CmrInfoCmd.h
     modules/cmr_module/CmrApi.cc
     modules/cmr_module/CmrApi.h
     #modules/cmr_module/CmrCache.cc
@@ -719,10 +719,11 @@ add_executable(bes
     modules/debug_functions/DebugFunctions.cc
     modules/debug_functions/DebugFunctions.h
 
-    modules/dmrpp_module/unit-tests/unused/DmrppChunkedReadTest.cc
-    modules/dmrpp_module/unit-tests/unused/DmrppHttpReadTest.cc
-    modules/dmrpp_module/unit-tests/unused/DmrppTypeReadTest.cc
-    modules/dmrpp_module/unit-tests/unused/DmrppUtilTest.cc
+#    modules/dmrpp_module/unit-tests/unused/DmrppChunkedReadTest.cc
+#    modules/dmrpp_module/unit-tests/unused/DmrppHttpReadTest.cc
+#    modules/dmrpp_module/unit-tests/unused/DmrppTypeReadTest.cc
+#    modules/dmrpp_module/unit-tests/unused/DmrppUtilTest.cc
+    modules/dmrpp_module/unit-tests/DmrppArrayTest.cc
     modules/dmrpp_module/unit-tests/ChunkTest.cc
     modules/dmrpp_module/unit-tests/CredentialsManagerTest.cc
     modules/dmrpp_module/unit-tests/DmrppCommonTest.cc
@@ -2024,7 +2025,7 @@ add_executable(bes
     xmlcommand/unit-tests/BuildTInterface.h
     xmlcommand/unit-tests/propsT.cc
     xmlcommand/unit-tests/test_config.h
-    xmlcommand/unused/SiteMapCommandNames.h
+#    xmlcommand/unused/SiteMapCommandNames.h
     xmlcommand/BESXMLCatalogCommand.cc
     xmlcommand/BESXMLCatalogCommand.h
     xmlcommand/BESXMLCommand.cc

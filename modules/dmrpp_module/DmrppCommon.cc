@@ -204,7 +204,7 @@ unsigned long DmrppCommon::add_chunk(
         const string &position_in_array)
 
 {
-    vector<unsigned int> cpia_vector;
+    vector<unsigned long long> cpia_vector;
     Chunk::parse_chunk_position_in_array_string(position_in_array, cpia_vector);
     return add_chunk(data_url, byte_order, size, offset, cpia_vector);
 }
@@ -214,7 +214,7 @@ unsigned long DmrppCommon::add_chunk(
         const string &byte_order,
         unsigned long long size,
         unsigned long long offset,
-        const vector<unsigned int> &position_in_array)
+        const vector<unsigned long long> &position_in_array)
 {
     std::shared_ptr<Chunk> chunk(new Chunk(data_url, byte_order, size, offset, position_in_array));
 #if 0
@@ -360,7 +360,7 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
 
         if (chunk->get_position_in_array().size() > 0) {
             // Get position in array string:
-            vector<unsigned int> pia = chunk->get_position_in_array();
+            vector<unsigned long long> pia = chunk->get_position_in_array();
             ostringstream oss;
             oss << "[";
             copy(pia.begin(), pia.end(), ostream_iterator<unsigned int>(oss, ","));
@@ -436,7 +436,7 @@ void DmrppCommon::dump(ostream & strm) const
     strm << BESIndent::LMarg << "is_deflate:             " << (is_deflate_compression() ? "true" : "false") << endl;
     strm << BESIndent::LMarg << "is_shuffle_compression: " << (is_shuffle_compression() ? "true" : "false") << endl;
 
-    const vector<unsigned int> &chunk_dim_sizes = get_chunk_dimension_sizes();
+    const vector<unsigned long long> &chunk_dim_sizes = get_chunk_dimension_sizes();
 
     strm << BESIndent::LMarg << "chunk dimension sizes:  [";
     for (unsigned int i = 0; i < chunk_dim_sizes.size(); i++) {

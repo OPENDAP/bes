@@ -64,7 +64,7 @@ public:
     static bool d_use_compute_threads;
     static unsigned int d_max_compute_threads;
 
-    static unsigned int d_min_size;
+    static unsigned long long d_contiguous_concurrent_threshold;
 
 	static bool dap_build_dmr(BESDataHandlerInterface &dhi);
 	static bool dap_build_dap4data(BESDataHandlerInterface &dhi);

@@ -107,9 +107,9 @@ struct one_chunk_args {
     std::string parent_super_chunk_id;
     std::shared_ptr<Chunk> chunk;
     DmrppArray *array;
-    const vector<unsigned int> &array_shape;
+    const vector<unsigned long long> &array_shape;
 
-    one_chunk_args(const string sc_id, std::shared_ptr<Chunk> c, DmrppArray *a, const vector<unsigned int> &a_s)
+    one_chunk_args(const string sc_id, std::shared_ptr<Chunk> c, DmrppArray *a, const vector<unsigned long long> &a_s)
             : parent_thread_id(std::this_thread::get_id()), parent_super_chunk_id(sc_id), chunk(std::move(c)), array(a), array_shape(a_s) {}
 };
 
@@ -123,11 +123,11 @@ struct one_chunk_unconstrained_args {
     std::string parent_super_chunk_id;
     std::shared_ptr<Chunk> chunk;
     DmrppArray *array;
-    const vector<unsigned int> &array_shape;
-    const vector<unsigned int> &chunk_shape;
+    const vector<unsigned long long> &array_shape;
+    const vector<unsigned long long> &chunk_shape;
 
-    one_chunk_unconstrained_args(const string sc_id, std::shared_ptr<Chunk> c, DmrppArray *a, const vector<unsigned int> &a_s,
-                                 const vector<unsigned int> &c_s)
+    one_chunk_unconstrained_args(const string sc_id, std::shared_ptr<Chunk> c, DmrppArray *a, const vector<unsigned long long> &a_s,
+                                 const vector<unsigned long long> &c_s)
             : parent_thread_id(std::this_thread::get_id()), parent_super_chunk_id(sc_id), chunk(std::move(c)),
             array(a), array_shape(a_s), chunk_shape(c_s) {}
 };
@@ -136,14 +136,14 @@ void process_chunks_concurrent(
         const string &super_chunk_id,
         std::queue<shared_ptr<Chunk>> &chunks,
         DmrppArray *array,
-        const std::vector<unsigned int> &shape );
+        const std::vector<unsigned long long> &shape );
 
 void process_chunks_unconstrained_concurrent(
         const string &super_chunk_id,
         std::queue<std::shared_ptr<Chunk>> &chunks,
-        const std::vector<unsigned int> &chunk_shape,
+        const std::vector<unsigned long long> &chunk_shape,
         DmrppArray *array,
-        const std::vector<unsigned int> &array_shape);
+        const std::vector<unsigned long long> &array_shape);
 
 
 
