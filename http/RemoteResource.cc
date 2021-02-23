@@ -311,6 +311,7 @@ namespace http {
                     cache->exclusive_to_shared_lock(d_fd);
                     load_hdrs_from_file();
                 }
+                d_initialized = true;
                 return;
             } else {
                 // Now we actually need to reach out across the interwebs and retrieve the remote resource and put it's
@@ -322,6 +323,7 @@ namespace http {
                     cache->get_read_lock(d_resourceCacheFileName, d_fd);
                     load_hdrs_from_file();
                 }
+                d_initialized = true;
                 return;
             }
 
@@ -381,11 +383,7 @@ namespace http {
                                     template_key << ") with " << replace_value << " in cached RemoteResource" << endl);
         }
 
-        //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-        // I think right here is where I would be able to cache the data type/response headers. While I have
-        // the exclusive lock I could open another cache file for metadata and write to it.
         {
-            // FIXME THIS IS WHERE WE NEED TO USE NGAP HASH CACHE FILE NAMES NOT FLC NAMES.
             string hdr_filename = d_resourceCacheFileName + ".hdrs";
             std::ofstream hdr_out(hdr_filename.c_str());
             try {
@@ -420,7 +418,7 @@ namespace http {
             BESDEBUG(MODULE, prolog << "Updated and purged cache." << endl);
         }
         BESDEBUG(MODULE, prolog << "END" << endl);
-        d_initialized = true;
+
         return;
     } //end RemoteResource::update_file_and_headers()
 
@@ -435,7 +433,7 @@ namespace http {
         }
 
         ingest_http_headers_and_type();
-        d_initialized = true;
+
         return;
     } //end RemoteResource::load_hdrs_from_file()
 

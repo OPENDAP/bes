@@ -182,6 +182,41 @@ public:
 /*##################################################################################################*/
 /* TESTS BEGIN */
 
+        /**
+         *
+         */
+        void load_hdrs_from_file_test(){
+            if(debug) cerr << prolog << "BEGIN" << endl;
+
+            string url = "http://test.opendap.org/data/httpd_catalog/READTHIS";
+            if(debug) cerr << prolog << "url: " << url << endl;
+            http::RemoteResource rhr(url);
+            try {
+                rhr.retrieveResource();
+                vector<string> *hdrs = rhr.getResponseHeaders();
+
+                for(size_t i=0; i<hdrs->size() && debug ; i++){
+                    cerr << prolog << "hdr["<< i << "]: " << (*hdrs)[i] << endl;
+                }
+                int retrieved_header_count = hdrs->size();
+                int expected_header_count = 7;
+                if(debug) cerr << prolog << "expected_header_count : " << expected_header_count << endl;
+                if(debug) cerr << prolog << "retrieved content: " << retrieved_header_count << endl;
+                CPPUNIT_ASSERT( retrieved_header_count == expected_header_count );
+            }
+            catch (BESError &besE){
+                cerr << "Caught BESError! message: " << besE.get_verbose_message() << " type: " << besE.get_bes_error_type() << endl;
+                CPPUNIT_ASSERT(false);
+            }
+            if(debug) cerr << prolog << "END" << endl;
+        }
+
+        /**
+         *
+         */
+        void update_file_and_headers_test(){
+
+        }
 
     void get_http_url_test() {
         if(debug) cerr << prolog << "BEGIN" << endl;
@@ -279,7 +314,7 @@ public:
         if(debug) cerr << prolog << "END" << endl;
     }
 
-        /**
+    /**
      *
      */
     void get_file_url_test() {
@@ -311,12 +346,28 @@ public:
         if(debug) cerr << prolog << "END" << endl;
     }
 
+    /**
+     *
+     */
+     void filter_retrieved_resource_test(){
+
+     }
+
+     /**
+      *
+      */
+     void is_cached_resource_expired_test(){
+
+     }
+
+
 /* TESTS END */
 /*##################################################################################################*/
 
 
     CPPUNIT_TEST_SUITE( RemoteResourceTest );
 
+    CPPUNIT_TEST(load_hdrs_from_file_test);
     CPPUNIT_TEST(get_http_url_test);
     CPPUNIT_TEST(get_file_url_test);
     CPPUNIT_TEST(get_ngap_ghrc_tea_url_test);
