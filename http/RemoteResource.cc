@@ -279,7 +279,7 @@ namespace http {
             ostringstream oss;
             oss << prolog << "FAILED to get local cache. ";
             oss << "Unable to proceed with request for " << this->d_remoteResourceUrl;
-             oss << " The server MUST have a valid HTTP cache configuration to operate." << endl;
+            oss << " The server MUST have a valid HTTP cache configuration to operate." << endl;
             BESDEBUG(MODULE, oss.str());
             throw BESInternalError(oss.str(), __FILE__, __LINE__);
         }
@@ -305,9 +305,11 @@ namespace http {
                                 << endl);
 
                 if (is_cached_resource_expired(d_resourceCacheFileName, d_uid)) {
+                    BESDEBUG(MODULE, prolog << "EXISTS - UPDATING " << endl);
                     update_file_and_headers(template_key, replace_value);
                     cache->exclusive_to_shared_lock(d_fd);
                 } else {
+                    BESDEBUG(MODULE, prolog << "EXISTS - LOADING " << endl);
                     cache->exclusive_to_shared_lock(d_fd);
                     load_hdrs_from_file();
                 }
@@ -318,8 +320,10 @@ namespace http {
                 // content into a local cache file, given that it's not in the cache.
                 // First make an empty file and get an exclusive lock on it.
                 if (cache->create_and_lock(d_resourceCacheFileName, d_fd)) {
+                    BESDEBUG(MODULE, prolog << "DOESN'T EXIST - CREATING " << endl);
                     update_file_and_headers(template_key, replace_value);
                 } else {
+                    BESDEBUG(MODULE, prolog << " WAS CREATED - LOADING " << endl);
                     cache->get_read_lock(d_resourceCacheFileName, d_fd);
                     load_hdrs_from_file();
                 }
@@ -382,7 +386,7 @@ namespace http {
                                     " instance(s) of template(" <<
                                     template_key << ") with " << replace_value << " in cached RemoteResource" << endl);
         }
-
+        else
         {
             string hdr_filename = d_resourceCacheFileName + ".hdrs";
             std::ofstream hdr_out(hdr_filename.c_str());
