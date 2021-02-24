@@ -32,6 +32,7 @@
 
 #include <GetOpt.h>
 #include <util.h>
+#include <HttpCache.h>
 
 #include "BESError.h"
 #include "BESDebug.h"
@@ -154,19 +155,7 @@ public:
         }
 
         if(purge_cache){
-            if(Debug) cerr << prolog << "Purging cache!" << endl;
-            string cache_dir;
-            bool found;
-            TheBESKeys::TheKeys()->get_value(HTTP_CACHE_DIR_KEY,cache_dir,found);
-            if(found){
-                if(Debug) cerr << prolog << HTTP_CACHE_DIR_KEY << ": " <<  cache_dir << endl;
-                if(Debug) cerr << prolog << "Purging " << cache_dir << endl;
-                string sys_cmd = "mkdir -p "+ cache_dir;
-                system(sys_cmd.c_str());
-                sys_cmd = "exec rm -rf "+ BESUtil::assemblePath(cache_dir,"/*");
-                system(sys_cmd.c_str());
-                if(Debug) cerr << prolog << cache_dir  << " has been purged." << endl;
-            }
+            cache_purge();
         }
 
 
@@ -178,6 +167,21 @@ public:
     {
     }
 
+    void cache_purge(){
+        if(Debug) cerr << prolog << "Purging cache!" << endl;
+        string cache_dir;
+        bool found;
+        TheBESKeys::TheKeys()->get_value(HTTP_CACHE_DIR_KEY,cache_dir,found);
+        if(found){
+            if(Debug) cerr << prolog << HTTP_CACHE_DIR_KEY << ": " <<  cache_dir << endl;
+            if(Debug) cerr << prolog << "Purging " << cache_dir << endl;
+            string sys_cmd = "mkdir -p "+ cache_dir;
+            system(sys_cmd.c_str());
+            sys_cmd = "exec rm -rf "+ BESUtil::assemblePath(cache_dir,"/*");
+            system(sys_cmd.c_str());
+            if(Debug) cerr << prolog << cache_dir  << " has been purged." << endl;
+        }
+    }
 
 /*##################################################################################################*/
 /* TESTS BEGIN */
@@ -186,6 +190,7 @@ public:
          *
          */
         void load_hdrs_from_file_test(){
+            if(debug) cerr << "|--------------------------------------------------|" << endl;
             if(debug) cerr << prolog << "BEGIN" << endl;
 
             string url = "http://test.opendap.org/data/httpd_catalog/READTHIS";
@@ -215,10 +220,38 @@ public:
          *
          */
         void update_file_and_headers_test(){
+            if(debug) cerr << "|--------------------------------------------------|" << endl;
+            if(debug) cerr << prolog << "BEGIN" << endl;
 
+            string url = "http://test.opendap.org/data/httpd_catalog/READTHIS";
+            if(debug) cerr << prolog << "url: " << url << endl;
+            http::RemoteResource rhr(url);
+            try {
+                cache_purge();
+
+                rhr.retrieveResource();
+                vector<string> *hdrs = rhr.getResponseHeaders();
+
+                for(size_t i=0; i<hdrs->size() && debug ; i++){
+                    cerr << prolog << "hdr["<< i << "]: " << (*hdrs)[i] << endl;
+                }
+                string cache_filename = rhr.getCacheFileName();
+                if(debug) cerr << prolog << "cache_filename: " << cache_filename << endl;
+                string expected_content("This is a test. If this was not a test you would have known the answer.\n");
+                if(debug) cerr << prolog << "expected_content string: " << expected_content << endl;
+                string content = get_file_as_string(cache_filename);
+                if(debug) cerr << prolog << "retrieved content: " << content << endl;
+                CPPUNIT_ASSERT( content == expected_content );
+            }
+            catch (BESError &besE){
+                cerr << "Caught BESError! message: " << besE.get_verbose_message() << " type: " << besE.get_bes_error_type() << endl;
+                CPPUNIT_ASSERT(false);
+            }
+            if(debug) cerr << prolog << "END" << endl;
         }
 
     void get_http_url_test() {
+        if(debug) cerr << "|--------------------------------------------------|" << endl;
         if(debug) cerr << prolog << "BEGIN" << endl;
 
         string url = "http://test.opendap.org/data/httpd_catalog/READTHIS";
@@ -247,6 +280,7 @@ public:
     }
 
     void get_ngap_ghrc_tea_url_test() {
+        if(debug) cerr << "|--------------------------------------------------|" << endl;
         if(!ngap_tests){
             if(debug) cerr << prolog << "SKIPPING." << endl;
             return;
@@ -282,6 +316,7 @@ public:
 
 
     void get_ngap_harmony_url_test() {
+        if(debug) cerr << "|--------------------------------------------------|" << endl;
         if(!ngap_tests){
             if(debug) cerr << prolog << "SKIPPING." << endl;
             return;
@@ -318,6 +353,7 @@ public:
      *
      */
     void get_file_url_test() {
+        if(debug) cerr << "|--------------------------------------------------|" << endl;
         if(debug) cerr << prolog << "BEGIN" << endl;
 
         string data_file_url = get_data_file_url("test_file");
@@ -350,6 +386,7 @@ public:
      *
      */
      void filter_retrieved_resource_test(){
+        if(debug) cerr << "|--------------------------------------------------|" << endl;
 
      }
 
@@ -357,6 +394,7 @@ public:
       *
       */
      void is_cached_resource_expired_test(){
+         if(debug) cerr << "|--------------------------------------------------|" << endl;
 
      }
 
@@ -368,6 +406,7 @@ public:
     CPPUNIT_TEST_SUITE( RemoteResourceTest );
 
     CPPUNIT_TEST(load_hdrs_from_file_test);
+    CPPUNIT_TEST(update_file_and_headers_test);
     CPPUNIT_TEST(get_http_url_test);
     CPPUNIT_TEST(get_file_url_test);
     CPPUNIT_TEST(get_ngap_ghrc_tea_url_test);
