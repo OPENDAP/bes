@@ -5,14 +5,13 @@ name: Main build workflow
 
 env:
   prefix: ${{ github.workspace }}/build
-  PATH: ${{ github.workspace }}/build/deps/bin:${{ github.workspace }}/build/bin:$PATH
   jobs: 16
 
 on:
   push:
-    branches: [ master gdal314]
+    branches: [ master gdal314 actions-build ]
   pull_request:
-    branches: [ master gdal314]
+    branches: [ master gdal314 actions-build ]
   workflow_dispatch:
 
 jobs:
@@ -32,6 +31,8 @@ jobs:
 
       - name: build dependencies
         if: steps.cache-deps.outputs.cache-hit != 'true'
+        env:
+            PATH: $prefix/deps/bin:$PATH
         run: |
           git clone https://github.com/OPENDAP/hyrax-dependencies
           cd hyrax-dependencies
