@@ -540,12 +540,15 @@ namespace http {
 
 
     /**
-     * @brief Filter the cached resource. Each key in content_filters is replaced with its associated map.
+     * @brief Filter the cached resource. Each key in content_filters is replaced with its associated map value.
      *
      * WARNING: Does not lock cache. This method assumes that the process has already
      * acquired an exclusive lock on the cache file.
      *
-     * @param content_filters A map of key value pairs which define the filter operation.
+     * WARNING: This method will overwrite the cached data with the filtered result.
+     *
+     * @param content_filters A map of key value pairs which define the filter operation. Each key found in the
+     * resource will be replaced with its associated value.
      */
     void RemoteResource::filter_retrieved_resource(const std::map<std::string, std::string> &content_filters){
 

@@ -49,12 +49,11 @@ namespace http {
  */
     class RemoteResource {
     private:
+        friend class RemoteResourceTest;
         /// Resource URL that an instance of this class represents
         std::string d_remoteResourceUrl;
 
-        /**
-         * Open file descriptor for the resource content (Returned from the cache).
-         */
+        /// Open file descriptor for the resource content (Returned from the cache).
         int d_fd;
 
         /// Protect the state of the object, not allowing some method calls before the resource is retrieved.
