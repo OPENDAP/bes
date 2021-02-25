@@ -25,6 +25,7 @@
 #include <cstdio>
 #include <cstring>
 #include <iostream>
+#include <unistd.h>
 
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
@@ -120,6 +121,44 @@ private:
         return data_file_url;
     }
 
+    /**
+     * @brief Copy the source file to a system determined tempory file and set the rvp tmp_file to the temp file name.
+     * @param src The source file to copy
+     * @param tmp_file The temporary file created.
+     */
+    void copy_to_temp(const string &src, string &tmp_file){
+        ifstream src_is(src);
+        if(!src_is.is_open()){
+            throw BESInternalError("Failed to open source file: "+src,__FILE__,__LINE__);
+        }
+
+        char *pointer = tmpnam(nullptr);
+        ofstream tmp_os(pointer);
+        if(!tmp_os.is_open()){
+            stringstream msg;
+            msg << "Failed to open temp file: " << pointer << endl;
+            throw BESInternalError(msg.str(),__FILE__,__LINE__);
+        }
+        char buf[4096];
+
+        do {
+            src_is.read(&buf[0], 4096);
+            tmp_os.write(&buf[0], src_is.gcount());
+        }while (src_is.gcount() > 0);
+        tmp_file=pointer;
+    }
+
+    /**
+     * @brief Compare two text files as string values.
+     * @param file_a
+     * @param file_b
+     * @return True the files match, False otherwise.
+     */
+    bool compare(const string &file_a, const string &file_b){
+        string a_str = get_file_as_string(file_a);
+        string b_str = get_file_as_string(file_b);
+        return a_str == b_str;
+    }
 
 
 public:
@@ -139,9 +178,9 @@ public:
     // Called before each test
     void setUp()
     {
-        if(debug) cerr << endl;
-        if(debug) cerr << "data_dir: " << d_data_dir << endl;
         if(Debug) cerr << endl << prolog << "BEGIN" << endl;
+        if(debug && !Debug) cerr << endl;
+        if(debug) cerr << prolog << "data_dir: " << d_data_dir << endl;
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR,"bes.conf");
         if(Debug) cerr << prolog << "Using BES configuration: " << bes_conf << endl;
         if (bes_debug) show_file(bes_conf);
@@ -382,14 +421,6 @@ public:
         if(debug) cerr << prolog << "END" << endl;
     }
 
-    /**
-     *
-     */
-     void filter_retrieved_resource_test(){
-        if(debug) cerr << "|--------------------------------------------------|" << endl;
-
-     }
-
      /**
       *
       */
@@ -398,6 +429,52 @@ public:
 
      }
 
+    /**
+     * Test of the RemoteResource content filtering method.
+     */
+    void filter_test() {
+        if(debug) cerr << prolog << "BEGIN" << endl;
+
+        string source_file = BESUtil::pathConcat(d_data_dir,"filter_test_source.xml");
+        if(debug) cerr << prolog << "source_file: " << source_file << endl;
+
+        string baseline_file = BESUtil::pathConcat(d_data_dir,"filter_test_source.xml_baseline");
+        if(debug) cerr << prolog << "baseline_file: " << baseline_file << endl;
+
+        string tmp_file;
+        try {
+            copy_to_temp(source_file,tmp_file);
+            if(debug) cerr << prolog << "temp_file: " << tmp_file << endl;
+
+            std::map<std::string,std::string> filter;
+            filter.insert(pair<string,string>("OPeNDAP_DMRpp_DATA_ACCESS_URL","file://original_file_ref"));
+            filter.insert(pair<string,string>("OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL","file://missing_file_ref"));
+
+            RemoteResource foo;
+            foo.d_resourceCacheFileName = tmp_file;
+            foo.filter_retrieved_resource(filter);
+
+            bool result_matched = compare(tmp_file,baseline_file);
+            stringstream info_msg;
+            info_msg << prolog << "The filtered file: "<< tmp_file << (result_matched?" MATCHED ":" DID NOT MATCH ")
+            << "the baseline file: " << baseline_file << endl;
+            if(debug) cerr << info_msg.str();
+            CPPUNIT_ASSERT_MESSAGE(info_msg.str(),result_matched);
+        }
+        catch(BESError be){
+            stringstream msg;
+            msg << prolog << "Caught BESError. Message: " << be.get_verbose_message() << " ";
+            msg << be.get_file() << " " << be.get_line() << endl;
+            if(debug) cerr << msg.str();
+            CPPUNIT_FAIL(msg.str());
+        }
+        // By unlinking here we only are doing it if the test is successful. This allows for forensic on broke tests.
+        if(!tmp_file.empty()){
+            unlink(tmp_file.c_str());
+            if(debug) cerr << prolog << "unlink call on: " << tmp_file << endl;
+        }
+        if(debug) cerr << prolog << "END" << endl;
+    }
 
 /* TESTS END */
 /*##################################################################################################*/
@@ -407,6 +484,7 @@ public:
 
     CPPUNIT_TEST(load_hdrs_from_file_test);
     CPPUNIT_TEST(update_file_and_headers_test);
+    CPPUNIT_TEST(filter_test);
     CPPUNIT_TEST(get_http_url_test);
     CPPUNIT_TEST(get_file_url_test);
     CPPUNIT_TEST(get_ngap_ghrc_tea_url_test);

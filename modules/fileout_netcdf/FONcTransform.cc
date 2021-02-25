@@ -587,8 +587,12 @@ void FONcTransform::transform_dap4_group(D4Group* grp,
 
     bool included_grp = false;
 
+    if(_dmr->get_ce_empty()) {
+        BESDEBUG("fonc", "Check-get_ce_empty. FONcTransform::transform_dap4() in group  - group name:  " << grp->FQN() << endl);
+        included_grp = true;
+}
     // Always include the root and its attributes.
-    if(is_root_grp == true)  
+    else if(is_root_grp == true)  
         included_grp = true;
     else {
         // Check if this group is in the group list kept in the file.
@@ -610,6 +614,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group* grp,
                                                   int par_grp_id,map<string,int>&fdimname_to_id,
                                                   vector<int>& rds_nums ) {
 
+    BESDEBUG("fonc", "transform_dap4_group_internal() - inside"<< endl);
     int grp_id = -1;
     int stax   = -1;
     if(is_root_grp == true)  
@@ -809,8 +814,11 @@ void FONcTransform::check_and_obtain_dimensions(D4Group*grp,bool is_root_grp) {
 
     // We may not need to do this way,it may overkill.
     bool included_grp = false;
+
+    if(_dmr->get_ce_empty())
+        included_grp = true;
     // Always include the root attributes.
-    if(is_root_grp == true)  
+    else if(is_root_grp == true)  
         included_grp = true;
     else {
         // Check if this group is in the group list kept in the file.

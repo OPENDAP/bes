@@ -49,12 +49,11 @@ namespace http {
  */
     class RemoteResource {
     private:
+        friend class RemoteResourceTest;
         /// Resource URL that an instance of this class represents
         std::string d_remoteResourceUrl;
 
-        /**
-         * Open file descriptor for the resource content (Returned from the cache).
-         */
+        /// Open file descriptor for the resource content (Returned from the cache).
         int d_fd;
 
         /// Protect the state of the object, not allowing some method calls before the resource is retrieved.
@@ -99,7 +98,7 @@ namespace http {
         void ingest_http_headers_and_type();
 
         /**
-        * Filter the cache and replaces all occurances of template_str with update_str.
+        * @brief Filter the cache and replaces all occurances each key in content_filters key with its associated value.
         *
         * WARNING: Does not lock cache. This method assumes that the process has already
         * acquired an exclusive lock on the cache file.
@@ -108,10 +107,10 @@ namespace http {
         * @param update_str
         * @return
         */
-        unsigned int filter_retrieved_resource(const std::string &template_str, const std::string &update_str);
+        void filter_retrieved_resource(const std::map<std::string, std::string> &content_filters);
 
         bool is_cached_resource_expired(const std::string &filename, const std::string &uid);
-        void update_file_and_headers(const std::string &template_key, const std::string &replace_value);
+        void update_file_and_headers(const std::map<std::string, std::string> &content_filters);
         void load_hdrs_from_file();
 
     protected:
@@ -127,8 +126,7 @@ namespace http {
         virtual ~RemoteResource();
 
         void retrieveResource();
-
-        void retrieveResource(const std::string &template_key, const std::string &replace_value);
+        void retrieveResource(const std::map<std::string, std::string> &content_filters);
 
         /**
          * Returns the DAP type std::string of the RemoteHttpResource

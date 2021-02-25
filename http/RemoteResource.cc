@@ -249,9 +249,8 @@ namespace http {
      * is available along with an open file descriptor for the (now read-locked) cache file.
      */
     void RemoteResource::retrieveResource() {
-        string template_key;
-        string replace_value;
-        retrieveResource(template_key,replace_value);
+        std::map<std::string, std::string> content_filters;
+        retrieveResource(content_filters);
     }
 
     /**
@@ -265,7 +264,7 @@ namespace http {
      * @param template_key
      * @param replace_value
      */
-    void RemoteResource::retrieveResource(const string &template_key, const string &replace_value) {
+    void RemoteResource::retrieveResource(const std::map<std::string, std::string> &content_filters) {
         BESDEBUG(MODULE, prolog << "BEGIN   resourceURL: " << d_remoteResourceUrl << endl);
         bool mangle = true;
 
@@ -306,7 +305,7 @@ namespace http {
 
                 if (is_cached_resource_expired(d_resourceCacheFileName, d_uid)) {
                     BESDEBUG(MODULE, prolog << "EXISTS - UPDATING " << endl);
-                    update_file_and_headers(template_key, replace_value);
+                    update_file_and_headers(content_filters);
                     cache->exclusive_to_shared_lock(d_fd);
                 } else {
                     BESDEBUG(MODULE, prolog << "EXISTS - LOADING " << endl);
@@ -321,7 +320,7 @@ namespace http {
                 // First make an empty file and get an exclusive lock on it.
                 if (cache->create_and_lock(d_resourceCacheFileName, d_fd)) {
                     BESDEBUG(MODULE, prolog << "DOESN'T EXIST - CREATING " << endl);
-                    update_file_and_headers(template_key, replace_value);
+                    update_file_and_headers(content_filters);
                 } else {
                     BESDEBUG(MODULE, prolog << " WAS CREATED - LOADING " << endl);
                     cache->get_read_lock(d_resourceCacheFileName, d_fd);
@@ -352,7 +351,7 @@ namespace http {
 
     } //end RemoteResource::retrieveResource()
 
-    void RemoteResource::update_file_and_headers(const string &template_key, const string &replace_value){
+    void RemoteResource::update_file_and_headers(const std::map<std::string, std::string> &content_filters){
 
         // Get a pointer to the singleton cache instance for this process.
         HttpCache *cache = HttpCache::get_instance();
@@ -376,33 +375,25 @@ namespace http {
         }
 
         //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-        // If we are filtering the response (for example to inject data URL into a dmr++ file),
-        // The file is locked and we have the information required to make the substitution.
-        // This is controlled by:
-        //  - The template_key string must not be empty.
-        if(!template_key.empty()){
-            unsigned int count = filter_retrieved_resource(template_key, replace_value);
-            BESDEBUG(MODULE, prolog << "Replaced " << count <<
-                                    " instance(s) of template(" <<
-                                    template_key << ") with " << replace_value << " in cached RemoteResource" << endl);
-        }
-        else
-        {
-            string hdr_filename = d_resourceCacheFileName + ".hdrs";
-            std::ofstream hdr_out(hdr_filename.c_str());
-            try {
-                for (size_t i = 0; i < this->d_response_headers->size(); i++) {
-                    hdr_out << (*d_response_headers)[i] << endl;
-                }
-            }
-            catch (...) {
-                // If this fails for any reason we:
-                hdr_out.close(); // Close the stream
-                unlink(hdr_filename.c_str()); // unlink the file
-                unlink(d_resourceCacheFileName.c_str()); // unlink the primary cache file.
-                throw;
+        // Filter the response file - If content_filters map is empty then nothing is done.
+        filter_retrieved_resource(content_filters);
+
+        // Write the headers to the appropriate cache file.
+        string hdr_filename = d_resourceCacheFileName + ".hdrs";
+        std::ofstream hdr_out(hdr_filename.c_str());
+        try {
+            for (size_t i = 0; i < this->d_response_headers->size(); i++) {
+                hdr_out << (*d_response_headers)[i] << endl;
             }
         }
+        catch (...) {
+            // If this fails for any reason we:
+            hdr_out.close(); // Close the stream
+            unlink(hdr_filename.c_str()); // unlink the file
+            unlink(d_resourceCacheFileName.c_str()); // unlink the primary cache file.
+            throw;
+        }
+
         // #########################################################################################################
 
         // Change the exclusive lock on the new file to a shared lock. This keeps
@@ -584,20 +575,26 @@ namespace http {
 
 
     /**
-     * Filter the cache and replaces all occurances of template_str with update_str.
+     * @brief Filter the cached resource. Each key in content_filters is replaced with its associated map value.
      *
      * WARNING: Does not lock cache. This method assumes that the process has already
      * acquired an exclusive lock on the cache file.
      *
-     * @param template_str
-     * @param update_str
-     * @return
+     * WARNING: This method will overwrite the cached data with the filtered result.
+     *
+     * @param content_filters A map of key value pairs which define the filter operation. Each key found in the
+     * resource will be replaced with its associated value.
      */
-    unsigned int RemoteResource::filter_retrieved_resource(const std::string &template_str, const std::string &update_str){
-        unsigned int replace_count = 0;
+    void RemoteResource::filter_retrieved_resource(const std::map<std::string, std::string> &content_filters){
+
+        // No filters?
+        if(content_filters.empty()){
+            // No problem...
+            return;
+        }
 
         //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-        // Read the dmr++ file into a string object
+        // Read the cached file into a string object
         std::ifstream cr_istrm(d_resourceCacheFileName);
         if (!cr_istrm.is_open()) {
             string msg = "Could not open '" + d_resourceCacheFileName + "' to read cached response.";
@@ -608,17 +605,23 @@ namespace http {
         buffer << cr_istrm.rdbuf();
         string resource_content(buffer.str());
 
-        //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-        // Replace all occurrences of the dmr++ href attr key.
-        int startIndex = 0;
-        while ((startIndex = resource_content.find(template_str)) != -1) {
-            resource_content.erase(startIndex, template_str.length());
-            resource_content.insert(startIndex, update_str);
-            replace_count++;
+        for (const auto& apair : content_filters) {
+            //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+            // Replace all occurrences of the template_key with replace_value.
+            unsigned int replace_count = 0;
+            int startIndex = 0;
+            while ((startIndex = resource_content.find(apair.first)) != -1) {
+                resource_content.erase(startIndex, apair.first.length());
+                resource_content.insert(startIndex, apair.second);
+                replace_count++;
+            }
+            BESDEBUG(MODULE, prolog << "Replaced " << replace_count << " instance(s) of template(" <<
+            apair.first << ") with " << apair.second << " in cached RemoteResource" << endl);
         }
 
+
         //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-        // Replace the contents of the cached dmr++ file with the modified string.
+        // Replace the contents of the cached file with the modified string.
         std::ofstream cr_ostrm(d_resourceCacheFileName);
         if (!cr_ostrm.is_open()) {
             string msg = "Could not open '" + d_resourceCacheFileName + "' to write modified cached response.";
@@ -626,8 +629,6 @@ namespace http {
             throw BESInternalError(msg, __FILE__, __LINE__);
         }
         cr_ostrm << resource_content;
-
-        return replace_count;
     }
 
     /**
