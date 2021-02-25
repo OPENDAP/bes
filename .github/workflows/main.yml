@@ -1,36 +1,74 @@
-# This is a basic workflow to help you get started with Actions
+# Copied from the libdap4 main.yml workflow written by Emmanuel Babalola.
+# jhrg 2/24/21
 
-name: CI
+name: Main build workflow
 
-# Controls when the action will run. 
+env:
+  prefix: ${{ github.workspace }}/build
+  jobs: 16
+
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ master ]
+    branches: [ master gdal314]
   pull_request:
-    branches: [ master ]
-
-  # Allows you to run this workflow manually from the Actions tab
+    branches: [ master gdal314]
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
+  ubuntu-build:
+    runs-on: ubuntu-16.04
+    
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - name: Packages
+        run: sudo apt-get --yes install libxml2-dev uuid-dev libcurl4-openssl-dev libcppunit-dev libicu-dev
+     
+      - name: cache-deps
+        id: cache-deps
+        uses: actions/cache@v2
+        with:
+          path: $prefix/deps
+          key: deps-${{ runner.os }}
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: build dependencies
+        if: steps.cache-deps.outputs.cache-hit != 'true'
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          git clone https://github.com/OPENDAP/hyrax-dependencies
+          cd hyrax-dependencies
+          git checkout gdal314
+          make --jobs=$jobs
+          gdal-config --formats
+
+      - name: cache-libdap4
+        id: cache-libdap4
+        uses: actions/cache@v2
+        with:
+          path: $prefix
+          key: libdap4-${{ runner.os }}
+
+      - name: build libdap4
+        if: steps.cache-libdap4.outputs.cache-hit != 'true'
+        run: |
+          git clone https://github.com/OPENDAP/libdap4
+          cd libdap4
+          autoreconf --force --install --verbose
+          ./configure --prefix=$prefix --enable-developer
+          make --jobs=$jobs
+          make install
+
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: autoreconf
+        run: autoreconf --force --install --verbose
+
+      - name: configure
+        run: ./configure --prefix=$prefix --with-dependecies=$prefix/deps --enable-developer
+
+      - name: Make
+        run: make --jobs=$jobs
+
+      - name: Check
+        run: make --jobs=$jobs check
+
+      - name: Install
+        run: make install
