@@ -594,9 +594,9 @@ AT_BESCMD_RESPONSE_TEST_DEFAULT([d_int8.h5.function.ddx.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST_DEFAULT([d_int8.h5.function.dods.bescmd])
 
 # The empty constraint that transfers the whole file. 
-#AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_1_2d.h5.ce_empty.data.bescmd])
-#AT_BESCMD_DAP4DATA_RESPONSE_TEST([t_int64_dap4_ce_empty_cf.h5.dap.bescmd])
-#AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_int64_dap4_ce_empty.h5.dap.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_1_2d.h5.ce_empty.data.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST([t_int64_dap4_ce_empty_cf.h5.dap.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_int64_dap4_ce_empty.h5.dap.bescmd])
 
 
 # These two tests check the dynamic configuration change.  The target files are identical
