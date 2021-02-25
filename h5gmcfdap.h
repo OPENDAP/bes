@@ -39,6 +39,8 @@
 
 void map_gmh5_cfdds(libdap::DDS &, hid_t, const std::string &);
 void map_gmh5_cfdas(libdap::DAS &, hid_t, const std::string &);
+
+void map_gmh5_cfdmr(libdap::D4Group*, hid_t, const std::string &);
 void gen_gmh5_cfdds(libdap::DDS &, HDF5CF::GMFile *);
 void gen_gmh5_cfdas(libdap::DAS &, HDF5CF::GMFile *);
 void gen_gmh5_cf_ignored_obj_info(libdap::DAS &, HDF5CF::GMFile *);

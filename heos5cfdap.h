@@ -45,6 +45,9 @@ void map_eos5_cfdds(libdap::DDS &, hid_t, const std::string &);
 void map_eos5_cfdas(libdap::DAS &, hid_t, const std::string &);
 void gen_eos5_cfdds(libdap::DDS &, HDF5CF::EOS5File*);
 void gen_eos5_cfdas(libdap::DAS &, hid_t, HDF5CF::EOS5File*);
+
+void map_eos5_cfdmr(libdap::D4Group*,hid_t, const std::string &);
+
 void gen_eos5_cf_ignored_obj_info(libdap::DAS &,HDF5CF::EOS5File*);
 void gen_dap_oneeos5cvar_dds(libdap::DDS &,const HDF5CF::EOS5CVar*,const hid_t, const std::string &);
 void gen_dap_oneeos5cf_dds(libdap::DDS &,const HDF5CF::EOS5CVar* );

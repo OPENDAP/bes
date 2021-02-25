@@ -122,6 +122,8 @@ static string get_beskeys(const string&);
 // For the CF option
 extern void read_cfdas(DAS &das, const string & filename,hid_t fileid);
 extern void read_cfdds(DDS &dds, const string & filename,hid_t fileid);
+extern void read_cfdmr(DMR *dmr, const string & filename,hid_t fileid);
+
 
 
 // Check the description of cache_entries and cache_purge_level at h5.conf.in.
@@ -156,6 +158,8 @@ bool HDF5RequestHandler::_eos5_rm_convention_attr_path = true;
 bool HDF5RequestHandler::_dmr_long_int                = false;
 bool HDF5RequestHandler::_no_zero_size_fullnameattr   = false;
 bool HDF5RequestHandler::_enable_coord_attr_add_path  = false;
+
+bool HDF5RequestHandler::_usecfdmr                    = false;
 
 bool HDF5RequestHandler::_common_cache_dirs            = false;
 
@@ -274,6 +278,8 @@ void HDF5RequestHandler::load_config()
     _dmr_long_int                = check_beskeys("H5.EnableDMR64bitInt");
     _no_zero_size_fullnameattr   = check_beskeys("H5.NoZeroSizeFullnameAttr");
     _enable_coord_attr_add_path  = check_beskeys("H5.EnableCoorattrAddPath");
+
+    _usecfdmr                    = check_beskeys("H5.EnableCFDMR");
 
     _use_disk_cache              = check_beskeys("H5.EnableDiskDataCache");
     _disk_cache_dir              = get_beskeys("H5.DiskCacheDataPath");
@@ -1280,6 +1286,21 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
  
             if(true ==_usecf) {// CF option
        
+                if(true == _usecfdmr) { 
+                    cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+                    if (cf_fileid < 0){
+                        string invalid_file_msg="Could not open this HDF5 file ";
+                        invalid_file_msg +=filename;
+                        invalid_file_msg +=". It is very possible that this file is not an HDF5 file ";
+                        invalid_file_msg +=" but with the .h5/.HDF5 suffix. Please check with the data";
+                        invalid_file_msg +=" distributor.";
+                        throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
+                    }
+                    read_cfdmr(dmr,filename,cf_fileid);
+                    H5Fclose(cf_fileid);
+                    return true;
+                }
+
                 if(true == _pass_fileid)
                     return hdf5_build_dmr_with_IDs(dhi);
 
@@ -1292,6 +1313,7 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
                     invalid_file_msg +=" distributor.";
                     throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
                 }
+
 
                 BaseTypeFactory factory;
                 DDS dds(&factory, name_path(filename), "3.2");
@@ -2400,5 +2422,6 @@ void HDF5RequestHandler::add_attributes(BESDataHandlerInterface &dhi) {
     bdds->set_ia_flag(true);
     return;
 
-
 }
+
+

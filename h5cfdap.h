@@ -39,6 +39,7 @@
 
 #ifndef _H5CFDAP_H
 #define _H5CFDAP_H
+#include <DMR.h>
 #include <DDS.h>
 #include <DAS.h>
 

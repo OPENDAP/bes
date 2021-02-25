@@ -82,6 +82,7 @@ class HDF5RequestHandler:public BESRequestHandler {
     static bool get_no_zero_size_fullnameattr() { return _no_zero_size_fullnameattr;}
     static bool get_enable_coord_attr_add_path() { return _enable_coord_attr_add_path;}
 
+    static bool get_usecfdmr() { return _usecfdmr;}
 
     // Default Handle dimension key, only valid when the default option is on.
     static bool get_default_handle_dimension() { return _default_handle_dimension;}
@@ -174,6 +175,8 @@ class HDF5RequestHandler:public BESRequestHandler {
      static bool _no_zero_size_fullnameattr;
      static bool _enable_coord_attr_add_path;
 
+     static bool _usecfdmr;
+
      // For the default option
      static bool _default_handle_dimension;
      static std::string _stp_east_filename;
@@ -207,6 +210,7 @@ class HDF5RequestHandler:public BESRequestHandler {
 
      static bool hdf5_build_data_with_IDs(BESDataHandlerInterface &dhi);
      static bool hdf5_build_dmr_with_IDs(BESDataHandlerInterface &dhi);
+     
      static void get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDSResponse*data_bdds,const std::string &container_name,const std::string &filename, const std::string &dds_cache_fname, const std::string &das_cache_fname,bool dds_from_dc,bool das_from_dc, bool build_data);
      static void get_dds_without_attributes_datadds(BESDataDDSResponse*data_bdds,const std::string &container_name,const std::string &filename);
 

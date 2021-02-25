@@ -42,6 +42,7 @@ using namespace libdap;
 
 void read_cfdds(DDS&,const string&,hid_t);
 void read_cfdas(DAS&, const string&,hid_t);
+void read_cfdmr(DMR*, const string&,hid_t);
 
 void read_cfdds(DDS & dds, const string &filename,hid_t myfile_id) {
 
@@ -97,5 +98,24 @@ void read_cfdas(DAS & das, const string &filename,hid_t myfile_id) {
     else { // handle HDF5 general product 
         map_gmh5_cfdas(das,fileid, filename);
     }
+
+}
+
+void read_cfdmr(DMR* dmr, const string &filename,hid_t fileid) {
+
+    BESDEBUG("h5","Coming to CF DMR read function read_cfdmr "<<endl);
+    H5CFModule moduletype;
+    dmr->set_name(name_path(filename));
+    dmr->set_filename(name_path(filename));
+    D4Group *d4_root = dmr->root();
+    moduletype = check_module(fileid);
+    if (moduletype == HDF_EOS5) 
+        map_eos5_cfdmr(d4_root,fileid, filename);
+    else  // handle HDF5 general product 
+        map_gmh5_cfdmr(d4_root,fileid, filename);
+
+    BESDEBUG("h5","Coming to CF DMR read function read_cfdmr "<<endl);
+
+    return;
 
 }

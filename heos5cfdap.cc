@@ -1817,7 +1817,7 @@ int get_metadata_num(const string & meta_str) {
         
 }
        
-       
+void map_eos5_cfdmr(D4Group *d4_root, hid_t file_id, const string &filename) {
 
 
-
+}

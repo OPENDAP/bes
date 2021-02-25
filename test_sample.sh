@@ -11,8 +11,11 @@
 #besstandalone -c bes-testsuite/bes.conf -i bes-testsuite/h5.local/nc4_multi_dscales.h5.dds.bescmd
 #besstandalone -c bes-testsuite/bes.conf -i bes-testsuite/h5.local/atl03.h5.das.bescmd
 #besstandalone -d"cerr,all" -c bes-testsuite/bes.default.conf -i bes-testsuite/h5.local/atl08.h5.dmr.bescmd
-besstandalone -c bes-testsuite/bes.default.conf -i bes-testsuite/h5.local/atl08.h5.dmr.bescmd
+#valgrind besstandalone -c bes-testsuite/bes.conf -i bes-testsuite/h5.cf/grid_1_2d.h5.dmr.bescmd
+besstandalone -c bes-testsuite/bes.conf -i bes-testsuite/h5.cf/grid_1_2d.h5.dmr.bescmd
+#besstandalone -d"cerr,all" -c bes-testsuite/bes.conf -i bes-testsuite/h5.cf/grid_1_2d.h5.dmr.bescmd
 #valgrind besstandalone -c bes-testsuite/bes.conf -i bes-testsuite/h5.local/atl03.h5.dmr.bescmd
+#besstandalone -c bes-testsuite/bes.conf -i bes-testsuite/h5.local/atl03.h5.dmr.bescmd
 #besstandalone  -d"cerr,all" -c bes-testsuite/bes.default.conf -i bes-testsuite/h5.local/simple_nc4.nc.h5.dmr.bescmd
 #valgrind besstandalone  -c bes-testsuite/bes.default.conf -i bes-testsuite/h5.local/simple_nc4.nc.h5.dmr.bescmd
 #valgrind besstandalone   -c bes-testsuite/bes.default.conf -i bes-testsuite/h5.local/nc4_group_atomic.h5.dmr.bescmd
