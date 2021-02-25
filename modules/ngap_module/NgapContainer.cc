@@ -148,45 +148,6 @@ namespace ngap {
     }
 
 
-#if 0
-
-
-    bool cache_terminal_urls(){
-        bool found;
-        string value;
-        TheBESKeys::TheKeys()->get_value(NGAP_CACHE_TERMINAL_URLS_KEY,value,found);
-        return found && BESUtil::lowercase(value)=="true";
-    }
-
-
-
-    void cache_final_redirect_url(string data_access_url_str) {
-        // See if the data_access_url has already been processed into a terminal signed URL
-        // in TheBESKeys
-        bool found;
-        std::map<std::string,std::string> data_access_url_info;
-        TheBESKeys::TheKeys()->get_values(data_access_url_str, data_access_url_info, false, found);
-        if(found){
-            // Is it expired?
-            http::url target_url(data_access_url_info);
-            found = NgapApi::signed_url_is_expired(target_url);
-        }
-        // It not found or expired, reload.
-        if(!found){
-            string last_accessed_url_str;
-            curl::find_last_redirect(data_access_url_str, last_accessed_url_str);
-            BESDEBUG(MODULE, prolog << "last_accessed_url: " << last_accessed_url_str << endl);
-
-            http::url last_accessed_url(last_accessed_url_str);
-            last_accessed_url.kvp(data_access_url_info);
-
-            // Placing the last accessed URL information in TheBESKeys associated with the data_access_url as the
-            // key allows allows other modules, such as dmrpp_module to access the crucial last accessed URL
-            // information which eliminates any number of redirects during access operations.
-            TheBESKeys::TheKeys()->set_keys(data_access_url_str, data_access_url_info, false, false);
-        }
-    }
-#endif
 
     /** @brief access the remote target response by making the remote request
      *
@@ -199,17 +160,15 @@ namespace ngap {
         // Since this the ngap we know that the real_name is a URL.
         string data_access_url_str = get_real_name();
 
-#if 0
-        if(cache_terminal_urls()){
-            curl::cache_final_redirect_url(data_access_url_str, 0);
-        }
-#endif
-
         // And we know that the dmr++ file should "right next to it" (side-car)
         string dmrpp_url = data_access_url_str + ".dmrpp";
 
+        // And if there's a missing data file (side-car) it should be "right there" too.
+        string missing_data_url = data_access_url_str + "_missing";
+
         BESDEBUG(MODULE, prolog << "data_access_url: " << data_access_url_str << endl);
         BESDEBUG(MODULE, prolog << "dmrpp_url: " << dmrpp_url << endl);
+        BESDEBUG(MODULE, prolog << "missing_data_url: " << missing_data_url << endl);
 
         string type = get_container_type();
         if (type == "ngap")
@@ -217,11 +176,10 @@ namespace ngap {
 
         if (!d_dmrpp_rresource) {
             BESDEBUG(MODULE, prolog << "Building new RemoteResource (dmr++)." << endl);
-            string replace_template;
-            string replace_value;
+            map<string,string> content_filters;
             if (inject_data_url()) {
-                replace_template = DATA_ACCESS_URL_KEY;
-                replace_value = data_access_url_str;
+                content_filters.insert(pair<string,string>(DATA_ACCESS_URL_KEY,data_access_url_str));
+                content_filters.insert(pair<string,string>(MISSING_DATA_ACCESS_URL_KEY,missing_data_url));
             }
             {
                 d_dmrpp_rresource = new http::RemoteResource(dmrpp_url);
@@ -229,7 +187,7 @@ namespace ngap {
                 if (BESISDEBUG(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()){
                     besTimer.start("DMR++ retrieval: "+ dmrpp_url);
                 }
-                d_dmrpp_rresource->retrieveResource(replace_template, replace_value);
+                d_dmrpp_rresource->retrieveResource(content_filters);
             }
         }
         BESDEBUG(MODULE, prolog << "Retrieved remote resource: " << dmrpp_url << endl);
