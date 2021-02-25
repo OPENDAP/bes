@@ -5,7 +5,7 @@ name: Main build workflow
 
 env:
   prefix: ${{ github.workspace }}/build
-  PATH: $prefix/deps/bin:$prefix/bin:$PATH
+  PATH: ${{ github.workspace }}/build/deps/bin:${{ github.workspace }}/build/bin:$PATH
   jobs: 16
 
 on:
