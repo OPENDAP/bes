@@ -232,26 +232,37 @@ public:
         if(debug) cerr << "|--------------------------------------------------|" << endl;
         if(debug) cerr << prolog << "BEGIN" << endl;
 
-        string url = BESUtil::pathConcat(d_data_dir,"load_hdrs_from_file_test_file.txt");
+        string url = "file://";
+        url += BESUtil::pathConcat(d_data_dir,"load_hdrs_from_file_test_file.txt");
         if(debug) cerr << prolog << "url: " << url << endl;
-        RemoteResource foo;
+        RemoteResource rhr(url);
         if(debug) cerr << prolog << "foo created" << endl;
         try {
-            foo.d_resourceCacheFileName = url;
-            foo.d_response_headers = new vector<string>();
-            foo.load_hdrs_from_file();
+            rhr.load_hdrs_from_file();
             if(debug) cerr << prolog << "loaded hdrs from file" << endl;
-            vector<string> *hdrs = foo.getResponseHeaders();
+            vector<string> *hdrs = rhr.getResponseHeaders();
             if(debug) cerr << prolog << "hdrs retrieved" << endl;
 
             for(size_t i=0; i<hdrs->size() && debug ; i++){
                 cerr << prolog << "hdr["<< i << "]: " << (*hdrs)[i] << endl;
             }
-            int retrieved_header_count = hdrs->size();
-            int expected_header_count = 7;
-            if(debug) cerr << prolog << "expected_header_count : " << expected_header_count << endl;
-            if(debug) cerr << prolog << "retrieved content: " << retrieved_header_count << endl;
-            CPPUNIT_ASSERT( retrieved_header_count == expected_header_count );
+
+            string header_1 = (*hdrs)[0];
+            string header_2 = (*hdrs)[1];
+            string header_3 = (*hdrs)[2];
+            string header_4 = (*hdrs)[3];
+
+            string expected_header_1 = "This ...";
+            string expected_header_2 = "Is ...";
+            string expected_header_3 = "A ...";
+            string expected_header_4 = "TEST";
+
+            if(debug) cerr << prolog << "Expected Header: " << expected_header_1 << "   <--/-->     Retrieved Header: " << header_1 << endl;
+            if(debug) cerr << prolog << "Expected Header: " << expected_header_2 << "   <--/-->     Retrieved Header: " << header_2 << endl;
+            if(debug) cerr << prolog << "Expected Header: " << expected_header_3 << "   <--/-->     Retrieved Header: " << header_3 << endl;
+            if(debug) cerr << prolog << "Expected Header: " << expected_header_4 << "   <--/-->     Retrieved Header: " << header_4 << endl;
+            CPPUNIT_ASSERT( header_1.compare(expected_header_1) && header_2.compare(expected_header_2) && header_3.compare(expected_header_3) && header_4.compare(expected_header_4));
+
         }
         catch (BESError &besE){
             cerr << "Caught BESError! message: " << besE.get_verbose_message() << " type: " << besE.get_bes_error_type() << endl;
