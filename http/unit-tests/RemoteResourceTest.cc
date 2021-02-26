@@ -225,69 +225,74 @@ public:
 /*##################################################################################################*/
 /* TESTS BEGIN */
 
-        /**
-         *
-         */
-        void load_hdrs_from_file_test(){
-            if(debug) cerr << "|--------------------------------------------------|" << endl;
-            if(debug) cerr << prolog << "BEGIN" << endl;
+    /**
+     *
+     */
+    void load_hdrs_from_file_test(){
+        if(debug) cerr << "|--------------------------------------------------|" << endl;
+        if(debug) cerr << prolog << "BEGIN" << endl;
 
-            string url = "http://test.opendap.org/data/httpd_catalog/READTHIS";
-            if(debug) cerr << prolog << "url: " << url << endl;
-            http::RemoteResource rhr(url);
-            try {
-                rhr.retrieveResource();
-                vector<string> *hdrs = rhr.getResponseHeaders();
+        string url = BESUtil::pathConcat(d_data_dir,"load_hdrs_from_file_test_file.txt");
+        if(debug) cerr << prolog << "url: " << url << endl;
+        RemoteResource foo;
+        if(debug) cerr << prolog << "foo created" << endl;
+        try {
+            foo.d_resourceCacheFileName = url;
+            foo.d_response_headers = new vector<string>();
+            foo.load_hdrs_from_file();
+            if(debug) cerr << prolog << "loaded hdrs from file" << endl;
+            vector<string> *hdrs = foo.getResponseHeaders();
+            if(debug) cerr << prolog << "hdrs retrieved" << endl;
 
-                for(size_t i=0; i<hdrs->size() && debug ; i++){
-                    cerr << prolog << "hdr["<< i << "]: " << (*hdrs)[i] << endl;
-                }
-                int retrieved_header_count = hdrs->size();
-                int expected_header_count = 7;
-                if(debug) cerr << prolog << "expected_header_count : " << expected_header_count << endl;
-                if(debug) cerr << prolog << "retrieved content: " << retrieved_header_count << endl;
-                CPPUNIT_ASSERT( retrieved_header_count == expected_header_count );
+            for(size_t i=0; i<hdrs->size() && debug ; i++){
+                cerr << prolog << "hdr["<< i << "]: " << (*hdrs)[i] << endl;
             }
-            catch (BESError &besE){
-                cerr << "Caught BESError! message: " << besE.get_verbose_message() << " type: " << besE.get_bes_error_type() << endl;
-                CPPUNIT_ASSERT(false);
-            }
-            if(debug) cerr << prolog << "END" << endl;
+            int retrieved_header_count = hdrs->size();
+            int expected_header_count = 7;
+            if(debug) cerr << prolog << "expected_header_count : " << expected_header_count << endl;
+            if(debug) cerr << prolog << "retrieved content: " << retrieved_header_count << endl;
+            CPPUNIT_ASSERT( retrieved_header_count == expected_header_count );
         }
-
-        /**
-         *
-         */
-        void update_file_and_headers_test(){
-            if(debug) cerr << "|--------------------------------------------------|" << endl;
-            if(debug) cerr << prolog << "BEGIN" << endl;
-
-            string url = "http://test.opendap.org/data/httpd_catalog/READTHIS";
-            if(debug) cerr << prolog << "url: " << url << endl;
-            http::RemoteResource rhr(url);
-            try {
-                cache_purge();
-
-                rhr.retrieveResource();
-                vector<string> *hdrs = rhr.getResponseHeaders();
-
-                for(size_t i=0; i<hdrs->size() && debug ; i++){
-                    cerr << prolog << "hdr["<< i << "]: " << (*hdrs)[i] << endl;
-                }
-                string cache_filename = rhr.getCacheFileName();
-                if(debug) cerr << prolog << "cache_filename: " << cache_filename << endl;
-                string expected_content("This is a test. If this was not a test you would have known the answer.\n");
-                if(debug) cerr << prolog << "expected_content string: " << expected_content << endl;
-                string content = get_file_as_string(cache_filename);
-                if(debug) cerr << prolog << "retrieved content: " << content << endl;
-                CPPUNIT_ASSERT( content == expected_content );
-            }
-            catch (BESError &besE){
-                cerr << "Caught BESError! message: " << besE.get_verbose_message() << " type: " << besE.get_bes_error_type() << endl;
-                CPPUNIT_ASSERT(false);
-            }
-            if(debug) cerr << prolog << "END" << endl;
+        catch (BESError &besE){
+            cerr << "Caught BESError! message: " << besE.get_verbose_message() << " type: " << besE.get_bes_error_type() << endl;
+            CPPUNIT_ASSERT(false);
         }
+        if(debug) cerr << prolog << "END" << endl;
+    }
+
+    /**
+     *
+     */
+    void update_file_and_headers_test(){
+        if(debug) cerr << "|--------------------------------------------------|" << endl;
+        if(debug) cerr << prolog << "BEGIN" << endl;
+
+        string url = "http://test.opendap.org/data/httpd_catalog/READTHIS";
+        if(debug) cerr << prolog << "url: " << url << endl;
+        http::RemoteResource rhr(url);
+        try {
+            cache_purge();
+
+            rhr.retrieveResource();
+            vector<string> *hdrs = rhr.getResponseHeaders();
+
+            for(size_t i=0; i<hdrs->size() && debug ; i++){
+                cerr << prolog << "hdr["<< i << "]: " << (*hdrs)[i] << endl;
+            }
+            string cache_filename = rhr.getCacheFileName();
+            if(debug) cerr << prolog << "cache_filename: " << cache_filename << endl;
+            string expected_content("This is a test. If this was not a test you would have known the answer.\n");
+            if(debug) cerr << prolog << "expected_content string: " << expected_content << endl;
+            string content = get_file_as_string(cache_filename);
+            if(debug) cerr << prolog << "retrieved content: " << content << endl;
+            CPPUNIT_ASSERT( content == expected_content );
+        }
+        catch (BESError &besE){
+            cerr << "Caught BESError! message: " << besE.get_verbose_message() << " type: " << besE.get_bes_error_type() << endl;
+            CPPUNIT_ASSERT(false);
+        }
+        if(debug) cerr << prolog << "END" << endl;
+    }
 
     void get_http_url_test() {
         if(debug) cerr << "|--------------------------------------------------|" << endl;
@@ -426,6 +431,7 @@ public:
       */
      void is_cached_resource_expired_test(){
          if(debug) cerr << "|--------------------------------------------------|" << endl;
+
 
      }
 

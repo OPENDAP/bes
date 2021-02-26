@@ -62,9 +62,8 @@ using namespace std;
 
 namespace http {
 
-
-
     RemoteResource::RemoteResource(const std::string &url,const std::string &uid){
+
         d_fd = 0;
         d_initialized = false;
 
@@ -118,8 +117,6 @@ namespace http {
             string err = prolog + "Unsupported protocol: " + url;
             throw BESInternalError(err, __FILE__, __LINE__);
         }
-
-
 
         // BESDEBUG(MODULE, prolog << "d_curl: " << d_curl << endl);
 
