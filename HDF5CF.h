@@ -600,7 +600,7 @@ public:
     /// huge memory allocation for some HDF5 files, we separate
     /// the access of DAS from DDS although internally they
     /// still share common routines.
-    virtual void Retrieve_H5_Info(const char *path, hid_t file_id, bool);
+    virtual void Retrieve_H5_Info(const char *path, hid_t file_id, bool, bool);
 
     /// Retrieve attribute values for the supported HDF5 datatypes.
     virtual void Retrieve_H5_Supported_Attr_Values();
@@ -851,7 +851,7 @@ public:
     }
 
     /// Retrieve DDS information from the HDF5 file; real implementation for general HDF5 products.
-    virtual void Retrieve_H5_Info(const char *path, hid_t file_id, bool include_attr);
+    virtual void Retrieve_H5_Info(const char *path, hid_t file_id, bool include_attr,bool);
 
     /// Retrieve attribute values for the supported HDF5 datatypes for general HDF5 products.
     virtual void Retrieve_H5_Supported_Attr_Values();
@@ -1202,7 +1202,7 @@ public:
     }
 
     /// Retrieve DDS information from the HDF5 file; a real implementation for HDF-EOS5 products
-    virtual void Retrieve_H5_Info(const char *path, hid_t file_id, bool include_attr);
+    virtual void Retrieve_H5_Info(const char *path, hid_t file_id, bool include_attr,bool);
 
     /// Retrieve attribute values for the supported HDF5 datatypes for HDF-EOS5 products.
     virtual void Retrieve_H5_Supported_Attr_Values() ;

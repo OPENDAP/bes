@@ -158,11 +158,11 @@ string EOS5File::get_CF_string(string s)
 }
 
 // Retrieve the HDF5 information for HDF-EOS5 
-void EOS5File::Retrieve_H5_Info(const char *file_fullpath, hid_t file_id, bool /*include_attr*/) 
+void EOS5File::Retrieve_H5_Info(const char *file_fullpath, hid_t file_id, bool /*include_attr*/, bool is_dap4) 
 {
     // Since we need to check the attribute info in order to determine if the file is augmented to netCDF-4,
     // we need to retrieve the attribute info also.
-    File::Retrieve_H5_Info(file_fullpath, file_id, true);
+    File::Retrieve_H5_Info(file_fullpath, file_id, true,false);
 }
 
 void EOS5File::Retrieve_H5_CVar_Supported_Attr_Values()

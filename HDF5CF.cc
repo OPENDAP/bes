@@ -167,7 +167,7 @@ Attribute::~Attribute()
 {
 }
 
-void File::Retrieve_H5_Info(const char * /*path*/, hid_t file_id, bool include_attr)
+void File::Retrieve_H5_Info(const char * /*path*/, hid_t file_id, bool include_attr, bool is_dap4)
 {
 
     BESDEBUG("h5", "coming to Retrieve_H5_Info" <<endl);

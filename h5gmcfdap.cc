@@ -83,7 +83,7 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
     bool include_attr = false;
     try {
         // Retrieve all HDF5 info(Not the values)
-        f->Retrieve_H5_Info(filename.c_str(),file_id,include_attr);
+        f->Retrieve_H5_Info(filename.c_str(),file_id,include_attr,false);
 
         // Update product type
         // Newer version of a product may have different layout and the 
@@ -212,7 +212,7 @@ void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
 
     bool include_attr = true;
     try {
-        f->Retrieve_H5_Info(filename.c_str(),file_id,include_attr);
+        f->Retrieve_H5_Info(filename.c_str(),file_id,include_attr,false);
 
         // Update product type(check comments of map_gmh5_cfdds)
         f->Update_Product_Type();
@@ -306,7 +306,7 @@ void map_gmh5_cfdmr(D4Group *d4_root, hid_t file_id, const string& filename){
     bool include_attr = false;
     try {
         // Retrieve all HDF5 info(Not the values)
-        f->Retrieve_H5_Info(filename.c_str(),file_id,include_attr);
+        f->Retrieve_H5_Info(filename.c_str(),file_id,include_attr,true);
 
         // Update product type
         // Newer version of a product may have different layout and the 
