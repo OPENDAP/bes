@@ -418,6 +418,13 @@ namespace http {
         string hdr_filename = d_resourceCacheFileName + ".hdrs";
         std::ifstream hdr_ifs(hdr_filename.c_str());
 
+        if(!hdr_ifs.is_open()){
+            stringstream msg;
+            msg << "ERROR. Internal state error. The headers file: " << hdr_filename << " could not be opened for reading.";
+            BESDEBUG(MODULE, prolog << msg.str() << endl);
+            throw BESInternalError(msg.str(), __FILE__, __LINE__);
+        }
+
         BESDEBUG(MODULE, prolog << "Reading response headers from: " << hdr_filename << endl);
         for (std::string line; std::getline(hdr_ifs, line);) {
             (*d_response_headers).push_back(line);
