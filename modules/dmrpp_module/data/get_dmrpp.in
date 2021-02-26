@@ -1072,7 +1072,7 @@ if test -n "${merge_missing_vars}"; then
     BES_CONF=$(make_missing_conf "${bes_conf_file}")
 
     # insert '_missing' into input_data_file name and use for sidecar_missing_file name
-    sidecar_missing_file="${input_data_file}_missing"
+    sidecar_missing_file="${input_data_file}.missing"
     if test -n "$very_verbose"; then echo "  MISSING_FILE: ${sidecar_missing_file}" >&2; fi
 
     # use besstandalone to generate sidecar_missing_file
