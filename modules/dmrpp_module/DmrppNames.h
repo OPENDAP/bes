@@ -44,12 +44,23 @@
 
 #define DMRPP_WAIT_FOR_FUTURE_MS 1
 
-#define DMRPP_DEFAULT_CONTIGUOUS_CONCURRENT_THRESHOLD  (1024*1024)
+#define DMRPP_DEFAULT_CONTIGUOUS_CONCURRENT_THRESHOLD  (2*1024*1024)
 #define DMRPP_CONTIGUOUS_CONCURRENT_THRESHOLD_KEY "DMRPP.ContiguousConcurrencyThreshold"
-
 
 #define DMRPP_USE_SUPER_CHUNKS 1
 #define DMRPP_ENABLE_THREAD_TIMERS 0
+
+// --------------------------------------------------------
+// Used by Credentials Manager Access Control
+//
+#define CMAC_ENV_ID_KEY "CMAC_ID"
+#define CMAC_ENV_ACCESS_KEY "CMAC_ACCESS_KEY"
+#define CMAC_ENV_REGION_KEY "CMAC_REGION"
+#define CMAC_ENV_BUCKET_KEY "CMAC_BUCKET"
+#define CMAC_ENV_URL_KEY "CMAC_URL"
+#define CMAC_USE_ENV_CREDS_KEY_VALUE "ENV_CREDS"
+// --------------------------------------------------------
+
 
 #endif // E_DmrppNames_H
 

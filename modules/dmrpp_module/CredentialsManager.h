@@ -37,12 +37,14 @@
 
 class CredentialsManager {
 public:
+#if 0
     static const std::string ENV_ID_KEY;
     static const std::string ENV_ACCESS_KEY;
     static const std::string ENV_REGION_KEY;
     //static const std::string ENV_BUCKET_KEY;
     static const std::string ENV_URL_KEY;
     static const std::string ENV_CREDS_KEY_VALUE;
+#endif
 
 private:
     std::mutex d_euc_cache_lock_mutex{};

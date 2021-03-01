@@ -40,6 +40,7 @@
 #include "BESDebug.h"
 #include "TheBESKeys.h"
 
+#include "DmrppNames.h"
 #include "CredentialsManager.h"
 
 #include "test_config.h"
@@ -206,9 +207,9 @@ public:
      * Clears the environment variable used by the CredentialsManager for credentials injection.
      */
     void clear_cm_env(){
-        unsetenv(CredentialsManager::ENV_ID_KEY.c_str());
-        unsetenv(CredentialsManager::ENV_ACCESS_KEY.c_str());
-        unsetenv(CredentialsManager::ENV_REGION_KEY.c_str());
+        unsetenv(CMAC_ENV_ID_KEY);
+        unsetenv(CMAC_ENV_ACCESS_KEY);
+        unsetenv(CMAC_ENV_REGION_KEY);
         //unsetenv(CredentialsManager::ENV_BUCKET_KEY.c_str());
     }
 
@@ -224,7 +225,7 @@ public:
         CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == 0);
 
         clear_cm_env();
-        TheBESKeys::TheKeys()->set_key(CATALOG_MANAGER_CREDENTIALS, CredentialsManager::ENV_CREDS_KEY_VALUE);
+        TheBESKeys::TheKeys()->set_key(CATALOG_MANAGER_CREDENTIALS, CMAC_USE_ENV_CREDS_KEY_VALUE);
 
         if(debug) cout << "check_incomplete_env_credentials() - Setting incomplete env injected credentials. "
                           "They should be ignored."<< endl;
@@ -235,10 +236,10 @@ public:
         string url("https://s3.amazonaws.com/emerald_city");
         string some_dataset_url(url+"data/fnoc1.nc");
 
-        setenv(CredentialsManager::ENV_ID_KEY.c_str(), id.c_str(), true);
-        setenv(CredentialsManager::ENV_REGION_KEY.c_str(), region.c_str(), true);
-        //setenv(CredentialsManager::ENV_BUCKET_KEY.c_str(), bucket.c_str(),true);
-        setenv(CredentialsManager::ENV_URL_KEY.c_str(), url.c_str(), true);
+        setenv(CMAC_ENV_ID_KEY, id.c_str(), true);
+        setenv(CMAC_ENV_REGION_KEY, region.c_str(), true);
+        //setenv(CredentialsManager::ENV_BUCKET_KEY, bucket.c_str(),true);
+        setenv(CMAC_ENV_URL_KEY, url.c_str(), true);
 
         CredentialsManager::theCM()->load_credentials();
 
@@ -256,7 +257,7 @@ public:
         CPPUNIT_ASSERT( CredentialsManager::theCM()->size() == 0);
 
         clear_cm_env();
-        TheBESKeys::TheKeys()->set_key(CATALOG_MANAGER_CREDENTIALS, CredentialsManager::ENV_CREDS_KEY_VALUE, false);
+        TheBESKeys::TheKeys()->set_key(CATALOG_MANAGER_CREDENTIALS, CMAC_USE_ENV_CREDS_KEY_VALUE, false);
 
         string id("Frank Morgan");
         string key("Ihadasecretthingforthewickedwitchofthewest");
@@ -265,11 +266,11 @@ public:
         string url("https://s3.amazonaws.com/emerald_city/");
         string some_dataset_url(url+"data/fnoc1.nc");
 
-        setenv(CredentialsManager::ENV_ID_KEY.c_str(),     id.c_str(), true);
-        setenv(CredentialsManager::ENV_ACCESS_KEY.c_str(), key.c_str(), true);
-        setenv(CredentialsManager::ENV_REGION_KEY.c_str(), region.c_str(), true);
-        //setenv(CredentialsManager::ENV_BUCKET_KEY.c_str(), bucket.c_str(),true);
-        setenv(CredentialsManager::ENV_URL_KEY.c_str(),    url.c_str(), true);
+        setenv(CMAC_ENV_ID_KEY,     id.c_str(), true);
+        setenv(CMAC_ENV_ACCESS_KEY, key.c_str(), true);
+        setenv(CMAC_ENV_REGION_KEY, region.c_str(), true);
+        //setenv(CMAC_ENV_BUCKET_KEY, bucket.c_str(),true);
+        setenv(CMAC_ENV_URL_KEY,    url.c_str(), true);
         if(debug) cout << "check_env_credentials() - Environment conditioned, calling CredentialsManager::load_credentials()" << endl;
         CredentialsManager::theCM()->load_credentials();
 

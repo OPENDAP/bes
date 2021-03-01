@@ -54,14 +54,6 @@ using namespace std;
  */
 CredentialsManager *CredentialsManager::theMngr=0;
 
-// Scope: public members of CredentialsManager
-const string CredentialsManager::ENV_ID_KEY="CMAC_ID";
-const string CredentialsManager::ENV_ACCESS_KEY="CMAC_ACCESS_KEY";
-const string CredentialsManager::ENV_REGION_KEY="CMAC_REGION";
-//const string CredentialsManager::ENV_BUCKET_KEY="CMAC_BUCKET";
-const string CredentialsManager::ENV_URL_KEY="CMAC_URL";
-const string CredentialsManager::ENV_CREDS_KEY_VALUE="ENV_CREDS";
-
 
 /**
  *  Get get the specified environment value. This function
@@ -280,7 +272,7 @@ void CredentialsManager::load_credentials( ) {
     }
 
     // Does the configuration indicate that credentials will be submitted via the runtime environment?
-    if(config_file == ENV_CREDS_KEY_VALUE){
+    if(config_file == string(CMAC_USE_ENV_CREDS_KEY_VALUE)){
         // Apparently so...
         accessCredentials = theCM()->load_credentials_from_env();
         if(accessCredentials){
@@ -386,11 +378,11 @@ AccessCredentials *CredentialsManager::load_credentials_from_env( ) {
     // If we are in developer mode then we compile this section which
     // allows us to inject credentials via the system environment
 
-    env_id.assign(        get_env_value(ENV_ID_KEY));
-    env_access_key.assign(get_env_value(ENV_ACCESS_KEY));
-    env_region.assign(    get_env_value(ENV_REGION_KEY));
-    //env_bucket.assign(    get_env_value(ENV_BUCKET_KEY));
-    env_url.assign(       get_env_value(ENV_URL_KEY));
+    env_id.assign(        get_env_value(CMAC_ENV_ID_KEY));
+    env_access_key.assign(get_env_value(CMAC_ENV_ACCESS_KEY));
+    env_region.assign(    get_env_value(CMAC_ENV_REGION_KEY));
+    //env_bucket.assign(    get_env_value(CMAC_ENV_BUCKET_KEY));
+    env_url.assign(       get_env_value(CMAC_ENV_URL_KEY));
 
     if(env_url.length() &&
             env_id.length() &&
