@@ -1409,6 +1409,7 @@ void BESDapResponseBuilder::send_dap4_data_using_ce(ostream &out, DMR &dmr, bool
     // don't need this, other code may depend on send_p being set. This may change
     // if DAP4 has a separate function evaluation phase. jhrg 11/25/13
     else {
+        dmr.set_ce_empty(true);
         dmr.root()->set_send_p(true);
     }
 
@@ -1457,6 +1458,7 @@ void BESDapResponseBuilder::intern_dap4_data_using_ce(DMR &dmr)
     // don't need this, other code may depend on send_p being set. This may change
     // if DAP4 has a separate function evaluation phase. jhrg 11/25/13
     else {
+        dmr.set_ce_empty(true);
         dmr.root()->set_send_p(true);
     }
 

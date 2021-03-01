@@ -163,4 +163,8 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/simple_nc4.nc_constraint_
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/dim_scale_smix.h5_local_constraint.2.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/dim_scale_dim_name_clash.h5_local_constraint.2.bescmd)
  
-
+dnl Add response that checks the empty expression constraint
+dnl The whole file is supposed to convert to netCDF
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/grid_1_2d_dap2_ce_empty.h5.2.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/grid_1_2d_dap2_to_4_ce_empty.h5.2.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/d_group_dap4_ce_empty.h5.2.bescmd)
