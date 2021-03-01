@@ -49,6 +49,13 @@ using namespace std;
 
 #define prolog std::string("CredentialsManager::").append(__func__).append("() - ")
 
+const char *CredentialsManager::ENV_ID_KEY = "CMAC_ID";
+const char *CredentialsManager::ENV_ACCESS_KEY = "CMAC_ACCESS_KEY";
+const char *CredentialsManager::ENV_REGION_KEY = "CMAC_REGION";
+const char *CredentialsManager::ENV_BUCKET_KEY = "CMAC_BUCKET";
+const char *CredentialsManager::ENV_URL_KEY = "CMAC_URL";
+const char *CredentialsManager::USE_ENV_CREDS_KEY_VALUE = "ENV_CREDS";
+
 /**
  * Our singleton instance
  */
@@ -272,7 +279,7 @@ void CredentialsManager::load_credentials( ) {
     }
 
     // Does the configuration indicate that credentials will be submitted via the runtime environment?
-    if(config_file == string(CMAC_USE_ENV_CREDS_KEY_VALUE)){
+    if(config_file == string(CredentialsManager::USE_ENV_CREDS_KEY_VALUE)){
         // Apparently so...
         accessCredentials = theCM()->load_credentials_from_env();
         if(accessCredentials){
@@ -378,11 +385,11 @@ AccessCredentials *CredentialsManager::load_credentials_from_env( ) {
     // If we are in developer mode then we compile this section which
     // allows us to inject credentials via the system environment
 
-    env_id.assign(        get_env_value(CMAC_ENV_ID_KEY));
-    env_access_key.assign(get_env_value(CMAC_ENV_ACCESS_KEY));
-    env_region.assign(    get_env_value(CMAC_ENV_REGION_KEY));
-    //env_bucket.assign(    get_env_value(CMAC_ENV_BUCKET_KEY));
-    env_url.assign(       get_env_value(CMAC_ENV_URL_KEY));
+    env_id.assign(        get_env_value(CredentialsManager::ENV_ID_KEY));
+    env_access_key.assign(get_env_value(CredentialsManager::ENV_ACCESS_KEY));
+    env_region.assign(    get_env_value(CredentialsManager::ENV_REGION_KEY));
+    //env_bucket.assign(    get_env_value(CredentialsManager::ENV_BUCKET_KEY));
+    env_url.assign(       get_env_value(CredentialsManager::ENV_URL_KEY));
 
     if(env_url.length() &&
             env_id.length() &&
