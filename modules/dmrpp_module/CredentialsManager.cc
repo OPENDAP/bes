@@ -182,6 +182,10 @@ void CredentialsManager::delete_instance()
  */
 void
 CredentialsManager::add(const std::string &key, AccessCredentials *ac){
+    // This lock is a RAII implementation. It will block until the mutex is
+    // available and the lock will be released when the instance is destroyed.
+    std::lock_guard<std::recursive_mutex> lock_me(d_lock_mutex);
+
     creds.insert(std::pair<std::string,AccessCredentials *>(key, ac));
     BESDEBUG(CREDS, prolog << "Added AccessCredentials to CredentialsManager. credentials: " << endl <<  ac->to_json() << endl);
 }
@@ -196,7 +200,7 @@ AccessCredentials*
 CredentialsManager::get(const std::string &url){
     // This lock is a RAII implementation. It will block until the mutex is
     // available and the lock will be released when the instance is destroyed.
-    std::lock_guard<std::mutex> lock_me(d_lock_mutex);
+    std::lock_guard<std::recursive_mutex> lock_me(d_lock_mutex);
 
     AccessCredentials *best_match = NULL;
     std::string best_key("");
@@ -304,7 +308,7 @@ void CredentialsManager::load_credentials( ) {
 
     // This lock is a RAII implementation. It will block until the mutex is
     // available and the lock will be released when the instance is destroyed.
-    std::lock_guard<std::mutex> lock_me(d_lock_mutex);
+    std::lock_guard<std::recursive_mutex> lock_me(d_lock_mutex);
 
     bool found_key = true;
     AccessCredentials *accessCredentials;
@@ -423,6 +427,10 @@ void CredentialsManager::load_credentials( ) {
  */
 AccessCredentials *CredentialsManager::load_credentials_from_env( ) {
 
+    // This lock is a RAII implementation. It will block until the mutex is
+    // available and the lock will be released when the instance is destroyed.
+    std::lock_guard<std::recursive_mutex> lock_me(d_lock_mutex);
+
     AccessCredentials *ac = nullptr;
     string env_url, env_id, env_access_key, env_region, env_bucket;
 
@@ -457,6 +465,10 @@ std::string NGAP_S3_BASE_DEFAULT="https://";
  * and adds to the CredentialsManager an instance of NgapS3Credentials based on the values found in the bes.conf chain.
  */
 void  CredentialsManager::load_ngap_s3_credentials( ){
+    // This lock is a RAII implementation. It will block until the mutex is
+    // available and the lock will be released when the instance is destroyed.
+    std::lock_guard<std::recursive_mutex> lock_me(d_lock_mutex);
+
     string s3_distribution_endpoint_url;
     bool found;
     TheBESKeys::TheKeys()->get_value(NgapS3Credentials::BES_CONF_S3_ENDPOINT_KEY,s3_distribution_endpoint_url,found);
