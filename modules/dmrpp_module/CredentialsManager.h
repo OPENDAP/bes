@@ -45,8 +45,8 @@ public:
     static const char* USE_ENV_CREDS_KEY_VALUE;
 
 private:
-    std::mutex d_euc_cache_lock_mutex{};
-    std::string d_netrc_filename;
+    std::mutex d_lock_mutex{};
+    // std::string d_netrc_filename;
     bool ngaps3CredentialsLoaded;
 
     std::map<std::string, AccessCredentials* > creds;
@@ -57,19 +57,15 @@ private:
     static void delete_instance();
     AccessCredentials *load_credentials_from_env( );
     void load_ngap_s3_credentials( );
+    void add(const std::string &url, AccessCredentials *ac);
 
 
 public:
     static CredentialsManager *theMngr;
 
     ~CredentialsManager();
+    static CredentialsManager *theCM();
 
-    static CredentialsManager *theCM(){
-        if (theMngr == 0) initialize_instance();
-        return theMngr;
-    }
-
-    void add(const std::string &url, AccessCredentials *ac);
     void load_credentials();
     void clear(){ delete_instance(); }
 

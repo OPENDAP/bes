@@ -46,22 +46,32 @@
 
 using namespace std;
 
-
 #define prolog std::string("CredentialsManager::").append(__func__).append("() - ")
 
-const char *CredentialsManager::ENV_ID_KEY = "CMAC_ID";
+// Class vocabulary
+const char *CredentialsManager::ENV_ID_KEY     = "CMAC_ID";
 const char *CredentialsManager::ENV_ACCESS_KEY = "CMAC_ACCESS_KEY";
 const char *CredentialsManager::ENV_REGION_KEY = "CMAC_REGION";
 const char *CredentialsManager::ENV_BUCKET_KEY = "CMAC_BUCKET";
-const char *CredentialsManager::ENV_URL_KEY = "CMAC_URL";
+const char *CredentialsManager::ENV_URL_KEY    = "CMAC_URL";
+
 const char *CredentialsManager::USE_ENV_CREDS_KEY_VALUE = "ENV_CREDS";
 
 /**
  * Our singleton instance
  */
-CredentialsManager *CredentialsManager::theMngr=0;
+CredentialsManager *CredentialsManager::theMngr = nullptr;
+
+/**
+ * Run once_flag for initializing the singleton instance.
+ */
+static std::once_flag d_cmac_init_once;
 
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+//
+// Helper Functions
+//
 /**
  *  Get get the specified environment value. This function
  *  returns an empty string if the environment variable is
@@ -104,21 +114,24 @@ std::string get_config_value(const string &key){
     return value;
 }
 
-/**
- * Destructo
- */
-CredentialsManager::~CredentialsManager() {
-    for (std::map<std::string, AccessCredentials *>::iterator it = creds.begin(); it != creds.end(); ++it) {
-        delete it->second;
-    }
-    creds.clear();
-}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+//
+// class CredentialsManager
+//
 
 /**
- * Really it's the default constructor for now.
+ * @brief Returns the singleton instance of the CrednetialsManager.
+ * @return Returns the singleton instance of the CredentialsManager
  */
-CredentialsManager::CredentialsManager(): ngaps3CredentialsLoaded(false){
-    d_netrc_filename = curl::get_netrc_filename();
+CredentialsManager *CredentialsManager::theCM(){
+
+    std::call_once(d_cmac_init_once,CredentialsManager::initialize_instance);
+
+    if (theMngr == 0)
+        initialize_instance();
+
+    return theMngr;
 }
 
 /**
@@ -132,6 +145,25 @@ void CredentialsManager::initialize_instance()
 #endif
 
 }
+
+/**
+ * Really it's the default constructor for now.
+ */
+CredentialsManager::CredentialsManager(): ngaps3CredentialsLoaded(false){
+    // d_netrc_filename = curl::get_netrc_filename();
+}
+
+
+/**
+ * Destructo
+ */
+CredentialsManager::~CredentialsManager() {
+    for (std::map<std::string, AccessCredentials *>::iterator it = creds.begin(); it != creds.end(); ++it) {
+        delete it->second;
+    }
+    creds.clear();
+}
+
 
 /**
  * Private static function can only be called by friends and pThreads code.
@@ -162,6 +194,10 @@ CredentialsManager::add(const std::string &key, AccessCredentials *ac){
  */
 AccessCredentials*
 CredentialsManager::get(const std::string &url){
+    // This lock is a RAII implementation. It will block until the mutex is
+    // available and the lock will be released when the instance is destroyed.
+    std::lock_guard<std::mutex> lock_me(d_lock_mutex);
+
     AccessCredentials *best_match = NULL;
     std::string best_key("");
 
@@ -266,6 +302,10 @@ bool file_is_secured(const string &filename) {
  */
 void CredentialsManager::load_credentials( ) {
 
+    // This lock is a RAII implementation. It will block until the mutex is
+    // available and the lock will be released when the instance is destroyed.
+    std::lock_guard<std::mutex> lock_me(d_lock_mutex);
+
     bool found_key = true;
     AccessCredentials *accessCredentials;
     map<string, AccessCredentials *> credential_sets;
@@ -294,7 +334,7 @@ void CredentialsManager::load_credentials( ) {
         return;
     }
 
-    theCM()->load_ngap_s3_credentials();
+    load_ngap_s3_credentials();
 
     if(!file_exists(config_file)){
         BESDEBUG(CREDS, prolog << "The file specified by the BES key " << CATALOG_MANAGER_CREDENTIALS
@@ -374,12 +414,16 @@ void CredentialsManager::load_credentials( ) {
 
 
 /**
+ * @brief Attempts to load Access Credentials from the environment variables.
  *
- * @return
+ * WARNING: This method assumes that the Manager is located and makes no
+ * effort to lock or unlock the manager.
+ *
+ * @return A pointer to AccessCredntials of successful, nullptr otherwise.
  */
 AccessCredentials *CredentialsManager::load_credentials_from_env( ) {
 
-    AccessCredentials *ac = NULL;
+    AccessCredentials *ac = nullptr;
     string env_url, env_id, env_access_key, env_region, env_bucket;
 
     // If we are in developer mode then we compile this section which
