@@ -158,11 +158,11 @@ string EOS5File::get_CF_string(string s)
 }
 
 // Retrieve the HDF5 information for HDF-EOS5 
-void EOS5File::Retrieve_H5_Info(const char *file_fullpath, hid_t file_id, bool /*include_attr*/, bool is_dap4) 
+void EOS5File::Retrieve_H5_Info(const char *file_fullpath, hid_t file_id, bool /*include_attr*/) 
 {
     // Since we need to check the attribute info in order to determine if the file is augmented to netCDF-4,
     // we need to retrieve the attribute info also.
-    File::Retrieve_H5_Info(file_fullpath, file_id, true,false);
+    File::Retrieve_H5_Info(file_fullpath, file_id, true);
 }
 
 void EOS5File::Retrieve_H5_CVar_Supported_Attr_Values()
@@ -223,7 +223,7 @@ void EOS5File::Handle_EOS5_Unsupported_Dtype(bool include_attr)
         if (true == include_attr) {
             for (vector<Attribute *>::iterator ira = (*ircv)->attrs.begin(); ira != (*ircv)->attrs.end();) {
                 H5DataType temp_dtype = (*ira)->getType();
-                if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
+                if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4)) {
                     delete (*ira);
                     ira = (*ircv)->attrs.erase(ira);
                 }
@@ -235,7 +235,7 @@ void EOS5File::Handle_EOS5_Unsupported_Dtype(bool include_attr)
         }
 
         H5DataType temp_dtype = (*ircv)->getType();
-        if (!HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
+        if (!HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4)) {
             delete (*ircv);
             ircv = this->cvars.erase(ircv);
         }
@@ -282,7 +282,8 @@ void EOS5File::Gen_EOS5_VarAttr_Unsupported_Dtype_Info()
             //if (true == (*irv)->unsupported_attr_dtype) {
                 for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
                     H5DataType temp_dtype = (*ira)->getType();
-                    if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype) || (temp_dtype == H5INT64) ||(temp_dtype == H5UINT64)) {
+                    // TODO: check why 64-bit integer is included.
+                    if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4) || (temp_dtype == H5INT64) ||(temp_dtype == H5UINT64)) {
                         // "DIMENSION_LIST" is okay to ignore and "REFERENCE_LIST"
                         // is okay to ignore if the variable has another attribute
                         // CLASS="DIMENSION_SCALE"

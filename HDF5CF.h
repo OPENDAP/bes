@@ -600,7 +600,7 @@ public:
     /// huge memory allocation for some HDF5 files, we separate
     /// the access of DAS from DDS although internally they
     /// still share common routines.
-    virtual void Retrieve_H5_Info(const char *path, hid_t file_id, bool, bool);
+    virtual void Retrieve_H5_Info(const char *path, hid_t file_id, bool);
 
     /// Retrieve attribute values for the supported HDF5 datatypes.
     virtual void Retrieve_H5_Supported_Attr_Values();
@@ -690,6 +690,14 @@ public:
         return have_udim;
     }
 
+    void setDap4(bool is_dap4)  
+    {
+        _is_dap4 = is_dap4;
+    }
+    bool getDap4() const 
+    {
+        return _is_dap4;
+    }
     /// Obtain the flag to see if ignored objects should be generated.
     virtual bool Get_IgnoredInfo_Flag() = 0;
 
@@ -786,7 +794,7 @@ protected:
     File(const char *h5_path, hid_t file_id) :
         path(std::string(h5_path)), fileid(file_id), rootid(-1), unsupported_var_dtype(false), unsupported_attr_dtype(false), unsupported_var_dspace(
             false), unsupported_attr_dspace(false), unsupported_var_attr_dspace(false), addeddimindex(0), check_ignored(
-            false), have_ignored(false), have_udim(false)
+            false), have_ignored(false), have_udim(false),_is_dap4(false)
     {
     }
 
@@ -825,6 +833,7 @@ protected:
     bool check_ignored;
     bool have_ignored;
     bool have_udim;
+    bool _is_dap4;
     std::string ignored_msg;
 
 };
@@ -851,7 +860,7 @@ public:
     }
 
     /// Retrieve DDS information from the HDF5 file; real implementation for general HDF5 products.
-    virtual void Retrieve_H5_Info(const char *path, hid_t file_id, bool include_attr,bool);
+    virtual void Retrieve_H5_Info(const char *path, hid_t file_id, bool include_attr);
 
     /// Retrieve attribute values for the supported HDF5 datatypes for general HDF5 products.
     virtual void Retrieve_H5_Supported_Attr_Values();
@@ -1202,7 +1211,7 @@ public:
     }
 
     /// Retrieve DDS information from the HDF5 file; a real implementation for HDF-EOS5 products
-    virtual void Retrieve_H5_Info(const char *path, hid_t file_id, bool include_attr,bool);
+    virtual void Retrieve_H5_Info(const char *path, hid_t file_id, bool include_attr);
 
     /// Retrieve attribute values for the supported HDF5 datatypes for HDF-EOS5 products.
     virtual void Retrieve_H5_Supported_Attr_Values() ;

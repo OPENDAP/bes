@@ -217,7 +217,7 @@ string GMFile::get_CF_string(string s) {
 
 // Retrieve all the HDF5 information.
 void GMFile::Retrieve_H5_Info(const char *file_fullpath,
-                              hid_t file_id, bool include_attr, bool is_dap4) {
+                              hid_t file_id, bool include_attr) {
 
     BESDEBUG("h5", "Coming to Retrieve_H5_Info()"<<endl);
     // GPM needs the attribute info. to obtain the lat/lon.
@@ -225,9 +225,9 @@ void GMFile::Retrieve_H5_Info(const char *file_fullpath,
     if (product_type == Mea_SeaWiFS_L2 || product_type == Mea_SeaWiFS_L3
         || GPMS_L3 == product_type  || GPMM_L3 == product_type || GPM_L1 == product_type || OBPG_L3 == product_type
         || Mea_Ozone == product_type || General_Product == product_type)  
-        File::Retrieve_H5_Info(file_fullpath,file_id,true,false);
+        File::Retrieve_H5_Info(file_fullpath,file_id,true);
     else 
-        File::Retrieve_H5_Info(file_fullpath,file_id,include_attr,false);
+        File::Retrieve_H5_Info(file_fullpath,file_id,include_attr);
 
 }
 
@@ -417,7 +417,7 @@ void GMFile:: Handle_GM_Unsupported_Dtype(bool include_attr)  {
             for (vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
                  ira != (*ircv)->attrs.end(); ) {
                 H5DataType temp_dtype = (*ira)->getType();
-                if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
+                if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4)) {
                     delete (*ira);
                     ira = (*ircv)->attrs.erase(ira);
                 }
@@ -427,7 +427,7 @@ void GMFile:: Handle_GM_Unsupported_Dtype(bool include_attr)  {
             }
         }
         H5DataType temp_dtype = (*ircv)->getType();
-        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
+        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4)) {
             
             // This may need to be checked carefully in the future,
             // My current understanding is that the coordinate variable can
@@ -449,7 +449,7 @@ void GMFile:: Handle_GM_Unsupported_Dtype(bool include_attr)  {
             for (vector<Attribute *>::iterator ira = (*ircv)->attrs.begin();
                 ira != (*ircv)->attrs.end(); ) {
                 H5DataType temp_dtype = (*ira)->getType();
-                if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
+                if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4)) {
                     delete (*ira);
                     ira = (*ircv)->attrs.erase(ira);
                 }
@@ -459,7 +459,7 @@ void GMFile:: Handle_GM_Unsupported_Dtype(bool include_attr)  {
             }
         }
         H5DataType temp_dtype = (*ircv)->getType();
-        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
+        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4)) {
             delete (*ircv);
             ircv = this->spvars.erase(ircv);
         }
@@ -519,7 +519,8 @@ void GMFile:: Gen_GM_VarAttr_Unsupported_Dtype_Info(){
                     for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
                         ira != (*irv)->attrs.end(); ++ira) {
                         H5DataType temp_dtype = (*ira)->getType();
-                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype) || temp_dtype == H5INT64 || temp_dtype == H5UINT64) {
+                        // TODO: check why 64-bit integer is included here.
+                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4) || temp_dtype == H5INT64 || temp_dtype == H5UINT64) {
                             // "DIMENSION_LIST" is okay to ignore and "REFERENCE_LIST"
                             // is okay to ignore if the variable has another attribute
                             // CLASS="DIMENSION_SCALE"
@@ -541,7 +542,8 @@ void GMFile:: Gen_GM_VarAttr_Unsupported_Dtype_Info(){
                     for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
                         ira != (*irv)->attrs.end(); ++ira) {
                         H5DataType temp_dtype = (*ira)->getType();
-                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype) || temp_dtype == H5INT64 || temp_dtype == H5UINT64) {
+                        //TODO; check why 64-bit integer is included here.
+                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4) || temp_dtype == H5INT64 || temp_dtype == H5UINT64) {
                             // "DIMENSION_LIST" is okay to ignore and "REFERENCE_LIST"
                             // is okay to ignore if the variable has another attribute
                             // CLASS="DIMENSION_SCALE"
@@ -562,7 +564,8 @@ void GMFile:: Gen_GM_VarAttr_Unsupported_Dtype_Info(){
                     for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
                         ira != (*irv)->attrs.end(); ++ira) {
                         H5DataType temp_dtype = (*ira)->getType();
-                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype) || temp_dtype == H5INT64 || temp_dtype == H5UINT64) {
+                        // TODO: check why 64-bit integer is included here.
+                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4) || temp_dtype == H5INT64 || temp_dtype == H5UINT64) {
                                 this->add_ignored_info_attrs(false,(*irv)->fullpath,(*ira)->name);
                         }
                     }
@@ -577,7 +580,8 @@ void GMFile:: Gen_GM_VarAttr_Unsupported_Dtype_Info(){
                     for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin();
                         ira != (*irv)->attrs.end(); ++ira) {
                         H5DataType temp_dtype = (*ira)->getType();
-                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype) || temp_dtype == H5INT64 || temp_dtype == H5UINT64) {
+                        //TODO: check why 64-bit integer is included here.
+                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4) || temp_dtype == H5INT64 || temp_dtype == H5UINT64) {
                             this->add_ignored_info_attrs(false,(*irv)->fullpath,(*ira)->name);
                         }
                     }

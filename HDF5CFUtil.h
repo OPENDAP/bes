@@ -101,8 +101,8 @@ struct HDF5CFUtil {
                static void cha_co(std::string &co,const std::string & vpath);
                static void get_relpath_pos(const std::string& temp_str,const std::string& relpath,std::vector<size_t>&var_pos);
 
-               static bool cf_strict_support_type(H5DataType dtype); 
-               static bool cf_dap2_support_numeric_type(H5DataType dtype); 
+               static bool cf_strict_support_type(H5DataType dtype,bool is_dap4); 
+               static bool cf_dap2_support_numeric_type(H5DataType dtype,bool is_dap4); 
 
                // Obtain the unique name for the clashed names and save it to set namelist.
                static void gen_unique_name(std::string &str, std::set<std::string>&namelist,int&clash_index);

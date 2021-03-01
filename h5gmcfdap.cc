@@ -83,7 +83,7 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
     bool include_attr = false;
     try {
         // Retrieve all HDF5 info(Not the values)
-        f->Retrieve_H5_Info(filename.c_str(),file_id,include_attr,false);
+        f->Retrieve_H5_Info(filename.c_str(),file_id,include_attr);
 
         // Update product type
         // Newer version of a product may have different layout and the 
@@ -212,7 +212,7 @@ void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
 
     bool include_attr = true;
     try {
-        f->Retrieve_H5_Info(filename.c_str(),file_id,include_attr,false);
+        f->Retrieve_H5_Info(filename.c_str(),file_id,include_attr);
 
         // Update product type(check comments of map_gmh5_cfdds)
         f->Update_Product_Type();
@@ -287,7 +287,7 @@ void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
 
 void map_gmh5_cfdmr(D4Group *d4_root, hid_t file_id, const string& filename){
 
-#if 0
+//#if 0
     BESDEBUG("h5","Coming to GM products DMR mapping function map_gmh5_cfdmr()  "<<endl);
 
     H5GCFProduct product_type = check_product(file_id);
@@ -303,10 +303,12 @@ void map_gmh5_cfdmr(D4Group *d4_root, hid_t file_id, const string& filename){
         throw InternalErr(__FILE__,__LINE__,"Cannot allocate memory for GMFile ");
     }
     // Generally don't need to handle attributes when handling DDS. 
-    bool include_attr = false;
+    bool include_attr = true;
     try {
+        // Set the is_dap4 flag be true.
+        f->setDap4(true);
         // Retrieve all HDF5 info(Not the values)
-        f->Retrieve_H5_Info(filename.c_str(),file_id,include_attr,true);
+        f->Retrieve_H5_Info(filename.c_str(),file_id,include_attr);
 
         // Update product type
         // Newer version of a product may have different layout and the 
@@ -338,8 +340,8 @@ void map_gmh5_cfdmr(D4Group *d4_root, hid_t file_id, const string& filename){
         // When cv memory cache is on, the unit attributes are needed to
         // distinguish whether this is lat/lon. Generally, memory cache 
         // is not used. This snipnet will not be accessed.
-        if((HDF5RequestHandler::get_lrdata_mem_cache() != NULL) ||
-           (HDF5RequestHandler::get_srdata_mem_cache() != NULL)){
+        //if((HDF5RequestHandler::get_lrdata_mem_cache() != NULL) ||
+        //   (HDF5RequestHandler::get_srdata_mem_cache() != NULL)){
 
             // Handle unsupported datatypes including the attributes
             f->Handle_Unsupported_Dtype(true);
@@ -347,10 +349,14 @@ void map_gmh5_cfdmr(D4Group *d4_root, hid_t file_id, const string& filename){
             // Handle unsupported dataspaces including the attributes
             f->Handle_Unsupported_Dspace(true);
 
-            // We need to retrieve  coordinate variable attributes for memory cache use.
-            f->Retrieve_H5_CVar_Supported_Attr_Values(); 
+            // We need to retrieve variable attributes.
+            f->Retrieve_H5_Supported_Attr_Values(); 
 
-        }
+            // Include handling internal netCDF-4 attributes
+            f->Handle_Unsupported_Others(include_attr);
+
+        //}
+#if 0
         else {
 
             // Handle unsupported datatypes
@@ -360,11 +366,9 @@ void map_gmh5_cfdmr(D4Group *d4_root, hid_t file_id, const string& filename){
             f->Handle_Unsupported_Dspace(include_attr);
 
         }
-
-        // Need to handle the "coordinate" attributes when memory cache is turned on.
-        if((HDF5RequestHandler::get_lrdata_mem_cache() != NULL) || 
-           (HDF5RequestHandler::get_srdata_mem_cache() != NULL))
-            f->Add_Supplement_Attrs(HDF5RequestHandler::get_add_path_attrs());
+#endif
+        // Need to handle the "coordinate" attributes 
+        f->Add_Supplement_Attrs(HDF5RequestHandler::get_add_path_attrs());
 
         // Adjust object names(may remove redundant paths)
         f->Adjust_Obj_Name();
@@ -379,22 +383,31 @@ void map_gmh5_cfdmr(D4Group *d4_root, hid_t file_id, const string& filename){
            true == HDF5RequestHandler::get_check_name_clashing()) 
            f->Handle_Obj_NameClashing(include_attr);
 
-        // Adjust Dimension name 
+        // Adjust Dimension name, CHECK: the das generation has a f->HaveUnlimitedDim() condition
         f->Adjust_Dim_Name();
         if(General_Product == product_type ||
             true == HDF5RequestHandler::get_check_name_clashing()) 
             f->Handle_DimNameClashing();
 
+        // Handle the "coordinate" attributes.
+        f->Handle_Coor_Attr();
+       
         f->Handle_Hybrid_EOS5();
         if(true == f->Have_Grid_Mapping_Attrs()) 
             f->Handle_Grid_Mapping_Vars();
+#if 0
         // Need to handle the "coordinate" attributes when memory cache is turned on.
         if((HDF5RequestHandler::get_lrdata_mem_cache() != NULL) || 
            (HDF5RequestHandler::get_srdata_mem_cache() != NULL))
             f->Handle_Coor_Attr();
+#endif
  
         f->Remove_Unused_FakeDimVars();
         f->Rename_NC4_NonCoordVars();
+
+        if(true == HDF5RequestHandler::get_enable_coord_attr_add_path())
+            f->Add_Path_Coord_Attr();
+
     }
     catch (HDF5CF::Exception &e){
         if (f != NULL)
@@ -402,9 +415,9 @@ void map_gmh5_cfdmr(D4Group *d4_root, hid_t file_id, const string& filename){
         throw InternalErr(e.what());
     }
     
-    // generate DDS.
+    // generate DMR.
     try {
-        gen_gmh5_cfdds(dds,f);
+        gen_gmh5_cfdmr(d4_root,f);
     }
     catch(...) {
         if (f != NULL)
@@ -415,7 +428,7 @@ void map_gmh5_cfdmr(D4Group *d4_root, hid_t file_id, const string& filename){
     if (f != NULL)
         delete f;
 
-#endif
+//#endif
 }
 
 // Generate DDS mapped from general HDF5 products
@@ -687,6 +700,40 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
     }
 }
 
+void gen_gmh5_cfdmr(D4Group* d4_root,HDF5CF::GMFile *f) {
+
+    BESDEBUG("h5","Coming to GM DDS generation function gen_gmh5_cfdds()  "<<endl);
+
+    const vector<HDF5CF::Var *>&      vars  = f->getVars();
+    const vector<HDF5CF::GMCVar *>&  cvars  = f->getCVars();
+    const vector<HDF5CF::GMSPVar *>& spvars = f->getSPVars();
+    const string filename                   = f->getPath();
+    const hid_t fileid                      = f->getFileID();
+
+    // Read Variable info.
+
+    vector<HDF5CF::Var *>::const_iterator       it_v;
+    vector<HDF5CF::GMCVar *>::const_iterator   it_cv;
+    vector<HDF5CF::GMSPVar *>::const_iterator it_spv;
+
+    for (it_v = vars.begin(); it_v !=vars.end();++it_v) {
+        BESDEBUG("h5","variable full path= "<< (*it_v)->getFullPath() <<endl);
+        gen_dap_onevar_dmr(d4_root,*it_v,fileid, filename);
+    }
+
+    for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
+        BESDEBUG("h5","variable full path= "<< (*it_cv)->getFullPath() <<endl);
+        gen_dap_onegmcvar_dmr(d4_root,,*it_cv,fileid, filename);
+    }
+
+    for (it_spv = spvars.begin(); it_spv !=spvars.end();it_spv++) {
+        BESDEBUG("h5","variable full path= "<< (*it_spv)->getFullPath() <<endl);
+        gen_dap_onegmspvar_dmr(d4_root,*it_spv,fileid, filename);
+    }
+
+
+}
+
 // Generate the ignored object info. for the CF option of the general products
 void gen_gmh5_cf_ignored_obj_info(DAS &das, HDF5CF::GMFile *f) {
 
@@ -764,6 +811,7 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
                                     CV_EXIST,
                                     is_latlon,
                                     cvar->getCompRatio(),
+                                    false,
                                     cvar->getNewName(),
                                     bt);
                 }
@@ -1066,4 +1114,10 @@ void update_GPM_special_attrs(DAS& das, const HDF5CF::Var *var,bool is_cvar) {
     }
 }
 
-               
+void gen_dap_onegmcvar_dmr(d4_root,,*it_cv,fileid, filename) {              
+
+}
+
+void gen_dap_onegmspvar_dmr(d4_root,*it_spv,fileid, filename) {
+
+}

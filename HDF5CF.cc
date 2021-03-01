@@ -167,7 +167,7 @@ Attribute::~Attribute()
 {
 }
 
-void File::Retrieve_H5_Info(const char * /*path*/, hid_t file_id, bool include_attr, bool is_dap4)
+void File::Retrieve_H5_Info(const char * /*path*/, hid_t file_id, bool include_attr)
 {
 
     BESDEBUG("h5", "coming to Retrieve_H5_Info" <<endl);
@@ -505,7 +505,8 @@ void File::Retrieve_H5_VarType(Var *var, hid_t dset_id, const string & varname, 
     // 
 
     var->dtype = HDF5CFUtil::H5type_to_H5DAPtype(ty_id);
-    if (false == HDF5CFUtil::cf_strict_support_type(var->dtype)) unsup_var_dtype = true;
+    if (false == HDF5CFUtil::cf_strict_support_type(var->dtype,_is_dap4)) 
+        unsup_var_dtype = true;
 
     if (H5Tclose(ty_id) < 0)
     throw1("Unable to close the HDF5 datatype ");;
@@ -632,7 +633,8 @@ void File::Retrieve_H5_Attr_Info(Attribute * attr, hid_t obj_id, const int j, bo
         // (128-bit or 92-bit floating point type).
         // 
         attr->dtype = HDF5CFUtil::H5type_to_H5DAPtype(ty_id);
-        if (false == HDF5CFUtil::cf_strict_support_type(attr->dtype)) unsup_attr_dtype = true;
+        if (false == HDF5CFUtil::cf_strict_support_type(attr->dtype,_is_dap4)) 
+            unsup_attr_dtype = true;
 
         if(H5VSTRING == attr->dtype || H5FSTRING == attr->dtype) {
             H5T_cset_t c_set_type = H5Tget_cset(ty_id);
@@ -1013,7 +1015,7 @@ void File::Handle_Group_Unsupported_Dtype()
         if (true == this->unsupported_attr_dtype) {
             for (vector<Attribute *>::iterator ira = this->root_attrs.begin(); ira != this->root_attrs.end();) {
                 H5DataType temp_dtype = (*ira)->getType();
-                if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
+                if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4)) {
                     delete (*ira);
                     ira = this->root_attrs.erase(ira);
                 }
@@ -1031,7 +1033,7 @@ void File::Handle_Group_Unsupported_Dtype()
                 if (true == (*irg)->unsupported_attr_dtype) {
                     for (vector<Attribute *>::iterator ira = (*irg)->attrs.begin(); ira != (*irg)->attrs.end();) {
                         H5DataType temp_dtype = (*ira)->getType();
-                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
+                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4)) {
                             delete (*ira);
                             ira = (*irg)->attrs.erase(ira);
                         }
@@ -1054,7 +1056,10 @@ void File::Gen_Group_Unsupported_Dtype_Info()
         //if (true == this->unsupported_attr_dtype) {
             for (vector<Attribute *>::iterator ira = this->root_attrs.begin(); ira != this->root_attrs.end(); ++ira) {
                 H5DataType temp_dtype = (*ira)->getType();
-                if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype) || temp_dtype == H5INT64 || temp_dtype == H5UINT64) {
+                // TODO: Don't know why we still include 64-bit integer here.
+                //if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype) || temp_dtype == H5INT64 || temp_dtype == H5UINT64) {
+                if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4) 
+                    || temp_dtype == H5INT64 || temp_dtype == H5UINT64) {
                     this->add_ignored_info_attrs(true, "/", (*ira)->name);
                 }
             }
@@ -1068,7 +1073,10 @@ void File::Gen_Group_Unsupported_Dtype_Info()
                 //if (true == (*irg)->unsupported_attr_dtype) {
                     for (vector<Attribute *>::iterator ira = (*irg)->attrs.begin(); ira != (*irg)->attrs.end(); ++ira) {
                         H5DataType temp_dtype = (*ira)->getType();
-                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype) || temp_dtype == H5INT64 || temp_dtype==H5UINT64 ) {
+                        // TODO: Don't know why we still include 64-bit integer here.
+                        //if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype) || temp_dtype == H5INT64 || temp_dtype==H5UINT64 ) {
+                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4) 
+                            || temp_dtype == H5INT64 || temp_dtype==H5UINT64 ) {
                             this->add_ignored_info_attrs(true, (*irg)->path, (*ira)->name);
                         }
                     }
@@ -1085,7 +1093,7 @@ void File::Handle_Var_Unsupported_Dtype()
         if (true == this->unsupported_var_dtype) {
             for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end();) {
                 H5DataType temp_dtype = (*irv)->getType();
-                if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
+                if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4)) {
                     delete (*irv);
                     irv = this->vars.erase(irv);
                 }
@@ -1106,7 +1114,10 @@ void File::Gen_Var_Unsupported_Dtype_Info()
         //if (true == this->unsupported_var_dtype) {
             for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
                 H5DataType temp_dtype = (*irv)->getType();
-                if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)||(H5INT64 == temp_dtype) ||(H5UINT64 == temp_dtype)) {
+                //TODO: don't know why 64-bit integer is still listed here.
+                //if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)||(H5INT64 == temp_dtype) ||(H5UINT64 == temp_dtype)) {
+                if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4)
+                    ||(H5INT64 == temp_dtype) ||(H5UINT64 == temp_dtype)) {
                     this->add_ignored_info_objs(false, (*irv)->fullpath);
                 }
             }
@@ -1124,7 +1135,7 @@ void File::Handle_VarAttr_Unsupported_Dtype()
                 if (true == (*irv)->unsupported_attr_dtype) {
                     for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end();) {
                         H5DataType temp_dtype = (*ira)->getType();
-                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype)) {
+                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4)) {
                             delete (*ira);
                             ira = (*irv)->attrs.erase(ira);
                         }
@@ -1148,7 +1159,10 @@ void File::Gen_VarAttr_Unsupported_Dtype_Info()
                 //if (true == (*irv)->unsupported_attr_dtype) {
                     for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
                         H5DataType temp_dtype = (*ira)->getType();
-                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype) || (temp_dtype==H5INT64) || (temp_dtype == H5UINT64)) {
+                        // TODO: check why 64-bit integer is still listed here.
+                        //if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype) || (temp_dtype==H5INT64) || (temp_dtype == H5UINT64)) {
+                        if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4) 
+                            || (temp_dtype==H5INT64) || (temp_dtype == H5UINT64)) {
                             this->add_ignored_info_attrs(false, (*irv)->fullpath, (*ira)->name);
                         }
                     }
@@ -1174,7 +1188,9 @@ void File::Gen_DimScale_VarAttr_Unsupported_Dtype_Info()
             //if (true == (*irv)->unsupported_attr_dtype) {
                 for (vector<Attribute *>::iterator ira = (*irv)->attrs.begin(); ira != (*irv)->attrs.end(); ++ira) {
                     H5DataType temp_dtype = (*ira)->getType();
-                    if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype) || (temp_dtype == H5INT64) || (temp_dtype == H5UINT64)) {
+                    // TODO: check why 64-bit is still listed here.
+                    if (false == HDF5CFUtil::cf_strict_support_type(temp_dtype,_is_dap4) 
+                        || (temp_dtype == H5INT64) || (temp_dtype == H5UINT64)) {
                         // "DIMENSION_LIST" is okay to ignore and "REFERENCE_LIST"
                         // is okay to ignore if the variable has another attribute
                         // CLASS="DIMENSION_SCALE"
@@ -2454,7 +2470,7 @@ bool File::ignored_dimscale_ref_list(Var *var)
     bool has_dimscale = false;
     bool has_reference_list = false;
     for (vector<Attribute *>::iterator ira = var->attrs.begin(); ira != var->attrs.end(); ira++) {
-        if ((*ira)->name == "REFERENCE_LIST" && false == HDF5CFUtil::cf_strict_support_type((*ira)->getType()))
+        if ((*ira)->name == "REFERENCE_LIST" && false == HDF5CFUtil::cf_strict_support_type((*ira)->getType(),_is_dap4))
             has_reference_list = true;
         if ((*ira)->name == "CLASS") {
             Retrieve_H5_Attr_Value(*ira, var->fullpath);

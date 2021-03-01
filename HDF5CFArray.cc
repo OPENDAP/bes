@@ -73,7 +73,7 @@ bool HDF5CFArray::read()
         if(((cvtype == CV_EXIST) && (islatlon != true)) || (cvtype == CV_NONLATLON_MISS) 
             || (cvtype == CV_FILLINDEX) ||(cvtype == CV_MODIFY) ||(cvtype == CV_SPECIAL)){
 
-            if(HDF5CFUtil::cf_dap2_support_numeric_type(dtype)==true) 
+            if(HDF5CFUtil::cf_dap2_support_numeric_type(dtype,is_dap4)==true) 
                 use_cache_flag = 1;
         }
     }
@@ -93,7 +93,7 @@ bool HDF5CFArray::read()
 //cerr<<"coming to use_cache_flag =2 "<<endl;
 #endif
                     // Only the data with the numeric datatype DAP2 and CF support are cached.
-		            if(HDF5CFUtil::cf_dap2_support_numeric_type(dtype)==true)
+		            if(HDF5CFUtil::cf_dap2_support_numeric_type(dtype,is_dap4)==true)
 		                use_cache_flag = 2;
                 }
             }
@@ -112,7 +112,7 @@ bool HDF5CFArray::read()
                         ("" == check_str_sect_in_list(cur_lrd_non_cache_dir_list,filename,'/'))) {
 
                         // Only data with the numeric datatype DAP2 and CF support are cached.   
-                        if(HDF5CFUtil::cf_dap2_support_numeric_type(dtype)==true) 
+                        if(HDF5CFUtil::cf_dap2_support_numeric_type(dtype,is_dap4)==true) 
                             use_cache_flag = 3;                       
                     }
                 }
@@ -132,7 +132,7 @@ bool HDF5CFArray::read()
 #endif
 
                          // Only the data with the numeric datatype DAP2 and CF support are cached. 
-                        if(HDF5CFUtil::cf_dap2_support_numeric_type(dtype)==true) 
+                        if(HDF5CFUtil::cf_dap2_support_numeric_type(dtype,is_dap4)==true) 
                             use_cache_flag = 4;
                     }
                 }

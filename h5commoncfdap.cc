@@ -289,7 +289,7 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
         HDF5CFArray *ar = NULL;
         try {
             ar = new HDF5CFArray(var->getRank(), file_id, filename, var->getType(), dimsizes, var->getFullPath(),
-                var->getTotalElems(), CV_UNSUPPORTED, false, var->getCompRatio(), var->getNewName(), bt);
+                var->getTotalElems(), CV_UNSUPPORTED, false, var->getCompRatio(), false,var->getNewName(), bt);
         }
         catch (...) {
             delete bt;

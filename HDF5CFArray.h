@@ -56,6 +56,7 @@ class HDF5CFArray:public HDF5BaseArray {
                     const CVType h5_cvtype,
                     const bool h5_islatlon,
                     const float h5_comp_ratio,
+                    const bool h5_is_dap4,
                     const std::string & n="",  
                     libdap::BaseType * v = 0):
                     HDF5BaseArray(n,v),
@@ -68,7 +69,8 @@ class HDF5CFArray:public HDF5BaseArray {
                     total_elems(h5_total_elems),
                     cvtype(h5_cvtype),
                     islatlon(h5_islatlon),
-                    comp_ratio(h5_comp_ratio)
+                    comp_ratio(h5_comp_ratio),
+                    is_dap4(h5_is_dap4)
         {
         }
         
@@ -97,6 +99,7 @@ class HDF5CFArray:public HDF5BaseArray {
         CVType cvtype;
         bool islatlon;
         float comp_ratio;
+        bool is_dap4;
         bool valid_disk_cache();
         bool valid_disk_cache_for_compressed_data(short dtype_size) const;
         bool obtain_cached_data(HDF5DiskCache*,const std::string&,int, std::vector<int>&,std::vector<int>&,size_t,short);

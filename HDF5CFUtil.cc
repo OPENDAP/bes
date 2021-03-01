@@ -179,7 +179,7 @@ bool HDF5CFUtil::use_data_mem_cache(H5DataType h5type, CVType cvtype, const stri
 
 }
 
-bool HDF5CFUtil::cf_strict_support_type(H5DataType dtype) {
+bool HDF5CFUtil::cf_strict_support_type(H5DataType dtype, bool is_dap4) {
     if ((H5UNSUPTYPE == dtype)||(H5REFERENCE == dtype)
         || (H5COMPOUND == dtype) || (H5ARRAY == dtype))
         // Important comments for the future work. 
@@ -187,22 +187,28 @@ bool HDF5CFUtil::cf_strict_support_type(H5DataType dtype) {
         //"|| (H5INT64 == dtype)    ||(H5UINT64 == dtype))"
         return false;
     else if ((H5INT64 == dtype) || (H5UINT64 == dtype)) {
-            if (HDF5RequestHandler::get_dmr_long_int()==false)
-                return false;
-            else
-                return true;
-         }
+        if (true == is_dap4 || HDF5RequestHandler::get_dmr_long_int()==true)
+            return true;
+        else
+            return false;
+    }
     else 
         return true;
 }
 
-bool HDF5CFUtil::cf_dap2_support_numeric_type(H5DataType dtype) {
+bool HDF5CFUtil::cf_dap2_support_numeric_type(H5DataType dtype,bool is_dap4) {
     if ((H5UNSUPTYPE == dtype)||(H5REFERENCE == dtype)
         || (H5COMPOUND == dtype) || (H5ARRAY == dtype)
         || (H5INT64 == dtype)    ||(H5UINT64 == dtype)
         || (H5FSTRING == dtype)  ||(H5VSTRING == dtype))
         return false;
-    else 
+    else if ((H5INT64 == dtype) ||(H5UINT64 == dtype)) {
+        if(true == is_dap4 || true == HDF5RequestHandler::get_dmr_long_int())
+            return true;
+        else 
+            return false;
+    }
+    else
         return true;
 }
 
