@@ -34,7 +34,6 @@ jobs:
         run: |
           git clone https://github.com/OPENDAP/hyrax-dependencies
           cd hyrax-dependencies
-          git checkout gdal314
           make --jobs=$jobs
           gdal-config --formats
 
