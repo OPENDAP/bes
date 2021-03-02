@@ -280,18 +280,17 @@ public:
         if(debug) cerr << "|--------------------------------------------------|" << endl;
         if(debug) cerr << prolog << "BEGIN" << endl;
 
-        try {
-            string tmp_file_name(tmpnam(nullptr));
-            if (debug) cerr << prolog << "tmp_file_name: " << tmp_file_name << endl;
-            {
-                ofstream ofs(tmp_file_name);
-                if(!ofs.is_open()){
-                    throw BESInternalError("Failed to open temporary file: "+tmp_file_name,__FILE__,__LINE__);
-                }
-                ofs << "This is the temp file." << endl;
+        string tmp_file_name(tmpnam(nullptr));
+        if (debug) cerr << prolog << "tmp_file_name: " << tmp_file_name << endl;
+        {
+            ofstream ofs(tmp_file_name);
+            if(!ofs.is_open()){
+                CPPUNIT_FAIL("Failed to open temporary file: "+tmp_file_name);
             }
-            //unlink(pointer);
+            ofs << "This is the temp file." << endl;
+        }
 
+        try {
             RemoteResource rhr("http://google.com", "foobar");
             if(debug) cerr << prolog << "remoteResource rhr: created" << endl;
 
@@ -301,7 +300,7 @@ public:
             string source_url = "file://" + BESUtil::pathConcat(d_data_dir,"update_file_and_headers_test_file.txt");
             rhr.d_remoteResourceUrl = source_url;
             if(debug) cerr << prolog << "d_remoteResourceUrl: " << source_url << endl;
-            
+
             // Get a pointer to the singleton cache instance for this process.
             HttpCache *cache = HttpCache::get_instance();
             if (!cache) {
@@ -316,6 +315,7 @@ public:
             }
             rhr.d_initialized = true;
 
+
             rhr.update_file_and_headers();
 
             if(debug) cerr << prolog << "update_file_and_headers() called" << endl;
@@ -327,10 +327,15 @@ public:
             string content = get_file_as_string(cache_filename);
             if(debug) cerr << prolog << "retrieved content: " << content << endl;
             CPPUNIT_ASSERT( content == expected_content );
+            unlink(tmp_file_name.c_str());
         }
         catch (BESError &besE){
-            cerr << endl << prolog << "Caught BESError! message: " << besE.get_verbose_message() << " type: " << besE.get_bes_error_type() << endl;
-            CPPUNIT_ASSERT(false);
+            stringstream msg;
+            msg << endl << prolog << "Caught BESError! message: " << besE.get_verbose_message();
+            msg << " type: " << besE.get_bes_error_type() << endl;
+            if(debug) cerr << msg.str();
+            unlink(tmp_file_name.c_str());
+            CPPUNIT_FAIL(msg.str());
         }
         if(debug) cerr << prolog << "END" << endl;
     }
