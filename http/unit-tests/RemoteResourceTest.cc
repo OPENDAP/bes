@@ -281,37 +281,21 @@ public:
 
         FILE *fd;
         try {
-            char * pointer = tmpnam(nullptr);
-            if(debug) cerr << prolog << "pointer : " << pointer << endl;
-
-            string tmp_file = pointer;
-            fd = fopen(tmp_file.c_str(),"w+");
-            if(debug) cerr << prolog << "fd : " << fd << endl;
-            if (fd != NULL){
-                if(debug) cerr << prolog << "tmp file created : " << endl;
-                fputs("this is the temp file",fd);
+            string tmp_file_name(tmpnam(nullptr));
+            if (debug) cerr << prolog << "pointer : " << tmp_file_name << endl;
+            {
+                ofstream ofs(tmp_file_name);
+                if(!ofs.is_open()){
+                    throw BESInternalError("Failed to open temporary file: "+tmp_file_name,__FILE__,__LINE__);
+                }
+                ofs << "This is the temp file." << endl;
             }
             //unlink(pointer);
-
-            rewind(fd);
-            char buf[4096];
-            if (fd == NULL) {
-                if (debug) cerr << prolog << "Error opening file" << endl;
-            }
-            else {
-                if (fgets(buf, 4096, fd) != NULL)
-                    if(debug) cerr << prolog << "file contents : " << buf << endl;
-                else
-                    if(debug) cerr << prolog << "file content : NULL" << endl;
-            }
-            rewind(fd);
-
-            if(debug) cerr << prolog << "///////////////////////////////////////////////////////////////////////////" << endl;
 
             RemoteResource rhr("http://google.com", "foobar");
             if(debug) cerr << prolog << "remoteResource rhr : created" << endl;
 
-            string tmp_url = "file://" + tmp_file;
+            string tmp_url = "file://" + tmp_file_name;
             rhr.d_resourceCacheFileName = tmp_url;
             if(debug) cerr << prolog << "d_resourceCacheFilename : " << tmp_url << endl;
 
