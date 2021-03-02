@@ -279,10 +279,9 @@ public:
         if(debug) cerr << "|--------------------------------------------------|" << endl;
         if(debug) cerr << prolog << "BEGIN" << endl;
 
-        FILE *fd;
         try {
             string tmp_file_name(tmpnam(nullptr));
-            if (debug) cerr << prolog << "pointer : " << tmp_file_name << endl;
+            if (debug) cerr << prolog << "tmp_file_name : " << tmp_file_name << endl;
             {
                 ofstream ofs(tmp_file_name);
                 if(!ofs.is_open()){
@@ -295,9 +294,8 @@ public:
             RemoteResource rhr("http://google.com", "foobar");
             if(debug) cerr << prolog << "remoteResource rhr : created" << endl;
 
-            string tmp_url = "file://" + tmp_file_name;
-            rhr.d_resourceCacheFileName = tmp_url;
-            if(debug) cerr << prolog << "d_resourceCacheFilename : " << tmp_url << endl;
+            rhr.d_resourceCacheFileName = tmp_file_name;
+            if(debug) cerr << prolog << "d_resourceCacheFilename : " << tmp_file_name << endl;
 
             string source_url = "file://" + BESUtil::pathConcat(d_data_dir,"update_file_and_headers_test_file.txt");
             rhr.d_remoteResourceUrl = source_url;
