@@ -331,7 +331,7 @@ public:
             CPPUNIT_ASSERT( content == expected_content );
         }
         catch (BESError &besE){
-            cerr << "Caught BESError! message: " << besE.get_verbose_message() << " type: " << besE.get_bes_error_type() << endl;
+            cerr << endl << prolog << "Caught BESError! message: " << besE.get_verbose_message() << " type: " << besE.get_bes_error_type() << endl;
             CPPUNIT_ASSERT(false);
         }
         if(debug) cerr << prolog << "END" << endl;
