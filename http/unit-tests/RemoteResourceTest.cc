@@ -315,7 +315,6 @@ public:
             }
             rhr.d_initialized = true;
 
-
             rhr.update_file_and_headers();
 
             if(debug) cerr << prolog << "update_file_and_headers() called" << endl;
@@ -327,7 +326,6 @@ public:
             string content = get_file_as_string(cache_filename);
             if(debug) cerr << prolog << "retrieved content: " << content << endl;
             CPPUNIT_ASSERT( content == expected_content );
-            unlink(tmp_file_name.c_str());
         }
         catch (BESError &besE){
             stringstream msg;
@@ -337,6 +335,7 @@ public:
             unlink(tmp_file_name.c_str());
             CPPUNIT_FAIL(msg.str());
         }
+        unlink(tmp_file_name.c_str());
         if(debug) cerr << prolog << "END" << endl;
     }
 
