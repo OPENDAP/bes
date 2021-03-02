@@ -44,6 +44,7 @@
 
 #include "RemoteResource.h"
 #include "HttpNames.h"
+#include "HttpCache.h"
 
 #include "test_config.h"
 
@@ -301,7 +302,22 @@ public:
             rhr.d_remoteResourceUrl = source_url;
             if(debug) cerr << prolog << "d_remoteResourceUrl : " << source_url << endl;
 
+
+            // Get a pointer to the singleton cache instance for this process.
+            HttpCache *cache = HttpCache::get_instance();
+            if (!cache) {
+                ostringstream oss;
+                oss << prolog << "FAILED to get local cache. ";
+                oss << "Unable to proceed with request for " << tmp_file_name;
+                oss << " The server MUST have a valid HTTP cache configuration to operate." << endl;
+                throw BESInternalError(oss.str(), __FILE__, __LINE__);
+            }
+            cache->get_exclusive_lock(tmp_file_name, rhr.d_fd);
+            rhr.d_initialized=true;
+
+
             rhr.update_file_and_headers();
+
             if(debug) cerr << prolog << "update_file_and_headers() called" << endl;
 
             string cache_filename = rhr.getCacheFileName();
