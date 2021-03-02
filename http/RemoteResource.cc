@@ -348,6 +348,11 @@ namespace http {
 
     } //end RemoteResource::retrieveResource()
 
+    void RemoteResource::update_file_and_headers(){
+        std::map<std::string, std::string> content_filters;
+        update_file_and_headers(content_filters);
+    }
+
     void RemoteResource::update_file_and_headers(const std::map<std::string, std::string> &content_filters){
 
         // Get a pointer to the singleton cache instance for this process.

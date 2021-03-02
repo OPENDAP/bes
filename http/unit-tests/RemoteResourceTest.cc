@@ -131,6 +131,7 @@ private:
         if(!src_is.is_open()){
             throw BESInternalError("Failed to open source file: "+src,__FILE__,__LINE__);
         }
+        if(debug) cerr << prolog << "ifstream opened" << endl;
 
         char *pointer = tmpnam(nullptr);
         ofstream tmp_os(pointer);
@@ -236,7 +237,7 @@ public:
         url += BESUtil::pathConcat(d_data_dir,"load_hdrs_from_file_test_file.txt");
         if(debug) cerr << prolog << "url: " << url << endl;
         RemoteResource rhr(url);
-        if(debug) cerr << prolog << "foo created" << endl;
+        if(debug) cerr << prolog << "rhr created" << endl;
         try {
             rhr.load_hdrs_from_file();
             if(debug) cerr << prolog << "loaded hdrs from file" << endl;
@@ -278,21 +279,52 @@ public:
         if(debug) cerr << "|--------------------------------------------------|" << endl;
         if(debug) cerr << prolog << "BEGIN" << endl;
 
-        string url = "http://test.opendap.org/data/httpd_catalog/READTHIS";
-        if(debug) cerr << prolog << "url: " << url << endl;
-        http::RemoteResource rhr(url);
+        FILE *fd;
         try {
-            cache_purge();
+            char * pointer = tmpnam(nullptr);
+            if(debug) cerr << prolog << "pointer : " << pointer << endl;
 
-            rhr.retrieveResource();
-            vector<string> *hdrs = rhr.getResponseHeaders();
-
-            for(size_t i=0; i<hdrs->size() && debug ; i++){
-                cerr << prolog << "hdr["<< i << "]: " << (*hdrs)[i] << endl;
+            string tmp_file = pointer;
+            fd = fopen(tmp_file.c_str(),"w+");
+            if(debug) cerr << prolog << "fd : " << fd << endl;
+            if (fd != NULL){
+                if(debug) cerr << prolog << "tmp file created : " << endl;
+                fputs("this is the temp file",fd);
             }
+            //unlink(pointer);
+
+            rewind(fd);
+            char buf[4096];
+            if (fd == NULL) {
+                if (debug) cerr << prolog << "Error opening file" << endl;
+            }
+            else {
+                if (fgets(buf, 4096, fd) != NULL)
+                    if(debug) cerr << prolog << "file contents : " << buf << endl;
+                else
+                    if(debug) cerr << prolog << "file content : NULL" << endl;
+            }
+            rewind(fd);
+
+            if(debug) cerr << prolog << "///////////////////////////////////////////////////////////////////////////" << endl;
+
+            RemoteResource rhr("http://google.com", "foobar");
+            if(debug) cerr << prolog << "remoteResource rhr : created" << endl;
+
+            string tmp_url = "file://" + tmp_file;
+            rhr.d_resourceCacheFileName = tmp_url;
+            if(debug) cerr << prolog << "d_resourceCacheFilename : " << tmp_url << endl;
+
+            string source_url = "file://" + BESUtil::pathConcat(d_data_dir,"update_file_and_headers_test_file.txt");
+            rhr.d_remoteResourceUrl = source_url;
+            if(debug) cerr << prolog << "d_remoteResourceUrl : " << source_url << endl;
+
+            rhr.update_file_and_headers();
+            if(debug) cerr << prolog << "update_file_and_headers() called" << endl;
+
             string cache_filename = rhr.getCacheFileName();
             if(debug) cerr << prolog << "cache_filename: " << cache_filename << endl;
-            string expected_content("This is a test. If this was not a test you would have known the answer.\n");
+            string expected_content("This an updating file and headers TEST. Move Along...");
             if(debug) cerr << prolog << "expected_content string: " << expected_content << endl;
             string content = get_file_as_string(cache_filename);
             if(debug) cerr << prolog << "retrieved content: " << content << endl;
@@ -501,6 +533,7 @@ public:
 
     CPPUNIT_TEST(load_hdrs_from_file_test);
     CPPUNIT_TEST(update_file_and_headers_test);
+    //CPPUNIT_TEST(is_cached_resource_expired_test);
     CPPUNIT_TEST(filter_test);
     CPPUNIT_TEST(get_http_url_test);
     CPPUNIT_TEST(get_file_url_test);

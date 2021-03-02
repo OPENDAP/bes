@@ -110,6 +110,7 @@ namespace http {
         void filter_retrieved_resource(const std::map<std::string, std::string> &content_filters);
 
         bool is_cached_resource_expired(const std::string &filename, const std::string &uid);
+        void update_file_and_headers();
         void update_file_and_headers(const std::map<std::string, std::string> &content_filters);
         void load_hdrs_from_file();
 
