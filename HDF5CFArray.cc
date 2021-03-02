@@ -1614,10 +1614,42 @@ void HDF5CFArray::read_data_from_mem_cache(void*buf) {
     return;
 }
 #endif
+
+// We don't inherit libdap Array Class's transform_to_dap4 method since it also transforms attributes.
+BaseType* HDF5CFArray::h5cfdims_transform_to_dap4(D4Group *grp) {
+
+    if(grp == NULL)
+        return NULL;
+    Array *dest = static_cast<HDF5CFArray*>(ptr_duplicate());
+
+    // If there is just a size, don't make
+    // a D4Dimension (In DAP4 you cannot share a dimension unless it has
+    // a name). jhrg 3/18/14
+
+    D4Dimensions *grp_dims = grp->dims();
+    for (Array::Dim_iter dap2_dim = dest->dim_begin(), e = dest->dim_end(); dap2_dim != e; ++dap2_dim) {
+        if (!(*dap2_dim).name.empty()) {
+
+            // If a D4Dimension with the name already exists, use it.
+            D4Dimension *d4_dim = grp_dims->find_dim((*dap2_dim).name);
+            if (!d4_dim) {
+                d4_dim = new D4Dimension((*dap2_dim).name, (*dap2_dim).size);
+                grp_dims->add_dim_nocopy(d4_dim);
+            }
+            // At this point d4_dim's name and size == those of (*d) so just set
+            // the D4Dimension pointer so it matches the one in the D4Group.
+            (*dap2_dim).dim = d4_dim;
+        }
+    }
+
+    return dest;
+
+}
+
 // We don't inherit libdap Array Class's transform_to_dap4 method since CF option is still using it.
 // This function is used for 64-bit integer mapping to DAP4 for the CF option. largely borrowed from
 // DAP4 code.
-BaseType* HDF5CFArray::h5cfdims_transform_to_dap4(D4Group *grp) {
+BaseType* HDF5CFArray::h5cfdims_transform_to_dap4_int64(D4Group *grp) {
 
     if(grp == NULL)
         return NULL;

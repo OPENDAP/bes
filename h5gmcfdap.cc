@@ -723,7 +723,7 @@ void gen_gmh5_cfdmr(D4Group* d4_root,HDF5CF::GMFile *f) {
 
     for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
         BESDEBUG("h5","variable full path= "<< (*it_cv)->getFullPath() <<endl);
-        gen_dap_onegmcvar_dmr(d4_root,,*it_cv,fileid, filename);
+        gen_dap_onegmcvar_dmr(d4_root,*it_cv,fileid, filename);
     }
 
     for (it_spv = spvars.begin(); it_spv !=spvars.end();it_spv++) {
@@ -1114,10 +1114,10 @@ void update_GPM_special_attrs(DAS& das, const HDF5CF::Var *var,bool is_cvar) {
     }
 }
 
-void gen_dap_onegmcvar_dmr(d4_root,,*it_cv,fileid, filename) {              
+void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar*it_cv,const hid_t fileid, const string &filename) {              
 
 }
 
-void gen_dap_onegmspvar_dmr(d4_root,*it_spv,fileid, filename) {
+void gen_dap_onegmspvar_dmr(D4Group*d4_root,const GMSPVar*it_cv,const hid_t fileid, const string &filename) {
 
 }

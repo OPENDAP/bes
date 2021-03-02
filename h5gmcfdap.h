@@ -48,4 +48,8 @@ void gen_gmh5_cf_ignored_obj_info(libdap::DAS &, HDF5CF::GMFile *);
 void gen_dap_onegmcvar_dds(libdap::DDS &,const HDF5CF::GMCVar*,const hid_t, const std::string &);
 void gen_dap_onegmspvar_dds(libdap::DDS &dds,const HDF5CF::GMSPVar* spvar, const hid_t, const std::string & filename);
 void update_GPM_special_attrs(libdap::DAS &, const HDF5CF::Var* var,bool );
+
+void gen_dap_onegmcvar_dmr(libdap::D4Group* d4_root,const HDF5CF::GMCVar*,const hid_t, const std::string &);
+void gen_dap_onegmspvar_dmr(libdap::D4Group* d4_root,const HDF5CF::GMSPVar* spvar, const hid_t, const std::string & filename);
+
 #endif

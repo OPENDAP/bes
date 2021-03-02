@@ -44,8 +44,10 @@
 #include "HDF5CF.h"
 
 
-void gen_dap_onevar_dds(libdap::DDS &dds, const HDF5CF::Var*, const hid_t, const string &);
+void gen_dap_onevar_dds(libdap::DDS &dds, const HDF5CF::Var*, const hid_t, const std::string &);
 void gen_dap_oneobj_das(libdap::AttrTable*, const HDF5CF::Attribute*, const HDF5CF::Var*);
+void gen_dap_onevar_dmr(libdap::D4Group*, const HDF5CF::Var*, const hid_t, const std::string &);
+void map_cfh5_attrs_to_dap4(const HDF5CF::Var*var,libdap::BaseType*new_var);
 
 void add_cf_grid_mapping_attr(libdap::DAS &das, const std::vector<HDF5CF::Var*>& vars, const std::string& cf_projection,
     const std::string & dim0name, hsize_t dim0size, const std::string &dim1name, hsize_t dim1size);
@@ -67,7 +69,7 @@ void gen_dap_special_oneobj_das(libdap::AttrTable*, const HDF5CF::Attribute*, co
 bool is_fvalue_valid(H5DataType, const HDF5CF::Attribute*);
 void gen_dap_str_attr(libdap::AttrTable*, const HDF5CF::Attribute *);
 void add_ll_valid_range(libdap::AttrTable*, bool is_lat);
-void map_cfh5_attrs_to_dap4(const HDF5CF::Var*var,libdap::BaseType*new_var);
+void map_cfh5_attrs_to_dap4_int64(const HDF5CF::Var*var,libdap::BaseType*new_var);
 bool need_attr_values_for_dap4(const HDF5CF::Var*var);
 void check_update_int64_attr(const std::string &, const HDF5CF::Attribute *);
 void handle_coor_attr_for_int64_var(const HDF5CF::Attribute *, const std::string &,std::string&,bool);

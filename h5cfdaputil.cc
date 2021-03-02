@@ -159,6 +159,55 @@ string HDF5CFDAPUtil::print_type(H5DataType type) {
 
 }
 
+D4AttributeType HDF5CFDAPUtil::print_type_dap4(H5DataType type) {
+
+    switch (type) {
+
+        case H5UCHAR:
+            return attr_byte_c;
+
+        case H5CHAR:
+            return attr_int8_c;
+
+        case H5INT16:
+            return attr_int16_c;
+        
+        case H5UINT16:
+            return attr_uint16_c;
+
+        case H5INT32:
+            return attr_int32_c; 
+
+        case H5UINT32:
+            return attr_uint32_c;
+
+        case H5INT64:
+            return attr_int64_c;
+
+        case H5UINT64:
+            return attr_uint64_c;
+
+        case H5FLOAT32:
+            return attr_float32_c;
+
+        case H5FLOAT64:
+            return attr_float64_c;
+
+        case H5FSTRING:
+        case H5VSTRING:
+            return attr_str_c;
+        case H5REFERENCE:
+        case H5COMPOUND:
+        case H5ARRAY:
+             return attr_null_c;
+ 
+        default:
+             return attr_null_c;
+    }
+
+}
+
+
 H5DataType
 HDF5CFDAPUtil::get_mem_dtype(H5DataType dtype,size_t mem_dtype_size ) {
 

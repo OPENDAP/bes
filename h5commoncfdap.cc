@@ -44,6 +44,7 @@
 #include "h5cfdaputil.h"
 #include "h5gmcfdap.h"
 #include "HDF5CFByte.h"
+#include "HDF5CFInt8.h"
 #include "HDF5CFUInt16.h"
 #include "HDF5CFInt16.h"
 #include "HDF5CFUInt32.h"
@@ -57,7 +58,7 @@
 #include "HDF5CFGeoCF1D.h"
 #include "HDF5CFGeoCFProj.h"
 
-#include "HDF5Int64.h"
+//#include "HDF5Int64.h"
 #include "HDF5CFUtil.h"
 
 using namespace std;
@@ -89,7 +90,7 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
                         throw InternalErr(__FILE__, __LINE__, error_message);
                     }
                     sca_int64->set_is_dap4(true);
-                    map_cfh5_attrs_to_dap4(var,sca_int64);
+                    map_cfh5_attrs_to_dap4_int64(var,sca_int64);
                     root_grp->add_var_nocopy(sca_int64);
  
                 }
@@ -102,7 +103,7 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
                         throw InternalErr(__FILE__, __LINE__, "Cannot allocate the HDF5CFInt64.");
                     }
                     sca_uint64->set_is_dap4(true);
-                    map_cfh5_attrs_to_dap4(var,sca_uint64);
+                    map_cfh5_attrs_to_dap4_int64(var,sca_uint64);
                     root_grp->add_var_nocopy(sca_uint64);
  
                 }
@@ -308,9 +309,9 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
             DMR * dmr = HDF5RequestHandler::get_dmr_64bit_int();
             D4Group* root_grp = dmr->root();
             // Dimensions need to be translated.
-            BaseType* d4_var = ar->h5cfdims_transform_to_dap4(root_grp);
+            BaseType* d4_var = ar->h5cfdims_transform_to_dap4_int64(root_grp);
             // Attributes.
-            map_cfh5_attrs_to_dap4(var,d4_var);
+            map_cfh5_attrs_to_dap4_int64(var,d4_var);
             root_grp->add_var_nocopy(d4_var);
         }
         else 
@@ -540,6 +541,254 @@ void gen_dap_oneobj_das(AttrTable*at, const HDF5CF::Attribute* attr, const HDF5C
         }
     }
 }
+
+// Generate DMR from one variable                                                                           
+void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const hid_t file_id, const string & filename) {
+
+    BESDEBUG("h5", "Coming to gen_dap_onevar_dmr()  "<<endl);
+
+    const vector<HDF5CF::Dimension *>& dims = var->getDimensions();
+
+    if (dims.empty()) {
+
+        if (H5FSTRING == var->getType() || H5VSTRING == var->getType()) {
+            HDF5CFStr *sca_str = NULL;
+            try {
+                sca_str = new HDF5CFStr(var->getNewName(), filename, var->getFullPath());
+                sca_str->set_is_dap4(true);
+                map_cfh5_attrs_to_dap4(var,sca_str);
+            }
+            catch (...) {
+                delete sca_str;
+                throw InternalErr(__FILE__, __LINE__, "Cannot allocate the HDF5CFStr.");
+            }
+            d4_grp->add_var_nocopy(sca_str);
+        }
+        else {
+            switch (var->getType()) {
+
+            case H5UCHAR: {
+                HDF5CFByte * sca_uchar = NULL;
+                try {
+                    sca_uchar = new HDF5CFByte(var->getNewName(), var->getFullPath(), filename);
+                    sca_uchar->set_is_dap4(true);
+                    map_cfh5_attrs_to_dap4(var,sca_uchar);
+                }
+                catch (...) {
+                    delete sca_uchar;
+                    throw InternalErr(__FILE__, __LINE__, "Cannot allocate the HDF5CFByte.");
+                }
+                d4_grp->add_var_nocopy(sca_uchar);
+            }
+                break;
+            case H5CHAR: {
+                HDF5CFInt8 * sca_char = NULL;
+                try {
+                    sca_char = new HDF5CFInt8(var->getNewName(), var->getFullPath(), filename);
+                    sca_char->set_is_dap4(true);
+                    map_cfh5_attrs_to_dap4(var,sca_char);
+                }
+                catch (...) {
+                    delete sca_char;
+                    throw InternalErr(__FILE__, __LINE__, "Cannot allocate the HDF5CFByte.");
+                }
+                d4_grp->add_var_nocopy(sca_char);
+            }
+                break;
+
+            case H5INT16: {
+                HDF5CFInt16 * sca_int16 = NULL;
+                try {
+                    sca_int16 = new HDF5CFInt16(var->getNewName(), var->getFullPath(), filename);
+                    sca_int16->set_is_dap4(true);
+                    map_cfh5_attrs_to_dap4(var,sca_int16);
+ 
+                }
+                catch (...) {
+                    delete sca_int16;
+                    throw InternalErr(__FILE__, __LINE__, "Cannot allocate the HDF5CFInt16.");
+                }
+                d4_grp->add_var_nocopy(sca_int16);
+            }
+                break;
+            case H5UINT16: {
+                HDF5CFUInt16 * sca_uint16 = NULL;
+                try {
+                    sca_uint16 = new HDF5CFUInt16(var->getNewName(), var->getFullPath(), filename);
+                    sca_uint16->set_is_dap4(true);
+                    map_cfh5_attrs_to_dap4(var,sca_uint16);
+                }
+                catch (...) {
+                    delete sca_uint16;
+                    throw InternalErr(__FILE__, __LINE__, "Cannot allocate the HDF5CFUInt16.");
+                }
+                d4_grp->add_var_nocopy(sca_uint16);
+            }
+                break;
+            case H5INT32: {
+                HDF5CFInt32 * sca_int32 = NULL;
+                try {
+                    sca_int32 = new HDF5CFInt32(var->getNewName(), var->getFullPath(), filename);
+                    sca_int32->set_is_dap4(true);
+                    map_cfh5_attrs_to_dap4(var,sca_int32);
+                }
+                catch (...) {
+                    delete sca_int32;
+                    throw InternalErr(__FILE__, __LINE__, "Cannot allocate the HDF5CFInt32.");
+                }
+                d4_grp->add_var_nocopy(sca_int32);
+            }
+                break;
+            case H5UINT32: {
+                HDF5CFUInt32 * sca_uint32 = NULL;
+                try {
+                    sca_uint32 = new HDF5CFUInt32(var->getNewName(), var->getFullPath(), filename);
+                    sca_uint32->set_is_dap4(true);
+                    map_cfh5_attrs_to_dap4(var,sca_uint32);
+                }
+                catch (...) {
+                    delete sca_uint32;
+                    throw InternalErr(__FILE__, __LINE__, "Cannot allocate the HDF5CFUInt32.");
+                }
+                d4_grp->add_var_nocopy(sca_uint32);
+            }
+                break;
+            // STOP, add INT64, UINT64
+            case H5INT64: {
+                HDF5CFInt64 * sca_int64 = NULL;
+                try {
+                    sca_int64 = new HDF5CFInt64(var->getNewName(), var->getFullPath(), filename);
+                    sca_int64->set_is_dap4(true);
+                    map_cfh5_attrs_to_dap4(var,sca_int64);
+                }
+                catch (...) {
+                    delete sca_int64;
+                    throw InternalErr(__FILE__, __LINE__, "Cannot allocate the HDF5CFInt64.");
+                }
+                d4_grp->add_var_nocopy(sca_int64);
+            }
+                break;
+            case H5UINT64: {
+                HDF5CFUInt64 * sca_uint64 = NULL;
+                try {
+                    sca_uint64 = new HDF5CFUInt64(var->getNewName(), var->getFullPath(), filename);
+                    sca_uint64->set_is_dap4(true);
+                    map_cfh5_attrs_to_dap4(var,sca_uint64);
+                }
+                catch (...) {
+                    delete sca_uint64;
+                    throw InternalErr(__FILE__, __LINE__, "Cannot allocate the HDF5CFUInt64.");
+                }
+                d4_grp->add_var_nocopy(sca_uint64);
+            }
+                break;
+            case H5FLOAT32: {
+                HDF5CFFloat32 * sca_float32 = NULL;
+                try {
+                    sca_float32 = new HDF5CFFloat32(var->getNewName(), var->getFullPath(), filename);
+                    sca_float32->set_is_dap4(true);
+                    map_cfh5_attrs_to_dap4(var,sca_float32);
+                }
+                catch (...) {
+                    delete sca_float32;
+                    throw InternalErr(__FILE__, __LINE__, "Cannot allocate the HDF5CFFloat32.");
+                }
+                d4_grp->add_var_nocopy(sca_float32);
+            }
+                break;
+            case H5FLOAT64: {
+                HDF5CFFloat64 * sca_float64 = NULL;
+                try {
+                    sca_float64 = new HDF5CFFloat64(var->getNewName(), var->getFullPath(), filename);
+                    sca_float64->set_is_dap4(true);
+                    map_cfh5_attrs_to_dap4(var,sca_float64);
+                }
+                catch (...) {
+                    delete sca_float64;
+                    throw InternalErr(__FILE__, __LINE__, "Cannot allocate the HDF5CFFloat64.");
+                }
+                d4_grp->add_var_nocopy(sca_float64);
+            }
+                break;
+            default:
+                throw InternalErr(__FILE__, __LINE__, "unsupported data type.");
+            }
+        }
+    }
+
+    else {
+
+        BaseType *bt = NULL;
+
+        switch (var->getType()) {
+#define HANDLE_CASE(tid,type)                                  \
+            case tid:                                           \
+                bt = new (type)(var->getNewName(),var->getFullPath()); \
+            break;
+        HANDLE_CASE(H5FLOAT32, HDF5CFFloat32)
+            ;
+        HANDLE_CASE(H5FLOAT64, HDF5CFFloat64)
+            ;
+        HANDLE_CASE(H5CHAR, HDF5CFInt8)
+            ;
+        HANDLE_CASE(H5UCHAR, HDF5CFByte)
+            ;
+        HANDLE_CASE(H5INT16, HDF5CFInt16)
+            ;
+        HANDLE_CASE(H5UINT16, HDF5CFUInt16)
+            ;
+        HANDLE_CASE(H5INT32, HDF5CFInt32)
+            ;
+        HANDLE_CASE(H5UINT32, HDF5CFUInt32)
+            ;
+        HANDLE_CASE(H5INT64, HDF5CFInt64)
+            ;
+        HANDLE_CASE(H5UINT64, HDF5CFUInt64)
+            ;
+        HANDLE_CASE(H5FSTRING, Str)
+            ;
+        HANDLE_CASE(H5VSTRING, Str)
+            ;
+        default:
+            throw InternalErr(__FILE__, __LINE__, "unsupported data type.");
+#undef HANDLE_CASE
+        }
+
+        vector<HDF5CF::Dimension*>::const_iterator it_d;
+        vector<size_t> dimsizes;
+        dimsizes.resize(var->getRank());
+        for (int i = 0; i < var->getRank(); i++)
+            dimsizes[i] = (dims[i])->getSize();
+
+        HDF5CFArray *ar = NULL;
+        try {
+            ar = new HDF5CFArray(var->getRank(), file_id, filename, var->getType(), dimsizes, var->getFullPath(),
+                var->getTotalElems(), CV_UNSUPPORTED, false, var->getCompRatio(), false,var->getNewName(), bt);
+        }
+        catch (...) {
+            delete bt;
+            throw InternalErr(__FILE__, __LINE__, "Cannot allocate the HDF5CFStr.");
+        }
+
+        for (it_d = dims.begin(); it_d != dims.end(); ++it_d) {
+            if ("" == (*it_d)->getNewName())
+                ar->append_dim((*it_d)->getSize());
+            else
+                ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+        }
+
+        ar->set_is_dap4(true);
+        BaseType* d4_var=ar->h5cfdims_transform_to_dap4(d4_grp);
+        d4_grp->add_var_nocopy(d4_var);
+
+    }
+
+    return;
+
+
+
+}
+
 
 void gen_dap_str_attr(AttrTable *at, const HDF5CF::Attribute *attr)
 {
@@ -899,7 +1148,7 @@ bool need_attr_values_for_dap4(const HDF5CF::Var *var) {
 }
 
 // This routine is for 64-bit DAP4 CF support: map all attributes to DAP4 for 64-bit integers.
-void map_cfh5_attrs_to_dap4(const HDF5CF::Var *var,BaseType* d4_var) {
+void map_cfh5_attrs_to_dap4_int64(const HDF5CF::Var *var,BaseType* d4_var) {
 
     vector<HDF5CF::Attribute *>::const_iterator it_ra;
     for (it_ra = var->getAttributes().begin();
@@ -1043,6 +1292,42 @@ void handle_coor_attr_for_int64_var(const HDF5CF::Attribute *attr,const string &
         tempstring = tempstring2;
 
 }
+
+// This routine is for directly built DAP4 CF support.We build DMR not from DDS and DAS. 
+void map_cfh5_attrs_to_dap4(const HDF5CF::Var *var,BaseType* d4_var) {
+
+    vector<HDF5CF::Attribute *>::const_iterator it_ra;
+    for (it_ra = var->getAttributes().begin();
+        it_ra != var->getAttributes().end(); ++it_ra) {
+
+        D4AttributeType dap4_attrtype = HDF5CFDAPUtil::print_type_dap4((*it_ra)->getType());
+        D4Attribute *d4_attr = new D4Attribute((*it_ra)->getNewName(),dap4_attrtype);
+        if(dap4_attrtype == attr_str_c) {
+            
+            const vector<size_t>& strsize = (*it_ra)->getStrSize();
+            unsigned int temp_start_pos = 0;
+            for (unsigned int loc = 0; loc < (*it_ra)->getCount(); loc++) {
+                if (strsize[loc] != 0) {
+                    string tempstring((*it_ra)->getValue().begin() + temp_start_pos,
+                                      (*it_ra)->getValue().begin() + temp_start_pos + strsize[loc]);
+                    temp_start_pos += strsize[loc];
+                    //The below if is not necessary since the "origname" and "fullnamepath" are not added.KY 2020-02-24
+                    //if (((*it_ra)->getNewName() != "origname") && ((*it_ra)->getNewName() != "fullnamepath")) 
+                    tempstring = HDF5CFDAPUtil::escattr(tempstring);
+                    d4_attr->add_value(tempstring);
+                }
+            }
+        }
+        else {
+            for (unsigned int loc = 0; loc < (*it_ra)->getCount(); loc++) {
+                string print_rep = HDF5CFDAPUtil::print_attr((*it_ra)->getType(), loc, (void*) &((*it_ra)->getValue()[0]));
+                d4_attr->add_value(print_rep);
+            }
+        }
+        d4_var->attributes()->add_attribute_nocopy(d4_attr);
+    }
+}
+
 
 // Mainly copy from HDF5CF::get_CF_string. Should be 
 // removed if we can generate DMR independently.
