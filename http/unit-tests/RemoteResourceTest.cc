@@ -282,7 +282,7 @@ public:
 
         try {
             string tmp_file_name(tmpnam(nullptr));
-            if (debug) cerr << prolog << "tmp_file_name : " << tmp_file_name << endl;
+            if (debug) cerr << prolog << "tmp_file_name: " << tmp_file_name << endl;
             {
                 ofstream ofs(tmp_file_name);
                 if(!ofs.is_open()){
@@ -293,16 +293,15 @@ public:
             //unlink(pointer);
 
             RemoteResource rhr("http://google.com", "foobar");
-            if(debug) cerr << prolog << "remoteResource rhr : created" << endl;
+            if(debug) cerr << prolog << "remoteResource rhr: created" << endl;
 
             rhr.d_resourceCacheFileName = tmp_file_name;
-            if(debug) cerr << prolog << "d_resourceCacheFilename : " << tmp_file_name << endl;
+            if(debug) cerr << prolog << "d_resourceCacheFilename: " << tmp_file_name << endl;
 
             string source_url = "file://" + BESUtil::pathConcat(d_data_dir,"update_file_and_headers_test_file.txt");
             rhr.d_remoteResourceUrl = source_url;
-            if(debug) cerr << prolog << "d_remoteResourceUrl : " << source_url << endl;
-
-
+            if(debug) cerr << prolog << "d_remoteResourceUrl: " << source_url << endl;
+            
             // Get a pointer to the singleton cache instance for this process.
             HttpCache *cache = HttpCache::get_instance();
             if (!cache) {
@@ -310,11 +309,12 @@ public:
                 oss << prolog << "FAILED to get local cache. ";
                 oss << "Unable to proceed with request for " << tmp_file_name;
                 oss << " The server MUST have a valid HTTP cache configuration to operate." << endl;
-                throw BESInternalError(oss.str(), __FILE__, __LINE__);
+                CPPUNIT_FAIL(oss.str());
             }
-            cache->get_exclusive_lock(tmp_file_name, rhr.d_fd);
-            rhr.d_initialized=true;
-
+            if(!cache->get_exclusive_lock(tmp_file_name, rhr.d_fd)){
+                CPPUNIT_FAIL(prolog + "Failed to acquire exclusive lock on: "+tmp_file_name);
+            }
+            rhr.d_initialized = true;
 
             rhr.update_file_and_headers();
 
@@ -323,7 +323,7 @@ public:
             string cache_filename = rhr.getCacheFileName();
             if(debug) cerr << prolog << "cache_filename: " << cache_filename << endl;
             string expected_content("This an updating file and headers TEST. Move Along...");
-            if(debug) cerr << prolog << "expected_content string: " << expected_content << endl;
+            if(debug) cerr << prolog << "expected_content: " << expected_content << endl;
             string content = get_file_as_string(cache_filename);
             if(debug) cerr << prolog << "retrieved content: " << content << endl;
             CPPUNIT_ASSERT( content == expected_content );
