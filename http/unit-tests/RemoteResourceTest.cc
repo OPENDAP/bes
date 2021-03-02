@@ -165,7 +165,7 @@ private:
 
 public:
     string d_data_dir;
-
+    string d_temp_file;
     // Called once before everything gets tested
     RemoteResourceTest()
     {
@@ -199,6 +199,18 @@ public:
             cache_purge();
         }
 
+        string tmp_file_name(tmpnam(nullptr));
+        if (debug) cerr << prolog << "tmp_file_name: " << tmp_file_name << endl;
+        {
+            ofstream ofs(tmp_file_name);
+            if(!ofs.is_open()){
+                CPPUNIT_FAIL("Failed to open temporary file: "+tmp_file_name);
+            }
+            ofs << "This is the temp file." << endl;
+        }
+        d_temp_file = tmp_file_name;
+
+
 
         if(Debug) cerr << "setUp() - END" << endl;
     }
@@ -206,6 +218,8 @@ public:
     // Called after each test
     void tearDown()
     {
+        if(!d_temp_file.empty())
+            unlink(d_temp_file.c_str());
     }
 
     void cache_purge(){
@@ -280,22 +294,12 @@ public:
         if(debug) cerr << "|--------------------------------------------------|" << endl;
         if(debug) cerr << prolog << "BEGIN" << endl;
 
-        string tmp_file_name(tmpnam(nullptr));
-        if (debug) cerr << prolog << "tmp_file_name: " << tmp_file_name << endl;
-        {
-            ofstream ofs(tmp_file_name);
-            if(!ofs.is_open()){
-                CPPUNIT_FAIL("Failed to open temporary file: "+tmp_file_name);
-            }
-            ofs << "This is the temp file." << endl;
-        }
-
         try {
             RemoteResource rhr("http://google.com", "foobar");
             if(debug) cerr << prolog << "remoteResource rhr: created" << endl;
 
-            rhr.d_resourceCacheFileName = tmp_file_name;
-            if(debug) cerr << prolog << "d_resourceCacheFilename: " << tmp_file_name << endl;
+            rhr.d_resourceCacheFileName = d_temp_file;
+            if(debug) cerr << prolog << "d_resourceCacheFilename: " << d_temp_file << endl;
 
             string source_url = "file://" + BESUtil::pathConcat(d_data_dir,"update_file_and_headers_test_file.txt");
             rhr.d_remoteResourceUrl = source_url;
@@ -306,12 +310,12 @@ public:
             if (!cache) {
                 ostringstream oss;
                 oss << prolog << "FAILED to get local cache. ";
-                oss << "Unable to proceed with request for " << tmp_file_name;
+                oss << "Unable to proceed with request for " << d_temp_file;
                 oss << " The server MUST have a valid HTTP cache configuration to operate." << endl;
                 CPPUNIT_FAIL(oss.str());
             }
-            if(!cache->get_exclusive_lock(tmp_file_name, rhr.d_fd)){
-                CPPUNIT_FAIL(prolog + "Failed to acquire exclusive lock on: "+tmp_file_name);
+            if(!cache->get_exclusive_lock(d_temp_file, rhr.d_fd)){
+                CPPUNIT_FAIL(prolog + "Failed to acquire exclusive lock on: "+d_temp_file);
             }
             rhr.d_initialized = true;
 
@@ -332,10 +336,8 @@ public:
             msg << endl << prolog << "Caught BESError! message: " << besE.get_verbose_message();
             msg << " type: " << besE.get_bes_error_type() << endl;
             if(debug) cerr << msg.str();
-            unlink(tmp_file_name.c_str());
             CPPUNIT_FAIL(msg.str());
         }
-        unlink(tmp_file_name.c_str());
         if(debug) cerr << prolog << "END" << endl;
     }
 
