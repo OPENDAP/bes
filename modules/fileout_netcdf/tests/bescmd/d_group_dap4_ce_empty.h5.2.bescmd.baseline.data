@@ -1,0 +1,11 @@
+netcdf test {
+
+group: a {
+
+  group: b {
+
+    group: c {
+      } // group c
+    } // group b
+  } // group a
+}

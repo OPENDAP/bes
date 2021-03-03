@@ -69,7 +69,10 @@ protected:
     std::string _nc4_datamodel;
     bool is_dap4;
 
-    FONcBaseType() : _varid(0), _defined(false),is_dap4(false){ }
+    //This is to handle the name clashing of dimension names of string type
+    bool is_dap4_group;
+
+    FONcBaseType() : _varid(0), _defined(false),is_dap4(false),is_dap4_group(false){ }
 
 public:
     virtual ~FONcBaseType() { }

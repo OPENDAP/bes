@@ -63,57 +63,334 @@ using namespace std;
 
 namespace ngap {
 
-    const string NGAP_PROVIDER_KEY("providers");
-    const string NGAP_COLLECTIONS_KEY("collections");
-    const string NGAP_CONCEPTS_KEY("concepts");
-    const string NGAP_GRANULES_KEY("granules");
-    const string DEFAULT_CMR_ENDPOINT_URL("https://cmr.earthdata.nasa.gov");
-    const string DEFAULT_CMR_SEARCH_ENDPOINT_PATH("/search/granules.umm_json_v1_4");
-
-    const string CMR_PROVIDER("provider");
-    const string CMR_ENTRY_TITLE("entry_title");
-    const string CMR_COLLECTION_CONCEPT_ID("collection_concept_id");
-    const string CMR_GRANULE_UR("granule_ur");
-    const string CMR_URL_TYPE_GET_DATA("GET DATA");
-
-    const string RJ_TYPE_NAMES[] = {
-            "kNullType",
-            "kFalseType",
-            "kTrueType",
-            "kObjectType",
-            "kArrayType",
-            "kStringType",
-            "kNumberType"
-    };
-
-    const string AMS_EXPIRES_HEADER_KEY("X-Amz-Expires");
-    const string AWS_DATE_HEADER_KEY("X-Amz-Date");
-    // const string AWS_DATE_FORMAT("%Y%m%dT%H%MS"); // 20200624T175046Z
-    const string CLOUDFRONT_EXPIRES_HEADER_KEY("Expires");
-    const string INGEST_TIME_KEY("ingest_time");
-    const unsigned int REFRESH_THRESHOLD = 3600; // An hour
+const unsigned int REFRESH_THRESHOLD = 3600; // An hour
 
 
-    NgapApi::NgapApi() : d_cmr_hostname(DEFAULT_CMR_ENDPOINT_URL), d_cmr_search_endpoint_path(DEFAULT_CMR_SEARCH_ENDPOINT_PATH) {
-        bool found;
-        string cmr_hostnamer;
-        TheBESKeys::TheKeys()->get_value(NGAP_CMR_HOSTNAME_KEY, cmr_hostnamer, found);
-        if (found) {
-            d_cmr_hostname = cmr_hostnamer;
-        }
-
-        string cmr_search_endpoint_path;
-        TheBESKeys::TheKeys()->get_value(NGAP_CMR_SEARCH_ENDPOINT_PATH_KEY, cmr_search_endpoint_path, found);
-        if (found) {
-            d_cmr_search_endpoint_path = cmr_search_endpoint_path;
-        }
-
-
+NgapApi::NgapApi() : d_cmr_hostname(DEFAULT_CMR_ENDPOINT_URL), d_cmr_search_endpoint_path(DEFAULT_CMR_SEARCH_ENDPOINT_PATH) {
+    bool found;
+    string cmr_hostname;
+    TheBESKeys::TheKeys()->get_value(NGAP_CMR_HOSTNAME_KEY, cmr_hostname, found);
+    if (found) {
+        d_cmr_hostname = cmr_hostname;
     }
 
-    std::string NgapApi::get_cmr_search_endpoint_url(){
-        return BESUtil::assemblePath(d_cmr_hostname , d_cmr_search_endpoint_path);
+    string cmr_search_endpoint_path;
+    TheBESKeys::TheKeys()->get_value(NGAP_CMR_SEARCH_ENDPOINT_PATH_KEY, cmr_search_endpoint_path, found);
+    if (found) {
+        d_cmr_search_endpoint_path = cmr_search_endpoint_path;
     }
+
+
+}
+
+std::string NgapApi::get_cmr_search_endpoint_url(){
+    return BESUtil::assemblePath(d_cmr_hostname , d_cmr_search_endpoint_path);
+}
+
+
+
+/**
+ * @brief Converts an NGAP restified path into the corresponding CMR query URL.
+ *
+ * @param restified_path The resitified path to convert
+ * @return The CMR query URL that will return the granules.umm_json_v1_4 from CMR for the
+ * granule specified in the restified path.
+ */
+std::string NgapApi::build_cmr_query_url_old_rpath_format(const std::string &restified_path) {
+
+    // Make sure it starts with a '/' (see key strings above)
+    string r_path = ( restified_path[0] != '/' ? "/" : "") + restified_path;
+
+    size_t provider_index  = r_path.find(NGAP_PROVIDERS_KEY);
+    if(provider_index == string::npos){
+        stringstream msg;
+        msg << prolog << "The specified path '" << r_path << "'";
+        msg << " does not contain the required path element '" << NGAP_PROVIDERS_KEY << "'";
+        throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+    }
+    if(provider_index != 0){
+        stringstream msg;
+        msg << prolog << "The specified path '" << r_path << "'";
+        msg << " has the path element '" << NGAP_PROVIDERS_KEY << "' located in the incorrect position (";
+        msg << provider_index << ") expected 0.";
+        throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+    }
+    provider_index += string(NGAP_PROVIDERS_KEY).length();
+
+    bool use_collection_concept_id = false;
+    size_t collection_index  = r_path.find(NGAP_COLLECTIONS_KEY);
+    if(collection_index == string::npos) {
+        size_t concepts_index = r_path.find(NGAP_CONCEPTS_KEY);
+        if (concepts_index == string::npos) {
+            stringstream msg;
+            msg << prolog << "The specified path '" << r_path << "'";
+            msg << " contains neither the '" << NGAP_COLLECTIONS_KEY << "'";
+            msg << " nor the '" << NGAP_CONCEPTS_KEY << "'";
+            msg << " one must be provided.";
+            throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+        }
+        collection_index = concepts_index;
+        use_collection_concept_id = true;
+    }
+    if(collection_index <= provider_index+1){  // The value of provider has to be at least 1 character
+        stringstream msg;
+        msg << prolog << "The specified path '" << r_path << "'";
+        msg << " has the path element '" << (use_collection_concept_id?NGAP_CONCEPTS_KEY:NGAP_COLLECTIONS_KEY) << "' located in the incorrect position (";
+        msg << collection_index << ") expected at least " << provider_index+1;
+        throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+    }
+    string provider = r_path.substr(provider_index,collection_index - provider_index);
+    collection_index += use_collection_concept_id?string(NGAP_CONCEPTS_KEY).length():string(NGAP_COLLECTIONS_KEY).length();
+
+
+    size_t granule_index  = r_path.find(NGAP_GRANULES_KEY);
+    if(granule_index == string::npos){
+        stringstream msg;
+        msg << prolog << "The specified path '" << r_path << "'";
+        msg << " does not contain the required path element '" << NGAP_GRANULES_KEY << "'";
+        throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+    }
+    if(granule_index <= collection_index+1){ // The value of collection must have at least one character.
+        stringstream msg;
+        msg << prolog << "The specified path '" << r_path << "'";
+        msg << " has the path element '" << NGAP_GRANULES_KEY << "' located in the incorrect position (";
+        msg << granule_index << ") expected at least " << collection_index+1;
+        throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+    }
+    string collection = r_path.substr(collection_index,granule_index - collection_index);
+    granule_index += string(NGAP_GRANULES_KEY).length();
+
+    // The granule value is the path terminus so it's every thing after the key
+    string granule = r_path.substr(granule_index);
+
+    // Build the CMR query URL for the dataset
+    string cmr_url = get_cmr_search_endpoint_url() + "?";
+    {
+        // This easy handle is only created so we can use the curl_easy_escape() on the token values
+        CURL *ceh = curl_easy_init();
+        char *esc_url_content;
+
+        // Add provider
+        esc_url_content = curl_easy_escape(ceh, provider.c_str(), provider.size());
+        cmr_url += string(CMR_PROVIDER).append("=").append(esc_url_content).append("&");
+        curl_free(esc_url_content);
+
+        esc_url_content = curl_easy_escape(ceh, collection.c_str(), collection.size());
+        if(use_collection_concept_id){
+            // Add collection_concept_id
+            cmr_url += string(CMR_COLLECTION_CONCEPT_ID).append("=").append(esc_url_content).append("&");
+        }
+        else {
+            // Add entry_title
+            cmr_url += string(CMR_ENTRY_TITLE).append("=").append(esc_url_content).append("&");
+
+        }
+        curl_free(esc_url_content);
+
+        esc_url_content = curl_easy_escape(ceh, granule.c_str(), granule.size());
+        cmr_url += string(CMR_GRANULE_UR).append("=").append(esc_url_content);
+        curl_free(esc_url_content);
+
+        curl_easy_cleanup(ceh);
+    }
+    return cmr_url;
+}
+
+/**
+ * @brief Converts an NGAP restified path into the corresponding CMR query URL.
+ *
+ * There are two mandatory and one optional query parameters in the URL
+ *   MANDATORY: " /collections/UMM-C:{concept-id} "
+ *   OPTIONAL:  "/UMM-C:{ShortName} '.' UMM-C:{Version} "
+ *   MANDATORY: "/granules/UMM-G:{GranuleUR}"
+ * Example:
+ * https://opendap.earthdata.nasa.gov/collections/C1443727145-LAADS/MOD08_D3.v6.1/granules/MOD08_D3.A2020308.061.2020309092644.hdf.nc
+ *
+ * More Info Here: https://wiki.earthdata.nasa.gov/display/DUTRAIN/Feature+analysis%3A+Restified+URL+for+OPENDAP+Data+Access
+ *
+ * @param restified_path The resitified path to convert
+ * @return The CMR query URL that will return the granules.umm_json_v1_4 from CMR for the
+ * granule specified in the restified path.
+ */
+std::string NgapApi::build_cmr_query_url(const std::string &restified_path) {
+
+    // Make sure it starts with a '/' (see key strings above)
+    string r_path = ( restified_path[0] != '/' ? "/" : "") + restified_path;
+
+    size_t provider_index  = r_path.find(NGAP_PROVIDERS_KEY);
+    if(provider_index != string::npos){
+        return build_cmr_query_url_old_rpath_format(restified_path);
+    }
+
+    size_t collections_key_index  = r_path.find(NGAP_COLLECTIONS_KEY);
+    if(collections_key_index == string::npos) {
+        stringstream msg;
+        msg << prolog << "The specified path '" << r_path << "'";
+        msg << " contains neither the '" << NGAP_COLLECTIONS_KEY << "'";
+        msg << " nor the '" << NGAP_CONCEPTS_KEY << "'";
+        msg << " one must be provided.";
+        throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+    }
+    if(collections_key_index != 0){  // The COLLECTIONS_KEY comes first
+        stringstream msg;
+        msg << prolog << "The specified path '" << r_path << "'";
+        msg << " has the path element '" << NGAP_COLLECTIONS_KEY << "' located in the incorrect position (";
+        msg << collections_key_index << ") expected at least " << provider_index + 1;
+        throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+    }
+    // This is now the beginning of the collection_concept_id value.
+    size_t collections_index =  collections_key_index + string(NGAP_COLLECTIONS_KEY).length();
+
+    size_t granules_key_index  = r_path.find(NGAP_GRANULES_KEY);
+    if(granules_key_index == string::npos){
+        stringstream msg;
+        msg << prolog << "The specified path '" << r_path << "'";
+        msg << " does not contain the required path element '" << NGAP_GRANULES_KEY << "'";
+        throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+    }
+
+    // The collection key must precede the granules key in the path,
+    // and the collection name must have at least one character.
+    if(granules_key_index <= collections_index + 1){
+        stringstream msg;
+        msg << prolog << "The specified path '" << r_path << "'";
+        msg << " has the path element '" << NGAP_GRANULES_KEY << "' located in the incorrect position (";
+        msg << granules_key_index << ") expected at least " << collections_index + 1;
+        throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
+    }
+    size_t granules_index =  granules_key_index + string(NGAP_GRANULES_KEY).length();
+    // The granule_name value is the path terminus so it's every thing after the key
+    string granule_name = r_path.substr(granules_index);
+
+    // Now we need to work on the collections value to eliminate the optional parts.
+    // This is the entire collections string including any optional components.
+    string collection_name = r_path.substr(collections_index, granules_key_index - collections_index);
+
+    // Since there may be optional parameters we need to strip them off to get the collection_concept_id
+    // And, since we know that collection_concept_id will never contain a '/', and we know that the optional
+    // part is separated from the collection_concept_id by a '/' we look for that and of we find it we truncate
+    // the value at that spot.
+    string optional_part;
+    size_t slash_pos  = collection_name.find('/');
+    if(slash_pos != string::npos){
+        optional_part = collection_name.substr(slash_pos);
+        BESDEBUG(MODULE, prolog << "Found optional collections name component: " << optional_part << endl);
+        collection_name = collection_name.substr(0,slash_pos);
+    }
+    BESDEBUG(MODULE, prolog << "Found collection_name (aka collection_concept_id): " << collection_name << endl);
+
+    // Build the CMR query URL for the dataset
+    string cmr_url = get_cmr_search_endpoint_url() + "?";
+    {
+        // This easy handle is only created so we can use the curl_easy_escape() on the token values
+        CURL *ceh = curl_easy_init();
+        char *esc_url_content;
+
+        esc_url_content = curl_easy_escape(ceh, collection_name.c_str(), collection_name.size());
+        cmr_url += string(CMR_COLLECTION_CONCEPT_ID).append("=").append(esc_url_content).append("&");
+        curl_free(esc_url_content);
+
+        esc_url_content = curl_easy_escape(ceh, granule_name.c_str(), granule_name.size());
+        cmr_url += string(CMR_GRANULE_UR).append("=").append(esc_url_content);
+        curl_free(esc_url_content);
+
+        curl_easy_cleanup(ceh);
+    }
+    return cmr_url;
+}
+
+/**
+ * @brief  Locates the "GET DATA" URL for a granule in the granules.umm_json_v1_4 document.
+ *
+ * A single granule query is built by convert_restified_path_to_cmr_query_url() from the
+ * NGAP API restified path. This method will parse the CMR response to the query and extract the
+ * granule's "GET DATA" URL and return it.
+ * @param restified_path THe restified path used to form the CMR query
+ * @param cmr_granules The CMR response (granules.umm_json_v1_4) to evaluate
+ * @return  The "GET DATA" URL for the granule.
+ */
+std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::string &restified_path, rapidjson::Document &cmr_granule_response)
+{
+
+    string data_access_url;
+
+    rapidjson::Value &val = cmr_granule_response["hits"];
+    int hits = val.GetInt();
+    if (hits < 1) {
+        throw BESNotFoundError(string("The specified path '").append(restified_path).append(
+                "' does not identify a granule in CMR."), __FILE__, __LINE__);
+    }
+
+    rapidjson::Value &items = cmr_granule_response["items"];
+    if (items.IsArray()) {
+        stringstream ss;
+        if(BESDebug::IsSet(MODULE)){
+            const string RJ_TYPE_NAMES[] = {string("kNullType"),string("kFalseType"),string("kTrueType"),
+                    string("kObjectType"),string("kArrayType"),string("kStringType"),string("kNumberType")};
+            for (rapidjson::SizeType i = 0; i < items.Size(); i++) // Uses SizeType instead of size_t
+                ss << "items[" << i << "]: " << RJ_TYPE_NAMES[items[i].GetType()] << endl;
+            BESDEBUG(MODULE, prolog << "items size: " << items.Size() << endl << ss.str() << endl);
+        }
+
+        rapidjson::Value &items_obj = items[0];
+        //  rapidjson::GenericMemberIterator<false, rapidjson::UTF8<char>, rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator>> mitr = items_obj.FindMember("umm");
+        auto mitr = items_obj.FindMember("umm");
+
+        rapidjson::Value &umm = mitr->value;
+        mitr = umm.FindMember("RelatedUrls");
+        if (mitr == umm.MemberEnd()) {
+            throw BESInternalError("Error! The umm/RelatedUrls object was not located!", __FILE__, __LINE__);
+        }
+        rapidjson::Value &related_urls = mitr->value;
+
+        if (!related_urls.IsArray()) {
+            throw BESNotFoundError("Error! The RelatedUrls object in the CMR response is not an array!", __FILE__,
+                                   __LINE__);
+        }
+
+        BESDEBUG(MODULE, prolog << " Found RelatedUrls array in CMR response." << endl);
+
+        bool noSubtype;
+        for (rapidjson::SizeType i = 0; i < related_urls.Size() && data_access_url.empty(); i++) {
+            rapidjson::Value &obj = related_urls[i];
+            mitr = obj.FindMember("URL");
+            if (mitr == obj.MemberEnd()) {
+                stringstream err;
+                err << "Error! The umm/RelatedUrls[" << i << "] does not contain the URL object";
+                throw BESInternalError(err.str(), __FILE__, __LINE__);
+            }
+            rapidjson::Value &r_url = mitr->value;
+
+            mitr = obj.FindMember("Type");
+            if (mitr == obj.MemberEnd()) {
+                stringstream err;
+                err << "Error! The umm/RelatedUrls[" << i << "] does not contain the Type object";
+                throw BESInternalError(err.str(), __FILE__, __LINE__);
+            }
+            rapidjson::Value &r_type = mitr->value;
+
+            noSubtype = obj.FindMember("Subtype") == obj.MemberEnd();
+
+            BESDEBUG(MODULE, prolog << "RelatedUrl Object:" <<
+                                    " URL: '" << r_url.GetString() << "'" <<
+                                    " Type: '" << r_type.GetString() << "'" <<
+                                    " SubType: '" << (noSubtype ? "Absent" : "Present") << "'" << endl);
+
+            if ((r_type.GetString() == string(CMR_URL_TYPE_GET_DATA)) && noSubtype) {
+                data_access_url = r_url.GetString();
+            }
+        }
+    }
+
+    if (data_access_url.empty()) {
+        throw BESInternalError(string("ERROR! Failed to locate a data access URL for the path: ") + restified_path,
+                               __FILE__, __LINE__);
+    }
+
+    return data_access_url;
+}
+
+
 
     /**
      * @brief Converts an NGAP restified granule path into a CMR metadata query for the granule.
@@ -141,178 +418,27 @@ namespace ngap {
             const std::string &restified_path,
             const std::string &uid
             ) {
+        BESDEBUG(MODULE, prolog << "BEGIN" << endl);
+        string data_access_url;
 
-        string data_access_url("");
+        string cmr_query_url = build_cmr_query_url(restified_path);
 
-        vector<string> tokens;
-        BESUtil::tokenize(restified_path, tokens);
-        if (tokens.empty()) {
-            throw BESSyntaxUserError(string("The specified NGAP API path '") + restified_path +
-                                     "' failed to tokenize: No tokens were returned.", __FILE__, __LINE__);
-        }
-        if(tokens.size()!=6){
-            stringstream msg;
-            msg << prolog << "The specified NGAP API path '" << restified_path << "' was tokenized, but ";
-            msg << tokens.size() << " token(s) were found where 6 are required.";
-            throw BESSyntaxUserError(msg.str() , __FILE__, __LINE__);
-        }
+        BESDEBUG(MODULE, prolog << "CMR Request URL: " << cmr_query_url << endl);
 
-        // Check that the NGAP_PROVIDER_KEY token is present.
-        if (tokens[0] != NGAP_PROVIDER_KEY ) {
-            stringstream msg;
-            msg << prolog << "The specified path '" << restified_path << "'";
-            msg << "does not contain the required path element '" << NGAP_PROVIDER_KEY << "'";
-            throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
-        }
-        // Check that the NGAP_COLLECTIONS_KEY or  NGAP_CONCEPTS_KEY token is present.
-        if ((tokens[2] != NGAP_COLLECTIONS_KEY && tokens[2] != NGAP_CONCEPTS_KEY)) {
-            stringstream msg;
-            msg << prolog << "The specified path '" << restified_path << "'";
-            msg << "does not contain the expected path element '" << NGAP_COLLECTIONS_KEY << "' or it's alternate, '";
-            msg << NGAP_CONCEPTS_KEY << "'. One of these is required";
-            throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
-        }
-        // Check that the NGAP_GRANULES_KEY token is present.
-        if (tokens[4] != NGAP_GRANULES_KEY) {
-            stringstream msg;
-            msg << prolog << "The specified path '" << restified_path << "'";
-            msg << "does not contain the required path element '" << NGAP_GRANULES_KEY << "'.";
-            throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
-        }
-
-        // Build the CMR query URL for the dataset
-        string cmr_url = get_cmr_search_endpoint_url() + "?";
-        {
-            // This easy handle is only created so we can use the curl_easy_escape() on the tokens
-            CURL *ceh = curl_easy_init();
-            char *esc_url_content;
-
-            // Add provider
-            esc_url_content = curl_easy_escape(ceh, tokens[1].c_str(), tokens[1].size());
-            cmr_url += CMR_PROVIDER + "=" + esc_url_content + "&";
-            curl_free(esc_url_content);
-
-            esc_url_content = curl_easy_escape(ceh, tokens[3].c_str(), tokens[3].size());
-            if (tokens[2] == NGAP_COLLECTIONS_KEY) {
-                // Add entry_title
-                cmr_url += CMR_ENTRY_TITLE + "=" + esc_url_content + "&";
-            }
-            else if(tokens[2] == NGAP_CONCEPTS_KEY){
-                // Add collection_concept_id
-                cmr_url += CMR_COLLECTION_CONCEPT_ID + "=" + esc_url_content + "&";
-            }
-            else {
-                // Bad inputs throw an exception.
-                curl_free(esc_url_content);
-                stringstream msg;
-                msg << prolog << "The specified path '" << restified_path << "'";
-                msg << "does not contain the expected path element '" << NGAP_COLLECTIONS_KEY << "' or it's alternate '";
-                msg << NGAP_CONCEPTS_KEY << "'. One of these is required";
-                throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
-            }
-            curl_free(esc_url_content);
-
-            esc_url_content = curl_easy_escape(ceh, tokens[5].c_str(), tokens[5].size());
-            cmr_url += CMR_GRANULE_UR + "=" + esc_url_content;
-            curl_free(esc_url_content);
-            curl_easy_cleanup(ceh);
-        }
-
-        BESDEBUG(MODULE, prolog << "CMR Request URL: " << cmr_url << endl);
-#if 1
         BESDEBUG(MODULE, prolog << "Building new RemoteResource." << endl);
-        http::RemoteResource cmr_query(cmr_url, uid);
+        http::RemoteResource cmr_query(cmr_query_url, uid);
         {
             BESStopWatch besTimer;
             if (BESISDEBUG(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()){
-                besTimer.start("CMR Query: " + cmr_url);
+                besTimer.start("CMR Query: " + cmr_query_url);
             }
             cmr_query.retrieveResource();
         }
         rapidjson::Document cmr_response = cmr_query.get_as_json();
-#else
-        rapidjson::Document cmr_response = ngap_curl::http_get_as_json(cmr_url);
-#endif
 
-        rapidjson::Value &val = cmr_response["hits"];
-        int hits = val.GetInt();
-        if (hits < 1) {
-            throw BESNotFoundError(string("The specified path '").append(restified_path).append(
-                    "' does not identify a granule in CMR."), __FILE__, __LINE__);
-        }
+        data_access_url = find_get_data_url_in_granules_umm_json_v1_4(restified_path, cmr_response);
 
-        rapidjson::Value &items = cmr_response["items"];
-        if (items.IsArray()) {
-            stringstream ss;
-            for (rapidjson::SizeType i = 0; i < items.Size(); i++) // Uses SizeType instead of size_t
-                ss << "items[" << i << "]: " << RJ_TYPE_NAMES[items[i].GetType()] << endl;
-
-            BESDEBUG(MODULE, prolog << "items size: " << items.Size() << endl << ss.str() << endl);
-
-            rapidjson::Value &items_obj = items[0];
-            rapidjson::GenericMemberIterator<false, rapidjson::UTF8<char>, rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator>> mitr = items_obj.FindMember(
-                    "umm");
-
-            rapidjson::Value &umm = mitr->value;
-            mitr = umm.FindMember("RelatedUrls");
-            if (mitr == umm.MemberEnd()) {
-                throw BESInternalError("Error! The umm/RelatedUrls object was not located!", __FILE__, __LINE__);
-            }
-            rapidjson::Value &related_urls = mitr->value;
-
-            if (!related_urls.IsArray()) {
-                throw BESNotFoundError("Error! The RelatedUrls object in the CMR response is not an array!", __FILE__,
-                                       __LINE__);
-            }
-
-            BESDEBUG(MODULE, prolog << " Found RelatedUrls array in CMR response." << endl);
-
-            bool noSubtype;
-            for (rapidjson::SizeType i = 0; i < related_urls.Size() && data_access_url.empty(); i++) {
-                rapidjson::Value &obj = related_urls[i];
-                mitr = obj.FindMember("URL");
-                if (mitr == obj.MemberEnd()) {
-                    stringstream err;
-                    err << "Error! The umm/RelatedUrls[" << i << "] does not contain the URL object";
-                    throw BESInternalError(err.str(), __FILE__, __LINE__);
-                }
-                rapidjson::Value &r_url = mitr->value;
-
-                mitr = obj.FindMember("Type");
-                if (mitr == obj.MemberEnd()) {
-                    stringstream err;
-                    err << "Error! The umm/RelatedUrls[" << i << "] does not contain the Type object";
-                    throw BESInternalError(err.str(), __FILE__, __LINE__);
-                }
-                rapidjson::Value &r_type = mitr->value;
-
-                noSubtype = obj.FindMember("Subtype") == obj.MemberEnd();
-#if 0
-                mitr = obj.FindMember("Description");
-                if(mitr == obj.MemberEnd()){
-                    stringstream  err;
-                    err << "Error! The umm/RelatedUrls[" << i << "] does not contain the Description object";
-                    throw BESInternalError(err.str(), __FILE__, __LINE__);
-                }
-                rapidjson::Value& r_desc = mitr->value;
-#endif
-                BESDEBUG(MODULE, prolog << "RelatedUrl Object:" <<
-                                        " URL: '" << r_url.GetString() << "'" <<
-                                        " Type: '" << r_type.GetString() << "'" <<
-                                        " SubType: '" << (noSubtype ? "Absent" : "Present") << "'" << endl);
-
-                if ((r_type.GetString() == CMR_URL_TYPE_GET_DATA) && noSubtype) {
-                    data_access_url = r_url.GetString();
-                }
-            }
-        }
-
-        if (data_access_url.empty()) {
-            throw BESInternalError(string("ERROR! Failed to locate a data access URL for the path: ") + restified_path,
-                                   __FILE__, __LINE__);
-        }
-
-        BESDEBUG(MODULE, prolog << "Following data_access_url redirects..." << endl);
+        BESDEBUG(MODULE, prolog << "END (data_access_url: "<< data_access_url << ")" << endl);
 
         return data_access_url;
     }
@@ -390,589 +516,6 @@ namespace ngap {
 
         return is_expired;
     }
-
-
-
-#if 0
-    string NgapApi::convert_ngap_resty_path_to_data_access_url(string real_name){
-    string data_access_url("");
-
-    vector<string> tokens;
-    BESUtil::tokenize(real_name,tokens);
-    if( tokens[0]!= NGAP_PROVIDER_KEY || tokens[2]!=NGAP_DATASETS_KEY || tokens[4]!=NGAP_GRANULES_KEY){
-        string err = (string) "The specified path " + real_name
-                     + " does not conform to the NGAP request interface API.";
-        throw BESSyntaxUserError(err, __FILE__, __LINE__);
-    }
-
-    string cmr_url = cmr_granule_search_endpoint_url + "?";
-    cmr_url += CMR_PROVIDER + "=" + tokens[1] + "&";
-    cmr_url += CMR_ENTRY_TITLE + "=" + tokens[3] + "&";
-    cmr_url += CMR_GRANULE_UR + "=" + tokens[5] ;
-    BESDEBUG( MODULE, prolog << "CMR Request URL: "<< cmr_url << endl );
-    rapidjson::Document cmr_response = ngap_curl::http_get_as_json(cmr_url);
-
-    rapidjson::Value& val = cmr_response["hits"];
-    int hits = val.GetInt();
-    if(hits < 1){
-        string err = (string) "The specified path " + real_name
-                     + " does not identify a thing we know about....";
-        throw BESNotFoundError(err, __FILE__, __LINE__);
-    }
-
-    rapidjson::Value& items = cmr_response["items"];
-    if(items.IsArray()){
-        stringstream ss;
-        for (rapidjson::SizeType i = 0; i < items.Size(); i++) // Uses SizeType instead of size_t
-            ss << "items[" << i << "]: " << rjtype_names[items[i].GetType()] << endl;
-        BESDEBUG(MODULE,prolog << "items size: " << items.Size() << endl << ss.str() << endl);
-
-        rapidjson::Value& items_obj = items[0];
-        rapidjson::GenericMemberIterator<false, rapidjson::UTF8<char>, rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator>> mitr = items_obj.FindMember("umm");
-
-        rapidjson::Value& umm = mitr->value;
-        mitr  = umm.FindMember("RelatedUrls");
-        rapidjson::Value& related_urls = mitr->value;
-
-        if(!related_urls.IsArray()){
-            string err = (string) "Error! The RelatedUrls object in the CMR response is not an array!";
-            throw BESNotFoundError(err, __FILE__, __LINE__);
-        }
-
-        BESDEBUG(MODULE,prolog << " Found RelatedUrls array in CMR response." << endl);
-
-        bool noSubtype;
-
-        for (rapidjson::SizeType i = 0; i < related_urls.Size() && data_access_url.empty(); i++)  {
-            rapidjson::Value& obj = related_urls[i];
-            mitr = obj.FindMember("URL");
-            rapidjson::Value& r_url = mitr->value;
-            mitr = obj.FindMember("Type");
-            rapidjson::Value& r_type = mitr->value;
-            noSubtype = ((mitr = obj.FindMember("Subtype")) == obj.MemberEnd()) ? true : false;
-            mitr = obj.FindMember("Description");
-            rapidjson::Value& r_desc = mitr->value;
-            BESDEBUG(MODULE,prolog << "RelatedUrl Object:" <<
-                                   " URL: '" << r_url.GetString() << "'" <<
-                                   " Type: '" << r_type.GetString() << "'" <<
-                                   //" Subtype: '" << r_subtype.GetString() << "'" <<
-                                   " Description: '" << r_desc.GetString() <<  "'" << endl);
-
-            if( (r_type.GetString() == CMR_URL_TYPE_GET_DATA) && noSubtype ){
-                data_access_url = r_url.GetString();
-            }
-        }
-
-    }
-
-    return data_access_url + ".dmrpp";
-}
-#endif
-
-#if 0
-    /**
-     *
-     */
-        const rapidjson::Value&
-        NgapApi::get_children(const rapidjson::Value& obj) {
-            rapidjson::Value::ConstMemberIterator itr;
-
-            itr = obj.FindMember("children");
-            bool result  = itr != obj.MemberEnd();
-            string msg = prolog + (result?"Located":"FAILED to locate") + " the value 'children' in the object.";
-            BESDEBUG(MODULE, msg << endl);
-            if(!result){
-                throw NgapError(msg,__FILE__,__LINE__);
-            }
-
-            const rapidjson::Value& children = itr->value;
-            result = children.IsArray();
-            msg = prolog + "The value 'children' is" + (result?"":" NOT") + " an array.";
-            BESDEBUG(MODULE, msg << endl);
-            if(!result){
-                throw NgapError(msg,__FILE__,__LINE__);
-            }
-            return children;
-        }
-
-    /**
-     *
-     */
-        const rapidjson::Value&
-        NgapApi::get_feed(const rapidjson::Document &ngap_doc){
-
-            bool result = ngap_doc.IsObject();
-            string msg = prolog + "Json document is" + (result?"":" NOT") + " an object.";
-            BESDEBUG(MODULE, msg << endl);
-            if(!result){
-                throw NgapError(msg,__FILE__,__LINE__);
-            }
-
-            //################### feed
-            rapidjson::Value::ConstMemberIterator itr = ngap_doc.FindMember("feed");
-            result  = itr != ngap_doc.MemberEnd();
-            msg = prolog + (result?"Located":"FAILED to locate") + " the value 'feed'.";
-            BESDEBUG(MODULE, msg << endl);
-            if(!result){
-                throw NgapError(msg,__FILE__,__LINE__);
-            }
-
-            const rapidjson::Value& feed = itr->value;
-            result  = feed.IsObject();
-            msg = prolog + "The value 'feed' is" + (result?"":" NOT") + " an object.";
-            BESDEBUG(MODULE, msg << endl);
-            if(!result){
-                throw NgapError(msg,__FILE__,__LINE__);
-            }
-            return feed;
-        }
-
-    /**
-     *
-     */
-        const rapidjson::Value&
-        NgapApi::get_entries(const rapidjson::Document &ngap_doc){
-            bool result;
-            string msg;
-
-            const rapidjson::Value& feed = get_feed(ngap_doc);
-
-            rapidjson::Value::ConstMemberIterator itr = feed.FindMember("entry");
-            result  = itr != feed.MemberEnd();
-            msg = prolog + (result?"Located":"FAILED to locate") + " the value 'entry'.";
-            BESDEBUG(MODULE, msg << endl);
-            if(!result){
-                throw NgapError(msg,__FILE__,__LINE__);
-            }
-
-            const rapidjson::Value& entry = itr->value;
-            result  = entry.IsArray();
-            msg = prolog + "The value 'entry' is" + (result?"":" NOT") + " an Array.";
-            BESDEBUG(MODULE, msg << endl);
-            if(!result){
-                throw NgapError(msg,__FILE__,__LINE__);
-            }
-            return entry;
-        }
-
-    /**
-     *
-     */
-        const rapidjson::Value&
-        NgapApi::get_temporal_group(const rapidjson::Document &ngap_doc){
-            rjson_utils ru;
-
-            bool result;
-            string msg;
-            const rapidjson::Value& feed = get_feed(ngap_doc);
-
-            //################### facets
-            rapidjson::Value::ConstMemberIterator  itr = feed.FindMember("facets");
-            result  = itr != feed.MemberEnd();
-            msg =  prolog + (result?"Located":"FAILED to locate") + " the value 'facets'." ;
-            BESDEBUG(MODULE, msg << endl);
-            if(!result){
-                throw NgapError(msg,__FILE__,__LINE__);
-            }
-
-            const rapidjson::Value& facets_obj = itr->value;
-            result  = facets_obj.IsObject();
-            msg =  prolog + "The value 'facets' is" + (result?"":" NOT") + " an object.";
-            BESDEBUG(MODULE, msg << endl);
-            if(!result){
-                throw NgapError(msg,__FILE__,__LINE__);
-            }
-
-            const rapidjson::Value& facets = get_children(facets_obj);
-            for (rapidjson::SizeType i = 0; i < facets.Size(); i++) { // Uses SizeType instead of size_t
-                const rapidjson::Value& facet = facets[i];
-
-                string facet_title = ru.getStringValue(facet,"title");
-                string temporal_title("Temporal");
-                if(facet_title == temporal_title){
-                    msg = prolog + "Found Temporal object.";
-                    BESDEBUG(MODULE, msg << endl);
-                    return facet;
-                }
-                else {
-                    msg = prolog + "The child of 'facets' with title '"+facet_title+"' does not match 'Temporal'";
-                    BESDEBUG(MODULE, msg << endl);
-                }
-            }
-            msg = prolog + "Failed to locate the Temporal facet.";
-            BESDEBUG(MODULE, msg << endl);
-            throw NgapError(msg,__FILE__,__LINE__);
-
-        } // NgapApi::get_temporal_group()
-
-    /**
-     *
-     */
-        const rapidjson::Value&
-        NgapApi::get_year_group(const rapidjson::Document &ngap_doc){
-            rjson_utils rju;
-            string msg;
-
-            const rapidjson::Value& temporal_group = get_temporal_group(ngap_doc);
-            const rapidjson::Value& temporal_children = get_children(temporal_group);
-            for (rapidjson::SizeType j = 0; j < temporal_children.Size(); j++) { // Uses SizeType instead of size_t
-                const rapidjson::Value& temporal_child = temporal_children[j];
-
-                string temporal_child_title = rju.getStringValue(temporal_child,"title");
-                string year_title("Year");
-                if(temporal_child_title == year_title){
-                    msg = prolog + "Found Year object.";
-                    BESDEBUG(MODULE, msg << endl);
-                    return temporal_child;
-                }
-                else {
-                    msg = prolog + "The child of 'Temporal' with title '"+temporal_child_title+"' does not match 'Year'";
-                    BESDEBUG(MODULE, msg << endl);
-                }
-            }
-            msg = prolog + "Failed to locate the Year group.";
-            BESDEBUG(MODULE, msg << endl);
-            throw NgapError(msg,__FILE__,__LINE__);
-        }
-
-    /**
-     *
-     */
-        const rapidjson::Value&
-        NgapApi::get_month_group(const string r_year, const rapidjson::Document &ngap_doc){
-            rjson_utils rju;
-            string msg;
-
-            const rapidjson::Value& year_group = get_year_group(ngap_doc);
-            const rapidjson::Value& years = get_children(year_group);
-            for (rapidjson::SizeType i = 0; i < years.Size(); i++) { // Uses SizeType instead of size_t
-                const rapidjson::Value& year_obj = years[i];
-
-                string year_title = rju.getStringValue(year_obj,"title");
-                if(r_year == year_title){
-                    msg = prolog + "Found Year object.";
-                    BESDEBUG(MODULE, msg << endl);
-
-                    const rapidjson::Value& year_children = get_children(year_obj);
-                    for (rapidjson::SizeType j = 0; j < year_children.Size(); j++) { // Uses SizeType instead of size_t
-                        const rapidjson::Value& child = year_children[i];
-                        string title = rju.getStringValue(child,"title");
-                        string month_title("Month");
-                        if(title == month_title){
-                            msg = prolog + "Found Month object.";
-                            BESDEBUG(MODULE, msg << endl);
-                            return child;
-                        }
-                        else {
-                            msg = prolog + "The child of 'Year' with title '"+title+"' does not match 'Month'";
-                            BESDEBUG(MODULE, msg << endl);
-                        }
-                    }
-                }
-                else {
-                    msg = prolog + "The child of 'Year' group with title '"+year_title+"' does not match the requested year ("+r_year+")";
-                    BESDEBUG(MODULE, msg << endl);
-                }
-            }
-            msg = prolog + "Failed to locate the Year group.";
-            BESDEBUG(MODULE, msg << endl);
-            throw NgapError(msg,__FILE__,__LINE__);
-        }
-
-        const rapidjson::Value&
-        NgapApi::get_month(const string r_month, const string r_year, const rapidjson::Document &ngap_doc){
-            rjson_utils rju;
-            stringstream msg;
-
-            const rapidjson::Value& month_group = get_month_group(r_year,ngap_doc);
-            const rapidjson::Value& months = get_children(month_group);
-            for (rapidjson::SizeType i = 0; i < months.Size(); i++) { // Uses SizeType instead of size_t
-                const rapidjson::Value& month = months[i];
-                string month_id = rju.getStringValue(month,"title");
-                if(month_id == r_month){
-                    msg.str("");
-                    msg << prolog  << "Located requested month ("<<r_month << ")";
-                    BESDEBUG(MODULE, msg.str() << endl);
-                    return month;
-                }
-                else {
-                    msg.str("");
-                    msg << prolog  << "The month titled '"<<month_id << "' does not match the requested month ("<< r_month <<")";
-                    BESDEBUG(MODULE, msg.str() << endl);
-                }
-            }
-            msg.str("");
-            msg << prolog  << "Failed to locate request Year/Month.";
-            BESDEBUG(MODULE, msg.str() << endl);
-            throw NgapError(msg.str(),__FILE__,__LINE__);
-        }
-
-        const rapidjson::Value&
-        NgapApi::get_day_group(const string r_month, const string r_year, const rapidjson::Document &ngap_doc){
-            rjson_utils rju;
-            stringstream msg;
-
-            const rapidjson::Value& month = get_month(r_month, r_year, ngap_doc);
-            const rapidjson::Value& month_children = get_children(month);
-
-            for (rapidjson::SizeType k = 0; k < month_children.Size(); k++) { // Uses SizeType instead of size_t
-                const rapidjson::Value& object = month_children[k];
-                string title = rju.getStringValue(object,"title");
-                string day_group_title = "Day";
-                if(title == day_group_title){
-                    msg.str("");
-                    msg << prolog  << "Located Day group for year: " << r_year << " month: "<< r_month;
-                    BESDEBUG(MODULE, msg.str() << endl);
-                    return object;
-                }
-            }
-            msg.str("");
-            msg << prolog  << "Failed to locate requested Day  year: " << r_year << " month: "<< r_month;
-            BESDEBUG(MODULE, msg.str() << endl);
-            throw NgapError(msg.str(),__FILE__,__LINE__);
-        }
-
-
-    /**
-     * Queries NGAP for the 'collection_name' and returns the span of years covered by the collection.
-     *
-     * @param collection_name The name of the collection to query.
-     * @param collection_years A vector into which the years will be placed.
-     */
-        void
-        NgapApi::get_years(string collection_name, vector<string> &years_result){
-            rjson_utils rju;
-            // bool result;
-            string msg;
-
-            string url = BESUtil::assemblePath(ngap_search_endpoint_url,"granules.json") + "?concept_id="+collection_name +"&include_facets=v2";
-            rapidjson::Document doc;
-            rju.getJsonDoc(url,doc);
-
-            const rapidjson::Value& year_group = get_year_group(doc);
-            const rapidjson::Value& years = get_children(year_group);
-            for (rapidjson::SizeType k = 0; k < years.Size(); k++) { // Uses SizeType instead of size_t
-                const rapidjson::Value& year_obj = years[k];
-                string year = rju.getStringValue(year_obj,"title");
-                years_result.push_back(year);
-            }
-        } // NgapApi::get_years()
-
-
-    /**
-     * Queries NGAP for the 'collection_name' and returns the span of years covered by the collection.
-     *
-     * https://cmr.earthdata.nasa.gov/search/granules.json?concept_id=C179003030-ORNL_DAAC&include_facets=v2&temporal_facet%5B0%5D%5Byear%5D=1985
-     *
-     * @param collection_name The name of the collection to query.
-     * @param collection_years A vector into which the years will be placed.
-     */
-        void
-        NgapApi::get_months(string collection_name, string r_year, vector<string> &months_result){
-            rjson_utils rju;
-
-            stringstream msg;
-
-            string url = BESUtil::assemblePath(ngap_search_endpoint_url,"granules.json")
-                         + "?concept_id="+collection_name
-                         +"&include_facets=v2"
-                         +"&temporal_facet[0][year]="+r_year;
-
-            rapidjson::Document doc;
-            rju.getJsonDoc(url,doc);
-            BESDEBUG(MODULE, prolog << "Got JSON Document: "<< endl << rju.jsonDocToString(doc) << endl);
-
-            const rapidjson::Value& year_group = get_year_group(doc);
-            const rapidjson::Value& years = get_children(year_group);
-            if(years.Size() != 1){
-                msg.str("");
-                msg << prolog  << "We expected to get back one year (" << r_year << ") but we got back " << years.Size();
-                BESDEBUG(MODULE, msg.str() << endl);
-                throw NgapError(msg.str(),__FILE__,__LINE__);
-            }
-
-            const rapidjson::Value& year = years[0];
-            string year_title = rju.getStringValue(year,"title");
-            if(year_title != r_year){
-                msg.str("");
-                msg << prolog  << "The returned year (" << year_title << ") does not match the requested year ("<< r_year << ")";
-                BESDEBUG(MODULE, msg.str() << endl);
-                throw NgapError(msg.str(),__FILE__,__LINE__);
-            }
-
-            const rapidjson::Value& year_children = get_children(year);
-            if(year_children.Size() != 1){
-                msg.str("");
-                msg << prolog  << "We expected to get back one child for the year (" << r_year << ") but we got back " << years.Size();
-                BESDEBUG(MODULE, msg.str() << endl);
-                throw NgapError(msg.str(),__FILE__,__LINE__);
-            }
-
-            const rapidjson::Value& month_group = year_children[0];
-            string title = rju.getStringValue(month_group,"title");
-            if(title != string("Month")){
-                msg.str("");
-                msg << prolog  << "We expected to get back a Month object, but we did not.";
-                BESDEBUG(MODULE, msg.str() << endl);
-                throw NgapError(msg.str(),__FILE__,__LINE__);
-            }
-
-            const rapidjson::Value& months = get_children(month_group);
-            for (rapidjson::SizeType i = 0; i < months.Size(); i++) { // Uses SizeType instead of size_t
-                const rapidjson::Value& month = months[i];
-                string month_id = rju.getStringValue(month,"title");
-                months_result.push_back(month_id);
-            }
-            return;
-
-        } // NgapApi::get_months()
-
-    /**
-     * Creates a list of the valid days for the collection matching the year and month
-     */
-        void
-        NgapApi::get_days(string collection_name, string r_year, string r_month, vector<string> &days_result){
-            rjson_utils rju;
-            stringstream msg;
-
-            string url = BESUtil::assemblePath(ngap_search_endpoint_url,"granules.json")
-                         + "?concept_id="+collection_name
-                         +"&include_facets=v2"
-                         +"&temporal_facet[0][year]="+r_year
-                         +"&temporal_facet[0][month]="+r_month;
-
-            rapidjson::Document ngap_doc;
-            rju.getJsonDoc(url,ngap_doc);
-            BESDEBUG(MODULE, prolog << "Got JSON Document: "<< endl << rju.jsonDocToString(ngap_doc) << endl);
-
-            const rapidjson::Value& day_group = get_day_group(r_month, r_year, ngap_doc);
-            const rapidjson::Value& days = get_children(day_group);
-            for (rapidjson::SizeType i = 0; i < days.Size(); i++) { // Uses SizeType instead of size_t
-                const rapidjson::Value& day = days[i];
-                string day_id = rju.getStringValue(day,"title");
-                days_result.push_back(day_id);
-            }
-        }
-
-
-
-    /**
-     *
-     */
-        void
-        NgapApi::get_granule_ids(string collection_name, string r_year, string r_month, string r_day, vector<string> &granules_ids){
-            rjson_utils rju;
-            stringstream msg;
-            rapidjson::Document ngap_doc;
-
-            granule_search(collection_name, r_year, r_month, r_day, ngap_doc);
-
-            const rapidjson::Value& entries = get_entries(ngap_doc);
-            for (rapidjson::SizeType i = 0; i < entries.Size(); i++) { // Uses SizeType instead of size_t
-                const rapidjson::Value& granule = entries[i];
-                string day_id = rju.getStringValue(granule,"id");
-                granules_ids.push_back(day_id);
-            }
-
-        }
-
-
-    /**
-     *
-     */
-        unsigned long
-        NgapApi::granule_count(string collection_name, string r_year, string r_month, string r_day){
-            stringstream msg;
-            rapidjson::Document ngap_doc;
-            granule_search(collection_name, r_year, r_month, r_day, ngap_doc);
-            const rapidjson::Value& entries = get_entries(ngap_doc);
-            return entries.Size();
-        }
-
-    /**
-     * Locates granules in the collection matching the year, month, and day. Any or all of
-     * year, month, and day may be the empty string.
-     */
-        void
-        NgapApi::granule_search(string collection_name, string r_year, string r_month, string r_day, rapidjson::Document &result_doc){
-            rjson_utils rju;
-
-            string url = BESUtil::assemblePath(ngap_search_endpoint_url,"granules.json")
-                         + "?concept_id="+collection_name
-                         + "&include_facets=v2"
-                         + "&page_size=2000";
-
-            if(!r_year.empty())
-                url += "&temporal_facet[0][year]="+r_year;
-
-            if(!r_month.empty())
-                url += "&temporal_facet[0][month]="+r_month;
-
-            if(!r_day.empty())
-                url += "&temporal_facet[0][day]="+r_day;
-
-            BESDEBUG(MODULE, prolog << "ngap Granule Search Request Url: : " << url << endl);
-            rju.getJsonDoc(url,result_doc);
-            BESDEBUG(MODULE, prolog << "Got JSON Document: "<< endl << rju.jsonDocToString(result_doc) << endl);
-        }
-
-
-
-    /**
-     * Returns all of the Granules in the collection matching the date.
-     */
-        void
-        NgapApi::get_granules(string collection_name, string r_year, string r_month, string r_day, vector<Granule *> &granules){
-            stringstream msg;
-            rapidjson::Document ngap_doc;
-
-            granule_search(collection_name, r_year, r_month, r_day, ngap_doc);
-
-            const rapidjson::Value& entries = get_entries(ngap_doc);
-            for (rapidjson::SizeType i = 0; i < entries.Size(); i++) { // Uses SizeType instead of size_t
-                const rapidjson::Value& granule_obj = entries[i];
-                // rapidjson::Value grnl(granule_obj, ngap_doc.GetAllocator());
-                Granule *g = new Granule(granule_obj);
-                granules.push_back(g);
-            }
-
-        }
-
-
-        void
-        NgapApi::get_collection_ids(std::vector<std::string> &collection_ids){
-            bool found = false;
-            string key = NGAP_COLLECTIONS;
-            TheBESKeys::TheKeys()->get_values(NGAP_COLLECTIONS, collection_ids, found);
-            if(!found){
-                throw BESInternalError(string("The '") +NGAP_COLLECTIONS
-                                       + "' field has not been configured.", __FILE__, __LINE__);
-            }
-        }
-
-    /**
-     * Returns all of the Granules in the collection matching the date.
-     */
-        Granule* NgapApi::get_granule(string collection_name, string r_year, string r_month, string r_day, string granule_id)
-        {
-            vector<Granule *> granules;
-            Granule *result = 0;
-
-            get_granules(collection_name, r_year, r_month, r_day, granules);
-            for(size_t i=0; i<granules.size() ;i++){
-                string id = granules[i]->getName();
-                BESDEBUG(MODULE, prolog << "Comparing granule id: " << granule_id << " to collection member id: " << id << endl);
-                if( id == granule_id){
-                    result = granules[i];
-                }
-                else {
-                    delete granules[i];
-                    granules[i] = 0;
-                }
-            }
-            return result;
-        }
-#endif
 
 } // namespace ngap
 

@@ -40,10 +40,6 @@
 #include "BESCatalogUtils.h"
 #include "url_impl.h"
 
-#if 0
-#include "Granule.h"
-#endif
-
 namespace ngap {
 
 class NgapApi {
@@ -52,6 +48,12 @@ private:
     std::string d_cmr_search_endpoint_path;
 
     std::string get_cmr_search_endpoint_url();
+    std::string find_get_data_url_in_granules_umm_json_v1_4(const std::string &restified_path, rapidjson::Document &cmr_granule_response);
+    std::string build_cmr_query_url(const std::string &restified_path);
+    std::string build_cmr_query_url_old_rpath_format(const std::string &restified_path);
+
+    friend class NgapApiTest;
+
 public:
 
     NgapApi();

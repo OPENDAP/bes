@@ -108,8 +108,9 @@ string pthread_error(unsigned int err){
             break;
     }
 
-
+    return error_msg;
 }
+
 Lock::Lock(pthread_mutex_t &lock) : m_mutex(lock) {
     int status = pthread_mutex_lock(&m_mutex);
     if (status != 0)
@@ -314,16 +315,16 @@ void dmrpp_easy_handle::read_data() {
 #if 0
 // This implmentation of the default constructor should have:
 // a) Utilized the other constructor:
-//        CurlHandlePool::CurlHandlePool() { CurlHandlePool(DmrppRequestHandler::d_max_parallel_transfers); }
+//        CurlHandlePool::CurlHandlePool() { CurlHandlePool(DmrppRequestHandler::d_max_transfer_threads); }
 //    rather than duplicating the logic.
 // b) Skipped because the only code that called it in the first place was DmrppRequestHandler::DmrppRequestHandler()
-//    which is already owns DmrppRequestHandler::d_max_parallel_transfers and can pass it in.
+//    which is already owns DmrppRequestHandler::d_max_transfer_threads and can pass it in.
 //
 //
 // Old default constructor. Duplicates logic.
 //
 CurlHandlePool::CurlHandlePool() {
-    d_max_easy_handles = DmrppRequestHandler::d_max_parallel_transfers;
+    d_max_easy_handles = DmrppRequestHandler::d_max_transfer_threads;
 
     for (unsigned int i = 0; i < d_max_easy_handles; ++i) {
         d_easy_handles.push_back(new dmrpp_easy_handle());
@@ -393,7 +394,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
     // Here we check to make sure that the we are only going to
     // access an approved location with this easy_handle
     if (!AllowedHosts::theHosts()->is_allowed(chunk->get_data_url())) {
-        string msg = "ERROR!! The chunk url " + chunk->get_data_url() + " does not match any white-list rule. ";
+        string msg = "ERROR!! The chunk url " + chunk->get_data_url() + " does not match any of the AllowedHost rules. ";
         throw BESForbiddenError(msg, __FILE__, __LINE__);
     }
 

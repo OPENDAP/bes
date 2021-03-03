@@ -136,7 +136,16 @@ valgrind besstandalone -c tests/bes.nc4.conf -i tests/bescmd/t_int64_dap4_d4_con
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/nc4_group_atomic.h5.2.bescmd >test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/t_cf_grp.h5.2.bescmd >test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/simple_nc4.nc.h5.2.bescmd >test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/t_group_scalar.h5.2.bescmd >test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/t_grp_string.h5.2.bescmd >test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/simple_nc4.nc_constraint.h5.2.bescmd >test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/simple_nc4.nc_constraint_2.h5.2.bescmd >test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/dim_scale_smix.h5_local_constraint.2.bescmd >test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/dim_scale_dim_name_clash.h5_local_constraint.2.bescmd >test.nc
+valgrind besstandalone -c tests/bes.nc4.conf -i tests/bescmd/grid_1_2d_dap2_ce_empty.h5.2.bescmd>gr.nc4
+valgrind besstandalone -c tests/bes.nc4.conf -i tests/bescmd/grid_1_2d_dap2_to_4_ce_empty.h5.2.bescmd>gr_d4.nc4
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/d_group_dap4_ce_empty.h5.2.bescmd>d_group.nc4
+
+
 
 rm -rf test.nc

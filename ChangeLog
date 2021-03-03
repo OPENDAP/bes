@@ -1,3 +1,3365 @@
+2020-12-23  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #461 from OPENDAP/thread_pool
+	Thread pool
+
+2020-12-23  ndp-opendap  <ndp@opendap.org>
+
+	Merge branch 'master' into thread_pool
+
+	Merge branch 'thread_pool' of https://github.com/opendap/bes 
+	into thread_pool
+
+	Migrated get_next_future() to a list of futures and then 
+	implemented a wait_for() strategy to scan the list of futures 
+	and calling future::get() on the first ready future found.
+
+	Switched from std:thread to std::async and std::future
+	cleanup and docs. Switched async calls to
+	specify std::launch::async
+
+	Migrated DmrppArray::read_chunks() to c++11 threads
+
+	Repairs AllowedHosts::is_allowed() unsigned to signed conversion issue
+
+	More concurrency code refinements
+
+	Improved read_chunks
+
+	Debugging output changes and made wait_for() time be 1ms. [skip ci]
+
+	Migrated get_next_future() to a list of futures and then implemented
+	a wait_for() strategy to scan the list of futures and calling 
+	future::get() on the first ready future found.
+
+2020-12-22  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #439 from captainkirk99/ejh_next
+	fixed missing return code in test ppt/unit-tests/extT.cc
+
+	Merge branch 'master' of https://github.com/OPENDAP/bes
+
+	Added to gitignore, updated hdf4/5 commit hashes
+
+2020-12-22  ndp-opendap  <ndp@opendap.org>
+
+	cleanup and docs. Switched async calls to specify std::launch::async
+
+2020-12-22  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #460 from OPENDAP/code-coverage
+	Code coverage
+
+2020-12-22  Sam Lloyd  <slloyd@opendap.org>
+
+	Merge pull request #456 from OPENDAP/NaN-issue-#420
+	NaN issue #420
+
+2020-12-22  James Gallagher  <jgallagher@opendap.org>
+
+	Added support for code coverage to the BES framework and modules
+	Added coverage to travis
+	Added gcovr to .travis and code-coverage branches for the hdf code
+
+2020-12-22  ndp-opendap  <ndp@opendap.org>
+
+	Switched from std:thread to std::async and std::future
+
+2020-12-22  Samuel Lloyd  <slloyd@opendap.org>
+
+	12/22/20 - NaN-issue-#420 - (Under Review) NaN tests added
+
+2020-12-22  ndp-opendap  <ndp@opendap.org>
+
+	Works, but a hackneed approach ti thread managment needs reworked.
+
+	More commentss, protoype thread pool.
+
+	Comments/TODO items and verified thread_vector is working as desired
+
+	Comments/TODO items and verified thread_vector is working as desired
+
+	dropping atomic_unint for now
+
+2020-12-21  ndp-opendap  <ndp@opendap.org>
+
+	Migrated DmrppArray::read_chunks() to c++11 threads
+
+	Merge branch 'master' into thread_pool
+
+	Thread pool first comit, more like c++11 threads
+
+2020-12-21  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #459 from OPENDAP/fix_allowedhosts_warning
+	Repairs AllowedHosts::is_allowed() unsigned to signed conversion issue
+
+2020-12-19  ndp-opendap  <ndp@opendap.org>
+
+	More with auto
+
+2020-12-18  ndp-opendap  <ndp@opendap.org>
+
+	Repairs AllowedHosts::is_allowed() unsigned to signed conversion issue
+
+2020-12-18  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #458 from OPENDAP/super_chunk
+	SuperChunk
+
+2020-12-18  ndp-opendap  <ndp@opendap.org>
+
+	Finally fiddling with disabled SuperChunk::read_and_copy() api. [skip ci]
+
+	Working on .gitignore for dmrpp_module and stare [skip ci]
+
+2020-12-17  ndp-opendap  <ndp@opendap.org>
+
+	Add mkchk script for easy checks
+
+	Updated CMakeLists.txt for new source. [skip ci]
+
+	sonar sonar sonar part2
+
+	sonar sonar sonar
+
+	A number of small changes to address compile warnings
+
+	More documentation details. [skip ci]
+
+	Made SuperChunk::~SuperChunk virtual per gcc warning. 
+	Added SuperChunk::chunks_to_array_values_unconstrained() 
+	which replaces DmrppArray::process_super_chunk_unconstrained() 
+	just as SuperChunk::chunks_to_array_values() can replace 
+	DmrppArray::process_super_chunk()
+
+	Fixing bug in CurlHandlePool::pthread_error()
+
+	Changed some unfavorable method names
+
+2020-12-17  James Gallagher  <jgallagher@opendap.org>
+
+	Minor edits
+
+2020-12-17  ndp-opendap  <ndp@opendap.org>
+
+	More comments [skip ci]
+
+	Comments and code formatting [skip ci]
+
+	Added SuperChunk::intern()
+
+	Comments [skip ci]
+
+	Comments [skip ci]
+
+2020-12-16  ndp-opendap  <ndp@opendap.org>
+
+	Dropping SuperChunky.h as it is not needed.
+
+	Reorder travis ci build so that scan happens before package.
+
+	Merge branch 'master' into super_chunk
+
+	Simplfied SuperChunk destructor. Comments
+
+	Documentation and an updated desructor for SuperChunk
+
+	Looks like SuperChunks are go
+
+	Added new SuperChunk test that checks for on-contiguous 
+	chunk rejection and that verifies retrived bytes.
+
+2020-12-15  ndp-opendap  <ndp@opendap.org>
+
+	Added 2 chunk SuperChunk test
+
+	SuperChunkTest::sc_test_01() passes. woot.
+
+	sync
+
+	sync
+
+	cleaning up shared_ptr mess
+
+	Starting unit-tests/SuperChunkTest and already the 
+	memory lifecycle problem shows up. woot.
+
+	Still struggling with SuperChunk lifecyle. Problem with destructor and shared_ptr
+
+	Backtracked changes that were off topic and breaking things.
+
+	Some problems fixed, new ones appeart
+
+	SUperChunk is now reading dat, problems with memory 
+	lifecyle in Chunk. CHECKING FOR VG
+
+2020-12-15  Samuel Lloyd  <slloyd@opendap.org>
+
+	12/14/20 - master merge
+	Conflicts:
+		modules/fileout_netcdf/FONcAttributes.cc
+
+2020-12-14  ndp-opendap  <ndp@opendap.org>
+
+	More comments
+
+	More updating comments an TODO statements
+
+	Added CHunk::set_read_buffer() which I believe should 
+	replace Chunk::set_rbuf()
+
+
+2020-12-14  Samuel Lloyd  <slloyd@opendap.org>
+
+	12/14/20 - NaN-issue-#420 - NaN first fix pass
+
+2020-12-14  ndp-opendap  <ndp@opendap.org>
+
+	Comments.
+
+	Comments an bug fixes.
+
+	Finsihed possible SuperChunl::read_contiguous() implementation
+
+	SuperChunk rolling back Chunk methods until needed.
+
+	SuperChunk rolling back Chunk methods until needed.
+
+	SuperChunk copyright...
+
+	More fleshing out of the SuperChunk code.
+
+2020-12-11  ndp-opendap  <ndp@opendap.org>
+
+	Added DmrppCommon::get_immutable_super_chunks()
+
+	First point at which DmrppCommon::add_chunk() is 
+	correctly creating SuperChunk objects.
+
+2020-12-11  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #452 from OPENDAP/fnetcdf-group-new
+	Fnetcdf group new
+
+2020-12-11  ndp-opendap  <ndp@opendap.org>
+
+	Switched to flrward declartion of DmrppArray in 
+	SuperChunk and now we can move on
+
+	Updated docs for changes to track_context
+
+	Still now include love for the new changes
+
+	INcluding SuperChunk.h in DmrppCommon.h breaks the build... why?
+
+	Here be many small chenges before SuperChunk 
+	integration in DmrppCommon
+
+2020-12-11  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #448 from OPENDAP/sonarBesHotspotFix
+	Sonar bes hotspot fix
+
+2020-12-11  ndp-opendap  <ndp@opendap.org>
+
+	Got SuperChunky working again
+
+	Merged master to branch with new shar_ptr Chunk 
+	collections. Small changes get it to com,pile. Untested.
+
+2020-12-11  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #455 from OPENDAP/chunk_ptrs
+	Chunk ptrs
+
+2020-12-10  ndp-opendap  <ndp@opendap.org>
+
+	Merge branch 'master' into chunk_ptrs
+
+2020-12-10  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #442 from OPENDAP/resty_path
+	Adds new restified path parsing implementation and
+
+2020-12-10  ndp-opendap  <ndp@opendap.org>
+
+	Fixed override semantics for MockDmrppArray::insert_chunk()
+
+	small changes to test code and DmrppArray formatting
+
+	small changes to test code and DmrppArray formatting
+
+	Including <memory> in files using shared_ptr
+
+	Adding debug instrumenttion to CurlHandlePoolTest, part3
+
+
+	First swipe a shared_ptr, compiles but 
+	CurlHandlePoolTest fails.
+
+2020-12-09  ndp-opendap  <ndp@opendap.org>
+
+	Fixed some iother issues, but the destructor code 
+	is still causing segmentation faults in the tests 
+	(see tests/testsuite 2)
+
+	Fixed problem with adding byteOrder attribute to 
+	the chunks elemet
+
+	Merge branch 'master' into chunk_ptrs
+
+	This commit runs, but must surely leak memory
+
+2020-12-09  Muqun Yang  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into fnetcdf-group-new
+
+	Remove an empty line to avoid the git conflict
+
+	HK-711, add a README on how to test NASA files 
+	for filenetCDF-4 for DAP4.
+
+	HK-686, clean up code: 1) add comments. 2) clean up 
+	the error handling code. 3) Use vectors to replace 
+	the dynamically allocated arrays. This can remove 
+	compiling warnings.
+
+2020-12-09  ndp-opendap  <ndp@opendap.org>
+
+	AllowedHosts conversion loose-end
+
+2020-12-09  Nathan Potter  <ndp@opendap.org>
+
+	Update Makefile.am
+	Build trigger
+
+2020-12-09  ndp-opendap  <ndp@opendap.org>
+
+	SuperChunk progress, prototype version of 
+	DmrppCommon::add_chunk() that does SuperChunk stuff.
+
+2020-12-08  ndp-opendap  <ndp@opendap.org>
+
+	Merge branch 'master' into super_chunk
+
+2020-12-07  Samuel Lloyd  <slloyd@opendap.org>
+
+	12/7/20 - pre-PR master merge
+
+2020-12-07  ndp-opendap  <ndp@opendap.org>
+
+	Made NgapApiTest a friend of NgapApi
+
+2020-12-07  Samuel Lloyd  <slloyd@opendap.org>
+
+	12/7/20 - sonarBesHotspotFix - (In Progress) https fixes
+
+2020-12-07  ndp-opendap  <ndp@opendap.org>
+
+	More changes to NgapAPi docs
+
+	Breaking up a large unwieldy function in NgapApi. Comments
+
+2020-12-06  ndp-opendap  <ndp@opendap.org>
+
+	Added documentation to NgapApi and streamlined the 
+	new path deconstruction.
+
+2020-12-05  ndp-opendap  <ndp@opendap.org>
+
+	Adds new restified path parsing implementation and a 
+	test for immunity for a delimiter infested entry_title  
+	value
+
+2020-12-05  Edward Hartnett  <Edward.Hartnett@noaa.gov>
+
+	fixed missing return code in test ppt/unit-tests/extT.cc
+
+2020-12-04  Muqun Yang  <myang6@hdfgroup.org>
+
+	HK-711, clean up code for the netCDF-4 group and other 
+	enhancements. Also add valgrind scripts for NASA DAP4 tests.
+
+2020-12-04  ndp-opendap  <ndp@opendap.org>
+
+	First partial draft of SuperChunk.
+
+2020-12-03  James Gallagher  <jgallagher@opendap.org>
+
+	HUGE/MAXFLOAT -> FLT_MAX in the hdf4_handler
+
+2020-12-02  James Gallagher  <jgallagher@opendap.org>
+
+	Update to CMakeLists and hdf4_handler
+
+2020-12-02  ndp-opendap  <ndp@opendap.org>
+
+	Merge branch 'master' into super_chunk
+
+	hdf5_handler hash
+
+	SuperChunk prototyping
+
+2020-12-02  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #433 from OPENDAP/retriever_tests
+	Retriever tests
+
+2020-12-02  ndp-opendap  <ndp@opendap.org>
+
+	Changed CurlHandlePool() implmetations to simplify the 
+	code and make it easier to understand.
+
+	Fixed debug output of threads count in DmrppArray
+
+2020-11-30  ndp-opendap  <ndp@opendap.org>
+
+	Outputing pthread error message in join_threads()
+
+2020-11-30  James Gallagher  <jgallagher@opendap.org>
+
+	I moved the package operation ahead of the scan
+	This way we can find out if there's a CentOS issue before the long 30
+	minutes of scanning. The code is not deployed for a PR and not if the
+	scan fails, so we still meet the criteria that a failed scan prevents
+	deployment (or merge to master, given our basic rule that a PR must
+	pass before it can be merged).
+	[skip ci]
+
+	Reorder build and scan stages of the travis build.gradle
+
+	Merge pull request #432 from OPENDAP/sonarGate
+	Sonar gate
+
+2020-11-30  ndp-opendap  <ndp@opendap.org>
+
+	Outputing pthread error message in join_threads()
+
+2020-11-27  Samuel Lloyd  <slloyd@opendap.org>
+
+	11/27/20 - sonarGate - (Testing) travis.yml fix
+
+	11/27/20 - sonarGate - (Testing) sonar testing
+
+2020-11-27  ndp-opendap  <ndp@opendap.org>
+
+	Fixed bad declaration if curl_list* instance
+
+	fixed leak to stderr in CurlUrils
+
+	Trying to compose the aws signing
+
+	Trying to compose the aws signing
+
+	Fixing uninitialized member vars in AccessCredentials
+
+2020-11-25  Muqun Yang  <myang6@hdfgroup.org>
+
+	HK-711, forget adding the .at file.
+
+	HK-711, forget adding the .at file.
+
+	HK-711, add the testsuite for NASA DAP4 tests.
+
+2020-11-25  Samuel Lloyd  <slloyd@opendap.org>
+
+	11/25/20 - master merge
+
+	11/25/20 - sonarGate - (In Progress) travis bes scans fixed
+
+2020-11-25  Muqun (Kent) Yang  <myang6@hdfgroup.org>
+
+	Hk-714, pure dimension handling is updated, fileout_netcdf 
+	needs to be tested.
+
+2020-11-25  Muqun Yang  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into fnetcdf-group-new
+
+2020-11-24  Samuel Lloyd  <slloyd@opendap.org>
+
+	11/24/20 - sonarGate - (In Progress) added sonar gates 
+	to travis file
+
+2020-11-24  Sam Lloyd  <slloyd@opendap.org>
+
+	Merge pull request #431 from OPENDAP/sonarHotSpotFix
+	11/13/20 - SonarHotSpotFix - (In Progress) first 
+	possible strncpy fix
+
+2020-11-24  Samuel Lloyd  <slloyd@opendap.org>
+
+	11/24/20 - sonarHotSpotFix - (Under Review) more 
+	http fixes
+
+2020-11-23  Samuel Lloyd  <slloyd@opendap.org>
+
+	11/23/20 - sonarHotSpotFix - (In Progress) freeform 
+	module fixes
+
+2020-11-20  Samuel Lloyd  <slloyd@opendap.org>
+
+	11/20/20 - sonarHotSpotFix - (In Progress) 
+	travis.yml and http fixes
+
+2020-11-20  ndp-opendap  <ndp@opendap.org>
+
+	Merged master to branch. Cleaned up unused code 
+	in comments
+
+	Merge branch 'master' into sonarHotSpotFix
+
+2020-11-19  ndp-opendap  <ndp@opendap.org>
+
+	Fixing parallelism in test harness
+
+	Fixing chunk count  computation
+
+	Hooking up array_get()
+
+	Hooking up array_get()
+
+	More test changes
+
+2020-11-18  ndp-opendap  <ndp@opendap.org>
+
+	Disabling sonar debug because the log size breaks 
+	the build.
+
+	Enabled sonar debug for submodules scan
+
+	More sonar.sources grooming
+
+	Refining sonar.sources
+
+	more with tht e sonarcloud configuration etc,
+
+	Added separate scan for the hdf submodules
+
+2020-11-18  Samuel Lloyd  <slloyd@opendap.org>
+
+	11/18/20 - master merge
+	Conflicts:
+		.travis.yml
+
+	11/18/20 - sonarHotSpotFix - (In Progress) revert 
+	FFStr.cc
+
+2020-11-18  ndp-opendap  <ndp@opendap.org>
+
+	Trying sonar.scm.exclusions.disabled to seeif that 
+	gets submodules into the scan
+
+2020-11-17  ndp-opendap  <ndp@opendap.org>
+
+	dropping 'git fetch --unshallow'
+
+	Tryong depth disabled and fetch unshallow
+
+	Dumping 'git fetch --unshallow' in favor of removing 
+	the 'depth' switch.
+
+	trying to get the submodules to build in sonarlandia
+
+	trying to get the submodules to buold
+
+	Dropping get fetch from sonar build
+
+2020-11-16  ndp-opendap  <ndp@opendap.org>
+
+	Updating hdf5_handler hash.
+
+	Bumped CuurlHandlePool TLS to 1.2 or higher
+
+2020-11-16  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #428 from OPENDAP/timing_triggers
+	Timing triggers
+
+2020-11-16  ndp-opendap  <ndp@opendap.org>
+
+	Dropping retriever from installed progs
+
+	Merge branch 'master' into timing_triggers
+
+	More retriever cleanup
+
+2020-11-14  ndp-opendap  <ndp@opendap.org>
+
+	Added parse_dmrpp() function to the retriever.
+	 Works with file and http urls
+
+2020-11-13  Samuel Lloyd  <slloyd@opendap.org>
+
+	11/13/20 - SonarHotSpotFix - (In Progress) first 
+	possible strncpy fix
+
+2020-11-12  Muqun Yang  <myang6@hdfgroup.org>
+
+	HK-703, support scalar/string variables in the 
+	filenetCDF-4 DAP4 response.
+
+2020-11-12  ndp-opendap  <ndp@opendap.org>
+
+	Adding retriever to spec files
+
+	Cleaning up output of retriever.
+
+	More thread stuffing
+
+	More thread stuffing
+
+	Threads situation
+
+	Check thread number
+
+	Check thread number
+
+2020-11-12  Sam Lloyd  <slloyd@opendap.org>
+
+	Merge pull request #430 from OPENDAP/sonarFix
+	11/9/20 - SonarFix - (Testing) vulnerability fixed
+
+2020-11-12  ndp-opendap  <ndp@opendap.org>
+
+	Unwinding the sad lifecycle management changes to TheBESKeys
+
+2020-11-12  Samuel Lloyd  <slloyd@opendap.org>
+
+	11/12/20 - SonarFix - (Testing) comments added
+
+2020-11-12  ndp-opendap  <ndp@opendap.org>
+
+	Merge branch 'master' into timing_triggers
+
+	fixing negeleted delete of template variable.
+
+	Working on valgrind issues.
+
+	Working on valgrind issues.
+
+	Working on valgrind issues.
+
+	More no HEAD Thirsday shenanigans.
+
+	more fixing the no HEAD capability
+
+	HEAD disabled, added call to to root.serialize\(\)
+
+	Disabling HEAD request for testsing
+
+2020-11-11  ndp-opendap  <ndp@opendap.org>
+
+	Still with the auth issues
+
+	Minor tweaks trying to understand auth issues.
+
+	Now with effective urls...
+
+	Now with effective urls...
+
+	First draft of retrival method test mule.
+
+	First draft of retrival method test mule.
+
+2020-11-11  Muqun (Kent) Yang  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into fnetcdf-group-new
+
+2020-11-11  Muqun Yang  <myang6@hdfgroup.org>
+
+	HK-705, update the testsuite that checks the possible 
+	dim. name clashs.
+
+2020-11-11  ndp-opendap  <ndp@opendap.org>
+
+	First draft of retrival method test mule.
+
+2020-11-10  ndp-opendap  <ndp@opendap.org>
+
+	First draft of retrival method test mule.
+
+2020-11-10  Samuel Lloyd  <slloyd@opendap.org>
+
+	11/10/20 - master merge
+	Conflicts:
+		.travis.yml
+
+2020-11-10  Sam Lloyd  <slloyd@opendap.org>
+
+	Merge pull request #429 from OPENDAP/travis-to-xenial
+	Travis to xenial fixed
+	merging
+
+2020-11-10  Muqun Yang  <myang6@hdfgroup.org>
+
+	HK-705, add code to handle the possible name clashing when 
+	the fakedim names like dim1,dim2.. are used by applications for DAP4.
+
+2020-11-10  Samuel Lloyd  <slloyd@opendap.org>
+
+	11/10/20 - travis-to-xenial - (In Progress) isnan fix
+
+2020-11-10  ndp-opendap  <ndp@opendap.org>
+
+	Dropped spurious ';' in EffectiveUrlCache and set 
+	default debug state to false in CurlHandlePoolTest
+
+2020-11-10  Samuel Lloyd  <slloyd@opendap.org>
+
+	11/10/20 - sonarFix - (testing) travis fix
+
+2020-11-09  Samuel Lloyd  <slloyd@opendap.org>
+
+	11/9/20 - SonarFix - (Testing) vulnerability fixed
+
+2020-11-05  James Gallagher  <jgallagher@opendap.org>
+
+	Change: ::isnan() to isnan() with the cmath header included
+
+	Merge branch 'travis-to-xenial' of 
+	https://github.com/OPENDAP/bes into travis-to-xenial
+
+	Switch back to xenial
+	There were too many issues with focal and the dependencies
+
+2020-11-05  Muqun Yang  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into fnetcdf-group-new
+
+2020-11-04  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into travis-to-xenial
+
+	Try the BES build usin gUbuntu focal
+
+	Fix for netcdf_handler and xenial
+
+2020-11-04  ndp-opendap  <ndp@opendap.org>
+
+	Improving timer ids
+
+	Added stop watch calls to DmrppArray::read_chunks(), 
+	DmrppArray::read_chunks_unconstrained(), and DmrppArray::read_contiguous()
+
+2020-11-03  ndp-opendap  <ndp@opendap.org>
+
+	Switched the BESStopWatch control so that it can be turned on 
+	without being compiled in developer mode.
+
+2020-11-03  James Gallagher  <jgallagher@opendap.org>
+
+	Updated text for two of the STARE server fucntions.
+	No changes other than the contents of some strings.
+	[skip-ci]
+
+	Revert "Switched from Ubuntu trusty to xenial for the travis build"
+	This reverts commit dfe7a4dc88527e32938b21a3e1e0dd735a9636db.
+	[skip-ci]
+
+	Switched from trusty to xenial for the travis builds.
+
+	Revert "Switched from Ubuntu trusty to xenial for the travis build"
+	This reverts commit dfe7a4dc88527e32938b21a3e1e0dd735a9636db.
+
+	Switched from Ubuntu trusty to xenial for the travis build
+
+2020-10-30  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #426 from OPENDAP/more_thread_safety
+	More thread safety
+
+2020-10-30  ndp-opendap  <ndp@opendap.org>
+
+	making debugT only run in dev mode
+
+	Tuning the BESDebug api
+
+2020-10-29  ndp-opendap  <ndp@opendap.org>
+
+	Added the word ERROR to an error message
+
+	Updting debug code and simplifying the BESDebug class
+
+	Working on debugT in dispatch -yuck
+
+	Fixing the fis, as it were
+
+	Potentially bad changes..
+
+2020-10-28  ndp-opendap  <ndp@opendap.org>
+
+	More concurrency issues in EffectiveUrlcache
+
+2020-10-28  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #425 from OPENDAP/thread_safety_check
+	Thread safety check
+
+2020-10-28  ndp-opendap  <ndp@opendap.org>
+
+	Fixed broken test code resulting from the removal of the 
+	EffectiveUrlCache::add() method.
+
+	Debug ouput changes in CmrApiTest
+
+	Dropped the unused EffectiveUrlCache::add() method. Made new 
+	debug key 'euc:dump' to add finer grain control to it' debug output.
+
+	Added pthread id to BesDebug output
+
+2020-10-27  ndp-opendap  <ndp@opendap.org>
+
+	I 'fixed' the EffectiveUrlCache::add() method
+
+	More pthread ofaffing
+
+	Added pthread error message decoder
+
+	Documenting lock in EffectiveUrlCache::get_effective_url()
+
+	Moving call to EffectiveUrlCache::dump() into the locked 
+	section of get_effective_url()
+
+	Refining locks
+
+	Added thread locking to EffectiveUrlCache
+
+	Updated assigned var types for EffectveUrlcache::get_effective_url() calls.
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Dropping unused include Error.h from BESInterface.cc
+
+2020-10-27  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #419 from OPENDAP/logging_mods
+	Logging mods for better downstream log management.
+
+2020-10-26  ndp-opendap  <ndp@opendap.org>
+
+	Made NGAP URL test pfaffing a commandline option for 
+	RemoteResourceTest and EffectiveUrlCacheTest
+
+	Merge branch 'master' into logging_mods
+
+	More git fussing with comnmit tags
+
+	bumping commit hash
+
+	Adding documentation to EffectiveUrl
+
+	Adding documentation to EffectiveUrl
+
+	Merge branch 'master' into logging_mods
+
+	Updating hdf4 and hdf5 handler commits to pick up merges 
+	sister branches
+
+	 Refining CmrApiTest
+
+	 Refining CmrApiTest
+
+2020-10-24  ndp-opendap  <ndp@opendap.org>
+
+	Merged master to logging_mods in hdf4_handler
+
+2020-10-23  ndp-opendap  <ndp@opendap.org>
+
+	Implmented EffectiveUrl (now with headers)
+
+2020-10-23  Muqun Yang  <myang6@hdfgroup.org>
+
+	HK-686, make the dimension size follow the local var 
+	dimension size in a constraint. TODO: add more tests.
+
+2020-10-23  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/OPENDAP/bes
+
+	Minor edit to stare functions tool build_sidecar
+	We're moving away from using this...skip_ci
+
+	Merge pull request #424 from OPENDAP/remove-c6-build
+	Removed CentOS 6 from the build
+
+	Removed CentOS 6 from the build
+
+2020-10-23  ndp-opendap  <ndp@opendap.org>
+
+	Added -t <Authorization header value> option to 
+	EffectiveUrlCacheTest and RemoteResourceTest
+
+2020-10-22  ndp-opendap  <ndp@opendap.org>
+
+	Updating expected for GHRC TEA in region
+
+	New tests to check time diffs between ghrc-tea and harmony
+
+	Added RemoteResourceTest to get a dmrpp out of harmony in UAT.
+
+2020-10-22  Muqun Yang  <myang6@hdfgroup.org>
+
+	HK-686, makes the group dimension size the same as the 
+	variable size when constraints apply.
+
+2020-10-21  ndp-opendap  <ndp@opendap.org>
+
+	Added in-region url to test result check
+
+	Added temporary test to EffectiveUrlCacheTest for profiling
+
+	renable range get for EUC
+
+	Dropping range get for euc
+
+	Refining stopwatch location
+
+2020-10-21  Muqun Yang  <myang6@hdfgroup.org>
+
+	HK-686, build up the dimname to size maps before updating 
+	the dimension size. Still need to handle non-dim-name dimensions.
+
+2020-10-21  ndp-opendap  <ndp@opendap.org>
+
+	tweaking stopwatch triggers
+
+	Changed the lifecycle of cached DMR objects in HDF5RequestHandler
+
+2020-10-20  ndp-opendap  <ndp@opendap.org>
+
+	Merge branch 'master' into logging_mods
+
+	Reverting to add_dim_no_copy()
+
+	Dropping use of add_dim_no_copy() from DmrppParserSax2
+
+	Fixing broken dap4:Dim and dap4:Dimension parser logic
+
+	Fixing broken dap4:Dim and dap4:Dimension parser logic
+
+	Fixing broken dap4:Dim and dap4:Dimension parser logic
+
+2020-10-20  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #423 from OPENDAP/hyrax-278
+	HYRAX-278, remove groups and its attributes if there 
+	are no variables…
+
+2020-10-20  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-278, remove debugging information.
+
+2020-10-20  ndp-opendap  <ndp@opendap.org>
+
+	Renamed proxy sing;eton. etc...
+
+2020-10-20  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-278, remove groups and its attributes if 
+	there are no variables specified in the expression
+    constraint under its group or its subgroups.
+
+2020-10-20  ndp-opendap  <ndp@opendap.org>
+
+	Fixing linking oroblem by actually implmenting 
+	the methods of HttpProxy
+
+2020-10-19  ndp-opendap  <ndp@opendap.org>
+
+	Made HttProxy a new singleton, etc etc
+
+	Moving RemoteResource to debug key 'rr'
+
+	Move EffectiveUrlCache debugging to key 'euc'
+
+	Move EffectiveUrlCache debugging to key 'euc'
+
+2020-10-15  ndp-opendap  <ndp@opendap.org>
+
+	Fixed bug in BESUncompressCache destructor
+
+2020-10-14  James Gallagher  <jgallagher@opendap.org>
+
+	Removed incorrect dep from CMakeLists.txt - fixes an issue with CLion
+
+2020-10-13  ndp-opendap  <ndp@opendap.org>
+
+	Many changes, yet no test love.
+
+2020-10-09  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #398 from OPENDAP/stare-3
+	Stare 3
+
+2020-10-08  ndp-opendap  <ndp@opendap.org>
+
+	Tracking down files that include BESDebug.h but fail to 
+	include config.h and correcting this
+
+2020-10-06  ndp-opendap  <ndp@opendap.org>
+
+	Whitespace mitigation
+
+	Fixed configure switches for catagorized logging
+
+2020-10-05  ndp-opendap  <ndp@opendap.org>
+
+	Making new log style compile time switch. Making sure all 
+	files that include BESLog.h also include config.h
+
+2020-10-02  ndp-opendap  <ndp@opendap.org>
+
+	More log management in BESMemoryGlobalArea
+
+	Rollback changes made for debugging log code.
+
+	Switching GlobalMetadataStore to the actual ERROR_LOG
+
+	Adding prolog to GlobalMetadataStore
+
+	Adding errno.h for Travis
+
+	Merged master to logging_mods branch
+
+	Updating hdf4/hdf5 hases
+
+	Logging overhaul in support of typed logging.
+
+	Overhauled BESStopWatch. dumped crazy time diff computation. 
+	utilized TIMING_LOG Normalized log format for downstream.
+
+2020-10-01  ndp-opendap  <ndp@opendap.org>
+
+	Changed define TIMING_LOG to TIMING_LOG_KEY because collisions
+
+	Moved LOG to REQUEST_LOG, ERROR to ERROR_LOG. Created INFO_LOG and TIMING)LOG
+
+2020-10-01  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into stare-3
+
+	Merge branch 'stare-3' of https://github.com/OPENDAP/bes into stare-3
+
+	Merge pull request #417 from OPENDAP/dmrpp-swim-lanes
+	Dmrpp swim lanes
+
+2020-10-01  ndp-opendap  <ndp@opendap.org>
+
+	Merge branch 'master' into logging_mods
+
+	Migrating to ERROR macro from LOG macro where appropriate
+
+2020-10-01  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #418 from OPENDAP/Hyrax-276
+	Hyrax 276
+
+2020-09-30  Samuel Lloyd  <slloyd@opendap.org>
+
+	9/30/20 - Hyrax-276 - (In Progress) Updated baselines
+
+	9/30/20 - Hyrax-276 - (In Progress) updated int64 tests and baselines
+
+2020-09-29  Samuel Lloyd  <slloyd@opendap.org>
+
+	9/29/20 - Hyrax-276 - (In Progress) all test and baseline files created
+
+2020-09-28  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #404 from OPENDAP/HYRAX-258
+	Hyrax 258
+
+2020-09-28  ndp-opendap  <ndp@opendap.org>
+
+	Added new compact layout tests as comments in testsuite.at
+
+	Adding compact layout test for int8
+
+2020-09-27  ndp-opendap  <ndp@opendap.org>
+
+	DAP2 tests for compact layout string array
+
+	Added a compact layout string array test.
+
+	Fixed Str handling in parser
+
+	Patching get_dmrpp.in for supplemental configuration issue.
+
+	INcluded stdexcept in Base64.h, because CentOS-6
+
+2020-09-26  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes to both Makefile.am files
+	The main Makefile.am had an extra -I option for check_dmrpp, removed.
+	The tests/Makefile.am did not include the 'compact' dir in EXTRA_DIST
+	and thus those tests failed with 'file not found,' added.
+
+	Fix for the build issues with build_dmrpp with distcheck, however, ...
+	There are two tests that fail.
+
+	Made h5common.c/h references in the Makefile.am via $srcdir
+
+2020-09-26  ndp-opendap  <ndp@opendap.org>
+
+	rolling back makefile
+
+	In Base64.h I dumped constexpr static char instances in 
+	favor of local vars set using #define staements
+
+	Trying to fix build_dmrpp production with Base64.h on srcs list.
+
+	Added Base64.h to dmrpp_module/Makefile.am
+
+	parser cleanup
+
+	parser cleanup
+
+	Adding dmrpp:compact regression tests
+
+	The parser apperas tot be working now.
+
+	Disabled unit tests test_integer_scalar_compact and 
+	test_string_compact because they are not testsing 
+	arrays and that's probably a mistake.
+
+	Removed suprious characters from dmrpp:compact element 
+	in test XML doc. It is not possible to use the backslash 
+	to continue a line (ala unix land) inside the text data 
+	of an XML element - those characters will be added to the 
+	elements value.
+
+2020-09-25  ndp-opendap  <ndp@opendap.org>
+
+	Sync
+
+	Sync
+
+	Sitll with the parser state
+
+	Sitll with the parser state
+
+	Sitll with the parser state
+
+	Regrouped DmrppParserTest tests
+
+	Added 4 regression tests (no baselines yet) for compact data
+
+	More parser stte thrashing
+
+2020-09-25  James Gallagher  <jgallagher@opendap.org>
+
+	Added CurlHandlePoolTest conf file to ESTRA_DIST for distcheck
+
+	Added the conf file for the CurlHandlePoolTests
+
+	Change to CurlHandlePoolTest ...test_0 and added debug-by-default
+	Trying to see why/where the test_0 test failed on Linux. Also, I'd
+	like to see how these tests are running on linux.
+
+2020-09-25  ndp-opendap  <ndp@opendap.org>
+
+	Turned on test_string_compact
+
+	Merge branch 'HYRAX-258' of https://github.com/opendap/bes into HYRAX-258
+
+	Merged master to branch HYRAX-258. Conflicts resolved. Tests passed.
+
+2020-09-25  dh-opendap  <dholloway@opendap.org>
+
+	string compact testfile
+
+2020-09-25  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed the includes for strerror and add the srcdir path for a test file.
+
+2020-09-25  ndp-opendap  <ndp@opendap.org>
+
+	W00t! Compact array test works
+
+	Test starting to get sorted.
+
+	Test starting to get sorted.
+
+	parser state fiddling
+
+	Sync
+
+	Merge branch 'HYRAX-258' of https://github.com/opendap/bes into HYRAX-258
+
+	INcremental hacks
+
+2020-09-25  dh-opendap  <dholloway@opendap.org>
+
+	Updated test files with compact array
+
+2020-09-25  ndp-opendap  <ndp@opendap.org>
+
+	Renaming method to be consistent with underlying activity
+
+	Closer still to dmr++ for compact
+
+2020-09-25  dh-opendap  <dholloway@opendap.org>
+
+	Merge branch 'HYRAX-258' of https://github.com/opendap/bes into HYRAX-258
+
+	Updated ParserTest for COMPACT variables
+
+2020-09-25  ndp-opendap  <ndp@opendap.org>
+
+	New parser handler for cpmoact
+
+	New parser handler for cpmoact
+
+	New parser handler for cpmoact
+
+2020-09-25  dh-opendap  <dholloway@opendap.org>
+
+	Added dods_array_c to decoding switch
+
+	Modifications for Base64 decoding of COMPACT storage layout variables in DMRPP
+
+2020-09-24  James Gallagher  <jgallagher@opendap.org>
+
+	Added more tests.
+	Pretty sure this will not leak curl handles as long as
+	curl_easy_perform() our super_easy_perform() throw exceptions
+	when un-recoverable errors happen and super_easy_perform()
+	handles re-tries and recoverable errors.
+
+	Test of thread cleanup with exceptions working
+
+	Working on testing the handle cleanup code
+
+2020-09-24  ndp-opendap  <ndp@opendap.org>
+
+	Fixing String read for Compact
+
+2020-09-24  dh-opendap  <dholloway@opendap.org>
+
+	Parser changes to handle decoding base64 compact variables
+
+2020-09-24  ndp-opendap  <ndp@opendap.org>
+
+	sync
+	
+2020-09-24  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into dmrpp-swim-lanes
+
+2020-09-24  dh-opendap  <dholloway@opendap.org>
+
+	ParserSax2 changes to support compact
+
+2020-09-24  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #416 from OPENDAP/dmrpp-refactor-2
+	Dmrpp refactor 2
+
+	Fixed spelling of SwimLane and removed some old code
+
+2020-09-23  James Gallagher  <jgallagher@opendap.org>
+
+	Added SwinLane initial version
+
+	Removed more multi-handle code; added RAII for the dmrpp easy handles
+
+2020-09-23  dh-opendap  <d.holloway@opendap.org>
+
+	Merge pull request #415 from OPENDAP/HYRAX-266
+	Hyrax 266
+
+2020-09-23  James Gallagher  <jgallagher@opendap.org>
+
+	Removed the multihandle curl code in dmrpp_module
+
+	Fixed the base64 encoding of strings
+
+2020-09-23  dh-opendap  <dholloway@opendap.org>
+
+	Fixed verbose handling for empty site-conf
+
+2020-09-23  ndp-opendap  <ndp@opendap.org>
+
+	Updated usage statement for get_dmrpp
+
+2020-09-23  dh-opendap  <dholloway@opendap.org>
+
+	Updated verbose to show bes_conf and site_conf files.
+
+	Add site-conf option, appends site-conf-file contents to BES_CONF
+
+2020-09-23  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #414 from OPENDAP/timing_refine_2
+	Moving stopwatch closer to remote access
+
+2020-09-23  ndp-opendap  <ndp@opendap.org>
+
+	Moving stopwatch closer to remote access
+
+2020-09-22  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #413 from OPENDAP/gdal-test-one-more-time
+	One small change for the filout gdal tests
+
+2020-09-22  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #412 from OPENDAP/stopwatch_walltime
+	Moved BESStopWatch implementation from CPU time to wall time.
+
+2020-09-22  ndp-opendap  <ndp@opendap.org>
+
+	Updated BESStopWatch var names to modern times.
+
+2020-09-22  James Gallagher  <jgallagher@opendap.org>
+
+	One small change for the filout gdal tests
+
+2020-09-22  ndp-opendap  <ndp@opendap.org>
+
+	Moved BESStopWatch implementation from CPU time to wall time.
+
+2020-09-22  James Gallagher  <jgallagher@opendap.org>
+
+	Change for print_dap4() so that string values are encoded.
+
+2020-09-22  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #411 from OPENDAP/time_refine
+	Timing refinements
+
+2020-09-22  ndp-opendap  <ndp@opendap.org>
+
+	Fixed BESStopWatch so that only debug or verbose output is 
+	produced, not both. Priority is VERBOSE befor DEBUG
+
+	restored earlier timing triggers for CMR queries and dmr++ 
+	retrieval. Keeping new timer in RemoteResource::writeResourceToFile()
+
+	Timing refinements
+
+2020-09-21  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #410 from OPENDAP/ngap-stopwatch
+	Ngap stopwatch
+
+2020-09-21  ndp-opendap  <ndp@opendap.org>
+
+	Adding BES.LogName=./bes.log to the tests.ini file for 
+	ResponseBuilderTests this is needed now because code 
+	called inside the tests now utilizes the VERBOSE logging 
+	command and without this BESKey it will exception.
+
+	Merge branch 'master' into ngap-stopwatch
+
+	This timing profile for verbose is ready, I think.
+
+2020-09-21  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #408 from OPENDAP/dmrpp-refactor
+	Dmrpp refactor
+
+2020-09-21  ndp-opendap  <ndp@opendap.org>
+
+	Added timer to: get_effective_url and getdap2 and dap4 data in DmrppRequestHandler
+
+2020-09-21  James Gallagher  <jgallagher@opendap.org>
+
+	Added BESLog.h into DmrppRequestHandler
+	CentOS6 lacks MultiHandle.
+
+	Merge pull request #409 from OPENDAP/fo-gdal-tests
+	Fo gdal tests
+
+2020-09-21  ndp-opendap  <ndp@opendap.org>
+
+	Added stop watch to dmr++ retrieval
+
+	Added Stopwatch to CMR query.
+
+	Replaced throwing of libdap::Error with BESInternalError.
+
+	hdf4 hash
+
+2020-09-21  James Gallagher  <jgallagher@opendap.org>
+
+	Minor change to unit-tests/Makefile.am to get the lib order correct
+
+	Merge branch 'master' into dmrpp-refactor
+
+	Updated hdf5 with a fix to the gtcp Makefile for OSX
+	A compiler update forced this change.
+
+	Merge branch 'master' of https://github.com/OPENDAP/bes
+
+	Merge branch 'fo-gdal-tests' of https://github.com/OPENDAP/bes into fo-gdal-tests
+
+	Updated the handler test macros to work with the chatty gdalinfo
+
+	Merge pull request #407 from OPENDAP/fileout-gdal-tests-refactor
+	Fileout gdal tests refactor
+
+	Updated the hadnler test macros to work with the chatty gdalinfo
+
+	Merge pull request #407 from OPENDAP/fileout-gdal-tests-refactor
+	Fileout gdal tests refactor
+
+2020-09-20  James Gallagher  <jgallagher@opendap.org>
+
+	Simplified File/Line removal in handler_tests_macros.m4
+	This should combat issues with odd names failing to match the regexes,
+	which were pretty specific.
+
+2020-09-18  James Gallagher  <jgallagher@opendap.org>
+
+	Removed File and Line info from the error response baseline
+
+	Fix to the link of the dmrpp_module unit tests
+	The link was failing on Linux because of a library order issue
+
+	Patched tests for older gdalinfo
+	Also fixed macro to versions of gdalinfo that print extra info
+	about corner points
+
+	Changed from using the autotest 'stdout' to a redirect to a temp file
+
+	Merge branch 'master' into dmrpp-refactor
+
+2020-09-17  James Gallagher  <jgallagher@opendap.org>
+
+	Updated the fileout_gdal tests
+
+	Swapped in pthreads code for read_chunks parallel case
+
+	Edits to build_dmrpp and DmrppArray
+	build_dmrpp now save 'array of char' string values as an
+	array of of length 1 of strings and now passes a pointer
+	to NULL into buf2val().
+
+2020-09-17  dh-opendap  <dholloway@opendap.org>
+
+	Changed to bin/sh
+
+	Fixed
+
+2020-09-16  James Gallagher  <jgallagher@opendap.org>
+
+	Removed unused headers; shadowed local vars in DmrppArray.
+
+2020-09-16  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #406 from OPENDAP/dmrpp_curl_se_perform
+	MIgrate the dmrpp code to use curl::super_easy_perform and others CurlUtils.
+
+2020-09-16  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'dmrpp-refactor' of https://github.com/OPENDAP/bes 
+	into dmrpp-refactor
+
+2020-09-16  ndp-opendap  <ndp@opendap.org>
+
+	Cleaning up comments. [skip ci]
+
+	Fixing duplicated token type in Authorization header.
+
+	More and more CurlUtils error grooming
+
+	More error grooming
+
+	More error handling work in CurlUtils.cc
+
+	Build trigger
+
+	Added check for empty response to eval_curl_easy_perform_code()
+
+	Dropped override in favor of CentOS-6 compatible virtual
+
+2020-09-16  James Gallagher  <jgallagher@opendap.org>
+
+	Refactoring DmrppArray
+
+2020-09-16  dh-opendap  <dholloway@opendap.org>
+
+	Fixed Base64 encoding issues in DmrppArray, DmrppCommon.
+
+2020-09-16  ndp-opendap  <ndp@opendap.org>
+
+	Imprved tests and use API for EffectiveUrlCache
+
+2020-09-15  ndp-opendap  <ndp@opendap.org>
+
+	Prolems with EffectiveUrlCache
+
+2020-09-15  James Gallagher  <jgallagher@opendap.org>
+
+	Refactored DmrppD4Opaque. No testing, however.
+
+2020-09-15  ndp-opendap  <ndp@opendap.org>
+
+	I think this fixes expiration issues with caced effective urls
+
+2020-09-15  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'fileout-gdal-tests-refactor' of 
+	https://github.com/OPENDAP/bes into fileout-gdal-tests-refactor
+
+	Work on the fileout gdal tests - they are more useful
+	I did this because the tests fail for me locally, but
+	my machine might be an outlier.
+
+	Work on the fileout gdal tests - they are more useful
+	I did this because the tests fail for me locally, but
+	my machine might be am=n outlier.
+
+2020-09-14  ndp-opendap  <ndp@opendap.org>
+
+	Change the use of curl_slist decls
+
+	Onlye send hedaers that have values
+
+	Fixed broken test caused by bug in CurlUtils
+
+	Team sync - probs with test
+
+	Added retrieve effective url test. (currently broken)
+
+	Fixing errormessage output
+
+	Fixing errormessage output
+
+	New dmrpp_easy_handle::read_data() implementation.
+
+2020-09-14  dh-opendap  <dholloway@opendap.org>
+
+	Fixed btp pointer use in compact variable generation.
+
+	Updated DmrppArray, DmrppCommon to print compact variables 
+	using base64 encoding.
+
+2020-09-14  ndp-opendap  <ndp@opendap.org>
+
+	Spell/grammar corrections in code docs.
+
+2020-09-14  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #405 from OPENDAP/curl_init_v1
+	Curl init v1
+
+2020-09-13  ndp-opendap  <ndp@opendap.org>
+
+	Corrected docs inaccuracies. Fixed the whole proxy situation. 
+	Changed function/method names to more clear explain their 
+	actions Dropped HttpUtils::useInternalCache
+
+	More and more docs, and var names.
+
+	More docs
+
+	Changed var names that shadowed class and function/method names.
+
+	Refactored curl/http code for headers, auth code reuse, and ssot.
+
+2020-09-11  ndp-opendap  <ndp@opendap.org>
+
+	GitHub is carping about a comment in which I had a made 
+	up bearer token. Not very spophistcated.
+
+	Correct keys request
+
+	I think this handles toekn passing to everything but the 
+	dmrpp:CurlHandlePool
+
+	Adding header management ti curl::init()
+
+	Another http consolidation step.
+
+	Fixed bug in HttpdDisScraperTest caused by not initializing 
+	the BES.LogName in the conf file used by the test.
+
+2020-09-11  Samuel Lloyd  <slloyd@opendap.org>
+
+	9/11/20 - curl_init_v1 - (in progress) curl::init() called in 
+	set_up_easy_handle()
+
+2020-09-10  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #393 from OPENDAP/HYRAX-180
+	Hyrax 180
+
+2020-09-10  ndp-opendap  <ndp@opendap.org>
+
+	Updated get_dmrpp script: - The DMR only switch was -r switch is -D, 
+	because semantics. - The reduce missing files switch was -s and is 
+	now -r This sets the stage for the upcomming supplemental config 
+	feature which will be invoked with -s.
+
+	Fixed missing Dimension elements when H5.EnableCF=false by 
+	adding H5.DefaultHandleDimension=true to get_dmrpp conf
+
+	More TheBESKeys debug tweaks
+
+2020-09-10  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into stare-3
+
+2020-09-10  ndp-opendap  <ndp@opendap.org>
+
+	Added some debugging to TheBESKeys
+
+	Fixed bug in get_dmrpp (output not drected to stderr was 
+	breaking things in verbose mode
+
+2020-09-10  dh-opendap  <dholloway@opendap.org>
+
+	Added COMPACT layout flag, to be used by print_dap4() 
+	functions for type instances.
+
+	Static functions to Base64 encode/decode.
+
+2020-09-10  ndp-opendap  <ndp@opendap.org>
+
+	CMakeList change and a bug patch to get_dmrpp
+
+	Comments etc
+
+2020-09-10  dh-opendap  <dholloway@opendap.org>
+
+	Merge branch 'HYRAX-180' of https://github.com/opendap/bes 
+	into HYRAX-180
+
+	Add note in -V usage message indicating temporary files will be kept.
+
+	Updated COMPACT handling to call val2buf() and set_read_p().
+
+2020-09-09  James Gallagher  <jgallagher@opendap.org>
+
+	Added %{_bindir}/reduce_mdf to the bes.spec files
+
+2020-09-09  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #403 from OPENDAP/curl-bad-ptr-patch
+	Curl bad ptr patch
+
+2020-09-09  ndp-opendap  <ndp@opendap.org>
+
+	Added TDOD for error_buffer in MULTI_API cde
+
+	Fixing mistaken comment
+
+	Consolodated evaluation of CURLcode values for code readability
+
+	Added set/unset functions for cURL error buffer
+
+	Fixing string vs char * issue
+
+	Unified the source of the USer-Agent used by Hyrax
+
+	Added support for 5 character time zone abbreviation
+
+2020-09-09  dh-opendap  <dholloway@opendap.org>
+
+	H5D_COMPACT/Base64 Updates
+
+2020-09-09  ndp-opendap  <ndp@opendap.org>
+
+	Cleanup and normailized the way that CURLOPT_ERRORBUFFER 
+	is set and utilized
+
+	Isolated the use of curl_easy_init in NgapApi.cc so 
+	that it's use is self contained.
+
+	Changed a user error to an internal error in TheBESKeys
+
+	Added a uinx time option for log time values.
+
+2020-09-09  Muqun Yang  <myang6@hdfgroup.org>
+
+	HFRHANDLER-332,very minor elaboration of syntax. 
+	CentOS7 -g -O2 option prefer '> >' to '>>". Change it to 
+	make HDF4 handler build successfully.
+
+2020-09-08  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes for distcheck
+
+	Merge branch 'master' into HYRAX-180
+	 Conflicts:
+		CMakeLists.txt
+
+2020-09-08  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #402 from OPENDAP/dc_patch
+	Disabling dynaconf correctly
+
+2020-09-08  ndp-opendap  <ndp@opendap.org>
+
+	moved nGAP api concepts to be colleciton_concept_id. More AllowedHosts work.
+
+	Disabling dynaconf correctly
+
+2020-09-03  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'dmrpp-refactor' of https://github.com/OPENDAP/bes 
+	into dmrpp-refactor
+
+	More refactoring AccessCredentials, NgapS3Credentials, CurlHandlePool
+
+2020-09-03  ndp-opendap  <ndp@opendap.org>
+
+	Disable dynaconf
+
+2020-09-03  James Gallagher  <jgallagher@opendap.org>
+
+	Minor edits and checkpoint
+
+2020-09-02  James Gallagher  <jgallagher@opendap.org>
+
+	Checkpoint
+
+2020-09-02  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #401 from OPENDAP/dynaconf
+	Dynaconf
+
+2020-09-02  ndp-opendap  <ndp@opendap.org>
+
+	Fixed small issue in ResponseBuilderTest
+
+	New hdf5_handler branch
+
+	More fussing with DynamicConfig and logging[skip ci]
+
+	More fussing with DynamicConfig and logging[skip ci]
+
+	Cleaning up uneeded puublic static vars in BESStoredDapResultCache
+
+	Debuggin outpput in ResponseBuilderTest.
+
+	Added dummy_test to ResponseBuilderTest
+
+	Dropping unused constructor from TheBESKeys
+
+	Adding DynamicConfig use to log.
+
+2020-09-01  ndp-opendap  <ndp@opendap.org>
+
+	Repaired keysT and sorted out regex for EEDTEST
+
+	More ALlowedHosts debugging
+
+	More ALlowedHosts debugging
+
+	More ALlowedHosts debugging
+
+	More ALlowedHosts debugging
+
+	More ALlowedHosts debugging
+
+	AllowedHosts patch
+
+2020-08-31  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #400 from OPENDAP/netrc_file_patch
+	Fixing missing netrc file configuration step in curl::init()
+
+2020-08-31  ndp-opendap  <ndp@opendap.org>
+
+	Undoing a debug change
+
+	Fixing missing netrc file confoguration step in curl::init()
+
+2020-08-31  dh-opendap  <dholloway@opendap.org>
+
+	Removed unused 'debug' argument.
+
+2020-08-31  ndp-opendap  <ndp@opendap.org>
+
+	Trggering build
+
+2020-08-30  ndp-opendap  <ndp@opendap.org>
+
+	More work on AllowedHosts
+
+2020-08-28  ndp-opendap  <ndp@opendap.org>
+
+	Updated documentation in AllowedHosts
+
+	Dropping GNURegex.h from HttpUtils
+
+	Fixed headers so that they don't overlap with libdap
+
+	Many changes derived from dropping pibndap util.h and 
+	cleaning up configuration inputs
+
+2020-08-27  ndp-opendap  <ndp@opendap.org>
+
+	Cleaned up more issues with file URLs
+
+	Repaired problems in RemoteResource caused by file URLs
+
+	Working on mysto issue with http build
+
+	Dropped util.h from CurlUtils
+
+	Fixed a newline issue in the log output.
+
+	Cleaning up error messages
+
+2020-08-24  ndp-opendap  <ndp@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Upding hdf5_habndler hash
+
+2020-08-24  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #397 from OPENDAP/dynamic-config
+	Dynamic config
+
+2020-08-24  ndp-opendap  <ndp@opendap.org>
+
+	Changing method is_dynamic_config() to using_dynamic_config()
+
+2020-08-21  ndp-opendap  <ndp@opendap.org>
+
+	Updatnig CMakeList and hdf5_handler(maybe)
+
+	Added prototype dynamic-config implementation to hdf5_handler
+
+2020-08-20  James Gallagher  <jgallagher@opendap.org>
+
+	Removed old STARE programs from the RPM.
+	The build_sidecar program is still made, along with one other pgm,
+	but they are not installed and are not part of the RPM.
+
+2020-08-20  ndp-opendap  <ndp@opendap.org>
+
+	Fixed referencing errors
+
+	EffectoveUrlCache tests and HttpUrlTests
+
+2020-08-19  ndp-opendap  <ndp@opendap.org>
+
+	Fixing tests in kesT
+
+	copyright
+
+	Why does it fail so?
+
+	Why does it fil so?
+
+	hmmm strange errors
+
+	hmmm strange errors
+
+	Fixed lifecycle error for the sjip_regex
+
+	Moved the effective url cache out of TheBESKeys
+	 because hacks that work should be made real, 
+	 and created EffectiveUrlCache which encapsulates 
+	 the logic for the cache. This in turn will make 
+	 the implementation of the dynamic configuration 
+	 work correctly and not loose effective url cache 
+	 info when swapping configs.
+
+2020-08-19  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into stare-3
+	Conflicts:
+		CMakeLists.txt
+
+2020-08-19  ndp-opendap  <ndp@opendap.org>
+
+	Added new keysT input files to EXTRA_DIST
+
+	Merged master into dynamic-config branch
+
+2020-08-19  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #396 from OPENDAP/ceu_patch
+	Ceu patch
+
+2020-08-19  ndp-opendap  <ndp@opendap.org>
+
+	Switched the setCOntainer name to the define in BESResponsNames.h
+
+2020-08-18  ndp-opendap  <ndp@opendap.org>
+
+	More effective_url api changes
+
+	More effective_url api changes
+
+	Merged master into ceu_patch, fixed conflicts
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Add concepts to ngap resty path
+
+	Removing unused crufty code blocks
+
+	Continue migration to effective_url terminology from cURL
+
+	Revert "Dropping cache_last_redirect_url() in favor of cache_effective_url()"
+	This reverts commit 1f2aab1d154d6431f9ff5f5d74e4dca58d3617fc.
+
+	Dropping cache_last_redirect_url() in favor of cache_effective_url()
+
+2020-08-17  Slav Korolev  <slav.korolev@nasa.gov>
+
+	Merge pull request #395 from OPENDAP/HYRAX-199
+	Hyrax 199
+
+	HYRAX-199. Merged master branch.
+
+2020-08-17  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #394 from OPENDAP/cache-last-redirect-url
+	Cache last redirect url
+
+2020-08-17  ndp-opendap  <ndp@opendap.org>
+
+	Clean up refactor
+
+2020-08-14  ndp-opendap  <ndp@opendap.org>
+
+	Disabled ngap tests until we have a stable inventory to target
+
+	More bes.log detail for http issues.
+
+	Add the new config term Http.No.Retry.Regex
+
+	Add the new config term Http.No.Retry.Regex
+
+	Add the new config term Http.No.Retry.Regex
+
+2020-08-11  ndp-opendap  <ndp@opendap.org>
+
+	Tests for dya=namic configuration ops on TheBESKeys
+
+	Preliminary load/unload dynamic configuration implementation.
+
+2020-08-10  ndp-opendap  <ndp@opendap.org>
+
+	added more instrumentation to CHunk
+
+	Merged origin to local branch
+
+	added more instrumentation to CHunk
+
+2020-08-07  James Gallagher  <jgallagher@opendap.org>
+
+	Added two more bescmd test files for to ngap_module
+	No test baselines for then yet, but these will help understand the
+	'Container lifetime' issue. Also added some more instrumentation
+	that helped write up a description of the issues found.
+
+2020-08-07  ndp-opendap  <ndp@opendap.org>
+
+	Cleaned up variable name semantics in CurlHandlePool, 
+	Added debug instrumentation to NgapContainer, Uncommneted 
+	BES command 'get' line in ngap tests
+
+	Fixing hard to read debug output.
+
+	Implmentation of map:map working and passing test.
+
+2020-08-06  ndp-opendap  <ndp@opendap.org>
+
+	making cookie file name consistent
+
+	Each process gets its own cookies
+
+	More debugging
+
+	Proto dynamic config
+
+2020-08-05  ndp-opendap  <ndp@opendap.org>
+
+	Added 422 to retries
+
+	Renaming TheBESKeys internal variables to conform to our best practices
+
+	More refinement of CurlUtils::eval_get_response()
+
+	Improved error management in CurlUtils::eval_get_response()
+
+	Refectored kesT so that it has a more compartmentalized testing pattern.
+
+2020-07-31  ndp-opendap  <ndp@opendap.org>
+
+	More improved logging
+
+2020-07-27  ndp-opendap  <ndp@opendap.org>
+
+	Fix initilization of cURL error_buffers. Added to many 
+	retries to LOG output
+
+	More AllowedHosts changes
+
+	Renamed method names in AllowedHost to reflect recent changes.
+
+2020-07-24  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into stare-3
+
+2020-07-24  ndp-opendap  <ndp@opendap.org>
+
+	Fine tuning regex expressions for AllowedHosts
+
+	Started building a more centralize GET evaluator, turned off atm
+
+	Added prolog to debugging output.
+
+2020-07-23  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HYRAX-199. Added test for wrong html link in the AllowedHostsTest.
+
+2020-07-22  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HYRAX-199. Correction one more time.
+
+	HYRAX-199. Corrected regex patterns according recommendaitions.
+
+2020-07-21  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HYRAX-199. Corrected some changes.
+
+	HYRAX-199. Added changes for ncml and ngap modules.
+
+2020-07-21  ndp-opendap  <ndp@opendap.org>
+
+	incremental changees for MULTICURL
+
+	INitialization for curl error_buf
+
+	incremental changees for MULTICURL
+
+	Updated CutlUtils::eval_get_response() to support the 
+	same set of retry on error conditions as its sibling 
+	in CurlHandlePool. Removed CurlHandlePool::eval_get_response() 
+	and migrated CurlHandlePool to utilize the (updated) 
+	CutlUtils::eval_get_response() version.
+
+
+2020-07-20  ndp-opendap  <ndp@opendap.org>
+
+	Merge branch 'cache-last-redirect-url' of https://github.com/opendap/bes 
+	into cache-last-redirect-url
+
+	Adding better error handling to http/CurlUtils::eval_curl_response() 
+	with changes based on the similar code in 
+	dmrpp/CurlHandlePool::evaluate_curl_response() Probably we utils 
+	the CurlUtils version in dmrpp_module.
+
+2020-07-20  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed a comment in BESRegex.cc
+
+2020-07-20  ndp-opendap  <ndp@opendap.org>
+
+	Adding better error handling to VurlUtils::eval_curl_response()
+
+2020-07-20  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HYRAX-199. Made changes for AllowedHosts in cmr, dmrpp, 
+	gateway and httpd_catalog modules.
+
+2020-07-17  ndp-opendap  <ndp@opendap.org>
+
+	More debug output additions
+	Fixed parser test bug
+
+	implmented no-redirect-cacheing-regex
+
+2020-07-16  ndp-opendap  <ndp@opendap.org>
+
+	More debug output additoins
+
+	More incremental changes to this url caching
+
+	First crack at making the dmrpp_module cache last accessed urls the
+	 way ngap_module is doing.
+
+2020-07-16  dh-opendap  <dholloway@opendap.org>
+
+	Merging changes from Nathan to HYRAX-180 with my locatl changes
+	Merge branch 'HYRAX-180' of https://github.com/opendap/bes into HYRAX-180
+
+	Fixed problem in writing byte_order attribute to XML chunk element.
+
+2020-07-15  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HYRAX-199. Additional replacement with AllowedHosts.
+
+2020-07-14  ndp-opendap  <ndp@opendap.org>
+
+	Added reduce_mdf.cc to CMakeLists.txt
+
+2020-07-14  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HYRAX-199. Replaced all Gateway.Whitelist with AllowedHosts in conf files.
+
+2020-07-14  ndp-opendap  <ndp@opendap.org>
+
+	output grooming
+
+2020-07-14  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HYRAX-199. Changed Gateway.Whitelist to AllowedHosts
+
+2020-07-14  dh-opendap  <dholloway@opendap.org>
+
+	Added reduce_mdf.cc which was missing from initial push, Nathan 
+	had merged master to this branch before I added the module.
+	Merge branch 'HYRAX-180' of https://github.com/opendap/bes into HYRAX-180
+
+	This is a modified version of Kent's reduce_mdf, it returns 0 
+	for both working cases and returns -1 on error.
+
+2020-07-13  ndp-opendap  <ndp@opendap.org>
+
+	M<erged master to HYRAX-180. Some code is missing from repo.
+
+	Repairing warnings in loopiterators
+
+2020-07-13  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #392 from OPENDAP/dmrpp_parser_debug
+	MOving DmrppSaxParser2 to utilize BESDEBUG and not cerr.
+
+2020-07-13  ndp-opendap  <ndp@opendap.org>
+
+	Dropping unused code from parser.
+
+	MOving DmrppSaxParser2 to utilize BESDEBUG and not cerr.
+
+2020-07-13  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #390 from OPENDAP/libcurl-lcd
+	Libcurl lcd
+
+2020-07-13  dh-opendap  <dholloway@opendap.org>
+
+	Added include config.h so that byteswap.h include will compile properly.
+
+	Added support for reduce_mdf to get_dmrpp
+
+2020-07-10  ndp-opendap  <ndp@opendap.org>
+
+	Dropp ngap_build_dmrpp from code base. Dropped decompose_url function 
+	(replicated in http::url class)
+
+	Changes for mapr::erase() in CentOS-6
+
+	Dumping static strings from url_impl
+
+	Making cache name for ncml/tests reflect the source
+
+	Merge branch 'master' into libcurl-lcd
+
+2020-07-10  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed the NGAP url expitation code for AWS dates
+
+2020-07-10  ndp-opendap  <ndp@opendap.org>
+
+	fixed ngap_module
+
+	Patch httpd_catalog_build to link with bes/http
+
+	More tweaking, some things work
+
+	sync
+
+	Dropping redunant lib from libADD
+
+	Unit tests working, regression tests failing because they are not finding libbes_http.la
+
+2020-07-09  ndp-opendap  <ndp@opendap.org>
+
+	sync with james
+
+2020-07-09  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'stare-3' of https://github.com/OPENDAP/bes into stare-3
+
+2020-07-09  ndp-opendap  <ndp@opendap.org>
+
+	sync for others
+
+	More build stuff, plus whitelist debug key
+
+	More buiild issues
+
+	Droppinmg unused static-cache target from bes/http/unit-tests/Makefile.am
+
+	More fiddling with EXTRA_DIST
+
+	Merge branch 'master' into libcurl-lcd
+
+	More with bes/http/unit-tests etc.
+
+2020-07-08  ndp-opendap  <ndp@opendap.org>
+
+	Patching dmrpp_module/unit-tests
+
+2020-07-08  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #391 from OPENDAP/rpm-fix
+	Rpm fix
+
+2020-07-08  ndp-opendap  <ndp@opendap.org>
+
+	First pass at migrating various http tests into http
+
+2020-07-08  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'rpm-fix' of https://github.com/OPENDAP/bes into rpm-fix
+
+	The RPMs no longer set the owner/group of the 'bespiddir'
+	This was breaking the RPMs. In the past 'bespiddir' was a bes-specific dir,
+	but we changed to the system-wide dir for compat with centos SA tools. As
+	a result, code that made and set the bespididr was now setting the onwer
+	of /var/run.
+
+	Changed the RPMs so they no longer set the ownder/group of the 'bespiddir'
+	This was breaking the RPMs. In the past 'bespiddir was a bes-specific dir,
+	but we changed to the system-wide dir for compat with centos SA tools.
+
+2020-07-08  ndp-opendap  <ndp@opendap.org>
+
+	Adds a protoype http::url class that operates on URL strings
+
+	Switched dmrpp_module from its curl_utils to bes/http/CurlUtils
+
+2020-07-07  ndp-opendap  <ndp@opendap.org>
+
+	Fixing build
+
+	First pass at incorporating current ngap_module functionality into 
+	bes.http, and then converting the ngap_module to use it.
+
+	Enabled hashed cache file names in HttpCache fixed naming convention
+	to work with lbadap/gateway naming scheme
+
+2020-07-06  ndp-opendap  <ndp@opendap.org>
+
+	First pass at integrating ngap_module with bes/http. Tests still pass.
+
+	First pass at integrating ngap_module with bes/http. Tests still pass.
+
+	THis should complete gateway migration to bes/http
+
+	gateway almost converted to use nbes/http problems remain 
+	in the ncml_handler gateway aggregations.
+
+2020-07-06  dh-opendap  <dholloway@opendap.org>
+
+	Merge branch 'HYRAX-180' of https://github.com/opendap/bes into HYRAX-180
+
+	Fixed m_duplicate_common() to copy new member variables.
+
+	Updated read() for byteswap
+
+	Added byteswap.h check.
+
+2020-07-06  ndp-opendap  <ndp@opendap.org>
+
+	I think this is gonna work. Thanks to James' sharp eyes\!
+
+2020-07-02  ndp-opendap  <ndp@opendap.org>
+
+	Tweaking buildy
+
+	Merge branch 'master' into libcurl-lcd
+
+	Dropping Http names from httpd.conf.in files.
+
+	Dropping Http names from httpd.conf.in files.
+
+2020-07-02  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into stare-3
+
+	Mods to the hdf5 handler
+
+	Merge branch 'stare-3' of https://github.com/OPENDAP/bes into stare-3
+
+2020-07-02  ndp-opendap  <ndp@opendap.org>
+
+	Made it like cmr_handler to no avail
+
+2020-07-01  James Gallagher  <jgallagher@opendap.org>
+
+	Minor changes to DmrppArray.cc
+
+2020-07-01  ndp-opendap  <ndp@opendap.org>
+
+	Changing order of module build/tests to help sort out 
+	httpd_catalog_module distcheck issues
+
+2020-07-01  James Gallagher  <jgallagher@opendap.org>
+
+	Added modules/dmrpp_module/byteswap_compat.h
+
+2020-07-01  ndp-opendap  <ndp@opendap.org>
+
+	Dropping unused defines and adding the include path for rapidjsom
+
+2020-07-01  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into stare-3
+
+	Added build_test_s_indices.cc
+
+2020-07-01  ndp-opendap  <ndp@opendap.org>
+
+	httpd_catalog_module migrated and passing test.
+
+	Fixed improper use of find in RemoteResource plus, comments.
+
+	Dropping unused cmr_module code.
+
+	Now distcheck works locally.
+
+	Trying to sortout distcheck before it gets away from me.
+
+	Fixing link list
+
+2020-06-30  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into stare-3
+
+	Merge branch 'stare-3' of https://github.com/OPENDAP/bes into stare-3
+
+2020-06-30  ndp-opendap  <ndp@opendap.org>
+
+	Migrated cmr_module to use http common code.
+
+	Migrated cmr_module to use http common code.
+
+	Adding http commons code to BES (from Slav)
+
+	hdf5_handler update
+
+	Style changes
+
+2020-06-29  dh-opendap  <dholloway@opendap.org>
+
+	Modified read() to twiddle_bytes.
+
+	Updated code to only set_twiddle_bytes from ingest_byte_order 
+	called during XML parsing.
+
+2020-06-26  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #389 from OPENDAP/get-dmrpp-int64
+	Enabling Int64 in get_dmrpp
+
+2020-06-26  ndp-opendap  <ndp@opendap.org>
+
+	Enabling Int64 in get_dmrpp
+
+2020-06-26  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #388 from OPENDAP/bes-h5-no-pure-dim
+	Bes h5 no pure dim
+
+2020-06-25  Muqun Yang  <myang6@hdfgroup.org>
+
+	use git commit -a for the module to obtain the latest HDF5 handler commit
+
+2020-06-25  Muqun (Kent) Yang  <myang6@hdfgroup.org>
+
+	HYRAX-198, because we revert the pure-dim handling in the hdf5 
+	handler, the testsuite needs to be updated.
+
+2020-06-25  dh-opendap  <dholloway@opendap.org>
+
+	Updated to support byte-swapping.
+
+	Updated to support byte-swapping.
+
+	Updated to support byte-swapping
+
+2020-06-25  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #387 from OPENDAP/redirect-url-cache
+	Redirect url cache
+
+2020-06-25  ndp-opendap  <ndp@opendap.org>
+
+	Fixing retry time units
+
+	hdf4 and hdf5 commits.
+
+	Fixed up ChunkTest be turning on TheBESKeys
+
+	More fine grained error handling in get_last_redirect_url()
+
+	Added retries for cURL errors CURLE_SSL_CONNECT_ERROR and CURLE_SSL_CACERT_BADFILE.
+
+	cURL handle life cucle, retries on failures.
+
+2020-06-24  ndp-opendap  <ndp@opendap.org>
+
+	improved AWS expires code
+
+	more changes to is_expired
+
+	Fixed (I hope) the is_expired computation for signed requests.
+
+2020-06-23  ndp-opendap  <ndp@opendap.org>
+
+	Added bes.conf switch to control terminal url mem caching.
+
+	Dropped use of hHEAD in favor of a tiny range get (4 bytes) in order 
+	to be able to reuse the signed redirect to s3 request
+
+	Debug logging response hedaers from HEAD
+
+	Ficed some copy bugs in TheBESKeys. Other things...
+
+	Added methods to TheBESKeys for getting and setting vectors of 
+	values associated with a key and for getting and setting a map 
+	associated with a key.
+	Added  code to ngap_module to HEAD the data access
+	URL retrieved from CMR and record the last accessed
+	URL (which may be a signed AWS s3 request URL)
+	in TheBESKeys
+	Addec code to the dmrpp_module Chunk class to retrieve
+	the target URL (last redirect accessed url) from the cache
+	and us it to make requests.
+	Adly, this is broken atm.
+
+2020-06-23  dh-opendap  <dholloway@opendap.org>
+
+	Back to the original
+
+2020-06-23  James Gallagher  <jgallagher@opendap.org>
+
+	DmrppCommon() field order initialization fix, new impl. of get_byte_roder()
+
+2020-06-23  dh-opendap  <dholloway@opendap.org>
+
+	Added chunks to dmrpp_module/unit-tests/input-file/chunked_fourD.h5.dmrpp
+
+	Updated DmrppParser to recognize <chunks byteOrder=""> attribute.
+
+2020-06-22  James Gallagher  <jgallagher@opendap.org>
+
+	Minor edits
+
+2020-06-22  dh-opendap  <dholloway@opendap.org>
+
+	Added <chunks byteOrder=""> parsing.
+
+2020-06-22  ndp-opendap  <ndp@opendap.org>
+
+	sync
+
+2020-06-22  dh-opendap  <dholloway@opendap.org>
+
+	Modifications to support adding endian information to chunks.
+
+2020-06-21  ndp-opendap  <ndp@opendap.org>
+
+	Debug content-type for chunk requests
+
+	Debug content-type for chunk requests
+
+2020-06-20  ndp-opendap  <ndp@opendap.org>
+
+	Added request URL to dmrpp:curl denugging
+
+2020-06-18  ndp-opendap  <ndp@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Fixed cURL curl_easy_info calls by adding the correct parameter
+
+2020-06-18  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #385 from OPENDAP/fnetcdf-group
+	Fnetcdf group
+
+	This branch failed CI, likely because the hdf5 handler commit 
+	hash was outdated
+
+2020-06-18  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #386 from OPENDAP/curl-errors-retries
+	Add cURL retries for empty response and 502 Bad Gateway
+
+2020-06-18  James Gallagher  <jgallagher@opendap.org>
+
+	Minor edit.
+
+2020-06-18  ndp-opendap  <ndp@opendap.org>
+
+	Fixed up the help response for get_dmrpp
+
+	Merge branch 'master' into curl-errors-retries
+
+	Having cURL retry on an empty response and on 502 Bad Gateway
+
+2020-06-17  James Gallagher  <jgallagher@opendap.org>
+
+	Added some commentary. The mask value still need to be implemented
+	Currently the mask value is always zero.
+
+	Added tests for the stare_subset_array() server function
+
+2020-06-17  Muqun (Kent) Yang  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into fnetcdf-group
+
+2020-06-17  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-198, clean up code and add some comments.
+
+2020-06-17  James Gallagher  <jgallagher@opendap.org>
+
+	checkpoint
+
+2020-06-17  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-198, add a BES configuration template.
+
+	HYRAX-198, add testsuite for the group support.
+
+2020-06-17  dh-opendap  <d.holloway@opendap.org>
+
+	Merge pull request #383 from OPENDAP/HYRAX-157
+	Hyrax 157
+
+2020-06-16  James Gallagher  <jgallagher@opendap.org>
+
+	Added the STARE sidecar file for the subset MODIS granule
+
+	Added a small MODIS data file for testing.
+	Subset using our server, just 20 x 20 pixels.
+
+	Initial version of stare_subset_array()
+	Missing some needed functionality, but ready for testing
+
+	Merge branch 'master' into stare-3
+
+2020-06-16  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-198, update the dimension size when expression 
+	constraint is involved.
+
+2020-06-16  dh-opendap  <dholloway@opendap.org>
+
+	Updated testsuite baseline for ntypes.h5, current build_dmrpp 
+	will not write chunk elements with size=0.
+
+2020-06-16  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #384 from OPENDAP/fonc-bug-fix
+	Simple patch to return an error with Int64 values and nc3 or nc4/classic
+
+	Changed the FONc.ClassicModel default back to true.
+
+2020-06-15  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #382 from OPENDAP/covjson-bug
+	Covjson bug
+
+	Simple patch to return an error with Int64 values and nc3 or nc4/classic
+	A better fix involves updating the underlying code, but this will
+	prevent a situation where the heap is corrupted and lets users
+	know why they did not get data from their request.
+
+2020-06-15  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-198, comment out debugging lines.
+
+2020-06-15  dh-opendap  <dholloway@opendap.org>
+
+	Only write chunk information when chunksize > 0
+
+2020-06-15  Muqun Yang  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into fnetcdf-group
+
+2020-06-12  dh-opendap  <dholloway@opendap.org>
+
+	Added check_dmrpp and merge_dmrpp executibles, required f
+	or get_dmrpp
+
+	Updated regex for naming sidecar missing_variable file.
+
+	Modified Makefile.am to include config for check_dmrpp and 
+	merge_dmrpp needed by get_dmrpp
+
+2020-06-11  James Gallagher  <jgallagher@opendap.org>
+
+	Start of the subset_array STARE function
+
+2020-06-11  dh-opendap  <dholloway@opendap.org>
+
+	Updated to new logic for -p option, will copy in value explicitly now.
+
+	Updated usage information
+
+	Modified add_faddr_chunk_info() to update <chunk> element 
+	href: attribute with OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL 
+	if explicit filepath is not provided.
+
+	Added logic to merge missing domain variables into dmrpp;  
+	Added cmdline options -M and -p <path-to-store-missing-var-file>
+
+2020-06-11  James Gallagher  <jgallagher@opendap.org>
+
+	I added some more 'tuned' exception processing
+	Hopefully this will help track down the covjson memory error.
+	I also updated the tests to use the common autotest macros.
+
+2020-06-10  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-198, fix memory leaking.
+
+2020-06-10  James Gallagher  <jgallagher@opendap.org>
+
+	While working on a fileout covjson issue, I updated the tests
+
+	Merge branch 'master' of https://github.com/OPENDAP/bes
+	Conflicts:
+		modules/dmrpp_module/tests/ssmis_libcurl_handle_bug_1.dap
+		modules/dmrpp_module/tests/ssmis_libcurl_handle_bug_2.dap
+	[skip ci]
+
+	Added some test material to dmrpp_module/tests
+	But it's not hooked up - finish this to add testing besstandalone running
+	multiple commands in sequence.
+	[skip ci]
+
+	Merge pull request #381 from OPENDAP/sigpipe-party
+	SIGPIPE issues needs the fixins
+
+	Merge pull request #380 from OPENDAP/libcurl-no-handles-fix
+	Libcurl no handles fix
+
+2020-06-10  ndp-opendap  <ndp@opendap.org>
+
+	SIGPIPE, I am coming for you...
+
+2020-06-10  James Gallagher  <jgallagher@opendap.org>
+
+	Removed unused dmrpp files
+
+2020-06-10  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYEAX-198, add group attribute support. Code is not cleaned up.
+
+2020-06-09  James Gallagher  <jgallagher@opendap.org>
+
+	Fixed the have_curl_multi_api flag.
+
+	Merge branch 'libcurl-no-handles-fix' of 
+	https://github.com/OPENDAP/bes into libcurl-no-handles-fix
+
+	Change to configure.ac to fix the build on CentOS6
+	But this means no parallel access on C6. probably just another reason
+	to drop that platform. Or, build our RPMs using a new gcc/++ and
+	libcurl.
+
+	Merge branch 'master' into libcurl-no-handles-fix
+
+	The 'no more curl handles' bug is fixed whn using the libcurl multi API
+	The issue persists with the pthread code; I've made it so that
+	building without the multi API but with UseParallelTransfers
+	results in a message in the BES log that serial transfers will
+	be used.
+
+2020-06-09  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-198, support shared dimensions for DAP4 groups. 
+	Tested with ATL and other cases. Code needs to be cleaned up.
+
+2020-06-09  James Gallagher  <jgallagher@opendap.org>
+
+	Potential fix for the 'no more libcurl handles' bug
+
+2020-06-08  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-198, can handle netcdf-4 or non-dimension names case 
+	for the group hierarchy. Need to handle the case that has 
+	both dim. names and non-dim names. Code needs to be cleaned up.
+
+2020-06-08  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'dmrpp-headers' into libcurl-no-handles-fix
+
+	Merge branch 'dmrpp-headers' into libcurl-no-handles-fix
+
+	Merge pull request #379 from OPENDAP/xmlcommand-fixes-jhrg
+	Changes to make these tests more dependable
+
+	Merge pull request #378 from OPENDAP/no-mods-build
+	No mods build
+
+	Fixed missing directory in xmlcommand/tests/Makefile.am
+
+2020-06-06  James Gallagher  <jgallagher@opendap.org>
+
+	Added test_data to xmlcommand/tests
+
+2020-06-05  James Gallagher  <jgallagher@opendap.org>
+
+	Now returns BESForbidden when dmrpp encounters access denied
+
+	Updates to the response header capture code
+
+	More work on the dmrpp header capture and error detection
+
+	Modified the stare functions to take a dependent variable argument
+
+	Arrgh forgot these baselines
+
+	Changes to make these tests more dependable
+	Also, switched to the common handler_tests_macros.m4
+
+	hdf4/5 sync
+
+	Merge branch 'master' into dmrpp-headers
+
+2020-06-04  James Gallagher  <jgallagher@opendap.org>
+
+	Added header parse/callback
+
+2020-06-04  ndp-opendap  <ndp@opendap.org>
+
+	hdf4/5 hashes and an endl in for the log output.
+
+2020-06-04  James Gallagher  <jgallagher@opendap.org>
+
+	checkpoint
+
+2020-06-04  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-198, add code to support shared dimensions for 
+	DAP4 group. Need more work.
+
+2020-06-03  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into no-mods-build
+
+2020-06-02  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #376 from OPENDAP/http_errors
+	Http errors
+
+2020-06-02  ndp-opendap  <ndp@opendap.org>
+
+	Merge branch 'master' into http_errors
+
+2020-06-02  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #377 from OPENDAP/test-fixes
+	Test fixes
+
+2020-06-02  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-198,HK-681, add code to support group. Can compile and 
+	generate netCDF-4 group files. Code not cleaned. Still need 
+	to check shared dimensions, attributes and constraint expressions.
+
+2020-06-02  James Gallagher  <jgallagher@opendap.org>
+
+	Added gateway/fnoc1.nc.nc.dap.bescmd
+
+	Added bescmd/linear_scale.dap.bescmd.baseline
+
+2020-06-02  ndp-opendap  <ndp@opendap.org>
+
+	Hacked baseline for test 7
+
+2020-06-02  James Gallagher  <jgallagher@opendap.org>
+
+	Another test fix...
+
+	Removed really large baseline data file (61MB) and the test
+
+	Fixes for tests that broke after the DAP4 chunk header error was fixed
+	In doing this I've also changed the way the tests that had to be
+	repaired are structured so that more comprehensive test macros are
+	used. This broke some tests in the fileout_netcdf handler and those
+	were fixed as well.
+
+2020-06-01  ndp-opendap  <ndp@opendap.org>
+
+	Merge branch 'http_errors' of https://github.com/opendap/bes into http_errors
+
+	Propagated improvements to curl error handling into all 4 
+	handlers that are using the cURL classes.
+
+2020-06-01  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-198,HK-681, add code for the group support in 
+	the filenetCDF-4 module. Not compiled. Goal is to 
+	only support the files that has groups
+
+2020-06-01  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into http_errors
+
+2020-06-01  ndp-opendap  <ndp@opendap.org>
+
+	Fixed gateway_module curl_utils error handling so 
+	that it is no longer killing the beslistener with 
+	uneeded Internal fatal errors
+
+	Deescalted a c++ exception from internal fatal 
+	error to internal error.
+
+2020-05-30  ndp-opendap  <ndp@opendap.org>
+
+	Fixed error (mis)handling in CSV handler.
+
+	Fixed error (mis)handling in CSV handler.
+
+	Added QC on input from RemoteResource crawl/scrape.
+
+	Revert "Downgrading C++ exceptions to"
+	This reverts commit 7afe388928844792b51466f3c58501297ab13af5.
+
+	Downgrading C++ exceptions to BESInternalError. 
+	It was BESInternalFatalError.
+
+2020-05-29  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes for the --with-dap-builtin-modules option
+	Doesn't pass the tests, however.
+
+2020-05-29  ndp-opendap  <ndp@opendap.org>
+
+	Log formatting issues.
+
+2020-05-28  ndp-opendap  <ndp@opendap.org>
+
+	Fixed undofrtunate english in the CSV error messages
+
+	Another attempt to stop Fatal errors in CSVHandler. 
+	Also dropped new lines for curl messages.
+
+	Stopped dropping fatal errors in CSVRequestHandler.cc
+
+2020-05-28  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #375 from OPENDAP/HYRAX-97
+	Hyrax 97
+
+2020-05-28  ndp-opendap  <ndp@opendap.org>
+
+	Correcting copypasta issues.
+
+2020-05-27  ndp-opendap  <ndp@opendap.org>
+
+	Fixing http error handling
+
+	Fixing http error handling
+
+	Fixing http error handling
+
+2020-05-27  Slav Korolev  <slav.korolev@nasa.gov>
+
+	HYRAX-97. Replaced bes/rapidjson with folder from gihub.
+
+	Merge branch 'master' into HYRAX-97
+
+	HYRAX-97. Corrected AM_CPPFLAGS in unit-tests of modules.
+
+	HYRAX-97. Corrected AM_CPPFLAGS in modules.
+
+	HYRAX-97. Removed rapidjson from modules.
+
+2020-05-26  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #374 from OPENDAP/stare-2
+	Stare 2
+
+	Fixes for distcheck, location of data for tests
+
+2020-05-23  James Gallagher  <jgallagher@opendap.org>
+
+	Modified AsciiTransmit so that it supports DAP4 functions
+	Other modifications to comments, stare/tests/README, stare/Makefile.am
+
+2020-05-21  James Gallagher  <jgallagher@opendap.org>
+
+	Added README for the tests
+
+	Added tests baselines
+
+	Changed stare count and subset to iterate over the dataset indices.
+
+	Added tests
+
+	Changes to stare_subset() and stare_count() - breaks tests
+
+	Added more tests using the Target dataset
+	The Target... dataset provides the target stare indices for the
+	tests while the MYD09... dataset is the base against which the
+	target indices are compared. The two overlap in the NW corner of
+	the base (MYD09) dataset.
+
+	Added two files that tests level 27 and level 27 plus resolution indices
+
+	Switched to BES Keys for the sidecar file extension
+	This will make it possible to write tests using different sidecar
+	files for the same data.
+
+	HDF5 handler updates
+
+	Merge branch 'master' into stare-2
+
+2020-05-20  James Gallagher  <jgallagher@opendap.org>
+
+	Added small test data files, fixed the -e option of build_sidecar
+
+	Added -e (extension) switch to build_sidecar
+
+2020-05-20  Slav Korolev  <slav.korolev@nasa.gov>
+
+	Merge branch 'master' into HYRAX-97
+
+	HYRAX-97. Consolidated rapidjson in the top level of BES.
+
+2020-05-15  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #372 from OPENDAP/cmr_debug
+	cmr_module debugging changes.
+
+2020-05-15  ndp-opendap  <ndp@opendap.org>
+
+	cmr_module debugging changes.
+
+2020-05-15  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #370 from OPENDAP/temp-check-dmr-fnetcdf
+	Temp check dmr fnetcdf
+
+2020-05-13  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-179, forget checking in the testing data file
+
+	HYRAX-179, forget checking in the testing data file
+
+	HYRAX-179, add two testsuites and correct comments/debug 
+	info for the source codes.
+
+2020-05-13  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #369 from OPENDAP/get_dmrpp_tests
+	Fixing issues with get_dmrpp qc machinery
+
+2020-05-13  James Gallagher  <jgallagher@opendap.org>
+
+	Checkpoint
+
+2020-05-13  ndp-opendap  <ndp@opendap.org>
+
+	Dropping unused -d option to get_dmrpp
+
+	Fixing issues with get_dmrpp qc machinery
+
+2020-05-13  Muqun Yang  <myang6@hdfgroup.org>
+
+	Make the temp-check-dmr-fnetcdf branch update with 
+	the master. Merge branch 'master' into temp-check-dmr-fnetcdf
+
+	HYRAX-179, correct expression constraint for the intern_dap4_data.
+
+2020-05-13  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #368 from OPENDAP/cmr_auth
+	Adjusting authentication parameters in the cmr_module.
+
+2020-05-13  ndp-opendap  <ndp@opendap.org>
+
+	Added a BES.LogName=/dev/null to the test config. 
+	(Needed because there is now a call to BESLog in curl_utils.cc)
+
+	* Adjusted the cmr_modules curl_utils.cc so that it 
+	  can utilize netrc files injected in the bes configuration for 
+	  authentication credentials. 
+	* Changed cmr_module user agent from the cURL library version 
+	  to hyrax-cmr-virtual-directories 
+	* Increased max redirects to 20.
+
+2020-05-13  James Gallagher  <jgallagher@opendap.org>
+
+	hdf4/5 submodule changes
+
+	Merge pull request #367 from OPENDAP/cmr_in_rpm
+	Added --with-cmr to configuration of bes.spec.all_static
+
+2020-05-13  ndp-opendap  <ndp@opendap.org>
+
+	Making the CMR module build by default, with configure 
+	argument --without-cmr to not build it.
+
+2020-05-12  ndp-opendap  <ndp@opendap.org>
+
+	Added --with-cmr to configuration of bes.spec.all_static
+
+2020-05-12  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' of https://github.com/OPENDAP/bes
+
+	Merge branch 'stareServerFunctions'
+
+	Merge branch 'master' into stareServerFunctions
+
+	Synch with hdf5 and hdf5 handlers
+
+	Merge branch 'stareServerFunctions' of 
+	https://github.com/OPENDAP/bes into stareServerFunctions
+
+	STARE index variable name changed in StareFunctions from 
+	"Stare Index" to Stare_Index [skip ci]
+
+	Merge pull request #366 from OPENDAP/distcheck-fix2
+	Fix for python2 to python3 function call syntax
+
+2020-05-12  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-179, add the expression constraint and function 
+	handling to intern_dap4_data.
+
+2020-05-12  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into stareServerFunctions
+	[skip ci]
+
+	Fix for python2 to python3 function call syntax
+
+2020-05-12  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-179, map the DAP4 attributes to the fileout netCDF.
+
+2020-05-12  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #365 from OPENDAP/dmrpp_typematch
+	Relaxing TypeMatch for get_dmrpp to allow any input filename.
+
+	Merge pull request #364 from OPENDAP/configure_options
+	Refactoring the way that command line options to configure are processed.
+
+2020-05-12  ndp-opendap  <ndp@opendap.org>
+
+	Added option to set BES_DATA_ROOT
+
+	Relaxing TypeMatch for get_dmrpp to allow any input filename.
+
+	Merge branch 'master' into configure_options
+
+2020-05-12  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #358 from OPENDAP/HK-399
+	Hk 399
+
+2020-05-11  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-179, update the history attributes for DAP4 mapping, not compiled yet.
+
+2020-05-11  ndp-opendap  <ndp@opendap.org>
+
+	Merge branch 'master' into configure_options
+
+	Cleaning up configure argument porcessing
+
+2020-05-11  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-179, minor addition.
+
+	HYRAX-179, add DAP4 attribute mapping. The code can be compiled.
+
+2020-05-11  ndp-opendap  <ndp@opendap.org>
+
+	More configure argument grooming
+
+2020-05-11  dh-opendap  <dholloway@opendap.org>
+
+	This testsuite requires a local copy of the 
+	handler_tests_macros.m4 file in order for distcheck to work.
+
+2020-05-11  ndp-opendap  <ndp@opendap.org>
+
+	Trying to fix the various arguments taken by configure.
+
+2020-05-11  dh-opendap  <dholloway@opendap.org>
+
+	Removed build_dmrpp from AT_TESTED().
+
+	Removed testsuite_dmrpp_tests.at from tests directory.
+
+	Added new tests_build_dmrpp directory to separate build_dmrpp 
+	tests from dmrpp_module tests.
+
+	Moved testsuite_dmrpp_tests and associated files into a 
+	new subdirectory named tests_build_dmrpp.
+
+	Added new tests directory for dmrpp_module/tests_build_dmrpp
+	requiring additional entries for the module Makefile, and added 
+	a separate AC_CONFIG_TESTDIR() for that subdirectory to 
+	include $srcdir path for distcheck to operate properly.
+
+2020-05-11  James Gallagher  <jgallagher@opendap.org>
+
+	Merge pull request #363 from OPENDAP/distcheck-1.16-fix
+	Distcheck 1.16 fix
+
+2020-05-09  James Gallagher  <jgallagher@opendap.org>
+
+	Added the local handler_tests_macro.m4 to the fileout_gdal/tests Makefile.am
+
+	Removed dependency 'cache' from fileout_gdal/tests/Makefile.am
+
+	Add the 'gdal' dir to EXTRA_DIST in fileout_gdal/tests/Makefile.am
+
+	Added missing mds data cache to cmdln tests.
+	Also fixed copy-pasta spelling error from the 1990's in 59 Makefiles
+
+	Fixed the cmdln and modules/fileout_gdal tests Makefile.am
+	Instead of hacking the exiting Makefiles, I copied ones from
+	places where the tests already worked, then modified the new
+	Makefile.am to fit.
+
+2020-05-08  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'master' into distcheck-1.16-fix
+
+	More fixes for autmake 1.15/16 distcheck fixes.
+	Automake 1.15 introduced a 'better' distcheck that rooted out issues
+	where build scripts made assumptions about the relative positions of
+	srcdir and builddir. Our's did, apparently, and this commit fixes those
+	problems. Or at least the last of the ones that trigger error in
+	the new distcheck target.
+	Issues have been fixed:
+	* $(srcdir)/config.status --> $(builddir)/config.status
+	* a fail to process the '../' sections of paths in a distcheck build.
+	For the latter, I switched to a short python program, embedded in the
+	Makefile.am files.
+	* various missing files in EXTRA_DIST and missing $(srcdir) instances
+
+2020-05-08  Muqun Yang  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into temp-check-dmr-fnetcdf
+
+	HYRAX-179, add the support of mapping DAP4 attributes in FilenetCDF. Not compiled.
+
+2020-05-08  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #362 from OPENDAP/add_cmr_module_to_rpm
+	Added cmr_module to RPM package builds.
+
+2020-05-08  ndp-opendap  <ndp@opendap.org>
+
+	Added cmr_module to RPM package builds.
+
+2020-05-07  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #361 from OPENDAP/virtDir
+
+2020-05-07  ndp-opendap  <ndp@opendap.org>
+
+	More patches
+
+	Switching default CMR from UAT to PROD
+
+	Modified cmr_module to accept the CMR location URL 
+	from configuration.
+
+2020-05-07  Muqun Yang  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into temp-check-dmr-fnetcdf Keep 
+	this branch updated to the master
+
+	HYRAX-179, add more debugging info.
+
+2020-05-07  James Gallagher  <jgallagher@opendap.org>
+
+	Minor edits to build_sidecar.cc - the stare index vector 
+	is now named Stare_Index
+	Added some other documentation updates in README, etc.
+
+2020-05-06  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-179, add some debugging information. Ready to handle 
+	DAP4 attributes.
+
+2020-05-06  dh-opendap  <dholloway@opendap.org>
+
+	Added build_dmrpp to AT_TEST().
+
+	Removed AT_TEST() in this file.
+
+	Removed [build_dmrpp] from AT_TEST, didn't seem to be working 
+	as expected, moved it to dmrpp_module/tests/testsuite_dmrpp_tests.at
+
+	Added AT_TEST([build_dmrpp]) to ensure binary is available.
+
+2020-05-05  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-179, make Fileout netCDF-4 read DMR responses, also add 
+	the 64-bit integer support.
+
+2020-05-05  dh-opendap  <dholloway@opendap.org>
+
+	Added build_dmrpp to AT_TEST.
+
+	Added proper name to AT_INIT
+
+2020-05-04  Muqun Yang  <myang6@hdfgroup.org>
+
+	HYRAX-179, check in temp source code files.
+
+2020-05-04  ndp-opendap  <ndp@opendap.org>
+
+	New hdf5_handler commit hash
+
+2020-05-04  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #360 from OPENDAP/xmlbase
+	The xml:base context bug. A state problem with the DMR cache.
+
+2020-05-04  ndp-opendap  <ndp@opendap.org>
+
+	Merge branch 'master' into xmlbase
+
+	Updating hdf5_handler commit hash
+
+	Added insertion of current xml:base context into the DMR after a 
+	DMR copy is retrieved from cache.
+
+	Patched an introduced bug in BESContextManager
+
+	Cleaning up debugging from xml:basse bug hunt. Switched a number 
+	of classes to the MODULE/prolog scheme
+
+	Marked a particularily relevant comment as a TODO.
+
+2020-05-01  James Gallagher  <jgallagher@opendap.org>
+
+	Added 'resolution' option to build_sidecar
+
+2020-05-01  ndp-opendap  <ndp@opendap.org>
+
+	Merge branch 'xmlbase' of https://github.com/opendap/bes into xmlbase
+
+	Merge branch 'master' into xmlbase
+
+	hdf4/5 hash
+
+	Merge branch 'master' into xmlbase
+
+2020-05-01  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #359 from OPENDAP/allalone
+	Hacked standalone for multiple command files.
+
+2020-05-01  ndp-opendap  <ndp@opendap.org>
+
+	Fixed output leak.
+
+	includes added
+
+	includes added
+
+	Hacked standalone for multiple command files.
+
+	More debugging changes
+
+	More debugging changes
+
+	More debugging changes
+
+2020-04-30  dh-opendap  <dholloway@opendap.org>
+
+	Removed reference to bes_dmrpp_tests.conf.in since this approach 
+	does not use bes configuration file.
+
+2020-04-29  dh-opendap  <dholloway@opendap.org>
+
+	Added AT_BESCMD_BUILD_DMRPP_RESPONSE_TEST to testsuite macros. 
+	Added AT_BESCMD_BUILD_DMRPP_RESPONSE_TEST to testsuite macros. 
+
+	Added testsuite_dmrpp_tests to local file checks.
+
+	Added testsuite_dmrpp_tests for dmrpp_module; runs build_dmrpp 
+	with files in ../data/dmrpp
+
+2020-04-28  Muqun Yang  <myang6@hdfgroup.org>
+
+	HK-582, minor correction of  README,README_reduce_mdf.
+
+2020-04-28  James Gallagher  <jgallagher@opendap.org>
+
+	Added some instrumentation for the xmlbase bug (HK-602)
+
+2020-04-27  ndp-opendap  <ndp@opendap.org>
+
+	Working on xml:base issues
+
+	Working on xml:base issues
+
+2020-04-27  James Gallagher  <jgallagher@opendap.org>
+
+	Added data/README and two baselines
+
+	Merge branch 'master' into stareServerFunctions
+
+2020-04-27  Muqun Yang  <myang6@hdfgroup.org>
+
+	HK-582, NASA GPM files ends with HDF5, so adds the support of hdf5 
+	files that end with HDF5 in the patch dmrpp programs.
+
+2020-04-25  Nathan Potter  <ndp@opendap.org>
+
+	Merge pull request #357 from OPENDAP/exit-message
+	Added an exit message when the bes gets an exit command from a client
+
+2020-04-25  ndp-opendap  <ndp@opendap.org>
+
+	Merge branch 'master' into exit-message
+
+	Added some additional, possibly less brittle, assertions in the NgapApiTest
+
+	Patched NgapApiTest with new CMR content
+
+2020-04-24  James Gallagher  <jgallagher@opendap.org>
+
+	Added an exit message when the bes gets an exit command from a client
+
+	checkpoint
+
+2020-04-22  ndp-opendap  <ndp@opendap.org>
+
+	Added version-3.20.7 and libdap-3.20.6 doi tags to README.md
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Updated files for Hyrax-1.16.2 (bes-3.20.7) release.
+
+2020-04-22  Muqun Yang  <myang6@hdfgroup.org>
+
+	HK-587, coding to work around the nbytes=0 isssue in the build_dmrpp. 
+	Fortunately the patch_dmrpp program is not affected with this workaround. 
+	Tested with NASA collection files.
+
+2020-04-21  ndp-opendap  <ndp@opendap.org>
+
+	Formatting
+
+2020-04-21  Muqun Yang  <myang6@hdfgroup.org>
+
+	HK-587, add some comments to the reduction of number of missing data files.
 2020-04-21  ndp-opendap  <ndp@opendap.org>
 
 	Formatting

@@ -31,7 +31,10 @@ endif
 # These are not used by automake but are often useful for certain types of
 # debugging. Set CXXFLAGS to this in the nightly build using export ...
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -Wcast-align
-TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
+
+AM_CXXFLAGS=
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
 
 # This determines what gets built by make check
 check_PROGRAMS = $(UNIT_TESTS)
@@ -88,7 +91,7 @@ $(CREDS_CONF):
 #
 
 if CPPUNIT
-UNIT_TESTS = NgapCredentialsTest ChunkTest DmrppParserTest DmrppCommonTest \
+UNIT_TESTS = DmrppArrayTest NgapCredentialsTest SuperChunkTest ChunkTest DmrppParserTest DmrppCommonTest \
 DmrppMetadataStoreTest CredentialsManagerTest awsv4_test CurlHandlePoolTest
 else
 UNIT_TESTS =
@@ -111,6 +114,9 @@ CurlHandlePoolTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 ChunkTest_SOURCES = ChunkTest.cc
 ChunkTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
+SuperChunkTest_SOURCES = SuperChunkTest.cc
+SuperChunkTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
+
 CredentialsManagerTest_SOURCES = CredentialsManagerTest.cc
 CredentialsManagerTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
@@ -129,3 +135,6 @@ DmrppCommonTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
 DmrppMetadataStoreTest_SOURCES = DmrppMetadataStoreTest.cc $(top_srcdir)/modules/read_test_baseline.cc
 DmrppMetadataStoreTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
+
+DmrppArrayTest_SOURCES = DmrppArrayTest.cc $(top_srcdir)/modules/read_test_baseline.cc
+DmrppArrayTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)

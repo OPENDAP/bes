@@ -87,7 +87,7 @@ public:
     {
         DBG(cerr << prolog << "BEGIN" << endl);
         d_chunk.set_position_in_array("[1,2,3,4]");
-        vector<unsigned int> pia = d_chunk.get_position_in_array();
+        vector<unsigned long long> pia = d_chunk.get_position_in_array();
         CPPUNIT_ASSERT(pia.size() == 4);
         CPPUNIT_ASSERT(pia.at(0) == 1);
         CPPUNIT_ASSERT(pia.at(1) == 2);
@@ -99,7 +99,7 @@ public:
     {
         DBG(cerr << prolog << "BEGIN" << endl);
         d_chunk.set_position_in_array("[5]");
-        vector<unsigned int> pia = d_chunk.get_position_in_array();
+        vector<unsigned long long> pia = d_chunk.get_position_in_array();
         CPPUNIT_ASSERT(pia.size() == 1);
         CPPUNIT_ASSERT(pia.at(0) == 5);
     }
@@ -142,14 +142,14 @@ public:
     void add_tracking_query_param_test_2()
     {
         DBG(cerr << prolog << "BEGIN" << endl);
-        CPPUNIT_ASSERT(Chunk::tracking_context == "cloudydap");
+        CPPUNIT_ASSERT(S3_TRACKING_CONTEXT == "cloudydap");
     }
 
     void add_tracking_query_param_test_3()
     {
         DBG(cerr << prolog << "BEGIN" << endl);
         try {
-            BESContextManager::TheManager()->set_context("cloudydap", "request_id");
+            BESContextManager::TheManager()->set_context(S3_TRACKING_CONTEXT, "request_id");
             // add_tracking_query_param() only works with S3 URLs. Bug? jhrg 8/9/18
             d_chunk.set_data_url("http://s3.amazonaws.com/somewhereovertherainbow");
 
@@ -172,7 +172,7 @@ public:
     {
         DBG(cerr << prolog << "BEGIN" << endl);
         try {
-            BESContextManager::TheManager()->set_context("cloudydap", "request_id");
+            BESContextManager::TheManager()->set_context(S3_TRACKING_CONTEXT, "request_id");
 
             // add_tracking_query_param() only works with S3 URLs. Bug? jhrg 8/9/18
             d_chunk.set_data_url("http://s3.amazonaws.com/somewhereovertherainbow");
@@ -197,7 +197,7 @@ public:
         DBG(cerr << prolog << "BEGIN" << endl);
         try {
             // An S3 URL, but no context.
-            BESContextManager::TheManager()->unset_context("cloudydap");   //>set_context("cloudydap", "request_id");
+            BESContextManager::TheManager()->unset_context(S3_TRACKING_CONTEXT);   //>set_context("cloudydap", "request_id");
             d_chunk.set_data_url("http://s3.amazonaws.com/somewhereovertherainbow");
             d_chunk.add_tracking_query_param();
         }
@@ -216,7 +216,7 @@ public:
     {
         DBG(cerr << prolog << "BEGIN" << endl);
         try {
-            BESContextManager::TheManager()->set_context("cloudydap", "request_id");
+            BESContextManager::TheManager()->set_context(S3_TRACKING_CONTEXT, "request_id");
 
             auto_ptr<Chunk> l_chunk(new Chunk("http://s3.amazonaws.com/somewhereovertherainbow", "", 100, 10, ""));
 
@@ -243,7 +243,7 @@ public:
         DBG(cerr << prolog << "BEGIN" << endl);
         try {
             // No context, S3 URL, non-default ctor
-            BESContextManager::TheManager()->unset_context("cloudydap");
+            BESContextManager::TheManager()->unset_context(S3_TRACKING_CONTEXT);
             auto_ptr<Chunk> l_chunk(new Chunk("http://s3.amazonaws.com/somewhereovertherainbow", "", 100, 10, ""));
 
             CPPUNIT_ASSERT(l_chunk->d_query_marker.empty());

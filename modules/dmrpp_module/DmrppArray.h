@@ -25,11 +25,18 @@
 #define _dmrpp_array_h 1
 
 #include <string>
+#include <utility>
 #include <vector>
+#include <thread>
+#include <memory>
+#include <queue>
+#include <future>
+#include <list>
 
 #include <Array.h>
 
 #include "DmrppCommon.h"
+#include "SuperChunk.h"
 
 // The 'read_serial()' method is more closely related to the original code
 // used to read data when the DMR++ handler was initially developed for NASA.
@@ -46,6 +53,7 @@ class XMLWriter;
 
 namespace dmrpp {
 
+    class SuperChunk;
 /**
  * @brief Extend libdap::Array so that a handler can read data using a DMR++ file.
  *
@@ -57,7 +65,7 @@ namespace dmrpp {
  * different kinds of optimizations, we have implemented two different read()
  * methods, one for the 'no chunks' case and one for arrays 'with chunks.'
  */
-class DmrppArray : public libdap::Array, public DmrppCommon {
+class DmrppArray : public libdap::Array, public dmrpp::DmrppCommon {
 
 private:
     void _duplicate(const DmrppArray &ts);
@@ -67,8 +75,8 @@ private:
     DmrppArray::dimension get_dimension(unsigned int dim_num);
 
     void insert_constrained_contiguous(Dim_iter dim_iter, unsigned long *target_index,
-                                       std::vector<unsigned int> &subset_addr,
-                                       const std::vector<unsigned int> &array_shape, char *data);
+                                       std::vector<unsigned long long> &subset_addr,
+                                       const std::vector<unsigned long long> &array_shape, char *data);
 
     void read_contiguous();
 
@@ -78,32 +86,40 @@ private:
     virtual void read_chunks_serial();
 #endif
 
+    friend class DmrppArrayTest;
     // Called from read_chunks_unconstrained() and also using pthreads
     friend void
-    process_one_chunk_unconstrained(Chunk *chunk, DmrppArray *array, const vector<unsigned int> &array_shape,
-                                    const vector<unsigned int> &chunk_shape);
+    process_one_chunk_unconstrained(std::shared_ptr<Chunk> chunk, const vector<unsigned long long> &chunk_shape,
+            DmrppArray *array, const vector<unsigned long long> &array_shape);
 
-    virtual void insert_chunk_unconstrained(Chunk *chunk, unsigned int dim,
-                                    unsigned long long array_offset, const std::vector<unsigned int> &array_shape,
-                                    unsigned long long chunk_offset, const std::vector<unsigned int> &chunk_shape,
-                                    const std::vector<unsigned int> &chunk_origin);
+    // Called from read_chunks()
+    friend void
+    process_one_chunk(std::shared_ptr<Chunk> chunk, DmrppArray *array, const vector<unsigned long long> &constrained_array_shape);
 
+
+
+    virtual void insert_chunk_unconstrained(std::shared_ptr<Chunk> chunk, unsigned int dim,
+                                    unsigned long long array_offset, const std::vector<unsigned long long> &array_shape,
+                                    unsigned long long chunk_offset, const std::vector<unsigned long long> &chunk_shape,
+                                    const std::vector<unsigned long long> &chunk_origin);
+
+    void read_chunks();
     void read_chunks_unconstrained();
 
     unsigned long long get_chunk_start(const dimension &thisDim, unsigned int chunk_origin_for_dim);
 
-    Chunk *find_needed_chunks(unsigned int dim, std::vector<unsigned int> *target_element_address, Chunk *chunk);
+    std::shared_ptr<Chunk> find_needed_chunks(unsigned int dim, std::vector<unsigned long long> *target_element_address, std::shared_ptr<Chunk> chunk);
 
-    virtual void insert_chunk(unsigned int dim, std::vector<unsigned int> *target_element_address,
-                      std::vector<unsigned int> *chunk_element_address,
-                      Chunk *chunk, const vector<unsigned int> &constrained_array_shape);
+    virtual void insert_chunk(
+            unsigned int dim,
+            std::vector<unsigned long long> *target_element_address,
+            std::vector<unsigned long long> *chunk_element_address,
+            std::shared_ptr<Chunk> chunk,
+            const vector<unsigned long long> &constrained_array_shape);
 
-    // Called from read_chunks()
-    friend void process_one_chunk(Chunk *chunk, DmrppArray *array, const vector<unsigned int> &constrained_array_shape);
 
-    void read_chunks();
 
-public:
+    public:
     DmrppArray(const std::string &n, libdap::BaseType *v);
 
     DmrppArray(const std::string &n, const std::string &d, libdap::BaseType *v);
@@ -121,7 +137,7 @@ public:
 
     virtual unsigned long long get_size(bool constrained = false);
 
-    virtual std::vector<unsigned int> get_shape(bool constrained);
+    virtual std::vector<unsigned long long> get_shape(bool constrained);
 
     virtual void print_dap4(libdap::XMLWriter &writer, bool constrained = false);
 
@@ -129,45 +145,17 @@ public:
 };
 
 /**
- * Read one chunk in a thread. Uses pthreads.
- *
- * @param arg_list A pointer to a one_chunk_args instance
- * @return NULL on success; a pointer to string on failure. The string holds
- * an error message.
+ * Args for threads that process SuperChunks, constrained or not.
  */
-void *one_chunk_thread(void *arg_list);
-
-/**
- * Args for threads that process chunks for constrianed arrays.
- */
-struct one_chunk_args {
-    int *fds;               // pipe back to parent
-    unsigned char tid;      // thread id as a byte
-    Chunk *chunk;
+struct one_super_chunk_args {
+    std::thread::id parent_thread_id;
+    std::shared_ptr<SuperChunk> super_chunk;
     DmrppArray *array;
-    const vector<unsigned int> &array_shape;
 
-    one_chunk_args(int *pipe, unsigned char id, Chunk *c, DmrppArray *a, const vector<unsigned int> &a_s)
-            : fds(pipe), tid(id), chunk(c), array(a), array_shape(a_s) {}
+    one_super_chunk_args(std::shared_ptr<SuperChunk> sc, DmrppArray *a)
+            : parent_thread_id(std::this_thread::get_id()), super_chunk(std::move(sc)), array(a) {}
 };
 
-/**
- * Args passed to threads that work with unconstrained array data.
- * The \arg chunk_shape is part of an optimization for the unconstrained
- * array case.
- */
-struct one_chunk_unconstrained_args {
-    int *fds;               // pipe back to parent
-    unsigned char tid;      // thread id as a byte
-    Chunk *chunk;
-    DmrppArray *array;
-    const vector<unsigned int> &array_shape;
-    const vector<unsigned int> &chunk_shape;
-
-    one_chunk_unconstrained_args(int *pipe, unsigned char id, Chunk *c, DmrppArray *a, const vector<unsigned int> &a_s,
-                                 const vector<unsigned int> &c_s)
-            : fds(pipe), tid(id), chunk(c), array(a), array_shape(a_s), chunk_shape(c_s) {}
-};
 
 /**
  * Chunk data insert args for use with pthreads. Used for reading contiguous data
@@ -176,17 +164,31 @@ struct one_chunk_unconstrained_args {
 struct one_child_chunk_args {
     int *fds;               // pipe back to parent
     unsigned char tid;      // thread id as a byte
-    Chunk *child_chunk;     // this chunk reads data; temporary allocation
-    Chunk *master_chunk;    // this chunk gets the data; shared memory, managed by DmrppArray
+    std::shared_ptr<Chunk> child_chunk;     // this chunk reads data; temporary allocation
+    std::shared_ptr<Chunk> master_chunk;    // this chunk gets the data; shared memory, managed by DmrppArray
 
-    one_child_chunk_args(int *pipe, unsigned char id, Chunk *c_c, Chunk *m_c)
+    one_child_chunk_args(int *pipe, unsigned char id, std::shared_ptr<Chunk> c_c, std::shared_ptr<Chunk> m_c)
             : fds(pipe), tid(id), child_chunk(c_c), master_chunk(m_c) {}
 
-    // FIXME Use smart pointers here. jhrg 9/16/20
-    ~one_child_chunk_args() {
-        delete child_chunk;
-    }
+    ~one_child_chunk_args() { }
 };
+
+
+/**
+ * Chunk data insert args for use with pthreads. Used for reading contiguous data
+ * in parallel.
+ */
+struct one_child_chunk_args_new {
+    std::shared_ptr<Chunk> child_chunk;     // this chunk reads data; temporary allocation
+    std::shared_ptr<Chunk> the_one_chunk;    // this chunk gets the data; shared memory, managed by DmrppArray
+
+    one_child_chunk_args_new(std::shared_ptr<Chunk> c_c, std::shared_ptr<Chunk> m_c) : child_chunk(c_c), the_one_chunk(m_c) {}
+
+    ~one_child_chunk_args_new() { }
+};
+
+
+bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_counter, unsigned long timeout, string debug_prefix);
 
 } // namespace dmrpp
 

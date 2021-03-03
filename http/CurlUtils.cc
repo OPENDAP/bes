@@ -1243,7 +1243,7 @@ bool is_retryable(std::string target_url) {
         vector<string>::iterator it;
         for (it = nr_regexs.begin(); it != nr_regexs.end() && retryable; it++) {
             BESRegex no_retry_regex((*it).c_str(), (*it).size());
-            int match_length;
+            size_t match_length;
             match_length = no_retry_regex.match(target_url.c_str(), target_url.size(), 0);
             if (match_length == target_url.size()) {
                 BESDEBUG(MODULE, prolog << "The url: '" << target_url << "' fully matched the "
@@ -1333,11 +1333,11 @@ bool eval_http_get_response(CURL *ceh, char *error_buffer, const string &request
     stringstream msg;
     if (http_code >= 400) {
         msg << "ERROR - The HTTP GET request for the source URL: " << requested_url << " FAILED. ";
-        msg << "CURLINFO_EFFECTIVE_URL: " << last_accessed_url;
-        msg << " The response had an HTTP status of " << http_code;
-        msg << " which means '" << http_status_to_string(http_code) << "'";
+        msg << "CURLINFO_EFFECTIVE_URL: " << last_accessed_url << " ";
         BESDEBUG(MODULE, prolog << msg.str() << endl);
     }
+    msg << "The response had an HTTP status of " << http_code;
+    msg << " which means '" << http_status_to_string(http_code) << "'";
 
     // Newer Apache servers return 206 for range requests. jhrg 8/8/18
     switch (http_code) {
@@ -1809,7 +1809,6 @@ curl_slist *append_http_header(curl_slist *slist, const string &header_name, con
  * @return
  */
 curl_slist *add_auth_headers(curl_slist *request_headers) {
-    curl_slist *temp = NULL;
     bool found;
     string s;
 

@@ -60,7 +60,7 @@ FONcInt64::FONcInt64( BaseType *b )
 
 /** @brief Destructor that cleans up the instance
  *
- * The DAP Int64 instance does not belong to the FONcByte
+ * The DAP Int64 instance does not belong to the FONcInt64
  * instance, so it is not deleted.
  */
 FONcInt64::~FONcInt64()

@@ -61,7 +61,7 @@ FONcShort::FONcShort( BaseType *b )
 
 /** @brief Destructor that cleans up the short
  *
- * The DAP Int16 or UInt16 instance does not belong to the FONcByte
+ * The DAP Int16 instance does not belong to the FONcShort
  * instance, so it is not deleted.
  */
 FONcShort::~FONcShort()

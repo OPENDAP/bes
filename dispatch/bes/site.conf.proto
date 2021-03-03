@@ -92,20 +92,36 @@
 ###################################################################################
 # httpd_catalog module
 #
-# By default, this module is turned off. Remove the comment to enable.
-#
+# By default, this module is turned off.
+# Uncomment the following line to enable.
 #BES.modules += httpd
 #
-#HttpResourceCache.dir = /tmp/hyrax_hc
-#HttpResourceCache.prefix = hc_
-#HttpResourceCache.size = 500
-#
-# For each entry in Httpd_Catalog.Collections you have to make sure that
-# the target address is on the Gateway.Whitelist
-# example:
+# For each entry added to Httpd_Catalog.Collections you have to make sure that
+# the target address is on the AllowedHosts list
+# Example:
 #
 #Httpd_Catalog.Collections = test:http://test.opendap.org/data/
-#Gateway.Whitelist += http://test.opendap.org/
+#AllowedHosts += ^http:\/\/test\.opendap\.org\/.*$
+#
+###################################################################################
+
+
+###################################################################################
+# HTTP Cache Management
+# Depending on your deployment the server may be tasked with retrieving various
+# things from remote locations. These are typically cached in a local filesystem
+# HTTP cache. If the default values, as shown below, are not sufficient, uncomment
+# the lines below and adjust the values as needed.
+#
+# Cache directory where the cached files are stored.
+#Http.Cache.dir=/tmp/hyrax_http
+#
+# Cache file prefix.
+#Http.Cache.prefix=http_
+#
+# Max Cache Size in MB
+#Http.Cache.size=500
+#
 #
 ###################################################################################
 

@@ -2,7 +2,7 @@
 
 AT_INIT([modules/fileout_netcdf/tests testsuite])
 
-T_TESTED([besstandalone])
+AT_TESTED([besstandalone])
 
 m4_include([../../handler_tests_macros.m4])
 m4_include([local_handler_tests_macros.m4])
@@ -120,6 +120,10 @@ dnl Test added for the fix for Hyrax-764. sk 08/17/18
 dnl Test added for the fix for HK-23.
 AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/testFillValue.bescmd)
 
+# testing for NaN values - sbl 12.22.20
+AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/nan00.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/nan01.bescmd)
+
 dnl NC4 test
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/simpleT00.8.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/simpleT00.9.bescmd)
@@ -152,7 +156,15 @@ dnl Add response that supports group(HDF5 default response et al.)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/nc4_group_atomic.h5.2.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/t_cf_grp.h5.2.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/simple_nc4.nc.h5.2.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/t_group_scalar.h5.2.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/t_grp_string.h5.2.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/simple_nc4.nc_constraint.h5.2.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/simple_nc4.nc_constraint_2.h5.2.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/dim_scale_smix.h5_local_constraint.2.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/dim_scale_dim_name_clash.h5_local_constraint.2.bescmd)
  
-
+dnl Add response that checks the empty expression constraint
+dnl The whole file is supposed to convert to netCDF
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/grid_1_2d_dap2_ce_empty.h5.2.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/grid_1_2d_dap2_to_4_ce_empty.h5.2.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/d_group_dap4_ce_empty.h5.2.bescmd)

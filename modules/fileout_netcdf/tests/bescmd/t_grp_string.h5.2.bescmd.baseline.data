@@ -1,0 +1,55 @@
+netcdf test {
+dimensions:
+	dim4 = 4 ;
+	array_1d_len1 = 8 ;
+	dim5 = 2 ;
+	dim6 = 2 ;
+	array_2d_len2 = 8 ;
+	dim7 = 1 ;
+	dim8 = 1 ;
+	array_special_case_len3 = 2 ;
+	scalar_len9 = 31 ;
+variables:
+	char array_1d(dim4, array_1d_len1) ;
+		array_1d:value = "Parting\000\000\000\nis so  \000\000\000\nswe    \000\000\000\n       " ;
+	char array_2d(dim5, dim6, array_2d_len2) ;
+		array_2d:value = "Parting\000\000\000\nis so  \000\000\000\nswe    \000\000\000\n       " ;
+	char array_special_case(dim7, dim8, array_special_case_len3) ;
+		array_special_case:value = "A" ;
+	char scalar(scalar_len9) ;
+		scalar:value = "Parting is such sweet sorrow." ;
+data:
+
+ array_1d =
+  "Parting",
+  "is so  ",
+  "swe    ",
+  "       " ;
+
+ array_2d =
+  "Parting",
+  "is so  ",
+  "swe    ",
+  "       " ;
+
+ array_special_case =
+  "A" ;
+
+ scalar = "Parting is such sweet sorrow." ;
+
+group: g {
+  dimensions:
+  	dim11 = 2 ;
+  	dim12 = 2 ;
+  	array_2d_len10 = 9 ;
+  variables:
+  	char array_2d(dim11, dim12, array_2d_len10) ;
+  data:
+
+   array_2d =
+  "Parting!",
+  "is so   ",
+  "swe     ",
+  "        " ;
+  } // group g
+}

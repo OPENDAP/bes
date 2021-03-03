@@ -31,6 +31,7 @@ addons:
     - libcurl4-openssl-dev
     - libcppunit-dev
     - libicu-dev
+    - gcovr
     # - debhelper These packages were used only for debian builds
     # - devscripts
     # - lintian
@@ -48,7 +49,7 @@ env:
     - PATH=$prefix/bin:$prefix/deps/bin:$PATH
     - TESTSUITEFLAGS=-j7
     # Change this when libdap version numbers change
-    - LIBDAP_RPM_VERSION=3.20.6-1
+    - LIBDAP_RPM_VERSION=3.20.7-1
     # SONAR_LOGIN, made using "travis encrypt --org -r OPENDAP/bes SONAR_LOGIN=335df..."
     - secure: "TmoFcgeIyAEjFyrlqB6rhdUhDqPJfxVZmT5fewgVHj0xm767VZ6DU21mM6ZHgNGyk99TzX0Gx/dwSqbsUj18hSSAvEa7fJQSKJ5IBJvTeMKhXn1DPPG9VpuZ4ti5afRDiNr6EJKbVxwBTkz+3798S8LajPuXGupYupir8IJQCt8="
     # SONAR_MODULES_LOGIN, using "travis encrypt --org -r OPENDAP/bes SONAR_MODULES_LOGIN=42ba..."
@@ -92,10 +93,10 @@ before_script:
 stages:
   - name: build
     if: branch = master
-  - name: package
-    if:  branch = master OR branch = travis
   - name: scan
     if:  branch = master
+  - name: package
+    if:  branch = master OR branch = travis
 
 jobs:
   include:
@@ -103,8 +104,12 @@ jobs:
     name: "scan bes"
     script:
     - export BES_BUILD=sonar-bes-framework
-    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer --enable-coverage
     - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
+
+    - make check -j7
+    - make coverage
+
     - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.login=$SONAR_LOGIN
     - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes | grep "QUALITY GATE PASS"
 
@@ -112,8 +117,12 @@ jobs:
     name: "scan bes-modules"
     script:
       - export BES_BUILD=sonar-bes-modules
-      - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+      - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer  --enable-coverage
       - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
+
+      - make check -j7
+      - make coverage
+
       - sonar-scanner -Dproject.settings=sonar-bes-modules.properties -Dsonar.login=$SONAR_MODULES_LOGIN
       - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-modules | grep "QUALITY GATE PASS"
 
@@ -121,8 +130,12 @@ jobs:
     name: "scan bes-submodules"
     script:
       - export BES_BUILD=sonar-bes-submodules
-      - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+      - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer  --enable-coverage
       - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
+
+      - make check -j7
+      - make coverage
+
       - sonar-scanner -Dproject.settings=sonar-bes-submodules.properties -Dsonar.login=$SONAR_SUBMODULES_LOGIN
       - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-submodules | grep "QUALITY GATE PASS"
 

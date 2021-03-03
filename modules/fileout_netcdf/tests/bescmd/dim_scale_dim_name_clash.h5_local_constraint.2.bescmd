@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="nc4_group_mlls" space="catalog">/data/dim_scale_dim_name_clash.h5</setContainer>
+    <define name="d">
+	<container name="nc4_group_mlls" >
+    <!-- dap4constraint>/data[0:1][0:1];/grp1/grp1_data[0:1][0:1]</dap4constraint -->
+    <dap4constraint>/v[0:2];/v_mdim[0:2][0:1];/g/vg[0:1];/g/vg_mdim[1:2][0:1]</dap4constraint>
+    <!-- dap4constraint>/x=[0:1];/y=[0:1];/data;/grp1/grp1_data</dap4constraint -->
+    </container>
+    </define>
+    <get type="dap" definition="d" returnAs="netcdf-4"/>
+</request>

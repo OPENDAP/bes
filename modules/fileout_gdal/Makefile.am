@@ -12,12 +12,16 @@ SUBDIRS = . tests
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=fileout_gdal
-M_VER=0.10.8
+M_VER=0.10.9
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(GDAL_CFLAGS) $(DAP_CFLAGS)
 LIBADD = $(GDAL_LDFLAGS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
+
+AM_CXXFLAGS=
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libfong_module.la

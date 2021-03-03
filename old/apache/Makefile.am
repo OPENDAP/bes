@@ -7,6 +7,10 @@ AUTOMAKE_OPTIONS = foreign check-news
 ACLOCAL_AMFLAGS = -I conf
 AM_CPPFLAGS = $(BES_CPPFLAGS) -I$(APACHE_DIR)/src/include -I$(APACHE_DIR)/src/os/unix
 
+AM_CXXFLAGS=
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
+
 SUBDIRS = unit-tests
 
 noinst_LTLIBRARIES = libbes_apache_module.la

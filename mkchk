@@ -1,0 +1,1 @@
+make -k -j20 check 2>&1 | tee mk.log | grep FAIL

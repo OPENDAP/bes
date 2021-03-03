@@ -16,7 +16,7 @@ AM_CPPFLAGS += $(OPENSSL_INC)
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=dmrpp_module
-M_VER=1.1.2
+M_VER=1.1.3
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
@@ -26,7 +26,10 @@ AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 # or ./configure --enable-developer --disable-shared
 # the --disable-shared is not required, but it seems to help with debuggers.
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align 
-TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
+
+AM_CXXFLAGS=
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
 
 SUBDIRS = . unit-tests tests tests_build_dmrpp data
 
@@ -50,6 +53,7 @@ DmrppInt8.cc DmrppUInt16.cc DmrppUInt32.cc DmrppUInt64.cc DmrppStr.cc  \
 DmrppStructure.cc DmrppUrl.cc DmrppD4Enum.cc DmrppD4Group.cc DmrppD4Opaque.cc \
 DmrppD4Sequence.cc  DmrppTypeFactory.cc DmrppParserSax2.cc DmrppMetadataStore.cc \
 CredentialsManager.cc AccessCredentials.cc NgapS3Credentials.cc \
+SuperChunk.cc \
 awsv4.cc
 
 BES_HDRS = DMRpp.h DmrppCommon.h Chunk.h  CurlHandlePool.h DmrppByte.h \
@@ -58,7 +62,8 @@ DmrppInt64.h DmrppInt8.h DmrppUInt16.h DmrppUInt32.h DmrppUInt64.h \
 DmrppStr.h DmrppStructure.h DmrppUrl.h DmrppD4Enum.h DmrppD4Group.h \
 DmrppD4Opaque.h DmrppD4Sequence.h DmrppTypeFactory.h DmrppParserSax2.h \
 CredentialsManager.h AccessCredentials.h NgapS3Credentials.h \
-DmrppMetadataStore.h awsv4.h DmrppNames.h byteswap_compat.h \
+DmrppMetadataStore.h awsv4.h DmrppNames.h byteswap_compat.h  \
+SuperChunk.h \
 Base64.h
 
 DMRPP_MODULE = DmrppModule.cc DmrppRequestHandler.cc DmrppModule.h DmrppRequestHandler.h
@@ -71,7 +76,7 @@ libdmrpp_module_la_LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIB
 $(H5_LDFLAGS) $(H5_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) -ltest-types
 
 bin_PROGRAMS = build_dmrpp check_dmrpp merge_dmrpp reduce_mdf
-noinst_PROGRAMS = retriever
+noinst_PROGRAMS = retriever superchunky
 
 # build_dmrpp config
 build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS) -I$(srcdir)/../hdf5_handler
@@ -98,6 +103,13 @@ reduce_mdf_LDADD =   $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) -lz
 retriever_CPPFLAGS = $(AM_CPPFLAGS)
 retriever_SOURCES = $(BES_SRCS) $(BES_HDRS) $(BUILD_DMRPP) retriever.cc
 retriever_LDADD =   $(BES_DAP_LIB) $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) \
+$(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) \
+$(OPENSSL_LIBS) $(XML2_LIBS) $(BYTESWAP_LIBS) -lz
+
+# superchunky config
+superchunky_CPPFLAGS = $(AM_CPPFLAGS)
+superchunky_SOURCES = $(BES_SRCS) $(BES_HDRS) $(BUILD_DMRPP) SuperChunky.cc
+superchunky_LDADD =   $(BES_DAP_LIB) $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) \
 $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) \
 $(OPENSSL_LIBS) $(XML2_LIBS) $(BYTESWAP_LIBS) -lz
 
