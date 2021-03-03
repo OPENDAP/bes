@@ -67,7 +67,11 @@ public:
 
     void add(const std::string &url, AccessCredentials *ac);
     void load_credentials();
-    void clear(){ delete_instance(); }
+
+    void clear(){
+        creds.clear();
+        ngaps3CredentialsLoaded = false;
+    }
 
     AccessCredentials *get(const std::string &url);
 
