@@ -93,6 +93,7 @@ std::string get_env_value(const string &key){
     return value;
 }
 
+#if 0
 /**
  *  Get get the specified bes.conf configuration value. This function
  *  returns an empty string if the configuration variable is
@@ -113,7 +114,7 @@ std::string get_config_value(const string &key){
     }
     return value;
 }
-
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //
@@ -127,10 +128,6 @@ std::string get_config_value(const string &key){
 CredentialsManager *CredentialsManager::theCM(){
 
     std::call_once(d_cmac_init_once,CredentialsManager::initialize_instance);
-
-    if (theMngr == 0)
-        initialize_instance();
-
     return theMngr;
 }
 

@@ -51,10 +51,11 @@ namespace bes {
 class AllowedHosts {
 private:
 	static AllowedHosts *d_instance;
-
     std::vector<std::string> d_allowed_hosts;
 
-protected:
+    static void initialize_instance();
+    static void delete_instance();
+
     AllowedHosts();
 
 public:

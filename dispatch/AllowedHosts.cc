@@ -47,7 +47,11 @@ using namespace bes;
 #define MODULE "ah"
 #define prolog string("AllowedHosts::").append(__func__).append("() - ")
 
-AllowedHosts *AllowedHosts::d_instance = 0;
+AllowedHosts *AllowedHosts::d_instance = nullptr;
+/**
+ * Run once_flag for initializing the singleton instance.
+ */
+static std::once_flag d_ah_init_once;
 
 /**
  * @brief Static accessor for the singleton
@@ -57,8 +61,7 @@ AllowedHosts *AllowedHosts::d_instance = 0;
 AllowedHosts *
 AllowedHosts::theHosts()
 {
-    if (d_instance) return d_instance;
-    d_instance = new AllowedHosts;
+    std::call_once(d_ah_init_once,AllowedHosts::initialize_instance);
     return d_instance;
 }
 
@@ -72,6 +75,30 @@ AllowedHosts::AllowedHosts()
                                + "' has not been configured.", __FILE__, __LINE__);
     }
 }
+
+/**
+*
+*/
+void AllowedHosts::initialize_instance()
+{
+    d_instance = new AllowedHosts();
+#ifdef HAVE_ATEXIT
+    atexit(delete_instance);
+#endif
+}
+
+/**
+ * Private static function can only be called by friends and pThreads code.
+ */
+void AllowedHosts::delete_instance()
+{
+    delete d_instance;
+    d_instance = 0;
+}
+
+
+
+
 
 /**
  * This method provides an access condition assessment for URLs and files
@@ -132,7 +159,7 @@ bool AllowedHosts::is_allowed(const std::string &candidate_url)
                 isAllowed = false;
             }
             else {
-                int ret = file_path.compare(0, catalog_root.npos, catalog_root) == 0;
+                int ret = file_path.compare(0, string::npos, catalog_root) == 0;
                 BESDEBUG(MODULE, prolog << "file_path.compare(): " << ret << endl);
                 isAllowed = (ret==0);
                 relative_path = file_path.substr(catalog_root.length());
