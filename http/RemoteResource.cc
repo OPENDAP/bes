@@ -55,14 +55,13 @@
 using namespace std;
 
 #define BES_CATALOG_ROOT_KEY "BES.Catalog.catalog.RootDirectory"
-#define expiredInterval 3600
 
 #define prolog std::string("RemoteResource::").append(__func__).append("() - ")
 #define MODULE "rr"
 
 namespace http {
 
-    RemoteResource::RemoteResource(const std::string &url,const std::string &uid){
+    RemoteResource::RemoteResource(const std::string &url,const std::string &uid, long long expiredInterval){
 
         d_fd = 0;
         d_initialized = false;
@@ -72,6 +71,8 @@ namespace http {
         d_resourceCacheFileName.clear();
         d_response_headers = new vector<string>();
         d_http_response_headers = new map<string, string>();
+
+        d_expires_interval = expiredInterval;
 
         if (url.empty()) {
             throw BESInternalError(prolog + "Remote resource URL is empty.", __FILE__, __LINE__);
@@ -442,20 +443,27 @@ namespace http {
     } //end RemoteResource::load_hdrs_from_file()
 
     bool RemoteResource::is_cached_resource_expired(const std::string &filename, const std::string &uid){
+        BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
         struct stat statbuf;
         if (stat(filename.c_str(), &statbuf) == -1){
             throw BESNotFoundError(strerror(errno), __FILE__, __LINE__);
         }//end if
+        BESDEBUG(MODULE, prolog << "File exists" << endl);
 
         time_t cacheTime = statbuf.st_ctime;
+        BESDEBUG(MODULE, prolog << "Cache file creation time: " << cacheTime << endl);
         time_t nowTime = time(0);
-        double diffSeconds = difftime(cacheTime,nowTime);
+        BESDEBUG(MODULE, prolog << "Time now: " << nowTime << endl);
+        double diffSeconds = difftime(nowTime,cacheTime);
+        BESDEBUG(MODULE, prolog << "Time difference between cacheTime and nowTime: " << diffSeconds << endl);
 
-        if (diffSeconds > expiredInterval){ //60 secs * 60 mins = 3600 seconds/1 hour
+        if (diffSeconds > d_expires_interval){
+            BESDEBUG(MODULE, prolog << " refresh = TRUE " << endl);
             return true;
         }
         else{
+            BESDEBUG(MODULE, prolog << " refresh = FALSE " << endl);
             return false;
         }
     } //end RemoteResource::is_cache_resource_expired()

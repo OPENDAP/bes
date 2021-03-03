@@ -26,6 +26,7 @@
 
 #ifndef  _bes_http_REMOTE_HTTP_RESOURCE_H_
 #define  _bes_http_REMOTE_HTTP_RESOURCE_H_ 1
+#define DEFAULT_EXPIRED_INTERVAL 3600
 
 #include <curl/curl.h>
 #include <curl/easy.h>
@@ -77,6 +78,9 @@ namespace http {
         /// The HTTP response headers returned by the request for the remote resource and parsed into KVP
         std::map<std::string, std::string> *d_http_response_headers; // Response headers
 
+        /// The interval before a cache resource needs to be refreshed
+        long long d_expires_interval;
+
 #if 0
         // FIXME Not impl. jhrg 8/7/20
         /**
@@ -117,12 +121,12 @@ namespace http {
     protected:
         RemoteResource() :
                 d_fd(0), d_initialized(false), d_resourceCacheFileName(""),
-                d_response_headers(0), d_http_response_headers(0) {
+                d_response_headers(0), d_http_response_headers(0), d_expires_interval(DEFAULT_EXPIRED_INTERVAL) {
         }
 
     public:
         // RemoteResource(const std::string &url, const std::string &uid = "", const std::string &echo_token = "");
-        RemoteResource(const std::string &url, const std::string &uid = "");
+        RemoteResource(const std::string &url, const std::string &uid = "", long long expires_interval = DEFAULT_EXPIRED_INTERVAL);
 
         virtual ~RemoteResource();
 

@@ -482,7 +482,44 @@ public:
       */
      void is_cached_resource_expired_test(){
          if(debug) cerr << "|--------------------------------------------------|" << endl;
+         if(debug) cerr << prolog << "BEGIN" << endl;
 
+         try {
+             RemoteResource rhr("http://google.com", "foobar", 1);
+             if(debug) cerr << prolog << "remoteResource rhr: created, expires_interval: " << rhr.d_expires_interval << endl;
+
+             rhr.d_resourceCacheFileName = d_temp_file;
+             if(debug) cerr << prolog << "d_resourceCacheFilename: " << d_temp_file << endl;
+
+             // Get a pointer to the singleton cache instance for this process.
+             HttpCache *cache = HttpCache::get_instance();
+             if (!cache) {
+                 ostringstream oss;
+                 oss << prolog << "FAILED to get local cache. ";
+                 oss << "Unable to proceed with request for " << d_temp_file;
+                 oss << " The server MUST have a valid HTTP cache configuration to operate." << endl;
+                 CPPUNIT_FAIL(oss.str());
+             }
+             if(!cache->get_exclusive_lock(d_temp_file, rhr.d_fd)){
+                 CPPUNIT_FAIL(prolog + "Failed to acquire exclusive lock on: "+d_temp_file);
+             }
+             rhr.d_initialized = true;
+
+             sleep(2);
+
+             bool refresh = rhr.is_cached_resource_expired(rhr.d_resourceCacheFileName, rhr.d_uid);
+             if(debug) cerr << prolog << "is_cached_resource_expired() called, refresh: " << refresh << endl;
+
+             CPPUNIT_ASSERT(refresh);
+         }
+         catch (BESError &besE){
+             stringstream msg;
+             msg << endl << prolog << "Caught BESError! message: " << besE.get_verbose_message();
+             msg << " type: " << besE.get_bes_error_type() << endl;
+             if(debug) cerr << msg.str();
+             CPPUNIT_FAIL(msg.str());
+         }
+         if(debug) cerr << prolog << "END" << endl;
 
      }
 
@@ -541,7 +578,7 @@ public:
 
     CPPUNIT_TEST(load_hdrs_from_file_test);
     CPPUNIT_TEST(update_file_and_headers_test);
-    //CPPUNIT_TEST(is_cached_resource_expired_test);
+    CPPUNIT_TEST(is_cached_resource_expired_test);
     CPPUNIT_TEST(filter_test);
     CPPUNIT_TEST(get_http_url_test);
     CPPUNIT_TEST(get_file_url_test);
