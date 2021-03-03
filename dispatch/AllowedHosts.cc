@@ -77,7 +77,7 @@ AllowedHosts::AllowedHosts()
 }
 
 /**
-*
+* @brief THis private static function that initializes the singleton instance.
 */
 void AllowedHosts::initialize_instance()
 {
@@ -88,7 +88,7 @@ void AllowedHosts::initialize_instance()
 }
 
 /**
- * Private static function can only be called by friends and pThreads code.
+ * @brief This private static function can only be called once since it destroys the singleton instance for the duration of the process.
  */
 void AllowedHosts::delete_instance()
 {
@@ -96,19 +96,11 @@ void AllowedHosts::delete_instance()
     d_instance = 0;
 }
 
-
-
-
-
 /**
  * This method provides an access condition assessment for URLs and files
  * to be accessed by the BES. The http and https URLs are verified against a
  * allowed hosts list assembled from configuration. All file URLs are checked to be
  * sure that they reference a resource within the BES default catalog.
- *
- * @note AllowedHosts is a singleton. This method will instantiate the class
- * if that has not already been done. This method should only be called from
- * the main thread of a multi-threaded application.
  *
  * @param candidate_url The URL to test
  * @return True if the URL may be dereferenced, given the BES's configuration,
@@ -146,11 +138,10 @@ bool AllowedHosts::is_allowed(const std::string &candidate_url)
         string catalog_root = bcat->get_root();
         BESDEBUG(MODULE, prolog << "Catalog root: "<< catalog_root << endl);
 
-
         // Never a relative path shall be accepted.
         // change??
-       // if( file_path[0] != '/'){
-       //     file_path.insert(0,"/");
+        // if( file_path[0] != '/'){
+        //     file_path.insert(0,"/");
         //}
 
         string relative_path;
@@ -188,8 +179,6 @@ bool AllowedHosts::is_allowed(const std::string &candidate_url)
                 isAllowed=false;
             }
         }
-
-
         BESDEBUG(MODULE, prolog << "File Access Allowed: "<< (isAllowed?"true ":"false ") << endl);
     }
     else {
