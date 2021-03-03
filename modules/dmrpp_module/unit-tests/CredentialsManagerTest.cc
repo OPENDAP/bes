@@ -54,7 +54,7 @@ static string bes_conf_file = "/bes.conf";
 #undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
 
-namespace dmrpp {
+// namespace dmrpp {
 
 class CredentialsManagerTest: public CppUnit::TestFixture {
 private:
@@ -354,7 +354,7 @@ CPPUNIT_TEST_SUITE( CredentialsManagerTest );
 
 CPPUNIT_TEST_SUITE_REGISTRATION(CredentialsManagerTest);
 
-} // namespace dmrpp
+// } // namespace dmrpp
 
 int main(int argc, char*argv[])
 {
@@ -391,7 +391,7 @@ int main(int argc, char*argv[])
     else {
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
-            string test = dmrpp::CredentialsManagerTest::suite()->getName().append("::").append(argv[i]);
+            string test = CredentialsManagerTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
             ++i;
         }
