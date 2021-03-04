@@ -230,6 +230,9 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
         for (unsigned int i = 0; i <dimsizes.size();i++)
             temp_total_elems = temp_total_elems*dimsizes[i];
         short dtype_size = HDF5CFUtil::H5_numeric_atomic_type_size(dtype);
+        // CHECK: I think when signed 8-bit needs to be converted to int16, dtype_size should also change.
+        if(is_dap4 == false && dtype==H5CHAR) 
+            dtype_size = 2;
 
         int expected_file_size = dtype_size *temp_total_elems;
         int fd = 0;
@@ -404,6 +407,10 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
                 throw InternalErr (__FILE__, __LINE__, eherr.str ());
 
             }
+ 
+            if(is_dap4 == true) 
+                set_value((dods_int8 *)&val[0],nelms);
+            else {
 
             vector<short>newval;
             newval.resize(nelms);
@@ -412,6 +419,7 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
                 newval[counter] = (short) (val[counter]);
 
             set_value ((dods_int16 *) &newval[0], nelms);
+            }
 
             if(true == data_to_disk_cache) {
                 try {
@@ -939,6 +947,8 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
                                      );
 
 #endif
+
+                     if(is_dap4 == false) {
                      vector<short>final_val;
                      subset<short>(
                                       &buf[0],
@@ -952,7 +962,23 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
                                       0
                                      );
                      set_value((dods_int16*)&final_val[0],nelms_to_send);
-
+                     }
+                     else {
+                     vector<char>final_val;
+                     subset<char>(
+                                      &buf[0],
+                                      rank,
+                                      dimsizes,
+                                      &cd_start[0],
+                                      &cd_step[0],
+                                      &cd_count[0],
+                                      &final_val,
+                                      cd_pos,
+                                      0
+                                     );
+                     set_value((dods_int8*)&final_val[0],nelms_to_send);
+                     }
+ 
                 }
 
                     break;
@@ -1325,7 +1351,7 @@ HDF5CFArray::write_data_to_cache(hid_t dset_id, hid_t /*dspace_id*/, hid_t /*msp
 
     vector<char>val;
 
-    if(H5CHAR == dtype) {
+    if(H5CHAR == dtype && is_dap4 == false) {
  
         vector<short>newval;
         newval.resize(total_nelem);

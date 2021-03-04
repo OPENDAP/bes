@@ -763,7 +763,7 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
         HDF5CFArray *ar = NULL;
         try {
             ar = new HDF5CFArray(var->getRank(), file_id, filename, var->getType(), dimsizes, var->getFullPath(),
-                var->getTotalElems(), CV_UNSUPPORTED, false, var->getCompRatio(), false,var->getNewName(), bt);
+                var->getTotalElems(), CV_UNSUPPORTED, false, var->getCompRatio(), true,var->getNewName(), bt);
         }
         catch (...) {
             delete bt;
@@ -777,9 +777,12 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
                 ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
         }
 
+        delete bt;
         ar->set_is_dap4(true);
         BaseType* d4_var=ar->h5cfdims_transform_to_dap4(d4_grp);
+        map_cfh5_attrs_to_dap4(var,d4_var);
         d4_grp->add_var_nocopy(d4_var);
+        delete ar;
 
     }
 
