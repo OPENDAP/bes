@@ -61,7 +61,7 @@ static std::once_flag d_ah_init_once;
 AllowedHosts *
 AllowedHosts::theHosts()
 {
-    std::call_once(d_ah_init_once,AllowedHosts::initialize_instance);
+    std::call_once(d_ah_init_once, AllowedHosts::initialize_instance);
     return d_instance;
 }
 
@@ -77,7 +77,7 @@ AllowedHosts::AllowedHosts()
 }
 
 /**
-* @brief THis private static function that initializes the singleton instance.
+* @brief This private static function initializes the singleton instance.
 */
 void AllowedHosts::initialize_instance()
 {
@@ -145,7 +145,7 @@ bool AllowedHosts::is_allowed(const std::string &candidate_url)
         //}
 
         string relative_path;
-        if(file_path[0] == '/'){
+        if(file_path[0] == '/') {
             if(file_path.length() < catalog_root.length()) {
                 isAllowed = false;
             }
@@ -165,7 +165,7 @@ bool AllowedHosts::is_allowed(const std::string &candidate_url)
         // string::compare() returns 0 if the path strings match exactly.
         // And since we are just looking at the catalog.root as a prefix of the resource
         // name we only allow access to the resource for an exact match.
-        if(isAllowed){
+        if(isAllowed) {
             // If we stop adding a '/' to file_path values that don't begin with one
             // then we need to detect the use of the relative path here
             bool follow_sym_links = bcat->get_catalog_utils()->follow_sym_links();
