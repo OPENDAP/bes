@@ -188,5 +188,5 @@ dnl #endif /* _config_hdf5_h */])
 modulesdir=$BES_MODULE_DIR
 AC_SUBST(modulesdir)
 
-AC_CONFIG_FILES([Makefile bes-testsuite/Makefile bes-testsuite/atlocal bes-testsuite/bes.conf bes-testsuite/bes.default.conf bes-testsuite/bes.ignore.conf])
+AC_CONFIG_FILES([Makefile bes-testsuite/Makefile bes-testsuite/atlocal bes-testsuite/bes.conf bes-testsuite/bes.default.conf bes-testsuite/bes.ignore.conf bes-testsuite/bes.cfdmr.conf])
 AC_OUTPUT
