@@ -105,7 +105,12 @@ bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_count
         while(!future_finished && future_is_valid && futr != fend){
             future_is_valid = (*futr).valid();
             if(future_is_valid){
-                // FIXME What happens if wait_for() always returns future_status::timeout for a stuck thread?
+                // What happens if wait_for() always returns future_status::timeout for a stuck thread?
+                // If that were to happen, the loop would run forever. However, we assume that these
+                // threads are never 'stuck.' We assume that their computations always complete, either
+                // with success or failure. For the transfer threads, timeouts will stop them if nothing
+                // else does and for the decompression threads, the worst case is a segmentation fault.
+                // jhrg 2/5/21
                 if((*futr).wait_for(timeout_ms) != std::future_status::timeout){
                     try {
                         bool success = (*futr).get();

@@ -7,8 +7,6 @@ Attributes {
         }
     }
     SRB1 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         String PhotometricInterpretation "Gray";
     }
     new_time {
