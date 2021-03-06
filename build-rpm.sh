@@ -40,10 +40,6 @@ then
     export PATH=$PATH:/root/.local/bin
 fi
 
-# Patch; remove this when we update the centos7 build container.
-# jhrg 3/5/21
-yum install -y libpng-devel
-
 # Get the pre-built dependencies (all static libraries). $OS is 'centos6' or 'centos7'
 # aws s3 cp s3://opendap.travis.build/
 aws s3 cp s3://opendap.travis.build/hyrax-dependencies-$OS-static.tar.gz /tmp/
