@@ -5,11 +5,9 @@ Attributes {
         Float64 Easternmost_Easting -39.375;
         Float64 Westernmost_Easting -100.625;
         String GeoTransform "-100.625 1.25 0 48.5 0 -1";
-        String spatial_ref "GEOGCS[\"Coordinate System imported from GRIB file\",DATUM[\"unknown\",SPHEROID[\"Sphere\",6371200,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433]]";
+        String spatial_ref "GEOGCS[\"Coordinate System imported from GRIB file\",DATUM[\"unnamed\",SPHEROID[\"Sphere\",6371200,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AXIS[\"Latitude\",NORTH],AXIS[\"Longitude\",EAST]]";
     }
     band_1 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -23,8 +21,6 @@ Attributes {
         }
     }
     band_2 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -38,8 +34,6 @@ Attributes {
         }
     }
     band_3 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -53,8 +47,6 @@ Attributes {
         }
     }
     band_4 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -68,8 +60,6 @@ Attributes {
         }
     }
     band_5 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -83,8 +73,6 @@ Attributes {
         }
     }
     band_6 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -98,8 +86,6 @@ Attributes {
         }
     }
     band_7 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -113,8 +99,6 @@ Attributes {
         }
     }
     band_8 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -128,8 +112,6 @@ Attributes {
         }
     }
     band_9 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -143,8 +125,6 @@ Attributes {
         }
     }
     band_10 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -158,8 +138,6 @@ Attributes {
         }
     }
     band_11 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -173,8 +151,6 @@ Attributes {
         }
     }
     band_12 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -188,8 +164,6 @@ Attributes {
         }
     }
     band_13 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -203,8 +177,6 @@ Attributes {
         }
     }
     band_14 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -218,8 +190,6 @@ Attributes {
         }
     }
     band_15 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -233,8 +203,6 @@ Attributes {
         }
     }
     band_16 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -248,8 +216,6 @@ Attributes {
         }
     }
     band_17 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -263,8 +229,6 @@ Attributes {
         }
     }
     band_18 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -278,8 +242,6 @@ Attributes {
         }
     }
     band_19 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -293,8 +255,6 @@ Attributes {
         }
     }
     band_20 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -308,8 +268,6 @@ Attributes {
         }
     }
     band_21 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -323,8 +281,6 @@ Attributes {
         }
     }
     band_22 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -338,8 +294,6 @@ Attributes {
         }
     }
     band_23 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -353,8 +307,6 @@ Attributes {
         }
     }
     band_24 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -368,8 +320,6 @@ Attributes {
         }
     }
     band_25 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -383,8 +333,6 @@ Attributes {
         }
     }
     band_26 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -398,8 +346,6 @@ Attributes {
         }
     }
     band_27 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -413,8 +359,6 @@ Attributes {
         }
     }
     band_28 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -428,8 +372,6 @@ Attributes {
         }
     }
     band_29 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -443,8 +385,6 @@ Attributes {
         }
     }
     band_30 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -458,8 +398,6 @@ Attributes {
         }
     }
     band_31 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -473,8 +411,6 @@ Attributes {
         }
     }
     band_32 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -488,8 +424,6 @@ Attributes {
         }
     }
     band_33 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -503,8 +437,6 @@ Attributes {
         }
     }
     band_34 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -518,8 +450,6 @@ Attributes {
         }
     }
     band_35 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -533,8 +463,6 @@ Attributes {
         }
     }
     band_36 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -548,8 +476,6 @@ Attributes {
         }
     }
     band_37 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -563,8 +489,6 @@ Attributes {
         }
     }
     band_38 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -578,8 +502,6 @@ Attributes {
         }
     }
     band_39 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -593,8 +515,6 @@ Attributes {
         }
     }
     band_40 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -608,8 +528,6 @@ Attributes {
         }
     }
     band_41 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -623,8 +541,6 @@ Attributes {
         }
     }
     band_42 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -638,8 +554,6 @@ Attributes {
         }
     }
     band_43 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -653,8 +567,6 @@ Attributes {
         }
     }
     band_44 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -668,8 +580,6 @@ Attributes {
         }
     }
     band_45 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -683,8 +593,6 @@ Attributes {
         }
     }
     band_46 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -698,8 +606,6 @@ Attributes {
         }
     }
     band_47 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -713,8 +619,6 @@ Attributes {
         }
     }
     band_48 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -728,8 +632,6 @@ Attributes {
         }
     }
     band_49 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -743,8 +645,6 @@ Attributes {
         }
     }
     band_50 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -758,8 +658,6 @@ Attributes {
         }
     }
     band_51 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -773,8 +671,6 @@ Attributes {
         }
     }
     band_52 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -788,8 +684,6 @@ Attributes {
         }
     }
     band_53 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -803,8 +697,6 @@ Attributes {
         }
     }
     band_54 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -818,8 +710,6 @@ Attributes {
         }
     }
     band_55 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -833,8 +723,6 @@ Attributes {
         }
     }
     band_56 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -848,8 +736,6 @@ Attributes {
         }
     }
     band_57 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -863,8 +749,6 @@ Attributes {
         }
     }
     band_58 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -878,8 +762,6 @@ Attributes {
         }
     }
     band_59 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -893,8 +775,6 @@ Attributes {
         }
     }
     band_60 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -908,8 +788,6 @@ Attributes {
         }
     }
     band_61 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -923,8 +801,6 @@ Attributes {
         }
     }
     band_62 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -938,8 +814,6 @@ Attributes {
         }
     }
     band_63 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -953,8 +827,6 @@ Attributes {
         }
     }
     band_64 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -968,8 +840,6 @@ Attributes {
         }
     }
     band_65 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -983,8 +853,6 @@ Attributes {
         }
     }
     band_66 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -998,8 +866,6 @@ Attributes {
         }
     }
     band_67 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1013,8 +879,6 @@ Attributes {
         }
     }
     band_68 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1028,8 +892,6 @@ Attributes {
         }
     }
     band_69 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1043,8 +905,6 @@ Attributes {
         }
     }
     band_70 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1058,8 +918,6 @@ Attributes {
         }
     }
     band_71 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1073,8 +931,6 @@ Attributes {
         }
     }
     band_72 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1088,8 +944,6 @@ Attributes {
         }
     }
     band_73 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1103,8 +957,6 @@ Attributes {
         }
     }
     band_74 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1118,8 +970,6 @@ Attributes {
         }
     }
     band_75 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1133,8 +983,6 @@ Attributes {
         }
     }
     band_76 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1148,8 +996,6 @@ Attributes {
         }
     }
     band_77 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1163,8 +1009,6 @@ Attributes {
         }
     }
     band_78 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1178,8 +1022,6 @@ Attributes {
         }
     }
     band_79 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1193,8 +1035,6 @@ Attributes {
         }
     }
     band_80 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1208,8 +1048,6 @@ Attributes {
         }
     }
     band_81 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1223,8 +1061,6 @@ Attributes {
         }
     }
     band_82 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1238,8 +1074,6 @@ Attributes {
         }
     }
     band_83 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1253,8 +1087,6 @@ Attributes {
         }
     }
     band_84 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1268,8 +1100,6 @@ Attributes {
         }
     }
     band_85 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1283,8 +1113,6 @@ Attributes {
         }
     }
     band_86 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1298,8 +1126,6 @@ Attributes {
         }
     }
     band_87 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1313,8 +1139,6 @@ Attributes {
         }
     }
     band_88 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1328,8 +1152,6 @@ Attributes {
         }
     }
     band_89 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1343,8 +1165,6 @@ Attributes {
         }
     }
     band_90 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1358,8 +1178,6 @@ Attributes {
         }
     }
     band_91 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1373,8 +1191,6 @@ Attributes {
         }
     }
     band_92 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1388,8 +1204,6 @@ Attributes {
         }
     }
     band_93 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1403,8 +1217,6 @@ Attributes {
         }
     }
     band_94 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1418,8 +1230,6 @@ Attributes {
         }
     }
     band_95 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1433,8 +1243,6 @@ Attributes {
         }
     }
     band_96 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1448,8 +1256,6 @@ Attributes {
         }
     }
     band_97 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1463,8 +1269,6 @@ Attributes {
         }
     }
     band_98 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1478,8 +1282,6 @@ Attributes {
         }
     }
     band_99 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1493,8 +1295,6 @@ Attributes {
         }
     }
     band_100 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1508,8 +1308,6 @@ Attributes {
         }
     }
     band_101 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1523,8 +1321,6 @@ Attributes {
         }
     }
     band_102 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1538,8 +1334,6 @@ Attributes {
         }
     }
     band_103 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1553,8 +1347,6 @@ Attributes {
         }
     }
     band_104 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1568,8 +1360,6 @@ Attributes {
         }
     }
     band_105 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1583,8 +1373,6 @@ Attributes {
         }
     }
     band_106 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1598,8 +1386,6 @@ Attributes {
         }
     }
     band_107 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1613,8 +1399,6 @@ Attributes {
         }
     }
     band_108 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1628,8 +1412,6 @@ Attributes {
         }
     }
     band_109 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1643,8 +1425,6 @@ Attributes {
         }
     }
     band_110 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1658,8 +1438,6 @@ Attributes {
         }
     }
     band_111 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1673,8 +1451,6 @@ Attributes {
         }
     }
     band_112 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1688,8 +1464,6 @@ Attributes {
         }
     }
     band_113 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1703,8 +1477,6 @@ Attributes {
         }
     }
     band_114 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1718,8 +1490,6 @@ Attributes {
         }
     }
     band_115 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1733,8 +1503,6 @@ Attributes {
         }
     }
     band_116 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1748,8 +1516,6 @@ Attributes {
         }
     }
     band_117 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1763,8 +1529,6 @@ Attributes {
         }
     }
     band_118 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1778,8 +1542,6 @@ Attributes {
         }
     }
     band_119 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1793,8 +1555,6 @@ Attributes {
         }
     }
     band_120 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1808,8 +1568,6 @@ Attributes {
         }
     }
     band_121 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
@@ -1823,8 +1581,6 @@ Attributes {
         }
     }
     band_122 {
-        Float64 add_offset 0;
-        Float64 scale_factor 1;
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {

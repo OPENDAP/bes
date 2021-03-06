@@ -17,12 +17,6 @@
     <Float64 name="band_1">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -61,12 +55,6 @@
     <Float64 name="band_2">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -105,12 +93,6 @@
     <Float64 name="band_3">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -149,12 +131,6 @@
     <Float64 name="band_4">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -193,12 +169,6 @@
     <Float64 name="band_5">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -237,12 +207,6 @@
     <Float64 name="band_6">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -281,12 +245,6 @@
     <Float64 name="band_7">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -325,12 +283,6 @@
     <Float64 name="band_8">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -369,12 +321,6 @@
     <Float64 name="band_9">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -413,12 +359,6 @@
     <Float64 name="band_10">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -457,12 +397,6 @@
     <Float64 name="band_11">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -501,12 +435,6 @@
     <Float64 name="band_12">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -545,12 +473,6 @@
     <Float64 name="band_13">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -589,12 +511,6 @@
     <Float64 name="band_14">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -633,12 +549,6 @@
     <Float64 name="band_15">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -677,12 +587,6 @@
     <Float64 name="band_16">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -721,12 +625,6 @@
     <Float64 name="band_17">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -765,12 +663,6 @@
     <Float64 name="band_18">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -809,12 +701,6 @@
     <Float64 name="band_19">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -853,12 +739,6 @@
     <Float64 name="band_20">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -897,12 +777,6 @@
     <Float64 name="band_21">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -941,12 +815,6 @@
     <Float64 name="band_22">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -985,12 +853,6 @@
     <Float64 name="band_23">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -1029,12 +891,6 @@
     <Float64 name="band_24">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -1073,12 +929,6 @@
     <Float64 name="band_25">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -1117,12 +967,6 @@
     <Float64 name="band_26">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -1161,12 +1005,6 @@
     <Float64 name="band_27">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -1205,12 +1043,6 @@
     <Float64 name="band_28">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -1249,12 +1081,6 @@
     <Float64 name="band_29">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -1293,12 +1119,6 @@
     <Float64 name="band_30">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -1337,12 +1157,6 @@
     <Float64 name="band_31">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -1381,12 +1195,6 @@
     <Float64 name="band_32">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -1425,12 +1233,6 @@
     <Float64 name="band_33">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -1469,12 +1271,6 @@
     <Float64 name="band_34">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -1513,12 +1309,6 @@
     <Float64 name="band_35">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -1557,12 +1347,6 @@
     <Float64 name="band_36">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -1601,12 +1385,6 @@
     <Float64 name="band_37">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -1645,12 +1423,6 @@
     <Float64 name="band_38">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -1689,12 +1461,6 @@
     <Float64 name="band_39">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -1733,12 +1499,6 @@
     <Float64 name="band_40">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -1777,12 +1537,6 @@
     <Float64 name="band_41">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -1821,12 +1575,6 @@
     <Float64 name="band_42">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -1865,12 +1613,6 @@
     <Float64 name="band_43">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -1909,12 +1651,6 @@
     <Float64 name="band_44">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -1953,12 +1689,6 @@
     <Float64 name="band_45">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -1997,12 +1727,6 @@
     <Float64 name="band_46">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -2041,12 +1765,6 @@
     <Float64 name="band_47">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -2085,12 +1803,6 @@
     <Float64 name="band_48">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -2129,12 +1841,6 @@
     <Float64 name="band_49">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -2173,12 +1879,6 @@
     <Float64 name="band_50">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -2217,12 +1917,6 @@
     <Float64 name="band_51">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -2261,12 +1955,6 @@
     <Float64 name="band_52">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -2305,12 +1993,6 @@
     <Float64 name="band_53">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -2349,12 +2031,6 @@
     <Float64 name="band_54">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -2393,12 +2069,6 @@
     <Float64 name="band_55">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -2437,12 +2107,6 @@
     <Float64 name="band_56">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -2481,12 +2145,6 @@
     <Float64 name="band_57">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -2525,12 +2183,6 @@
     <Float64 name="band_58">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -2569,12 +2221,6 @@
     <Float64 name="band_59">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -2613,12 +2259,6 @@
     <Float64 name="band_60">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -2657,12 +2297,6 @@
     <Float64 name="band_61">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -2701,12 +2335,6 @@
     <Float64 name="band_62">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -2745,12 +2373,6 @@
     <Float64 name="band_63">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -2789,12 +2411,6 @@
     <Float64 name="band_64">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -2833,12 +2449,6 @@
     <Float64 name="band_65">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -2877,12 +2487,6 @@
     <Float64 name="band_66">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -2921,12 +2525,6 @@
     <Float64 name="band_67">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -2965,12 +2563,6 @@
     <Float64 name="band_68">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -3009,12 +2601,6 @@
     <Float64 name="band_69">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -3053,12 +2639,6 @@
     <Float64 name="band_70">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -3097,12 +2677,6 @@
     <Float64 name="band_71">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -3141,12 +2715,6 @@
     <Float64 name="band_72">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -3185,12 +2753,6 @@
     <Float64 name="band_73">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -3229,12 +2791,6 @@
     <Float64 name="band_74">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -3273,12 +2829,6 @@
     <Float64 name="band_75">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -3317,12 +2867,6 @@
     <Float64 name="band_76">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -3361,12 +2905,6 @@
     <Float64 name="band_77">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -3405,12 +2943,6 @@
     <Float64 name="band_78">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -3449,12 +2981,6 @@
     <Float64 name="band_79">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -3493,12 +3019,6 @@
     <Float64 name="band_80">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -3537,12 +3057,6 @@
     <Float64 name="band_81">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -3581,12 +3095,6 @@
     <Float64 name="band_82">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -3625,12 +3133,6 @@
     <Float64 name="band_83">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -3669,12 +3171,6 @@
     <Float64 name="band_84">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -3713,12 +3209,6 @@
     <Float64 name="band_85">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -3757,12 +3247,6 @@
     <Float64 name="band_86">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -3801,12 +3285,6 @@
     <Float64 name="band_87">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -3845,12 +3323,6 @@
     <Float64 name="band_88">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -3889,12 +3361,6 @@
     <Float64 name="band_89">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -3933,12 +3399,6 @@
     <Float64 name="band_90">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -3977,12 +3437,6 @@
     <Float64 name="band_91">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -4021,12 +3475,6 @@
     <Float64 name="band_92">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -4065,12 +3513,6 @@
     <Float64 name="band_93">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -4109,12 +3551,6 @@
     <Float64 name="band_94">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -4153,12 +3589,6 @@
     <Float64 name="band_95">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -4197,12 +3627,6 @@
     <Float64 name="band_96">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -4241,12 +3665,6 @@
     <Float64 name="band_97">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -4285,12 +3703,6 @@
     <Float64 name="band_98">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -4329,12 +3741,6 @@
     <Float64 name="band_99">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -4373,12 +3779,6 @@
     <Float64 name="band_100">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -4417,12 +3817,6 @@
     <Float64 name="band_101">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -4461,12 +3855,6 @@
     <Float64 name="band_102">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -4505,12 +3893,6 @@
     <Float64 name="band_103">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -4549,12 +3931,6 @@
     <Float64 name="band_104">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -4593,12 +3969,6 @@
     <Float64 name="band_105">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -4637,12 +4007,6 @@
     <Float64 name="band_106">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -4681,12 +4045,6 @@
     <Float64 name="band_107">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -4725,12 +4083,6 @@
     <Float64 name="band_108">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -4769,12 +4121,6 @@
     <Float64 name="band_109">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -4813,12 +4159,6 @@
     <Float64 name="band_110">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -4857,12 +4197,6 @@
     <Float64 name="band_111">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -4901,12 +4235,6 @@
     <Float64 name="band_112">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -4945,12 +4273,6 @@
     <Float64 name="band_113">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -4989,12 +4311,6 @@
     <Float64 name="band_114">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -5033,12 +4349,6 @@
     <Float64 name="band_115">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -5077,12 +4387,6 @@
     <Float64 name="band_116">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -5121,12 +4425,6 @@
     <Float64 name="band_117">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -5165,12 +4463,6 @@
     <Float64 name="band_118">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -5209,12 +4501,6 @@
     <Float64 name="band_119">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -5253,12 +4539,6 @@
     <Float64 name="band_120">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -5297,12 +4577,6 @@
     <Float64 name="band_121">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -5341,12 +4615,6 @@
     <Float64 name="band_122">
         <Dim name="/northing"/>
         <Dim name="/easting"/>
-        <Attribute name="add_offset" type="Float64">
-            <Value>0</Value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <Value>1</Value>
-        </Attribute>
         <Attribute name="missing_value" type="Float64">
             <Value>9999</Value>
         </Attribute>
@@ -5399,7 +4667,7 @@
             <Value>-100.625 1.25 0 48.5 0 -1</Value>
         </Attribute>
         <Attribute name="spatial_ref" type="String">
-            <Value>GEOGCS[\&quot;Coordinate System imported from GRIB file\&quot;,DATUM[\&quot;unknown\&quot;,SPHEROID[\&quot;Sphere\&quot;,6371200,0]],PRIMEM[\&quot;Greenwich\&quot;,0],UNIT[\&quot;degree\&quot;,0.0174532925199433]]</Value>
+            <Value>GEOGCS[\&quot;Coordinate System imported from GRIB file\&quot;,DATUM[\&quot;unnamed\&quot;,SPHEROID[\&quot;Sphere\&quot;,6371200,0]],PRIMEM[\&quot;Greenwich\&quot;,0],UNIT[\&quot;degree\&quot;,0.0174532925199433,AUTHORITY[\&quot;EPSG\&quot;,\&quot;9122\&quot;]],AXIS[\&quot;Latitude\&quot;,NORTH],AXIS[\&quot;Longitude\&quot;,EAST]]</Value>
         </Attribute>
     </Attribute>
 </Dataset>
