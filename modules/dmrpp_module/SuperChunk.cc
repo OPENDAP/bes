@@ -29,12 +29,9 @@
 
 #include "BESInternalError.h"
 #include "BESDebug.h"
-#include "BESStopWatch.h"
-#include "CurlUtils.h"
 
 #include "DmrppRequestHandler.h"
 #include "CurlHandlePool.h"
-#include "DmrppCommon.h"
 #include "DmrppArray.h"
 #include "DmrppNames.h"
 #include "Chunk.h"
