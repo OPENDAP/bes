@@ -40,6 +40,9 @@ then
     export PATH=$PATH:/root/.local/bin
 fi
 
+# Added 3/5/21 jhrg
+yum install -y libpng-devel
+
 # Get the pre-built dependencies (all static libraries). $OS is 'centos6' or 'centos7'
 # aws s3 cp s3://opendap.travis.build/
 aws s3 cp s3://opendap.travis.build/hyrax-dependencies-$OS-static.tar.gz /tmp/
