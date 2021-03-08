@@ -260,38 +260,31 @@ public:
         try {
             rhr.load_hdrs_from_file();
             if(debug) cerr << prolog << "loaded hdrs from file" << endl;
-            vector<string> *hdrs = rhr.getResponseHeaders();
-            if(debug) cerr << prolog << "hdrs retrieved" << endl;
-
-            for(size_t i=0; i<hdrs->size() && debug ; i++){
-                cerr << prolog << "hdr["<< i << "]: " << (*hdrs)[i] << endl;
-            }
-
-            string header_1 = (*hdrs)[0];
-            string header_2 = (*hdrs)[1];
-            string header_3 = (*hdrs)[2];
-            string header_4 = (*hdrs)[3];
 
             string expected_header_1 = "This ...";
             string expected_header_2 = "Is ...";
             string expected_header_3 = "A ...";
             string expected_header_4 = "TEST";
 
+            string header_1 = rhr.get_http_response_header("Header_1");
             if(debug) cerr << prolog << " Expected Header: '" << expected_header_1 << "'" << endl;
             if(debug) cerr << prolog << "Retrieved Header: '" << header_1  << "'"<< endl;
-            CPPUNIT_ASSERT(header_1.compare(expected_header_1));
+            CPPUNIT_ASSERT(header_1 == expected_header_1);
 
+            string header_2 = rhr.get_http_response_header("Header_2");
             if(debug) cerr << prolog << " Expected Header: '" << expected_header_2  << "'"<< endl;
             if(debug) cerr << prolog << "Retrieved Header: '" << header_2  << "'"<< endl;
-            CPPUNIT_ASSERT(  header_2.compare(expected_header_2));
+            CPPUNIT_ASSERT(  header_2 == expected_header_2);
 
+            string header_3 = rhr.get_http_response_header("Header_3");
             if(debug) cerr << prolog << " Expected Header: '" << expected_header_3   << "'"<< endl;
             if(debug) cerr << prolog << "Retrieved Header: '" << header_3  << "'"<< endl;
-            CPPUNIT_ASSERT(  header_3.compare(expected_header_3));
+            CPPUNIT_ASSERT(  header_3 == expected_header_3);
 
+            string header_4 = rhr.get_http_response_header("Header_4");
             if(debug) cerr << prolog << " Expected Header: '" << expected_header_4  << "'"<< endl;
             if(debug) cerr << prolog << "Retrieved Header: '" << header_4  << "'"<< endl;
-            CPPUNIT_ASSERT( header_4.compare(expected_header_4));
+            CPPUNIT_ASSERT( header_4 == expected_header_4);
 
         }
         catch (BESError &besE){
