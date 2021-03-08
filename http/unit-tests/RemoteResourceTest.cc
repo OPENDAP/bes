@@ -277,11 +277,21 @@ public:
             string expected_header_3 = "A ...";
             string expected_header_4 = "TEST";
 
-            if(debug) cerr << prolog << "Expected Header: " << expected_header_1 << "   <--/-->     Retrieved Header: " << header_1 << endl;
-            if(debug) cerr << prolog << "Expected Header: " << expected_header_2 << "   <--/-->     Retrieved Header: " << header_2 << endl;
-            if(debug) cerr << prolog << "Expected Header: " << expected_header_3 << "   <--/-->     Retrieved Header: " << header_3 << endl;
-            if(debug) cerr << prolog << "Expected Header: " << expected_header_4 << "   <--/-->     Retrieved Header: " << header_4 << endl;
-            CPPUNIT_ASSERT( header_1.compare(expected_header_1) && header_2.compare(expected_header_2) && header_3.compare(expected_header_3) && header_4.compare(expected_header_4));
+            if(debug) cerr << prolog << " Expected Header: '" << expected_header_1 << "'" << endl;
+            if(debug) cerr << prolog << "Retrieved Header: '" << header_1  << "'"<< endl;
+            CPPUNIT_ASSERT(header_1.compare(expected_header_1));
+
+            if(debug) cerr << prolog << " Expected Header: '" << expected_header_2  << "'"<< endl;
+            if(debug) cerr << prolog << "Retrieved Header: '" << header_2  << "'"<< endl;
+            CPPUNIT_ASSERT(  header_2.compare(expected_header_2));
+
+            if(debug) cerr << prolog << " Expected Header: '" << expected_header_3   << "'"<< endl;
+            if(debug) cerr << prolog << "Retrieved Header: '" << header_3  << "'"<< endl;
+            CPPUNIT_ASSERT(  header_3.compare(expected_header_3));
+
+            if(debug) cerr << prolog << " Expected Header: '" << expected_header_4  << "'"<< endl;
+            if(debug) cerr << prolog << "Retrieved Header: '" << header_4  << "'"<< endl;
+            CPPUNIT_ASSERT( header_4.compare(expected_header_4));
 
         }
         catch (BESError &besE){
