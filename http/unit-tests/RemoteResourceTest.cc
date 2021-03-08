@@ -288,8 +288,10 @@ public:
 
         }
         catch (BESError &besE){
-            cerr << "Caught BESError! message: " << besE.get_verbose_message() << " type: " << besE.get_bes_error_type() << endl;
-            CPPUNIT_ASSERT(false);
+            stringstream msg;
+            msg << "Caught BESError! message: " << besE.get_verbose_message() << " type: " << besE.get_bes_error_type();
+            cerr << msg.str() << endl;
+            CPPUNIT_FAIL(msg.str());
         }
         if(debug) cerr << prolog << "END" << endl;
     }
