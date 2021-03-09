@@ -250,4 +250,4 @@ deploy:
 # and pushes the result to GitHub. This push triggers TravisCI to build the Docker containers
 # for all of the Hyrax snapshot products. jhrg 10/28/19
 after_deploy:
-  - if test x"$BES_BUILD" = x"centos7" -a x"$DEPLOY" = x"S3"; then ./travis/trigger-hyrax-docker.sh; fi
+  - if test x"$BES_BUILD" = x"centos7" -a x"$DEPLOY" = x"S3"; then ./travis/trigger-olfs-build.sh; fi

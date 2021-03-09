@@ -11,6 +11,8 @@ echo "-- -- -- -- -- -- -- -- -- after_deploy BEGIN -- -- -- -- -- -- -- -- --"
 
 echo "New CentOS-7 snapshot of BES pushed. Triggering a OLFS build"
 
+echo LIBDAP4_SNAPSHOT=`cat libdap4-snapshot`;
+
 git clone --depth 1 https://github.com/opendap/olfs
 git config --global user.name "The-Robot-Travis"
 git config --global user.email "npotter@opendap.org"
@@ -18,12 +20,17 @@ git config --global user.email "npotter@opendap.org"
 cd olfs
 git checkout master
 
-snap_time="BES-<version.build> "`date "+%FT%T%z"`
+# Add the libdap4 snapshot line to the bes-snapshot file.
+echo "${LIBDAP4_SNAPSHOT}" > bes-snapshot
 
-echo "bes-snapshot record: ${snap_time}"
-echo "${snap_time}" > bes-snapshot
+# Compute the BES snapshot record.
+BES_SNAPSHOT="BES-<version.build> "`date "+%FT%T%z"`
+echo "bes-snapshot record: ${BES_SNAPSHOT}" >&2
 
-cat bes-snapshot;
+# Append the BES snapshot record to the bes-snapshot file.
+echo "${BES_SNAPSHOT}" >> bes-snapshot
+
+cat bes-snapshot >&2
 
 git commit -am "${snap_time} Triggering OLFS build for snapshots.";
 git push https://$GIT_UID:$GIT_PSWD@github.com/opendap/olfs --all;
