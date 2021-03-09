@@ -166,8 +166,8 @@ namespace ngap {
         // And if there's a missing data file (side-car) it should be "right there" too.
         string missing_data_url = data_access_url_str + ".missing";
 
-        BESDEBUG(MODULE, prolog << "data_access_url: " << data_access_url_str << endl);
-        BESDEBUG(MODULE, prolog << "dmrpp_url: " << dmrpp_url << endl);
+        BESDEBUG(MODULE, prolog << " data_access_url: " << data_access_url_str << endl);
+        BESDEBUG(MODULE, prolog << "       dmrpp_url: " << dmrpp_url << endl);
         BESDEBUG(MODULE, prolog << "missing_data_url: " << missing_data_url << endl);
 
         string type = get_container_type();

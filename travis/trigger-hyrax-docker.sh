@@ -9,22 +9,23 @@ set -e
 
 echo "-- -- -- -- -- -- -- -- -- after_deploy BEGIN -- -- -- -- -- -- -- -- --"
 
-echo "New CentOS-7 snapshot of BES pushed. Triggering a Docker build"
+echo "New CentOS-7 snapshot of BES pushed. Triggering a OLFS build"
 
-git clone https://github.com/opendap/hyrax-docker
+git clone --depth 1 https://github.com/opendap/olfs
 git config --global user.name "The-Robot-Travis"
 git config --global user.email "npotter@opendap.org"
 
-cd hyrax-docker/hyrax-snapshot
+cd olfs
+git checkout master
 
-snap_time="BES: "`date "+%FT%T%z"`
+snap_time="BES-<version.build> "`date "+%FT%T%z"`
 
-echo "snapshot.time record is: ${snap_time}"
-echo "${snap_time}" >> snapshot.time
+echo "bes-snapshot record: ${snap_time}"
+echo "${snap_time}" > bes-snapshot
 
-cat snapshot.time;
+cat bes-snapshot;
 
-git commit -am "The BES has produced new snapshot files. Triggering Hyrax-Docker image builds for snapshots.";
-git push https://$GIT_UID:$GIT_PSWD@github.com/opendap/hyrax-docker --all;
+git commit -am "${snap_time} Triggering OLFS build for snapshots.";
+git push https://$GIT_UID:$GIT_PSWD@github.com/opendap/olfs --all;
 
 echo "-- -- -- -- -- -- -- -- -- after_deploy END -- -- -- -- -- -- -- -- --"
