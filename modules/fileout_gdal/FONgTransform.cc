@@ -380,8 +380,8 @@ void FONgTransform::transform_to_geotiff()
 
         try {
             // TODO We can read any of the basic DAP2 types and let RasterIO convert it to any other type.
-            // That is, we can read these values in their native type, skipping the conversion here. That
-            // would make this code faster. jhrg 3/20/19
+            //  That is, we can read these values in their native type, skipping the conversion here. That
+            //  would make this code faster. jhrg 3/20/19
             data = fbtp->get_data();
 
             // If the latitude values are inverted, the 0th value will be less than
@@ -435,6 +435,10 @@ void FONgTransform::transform_to_geotiff()
         // although the resulting files differ. jhrg 11/21/12
         char **options = NULL;
         options = CSLSetNameValue(options, "PHOTOMETRIC", "MINISBLACK" ); // The default for GDAL
+        // TODO Adding these options: -co COMPRESS=LZW -co TILED=YES -co INTERLEAVE=BAND
+        //  will produce a COG file. The INTERLEAVE=BAND is not strictly needed but would
+        //  be nice if there are multiple variables.
+        //  See https://geoexamples.com/other/2019/02/08/cog-tutorial.html
 
         BESDEBUG("fong3", "Before CreateCopy, number of bands: " << d_dest->GetRasterCount() << endl);
 
