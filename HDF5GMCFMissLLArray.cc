@@ -90,7 +90,7 @@ bool HDF5GMCFMissLLArray::read()
             for (unsigned int i = 0; i < dim_sizes.size(); i++)
                 total_elems = total_elems * dim_sizes[i];
 
-            handle_data_with_mem_cache(dtype, total_elems, cache_flag, cache_key);
+            handle_data_with_mem_cache(dtype, total_elems, cache_flag, cache_key,false);
         }
         else
             read_data_NOT_from_mem_cache(false, NULL);

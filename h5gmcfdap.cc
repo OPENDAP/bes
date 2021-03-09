@@ -43,11 +43,14 @@
 #include "HDF5RequestHandler.h"
 #include "h5cfdaputil.h"
 #include "h5gmcfdap.h"
+#include "HDF5CFInt8.h"
 #include "HDF5CFByte.h"
 #include "HDF5CFUInt16.h"
 #include "HDF5CFInt16.h"
 #include "HDF5CFUInt32.h"
 #include "HDF5CFInt32.h"
+#include "HDF5CFInt64.h"
+#include "HDF5CFUInt64.h"
 #include "HDF5CFFloat32.h"
 #include "HDF5CFFloat64.h"
 #include "HDF5CFStr.h"
@@ -702,7 +705,7 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
 
 void gen_gmh5_cfdmr(D4Group* d4_root,HDF5CF::GMFile *f) {
 
-    BESDEBUG("h5","Coming to GM DDS generation function gen_gmh5_cfdds()  "<<endl);
+    BESDEBUG("h5","Coming to GM DDS generation function gen_gmh5_cfdmr()  "<<endl);
 
     const vector<HDF5CF::Var *>&      vars  = f->getVars();
     const vector<HDF5CF::GMCVar *>&  cvars  = f->getCVars();
@@ -919,6 +922,7 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
                     ar = new HDF5GMCFFillIndexArray(
                                                       cvar->getRank(),
                                                       cvar->getType(),
+                                                      false,
                                                       cvar->getNewName(),
                                                       bt);
                 }
@@ -1114,7 +1118,254 @@ void update_GPM_special_attrs(DAS& das, const HDF5CF::Var *var,bool is_cvar) {
     }
 }
 
-void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar*it_cv,const hid_t fileid, const string &filename) {              
+void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid, const string &filename) {              
+//void gen_dap_onegmcvar_dmr(D4Group*d4_root,const cvar,const hid_t fileid, const string &filename) {              
+    BESDEBUG("h5","Coming to gen_dap_onegmcvar_dds()  "<<endl);
+
+    BaseType *bt = NULL;
+
+    switch(cvar->getType()) {
+#define HANDLE_CASE(tid,type)                                  \
+        case tid:                                           \
+            bt = new (type)(cvar->getNewName(),cvar->getFullPath());  \
+            break;
+
+        HANDLE_CASE(H5FLOAT32, HDF5CFFloat32);
+        HANDLE_CASE(H5FLOAT64, HDF5CFFloat64);
+        HANDLE_CASE(H5CHAR,HDF5CFInt8);
+        HANDLE_CASE(H5UCHAR, HDF5CFByte);
+        HANDLE_CASE(H5INT16, HDF5CFInt16);
+        HANDLE_CASE(H5UINT16, HDF5CFUInt16);
+        HANDLE_CASE(H5INT32, HDF5CFInt32);
+        HANDLE_CASE(H5UINT32, HDF5CFUInt32);
+        HANDLE_CASE(H5INT64, HDF5CFInt64);
+        HANDLE_CASE(H5UINT64, HDF5CFUInt64);
+        HANDLE_CASE(H5FSTRING, Str);
+        HANDLE_CASE(H5VSTRING, Str);
+
+        default:
+            throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+#undef HANDLE_CASE
+    }
+
+    if (bt) {
+
+        const vector<HDF5CF::Dimension *>& dims = cvar->getDimensions();
+        vector <HDF5CF::Dimension*>:: const_iterator it_d;
+        vector <size_t> dimsizes;
+        dimsizes.resize(cvar->getRank());
+        for(int i = 0; i <cvar->getRank();i++)
+            dimsizes[i] = (dims[i])->getSize();
+
+
+        if(dims.empty()) 
+            throw InternalErr(__FILE__,__LINE__,"the coordinate variable cannot be a scalar");
+            
+        switch(cvar->getCVType()) {
+            
+            case CV_EXIST: 
+            {
+                HDF5CFArray *ar = NULL;
+
+                // Need to check if this CV is lat/lon. This is necessary when data memory cache is turned on.
+                bool is_latlon = cvar->isLatLon();
+                
+                try {
+                    ar = new HDF5CFArray (
+                                    cvar->getRank(),
+                                    fileid,
+                                    filename,
+                                    cvar->getType(),
+                                    dimsizes,
+                                    cvar->getFullPath(),
+                                    cvar->getTotalElems(),
+                                    CV_EXIST,
+                                    is_latlon,
+                                    cvar->getCompRatio(),
+                                    true,
+                                    cvar->getNewName(),
+                                    bt);
+                }
+                catch(...) {
+                    delete bt;
+                    throw InternalErr(__FILE__,__LINE__,"Unable to allocate HDF5CFArray. ");
+                }
+
+                for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
+                    if (""==(*it_d)->getNewName()) 
+                        ar->append_dim((*it_d)->getSize());
+                    else 
+                        ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+                }
+
+                ar->set_is_dap4(true);
+                BaseType* d4_var=ar->h5cfdims_transform_to_dap4(d4_root);
+                map_cfh5_attrs_to_dap4(cvar,d4_var);
+                d4_root->add_var_nocopy(d4_var);
+                delete bt;
+                delete ar;
+            }
+            break;
+
+            case CV_LAT_MISS:
+            case CV_LON_MISS:
+            {
+                // Using HDF5GMCFMissLLArray
+                HDF5GMCFMissLLArray *ar = NULL;
+                try {
+                    ar = new HDF5GMCFMissLLArray (
+                                    cvar->getRank(),
+                                    filename,
+                                    fileid,
+                                    cvar->getType(),
+                                    cvar->getFullPath(),
+                                    cvar->getPtType(),
+                                    cvar->getCVType(),
+                                    cvar->getNewName(),
+                                    bt);
+                }
+                catch(...) {
+                    delete bt;
+                    throw InternalErr(__FILE__,__LINE__,"Unable to allocate HDF5GMCFMissLLArray. ");
+                }
+
+           
+                for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
+                    if (""==(*it_d)->getNewName()) 
+                        ar->append_dim((*it_d)->getSize());
+                    else 
+                        ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+                }
+
+                ar->set_is_dap4(true);
+                BaseType* d4_var=ar->h5cfdims_transform_to_dap4(d4_root);
+                map_cfh5_attrs_to_dap4(cvar,d4_var);
+                d4_root->add_var_nocopy(d4_var);
+                delete bt;
+                delete ar;
+            }
+            break;
+
+            case CV_NONLATLON_MISS:
+            {
+
+                if (cvar->getRank() !=1) {
+                    delete bt;
+                    throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");
+                }
+                int nelem = (cvar->getDimensions()[0])->getSize();
+
+                HDF5GMCFMissNonLLCVArray *ar = NULL;
+
+                try {
+                    ar = new HDF5GMCFMissNonLLCVArray(
+                                                      cvar->getRank(),
+                                                      nelem,
+                                                      cvar->getNewName(),
+                                                      bt);
+                }
+                catch(...) {
+                    delete bt;
+                    throw InternalErr(__FILE__,__LINE__,"Unable to allocate HDF5GMCFMissNonLLCVArray. ");
+                }
+
+
+                for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
+                    if (""==(*it_d)->getNewName()) 
+                        ar->append_dim((*it_d)->getSize());
+                    else 
+                        ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+                }
+                ar->set_is_dap4(true);
+                BaseType* d4_var=ar->h5cfdims_transform_to_dap4(d4_root);
+                map_cfh5_attrs_to_dap4(cvar,d4_var);
+                d4_root->add_var_nocopy(d4_var);
+                delete bt;
+                delete ar;
+            }
+            break;
+
+            case CV_FILLINDEX:
+            {
+
+                if (cvar->getRank() !=1) {
+                    delete bt;
+                    throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");
+                }
+
+                HDF5GMCFFillIndexArray *ar = NULL;
+  
+                try {
+                    ar = new HDF5GMCFFillIndexArray(
+                                                      cvar->getRank(),
+                                                      cvar->getType(),
+                                                      true,
+                                                      cvar->getNewName(),
+                                                      bt);
+                }
+                catch(...) {
+                    delete bt;
+                    throw InternalErr(__FILE__,__LINE__,"Unable to allocate HDF5GMCFMissNonLLCVArray. ");
+                }
+
+
+                for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
+                    if (""==(*it_d)->getNewName()) 
+                        ar->append_dim((*it_d)->getSize());
+                    else 
+                        ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+                }
+                ar->set_is_dap4(true);
+                BaseType* d4_var=ar->h5cfdims_transform_to_dap4(d4_root);
+                map_cfh5_attrs_to_dap4(cvar,d4_var);
+                d4_root->add_var_nocopy(d4_var);
+                delete bt;
+                delete ar;
+            }
+            break;
+
+
+            case CV_SPECIAL:
+             {
+                // Currently only handle 1-D special CV.
+                if (cvar->getRank() !=1) {
+                    delete bt;
+                    throw InternalErr(__FILE__, __LINE__, "The rank of special coordinate variable  must be 1");
+                }
+                int nelem = (cvar->getDimensions()[0])->getSize();
+
+                HDF5GMCFSpecialCVArray * ar = NULL;
+                ar = new HDF5GMCFSpecialCVArray(
+                                                cvar->getType(),
+                                                nelem,
+                                                cvar->getFullPath(),
+                                                cvar->getPtType(),
+                                                cvar->getNewName(),
+                                                bt);
+
+                for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
+                    if (""==(*it_d)->getNewName())
+                        ar->append_dim((*it_d)->getSize());
+                    else
+                        ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+                }
+
+                ar->set_is_dap4(true);
+                BaseType* d4_var=ar->h5cfdims_transform_to_dap4(d4_root);
+                map_cfh5_attrs_to_dap4(cvar,d4_var);
+                d4_root->add_var_nocopy(d4_var);
+                delete bt;
+                delete ar;
+
+            }
+            break;
+            case CV_MODIFY:
+            default: 
+                delete bt;
+                throw InternalErr(__FILE__,__LINE__,"Coordinate variable type is not supported.");
+        }
+    }
+
 
 }
 

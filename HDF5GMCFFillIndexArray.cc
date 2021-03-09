@@ -108,6 +108,32 @@ cerr<<"file name " <<filename <<endl;
 
         // signed char maps to 16-bit integer in DAP2(HDF5 to DAP2 mapping document.)
         case H5CHAR:
+        {
+            if(is_dap4 == false) {
+            vector<short>val;
+            val.resize(nelms);
+
+            for (int i = 0; i < count[0]; i++)
+                val[i] = (short)(offset[0] + step[0] * i);
+               
+            set_value ((dods_int16 *) &val[0], nelms);
+            }
+            else {
+               vector<char> val;
+               val.resize(nelms);
+
+               for (int i = 0; i < count[0]; i++)
+                val[i] = (char)(offset[0] + step[0] * i);
+
+            set_value ((dods_int8 *) &val[0], nelms);
+
+
+            }
+        }// H5CHAR and H5INT16
+            break;
+
+    
+
         case H5INT16:
         {
 
@@ -156,6 +182,30 @@ cerr<<"file name " <<filename <<endl;
                 val[i] = offset[0] + step[0] * i;
 
             set_value ((dods_uint32 *) &val[0], nelms);
+        }
+            break;
+
+        case H5INT64:
+        {
+            vector<long long>val;
+            val.resize(nelms);
+
+            for (int i = 0; i < count[0]; i++)
+                val[i] = offset[0] + step[0] * i;
+
+            set_value ((dods_int64 *) &val[0], nelms);
+        } // case H5INT64
+            break;
+
+        case H5UINT64:
+        {
+            vector<unsigned long long>val;
+            val.resize(nelms);
+
+            for (int i = 0; i < count[0]; i++)
+                val[i] = offset[0] + step[0] * i;
+
+            set_value ((dods_uint64 *) &val[0], nelms);
         }
             break;
 

@@ -79,9 +79,9 @@ bool HDFEOS5CFMissLLArray::read()
                 // So the total number of elements for LAT is ydimsize,
                 //    the total number of elements for LON is xdimsize.
                 if(cvartype == CV_LAT_MISS)
-                    handle_data_with_mem_cache(H5FLOAT32,(size_t)ydimsize,cache_flag,cache_key);
+                    handle_data_with_mem_cache(H5FLOAT32,(size_t)ydimsize,cache_flag,cache_key,false);
                 else 
-                    handle_data_with_mem_cache(H5FLOAT32,(size_t)xdimsize,cache_flag,cache_key);
+                    handle_data_with_mem_cache(H5FLOAT32,(size_t)xdimsize,cache_flag,cache_key,false);
         }
         else 
 	         read_data_NOT_from_mem_cache(false,NULL);

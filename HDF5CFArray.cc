@@ -164,7 +164,7 @@ bool HDF5CFArray::read()
         else
             cache_key = filename + varname;
 
-        handle_data_with_mem_cache(dtype,total_elems,use_cache_flag,cache_key);
+        handle_data_with_mem_cache(dtype,total_elems,use_cache_flag,cache_key,is_dap4);
 
     }
 
@@ -1641,6 +1641,7 @@ void HDF5CFArray::read_data_from_mem_cache(void*buf) {
 }
 #endif
 
+#if 0
 // We don't inherit libdap Array Class's transform_to_dap4 method since it also transforms attributes.
 BaseType* HDF5CFArray::h5cfdims_transform_to_dap4(D4Group *grp) {
 
@@ -1671,6 +1672,7 @@ BaseType* HDF5CFArray::h5cfdims_transform_to_dap4(D4Group *grp) {
     return dest;
 
 }
+#endif
 
 // We don't inherit libdap Array Class's transform_to_dap4 method since CF option is still using it.
 // This function is used for 64-bit integer mapping to DAP4 for the CF option. largely borrowed from

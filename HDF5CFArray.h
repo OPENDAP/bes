@@ -82,7 +82,7 @@ class HDF5CFArray:public HDF5BaseArray {
 
     // Currently this routine is only used for 64-bit integer mapping to DAP4.
     libdap::BaseType *h5cfdims_transform_to_dap4_int64(libdap::D4Group *root);
-    libdap::BaseType *h5cfdims_transform_to_dap4(libdap::D4Group *root);
+    //libdap::BaseType *h5cfdims_transform_to_dap4(libdap::D4Group *root);
 #if 0
     //void read_data_from_mem_cache(void*buf);
     //void read_data_from_file(bool add_cache,void*buf);

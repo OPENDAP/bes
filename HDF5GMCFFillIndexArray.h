@@ -43,8 +43,8 @@
 
 class HDF5GMCFFillIndexArray: public HDF5BaseArray {
 public:
-    HDF5GMCFFillIndexArray(int h5_rank, H5DataType h5_dtype, const string & n = "", libdap::BaseType * v = 0) :
-        HDF5BaseArray(n, v), rank(h5_rank), dtype(h5_dtype)
+    HDF5GMCFFillIndexArray(int h5_rank, H5DataType h5_dtype, bool h5_is_dap4, const string & n = "", libdap::BaseType * v = 0) :
+        HDF5BaseArray(n, v), rank(h5_rank), dtype(h5_dtype),is_dap4(h5_is_dap4)
     {
     }
 
@@ -58,6 +58,7 @@ public:
 private:
     int rank;
     H5DataType dtype;
+    bool is_dap4;
 };
 
 #endif                          // _HDF5GMCFFILLINDEXARRAY_H
