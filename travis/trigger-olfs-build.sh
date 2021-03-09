@@ -4,14 +4,17 @@
 # RPMs, grab those and use them to make a new set of Docker containers. The
 # hyrax-docker git repo runs its own build to do this (and can be triggered
 # separately).
-
+#
+# Caveat: If this script is run from after-deploy failures will not affect the build.
+#
 set -e
 
 echo "-- -- -- -- -- -- -- -- -- after_deploy BEGIN -- -- -- -- -- -- -- -- --"
 
 echo "New CentOS-7 snapshot of BES pushed. Triggering a OLFS build"
 
-echo LIBDAP4_SNAPSHOT=`cat libdap4-snapshot`;
+LIBDAP4_SNAPSHOT=`cat libdap4-snapshot`;
+echo "libdap4-snapshot record: ${LIBDAP4_SNAPSHOT}"
 
 git clone --depth 1 https://github.com/opendap/olfs
 git config --global user.name "The-Robot-Travis"
@@ -36,3 +39,4 @@ git commit -am "${snap_time} Triggering OLFS build for snapshots.";
 git push https://$GIT_UID:$GIT_PSWD@github.com/opendap/olfs --all;
 
 echo "-- -- -- -- -- -- -- -- -- after_deploy END -- -- -- -- -- -- -- -- --"
+
