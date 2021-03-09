@@ -164,7 +164,7 @@ namespace ngap {
         string dmrpp_url = data_access_url_str + ".dmrpp";
 
         // And if there's a missing data file (side-car) it should be "right there" too.
-        string missing_data_url = data_access_url_str + "_missing";
+        string missing_data_url = data_access_url_str + ".missing";
 
         BESDEBUG(MODULE, prolog << "data_access_url: " << data_access_url_str << endl);
         BESDEBUG(MODULE, prolog << "dmrpp_url: " << dmrpp_url << endl);

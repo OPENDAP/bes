@@ -16,7 +16,11 @@ git config --global user.name "The-Robot-Travis"
 git config --global user.email "npotter@opendap.org"
 
 cd hyrax-docker/hyrax-snapshot
-date | tee -a snapshot.time
+
+snap_time="BES: "`date "+%FT%T%z"`
+
+echo "snapshot.time record is: ${snap_time}"
+echo "${snap_time}" >> snapshot.time
 
 cat snapshot.time;
 
