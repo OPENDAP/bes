@@ -222,8 +222,7 @@ public:
             unlink(d_temp_file.c_str());
 
         string temp_file_hdrs = d_temp_file + ".hdrs";
-        if(!temp_file_hdrs.empty())
-            unlink(temp_file_hdrs.c_str());
+        unlink(temp_file_hdrs.c_str());
     }
 
     void cache_purge(){

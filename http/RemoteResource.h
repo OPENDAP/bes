@@ -26,7 +26,6 @@
 
 #ifndef  _bes_http_REMOTE_HTTP_RESOURCE_H_
 #define  _bes_http_REMOTE_HTTP_RESOURCE_H_ 1
-#define DEFAULT_EXPIRED_INTERVAL 3600
 
 #include <curl/curl.h>
 #include <curl/easy.h>
@@ -121,12 +120,12 @@ namespace http {
     protected:
         RemoteResource() :
                 d_fd(0), d_initialized(false), d_resourceCacheFileName(""),
-                d_response_headers(0), d_http_response_headers(0), d_expires_interval(DEFAULT_EXPIRED_INTERVAL) {
+                d_response_headers(0), d_http_response_headers(0), d_expires_interval(3600) {
         }
 
     public:
         // RemoteResource(const std::string &url, const std::string &uid = "", const std::string &echo_token = "");
-        RemoteResource(const std::string &url, const std::string &uid = "", long long expires_interval = DEFAULT_EXPIRED_INTERVAL);
+        RemoteResource(const std::string &url, const std::string &uid = "", long long expires_interval = 3600);
 
         virtual ~RemoteResource();
 
