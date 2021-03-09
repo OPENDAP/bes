@@ -712,12 +712,26 @@ void gen_gmh5_cfdmr(D4Group* d4_root,HDF5CF::GMFile *f) {
     const vector<HDF5CF::GMSPVar *>& spvars = f->getSPVars();
     const string filename                   = f->getPath();
     const hid_t fileid                      = f->getFileID();
+    const vector<HDF5CF::Group *>& grps           = f->getGroups();
+    const vector<HDF5CF::Attribute *>& root_attrs = f->getAttributes();
+
+
+    // Root and low-level group attributes.
 
     // Read Variable info.
 
     vector<HDF5CF::Var *>::const_iterator       it_v;
     vector<HDF5CF::GMCVar *>::const_iterator   it_cv;
     vector<HDF5CF::GMSPVar *>::const_iterator it_spv;
+    vector<HDF5CF::Group *>::const_iterator it_g;
+    vector<HDF5CF::Attribute *>::const_iterator it_ra;
+
+//#if 0
+    if (false == root_attrs.empty()) {
+        for (it_ra = root_attrs.begin(); it_ra != root_attrs.end(); ++it_ra) 
+            map_cfh5_grp_attr_to_dap4(d4_root,*it_ra);
+    }
+//#endif
 
     for (it_v = vars.begin(); it_v !=vars.end();++it_v) {
         BESDEBUG("h5","variable full path= "<< (*it_v)->getFullPath() <<endl);
@@ -734,6 +748,20 @@ void gen_gmh5_cfdmr(D4Group* d4_root,HDF5CF::GMFile *f) {
         gen_dap_onegmspvar_dmr(d4_root,*it_spv,fileid, filename);
     }
 
+    // STOPPP, need to move attributes to the root since we claim to have no hierarchy.
+#if 0
+    if (false == grps.empty()) {
+        for (it_g = grps.begin();
+             it_g != grps.end(); ++it_g) {
+            D4Group *tmp_grp = new D4Group((*it_g)->getNewName());
+            for (it_ra = (*it_g)->getAttributes().begin();
+                 it_ra != (*it_g)->getAttributes().end(); ++it_ra) {
+                map_cfh5_grp_attr_to_dap4(tmp_grp,(*it_ra));
+            }
+            d4_root->add_group_nocopy(tmp_grp);
+        }
+    }
+#endif
 
 }
 
@@ -1200,7 +1228,7 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
 
                 ar->set_is_dap4(true);
                 BaseType* d4_var=ar->h5cfdims_transform_to_dap4(d4_root);
-                map_cfh5_attrs_to_dap4(cvar,d4_var);
+                map_cfh5_var_attrs_to_dap4(cvar,d4_var);
                 d4_root->add_var_nocopy(d4_var);
                 delete bt;
                 delete ar;
@@ -1239,7 +1267,7 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
 
                 ar->set_is_dap4(true);
                 BaseType* d4_var=ar->h5cfdims_transform_to_dap4(d4_root);
-                map_cfh5_attrs_to_dap4(cvar,d4_var);
+                map_cfh5_var_attrs_to_dap4(cvar,d4_var);
                 d4_root->add_var_nocopy(d4_var);
                 delete bt;
                 delete ar;
@@ -1278,7 +1306,7 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
                 }
                 ar->set_is_dap4(true);
                 BaseType* d4_var=ar->h5cfdims_transform_to_dap4(d4_root);
-                map_cfh5_attrs_to_dap4(cvar,d4_var);
+                map_cfh5_var_attrs_to_dap4(cvar,d4_var);
                 d4_root->add_var_nocopy(d4_var);
                 delete bt;
                 delete ar;
@@ -1317,7 +1345,7 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
                 }
                 ar->set_is_dap4(true);
                 BaseType* d4_var=ar->h5cfdims_transform_to_dap4(d4_root);
-                map_cfh5_attrs_to_dap4(cvar,d4_var);
+                map_cfh5_var_attrs_to_dap4(cvar,d4_var);
                 d4_root->add_var_nocopy(d4_var);
                 delete bt;
                 delete ar;
@@ -1352,7 +1380,7 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
 
                 ar->set_is_dap4(true);
                 BaseType* d4_var=ar->h5cfdims_transform_to_dap4(d4_root);
-                map_cfh5_attrs_to_dap4(cvar,d4_var);
+                map_cfh5_var_attrs_to_dap4(cvar,d4_var);
                 d4_root->add_var_nocopy(d4_var);
                 delete bt;
                 delete ar;
@@ -1369,6 +1397,81 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
 
 }
 
-void gen_dap_onegmspvar_dmr(D4Group*d4_root,const GMSPVar*it_cv,const hid_t fileid, const string &filename) {
+void gen_dap_onegmspvar_dmr(D4Group*d4_root,const GMSPVar*spvar,const hid_t fileid, const string &filename) {
+
+    BESDEBUG("h5","Coming to gen_dap_onegmspvar_dmr()  "<<endl);
+    BaseType *bt = NULL;
+
+    // Note: The special variable is actually an ACOS_OCO2 64-bit integer variable.
+    // We decompose 64-bit to two integer variables according to the specification.
+    // This product has been served in this way for years. For backward compatibility,
+    // we will not change this in the CF DMR implementation. So Int64/UInt64 are not added.
+    // KY 2021-03-09
+    switch(spvar->getType()) {
+#define HANDLE_CASE(tid,type)                                  \
+        case tid:                                           \
+            bt = new (type)(spvar->getNewName(),spvar->getFullPath());  \
+        break;
+
+        HANDLE_CASE(H5FLOAT32, HDF5CFFloat32);
+        HANDLE_CASE(H5FLOAT64, HDF5CFFloat64);
+        HANDLE_CASE(H5CHAR,HDF5CFByte);
+        HANDLE_CASE(H5UCHAR, HDF5CFByte);
+        HANDLE_CASE(H5INT16, HDF5CFInt16);
+        HANDLE_CASE(H5UINT16, HDF5CFUInt16);
+        HANDLE_CASE(H5INT32, HDF5CFInt32);
+        HANDLE_CASE(H5UINT32, HDF5CFUInt32);
+        HANDLE_CASE(H5FSTRING, Str);
+        HANDLE_CASE(H5VSTRING, Str);
+        default:
+            throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+#undef HANDLE_CASE
+    }
+
+    if (bt) {
+
+        const vector<HDF5CF::Dimension *>& dims = spvar->getDimensions();
+        vector <HDF5CF::Dimension*>:: const_iterator it_d;
+
+        if(dims.empty())
+            throw InternalErr(__FILE__,__LINE__,"Currently don't support scalar special variables. ");
+
+        HDF5GMSPCFArray *ar = NULL;
+ 
+        try {
+            ar = new HDF5GMSPCFArray (
+                                 spvar->getRank(),
+                                 filename,
+                                 fileid,
+                                 spvar->getType(),
+                                 spvar->getFullPath(),
+                                 spvar->getOriginalType(),
+                                 spvar->getStartBit(),
+                                 spvar->getBitNum(),
+                                 spvar->getNewName(),
+                                 bt);
+        }
+        catch(...) {
+            delete bt;
+            throw InternalErr(__FILE__,__LINE__,"Unable to allocate HDF5GMCFMissNonLLCVArray. ");
+        }
+
+
+        for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
+            if (""==(*it_d)->getNewName()) 
+                ar->append_dim((*it_d)->getSize());
+            else 
+                ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+        }
+
+        ar->set_is_dap4(true);
+        BaseType* d4_var=ar->h5cfdims_transform_to_dap4(d4_root);
+        map_cfh5_var_attrs_to_dap4(spvar,d4_var);
+        d4_root->add_var_nocopy(d4_var);
+ 
+        //dds.add_var(ar);
+        delete bt;
+        delete ar;
+    }
 
 }

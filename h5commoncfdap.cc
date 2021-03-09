@@ -90,7 +90,7 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
                         throw InternalErr(__FILE__, __LINE__, error_message);
                     }
                     sca_int64->set_is_dap4(true);
-                    map_cfh5_attrs_to_dap4_int64(var,sca_int64);
+                    map_cfh5_var_attrs_to_dap4_int64(var,sca_int64);
                     root_grp->add_var_nocopy(sca_int64);
  
                 }
@@ -103,7 +103,7 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
                         throw InternalErr(__FILE__, __LINE__, "Cannot allocate the HDF5CFInt64.");
                     }
                     sca_uint64->set_is_dap4(true);
-                    map_cfh5_attrs_to_dap4_int64(var,sca_uint64);
+                    map_cfh5_var_attrs_to_dap4_int64(var,sca_uint64);
                     root_grp->add_var_nocopy(sca_uint64);
  
                 }
@@ -311,7 +311,7 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
             // Dimensions need to be translated.
             BaseType* d4_var = ar->h5cfdims_transform_to_dap4_int64(root_grp);
             // Attributes.
-            map_cfh5_attrs_to_dap4_int64(var,d4_var);
+            map_cfh5_var_attrs_to_dap4_int64(var,d4_var);
             root_grp->add_var_nocopy(d4_var);
         }
         else 
@@ -556,7 +556,7 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
             try {
                 sca_str = new HDF5CFStr(var->getNewName(), filename, var->getFullPath());
                 sca_str->set_is_dap4(true);
-                map_cfh5_attrs_to_dap4(var,sca_str);
+                map_cfh5_var_attrs_to_dap4(var,sca_str);
             }
             catch (...) {
                 delete sca_str;
@@ -572,7 +572,7 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
                 try {
                     sca_uchar = new HDF5CFByte(var->getNewName(), var->getFullPath(), filename);
                     sca_uchar->set_is_dap4(true);
-                    map_cfh5_attrs_to_dap4(var,sca_uchar);
+                    map_cfh5_var_attrs_to_dap4(var,sca_uchar);
                 }
                 catch (...) {
                     delete sca_uchar;
@@ -586,7 +586,7 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
                 try {
                     sca_char = new HDF5CFInt8(var->getNewName(), var->getFullPath(), filename);
                     sca_char->set_is_dap4(true);
-                    map_cfh5_attrs_to_dap4(var,sca_char);
+                    map_cfh5_var_attrs_to_dap4(var,sca_char);
                 }
                 catch (...) {
                     delete sca_char;
@@ -601,7 +601,7 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
                 try {
                     sca_int16 = new HDF5CFInt16(var->getNewName(), var->getFullPath(), filename);
                     sca_int16->set_is_dap4(true);
-                    map_cfh5_attrs_to_dap4(var,sca_int16);
+                    map_cfh5_var_attrs_to_dap4(var,sca_int16);
  
                 }
                 catch (...) {
@@ -616,7 +616,7 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
                 try {
                     sca_uint16 = new HDF5CFUInt16(var->getNewName(), var->getFullPath(), filename);
                     sca_uint16->set_is_dap4(true);
-                    map_cfh5_attrs_to_dap4(var,sca_uint16);
+                    map_cfh5_var_attrs_to_dap4(var,sca_uint16);
                 }
                 catch (...) {
                     delete sca_uint16;
@@ -630,7 +630,7 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
                 try {
                     sca_int32 = new HDF5CFInt32(var->getNewName(), var->getFullPath(), filename);
                     sca_int32->set_is_dap4(true);
-                    map_cfh5_attrs_to_dap4(var,sca_int32);
+                    map_cfh5_var_attrs_to_dap4(var,sca_int32);
                 }
                 catch (...) {
                     delete sca_int32;
@@ -644,7 +644,7 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
                 try {
                     sca_uint32 = new HDF5CFUInt32(var->getNewName(), var->getFullPath(), filename);
                     sca_uint32->set_is_dap4(true);
-                    map_cfh5_attrs_to_dap4(var,sca_uint32);
+                    map_cfh5_var_attrs_to_dap4(var,sca_uint32);
                 }
                 catch (...) {
                     delete sca_uint32;
@@ -659,7 +659,7 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
                 try {
                     sca_int64 = new HDF5CFInt64(var->getNewName(), var->getFullPath(), filename);
                     sca_int64->set_is_dap4(true);
-                    map_cfh5_attrs_to_dap4(var,sca_int64);
+                    map_cfh5_var_attrs_to_dap4(var,sca_int64);
                 }
                 catch (...) {
                     delete sca_int64;
@@ -673,7 +673,7 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
                 try {
                     sca_uint64 = new HDF5CFUInt64(var->getNewName(), var->getFullPath(), filename);
                     sca_uint64->set_is_dap4(true);
-                    map_cfh5_attrs_to_dap4(var,sca_uint64);
+                    map_cfh5_var_attrs_to_dap4(var,sca_uint64);
                 }
                 catch (...) {
                     delete sca_uint64;
@@ -687,7 +687,7 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
                 try {
                     sca_float32 = new HDF5CFFloat32(var->getNewName(), var->getFullPath(), filename);
                     sca_float32->set_is_dap4(true);
-                    map_cfh5_attrs_to_dap4(var,sca_float32);
+                    map_cfh5_var_attrs_to_dap4(var,sca_float32);
                 }
                 catch (...) {
                     delete sca_float32;
@@ -701,7 +701,7 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
                 try {
                     sca_float64 = new HDF5CFFloat64(var->getNewName(), var->getFullPath(), filename);
                     sca_float64->set_is_dap4(true);
-                    map_cfh5_attrs_to_dap4(var,sca_float64);
+                    map_cfh5_var_attrs_to_dap4(var,sca_float64);
                 }
                 catch (...) {
                     delete sca_float64;
@@ -780,7 +780,7 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
         delete bt;
         ar->set_is_dap4(true);
         BaseType* d4_var=ar->h5cfdims_transform_to_dap4(d4_grp);
-        map_cfh5_attrs_to_dap4(var,d4_var);
+        map_cfh5_var_attrs_to_dap4(var,d4_var);
         d4_grp->add_var_nocopy(d4_var);
         delete ar;
 
@@ -1151,7 +1151,7 @@ bool need_attr_values_for_dap4(const HDF5CF::Var *var) {
 }
 
 // This routine is for 64-bit DAP4 CF support: map all attributes to DAP4 for 64-bit integers.
-void map_cfh5_attrs_to_dap4_int64(const HDF5CF::Var *var,BaseType* d4_var) {
+void map_cfh5_var_attrs_to_dap4_int64(const HDF5CF::Var *var,BaseType* d4_var) {
 
     vector<HDF5CF::Attribute *>::const_iterator it_ra;
     for (it_ra = var->getAttributes().begin();
@@ -1297,12 +1297,14 @@ void handle_coor_attr_for_int64_var(const HDF5CF::Attribute *attr,const string &
 }
 
 // This routine is for directly built DAP4 CF support.We build DMR not from DDS and DAS. 
-void map_cfh5_attrs_to_dap4(const HDF5CF::Var *var,BaseType* d4_var) {
+void map_cfh5_var_attrs_to_dap4(const HDF5CF::Var *var,BaseType* d4_var) {
 
     vector<HDF5CF::Attribute *>::const_iterator it_ra;
     for (it_ra = var->getAttributes().begin();
         it_ra != var->getAttributes().end(); ++it_ra) {
-
+     
+        D4Attribute *d4_attr = gen_dap4_attr((*it_ra));
+#if 0
         D4AttributeType dap4_attrtype = HDF5CFDAPUtil::print_type_dap4((*it_ra)->getType());
         D4Attribute *d4_attr = new D4Attribute((*it_ra)->getNewName(),dap4_attrtype);
         if(dap4_attrtype == attr_str_c) {
@@ -1327,8 +1329,46 @@ void map_cfh5_attrs_to_dap4(const HDF5CF::Var *var,BaseType* d4_var) {
                 d4_attr->add_value(print_rep);
             }
         }
+#endif
         d4_var->attributes()->add_attribute_nocopy(d4_attr);
     }
+}
+
+// This routine is for directly built DAP4 CF support.We build DMR not from DDS and DAS. 
+void map_cfh5_grp_attr_to_dap4(libdap::D4Group *d4_grp,const HDF5CF::Attribute *attr) {
+
+        D4Attribute *d4_attr = gen_dap4_attr(attr);
+        d4_grp->attributes()->add_attribute_nocopy(d4_attr);
+
+}
+
+D4Attribute *gen_dap4_attr(const HDF5CF::Attribute *attr) {
+
+    D4AttributeType dap4_attrtype = HDF5CFDAPUtil::print_type_dap4(attr->getType());
+    D4Attribute *d4_attr = new D4Attribute(attr->getNewName(),dap4_attrtype);
+    if(dap4_attrtype == attr_str_c) {
+            
+        const vector<size_t>& strsize = attr->getStrSize();
+        unsigned int temp_start_pos = 0;
+        for (unsigned int loc = 0; loc < attr->getCount(); loc++) {
+            if (strsize[loc] != 0) {
+                string tempstring(attr->getValue().begin() + temp_start_pos,
+                                  attr->getValue().begin() + temp_start_pos + strsize[loc]);
+                temp_start_pos += strsize[loc];
+                //The below if is not necessary since the "origname" and "fullnamepath" are not added.KY 2020-02-24
+                //if ((attr->getNewName() != "origname") && (attr->getNewName() != "fullnamepath")) 
+                tempstring = HDF5CFDAPUtil::escattr(tempstring);
+                d4_attr->add_value(tempstring);
+            }
+        }
+    }
+    else {
+        for (unsigned int loc = 0; loc < attr->getCount(); loc++) {
+            string print_rep = HDF5CFDAPUtil::print_attr(attr->getType(), loc, (void*) &(attr->getValue()[0]));
+            d4_attr->add_value(print_rep);
+        }
+    }
+    return d4_attr;
 }
 
 
