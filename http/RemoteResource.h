@@ -32,12 +32,16 @@
 
 #include <string>
 #include <vector>
+
 #if 0
 #include "InternalErr.h"
 #include "RCReader.h"
 #endif
+
 #include "RemoteResource.h"
 #include "rapidjson/document.h"
+
+#define REMOTE_RESOURCE_DEFAULT_EXPIRED_INTERVAL 3600
 
 namespace http {
 
@@ -120,12 +124,12 @@ namespace http {
     protected:
         RemoteResource() :
                 d_fd(0), d_initialized(false), d_resourceCacheFileName(""),
-                d_response_headers(0), d_http_response_headers(0), d_expires_interval(3600) {
+                d_response_headers(0), d_http_response_headers(0), d_expires_interval(REMOTE_RESOURCE_DEFAULT_EXPIRED_INTERVAL) {
         }
 
     public:
         // RemoteResource(const std::string &url, const std::string &uid = "", const std::string &echo_token = "");
-        RemoteResource(const std::string &url, const std::string &uid = "", long long expires_interval = 3600);
+        RemoteResource(const std::string &url, const std::string &uid = "", long long expires_interval = REMOTE_RESOURCE_DEFAULT_EXPIRED_INTERVAL);
 
         virtual ~RemoteResource();
 

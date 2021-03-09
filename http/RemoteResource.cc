@@ -55,14 +55,13 @@
 using namespace std;
 
 #define BES_CATALOG_ROOT_KEY "BES.Catalog.catalog.RootDirectory"
-#define DEFAULT_EXPIRED_INTERVAL 3600
 
 #define prolog std::string("RemoteResource::").append(__func__).append("() - ")
 #define MODULE "rr"
 
 namespace http {
 
-    RemoteResource::RemoteResource(const std::string &url,const std::string &uid, long long expiredInterval = DEFAULT_EXPIRED_INTERVAL){
+    RemoteResource::RemoteResource(const std::string &url,const std::string &uid, long long expiredInterval){
 
         d_fd = 0;
         d_initialized = false;
