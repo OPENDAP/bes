@@ -159,7 +159,6 @@ private:
         return a_str == b_str;
     }
 
-
 public:
     string d_data_dir;
 
