@@ -749,6 +749,8 @@ void gen_gmh5_cfdmr(D4Group* d4_root,HDF5CF::GMFile *f) {
     }
 
     // STOPPP, need to move attributes to the root since we claim to have no hierarchy.
+    // Actually there is no way to keep the group name unless we change the attribute name.
+    // Since this may be rare, just keep the current handling.
 #if 0
     if (false == grps.empty()) {
         for (it_g = grps.begin();

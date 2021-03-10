@@ -1820,5 +1820,264 @@ int get_metadata_num(const string & meta_str) {
        
 void map_eos5_cfdmr(D4Group *d4_root, hid_t file_id, const string &filename) {
 
+    BESDEBUG("h5","Coming to HDF-EOS5 products DDS mapping function map_eos5_cfdds  "<<endl);
+
+    string st_str ="";
+    string core_str="";
+    string arch_str="";
+    string xml_str ="";
+    string subset_str="";
+    string product_str="";
+    string other_str ="";
+    bool st_only = true;
+
+    // Read ECS metadata: merge them into one C++ string
+    read_ecs_metadata(file_id,st_str,core_str,arch_str,xml_str, subset_str,product_str,other_str,st_only); 
+    if(""==st_str) {
+        string msg =
+            "unable to obtain the HDF-EOS5 struct metadata ";
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+     
+    bool is_check_nameclashing = HDF5RequestHandler::get_check_name_clashing();
+
+    bool is_add_path_attrs = HDF5RequestHandler::get_add_path_attrs();
+
+    EOS5File *f = NULL;
+
+    try {
+        f = new EOS5File(filename.c_str(),file_id);
+    }
+    catch(...) {
+        throw InternalErr(__FILE__,__LINE__,"Cannot allocate the file object.");
+    }
+
+    bool include_attr = true;
+
+    // This first "try-catch" block will use the parsed info
+    try {
+
+        // Parse the structmetadata
+        HE5Parser p;
+        HE5Checker c;
+        he5dds_scan_string(st_str.c_str());
+        he5ddsparse(&p);
+        he5ddslex_destroy();
+
+        // Retrieve ProjParams from StructMetadata
+        p.add_projparams(st_str);
+#if 0
+        //p.print();
+#endif
+
+        // Check if the HDF-EOS5 grid has the valid parameters, projection codes.
+        if (c.check_grids_unknown_parameters(&p)) {
+            throw InternalErr("Unknown HDF-EOS5 grid paramters found in the file");
+        }
+
+        if (c.check_grids_missing_projcode(&p)) {
+            throw InternalErr("The HDF-EOS5 is missing project code ");
+        }
+
+        // We gradually add the support of different projection codes
+        if (c.check_grids_support_projcode(&p)) {
+            throw InternalErr("The current project code is not supported");
+        }
+       
+        // HDF-EOS5 provides default pixel and origin values if they are not defined.
+        c.set_grids_missing_pixreg_orig(&p);
+
+        // Check if this multi-grid file shares the same grid.
+        bool grids_mllcv = c.check_grids_multi_latlon_coord_vars(&p);
+
+        // Retrieve all HDF5 info(Not the values)
+        f->Retrieve_H5_Info(filename.c_str(),file_id,include_attr);
+
+        // Adjust EOS5 Dimension names/sizes based on the parsed results
+        f->Adjust_EOS5Dim_Info(&p);
+
+        // Translate the parsed output to HDF-EOS5 grids/swaths/zonal.
+        // Several maps related to dimension and coordiantes are set up here.
+        f->Add_EOS5File_Info(&p, grids_mllcv);
+
+        // Add the dimension names
+        f->Add_Dim_Name(&p);
+    }
+    catch (HDF5CF::Exception &e){
+        if(f!=NULL) 
+            delete f;
+        throw InternalErr(e.what());
+    }
+    catch(...) {
+        if(f!=NULL)
+            delete f;
+        throw;
+    }
+
+    // The parsed struct will no longer be in this "try-catch" block.
+    try {
+
+        // NASA Aura files need special handlings. So first check if this file is an Aura file.
+        f->Check_Aura_Product_Status();
+
+        // Adjust the variable name
+        f->Adjust_Var_NewName_After_Parsing();
+
+        // Handle coordinate variables
+        f->Handle_CVar();
+
+        // Adjust variable and dimension names again based on the handling of coordinate variables.
+        f->Adjust_Var_Dim_NewName_Before_Flattening();
+
+
+        // We need to use the CV units to distinguish lat/lon from th 3rd CV when
+        // memory cache is turned on.
+        //if((HDF5RequestHandler::get_lrdata_mem_cache() != NULL) ||
+        //   (HDF5RequestHandler::get_srdata_mem_cache() != NULL)){
+
+            // Handle unsupported datatypes including the attributes
+            f->Handle_Unsupported_Dtype(true);
+
+            // Handle unsupported dataspaces including the attributes
+            f->Handle_Unsupported_Dspace(true);
+
+            // We need to retrieve  coordinate variable attributes for memory cache use.
+            f->Retrieve_H5_CVar_Supported_Attr_Values(); 
+
+            f->Retrieve_H5_Supported_Attr_Values(); 
+
+            // Handle other unsupported objects, 
+            // currently it mainly generates the info. for the
+            // unsupported objects other than datatype, dataspace,links and named datatype
+            // This function needs to be called after retrieving supported attributes.
+            f->Handle_Unsupported_Others(include_attr);
+
+        //}
+#if 0
+        else {
+
+	        // Handle unsupported datatypes
+	        f->Handle_Unsupported_Dtype(include_attr);
+
+	        // Handle unsupported dataspaces
+	        f->Handle_Unsupported_Dspace(include_attr);
+
+        }
+#endif
+ 
+        
+        // Need to retrieve the units of CV when memory cache is turned on.
+        // The units of CV will be used to distinguish whether this CV is 
+        // latitude/longitude or a third-dimension CV. 
+        // isLatLon() will use the units value.
+        //if((HDF5RequestHandler::get_lrdata_mem_cache() != NULL) ||
+        //   (HDF5RequestHandler::get_srdata_mem_cache() != NULL))
+            f->Adjust_Attr_Info();
+
+        // May need to adjust the object names for special objects. Currently no operations
+        // are done in this routine.
+        f->Adjust_Obj_Name();
+
+        // Flatten the object name
+        f->Flatten_Obj_Name(include_attr);
+     
+        // Handle name clashing     
+        if(true == is_check_nameclashing)
+            f->Handle_Obj_NameClashing(include_attr);
+
+        // Check if this should follow COARDS, yes, set the COARDS flag.
+        f->Set_COARDS_Status();
+
+        // For COARDS, the dimension name needs to be changed.
+        f->Adjust_Dim_Name();
+        if(true == is_check_nameclashing)
+           f->Handle_DimNameClashing();
+
+        f->Add_Supplement_Attrs(is_add_path_attrs);
+        
+        // We need to turn off the very long string in the TES file to avoid
+        // the choking of netCDF Java tools. So this special variable routine
+        // is listed at last. We may need to turn off this if netCDF can handle
+        // long string better.
+        f->Handle_SpVar();
+        // Handle coordinate attributes
+        f->Handle_Coor_Attr();
+        f->Handle_SpVar_Attr();
+    }
+    catch (HDF5CF::Exception &e){
+        if(f != NULL)
+            delete f;
+        throw InternalErr(e.what());
+    }
+
+    // Generate EOS5 DDS
+    try {
+        gen_eos5_cfdmr(d4_root,f);
+    }
+    catch(...) {
+        if (f!=NULL)
+            delete f;
+        throw;
+    }
+
+    if (f!=NULL)
+        delete f;
 
 }
+
+void gen_eos5_cfdmr(D4Group *d4_root,  HDF5CF::EOS5File *f) {
+
+    BESDEBUG("h5","Coming to HDF-EOS5 products DDS generation function   "<<endl);
+    const vector<HDF5CF::Var *>& vars       = f->getVars();
+    const vector<HDF5CF::EOS5CVar *>& cvars = f->getCVars();
+    const string filename = f->getPath();
+    const hid_t file_id = f->getFileID();
+    const vector<HDF5CF::Group *>& grps           = f->getGroups();
+    const vector<HDF5CF::Attribute *>& root_attrs = f->getAttributes();
+
+
+    // Read Variable info.
+    vector<HDF5CF::Var *>::const_iterator it_v;
+    vector<HDF5CF::EOS5CVar *>::const_iterator it_cv;
+
+    //TODO: root attribute
+    for (it_v = vars.begin(); it_v !=vars.end();++it_v) {
+        BESDEBUG("h5","variable full path= "<< (*it_v)->getFullPath() <<endl);
+        gen_dap_onevar_dmr(d4_root,*it_v,file_id,filename);
+    }
+
+    for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
+        BESDEBUG("h5","variable full path= "<< (*it_cv)->getFullPath() <<endl);
+        gen_dap_oneeos5cvar_dmr(d4_root,*it_cv,file_id,filename);
+
+    }
+
+    // TODO: special grid info.
+#if 0
+    // We need to provide grid_mapping info. for multiple grids.
+    // Here cv_lat_miss_index represents the missing latitude(HDF-EOS grid without the latitude field) cv index
+    // This index is used to create the grid_mapping variable for different grids.
+    unsigned short cv_lat_miss_index = 1;
+    for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
+        if((*it_cv)->getCVType() == CV_LAT_MISS) {
+            if((*it_cv)->getProjCode() != HE5_GCTP_GEO) {
+                // Here we need to add grid_mapping variables for each grid
+                // For projections other than sinusoidal since attribute values for LAMAZ and PS
+                // are different for each grid.
+                gen_dap_oneeos5cf_dds(dds,*it_cv);
+                add_cf_grid_mapinfo_var(dds,(*it_cv)->getProjCode(),cv_lat_miss_index);
+                cv_lat_miss_index++;
+            }
+        }
+    }
+#endif
+}
+
+
+void gen_dap_oneeos5cvar_dmr(D4Group* d4_root,const EOS5CVar* var,const hid_t file_id,const string & filename){
+
+}
+
+
+
+

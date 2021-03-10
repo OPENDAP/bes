@@ -798,6 +798,7 @@ void gen_dap_str_attr(AttrTable *at, const HDF5CF::Attribute *attr)
 
     BESDEBUG("h5", "Coming to gen_dap_str_attr()  "<<endl);
     const vector<size_t>& strsize = attr->getStrSize();
+//cerr<<"in DAS strsize is "<<strsize.size() <<endl;
     unsigned int temp_start_pos = 0;
     bool is_cset_ascii = attr->getCsetType();
     for (unsigned int loc = 0; loc < attr->getCount(); loc++) {
@@ -1346,9 +1347,16 @@ D4Attribute *gen_dap4_attr(const HDF5CF::Attribute *attr) {
 
     D4AttributeType dap4_attrtype = HDF5CFDAPUtil::print_type_dap4(attr->getType());
     D4Attribute *d4_attr = new D4Attribute(attr->getNewName(),dap4_attrtype);
+//cerr<<"attr name is "<<attr->getNewName() <<endl;
     if(dap4_attrtype == attr_str_c) {
             
         const vector<size_t>& strsize = attr->getStrSize();
+#if 0
+if(strsize.size()  == 0)
+cerr<<"vector string size is 0"<<endl;
+for(int i = 0; i<strsize.size(); i++)
+cerr<<"attr size  is "<<strsize[i] <<endl;
+#endif
         unsigned int temp_start_pos = 0;
         for (unsigned int loc = 0; loc < attr->getCount(); loc++) {
             if (strsize[loc] != 0) {
@@ -1363,6 +1371,7 @@ D4Attribute *gen_dap4_attr(const HDF5CF::Attribute *attr) {
         }
     }
     else {
+//cerr<<"not a string type "<<endl;
         for (unsigned int loc = 0; loc < attr->getCount(); loc++) {
             string print_rep = HDF5CFDAPUtil::print_attr(attr->getType(), loc, (void*) &(attr->getValue()[0]));
             d4_attr->add_value(print_rep);

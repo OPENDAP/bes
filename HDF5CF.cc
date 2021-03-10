@@ -878,8 +878,9 @@ void File::Retrieve_H5_Attr_Value(Attribute *attr, string obj_name)
 
 #if 0
                 // "h5","new string value " <<string(attr->value.begin(), attr->value.end()) <<endl;
+                cerr<<"Attr name is "<<attr->name <<endl;
                 for (int temp_i = 0; temp_i <num_sect; temp_i ++)
-                "h5","string new section size = " << attr->strsize[temp_i] <<endl;
+                cerr<<"string new section size = " << attr->strsize[temp_i] <<endl;
 #endif
             }
         }
