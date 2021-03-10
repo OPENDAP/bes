@@ -35,7 +35,7 @@ echo "${BES_SNAPSHOT}" >> bes-snapshot
 
 cat bes-snapshot >&2
 
-git commit -am "${snap_time} Triggering OLFS build for snapshots.";
+git commit -am "${BES_SNAPSHOT} - Triggering OLFS build for snapshots.";
 git push https://$GIT_UID:$GIT_PSWD@github.com/opendap/olfs --all;
 
 echo "-- -- -- -- -- -- -- -- -- after_deploy END -- -- -- -- -- -- -- -- --"
