@@ -27,7 +27,7 @@ git checkout master
 echo "${LIBDAP4_SNAPSHOT}" > bes-snapshot
 
 # Compute the BES snapshot record.
-BES_SNAPSHOT="BES-<version.build> "`date "+%FT%T%z"`
+BES_SNAPSHOT="bes-<version.build> "`date "+%FT%T%z"`
 echo "bes-snapshot record: ${BES_SNAPSHOT}" >&2
 
 # Append the BES snapshot record to the bes-snapshot file.
