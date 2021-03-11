@@ -24,6 +24,7 @@
 
 #include <sstream>
 #include <memory>
+#include <cassert>
 
 #include <STARE.h>
 #include <hdf5.h>
@@ -73,7 +74,7 @@ string stare_sidecar_suffix = "_sidecar";
  * @brief Write a collection of STARE Matches to an ostream
  *
  * STARE matches is not a vector of stare_match objects. It's a self-contained
- * commection of vectors that holds a collection of STARE matches in a way that
+ * connection of vectors that holds a collection of STARE matches in a way that
  * can be dumped into libdap::Array instances easily and efficiently.
  *
  * @param out The ostream
@@ -145,16 +146,16 @@ extract_uint64_array(Array *var, vector<dods_uint64> &values) {
 
 /**
  * @brief Do any of the targetIndices STARE indices overlap the dataset's STARE indices?
- * @param targetIndices - stare values from a constraint expression
- * @param dataStareIndices - stare values being compared, retrieved from the sidecar file. These
+ * @param target_indices - stare values from a constraint expression
+ * @param data_stare_indices - stare values being compared, retrieved from the sidecar file. These
  * are the index values that describe the coverage of the dataset.
  */
 bool
-target_in_dataset(const vector<dods_uint64> &targetIndices, const vector<dods_uint64> &dataStareIndices) {
+target_in_dataset(const vector<dods_uint64> &target_indices, const vector<dods_uint64> &data_stare_indices) {
     // Changes to the range-for loop, fixed the type (was unsigned long long
     // which works on OSX but not CentOS7). jhrg 11/5/19
-    for (const dods_uint64 &i : targetIndices) {
-        for (const dods_uint64 &j :dataStareIndices ) {
+    for (const dods_uint64 &i : target_indices) {
+        for (const dods_uint64 &j :data_stare_indices ) {
             // Check to see if the index 'i' overlaps the index 'j'. The cmpSpatial()
             // function returns -1, 0, 1 depending on i in j, no overlap or, j in i.
             // testing for !0 covers the general overlap case.
@@ -171,7 +172,7 @@ target_in_dataset(const vector<dods_uint64> &targetIndices, const vector<dods_ui
  * @brief How many of the dataset's STARE indices overlap the target STARE indices?
  *
  * This method should return the number of indices of the dataset's spatial coverage
- * that overlap the spatial coverage passed to the server as defined by  the target
+ * that overlap the spatial coverage passed to the server as defined by the target
  * STARE indices.
  *
  * @param target_indices - stare values from a constraint expression

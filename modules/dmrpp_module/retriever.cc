@@ -286,7 +286,7 @@ void make_chunks(const string &target_url, const size_t &target_size, const size
     size_t chunk_start = 0;
     size_t chunk_index;
     for (chunk_index = 0; chunk_index < chunk_count; chunk_index++) {
-        vector<unsigned int> position_in_array;
+        vector<unsigned long long> position_in_array;
         position_in_array.push_back(chunk_index);
         if (debug)
             cerr << prolog << "chunks[" << chunk_index << "]  chunk_start: " << chunk_start << " chunk_size: "
@@ -305,7 +305,7 @@ void make_chunks(const string &target_url, const size_t &target_size, const size
             cerr << prolog << "Remainder chunk! target_size: " << target_size << "  index: " << chunk_index
                  << " last_chunk_start: " << chunk_start << " last_chunk_size: " << last_chunk_size << endl;
         if (last_chunk_size > 0) {
-            vector<unsigned int> position_in_array;
+            vector<unsigned long long> position_in_array;
             position_in_array.push_back(chunk_index);
             if (debug)
                 cerr << prolog << "chunks[" << chunk_index << "]  chunk_start: " << chunk_start << " chunk_size: "
@@ -447,7 +447,7 @@ void add_chunks(const string &target_url, const size_t &target_size, const size_
     size_t chunk_start = 0;
     size_t chunk_index;
     for (chunk_index = 0; chunk_index < chunk_count; chunk_index++) {
-        vector<unsigned int> position_in_array;
+        vector<unsigned long long> position_in_array;
         position_in_array.push_back(chunk_start);
         if (debug)
             cerr << prolog << "chunks[" << chunk_index << "]  chunk_start: " << chunk_start << " chunk_size: "
@@ -462,7 +462,7 @@ void add_chunks(const string &target_url, const size_t &target_size, const size_
             cerr << prolog << "Remainder chunk! target_size: " << target_size << "  index: " << chunk_index
                  << " last_chunk_start: " << chunk_start << " last_chunk_size: " << last_chunk_size << endl;
         if (last_chunk_size > 0) {
-            vector<unsigned int> position_in_array;
+            vector<unsigned long long> position_in_array;
             position_in_array.push_back(chunk_start);
             if (debug)
                 cerr << prolog << "chunks[" << chunk_index << "]  chunk_start: " << chunk_start << " chunk_size: "
@@ -519,8 +519,8 @@ size_t array_get(const string &target_url, const size_t &target_size, const size
         stringstream timer_msg;
         timer_msg << prolog << "DmrppD4Group.intern_data() for " << target_size << " bytes in " << chunk_count <<
                   " chunks, parallel transfers ";
-        if (dmrpp::DmrppRequestHandler::d_use_parallel_transfers) {
-            timer_msg << "enabled.  (max: " << dmrpp::DmrppRequestHandler::d_max_parallel_transfers << ")";
+        if (dmrpp::DmrppRequestHandler::d_use_transfer_threads) {
+            timer_msg << "enabled.  (max: " << dmrpp::DmrppRequestHandler::d_max_transfer_threads << ")";
         } else {
             timer_msg << "disabled.";
         }
@@ -597,16 +597,16 @@ int test_plan_01(const string &target_url,
         for (size_t chunk_pwr = 1; chunk_pwr <= power_of_two_chunk_count; chunk_pwr++) {
 
             // We turn off parallel transfers to get a baseline that is the single threaded, serial retrieval of the chunks.
-            dmrpp::DmrppRequestHandler::d_use_parallel_transfers = false;
+            dmrpp::DmrppRequestHandler::d_use_transfer_threads = false;
             for ( unsigned int rep = 0; rep < reps; rep++) {
                 array_get(effectiveUrl, target_size, chunk_count, output_file_base );
             }
 
             // Now we enable threads and starting with 2 work up to power_of_two_threads_max
-            dmrpp::DmrppRequestHandler::d_use_parallel_transfers = true;
+            dmrpp::DmrppRequestHandler::d_use_transfer_threads = true;
             unsigned int thread_count = 2;
             for ( unsigned int tpwr = 1; tpwr <= power_of_two_threads_max; tpwr++) {
-                dmrpp::DmrppRequestHandler::d_max_parallel_transfers = thread_count;
+                dmrpp::DmrppRequestHandler::d_max_transfer_threads = thread_count;
                 for ( unsigned int rep = 0; rep < reps; rep++) {
                     array_get(effectiveUrl, target_size, chunk_count, output_file_base);
                 }
@@ -744,12 +744,12 @@ int main(int argc, char *argv[]) {
     try {
         if(pwr2_parallel_reads){
             unsigned long long int max_threads = 1ULL << pwr2_parallel_reads;
-            dmrpp::DmrppRequestHandler::d_use_parallel_transfers = true;
-            dmrpp::DmrppRequestHandler::d_max_parallel_transfers = max_threads;
+            dmrpp::DmrppRequestHandler::d_use_transfer_threads = true;
+            dmrpp::DmrppRequestHandler::d_max_transfer_threads = max_threads;
         }
         else {
-            dmrpp::DmrppRequestHandler::d_use_parallel_transfers = false;
-            dmrpp::DmrppRequestHandler::d_max_parallel_transfers = 1;
+            dmrpp::DmrppRequestHandler::d_use_transfer_threads = false;
+            dmrpp::DmrppRequestHandler::d_max_transfer_threads = 1;
         }
 
         dmrpp::DmrppRequestHandler *dmrppRH = bes_setup(bes_config_file, bes_log_file, bes_debug_log_file,

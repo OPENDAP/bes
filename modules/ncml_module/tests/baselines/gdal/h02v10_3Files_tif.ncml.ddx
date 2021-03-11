@@ -14,12 +14,6 @@
         </Attribute>
     </Attribute>
     <Grid name="SRB1">
-        <Attribute name="add_offset" type="Float64">
-            <value>0</value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <value>1</value>
-        </Attribute>
         <Attribute name="PhotometricInterpretation" type="String">
             <value>Gray</value>
         </Attribute>

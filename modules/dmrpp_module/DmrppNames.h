@@ -36,7 +36,20 @@
 #define CREDS  "dmrpp:creds"
 #define DMRPP_CURL  "dmrpp:curl"
 
-#define USE_SUPER_CHUNKS 1
+#define DMRPP_USE_TRANSFER_THREADS_KEY "DMRPP.UseParallelTransfers"
+#define DMRPP_MAX_TRANSFER_THREADS_KEY "DMRPP.MaxParallelTransfers"
+
+#define DMRPP_USE_COMPUTE_THREADS_KEY "DMRPP.UseComputeThreads"
+#define DMRPP_MAX_COMPUTE_THREADS_KEY "DMRPP.MaxComputeThreads"
+
+#define DMRPP_WAIT_FOR_FUTURE_MS 1
+
+#define DMRPP_DEFAULT_CONTIGUOUS_CONCURRENT_THRESHOLD  (2*1024*1024)
+#define DMRPP_CONTIGUOUS_CONCURRENT_THRESHOLD_KEY "DMRPP.ContiguousConcurrencyThreshold"
+
+#define DMRPP_USE_SUPER_CHUNKS 1
+#define DMRPP_ENABLE_THREAD_TIMERS 0
+
 
 #endif // E_DmrppNames_H
 

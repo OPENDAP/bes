@@ -56,16 +56,16 @@
 #define CURL_VERBOSE 0  // Logs curl info to the bes.log
 
 #define prolog std::string("CurlHandlePool::").append(__func__).append("() - ")
-#define NEW_WAY 1
 
-static const int MAX_WAIT_MSECS = 30 * 1000; // Wait max. 30 seconds
-// FIXME retry_limit is not used. jhrg 9/18/20
-static const unsigned int retry_limit = 10; // Amazon's suggestion
-static const useconds_t uone_second = 1000 * 1000; // one second, in microseconds
-
-namespace dmrpp {
-const bool have_curl_multi_api = false;
-}
+#if 0
+// Shutdown this block of unsed variables. ndp - 3/1/21
+//static const int MAX_WAIT_MSECS = 30 * 1000; // Wait max. 30 seconds
+//static const unsigned int retry_limit = 10; // Amazon's suggestion
+//static const useconds_t uone_second = 1000 * 1000; // one second, in microseconds
+//namespace dmrpp {
+//const bool have_curl_multi_api = false;
+//}
+#endif
 
 using namespace dmrpp;
 using namespace std;
@@ -315,16 +315,16 @@ void dmrpp_easy_handle::read_data() {
 #if 0
 // This implmentation of the default constructor should have:
 // a) Utilized the other constructor:
-//        CurlHandlePool::CurlHandlePool() { CurlHandlePool(DmrppRequestHandler::d_max_parallel_transfers); }
+//        CurlHandlePool::CurlHandlePool() { CurlHandlePool(DmrppRequestHandler::d_max_transfer_threads); }
 //    rather than duplicating the logic.
 // b) Skipped because the only code that called it in the first place was DmrppRequestHandler::DmrppRequestHandler()
-//    which is already owns DmrppRequestHandler::d_max_parallel_transfers and can pass it in.
+//    which is already owns DmrppRequestHandler::d_max_transfer_threads and can pass it in.
 //
 //
 // Old default constructor. Duplicates logic.
 //
 CurlHandlePool::CurlHandlePool() {
-    d_max_easy_handles = DmrppRequestHandler::d_max_parallel_transfers;
+    d_max_easy_handles = DmrppRequestHandler::d_max_transfer_threads;
 
     for (unsigned int i = 0; i < d_max_easy_handles; ++i) {
         d_easy_handles.push_back(new dmrpp_easy_handle());

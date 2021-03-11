@@ -35,8 +35,8 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([gateway/fnoc1.nc.dods.dods.bescmd])
 # code that fixes the DAP4 check header issues. They may require a new
 # set of baselines. jhrg 6/2/20
 #
-AT_BESCMD_RESPONSE_TEST([gateway/fnoc1.nc.dap.dmr.bescmd], xfail)
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([gateway/fnoc1.nc.dap.dap.bescmd], xfail)
+AT_BESCMD_RESPONSE_TEST([gateway/fnoc1.nc.dap.dmr.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([gateway/fnoc1.nc.dap.dap.bescmd])
 
 # Try to get DAP2 response objects from the cached DAP4 response.
 # 

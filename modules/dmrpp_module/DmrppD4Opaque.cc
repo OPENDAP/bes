@@ -83,11 +83,11 @@ DmrppD4Opaque::operator=(const DmrppD4Opaque &rhs)
 void DmrppD4Opaque::insert_chunk(shared_ptr<Chunk>  chunk)
 {
     // The size, in elements, of each of the chunk's dimensions.
-    const vector<unsigned int> &chunk_shape = get_chunk_dimension_sizes();
+    const vector<unsigned long long> &chunk_shape = get_chunk_dimension_sizes();
     if (chunk_shape.size() != 1) throw BESInternalError("Opaque variables' chunks can only have one dimension.", __FILE__, __LINE__);
 
     // The chunk's origin point a.k.a. its "position in array".
-    const vector<unsigned int> &chunk_origin = chunk->get_position_in_array();
+    const vector<unsigned long long> &chunk_origin = chunk->get_position_in_array();
 
     char *source_buffer = chunk->get_rbuf();
     unsigned char *target_buffer = get_buf();
@@ -113,11 +113,11 @@ void DmrppD4Opaque::read_chunks_parallel()
     }
 
 #if !HAVE_CURL_MULTI_API
-    if (DmrppRequestHandler::d_use_parallel_transfers)
+    if (DmrppRequestHandler::d_use_transfer_threads)
         LOG("The DMR++ handler is configured to use parallel transfers, but the libcurl Multi API is not present, defaulting to serial transfers");
 #endif
 
-    if (DmrppRequestHandler::d_use_parallel_transfers && have_curl_multi_api) {
+    if (DmrppRequestHandler::d_use_transfer_threads && have_curl_multi_api) {
         // This is the parallel version of the code. It reads a set of chunks in parallel
         // using the multi curl API, then inserts them, then reads the next set, ... jhrg 5/1/18
         unsigned int max_handles = DmrppRequestHandler::curl_handle_pool->get_max_handles();

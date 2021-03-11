@@ -62,6 +62,7 @@
 #include <BESDebug.h>
 #include <BESStopWatch.h>
 
+#include "DmrppNames.h"
 #include "DMRpp.h"
 #include "DmrppTypeFactory.h"
 #include "DmrppParserSax2.h"
@@ -75,7 +76,6 @@ using namespace libdap;
 using namespace std;
 
 #define prolog std::string("DmrppRequestHandler::").append(__func__).append("() - ")
-#define MODULE "dmrpp"
 
 namespace dmrpp {
 
@@ -88,11 +88,14 @@ ObjMemCache *DmrppRequestHandler::dmr_cache = 0;
 // reuse. jhrg
 CurlHandlePool *DmrppRequestHandler::curl_handle_pool = 0;
 
-bool DmrppRequestHandler::d_use_parallel_transfers = true;
-unsigned int DmrppRequestHandler::d_max_parallel_transfers = 8;
+bool DmrppRequestHandler::d_use_transfer_threads = true;
+unsigned int DmrppRequestHandler::d_max_transfer_threads = 8;
+
+bool DmrppRequestHandler::d_use_compute_threads = true;
+unsigned int DmrppRequestHandler::d_max_compute_threads = 8;
 
 // Default minimum value is 2MB: 2 * (1024*1024)
-unsigned int DmrppRequestHandler::d_min_size = 2097152;
+unsigned long long DmrppRequestHandler::d_contiguous_concurrent_threshold = DMRPP_DEFAULT_CONTIGUOUS_CONCURRENT_THRESHOLD;
 
 static void read_key_value(const std::string &key_name, bool &key_value)
 {
@@ -106,6 +109,16 @@ static void read_key_value(const std::string &key_name, bool &key_value)
 }
 
 static void read_key_value(const std::string &key_name, unsigned int &key_value)
+{
+    bool key_found = false;
+    string value;
+    TheBESKeys::TheKeys()->get_value(key_name, value, key_found);
+    if (key_found) {
+        istringstream iss(value);
+        iss >> key_value;
+    }
+}
+static void read_key_value(const std::string &key_name, unsigned long long &key_value)
 {
     bool key_found = false;
     string value;
@@ -132,18 +145,48 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
     add_method(VERS_RESPONSE, dap_build_vers);
     add_method(HELP_RESPONSE, dap_build_help);
 
-    read_key_value("DMRPP.UseParallelTransfers", d_use_parallel_transfers);
-    read_key_value("DMRPP.MaxParallelTransfers", d_max_parallel_transfers);
+    stringstream msg;
+    read_key_value(DMRPP_USE_TRANSFER_THREADS_KEY, d_use_transfer_threads);
+    read_key_value(DMRPP_MAX_TRANSFER_THREADS_KEY, d_max_transfer_threads);
+    msg << prolog << "Concurrent Transfer Threads: ";
+    if(DmrppRequestHandler::d_use_transfer_threads){
+        msg << "Enabled. max_transfer_threads: " << DmrppRequestHandler::d_max_transfer_threads << endl;
+    }
+    else{
+        msg << "Disabled." << endl;
+    }
+    // BESDEBUG(MODULE, msg.str());
+    INFO_LOG(msg.str() );
+    msg.str(std::string());
+
+    read_key_value(DMRPP_USE_COMPUTE_THREADS_KEY, d_use_compute_threads);
+    read_key_value(DMRPP_MAX_COMPUTE_THREADS_KEY, d_max_compute_threads);
+    msg << prolog << "Concurrent Compute Threads: ";
+    if(DmrppRequestHandler::d_use_compute_threads){
+        msg << "Enabled. max_compute_threads: " << DmrppRequestHandler::d_max_compute_threads << endl;
+    }
+    else{
+        msg << "Disabled." << endl;
+    }
+    // BESDEBUG(MODULE, msg.str());
+    INFO_LOG(msg.str() );
+    msg.str(std::string());
+
+    // DMRPP_CONTIGUOUS_CONCURRENT_THRESHOLD_KEY
+    read_key_value(DMRPP_CONTIGUOUS_CONCURRENT_THRESHOLD_KEY, d_contiguous_concurrent_threshold);
+    msg << prolog << "Contiguous Concurrency Threshold: " << d_contiguous_concurrent_threshold << " bytes." << endl;
+    INFO_LOG(msg.str() );
+
 
 #if !HAVE_CURL_MULTI_API
-    if (DmrppRequestHandler::d_use_parallel_transfers)
+    if (DmrppRequestHandler::d_use_transfer_threads)
         ERROR_LOG("The DMR++ handler is configured to use parallel transfers, but the libcurl Multi API is not present, defaulting to serial transfers");
 #endif
 
     CredentialsManager::theCM()->load_credentials();
 
     if (!curl_handle_pool)
-        curl_handle_pool = new CurlHandlePool(d_max_parallel_transfers);
+        curl_handle_pool = new CurlHandlePool(d_max_transfer_threads);
 
     // This and the matching cleanup function can be called many times as long as
     // they are called in balanced pairs. jhrg 9/3/20

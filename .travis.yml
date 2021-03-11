@@ -49,7 +49,7 @@ env:
     - PATH=$prefix/bin:$prefix/deps/bin:$PATH
     - TESTSUITEFLAGS=-j7
     # Change this when libdap version numbers change
-    - LIBDAP_RPM_VERSION=3.20.6-1
+    - LIBDAP_RPM_VERSION=3.20.7-1
     # SONAR_LOGIN, made using "travis encrypt --org -r OPENDAP/bes SONAR_LOGIN=335df..."
     - secure: "TmoFcgeIyAEjFyrlqB6rhdUhDqPJfxVZmT5fewgVHj0xm767VZ6DU21mM6ZHgNGyk99TzX0Gx/dwSqbsUj18hSSAvEa7fJQSKJ5IBJvTeMKhXn1DPPG9VpuZ4ti5afRDiNr6EJKbVxwBTkz+3798S8LajPuXGupYupir8IJQCt8="
     # SONAR_MODULES_LOGIN, using "travis encrypt --org -r OPENDAP/bes SONAR_MODULES_LOGIN=42ba..."
@@ -94,6 +94,8 @@ stages:
   - name: build
     if: branch = master
   - name: scan
+    if:  branch = master
+  - name: package
     if:  branch = master
   - name: package
     if:  branch = master OR branch = travis
@@ -255,5 +257,8 @@ deploy:
 # The after_deploy section grabs the hyrax-docker project, sets the current snapshot time 
 # and pushes the result to GitHub. This push triggers TravisCI to build the Docker containers
 # for all of the Hyrax snapshot products. jhrg 10/28/19
+#
+# CAVEAT: In after_deploy failures will not affect the build outcome, they will be ignored.
+#
 after_deploy:
-  - if test x"$BES_BUILD" = x"centos7" -a x"$DEPLOY" = x"S3"; then ./travis/trigger-hyrax-docker.sh; fi
+  - if test x"$BES_BUILD" = x"centos7" -a x"$DEPLOY" = x"S3"; then ./travis/trigger-olfs-build.sh; fi
