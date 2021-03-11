@@ -66,6 +66,30 @@ namespace http {
 class RemoteResourceTest: public CppUnit::TestFixture {
 private:
 
+    void purge_http_cache(){
+        if(Debug) cerr << prolog << "Purging cache!" << endl;
+        string cache_dir;
+        bool found_dir;
+        TheBESKeys::TheKeys()->get_value(HTTP_CACHE_DIR_KEY,cache_dir,found_dir);
+        bool found_prefix;
+        string cache_prefix;
+        TheBESKeys::TheKeys()->get_value(HTTP_CACHE_PREFIX_KEY,cache_prefix,found_prefix);
+
+        if(found_dir && found_prefix){
+            if(Debug) cerr << prolog << HTTP_CACHE_DIR_KEY << ": " <<  cache_dir << endl;
+            if(Debug) cerr << prolog << "Purging " << cache_dir << " of files with prefix: " << cache_prefix << endl;
+            string sys_cmd = "mkdir -p "+ cache_dir;
+            if(Debug) cerr << "Running system command: " << sys_cmd << endl;
+            system(sys_cmd.c_str());
+
+            sys_cmd = "exec rm -rf "+ BESUtil::assemblePath(cache_dir,cache_prefix);
+            sys_cmd =  sys_cmd.append("*");
+            if(Debug) cerr << "Running system command: " << sys_cmd << endl;
+            system(sys_cmd.c_str());
+            if(Debug) cerr << prolog << "The HTTP cache has been purged." << endl;
+        }
+    }
+
     /**
      *
      */
@@ -196,7 +220,7 @@ public:
         }
 
         if(purge_cache){
-            cache_purge();
+            purge_http_cache();
         }
 
         string tmp_file_name(tmpnam(nullptr));
@@ -225,21 +249,6 @@ public:
         unlink(temp_file_hdrs.c_str());
     }
 
-    void cache_purge(){
-        if(Debug) cerr << prolog << "Purging cache!" << endl;
-        string cache_dir;
-        bool found;
-        TheBESKeys::TheKeys()->get_value(HTTP_CACHE_DIR_KEY,cache_dir,found);
-        if(found){
-            if(Debug) cerr << prolog << HTTP_CACHE_DIR_KEY << ": " <<  cache_dir << endl;
-            if(Debug) cerr << prolog << "Purging " << cache_dir << endl;
-            string sys_cmd = "mkdir -p "+ cache_dir;
-            system(sys_cmd.c_str());
-            sys_cmd = "exec rm -rf "+ BESUtil::assemblePath(cache_dir,"/*");
-            system(sys_cmd.c_str());
-            if(Debug) cerr << prolog << cache_dir  << " has been purged." << endl;
-        }
-    }
 
 /*##################################################################################################*/
 /* TESTS BEGIN */
