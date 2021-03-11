@@ -6,11 +6,14 @@ AUTOMAKE_OPTIONS = foreign
 # I added a new command to and put the ResponseHandler in xmlcommand to
 # keep all of the files together. jhrg 2/8/18
 AM_CPPFLAGS = -I$(top_srcdir)/dap -I$(top_srcdir)/xmlcommand $(DAP_CFLAGS) $(XML2_CFLAGS)
-AM_CXXFLAGS = 
 
 if BES_DEVELOPER
 AM_CPPFLAGS += -DBES_DEVELOPER
 endif
+
+AM_CXXFLAGS=
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
 
 SUBDIRS = . unit-tests tests
 
@@ -95,7 +98,7 @@ SRCS = BESInterface.cc \
 	BESCatalogEntry.cc \
 	BESCatalogResponseHandler.cc ShowNodeResponseHandler.cc \
 	CatalogNode.cc CatalogItem.cc \
-	WhiteList.cc \
+	AllowedHosts.cc \
 	ServerAdministrator.cc
 
 #	BESAggFactory.cc BESAggregationServer.cc BESContainerStorageCatalog.cc
@@ -154,7 +157,7 @@ HDRS = BESInterface.h BESLog.h 			\
 	BESCatalogEntry.h \
 	BESCatalogResponseHandler.h ShowNodeResponseHandler.h \
 	CatalogNode.h CatalogItem.h \
-	WhiteList.h \
+	AllowedHosts.h \
 	ServerAdministrator.h
 
 #	BESAggFactory.h BESAggregationServer.h BESContainerStorageCatalog.h

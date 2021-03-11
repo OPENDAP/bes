@@ -149,15 +149,14 @@ static inline struct flock *lock(int type)
 
 inline void BESFileLockingCache::m_record_descriptor(const string &file, int fd)
 {
-    BESDEBUG(LOCK,
-        "BESFileLockingCache::m_record_descriptor() - Recording descriptor: " << file << ", " << fd << endl);
+    BESDEBUG(LOCK, prolog << "Recording descriptor: " << file << ", " << fd << endl);
 
     d_locks.insert(std::pair<string, int>(file, fd));
 }
 
 inline int BESFileLockingCache::m_remove_descriptor(const string &file)
 {
-    BESDEBUG(LOCK, "BESFileLockingCache::m_remove_descriptor(): d_locks size: " << d_locks.size() << endl);
+    BESDEBUG(LOCK, prolog << "d_locks size: " << d_locks.size() << endl);
 
     FilesAndLockDescriptors::iterator i = d_locks.find(file);
     if (i == d_locks.end()) return -1;
@@ -165,8 +164,7 @@ inline int BESFileLockingCache::m_remove_descriptor(const string &file)
     int fd = i->second;
     d_locks.erase(i);
 
-    BESDEBUG(LOCK,
-        "BESFileLockingCache::m_remove_descriptor(): Found file descriptor [" << fd << "] for file: " << file << endl);
+    BESDEBUG(LOCK, prolog << "Found file descriptor [" << fd << "] for file: " << file << endl);
 
     return fd;
 }
@@ -174,13 +172,12 @@ inline int BESFileLockingCache::m_remove_descriptor(const string &file)
 #if USE_GET_SHARED_LOCK
 inline int BESFileLockingCache::m_find_descriptor(const string &file)
 {
-    BESDEBUG(LOCK, "BESFileLockingCache::m_find_descriptor(): d_locks size: " << d_locks.size() << endl);
+    BESDEBUG(LOCK, prolog << "d_locks size: " << d_locks.size() << endl);
 
     FilesAndLockDescriptors::iterator i = d_locks.find(file);
     if (i == d_locks.end()) return -1;
 
-    BESDEBUG(LOCK,
-        "BESFileLockingCache::m_find_descriptor(): Found file descriptor [" << i->second << "] for file: " << file << endl);
+    BESDEBUG(LOCK, prolog << "Found file descriptor [" << i->second << "] for file: " << file << endl);
 
     return i->second;   // return the file descriptor bound to 'file'
 }
@@ -245,14 +242,14 @@ static string lockStatus(const int fd)
 static void unlock(int fd)
 {
     if (fcntl(fd, F_SETLK, lock(F_UNLCK)) == -1) {
-        throw BESInternalError("An error occurred trying to unlock the file: " + get_errno(), __FILE__, __LINE__);
+        throw BESInternalError(prolog + "An error occurred trying to unlock the file: " + get_errno(), __FILE__, __LINE__);
     }
 
-    BESDEBUG(LOCK_STATUS, "BESFileLockingCache::unlock() - lock status: " << lockStatus(fd) << endl);
+    BESDEBUG(LOCK_STATUS,  prolog << "lock status: " << lockStatus(fd) << endl);
 
-    if (close(fd) == -1) throw BESInternalError("Could not close the (just) unlocked file.", __FILE__, __LINE__);
+    if (close(fd) == -1) throw BESInternalError(prolog + "Could not close the (just) unlocked file.", __FILE__, __LINE__);
 
-    BESDEBUG(LOCK, "BESFileLockingCache::unlock() - File Closed. fd: " << fd << endl);
+    BESDEBUG(LOCK,  prolog << "File Closed. fd: " << fd << endl);
 }
 
 /**
@@ -287,11 +284,10 @@ bool BESFileLockingCache::m_check_ctor_params()
     // and we don't want to throw an exception for every call to a child's
     // get_instance() method  just because someone doesn't want to use a cache.
     // jhrg 9/27/16
-    BESDEBUG(CACHE, "BESFileLockingCache::" <<__func__ << "() - BEGIN" << endl);
+    BESDEBUG(CACHE,  prolog << "BEGIN" << endl);
 
     if (d_cache_dir.empty()) {
-        BESDEBUG(CACHE, "BESFileLockingCache::" <<__func__ << "() - " <<
-            "The cache directory was not specified. CACHE IS DISABLED." << endl);
+        BESDEBUG(CACHE,  prolog << "The cache directory was not specified. CACHE IS DISABLED." << endl);
 
         disable();
         return false;
@@ -302,12 +298,12 @@ bool BESFileLockingCache::m_check_ctor_params()
     // If there is an error and it's not that the dir already exists,
     // throw an exception.
     if (status == -1 && errno != EEXIST) {
-        string err = "The cache directory " + d_cache_dir + " could not be created: " + strerror(errno);
+        string err = prolog + "The cache directory " + d_cache_dir + " could not be created: " + strerror(errno);
         throw BESError(err, BES_SYNTAX_USER_ERROR, __FILE__, __LINE__);
     }
 
     if (d_prefix.empty()) {
-        string err = "The cache file prefix was not specified, must not be empty";
+        string err = prolog + "The cache file prefix was not specified, must not be empty";
         throw BESError(err, BES_SYNTAX_USER_ERROR, __FILE__, __LINE__);
     }
 
@@ -345,7 +341,7 @@ bool BESFileLockingCache::m_check_ctor_params()
  */
 static bool createLockedFile(const string &file_name, int &ref_fd)
 {
-    BESDEBUG(LOCK, "createLockedFile() - filename: " << file_name <<endl);
+    BESDEBUG(LOCK,  prolog << "BEGIN file: " << file_name <<endl);
 
     int fd;
     if ((fd = open(file_name.c_str(), O_CREAT | O_EXCL | O_RDWR, 0666)) < 0) {
@@ -367,7 +363,7 @@ static bool createLockedFile(const string &file_name, int &ref_fd)
         throw BESInternalError(oss.str(), __FILE__, __LINE__);
     }
 
-    BESDEBUG(LOCK, "createLockedFile exit: " << file_name <<endl);
+    BESDEBUG(LOCK,  prolog << "END file: " << file_name <<endl);
 
     // Success
     ref_fd = fd;
@@ -385,7 +381,7 @@ static bool createLockedFile(const string &file_name, int &ref_fd)
  */
 bool BESFileLockingCache::m_initialize_cache_info()
 {
-    BESDEBUG(CACHE, "BESFileLockingCache::m_initialize_cache_info() - BEGIN" << endl);
+    BESDEBUG(CACHE,  prolog << "BEGIN" << endl);
 
     // The value set in configuration files, etc., is the size in megabytes. The private
     // variable holds the size in bytes (converted below).
@@ -393,15 +389,14 @@ bool BESFileLockingCache::m_initialize_cache_info()
     d_max_cache_size_in_bytes *= BYTES_PER_MEG;
     d_target_size = d_max_cache_size_in_bytes * 0.8;
 
-    BESDEBUG(CACHE,
-        "BESFileLockingCache::m_initialize_cache_info() - d_max_cache_size_in_bytes: "
+    BESDEBUG(CACHE, prolog << "d_max_cache_size_in_bytes: "
         << d_max_cache_size_in_bytes << " d_target_size: "<<d_target_size<< endl);
 
     bool status = m_check_ctor_params(); // Throws BESError on error; otherwise sets the cache_enabled() property
     if (status) {
         d_cache_info = BESUtil::assemblePath(d_cache_dir, d_prefix + CACHE_CONTROL, true);
 
-        BESDEBUG(CACHE, "BESFileLockingCache::m_initialize_cache_info() - d_cache_info: " << d_cache_info << endl);
+        BESDEBUG(CACHE, prolog << "d_cache_info: " << d_cache_info << endl);
 
         // See if we can create it. If so, that means it doesn't exist. So make it and
         // set the cache initial size to zero.
@@ -409,7 +404,7 @@ bool BESFileLockingCache::m_initialize_cache_info()
             // initialize the cache size to zero
             unsigned long long size = 0;
             if (write(d_cache_info_fd, &size, sizeof(unsigned long long)) != sizeof(unsigned long long))
-                throw BESInternalError("Could not write size info to the cache info file `" + d_cache_info + "`",
+                throw BESInternalError(prolog + "Could not write size info to the cache info file `" + d_cache_info + "`",
                     __FILE__,
                     __LINE__);
 
@@ -418,16 +413,14 @@ bool BESFileLockingCache::m_initialize_cache_info()
         }
         else {
             if ((d_cache_info_fd = open(d_cache_info.c_str(), O_RDWR)) == -1) {
-                throw BESInternalError(get_errno(), __FILE__, __LINE__);
+                throw BESInternalError(prolog + "Failed to open cache info file: " + d_cache_info + " errno: " + get_errno(), __FILE__, __LINE__);
             }
         }
 
-        BESDEBUG(CACHE,
-            "BESFileLockingCache::m_initialize_cache_info() - d_cache_info_fd: " << d_cache_info_fd << endl);
+        BESDEBUG(CACHE,prolog << "d_cache_info_fd: " << d_cache_info_fd << endl);
     }
 
-    BESDEBUG(CACHE,
-        "BESFileLockingCache::m_initialize_cache_info() - END [" << "CACHE IS " << (cache_enabled()?"ENABLED]":"DISABLED]") << endl);
+    BESDEBUG(CACHE,prolog << "END [" << "CACHE IS " << (cache_enabled()?"ENABLED]":"DISABLED]") << endl);
 
     return status;
 }
@@ -452,7 +445,7 @@ string BESFileLockingCache::get_cache_file_name(const string &src, bool mangle)
 {
     // Old way of building String, retired 10/02/2015 - ndp
     // Return d_cache_dir + "/" + d_prefix + BESFileLockingCache::DAP_CACHE_CHAR + target;
-    BESDEBUG(CACHE, __FUNCTION__ << " - src: '" << src << "' mangle: "<< mangle << endl);
+    BESDEBUG(CACHE, prolog << "src: '" << src << "' mangle: "<< mangle << endl);
 
     string target = get_cache_file_prefix() + src;
 
@@ -466,14 +459,14 @@ string BESFileLockingCache::get_cache_file_name(const string &src, bool mangle)
 
     if (target.length() > 254) {
         ostringstream msg;
-        msg << "Cache filename is longer than 254 characters (name length: ";
+        msg << prolog << "Cache filename is longer than 254 characters (name length: ";
         msg << target.length() << ", name: " << target;
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
 
     target = BESUtil::assemblePath(get_cache_directory(), target, true);
 
-    BESDEBUG(CACHE,  __FUNCTION__ << " - target:      '" << target << "'" << endl);
+    BESDEBUG(CACHE,  prolog << "target:      '" << target << "'" << endl);
 
     return target;
 }
@@ -494,7 +487,7 @@ string BESFileLockingCache::get_cache_file_name(const string &src, bool mangle)
  */
 static bool getSharedLock(const string &file_name, int &ref_fd)
 {
-    BESDEBUG(LOCK, "getSharedLock(): Acquiring cache read lock for " << file_name <<endl);
+    BESDEBUG(LOCK, prolog << "Acquiring cache read lock for " << file_name <<endl);
 
     int fd;
     if ((fd = open(file_name.c_str(), O_RDONLY)) < 0) {
@@ -511,11 +504,11 @@ static bool getSharedLock(const string &file_name, int &ref_fd)
     if (fcntl(fd, F_SETLKW, l) == -1) {
         close(fd);
         ostringstream oss;
-        oss << "cache process: " << l->l_pid << " triggered a locking error for '" << file_name << "': " << get_errno();
+        oss << prolog << "cache process: " << l->l_pid << " triggered a locking error for '" << file_name << "': " << get_errno();
         throw BESInternalError(oss.str(), __FILE__, __LINE__);
     }
 
-    BESDEBUG(LOCK, "getSharedLock(): SUCCESS Read Lock Acquired For " << file_name <<endl);
+    BESDEBUG(LOCK, prolog << "SUCCESS Read Lock Acquired For " << file_name <<endl);
 
     // Success
     ref_fd = fd;
@@ -602,8 +595,7 @@ bool BESFileLockingCache::create_and_lock(const string &target, int &fd)
 
     bool status = createLockedFile(target, fd);
 
-    BESDEBUG(LOCK,
-        "BESFileLockingCache::create_and_lock() - " << target << " (status: " << status << ", fd: " << fd << ")" << endl);
+    BESDEBUG(LOCK, prolog << "target: " << target << " (status: " << status << ", fd: " << fd << ")" << endl);
 
     if (status) m_record_descriptor(target, fd);
 
@@ -640,7 +632,7 @@ void BESFileLockingCache::exclusive_to_shared_lock(int fd)
         throw BESInternalError(get_errno(), __FILE__, __LINE__);
     }
 
-    BESDEBUG(LOCK_STATUS, "BESFileLockingCache::exclusive_to_shared_lock() - lock status: " << lockStatus(fd) << endl);
+    BESDEBUG(LOCK_STATUS, prolog << "lock status: " << lockStatus(fd) << endl);
 }
 
 /** Get an exclusive lock on the 'cache info' file. The 'cache info' file
@@ -653,14 +645,14 @@ void BESFileLockingCache::exclusive_to_shared_lock(int fd)
  */
 void BESFileLockingCache::lock_cache_write()
 {
-    BESDEBUG(LOCK, "BESFileLockingCache::lock_cache_write() - d_cache_info_fd: " << d_cache_info_fd << endl);
+    BESDEBUG(LOCK, prolog << "d_cache_info_fd: " << d_cache_info_fd << endl);
 
     if (fcntl(d_cache_info_fd, F_SETLKW, lock(F_WRLCK)) == -1) {
         throw BESInternalError("An error occurred trying to lock the cache-control file" + get_errno(), __FILE__,
             __LINE__);
     }
 
-    BESDEBUG(LOCK_STATUS, "BESFileLockingCache::lock_cache_write() - lock status: " << lockStatus(d_cache_info_fd) << endl);
+    BESDEBUG(LOCK_STATUS,  prolog << "lock status: " << lockStatus(d_cache_info_fd) << endl);
 }
 
 /** Get a shared lock on the 'cache info' file.
@@ -668,14 +660,14 @@ void BESFileLockingCache::lock_cache_write()
  */
 void BESFileLockingCache::lock_cache_read()
 {
-    BESDEBUG(LOCK, "BESFileLockingCache::lock_cache_read() - d_cache_info_fd: " << d_cache_info_fd << endl);
+    BESDEBUG(LOCK,  prolog << "d_cache_info_fd: " << d_cache_info_fd << endl);
 
     if (fcntl(d_cache_info_fd, F_SETLKW, lock(F_RDLCK)) == -1) {
-        throw BESInternalError("An error occurred trying to lock the cache-control file" + get_errno(), __FILE__,
+        throw BESInternalError(prolog + "An error occurred trying to lock the cache-control file" + get_errno(), __FILE__,
             __LINE__);
     }
 
-    BESDEBUG(LOCK_STATUS, "BESFileLockingCache::lock_cache_read() - lock status: " << lockStatus(d_cache_info_fd) << endl);
+    BESDEBUG(LOCK_STATUS,  prolog << "lock status: " << lockStatus(d_cache_info_fd) << endl);
 }
 
 /** Unlock the cache info file.
@@ -685,14 +677,14 @@ void BESFileLockingCache::lock_cache_read()
  */
 void BESFileLockingCache::unlock_cache()
 {
-    BESDEBUG(LOCK, "BESFileLockingCache::unlock_cache() - d_cache_info_fd: " << d_cache_info_fd << endl);
+    BESDEBUG(LOCK,  prolog << "d_cache_info_fd: " << d_cache_info_fd << endl);
 
     if (fcntl(d_cache_info_fd, F_SETLK, lock(F_UNLCK)) == -1) {
-        throw BESInternalError("An error occurred trying to unlock the cache-control file" + get_errno(), __FILE__,
+        throw BESInternalError(prolog +"An error occurred trying to unlock the cache-control file" + get_errno(), __FILE__,
             __LINE__);
     }
 
-    BESDEBUG(LOCK_STATUS, "BESFileLockingCache::unlock_cache() - lock status: " << lockStatus(d_cache_info_fd) << endl);
+    BESDEBUG(LOCK_STATUS,  prolog << "lock status: " << lockStatus(d_cache_info_fd) << endl);
 }
 
 /** Unlock the named file.
@@ -712,7 +704,7 @@ void BESFileLockingCache::unlock_cache()
  * @throws BESBESInternalErroror */
 void BESFileLockingCache::unlock_and_close(const string &file_name)
 {
-    BESDEBUG(LOCK, "BESFileLockingCache::unlock_and_close() - BEGIN file: " << file_name << endl);
+    BESDEBUG(LOCK,  prolog << "BEGIN file: " << file_name << endl);
 
     int fd = m_remove_descriptor(file_name);	// returns -1 when no more files desp. remain
     while (fd != -1) {
@@ -720,8 +712,8 @@ void BESFileLockingCache::unlock_and_close(const string &file_name)
         fd = m_remove_descriptor(file_name);
     }
 
-    BESDEBUG(LOCK_STATUS, "BESFileLockingCache::unlock_and_close() - lock status: " << lockStatus(d_cache_info_fd) << endl);
-    BESDEBUG(LOCK, "BESFileLockingCache::unlock_and_close() -  END"<< endl);
+    BESDEBUG(LOCK_STATUS,  prolog << "lock status: " << lockStatus(d_cache_info_fd) << endl);
+    BESDEBUG(LOCK,  prolog << "END"<< endl);
 }
 
 /** @brief Update the cache info file to include 'target'
@@ -741,27 +733,27 @@ unsigned long long BESFileLockingCache::update_cache_info(const string &target)
         lock_cache_write();
 
         if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
-            throw BESInternalError("Could not rewind to front of cache info file.", __FILE__, __LINE__);
+            throw BESInternalError(prolog + "Could not rewind to front of cache info file.", __FILE__, __LINE__);
 
         // read the size from the cache info file
         if (read(d_cache_info_fd, &current_size, sizeof(unsigned long long)) != sizeof(unsigned long long))
-            throw BESInternalError("Could not get read size info from the cache info file!", __FILE__, __LINE__);
+            throw BESInternalError(prolog + "Could not get read size info from the cache info file!", __FILE__, __LINE__);
 
         struct stat buf;
         int statret = stat(target.c_str(), &buf);
         if (statret == 0)
             current_size += buf.st_size;
         else
-            throw BESInternalError("Could not read the size of the new file: " + target + " : " + get_errno(), __FILE__,
+            throw BESInternalError(prolog + "Could not read the size of the new file: " + target + " : " + get_errno(), __FILE__,
                 __LINE__);
 
-        BESDEBUG(CACHE, "BESFileLockingCache::update_cache_info() - cache size updated to: " << current_size << endl);
+        BESDEBUG(CACHE,  prolog << "cache size updated to: " << current_size << endl);
 
         if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
-            throw BESInternalError("Could not rewind to front of cache info file.", __FILE__, __LINE__);
+            throw BESInternalError(prolog + "Could not rewind to front of cache info file.", __FILE__, __LINE__);
 
         if (write(d_cache_info_fd, &current_size, sizeof(unsigned long long)) != sizeof(unsigned long long))
-            throw BESInternalError("Could not write size info from the cache info file!", __FILE__, __LINE__);
+            throw BESInternalError(prolog + "Could not write size info from the cache info file!", __FILE__, __LINE__);
 
         unlock_cache();
     }
@@ -796,10 +788,10 @@ unsigned long long BESFileLockingCache::get_cache_size()
         lock_cache_read();
 
         if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
-            throw BESInternalError("Could not rewind to front of cache info file.", __FILE__, __LINE__);
+            throw BESInternalError(prolog + "Could not rewind to front of cache info file.", __FILE__, __LINE__);
         // read the size from the cache info file
         if (read(d_cache_info_fd, &current_size, sizeof(unsigned long long)) != sizeof(unsigned long long))
-            throw BESInternalError("Could not get read size info from the cache info file!", __FILE__, __LINE__);
+            throw BESInternalError(prolog + "Could not get read size info from the cache info file!", __FILE__, __LINE__);
 
         unlock_cache();
     }
@@ -820,7 +812,7 @@ static bool entry_op(cache_entry &e1, cache_entry &e2)
 unsigned long long BESFileLockingCache::m_collect_cache_dir_info(CacheFiles &contents)
 {
     DIR *dip = opendir(d_cache_dir.c_str());
-    if (!dip) throw BESInternalError("Unable to open cache directory " + d_cache_dir, __FILE__, __LINE__);
+    if (!dip) throw BESInternalError(prolog + "Unable to open cache directory " + d_cache_dir, __FILE__, __LINE__);
 
     struct dirent *dit;
     vector<string> files;
@@ -886,7 +878,7 @@ static bool getExclusiveLockNB(const string &file_name, int &ref_fd)
             return false;
 
         default:
-            throw BESInternalError(get_errno(), __FILE__, __LINE__);
+            throw BESInternalError(prolog + "errno: " + get_errno(), __FILE__, __LINE__);
         }
     }
 
@@ -895,21 +887,20 @@ static bool getExclusiveLockNB(const string &file_name, int &ref_fd)
         switch (errno) {
         case EAGAIN:
         case EACCES:
-            BESDEBUG(LOCK,
-                "getExclusiveLockNB exit (false): " << file_name << " by: " << l->l_pid << endl);
+            BESDEBUG(LOCK,prolog << "exit (false): " << file_name << " by: " << l->l_pid << endl);
             close(fd);
             return false;
 
         default: {
             close(fd);
             ostringstream oss;
-            oss << "cache process: " << l->l_pid << " triggered a locking error for '" << file_name << "': " << get_errno();
+            oss << prolog << "cache process: " << l->l_pid << " triggered a locking error for '" << file_name << "': " << get_errno();
             throw BESInternalError(oss.str(), __FILE__, __LINE__);
         }
         }
     }
 
-    BESDEBUG(LOCK, "getExclusiveLock_nonblocking exit (true): " << file_name <<endl);
+    BESDEBUG(LOCK, prolog << "exit (true): " << file_name <<endl);
 
     // Success
     ref_fd = fd;
@@ -939,10 +930,10 @@ bool BESFileLockingCache::get_exclusive_lock_nb(const string &target, int &fd)
  */
 void BESFileLockingCache::update_and_purge(const string &new_file)
 {
-    BESDEBUG(CACHE, "purge - starting the purge" << endl);
+    BESDEBUG(CACHE, prolog << "Starting the purge" << endl);
 
     if (is_unlimited()) {
-        BESDEBUG(CACHE, "purge - unlimited so no need to purge." << endl);
+        BESDEBUG(CACHE, prolog << "Size is set to unlimited, so no need to purge." << endl);
         return;
     }
 
@@ -961,8 +952,7 @@ void BESFileLockingCache::update_and_purge(const string &new_file)
             }
         }
 #endif
-        BESDEBUG(CACHE,
-            "BESFileLockingCache::update_and_purge() - current and target size (in MB) "
+        BESDEBUG(CACHE, prolog << "Current and target size (in MB) "
             << computed_size/BYTES_PER_MEG << ", " << d_target_size/BYTES_PER_MEG << endl);
 
         // This deletes files and updates computed_size
@@ -977,11 +967,11 @@ void BESFileLockingCache::update_and_purge(const string &new_file)
                 // this process just added to the cache - don't purge that!
                 int cfile_fd;
                 if (i->name != new_file && getExclusiveLockNB(i->name, cfile_fd)) {
-                    BESDEBUG(CACHE, "purge: " << i->name << " removed." << endl);
+                    BESDEBUG(CACHE, prolog << "purge: " << i->name << " removed." << endl);
 
                     if (unlink(i->name.c_str()) != 0)
                         throw BESInternalError(
-                            "Unable to purge the file " + i->name + " from the cache: " + get_errno(), __FILE__,
+                            prolog + "Unable to purge the file " + i->name + " from the cache: " + get_errno(), __FILE__,
                             __LINE__);
 
                     unlock(cfile_fd);
@@ -989,17 +979,16 @@ void BESFileLockingCache::update_and_purge(const string &new_file)
                 }
                 ++i;
 
-                BESDEBUG(CACHE,
-                    "BESFileLockingCache::update_and_purge() - current and target size (in MB) "
+                BESDEBUG(CACHE,prolog << "Current and target size (in MB) "
                     << computed_size/BYTES_PER_MEG << ", " << d_target_size/BYTES_PER_MEG << endl);
             }
         }
 
         if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
-            throw BESInternalError("Could not rewind to front of cache info file.", __FILE__, __LINE__);
+            throw BESInternalError(prolog + "Could not rewind to front of cache info file.", __FILE__, __LINE__);
 
         if (write(d_cache_info_fd, &computed_size, sizeof(unsigned long long)) != sizeof(unsigned long long))
-            throw BESInternalError("Could not write size info to the cache info file!", __FILE__, __LINE__);
+            throw BESInternalError(prolog + "Could not write size info to the cache info file!", __FILE__, __LINE__);
 #if 0
         if (BESISDEBUG( "cache_contents" )) {
             contents.clear();
@@ -1038,7 +1027,7 @@ void BESFileLockingCache::update_and_purge(const string &new_file)
  */
 static bool getExclusiveLock(const string &file_name, int &ref_fd)
 {
-    BESDEBUG(LOCK, "BESFileLockingCache::getExclusiveLock() - " << file_name <<endl);
+    BESDEBUG(LOCK, prolog << "BEGIN file: " << file_name <<endl);
 
     int fd;
     if ((fd = open(file_name.c_str(), O_RDWR)) < 0) {
@@ -1047,8 +1036,12 @@ static bool getExclusiveLock(const string &file_name, int &ref_fd)
             return false;
 
         default:
-            BESDEBUG(LOCK, __func__ << "() -  FAILED to open file: " << file_name << endl);
-            throw BESInternalError(get_errno(), __FILE__, __LINE__);
+            {
+            stringstream msg;
+            msg << prolog << "FAILED to open file: " << file_name << " errno: " << get_errno();
+            BESDEBUG(LOCK, msg.str() << endl);
+            throw BESInternalError(msg.str() , __FILE__, __LINE__);
+            }
         }
     }
 
@@ -1060,7 +1053,7 @@ static bool getExclusiveLock(const string &file_name, int &ref_fd)
         throw BESInternalError(oss.str(), __FILE__, __LINE__);
     }
 
-    BESDEBUG(LOCK, "BESFileLockingCache::getExclusiveLock() -  exit: " << file_name <<endl);
+    BESDEBUG(LOCK, prolog << "END file: " << file_name <<endl);
 
     // Success
     ref_fd = fd;
@@ -1084,7 +1077,7 @@ bool BESFileLockingCache::get_exclusive_lock(const string &target, int &fd)
  */
 void BESFileLockingCache::purge_file(const string &file)
 {
-    BESDEBUG(CACHE, "BESFileLockingCache::purge_file() - starting the purge" << endl);
+    BESDEBUG(CACHE, prolog << "Starting the purge" << endl);
 
     try {
         lock_cache_write();
@@ -1099,10 +1092,10 @@ void BESFileLockingCache::purge_file(const string &file)
                 size = buf.st_size;
             }
 
-            BESDEBUG(CACHE, "BESFileLockingCache::purge_file() - " << file << " removed." << endl);
+            BESDEBUG(CACHE,  prolog << "file: " << file << " removed." << endl);
 
             if (unlink(file.c_str()) != 0)
-                throw BESInternalError("Unable to purge the file " + file + " from the cache: " + get_errno(), __FILE__,
+                throw BESInternalError(prolog + "Unable to purge the file " + file + " from the cache: " + get_errno(), __FILE__,
                     __LINE__);
 
             unlock(cfile_fd);
@@ -1110,10 +1103,10 @@ void BESFileLockingCache::purge_file(const string &file)
             unsigned long long cache_size = get_cache_size() - size;
 
             if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
-                throw BESInternalError("Could not rewind to front of cache info file.", __FILE__, __LINE__);
+                throw BESInternalError(prolog + "Could not rewind to front of cache info file.", __FILE__, __LINE__);
 
             if (write(d_cache_info_fd, &cache_size, sizeof(unsigned long long)) != sizeof(unsigned long long))
-                throw BESInternalError("Could not write size info to the cache info file!", __FILE__, __LINE__);
+                throw BESInternalError(prolog + "Could not write size info to the cache info file!", __FILE__, __LINE__);
         }
 
         unlock_cache();
@@ -1150,7 +1143,7 @@ bool BESFileLockingCache::dir_exists(const string &dir)
  */
 void BESFileLockingCache::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESFileLockingCache::dump - (" << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << prolog << "(" << (void *) this << ")" << endl;
     BESIndent::Indent();
     strm << BESIndent::LMarg << "cache dir: " << d_cache_dir << endl;
     strm << BESIndent::LMarg << "prefix: " << d_prefix << endl;

@@ -30,6 +30,8 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
 #include <unistd.h>  // for getopt fork setsid execvp access geteuid
 
 #include <grp.h>    // for getgrnam
@@ -62,7 +64,6 @@ using std::map;
 using std::ostringstream;
 using std::vector;
 
-#include "config.h"
 #include "ServerExitConditions.h"
 #include "SocketListener.h"
 #include "TcpSocket.h"
@@ -772,7 +773,7 @@ static void set_group_id()
         BESDEBUG("server", "beslistener: FAILED" << endl);
         string err = string("FAILED: ") + e.get_message();
         cerr << err << endl;
-        LOG(err << endl);
+        ERROR_LOG(err << endl);
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
 
@@ -780,7 +781,7 @@ static void set_group_id()
         BESDEBUG("server", "beslistener: FAILED" << endl);
         string err = "FAILED: Group not specified in BES configuration file";
         cerr << err << endl;
-        LOG(err << endl);
+        ERROR_LOG(err << endl);
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
     BESDEBUG("server", "to " << group_str << " ... " << endl);
@@ -800,7 +801,7 @@ static void set_group_id()
             BESDEBUG("server", "beslistener: FAILED" << endl);
             string err = (string) "FAILED: Group " + group_str + " does not exist";
             cerr << err << endl;
-            LOG(err << endl);
+            ERROR_LOG(err << endl);
             exit(SERVER_EXIT_FATAL_CANNOT_START);
         }
         new_gid = ent->gr_gid;
@@ -811,7 +812,7 @@ static void set_group_id()
         ostringstream err;
         err << "FAILED: Group id " << new_gid << " not a valid group id for BES";
         cerr << err.str() << endl;
-        LOG(err.str() << endl);
+        ERROR_LOG(err.str() << endl);
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
 
@@ -821,7 +822,7 @@ static void set_group_id()
         ostringstream err;
         err << "FAILED: unable to set the group id to " << new_gid;
         cerr << err.str() << endl;
-        LOG(err.str() << endl);
+        ERROR_LOG(err.str() << endl);
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
 
@@ -849,7 +850,7 @@ static void set_user_id()
         BESDEBUG("server", "beslistener: FAILED" << endl);
         string err = (string) "FAILED: " + e.get_message();
         cerr << err << endl;
-        LOG(err << endl);
+        ERROR_LOG(err << endl);
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
 
@@ -857,7 +858,7 @@ static void set_user_id()
         BESDEBUG("server", "beslistener: FAILED" << endl);
         string err = (string) "FAILED: User not specified in BES config file";
         cerr << err << endl;
-        LOG(err << endl);
+        ERROR_LOG(err << endl);
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
     BESDEBUG("server", "to " << user_str << " ... " << endl);
@@ -875,7 +876,7 @@ static void set_user_id()
             BESDEBUG("server", "beslistener: FAILED" << endl);
             string err = (string) "FAILED: Bad user name specified: " + user_str;
             cerr << err << endl;
-            LOG(err << endl);
+            ERROR_LOG(err << endl);
             exit(SERVER_EXIT_FATAL_CANNOT_START);
         }
         new_id = ent->pw_uid;
@@ -886,7 +887,7 @@ static void set_user_id()
         BESDEBUG("server", "beslistener: FAILED" << endl);
         string err = (string) "FAILED: BES cannot run as root";
         cerr << err << endl;
-        LOG(err << endl);
+        ERROR_LOG(err << endl);
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
 
@@ -899,7 +900,7 @@ static void set_user_id()
         ostringstream err;
         err << "FAILED: Unable to relinquish supplementary groups (" << new_id << ")";
         cerr << err.str() << endl;
-        LOG(err.str() << endl);
+        ERROR_LOG(err.str() << endl);
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
 
@@ -909,7 +910,7 @@ static void set_user_id()
         ostringstream err;
         err << "FAILED: Unable to set user id to " << new_id;
         cerr << err.str() << endl;
-        LOG(err.str() << endl);
+        ERROR_LOG(err.str() << endl);
         exit(SERVER_EXIT_FATAL_CANNOT_START);
     }
 
@@ -1115,6 +1116,17 @@ int main(int argc, char *argv[])
 
         store_daemon_id(getpid());
 
+        if (curr_euid == 0) {
+#ifdef BES_DEVELOPER
+            cerr << "Developer Mode: Running as root - setting group and user ids" << endl;
+#endif
+            set_group_id();
+            set_user_id();
+        }
+        else {
+            cerr << "Developer Mode: Not setting group or user ids" << endl;
+        }
+
         register_signal_handlers();
 
         // Load the modules in the conf file(s) so that the debug (log) contexts
@@ -1131,16 +1143,6 @@ int main(int argc, char *argv[])
         BESDebug::Register("server");
         BESDebug::Register("ppt");
 
-        if (curr_euid == 0) {
-#ifdef BES_DEVELOPER
-            cerr << "Developer Mode: Running as root - setting group and user ids" << endl;
-#endif
-            set_group_id();
-            set_user_id();
-        }
-        else {
-            cerr << "Developer Mode: Not setting group or user ids" << endl;
-        }
 
         // The stuff in global_args is used whenever a call to start_master_beslistener()
         // is made, so any time the BESDebug contexts are changed, a change to the

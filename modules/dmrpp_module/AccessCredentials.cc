@@ -21,19 +21,25 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
+#include "config.h"
+#if 0
 #include "CredentialsManager.h"
 #include <BESDebug.h>
 #include <BESInternalError.h>
 #include <kvp_utils.h>
 #include <TheBESKeys.h>
-#include <WhiteList.h>
+#include <AllowedHosts.h>
 #include <sys/stat.h>
+#endif
 #include <string>
-#include <locale>
 #include <sstream>
+#if 0
+#include <locale>
+
 #include <iomanip>
 #include <cstring>
-#include "config.h"
+
+#endif
 #include "AccessCredentials.h"
 
 using std::string;
@@ -42,12 +48,18 @@ using std::pair;
 using std::stringstream;
 using std::endl;
 
+#if 0
 // Scope: public members of AccessCredentials
-const string AccessCredentials::ID_KEY="id";
-const string AccessCredentials::KEY_KEY="key";
-const string AccessCredentials::REGION_KEY="region";
-//const string AccessCredentials::BUCKET_KEY="bucket";
-const string AccessCredentials::URL_KEY="url";
+const string AccessCredentials::ID_KEY = "id";
+const string AccessCredentials::KEY_KEY = "key";
+const string AccessCredentials::REGION_KEY = "region";
+const string AccessCredentials::URL_KEY = "url";
+#else
+const char *AccessCredentials::ID_KEY = "id";
+const char *AccessCredentials::KEY_KEY = "key";
+const char *AccessCredentials::REGION_KEY = "region";
+const char *AccessCredentials::URL_KEY = "url";
+#endif
 
 /**
  * Retrieves the value of key
@@ -55,9 +67,9 @@ const string AccessCredentials::URL_KEY="url";
  * @return The value of the key, empty string if the key does not exist.
  */
 string
-AccessCredentials::get(const string &key){
+AccessCredentials::get(const string &key) {
     map<string, string>::iterator it;
-    string value("");
+    string value={""};
     it = kvp.find(key);
     if (it != kvp.end())
         value = it->second;
@@ -65,34 +77,32 @@ AccessCredentials::get(const string &key){
 }
 
 /**
- *
+ * @brief Add the key and value pair
  * @param key
  * @param value
  */
 void
-AccessCredentials::add(
-        const string &key,
-        const string &value){
+AccessCredentials::add(const string &key, const string &value) {
     kvp.insert(pair<string, string>(key, value));
 }
 
 /**
- *
- * @return
+ * @brief Do the URL, ID, Key amd Region items make up an S3 Credential?
+ * @return True
  */
-bool AccessCredentials::isS3Cred(){
-    if(!s3_tested){
-        is_s3 = get(URL_KEY).length()>0 &&
-                get(ID_KEY).length()>0 &&
-                get(KEY_KEY).length()>0 &&
-                get(REGION_KEY).length()>0; //&&
-                //get(BUCKET_KEY).length()>0;
-        s3_tested = true;
+bool AccessCredentials::is_s3_cred() {
+    if (!d_s3_tested) {
+        d_is_s3 = get(URL_KEY).length() > 0 &&
+                get(ID_KEY).length() > 0 &&
+                get(KEY_KEY).length() > 0 &&
+                get(REGION_KEY).length() > 0; //&&
+        //get(BUCKET_KEY).length()>0;
+        d_s3_tested = true;
     }
-    return is_s3;
+    return d_is_s3;
 }
 
-string AccessCredentials::to_json(){
+string AccessCredentials::to_json() {
     stringstream ss;
     ss << "{" << endl << "  \"AccessCredentials\": { " << endl;
     ss << "    \"name\": \"" << d_config_name << "\"," << endl;
@@ -100,8 +110,8 @@ string AccessCredentials::to_json(){
         string key = it->first;
         string value = it->second;
 
-        if(it!=kvp.begin())
-            ss << ", " << endl ;
+        if (it != kvp.begin())
+            ss << ", " << endl;
 
         ss << "    \"" << it->first << "\": \"" << it->second << "\"";
     }

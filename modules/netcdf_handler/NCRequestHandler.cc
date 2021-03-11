@@ -66,6 +66,9 @@
 
 using namespace libdap;
 
+#define prolog std::string("NCRequestHandler::").append(__func__).append("() - ")
+
+
 bool NCRequestHandler::_show_shared_dims = true;
 bool NCRequestHandler::_show_shared_dims_set = false;
 
@@ -158,7 +161,7 @@ static float get_float_key(const string &key, float def_val)
 NCRequestHandler::NCRequestHandler(const string &name) :
     BESRequestHandler(name)
 {
-    BESDEBUG(NC_NAME, "In NCRequestHandler::NCRequestHandler" << endl);
+    BESDEBUG(NC_NAME, prolog << "BEGIN" << endl);
 
     add_method(DAS_RESPONSE, NCRequestHandler::nc_build_das);
     add_method(DDS_RESPONSE, NCRequestHandler::nc_build_dds);
@@ -230,7 +233,7 @@ NCRequestHandler::NCRequestHandler(const string &name) :
         dmr_cache = new ObjMemCache(get_cache_entries(), get_cache_purge_level());
     }
 
-    BESDEBUG(NC_NAME, "Exiting NCRequestHandler::NCRequestHandler" << endl);
+    BESDEBUG(NC_NAME, prolog << "END" << endl);
 }
 
 NCRequestHandler::~NCRequestHandler()
@@ -244,10 +247,10 @@ NCRequestHandler::~NCRequestHandler()
 bool NCRequestHandler::nc_build_das(BESDataHandlerInterface & dhi)
 {
 	BESStopWatch sw;
-	if (BESISDEBUG( TIMING_LOG ))
+	if (BESDebug::IsSet(TIMING_LOG_KEY))
 		sw.start("NCRequestHandler::nc_build_das", dhi.data[REQUEST_ID]);
 
-    BESDEBUG(NC_NAME, "In NCRequestHandler::nc_build_das" << endl);
+    BESDEBUG(NC_NAME, prolog << "BEGIN" << endl);
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESDASResponse *bdas = dynamic_cast<BESDASResponse *> (response);
@@ -265,7 +268,7 @@ bool NCRequestHandler::nc_build_das(BESDataHandlerInterface & dhi)
         DAS *cached_das_ptr = 0;
         if (das_cache && (cached_das_ptr = static_cast<DAS*>(das_cache->get(accessed)))) {
             // copy the cached DAS into the BES response object
-            BESDEBUG(NC_NAME, "DAS Cached hit for : " << accessed << endl);
+            BESDEBUG(NC_NAME, prolog << "DAS Cached hit for : " << accessed << endl);
             *das = *cached_das_ptr;
         }
         else {
@@ -273,7 +276,7 @@ bool NCRequestHandler::nc_build_das(BESDataHandlerInterface & dhi)
             Ancillary::read_ancillary_das(*das, accessed);
             if (das_cache) {
                 // add a copy
-                BESDEBUG(NC_NAME, "DAS added to the cache for : " << accessed << endl);
+                BESDEBUG(NC_NAME, prolog << "DAS added to the cache for : " << accessed << endl);
                 das_cache->add(new DAS(*das), accessed);
             }
         }
@@ -297,12 +300,12 @@ bool NCRequestHandler::nc_build_das(BESDataHandlerInterface & dhi)
         throw ex;
     }
     catch (...) {
-        string s = "unknown exception caught building DAS";
+        string s = "Unknown exception caught building DAS";
         BESInternalFatalError ex(s, __FILE__, __LINE__);
         throw ex;
     }
 
-    BESDEBUG(NC_NAME, "Exiting NCRequestHandler::nc_build_das" << endl);
+    BESDEBUG(NC_NAME, prolog << "END" << endl);
     return true;
 }
 
@@ -319,7 +322,7 @@ void NCRequestHandler::get_dds_with_attributes(const string& dataset_name, const
     if (dds_cache && (cached_dds_ptr = static_cast<DDS*>(dds_cache->get(dataset_name)))) {
         // copy the cached DDS into the BES response object. Assume that any cached DDS
         // includes the DAS information.
-        BESDEBUG(NC_NAME, "DDS Cached hit for : " << dataset_name << endl);
+        BESDEBUG(NC_NAME, prolog << "DDS Cached hit for : " << dataset_name << endl);
         *dds = *cached_dds_ptr; // Copy the referenced object
     }
     else {
@@ -330,7 +333,7 @@ void NCRequestHandler::get_dds_with_attributes(const string& dataset_name, const
 
         DAS* das = 0;
         if (das_cache && (das = static_cast<DAS*>(das_cache->get(dataset_name)))) {
-            BESDEBUG(NC_NAME, "DAS Cached hit for : " << dataset_name << endl);
+            BESDEBUG(NC_NAME, prolog << "DAS Cached hit for : " << dataset_name << endl);
             dds->transfer_attributes(das); // no need to cop the cached DAS
         }
         else {
@@ -347,7 +350,7 @@ void NCRequestHandler::get_dds_with_attributes(const string& dataset_name, const
             // Only free the DAS if it's not added to the cache
             if (das_cache) {
                 // add a copy
-                BESDEBUG(NC_NAME, "DAS added to the cache for : " << dataset_name << endl);
+                BESDEBUG(NC_NAME, prolog << "DAS added to the cache for : " << dataset_name << endl);
                 das_cache->add(das, dataset_name);
             }
             else {
@@ -357,7 +360,7 @@ void NCRequestHandler::get_dds_with_attributes(const string& dataset_name, const
 
         if (dds_cache) {
             // add a copy
-            BESDEBUG(NC_NAME, "DDS added to the cache for : " << dataset_name << endl);
+            BESDEBUG(NC_NAME, prolog << "DDS added to the cache for : " << dataset_name << endl);
             dds_cache->add(new DDS(*dds), dataset_name);
         }
     }
@@ -369,7 +372,7 @@ void NCRequestHandler::get_dds_without_attributes(const string& dataset_name, co
     DDS* cached_datadds_ptr = 0;
     if (datadds_cache && (cached_datadds_ptr = static_cast<DDS*>(datadds_cache->get(dataset_name)))) {
         // copy the cached DDS into the BES response object. 
-        BESDEBUG(NC_NAME, "DataDDS Cached hit for : " << dataset_name << endl);
+        BESDEBUG(NC_NAME, prolog << "DataDDS Cached hit for : " << dataset_name << endl);
         *dds = *cached_datadds_ptr; // Copy the referenced object
     }
     else {
@@ -380,7 +383,7 @@ void NCRequestHandler::get_dds_without_attributes(const string& dataset_name, co
 
         if (datadds_cache) {
             // add a copy
-            BESDEBUG(NC_NAME, "DataDDS added to the cache for : " << dataset_name << endl);
+            BESDEBUG(NC_NAME, prolog << "DataDDS added to the cache for : " << dataset_name << endl);
             datadds_cache->add(new DDS(*dds), dataset_name);
         }
     }
@@ -391,7 +394,7 @@ bool NCRequestHandler::nc_build_dds(BESDataHandlerInterface & dhi)
 {
 
 	BESStopWatch sw;
-	if (BESISDEBUG( TIMING_LOG ))
+	if (BESDebug::IsSet(TIMING_LOG_KEY))
 		sw.start("NCRequestHandler::nc_build_dds", dhi.data[REQUEST_ID]);
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
@@ -407,7 +410,7 @@ bool NCRequestHandler::nc_build_dds(BESDataHandlerInterface & dhi)
             bool context_found = false;
             string context_value = BESContextManager::TheManager()->get_context("xdap_accept", context_found);
             if (context_found) {
-                BESDEBUG(NC_NAME, "xdap_accept: " << context_value << endl);
+                BESDEBUG(NC_NAME, prolog << "xdap_accept: " << context_value << endl);
                 if (version_ge(context_value, 3.2))
                     NCRequestHandler::_show_shared_dims = false;
                 else
@@ -419,7 +422,8 @@ bool NCRequestHandler::nc_build_dds(BESDataHandlerInterface & dhi)
         DDS *dds = bdds->get_dds();
 
         // Build a DDS in the empty DDS object
-        get_dds_with_attributes(dhi.container->access(), container_name, dds);
+        string filename = dhi.container->access();
+        get_dds_with_attributes(filename, container_name, dds);
 
         bdds->set_constraint(dhi);
         bdds->clear_container();
@@ -441,7 +445,7 @@ bool NCRequestHandler::nc_build_dds(BESDataHandlerInterface & dhi)
         throw ex;
     }
     catch (...) {
-        string s = "unknown exception caught building DDS";
+        string s = "Unknown exception caught building DDS";
         BESInternalFatalError ex(s, __FILE__, __LINE__);
         throw ex;
     }
@@ -452,7 +456,7 @@ bool NCRequestHandler::nc_build_dds(BESDataHandlerInterface & dhi)
 bool NCRequestHandler::nc_build_data(BESDataHandlerInterface & dhi)
 {
 	BESStopWatch sw;
-	if (BESISDEBUG( TIMING_LOG ))
+	if (BESDebug::IsSet(TIMING_LOG_KEY))
 		sw.start("NCRequestHandler::nc_build_data", dhi.data[REQUEST_ID]);
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
@@ -465,7 +469,7 @@ bool NCRequestHandler::nc_build_data(BESDataHandlerInterface & dhi)
             bool context_found = false;
             string context_value = BESContextManager::TheManager()->get_context("xdap_accept", context_found);
             if (context_found) {
-                BESDEBUG(NC_NAME, "xdap_accept: " << context_value << endl);
+                BESDEBUG(NC_NAME, prolog << "xdap_accept: " << context_value << endl);
                 if (version_ge(context_value, 3.2))
                     NCRequestHandler::_show_shared_dims = false;
                 else
@@ -480,7 +484,7 @@ bool NCRequestHandler::nc_build_data(BESDataHandlerInterface & dhi)
         get_dds_without_attributes(dhi.container->access(), container_name, dds);
 
         bdds->set_constraint(dhi);
-        BESDEBUG(NC_NAME, "Data ACCESS build_data(): set the including attribute flag to false: "<<dhi.container->access() << endl);
+        BESDEBUG(NC_NAME, prolog << "Data ACCESS build_data(): set the including attribute flag to false: "<<dhi.container->access() << endl);
         bdds->set_ia_flag(false);
         bdds->clear_container();
     }
@@ -501,7 +505,7 @@ bool NCRequestHandler::nc_build_data(BESDataHandlerInterface & dhi)
         throw ex;
     }
     catch (...) {
-        string s = "unknown exception caught building DAS";
+        string s = "Unknown exception caught building DAS";
         BESInternalFatalError ex(s, __FILE__, __LINE__);
         throw ex;
     }
@@ -512,7 +516,7 @@ bool NCRequestHandler::nc_build_data(BESDataHandlerInterface & dhi)
 bool NCRequestHandler::nc_build_dmr(BESDataHandlerInterface &dhi)
 {
 	BESStopWatch sw;
-	if (BESISDEBUG( TIMING_LOG ))
+	if (BESDebug::IsSet(TIMING_LOG_KEY))
 		sw.start("NCRequestHandler::nc_build_dmr", dhi.data[REQUEST_ID]);
 
     // Extract the DMR Response object - this holds the DMR used by the
@@ -534,7 +538,7 @@ bool NCRequestHandler::nc_build_dmr(BESDataHandlerInterface &dhi)
         DMR* cached_dmr_ptr = 0;
         if (dmr_cache && (cached_dmr_ptr = static_cast<DMR*>(dmr_cache->get(dataset_name)))) {
             // copy the cached DMR into the BES response object
-            BESDEBUG(NC_NAME, "DMR Cached hit for : " << dataset_name << endl);
+            BESDEBUG(NC_NAME, prolog << "DMR Cached hit for : " << dataset_name << endl);
             *dmr = *cached_dmr_ptr; // Copy the referenced object
             dmr->set_request_xml_base(bdmr.get_request_xml_base());
         }
@@ -557,7 +561,7 @@ bool NCRequestHandler::nc_build_dmr(BESDataHandlerInterface &dhi)
             DDS *dds_ptr = 0;
             if (dds_cache && (dds_ptr = static_cast<DDS*>(dds_cache->get(dataset_name)))) {
                 // Use the cached DDS; Assume that all cached DDS objects hold DAS info too
-                BESDEBUG(NC_NAME, "DDS Cached hit (while building DMR) for : " << dataset_name << endl);
+                BESDEBUG(NC_NAME, prolog << "DDS Cached hit (while building DMR) for : " << dataset_name << endl);
 
                 dmr->build_using_dds(*dds_ptr);
             }
@@ -582,7 +586,7 @@ bool NCRequestHandler::nc_build_dmr(BESDataHandlerInterface &dhi)
 
             if (dmr_cache) {
                 // add a copy
-                BESDEBUG(NC_NAME, "DMR added to the cache for : " << dataset_name << endl);
+                BESDEBUG(NC_NAME, prolog << "DMR added to the cache for : " << dataset_name << endl);
                 dmr_cache->add(new DMR(*dmr), dataset_name);
             }
         }
@@ -611,7 +615,7 @@ bool NCRequestHandler::nc_build_dmr(BESDataHandlerInterface &dhi)
 bool NCRequestHandler::nc_build_help(BESDataHandlerInterface & dhi)
 {
 	BESStopWatch sw;
-	if (BESISDEBUG( TIMING_LOG ))
+	if (BESDebug::IsSet(TIMING_LOG_KEY))
 		sw.start("NCRequestHandler::nc_build_help", dhi.data[REQUEST_ID]);
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
@@ -641,7 +645,7 @@ bool NCRequestHandler::nc_build_help(BESDataHandlerInterface & dhi)
 bool NCRequestHandler::nc_build_version(BESDataHandlerInterface & dhi)
 {
 	BESStopWatch sw;
-	if (BESISDEBUG( TIMING_LOG ))
+	if (BESDebug::IsSet(TIMING_LOG_KEY))
 		sw.start("NCRequestHandler::nc_build_version", dhi.data[REQUEST_ID]);
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
@@ -668,7 +672,7 @@ void NCRequestHandler::add_attributes(BESDataHandlerInterface &dhi) {
     string dataset_name = dhi.container->access();
     DAS* das = 0;
     if (das_cache && (das = static_cast<DAS*>(das_cache->get(dataset_name)))) {
-        BESDEBUG(NC_NAME, "DAS Cached hit for : " << dataset_name << endl);
+        BESDEBUG(NC_NAME, prolog << "DAS Cached hit for : " << dataset_name << endl);
         dds->transfer_attributes(das); // no need to cop the cached DAS
     }
     else {
@@ -691,7 +695,7 @@ void NCRequestHandler::add_attributes(BESDataHandlerInterface &dhi) {
                 // Obtain the DAS lock in MDS
                 bes::GlobalMetadataStore::MDSReadLock mds_das_lock = mds->is_das_available(rel_file_path);
                 if(mds_das_lock()) {
-                    BESDEBUG("nc", "Using MDS to generate DAS in the data response for file " << dataset_name << endl);
+                    BESDEBUG(NC_NAME, prolog << "Using MDS to generate DAS in the data response for file " << dataset_name << endl);
                     mds->parse_das_from_mds(das,rel_file_path);
                 }
                 else {//Don't fail, still build das from the NC APIs
@@ -713,14 +717,14 @@ void NCRequestHandler::add_attributes(BESDataHandlerInterface &dhi) {
         // Only free the DAS if it's not added to the cache
         if (das_cache) {
             // add a copy
-            BESDEBUG(NC_NAME, "DAS added to the cache for : " << dataset_name << endl);
+            BESDEBUG(NC_NAME, prolog << "DAS added to the cache for : " << dataset_name << endl);
             das_cache->add(das, dataset_name);
         }
         else {
             delete das;
         }
     }
-    BESDEBUG(NC_NAME, "Data ACCESS in add_attributes(): set the including attribute flag to true: "<<dataset_name << endl);
+    BESDEBUG(NC_NAME, prolog << "Data ACCESS in add_attributes(): set the including attribute flag to true: "<<dataset_name << endl);
     bdds->set_ia_flag(true);
     return;
 }

@@ -7,7 +7,7 @@
 #define TEST_DATA_DIR "@abs_top_srcdir@/modules/dmrpp_module/data/dmrpp"
 #define TEST_DMRPP_CATALOG "@abs_top_srcdir@/modules/dmrpp_module"
 
-const string test_data_dir = "@abs_top_srcdir@/modules/dmrpp_module/data/dmrpp";
+const std::string test_data_dir = "@abs_top_srcdir@/modules/dmrpp_module/data/dmrpp";
 
 #endif
 

@@ -12,28 +12,46 @@ class AccessCredentials {
 public:
     // These are the string keys used to express the normative key names
     // for the credentials components.
-    static const std::string ID_KEY;
+#if 0
+    static const  std::string ID_KEY;
     static const std::string KEY_KEY;
     static const std::string REGION_KEY;
     //static const std::string BUCKET_KEY;
     static const std::string URL_KEY;
+#else
+    static const char *ID_KEY;
+    static const char *KEY_KEY;
+    static const char *REGION_KEY;
+    static const char *URL_KEY;
+#endif
 private:
     std::map<std::string, std::string> kvp;
-    bool s3_tested, is_s3;
     std::string d_config_name;
+    bool d_s3_tested;
+    bool d_is_s3;
 public:
-    AccessCredentials()= default;
-    AccessCredentials(std::string config_name){ d_config_name = config_name;}
+    AccessCredentials() = default;
+
+    explicit AccessCredentials(const std::string &config_name) :
+        d_config_name(config_name),
+        d_s3_tested(false),
+        d_is_s3(false) { }
+
     AccessCredentials(const AccessCredentials &ac) = default;
-    virtual ~AccessCredentials()=default;
+
+    virtual ~AccessCredentials() = default;
 
     virtual std::string get(const std::string &key);
+
     void add(const std::string &key, const std::string &value);
 
-    virtual bool isS3Cred();
+    virtual bool is_s3_cred();
+
     std::string to_json();
-    std::string name(){ return d_config_name; }
-    void name(const std::string &name){ d_config_name=name; }
+
+    std::string name() { return d_config_name; }
+
+    void name(const std::string &name) { d_config_name = name; }
 };
 
 #include <string>

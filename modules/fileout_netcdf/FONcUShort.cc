@@ -38,7 +38,7 @@
  * This constructor takes a DAP BaseType and makes sure that it is a DAP
  * UInt16 instance. If not, it throws an exception
  *
- * @param b A DAP BaseType that should be a byte
+ * @param b A DAP BaseType that should be a DAP UInt16
  * @throws BESInternalError if the BaseType is not a UInt16
  */
 FONcUShort::FONcUShort( BaseType *b )
@@ -47,7 +47,7 @@ FONcUShort::FONcUShort( BaseType *b )
     UInt16 *u16 = dynamic_cast<UInt16 *>(b) ;
     if(  !u16 )
     {
-	string s = (string)"File out netcdf, FONcUShort was passed a "
+	string s = (string)"File out netcdf-4, FONcUShort was passed a "
 		   + "variable that is not a DAP  UInt16" ;
 	throw BESInternalError( s, __FILE__, __LINE__ ) ;
     }
@@ -55,7 +55,7 @@ FONcUShort::FONcUShort( BaseType *b )
 
 /** @brief Destructor that cleans up the short
  *
- * The DAP Int16 or UInt16 instance does not belong to the FONcByte
+ * The DAP Int16 or UInt16 instance does not belong to the FONcUShort
  * instance, so it is not deleted.
  */
 FONcUShort::~FONcUShort()
@@ -106,7 +106,7 @@ FONcUShort::write( int ncid )
     int stax = nc_put_var1_ushort( ncid, _varid, var_index, data ) ;
     if( stax != NC_NOERR )
     {
-	string err = (string)"fileout.netcdf - "
+	string err = (string)"fileout.netcdf-4  - "
 		     + "Failed to write short data for "
 		     + _varname ;
 	FONcUtils::handle_error( stax, err, __FILE__, __LINE__ ) ;
@@ -127,7 +127,7 @@ FONcUShort::name()
 
 /** @brief returns the netcdf type of the DAP object
  *
- * @returns The nc_type of NC_SHORT
+ * @returns The nc_type of NC_USHORT
  */
 nc_type
 FONcUShort::type()

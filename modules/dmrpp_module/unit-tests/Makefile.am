@@ -9,13 +9,15 @@ OPENSSL_INC=-I/usr/local/opt/openssl/include
 OPENSSL_LDFLAGS=-L/usr/local/opt/openssl/lib
 
 AM_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir) -I$(top_srcdir)/modules -I$(top_srcdir)/modules/dmrpp_module \
--I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS) $(OPENSSL_INC)
+-I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/http $(DAP_CFLAGS) $(OPENSSL_INC)
+
+# FIXME with configure.ac jhrg 9/2/20
+BES_DAP_LIB_STATIC = $(abs_top_builddir)/dap/.libs/libdap_module.a
 
 # Added -lz for ubuntu
-LIBADD = $(BES_DISPATCH_LIB) $(BES_DAP_LIB) $(BES_EXTRA_LIBS) \
+LIBADD = $(BES_DISPATCH_LIB) $(BES_DAP_LIB_STATIC) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) \
 $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) \
 $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) -lz
-
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS) 
@@ -29,7 +31,10 @@ endif
 # These are not used by automake but are often useful for certain types of
 # debugging. Set CXXFLAGS to this in the nightly build using export ...
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -Wcast-align
-TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
+
+AM_CXXFLAGS=
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
 
 # This determines what gets built by make check
 check_PROGRAMS = $(UNIT_TESTS)
@@ -44,7 +49,8 @@ noinst_HEADERS = test_config.h
 
 noinst_DATA = bes.conf bes_ngap_s3_creds.conf $(CREDS_CONF) input-files/weak.conf
 
-EXTRA_DIST = bes.conf.in bes_ngap_s3_creds.conf.in test_config.h.in baselines input-files awsv4
+EXTRA_DIST = bes.conf.in bes_ngap_s3_creds.conf.in test_config.h.in curl_handle_pool_keys.conf \
+baselines input-files awsv4
 
 CLEANFILES = *.gcda *.gcno *.strm *.file test_config.h tmp.txt
 
@@ -85,7 +91,8 @@ $(CREDS_CONF):
 #
 
 if CPPUNIT
-UNIT_TESTS = NgapCredentialsTest ChunkTest DmrppParserTest DmrppCommonTest DmrppMetadataStoreTest CredentialsManagerTest awsv4_test
+UNIT_TESTS = DmrppArrayTest NgapCredentialsTest SuperChunkTest ChunkTest DmrppParserTest DmrppCommonTest \
+DmrppMetadataStoreTest CredentialsManagerTest awsv4_test CurlHandlePoolTest
 else
 UNIT_TESTS =
 
@@ -101,36 +108,33 @@ endif
 clean-local:
 	-rm -rf mds mds_ledger.txt
 
-OBJS = ../DMRpp.o ../DmrppCommon.o ../Chunk.o ../CurlHandlePool.o	\
-../DmrppByte.o ../DmrppArray.o ../DmrppFloat32.o ../DmrppFloat64.o	\
-../DmrppInt16.o ../DmrppInt32.o ../DmrppInt64.o ../DmrppInt8.o		\
-../DmrppUInt16.o ../DmrppUInt32.o ../DmrppUInt64.o ../DmrppStr.o	\
-../DmrppStructure.o ../DmrppUrl.o ../DmrppD4Enum.o ../DmrppD4Group.o	\
-../DmrppD4Opaque.o ../DmrppD4Sequence.o ../DmrppTypeFactory.o		\
-../DmrppParserSax2.o ../DmrppMetadataStore.o ../DmrppRequestHandler.o \
-../CredentialsManager.o ../AccessCredentials.o ../NgapS3Credentials.o \
-../awsv4.o ../url_parser.o \
-../curl_utils.o
-
+CurlHandlePoolTest_SOURCES = CurlHandlePoolTest.cc
+CurlHandlePoolTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
 ChunkTest_SOURCES = ChunkTest.cc
-ChunkTest_LDADD = $(OBJS) $(LIBADD)
+ChunkTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
+
+SuperChunkTest_SOURCES = SuperChunkTest.cc
+SuperChunkTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
 CredentialsManagerTest_SOURCES = CredentialsManagerTest.cc
-CredentialsManagerTest_LDADD = $(OBJS) $(LIBADD)
+CredentialsManagerTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
 NgapCredentialsTest_SOURCES = NgapCredentialsTest.cc
-NgapCredentialsTest_LDADD = ../AccessCredentials.o ../NgapS3Credentials.o ../curl_utils.o $(LIBADD)
+NgapCredentialsTest_LDADD = ../AccessCredentials.o ../NgapS3Credentials.o $(LIBADD)
 
 awsv4_test_SOURCES = awsv4_test.cc
-awsv4_test_LDADD = $(OBJS) $(LIBADD)
+awsv4_test_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
 DmrppParserTest_CPPFLAGS = $(AM_CPPFLAGS) -I$(top_srcdir)/modules/hdf5_handler
 DmrppParserTest_SOURCES = DmrppParserTest.cc
-DmrppParserTest_LDADD = $(OBJS) $(LIBADD) 
+DmrppParserTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
 DmrppCommonTest_SOURCES = DmrppCommonTest.cc $(top_srcdir)/modules/read_test_baseline.cc
-DmrppCommonTest_LDADD = $(OBJS) $(LIBADD)
+DmrppCommonTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
 DmrppMetadataStoreTest_SOURCES = DmrppMetadataStoreTest.cc $(top_srcdir)/modules/read_test_baseline.cc
-DmrppMetadataStoreTest_LDADD = $(OBJS) $(LIBADD)
+DmrppMetadataStoreTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
+
+DmrppArrayTest_SOURCES = DmrppArrayTest.cc $(top_srcdir)/modules/read_test_baseline.cc
+DmrppArrayTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)

@@ -21,6 +21,8 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
+#include "config.h"
+
 #include <memory>
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
@@ -38,17 +40,22 @@
 #include <GetOpt.h>
 #include <util.h>
 
-#include <BESError.h>
-#include <BESDebug.h>
-#include <BESUtil.h>
-#include <BESCatalogList.h>
-#include <TheBESKeys.h>
-#include <ngap_module/NgapContainer.h>
+#include "BESError.h"
+#include "BESDebug.h"
+#include "BESUtil.h"
+#include "BESCatalogList.h"
+#include "TheBESKeys.h"
+#include "HttpUtils.h"
+#include "HttpNames.h"
+#include "url_impl.h"
+#include "RemoteResource.h"
+
 #include "test_config.h"
 
-#include "RemoteHttpResource.h"
+
 #include "NgapApi.h"
 #include "NgapContainer.h"
+#include "NgapNames.h"
 // #include "NgapError.h"
 // #include "rjson_utils.h"
 
@@ -61,6 +68,8 @@ static bool bes_debug = false;
 
 #undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
+
+#define prolog std::string("NgapApiTest::").append(__func__).append("() - ")
 
 namespace ngap {
 
@@ -98,15 +107,16 @@ public:
     // Called before each test
     void setUp()
     {
+        if(debug) cerr << endl;
         if(Debug) cerr << "setUp() - BEGIN" << endl;
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR,"bes.conf");
         if(Debug) cerr << "setUp() - Using BES configuration: " << bes_conf << endl;
 
         TheBESKeys::ConfigFile = bes_conf;
 
-        if (bes_debug) BESDebug::SetUp("cerr,ngap");
+        if (bes_debug) BESDebug::SetUp("cerr,ngap,http");
 
-        if (bes_debug) show_file(bes_conf);
+        if (Debug) show_file(bes_conf);
         if(Debug) cerr << "setUp() - END" << endl;
     }
 
@@ -115,18 +125,143 @@ public:
     {
     }
 
-    void cmr_access_test() {
-        string prolog = string(__func__) + "() - ";
+    void show_vector(vector<string> v){
+        cerr << "show_vector(): Found " << v.size() << " elements." << endl;
+        // vector<string>::iterator it = v.begin();
+        for(size_t i=0;  i < v.size(); i++){
+            cerr << "show_vector:    v["<< i << "]: " << v[i] << endl;
+        }
+    }
+
+
+    void compare_results(const string &granule_name, const string &data_access_url, const string &expected_data_access_url){
+        if (debug) cerr << prolog << "TEST: Is the URL longer than the granule name? " << endl;
+        CPPUNIT_ASSERT (data_access_url.length() > granule_name.length() );
+
+        if (debug) cerr << prolog << "TEST: Does the URL end with the granule name? " << endl;
+        bool endsWithGranuleName = data_access_url.substr(data_access_url.length()-granule_name.length(), granule_name.length()) == granule_name;
+        CPPUNIT_ASSERT( endsWithGranuleName == true );
+
+        if (debug) cerr << prolog << "TEST: Does the returned URL match the expected URL? " << endl;
+        if (debug) cerr << prolog << "CMR returned DataAccessURL: " << data_access_url << endl;
+        if (debug) cerr << prolog << "The expected DataAccessURL: " << expected_data_access_url << endl;
+        CPPUNIT_ASSERT (expected_data_access_url == data_access_url);
+
+    }
+
+
+    /**
+     * This test exercises the legacy 3 component restified path model
+     * /providers/<provider_id>/collections/<entry_title>/granules/<granule_ur>
+     */
+    void resty_path_to_cmr_query_test_01() {
+        if(debug) cerr << prolog << "BEGIN" << endl;
+        NgapApi ngapi;
+
+        string resty_path("providers/POCLOUD"
+                          "/collections/Sentinel-6A MF/Jason-CS L2 Advanced Microwave Radiometer (AMR-C) NRT Geophysical Parameters"
+                          "/granules/S6A_MW_2__AMR_____NR_001_227_20201130T133814_20201130T153340_F00");
+        if(debug) cerr << prolog << "resty_path: " << resty_path << endl;
+
+        string expected_cmr_url(
+                "https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4"
+                "?" CMR_PROVIDER "=POCLOUD"
+                "&" CMR_ENTRY_TITLE "=Sentinel-6A%20MF%2FJason-CS%20L2%20Advanced%20Microwave%20Radiometer%20%28AMR-C%29%20NRT%20Geophysical%20Parameters"
+                "&" CMR_GRANULE_UR "=S6A_MW_2__AMR_____NR_001_227_20201130T133814_20201130T153340_F00"
+        );
+        try {
+            string cmr_query_url;
+            cmr_query_url = ngapi.build_cmr_query_url(resty_path);
+            if(debug) cerr << prolog << "expected_cmr_url: " << expected_cmr_url << endl;
+            if(debug) cerr << prolog << "   cmr_query_url: " << cmr_query_url << endl;
+            CPPUNIT_ASSERT( cmr_query_url == expected_cmr_url );
+        }
+        catch(BESError e){
+            stringstream msg;
+            msg << prolog << "Caught BESError! Message: " << e.get_verbose_message() << endl;
+            CPPUNIT_FAIL(msg.str());
+        }
+        if(debug) cerr << prolog << "END" << endl;
+    }
+
+
+    /**
+     * This test exercises the new (12/2020) 2 component restified path model
+     * /collections/<collection_concept_id>/granules/<granule_ur>
+     * Example:
+     * https://opendap.earthdata.nasa.gov/collections/C1443727145-LAADS/granules/MOD08_D3.A2020308.061.2020309092644.hdf.nc
+     */
+    void resty_path_to_cmr_query_test_02() {
+        if(debug) cerr << prolog << "BEGIN" << endl;
+        NgapApi ngapi;
+
+        string resty_path("/collections/C1443727145-LAADS/MOD08_D3.v6.1/granules/MOD08_D3.A2020308.061.2020309092644.hdf.nc");
+        if(debug) cerr << prolog << "resty_path: " << resty_path << endl;
+
+        string expected_cmr_url(
+                "https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4?"
+                CMR_COLLECTION_CONCEPT_ID "=C1443727145-LAADS&"
+                CMR_GRANULE_UR "=MOD08_D3.A2020308.061.2020309092644.hdf.nc"
+        );
+        try {
+            string cmr_query_url;
+            cmr_query_url = ngapi.build_cmr_query_url(resty_path);
+            if(debug) cerr << prolog << "expected_cmr_url: " << expected_cmr_url << endl;
+            if(debug) cerr << prolog << "   cmr_query_url: " << cmr_query_url << endl;
+            CPPUNIT_ASSERT( cmr_query_url == expected_cmr_url );
+        }
+        catch(BESError e){
+            stringstream msg;
+            msg << prolog << "Caught BESError! Message: " << e.get_verbose_message() << endl;
+            CPPUNIT_FAIL(msg.str());
+        }
+
+    }
+
+
+    /**
+     * This test exercises the new (12/2020) 2 component restified path model with the optional shirtname and version
+     * /collections/<collection_concept_id>[/short_name.version]/granules/<granule_ur>
+     * Exsmple:
+     * https://opendap.earthdata.nasa.gov/collections/C1443727145-LAADS/MOD08_D3.v6.1/granules/MOD08_D3.A2020308.061.2020309092644.hdf.nc
+     */
+    void resty_path_to_cmr_query_test_03() {
+        if(debug) cerr << prolog << "BEGIN" << endl;
+        NgapApi ngapi;
+
+        string resty_path("/collections/C1443727145-LAADS/MOD08_D3.v6.1/granules/MOD08_D3.A2020308.061.2020309092644.hdf.nc");
+        if(debug) cerr << prolog << "resty_path: " << resty_path << endl;
+
+        string expected_cmr_url(
+                "https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4?"
+                CMR_COLLECTION_CONCEPT_ID "=C1443727145-LAADS&"
+                CMR_GRANULE_UR "=MOD08_D3.A2020308.061.2020309092644.hdf.nc"
+        );
+        try {
+            string cmr_query_url;
+            cmr_query_url = ngapi.build_cmr_query_url(resty_path);
+            if(debug) cerr << prolog << "expected_cmr_url: " << expected_cmr_url << endl;
+            if(debug) cerr << prolog << "   cmr_query_url: " << cmr_query_url << endl;
+            CPPUNIT_ASSERT( cmr_query_url == expected_cmr_url );
+        }
+        catch(BESError e){
+            stringstream msg;
+            msg << prolog << "Caught BESError! Message: " << e.get_verbose_message() << endl;
+            CPPUNIT_FAIL(msg.str());
+        }
+
+    }
+
+
+    void cmr_access_entry_title_test() {
+        if(debug) cerr << prolog << "BEGIN" << endl;
         NgapApi ngapi;
         string provider_name;
         string collection_name;
         string granule_name;
         string data_access_url;
 
-        if ( debug  ) {
-            cout << endl;
-        }
-        provider_name = "GHRC_CLOUD";
+        provider_name = "GHRC_DAAC";
         collection_name ="ADVANCED MICROWAVE SOUNDING UNIT-A (AMSU-A) SWATH FROM NOAA-15 V1";
         granule_name = "amsua15_2020.028_12915_1139_1324_WI.nc";
 
@@ -135,147 +270,55 @@ public:
 
         try {
             data_access_url = ngapi.convert_ngap_resty_path_to_data_access_url(resty_path);
+            if (debug) cerr << prolog << "Found data_access_url: " << data_access_url << endl;
         }
-        catch(BESError e){
-            cerr << "Caught BESError: " << e.get_message() << endl;
+        catch(BESError &e){
+            cerr << "Caught BESError: " << e.get_message() << " File: " << e.get_file() << " Line: " << e.get_line() << endl;
             CPPUNIT_ASSERT(false);
         }
-        stringstream msg;
-
         string expected;
-        // OLD value.
-        // expected = "https://d1lpqa6z94hycl.cloudfront.net/ghrc-app-protected/amsua15sp__1/2020-01-28/amsua15_2020.028_12915_1139_1324_WI.nc";
-        // New value as of 4/24/2020
-        expected = "https://d1sd4up8kynpk2.cloudfront.net/ghrcw-protected/amsua15sp/amsu-a/noaa-15/data/nc/2020/0128/amsua15_2020.028_12915_1139_1324_WI.nc";
-
-        if (debug) cerr << prolog << "TEST: Is the URL longer than the granule name? " << endl;
-        CPPUNIT_ASSERT (data_access_url.length() > granule_name.length() );
-
-        if (debug) cerr << prolog << "TEST: Does the URL end with the granule name? " << endl;
-        bool endsWithGranuleName = data_access_url.substr(data_access_url.length()-granule_name.length(), granule_name.length()).compare(granule_name) == 0;
-        CPPUNIT_ASSERT( endsWithGranuleName == true );
-
-        if (debug) cerr << prolog << "TEST: Does the returned URL match the expected URL? " << endl;
-        if (debug) cerr << prolog << "CMR returned DataAccessURL: " << data_access_url << endl;
-        if (debug) cerr << prolog << "The expected DataAccessURL: " << expected << endl;
-        CPPUNIT_ASSERT (expected == data_access_url);
+        expected = "https://data.ghrc.earthdata.nasa.gov/ghrcw-protected/amsua15sp__1/amsu-a/noaa-15/data/nc/2020/0128/amsua15_2020.028_12915_1139_1324_WI.nc";
+        compare_results(granule_name, data_access_url, expected);
+        if(debug) cerr << prolog << "END" << endl;
     }
 
-    bool check_kvp( string prolog, const map<string,string> &url_info, const string key, const string expected_value){
-        std::map<std::string,std::string>::const_iterator it;
-        if(debug) cerr << prolog << "Checking " << key << ": ";
-        it = url_info.find(key);
-        CPPUNIT_ASSERT(it != url_info.end() );
-        CPPUNIT_ASSERT(it->second == expected_value );
-        if(debug) cerr << it->second << endl;
-    }
-
-    void decompose_aws_signed_request_url_test(){
-        string prolog = string(__func__) + "() - ";
+    void cmr_access_collection_concept_id_test() {
+        if(debug) cerr << prolog << "BEGIN" << endl;
         NgapApi ngapi;
+        string provider_name;
+        string collection_concept_id;
+        string granule_name;
+        string data_access_url;
 
-        std::map<std::string,std::string> url_info;
-        std::map<std::string,std::string>::iterator it;
+        provider_name = "GHRC_DAAC";
+        collection_concept_id ="C1996541017-GHRC_DAAC";
+        granule_name = "amsua15_2020.028_12915_1139_1324_WI.nc";
 
-        if(debug ) cout << endl;
-
-        string url;
-        string key;
-        string expected_value;
-
-        url = "https://ghrcw-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc?"
-              "A-userid=hyrax"
-              "&X-Amz-Algorithm=AWS4-HMAC-SHA256"
-              "&X-Amz-Credential=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
-              "&X-Amz-Date=20200621T161744Z"
-              "&X-Amz-Expires=86400"
-              "&X-Amz-Security-Token=FwoGZXIvYXdzENL%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaDKmu"
-              "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
-              "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
-              "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
-              "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
-              "&X-Amz-SignedHeaders=host"
-              "&X-Amz-Signature=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing";
-
-        if (debug) cerr << prolog << "Decomposing URL: " << url << endl;
-        NgapApi::decompose_url(url,url_info);
-
-        key = "A-userid";
-        expected_value = "hyrax";
-        check_kvp(prolog, url_info, key, expected_value);
-
-        key = "X-Amz-Algorithm";
-        expected_value = "AWS4-HMAC-SHA256";
-        check_kvp(prolog, url_info, key, expected_value);
-
-        key = "X-Amz-Credential";
-        expected_value = "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing";
-        check_kvp(prolog, url_info, key, expected_value);
-
-        key = "X-Amz-Date";
-        expected_value = "20200621T161744Z";
-        check_kvp(prolog, url_info, key, expected_value);
-
-        key = "X-Amz-Expires";
-        expected_value = "86400";
-        check_kvp(prolog, url_info, key, expected_value);
-
-        key = "X-Amz-Security-Token";
-        expected_value = "FwoGZXIvYXdzENL%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaDKmu"
-                         "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
-                         "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
-                         "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
-                         "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing";
-        check_kvp(prolog, url_info, key, expected_value);
-
-        key = "X-Amz-SignedHeaders";
-        expected_value = "host";
-        check_kvp(prolog, url_info, key, expected_value);
-
-        key = "X-Amz-Signature";
-        expected_value = "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing";
-        check_kvp(prolog, url_info, key, expected_value);
-
+        string resty_path;
+        resty_path = "providers/" + provider_name + "/concepts/" + collection_concept_id + "/granules/" + granule_name;
+        if (debug) cerr << prolog << "RestifiedPath: " << resty_path << endl;
+        try {
+            data_access_url = ngapi.convert_ngap_resty_path_to_data_access_url(resty_path);
+            if (debug) cerr << prolog << "Found data_access_url: " << data_access_url << endl;
+        }
+        catch(BESError &e){
+            cerr << "Caught BESError: " << e.get_message() << " File: " << e.get_file() << " Line: " << e.get_line() << endl;
+            CPPUNIT_ASSERT(false);
+        }
+        string expected = "https://data.ghrc.earthdata.nasa.gov/ghrcw-protected/amsua15sp__1/amsu-a/noaa-15/data/nc/2020/0128/amsua15_2020.028_12915_1139_1324_WI.nc";
+        compare_results(granule_name, data_access_url, expected);
+        if(debug) cerr << prolog << "END" << endl;
     }
-    void decompose_simple_url_test(){
-        string prolog = string(__func__) + "() - ";
-        NgapApi ngapi;
 
-        std::map<std::string,std::string> url_info;
-        std::map<std::string,std::string>::iterator it;
-
-        if(debug ) cout << endl;
-
-        string url;
-        string key;
-        string expected_value;
-
-        url = "https://d1sd4up8kynpk2.cloudfront.net/s3-2dbad80ed80161e4b685a0385c322d93/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc?"
-              "RequestId=yU6NwaRaSZBwQ0xexo5Ufv7aL0MeANMMM7oeB96NfuJzrfjVNmW9eQ=="
-              "&Expires=1592946176";
-
-        if (debug) cerr << prolog << "Decomposing URL: " << url << endl;
-        NgapApi::decompose_url(url,url_info);
-
-        key = "RequestId";
-        expected_value = "yU6NwaRaSZBwQ0xexo5Ufv7aL0MeANMMM7oeB96NfuJzrfjVNmW9eQ==";
-        check_kvp(prolog, url_info, key, expected_value);
-
-        key = "Expires";
-        expected_value = "1592946176";
-        check_kvp(prolog, url_info, key, expected_value);
-
-    }
 
     void signed_url_is_expired_test(){
-        string prolog = string(__func__) + "() - ";
-
-        string url;
+        if(debug) cerr << prolog << "BEGIN" << endl;
+        string signed_url_str;
         std::map<std::string,std::string> url_info;
         bool is_expired;
 
 
-        url = "https://ghrcw-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc?"
+        signed_url_str = "https://ghrcw-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc?"
               "A-userid=hyrax"
               "&X-Amz-Algorithm=AWS4-HMAC-SHA256"
               "&X-Amz-Credential=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
@@ -288,27 +331,28 @@ public:
               "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
               "&X-Amz-SignedHeaders=host"
               "&X-Amz-Signature=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing";
-        if (debug) cerr << prolog << "Decomposing URL: " << url << endl;
-        NgapApi::decompose_url(url,url_info);
+
+        http::url signed_url(signed_url_str);
 
         time_t now;
         time(&now);
         stringstream ingest_time;
         time_t then = now - 82810; // 23 hours and 10 seconds ago.
-        ingest_time << then;
-        string ingest_time_key="ingest_time";
-        url_info.erase(ingest_time_key);
-        url_info.insert(pair<string, string>(ingest_time_key,ingest_time.str()));
-        is_expired = NgapApi::signed_url_is_expired(url_info);
+
+        signed_url.set_ingest_time(then);
+        is_expired = NgapApi::signed_url_is_expired(signed_url);
         CPPUNIT_ASSERT(is_expired == true );
+        if(debug) cerr << prolog << "END" << endl;
 
     }
 
     CPPUNIT_TEST_SUITE( NgapApiTest );
 
-        CPPUNIT_TEST(cmr_access_test);
-        CPPUNIT_TEST(decompose_simple_url_test);
-        CPPUNIT_TEST(decompose_aws_signed_request_url_test);
+        CPPUNIT_TEST(resty_path_to_cmr_query_test_01);
+        CPPUNIT_TEST(resty_path_to_cmr_query_test_02);
+        CPPUNIT_TEST(resty_path_to_cmr_query_test_03);
+        CPPUNIT_TEST(cmr_access_entry_title_test);
+        CPPUNIT_TEST(cmr_access_collection_concept_id_test);
         CPPUNIT_TEST(signed_url_is_expired_test);
 
     CPPUNIT_TEST_SUITE_END();

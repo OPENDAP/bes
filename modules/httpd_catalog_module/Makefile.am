@@ -10,12 +10,16 @@ ACLOCAL_AMFLAGS = -I conf
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=httpd_catalog_module
-M_VER=0.9.3
+M_VER=0.9.4
 
-AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
-LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/http -I$(top_srcdir)/dap $(DAP_CFLAGS)
+LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
+
+AM_CXXFLAGS=
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
 
 SUBDIRS = . unit-tests tests
 
@@ -26,15 +30,13 @@ libhttpd_catalog_module_la_SOURCES = $(HTTP_CAT_SRC) $(HTTP_CAT_HDR)
 libhttpd_catalog_module_la_LDFLAGS = -avoid-version -module 
 libhttpd_catalog_module_la_LIBADD = $(LIBADD)
 
-HTTP_CAT_SRC = HttpdCatalogModule.cc HttpdCatalogUtils.cc HttpdCatalog.cc \
+HTTP_CAT_SRC = HttpdCatalogModule.cc HttpdCatalog.cc \
 	HttpdCatalogContainer.cc HttpdCatalogContainerStorage.cc \
-	curl_utils.cc RemoteHttpResourceCache.cc RemoteHttpResource.cc \
 	HttpdDirScraper.cc
-	
-HTTP_CAT_HDR = HttpdCatalog.h  HttpdCatalogNames.h \
-	HttpdCatalogModule.h HttpdCatalogUtils.h HttpdCatalogNames.h \
+
+HTTP_CAT_HDR = HttpdCatalog.h HttpdCatalogNames.h \
+	HttpdCatalogModule.h \
 	HttpdCatalogContainer.h HttpdCatalogContainerStorage.h \
-	curl_utils.h RemoteHttpResourceCache.h RemoteHttpResource.h \
 	HttpdDirScraper.h 
 
 # HttpdCatalogError.h  

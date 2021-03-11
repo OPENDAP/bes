@@ -28,6 +28,8 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
+#include "config.h"
+
 #include "awsv4.h"
 
 #include <cstring>
@@ -39,62 +41,47 @@
 #include <iostream>
 #include <sstream>
 
-#if 0
-#include <regex>
-#endif
-
 #include <openssl/sha.h>
 #include <openssl/hmac.h>
 
+#include "url_impl.h"
 #include "BESInternalError.h"
+#include "BESDebug.h"
+#include "DmrppNames.h"
 
-#include "url_parser.h"
+#define prolog std::string("AWSV4::").append(__func__).append("() - ")
 
 namespace AWSV4 {
 
     // used in sha256_base16() and hmac_to_string(). jhrg 1/5/20
     const int SHA256_DIGEST_STRING_LENGTH = (SHA256_DIGEST_LENGTH << 1);
 
-    std::string join(const std::vector<std::string>& ss, const std::string delim) {
+    /**
+     * @brief join strings using a delimiter
+     * @param ss Strings to join
+     * @param delim Dilimiter to separate the strings
+     * @return The string result
+     */
+    std::string join(const std::vector<std::string> &ss, const std::string &delim) {
+        if (ss.size() == 0)
+            return "";
+
         std::stringstream sstream;
-        const auto l = ss.size() - 1;
-        std::vector<int>::size_type i;
-        for (i = 0; i < l; i++) {
-            sstream << ss.at(i) << delim;
+        const size_t l = ss.size() - 1;
+        for (size_t i = 0; i < l; i++) {
+            sstream << ss[i] << delim;
         }
         sstream << ss.back();
         return sstream.str();
     }
 
-#if 0
-    // http://stackoverflow.com/questions/2262386/generate-sha256-with-openssl-and-c
-    void sha256(const std::string str, unsigned char outputBuffer[SHA256_DIGEST_LENGTH]) {
-        char *c_string = new char [str.length()+1];
-        std::strcpy(c_string, str.c_str());
-
-        SHA256_CTX sha256;
-        SHA256_Init(&sha256);
-        SHA256_Update(&sha256, c_string, strlen(c_string));
-        unsigned char hash[SHA256_DIGEST_LENGTH];
-        SHA256_Final(hash, &sha256);
-
-        for (int i=0;i<SHA256_DIGEST_LENGTH;i++) {
-            outputBuffer[i] = hash[i];
-        }
-    }
-#endif
-
-    std::string sha256_base16(const std::string str) {
+    std::string sha256_base16(const std::string &str) {
 
         unsigned char hashOut[SHA256_DIGEST_LENGTH];
-#if 1
         SHA256_CTX sha256;
         SHA256_Init(&sha256);
         SHA256_Update(&sha256, (const unsigned char *)str.c_str(), str.length());
         SHA256_Final(hashOut, &sha256);
-#else
-        AWSV4::sha256(str,hashOut);
-#endif
 
         char outputBuffer[SHA256_DIGEST_STRING_LENGTH + 1];
         for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
@@ -105,8 +92,7 @@ namespace AWSV4 {
     }
 
     // From https://stackoverflow.com/questions/1798112/removing-leading-and-trailing-spaces-from-a-string
-    static std::string trim(const std::string& str, const std::string& whitespace = " \t")
-    {
+    static std::string trim(const std::string& str, const std::string& whitespace = " \t") {
         const auto strBegin = str.find_first_not_of(whitespace);
         if (strBegin == std::string::npos)
             return ""; // no content
@@ -250,8 +236,7 @@ namespace AWSV4 {
                                           const std::string secret,
                                           const std::string region,
                                           const std::string service,
-                                          const std::string string_to_sign,
-                                          const bool verbose) {
+                                          const std::string string_to_sign) {
 
         // These are used/re-used for the various signatures. jhrg 1/3/20
         unsigned char md[EVP_MAX_MD_SIZE+1];
@@ -264,48 +249,32 @@ namespace AWSV4 {
         if (!kDate)
             throw BESInternalError("Could not compute AWS V4 requst signature." ,__FILE__, __LINE__);
 
-        if (verbose) {
-            std::cerr << "kDate: " << hmac_to_string(kDate) << std::endl;
-            std::cerr << "md_len: " << md_len << std::endl;
-            md[md_len] = '\0';
-            std::cerr << "md: " << hmac_to_string(md) << std::endl;
-        }
+        md[md_len] = '\0';
+        BESDEBUG(CREDS, prolog << "kDate: " << hmac_to_string(kDate)  << " md_len: " << md_len  << " md: " << hmac_to_string(md)  << std::endl );
 
         unsigned char *kRegion = HMAC(EVP_sha256(), md, (size_t)md_len,
                                       (const unsigned char*)region.c_str(), region.length(), md, &md_len);
         if (!kRegion)
             throw BESInternalError("Could not compute AWS V4 requst signature." ,__FILE__, __LINE__);
 
-        if (verbose) {
-            std::cerr << "kRegion: " << hmac_to_string(kRegion) << std::endl;
-            std::cerr << "md_len: " << md_len << std::endl;
-            md[md_len] = '\0';
-            std::cerr << "md: " << hmac_to_string(md) << std::endl;
-        }
+        md[md_len] = '\0';
+        BESDEBUG(CREDS, prolog << "kRegion: " << hmac_to_string(kRegion)  << " md_len: " << md_len  << " md: " << hmac_to_string(md)  << std::endl );
 
         unsigned char *kService = HMAC(EVP_sha256(), md, (size_t)md_len,
                         (const unsigned char*)service.c_str(), service.length(), md, &md_len);
         if (!kService)
             throw BESInternalError("Could not compute AWS V4 requst signature." ,__FILE__, __LINE__);
 
-        if (verbose) {
-            std::cerr << "kService: " << hmac_to_string(kService) << std::endl;
-            std::cerr << "md_len: " << md_len << std::endl;
-            md[md_len] = '\0';
-            std::cerr << "md: " << hmac_to_string(md) << std::endl;
-        }
+        md[md_len] = '\0';
+        BESDEBUG(CREDS, prolog << "kService: " << hmac_to_string(kService)  << " md_len: " << md_len  << " md: " << hmac_to_string(md)  << std::endl );
 
         unsigned char *kSigning = HMAC(EVP_sha256(), md, (size_t)md_len,
                         (const unsigned char*)AWS4_REQUEST.c_str(), AWS4_REQUEST.length(), md, &md_len);
         if (!kSigning)
             throw BESInternalError("Could not compute AWS V4 requst signature." ,__FILE__, __LINE__);
 
-        if (verbose) {
-            std::cerr << "kSigning " << hmac_to_string(kSigning) << std::endl;
-            std::cerr << "md_len: " << md_len << std::endl;
-            md[md_len] = '\0';
-            std::cerr << "md: " << hmac_to_string(md) << std::endl;
-        }
+       md[md_len] = '\0';
+        BESDEBUG(CREDS, prolog << "kSigning: " << hmac_to_string(kRegion)  << " md_len: " << md_len  << " md: " << hmac_to_string(md)  << std::endl );
 
         unsigned char *kSig = HMAC(EVP_sha256(), md, (size_t)md_len,
                     (const unsigned char*)string_to_sign.c_str(), string_to_sign.length(), md, &md_len);
@@ -314,21 +283,21 @@ namespace AWSV4 {
 
         md[md_len] = '\0';
         auto sig = hmac_to_string(md);
+        BESDEBUG(CREDS, prolog << "kSig: " << sig  << " md_len: " << md_len  << " md: " << hmac_to_string(md)  << std::endl );
         return sig;
     }
 
 
-/**
-    * @brief Return the AWS V4 signature for a given GET request
-    *
-    * @param uri_str The URI to fetch
-    * @param request_date The current date & time
-    * @param secret_key The Secret key for this resource (the thing referenced by the URI).
-    * @param region The AWS region where the request is being made (us-west-2 by default)
-    * @param service The AWS service that is the target of the request (S3 by default)
-    * @pram verbose True, be chatty to stderr. False by default
-    * @return The AWS V4 Signature string.
-    */
+    /**
+     * @brief Return the AWS V4 signature for a given GET request
+     *
+     * @param uri_str The URI to fetch
+     * @param request_date The current date & time
+     * @param secret_key The Secret key for this resource (the thing referenced by the URI).
+     * @param region The AWS region where the request is being made (us-west-2 by default)
+     * @param service The AWS service that is the target of the request (S3 by default)
+     * @return The AWS V4 Signature string.
+     */
 
     const std::string compute_awsv4_signature(
             const std::string &uri_str,
@@ -336,10 +305,9 @@ namespace AWSV4 {
             const std::string &public_key,
             const std::string &secret_key,
             const std::string &region,
-            const std::string &service,
-            const bool &verbose) {
+            const std::string &service) {
 
-        url_parser uri(uri_str);
+        http::url uri(uri_str);
 
         // canonical_uri is the path component of the URL. Later we will need the host.
         const auto canonical_uri = uri.path(); // AWSV4::canonicalize_uri(uri);
@@ -373,8 +341,7 @@ namespace AWSV4 {
                                                             signed_headers,
                                                             sha256_empty_payload);
 
-        if (verbose)
-            std::cerr << "-- Canonical Request\n" << canonical_request << "\n--\n" << std::endl;
+        BESDEBUG(CREDS, prolog << "Canonical Request: " << canonical_request <<  std::endl );
 
         auto hashed_canonical_request = sha256_base16(canonical_request);
         auto credential_scope = AWSV4::credential_scope(request_date,region,service);
@@ -383,23 +350,20 @@ namespace AWSV4 {
                                                     credential_scope,
                                                     hashed_canonical_request);
 
-        if (verbose)
-            std::cerr << "-- String to Sign\n" << string_to_sign << "\n----\n" << std::endl;
+        BESDEBUG(CREDS, prolog << "String to Sign: " << string_to_sign <<  std::endl );
 
         auto signature = calculate_signature(request_date,
                                                     secret_key,
                                                     region,
                                                     service,
-                                                    string_to_sign,
-                                                    verbose);
-        if (verbose)
-            std::cerr << "-- signature\n" << signature << "\n----\n" << std::endl;
+                                                    string_to_sign);
+
+        BESDEBUG(CREDS, prolog << "signature: " << signature <<  std::endl );
 
         const std::string authorization_header = STRING_TO_SIGN_ALGO + " Credential=" + public_key + "/"
                 + credential_scope + ", SignedHeaders=" + signed_headers + ", Signature=" + signature;
 
-        if (verbose)
-            std::cerr << "-- authorization_header\n" << authorization_header << "\n----\n" << std::endl;
+        BESDEBUG(CREDS, prolog << "authorization_header: " << authorization_header <<  std::endl );
 
         return authorization_header;
     }

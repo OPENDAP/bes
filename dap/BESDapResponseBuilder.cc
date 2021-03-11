@@ -114,6 +114,7 @@
 
 #include "BESUtil.h"
 #include "BESDebug.h"
+#include "BESLog.h"
 #include "BESStopWatch.h"
 #include "DapFunctionUtils.h"
 
@@ -798,7 +799,7 @@ bool BESDapResponseBuilder::store_dap2_result(ostream &out, DDS &dds, Constraint
 void BESDapResponseBuilder::serialize_dap2_data_dds(ostream &out, DDS **dds, ConstraintEvaluator &eval, bool ce_eval)
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("BESDapResponseBuilder::serialize_dap2_data_dds", "");
+    if (BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) sw.start(prolog + "Timer", "");
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
@@ -987,6 +988,9 @@ BESDapResponseBuilder::process_dap2_dds(BESResponseObject *obj, BESDataHandlerIn
 libdap::DDS *
 BESDapResponseBuilder::intern_dap2_data(BESResponseObject *obj, BESDataHandlerInterface &dhi)
 {
+    BESStopWatch sw;
+    if (BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) sw.start(prolog + "Timer", "");
+
     BESDEBUG(MODULE, prolog << "BEGIN"<< endl);
 
     dhi.first_container();
@@ -1405,6 +1409,7 @@ void BESDapResponseBuilder::send_dap4_data_using_ce(ostream &out, DMR &dmr, bool
     // don't need this, other code may depend on send_p being set. This may change
     // if DAP4 has a separate function evaluation phase. jhrg 11/25/13
     else {
+        dmr.set_ce_empty(true);
         dmr.root()->set_send_p(true);
     }
 
@@ -1441,6 +1446,8 @@ void BESDapResponseBuilder::send_dap4_data_using_ce(ostream &out, DMR &dmr, bool
 
 void BESDapResponseBuilder::intern_dap4_data_using_ce(DMR &dmr)
 {
+    BESStopWatch sw;
+    if (BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) sw.start(prolog + "Timer", "");
     if (!d_dap4ce.empty()) {
         BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data_using_ce() - expression constraint is not empty. " <<endl);
         D4ConstraintEvaluator parser(&dmr);
@@ -1451,6 +1458,7 @@ void BESDapResponseBuilder::intern_dap4_data_using_ce(DMR &dmr)
     // don't need this, other code may depend on send_p being set. This may change
     // if DAP4 has a separate function evaluation phase. jhrg 11/25/13
     else {
+        dmr.set_ce_empty(true);
         dmr.root()->set_send_p(true);
     }
 
@@ -1498,6 +1506,9 @@ void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, bool with_mim
  */
 void BESDapResponseBuilder::serialize_dap4_data(std::ostream &out, libdap::DMR &dmr, bool with_mime_headers)
 {
+    BESStopWatch sw;
+    if (BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) sw.start(prolog + "Timer", "");
+
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
     if (with_mime_headers) set_mime_binary(out, dap4_data, x_plain, last_modified_time(d_dataset), dmr.dap_version());
@@ -1641,6 +1652,8 @@ bool BESDapResponseBuilder::store_dap4_result(ostream &out, libdap::DMR &dmr)
 libdap::DMR *
 BESDapResponseBuilder::intern_dap4_data(BESResponseObject *obj, BESDataHandlerInterface &dhi)
 {
+    BESStopWatch sw;
+    if (BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) sw.start(prolog + "Timer", "");
     BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() - BEGIN"<< endl);
 
     dhi.first_container();

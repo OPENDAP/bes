@@ -232,7 +232,7 @@ GridAggregationBase::serialize(libdap::ConstraintEvaluator &eval, libdap::DDS &d
     bool ce_eval)
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("GridAggregationBase::serialize", "");
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("GridAggregationBase::serialize", "");
 
     bool status = false;
 

@@ -10,7 +10,7 @@
 %define hyraxsharedir %{_datadir}/hyrax
 
 Name:           bes
-Version:        3.20.7
+Version:        3.20.8
 Release:        1%{?dist}
 Summary:        Back-end server software framework for OPeNDAP
 
@@ -21,7 +21,7 @@ Source0:        http://www.opendap.org/pub/source/bes-%{version}.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Requires:       libdap >= 3.20.6
+Requires:       libdap >= 3.20.7
 Requires:       readline bzip2 zlib
 Requires:	    netcdf >= 4.1
 Requires:	    libicu >= 3.6
@@ -32,7 +32,7 @@ Requires:       openssl
 
 Requires(pre): shadow-utils
 
-BuildRequires:  libdap-devel >= 3.20.6
+BuildRequires:  libdap-devel >= 3.20.7
 BuildRequires:  readline-devel
 BuildRequires:  bzip2-devel zlib-devel
 BuildRequires:  libxml2-devel >= 2.7.0
@@ -58,7 +58,7 @@ hooks, and more.
 Summary:        Development files for %{name}
 Group:          Development/Libraries
 Requires:       %{name} = %{version}-%{release}
-Requires:       libdap-devel >= 3.20.3
+Requires:       libdap-devel >= 3.20.7
 # for the /usr/share/aclocal directory ownership
 Requires:       automake
 Requires:       openssl-devel, bzip2-devel, zlib-devel
@@ -174,12 +174,14 @@ exit 0
 %{_bindir}/build_dmrpp
 %{_bindir}/check_dmrpp
 %{_bindir}/merge_dmrpp
-%{_bindir}/ngap_build_dmrpp
+%{_bindir}/reduce_mdf
+#%{_bindir}/ngap_build_dmrpp
 %{_bindir}/localBesGetDap
 %{_bindir}/populateMDS
 %{_bindir}/get_dmrpp
 %{_bindir}/ingest_filesystem
 %{_bindir}/ingest_s3bucket
+%{_bindir}/retriever
 # TODO Change build_sidecar to a better name, like build_stare_sidecar. jhrg 10/29/19
 %{_bindir}/build_sidecar
 

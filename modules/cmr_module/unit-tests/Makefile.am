@@ -3,10 +3,10 @@
 AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/modules -I$(top_srcdir)/modules/cmr_module \
--I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
+-I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/http $(DAP_CFLAGS)
 
 # Added -lz for ubuntu
-LIBADD = -L../../../dispatch/.libs -lbes_dispatch $(BES_DISPATCH_LIB) $(BES_DAP_LIB) $(BES_EXTRA_LIBS) \
+LIBADD = $(BES_DISPATCH_LIB) $(BES_DAP_LIB) $(BES_EXTRA_LIBS) $(BES_HTTP_LIB)\
 $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -lz
 
 if CPPUNIT
@@ -17,7 +17,10 @@ endif
 # These are not used by automake but are often useful for certain types of
 # debugging. Set CXXFLAGS to this in the nightly build using export ...
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
-TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
+
+AM_CXXFLAGS=
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
 
 DISTCLEANFILES = test_config.h *.Po
 
@@ -92,14 +95,7 @@ endif
 clean-local:
 	test ! -d $(builddir)/static-cache || rm -rf $(builddir)/static-cache
 
-OBJS = ../RemoteHttpResource.o \
-../curl_utils.o \
-../rjson_utils.o \
-../CmrCache.o \
-../CmrUtils.o \
-../CmrApi.o \
-../Granule.o \
-../CmrCatalog.o 
+OBJS = ../rjson_utils.o ../CmrApi.o ../Granule.o ../CmrCatalog.o
 
 CmrApiTest_SOURCES = CmrApiTest.cc
 CmrApiTest_LDADD = $(OBJS) $(LIBADD)

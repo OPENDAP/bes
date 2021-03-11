@@ -18,12 +18,18 @@ endif
 # These are not used by automake but are often useful for certain types of
 # debugging. Set CXXFLAGS to this in the nightly build using export ...
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
-TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-bin_PROGRAMS = build_sidecar
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
+
+# Old programs used at the start of the STARE project. jhrg 8/20/20
+# noinst_PROGRAMS = build_sidecar build_test_s_indices
 
 build_sidecar_SOURCES = build_sidecar.cc
 build_sidecar_LDADD = $(AM_LDADD)
+
+build_test_s_indices_SOURCES = build_test_s_indices.cc
+build_test_s_indices_LDADD = $(AM_LDADD)
 
 sample_datadir = $(datadir)/hyrax/data/stare
 

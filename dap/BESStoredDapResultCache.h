@@ -32,6 +32,10 @@
 
 #include "BESFileLockingCache.h"
 
+#define DAP_STORED_RESULTS_CACHE_SUBDIR_KEY "DAP.StoredResultsCache.subdir"
+#define DAP_STORED_RESULTS_CACHE_PREFIX_KEY "DAP.StoredResultsCache.prefix"
+#define DAP_STORED_RESULTS_CACHE_SIZE_KEY "DAP.StoredResultsCache.size"
+
 #undef DAP2_STORED_RESULTS
 
 namespace libdap {
@@ -92,9 +96,11 @@ protected:
         unsigned long long size);
 
 public:
+#if 0
     static const string SUBDIR_KEY;
     static const string PREFIX_KEY;
     static const string SIZE_KEY;
+#endif
 
     virtual ~BESStoredDapResultCache() { }
 

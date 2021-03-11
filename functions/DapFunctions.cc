@@ -107,6 +107,7 @@ void DapFunctions::initialize(const string &modname)
     libdap::ServerFunctionsList::TheList()->add_function(new StareIntersectionFunction());
     libdap::ServerFunctionsList::TheList()->add_function(new StareCountFunction());
     libdap::ServerFunctionsList::TheList()->add_function(new StareSubsetFunction());
+    libdap::ServerFunctionsList::TheList()->add_function(new StareSubsetArrayFunction());
 
     // The key names and module variables used here are defined in StareFunctions.cc
     // jhrg 5/21/20

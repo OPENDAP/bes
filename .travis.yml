@@ -7,8 +7,11 @@
 #
 # Now uses hyrax-dependencies and libdap binaries stored in an AWS S3 bucket
 # that were built using other builds. jhrg 2.24.18
+#
+# Try using Ubuntu Focal
 
-dist: trusty
+# dist: trusty
+dist: xenial
 
 language: cpp
 
@@ -20,6 +23,7 @@ branches:
   - travis
 
 addons:
+  sonarcloud: true
   apt:
     packages:
     - uuid-dev
@@ -27,12 +31,16 @@ addons:
     - libcurl4-openssl-dev
     - libcppunit-dev
     - libicu-dev
+    - gcovr
     # - debhelper These packages were used only for debian builds
     # - devscripts
     # - lintian
     # - fakeroot
     # - build-essential
     # - sshpass Only used for ssh access to www.o.o (also not done anymore)
+
+git:
+  depth: false
 
 env:
   global:
@@ -41,12 +49,13 @@ env:
     - PATH=$prefix/bin:$prefix/deps/bin:$PATH
     - TESTSUITEFLAGS=-j7
     # Change this when libdap version numbers change
-    - LIBDAP_RPM_VERSION=3.20.6-1
+    - LIBDAP_RPM_VERSION=3.20.7-1
     # SONAR_LOGIN, made using "travis encrypt --org -r OPENDAP/bes SONAR_LOGIN=335df..."
     - secure: "TmoFcgeIyAEjFyrlqB6rhdUhDqPJfxVZmT5fewgVHj0xm767VZ6DU21mM6ZHgNGyk99TzX0Gx/dwSqbsUj18hSSAvEa7fJQSKJ5IBJvTeMKhXn1DPPG9VpuZ4ti5afRDiNr6EJKbVxwBTkz+3798S8LajPuXGupYupir8IJQCt8="
     # SONAR_MODULES_LOGIN, using "travis encrypt --org -r OPENDAP/bes SONAR_MODULES_LOGIN=42ba..."
     - secure: "V3fMZgzMRRB0xFQMTvXf2fFPHIdwvg2y6bNFKqSGI5HP2sZEtc7XqSC4hjboR9RjnyZY/H1L/EuYQCS45gmJMsmtzo4g1Cn0oTfuPRJzDSi00jRlB1wUl5p1pU0Fdv2ffrGF4m6/SRfYFT0KkR/Tp8hdIoYx5/8R4MajysABMT4="
-    # AWS_ACCESS_KEY_ID
+    # SONAR_SUBMODULES_LOGIN, using "travis encrypt --org -r OPENDAP/bes SONAR_SUBMODULES_LOGIN=Q4aWrvS..."
+    - secure: "Q4aWrvSlKUY7413FNI6tHlWJdhVtjJxrtSBApJRe5fGTn/HEmod5n3O4o0elFhuYh0O57aYsYclD7t0lriKMPvPdY/s8CFAaIPSANhNRkD44MWYWCPyivl83BBUlhWgkqgWFcCEaTqCpF/8A0HlOF1TsE1KKyQSns7snqgWTfSA="    # AWS_ACCESS_KEY_ID
     # user == travis-bes
     - secure: "ZfL1IPX5zab1HWkJTlNPHroyUOp2lhAlcCH6UXDEL/yXpKoRCNkSo/CILM20DsjBckGys/7chom6uIoOilLu9Tp/6nPwkYlOe5DjgDt/qqKutclk9QBfrwU7WHRUOiEOESZl3Knd6B+GzuBZe8nrJzJhZWT54VFiOlEAGeIiFwo="
     # AWS_SECRET_ACCESS_KEY
@@ -83,61 +92,86 @@ before_script:
 # but do not run the scan.
 stages:
   - name: build
-    if:  branch = master
+    if: branch = master
   - name: scan
-    if:  branch = master AND NOT type = pull_request
+    if:  branch = master
+  - name: package
+    if:  branch = master
   - name: package
     if:  branch = master OR branch = travis
 
 jobs:
   include:
   - stage: scan
-    addons: 
-      sonarcloud:  true
+    name: "scan bes"
     script:
     - export BES_BUILD=sonar-bes-framework
-    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer --enable-coverage
     - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
+
+    - make check -j7
+    - make coverage
+
     - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.login=$SONAR_LOGIN
+    - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes | grep "QUALITY GATE PASS"
 
   - stage: scan
-    addons: 
-      sonarcloud: true
+    name: "scan bes-modules"
     script:
-    - export BES_BUILD=sonar-bes-modules
-    # Adding this 'fetch --unshallow' since I think sonar is excluding the hdf handlers
-    # because they are submodules.
-    - git fetch --unshallow
-    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-    - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
-    - sonar-scanner -Dproject.settings=sonar-bes-modules.properties -Dsonar.login=$SONAR_MODULES_LOGIN
+      - export BES_BUILD=sonar-bes-modules
+      - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer  --enable-coverage
+      - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
+
+      - make check -j7
+      - make coverage
+
+      - sonar-scanner -Dproject.settings=sonar-bes-modules.properties -Dsonar.login=$SONAR_MODULES_LOGIN
+      - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-modules | grep "QUALITY GATE PASS"
+
+  - stage: scan
+    name: "scan bes-submodules"
+    script:
+      - export BES_BUILD=sonar-bes-submodules
+      - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer  --enable-coverage
+      - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
+
+      - make check -j7
+      - make coverage
+
+      - sonar-scanner -Dproject.settings=sonar-bes-submodules.properties -Dsonar.login=$SONAR_SUBMODULES_LOGIN
+      - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-submodules | grep "QUALITY GATE PASS"
 
   - stage: build
+    name: "check"
     script: 
     - export BES_BUILD=main
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
     - make -j7 && make install && besctl start && make check -j7 && besctl stop
 
   - stage: build
+    name: "distcheck"
     script:
     - export BES_BUILD=distcheck
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
     - make distcheck -j7
 
-  - stage: package
-    script: 
-    - export BES_BUILD=centos6
-    - mkdir -p $prefix/rpmbuild
     # NB: ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} supplies the name of the PR branch for a PR,
     # or the name of the branch for a regular push. The reason for this is not that we want special
     # packages for branches, but we want to be able to test builds without making pushes to master
     # and that means having the build-rpm.sh use the spec files on a branch.
-    - docker run --volume $prefix/rpmbuild:/root/rpmbuild --volume $TRAVIS_BUILD_DIR:/root/travis
-                 --env OS=centos6 --env DIST=el6 --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
-                 --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-                 opendap/centos6_hyrax_builder:1.3 /root/travis/build-rpm.sh ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}
+
+# Removed CentOS 6 build. jhrg 10/23/20
+#  - stage: package
+#    script:
+#    - export BES_BUILD=centos6
+#    - mkdir -p $prefix/rpmbuild
+#    - docker run --volume $prefix/rpmbuild:/root/rpmbuild --volume $TRAVIS_BUILD_DIR:/root/travis
+#                 --env OS=centos6 --env DIST=el6 --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
+#                 --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+#                 opendap/centos6_hyrax_builder:1.3 /root/travis/build-rpm.sh ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}
 
   - stage: package
+    name: "CentOS-7 RPMs"
     script: 
     - export BES_BUILD=centos7
     - mkdir -p $prefix/rpmbuild
@@ -148,6 +182,7 @@ jobs:
                  opendap/centos7_hyrax_builder:1.2 /root/travis/build-rpm.sh ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}
 
   - stage: package
+    name: "dist"
     script:
     - export BES_BUILD=srcdist
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
@@ -171,9 +206,9 @@ before_deploy:
   - mkdir -p $TRAVIS_BUILD_DIR/package;
   # Source distribution prep (copies both the 'version' and 'snapshot'
   - if test "$BES_BUILD" = "srcdist"; then cp bes-*.tar.gz $TRAVIS_BUILD_DIR/package; fi
+  # CentOS-6 distribution prep. Removed, jhrg 10/23/20
+  # - if test "$BES_BUILD" = "centos6"; then ./travis/rpm-to-package-dir.sh "el6"; fi
   # CentOS-7  distribution prep
-  - if test "$BES_BUILD" = "centos6"; then ./travis/rpm-to-package-dir.sh "el6"; fi
-  # CentOS-6 distribution prep
   - if test "$BES_BUILD" = "centos7"; then ./travis/rpm-to-package-dir.sh "el7"; fi
   # Check for the stuff...
   - ls -l $TRAVIS_BUILD_DIR/package
@@ -189,7 +224,8 @@ deploy:
     local_dir: $TRAVIS_BUILD_DIR/package
     on:
       branch: master
-      condition: $BES_BUILD =~ ^deb|centos7|centos6|srcdist$
+      condition: $BES_BUILD =~ ^deb|centos7|srcdist$
+    # Removed condition 'centos6|'. jhrg 10/23/20
 
   # See https://opendap.atlassian.net/browse/HK-519
   #
@@ -221,5 +257,8 @@ deploy:
 # The after_deploy section grabs the hyrax-docker project, sets the current snapshot time 
 # and pushes the result to GitHub. This push triggers TravisCI to build the Docker containers
 # for all of the Hyrax snapshot products. jhrg 10/28/19
+#
+# CAVEAT: In after_deploy failures will not affect the build outcome, they will be ignored.
+#
 after_deploy:
-  - if test x"$BES_BUILD" = x"centos7" -a x"$DEPLOY" = x"S3"; then ./travis/trigger-hyrax-docker.sh; fi
+  - if test x"$BES_BUILD" = x"centos7" -a x"$DEPLOY" = x"S3"; then ./travis/trigger-olfs-build.sh; fi

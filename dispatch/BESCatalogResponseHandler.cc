@@ -30,6 +30,8 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
 #include "BESCatalogResponseHandler.h"
 #include "BESInfoList.h"
 #include "BESInfo.h"
@@ -71,7 +73,7 @@ BESCatalogResponseHandler::~BESCatalogResponseHandler()
 void BESCatalogResponseHandler::execute(BESDataHandlerInterface &dhi)
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("BESCatalogResponseHandler::execute", dhi.data[REQUEST_ID]);
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("BESCatalogResponseHandler::execute", dhi.data[REQUEST_ID]);
 
     BESInfo *info = BESInfoList::TheList()->build_info();
     d_response_object = info;

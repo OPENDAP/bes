@@ -33,7 +33,7 @@ namespace ncml_module {
 
 const std::string ModuleConstants::NCML_NAME = "ncml";
 
-const std::string ModuleConstants::DOC_WIKI_URL = "http://docs.opendap.org/index.php/BES_-_Modules_-_NcML_Module";
+const std::string ModuleConstants::DOC_WIKI_URL = "https://docs.opendap.org/index.php/BES_-_Modules_-_NcML_Module";
 
 const std::string ModuleConstants::CACHE_AGG_RESPONSE = "cacheAgg";
 

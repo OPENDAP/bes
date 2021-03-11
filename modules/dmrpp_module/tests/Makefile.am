@@ -8,9 +8,9 @@ noinst_DATA = bes.conf bes_mds_tests.conf mds_for_tests
 CLEANFILES = bes.conf bes.log $(srcdir)/package.m4 $(TESTSUITE) \
 bes_mds_tests.conf bes_serial.conf $(TESTSUITE_MDS) $(TESTSUITE_S3)
 
-EXTRA_DIST = contiguous chunked new_types mds_tests s3 $(srcdir)/package.m4 \
-$(TESTSUITE) $(TESTSUITE).at $(TESTSUITE_MDS) $(TESTSUITE_MDS).at \
-$(TESTSUITE_S3)  $(TESTSUITE_S3).at \
+EXTRA_DIST = contiguous chunked compact new_types mds_tests s3 \
+$(srcdir)/package.m4 $(TESTSUITE) $(TESTSUITE).at $(TESTSUITE_MDS) \
+$(TESTSUITE_MDS).at $(TESTSUITE_S3)  $(TESTSUITE_S3).at \
 atlocal.in bes.conf.in bes_mds_tests.conf.in  bes_serial.conf.in
 
 DISTCLEANFILES = atconfig mds_for_tests_ledger.txt
@@ -64,7 +64,7 @@ s3-tests: $(TESTSUITE_S3) bes.conf bes_serial.conf
 	fi
 	@echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
 
-check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_MDS) $(TESTSUITE_S3) $(TESTSUITE_DMRPP) bes.conf bes_serial.conf bes_mds_tests.conf mds_for_tests
+check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_MDS) $(TESTSUITE_S3) bes.conf bes_serial.conf bes_mds_tests.conf mds_for_tests
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS) --conf=bes_serial.conf
 	$(SHELL) '$(TESTSUITE_MDS)' $(TESTSUITEFLAGS) --conf=bes_mds_tests.conf
@@ -72,13 +72,11 @@ check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_MDS) $(TESTSUITE_S3) $(TE
 	@if [ -n "$${CMAC_ID}" ] \
 		&& [ -n "$${CMAC_ACCESS_KEY}" ] \
 		&& [ -n "$${CMAC_REGION}" ]  \
-		&& [ -n "$${CMAC_BUCKET}" ]   \
 		&& [ -n "$${CMAC_URL}" ] ; then \
 		echo "--------- S3 Auth Tests ---------"; \
 		echo "        CMAC_ID: <Has Been Set>"; \
 		echo "CMAC_ACCESS_KEY: <Has Been Set>"; \
 		echo "    CMAC_REGION: ${CMAC_REGION}"; \
-		echo "    CMAC_BUCKET: ${CMAC_BUCKET}"; \
 		echo "       CMAC_URL: ${CMAC_URL}"; \
 		$(SHELL) '$(TESTSUITE_S3)' $(TESTSUITEFLAGS); \
 	else \

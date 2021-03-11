@@ -28,6 +28,7 @@
 
 #include <string>
 #include <vector>
+#include <mutex>
 #include "AccessCredentials.h"
 
 
@@ -36,40 +37,41 @@
 
 class CredentialsManager {
 public:
-    static const std::string ENV_ID_KEY;
-    static const std::string ENV_ACCESS_KEY;
-    static const std::string ENV_REGION_KEY;
-    //static const std::string ENV_BUCKET_KEY;
-    static const std::string ENV_URL_KEY;
-    static const std::string ENV_CREDS_KEY_VALUE;
-    static const std::string NETRC_FILE_KEY;
+    static const char* ENV_ID_KEY;
+    static const char* ENV_ACCESS_KEY;
+    static const char* ENV_REGION_KEY;
+    static const char* ENV_BUCKET_KEY;
+    static const char* ENV_URL_KEY;
+    static const char* USE_ENV_CREDS_KEY_VALUE;
 
 private:
-    CredentialsManager();
-
-    std::map<std::string, AccessCredentials* > creds;
-    static void initialize_instance();
-    static void delete_instance();
+    std::recursive_mutex d_lock_mutex{};
+    // std::string d_netrc_filename;
     bool ngaps3CredentialsLoaded;
 
+    std::map<std::string, AccessCredentials* > creds;
+
+    CredentialsManager();
+
+    static void initialize_instance();
+    static void delete_instance();
     AccessCredentials *load_credentials_from_env( );
     void load_ngap_s3_credentials( );
 
-    std::string d_netrc_filename;
 
 public:
     static CredentialsManager *theMngr;
 
     ~CredentialsManager();
-
-    static CredentialsManager *theCM(){
-        if (theMngr == 0) initialize_instance();
-        return theMngr;
-    }
+    static CredentialsManager *theCM();
 
     void add(const std::string &url, AccessCredentials *ac);
     void load_credentials();
-    void clear(){ delete_instance(); }
+
+    void clear(){
+        creds.clear();
+        ngaps3CredentialsLoaded = false;
+    }
 
     AccessCredentials *get(const std::string &url);
 
@@ -80,8 +82,6 @@ public:
     bool hasNgapS3Credentials(){
         return ngaps3CredentialsLoaded;
     }
-
-    std::string get_netrc_filename(){ return d_netrc_filename; }
 };
 
 

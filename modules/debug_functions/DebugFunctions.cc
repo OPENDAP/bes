@@ -22,6 +22,8 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
+#include "config.h"
+
 #include <sstream>      // std::stringstream
 #include <stdlib.h>     /* abort, NULL */
 #include <iostream>
@@ -113,8 +115,8 @@ AbortFunc::AbortFunc()
     setName("abort");
     setDescriptionString((string) "This function calls abort() killing the beslistner process.");
     setUsageString(abort_usage);
-    setRole("http://services.opendap.org/dap4/server-side-function/debug/abort");
-    setDocUrl("http://docs.opendap.org/index.php/Debug_Functions");
+    setRole("http://services.opendap.org/dap4/server-side-function/debug/abort"); // 11/18/20 SBL - https not supported
+    setDocUrl("https://docs.opendap.org/index.php/Debug_Functions");
     setFunction(debug_function::abort_ssf);
     setVersion("1.0");
 }
@@ -168,8 +170,8 @@ SleepFunc::SleepFunc()
     setName("sleep");
     setDescriptionString((string) "This function calls sleep() for the specified number of millisecs.");
     setUsageString(sleep_usage);
-    setRole("http://services.opendap.org/dap4/server-side-function/debug/sleep");
-    setDocUrl("http://docs.opendap.org/index.php/Debug_Functions");
+    setRole("http://services.opendap.org/dap4/server-side-function/debug/sleep"); // 11/18/20 SBL - https not supported
+    setDocUrl("https://docs.opendap.org/index.php/Debug_Functions");
     setFunction(debug_function::sleep_ssf);
     setVersion("1.0");
 }
@@ -234,8 +236,8 @@ SumUntilFunc::SumUntilFunc()
     setName("sum_until");
     setDescriptionString((string) "This function calls sleep() for the specified number of millisecs.");
     setUsageString(sum_until_usage);
-    setRole("http://services.opendap.org/dap4/server-side-function/debug/sum_until");
-    setDocUrl("http://docs.opendap.org/index.php/Debug_Functions");
+    setRole("http://services.opendap.org/dap4/server-side-function/debug/sum_until"); // 11/18/20 SBL - https not supported
+    setDocUrl("https://docs.opendap.org/index.php/Debug_Functions");
     setFunction(debug_function::sum_until_ssf);
     setVersion("1.0");
 }
@@ -320,8 +322,8 @@ ErrorFunc::ErrorFunc()
     setName("error");
     setDescriptionString((string) "This function triggers a BES Error of the type specified");
     setUsageString(error_usage);
-    setRole("http://services.opendap.org/dap4/server-side-function/debug/error");
-    setDocUrl("http://docs.opendap.org/index.php/Debug_Functions");
+    setRole("http://services.opendap.org/dap4/server-side-function/debug/error"); // 11/18/20 SBL - https not supported
+    setDocUrl("https://docs.opendap.org/index.php/Debug_Functions");
     setFunction(debug_function::error_ssf);
     setVersion("1.0");
 }

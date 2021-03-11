@@ -59,6 +59,9 @@
 #include "NCStructure.h"
 // #include "nc_util.h"
 
+#define MODULE "nc"
+#define prolog std::string("NCArray::").append(__func__).append("() - ")
+
 BaseType *
 NCArray::ptr_duplicate()
 {
@@ -157,7 +160,7 @@ void NCArray::do_cardinal_array_read(int ncid, int varid, nc_type datatype,
     size = nctypelen(datatype);
 #endif
 
-    BESDEBUG("nc", "In NCArray::do_cardinal_array_read, size = " << size << endl);
+    BESDEBUG( MODULE, prolog << "size = " << size << endl);
     switch (datatype) {
         case NC_FLOAT:
         case NC_DOUBLE:
@@ -177,7 +180,7 @@ void NCArray::do_cardinal_array_read(int ncid, int varid, nc_type datatype,
                     errstat = nc_get_vara(ncid, varid, cor, edg, &values[0]);
                 if (errstat != NC_NOERR){
                 	ostringstream oss;
-                	oss << "NCArray::do_cardinal_array_read() - Could not get the value for Array variable '" << name() << "'.";
+                	oss << prolog << "Could not get the value for Array variable '" << name() << "'.";
                 	oss << " dimensions: " << dimensions(true);
                 	oss << " nc_get_vara() errstat: " << errstat;
                     throw Error(errstat, oss.str());
@@ -200,7 +203,7 @@ void NCArray::do_cardinal_array_read(int ncid, int varid, nc_type datatype,
                 else
                     errstat = nc_get_vara(ncid, varid, cor, edg, &values[0]);
                 if (errstat != NC_NOERR)
-                    throw Error(errstat, string("Could not get the value for variable '") + name() + string("' (NCArray::do_cardinal_array_read)"));
+                    throw Error(errstat, prolog + "Could not get the value for variable '" + name() + string("' (NCArray::do_cardinal_array_read)"));
             }
             if (NCRequestHandler::get_promote_byte_to_short()) {
                 // the data set's signed byte data are going to be stored in a short
@@ -493,7 +496,7 @@ bool NCArray::read()
 //    for(unsigned int i=0; i<MAX_NC_DIMS; i++){
 //    	oss << cor[i] <<  ", " << edg[i] << ", " << step[i] << endl;
 //    }
-//    BESDEBUG("nc", "NCArray::read() - corners, edges, stride" << endl << oss.str() << endl);
+//    BESDEBUG( MODULE, prolog << "corners, edges, stride" << endl << oss.str() << endl);
 
     vector<char> values;
     do_array_read(ncid, varid, datatype, values, false /*has_values*/, 0 /*values_offset*/,

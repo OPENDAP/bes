@@ -470,7 +470,7 @@ void ugrid_restrict(string func_name, locationType location, int argc, BaseType 
     try { // This top level try block is used to catch gridfields library errors.
 
         BESStopWatch sw;
-        if (BESISDEBUG(TIMING_LOG)) sw.start("ugrid::ugrid_restrict()", "[function_invocation]");
+        if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("ugrid::ugrid_restrict()", "[function_invocation]");
 
         BESDEBUG("ugrid", "ugrid_restrict() - BEGIN" << endl);
 

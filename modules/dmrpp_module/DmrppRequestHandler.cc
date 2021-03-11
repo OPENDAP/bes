@@ -54,6 +54,7 @@
 #include <BESConstraintFuncs.h>
 #include <BESServiceRegistry.h>
 #include <BESUtil.h>
+#include <BESLog.h>
 #include <TheBESKeys.h>
 
 #include <BESDapError.h>
@@ -61,6 +62,7 @@
 #include <BESDebug.h>
 #include <BESStopWatch.h>
 
+#include "DmrppNames.h"
 #include "DMRpp.h"
 #include "DmrppTypeFactory.h"
 #include "DmrppParserSax2.h"
@@ -73,9 +75,10 @@ using namespace bes;
 using namespace libdap;
 using namespace std;
 
+#define prolog std::string("DmrppRequestHandler::").append(__func__).append("() - ")
+
 namespace dmrpp {
 
-const string module = "dmrpp";
 
 ObjMemCache *DmrppRequestHandler::das_cache = 0;
 ObjMemCache *DmrppRequestHandler::dds_cache = 0;
@@ -85,11 +88,14 @@ ObjMemCache *DmrppRequestHandler::dmr_cache = 0;
 // reuse. jhrg
 CurlHandlePool *DmrppRequestHandler::curl_handle_pool = 0;
 
-bool DmrppRequestHandler::d_use_parallel_transfers = true;
-unsigned int DmrppRequestHandler::d_max_parallel_transfers = 8;
+bool DmrppRequestHandler::d_use_transfer_threads = true;
+unsigned int DmrppRequestHandler::d_max_transfer_threads = 8;
+
+bool DmrppRequestHandler::d_use_compute_threads = true;
+unsigned int DmrppRequestHandler::d_max_compute_threads = 8;
 
 // Default minimum value is 2MB: 2 * (1024*1024)
-unsigned int DmrppRequestHandler::d_min_size = 2097152;
+unsigned long long DmrppRequestHandler::d_contiguous_concurrent_threshold = DMRPP_DEFAULT_CONTIGUOUS_CONCURRENT_THRESHOLD;
 
 static void read_key_value(const std::string &key_name, bool &key_value)
 {
@@ -103,6 +109,16 @@ static void read_key_value(const std::string &key_name, bool &key_value)
 }
 
 static void read_key_value(const std::string &key_name, unsigned int &key_value)
+{
+    bool key_found = false;
+    string value;
+    TheBESKeys::TheKeys()->get_value(key_name, value, key_found);
+    if (key_found) {
+        istringstream iss(value);
+        iss >> key_value;
+    }
+}
+static void read_key_value(const std::string &key_name, unsigned long long &key_value)
 {
     bool key_found = false;
     string value;
@@ -129,14 +145,51 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
     add_method(VERS_RESPONSE, dap_build_vers);
     add_method(HELP_RESPONSE, dap_build_help);
 
-    read_key_value("DMRPP.UseParallelTransfers", d_use_parallel_transfers);
-    read_key_value("DMRPP.MaxParallelTransfers", d_max_parallel_transfers);
+    stringstream msg;
+    read_key_value(DMRPP_USE_TRANSFER_THREADS_KEY, d_use_transfer_threads);
+    read_key_value(DMRPP_MAX_TRANSFER_THREADS_KEY, d_max_transfer_threads);
+    msg << prolog << "Concurrent Transfer Threads: ";
+    if(DmrppRequestHandler::d_use_transfer_threads){
+        msg << "Enabled. max_transfer_threads: " << DmrppRequestHandler::d_max_transfer_threads << endl;
+    }
+    else{
+        msg << "Disabled." << endl;
+    }
+    // BESDEBUG(MODULE, msg.str());
+    INFO_LOG(msg.str() );
+    msg.str(std::string());
+
+    read_key_value(DMRPP_USE_COMPUTE_THREADS_KEY, d_use_compute_threads);
+    read_key_value(DMRPP_MAX_COMPUTE_THREADS_KEY, d_max_compute_threads);
+    msg << prolog << "Concurrent Compute Threads: ";
+    if(DmrppRequestHandler::d_use_compute_threads){
+        msg << "Enabled. max_compute_threads: " << DmrppRequestHandler::d_max_compute_threads << endl;
+    }
+    else{
+        msg << "Disabled." << endl;
+    }
+    // BESDEBUG(MODULE, msg.str());
+    INFO_LOG(msg.str() );
+    msg.str(std::string());
+
+    // DMRPP_CONTIGUOUS_CONCURRENT_THRESHOLD_KEY
+    read_key_value(DMRPP_CONTIGUOUS_CONCURRENT_THRESHOLD_KEY, d_contiguous_concurrent_threshold);
+    msg << prolog << "Contiguous Concurrency Threshold: " << d_contiguous_concurrent_threshold << " bytes." << endl;
+    INFO_LOG(msg.str() );
+
+
+#if !HAVE_CURL_MULTI_API
+    if (DmrppRequestHandler::d_use_transfer_threads)
+        ERROR_LOG("The DMR++ handler is configured to use parallel transfers, but the libcurl Multi API is not present, defaulting to serial transfers");
+#endif
 
     CredentialsManager::theCM()->load_credentials();
 
     if (!curl_handle_pool)
-        curl_handle_pool = new CurlHandlePool();
+        curl_handle_pool = new CurlHandlePool(d_max_transfer_threads);
 
+    // This and the matching cleanup function can be called many times as long as
+    // they are called in balanced pairs. jhrg 9/3/20
     curl_global_init(CURL_GLOBAL_DEFAULT);
 }
 
@@ -159,7 +212,7 @@ void DmrppRequestHandler::build_dmr_from_file(BESContainer *container, DMR* dmr)
     DmrppParserSax2 parser;
     ifstream in(data_pathname.c_str(), ios::in);
 
-    parser.intern(in, dmr, BESDebug::IsSet(module));
+    parser.intern(in, dmr);
 
     dmr->set_factory(0);
 }
@@ -178,7 +231,7 @@ void DmrppRequestHandler::build_dmr_from_file(BESContainer *container, DMR* dmr)
  */
 bool DmrppRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
 {
-    BESDEBUG(module, "Entering dap_build_dmr..." << endl);
+    BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESDMRResponse *bdmr = dynamic_cast<BESDMRResponse *>(response);
@@ -203,14 +256,17 @@ bool DmrppRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
         throw BESInternalFatalError("Unknown exception caught building a DMR", __FILE__, __LINE__);
     }
 
-    BESDEBUG(module, "Leaving dap_build_dmr..." << endl);
+    BESDEBUG(MODULE, prolog << "END" << endl);
 
     return true;
 }
 
 bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
 {
-    BESDEBUG(module, "Entering dap_build_dap4data..." << endl);
+    BESStopWatch sw;
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + "timer" , dhi.data[REQUEST_ID]);
+
+    BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESDMRResponse *bdmr = dynamic_cast<BESDMRResponse *>(response);
@@ -250,7 +306,7 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
         throw BESInternalFatalError("Unknown exception caught building DAP4 Data response", __FILE__, __LINE__);
     }
 
-    BESDEBUG(module, "Leaving dap_build_dap4data..." << endl);
+    BESDEBUG(MODULE, prolog << "END" << endl);
 
     return false;
 }
@@ -261,9 +317,9 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
 bool DmrppRequestHandler::dap_build_dap2data(BESDataHandlerInterface & dhi)
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("DmrppRequestHandler::dap_build_dap2data()", dhi.data[REQUEST_ID]);
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + "timer" , dhi.data[REQUEST_ID]);
 
-    BESDEBUG(module, __func__ << "() - BEGIN" << endl);
+    BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *>(response);
@@ -280,7 +336,7 @@ bool DmrppRequestHandler::dap_build_dap2data(BESDataHandlerInterface & dhi)
         DDS *cached_dds_ptr = 0;
         if (dds_cache && (cached_dds_ptr = static_cast<DDS*>(dds_cache->get(accessed)))) {
             // copy the cached DAS into the BES response object
-            BESDEBUG(module, "DDS Cached hit for : " << accessed << endl);
+            BESDEBUG(MODULE, prolog << "DDS Cached hit for : " << accessed << endl);
             *dds = *cached_dds_ptr;
             bdds->set_constraint(dhi);
         }
@@ -344,7 +400,7 @@ bool DmrppRequestHandler::dap_build_dap2data(BESDataHandlerInterface & dhi)
         throw ex;
     }
 
-    BESDEBUG(module, "DmrppRequestHandler::dap_build_dds() - END" << endl);
+    BESDEBUG(MODULE, prolog << "END" << endl);
     return true;
 }
 
@@ -354,9 +410,9 @@ bool DmrppRequestHandler::dap_build_dap2data(BESDataHandlerInterface & dhi)
 bool DmrppRequestHandler::dap_build_dds(BESDataHandlerInterface & dhi)
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("DmrppRequestHandler::dap_build_dds()", dhi.data[REQUEST_ID]);
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + "timer" , dhi.data[REQUEST_ID]);
 
-    BESDEBUG(module, __func__ << "() - BEGIN" << endl);
+    BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESDDSResponse *bdds = dynamic_cast<BESDDSResponse *>(response);
@@ -373,7 +429,7 @@ bool DmrppRequestHandler::dap_build_dds(BESDataHandlerInterface & dhi)
         DDS *cached_dds_ptr = 0;
         if (dds_cache && (cached_dds_ptr = static_cast<DDS*>(dds_cache->get(accessed)))) {
             // copy the cached DAS into the BES response object
-            BESDEBUG(module, "DDS Cached hit for : " << accessed << endl);
+            BESDEBUG(MODULE, prolog << "DDS Cached hit for : " << accessed << endl);
             *dds = *cached_dds_ptr;
         }
         else {
@@ -422,7 +478,7 @@ bool DmrppRequestHandler::dap_build_dds(BESDataHandlerInterface & dhi)
         throw ex;
     }
 
-    BESDEBUG(module, "DmrppRequestHandler::dap_build_dds() - END" << endl);
+    BESDEBUG(MODULE, prolog << "END" << endl);
     return true;
 }
 
@@ -433,7 +489,7 @@ bool DmrppRequestHandler::dap_build_dds(BESDataHandlerInterface & dhi)
 bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi)
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("DmrppRequestHandler::dap_build_das()", dhi.data[REQUEST_ID]);
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + "timer" , dhi.data[REQUEST_ID]);
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESDASResponse *bdas = dynamic_cast<BESDASResponse *>(response);
@@ -498,7 +554,7 @@ bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi)
         throw ex;
     }
 
-    BESDEBUG(module, __func__ << "() - END" << endl);
+    BESDEBUG(MODULE, prolog << "END" << endl);
     return true;
 }
 
@@ -523,7 +579,7 @@ bool DmrppRequestHandler::dap_build_help(BESDataHandlerInterface &dhi)
     attrs["name"] = MODULE_NAME /* PACKAGE_NAME */;
     attrs["version"] = MODULE_VERSION /* PACKAGE_VERSION */;
     list<string> services;
-    BESServiceRegistry::TheRegistry()->services_handled(module, services);
+    BESServiceRegistry::TheRegistry()->services_handled(MODULE, services);
     if (services.size() > 0) {
         string handles = BESUtil::implode(services, ',');
         attrs["handles"] = handles;

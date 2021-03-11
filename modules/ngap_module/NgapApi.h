@@ -38,10 +38,7 @@
 #include <map>
 #include "rapidjson/document.h"
 #include "BESCatalogUtils.h"
-
-#if 0
-#include "Granule.h"
-#endif
+#include "url_impl.h"
 
 namespace ngap {
 
@@ -51,17 +48,21 @@ private:
     std::string d_cmr_search_endpoint_path;
 
     std::string get_cmr_search_endpoint_url();
+    std::string find_get_data_url_in_granules_umm_json_v1_4(const std::string &restified_path, rapidjson::Document &cmr_granule_response);
+    std::string build_cmr_query_url(const std::string &restified_path);
+    std::string build_cmr_query_url_old_rpath_format(const std::string &restified_path);
+
+    friend class NgapApiTest;
+
 public:
 
     NgapApi();
 
     std::string convert_ngap_resty_path_to_data_access_url(
             const std::string &restified_path,
-            const std::string &uid="",
-            const std::string &access_token="");
+            const std::string &uid="");
 
-    static void decompose_url(const std::string target_url, std::map<std::string,std::string> &data_access_url_info);
-    static bool signed_url_is_expired(const std::map<std::string,std::string> &url_info);
+    static bool signed_url_is_expired(const http::url &signed_url) ;
 
 #if 0
     void get_years(std::string collection_name, std::vector<std::string> &years_result);

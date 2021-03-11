@@ -30,10 +30,12 @@
 #include <ostream>
 
 #include "BESContainer.h"
+#include "RemoteResource.h"
+
 
 namespace ngap {
 
-    class RemoteHttpResource;
+
 
 /** @brief Container representing a remote request
  *
@@ -49,7 +51,7 @@ namespace ngap {
     class NgapContainer: public BESContainer {
 
     private:
-        RemoteHttpResource *d_dmrpp_rresource;
+        http::RemoteResource *d_dmrpp_rresource;
 
         // std::vector<std::string> d_collections;
         // std::vector<std::string> d_facets;

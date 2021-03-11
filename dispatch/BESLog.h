@@ -33,6 +33,8 @@
 #ifndef BESLog_h_
 #define BESLog_h_ 1
 
+#include "config.h"
+
 #include <fstream>
 #include <string>
 
@@ -44,6 +46,28 @@
 
 #undef TRACE_LOGGING
 
+// #define USE_LOG_TYPES WITH_NEWLOG
+
+#if 1 // NEW WAY is better way.  ndp - 10/1/2020
+#ifdef TRACE_LOGGING
+#define MR_LOG(tag, msg) do { *(BESLog::TheLog()) << "trace-" << tag << BESLog::mark << __FILE__  << BESLog::mark << __LINE__ << BESLog::mark << msg ; BESLog::TheLog()->flush_me() ; } while( 0 )
+#else
+#if USE_LOG_CATEGORIES
+#define MR_LOG(tag, msg) do { *(BESLog::TheLog()) << tag << BESLog::mark << msg ; BESLog::TheLog()->flush_me() ; } while( 0 )
+#else
+#define MR_LOG(tag, msg) do { *(BESLog::TheLog()) << msg ; BESLog::TheLog()->flush_me() ; } while( 0 )
+#endif
+#endif
+
+#define REQUEST_LOG(x) MR_LOG("request", x)
+#define INFO_LOG(x) MR_LOG("info", x)
+#define ERROR_LOG(x) MR_LOG("error", x)
+#define VERBOSE(x) do { if (BESLog::TheLog()->is_verbose()) MR_LOG("verbose", x); } while( 0 )
+
+#endif
+
+
+#if 0// OLD WAY
 #ifdef TRACE_LOGGING
 #define LOG(x) do { *(BESLog::TheLog()) << __FILE__ << ":" << __LINE__ << " - " << x ; BESLog::TheLog()->flush_me() ; } while( 0 )
 #define VERBOSE(x) do { if (BESLog::TheLog()->is_verbose()) *(BESLog::TheLog()) << __FILE__ << ":" << __LINE__ << " - " << x ; BESLog::TheLog()->flush_me() ; } while( 0 )
@@ -56,6 +80,9 @@
 // want to treat errors differently in the near future given the special logging
 // needs of the 'Hyrax in the Cloud' project. jhrg 11/16/17
 #define ERROR(x) LOG(x)
+#endif
+
+
 
 #include "BESObj.h"
 
@@ -114,7 +141,9 @@ private:
     // Flag to indicate whether to log verbose messages
     bool d_verbose;
 
-    bool d_use_local_time; ///< Use UTC by default
+    bool d_use_local_time; // Use UTC by default
+
+    bool d_use_unix_time; // Use the UNIX time value as the log time.
 
 protected:
     BESLog();

@@ -30,6 +30,8 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
 #include "BESXMLDefineCommand.h"
 #include "BESContainerStorageList.h"
 #include "BESContainerStorage.h"
@@ -244,10 +246,13 @@ void BESXMLDefineCommand::handle_container_element(const string &action, xmlNode
                 string err = action + " command: constraint element " + "should not contain properties";
                 throw BESSyntaxUserError(err, __FILE__, __LINE__);
             }
+            // HYRAX-316, the empty constraint now is legal. It is used to transfer the whole file.
+#if 0
             if (child_value.empty()) {
                 string err = action + " command: constraint element " + "missing value";
                 throw BESSyntaxUserError(err, __FILE__, __LINE__);
             }
+#endif
             if (have_constraint) {
                 string err = action + " command: container element " + "contains multiple constraint elements";
                 throw BESSyntaxUserError(err, __FILE__, __LINE__);
@@ -260,10 +265,13 @@ void BESXMLDefineCommand::handle_container_element(const string &action, xmlNode
                 string err = action + " command: constraint element " + "should not contain properties";
                 throw BESSyntaxUserError(err, __FILE__, __LINE__);
             }
+            // HYRAX-316, the empty constraint now is legal. It is used to transfer the whole file.
+#if 0
             if (child_value.empty()) {
                 string err = action + " command: constraint element " + "missing value";
                 throw BESSyntaxUserError(err, __FILE__, __LINE__);
             }
+#endif
             if (have_dap4constraint) {
                 string err = action + " command: container element " + "contains multiple constraint elements";
                 throw BESSyntaxUserError(err, __FILE__, __LINE__);

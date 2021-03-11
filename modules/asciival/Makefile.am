@@ -9,7 +9,7 @@ AUTOMAKE_OPTIONS = foreign
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=asciival
-M_VER=4.2.0
+M_VER=4.2.1
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir) $(DAP_CFLAGS)
 LIBADD = $(BES_DAP_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
@@ -19,7 +19,10 @@ AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 # These are not used by automake but are often useful for certain types of
 # debugging.
 CXXFLAGS_DEBUG = -g3 -O0 -Wall 
-TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
+
+AM_CXXFLAGS=
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
 
 SUBDIRS = . unit-tests tests
 

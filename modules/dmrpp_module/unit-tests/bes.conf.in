@@ -8,3 +8,12 @@ BES.Catalog.Default=default
 BES.Catalog.default.RootDirectory=@abs_top_srcdir@
 BES.Catalog.default.TypeMatch=null:*;
 
+# Since many URLs result in a number of time consuming redirects (ex: OAuth2)
+# We cache the "effective URL" for each to improve speed and reduce authentication churn
+Http.cache.effective.urls=true
+
+# For these tests we don't want to tyry to cache the effective url of a fictious
+# s3 bucket so we exclude it.
+Http.cache.effective.urls.skip.regex.pattern=^https?:\/\/s3\.amazonaws\.com\/.*$
+
+AllowedHosts=^(file|https?):\/\/.*$

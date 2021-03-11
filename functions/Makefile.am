@@ -4,8 +4,6 @@
 # 01/28/2013 Hacked up by jhrg
 #
 
-AM_CXXFLAGS = 
-
 AUTOMAKE_OPTIONS = foreign subdir-objects
 
 AM_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS) $(GDAL_CFLAGS)
@@ -19,7 +17,10 @@ LIBADD = $(DAP_LIBS) $(GDAL_LDFLAGS)
 #
 # Added -Wno-deprecated to quite warings about auto_ptr<>. jhrg 11/6/19
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Wno-deprecated
-TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
+
+AM_CXXFLAGS=
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
 
 if BES_DEVELOPER
 AM_CXXFLAGS += $(CXXFLAGS_DEBUG)

@@ -15,7 +15,6 @@
 
 AUTOMAKE_OPTIONS = foreign check-news subdir-objects
 ACLOCAL_AMFLAGS = -I conf
-AM_CXXFLAGS = 
 
 AM_DISTCHECK_CONFIGURE_FLAGS=
 
@@ -26,7 +25,11 @@ if WITH_DEPENDENCIES
 AM_DISTCHECK_CONFIGURE_FLAGS += --with-dependencies=@ac_bes_dependencies_prefix@ --enable-developer
 endif
 
-SUBDIRS = dispatch xmlcommand ppt server cmdln standalone docs bin templates hello_world
+AM_CXXFLAGS=
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
+
+SUBDIRS = http dispatch xmlcommand ppt server cmdln standalone docs bin templates hello_world
 
 if LIBDAP
 SUBDIRS += dap dapreader

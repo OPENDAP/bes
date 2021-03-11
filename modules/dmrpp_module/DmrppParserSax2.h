@@ -39,6 +39,8 @@
 #include <libxml/parserInternals.h>
 
 #include <Type.h>   // from libdap
+#include "BESRegex.h"
+#include "EffectiveUrlCache.h"
 
 #define CRLF "\r\n"
 #define D4_PARSE_BUFF_SIZE 1048576
@@ -98,6 +100,7 @@ private:
         not_dap4_element,
         inside_dmrpp_object,
         inside_dmrpp_chunkDimensionSizes_element,
+        inside_dmrpp_compact_element,
 
         parser_unknown,
         parser_error,
@@ -114,6 +117,10 @@ private:
     // This is passed into the parser using the intern() methods.
     libdap::DMR *d_dmr;   // dump DMR here
     libdap::DMR *dmr() const { return d_dmr; }
+
+
+
+
 
     // These stacks hold the state of the parse as it progresses.
     std::stack<ParseState> s; // Current parse state
@@ -166,8 +173,6 @@ private:
     std::string char_data;  // char data in value elements; null after use
     std::string root_ns;     // What is the namespace of the root node (Group)
 
-    bool d_debug;
-    bool debug() const { return d_debug; }
 
     bool d_strict;
 
@@ -237,6 +242,8 @@ private:
     void process_enum_const_helper(const xmlChar **attrs, int nb_attributes);
     void process_enum_def_helper(const xmlChar **attrs, int nb_attributes);
 
+    bool process_dmrpp_compact_start(const char *name);
+    void process_dmrpp_compact_end(const char *localname);
     bool process_dimension(const char *name, const xmlChar **attrs, int nb_attrs);
     bool process_dimension_def(const char *name, const xmlChar **attrs, int nb_attrs);
     bool process_map(const char *name, const xmlChar **attrs, int nb_attributes);
@@ -254,12 +261,12 @@ private:
 
 public:
     DmrppParserSax2() :
-        d_dmr(0), d_enum_def(0), d_dim_def(0),
-        other_xml(""), other_xml_depth(0), unknown_depth(0),
-        error_msg(""), context(0),
-        dods_attr_name(""), dods_attr_type(""),
-        char_data(""), root_ns(""), d_debug(false), d_strict(true),
-        dmrpp_dataset_href("")
+            d_dmr(0), d_enum_def(0), d_dim_def(0),
+            other_xml(""), other_xml_depth(0), unknown_depth(0),
+            error_msg(""), context(0),
+            dods_attr_name(""), dods_attr_type(""),
+            char_data(""), root_ns(""), d_strict(true),
+            dmrpp_dataset_href("")
     {
         //xmlSAXHandler ddx_sax_parser;
         memset(&dmrpp_sax_parser, 0, sizeof(xmlSAXHandler));
@@ -278,9 +285,11 @@ public:
         dmrpp_sax_parser.endElementNs = &DmrppParserSax2::dmr_end_element;
     }
 
-    void intern(std::istream &f, libdap::DMR *dest_dmr, bool debug = false);
-    void intern(const std::string &document, libdap::DMR *dest_dmr, bool debug = false);
-    void intern(const char *buffer, int size, libdap::DMR *dest_dmr, bool debug = false);
+    ~DmrppParserSax2(){}
+
+    void intern(std::istream &f, libdap::DMR *dest_dmr);
+    void intern(const std::string &document, libdap::DMR *dest_dmr);
+    void intern(const char *buffer, int size, libdap::DMR *dest_dmr);
 
     /**
      * @defgroup strict The 'strict' mode
@@ -319,7 +328,8 @@ public:
     static xmlEntityPtr dmr_get_entity(void *parser, const xmlChar *name);
     static void dmr_fatal_error(void *parser, const char *msg, ...);
     static void dmr_error(void *parser, const char *msg, ...);
-};
+
+    };
 
 } // namespace dmrpp
 

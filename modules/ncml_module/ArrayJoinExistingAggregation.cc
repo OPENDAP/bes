@@ -27,6 +27,8 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 /////////////////////////////////////////////////////////////////////////////
 
+#include "config.h"
+
 #include <sstream>
 
 #include <Marshaller.h>
@@ -119,7 +121,7 @@ bool ArrayJoinExistingAggregation::serialize(libdap::ConstraintEvaluator &eval, 
     bool ce_eval)
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG)) sw.start("ArrayJoinExistingAggregation::serialize", "");
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("ArrayJoinExistingAggregation::serialize", "");
 
     // *** This serialize() implementation was made by starting with a simple version that
     // *** tested read_p(), calling read() if needed and tsting send_p() and is_in_selection(),
@@ -325,7 +327,7 @@ void ArrayJoinExistingAggregation::transferOutputConstraintsIntoGranuleTemplateH
 void ArrayJoinExistingAggregation::readConstrainedGranuleArraysAndAggregateDataHook()
 {
     BESStopWatch sw;
-    if (BESISDEBUG(TIMING_LOG))
+    if (BESDebug::IsSet(TIMING_LOG_KEY))
         sw.start("ArrayJoinExistingAggregation::readConstrainedGranuleArraysAndAggregateDataHook", "");
 
     // outer one is the first in iteration

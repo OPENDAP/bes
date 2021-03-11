@@ -30,6 +30,8 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
 #include "BESFileContainer.h"
 #include "TheBESKeys.h"
 
@@ -45,6 +47,12 @@ using std::endl;
 using std::ostream;
 using std::string;
 
+#define MODULE "cache2"
+#define prolog std::string("BESFileContainer::").append(__func__).append("() - ")
+
+
+
+
 /** @brief construct a container representing a file
  *
  * @param sym_name symbolic name of the container
@@ -56,7 +64,7 @@ BESFileContainer::BESFileContainer(const string &sym_name, const string &real_na
 {
     string::size_type dotdot = real_name.find("..");
     if (dotdot != string::npos) {
-        string s = (string) "'../' not allowed in container real name " + real_name;
+        string s = prolog + "'../' not allowed in container real name " + real_name;
         throw BESForbiddenError(s, __FILE__, __LINE__);
     }
 }
@@ -93,7 +101,7 @@ BESFileContainer::ptr_duplicate()
  */
 string BESFileContainer::access()
 {
-    BESDEBUG("cache2", "Entering " << __PRETTY_FUNCTION__ <<", real_name: " << get_real_name() << endl);
+    BESDEBUG(MODULE, prolog << "BEGIN real_name: " << get_real_name() << endl);
 
     // Get a pointer to the singleton cache instance for this process.
     BESUncompressCache *cache = BESUncompressCache::get_instance();
@@ -106,11 +114,11 @@ string BESFileContainer::access()
     // the value-result parameter '_target' is undefined.
     _cached = BESUncompressManager3::TheManager()->uncompress(get_real_name(), _target, cache);
     if (_cached) {
-        BESDEBUG("cache2", "Cached as: " << _target << endl);
+        BESDEBUG(MODULE, prolog << "END Cached as: " << _target << endl);
         return _target;
     }
     else {
-        BESDEBUG("cache2", "Not cached" << endl);
+        BESDEBUG(MODULE, prolog << "END Not cached" << endl);
         return get_real_name();
     }
 }
@@ -125,7 +133,7 @@ string BESFileContainer::access()
  */
 bool BESFileContainer::release()
 {
-    BESDEBUG("cache2", "Entering " << __PRETTY_FUNCTION__ <<", _cached: " << _cached << ", _target: " << _target << endl);
+    BESDEBUG(MODULE, prolog << "_cached: " << _cached << ", _target: " << _target << endl);
     if (_cached)
     	BESUncompressCache::get_instance()->unlock_and_close(_target);
 
@@ -141,7 +149,7 @@ bool BESFileContainer::release()
  */
 void BESFileContainer::dump(ostream &strm) const
 {
-    strm << BESIndent::LMarg << "BESFileContainer::dump - (" << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << prolog << "(" << (void *) this << ")" << endl;
     BESIndent::Indent();
     BESContainer::dump(strm);
     BESIndent::UnIndent();

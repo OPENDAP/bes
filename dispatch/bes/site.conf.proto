@@ -63,22 +63,16 @@
 
 ###################################################################################
 # Because the Hyrax is often tasked with accessing services using the 
-# internets we maintain a whitelist of services which Hyrax is allowed 
-# to access. By default, Hyrax is allowed to access itself. If additional
-# services are to be added to the whitelist do so by adding the new 
-# service URL to the site.conf file using += syntax like this:
+# internets we maintain an allowed hosts list of services which Hyrax is allowed
+# to access. By default, Hyrax is allowed to access itself. Each entry on the
+# AllowedHosts  list must be a regular expression matching the target host. If
+# additional services are to be added to the allowed hosts list, do so by adding the new
+# service URL to the site.conf file using += syntax as below.
 #
-#     Gateway.Whitelist+=http://test.opendap.org/opendap
+# The following example matches everything at http://test.opendp.org/
 #
-#Gateway.Whitelist+=http://test.opendap.org
+#    AllowedHosts += ^http:\/\/test\.opendap\.org\/.*$
 #
-# Gateway operations (in which Hyrax reaches out across the web and 
-# grabs various data resources) utilize a cache. The cache size and location
-# can be adjusted with the following parameters.
-#
-#Gateway.Cache.dir = /tmp/hyrax_gw
-#Gateway.Cache.prefix = gw_
-#Gateway.Cache.size = 500
 #
 ###################################################################################
 
@@ -98,20 +92,36 @@
 ###################################################################################
 # httpd_catalog module
 #
-# By default, this module is turned off. Remove the comment to enable.
-#
+# By default, this module is turned off.
+# Uncomment the following line to enable.
 #BES.modules += httpd
 #
-#HttpResourceCache.dir = /tmp/hyrax_hc
-#HttpResourceCache.prefix = hc_
-#HttpResourceCache.size = 500
-#
-# For each entry in Httpd_Catalog.Collections you have to make sure that
-# the target address is on the Gateway.Whitelist
-# example:
+# For each entry added to Httpd_Catalog.Collections you have to make sure that
+# the target address is on the AllowedHosts list
+# Example:
 #
 #Httpd_Catalog.Collections = test:http://test.opendap.org/data/
-#Gateway.Whitelist += http://test.opendap.org/
+#AllowedHosts += ^http:\/\/test\.opendap\.org\/.*$
+#
+###################################################################################
+
+
+###################################################################################
+# HTTP Cache Management
+# Depending on your deployment the server may be tasked with retrieving various
+# things from remote locations. These are typically cached in a local filesystem
+# HTTP cache. If the default values, as shown below, are not sufficient, uncomment
+# the lines below and adjust the values as needed.
+#
+# Cache directory where the cached files are stored.
+#Http.Cache.dir=/tmp/hyrax_http
+#
+# Cache file prefix.
+#Http.Cache.prefix=http_
+#
+# Max Cache Size in MB
+#Http.Cache.size=500
+#
 #
 ###################################################################################
 

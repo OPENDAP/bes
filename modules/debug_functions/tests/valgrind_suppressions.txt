@@ -20,7 +20,7 @@
    fun:_ZL12realizeClassP10objc_class
    fun:_ZL12realizeClassP10objc_class
    fun:_ZL12realizeClassP10objc_class
-   fun:look_up_class
+   theOne:look_up_class
    fun:objc_getFutureClass
    fun:__CFInitialize
    fun:_ZN16ImageLoaderMachO11doImageInitERKN11ImageLoader11LinkContextE

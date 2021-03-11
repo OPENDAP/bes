@@ -27,6 +27,9 @@ if BES_DEVELOPER
 AM_CXXFLAGS += $(CXXFLAGS_DEBUG)
 endif
 
+AM_LDFLAGS =
+include $(top_srcdir)/coverage.mk
+
 SUBDIRS = . unit-tests tests
 
 # These tests depend on dapreader, which is built after this code.
