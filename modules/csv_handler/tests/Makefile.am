@@ -38,7 +38,7 @@ AUTOM4TE = autom4te
 # is put in the source directory along with the *.at file used to
 # build it, which is important since these scripts are distributed
 # in the tar.gz distribution.
-TESTSUITE = $(srcdir)/csv_handlerTest
+TESTSUITE = $(srcdir)/testsuite
 
 check-local: $(TESTSUITE) atconfig atlocal 
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
