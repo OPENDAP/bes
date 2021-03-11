@@ -11,6 +11,9 @@ AT_BESCMD_RESPONSE_TEST([csv/temperature.csv.1.bescmd])
 AT_BESCMD_RESPONSE_TEST([csv/temperature.csv.2.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([csv/temperature.csv.3.bescmd])
 
+AT_BESCMD_RESPONSE_TEST([csv/temperature_w_comments.csv.1.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([csv/temperature_w_comments.csv.3.bescmd])
+
 # DAP4 tests
 AT_BESCMD_RESPONSE_TEST([csv/temperature.csv.dmr.bescmd])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([csv/temperature.csv.dap.bescmd])

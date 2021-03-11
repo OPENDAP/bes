@@ -97,7 +97,16 @@ void
 CSV_Reader::get(vector<string> &row) {
     string line;
 
-    getline(*_stream_in, line);
+    // Read and ignore empty lines of comment lines. Comment lines
+    // must start with a '#'. Pretty primitive; if more is needed,
+    // add a function to test for a comment line. jhrg 3/11/21
+    do {
+        getline(*_stream_in, line);
+        // when we reach EOF, line.length() is zero and that condition
+        // (i.e., when row is zero in CSV_Utils::split() below) signals
+        // EOF to this handler. jhrg 3/11/21
+    } while(!_stream_in->eof() && (line.length() == 0 || line[0] == '#'));
+
     CSV_Utils::split(line, ',', row);
     _row_number++;
 }
