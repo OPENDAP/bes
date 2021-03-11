@@ -6,8 +6,8 @@
             <Message>Error in CSV dataset, too few data elements on line 2</Message>
             <Administrator>support@opendap.org</Administrator>
             <Location>
-                <File>CSV_Obj.cc</File>
-                <Line>131</Line>
+                removed file
+                removed line
             </Location>
         </BESError>
     </getDODS>

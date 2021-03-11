@@ -433,7 +433,7 @@ dnl Given a filename, remove the <File> element of a response. Useful for testin
 dnl jhrg 10/23/19
 
 m4_define([REMOVE_ERROR_FILE], [dnl
-    sed -e 's@<File>[[0-9a-zA-Z/.]]*</File>@removed file@g' \
+    sed -e 's@<File>[[0-9a-zA-Z/._]]*</File>@removed file@g' \
         -e 's@File:.*@removed file@g' < $1 > $1.sed
     dnl '
     mv $1.sed $1

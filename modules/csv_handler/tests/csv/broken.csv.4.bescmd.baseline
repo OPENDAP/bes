@@ -6,8 +6,8 @@
             <Message>Malformed header information in column 0, missing type in ''</Message>
             <Administrator>support@opendap.org</Administrator>
             <Location>
-                <File>CSV_Header.cc</File>
-                <Line>96</Line>
+                removed file
+                removed line
             </Location>
         </BESError>
     </getDODS>
