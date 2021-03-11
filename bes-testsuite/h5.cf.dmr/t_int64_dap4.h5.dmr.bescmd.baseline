@@ -70,4 +70,16 @@
     <Attribute name="root_attr_int64_scalar" type="Int64">
         <Value>9223372036854775807</Value>
     </Attribute>
+    <Attribute name="grp_int64" type="Container">
+        <Attribute name="grp_attr_int64" type="Int64">
+            <Value>9223372036854775807</Value>
+            <Value>-9223372036854775808</Value>
+        </Attribute>
+        <Attribute name="grp_attr_int64_scalar" type="Int64">
+            <Value>9223372036854775807</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/grp_int64</Value>
+        </Attribute>
+    </Attribute>
 </Dataset>

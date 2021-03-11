@@ -49,6 +49,7 @@ void gen_dap_oneobj_das(libdap::AttrTable*, const HDF5CF::Attribute*, const HDF5
 void gen_dap_onevar_dmr(libdap::D4Group*, const HDF5CF::Var*, const hid_t, const std::string &);
 void map_cfh5_var_attrs_to_dap4(const HDF5CF::Var*var,libdap::BaseType*new_var);
 void map_cfh5_grp_attr_to_dap4(libdap::D4Group*, const HDF5CF::Attribute*);
+void map_cfh5_attr_container_to_dap4(libdap::D4Attribute *, const HDF5CF::Attribute*);
 
 
 void add_cf_grid_mapping_attr(libdap::DAS &das, const std::vector<HDF5CF::Var*>& vars, const std::string& cf_projection,

@@ -748,22 +748,25 @@ void gen_gmh5_cfdmr(D4Group* d4_root,HDF5CF::GMFile *f) {
         gen_dap_onegmspvar_dmr(d4_root,*it_spv,fileid, filename);
     }
 
-    // STOPPP, need to move attributes to the root since we claim to have no hierarchy.
-    // Actually there is no way to keep the group name unless we change the attribute name.
-    // Since this may be rare, just keep the current handling.
-#if 0
+    // We use the container since we claim to have no hierarchy.
+//#if 0
     if (false == grps.empty()) {
         for (it_g = grps.begin();
              it_g != grps.end(); ++it_g) {
-            D4Group *tmp_grp = new D4Group((*it_g)->getNewName());
+            //D4Group *tmp_grp = new D4Group((*it_g)->getNewName());
+            D4Attribute *tmp_grp = new D4Attribute;
+            tmp_grp->set_name((*it_g)->getNewName());
+            // Make the type as a container
+            tmp_grp->set_type(attr_container_c);
+
             for (it_ra = (*it_g)->getAttributes().begin();
                  it_ra != (*it_g)->getAttributes().end(); ++it_ra) {
-                map_cfh5_grp_attr_to_dap4(tmp_grp,(*it_ra));
+                map_cfh5_attr_container_to_dap4(tmp_grp,(*it_ra));
             }
-            d4_root->add_group_nocopy(tmp_grp);
+            d4_root->attributes()->add_attribute_nocopy(tmp_grp);
         }
     }
-#endif
+//#endif
 
 }
 

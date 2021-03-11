@@ -45,10 +45,13 @@
 #include "heos5cfdap.h"
 #include "h5cfdaputil.h"
 #include "HDF5CFByte.h"
+#include "HDF5CFInt8.h"
 #include "HDF5CFUInt16.h"
 #include "HDF5CFInt16.h"
 #include "HDF5CFUInt32.h"
 #include "HDF5CFInt32.h"
+#include "HDF5CFUInt64.h"
+#include "HDF5CFInt64.h"
 #include "HDF5CFFloat32.h"
 #include "HDF5CFFloat64.h"
 #include "HDF5CFStr.h"
@@ -2035,12 +2038,40 @@ void gen_eos5_cfdmr(D4Group *d4_root,  HDF5CF::EOS5File *f) {
     const vector<HDF5CF::Group *>& grps           = f->getGroups();
     const vector<HDF5CF::Attribute *>& root_attrs = f->getAttributes();
 
+    vector<HDF5CF::Group *>::const_iterator it_g;
+    vector<HDF5CF::Attribute *>::const_iterator it_ra;
+
+    //TODO: root attribute
+    if (false == root_attrs.empty()) {
+        for (it_ra = root_attrs.begin(); it_ra != root_attrs.end(); ++it_ra) 
+            map_cfh5_grp_attr_to_dap4(d4_root,*it_ra);
+    }
+    // We use the container since we claim to have no hierarchy.
+//#if 0
+    if (false == grps.empty()) {
+        for (it_g = grps.begin();
+             it_g != grps.end(); ++it_g) {
+            //D4Group *tmp_grp = new D4Group((*it_g)->getNewName());
+            D4Attribute *tmp_grp = new D4Attribute;
+            tmp_grp->set_name((*it_g)->getNewName());
+            // Make the type as a container
+            tmp_grp->set_type(attr_container_c);
+            //cerr<<"tmp_grp name is "<<(*it_g)->getNewName() <<endl;
+
+            for (it_ra = (*it_g)->getAttributes().begin();
+                 it_ra != (*it_g)->getAttributes().end(); ++it_ra) {
+                map_cfh5_attr_container_to_dap4(tmp_grp,(*it_ra));
+            }
+            d4_root->attributes()->add_attribute_nocopy(tmp_grp);
+        }
+    }
+//#endif
+
 
     // Read Variable info.
     vector<HDF5CF::Var *>::const_iterator it_v;
     vector<HDF5CF::EOS5CVar *>::const_iterator it_cv;
 
-    //TODO: root attribute
     for (it_v = vars.begin(); it_v !=vars.end();++it_v) {
         BESDEBUG("h5","variable full path= "<< (*it_v)->getFullPath() <<endl);
         gen_dap_onevar_dmr(d4_root,*it_v,file_id,filename);
@@ -2074,7 +2105,246 @@ void gen_eos5_cfdmr(D4Group *d4_root,  HDF5CF::EOS5File *f) {
 }
 
 
-void gen_dap_oneeos5cvar_dmr(D4Group* d4_root,const EOS5CVar* var,const hid_t file_id,const string & filename){
+void gen_dap_oneeos5cvar_dmr(D4Group* d4_root,const EOS5CVar* cvar,const hid_t file_id,const string & filename){
+
+    BESDEBUG("h5","Coming to gen_dap_oneeos5cvar_dmr()  "<<endl);
+    BaseType *bt = NULL;
+
+    switch(cvar->getType()) {
+#define HANDLE_CASE(tid,type)                                  \
+        case tid:                                           \
+            bt = new (type)(cvar->getNewName(),cvar->getFullPath());  \
+        break;
+
+        HANDLE_CASE(H5FLOAT32, HDF5CFFloat32);
+        HANDLE_CASE(H5FLOAT64, HDF5CFFloat64);
+        HANDLE_CASE(H5CHAR,HDF5CFInt8);
+        HANDLE_CASE(H5UCHAR, HDF5CFByte);
+        HANDLE_CASE(H5INT16, HDF5CFInt16);
+        HANDLE_CASE(H5UINT16, HDF5CFUInt16);
+        HANDLE_CASE(H5INT32, HDF5CFInt32);
+        HANDLE_CASE(H5UINT32, HDF5CFUInt32);
+        HANDLE_CASE(H5INT64, HDF5CFInt64);
+        HANDLE_CASE(H5UINT64, HDF5CFUInt64);
+        HANDLE_CASE(H5FSTRING, Str);
+        HANDLE_CASE(H5VSTRING, Str);
+        default:
+            throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+#undef HANDLE_CASE
+    }
+
+    if (bt) {
+
+        const vector<HDF5CF::Dimension *>& dims = cvar->getDimensions();
+        vector <HDF5CF::Dimension*>:: const_iterator it_d;
+        vector <size_t> dimsizes;
+        dimsizes.resize(cvar->getRank());
+        for(int i = 0; i <cvar->getRank();i++)
+            dimsizes[i] = (dims[i])->getSize();
+
+
+        if(dims.empty())
+            throw InternalErr(__FILE__,__LINE__,"the coordinate variables cannot be scalar.");
+        switch(cvar->getCVType()) {
+
+            case CV_EXIST:
+            {
+
+#if 0
+for(vector<HDF5CF::Attribute *>::const_iterator it_ra = cvar->getAttributes().begin();
+                 it_ra != cvar->getAttributes().end(); ++it_ra) {
+cerr<<"cvar attribute name is "<<(*it_ra)->getNewName() <<endl;
+cerr<<"cvar attribute value type is "<<(*it_ra)->getType() <<endl;
+}
+cerr<<"cvar new name exist at he s5cfdap.cc is "<<cvar->getNewName() <<endl;
+#endif
+                bool is_latlon = cvar->isLatLon();
+                HDF5CFArray *ar = NULL;
+                try {
+                    ar = new HDF5CFArray (
+                                          cvar->getRank(),
+                                          file_id,
+                                          filename,
+                                          cvar->getType(),
+                                          dimsizes,
+                                          cvar->getFullPath(),
+                                          cvar->getTotalElems(),
+                                          CV_EXIST,
+                                          is_latlon,
+                                          cvar->getCompRatio(),
+                                          true,
+                                          cvar->getNewName(),
+                                          bt);
+                }
+                catch (...) {
+                    delete bt;
+                    throw InternalErr(__FILE__,__LINE__,"unable to allocate memory for HDF5CFArray.");
+                }
+
+                for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
+                    if (""==(*it_d)->getNewName()) 
+                        ar->append_dim((*it_d)->getSize());
+                    else 
+                        ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+                }
+
+                ar->set_is_dap4(true);
+                BaseType* d4_var=ar->h5cfdims_transform_to_dap4(d4_root);
+                map_cfh5_var_attrs_to_dap4(cvar,d4_var);
+                d4_root->add_var_nocopy(d4_var);
+
+                delete bt;
+                delete ar;
+            }
+            break;
+
+            case CV_LAT_MISS:
+            case CV_LON_MISS:
+            {
+
+                HDFEOS5CFMissLLArray *ar = NULL;
+                try {
+#if 0
+cerr<<"cvar zone here is "<<cvar->getZone() <<endl;
+cerr<<"cvar Sphere here is "<<cvar->getSphere() <<endl;
+cerr<<"cvar getParams here 1 is "<<cvar->getParams()[0]<<endl;
+#endif
+                    ar = new HDFEOS5CFMissLLArray (
+                                    cvar->getRank(),
+                                    filename,
+                                    file_id,
+                                    cvar->getFullPath(),
+                                    cvar->getCVType(),
+                                    cvar->getPointLower(),
+                                    cvar->getPointUpper(),
+                                    cvar->getPointLeft(),
+                                    cvar->getPointRight(),
+                                    cvar->getPixelReg(),
+                                    cvar->getOrigin(),
+                                    cvar->getProjCode(),
+                                    cvar->getParams(),
+                                    cvar->getZone(),
+                                    cvar->getSphere(),
+                                    cvar->getXDimSize(),
+                                    cvar->getYDimSize(),
+                                    cvar->getNewName(),
+                                    bt);
+                }
+                catch (...) {
+                    delete bt;
+                    throw InternalErr(__FILE__,__LINE__,"unable to allocate memory for HDFEOS5CFMissLLArray.");
+                }
+
+               for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
+                    if (""==(*it_d)->getNewName()) 
+                        ar->append_dim((*it_d)->getSize());
+                    else 
+                        ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+                }
+
+                ar->set_is_dap4(true);
+                BaseType* d4_var=ar->h5cfdims_transform_to_dap4(d4_root);
+                map_cfh5_var_attrs_to_dap4(cvar,d4_var);
+                d4_root->add_var_nocopy(d4_var);
+
+                delete bt;
+                delete ar;
+            }
+            break;
+
+            case CV_NONLATLON_MISS:
+            {
+
+                if (cvar->getRank() !=1) {
+                    delete bt;
+                    throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");
+                }
+                int nelem = (cvar->getDimensions()[0])->getSize();
+
+                HDFEOS5CFMissNonLLCVArray *ar = NULL;
+                try {
+                    ar = new HDFEOS5CFMissNonLLCVArray(
+                                                    cvar->getRank(),
+                                                    nelem,
+                                                    cvar->getNewName(),
+                                                    bt);
+                }
+                catch (...) {
+                    delete bt;
+                    throw InternalErr(__FILE__,__LINE__,"unable to allocate memory for HDFEOS5CFMissNonLLCVArray.");
+                }
+
+
+                for(it_d = dims.begin(); it_d != dims.end(); it_d++) {
+                    if (""==(*it_d)->getNewName()) 
+                        ar->append_dim((*it_d)->getSize());
+                    else 
+                        ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+                }
+
+                ar->set_is_dap4(true);
+                BaseType* d4_var=ar->h5cfdims_transform_to_dap4(d4_root);
+                map_cfh5_var_attrs_to_dap4(cvar,d4_var);
+                d4_root->add_var_nocopy(d4_var);
+
+                delete bt;
+                delete ar;
+
+
+            }
+            break;
+            case CV_SPECIAL:
+                // Currently only support Aura TES files. May need to revise when having more
+                // special products KY 2012-2-3
+            {
+
+                if (cvar->getRank() !=1) {
+                    delete bt;
+                    throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");
+                }
+                int nelem = (cvar->getDimensions()[0])->getSize();
+                HDFEOS5CFSpecialCVArray *ar = NULL;
+
+                try {
+                    ar = new HDFEOS5CFSpecialCVArray(
+                                                      cvar->getRank(),
+                                                      filename,
+                                                      file_id,
+                                                      cvar->getType(),
+                                                      nelem,
+                                                      cvar->getFullPath(),
+                                                      cvar->getNewName(),
+                                                      bt);
+                }
+                catch (...) {
+                    delete bt;
+                    throw InternalErr(__FILE__,__LINE__,"unable to allocate memory for HDF5CFArray.");
+                }
+
+
+                for(it_d = dims.begin(); it_d != dims.end(); ++it_d){
+                    if (""==(*it_d)->getNewName()) 
+                        ar->append_dim((*it_d)->getSize());
+                    else 
+                        ar->append_dim((*it_d)->getSize(), (*it_d)->getNewName());
+                }
+
+                ar->set_is_dap4(true);
+                BaseType* d4_var=ar->h5cfdims_transform_to_dap4(d4_root);
+                map_cfh5_var_attrs_to_dap4(cvar,d4_var);
+                d4_root->add_var_nocopy(d4_var);
+                delete bt;
+                delete ar;
+            }
+            break;
+            case CV_MODIFY:
+            default: 
+                delete bt;
+                throw InternalErr(__FILE__,__LINE__,"Unsupported coordinate variable type.");
+        }
+
+    }
+ 
 
 }
 

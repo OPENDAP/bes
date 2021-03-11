@@ -1338,8 +1338,15 @@ void map_cfh5_var_attrs_to_dap4(const HDF5CF::Var *var,BaseType* d4_var) {
 // This routine is for directly built DAP4 CF support.We build DMR not from DDS and DAS. 
 void map_cfh5_grp_attr_to_dap4(libdap::D4Group *d4_grp,const HDF5CF::Attribute *attr) {
 
-        D4Attribute *d4_attr = gen_dap4_attr(attr);
-        d4_grp->attributes()->add_attribute_nocopy(d4_attr);
+    D4Attribute *d4_attr = gen_dap4_attr(attr);
+    d4_grp->attributes()->add_attribute_nocopy(d4_attr);
+
+}
+// This routine is for directly built DAP4 CF support.We build DMR not from DDS and DAS. 
+void map_cfh5_attr_container_to_dap4(libdap::D4Attribute *d4_con,const HDF5CF::Attribute *attr) {
+
+    D4Attribute *d4_attr = gen_dap4_attr(attr);
+    d4_con->attributes()->add_attribute_nocopy(d4_attr);
 
 }
 
