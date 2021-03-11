@@ -91,6 +91,8 @@ stages:
     if:  branch = master
   - name: package
     if:  branch = master
+  - name: olfs-snapshot-trigger
+    if:  branch = master AND type != pull_request
 
 jobs:
   include:
@@ -181,6 +183,18 @@ jobs:
     - make dist -j7
     - cp bes-*.tar.gz bes-snapshot.tar.gz;
 
+    # The olfs-snapshot-trigger stage grabs the hyrax-docker project, sets the current
+    # snapshot time and pushes the result to GitHub. This push triggers TravisCI
+    # to build the Docker containers for all of the Hyrax snapshot products.
+    # I moved this into it's own stage instead of after_deploy so that it would
+    # reliably run once after everything else worked. -ndp 3/10/21
+  - stage: olfs-snapshot-trigger
+    name: "Triggering olfs snapshot build"
+    script:
+      - export STAGE=olfs-snapshot-trigger
+      - echo $STAGE
+      - ./travis/trigger-olfs-build.sh
+
 after_script:
   - ./travis/upload-test-results.sh
 
@@ -252,5 +266,5 @@ deploy:
 #
 # CAVEAT: In after_deploy failures will not affect the build outcome, they will be ignored.
 #
-after_deploy:
-  - if test x"$BES_BUILD" = x"centos7" -a x"$DEPLOY" = x"S3"; then ./travis/trigger-olfs-build.sh; fi
+# after_deploy:
+#  - if test x"$BES_BUILD" = x"centos7" -a x"$DEPLOY" = x"S3"; then ./travis/trigger-olfs-build.sh; fi
