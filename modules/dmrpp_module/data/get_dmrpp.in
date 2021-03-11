@@ -160,7 +160,7 @@ show_usage() {
 
  Write the DMR++ for hdf5_file to stdout
 
- By default the BES Data Root directory is set to the CWD. This
+ By default the BES Data Root directory is set to /tmp. This
  utility will add an entry to the bes.log specified in the
  configuration file. The DMR++ is built using the DMR as returned
  by the HDF5 handler, using options as set in the bes
@@ -175,7 +175,7 @@ show_usage() {
      not used; then dap4:Dataset/@dmrpp:href attribute will contain the template string
      OPeNDAP_DMRpp_DATA_ACCESS_URL which can be replaced at runtime.
  -b: The fully qualified path to the BES_DATA_ROOT directory. May not be "/" or "/etc".
-     The default value is /tmp if a vlaue is not provided
+     The default value is /tmp if a value is not provided
  -c: The path to the bes configuration file to use.
  -s: The path to an optional addendum configuration file which will be appended to the
      default BES configuration. Much like the site.conf file works for the full server
