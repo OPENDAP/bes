@@ -116,9 +116,30 @@ namespace http {
         */
         void filter_retrieved_resource(const std::map<std::string, std::string> &content_filters);
 
+        /**
+         * Checks if a cache resource is older than an hour
+         *
+         * @param filename - name of the resource to be checked
+         * @param uid
+         * @return true if the resource is over an hour old
+         */
         bool is_cached_resource_expired(const std::string &filename, const std::string &uid);
+
+        /**
+         * method for calling update_file_and_header(map<string,string>) with a black map
+         */
         void update_file_and_headers();
+
+        /**
+         * updates the file in the cache and the related headers file
+         *
+         * @param content_filters
+         */
         void update_file_and_headers(const std::map<std::string, std::string> &content_filters);
+
+        /**
+         * finds the header file of a previously specified file and retrieves the related headers file
+         */
         void load_hdrs_from_file();
 
     protected:

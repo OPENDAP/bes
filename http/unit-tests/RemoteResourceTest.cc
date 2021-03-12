@@ -66,6 +66,9 @@ namespace http {
 class RemoteResourceTest: public CppUnit::TestFixture {
 private:
 
+    /**
+     * purges the http cache for temp files created in tests
+     */
     void purge_http_cache(){
         if(Debug) cerr << prolog << "Purging cache!" << endl;
         string cache_dir;
@@ -254,7 +257,8 @@ public:
 /* TESTS BEGIN */
 
     /**
-     *
+     * tests the load_hdrs_from_file function
+     * checks if the headers fields inside a *.hdrs file are correct
      */
     void load_hdrs_from_file_test(){
         if(debug) cerr << "|--------------------------------------------------|" << endl;
@@ -305,7 +309,9 @@ public:
     }
 
     /**
-     *
+     * tests the update_file_and_headers() function
+     * makes a temp file and sets the expire time to 1 second,
+     * then checks if the file is updated after it is allowed to expired
      */
     void update_file_and_headers_test(){
         if(debug) cerr << "|--------------------------------------------------|" << endl;
@@ -358,6 +364,9 @@ public:
         if(debug) cerr << prolog << "END" << endl;
     }
 
+    /**
+     *
+     */
     void get_http_url_test() {
         if(debug) cerr << "|--------------------------------------------------|" << endl;
         if(debug) cerr << prolog << "BEGIN" << endl;
@@ -387,6 +396,9 @@ public:
         if(debug) cerr << prolog << "END" << endl;
     }
 
+    /**
+     *
+     */
     void get_ngap_ghrc_tea_url_test() {
         if(debug) cerr << "|--------------------------------------------------|" << endl;
         if(!ngap_tests){
@@ -421,8 +433,9 @@ public:
         if(debug) cerr << prolog << "END" << endl;
     }
 
-
-
+    /**
+     *
+     */
     void get_ngap_harmony_url_test() {
         if(debug) cerr << "|--------------------------------------------------|" << endl;
         if(!ngap_tests){
@@ -491,7 +504,9 @@ public:
     }
 
      /**
-      *
+      * tests the is_cache_resource_expired() function
+      * create a temp file and sets the expired time to 1 sec
+      * allows temp file to expire and checks if the expiration is noticed
       */
      void is_cached_resource_expired_test(){
          if(debug) cerr << "|--------------------------------------------------|" << endl;

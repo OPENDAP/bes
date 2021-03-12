@@ -349,11 +349,19 @@ namespace http {
 
     } //end RemoteResource::retrieveResource()
 
+    /**
+     * method for calling update_file_and_header(map<string,string>) with a black map
+     */
     void RemoteResource::update_file_and_headers(){
         std::map<std::string, std::string> content_filters;
         update_file_and_headers(content_filters);
     }
 
+    /**
+     * updates the file in the cache and the related headers file
+     *
+     * @param content_filters
+     */
     void RemoteResource::update_file_and_headers(const std::map<std::string, std::string> &content_filters){
 
         // Get a pointer to the singleton cache instance for this process.
@@ -420,6 +428,9 @@ namespace http {
         return;
     } //end RemoteResource::update_file_and_headers()
 
+    /**
+     * finds the header file of a previously specified file and retrieves the related headers file
+     */
     void RemoteResource::load_hdrs_from_file(){
         string hdr_filename = d_resourceCacheFileName + ".hdrs";
         std::ifstream hdr_ifs(hdr_filename.c_str());
@@ -442,6 +453,13 @@ namespace http {
         return;
     } //end RemoteResource::load_hdrs_from_file()
 
+    /**
+     * Checks if a cache resource is older than an hour
+     *
+     * @param filename - name of the resource to be checked
+     * @param uid
+     * @return true if the resource is over an hour old
+     */
     bool RemoteResource::is_cached_resource_expired(const std::string &filename, const std::string &uid){
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
