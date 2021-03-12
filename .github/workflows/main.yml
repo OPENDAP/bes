@@ -20,7 +20,7 @@ jobs:
     
     steps:
       - name: set-path
-        run: echo "$prefix/bin:$prefix/deps/bin" >> $PATH
+        run: echo "$PATH:$prefix/deps/bin" >> $PATH
         
       - name: Packages
         run: sudo apt-get --yes install libxml2-dev uuid-dev libcurl4-openssl-dev libcppunit-dev libicu-dev libgdal-dev
