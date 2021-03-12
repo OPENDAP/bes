@@ -86,13 +86,13 @@ before_script:
 # but do not run the scan.
 stages:
   - name: build
-    if: branch = master AND type != pull_request
+    if: branch = master
   - name: scan
-    if:  branch = master AND type != pull_request
+    if: branch = master
   - name: package
-    if:  branch = master
+    if: branch = master
   - name: olfs-snapshot-trigger
-    if:  branch = master AND type != pull_request
+    if: branch = master AND type != pull_request
 
 jobs:
   include:
