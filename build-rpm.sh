@@ -35,6 +35,9 @@ then
     exit 1
 fi
 
+yum install -y awscli
+yum install -7 libpng-devel
+
 if ! command -v aws && test -x /root/.local/bin/aws
 then
     export PATH=$PATH:/root/.local/bin
@@ -53,7 +56,6 @@ tar -xzvf /tmp/hyrax-dependencies-$OS-static.tar.gz
 aws s3 cp s3://opendap.travis.build/libdap-$LIBDAP_RPM_VERSION.$DIST.x86_64.rpm /tmp/
 aws s3 cp s3://opendap.travis.build/libdap-devel-$LIBDAP_RPM_VERSION.$DIST.x86_64.rpm /tmp/
 
-yum install -y libpng
 yum install -y /tmp/*.rpm
 
 # Get a fresh copy of the sources and any submodules
