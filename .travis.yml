@@ -163,7 +163,7 @@ jobs:
     - docker run --volume $prefix/rpmbuild:/root/rpmbuild --volume $TRAVIS_BUILD_DIR:/root/travis
                  --env OS=centos7 --env DIST=el7 --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
                  --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-                 opendap/centos7_hyrax_builder:1.4 /root/travis/build-rpm.sh ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}
+                 opendap/centos7_hyrax_builder:1.3 /root/travis/build-rpm.sh ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}
 
   - stage: package
     name: "dist"
