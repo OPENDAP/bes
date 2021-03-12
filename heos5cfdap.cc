@@ -2083,7 +2083,7 @@ void gen_eos5_cfdmr(D4Group *d4_root,  HDF5CF::EOS5File *f) {
 
     }
 
-    // TODO: special grid info.
+    // TODO: special grid info. 2021-03-12
 #if 0
     // We need to provide grid_mapping info. for multiple grids.
     // Here cv_lat_miss_index represents the missing latitude(HDF-EOS grid without the latitude field) cv index
