@@ -127,7 +127,7 @@ while getopts "h?vVjs:b:d:t:r:fk" opt; do
         echo "${0} - BEGIN (very_verbose)";
        ;;
     j)
-        just_dmr="-r";
+        just_dmr="-D";
         ;;
     s)
         s3_service_endpoint="$OPTARG"
@@ -272,7 +272,7 @@ function mk_dmrpp_from_s3_list() {
             echo ""
         else 
 	        mkdir -p `dirname ${target_file}`;
-	        get_dmrpp ${verbose} ${very_verbose} ${just_dmr} -u "${s3_url}" -d "${data_root}" -o "${target_file}" "${relative_filename}";
+	        get_dmrpp ${verbose} ${very_verbose} ${just_dmr} -u "${s3_url}" -b "${data_root}" -o "${target_file}" "${relative_filename}";
 	     
 	        if test -z "${keep_data_files}"
 	        then
