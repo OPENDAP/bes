@@ -32,12 +32,6 @@ addons:
     - libcppunit-dev
     - libicu-dev
     - gcovr
-    # - debhelper These packages were used only for debian builds
-    # - devscripts
-    # - lintian
-    # - fakeroot
-    # - build-essential
-    # - sshpass Only used for ssh access to www.o.o (also not done anymore)
 
 git:
   depth: false
@@ -97,8 +91,6 @@ stages:
     if:  branch = master
   - name: package
     if:  branch = master
-  - name: package
-    if:  branch = master OR branch = travis
 
 jobs:
   include:

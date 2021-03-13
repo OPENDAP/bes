@@ -7,7 +7,7 @@
             <Value>String</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>514f4cc3</Value>
+            removed checksum
         </Attribute>
     </String>
     <Float32 name="latitude">
@@ -16,7 +16,7 @@
             <Value>Float32</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>909148ed</Value>
+            removed checksum
         </Attribute>
     </Float32>
     <Float32 name="longitude">
@@ -25,7 +25,7 @@
             <Value>Float32</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>1f219544</Value>
+            removed checksum
         </Attribute>
     </Float32>
     <Float32 name="temperature_K">
@@ -34,7 +34,7 @@
             <Value>Float32</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>9b9537ac</Value>
+            removed checksum
         </Attribute>
     </Float32>
     <String name="Notes">
@@ -43,7 +43,7 @@
             <Value>String</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>d03ae749</Value>
+            removed checksum
         </Attribute>
     </String>
 </Dataset>

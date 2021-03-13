@@ -1,11 +1,18 @@
 # Process with autom4te to create an -*- Autotest -*- test suite.
 
-m4_include([handler_tests_macros.m4])
+AT_INIT([bes/modules/csv_handler/tests testsuite])
+
+m4_include([../../handler_tests_macros.m4])
+
+# m4_include([handler_tests_macros.m4])
 
 AT_BESCMD_RESPONSE_TEST([csv/temperature.csv.0.bescmd])
 AT_BESCMD_RESPONSE_TEST([csv/temperature.csv.1.bescmd])
 AT_BESCMD_RESPONSE_TEST([csv/temperature.csv.2.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([csv/temperature.csv.3.bescmd])
+
+AT_BESCMD_RESPONSE_TEST([csv/temperature_w_comments.csv.1.bescmd])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([csv/temperature_w_comments.csv.3.bescmd])
 
 # DAP4 tests
 AT_BESCMD_RESPONSE_TEST([csv/temperature.csv.dmr.bescmd])
@@ -23,3 +30,8 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([csv/temperature.csv.dap_ce_2.bescmd])
 AT_BESCMD_RESPONSE_TEST([csv/temperature.csv.function.ddx.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([csv/temperature.csv.function.dods.bescmd])
 #
+
+# Test errant data files
+AT_BESCMD_ERROR_RESPONSE_TEST([csv/broken.csv.3.bescmd])
+AT_BESCMD_ERROR_RESPONSE_TEST([csv/broken.csv.4.bescmd])
+AT_BESCMD_ERROR_RESPONSE_TEST([csv/broken.csv.5.bescmd])
