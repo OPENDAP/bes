@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response reqID="some_unique_value" xmlns="http://xml.opendap.org/ns/bes/1.0#">
+    <getDODS>
+        <BESError>
+            <Type>3</Type>
+            <Message>Error in CSV dataset, too few data elements on line 2</Message>
+            <Administrator>support@opendap.org</Administrator>
+            <Location>
+                removed file
+                removed line
+            </Location>
+        </BESError>
+    </getDODS>
+</response>

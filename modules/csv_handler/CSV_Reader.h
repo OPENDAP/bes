@@ -43,23 +43,30 @@
 
 #include <BESObj.h>
 
-class CSV_Reader: public BESObj {
+class CSV_Reader : public BESObj {
 private:
-	std::string _filepath;
-	std::fstream * _stream_in;
+    unsigned long long _row_number;
+    std::string _filepath;
+    std::fstream *_stream_in;
 public:
-	CSV_Reader();
-	virtual ~CSV_Reader();
+    CSV_Reader();
 
-	bool open(const std::string& filepath);
-	bool close() const;
-	bool eof() const;
+    virtual ~CSV_Reader();
 
-	void reset();
+    bool open(const std::string &filepath);
 
-	void get(std::vector<std::string> &row);
+    bool close() const;
 
-	virtual void dump(std::ostream &strm) const;
+    bool eof() const;
+
+    void reset();
+
+    void get(std::vector<std::string> &row);
+
+    unsigned long long get_row_number() const { return _row_number; }
+    std::string get_file_name() const { return _filepath; }
+
+    virtual void dump(std::ostream &strm) const;
 };
 
 #endif // I_CSV_Reader_h

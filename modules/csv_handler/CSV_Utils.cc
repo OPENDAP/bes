@@ -49,34 +49,15 @@ using std::list;
  * @param tokens The resulting vector of tokens
  */
 void
-CSV_Utils::split( const string& str, char delimiter,
-                 vector<string> &tokens )
-{
-    /*
-    string::size_type lastPos = str.find_first_not_of( delimiters, 0 ) ;
-    string::size_type pos = str.find_first_not_of( delimiters, lastPos ) ;
-
-    while( string::npos != pos || string::npos != lastPos )
-    {
-	if(lastPos != pos)
-	{
-	    string token = str.substr( lastPos, pos - lastPos ) ;
-	    tokens.push_back( token ) ;
-	}
-	lastPos = str.find_first_not_of( delimiters, pos ) ;
-	pos = str.find_first_of( delimiters, lastPos ) ;
-    }
-    */
-    if( !str.empty() )
-    {
-	list<string> tmplist ;
-	BESUtil::explode( delimiter, str, tmplist ) ;
-	list<string>::iterator i = tmplist.begin() ;
-	list<string>::iterator e = tmplist.end() ;
-	for( ; i != e; i++ )
-	{
-	    tokens.push_back( (*i) ) ;
-	}
+CSV_Utils::split(const string &str, char delimiter, vector<string> &tokens) {
+    if (!str.empty()) {
+        list<string> tmplist;
+        BESUtil::explode(delimiter, str, tmplist);
+        list<string>::iterator i = tmplist.begin();
+        list<string>::iterator e = tmplist.end();
+        for (; i != e; i++) {
+            tokens.push_back((*i));
+        }
     }
 }
 
@@ -88,9 +69,8 @@ CSV_Utils::split( const string& str, char delimiter,
  * @param str string to remove leading and trailing double quotes from
  */
 void
-CSV_Utils::slim( string& str )
-{
-    if( *(--str.end()) == '\"' and *str.begin() == '\"' )
-	str = str.substr( 1, str.length() - 2 ) ;
+CSV_Utils::slim(string &str) {
+    if (*(--str.end()) == '\"' and *str.begin() == '\"')
+        str = str.substr(1, str.length() - 2);
 }
 

@@ -43,87 +43,85 @@ using std::ios;
 using std::string;
 using std::vector;
 
-CSV_Reader::CSV_Reader()
-{
-    _stream_in = new fstream() ;
+CSV_Reader::CSV_Reader(): _row_number(0) {
+    _stream_in = new fstream();
 }
 
-CSV_Reader::~CSV_Reader()
-{
-    if( _stream_in )
-    {
-	if( _stream_in->is_open() )
-	{
-	    _stream_in->close();
-	}
-	delete _stream_in;
-	_stream_in = 0 ;
+CSV_Reader::~CSV_Reader() {
+    if (_stream_in) {
+        if (_stream_in->is_open()) {
+            _stream_in->close();
+        }
+        delete _stream_in;
+        _stream_in = 0;
     }
 }
 
 bool
-CSV_Reader::open( const string& filepath )
-{
-    bool ret = false ;
-    _filepath = filepath ;
-    _stream_in->open( filepath.c_str(), fstream::in ) ;
-    if( !(_stream_in->fail()) && _stream_in->is_open() )
-    {
-	ret = true ;
+CSV_Reader::open(const string &filepath) {
+    bool ret = false;
+    _filepath = filepath;
+    _stream_in->open(filepath.c_str(), fstream::in);
+    if (!(_stream_in->fail()) && _stream_in->is_open()) {
+        _row_number = 0;
+        ret = true;
     }
-    return ret ;
+    return ret;
 }
 
 bool
-CSV_Reader::close() const
-{
-    bool ret = false ;
-    if( _stream_in )
-    {
-	_stream_in->close() ;
-	if( !(_stream_in->bad()) && !(_stream_in->is_open()) )
-	{
-	    ret = true ;
-	}
+CSV_Reader::close() const {
+    bool ret = false;
+    if (_stream_in) {
+        _stream_in->close();
+        if (!(_stream_in->bad()) && !(_stream_in->is_open())) {
+            ret = true;
+        }
     }
-    return ret ;
+    return ret;
 }
 
 bool
-CSV_Reader::eof() const
-{
-    return _stream_in->eof() ;
+CSV_Reader::eof() const {
+    return _stream_in->eof();
 }
 
 void
-CSV_Reader::reset()
-{
-    _stream_in->seekg( ios::beg ) ;
+CSV_Reader::reset() {
+    _row_number = 0;
+    _stream_in->seekg(ios::beg);
 }
 
 
 void
-CSV_Reader::get( vector<string> &row )
-{
-    string line ;
+CSV_Reader::get(vector<string> &row) {
+    string line;
 
-    getline( *_stream_in, line ) ;
-    CSV_Utils::split( line, ',', row ) ;
+    // Read and ignore empty lines of comment lines. Comment lines
+    // must start with a '#'. Pretty primitive; if more is needed,
+    // add a function to test for a comment line. jhrg 3/11/21
+    do {
+        getline(*_stream_in, line);
+        // when we reach EOF, line.length() is zero and that condition
+        // (i.e., when row is zero in CSV_Utils::split() below) signals
+        // EOF to this handler. jhrg 3/11/21
+    } while(!_stream_in->eof() && (line.length() == 0 || line[0] == '#'));
+
+    CSV_Utils::split(line, ',', row);
+    _row_number++;
 }
 
 void
-CSV_Reader::dump( ostream &strm ) const
-{
+CSV_Reader::dump(ostream &strm) const {
     strm << BESIndent::LMarg << "CSV_Reader::dump - ("
-	 << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    if( _stream_in )
-    {
-	strm << BESIndent::LMarg << "File " << _filepath << " is open" << endl ;
+         << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    if (_stream_in) {
+        strm << BESIndent::LMarg << "File " << _filepath << " is open" << endl;
+        strm << BESIndent::LMarg << "Current row " << _row_number << endl;
     }
-    else
-    {
-	strm << BESIndent::LMarg << "No stream opened at this time" << endl ;
+    else {
+        strm << BESIndent::LMarg << "No stream opened at this time" << endl;
     }
-    BESIndent::UnIndent() ;
+    BESIndent::UnIndent();
 }
