@@ -124,10 +124,10 @@ void CSV_Obj::load()
                     }
                     d->insert(f, &token);
                 }
-				catch (const std::out_of_range &e) {
+				catch (const std::out_of_range &/*e*/) {
                     ostringstream err;
-                    err << "Error in CSV dataset, too few data elements on line " << _reader->get_row_number()
-                        << " (C++ Error: " << e.what() << ")";
+                    err << "Error in CSV dataset, too few data elements on line " << _reader->get_row_number();
+                        // FIXME: Different on OSX and Linux << " (C++ Error: " << e.what() << ")";
                     ERROR_LOG(err.str());
                     throw BESSyntaxUserError(err.str(), __FILE__, __LINE__);
 				}

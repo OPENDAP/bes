@@ -3,7 +3,7 @@
     <getDODS>
         <BESError>
             <Type>3</Type>
-            <Message>Error in CSV dataset, too few data elements on line 2 (C++ Error: vector)</Message>
+            <Message>Error in CSV dataset, too few data elements on line 2</Message>
             <Administrator>support@opendap.org</Administrator>
             <Location>
                 removed file
