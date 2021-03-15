@@ -16,6 +16,6 @@ AT_BESCMD_ERROR_RESPONSE_TEST([gdal/coads_climatology.nc.1.err.bescmd], [pass])
 AT_BESCMD_GDAL_BINARY_FILE_RESPONSE_TEST([gdal/function_result_unwrap_tif.bescmd], [info], [pass])
 
 # jpeg2000 tests
-AT_BESCMD_GDAL_BINARY_FILE_RESPONSE_TEST([gdal/coads_climatology.nc.2.bescmd], [info], [pass])
+# AT_BESCMD_GDAL_BINARY_FILE_RESPONSE_TEST([gdal/coads_climatology.nc.2.bescmd], [info], [xfail])
 
-AT_BESCMD_GDAL_BINARY_FILE_RESPONSE_TEST([gdal/function_result_unwrap_jp2.bescmd], [info], [pass])
+# AT_BESCMD_GDAL_BINARY_FILE_RESPONSE_TEST([gdal/function_result_unwrap_jp2.bescmd], [info], [xfail])

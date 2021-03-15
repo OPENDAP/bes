@@ -30,7 +30,7 @@
 #include <stdlib.h>
 #endif
 
-#include <pthread.h>
+#include <mutex>
 
 #include <sstream>
 #include <string>
@@ -55,57 +55,28 @@ using namespace std;
 
 namespace http {
 
-EffectiveUrlCache *EffectiveUrlCache::d_instance = 0;
-pthread_once_t EffectiveUrlCache::d_init_control = PTHREAD_ONCE_INIT;
+EffectiveUrlCache *EffectiveUrlCache::d_instance = nullptr;
+static std::once_flag d_euc_init_once;
 
-EucLock::EucLock(pthread_mutex_t &lock) : m_mutex(lock) {
-    int status = pthread_mutex_lock(&m_mutex);
-    if (status != 0){
-        throw BESInternalError(prolog  + "Could not acquire mutex lock.", __FILE__, __LINE__);
-    }
-    BESDEBUG(MODULE,prolog << "Locked. (thread: " << pthread_self() << ")"  << endl);
-}
-
-EucLock::~EucLock() {
-    int status = pthread_mutex_unlock(&m_mutex);
-    if (status != 0){
-        ERROR_LOG(prolog + "Failed to release mutex lock.");
-    }
-    BESDEBUG(MODULE,prolog << "Unlocked. (thread: " << pthread_self() << ")" << endl);
-}
-
-
-/** @brief Get the singleton BESCatalogList instance.
+/** @brief Get the singleton EffectiveUrlCache instance.
  *
- * This static method returns the instance of this singleton class. It
- * uses the protected constructor below to read the name of the default
- * catalog from the BES's configuration file, using the key "BES.Catalog.Default".
- * If the key is not found or the key lookup fails for any reason, it
- * uses the the value of BES_DEFAULT_CATALOG as defined in this class'
- * header file (currently the confusing name "catalog").
- *
- * The implementation will only build one instance of CatalogList and
+ * This static method returns the instance of this singleton class.
+ * The implementation will only build one instance of EffectiveUrlCache and
  * thereafter simple return that pointer.
  *
- * For this code, the default catalog is implemented suing CatalogDirectory,
- * which exposes the BES's local POSIX file system, rooted at a place set in
- * the BES configuration file.
- *
- * @return A pointer to the CatalogList singleton
+ * @return A pointer to the EffectiveUrlCache singleton
  */
 EffectiveUrlCache *
 EffectiveUrlCache::TheCache()
 {
-    if (d_instance == 0) {
-        pthread_once(&d_init_control,EffectiveUrlCache::initialize_instance);
-    }
+    std::call_once(d_euc_init_once,EffectiveUrlCache::initialize_instance);
 
     return d_instance;
 }
 
 /**
- * private static that only get's called once by using pthread_once and
- * pthread_once_t mutex.
+ * private static that only get's called once by using std::call_once() and
+ * std::mutex.
  */
 void EffectiveUrlCache::initialize_instance()
 {
@@ -118,7 +89,7 @@ void EffectiveUrlCache::initialize_instance()
 }
 
 /**
- * Private static function can only be called by friends and pThreads code.
+ * Private static function can only be called by friends.
  */
 void EffectiveUrlCache::delete_instance()
 {
@@ -126,16 +97,6 @@ void EffectiveUrlCache::delete_instance()
     d_instance = 0;
 }
 
-/** @brief construct a catalog list
- *
- * @see BESCatalog
- */
-EffectiveUrlCache::EffectiveUrlCache(): d_skip_regex(NULL), d_enabled(-1)
-{
-    if (pthread_mutex_init(&d_get_effective_url_cache_mutex, 0) != 0)
-        throw BESInternalError("Could not initialize mutex in CurlHandlePool", __FILE__, __LINE__);
-
-}
 
 /** @brief list destructor deletes all cached http::urls
  *
@@ -204,7 +165,7 @@ string EffectiveUrlCache::dump() const
  * @param source_url
  */
 http::EffectiveUrl *EffectiveUrlCache::get(const std::string  &source_url){
-    http::EffectiveUrl *effective_url=NULL;
+    http::EffectiveUrl *effective_url=nullptr;
     auto it = d_effective_urls.find(source_url);
     if(it!=d_effective_urls.end()){
         effective_url = (*it).second;
@@ -228,8 +189,9 @@ http::EffectiveUrl *EffectiveUrlCache::get(const std::string  &source_url){
 string EffectiveUrlCache::get_effective_url(const string &source_url)
 {
 
-    // This lock will block until the mutex is available.
-    EucLock dat_lock(this->d_get_effective_url_cache_mutex);
+    // This lock is a RAII implementation. It will block until the mutex is
+    // available and the lock will be released when the instance is destroyed.
+    std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
 
     BESDEBUG(MODULE, prolog << "BEGIN url: " << source_url << endl);
     string effective_url_str = source_url;

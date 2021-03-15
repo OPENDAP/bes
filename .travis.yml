@@ -32,12 +32,6 @@ addons:
     - libcppunit-dev
     - libicu-dev
     - gcovr
-    # - debhelper These packages were used only for debian builds
-    # - devscripts
-    # - lintian
-    # - fakeroot
-    # - build-essential
-    # - sshpass Only used for ssh access to www.o.o (also not done anymore)
 
 git:
   depth: false
@@ -96,7 +90,7 @@ stages:
   - name: scan
     if:  branch = master
   - name: package
-    if:  branch = master OR branch = travis
+    if:  branch = master
 
 jobs:
   include:
@@ -255,5 +249,8 @@ deploy:
 # The after_deploy section grabs the hyrax-docker project, sets the current snapshot time 
 # and pushes the result to GitHub. This push triggers TravisCI to build the Docker containers
 # for all of the Hyrax snapshot products. jhrg 10/28/19
+#
+# CAVEAT: In after_deploy failures will not affect the build outcome, they will be ignored.
+#
 after_deploy:
-  - if test x"$BES_BUILD" = x"centos7" -a x"$DEPLOY" = x"S3"; then ./travis/trigger-hyrax-docker.sh; fi
+  - if test x"$BES_BUILD" = x"centos7" -a x"$DEPLOY" = x"S3"; then ./travis/trigger-olfs-build.sh; fi

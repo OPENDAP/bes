@@ -22,7 +22,7 @@
             </Attribute>
         </Attribute>
         <Attribute name="spatial_ref" type="String">
-            <value>PROJCS[\&quot;unnamed\&quot;,GEOGCS[\&quot;NAD27\&quot;,DATUM[\&quot;North_American_Datum_1927\&quot;,SPHEROID[\&quot;Clarke 1866\&quot;,6378206.4,294.9786982138982,AUTHORITY[\&quot;EPSG\&quot;,\&quot;7008\&quot;]],AUTHORITY[\&quot;EPSG\&quot;,\&quot;6267\&quot;]],PRIMEM[\&quot;Greenwich\&quot;,0],UNIT[\&quot;degree\&quot;,0.0174532925199433],AUTHORITY[\&quot;EPSG\&quot;,\&quot;4267\&quot;]],PROJECTION[\&quot;Cylindrical_Equal_Area\&quot;],PARAMETER[\&quot;standard_parallel_1\&quot;,33.75],PARAMETER[\&quot;central_meridian\&quot;,-117.333333333333],PARAMETER[\&quot;false_easting\&quot;,0],PARAMETER[\&quot;false_northing\&quot;,0],UNIT[\&quot;metre\&quot;,1,AUTHORITY[\&quot;EPSG\&quot;,\&quot;9001\&quot;]]]</value>
+            <value>PROJCS[\&quot;unnamed\&quot;,GEOGCS[\&quot;NAD27\&quot;,DATUM[\&quot;North_American_Datum_1927\&quot;,SPHEROID[\&quot;Clarke 1866\&quot;,6378206.4,294.978698213898,AUTHORITY[\&quot;EPSG\&quot;,\&quot;7008\&quot;]],AUTHORITY[\&quot;EPSG\&quot;,\&quot;6267\&quot;]],PRIMEM[\&quot;Greenwich\&quot;,0],UNIT[\&quot;degree\&quot;,0.0174532925199433,AUTHORITY[\&quot;EPSG\&quot;,\&quot;9122\&quot;]],AUTHORITY[\&quot;EPSG\&quot;,\&quot;4267\&quot;]],PROJECTION[\&quot;Cylindrical_Equal_Area\&quot;],PARAMETER[\&quot;standard_parallel_1\&quot;,33.75],PARAMETER[\&quot;central_meridian\&quot;,-117.333333333333],PARAMETER[\&quot;false_easting\&quot;,0],PARAMETER[\&quot;false_northing\&quot;,0],UNIT[\&quot;metre\&quot;,1,AUTHORITY[\&quot;EPSG\&quot;,\&quot;9001\&quot;]],AXIS[\&quot;Easting\&quot;,EAST],AXIS[\&quot;Northing\&quot;,NORTH]]</value>
         </Attribute>
     </Attribute>
     <Array name="slice">
@@ -30,12 +30,6 @@
         <dimension name="slice" size="3"/>
     </Array>
     <Grid name="band_1">
-        <Attribute name="add_offset" type="Float64">
-            <value>0</value>
-        </Attribute>
-        <Attribute name="scale_factor" type="Float64">
-            <value>1</value>
-        </Attribute>
         <Attribute name="PhotometricInterpretation" type="String">
             <value>Gray</value>
         </Attribute>
