@@ -7,7 +7,7 @@
             <Value>String</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>514f4cc3</Value>
+            removed checksum
         </Attribute>
     </String>
     <Float32 name="latitude">
@@ -16,7 +16,7 @@
             <Value>Float32</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>909148ed</Value>
+            removed checksum
         </Attribute>
     </Float32>
 </Dataset>

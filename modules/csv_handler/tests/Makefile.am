@@ -16,11 +16,11 @@ noinst_DATA = bes.conf
 CLEANFILES = bes.conf
 
 EXTRA_DIST = csv $(TESTSUITE).at $(TESTSUITE) atlocal.in \
-$(BES_CONF_IN) package.m4 handler_tests_macros.m4
+$(BES_CONF_IN) package.m4
 
 DISTCLEANFILES = atconfig
 
-BES_CONF_IN = bes.conf.modules.in
+BES_CONF_IN = bes.conf.in
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
@@ -38,7 +38,7 @@ AUTOM4TE = autom4te
 # is put in the source directory along with the *.at file used to
 # build it, which is important since these scripts are distributed
 # in the tar.gz distribution.
-TESTSUITE = $(srcdir)/csv_handlerTest
+TESTSUITE = $(srcdir)/testsuite
 
 check-local: $(TESTSUITE) atconfig atlocal 
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
@@ -52,7 +52,7 @@ clean-local:
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
-$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(srcdir)/handler_tests_macros.m4
+$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
 
 # The `:;' works around a Bash 3.2 bug when the output is not writable.

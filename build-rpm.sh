@@ -35,14 +35,13 @@ then
     exit 1
 fi
 
+yum install -y awscli
+yum install -y libpng-devel
+
 if ! command -v aws && test -x /root/.local/bin/aws
 then
     export PATH=$PATH:/root/.local/bin
 fi
-
-# Patch; remove this when we update the centos7 build container.
-# jhrg 3/5/21
-yum install -y libpng-devel
 
 # Get the pre-built dependencies (all static libraries). $OS is 'centos6' or 'centos7'
 # aws s3 cp s3://opendap.travis.build/
