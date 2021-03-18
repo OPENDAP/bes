@@ -1355,6 +1355,9 @@ bool eval_http_get_response(CURL *ceh, char *error_buffer, const string &request
             // comprehensive HTTP/S processing here. jhrg 8/8/18
             return true;
 
+        //case 301: // Moved Permanently - but that's ok for now?
+        //    return true;
+
         case 400: // Bad Request
             ERROR_LOG(msg.str() << endl);
             throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);

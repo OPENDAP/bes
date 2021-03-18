@@ -37,8 +37,10 @@ Http.Cookies.File=/tmp/.hyrax-cookies
 # But we also know that many URLs (ex: AWS S3) will never redirect so we can skip the caching
 # for those destinations. Any URL matching these patterns will not hae redirects followed
 # and cached.
-#
-# Http.cache.effective.urls.skip.regex.pattern=^https:\/\/.*s3(\.|-).*\.amazonaws\.com\/.*$
+# Matches any "virtual host" style S3 bucket URL
+# Http.cache.effective.urls.skip.regex.pattern=^https?:\/\/([a-z]|[0-9])(([a-z]|[0-9]|\.|-){1,61})([a-z]|[0-9])\.s3((\.|-)us-(east|west)-(1|2))?\.amazonaws\.com\/.*$
+# Matches any "path" style S3 bucket URL
+# Http.cache.effective.urls.skip.regex.pattern=^https?:\/\/s3((\.|-)us-(east|west)-(1|2))?\.amazonaws\.com\/([a-z]|[0-9])(([a-z]|[0-9]|\.|-){1,61})([a-z]|[0-9])\/.*$
 
 Http.MimeTypes=nc:application/x-netcdf
 Http.MimeTypes+=h4:application/x-hdf

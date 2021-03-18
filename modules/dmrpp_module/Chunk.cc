@@ -130,8 +130,8 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
             // are not good enough. But the "Code" is not really suitable for normal humans...
             // jhrg 12/31/19
             stringstream msg;
-            msg << prolog << "Error accessing object store data. (Tried: " << chunk->get_data_url() << ")" <<
-                " Message " << message.GetString();
+            msg << prolog << "Error returned by object store when accessing data. (Tried: " << chunk->get_data_url() << ")" <<
+                " Code: " << code.GetString() <<  " Message: " << message.GetString();
             BESDEBUG(MODULE, msg.str() << endl);
             if (string(code.GetString()) == "AccessDenied") {
                 throw BESForbiddenError(msg.str(), __FILE__, __LINE__);
@@ -147,8 +147,8 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
         }
         catch (std::exception &e) {
             stringstream msg;
-            msg << prolog << "Error accessing object store data. (Tried: " << chunk->get_data_url() << ")" <<
-                " Message " << e.what();
+            msg << prolog << "Caught std::exception when accessing object store data. (Tried: " << chunk->get_data_url() << ")" <<
+                " Message: " << e.what();
             BESDEBUG(MODULE, msg.str() << endl);
             throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
         }

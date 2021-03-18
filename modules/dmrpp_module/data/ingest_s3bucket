@@ -28,10 +28,10 @@ target_dir=`pwd`;
 # Should match the value of BES.Catalog.catalog.TypeMatch in the bes 
 # configuration fileused by get_dmrpp.
 # TODO - can we make this read the conf file to get the regex info?
-dataset_regex_match="^.*\\.(h5|he5|nc4)(\\.bz2|\\.gz|\\.Z)?$";
+dataset_regex_match="^.*\\.(h5|he5|nc4?)(\\.bz2|\\.gz|\\.Z)?$";
 
-s3_service_endpoint="https://s3.amazonaws.com/"
-s3_bucket_name="cloudydap"
+s3_bucket_name="ngap-ssmis-west"
+s3_bucket_region="us-west-2"
 
 #target_dir=".";
 
@@ -58,8 +58,8 @@ function show_usage() {
  -V: Very Verbose: Verbose plus so much more. Your eyes will water from
      the scanning of it all.
  -j: Just print the DMR that will be used to build the DMR++
- -s: The endpoint URL for the S3 datastore. 
-     (default: ${s3_service_endpoint})
+ -s: The S3 bucket region.
+     (default: ${s3_bucket_region})
  -b: The S3 bucket name. 
      (default: ${s3_bucket_name})
  -d: The "local" filesystem root for the downloaded data. 
@@ -130,7 +130,7 @@ while getopts "h?vVjs:b:d:t:r:fk" opt; do
         just_dmr="-D";
         ;;
     s)
-        s3_service_endpoint="$OPTARG"
+        s3_bucket_region="$OPTARG"
         ;;
     b)
         s3_bucket_name="$OPTARG"
@@ -167,8 +167,8 @@ if test -n "${verbose}"; then
     echo "verbose:             '${verbose}'"
     echo "very_verbose:        '${very_verbose}'"
     echo "just_dmr:            '${just_dmr}'"
-    echo "s3_service_endpoint: '${s3_service_endpoint}'"
     echo "s3_bucket_name:      '${s3_bucket_name}'"
+    echo "s3_bucket_region:    '${s3_bucket_region}'"
     echo "data_root:           '${data_root}'"
     echo "target_dir:          '${target_dir}'"
     echo "find_s3_files:       '${find_s3_files}'"
@@ -241,20 +241,24 @@ function mk_dmrpp_from_s3_list() {
 
     for relative_filename  in `cat ${S3_DATA_FILES} | awk '{print $4;}' -`
     do        
-        s3_url="${s3_service_endpoint}${s3_bucket_name}/${relative_filename}";
+        s3_url="https://${s3_bucket_name}.s3.${s3_bucket_region}.amazonaws.com/${relative_filename}";
         if test -z "${data_root}"; then
             data_root=`pwd`"/s3_data/${s3_bucket_name}";
         fi
         
         data_file="${data_root}/${relative_filename}";
         target_file="${target_dir}/${relative_filename}.dmrpp";       
-          
+        missing_data_file="${target_dir}/${relative_filename}.missing";
+        missing_data_url="${s3_url}.missing";
+
         if test -n "$verbose"
         then
+            echo "# == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == =="
             echo "relative_filename: ${relative_filename}";
-            echo "s3_url:            ${s3_url}";
-            echo "data_file:         ${data_file}";
-            echo "target_file:       ${target_file}";
+            echo "           s3_url: ${s3_url}";
+            echo "        data_file: ${data_file}";
+            echo "      target_file: ${target_file}";
+            echo "missing_data_file: ${missing_data_file}";
         fi
         
         
@@ -272,7 +276,10 @@ function mk_dmrpp_from_s3_list() {
             echo ""
         else 
 	        mkdir -p `dirname ${target_file}`;
-	        get_dmrpp ${verbose} ${very_verbose} ${just_dmr} -u "${s3_url}" -b "${data_root}" -o "${target_file}" "${relative_filename}";
+	        get_dmrpp ${verbose} ${very_verbose} ${just_dmr} \
+	            -u "${s3_url}" -b "${data_root}" -o "${target_file}" \
+	            -M -r "${missing_data_file}" -p "${missing_data_url}" \
+	            "${relative_filename}";
 	     
 	        if test -z "${keep_data_files}"
 	        then
