@@ -116,33 +116,29 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
         // will be sad if that happens. jhrg 12/30/19
         try {
             string json_message = xml2json(xml_message.c_str());
-            stringstream aws_msg;
-            aws_msg << prolog << "AWS S3 Access Error:" << json_message;
-            BESDEBUG(MODULE, aws_msg.str() << endl);
-            VERBOSE(aws_msg.str() << endl);
-
             rapidjson::Document d;
             d.Parse(json_message.c_str());
             rapidjson::Value &message = d["Error"]["Message"];
             rapidjson::Value &code = d["Error"]["Code"];
-            rapidjson::Value &resource = d["Error"]["Resource"];
-            rapidjson::Value &request_id = d["Error"]["RequestId"];
 
             // We might want to get the "Code" from the "Error" if these text messages
             // are not good enough. But the "Code" is not really suitable for normal humans...
             // jhrg 12/31/19
-            stringstream msg;
-            msg << prolog << "Error returned by object store when accessing data.";
-            msg << "(Tried: " << chunk->get_data_url() << ")";
-            msg << " Error.Code: '" << code.GetString() << "'";
-            msg << " Error.Message: '" << message.GetString() << "'";
-            msg << " Error.Resource: '" << resource.GetString() << "'";
-            msg << " Error.RequestId: '" << request_id.GetString() << "'";
-            BESDEBUG(MODULE, msg.str() << endl);
+
             if (string(code.GetString()) == "AccessDenied") {
+                stringstream msg;
+                msg << prolog << "ACCESS DENIED - The underlying object store has refused access to: ";
+                msg << chunk->get_data_url() << " Object Store Message: " << json_message;
+                BESDEBUG(MODULE, msg.str() << endl);
+                VERBOSE(msg.str() << endl);
                 throw BESForbiddenError(msg.str(), __FILE__, __LINE__);
             }
             else {
+                stringstream msg;
+                msg << prolog << "ERROR - The underlying object store returned an error. ";
+                msg << "(Tried: " << chunk->get_data_url() << ") Object Store Message: " << json_message;
+                BESDEBUG(MODULE, msg.str() << endl);
+                VERBOSE(msg.str() << endl);
                 throw BESInternalError(msg.str(), __FILE__, __LINE__);
             }
         }
