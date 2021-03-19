@@ -218,7 +218,7 @@ function mk_file_list_from_s3() {
 
     if test -n "$verbose"
     then
-	    echo "# Retrieving file list from S3."
+	    echo "## Retrieving file list from S3."
 	    echo "# s3_bucket_name: ${s3_bucket_name}"
 	    echo "#   S3_ALL_FILES: ${S3_ALL_FILES}";
     fi
@@ -226,8 +226,11 @@ function mk_file_list_from_s3() {
     status=$?
     if [ ${status} -ne 0 ]
     then
+        echo ""
+        echo ""
         echo "Encountered AWS CLI error (status: ${status}) Unable to list bucket ${s3_bucket_name}"
         echo "Terminating now."
+        echo ""
         exit 1
     else
         if test -n "$verbose"
@@ -313,7 +316,24 @@ function mk_dmrpp_from_s3_list() {
 	            -u "${s3_url}" -b "${data_root}" -o "${target_file}" \
 	            ${missing_data_cmd}  \
 	            "${relative_filename}";
-	     
+
+	        status=$?;
+
+	        if test ${status} -ne 0; then
+                echo ""
+                echo ""
+                echo "get_dmrpp FAILED to build a dmr++ for: '${relative_filename}', status: ${status}"
+                if test -n "${verbose}"; then
+                    echo "Terminating now."
+                    echo ""
+                    exit ${status}
+                else
+                    echo "Continuing..."
+                    echo ""
+                fi
+            fi
+
+
 	        if test -z "${keep_data_files}"
 	        then
 	            rm ${verbose} -f "${data_file}";
@@ -322,9 +342,6 @@ function mk_dmrpp_from_s3_list() {
         #set +x
 
  done
-
-
-
 }
 #################################################################################
 
