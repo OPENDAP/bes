@@ -231,7 +231,7 @@ function mk_file_list_from_s3() {
         echo "Encountered AWS CLI error (status: ${status}) Unable to list bucket ${s3_bucket_name}"
         echo "Terminating now."
         echo ""
-        exit 1
+        exit ${status}
     else
         if test -n "$verbose"
         then
