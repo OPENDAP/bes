@@ -125,13 +125,19 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
             d.Parse(json_message.c_str());
             rapidjson::Value &message = d["Error"]["Message"];
             rapidjson::Value &code = d["Error"]["Code"];
+            rapidjson::Value &resource = d["Error"]["Resource"];
+            rapidjson::Value &request_id = d["Error"]["RequestId"];
 
             // We might want to get the "Code" from the "Error" if these text messages
             // are not good enough. But the "Code" is not really suitable for normal humans...
             // jhrg 12/31/19
             stringstream msg;
-            msg << prolog << "Error returned by object store when accessing data. (Tried: " << chunk->get_data_url() << ")" <<
-                " Code: " << code.GetString() <<  " Message: " << message.GetString();
+            msg << prolog << "Error returned by object store when accessing data.";
+            msg << "(Tried: " << chunk->get_data_url() << ")";
+            msg << " Error.Code: '" << code.GetString() << "'";
+            msg << " Error.Message: '" << message.GetString() << "'";
+            msg << " Error.Resource: '" << resource.GetString() << "'";
+            msg << " Error.RequestId: '" << request_id.GetString() << "'";
             BESDEBUG(MODULE, msg.str() << endl);
             if (string(code.GetString()) == "AccessDenied") {
                 throw BESForbiddenError(msg.str(), __FILE__, __LINE__);
