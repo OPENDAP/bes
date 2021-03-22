@@ -113,15 +113,20 @@ cout<<"chunk_exist["<<i<<"]= "<<chunk_exist[i]<<endl;
 #endif
 
     bool has_missing_info = false;
-    size_t last_missing_chunk_index = -1;
+    size_t last_missing_chunk_index = 0;
 
     // Check if there are any missing variable information.
-    // FIXME: 'i' is unsigned and thus will always be >= 0. jhrg 9/18/20
-    for (size_t i =var_type.size()-1;i>=0;i--) {
-        if(false == chunk_exist[i]){
-            has_missing_info = true;
-            last_missing_chunk_index = i;
-            break;
+    if (!var_type.empty()) {
+        auto ritr = var_type.rbegin();
+        size_t i = var_type.size() - 1;
+        while(ritr != var_type.rend()) {
+            if (!chunk_exist[i]) {
+                has_missing_info = true;
+                last_missing_chunk_index = i;
+                break;
+            }
+            ritr++;
+            i--;
         }
     }
 
@@ -144,13 +149,15 @@ cout<<"chunk_exist["<<i<<"]= "<<chunk_exist[i]<<endl;
         string fname2(argv[2]);
         dmrpp_ofstream.open(fname2.c_str(),ofstream::out);
 
-        for (size_t i =0;i<var_type.size();i++) {
-            if(false == chunk_exist[i]) {
+        size_t i = 0;
+        for (auto vt:var_type) {
+            if(!chunk_exist[i]) {
                 if (i!=last_missing_chunk_index)
                     dmrpp_ofstream<<var_name[i] <<",";
                 else 
                     dmrpp_ofstream<<var_name[i];
             }
+            i++;
         }
 
         dmrpp_ofstream.close();
