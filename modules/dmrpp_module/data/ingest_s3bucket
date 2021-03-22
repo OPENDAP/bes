@@ -289,7 +289,7 @@ function mk_dmrpp_from_s3_list() {
             if test -n "$verbose";then echo "# missing_data_file: ${missing_data_file}"; fi
 
             missing_data_url="${s3_url}.missing";
-            if test -n "$verbose";then echo "#  missing_data_url: ${missing_data_file}"; fi
+            if test -n "$verbose";then echo "#  missing_data_url: ${missing_data_url}"; fi
 
             missing_data_cmd=" -M -r \"${missing_data_file}\" -p \"${missing_data_url}\" ";
             if test -n "$verbose";then echo "#  missing_data_cmd: ${missing_data_cmd}"; fi
