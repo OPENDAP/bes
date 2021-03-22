@@ -59,6 +59,16 @@ jobs:
           make --jobs=$jobs
           make install
 
+      - name: build bes
+        run: |
+          git clone https://github.com/OPENDAP/bes
+          cd bes
+          git submodule update --init
+          autoreconf --force --install --verbose
+          ./configure --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+          make --jobs=$jobs
+          make install
+
       - name: checkout
         uses: actions/checkout@v2
 
