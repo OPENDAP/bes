@@ -35,7 +35,7 @@ then
     exit 1
 fi
 
-yum install -y awscli
+# yum install -y awscli
 yum install -y libpng-devel
 
 if ! command -v aws && test -x /root/.local/bin/aws
