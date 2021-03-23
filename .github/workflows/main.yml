@@ -32,7 +32,7 @@ jobs:
       - name: build dependencies
         if: steps.cache-deps.outputs.cache-hit != 'true'
         run: |
-          echo "$PATH:$prefix/deps/bin" >> $PATH
+          echo "$PATH:/home/runner/work/bes/bes/build/deps/bin" >> $PATH
           git clone https://github.com/OPENDAP/hyrax-dependencies
           cd hyrax-dependencies
           git checkout gdal314
