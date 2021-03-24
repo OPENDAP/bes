@@ -36,6 +36,7 @@ set_ec.sh
 .DS_Store
 */.DS_Store
 
+VERSION
 Makefile
 Makefile.in
 doxy.conf

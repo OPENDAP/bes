@@ -43,7 +43,7 @@ env:
     - PATH=$prefix/bin:$prefix/deps/bin:$PATH
     - TESTSUITEFLAGS=-j7
     # Change this when libdap version numbers change
-    - LIBDAP_RPM_VERSION=3.20.7-1
+    - LIBDAP_RPM_VERSION=3.20.7-16
     # SONAR_LOGIN, made using "travis encrypt --org -r OPENDAP/bes SONAR_LOGIN=335df..."
     - secure: "TmoFcgeIyAEjFyrlqB6rhdUhDqPJfxVZmT5fewgVHj0xm767VZ6DU21mM6ZHgNGyk99TzX0Gx/dwSqbsUj18hSSAvEa7fJQSKJ5IBJvTeMKhXn1DPPG9VpuZ4ti5afRDiNr6EJKbVxwBTkz+3798S8LajPuXGupYupir8IJQCt8="
     # SONAR_MODULES_LOGIN, using "travis encrypt --org -r OPENDAP/bes SONAR_MODULES_LOGIN=42ba..."
@@ -172,9 +172,12 @@ jobs:
     - mkdir -p $prefix/rpmbuild
     - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
     - docker run --volume $prefix/rpmbuild:/root/rpmbuild --volume $TRAVIS_BUILD_DIR:/root/travis
-                 --env OS=centos7 --env DIST=el7 --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
-                 --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-                 opendap/centos7_hyrax_builder:1.7 /root/travis/build-rpm.sh ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}
+                 --env OS=centos7
+                 --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
+                 --env LIBDAP_BUILD_NUMBER=$LIBDAP_BUILD_NUMBER
+                 --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+                 --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+                 opendap/centos7_hyrax_builder:1.7 /root/travis/build-rpm.sh
 
   - stage: package
     name: "dist"
@@ -190,6 +193,7 @@ jobs:
       - SOURCE_VERSION=$(cat VERSION)
       - mv libdap-*.tar.gz libdap-$SOURCE_VERSION.tar.gz
       - cp libdap-$SOURCE_VERSION.tar.gz libdap-snapshot.tar.gz
+      - ls -l *.tar.gz
 
 after_script:
   - ./travis/upload-test-results.sh
