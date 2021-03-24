@@ -179,6 +179,7 @@ jobs:
   - stage: package
     name: "dist"
     script:
+      - export BES_BUILD=srcdist
       - autoreconf --force --install --verbose
       - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --with-build=$BES_BUILD_NUMBER
       - make dist -j7
@@ -188,8 +189,7 @@ jobs:
       # number passed into configure when it is run. jhrg 3/23/21
       - SOURCE_VERSION=$(cat VERSION)
       - mv libdap-*.tar.gz libdap-$SOURCE_VERSION.tar.gz
-      - cp libdap-$SOURCE_VERSION.tar.gz libdap-snapshot.tar.gz;
-
+      - cp libdap-$SOURCE_VERSION.tar.gz libdap-snapshot.tar.gz
 
 after_script:
   - ./travis/upload-test-results.sh
@@ -200,8 +200,6 @@ before_deploy:
   - mkdir -p $TRAVIS_BUILD_DIR/package;
   # Source distribution prep (copies both the 'version' and 'snapshot'
   - if test "$BES_BUILD" = "srcdist"; then cp bes-*.tar.gz $TRAVIS_BUILD_DIR/package; fi
-  # CentOS-6 distribution prep. Removed, jhrg 10/23/20
-  # - if test "$BES_BUILD" = "centos6"; then ./travis/rpm-to-package-dir.sh "el6"; fi
   # CentOS-7  distribution prep
   - if test "$BES_BUILD" = "centos7"; then ./travis/rpm-to-package-dir.sh "el7"; fi
   # Check for the stuff...
