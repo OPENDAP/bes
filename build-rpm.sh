@@ -34,7 +34,7 @@ aws s3 cp s3://opendap.travis.build/hyrax-dependencies-$OS-static.tar.gz /tmp/
 # This dumps the dependencies in $HOME/install/deps/{lib,bin,...}
 tar -xzvf /tmp/hyrax-dependencies-$OS-static.tar.gz
 
-ls -lR $HOME/install/deps
+# ls -lR $HOME/install/deps
 
 # Then get the libdap RPMs packages
 # libdap-3.20.0-1.el6.x86_64.rpm libdap-devel-3.20.0-1.el6.x86_64.rpm
