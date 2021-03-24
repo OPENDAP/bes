@@ -85,7 +85,7 @@ before_script:
   # - autoreconf --force --install --verbose
   - source travis/travis_bes_build_offset.sh
   - export BES_BUILD_NUMBER=$(expr $TRAVIS_BUILD_NUMBER - $BES_TRAVIS_BUILD_OFFSET)
-  - echo "BES_BUILD_NUMBER is ${BES_BUILD_NUMBER} = ${TRAVIS_BUILD_NUMBER} - ${LIBDAP_BES_BUILD_OFFSET}"
+  - echo "BES_BUILD_NUMBER is ${BES_BUILD_NUMBER} = ${TRAVIS_BUILD_NUMBER} - ${BES_TRAVIS_BUILD_OFFSET}"
   - echo "Travis default env:"
   - printenv
 
