@@ -50,7 +50,7 @@ cd $HOME/travis
 
 autoreconf -fiv
 
-./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --with-build=$LIBDAP_BUILD_NUMBER
+./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --with-build=$BES_BUILD_NUMBER
 
 # set up the rpm tree in $HOME. We didn't need to do this for libdap because 
 # rpmbuild took care of it, but for the BES, the Makefile copies the source 

@@ -86,6 +86,7 @@ before_script:
   - source travis/travis_bes_build_offset.sh
   - export BES_BUILD_NUMBER=$(expr $TRAVIS_BUILD_NUMBER - $BES_TRAVIS_BUILD_OFFSET)
   - echo "BES_BUILD_NUMBER is ${BES_BUILD_NUMBER} = ${TRAVIS_BUILD_NUMBER} - ${BES_TRAVIS_BUILD_OFFSET}"
+  - export LIBDAP_RPM_VERSION=$(grep "libdap4-" libdap4-snapshot | awk '{print $1;}' - | sed "s/libdap4-//g")
   - echo "Travis default env:"
   - printenv
 
@@ -175,7 +176,7 @@ jobs:
                  --env OS=centos7
                  --env DIST=el7
                  --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
-                 --env LIBDAP_BUILD_NUMBER=$LIBDAP_BUILD_NUMBER
+                 --env BES_BUILD_NUMBER=$BES_BUILD_NUMBER
                  --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
                  --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
                  opendap/centos7_hyrax_builder:1.7 /root/travis/build-rpm.sh
