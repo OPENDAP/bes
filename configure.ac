@@ -8,15 +8,46 @@ AC_INIT(bes, 3.20.8, support@opendap.org)
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 
-PACKAGE_MAJOR_VERSION=`echo $PACKAGE_VERSION | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$@\1@'`
-PACKAGE_MINOR_VERSION=`echo $PACKAGE_VERSION | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$@\2@'`
-PACKAGE_SUBMINOR_VERSION=`echo $PACKAGE_VERSION | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$@\3@'`
-AC_MSG_NOTICE(Package Major Version:     $PACKAGE_MAJOR_VERSION)
-AC_MSG_NOTICE(Package Minor Version:     $PACKAGE_MINOR_VERSION)
-AC_MSG_NOTICE(Package SubMinor Version:  $PACKAGE_SUBMINOR_VERSION)
+dnl Provide a way to pass in a build number. This is used by CI/CD systems to record
+dnl each build. The version number is set by the value in AC_INIT (see above). For
+dnl people building the source, it's not customary to supply a build number (i.e.,
+dnl if you're building the code for your own use, a build number seems like overkill).
+dnl jhrg 3/16/21 (copied from libdap4's configure.ac)
+AC_ARG_WITH([build],
+            [AC_HELP_STRING([--with-build=<number>],
+             [Inject the integer build number (default is to not define a build number)])],
+            [build_number=${withval}], [build_number=])
+
+dnl If a build number is given and valid (it must be an integer), use it. If it's
+dnl given but invalid, print a message and exit.
+dnl PACKAGE_VERSION is used in the file VERSION.in - and that file is used to inject
+dnl the version or version-build_number into packages. jhrg 3/24/21
+AS_IF([test -n "$with_build"],
+    [AS_IF([echo $build_number | grep '^[[0-9]][[-0-9.]]*$' > /dev/null 2>&1 ],
+     [PACKAGE_VERSION=$PACKAGE_VERSION-$build_number
+      AC_MSG_NOTICE([PACKAGE_VERSION: $PACKAGE_VERSION])],
+     [AC_MSG_ERROR([Invalid build number given (must be an integer): $build_number])])])
+
+AS_IF([echo $PACKAGE_VERSION | grep '^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)-\([[0-9]]*\)$'],
+      [PACKAGE_MAJOR_VERSION=`echo $PACKAGE_VERSION | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)-\([[0-9]]*\)$@\1@'`
+       PACKAGE_MINOR_VERSION=`echo $PACKAGE_VERSION | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)-\([[0-9]]*\)$@\2@'`
+       PACKAGE_PATCH_VERSION=`echo $PACKAGE_VERSION | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)-\([[0-9]]*\)$@\3@'`
+       PACKAGE_BUILD_NUMBER=`echo $PACKAGE_VERSION | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)-\([[0-9]]*\)$@\4@'`],
+      [AS_IF([echo $PACKAGE_VERSION | grep '^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$'],
+       [PACKAGE_MAJOR_VERSION=`echo $PACKAGE_VERSION | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$@\1@'`
+        PACKAGE_MINOR_VERSION=`echo $PACKAGE_VERSION | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$@\2@'`
+        PACKAGE_PATCH_VERSION=`echo $PACKAGE_VERSION | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$@\3@'`
+        PACKAGE_BUILD_NUMBER=],
+       [AC_MSG_ERROR([VERSION file does not contain a valid version number (x.y.z or x.y.z-b)])])])
+
+AC_MSG_NOTICE(Package Major Version: $PACKAGE_MAJOR_VERSION)
+AC_MSG_NOTICE(Package Minor Version: $PACKAGE_MINOR_VERSION)
+AC_MSG_NOTICE(Package Patch Version: $PACKAGE_PATCH_VERSION)
+AC_MSG_NOTICE(Package Build Number: $PACKAGE_BUILD_NUMBER)
 AC_SUBST(PACKAGE_MAJOR_VERSION)
 AC_SUBST(PACKAGE_MINOR_VERSION)
-AC_SUBST(PACKAGE_SUBMINOR_VERSION)
+AC_SUBST(PACKAGE_PATCH_VERSION)
+AC_SUBST(PACKAGE_BUILD_NUMBER)
 
 dnl Add valgrind options - no longer include gcov, see --enable-coverage jhrg 12/18/20
 DODS_GCOV_VALGRIND
@@ -915,6 +946,7 @@ AH_BOTTOM([
 #endif /* _config_h */])
 
 AC_CONFIG_FILES([Makefile
+		 VERSION
 		 abi_checker.xml
 		 bes_dispatch.pc
 		 bes_ppt.pc
