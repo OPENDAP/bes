@@ -83,6 +83,12 @@ before_script:
   # This is now done in each step. Doing that made the libdap4 build a bit faster/cleaner
   # and hopefully that will be true here too. jhrg 3/24/21
   # - autoreconf --force --install --verbose
+  - source travis/travis_bes_build_offset.sh
+  - export BES_BUILD_NUMBER=$(expr $TRAVIS_BUILD_NUMBER - $BES_TRAVIS_BUILD_OFFSET)
+  - echo "BES_BUILD_NUMBER is ${BES_BUILD_NUMBER} = ${TRAVIS_BUILD_NUMBER} - ${LIBDAP_BES_BUILD_OFFSET}"
+  - echo "Travis default env:"
+  - printenv
+
 
 # Build all the stages for 'master'. For a PR, run the 'build' and 'package' stages,
 # but do not run the scan.
@@ -174,7 +180,7 @@ jobs:
     name: "dist"
     script:
       - autoreconf --force --install --verbose
-      - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --with-build=$LIBDAP_BUILD_NUMBER
+      - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --with-build=$BES_BUILD_NUMBER
       - make dist -j7
       # Make both a bes-<version>-<build num> and bes-snapshot tar.gz. This will simplify
       # other operations that use the bes source code. Note that the VERSION file holds a
