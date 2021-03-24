@@ -20,7 +20,7 @@ compiler: gcc
 branches:
   only:
   - master
-  - travis
+  - build-numbers
 
 addons:
   sonarcloud: true
