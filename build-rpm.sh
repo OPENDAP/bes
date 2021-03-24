@@ -5,7 +5,7 @@
 # in the BES's .travis.yml file. However, it is run _inside a Docker
 # container_ using values passed in by the .travis.yml file
 #
-# The env vars $HOME, $OS, $DIST, AND $LIBDAP_RPM_VERSION must be set.
+# The env vars $HOME, $OS, $DIST AND $LIBDAP_RPM_VERSION must be set.
 #
 # run the script like (with the obvious changes for CentOS7):
 # docker run -e OS=centos6 -e DIST=el6 -e LIBDAP_RPM_VERSION='3.20.0-1'

@@ -173,6 +173,7 @@ jobs:
     - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
     - docker run --volume $prefix/rpmbuild:/root/rpmbuild --volume $TRAVIS_BUILD_DIR:/root/travis
                  --env OS=centos7
+                 --env DIST=el7
                  --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
                  --env LIBDAP_BUILD_NUMBER=$LIBDAP_BUILD_NUMBER
                  --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
