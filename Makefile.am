@@ -114,12 +114,12 @@ rpm: dist
 # This will link with everything it can find in the local deps dir,
 # removing the need for EPEL
 all-static-rpm: dist
-	cp @PACKAGE@-@PACKAGE_VERSION@.tar.gz ~/rpmbuild/SOURCES
+	cp @PACKAGE@-@VERSION@.tar.gz ~/rpmbuild/SOURCES
 	rpmbuild -bb $(RPM_OPTIONS) bes.spec.all_static
 
 # Static RPM for CentOS 6 - the 'all-static-rpm' target requires CentOS 7
 c6-all-static-rpm: dist
-	cp @PACKAGE@-@PACKAGE_VERSION@.tar.gz ~/rpmbuild/SOURCES
+	cp @PACKAGE@-@VERSION@.tar.gz ~/rpmbuild/SOURCES
 	rpmbuild -bb $(RPM_OPTIONS) bes.spec.c6.all_static
 
 # Old comment: 
