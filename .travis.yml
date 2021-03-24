@@ -191,8 +191,8 @@ jobs:
       # string that is the version number as set by the configure script and the build
       # number passed into configure when it is run. jhrg 3/23/21
       - SOURCE_VERSION=$(cat VERSION)
-      - mv libdap-*.tar.gz libdap-$SOURCE_VERSION.tar.gz
-      - cp libdap-$SOURCE_VERSION.tar.gz libdap-snapshot.tar.gz
+      - mv bes-*.tar.gz bes-$SOURCE_VERSION.tar.gz
+      - cp bes-$SOURCE_VERSION.tar.gz bes-snapshot.tar.gz
       - ls -l *.tar.gz
 
 after_script:
