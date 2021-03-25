@@ -36,11 +36,11 @@
 
 namespace http {
 
-    /**
-     * An EffectiveUrl is always acquired by following redirects and so may include response
-     * headers received with the final redirect response.
-     */
-    class EffectiveUrl : public url {
+/**
+ * An EffectiveUrl is always acquired by following redirects and so may include response
+ * headers received with the final redirect response.
+ */
+class EffectiveUrl : public url {
     private:
 
         // We need order so we use two vectors instead of a map to hold the header "map"
@@ -59,6 +59,13 @@ namespace http {
         explicit EffectiveUrl(const std::string &url_s) : http::url(url_s), d_response_header_names(), d_response_header_values() {};
         explicit EffectiveUrl() : http::url(""), d_response_header_names(), d_response_header_values() {};
 
+
+        explicit EffectiveUrl(EffectiveUrl const &src_url) : http::url(src_url) {  }
+
+        explicit EffectiveUrl(http::url const &src_url) : http::url(src_url) {  }
+
+
+
         virtual ~EffectiveUrl(){ }
 
         bool is_expired() override;
@@ -66,10 +73,6 @@ namespace http {
         void get_header(const std::string &name, std::string &value, bool &found );
 
         void ingest_response_headers(const std::vector<std::string> &resp_hdrs);
-
-        void url(std::string url){
-            parse(url);
-        }
 
         std::string dump() override;
     };

@@ -197,7 +197,7 @@ std::string DmrppCommon::get_byte_order()
  * @return The number of chunk refs (byteStreams) held.
  */
 unsigned long DmrppCommon::add_chunk(
-        const string &data_url,
+        const http::url &data_url,
         const string &byte_order,
         unsigned long long size,
         unsigned long long offset,
@@ -210,7 +210,7 @@ unsigned long DmrppCommon::add_chunk(
 }
 
 unsigned long DmrppCommon::add_chunk(
-        const string &data_url,
+        const http::url &data_url,
         const string &byte_order,
         unsigned long long size,
         unsigned long long offset,

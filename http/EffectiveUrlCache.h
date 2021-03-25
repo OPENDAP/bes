@@ -63,7 +63,7 @@ private:
     static void delete_instance();
 
     friend class EffectiveUrlCacheTest;
-    http::EffectiveUrl *get(const std::string  &source_url);
+    http::EffectiveUrl *get(const http::url  &source_url);
     BESRegex *get_skip_regex();
     bool is_enabled();
 
@@ -75,7 +75,7 @@ public:
 
     static EffectiveUrlCache *TheCache();
 
-    std::string get_effective_url(const std::string &source_url);
+    const EffectiveUrl *get_effective_url(const http::url &source_url);
 
     void dump(std::ostream &strm) const override;
     virtual std::string dump() const;

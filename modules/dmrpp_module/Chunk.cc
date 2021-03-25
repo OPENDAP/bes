@@ -35,7 +35,6 @@
 #include <BESSyntaxUserError.h>
 #include <BESForbiddenError.h>
 #include <BESContextManager.h>
-#include <url_impl.h>
 
 #include "xml2json/include/xml2json.hpp"
 
@@ -103,7 +102,7 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
     auto chunk = reinterpret_cast<Chunk *>(data);
 
     BESDEBUG(MODULE, prolog << "BEGIN chunk->get_response_content_type():" << chunk->get_response_content_type()
-                            << " chunk->get_data_url(): " << chunk->get_data_url() << endl);
+                            << " chunk->get_data_url(): " << chunk->get_data_url().str() << endl);
 
     // When Content-Type is 'application/xml,' that's an error. jhrg 6/9/20
     if (chunk->get_response_content_type().find("application/xml") != string::npos) {
@@ -118,7 +117,7 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
             string json_message = xml2json(xml_message.c_str());
             rapidjson::Document d;
             d.Parse(json_message.c_str());
-            rapidjson::Value &message = d["Error"]["Message"];
+            // rapidjson::Value &message = d["Error"]["Message"];
             rapidjson::Value &code = d["Error"]["Code"];
 
             // We might want to get the "Code" from the "Error" if these text messages
@@ -128,7 +127,7 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
             if (string(code.GetString()) == "AccessDenied") {
                 stringstream msg;
                 msg << prolog << "ACCESS DENIED - The underlying object store has refused access to: ";
-                msg << chunk->get_data_url() << " Object Store Message: " << json_message;
+                msg << chunk->get_data_url().str() << " Object Store Message: " << json_message;
                 BESDEBUG(MODULE, msg.str() << endl);
                 VERBOSE(msg.str() << endl);
                 throw BESForbiddenError(msg.str(), __FILE__, __LINE__);
@@ -136,7 +135,7 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
             else {
                 stringstream msg;
                 msg << prolog << "ERROR - The underlying object store returned an error. ";
-                msg << "(Tried: " << chunk->get_data_url() << ") Object Store Message: " << json_message;
+                msg << "(Tried: " << chunk->get_data_url().str() << ") Object Store Message: " << json_message;
                 BESDEBUG(MODULE, msg.str() << endl);
                 VERBOSE(msg.str() << endl);
                 throw BESInternalError(msg.str(), __FILE__, __LINE__);
@@ -149,8 +148,8 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
         }
         catch (std::exception &e) {
             stringstream msg;
-            msg << prolog << "Caught std::exception when accessing object store data. (Tried: " << chunk->get_data_url() << ")" <<
-                " Message: " << e.what();
+            msg << prolog << "Caught std::exception when accessing object store data.";
+            msg << " (Tried: " << chunk->get_data_url().str() << ")" << " Message: " << e.what();
             BESDEBUG(MODULE, msg.str() << endl);
             throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
         }
@@ -478,7 +477,7 @@ void Chunk::add_tracking_query_param() {
     string aws_s3_url_http("http://s3.amazonaws.com/");
 
     // Is it an AWS S3 access? (y.find(x) returns 0 when y starts with x)
-    if (d_data_url.find(aws_s3_url_https) == 0 || d_data_url.find(aws_s3_url_http) == 0) {
+    if (d_data_url.str().find(aws_s3_url_https) == 0 || d_data_url.str().find(aws_s3_url_http) == 0) {
         // Yup, headed to S3.
         bool found = false;
         string cloudydap_context_value = BESContextManager::TheManager()->get_context(S3_TRACKING_CONTEXT, found);
@@ -647,7 +646,7 @@ void Chunk::read_chunk() {
 void Chunk::dump(ostream &oss) const {
     oss << "Chunk";
     oss << "[ptr='" << (void *) this << "']";
-    oss << "[data_url='" << d_data_url << "']";
+    oss << "[data_url='" << d_data_url.str() << "']";
     oss << "[offset=" << d_offset << "]";
     oss << "[size=" << d_size << "]";
     oss << "[chunk_position_in_array=(";
@@ -667,18 +666,18 @@ string Chunk::to_string() const {
 }
 
 
-std::string Chunk::get_data_url() const {
+http::url Chunk::get_data_url() const {
 
-    string data_url = EffectiveUrlCache::TheCache()->get_effective_url(d_data_url);
-    BESDEBUG(MODULE, prolog << "Using data_url: " << data_url << endl);
+    const http::EffectiveUrl *data_url = EffectiveUrlCache::TheCache()->get_effective_url(d_data_url);
+    BESDEBUG(MODULE, prolog << "Using data_url: " << data_url->str() << endl);
 
     // A conditional call to void Chunk::add_tracking_query_param()
     // here for the NASA cost model work THG's doing. jhrg 8/7/18
-    if (!d_query_marker.empty()) {
-        return data_url + d_query_marker;
-    }
+    // if (!d_query_marker.empty()) {
+    //    return data_url + d_query_marker;
+    // }
 
-    return data_url;
+    return *data_url;
 }
 
 } // namespace dmrpp

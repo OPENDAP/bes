@@ -28,7 +28,13 @@
 #include <utility>
 #include <vector>
 #include <memory>
+
+// BES
+#include "url_impl.h"
+
+// libdap4
 #include "util.h"
+
 
 // This is used to track access to 'cloudydap' accesses in the S3 logs
 // by adding a query string that will show up in those logs. This is
@@ -49,7 +55,7 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data);
  */
 class Chunk {
 private:
-    std::string d_data_url;
+    http::url d_data_url;
     std::string d_query_marker;
     std::string d_byte_order;
     unsigned long long d_size;
@@ -139,7 +145,7 @@ public:
      * @param pia_str A string that provides the logical position of this chunk
      * in an Array. Has the syntax '[1,2,3,4]'.
      */
-    Chunk(std::string data_url, std::string order, unsigned long long size, unsigned long long offset,
+    Chunk(const http::url &data_url, std::string order, unsigned long long size, unsigned long long offset,
             const std::string &pia_str = "") :
             d_data_url(std::move(data_url)), d_query_marker(""),
             d_byte_order(std::move(order)), d_size(size), d_offset(offset),
@@ -160,9 +166,9 @@ public:
      * @param pia_vec The logical position of this chunk in an Array; a std::vector
      * of unsigned ints.
      */
-    Chunk(std::string data_url, std::string order, unsigned long long size,
+    Chunk(const http::url &data_url, std::string order, unsigned long long size,
             unsigned long long offset, const std::vector<unsigned long long> &pia_vec) :
-            d_data_url(std::move(data_url)), d_query_marker(""), d_byte_order(std::move(order)), d_size(size), d_offset(offset),
+            d_data_url(data_url), d_query_marker(""), d_byte_order(std::move(order)), d_size(size), d_offset(offset),
             d_read_buffer_is_mine(true), d_bytes_read(0), d_read_buffer(nullptr),
             d_read_buffer_size(0), d_is_read(false), d_is_inflated(false)
     {
@@ -221,14 +227,14 @@ public:
     }
 
     /**
-     * @brief Get the data url string for this Chunk's data block
+     * @brief Get the data url for this Chunk's data block
      */
-    virtual std::string get_data_url() const;
+    virtual http::url get_data_url() const;
 
     /**
-     * @brief Set the data url string for this Chunk's data block
+     * @brief Set the data url for this Chunk's data block
      */
-    virtual void set_data_url(const std::string &data_url)
+    virtual void set_data_url(const http::url &data_url)
     {
         d_data_url = data_url;
     }

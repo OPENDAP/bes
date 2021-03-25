@@ -100,9 +100,9 @@ url::url(const map<string,string> &kvp)
     it = kvp.find(SOURCE_URL_KEY);
     itc = kvp_copy.find(SOURCE_URL_KEY);
     if(it != kvp.end() && itc != kvp_copy.end()){
-        d_source_url = it->second;
+        d_source_url_str = it->second;
         kvp_copy.erase(it->first);
-        BESDEBUG(MODULE, prolog << "Located SOURCE_URL_KEY(" << SOURCE_URL_KEY << ") value: " << d_source_url << endl);
+        BESDEBUG(MODULE, prolog << "Located SOURCE_URL_KEY(" << SOURCE_URL_KEY << ") value: " << d_source_url_str << endl);
     }
 
     for(itc = kvp_copy.begin(); itc != kvp_copy.end(); itc++){
@@ -240,7 +240,7 @@ void url::kvp(map<string,string>  &kvp){
     kvp.insert(pair<string,string>(HOST_KEY, d_host));
     kvp.insert(pair<string,string>(PATH_KEY, d_path));
     kvp.insert(pair<string,string>(QUERY_KEY, d_query));
-    kvp.insert(pair<string,string>(SOURCE_URL_KEY, d_source_url));
+    kvp.insert(pair<string,string>(SOURCE_URL_KEY, d_source_url_str));
     ss << d_ingest_time;
     kvp.insert(pair<string,string>(INGEST_TIME_KEY,ss.str()));
 
@@ -338,7 +338,7 @@ string url::dump(){
     string indent = indent_inc;
 
     ss << "http::url [" << this << "] " << endl;
-    ss << indent << "d_source_url: " << d_source_url << endl;
+    ss << indent << "d_source_url_str: " << d_source_url_str << endl;
     ss << indent << "d_protocol:   " << d_protocol << endl;
     ss << indent << "d_host:       " << d_host << endl;
     ss << indent << "d_path:       " << d_path << endl;

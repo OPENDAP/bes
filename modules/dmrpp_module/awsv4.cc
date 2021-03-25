@@ -298,16 +298,14 @@ namespace AWSV4 {
      * @param service The AWS service that is the target of the request (S3 by default)
      * @return The AWS V4 Signature string.
      */
-
     const std::string compute_awsv4_signature(
-            const std::string &uri_str,
+            const http::url &uri,
             const std::time_t &request_date,
             const std::string &public_key,
             const std::string &secret_key,
             const std::string &region,
             const std::string &service) {
 
-        http::url uri(uri_str);
 
         // canonical_uri is the path component of the URL. Later we will need the host.
         const auto canonical_uri = uri.path(); // AWSV4::canonicalize_uri(uri);
@@ -367,4 +365,18 @@ namespace AWSV4 {
 
         return authorization_header;
     }
+
+
+const std::string compute_awsv4_signature(
+        const std::string &uri_str,
+        const std::time_t &request_date,
+        const std::string &public_key,
+        const std::string &secret_key,
+        const std::string &region,
+        const std::string &service) {
+
+    http::url uri(uri_str);
+    return compute_awsv4_signature(uri,request_date,public_key,secret_key,region,service);
+}
+
 }

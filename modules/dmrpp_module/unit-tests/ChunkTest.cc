@@ -39,6 +39,7 @@
 #include "BESDebug.h"
 #include "TheBESKeys.h"
 
+#include "url_impl.h"
 #include "Chunk.h"
 
 #include "test_config.h"
@@ -151,7 +152,8 @@ public:
         try {
             BESContextManager::TheManager()->set_context(S3_TRACKING_CONTEXT, "request_id");
             // add_tracking_query_param() only works with S3 URLs. Bug? jhrg 8/9/18
-            d_chunk.set_data_url("http://s3.amazonaws.com/somewhereovertherainbow");
+            http::url data_url("http://s3.amazonaws.com/somewhereovertherainbow");
+            d_chunk.set_data_url(data_url);
 
             d_chunk.add_tracking_query_param();
 
@@ -175,7 +177,8 @@ public:
             BESContextManager::TheManager()->set_context(S3_TRACKING_CONTEXT, "request_id");
 
             // add_tracking_query_param() only works with S3 URLs. Bug? jhrg 8/9/18
-            d_chunk.set_data_url("http://s3.amazonaws.com/somewhereovertherainbow");
+            http::url some_url("http://s3.amazonaws.com/somewhereovertherainbow");
+            d_chunk.set_data_url(some_url);
 
             d_chunk.add_tracking_query_param();
 
@@ -198,7 +201,8 @@ public:
         try {
             // An S3 URL, but no context.
             BESContextManager::TheManager()->unset_context(S3_TRACKING_CONTEXT);   //>set_context("cloudydap", "request_id");
-            d_chunk.set_data_url("http://s3.amazonaws.com/somewhereovertherainbow");
+            http::url data_url("http://s3.amazonaws.com/somewhereovertherainbow");
+            d_chunk.set_data_url(data_url);
             d_chunk.add_tracking_query_param();
         }
         catch(BESError &be){

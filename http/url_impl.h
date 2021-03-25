@@ -35,36 +35,62 @@
 
 namespace http {
 
-
-
 class  url {
 private:
 
-    std::string d_source_url;
+    std::string d_source_url_str;
     std::string d_protocol;
     std::string d_host;
     std::string d_path;
     std::string d_query;
     std::map<std::string, std::vector<std::string> * > d_query_kvp;
     time_t d_ingest_time;
-
-protected:
-
-public:
+    bool d_trusted;
 
     void parse(const std::string &source_url);
 
-    explicit url():d_source_url(""), d_ingest_time(0) {
+protected:
+
+
+public:
+
+
+
+    explicit url() :
+            d_source_url_str(""),
+            d_protocol(""),
+            d_host(""),
+            d_path(""),
+            d_query(""),
+            d_ingest_time(0),
+            d_trusted(false) {
     }
-
-
-    // omitted copy, ==, accessors, ...
-    explicit url(const std::string &url_s):d_source_url(url_s), d_ingest_time(0) {
+    explicit url(const std::string &url_s, bool trusted=false) :
+            d_source_url_str(url_s),
+            d_protocol(""),
+            d_host(""),
+            d_path(""),
+            d_query(""),
+            d_ingest_time(0),
+            d_trusted(trusted) {
         parse(url_s);
     }
 
+    explicit url(http::url const &src_url){
+        d_source_url_str = src_url.d_source_url_str;
+        d_protocol = src_url.d_protocol;
+        d_host = src_url.d_host;
+        d_path = src_url.d_path;
+        d_query = src_url.d_query;
+        d_ingest_time = src_url.d_ingest_time;
+        d_trusted = src_url.d_trusted;
+    }
+
     ~url();
-    virtual std::string str() const { return d_source_url; }
+
+
+
+    virtual std::string str() const { return d_source_url_str; }
 
     virtual std::string protocol() const { return d_protocol; }
 
@@ -84,6 +110,7 @@ public:
     virtual void query_parameter_values(const std::string &key, std::vector<std::string> &values) const;
 
     virtual bool is_expired();
+    virtual bool is_trusted() { return d_trusted; };
 
     virtual std::string dump();
 
