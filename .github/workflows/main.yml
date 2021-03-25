@@ -20,7 +20,7 @@ jobs:
     
     steps:
       - name: Packages
-        run: sudo apt-get --yes install libxml2-dev uuid-dev libcurl4-openssl-dev libcppunit-dev libicu-dev libgdal-dev
+        run: sudo apt-get --yes install libxml2-dev uuid-dev libcurl4-openssl-dev libcppunit-dev libicu-dev libgdal-dev flex
      
       - name: cache-deps
         id: cache-deps
@@ -32,7 +32,6 @@ jobs:
       - name: build dependencies
         if: steps.cache-deps.outputs.cache-hit != 'true'
         run: |
-          echo $GITHUB_PATH
           echo "$GITHUB_PATH:$prefix/deps/bin:$prefix/bin" >> $GITHUB_PATH
           git clone https://github.com/OPENDAP/hyrax-dependencies
           cd hyrax-dependencies
