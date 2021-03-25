@@ -95,11 +95,11 @@ before_script:
 # Build all the stages for 'master'. For a PR, run the 'build' and 'package' stages,
 # but do not run the scan.
 stages:
+  - name: package
+    if:  branch = master
   - name: build
     if: branch = master
   - name: scan
-    if:  branch = master
-  - name: package
     if:  branch = master
 
 jobs:
