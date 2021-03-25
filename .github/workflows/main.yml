@@ -10,8 +10,9 @@ env:
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
+  # FIXME Remove these comments before merging. jhrg 3/25/21
+  # pull_request:
+  #   branches: [ master ]
   workflow_dispatch:
 
 jobs:
