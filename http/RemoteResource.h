@@ -146,12 +146,12 @@ namespace http {
     protected:
         RemoteResource() :
                 d_fd(0), d_initialized(false), d_resourceCacheFileName(""),
-                d_response_headers(0), d_http_response_headers(0), d_expires_interval(HttpCache::getCacheExpiresTimeFromConfig()) {
+                d_response_headers(0), d_http_response_headers(0), d_expires_interval(HttpCache::getCacheExpiresTime()) {
         }
 
     public:
         // RemoteResource(const std::string &url, const std::string &uid = "", const std::string &echo_token = "");
-        RemoteResource(const std::string &url, const std::string &uid = "", long long expires_interval = HttpCache::getCacheExpiresTimeFromConfig());
+        RemoteResource(const std::string &url, const std::string &uid = "", long long expires_interval = HttpCache::getCacheExpiresTime());
 
         virtual ~RemoteResource();
 

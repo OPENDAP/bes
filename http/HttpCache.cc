@@ -85,7 +85,7 @@ namespace http {
         return size_in_megabytes;
     }
 
-    unsigned long long HttpCache::getCacheExpiresTimeFromConfig() {
+    unsigned long long HttpCache::getCacheExpiresTime() {
         bool found = false;
         string time;
         unsigned long time_in_seconds = 0;
@@ -95,10 +95,7 @@ namespace http {
             std::istringstream iss(time);
             iss >> time_in_seconds;
         } else {
-            stringstream msg;
-            msg << prolog << "The BES Key " << HTTP_CACHE_EXPIRES_TIME_KEY << " is not set.";
-            BESDEBUG(HTTP_MODULE, msg.str() << endl);
-            throw BESInternalError(msg.str(), __FILE__, __LINE__);
+            time_in_seconds = 3600;
         }
 
         return time_in_seconds;
