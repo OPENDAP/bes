@@ -97,7 +97,7 @@ before_script:
 # but do not run the scan.
 stages:
   - name: build
-    if: branch = master
+    if: branch = master OR branch = build-numbers
   - name: scan
     if:  branch = master
   - name: package
