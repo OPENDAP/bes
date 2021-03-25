@@ -9,9 +9,9 @@ env:
 
 on:
   push:
-    branches: [ master gdal314]
+    branches: [ master ]
   pull_request:
-    branches: [ master gdal314]
+    branches: [ master ]
   workflow_dispatch:
 
 jobs:
@@ -20,7 +20,7 @@ jobs:
     
     steps:
       - name: Packages
-        run: sudo apt-get --yes install libxml2-dev uuid-dev libcurl4-openssl-dev libcppunit-dev libicu-dev
+        run: sudo apt-get --yes install libxml2-dev uuid-dev libcurl4-openssl-dev libcppunit-dev libicu-dev fl-dev
      
       - name: cache-deps
         id: cache-deps
