@@ -22,7 +22,6 @@ compiler: gcc
 branches:
   only:
   - master
-  - build-numbers
 
 addons:
   sonarcloud: true
