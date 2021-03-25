@@ -14,10 +14,15 @@
 # they will be easily identifiable.
 #
 # Http.Cache.size - The maxium size of the Gateway cache, in megabytes.
+#
+# Http.Cache.expires - The expiration time in seconds for cached resources
+# 60 is equal to 1 minute
+# 3600 is equal to 1 hour
 
 Http.Cache.dir=/tmp/hyrax_http
 Http.Cache.prefix=http_
 Http.Cache.size=500
+Http.Cache.expires.time=3600
 
 # Cookie Files base (one file for each beslistener pid)
 Http.Cookies.File=/tmp/.hyrax-cookies

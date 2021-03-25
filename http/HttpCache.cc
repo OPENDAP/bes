@@ -85,6 +85,25 @@ namespace http {
         return size_in_megabytes;
     }
 
+    unsigned long long HttpCache::getCacheExpiresTimeFromConfig() {
+        bool found = false;
+        string time;
+        unsigned long time_in_seconds = 0;
+        TheBESKeys::TheKeys()->get_value(HTTP_CACHE_EXPIRES_TIME_KEY, time, found);
+
+        if (found) {
+            std::istringstream iss(time);
+            iss >> time_in_seconds;
+        } else {
+            stringstream msg;
+            msg << prolog << "The BES Key " << HTTP_CACHE_EXPIRES_TIME_KEY << " is not set.";
+            BESDEBUG(HTTP_MODULE, msg.str() << endl);
+            throw BESInternalError(msg.str(), __FILE__, __LINE__);
+        }
+
+        return time_in_seconds;
+    }
+
     string HttpCache::getCacheDirFromConfig() {
         bool found;
         string subdir = "";

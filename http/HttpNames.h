@@ -48,6 +48,7 @@
 #define HTTP_CACHE_DIR_KEY "Http.Cache.dir"
 #define HTTP_CACHE_PREFIX_KEY "Http.Cache.prefix"
 #define HTTP_CACHE_SIZE_KEY "Http.Cache.size"
+#define HTTP_CACHE_EXPIRES_TIME_KEY "Http.Cache.expires.time"
 
 #define HTTP_NETRC_FILE_KEY "Http.netrc.file"
 
