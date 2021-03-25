@@ -22,6 +22,7 @@ compiler: gcc
 branches:
   only:
   - master
+  - build-nums-redux
 
 addons:
   sonarcloud: true
@@ -96,7 +97,7 @@ before_script:
 # but do not run the scan.
 stages:
   - name: package
-    if:  branch = master
+    if:  branch = master OR branch = build-nums-redux
   - name: build
     if: branch = master
   - name: scan
