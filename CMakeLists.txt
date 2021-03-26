@@ -471,8 +471,8 @@ add_executable(bes
     dispatch/ShowNodeResponseHandler.h
     dispatch/TheBESKeys.cc
     dispatch/TheBESKeys.h
-    dispatch/AllowedHosts.cc
-    dispatch/AllowedHosts.h
+        http/AllowedHosts.cc
+        http/AllowedHosts.h
 
     http/url_impl.cc
     http/url_impl.h
