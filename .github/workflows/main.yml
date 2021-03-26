@@ -16,12 +16,15 @@ on:
 
 jobs:
   ubuntu-build:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-18.04
     
     steps:
       - name: Packages
         run: sudo apt-get --yes install libxml2-dev uuid-dev libcurl4-openssl-dev libcppunit-dev libicu-dev libgdal-dev flex
      
+      - name: Set PATH
+        run: echo "$GITHUB_PATH:$prefix/deps/bin:$prefix/bin" >> $GITHUB_PATH
+        
       - name: cache-deps
         id: cache-deps
         uses: actions/cache@v2
@@ -32,11 +35,10 @@ jobs:
       - name: build dependencies
         if: steps.cache-deps.outputs.cache-hit != 'true'
         run: |
-          echo "$GITHUB_PATH:$prefix/deps/bin:$prefix/bin" >> $GITHUB_PATH
           git clone https://github.com/OPENDAP/hyrax-dependencies
           cd hyrax-dependencies
           git checkout gdal314
-          make --jobs=$jobs
+          make bison
           gdal-config --formats
 
       - name: cache-libdap4
