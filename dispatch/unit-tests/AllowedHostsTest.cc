@@ -118,10 +118,11 @@ public:
 
     CPPUNIT_TEST_SUITE_END();
 
-    bool can_access(string url)
+    bool can_access(string url_str)
     {
-        if (debug) cout << "Checking remote access permission for url: '" << url << "' result: ";
-        bool result = bes::AllowedHosts::theHosts()->is_allowed(url);
+        std::shared_ptr<http::url> target_url( new http::url(url_str));
+        if (debug) cout << "Checking remote access permission for url: '" << target_url.str() << "' result: ";
+        bool result = bes::AllowedHosts::theHosts()->is_allowed(target_url);
         if (debug) cout << (result ? "true" : "false") << endl;
         return result;
     }
