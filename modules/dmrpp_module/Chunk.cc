@@ -666,7 +666,7 @@ string Chunk::to_string() const {
 }
 
 
-http::url Chunk::get_data_url() const {
+const http::url Chunk::get_data_url() const {
 
     const http::EffectiveUrl *data_url = EffectiveUrlCache::TheCache()->get_effective_url(d_data_url);
     BESDEBUG(MODULE, prolog << "Using data_url: " << data_url->str() << endl);
