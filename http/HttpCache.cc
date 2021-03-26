@@ -85,7 +85,7 @@ namespace http {
         return size_in_megabytes;
     }
 
-    unsigned long long HttpCache::getCacheExpiresTime() {
+    unsigned long HttpCache::getCacheExpiresTime() {
         bool found = false;
         string time;
         unsigned long time_in_seconds = 0;
@@ -95,7 +95,7 @@ namespace http {
             std::istringstream iss(time);
             iss >> time_in_seconds;
         } else {
-            time_in_seconds = 3600;
+            time_in_seconds = REMOTE_RESOURCE_DEFAULT_EXPIRED_INTERVAL;
         }
 
         return time_in_seconds;

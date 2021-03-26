@@ -42,8 +42,6 @@
 #include "rapidjson/document.h"
 #include "HttpCache.h"
 
-//#define REMOTE_RESOURCE_DEFAULT_EXPIRED_INTERVAL -1
-
 namespace http {
 
 /**
