@@ -57,11 +57,13 @@ using namespace std;
 #define BES_CATALOG_ROOT_KEY "BES.Catalog.catalog.RootDirectory"
 
 #define prolog std::string("RemoteResource::").append(__func__).append("() - ")
-#define MODULE "rr"
+#define MODULE HTTP_MODULE
 
 namespace http {
 
-    RemoteResource::RemoteResource(const std::string &url,const std::string &uid, long long expiredInterval){
+    RemoteResource::RemoteResource(const std::string &target_url_str,const std::string &uid, long long expiredInterval){
+
+        d_remoteResourceUrl = shared_ptr<http::url>(new http::url(target_url_str));
 
         d_fd = 0;
         d_initialized = false;
@@ -74,12 +76,13 @@ namespace http {
 
         d_expires_interval = expiredInterval;
 
-        if (url.empty()) {
+        if (target_url_str.empty()) {
             throw BESInternalError(prolog + "Remote resource URL is empty.", __FILE__, __LINE__);
         }
 
-        if(url.find(FILE_PROTOCOL) == 0){
-            d_resourceCacheFileName = url.substr(strlen(FILE_PROTOCOL));
+        if(d_remoteResourceUrl->protocol() == FILE_PROTOCOL){
+            BESDEBUG(MODULE,prolog << "Found FILE protocol." << endl);
+            d_resourceCacheFileName = d_remoteResourceUrl->path();
             while(BESUtil::endsWith(d_resourceCacheFileName,"/")){
                 // Strip trailing slashes, because this about files, not directories
                 d_resourceCacheFileName = d_resourceCacheFileName.substr(0,d_resourceCacheFileName.length()-1);
@@ -94,11 +97,11 @@ namespace http {
             if(d_resourceCacheFileName.find(catalog_root) !=0 ){
                 d_resourceCacheFileName = BESUtil::pathConcat(catalog_root,d_resourceCacheFileName);
             }
+            BESDEBUG(MODULE,"d_resourceCacheFileName: " << d_resourceCacheFileName << endl);
             d_initialized =true;
         }
-        else if(url.find(HTTPS_PROTOCOL) == 0  || url.find(HTTP_PROTOCOL) == 0){
-            d_remoteResourceUrl = url;
-            BESDEBUG(MODULE, prolog << "URL: " << d_remoteResourceUrl << endl);
+        else if( d_remoteResourceUrl->protocol() == HTTPS_PROTOCOL || d_remoteResourceUrl->protocol() == HTTP_PROTOCOL ){
+            BESDEBUG(MODULE, prolog << "URL: " << d_remoteResourceUrl->str() << endl);
 #if 0
 
             if (!d_uid.empty()){
@@ -115,7 +118,7 @@ namespace http {
 
         }
         else {
-            string err = prolog + "Unsupported protocol: " + url;
+            string err = prolog + "Unsupported protocol: " + d_remoteResourceUrl->protocol();
             throw BESInternalError(err, __FILE__, __LINE__);
         }
 
@@ -199,12 +202,11 @@ namespace http {
      * ( Closes the file descriptor opened when retrieveResource() was called.)
      */
     RemoteResource::~RemoteResource() {
-        BESDEBUG(MODULE, prolog << "BEGIN resourceURL: " << d_remoteResourceUrl << endl);
+        BESDEBUG(MODULE, prolog << "BEGIN resourceURL: " << d_remoteResourceUrl->str() << endl);
 
         delete d_response_headers;
         d_response_headers = 0;
         BESDEBUG(MODULE, prolog << "Deleted d_response_headers." << endl);
-
 
         if (!d_resourceCacheFileName.empty()) {
             HttpCache *cache = HttpCache::get_instance();
@@ -214,16 +216,6 @@ namespace http {
                 d_resourceCacheFileName.clear();
             }
         }
-
-#if 0
-        if (d_curl) {
-            curl_easy_cleanup(d_curl);
-            BESDEBUG(MODULE, prolog << "Called curl_easy_cleanup()." << endl);
-        }
-        d_curl = 0;
-#endif
-        BESDEBUG(MODULE, prolog << "Clearing resourceURL: " << d_remoteResourceUrl << endl);
-        d_remoteResourceUrl.clear();
         BESDEBUG(MODULE, prolog << "END" << endl);
     }
 
@@ -233,7 +225,7 @@ namespace http {
      */
     std::string RemoteResource::getCacheFileName() {
         if (!d_initialized) {
-            throw BESInternalError(prolog + "STATE ERROR: Remote Resource " + d_remoteResourceUrl +
+            throw BESInternalError(prolog + "STATE ERROR: Remote Resource " + d_remoteResourceUrl->str() +
                                    " has Not Been Retrieved.", __FILE__, __LINE__);
         }
         return d_resourceCacheFileName;
@@ -263,7 +255,7 @@ namespace http {
      * @param replace_value
      */
     void RemoteResource::retrieveResource(const std::map<std::string, std::string> &content_filters) {
-        BESDEBUG(MODULE, prolog << "BEGIN   resourceURL: " << d_remoteResourceUrl << endl);
+        BESDEBUG(MODULE, prolog << "BEGIN   resourceURL: " << d_remoteResourceUrl->str() << endl);
         bool mangle = true;
 
         if (d_initialized) {
@@ -275,7 +267,7 @@ namespace http {
         if (!cache) {
             ostringstream oss;
             oss << prolog << "FAILED to get local cache. ";
-            oss << "Unable to proceed with request for " << this->d_remoteResourceUrl;
+            oss << "Unable to proceed with request for " << this->d_remoteResourceUrl->str();
             oss << " The server MUST have a valid HTTP cache configuration to operate." << endl;
             BESDEBUG(MODULE, oss.str());
             throw BESInternalError(oss.str(), __FILE__, __LINE__);
@@ -283,7 +275,7 @@ namespace http {
 
         // Get the name of the file in the cache (either the code finds this file or
         // or it makes it).
-        d_resourceCacheFileName = cache->get_cache_file_name(d_uid, d_remoteResourceUrl, mangle);
+        d_resourceCacheFileName = cache->get_cache_file_name(d_uid, d_remoteResourceUrl->str(), mangle);
         BESDEBUG(MODULE, prolog << "d_resourceCacheFileName: " << d_resourceCacheFileName << endl);
 
         // @TODO MAKE THIS RETRIEVE THE CACHED DATA TYPE IF THE CACHED RESPONSE IF FOUND
@@ -292,7 +284,7 @@ namespace http {
         //   to subsequent accesses of the cached object. Since we have to have a type, for now we just set the type
         //   from the url. If down below we DO an HTTP GET then the headers will be evaluated and the type set by setType()
         //   But really - we gotta fix this.
-        http::get_type_from_url(d_remoteResourceUrl, d_type);
+        http::get_type_from_url(d_remoteResourceUrl->str(), d_type);
         BESDEBUG(MODULE, prolog << "d_type: " << d_type << endl);
 
         try {
@@ -328,9 +320,10 @@ namespace http {
                 return;
             }
 
-            string msg = prolog + "Failed to acquire cache read lock for remote resource: '";
-            msg += d_remoteResourceUrl + "\n";
-            throw BESInternalError(msg, __FILE__, __LINE__);
+            stringstream msg;
+            msg << prolog + "Failed to acquire cache read lock for remote resource: '";
+            msg << d_remoteResourceUrl->str() << endl;
+            throw BESInternalError(msg.str(), __FILE__, __LINE__);
 
         }
         catch (BESError &besError) {
@@ -369,7 +362,7 @@ namespace http {
         if (!cache) {
             ostringstream oss;
             oss << prolog << "FAILED to get local cache. ";
-            oss << "Unable to proceed with request for " << this->d_remoteResourceUrl;
+            oss << "Unable to proceed with request for " << this->d_remoteResourceUrl->str();
             oss << " The server MUST have a valid HTTP cache configuration to operate." << endl;
             BESDEBUG(MODULE, oss.str());
             throw BESInternalError(oss.str(), __FILE__, __LINE__);
@@ -447,11 +440,8 @@ namespace http {
             (*d_response_headers).push_back(line);
             BESDEBUG(MODULE, prolog << "header:   " << line << endl);
         }
-
         ingest_http_headers_and_type();
-
-        return;
-    } //end RemoteResource::load_hdrs_from_file()
+   } //end RemoteResource::load_hdrs_from_file()
 
     /**
      * Checks if a cache resource is older than an hour
@@ -501,13 +491,13 @@ namespace http {
 
             BESStopWatch besTimer;
             if (BESDebug::IsSet("rr") || BESDebug::IsSet(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()){
-                besTimer.start(prolog + "source url: " + d_remoteResourceUrl);
+                besTimer.start(prolog + "source url: " + d_remoteResourceUrl->str());
             }
 
-            BESDEBUG(MODULE, prolog << "Saving resource " << d_remoteResourceUrl << " to cache file " << d_resourceCacheFileName << endl);
+            BESDEBUG(MODULE, prolog << "Saving resource " << d_remoteResourceUrl->str() << " to cache file " << d_resourceCacheFileName << endl);
             curl::http_get_and_write_resource(d_remoteResourceUrl, fd, d_response_headers); // Throws BESInternalError if there is a curl error.
 
-            BESDEBUG(MODULE,  prolog << "Resource " << d_remoteResourceUrl << " saved to cache file " << d_resourceCacheFileName << endl);
+            BESDEBUG(MODULE,  prolog << "Resource " << d_remoteResourceUrl->str() << " saved to cache file " << d_resourceCacheFileName << endl);
 
             // rewind the file
             // FIXME I think the idea here is that we have the file open and we should just keep
@@ -549,12 +539,14 @@ namespace http {
                 (*d_http_response_headers)[key] = value;
             }
         }
+        BESDEBUG(MODULE, prolog << "Ingested " << d_http_response_headers->size() << " response headers." << endl);
+
         std::map<string, string>::iterator it;
         string type;
 
         // Try and figure out the file type first from the
         // Content-Disposition in the http header response.
-
+        BESDEBUG(MODULE, prolog << "Checking Content-Disposition headers for type information." << endl);
         string content_disp_hdr;
         content_disp_hdr = get_http_response_header("content-disposition");
         if (!content_disp_hdr.empty()) {
@@ -568,6 +560,7 @@ namespace http {
         // next, translate to the BES MODULE name. It's also possible
         // that even though Content-disposition was available, we could
         // not determine the type of the file.
+        BESDEBUG(MODULE, prolog << "Checking Content-Type headers for type information." << endl);
         string content_type = get_http_response_header("content-type");
         if (type.empty() && !content_type.empty()) {
             http::get_type_from_content_type(content_type, type);
@@ -576,15 +569,16 @@ namespace http {
 
         // still haven't figured out the type. Now check the actual URL
         // and see if we can't match the URL to a MODULE name
+        BESDEBUG(MODULE, prolog << "Checking URL path for type information." << endl);
         if (type.empty()) {
-            http::get_type_from_url(d_remoteResourceUrl, type);
-            BESDEBUG(MODULE, prolog << "Evaluated url '" << d_remoteResourceUrl << "' matched type: \"" << type << "\"" << endl);
+            http::get_type_from_url(d_remoteResourceUrl->str(), type);
+            BESDEBUG(MODULE, prolog << "Evaluated url '" << d_remoteResourceUrl->str() << "' matched type: \"" << type << "\"" << endl);
         }
 
         // still couldn't figure it out, punt
         if (type.empty()) {
             string err = prolog + "Unable to determine the type of data"
-                         + " returned from '" + d_remoteResourceUrl + "'  Setting type to 'unknown'";
+                         + " returned from '" + d_remoteResourceUrl->str() + "'  Setting type to 'unknown'";
             BESDEBUG(MODULE, err << endl);
             type = "unknown";
             //throw BESSyntaxUserError( err, __FILE__, __LINE__ ) ;

@@ -207,7 +207,7 @@ namespace http {
 
             try {
                 if(debug) cerr << prolog << "   target_url: " << target_url << endl;
-                effective_url = curl::retrieve_effective_url(target_url);
+                auto effective_url = curl::retrieve_effective_url(target_url);
                 if(debug) cerr << prolog << "effective_url: " << effective_url->str() << endl;
                 if(debug) cerr << prolog << " expected_url: " << expected_url << endl;
 

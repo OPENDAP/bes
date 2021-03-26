@@ -143,53 +143,64 @@ url::~url()
  * @param source_url
  */
 void url::parse(const string &source_url) {
-    const string prot_end("://");
+    const string protcol_end("://");
     string::const_iterator prot_i = search(source_url.begin(), source_url.end(),
-                                           prot_end.begin(), prot_end.end());
+                                           protcol_end.begin(), protcol_end.end());
+
+    if(prot_i != source_url.end())
+        advance(prot_i, protcol_end.length());
+
     d_protocol.reserve(distance(source_url.begin(), prot_i));
     transform(source_url.begin(), prot_i,
               back_inserter(d_protocol),
               ptr_fun<int, int>(tolower)); // protocol is icase
     if (prot_i == source_url.end())
         return;
-    advance(prot_i, prot_end.length());
-    string::const_iterator path_i = find(prot_i, source_url.end(), '/');
-    d_host.reserve(distance(prot_i, path_i));
-    transform(prot_i, path_i,
-              back_inserter(d_host),
-              ptr_fun<int, int>(tolower)); // host is icase
-    string::const_iterator query_i = find(path_i, source_url.end(), '?');
-    d_path.assign(path_i, query_i);
-    if (query_i != source_url.end())
-        ++query_i;
-    d_query.assign(query_i, source_url.end());
 
+    if(d_protocol == FILE_PROTOCOL){
+        d_path = source_url.substr(source_url.find(protcol_end) + protcol_end.length());
 
-    if(!d_query.empty()){
-        vector<string> records;
-        string delimiters = "&";
-        BESUtil::tokenize(d_query, records, delimiters);
-        vector<string>::iterator i = records.begin();
-        for(; i!=records.end(); i++){
-            size_t index = i->find('=');
-            if(index != string::npos) {
-                string key = i->substr(0, index);
-                string value = i->substr(index+1);
-                BESDEBUG(MODULE, prolog << "key: " << key << " value: " << value << endl);
-                map<string, vector<string>* >::const_iterator record_it;
-                record_it = d_query_kvp.find(key);
-                if(record_it != d_query_kvp.end()){
-                    vector<string> *values = record_it->second;
-                    values->push_back(value);
-                }
-                else {
-                    vector<string> *values = new vector<string>();
-                    values->push_back(value);
-                    d_query_kvp.insert(pair<string, vector<string>*>(key, values));
+    }
+    else {
+        string::const_iterator path_i = find(prot_i, source_url.end(), '/');
+        d_host.reserve(distance(prot_i, path_i));
+        transform(prot_i, path_i,
+                  back_inserter(d_host),
+                  ptr_fun<int, int>(tolower)); // host is icase
+        string::const_iterator query_i = find(path_i, source_url.end(), '?');
+        d_path.assign(path_i, query_i);
+        if (query_i != source_url.end())
+            ++query_i;
+        d_query.assign(query_i, source_url.end());
+
+        if(!d_query.empty()){
+            vector<string> records;
+            string delimiters = "&";
+            BESUtil::tokenize(d_query, records, delimiters);
+            vector<string>::iterator i = records.begin();
+            for(; i!=records.end(); i++){
+                size_t index = i->find('=');
+                if(index != string::npos) {
+                    string key = i->substr(0, index);
+                    string value = i->substr(index+1);
+                    BESDEBUG(MODULE, prolog << "key: " << key << " value: " << value << endl);
+                    map<string, vector<string>* >::const_iterator record_it;
+                    record_it = d_query_kvp.find(key);
+                    if(record_it != d_query_kvp.end()){
+                        vector<string> *values = record_it->second;
+                        values->push_back(value);
+                    }
+                    else {
+                        vector<string> *values = new vector<string>();
+                        values->push_back(value);
+                        d_query_kvp.insert(pair<string, vector<string>*>(key, values));
+                    }
                 }
             }
         }
     }
+
+
     time(&d_ingest_time);
 }
 

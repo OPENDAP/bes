@@ -188,16 +188,16 @@ namespace http {
 
 
 
-            string src_url_00 = "http://started_here.com";
-            http::EffectiveUrl *effective_url_00 = new http::EffectiveUrl("https://ended_here.com");
+            http::url src_url_00("http://started_here.com");
+            auto effective_url_00 = new http::EffectiveUrl("https://ended_here.com");
 
-            EffectiveUrlCache::TheCache()->d_effective_urls.insert(pair<string,EffectiveUrl *>(src_url_00,effective_url_00));
+            EffectiveUrlCache::TheCache()->d_effective_urls.insert(pair<string,EffectiveUrl *>(src_url_00.str(),effective_url_00));
             CPPUNIT_ASSERT( EffectiveUrlCache::TheCache()->d_effective_urls.size() == 1);
 
 
             // This one does not add the URL or even check it because it _should_ be matching the skip regex.
-            string result_url = EffectiveUrlCache::TheCache()->get_effective_url(src_url_00);
-            CPPUNIT_ASSERT( result_url ==  src_url_00);
+            auto result_url = EffectiveUrlCache::TheCache()->get_effective_url(src_url_00);
+            CPPUNIT_ASSERT( result_url->str() ==  src_url_00.str());
 
 
         }
@@ -211,10 +211,10 @@ namespace http {
 
                 // This one does not add the URL or even check it because it _should_ be matching the skip regex
                 // in the bes.conf
-                string src_url_03 = "https://foobar.com/opendap/data/nc/fnoc1.nc?dap4.ce=u;v";
-                string result_url =EffectiveUrlCache::TheCache()->get_effective_url(src_url_03);
+                http::url src_url_03("https://foobar.com/opendap/data/nc/fnoc1.nc?dap4.ce=u;v");
+                auto result_url = EffectiveUrlCache::TheCache()->get_effective_url(src_url_03);
                 CPPUNIT_ASSERT( EffectiveUrlCache::TheCache()->d_effective_urls.size() == 0);
-                CPPUNIT_ASSERT( result_url == src_url_03 );
+                CPPUNIT_ASSERT( result_url->str() == src_url_03.str() );
 
             }
             catch (BESError be){
@@ -245,15 +245,15 @@ namespace http {
                 CPPUNIT_ASSERT( EffectiveUrlCache::TheCache()->d_effective_urls.size() == 2);
 
                 // This one actually does the thing
-                string src_url_02 = "http://test.opendap.org/opendap";
-                auto *effective_url_02 = new http::EffectiveUrl("http://test.opendap.org/opendap/");
+                http::url src_url_02("http://test.opendap.org/opendap");
+                auto expected_url_02 = new http::EffectiveUrl("http://test.opendap.org/opendap/");
 
-                if(debug) cerr << prolog << "Retrieving effective URL for: " << src_url_02 << endl;
-                string result_url = EffectiveUrlCache::TheCache()->get_effective_url(src_url_02);
+                if(debug) cerr << prolog << "Retrieving effective URL for: " << src_url_02.str() << endl;
+                auto result_url = EffectiveUrlCache::TheCache()->get_effective_url(src_url_02);
                 CPPUNIT_ASSERT( EffectiveUrlCache::TheCache()->d_effective_urls.size() == 3);
 
                 if(debug) cerr << prolog << "EffectiveUrlCache::TheCache()->get_effective_url() returned: " << result_url << endl;
-                CPPUNIT_ASSERT(result_url == effective_url_02->str());
+                CPPUNIT_ASSERT(result_url->str() == expected_url_02->str());
 
             }
             catch (BESError be){
@@ -310,22 +310,21 @@ namespace http {
             if(debug) cerr << prolog << "BEGIN" << endl;
             string source_url;
             string value;
-            string result_url;
             try {
                 // The cache is disabled in bes.conf so we need to turn it on.
                 EffectiveUrlCache::TheCache()->d_enabled = true;
-                string thing1 = "https://d1jecqxxv88lkr.cloudfront.net/ghrcwuat-protected/rss_demo/rssmif16d__7/f16_ssmis_20031026v7.nc";
+                http::url thing1("https://d1jecqxxv88lkr.cloudfront.net/ghrcwuat-protected/rss_demo/rssmif16d__7/f16_ssmis_20031026v7.nc");
                 string thing1_out_of_region_effective_url_prefix = "https://d1jecqxxv88lkr.cloudfront.net/s3";
                 string thing1_in_region_effective_url_prefix = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/";
 
-                if(debug) cerr << prolog << "Retrieving effective URL for: " << thing1 << endl;
-                result_url = EffectiveUrlCache::TheCache()->get_effective_url(thing1);
+                if(debug) cerr << prolog << "Retrieving effective URL for: " << thing1.str() << endl;
+                auto result_url = EffectiveUrlCache::TheCache()->get_effective_url(thing1);
                 CPPUNIT_ASSERT( EffectiveUrlCache::TheCache()->d_effective_urls.size() == 1);
 
                 if(debug) cerr << prolog << "EffectiveUrlCache::TheCache()->get_effective_url() returned: " << result_url << endl;
                 CPPUNIT_ASSERT(
-                        result_url.rfind(thing1_in_region_effective_url_prefix, 0) == 0 ||
-                                result_url.rfind(thing1_out_of_region_effective_url_prefix, 0) == 0
+                        result_url->str().rfind(thing1_in_region_effective_url_prefix, 0) == 0 ||
+                                result_url->str().rfind(thing1_out_of_region_effective_url_prefix, 0) == 0
                 );
 
                 result_url = EffectiveUrlCache::TheCache()->get_effective_url(thing1);
@@ -351,24 +350,23 @@ namespace http {
             if(debug) cerr << prolog << "BEGIN" << endl;
             string source_url;
             string value;
-            string result_url;
             try {
                 // The cache is disabled in bes.conf so we need to turn it on.
                 EffectiveUrlCache::TheCache()->d_enabled = true;
-                string thing1 = "https://harmony.uat.earthdata.nasa.gov/service-results/harmony-uat-staging/public/"
-                                "sds/staged/ATL03_20200714235814_03000802_003_01.h5";
+                http::url thing1("https://harmony.uat.earthdata.nasa.gov/service-results/harmony-uat-staging/public/"
+                                "sds/staged/ATL03_20200714235814_03000802_003_01.h5");
                 string thing1_out_of_region_effective_url_prefix = "https://djpip0737hawz.cloudfront.net/s3";
                 string thing1_in_region_effective_url_prefix = "https://harmony-uat-staging.s3.us-west-2.amazonaws.com/public/";
 
-                if(debug) cerr << prolog << "Retrieving effective URL for: " << thing1 << endl;
-                result_url = EffectiveUrlCache::TheCache()->get_effective_url(thing1);
+                if(debug) cerr << prolog << "Retrieving effective URL for: " << thing1.str() << endl;
+                auto result_url = EffectiveUrlCache::TheCache()->get_effective_url(thing1);
                 CPPUNIT_ASSERT( EffectiveUrlCache::TheCache()->d_effective_urls.size() == 1);
 
                 if(debug) cerr << prolog << "EffectiveUrlCache::TheCache()->get_effective_url() returned: " << result_url << endl;
 
                 CPPUNIT_ASSERT(
-                        result_url.rfind(thing1_in_region_effective_url_prefix, 0) == 0 ||
-                                result_url.rfind(thing1_out_of_region_effective_url_prefix, 0) == 0
+                        result_url->str().rfind(thing1_in_region_effective_url_prefix, 0) == 0 ||
+                                result_url->str().rfind(thing1_out_of_region_effective_url_prefix, 0) == 0
                 );
 
 

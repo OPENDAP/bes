@@ -38,6 +38,7 @@
 #include "RCReader.h"
 #endif
 
+#include "url_impl.h"
 #include "RemoteResource.h"
 #include "rapidjson/document.h"
 
@@ -55,7 +56,8 @@ namespace http {
     private:
         friend class RemoteResourceTest;
         /// Resource URL that an instance of this class represents
-        std::string d_remoteResourceUrl;
+        // std::string d_remoteResourceUrl;
+        std::shared_ptr<http::url> d_remoteResourceUrl;
 
         /// Open file descriptor for the resource content (Returned from the cache).
         int d_fd;

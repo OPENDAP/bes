@@ -104,10 +104,6 @@ void EffectiveUrlCache::delete_instance()
  */
 EffectiveUrlCache::~EffectiveUrlCache()
 {
-    map<string , http::EffectiveUrl *>::iterator it;
-    for(it = d_effective_urls.begin(); it!= d_effective_urls.end(); it++){
-        delete it->second;
-    }
     d_effective_urls.clear();
 
     if(d_skip_regex){
@@ -164,8 +160,8 @@ string EffectiveUrlCache::dump() const
  *
  * @param source_url
  */
-http::EffectiveUrl *EffectiveUrlCache::get(const http::url  &source_url){
-    http::EffectiveUrl *effective_url=nullptr;
+shared_ptr<http::EffectiveUrl> EffectiveUrlCache::get_eu(const http::url  &source_url){
+    shared_ptr<http::EffectiveUrl> effective_url(nullptr);
     auto it = d_effective_urls.find(source_url.str());
     if(it!=d_effective_urls.end()){
         effective_url = (*it).second;
@@ -186,7 +182,7 @@ http::EffectiveUrl *EffectiveUrlCache::get(const http::url  &source_url){
  * @param source_url
  * @returns The effective URL
 */
-const EffectiveUrl *EffectiveUrlCache::get_effective_url(const http::url &source_url)
+shared_ptr<http::EffectiveUrl> EffectiveUrlCache::get_effective_url(const http::url &source_url)
 {
 
     // This lock is a RAII implementation. It will block until the mutex is
@@ -194,7 +190,7 @@ const EffectiveUrl *EffectiveUrlCache::get_effective_url(const http::url &source
     std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
 
     BESDEBUG(MODULE, prolog << "BEGIN url: " << source_url.str() << endl);
-    http::EffectiveUrl *effective_url = nullptr;
+    shared_ptr<http::EffectiveUrl> effective_url(nullptr);
 
     if(is_enabled()){
 
@@ -205,7 +201,7 @@ const EffectiveUrl *EffectiveUrlCache::get_effective_url(const http::url &source
         // if it's not an HTTP url there is nothing to cache.
         if (source_url.str().find(HTTP_PROTOCOL) != 0 && source_url.str().find(HTTPS_PROTOCOL) != 0) {
             BESDEBUG(MODULE, prolog << "END Not an HTTP request, SKIPPING." << endl);
-            return new http::EffectiveUrl(source_url);
+            return shared_ptr<http::EffectiveUrl>(new http::EffectiveUrl(source_url));
         }
 
         BESRegex *skip_regex = get_skip_regex();
@@ -215,7 +211,7 @@ const EffectiveUrl *EffectiveUrlCache::get_effective_url(const http::url &source
                 BESDEBUG(MODULE, prolog << "END Candidate url matches the "
                                            "no_redirects_regex_pattern [" << skip_regex->pattern() <<
                                         "][match_length=" << match_length << "] SKIPPING." << endl);
-                return new http::EffectiveUrl(source_url);
+                return shared_ptr<http::EffectiveUrl>(new http::EffectiveUrl(source_url));
             }
             BESDEBUG(MODULE, prolog << "Candidate url: '" << source_url.str() << "' does NOT match the "
                                 "skip_regex pattern [" << skip_regex->pattern() << "]" << endl);
@@ -224,7 +220,7 @@ const EffectiveUrl *EffectiveUrlCache::get_effective_url(const http::url &source
             BESDEBUG(MODULE, prolog << "The cache_effective_urls_skip_regex() was NOT SET "<< endl);
         }
 
-        effective_url = get(source_url);
+        effective_url = get_eu(source_url);
 
         // See if the data_access_url has already been processed into a terminal URL
         bool retrieve_and_cache = !effective_url; // If there's no effective_url we gotta go get it.
@@ -254,7 +250,7 @@ const EffectiveUrl *EffectiveUrlCache::get_effective_url(const http::url &source
     } // EucLock dat_lock is released when the point of execution reaches this brace and dat_lock goes out of scope.
     else {
         BESDEBUG(MODULE, prolog << "CACHE IS DISABLED." << endl);
-        effective_url = new http::EffectiveUrl(source_url);
+        effective_url = shared_ptr<http::EffectiveUrl>(new http::EffectiveUrl(source_url));
     }
     BESDEBUG(MODULE, prolog << "END" << endl);
     return effective_url;

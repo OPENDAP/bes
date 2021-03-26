@@ -209,7 +209,7 @@ namespace http {
         void url_ingest_test(){
 
             http::url url(expired_source_url);
-            CPPUNIT_ASSERT(url.protocol() == "https");
+            CPPUNIT_ASSERT(url.protocol() == HTTPS_PROTOCOL);
             CPPUNIT_ASSERT(url.host() == "ghrcwuat-protected.s3.us-west-2.amazonaws.com");
             CPPUNIT_ASSERT(url.path() == "/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc");
 

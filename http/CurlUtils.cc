@@ -783,7 +783,7 @@ CURL *init_effective_url_retriever_handle(const string &target_url, struct curl_
  * @exception Error Thrown if libcurl encounters a problem; the libcurl
  * error message is stuffed into the Error object.
  */
-void http_get_and_write_resource(const string &target_url,
+void http_get_and_write_resource(const std::shared_ptr<http::url>& target_url,
                                  const int fd,
                                  vector<string> *http_response_headers) {
 
@@ -796,7 +796,7 @@ void http_get_and_write_resource(const string &target_url,
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
     // Before we do anything, make sure that the URL is OK to pursue.
     if (!bes::AllowedHosts::theHosts()->is_allowed(target_url)) {
-        string err = (string) "The specified URL " + target_url
+        string err = (string) "The specified URL " + target_url->str()
                      + " does not match any of the accessible services in"
                      + " the allowed hosts list.";
         BESDEBUG(MODULE, prolog << err << endl);
@@ -808,7 +808,7 @@ void http_get_and_write_resource(const string &target_url,
 
     try {
         // OK! Make the cURL handle
-        ceh = init(target_url, req_headers, http_response_headers);
+        ceh = init(target_url->str(), req_headers, http_response_headers);
 
         set_error_buffer(ceh, error_buffer);
 
@@ -1542,7 +1542,7 @@ bool eval_curl_easy_perform_code(
      * @param target_url The URL to follow
      * @return A 'new' EffectiveUrl which will need to be deleted by the caller.
      */
-    http::EffectiveUrl *retrieve_effective_url(const string &target_url) {
+    std::shared_ptr<http::EffectiveUrl> retrieve_effective_url(const string &target_url) {
 
         vector<string> resp_hdrs;
         CURL *ceh = NULL;
@@ -1581,7 +1581,7 @@ bool eval_curl_easy_perform_code(
                             << "'"
                             << endl);
 
-            auto *eurl = new EffectiveUrl(effective_url_str, resp_hdrs);
+            std::shared_ptr<http::EffectiveUrl> eurl(new EffectiveUrl(effective_url_str, resp_hdrs));
 
             if (request_headers)
                 curl_slist_free_all(request_headers);

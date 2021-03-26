@@ -39,7 +39,11 @@
 
 namespace curl {
 
-void http_get_and_write_resource(const std::string &url,
+//void http_get_and_write_resource(const std::string &url,
+//                                 const int fd,
+//                                 std::vector<std::string> *http_response_headers){}
+
+void http_get_and_write_resource(const std::shared_ptr<http::url>& target_url,
                                  const int fd,
                                  std::vector<std::string> *http_response_headers);
 
@@ -49,7 +53,7 @@ std::string http_get_as_string(const std::string &url);
 
 rapidjson::Document http_get_as_json(const std::string &target_url);
 
-http::EffectiveUrl *retrieve_effective_url(const std::string &target_url);
+std::shared_ptr<http::EffectiveUrl> retrieve_effective_url(const std::string &target_url);
 
 std::string get_netrc_filename();
 

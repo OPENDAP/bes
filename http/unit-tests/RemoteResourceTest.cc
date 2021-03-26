@@ -33,7 +33,6 @@
 
 #include <GetOpt.h>
 #include <util.h>
-#include <HttpCache.h>
 
 #include "BESError.h"
 #include "BESDebug.h"
@@ -45,6 +44,7 @@
 #include "RemoteResource.h"
 #include "HttpNames.h"
 #include "HttpCache.h"
+#include "url_impl.h"
 
 #include "test_config.h"
 
@@ -214,7 +214,7 @@ public:
         if (bes_debug) show_file(bes_conf);
         TheBESKeys::ConfigFile = bes_conf;
 
-        if (bes_debug) BESDebug::SetUp("cerr,rr,bes,http");
+        if (bes_debug) BESDebug::SetUp("cerr,rr,bes,http,curl");
 
         if(!token.empty()){
             if(debug) cerr << "Setting BESContext " << EDL_AUTH_TOKEN_KEY<< " to: '"<< token << "'" << endl;
@@ -263,7 +263,7 @@ public:
         if(debug) cerr << "|--------------------------------------------------|" << endl;
         if(debug) cerr << prolog << "BEGIN" << endl;
 
-        string url = "file://";
+        string url = FILE_PROTOCOL;
         url += BESUtil::pathConcat(d_data_dir,"load_hdrs_from_file_test_file.txt");
         if(debug) cerr << prolog << "url: " << url << endl;
         RemoteResource rhr(url);
@@ -324,7 +324,7 @@ public:
             if(debug) cerr << prolog << "d_resourceCacheFilename: " << d_temp_file << endl;
 
             string source_url = "file://" + BESUtil::pathConcat(d_data_dir,"update_file_and_headers_test_file.txt");
-            rhr.d_remoteResourceUrl = source_url;
+            rhr.d_remoteResourceUrl = shared_ptr<http::url>(new http::url(source_url));
             if(debug) cerr << prolog << "d_remoteResourceUrl: " << source_url << endl;
 
             // Get a pointer to the singleton cache instance for this process.
