@@ -76,6 +76,7 @@ Http.MimeTypes+=h5:application/x-hdf5
 Http.Cache.dir=@abs_top_builddir@/modules/ncml_module/tests/cache
 Http.Cache.prefix=ncml_tests_
 Http.Cache.size=500
+Http.Cache.expires.time=3600
 
 #-----------------------------------------------------------------------#
 #                                                                       #

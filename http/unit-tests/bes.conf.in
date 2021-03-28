@@ -8,6 +8,7 @@ BES.LogName=/dev/null
 Http.Cache.dir=/tmp/hyrax_tests
 Http.Cache.prefix=http_unit_tests_
 Http.Cache.size=500
+Http.Cache.expires.time=3600
 
 Http.No.Retry.Regex=^https:\/\/.*\?code\=.*$
 Http.No.Retry.Regex+=^https:\/\/.*s3(\.|-).*\.amazonaws\.com\/.*$
