@@ -114,6 +114,7 @@ public:
     CPPUNIT_TEST(test_count_2);
     CPPUNIT_TEST(test_count_3);
     CPPUNIT_TEST(test_stare_subset);
+    CPPUNIT_TEST(test_stare_get_sidecar_uint64_values_2);
 
     CPPUNIT_TEST(intersection_function_test);
     CPPUNIT_TEST(count_function_test);
@@ -198,6 +199,18 @@ public:
         CPPUNIT_ASSERT(result->stare_indices.at(2) == 3440016191299518474);
         CPPUNIT_ASSERT(result->x_indices.at(2) == 2);
         CPPUNIT_ASSERT(result->y_indices.at(2) == 2);
+    }
+
+    void test_stare_get_sidecar_uint64_values_2() {
+        DBG(cerr << "--- test_stare_get_sidecar_uint64_values_2() test - BEGIN ---" << endl);
+
+	const string filename = "../../test/data/t1_sidecar.nc";
+	BaseType *variable = NULL;
+	vector<dods_uint64> values;
+	    
+	// Call our function.
+	get_sidecar_uint64_values_2(filename, variable, values);
+
     }
 
     // The one and only target index is in the 'dataset'

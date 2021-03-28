@@ -28,6 +28,7 @@
 
 #include <STARE.h>
 #include <hdf5.h>
+#include <netcdf.h>
 
 #include <BaseType.h>
 #include <Float64.h>
@@ -374,6 +375,53 @@ get_sidecar_int32_values(const string &filename, const string &variable, vector<
 
     //Read the data file and store the values of each dataset into an array
     H5Dread(dataset, H5T_NATIVE_INT, memspace, filespace, H5P_DEFAULT, &values[0]);
+}
+
+/**
+ * @brief Read the unsigned 64-bit integer array data
+ * @param file The HDF5 Id of an open file
+ * @param variable Get the stare indices for this dependent variable
+ * @param values Value-result parameter, a vector that can hold dods_uint64 values
+ */
+void
+get_sidecar_uint64_values_2(const string &filename, BaseType *variable, vector<dods_uint64> &values)
+{
+    int ncid;
+    int ret;
+    
+    //Read the file and store the datasets
+    if ((ret = nc_open(filename.c_str(), NC_NOWRITE, &ncid)))
+        throw BESInternalError("Could not open file " + filename + " - " + nc_strerror(ret), __FILE__, __LINE__);
+
+    // // Here we look up the name of the stare index data for 'variable.' For now,
+    // // use the name stored in 's_index_name'. jhrg 6/3/20
+
+    // hid_t dataset = H5Dopen(file, s_index_name.c_str(), H5P_DEFAULT);
+    // if (dataset < 0)
+    //     throw BESInternalError(string("Could not open dataset: ").append(s_index_name), __FILE__, __LINE__);
+
+    // hid_t dspace = H5Dget_space(dataset);
+    // const int ndims = H5Sget_simple_extent_ndims(dspace);
+    // vector<hsize_t> dims(ndims);
+
+    // //Get the size of the dimension so that we know how big to make the memory space
+    // //Each of the dataspaces should be the same size, if in the future they are different
+    // // sizes then the size of each dataspace will need to be calculated.
+    // H5Sget_simple_extent_dims(dspace, &dims[0], NULL);
+
+    // //We need to get the filespace and memspace before reading the values from each dataset
+    // hid_t filespace = H5Dget_space(dataset);
+
+    // hid_t memspace = H5Screate_simple(ndims, &dims[0], NULL);
+
+    // //Get the number of elements in the dataspace and use that to appropriate the proper size of the vectors
+    // values.resize(H5Sget_select_npoints(filespace));
+
+    // //Read the data file and store the values of each dataset into an array
+    // H5Dread(dataset, H5T_NATIVE_ULLONG, memspace, filespace, H5P_DEFAULT, &values[0]);
+
+    if ((ret = nc_close(ncid)))
+        throw BESInternalError("Could not close file " + filename + " - " + nc_strerror(ret),  __FILE__, __LINE__);
 }
 
 /**
