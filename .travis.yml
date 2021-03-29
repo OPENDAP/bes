@@ -10,9 +10,9 @@
 #
 # Try using Ubuntu Focal
 
-virt: lxd             # use an lxd container
-arch: amd64           # optional, this is default, routes to a full VM
-os: linux             # optional, this is default
+# virt: lxd             # use an lxd container
+# arch: amd64           # optional, this is default, routes to a full VM
+# os: linux             # optional, this is default
 dist: xenial          # or bionic | xenial | trusty | precise with xenial as default
 
 language: cpp
@@ -22,6 +22,7 @@ compiler: gcc
 branches:
   only:
   - master
+  - build-nums-redux
 
 addons:
   sonarcloud: true
@@ -95,12 +96,13 @@ before_script:
 # Build all the stages for 'master'. For a PR, run the 'build' and 'package' stages,
 # but do not run the scan.
 stages:
-  - name: package
-    if:  branch = master
   - name: build
     if: branch = master
   - name: scan
     if:  branch = master
+  - name: package
+    if: branch = master OR branch = build-nums-redux
+
 
 jobs:
   include:
