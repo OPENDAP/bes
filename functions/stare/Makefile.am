@@ -25,8 +25,8 @@ include $(top_srcdir)/coverage.mk
 # Old programs used at the start of the STARE project. jhrg 8/20/20
 # noinst_PROGRAMS = build_sidecar build_test_s_indices
 
-build_sidecar_SOURCES = build_sidecar.cc
-build_sidecar_LDADD = $(AM_LDADD)
+#build_sidecar_SOURCES = build_sidecar.cc
+#build_sidecar_LDADD = $(AM_LDADD)
 
 build_test_s_indices_SOURCES = build_test_s_indices.cc
 build_test_s_indices_LDADD = $(AM_LDADD)

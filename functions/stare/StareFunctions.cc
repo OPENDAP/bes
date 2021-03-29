@@ -388,7 +388,8 @@ get_sidecar_uint64_values_2(const string &filename, BaseType *variable, vector<d
 {
     int ncid;
     int ret;
-    
+
+    cout<<"howdy again "<<filename<<"\n";
     //Read the file and store the datasets
     if ((ret = nc_open(filename.c_str(), NC_NOWRITE, &ncid)))
         throw BESInternalError("Could not open file " + filename + " - " + nc_strerror(ret), __FILE__, __LINE__);

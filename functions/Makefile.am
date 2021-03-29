@@ -7,7 +7,7 @@
 AUTOMAKE_OPTIONS = foreign subdir-objects
 
 AM_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS) $(GDAL_CFLAGS)
-LIBADD = $(DAP_LIBS) $(GDAL_LDFLAGS)
+LIBADD = $(DAP_LIBS) $(GDAL_LDFLAGS) 
 
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:
@@ -37,7 +37,7 @@ DISTDIRS = unit-tests tests stare
 
 if BUILD_STARE
 SUBDIRS += stare
-LIBADD += $(H5_LDFLAGS) $(H5_LIBS) $(STARE_LDFLAGS) $(STARE_LIBS)
+LIBADD += $(NC_LDFLAGS) $(NC_LIBS) $(STARE_LDFLAGS) $(STARE_LIBS)
 endif
 
 if BUILD_GDAL

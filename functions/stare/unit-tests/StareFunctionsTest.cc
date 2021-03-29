@@ -204,13 +204,20 @@ public:
     void test_stare_get_sidecar_uint64_values_2() {
         DBG(cerr << "--- test_stare_get_sidecar_uint64_values_2() test - BEGIN ---" << endl);
 
-	const string filename = "../../test/data/t1_sidecar.nc";
-	BaseType *variable = NULL;
-	vector<dods_uint64> values;
+	try
+	{
+	    const string filename_1 = "../data/t1_sidecar.nc";
+	    BaseType *variable = NULL;
+	    vector<dods_uint64> values;
 	    
-	// Call our function.
-	get_sidecar_uint64_values_2(filename, variable, values);
-
+	    // Call our function.
+	    get_sidecar_uint64_values_2(filename_1, variable, values);
+	}
+	catch(BESError &e) {
+            DBG(cerr << e.get_verbose_message() << endl);
+	    cout << e.get_verbose_message() << endl;
+            CPPUNIT_FAIL("test_stare_get_sidecar_uint64_values_2() test failed");
+        }
     }
 
     // The one and only target index is in the 'dataset'
