@@ -795,7 +795,7 @@ void http_get_and_write_resource(const std::shared_ptr<http::url>& target_url,
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
     // Before we do anything, make sure that the URL is OK to pursue.
-    if (!bes::AllowedHosts::theHosts()->is_allowed(target_url)) {
+    if (!http::AllowedHosts::theHosts()->is_allowed(target_url)) {
         string err = (string) "The specified URL " + target_url->str()
                      + " does not match any of the accessible services in"
                      + " the allowed hosts list.";

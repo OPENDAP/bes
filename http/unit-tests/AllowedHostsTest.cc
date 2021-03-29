@@ -56,7 +56,7 @@ const string catalog_root_dir = BESUtil::assemblePath(TEST_SRC_DIR,"catalog_test
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 
-class RemoteAccessTest: public TestFixture {
+class AllowedHostsTest: public TestFixture {
 private:
 
     void show_file(string filename)
@@ -75,11 +75,11 @@ private:
     }
 
 public:
-    RemoteAccessTest()
+    AllowedHostsTest()
     {
     }
 
-    ~RemoteAccessTest()
+    ~AllowedHostsTest()
     {
     }
 
@@ -111,7 +111,7 @@ public:
         // BESCatalogList::TheCatalogList()->deref_catalog(BES_DEFAULT_CATALOG);
     }
 
-    CPPUNIT_TEST_SUITE( RemoteAccessTest );
+    CPPUNIT_TEST_SUITE( AllowedHostsTest );
 
     CPPUNIT_TEST(do_http_test);
     CPPUNIT_TEST(do_file_test);
@@ -121,8 +121,8 @@ public:
     bool can_access(string url_str)
     {
         std::shared_ptr<http::url> target_url( new http::url(url_str));
-        if (debug) cout << "Checking remote access permission for url: '" << target_url.str() << "' result: ";
-        bool result = bes::AllowedHosts::theHosts()->is_allowed(target_url);
+        if (debug) cout << "Checking remote access permission for url: '" << target_url->str() << "' result: ";
+        bool result = http::AllowedHosts::theHosts()->is_allowed(target_url);
         if (debug) cout << (result ? "true" : "false") << endl;
         return result;
     }
@@ -179,7 +179,7 @@ public:
     }
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(RemoteAccessTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(AllowedHostsTest);
 
 int main(int argc, char*argv[])
 {
@@ -195,8 +195,8 @@ int main(int argc, char*argv[])
             break;
         case 'h': {     // help - show test names
             cerr << "Usage: plistT has the following tests:" << endl;
-            const vector<Test*> &tests = RemoteAccessTest::suite()->getTests();
-            unsigned int prefix_len = RemoteAccessTest::suite()->getName().append("::").length();
+            const vector<Test*> &tests = AllowedHostsTest::suite()->getTests();
+            unsigned int prefix_len = AllowedHostsTest::suite()->getName().append("::").length();
             for (vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
                 cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
             }
@@ -219,7 +219,7 @@ int main(int argc, char*argv[])
     else {
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
-            test = RemoteAccessTest::suite()->getName().append("::").append(argv[i]);
+            test = AllowedHostsTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
     }

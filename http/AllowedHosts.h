@@ -38,7 +38,7 @@
 
 #define ALLOWED_HOSTS_BES_KEY "AllowedHosts"
 
-namespace bes {
+namespace http {
 
 /**
  * @brief Can a given URL be dereferenced given the BES's configuration?

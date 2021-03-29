@@ -46,10 +46,11 @@
 
 
 using namespace std;
-using namespace bes;
 
 #define MODULE "ah"
 #define prolog string("AllowedHosts::").append(__func__).append("() - ")
+
+namespace http {
 
 AllowedHosts *AllowedHosts::d_instance = nullptr;
 /**
@@ -63,18 +64,16 @@ static std::once_flag d_ah_init_once;
  * @return A pointer to the singleton instance
  */
 AllowedHosts *
-AllowedHosts::theHosts()
-{
+AllowedHosts::theHosts() {
     std::call_once(d_ah_init_once, AllowedHosts::initialize_instance);
     return d_instance;
 }
 
-AllowedHosts::AllowedHosts()
-{
+AllowedHosts::AllowedHosts() {
     bool found = false;
     string key = ALLOWED_HOSTS_BES_KEY;
     TheBESKeys::TheKeys()->get_values(ALLOWED_HOSTS_BES_KEY, d_allowed_hosts, found);
-    if(!found){
+    if (!found) {
         throw BESInternalError(string("The allowed hosts key, '") + ALLOWED_HOSTS_BES_KEY
                                + "' has not been configured.", __FILE__, __LINE__);
     }
@@ -83,8 +82,7 @@ AllowedHosts::AllowedHosts()
 /**
 * @brief This private static function initializes the singleton instance.
 */
-void AllowedHosts::initialize_instance()
-{
+void AllowedHosts::initialize_instance() {
     d_instance = new AllowedHosts();
 #ifdef HAVE_ATEXIT
     atexit(delete_instance);
@@ -94,8 +92,7 @@ void AllowedHosts::initialize_instance()
 /**
  * @brief This private static function can only be called once since it destroys the singleton instance for the duration of the process.
  */
-void AllowedHosts::delete_instance()
-{
+void AllowedHosts::delete_instance() {
     delete d_instance;
     d_instance = 0;
 }
@@ -117,12 +114,11 @@ bool AllowedHosts::is_allowed(const std::string &candidate_url) {
 }
 
 
-bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url)
-{
+bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url) {
     BESDEBUG(MODULE, prolog << "BEGIN candidate_url: " << candidate_url->str() << endl);
     bool isAllowed = false;
 
-    if(candidate_url->is_trusted()) {
+    if (candidate_url->is_trusted()) {
         BESDEBUG(MODULE, prolog << "END The URL is marked as TRUSTED. candidate_url: " << candidate_url->str() << endl);
         isAllowed = true;
     }
@@ -138,23 +134,22 @@ bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url)
 
         // Ensure that the file path starts with the catalog root dir.
         string file_path = candidate_url->str().substr(file_url.size());
-        BESDEBUG(MODULE, prolog << "file_path: "<< file_path << endl);
+        BESDEBUG(MODULE, prolog << "file_path: " << file_path << endl);
 
-        BESCatalogList *bcl =  BESCatalogList::TheCatalogList();
+        BESCatalogList *bcl = BESCatalogList::TheCatalogList();
         string default_catalog_name = bcl->default_catalog_name();
-        BESDEBUG(MODULE, prolog << "Searching for  catalog: "<< default_catalog_name << endl);
+        BESDEBUG(MODULE, prolog << "Searching for  catalog: " << default_catalog_name << endl);
         BESCatalog *bcat = bcl->find_catalog(default_catalog_name);
         if (bcat) {
-            BESDEBUG(MODULE, prolog << "Found catalog: "<< bcat->get_catalog_name() << endl);
-        }
-        else {
+            BESDEBUG(MODULE, prolog << "Found catalog: " << bcat->get_catalog_name() << endl);
+        } else {
             string msg = "OUCH! Unable to locate default catalog!";
             BESDEBUG(MODULE, prolog << msg << endl);
             throw BESInternalError(msg, __FILE__, __LINE__);
         }
 
         string catalog_root = bcat->get_root();
-        BESDEBUG(MODULE, prolog << "Catalog root: "<< catalog_root << endl);
+        BESDEBUG(MODULE, prolog << "Catalog root: " << catalog_root << endl);
 
         // Never a relative path shall be accepted.
         // change??
@@ -163,18 +158,16 @@ bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url)
         //}
 
         string relative_path;
-        if(file_path[0] == '/') {
-            if(file_path.length() < catalog_root.length()) {
+        if (file_path[0] == '/') {
+            if (file_path.length() < catalog_root.length()) {
                 isAllowed = false;
-            }
-            else {
+            } else {
                 int ret = file_path.compare(0, string::npos, catalog_root) == 0;
                 BESDEBUG(MODULE, prolog << "file_path.compare(): " << ret << endl);
-                isAllowed = (ret==0);
+                isAllowed = (ret == 0);
                 relative_path = file_path.substr(catalog_root.length());
             }
-        }
-        else {
+        } else {
             BESDEBUG(MODULE, prolog << "Relative path detected");
             relative_path = file_path;
             isAllowed = true;
@@ -183,7 +176,7 @@ bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url)
         // string::compare() returns 0 if the path strings match exactly.
         // And since we are just looking at the catalog.root as a prefix of the resource
         // name we only allow access to the resource for an exact match.
-        if(isAllowed) {
+        if (isAllowed) {
             // If we stop adding a '/' to file_path values that don't begin with one
             // then we need to detect the use of the relative path here
             bool follow_sym_links = bcat->get_catalog_utils()->follow_sym_links();
@@ -191,15 +184,14 @@ bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url)
                 BESUtil::check_path(relative_path, catalog_root, follow_sym_links);
             }
             catch (BESNotFoundError &e) {
-                isAllowed=false;
+                isAllowed = false;
             }
             catch (BESForbiddenError &e) {
-                isAllowed=false;
+                isAllowed = false;
             }
         }
-        BESDEBUG(MODULE, prolog << "File Access Allowed: "<< (isAllowed?"true ":"false ") << endl);
-    }
-    else {
+        BESDEBUG(MODULE, prolog << "File Access Allowed: " << (isAllowed ? "true " : "false ") << endl);
+    } else {
         // We assume it's an http(s) URL.
         vector<string>::const_iterator it = d_allowed_hosts.begin();
         vector<string>::const_iterator end_it = d_allowed_hosts.end();
@@ -207,7 +199,7 @@ bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url)
             string a_regex_pattern = *it;
             BESRegex reg_expr(a_regex_pattern.c_str());
             int match_result = reg_expr.match(candidate_url->str().c_str(), candidate_url->str().length());
-            if(match_result>=0) {
+            if (match_result >= 0) {
                 auto match_length = (unsigned int) match_result;
                 if (match_length == candidate_url->str().length()) {
                     BESDEBUG(MODULE,
@@ -219,9 +211,10 @@ bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url)
                 }
             }
         }
-        BESDEBUG(MODULE, prolog << "HTTP Access Allowed: "<< (isAllowed?"true ":"false ") << endl);
+        BESDEBUG(MODULE, prolog << "HTTP Access Allowed: " << (isAllowed ? "true " : "false ") << endl);
     }
-    BESDEBUG(MODULE, prolog << "END Access Allowed: "<< (isAllowed?"true ":"false ") << endl);
+    BESDEBUG(MODULE, prolog << "END Access Allowed: " << (isAllowed ? "true " : "false ") << endl);
     return isAllowed;
 }
 
+} // namespace http
