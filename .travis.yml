@@ -102,7 +102,8 @@ stages:
     if:  branch = master
   - name: package
     if: branch = master OR branch = build-nums-redux
-
+  - name: hyrax-olfs-trigger
+    if: branch = master OR branch = build-nums-redux
 
 jobs:
   include:
@@ -200,6 +201,15 @@ jobs:
       - cp bes-$SOURCE_VERSION.tar.gz bes-snapshot.tar.gz
       - ls -l *.tar.gz
 
+  - stage: hyrax-olfs-trigger
+    name: "Hyrax OLFS Trigger"
+    script:
+      - export STAGE=hyrax-olfs
+      - echo $STAGE
+      - autoreconf --force --install --verbose
+      - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --with-build=$BES_BUILD_NUMBER
+      - ./travis/trigger-olfs-build.sh
+
 after_script:
   - ./travis/upload-test-results.sh
 
@@ -233,5 +243,5 @@ deploy:
 #
 # CAVEAT: In after_deploy failures will not affect the build outcome, they will be ignored.
 #
-after_deploy:
-  - if test x"$BES_BUILD" = x"centos7" -a x"$DEPLOY" = x"S3"; then ./travis/trigger-olfs-build.sh; fi
+# after_deploy:
+#  - if test x"$BES_BUILD" = x"centos7" -a x"$DEPLOY" = x"S3"; then ./travis/trigger-olfs-build.sh; fi
