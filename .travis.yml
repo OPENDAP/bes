@@ -198,7 +198,6 @@ jobs:
       - SOURCE_VERSION=$(cat VERSION)
       - mv bes-*.tar.gz bes-$SOURCE_VERSION.tar.gz
       - cp bes-$SOURCE_VERSION.tar.gz bes-snapshot.tar.gz
-      - ls -l *.tar.gz
 
   - stage: hyrax-olfs-trigger
     name: "Hyrax OLFS Trigger"
