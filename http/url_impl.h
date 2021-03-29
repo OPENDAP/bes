@@ -86,9 +86,17 @@ public:
         d_trusted = src_url.d_trusted;
     }
 
-    ~url();
+    explicit url(const std::shared_ptr<http::url>& source_url){
+        d_source_url_str = source_url->d_source_url_str;
+        d_protocol = source_url->d_protocol;
+        d_host = source_url->d_host;
+        d_path = source_url->d_path;
+        d_query = source_url->d_query;
+        d_ingest_time = source_url->d_ingest_time;
+        d_trusted = source_url->d_trusted;
+    }
 
-
+    virtual ~url();
 
     virtual std::string str() const { return d_source_url_str; }
 

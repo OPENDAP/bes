@@ -62,6 +62,7 @@
 #include "DmrppArray.h"
 
 #include "CurlUtils.h"
+#include "HttpNames.h"
 
 #include "Base64.h"
 
@@ -914,8 +915,9 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
         if (parser->check_attribute("href", attributes, nb_attributes)) {
             parser->dmrpp_dataset_href = parser->get_attribute_val("href", attributes, nb_attributes);
             BESDEBUG(PARSER, prolog << "Attempting to locate and cache the effective URL for Dataset URL: " << parser->dmrpp_dataset_href << endl);
-            string effective_url = EffectiveUrlCache::TheCache()->get_effective_url(parser->dmrpp_dataset_href);
-            BESDEBUG(PARSER, prolog << "EffectiveUrlCache::get_effective_url() returned: " << effective_url << endl);
+            shared_ptr<http::url> dataset_url(new http::url(parser->dmrpp_dataset_href));
+            auto effective_url = EffectiveUrlCache::TheCache()->get_effective_url(dataset_url);
+            BESDEBUG(PARSER, prolog << "EffectiveUrlCache::get_effective_url() returned: " << effective_url->str() << endl);
         }
         BESDEBUG(PARSER, prolog << "Dataset dmrpp:href is set to '" << parser->dmrpp_dataset_href << "'" << endl);
 
@@ -1126,7 +1128,8 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
         }
         // Ingest an dmrpp:chunk element and its attributes
         else if (strcmp(localname, "chunk") == 0) {
-            string data_url = "unknown_data_location";
+            string data_url_str = "unknown_data_location";
+            shared_ptr<http::url> data_url(nullptr);
             if (parser->check_attribute("href", attributes, nb_attributes)) {
 #if 0
                 istringstream data_url_ss(parser->xml_attrs["href"].value);
@@ -1135,22 +1138,25 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 data_url_ss.str() << endl);
 #endif
 
-                data_url = parser->get_attribute_val("href", attributes, nb_attributes);
-                BESDEBUG(PARSER, prolog << "Processing 'href' value into data_url. href: " << data_url << endl);
+                // This is the chunk elements href that we check.
+                data_url_str = parser->get_attribute_val("href", attributes, nb_attributes);
+                data_url = shared_ptr<http::url> ( new http::url(data_url_str));
+                BESDEBUG(PARSER, prolog << "Processing 'href' value into data_url. href: " << data_url->str() << endl);
                 // We may have to cache the last accessed/redirect URL for data_url here because this URL
                 // may be unique to this chunk.
-                BESDEBUG(PARSER, prolog << "Attempting to locate and cache the effective URL for Chunk URL: " << parser->dmrpp_dataset_href << endl);
-                string effective_url = EffectiveUrlCache::TheCache()->get_effective_url(data_url);
-                BESDEBUG(PARSER, prolog << "EffectiveUrlCache::get_effective_url() returned: " << effective_url << endl);
+                BESDEBUG(PARSER, prolog << "Attempting to locate and cache the effective URL for Chunk URL: " << data_url->str() << endl);
+                auto effective_url = EffectiveUrlCache::TheCache()->get_effective_url(data_url);
+                BESDEBUG(PARSER, prolog << "EffectiveUrlCache::get_effective_url() returned: " << effective_url->str() << endl);
             }
             else {
                 BESDEBUG(PARSER, prolog << "No attribute 'href' located. Trying Dataset/@dmrpp:href..." << endl);
                 // This bit of magic sets the URL used to get the data and it's
                 // magic in part because it may be a file or an http URL
-                data_url = parser->dmrpp_dataset_href;
+                data_url_str = parser->dmrpp_dataset_href;
+                data_url = shared_ptr<http::url> ( new http::url(data_url_str));
                 // We don't have to conditionally cache parser->dmrpp_dataset_href  here because that was
                 // done in the evaluation of the parser_start case.
-                BESDEBUG(PARSER, prolog << "Processing dmrpp:href into data_url. dmrpp:href='" << data_url << "'" << endl);
+                BESDEBUG(PARSER, prolog << "Processing dmrpp:href into data_url. dmrpp:href='" << data_url->str() << "'" << endl);
             }
             // First we see if it's an HTTP URL, and if not we
             // make a local file url based on the Catalog Root
@@ -1162,7 +1168,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 && data_url.compare(0, file.size(), file))
 #endif
 
-            if (data_url.find("http://") != 0 && data_url.find("https://") != 0 && data_url.find("file://") != 0) {
+            if (data_url->protocol() != HTTP_PROTOCOL && data_url->protocol() != HTTPS_PROTOCOL && data_url->protocol() != FILE_PROTOCOL) {
                 BESDEBUG(PARSER, prolog << "data_url does NOT start with 'http://', 'https://' or 'file://'. "
                     "Retrieving default catalog root directory" << endl);
 
@@ -1177,12 +1183,13 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
 
                     BESDEBUG(PARSER, prolog << "Found default catalog root_dir: '" << utils->get_root_dir() << "'" << endl);
 
-                    data_url = BESUtil::assemblePath(utils->get_root_dir(), data_url, true);
-                    data_url = "file://" + data_url;
+                    data_url_str = BESUtil::assemblePath(utils->get_root_dir(), data_url_str, true);
+                    data_url_str = "file://" + data_url_str;
+                    data_url = shared_ptr<http::url> ( new http::url(data_url_str));
                 }
             }
 
-            BESDEBUG(PARSER, prolog << "Processed data_url: '" << data_url << "'" << endl);
+            BESDEBUG(PARSER, prolog << "Processed data_url: '" << data_url->str() << "'" << endl);
 
             unsigned long long offset = 0;
             unsigned long long size = 0;

@@ -54,6 +54,7 @@
 
 #include "awsv4.h"
 #include "HttpNames.h"
+#include "url_impl.h"
 #include "EffectiveUrl.h"
 #include "EffectiveUrlCache.h"
 #include "RemoteResource.h"
@@ -145,7 +146,7 @@ dmrpp::DmrppRequestHandler *bes_setup(
     return foo;
 }
 
-curl_slist *aws_sign_request_url(const string &target_url, curl_slist *request_headers) {
+curl_slist *aws_sign_request_url(shared_ptr<http::url> &target_url, curl_slist *request_headers) {
 
     if (debug) cerr << prolog << "BEGIN" << endl;
 
@@ -159,7 +160,7 @@ curl_slist *aws_sign_request_url(const string &target_url, curl_slist *request_h
 
         const std::string auth_header =
                 AWSV4::compute_awsv4_signature(
-                        target_url,
+                        target_url->str(),
                         request_time,
                         credentials->get(AccessCredentials::ID_KEY),
                         credentials->get(AccessCredentials::KEY_KEY),
@@ -184,19 +185,19 @@ curl_slist *aws_sign_request_url(const string &target_url, curl_slist *request_h
  * @param url
  * @return
  */
-size_t get_remote_size(string url, bool aws_signing) {
+size_t get_remote_size(shared_ptr<http::url> &target_url, bool aws_signing) {
     if (debug) cerr << prolog << "BEGIN" << endl;
 
     char error_buffer[CURL_ERROR_SIZE];
     std::vector<std::string> resp_hdrs;
-    curl_slist *request_headers = NULL;
+    curl_slist *request_headers = nullptr;
 
     request_headers = curl::add_auth_headers(request_headers);
 
     if (aws_signing)
-        request_headers = aws_sign_request_url(url, request_headers);
+        request_headers = aws_sign_request_url(target_url, request_headers);
 
-    CURL *ceh = curl::init(url, request_headers, &resp_hdrs);
+    CURL *ceh = curl::init(target_url->str(), request_headers, &resp_hdrs);
     curl::set_error_buffer(ceh, error_buffer);
 
     // In cURLville, CURLOPT_NOBODY means a HEAD request i.e. Don't send the response body a.k.a. "NoBody"
@@ -227,16 +228,16 @@ size_t get_remote_size(string url, bool aws_signing) {
         }
     }
     if (!done)
-        throw BESInternalError(prolog + "Failed to determine size of target resource: " + url, __FILE__, __LINE__);
+        throw BESInternalError(prolog + "Failed to determine size of target resource: " + target_url->str(), __FILE__, __LINE__);
 
     if (debug) cerr << prolog << "END" << endl;
 
     return how_big_it_is;
 }
-size_t get_max_retrival_size(const size_t &max_target_size, const string &effectiveUrl) {
+size_t get_max_retrival_size(const size_t &max_target_size, shared_ptr<http::url> &target_url) {
     size_t target_size = max_target_size;
     if (max_target_size == 0) {
-        target_size = get_remote_size(effectiveUrl, true);
+        target_size = get_remote_size(target_url, true);
         if (debug) cerr << prolog << "Remote resource size is " << max_target_size << " bytes.  " << endl;
     }
     return target_size;
@@ -247,7 +248,7 @@ size_t get_max_retrival_size(const size_t &max_target_size, const string &effect
  * @param target_url
  * @param output_file
  */
-void simple_get(const string target_url, const string output_file_base) {
+void simple_get(const string target_url_str, const string output_file_base) {
 
     string output_file = output_file_base + "_simple_get.out";
     vector<string> resp_hdrs;
@@ -258,7 +259,8 @@ void simple_get(const string target_url, const string output_file_base) {
     }
     {
         BESStopWatch sw;
-        sw.start(prolog + "url: " + target_url);
+        sw.start(prolog + "url: " + target_url_str);
+        shared_ptr<http::url> target_url(new http::url(target_url_str));
         curl::http_get_and_write_resource(target_url, fd,
                                           &resp_hdrs); // Throws BESInternalError if there is a curl error.
     }
@@ -279,7 +281,7 @@ void simple_get(const string target_url, const string output_file_base) {
  * @param chunk_count
  * @param chunks
  */
-void make_chunks(const string &target_url, const size_t &target_size, const size_t &chunk_count,
+void make_chunks(shared_ptr<http::url> &target_url, const size_t &target_size, const size_t &chunk_count,
                  vector<dmrpp::Chunk *> &chunks) {
     if (debug) cerr << prolog << "BEGIN" << endl;
     size_t chunk_size = target_size / chunk_count;
@@ -324,11 +326,11 @@ void make_chunks(const string &target_url, const size_t &target_size, const size
  * @param target_size
  * @param chunk_count
  */
-void serial_chunky_get(const string &target_url, const size_t target_size, const unsigned long chunk_count,
+void serial_chunky_get(shared_ptr<http::url> &target_url, const size_t target_size, const unsigned long chunk_count,
                        const string &output_file_base) {
 
-    string effectiveUrl = http::EffectiveUrlCache::TheCache()->get_effective_url(target_url);
-    if (debug) cerr << prolog << "curl::retrieve_effective_url() returned:  " << effectiveUrl << endl;
+    shared_ptr<http::url> effectiveUrl = http::EffectiveUrlCache::TheCache()->get_effective_url(target_url);
+    if (debug) cerr << prolog << "curl::retrieve_effective_url() returned:  " << effectiveUrl->str() << endl;
     size_t retrieval_size =  get_max_retrival_size(target_size, effectiveUrl);
 
     string output_file = output_file_base + "_serial_chunky_get.out";
@@ -432,7 +434,7 @@ void parse_dmrpp(const string &dmrpp_filename_url){
  * @param target_size
  * @param chunk_count
  */
-void add_chunks(const string &target_url, const size_t &target_size, const size_t &chunk_count,
+void add_chunks(shared_ptr<http::url> &target_url, const size_t &target_size, const size_t &chunk_count,
                 dmrpp::DmrppArray *target_array) {
 
     if (debug) cerr << prolog << "BEGIN" << endl;
@@ -482,7 +484,7 @@ void add_chunks(const string &target_url, const size_t &target_size, const size_
  * @param chunk_count
  * @param output_file_base
  */
-size_t array_get(const string &target_url, const size_t &target_size, const size_t &chunk_count,
+size_t array_get(shared_ptr<http::url> &target_url, const size_t &target_size, const size_t &chunk_count,
                  const string &output_file_base) {
 
     if (debug) cerr << prolog << "BEGIN" << endl;
@@ -502,7 +504,7 @@ size_t array_get(const string &target_url, const size_t &target_size, const size
 
     dmrpp::DmrppTypeFactory factory;
     dmrpp::DMRpp dmr(&factory);
-    dmr.set_href(target_url);
+    dmr.set_href(target_url->str());
     dmrpp::DmrppD4Group *root = dynamic_cast<dmrpp::DmrppD4Group *>(dmr.root());
     root->add_var_nocopy(target_array);
     root->set_in_selection(true);
@@ -643,7 +645,7 @@ int main(int argc, char *argv[]) {
     string bes_log_file;
     string bes_debug_log_file = "cerr";
     string bes_debug_keys = "bes,http,curl,dmrpp,dmrpp:3,dmrpp:4,rr";
-    string target_url = "https://www.opendap.org/pub/binary/hyrax-1.16/centos-7.x/bes-debuginfo-3.20.7-1.static.el7.x86_64.rpm";
+    shared_ptr<http::url> target_url(new http::url("https://www.opendap.org/pub/binary/hyrax-1.16/centos-7.x/bes-debuginfo-3.20.7-1.static.el7.x86_64.rpm"));
     string output_file_base("retriever");
     string http_cache_dir;
     string prefix;
@@ -684,7 +686,7 @@ int main(int argc, char *argv[]) {
                 bes_config_file = getopt.optarg;
                 break;
             case 'u':
-                target_url = getopt.optarg;
+                target_url = shared_ptr<http::url>(new http::url(getopt.optarg));
                 break;
             case 'l':
                 bes_log_file = getopt.optarg;
@@ -730,7 +732,7 @@ int main(int argc, char *argv[]) {
     cerr << prolog << "bes_debug_log_file: '" << bes_debug_log_file << "'" << endl;
     cerr << prolog << "bes_debug_keys: '" << bes_debug_keys << "'" << endl;
     cerr << prolog << "http_netrc_file: '" << http_netrc_file << "'" << endl;
-    cerr << prolog << "target_url: '" << target_url << "'" << endl;
+    cerr << prolog << "target_url: '" << target_url->str() << "'" << endl;
     cerr << prolog << "max_target_size: '" << max_target_size << "'" << endl;
     cerr << prolog << "number_o_chunks: 2^" << pwr2_number_o_chunks << endl;
     cerr << prolog << "reps: " << reps << endl;
@@ -755,7 +757,7 @@ int main(int argc, char *argv[]) {
         dmrpp::DmrppRequestHandler *dmrppRH = bes_setup(bes_config_file, bes_log_file, bes_debug_log_file,
                                                         bes_debug_keys, http_netrc_file,http_cache_dir);
         
-        string effectiveUrl = http::EffectiveUrlCache::TheCache()->get_effective_url(target_url);
+        shared_ptr<http::url> effectiveUrl = http::EffectiveUrlCache::TheCache()->get_effective_url(target_url);
         if (debug)  cerr << prolog << "curl::retrieve_effective_url() returned:  " << effectiveUrl << endl;
         size_t target_size =  get_max_retrival_size(max_target_size, effectiveUrl);
 

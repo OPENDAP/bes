@@ -196,11 +196,31 @@ public:
     virtual void ingest_byte_order(const std::string &byte_order_string);
     virtual std::string get_byte_order() const { return d_byte_order; }
 
-    virtual unsigned long add_chunk(const http::url &data_url, const std::string &byte_order,
-            unsigned long long size,  unsigned long long offset, const std::string &position_in_array = "");
+    virtual unsigned long add_chunk(
+            std::shared_ptr<http::url> d_data_url,
+            const std::string &byte_order,
+            unsigned long long size,
+            unsigned long long offset,
+            const std::string &position_in_array = "");
 
-    virtual unsigned long add_chunk(const http::url &data_url, const std::string &byte_order,
-            unsigned long long size, const unsigned long long offset, const std::vector<unsigned long long> &position_in_array);
+    virtual unsigned long add_chunk(
+            std::shared_ptr<http::url> d_data_url,
+            const std::string &byte_order,
+            unsigned long long size,
+            const unsigned long long offset,
+            const std::vector<unsigned long long> &position_in_array);
+
+    virtual unsigned long add_chunk(
+            const std::string &byte_order,
+            unsigned long long size,
+            unsigned long long offset,
+            const std::string &position_in_array = "");
+
+    virtual unsigned long add_chunk(
+            const std::string &byte_order,
+            unsigned long long size,
+            const unsigned long long offset,
+            const std::vector<unsigned long long> &position_in_array);
 
     virtual void dump(std::ostream & strm) const;
 };

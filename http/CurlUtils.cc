@@ -1533,21 +1533,20 @@ bool eval_curl_easy_perform_code(
         }
     }
 #endif
-
     /**
      * @brief Performs a small (4 byte) range get on the target URL. If successful the value of  returende EffectiveUrl
      * will be set to the value of the last accessed URL (CURLINFO_EFFECTIVE_URL), including the query string and the
      * accumulated response headers from the journey, in the order recieved.
      *
      * @param target_url The URL to follow
-     * @return A 'new' EffectiveUrl which will need to be deleted by the caller.
+     * @return A 'new' EffectiveUrl wrapped in a shared_ptr
      */
-    std::shared_ptr<http::EffectiveUrl> retrieve_effective_url(const string &target_url) {
+    std::shared_ptr<http::EffectiveUrl> retrieve_effective_url(std::shared_ptr<http::url> &target_url) {
 
         vector<string> resp_hdrs;
-        CURL *ceh = NULL;
+        CURL *ceh = nullptr;
         // CURLcode curl_code;
-        curl_slist *request_headers = NULL;
+        curl_slist *request_headers = nullptr;
 
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
@@ -1563,25 +1562,27 @@ bool eval_curl_easy_perform_code(
             BESDEBUG(MODULE, prolog << "BESLog::TheLog()->is_verbose(): "
                                     << (BESLog::TheLog()->is_verbose() ? "true" : "false") << endl);
 
-            ceh = init_effective_url_retriever_handle(target_url, request_headers, resp_hdrs);
+            ceh = init_effective_url_retriever_handle(target_url->str(), request_headers, resp_hdrs);
 
             {
                 BESStopWatch sw;
                 if (BESDebug::IsSet("euc") || BESDebug::IsSet(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) ||
                     BESLog::TheLog()->is_verbose()) {
-                    sw.start(prolog + " Following Redirects Starting With: " + target_url);
+                    sw.start(prolog + " Following Redirects Starting With: " + target_url->str());
                 }
                 super_easy_perform(ceh);
             }
 
             // After doing the thing with super_easy_perform() we retrieve the effective URL form the cURL handle.
-            string effective_url_str = get_effective_url(ceh, target_url);
-            BESDEBUG(MODULE, prolog << "Last Accessed URL(CURLINFO_EFFECTIVE_URL): " << effective_url_str << endl);
-            INFO_LOG(prolog << "Source URL: '" << target_url << "' CURLINFO_EFFECTIVE_URL: '" << effective_url_str
-                            << "'"
-                            << endl);
+            string e_url_str = get_effective_url(ceh, target_url->str());
+            std::shared_ptr<http::EffectiveUrl> eurl(new EffectiveUrl(e_url_str, resp_hdrs, target_url->is_trusted()));
 
-            std::shared_ptr<http::EffectiveUrl> eurl(new EffectiveUrl(effective_url_str, resp_hdrs));
+            BESDEBUG(MODULE, prolog << "Last Accessed URL(CURLINFO_EFFECTIVE_URL): " << eurl->str() <<
+                "(" << (eurl->is_trusted()?"":"NOT ") << "trusted)" << endl);
+
+            INFO_LOG(prolog << "Source URL: '" << target_url->str() << "(" << (target_url->is_trusted()?"":"NOT ") << "trusted)" <<
+                "' CURLINFO_EFFECTIVE_URL: '" << eurl->str()  << "'" << "(" << (eurl->is_trusted()?"":"NOT ") << "trusted)" << endl);
+
 
             if (request_headers)
                 curl_slist_free_all(request_headers);
@@ -1849,7 +1850,7 @@ curl_slist *add_auth_headers(curl_slist *request_headers) {
  * @return  The value of CURLINFO_EFFECTIVE_URL from the cURL handle ceh.
  */
 string get_effective_url(CURL *ceh, string requested_url) {
-    char *effectve_url = NULL;
+    char *effectve_url = nullptr;
     CURLcode curl_code = curl_easy_getinfo(ceh, CURLINFO_EFFECTIVE_URL, &effectve_url);
     if (curl_code != CURLE_OK) {
         stringstream msg;

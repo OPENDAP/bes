@@ -431,7 +431,7 @@ bool SuperChunk::add_chunk(const std::shared_ptr<Chunk> candidate_chunk) {
  */
 bool SuperChunk::is_contiguous(const std::shared_ptr<Chunk> candidate_chunk) {
     // Are the URLs the same?
-    bool contiguous  = candidate_chunk->get_data_url() == d_data_url;
+    bool contiguous  = candidate_chunk->get_data_url()->str() == d_data_url->str();
     if(contiguous){
         // If the URLs match then see if the locations are matching
         contiguous = (d_offset + d_size) == candidate_chunk->get_offset();

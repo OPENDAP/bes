@@ -197,7 +197,7 @@ std::string DmrppCommon::get_byte_order()
  * @return The number of chunk refs (byteStreams) held.
  */
 unsigned long DmrppCommon::add_chunk(
-        const http::url &data_url,
+        std::shared_ptr<http::url> data_url,
         const string &byte_order,
         unsigned long long size,
         unsigned long long offset,
@@ -210,7 +210,7 @@ unsigned long DmrppCommon::add_chunk(
 }
 
 unsigned long DmrppCommon::add_chunk(
-        const http::url &data_url,
+        std::shared_ptr<http::url> data_url,
         const string &byte_order,
         unsigned long long size,
         unsigned long long offset,
@@ -262,6 +262,37 @@ unsigned long DmrppCommon::add_chunk(
     d_chunks.push_back(chunk);
     return d_chunks.size();
 }
+
+
+
+
+unsigned long DmrppCommon::add_chunk(
+        const string &byte_order,
+        unsigned long long size,
+        unsigned long long offset,
+        const string &position_in_array)
+
+{
+    vector<unsigned long long> cpia_vector;
+    Chunk::parse_chunk_position_in_array_string(position_in_array, cpia_vector);
+    return add_chunk(byte_order, size, offset, cpia_vector);
+}
+
+unsigned long DmrppCommon::add_chunk(
+        const string &byte_order,
+        unsigned long long size,
+        unsigned long long offset,
+        const vector<unsigned long long> &position_in_array)
+{
+    std::shared_ptr<Chunk> chunk(new Chunk( byte_order, size, offset, position_in_array));
+
+    d_chunks.push_back(chunk);
+    return d_chunks.size();
+}
+
+
+
+
 
 /**
  * @brief read method for the atomic types

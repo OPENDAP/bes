@@ -33,6 +33,7 @@
 #include <curl/curl.h>
 
 #include "CurlUtils.h"
+#include "HttpNames.h"
 
 #include <time.h>
 
@@ -227,7 +228,8 @@ int curl_trace(CURL */*handle*/, curl_infotype type, char *data, size_t /*size*/
 }
 #endif
 
-dmrpp_easy_handle::dmrpp_easy_handle() : d_request_headers(0) {
+ // FIXME - This code does not make a cURL handle that follows links and I think that's a bug!
+dmrpp_easy_handle::dmrpp_easy_handle() : d_url(nullptr), d_request_headers(nullptr) {
 
     CURLcode res;
 
@@ -275,7 +277,6 @@ dmrpp_easy_handle::dmrpp_easy_handle() : d_request_headers(0) {
 #endif
 
     d_in_use = false;
-    d_url = "";
     d_chunk = 0;
 }
 
@@ -298,7 +299,7 @@ dmrpp_easy_handle::~dmrpp_easy_handle() {
  */
 void dmrpp_easy_handle::read_data() {
     // Treat HTTP/S requests specially; retry some kinds of failures.
-    if (d_url.find("https://") == 0 || d_url.find("http://") == 0) {
+    if (d_url->protocol() == HTTPS_PROTOCOL || d_url->protocol() == HTTP_PROTOCOL) {
         curl::super_easy_perform(d_handle);
     }
     else {
@@ -394,7 +395,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
     // Here we check to make sure that the we are only going to
     // access an approved location with this easy_handle
     if (!AllowedHosts::theHosts()->is_allowed(chunk->get_data_url())) {
-        string msg = "ERROR!! The chunk url " + chunk->get_data_url() + " does not match any of the AllowedHost rules. ";
+        string msg = "ERROR!! The chunk url " + chunk->get_data_url()->str() + " does not match any of the AllowedHost rules. ";
         throw BESForbiddenError(msg, __FILE__, __LINE__);
     }
 
@@ -415,7 +416,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
 
         handle->d_chunk = chunk;
 
-        CURLcode res = curl_easy_setopt(handle->d_handle, CURLOPT_URL, chunk->get_data_url().c_str());
+        CURLcode res = curl_easy_setopt(handle->d_handle, CURLOPT_URL, chunk->get_data_url()->str().c_str());
         curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_URL", handle->d_errbuf, __FILE__, __LINE__);
 
         // get the offset to offset + size bytes
@@ -482,7 +483,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
 
             const std::string auth_header =
                     AWSV4::compute_awsv4_signature(
-                            handle->d_url,
+                            handle->d_url->str(),
                             request_time,
                             credentials->get(AccessCredentials::ID_KEY),
                             credentials->get(AccessCredentials::KEY_KEY),
@@ -553,7 +554,7 @@ void CurlHandlePool::release_handle(dmrpp_easy_handle *handle) {
     // TODO Add a call to curl reset() here. jhrg 9/23/20
 
 #if KEEP_ALIVE
-    handle->d_url = "";
+    handle->d_url = nullptr;
     handle->d_chunk = 0;
     handle->d_in_use = false;
 #else
