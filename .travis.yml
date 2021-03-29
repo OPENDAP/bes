@@ -102,7 +102,7 @@ stages:
   - name: package
     if: branch = master
   - name: hyrax-olfs-trigger
-    if: branch = master
+    if: branch = master AND type != pull_request
 
 jobs:
   include:
