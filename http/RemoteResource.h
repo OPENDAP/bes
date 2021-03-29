@@ -40,8 +40,7 @@
 
 #include "RemoteResource.h"
 #include "rapidjson/document.h"
-
-#define REMOTE_RESOURCE_DEFAULT_EXPIRED_INTERVAL 3600
+#include "HttpCache.h"
 
 namespace http {
 
@@ -145,12 +144,12 @@ namespace http {
     protected:
         RemoteResource() :
                 d_fd(0), d_initialized(false), d_resourceCacheFileName(""),
-                d_response_headers(0), d_http_response_headers(0), d_expires_interval(REMOTE_RESOURCE_DEFAULT_EXPIRED_INTERVAL) {
+                d_response_headers(0), d_http_response_headers(0), d_expires_interval(HttpCache::getCacheExpiresTime()) {
         }
 
     public:
         // RemoteResource(const std::string &url, const std::string &uid = "", const std::string &echo_token = "");
-        RemoteResource(const std::string &url, const std::string &uid = "", long long expires_interval = REMOTE_RESOURCE_DEFAULT_EXPIRED_INTERVAL);
+        RemoteResource(const std::string &url, const std::string &uid = "", long long expires_interval = HttpCache::getCacheExpiresTime());
 
         virtual ~RemoteResource();
 

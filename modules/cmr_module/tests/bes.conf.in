@@ -91,6 +91,7 @@ BES.Catalog.CMR.TypeMatch+=nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$;
 Http.Cache.dir=@abs_top_builddir@/modules/cmr_module/tests/cache
 Http.Cache.prefix=cmr_tests_
 Http.Cache.size=500
+Http.Cache.expires.time=3600
 
 Http.MimeTypes=nc:application/x-netcdf
 Http.MimeTypes+=h4:application/x-hdf
