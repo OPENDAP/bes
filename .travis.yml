@@ -101,9 +101,9 @@ stages:
   - name: scan
     if:  branch = master
   - name: package
-    if: branch = master OR branch = build-nums-redux
+    if: branch = master
   - name: hyrax-olfs-trigger
-    if: branch = master OR branch = build-nums-redux
+    if: branch = master
 
 jobs:
   include:
@@ -236,12 +236,3 @@ deploy:
     on:
       branch: master
       condition: $BES_BUILD =~ ^centos7|srcdist$
-
-# The after_deploy section grabs the hyrax-docker project, sets the current snapshot time 
-# and pushes the result to GitHub. This push triggers TravisCI to build the Docker containers
-# for all of the Hyrax snapshot products. jhrg 10/28/19
-#
-# CAVEAT: In after_deploy failures will not affect the build outcome, they will be ignored.
-#
-# after_deploy:
-#  - if test x"$BES_BUILD" = x"centos7" -a x"$DEPLOY" = x"S3"; then ./travis/trigger-olfs-build.sh; fi
