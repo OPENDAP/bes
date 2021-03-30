@@ -27,6 +27,7 @@ Http.Cache.dir=@abs_top_builddir@/modules/cmr_module/unit-tests/static-cache
 #CMR.Cache.dir=/tmp/cache
 Http.Cache.prefix=cmr_
 Http.Cache.size=500
+Http.Cache.expires.time=3600
 
 Http.MimeTypes=nc:application/x-netcdf
 Http.MimeTypes+=h4:application/x-hdf
