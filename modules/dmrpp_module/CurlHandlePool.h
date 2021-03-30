@@ -24,6 +24,7 @@
 #ifndef _HandlePool_h
 #define _HandlePool_h 1
 
+#include <memory>
 #include <string>
 #include <vector>
 

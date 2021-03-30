@@ -30,6 +30,7 @@
 #include <curl/curl.h>
 #include <curl/easy.h>
 
+#include <memory>
 #include <string>
 #include <vector>
 

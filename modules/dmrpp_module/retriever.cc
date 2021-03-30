@@ -29,6 +29,7 @@
 #include <unistd.h>
 #include <time.h>
 
+#include <memory>
 #include <cstdlib>
 #include <cstring>
 #include <cassert>

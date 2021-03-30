@@ -31,6 +31,7 @@
 #ifndef I_AllowedHosts_H
 #define I_AllowedHosts_H 1
 
+#include <memory>
 #include <string>
 #include <vector>
 

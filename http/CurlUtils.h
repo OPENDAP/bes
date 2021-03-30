@@ -27,6 +27,7 @@
 #ifndef  _bes_http_CURL_UTILS_H_
 #define  _bes_http_CURL_UTILS_H_ 1
 
+#include <memory>
 #include <string>
 #include <vector>
 

@@ -29,6 +29,7 @@
 #ifndef HYRAX_GIT_EFFECTIVEURL_H
 #define HYRAX_GIT_EFFECTIVEURL_H
 
+#include <memory>
 #include <string>
 #include <map>
 #include <utility>

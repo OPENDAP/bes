@@ -26,6 +26,7 @@
 #ifndef HYRAX_CREDENTIALSMANAGER_H
 #define HYRAX_CREDENTIALSMANAGER_H
 
+#include <memory>
 #include <string>
 #include <vector>
 #include <mutex>
