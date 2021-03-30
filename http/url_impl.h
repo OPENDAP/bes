@@ -76,7 +76,7 @@ public:
         parse(url_s);
     }
 
-    explicit url(http::url const &src_url){
+    url(http::url const &src_url){
         d_source_url_str = src_url.d_source_url_str;
         d_protocol = src_url.d_protocol;
         d_host = src_url.d_host;
@@ -86,7 +86,7 @@ public:
         d_trusted = src_url.d_trusted;
     }
 
-    explicit url(const std::shared_ptr<http::url>& source_url){
+    explicit url(const std::shared_ptr<http::url> &source_url){
         d_source_url_str = source_url->d_source_url_str;
         d_protocol = source_url->d_protocol;
         d_host = source_url->d_host;
