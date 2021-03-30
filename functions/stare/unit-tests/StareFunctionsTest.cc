@@ -28,6 +28,7 @@
 
 #include <GetOpt.h>
 #include <BaseType.h>
+#include <Float32.h>
 #include <Array.h>
 #include <Byte.h>
 #include <Int32.h>
@@ -207,7 +208,7 @@ public:
 	try
 	{
 	    const string filename_1 = "../data/t1_sidecar.nc";
-	    BaseType *variable = NULL;
+	    Float32 *variable = new Float32("Solar_Zenith");
 	    vector<dods_uint64> values;
 	    
 	    // Call our function.

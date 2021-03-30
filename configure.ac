@@ -766,6 +766,15 @@ AC_CHECK_STARE(
   $ac_bes_dependencies_prefix
 )
 
+AC_CHECK_STAREMASTER(
+  [AM_CONDITIONAL([BUILD_STAREMASTER],[true])
+  ],
+  [AC_MSG_WARN([STAREmaster library not found.])
+  AM_CONDITIONAL([BUILD_STAREMASTER],[false])
+  ],
+  $ac_bes_dependencies_prefix
+)
+
 dnl NCML module test
 dnl
 dnl Look for the minimum version of the icu libs and headers
