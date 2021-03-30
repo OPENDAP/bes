@@ -9,9 +9,10 @@ env:
 
 on:
   push:
-    branches: [ master gdal314]
-  pull_request:
-    branches: [ master gdal314]
+    branches: [ master ]
+  # FIXME Remove these comments before merging. jhrg 3/25/21
+  # pull_request:
+  #   branches: [ master ]
   workflow_dispatch:
 
 jobs:
@@ -21,7 +22,10 @@ jobs:
     steps:
       - name: Packages
         run: sudo apt-get --yes install libxml2-dev uuid-dev libcurl4-openssl-dev libcppunit-dev libicu-dev
-     
+
+      - name: Set PATH
+        run: echo "$prefix/bin:$prefix/deps/bin" >> $GITHUB_PATH
+
       - name: cache-deps
         id: cache-deps
         uses: actions/cache@v2

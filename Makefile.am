@@ -58,20 +58,11 @@ pkgconfig_DATA = bes_dispatch.pc bes_ppt.pc bes_xml_command.pc
 aclocaldir=$(datadir)/aclocal
 dist_aclocal_DATA = conf/bes.m4
 
-EXTRA_DIST = doxy.conf.in bes.spec OSX_Resources bes-config-pkgconfig \
+EXTRA_DIST = doxy.conf.in bes-config-pkgconfig \
 bes-tmpfiles-conf besd.logrotate README.md rapidjson
 
 HTML_DOCS=html
 DOXYGEN_CONF=doxy.conf
-
-# Build a compile_commands.json.tmp file for use with CLion. This will emable
-# reasonable use for all the source that's compiled using either 'all' or
-# 'check' but other targets will have to be added by hand. See the compiledb
-# github site (https://github.com/nickdiego/compiledb) for more info.
-# jhrg 9/25/19
-.PHONY: compiledb
-compiledb:
-	make -nwk all check | compiledb
 
 # This target only builds the documents, it does not move them to
 # github. Use the 'gh-docs' target below for that.
@@ -107,42 +98,25 @@ srpm: dist
 
 # NB: 'dist' builds a tar.gz package using automake in the CWD.
 rpm: dist
-	rpmbuild -tb --clean $(RPM_OPTIONS) @PACKAGE@-@PACKAGE_VERSION@.tar.gz
+	cp @PACKAGE@-@VERSION@.tar.gz ~/rpmbuild/SOURCES
+	rpmbuild -bb --clean $(RPM_OPTIONS) bes.spec
 
 # This target is pretty specific to our need to build a RPM for use at
-# GSFC and JPL. We are assuming that the user has the rpmbuild dirs.
+# NASA DAACs. We are assuming that the user has the rpmbuild dirs.
 # This will link with everything it can find in the local deps dir,
 # removing the need for EPEL
 all-static-rpm: dist
-	cp @PACKAGE@-@PACKAGE_VERSION@.tar.gz ~/rpmbuild/SOURCES
+	cp @PACKAGE@-@VERSION@.tar.gz ~/rpmbuild/SOURCES
 	rpmbuild -bb $(RPM_OPTIONS) bes.spec.all_static
-
-# Static RPM for CentOS 6 - the 'all-static-rpm' target requires CentOS 7
-c6-all-static-rpm: dist
-	cp @PACKAGE@-@PACKAGE_VERSION@.tar.gz ~/rpmbuild/SOURCES
-	rpmbuild -bb $(RPM_OPTIONS) bes.spec.c6.all_static
-
-# Old comment: 
-# We used to use -tb and feed it the source tar.gz but with the new
-# 'modules' build of the bes there are multiple .spec files in the resulting
-# tar.gz and that confuses rpmbuild. Running rpmbuild with more than one
-# spec file in the tar.gz results in the somewhat inscrutable error: 'two
-# %prep lines'. As a work-around (and because I don't want to remove the
-# handler's spec files, I'm using the modified rpm rule above). jhrg 3/18/15
-#
-# Update: I used dist-hook to filter out the modules' *.spec files. jhrg 
-# 3/20/15
-
 
 ###########################################################################
 
 #Build the debian package
 deb: dist 
-	( mv @PACKAGE@-@PACKAGE_VERSION@.tar.gz ../ )
-	( mv ../@PACKAGE@-@PACKAGE_VERSION@.tar.gz ../@PACKAGE@_@PACKAGE_VERSION@.orig.tar.gz )
-	( cd ../ && tar xzf @PACKAGE@_@PACKAGE_VERSION@.orig.tar.gz )
-	( cp -r debian/ ../@PACKAGE@-@PACKAGE_VERSION@ )
-	( cd ../@PACKAGE@-@PACKAGE_VERSION@ && debuild --preserve-env --prepend-path=$(prefix)/deps/bin -us -uc -j7)
+	( mv @PACKAGE@-@VERSION@.tar.gz ../@PACKAGE@_@VERSION@.orig.tar.gz )
+	( cd ../ && tar xzf @PACKAGE@_@VERSION@.orig.tar.gz )
+	( cp -r debian/ ../@PACKAGE@-@VERSION@ )
+	( cd ../@PACKAGE@-@VERSION@ && debuild --preserve-env --prepend-path=$(prefix)/deps/bin -us -uc -j7)
 
 ##########################################################################
 

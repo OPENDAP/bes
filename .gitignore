@@ -25,6 +25,9 @@ lex.*.cc
 *.gcda
 *.gcno
 set_ec.sh
+# These spec files are now generated
+bes.spec
+bes.spec.all-static
 
 ## OS-X Finder spoo
 *.DS_Store
@@ -36,6 +39,7 @@ set_ec.sh
 .DS_Store
 */.DS_Store
 
+VERSION
 Makefile
 Makefile.in
 doxy.conf

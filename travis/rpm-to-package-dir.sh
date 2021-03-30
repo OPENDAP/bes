@@ -6,7 +6,8 @@
 
 set -e
 
-# DIST should be one of el6 or el7
+# DIST should be one of el6 or el7. NB: We no longer make CentOS 6 packages
+# but this will be useful when we are supporting both C7 and C8. jhrg 3/24/21
 DIST=${1}
 
 # 'prefix' and 'TRAVIS_BUILD_DIR' are in the environment
