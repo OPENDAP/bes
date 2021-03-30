@@ -402,7 +402,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
     Lock lock(d_get_easy_handle_mutex); // RAII
 
     dmrpp_easy_handle *handle = 0;
-    for (vector<dmrpp_easy_handle *>::iterator i = d_easy_handles.begin(), e = d_easy_handles.end(); i != e; ++i) {
+    for (auto i = d_easy_handles.begin(), e = d_easy_handles.end(); i != e; ++i) {
         if (!(*i)->d_in_use) {
             handle = *i;
             break;

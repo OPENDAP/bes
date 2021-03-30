@@ -130,6 +130,8 @@ bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url) {
     if (candidate_url->protocol() == FILE_PROTOCOL) {
 
         // Ensure that the file path starts with the catalog root dir.
+        // We know that when a file URL is parsed by http::url it stores everything in after the "file://" mark in
+        // the path, as there is no hostname.
         string file_path = candidate_url->path();
         BESDEBUG(MODULE, prolog << "file_path: " << file_path << endl);
 
