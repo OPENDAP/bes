@@ -238,7 +238,7 @@ public:
 
         try {
             auto target_url = shared_ptr<http::url>(new http::url());
-            bool result = can_access(prolog, target_url);
+            can_access(prolog, target_url);
             CPPUNIT_FAIL("Bad (empty) URL should have thrown a BESInternalError!");
         }
         catch(BESInternalError &berr){
@@ -247,7 +247,7 @@ public:
         }
         try {
             auto target_url = shared_ptr<http::url>(new http::url("s3://cloudydap/airs/somefile.nc"));
-            bool result = can_access(prolog, target_url);
+            can_access(prolog, target_url);
             CPPUNIT_FAIL("Bad (s3://) URL should have thrown a BESInternalError!");
         }
         catch(BESInternalError &berr){
@@ -256,7 +256,7 @@ public:
         }
         try {
             auto target_url = shared_ptr<http::url>(new http::url("dods://localhost:8080/opendap/data/nc/fnoc1.nc"));
-            bool result = can_access(prolog, target_url);
+            can_access(prolog, target_url);
             CPPUNIT_FAIL("Bad (dods://) URL should have thrown a BESInternalError!");
         }
         catch(BESInternalError &berr){
