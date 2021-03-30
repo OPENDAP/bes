@@ -185,6 +185,7 @@ namespace http {
         std::string get_response_as_string();
 
         rapidjson::Document get_as_json();
+
     };
 
 } /* namespace http */
