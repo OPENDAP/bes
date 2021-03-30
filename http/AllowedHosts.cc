@@ -27,17 +27,19 @@
 
 #include "config.h"
 
-#include <BESUtil.h>
-#include <BESCatalog.h>
-#include <BESCatalogList.h>
-#include <BESCatalogUtils.h>
-#include <BESRegex.h>
-#include <TheBESKeys.h>
-#include <BESInternalError.h>
-#include <BESSyntaxUserError.h>
-#include <BESDebug.h>
-#include <BESNotFoundError.h>
-#include <BESForbiddenError.h>
+#include <sstream>
+
+#include "BESUtil.h"
+#include "BESCatalog.h"
+#include "BESCatalogList.h"
+#include "BESCatalogUtils.h"
+#include "BESRegex.h"
+#include "TheBESKeys.h"
+#include "BESInternalError.h"
+#include "BESSyntaxUserError.h"
+#include "BESDebug.h"
+#include "BESNotFoundError.h"
+#include "BESForbiddenError.h"
 
 #include "HttpNames.h"
 #include "url_impl.h"
@@ -118,11 +120,6 @@ bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url) {
     BESDEBUG(MODULE, prolog << "BEGIN candidate_url: " << candidate_url->str() << endl);
     bool isAllowed = false;
 
-    if (candidate_url->is_trusted()) {
-        BESDEBUG(MODULE, prolog << "END The URL is marked as TRUSTED. candidate_url: " << candidate_url->str() << endl);
-        isAllowed = true;
-    }
-
     const string file_url(FILE_PROTOCOL);
     const string http_url(HTTP_PROTOCOL);
     const string https_url(HTTPS_PROTOCOL);
@@ -130,10 +127,10 @@ bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url) {
 
     // Special case: This allows any file: URL to pass if the URL starts with the default
     // catalog's path.
-    if (candidate_url->str().compare(0, file_url.size(), file_url) == 0 /*equals a file url*/) {
+    if (candidate_url->protocol() == FILE_PROTOCOL) {
 
         // Ensure that the file path starts with the catalog root dir.
-        string file_path = candidate_url->str().substr(file_url.size());
+        string file_path = candidate_url->path();
         BESDEBUG(MODULE, prolog << "file_path: " << file_path << endl);
 
         BESCatalogList *bcl = BESCatalogList::TheCatalogList();
@@ -191,8 +188,15 @@ bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url) {
             }
         }
         BESDEBUG(MODULE, prolog << "File Access Allowed: " << (isAllowed ? "true " : "false ") << endl);
-    } else {
-        // We assume it's an http(s) URL.
+    } else if(candidate_url->protocol() == HTTPS_PROTOCOL || candidate_url->protocol() == HTTP_PROTOCOL ){
+
+
+        // We only check this on the HTTP side because there is no such thing as a trusted file URL.
+        if (candidate_url->is_trusted()) {
+            BESDEBUG(MODULE, prolog << "END The URL is marked as TRUSTED. candidate_url: " << candidate_url->str() << endl);
+            isAllowed = true;
+        }
+
         vector<string>::const_iterator it = d_allowed_hosts.begin();
         vector<string>::const_iterator end_it = d_allowed_hosts.end();
         for (; it != end_it && !isAllowed; it++) {
@@ -212,6 +216,12 @@ bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url) {
             }
         }
         BESDEBUG(MODULE, prolog << "HTTP Access Allowed: " << (isAllowed ? "true " : "false ") << endl);
+    }
+    else {
+        stringstream msg;
+        msg << prolog << "The candidate_url utilizes an unsupported protocol '" << candidate_url->protocol() << "'" ;
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw BESInternalError(msg.str(),__FILE__,__LINE__);
     }
     BESDEBUG(MODULE, prolog << "END Access Allowed: " << (isAllowed ? "true " : "false ") << endl);
     return isAllowed;

@@ -3,3 +3,5 @@ HttpUtilsTest
 CurlUtilsTest
 EffectiveUrlCacheTest
 HttpUrlTest
+AllowedHostsTest
+

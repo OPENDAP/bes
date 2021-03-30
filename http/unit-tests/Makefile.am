@@ -26,7 +26,7 @@ DISTCLEANFILES = test_config.h *.Po
 
 CLEANFILES = bes.conf *.dbg *.log
 
-EXTRA_DIST = test_config.h.in bes.conf.in
+EXTRA_DIST = test_config.h.in bes.conf.in allowed_hosts_test.ini
 
 check_PROGRAMS = $(UNIT_TESTS)
 
@@ -98,4 +98,4 @@ HttpUrlTest_SOURCES = HttpUrlTest.cc
 HttpUrlTest_LDADD = $(LIBADD)
 
 AllowedHostsTest_SOURCES = AllowedHostsTest.cc
-AllowedHostsTest_LDADD = $(LDADD)
+AllowedHostsTest_LDADD = $(LIBADD)
