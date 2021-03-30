@@ -28,8 +28,9 @@
 
 #define ATTR 1
 
-#include <string.h>
+#include <cstring>
 
+#include <memory>
 #include <string>
 #include <iostream>
 #include <map>

@@ -27,11 +27,13 @@
 // Authors:
 //      pcw       Patrick West <pwest@ucar.edu>
 
-#include <BESSyntaxUserError.h>
-#include <BESInternalError.h>
-#include <BESDebug.h>
-#include <BESUtil.h>
-#include <AllowedHosts.h>
+#include <memory>
+
+#include "BESSyntaxUserError.h"
+#include "BESInternalError.h"
+#include "BESDebug.h"
+#include "BESUtil.h"
+#include "AllowedHosts.h"
 
 #include "GatewayContainer.h"
 #include "GatewayNames.h"
@@ -69,7 +71,7 @@ GatewayContainer::GatewayContainer(const string &sym_name,
 
     std::shared_ptr<http::url> target_url(new http::url(url_string));
 
-    if (!AllowedHosts::theHosts()->is_allowed(target_url)) {
+    if (!http::AllowedHosts::theHosts()->is_allowed(target_url)) {
         string err = (string) "The specified URL " + real_name
                 + " does not match any of the accessible services in"
                 + " the allowed hosts list.";

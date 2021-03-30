@@ -70,7 +70,6 @@
 
 using namespace dmrpp;
 using namespace std;
-using namespace bes;
 
 string pthread_error(unsigned int err){
     string error_msg;

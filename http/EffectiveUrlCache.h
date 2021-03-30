@@ -27,6 +27,7 @@
 #ifndef _bes_http_EffectiveUrlCache_h_
 #define _bes_http_EffectiveUrlCache_h_ 1
 
+#include <memory>
 #include <map>
 #include <string>
 #include <mutex>
