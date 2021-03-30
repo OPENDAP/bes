@@ -396,7 +396,7 @@ std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::stri
      * @brief Converts an NGAP restified granule path into a CMR metadata query for the granule.
      *
      * The NGAP module's "restified" interface utilizes a google-esque set of
-     * ordered key value pairs using the "/" character as field seperatror.
+     * ordered key value pairs using the "/" character as field separatror.
      *
      * The NGAP container the "restified_path" will follow the template:
      *

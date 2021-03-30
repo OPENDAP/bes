@@ -53,7 +53,6 @@ using http::EffectiveUrlCache;
 
 namespace dmrpp {
 
-
 /**
  * @brief Read the response headers, save the Content-Type header
  * Look at the HTTP response headers and save the value of the Content-Type
