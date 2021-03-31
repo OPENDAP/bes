@@ -261,6 +261,7 @@ namespace http {
                   "&Expires=1592946176";
 
             http::url target_url(url);
+
             value = target_url.protocol();
             expected_value = HTTPS_PROTOCOL;
             if(debug) cerr << prolog << "target_url.protocol(): " << value << " expected: " << expected_value << endl;

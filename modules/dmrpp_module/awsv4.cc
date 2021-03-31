@@ -299,7 +299,7 @@ namespace AWSV4 {
      * @return The AWS V4 Signature string.
      */
     const std::string compute_awsv4_signature(
-            const http::url &uri,
+            std::shared_ptr<http::url> &uri,
             const std::time_t &request_date,
             const std::string &public_key,
             const std::string &secret_key,
@@ -308,9 +308,9 @@ namespace AWSV4 {
 
 
         // canonical_uri is the path component of the URL. Later we will need the host.
-        const auto canonical_uri = uri.path(); // AWSV4::canonicalize_uri(uri);
+        const auto canonical_uri = uri->path(); // AWSV4::canonicalize_uri(uri);
         // The query string is null for our code.
-        const auto canonical_query = uri.query(); // AWSV4::canonicalize_query(uri);
+        const auto canonical_query = uri->query(); // AWSV4::canonicalize_query(uri);
 
         // We can eliminate one call to sha256 if the payload is null, which
         // is the case for a GET request. jhrg 11/25/19
@@ -323,7 +323,7 @@ namespace AWSV4 {
         //
         // NOTE: Changing this will break the awsv4_test using tests. jhrg 1/3/20
         std::vector<std::string> headers{"host: ", "x-amz-date: "};
-        headers[0].append(uri.host()); // headers[0].append(uri.getHost());
+        headers[0].append(uri->host()); // headers[0].append(uri.getHost());
         headers[1].append(ISO8601_date(request_date));
 
         const auto canonical_headers_map = canonicalize_headers(headers);
@@ -367,16 +367,5 @@ namespace AWSV4 {
     }
 
 
-const std::string compute_awsv4_signature(
-        const std::string &uri_str,
-        const std::time_t &request_date,
-        const std::string &public_key,
-        const std::string &secret_key,
-        const std::string &region,
-        const std::string &service) {
-
-    http::url uri(uri_str);
-    return compute_awsv4_signature(uri,request_date,public_key,secret_key,region,service);
-}
 
 }

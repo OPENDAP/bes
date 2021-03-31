@@ -161,7 +161,7 @@ curl_slist *aws_sign_request_url(shared_ptr<http::url> &target_url, curl_slist *
 
         const std::string auth_header =
                 AWSV4::compute_awsv4_signature(
-                        target_url->str(),
+                        target_url,
                         request_time,
                         credentials->get(AccessCredentials::ID_KEY),
                         credentials->get(AccessCredentials::KEY_KEY),

@@ -482,7 +482,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
 
             const std::string auth_header =
                     AWSV4::compute_awsv4_signature(
-                            handle->d_url->str(),
+                            handle->d_url,
                             request_time,
                             credentials->get(AccessCredentials::ID_KEY),
                             credentials->get(AccessCredentials::KEY_KEY),
