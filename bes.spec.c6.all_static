@@ -1,4 +1,6 @@
 # -*- mode: rpm-spec -*-
+#
+# NB: We've stopped supporting CentOS 6 with RPM builds. jhrg 3/24/21
 
 %define bescachedir %{_localstatedir}/cache/%{name}
 %define bespkidir %{_sysconfdir}/pki/%{name}

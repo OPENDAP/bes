@@ -47,7 +47,11 @@ using namespace bes;
 #define MODULE "ah"
 #define prolog string("AllowedHosts::").append(__func__).append("() - ")
 
-AllowedHosts *AllowedHosts::d_instance = 0;
+AllowedHosts *AllowedHosts::d_instance = nullptr;
+/**
+ * Run once_flag for initializing the singleton instance.
+ */
+static std::once_flag d_ah_init_once;
 
 /**
  * @brief Static accessor for the singleton
@@ -57,8 +61,7 @@ AllowedHosts *AllowedHosts::d_instance = 0;
 AllowedHosts *
 AllowedHosts::theHosts()
 {
-    if (d_instance) return d_instance;
-    d_instance = new AllowedHosts;
+    std::call_once(d_ah_init_once, AllowedHosts::initialize_instance);
     return d_instance;
 }
 
@@ -74,14 +77,30 @@ AllowedHosts::AllowedHosts()
 }
 
 /**
+* @brief This private static function initializes the singleton instance.
+*/
+void AllowedHosts::initialize_instance()
+{
+    d_instance = new AllowedHosts();
+#ifdef HAVE_ATEXIT
+    atexit(delete_instance);
+#endif
+}
+
+/**
+ * @brief This private static function can only be called once since it destroys the singleton instance for the duration of the process.
+ */
+void AllowedHosts::delete_instance()
+{
+    delete d_instance;
+    d_instance = 0;
+}
+
+/**
  * This method provides an access condition assessment for URLs and files
  * to be accessed by the BES. The http and https URLs are verified against a
  * allowed hosts list assembled from configuration. All file URLs are checked to be
  * sure that they reference a resource within the BES default catalog.
- *
- * @note AllowedHosts is a singleton. This method will instantiate the class
- * if that has not already been done. This method should only be called from
- * the main thread of a multi-threaded application.
  *
  * @param candidate_url The URL to test
  * @return True if the URL may be dereferenced, given the BES's configuration,
@@ -119,20 +138,19 @@ bool AllowedHosts::is_allowed(const std::string &candidate_url)
         string catalog_root = bcat->get_root();
         BESDEBUG(MODULE, prolog << "Catalog root: "<< catalog_root << endl);
 
-
         // Never a relative path shall be accepted.
         // change??
-       // if( file_path[0] != '/'){
-       //     file_path.insert(0,"/");
+        // if( file_path[0] != '/'){
+        //     file_path.insert(0,"/");
         //}
 
         string relative_path;
-        if(file_path[0] == '/'){
+        if(file_path[0] == '/') {
             if(file_path.length() < catalog_root.length()) {
                 isAllowed = false;
             }
             else {
-                int ret = file_path.compare(0, catalog_root.npos, catalog_root) == 0;
+                int ret = file_path.compare(0, string::npos, catalog_root) == 0;
                 BESDEBUG(MODULE, prolog << "file_path.compare(): " << ret << endl);
                 isAllowed = (ret==0);
                 relative_path = file_path.substr(catalog_root.length());
@@ -147,7 +165,7 @@ bool AllowedHosts::is_allowed(const std::string &candidate_url)
         // string::compare() returns 0 if the path strings match exactly.
         // And since we are just looking at the catalog.root as a prefix of the resource
         // name we only allow access to the resource for an exact match.
-        if(isAllowed){
+        if(isAllowed) {
             // If we stop adding a '/' to file_path values that don't begin with one
             // then we need to detect the use of the relative path here
             bool follow_sym_links = bcat->get_catalog_utils()->follow_sym_links();
@@ -161,8 +179,6 @@ bool AllowedHosts::is_allowed(const std::string &candidate_url)
                 isAllowed=false;
             }
         }
-
-
         BESDEBUG(MODULE, prolog << "File Access Allowed: "<< (isAllowed?"true ":"false ") << endl);
     }
     else {

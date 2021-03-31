@@ -41,6 +41,9 @@
 
 #include <BESInternalError.h>
 #include <BESNotFoundError.h>
+#include <BESSyntaxUserError.h>
+
+#include <BESLog.h>
 
 using std::string;
 using std::ostream;
@@ -109,15 +112,25 @@ void CSV_Obj::load()
 			vector<CSV_Data *>::iterator et = _data->end();
 			for (; it != et; it++) {
 				CSV_Data *d = (*it);
-				string token = txtLine.at(index);
-				CSV_Utils::slim(token);
-				CSV_Field *f = _header->getField(index);
-				if (!f) {
-					ostringstream err;
-					err << " Attempting to add value " << token << " to field " << index << ", field does not exist";
-					throw BESInternalError(err.str(), __FILE__, __LINE__);
+				try {
+                    string token = txtLine.at(index);
+                    CSV_Utils::slim(token);
+                    CSV_Field *f = _header->getField(index);
+                    if (!f) {
+                        ostringstream err;
+                        err << " Attempting to add value " << token << " to field " << index << ", field does not exist";
+                        ERROR_LOG(err.str());
+                        throw BESInternalError(err.str(), __FILE__, __LINE__);
+                    }
+                    d->insert(f, &token);
+                }
+				catch (const std::out_of_range &/*e*/) {
+                    ostringstream err;
+                    err << "Error in CSV dataset, too few data elements on line " << _reader->get_row_number();
+                        // FIXME: Different on OSX and Linux << " (C++ Error: " << e.what() << ")";
+                    ERROR_LOG(err.str());
+                    throw BESSyntaxUserError(err.str(), __FILE__, __LINE__);
 				}
-				d->insert(f, &token);
 				index++;
 			}
 		}

@@ -55,6 +55,7 @@ AllowedHosts+=^http:\/\/test\.opendap\.org\/.*$
 Http.Cache.dir=@abs_top_builddir@/modules/httpd_catalog_module/tests/cache
 Http.Cache.prefix=httpd_cat_
 Http.Cache.size=500
+Http.Cache.expires.time=3600
 
 Http.MimeTypes=nc:application/x-netcdf
 Http.MimeTypes+=h4:application/x-hdf

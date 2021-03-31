@@ -64,7 +64,7 @@ s3-tests: $(TESTSUITE_S3) bes.conf bes_serial.conf
 	fi
 	@echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
 
-check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_MDS) $(TESTSUITE_S3) $(TESTSUITE_DMRPP) bes.conf bes_serial.conf bes_mds_tests.conf mds_for_tests
+check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_MDS) $(TESTSUITE_S3) bes.conf bes_serial.conf bes_mds_tests.conf mds_for_tests
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS) --conf=bes_serial.conf
 	$(SHELL) '$(TESTSUITE_MDS)' $(TESTSUITEFLAGS) --conf=bes_mds_tests.conf
@@ -72,13 +72,11 @@ check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_MDS) $(TESTSUITE_S3) $(TE
 	@if [ -n "$${CMAC_ID}" ] \
 		&& [ -n "$${CMAC_ACCESS_KEY}" ] \
 		&& [ -n "$${CMAC_REGION}" ]  \
-		&& [ -n "$${CMAC_BUCKET}" ]   \
 		&& [ -n "$${CMAC_URL}" ] ; then \
 		echo "--------- S3 Auth Tests ---------"; \
 		echo "        CMAC_ID: <Has Been Set>"; \
 		echo "CMAC_ACCESS_KEY: <Has Been Set>"; \
 		echo "    CMAC_REGION: ${CMAC_REGION}"; \
-		echo "    CMAC_BUCKET: ${CMAC_BUCKET}"; \
 		echo "       CMAC_URL: ${CMAC_URL}"; \
 		$(SHELL) '$(TESTSUITE_S3)' $(TESTSUITEFLAGS); \
 	else \

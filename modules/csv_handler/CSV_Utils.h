@@ -23,7 +23,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -41,14 +41,12 @@
 #include <iostream>
 #include <algorithm>
 
-class CSV_Utils
-{
+class CSV_Utils {
 public:
-    static void			split( const std::string& str,
-				       char delimiter,
-					   std::vector<std::string> &tokens ) ;
-    static void			slim( std::string& str ) ;
-} ;
+    static void split(const std::string &str, char delimiter, std::vector<std::string> &tokens);
+
+    static void slim(std::string &str);
+};
 
 #endif // I_CSV_Utils_h
 

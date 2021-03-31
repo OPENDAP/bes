@@ -92,6 +92,29 @@ private:
             cout << ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " << endl;
         }
     }
+    void purge_http_cache(){
+        if(Debug) cerr << prolog << "Purging cache!" << endl;
+        string cache_dir;
+        bool found_dir;
+        TheBESKeys::TheKeys()->get_value(HTTP_CACHE_DIR_KEY,cache_dir,found_dir);
+        bool found_prefix;
+        string cache_prefix;
+        TheBESKeys::TheKeys()->get_value(HTTP_CACHE_PREFIX_KEY,cache_prefix,found_prefix);
+
+        if(found_dir && found_prefix){
+            if(Debug) cerr << prolog << HTTP_CACHE_DIR_KEY << ": " <<  cache_dir << endl;
+            if(Debug) cerr << prolog << "Purging " << cache_dir << " of files with prefix: " << cache_prefix << endl;
+            string sys_cmd = "mkdir -p "+ cache_dir;
+            if(Debug) cerr << "Running system command: " << sys_cmd << endl;
+            system(sys_cmd.c_str());
+
+            sys_cmd = "exec rm -rf "+ BESUtil::assemblePath(cache_dir,cache_prefix);
+            sys_cmd =  sys_cmd.append("*");
+            if(Debug) cerr << "Running system command: " << sys_cmd << endl;
+            system(sys_cmd.c_str());
+            if(Debug) cerr << prolog << "The HTTP cache has been purged." << endl;
+        }
+    }
 
 public:
     // Called once before everything gets tested
@@ -117,6 +140,9 @@ public:
         if (bes_debug) BESDebug::SetUp("cerr,ngap,http");
 
         if (Debug) show_file(bes_conf);
+
+        purge_http_cache();
+
         if(Debug) cerr << "setUp() - END" << endl;
     }
 

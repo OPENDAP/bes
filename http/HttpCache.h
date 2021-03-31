@@ -97,6 +97,7 @@ namespace http {
         virtual std::string get_cache_file_name(const std::string &src, bool mangle=true);
 #endif
 
+        static unsigned long getCacheExpiresTime();
     };
 
 } /* namespace http */

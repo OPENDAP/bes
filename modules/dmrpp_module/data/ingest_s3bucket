@@ -28,10 +28,10 @@ target_dir=`pwd`;
 # Should match the value of BES.Catalog.catalog.TypeMatch in the bes 
 # configuration fileused by get_dmrpp.
 # TODO - can we make this read the conf file to get the regex info?
-dataset_regex_match="^.*\\.(h5|he5|nc4)(\\.bz2|\\.gz|\\.Z)?$";
+dataset_regex_match="^.*\\.(h5|he5|nc4?)(\\.bz2|\\.gz|\\.Z)?$";
 
-s3_service_endpoint="https://s3.amazonaws.com/"
 s3_bucket_name="cloudydap"
+s3_bucket_region="us-east-1"
 
 #target_dir=".";
 
@@ -58,8 +58,8 @@ function show_usage() {
  -V: Very Verbose: Verbose plus so much more. Your eyes will water from
      the scanning of it all.
  -j: Just print the DMR that will be used to build the DMR++
- -s: The endpoint URL for the S3 datastore. 
-     (default: ${s3_service_endpoint})
+ -s: The S3 bucket region.
+     (default: ${s3_bucket_region})
  -b: The S3 bucket name. 
      (default: ${s3_bucket_name})
  -d: The "local" filesystem root for the downloaded data. 
@@ -79,6 +79,7 @@ function show_usage() {
      (default: ${dataset_regex_match})
  -k: Keep the downloaded datafiles after the dmr++ file has been 
      created. Be careful! S3 buckets can be quite large!
+ -M: Create a missing datafile for computed domain coordinate variables.
 
 Dependencies:
 This script requires that:
@@ -108,8 +109,10 @@ find_s3_files=
 find_local_files=
 keep_data_files=
 data_root=
+aws_quiet="--quiet"
+make_missing=
 
-while getopts "h?vVjs:b:d:t:r:fk" opt; do
+while getopts "h?vVjs:b:d:t:r:fkM" opt; do
     case "$opt" in
     h|\?)
         show_usage
@@ -117,20 +120,21 @@ while getopts "h?vVjs:b:d:t:r:fk" opt; do
         ;;
     v)
         verbose="-v"
-        echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
-        echo "${0} - BEGIN (verbose)";
+        echo "#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
+        echo "# ${0} - BEGIN (verbose)";
         ;;
     V)
         very_verbose="-V"
         verbose="-v"
-         echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
-        echo "${0} - BEGIN (very_verbose)";
+        aws_quiet=
+        echo "#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
+        echo "# ${0} - BEGIN (very_verbose)";
        ;;
     j)
-        just_dmr="-r";
+        just_dmr="-D";
         ;;
     s)
-        s3_service_endpoint="$OPTARG"
+        s3_bucket_region="$OPTARG"
         ;;
     b)
         s3_bucket_name="$OPTARG"
@@ -150,7 +154,10 @@ while getopts "h?vVjs:b:d:t:r:fk" opt; do
     k)
         keep_data_files="yes";
         ;;
-        
+    M)
+        make_missing="yes";
+        ;;
+
         
     esac
 done
@@ -159,21 +166,34 @@ shift $((OPTIND-1))
 
 [ "$1" = "--" ] && shift
 
+if test -z "${data_root}"; then
+    data_root=`pwd`;
+    size=$(expr length ${data_root})
+    if [[ "${data_root}" != */ ]] && [[ ${size} -gt 1 ]]
+    then
+        data_root="${data_root}/";
+    fi
+    data_root="${data_root}${s3_bucket_name}";
+fi
+
 if test -n "$very_verbose"
 then
     set -x;
 fi
-if test -n "${verbose}"; then 
-    echo "verbose:             '${verbose}'"
-    echo "very_verbose:        '${very_verbose}'"
-    echo "just_dmr:            '${just_dmr}'"
-    echo "s3_service_endpoint: '${s3_service_endpoint}'"
-    echo "s3_bucket_name:      '${s3_bucket_name}'"
-    echo "data_root:           '${data_root}'"
-    echo "target_dir:          '${target_dir}'"
-    echo "find_s3_files:       '${find_s3_files}'"
-    echo "dataset_regex_match: '${dataset_regex_match}'"
-    echo "keep_data_files:     '${keep_data_files}'"
+if test -n "${verbose}"; then
+
+    echo "#"
+    echo "#             verbose: '${verbose}'"
+    echo "#        very_verbose: '${very_verbose}'"
+    echo "#            just_dmr: '${just_dmr}'"
+    echo "#        make_missing: '${make_missing}'"
+    echo "#      s3_bucket_name: '${s3_bucket_name}'"
+    echo "#    s3_bucket_region: '${s3_bucket_region}'"
+    echo "#           data_root: '${data_root}'"
+    echo "#          target_dir: '${target_dir}'"
+    echo "#       find_s3_files: '${find_s3_files}'"
+    echo "# dataset_regex_match: '${dataset_regex_match}'"
+    echo "#     keep_data_files: '${keep_data_files}'"
 fi
 
 S3_ALL_FILES="./s3_${s3_bucket_name}_all_files.txt"
@@ -198,28 +218,31 @@ function mk_file_list_from_s3() {
 
     if test -n "$verbose"
     then
-	    echo "Retrieving file list from S3."
-	    echo "s3_bucket_name: ${s3_bucket_name}"
-	    echo "S3_ALL_FILES: ${S3_ALL_FILES}";
+	    echo "## Retrieving file list from S3."
+	    echo "# s3_bucket_name: ${s3_bucket_name}"
+	    echo "#   S3_ALL_FILES: ${S3_ALL_FILES}";
     fi
     time -p aws s3 ls --recursive "${s3_bucket_name}" > "${S3_ALL_FILES}";
     status=$?
     if [ ${status} -ne 0 ]
     then
+        echo ""
+        echo ""
         echo "Encountered AWS CLI error (status: ${status}) Unable to list bucket ${s3_bucket_name}"
         echo "Terminating now."
-        exit 1
+        echo ""
+        exit ${status}
     else
         if test -n "$verbose"
         then
-            echo "Locating S3_DATA_FILES: ${S3_DATA_FILES}";
+            echo "# Locating S3_DATA_FILES: ${S3_DATA_FILES}";
         fi
         time -p grep -E -e "${dataset_regex_match}" "${S3_ALL_FILES}" > "${S3_DATA_FILES}";
     
         if test -n "$verbose"
         then
             dataset_count=`cat ${S3_DATA_FILES} | wc -l`;
-            echo "Found ${dataset_count} suitable data files in s3 bucket: ${s3_bucket_name}";
+            echo "# Found ${dataset_count} suitable data files in s3 bucket: ${s3_bucket_name}";
         fi
     fi 
 }
@@ -241,29 +264,46 @@ function mk_dmrpp_from_s3_list() {
 
     for relative_filename  in `cat ${S3_DATA_FILES} | awk '{print $4;}' -`
     do        
-        s3_url="${s3_service_endpoint}${s3_bucket_name}/${relative_filename}";
-        if test -z "${data_root}"; then
-            data_root=`pwd`"/s3_data/${s3_bucket_name}";
-        fi
-        
+        s3_url="https://${s3_bucket_name}.s3.${s3_bucket_region}.amazonaws.com/${relative_filename}";
+
         data_file="${data_root}/${relative_filename}";
-        target_file="${target_dir}/${relative_filename}.dmrpp";       
-          
-        if test -n "$verbose"
+        target_file="${target_dir}/${relative_filename}.dmrpp";
+
+
+        if test -n "${verbose}"
         then
-            echo "relative_filename: ${relative_filename}";
-            echo "s3_url:            ${s3_url}";
-            echo "data_file:         ${data_file}";
-            echo "target_file:       ${target_file}";
+            echo "# == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == == =="
+            echo "#         data_root: ${data_root}"
+            echo "# relative_filename: ${relative_filename}";
+            echo "#            s3_url: ${s3_url}";
+            echo "#         data_file: ${data_file}";
+            echo "#       target_file: ${target_file}";
         fi
-        
+
+        missing_data_cmd=
+        if test -n "${make_missing}"
+        then
+            if test -n "$verbose";then echo "#      make_missing: ${make_missing}"; fi
+
+            missing_data_file="${target_dir}/${relative_filename}.missing";
+            if test -n "$verbose";then echo "# missing_data_file: ${missing_data_file}"; fi
+
+            missing_data_url="${s3_url}.missing";
+            if test -n "$verbose";then echo "#  missing_data_url: ${missing_data_url}"; fi
+
+            missing_data_cmd=" -M -r \"${missing_data_file}\" -p \"${missing_data_url}\" ";
+            if test -n "$verbose";then echo "#  missing_data_cmd: ${missing_data_cmd}"; fi
+
+        fi
+
         
         mkdir -p `dirname ${data_file}`;
         timer=;
+	    #set -x
         if test -n "$verbose"; then
-            time -p aws s3 cp --quiet "s3://${s3_bucket_name}/${relative_filename}" "${data_file}";
+            time -p aws s3 cp ${aws_quiet} "s3://${s3_bucket_name}/${relative_filename}" "${data_file}";
         else
-            aws s3 cp --quiet "s3://${s3_bucket_name}/${relative_filename}" "${data_file}";
+            aws s3 cp ${aws_quiet} "s3://${s3_bucket_name}/${relative_filename}" "${data_file}";
         fi
         status=$?
         if [ ${status} -ne 0 ]
@@ -272,18 +312,36 @@ function mk_dmrpp_from_s3_list() {
             echo ""
         else 
 	        mkdir -p `dirname ${target_file}`;
-	        get_dmrpp ${verbose} ${very_verbose} ${just_dmr} -u "${s3_url}" -d "${data_root}" -o "${target_file}" "${relative_filename}";
-	     
+	        get_dmrpp ${verbose} ${very_verbose} ${just_dmr} \
+	            -u "${s3_url}" -b "${data_root}" -o "${target_file}" \
+	            ${missing_data_cmd}  \
+	            "${relative_filename}";
+
+	        status=$?;
+
+	        if test ${status} -ne 0; then
+                echo ""
+                echo ""
+                echo "get_dmrpp FAILED to build a dmr++ for: '${relative_filename}', status: ${status}"
+                if test -n "${verbose}"; then
+                    echo "Terminating now."
+                    echo ""
+                    exit ${status}
+                else
+                    echo "Continuing..."
+                    echo ""
+                fi
+            fi
+
+
 	        if test -z "${keep_data_files}"
 	        then
 	            rm ${verbose} -f "${data_file}";
 	        fi
 	    fi
-        
+        #set +x
+
  done
-
-
-
 }
 #################################################################################
 
@@ -295,7 +353,7 @@ function mk_dmrpp_from_s3_list() {
 # "main()" (such as there is in bash)
 # 
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-echo "${0} START: "`date`;
+echo "# ${0} START: "`date`;
 
 if test -n "${find_s3_files}"
 then
@@ -304,6 +362,6 @@ fi
 
 mk_dmrpp_from_s3_list
 
-echo "${0} END:   "`date`;
+echo "# ${0} END:   "`date`;
 #################################################################################
 

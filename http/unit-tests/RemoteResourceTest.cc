@@ -25,6 +25,7 @@
 #include <cstdio>
 #include <cstring>
 #include <iostream>
+#include <unistd.h>
 
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
@@ -32,6 +33,7 @@
 
 #include <GetOpt.h>
 #include <util.h>
+#include <HttpCache.h>
 
 #include "BESError.h"
 #include "BESDebug.h"
@@ -42,6 +44,7 @@
 
 #include "RemoteResource.h"
 #include "HttpNames.h"
+#include "HttpCache.h"
 
 #include "test_config.h"
 
@@ -62,6 +65,33 @@ namespace http {
 
 class RemoteResourceTest: public CppUnit::TestFixture {
 private:
+
+    /**
+     * purges the http cache for temp files created in tests
+     */
+    void purge_http_cache(){
+        if(Debug) cerr << prolog << "Purging cache!" << endl;
+        string cache_dir;
+        bool found_dir;
+        TheBESKeys::TheKeys()->get_value(HTTP_CACHE_DIR_KEY,cache_dir,found_dir);
+        bool found_prefix;
+        string cache_prefix;
+        TheBESKeys::TheKeys()->get_value(HTTP_CACHE_PREFIX_KEY,cache_prefix,found_prefix);
+
+        if(found_dir && found_prefix){
+            if(Debug) cerr << prolog << HTTP_CACHE_DIR_KEY << ": " <<  cache_dir << endl;
+            if(Debug) cerr << prolog << "Purging " << cache_dir << " of files with prefix: " << cache_prefix << endl;
+            string sys_cmd = "mkdir -p "+ cache_dir;
+            if(Debug) cerr << "Running system command: " << sys_cmd << endl;
+            system(sys_cmd.c_str());
+
+            sys_cmd = "exec rm -rf "+ BESUtil::assemblePath(cache_dir,cache_prefix);
+            sys_cmd =  sys_cmd.append("*");
+            if(Debug) cerr << "Running system command: " << sys_cmd << endl;
+            system(sys_cmd.c_str());
+            if(Debug) cerr << prolog << "The HTTP cache has been purged." << endl;
+        }
+    }
 
     /**
      *
@@ -119,11 +149,49 @@ private:
         return data_file_url;
     }
 
+    /**
+     * @brief Copy the source file to a system determined tempory file and set the rvp tmp_file to the temp file name.
+     * @param src The source file to copy
+     * @param tmp_file The temporary file created.
+     */
+    void copy_to_temp(const string &src, string &tmp_file){
+        ifstream src_is(src);
+        if(!src_is.is_open()){
+            throw BESInternalError("Failed to open source file: "+src,__FILE__,__LINE__);
+        }
+        if(debug) cerr << prolog << "ifstream opened" << endl;
 
+        char *pointer = tmpnam(nullptr);
+        ofstream tmp_os(pointer);
+        if(!tmp_os.is_open()){
+            stringstream msg;
+            msg << "Failed to open temp file: " << pointer << endl;
+            throw BESInternalError(msg.str(),__FILE__,__LINE__);
+        }
+        char buf[4096];
+
+        do {
+            src_is.read(&buf[0], 4096);
+            tmp_os.write(&buf[0], src_is.gcount());
+        }while (src_is.gcount() > 0);
+        tmp_file=pointer;
+    }
+
+    /**
+     * @brief Compare two text files as string values.
+     * @param file_a
+     * @param file_b
+     * @return True the files match, False otherwise.
+     */
+    bool compare(const string &file_a, const string &file_b){
+        string a_str = get_file_as_string(file_a);
+        string b_str = get_file_as_string(file_b);
+        return a_str == b_str;
+    }
 
 public:
     string d_data_dir;
-
+    string d_temp_file;
     // Called once before everything gets tested
     RemoteResourceTest()
     {
@@ -138,9 +206,9 @@ public:
     // Called before each test
     void setUp()
     {
-        if(debug) cerr << endl;
-        if(debug) cerr << "data_dir: " << d_data_dir << endl;
         if(Debug) cerr << endl << prolog << "BEGIN" << endl;
+        if(debug && !Debug) cerr << endl;
+        if(debug) cerr << prolog << "data_dir: " << d_data_dir << endl;
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR,"bes.conf");
         if(Debug) cerr << prolog << "Using BES configuration: " << bes_conf << endl;
         if (bes_debug) show_file(bes_conf);
@@ -154,20 +222,20 @@ public:
         }
 
         if(purge_cache){
-            if(Debug) cerr << prolog << "Purging cache!" << endl;
-            string cache_dir;
-            bool found;
-            TheBESKeys::TheKeys()->get_value(HTTP_CACHE_DIR_KEY,cache_dir,found);
-            if(found){
-                if(Debug) cerr << prolog << HTTP_CACHE_DIR_KEY << ": " <<  cache_dir << endl;
-                if(Debug) cerr << prolog << "Purging " << cache_dir << endl;
-                string sys_cmd = "mkdir -p "+ cache_dir;
-                system(sys_cmd.c_str());
-                sys_cmd = "exec rm -rf "+ BESUtil::assemblePath(cache_dir,"/*");
-                system(sys_cmd.c_str());
-                if(Debug) cerr << prolog << cache_dir  << " has been purged." << endl;
-            }
+            purge_http_cache();
         }
+
+        string tmp_file_name(tmpnam(nullptr));
+        if (debug) cerr << prolog << "tmp_file_name: " << tmp_file_name << endl;
+        {
+            ofstream ofs(tmp_file_name);
+            if(!ofs.is_open()){
+                CPPUNIT_FAIL("Failed to open temporary file: "+tmp_file_name);
+            }
+            ofs << "This is the temp file." << endl;
+        }
+        d_temp_file = tmp_file_name;
+
 
 
         if(Debug) cerr << "setUp() - END" << endl;
@@ -176,14 +244,130 @@ public:
     // Called after each test
     void tearDown()
     {
+        if(!d_temp_file.empty())
+            unlink(d_temp_file.c_str());
+
+        string temp_file_hdrs = d_temp_file + ".hdrs";
+        unlink(temp_file_hdrs.c_str());
     }
 
 
 /*##################################################################################################*/
 /* TESTS BEGIN */
 
+    /**
+     * tests the load_hdrs_from_file function
+     * checks if the headers fields inside a *.hdrs file are correct
+     */
+    void load_hdrs_from_file_test(){
+        if(debug) cerr << "|--------------------------------------------------|" << endl;
+        if(debug) cerr << prolog << "BEGIN" << endl;
 
+        string url = "file://";
+        url += BESUtil::pathConcat(d_data_dir,"load_hdrs_from_file_test_file.txt");
+        if(debug) cerr << prolog << "url: " << url << endl;
+        RemoteResource rhr(url);
+        if(debug) cerr << prolog << "rhr created" << endl;
+        try {
+            rhr.load_hdrs_from_file();
+            if(debug) cerr << prolog << "loaded hdrs from file" << endl;
+
+            string expected_header_1 = "This ...";
+            string expected_header_2 = "Is ...";
+            string expected_header_3 = "A ...";
+            string expected_header_4 = "TEST";
+
+            string header_1 = rhr.get_http_response_header("Header_1");
+            if(debug) cerr << prolog << " Expected Header: '" << expected_header_1 << "'" << endl;
+            if(debug) cerr << prolog << "Retrieved Header: '" << header_1  << "'"<< endl;
+            CPPUNIT_ASSERT(header_1 == expected_header_1);
+
+            string header_2 = rhr.get_http_response_header("Header_2");
+            if(debug) cerr << prolog << " Expected Header: '" << expected_header_2  << "'"<< endl;
+            if(debug) cerr << prolog << "Retrieved Header: '" << header_2  << "'"<< endl;
+            CPPUNIT_ASSERT(  header_2 == expected_header_2);
+
+            string header_3 = rhr.get_http_response_header("Header_3");
+            if(debug) cerr << prolog << " Expected Header: '" << expected_header_3   << "'"<< endl;
+            if(debug) cerr << prolog << "Retrieved Header: '" << header_3  << "'"<< endl;
+            CPPUNIT_ASSERT(  header_3 == expected_header_3);
+
+            string header_4 = rhr.get_http_response_header("Header_4");
+            if(debug) cerr << prolog << " Expected Header: '" << expected_header_4  << "'"<< endl;
+            if(debug) cerr << prolog << "Retrieved Header: '" << header_4  << "'"<< endl;
+            CPPUNIT_ASSERT( header_4 == expected_header_4);
+
+        }
+        catch (BESError &besE){
+            stringstream msg;
+            msg << "Caught BESError! message: " << besE.get_verbose_message() << " type: " << besE.get_bes_error_type();
+            cerr << msg.str() << endl;
+            CPPUNIT_FAIL(msg.str());
+        }
+        if(debug) cerr << prolog << "END" << endl;
+    }
+
+    /**
+     * tests the update_file_and_headers() function
+     * makes a temp file and sets the expire time to 1 second,
+     * then checks if the file is updated after it is allowed to expired
+     */
+    void update_file_and_headers_test(){
+        if(debug) cerr << "|--------------------------------------------------|" << endl;
+        if(debug) cerr << prolog << "BEGIN" << endl;
+
+        try {
+            RemoteResource rhr("http://google.com", "foobar");
+            if(debug) cerr << prolog << "remoteResource rhr: created" << endl;
+
+            rhr.d_resourceCacheFileName = d_temp_file;
+            if(debug) cerr << prolog << "d_resourceCacheFilename: " << d_temp_file << endl;
+
+            string source_url = "file://" + BESUtil::pathConcat(d_data_dir,"update_file_and_headers_test_file.txt");
+            rhr.d_remoteResourceUrl = source_url;
+            if(debug) cerr << prolog << "d_remoteResourceUrl: " << source_url << endl;
+
+            // Get a pointer to the singleton cache instance for this process.
+            HttpCache *cache = HttpCache::get_instance();
+            if (!cache) {
+                ostringstream oss;
+                oss << prolog << "FAILED to get local cache. ";
+                oss << "Unable to proceed with request for " << d_temp_file;
+                oss << " The server MUST have a valid HTTP cache configuration to operate." << endl;
+                CPPUNIT_FAIL(oss.str());
+            }
+            if(!cache->get_exclusive_lock(d_temp_file, rhr.d_fd)){
+                CPPUNIT_FAIL(prolog + "Failed to acquire exclusive lock on: "+d_temp_file);
+            }
+            rhr.d_initialized = true;
+
+            rhr.update_file_and_headers();
+
+            if(debug) cerr << prolog << "update_file_and_headers() called" << endl;
+
+            string cache_filename = rhr.getCacheFileName();
+            if(debug) cerr << prolog << "cache_filename: " << cache_filename << endl;
+            string expected_content("This an updating file and headers TEST. Move Along...");
+            if(debug) cerr << prolog << "expected_content: " << expected_content << endl;
+            string content = get_file_as_string(cache_filename);
+            if(debug) cerr << prolog << "retrieved content: " << content << endl;
+            CPPUNIT_ASSERT( content == expected_content );
+        }
+        catch (BESError &besE){
+            stringstream msg;
+            msg << endl << prolog << "Caught BESError! message: " << besE.get_verbose_message();
+            msg << " type: " << besE.get_bes_error_type() << endl;
+            if(debug) cerr << msg.str();
+            CPPUNIT_FAIL(msg.str());
+        }
+        if(debug) cerr << prolog << "END" << endl;
+    }
+
+    /**
+     *
+     */
     void get_http_url_test() {
+        if(debug) cerr << "|--------------------------------------------------|" << endl;
         if(debug) cerr << prolog << "BEGIN" << endl;
 
         string url = "http://test.opendap.org/data/httpd_catalog/READTHIS";
@@ -211,7 +395,11 @@ public:
         if(debug) cerr << prolog << "END" << endl;
     }
 
+    /**
+     *
+     */
     void get_ngap_ghrc_tea_url_test() {
+        if(debug) cerr << "|--------------------------------------------------|" << endl;
         if(!ngap_tests){
             if(debug) cerr << prolog << "SKIPPING." << endl;
             return;
@@ -244,9 +432,11 @@ public:
         if(debug) cerr << prolog << "END" << endl;
     }
 
-
-
+    /**
+     *
+     */
     void get_ngap_harmony_url_test() {
+        if(debug) cerr << "|--------------------------------------------------|" << endl;
         if(!ngap_tests){
             if(debug) cerr << prolog << "SKIPPING." << endl;
             return;
@@ -279,10 +469,11 @@ public:
         if(debug) cerr << prolog << "END" << endl;
     }
 
-        /**
+    /**
      *
      */
     void get_file_url_test() {
+        if(debug) cerr << "|--------------------------------------------------|" << endl;
         if(debug) cerr << prolog << "BEGIN" << endl;
 
         string data_file_url = get_data_file_url("test_file");
@@ -311,12 +502,111 @@ public:
         if(debug) cerr << prolog << "END" << endl;
     }
 
+     /**
+      * tests the is_cache_resource_expired() function
+      * create a temp file and sets the expired time to 1 sec
+      * allows temp file to expire and checks if the expiration is noticed
+      */
+     void is_cached_resource_expired_test(){
+         if(debug) cerr << "|--------------------------------------------------|" << endl;
+         if(debug) cerr << prolog << "BEGIN" << endl;
+
+         try {
+             RemoteResource rhr("http://google.com", "foobar", 1);
+             if(debug) cerr << prolog << "remoteResource rhr: created, expires_interval: " << rhr.d_expires_interval << endl;
+
+             rhr.d_resourceCacheFileName = d_temp_file;
+             if(debug) cerr << prolog << "d_resourceCacheFilename: " << d_temp_file << endl;
+
+             // Get a pointer to the singleton cache instance for this process.
+             HttpCache *cache = HttpCache::get_instance();
+             if (!cache) {
+                 ostringstream oss;
+                 oss << prolog << "FAILED to get local cache. ";
+                 oss << "Unable to proceed with request for " << d_temp_file;
+                 oss << " The server MUST have a valid HTTP cache configuration to operate." << endl;
+                 CPPUNIT_FAIL(oss.str());
+             }
+             if(!cache->get_exclusive_lock(d_temp_file, rhr.d_fd)){
+                 CPPUNIT_FAIL(prolog + "Failed to acquire exclusive lock on: "+d_temp_file);
+             }
+             rhr.d_initialized = true;
+
+             sleep(2);
+
+             bool refresh = rhr.is_cached_resource_expired(rhr.d_resourceCacheFileName, rhr.d_uid);
+             if(debug) cerr << prolog << "is_cached_resource_expired() called, refresh: " << refresh << endl;
+
+             CPPUNIT_ASSERT(refresh);
+         }
+         catch (BESError &besE){
+             stringstream msg;
+             msg << endl << prolog << "Caught BESError! message: " << besE.get_verbose_message();
+             msg << " type: " << besE.get_bes_error_type() << endl;
+             if(debug) cerr << msg.str();
+             CPPUNIT_FAIL(msg.str());
+         }
+         if(debug) cerr << prolog << "END" << endl;
+
+     }
+
+    /**
+     * Test of the RemoteResource content filtering method.
+     */
+    void filter_test() {
+        if(debug) cerr << prolog << "BEGIN" << endl;
+
+        string source_file = BESUtil::pathConcat(d_data_dir,"filter_test_source.xml");
+        if(debug) cerr << prolog << "source_file: " << source_file << endl;
+
+        string baseline_file = BESUtil::pathConcat(d_data_dir,"filter_test_source.xml_baseline");
+        if(debug) cerr << prolog << "baseline_file: " << baseline_file << endl;
+
+        string tmp_file;
+        try {
+            copy_to_temp(source_file,tmp_file);
+            if(debug) cerr << prolog << "temp_file: " << tmp_file << endl;
+
+            std::map<std::string,std::string> filter;
+            filter.insert(pair<string,string>("OPeNDAP_DMRpp_DATA_ACCESS_URL","file://original_file_ref"));
+            filter.insert(pair<string,string>("OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL","file://missing_file_ref"));
+
+            RemoteResource foo;
+            foo.d_resourceCacheFileName = tmp_file;
+            foo.filter_retrieved_resource(filter);
+
+            bool result_matched = compare(tmp_file,baseline_file);
+            stringstream info_msg;
+            info_msg << prolog << "The filtered file: "<< tmp_file << (result_matched?" MATCHED ":" DID NOT MATCH ")
+            << "the baseline file: " << baseline_file << endl;
+            if(debug) cerr << info_msg.str();
+            CPPUNIT_ASSERT_MESSAGE(info_msg.str(),result_matched);
+        }
+        catch(BESError be){
+            stringstream msg;
+            msg << prolog << "Caught BESError. Message: " << be.get_verbose_message() << " ";
+            msg << be.get_file() << " " << be.get_line() << endl;
+            if(debug) cerr << msg.str();
+            CPPUNIT_FAIL(msg.str());
+        }
+        // By unlinking here we only are doing it if the test is successful. This allows for forensic on broke tests.
+        if(!tmp_file.empty()){
+            unlink(tmp_file.c_str());
+            if(debug) cerr << prolog << "unlink call on: " << tmp_file << endl;
+        }
+        if(debug) cerr << prolog << "END" << endl;
+    }
+
 /* TESTS END */
 /*##################################################################################################*/
 
 
     CPPUNIT_TEST_SUITE( RemoteResourceTest );
 
+    CPPUNIT_TEST(load_hdrs_from_file_test);
+    CPPUNIT_TEST(update_file_and_headers_test);
+    CPPUNIT_TEST(is_cached_resource_expired_test);
+    CPPUNIT_TEST(filter_test);
     CPPUNIT_TEST(get_http_url_test);
     CPPUNIT_TEST(get_file_url_test);
     CPPUNIT_TEST(get_ngap_ghrc_tea_url_test);

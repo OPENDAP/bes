@@ -1341,11 +1341,22 @@ bool eval_http_get_response(CURL *ceh, char *error_buffer, const string &request
 
     // Newer Apache servers return 206 for range requests. jhrg 8/8/18
     switch (http_code) {
+        case 0:
+        {
+            if(requested_url.find(FILE_PROTOCOL)!=0){
+                ERROR_LOG(msg.str() << endl);
+                throw BESInternalError(msg.str(), __FILE__, __LINE__);
+            }
+            return true;
+        }
         case 200: // OK
         case 206: // Partial content - this is to be expected since we use range gets
             // cases 201-205 are things we should probably reject, unless we add more
             // comprehensive HTTP/S processing here. jhrg 8/8/18
             return true;
+
+        //case 301: // Moved Permanently - but that's ok for now?
+        //    return true;
 
         case 400: // Bad Request
             ERROR_LOG(msg.str() << endl);

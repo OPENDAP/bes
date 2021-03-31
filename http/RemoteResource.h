@@ -32,12 +32,15 @@
 
 #include <string>
 #include <vector>
+
 #if 0
 #include "InternalErr.h"
 #include "RCReader.h"
 #endif
+
 #include "RemoteResource.h"
 #include "rapidjson/document.h"
+#include "HttpCache.h"
 
 namespace http {
 
@@ -49,12 +52,11 @@ namespace http {
  */
     class RemoteResource {
     private:
+        friend class RemoteResourceTest;
         /// Resource URL that an instance of this class represents
         std::string d_remoteResourceUrl;
 
-        /**
-         * Open file descriptor for the resource content (Returned from the cache).
-         */
+        /// Open file descriptor for the resource content (Returned from the cache).
         int d_fd;
 
         /// Protect the state of the object, not allowing some method calls before the resource is retrieved.
@@ -78,6 +80,9 @@ namespace http {
         /// The HTTP response headers returned by the request for the remote resource and parsed into KVP
         std::map<std::string, std::string> *d_http_response_headers; // Response headers
 
+        /// The interval before a cache resource needs to be refreshed
+        long long d_expires_interval;
+
 #if 0
         // FIXME Not impl. jhrg 8/7/20
         /**
@@ -99,7 +104,7 @@ namespace http {
         void ingest_http_headers_and_type();
 
         /**
-        * Filter the cache and replaces all occurances of template_str with update_str.
+        * @brief Filter the cache and replaces all occurances each key in content_filters key with its associated value.
         *
         * WARNING: Does not lock cache. This method assumes that the process has already
         * acquired an exclusive lock on the cache file.
@@ -108,23 +113,48 @@ namespace http {
         * @param update_str
         * @return
         */
-        unsigned int filter_retrieved_resource(const std::string &template_str, const std::string &update_str);
+        void filter_retrieved_resource(const std::map<std::string, std::string> &content_filters);
+
+        /**
+         * Checks if a cache resource is older than an hour
+         *
+         * @param filename - name of the resource to be checked
+         * @param uid
+         * @return true if the resource is over an hour old
+         */
+        bool is_cached_resource_expired(const std::string &filename, const std::string &uid);
+
+        /**
+         * method for calling update_file_and_header(map<string,string>) with a black map
+         */
+        void update_file_and_headers();
+
+        /**
+         * updates the file in the cache and the related headers file
+         *
+         * @param content_filters
+         */
+        void update_file_and_headers(const std::map<std::string, std::string> &content_filters);
+
+        /**
+         * finds the header file of a previously specified file and retrieves the related headers file
+         */
+        void load_hdrs_from_file();
 
     protected:
         RemoteResource() :
                 d_fd(0), d_initialized(false), d_resourceCacheFileName(""),
-                d_response_headers(0), d_http_response_headers(0) {
+                d_response_headers(0), d_http_response_headers(0), d_expires_interval(HttpCache::getCacheExpiresTime()) {
         }
 
     public:
         // RemoteResource(const std::string &url, const std::string &uid = "", const std::string &echo_token = "");
-        RemoteResource(const std::string &url, const std::string &uid = "");
+        RemoteResource(const std::string &url, const std::string &uid = "", long long expires_interval = HttpCache::getCacheExpiresTime());
 
         virtual ~RemoteResource();
 
         void retrieveResource();
-
-        void retrieveResource(const std::string &template_key, const std::string &replace_value);
+        void retrieveResource(const std::map<std::string, std::string> &content_filters);
 
         /**
          * Returns the DAP type std::string of the RemoteHttpResource
