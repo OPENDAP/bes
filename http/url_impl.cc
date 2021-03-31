@@ -43,8 +43,9 @@
 #include "url_impl.h"
 
 using namespace std;
+using std::chrono::system_clock;
 
-#define MODULE "http"
+#define MODULE HTTP_MODULE
 #define prolog string("url::").append(__func__).append("() - ")
 
 #define PROTOCOL_KEY "http_url_protocol"
@@ -54,7 +55,6 @@ using namespace std;
 #define SOURCE_URL_KEY  "http_url_target_url"
 #define INGEST_TIME_KEY  "http_url_ingest_time"
 
-#define REFRESH_THRESHOLD 600
 
 namespace http {
 
@@ -147,7 +147,7 @@ void url::parse(const string &source_url) {
     string::const_iterator prot_i = search(source_url.begin(), source_url.end(),
                                            protcol_end.begin(), protcol_end.end());
 
-    if(prot_i != source_url.end())
+    if (prot_i != source_url.end())
         advance(prot_i, protcol_end.length());
 
     d_protocol.reserve(distance(source_url.begin(), prot_i));
@@ -157,11 +157,10 @@ void url::parse(const string &source_url) {
     if (prot_i == source_url.end())
         return;
 
-    if(d_protocol == FILE_PROTOCOL){
+    if (d_protocol == FILE_PROTOCOL) {
         d_path = source_url.substr(source_url.find(protcol_end) + protcol_end.length());
 
-    }
-    else {
+    } else {
         string::const_iterator path_i = find(prot_i, source_url.end(), '/');
         d_host.reserve(distance(prot_i, path_i));
         transform(prot_i, path_i,
@@ -173,36 +172,33 @@ void url::parse(const string &source_url) {
             ++query_i;
         d_query.assign(query_i, source_url.end());
 
-        if(!d_query.empty()){
+        if (!d_query.empty()) {
             vector<string> records;
             string delimiters = "&";
             BESUtil::tokenize(d_query, records, delimiters);
             vector<string>::iterator i = records.begin();
-            for(; i!=records.end(); i++){
+            for (; i != records.end(); i++) {
                 size_t index = i->find('=');
-                if(index != string::npos) {
+                if (index != string::npos) {
                     string key = i->substr(0, index);
-                    string value = i->substr(index+1);
+                    string value = i->substr(index + 1);
                     BESDEBUG(MODULE, prolog << "key: " << key << " value: " << value << endl);
-                    map<string, vector<string>* >::const_iterator record_it;
+                    map<string, vector<string> *>::const_iterator record_it;
                     record_it = d_query_kvp.find(key);
-                    if(record_it != d_query_kvp.end()){
+                    if (record_it != d_query_kvp.end()) {
                         vector<string> *values = record_it->second;
                         values->push_back(value);
-                    }
-                    else {
+                    } else {
                         vector<string> *values = new vector<string>();
                         values->push_back(value);
-                        d_query_kvp.insert(pair<string, vector<string>*>(key, values));
+                        d_query_kvp.insert(pair<string, vector<string> *>(key, values));
                     }
                 }
             }
         }
     }
-
-
-    time(&d_ingest_time);
 }
+
 
 /**
  *
@@ -271,28 +267,36 @@ void url::kvp(map<string,string>  &kvp){
  */
 bool url::is_expired()
 {
-    bool is_expired;
-    time_t now;
-    time(&now);  /* get current time; same as: timer = time(NULL)  */
-    BESDEBUG(MODULE, prolog << "now: " << now << endl);
 
-    time_t expires = now;
+    bool stale;
+    std::time_t now = system_clock::to_time_t(system_clock::now());
+
+    BESDEBUG(MODULE, prolog << "now: " << now << endl);
+    // We set the expiration time to the default, in case other avenues don't work out so well.
+    std::time_t  expires_time = ingest_time() + HTTP_EFFECTIVE_URL_DEFAULT_EXPIRES_INTERVAL;
+
     string cf_expires = query_parameter_value(CLOUDFRONT_EXPIRES_HEADER_KEY);
-    string aws_expires = query_parameter_value(AMS_EXPIRES_HEADER_KEY);
+    string aws_expires_str = query_parameter_value(AMS_EXPIRES_HEADER_KEY);
 
     if(!cf_expires.empty()){ // CloudFront expires header?
-        expires = stoll(cf_expires);
-        BESDEBUG(MODULE, prolog << "Using "<< CLOUDFRONT_EXPIRES_HEADER_KEY << ": " << expires << endl);
+        std::istringstream(cf_expires) >> expires_time;
+        BESDEBUG(MODULE, prolog << "Using "<< CLOUDFRONT_EXPIRES_HEADER_KEY << ": " << expires_time << endl);
     }
-    else if(!aws_expires.empty()){
+    else if(!aws_expires_str.empty()){
+
+        long long aws_expires;
+        std::istringstream(aws_expires_str) >> aws_expires;
         // AWS Expires header?
         //
         // By default we'll use the time we made the URL object, ingest_time
-        time_t start_time = ingest_time();
+        std::time_t aws_start_time = ingest_time();
+
         // But if there's an AWS Date we'll parse that and compute the time
         // @TODO move to NgapApi::decompose_url() and add the result to the map
         string aws_date = query_parameter_value(AWS_DATE_HEADER_KEY);
+
         if(!aws_date.empty()){
+
             string date = aws_date; // 20200624T175046Z
             string year = date.substr(0,4);
             string month = date.substr(4,2);
@@ -305,7 +309,10 @@ bool url::is_expired()
                                     " year: " << year << " month: " << month << " day: " << day <<
                                     " hour: " << hour << " minute: " << minute  << " second: " << second << endl);
 
-            struct tm *ti = gmtime(&now);
+            std::time_t old_now;
+            time(&old_now);  /* get current time; same as: timer = time(NULL)  */
+            BESDEBUG(MODULE, prolog << "old_now: " << old_now << endl);
+            struct tm *ti = gmtime(&old_now);
             ti->tm_year = stoll(year) - 1900;
             ti->tm_mon = stoll(month) - 1;
             ti->tm_mday = stoll(day);
@@ -321,22 +328,23 @@ bool url::is_expired()
                                     " ti->tm_sec: " << ti->tm_sec << endl);
 
 
-            start_time = mktime(ti);
-            BESDEBUG(MODULE, prolog << "AWS (computed) start_time: "<< start_time << endl);
+            aws_start_time = mktime(ti);
+            BESDEBUG(MODULE, prolog << "AWS start_time (computed): " << aws_start_time << endl);
         }
-        expires = start_time + stoll(aws_expires);
+
+        expires_time = aws_start_time + aws_expires;
         BESDEBUG(MODULE, prolog << "Using "<< AMS_EXPIRES_HEADER_KEY << ": " << aws_expires <<
-                                " (expires: " << expires << ")" << endl);
+                                " (expires_time: " << expires_time << ")" << endl);
     }
-    time_t remaining = expires - now;
-    BESDEBUG(MODULE, prolog << "expires: " << expires <<
+    std::time_t remaining = expires_time - now;
+    BESDEBUG(MODULE, prolog << "expires_time: " << expires_time <<
                             "  remaining: " << remaining <<
-                            " threshold: " << REFRESH_THRESHOLD << endl);
+                            " threshold: " << HTTP_URL_REFRESH_THRESHOLD << endl);
 
-    is_expired = remaining < REFRESH_THRESHOLD;
-    BESDEBUG(MODULE, prolog << "is_expired: " << (is_expired?"true":"false") << endl);
+    stale = remaining < HTTP_URL_REFRESH_THRESHOLD;
+    BESDEBUG(MODULE, prolog << "stale: " << (stale?"true":"false") << endl);
 
-    return is_expired;
+    return stale;
 }
 
 /**
@@ -365,7 +373,7 @@ string url::dump(){
             ss << idt << "value[" << i << "]: " << (*values)[i] << endl;
         }
     }
-    ss << indent << "d_ingest_time:      " << d_ingest_time << endl;
+    ss << indent << "d_ingest_time:      " << d_ingest_time.time_since_epoch().count() << endl;
     return ss.str();
 }
 

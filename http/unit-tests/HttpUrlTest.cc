@@ -25,6 +25,8 @@
 #include <cstdio>
 #include <cstring>
 #include <iostream>
+#include <thread>         // std::this_thread::sleep_for
+#include <chrono>
 #include <time.h>
 
 #include <cppunit/TextTestRunner.h>
@@ -250,6 +252,51 @@ namespace http {
             }
 
         }
+    void chrono_test(){
+            long long nap_time = 2;
+            std::time_t today_tt;
+            std::chrono::system_clock::time_point today = std::chrono::system_clock::now();
+            today_tt = std::chrono::system_clock::to_time_t ( today );
+            if(debug) cerr  << "today is: " << ctime(&today_tt) << endl;
+
+        {
+            if(debug) cerr << "std::chrono::steady_clock" << endl;
+
+            std::chrono::steady_clock::time_point cnow = std::chrono::steady_clock::now();
+            long long now = cnow.time_since_epoch().count();
+            auto now_secs = std::chrono::time_point_cast<std::chrono::seconds>(cnow);
+            if(debug) cerr << "   now: " << now << " converted: " << now_secs.time_since_epoch().count()  << endl;
+
+            std::this_thread::sleep_for (std::chrono::seconds(nap_time));
+
+            auto lnow = std::chrono::steady_clock::now();
+            long long later = lnow.time_since_epoch().count();
+            auto later_secs = std::chrono::time_point_cast<std::chrono::seconds>(lnow);
+            if(debug) cerr << " later: " << later << " converted: " << later_secs.time_since_epoch().count() << endl;
+            if(debug) cerr << "  diff: " << later_secs.time_since_epoch().count() - now_secs.time_since_epoch().count() << endl;
+        }
+        {
+            if(debug) cerr << "std::chrono::system_clock" << endl;
+            auto cnow = std::chrono::system_clock::now();
+            std::time_t now_tt = std::chrono::system_clock::to_time_t(cnow);
+            long long now_count = cnow.time_since_epoch().count();
+            auto n2 =  std::chrono::time_point_cast<std::chrono::seconds>(cnow);
+            if(debug) cerr << "     now_count: " << now_count << " converted: " << n2.time_since_epoch().count() << endl;
+            if(debug) cerr << "        now_tt: " << now_tt << endl;
+
+            std::this_thread::sleep_for (std::chrono::seconds(nap_time));
+
+            auto lnow = std::chrono::system_clock::now();
+            std::time_t later_tt = std::chrono::system_clock::to_time_t(lnow);
+            long long lnow_count = lnow.time_since_epoch().count();
+            auto l2 =  std::chrono::time_point_cast<std::chrono::seconds>(lnow);
+            if(debug) cerr << "    lnow_count: " << lnow_count << " converted: " << l2.time_since_epoch().count() << endl;
+            if(debug) cerr << "      later_tt: " << later_tt << endl;
+            if(debug) cerr << "          diff: " << lnow_count - now_count << endl;
+            if(debug) cerr << "diff_converted: " << l2.time_since_epoch().count() - n2.time_since_epoch().count() << endl;
+            if(debug) cerr << "       diff_tt: " << later_tt - now_tt << endl;
+        }
+    }
 
 /* TESTS END */
 /*##################################################################################################*/
@@ -257,6 +304,7 @@ namespace http {
 
     CPPUNIT_TEST_SUITE( HttpUrlTest );
 
+            CPPUNIT_TEST(chrono_test);
             CPPUNIT_TEST(url_is_expired_test);
             CPPUNIT_TEST(url_ingest_test);
 

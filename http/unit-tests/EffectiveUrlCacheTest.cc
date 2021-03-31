@@ -207,9 +207,12 @@ namespace http {
 
         void skip_regex_test(){
             if(debug) cerr << prolog << "BEGIN" << endl;
+
             string source_url;
             string value;
             try {
+                // The cache is disabled in bes.conf so we need to turn it on.
+                EffectiveUrlCache::TheCache()->d_enabled = true;
 
                 // This one does not add the URL or even check it because it _should_ be matching the skip regex
                 // in the bes.conf
@@ -219,11 +222,10 @@ namespace http {
                 CPPUNIT_ASSERT( result_url->str() == src_url_03->str() );
 
             }
-            catch (BESError be){
+            catch (BESError &be){
                 stringstream msg;
-                msg << __func__ << "() - ERROR! Caught BESError. Message: " << be.get_message() << endl;
+                msg << prolog << "ERROR! Caught BESError. Message: " << be.get_message() << endl;
                 CPPUNIT_FAIL(msg.str());
-
             }
         }
 
@@ -267,9 +269,9 @@ namespace http {
                 CPPUNIT_ASSERT(result_url->str() == expected_url_02->str());
 
             }
-            catch (BESError be){
+            catch (BESError &be){
                 stringstream msg;
-                msg << __func__ << "() - ERROR! Caught BESError. Message: " << be.get_message() << endl;
+                msg << prolog << "ERROR! Caught BESError. Message: " << be.get_message() << endl;
                 CPPUNIT_FAIL(msg.str());
 
             }
@@ -283,8 +285,11 @@ namespace http {
             string value;
             string result_url;
             try {
+                // The cache is disabled in bes.conf so we need to turn it on.
+                EffectiveUrlCache::TheCache()->d_enabled = true;
+
                 std::map<std::string , http::EffectiveUrl *> d_effective_urls;
-                string source_url = "http://someURL";
+                source_url = "http://someURL";
 
                 http::EffectiveUrl first_eu("http://someOtherUrl");
                 d_effective_urls[source_url] = &first_eu;
@@ -301,9 +306,9 @@ namespace http {
                 CPPUNIT_ASSERT( d_effective_urls[source_url] == &second_eu);
 
             }
-            catch (BESError be){
+            catch (BESError &be){
                 stringstream msg;
-                msg << __func__ << "() - ERROR! Caught BESError. Message: " << be.get_message() << endl;
+                msg << prolog << "ERROR! Caught BESError. Message: " << be.get_message() << endl;
                 CPPUNIT_FAIL(msg.str());
 
             }
@@ -324,6 +329,7 @@ namespace http {
             try {
                 // The cache is disabled in bes.conf so we need to turn it on.
                 EffectiveUrlCache::TheCache()->d_enabled = true;
+
                 shared_ptr<http::url> thing1(new http::url("https://d1jecqxxv88lkr.cloudfront.net/ghrcwuat-protected/rss_demo/rssmif16d__7/f16_ssmis_20031026v7.nc"));
                 string thing1_out_of_region_effective_url_prefix = "https://d1jecqxxv88lkr.cloudfront.net/s3";
                 string thing1_in_region_effective_url_prefix = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/";
@@ -341,9 +347,9 @@ namespace http {
                 result_url = EffectiveUrlCache::TheCache()->get_effective_url(thing1);
 
             }
-            catch (BESError be){
+            catch (BESError &be){
                 stringstream msg;
-                msg << __func__ << "() - ERROR! Caught BESError. Message: " << be.get_message() << endl;
+                msg << prolog << "ERROR! Caught BESError. Message: " << be.get_message() << endl;
                 CPPUNIT_FAIL(msg.str());
 
             }
@@ -364,6 +370,7 @@ namespace http {
             try {
                 // The cache is disabled in bes.conf so we need to turn it on.
                 EffectiveUrlCache::TheCache()->d_enabled = true;
+
                 shared_ptr<http::url> thing1(
                         new http::url("https://harmony.uat.earthdata.nasa.gov/service-results/harmony-uat-staging/public/"
                                 "sds/staged/ATL03_20200714235814_03000802_003_01.h5"));
@@ -386,14 +393,52 @@ namespace http {
 
 
             }
-            catch (BESError be){
+            catch (BESError &be){
                 stringstream msg;
-                msg << __func__ << "() - ERROR! Caught BESError. Message: " << be.get_message() << endl;
+                msg << prolog << "ERROR! Caught BESError. Message: " << be.get_message() << endl;
                 CPPUNIT_FAIL(msg.str());
 
             }
             if(debug) cerr << prolog << "END" << endl;
         }
+
+        void trusted_url_test_01(){
+            if(debug) cerr << prolog << "BEGIN" << endl;
+            string url_str = "http://test.opendap.org/data/nothing_is_here.html";
+            string result_url_str = "http://test.opendap.org/data/httpd_catalog/READTHIS";
+            shared_ptr<http::url> trusted_src_url(new http::url(url_str,true));
+            shared_ptr<http::url> untrusted_src_url(new http::url(url_str,false));
+
+            if(debug) cerr << prolog << "Retrieving effective URL for: " << trusted_src_url->str() << endl;
+            try {
+                // The cache is disabled in bes.conf so we need to turn it on.
+                EffectiveUrlCache::TheCache()->d_enabled = true;
+
+                auto result_url = EffectiveUrlCache::TheCache()->get_effective_url(trusted_src_url);
+                if(debug) cerr << prolog << "source_url: " << trusted_src_url->str() << " is " << (trusted_src_url->is_trusted()?"":"NOT ") << "trusted." << endl;
+                if(debug) cerr << prolog << "result_url: " << result_url->str() << " is " << (result_url->is_trusted()?"":"NOT ") << "trusted." << endl;
+                if(debug) cerr << prolog << "EffectiveUrlCache::TheCache()->d_effective_urls.size(): " << EffectiveUrlCache::TheCache()->d_effective_urls.size() << endl;
+                CPPUNIT_ASSERT( EffectiveUrlCache::TheCache()->d_effective_urls.size() == 1);
+                CPPUNIT_ASSERT( result_url->str() == result_url_str);
+                CPPUNIT_ASSERT( result_url->is_trusted());
+
+                result_url = EffectiveUrlCache::TheCache()->get_effective_url(untrusted_src_url);
+                if(debug) cerr << prolog << "source_url: " << untrusted_src_url->str() << " is " << (untrusted_src_url->is_trusted()?"":"NOT ") << "trusted." << endl;
+                if(debug) cerr << prolog << "result_url: " << result_url->str() << " is " << (result_url->is_trusted()?"":"NOT ") << "trusted." << endl;
+                if(debug) cerr << prolog << "EffectiveUrlCache::TheCache()->d_effective_urls.size(): " << EffectiveUrlCache::TheCache()->d_effective_urls.size() << endl;
+                CPPUNIT_ASSERT( EffectiveUrlCache::TheCache()->d_effective_urls.size() == 1);
+                CPPUNIT_ASSERT( result_url->str() == result_url_str);
+                CPPUNIT_ASSERT( result_url->is_trusted());
+
+            }
+            catch (BESError &be){
+                stringstream msg;
+                msg << prolog << "ERROR! Caught BESError. Message: " << be.get_message() << endl;
+                CPPUNIT_FAIL(msg.str());
+            }
+            if(debug) cerr << prolog << "END" << endl;
+        }
+
 #if 0
         string get_amz_date(const time_t &da_time){
             string amz_date_format("%Y%m%dT%H%M%SZ"); // "20200808T032623Z";
@@ -435,12 +480,13 @@ namespace http {
 
     CPPUNIT_TEST_SUITE( EffectiveUrlCacheTest );
 
-            CPPUNIT_TEST(is_cache_disabled_test);
-            CPPUNIT_TEST(cache_test_00);
-            CPPUNIT_TEST(cache_test_01);
-            CPPUNIT_TEST(skip_regex_test);
-            CPPUNIT_TEST(euc_ghrc_tea_url_test);
-            CPPUNIT_TEST(euc_harmony_url_test);
+        CPPUNIT_TEST(is_cache_disabled_test);
+        CPPUNIT_TEST(cache_test_00);
+        CPPUNIT_TEST(cache_test_01);
+        CPPUNIT_TEST(skip_regex_test);
+        CPPUNIT_TEST(euc_ghrc_tea_url_test);
+        CPPUNIT_TEST(euc_harmony_url_test);
+        CPPUNIT_TEST(trusted_url_test_01);
 
     CPPUNIT_TEST_SUITE_END();
 };

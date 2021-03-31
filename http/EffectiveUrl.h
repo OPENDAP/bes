@@ -29,11 +29,14 @@
 #ifndef HYRAX_GIT_EFFECTIVEURL_H
 #define HYRAX_GIT_EFFECTIVEURL_H
 
+#include <chrono>
+
 #include <memory>
 #include <string>
 #include <map>
 #include <utility>
 
+#include "HttpNames.h"
 #include "url_impl.h"
 
 namespace http {
@@ -54,7 +57,7 @@ private:
 
 public:
 
-    explicit EffectiveUrl() : http::url(""), d_response_header_names(), d_response_header_values() {};
+    explicit EffectiveUrl();
 
     explicit EffectiveUrl(const std::string &url_s, bool trusted=false) : http::url(url_s,trusted), d_response_header_names(), d_response_header_values() {};
 

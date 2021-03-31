@@ -31,7 +31,7 @@
 #include <map>
 #include <vector>
 #include <memory>
-#include <time.h>
+#include <chrono>
 
 
 namespace http {
@@ -45,7 +45,8 @@ private:
     std::string d_path;
     std::string d_query;
     std::map<std::string, std::vector<std::string> * > d_query_kvp;
-    time_t d_ingest_time;
+    // time_t d_ingest_time;
+    std::chrono::system_clock::time_point d_ingest_time;
     bool d_trusted;
 
     void parse(const std::string &source_url);
@@ -63,7 +64,7 @@ public:
             d_host(""),
             d_path(""),
             d_query(""),
-            d_ingest_time(0),
+            d_ingest_time(std::chrono::system_clock::now()),
             d_trusted(false) {
     }
     explicit url(const std::string &url_s, bool trusted=false) :
@@ -72,7 +73,7 @@ public:
             d_host(""),
             d_path(""),
             d_query(""),
-            d_ingest_time(0),
+            d_ingest_time(std::chrono::system_clock::now()),
             d_trusted(trusted) {
         parse(url_s);
     }
@@ -109,10 +110,12 @@ public:
 
     virtual std::string query() const { return d_query; }
 
-    virtual time_t ingest_time() const { return d_ingest_time; }
+    virtual std::time_t  ingest_time() const {
+        return std::chrono::system_clock::to_time_t(d_ingest_time);
+    }
 
-    virtual void set_ingest_time(const time_t itime){
-        d_ingest_time = itime;
+    virtual void set_ingest_time(const std::time_t &itime){
+        d_ingest_time = std::chrono::system_clock::from_time_t(itime);
     }
 
     virtual std::string query_parameter_value(const std::string &key) const;

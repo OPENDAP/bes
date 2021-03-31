@@ -238,9 +238,8 @@ shared_ptr<http::EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr<h
                     sw.start(prolog + "Retrieve and cache effective url for source url: " + source_url->str());
                 effective_url = curl::retrieve_effective_url(source_url);
             }
-            if(source_url->is_trusted())
-            BESDEBUG(MODULE, prolog << "   source_url: " << source_url->str() << endl);
-            BESDEBUG(MODULE, prolog << "effective_url: " << effective_url->dump() << endl);
+            BESDEBUG(MODULE, prolog << "   source_url: " << source_url->str() << " (" << (source_url->is_trusted()?"":"NOT ") << "trusted)" << endl);
+            BESDEBUG(MODULE, prolog << "effective_url: " << effective_url->dump() << " (" << (source_url->is_trusted()?"":"NOT ") << "trusted)" << endl);
 
             d_effective_urls[source_url->str()] = effective_url;
 
