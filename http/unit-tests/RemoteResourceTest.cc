@@ -267,7 +267,8 @@ public:
         string url = FILE_PROTOCOL;
         url += BESUtil::pathConcat(d_data_dir,"load_hdrs_from_file_test_file.txt");
         if(debug) cerr << prolog << "url: " << url << endl;
-        RemoteResource rhr(url);
+        shared_ptr<http::url> url_ptr(new http::url(url));
+        RemoteResource rhr(url_ptr);
         if(debug) cerr << prolog << "rhr created" << endl;
         try {
             rhr.load_hdrs_from_file();
@@ -318,7 +319,8 @@ public:
         if(debug) cerr << prolog << "BEGIN" << endl;
 
         try {
-            RemoteResource rhr("http://google.com", "foobar");
+            std::shared_ptr<http::url> target_url(new http::url("http://google.com"));
+            RemoteResource rhr(target_url, "foobar");
             if(debug) cerr << prolog << "remoteResource rhr: created" << endl;
 
             rhr.d_resourceCacheFileName = d_temp_file;
@@ -373,7 +375,8 @@ public:
 
         string url = "http://test.opendap.org/data/httpd_catalog/READTHIS";
         if(debug) cerr << prolog << "url: " << url << endl;
-        http::RemoteResource rhr(url);
+        std::shared_ptr<http::url> url_ptr(new http::url(url));
+        http::RemoteResource rhr(url_ptr);
         try {
             rhr.retrieveResource();
             vector<string> *hdrs = rhr.getResponseHeaders();
@@ -408,7 +411,8 @@ public:
         if(debug) cerr << prolog << "BEGIN" << endl;
         string url = "https://d1jecqxxv88lkr.cloudfront.net/ghrcwuat-protected/rss_demo/rssmif16d__7/f16_ssmis_20031026v7.nc.dmrpp";
         if(debug) cerr << prolog << "url: " << url << endl;
-        http::RemoteResource rhr(url);
+        std::shared_ptr<http::url> url_ptr(new http::url(url));
+        http::RemoteResource rhr(url_ptr);
         try {
             rhr.retrieveResource();
             vector<string> *hdrs = rhr.getResponseHeaders();
@@ -448,7 +452,8 @@ public:
                         "sds/staged/ATL03_20200714235814_03000802_003_01.h5.dmrpp";
 
         if(debug) cerr << prolog << "url: " << url << endl;
-        http::RemoteResource rhr(url);
+        std::shared_ptr<http::url> url_ptr(new http::url(url));
+        http::RemoteResource rhr(url_ptr);
         try {
             rhr.retrieveResource();
             vector<string> *hdrs = rhr.getResponseHeaders();
@@ -478,7 +483,8 @@ public:
         if(debug) cerr << prolog << "BEGIN" << endl;
 
         string data_file_url = get_data_file_url("test_file");
-        http::RemoteResource rhr(data_file_url);
+        std::shared_ptr<http::url> url_ptr(new http::url(data_file_url));
+        http::RemoteResource rhr(url_ptr);
         try {
             rhr.retrieveResource();
             vector<string> *hdrs = rhr.getResponseHeaders();
@@ -513,7 +519,8 @@ public:
          if(debug) cerr << prolog << "BEGIN" << endl;
 
          try {
-             RemoteResource rhr("http://google.com", "foobar", 1);
+             std::shared_ptr<http::url> target_url(new http::url("http://google.com"));
+             RemoteResource rhr(target_url, "foobar", 1);
              if(debug) cerr << prolog << "remoteResource rhr: created, expires_interval: " << rhr.d_expires_interval << endl;
 
              rhr.d_resourceCacheFileName = d_temp_file;
@@ -535,7 +542,7 @@ public:
 
              sleep(2);
 
-             bool refresh = rhr.is_cached_resource_expired(rhr.d_resourceCacheFileName, rhr.d_uid);
+             bool refresh = rhr.cached_resource_is_expired();
              if(debug) cerr << prolog << "is_cached_resource_expired() called, refresh: " << refresh << endl;
 
              CPPUNIT_ASSERT(refresh);

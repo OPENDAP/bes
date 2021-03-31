@@ -140,7 +140,8 @@ string GatewayContainer::access() {
 
     if(!d_remoteResource) {
         BESDEBUG( MODULE, prolog << "Building new RemoteResource." << endl );
-        d_remoteResource = new http::RemoteResource(url);
+        std::shared_ptr<http::url> url_ptr(new http::url(url));
+        d_remoteResource = new http::RemoteResource(url_ptr);
         d_remoteResource->retrieveResource();
     }
     BESDEBUG( MODULE, prolog << "Located remote resource." << endl );

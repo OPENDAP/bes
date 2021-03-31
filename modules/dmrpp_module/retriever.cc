@@ -387,7 +387,8 @@ void parse_dmrpp(const string &dmrpp_filename_url){
 
     if(target_file_url.rfind(http_protocol,0)==0 || target_file_url.rfind(https_protocol,0)==0 ){
         // Use RemoteResource to get the thing.
-        http::RemoteResource target_resource(target_file_url,prolog+"Timer");
+        shared_ptr<http::url> tfile_url(new http::url(target_file_url));
+        http::RemoteResource target_resource(tfile_url,prolog+"Timer");
         target_resource.retrieveResource();
         target_file = target_resource.getCacheFileName();
     }

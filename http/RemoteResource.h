@@ -121,11 +121,8 @@ namespace http {
         /**
          * Checks if a cache resource is older than an hour
          *
-         * @param filename - name of the resource to be checked
-         * @param uid
-         * @return true if the resource is over an hour old
          */
-        bool is_cached_resource_expired(const std::string &filename, const std::string &uid);
+        bool cached_resource_is_expired();
 
         /**
          * method for calling update_file_and_header(map<string,string>) with a black map
@@ -146,13 +143,15 @@ namespace http {
 
     protected:
         RemoteResource() :
-                d_fd(0), d_initialized(false), d_resourceCacheFileName(""),
+                d_remoteResourceUrl(), d_fd(0), d_initialized(false), d_resourceCacheFileName(""),
                 d_response_headers(0), d_http_response_headers(0), d_expires_interval(HttpCache::getCacheExpiresTime()) {
         }
 
     public:
         // RemoteResource(const std::string &url, const std::string &uid = "", const std::string &echo_token = "");
-        RemoteResource(const std::string &url, const std::string &uid = "", long long expires_interval = HttpCache::getCacheExpiresTime());
+        //RemoteResource(const std::string &url, const std::string &uid = "", long long expires_interval = HttpCache::getCacheExpiresTime());
+
+        RemoteResource(std::shared_ptr<http::url> target_url, const std::string &uid = "", long long expires_interval = HttpCache::getCacheExpiresTime());
 
         virtual ~RemoteResource();
 

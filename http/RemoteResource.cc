@@ -30,6 +30,7 @@
 #include <fstream>
 #include <string>
 #include <iostream>
+#include <utility>
 #include <sys/stat.h>
 
 #include "rapidjson/document.h"
@@ -61,9 +62,11 @@ using namespace std;
 
 namespace http {
 
-    RemoteResource::RemoteResource(const std::string &target_url_str,const std::string &uid, long long expiredInterval){
-
-        d_remoteResourceUrl = shared_ptr<http::url>(new http::url(target_url_str));
+RemoteResource::RemoteResource(
+        std::shared_ptr<http::url> target_url,
+        const std::string &uid,
+        long long expiredInterval)
+        : d_remoteResourceUrl(std::move(target_url)){
 
         d_fd = 0;
         d_initialized = false;
@@ -76,9 +79,6 @@ namespace http {
 
         d_expires_interval = expiredInterval;
 
-        if (target_url_str.empty()) {
-            throw BESInternalError(prolog + "Remote resource URL is empty.", __FILE__, __LINE__);
-        }
 
         if(d_remoteResourceUrl->protocol() == FILE_PROTOCOL){
             BESDEBUG(MODULE,prolog << "Found FILE protocol." << endl);
@@ -293,7 +293,7 @@ namespace http {
                          prolog << "Remote resource is already in cache. cache_file_name: " << d_resourceCacheFileName
                                 << endl);
 
-                if (is_cached_resource_expired(d_resourceCacheFileName, d_uid)) {
+                if (cached_resource_is_expired()) {
                     BESDEBUG(MODULE, prolog << "EXISTS - UPDATING " << endl);
                     update_file_and_headers(content_filters);
                     cache->exclusive_to_shared_lock(d_fd);
@@ -450,11 +450,11 @@ namespace http {
      * @param uid
      * @return true if the resource is over an hour old
      */
-    bool RemoteResource::is_cached_resource_expired(const std::string &filename, const std::string &uid){
+    bool RemoteResource::cached_resource_is_expired(){
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
         struct stat statbuf;
-        if (stat(filename.c_str(), &statbuf) == -1){
+        if (stat(d_resourceCacheFileName.c_str(), &statbuf) == -1){
             throw BESNotFoundError(strerror(errno), __FILE__, __LINE__);
         }//end if
         BESDEBUG(MODULE, prolog << "File exists" << endl);
