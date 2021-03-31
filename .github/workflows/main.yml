@@ -12,7 +12,6 @@ on:
     branches: [ master gdal314 actions-build ]
   pull_request:
     branches: [ master gdal314 actions-build ]
-    branches: [ master ]
   workflow_dispatch:
 
 jobs:
