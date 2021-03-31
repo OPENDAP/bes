@@ -36,6 +36,7 @@ jobs:
         if: steps.cache-deps.outputs.cache-hit != 'true'
         run: |
           git clone https://github.com/OPENDAP/hyrax-dependencies
+          git checkout gdal314
           cd hyrax-dependencies
           make --jobs=$jobs
           gdal-config --formats
@@ -55,6 +56,7 @@ jobs:
           autoreconf --force --install --verbose
           ./configure --prefix=$prefix --enable-developer
           make --jobs=$jobs
+          make check --jobs=$jobs
           make install
 
       - name: build bes
