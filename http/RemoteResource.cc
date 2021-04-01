@@ -609,7 +609,19 @@ namespace http {
     }
 
 
-    /**
+unsigned int RemoteResource::replace_all(string &src_str, const string &template_str, const string &replace_str){
+    unsigned int replace_count = 0;
+    size_t current_position = src_str.find(template_str);
+    while (current_position != string::npos) {
+        src_str.erase(current_position, template_str.length());
+        src_str.insert(current_position, replace_str);
+        current_position = src_str.find(template_str);
+        replace_count++;
+    }
+    return replace_count;
+}
+
+/**
      * @brief Filter the cached resource. Each key in content_filters is replaced with its associated map value.
      *
      * WARNING: Does not lock cache. This method assumes that the process has already
@@ -628,28 +640,23 @@ namespace http {
             return;
         }
 
-        //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-        // Read the cached file into a string object
-        std::ifstream cr_istrm(d_resourceCacheFileName);
-        if (!cr_istrm.is_open()) {
-            string msg = "Could not open '" + d_resourceCacheFileName + "' to read cached response.";
-            BESDEBUG(MODULE, prolog << msg << endl);
-            throw BESInternalError(msg, __FILE__, __LINE__);
-        }
-        std::stringstream buffer;
-        buffer << cr_istrm.rdbuf();
-        string resource_content(buffer.str());
+        string resource_content;
+        {
+            std::stringstream buffer;
+            //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+            // Read the cached file into a string object
+            std::ifstream cr_istrm(d_resourceCacheFileName);
+            if (!cr_istrm.is_open()) {
+                string msg = "Could not open '" + d_resourceCacheFileName + "' to read cached response.";
+                BESDEBUG(MODULE, prolog << msg << endl);
+                throw BESInternalError(msg, __FILE__, __LINE__);
+            }
+            buffer << cr_istrm.rdbuf();
+            resource_content = buffer.str();
+        } // cr_istrm is closed here.
 
         for (const auto& apair : content_filters) {
-            //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-            // Replace all occurrences of the template_key with replace_value.
-            unsigned int replace_count = 0;
-            int startIndex = 0;
-            while ((startIndex = resource_content.find(apair.first)) != -1) {
-                resource_content.erase(startIndex, apair.first.length());
-                resource_content.insert(startIndex, apair.second);
-                replace_count++;
-            }
+            unsigned int replace_count = replace_all(resource_content,apair.first, apair.second);
             BESDEBUG(MODULE, prolog << "Replaced " << replace_count << " instance(s) of template(" <<
             apair.first << ") with " << apair.second << " in cached RemoteResource" << endl);
         }

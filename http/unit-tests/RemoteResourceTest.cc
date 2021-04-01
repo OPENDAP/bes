@@ -578,7 +578,7 @@ public:
             bool result_matched = compare(tmp_file,baseline_file);
             stringstream info_msg;
             info_msg << prolog << "The filtered file: "<< tmp_file << (result_matched?" MATCHED ":" DID NOT MATCH ")
-            << "the baseline file: " << baseline_file << endl;
+                     << "the baseline file: " << baseline_file << endl;
             if(debug) cerr << info_msg.str();
             CPPUNIT_ASSERT_MESSAGE(info_msg.str(),result_matched);
         }
@@ -597,6 +597,51 @@ public:
         if(debug) cerr << prolog << "END" << endl;
     }
 
+    /**
+ * Test of the RemoteResource content filtering method.
+ */
+    void replace_all_test() {
+        if(debug) cerr << prolog << "BEGIN" << endl;
+
+        string source_file = BESUtil::pathConcat(d_data_dir,"ATL08_20200716202251.h5.dmrpp");
+        if(debug) cerr << prolog << "source_file: " << source_file << endl;
+
+        string baseline_file = BESUtil::pathConcat(d_data_dir,"ATL08_20200716202251.h5.dmrpp.baseline");
+        if(debug) cerr << prolog << "baseline_file: " << baseline_file << endl;
+
+        try {
+            string source_str = get_file_as_string(source_file);
+            string baseline_str = get_file_as_string(baseline_file);
+
+            string data_url_template = "OPeNDAP_DMRpp_DATA_ACCESS_URL";
+            string data_url = "https://harmony.uat.earthdata.nasa.gov/service-results/harmony-uat-staging/public/sds/staged/ATL08_20200716202251_03280806_003_01.h5";
+
+            string missing_data_url_template = "OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL";
+            string missing_data_url="file://missing_file_ref";
+
+            RemoteResource foo;
+            foo.replace_all(source_str, data_url_template, data_url);
+            foo.replace_all(source_str, missing_data_url_template, missing_data_url);
+
+            bool result_matched = source_str == baseline_str;
+
+            stringstream info_msg;
+            info_msg << prolog << "The filtered string " << (result_matched?"MATCHED ":"DID NOT MATCH ")
+                     << "the baseline file: " << baseline_file << endl;
+            if(debug) cerr << info_msg.str();
+            if(Debug && !result_matched) cerr << prolog << "Filtered Source Content:" << endl << source_str << endl;
+            CPPUNIT_ASSERT_MESSAGE(info_msg.str(),result_matched);
+        }
+        catch(BESError be){
+            stringstream msg;
+            msg << prolog << "Caught BESError. Message: " << be.get_verbose_message() << " ";
+            msg << be.get_file() << " " << be.get_line() << endl;
+            if(debug) cerr << msg.str();
+            CPPUNIT_FAIL(msg.str());
+        }
+        if(debug) cerr << prolog << "END" << endl;
+    }
+
 /* TESTS END */
 /*##################################################################################################*/
 
@@ -607,6 +652,7 @@ public:
     CPPUNIT_TEST(update_file_and_headers_test);
     CPPUNIT_TEST(is_cached_resource_expired_test);
     CPPUNIT_TEST(filter_test);
+    CPPUNIT_TEST(replace_all_test);
     CPPUNIT_TEST(get_http_url_test);
     CPPUNIT_TEST(get_file_url_test);
     CPPUNIT_TEST(get_ngap_ghrc_tea_url_test);
