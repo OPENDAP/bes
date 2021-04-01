@@ -1288,6 +1288,9 @@ public:
     virtual void Handle_Grid_Mapping_Vars();
 
 
+    bool Have_EOS5_Grids() {
+        return (this->eos5cfgrids.size()!=0);
+    }
     virtual bool Get_IgnoredInfo_Flag()
     {
         return check_ignored;
