@@ -26,11 +26,14 @@
 
 #include "config.h"
 
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+
 #include <sstream>
 #include <fstream>
 #include <string>
 #include <iostream>
-#include <sys/stat.h>
 
 #include "rapidjson/document.h"
 
@@ -504,6 +507,16 @@ namespace http {
                 besTimer.start(prolog + "source url: " + d_remoteResourceUrl);
             }
 
+            int status = lseek(fd, 0, SEEK_SET);
+            if (-1 == status)
+                throw BESNotFoundError("Could not seek within the response file.", __FILE__, __LINE__);
+            BESDEBUG(MODULE, prolog << "Reset file descriptor to start of file." << endl);
+
+            status = ftruncate(fd, 0);
+            if (-1 == status)
+                throw BESInternalError("Could not seek within the response. ", __FILE__, __LINE__);
+            BESDEBUG(MODULE, prolog << "Truncated file, length is zero." << endl);
+
             BESDEBUG(MODULE, prolog << "Saving resource " << d_remoteResourceUrl << " to cache file " << d_resourceCacheFileName << endl);
             curl::http_get_and_write_resource(d_remoteResourceUrl, fd, d_response_headers); // Throws BESInternalError if there is a curl error.
 
@@ -513,10 +526,10 @@ namespace http {
             // FIXME I think the idea here is that we have the file open and we should just keep
             // reading from it. But the container mechanism works with file names, so we will
             // likely have to open the file again. If that's true, lets remove this call. jhrg 3.2.18
-            int status = lseek(fd, 0, SEEK_SET);
+            status = lseek(fd, 0, SEEK_SET);
             if (-1 == status)
-                throw BESError("Could not seek within the response.", BES_NOT_FOUND_ERROR, __FILE__, __LINE__);
-            BESDEBUG(MODULE, prolog << "Reset file descriptor." << endl);
+                throw BESNotFoundError("Could not seek within the response file.", __FILE__, __LINE__);
+            BESDEBUG(MODULE, prolog << "Reset file descriptor to start of file." << endl);
 
             // @TODO CACHE THE DATA TYPE OR THE HTTP HEADERS SO WHEN WE ARE RETRIEVING THE CACHED OBJECT WE CAN GET THE CORRECT TYPE
             ingest_http_headers_and_type();
