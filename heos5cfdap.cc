@@ -2077,6 +2077,21 @@ void gen_eos5_cfdmr(D4Group *d4_root,  HDF5CF::EOS5File *f) {
         gen_dap_onevar_dmr(d4_root,*it_v,file_id,filename);
     }
 
+    // Here we need to check if the grid_mapping dummy var needs to be added here.
+    // Since we need to make sure the dimension name and size match, we need to 
+    // use coordinate variables. So still a loop like the following. STOP,TODO: 2021-04-01
+#if 0
+    for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
+        if((*it_cv)->getCVType() == CV_LAT_MISS) {
+            if((*it_cv)->getProjCode() != HE5_GCTP_GEO) {
+                gen_dap_oneeos5cf_das(das,vars,*it_cv,cv_lat_miss_index);
+                cv_lat_miss_index++;
+            }
+        }
+    }
+
+
+#endif
     for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
         BESDEBUG("h5","variable full path= "<< (*it_cv)->getFullPath() <<endl);
         gen_dap_oneeos5cvar_dmr(d4_root,*it_cv,file_id,filename);
@@ -2348,6 +2363,22 @@ cerr<<"cvar getParams here 1 is "<<cvar->getParams()[0]<<endl;
 
 }
 
+// REVIEW THIS, CHECK THE TICKET WORK LOG FOR TODO LIST:2021-04-01
+void gen_dap_oneeos5cf_dmr(D4Group *d4_root, const HDF5CF::EOS5CVar* cvar) {
+
+    BESDEBUG("h5","Coming to gen_dap_oneeos5cf_dmr()  "<<endl);
+
+    float cv_point_lower = cvar->getPointLower();       
+    float cv_point_upper = cvar->getPointUpper();       
+    float cv_point_left  = cvar->getPointLeft();       
+    float cv_point_right = cvar->getPointRight();       
+    EOS5GridPCType cv_proj_code = cvar->getProjCode();
+    const vector<HDF5CF::Dimension *>& dims = cvar->getDimensions();
+    if(dims.size() !=2) 
+        throw InternalErr(__FILE__,__LINE__,"Currently we only support the 2-D CF coordinate projection system.");
+    //add_cf_grid_cvs_dmr(d4_root,cv_proj_code,cv_point_lower,cv_point_upper,cv_point_left,cv_point_right,dims);
+
+}
 
 
 
