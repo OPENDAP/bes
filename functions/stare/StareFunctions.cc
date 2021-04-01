@@ -389,44 +389,22 @@ get_sidecar_uint64_values_2(const string &filename, BaseType *variable, vector<d
 {
     int ncid;
     GeoFile *gf = new GeoFile();
+    vector<long long unsigned int> my_values;
     int ret;
 
-    cout<<"howdy again "<<filename<<"\n";
-    //Read the file and store the datasets
+    // Open and scan the sidecar file.
     if ((ret = gf->readSidecarFile(filename.c_str(), 1, ncid)))
         throw BESInternalError("Could not open file " + filename + " - " + nc_strerror(ret), __FILE__, __LINE__);
-    // if ((ret = nc_open(filename.c_str(), NC_NOWRITE, &ncid)))
-    //     throw BESInternalError("Could not open file " + filename + " - " + nc_strerror(ret), __FILE__, __LINE__);
 
-    // // Here we look up the name of the stare index data for 'variable.' For now,
-    // // use the name stored in 's_index_name'. jhrg 6/3/20
+    // Get the STARE index data for variable.
+    if ((ret = gf->getSTAREIndex_2(variable->name(), 1, ncid, my_values)))
+        throw BESInternalError("Could get stare indexes from file " + filename + " - " + nc_strerror(ret), __FILE__, __LINE__);
 
-    // hid_t dataset = H5Dopen(file, s_index_name.c_str(), H5P_DEFAULT);
-    // if (dataset < 0)
-    //     throw BESInternalError(string("Could not open dataset: ").append(s_index_name), __FILE__, __LINE__);
+    // Copy vector.
+    for (int i = 0; i < my_values.size(); i++)
+	values.push_back(my_values.at(i));
 
-    // hid_t dspace = H5Dget_space(dataset);
-    // const int ndims = H5Sget_simple_extent_ndims(dspace);
-    // vector<hsize_t> dims(ndims);
-
-    // //Get the size of the dimension so that we know how big to make the memory space
-    // //Each of the dataspaces should be the same size, if in the future they are different
-    // // sizes then the size of each dataspace will need to be calculated.
-    // H5Sget_simple_extent_dims(dspace, &dims[0], NULL);
-
-    // //We need to get the filespace and memspace before reading the values from each dataset
-    // hid_t filespace = H5Dget_space(dataset);
-
-    // hid_t memspace = H5Screate_simple(ndims, &dims[0], NULL);
-
-    // //Get the number of elements in the dataspace and use that to appropriate the proper size of the vectors
-    // values.resize(H5Sget_select_npoints(filespace));
-
-    // //Read the data file and store the values of each dataset into an array
-    // H5Dread(dataset, H5T_NATIVE_ULLONG, memspace, filespace, H5P_DEFAULT, &values[0]);
-
-    // if ((ret = nc_close(ncid)))
-    //     throw BESInternalError("Could not close file " + filename + " - " + nc_strerror(ret),  __FILE__, __LINE__);
+    // Close the sidecar file.
     if ((ret = gf->closeSidecarFile(1, ncid)))
         throw BESInternalError("Could not close file " + filename + " - " + nc_strerror(ret),  __FILE__, __LINE__);
 }
