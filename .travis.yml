@@ -10,8 +10,10 @@
 #
 # Try using Ubuntu Focal
 
-# dist: trusty
-dist: xenial
+# virt: lxd             # use an lxd container
+# arch: amd64           # optional, this is default, routes to a full VM
+# os: linux             # optional, this is default
+dist: xenial          # or bionic | xenial | trusty | precise with xenial as default
 
 language: cpp
 
@@ -20,7 +22,6 @@ compiler: gcc
 branches:
   only:
   - master
-  - travis
 
 addons:
   sonarcloud: true
@@ -43,7 +44,7 @@ env:
     - PATH=$prefix/bin:$prefix/deps/bin:$PATH
     - TESTSUITEFLAGS=-j7
     # Change this when libdap version numbers change
-    - LIBDAP_RPM_VERSION=3.20.7-1
+    - LIBDAP_RPM_VERSION=3.20.7-16
     # SONAR_LOGIN, made using "travis encrypt --org -r OPENDAP/bes SONAR_LOGIN=335df..."
     - secure: "TmoFcgeIyAEjFyrlqB6rhdUhDqPJfxVZmT5fewgVHj0xm767VZ6DU21mM6ZHgNGyk99TzX0Gx/dwSqbsUj18hSSAvEa7fJQSKJ5IBJvTeMKhXn1DPPG9VpuZ4ti5afRDiNr6EJKbVxwBTkz+3798S8LajPuXGupYupir8IJQCt8="
     # SONAR_MODULES_LOGIN, using "travis encrypt --org -r OPENDAP/bes SONAR_MODULES_LOGIN=42ba..."
@@ -80,7 +81,16 @@ install:
   - tar -C $HOME -xzvf $TRAVIS_BUILD_DIR/libdap-build.tar.gz
 
 before_script:
-  - autoreconf --force --install --verbose
+  # This is now done in each step. Doing that made the libdap4 build a bit faster/cleaner
+  # and hopefully that will be true here too. jhrg 3/24/21
+  # - autoreconf --force --install --verbose
+  - source travis/travis_bes_build_offset.sh
+  - export BES_BUILD_NUMBER=$(expr $TRAVIS_BUILD_NUMBER - $BES_TRAVIS_BUILD_OFFSET)
+  - echo "BES_BUILD_NUMBER is ${BES_BUILD_NUMBER} = ${TRAVIS_BUILD_NUMBER} - ${BES_TRAVIS_BUILD_OFFSET}"
+  - export LIBDAP_RPM_VERSION=$(grep "libdap4-" libdap4-snapshot | awk '{print $1;}' - | sed "s/libdap4-//g")
+  - echo "Travis default env:"
+  - printenv
+
 
 # Build all the stages for 'master'. For a PR, run the 'build' and 'package' stages,
 # but do not run the scan.
@@ -90,7 +100,9 @@ stages:
   - name: scan
     if:  branch = master
   - name: package
-    if:  branch = master
+    if: branch = master
+  - name: hyrax-olfs-trigger
+    if: branch = master AND type != pull_request
 
 jobs:
   include:
@@ -98,6 +110,7 @@ jobs:
     name: "scan bes"
     script:
     - export BES_BUILD=sonar-bes-framework
+    - autoreconf --force --install --verbose
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer --enable-coverage
     - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
 
@@ -111,6 +124,7 @@ jobs:
     name: "scan bes-modules"
     script:
       - export BES_BUILD=sonar-bes-modules
+      - autoreconf --force --install --verbose
       - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer  --enable-coverage
       - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
 
@@ -124,6 +138,7 @@ jobs:
     name: "scan bes-submodules"
     script:
       - export BES_BUILD=sonar-bes-submodules
+      - autoreconf --force --install --verbose
       - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer  --enable-coverage
       - build-wrapper-linux-x86-64 --out-dir bw-output make -j7
 
@@ -137,6 +152,7 @@ jobs:
     name: "check"
     script: 
     - export BES_BUILD=main
+    - autoreconf --force --install --verbose
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
     - make -j7 && make install && besctl start && make check -j7 && besctl stop
 
@@ -144,6 +160,7 @@ jobs:
     name: "distcheck"
     script:
     - export BES_BUILD=distcheck
+    - autoreconf --force --install --verbose
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
     - make distcheck -j7
 
@@ -152,16 +169,6 @@ jobs:
     # packages for branches, but we want to be able to test builds without making pushes to master
     # and that means having the build-rpm.sh use the spec files on a branch.
 
-# Removed CentOS 6 build. jhrg 10/23/20
-#  - stage: package
-#    script:
-#    - export BES_BUILD=centos6
-#    - mkdir -p $prefix/rpmbuild
-#    - docker run --volume $prefix/rpmbuild:/root/rpmbuild --volume $TRAVIS_BUILD_DIR:/root/travis
-#                 --env OS=centos6 --env DIST=el6 --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
-#                 --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-#                 opendap/centos6_hyrax_builder:1.3 /root/travis/build-rpm.sh ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}
-
   - stage: package
     name: "CentOS-7 RPMs"
     script: 
@@ -169,37 +176,47 @@ jobs:
     - mkdir -p $prefix/rpmbuild
     - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
     - docker run --volume $prefix/rpmbuild:/root/rpmbuild --volume $TRAVIS_BUILD_DIR:/root/travis
-                 --env OS=centos7 --env DIST=el7 --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
-                 --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-                 opendap/centos7_hyrax_builder:1.2 /root/travis/build-rpm.sh ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}
+                 --env OS=centos7
+                 --env DIST=el7
+                 --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
+                 --env BES_BUILD_NUMBER=$BES_BUILD_NUMBER
+                 --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+                 --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+                 opendap/centos7_hyrax_builder:1.7 /root/travis/build-rpm.sh
 
   - stage: package
     name: "dist"
     script:
-    - export BES_BUILD=srcdist
-    - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer 
-    - make dist -j7
-    - cp bes-*.tar.gz bes-snapshot.tar.gz;
+      - export BES_BUILD=srcdist
+      - autoreconf --force --install --verbose
+      - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --with-build=$BES_BUILD_NUMBER
+      - make dist -j7
+      # Make both a bes-<version>-<build num> and bes-snapshot tar.gz. This will simplify
+      # other operations that use the bes source code. Note that the VERSION file holds a
+      # string that is the version number as set by the configure script and the build
+      # number passed into configure when it is run. jhrg 3/23/21
+      - SOURCE_VERSION=$(cat VERSION)
+      - mv bes-*.tar.gz bes-$SOURCE_VERSION.tar.gz
+      - cp bes-$SOURCE_VERSION.tar.gz bes-snapshot.tar.gz
+
+  - stage: hyrax-olfs-trigger
+    name: "Hyrax OLFS Trigger"
+    script:
+      - export STAGE=hyrax-olfs
+      - echo $STAGE
+      - autoreconf --force --install --verbose
+      - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --with-build=$BES_BUILD_NUMBER
+      - ./travis/trigger-olfs-build.sh
 
 after_script:
   - ./travis/upload-test-results.sh
 
 before_deploy:
-  # Get creds for pushing snapshots to w.o.o.
-  # - if  test "$BES_BUILD" = "srcdist" || test "$BES_BUILD" = "centos6" || test "$BES_BUILD" = "centos7" ;
-  #   then
-  #     openssl aes-256-cbc -K $encrypted_f3adba893add_key -iv $encrypted_f3adba893add_iv -in ./travis/woo_deploy_rsa_enc -out /tmp/woo_deploy_rsa -d;
-  #     eval "$(ssh-agent -s)";
-  #     chmod 600 /tmp/woo_deploy_rsa;
-  #     ssh-add /tmp/woo_deploy_rsa;
-  #   fi
   - export DEPLOY="S3"
   # Make sure that we have the target dir...
   - mkdir -p $TRAVIS_BUILD_DIR/package;
   # Source distribution prep (copies both the 'version' and 'snapshot'
   - if test "$BES_BUILD" = "srcdist"; then cp bes-*.tar.gz $TRAVIS_BUILD_DIR/package; fi
-  # CentOS-6 distribution prep. Removed, jhrg 10/23/20
-  # - if test "$BES_BUILD" = "centos6"; then ./travis/rpm-to-package-dir.sh "el6"; fi
   # CentOS-7  distribution prep
   - if test "$BES_BUILD" = "centos7"; then ./travis/rpm-to-package-dir.sh "el7"; fi
   # Check for the stuff...
@@ -216,41 +233,4 @@ deploy:
     local_dir: $TRAVIS_BUILD_DIR/package
     on:
       branch: master
-      condition: $BES_BUILD =~ ^deb|centos7|srcdist$
-    # Removed condition 'centos6|'. jhrg 10/23/20
-
-  # See https://opendap.atlassian.net/browse/HK-519
-  #
-  # Push CentOS-7 snapshot rpms to w.o.o
-  # - provider: script
-  #   skip_cleanup: true
-  #   env: DEPLOY="NOT_S3"
-  #   script: sshpass -p $WOO_PSWD scp -v $TRAVIS_BUILD_DIR/package/*snapshot*el7* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-7.x
-  #   on:
-  #     branch: master
-  #     condition: $BES_BUILD =~ ^centos7$
-  # # Push CentOS-6 snapshot rpms to w.o.o
-  # - provider: script
-  #   skip_cleanup: true
-  #   env: DEPLOY="NOT_S3"
-  #   script: sshpass -p $WOO_PSWD scp -v $TRAVIS_BUILD_DIR/package/*snapshot*el6* $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/centos-6.x
-  #   on:
-  #     branch: master
-  #     condition: $BES_BUILD =~ ^centos6$
-  # # Push source snapshot rpms to w.o.o
-  # - provider: script
-  #   skip_cleanup: true
-  #   env: DEPLOY="NOT_S3"
-  #   script: sshpass -p $WOO_PSWD scp -v $TRAVIS_BUILD_DIR/package/*snapshot.tar.gz $WOO_UID@www.opendap.org:/httpdocs/webdav/pub/binary/hyrax-snapshot/src
-  #   on:
-  #     branch: master
-  #     condition: $BES_BUILD =~ ^srcdist$
-
-# The after_deploy section grabs the hyrax-docker project, sets the current snapshot time 
-# and pushes the result to GitHub. This push triggers TravisCI to build the Docker containers
-# for all of the Hyrax snapshot products. jhrg 10/28/19
-#
-# CAVEAT: In after_deploy failures will not affect the build outcome, they will be ignored.
-#
-after_deploy:
-  - if test x"$BES_BUILD" = x"centos7" -a x"$DEPLOY" = x"S3"; then ./travis/trigger-olfs-build.sh; fi
+      condition: $BES_BUILD =~ ^centos7|srcdist$
