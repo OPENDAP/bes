@@ -514,7 +514,7 @@ namespace http {
 
             status = ftruncate(fd, 0);
             if (-1 == status)
-                throw BESInternalError("Could not seek within the response. ", __FILE__, __LINE__);
+                throw BESInternalError("Could truncate the file prior to updating from remote. ", __FILE__, __LINE__);
             BESDEBUG(MODULE, prolog << "Truncated file, length is zero." << endl);
 
             BESDEBUG(MODULE, prolog << "Saving resource " << d_remoteResourceUrl << " to cache file " << d_resourceCacheFileName << endl);
