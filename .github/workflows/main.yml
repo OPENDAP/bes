@@ -36,8 +36,8 @@ jobs:
         if: steps.cache-deps.outputs.cache-hit != 'true'
         run: |
           git clone https://github.com/OPENDAP/hyrax-dependencies
-          git checkout gdal314
           cd hyrax-dependencies
+          git checkout gdal314
           make --jobs=$jobs
           gdal-config --formats
 
