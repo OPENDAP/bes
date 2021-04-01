@@ -44,14 +44,17 @@ typedef BESInfo * (*p_info_builder)(const std::string &info_type);
 
 class BESInfoList: public BESObj {
 private:
-    static BESInfoList * _instance;
+    static BESInfoList * d_instance;
+
+    static void initialize_instance();  // originally used with pthread_once(). jhrg 7/22/18
+    static void delete_instance();
+
     std::map<std::string, p_info_builder> _info_list;
 
     typedef std::map<std::string, p_info_builder>::const_iterator Info_citer;
     typedef std::map<std::string, p_info_builder>::iterator Info_iter;
-protected:
-    BESInfoList(void);
 public:
+    BESInfoList();
     virtual ~BESInfoList(void);
 
     virtual bool add_info_builder(const std::string &info_type, p_info_builder info_builder);
