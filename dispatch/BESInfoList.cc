@@ -30,6 +30,14 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
+
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
+
+#include <mutex>
+
 #include "BESInfoList.h"
 #include "BESInfo.h"
 #include "TheBESKeys.h"
@@ -41,7 +49,8 @@ using std::string;
 
 #define BES_DEFAULT_INFO_TYPE "txt"
 
-BESInfoList *BESInfoList::d_instance = 0;
+BESInfoList *BESInfoList::d_instance = nullptr;
+static std::once_flag d_euc_init_once;
 
 BESInfoList::~BESInfoList() {
 }
@@ -139,6 +148,6 @@ void BESInfoList::delete_instance() {
 
 BESInfoList *
 BESInfoList::TheList() {
-    if (d_instance == 0) initialize_instance();
+    std::call_once(d_euc_init_once,BESInfoList::initialize_instance);
     return d_instance;
 }

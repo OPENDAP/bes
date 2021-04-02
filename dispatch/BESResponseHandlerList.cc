@@ -32,11 +32,20 @@
 
 #include "BESResponseHandlerList.h"
 
+#include "config.h"
+
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
+
+using namespace std;
 using std::endl;
 using std::ostream;
 using std::string;
 
-BESResponseHandlerList *BESResponseHandlerList::_instance = 0;
+BESResponseHandlerList *BESResponseHandlerList::d_instance = nullptr;
+
+BESResponseHandlerList::BESResponseHandlerList(){}
 
 /** @brief add a response handler to the list
  *
@@ -156,9 +165,18 @@ void BESResponseHandlerList::dump(ostream &strm) const
 BESResponseHandlerList *
 BESResponseHandlerList::TheList()
 {
-    if (_instance == 0) {
-        _instance = new BESResponseHandlerList;
-    }
-    return _instance;
+    if (d_instance == 0) initialize_instance();
+    return d_instance;
+}
+
+void BESResponseHandlerList::initialize_instance() {
+#ifdef HAVE_ATEXIT
+    atexit(delete_instance);
+#endif
+}
+
+void BESResponseHandlerList::delete_instance() {
+    delete d_instance;
+    d_instance = 0;
 }
 

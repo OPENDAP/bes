@@ -35,6 +35,7 @@
 
 #include <map>
 #include <string>
+#include <mutex>
 
 #include "BESObj.h"
 
@@ -45,8 +46,9 @@ typedef BESInfo * (*p_info_builder)(const std::string &info_type);
 class BESInfoList: public BESObj {
 private:
     static BESInfoList * d_instance;
+    std::mutex d_cache_lock_mutex;
 
-    static void initialize_instance();  // originally used with pthread_once(). jhrg 7/22/18
+    static void initialize_instance();
     static void delete_instance();
 
     std::map<std::string, p_info_builder> _info_list;
@@ -55,7 +57,7 @@ private:
     typedef std::map<std::string, p_info_builder>::iterator Info_iter;
 public:
     BESInfoList();
-    virtual ~BESInfoList(void);
+    virtual ~BESInfoList();
 
     virtual bool add_info_builder(const std::string &info_type, p_info_builder info_builder);
     virtual bool rem_info_builder(const std::string &info_type);

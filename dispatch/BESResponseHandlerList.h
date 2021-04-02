@@ -58,20 +58,18 @@ typedef BESResponseHandler * (*p_response_handler)(const std::string &name);
  */
 class BESResponseHandlerList: public BESObj {
 private:
-    static BESResponseHandlerList * _instance;
+    static BESResponseHandlerList * d_instance;
+
+    static void initialize_instance();
+    static void delete_instance();
+
     std::map<std::string, p_response_handler> _handler_list;
 
     friend class resplistT;
 
-protected:
-    BESResponseHandlerList(void)
-    {
-    }
-
 public:
-    virtual ~BESResponseHandlerList(void)
-    {
-    }
+    BESResponseHandlerList();
+    virtual ~BESResponseHandlerList();
 
     typedef std::map<std::string, p_response_handler>::const_iterator Handler_citer;
     typedef std::map<std::string, p_response_handler>::iterator Handler_iter;
