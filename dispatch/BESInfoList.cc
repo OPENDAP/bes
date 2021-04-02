@@ -60,6 +60,9 @@ BESInfoList::BESInfoList() {};
 bool
 BESInfoList::add_info_builder(const string &info_type,
                               p_info_builder info_builder) {
+
+    std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
+
     BESInfoList::Info_citer i;
     i = _info_list.find(info_type);
     if (i == _info_list.end()) {
@@ -71,6 +74,9 @@ BESInfoList::add_info_builder(const string &info_type,
 
 bool
 BESInfoList::rem_info_builder(const string &info_type) {
+
+    std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
+
     BESInfoList::Info_iter i;
     i = _info_list.find(info_type);
     if (i != _info_list.end()) {
@@ -82,6 +88,9 @@ BESInfoList::rem_info_builder(const string &info_type) {
 
 BESInfo *
 BESInfoList::build_info() {
+
+    std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
+
     string info_type = "";
     bool found = false;
     TheBESKeys::TheKeys()->get_value("BES.Info.Type", info_type, found);

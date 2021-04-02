@@ -68,10 +68,7 @@ class BESInfo;
  */
 class BESDefinitionStorageList: public BESObj {
 private:
-    static BESDefinitionStorageList * d_instance;
-
-    static void initialize_instance();
-    static void delete_instance();
+    static BESDefinitionStorageList * _instance;
 
     typedef struct _persistence_list {
         BESDefinitionStorage *_persistence_obj;
@@ -80,8 +77,9 @@ private:
     } persistence_list;
 
     BESDefinitionStorageList::persistence_list *_first;
-public:
+protected:
     BESDefinitionStorageList();
+public:
     virtual ~BESDefinitionStorageList();
 
     virtual bool add_persistence(BESDefinitionStorage *p);

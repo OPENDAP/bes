@@ -31,13 +31,7 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include <iostream>
-#include "config.h"
 
-#ifdef HAVE_STDLIB_H
-#include <stdlib.h>
-#endif
-
-using namespace std;
 using std::endl;
 using std::string;
 using std::ostream;
@@ -47,7 +41,7 @@ using std::ostream;
 #include "BESDefine.h"
 #include "BESInfo.h"
 
-BESDefinitionStorageList *BESDefinitionStorageList::d_instance = nullptr;
+BESDefinitionStorageList *BESDefinitionStorageList::_instance = 0;
 
 BESDefinitionStorageList::BESDefinitionStorageList() :
     _first(0)
@@ -297,8 +291,10 @@ void BESDefinitionStorageList::show_definitions(BESInfo &info)
 BESDefinitionStorageList *
 BESDefinitionStorageList::TheList()
 {
-    if (d_instance == 0) initialize_instance();
-    return d_instance;
+    if (_instance == 0) {
+        _instance = new BESDefinitionStorageList;
+    }
+    return _instance;
 }
 
 /** @brief dumps information about this object
@@ -326,16 +322,5 @@ void BESDefinitionStorageList::dump(ostream &strm) const
         strm << BESIndent::LMarg << "registered definition storage: none" << endl;
     }
     BESIndent::UnIndent();
-}
-
-void BESDefinitionStorageList::initialize_instance() {
-#ifdef HAVE_ATEXIT
-    atexit(delete_instance);
-#endif
-}
-
-void BESDefinitionStorageList::delete_instance() {
-    delete d_instance;
-    d_instance = 0;
 }
 
