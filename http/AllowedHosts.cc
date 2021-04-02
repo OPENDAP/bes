@@ -120,11 +120,6 @@ bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url) {
     BESDEBUG(MODULE, prolog << "BEGIN candidate_url: " << candidate_url->str() << endl);
     bool isAllowed = false;
 
-    const string file_url(FILE_PROTOCOL);
-    const string http_url(HTTP_PROTOCOL);
-    const string https_url(HTTPS_PROTOCOL);
-
-
     // Special case: This allows any file: URL to pass if the URL starts with the default
     // catalog's path.
     if (candidate_url->protocol() == FILE_PROTOCOL) {
@@ -192,28 +187,28 @@ bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url) {
         BESDEBUG(MODULE, prolog << "File Access Allowed: " << (isAllowed ? "true " : "false ") << endl);
     } else if(candidate_url->protocol() == HTTPS_PROTOCOL || candidate_url->protocol() == HTTP_PROTOCOL ){
 
-
         // We only check this on the HTTP side because there is no such thing as a trusted file URL.
         if (candidate_url->is_trusted()) {
             BESDEBUG(MODULE, prolog << "END The URL is marked as TRUSTED. candidate_url: " << candidate_url->str() << endl);
             isAllowed = true;
         }
-
-        vector<string>::const_iterator it = d_allowed_hosts.begin();
-        vector<string>::const_iterator end_it = d_allowed_hosts.end();
-        for (; it != end_it && !isAllowed; it++) {
-            string a_regex_pattern = *it;
-            BESRegex reg_expr(a_regex_pattern.c_str());
-            int match_result = reg_expr.match(candidate_url->str().c_str(), candidate_url->str().length());
-            if (match_result >= 0) {
-                auto match_length = (unsigned int) match_result;
-                if (match_length == candidate_url->str().length()) {
-                    BESDEBUG(MODULE,
-                             prolog << "FULL MATCH. pattern: " << a_regex_pattern << " url: " << candidate_url << endl);
-                    isAllowed = true;;
-                } else {
-                    BESDEBUG(MODULE,
-                             prolog << "No Match. pattern: " << a_regex_pattern << " url: " << candidate_url << endl);
+        else {
+            auto it = d_allowed_hosts.begin();
+            auto end_it = d_allowed_hosts.end();
+            for (; it != end_it && !isAllowed; it++) {
+                string a_regex_pattern = *it;
+                BESRegex reg_expr(a_regex_pattern.c_str());
+                int match_result = reg_expr.match(candidate_url->str().c_str(), candidate_url->str().length());
+                if (match_result >= 0) {
+                    auto match_length = (unsigned int) match_result;
+                    if (match_length == candidate_url->str().length()) {
+                        BESDEBUG(MODULE,
+                                 prolog << "FULL MATCH. pattern: " << a_regex_pattern << " url: " << candidate_url << endl);
+                        isAllowed = true;;
+                    } else {
+                        BESDEBUG(MODULE,
+                                 prolog << "No Match. pattern: " << a_regex_pattern << " url: " << candidate_url << endl);
+                    }
                 }
             }
         }
