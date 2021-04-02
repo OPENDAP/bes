@@ -49,7 +49,7 @@ private:
     std::chrono::system_clock::time_point d_ingest_time;
     bool d_trusted;
 
-    void parse(const std::string &source_url);
+    void parse();
 
 protected:
 
@@ -75,7 +75,7 @@ public:
             d_query(""),
             d_ingest_time(std::chrono::system_clock::now()),
             d_trusted(trusted) {
-        parse(url_s);
+        parse();
     }
 
     url(http::url const &src_url){
