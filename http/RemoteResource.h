@@ -117,6 +117,7 @@ namespace http {
         * @return
         */
         void filter_retrieved_resource(const std::map<std::string, std::string> &content_filters);
+        unsigned int replace_all(std::string &src_str, const std::string &template_str, const std::string &replace_str);
 
         /**
          * Checks if a cache resource is older than an hour
