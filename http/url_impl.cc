@@ -142,35 +142,43 @@ url::~url()
  * Tip of the hat to: https://stackoverflow.com/questions/2616011/easy-way-to-parse-a-url-in-c-cross-platform
  * @param source_url
  */
-void url::parse(const string &source_url) {
+void url::parse() {
     const string protcol_end("://");
-    string::const_iterator prot_i = search(source_url.begin(), source_url.end(),
+
+    // if it does not start with a protocol, assign it to the FILE_PROTOCOL
+    string tmp;
+    if(d_source_url_str.find(protcol_end) == string::npos){
+        d_source_url_str = FILE_PROTOCOL + d_source_url_str;
+    }
+    const string parse_url_target(d_source_url_str);
+
+    string::const_iterator prot_i = search(parse_url_target.begin(), parse_url_target.end(),
                                            protcol_end.begin(), protcol_end.end());
 
-    if (prot_i != source_url.end())
+    if (prot_i != parse_url_target.end())
         advance(prot_i, protcol_end.length());
 
-    d_protocol.reserve(distance(source_url.begin(), prot_i));
-    transform(source_url.begin(), prot_i,
+    d_protocol.reserve(distance(parse_url_target.begin(), prot_i));
+    transform(parse_url_target.begin(), prot_i,
               back_inserter(d_protocol),
               ptr_fun<int, int>(tolower)); // protocol is icase
-    if (prot_i == source_url.end())
+    if (prot_i == parse_url_target.end())
         return;
 
     if (d_protocol == FILE_PROTOCOL) {
-        d_path = source_url.substr(source_url.find(protcol_end) + protcol_end.length());
+        d_path = parse_url_target.substr(parse_url_target.find(protcol_end) + protcol_end.length());
 
     } else {
-        string::const_iterator path_i = find(prot_i, source_url.end(), '/');
+        string::const_iterator path_i = find(prot_i, parse_url_target.end(), '/');
         d_host.reserve(distance(prot_i, path_i));
         transform(prot_i, path_i,
                   back_inserter(d_host),
                   ptr_fun<int, int>(tolower)); // host is icase
-        string::const_iterator query_i = find(path_i, source_url.end(), '?');
+        string::const_iterator query_i = find(path_i, parse_url_target.end(), '?');
         d_path.assign(path_i, query_i);
-        if (query_i != source_url.end())
+        if (query_i != parse_url_target.end())
             ++query_i;
-        d_query.assign(query_i, source_url.end());
+        d_query.assign(query_i, parse_url_target.end());
 
         if (!d_query.empty()) {
             vector<string> records;
