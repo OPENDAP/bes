@@ -614,18 +614,6 @@ RemoteResource::get_http_response_header(const std::string header_name) {
     return value;
 }
 
-unsigned int RemoteResource::replace_all(string &src_str, const string &template_str, const string &replace_str){
-    unsigned int replace_count = 0;
-    size_t current_position = src_str.find(template_str);
-    while (current_position != string::npos) {
-        src_str.erase(current_position, template_str.length());
-        src_str.insert(current_position, replace_str);
-        current_position = src_str.find(template_str);
-        replace_count++;
-    }
-    return replace_count;
-}
-
 /**
  * @brief Filter the cached resource. Each key in content_filters is replaced with its associated map value.
  *
@@ -662,7 +650,7 @@ void RemoteResource::filter_retrieved_resource(const std::map<std::string, std::
     } // cr_istrm is closed here.
 
     for (const auto& apair : content_filters) {
-        unsigned int replace_count = replace_all(resource_content,apair.first, apair.second);
+        unsigned int replace_count = BESUtil::replace_all(resource_content,apair.first, apair.second);
         BESDEBUG(MODULE, prolog << "Replaced " << replace_count << " instance(s) of template(" <<
         apair.first << ") with " << apair.second << " in cached RemoteResource" << endl);
     }
