@@ -140,16 +140,40 @@ url::~url()
 
 
 /**
+ * @brief Parses the URL into it's components and makes some BES file system magic.
+ *
+ *
  * Tip of the hat to: https://stackoverflow.com/questions/2616011/easy-way-to-parse-a-url-in-c-cross-platform
  * @param source_url
  */
 void url::parse() {
     const string protcol_end("://");
 
-    // if it does not start with a protocol, assign it to the FILE_PROTOCOL
-    string tmp;
+    // If the supplied string does not start with a protocol, we assume it must be a
+    // path relative the BES.Catalog.catalog.RootDirectory because that's the only
+    // thing we are going to allow, even when it starts with slash '/'. Basically
+    // we force it to be in the BES.Catalog.catalog.RootDirectory tree.
     if(d_source_url_str.find(protcol_end) == string::npos){
-        d_source_url_str = FILE_PROTOCOL + d_source_url_str;
+        // Since we want a valid path in the file system tree for data we make it so by adding the
+        // the file path starts with the catalog root dir.
+        BESCatalogList *bcl = BESCatalogList::TheCatalogList();
+        string default_catalog_name = bcl->default_catalog_name();
+        BESDEBUG(MODULE, prolog << "Searching for  catalog: " << default_catalog_name << endl);
+        BESCatalog *bcat = bcl->find_catalog(default_catalog_name);
+        if (bcat) {
+            BESDEBUG(MODULE, prolog << "Found catalog: " << bcat->get_catalog_name() << endl);
+        } else {
+            string msg = "OUCH! Unable to locate default catalog!";
+            BESDEBUG(MODULE, prolog << msg << endl);
+            throw BESInternalError(msg, __FILE__, __LINE__);
+        }
+        string catalog_root = bcat->get_root();
+        BESDEBUG(MODULE, prolog << "Catalog root: " << catalog_root << endl);
+
+        string file_path = BESUtil::pathConcat(catalog_root,d_source_url_str);
+        if(file_path[0] != '/')
+            file_path = "/" + file_path;
+        d_source_url_str = FILE_PROTOCOL + file_path;
     }
 
     const string parse_url_target(d_source_url_str);
@@ -169,39 +193,9 @@ void url::parse() {
 
     if (d_protocol == FILE_PROTOCOL) {
         d_path = parse_url_target.substr(parse_url_target.find(protcol_end) + protcol_end.length());
-
-        BESDEBUG(MODULE, prolog << "relative file_path: " << d_path[0] << endl);
-
-        // Since we want a valid path in the file system tree for data we make it so by adding the
-        // the file path starts with the catalog root dir.
-        BESCatalogList *bcl = BESCatalogList::TheCatalogList();
-        string default_catalog_name = bcl->default_catalog_name();
-        BESDEBUG(MODULE, prolog << "Searching for  catalog: " << default_catalog_name << endl);
-        BESCatalog *bcat = bcl->find_catalog(default_catalog_name);
-        if (bcat) {
-            BESDEBUG(MODULE, prolog << "Found catalog: " << bcat->get_catalog_name() << endl);
-        } else {
-            string msg = "OUCH! Unable to locate default catalog!";
-            BESDEBUG(MODULE, prolog << msg << endl);
-            throw BESInternalError(msg, __FILE__, __LINE__);
-        }
-        string catalog_root = bcat->get_root();
-        BESDEBUG(MODULE, prolog << "Catalog root: " << catalog_root << endl);
-
-        if(d_path[0] != '/'){
-            d_path = BESUtil::pathConcat(catalog_root,d_path);
-            if(d_path[0] != '/')
-                d_path = "/" + d_path;
-            d_source_url_str = FILE_PROTOCOL + d_path;
-        }
-        else if(d_path.find(catalog_root) != 0){
-            stringstream msg;
-            msg << "OUCH! File protocol URL was requested for a file outside of the catalog root graph. ";
-            msg << "url: " << d_source_url_str;
-            throw BESInternalError(msg.str(),__FILE__,__LINE__);
-        }
+        BESDEBUG(MODULE, prolog << "FILE_PROTOCOL d_path: " << d_path << endl);
     }
-    else {
+    else if( d_protocol == HTTP_PROTOCOL || d_protocol == HTTPS_PROTOCOL){
         string::const_iterator path_i = find(prot_i, parse_url_target.end(), '/');
         d_host.reserve(distance(prot_i, path_i));
         transform(prot_i, path_i,
@@ -237,6 +231,12 @@ void url::parse() {
                 }
             }
         }
+    }
+    else {
+        stringstream msg;
+        msg << prolog << "Unsupported URL protocol " << d_protocol << " found in URL: " << d_source_url_str;
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
 }
 
