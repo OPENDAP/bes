@@ -31,14 +31,15 @@
 
 #include <curl/curl.h>
 
-#include <BaseType.h>
-#include <D4Attributes.h>
-#include <XMLWriter.h>
+#include "BaseType.h"
+#include "D4Attributes.h"
+#include "XMLWriter.h"
 
-#include <BESIndent.h>
-#include <BESDebug.h>
-#include <BESLog.h>
-#include <BESInternalError.h>
+#include "BESIndent.h"
+#include "BESDebug.h"
+#include "BESUtil.h"
+#include "BESLog.h"
+#include "BESInternalError.h"
 
 #include "DmrppRequestHandler.h"
 #include "DmrppCommon.h"
@@ -125,14 +126,14 @@ void DmrppCommon::parse_chunk_dimension_sizes(const string &chunk_dims_string)
         while ((strPos = chunk_dims.find(space)) != string::npos) {
             strVal = chunk_dims.substr(0, strPos);
 
-            d_chunk_dimension_sizes.push_back(strtol(strVal.c_str(), NULL, 10));
+            d_chunk_dimension_sizes.push_back(strtol(strVal.c_str(), nullptr, 10));
             chunk_dims.erase(0, strPos + space.length());
         }
     }
 
     // If it's multi valued there's still one more value left to process
     // If it's single valued the same is true, so let's ingest that.
-    d_chunk_dimension_sizes.push_back(strtol(chunk_dims.c_str(), NULL, 10));
+    d_chunk_dimension_sizes.push_back(strtol(chunk_dims.c_str(), nullptr, 10));
 }
 
 /**
