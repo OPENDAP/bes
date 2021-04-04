@@ -96,6 +96,7 @@ private:
      */
     void init_dmr_and_mds()
     {
+        DBG( cerr << prolog << "BEGIN" << endl );
         try {
             // Stock code to get the d_test_dds and d_mds objects used by many
             // of the tests.
@@ -123,10 +124,12 @@ private:
         catch (std::exception &e) {
             CPPUNIT_FAIL(e.what());
         }
+        DBG( cerr << prolog << "BEGIN" << endl );
     }
 
     void init_dmrpp_and_mds()
     {
+        DBG( cerr << prolog << "BEGIN" << endl );
         try {
             // Stock code to get the d_test_dds and d_mds objects used by many
             // of the tests.
@@ -154,6 +157,7 @@ private:
         catch (std::exception &e) {
             CPPUNIT_FAIL(e.what());
         }
+        DBG( cerr << prolog << "END" << endl );
     }
 
 public:
@@ -486,11 +490,11 @@ public:
 
             // look for the files
             string dmr_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dmr->name().append("dmr_r")), false /*mangle*/);
-            DBG(cerr << prolog <<  " - dmr_cache_name: " << dmr_cache_name << endl);
+            DBG(cerr << prolog <<  "dmr_cache_name: " << dmr_cache_name << endl);
             CPPUNIT_ASSERT(access(dmr_cache_name.c_str(), R_OK) == 0);
 
             string dmrpp_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dmr->name().append("dmrpp_r")), false /*mangle*/);
-            DBG(cerr << prolog <<  " - dmrpp_cache_name: " << dmrpp_cache_name << endl);
+            DBG(cerr << prolog <<  "dmrpp_cache_name: " << dmrpp_cache_name << endl);
             CPPUNIT_ASSERT(access(dmrpp_cache_name.c_str(), R_OK) == 0);
 
             bool removed = d_mds->remove_responses(d_test_dmr->name());
@@ -557,14 +561,12 @@ public:
 
             // Store it - this will work if the the code is cleaning the cache.
             bool stored = d_mds->add_responses(d_test_dmr, d_test_dmr->name());
-
+            DBG(cerr << prolog <<  "Stored: " << (stored?"true":"false") << endl);
             CPPUNIT_ASSERT(stored);
 
             DMRpp *dmrpp = d_mds->get_dmrpp_object(d_test_dmr->name());
-
+            DBG(cerr << prolog <<  "Got dmr++: " << (dmrpp?dmrpp->name():"NULL") << endl);
             CPPUNIT_ASSERT(dmrpp);
-
-            DBG(cerr << prolog << "DMR++: " << dmrpp->name() << endl);
 
             ostringstream oss;
             XMLWriter writer;
