@@ -91,16 +91,15 @@ public:
         catch(BESError &be){
             stringstream msg;
             msg << prolog << "Caught BESError! Message: " << be.get_verbose_message();
-            msg << " Location: " << be.get_file() << ":" << be.get_line();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-}
+        }
         catch(std::exception &se){
             stringstream msg;
             msg << prolog << "Caught std::excpetion! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-}
+        }
         catch(...){
             CPPUNIT_FAIL(prolog + "Caught unknown exception.");
         }
@@ -116,16 +115,15 @@ public:
         catch(BESError &be){
             stringstream msg;
             msg << prolog << "Caught BESError! Message: " << be.get_verbose_message();
-            msg << " Location: " << be.get_file() << ":" << be.get_line();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-}
+        }
         catch(std::exception &se){
             stringstream msg;
             msg << prolog << "Caught std::excpetion! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-}
+        }
         catch(...){
             CPPUNIT_FAIL(prolog + "Caught unknown exception.");
         }
@@ -140,18 +138,19 @@ public:
             CPPUNIT_ASSERT(d_dc.d_chunk_dimension_sizes.at(1) == 17);
         }
         catch(BESError &be){
-            stringstream msg;
-            msg << prolog << "Caught BESError! Message: " << be.get_verbose_message();
-            msg << " Location: " << be.get_file() << ":" << be.get_line();
-            cerr << msg.str() << endl;
-            CPPUNIT_FAIL(msg.str());
-}
+            if(debug){
+                stringstream msg;
+                msg << prolog << "Caught BESError! Message: " << be.get_verbose_message();
+                cerr << msg.str() << endl;
+            }
+            throw;
+        }
         catch(std::exception &se){
             stringstream msg;
             msg << prolog << "Caught std::excpetion! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-}
+        }
         catch(...){
             CPPUNIT_FAIL(prolog + "Caught unknown exception.");
         }
@@ -166,18 +165,19 @@ public:
             CPPUNIT_ASSERT(d_dc.d_chunk_dimension_sizes.at(1) == 17);
         }
         catch(BESError &be){
-            stringstream msg;
-            msg << prolog << "Caught BESError! Message: " << be.get_verbose_message();
-            msg << " Location: " << be.get_file() << ":" << be.get_line();
-            cerr << msg.str() << endl;
-            CPPUNIT_FAIL(msg.str());
-}
+            if(debug){
+                stringstream msg;
+                msg << prolog << "Caught BESError! Message: " << be.get_verbose_message();
+                cerr << msg.str() << endl;
+            }
+            throw;
+        }
         catch(std::exception &se){
             stringstream msg;
             msg << prolog << "Caught std::excpetion! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-}
+        }
         catch(...){
             CPPUNIT_FAIL(prolog + "Caught unknown exception.");
         }
@@ -192,16 +192,15 @@ public:
         catch(BESError &be){
             stringstream msg;
             msg << prolog << "Caught BESError! Message: " << be.get_verbose_message();
-            msg << " Location: " << be.get_file() << ":" << be.get_line();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-}
+        }
         catch(std::exception &se){
             stringstream msg;
             msg << prolog << "Caught std::excpetion! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-}
+        }
         catch(...){
             CPPUNIT_FAIL(prolog + "Caught unknown exception.");
         }
@@ -216,16 +215,15 @@ public:
         catch(BESError &be){
             stringstream msg;
             msg << prolog << "Caught BESError! Message: " << be.get_verbose_message();
-            msg << " Location: " << be.get_file() << ":" << be.get_line();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-}
+        }
         catch(std::exception &se){
             stringstream msg;
             msg << prolog << "Caught std::excpetion! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-}
+        }
         catch(...){
             CPPUNIT_FAIL(prolog + "Caught unknown exception.");
         }
@@ -240,16 +238,15 @@ public:
         catch(BESError &be){
             stringstream msg;
             msg << prolog << "Caught BESError! Message: " << be.get_verbose_message();
-            msg << " Location: " << be.get_file() << ":" << be.get_line();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-}
+        }
         catch(std::exception &se){
             stringstream msg;
             msg << prolog << "Caught std::excpetion! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-}
+        }
         catch(...){
             CPPUNIT_FAIL(prolog + "Caught unknown exception.");
         }
@@ -265,16 +262,15 @@ public:
         catch(BESError &be){
             stringstream msg;
             msg << prolog << "Caught BESError! Message: " << be.get_verbose_message();
-            msg << " Location: " << be.get_file() << ":" << be.get_line();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-}
+        }
         catch(std::exception &se){
             stringstream msg;
             msg << prolog << "Caught std::excpetion! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-}
+        }
         catch(...){
             CPPUNIT_FAIL(prolog + "Caught unknown exception.");
         }
@@ -292,16 +288,15 @@ public:
         catch(BESError &be){
             stringstream msg;
             msg << prolog << "Caught BESError! Message: " << be.get_verbose_message();
-            msg << " Location: " << be.get_file() << ":" << be.get_line();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-}
+        }
         catch(std::exception &se){
             stringstream msg;
             msg << prolog << "Caught std::excpetion! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-}
+        }
         catch(...){
             CPPUNIT_FAIL(prolog + "Caught unknown exception.");
         }
@@ -317,16 +312,15 @@ public:
         catch(BESError &be){
             stringstream msg;
             msg << prolog << "Caught BESError! Message: " << be.get_verbose_message();
-            msg << " Location: " << be.get_file() << ":" << be.get_line();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-}
+        }
         catch(std::exception &se){
             stringstream msg;
             msg << prolog << "Caught std::excpetion! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-}
+        }
         catch(...){
             CPPUNIT_FAIL(prolog + "Caught unknown exception.");
         }
@@ -355,16 +349,15 @@ public:
         catch(BESError &be){
             stringstream msg;
             msg << prolog << "Caught BESError! Message: " << be.get_verbose_message();
-            msg << " Location: " << be.get_file() << ":" << be.get_line();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-}
+        }
         catch(std::exception &se){
             stringstream msg;
             msg << prolog << "Caught std::excpetion! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-}
+        }
         catch(...){
             CPPUNIT_FAIL(prolog + "Caught unknown exception.");
         }
@@ -394,17 +387,16 @@ public:
         catch(BESError &be){
             stringstream msg;
             msg << prolog << "Caught BESError! Message: " << be.get_verbose_message();
-            msg << " Location: " << be.get_file() << ":" << be.get_line();
             cerr << msg.str();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-}
+        }
         catch(std::exception &se){
             stringstream msg;
             msg << prolog << "Caught std::excpetion! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-}
+        }
         catch(...){
             CPPUNIT_FAIL(prolog + "Caught unknown exception.");
         }
@@ -428,16 +420,15 @@ public:
         catch(BESError &be){
             stringstream msg;
             msg << prolog << "Caught BESError! Message: " << be.get_verbose_message();
-            msg << " Location: " << be.get_file() << ":" << be.get_line();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-}
+        }
         catch(std::exception &se){
             stringstream msg;
             msg << prolog << "Caught std::excpetion! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-}
+        }
         catch(...){
             CPPUNIT_FAIL(prolog + "Caught unknown exception.");
         }
@@ -464,16 +455,15 @@ public:
         catch(BESError &be){
             stringstream msg;
             msg << prolog << "Caught BESError! Message: " << be.get_verbose_message();
-            msg << " Location: " << be.get_file() << ":" << be.get_line();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-}
+        }
         catch(std::exception &se){
             stringstream msg;
             msg << prolog << "Caught std::excpetion! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-}
+        }
         catch(...){
             CPPUNIT_FAIL(prolog + "Caught unknown exception.");
         }
@@ -501,16 +491,15 @@ public:
         catch(BESError &be){
             stringstream msg;
             msg << prolog << "Caught BESError! Message: " << be.get_verbose_message();
-            msg << " Location: " << be.get_file() << ":" << be.get_line();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-}
+        }
         catch(std::exception &se){
             stringstream msg;
             msg << prolog << "Caught std::excpetion! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-}
+        }
         catch(...){
             CPPUNIT_FAIL(prolog + "Caught unknown exception.");
         }
@@ -539,16 +528,15 @@ public:
         catch(BESError &be){
             stringstream msg;
             msg << prolog << "Caught BESError! Message: " << be.get_verbose_message();
-            msg << " Location: " << be.get_file() << ":" << be.get_line();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-}
+        }
         catch(std::exception &se){
             stringstream msg;
             msg << prolog << "Caught std::excpetion! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-}
+        }
         catch(...){
             CPPUNIT_FAIL(prolog + "Caught unknown exception.");
         }
@@ -577,16 +565,15 @@ public:
         catch(BESError &be){
             stringstream msg;
             msg << prolog << "Caught BESError! Message: " << be.get_verbose_message();
-            msg << " Location: " << be.get_file() << ":" << be.get_line();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-}
+        }
         catch(std::exception &se){
             stringstream msg;
             msg << prolog << "Caught std::excpetion! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-}
+        }
         catch(...){
             CPPUNIT_FAIL(prolog + "Caught unknown exception.");
         }
