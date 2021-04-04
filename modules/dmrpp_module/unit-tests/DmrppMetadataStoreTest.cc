@@ -85,12 +85,12 @@ static const string c_mds_baselines = string(TEST_SRC_DIR) + "/baselines";
 class DmrppMetadataStoreTest: public TestFixture {
 private:
     DMR *d_test_dmr;
+    shared_ptr<http::url> d_test_dmr_url;
     D4BaseTypeFactory d_d4f;
-    DmrppTypeFactory d_dmrpp_f;
+    DmrppTypeFactory d_dmrpp_factory;
 
     string d_mds_dir;
     DmrppMetadataStore *d_mds;
-
     /**
      * SetUp()-like method to build a DMR for testing.
      */
@@ -138,8 +138,14 @@ private:
 
             // Get a DMRpp to cache.
             string file_name = string(TEST_SRC_DIR).append("/input-files/chunked_fourD.h5.dmrpp");
+            string test_dmr_url_str = FILE_PROTOCOL;
+            test_dmr_url_str += "This/Is/a/Test.nc";
+            d_test_dmr_url = shared_ptr<http::url>(new http::url(test_dmr_url_str));
 
-            d_test_dmr = new DMRpp(&d_dmrpp_f);
+            DMRpp *dmrpp = new DMRpp(&d_dmrpp_factory);
+            dmrpp->set_href(d_test_dmr_url->str());
+
+            d_test_dmr = dmrpp;
             DmrppParserSax2 dp;
             DBG(cerr << prolog << "DMRpp file to be parsed: " << file_name << endl);
             fstream in(file_name.c_str(), ios::in|ios::binary);
@@ -570,7 +576,7 @@ public:
 
             ostringstream oss;
             XMLWriter writer;
-            dmrpp->print_dmrpp(writer); // no href passed, using the default which is ""
+            dmrpp->print_dmrpp(writer, d_test_dmr_url->str());
             oss << writer.get_doc();
 
             string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "chunked_fourD.h5.dmrpp_r";
