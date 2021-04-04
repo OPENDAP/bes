@@ -28,6 +28,7 @@
 
 #include <GetOpt.h>
 #include <BaseType.h>
+#include <Float32.h>
 #include <Array.h>
 #include <Byte.h>
 #include <Int32.h>
@@ -114,6 +115,7 @@ public:
     CPPUNIT_TEST(test_count_2);
     CPPUNIT_TEST(test_count_3);
     CPPUNIT_TEST(test_stare_subset);
+    CPPUNIT_TEST(test_stare_get_sidecar_uint64_values_2);
 
     CPPUNIT_TEST(intersection_function_test);
     CPPUNIT_TEST(count_function_test);
@@ -198,6 +200,25 @@ public:
         CPPUNIT_ASSERT(result->stare_indices.at(2) == 3440016191299518474);
         CPPUNIT_ASSERT(result->x_indices.at(2) == 2);
         CPPUNIT_ASSERT(result->y_indices.at(2) == 2);
+    }
+
+    void test_stare_get_sidecar_uint64_values_2() {
+        DBG(cerr << "--- test_stare_get_sidecar_uint64_values_2() test - BEGIN ---" << endl);
+
+	try
+	{
+	    const string filename_1 = "../data/t1_sidecar.nc";
+	    Float32 *variable = new Float32("Solar_Zenith");
+	    vector<dods_uint64> values;
+	    
+	    // Call our function.
+	    get_sidecar_uint64_values_2(filename_1, variable, values);
+	}
+	catch(BESError &e) {
+            DBG(cerr << e.get_verbose_message() << endl);
+	    cout << e.get_verbose_message() << endl;
+            CPPUNIT_FAIL("test_stare_get_sidecar_uint64_values_2() test failed");
+        }
     }
 
     // The one and only target index is in the 'dataset'
