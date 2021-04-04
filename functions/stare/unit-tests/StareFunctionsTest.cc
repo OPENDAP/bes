@@ -213,6 +213,12 @@ public:
 	    
 	    // Call our function.
 	    get_sidecar_uint64_values_2(filename_1, variable, values);
+
+	    // Check the results.
+	    if (values.size() != 406 * 270)
+		CPPUNIT_FAIL("test_stare_get_sidecar_uint64_values_2() test failed bad size");
+	    if (values.at(0) != 3461703427396677225)
+		CPPUNIT_FAIL("test_stare_get_sidecar_uint64_values_2() test failed bad value");
 	}
 	catch(BESError &e) {
             DBG(cerr << e.get_verbose_message() << endl);
