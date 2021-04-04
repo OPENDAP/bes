@@ -29,6 +29,7 @@
 #include <hdf5.h>
 #include <BaseType.h>
 #include "ServerFunction.h"
+#include <stare/GeoFile.h>
 
 namespace libdap {
 class BaseType;

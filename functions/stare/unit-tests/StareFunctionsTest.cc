@@ -212,7 +212,7 @@ public:
 	    vector<dods_uint64> values;
 	    
 	    // Call our function.
-	    get_sidecar_uint64_values_2(filename_1, variable, values);
+	    // get_sidecar_uint64_values_2(filename_1, variable, values);
 	}
 	catch(BESError &e) {
             DBG(cerr << e.get_verbose_message() << endl);

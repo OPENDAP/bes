@@ -387,25 +387,25 @@ void
 get_sidecar_uint64_values_2(const string &filename, BaseType *variable, vector<dods_uint64> &values)
 {
     int ncid;
-    // GeoFile *gf = new GeoFile();
-    // vector<long long unsigned int> my_values;
-    // int ret;
+    GeoFile *gf = new GeoFile();
+    vector<long long unsigned int> my_values;
+    int ret;
 
-    // // Open and scan the sidecar file.
-    // if ((ret = gf->readSidecarFile(filename.c_str(), 1, ncid)))
-    //     throw BESInternalError("Could not open file " + filename + " - " + nc_strerror(ret), __FILE__, __LINE__);
+    // Open and scan the sidecar file.
+    if ((ret = gf->readSidecarFile(filename.c_str(), 1, ncid)))
+        throw BESInternalError("Could not open file " + filename + " - " + nc_strerror(ret), __FILE__, __LINE__);
 
-    // // Get the STARE index data for variable.
-    // if ((ret = gf->getSTAREIndex_2(variable->name(), 1, ncid, my_values)))
-    //     throw BESInternalError("Could get stare indexes from file " + filename + " - " + nc_strerror(ret), __FILE__, __LINE__);
+    // Get the STARE index data for variable.
+    if ((ret = gf->getSTAREIndex_2(variable->name(), 1, ncid, my_values)))
+        throw BESInternalError("Could get stare indexes from file " + filename + " - " + nc_strerror(ret), __FILE__, __LINE__);
 
-    // // Copy vector.
-    // for (int i = 0; i < my_values.size(); i++)
-    // 	values.push_back(my_values.at(i));
+    // Copy vector.
+    for (int i = 0; i < my_values.size(); i++)
+    	values.push_back(my_values.at(i));
 
-    // // Close the sidecar file.
-    // if ((ret = gf->closeSidecarFile(1, ncid)))
-    //     throw BESInternalError("Could not close file " + filename + " - " + nc_strerror(ret),  __FILE__, __LINE__);
+    // Close the sidecar file.
+    if ((ret = gf->closeSidecarFile(1, ncid)))
+        throw BESInternalError("Could not close file " + filename + " - " + nc_strerror(ret),  __FILE__, __LINE__);
 }
 
 /**
