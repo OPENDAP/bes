@@ -207,7 +207,7 @@ public:
 
 	try
 	{
-	    const string filename_1 = "../data/t1_sidecar.nc";
+	    const string filename_1 = string(TOP_SRC_DIR) + "/functions/stare/data/t1_sidecar.nc";
 	    Float32 *variable = new Float32("Solar_Zenith");
 	    vector<dods_uint64> values;
 	    
