@@ -73,6 +73,7 @@
 #include "H5Dpublic.h"
 #endif
 
+#define BES_CATALOG_ROOT_KEY "BES.Catalog.default.RootDirectory"
 
 using namespace libdap;
 
@@ -99,12 +100,22 @@ public:
     // Called before each test
     void setUp()
     {
-        if (debug) BESDebug::SetUp("cerr,dmrpp,dmrpp:parser");
+        if(debug) cerr << endl;
+
+        if (debug) BESDebug::SetUp("cerr,dmrpp,dmrpp:parser,http");
         // Contains BES Log parameters but not cache names
         TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
+        if(debug) cerr << prolog << "TheBESKeys::ConfigFile: " << TheBESKeys::ConfigFile << endl;
         string val;
         bool found;
-        TheBESKeys::TheKeys()->get_value("ff",val,found);
+        TheBESKeys::TheKeys()->get_value(BES_CATALOG_ROOT_KEY,val,found);
+        if(!found){
+            cerr << endl << endl << prolog << "WARNING! Unable to locate " << BES_CATALOG_ROOT_KEY << " in TheBESKeys." << endl << endl;
+        }
+        else if(debug){
+            cerr << prolog << "Using " << BES_CATALOG_ROOT_KEY << ": " << val << endl;
+        }
+
         parser = new DmrppParserSax2();
 
     }
