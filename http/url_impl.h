@@ -51,6 +51,8 @@ private:
     bool d_trusted;
 
     void parse();
+
+    // Because EUC transfers trusty-ness
     friend http::EffectiveUrlCache;
 
 protected:
