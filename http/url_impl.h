@@ -33,8 +33,9 @@
 #include <memory>
 #include <chrono>
 
-
 namespace http {
+
+class EffectiveUrlCache;
 
 class  url {
 private:
@@ -50,13 +51,12 @@ private:
     bool d_trusted;
 
     void parse();
+    friend http::EffectiveUrlCache;
 
 protected:
 
 
 public:
-
-
 
     explicit url() :
             d_source_url_str(""),
