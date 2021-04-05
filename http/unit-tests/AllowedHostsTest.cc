@@ -278,7 +278,7 @@ public:
         CPPUNIT_ASSERT(can_access(prolog, target_url));
 
         // Marking this url trusted=false (default) will block access because it does not comes from an allowed host.
-        target_url = shared_ptr<http::url>(new http::url("http://test.opendap.wrong.org/opendap/data/nc/fnoc1.nc",false));
+        target_url = shared_ptr<http::url>(new http::url("http://test.opendap.WRONG.org/opendap/data/nc/fnoc1.nc",false));
         CPPUNIT_ASSERT(!can_access(prolog, target_url));
 
         // Marking this url trusted=true (default) will allow access because it's "trusted".
