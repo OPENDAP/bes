@@ -36,7 +36,6 @@
 #include "BESRegex.h"
 #include "TheBESKeys.h"
 #include "BESInternalError.h"
-#include "BESSyntaxUserError.h"
 #include "BESDebug.h"
 #include "BESNotFoundError.h"
 #include "BESForbiddenError.h"
@@ -128,7 +127,6 @@ bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url) {
         // We know that when a file URL is parsed by http::url it stores everything in after the "file://" mark in
         // the path, as there is no hostname.
         string file_path = candidate_url->path();
-        BESDEBUG(MODULE, prolog << "file_path: " << file_path << endl);
 
         BESCatalogList *bcl = BESCatalogList::TheCatalogList();
         string default_catalog_name = bcl->default_catalog_name();
@@ -143,21 +141,18 @@ bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url) {
         }
 
         string catalog_root = bcat->get_root();
-        BESDEBUG(MODULE, prolog << "Catalog root: " << catalog_root << endl);
-
-        // Never a relative path shall be accepted.
-        // change??
-        // if( file_path[0] != '/'){
-        //     file_path.insert(0,"/");
-        //}
+        BESDEBUG(MODULE, prolog << "catalog_root: '" << catalog_root <<
+            "' (length: " << catalog_root.length() << " size: " << catalog_root.size() << ")" << endl);
+        BESDEBUG(MODULE, prolog << "   file_path: '" << file_path <<
+            "' (length: " << file_path.length() << " size: " << file_path.size() << ")" <<endl);
 
         string relative_path;
         if (file_path[0] == '/') {
             if (file_path.length() < catalog_root.length()) {
                 isAllowed = false;
             } else {
-                int ret = file_path.compare(0, string::npos, catalog_root) == 0;
-                BESDEBUG(MODULE, prolog << "file_path.compare(): " << ret << endl);
+                size_t ret = file_path.find(catalog_root);
+                BESDEBUG(MODULE, prolog << "file_path.find(catalog_root): " << ret << endl);
                 isAllowed = (ret == 0);
                 relative_path = file_path.substr(catalog_root.length());
             }
@@ -167,7 +162,7 @@ bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url) {
             isAllowed = true;
         }
 
-        // string::compare() returns 0 if the path strings match exactly.
+        // string::find() returns 0 if the submitted path begins with the catalog root.
         // And since we are just looking at the catalog.root as a prefix of the resource
         // name we only allow access to the resource for an exact match.
         if (isAllowed) {
