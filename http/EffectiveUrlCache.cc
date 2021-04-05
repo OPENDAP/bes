@@ -160,7 +160,7 @@ string EffectiveUrlCache::dump() const
  *
  * @param source_url
  */
-shared_ptr<http::EffectiveUrl> EffectiveUrlCache::get_eu(string const &url_key){
+shared_ptr<http::EffectiveUrl> EffectiveUrlCache::get_cached_eurl(string const &url_key){
     shared_ptr<http::EffectiveUrl> effective_url(nullptr);
     auto it = d_effective_urls.find(url_key);
     if(it!=d_effective_urls.end()){
@@ -182,79 +182,83 @@ shared_ptr<http::EffectiveUrl> EffectiveUrlCache::get_eu(string const &url_key){
  * @param source_url
  * @returns The effective URL
 */
-shared_ptr<http::EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr<http::url> source_url)
-{
+shared_ptr<http::EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr<http::url> source_url) {
 
     // This lock is a RAII implementation. It will block until the mutex is
     // available and the lock will be released when the instance is destroyed.
     std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
 
     BESDEBUG(MODULE, prolog << "BEGIN url: " << source_url->str() << endl);
-    shared_ptr<http::EffectiveUrl> effective_url(nullptr);
+    BESDEBUG(MODULE_DUMPER, prolog << "dump: " << endl << dump() << endl);
 
-    if(is_enabled()){
+    if (!is_enabled()) {
+        BESDEBUG(MODULE, prolog << "CACHE IS DISABLED." << endl);
+        return shared_ptr<http::EffectiveUrl>(new http::EffectiveUrl(source_url));
+    }
 
-        BESDEBUG(MODULE_DUMPER, prolog << "dump: " << endl << dump() << endl);
 
-        size_t match_length=0;
+    // if it's not an HTTP url there is nothing to cache.
+    if (source_url->str().find(HTTP_PROTOCOL) != 0 && source_url->str().find(HTTPS_PROTOCOL) != 0) {
+        BESDEBUG(MODULE, prolog << "END Not an HTTP request, SKIPPING." << endl);
+        return shared_ptr<http::EffectiveUrl>(new http::EffectiveUrl(source_url));
+    }
 
-        // if it's not an HTTP url there is nothing to cache.
-        if (source_url->str().find(HTTP_PROTOCOL) != 0 && source_url->str().find(HTTPS_PROTOCOL) != 0) {
-            BESDEBUG(MODULE, prolog << "END Not an HTTP request, SKIPPING." << endl);
+    size_t match_length=0;
+
+    BESRegex *skip_regex = get_skip_regex();
+    if( skip_regex ) {
+        match_length = skip_regex->match(source_url->str().c_str(), source_url->str().length());
+        if (match_length == source_url->str().length()) {
+            BESDEBUG(MODULE, prolog << "END Candidate url matches the "
+                                       "no_redirects_regex_pattern [" << skip_regex->pattern() <<
+                                    "][match_length=" << match_length << "] SKIPPING." << endl);
             return shared_ptr<http::EffectiveUrl>(new http::EffectiveUrl(source_url));
         }
-
-        BESRegex *skip_regex = get_skip_regex();
-        if( skip_regex ) {
-            match_length = skip_regex->match(source_url->str().c_str(), source_url->str().length());
-            if (match_length == source_url->str().length()) {
-                BESDEBUG(MODULE, prolog << "END Candidate url matches the "
-                                           "no_redirects_regex_pattern [" << skip_regex->pattern() <<
-                                        "][match_length=" << match_length << "] SKIPPING." << endl);
-                return shared_ptr<http::EffectiveUrl>(new http::EffectiveUrl(source_url));
-            }
-            BESDEBUG(MODULE, prolog << "Candidate url: '" << source_url->str() << "' does NOT match the "
-                                "skip_regex pattern [" << skip_regex->pattern() << "]" << endl);
-        }
-        else {
-            BESDEBUG(MODULE, prolog << "The cache_effective_urls_skip_regex() was NOT SET "<< endl);
-        }
-
-        effective_url = get_eu(source_url->str());
-
-        // See if the data_access_url has already been processed into a terminal URL
-        bool retrieve_and_cache = !effective_url; // If there's no effective_url we gotta go get it.
-        if(effective_url){
-            BESDEBUG(MODULE, prolog << "Cache hit for: " << source_url->str() << endl);
-            retrieve_and_cache = effective_url->is_expired();
-            BESDEBUG(MODULE, prolog << "Cached target URL is " << (retrieve_and_cache?"":"not ") << "expired." << endl);
-        }
-        // It not found or expired, reload.
-        if(retrieve_and_cache){
-            BESDEBUG(MODULE, prolog << "Acquiring effective URL for  " << source_url->str() << endl);
-            {
-                BESStopWatch sw;
-                if(BESDebug::IsSet(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY))
-                    sw.start(prolog + "Retrieve and cache effective url for source url: " + source_url->str());
-                effective_url = curl::retrieve_effective_url(source_url);
-            }
-            BESDEBUG(MODULE, prolog << "   source_url: " << source_url->str() << " (" << (source_url->is_trusted()?"":"NOT ") << "trusted)" << endl);
-            BESDEBUG(MODULE, prolog << "effective_url: " << effective_url->dump() << " (" << (source_url->is_trusted()?"":"NOT ") << "trusted)" << endl);
-
-            d_effective_urls[source_url->str()] = effective_url;
-
-            BESDEBUG(MODULE, prolog << "Updated record for "<< source_url->str() << " cache size: " << d_effective_urls.size() << endl);
-        }
-        // effective_url_str = effective_url->str();
-        BESDEBUG(MODULE_DUMPER, prolog << "dump: " << endl << dump() << endl);
-    } // EucLock dat_lock is released when the point of execution reaches this brace and dat_lock goes out of scope.
-    else {
-        BESDEBUG(MODULE, prolog << "CACHE IS DISABLED." << endl);
-        effective_url = shared_ptr<http::EffectiveUrl>(new http::EffectiveUrl(source_url));
+        BESDEBUG(MODULE, prolog << "Candidate url: '" << source_url->str() << "' does NOT match the "
+                                                                              "skip_regex pattern [" << skip_regex->pattern() << "]" << endl);
     }
+    else {
+        BESDEBUG(MODULE, prolog << "The cache_effective_urls_skip_regex() was NOT SET "<< endl);
+    }
+
+    shared_ptr<http::EffectiveUrl> effective_url = get_cached_eurl(source_url->str());
+
+    // See if the data_access_url has already been processed into a terminal URL
+    // If there's no effective_url in the cache we gotta go get it.
+    bool retrieve_and_cache = !effective_url;
+    if(effective_url){
+        // It was in the cache. w00t. But, is it expired?.
+        BESDEBUG(MODULE, prolog << "Cache hit for: " << source_url->str() << endl);
+        retrieve_and_cache = effective_url->is_expired();
+        BESDEBUG(MODULE, prolog << "Cached target URL is " << (retrieve_and_cache?"":"not ") << "expired." << endl);
+    }
+    // It not found or expired, reload.
+    if(retrieve_and_cache){
+        BESDEBUG(MODULE, prolog << "Acquiring effective URL for  " << source_url->str() << endl);
+        {
+            BESStopWatch sw;
+            if(BESDebug::IsSet(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY))
+                sw.start(prolog + "Retrieve and cache effective url for source url: " + source_url->str());
+            effective_url = curl::retrieve_effective_url(source_url);
+        }
+        BESDEBUG(MODULE, prolog << "   source_url: " << source_url->str() << " (" << (source_url->is_trusted()?"":"NOT ") << "trusted)" << endl);
+        BESDEBUG(MODULE, prolog << "effective_url: " << effective_url->dump() << " (" << (source_url->is_trusted()?"":"NOT ") << "trusted)" << endl);
+
+        d_effective_urls[source_url->str()] = effective_url;
+
+        BESDEBUG(MODULE, prolog << "Updated record for "<< source_url->str() << " cache size: " << d_effective_urls.size() << endl);
+    }
+    // Trust is inherited from the source.
+    effective_url->d_trusted = source_url->is_trusted();
+
+    BESDEBUG(MODULE_DUMPER, prolog << "dump: " << endl << dump() << endl);
+
+
+
     BESDEBUG(MODULE, prolog << "END" << endl);
+
     return effective_url;
-}
+}// The lock is released when the point of execution reaches this brace and lock_me goes out of scope.
 
 
 /**

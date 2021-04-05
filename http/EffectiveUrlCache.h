@@ -63,8 +63,7 @@ private:
     static void initialize_instance();
     static void delete_instance();
 
-    friend class EffectiveUrlCacheTest;
-    std::shared_ptr<http::EffectiveUrl> get_eu(std::string const &source_url);
+    std::shared_ptr<EffectiveUrl> get_cached_eurl(std::string const &url_key);
     BESRegex *get_skip_regex();
     bool is_enabled();
 
@@ -72,11 +71,13 @@ private:
 
     ~EffectiveUrlCache() override;
 
+    friend class EffectiveUrlCacheTest;
+
 public:
 
     static EffectiveUrlCache *TheCache();
 
-    std::shared_ptr<http::EffectiveUrl> get_effective_url(std::shared_ptr<http::url> source_url);
+    std::shared_ptr<EffectiveUrl> get_effective_url(std::shared_ptr<url> source_url);
 
     void dump(std::ostream &strm) const override;
     virtual std::string dump() const;
