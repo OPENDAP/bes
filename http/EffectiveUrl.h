@@ -65,7 +65,6 @@ public:
         ingest_response_headers(resp_hdrs);
     };
 
-
     /**
      * Copy constructor
      * @param src_url
@@ -100,10 +99,6 @@ public:
             d_response_header_values()
         {
     }
-
-
-
-
 
     virtual ~EffectiveUrl(){ }
 
