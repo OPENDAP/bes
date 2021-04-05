@@ -47,6 +47,7 @@
 #include "BESUtil.h"
 #include "BESLog.h"
 #include "BESStopWatch.h"
+#include "RemoteResource.h"
 
 #include "BESSyntaxUserError.h"
 #include "HttpNames.h"
@@ -1836,6 +1837,54 @@ curl_slist *add_auth_headers(curl_slist *request_headers) {
     s = BESContextManager::TheManager()->get_context(EDL_ECHO_TOKEN_KEY, found);
     if (found && !s.empty()) {
         request_headers = append_http_header(request_headers,"Echo-Token",s);
+    }
+
+    return request_headers;
+}
+
+/**
+ * @brief Adds the user id and/or the associated EDL auth token
+ * to request_headers.
+ *
+ * Currently looks for 3 specific auth header values in the
+ * BESContextManager set by the OLFS.
+ *
+ *  - uid: The user id of the logged in user.
+ *
+ * - edl_auth_token: The EDL authentication token recovered
+ *  from EDL using the user's one time code. This may have
+ *  come from the user logging in via the OLFS and EDL or it
+ *  may have been transmitted from upstream as the header:
+ *      Authorization: Bearer <edl_auth_token>
+ *  from an upstream process.
+ *
+ * The Authorization header is made of the sting:
+ *
+ *    Authorization: Bearer edl_access_token
+ *
+ * - edl_echo_token: This soon to be legacy token is formed from
+ *  the edl_auth_token and the server's EDL client_application_id.
+ *     Echo-Token: edl_access_token:Client-Id
+ *
+ * If an aspirational auth header value is missing then that header
+ * will not be added to the request_headers list.
+ *
+ * @param request_headers
+ * @return
+ */
+curl_slist *add_conditional_get_headers(curl_slist *request_headers, string url) {
+
+    http::RemoteResource rhr(url);
+
+    string etag = rhr.get_http_response_header("Etag");
+    if (!etag.empty()) {
+        request_headers = append_http_header(request_headers,"If-None-Match",etag);
+    }
+    else{
+        string date = rhr.get_http_response_header("Date");
+        if (!date.empty()) {
+            request_headers = append_http_header(request_headers, "If-Modified-Since", date);
+        }
     }
 
     return request_headers;
