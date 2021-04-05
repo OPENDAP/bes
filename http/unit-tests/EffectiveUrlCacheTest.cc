@@ -414,16 +414,17 @@ namespace http {
                 // The cache is disabled in bes.conf so we need to turn it on.
                 EffectiveUrlCache::TheCache()->d_enabled = true;
 
-                /*
-                auto result_url = EffectiveUrlCache::TheCache()->get_effective_url(untrusted_src_url);
+                shared_ptr<http::url> result_url;
+
+                result_url = EffectiveUrlCache::TheCache()->get_effective_url(untrusted_src_url);
                 if(debug) cerr << prolog << "source_url: " << untrusted_src_url->str() << " is " << (untrusted_src_url->is_trusted()?"":"NOT ") << "trusted." << endl;
                 if(debug) cerr << prolog << "result_url: " << result_url->str() << " is " << (result_url->is_trusted()?"":"NOT ") << "trusted." << endl;
                 if(debug) cerr << prolog << "EffectiveUrlCache::TheCache()->d_effective_urls.size(): " << EffectiveUrlCache::TheCache()->d_effective_urls.size() << endl;
                 CPPUNIT_ASSERT( EffectiveUrlCache::TheCache()->d_effective_urls.size() == 1);
                 CPPUNIT_ASSERT( result_url->str() == result_url_str);
                 CPPUNIT_ASSERT( !result_url->is_trusted());
-*/
-                auto result_url = EffectiveUrlCache::TheCache()->get_effective_url(trusted_src_url);
+
+                result_url = EffectiveUrlCache::TheCache()->get_effective_url(trusted_src_url);
                 if(debug) cerr << prolog << "source_url: " << trusted_src_url->str() << " is " << (trusted_src_url->is_trusted()?"":"NOT ") << "trusted." << endl;
                 if(debug) cerr << prolog << "result_url: " << result_url->str() << " is " << (result_url->is_trusted()?"":"NOT ") << "trusted." << endl;
                 if(debug) cerr << prolog << "EffectiveUrlCache::TheCache()->d_effective_urls.size(): " << EffectiveUrlCache::TheCache()->d_effective_urls.size() << endl;
@@ -437,7 +438,7 @@ namespace http {
                 if(debug) cerr << prolog << "EffectiveUrlCache::TheCache()->d_effective_urls.size(): " << EffectiveUrlCache::TheCache()->d_effective_urls.size() << endl;
                 CPPUNIT_ASSERT( EffectiveUrlCache::TheCache()->d_effective_urls.size() == 1);
                 CPPUNIT_ASSERT( result_url->str() == result_url_str);
-                CPPUNIT_ASSERT( result_url->is_trusted());
+                CPPUNIT_ASSERT( !result_url->is_trusted());
 
             }
             catch (BESError &be){
