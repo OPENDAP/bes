@@ -6,8 +6,8 @@
 
 AUTOMAKE_OPTIONS = foreign subdir-objects
 
-AM_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS) $(GDAL_CFLAGS)
-LIBADD = $(DAP_LIBS) $(GDAL_LDFLAGS)
+AM_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS) $(GDAL_CFLAGS) $(NC_CPPFLAGS) 
+LIBADD = $(DAP_LIBS) $(GDAL_LDFLAGS) $(NC_LDFLAGS) $(NC_LIBS)
 
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:
@@ -37,7 +37,7 @@ DISTDIRS = unit-tests tests stare
 
 if BUILD_STARE
 SUBDIRS += stare
-LIBADD += $(H5_LDFLAGS) $(H5_LIBS) $(STARE_LDFLAGS) $(STARE_LIBS)
+LIBADD += $(H5_LDFLAGS) $(H5_LIBS) $(STARE_LDFLAGS) $(STARE_LIBS) $(NC_LDFLAGS) $(NC_LIBS)
 endif
 
 if BUILD_GDAL
@@ -72,8 +72,8 @@ RangeFunction.h functions_util.h DapFunctionsRequestHandler.h		\
 ScaleGrid.h BBoxCombFunction.h TestFunction.h
 
 if BUILD_STARE
-SRCS += stare/StareFunctions.cc
-HDRS += stare/StareFunctions.h
+SRCS += stare/StareFunctions.cc stare/GeoFile.cc
+HDRS += stare/StareFunctions.h stare/GeoFile.h
 endif
 
 libfunctions_module_la_SOURCES = $(SRCS) $(HDRS)
