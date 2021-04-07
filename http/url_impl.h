@@ -52,9 +52,6 @@ private:
 
     void parse();
 
-    // Because EUC transfers trusty-ness
-    friend http::EffectiveUrlCache;
-
 protected:
 
 
@@ -98,6 +95,16 @@ public:
         d_query = source_url->d_query;
         d_ingest_time = source_url->d_ingest_time;
         d_trusted = source_url->d_trusted;
+    }
+
+    explicit url(const std::shared_ptr<http::url> &source_url, bool trusted){
+        d_source_url_str = source_url->d_source_url_str;
+        d_protocol = source_url->d_protocol;
+        d_host = source_url->d_host;
+        d_path = source_url->d_path;
+        d_query = source_url->d_query;
+        d_ingest_time = source_url->d_ingest_time;
+        d_trusted = trusted;
     }
 
     virtual ~url();

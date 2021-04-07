@@ -1541,7 +1541,7 @@ bool eval_curl_easy_perform_code(
      * @param starting_point_url The URL to follow
      * @return A 'new' EffectiveUrl wrapped in a shared_ptr
      */
-    std::shared_ptr<http::EffectiveUrl> retrieve_effective_url(std::shared_ptr<http::url> &starting_point_url) {
+    std::shared_ptr<http::EffectiveUrl> retrieve_effective_url(const std::shared_ptr<http::url> &starting_point_url) {
 
         vector<string> resp_hdrs;
         CURL *ceh = nullptr;

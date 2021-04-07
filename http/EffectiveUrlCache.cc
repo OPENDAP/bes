@@ -194,8 +194,8 @@ shared_ptr<http::EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr<h
     if (!is_enabled()) {
         BESDEBUG(MODULE, prolog << "CACHE IS DISABLED." << endl);
         return shared_ptr<http::EffectiveUrl>(new http::EffectiveUrl(source_url));
-    }
 
+    }
 
     // if it's not an HTTP url there is nothing to cache.
     if (source_url->str().find(HTTP_PROTOCOL) != 0 && source_url->str().find(HTTPS_PROTOCOL) != 0) {
@@ -203,10 +203,9 @@ shared_ptr<http::EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr<h
         return shared_ptr<http::EffectiveUrl>(new http::EffectiveUrl(source_url));
     }
 
-    size_t match_length=0;
-
     BESRegex *skip_regex = get_skip_regex();
     if( skip_regex ) {
+        size_t match_length = 0;
         match_length = skip_regex->match(source_url->str().c_str(), source_url->str().length());
         if (match_length == source_url->str().length()) {
             BESDEBUG(MODULE, prolog << "END Candidate url matches the "
@@ -223,15 +222,19 @@ shared_ptr<http::EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr<h
 
     shared_ptr<http::EffectiveUrl> effective_url = get_cached_eurl(source_url->str());
 
-    // See if the data_access_url has already been processed into a terminal URL
-    // If there's no effective_url in the cache we gotta go get it.
+    // If the source_url does not have an associated EffectiveUrl instance in the cache
+    // the we know we have to get one.
     bool retrieve_and_cache = !effective_url;
+
+    // But, if there is a value in the cache, we must check to see
+    // if it is expired, in which case we will retrive and cache it.
     if(effective_url){
         // It was in the cache. w00t. But, is it expired?.
         BESDEBUG(MODULE, prolog << "Cache hit for: " << source_url->str() << endl);
         retrieve_and_cache = effective_url->is_expired();
         BESDEBUG(MODULE, prolog << "Cached target URL is " << (retrieve_and_cache?"":"not ") << "expired." << endl);
     }
+    
     // It not found or expired, reload.
     if(retrieve_and_cache){
         BESDEBUG(MODULE, prolog << "Acquiring effective URL for  " << source_url->str() << endl);
@@ -247,13 +250,23 @@ shared_ptr<http::EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr<h
         d_effective_urls[source_url->str()] = effective_url;
 
         BESDEBUG(MODULE, prolog << "Updated record for "<< source_url->str() << " cache size: " << d_effective_urls.size() << endl);
+
+        // Since we don't want there to be a concurrency issue when we release the lock, we don't
+        // return the instance of shared_ptr<EffectiveUrl> that we placed in the cache. Rather
+        // we make a clone and return that. It will have it's own lifecycle independent of
+        // the instance we placed in the cache - it can be modified at the one in the cache
+        // is unchanged. Trusted state was established from source_url when effective_url was
+        // in curl::retrieve_effective_url()
+        effective_url = shared_ptr<EffectiveUrl>(new EffectiveUrl(effective_url));
     }
-    // Trust is inherited from the source.
-    effective_url->d_trusted = source_url->is_trusted();
+    else {
+        // Here we are have an instance of shared_ptr<EffectiveUrl> from the cache .
+        // Now we need to make a copy to return, inheriting trust from the
+        // requesting URL.
+        effective_url = shared_ptr<EffectiveUrl>(new EffectiveUrl(effective_url,source_url->is_trusted()));
+    }
 
     BESDEBUG(MODULE_DUMPER, prolog << "dump: " << endl << dump() << endl);
-
-
 
     BESDEBUG(MODULE, prolog << "END" << endl);
 
