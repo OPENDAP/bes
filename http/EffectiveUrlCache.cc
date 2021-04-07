@@ -234,7 +234,7 @@ shared_ptr<http::EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr<h
         retrieve_and_cache = effective_url->is_expired();
         BESDEBUG(MODULE, prolog << "Cached target URL is " << (retrieve_and_cache?"":"not ") << "expired." << endl);
     }
-    
+
     // It not found or expired, reload.
     if(retrieve_and_cache){
         BESDEBUG(MODULE, prolog << "Acquiring effective URL for  " << source_url->str() << endl);
@@ -254,13 +254,13 @@ shared_ptr<http::EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr<h
         // Since we don't want there to be a concurrency issue when we release the lock, we don't
         // return the instance of shared_ptr<EffectiveUrl> that we placed in the cache. Rather
         // we make a clone and return that. It will have it's own lifecycle independent of
-        // the instance we placed in the cache - it can be modified at the one in the cache
+        // the instance we placed in the cache - it can be modified and the one in the cache
         // is unchanged. Trusted state was established from source_url when effective_url was
-        // in curl::retrieve_effective_url()
+        // created in curl::retrieve_effective_url()
         effective_url = shared_ptr<EffectiveUrl>(new EffectiveUrl(effective_url));
     }
     else {
-        // Here we are have an instance of shared_ptr<EffectiveUrl> from the cache .
+        // Here we have a !expired instance of a shared_ptr<EffectiveUrl> retrieved from the cache.
         // Now we need to make a copy to return, inheriting trust from the
         // requesting URL.
         effective_url = shared_ptr<EffectiveUrl>(new EffectiveUrl(effective_url,source_url->is_trusted()));
