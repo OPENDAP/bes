@@ -26,9 +26,11 @@
 #ifndef HYRAX_CREDENTIALSMANAGER_H
 #define HYRAX_CREDENTIALSMANAGER_H
 
+#include <memory>
 #include <string>
 #include <vector>
 #include <mutex>
+#include "url_impl.h"
 #include "AccessCredentials.h"
 
 
@@ -73,7 +75,7 @@ public:
         ngaps3CredentialsLoaded = false;
     }
 
-    AccessCredentials *get(const std::string &url);
+    AccessCredentials *get(std::shared_ptr<http::url> &url);
 
     unsigned int size(){
         return creds.size();

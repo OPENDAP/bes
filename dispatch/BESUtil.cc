@@ -986,15 +986,18 @@ void BESUtil::conditional_timeout_cancel()
  * 'find_this' with the value of the string 'replace_with_this'
  * @param
  */
-void BESUtil::replace_all(string &s, string find_this, string replace_with_this)
+unsigned int BESUtil::replace_all(string &s, string find_this, string replace_with_this)
 {
+    unsigned int replace_count = 0;
     size_t pos = s.find(find_this);
     while (pos != string::npos) {
         // Replace current matching substring
         s.replace(pos, find_this.size(), replace_with_this);
         // Get the next occurrence from current position
-        pos = s.find(find_this, pos + find_this.size());
+        pos = s.find(find_this, pos + replace_with_this.size());
+        replace_count++;
     }
+    return replace_count;
 }
 
 /**

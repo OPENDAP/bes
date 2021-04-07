@@ -25,8 +25,12 @@
 #ifndef MODULES_DMRPP_MODULE_DMRPP_H_
 #define MODULES_DMRPP_MODULE_DMRPP_H_
 
+#include "config.h"
+
 #include <string>
-#include <DMR.h>
+
+#include "DMR.h"
+#include "url_impl.h"
 
 namespace libdap {
 class XMLWriter;

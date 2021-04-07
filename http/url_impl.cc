@@ -38,13 +38,15 @@
 
 #include "BESDebug.h"
 #include "BESUtil.h"
+#include "BESCatalogList.h"
 #include "HttpNames.h"
 
 #include "url_impl.h"
 
 using namespace std;
+using std::chrono::system_clock;
 
-#define MODULE "http"
+#define MODULE HTTP_MODULE
 #define prolog string("url::").append(__func__).append("() - ")
 
 #define PROTOCOL_KEY "http_url_protocol"
@@ -54,7 +56,6 @@ using namespace std;
 #define SOURCE_URL_KEY  "http_url_target_url"
 #define INGEST_TIME_KEY  "http_url_ingest_time"
 
-#define REFRESH_THRESHOLD 600
 
 namespace http {
 
@@ -100,9 +101,9 @@ url::url(const map<string,string> &kvp)
     it = kvp.find(SOURCE_URL_KEY);
     itc = kvp_copy.find(SOURCE_URL_KEY);
     if(it != kvp.end() && itc != kvp_copy.end()){
-        d_source_url = it->second;
+        d_source_url_str = it->second;
         kvp_copy.erase(it->first);
-        BESDEBUG(MODULE, prolog << "Located SOURCE_URL_KEY(" << SOURCE_URL_KEY << ") value: " << d_source_url << endl);
+        BESDEBUG(MODULE, prolog << "Located SOURCE_URL_KEY(" << SOURCE_URL_KEY << ") value: " << d_source_url_str << endl);
     }
 
     for(itc = kvp_copy.begin(); itc != kvp_copy.end(); itc++){
@@ -139,59 +140,106 @@ url::~url()
 
 
 /**
+ * @brief Parses the URL into it's components and makes some BES file system magic.
+ *
+ *
  * Tip of the hat to: https://stackoverflow.com/questions/2616011/easy-way-to-parse-a-url-in-c-cross-platform
  * @param source_url
  */
-void url::parse(const string &source_url) {
-    const string prot_end("://");
-    string::const_iterator prot_i = search(source_url.begin(), source_url.end(),
-                                           prot_end.begin(), prot_end.end());
-    d_protocol.reserve(distance(source_url.begin(), prot_i));
-    transform(source_url.begin(), prot_i,
+void url::parse() {
+    const string protcol_end("://");
+
+    // If the supplied string does not start with a protocol, we assume it must be a
+    // path relative the BES.Catalog.catalog.RootDirectory because that's the only
+    // thing we are going to allow, even when it starts with slash '/'. Basically
+    // we force it to be in the BES.Catalog.catalog.RootDirectory tree.
+    if(d_source_url_str.find(protcol_end) == string::npos){
+        // Since we want a valid path in the file system tree for data we make it so by adding the
+        // the file path starts with the catalog root dir.
+        BESCatalogList *bcl = BESCatalogList::TheCatalogList();
+        string default_catalog_name = bcl->default_catalog_name();
+        BESDEBUG(MODULE, prolog << "Searching for  catalog: " << default_catalog_name << endl);
+        BESCatalog *bcat = bcl->find_catalog(default_catalog_name);
+        if (bcat) {
+            BESDEBUG(MODULE, prolog << "Found catalog: " << bcat->get_catalog_name() << endl);
+        } else {
+            string msg = "OUCH! Unable to locate default catalog!";
+            BESDEBUG(MODULE, prolog << msg << endl);
+            throw BESInternalError(msg, __FILE__, __LINE__);
+        }
+        string catalog_root = bcat->get_root();
+        BESDEBUG(MODULE, prolog << "Catalog root: " << catalog_root << endl);
+
+        string file_path = BESUtil::pathConcat(catalog_root,d_source_url_str);
+        if(file_path[0] != '/')
+            file_path = "/" + file_path;
+        d_source_url_str = FILE_PROTOCOL + file_path;
+    }
+
+    const string parse_url_target(d_source_url_str);
+
+    string::const_iterator prot_i = search(parse_url_target.begin(), parse_url_target.end(),
+                                           protcol_end.begin(), protcol_end.end());
+
+    if (prot_i != parse_url_target.end())
+        advance(prot_i, protcol_end.length());
+
+    d_protocol.reserve(distance(parse_url_target.begin(), prot_i));
+    transform(parse_url_target.begin(), prot_i,
               back_inserter(d_protocol),
               ptr_fun<int, int>(tolower)); // protocol is icase
-    if (prot_i == source_url.end())
+    if (prot_i == parse_url_target.end())
         return;
-    advance(prot_i, prot_end.length());
-    string::const_iterator path_i = find(prot_i, source_url.end(), '/');
-    d_host.reserve(distance(prot_i, path_i));
-    transform(prot_i, path_i,
-              back_inserter(d_host),
-              ptr_fun<int, int>(tolower)); // host is icase
-    string::const_iterator query_i = find(path_i, source_url.end(), '?');
-    d_path.assign(path_i, query_i);
-    if (query_i != source_url.end())
-        ++query_i;
-    d_query.assign(query_i, source_url.end());
 
+    if (d_protocol == FILE_PROTOCOL) {
+        d_path = parse_url_target.substr(parse_url_target.find(protcol_end) + protcol_end.length());
+        BESDEBUG(MODULE, prolog << "FILE_PROTOCOL d_path: " << d_path << endl);
+    }
+    else if( d_protocol == HTTP_PROTOCOL || d_protocol == HTTPS_PROTOCOL){
+        string::const_iterator path_i = find(prot_i, parse_url_target.end(), '/');
+        d_host.reserve(distance(prot_i, path_i));
+        transform(prot_i, path_i,
+                  back_inserter(d_host),
+                  ptr_fun<int, int>(tolower)); // host is icase
+        string::const_iterator query_i = find(path_i, parse_url_target.end(), '?');
+        d_path.assign(path_i, query_i);
+        if (query_i != parse_url_target.end())
+            ++query_i;
+        d_query.assign(query_i, parse_url_target.end());
 
-    if(!d_query.empty()){
-        vector<string> records;
-        string delimiters = "&";
-        BESUtil::tokenize(d_query, records, delimiters);
-        vector<string>::iterator i = records.begin();
-        for(; i!=records.end(); i++){
-            size_t index = i->find('=');
-            if(index != string::npos) {
-                string key = i->substr(0, index);
-                string value = i->substr(index+1);
-                BESDEBUG(MODULE, prolog << "key: " << key << " value: " << value << endl);
-                map<string, vector<string>* >::const_iterator record_it;
-                record_it = d_query_kvp.find(key);
-                if(record_it != d_query_kvp.end()){
-                    vector<string> *values = record_it->second;
-                    values->push_back(value);
-                }
-                else {
-                    vector<string> *values = new vector<string>();
-                    values->push_back(value);
-                    d_query_kvp.insert(pair<string, vector<string>*>(key, values));
+        if (!d_query.empty()) {
+            vector<string> records;
+            string delimiters = "&";
+            BESUtil::tokenize(d_query, records, delimiters);
+            vector<string>::iterator i = records.begin();
+            for (; i != records.end(); i++) {
+                size_t index = i->find('=');
+                if (index != string::npos) {
+                    string key = i->substr(0, index);
+                    string value = i->substr(index + 1);
+                    BESDEBUG(MODULE, prolog << "key: " << key << " value: " << value << endl);
+                    map<string, vector<string> *>::const_iterator record_it;
+                    record_it = d_query_kvp.find(key);
+                    if (record_it != d_query_kvp.end()) {
+                        vector<string> *values = record_it->second;
+                        values->push_back(value);
+                    } else {
+                        vector<string> *values = new vector<string>();
+                        values->push_back(value);
+                        d_query_kvp.insert(pair<string, vector<string> *>(key, values));
+                    }
                 }
             }
         }
     }
-    time(&d_ingest_time);
+    else {
+        stringstream msg;
+        msg << prolog << "Unsupported URL protocol " << d_protocol << " found in URL: " << d_source_url_str;
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw BESInternalError(msg.str(), __FILE__, __LINE__);
+    }
 }
+
 
 /**
  *
@@ -240,7 +288,7 @@ void url::kvp(map<string,string>  &kvp){
     kvp.insert(pair<string,string>(HOST_KEY, d_host));
     kvp.insert(pair<string,string>(PATH_KEY, d_path));
     kvp.insert(pair<string,string>(QUERY_KEY, d_query));
-    kvp.insert(pair<string,string>(SOURCE_URL_KEY, d_source_url));
+    kvp.insert(pair<string,string>(SOURCE_URL_KEY, d_source_url_str));
     ss << d_ingest_time;
     kvp.insert(pair<string,string>(INGEST_TIME_KEY,ss.str()));
 
@@ -260,28 +308,36 @@ void url::kvp(map<string,string>  &kvp){
  */
 bool url::is_expired()
 {
-    bool is_expired;
-    time_t now;
-    time(&now);  /* get current time; same as: timer = time(NULL)  */
-    BESDEBUG(MODULE, prolog << "now: " << now << endl);
 
-    time_t expires = now;
+    bool stale;
+    std::time_t now = system_clock::to_time_t(system_clock::now());
+
+    BESDEBUG(MODULE, prolog << "now: " << now << endl);
+    // We set the expiration time to the default, in case other avenues don't work out so well.
+    std::time_t  expires_time = ingest_time() + HTTP_EFFECTIVE_URL_DEFAULT_EXPIRES_INTERVAL;
+
     string cf_expires = query_parameter_value(CLOUDFRONT_EXPIRES_HEADER_KEY);
-    string aws_expires = query_parameter_value(AMS_EXPIRES_HEADER_KEY);
+    string aws_expires_str = query_parameter_value(AMS_EXPIRES_HEADER_KEY);
 
     if(!cf_expires.empty()){ // CloudFront expires header?
-        expires = stoll(cf_expires);
-        BESDEBUG(MODULE, prolog << "Using "<< CLOUDFRONT_EXPIRES_HEADER_KEY << ": " << expires << endl);
+        std::istringstream(cf_expires) >> expires_time;
+        BESDEBUG(MODULE, prolog << "Using "<< CLOUDFRONT_EXPIRES_HEADER_KEY << ": " << expires_time << endl);
     }
-    else if(!aws_expires.empty()){
+    else if(!aws_expires_str.empty()){
+
+        long long aws_expires;
+        std::istringstream(aws_expires_str) >> aws_expires;
         // AWS Expires header?
         //
         // By default we'll use the time we made the URL object, ingest_time
-        time_t start_time = ingest_time();
+        std::time_t aws_start_time = ingest_time();
+
         // But if there's an AWS Date we'll parse that and compute the time
         // @TODO move to NgapApi::decompose_url() and add the result to the map
         string aws_date = query_parameter_value(AWS_DATE_HEADER_KEY);
+
         if(!aws_date.empty()){
+
             string date = aws_date; // 20200624T175046Z
             string year = date.substr(0,4);
             string month = date.substr(4,2);
@@ -294,7 +350,10 @@ bool url::is_expired()
                                     " year: " << year << " month: " << month << " day: " << day <<
                                     " hour: " << hour << " minute: " << minute  << " second: " << second << endl);
 
-            struct tm *ti = gmtime(&now);
+            std::time_t old_now;
+            time(&old_now);  /* get current time; same as: timer = time(NULL)  */
+            BESDEBUG(MODULE, prolog << "old_now: " << old_now << endl);
+            struct tm *ti = gmtime(&old_now);
             ti->tm_year = stoll(year) - 1900;
             ti->tm_mon = stoll(month) - 1;
             ti->tm_mday = stoll(day);
@@ -310,22 +369,23 @@ bool url::is_expired()
                                     " ti->tm_sec: " << ti->tm_sec << endl);
 
 
-            start_time = mktime(ti);
-            BESDEBUG(MODULE, prolog << "AWS (computed) start_time: "<< start_time << endl);
+            aws_start_time = mktime(ti);
+            BESDEBUG(MODULE, prolog << "AWS start_time (computed): " << aws_start_time << endl);
         }
-        expires = start_time + stoll(aws_expires);
+
+        expires_time = aws_start_time + aws_expires;
         BESDEBUG(MODULE, prolog << "Using "<< AMS_EXPIRES_HEADER_KEY << ": " << aws_expires <<
-                                " (expires: " << expires << ")" << endl);
+                                " (expires_time: " << expires_time << ")" << endl);
     }
-    time_t remaining = expires - now;
-    BESDEBUG(MODULE, prolog << "expires: " << expires <<
+    std::time_t remaining = expires_time - now;
+    BESDEBUG(MODULE, prolog << "expires_time: " << expires_time <<
                             "  remaining: " << remaining <<
-                            " threshold: " << REFRESH_THRESHOLD << endl);
+                            " threshold: " << HTTP_URL_REFRESH_THRESHOLD << endl);
 
-    is_expired = remaining < REFRESH_THRESHOLD;
-    BESDEBUG(MODULE, prolog << "is_expired: " << (is_expired?"true":"false") << endl);
+    stale = remaining < HTTP_URL_REFRESH_THRESHOLD;
+    BESDEBUG(MODULE, prolog << "stale: " << (stale?"true":"false") << endl);
 
-    return is_expired;
+    return stale;
 }
 
 /**
@@ -338,7 +398,7 @@ string url::dump(){
     string indent = indent_inc;
 
     ss << "http::url [" << this << "] " << endl;
-    ss << indent << "d_source_url: " << d_source_url << endl;
+    ss << indent << "d_source_url_str: " << d_source_url_str << endl;
     ss << indent << "d_protocol:   " << d_protocol << endl;
     ss << indent << "d_host:       " << d_host << endl;
     ss << indent << "d_path:       " << d_path << endl;
@@ -354,7 +414,7 @@ string url::dump(){
             ss << idt << "value[" << i << "]: " << (*values)[i] << endl;
         }
     }
-    ss << indent << "d_ingest_time:      " << d_ingest_time << endl;
+    ss << indent << "d_ingest_time:      " << d_ingest_time.time_since_epoch().count() << endl;
     return ss.str();
 }
 
