@@ -287,8 +287,6 @@ public:
 
     }
 
-
-
     CPPUNIT_TEST_SUITE( AllowedHostsTest );
 
         CPPUNIT_TEST(do_http_test);
