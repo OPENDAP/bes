@@ -1844,6 +1844,35 @@ curl_slist *add_auth_headers(curl_slist *request_headers) {
 }
 
 /**
+ * Adds conditional get headers to the request headers list
+ * Will add either of the following headers to the headers list
+ *      If-None-Match : uses the etag of the cache resource
+ *          to check if the file has changed since it was created
+ *      If-Modified-Since : use the date of the cache resource
+ *          to check if the file has been modified since it was pulled
+ *
+ * @param request_headers 
+ * @return
+ */
+    curl_slist *add_conditional_get_headers(curl_slist *request_headers) {
+        http::RemoteResource rhr();
+        string etag;
+
+        etag = rhr().get_http_response_header("Etag");
+        if (!etag.empty()) {
+            request_headers = append_http_header(request_headers,"If-None-Match",etag);
+        }
+        else{
+            string date = rhr().get_http_response_header("Date");
+            if (!date.empty()){
+                request_headers = append_http_header(request_headers,"If-Modified-Since",date);
+            }
+        }
+
+        return request_headers;
+    }
+
+/**
  * @brief Queries the passed cURL easy handle, ceh, for the value of CURLINFO_EFFECTIVE_URL and returns said value.
  *
  * @param ceh The cURL easy handle to query
