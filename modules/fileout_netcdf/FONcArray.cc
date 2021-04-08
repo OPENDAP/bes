@@ -394,6 +394,7 @@ void FONcArray::define(int ncid)
             FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
         }
 
+        BESDEBUG("fonc", "FONcArray::define() netcdf-4 version is " << _ncVersion << endl);
         if (isNetCDF4()) {
             BESDEBUG("fonc", "FONcArray::define() Working netcdf-4 branch " << endl);
            if (FONcRequestHandler::chunk_size == 0)

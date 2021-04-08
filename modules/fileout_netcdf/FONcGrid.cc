@@ -143,6 +143,7 @@ void FONcGrid::convert(vector<string> embed,bool is_dap4_group)
 {
     FONcGrid::InGrid = true;
     FONcBaseType::convert(embed,is_dap4_group);
+    BESDEBUG("fonc", "FONcGrid:: version: '" << _ncVersion << "'" << endl);
     _varname = FONcUtils::gen_name(embed, _varname, _orig_varname);
     BESDEBUG("fonc", "FONcGrid::convert - converting grid " << _varname << endl);
 
@@ -172,6 +173,8 @@ void FONcGrid::convert(vector<string> embed,bool is_dap4_group)
         // FONcMap to the FONcGrid.
         if (!map_found) {
             FONcArray *fa = new FONcArray(map);
+            fa->setVersion(_ncVersion);
+            fa->setNC4DataModel(_nc4_datamodel);
             fa->convert(map_embed,is_dap4_group);
             map_found = new FONcMap(fa, true);
             FONcGrid::Maps.push_back(map_found);
@@ -193,6 +196,9 @@ void FONcGrid::convert(vector<string> embed,bool is_dap4_group)
     // jhrg 11/3/16
     if (_grid->get_array()->send_p()) {
         _arr = new FONcArray(_grid->get_array());
+        _arr->setVersion(_ncVersion);
+        _arr->setNC4DataModel(_nc4_datamodel);
+        
         _arr->convert(_embed,is_dap4_group);
     }
 

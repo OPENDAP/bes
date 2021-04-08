@@ -89,7 +89,7 @@ m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST_NC4_ENHANCED],  [dnl
 ])
 
 dnl This is similar to the "binary data" macro above, but instead assumes the
-dnl output of besstandalone is a netcdf3 file. The binary stream is read using
+dnl output of besstandalone is a netcdf4 file. The binary stream is read using
 dnl ncdump and the output of that is compared to a baseline. Of course, this
 dnl requires ncdump be accessible.
 
@@ -228,9 +228,9 @@ m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST_NC4_ENHANCED_GRP],  [dnl
 ])
 
 dnl This is similar to the "binary data" macro above, but instead assumes the
-dnl output of besstandalone is a netcdf3 file. The binary stream is read using
+dnl output of besstandalone is a netcdf4 file. The binary stream is read using
 dnl ncdump and the output of that is compared to a baseline. Of course, this
-dnl requires ncdump be accessible.
+dnl requires ncdump be accessible. The netcdf4 file is in netCDF-4 enhanced model.
 
 m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP],  [dnl
 
@@ -278,9 +278,9 @@ m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP],  [dnl
 ])
 
 dnl This is similar to the "binary data" macro above, but instead assumes the
-dnl output of besstandalone is a netcdf3 file. The binary stream is read using
+dnl output of besstandalone is a netcdf4 file. The binary stream is read using
 dnl ncdump and the output of that is compared to a baseline. Of course, this
-dnl requires ncdump be accessible.
+dnl requires ncdump be accessible. This one only checks the header of ncdump.
 
 m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR],  [dnl
 
@@ -300,26 +300,57 @@ m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR],  [dnl
          [
          AT_CHECK([besstandalone -c $abs_builddir/bes.nc4.grp.conf -i $input > test.nc])
 
-         dnl first get the version number, then the header, then the data
-         dnl AT_CHECK([ncdump -k test.nc > $baseline.ver.tmp])
+         dnl the header
          AT_CHECK([ncdump -h test.nc > $baseline.header.tmp])
          dnl REMOVE_DATE_TIME([$baseline.header.tmp])
          ],
          [
          AT_CHECK([besstandalone -c $abs_builddir/bes.nc4.grp.conf -i $input > test.nc])
-        
-         dnl AT_CHECK([ncdump -k test.nc > tmp])
-         dnl AT_CHECK([diff -b -B $baseline.ver tmp])
-        
          AT_CHECK([ncdump -h test.nc > tmp])
          dnl REMOVE_DATE_TIME([tmp])
          AT_CHECK([diff -b -B $baseline.header tmp])
-        
+         AT_XFAIL_IF([test z$2 = zxfail])
+         ])
+
+    AT_CLEANUP
+])
+
+dnl Only check if the netcdf-4 file is compressed.
+
+m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_COMPRESSION],  [dnl
+    AT_SETUP([$1])
+    AT_KEYWORDS([nc4 enhanced binary ncdump])
+
+    input=$abs_srcdir/$1
+    baseline=$abs_srcdir/$1.baseline
+    pass=$2
+    repeat=$3
+    compression="Deflate"
+
+    AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+         [
+         AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input > test.nc])
+
+         AT_CHECK([ncdump -sh test.nc > tmp])
+         AT_CHECK([grep -m 1 $compression tmp >$baseline.comp.tmp]) 
+ 
+         ],
+         [
+         AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input > test.nc])
+         AT_CHECK([ncdump -sh test.nc > tmp])
+         dnl only need to check if the deflate compression appears.
+         AT_CHECK([grep -m 1 $compression tmp >tmp2]) 
+         AT_CHECK([diff -b -B $baseline.comp tmp2])
         
          AT_XFAIL_IF([test z$2 = zxfail])
          ])
 
     AT_CLEANUP
+
 ])
 
 
