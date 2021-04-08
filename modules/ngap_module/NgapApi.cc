@@ -126,7 +126,7 @@ std::string NgapApi::build_cmr_query_url_old_rpath_format(const std::string &res
             msg << prolog << "The specified path '" << r_path << "'";
             msg << " contains neither the '" << NGAP_COLLECTIONS_KEY << "'";
             msg << " nor the '" << NGAP_CONCEPTS_KEY << "'";
-            msg << " one must be provided.";
+            msg << " key, one must be provided.";
             throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
         }
         collection_index = concepts_index;

@@ -111,7 +111,7 @@ void read_data(CURL *c_handle);
 
 curl_slist *append_http_header(curl_slist *slist, const std::string &header_name, const std::string &value);
 
-curl_slist *add_auth_headers(curl_slist *request_headers);
+curl_slist *add_edl_auth_headers(curl_slist *request_headers);
 
 
 } // namespace curl

@@ -193,7 +193,7 @@ size_t get_remote_size(shared_ptr<http::url> &target_url, bool aws_signing) {
     std::vector<std::string> resp_hdrs;
     curl_slist *request_headers = nullptr;
 
-    request_headers = curl::add_auth_headers(request_headers);
+    request_headers = curl::add_edl_auth_headers(request_headers);
 
     if (aws_signing)
         request_headers = aws_sign_request_url(target_url, request_headers);

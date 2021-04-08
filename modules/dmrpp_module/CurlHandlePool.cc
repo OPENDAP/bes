@@ -524,7 +524,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
             handle->d_request_headers = temp;
 #endif
 
-            // handle->d_request_headers = curl::add_auth_headers(handle->d_request_headers);
+            // handle->d_request_headers = curl::add_edl_auth_headers(handle->d_request_headers);
 
             res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPHEADER, handle->d_request_headers);
             curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HTTPHEADER", handle->d_errbuf, __FILE__, __LINE__);

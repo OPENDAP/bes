@@ -57,9 +57,12 @@ namespace ngap {
         // std::vector<std::string> d_facets;
 
         NgapContainer() :
-                BESContainer(), d_dmrpp_rresource(0)
+                BESContainer(), d_dmrpp_rresource(nullptr)
         {
         }
+
+        void initialize();
+
         bool inject_data_url();
 
 

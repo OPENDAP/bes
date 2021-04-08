@@ -266,7 +266,7 @@ namespace http {
             BESContextManager::TheManager()->set_context(EDL_ECHO_TOKEN_KEY, tokens[2]);
 
             try {
-                hdrs = curl::add_auth_headers(hdrs);
+                hdrs = curl::add_edl_auth_headers(hdrs);
                 temp=hdrs;
                 size_t index = 0;
                 while(temp){

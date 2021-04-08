@@ -76,7 +76,7 @@ static const unsigned int retry_limit = 10; // Amazon's suggestion
 static const useconds_t uone_second = 1000 * 1000; // one second in micro seconds (which is 1000
 
 // Forward declaration
-curl_slist *add_auth_headers(struct curl_slist *request_headers);
+curl_slist *add_edl_auth_headers(struct curl_slist *request_headers);
 
 // Set this to 1 to turn on libcurl's verbose mode (for debugging).
 int curl_trace = 0;
@@ -784,13 +784,14 @@ CURL *init_effective_url_retriever_handle(const string &target_url, struct curl_
  * error message is stuffed into the Error object.
  */
 void http_get_and_write_resource(const std::shared_ptr<http::url>& target_url,
+                                 const vector<string> &request_headers,
                                  const int fd,
                                  vector<string> *http_response_headers) {
 
     char error_buffer[CURL_ERROR_SIZE];
     CURLcode res;
-    CURL *ceh = NULL;
-    curl_slist *req_headers = NULL;
+    CURL *ceh = nullptr;
+    curl_slist *req_headers = nullptr;
     BuildHeaders header_builder;
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
@@ -804,7 +805,7 @@ void http_get_and_write_resource(const std::shared_ptr<http::url>& target_url,
     }
 
     // Add the authorization headers
-    req_headers = add_auth_headers(req_headers);
+    req_headers = add_edl_auth_headers(req_headers);
 
     try {
         // OK! Make the cURL handle
@@ -932,16 +933,16 @@ rapidjson::Document http_get_as_json(const std::string &target_url) {
 void http_get(const std::string &target_url, char *response_buf) {
 
     char errbuf[CURL_ERROR_SIZE]; ///< raw error message info from libcurl
-    CURL *ceh = NULL;     ///< The libcurl handle object.
+    CURL *ceh = nullptr;     ///< The libcurl handle object.
     CURLcode res;
 
-    curl_slist *request_headers = NULL;
+    curl_slist *request_headers = nullptr;
     // Add the authorization headers
-    request_headers = add_auth_headers(request_headers);
+    request_headers = add_edl_auth_headers(request_headers);
 
     try {
 
-        ceh = curl::init(target_url, request_headers, NULL);
+        ceh = curl::init(target_url, request_headers, nullptr);
         if (!ceh)
             throw BESInternalError(string("ERROR! Failed to acquire cURL Easy Handle! "), __FILE__, __LINE__);
 
@@ -1551,7 +1552,7 @@ bool eval_curl_easy_perform_code(
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
         // Add the authorization headers
-        request_headers = add_auth_headers(request_headers);
+        request_headers = add_edl_auth_headers(request_headers);
 
         try {
             BESDEBUG(MODULE,
@@ -1820,7 +1821,7 @@ curl_slist *append_http_header(curl_slist *slist, const string &header_name, con
  * @param request_headers
  * @return
  */
-curl_slist *add_auth_headers(curl_slist *request_headers) {
+curl_slist *add_edl_auth_headers(curl_slist *request_headers) {
     bool found;
     string s;
 
