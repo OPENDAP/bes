@@ -38,7 +38,7 @@ if CPPUNIT
 TESTS = constraintT defT keysT pfileT plistT pvolT replistT		\
 reqhandlerT reqlistT resplistT infoT utilT regexT scrubT		\
 checkT servicesT fsT urlT containerT uncompressT cacheT			\
-BESCatalogListTest AllowedHostsTest CatalogNodeTest CatalogItemTest \
+BESCatalogListTest CatalogNodeTest CatalogItemTest \
 ServerAdministratorTest kvp_utils_test
 
 # Debugging code is compiled if the project when
@@ -82,7 +82,7 @@ EXTRA_DIST = $(CACHE) catalog_test catalog_test_baselines bad_keys1.ini \
 	persistence_file1.txt persistence_file2.txt \
 	persistence_file3.txt persistence_file4.txt \
 	persistence_file_test.txt test_config.h.in \
-	bes.conf.in remote_access_test.ini
+	bes.conf.in
 
 DISTCLEANFILES = 
 
@@ -166,9 +166,6 @@ regexT_SOURCES = regexT.cc
 scrubT_SOURCES = scrubT.cc
 
 checkT_SOURCES = checkT.cc
-
-AllowedHostsTest_SOURCES = AllowedHostsTest.cc
-AllowedHostsTest_LDADD = ../AllowedHosts.o $(LDADD)
 
 CatalogNodeTest_SOURCES = test_utils.cc CatalogNodeTest.cc
 CatalogNodeTest_LDADD = ../CatalogNode.o $(LDADD)

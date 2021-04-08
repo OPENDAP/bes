@@ -27,11 +27,13 @@
 // Authors:
 //      pcw       Patrick West <pwest@ucar.edu>
 
-#include <BESSyntaxUserError.h>
-#include <BESInternalError.h>
-#include <BESDebug.h>
-#include <BESUtil.h>
-#include <AllowedHosts.h>
+#include <memory>
+
+#include "BESSyntaxUserError.h"
+#include "BESInternalError.h"
+#include "BESDebug.h"
+#include "BESUtil.h"
+#include "AllowedHosts.h"
 
 #include "GatewayContainer.h"
 #include "GatewayNames.h"
@@ -65,9 +67,11 @@ GatewayContainer::GatewayContainer(const string &sym_name,
     BESUtil::url_explode(real_name, url_parts);
     url_parts.uname = "";
     url_parts.psswd = "";
-    string use_real_name = BESUtil::url_create(url_parts);
+    string url_string = BESUtil::url_create(url_parts);
 
-    if (!AllowedHosts::theHosts()->is_allowed(use_real_name)) {
+    std::shared_ptr<http::url> target_url(new http::url(url_string));
+
+    if (!http::AllowedHosts::theHosts()->is_allowed(target_url)) {
         string err = (string) "The specified URL " + real_name
                 + " does not match any of the accessible services in"
                 + " the allowed hosts list.";
@@ -136,7 +140,8 @@ string GatewayContainer::access() {
 
     if(!d_remoteResource) {
         BESDEBUG( MODULE, prolog << "Building new RemoteResource." << endl );
-        d_remoteResource = new http::RemoteResource(url);
+        std::shared_ptr<http::url> url_ptr(new http::url(url));
+        d_remoteResource = new http::RemoteResource(url_ptr);
         d_remoteResource->retrieveResource();
     }
     BESDEBUG( MODULE, prolog << "Located remote resource." << endl );

@@ -22,6 +22,8 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
+#include <memory>
+
 #include <BESSyntaxUserError.h>
 #include <BESInternalError.h>
 #include <BESDebug.h>
@@ -129,7 +131,8 @@ string HttpdCatalogContainer::access()
 
     if (!d_remoteResource) {
         BESDEBUG(MODULE, prolog << "Building new RemoteResource." << endl);
-        d_remoteResource = new http::RemoteResource(access_url);
+        std::shared_ptr<http::url> access_url_ptr(new http::url(access_url));
+        d_remoteResource = new http::RemoteResource(access_url_ptr);
         d_remoteResource->retrieveResource();
     }
 

@@ -793,7 +793,7 @@ void DmrppArray::read_contiguous()
         // the remainder here and increase the size of the last chunk by this number of bytes.
         unsigned long long chunk_remainder = the_one_chunk_size % num_chunks;
 
-        string chunk_url = the_one_chunk->get_data_url();
+        auto chunk_url = the_one_chunk->get_data_url();
 
         // Setup a queue to break up the original the_one_chunk and keep track of the pieces
         queue<shared_ptr<Chunk>> chunks_to_read;

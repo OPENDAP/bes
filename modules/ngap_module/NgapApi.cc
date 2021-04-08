@@ -426,7 +426,8 @@ std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::stri
         BESDEBUG(MODULE, prolog << "CMR Request URL: " << cmr_query_url << endl);
 
         BESDEBUG(MODULE, prolog << "Building new RemoteResource." << endl);
-        http::RemoteResource cmr_query(cmr_query_url, uid);
+        std::shared_ptr<http::url> cmr_query_url_ptr(new http::url(cmr_query_url));
+        http::RemoteResource cmr_query(cmr_query_url_ptr, uid);
         {
             BESStopWatch besTimer;
             if (BESISDEBUG(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()){

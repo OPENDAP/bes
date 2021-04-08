@@ -170,7 +170,8 @@ string CmrContainer::access() {
 
     if(!d_remoteResource) {
         BESDEBUG( MODULE, prolog << "Building new RemoteResource." << endl );
-        d_remoteResource = new http::RemoteResource(url);
+        shared_ptr<http::url> target_url(new http::url(url));
+        d_remoteResource = new http::RemoteResource(target_url);
         d_remoteResource->retrieveResource();
     }
     BESDEBUG( MODULE, prolog << "Located remote resource." << endl );

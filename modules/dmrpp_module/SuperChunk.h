@@ -48,7 +48,7 @@ class SuperChunk {
 private:
     std::string d_id;
     DmrppArray *d_parent_array;
-    std::string d_data_url;
+    std::shared_ptr<http::url> d_data_url;
     std::vector<std::shared_ptr<Chunk>> d_chunks;
     unsigned long long d_offset;
     unsigned long long d_size;
@@ -62,7 +62,7 @@ private:
 public:
 
     explicit SuperChunk(const std::string sc_id, DmrppArray *parent=nullptr):
-    d_id(sc_id), d_parent_array(parent), d_data_url(""), d_offset(0), d_size(0), d_is_read(false), d_read_buffer(nullptr){}
+    d_id(sc_id), d_parent_array(parent), d_data_url(nullptr), d_offset(0), d_size(0), d_is_read(false), d_read_buffer(nullptr){}
 
     virtual ~SuperChunk(){
         delete[] d_read_buffer;
@@ -72,7 +72,7 @@ public:
 
     virtual bool add_chunk(std::shared_ptr<Chunk> candidate_chunk);
 
-    virtual std::string get_data_url(){ return d_data_url; }
+    std::shared_ptr<http::url> get_data_url(){ return d_data_url; }
     virtual unsigned long long get_size(){ return d_size; }
     virtual unsigned long long get_offset(){ return d_offset; }
 

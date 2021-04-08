@@ -66,12 +66,14 @@ static bool clean = true;
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 
-#define DEBUG_KEY "dmrpp_store,cache"
+#define DEBUG_KEY "dmrpp_store,cache,dmrpp:parser"
 
 using namespace CppUnit;
 using namespace std;
 using namespace libdap;
 using namespace dmrpp;
+
+#define prolog std::string("DmrppMetadataStoreTest::").append(__func__).append("() - ")
 
 namespace bes {
 
@@ -83,33 +85,34 @@ static const string c_mds_baselines = string(TEST_SRC_DIR) + "/baselines";
 class DmrppMetadataStoreTest: public TestFixture {
 private:
     DMR *d_test_dmr;
+    shared_ptr<http::url> d_test_dmr_url;
     D4BaseTypeFactory d_d4f;
-    DmrppTypeFactory d_dmrpp_f;
+    DmrppTypeFactory d_dmrpp_factory;
 
     string d_mds_dir;
     DmrppMetadataStore *d_mds;
-
     /**
      * SetUp()-like method to build a DMR for testing.
      */
     void init_dmr_and_mds()
     {
+        DBG( cerr << prolog << "BEGIN" << endl );
         try {
             // Stock code to get the d_test_dds and d_mds objects used by many
             // of the tests.
             d_mds = DmrppMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 1000);
-            DBG(cerr << "Retrieved DmrppMetadataStore object: " << d_mds << endl);
+            DBG(cerr << prolog << "Retrieved DmrppMetadataStore object: " << d_mds << endl);
 
             // Get a DMR to cache.
             string file_name = string(TEST_SRC_DIR).append("/input-files/test_01.dmr");
 
             d_test_dmr = new DMR(&d_d4f);
             D4ParserSax2 dp;
-            DBG(cerr << "DMR file to be parsed: " << file_name << endl);
+            DBG(cerr << prolog << "DMR file to be parsed: " << file_name << endl);
             fstream in(file_name.c_str(), ios::in|ios::binary);
             dp.intern(in, d_test_dmr);
 
-            DBG(cerr << "DMR Name: " << d_test_dmr->name() << endl);
+            DBG(cerr << prolog << "DMR Name: " << d_test_dmr->name() << endl);
             CPPUNIT_ASSERT(d_test_dmr);
         }
         catch (BESError &e) {
@@ -121,26 +124,34 @@ private:
         catch (std::exception &e) {
             CPPUNIT_FAIL(e.what());
         }
+        DBG( cerr << prolog << "BEGIN" << endl );
     }
 
     void init_dmrpp_and_mds()
     {
+        DBG( cerr << prolog << "BEGIN" << endl );
         try {
             // Stock code to get the d_test_dds and d_mds objects used by many
             // of the tests.
             d_mds = DmrppMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 1000);
-            DBG(cerr << "Retrieved DmrppMetadataStore object: " << d_mds << endl);
+            DBG(cerr << prolog << "Retrieved DmrppMetadataStore object: " << d_mds << endl);
 
             // Get a DMRpp to cache.
             string file_name = string(TEST_SRC_DIR).append("/input-files/chunked_fourD.h5.dmrpp");
+            string test_dmr_url_str = FILE_PROTOCOL;
+            test_dmr_url_str += "This/Is/a/Test.nc";
+            d_test_dmr_url = shared_ptr<http::url>(new http::url(test_dmr_url_str));
 
-            d_test_dmr = new DMRpp(&d_dmrpp_f);
+            DMRpp *dmrpp = new DMRpp(&d_dmrpp_factory);
+            dmrpp->set_href(d_test_dmr_url->str());
+
+            d_test_dmr = dmrpp;
             DmrppParserSax2 dp;
-            DBG(cerr << "DMRpp file to be parsed: " << file_name << endl);
+            DBG(cerr << prolog << "DMRpp file to be parsed: " << file_name << endl);
             fstream in(file_name.c_str(), ios::in|ios::binary);
             dp.intern(in, d_test_dmr);
 
-            DBG(cerr << "DMRpp Name: " << d_test_dmr->name() << endl);
+            DBG(cerr << prolog << "DMRpp Name: " << d_test_dmr->name() << endl);
             CPPUNIT_ASSERT(d_test_dmr);
         }
         catch (BESError &e) {
@@ -152,6 +163,7 @@ private:
         catch (std::exception &e) {
             CPPUNIT_FAIL(e.what());
         }
+        DBG( cerr << prolog << "END" << endl );
     }
 
 public:
@@ -166,7 +178,8 @@ public:
 
     void setUp()
     {
-        DBG(cerr << __func__ << " - BEGIN" << endl);
+        DBG( cerr << endl );
+        DBG(cerr << prolog <<  "BEGIN" << endl);
 
         if (bes_debug) BESDebug::SetUp(string("cerr,").append(DEBUG_KEY));
 
@@ -175,12 +188,12 @@ public:
         // Contains BES Log parameters but not cache names
         TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
 
-        DBG(cerr << __func__ << " - END" << endl);
+        DBG(cerr << prolog <<  "END" << endl);
     }
 
     void tearDown()
     {
-        DBG(cerr << __func__ << " - BEGIN" << endl);
+        DBG(cerr << prolog <<  "BEGIN" << endl);
 
         delete d_test_dmr; d_test_dmr = 0;
 
@@ -188,12 +201,13 @@ public:
 
         if (clean) clean_cache_dir(d_mds_dir);
 
-        DBG(cerr << __func__ << " - END" << endl);
+        DBG(cerr << prolog <<  "END" << endl);
+        DBG( cerr << endl );
     }
 
     void ctor_test_1()
     {
-        DBG(cerr << __func__ << " - BEGIN" << endl);
+        DBG(cerr << prolog <<  "BEGIN" << endl);
 
         try {
             // The call to get_instance should fail since the directory is named,
@@ -201,7 +215,7 @@ public:
         		// Check to see if the test is being run by the super user or built in root.
         	    if (access("/", W_OK) != 0) {
 				d_mds = DmrppMetadataStore::get_instance("/new", c_mds_prefix, 1000);
-				DBG(cerr << "retrieved DmrppMetadataStore instance: " << d_mds << endl);
+				DBG(cerr << prolog << "retrieved DmrppMetadataStore instance: " << d_mds << endl);
 				CPPUNIT_FAIL("get_instance() Should not return when the non-existent directory cannot be created");
         	    }
         }
@@ -209,17 +223,17 @@ public:
             CPPUNIT_ASSERT(!e.get_message().empty());
         }
 
-        DBG(cerr << __func__ << " - END" << endl);
+        DBG(cerr << prolog <<  "END" << endl);
     }
 
     void ctor_test_2()
     {
-        DBG(cerr << __func__ << " - BEGIN" << endl);
+        DBG(cerr << prolog <<  "BEGIN" << endl);
 
         try {
             // This one should work and will make the directory
             d_mds = DmrppMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 1000);
-            DBG(cerr << "retrieved DmrppMetadataStore instance: " << d_mds << endl);
+            DBG(cerr << prolog << "retrieved DmrppMetadataStore instance: " << d_mds << endl);
             CPPUNIT_ASSERT(d_mds);
             CPPUNIT_ASSERT(!d_mds->is_unlimited());
 
@@ -229,17 +243,17 @@ public:
             CPPUNIT_FAIL("Caught exception: " + e.get_message());
         }
 
-        DBG(cerr << __func__ << " - END" << endl);
+        DBG(cerr << prolog <<  "END" << endl);
     }
 
     void ctor_test_3()
     {
-        DBG(cerr << __func__ << " - BEGIN" << endl);
+        DBG(cerr << prolog <<  "BEGIN" << endl);
 
         try {
             // This one should work and will make the directory
             d_mds = DmrppMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 0);
-            DBG(cerr << "retrieved DmrppMetadataStore instance: " << d_mds << endl);
+            DBG(cerr << prolog << "retrieved DmrppMetadataStore instance: " << d_mds << endl);
             CPPUNIT_ASSERT(d_mds);
             CPPUNIT_ASSERT(d_mds->is_unlimited());
 
@@ -249,12 +263,12 @@ public:
             CPPUNIT_FAIL("Caught exception: " + e.get_message());
         }
 
-        DBG(cerr << __func__ << " - END" << endl);
+        DBG(cerr << prolog <<  "END" << endl);
     }
 
     void cache_a_dmr_response()
     {
-        DBG(cerr << __func__ << " - BEGIN" << endl);
+        DBG(cerr << prolog <<  "BEGIN" << endl);
 
         try {
             init_dmr_and_mds();
@@ -268,13 +282,13 @@ public:
 
             // Now check the file
             string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "test_array_4.dmr_r";
-            DBG(cerr << "Reading baseline: " << baseline_name << endl);
+            DBG(cerr << prolog << "Reading baseline: " << baseline_name << endl);
             CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
 
             string test_05_dmr_baseline = read_test_baseline(baseline_name);
 
             string response_name = d_mds_dir + "/" + c_mds_prefix + "test_array_4.dmr_r";
-            DBG(cerr << "Reading response: " << response_name << endl);
+            DBG(cerr << prolog << "Reading response: " << response_name << endl);
             CPPUNIT_ASSERT(access(response_name.c_str(), R_OK) == 0);
 
             string stored_response = read_test_baseline(response_name);
@@ -285,12 +299,12 @@ public:
             CPPUNIT_FAIL(e.get_message());
         }
 
-        DBG(cerr << __func__ << " - END" << endl);
+        DBG(cerr << prolog <<  "END" << endl);
     }
 
     void cache_a_dmrpp_response()
     {
-        DBG(cerr << __func__ << " - BEGIN" << endl);
+        DBG(cerr << prolog <<  "BEGIN" << endl);
 
         try {
             init_dmrpp_and_mds();
@@ -303,13 +317,13 @@ public:
 
             // Now check the file
             string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "chunked_fourD.h5.dmrpp_r";
-            DBG(cerr << "Reading baseline: " << baseline_name << endl);
+            DBG(cerr << prolog << "Reading baseline: " << baseline_name << endl);
             CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
 
             string chunked_4d_dmrpp_baseline = read_test_baseline(baseline_name);
 
             string response_name = d_mds_dir + "/" + c_mds_prefix + "chunked_fourD.h5.dmrpp_r";
-            DBG(cerr << "Reading response: " << response_name << endl);
+            DBG(cerr << prolog << "Reading response: " << response_name << endl);
             CPPUNIT_ASSERT(access(response_name.c_str(), R_OK) == 0);
 
             string stored_response = read_test_baseline(response_name);
@@ -320,12 +334,12 @@ public:
             CPPUNIT_FAIL(e.get_message());
         }
 
-        DBG(cerr << __func__ << " - END" << endl);
+        DBG(cerr << prolog <<  "END" << endl);
     }
 
     void add_response_test()
     {
-        DBG(cerr << __func__ << " - BEGIN" << endl);
+        DBG(cerr << prolog <<  "BEGIN" << endl);
 
         try {
             init_dmr_and_mds();
@@ -336,12 +350,12 @@ public:
             CPPUNIT_ASSERT(stored);
 
             string dmr_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dmr->name().append("dmr_r")), false /*mangle*/);
-            DBG(cerr << __func__ << " - dmr_cache_name: " << dmr_cache_name << endl);
+            DBG(cerr << prolog <<  " - dmr_cache_name: " << dmr_cache_name << endl);
             CPPUNIT_ASSERT(access(dmr_cache_name.c_str(), R_OK) == 0);
 
             // There should be no DMR++ in the MDS
             string dmrpp_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dmr->name().append("dmrpp_r")), false /*mangle*/);
-            DBG(cerr << __func__ << " - dmrpp_cache_name: " << dmrpp_cache_name << endl);
+            DBG(cerr << prolog <<  " - dmrpp_cache_name: " << dmrpp_cache_name << endl);
             CPPUNIT_ASSERT(access(dmrpp_cache_name.c_str(), R_OK) != 0);
 
         }
@@ -349,13 +363,13 @@ public:
             CPPUNIT_FAIL(e.get_message());
         }
 
-        DBG(cerr << __func__ << " - END" << endl);
+        DBG(cerr << prolog <<  "END" << endl);
     }
 
     // Make a DMR++. add_responses() should add both the DMR and DMR++
     void add_response_test_2()
     {
-        DBG(cerr << __func__ << " - BEGIN" << endl);
+        DBG(cerr << prolog <<  "BEGIN" << endl);
 
         try {
             init_dmrpp_and_mds();
@@ -366,23 +380,23 @@ public:
             CPPUNIT_ASSERT(stored);
 
             string dmr_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dmr->name().append("dmr_r")), false /*mangle*/);
-            DBG(cerr << __func__ << " - dmr_cache_name: " << dmr_cache_name << endl);
+            DBG(cerr << prolog <<  " - dmr_cache_name: " << dmr_cache_name << endl);
             CPPUNIT_ASSERT(access(dmr_cache_name.c_str(), R_OK) == 0);
 
             string dmrpp_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dmr->name().append("dmrpp_r")), false /*mangle*/);
-            DBG(cerr << __func__ << " - dmrpp_cache_name: " << dmrpp_cache_name << endl);
+            DBG(cerr << prolog <<  " - dmrpp_cache_name: " << dmrpp_cache_name << endl);
             CPPUNIT_ASSERT(access(dmrpp_cache_name.c_str(), R_OK) == 0);
         }
         catch (BESError &e) {
             CPPUNIT_FAIL(e.get_message());
         }
 
-        DBG(cerr << __func__ << " - END" << endl);
+        DBG(cerr << prolog <<  "END" << endl);
     }
 
     void is_dmrpp_available_test()
     {
-        DBG(cerr << __func__ << " - BEGIN" << endl);
+        DBG(cerr << prolog <<  "BEGIN" << endl);
 
         try {
             init_dmrpp_and_mds();
@@ -402,12 +416,12 @@ public:
             CPPUNIT_FAIL(e.get_message());
         }
 
-        DBG(cerr << __func__ << " - END" << endl);
+        DBG(cerr << prolog <<  "END" << endl);
 
     }
 
     void write_dmr_response_test() {
-        DBG(cerr << __func__ << " - BEGIN" << endl);
+        DBG(cerr << prolog <<  "BEGIN" << endl);
 
         try {
             init_dmr_and_mds();
@@ -420,10 +434,10 @@ public:
             // Now lets read the object from the cache
             ostringstream oss;
             d_mds->write_dmr_response(d_test_dmr->name(), oss);
-            DBG(cerr << "DMR response: " << endl << oss.str() << endl);
+            DBG(cerr << prolog << "DMR response: " << endl << oss.str() << endl);
 
             string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "test_array_4.dmr_r";
-            DBG(cerr << "Reading baseline: " << baseline_name << endl);
+            DBG(cerr << prolog << "Reading baseline: " << baseline_name << endl);
             CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
 
             string test_array_4_dmr_baseline = read_test_baseline(baseline_name);
@@ -434,11 +448,11 @@ public:
             CPPUNIT_FAIL(e.get_message());
         }
 
-        DBG(cerr << __func__ << " - END" << endl);
+        DBG(cerr << prolog <<  "END" << endl);
     }
 
     void write_dmrpp_response_test() {
-        DBG(cerr << __func__ << " - BEGIN" << endl);
+        DBG(cerr << prolog <<  "BEGIN" << endl);
 
         try {
             init_dmrpp_and_mds();
@@ -451,10 +465,10 @@ public:
             // Now lets read the object from the cache
             ostringstream oss;
             d_mds->write_dmrpp_response(d_test_dmr->name(), oss);
-            DBG(cerr << "DMR++ response: " << endl << oss.str() << endl);
+            DBG(cerr << prolog << "DMR++ response: " << endl << oss.str() << endl);
 
             string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "chunked_fourD.h5.dmrpp_r";
-            DBG(cerr << "Reading baseline: " << baseline_name << endl);
+            DBG(cerr << prolog << "Reading baseline: " << baseline_name << endl);
             CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
 
             string test_05_dmr_baseline = read_test_baseline(baseline_name);
@@ -465,12 +479,12 @@ public:
             CPPUNIT_FAIL(e.get_message());
         }
 
-        DBG(cerr << __func__ << " - END" << endl);
+        DBG(cerr << prolog <<  "END" << endl);
     }
 
     void remove_object_test()
     {
-        DBG(cerr << __func__ << " - BEGIN" << endl);
+        DBG(cerr << prolog <<  "BEGIN" << endl);
 
         try {
             init_dmrpp_and_mds();
@@ -482,11 +496,11 @@ public:
 
             // look for the files
             string dmr_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dmr->name().append("dmr_r")), false /*mangle*/);
-            DBG(cerr << __func__ << " - dmr_cache_name: " << dmr_cache_name << endl);
+            DBG(cerr << prolog <<  "dmr_cache_name: " << dmr_cache_name << endl);
             CPPUNIT_ASSERT(access(dmr_cache_name.c_str(), R_OK) == 0);
 
             string dmrpp_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dmr->name().append("dmrpp_r")), false /*mangle*/);
-            DBG(cerr << __func__ << " - dmrpp_cache_name: " << dmrpp_cache_name << endl);
+            DBG(cerr << prolog <<  "dmrpp_cache_name: " << dmrpp_cache_name << endl);
             CPPUNIT_ASSERT(access(dmrpp_cache_name.c_str(), R_OK) == 0);
 
             bool removed = d_mds->remove_responses(d_test_dmr->name());
@@ -499,11 +513,11 @@ public:
             CPPUNIT_FAIL(e.get_message());
         }
 
-        DBG(cerr << __func__ << " - END" << endl);
+        DBG(cerr << prolog <<  "END" << endl);
     }
 
     void get_dmr_object_test() {
-        DBG(cerr << __func__ << " - BEGIN" << endl);
+        DBG(cerr << prolog <<  "BEGIN" << endl);
 
         try {
             init_dmr_and_mds();
@@ -517,7 +531,7 @@ public:
 
             CPPUNIT_ASSERT(dmr);
 
-            DBG(cerr << "DMR: " << dmr->name() << endl);
+            DBG(cerr << prolog << "DMR: " << dmr->name() << endl);
 
             ostringstream oss;
             XMLWriter writer;
@@ -525,7 +539,7 @@ public:
             oss << writer.get_doc();
 
             string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "test_array_4.dmr_r";
-            DBG(cerr << "Reading baseline: " << baseline_name << endl);
+            DBG(cerr << prolog << "Reading baseline: " << baseline_name << endl);
             CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
 
             string test_01_dmr_baseline = read_test_baseline(baseline_name);
@@ -542,33 +556,31 @@ public:
             CPPUNIT_FAIL(e.what());
         }
 
-        DBG(cerr << __func__ << " - END" << endl);
+        DBG(cerr << prolog <<  "END" << endl);
     }
 
     void get_dmrpp_object_test() {
-        DBG(cerr << __func__ << " - BEGIN" << endl);
+        DBG(cerr << prolog <<  "BEGIN" << endl);
 
         try {
             init_dmrpp_and_mds();
 
             // Store it - this will work if the the code is cleaning the cache.
             bool stored = d_mds->add_responses(d_test_dmr, d_test_dmr->name());
-
+            DBG(cerr << prolog <<  "Stored: " << (stored?"true":"false") << endl);
             CPPUNIT_ASSERT(stored);
 
             DMRpp *dmrpp = d_mds->get_dmrpp_object(d_test_dmr->name());
-
+            DBG(cerr << prolog <<  "Got dmr++: " << (dmrpp?dmrpp->name():"NULL") << endl);
             CPPUNIT_ASSERT(dmrpp);
-
-            DBG(cerr << "DMR++: " << dmrpp->name() << endl);
 
             ostringstream oss;
             XMLWriter writer;
-            dmrpp->print_dmrpp(writer); // no href passed, using the default which is ""
+            dmrpp->print_dmrpp(writer, d_test_dmr_url->str());
             oss << writer.get_doc();
 
             string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "chunked_fourD.h5.dmrpp_r";
-            DBG(cerr << "Reading baseline: " << baseline_name << endl);
+            DBG(cerr << prolog << "Reading baseline: " << baseline_name << endl);
             CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
 
             string chunked_fourD_dmrpp_baseline = read_test_baseline(baseline_name);
@@ -576,7 +588,9 @@ public:
             CPPUNIT_ASSERT(chunked_fourD_dmrpp_baseline == oss.str());
         }
         catch (BESError &e) {
-            CPPUNIT_FAIL(e.get_message());
+            stringstream msg;
+            msg << "Caught BESError! message: " << e.get_verbose_message() << endl;
+            CPPUNIT_FAIL(msg.str());
         }
         catch(Error &e) {
             CPPUNIT_FAIL(e.get_error_message());
@@ -585,12 +599,12 @@ public:
             CPPUNIT_FAIL(e.what());
         }
 
-        DBG(cerr << __func__ << " - END" << endl);
+        DBG(cerr << prolog <<  "END" << endl);
     }
 
     void use_dmrpp_response_test()
     {
-        DBG(cerr << __func__ << " - BEGIN" << endl);
+        DBG(cerr << prolog <<  "BEGIN" << endl);
 
         try {
             init_dmrpp_and_mds();
@@ -601,11 +615,11 @@ public:
             CPPUNIT_ASSERT(stored);
 
             string dmr_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dmr->name().append("dmr_r")), false /*mangle*/);
-            DBG(cerr << __func__ << " - dmr_cache_name: " << dmr_cache_name << endl);
+            DBG(cerr << prolog <<  " - dmr_cache_name: " << dmr_cache_name << endl);
             CPPUNIT_ASSERT(access(dmr_cache_name.c_str(), R_OK) == 0);
 
             string dmrpp_cache_name = d_mds->get_cache_file_name(d_mds->get_hash(d_test_dmr->name().append("dmrpp_r")), false /*mangle*/);
-            DBG(cerr << __func__ << " - dmrpp_cache_name: " << dmrpp_cache_name << endl);
+            DBG(cerr << prolog <<  " - dmrpp_cache_name: " << dmrpp_cache_name << endl);
             CPPUNIT_ASSERT(access(dmrpp_cache_name.c_str(), R_OK) == 0);
 
             // So the DMR++ response is in the cache and an instance of DmrppMetadataStore can
@@ -615,20 +629,20 @@ public:
             GlobalMetadataStore *gms = GlobalMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 1000);
 
             string gms_dmr_cache_name = gms->get_cache_file_name(gms->get_hash(d_test_dmr->name().append("dmr_r")), false /*mangle*/);
-            DBG(cerr << __func__ << " - gms_dmr_cache_name: " << gms_dmr_cache_name << endl);
+            DBG(cerr << prolog <<  " - gms_dmr_cache_name: " << gms_dmr_cache_name << endl);
             CPPUNIT_ASSERT(access(gms_dmr_cache_name.c_str(), R_OK) == 0);
 
             string gms_dmrpp_cache_name = gms->get_cache_file_name(gms->get_hash(d_test_dmr->name().append("dmrpp_r")), false /*mangle*/);
-            DBG(cerr << __func__ << " - gms_dmrpp_cache_name: " << gms_dmrpp_cache_name << endl);
+            DBG(cerr << prolog <<  " - gms_dmrpp_cache_name: " << gms_dmrpp_cache_name << endl);
             CPPUNIT_ASSERT(access(gms_dmrpp_cache_name.c_str(), R_OK) == 0);
 
             // Now lets read the object from the cache
             ostringstream oss;
             gms->write_dmrpp_response(d_test_dmr->name(), oss);
-            DBG(cerr << "DMR++ response: " << endl << oss.str() << endl);
+            DBG(cerr << prolog << "DMR++ response: " << endl << oss.str() << endl);
 
             string baseline_name = c_mds_baselines + "/" + c_mds_prefix + "chunked_fourD.h5.dmrpp_r";
-            DBG(cerr << "Reading baseline: " << baseline_name << endl);
+            DBG(cerr << prolog << "Reading baseline: " << baseline_name << endl);
             CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
 
             string chunked_fourD_dmrpp_baseline = read_test_baseline(baseline_name);
@@ -639,7 +653,7 @@ public:
             CPPUNIT_FAIL(e.get_message());
         }
 
-        DBG(cerr << __func__ << " - END" << endl);
+        DBG(cerr << prolog <<  "END" << endl);
     }
 
 

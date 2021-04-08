@@ -35,7 +35,6 @@
 #include <BESSyntaxUserError.h>
 #include <BESForbiddenError.h>
 #include <BESContextManager.h>
-#include <url_impl.h>
 
 #include "xml2json/include/xml2json.hpp"
 
@@ -103,7 +102,7 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
     auto chunk = reinterpret_cast<Chunk *>(data);
 
     BESDEBUG(MODULE, prolog << "BEGIN chunk->get_response_content_type():" << chunk->get_response_content_type()
-                            << " chunk->get_data_url(): " << chunk->get_data_url() << endl);
+                            << " chunk->get_data_url(): " << chunk->get_data_url()->str() << endl);
 
     // When Content-Type is 'application/xml,' that's an error. jhrg 6/9/20
     if (chunk->get_response_content_type().find("application/xml") != string::npos) {
@@ -118,7 +117,7 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
             string json_message = xml2json(xml_message.c_str());
             rapidjson::Document d;
             d.Parse(json_message.c_str());
-            rapidjson::Value &message = d["Error"]["Message"];
+            // rapidjson::Value &message = d["Error"]["Message"];
             rapidjson::Value &code = d["Error"]["Code"];
 
             // We might want to get the "Code" from the "Error" if these text messages
@@ -128,7 +127,7 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
             if (string(code.GetString()) == "AccessDenied") {
                 stringstream msg;
                 msg << prolog << "ACCESS DENIED - The underlying object store has refused access to: ";
-                msg << chunk->get_data_url() << " Object Store Message: " << json_message;
+                msg << chunk->get_data_url()->str() << " Object Store Message: " << json_message;
                 BESDEBUG(MODULE, msg.str() << endl);
                 VERBOSE(msg.str() << endl);
                 throw BESForbiddenError(msg.str(), __FILE__, __LINE__);
@@ -136,7 +135,7 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
             else {
                 stringstream msg;
                 msg << prolog << "ERROR - The underlying object store returned an error. ";
-                msg << "(Tried: " << chunk->get_data_url() << ") Object Store Message: " << json_message;
+                msg << "(Tried: " << chunk->get_data_url()->str() << ") Object Store Message: " << json_message;
                 BESDEBUG(MODULE, msg.str() << endl);
                 VERBOSE(msg.str() << endl);
                 throw BESInternalError(msg.str(), __FILE__, __LINE__);
@@ -149,8 +148,8 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
         }
         catch (std::exception &e) {
             stringstream msg;
-            msg << prolog << "Caught std::exception when accessing object store data. (Tried: " << chunk->get_data_url() << ")" <<
-                " Message: " << e.what();
+            msg << prolog << "Caught std::exception when accessing object store data.";
+            msg << " (Tried: " << chunk->get_data_url()->str() << ")" << " Message: " << e.what();
             BESDEBUG(MODULE, msg.str() << endl);
             throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
         }
@@ -455,11 +454,18 @@ string Chunk::get_curl_range_arg_string() {
  * tracking the origin of requests when reading data from S3. The information
  * added to the query string comes from a BES Context command sent to the BES
  * by a client (e.g., the OLFS). The addition takes the form
- * "?tracking_context=<context value>".
+ * "tracking_context=<context value>". The method checks to see if the URL
+ * already has a query string, if not it adds one: "?tracking_context=<context value>"
+ * And if so it appends an additional parameter: "&tracking_context=<context value>"
  *
- * @note This is only added to data URLs that reference S3.
+ * @note This is only added to data URLs that reference an S3 bucket.
  */
 void Chunk::add_tracking_query_param() {
+
+    // If there is no data url then there is nothing to add the parameter too.
+    if(d_data_url == nullptr)
+        return;
+
     /** - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
      * Cloudydap test hack where we tag the S3 URLs with a query string for the S3 log
      * in order to track S3 requests. The tag is submitted as a BESContext with the
@@ -474,16 +480,45 @@ void Chunk::add_tracking_query_param() {
      * Well, it's a function now... ;-) jhrg 8/6/18
      */
 
-    string aws_s3_url_https("https://s3.amazonaws.com/");
-    string aws_s3_url_http("http://s3.amazonaws.com/");
+    // All S3 buckets, virtual host style URL
+    string s3_vh_regex_str = R"(^https?:\/\/([a-z]|[0-9])(([a-z]|[0-9]|\.|-){1,61})([a-z]|[0-9])\.s3((\.|-)us-(east|west)-(1|2))?\.amazonaws\.com\/.*$)";
+    BESRegex s3_vh_regex(s3_vh_regex_str.c_str());
 
-    // Is it an AWS S3 access? (y.find(x) returns 0 when y starts with x)
-    if (d_data_url.find(aws_s3_url_https) == 0 || d_data_url.find(aws_s3_url_http) == 0) {
+    // All S3 buckets, path style URL
+    string  s3_path_regex_str = R"(^https?:\/\/s3((\.|-)us-(east|west)-(1|2))?\.amazonaws\.com\/([a-z]|[0-9])(([a-z]|[0-9]|\.|-){1,61})([a-z]|[0-9])\/.*$)";
+    BESRegex s3_path_regex(s3_path_regex_str.c_str());
+
+
+    bool add_tracking = false;
+
+    int match_result = s3_vh_regex.match(d_data_url->str().c_str(), d_data_url->str().length());
+    if(match_result>=0) {
+        auto match_length = (unsigned int) match_result;
+        if (match_length == d_data_url->str().length()) {
+            BESDEBUG(MODULE,
+                     prolog << "FULL MATCH. pattern: " << s3_vh_regex_str << " url: " << d_data_url->str() << endl);
+            add_tracking = true;;
+        }
+    }
+
+    if(!add_tracking){
+        match_result = s3_path_regex.match(d_data_url->str().c_str(), d_data_url->str().length());
+        if(match_result>=0) {
+            auto match_length = (unsigned int) match_result;
+            if (match_length == d_data_url->str().length()) {
+                BESDEBUG(MODULE,
+                         prolog << "FULL MATCH. pattern: " << s3_vh_regex_str << " url: " << d_data_url->str() << endl);
+                add_tracking = true;;
+            }
+        }
+    }
+
+    if (add_tracking) {
         // Yup, headed to S3.
         bool found = false;
         string cloudydap_context_value = BESContextManager::TheManager()->get_context(S3_TRACKING_CONTEXT, found);
         if (found) {
-            d_query_marker.append("?").append(S3_TRACKING_CONTEXT).append("=").append(cloudydap_context_value);
+            d_query_marker.append(S3_TRACKING_CONTEXT).append("=").append(cloudydap_context_value);
         }
     }
 }
@@ -647,7 +682,7 @@ void Chunk::read_chunk() {
 void Chunk::dump(ostream &oss) const {
     oss << "Chunk";
     oss << "[ptr='" << (void *) this << "']";
-    oss << "[data_url='" << d_data_url << "']";
+    oss << "[data_url='" << d_data_url->str() << "']";
     oss << "[offset=" << d_offset << "]";
     oss << "[size=" << d_size << "]";
     oss << "[chunk_position_in_array=(";
@@ -667,18 +702,27 @@ string Chunk::to_string() const {
 }
 
 
-std::string Chunk::get_data_url() const {
+std::shared_ptr<http::url> Chunk::get_data_url() const {
 
-    string data_url = EffectiveUrlCache::TheCache()->get_effective_url(d_data_url);
-    BESDEBUG(MODULE, prolog << "Using data_url: " << data_url << endl);
+    std::shared_ptr<http::EffectiveUrl> effective_url = EffectiveUrlCache::TheCache()->get_effective_url(d_data_url);
+    BESDEBUG(MODULE, prolog << "Using data_url: " << effective_url->str() << endl);
 
-    // A conditional call to void Chunk::add_tracking_query_param()
+    //A conditional call to void Chunk::add_tracking_query_param()
     // here for the NASA cost model work THG's doing. jhrg 8/7/18
     if (!d_query_marker.empty()) {
-        return data_url + d_query_marker;
+        string url_str = effective_url->str();
+        if(url_str.find("?") != string::npos){
+            url_str += "&";
+        }
+        else {
+            url_str +="?";
+        }
+        url_str += d_query_marker;
+        shared_ptr<http::url> query_marker_url( new http::url(url_str));
+        return query_marker_url;
     }
 
-    return data_url;
+    return effective_url;
 }
 
 } // namespace dmrpp

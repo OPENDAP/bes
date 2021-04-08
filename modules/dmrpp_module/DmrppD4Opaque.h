@@ -25,6 +25,7 @@
 #ifndef _dmrpp_d4opaque_h
 #define _dmrpp_d4opaque_h 1
 
+#include <memory>
 #include <string>
 
 #include <D4Opaque.h>

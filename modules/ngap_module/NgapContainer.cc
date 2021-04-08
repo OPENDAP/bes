@@ -161,14 +161,23 @@ namespace ngap {
         string data_access_url_str = get_real_name();
 
         // And we know that the dmr++ file should "right next to it" (side-car)
-        string dmrpp_url = data_access_url_str + ".dmrpp";
+        string dmrpp_url_str = data_access_url_str + ".dmrpp";
 
         // And if there's a missing data file (side-car) it should be "right there" too.
-        string missing_data_url = data_access_url_str + ".missing";
+        string missing_data_url_str = data_access_url_str + ".missing";
 
         BESDEBUG(MODULE, prolog << " data_access_url: " << data_access_url_str << endl);
-        BESDEBUG(MODULE, prolog << "       dmrpp_url: " << dmrpp_url << endl);
-        BESDEBUG(MODULE, prolog << "missing_data_url: " << missing_data_url << endl);
+        BESDEBUG(MODULE, prolog << "       dmrpp_url: " << dmrpp_url_str << endl);
+        BESDEBUG(MODULE, prolog << "missing_data_url: " << missing_data_url_str << endl);
+
+        string trusted_url_hack="\" dmrpp:trust=\"true";
+        string data_access_url_with_trusted_attr_str = data_access_url_str + trusted_url_hack;
+        string dmrpp_url_with_trusted_attr_str = dmrpp_url_str + trusted_url_hack;
+        string missing_data_url_with_trusted_attr_str = missing_data_url_str + trusted_url_hack;
+
+        BESDEBUG(MODULE, prolog << " data_access_url_with_trusted_attr_str: " << data_access_url_with_trusted_attr_str << endl);
+        BESDEBUG(MODULE, prolog << "       dmrpp_url_with_trusted_attr_str: " << dmrpp_url_with_trusted_attr_str << endl);
+        BESDEBUG(MODULE, prolog << "missing_data_url_with_trusted_attr_str: " << missing_data_url_with_trusted_attr_str << endl);
 
         string type = get_container_type();
         if (type == "ngap")
@@ -178,19 +187,20 @@ namespace ngap {
             BESDEBUG(MODULE, prolog << "Building new RemoteResource (dmr++)." << endl);
             map<string,string> content_filters;
             if (inject_data_url()) {
-                content_filters.insert(pair<string,string>(DATA_ACCESS_URL_KEY,data_access_url_str));
-                content_filters.insert(pair<string,string>(MISSING_DATA_ACCESS_URL_KEY,missing_data_url));
+                content_filters.insert(pair<string,string>(DATA_ACCESS_URL_KEY,data_access_url_with_trusted_attr_str));
+                content_filters.insert(pair<string,string>(MISSING_DATA_ACCESS_URL_KEY,missing_data_url_with_trusted_attr_str));
             }
+            shared_ptr<http::url> dmrpp_url(new http::url(dmrpp_url_str, true));
             {
                 d_dmrpp_rresource = new http::RemoteResource(dmrpp_url);
                 BESStopWatch besTimer;
                 if (BESISDEBUG(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()){
-                    besTimer.start("DMR++ retrieval: "+ dmrpp_url);
+                    besTimer.start("DMR++ retrieval: "+ dmrpp_url->str());
                 }
                 d_dmrpp_rresource->retrieveResource(content_filters);
             }
+            BESDEBUG(MODULE, prolog << "Retrieved remote resource: " << dmrpp_url->str() << endl);
         }
-        BESDEBUG(MODULE, prolog << "Retrieved remote resource: " << dmrpp_url << endl);
 
         // TODO This file should be read locked before leaving this method.
         string cachedResource = d_dmrpp_rresource->getCacheFileName();
@@ -199,7 +209,7 @@ namespace ngap {
         type = d_dmrpp_rresource->getType();
         set_container_type(type);
         BESDEBUG(MODULE, prolog << "Type: " << type << endl);
-        BESDEBUG(MODULE, prolog << "Done retrieving:  " << dmrpp_url << " returning cached file " << cachedResource << endl);
+        BESDEBUG(MODULE, prolog << "Done retrieving:  " << dmrpp_url_str << " returning cached file " << cachedResource << endl);
         BESDEBUG(MODULE, prolog << "END" << endl);
 
         return cachedResource;    // this should return the dmr++ file name from the NgapCache

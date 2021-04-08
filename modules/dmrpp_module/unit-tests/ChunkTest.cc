@@ -39,6 +39,7 @@
 #include "BESDebug.h"
 #include "TheBESKeys.h"
 
+#include "url_impl.h"
 #include "Chunk.h"
 
 #include "test_config.h"
@@ -151,20 +152,21 @@ public:
         try {
             BESContextManager::TheManager()->set_context(S3_TRACKING_CONTEXT, "request_id");
             // add_tracking_query_param() only works with S3 URLs. Bug? jhrg 8/9/18
-            d_chunk.set_data_url("http://s3.amazonaws.com/somewhereovertherainbow");
+            shared_ptr<http::url> data_url(new http::url("http://s3.amazonaws.com/somewhereovertherainbow/foo.nc"));
+            d_chunk.set_data_url(data_url);
 
             d_chunk.add_tracking_query_param();
 
             CPPUNIT_ASSERT(!d_chunk.d_query_marker.empty());
             DBG(cerr << prolog << "d_chunk.d_query_marker: " << d_chunk.d_query_marker << endl);
-            CPPUNIT_ASSERT(d_chunk.d_query_marker == "?cloudydap=request_id");
+            CPPUNIT_ASSERT(d_chunk.d_query_marker == "cloudydap=request_id");
 
         }
         catch(BESError &be){
             CPPUNIT_FAIL(prolog + be.get_message());
         }
-        catch(...){
-            CPPUNIT_FAIL("Caught unknown exception.");
+        catch(std::exception e){
+            CPPUNIT_FAIL(prolog + "Caught std::exception. Message: "+e.what());
         }
     }
 
@@ -175,21 +177,22 @@ public:
             BESContextManager::TheManager()->set_context(S3_TRACKING_CONTEXT, "request_id");
 
             // add_tracking_query_param() only works with S3 URLs. Bug? jhrg 8/9/18
-            d_chunk.set_data_url("http://s3.amazonaws.com/somewhereovertherainbow");
+            shared_ptr<http::url> some_url( new http::url("http://s3.amazonaws.com/somewhereovertherainbow/foo.nc"));
+            d_chunk.set_data_url(some_url);
 
             d_chunk.add_tracking_query_param();
 
-            string data_url = d_chunk.get_data_url();
+            auto data_url = d_chunk.get_data_url();
 
-            DBG(cerr << prolog << "data_url: " << data_url << endl);
-            CPPUNIT_ASSERT(!data_url.empty());
-            CPPUNIT_ASSERT(data_url == "http://s3.amazonaws.com/somewhereovertherainbow?cloudydap=request_id");
+            DBG(cerr << prolog << "data_url: " << data_url->str() << endl);
+            CPPUNIT_ASSERT(!data_url->str().empty());
+            CPPUNIT_ASSERT(data_url->str() == "http://s3.amazonaws.com/somewhereovertherainbow/foo.nc?cloudydap=request_id");
         }
         catch(BESError &be){
             CPPUNIT_FAIL(prolog + be.get_message());
         }
-        catch(...){
-            CPPUNIT_FAIL(prolog + "Caught unknown exception.");
+        catch(std::exception e){
+            CPPUNIT_FAIL(prolog + "Caught std::exception. Message: "+e.what());
         }
     }
 
@@ -198,17 +201,18 @@ public:
         try {
             // An S3 URL, but no context.
             BESContextManager::TheManager()->unset_context(S3_TRACKING_CONTEXT);   //>set_context("cloudydap", "request_id");
-            d_chunk.set_data_url("http://s3.amazonaws.com/somewhereovertherainbow");
+            shared_ptr<http::url> data_url(new http::url("http://s3.amazonaws.com/somewhereovertherainbow/foo.nc"));
+            d_chunk.set_data_url(data_url);
             d_chunk.add_tracking_query_param();
         }
         catch(BESError &be){
             CPPUNIT_FAIL(prolog + be.get_message());
         }
-        catch(...){
-            CPPUNIT_FAIL(prolog + "Caught unknown exception.");
+        catch(std::exception e){
+            CPPUNIT_FAIL(prolog + "Caught std::exception. Message: "+e.what());
         }
 
-    CPPUNIT_ASSERT(d_chunk.d_query_marker.empty());
+        CPPUNIT_ASSERT(d_chunk.d_query_marker.empty());
     }
 
     // Test the non-default ctor
@@ -217,24 +221,24 @@ public:
         DBG(cerr << prolog << "BEGIN" << endl);
         try {
             BESContextManager::TheManager()->set_context(S3_TRACKING_CONTEXT, "request_id");
-
-            auto_ptr<Chunk> l_chunk(new Chunk("http://s3.amazonaws.com/somewhereovertherainbow", "", 100, 10, ""));
+            shared_ptr<http::url> sotr(new http::url("http://s3.amazonaws.com/somewhereovertherainbow/foo.nc"));
+            unique_ptr<Chunk> l_chunk(new Chunk(sotr, "", 100, 10, ""));
 
             CPPUNIT_ASSERT(!l_chunk->d_query_marker.empty());
             DBG(cerr << prolog << "l_chunk->d_query_marker: " << l_chunk->d_query_marker << endl);
-            CPPUNIT_ASSERT(l_chunk->d_query_marker == "?cloudydap=request_id");
+            CPPUNIT_ASSERT(l_chunk->d_query_marker == "cloudydap=request_id");
 
-            string data_url = l_chunk->get_data_url();
+            auto data_url = l_chunk->get_data_url();
 
             DBG(cerr << prolog << "data_url: " << data_url << endl);
-            CPPUNIT_ASSERT(!data_url.empty());
-            CPPUNIT_ASSERT(data_url == "http://s3.amazonaws.com/somewhereovertherainbow?cloudydap=request_id");
+            CPPUNIT_ASSERT(!data_url->str().empty());
+            CPPUNIT_ASSERT(data_url->str() == "http://s3.amazonaws.com/somewhereovertherainbow/foo.nc?cloudydap=request_id");
         }
         catch(BESError &be){
             CPPUNIT_FAIL(prolog + be.get_message());
         }
-        catch(...){
-            CPPUNIT_FAIL(prolog + "Caught unknown exception.");
+        catch(std::exception e){
+            CPPUNIT_FAIL(prolog + "Caught std::exception. Message: "+e.what());
         }
     }
 
@@ -244,21 +248,22 @@ public:
         try {
             // No context, S3 URL, non-default ctor
             BESContextManager::TheManager()->unset_context(S3_TRACKING_CONTEXT);
-            auto_ptr<Chunk> l_chunk(new Chunk("http://s3.amazonaws.com/somewhereovertherainbow", "", 100, 10, ""));
+            shared_ptr<http::url> sotr(new http::url("http://s3.amazonaws.com/somewhereovertherainbow"));
+            unique_ptr<Chunk> l_chunk(new Chunk(sotr, "", 100, 10, ""));
 
             CPPUNIT_ASSERT(l_chunk->d_query_marker.empty());
 
-            string data_url = l_chunk->get_data_url();
+            auto data_url = l_chunk->get_data_url();
 
             DBG(cerr << prolog << "data_url: " << data_url << endl);
-            CPPUNIT_ASSERT(!data_url.empty());
-            CPPUNIT_ASSERT(data_url == "http://s3.amazonaws.com/somewhereovertherainbow");
+            CPPUNIT_ASSERT(!data_url->str().empty());
+            CPPUNIT_ASSERT(data_url->str() == "http://s3.amazonaws.com/somewhereovertherainbow");
         }
         catch(BESError &be){
             CPPUNIT_FAIL(prolog + be.get_message());
         }
-        catch(...){
-            CPPUNIT_FAIL(prolog + "Caught unknown exception.");
+        catch(std::exception e){
+            CPPUNIT_FAIL(prolog + "Caught std::exception. Message: "+e.what());
         }
 
     }

@@ -161,13 +161,15 @@ public:
         if (debug) show_baseline("auth_header_baseline", auth_header_baseline);
     }
 
-    void run_test(const string &test_name, const string &request_uri) {
+    void run_test(const string &test_name, const string &request_uri_str) {
 
         string web_request_baseline;
         string canonical_request_baseline;
         string string_to_sign_baseline;
         string signed_request_baseline;
         string auth_header_baseline;
+
+        shared_ptr<http::url> request_uri(new http::url(request_uri_str));
 
         load_test_baselines(
                 test_name,

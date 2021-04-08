@@ -28,6 +28,7 @@
 
 #include <STARE.h>
 #include <hdf5.h>
+#include <netcdf.h>
 
 #include <BaseType.h>
 #include <Float64.h>
@@ -374,6 +375,37 @@ get_sidecar_int32_values(const string &filename, const string &variable, vector<
 
     //Read the data file and store the values of each dataset into an array
     H5Dread(dataset, H5T_NATIVE_INT, memspace, filespace, H5P_DEFAULT, &values[0]);
+}
+
+/**
+ * @brief Read the unsigned 64-bit integer array data
+ * @param filename The name of the netCDF/HDF5 sidecar file
+ * @param variable Get the stare indices for this dependent variable
+ * @param values Value-result parameter, a vector that can hold dods_uint64 values
+ */
+void
+get_sidecar_uint64_values_2(const string &filename, BaseType *variable, vector<dods_uint64> &values)
+{
+    int ncid;
+    GeoFile *gf = new GeoFile();
+    vector<long long unsigned int> my_values;
+    int ret;
+
+    // Open and scan the sidecar file.
+    if ((ret = gf->readSidecarFile(filename.c_str(), 1, ncid)))
+        throw BESInternalError("Could not open file " + filename + " - " + nc_strerror(ret), __FILE__, __LINE__);
+
+    // Get the STARE index data for variable.
+    if ((ret = gf->getSTAREIndex_2(variable->name(), 1, ncid, my_values)))
+        throw BESInternalError("Could get stare indexes from file " + filename + " - " + nc_strerror(ret), __FILE__, __LINE__);
+
+    // Copy vector.
+    for (int i = 0; i < my_values.size(); i++)
+    	values.push_back(my_values.at(i));
+
+    // Close the sidecar file.
+    if ((ret = gf->closeSidecarFile(1, ncid)))
+        throw BESInternalError("Could not close file " + filename + " - " + nc_strerror(ret),  __FILE__, __LINE__);
 }
 
 /**

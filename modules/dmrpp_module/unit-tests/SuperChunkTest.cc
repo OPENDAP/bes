@@ -102,7 +102,8 @@ public:
         DBG(cerr << prolog << "BEGIN" << endl);
 
         // chunked_gzipped_fourD.h5 is 2,870,087 bytes (2.9 MB on disk)
-        string data_url = string("file://").append(TEST_DATA_DIR).append("/").append("chunked_gzipped_fourD.h5");
+        string url_s = string("file://").append(TEST_DATA_DIR).append("/").append("chunked_gzipped_fourD.h5");
+        shared_ptr<http::url> data_url(new http::url(url_s));
         DBG(cerr << prolog << "data_url: " << data_url << endl);
 
         string chunk_position_in_array = "[0]";
@@ -140,7 +141,8 @@ public:
         DBG(cerr << prolog << "BEGIN" << endl);
 
         // chunked_gzipped_fourD.h5 is 2,870,087 bytes (2.9 MB on disk)
-        string data_url = string("file://").append(TEST_DATA_DIR).append("/").append("chunked_gzipped_fourD.h5");
+        string url_s = string("file://").append(TEST_DATA_DIR).append("/").append("chunked_gzipped_fourD.h5");
+        shared_ptr<http::url> data_url(new http::url(url_s));
         DBG(cerr << prolog << "data_url: " << data_url << endl);
 
         string chunk_position_in_array = "[0]";
@@ -176,20 +178,17 @@ public:
             }
 
         }
-        catch( BESError be){
+        catch( BESError &be){
             stringstream msg;
             msg << prolog << "CAUGHT BESError: " << be.get_verbose_message() << endl;
             cerr << msg.str();
             CPPUNIT_FAIL(msg.str());
         }
-        catch( std::exception se ){
+        catch( std::exception &se ){
             stringstream msg;
-            msg << "CAUGHT std::exception: " << se.what() << endl;
+            msg << "CAUGHT std::exception message: " << se.what() << endl;
             cerr << msg.str();
             CPPUNIT_FAIL(msg.str());
-        }
-        catch( ... ){
-            cerr << "CAUGHT Unknown Exception." << endl;
         }
         DBG( cerr << prolog << "END" << endl);
     }
@@ -198,7 +197,8 @@ public:
         DBG(cerr << prolog << "BEGIN" << endl);
 
         // this_is_a_test.txt is 1106 bytes and contains human readable text chunk content.
-        string data_url = string("file://").append(TEST_DATA_DIR).append("/").append("this_is_a_test.txt");
+        string url_s = string("file://").append(TEST_DATA_DIR).append("/").append("this_is_a_test.txt");
+        shared_ptr<http::url> data_url(new http::url(url_s));
         DBG(cerr << prolog << "data_url: " << data_url << endl);
 
         string chunk_position_in_array = "[0]";

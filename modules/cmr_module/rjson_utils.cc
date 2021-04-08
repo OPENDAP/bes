@@ -56,7 +56,8 @@ namespace cmr {
 void
 rjson_utils::getJsonDoc(const string &url, rapidjson::Document &doc){
     BESDEBUG(MODULE,prolog << "Trying url: " << url << endl);
-    http::RemoteResource rhr(url);
+    shared_ptr<http::url> target_url(new http::url(url));
+    http::RemoteResource rhr(target_url);
     rhr.retrieveResource();
     if(BESDebug::IsSet(MODULE)){
         string cmr_hits = rhr.get_http_response_header("cmr-hits");

@@ -28,8 +28,9 @@
 
 #define ATTR 1
 
-#include <string.h>
+#include <cstring>
 
+#include <memory>
 #include <string>
 #include <iostream>
 #include <map>
@@ -40,6 +41,7 @@
 
 #include <Type.h>   // from libdap
 #include "BESRegex.h"
+#include "url_impl.h"
 #include "EffectiveUrlCache.h"
 
 #define CRLF "\r\n"
@@ -176,7 +178,7 @@ private:
 
     bool d_strict;
 
-    std::string dmrpp_dataset_href;
+    std::shared_ptr<http::url> dmrpp_dataset_href;
 
     class XMLAttribute {
         public:
@@ -266,7 +268,7 @@ public:
             error_msg(""), context(0),
             dods_attr_name(""), dods_attr_type(""),
             char_data(""), root_ns(""), d_strict(true),
-            dmrpp_dataset_href("")
+            dmrpp_dataset_href(nullptr)
     {
         //xmlSAXHandler ddx_sax_parser;
         memset(&dmrpp_sax_parser, 0, sizeof(xmlSAXHandler));

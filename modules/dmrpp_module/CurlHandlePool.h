@@ -24,12 +24,15 @@
 #ifndef _HandlePool_h
 #define _HandlePool_h 1
 
+#include <memory>
 #include <string>
 #include <vector>
 
 #include <pthread.h>
 
 #include <curl/curl.h>
+
+#include "url_impl.h"
 
 namespace dmrpp {
 
@@ -61,7 +64,7 @@ public:
  */
 class dmrpp_easy_handle {
     bool d_in_use;      ///< Is this easy_handle in use?
-    std::string d_url;  ///< The libcurl handle reads from this URL.
+    std::shared_ptr<http::url> d_url;  ///< The libcurl handle reads from this URL.
     Chunk *d_chunk;     ///< This easy_handle reads the data for \arg chunk.
     char d_errbuf[CURL_ERROR_SIZE]; ///< raw error message info from libcurl
     CURL *d_handle;     ///< The libcurl handle object.

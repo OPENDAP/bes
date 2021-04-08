@@ -26,7 +26,7 @@ DISTCLEANFILES = test_config.h *.Po
 
 CLEANFILES = bes.conf *.dbg *.log
 
-EXTRA_DIST = test_config.h.in bes.conf.in
+EXTRA_DIST = test_config.h.in bes.conf.in allowed_hosts_test.ini
 
 check_PROGRAMS = $(UNIT_TESTS)
 
@@ -66,7 +66,7 @@ bes.conf: $(BES_CONF_IN) $(top_srcdir)/configure.ac
 #
 
 if CPPUNIT
-UNIT_TESTS =  HttpUtilsTest RemoteResourceTest CurlUtilsTest EffectiveUrlCacheTest HttpUrlTest
+UNIT_TESTS =  HttpUtilsTest RemoteResourceTest CurlUtilsTest EffectiveUrlCacheTest HttpUrlTest AllowedHostsTest
 else
 UNIT_TESTS =
 
@@ -96,3 +96,6 @@ EffectiveUrlCacheTest_LDADD = $(LIBADD)
 
 HttpUrlTest_SOURCES = HttpUrlTest.cc
 HttpUrlTest_LDADD = $(LIBADD)
+
+AllowedHostsTest_SOURCES = AllowedHostsTest.cc
+AllowedHostsTest_LDADD = $(LIBADD)

@@ -49,7 +49,8 @@ SRCS = CurlUtils.cc \
     ProxyConfig.cc \
     EffectiveUrlCache.cc \
     url_impl.cc \
-    EffectiveUrl.cc
+    EffectiveUrl.cc \
+    AllowedHosts.cc
 
 HDRS = CurlUtils.h \
     HttpCache.h \
@@ -59,7 +60,8 @@ HDRS = CurlUtils.h \
     HttpNames.h \
     EffectiveUrlCache.h \
     url_impl.h \
-    EffectiveUrl.h
+    EffectiveUrl.h \
+    AllowedHosts.h
 
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = http.conf
