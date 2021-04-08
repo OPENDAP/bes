@@ -61,7 +61,7 @@ namespace ngap {
         {
         }
 
-        void initialize();
+        virtual void initialize();
 
         bool inject_data_url();
 

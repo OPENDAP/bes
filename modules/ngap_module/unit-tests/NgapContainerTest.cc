@@ -73,6 +73,13 @@ static bool bes_debug = false;
 
 
 class MockContainer : public ngap::NgapContainer {
+    MockContainer(const string &sym_name,
+                                 const string &real_name,
+                                 const string &type) :
+            NgapContainer(sym_name, real_name, type) {
+    }
+
+    void initialize() override {  }
 
 
 };
