@@ -49,15 +49,15 @@
 #include "HttpNames.h"
 #include "url_impl.h"
 #include "RemoteResource.h"
-
-#include "test_config.h"
-
+#include "BESContainer.h"
 
 #include "NgapApi.h"
 #include "NgapContainer.h"
 #include "NgapNames.h"
 // #include "NgapError.h"
 // #include "rjson_utils.h"
+
+#include "test_config.h"
 
 using namespace std;
 using namespace rapidjson;
@@ -73,19 +73,22 @@ static bool bes_debug = false;
 
 
 class MockContainer : public ngap::NgapContainer {
-    MockContainer(const string &sym_name,
-                                 const string &real_name,
-                                 const string &type) :
-            NgapContainer(sym_name, real_name, type) {
-    }
-
+private:
     void initialize() override {  }
 
+public:
 
+    MockContainer(const string &sym_name,
+                  const string &real_name,
+                  const string &type) {
+        set_real_name(real_name);
+    }
 };
 
 class NgapContainerTest: public CppUnit::TestFixture {
 private:
+    string d_data_dir;
+    string d_temp_file;
 
     // char curl_error_buf[CURL_ERROR_SIZE];
 
@@ -131,6 +134,7 @@ public:
     // Called once before everything gets tested
     NgapContainerTest()
     {
+        d_data_dir = TEST_DATA_DIR;;
     }
 
     // Called at the end of the test
@@ -196,10 +200,10 @@ public:
 
         try {
             string sym_name = "";
-            string restified_path = "";
+            string restified_path = "http://";
             string type = "";
 
-            ngap::NgapContainer nc(sym_name,restified_path,type);
+            MockContainer mc(sym_name,restified_path,type);
 
         }
         catch(BESError &be){

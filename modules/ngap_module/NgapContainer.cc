@@ -94,8 +94,8 @@ void NgapContainer::initialize()
     if (get_container_type().empty())
         set_container_type("ngap");
 
-    string uid = BESContextManager::TheManager()->get_context(UID_CONTEXT, found);
-    BESDEBUG(MODULE, prolog << "UID_CONTEXT(" << UID_CONTEXT << "): " << uid << endl);
+    string uid = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
+    BESDEBUG(MODULE, prolog << "EDL_UID_KEY(" << EDL_UID_KEY << "): " << uid << endl);
 
     string data_access_url = ngap_api.convert_ngap_resty_path_to_data_access_url(get_real_name(), uid);
 
