@@ -914,8 +914,8 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
 
         if (parser->check_attribute("href", attributes, nb_attributes)) {
             bool trusted = false;
-            if (parser->check_attribute("trusted", attributes, nb_attributes)) {
-                string value = parser->get_attribute_val("href", attributes, nb_attributes);
+            if (parser->check_attribute("trust", attributes, nb_attributes)) {
+                string value = parser->get_attribute_val("trust", attributes, nb_attributes);
                 trusted = value == "true";
             }
             string href  = parser->get_attribute_val("href", attributes, nb_attributes);
@@ -1139,8 +1139,8 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
 
             if (parser->check_attribute("href", attributes, nb_attributes)) {
                 bool trusted = false;
-                if (parser->check_attribute("trusted", attributes, nb_attributes)) {
-                    string value = parser->get_attribute_val("href", attributes, nb_attributes);
+                if (parser->check_attribute("trust", attributes, nb_attributes)) {
+                    string value = parser->get_attribute_val("trust", attributes, nb_attributes);
                     trusted = value == "true";
                 }
 
