@@ -784,7 +784,6 @@ CURL *init_effective_url_retriever_handle(const string &target_url, struct curl_
  * error message is stuffed into the Error object.
  */
 void http_get_and_write_resource(const std::shared_ptr<http::url>& target_url,
-                                 const vector<string> &request_headers,
                                  const int fd,
                                  vector<string> *http_response_headers) {
 
