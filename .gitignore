@@ -45,6 +45,7 @@ Makefile.in
 doxy.conf
 doxygen_warnings.txt
 main_page.doxygen
+bes.spec.all_static
 
 conf/compile
 conf/config.guess

@@ -256,7 +256,7 @@ namespace http {
         /**
          * struct curl_slist {  char *data;  struct curl_slist *next;};
          */
-        void add_auth_headers_test(){
+        void add_edl_auth_headers_test(){
             if(debug) cerr << prolog << "BEGIN" << endl;
             curl_slist *hdrs=NULL;
             curl_slist *temp=NULL;
@@ -302,7 +302,7 @@ namespace http {
 
             CPPUNIT_TEST(is_retryable_test);
             CPPUNIT_TEST(retrieve_effective_url_test);
-            CPPUNIT_TEST(add_auth_headers_test);
+            CPPUNIT_TEST(add_edl_auth_headers_test);
 
         CPPUNIT_TEST_SUITE_END();
     };

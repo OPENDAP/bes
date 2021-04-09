@@ -75,7 +75,7 @@ $(abs_builddir)/static-cache:
 #
 
 if CPPUNIT
-UNIT_TESTS =  NgapApiTest NgapContainerTest
+UNIT_TESTS =  NgapApiTest
 else
 UNIT_TESTS =
 
@@ -94,5 +94,3 @@ clean-local:
 NgapApiTest_SOURCES = NgapApiTest.cc
 NgapApiTest_LDADD = $(top_builddir)/modules/ngap_module/.libs/libngap_module.a $(LIBADD)
 
-NgapContainerTest_SOURCES = NgapContainerTest.cc
-NgapContainerTest_LDADD = $(top_builddir)/modules/ngap_module/.libs/libngap_module.a $(LIBADD)
