@@ -183,16 +183,10 @@ bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url) {
         BESDEBUG(MODULE, prolog << "File Access Allowed: " << (isAllowed ? "true " : "false ") << endl);
     } else if(candidate_url->protocol() == HTTPS_PROTOCOL || candidate_url->protocol() == HTTP_PROTOCOL ){
 
-        // Always run this check so we can track which URLs are
-        // being "trusted" and but are technically "not allowed"
-        isAllowed = check(candidate_url->str());
+        isAllowed = candidate_url->is_trusted() || check(candidate_url->str());
 
-        // If the URL does not pass check, we see is it's marked trusted.
-        if (!isAllowed && candidate_url->is_trusted()) {
-            // It's not allowed but is trusted, so log that
-            INFO_LOG(prolog << "Candidate URL failed check() but is marked trusted. url: " << candidate_url->str() <<  endl);
-            // And mark it allowed.
-            isAllowed = true;
+        if (candidate_url->is_trusted()) {
+            INFO_LOG(prolog << "Candidate URL is marked trusted, allowing. url: " << candidate_url->str() <<  endl);
         }
         BESDEBUG(MODULE, prolog << "HTTP Access Allowed: " << (isAllowed ? "true " : "false ") << endl);
     }
