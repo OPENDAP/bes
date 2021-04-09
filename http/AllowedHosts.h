@@ -61,6 +61,8 @@ private:
 
     AllowedHosts();
 
+    bool check(const std::string &url);
+
 public:
     virtual ~AllowedHosts() {}
 
