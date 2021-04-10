@@ -36,13 +36,9 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace CppUnit;
 
-#include <cerrno>
 #include <iostream>
-#include <fstream>
 #include <cstdlib>
-#include <dirent.h>
 #include <GetOpt.h>
 
 #include "BESUncompressManager3.h"
@@ -51,15 +47,15 @@ using namespace CppUnit;
 #include "TheBESKeys.h"
 #include "BESDebug.h"
 #include "BESUtil.h"
-#include <test_config.h>
+#include "test_config.h"
+
+using namespace CppUnit;
 
 using std::cerr;
 using std::endl;
 using std::ifstream;
 using std::string;
 
-
-#define BES_CACHE_CHAR '#'
 static bool debug = false;
 static bool bes_debug = false;
 
