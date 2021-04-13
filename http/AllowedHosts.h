@@ -31,12 +31,15 @@
 #ifndef I_AllowedHosts_H
 #define I_AllowedHosts_H 1
 
+#include <memory>
 #include <string>
 #include <vector>
 
+#include "url_impl.h"
+
 #define ALLOWED_HOSTS_BES_KEY "AllowedHosts"
 
-namespace bes {
+namespace http {
 
 /**
  * @brief Can a given URL be dereferenced given the BES's configuration?
@@ -58,12 +61,16 @@ private:
 
     AllowedHosts();
 
+    bool check(const std::string &url);
+
 public:
     virtual ~AllowedHosts() {}
 
     static AllowedHosts *theHosts();
 
     bool is_allowed(const std::string &candidate_url);
+    bool is_allowed(std::shared_ptr<http::url> candidate_url);
+
 };
 
 } // namespace bes

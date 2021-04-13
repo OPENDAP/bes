@@ -38,6 +38,7 @@ using namespace CppUnit;
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <cstdlib>
 #include <list>
 
@@ -55,9 +56,11 @@ using std::list;
 #include <GetOpt.h>
 
 static bool debug = false;
+static bool Debug = false;
 
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
+#define prolog std::string("utilT::").append(__func__).append("() - ")
 
 class utilT: public TestFixture {
 private:
@@ -81,6 +84,7 @@ public:
 
     void setUp()
     {
+        if(debug) cerr << endl;
         string bes_conf = (string) TEST_SRC_DIR + "/bes.conf";
         TheBESKeys::ConfigFile = bes_conf;
     }
@@ -89,12 +93,6 @@ public:
     {
     }
 
-CPPUNIT_TEST_SUITE( utilT );
-
-    CPPUNIT_TEST( do_test );
-
-    CPPUNIT_TEST_SUITE_END()
-    ;
 
     void do_test()
     {
@@ -267,6 +265,102 @@ CPPUNIT_TEST_SUITE( utilT );
         cout << "*****************************************" << endl;
         cout << "Returning from utilT::run" << endl;
     }
+
+
+    void replace_all_worker(
+            const string &id,
+            string &source_str,
+            const string &template_str,
+            const string &replace_str,
+            const string &baseline_str){
+
+        try {
+            if(debug) cerr << id << "(" << prolog <<  ") " << "  Source String: '" << source_str << "'" << endl;
+            if(debug) cerr << id << "(" << prolog <<  ") " << "Template String: '" << template_str << "'" << endl;
+            if(debug) cerr << id << "(" << prolog <<  ") " << " Replace String: '" << replace_str << "'" << endl;
+            if(debug) cerr << id << "(" << prolog <<  ") " << "       Expected: '" << baseline_str << "'" << endl;
+
+            unsigned int replace_count = BESUtil::replace_all(source_str, template_str, replace_str);
+            bool result_matched = source_str == baseline_str;
+            if(debug) cerr << id << "(" << prolog <<  ") " << "     Result(" << replace_count << "): '" << source_str << "'" << endl;
+
+            std::stringstream info_msg;
+            info_msg << id << "(" << prolog <<  ") " << "The filtered string " << (result_matched?"MATCHED ":"DID NOT MATCH ")
+                     << "the baseline: " << endl;
+            if(debug) cerr << info_msg.str();
+            CPPUNIT_ASSERT_MESSAGE(info_msg.str(),result_matched);
+
+        }
+        catch(BESError &be){
+            std::stringstream msg;
+            msg << prolog << "Caught BESError. Message: " << be.get_verbose_message() << " ";
+            msg << be.get_file() << " " << be.get_line();
+            if(debug) cerr << msg.str() << endl;
+            CPPUNIT_FAIL(msg.str());
+        }
+    }
+    /**
+     * Test replace_all() string function
+     */
+    void replace_all_test_01() {
+        if(debug) cerr << prolog << "BEGIN" << endl;
+        string source_str = "aabaabaabbbbaaaaaabbabbbaaabbbaaaaabbabaabbabbaaabbaabbaaabejklgvaxxxaccaxxxacccaccaaacaabo";
+        string template_str = "aab";
+        string replace_str = "###";
+        string baseline_str = "#########bbbaaaa###babbba###bbaaa###bab###babba###b###ba###ejklgvaxxxaccaxxxacccaccaaac###o";
+
+        replace_all_worker(prolog, source_str,template_str,replace_str, baseline_str );
+
+        if(debug) cerr << prolog << "END" << endl;
+    }
+
+    void replace_all_test_02() {
+        if(debug) cerr << prolog << "BEGIN" << endl;
+        string source_str = "#########bbbaaaa###babbba###bbaaa###bab###babba###b###ba###ejklgvaxxxaccaxxxacccaccaaac###o";
+        string template_str = "#";
+        string replace_str = "";
+        string baseline_str = "bbbaaaababbbabbaaababbabbabbaejklgvaxxxaccaxxxacccaccaaaco";
+
+        replace_all_worker(prolog, source_str,template_str,replace_str, baseline_str );
+
+        if(debug) cerr << prolog << "END" << endl;
+    }
+
+    void replace_all_test_03() {
+        if(debug) cerr << prolog << "BEGIN" << endl;
+        string source_str = "The quick brown fox jumped over the lazy dog.";
+        string template_str = "quick brown fox";
+        string replace_str  = "grasshopper";
+        string baseline_str = "The grasshopper jumped over the lazy dog.";
+
+        replace_all_worker(prolog, source_str,template_str,replace_str, baseline_str );
+
+        if(debug) cerr << prolog << "END" << endl;
+    }
+
+    void replace_all_test_04() {
+        if(debug) cerr << prolog << "BEGIN" << endl;
+        string source_str = "The quick brown fox jumped over the lazy dog.";
+        string template_str = "quick brown fox";
+        string replace_str  = "reckless skateboarder";
+        string baseline_str = "The reckless skateboarder jumped over the lazy dog.";
+
+        replace_all_worker(prolog, source_str,template_str,replace_str, baseline_str );
+
+        if(debug) cerr << prolog << "END" << endl;
+    }
+
+CPPUNIT_TEST_SUITE( utilT );
+
+        CPPUNIT_TEST( do_test );
+        CPPUNIT_TEST( replace_all_test_01 );
+        CPPUNIT_TEST( replace_all_test_02 );
+        CPPUNIT_TEST( replace_all_test_03 );
+        CPPUNIT_TEST( replace_all_test_04 );
+
+    CPPUNIT_TEST_SUITE_END();
+
+
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( utilT );
@@ -278,9 +372,12 @@ int main(int argc, char*argv[])
     int option_char;
     while ((option_char = getopt()) != EOF)
         switch (option_char) {
-        case 'd':
-            debug = 1;  // debug is a static global
-            break;
+            case 'd':
+                debug = true;  // debug is a static global
+                break;
+            case 'D':
+                Debug = true;  // debug is a static global
+                break;
         case 'h': {     // help - show test names
             cerr << "Usage: utilT has the following tests:" << endl;
             const std::vector<Test*> &tests = utilT::suite()->getTests();

@@ -101,7 +101,7 @@ public:
     void read_contiguous_sc_test() {
         DBG(cerr << prolog << "BEGIN" << endl);
         // string target_file_name= string(TEST_DATA_DIR).append("contiguous/d_int.h5.dap");
-        string data_url = string("file://").append(TEST_DATA_DIR).append("/").append("big_ole_chunky_test.txt");
+        shared_ptr<http::url> data_url(new http::url(string("file://").append(TEST_DATA_DIR).append("/").append("big_ole_chunky_test.txt")));
         unsigned long long target_file_size = 4194300;
 
         DmrppArray tiat(string("foo"), new libdap::Byte("foo"));
@@ -149,7 +149,7 @@ public:
     void read_contiguous_test() {
         DBG(cerr << prolog << "BEGIN" << endl);
         // string target_file_name= string(TEST_DATA_DIR).append("contiguous/d_int.h5.dap");
-        string data_url = string("file://").append(TEST_DATA_DIR).append("/").append("big_ole_chunky_test.txt");
+        shared_ptr<http::url> data_url( new http::url(string("file://").append(TEST_DATA_DIR).append("/").append("big_ole_chunky_test.txt")));
         unsigned long long target_file_size = 4194300;
 
         DmrppArray tiat(string("foo"), new libdap::Byte("foo"));

@@ -39,6 +39,7 @@
 #include "BESInternalError.h"
 #include "BESDebug.h"
 #include "CurlUtils.h"
+#include "HttpNames.h"
 
 #include "CredentialsManager.h"
 #include "NgapS3Credentials.h"
@@ -194,7 +195,7 @@ CredentialsManager::add(const std::string &key, AccessCredentials *ac){
  * them will be returned. Otherwise, NULL.
  */
 AccessCredentials*
-CredentialsManager::get(const std::string &url){
+CredentialsManager::get(shared_ptr<http::url> &url){
     // This lock is a RAII implementation. It will block until the mutex is
     // available and the lock will be released when the instance is destroyed.
     std::lock_guard<std::recursive_mutex> lock_me(d_lock_mutex);
@@ -202,10 +203,10 @@ CredentialsManager::get(const std::string &url){
     AccessCredentials *best_match = NULL;
     std::string best_key("");
 
-    if(url.find("http://") == 0 || url.find("https://") == 0) {
+    if(url->protocol() == HTTP_PROTOCOL || url->protocol() == HTTPS_PROTOCOL) {
         for (std::map<std::string, AccessCredentials *>::iterator it = creds.begin(); it != creds.end(); ++it) {
             std::string key = it->first;
-            if (url.rfind(key, 0) == 0) {
+            if (url->str().rfind(key, 0) == 0) {
                 // url starts with key
                 if (key.length() > best_key.length()) {
                     best_key = key;

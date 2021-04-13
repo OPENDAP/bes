@@ -4,6 +4,5 @@
 #define TEST_SRC_DIR "@abs_srcdir@"
 #define TEST_BUILD_DIR "@abs_builddir@"
 #define TEST_DATA_DIR "@abs_top_srcdir@/http/data"
-const string test_data_dir = TEST_DATA_DIR;
 
 #endif

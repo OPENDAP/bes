@@ -212,7 +212,6 @@ void FONcTransform::transform()
             }
 #endif
             _fonc_vars.push_back(fb);
-
             vector<string> embed;
             fb->convert(embed);
         }

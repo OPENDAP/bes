@@ -108,8 +108,9 @@ public:
     static bool endsWith(std::string const &fullString, std::string const &ending);
     static void conditional_timeout_cancel();
 
-    static void replace_all(std::string &s, std::string find_this, std::string replace_with_this);
-    static std::string normalize_path(const std::string &path, bool leading_separator, bool trailing_separator, const std::string separator = "/");
+    /** Convert a string to all lower case **/
+    static unsigned int replace_all(std::string &s, std::string find_this, std::string replace_with_this);
+    static std::string normalize_path(const std::string &path, bool leading_separator, bool trailing_separator, std::string separator = "/");
     static void tokenize(const std::string& str, std::vector<std::string>& tokens, const std::string& delimiters = "/");
     static std::string get_time(bool use_local_time = false);
     static std::string get_time(time_t the_time, bool use_local_time = false);

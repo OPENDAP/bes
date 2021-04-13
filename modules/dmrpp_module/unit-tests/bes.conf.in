@@ -5,7 +5,7 @@ BES.LogName=./bes.log
 BES.LogVerbose=yes
 
 BES.Catalog.Default=default
-BES.Catalog.default.RootDirectory=@abs_top_srcdir@
+BES.Catalog.default.RootDirectory=@abs_top_srcdir@/modules/dmrpp_module
 BES.Catalog.default.TypeMatch=null:*;
 
 # Since many URLs result in a number of time consuming redirects (ex: OAuth2)

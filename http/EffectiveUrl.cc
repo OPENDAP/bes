@@ -32,7 +32,7 @@
 #include <map>
 #include <vector>
 
-#include <time.h>
+#include <chrono>
 
 #include "BESDebug.h"
 #include "BESUtil.h"
@@ -50,13 +50,15 @@ using std::endl;
 using std::stringstream;
 
 #define CACHE_CONTROL_HEADER_KEY "cache-control"
-#define REFRESH_THRESHOLD 60
 
 #define MODULE HTTP_MODULE
 #define prolog std::string("EffectiveUrl::").append(__func__).append("() - ")
 
 namespace http {
 
+EffectiveUrl::EffectiveUrl() : http::url(""), d_response_header_names(), d_response_header_values() {
+    BESDEBUG(HTTP_MODULE, prolog << "created: " << ingest_time() << endl);
+};
 
     /**
      * @brief Returns true if URL is reusable, false otherwise.
@@ -71,27 +73,29 @@ namespace http {
         bool found = false;
         string cc_hdr_val;
 
+        auto now =  std::chrono::system_clock::now();
+        auto now_secs = std::chrono::time_point_cast<std::chrono::seconds>(now);
+        BESDEBUG(MODULE, prolog << "now_secs: " << now_secs.time_since_epoch().count() << endl);
+
         get_header(CACHE_CONTROL_HEADER_KEY, cc_hdr_val, found);
         if (found) {
             BESDEBUG(MODULE, prolog << CACHE_CONTROL_HEADER_KEY << " '" << cc_hdr_val << "'" << endl);
-            time_t now;
-            time(&now);  /* get current time; same as: timer = time(NULL)  */
-            BESDEBUG(MODULE, prolog << "now: " << now << endl);
 
             // Example: 'Cache-Control: private, max-age=600'
             string max_age_key("max-age=");
             size_t max_age_index = cc_hdr_val.find(max_age_key);
             if (max_age_index != cc_hdr_val.npos) {
                 string max_age_str = cc_hdr_val.substr(max_age_index + max_age_key.size());
-                time_t max_age;
-                std::istringstream(max_age_str) >> max_age; // Returns 0 if the parse fails.
-                time_t expires = ingest_time() + max_age;
-                time_t remaining = expires - now;
-                BESDEBUG(MODULE, prolog << "expires: " << expires <<
-                                        "  remaining: " << remaining <<
-                                        " threshold: " << REFRESH_THRESHOLD << endl);
+                long long msi;
+                std::istringstream(max_age_str) >> msi;
+                std::chrono::seconds max_age(msi);
+                auto itime = std::chrono::system_clock::from_time_t(ingest_time());
+                auto expires_time = std::chrono::time_point_cast<std::chrono::seconds>(itime + max_age);
+                expired = now_secs > expires_time;
 
-                expired = remaining < REFRESH_THRESHOLD;
+                BESDEBUG(MODULE, prolog << "expires_time: " << expires_time.time_since_epoch().count() <<
+                                        " threshold: " << HTTP_URL_REFRESH_THRESHOLD << endl);
+
                 BESDEBUG(MODULE, prolog << "expired: " << (expired ? "true" : "false") << endl);
             }
         }

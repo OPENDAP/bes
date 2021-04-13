@@ -287,7 +287,6 @@ add_executable(bes
     dispatch/unit-tests/uncompressT.cc
     dispatch/unit-tests/urlT.cc
     dispatch/unit-tests/utilT.cc
-        dispatch/unit-tests/AllowedHostsTest.cc
     dispatch/BESAbstractModule.h
     dispatch/BESApp.cc
     dispatch/BESApp.h
@@ -471,9 +470,9 @@ add_executable(bes
     dispatch/ShowNodeResponseHandler.h
     dispatch/TheBESKeys.cc
     dispatch/TheBESKeys.h
-    dispatch/AllowedHosts.cc
-    dispatch/AllowedHosts.h
 
+    http/AllowedHosts.cc
+    http/AllowedHosts.h
     http/url_impl.cc
     http/url_impl.h
     http/CurlUtils.cc
@@ -496,6 +495,7 @@ add_executable(bes
     http/unit-tests/EffectiveUrlCacheTest.cc
     http/unit-tests/HttpUrlTest.cc
     http/unit-tests/RemoteResourceTest.cc
+    http/unit-tests/AllowedHostsTest.cc
 
 #    functions/geo-functions/unused/NC_GOES_Dataset.cpp
 #    functions/geo-functions/unused/NC_GOES_Dataset.h
@@ -1684,7 +1684,8 @@ add_executable(bes
 	modules/ngap_module/NgapNames.h
 	modules/ngap_module/NgapRequestHandler.cc
     modules/ngap_module/NgapRequestHandler.h
-	modules/ngap_module/unit-tests/NgapApiTest.cc
+    modules/ngap_module/unit-tests/NgapApiTest.cc
+    modules/ngap_module/unit-tests/NgapContainerTest.cc
 
 	#modules/sql_handler/action/SQLAction.h
     #modules/sql_handler/action/SQLActionFactory.h

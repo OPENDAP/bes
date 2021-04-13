@@ -93,3 +93,4 @@ clean-local:
 
 NgapApiTest_SOURCES = NgapApiTest.cc
 NgapApiTest_LDADD = $(top_builddir)/modules/ngap_module/.libs/libngap_module.a $(LIBADD)
+

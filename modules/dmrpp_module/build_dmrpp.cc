@@ -535,7 +535,7 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
                 VERBOSE(cerr << "byteOrder: " << byteOrder << endl);
 
                 if (cont_size > 0) {
-                    if (dc) dc->add_chunk("", byteOrder, cont_size, cont_addr, "" /*pos in array*/);
+                    if (dc) dc->add_chunk(byteOrder, cont_size, cont_addr, "" /*pos in array*/);
                 }
                 break;
             }
@@ -589,7 +589,7 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
                     // FIXME Modify add_chunk so that it takes a vector<unsigned long long> or <unsined long>
                     // (depending on the machine/OS/compiler). Limiting the offset to 32-bits won't work
                     // for large files. jhrg 5/21/19
-                    if (dc) dc->add_chunk("", byteOrder, size, addr, chunk_coords);
+                    if (dc) dc->add_chunk(byteOrder, size, addr, chunk_coords);
                 }
 
                 break;

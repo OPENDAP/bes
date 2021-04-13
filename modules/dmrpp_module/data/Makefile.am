@@ -111,4 +111,5 @@ dmrpp/nc4_group_atomic.h5.dmrpp \
 dmrpp/t_float.h5 \
 dmrpp/t_float.h5.dmrpp \
 dmrpp/t_int_scalar.h5 \
-dmrpp/t_int_scalar.h5.dmrpp
+dmrpp/t_int_scalar.h5.dmrpp \
+dmrpp/trust_test.dmrpp

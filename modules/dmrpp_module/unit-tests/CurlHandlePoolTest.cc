@@ -84,9 +84,8 @@ public:
         return;
     }
 
-    virtual std::string get_data_url() const  override
-    {
-        return "https://httpbin.org/";
+    virtual shared_ptr<http::url> get_data_url() const override {
+        return shared_ptr<http::url>(new  http::url("https://httpbin.org/"));
     }
 
     virtual unsigned long long get_bytes_read() const  override

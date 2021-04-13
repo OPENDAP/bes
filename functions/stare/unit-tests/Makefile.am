@@ -9,9 +9,9 @@ AUTOMAKE_OPTIONS = foreign
 # Headers in 'tests' are used by the arrayT unit tests.
 
 AM_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
-	-I$(top_srcdir)/functions -I$(top_srcdir)/functions/stare $(DAP_CFLAGS)
+	-I$(top_srcdir)/functions -I$(top_srcdir)/functions/stare $(DAP_CFLAGS) $(NC_CPPFLAGS)
 AM_LDADD =  $(DAP_LIBS) $(top_builddir)/dispatch/libbes_dispatch.la  \
-	-ltest-types $(H5_LDFLAGS) $(H5_LIBS) $(STARE_LDFLAGS) $(STARE_LIBS)
+	-ltest-types $(H5_LDFLAGS) $(H5_LIBS) $(STARE_LDFLAGS) $(STARE_LIBS) $(NC_LDFLAGS) $(NC_LIBS)
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
@@ -96,5 +96,5 @@ endif
 # Listing the objects here keeps from having to link with the module - not a portable
 # solution - and listing these as source breaks distcheck jhrg 9/24/15
 StareFunctionsTest_SOURCES = StareFunctionsTest.cc  $(TEST_SRC)
-StareFunctionsTest_OBJ = ../StareFunctions.o
+StareFunctionsTest_OBJ = ../StareFunctions.o ../GeoFile.o
 StareFunctionsTest_LDADD = $(StareFunctionsTest_OBJ) $(TEST_OBJ) $(AM_LDADD)

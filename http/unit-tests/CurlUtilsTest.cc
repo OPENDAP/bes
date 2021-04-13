@@ -195,23 +195,48 @@ namespace http {
                 CPPUNIT_FAIL(msg.str());
 
             }
-            if(debug)  cerr << prolog << "END" << endl;
+            catch( std::exception &se ){
+                stringstream msg;
+                msg << "CAUGHT std::exception message: " << se.what() << endl;
+                cerr << msg.str();
+                CPPUNIT_FAIL(msg.str());
+            }
+        if(debug)  cerr << prolog << "END" << endl;
         }
 
 
         void retrieve_effective_url_test(){
             if(debug) cerr << prolog << "BEGIN" << endl;
-            string target_url = "http://test.opendap.org/opendap";
+            shared_ptr<http::url> trusted_target_url(new http::url("http://test.opendap.org/opendap",true));
+            shared_ptr<http::url> target_url(new http::url("http://test.opendap.org/opendap",false));
             string expected_url = "http://test.opendap.org/opendap/";
             EffectiveUrl *effective_url;
 
             try {
-                if(debug) cerr << prolog << "   target_url: " << target_url << endl;
-                effective_url = curl::retrieve_effective_url(target_url);
+                if(debug) cerr << prolog << "   target_url: " << target_url->str() << endl;
+
+                auto effective_url = curl::retrieve_effective_url(target_url);
+
                 if(debug) cerr << prolog << "effective_url: " << effective_url->str() << endl;
                 if(debug) cerr << prolog << " expected_url: " << expected_url << endl;
-
                 CPPUNIT_ASSERT( effective_url->str() == expected_url );
+
+                if(debug) cerr << prolog << "   target_url is " << (target_url->is_trusted()?"":"NOT ")<< "trusted." << endl;
+                if(debug) cerr << prolog << "effective_url is " << (effective_url->is_trusted()?"":"NOT ")<< "trusted." << endl;
+                CPPUNIT_ASSERT( effective_url->is_trusted() == target_url->is_trusted() );
+
+
+
+                effective_url = curl::retrieve_effective_url(trusted_target_url);
+
+                if(debug) cerr << prolog << "effective_url: " << effective_url->str() << endl;
+                if(debug) cerr << prolog << " expected_url: " << expected_url << endl;
+                CPPUNIT_ASSERT( effective_url->str() == expected_url );
+
+                if(debug) cerr << prolog << "   target_url is " << (trusted_target_url->is_trusted()?"":"NOT ")<< "trusted." << endl;
+                if(debug) cerr << prolog << "effective_url is " << (effective_url->is_trusted()?"":"NOT ")<< "trusted." << endl;
+                CPPUNIT_ASSERT( effective_url->is_trusted() == trusted_target_url->is_trusted() );
+
 
             }
             catch(BESError &be){
@@ -219,9 +244,10 @@ namespace http {
                 msg << "Caught BESError! Message: " << be.get_message() << " file: " << be.get_file() << " line: " << be.get_line()<< endl;
                 CPPUNIT_FAIL(msg.str());
             }
-            catch(...){
+            catch( std::exception &se ){
                 stringstream msg;
-                msg << "Caught Unknown exception!. " << endl;
+                msg << "CAUGHT std::exception message: " << se.what() << endl;
+                cerr << msg.str();
                 CPPUNIT_FAIL(msg.str());
             }
             if(debug) cerr << prolog << "END" << endl;
@@ -230,7 +256,7 @@ namespace http {
         /**
          * struct curl_slist {  char *data;  struct curl_slist *next;};
          */
-        void add_auth_headers_test(){
+        void add_edl_auth_headers_test(){
             if(debug) cerr << prolog << "BEGIN" << endl;
             curl_slist *hdrs=NULL;
             curl_slist *temp=NULL;
@@ -240,7 +266,7 @@ namespace http {
             BESContextManager::TheManager()->set_context(EDL_ECHO_TOKEN_KEY, tokens[2]);
 
             try {
-                hdrs = curl::add_auth_headers(hdrs);
+                hdrs = curl::add_edl_auth_headers(hdrs);
                 temp=hdrs;
                 size_t index = 0;
                 while(temp){
@@ -257,9 +283,10 @@ namespace http {
                 msg << "Caught BESError! Message: " << be.get_message() << " file: " << be.get_file() << " line: " << be.get_line()<< endl;
                 CPPUNIT_FAIL(msg.str());
             }
-            catch(...){
+            catch( std::exception &se ){
                 stringstream msg;
-                msg << "Caught Unknown exception!. " << endl;
+                msg << "CAUGHT std::exception message: " << se.what() << endl;
+                cerr << msg.str();
                 CPPUNIT_FAIL(msg.str());
             }
             if(debug) cerr << prolog << "END" << endl;
@@ -275,7 +302,7 @@ namespace http {
 
             CPPUNIT_TEST(is_retryable_test);
             CPPUNIT_TEST(retrieve_effective_url_test);
-            CPPUNIT_TEST(add_auth_headers_test);
+            CPPUNIT_TEST(add_edl_auth_headers_test);
 
         CPPUNIT_TEST_SUITE_END();
     };
