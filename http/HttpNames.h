@@ -31,6 +31,9 @@
 #define HTTPS_PROTOCOL "https://"
 #define FILE_PROTOCOL "file://"
 
+#define HTTP_USER_AGENT_KEY "Http.UserAgent"
+#define HTTP_DEFAULT_USER_AGENT "hyrax"
+
 #define HTTP_MIMELIST_KEY "Http.MimeTypes"
 #define HTTP_PROXYPROTOCOL_KEY "Http.ProxyProtocol"
 #define HTTP_PROXYHOST_KEY "Http.ProxyHost"

@@ -7,6 +7,9 @@
 # in the definitions that follow. If more parameters are needed, they
 # can be added by editing the build rule in Makefile.am in this directory.
 
+# The user agent that Hyrax will utilize when making HTTP requests.
+# Http.UserAgent=hyrax
+
 # Http.Cache.dir - defines which directory to use for caching web
 # resources retrieved by the gateway_module
 #
