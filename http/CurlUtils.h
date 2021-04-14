@@ -113,6 +113,10 @@ curl_slist *append_http_header(curl_slist *slist, const std::string &header_name
 
 curl_slist *add_auth_headers(curl_slist *request_headers);
 
+curl_slist *add_conditional_get_headers(curl_slist *request_headers, std::string url);
+
+curl_slist *add_conditional_get_headers(curl_slist *request_headers, std::shared_ptr<http::url> url);
+
 
 } // namespace curl
 

@@ -806,6 +806,7 @@ void http_get_and_write_resource(const std::shared_ptr<http::url>& target_url,
 
     // Add the authorization headers
     req_headers = add_auth_headers(req_headers);
+    req_headers = add_conditional_get_headers(req_headers, target_url->str());
 
     try {
         // OK! Make the cURL handle
@@ -939,6 +940,7 @@ void http_get(const std::string &target_url, char *response_buf) {
     curl_slist *request_headers = NULL;
     // Add the authorization headers
     request_headers = add_auth_headers(request_headers);
+    request_headers = add_conditional_get_headers(request_headers, target_url);
 
     try {
 
@@ -1553,6 +1555,7 @@ bool eval_curl_easy_perform_code(
 
         // Add the authorization headers
         request_headers = add_auth_headers(request_headers);
+        request_headers = add_conditional_get_headers(request_headers, starting_point_url);
 
         try {
             BESDEBUG(MODULE,
@@ -1854,16 +1857,46 @@ curl_slist *add_auth_headers(curl_slist *request_headers) {
  * @param request_headers 
  * @return
  */
-    curl_slist *add_conditional_get_headers(curl_slist *request_headers) {
-        http::RemoteResource rhr();
+curl_slist *add_conditional_get_headers(curl_slist *request_headers, string url) {
+    std::shared_ptr<http::url> target_url(new http::url(url));
+    http::RemoteResource rhr(target_url);
+    string etag;
+
+    etag = rhr.get_http_response_header("Etag");
+    if (!etag.empty()) {
+        request_headers = append_http_header(request_headers,"If-None-Match",etag);
+    }
+    else{
+        string date = rhr.get_http_response_header("Date");
+        if (!date.empty()){
+            request_headers = append_http_header(request_headers,"If-Modified-Since",date);
+        }
+    }
+
+    return request_headers;
+}
+
+/**
+ * Adds conditional get headers to the request headers list
+ * Will add either of the following headers to the headers list
+ *      If-None-Match : uses the etag of the cache resource
+ *          to check if the file has changed since it was created
+ *      If-Modified-Since : use the date of the cache resource
+ *          to check if the file has been modified since it was pulled
+ *
+ * @param request_headers
+ * @return
+ */
+    curl_slist *add_conditional_get_headers(curl_slist *request_headers, std::shared_ptr<http::url> url) {
+        http::RemoteResource rhr(url);
         string etag;
 
-        etag = rhr().get_http_response_header("Etag");
+        etag = rhr.get_http_response_header("Etag");
         if (!etag.empty()) {
             request_headers = append_http_header(request_headers,"If-None-Match",etag);
         }
         else{
-            string date = rhr().get_http_response_header("Date");
+            string date = rhr.get_http_response_header("Date");
             if (!date.empty()){
                 request_headers = append_http_header(request_headers,"If-Modified-Since",date);
             }
