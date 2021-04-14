@@ -46,15 +46,22 @@ void map_eos5_cfdas(libdap::DAS &, hid_t, const std::string &);
 void gen_eos5_cfdds(libdap::DDS &, HDF5CF::EOS5File*);
 void gen_eos5_cfdas(libdap::DAS &, hid_t, HDF5CF::EOS5File*);
 
-void map_eos5_cfdmr(libdap::D4Group*,hid_t, const std::string &);
-void gen_eos5_cfdmr(libdap::D4Group*, HDF5CF::EOS5File*);
-
 void gen_eos5_cf_ignored_obj_info(libdap::DAS &,HDF5CF::EOS5File*);
 void gen_dap_oneeos5cvar_dds(libdap::DDS &,const HDF5CF::EOS5CVar*,const hid_t, const std::string &);
-void gen_dap_oneeos5cvar_dmr(libdap::D4Group*,const HDF5CF::EOS5CVar*,const hid_t, const std::string &);
-void gen_dap_oneeos5cf_dmr(libdap::D4Group*,const HDF5CF::EOS5CVar*);
+
+//void gen_dap_oneeos5cf_dmr(libdap::D4Group*,const HDF5CF::EOS5CVar*);
 void gen_dap_oneeos5cf_dds(libdap::DDS &,const HDF5CF::EOS5CVar* );
 void gen_dap_oneeos5cf_das(libdap::DAS &,const std::vector<HDF5CF::Var*>&,const HDF5CF::EOS5CVar* ,const unsigned short);
+
+// DMR
+void map_eos5_cfdmr(libdap::D4Group*,hid_t, const std::string &);
+void gen_eos5_cfdmr(libdap::D4Group*, HDF5CF::EOS5File*);
+void gen_dap_oneeos5cvar_dmr(libdap::D4Group*,const HDF5CF::EOS5CVar*,const hid_t, const std::string &);
+void gen_dap_eos5cf_gm_dmr(libdap::D4Group*,HDF5CF::EOS5File*);
+void gen_gm_proj_spvar_info(libdap::D4Group* d4_root,HDF5CF::EOS5File* f);
+void gen_gm_oneproj_var(libdap::D4Group*, const HDF5CF::EOS5CVar*, const unsigned short); 
+void gen_gm_proj_var_info(libdap::D4Group* ,HDF5CF::EOS5File* );
+
 void read_ecs_metadata(hid_t file_id, std::string & st_str, std::string & core_str, std::string & arch_str,std::string &xml_str, std::string& subset_str, std::string & product_str,std::string &other_str,bool st_only);
 int get_metadata_num(const std::string &);
 #endif

@@ -59,6 +59,8 @@
 #include "HDFEOS5CFMissLLArray.h"
 #include "HDFEOS5CFMissNonLLCVArray.h"
 #include "HDFEOS5CFSpecialCVArray.h"
+#include "HDF5CFGeoCF1D.h"                                                             
+#include "HDF5CFGeoCFProj.h"  
 #include "HDF5RequestHandler.h"
 
 #include "he5dds.tab.hh"
@@ -2080,6 +2082,8 @@ void gen_eos5_cfdmr(D4Group *d4_root,  HDF5CF::EOS5File *f) {
     // Here we need to check if the grid_mapping dummy var needs to be added here.
     // Since we need to make sure the dimension name and size match, we need to 
     // use coordinate variables. So still a loop like the following. STOP,TODO: 2021-04-01
+    if (f->Have_EOS5_Grids()==true) 
+        gen_dap_eos5cf_gm_dmr(d4_root,f);
 #if 0
     for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
         if((*it_cv)->getCVType() == CV_LAT_MISS) {
@@ -2359,11 +2363,11 @@ cerr<<"cvar getParams here 1 is "<<cvar->getParams()[0]<<endl;
         }
 
     }
- 
 
 }
 
 // REVIEW THIS, CHECK THE TICKET WORK LOG FOR TODO LIST:2021-04-01
+#if 0
 void gen_dap_oneeos5cf_dmr(D4Group *d4_root, const HDF5CF::EOS5CVar* cvar) {
 
     BESDEBUG("h5","Coming to gen_dap_oneeos5cf_dmr()  "<<endl);
@@ -2380,5 +2384,89 @@ void gen_dap_oneeos5cf_dmr(D4Group *d4_root, const HDF5CF::EOS5CVar* cvar) {
 
 }
 
+#endif
 
 
+void  gen_dap_eos5cf_gm_dmr(libdap::D4Group* d4_root,HDF5CF::EOS5File*f) {
+
+    gen_gm_proj_var_info(d4_root,f);
+    gen_gm_proj_spvar_info(d4_root,f);
+
+}
+
+//(1) Add grid mapping projection vars if we have any
+//(2) Add grid_mapping attributes for all non-cv vars
+void gen_gm_proj_var_info(libdap::D4Group* d4_root,HDF5CF::EOS5File* f) {
+
+    BESDEBUG("h5","Coming to HDF-EOS5 products DDS generation function   "<<endl);
+    const vector<HDF5CF::EOS5CVar *>& cvars = f->getCVars();
+    vector<HDF5CF::EOS5CVar *>::const_iterator it_cv;
+
+    // TODO: 2021-04-13: add more code!
+    unsigned short cv_lat_miss_index = 1;
+    for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
+        if((*it_cv)->getCVType() == CV_LAT_MISS) {
+            if((*it_cv)->getProjCode() != HE5_GCTP_GEO) {
+                gen_gm_oneproj_var(d4_root,*it_cv,cv_lat_miss_index);
+                cv_lat_miss_index++;
+            }
+        }
+    }
+}
+
+void  gen_gm_oneproj_var(libdap::D4Group*d4_root,
+                           const HDF5CF::EOS5CVar* cvar,
+                           const unsigned short g_suffix) {
+
+    BESDEBUG("h5","Coming to gen_gm_oneproj_var()  "<<endl);
+    EOS5GridPCType cv_proj_code = cvar->getProjCode();
+    const vector<HDF5CF::Dimension *>& dims = cvar->getDimensions();
+#if 0   
+cerr<<"cvar name is "<<cvar->getName() <<endl;
+for(vector<HDF5CF::Dimension*>::const_iterator it_d = dims.begin(); it_d != dims.end(); ++it_d) 
+    cerr<<"dim name das is "<<(*it_d)->getNewName() <<endl;
+#endif
+
+   if(dims.size() !=2) 
+        throw InternalErr(__FILE__,__LINE__,"Currently we only support the 2-D CF coordinate projection system.");
+
+    // 1. Add the grid mapping dummy projection variable dmr for each grid
+    // 2. Add the grid_mapping attribute for each variable that this projection applies 
+    //  now, we handle sinusoidal,PS and LAMAZ projections.              
+    if (HE5_GCTP_SNSOID == cv_proj_code || HE5_GCTP_PS == cv_proj_code || HE5_GCTP_LAMAZ== cv_proj_code) {  
+
+        //Add the dummy projection variable. The attributes of this variable can be used to store the grid mapping info.
+        // To handle multi-grid cases, we need to add suffixes to distinguish them.                             
+        string cf_projection_base = "eos_cf_projection";                                                        
+        string cf_projection_name;                           
+                                                                                                            
+        HDF5CFGeoCFProj * dummy_proj_cf = NULL;                                                                 
+        if(HE5_GCTP_SNSOID == cv_proj_code)  {                                                                
+            // AFAWK, one grid_mapping variable is necessary for multi-grids. So we just leave one grid here.   
+            cf_projection_name = cf_projection_base;
+            if(g_suffix == 1)                                                                                 
+                dummy_proj_cf = new HDF5CFGeoCFProj(cf_projection_name, cf_projection_name);                    
+        }                                                                                                       
+        else {                                                                                                  
+            stringstream t_suffix_ss;                                                                           
+            t_suffix_ss << g_suffix;                                                                            
+            cf_projection_name = cf_projection_base + "_" + t_suffix_ss.str();                           
+            dummy_proj_cf = new HDF5CFGeoCFProj(cf_projection_name, cf_projection_name);                        
+        }                                                                                                       
+
+        if(dummy_proj_cf != NULL) {
+            dummy_proj_cf->set_is_dap4(true); 
+            add_gm_oneproj_var_dap4_attrs(dummy_proj_cf,cv_proj_code,cvar->getParams());
+            d4_root->add_var_nocopy(dummy_proj_cf);
+        }
+        //if (dummy_proj_cf) 
+        //    delete dummy_proj_cf;           
+        add_cf_grid_cv_dap4_attrs(d4_root,cf_projection_name,dims);
+    }
+
+}
+
+void gen_gm_proj_spvar_info(libdap::D4Group* d4_root,HDF5CF::EOS5File* f){
+
+
+}

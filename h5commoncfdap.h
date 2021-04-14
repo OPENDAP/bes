@@ -80,5 +80,13 @@ libdap::D4Attribute *gen_dap4_attr(const HDF5CF::Attribute *);
 std::string get_cf_string(std::string & s);
 std::string get_cf_string_helper(std::string & s);
 
+void add_cf_grid_cv_dap4_attrs(libdap::D4Group *d4_root, const std::string& cf_projection, const std::vector<HDF5CF::Dimension*>&dims); 
+
+void add_gm_oneproj_var_dap4_attrs(libdap::BaseType *d4_var,EOS5GridPCType cv_proj_code,const std::vector<double> &eos5_proj_params); 
+
+void add_var_dap4_attr(libdap::BaseType *d4_var,const std::string& attr_name, D4AttributeType attr_type, const std::string& attr_value);
+
+
+
 
 #endif
