@@ -2264,6 +2264,7 @@ cerr<<"cvar getParams here 1 is "<<cvar->getParams()[0]<<endl;
                 ar->set_is_dap4(true);
                 BaseType* d4_var=ar->h5cfdims_transform_to_dap4(d4_root);
                 map_cfh5_var_attrs_to_dap4(cvar,d4_var);
+                add_var_sp_attrs_to_dap4(d4_var,cvar);   
                 d4_root->add_var_nocopy(d4_var);
 
                 delete bt;
@@ -2468,5 +2469,50 @@ for(vector<HDF5CF::Dimension*>::const_iterator it_d = dims.begin(); it_d != dims
 
 void gen_gm_proj_spvar_info(libdap::D4Group* d4_root,HDF5CF::EOS5File* f){
 
+    BESDEBUG("h5","Coming to HDF-EOS5 products grid mapping variable generation function   "<<endl);
+    const vector<HDF5CF::EOS5CVar *>& cvars = f->getCVars();
+    vector<HDF5CF::EOS5CVar *>::const_iterator it_cv;
+
+    for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
+        if((*it_cv)->getCVType() == CV_LAT_MISS) {
+            if((*it_cv)->getProjCode() != HE5_GCTP_GEO) 
+                gen_gm_oneproj_spvar(d4_root,*it_cv);
+        }
+    }
+}
+
+void gen_gm_oneproj_spvar(libdap::D4Group *d4_root,const HDF5CF::EOS5CVar *cvar) {
+
+    BESDEBUG("h5","Coming to gen_gm_oneproj_spvar()  "<<endl);
+
+    float cv_point_lower = cvar->getPointLower();       
+    float cv_point_upper = cvar->getPointUpper();       
+    float cv_point_left  = cvar->getPointLeft();       
+    float cv_point_right = cvar->getPointRight();       
+    EOS5GridPCType cv_proj_code = cvar->getProjCode();
+    const vector<HDF5CF::Dimension *>& dims = cvar->getDimensions();
+    if(dims.size() !=2) 
+        throw InternalErr(__FILE__,__LINE__,"Currently we only support the 2-D CF coordinate projection system.");
+    add_gm_spcvs(d4_root,cv_proj_code,cv_point_lower,cv_point_upper,cv_point_left,cv_point_right,dims);
 
 }
+
+void add_var_sp_attrs_to_dap4(BaseType *d4_var,const EOS5CVar* cvar) {
+
+    if(cvar->getProjCode() == HE5_GCTP_LAMAZ) {
+        if(cvar->getCVType() == CV_LAT_MISS) {
+        //at->append_attr("valid_min", "Float64","-90.0");
+        //at->append_attr("valid_max", "Float64","90.0");
+            add_var_dap4_attr(d4_var,"valid_min", attr_float64_c, "-90.0");
+            add_var_dap4_attr(d4_var,"valid_max", attr_float64_c, "90.0");
+        }
+        else {
+            //at->append_attr("valid_min", "Float64","-180.0");
+            //at->append_attr("valid_max", "Float64","180.0");
+            add_var_dap4_attr(d4_var,"valid_min", attr_float64_c, "-180.0");
+            add_var_dap4_attr(d4_var,"valid_max", attr_float64_c, "180.0");
+        }
+    }
+
+}
+                          

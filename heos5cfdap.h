@@ -60,7 +60,9 @@ void gen_dap_oneeos5cvar_dmr(libdap::D4Group*,const HDF5CF::EOS5CVar*,const hid_
 void gen_dap_eos5cf_gm_dmr(libdap::D4Group*,HDF5CF::EOS5File*);
 void gen_gm_proj_spvar_info(libdap::D4Group* d4_root,HDF5CF::EOS5File* f);
 void gen_gm_oneproj_var(libdap::D4Group*, const HDF5CF::EOS5CVar*, const unsigned short); 
+void gen_gm_oneproj_spvar(libdap::D4Group*, const HDF5CF::EOS5CVar*); 
 void gen_gm_proj_var_info(libdap::D4Group* ,HDF5CF::EOS5File* );
+void add_var_sp_attrs_to_dap4(libdap::BaseType *d4_var,const HDF5CF::EOS5CVar* cvar);
 
 void read_ecs_metadata(hid_t file_id, std::string & st_str, std::string & core_str, std::string & arch_str,std::string &xml_str, std::string& subset_str, std::string & product_str,std::string &other_str,bool st_only);
 int get_metadata_num(const std::string &);

@@ -1581,6 +1581,93 @@ void add_cf_grid_cv_dap4_attrs(D4Group *d4_root, const string& cf_projection,
     }
 #endif
 
+void add_gm_spcvs(libdap::D4Group *d4_root, EOS5GridPCType cv_proj_code, float cv_point_lower, float cv_point_upper,
+                  float cv_point_left, float cv_point_right, const std::vector<HDF5CF::Dimension*>& dims) {
+
+    //1. Check the projection information: we first just handled the sinusoidal projection. 
+    // We also add the LAMAZ and PS support. These 1-D varaibles are the same as the sinusoidal one.
+    if (HE5_GCTP_SNSOID == cv_proj_code || HE5_GCTP_LAMAZ == cv_proj_code || HE5_GCTP_PS == cv_proj_code) {
+
+        //2. Obtain the dimension information from latitude and longitude(fieldtype =1 or fieldtype =2)
+        vector<HDF5CF::Dimension*>::const_iterator it_d;
+        string dim0name = dims[0]->getNewName();
+        int dim0size = dims[0]->getSize();
+        string dim1name = dims[1]->getNewName();
+        int dim1size = dims[1]->getSize();
+
+        //3. Add the 1-D CV variables and the dummy projection variable
+        BaseType *bt_dim0 = NULL;
+        BaseType *bt_dim1 = NULL;
+
+        HDF5CFGeoCF1D * ar_dim0 = NULL;
+        HDF5CFGeoCF1D * ar_dim1 = NULL;
+
+        try {
+
+            bt_dim0 = new (HDF5CFFloat64)(dim0name, dim0name);
+            bt_dim1 = new (HDF5CFFloat64)(dim1name, dim1name);
+
+            // Note ar_dim0 is y, ar_dim1 is x.
+            ar_dim0 = new HDF5CFGeoCF1D(HE5_GCTP_SNSOID, cv_point_upper, cv_point_lower, dim0size, dim0name, bt_dim0);
+            ar_dim0->append_dim(dim0size, dim0name);
+
+            ar_dim0->set_is_dap4(true);
+
+            add_gm_spcvs_attrs(ar_dim0,true);
+
+            ar_dim1 = new HDF5CFGeoCF1D(HE5_GCTP_SNSOID, cv_point_left, cv_point_right, dim1size, dim1name, bt_dim1);
+            ar_dim1->append_dim(dim1size, dim1name);
+
+            ar_dim1->set_is_dap4(true);
+
+            add_gm_spcvs_attrs(ar_dim1,false);
+
+            d4_root->add_var(ar_dim0);
+            d4_root->add_var(ar_dim1);
+
+        }
+        catch (...) {
+            if (bt_dim0) delete bt_dim0;
+            if (bt_dim1) delete bt_dim1;
+            if (ar_dim0) delete ar_dim0;
+            if (ar_dim1) delete ar_dim1;
+            throw InternalErr(__FILE__, __LINE__, "Unable to allocate the HDFEOS2GeoCF1D instance.");
+        }
+
+        if (bt_dim0) delete bt_dim0;
+        if (bt_dim1) delete bt_dim1;
+        if (ar_dim0) delete ar_dim0;
+        if (ar_dim1) delete ar_dim1;
+
+
+    }
+
+}
+
+void add_gm_spcvs_attrs(libdap::BaseType *var,const bool is_dim0) {
+
+    string standard_name;
+    string long_name;
+    string COORAxisTypes;
+
+    if (true == is_dim0) {
+        standard_name = "projection_y_coordinate";
+        long_name = "y coordinate of projection ";
+        COORAxisTypes = "GeoY";
+    }
+    else {
+        standard_name = "projection_x_coordinate";
+        long_name = "x coordinate of projection ";
+        COORAxisTypes = "GeoX";
+    }
+       
+    add_var_dap4_attr(var,"standard_name", attr_str_c, standard_name);
+    add_var_dap4_attr(var,"long_name", attr_str_c, long_name);
+    add_var_dap4_attr(var,"units", attr_str_c, "meter");
+    add_var_dap4_attr(var,"_CoordinateAxisType", attr_str_c, COORAxisTypes);
+
+}
+
 void add_var_dap4_attr(BaseType *var,const string& attr_name, D4AttributeType attr_type, const string& attr_value){
 
 

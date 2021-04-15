@@ -1,0 +1,923 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="VNP09A1.A2015257.h29v11.001.2016221164845.h5">
+    <Dimension name="YDim" size="1200"/>
+    <Dimension name="XDim" size="1200"/>
+    <Int16 name="RelativeAzimuth">
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Relative_azimuth</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degree</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <Value>-18000</Value>
+            <Value>18000</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>0.010000000000000000</Value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <Value>5</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>RelativeAzimuth</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/VNP_Grid_1km_L3_2d/Data Fields/RelativeAzimuth</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lat lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection</Value>
+        </Attribute>
+    </Int16>
+    <Int16 name="SensorZenith">
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>View_zenith</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degree</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <Value>0</Value>
+            <Value>18000</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>0.010000000000000000</Value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <Value>5</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SensorZenith</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/VNP_Grid_1km_L3_2d/Data Fields/SensorZenith</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lat lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection</Value>
+        </Attribute>
+    </Int16>
+    <Int16 name="SolarZenith">
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Solar_zenith</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degree</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <Value>0</Value>
+            <Value>18000</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>0.010000000000000000</Value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <Value>5</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SolarZenith</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/VNP_Grid_1km_L3_2d/Data Fields/SolarZenith</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lat lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection</Value>
+        </Attribute>
+    </Int16>
+    <UInt16 name="SurfReflect_Day_Of_Year">
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="UInt16">
+            <Value>65535</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Surface_reflectance_day_of_year</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Julian day</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="UInt16">
+            <Value>1</Value>
+            <Value>366</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SurfReflect_Day_Of_Year</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/VNP_Grid_1km_L3_2d/Data Fields/SurfReflect_Day_Of_Year</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lat lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection</Value>
+        </Attribute>
+    </UInt16>
+    <Int16 name="SurfReflect_M1">
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="long_name" type="String">
+            <Value>Surface_reflectance_for_band_M1</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>reflectance</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <Value>-100</Value>
+            <Value>16000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>0.00010000000000000000</Value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <Value>5</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SurfReflect_M1</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/VNP_Grid_1km_L3_2d/Data Fields/SurfReflect_M1</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lat lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection</Value>
+        </Attribute>
+    </Int16>
+    <Int16 name="SurfReflect_M10">
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Surface_reflectance_for_band_M10</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>reflectance</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <Value>-100</Value>
+            <Value>16000</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>0.00010000000000000000</Value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <Value>5</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SurfReflect_M10</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/VNP_Grid_1km_L3_2d/Data Fields/SurfReflect_M10</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lat lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection</Value>
+        </Attribute>
+    </Int16>
+    <Int16 name="SurfReflect_M11">
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Surface_reflectance_for_band_M11</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>reflectance</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <Value>-100</Value>
+            <Value>16000</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>0.00010000000000000000</Value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <Value>5</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SurfReflect_M11</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/VNP_Grid_1km_L3_2d/Data Fields/SurfReflect_M11</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lat lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection</Value>
+        </Attribute>
+    </Int16>
+    <Int16 name="SurfReflect_M2">
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Surface_reflectance_for_band_M2</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>reflectance</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <Value>-100</Value>
+            <Value>16000</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>0.00010000000000000000</Value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <Value>5</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SurfReflect_M2</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/VNP_Grid_1km_L3_2d/Data Fields/SurfReflect_M2</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lat lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection</Value>
+        </Attribute>
+    </Int16>
+    <Int16 name="SurfReflect_M3">
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Surface_reflectance_for_band_M3</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>reflectance</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <Value>-100</Value>
+            <Value>16000</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>0.00010000000000000000</Value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <Value>5</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SurfReflect_M3</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/VNP_Grid_1km_L3_2d/Data Fields/SurfReflect_M3</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lat lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection</Value>
+        </Attribute>
+    </Int16>
+    <Int16 name="SurfReflect_M4">
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Surface_reflectance_for_band_M4</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>reflectance</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <Value>-100</Value>
+            <Value>16000</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>0.00010000000000000000</Value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <Value>5</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SurfReflect_M4</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/VNP_Grid_1km_L3_2d/Data Fields/SurfReflect_M4</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lat lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection</Value>
+        </Attribute>
+    </Int16>
+    <Int16 name="SurfReflect_M5">
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Surface_reflectance_for_band_M5</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>reflectance</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <Value>-100</Value>
+            <Value>16000</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>0.00010000000000000000</Value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <Value>5</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SurfReflect_M5</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/VNP_Grid_1km_L3_2d/Data Fields/SurfReflect_M5</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lat lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection</Value>
+        </Attribute>
+    </Int16>
+    <Int16 name="SurfReflect_M7">
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Surface_reflectance_for_band_M7</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>reflectance</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <Value>-100</Value>
+            <Value>16000</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>0.00010000000000000000</Value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <Value>5</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SurfReflect_M7</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/VNP_Grid_1km_L3_2d/Data Fields/SurfReflect_M7</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lat lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection</Value>
+        </Attribute>
+    </Int16>
+    <Int16 name="SurfReflect_M8">
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Surface_reflectance_for_band_M8</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>reflectance</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <Value>-100</Value>
+            <Value>16000</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>0.00010000000000000000</Value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <Value>5</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SurfReflect_M8</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/VNP_Grid_1km_L3_2d/Data Fields/SurfReflect_M8</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lat lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection</Value>
+        </Attribute>
+    </Int16>
+    <UInt32 name="SurfReflect_QC">
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="UInt32">
+            <Value>1073741824</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Surface_reflectance_500m_quality_control_flags</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>bit field</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="UInt32">
+            <Value>0</Value>
+            <Value>4294966531</Value>
+        </Attribute>
+        <Attribute name="QA_bitmap_index" type="String">
+            <Value>
+	Bits are listed from the MSB (bit 31) to the LSB (bit 0):
+	Bit    Description
+	31     adjacency correction performed; 
+	       1 -- yes
+	       0 -- no
+	30     atmospheric correction performed; 
+	       1 -- yes
+	       0 -- no
+	26-29  band 7 data quality four bit range;
+	       0000 -- highest quality
+	       0111 -- noisy detector
+	       1000 -- dead detector, data interpolated in L1B
+	       1001 -- solar zenith &gt;= 86 degrees
+	       1010 -- solar zenith &gt;= 85 and &lt; 86 degrees
+	       1011 -- missing input
+	       1100 -- internal constant used in place of climatological data 
+	               for at least one atmospheric constant
+	       1101 -- correction out of bounds pixel constrained to extreme 
+	               allowable value
+	       1110 -- L1B data faulty
+	       1111 -- not processed due to deep ocean or clouds
+	22-25  band 6 data quality four bit range;
+	       SAME AS ABOVE
+	18-21  band 5 data quality four bit range;
+	       SAME AS ABOVE
+	14-17  band 4 data quality four bit range;
+	       SAME AS ABOVE
+	10-13  band 3 data quality four bit range;
+	       SAME AS ABOVE
+	6-9    band 2 data quality four bit range;
+	       SAME AS ABOVE
+	2-5    band 1 data quality four bit range;
+	       SAME AS ABOVE
+	0-1    MODLAND QA bits; 
+	       corrected product produced at
+	       00 -- ideal quality all bands 
+	       01 -- less than ideal quality some or all bands
+	       corrected product not produced due to
+	       10 -- cloud effects all bands 
+	       11 -- other reasons some or all bands may be fill value
+	       [Note that a value of (11) overrides a value of (01)].
+</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SurfReflect_QC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/VNP_Grid_1km_L3_2d/Data Fields/SurfReflect_QC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lat lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection</Value>
+        </Attribute>
+    </UInt32>
+    <UInt16 name="SurfReflect_State">
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="UInt16">
+            <Value>65535</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Surface_reflectance_500m_state_flags</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>bit field</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="UInt16">
+            <Value>0</Value>
+            <Value>57343</Value>
+        </Attribute>
+        <Attribute name="QA_bitmap_index" type="String">
+            <Value>
+	Bits are listed from the MSB (bit 15) to the LSB (bit 0):
+	Bit    Description
+	15     internal snow algorithm flag; 
+	       1 -- yes
+	       0 -- no
+	14     BRDF correction performed;
+	       1 -- yes
+	       0 -- no
+	13     Pixel is adjacent to cloud;
+	       1 -- yes
+	       0 -- no
+	12     MOD35 snow/ice flag;
+	       1 -- yes
+	       0 -- no
+	11     internal fire algorithm flag;
+	       1 -- fire
+	       0 -- no fire
+	10    internal cloud algorithm flag;
+	       1 -- cloud
+	       0 -- no cloud
+	8-9    cirrus detected;
+	       00 -- none
+	       01 -- small
+	       10 -- average
+	       11 -- high
+	6-7    aerosol quantity;
+	       00 -- climatology
+	       01 -- low
+	       10 -- average
+	       11 -- high
+	3-5    land/water flag;
+	       000 -- shallow ocean
+	       001 -- land
+	       010 -- ocean coastlines and lake shorelines
+	       011 -- shallow inland water
+	       100 -- ephemeral water
+	       101 -- deep inland water
+	       110 -- continental/moderate ocean
+	       111 -- deep ocean
+	2      cloud shadow;
+	       1 -- yes
+	       0 -- no
+	0-1    cloud state;
+	       00 -- clear
+	       01 -- cloudy
+	       10 -- mixed
+	       11 -- not set, assumed clear
+</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SurfReflect_State</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/VNP_Grid_1km_L3_2d/Data Fields/SurfReflect_State</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>lat lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection</Value>
+        </Attribute>
+    </UInt16>
+    <String name="StructMetadata_0">
+        <Attribute name="origname" type="String">
+            <Value>StructMetadata.0</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
+        </Attribute>
+    </String>
+    <Byte name="eos_cf_projection">
+        <Attribute name="grid_mapping_name" type="String">
+            <Value>sinusoidal</Value>
+        </Attribute>
+        <Attribute name="longitude_of_central_meridian" type="Float64">
+            <Value>0.0</Value>
+        </Attribute>
+        <Attribute name="earth_radius" type="Float64">
+            <Value>6371007.181</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisTypes" type="String">
+            <Value>GeoX GeoY</Value>
+        </Attribute>
+    </Byte>
+    <Float64 name="YDim">
+        <Dim name="YDim"/>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_y_coordinate</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>y coordinate of projection </Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meter</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoY</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="XDim">
+        <Dim name="XDim"/>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_x_coordinate</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>x coordinate of projection </Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meter</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoX</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="lon">
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="lat">
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+    </Float64>
+    <Attribute name="GRingLatitude" type="Float64">
+        <Value>-30.060828000000001</Value>
+        <Value>-19.942433000000001</Value>
+        <Value>-19.883099000000001</Value>
+        <Value>-30.000000000000000</Value>
+    </Attribute>
+    <Attribute name="GRingLongitude" type="Float64">
+        <Value>126.62759000000000</Value>
+        <Value>116.68638000000000</Value>
+        <Value>127.67430000000000</Value>
+        <Value>138.56406000000001</Value>
+    </Attribute>
+    <Attribute name="PGE_StartTime" type="String">
+        <Value>2015-09-14 00:00:00.000</Value>
+    </Attribute>
+    <Attribute name="ProductionTime" type="String">
+        <Value>2016-08-08 16:48:45.000</Value>
+    </Attribute>
+    <Attribute name="ProcessingEnvironment" type="String">
+        <Value>Linux minion5580 2.6.18-410.el5 #1 SMP Wed May 11 06:00:14 EDT 2016 x86_64 x86_64 x86_64 GNU/Linux</Value>
+    </Attribute>
+    <Attribute name="PGE_EndTime" type="String">
+        <Value>2015-09-22 00:00:00.000</Value>
+    </Attribute>
+    <Attribute name="DataResolution" type="String">
+        <Value>Moderate</Value>
+    </Attribute>
+    <Attribute name="DayNumbers" type="String">
+        <Value>262</Value>
+    </Attribute>
+    <Attribute name="LongName" type="String">
+        <Value>VIIRS/NPP Surface Reflectance 8-Day L3 Global 1km SIN Grid</Value>
+    </Attribute>
+    <Attribute name="PGEVersion" type="String">
+        <Value>1.0.3</Value>
+    </Attribute>
+    <Attribute name="InputPointer" type="String">
+        <Value>/MODAPSlp1/archive/f5580/running/VNP_L10mc/26821592/VNP09GA.A2015262.h29v11.001.2016112235056.h5</Value>
+    </Attribute>
+    <Attribute name="RangeBeginningDate" type="String">
+        <Value>2015-09-14</Value>
+    </Attribute>
+    <Attribute name="StartTime" type="String">
+        <Value>2015-09-14 00:00:00</Value>
+    </Attribute>
+    <Attribute name="AlgorithmType" type="String">
+        <Value>OPS</Value>
+    </Attribute>
+    <Attribute name="LSIPS_AlgorithmVersion" type="String">
+        <Value>NPP_PR09A 1.0.2</Value>
+    </Attribute>
+    <Attribute name="TileID" type="String">
+        <Value>51029011</Value>
+    </Attribute>
+    <Attribute name="Product_authority" type="String">
+        <Value>http://dx.doi.org</Value>
+    </Attribute>
+    <Attribute name="HorizontalTileNumber" type="String">
+        <Value>29</Value>
+    </Attribute>
+    <Attribute name="ProcessVersion" type="String">
+        <Value>001</Value>
+    </Attribute>
+    <Attribute name="SatelliteInstrument" type="String">
+        <Value>NPP_OPS</Value>
+    </Attribute>
+    <Attribute name="ShortName" type="String">
+        <Value>VNP09A1</Value>
+    </Attribute>
+    <Attribute name="ProcessingCenter" type="String">
+        <Value>MODAPS, NASA GSFC</Value>
+    </Attribute>
+    <Attribute name="RangeEndingDate" type="String">
+        <Value>2015-09-22</Value>
+    </Attribute>
+    <Attribute name="RangeEndingTime" type="String">
+        <Value>00:00:00.000</Value>
+    </Attribute>
+    <Attribute name="PlatformShortName" type="String">
+        <Value>NPP</Value>
+    </Attribute>
+    <Attribute name="RangeBeginningTime" type="String">
+        <Value>00:00:00.000</Value>
+    </Attribute>
+    <Attribute name="PGENumber" type="String">
+        <Value>521</Value>
+    </Attribute>
+    <Attribute name="Product_doi" type="String">
+        <Value>10.5067/VIIRS/VNP09A1.001</Value>
+    </Attribute>
+    <Attribute name="VerticalTileNumber" type="String">
+        <Value>11</Value>
+    </Attribute>
+    <Attribute name="EndTime" type="String">
+        <Value>2015-09-22 00:00:00</Value>
+    </Attribute>
+    <Attribute name="LocalGranuleID" type="String">
+        <Value>VNP09A1.A2015257.h29v11.001.2016221164845.h5</Value>
+    </Attribute>
+    <Attribute name="SensorShortname" type="String">
+        <Value>VIIRS</Value>
+    </Attribute>
+    <Attribute name="Conventions" type="String">
+        <Value>CF-1.7</Value>
+    </Attribute>
+    <Attribute name="HDFEOS" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL_FILE_ATTRIBUTES" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS" type="Container">
+        <Attribute name="PercentLand" type="Float32">
+            <Value>98.38358307</Value>
+        </Attribute>
+        <Attribute name="PercentWater" type="Float32">
+            <Value>1.616416931</Value>
+        </Attribute>
+        <Attribute name="PercentCloud" type="Float32">
+            <Value>8.157571793</Value>
+        </Attribute>
+        <Attribute name="QAPercentGoodQuality" type="Float32">
+            <Value>100.0000000</Value>
+        </Attribute>
+        <Attribute name="QAPercentOtherQuality" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="QAPercentNotProduced" type="Float32">
+            <Value>0.003472283017</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="HDFEOS_GRIDS_VNP_Grid_1km_L3_2d" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_VNP_Grid_1km_L3_2d_Data_Fields" type="Container"/>
+    <Attribute name="HDFEOS_INFORMATION" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <Value>HDFEOS_5.1.13</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>
