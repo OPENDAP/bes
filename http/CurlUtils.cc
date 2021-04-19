@@ -1723,8 +1723,14 @@ void unset_error_buffer(CURL *ceh) {
  * @return The Hyrax User-Agent string.
  */
 string hyrax_user_agent() {
-    // return curl_version();
-    return "Hyrax";
+    string user_agent;
+    bool found;
+    TheBESKeys::TheKeys()->get_value(HTTP_USER_AGENT_KEY,user_agent, found);
+    if(!found || user_agent.empty()){
+        user_agent = HTTP_DEFAULT_USER_AGENT;
+    }
+    BESDEBUG(MODULE, prolog << "User-Agent: "<< user_agent << endl);
+    return user_agent;
 }
 
 /**
