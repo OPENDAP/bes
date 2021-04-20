@@ -35,19 +35,26 @@
 #include <cstdlib>
 #include <cerrno>
 #include <cstring>
+#include <mutex>
 
 #include "BESContextManager.h"
 #include "BESInfo.h"
 #include "BESDebug.h"
 
+using namespace std;
 using std::endl;
 using std::string;
 using std::ostream;
 
-BESContextManager *BESContextManager::_instance = 0;
+BESContextManager *BESContextManager::d_instance = nullptr;
+static std::once_flag d_euc_init_once;
 
 #define MODULE "context"
 #define prolog std::string("BESContextManager::").append(__func__).append("() - ")
+
+BESContextManager::BESContextManager() {}
+
+BESContextManager::~BESContextManager() {}
 
 /** @brief set context in the BES
  *
@@ -56,6 +63,8 @@ BESContextManager *BESContextManager::_instance = 0;
  */
 void BESContextManager::set_context(const string &name, const string &value)
 {
+    std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
+
     BESDEBUG(MODULE, prolog << "name=\"" << name << "\", value=\"" << value << "\"" << endl);
     _context_list[name] = value;
 }
@@ -67,6 +76,8 @@ void BESContextManager::set_context(const string &name, const string &value)
  */
 void BESContextManager::unset_context(const string &name)
 {
+    std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
+
     BESDEBUG(MODULE, prolog << "name=\"" << name << "\"" << endl);
     _context_list.erase(name);
 }
@@ -82,6 +93,7 @@ void BESContextManager::unset_context(const string &name)
  */
 string BESContextManager::get_context(const string &name, bool &found)
 {
+    std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
 #if 1
     string ret = "";
     found = false;
@@ -114,6 +126,7 @@ string BESContextManager::get_context(const string &name, bool &found)
 int BESContextManager::get_context_int(const string &name, bool &found)
 {
     string value = BESContextManager::TheManager()->get_context(name, found);
+
     if (!found || value.empty()) return 0;
 
     char *endptr;
@@ -133,6 +146,8 @@ int BESContextManager::get_context_int(const string &name, bool &found)
  */
 void BESContextManager::list_context(BESInfo &info)
 {
+    std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
+
     string name;
     string value;
     std::map<string, string> props;
@@ -177,9 +192,19 @@ void BESContextManager::dump(ostream &strm) const
 BESContextManager *
 BESContextManager::TheManager()
 {
-    if (_instance == 0) {
-        _instance = new BESContextManager;
-    }
-    return _instance;
+    std::call_once(d_euc_init_once,BESContextManager::initialize_instance);
+    return d_instance;
+}
+
+void BESContextManager::initialize_instance() {
+    d_instance = new BESContextManager;
+#ifdef HAVE_ATEXIT
+    atexit(delete_instance);
+#endif
+}
+
+void BESContextManager::delete_instance() {
+    delete d_instance;
+    d_instance = 0;
 }
 
