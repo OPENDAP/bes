@@ -33,6 +33,7 @@
 #include "config.h"
 
 #include <iostream>
+#include <mutex>
 
 #include "BESContainerStorageList.h"
 #include "BESContainerStorage.h"
@@ -44,12 +45,13 @@
 
 #include "BESDebug.h"
 
-
+using namespace std;
 using std::endl;
 using std::string;
 using std::ostream;
 
-BESContainerStorageList *BESContainerStorageList::_instance = 0;
+BESContainerStorageList *BESContainerStorageList::d_instance = nullptr;
+static std::once_flag d_euc_init_once;
 
 BESContainerStorageList::BESContainerStorageList() :
         _first(0)
@@ -83,6 +85,8 @@ BESContainerStorageList::~BESContainerStorageList()
  */
 bool BESContainerStorageList::add_persistence(BESContainerStorage *cp)
 {
+    std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
+
     bool ret = false;
     if (!_first) {
         _first = new BESContainerStorageList::persistence_list;
@@ -129,6 +133,8 @@ bool BESContainerStorageList::add_persistence(BESContainerStorage *cp)
  */
 bool BESContainerStorageList::ref_persistence(const string &persist_name)
 {
+    std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
+
     bool ret = false;
     BESContainerStorageList::persistence_list *pl = _first;
 
@@ -165,6 +171,8 @@ bool BESContainerStorageList::ref_persistence(const string &persist_name)
  */
 bool BESContainerStorageList::deref_persistence(const string &persist_name)
 {
+    std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
+
     bool ret = false;
     BESContainerStorageList::persistence_list *pl = _first;
     BESContainerStorageList::persistence_list *last = 0;
@@ -214,6 +222,8 @@ bool BESContainerStorageList::deref_persistence(const string &persist_name)
 BESContainerStorage *
 BESContainerStorageList::find_persistence(const string &persist_name)
 {
+    std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
+
     BESContainerStorage *ret = NULL;
     BESContainerStorageList::persistence_list *pl = _first;
     bool done = false;
@@ -236,6 +246,8 @@ BESContainerStorageList::find_persistence(const string &persist_name)
 
 bool BESContainerStorageList::isnice()
 {
+    std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
+
     bool ret = false;
     string key = "BES.Container.Persistence";
     bool found = false;
@@ -274,6 +286,8 @@ bool BESContainerStorageList::isnice()
 BESContainer *
 BESContainerStorageList::look_for(const string &sym_name)
 {
+    //std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
+
     BESContainer *ret_container = 0;
     BESContainerStorageList::persistence_list *pl = _first;
     bool done = false;
@@ -319,6 +333,8 @@ BESContainerStorageList::look_for(const string &sym_name)
 void
 BESContainerStorageList::delete_container(const std::string &sym_name)
 {
+    std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
+
     BESContainerStorageList::persistence_list *pl = _first;
     while (pl) {
         (void) pl->_persistence_obj->del_container(sym_name);
@@ -341,6 +357,8 @@ BESContainerStorageList::delete_container(const std::string &sym_name)
  */
 void BESContainerStorageList::show_containers(BESInfo &info)
 {
+    std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
+
     BESContainerStorageList::persistence_list *pl = _first;
     while (pl) {
         std::map<string, string> props;
@@ -382,9 +400,19 @@ void BESContainerStorageList::dump(ostream &strm) const
 BESContainerStorageList *
 BESContainerStorageList::TheList()
 {
-    if (_instance == 0) {
-        _instance = new BESContainerStorageList;
-    }
-    return _instance;
+    std::call_once(d_euc_init_once,BESContainerStorageList::initialize_instance);
+    return d_instance;
+}
+
+void BESContainerStorageList::initialize_instance() {
+    d_instance = new BESContainerStorageList;
+#ifdef HAVE_ATEXIT
+    atexit(delete_instance);
+#endif
+}
+
+void BESContainerStorageList::delete_instance() {
+    delete d_instance;
+    d_instance = 0;
 }
 
