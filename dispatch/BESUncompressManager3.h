@@ -56,7 +56,7 @@ typedef void (*p_bes_uncompress)(const std::string &src, int fd);
 class BESUncompressManager3: public BESObj {
 private:
     static BESUncompressManager3 * d_instance;
-    std::mutex d_cache_lock_mutex;
+    std::recursive_mutex d_cache_lock_mutex;
 
     static void initialize_instance();
     static void delete_instance();

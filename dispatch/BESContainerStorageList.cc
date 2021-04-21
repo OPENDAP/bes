@@ -85,7 +85,7 @@ BESContainerStorageList::~BESContainerStorageList()
  */
 bool BESContainerStorageList::add_persistence(BESContainerStorage *cp)
 {
-    std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     bool ret = false;
     if (!_first) {
@@ -133,7 +133,7 @@ bool BESContainerStorageList::add_persistence(BESContainerStorage *cp)
  */
 bool BESContainerStorageList::ref_persistence(const string &persist_name)
 {
-    std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     bool ret = false;
     BESContainerStorageList::persistence_list *pl = _first;
@@ -171,7 +171,7 @@ bool BESContainerStorageList::ref_persistence(const string &persist_name)
  */
 bool BESContainerStorageList::deref_persistence(const string &persist_name)
 {
-    std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     bool ret = false;
     BESContainerStorageList::persistence_list *pl = _first;
@@ -222,7 +222,7 @@ bool BESContainerStorageList::deref_persistence(const string &persist_name)
 BESContainerStorage *
 BESContainerStorageList::find_persistence(const string &persist_name)
 {
-    std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     BESContainerStorage *ret = NULL;
     BESContainerStorageList::persistence_list *pl = _first;
@@ -246,7 +246,7 @@ BESContainerStorageList::find_persistence(const string &persist_name)
 
 bool BESContainerStorageList::isnice()
 {
-    std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     bool ret = false;
     string key = "BES.Container.Persistence";
@@ -286,7 +286,7 @@ bool BESContainerStorageList::isnice()
 BESContainer *
 BESContainerStorageList::look_for(const string &sym_name)
 {
-    //std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     BESContainer *ret_container = 0;
     BESContainerStorageList::persistence_list *pl = _first;
@@ -333,7 +333,7 @@ BESContainerStorageList::look_for(const string &sym_name)
 void
 BESContainerStorageList::delete_container(const std::string &sym_name)
 {
-    std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     BESContainerStorageList::persistence_list *pl = _first;
     while (pl) {
@@ -357,7 +357,7 @@ BESContainerStorageList::delete_container(const std::string &sym_name)
  */
 void BESContainerStorageList::show_containers(BESInfo &info)
 {
-    std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     BESContainerStorageList::persistence_list *pl = _first;
     while (pl) {
@@ -379,6 +379,8 @@ void BESContainerStorageList::show_containers(BESInfo &info)
  */
 void BESContainerStorageList::dump(ostream &strm) const
 {
+    //std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     strm << BESIndent::LMarg << "BESContainerStorageList::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     BESContainerStorageList::persistence_list *pl = _first;

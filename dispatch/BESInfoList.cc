@@ -61,7 +61,7 @@ bool
 BESInfoList::add_info_builder(const string &info_type,
                               p_info_builder info_builder) {
 
-    std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     BESInfoList::Info_citer i;
     i = _info_list.find(info_type);
@@ -75,7 +75,7 @@ BESInfoList::add_info_builder(const string &info_type,
 bool
 BESInfoList::rem_info_builder(const string &info_type) {
 
-    std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     BESInfoList::Info_iter i;
     i = _info_list.find(info_type);
@@ -89,7 +89,7 @@ BESInfoList::rem_info_builder(const string &info_type) {
 BESInfo *
 BESInfoList::build_info() {
 
-    std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     string info_type = "";
     bool found = false;
@@ -118,6 +118,9 @@ BESInfoList::build_info() {
  */
 void
 BESInfoList::dump(ostream &strm) const {
+
+    //std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     strm << BESIndent::LMarg << "BESInfoList::dump - ("
          << (void *) this << ")" << endl;
     BESIndent::Indent();

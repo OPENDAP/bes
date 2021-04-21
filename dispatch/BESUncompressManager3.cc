@@ -81,7 +81,7 @@ BESUncompressManager3::~BESUncompressManager3() {}
  */
 bool BESUncompressManager3::add_method(const string &name, p_bes_uncompress method)
 {
-    std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     BESUncompressManager3::UCIter i;
     i = _uncompress_list.find(name);
@@ -102,7 +102,7 @@ bool BESUncompressManager3::add_method(const string &name, p_bes_uncompress meth
  */
 p_bes_uncompress BESUncompressManager3::find_method(const string &name)
 {
-    std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     BESUncompressManager3::UCIter i;
     i = _uncompress_list.find(name);
@@ -146,7 +146,7 @@ p_bes_uncompress BESUncompressManager3::find_method(const string &name)
  */
 bool BESUncompressManager3::uncompress(const string &src, string &cache_file, BESFileLockingCache *cache)
 {
-    //std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     BESDEBUG( "uncompress2", "BESUncompressManager3::uncompress() - src: " << src << endl );
 
@@ -247,6 +247,8 @@ bool BESUncompressManager3::uncompress(const string &src, string &cache_file, BE
  */
 void BESUncompressManager3::dump(ostream &strm) const
 {
+    //std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     strm << BESIndent::LMarg << "BESUncompressManager3::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     if (_uncompress_list.size()) {

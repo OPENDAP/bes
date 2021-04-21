@@ -63,7 +63,7 @@ BESContextManager::~BESContextManager() {}
  */
 void BESContextManager::set_context(const string &name, const string &value)
 {
-    std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     BESDEBUG(MODULE, prolog << "name=\"" << name << "\", value=\"" << value << "\"" << endl);
     _context_list[name] = value;
@@ -76,7 +76,7 @@ void BESContextManager::set_context(const string &name, const string &value)
  */
 void BESContextManager::unset_context(const string &name)
 {
-    std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     BESDEBUG(MODULE, prolog << "name=\"" << name << "\"" << endl);
     _context_list.erase(name);
@@ -93,7 +93,7 @@ void BESContextManager::unset_context(const string &name)
  */
 string BESContextManager::get_context(const string &name, bool &found)
 {
-    std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 #if 1
     string ret = "";
     found = false;
@@ -125,6 +125,8 @@ string BESContextManager::get_context(const string &name, bool &found)
  */
 int BESContextManager::get_context_int(const string &name, bool &found)
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     string value = BESContextManager::TheManager()->get_context(name, found);
 
     if (!found || value.empty()) return 0;
@@ -146,7 +148,7 @@ int BESContextManager::get_context_int(const string &name, bool &found)
  */
 void BESContextManager::list_context(BESInfo &info)
 {
-    std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     string name;
     string value;
@@ -171,6 +173,8 @@ void BESContextManager::list_context(BESInfo &info)
  */
 void BESContextManager::dump(ostream &strm) const
 {
+    //std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     strm << BESIndent::LMarg << prolog << "(this: " << (void *) this << ")" << endl;
     BESIndent::Indent();
     if (_context_list.size()) {

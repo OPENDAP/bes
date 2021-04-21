@@ -46,7 +46,7 @@ typedef BESInfo * (*p_info_builder)(const std::string &info_type);
 class BESInfoList: public BESObj {
 private:
     static BESInfoList * d_instance;
-    std::mutex d_cache_lock_mutex;
+    std::recursive_mutex d_cache_lock_mutex;
 
     static void initialize_instance();
     static void delete_instance();
