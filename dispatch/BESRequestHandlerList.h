@@ -35,6 +35,7 @@
 
 #include <map>
 #include <string>
+#include <mutex>
 
 #include "BESObj.h"
 
@@ -69,18 +70,17 @@ class BESDataHandlerInterface;
  */
 class BESRequestHandlerList: public BESObj {
 private:
-    static BESRequestHandlerList * _instance;
+    static BESRequestHandlerList * d_instance;
+    mutable std::recursive_mutex d_cache_lock_mutex;
+
+    static void initialize_instance();
+    static void delete_instance();
+
     std::map<std::string, BESRequestHandler *> _handler_list;
 
-protected:
-    BESRequestHandlerList(void)
-    {
-    }
-
 public:
-    virtual ~BESRequestHandlerList(void)
-    {
-    }
+    BESRequestHandlerList();
+    virtual ~BESRequestHandlerList();
 
     typedef std::map<std::string, BESRequestHandler *>::const_iterator Handler_citer;
     typedef std::map<std::string, BESRequestHandler *>::iterator Handler_iter;

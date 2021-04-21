@@ -52,8 +52,7 @@ using std::string;
 BESInfoList *BESInfoList::d_instance = nullptr;
 static std::once_flag d_euc_init_once;
 
-BESInfoList::~BESInfoList() {
-}
+BESInfoList::~BESInfoList() {}
 
 BESInfoList::BESInfoList() {};
 
