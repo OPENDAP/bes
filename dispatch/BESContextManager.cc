@@ -173,7 +173,7 @@ void BESContextManager::list_context(BESInfo &info)
  */
 void BESContextManager::dump(ostream &strm) const
 {
-    //std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     strm << BESIndent::LMarg << prolog << "(this: " << (void *) this << ")" << endl;
     BESIndent::Indent();

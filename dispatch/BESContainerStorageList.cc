@@ -379,7 +379,7 @@ void BESContainerStorageList::show_containers(BESInfo &info)
  */
 void BESContainerStorageList::dump(ostream &strm) const
 {
-    //std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     strm << BESIndent::LMarg << "BESContainerStorageList::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();

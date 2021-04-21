@@ -72,7 +72,7 @@ class BESInfo;
 class BESContainerStorageList: public BESObj {
 private:
     static BESContainerStorageList * d_instance;
-    std::recursive_mutex d_cache_lock_mutex;
+    mutable std::recursive_mutex d_cache_lock_mutex;
 
     typedef struct _persistence_list {
         BESContainerStorage *_persistence_obj;

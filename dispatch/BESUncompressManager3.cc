@@ -247,7 +247,7 @@ bool BESUncompressManager3::uncompress(const string &src, string &cache_file, BE
  */
 void BESUncompressManager3::dump(ostream &strm) const
 {
-    //std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     strm << BESIndent::LMarg << "BESUncompressManager3::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();

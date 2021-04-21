@@ -30,17 +30,19 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <mutex>
+
 #include "BESReturnManager.h"
 
+using namespace std;
 using std::endl;
 using std::ostream;
 using std::string;
 
-BESReturnManager *BESReturnManager::_instance = 0;
+BESReturnManager *BESReturnManager::d_instance = nullptr;
+std::once_flag d_euc_init_once;
 
-BESReturnManager::BESReturnManager()
-{
-}
+BESReturnManager::BESReturnManager() {}
 
 BESReturnManager::~BESReturnManager()
 {
@@ -54,6 +56,8 @@ BESReturnManager::~BESReturnManager()
 
 bool BESReturnManager::add_transmitter(const string &name, BESTransmitter *transmitter)
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
 	if (find_transmitter(name) == 0) {
 		_transmitter_list[name] = transmitter;
 		return true;
@@ -63,6 +67,8 @@ bool BESReturnManager::add_transmitter(const string &name, BESTransmitter *trans
 
 bool BESReturnManager::del_transmitter(const string &name)
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
 	bool ret = false;
 	BESReturnManager::Transmitter_iter i;
 	i = _transmitter_list.find(name);
@@ -78,6 +84,8 @@ bool BESReturnManager::del_transmitter(const string &name)
 BESTransmitter *
 BESReturnManager::find_transmitter(const string &name)
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
 	BESReturnManager::Transmitter_citer i;
 	i = _transmitter_list.find(name);
 	if (i != _transmitter_list.end()) {
@@ -95,6 +103,8 @@ BESReturnManager::find_transmitter(const string &name)
  */
 void BESReturnManager::dump(ostream &strm) const
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
 	strm << BESIndent::LMarg << "BESReturnManager::dump - (" << (void *) this << ")" << endl;
 	BESIndent::Indent();
 	if (_transmitter_list.size()) {
@@ -119,9 +129,19 @@ void BESReturnManager::dump(ostream &strm) const
 BESReturnManager *
 BESReturnManager::TheManager()
 {
-	if (_instance == 0) {
-		_instance = new BESReturnManager;
-	}
-	return _instance;
+    std::call_once(d_euc_init_once, BESReturnManager::initialize_instance);
+    return d_instance;
+}
+
+void BESReturnManager::initialize_instance() {
+    d_instance = new BESReturnManager;
+#ifdef HAVE_ATEXIT
+    atexit(delete_instance);
+#endif
+}
+
+void BESReturnManager::delete_instance() {
+    delete d_instance;
+    d_instance = 0;
 }
 

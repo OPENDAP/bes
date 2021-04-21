@@ -51,7 +51,7 @@ class BESInfo;
 class BESContextManager: public BESObj {
 private:
     static BESContextManager * d_instance;
-    std::recursive_mutex d_cache_lock_mutex;
+    mutable std::recursive_mutex d_cache_lock_mutex;
 
     static void initialize_instance();
     static void delete_instance();

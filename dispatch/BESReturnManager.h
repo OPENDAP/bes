@@ -35,6 +35,7 @@
 
 #include <map>
 #include <string>
+#include <mutex>
 
 #include "BESObj.h"
 #include "BESDataHandlerInterface.h"
@@ -48,12 +49,17 @@ class BESTransmitter;
  */
 class BESReturnManager: public BESObj {
 private:
-	static BESReturnManager * _instance;
+	static BESReturnManager * d_instance;
+    mutable std::recursive_mutex d_cache_lock_mutex;
+
+    static void initialize_instance();
+    static void delete_instance();
 
 	std::map<std::string, BESTransmitter *> _transmitter_list;
-protected:
-	BESReturnManager();
+
 public:
+
+	BESReturnManager();
 	virtual ~BESReturnManager();
 
 	typedef std::map<std::string, BESTransmitter *>::const_iterator Transmitter_citer;
