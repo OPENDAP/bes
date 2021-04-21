@@ -495,7 +495,7 @@ StareIntersectionFunction::stare_intersection_dap4_function(D4RValueList *args, 
 
      //Read the data file and store the values of each dataset into an array
     vector<dods_uint64> dep_var_stare_indices;
-    get_sidecar_uint64_values(fullPath, dependent_var, dep_var_stare_indices);
+    get_sidecar_uint64_values_2(fullPath, dependent_var, dep_var_stare_indices);
 
     // TODO: We can dump the values in 'stare_indices' here
     vector<dods_uint64> target_s_indices;
@@ -552,7 +552,7 @@ StareCountFunction::stare_count_dap4_function(D4RValueList *args, DMR &dmr)
 
     //Read the data file and store the values of each dataset into an array
     vector<dods_uint64> dep_var_stare_indices;
-    get_sidecar_uint64_values(fullPath, dependent_var, dep_var_stare_indices);
+    get_sidecar_uint64_values_2(fullPath, dependent_var, dep_var_stare_indices);
 
     // TODO: We can dump the values in 'stare_indices' here
     vector<dods_uint64> target_s_indices;
@@ -599,7 +599,7 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
 
     //Read the data file and store the values of each dataset into an array
     vector<dods_uint64> dep_var_stare_indices;
-    get_sidecar_uint64_values(fullPath, dependent_var, dep_var_stare_indices);
+    get_sidecar_uint64_values_2(fullPath, dependent_var, dep_var_stare_indices);
 
     // TODO: We can dump the values in 'stare_indices' here
     vector<dods_uint64> target_s_indices;
@@ -670,7 +670,7 @@ StareSubsetArrayFunction::stare_subset_array_dap4_function(D4RValueList *args, D
 
     //Read the data file and store the values of each dataset into an array
     vector<dods_uint64> dep_var_stare_indices;
-    get_sidecar_uint64_values(fullPath, dependent_var, dep_var_stare_indices);
+    get_sidecar_uint64_values_2(fullPath, dependent_var, dep_var_stare_indices);
 
     vector<dods_uint64> target_s_indices;
     read_stare_indices_from_function_argument(raw_stare_indices, target_s_indices);
