@@ -65,7 +65,7 @@ jobs:
           cd bes
           git submodule update --init
           autoreconf --force --install --verbose
-          ./configure --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+          ./configure --prefix=$prefix  --enable-developer
           make --jobs=$jobs
           make install
 
