@@ -31,6 +31,11 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include <mutex>
+#include "config.h"
+
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
 
 #include "BESResponseHandlerList.h"
 
@@ -41,6 +46,10 @@ using std::string;
 
 BESResponseHandlerList *BESResponseHandlerList::d_instance = nullptr;
 static std::once_flag d_euc_init_once;
+
+BESResponseHandlerList::BESResponseHandlerList() {}
+
+BESResponseHandlerList::~BESResponseHandlerList() {}
 
 /** @brief add a response handler to the list
  *

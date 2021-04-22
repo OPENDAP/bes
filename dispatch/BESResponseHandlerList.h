@@ -70,8 +70,8 @@ private:
     friend class resplistT;
 
 public:
-    BESResponseHandlerList() {}
-    virtual ~BESResponseHandlerList() {}
+    BESResponseHandlerList();
+    virtual ~BESResponseHandlerList();
 
     typedef std::map<std::string, p_response_handler>::const_iterator Handler_citer;
     typedef std::map<std::string, p_response_handler>::iterator Handler_iter;

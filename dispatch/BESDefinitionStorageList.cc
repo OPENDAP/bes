@@ -32,6 +32,11 @@
 
 #include <iostream>
 #include <mutex>
+#include "config.h"
+
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
 
 using namespace std;
 using std::endl;
