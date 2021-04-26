@@ -53,7 +53,7 @@ static std::once_flag d_euc_init_once;
 
 BESInfoList::~BESInfoList() {}
 
-BESInfoList::BESInfoList() {};
+BESInfoList::BESInfoList() {}
 
 bool
 BESInfoList::add_info_builder(const string &info_type,
