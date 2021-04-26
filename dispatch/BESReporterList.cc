@@ -35,7 +35,6 @@
 #include "BESReporterList.h"
 #include "BESReporter.h"
 
-using namespace std;
 using std::endl;
 using std::ostream;
 using std::string;

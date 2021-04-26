@@ -42,7 +42,6 @@
 #include "BESInfo.h"
 #include "TheBESKeys.h"
 
-using namespace std;
 using std::endl;
 using std::ostream;
 using std::string;

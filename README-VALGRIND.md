@@ -7,6 +7,9 @@
 
 `valgrind --max-stackframe=2142999 --leak-check=full --show-reachable=yes --error-limit=no --gen-suppressions=all --log-file=test_bes_make.txt make
 `
+
+If in the log file you get "Warning: client switching stacks?..." then use `--max-stackframe` option to get clean output.
+
 ## 2. Get suppression file 
 ####(vg-test_bes_make.supp)
 

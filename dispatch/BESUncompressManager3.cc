@@ -31,7 +31,6 @@
 
 #include <sstream>
 
-using namespace std;
 using std::istringstream;
 using std::endl;
 using std::ostream;

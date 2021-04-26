@@ -41,7 +41,6 @@
 #include "BESInfo.h"
 #include "BESDebug.h"
 
-using namespace std;
 using std::endl;
 using std::string;
 using std::ostream;

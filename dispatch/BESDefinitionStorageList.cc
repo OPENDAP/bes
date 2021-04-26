@@ -38,7 +38,6 @@
 #include <stdlib.h>
 #endif
 
-using namespace std;
 using std::endl;
 using std::string;
 using std::ostream;

@@ -39,7 +39,6 @@
 
 #include "BESResponseHandlerList.h"
 
-using namespace std;
 using std::endl;
 using std::ostream;
 using std::string;
