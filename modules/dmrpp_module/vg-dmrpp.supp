@@ -1,0 +1,162 @@
+# Valgrind suppress file. See ValgrindHelp.txt
+{
+   DMRPP xmlBufferCreateSize
+   Memcheck:Leak
+   ...
+   fun:xmlBufferCreateSize
+   ...
+}
+{
+  DMRPP curl_easy_perform
+   Memcheck:Leak
+   ...
+   fun:curl_easy_perform
+   ...
+}
+{
+  DMRPP Curl_cookie_init
+   Memcheck:Leak
+   ...
+   fun:Curl_cookie_init
+   ...
+}
+{
+  DMRPP __fopen_internal
+   Memcheck:Leak
+   ...
+   fun:__fopen_internal
+   ...
+}
+{
+  DMRPP allocate_dtv
+   Memcheck:Leak
+   ...
+   fun:allocate_dtv
+   ...
+}
+{
+  DMRPP __new_exitfn
+   Memcheck:Leak
+   ...
+   fun:__new_exitfn
+   ...
+}
+{
+  DMRPP xmlBufferCreateSize
+   Memcheck:Leak
+   ...
+   fun:xmlBufferCreateSize
+   ...
+}
+{
+  DMRPP _Znam
+   Memcheck:Leak
+   ...
+   fun:_Znam
+   ...
+}
+{
+   DMRPP strdup
+   Memcheck:Leak
+   ...
+   fun:strdup
+   ...
+}
+{
+   DMRPP xmlStrndup
+   Memcheck:Leak
+   ...
+   fun:xmlStrndup
+   ...
+}
+{
+   DMRPP _PR_InitLinker
+   Memcheck:Leak
+   ...
+   fun:_PR_InitLinker
+   ...
+}
+{
+   DMRPP PR_NewLogModule
+   Memcheck:Leak
+   ...
+   fun:PR_NewLogModule
+   ...
+}
+{
+   DMRPP _PR_InitMW
+   Memcheck:Leak
+   ...
+   fun:_PR_InitMW
+   ...
+}
+{
+   DMRPP PR_ErrorInstallTable
+   Memcheck:Leak
+   ...
+   fun:PR_ErrorInstallTable
+   ...
+}
+{
+   DMRPP _Znwm
+   Memcheck:Leak
+   ...
+   fun:_Znwm
+   ...
+}
+{
+   DMRPP _dlerror_run
+   Memcheck:Leak
+   ...
+   fun:_dlerror_run
+   ...
+}
+{
+   DMRPP _PR_Getfd
+   Memcheck:Leak
+   ...
+   fun:_PR_Getfd
+   ...
+}
+{
+   DMRPP xmlNewCharEncodingHandler
+   Memcheck:Leak
+   ...
+   fun:xmlNewCharEncodingHandler
+   ...
+}
+{
+   DMRPP _PR_InitStuff
+   Memcheck:Leak
+   ...
+   fun:_PR_InitStuff
+   ...
+}
+{
+   DMRPP _dl_map_object
+   Memcheck:Leak
+   ...
+   fun:_dl_map_object
+   ...
+}
+{
+   DMRPP xmlCreatePushParserCtxt
+   Memcheck:Leak
+   ...
+   fun:xmlCreatePushParserCtxt
+   ...
+}
+{
+   DMRPP _ZN5dmrpp19DmrppRequestHandlerC1ERKSs
+   Memcheck:Leak
+   ...
+   fun:_ZN5dmrpp19DmrppRequestHandlerC1ERKSs
+   ...
+}
+{
+   DMRPP _Z14ce_exprreallocPvm
+   Memcheck:Leak
+   ...
+   fun:_Z14ce_exprreallocPvm
+   ...
+}
