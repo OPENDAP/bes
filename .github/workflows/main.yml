@@ -60,7 +60,7 @@ jobs:
           make install
 
       - name: build bes
-        needs: cache-lipdap4
+        uses: actions/cache@v2
         run: |
           git clone https://github.com/OPENDAP/bes
           cd bes
