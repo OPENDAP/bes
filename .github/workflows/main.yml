@@ -31,7 +31,7 @@ jobs:
         with:
           path: $prefix/deps
           key: deps-${{ runner.os }}
-
+ 
       - name: build dependencies
         if: steps.cache-deps.outputs.cache-hit != 'true'
         run: |
@@ -60,12 +60,13 @@ jobs:
           make install
 
       - name: build bes
+        needs: cache-lipdap4
         run: |
           git clone https://github.com/OPENDAP/bes
           cd bes
           git submodule update --init
           autoreconf --force --install --verbose
-          ./configure --prefix=$prefix  --enable-developer
+          ./configure --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
           make --jobs=$jobs
           make install
 
