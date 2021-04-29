@@ -65,7 +65,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: $prefix #${{steps.cache-libdap4.outputs.dir}}
-          key: libdap4-${{ runner.os }}
+          key: bes-${{ runner.os }}
         # run: |
         #   git clone https://github.com/OPENDAP/bes
         #   cd bes
