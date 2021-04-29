@@ -35,6 +35,7 @@
 
 #include <map>
 #include <string>
+#include <mutex>
 
 #include "BESObj.h"
 #include "BESDataHandlerInterface.h"
@@ -44,12 +45,18 @@ class BESReporter ;
 class BESReporterList : public BESObj
 {
 private:
-    static BESReporterList *	_instance ;
+    static BESReporterList * d_instance ;
+    mutable std::recursive_mutex d_cache_lock_mutex;
+
+    static void initialize_instance();
+    static void delete_instance();
+
     std::map< std::string, BESReporter * > _reporter_list ;
-protected:
-				BESReporterList(void) ;
+
 public:
-    virtual			~BESReporterList(void) ;
+    BESReporterList() ;
+
+    virtual	~BESReporterList() ;
 
     typedef std::map< std::string, BESReporter * >::const_iterator Reporter_citer ;
     typedef std::map< std::string, BESReporter * >::iterator Reporter_iter ;
@@ -59,9 +66,9 @@ public:
     virtual BESReporter *	remove_reporter( std::string reporter_name ) ;
     virtual BESReporter *	find_reporter( std::string reporter_name ) ;
 
-    virtual void		report( BESDataHandlerInterface &dhi ) ;
+    virtual void report( BESDataHandlerInterface &dhi ) ;
 
-    virtual void		dump( std::ostream &strm ) const ;
+    void dump( std::ostream &strm ) const override;
 
     static BESReporterList *	TheList() ;
 };

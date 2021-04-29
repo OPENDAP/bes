@@ -30,6 +30,8 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <mutex>
+
 #include "BESServiceRegistry.h"
 #include "BESInfo.h"
 #include "BESInternalError.h"
@@ -40,15 +42,12 @@ using std::string;
 using std::map;
 using std::list;
 
-BESServiceRegistry *BESServiceRegistry::_instance = 0 ;
+BESServiceRegistry *BESServiceRegistry::d_instance = nullptr ;
+static std::once_flag d_euc_init_once;
 
-BESServiceRegistry::BESServiceRegistry()
-{
-}
+BESServiceRegistry::BESServiceRegistry() {}
 
-BESServiceRegistry::~BESServiceRegistry()
-{
-}
+BESServiceRegistry::~BESServiceRegistry() {}
 
 /** @brief Add a service to the BES
  *
@@ -58,6 +57,8 @@ BESServiceRegistry::~BESServiceRegistry()
 void
 BESServiceRegistry::add_service( const string &name ) 
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     map<string,map<string,service_cmd> >::iterator i = _services.find( name ) ;
     if( i == _services.end() )
     {
@@ -92,6 +93,8 @@ BESServiceRegistry::add_to_service( const string &service,
 				    const string &cmd_descript,
 				    const string &format )
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     map<string,map<string,service_cmd> >::iterator si ;
     si = _services.find( service ) ;
     if( si != _services.end() )
@@ -131,6 +134,8 @@ BESServiceRegistry::add_format( const string &service,
 				const string &cmd,
 				const string &format )
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     map<string,map<string,service_cmd> >::iterator si ;
     si = _services.find( service ) ;
     if( si != _services.end() )
@@ -181,6 +186,8 @@ BESServiceRegistry::add_format( const string &service,
 void
 BESServiceRegistry::remove_service( const string &service )
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     map<string,map<string,service_cmd> >::iterator i ;
     i = _services.find( service ) ;
     if( i != _services.end() )
@@ -223,6 +230,8 @@ BESServiceRegistry::service_available( const string &service,
 				       const string &cmd,
 				       const string &format )
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     bool isit = false ;
     map<string,map<string,service_cmd> >::iterator si ;
     si = _services.find( service ) ;
@@ -271,6 +280,8 @@ void
 BESServiceRegistry::handles_service( const string &handler,
 				     const string &service )
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     map<string,map<string,service_cmd> >::iterator si ;
     si = _services.find( service ) ;
     if( si == _services.end() )
@@ -309,6 +320,8 @@ bool
 BESServiceRegistry::does_handle_service( const string &handler,
 					 const string &service )
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     bool handled = false ;
     map<string,map<string,string> >::iterator hi = _handles.find( handler ) ;
     if( hi != _handles.end() )
@@ -334,6 +347,8 @@ void
 BESServiceRegistry::services_handled( const string &handler,
 				      list<string> &services )
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     map<string,map<string,string> >::iterator hi = _handles.find( handler ) ;
     if( hi != _handles.end() )
     {
@@ -357,6 +372,8 @@ BESServiceRegistry::services_handled( const string &handler,
 void
 BESServiceRegistry::show_services( BESInfo &info )
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     map<string,map<string,service_cmd> >::iterator si = _services.begin() ;
     map<string,map<string,service_cmd> >::iterator se = _services.end() ;
     for( ; si != se; si++ )
@@ -396,6 +413,8 @@ BESServiceRegistry::show_services( BESInfo &info )
 void
 BESServiceRegistry::dump( ostream &strm ) const
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     strm << BESIndent::LMarg << "BESServiceRegistry::dump - ("
 			     << (void *)this << ")" << endl ;
     BESIndent::Indent() ;
@@ -459,10 +478,19 @@ BESServiceRegistry::dump( ostream &strm ) const
 BESServiceRegistry *
 BESServiceRegistry::TheRegistry()
 {
-    if( _instance == 0 )
-    {
-	_instance = new BESServiceRegistry ;
-    }
-    return _instance ;
+    std::call_once(d_euc_init_once,BESServiceRegistry::initialize_instance);
+    return d_instance;
+}
+
+void BESServiceRegistry::initialize_instance() {
+    d_instance = new BESServiceRegistry;
+#ifdef HAVE_ATEXIT
+    atexit(delete_instance);
+#endif
+}
+
+void BESServiceRegistry::delete_instance() {
+    delete d_instance;
+    d_instance = 0;
 }
 
