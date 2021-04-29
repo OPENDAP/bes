@@ -62,7 +62,7 @@ jobs:
           pwd
 
       - name: build bes
-        uses: cache-libdap4
+        uses: actions/cache@v2
         with:
           path: $prefix #${{steps.cache-libdap4.outputs.dir}}
           key: libdap4-${{ runner.os }}
