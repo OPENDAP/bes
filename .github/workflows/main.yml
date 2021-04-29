@@ -25,12 +25,12 @@ jobs:
       - name: Set PATH
         run: echo "$GITHUB_PATH:$prefix/deps/bin:$prefix/bin" >> $GITHUB_PATH
         
-      # - name: cache-deps
-      #   id: cache-deps
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: $prefix/deps
-      #     key: deps-${{ runner.os }}
+      - name: cache-deps
+        id: cache-deps
+        uses: actions/cache@v2
+        with:
+          path: $prefix/deps
+          key: deps-${{ runner.os }}
 
       - name: build dependencies
         if: steps.cache-deps.outputs.cache-hit != 'true'
@@ -42,12 +42,12 @@ jobs:
           gdal-config --formats
           pwd
 
-      # - name: cache-libdap4
-      #   id: cache-libdap4
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: $prefix
-      #     key: libdap4-${{ runner.os }}
+      - name: cache-libdap4
+        id: cache-libdap4
+        uses: actions/cache@v2
+        with:
+          path: $prefix
+          key: libdap4-${{ runner.os }}
 
       - name: build libdap4
         if: steps.cache-libdap4.outputs.cache-hit != 'true'
@@ -62,15 +62,19 @@ jobs:
           pwd
 
       - name: build bes
-        run: |
-          git clone https://github.com/OPENDAP/bes
-          cd bes
-          git submodule update --init
-          autoreconf --force --install --verbose
-          pwd
-          ./configure --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-          make --jobs=$jobs
-          make install
+        uses: cache-libdap4
+        with:
+          path: $prefix #${{steps.cache-libdap4.outputs.dir}}
+          key: libdap4-${{ runner.os }}
+        # run: |
+        #   git clone https://github.com/OPENDAP/bes
+        #   cd bes
+        #   git submodule update --init
+        #   autoreconf --force --install --verbose
+        #   pwd
+        #   ./configure --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+        #   make --jobs=$jobs
+        #   make install
 
       - name: checkout
         uses: actions/checkout@v2
