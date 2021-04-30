@@ -20,8 +20,8 @@ jobs:
     
     steps:
       - name: Packages
-        run: sudo apt-get --yes install libxml2-dev uuid-dev libcurl4-openssl-dev libcppunit-dev libicu-dev libgdal-dev libfl-dev gcovr
-     
+        run: sudo apt-get --yes install libxml2-dev uuid-dev libcurl4-openssl-dev libcppunit-dev libfl-dev gcovr
+        # libicu-dev libgdal-dev Removed
       - name: Set PATH
         run: echo "$prefix/deps/bin:$prefix/bin" >> $GITHUB_PATH
         
