@@ -16,7 +16,7 @@ on:
 
 jobs:
   ubuntu-build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-16.04
     
     steps:
       - name: Packages
@@ -40,7 +40,7 @@ jobs:
           git checkout gdal314
           make --jobs=$jobs
           gdal-config --formats
-          pwd
+          
 
       - name: cache-libdap4
         id: cache-libdap4
@@ -59,22 +59,21 @@ jobs:
           make --jobs=$jobs
           make check --jobs=$jobs
           make install
-          pwd
+          
 
       - name: build bes
         uses: actions/cache@v2
         with:
-          path: $prefix #${{steps.cache-libdap4.outputs.dir}}
+          path: $prefix 
           key: bes-${{ runner.os }}
-        # run: |
-        #   git clone https://github.com/OPENDAP/bes
-        #   cd bes
-        #   git submodule update --init
-        #   autoreconf --force --install --verbose
-        #   pwd
-        #   ./configure --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-        #   make --jobs=$jobs
-        #   make install
+        run: |
+          git clone https://github.com/OPENDAP/bes
+          cd bes
+          git submodule update --init
+          autoreconf --force --install --verbose
+          ./configure --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+          make --jobs=$jobs
+          make install
 
       - name: checkout
         uses: actions/checkout@v2
