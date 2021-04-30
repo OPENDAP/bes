@@ -22,8 +22,8 @@ jobs:
       - name: Packages
         run: sudo apt-get --yes install libxml2-dev uuid-dev libcurl4-openssl-dev libcppunit-dev libicu-dev libgdal-dev libfl-dev
      
-      - name: Set PATH
-        run: echo "$GITHUB_PATH:$prefix/deps/bin:$prefix/bin" >> $GITHUB_PATH
+      # - name: Set PATH
+      #   run: echo "$GITHUB_PATH:$prefix/deps/bin:$prefix/bin" >> $GITHUB_PATH
         
       - name: cache-deps
         id: cache-deps
