@@ -36,6 +36,9 @@ jobs:
       - name: build dependencies
         if: steps.cache-bison.outputs.cache-hit != 'true'
         run: |
+          echo "PATH: $PATH"
+          echo "which dap-config: `which dap-config`"
+          dap-config --version --cflags
           git clone https://github.com/OPENDAP/hyrax-dependencies
           cd hyrax-dependencies
           # git checkout gdal314
