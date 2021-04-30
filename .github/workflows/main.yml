@@ -9,7 +9,7 @@ env:
 
 on:
   push:
-    branches: [ master gdal314 actions-build ]
+    branches: [ master, actions-build ]
   pull_request:
     branches: [ master gdal314 actions-build ]
   workflow_dispatch:
