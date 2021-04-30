@@ -21,7 +21,7 @@ jobs:
     steps:
       - name: Packages
         run: sudo apt-get --yes install libxml2-dev uuid-dev libcurl4-openssl-dev libcppunit-dev libfl-dev gcovr
-        # libicu-dev libgdal-dev Removed
+
       - name: Set PATH
         run: echo "$prefix/deps/bin:$prefix/bin" >> $GITHUB_PATH
         
@@ -32,17 +32,13 @@ jobs:
           path: $prefix/deps
           key: deps-${{ runner.os }}
 
-      # TODO Build only bison for initial tests
       - name: build dependencies
         if: steps.cache-bison.outputs.cache-hit != 'true'
         run: |
           echo "PATH: $PATH"
-          echo "which dap-config: `which dap-config`"
           git clone https://github.com/OPENDAP/hyrax-dependencies
           cd hyrax-dependencies
-          # git checkout gdal314
-          make --jobs=$jobs bison
-          # gdal-config --formats
+          make --jobs=$jobs
 
       - name: cache-libdap4
         id: cache-libdap4
