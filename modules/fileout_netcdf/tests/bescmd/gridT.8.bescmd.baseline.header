@@ -3,7 +3,4 @@ dimensions:
 	i = 2 ;
 variables:
 	int i(i) ;
-
-// global attributes:
-		:history = "removed date-timex gridT.dods?order.i" ;
 }
