@@ -62,10 +62,6 @@ jobs:
           
 
       - name: build bes
-        uses: actions/cache@v2
-        with:
-          path: $prefix 
-          key: bes-${{ runner.os }}
         run: |
           git clone https://github.com/OPENDAP/bes
           cd bes
