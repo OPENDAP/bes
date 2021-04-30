@@ -30,7 +30,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: $prefix/deps
-          key: deps-${{ runner.os }}
+          key: bison-${{ runner.os }}
 
       - name: build dependencies
         if: steps.cache-deps.outputs.cache-hit != 'true'
