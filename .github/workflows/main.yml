@@ -32,8 +32,8 @@ jobs:
           path: $prefix/deps
           key: deps-${{ runner.os }}
 
-      - name: cache-deps
-        id: cache-deps
+      - name: cache-depss
+        id: cache-depss
         uses: actions/cache@v2
         with:
           path: $prefix/deps
