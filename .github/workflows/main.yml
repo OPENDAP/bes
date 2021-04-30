@@ -25,29 +25,22 @@ jobs:
       - name: Set PATH
         run: echo "$GITHUB_PATH:$prefix/deps/bin:$prefix/bin" >> $GITHUB_PATH
         
-      # - name: cache-deps
-      #   id: cache-deps
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: $prefix/deps
-      #     key: deps-${{ runner.os }}
-
-      - name: cache-bison
-        id: cache-bison 
+      - name: cache-deps
+        id: cache-deps
         uses: actions/cache@v2
         with:
           path: $prefix/deps
-          key: bison-${{ runner.os }}
+          key: deps-${{ runner.os }}
 
+      # TODO Build only bison for initial tests
       - name: build dependencies
         if: steps.cache-bison.outputs.cache-hit != 'true'
         run: |
           git clone https://github.com/OPENDAP/hyrax-dependencies
           cd hyrax-dependencies
-          git checkout gdal314
-          make --jobs=$jobs
-          gdal-config --formats
-          
+          # git checkout gdal314
+          make --jobs=$jobs bison
+          # gdal-config --formats
 
       - name: cache-libdap4
         id: cache-libdap4
@@ -66,13 +59,12 @@ jobs:
           make --jobs=$jobs
           make check --jobs=$jobs
           make install
-          
 
       - name: build bes
         run: |
-          git clone https://github.com/OPENDAP/bes
+          git clone --recurse-submodules https://github.com/OPENDAP/bes
           cd bes
-          git submodule update --init
+          # git submodule update --init
           autoreconf --force --install --verbose
           ./configure --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
           make --jobs=$jobs
