@@ -39,6 +39,18 @@ jobs:
           path: $prefix/deps
           key: bison-${{ runner.os }}
 
+      - name: cache-bisonS
+        id: cache-bisonS
+        run: |
+            ls
+
+      - name: cache-bisonss
+        id: cache-bisonss 
+        uses: actions/cache@v2
+        with:
+          path: $prefix/deps
+          key: bison-${{ runner.os }}
+
 
 
       # - name: build dependencies
