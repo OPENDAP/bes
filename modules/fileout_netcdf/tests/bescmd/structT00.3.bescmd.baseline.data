@@ -10,9 +10,6 @@ variables:
 	float mystruct.f32 ;
 	double mystruct.f64 ;
 	char mystruct.str(mystruct.str_len) ;
-
-// global attributes:
-		:history = "removed date-timex structT00.dods?" ;
 data:
 
  mystruct.byte = 28 ;
