@@ -40,50 +40,50 @@ jobs:
           cd hyrax-dependencies
           make --jobs=$jobs
 
-      - name: cache-libdap4
-        id: cache-libdap4
-        uses: actions/cache@v2
-        with:
-          path: $prefix
-          key: libdap4-${{ runner.os }}
-
-      - name: build libdap4
-        if: steps.cache-libdap4.outputs.cache-hit != 'true'
-        run: |
-          git clone https://github.com/OPENDAP/libdap4
-          cd libdap4
-          autoreconf --force --install --verbose
-          ./configure --prefix=$prefix --enable-developer
-          make --jobs=$jobs
-          make check --jobs=$jobs
-          make install
-
-#      - name: build bes
+#      - name: cache-libdap4
+#        id: cache-libdap4
+#        uses: actions/cache@v2
+#        with:
+#          path: $prefix
+#          key: libdap4-${{ runner.os }}
+#
+#      - name: build libdap4
+#        if: steps.cache-libdap4.outputs.cache-hit != 'true'
 #        run: |
-#          git clone --recurse-submodules https://github.com/OPENDAP/bes
-#          cd bes
+#          git clone https://github.com/OPENDAP/libdap4
+#          cd libdap4
 #          autoreconf --force --install --verbose
-#          ./configure --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+#          ./configure --prefix=$prefix --enable-developer
 #          make --jobs=$jobs
+#          make check --jobs=$jobs
 #          make install
-
-      - name: checkout
-        # https://github.com/actions/checkout
-        uses: actions/checkout@v2
-        with:
-          submodules: 'recursive'
-
-      - name: autoreconf
-        run: autoreconf --force --install --verbose
-
-      - name: configure
-        run: ./configure --prefix=$prefix --with-dependecies=$prefix/deps --enable-developer
-
-      - name: Make
-        run: make --jobs=$jobs
-
-      - name: Check
-        run: make --jobs=$jobs check
-
-      - name: Install
-        run: make install
+#
+##      - name: build bes
+##        run: |
+##          git clone --recurse-submodules https://github.com/OPENDAP/bes
+##          cd bes
+##          autoreconf --force --install --verbose
+##          ./configure --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+##          make --jobs=$jobs
+##          make install
+#
+#      - name: checkout
+#        # https://github.com/actions/checkout
+#        uses: actions/checkout@v2
+#        with:
+#          submodules: 'recursive'
+#
+#      - name: autoreconf
+#        run: autoreconf --force --install --verbose
+#
+#      - name: configure
+#        run: ./configure --prefix=$prefix --with-dependecies=$prefix/deps --enable-developer
+#
+#      - name: Make
+#        run: make --jobs=$jobs
+#
+#      - name: Check
+#        run: make --jobs=$jobs check
+#
+#      - name: Install
+#        run: make install
