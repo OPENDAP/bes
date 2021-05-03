@@ -11,7 +11,7 @@ on:
   push:
     branches: [ master, actions-build ]
   pull_request:
-    branches: [ master gdal314 actions-build ]
+    branches: [ master, actions-build ]
   workflow_dispatch:
 
 jobs:
@@ -58,18 +58,20 @@ jobs:
           make check --jobs=$jobs
           make install
 
-      - name: build bes
-        run: |
-          git clone --recurse-submodules https://github.com/OPENDAP/bes
-          cd bes
-          # git submodule update --init
-          autoreconf --force --install --verbose
-          ./configure --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-          make --jobs=$jobs
-          make install
+#      - name: build bes
+#        run: |
+#          git clone --recurse-submodules https://github.com/OPENDAP/bes
+#          cd bes
+#          autoreconf --force --install --verbose
+#          ./configure --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+#          make --jobs=$jobs
+#          make install
 
       - name: checkout
+        # https://github.com/actions/checkout
         uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'
 
       - name: autoreconf
         run: autoreconf --force --install --verbose
