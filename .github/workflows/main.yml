@@ -40,23 +40,23 @@ jobs:
           cd hyrax-dependencies
           make --jobs=$jobs
 
-#      - name: cache-libdap4
-#        id: cache-libdap4
-#        uses: actions/cache@v2
-#        with:
-#          path: $prefix
-#          key: libdap4-${{ runner.os }}
-#
-#      - name: build libdap4
-#        if: steps.cache-libdap4.outputs.cache-hit != 'true'
-#        run: |
-#          git clone https://github.com/OPENDAP/libdap4
-#          cd libdap4
-#          autoreconf --force --install --verbose
-#          ./configure --prefix=$prefix --enable-developer
-#          make --jobs=$jobs
-#          make check --jobs=$jobs
-#          make install
+      - name: cache-libdap4
+        id: cache-libdap4
+        uses: actions/cache@v2
+        with:
+          path: $prefix
+          key: libdap4-${{ runner.os }}
+
+      - name: build libdap4
+        if: steps.cache-libdap4.outputs.cache-hit != 'true'
+        run: |
+          git clone https://github.com/OPENDAP/libdap4
+          cd libdap4
+          autoreconf --force --install --verbose
+          ./configure --prefix=$prefix --enable-developer
+          make --jobs=$jobs
+          make check --jobs=$jobs
+          make install
 #
 ##      - name: build bes
 ##        run: |
