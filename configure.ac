@@ -20,7 +20,7 @@ AC_ARG_WITH([build],
 
 dnl If a build number is given and valid (it must be an integer), use it. If it's
 dnl given but invalid, print a message and exit.
-dnl PACKAGE_VERSION is used in the file VERSION.in - and that file is used to inject
+dnl PACKAGE_VERSION is used in the file bes_VERSION.in - and that file is used to inject
 dnl the version or version-build_number into packages. jhrg 3/24/21
 AS_IF([test -n "$with_build"],
     [AS_IF([echo $build_number | grep '^[[0-9]][[-0-9.]]*$' > /dev/null 2>&1 ],
@@ -946,7 +946,7 @@ AH_BOTTOM([
 #endif /* _config_h */])
 
 AC_CONFIG_FILES([Makefile
-		 VERSION
+		 bes_VERSION
 		 bes.spec
 		 bes.spec.all_static
 		 abi_checker.xml
