@@ -195,7 +195,7 @@ jobs:
       # other operations that use the bes source code. Note that the VERSION file holds a
       # string that is the version number as set by the configure script and the build
       # number passed into configure when it is run. jhrg 3/23/21
-      - SOURCE_VERSION=$(cat VERSION)
+      - SOURCE_VERSION=$(cat bes_VERSION)
       - mv bes-*.tar.gz bes-$SOURCE_VERSION.tar.gz
       - cp bes-$SOURCE_VERSION.tar.gz bes-snapshot.tar.gz
 
