@@ -35,6 +35,7 @@
 
 #include <map>
 #include <string>
+#include <mutex>
 
 #include "BESObj.h"
 
@@ -58,20 +59,19 @@ typedef BESResponseHandler * (*p_response_handler)(const std::string &name);
  */
 class BESResponseHandlerList: public BESObj {
 private:
-    static BESResponseHandlerList * _instance;
+    static BESResponseHandlerList * d_instance;
+    mutable std::recursive_mutex d_cache_lock_mutex;
+
+    static void initialize_instance();
+    static void delete_instance();
+
     std::map<std::string, p_response_handler> _handler_list;
 
     friend class resplistT;
 
-protected:
-    BESResponseHandlerList(void)
-    {
-    }
-
 public:
-    virtual ~BESResponseHandlerList(void)
-    {
-    }
+    BESResponseHandlerList();
+    virtual ~BESResponseHandlerList();
 
     typedef std::map<std::string, p_response_handler>::const_iterator Handler_citer;
     typedef std::map<std::string, p_response_handler>::iterator Handler_iter;

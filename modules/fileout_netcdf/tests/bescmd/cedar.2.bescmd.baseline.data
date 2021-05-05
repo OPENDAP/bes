@@ -1441,9 +1441,6 @@ variables:
 	short mfp920504a.data_record_32.MPAR.e_vnpnh(dim478) ;
 	short mfp920504a.data_record_32.MPAR.vnpe(dim479) ;
 	short mfp920504a.data_record_32.MPAR.e_vnpe(dim480) ;
-
-// global attributes:
-		:history = "removed date-timex cedar.dods?" ;
 data:
 
  mfp920504a.data_record_1.prologue.KINST = 5340 ;

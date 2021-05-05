@@ -33,6 +33,7 @@ variables:
 		:root_attr_int64_scalar = 9223372036854775807LL ;
 		:grp_int64.grp_attr_int64 = 9223372036854775807LL, -9223372036854775808LL ;
 		:grp_int64.grp_attr_int64_scalar = 9223372036854775807LL ;
+		:history = "removed date-timex t_int64_dap4.h5?" ;
 		:grp_int64.fullnamepath = "/grp_int64" ;
 data:
 

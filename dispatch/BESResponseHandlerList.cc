@@ -30,13 +30,25 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <mutex>
+#include "config.h"
+
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
+
 #include "BESResponseHandlerList.h"
 
 using std::endl;
 using std::ostream;
 using std::string;
 
-BESResponseHandlerList *BESResponseHandlerList::_instance = 0;
+BESResponseHandlerList *BESResponseHandlerList::d_instance = nullptr;
+static std::once_flag d_euc_init_once;
+
+BESResponseHandlerList::BESResponseHandlerList() {}
+
+BESResponseHandlerList::~BESResponseHandlerList() {}
 
 /** @brief add a response handler to the list
  *
@@ -54,6 +66,8 @@ BESResponseHandlerList *BESResponseHandlerList::_instance = 0;
  */
 bool BESResponseHandlerList::add_handler(const string &handler_name, p_response_handler handler_method)
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     BESResponseHandlerList::Handler_citer i = _handler_list.find(handler_name);
     if (i == _handler_list.end()) {
         _handler_list[handler_name] = handler_method;
@@ -73,6 +87,8 @@ bool BESResponseHandlerList::add_handler(const string &handler_name, p_response_
  */
 bool BESResponseHandlerList::remove_handler(const string &handler_name)
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     BESResponseHandlerList::Handler_iter i = _handler_list.find(handler_name);
     if (i != _handler_list.end()) {
         _handler_list.erase(i);
@@ -96,6 +112,8 @@ bool BESResponseHandlerList::remove_handler(const string &handler_name)
 BESResponseHandler *
 BESResponseHandlerList::find_handler(const string &handler_name)
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     BESResponseHandlerList::Handler_citer i = _handler_list.find(handler_name);
     if (i != _handler_list.end()) {
         p_response_handler p = (*i).second;
@@ -115,6 +133,8 @@ BESResponseHandlerList::find_handler(const string &handler_name)
  */
 string BESResponseHandlerList::get_handler_names()
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     string ret = "";
     bool first_name = true;
     BESResponseHandlerList::Handler_citer i = _handler_list.begin();
@@ -135,6 +155,8 @@ string BESResponseHandlerList::get_handler_names()
  */
 void BESResponseHandlerList::dump(ostream &strm) const
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     strm << BESIndent::LMarg << "BESResponseHandlerList::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     if (_handler_list.size()) {
@@ -156,9 +178,19 @@ void BESResponseHandlerList::dump(ostream &strm) const
 BESResponseHandlerList *
 BESResponseHandlerList::TheList()
 {
-    if (_instance == 0) {
-        _instance = new BESResponseHandlerList;
-    }
-    return _instance;
+    std::call_once(d_euc_init_once,BESResponseHandlerList::initialize_instance);
+    return d_instance;
+}
+
+void BESResponseHandlerList::initialize_instance() {
+    d_instance = new BESResponseHandlerList;
+#ifdef HAVE_ATEXIT
+    atexit(delete_instance);
+#endif
+}
+
+void BESResponseHandlerList::delete_instance() {
+    delete d_instance;
+    d_instance = 0;
 }
 

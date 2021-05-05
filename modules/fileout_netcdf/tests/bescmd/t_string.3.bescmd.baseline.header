@@ -29,5 +29,4 @@ variables:
 
 // global attributes:
 		:HDF5_ROOT_GROUP.Dataset = "array_1d\narray_2d\narray_special_case\nscalar" ;
-		:history = "removed date-timex t_string.h5.dods?" ;
 }

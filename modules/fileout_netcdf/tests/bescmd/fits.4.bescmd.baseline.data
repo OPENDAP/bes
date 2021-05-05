@@ -1188,9 +1188,6 @@ variables:
 	char c.HDU_2.key_121.value(c.HDU_2.key_121.value_len) ;
 	char c.HDU_2.key_121.comment(c.HDU_2.key_121.comment_len) ;
 	ubyte c.HDU_2.HDU_2_IMAGE(c.HDU_2.NAXIS0) ;
-
-// global attributes:
-		:history = "removed date-timex fits.dods?" ;
 data:
 
  c.HDU_1.key_1.name = "SIMPLE" ;

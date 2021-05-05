@@ -12,9 +12,6 @@ variables:
 	char s1.s2.str(s1.s2.str_len) ;
 	int s1.s2.s3.i32 ;
 	float s1.s2.s3.f32 ;
-
-// global attributes:
-		:history = "removed date-timex structT01.dods?" ;
 data:
 
  s1.byte = 28 ;

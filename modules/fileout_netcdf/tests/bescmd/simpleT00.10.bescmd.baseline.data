@@ -1,9 +1,6 @@
 netcdf test {
 variables:
 	ubyte byte ;
-
-// global attributes:
-		:history = "removed date-timex simpleT00.dods?byte" ;
 data:
 
  byte = 28 ;

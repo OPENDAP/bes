@@ -22,13 +22,21 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
+
+#include "config.h"
+
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
+
+#include <mutex>
 
 #include "BESInfoList.h"
 #include "BESInfo.h"
@@ -40,64 +48,63 @@ using std::string;
 
 #define BES_DEFAULT_INFO_TYPE "txt"
 
-BESInfoList *BESInfoList::_instance = 0 ;
+BESInfoList *BESInfoList::d_instance = nullptr;
+static std::once_flag d_euc_init_once;
 
-BESInfoList::BESInfoList()
-{
-}
+BESInfoList::~BESInfoList() {}
 
-BESInfoList::~BESInfoList()
-{
+BESInfoList::BESInfoList() {}
+
+bool
+BESInfoList::add_info_builder(const string &info_type,
+                              p_info_builder info_builder) {
+
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
+    BESInfoList::Info_citer i;
+    i = _info_list.find(info_type);
+    if (i == _info_list.end()) {
+        _info_list[info_type] = info_builder;
+        return true;
+    }
+    return false;
 }
 
 bool
-BESInfoList::add_info_builder( const string &info_type,
-			       p_info_builder info_builder )
-{
-    BESInfoList::Info_citer i ;
-    i = _info_list.find( info_type ) ;
-    if( i == _info_list.end() )
-    {
-	_info_list[info_type] = info_builder ;
-	return true ;
-    }
-    return false ;
-}
+BESInfoList::rem_info_builder(const string &info_type) {
 
-bool
-BESInfoList::rem_info_builder( const string &info_type )
-{
-    BESInfoList::Info_iter i ;
-    i = _info_list.find( info_type ) ;
-    if( i != _info_list.end() )
-    {
-	_info_list.erase( i ) ;
-	return true ;
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
+    BESInfoList::Info_iter i;
+    i = _info_list.find(info_type);
+    if (i != _info_list.end()) {
+        _info_list.erase(i);
+        return true;
     }
-    return false ;
+    return false;
 }
 
 BESInfo *
-BESInfoList::build_info( )
-{
-    string info_type = "" ;
-    bool found = false ;
-    TheBESKeys::TheKeys()->get_value( "BES.Info.Type", info_type, found ) ;
+BESInfoList::build_info() {
 
-    if( !found || info_type == "" )
-	info_type = BES_DEFAULT_INFO_TYPE ;
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    BESInfoList::Info_citer i ;
-    i = _info_list.find( info_type ) ;
-    if( i != _info_list.end() )
-    {
-	p_info_builder p = (*i).second ;
-	if( p )
-	{
-	    return p( info_type ) ;
-	}
+    string info_type = "";
+    bool found = false;
+    TheBESKeys::TheKeys()->get_value("BES.Info.Type", info_type, found);
+
+    if (!found || info_type == "")
+        info_type = BES_DEFAULT_INFO_TYPE;
+
+    BESInfoList::Info_citer i;
+    i = _info_list.find(info_type);
+    if (i != _info_list.end()) {
+        p_info_builder p = (*i).second;
+        if (p) {
+            return p(info_type);
+        }
     }
-    return 0 ;
+    return 0;
 }
 
 /** @brief dumps information about this object
@@ -108,47 +115,49 @@ BESInfoList::build_info( )
  * @param strm C++ i/o stream to dump the information to
  */
 void
-BESInfoList::dump( ostream &strm ) const
-{
+BESInfoList::dump(ostream &strm) const {
+
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     strm << BESIndent::LMarg << "BESInfoList::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    if( _info_list.size() )
-    {
-	strm << BESIndent::LMarg << "registered builders:" << endl ;
-	BESIndent::Indent() ;
-	BESInfoList::Info_citer i = _info_list.begin() ;
-	BESInfoList::Info_citer ie = _info_list.end() ;
-	for( ; i != ie; i++ )
-	{
-	    p_info_builder p = (*i).second ;
-	    if( p )
-	    {
-		BESInfo *info = p( "dump" ) ;
-		info->dump( strm ) ;
-		delete info ;
-	    }
-	    else
-	    {
-		strm << BESIndent::LMarg << "builder is null" << endl ;
-	    }
-	}
-	BESIndent::UnIndent() ;
+         << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    if (_info_list.size()) {
+        strm << BESIndent::LMarg << "registered builders:" << endl;
+        BESIndent::Indent();
+        BESInfoList::Info_citer i = _info_list.begin();
+        BESInfoList::Info_citer ie = _info_list.end();
+        for (; i != ie; i++) {
+            p_info_builder p = (*i).second;
+            if (p) {
+                BESInfo *info = p("dump");
+                info->dump(strm);
+                delete info;
+            } else {
+                strm << BESIndent::LMarg << "builder is null" << endl;
+            }
+        }
+        BESIndent::UnIndent();
+    } else {
+        strm << BESIndent::LMarg << "registered builders: none" << endl;
     }
-    else
-    {
-	strm << BESIndent::LMarg << "registered builders: none" << endl ;
-    }
-    BESIndent::UnIndent() ;
+    BESIndent::UnIndent();
+}
+
+void BESInfoList::initialize_instance() {
+    d_instance = new BESInfoList;
+#ifdef HAVE_ATEXIT
+    atexit(delete_instance);
+#endif
+}
+
+void BESInfoList::delete_instance() {
+    delete d_instance;
+    d_instance = 0;
 }
 
 BESInfoList *
-BESInfoList::TheList()
-{
-    if( _instance == 0 )
-    {
-	_instance = new BESInfoList ;
-    }
-    return _instance ;
+BESInfoList::TheList() {
+    std::call_once(d_euc_init_once,BESInfoList::initialize_instance);
+    return d_instance;
 }
-
