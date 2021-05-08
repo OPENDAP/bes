@@ -30,6 +30,8 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <mutex>
+
 #include "BESReporterList.h"
 #include "BESReporter.h"
 
@@ -37,11 +39,10 @@ using std::endl;
 using std::ostream;
 using std::string;
 
-BESReporterList *BESReporterList::_instance = 0 ;
+BESReporterList *BESReporterList::d_instance = nullptr ;
+static std::once_flag d_euc_init_once;
 
-BESReporterList::BESReporterList()
-{
-}
+BESReporterList::BESReporterList() {}
 
 BESReporterList::~BESReporterList()
 {
@@ -61,6 +62,8 @@ bool
 BESReporterList::add_reporter( string reporter_name,
 			       BESReporter *reporter_object )
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     if( find_reporter( reporter_name ) == 0 )
     {
 	_reporter_list[reporter_name] = reporter_object ;
@@ -72,6 +75,8 @@ BESReporterList::add_reporter( string reporter_name,
 BESReporter *
 BESReporterList::remove_reporter( string reporter_name )
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     BESReporter *ret = 0 ;
     BESReporterList::Reporter_iter i ;
     i = _reporter_list.find( reporter_name ) ;
@@ -86,6 +91,8 @@ BESReporterList::remove_reporter( string reporter_name )
 BESReporter *
 BESReporterList::find_reporter( string reporter_name )
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     BESReporterList::Reporter_citer i ;
     i = _reporter_list.find( reporter_name ) ;
     if( i != _reporter_list.end() )
@@ -98,6 +105,8 @@ BESReporterList::find_reporter( string reporter_name )
 void
 BESReporterList::report( BESDataHandlerInterface &dhi )
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     BESReporter *reporter = 0 ;
     BESReporterList::Reporter_iter i = _reporter_list.begin() ;
     for( ; i != _reporter_list.end(); i++ )
@@ -117,6 +126,8 @@ BESReporterList::report( BESDataHandlerInterface &dhi )
 void
 BESReporterList::dump( ostream &strm ) const
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     strm << BESIndent::LMarg << "BESReporterList::dump - ("
 			     << (void *)this << ")" << endl ;
     BESIndent::Indent() ;
@@ -146,10 +157,19 @@ BESReporterList::dump( ostream &strm ) const
 BESReporterList *
 BESReporterList::TheList()
 {
-    if( _instance == 0 )
-    {
-	_instance = new BESReporterList ;
-    }
-    return _instance ;
+    std::call_once(d_euc_init_once,BESReporterList::initialize_instance);
+    return d_instance;
+}
+
+void BESReporterList::initialize_instance() {
+    d_instance = new BESReporterList;
+#ifdef HAVE_ATEXIT
+    atexit(delete_instance);
+#endif
+}
+
+void BESReporterList::delete_instance() {
+    delete d_instance;
+    d_instance = 0;
 }
 

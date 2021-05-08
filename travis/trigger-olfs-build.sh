@@ -13,7 +13,7 @@ LIBDAP4_SNAPSHOT=`cat libdap4-snapshot`;
 echo "libdap4-snapshot record: ${LIBDAP4_SNAPSHOT}"
 
 # Compute the BES snapshot record.
-BES_SNAPSHOT="bes-`cat VERSION` `date \"+%FT%T%z\"`"
+BES_SNAPSHOT="bes-`cat bes_VERSION` `date \"+%FT%T%z\"`"
 echo "bes-snapshot record: ${BES_SNAPSHOT}" >&2
 
 git clone --depth 1 https://github.com/opendap/olfs

@@ -27,6 +27,8 @@
 
 #include "config.h"
 
+#include <mutex>
+
 #include <sstream>
 
 using std::istringstream;
@@ -46,7 +48,8 @@ using std::string;
 
 #include "TheBESKeys.h"
 
-BESUncompressManager3 *BESUncompressManager3::_instance = 0;
+BESUncompressManager3 *BESUncompressManager3::d_instance = nullptr;
+static std::once_flag d_euc_init_once;
 
 /** @brief constructs an uncompression manager adding gz, z, and bz2
  * uncompression methods by default.
@@ -64,6 +67,8 @@ BESUncompressManager3::BESUncompressManager3()
     add_method("Z", BESUncompress3Z::uncompress);
 }
 
+BESUncompressManager3::~BESUncompressManager3() {}
+
 /** @brief create_and_lock a uncompress method to the list
  *
  * This method actually adds to the list a static method that knows how to
@@ -75,6 +80,8 @@ BESUncompressManager3::BESUncompressManager3()
  */
 bool BESUncompressManager3::add_method(const string &name, p_bes_uncompress method)
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     BESUncompressManager3::UCIter i;
     i = _uncompress_list.find(name);
     if (i == _uncompress_list.end()) {
@@ -94,6 +101,8 @@ bool BESUncompressManager3::add_method(const string &name, p_bes_uncompress meth
  */
 p_bes_uncompress BESUncompressManager3::find_method(const string &name)
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     BESUncompressManager3::UCIter i;
     i = _uncompress_list.find(name);
     if (i != _uncompress_list.end()) {
@@ -136,6 +145,8 @@ p_bes_uncompress BESUncompressManager3::find_method(const string &name)
  */
 bool BESUncompressManager3::uncompress(const string &src, string &cache_file, BESFileLockingCache *cache)
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     BESDEBUG( "uncompress2", "BESUncompressManager3::uncompress() - src: " << src << endl );
 
     /**
@@ -235,6 +246,8 @@ bool BESUncompressManager3::uncompress(const string &src, string &cache_file, BE
  */
 void BESUncompressManager3::dump(ostream &strm) const
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     strm << BESIndent::LMarg << "BESUncompressManager3::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     if (_uncompress_list.size()) {
@@ -256,8 +269,18 @@ void BESUncompressManager3::dump(ostream &strm) const
 BESUncompressManager3 *
 BESUncompressManager3::TheManager()
 {
-    if (_instance == 0) {
-        _instance = new BESUncompressManager3;
-    }
-    return _instance;
+    std::call_once(d_euc_init_once,BESUncompressManager3::initialize_instance);
+    return d_instance;
+}
+
+void BESUncompressManager3::initialize_instance() {
+    d_instance = new BESUncompressManager3;
+#ifdef HAVE_ATEXIT
+    atexit(delete_instance);
+#endif
+}
+
+void BESUncompressManager3::delete_instance() {
+    delete d_instance;
+    d_instance = 0;
 }

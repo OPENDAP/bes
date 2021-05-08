@@ -26,7 +26,6 @@ variables:
 		:base_time = "88- 10-00:00:00" ;
 		:title = " FNOC UV wind components from 1988- 10 to 1988- 13." ;
 		:DODS_EXTRA.Unlimited_Dimension = "time_a" ;
-		:history = "removed date-timex fnoc1.dods?" ;
 data:
 
  u =

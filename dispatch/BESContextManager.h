@@ -35,6 +35,7 @@
 
 #include <map>
 #include <string>
+#include <mutex>
 
 #include "BESObj.h"
 
@@ -49,18 +50,17 @@ class BESInfo;
  */
 class BESContextManager: public BESObj {
 private:
-    static BESContextManager * _instance;
+    static BESContextManager * d_instance;
+    mutable std::recursive_mutex d_cache_lock_mutex;
+
+    static void initialize_instance();
+    static void delete_instance();
+
     std::map<std::string, std::string> _context_list;
 
-protected:
-    BESContextManager(void)
-    {
-    }
-
 public:
-    virtual ~BESContextManager(void)
-    {
-    }
+    BESContextManager();
+    virtual ~BESContextManager();
 
     typedef std::map<std::string, std::string>::const_iterator Context_citer;
     typedef std::map<std::string, std::string>::iterator Context_iter;

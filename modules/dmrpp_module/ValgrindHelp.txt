@@ -1,0 +1,8 @@
+To run valgrind with command for instance
+
+besstandalone -c tests/bes.conf -i tests/profiler/chunked_fourD.h5.full.dap
+
+use
+
+valgrind -s --leak-check=full --show-reachable=yes --error-limit=no --suppressions=./vg-dmrpp.supp \
+--gen-suppressions=all --log-file=vg-dmrpp.log besstandalone -c tests/bes.conf -i tests/contiguous/coads_climatology.dds

@@ -73,9 +73,6 @@ variables:
 		s_uint8:attr_s_uint8 = 255UB ;
 		s_uint8:origname = "s_uint8" ;
 		s_uint8:fullnamepath = "/s_uint8" ;
-
-// global attributes:
-		:history = "removed date-timex tdset_types.h5?" ;
 data:
 
  a_float32 = 1.1, 1.1 ;
