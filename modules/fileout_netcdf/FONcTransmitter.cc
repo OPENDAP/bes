@@ -661,6 +661,7 @@ void FONcTransmitter::file_to_ostream(const std::string &file_name, ostream &o_s
         throw BESInternalError(msg.str(),__FILE__,__LINE__);
     }
 
+    // If we're not at the eof of the input stream then we have failed.
     if (!i_stream.eof()){
         stringstream msg;
         msg << prolog << "Failed to reach EOF on source file: " << file_name;
@@ -669,6 +670,8 @@ void FONcTransmitter::file_to_ostream(const std::string &file_name, ostream &o_s
         throw BESInternalError(msg.str(),__FILE__,__LINE__);
     }
 
+    // And if something went wrong on the output stream we have failed.
+    // TODO  Do we really want to throw an exception if the ostream is !good()? Do we care?
     if(!o_strm.good()){
         stringstream msg;
         msg << prolog << "There was an ostream error during transmit.";
