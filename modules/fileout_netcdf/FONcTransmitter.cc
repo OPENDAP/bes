@@ -551,7 +551,7 @@ void FONcTransmitter::write_temp_file_to_stream(int fd, ostream &strm) //, const
 }
 
 
-std::string ios_state_msg(std::ios &ifs, std::stringstream &msg){
+void ios_state_msg(std::ios &ifs, std::stringstream &msg){
 
     msg << " ifs.good()=" << (ifs.good()?"set":"not set") << endl;
     msg << " ifs.eof()="  << (ifs.eof()?"set":"not set") << endl;
@@ -565,7 +565,7 @@ void FONcTransmitter::file_to_ostream(const std::string &file_name, ostream &o_s
     char rbuffer[OUTPUT_FILE_BLOCK_SIZE];
     std::ifstream i_stream(file_name, ios_base::in | ios_base::binary);  // Use binary mode so we can
 
-    // Make sure the streams opened okay...
+    // good() returns true if !(eofbit || badbit || failbit)
     if(!i_stream.good()){
         stringstream msg;
         msg << prolog << "Failed to open file " << file_name;
@@ -574,6 +574,7 @@ void FONcTransmitter::file_to_ostream(const std::string &file_name, ostream &o_s
         throw BESInternalError(msg.str(),__FILE__,__LINE__);
     }
 
+    // good() returns true if !(eofbit || badbit || failbit)
     if(!o_strm.good()){
         stringstream msg;
         msg << prolog << "Problem with ostream. " << file_name;
@@ -583,39 +584,40 @@ void FONcTransmitter::file_to_ostream(const std::string &file_name, ostream &o_s
     }
 
     //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    // This is where the file is copied.
     uint64_t tcount = 0;
-    while (i_stream.good()){
+    while (i_stream.good() && o_strm.good()){
         i_stream.read(&rbuffer[0], OUTPUT_FILE_BLOCK_SIZE);      // Read at most n bytes into
         o_strm.write(&rbuffer[0], i_stream.gcount()); // buf, then write the buf to
         tcount += i_stream.gcount();
     }
-    // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    // Check streams for problems...
+    // fail() is true if failbit || badbit got set, but does not consider eofbit
     if(i_stream.fail()){
         stringstream msg;
-        msg << prolog << "There was an ifstream error when reading from " << file_name;
-        BESDEBUG(MODULE, msg.str() << endl);
-        throw BESInternalError(msg.str(),__FILE__,__LINE__);
-    }
-
-    if(!o_strm.good()){
-        stringstream msg;
-        msg << prolog << "Problem with ostream. " << file_name;
+        msg << prolog << "There was an ifstream error when reading from: " << file_name;
         ios_state_msg(i_stream, msg);
         BESDEBUG(MODULE, msg.str() << endl);
         throw BESInternalError(msg.str(),__FILE__,__LINE__);
     }
 
-    if (i_stream && i_stream.eof())
-        BESDEBUG(MODULE,prolog << "Reached End Of File. Sent "<< tcount << " bytes." << endl);
-    else {
+    if (!i_stream.eof()){
         stringstream msg;
         msg << prolog << "Failed to reach EOF on source file: " << file_name;
         ios_state_msg(i_stream, msg);
         BESDEBUG(MODULE, msg.str() << endl);
         throw BESInternalError(msg.str(),__FILE__,__LINE__);
     }
+
+    if(!o_strm.good()){
+        stringstream msg;
+        msg << prolog << "There was an ostream error during transmit.";
+        ios_state_msg(i_stream, msg);
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+    }
+
+    BESDEBUG(MODULE,prolog << "Reached End Of File. Sent "<< tcount << " bytes." << endl);
 
     // We don't need to explicitly close i_stream because that happens when it goes out of scope.
     // i_stream.close();
