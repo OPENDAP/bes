@@ -79,9 +79,13 @@
 using namespace libdap;
 using namespace std;
 
+
 // size of the buffer used to read from the temporary file built on disk and
 // send data to the client over the network connection (socket/stream)
 #define OUTPUT_FILE_BLOCK_SIZE 4096
+
+#define prolog std::string("FONcTransmitter::").append(__func__).append("() - ")
+#define MODULE "fonc"
 
 /** @brief Construct the FONcTransmitter, adding it with name netcdf to be
  * able to transmit a data response
@@ -200,7 +204,7 @@ void updateHistoryAttribute(DDS *dds, const string ce)
                 AttrTable::Attr_iter history_attrItr = source_file_globals->simple_find("history");
                 if (history_attrItr != source_file_globals->attr_end()) {
                     // Yup! Add our entry...
-                    BESDEBUG("fonc",
+                    BESDEBUG(MODULE,
                         "FONcTransmitter::updateHistoryAttribute() - Adding history entry to " << attr_name << endl);
                     source_file_globals->append_attr("history", "string", &hist_entry_vec);
                     done = true;
@@ -211,7 +215,7 @@ void updateHistoryAttribute(DDS *dds, const string ce)
 
     if (!done) {
         // We never found an existing location to place the "history" entry, so we'll just stuff it into the top level AttrTable.
-        BESDEBUG("fonc",
+        BESDEBUG(MODULE,
             "FONcTransmitter::updateHistoryAttribute() - Adding history entry to top level AttrTable" << endl);
         globals.append_attr("history", "string", &hist_entry_vec);
 
@@ -264,12 +268,12 @@ void update_Dap4_HistoryAttribute(DMR *dmr, const string ce)
         cf_history_entry = ss.str();
     }
 
-    BESDEBUG("fonc",
+    BESDEBUG(MODULE,
         "FONcTransmitter::update_Dap4_HistoryAttribute() - Adding cf_history_entry context. '" << cf_history_entry << "'" << endl);
 
     vector<string> hist_entry_vec;
     hist_entry_vec.push_back(cf_history_entry);
-    BESDEBUG("fonc",
+    BESDEBUG(MODULE,
         "FONcTransmitter::update_Dap4_HistoryAttribute() - hist_entry_vec.size(): " << hist_entry_vec.size() << endl);
 
     // Add the new entry to the "history" attribute
@@ -297,7 +301,7 @@ void update_Dap4_HistoryAttribute(DMR *dmr, const string ce)
                 AttrTable::Attr_iter history_attrItr = source_file_globals->simple_find("history");
                 if (history_attrItr != source_file_globals->attr_end()) {
                     // Yup! Add our entry...
-                    BESDEBUG("fonc",
+                    BESDEBUG(MODULE,
                         "FONcTransmitter::updateHistoryAttribute() - Adding history entry to " << attr_name << endl);
                     source_file_globals->append_attr("history", "string", &hist_entry_vec);
                     done = true;
@@ -308,7 +312,7 @@ void update_Dap4_HistoryAttribute(DMR *dmr, const string ce)
 
     if (!done) {
         // We never found an existing location to place the "history" entry, so we'll just stuff it into the top level AttrTable.
-        BESDEBUG("fonc",
+        BESDEBUG(MODULE,
             "FONcTransmitter::updateHistoryAttribute() - Adding history entry to top level AttrTable" << endl);
         globals.append_attr("history", "string", &hist_entry_vec);
 
@@ -335,7 +339,7 @@ void update_Dap4_HistoryAttribute(DMR *dmr, const string ce)
  */
 void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface &dhi)
 {
-    BESDEBUG("fonc", "FONcTransmitter::send_data() - BEGIN" << endl);
+    BESDEBUG(MODULE, "FONcTransmitter::send_data() - BEGIN" << endl);
 
     try { // Expanded try block so all DAP errors are caught. ndp 12/23/2015
         BESDapResponseBuilder responseBuilder;
@@ -348,7 +352,7 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
         // cancel any pending timeout alarm according to the configuration.
         BESUtil::conditional_timeout_cancel();
 
-        BESDEBUG("fonc", "FONcTransmitter::send_data() - Reading data into DataDDS" << endl);
+        BESDEBUG(MODULE, "FONcTransmitter::send_data() - Reading data into DataDDS" << endl);
         DDS *loaded_dds = responseBuilder.intern_dap2_data(obj, dhi);
 
         // ResponseBuilder splits the CE, so use the DHI or make two calls and
@@ -381,7 +385,7 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
         // This object closes the file when it goes out of scope.
         bes::TempFile temp_file(FONcRequestHandler::temp_dir + "/ncXXXXXX");
 
-        BESDEBUG("fonc", "FONcTransmitter::send_data - Building response file " << temp_file.get_name() << endl);
+        BESDEBUG(MODULE, "FONcTransmitter::send_data - Building response file " << temp_file.get_name() << endl);
         // Note that 'RETURN_CMD' is the same as the string that determines the file type:
         // netcdf 3 or netcdf 4. Hack. jhrg 9/7/16
         FONcTransform ft(loaded_dds, dhi, temp_file.get_name(), dhi.data[RETURN_CMD]);
@@ -390,9 +394,10 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
         ostream &strm = dhi.get_output_stream();
         if (!strm) throw BESInternalError("Output stream is not set, can not return as", __FILE__, __LINE__);
 
-        BESDEBUG("fonc", "FONcTransmitter::send_data - Transmitting temp file " << temp_file.get_name() << endl);
+        BESDEBUG(MODULE, "FONcTransmitter::send_data - Transmitting temp file " << temp_file.get_name() << endl);
 
-        FONcTransmitter::write_temp_file_to_stream(temp_file.get_fd(), strm); //, loaded_dds->filename(), ncVersion);
+        // FONcTransmitter::write_temp_file_to_stream(temp_file.get_fd(), strm); //, loaded_dds->filename(), ncVersion);
+        FONcTransmitter::file_to_ostream(temp_file.get_name(),strm);
     }
     catch (Error &e) {
         throw BESDapError("Failed to read data: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
@@ -407,7 +412,7 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
         throw BESInternalError("Failed to get read data: Unknown exception caught", __FILE__, __LINE__);
     }
 
-    BESDEBUG("fonc", "FONcTransmitter::send_data - done transmitting to netcdf" << endl);
+    BESDEBUG(MODULE, "FONcTransmitter::send_data - done transmitting to netcdf" << endl);
 }
 
 /**
@@ -429,7 +434,7 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
  */
 void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInterface &dhi)
 {
-    BESDEBUG("fonc", "FONcTransmitter::send_dap4_data() - BEGIN" << endl);
+    BESDEBUG(MODULE, "FONcTransmitter::send_dap4_data() - BEGIN" << endl);
 
     try { // Expanded try block so all DAP errors are caught. ndp 12/23/2015
         BESDapResponseBuilder responseBuilder;
@@ -442,7 +447,7 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
         // cancel any pending timeout alarm according to the configuration.
         BESUtil::conditional_timeout_cancel();
 
-        BESDEBUG("fonc", "FONcTransmitter::send_dap4_data() - Reading data into DMR" << endl);
+        BESDEBUG(MODULE, "FONcTransmitter::send_dap4_data() - Reading data into DMR" << endl);
         //DDS *loaded_dds = responseBuilder.intern_dap2_data(obj, dhi);
         DMR *loaded_dmr = responseBuilder.intern_dap4_data(obj, dhi);
 
@@ -453,7 +458,7 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
     D4Group* root_grp = loaded_dmr->root();
     Constructor::Vars_iter v = root_grp->var_begin();
     for (D4Group::Vars_iter i = root_grp->var_begin(), e = root_grp->var_end(); i != e; ++i) {
-        BESDEBUG("fonc", "BESDapResponseBuilder::send_dap4_data() - "<< (*i)->name() <<endl);
+        BESDEBUG(MODULE, "BESDapResponseBuilder::send_dap4_data() - "<< (*i)->name() <<endl);
         if ((*i)->send_p()) {
             (*i)->intern_data();
         }
@@ -490,7 +495,7 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
         // This object closes the file when it goes out of scope.
         bes::TempFile temp_file(FONcRequestHandler::temp_dir + "/ncXXXXXX");
 
-        BESDEBUG("fonc", "FONcTransmitter::send_dap4_data - Building response file " << temp_file.get_name() << endl);
+        BESDEBUG(MODULE, "FONcTransmitter::send_dap4_data - Building response file " << temp_file.get_name() << endl);
         // Note that 'RETURN_CMD' is the same as the string that determines the file type:
         // netcdf 3 or netcdf 4. Hack. jhrg 9/7/16
         FONcTransform ft(loaded_dmr, dhi, temp_file.get_name(), dhi.data[RETURN_CMD]);
@@ -501,9 +506,11 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
         ostream &strm = dhi.get_output_stream();
         if (!strm) throw BESInternalError("Output stream is not set, can not return as", __FILE__, __LINE__);
 
-        BESDEBUG("fonc", "FONcTransmitter::send_dap4_data - Transmitting temp file " << temp_file.get_name() << endl);
+        BESDEBUG(MODULE, "FONcTransmitter::send_dap4_data - Transmitting temp file " << temp_file.get_name() << endl);
 
-        FONcTransmitter::write_temp_file_to_stream(temp_file.get_fd(), strm); //, loaded_dds->filename(), ncVersion);
+        // FONcTransmitter::write_temp_file_to_stream(temp_file.get_fd(), strm); //, loaded_dds->filename(), ncVersion);
+        FONcTransmitter::file_to_ostream(temp_file.get_name(),strm);
+
     }
     catch (Error &e) {
         throw BESDapError("Failed to read data: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
@@ -518,7 +525,7 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
         throw BESInternalError("Failed to get read data: Unknown exception caught", __FILE__, __LINE__);
     }
 
-    BESDEBUG("fonc", "FONcTransmitter::send_dap4_data - done transmitting to netcdf" << endl);
+    BESDEBUG(MODULE, "FONcTransmitter::send_dap4_data - done transmitting to netcdf" << endl);
 }
 
 
@@ -540,5 +547,81 @@ void FONcTransmitter::write_temp_file_to_stream(int fd, ostream &strm) //, const
         strm.write(block, nbytes /*os.gcount()*/);
         nbytes = read(fd, block, sizeof block);
     }
+
+}
+
+
+std::string ios_state_msg(std::ios &ifs, std::stringstream &msg){
+
+    msg << " ifs.good()=" << (ifs.good()?"set":"not set") << endl;
+    msg << " ifs.eof()="  << (ifs.eof()?"set":"not set") << endl;
+    msg << " ifs.fail()=" << (ifs.fail()?"set":"not set") << endl;
+    msg << " ifs.bad()="  << (ifs.bad()?"set":"not set") << endl;
+}
+
+// Thanks to O'Reilly: https://www.oreilly.com/library/view/c-cookbook/0596007612/ch10s08.html
+void FONcTransmitter::file_to_ostream(const std::string &file_name, ostream &o_strm) {
+
+    char rbuffer[OUTPUT_FILE_BLOCK_SIZE];
+    std::ifstream i_stream(file_name, ios_base::in | ios_base::binary);  // Use binary mode so we can
+
+    // Make sure the streams opened okay...
+    if(!i_stream.good()){
+        stringstream msg;
+        msg << prolog << "Failed to open file " << file_name;
+        ios_state_msg(i_stream, msg);
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+    }
+
+    if(!o_strm.good()){
+        stringstream msg;
+        msg << prolog << "Problem with ostream. " << file_name;
+        ios_state_msg(i_stream, msg);
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+    }
+
+    //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    uint64_t tcount = 0;
+    while (i_stream.good()){
+        i_stream.read(&rbuffer[0], OUTPUT_FILE_BLOCK_SIZE);      // Read at most n bytes into
+        o_strm.write(&rbuffer[0], i_stream.gcount()); // buf, then write the buf to
+        tcount += i_stream.gcount();
+    }
+    // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+    // Check streams for problems...
+    if(i_stream.fail()){
+        stringstream msg;
+        msg << prolog << "There was an ifstream error when reading from " << file_name;
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+    }
+
+    if(!o_strm.good()){
+        stringstream msg;
+        msg << prolog << "Problem with ostream. " << file_name;
+        ios_state_msg(i_stream, msg);
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+    }
+
+    if (i_stream && i_stream.eof())
+        BESDEBUG(MODULE,prolog << "Reached End Of File. Sent "<< tcount << " bytes." << endl);
+    else {
+        stringstream msg;
+        msg << prolog << "Failed to reach EOF on source file: " << file_name;
+        ios_state_msg(i_stream, msg);
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+    }
+
+    // We don't need to explicitly close i_stream because that happens when it goes out of scope.
+    // i_stream.close();
+
+    // We don't close out because it is not ours to closed (passed in)
+    // out.close();
+
 }
 
