@@ -216,8 +216,8 @@ void updateHistoryAttribute(DDS *dds, const string ce)
     if (num_attrs) {
         // Here we look for a top level AttrTable whose name ends with "_GLOBAL" which is where, by convention,
         // data ingest handlers place global level attributes found in the source dataset.
-        auto i = globals.attr_begin();
-        auto e = globals.attr_end();
+        AttrTable::Attr_iter i = globals.attr_begin();
+        AttrTable::Attr_iter e = globals.attr_end();
         for (; i != e; i++) {
             AttrType attrType = globals.get_attr_type(i);
             string attr_name = globals.get_name(i);
@@ -225,7 +225,7 @@ void updateHistoryAttribute(DDS *dds, const string ce)
             if (attrType == Attr_container && BESUtil::endsWith(attr_name, "_GLOBAL")) {
                 // Look promising, but does it have an existing "history" Attribute?
                 AttrTable *source_file_globals = globals.get_attr_table(i);
-                auto history_attrItr = source_file_globals->simple_find("history");
+                AttrTable::Attr_iter history_attrItr = source_file_globals->simple_find("history");
                 if (history_attrItr != source_file_globals->attr_end()) {
                     // Yup! Add our entry...
                     BESDEBUG(MODULE, prolog << "Adding history entry to " << attr_name << endl);
