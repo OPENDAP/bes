@@ -211,28 +211,41 @@ void updateHistoryAttribute(DDS *dds, const string ce)
 
     // Since many files support "CF" conventions the history tag may already exist in the source data
     // and we should add an entry to it if possible.
-    //bool done = false; // Used to indicate that we located a toplevel ATtrTable whose name ends in "_GLOBAL" and that has an existing "history" attribute.
+    bool added_history = false; // Used to indicate that we located a toplevel AttrTable whose name ends in "_GLOBAL" and that has an existing "history" attribute.
     unsigned int num_attrs = globals.get_size();
     if (num_attrs) {
         // Here we look for a top level AttrTable whose name ends with "_GLOBAL" which is where, by convention,
         // data ingest handlers place global level attributes found in the source dataset.
-        AttrTable::Attr_iter i = globals.attr_begin();
-        AttrTable::Attr_iter e = globals.attr_end();
+        auto i = globals.attr_begin();
+        auto e = globals.attr_end();
         for (; i != e; i++) {
             AttrType attrType = globals.get_attr_type(i);
             string attr_name = globals.get_name(i);
             // Test the entry...
             if (attrType == Attr_container && BESUtil::endsWith(attr_name, "_GLOBAL")) {
-                // Look promising, but does it have an existing "history" Attribute?
+                // We are going to append to an existing history attributeif there is one
+                // Or just add a histiry attribute if there is not one. In a most
+                // handy API moment, append_attr() does just this.
                 AttrTable *source_file_globals = globals.get_attr_table(i);
-                AttrTable::Attr_iter history_attrItr = source_file_globals->simple_find("history");
+                source_file_globals->append_attr("history", "string", &hist_entry_vec);
+                added_history = true;
+
+#if 0
+                auto history_attrItr = source_file_globals->simple_find("history");
                 if (history_attrItr != source_file_globals->attr_end()) {
-                    // Yup! Add our entry...
+                    // Found it!! Append our entry...
                     BESDEBUG("fonc",
                              "FONcTransmitter::updateHistoryAttribute() - Adding history entry to " << attr_name << endl);
                     source_file_globals->append_attr("history", "string", &hist_entry_vec);
                 }
+#endif
+
             }
+        }
+        if(!added_history){
+            auto dap_global_at = globals.append_container("DAP_GLOBAL");
+            dap_global_at->set_name("DAP_GLOBAL");
+            dap_global_at->append_attr("history", "string", &hist_entry_vec);
         }
     }
 }
@@ -341,26 +354,33 @@ void updateHistoryAttribute(DMR *dmr, const string ce)
     vector<string> hist_entry_vector = get_history_entry(request_url);
     BESDEBUG("fonc",
              "FONcTransmitter::update_Dap4_HistoryAttribute() - hist_entry_vec.size(): " << hist_entry_vector.size() << endl);
+    bool added_history = false;
     D4Group* root_grp = dmr->root();
-    D4Attributes *d4_attrs = root_grp->attributes();
-    if(d4_attrs){
-        for (auto attrs = d4_attrs->attribute_begin(); attrs != d4_attrs->attribute_end(); ++attrs) {
-            string name = (*attrs)->name();
-            BESDEBUG("dap", "FONcAttributes:: attribute name is "<<name <<endl);
-            if ((*attrs)->type() && BESUtil::endsWith(name, "_GLOBAL")) {
-                // Yup! Add our entry...
-                D4Attribute *history_attr = (*attrs)->attributes()->find("history");
-                if (!history_attr) {
-                    //if there is no source history attribute
-                    BESDEBUG("fonc","FONcTransmitter::updateHistoryAttribute() - Adding history entry to " << name << endl);
-                    D4Attribute *new_history = new D4Attribute("history", attr_str_c);
-                    new_history->add_value_vector(hist_entry_vector);
-                    (*attrs)->attributes()->add_attribute(new_history);
-                } else {
-                    (*attrs)->attributes()->find("history")->add_value_vector(hist_entry_vector);
-                }
+    D4Attributes *root_attrs = root_grp->attributes();
+    for (auto attrs = root_attrs->attribute_begin(); attrs != root_attrs->attribute_end(); ++attrs) {
+        string name = (*attrs)->name();
+        BESDEBUG("dap", "FONcAttributes:: attribute name is "<<name <<endl);
+        if ((*attrs)->type() && BESUtil::endsWith(name, "_GLOBAL")) {
+            // Yup! Add our entry...
+            D4Attribute *history_attr = (*attrs)->attributes()->find("history");
+            if (!history_attr) {
+                //if there is no source history attribute
+                BESDEBUG("fonc","FONcTransmitter::updateHistoryAttribute() - Adding history entry to " << name << endl);
+                auto *new_history = new D4Attribute("history", attr_str_c);
+                new_history->add_value_vector(hist_entry_vector);
+                (*attrs)->attributes()->add_attribute(new_history);
+            } else {
+                (*attrs)->attributes()->find("history")->add_value_vector(hist_entry_vector);
             }
+            added_history = true;
         }
+    }
+    if(!added_history){
+        auto *dap_global = new D4Attribute("DAP_GLOBAL",attr_container_c);
+        root_attrs->add_attribute(dap_global);
+        auto *new_history = new D4Attribute("history", attr_str_c);
+        new_history->add_value_vector(hist_entry_vector);
+        dap_global->attributes()->add_attribute(new_history);
     }
 }
 
