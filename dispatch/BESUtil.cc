@@ -50,6 +50,7 @@
 
 #include <sstream>
 #include <iostream>
+#include <iostream>
 
 using std::stringstream;
 using std::istringstream;
@@ -71,7 +72,7 @@ using std::ostream;
 
 #define CRLF "\r\n"
 
-#define debug_key "util"
+#define MODULE "util"
 #define prolog string("BESUtil::").append(__func__).append("() - ")
 
 const string BES_KEY_TIMEOUT_CANCEL = "BES.CancelTimeoutOnSend";
@@ -262,11 +263,11 @@ void BESUtil::check_path(const string &path, const string &root, bool follow_sym
     // function for the eval operation.
     int (*ye_old_stat_function)(const char *pathname, struct stat *buf);
     if (follow_sym_links) {
-        BESDEBUG(debug_key, "check_path() - Using 'stat' function (follow_sym_links = true)" << endl);
+        BESDEBUG(MODULE, "check_path() - Using 'stat' function (follow_sym_links = true)" << endl);
         ye_old_stat_function = &stat;
     }
     else {
-        BESDEBUG(debug_key, "check_path() - Using 'lstat' function (follow_sym_links = false)" << endl);
+        BESDEBUG(MODULE, "check_path() - Using 'lstat' function (follow_sym_links = false)" << endl);
         ye_old_stat_function = &lstat;
     }
 
@@ -328,7 +329,7 @@ void BESUtil::check_path(const string &path, const string &root, bool follow_sym
             else
                 error.append("unknown error");
 
-            BESDEBUG(debug_key, "check_path() - error: "<< error << "   errno: " << errno << endl);
+            BESDEBUG(MODULE, "check_path() - error: " << error << "   errno: " << errno << endl);
 
             // ENOENT means that the node wasn't found.
             // On some systems a file that doesn't exist returns ENOTDIR because: w.f.t?
@@ -843,8 +844,8 @@ string BESUtil::assemblePath(const string &firstPart, const string &secondPart, 
 #endif
 
 #if 1
-    BESDEBUG(debug_key, prolog << "firstPart:  '" << firstPart << "'" << endl);
-    BESDEBUG(debug_key, prolog << "secondPart: '" << secondPart << "'" << endl);
+    BESDEBUG(MODULE, prolog << "firstPart:  '" << firstPart << "'" << endl);
+    BESDEBUG(MODULE, prolog << "secondPart: '" << secondPart << "'" << endl);
 
 #if 0
     // assert(!firstPart.empty()); // I dropped this because I had to ask, why? Why does it matter? ndp 2017
@@ -897,7 +898,7 @@ string BESUtil::assemblePath(const string &firstPart, const string &secondPart, 
         while(newPath.length()>1 &&  *newPath.rbegin() == '/')
             newPath = newPath.substr(0,newPath.length()-1);
     }
-    BESDEBUG(debug_key, prolog << "newPath: "<< newPath << endl);
+    BESDEBUG(MODULE, prolog << "newPath: " << newPath << endl);
     return newPath;
 #endif
 
@@ -977,7 +978,7 @@ void BESUtil::conditional_timeout_cancel()
         doset = BESUtil::lowercase(doset);
         if (dosettrue == doset || dosetyes == doset) cancel_timeout_on_send = true;
     }
-    BESDEBUG(debug_key, __func__ << "() - cancel_timeout_on_send: " <<(cancel_timeout_on_send?"true":"false") << endl);
+    BESDEBUG(MODULE, __func__ << "() - cancel_timeout_on_send: " << (cancel_timeout_on_send ? "true" : "false") << endl);
     if (cancel_timeout_on_send) alarm(0);
 }
 
@@ -1156,7 +1157,7 @@ BESCatalog *BESUtil::separateCatalogFromPath(std::string &ppath)
 
     // BESUtil::normalize_path() removes duplicate separators and adds leading and trailing separators as directed.
     string path = BESUtil::normalize_path(ppath, false, false);
-    BESDEBUG(debug_key, prolog << "Normalized path: " << path << endl);
+    BESDEBUG(MODULE, prolog << "Normalized path: " << path << endl);
 
     // Because we may need to alter the container/file/resource name by removing
     // a catalog name from the first node in the path we use "use_container" to store
@@ -1166,20 +1167,98 @@ BESCatalog *BESUtil::separateCatalogFromPath(std::string &ppath)
     // Breaks path into tokens
     BESUtil::tokenize(path, path_tokens);
     if (!path_tokens.empty()) {
-        BESDEBUG(debug_key, "First path token: " << path_tokens[0] << endl);
+        BESDEBUG(MODULE, "First path token: " << path_tokens[0] << endl);
         catalog = BESCatalogList::TheCatalogList()->find_catalog(path_tokens[0]);
         if (catalog) {
-            BESDEBUG(debug_key, prolog << "Located catalog " << catalog->get_catalog_name() << " from path component" << endl);
+            BESDEBUG(MODULE, prolog << "Located catalog " << catalog->get_catalog_name() << " from path component" << endl);
             // Since the catalog name is in the path we
             // need to drop it this should leave container
             // with a leading
             ppath = BESUtil::normalize_path(path.substr(path_tokens[0].length()), true, false);
-            BESDEBUG(debug_key, prolog << "Modified container/path value to:  " << use_container << endl);
+            BESDEBUG(MODULE, prolog << "Modified container/path value to:  " << use_container << endl);
         }
     }
 
     return catalog;
 }
 
+void ios_state_msg(std::ios &ios_ref, std::stringstream &msg){
+    msg << " ios.good()=" << (ios_ref.good()?"true":"false") << endl;
+    msg << " ios.eof()="  <<  (ios_ref.eof()?"true":"false") << endl;
+    msg << " ios.fail()=" << (ios_ref.fail()?"true":"false") << endl;
+    msg << " ios.bad()="  <<  (ios_ref.bad()?"true":"false") << endl;
+}
+
+// size of the buffer used to read from the temporary file built on disk and
+// send data to the client over the network connection (socket/stream)
+#define OUTPUT_FILE_BLOCK_SIZE 4096
+
+/**
+ * @brief Copies the contents of the file identified by file_name to the stream o_strm
+ *
+ * Thanks to O'Reilly: https://www.oreilly.com/library/view/c-cookbook/0596007612/ch10s08.html
+ * @param file_name
+ * @param o_strm
+ */
+void BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm)
+{
+    char rbuffer[OUTPUT_FILE_BLOCK_SIZE];
+    std::ifstream i_stream(file_name, std::ios_base::in | std::ios_base::binary);  // Use binary mode so we can
+
+    // good() returns true if !(eofbit || badbit || failbit)
+    if(!i_stream.good()){
+        stringstream msg;
+        msg << prolog << "Failed to open file " << file_name;
+        ios_state_msg(i_stream, msg);
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+    }
+
+    // good() returns true if !(eofbit || badbit || failbit)
+    if(!o_strm.good()){
+        stringstream msg;
+        msg << prolog << "Problem with ostream. " << file_name;
+        ios_state_msg(i_stream, msg);
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+    }
+
+    //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    // This is where the file is copied.
+    uint64_t tcount = 0;
+    while (i_stream.good() && o_strm.good()){
+        i_stream.read(&rbuffer[0], OUTPUT_FILE_BLOCK_SIZE);      // Read at most n bytes into
+        o_strm.write(&rbuffer[0], i_stream.gcount()); // buf, then write the buf to
+        tcount += i_stream.gcount();
+    }
+
+    // fail() is true if failbit || badbit got set, but does not consider eofbit
+    if(i_stream.fail()){
+        stringstream msg;
+        msg << prolog << "There was an ifstream error when reading from: " << file_name;
+        ios_state_msg(i_stream, msg);
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+    }
+
+    // If we're not at the eof of the input stream then we have failed.
+    if (!i_stream.eof()){
+        stringstream msg;
+        msg << prolog << "Failed to reach EOF on source file: " << file_name;
+        ios_state_msg(i_stream, msg);
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+    }
+
+    // And if something went wrong on the output stream we have failed.
+    if(!o_strm.good()){
+        stringstream msg;
+        msg << prolog << "There was an ostream error during transmit. Transmitted " << tcount  << " bytes.";
+        ios_state_msg(i_stream, msg);
+        BESDEBUG(MODULE, msg.str() << endl);
+        INFO_LOG(msg.str());
+    }
+    BESDEBUG(MODULE,prolog << "Reached End Of File. Sent "<< tcount << " bytes." << endl);
+}
 
 
