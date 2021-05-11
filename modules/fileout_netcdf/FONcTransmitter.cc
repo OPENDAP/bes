@@ -84,9 +84,11 @@ using namespace std;
 #define MODULE "fonc"
 #define prolog string("FONcTransmitter::").append(__func__).append("() - ")
 
+#if 0 // Moved to BESUtil.cc
 // size of the buffer used to read from the temporary file built on disk and
 // send data to the client over the network connection (socket/stream)
-#define OUTPUT_FILE_BLOCK_SIZE 4096
+// #define OUTPUT_FILE_BLOCK_SIZE 4096
+#endif
 
 /** @brief Construct the FONcTransmitter, adding it with name netcdf to be
  * able to transmit a data response
@@ -434,7 +436,8 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
 
         BESDEBUG(MODULE,  prolog << "Transmitting temp file " << temp_file.get_name() << endl);
 
-        FONcTransmitter::write_temp_file_to_stream(temp_file.get_fd(), strm); //, loaded_dds->filename(), ncVersion);
+        // FONcTransmitter::write_temp_file_to_stream(temp_file.get_fd(), strm); //, loaded_dds->filename(), ncVersion);
+        BESUtil::file_to_stream(temp_file.get_name(),strm);
     }
     catch (Error &e) {
         throw BESDapError("Failed to read data: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
@@ -545,7 +548,8 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
 
         BESDEBUG(MODULE,  prolog << "Transmitting temp file " << temp_file.get_name() << endl);
 
-        FONcTransmitter::write_temp_file_to_stream(temp_file.get_fd(), strm); //, loaded_dds->filename(), ncVersion);
+        // FONcTransmitter::write_temp_file_to_stream(temp_file.get_fd(), strm); //, loaded_dds->filename(), ncVersion);
+        BESUtil::file_to_stream(temp_file.get_name(),strm);
     }
     catch (Error &e) {
         throw BESDapError("Failed to read data: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);
@@ -563,7 +567,7 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
     BESDEBUG(MODULE,  prolog << "END  Transmitted as netcdf" << endl);
 }
 
-
+#if 0  // Moved to BESUtil.cc
 /** @brief stream the temporary netcdf file back to the requester
  *
  * Streams the temporary netcdf file specified by filename to the specified
@@ -583,4 +587,4 @@ void FONcTransmitter::write_temp_file_to_stream(int fd, ostream &strm) //, const
         nbytes = read(fd, block, sizeof block);
     }
 }
-
+#endif
