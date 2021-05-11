@@ -275,6 +275,9 @@ FONcUtils::convert(BaseType *v,const string &ncdf_version, const bool is_classic
         if(true == is_netcdf4_enhanced)
             b = new FONcUShort(v); 
         else 
+            // Kent: This is the original handling. 
+            // It is not right but the main reason is
+            // due to the limitation of the classic model.
             b = new FONcShort(v);
         break;
     }

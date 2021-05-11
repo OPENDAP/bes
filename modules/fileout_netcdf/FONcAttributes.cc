@@ -256,12 +256,14 @@ void FONcAttributes::add_attributes_worker(int ncid, int varid, const string &va
 #endif
 
     string new_name = FONcUtils::id2netcdf(new_attr_name);;
-
+    BESDEBUG("fonc", "FONcAttributes name:  " << new_name << endl);
+    BESDEBUG("fonc", "FONcAttributes type:  " << attrType << endl);
+ 
 
     if (varid == NC_GLOBAL) {
-        BESDEBUG("fonc", "FONcAttributes::addattrs() - Adding global attributes " << attr_name << endl);
+        BESDEBUG("fonc", "FONcAttributes::add_attrbutes_worker() - Adding global attributes " << attr_name << endl);
     } else {
-        BESDEBUG("fonc", "FONcAttributes::addattrs() - Adding attribute " << new_name << endl);
+        BESDEBUG("fonc", "FONcAttributes::add_attributes_worker() - Adding attribute " << new_name << endl);
     }
 
     // If we want to map the attributes of the datatypes to those of netCDF-4, KY 2020-02-14
@@ -897,6 +899,8 @@ FONcAttributes::write_attrs_for_nc4_types(int ncid, int varid, const string &var
     int stax = NC_NOERR;
     string attr_type = "unknown"; // Used for error messages. jhrg 6/18/20
     AttrType attrType = attrs.get_attr_type(attr);
+    BESDEBUG("fonc", "FONcAttributes write_attrs_for_nc4_type name:  " << var_attr_name << endl);
+    BESDEBUG("fonc", "FONcAttributes write_attrs_for_nc4_type type:  " << attrType << endl);
     unsigned int attri = 0;
     unsigned int num_vals = attrs.get_attr_num(attr);
     switch (attrType) {
