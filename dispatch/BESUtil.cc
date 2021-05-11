@@ -50,7 +50,6 @@
 
 #include <sstream>
 #include <iostream>
-#include <iostream>
 
 using std::stringstream;
 using std::istringstream;
