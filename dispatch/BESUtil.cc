@@ -1181,11 +1181,11 @@ BESCatalog *BESUtil::separateCatalogFromPath(std::string &ppath)
     return catalog;
 }
 
-void ios_state_msg(std::ios &ios_ref, std::stringstream &msg){
-    msg << " ios.good()=" << (ios_ref.good()?"true":"false") << endl;
-    msg << " ios.eof()="  <<  (ios_ref.eof()?"true":"false") << endl;
-    msg << " ios.fail()=" << (ios_ref.fail()?"true":"false") << endl;
-    msg << " ios.bad()="  <<  (ios_ref.bad()?"true":"false") << endl;
+void ios_state_msg(std::ios &ios_ref, std::stringstream &msg) {
+    msg << " {ios.good()=" << (ios_ref.good() ? "true" : "false") << "}";
+    msg << " {ios.eof()="  <<  (ios_ref.eof()?"true":"false") << "}";
+    msg << " {ios.fail()=" << (ios_ref.fail()?"true":"false") << "}";
+    msg << " {ios.bad()="  <<  (ios_ref.bad()?"true":"false") << "}";
 }
 
 // size of the buffer used to read from the temporary file built on disk and
@@ -1230,12 +1230,15 @@ void BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm)
         o_strm.write(&rbuffer[0], i_stream.gcount()); // buf, then write the buf to
         tcount += i_stream.gcount();
     }
+    o_strm.flush();
 
     // fail() is true if failbit || badbit got set, but does not consider eofbit
-    if(i_stream.fail()){
+    if(i_stream.fail() && !i_stream.eof()){
         stringstream msg;
         msg << prolog << "There was an ifstream error when reading from: " << file_name;
         ios_state_msg(i_stream, msg);
+        msg << " last_lap: " << i_stream.gcount() << " bytes";
+        msg << " total_read: " << tcount << " bytes";
         BESDEBUG(MODULE, msg.str() << endl);
         throw BESInternalError(msg.str(),__FILE__,__LINE__);
     }
@@ -1245,6 +1248,8 @@ void BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm)
         stringstream msg;
         msg << prolog << "Failed to reach EOF on source file: " << file_name;
         ios_state_msg(i_stream, msg);
+        msg << " last_lap: " << i_stream.gcount() << " bytes";
+        msg << " total_read: " << tcount << " bytes";
         BESDEBUG(MODULE, msg.str() << endl);
         throw BESInternalError(msg.str(),__FILE__,__LINE__);
     }
@@ -1254,9 +1259,12 @@ void BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm)
         stringstream msg;
         msg << prolog << "There was an ostream error during transmit. Transmitted " << tcount  << " bytes.";
         ios_state_msg(i_stream, msg);
+        auto crntpos = o_strm.tellp();
+        msg << " current_position: " << crntpos;
         BESDEBUG(MODULE, msg.str() << endl);
         INFO_LOG(msg.str());
     }
+
     stringstream msg;
     msg << prolog << "Transmitted as response as NetCDF from temp file '" << file_name<< "'. ";
     msg << "Sent "<< tcount << " bytes.";
