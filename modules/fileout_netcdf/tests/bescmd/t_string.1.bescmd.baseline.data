@@ -38,7 +38,6 @@ variables:
 			"array_2d\n",
 			"array_special_case\n",
 			"scalar" ;
-		:history = "removed date-timex t_string.h5.dods?" ;
 data:
 
  _array_1d =

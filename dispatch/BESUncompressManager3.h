@@ -29,6 +29,7 @@
 
 #include <map>
 #include <string>
+#include <mutex>
 
 #include "BESObj.h"
 
@@ -54,16 +55,18 @@ typedef void (*p_bes_uncompress)(const std::string &src, int fd);
  */
 class BESUncompressManager3: public BESObj {
 private:
-    static BESUncompressManager3 * _instance;
+    static BESUncompressManager3 * d_instance;
+    mutable std::recursive_mutex d_cache_lock_mutex;
+
+    static void initialize_instance();
+    static void delete_instance();
+
     std::map<std::string, p_bes_uncompress> _uncompress_list;
     typedef std::map<std::string, p_bes_uncompress>::const_iterator UCIter;
 
-    BESUncompressManager3(void);
-
 public:
-    virtual ~BESUncompressManager3(void)
-    {
-    }
+    BESUncompressManager3();
+    virtual ~BESUncompressManager3();
 
     virtual bool add_method(const std::string &name, p_bes_uncompress method);
     virtual p_bes_uncompress find_method(const std::string &name);

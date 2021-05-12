@@ -43,7 +43,6 @@ variables:
 		:HDF_Conversion_Organization = "JPL PO.DAAC\\000" ;
 		:HDF_Conversion_Time = "1996-320T17:32:34       " ;
 		:Data_Format_Type = "HDF\\000" ;
-		:history = "removed date-timex S2000415.HDF?WVC_Lat" ;
 data:
 
  NSCAT_Rev_20.WVC_Lat =

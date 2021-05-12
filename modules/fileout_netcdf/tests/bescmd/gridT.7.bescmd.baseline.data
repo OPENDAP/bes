@@ -4,9 +4,6 @@ dimensions:
 	j = 3 ;
 variables:
 	int gstruct.shot(i, j) ;
-
-// global attributes:
-		:history = "removed date-timex gridT.dods?gstruct.shot.shot" ;
 data:
 
  gstruct.shot =

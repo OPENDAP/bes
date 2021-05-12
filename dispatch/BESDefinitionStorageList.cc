@@ -31,6 +31,12 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include <iostream>
+#include <mutex>
+#include "config.h"
+
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
 
 using std::endl;
 using std::string;
@@ -41,7 +47,8 @@ using std::ostream;
 #include "BESDefine.h"
 #include "BESInfo.h"
 
-BESDefinitionStorageList *BESDefinitionStorageList::_instance = 0;
+BESDefinitionStorageList *BESDefinitionStorageList::d_instance = nullptr;
+static std::once_flag d_euc_init_once;
 
 BESDefinitionStorageList::BESDefinitionStorageList() :
     _first(0)
@@ -75,6 +82,8 @@ BESDefinitionStorageList::~BESDefinitionStorageList()
  */
 bool BESDefinitionStorageList::add_persistence(BESDefinitionStorage *cp)
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     bool ret = false;
     if (!_first) {
         _first = new BESDefinitionStorageList::persistence_list;
@@ -119,6 +128,8 @@ bool BESDefinitionStorageList::add_persistence(BESDefinitionStorage *cp)
  */
 bool BESDefinitionStorageList::ref_persistence(const string &persist_name)
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     bool ret = false;
     BESDefinitionStorageList::persistence_list *pl = _first;
 
@@ -154,6 +165,8 @@ bool BESDefinitionStorageList::ref_persistence(const string &persist_name)
  */
 bool BESDefinitionStorageList::deref_persistence(const string &persist_name)
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     bool ret = false;
     BESDefinitionStorageList::persistence_list *pl = _first;
     BESDefinitionStorageList::persistence_list *last = 0;
@@ -202,6 +215,8 @@ bool BESDefinitionStorageList::deref_persistence(const string &persist_name)
 BESDefinitionStorage *
 BESDefinitionStorageList::find_persistence(const string &persist_name)
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     BESDefinitionStorage *ret = NULL;
     BESDefinitionStorageList::persistence_list *pl = _first;
     bool done = false;
@@ -235,6 +250,8 @@ BESDefinitionStorageList::find_persistence(const string &persist_name)
 BESDefine *
 BESDefinitionStorageList::look_for(const string &def_name)
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     BESDefine *ret_def = NULL;
     BESDefinitionStorageList::persistence_list *pl = _first;
     bool done = false;
@@ -271,6 +288,8 @@ BESDefinitionStorageList::look_for(const string &def_name)
  */
 void BESDefinitionStorageList::show_definitions(BESInfo &info)
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     BESDefinitionStorageList::persistence_list *pl = _first;
     bool first = true;
     while (pl) {
@@ -288,15 +307,6 @@ void BESDefinitionStorageList::show_definitions(BESInfo &info)
     }
 }
 
-BESDefinitionStorageList *
-BESDefinitionStorageList::TheList()
-{
-    if (_instance == 0) {
-        _instance = new BESDefinitionStorageList;
-    }
-    return _instance;
-}
-
 /** @brief dumps information about this object
  *
  * Displays the pointer value of this instance along with the list of
@@ -306,6 +316,8 @@ BESDefinitionStorageList::TheList()
  */
 void BESDefinitionStorageList::dump(ostream &strm) const
 {
+    std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
+
     strm << BESIndent::LMarg << "BESDefinitionStorageList::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     if (_first) {
@@ -322,5 +334,24 @@ void BESDefinitionStorageList::dump(ostream &strm) const
         strm << BESIndent::LMarg << "registered definition storage: none" << endl;
     }
     BESIndent::UnIndent();
+}
+
+BESDefinitionStorageList *
+BESDefinitionStorageList::TheList()
+{
+    std::call_once(d_euc_init_once,BESDefinitionStorageList::initialize_instance);
+    return d_instance;
+}
+
+void BESDefinitionStorageList::initialize_instance() {
+    d_instance = new BESDefinitionStorageList;
+#ifdef HAVE_ATEXIT
+    atexit(delete_instance);
+#endif
+}
+
+void BESDefinitionStorageList::delete_instance() {
+    delete d_instance;
+    d_instance = 0;
 }
 

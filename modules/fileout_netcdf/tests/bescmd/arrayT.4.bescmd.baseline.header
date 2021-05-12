@@ -27,7 +27,4 @@ variables:
 	float f32_array(f32_dim1) ;
 	double f64_array(f64_dim1, f64_dim2, f64_dim3) ;
 	char str_array(str_dim1, str_dim2, str_dim3, str_array_len) ;
-
-// global attributes:
-		:history = "removed date-timex arrayT.dods?" ;
 }
