@@ -31,7 +31,7 @@ endif
 
 AM_CPPFLAGS += -DUSE_DAP4 -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
-AM_CXXFLAGS=
+# jhrg 5/12/21 Note that this is defined above. AM_CXXFLAGS=
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
