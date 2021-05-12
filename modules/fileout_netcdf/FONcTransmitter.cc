@@ -102,7 +102,7 @@ using namespace std;
  * defaults to the macro definition FONC_TEMP_DIR.
  */
 FONcTransmitter::FONcTransmitter() :
-    BESTransmitter()
+        BESTransmitter()
 {
     add_method(DATA_SERVICE, FONcTransmitter::send_data);
     add_method(DAP4DATA_SERVICE, FONcTransmitter::send_dap4_data);
@@ -117,19 +117,6 @@ struct wrap_temp_descriptor {
     ~wrap_temp_descriptor() { close(d_fd); }
 };
 
-#if 0
-// Replaced by code in BESHandlerUtil. jhrg 8/25/17
-
-/**
- * Hack to ensure that the temporary file name used with mkstemp() will
- * be 'unlinked' no matter how we exit.
- */
-struct wrap_temp_name {
-    vector<char> d_name;
-    wrap_temp_name(vector<char> &name) : d_name(name) {}
-    ~wrap_temp_name() { unlink(&d_name[0]); }
-};
-#endif
 
 /**
  * Creates the "history" text appended to source attribute "history".
@@ -140,7 +127,7 @@ struct wrap_temp_name {
  *  - JSON?
  * @param request_url
  */
-string create_history_txt(string request_url)
+string create_history_txt(const string &request_url)
 {
     // This code will be used only when the 'cf_histroy_context' is not set,
     // which should be never in an operating server. However, when we are
@@ -171,7 +158,7 @@ string create_history_txt(string request_url)
 *
 * @request_url
 */
-vector<string> get_history_entry (string request_url)
+vector<string> get_history_entry (const string &request_url)
 {
     vector<string> hist_entry_vec;
     string cf_history_entry;
@@ -194,7 +181,7 @@ vector<string> get_history_entry (string request_url)
  * @param dds The DDS to modify
  * @param ce The constraint expression that produced this new netCDF file.
  */
-void updateHistoryAttribute(DDS *dds, const string ce)
+void updateHistoryAttribute(DDS *dds, const string &ce)
 {
     string request_url = dds->filename();
     // remove path info
@@ -213,114 +200,36 @@ void updateHistoryAttribute(DDS *dds, const string ce)
 
     // Since many files support "CF" conventions the history tag may already exist in the source data
     // and we should add an entry to it if possible.
-    //bool done = false; // Used to indicate that we located a toplevel ATtrTable whose name ends in "_GLOBAL" and that has an existing "history" attribute.
+    bool added_history = false; // Used to indicate that we located a toplevel AttrTable whose name ends in "_GLOBAL" and that has an existing "history" attribute.
     unsigned int num_attrs = globals.get_size();
     if (num_attrs) {
         // Here we look for a top level AttrTable whose name ends with "_GLOBAL" which is where, by convention,
         // data ingest handlers place global level attributes found in the source dataset.
-        AttrTable::Attr_iter i = globals.attr_begin();
-        AttrTable::Attr_iter e = globals.attr_end();
+        auto i = globals.attr_begin();
+        auto e = globals.attr_end();
         for (; i != e; i++) {
             AttrType attrType = globals.get_attr_type(i);
             string attr_name = globals.get_name(i);
             // Test the entry...
             if (attrType == Attr_container && BESUtil::endsWith(attr_name, "_GLOBAL")) {
-                // Look promising, but does it have an existing "history" Attribute?
+                // We are going to append to an existing history attributeif there is one
+                // Or just add a histiry attribute if there is not one. In a most
+                // handy API moment, append_attr() does just this.
                 AttrTable *source_file_globals = globals.get_attr_table(i);
-                AttrTable::Attr_iter history_attrItr = source_file_globals->simple_find("history");
-                if (history_attrItr != source_file_globals->attr_end()) {
-                    // Yup! Add our entry...
-                    BESDEBUG(MODULE, prolog << "Adding history entry to " << attr_name << endl);
-                    source_file_globals->append_attr("history", "string", &hist_entry_vec);
-                }
+                source_file_globals->append_attr("history", "string", &hist_entry_vec);
+                added_history = true;
+                BESDEBUG(MODULE, prolog << "Added history entry to " << attr_name << endl);
             }
+        }
+        if(!added_history){
+            auto dap_global_at = globals.append_container("DAP_GLOBAL");
+            dap_global_at->set_name("DAP_GLOBAL");
+            dap_global_at->append_attr("history", "string", &hist_entry_vec);
+            BESDEBUG(MODULE, prolog << "No top level AttributeTable name matched '*_GLOBAL'. "
+                                       "Created DAP_GLOBAL AttributeTable and added history Attribute to it." << endl);
         }
     }
 }
-
-#if 0
-/**
- * Process the "history" attribute.
- * We add:
- *  - Sub-setting information if any
- *  - SSFunction invocations
- *  - ResourceID? URL?
- *
- * @param dds The DDS to modify
- * @param ce The constraint expression that produced this new netCDF file.
- */
-void updateHistoryAttribute(DDS *dds, const string ce)
-{
-    bool foundIt = false;
-    string cf_history_entry = BESContextManager::TheManager()->get_context("cf_history_entry", foundIt);
-    if (!foundIt) {
-        // This code will be used only when the 'cf_histroy_context' is not set,
-        // which should be never in an operating server. However, when we are
-        // testing, often only the besstandalone code is running and the existing
-        // baselines don't set the context, so we have this. It must do something
-        // so the tests are not hopelessly obscure and filter out junk that varies
-        // by host (e.g., the names of cached files that have been decompressed).
-        // jhrg 6/3/16
-
-        string request_url = dds->filename();
-        // remove path info
-        request_url = request_url.substr(request_url.find_last_of('/')+1);
-        // remove 'uncompress' cache mangling
-        request_url = request_url.substr(request_url.find_last_of('#')+1);
-        request_url += "?" + ce;
-
-        std::stringstream ss;
-
-        time_t raw_now;
-        struct tm * timeinfo;
-        time(&raw_now); /* get current time; same as: timer = time(NULL)  */
-        timeinfo = localtime(&raw_now);
-
-        char time_str[100];
-        // 2000-6-1 6:00:00
-        strftime(time_str, 100, "%Y-%m-%d %H:%M:%S", timeinfo);
-
-        ss << time_str << " " << "Hyrax" << " " << request_url;
-        cf_history_entry = ss.str();
-    }
-
-    BESDEBUG(MODULE, prolog << "Adding cf_history_entry context. '" << cf_history_entry << "'" << endl);
-
-    vector<string> hist_entry_vec;
-    hist_entry_vec.push_back(cf_history_entry);
-    BESDEBUG(MODULE, prolog << "hist_entry_vec.size(): " << hist_entry_vec.size() << endl);
-
-    // Add the new entry to the "history" attribute
-    // Get the top level Attribute table.
-    AttrTable &globals = dds->get_attr_table();
-
-    // Since many files support "CF" conventions the history tag may already exist in the source data
-    // and we should add an entry to it if possible.
-    //bool done = false; // Used to indicate that we located a toplevel ATtrTable whose name ends in "_GLOBAL" and that has an existing "history" attribute.
-    unsigned int num_attrs = globals.get_size();
-    if (num_attrs) {
-        // Here we look for a top level AttrTable whose name ends with "_GLOBAL" which is where, by convention,
-        // data ingest handlers place global level attributes found in the source dataset.
-        AttrTable::Attr_iter i = globals.attr_begin();
-        AttrTable::Attr_iter e = globals.attr_end();
-        for (; i != e; i++) {
-            AttrType attrType = globals.get_attr_type(i);
-            string attr_name = globals.get_name(i);
-            // Test the entry...
-            if (attrType == Attr_container && BESUtil::endsWith(attr_name, "_GLOBAL")) {
-                // Look promising, but does it have an existing "history" Attribute?
-                AttrTable *source_file_globals = globals.get_attr_table(i);
-                AttrTable::Attr_iter history_attrItr = source_file_globals->simple_find("history");
-                if (history_attrItr != source_file_globals->attr_end()) {
-                    // Yup! Add our entry...
-                    BESDEBUG(MODULE, prolog << "Adding history entry to " << attr_name << endl);
-                    source_file_globals->append_attr("history", "string", &hist_entry_vec);
-                }
-            }
-        }
-    }
-}
-#endif
 
 /**
 * Process the DAP4 "history" attribute.
@@ -337,27 +246,35 @@ void updateHistoryAttribute(DMR *dmr, const string ce)
     request_url = request_url.substr(request_url.find_last_of('#')+1);
     request_url += "?" + ce;
     vector<string> hist_entry_vector = get_history_entry(request_url);
+
     BESDEBUG(MODULE, prolog << "hist_entry_vec.size(): " << hist_entry_vector.size() << endl);
+    bool added_history = false;
     D4Group* root_grp = dmr->root();
-    D4Attributes *d4_attrs = root_grp->attributes();
-    if(d4_attrs){
-        for (auto attrs = d4_attrs->attribute_begin(); attrs != d4_attrs->attribute_end(); ++attrs) {
-            string name = (*attrs)->name();
-            BESDEBUG("dap",  prolog << "Attribute name is "<<name <<endl);
-            if ((*attrs)->type() && BESUtil::endsWith(name, "_GLOBAL")) {
-                // Yup! Add our entry...
-                D4Attribute *history_attr = (*attrs)->attributes()->find("history");
-                if (!history_attr) {
-                    //if there is no source history attribute
-                    BESDEBUG(MODULE, prolog << "Adding history entry to " << name << endl);
-                    D4Attribute *new_history = new D4Attribute("history", attr_str_c);
-                    new_history->add_value_vector(hist_entry_vector);
-                    (*attrs)->attributes()->add_attribute(new_history);
-                } else {
-                    (*attrs)->attributes()->find("history")->add_value_vector(hist_entry_vector);
-                }
+    D4Attributes *root_attrs = root_grp->attributes();
+    for (auto attrs = root_attrs->attribute_begin(); attrs != root_attrs->attribute_end(); ++attrs) {
+        string name = (*attrs)->name();
+        BESDEBUG(MODULE, prolog << "Attribute name is "<<name <<endl);
+        if ((*attrs)->type() && BESUtil::endsWith(name, "_GLOBAL")) {
+            // Yup! Add our entry...
+            D4Attribute *history_attr = (*attrs)->attributes()->find("history");
+            if (!history_attr) {
+                //if there is no source history attribute
+                BESDEBUG(MODULE, prolog << "Adding history entry to " << name << endl);
+                auto *new_history = new D4Attribute("history", attr_str_c);
+                new_history->add_value_vector(hist_entry_vector);
+                (*attrs)->attributes()->add_attribute(new_history);
+            } else {
+                (*attrs)->attributes()->find("history")->add_value_vector(hist_entry_vector);
             }
+            added_history = true;
         }
+    }
+    if(!added_history){
+        auto *dap_global = new D4Attribute("DAP_GLOBAL",attr_container_c);
+        root_attrs->add_attribute(dap_global);
+        auto *new_history = new D4Attribute("history", attr_str_c);
+        new_history->add_value_vector(hist_entry_vector);
+        dap_global->attributes()->add_attribute(new_history);
     }
 }
 
@@ -400,28 +317,6 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
         // jhrg 9/6/16
         updateHistoryAttribute(loaded_dds, dhi.data[POST_CONSTRAINT]);
 
-#if 0
-        // TODO Make this code and the two struct classes that wrap the name a fd part of
-        // a utility class or file. jhrg 9/7/16
-
-        string temp_file_name = FONcRequestHandler::temp_dir + "/ncXXXXXX";
-        vector<char> temp_file(temp_file_name.length() + 1);
-        string::size_type len = temp_file_name.copy(&temp_file[0], temp_file_name.length());
-        temp_file[len] = '\0';
-        // cover the case where older versions of mkstemp() create the file using
-        // a mode of 666.
-        mode_t original_mode = umask(077);
-        int fd = mkstemp(&temp_file[0]);
-        umask(original_mode);
-
-        // Hack: Wrap the name and file descriptors so that the descriptor is closed
-        // and temp file in unlinked no matter how we exit. jhrg 9/7/16
-        // Except if there is a hard crash.. jhrg 3/30/17
-        wrap_temp_name w_temp_file(temp_file);
-        wrap_temp_descriptor w_fd(fd);
-
-        if (fd == -1) throw BESInternalError("Failed to open the temporary file.", __FILE__, __LINE__);
-#endif
         // This object closes the file when it goes out of scope.
         bes::TempFile temp_file(FONcRequestHandler::temp_dir + "/ncXXXXXX");
 
@@ -491,47 +386,7 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
         //DDS *loaded_dds = responseBuilder.intern_dap2_data(obj, dhi);
         DMR *loaded_dmr = responseBuilder.intern_dap4_data(obj, dhi);
         updateHistoryAttribute(loaded_dmr, dhi.data[POST_CONSTRAINT]);
-#if 0
 
-         // Iterate through the variables in the DataDDS and read
-    // in the data if the variable has the send flag set.
-    D4Group* root_grp = loaded_dmr->root();
-    Constructor::Vars_iter v = root_grp->var_begin();
-    for (D4Group::Vars_iter i = root_grp->var_begin(), e = root_grp->var_end(); i != e; ++i) {
-        BESDEBUG(MODULE,  prolog << (*i)->name() <<endl);
-        if ((*i)->send_p()) {
-            (*i)->intern_data();
-        }
-    }
-#endif
-
-        // ResponseBuilder splits the CE, so use the DHI or make two calls and
-        // glue the result together: responseBuilder.get_btp_func_ce() + " " + responseBuilder.get_ce()
-        // jhrg 9/6/16
-        //update_Dap4_HistoryAttribute(dmr, dhi.data[POST_CONSTRAINT]);
-
-#if 0
-        // TODO Make this code and the two struct classes that wrap the name a fd part of
-        // a utility class or file. jhrg 9/7/16
-
-        string temp_file_name = FONcRequestHandler::temp_dir + "/ncXXXXXX";
-        vector<char> temp_file(temp_file_name.length() + 1);
-        string::size_type len = temp_file_name.copy(&temp_file[0], temp_file_name.length());
-        temp_file[len] = '\0';
-        // cover the case where older versions of mkstemp() create the file using
-        // a mode of 666.
-        mode_t original_mode = umask(077);
-        int fd = mkstemp(&temp_file[0]);
-        umask(original_mode);
-
-        // Hack: Wrap the name and file descriptors so that the descriptor is closed
-        // and temp file in unlinked no matter how we exit. jhrg 9/7/16
-        // Except if there is a hard crash.. jhrg 3/30/17
-        wrap_temp_name w_temp_file(temp_file);
-        wrap_temp_descriptor w_fd(fd);
-
-        if (fd == -1) throw BESInternalError("Failed to open the temporary file.", __FILE__, __LINE__);
-#endif
         // This object closes the file when it goes out of scope.
         bes::TempFile temp_file(FONcRequestHandler::temp_dir + "/ncXXXXXX");
 
