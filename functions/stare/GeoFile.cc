@@ -19,13 +19,6 @@ GeoFile::GeoFile()
 
     // Initialize values.
     num_index = 0;
-    geo_num_i1 = NULL;
-    geo_num_j1 = NULL;
-    geo_cover1 = NULL;
-    geo_num_cover_values1 = NULL;
-    geo_lat1 = NULL;
-    geo_lon1 = NULL;
-    geo_index1 = NULL;
 }
 
 /** Destroy a GeoFile.
@@ -35,50 +28,6 @@ GeoFile::~GeoFile()
 {
     cout<<"GeoFile destructor\n";
 
-    // Free any allocated memory.
-    if (geo_lat1)
-    {
-        for (int i = 0; i < num_index; i++)
-            if (geo_lat1[i])
-                free(geo_lat1[i]);
-	free(geo_lat1);
-    }
-
-    if (geo_lon1)
-    {
-        for (int i = 0; i < num_index; i++)
-            if (geo_lon1[i])
-                free(geo_lon1[i]);
-	free(geo_lon1);
-    }
-    
-    if (geo_index1)
-    {
-        for (int i = 0; i < num_index; i++)
-            if (geo_index1[i])
-                free(geo_index1[i]);
-	free(geo_index1);
-    }
-        
-    if (geo_num_i1)
-	free(geo_num_i1);
-    if (geo_num_j1)
-	free(geo_num_j1);
-
-    for (int i = 0; i < num_cover; i++)
-    {
-	if (geo_cover1)
-	    free(geo_cover1[i]);
-	// if (cover1)
-	//     free(cover1[i]);
-    }
-
-    if (geo_cover1)
-	free(geo_cover1);
-    if (geo_num_cover_values1)
-	free(geo_num_cover_values1);
-    //    if (cover1)
-    //	free(cover1);
 
 }
 
@@ -217,39 +166,6 @@ GeoFile::readSidecarFile(const std::string fileName, int verbose, int &ncid)
     if ((ret = readSidecarFile_int(fileName, verbose, num_index, stare_index_name,
 				   size_i, size_j, variables, stare_varid, ncid)))
         return ret;
-    return 0;
-}
-
-/**
- * Get STARE index for data varaible.
- *
- * @param ncid ID of the sidecar file.
- * @param verbose Set to non-zero to enable verbose output for
- * debugging.
- * @param varid A reference that gets the varid of the STARE index.
- * @return 0 for success, error code otherwise.
- */
-int
-GeoFile::getSTAREIndex(const std::string varName, int verbose, int ncid, int &varid,
-		       size_t &my_size_i, size_t &my_size_j)
-{
-    if (verbose)
-	cout << "getSTAREIndex called for " << varName << endl;
-    
-    // Check all of our STARE indexes.
-    for (int v = 0; v < (int)variables.size(); v++)
-    {
-	string vars = variables.at(v);
-	cout << vars << endl;
-
-	// Is the desired variable listed in the vars string?
-	if (vars.find(varName) != string::npos) {
-	    cout << "found!" << endl;
-	    varid = stare_varid.at(0);
-	    my_size_i = size_i.at(0);
-	    my_size_j = size_j.at(0);
-	} 
-    }
     return 0;
 }
 

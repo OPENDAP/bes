@@ -69,8 +69,6 @@ public:
     int readSidecarFile(const std::string fileName, int verbose, int &ncid);
 
     /** Get STARE index for data varaible. */
-    int getSTAREIndex(const std::string varName, int verbose, int ncid, int &varid,
-		      size_t &my_size_i, size_t &my_size_j);
     int getSTAREIndex_2(const std::string varName, int verbose, int ncid,
 			vector<unsigned long long> &values);
 
@@ -78,11 +76,11 @@ public:
     int closeSidecarFile(int verbose, int ncid);
 
     int num_index; /**< Number of STARE indicies needed for this file. */
-    int *geo_num_i1; /**< Number of I. */
-    int *geo_num_j1; /**< Number of J. */
-    double **geo_lat1; /**< Array of latitude values. */
-    double **geo_lon1; /**< Array of longitude values. */
-    unsigned long long **geo_index1; /**< Array of STARE index. */
+    // int *geo_num_i1; /**< Number of I. */
+    // int *geo_num_j1; /**< Number of J. */
+    // double **geo_lat1; /**< Array of latitude values. */
+    // double **geo_lon1; /**< Array of longitude values. */
+    // unsigned long long **geo_index1; /**< Array of STARE index. */
 
     int num_cover;
     unsigned long long **geo_cover1; /**< Array of STARE index intervals. */

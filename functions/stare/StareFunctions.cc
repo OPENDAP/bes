@@ -388,7 +388,7 @@ get_sidecar_uint64_values_2(const string &filename, BaseType *variable, vector<d
 {
     int ncid;
     GeoFile *gf = new GeoFile();
-    vector<long long unsigned int> my_values;
+    vector<unsigned long long> my_values;
     int ret;
 
     // Open and scan the sidecar file.
