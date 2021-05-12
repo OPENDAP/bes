@@ -1267,8 +1267,8 @@ void BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm)
 
     stringstream msg;
     msg << prolog << "Transmitted as response as NetCDF from temp file '" << file_name<< "'. ";
-    msg << "Sent "<< tcount << " bytes.";
-    BESDEBUG(MODULE,msg.str() << endl);
+    msg << "Sent "<< tcount << " bytes." << endl;
+    BESDEBUG(MODULE,msg.str());
     INFO_LOG(msg.str());
 }
 
