@@ -117,6 +117,9 @@ public:
     static std::vector<std::string> split(const std::string &s, char delim='/', bool skip_empty=true);
 
     static BESCatalog *separateCatalogFromPath(std::string &path);
+
+    static void file_to_stream(const std::string &file_name, std::ostream &o_strm);
+
 };
 
 #endif // E_BESUtil_h

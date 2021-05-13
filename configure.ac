@@ -946,7 +946,7 @@ AH_BOTTOM([
 #endif /* _config_h */])
 
 AC_CONFIG_FILES([Makefile
-		 VERSION
+		 bes_VERSION
 		 bes.spec
 		 bes.spec.all_static
 		 abi_checker.xml
