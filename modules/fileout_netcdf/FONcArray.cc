@@ -496,6 +496,10 @@ void FONcArray::write(int ncid)
             switch (d_array_type) {
             case NC_BYTE: {
                 unsigned char *data = new unsigned char[d_nelements];
+
+
+                d_a->intern_data();
+
                 d_a->buf2val((void**) &data);
                 stax = nc_put_var_uchar(ncid, _varid, data);
                 delete[] data;

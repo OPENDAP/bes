@@ -48,6 +48,8 @@
 
 namespace libdap {
 class BaseType;
+class DDS;
+class ConstraintEvaluator;
 }
 
 //using namespace libdap;
@@ -72,14 +74,23 @@ protected:
     //This is to handle the name clashing of dimension names of string type
     bool is_dap4_group;
 
+    libdap::DDS *d_dds;
+    libdap::ConstraintEvaluator *d_eval;
+
     FONcBaseType() : _varid(0), _defined(false),is_dap4(false),is_dap4_group(false){ }
 
 public:
     virtual ~FONcBaseType() { }
 
+    libdap::DDS *get_dds() const {return d_dds;}
+    void set_dds(libdap::DDS *dds) {d_dds = dds;}
+
+    libdap::ConstraintEvaluator *get_eval() const {return d_eval;}
+    void set_eval(libdap::ConstraintEvaluator *eval) {d_eval = eval;}
+
     virtual void convert(std::vector<std::string> embed,bool is_dap4_group=false);
     virtual void define(int ncid);
-    virtual void write(int /*ncid*/) {  }
+    virtual void write(int /*ncid*/) = 0;
 
     virtual std::string name() = 0;
     virtual nc_type type();
