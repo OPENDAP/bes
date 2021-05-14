@@ -35,9 +35,10 @@
 #include <netcdf.h>
 #include <vector>
 #include <string>
-
-
+#include "AttrTable.h"
+#include <D4Attributes.h>
 #include <BESObj.h>
+
 //#include <BaseType.h>
 
 #define RETURNAS_NETCDF "netcdf"
@@ -93,6 +94,10 @@ public:
     virtual bool isNetCDF4();
     virtual bool isNetCDF4_ENHANCED();
     virtual void set_is_dap4(bool set_dap4) {is_dap4 = set_dap4;}
+    virtual libdap::AttrType getAttrType(nc_type t);
+    virtual D4AttributeType getD4AttrType(nc_type t);
+    virtual void updateD4AttrType(libdap::D4Attributes *d4_attrs, nc_type t);
+    virtual void updateAttrType(libdap::AttrTable&  attrs, nc_type t);
 
 };
 

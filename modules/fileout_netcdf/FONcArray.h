@@ -35,6 +35,7 @@
 #include <vector>
 #include <string>
 #include "AttrTable.h"
+#include <D4Attributes.h>
 
 #include "FONcBaseType.h"
 
@@ -120,7 +121,10 @@ public:
     virtual void dump(std::ostream &strm) const;
 
     static std::vector<FONcDim *> Dimensions;
+#if 0
     libdap::AttrType getAttrType(nc_type t);
+    D4AttributeType getD4AttrType(nc_type t);
+#endif
 };
 
 #endif // FONcArray_h_
