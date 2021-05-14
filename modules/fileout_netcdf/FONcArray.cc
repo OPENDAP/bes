@@ -497,7 +497,10 @@ void FONcArray::write(int ncid)
             case NC_BYTE: {
                 unsigned char *data = new unsigned char[d_nelements];
 
-                d_a->intern_data();
+                if (is_dap4)
+                    d_a->intern_data();
+                else
+                    d_a->intern_data(*get_eval(), *get_dds());
 
                 d_a->buf2val((void**) &data);
                 stax = nc_put_var_uchar(ncid, _varid, data);
