@@ -237,7 +237,7 @@ void updateHistoryAttribute(DDS *dds, const string &ce)
 * @param dmr The DMR to modify
 * @param ce The constraint expression that produced this new netCDF file.
 */
-void updateHistoryAttribute(DMR *dmr, const string ce)
+void updateHistoryAttribute(DMR *dmr, const string &ce)
 {
     string request_url = dmr->filename();
     // remove path info
