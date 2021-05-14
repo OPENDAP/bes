@@ -105,6 +105,12 @@ FONcByte::write( int ncid )
     BESDEBUG( "fonc", "FOncByte::write for var " << _varname << endl ) ;
     size_t var_index[] = {0} ;
     unsigned char *data = new unsigned char ;
+
+    if (is_dap4)
+        _b->intern_data();
+    else
+        _b->intern_data(*get_eval(), *get_dds());
+
     _b->buf2val( (void**)&data ) ;
     int stax = nc_put_var1_uchar( ncid, _varid, var_index, data ) ;
     if( stax != NC_NOERR )

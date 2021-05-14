@@ -103,6 +103,12 @@ FONcDouble::write( int ncid )
     BESDEBUG( "fonc", "FONcDouble::write for var " << _varname << endl ) ;
     size_t var_index[] = {0} ;
     double *data = new double ;
+
+    if (is_dap4)
+        _f->intern_data();
+    else
+        _f->intern_data(*get_eval(), *get_dds());
+
     _f->buf2val( (void**)&data ) ;
     int stax = nc_put_var1_double( ncid, _varid, var_index, data ) ;
     if( stax != NC_NOERR )

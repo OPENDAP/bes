@@ -499,7 +499,7 @@ void FONcTransform::transform()
         for (; i != e; i++) {
             FONcBaseType *fbt = *i;
             BESDEBUG("fonc", "FONcTransform::transform() - Writing data for variable:  " << fbt->name() << endl);
-            fbt->write(_ncid, &eval, _dds);
+            fbt->write(_ncid);
         }
 
         stax = nc_close(_ncid);

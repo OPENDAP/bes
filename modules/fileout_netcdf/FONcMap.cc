@@ -54,8 +54,8 @@
  * @param ingrid true if the FONcArray was created in the context of a
  * grid, false otherwise
  */
-FONcMap::FONcMap( FONcArray *a, bool ingrid )
-    : _arr( a ), _ingrid( ingrid ), _defined( false ), _ref( 1 )
+FONcMap::FONcMap(FONcArray *a, bool ingrid)
+        : _arr(a), _ingrid(ingrid), _defined(false), _ref(1)
 {
 }
 
@@ -68,10 +68,9 @@ FONcMap::FONcMap( FONcArray *a, bool ingrid )
  */
 FONcMap::~FONcMap()
 {
-    if( _ingrid )
-    {
-	delete _arr ;
-	_arr = 0 ;
+    if (_ingrid) {
+        delete _arr;
+        _arr = 0;
     }
 }
 
@@ -85,8 +84,8 @@ FONcMap::~FONcMap()
 void
 FONcMap::decref()
 {
-    _ref-- ;
-    if( !_ref ) delete this ;
+    _ref--;
+    if (!_ref) delete this;
 }
 
 /** @brief a method to compare two grid maps, or possible grid maps.
@@ -102,13 +101,14 @@ FONcMap::decref()
  * @param tomap compare the saved map to this provided map
  * @return true if they are the same (shared) or false otherwise
  */
-bool FONcMap::compare(libdap::Array *tomap) {
+bool FONcMap::compare(libdap::Array *tomap)
+{
     bool isequal = true;
 
     libdap::Array *map = _arr->array();
 
-    BESDEBUG( "fonc", "FONcMap::compare - comparing " << tomap->name()
-        << " to " << map->name() << endl );
+    BESDEBUG("fonc", "FONcMap::compare - comparing " << tomap->name()
+                                                     << " to " << map->name() << endl);
 
     // compare the name
     if (isequal && tomap->name() != map->name()) {
@@ -270,16 +270,16 @@ bool FONcMap::compare(libdap::Array *tomap) {
         }
 #endif
     BESDEBUG("fonc",
-        "FONcMap::compare - done comparing " << tomap->name() << " to " << map->name() << ": " << isequal << endl);
+             "FONcMap::compare - done comparing " << tomap->name() << " to " << map->name() << ": " << isequal << endl);
     return isequal;
 }
 
 /** @brief Add the name of the grid as a grid that uses this map
  */
 void
-FONcMap::add_grid( const string &name )
+FONcMap::add_grid(const string &name)
 {
-    _shared_by.push_back( name );
+    _shared_by.push_back(name);
 }
 
 /** @brief clear the embedded names for the FONcArray kept by this
@@ -288,7 +288,7 @@ FONcMap::add_grid( const string &name )
 void
 FONcMap::clear_embedded()
 {
-    _arr->clear_embedded() ;
+    _arr->clear_embedded();
 }
 
 /** @brief define the map in the netcdf file by calling define on the
@@ -297,12 +297,11 @@ FONcMap::clear_embedded()
  * @param ncid The id of the netcdf file
  */
 void
-FONcMap::define( int ncid )
+FONcMap::define(int ncid)
 {
-    if( !_defined )
-    {
-	_arr->define( ncid ) ;
-	_defined = true ;
+    if (!_defined) {
+        _arr->define(ncid);
+        _defined = true;
     }
 }
 
@@ -312,9 +311,9 @@ FONcMap::define( int ncid )
  * @param ncid The id of the netcdf file
  */
 void
-FONcMap::write( int ncid )
+FONcMap::write(int ncid)
 {
-    _arr->write( ncid ) ;
+    _arr->write(ncid);
 }
 
 /** @brief dumps information about this object for debugging purposes
@@ -325,34 +324,31 @@ FONcMap::write( int ncid )
  * @param strm C++ i/o stream to dump the information to
  */
 void
-FONcMap::dump( ostream &strm ) const
+FONcMap::dump(ostream &strm) const
 {
     strm << BESIndent::LMarg << "FONcMap::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    strm << BESIndent::LMarg << "array:" ;
-    if( _arr )
-    {
-	strm << endl ;
-	BESIndent::Indent() ;
-	_arr->dump( strm ) ;
-	BESIndent::UnIndent() ;
+         << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    strm << BESIndent::LMarg << "array:";
+    if (_arr) {
+        strm << endl;
+        BESIndent::Indent();
+        _arr->dump(strm);
+        BESIndent::UnIndent();
     }
-    else
-    {
-	strm << " not set" << endl ;
+    else {
+        strm << " not set" << endl;
     }
-    strm << BESIndent::LMarg << "shared by: " ;
-    vector<string>::const_iterator i = _shared_by.begin() ;
-    vector<string>::const_iterator e = _shared_by.end() ;
-    bool first = true ;
-    for( ; i != e; i++ )
-    {
-	if( !first ) strm << ", " ;
-	strm << (*i) ;
-	first = false ;
+    strm << BESIndent::LMarg << "shared by: ";
+    vector<string>::const_iterator i = _shared_by.begin();
+    vector<string>::const_iterator e = _shared_by.end();
+    bool first = true;
+    for (; i != e; i++) {
+        if (!first) strm << ", ";
+        strm << (*i);
+        first = false;
     }
-    strm << endl ;
-    BESIndent::UnIndent() ;
+    strm << endl;
+    BESIndent::UnIndent();
 }
 

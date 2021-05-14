@@ -497,7 +497,10 @@ void FONcArray::write(int ncid)
             case NC_BYTE: {
                 unsigned char *data = new unsigned char[d_nelements];
 
-                d_a->intern_data();
+                if (is_dap4)
+                    d_a->intern_data();
+                else
+                    d_a->intern_data(*get_eval(), *get_dds());
 
                 d_a->buf2val((void**) &data);
                 stax = nc_put_var_uchar(ncid, _varid, data);
@@ -520,6 +523,12 @@ void FONcArray::write(int ncid)
                 if (var_type == "Byte") {
 
                     unsigned char *orig_data = new unsigned char[d_nelements];
+
+                    if (is_dap4)
+                        d_a->intern_data();
+                    else
+                        d_a->intern_data(*get_eval(), *get_dds());
+
                     d_a->buf2val((void**) &orig_data);
 
                     for (int d_i = 0; d_i < d_nelements; d_i++)
@@ -565,6 +574,12 @@ void FONcArray::write(int ncid)
                 // KY 2012-10-25
                 if (var_type == "UInt16") {
                     unsigned short *orig_data = new unsigned short[d_nelements];
+
+                    if (is_dap4)
+                        d_a->intern_data();
+                    else
+                        d_a->intern_data(*get_eval(), *get_dds());
+
                     d_a->buf2val((void**) &orig_data);
 
                     for (int d_i = 0; d_i < d_nelements; d_i++)
@@ -588,6 +603,12 @@ void FONcArray::write(int ncid)
 
             case NC_FLOAT: {
                 float *data = new float[d_nelements];
+
+                if (is_dap4)
+                    d_a->intern_data();
+                else
+                    d_a->intern_data(*get_eval(), *get_dds());
+
                 d_a->buf2val((void**) &data);
                 int stax = nc_put_var_float(ncid, _varid, data);
                 delete[] data;
@@ -601,6 +622,12 @@ void FONcArray::write(int ncid)
 
             case NC_DOUBLE: {
                 double *data = new double[d_nelements];
+
+                if (is_dap4)
+                    d_a->intern_data();
+                else
+                    d_a->intern_data(*get_eval(), *get_dds());
+
                 d_a->buf2val((void**) &data);
                 int stax = nc_put_var_double(ncid, _varid, data);
                 delete[] data;
