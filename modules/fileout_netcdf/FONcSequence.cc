@@ -109,6 +109,7 @@ void FONcSequence::define(int ncid)
  */
 void FONcSequence::write(int /*ncid*/)
 {
+    //FIXME implement this function. jhrg/sbl 5.14.21
 }
 
 string FONcSequence::name()

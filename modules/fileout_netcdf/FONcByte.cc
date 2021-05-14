@@ -99,7 +99,7 @@ FONcByte::define( int ncid )
  * @throws BESInternalError if there is a problem writing the value out
  * to the netcdf file
  */
-void
+void//FIXME there is nothing in data. jhrg/sbl 5.14.21
 FONcByte::write( int ncid )
 {
     BESDEBUG( "fonc", "FOncByte::write for var " << _varname << endl ) ;
