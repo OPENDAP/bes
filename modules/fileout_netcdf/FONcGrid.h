@@ -34,7 +34,11 @@
 
 #include <Grid.h>
 
-using namespace libdap ;
+namespace libdap {
+    class BaseType;
+    class Grid;
+    class Array;
+}
 
 #include "FONcBaseType.h"
 #include "FONcMap.h"
@@ -56,11 +60,11 @@ using namespace libdap ;
  */
 class FONcGrid: public FONcBaseType {
 private:
-    Grid * _grid;
+    libdap::Grid * _grid;
     FONcArray * _arr;
     vector<FONcMap *> _maps;
 public:
-    FONcGrid(BaseType *b);
+    FONcGrid(libdap::BaseType *b);
     virtual ~FONcGrid();
 
     virtual void convert(vector<string> embed,bool is_dap4_group=false);
@@ -72,7 +76,7 @@ public:
     virtual void dump(ostream &strm) const;
 
     static vector<FONcMap *> Maps;
-    static FONcMap * InMaps(Array *array);
+    static FONcMap * InMaps(libdap::Array *array);
     static bool InGrid;
 };
 

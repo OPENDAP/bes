@@ -497,7 +497,6 @@ void FONcArray::write(int ncid)
             case NC_BYTE: {
                 unsigned char *data = new unsigned char[d_nelements];
 
-
                 d_a->intern_data();
 
                 d_a->buf2val((void**) &data);

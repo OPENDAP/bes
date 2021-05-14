@@ -102,10 +102,10 @@ FONcMap::decref()
  * @param tomap compare the saved map to this provided map
  * @return true if they are the same (shared) or false otherwise
  */
-bool FONcMap::compare(Array *tomap) {
+bool FONcMap::compare(libdap::Array *tomap) {
     bool isequal = true;
 
-    Array *map = _arr->array();
+    libdap::Array *map = _arr->array();
 
     BESDEBUG( "fonc", "FONcMap::compare - comparing " << tomap->name()
         << " to " << map->name() << endl );

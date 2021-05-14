@@ -90,7 +90,7 @@ public:
 
     virtual void convert(std::vector<std::string> embed,bool is_dap4_group=false);
     virtual void define(int ncid);
-    virtual void write(int /*ncid*/) = 0;
+    virtual void write(int /*ncid*/, libdap::ConstraintEvaluator * = nullptr, libdap::DDS * = nullptr) { }
 
     virtual std::string name() = 0;
     virtual nc_type type();

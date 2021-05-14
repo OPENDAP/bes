@@ -35,6 +35,10 @@
 #include <Float64.h>
 
 using namespace libdap ;
+namespace libdap {
+    class BaseType;
+    class Float64;
+}
 
 #include "FONcBaseType.h"
 
@@ -47,9 +51,9 @@ using namespace libdap ;
 class FONcDouble : public FONcBaseType
 {
 private:
-    Float64 *			_f ;
+    libdap::Float64 *			_f ;
 public:
-    				FONcDouble( BaseType *b ) ;
+    				FONcDouble( libdap::BaseType *b ) ;
     virtual			~FONcDouble() ;
 
     virtual void		define( int ncid ) ;

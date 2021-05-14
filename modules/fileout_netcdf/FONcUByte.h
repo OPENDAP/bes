@@ -31,7 +31,10 @@
 
 #include <Byte.h>
 
-using namespace libdap ;
+namespace libdap {
+    class BaseType;
+    class Byte;
+}
 
 #include "FONcBaseType.h"
 
@@ -44,9 +47,9 @@ using namespace libdap ;
 class FONcUByte : public FONcBaseType
 {
 private:
-    Byte *			_b ;
+    libdap::Byte *			_b ;
 public:
-    				FONcUByte( BaseType *b ) ;
+    				FONcUByte( libdap::BaseType *b ) ;
     virtual			~FONcUByte() ;
 
     virtual void		define( int ncid ) ;

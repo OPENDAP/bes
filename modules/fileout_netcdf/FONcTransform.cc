@@ -34,8 +34,15 @@
 
 #include <sstream>
 
-using std::ostringstream;
-using std::istringstream;
+#include <BESResponseObject.h>
+#include <BESDapResponseBuilder.h>
+#include <BESDataHandlerInterface.h>
+#include <BESUtil.h>
+#include <TempFile.h>
+#include <BESDapNames.h>
+#include <BESDataNames.h>
+#include <BESDataDDSResponse.h>
+#include <BESRequestHandlerList.h>
 
 #include "FONcRequestHandler.h" // for the keys
 
@@ -43,6 +50,7 @@ using std::istringstream;
 #include "FONcUtils.h"
 #include "FONcBaseType.h"
 #include "FONcAttributes.h"
+#include "FONcTransmitter.h"
 
 #include <DDS.h>
 #include <DMR.h>
@@ -54,8 +62,12 @@ using std::istringstream;
 #include <Sequence.h>
 #include <BESDebug.h>
 #include <BESInternalError.h>
+#include <BESInternalFatalError.h>
 
 #include "DapFunctionUtils.h"
+
+using std::ostringstream;
+using std::istringstream;
 
 /** @brief Constructor that creates transformation object from the specified
  * DataDDS object to the specified file
@@ -138,6 +150,44 @@ FONcTransform::FONcTransform(DMR *dmr, BESDataHandlerInterface &dhi, const strin
     }
 }
 
+/** @brief Constructor that creates transformation object from the specified
+ * DataDDS object to the specified file
+ *
+ * @param dds DataDDS object that contains the data structure, attributes
+ * and data
+ * @param dhi The data interface containing information about the current
+ * request
+ * @param localfile netcdf to create and write the information to
+ * @throws BESInternalError if dds provided is empty or not read, if the
+ * file is not specified or failed to create the netcdf file
+ */
+FONcTransform::FONcTransform(BESResponseObject *obj, BESDataHandlerInterface *dhi, const string &localfile, const string &ncVersion) :
+        _ncid(0), _dds(nullptr), d_obj(obj), d_dhi(dhi), _localfile(localfile), _returnAs(ncVersion)
+{
+    if (!d_obj) {
+        string s = (string) "File out netcdf, " + "null BESResponseObject passed to constructor";
+        throw BESInternalError(s, __FILE__, __LINE__);
+    }
+    if (_localfile.empty()) {
+        string s = (string) "File out netcdf, " + "empty local file name passed to constructor";
+        throw BESInternalError(s, __FILE__, __LINE__);
+    }
+
+    // if there is a variable, attribute, dimension name that is not
+    // compliant with netcdf naming conventions then we will create
+    // a new name. If the new name does not begin with an alpha
+    // character then we will prefix it with name_prefix. We will
+    // get this prefix from the type of data that we are reading in,
+    // such as nc, h4, h5, ff, jg, etc...
+    dhi->first_container();
+    if (dhi->container) {
+        FONcUtils::name_prefix = dhi->container->get_container_type() + "_";
+    }
+    else {
+        FONcUtils::name_prefix = "nc_";
+    }
+}
+
 
 /** @brief Destructor
  *
@@ -176,6 +226,8 @@ FONcTransform::~FONcTransform()
 
 }
 
+// previous transform() fct, keep for rollback purposes. sbl 5.14.21
+#if 0
 /** @brief Transforms each of the variables of the DataDDS to the NetCDF
  * file
  *
@@ -292,6 +344,174 @@ void FONcTransform::transform()
         throw;
     }
 }
+#endif
+
+/** @brief Transforms each of the variables of the DataDDS to the NetCDF
+ * file
+ *
+ * For each variable in the DataDDS write out that variable and its
+ * attributes to the netcdf file. Each OPeNDAP data type translates into a
+ * particular netcdf type. Also write out any global variables stored at the
+ * top level of the DataDDS.
+ */
+void FONcTransform::transform()
+{
+    BESDapResponseBuilder responseBuilder;
+    // Use the DDS from the ResponseObject along with the parameters
+    // from the DataHandlerInterface to load the DDS with values.
+    // Note that the BESResponseObject will manage the loaded_dds object's
+    // memory. Make this a shared_ptr<>. jhrg 9/6/16
+
+    // Now that we are ready to start reading the response data we
+    // cancel any pending timeout alarm according to the configuration.
+    BESUtil::conditional_timeout_cancel();
+
+    BESDEBUG("fonc", "FONcTransmitter::send_data() - Reading data into DataDDS" << endl);
+    //_dds = responseBuilder.intern_dap2_data(d_obj, *d_dhi);
+
+    // This object closes the file when it goes out of scope.
+    bes::TempFile temp_file(FONcRequestHandler::temp_dir + "/ncXXXXXX");
+
+    FONcUtils::reset();
+
+    d_dhi->first_container();
+
+    BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *>(d_obj);
+    if (!bdds) throw BESInternalFatalError("Expected a BESDataDDSResponse instance", __FILE__, __LINE__);
+
+    _dds = bdds->get_dds();
+
+    BESDapResponseBuilder besDRB;
+
+    besDRB.set_dataset_name(_dds->filename());
+    besDRB.set_ce(d_dhi->data[POST_CONSTRAINT]);
+    besDRB.set_async_accepted(d_dhi->data[ASYNC]);
+    besDRB.set_store_result(d_dhi->data[STORE_RESULT]);
+
+
+    // This function is used by all fileout modules and they need to include the attributes in data access.
+    // So obtain the attributes if necessary. KY 2019-10-30
+    if(bdds->get_ia_flag() == false) {
+        BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler(d_dhi->container->get_container_type());
+        besRH->add_attributes(*d_dhi);
+    }
+
+    ConstraintEvaluator &eval = bdds->get_ce();
+
+    // Split constraint into two halves; stores the function and non-function parts in this instance.
+    besDRB.split_ce(eval);
+
+
+    // evaluate the rest of the CE - the part that follows the function calls.
+    eval.parse_constraint(besDRB.get_ce(), *_dds);
+
+    _dds->tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
+
+    //throw_if_dap2_response_too_big(_dds); // TODO Fix this, sbl 5/6/21
+
+    // Convert the DDS into an internal format to keep track of
+    // variables, arrays, shared dimensions, grids, common maps,
+    // embedded structures. It only grabs the variables that are to be
+    // sent.
+    DDS::Vars_iter vi = _dds->var_begin();
+    DDS::Vars_iter ve = _dds->var_end();
+    for (; vi != ve; vi++) {
+        if ((*vi)->send_p()) {
+            BaseType *v = *vi;
+            //v->intern_data(eval, *_dds);
+
+            BESDEBUG("fonc", "FONcTransform::transform() - Converting variable '" << v->name() << "'" << endl);
+
+            // This is a factory class call, and 'fg' is specialized for 'v'
+            FONcBaseType *fb = FONcUtils::convert(v, FONcTransform::_returnAs, FONcRequestHandler::classic_model);
+
+            _fonc_vars.push_back(fb);
+            vector<string> embed;
+            fb->convert(embed);
+        }
+    }
+
+    // ResponseBuilder splits the CE, so use the DHI or make two calls and
+    // glue the result together: responseBuilder.get_btp_func_ce() + " " + responseBuilder.get_ce()
+    // jhrg 9/6/16
+    updateHistoryAttribute(_dds, d_dhi->data[POST_CONSTRAINT]);
+
+    // Open the file for writing
+    int stax;
+    if ( FONcTransform::_returnAs == RETURNAS_NETCDF4 ) {
+        if (FONcRequestHandler::classic_model){
+            BESDEBUG("fonc", "FONcTransform::transform() - Opening NetCDF-4 cache file in classic mode. fileName:  " << _localfile << endl);
+            stax = nc_create(_localfile.c_str(), NC_CLOBBER|NC_NETCDF4|NC_CLASSIC_MODEL, &_ncid);
+        }
+        else {
+            BESDEBUG("fonc", "FONcTransform::transform() - Opening NetCDF-4 cache file. fileName:  " << _localfile << endl);
+            stax = nc_create(_localfile.c_str(), NC_CLOBBER|NC_NETCDF4, &_ncid);
+        }
+    }
+    else {
+        BESDEBUG("fonc", "FONcTransform::transform() - Opening NetCDF-3 cache file. fileName:  " << _localfile << endl);
+        stax = nc_create(_localfile.c_str(), NC_CLOBBER, &_ncid);
+    }
+
+    if (stax != NC_NOERR) {
+        FONcUtils::handle_error(stax, "File out netcdf, unable to open: " + _localfile, __FILE__, __LINE__);
+    }
+
+    try {
+        // Here we will be defining the variables of the netcdf and
+        // adding attributes. To do this we must be in define mode.
+        nc_redef(_ncid);
+
+        // For each converted FONc object, call define on it to define
+        // that object to the netcdf file. This also adds the attributes
+        // for the variables to the netcdf file
+        vector<FONcBaseType *>::iterator i = _fonc_vars.begin();
+        vector<FONcBaseType *>::iterator e = _fonc_vars.end();
+        for (; i != e; i++) {
+            FONcBaseType *fbt = *i;
+            BESDEBUG("fonc", "FONcTransform::transform() - Defining variable:  " << fbt->name() << endl);
+            fbt->define(_ncid);
+        }
+
+        if(FONcRequestHandler::no_global_attrs == false) {
+            // Add any global attributes to the netcdf file
+            AttrTable &globals = _dds->get_attr_table();
+            BESDEBUG("fonc", "FONcTransform::transform() - Adding Global Attributes" << endl << globals << endl);
+            bool is_netCDF_enhanced = false;
+            if(FONcTransform::_returnAs == RETURNAS_NETCDF4 && FONcRequestHandler::classic_model==false)
+                is_netCDF_enhanced = true;
+            FONcAttributes::add_attributes(_ncid, NC_GLOBAL, globals, "", "",is_netCDF_enhanced);
+        }
+
+        // We are done defining the variables, dimensions, and
+        // attributes of the netcdf file. End the define mode.
+        int stax = nc_enddef(_ncid);
+
+        // Check error for nc_enddef. Handling of HDF failures
+        // can be detected here rather than later.  KY 2012-10-25
+        if (stax != NC_NOERR) {
+            FONcUtils::handle_error(stax, "File out netcdf, unable to end the define mode: " + _localfile, __FILE__, __LINE__);
+        }
+
+        // Write everything out
+        i = _fonc_vars.begin();
+        e = _fonc_vars.end();
+        for (; i != e; i++) {
+            FONcBaseType *fbt = *i;
+            BESDEBUG("fonc", "FONcTransform::transform() - Writing data for variable:  " << fbt->name() << endl);
+            fbt->write(_ncid, &eval, _dds);
+        }
+
+        stax = nc_close(_ncid);
+        if (stax != NC_NOERR)
+            FONcUtils::handle_error(stax, "File out netcdf, unable to close: " + _localfile, __FILE__, __LINE__);
+    }
+    catch (BESError &e) {
+        (void) nc_close(_ncid); // ignore the error at this point
+        throw;
+    }
+}
+
 
 /** @brief Transforms each of the variables of the DMR to the NetCDF
  * file
@@ -369,11 +589,11 @@ void FONcTransform::transform_dap4()
             }
         }
 
-        // Thie part of code is to address the possible dimension name confliction
+        // This part of code is to address the possible dimension name conflict
         // when variables in the constraint don't have dimension names. Fileout netCDF
         // adds the fake dimensions such as dim1, dim2...to these variables.
         // If these dimension names are used by
-        // the file to be handled, the dimension confliction will corrupt the final output.
+        // the file to be handled, the dimension conflict will corrupt the final output.
         // The idea is to find if there are any dimension names like dim1, dim2 ... 
         // under the root group.
         // We will remember them and not use these names as fake dimension names.

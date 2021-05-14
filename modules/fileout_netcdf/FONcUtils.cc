@@ -222,10 +222,10 @@ string FONcUtils::gen_name(const vector<string> &embed, const string &name, stri
  * @throws BESInternalError if the DAP object is not an expected type
  */
 FONcBaseType *
-FONcUtils::convert(BaseType *v,const string &ncdf_version, const bool is_classic_model) {
+FONcUtils::convert(BaseType *v, const string &ncdf_version, const bool is_classic_model) {
     map<string,int>fdimname_to_id;
     vector<int>rds_nums;
-    return convert(v,ncdf_version, is_classic_model,fdimname_to_id,rds_nums);
+    return convert(v, ncdf_version, is_classic_model,fdimname_to_id,rds_nums);
 }
 
 /** @brief Creates a FONc object for the given DAP object
@@ -241,9 +241,9 @@ FONcUtils::convert(BaseType *v,const string &ncdf_version, const bool is_classic
  * @throws BESInternalError if the DAP object is not an expected type
  */
 FONcBaseType *
-FONcUtils::convert(BaseType *v,const string &ncdf_version, const bool is_classic_model, map<string,int>&fdimname_to_id,vector<int>&rbs_nums)
+FONcUtils::convert(BaseType *v, const string &ncdf_version, const bool is_classic_model, map<string,int>&fdimname_to_id,vector<int>&rbs_nums)
 {
-    FONcBaseType *b = 0;
+    FONcBaseType *b = nullptr;
 
     // We need to handle netCDF-4 enhanced differently. More datatypes are supported.
     bool is_netcdf4_enhanced = false;

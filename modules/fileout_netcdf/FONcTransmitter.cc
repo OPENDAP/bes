@@ -299,6 +299,8 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
     BESDEBUG(MODULE,  prolog << "BEGIN" << endl);
 
     try { // Expanded try block so all DAP errors are caught. ndp 12/23/2015
+
+#if 0
         BESDapResponseBuilder responseBuilder;
         // Use the DDS from the ResponseObject along with the parameters
         // from the DataHandlerInterface to load the DDS with values.
@@ -316,6 +318,7 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
         // glue the result together: responseBuilder.get_btp_func_ce() + " " + responseBuilder.get_ce()
         // jhrg 9/6/16
         updateHistoryAttribute(loaded_dds, dhi.data[POST_CONSTRAINT]);
+#endif
 
         // This object closes the file when it goes out of scope.
         bes::TempFile temp_file(FONcRequestHandler::temp_dir + "/ncXXXXXX");
@@ -323,7 +326,7 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
         BESDEBUG(MODULE,  prolog << "Building response file " << temp_file.get_name() << endl);
         // Note that 'RETURN_CMD' is the same as the string that determines the file type:
         // netcdf 3 or netcdf 4. Hack. jhrg 9/7/16
-        FONcTransform ft(loaded_dds, dhi, temp_file.get_name(), dhi.data[RETURN_CMD]);
+        FONcTransform ft(obj, &dhi, temp_file.get_name(), dhi.data[RETURN_CMD]);
         ft.transform();
 
         ostream &strm = dhi.get_output_stream();
