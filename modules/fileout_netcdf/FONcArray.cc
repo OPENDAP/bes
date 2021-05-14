@@ -495,6 +495,8 @@ void FONcArray::write(int ncid)
             // create array to hold data hyperslab
             switch (d_array_type) {
             case NC_BYTE: {
+#if 0
+                // TODO remove this code once it's no longer useful as a reference. jhrg 4/14/21
                 unsigned char *data = new unsigned char[d_nelements];
 
                 if (is_dap4)
@@ -510,6 +512,32 @@ void FONcArray::write(int ncid)
                     string err = "fileout.netcdf - Failed to create array of bytes for " + _varname;
                     FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
                 }
+#endif
+                if (is_dap4)
+                    d_a->intern_data();
+                else
+                    d_a->intern_data(*get_eval(), *get_dds());
+                // TODO I've left the removed code as comments. The key here is that libdap::Array
+                //  is special since it will allow access to the internal storage for code that
+                //  needs that for performance. Note the ugly reinterpret_cast<>(). Don't keep the
+                //  removed lines in the other case blocks.
+                //  Note the call to clear_local_data() after we check for an error. That's new and
+                //  should free up the space used by the variable once the data are 'put' to the file.
+                //  jhrg 5/14/21
+
+                //unsigned char *data = new unsigned char[d_nelements];
+                //d_a->buf2val((void**) &data);
+                stax = nc_put_var_uchar(ncid, _varid, reinterpret_cast<unsigned char *>(d_a->get_buf()));
+                //delete[] data;
+
+                if (stax != NC_NOERR) {
+                    string err = "fileout.netcdf - Failed to create array of bytes for " + _varname;
+                    FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+                }
+
+                // This frees the local storage. jhrg 5/14/21
+                d_a->clear_local_data();
+
                 break;
             }
 
@@ -752,6 +780,13 @@ void FONcArray::write_for_nc4_types(int ncid) {
     // Actually 64-bit integer is supported.
     switch (d_array_type) {
     case NC_BYTE: {
+
+        if (is_dap4)
+            d_a->intern_data();
+        else
+            d_a->intern_data(*get_eval(), *get_dds());
+
+
         signed char *data = new signed char[d_nelements];
         d_a->buf2val((void**) &data);
         stax = nc_put_var_schar(ncid, _varid, data);
@@ -765,6 +800,12 @@ void FONcArray::write_for_nc4_types(int ncid) {
     }
 
     case NC_UBYTE: {
+
+        if (is_dap4)
+            d_a->intern_data();
+        else
+            d_a->intern_data(*get_eval(), *get_dds());
+
         unsigned char *data = new unsigned char[d_nelements];
         d_a->buf2val((void**) &data);
         stax = nc_put_var_uchar(ncid, _varid, data);
@@ -779,6 +820,11 @@ void FONcArray::write_for_nc4_types(int ncid) {
 
     case NC_SHORT: {
 
+        if (is_dap4)
+            d_a->intern_data();
+        else
+            d_a->intern_data(*get_eval(), *get_dds());
+
         short *data = new short[d_nelements];
         d_a->buf2val((void**) &data);
         int stax = nc_put_var_short(ncid, _varid, data);
@@ -792,6 +838,11 @@ void FONcArray::write_for_nc4_types(int ncid) {
     }
 
     case NC_INT: {
+
+        if (is_dap4)
+            d_a->intern_data();
+        else
+            d_a->intern_data(*get_eval(), *get_dds());
 
         int *data = new int[d_nelements];
         d_a->buf2val((void**) &data);
@@ -808,6 +859,11 @@ void FONcArray::write_for_nc4_types(int ncid) {
 
     case NC_INT64: {
 
+        if (is_dap4)
+            d_a->intern_data();
+        else
+            d_a->intern_data(*get_eval(), *get_dds());
+
         int64_t *data = new int64_t[d_nelements];
         d_a->buf2val((void**) &data);
 
@@ -822,6 +878,12 @@ void FONcArray::write_for_nc4_types(int ncid) {
     }
 
     case NC_FLOAT: {
+
+        if (is_dap4)
+            d_a->intern_data();
+        else
+            d_a->intern_data(*get_eval(), *get_dds());
+
         float *data = new float[d_nelements];
         d_a->buf2val((void**) &data);
         int stax = nc_put_var_float(ncid, _varid, data);
@@ -835,6 +897,12 @@ void FONcArray::write_for_nc4_types(int ncid) {
     }
 
     case NC_DOUBLE: {
+
+        if (is_dap4)
+            d_a->intern_data();
+        else
+            d_a->intern_data(*get_eval(), *get_dds());
+
         double *data = new double[d_nelements];
         d_a->buf2val((void**) &data);
         int stax = nc_put_var_double(ncid, _varid, data);
@@ -848,6 +916,12 @@ void FONcArray::write_for_nc4_types(int ncid) {
     }
 
     case NC_USHORT: {
+
+        if (is_dap4)
+            d_a->intern_data();
+        else
+            d_a->intern_data(*get_eval(), *get_dds());
+
         unsigned short *data = new unsigned short[d_nelements];
         d_a->buf2val((void**) &data);
         int stax = nc_put_var_ushort(ncid, _varid, data);
@@ -861,6 +935,12 @@ void FONcArray::write_for_nc4_types(int ncid) {
     }
 
     case NC_UINT: {
+
+        if (is_dap4)
+            d_a->intern_data();
+        else
+            d_a->intern_data(*get_eval(), *get_dds());
+
         unsigned int *data = new unsigned int[d_nelements];
         d_a->buf2val((void**) &data);
         int stax = nc_put_var_uint(ncid, _varid, data);
@@ -874,6 +954,12 @@ void FONcArray::write_for_nc4_types(int ncid) {
     }
 
     case NC_UINT64: {
+
+        if (is_dap4)
+            d_a->intern_data();
+        else
+            d_a->intern_data(*get_eval(), *get_dds());
+
         uint64_t *data = new uint64_t[d_nelements];
         d_a->buf2val((void**) &data);
         int stax = nc_put_var_ulonglong(ncid, _varid, (const unsigned long long*)data);
