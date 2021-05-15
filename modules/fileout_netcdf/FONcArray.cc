@@ -485,6 +485,10 @@ void FONcArray::write_nc_variable(int ncid)
     }
 
     // This frees the local storage. jhrg 5/14/21
+    // TODO We could wrap the following in #if CLEAR_LOCAL_DATA and then
+    //  build the server so it either does or does not drop the memory after
+    //  data are written to the file. That way we could look at the process
+    //  memory size for a test/demo. jhrg 5/15/21
     d_a->clear_local_data();
 }
 
