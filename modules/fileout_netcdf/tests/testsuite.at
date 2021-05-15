@@ -151,6 +151,7 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST_NC4_ENHANCED(bescmd/grid_1_2d.h5.1.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/grid_1_2d.h5.2.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/t_int64_dap4_d4.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/t_int64_dap4_d4_constraint.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/t_wrong_fvalue_type_dap4_all.bescmd)
 
 dnl Add response that supports group(HDF5 default response et al.)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/nc4_group_atomic.h5.2.bescmd)
@@ -162,6 +163,7 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/simple_nc4.nc_constraint.
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/simple_nc4.nc_constraint_2.h5.2.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/dim_scale_smix.h5_local_constraint.2.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/dim_scale_dim_name_clash.h5_local_constraint.2.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/t_wrong_fvalue_type_dap4_all_nocf.bescmd)
  
 dnl Add response that checks the empty expression constraint
 dnl The whole file is supposed to convert to netCDF
