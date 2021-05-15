@@ -138,10 +138,10 @@ public:
 };
 
 /**
- * How a collection of dmrpp_easy_handles that are being used together on
+ * Holds a collection of dmrpp_easy_handles that are being used together on
  * a single logical transfer. By definition, if one of these fails, they all
  * fail, are stopped and the easy handles reset and returned to the pool.
- * This class is used to portect leaking handles when one thread of a
+ * This class is used to protect leaking handles when one thread of a
  * parallel transfer fails and an exception is thrown taking the flow of
  * control out of the handler to the command processor loop.
  */
