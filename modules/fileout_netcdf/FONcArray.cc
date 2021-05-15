@@ -480,7 +480,7 @@ void FONcArray::write_nc_variable(int ncid)
     int stax = nc_put_var_uchar(ncid, _varid, reinterpret_cast<T *>(d_a->get_buf()));
 
     if (stax != NC_NOERR) {
-        string err = "fileout.netcdf - Failed to create array of bytes for " + _varname;
+        string err = "fileout.netcdf - Failed to create array of " + d_a->var()->type_name() + " for " + _varname;
         FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
     }
 
@@ -701,7 +701,10 @@ void FONcArray::write(int ncid)
     }
     else {
         // special case for string data. Could have put this in the
-        // switch, but it's pretty big
+        // switch, but it's pretty big.
+        // TODO For the refactoring to make fonc stream data, this code does not
+        //  need to be changed. NB: The data values are read in FONcArray::convert().
+        //  jhrg 5/15/21
         size_t var_count[d_ndims];
         size_t var_start[d_ndims];
         int dim = 0;
@@ -797,10 +800,8 @@ void FONcArray::dump(ostream &strm) const
  *
  * @param ncid netCDF file ID 
  */
-
 void FONcArray::write_for_nc4_types(int ncid)
 {
-
     int stax = NC_NOERR;
 
     // create array to hold data hyperslab
@@ -810,7 +811,8 @@ void FONcArray::write_for_nc4_types(int ncid)
     // Actually 64-bit integer is supported.
     switch (d_array_type) {
         case NC_BYTE: {
-
+            // TODO Use the write_nc_variables<T>() private method to reduce
+            //  code duplication and enable streaming. jhrg 5/15/21
             if (is_dap4)
                 d_a->intern_data();
             else
