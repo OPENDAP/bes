@@ -116,7 +116,7 @@ FONcUByte::write( int ncid )
         _b->intern_data();
     else
         _b->intern_data(*get_eval(), *get_dds());
-    
+
     _b->buf2val( (void**)&data ) ;
     int stax = nc_put_var1_uchar(ncid, _varid, var_index, data ) ;
     if( stax != NC_NOERR )
