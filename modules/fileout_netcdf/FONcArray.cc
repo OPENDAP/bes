@@ -626,6 +626,11 @@ void FONcArray::write(int ncid)
                         delete[] orig_data;
                     }
                     else {
+                        if (is_dap4)
+                            d_a->intern_data();
+                        else
+                            d_a->intern_data(*get_eval(), *get_dds());
+
                         d_a->buf2val((void **) &data);
                     }
                     int stax = nc_put_var_short(ncid, _varid, data);
@@ -1089,6 +1094,7 @@ libdap::AttrType FONcArray::getAttrType(nc_type nct)
             return Attr_unknown;
     }
 }
+
 #if 0
             // This function is only used for handling _FillValue now. But it is a general routine that can be
             // used for other purposes.
