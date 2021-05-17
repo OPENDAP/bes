@@ -165,6 +165,8 @@ void FONcStructure::write(int ncid)
     vector<FONcBaseType *>::const_iterator e = _vars.end();
     for (; i != e; i++) {
         FONcBaseType *fbt = (*i);
+        fbt->set_dds(get_dds());
+        fbt->set_eval(get_eval());
         fbt->write(ncid);
     }
     BESDEBUG("fonc", "FONcStructure::define - done writing " << _varname << endl);
