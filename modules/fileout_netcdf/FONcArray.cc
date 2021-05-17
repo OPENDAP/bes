@@ -530,6 +530,7 @@ void FONcArray::write_nc_variable(int ncid)
 void FONcArray::write(int ncid)
 {
     BESDEBUG("fonc", "FONcArray::write() BEGIN  var: " << _varname << "[" << d_nelements << "]" << endl);
+    BESDEBUG("fonc", "FONcArray::write() BEGIN  var type: " <<d_array_type<< " " << endl);
 
     if (d_dont_use_it) {
         BESDEBUG("fonc", "FONcTransform::write not using variable " << _varname << endl);
@@ -624,6 +625,18 @@ void FONcArray::write(int ncid)
 
                         delete[] orig_data;
                     }
+                    else {
+                        d_a->buf2val((void **) &data);
+                    }
+                    int stax = nc_put_var_short(ncid, _varid, data);
+                    delete[] data;
+
+                    if (stax != NC_NOERR) {
+                        string err = (string) "fileout.netcdf - Failed to create array of shorts for " + _varname;
+                        FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+                    }
+                    break;
+
                 }
 #if 0
             case NC_INT: {
