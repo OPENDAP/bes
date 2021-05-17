@@ -82,6 +82,16 @@ FONcDouble::define( int ncid )
 
     if( !_defined )
     {
+
+        if(is_dap4) {                                                                                       
+            D4Attributes *d4_attrs = _f->attributes();                                                     
+            updateD4AttrType(d4_attrs,NC_DOUBLE);   
+        }
+        else {
+            AttrTable &attrs = _f->get_attr_table();  
+            updateAttrType(attrs,NC_DOUBLE); 
+        }
+
 	FONcAttributes::add_variable_attributes( ncid, _varid, _f,isNetCDF4_ENHANCED(),is_dap4 ) ;
 	FONcAttributes::add_original_name( ncid, _varid,
 					   _varname, _orig_varname ) ;

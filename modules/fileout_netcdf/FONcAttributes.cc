@@ -256,12 +256,14 @@ void FONcAttributes::add_attributes_worker(int ncid, int varid, const string &va
 #endif
 
     string new_name = FONcUtils::id2netcdf(new_attr_name);;
-
+    BESDEBUG("fonc", "FONcAttributes name:  " << new_name << endl);
+    BESDEBUG("fonc", "FONcAttributes type:  " << attrType << endl);
+ 
 
     if (varid == NC_GLOBAL) {
-        BESDEBUG("fonc", "FONcAttributes::addattrs() - Adding global attributes " << attr_name << endl);
+        BESDEBUG("fonc", "FONcAttributes::add_attrbutes_worker() - Adding global attributes " << attr_name << endl);
     } else {
-        BESDEBUG("fonc", "FONcAttributes::addattrs() - Adding attribute " << new_name << endl);
+        BESDEBUG("fonc", "FONcAttributes::add_attributes_worker() - Adding attribute " << new_name << endl);
     }
 
     // If we want to map the attributes of the datatypes to those of netCDF-4, KY 2020-02-14
@@ -285,16 +287,18 @@ void FONcAttributes::add_attributes_worker(int ncid, int varid, const string &va
                 break;
             case Attr_byte: {
                 // unsigned char
-                vector<unsigned char>vals;
+                // This should be converted to short to be consistent with the array. 
+                // The classic model doesn't support unsigned char.
+                vector<short>vals;
                 vals.resize(num_vals);
                 for (attri = 0; attri < num_vals; attri++) {
                     string val = attrs.get_attr(attr, attri);
                     istringstream is(val);
                     unsigned int uival = 0;
                     is >> uival;
-                    vals[attri] = (unsigned char) uival;
+                    vals[attri] = (short) uival;
                 }
-                stax = nc_put_att_uchar(ncid, varid, new_name.c_str(), NC_BYTE,
+                stax = nc_put_att_short(ncid, varid, new_name.c_str(), NC_SHORT,
                                         num_vals, &vals[0]);
                 if (stax != NC_NOERR) {
                     string err = (string) "File out netcdf, "
@@ -564,21 +568,46 @@ void FONcAttributes::add_dap4_attributes_worker(int ncid, int varid, const strin
                     add_dap4_attributes(ncid, varid, c_attributes, var_name, new_attr_name, is_nc_enhanced);
                 }
 
-                break;
             }
+                break;
+
+            case attr_int8_c:{
+
+                // 8-bit integer
+                vector<int8_t> vals;
+                vals.resize(num_vals);
+                attri = 0;
+                for (D4Attribute::D4AttributeIter vi = attr->value_begin(), ve = attr->value_end(); vi != ve; vi++) {
+                    string val = *vi;
+                    istringstream is(val);
+                    int uival = 0;
+                    is >> uival;
+                    vals[attri] = (int8_t) uival;
+                    ++attri;
+                }
+                stax = nc_put_att_schar(ncid, varid, new_name.c_str(), NC_BYTE,
+                                        num_vals, &vals[0]);
+                if (stax != NC_NOERR) {
+                    string err = (string) "File out netcdf-4 classic for DAP4, "
+                                     + "failed to write signed 8-bit integer attribute " + new_name;
+                    FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+                }
+            }
+            break;
 
             case attr_byte_c:
             case attr_uint8_c: {
-                // unsigned char
-                attr_type = "byte";
-                unsigned char vals[num_vals];
+                vector<short> vals;
+                vals.resize(num_vals);
                 attri = 0;
                 for (D4Attribute::D4AttributeIter vi = attr->value_begin(), ve = attr->value_end(); vi != ve; vi++) {
                     string val = *vi;
                     istringstream is(val);
+                    // Follow the classic code, the stringstream doesn't work well with int8, 
+                    // no overflow when casted back to vals.
                     unsigned int uival = 0;
                     is >> uival;
-                    vals[attri] = (unsigned char) uival;
+                    vals[attri] = (short) uival;
                     ++attri;
                 }
 #if 0
@@ -590,15 +619,15 @@ void FONcAttributes::add_dap4_attributes_worker(int ncid, int varid, const strin
                     vals[attri] = (unsigned char) uival;
                 }
 #endif
-                stax = nc_put_att_uchar(ncid, varid, new_name.c_str(), NC_UBYTE, num_vals, vals);
+                stax = nc_put_att_short(ncid, varid, new_name.c_str(), NC_SHORT, num_vals, &vals[0]);
 
-                break;
             }
+                break;
 
             case attr_int16_c: {
                 // short
-                attr_type = "short";
-                short vals[num_vals];
+                vector<short> vals;
+                vals.resize(num_vals);
                 attri = 0;
                 for (D4Attribute::D4AttributeIter vi = attr->value_begin(), ve = attr->value_end(); vi != ve; vi++) {
                     string val = *vi;
@@ -618,7 +647,7 @@ void FONcAttributes::add_dap4_attributes_worker(int ncid, int varid, const strin
                     vals[attri] = sval;
                 }
 #endif
-                stax = nc_put_att_short(ncid, varid, new_name.c_str(), NC_SHORT, num_vals, vals);
+                stax = nc_put_att_short(ncid, varid, new_name.c_str(), NC_SHORT, num_vals, &vals[0]);
 
                 break;
             }
@@ -626,9 +655,10 @@ void FONcAttributes::add_dap4_attributes_worker(int ncid, int varid, const strin
             case attr_uint16_c: {
                 // unsigned short
                 // (needs to be big enough to store an unsigned short
-                attr_type = "unsigned short";
                 attri = 0;
-                int vals[num_vals];
+                //int vals[num_vals];
+                vector<int> vals;
+                vals.resize(num_vals);
                 for (D4Attribute::D4AttributeIter vi = attr->value_begin(), ve = attr->value_end(); vi != ve; vi++) {
                     string val = *vi;
                     istringstream is(val);
@@ -647,15 +677,15 @@ void FONcAttributes::add_dap4_attributes_worker(int ncid, int varid, const strin
                     vals[attri] = ival;
                 }
 #endif
-                stax = nc_put_att_int(ncid, varid, new_name.c_str(), NC_INT, num_vals, vals);
+                stax = nc_put_att_int(ncid, varid, new_name.c_str(), NC_INT, num_vals, &vals[0]);
 
                 break;
             }
 
             case attr_int32_c: {
                 // int
-                attr_type = "int";
-                int vals[num_vals];
+                vector<int>vals;
+                vals.resize(num_vals);
                 attri = 0;
                 for (D4Attribute::D4AttributeIter vi = attr->value_begin(), ve = attr->value_end(); vi != ve; vi++) {
                     string val = *vi;
@@ -675,7 +705,7 @@ void FONcAttributes::add_dap4_attributes_worker(int ncid, int varid, const strin
                     vals[attri] = ival;
                 }
 #endif
-                stax = nc_put_att_int(ncid, varid, new_name.c_str(), NC_INT, num_vals, vals);
+                stax = nc_put_att_int(ncid, varid, new_name.c_str(), NC_INT, num_vals, &vals[0]);
 
                 break;
             }
@@ -683,8 +713,8 @@ void FONcAttributes::add_dap4_attributes_worker(int ncid, int varid, const strin
             case attr_uint32_c: {
                 // uint
                 // needs to be big enough to store an unsigned int
-                attr_type = "unsigned int";
-                int vals[num_vals];
+                vector<int>vals;
+                vals.resize(num_vals);
                 attri = 0;
                 for (D4Attribute::D4AttributeIter vi = attr->value_begin(), ve = attr->value_end(); vi != ve; vi++) {
                     string val = *vi;
@@ -704,15 +734,15 @@ void FONcAttributes::add_dap4_attributes_worker(int ncid, int varid, const strin
                     vals[attri] = lval;
                 }
 #endif
-                stax = nc_put_att_int(ncid, varid, new_name.c_str(), NC_INT, num_vals, vals);
+                stax = nc_put_att_int(ncid, varid, new_name.c_str(), NC_INT, num_vals, &vals[0]);
 
                 break;
              }
 
             case attr_float32_c: {
                 // float
-                attr_type = "float";
-                float vals[num_vals];
+                vector<float>vals;
+                vals.resize(num_vals);
                 attri = 0;
                 for (D4Attribute::D4AttributeIter vi = attr->value_begin(), ve = attr->value_end(); vi != ve; vi++) {
                     string val = *vi;
@@ -734,15 +764,15 @@ void FONcAttributes::add_dap4_attributes_worker(int ncid, int varid, const strin
                     vals[attri] = fval;
                 }
 #endif
-                stax = nc_put_att_float(ncid, varid, new_name.c_str(), NC_FLOAT, num_vals, vals);
+                stax = nc_put_att_float(ncid, varid, new_name.c_str(), NC_FLOAT, num_vals, &vals[0]);
 
                 break;
             }
 
             case attr_float64_c: {
                 // double
-                attr_type = "float64";
-                double vals[num_vals];
+                vector<double>vals;
+                vals.resize(num_vals);
                 attri = 0;
                 for (D4Attribute::D4AttributeIter vi = attr->value_begin(), ve = attr->value_end(); vi != ve; vi++) {
                     string val = *vi;
@@ -763,7 +793,7 @@ void FONcAttributes::add_dap4_attributes_worker(int ncid, int varid, const strin
                     vals[attri] = dval;
                 }
 #endif
-                stax = nc_put_att_double(ncid, varid, new_name.c_str(), NC_DOUBLE, num_vals, vals);
+                stax = nc_put_att_double(ncid, varid, new_name.c_str(), NC_DOUBLE, num_vals, &vals[0]);
 
                 break;
             }
@@ -828,7 +858,6 @@ void FONcAttributes::add_dap4_attributes_worker(int ncid, int varid, const strin
             }
 
             case attr_null_c:
-            case attr_int8_c:
             case attr_int64_c:
             case attr_uint64_c:
             case attr_enum_c:
@@ -897,6 +926,8 @@ FONcAttributes::write_attrs_for_nc4_types(int ncid, int varid, const string &var
     int stax = NC_NOERR;
     string attr_type = "unknown"; // Used for error messages. jhrg 6/18/20
     AttrType attrType = attrs.get_attr_type(attr);
+    BESDEBUG("fonc", "FONcAttributes write_attrs_for_nc4_type name:  " << var_attr_name << endl);
+    BESDEBUG("fonc", "FONcAttributes write_attrs_for_nc4_type type:  " << attrType << endl);
     unsigned int attri = 0;
     unsigned int num_vals = attrs.get_attr_num(attr);
     switch (attrType) {

@@ -79,6 +79,16 @@ FONcInt8::define( int ncid )
 
     if( !_defined )
     {
+
+        if(is_dap4) {                                                                                       
+            D4Attributes *d4_attrs = _b->attributes();                                                     
+            updateD4AttrType(d4_attrs,NC_BYTE);   
+        }
+        else {
+            AttrTable &attrs = _b->get_attr_table();  
+            updateAttrType(attrs,NC_BYTE); 
+        }
+
 	FONcAttributes::add_variable_attributes( ncid, _varid, _b,isNetCDF4_ENHANCED(),is_dap4 ) ;
 	FONcAttributes::add_original_name( ncid, _varid,
 					   _varname, _orig_varname ) ;

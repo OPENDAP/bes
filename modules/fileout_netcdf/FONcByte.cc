@@ -79,10 +79,20 @@ FONcByte::define(int ncid)
 {
     FONcBaseType::define(ncid);
 
-    if (!_defined) {
-        FONcAttributes::add_variable_attributes(ncid, _varid, _b, isNetCDF4_ENHANCED(), is_dap4);
-        FONcAttributes::add_original_name(ncid, _varid,
-                                          _varname, _orig_varname);
+    if( !_defined )
+    {
+        if(is_dap4) {                                                                                       
+            D4Attributes *d4_attrs = _b->attributes();                                                     
+            updateD4AttrType(d4_attrs,NC_UBYTE);   
+        }
+        else {
+            AttrTable &attrs = _b->get_attr_table();  
+            updateAttrType(attrs,NC_UBYTE); 
+        }
+
+	FONcAttributes::add_variable_attributes( ncid, _varid, _b,isNetCDF4_ENHANCED(),is_dap4 ) ;
+	FONcAttributes::add_original_name( ncid, _varid,
+					   _varname, _orig_varname ) ;
 
         _defined = true;
     }
