@@ -7,6 +7,12 @@
 autom4te.cache
 /bes-*
 docs
+.idea/
+bes_VERSION
+cookies
+gcovr_report.txt
+make_files.txt
+merged.txt
 
 ## files
 *~

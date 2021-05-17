@@ -44,15 +44,14 @@
  * @param b A DAP BaseType that should be a byte
  * @throws BESInternalError if the BaseType is not a Byte
  */
-FONcByte::FONcByte( BaseType *b )
-    : FONcBaseType(), _b( 0 )
+FONcByte::FONcByte(BaseType *b)
+        : FONcBaseType(), _b(0)
 {
-    _b = dynamic_cast<Byte *>(b) ;
-    if( !_b )
-    {
-	string s = (string)"File out netcdf, FONcByte was passed a "
-		   + "variable that is not a DAP Byte" ;
-	throw BESInternalError( s, __FILE__, __LINE__ ) ;
+    _b = dynamic_cast<Byte *>(b);
+    if (!_b) {
+        string s = (string) "File out netcdf, FONcByte was passed a "
+                   + "variable that is not a DAP Byte";
+        throw BESInternalError(s, __FILE__, __LINE__);
     }
 }
 
@@ -76,17 +75,16 @@ FONcByte::~FONcByte()
  * Byte
  */
 void
-FONcByte::define( int ncid )
+FONcByte::define(int ncid)
 {
-    FONcBaseType::define( ncid ) ;
+    FONcBaseType::define(ncid);
 
-    if( !_defined )
-    {
-	FONcAttributes::add_variable_attributes( ncid, _varid, _b,isNetCDF4_ENHANCED(),is_dap4 ) ;
-	FONcAttributes::add_original_name( ncid, _varid,
-					   _varname, _orig_varname ) ;
+    if (!_defined) {
+        FONcAttributes::add_variable_attributes(ncid, _varid, _b, isNetCDF4_ENHANCED(), is_dap4);
+        FONcAttributes::add_original_name(ncid, _varid,
+                                          _varname, _orig_varname);
 
-	_defined = true ;
+        _defined = true;
     }
 }
 
@@ -99,28 +97,48 @@ FONcByte::define( int ncid )
  * @throws BESInternalError if there is a problem writing the value out
  * to the netcdf file
  */
-void//FIXME there is nothing in data. jhrg/sbl 5.14.21
-FONcByte::write( int ncid )
+void
+FONcByte::write(int ncid)
 {
-    BESDEBUG( "fonc", "FOncByte::write for var " << _varname << endl ) ;
-    size_t var_index[] = {0} ;
-    unsigned char *data = new unsigned char ;
+    BESDEBUG("fonc", "FOncByte::write for var " << _varname << endl);
+#if 0
+    // TODO Remove original version once it's not needed as a fallback. jhrg 5/14/21
+    size_t var_index[] = {0};
+    unsigned char *data = new unsigned char;
 
     if (is_dap4)
         _b->intern_data();
     else
         _b->intern_data(*get_eval(), *get_dds());
 
-    _b->buf2val( (void**)&data ) ;
-    int stax = nc_put_var1_uchar( ncid, _varid, var_index, data ) ;
-    if( stax != NC_NOERR )
-    {
-	string err = (string)"fileout.netcdf - "
-		     + "Failed to write byte data for "
-		     + _varname ;
-	FONcUtils::handle_error( stax, err, __FILE__, __LINE__ ) ;
+    _b->buf2val((void **) &data);
+    int stax = nc_put_var1_uchar(ncid, _varid, var_index, data);
+    if (stax != NC_NOERR) {
+        string err = (string) "fileout.netcdf - "
+                     + "Failed to write byte data for "
+                     + _varname;
+        FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
     }
-    delete data ;
+    delete data;
+#endif
+
+    if (is_dap4)
+        _b->intern_data();
+    else
+        _b->intern_data(*get_eval(), *get_dds());
+
+    // TODO repeat this for all the subsequent scalar types' write() methods
+    //  jhrg 4/14/21
+    // For scalar types, assign the value to a local variable. Eliminate the
+    // allocation of dynamic memory as well as the delete call. The amount of
+    // memory used in this case is too small to warrant any more optimization.
+    unsigned char data = _b->value();
+    size_t var_index[] = {0};
+    int stax = nc_put_var1_uchar(ncid, _varid, var_index, &data);
+    if (stax != NC_NOERR) {
+        string err = string("fileout.netcdf - Failed to write byte data for ") + _varname;
+        FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+    }
 }
 
 /** @brief returns the name of the DAP Byte
@@ -130,7 +148,7 @@ FONcByte::write( int ncid )
 string
 FONcByte::name()
 {
-    return _b->name() ;
+    return _b->name();
 }
 
 /** @brief returns the netcdf type of the DAP Byte
@@ -140,7 +158,7 @@ FONcByte::name()
 nc_type
 FONcByte::type()
 {
-    return NC_BYTE ;
+    return NC_BYTE;
 }
 
 /** @brief dumps information about this object for debugging purposes
@@ -150,12 +168,12 @@ FONcByte::type()
  * @param strm C++ i/o stream to dump the information to
  */
 void
-FONcByte::dump( ostream &strm ) const
+FONcByte::dump(ostream &strm) const
 {
     strm << BESIndent::LMarg << "FONcByte::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    strm << BESIndent::LMarg << "name = " << _b->name()  << endl ;
-    BESIndent::UnIndent() ;
+         << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    strm << BESIndent::LMarg << "name = " << _b->name() << endl;
+    BESIndent::UnIndent();
 }
 

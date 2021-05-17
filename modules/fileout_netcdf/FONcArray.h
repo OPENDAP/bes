@@ -102,6 +102,9 @@ private:
 
     void write_for_nc4_types(int ncid);
 
+    // Used in write()
+    template<typename T> void write_nc_variable(int ncid);
+
 public:
     FONcArray(libdap::BaseType *b);
     FONcArray(libdap::BaseType *b,const std::vector<int>&dim_ids,const std::vector<bool>&use_dim_ids,const std::vector<int>&rbs_nums);
