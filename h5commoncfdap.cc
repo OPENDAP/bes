@@ -653,7 +653,6 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
                 d4_grp->add_var_nocopy(sca_uint32);
             }
                 break;
-            // STOP, add INT64, UINT64
             case H5INT64: {
                 HDF5CFInt64 * sca_int64 = NULL;
                 try {
@@ -1143,6 +1142,7 @@ void add_ll_valid_range(AttrTable* at, bool is_lat) {
 }
 
 // This routine is for 64-bit DAP4 CF support: when var type is 64-bit integer.
+// Note: the main part of DMR still comes from DDS and DAS.
 bool need_attr_values_for_dap4(const HDF5CF::Var *var) {
     bool ret_value = false;
     if((HDF5RequestHandler::get_dmr_64bit_int()!=NULL) && 
@@ -1152,6 +1152,7 @@ bool need_attr_values_for_dap4(const HDF5CF::Var *var) {
 }
 
 // This routine is for 64-bit DAP4 CF support: map all attributes to DAP4 for 64-bit integers.
+// Note: the main part of DMR still comes from DDS and DAS.
 void map_cfh5_var_attrs_to_dap4_int64(const HDF5CF::Var *var,BaseType* d4_var) {
 
     vector<HDF5CF::Attribute *>::const_iterator it_ra;
@@ -1209,6 +1210,8 @@ void map_cfh5_var_attrs_to_dap4_int64(const HDF5CF::Var *var,BaseType* d4_var) {
     d4_var->attributes()->add_attribute_nocopy(d4_attr);
 }
 
+// A helper function for 64-bit DAP4 CF support
+// Note: the main part of DMR still comes from DDS and DAS.
 void check_update_int64_attr(const string & obj_name, const HDF5CF::Attribute * attr) {
     if(attr->getType() == H5INT64 || attr->getType() == H5UINT64) { 
 
@@ -1276,6 +1279,9 @@ void check_update_int64_attr(const string & obj_name, const HDF5CF::Attribute * 
         }
     }
 }
+
+// Another helper function for 64-bit DAP4 CF support
+// Note: the main part of DMR still comes from DDS and DAS.
 void handle_coor_attr_for_int64_var(const HDF5CF::Attribute *attr,const string &var_path,string &tempstring,bool chg_coor_value) {
 
     string tempstring2(attr->getValue().begin(),attr->getValue().end()); 
@@ -1298,6 +1304,7 @@ void handle_coor_attr_for_int64_var(const HDF5CF::Attribute *attr,const string &
 }
 
 // This routine is for directly built DAP4 CF support.We build DMR not from DDS and DAS. 
+// Hopefully this will be eventually used to build DMR. 
 void map_cfh5_var_attrs_to_dap4(const HDF5CF::Var *var,BaseType* d4_var) {
 
     vector<HDF5CF::Attribute *>::const_iterator it_ra;
@@ -1305,32 +1312,6 @@ void map_cfh5_var_attrs_to_dap4(const HDF5CF::Var *var,BaseType* d4_var) {
         it_ra != var->getAttributes().end(); ++it_ra) {
      
         D4Attribute *d4_attr = gen_dap4_attr((*it_ra));
-#if 0
-        D4AttributeType dap4_attrtype = HDF5CFDAPUtil::print_type_dap4((*it_ra)->getType());
-        D4Attribute *d4_attr = new D4Attribute((*it_ra)->getNewName(),dap4_attrtype);
-        if(dap4_attrtype == attr_str_c) {
-            
-            const vector<size_t>& strsize = (*it_ra)->getStrSize();
-            unsigned int temp_start_pos = 0;
-            for (unsigned int loc = 0; loc < (*it_ra)->getCount(); loc++) {
-                if (strsize[loc] != 0) {
-                    string tempstring((*it_ra)->getValue().begin() + temp_start_pos,
-                                      (*it_ra)->getValue().begin() + temp_start_pos + strsize[loc]);
-                    temp_start_pos += strsize[loc];
-                    //The below if is not necessary since the "origname" and "fullnamepath" are not added.KY 2020-02-24
-                    //if (((*it_ra)->getNewName() != "origname") && ((*it_ra)->getNewName() != "fullnamepath")) 
-                    tempstring = HDF5CFDAPUtil::escattr(tempstring);
-                    d4_attr->add_value(tempstring);
-                }
-            }
-        }
-        else {
-            for (unsigned int loc = 0; loc < (*it_ra)->getCount(); loc++) {
-                string print_rep = HDF5CFDAPUtil::print_attr((*it_ra)->getType(), loc, (void*) &((*it_ra)->getValue()[0]));
-                d4_attr->add_value(print_rep);
-            }
-        }
-#endif
         d4_var->attributes()->add_attribute_nocopy(d4_attr);
     }
 }
@@ -1365,14 +1346,14 @@ for(int i = 0; i<strsize.size(); i++)
 cerr<<"attr size  is "<<strsize[i] <<endl;
 #endif
         unsigned int temp_start_pos = 0;
+        bool is_cset_ascii = attr->getCsetType();
         for (unsigned int loc = 0; loc < attr->getCount(); loc++) {
             if (strsize[loc] != 0) {
                 string tempstring(attr->getValue().begin() + temp_start_pos,
                                   attr->getValue().begin() + temp_start_pos + strsize[loc]);
                 temp_start_pos += strsize[loc];
-                //The below if is not necessary since the "origname" and "fullnamepath" are not added.KY 2020-02-24
-                //if ((attr->getNewName() != "origname") && (attr->getNewName() != "fullnamepath")) 
-                tempstring = HDF5CFDAPUtil::escattr(tempstring);
+                if ((attr->getNewName() != "origname") && (attr->getNewName() != "fullnamepath") && (true == is_cset_ascii)) 
+                     tempstring = HDF5CFDAPUtil::escattr(tempstring);
                 d4_attr->add_value(tempstring);
             }
         }
@@ -1386,6 +1367,7 @@ cerr<<"attr size  is "<<strsize[i] <<endl;
     }
     return d4_attr;
 }
+
 void add_gm_oneproj_var_dap4_attrs(BaseType *var,EOS5GridPCType cv_proj_code,const vector<double> &eos5_proj_params) {
 
     if (HE5_GCTP_SNSOID == cv_proj_code) {
