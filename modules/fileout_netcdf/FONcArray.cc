@@ -134,17 +134,16 @@ void FONcArray::convert(vector<string> embed, bool is_dap4_group)
 {
     FONcBaseType::convert(embed, is_dap4_group);
 
-    //TOODOO: don't use _d_dim_ids when has_dap4_group.
+    //TODO: don't use _d_dim_ids when has_dap4_group.
     _varname = FONcUtils::gen_name(embed, _varname, _orig_varname);
 
     BESDEBUG("fonc", "FONcArray::convert() - converting array " << _varname << endl);
 
     d_array_type = FONcUtils::get_nc_type(d_a->var(), isNetCDF4_ENHANCED());
 
-#if 0
+#if !NDEBUG
     if(d4_dim_ids.size() >0) {
         BESDEBUG("fonc", "FONcArray::convert() - d4_dim_ids size is " << d4_dim_ids.size() << endl);
-
     }
 #endif
 
@@ -204,6 +203,21 @@ void FONcArray::convert(vector<string> embed, bool is_dap4_group)
 
     // if this array is a string array, then add the length dimension
     if (d_array_type == NC_CHAR) {
+        // Calling intern_data() here is part of the 'streaming' refactoring.
+        // For the other types, the call can go in the write() implementations,
+        // but because strings in netCDF are arrays of char, a string array
+        // must have an added dimension (so a 1d string array becomes a 2d char
+        // array). To build the netCDF file, we need to know the dimensions of
+        // the array when the file is defined, not when the data are written.
+        // To know the size of the extra dimension used to hold the chars, we
+        // need to look at all the strings and find the biggest one. Thus, in
+        // order to define the variable for the netCDF file, we need to read
+        // string data long before we actually write it out. Kind of a drag,
+        // but not the end of the world. jhrg 5/18/21
+        if (is_dap4)
+            d_a->intern_data();
+        else
+            d_a->intern_data(*get_eval(), *get_dds());
 
         // get the data from the dap array
         int array_length = d_a->length();
@@ -807,6 +821,8 @@ void FONcArray::write(int ncid)
                 }
             }
         }
+
+        // TODO: can call clear_local_data() here. I think. jhrg 5/18/21
     }
 
     BESDEBUG("fonc", "FONcArray::write() END  var: " << _varname << "[" << d_nelements << "]" << endl);

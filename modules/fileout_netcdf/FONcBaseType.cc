@@ -37,7 +37,7 @@
 
 using namespace libdap;
 
-void FONcBaseType::convert(vector<string> embed,bool dap4_group)
+void FONcBaseType::convert(vector<string> embed, bool dap4_group)
 {
     _embed = embed;
     _varname = name();
@@ -64,7 +64,6 @@ void FONcBaseType::define(int ncid)
             string err = (string) "fileout.netcdf - " + "Failed to define variable " + _varname;
             FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
         }
-
 
 
         BESDEBUG("fonc", "FONcBaseType::define - done defining " << _varname << endl);
@@ -102,108 +101,110 @@ void FONcBaseType::setVersion(string version)
  */
 void FONcBaseType::setNC4DataModel(string nc4_datamodel)
 {
-    _nc4_datamodel= nc4_datamodel;
+    _nc4_datamodel = nc4_datamodel;
 
     BESDEBUG("fonc", "FONcBaseType::setNC4DataModel() - data model: '" << _nc4_datamodel << "'" << endl);
 }
+
 /** @brief Returns true if NetCDF4 features will be required
  */
 bool FONcBaseType::isNetCDF4()
 {
     return FONcBaseType::_ncVersion == RETURNAS_NETCDF4;
 }
+
 bool FONcBaseType::isNetCDF4_ENHANCED()
 {
     return FONcBaseType::_nc4_datamodel == NC4_ENHANCED;
 }
 
-void FONcBaseType::updateD4AttrType(libdap::D4Attributes *d4_attrs, nc_type t) {
-            for (libdap::D4Attributes::D4AttributesIter ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end(); ii != ee; ++ii) {
-                if((*ii)->name() == _FillValue) {
-                    // TODO: remove debug
-                    BESDEBUG("fonc", "FONcArray - attrtype " << getD4AttrType(t) << endl);
-                    BESDEBUG("fonc", "FONcArray - attr_type " << (*ii)->type() << endl);
-                    D4AttributeType correct_d4_attr_type = getD4AttrType(t);
-                    if(correct_d4_attr_type != (*ii)->type()) 
-                        (*ii)->set_type(correct_d4_attr_type);
-                    break;
-                }
-            }
+void FONcBaseType::updateD4AttrType(libdap::D4Attributes *d4_attrs, nc_type t)
+{
+    for (libdap::D4Attributes::D4AttributesIter ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end();
+         ii != ee; ++ii) {
+        if ((*ii)->name() == _FillValue) {
+            // TODO: remove debug
+            BESDEBUG("fonc", "FONcArray - attrtype " << getD4AttrType(t) << endl);
+            BESDEBUG("fonc", "FONcArray - attr_type " << (*ii)->type() << endl);
+            D4AttributeType correct_d4_attr_type = getD4AttrType(t);
+            if (correct_d4_attr_type != (*ii)->type())
+                (*ii)->set_type(correct_d4_attr_type);
+            break;
+        }
+    }
 
 
 }
 
-void FONcBaseType::updateAttrType(libdap::AttrTable& attrs, nc_type t) {
+void FONcBaseType::updateAttrType(libdap::AttrTable &attrs, nc_type t)
+{
     if (attrs.get_size()) {
-            for (libdap::AttrTable::Attr_iter iter = attrs.attr_begin(); iter != attrs.attr_end(); iter++) {
-                if (attrs.get_name(iter) == _FillValue){
-                    
-                    BESDEBUG("fonc", "FONcArray - attrtype " << getAttrType(t) << endl);
-                    BESDEBUG("fonc", "FONcArray - attr_type " << attrs.get_attr_type(iter) << endl);
-                    if(getAttrType(t) != attrs.get_attr_type(iter)) {
-                        (*iter)->type = getAttrType(t);
-                    }
-                    break;
+        for (libdap::AttrTable::Attr_iter iter = attrs.attr_begin(); iter != attrs.attr_end(); iter++) {
+            if (attrs.get_name(iter) == _FillValue) {
+
+                BESDEBUG("fonc", "FONcArray - attrtype " << getAttrType(t) << endl);
+                BESDEBUG("fonc", "FONcArray - attr_type " << attrs.get_attr_type(iter) << endl);
+                if (getAttrType(t) != attrs.get_attr_type(iter)) {
+                    (*iter)->type = getAttrType(t);
                 }
+                break;
             }
         }
+    }
 
 }
-// This function is only used for handling _FillValue now. But it is a general routine that can be 
+
+// This function is only used for handling _FillValue now. But it is a general routine that can be
 // used for other purposes. 
-libdap::AttrType FONcBaseType::getAttrType(nc_type nct) {
-    BESDEBUG("fonc", "FONcArray getAttrType "<< endl);
+libdap::AttrType FONcBaseType::getAttrType(nc_type nct)
+{
+    BESDEBUG("fonc", "FONcArray getAttrType " << endl);
     libdap::AttrType atype = Attr_unknown;
-    switch (nct)
-    {
-        
-        case NC_BYTE:  
+    switch (nct) {
+
+        case NC_BYTE:
             // The original code maps to Attr_byte. This is not right. Attr_byte is uint8, NC_BYTE is int8.
             // Change to 16-bit integer to be consistent with other parts for the classic model. 
             // Note; In DAP2, no 8-bit integer type. So regardless the netCDF model, this has to be
             // Attr_int16.
             atype = Attr_int16;
             break;
-        case NC_SHORT: 
+        case NC_SHORT:
             atype = Attr_int16;
             break;
-        case NC_INT: 
+        case NC_INT:
             atype = Attr_int32;
             break;
-        case NC_FLOAT: 
+        case NC_FLOAT:
             atype = Attr_float32;
             break;
-        case NC_DOUBLE: 
+        case NC_DOUBLE:
             atype = Attr_float64;
             break;
-        case NC_UBYTE:
-        {
+        case NC_UBYTE: {
             atype = Attr_byte;
         }
-           break;
-        case NC_USHORT: 
-        {
-            if(isNetCDF4_ENHANCED()) 
+            break;
+        case NC_USHORT: {
+            if (isNetCDF4_ENHANCED())
                 atype = Attr_uint16;
-            else 
+            else
                 atype = Attr_int32;
         }
-           break;
-        
-        case NC_UINT:
-        {
-            if(isNetCDF4_ENHANCED()) 
+            break;
+
+        case NC_UINT: {
+            if (isNetCDF4_ENHANCED())
                 atype = Attr_uint32;
-            else 
+            else
                 atype = Attr_int32;
         }
             break;
         case NC_CHAR:
-        case NC_STRING: 
+        case NC_STRING:
             atype = Attr_string;
             break;
-        default:     
-            ;
+        default:;
     }
     return atype;
 }
@@ -211,77 +212,71 @@ libdap::AttrType FONcBaseType::getAttrType(nc_type nct) {
 // This function is only used for handling _FillValue. TODO: review all cases and generalize it.
 // Check FONcUtils:get_nc_type() for the datatype mapping. The limitation of the classic model
 // and DAP2 can be seen.
-D4AttributeType FONcBaseType::getD4AttrType(nc_type nct) {
-    BESDEBUG("fonc", "FONcArray getAttrType "<< endl);
+D4AttributeType FONcBaseType::getD4AttrType(nc_type nct)
+{
+    BESDEBUG("fonc", "FONcArray getAttrType " << endl);
     D4AttributeType atype = attr_null_c;
-    switch (nct)
-    {
-        
-        case NC_BYTE:  
-        {
-            if(isNetCDF4_ENHANCED()) 
+    switch (nct) {
+
+        case NC_BYTE: {
+            if (isNetCDF4_ENHANCED())
                 atype = attr_int8_c;
-            else 
+            else
                 atype = attr_int16_c;
         }
             break;
-        case NC_SHORT: 
+        case NC_SHORT:
             atype = attr_int16_c;
             break;
-        case NC_INT: 
+        case NC_INT:
             atype = attr_int32_c;
             break;
-        case NC_FLOAT: 
+        case NC_FLOAT:
             atype = attr_float32_c;
             break;
-        case NC_DOUBLE: 
+        case NC_DOUBLE:
             atype = attr_float64_c;
             break;
         case NC_UBYTE:
             atype = attr_byte_c;
             break;
-        case NC_USHORT: 
-        {
-            if(isNetCDF4_ENHANCED()) 
+        case NC_USHORT: {
+            if (isNetCDF4_ENHANCED())
                 atype = attr_uint16_c;
-            else 
+            else
                 atype = attr_int32_c;
         }
-           break;
-        
-        case NC_UINT:
-        {
-            if(isNetCDF4_ENHANCED()) 
+            break;
+
+        case NC_UINT: {
+            if (isNetCDF4_ENHANCED())
                 atype = attr_uint32_c;
-            else 
+            else
                 atype = attr_int32_c; //Overflow due to the limitation of classic model
         }
             break;
 
-        case NC_INT64:
-        {
-            if(isNetCDF4_ENHANCED()) 
+        case NC_INT64: {
+            if (isNetCDF4_ENHANCED())
                 atype = attr_int64_c;
-            else 
+            else
                 atype = attr_int32_c; //Overflow due to the limitation of classic model
         }
             break;
 
-        case NC_UINT64:
-        {
-            if(isNetCDF4_ENHANCED()) 
+        case NC_UINT64: {
+            if (isNetCDF4_ENHANCED())
                 atype = attr_uint64_c;
-            else 
+            else
                 atype = attr_int32_c; //Overflow due to the limitation of classic model
         }
             break;
-    
+
         case NC_CHAR:
-        case NC_STRING: 
+        case NC_STRING:
             atype = attr_str_c;
             break;
-        default:     
-            ;
+        default:;
     }
     return atype;
 }
