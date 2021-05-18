@@ -165,10 +165,10 @@ vector<string> get_history_entry (const string &request_url)
     string cf_history_entry = BESContextManager::TheManager()->get_context("cf_history_entry", foundIt);
     if (!foundIt) {
         // If the cf_history_entry context was not set by the incoming command then
-        // we compute and add the history entry string here.
-        string hyrax_history_txt = create_history_txt(request_url);
-        cf_history_entry.append(hyrax_history_txt);
+        // we compute and the value of the history string here.
+        cf_history_entry = create_history_txt(request_url);
     }
+    // And here we add to the returned vector.
     hist_entry_vec.push_back(cf_history_entry);
     return hist_entry_vec;
 }
