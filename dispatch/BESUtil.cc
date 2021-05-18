@@ -1260,8 +1260,8 @@ void BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm)
         msg << prolog << "There was an ostream error during transmit. Transmitted " << tcount  << " bytes.";
         ios_state_msg(i_stream, msg);
         auto crntpos = o_strm.tellp();
-        msg << " current_position: " << crntpos;
-        BESDEBUG(MODULE, msg.str() << endl);
+        msg << " current_position: " << crntpos << endl;
+        BESDEBUG(MODULE, msg.str());
         INFO_LOG(msg.str());
     }
 
