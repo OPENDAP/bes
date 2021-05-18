@@ -114,20 +114,16 @@ nc_type FONcUtils::get_nc_type(BaseType *element,bool IsNC4_ENHANCED)
     nc_type x_type = NC_NAT; // the constant ncdf uses to define simple type
 
     string var_type = element->type_name();
-    if (var_type == "Byte") {       	// check this for dods type
+    BESDEBUG("fonc", "FONcUtils() - var_type "<< var_type <<endl);
+    BESDEBUG("fonc", "FONcUtils() - var_name "<< element->name() <<endl);
+    if (var_type == "Byte" || var_type == "UInt8") { // check this for dods type
         if(IsNC4_ENHANCED) 
             x_type = NC_UBYTE;
         else 
             x_type = NC_SHORT;
     }
-    else if(var_type =="Int8") {
-        if(IsNC4_ENHANCED) 
-            x_type = NC_BYTE;
-    }
-    else if(var_type =="UInt8") {
-        if(IsNC4_ENHANCED) 
-            x_type = NC_UBYTE;
-    }
+    else if(var_type =="Int8") 
+        x_type = NC_BYTE;
     else if (var_type == "String")
         x_type = NC_CHAR;
     else if (var_type == "Int16")
@@ -275,6 +271,9 @@ FONcUtils::convert(BaseType *v,const string &ncdf_version, const bool is_classic
         if(true == is_netcdf4_enhanced)
             b = new FONcUShort(v); 
         else 
+            // Kent: This is the original handling. 
+            // It is not right but the main reason is
+            // due to the limitation of the classic model.
             b = new FONcShort(v);
         break;
     }

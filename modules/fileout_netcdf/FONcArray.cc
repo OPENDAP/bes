@@ -433,16 +433,42 @@ void FONcArray::define(int ncid)
         // Question: Are there other cases where an unsigned type is 'promoted' and thus
         // the type of the fill value attribute should be too? jhrg 10/12/15
         // TODO: The following code is a hack. We may need to review all cases and re-implement it. KY 12/4/2020
-        AttrTable &attrs = d_a->get_attr_table();
+        // Largely revised the fillvalue check code and add the check for the DAP4 case.
+        if(is_dap4) {
+            D4Attributes *d4_attrs = d_a->attributes();
+            updateD4AttrType(d4_attrs,d_array_type);
+#if 0
+            for (D4Attributes::D4AttributesIter ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end(); ii != ee; ++ii) {
+                if((*ii)->name() == _FillValue) {
+                    // TODO: remove debug
+                    BESDEBUG("fonc", "FONcArray - attrtype " << getD4AttrType(d_array_type) << endl);
+                    BESDEBUG("fonc", "FONcArray - attr_type " << (*ii)->type() << endl);
+                    D4AttributeType correct_d4_attr_type = getD4AttrType(d_array_type);
+                    if(correct_d4_attr_type != (*ii)->type()) 
+                        (*ii)->set_type(correct_d4_attr_type);
+                    break;
+                }
+            }
+#endif
+        }
+        else {
+            AttrTable &attrs = d_a->get_attr_table();
+#if 0
         if (attrs.get_size()) {
             for (AttrTable::Attr_iter iter = attrs.attr_begin(); iter != attrs.attr_end(); iter++) {
-                if (attrs.get_name(iter) == _FillValue || attrs.get_name(iter) == "FillValue"){
-                    if(FONcArray::getAttrType(d_array_type) != attrs.get_attr_type(iter)) {
-                        (*iter)->type = FONcArray::getAttrType(d_array_type);
+                if (attrs.get_name(iter) == _FillValue){
+                    
+                    BESDEBUG("fonc", "FONcArray - attrtype " << getAttrType(d_array_type) << endl);
+                    BESDEBUG("fonc", "FONcArray - attr_type " << attrs.get_attr_type(iter) << endl);
+                    if(getAttrType(d_array_type) != attrs.get_attr_type(iter)) {
+                        (*iter)->type = getAttrType(d_array_type);
                     }
                     break;
                 }
             }
+        }
+#endif
+            updateAttrType(attrs,d_array_type);
         }
 
         BESDEBUG("fonc", "FONcArray::define() - Adding attributes " << endl);
@@ -514,7 +540,7 @@ void FONcArray::write(int ncid)
                 // to a NetCDF type that will support unsigned bytes.  This
                 // detects the original variable was of type Byte and typecasts
                 // each data value to a short.
-                if (var_type == "Byte") {
+                if (var_type == "Byte" || var_type =="UInt8") {
 
                     unsigned char *orig_data = new unsigned char[d_nelements];
                     d_a->buf2val((void**) &orig_data);
@@ -546,8 +572,8 @@ void FONcArray::write(int ncid)
                     // classic model. Tell the user and the SA.
                     string msg;
                     if (FONcRequestHandler::classic_model == false) {
-                        msg = "You asked for one or more 64-bit integer values returned using a netCDF3 file. "
-                              "Try asking for netCDF4 and/or contact the server administrator.";
+                        msg = "You asked for one or more 64-bit integer values returned using a netCDF3 or a netCDF4 classic file. "
+                              "Try asking for netCDF4 enhanced and/or contact the server administrator.";
                     }
                     else {
                         msg = "You asked for one or more 64-bit integer values, but either returned using a netCDF3 file or "
@@ -566,7 +592,6 @@ void FONcArray::write(int ncid)
 
                     for (int d_i = 0; d_i < d_nelements; d_i++)
                         data[d_i] = orig_data[d_i];
-
                     delete[] orig_data;
                 }
                 else {
@@ -863,17 +888,141 @@ void FONcArray::write_for_nc4_types(int ncid) {
 
 }
 
-// This function is only used for handling _FillValue. TODO: review all cases and generalize it.
+#if 0
+// This function is only used for handling _FillValue now. But it is a general routine that can be 
+// used for other purposes. 
 libdap::AttrType FONcArray::getAttrType(nc_type nct) {
+    BESDEBUG("fonc", "FONcArray getAttrType "<< endl);
+    libdap::AttrType atype = Attr_unknown;
     switch (nct)
     {
-        case NC_BYTE: return Attr_byte;
-        case NC_SHORT: return Attr_int16;
-        case NC_LONG: return Attr_int32;
-        case NC_FLOAT: return Attr_float32;
-        case NC_DOUBLE: return Attr_float64;
+        
+        case NC_BYTE:  
+            // The original code maps to Attr_byte. This is not right. Attr_byte is uint8, NC_BYTE is int8.
+            // Change to 16-bit integer to be consistent with other parts for the classic model. 
+            // Note; In DAP2, no 8-bit integer type. So regardless the netCDF model, this has to be
+            // Attr_int16.
+            atype = Attr_int16;
+            break;
+        case NC_SHORT: 
+            atype = Attr_int16;
+            break;
+        case NC_INT: 
+            atype = Attr_int32;
+            break;
+        case NC_FLOAT: 
+            atype = Attr_float32;
+            break;
+        case NC_DOUBLE: 
+            atype = Attr_float64;
+            break;
+        case NC_UBYTE:
+        {
+            atype = Attr_byte;
+        }
+           break;
+        case NC_USHORT: 
+        {
+            if(isNetCDF4_ENHANCED()) 
+                atype = Attr_uint16;
+            else 
+                atype = Attr_int32;
+        }
+           break;
+        
+        case NC_UINT:
+        {
+            if(isNetCDF4_ENHANCED()) 
+                atype = Attr_uint32;
+            else 
+                atype = Attr_int32;
+        }
+            break;
         case NC_CHAR:
-        case NC_STRING: return Attr_string;
-        default:      return Attr_unknown;
+        case NC_STRING: 
+            atype = Attr_string;
+            break;
+        default:     
+            ;
     }
+    return atype;
 }
+
+// This function is only used for handling _FillValue. TODO: review all cases and generalize it.
+// Check FONcUtils:get_nc_type() for the datatype mapping. The limitation of the classic model
+// and DAP2 can be seen.
+D4AttributeType FONcArray::getD4AttrType(nc_type nct) {
+    BESDEBUG("fonc", "FONcArray getAttrType "<< endl);
+    D4AttributeType atype = attr_null_c;
+    switch (nct)
+    {
+        
+        case NC_BYTE:  
+        {
+            if(isNetCDF4_ENHANCED()) 
+                atype = attr_int8_c;
+            else 
+                atype = attr_int16_c;
+        }
+            break;
+        case NC_SHORT: 
+            atype = attr_int16_c;
+            break;
+        case NC_INT: 
+            atype = attr_int32_c;
+            break;
+        case NC_FLOAT: 
+            atype = attr_float32_c;
+            break;
+        case NC_DOUBLE: 
+            atype = attr_float64_c;
+            break;
+        case NC_UBYTE:
+            atype = attr_byte_c;
+            break;
+        case NC_USHORT: 
+        {
+            if(isNetCDF4_ENHANCED()) 
+                atype = attr_uint16_c;
+            else 
+                atype = attr_int32_c;
+        }
+           break;
+        
+        case NC_UINT:
+        {
+            if(isNetCDF4_ENHANCED()) 
+                atype = attr_uint32_c;
+            else 
+                atype = attr_int32_c; //Overflow due to the limitation of classic model
+        }
+            break;
+
+        case NC_INT64:
+        {
+            if(isNetCDF4_ENHANCED()) 
+                atype = attr_int64_c;
+            else 
+                atype = attr_int32_c; //Overflow due to the limitation of classic model
+        }
+            break;
+
+        case NC_UINT64:
+        {
+            if(isNetCDF4_ENHANCED()) 
+                atype = attr_uint64_c;
+            else 
+                atype = attr_int32_c; //Overflow due to the limitation of classic model
+        }
+            break;
+    
+        case NC_CHAR:
+        case NC_STRING: 
+            atype = attr_str_c;
+            break;
+        default:     
+            ;
+    }
+    return atype;
+}
+#endif

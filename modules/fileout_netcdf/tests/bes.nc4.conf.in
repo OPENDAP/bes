@@ -69,6 +69,8 @@ FONc.ClassicModel=false
 # Uncomment the following line to suppress the output of global attributes.
 #FONc.NoGlobalAttrs=true
 
+NC.PromoteByteToShort=true
+
 # For HDF5
 # Note enabling the CF option changes the behavior of testFillValue test.
 # One can make H5.EnableCF=false to emulate the testFillValue test in bes.conf.
@@ -108,7 +110,7 @@ H5.DiskCacheFloatOnlyComp=true
 H5.DiskCacheCompThreshold=2.0
 H5.DiskCacheCompVarSize=10000
 
-
+NC.PromoteByteToShort=true
 # For HDF4
 
 # Note that changing H4.EnableCF will change the output of the HDF4 tests.
