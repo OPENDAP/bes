@@ -161,16 +161,14 @@ string create_history_txt(const string &request_url)
 vector<string> get_history_entry (const string &request_url)
 {
     vector<string> hist_entry_vec;
-    string cf_history_entry;
-    string hyrax_history_txt = create_history_txt(request_url);
     bool foundIt = false;
-    string src_history_entry = BESContextManager::TheManager()->get_context("cf_history_entry", foundIt);
-    if (foundIt) {
-        // attribute history exists in source attributes
-        cf_history_entry.append(src_history_entry).append(hyrax_history_txt);
-    } else {
-        cf_history_entry.append(hyrax_history_txt);
+    string cf_history_entry = BESContextManager::TheManager()->get_context("cf_history_entry", foundIt);
+    if (!foundIt) {
+        // If the cf_history_entry context was not set by the incoming command then
+        // we compute and the value of the history string here.
+        cf_history_entry = create_history_txt(request_url);
     }
+    // And here we add to the returned vector.
     hist_entry_vec.push_back(cf_history_entry);
     return hist_entry_vec;
 }
@@ -212,11 +210,11 @@ void updateHistoryAttribute(DDS *dds, const string &ce)
             string attr_name = globals.get_name(i);
             // Test the entry...
             if (attrType == Attr_container && BESUtil::endsWith(attr_name, "_GLOBAL")) {
-                // We are going to append to an existing history attributeif there is one
+                // We are going to append to an existing history attribute if there is one
                 // Or just add a histiry attribute if there is not one. In a most
                 // handy API moment, append_attr() does just this.
-                AttrTable *source_file_globals = globals.get_attr_table(i);
-                source_file_globals->append_attr("history", "string", &hist_entry_vec);
+                AttrTable *global_attr_tbl = globals.get_attr_table(i);
+                global_attr_tbl->append_attr("history", "string", &hist_entry_vec);
                 added_history = true;
                 BESDEBUG(MODULE, prolog << "Added history entry to " << attr_name << endl);
             }
