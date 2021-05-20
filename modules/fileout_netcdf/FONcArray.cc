@@ -531,9 +531,9 @@ void FONcArray::write_nc_variable(int ncid, nc_type var_type)
         case NC_INT:
             stax = nc_put_var_int(ncid, _varid, reinterpret_cast<int *>(d_a->get_buf()));
             break;
-//        case NC_INT64:
-//            stax = nc_put_var_long(ncid, _varid, reinterpret_cast<int64_t *>(d_a->get_buf()));
-//            break;
+        case NC_INT64:
+            stax = nc_put_var_longlong(ncid, _varid, reinterpret_cast<long long *>(d_a->get_buf()));
+            break;
         case NC_FLOAT:
             stax = nc_put_var_float(ncid, _varid, reinterpret_cast<float *>(d_a->get_buf()));
             break;
@@ -545,6 +545,9 @@ void FONcArray::write_nc_variable(int ncid, nc_type var_type)
             break;
         case NC_UINT:
             stax = nc_put_var_uint(ncid, _varid, reinterpret_cast<unsigned int *>(d_a->get_buf()));
+            break;
+        case NC_UINT64:
+            stax = nc_put_var_ulonglong(ncid, _varid, reinterpret_cast<unsigned long long *>(d_a->get_buf()));
             break;
     }
 
@@ -889,52 +892,14 @@ void FONcArray::write_for_nc4_types(int ncid)
         case NC_UBYTE:
         case NC_SHORT:
         case NC_INT:
+        case NC_INT64:
         case NC_FLOAT:
         case NC_DOUBLE:
         case NC_USHORT:
         case NC_UINT:
+        case NC_UINT64:
             write_nc_variable(ncid, d_array_type);
             break;
-
-
-        case NC_INT64: {
-
-            if (is_dap4)
-                d_a->intern_data();
-            else
-                d_a->intern_data(*get_eval(), *get_dds());
-
-            int64_t *data = new int64_t[d_nelements];
-            d_a->buf2val((void **) &data);
-
-            int stax = nc_put_var_longlong(ncid, _varid, (const long long *) data);
-            delete[] data;
-
-            if (stax != NC_NOERR) {
-                string err = (string) "fileout.netcdf - Failed to create array of ints for " + _varname;
-                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
-            }
-            break;
-        }
-
-        case NC_UINT64: {
-
-            if (is_dap4)
-                d_a->intern_data();
-            else
-                d_a->intern_data(*get_eval(), *get_dds());
-
-            uint64_t *data = new uint64_t[d_nelements];
-            d_a->buf2val((void **) &data);
-            int stax = nc_put_var_ulonglong(ncid, _varid, (const unsigned long long *) data);
-            delete[] data;
-
-            if (stax != NC_NOERR) {
-                string err = (string) "fileout.netcdf - Failed to create array of unsigned int for " + _varname;
-                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
-            }
-            break;
-        }
 
         default:
             string err = (string) "Failed to transform array of unknown type in file out netcdf";
