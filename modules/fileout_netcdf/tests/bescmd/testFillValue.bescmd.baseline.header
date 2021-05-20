@@ -86,7 +86,7 @@ variables:
 		:creator_name = "Kai Yang" ;
 		:creator_type = "person" ;
 		:history = "removed date-time: Original file created by Ozone SIPS\n",
-			"removed date-timex OMPS-NPP_NMNO2-L2_2017m0101t000532_o26838_2017m0309t171152.h5?" ;
+			"removed date-timex OMPS-NPP_NMNO2-L2_2017m0101t000532_o26838_2017m0309t171152.h5" ;
 		:id = "OMPS_NPP_NMNO2_L2" ;
 		:institution = "NASA Goddard Space Flight Center and University of Maryland" ;
 		:keywords = "NASA, Goddard Space Flight Center, GSFC, Atmospheric Chemistry, University of Maryland, UMCP, Nitrogen Dioxide, Suomi NPP, Ozone Mapping and Profiler Suite, OMPS" ;
