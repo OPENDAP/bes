@@ -547,6 +547,10 @@ void FONcArray::write_nc_variable(int ncid, nc_type var_type) {
         case NC_UINT64:
             stax = nc_put_var_ulonglong(ncid, _varid, reinterpret_cast<unsigned long long *>(d_a->get_buf()));
             break;
+
+        default:
+            throw BESInternalError("Failed to transform array of unknown type in file out netcdf (1)",
+                                         __FILE__, __LINE__);
     }
 
     if (stax != NC_NOERR) {
@@ -589,8 +593,9 @@ void FONcArray::write(int ncid) {
 
         // If we support the netCDF-4 enhanced model, the unsigned integer 
         // can be directly mapped to the netcdf-4 unsigned integer.
-        if (isNetCDF4_ENHANCED())
+        if (isNetCDF4_ENHANCED()) {
             write_for_nc4_types(ncid);
+        }
         else {
             string var_type = d_a->var()->type_name();
 
@@ -771,7 +776,7 @@ void FONcArray::write(int ncid) {
                     break;
 
                 default:
-                    throw BESInternalError("Failed to transform array of unknown type in file out netcdf",
+                    throw BESInternalError("Failed to transform array of unknown type in file out netcdf (2)",
                                            __FILE__, __LINE__);
             }
         }
@@ -885,6 +890,8 @@ void FONcArray::write_for_nc4_types(int ncid) {
 #if 0
     int stax = NC_NOERR;
 #endif
+
+    is_dap4 = true;
 
     // create array to hold data hyperslab
     // DAP2 only supports unsigned BYTE. So here
