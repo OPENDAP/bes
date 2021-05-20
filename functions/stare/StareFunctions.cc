@@ -55,6 +55,7 @@
 #include "BESSyntaxUserError.h"
 
 #include "StareFunctions.h"
+#include "GeoFile.h"
 
 // Used with BESDEBUG
 #define STARE "stare"
@@ -143,7 +144,7 @@ extract_uint64_array(Array *var, vector<dods_uint64> &values) {
  *   0 otherwise.
  *
  */
-//int cmpSpatial(STARE_ArrayIndexSpatialValue a_, STARE_ArrayIndexSpatialValue b_) {
+//int cmpSpatial(STARE_ArrayIndexSpatialValue a_, STARE_ArrayIndexSpatialValue b_);
 
 /**
  * @brief Do any of the targetIndices STARE indices overlap the dataset's STARE indices?
@@ -396,11 +397,12 @@ get_sidecar_uint64_values_2(const string &filename, BaseType *variable, vector<d
         throw BESInternalError("Could not open file " + filename + " - " + nc_strerror(ret), __FILE__, __LINE__);
 
     // Get the STARE index data for variable.
+    // FIXME do not copy indices to temp storage. jhrg 5/19/21
     if ((ret = gf->getSTAREIndex_2(variable->name(), 1, ncid, my_values)))
         throw BESInternalError("Could get stare indexes from file " + filename + " - " + nc_strerror(ret), __FILE__, __LINE__);
 
     // Copy vector.
-    for (int i = 0; i < my_values.size(); i++)
+    for (size_t i = 0; i < my_values.size(); i++)
     	values.push_back(my_values.at(i));
 
     // Close the sidecar file.
@@ -413,6 +415,7 @@ get_sidecar_uint64_values_2(const string &filename, BaseType *variable, vector<d
  * @param file The HDF5 Id of an open file
  * @param variable Get the stare indices for this dependent variable
  * @param values Value-result parameter, a vector that can hold dods_uint64 values
+ * @deprecated This read from the old sidecar files
  */
 void
 get_sidecar_uint64_values(const string &filename, BaseType */*variable*/, vector<dods_uint64> &values)
@@ -487,13 +490,13 @@ StareIntersectionFunction::stare_intersection_dap4_function(D4RValueList *args, 
         throw BESSyntaxUserError(oss.str(), __FILE__, __LINE__);
     }
 
-    //Find the filename from the dmr
+    // Find the filename from the dmr
     string fullPath = get_sidecar_file_pathname(dmr.filename(), stare_sidecar_suffix);
 
     BaseType *dependent_var = args->get_rvalue(0)->value(dmr);
     BaseType *raw_stare_indices = args->get_rvalue(1)->value(dmr);
 
-     //Read the data file and store the values of each dataset into an array
+     // Read the data file and store the values of each dataset into an array
     vector<dods_uint64> dep_var_stare_indices;
     get_sidecar_uint64_values_2(fullPath, dependent_var, dep_var_stare_indices);
 

@@ -23,13 +23,14 @@
 #include <string>
 #include <utility>
 
-#include <dods-datatypes.h>
-
 #include <STARE.h>
 #include <hdf5.h>
+
 #include <BaseType.h>
+#include <dods-datatypes.h>
+
 #include "ServerFunction.h"
-#include <stare/GeoFile.h>
+//#include "GeoFile.h"
 
 namespace libdap {
 class BaseType;

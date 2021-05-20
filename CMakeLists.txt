@@ -17,6 +17,7 @@ include_directories(../build/include/libdap)
 include_directories(/usr/local/Cellar/openssl/1.0.2q/include/)
 include_directories(/usr/local/Cellar/openssl/1.0.2r/include/)
 include_directories(/usr/local/include/)
+include_directories(/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/)
 
 # Where the hyrax project puts the dependencies' headers
 
