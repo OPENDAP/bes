@@ -34,7 +34,8 @@
 
 #include <vector>
 #include <string>
-#include "AttrTable.h"
+
+#include <AttrTable.h>
 #include <D4Attributes.h>
 
 #include "FONcBaseType.h"
@@ -56,7 +57,7 @@ class Array;
 class FONcArray: public FONcBaseType {
 private:
     // The array being converted
-    libdap::Array * d_a;
+    libdap::Array *d_a;
     // The type of data stored in the array
     nc_type d_array_type;
     // The number of dimensions to be stored in netcdf (if string, 2)
@@ -107,22 +108,22 @@ private:
     void write_nc_variable(int ncid, nc_type var_type);
 
 public:
-    FONcArray(libdap::BaseType *b);
+    explicit FONcArray(libdap::BaseType *b);
     FONcArray(libdap::BaseType *b,const std::vector<int>&dim_ids,const std::vector<bool>&use_dim_ids,const std::vector<int>&rbs_nums);
-    virtual ~FONcArray();
+    ~FONcArray() override;
 
-    virtual void convert(std::vector<std::string> embed,bool is_dap4_group=false);
-    virtual void define(int ncid);
-    virtual void write(int ncid);
+    void convert(std::vector<std::string> embed, bool is_dap4_group=false) override;
+    void define(int ncid) override;
+    void write(int ncid)override ;
 
-    virtual std::string name();
+    std::string name() override;
     virtual libdap::Array *array()
     {
         return d_a;
     }
 
-    virtual void dump(std::ostream &strm) const;
-    virtual libdap::AttrType getAttrType(nc_type nct);
+    void dump(std::ostream &strm) const override;
+    libdap::AttrType getAttrType(nc_type nct) override;
 
     static std::vector<FONcDim *> Dimensions;
 #if 0

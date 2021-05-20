@@ -12,7 +12,7 @@
 include_directories(../libdap4)
 
 # Does including this _and_ the above bork CLion? jhrg 1.15.20
-include_directories(../build/include/libdap)
+#include_directories(../build/include/libdap)
 
 # Added for the sql handler and its use of unixODBC
 include_directories(/usr/local/Cellar/openssl/1.0.2r/include/)

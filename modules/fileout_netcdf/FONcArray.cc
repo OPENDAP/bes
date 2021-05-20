@@ -31,6 +31,10 @@
 //      Kent Yang <myang6@hdfgroup.org> (for DAP4/netCDF-4 enhancement)
 
 #include <sstream>
+#include <algorithm>
+
+#include "Array.h"
+
 #include <BESInternalError.h>
 #include <BESDebug.h>
 
@@ -41,7 +45,8 @@
 #include "FONcMap.h"
 #include "FONcUtils.h"
 #include "FONcAttributes.h"
-#include <algorithm>
+
+using namespace libdap;
 
 vector<FONcDim *> FONcArray::Dimensions;
 
@@ -57,9 +62,8 @@ const int MAX_CHUNK_SIZE = 1024;
  */
 FONcArray::FONcArray(BaseType *b) :
         FONcBaseType(), d_a(0), d_array_type(NC_NAT), d_ndims(0), d_actual_ndims(0), d_nelements(1), d4_dim_ids(0),
-        d_dim_ids(0),
-        d_dim_sizes(0), d_str_data(0), d_dont_use_it(false), d_chunksizes(0), d_grid_maps(0), d4_def_dim(false)
-{
+        d_dim_ids(0), d_dim_sizes(0), d_str_data(0), d_dont_use_it(false), d_chunksizes(0),
+        d_grid_maps(0), d4_def_dim(false) {
     d_a = dynamic_cast<Array *>(b);
     if (!d_a) {
         string s = "File out netcdf, FONcArray was passed a variable that is not a DAP Array";
@@ -73,8 +77,7 @@ FONcArray::FONcArray(BaseType *b) :
 FONcArray::FONcArray(BaseType *b, const vector<int> &fd4_dim_ids, const vector<bool> &fuse_d4_dim_ids,
                      const vector<int> &rbs_nums) :
         FONcBaseType(), d_a(0), d_array_type(NC_NAT), d_ndims(0), d_actual_ndims(0), d_nelements(1), d_dim_ids(0),
-        d_dim_sizes(0), d_str_data(0), d_dont_use_it(false), d_chunksizes(0), d_grid_maps(0)
-{
+        d_dim_sizes(0), d_str_data(0), d_dont_use_it(false), d_chunksizes(0), d_grid_maps(0) {
     d_a = dynamic_cast<Array *>(b);
     if (!d_a) {
         string s = "File out netcdf, FONcArray was passed a variable that is not a DAP Array";
@@ -99,8 +102,7 @@ FONcArray::FONcArray(BaseType *b, const vector<int> &fd4_dim_ids, const vector<b
  * The DAP Array instance does not belong to the FONcArray instance, so
  * it is not deleted.
  */
-FONcArray::~FONcArray()
-{
+FONcArray::~FONcArray() {
     // Added jhrg 8/28/13
     vector<FONcDim *>::iterator d = d_dims.begin();
     while (d != d_dims.end()) {
@@ -130,8 +132,7 @@ FONcArray::~FONcArray()
  * grids
  * @throws BESInternalError if there is a problem converting the Array
  */
-void FONcArray::convert(vector<string> embed, bool is_dap4_group)
-{
+void FONcArray::convert(vector<string> embed, bool is_dap4_group) {
     FONcBaseType::convert(embed, is_dap4_group);
 
     //TODO: don't use _d_dim_ids when has_dap4_group.
@@ -142,7 +143,7 @@ void FONcArray::convert(vector<string> embed, bool is_dap4_group)
     d_array_type = FONcUtils::get_nc_type(d_a->var(), isNetCDF4_ENHANCED());
 
 #if !NDEBUG
-    if(d4_dim_ids.size() >0) {
+    if (d4_dim_ids.size() > 0) {
         BESDEBUG("fonc", "FONcArray::convert() - d4_dim_ids size is " << d4_dim_ids.size() << endl);
     }
 #endif
@@ -306,8 +307,7 @@ void FONcArray::convert(vector<string> embed, bool is_dap4_group)
  * the size is different
  */
 FONcDim *
-FONcArray::find_dim(vector<string> &embed, const string &name, int size, bool ignore_size)
-{
+FONcArray::find_dim(vector<string> &embed, const string &name, int size, bool ignore_size) {
     string oname;
     string ename = FONcUtils::gen_name(embed, name, oname);
     FONcDim *ret_dim = 0;
@@ -355,8 +355,7 @@ FONcArray::find_dim(vector<string> &embed, const string &name, int size, bool ig
  * @throws BESInternalError if there is a problem defining the
  * dimensions or variable
  */
-void FONcArray::define(int ncid)
-{
+void FONcArray::define(int ncid) {
     BESDEBUG("fonc", "FONcArray::define() - defining array '" << _varname << "'" << endl);
 
     if (!_defined && !d_dont_use_it) {
@@ -450,9 +449,9 @@ void FONcArray::define(int ncid)
         // the type of the fill value attribute should be too? jhrg 10/12/15
         // TODO: The following code is a hack. We may need to review all cases and re-implement it. KY 12/4/2020
         // Largely revised the fillvalue check code and add the check for the DAP4 case.
-        if(is_dap4) {
+        if (is_dap4) {
             D4Attributes *d4_attrs = d_a->attributes();
-            updateD4AttrType(d4_attrs,d_array_type);
+            updateD4AttrType(d4_attrs, d_array_type);
 #if 0
             for (D4Attributes::D4AttributesIter ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end(); ii != ee; ++ii) {
                 if((*ii)->name() == _FillValue) {
@@ -470,21 +469,21 @@ void FONcArray::define(int ncid)
         else {
             AttrTable &attrs = d_a->get_attr_table();
 #if 0
-        if (attrs.get_size()) {
-            for (AttrTable::Attr_iter iter = attrs.attr_begin(); iter != attrs.attr_end(); iter++) {
-                if (attrs.get_name(iter) == _FillValue){
-                    
-                    BESDEBUG("fonc", "FONcArray - attrtype " << getAttrType(d_array_type) << endl);
-                    BESDEBUG("fonc", "FONcArray - attr_type " << attrs.get_attr_type(iter) << endl);
-                    if(getAttrType(d_array_type) != attrs.get_attr_type(iter)) {
-                        (*iter)->type = getAttrType(d_array_type);
+            if (attrs.get_size()) {
+                for (AttrTable::Attr_iter iter = attrs.attr_begin(); iter != attrs.attr_end(); iter++) {
+                    if (attrs.get_name(iter) == _FillValue){
+
+                        BESDEBUG("fonc", "FONcArray - attrtype " << getAttrType(d_array_type) << endl);
+                        BESDEBUG("fonc", "FONcArray - attr_type " << attrs.get_attr_type(iter) << endl);
+                        if(getAttrType(d_array_type) != attrs.get_attr_type(iter)) {
+                            (*iter)->type = getAttrType(d_array_type);
+                        }
+                        break;
                     }
-                    break;
                 }
             }
-        }
 #endif
-            updateAttrType(attrs,d_array_type);
+            updateAttrType(attrs, d_array_type);
         }
 
         BESDEBUG("fonc", "FONcArray::define() - Adding attributes " << endl);
@@ -509,8 +508,7 @@ void FONcArray::define(int ncid)
  * @tparam T Write an array of this C++ type
  * @param ncid The ID of the open netCDF file.
  */
-void FONcArray::write_nc_variable(int ncid, nc_type var_type)
-{
+void FONcArray::write_nc_variable(int ncid, nc_type var_type) {
     if (is_dap4)
         d_a->intern_data();
     else
@@ -573,18 +571,19 @@ void FONcArray::write_nc_variable(int ncid, nc_type var_type)
  * @throws BESInternalError if there is a problem writing the values out
  * to the netcdf file
  */
-void FONcArray::write(int ncid)
-{
+void FONcArray::write(int ncid) {
     BESDEBUG("fonc", "FONcArray::write() BEGIN  var: " << _varname << "[" << d_nelements << "]" << endl);
-    BESDEBUG("fonc", "FONcArray::write() BEGIN  var type: " <<d_array_type<< " " << endl);
+    BESDEBUG("fonc", "FONcArray::write() BEGIN  var type: " << d_array_type << " " << endl);
 
     if (d_dont_use_it) {
         BESDEBUG("fonc", "FONcTransform::write not using variable " << _varname << endl);
         return;
     }
 
+#if 0
     ncopts = NC_VERBOSE;
     int stax = NC_NOERR;
+#endif
 
     if (d_array_type != NC_CHAR) {
 
@@ -690,36 +689,36 @@ void FONcArray::write(int ncid)
 
                 }
 #if 0
-            case NC_INT: {
-                // Added as a stop-gap measure to alert SAs and inform users of a misconfigured server.
-                // jhrg 6/15/20
-                if (var_type == "Int64" || var_type == "UInt64" ) {
-                    // We should not be here. The server configuration is wrong since the netcdf classic
-                    // model is being used (either a netCDf3 response is requested OR a netCDF4 with the
-                    // classic model. Tell the user and the SA.
-                    string msg;
-                    if (FONcRequestHandler::classic_model == false) {
-                        msg = "You asked for one or more 64-bit integer values returned using a netCDF3 or a netCDF4 classic file. "
-                              "Try asking for netCDF4 enhanced and/or contact the server administrator.";
-                    }
-                    else {
-                        d_a->buf2val((void **) &data);
-                    }
-                    int stax = nc_put_var_short(ncid, _varid, data);
-                    delete[] data;
+                    case NC_INT: {
+                        // Added as a stop-gap measure to alert SAs and inform users of a misconfigured server.
+                        // jhrg 6/15/20
+                        if (var_type == "Int64" || var_type == "UInt64" ) {
+                            // We should not be here. The server configuration is wrong since the netcdf classic
+                            // model is being used (either a netCDf3 response is requested OR a netCDF4 with the
+                            // classic model. Tell the user and the SA.
+                            string msg;
+                            if (FONcRequestHandler::classic_model == false) {
+                                msg = "You asked for one or more 64-bit integer values returned using a netCDF3 or a netCDF4 classic file. "
+                                      "Try asking for netCDF4 enhanced and/or contact the server administrator.";
+                            }
+                            else {
+                                d_a->buf2val((void **) &data);
+                            }
+                            int stax = nc_put_var_short(ncid, _varid, data);
+                            delete[] data;
 
-                    if (stax != NC_NOERR) {
-                        string err = (string) "fileout.netcdf - Failed to create array of shorts for " + _varname;
-                        FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
-                    }
-                    break;
-                }
+                            if (stax != NC_NOERR) {
+                                string err = (string) "fileout.netcdf - Failed to create array of shorts for " + _varname;
+                                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+                            }
+                            break;
+                        }
 #endif
 
                 case NC_INT: {
                     // Added as a stop-gap measure to alert SAs and inform users of a misconfigured server.
                     // jhrg 6/15/20
-                    if (var_type == "Int64" || var_type == "UInt64" ) {
+                    if (var_type == "Int64" || var_type == "UInt64") {
                         // We should not be here. The server configuration is wrong since the netcdf classic
                         // model is being used (either a netCDf3 response is requested OR a netCDF4 with the
                         // classic model. Tell the user and the SA.
@@ -746,14 +745,14 @@ void FONcArray::write(int ncid)
                     // KY 2012-10-25
                     if (var_type == "UInt16") {
                         unsigned short *orig_data = new unsigned short[d_nelements];
-                        d_a->buf2val((void**) &orig_data);
+                        d_a->buf2val((void **) &orig_data);
 
                         for (int d_i = 0; d_i < d_nelements; d_i++)
                             data[d_i] = orig_data[d_i];
                         delete[] orig_data;
                     }
                     else {
-                        d_a->buf2val((void**) &data);
+                        d_a->buf2val((void **) &data);
                     }
 
                     int stax = nc_put_var_int(ncid, _varid, data);
@@ -771,7 +770,9 @@ void FONcArray::write(int ncid)
                     write_nc_variable(ncid, d_array_type);
                     break;
 
-                    // TODO: should add other DAP4 types: NC_UINT...
+                default:
+                    throw BESInternalError("Failed to transform array of unknown type in file out netcdf",
+                                           __FILE__, __LINE__);
             }
         }
     }
@@ -781,8 +782,12 @@ void FONcArray::write(int ncid)
         // TODO For the refactoring to make fonc stream data, this code does not
         //  need to be changed. NB: The data values are read in FONcArray::convert().
         //  jhrg 5/15/21
+#if 0
         size_t var_count[d_ndims];
         size_t var_start[d_ndims];
+#endif
+        vector<size_t> var_count(d_ndims);
+        vector<size_t> var_start(d_ndims);
         int dim = 0;
         for (dim = 0; dim < d_ndims; dim++) {
             // the count for each of the dimensions will always be 1 except
@@ -799,7 +804,7 @@ void FONcArray::write(int ncid)
             var_start[d_ndims - 1] = 0;
 
             // write out the string
-            int stax = nc_put_vara_text(ncid, _varid, var_start, var_count, d_str_data[element].c_str());
+            int stax = nc_put_vara_text(ncid, _varid, &var_start[0], &var_count[0], d_str_data[element].c_str());
             if (stax != NC_NOERR) {
                 string err = (string) "fileout.netcdf - Failed to create array of strings for " + _varname;
                 FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
@@ -832,8 +837,7 @@ void FONcArray::write(int ncid)
  *
  * @returns The name of the DAP Array
  */
-string FONcArray::name()
-{
+string FONcArray::name() {
     return d_a->name();
 }
 
@@ -845,8 +849,7 @@ string FONcArray::name()
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void FONcArray::dump(ostream &strm) const
-{
+void FONcArray::dump(ostream &strm) const {
     strm << BESIndent::LMarg << "FONcArray::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     strm << BESIndent::LMarg << "name = " << _varname << endl;
@@ -878,9 +881,10 @@ void FONcArray::dump(ostream &strm) const
  *
  * @param ncid netCDF file ID 
  */
-void FONcArray::write_for_nc4_types(int ncid)
-{
+void FONcArray::write_for_nc4_types(int ncid) {
+#if 0
     int stax = NC_NOERR;
+#endif
 
     // create array to hold data hyperslab
     // DAP2 only supports unsigned BYTE. So here
@@ -909,8 +913,7 @@ void FONcArray::write_for_nc4_types(int ncid)
 }
 
 // This function is only used for handling _FillValue. TODO: review all cases and generalize it.
-libdap::AttrType FONcArray::getAttrType(nc_type nct)
-{
+libdap::AttrType FONcArray::getAttrType(nc_type nct) {
     switch (nct) {
         case NC_BYTE:
             return Attr_byte;
@@ -931,140 +934,140 @@ libdap::AttrType FONcArray::getAttrType(nc_type nct)
 }
 
 #if 0
-            // This function is only used for handling _FillValue now. But it is a general routine that can be
-            // used for other purposes.
-            libdap::AttrType FONcArray::getAttrType(nc_type nct) {
-                BESDEBUG("fonc", "FONcArray getAttrType "<< endl);
-                libdap::AttrType atype = Attr_unknown;
-                switch (nct)
-                {
+// This function is only used for handling _FillValue now. But it is a general routine that can be
+// used for other purposes.
+libdap::AttrType FONcArray::getAttrType(nc_type nct) {
+    BESDEBUG("fonc", "FONcArray getAttrType "<< endl);
+    libdap::AttrType atype = Attr_unknown;
+    switch (nct)
+    {
 
-                    case NC_BYTE:
-                        // The original code maps to Attr_byte. This is not right. Attr_byte is uint8, NC_BYTE is int8.
-                        // Change to 16-bit integer to be consistent with other parts for the classic model.
-                        // Note; In DAP2, no 8-bit integer type. So regardless the netCDF model, this has to be
-                        // Attr_int16.
-                        atype = Attr_int16;
-                        break;
-                    case NC_SHORT:
-                        atype = Attr_int16;
-                        break;
-                    case NC_INT:
-                        atype = Attr_int32;
-                        break;
-                    case NC_FLOAT:
-                        atype = Attr_float32;
-                        break;
-                    case NC_DOUBLE:
-                        atype = Attr_float64;
-                        break;
-                    case NC_UBYTE:
-                    {
-                        atype = Attr_byte;
-                    }
-                       break;
-                    case NC_USHORT:
-                    {
-                        if(isNetCDF4_ENHANCED())
-                            atype = Attr_uint16;
-                        else
-                            atype = Attr_int32;
-                    }
-                       break;
+        case NC_BYTE:
+            // The original code maps to Attr_byte. This is not right. Attr_byte is uint8, NC_BYTE is int8.
+            // Change to 16-bit integer to be consistent with other parts for the classic model.
+            // Note; In DAP2, no 8-bit integer type. So regardless the netCDF model, this has to be
+            // Attr_int16.
+            atype = Attr_int16;
+            break;
+        case NC_SHORT:
+            atype = Attr_int16;
+            break;
+        case NC_INT:
+            atype = Attr_int32;
+            break;
+        case NC_FLOAT:
+            atype = Attr_float32;
+            break;
+        case NC_DOUBLE:
+            atype = Attr_float64;
+            break;
+        case NC_UBYTE:
+        {
+            atype = Attr_byte;
+        }
+           break;
+        case NC_USHORT:
+        {
+            if(isNetCDF4_ENHANCED())
+                atype = Attr_uint16;
+            else
+                atype = Attr_int32;
+        }
+           break;
 
-                    case NC_UINT:
-                    {
-                        if(isNetCDF4_ENHANCED())
-                            atype = Attr_uint32;
-                        else
-                            atype = Attr_int32;
-                    }
-                        break;
-                    case NC_CHAR:
-                    case NC_STRING:
-                        atype = Attr_string;
-                        break;
-                    default:
-                        ;
-                }
-                return atype;
-            }
+        case NC_UINT:
+        {
+            if(isNetCDF4_ENHANCED())
+                atype = Attr_uint32;
+            else
+                atype = Attr_int32;
+        }
+            break;
+        case NC_CHAR:
+        case NC_STRING:
+            atype = Attr_string;
+            break;
+        default:
+            ;
+    }
+    return atype;
+}
 
-            // This function is only used for handling _FillValue. TODO: review all cases and generalize it.
-            // Check FONcUtils:get_nc_type() for the datatype mapping. The limitation of the classic model
-            // and DAP2 can be seen.
-            D4AttributeType FONcArray::getD4AttrType(nc_type nct) {
-                BESDEBUG("fonc", "FONcArray getAttrType "<< endl);
-                D4AttributeType atype = attr_null_c;
-                switch (nct)
-                {
+// This function is only used for handling _FillValue. TODO: review all cases and generalize it.
+// Check FONcUtils:get_nc_type() for the datatype mapping. The limitation of the classic model
+// and DAP2 can be seen.
+D4AttributeType FONcArray::getD4AttrType(nc_type nct) {
+    BESDEBUG("fonc", "FONcArray getAttrType "<< endl);
+    D4AttributeType atype = attr_null_c;
+    switch (nct)
+    {
 
-                    case NC_BYTE:
-                    {
-                        if(isNetCDF4_ENHANCED())
-                            atype = attr_int8_c;
-                        else
-                            atype = attr_int16_c;
-                    }
-                        break;
-                    case NC_SHORT:
-                        atype = attr_int16_c;
-                        break;
-                    case NC_INT:
-                        atype = attr_int32_c;
-                        break;
-                    case NC_FLOAT:
-                        atype = attr_float32_c;
-                        break;
-                    case NC_DOUBLE:
-                        atype = attr_float64_c;
-                        break;
-                    case NC_UBYTE:
-                        atype = attr_byte_c;
-                        break;
-                    case NC_USHORT:
-                    {
-                        if(isNetCDF4_ENHANCED())
-                            atype = attr_uint16_c;
-                        else
-                            atype = attr_int32_c;
-                    }
-                       break;
+        case NC_BYTE:
+        {
+            if(isNetCDF4_ENHANCED())
+                atype = attr_int8_c;
+            else
+                atype = attr_int16_c;
+        }
+            break;
+        case NC_SHORT:
+            atype = attr_int16_c;
+            break;
+        case NC_INT:
+            atype = attr_int32_c;
+            break;
+        case NC_FLOAT:
+            atype = attr_float32_c;
+            break;
+        case NC_DOUBLE:
+            atype = attr_float64_c;
+            break;
+        case NC_UBYTE:
+            atype = attr_byte_c;
+            break;
+        case NC_USHORT:
+        {
+            if(isNetCDF4_ENHANCED())
+                atype = attr_uint16_c;
+            else
+                atype = attr_int32_c;
+        }
+           break;
 
-                    case NC_UINT:
-                    {
-                        if(isNetCDF4_ENHANCED())
-                            atype = attr_uint32_c;
-                        else
-                            atype = attr_int32_c; //Overflow due to the limitation of classic model
-                    }
-                        break;
+        case NC_UINT:
+        {
+            if(isNetCDF4_ENHANCED())
+                atype = attr_uint32_c;
+            else
+                atype = attr_int32_c; //Overflow due to the limitation of classic model
+        }
+            break;
 
-                    case NC_INT64:
-                    {
-                        if(isNetCDF4_ENHANCED())
-                            atype = attr_int64_c;
-                        else
-                            atype = attr_int32_c; //Overflow due to the limitation of classic model
-                    }
-                        break;
+        case NC_INT64:
+        {
+            if(isNetCDF4_ENHANCED())
+                atype = attr_int64_c;
+            else
+                atype = attr_int32_c; //Overflow due to the limitation of classic model
+        }
+            break;
 
-                    case NC_UINT64:
-                    {
-                        if(isNetCDF4_ENHANCED())
-                            atype = attr_uint64_c;
-                        else
-                            atype = attr_int32_c; //Overflow due to the limitation of classic model
-                    }
-                        break;
+        case NC_UINT64:
+        {
+            if(isNetCDF4_ENHANCED())
+                atype = attr_uint64_c;
+            else
+                atype = attr_int32_c; //Overflow due to the limitation of classic model
+        }
+            break;
 
-                    case NC_CHAR:
-                    case NC_STRING:
-                        atype = attr_str_c;
-                        break;
-                    default:
-                        ;
-                }
-                return atype;
-            }
+        case NC_CHAR:
+        case NC_STRING:
+            atype = attr_str_c;
+            break;
+        default:
+            ;
+    }
+    return atype;
+}
 #endif
