@@ -509,15 +509,44 @@ void FONcArray::define(int ncid)
  * @tparam T Write an array of this C++ type
  * @param ncid The ID of the open netCDF file.
  */
-template<typename T>
-void FONcArray::write_nc_variable(int ncid)
+void FONcArray::write_nc_variable(int ncid, nc_type var_type)
 {
     if (is_dap4)
         d_a->intern_data();
     else
         d_a->intern_data(*get_eval(), *get_dds());
 
-    int stax = nc_put_var_uchar(ncid, _varid, reinterpret_cast<T *>(d_a->get_buf()));
+    int stax;
+
+    switch (var_type) {
+        case NC_UBYTE:
+            stax = nc_put_var_uchar(ncid, _varid, reinterpret_cast<unsigned char *>(d_a->get_buf()));
+            break;
+        case NC_BYTE:
+            stax = nc_put_var_schar(ncid, _varid, reinterpret_cast<signed char *>(d_a->get_buf()));
+            break;
+        case NC_SHORT:
+            stax = nc_put_var_short(ncid, _varid, reinterpret_cast<short *>(d_a->get_buf()));
+            break;
+        case NC_INT:
+            stax = nc_put_var_int(ncid, _varid, reinterpret_cast<int *>(d_a->get_buf()));
+            break;
+//        case NC_INT64:
+//            stax = nc_put_var_long(ncid, _varid, reinterpret_cast<int64_t *>(d_a->get_buf()));
+//            break;
+        case NC_FLOAT:
+            stax = nc_put_var_float(ncid, _varid, reinterpret_cast<float *>(d_a->get_buf()));
+            break;
+        case NC_DOUBLE:
+            stax = nc_put_var_double(ncid, _varid, reinterpret_cast<double *>(d_a->get_buf()));
+            break;
+        case NC_USHORT:
+            stax = nc_put_var_ushort(ncid, _varid, reinterpret_cast<unsigned short *>(d_a->get_buf()));
+            break;
+        case NC_UINT:
+            stax = nc_put_var_uint(ncid, _varid, reinterpret_cast<unsigned int *>(d_a->get_buf()));
+            break;
+    }
 
     if (stax != NC_NOERR) {
         string err = "fileout.netcdf - Failed to create array of " + d_a->var()->type_name() + " for " + _varname;
@@ -611,7 +640,7 @@ void FONcArray::write(int ncid)
                     d_a->clear_local_data();
 #endif
                     // TODO Here's a more concise way to do the above with far less code duplication.
-                    write_nc_variable<unsigned char>(ncid);
+                    write_nc_variable(ncid, d_array_type);
                     break;
                 }
 
@@ -734,43 +763,11 @@ void FONcArray::write(int ncid)
                     break;
                 }
 
-                case NC_FLOAT: {
-                    float *data = new float[d_nelements];
-
-                    if (is_dap4)
-                        d_a->intern_data();
-                    else
-                        d_a->intern_data(*get_eval(), *get_dds());
-
-                    d_a->buf2val((void **) &data);
-                    int stax = nc_put_var_float(ncid, _varid, data);
-                    delete[] data;
-
-                    if (stax != NC_NOERR) {
-                        string err = (string) "fileout.netcdf - Failed to create array of floats for " + _varname;
-                        FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
-                    }
+                case NC_FLOAT:
+                case NC_DOUBLE:
+                    write_nc_variable(ncid, d_array_type);
                     break;
-                }
 
-                case NC_DOUBLE: {
-                    double *data = new double[d_nelements];
-
-                    if (is_dap4)
-                        d_a->intern_data();
-                    else
-                        d_a->intern_data(*get_eval(), *get_dds());
-
-                    d_a->buf2val((void **) &data);
-                    int stax = nc_put_var_double(ncid, _varid, data);
-                    delete[] data;
-
-                    if (stax != NC_NOERR) {
-                        string err = (string) "fileout.netcdf - Failed to create array of doubles for " + _varname;
-                        FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
-                    }
-                    break;
-                }
                     // TODO: should add other DAP4 types: NC_UINT...
             }
         }
@@ -888,84 +885,17 @@ void FONcArray::write_for_nc4_types(int ncid)
     // as 64-bit integer). KY 2020-03-20 
     // Actually 64-bit integer is supported.
     switch (d_array_type) {
-        case NC_BYTE: {
-            // TODO Use the write_nc_variables<T>() private method to reduce
-            //  code duplication and enable streaming. jhrg 5/15/21
-            if (is_dap4)
-                d_a->intern_data();
-            else
-                d_a->intern_data(*get_eval(), *get_dds());
-
-
-            signed char *data = new signed char[d_nelements];
-            d_a->buf2val((void **) &data);
-            stax = nc_put_var_schar(ncid, _varid, data);
-            delete[] data;
-
-            if (stax != NC_NOERR) {
-                string err = "fileout.netcdf - Failed to create array of bytes for " + _varname;
-                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
-            }
+        case NC_BYTE:
+        case NC_UBYTE:
+        case NC_SHORT:
+        case NC_INT:
+        case NC_FLOAT:
+        case NC_DOUBLE:
+        case NC_USHORT:
+        case NC_UINT:
+            write_nc_variable(ncid, d_array_type);
             break;
-        }
 
-        case NC_UBYTE: {
-
-            if (is_dap4)
-                d_a->intern_data();
-            else
-                d_a->intern_data(*get_eval(), *get_dds());
-
-            unsigned char *data = new unsigned char[d_nelements];
-            d_a->buf2val((void **) &data);
-            stax = nc_put_var_uchar(ncid, _varid, data);
-            delete[] data;
-
-            if (stax != NC_NOERR) {
-                string err = "fileout.netcdf - Failed to create array of bytes for " + _varname;
-                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
-            }
-            break;
-        }
-
-        case NC_SHORT: {
-
-            if (is_dap4)
-                d_a->intern_data();
-            else
-                d_a->intern_data(*get_eval(), *get_dds());
-
-            short *data = new short[d_nelements];
-            d_a->buf2val((void **) &data);
-            int stax = nc_put_var_short(ncid, _varid, data);
-            delete[] data;
-
-            if (stax != NC_NOERR) {
-                string err = (string) "fileout.netcdf - Failed to create array of shorts for " + _varname;
-                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
-            }
-            break;
-        }
-
-        case NC_INT: {
-
-            if (is_dap4)
-                d_a->intern_data();
-            else
-                d_a->intern_data(*get_eval(), *get_dds());
-
-            int *data = new int[d_nelements];
-            d_a->buf2val((void **) &data);
-
-            int stax = nc_put_var_int(ncid, _varid, data);
-            delete[] data;
-
-            if (stax != NC_NOERR) {
-                string err = (string) "fileout.netcdf - Failed to create array of ints for " + _varname;
-                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
-            }
-            break;
-        }
 
         case NC_INT64: {
 
@@ -982,82 +912,6 @@ void FONcArray::write_for_nc4_types(int ncid)
 
             if (stax != NC_NOERR) {
                 string err = (string) "fileout.netcdf - Failed to create array of ints for " + _varname;
-                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
-            }
-            break;
-        }
-
-        case NC_FLOAT: {
-
-            if (is_dap4)
-                d_a->intern_data();
-            else
-                d_a->intern_data(*get_eval(), *get_dds());
-
-            float *data = new float[d_nelements];
-            d_a->buf2val((void **) &data);
-            int stax = nc_put_var_float(ncid, _varid, data);
-            delete[] data;
-
-            if (stax != NC_NOERR) {
-                string err = (string) "fileout.netcdf - Failed to create array of floats for " + _varname;
-                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
-            }
-            break;
-        }
-
-        case NC_DOUBLE: {
-
-            if (is_dap4)
-                d_a->intern_data();
-            else
-                d_a->intern_data(*get_eval(), *get_dds());
-
-            double *data = new double[d_nelements];
-            d_a->buf2val((void **) &data);
-            int stax = nc_put_var_double(ncid, _varid, data);
-            delete[] data;
-
-            if (stax != NC_NOERR) {
-                string err = (string) "fileout.netcdf - Failed to create array of doubles for " + _varname;
-                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
-            }
-            break;
-        }
-
-        case NC_USHORT: {
-
-            if (is_dap4)
-                d_a->intern_data();
-            else
-                d_a->intern_data(*get_eval(), *get_dds());
-
-            unsigned short *data = new unsigned short[d_nelements];
-            d_a->buf2val((void **) &data);
-            int stax = nc_put_var_ushort(ncid, _varid, data);
-            delete[] data;
-
-            if (stax != NC_NOERR) {
-                string err = (string) "fileout.netcdf - Failed to create array of unsigned short for " + _varname;
-                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
-            }
-            break;
-        }
-
-        case NC_UINT: {
-
-            if (is_dap4)
-                d_a->intern_data();
-            else
-                d_a->intern_data(*get_eval(), *get_dds());
-
-            unsigned int *data = new unsigned int[d_nelements];
-            d_a->buf2val((void **) &data);
-            int stax = nc_put_var_uint(ncid, _varid, data);
-            delete[] data;
-
-            if (stax != NC_NOERR) {
-                string err = (string) "fileout.netcdf - Failed to create array of unsigned int for " + _varname;
                 FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
             }
             break;
