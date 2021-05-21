@@ -139,16 +139,16 @@ void FONcGrid::define(int ncid)
  * @throws BESInternalError if there is a problem defining the
  * Byte
  */
-void FONcGrid::convert(vector<string> embed,bool is_dap4_group)
+void FONcGrid::convert(vector<string> embed, bool is_dap4_group)
 {
     FONcGrid::InGrid = true;
-    FONcBaseType::convert(embed,is_dap4_group);
+    FONcBaseType::convert(embed, is_dap4_group);
     BESDEBUG("fonc", "FONcGrid:: version: '" << _ncVersion << "'" << endl);
     _varname = FONcUtils::gen_name(embed, _varname, _orig_varname);
     BESDEBUG("fonc", "FONcGrid::convert - converting grid " << _varname << endl);
 
     // A grid has maps, which are single dimnension arrays, and an array
-    // with that many maps for dimensions.
+    // with one dimension for each map.
     Grid::Map_iter mi = _grid->map_begin();
     Grid::Map_iter me = _grid->map_end();
     for (; mi != me; mi++) {
@@ -157,37 +157,39 @@ void FONcGrid::convert(vector<string> embed,bool is_dap4_group)
         // supposed to be sent. See Hyrax-282. jhrg 11/3/16
         if ((*mi)->send_p()) {
 
-        Array *map = dynamic_cast<Array *>((*mi));
-        if (!map) {
-            string err = (string) "file out netcdf, grid " + _varname + " map is not an array";
-            throw BESInternalError(err, __FILE__, __LINE__);
-        }
+            Array *map = dynamic_cast<Array *>((*mi));
+            if (!map) {
+                string err = (string) "file out netcdf, grid " + _varname + " map is not an array";
+                throw BESInternalError(err, __FILE__, __LINE__);
+            }
 
-        vector<string> map_embed;
+            vector<string> map_embed;
 
-        FONcMap *map_found = FONcGrid::InMaps(map);
+            map->intern_data(*get_eval(), *get_dds());
 
-        // if we didn't find a match then found is still false. Add the
-        // map to the vector of maps. If they are the same then create a
-        // new FONcMap, add the grid name to the shared list and add the
-        // FONcMap to the FONcGrid.
-        if (!map_found) {
-            FONcArray *fa = new FONcArray(map);
-            fa->setVersion(_ncVersion);
-            fa->setNC4DataModel(_nc4_datamodel);
-            fa->convert(map_embed,is_dap4_group);
-            map_found = new FONcMap(fa, true);
-            FONcGrid::Maps.push_back(map_found);
-        }
-        else {
-            // it's the same ... we are sharing. Add the grid name fo
-            // the list of grids sharing this map and set the embedded
-            // name to empty, just using the name of the map.
-            map_found->incref();
-            map_found->add_grid(_varname);
-            map_found->clear_embedded();
-        }
-        _maps.push_back(map_found);
+            FONcMap *map_found = FONcGrid::InMaps(map);
+
+            // if we didn't find a match then found is still false. Add the
+            // map to the vector of maps. If they are the same then create a
+            // new FONcMap, add the grid name to the shared list and add the
+            // FONcMap to the FONcGrid.
+            if (!map_found) {
+                FONcArray *fa = new FONcArray(map);
+                fa->setVersion(_ncVersion);
+                fa->setNC4DataModel(_nc4_datamodel);
+                fa->convert(map_embed, is_dap4_group);
+                map_found = new FONcMap(fa, true);
+                FONcGrid::Maps.push_back(map_found);
+            }
+            else {
+                // it's the same ... we are sharing. Add the grid name fo
+                // the list of grids sharing this map and set the embedded
+                // name to empty, just using the name of the map.
+                map_found->incref();
+                map_found->add_grid(_varname);
+                map_found->clear_embedded();
+            }
+            _maps.push_back(map_found);
 
         }
     }
@@ -198,8 +200,8 @@ void FONcGrid::convert(vector<string> embed,bool is_dap4_group)
         _arr = new FONcArray(_grid->get_array());
         _arr->setVersion(_ncVersion);
         _arr->setNC4DataModel(_nc4_datamodel);
-        
-        _arr->convert(_embed,is_dap4_group);
+
+        _arr->convert(_embed, is_dap4_group);
     }
 
     BESDEBUG("fonc", "FONcGrid::convert - done converting grid " << _varname << endl);

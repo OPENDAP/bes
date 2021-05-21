@@ -145,6 +145,7 @@ bool FONcMap::compare(libdap::Array *tomap)
         isequal = false;
     }
 
+#if 1
     if (isequal) {
         // compare the values of the array
         char *map_buf = map->get_buf();
@@ -154,6 +155,8 @@ bool FONcMap::compare(libdap::Array *tomap)
             isequal = false;
         }
     }
+#endif
+
 #if 0
         switch (tomap->var()->type()) {
             case dods_byte_c: {
