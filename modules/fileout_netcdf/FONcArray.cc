@@ -428,7 +428,7 @@ void FONcArray::define(int ncid) {
             }
 
             // TODO Make this more adaptable to the Array's data type. Find out when it's
-            // best to use shuffle, et c. jhrg 7/22/18
+            //  best to use shuffle, et c. jhrg 7/22/18
             if (FONcRequestHandler::use_compression) {
                 int shuffle = 0;
                 int deflate = 1;
@@ -605,96 +605,12 @@ void FONcArray::write(int ncid) {
             // create array to hold data hyperslab
             switch (d_array_type) {
                 case NC_BYTE: {
-#if 0
-                    // TODO remove this code once it's no longer useful as a reference. jhrg 4/14/21
-                    unsigned char *data = new unsigned char[d_nelements];
 
-                    if (is_dap4)
-                        d_a->intern_data();
-                    else
-                        d_a->intern_data(*get_eval(), *get_dds());
-
-                    d_a->buf2val((void**) &data);
-                    stax = nc_put_var_uchar(ncid, _varid, data);
-                    delete[] data;
-
-                    if (stax != NC_NOERR) {
-                        string err = "fileout.netcdf - Failed to create array of bytes for " + _varname;
-                        FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
-                    }
-#endif
-#if 0
-                    if (is_dap4)
-                        d_a->intern_data();
-                    else
-                        d_a->intern_data(*get_eval(), *get_dds());
-                    // TODO I've left the removed code as comments. The key here is that libdap::Array
-                    //  is special since it will allow access to the internal storage for code that
-                    //  needs that for performance. Note the ugly reinterpret_cast<>(). Don't keep the
-                    //  removed lines in the other case blocks.
-                    //  Note the call to clear_local_data() after we check for an error. That's new and
-                    //  should free up the space used by the variable once the data are 'put' to the file.
-                    //  jhrg 5/14/21
-
-                    //unsigned char *data = new unsigned char[d_nelements];
-                    //d_a->buf2val((void**) &data);
-                    stax = nc_put_var_uchar(ncid, _varid, reinterpret_cast<unsigned char *>(d_a->get_buf()));
-                    //delete[] data;
-
-                    if (stax != NC_NOERR) {
-                        string err = "fileout.netcdf - Failed to create array of bytes for " + _varname;
-                        FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
-                    }
-
-                    // This frees the local storage. jhrg 5/14/21
-                    d_a->clear_local_data();
-#endif
-                    // TODO Here's a more concise way to do the above with far less code duplication.
                     write_nc_variable(ncid, d_array_type);
                     break;
                 }
 
                 case NC_SHORT: {
-#if 0
-                    short *data = new short[d_nelements];
-
-                    // Given Byte/UInt8 will always be unsigned they must map
-                    // to a NetCDF type that will support unsigned bytes.  This
-                    // detects the original variable was of type Byte and typecasts
-                    // each data value to a short.
-                    if (var_type == "Byte" || var_type == "UInt8") {
-
-                        unsigned char *orig_data = new unsigned char[d_nelements];
-
-                        if (is_dap4)
-                            d_a->intern_data();
-                        else
-                            d_a->intern_data(*get_eval(), *get_dds());
-
-                        d_a->buf2val((void **) &orig_data);
-
-                        for (int d_i = 0; d_i < d_nelements; d_i++)
-                            data[d_i] = orig_data[d_i];
-
-
-                        delete[] orig_data;
-                    }
-                    else {
-                        if (is_dap4)
-                            d_a->intern_data();
-                        else
-                            d_a->intern_data(*get_eval(), *get_dds());
-
-                        d_a->buf2val((void **) &data);
-                    }
-                    int stax = nc_put_var_short(ncid, _varid, data);
-                    delete[] data;
-
-                    if (stax != NC_NOERR) {
-                        string err = (string) "fileout.netcdf - Failed to create array of shorts for " + _varname;
-                        FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
-                    }
-#else
                     // Given Byte/UInt8 will always be unsigned they must map
                     // to a NetCDF type that will support unsigned bytes.  This
                     // detects the original variable was of type Byte and typecasts
@@ -723,36 +639,9 @@ void FONcArray::write(int ncid) {
                     else {
                         write_nc_variable(ncid, NC_SHORT);
                     }
-#endif
                     break;
 
                 }
-#if 0
-                    case NC_INT: {
-                        // Added as a stop-gap measure to alert SAs and inform users of a misconfigured server.
-                        // jhrg 6/15/20
-                        if (var_type == "Int64" || var_type == "UInt64" ) {
-                            // We should not be here. The server configuration is wrong since the netcdf classic
-                            // model is being used (either a netCDf3 response is requested OR a netCDF4 with the
-                            // classic model. Tell the user and the SA.
-                            string msg;
-                            if (FONcRequestHandler::classic_model == false) {
-                                msg = "You asked for one or more 64-bit integer values returned using a netCDF3 or a netCDF4 classic file. "
-                                      "Try asking for netCDF4 enhanced and/or contact the server administrator.";
-                            }
-                            else {
-                                d_a->buf2val((void **) &data);
-                            }
-                            int stax = nc_put_var_short(ncid, _varid, data);
-                            delete[] data;
-
-                            if (stax != NC_NOERR) {
-                                string err = (string) "fileout.netcdf - Failed to create array of shorts for " + _varname;
-                                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
-                            }
-                            break;
-                        }
-#endif
 
                 case NC_INT: {
                     // Added as a stop-gap measure to alert SAs and inform users of a misconfigured server.
@@ -773,35 +662,7 @@ void FONcArray::write(int ncid) {
                         }
                         throw BESInternalError(msg, __FILE__, __LINE__);
                     }
-#if 0
-                    if (is_dap4)
-                        d_a->intern_data();
-                    else
-                        d_a->intern_data(*get_eval(), *get_dds());
 
-                    int *data = new int[d_nelements];
-                    // Since UInt16 also maps to NC_INT, we need to obtain the data correctly
-                    // KY 2012-10-25
-                    if (var_type == "UInt16") {
-                        unsigned short *orig_data = new unsigned short[d_nelements];
-                        d_a->buf2val((void **) &orig_data);
-
-                        for (int d_i = 0; d_i < d_nelements; d_i++)
-                            data[d_i] = orig_data[d_i];
-                        delete[] orig_data;
-                    }
-                    else {
-                        d_a->buf2val((void **) &data);
-                    }
-
-                    int stax = nc_put_var_int(ncid, _varid, data);
-                    delete[] data;
-
-                    if (stax != NC_NOERR) {
-                        string err = (string) "fileout.netcdf - Failed to create array of ints for " + _varname;
-                        FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
-                    }
-#else
                     if (var_type == "UInt16") {
                         if (is_dap4)
                             d_a->intern_data();
@@ -824,7 +685,6 @@ void FONcArray::write(int ncid) {
                     else {
                         write_nc_variable(ncid, NC_INT);
                     }
-#endif
                     break;
                 }
 
@@ -842,13 +702,7 @@ void FONcArray::write(int ncid) {
     else {
         // special case for string data. Could have put this in the
         // switch, but it's pretty big.
-        // TODO For the refactoring to make fonc stream data, this code does not
-        //  need to be changed. NB: The data values are read in FONcArray::convert().
-        //  jhrg 5/15/21
-#if 0
-        size_t var_count[d_ndims];
-        size_t var_start[d_ndims];
-#endif
+
         vector<size_t> var_count(d_ndims);
         vector<size_t> var_start(d_ndims);
         int dim = 0;
@@ -952,9 +806,6 @@ void FONcArray::dump(ostream &strm) const {
  * @param ncid netCDF file ID 
  */
 void FONcArray::write_for_nc4_types(int ncid) {
-#if 0
-    int stax = NC_NOERR;
-#endif
 
     is_dap4 = true;
 
