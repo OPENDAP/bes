@@ -110,20 +110,20 @@ private:
 public:
     explicit FONcArray(libdap::BaseType *b);
     FONcArray(libdap::BaseType *b,const std::vector<int>&dim_ids,const std::vector<bool>&use_dim_ids,const std::vector<int>&rbs_nums);
-    ~FONcArray() override;
+    virtual ~FONcArray() override;
 
-    void convert(std::vector<std::string> embed, bool is_dap4_group=false) override;
-    void define(int ncid) override;
-    void write(int ncid)override ;
+    virtual void convert(std::vector<std::string> embed, bool is_dap4_group=false) override;
+    virtual void define(int ncid) override;
+    virtual void write(int ncid)override ;
 
-    std::string name() override;
+    virtual std::string name() override;
     virtual libdap::Array *array()
     {
         return d_a;
     }
 
-    void dump(std::ostream &strm) const override;
-    libdap::AttrType getAttrType(nc_type nct) override;
+    virtual void dump(std::ostream &strm) const override;
+    virtual libdap::AttrType getAttrType(nc_type nct) override;
 
     static std::vector<FONcDim *> Dimensions;
 #if 0
