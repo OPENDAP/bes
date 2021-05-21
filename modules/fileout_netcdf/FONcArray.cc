@@ -48,6 +48,10 @@
 
 using namespace libdap;
 
+// This controls whether variables' data values are deleted as soon
+// as they are written (excpet for DAP2 Grid Maps, which may be shared).
+#define CLEAR_LOCAL_DATA 1
+
 vector<FONcDim *> FONcArray::Dimensions;
 
 const int MAX_CHUNK_SIZE = 1024;
@@ -559,12 +563,10 @@ void FONcArray::write_nc_variable(int ncid, nc_type var_type) {
     }
 
     // This frees the local storage. jhrg 5/14/21
-    // TODO We could wrap the following in #if CLEAR_LOCAL_DATA and then
-    //  build the server so it either does or does not drop the memory after
-    //  data are written to the file. That way we could look at the process
-    //  memory size for a test/demo. jhrg 5/15/21
+#if CLEAR_LOCAL_DATA
     if (!FONcGrid::InMaps(d_a))
         d_a->clear_local_data();
+#endif
 }
 
 /** @brief Write the array out to the netcdf file
@@ -653,6 +655,7 @@ void FONcArray::write(int ncid) {
                 }
 
                 case NC_SHORT: {
+#if 0
                     short *data = new short[d_nelements];
 
                     // Given Byte/UInt8 will always be unsigned they must map
@@ -691,6 +694,36 @@ void FONcArray::write(int ncid) {
                         string err = (string) "fileout.netcdf - Failed to create array of shorts for " + _varname;
                         FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
                     }
+#else
+                    // Given Byte/UInt8 will always be unsigned they must map
+                    // to a NetCDF type that will support unsigned bytes.  This
+                    // detects the original variable was of type Byte and typecasts
+                    // each data value to a short.
+                    if (var_type == "Byte" || var_type == "UInt8") {
+                        if (is_dap4)
+                            d_a->intern_data();
+                        else
+                            d_a->intern_data(*get_eval(), *get_dds());
+
+                        // There's no practical way to get rid of the value copy, be here we
+                        // read directly from libdap::Array object's memory.
+                        vector<short> data(d_nelements);
+                         for (int d_i = 0; d_i < d_nelements; d_i++)
+                            data[d_i] = *(reinterpret_cast<unsigned char *>(d_a->get_buf()) + d_i);
+
+                        int stax = nc_put_var_short(ncid, _varid, &data[0]);
+                        if (stax != NC_NOERR) {
+                            string err = (string) "fileout.netcdf - Failed to create array of shorts for " + _varname;
+                            FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+                        }
+
+                        if (!FONcGrid::InMaps(d_a))
+                            d_a->clear_local_data();
+                    }
+                    else {
+                        write_nc_variable(ncid, NC_SHORT);
+                    }
+#endif
                     break;
 
                 }
@@ -740,7 +773,7 @@ void FONcArray::write(int ncid) {
                         }
                         throw BESInternalError(msg, __FILE__, __LINE__);
                     }
-
+#if 0
                     if (is_dap4)
                         d_a->intern_data();
                     else
@@ -768,6 +801,30 @@ void FONcArray::write(int ncid) {
                         string err = (string) "fileout.netcdf - Failed to create array of ints for " + _varname;
                         FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
                     }
+#else
+                    if (var_type == "UInt16") {
+                        if (is_dap4)
+                            d_a->intern_data();
+                        else
+                            d_a->intern_data(*get_eval(), *get_dds());
+
+                        vector<int> data(d_nelements);
+                        for (int d_i = 0; d_i < d_nelements; d_i++)
+                            data[d_i] = *(reinterpret_cast<unsigned short *>(d_a->get_buf()) + d_i);
+
+                        int stax = nc_put_var_int(ncid, _varid, &data[0]);
+                        if (stax != NC_NOERR) {
+                            string err = (string) "fileout.netcdf - Failed to create array of ints for " + _varname;
+                            FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+                        }
+
+                        if (!FONcGrid::InMaps(d_a))
+                            d_a->clear_local_data();
+                    }
+                    else {
+                        write_nc_variable(ncid, NC_INT);
+                    }
+#endif
                     break;
                 }
 
@@ -833,7 +890,14 @@ void FONcArray::write(int ncid) {
             }
         }
 
-        // TODO: can call clear_local_data() here. I think. jhrg 5/18/21
+        // TODO: Should be able to call clear_local_data() here, but it results in
+        //  odd errors. These appear to be related to the errors for deleting Grid
+        //  Map memory before the whole dataset is processed. This may be due the
+        //  different way libdap::Array stores string data. jhrg 5/18/21
+#if 0
+        if (!FONcGrid::InMaps(d_a))
+            d_a->clear_local_data();
+#endif
     }
 
     BESDEBUG("fonc", "FONcArray::write() END  var: " << _varname << "[" << d_nelements << "]" << endl);
