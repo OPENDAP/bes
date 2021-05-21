@@ -19,12 +19,14 @@ jobs:
     runs-on: ubuntu-20.04
     
     steps:
+      - name: Set PATH
+        run: echo "$prefix/bin:$prefix/deps/bin" >> $GITHUB_PATH
+        #run: echo "$prefix/deps/bin:$prefix/bin" >> $GITHUB_PATH
+        
       - name: Packages
         run: sudo apt-get --yes install libxml2-dev uuid-dev libcurl4-openssl-dev libcppunit-dev libfl-dev gcovr
 
-      - name: Set PATH
-        run: echo "$prefix/deps/bin:$prefix/bin" >> $GITHUB_PATH
-        
+
       - name: cache-deps
         id: cache-deps
         uses: actions/cache@v2
@@ -57,33 +59,32 @@ jobs:
           make --jobs=$jobs
           make check --jobs=$jobs
           make install
-#
-##      - name: build bes
-##        run: |
-##          git clone --recurse-submodules https://github.com/OPENDAP/bes
-##          cd bes
-##          autoreconf --force --install --verbose
-##          ./configure --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-##          make --jobs=$jobs
-##          make install
-#
-#      - name: checkout
-#        # https://github.com/actions/checkout
-#        uses: actions/checkout@v2
-#        with:
-#          submodules: 'recursive'
-#
-#      - name: autoreconf
-#        run: autoreconf --force --install --verbose
-#
-#      - name: configure
-#        run: ./configure --prefix=$prefix --with-dependecies=$prefix/deps --enable-developer
-#
-#      - name: Make
-#        run: make --jobs=$jobs
-#
-#      - name: Check
-#        run: make --jobs=$jobs check
-#
-#      - name: Install
-#        run: make install
+
+      - name: build bes
+        run: |
+          git clone --recurse-submodules https://github.com/OPENDAP/bes
+          cd bes
+          autoreconf --force --install --verbose
+          ./configure --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+          make --jobs=$jobs
+          make install
+
+      - name: checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'
+
+      - name: autoreconf
+        run: autoreconf --force --install --verbose
+
+      - name: configure
+        run: ./configure --prefix=$prefix --with-dependecies=$prefix/deps --enable-developer
+
+      - name: Make
+        run: make --jobs=$jobs
+
+      - name: Check
+        run: make --jobs=$jobs check
+
+      - name: Install
+        run: make install
