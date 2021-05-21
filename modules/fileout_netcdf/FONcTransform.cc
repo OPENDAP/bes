@@ -438,7 +438,7 @@ void FONcTransform::transform()
 
     // Open the file for writing
     int stax;
-    if ( FONcTransform::_returnAs == RETURNAS_NETCDF4 ) {
+    if (FONcTransform::_returnAs == RETURN_AS_NETCDF4 ) {
         if (FONcRequestHandler::classic_model){
             BESDEBUG("fonc", "FONcTransform::transform() - Opening NetCDF-4 cache file in classic mode. fileName:  " << _localfile << endl);
             stax = nc_create(_localfile.c_str(), NC_CLOBBER|NC_NETCDF4|NC_CLASSIC_MODEL, &_ncid);
@@ -478,7 +478,7 @@ void FONcTransform::transform()
             AttrTable &globals = _dds->get_attr_table();
             BESDEBUG("fonc", "FONcTransform::transform() - Adding Global Attributes" << endl << globals << endl);
             bool is_netCDF_enhanced = false;
-            if(FONcTransform::_returnAs == RETURNAS_NETCDF4 && FONcRequestHandler::classic_model==false)
+            if(FONcTransform::_returnAs == RETURN_AS_NETCDF4 && FONcRequestHandler::classic_model == false)
                 is_netCDF_enhanced = true;
             FONcAttributes::add_attributes(_ncid, NC_GLOBAL, globals, "", "",is_netCDF_enhanced);
         }
@@ -672,7 +672,7 @@ void FONcTransform::transform_dap4()
 
 // Transform the DMR to a netCDF-4 file when there are no DAP4 groups.
 // This routine is similar to transform() that handles DAP2 objects.  However, DAP4 routines are needed. 
-// So still keep a separate function. May combine this function with the tranform()  in the future. 
+// So still keep a separate function. May combine this function with the transform()  in the future.
 void FONcTransform::transform_dap4_no_group() {
 
     D4Group* root_grp = _dmr->root();
@@ -717,7 +717,7 @@ void FONcTransform::transform_dap4_no_group() {
 
     // Open the file for writing
     int stax = -1;
-    if ( FONcTransform::_returnAs == RETURNAS_NETCDF4 ) {
+    if (FONcTransform::_returnAs == RETURN_AS_NETCDF4 ) {
         if (FONcRequestHandler::classic_model){
             BESDEBUG("fonc", "FONcTransform::transform_dap4_no_group() - Opening NetCDF-4 cache file in classic mode. fileName:  " << _localfile << endl);
             stax = nc_create(_localfile.c_str(), NC_CLOBBER|NC_NETCDF4|NC_CLASSIC_MODEL, &_ncid);
@@ -767,7 +767,7 @@ void FONcTransform::transform_dap4_no_group() {
             }
 #endif
             bool is_netCDF_enhanced = false;
-            if(FONcTransform::_returnAs == RETURNAS_NETCDF4 && FONcRequestHandler::classic_model==false)
+            if(FONcTransform::_returnAs == RETURN_AS_NETCDF4 && FONcRequestHandler::classic_model == false)
                 is_netCDF_enhanced = true;
             FONcAttributes::add_dap4_attributes(_ncid, NC_GLOBAL, d4_attrs, "", "",is_netCDF_enhanced);
         }
@@ -895,7 +895,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group* grp,
 
             // This is a factory class call, and 'fg' is specialized for 'v'
             //FONcBaseType *fb = FONcUtils::convert(v,FONcTransform::_returnAs,FONcRequestHandler::classic_model);
-            FONcBaseType *fb = FONcUtils::convert(v,RETURNAS_NETCDF4,false,fdimname_to_id,rds_nums);
+            FONcBaseType *fb = FONcUtils::convert(v, RETURN_AS_NETCDF4, false, fdimname_to_id, rds_nums);
 
             fonc_vars_in_grp.push_back(fb);
 
@@ -930,7 +930,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group* grp,
         }
 
         bool is_netCDF_enhanced = false;
-        if(FONcTransform::_returnAs == RETURNAS_NETCDF4 && FONcRequestHandler::classic_model==false)
+        if(FONcTransform::_returnAs == RETURN_AS_NETCDF4 && FONcRequestHandler::classic_model == false)
                 is_netCDF_enhanced = true;
  
 
@@ -975,7 +975,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group* grp,
 
 // Group support is only on when netCDF-4 is in enhanced model and there are groups in the DMR.
 bool FONcTransform::check_group_support() {
-    if(RETURNAS_NETCDF4 == FONcTransform::_returnAs && false == FONcRequestHandler::classic_model && 
+    if(RETURN_AS_NETCDF4 == FONcTransform::_returnAs && false == FONcRequestHandler::classic_model &&
        (_dmr->root()->grp_begin()!=_dmr->root()->grp_end())) 
         return true; 
     else 

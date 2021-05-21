@@ -45,23 +45,13 @@
  * @throws BESInternalError if the BaseType is not a Byte
  */
 FONcByte::FONcByte(BaseType *b)
-        : FONcBaseType(), _b(0)
-{
+        : FONcBaseType(), _b(nullptr) {
     _b = dynamic_cast<Byte *>(b);
     if (!_b) {
         string s = (string) "File out netcdf, FONcByte was passed a "
                    + "variable that is not a DAP Byte";
         throw BESInternalError(s, __FILE__, __LINE__);
     }
-}
-
-/** @brief Destructor that cleans up the byte
- *
- * The DAP Byte instance does not belong to the FONcByte instance, so it
- * is not deleted.
- */
-FONcByte::~FONcByte()
-{
 }
 
 /** @brief define the DAP Byte in the netcdf file
@@ -75,24 +65,21 @@ FONcByte::~FONcByte()
  * Byte
  */
 void
-FONcByte::define(int ncid)
-{
+FONcByte::define(int ncid) {
     FONcBaseType::define(ncid);
 
-    if( !_defined )
-    {
-        if(is_dap4) {                                                                                       
-            D4Attributes *d4_attrs = _b->attributes();                                                     
-            updateD4AttrType(d4_attrs,NC_UBYTE);   
+    if (!_defined) {
+        if (is_dap4) {
+            D4Attributes *d4_attrs = _b->attributes();
+            updateD4AttrType(d4_attrs, NC_UBYTE);
         }
         else {
-            AttrTable &attrs = _b->get_attr_table();  
-            updateAttrType(attrs,NC_UBYTE); 
+            AttrTable &attrs = _b->get_attr_table();
+            updateAttrType(attrs, NC_UBYTE);
         }
 
-	FONcAttributes::add_variable_attributes( ncid, _varid, _b,isNetCDF4_ENHANCED(),is_dap4 ) ;
-	FONcAttributes::add_original_name( ncid, _varid,
-					   _varname, _orig_varname ) ;
+        FONcAttributes::add_variable_attributes(ncid, _varid, _b, isNetCDF4_ENHANCED(), is_dap4);
+        FONcAttributes::add_original_name(ncid, _varid, _varname, _orig_varname);
 
         _defined = true;
     }
@@ -108,29 +95,8 @@ FONcByte::define(int ncid)
  * to the netcdf file
  */
 void
-FONcByte::write(int ncid)
-{
+FONcByte::write(int ncid) {
     BESDEBUG("fonc", "FOncByte::write for var " << _varname << endl);
-#if 0
-    // TODO Remove original version once it's not needed as a fallback. jhrg 5/14/21
-    size_t var_index[] = {0};
-    unsigned char *data = new unsigned char;
-
-    if (is_dap4)
-        _b->intern_data();
-    else
-        _b->intern_data(*get_eval(), *get_dds());
-
-    _b->buf2val((void **) &data);
-    int stax = nc_put_var1_uchar(ncid, _varid, var_index, data);
-    if (stax != NC_NOERR) {
-        string err = (string) "fileout.netcdf - "
-                     + "Failed to write byte data for "
-                     + _varname;
-        FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
-    }
-    delete data;
-#endif
 
     if (is_dap4)
         _b->intern_data();
@@ -151,26 +117,6 @@ FONcByte::write(int ncid)
     }
 }
 
-/** @brief returns the name of the DAP Byte
- *
- * @returns The name of the DAP Byte
- */
-string
-FONcByte::name()
-{
-    return _b->name();
-}
-
-/** @brief returns the netcdf type of the DAP Byte
- *
- * @returns The nc_type of NC_BYTE
- */
-nc_type
-FONcByte::type()
-{
-    return NC_BYTE;
-}
-
 /** @brief dumps information about this object for debugging purposes
  *
  * Displays the pointer value of this instance plus instance data
@@ -178,8 +124,7 @@ FONcByte::type()
  * @param strm C++ i/o stream to dump the information to
  */
 void
-FONcByte::dump(ostream &strm) const
-{
+FONcByte::dump(ostream &strm) const {
     strm << BESIndent::LMarg << "FONcByte::dump - ("
          << (void *) this << ")" << endl;
     BESIndent::Indent();

@@ -35,15 +35,14 @@
 #include <netcdf.h>
 #include <vector>
 #include <string>
-#include "AttrTable.h"
+
+#include <AttrTable.h>
 #include <D4Attributes.h>
 #include <D4AttributeType.h>
 #include <BESObj.h>
 
-//#include <BaseType.h>
-
-#define RETURNAS_NETCDF "netcdf"
-#define RETURNAS_NETCDF4 "netcdf-4"
+#define RETURN_AS_NETCDF "netcdf"
+#define RETURN_AS_NETCDF4 "netcdf-4"
 #define NC4_CLASSIC_MODEL "NC4_CLASSIC_MODEL"
 #define NC4_ENHANCED "NC4_ENHANCED"
 // May add netCDF-3 CDF-5 in the future.
@@ -79,10 +78,10 @@ protected:
     libdap::DDS *d_dds;
     libdap::ConstraintEvaluator *d_eval;
 
-    FONcBaseType() : _varid(0), _defined(false),is_dap4(false),is_dap4_group(false){ }
+    FONcBaseType() : _varid(0), _defined(false), is_dap4(false), is_dap4_group(false), d_dds(nullptr), d_eval(nullptr) { }
 
 public:
-    virtual ~FONcBaseType() { }
+    virtual ~FONcBaseType() = default; // { }
 
     libdap::DDS *get_dds() const {return d_dds;}
     void set_dds(libdap::DDS *dds) {d_dds = dds;}
@@ -90,9 +89,9 @@ public:
     libdap::ConstraintEvaluator *get_eval() const {return d_eval;}
     void set_eval(libdap::ConstraintEvaluator *eval) {d_eval = eval;}
 
-    virtual void convert(std::vector<std::string> embed,bool is_dap4_group=false);
+    virtual void convert(std::vector<std::string> embed, bool is_dap4_group=false);
     virtual void define(int ncid);
-    virtual void write(int /*ncid*/) = 0; // FIXME , libdap::ConstraintEvaluator * = nullptr, libdap::DDS * = nullptr) { }
+    virtual void write(int ncid) = 0;
 
     virtual std::string name() = 0;
     virtual nc_type type();
@@ -101,8 +100,8 @@ public:
 
     virtual void dump(std::ostream &strm) const = 0;
 
-    virtual void setVersion(std::string version);
-    virtual void setNC4DataModel(std::string nc4_datamodel);
+    virtual void setVersion(const std::string &version);
+    virtual void setNC4DataModel(const string &nc4_datamodel);
     virtual bool isNetCDF4();
     virtual bool isNetCDF4_ENHANCED();
     virtual void set_is_dap4(bool set_dap4) {is_dap4 = set_dap4;}
@@ -110,7 +109,6 @@ public:
     virtual D4AttributeType getD4AttrType(nc_type t);
     virtual void updateD4AttrType(libdap::D4Attributes *d4_attrs, nc_type t);
     virtual void updateAttrType(libdap::AttrTable&  attrs, nc_type t);
-
 };
 
 #endif // FONcBaseType_h_

@@ -243,7 +243,7 @@ FONcUtils::convert(BaseType *v, const string &ncdf_version, const bool is_classi
 
     // We need to handle netCDF-4 enhanced differently. More datatypes are supported.
     bool is_netcdf4_enhanced = false;
-    if(ncdf_version == RETURNAS_NETCDF4 && is_classic_model == false)
+    if(ncdf_version == RETURN_AS_NETCDF4 && is_classic_model == false)
         is_netcdf4_enhanced = true;
 
     switch (v->type()) {
@@ -368,7 +368,7 @@ FONcUtils::convert(BaseType *v, const string &ncdf_version, const bool is_classi
     }
     // The following code may be combined with other related code. TODO: later.
     b->setVersion(ncdf_version);
-    if(ncdf_version == RETURNAS_NETCDF4) {
+    if(ncdf_version == RETURN_AS_NETCDF4) {
         if(is_classic_model)
             b->setNC4DataModel("NC4_CLASSIC_MODEL");
         else
