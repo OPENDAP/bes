@@ -290,7 +290,6 @@ void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
 
 void map_gmh5_cfdmr(D4Group *d4_root, hid_t file_id, const string& filename){
 
-//#if 0
     BESDEBUG("h5","Coming to GM products DMR mapping function map_gmh5_cfdmr()  "<<endl);
 
     H5GCFProduct product_type = check_product(file_id);
@@ -305,11 +304,14 @@ void map_gmh5_cfdmr(D4Group *d4_root, hid_t file_id, const string& filename){
     catch(...) {
         throw InternalErr(__FILE__,__LINE__,"Cannot allocate memory for GMFile ");
     }
-    // Generally don't need to handle attributes when handling DDS. 
+
+    //  Both variables and attributes are in DMR.
     bool include_attr = true;
     try {
+
         // Set the is_dap4 flag be true.
         f->setDap4(true);
+
         // Retrieve all HDF5 info(Not the values)
         f->Retrieve_H5_Info(filename.c_str(),file_id,include_attr);
 
@@ -346,19 +348,18 @@ void map_gmh5_cfdmr(D4Group *d4_root, hid_t file_id, const string& filename){
         //if((HDF5RequestHandler::get_lrdata_mem_cache() != NULL) ||
         //   (HDF5RequestHandler::get_srdata_mem_cache() != NULL)){
 
-            // Handle unsupported datatypes including the attributes
-            f->Handle_Unsupported_Dtype(true);
+        // Handle unsupported datatypes including the attributes
+        f->Handle_Unsupported_Dtype(true);
 
-            // Handle unsupported dataspaces including the attributes
-            f->Handle_Unsupported_Dspace(true);
+        // Handle unsupported dataspaces including the attributes
+        f->Handle_Unsupported_Dspace(true);
 
-            // We need to retrieve variable attributes.
-            f->Retrieve_H5_Supported_Attr_Values(); 
+        // We need to retrieve variable attributes.
+        f->Retrieve_H5_Supported_Attr_Values(); 
 
-            // Include handling internal netCDF-4 attributes
-            f->Handle_Unsupported_Others(include_attr);
+        // Include handling internal netCDF-4 attributes
+        f->Handle_Unsupported_Others(include_attr);
 
-        //}
 #if 0
         else {
 
@@ -431,7 +432,6 @@ void map_gmh5_cfdmr(D4Group *d4_root, hid_t file_id, const string& filename){
     if (f != NULL)
         delete f;
 
-//#endif
 }
 
 // Generate DDS mapped from general HDF5 products
@@ -715,24 +715,19 @@ void gen_gmh5_cfdmr(D4Group* d4_root,HDF5CF::GMFile *f) {
     const vector<HDF5CF::Group *>& grps           = f->getGroups();
     const vector<HDF5CF::Attribute *>& root_attrs = f->getAttributes();
 
-
-    // Root and low-level group attributes.
-
-    // Read Variable info.
-
     vector<HDF5CF::Var *>::const_iterator       it_v;
     vector<HDF5CF::GMCVar *>::const_iterator   it_cv;
     vector<HDF5CF::GMSPVar *>::const_iterator it_spv;
     vector<HDF5CF::Group *>::const_iterator it_g;
     vector<HDF5CF::Attribute *>::const_iterator it_ra;
 
-//#if 0
+    // Root and low-level group attributes.
     if (false == root_attrs.empty()) {
         for (it_ra = root_attrs.begin(); it_ra != root_attrs.end(); ++it_ra) 
             map_cfh5_grp_attr_to_dap4(d4_root,*it_ra);
     }
-//#endif
 
+    // Read Variable info.
     for (it_v = vars.begin(); it_v !=vars.end();++it_v) {
         BESDEBUG("h5","variable full path= "<< (*it_v)->getFullPath() <<endl);
         gen_dap_onevar_dmr(d4_root,*it_v,fileid, filename);
@@ -749,13 +744,13 @@ void gen_gmh5_cfdmr(D4Group* d4_root,HDF5CF::GMFile *f) {
     }
 
     // We use the container since we claim to have no hierarchy.
-//#if 0
     if (false == grps.empty()) {
         for (it_g = grps.begin();
              it_g != grps.end(); ++it_g) {
-            //D4Group *tmp_grp = new D4Group((*it_g)->getNewName());
+
             D4Attribute *tmp_grp = new D4Attribute;
             tmp_grp->set_name((*it_g)->getNewName());
+
             // Make the type as a container
             tmp_grp->set_type(attr_container_c);
 
@@ -763,10 +758,10 @@ void gen_gmh5_cfdmr(D4Group* d4_root,HDF5CF::GMFile *f) {
                  it_ra != (*it_g)->getAttributes().end(); ++it_ra) {
                 map_cfh5_attr_container_to_dap4(tmp_grp,(*it_ra));
             }
+
             d4_root->attributes()->add_attribute_nocopy(tmp_grp);
         }
     }
-//#endif
 
 }
 
@@ -1152,7 +1147,7 @@ void update_GPM_special_attrs(DAS& das, const HDF5CF::Var *var,bool is_cvar) {
 }
 
 void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid, const string &filename) {              
-//void gen_dap_onegmcvar_dmr(D4Group*d4_root,const cvar,const hid_t fileid, const string &filename) {              
+
     BESDEBUG("h5","Coming to gen_dap_onegmcvar_dds()  "<<endl);
 
     BaseType *bt = NULL;
@@ -1187,9 +1182,9 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
         vector <HDF5CF::Dimension*>:: const_iterator it_d;
         vector <size_t> dimsizes;
         dimsizes.resize(cvar->getRank());
+
         for(int i = 0; i <cvar->getRank();i++)
             dimsizes[i] = (dims[i])->getSize();
-
 
         if(dims.empty()) 
             throw InternalErr(__FILE__,__LINE__,"the coordinate variable cannot be a scalar");
@@ -1204,6 +1199,8 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
                 bool is_latlon = cvar->isLatLon();
                 
                 try {
+
+                    bool is_dap4 = true;
                     ar = new HDF5CFArray (
                                     cvar->getRank(),
                                     fileid,
@@ -1215,7 +1212,7 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
                                     CV_EXIST,
                                     is_latlon,
                                     cvar->getCompRatio(),
-                                    true,
+                                    is_dap4,
                                     cvar->getNewName(),
                                     bt);
                 }
@@ -1261,7 +1258,6 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
                     delete bt;
                     throw InternalErr(__FILE__,__LINE__,"Unable to allocate HDF5GMCFMissLLArray. ");
                 }
-
            
                 for(it_d = dims.begin(); it_d != dims.end(); ++it_d) {
                     if (""==(*it_d)->getNewName()) 
@@ -1330,11 +1326,11 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
   
                 try {
                     ar = new HDF5GMCFFillIndexArray(
-                                                      cvar->getRank(),
-                                                      cvar->getType(),
-                                                      true,
-                                                      cvar->getNewName(),
-                                                      bt);
+                                                     cvar->getRank(),
+                                                     cvar->getType(),
+                                                     true,
+                                                     cvar->getNewName(),
+                                                     bt);
                 }
                 catch(...) {
                     delete bt;

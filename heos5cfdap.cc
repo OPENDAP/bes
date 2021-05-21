@@ -1863,6 +1863,9 @@ void map_eos5_cfdmr(D4Group *d4_root, hid_t file_id, const string &filename) {
     try {
 
         // Parse the structmetadata
+        // Note: he5dds_scan_string just retrieves the variable info.
+        // It is still used to handle DMR, no need to write another parser.
+        // KY 2021-05-21
         HE5Parser p;
         HE5Checker c;
         he5dds_scan_string(st_str.c_str());
@@ -1935,29 +1938,29 @@ void map_eos5_cfdmr(D4Group *d4_root, hid_t file_id, const string &filename) {
         f->Adjust_Var_Dim_NewName_Before_Flattening();
 
 
+        // Old comments, leave them for the time being:
         // We need to use the CV units to distinguish lat/lon from th 3rd CV when
         // memory cache is turned on.
         //if((HDF5RequestHandler::get_lrdata_mem_cache() != NULL) ||
         //   (HDF5RequestHandler::get_srdata_mem_cache() != NULL)){
 
-            // Handle unsupported datatypes including the attributes
-            f->Handle_Unsupported_Dtype(true);
+        // Handle unsupported datatypes including the attributes
+        f->Handle_Unsupported_Dtype(true);
 
-            // Handle unsupported dataspaces including the attributes
-            f->Handle_Unsupported_Dspace(true);
+        // Handle unsupported dataspaces including the attributes
+        f->Handle_Unsupported_Dspace(true);
 
-            // We need to retrieve  coordinate variable attributes for memory cache use.
-            f->Retrieve_H5_CVar_Supported_Attr_Values(); 
+        // We need to retrieve  coordinate variable attributes for memory cache use.
+        f->Retrieve_H5_CVar_Supported_Attr_Values(); 
 
-            f->Retrieve_H5_Supported_Attr_Values(); 
+        f->Retrieve_H5_Supported_Attr_Values(); 
 
-            // Handle other unsupported objects, 
-            // currently it mainly generates the info. for the
-            // unsupported objects other than datatype, dataspace,links and named datatype
-            // This function needs to be called after retrieving supported attributes.
-            f->Handle_Unsupported_Others(include_attr);
+        // Handle other unsupported objects, 
+        // currently it mainly generates the info. for the
+        // unsupported objects other than datatype, dataspace,links and named datatype
+        // This function needs to be called after retrieving supported attributes.
+        f->Handle_Unsupported_Others(include_attr);
 
-        //}
 #if 0
         else {
 
@@ -1977,7 +1980,7 @@ void map_eos5_cfdmr(D4Group *d4_root, hid_t file_id, const string &filename) {
         // isLatLon() will use the units value.
         //if((HDF5RequestHandler::get_lrdata_mem_cache() != NULL) ||
         //   (HDF5RequestHandler::get_srdata_mem_cache() != NULL))
-            f->Adjust_Attr_Info();
+        f->Adjust_Attr_Info();
 
         // May need to adjust the object names for special objects. Currently no operations
         // are done in this routine.
@@ -2005,6 +2008,7 @@ void map_eos5_cfdmr(D4Group *d4_root, hid_t file_id, const string &filename) {
         // is listed at last. We may need to turn off this if netCDF can handle
         // long string better.
         f->Handle_SpVar();
+
         // Handle coordinate attributes
         f->Handle_Coor_Attr();
         f->Handle_SpVar_Attr();
@@ -2015,7 +2019,7 @@ void map_eos5_cfdmr(D4Group *d4_root, hid_t file_id, const string &filename) {
         throw InternalErr(e.what());
     }
 
-    // Generate EOS5 DDS
+    // Generate EOS5 DMR
     try {
         gen_eos5_cfdmr(d4_root,f);
     }
@@ -2043,22 +2047,18 @@ void gen_eos5_cfdmr(D4Group *d4_root,  HDF5CF::EOS5File *f) {
     vector<HDF5CF::Group *>::const_iterator it_g;
     vector<HDF5CF::Attribute *>::const_iterator it_ra;
 
-    //TODO: root attribute
     if (false == root_attrs.empty()) {
         for (it_ra = root_attrs.begin(); it_ra != root_attrs.end(); ++it_ra) 
             map_cfh5_grp_attr_to_dap4(d4_root,*it_ra);
     }
+
     // We use the container since we claim to have no hierarchy.
-//#if 0
     if (false == grps.empty()) {
         for (it_g = grps.begin();
              it_g != grps.end(); ++it_g) {
-            //D4Group *tmp_grp = new D4Group((*it_g)->getNewName());
             D4Attribute *tmp_grp = new D4Attribute;
             tmp_grp->set_name((*it_g)->getNewName());
-            // Make the type as a container
             tmp_grp->set_type(attr_container_c);
-            //cerr<<"tmp_grp name is "<<(*it_g)->getNewName() <<endl;
 
             for (it_ra = (*it_g)->getAttributes().begin();
                  it_ra != (*it_g)->getAttributes().end(); ++it_ra) {
@@ -2067,8 +2067,6 @@ void gen_eos5_cfdmr(D4Group *d4_root,  HDF5CF::EOS5File *f) {
             d4_root->attributes()->add_attribute_nocopy(tmp_grp);
         }
     }
-//#endif
-
 
     // Read Variable info.
     vector<HDF5CF::Var *>::const_iterator it_v;
@@ -2079,48 +2077,16 @@ void gen_eos5_cfdmr(D4Group *d4_root,  HDF5CF::EOS5File *f) {
         gen_dap_onevar_dmr(d4_root,*it_v,file_id,filename);
     }
 
-    // Here we need to check if the grid_mapping dummy var needs to be added here.
-    // Since we need to make sure the dimension name and size match, we need to 
-    // use coordinate variables. So still a loop like the following. STOP,TODO: 2021-04-01
+    // Handle EOS5 grid mapping info.
     if (f->Have_EOS5_Grids()==true) 
         gen_dap_eos5cf_gm_dmr(d4_root,f);
-#if 0
-    for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
-        if((*it_cv)->getCVType() == CV_LAT_MISS) {
-            if((*it_cv)->getProjCode() != HE5_GCTP_GEO) {
-                gen_dap_oneeos5cf_das(das,vars,*it_cv,cv_lat_miss_index);
-                cv_lat_miss_index++;
-            }
-        }
-    }
 
-
-#endif
     for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
         BESDEBUG("h5","variable full path= "<< (*it_cv)->getFullPath() <<endl);
         gen_dap_oneeos5cvar_dmr(d4_root,*it_cv,file_id,filename);
 
     }
 
-    // TODO: special grid info. 2021-03-12
-#if 0
-    // We need to provide grid_mapping info. for multiple grids.
-    // Here cv_lat_miss_index represents the missing latitude(HDF-EOS grid without the latitude field) cv index
-    // This index is used to create the grid_mapping variable for different grids.
-    unsigned short cv_lat_miss_index = 1;
-    for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
-        if((*it_cv)->getCVType() == CV_LAT_MISS) {
-            if((*it_cv)->getProjCode() != HE5_GCTP_GEO) {
-                // Here we need to add grid_mapping variables for each grid
-                // For projections other than sinusoidal since attribute values for LAMAZ and PS
-                // are different for each grid.
-                gen_dap_oneeos5cf_dds(dds,*it_cv);
-                add_cf_grid_mapinfo_var(dds,(*it_cv)->getProjCode(),cv_lat_miss_index);
-                cv_lat_miss_index++;
-            }
-        }
-    }
-#endif
 }
 
 
@@ -2169,17 +2135,10 @@ void gen_dap_oneeos5cvar_dmr(D4Group* d4_root,const EOS5CVar* cvar,const hid_t f
             case CV_EXIST:
             {
 
-#if 0
-for(vector<HDF5CF::Attribute *>::const_iterator it_ra = cvar->getAttributes().begin();
-                 it_ra != cvar->getAttributes().end(); ++it_ra) {
-cerr<<"cvar attribute name is "<<(*it_ra)->getNewName() <<endl;
-cerr<<"cvar attribute value type is "<<(*it_ra)->getType() <<endl;
-}
-cerr<<"cvar new name exist at he s5cfdap.cc is "<<cvar->getNewName() <<endl;
-#endif
                 bool is_latlon = cvar->isLatLon();
                 HDF5CFArray *ar = NULL;
                 try {
+                    bool is_dap4 = true;
                     ar = new HDF5CFArray (
                                           cvar->getRank(),
                                           file_id,
@@ -2191,7 +2150,7 @@ cerr<<"cvar new name exist at he s5cfdap.cc is "<<cvar->getNewName() <<endl;
                                           CV_EXIST,
                                           is_latlon,
                                           cvar->getCompRatio(),
-                                          true,
+                                          is_dap4,
                                           cvar->getNewName(),
                                           bt);
                 }
@@ -2367,30 +2326,15 @@ cerr<<"cvar getParams here 1 is "<<cvar->getParams()[0]<<endl;
 
 }
 
-// REVIEW THIS, CHECK THE TICKET WORK LOG FOR TODO LIST:2021-04-01
-#if 0
-void gen_dap_oneeos5cf_dmr(D4Group *d4_root, const HDF5CF::EOS5CVar* cvar) {
 
-    BESDEBUG("h5","Coming to gen_dap_oneeos5cf_dmr()  "<<endl);
-
-    float cv_point_lower = cvar->getPointLower();       
-    float cv_point_upper = cvar->getPointUpper();       
-    float cv_point_left  = cvar->getPointLeft();       
-    float cv_point_right = cvar->getPointRight();       
-    EOS5GridPCType cv_proj_code = cvar->getProjCode();
-    const vector<HDF5CF::Dimension *>& dims = cvar->getDimensions();
-    if(dims.size() !=2) 
-        throw InternalErr(__FILE__,__LINE__,"Currently we only support the 2-D CF coordinate projection system.");
-    //add_cf_grid_cvs_dmr(d4_root,cv_proj_code,cv_point_lower,cv_point_upper,cv_point_left,cv_point_right,dims);
-
-}
-
-#endif
-
-
+// generate dmr info for grid mapping (gm: grid mapping)
 void  gen_dap_eos5cf_gm_dmr(libdap::D4Group* d4_root,HDF5CF::EOS5File*f) {
 
+    // grid mapping projection vars 
+    // and add grid_mapping attribute for non-cv vars
     gen_gm_proj_var_info(d4_root,f);
+
+    // special grid mapping dimension variables.
     gen_gm_proj_spvar_info(d4_root,f);
 
 }
@@ -2403,7 +2347,8 @@ void gen_gm_proj_var_info(libdap::D4Group* d4_root,HDF5CF::EOS5File* f) {
     const vector<HDF5CF::EOS5CVar *>& cvars = f->getCVars();
     vector<HDF5CF::EOS5CVar *>::const_iterator it_cv;
 
-    // TODO: 2021-04-13: add more code!
+    // For multiple grids, multiple grid mapping variables are needed.
+    // We use EOS5 coordinate variables to track this.
     unsigned short cv_lat_miss_index = 1;
     for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
         if((*it_cv)->getCVType() == CV_LAT_MISS) {
@@ -2415,20 +2360,17 @@ void gen_gm_proj_var_info(libdap::D4Group* d4_root,HDF5CF::EOS5File* f) {
     }
 }
 
+// Generate the dummy grid_mapping variables,attributes and 
+// grid_mapping attributes for all the non-cv variables.
 void  gen_gm_oneproj_var(libdap::D4Group*d4_root,
-                           const HDF5CF::EOS5CVar* cvar,
-                           const unsigned short g_suffix) {
+                         const HDF5CF::EOS5CVar* cvar,
+                         const unsigned short g_suffix) {
 
     BESDEBUG("h5","Coming to gen_gm_oneproj_var()  "<<endl);
     EOS5GridPCType cv_proj_code = cvar->getProjCode();
     const vector<HDF5CF::Dimension *>& dims = cvar->getDimensions();
-#if 0   
-cerr<<"cvar name is "<<cvar->getName() <<endl;
-for(vector<HDF5CF::Dimension*>::const_iterator it_d = dims.begin(); it_d != dims.end(); ++it_d) 
-    cerr<<"dim name das is "<<(*it_d)->getNewName() <<endl;
-#endif
 
-   if(dims.size() !=2) 
+    if(dims.size() !=2) 
         throw InternalErr(__FILE__,__LINE__,"Currently we only support the 2-D CF coordinate projection system.");
 
     // 1. Add the grid mapping dummy projection variable dmr for each grid
@@ -2436,14 +2378,18 @@ for(vector<HDF5CF::Dimension*>::const_iterator it_d = dims.begin(); it_d != dims
     //  now, we handle sinusoidal,PS and LAMAZ projections.              
     if (HE5_GCTP_SNSOID == cv_proj_code || HE5_GCTP_PS == cv_proj_code || HE5_GCTP_LAMAZ== cv_proj_code) {  
 
-        //Add the dummy projection variable. The attributes of this variable can be used to store the grid mapping info.
+        // Add the dummy projection variable. 
+        // The attributes of this variable can be used to store the grid mapping info.
         // To handle multi-grid cases, we need to add suffixes to distinguish them.                             
         string cf_projection_base = "eos_cf_projection";                                                        
         string cf_projection_name;                           
                                                                                                             
         HDF5CFGeoCFProj * dummy_proj_cf = NULL;                                                                 
+
         if(HE5_GCTP_SNSOID == cv_proj_code)  {                                                                
-            // AFAWK, one grid_mapping variable is necessary for multi-grids. So we just leave one grid here.   
+
+            // AFAIK, one grid_mapping variable is necessary for multi-grids. 
+            // So we just leave one grid here.   
             cf_projection_name = cf_projection_base;
             if(g_suffix == 1)                                                                                 
                 dummy_proj_cf = new HDF5CFGeoCFProj(cf_projection_name, cf_projection_name);                    
@@ -2460,13 +2406,14 @@ for(vector<HDF5CF::Dimension*>::const_iterator it_d = dims.begin(); it_d != dims
             add_gm_oneproj_var_dap4_attrs(dummy_proj_cf,cv_proj_code,cvar->getParams());
             d4_root->add_var_nocopy(dummy_proj_cf);
         }
-        //if (dummy_proj_cf) 
-        //    delete dummy_proj_cf;           
+
+        // Add the grid_mapping attributes to all non-cv variables for the grid.
         add_cf_grid_cv_dap4_attrs(d4_root,cf_projection_name,dims);
     }
 
 }
 
+//Generate DMR of special dimension variables.
 void gen_gm_proj_spvar_info(libdap::D4Group* d4_root,HDF5CF::EOS5File* f){
 
     BESDEBUG("h5","Coming to HDF-EOS5 products grid mapping variable generation function   "<<endl);
@@ -2501,14 +2448,10 @@ void add_var_sp_attrs_to_dap4(BaseType *d4_var,const EOS5CVar* cvar) {
 
     if(cvar->getProjCode() == HE5_GCTP_LAMAZ) {
         if(cvar->getCVType() == CV_LAT_MISS) {
-        //at->append_attr("valid_min", "Float64","-90.0");
-        //at->append_attr("valid_max", "Float64","90.0");
             add_var_dap4_attr(d4_var,"valid_min", attr_float64_c, "-90.0");
             add_var_dap4_attr(d4_var,"valid_max", attr_float64_c, "90.0");
         }
         else {
-            //at->append_attr("valid_min", "Float64","-180.0");
-            //at->append_attr("valid_max", "Float64","180.0");
             add_var_dap4_attr(d4_var,"valid_min", attr_float64_c, "-180.0");
             add_var_dap4_attr(d4_var,"valid_max", attr_float64_c, "180.0");
         }

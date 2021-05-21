@@ -1303,7 +1303,7 @@ void handle_coor_attr_for_int64_var(const HDF5CF::Attribute *attr,const string &
 
 }
 
-// This routine is for directly built DAP4 CF support.We build DMR not from DDS and DAS. 
+// This routine is for direct mapping from CF to DAP4. We build DMR not from DDS and DAS. 
 // Hopefully this will be eventually used to build DMR. 
 void map_cfh5_var_attrs_to_dap4(const HDF5CF::Var *var,BaseType* d4_var) {
 
@@ -1316,14 +1316,15 @@ void map_cfh5_var_attrs_to_dap4(const HDF5CF::Var *var,BaseType* d4_var) {
     }
 }
 
-// This routine is for directly built DAP4 CF support.We build DMR not from DDS and DAS. 
+// This routine is for direct mapping from CF to DAP4. We build DMR not from DDS and DAS. 
 void map_cfh5_grp_attr_to_dap4(libdap::D4Group *d4_grp,const HDF5CF::Attribute *attr) {
 
     D4Attribute *d4_attr = gen_dap4_attr(attr);
     d4_grp->attributes()->add_attribute_nocopy(d4_attr);
 
 }
-// This routine is for directly built DAP4 CF support.We build DMR not from DDS and DAS. 
+
+// This routine is for direct mapping from CF to DAP4. We build DMR not from DDS and DAS. 
 void map_cfh5_attr_container_to_dap4(libdap::D4Attribute *d4_con,const HDF5CF::Attribute *attr) {
 
     D4Attribute *d4_attr = gen_dap4_attr(attr);
@@ -1331,11 +1332,11 @@ void map_cfh5_attr_container_to_dap4(libdap::D4Attribute *d4_con,const HDF5CF::A
 
 }
 
+// Helper function to generate a DAP4 attribute.
 D4Attribute *gen_dap4_attr(const HDF5CF::Attribute *attr) {
 
     D4AttributeType dap4_attrtype = HDF5CFDAPUtil::print_type_dap4(attr->getType());
     D4Attribute *d4_attr = new D4Attribute(attr->getNewName(),dap4_attrtype);
-//cerr<<"attr name is "<<attr->getNewName() <<endl;
     if(dap4_attrtype == attr_str_c) {
             
         const vector<size_t>& strsize = attr->getStrSize();
@@ -1368,6 +1369,8 @@ cerr<<"attr size  is "<<strsize[i] <<endl;
     return d4_attr;
 }
 
+// Direct CF to DAP4, add CF grid_mapping attributes of the projection variable to DAP4.  
+// we support sinusodial, polar stereographic and lambert azimuthal equal-area(LAMAZ) projections.
 void add_gm_oneproj_var_dap4_attrs(BaseType *var,EOS5GridPCType cv_proj_code,const vector<double> &eos5_proj_params) {
 
     if (HE5_GCTP_SNSOID == cv_proj_code) {
@@ -1380,134 +1383,113 @@ void add_gm_oneproj_var_dap4_attrs(BaseType *var,EOS5GridPCType cv_proj_code,con
     }
     else if (HE5_GCTP_PS == cv_proj_code) {
 
-            // The following information is added according to the HDF-EOS5 user's guide and
-            // CF 1.7 grid_mapping requirement.
+        // The following information is added according to the HDF-EOS5 user's guide and
+        // CF 1.7 grid_mapping requirement.
 
-            // Longitude down below pole of map
-            double vert_lon_pole =  HE5_EHconvAng(eos5_proj_params[4],HE5_HDFE_DMS_DEG);
+        // Longitude down below pole of map
+        double vert_lon_pole =  HE5_EHconvAng(eos5_proj_params[4],HE5_HDFE_DMS_DEG);
 
-            // Latitude of true scale
-            double lat_true_scale = HE5_EHconvAng(eos5_proj_params[5],HE5_HDFE_DMS_DEG);
+        // Latitude of true scale
+        double lat_true_scale = HE5_EHconvAng(eos5_proj_params[5],HE5_HDFE_DMS_DEG);
 
-            // False easting
-            double fe = eos5_proj_params[6];
+        // False easting
+        double fe = eos5_proj_params[6];
 
-            // False northing 
-            double fn = eos5_proj_params[7];
+        // False northing 
+        double fn = eos5_proj_params[7];
 
-            //at->append_attr("grid_mapping_name", "String", "polar_stereographic");
-            add_var_dap4_attr(var,"grid_mapping_name",attr_str_c,"polar_stereographic"); 
-            
+        add_var_dap4_attr(var,"grid_mapping_name",attr_str_c,"polar_stereographic"); 
 
-            ostringstream s_vert_lon_pole;
-            s_vert_lon_pole << vert_lon_pole;
+        ostringstream s_vert_lon_pole;
+        s_vert_lon_pole << vert_lon_pole;
 
-            // I did this map is based on my best understanding. I cannot be certain about south pole. KY
-            // CF: straight_vertical_longitude_from_pole
-            //at->append_attr("straight_vertical_longitude_from_pole", "Float64", s_vert_lon_pole.str());
-            add_var_dap4_attr(var,"straight_vertical_longitude_from_pole", attr_float64_c, s_vert_lon_pole.str());
-            ostringstream s_lat_true_scale;
-            s_lat_true_scale << lat_true_scale;
+        // I did this map is based on my best understanding. I cannot be certain about south pole. KY
+        // CF: straight_vertical_longitude_from_pole
+        //at->append_attr("straight_vertical_longitude_from_pole", "Float64", s_vert_lon_pole.str());
+        add_var_dap4_attr(var,"straight_vertical_longitude_from_pole", attr_float64_c, s_vert_lon_pole.str());
 
-            //at->append_attr("standard_parallel", "Float64", s_lat_true_scale.str());
-            add_var_dap4_attr(var,"standard_parallel", attr_float64_c, s_lat_true_scale.str());
+        ostringstream s_lat_true_scale;
+        s_lat_true_scale << lat_true_scale;
+        add_var_dap4_attr(var,"standard_parallel", attr_float64_c, s_lat_true_scale.str());
 
-            if(fe == 0.0) 
-                //at->append_attr("false_easting","Float64","0.0");
-                add_var_dap4_attr(var,"false_easting",attr_float64_c,"0.0"); 
-            else { 
-                ostringstream s_fe;
-                s_fe << fe;
-                //at->append_attr("false_easting","Float64",s_fe.str());
-                add_var_dap4_attr(var,"false_easting",attr_float64_c,s_fe.str());
-            }
+        if(fe == 0.0) 
+            add_var_dap4_attr(var,"false_easting",attr_float64_c,"0.0"); 
+        else { 
+            ostringstream s_fe;
+            s_fe << fe;
+            add_var_dap4_attr(var,"false_easting",attr_float64_c,s_fe.str());
+        }
 
+        if(fn == 0.0) 
+            add_var_dap4_attr(var,"false_northing",attr_float64_c,"0.0");
+        else { 
+            ostringstream s_fn;
+            s_fn << fn;
+            add_var_dap4_attr(var,"false_northing",attr_float64_c,s_fn.str());
+        }
+        
+        if(lat_true_scale >0) 
+            add_var_dap4_attr(var,"latitude_of_projection_origin",attr_float64_c,"+90.0");
+        else 
+            add_var_dap4_attr(var, "latitude_of_projection_origin",attr_float64_c,"-90.0");
 
-            if(fn == 0.0) 
-                //at->append_attr("false_northing","Float64","0.0");
-                add_var_dap4_attr(var,"false_northing",attr_float64_c,"0.0");
-            else { 
-                ostringstream s_fn;
-                s_fn << fn;
-                //at->append_attr("false_northing","Float64",s_fn.str());
-                add_var_dap4_attr(var,"false_northing",attr_float64_c,s_fn.str());
-            }
+        add_var_dap4_attr(var, "_CoordinateAxisTypes", attr_str_c, "GeoX GeoY");
 
-            
-            if(lat_true_scale >0) 
-                //at->append_attr("latitude_of_projection_origin","Float64","+90.0");
-                add_var_dap4_attr(var,"latitude_of_projection_origin",attr_float64_c,"+90.0");
-            else 
-                //at->append_attr("latitude_of_projection_origin","Float64","-90.0");
-                add_var_dap4_attr(var, "latitude_of_projection_origin",attr_float64_c,"-90.0");
-
-
-            //at->append_attr("_CoordinateAxisTypes", "string", "GeoX GeoY");
-            add_var_dap4_attr(var, "_CoordinateAxisTypes", attr_str_c, "GeoX GeoY");
-
-            // From CF, PS has another parameter,
-            // Either standard_parallel (EPSG 9829) or scale_factor_at_projection_origin (EPSG 9810)
-            // I cannot find the corresponding parameter from the EOS5.
+        // From CF, PS has another parameter,
+        // Either standard_parallel (EPSG 9829) or scale_factor_at_projection_origin (EPSG 9810)
+        // I cannot find the corresponding parameter from the EOS5.
 
     }
     else if(HE5_GCTP_LAMAZ == cv_proj_code) {
-            double lon_proj_origin = HE5_EHconvAng(eos5_proj_params[4],HE5_HDFE_DMS_DEG);
-            double lat_proj_origin = HE5_EHconvAng(eos5_proj_params[5],HE5_HDFE_DMS_DEG);
-            double fe = eos5_proj_params[6];
-            double fn = eos5_proj_params[7];
 
-            //at->append_attr("grid_mapping_name", "String", "lambert_azimuthal_equal_area");
-            add_var_dap4_attr(var,"grid_mapping_name", attr_str_c, "lambert_azimuthal_equal_area");
+        double lon_proj_origin = HE5_EHconvAng(eos5_proj_params[4],HE5_HDFE_DMS_DEG);
+        double lat_proj_origin = HE5_EHconvAng(eos5_proj_params[5],HE5_HDFE_DMS_DEG);
+        double fe = eos5_proj_params[6];
+        double fn = eos5_proj_params[7];
 
-            ostringstream s_lon_proj_origin;
-            s_lon_proj_origin << lon_proj_origin;
-            //at->append_attr("longitude_of_projection_origin", "Float64", s_lon_proj_origin.str());
-            add_var_dap4_attr(var,"longitude_of_projection_origin", attr_float64_c, s_lon_proj_origin.str());
-            
-            ostringstream s_lat_proj_origin;
-            s_lat_proj_origin << lat_proj_origin;
- 
-            //at->append_attr("latitude_of_projection_origin", "Float64", s_lat_proj_origin.str());
-            add_var_dap4_attr(var,"latitude_of_projection_origin", attr_float64_c, s_lat_proj_origin.str());
+        add_var_dap4_attr(var,"grid_mapping_name", attr_str_c, "lambert_azimuthal_equal_area");
 
+        ostringstream s_lon_proj_origin;
+        s_lon_proj_origin << lon_proj_origin;
+        add_var_dap4_attr(var,"longitude_of_projection_origin", attr_float64_c, s_lon_proj_origin.str());
+        
+        ostringstream s_lat_proj_origin;
+        s_lat_proj_origin << lat_proj_origin;
 
-            if(fe == 0.0) 
-                //at->append_attr("false_easting","Float64","0.0");
-                add_var_dap4_attr(var,"false_easting",attr_float64_c,"0.0");
-            else { 
-                ostringstream s_fe;
-                s_fe << fe;
-                //at->append_attr("false_easting","Float64",s_fe.str());
-                add_var_dap4_attr(var,"false_easting",attr_float64_c,s_fe.str());
-            }
+        add_var_dap4_attr(var,"latitude_of_projection_origin", attr_float64_c, s_lat_proj_origin.str());
 
-
-            if(fn == 0.0) 
-                //at->append_attr("false_northing","Float64","0.0");
-                add_var_dap4_attr(var,"false_northing",attr_float64_c,"0.0");
-            else { 
-                ostringstream s_fn;
-                s_fn << fn;
-                //at->append_attr("false_northing","Float64",s_fn.str());
-                add_var_dap4_attr(var,"false_northing",attr_float64_c,s_fn.str());
-            }
-
-            //at->append_attr("_CoordinateAxisTypes", "string", "GeoX GeoY");
-            add_var_dap4_attr(var,"_CoordinateAxisTypes", attr_str_c, "GeoX GeoY");
-
-
+        if(fe == 0.0) 
+            add_var_dap4_attr(var,"false_easting",attr_float64_c,"0.0");
+        else { 
+            ostringstream s_fe;
+            s_fe << fe;
+            add_var_dap4_attr(var,"false_easting",attr_float64_c,s_fe.str());
         }
+
+        if(fn == 0.0) 
+            add_var_dap4_attr(var,"false_northing",attr_float64_c,"0.0");
+        else { 
+            ostringstream s_fn;
+            s_fn << fn;
+            add_var_dap4_attr(var,"false_northing",attr_float64_c,s_fn.str());
+        }
+
+        add_var_dap4_attr(var,"_CoordinateAxisTypes", attr_str_c, "GeoX GeoY");
+    }
 
 }
 
+// Direct CF to DAP4, add the CF "grid_mapping_name" attribute to every variable that uses the grid.
 void add_cf_grid_cv_dap4_attrs(D4Group *d4_root, const string& cf_projection,      
                                const vector<HDF5CF::Dimension*>& dims)                    
 {
+    // dims are dimensions for a grid. It is always 2-D for the projections we support.t
     string dim0name = (dims[0])->getNewName();
     hsize_t dim0size = dims[0]->getSize();
     string dim1name = (dims[1])->getNewName();
     hsize_t dim1size = dims[1]->getSize();
 
+    // We only add the attribute to the variables that match the grid dimensions.
     Constructor::Vars_iter vi = d4_root->var_begin();
     Constructor::Vars_iter ve = d4_root->var_end();
     for (; vi != ve; vi++) {
@@ -1531,38 +1513,10 @@ void add_cf_grid_cv_dap4_attrs(D4Group *d4_root, const string& cf_projection,
         }
     }
 }
-#if 0
-    // Check >=2-D fields, check if they hold the dim0name,dim0size etc., yes, add the attribute cf_projection.
-    vector<HDF5CF::Var *>::const_iterator it_v;
-    for (it_v = vars.begin(); it_v != vars.end(); ++it_v) {
 
-        if ((*it_v)->getRank() > 1) {
-            bool has_dim0 = false;
-            bool has_dim1 = false;
-            const vector<HDF5CF::Dimension*>& dims = (*it_v)->getDimensions();
-            for (vector<HDF5CF::Dimension *>::const_iterator j = dims.begin(); j != dims.end(); ++j) {
-                if ((*j)->getNewName() == dim0name && (*j)->getSize() == dim0size)
-                    has_dim0 = true;
-                else if ((*j)->getNewName() == dim1name && (*j)->getSize() == dim1size) 
-                    has_dim1 = true;
 
-            }
-            if (true == has_dim0 && true == has_dim1) {        // Need to add the grid_mapping attribute
-
-                // Find the corresponding d4_var of the corresponding var, this is expensive.
-                // STOP: 2021-04-13
-                BaseType *d4_var =???
-                add_var_dap4_attr(var,"grid_mapping",attr_str_c,cf_projection);
-                AttrTable *at = das.get_table((*it_v)->getNewName());
-                if (!at) at = das.add_table((*it_v)->getNewName(), new AttrTable);
-
-                // The dummy projection name is the value of the grid_mapping attribute
-                at->append_attr("grid_mapping", "String", cf_projection);
-            }
-        }
-    }
-#endif
-
+// Direct CF to DAP4, add special CF grid_mapping variable to DAP4.  
+// These variables are dimension variables.
 void add_gm_spcvs(libdap::D4Group *d4_root, EOS5GridPCType cv_proj_code, float cv_point_lower, float cv_point_upper,
                   float cv_point_left, float cv_point_right, const std::vector<HDF5CF::Dimension*>& dims) {
 
@@ -1620,12 +1574,11 @@ void add_gm_spcvs(libdap::D4Group *d4_root, EOS5GridPCType cv_proj_code, float c
         if (bt_dim1) delete bt_dim1;
         if (ar_dim0) delete ar_dim0;
         if (ar_dim1) delete ar_dim1;
-
-
     }
-
 }
 
+// Direct CF to DAP4, 
+// add CF grid_mapping $attributes for the special dimension variables.  
 void add_gm_spcvs_attrs(libdap::BaseType *var,const bool is_dim0) {
 
     string standard_name;
@@ -1650,16 +1603,15 @@ void add_gm_spcvs_attrs(libdap::BaseType *var,const bool is_dim0) {
 
 }
 
-void add_var_dap4_attr(BaseType *var,const string& attr_name, D4AttributeType attr_type, const string& attr_value){
 
+// Direct CF to DAP4, helper function to DAP4 variable  attributes.  
+void add_var_dap4_attr(BaseType *var,const string& attr_name, D4AttributeType attr_type, const string& attr_value){
 
     D4Attribute *d4_attr = new D4Attribute(attr_name,attr_type);
     d4_attr->add_value(attr_value);
     var->attributes()->add_attribute_nocopy(d4_attr);
 
 }
-
-
 
 // Mainly copy from HDF5CF::get_CF_string. Should be 
 // removed if we can generate DMR independently.
