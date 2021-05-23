@@ -81,10 +81,10 @@ jobs:
         run: ./configure --prefix=$prefix --with-dependecies=$prefix/deps --enable-developer
 
       - name: Make
-        run: make --jobs=$jobs
+        run: make -j7
 
       - name: Check
-        run: make --jobs=$jobs check
+        run: make -j7 check
 
       - name: Install
         run: make install
