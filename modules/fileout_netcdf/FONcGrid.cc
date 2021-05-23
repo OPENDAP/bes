@@ -105,13 +105,20 @@ void FONcGrid::define(int ncid)
 {
     if (!_defined) {
         BESDEBUG("fonc", "FOncGrid::define - defining grid " << _varname << endl);
-
+        // TODO The following shows how to replace older for loops with range-based loops.
+        //  I included it mostly as a FYI. Update loops as appropriate, but always as a
+        //  refactor and coupled with running tests. jhrg 5/23/21
+#if 0
         // Only variables that should be sent are in _maps. jhrg 11/3/16
         vector<FONcMap *>::iterator i = _maps.begin();
         vector<FONcMap *>::iterator e = _maps.end();
         for (; i != e; i++) {
             (*i)->define(ncid);
         }
+#else
+        for (auto map: _maps)
+            map->define(ncid);
+#endif
 
         // Only define if this should be sent. jhrg 11/3/16
         if (_arr)
