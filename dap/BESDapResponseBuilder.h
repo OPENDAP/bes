@@ -41,6 +41,8 @@ namespace libdap {
     class ConstraintEvaluator;
     class DDS;
     class DAS;
+    class DMR;
+    class D4Group;
 }
 
 
@@ -186,7 +188,7 @@ public:
 
 	virtual void serialize_dap4_data(std::ostream &out, libdap::DMR &dmr, bool with_mime_headers = true);
 
-	virtual bool store_dap4_result(ostream &out, libdap::DMR &dmr);
+	virtual bool store_dap4_result(std::ostream &out, libdap::DMR &dmr);
 };
 
 

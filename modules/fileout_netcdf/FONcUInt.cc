@@ -116,6 +116,12 @@ FONcUInt::write( int ncid )
     BESDEBUG( "fonc", "FONcUInt::write for var " << _varname << endl ) ;
     size_t var_index[] = {0} ;
     unsigned int *data = new unsigned int ;
+
+    if (is_dap4)
+        _bt->intern_data();
+    else
+        _bt->intern_data(*get_eval(), *get_dds());
+
     _bt->buf2val( (void**)&data ) ;
     int stax = nc_put_var1_uint( ncid, _varid, var_index, data ) ;
     if( stax != NC_NOERR )

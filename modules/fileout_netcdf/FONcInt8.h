@@ -31,7 +31,9 @@
 
 #include <Int8.h>
 
-using namespace libdap ;
+namespace libdap {
+    class BaseType;
+}
 
 #include "FONcBaseType.h"
 
@@ -44,9 +46,9 @@ using namespace libdap ;
 class FONcInt8 : public FONcBaseType
 {
 private:
-    Int8 *			_b ;
+    libdap::Int8 *			_b ;
 public:
-    				FONcInt8( BaseType *b ) ;
+    				FONcInt8( libdap::BaseType *b ) ;
     virtual			~FONcInt8() ;
 
     virtual void		define( int ncid ) ;

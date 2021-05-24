@@ -85,6 +85,12 @@ void FONcStr::define(int ncid)
 
         _varname = FONcUtils::gen_name(_embed, _varname, _orig_varname);
         _data = new string;
+
+        if (is_dap4)
+            _str->intern_data();
+        else
+            _str->intern_data(*get_eval(), *get_dds());
+
         _str->buf2val((void**) &_data);
         int size = _data->size() + 1;
 

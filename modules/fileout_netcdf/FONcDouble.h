@@ -34,7 +34,12 @@
 
 #include <Float64.h>
 
-using namespace libdap ;
+using namespace libdap;
+namespace libdap {
+class BaseType;
+
+class Float64;
+}
 
 #include "FONcBaseType.h"
 
@@ -44,22 +49,24 @@ using namespace libdap ;
  * needed to write it out to a netcdf file. Includes a reference to the
  * actual DAP Float64 being converted
  */
-class FONcDouble : public FONcBaseType
-{
+class FONcDouble : public FONcBaseType {
 private:
-    Float64 *			_f ;
+    libdap::Float64 *_f;
 public:
-    				FONcDouble( BaseType *b ) ;
-    virtual			~FONcDouble() ;
+    FONcDouble(libdap::BaseType *b);
 
-    virtual void		define( int ncid ) ;
-    virtual void		write( int ncid ) ;
+    virtual ~FONcDouble() = default;
 
-    virtual string 		name() ;
-    virtual nc_type		type() ;
+    virtual void define(int ncid) override;
 
-    virtual void		dump( ostream &strm ) const ;
-} ;
+    virtual void write(int ncid) override;
+
+    virtual string name() override { return _f->name(); }
+
+    virtual nc_type type() override { return NC_DOUBLE; }
+
+    virtual void dump(ostream &strm) const override;
+};
 
 #endif // FONcDouble_h_
 
