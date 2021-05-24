@@ -29,7 +29,9 @@
 
 #include <BaseType.h>
 
-using namespace libdap ;
+namespace libdap {
+    class BaseType;
+}
 
 #include "FONcBaseType.h"
 
@@ -42,9 +44,9 @@ using namespace libdap ;
 class FONcUShort : public FONcBaseType
 {
 private:
-    BaseType *			_bt ;
+    libdap::BaseType *			_bt ;
 public:
-    				FONcUShort( BaseType *b ) ;
+    				FONcUShort( libdap::BaseType *b ) ;
     virtual			~FONcUShort() ;
 
     virtual void		define( int ncid ) ;

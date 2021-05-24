@@ -39,7 +39,9 @@
 #include <BaseType.h>
 #include <map>
 
-using namespace libdap;
+namespace libdap{
+    class BaseType;
+}
 
 class FONcBaseType;
 
@@ -58,10 +60,10 @@ public:
     static string name_prefix;
     static void reset();
     static string id2netcdf(string in);
-    static nc_type get_nc_type(BaseType *element,bool isNC4_ENHANCED);
+    static nc_type get_nc_type(libdap::BaseType *element,bool isNC4_ENHANCED);
     static string gen_name(const vector<string> &embed, const string &name, string &original);
-    static FONcBaseType * convert(BaseType *v,const string & version, const bool classic_model);
-    static FONcBaseType * convert(BaseType *v,const string & version, const bool classic_model, map<string,int>&,vector<int>&);
+    static FONcBaseType * convert(libdap::BaseType *v,const string & version, const bool classic_model);
+    static FONcBaseType * convert(libdap::BaseType *v,const string & version, const bool classic_model, map<string,int>&,vector<int>&);
     static void handle_error(int stax, const string &err, const string &file, int line);
 };
 
