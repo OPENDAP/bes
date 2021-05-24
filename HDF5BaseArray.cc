@@ -207,12 +207,13 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
                                      );
 
             if(false == is_dap4) {
-            vector<short>newval;
-            newval.resize(nelms);
 
-            for (int counter = 0; counter < nelms; counter++)
-                newval[counter] = (short) (val[counter]);
-            set_value ((dods_int16 *) &val[0], nelms);
+                vector<short>newval;
+                newval.resize(nelms);
+
+                for (int counter = 0; counter < nelms; counter++)
+                    newval[counter] = (short) (val[counter]);
+                set_value ((dods_int16 *) &val[0], nelms);
             }
             else 
                 set_value ((dods_int8 *) &val[0], nelms);

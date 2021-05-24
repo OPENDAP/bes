@@ -110,23 +110,24 @@ cerr<<"file name " <<filename <<endl;
         case H5CHAR:
         {
             if(is_dap4 == false) {
-            vector<short>val;
-            val.resize(nelms);
 
-            for (int i = 0; i < count[0]; i++)
-                val[i] = (short)(offset[0] + step[0] * i);
+                vector<short>val;
+                val.resize(nelms);
+
+                for (int i = 0; i < count[0]; i++)
+                    val[i] = (short)(offset[0] + step[0] * i);
                
-            set_value ((dods_int16 *) &val[0], nelms);
+                set_value ((dods_int16 *) &val[0], nelms);
             }
             else {
-               vector<char> val;
-               val.resize(nelms);
 
-               for (int i = 0; i < count[0]; i++)
-                val[i] = (char)(offset[0] + step[0] * i);
+                vector<char> val;
+                val.resize(nelms);
 
-            set_value ((dods_int8 *) &val[0], nelms);
+                for (int i = 0; i < count[0]; i++)
+                    val[i] = (char)(offset[0] + step[0] * i);
 
+                set_value ((dods_int8 *) &val[0], nelms);
 
             }
         }// H5CHAR and H5INT16

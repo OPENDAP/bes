@@ -948,9 +948,9 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
 
 #endif
 
-                     if(is_dap4 == false) {
-                     vector<short>final_val;
-                     subset<short>(
+                    if(is_dap4 == false) {
+                        vector<short>final_val;
+                        subset<short>(
                                       &buf[0],
                                       rank,
                                       dimsizes,
@@ -961,11 +961,11 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
                                       cd_pos,
                                       0
                                      );
-                     set_value((dods_int16*)&final_val[0],nelms_to_send);
-                     }
-                     else {
-                     vector<char>final_val;
-                     subset<char>(
+                        set_value((dods_int16*)&final_val[0],nelms_to_send);
+                    }
+                    else {
+                        vector<char>final_val;
+                        subset<char>(
                                       &buf[0],
                                       rank,
                                       dimsizes,
@@ -976,8 +976,8 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
                                       cd_pos,
                                       0
                                      );
-                     set_value((dods_int8*)&final_val[0],nelms_to_send);
-                     }
+                        set_value((dods_int8*)&final_val[0],nelms_to_send);
+                    }
  
                 }
 
