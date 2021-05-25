@@ -34,7 +34,10 @@
 
 #include <Sequence.h>
 
-using namespace libdap ;
+namespace libdap {
+    class BaseType;
+    class Sequence;
+}
 
 #include "FONcBaseType.h"
 
@@ -47,9 +50,9 @@ using namespace libdap ;
 class FONcSequence : public FONcBaseType
 {
 private:
-    Sequence *			_s ;
+    libdap::Sequence *			_s ;
 public:
-    				FONcSequence( BaseType *b ) ;
+    				FONcSequence( libdap::BaseType *b ) ;
     virtual			~FONcSequence() ;
 
     virtual void		convert( vector<string> embed ,bool is_dap4_group=false) ;

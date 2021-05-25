@@ -45,24 +45,14 @@
  * @param b A DAP BaseType that should be a float64
  * @throws BESInternalError if the BaseType is not a Float64
  */
-FONcDouble::FONcDouble( BaseType *b )
-    : FONcBaseType(), _f( 0 )
-{
-    _f = dynamic_cast<Float64 *>(b) ;
-    if( !_f )
-    {
-	string s = (string)"File out netcdf, FONcDouble was passed a "
-		   + "variable that is not a DAP Float64" ;
-	throw BESInternalError( s, __FILE__, __LINE__ ) ;
+FONcDouble::FONcDouble(BaseType *b)
+        : FONcBaseType(), _f(0) {
+    _f = dynamic_cast<Float64 *>(b);
+    if (!_f) {
+        string s = (string) "File out netcdf, FONcDouble was passed a "
+                   + "variable that is not a DAP Float64";
+        throw BESInternalError(s, __FILE__, __LINE__);
     }
-}
-
-/** @brief Destructor that cleans up the instance
- *
- * Since the DAP object is not owned by this instance, it is not deleted
- */
-FONcDouble::~FONcDouble()
-{
 }
 
 /** @brief define the DAP Float64 in the netcdf file
@@ -76,27 +66,24 @@ FONcDouble::~FONcDouble()
  * variable
  */
 void
-FONcDouble::define( int ncid )
-{
-    FONcBaseType::define( ncid ) ;
+FONcDouble::define(int ncid) {
+    FONcBaseType::define(ncid);
 
-    if( !_defined )
-    {
+    if (!_defined) {
 
-        if(is_dap4) {                                                                                       
-            D4Attributes *d4_attrs = _f->attributes();                                                     
-            updateD4AttrType(d4_attrs,NC_DOUBLE);   
+        if (is_dap4) {
+            D4Attributes *d4_attrs = _f->attributes();
+            updateD4AttrType(d4_attrs, NC_DOUBLE);
         }
         else {
-            AttrTable &attrs = _f->get_attr_table();  
-            updateAttrType(attrs,NC_DOUBLE); 
+            AttrTable &attrs = _f->get_attr_table();
+            updateAttrType(attrs, NC_DOUBLE);
         }
 
-	FONcAttributes::add_variable_attributes( ncid, _varid, _f,isNetCDF4_ENHANCED(),is_dap4 ) ;
-	FONcAttributes::add_original_name( ncid, _varid,
-					   _varname, _orig_varname ) ;
+        FONcAttributes::add_variable_attributes(ncid, _varid, _f, isNetCDF4_ENHANCED(), is_dap4);
+        FONcAttributes::add_original_name(ncid, _varid, _varname, _orig_varname);
 
-	_defined = true ;
+        _defined = true;
     }
 }
 
@@ -108,42 +95,25 @@ FONcDouble::define( int ncid )
  * @throws BESInternalError if there is a problem writing the value
  */
 void
-FONcDouble::write( int ncid )
-{
-    BESDEBUG( "fonc", "FONcDouble::write for var " << _varname << endl ) ;
-    size_t var_index[] = {0} ;
-    double *data = new double ;
-    _f->buf2val( (void**)&data ) ;
-    int stax = nc_put_var1_double( ncid, _varid, var_index, data ) ;
-    if( stax != NC_NOERR )
-    {
-	string err = (string)"fileout.netcdf - "
-		     + "Failed to write double data for "
-		     + _varname ;
-	FONcUtils::handle_error( stax, err, __FILE__, __LINE__ ) ;
+FONcDouble::write(int ncid) {
+    BESDEBUG("fonc", "FONcDouble::write for var " << _varname << endl);
+
+    if (is_dap4)
+        _f->intern_data();
+    else
+        _f->intern_data(*get_eval(), *get_dds());
+
+    double data = _f->value();
+    size_t var_index[] = {0};
+    int stax = nc_put_var1_double(ncid, _varid, var_index, &data);
+    if (stax != NC_NOERR) {
+        string err = (string) "fileout.netcdf - "
+                     + "Failed to write double data for "
+                     + _varname;
+        FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
     }
-    delete data ;
-    BESDEBUG( "fonc", "FONcDouble::done write for var " << _varname << endl ) ;
-}
 
-/** @brief returns the name of the DAP Float64
- *
- * @returns The name of the DAP Float64
- */
-string
-FONcDouble::name()
-{
-    return _f->name() ;
-}
-
-/** @brief returns the netcdf type of the DAP Float64
- *
- * @returns The nc_type of NC_DOUBLE
- */
-nc_type
-FONcDouble::type()
-{
-    return NC_DOUBLE ;
+    BESDEBUG("fonc", "FONcDouble::done write for var " << _varname << endl);
 }
 
 /** @brief dumps information about this object for debugging purposes
@@ -153,12 +123,11 @@ FONcDouble::type()
  * @param strm C++ i/o stream to dump the information to
  */
 void
-FONcDouble::dump( ostream &strm ) const
-{
+FONcDouble::dump(ostream &strm) const {
     strm << BESIndent::LMarg << "FONcDouble::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    strm << BESIndent::LMarg << "name = " << _f->name()  << endl ;
-    BESIndent::UnIndent() ;
+         << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    strm << BESIndent::LMarg << "name = " << _f->name() << endl;
+    BESIndent::UnIndent();
 }
 

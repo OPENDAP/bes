@@ -116,6 +116,12 @@ FONcFloat::write( int ncid )
     BESDEBUG( "fonc", "FONcFloat::write for var " << _varname << endl ) ;
     size_t var_index[] = {0} ;
     float *data = new float ;
+
+    if (is_dap4)
+        _f->intern_data();
+    else
+        _f->intern_data(*get_eval(), *get_dds());
+
     _f->buf2val( (void**)&data ) ;
     int stax = nc_put_var1_float( ncid, _varid, var_index, data ) ;
     ncopts = NC_VERBOSE ;

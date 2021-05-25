@@ -113,6 +113,12 @@ FONcInt8::write( int ncid )
     size_t var_index[] = {0} ;
     //char *data = new char ;
     signed char data_value[1];
+
+    if (is_dap4)
+        _b->intern_data();
+    else
+        _b->intern_data(*get_eval(), *get_dds());
+
     data_value[0] = _b->value();
     
     //_b->buf2val( (void**)&data ) ;

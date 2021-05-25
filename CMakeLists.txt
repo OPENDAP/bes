@@ -12,11 +12,19 @@
 include_directories(../libdap4)
 
 # Does including this _and_ the above bork CLion? jhrg 1.15.20
-include_directories(../build/include/libdap)
+#include_directories(../build/include/libdap)
 
-include_directories(/usr/local/Cellar/openssl/1.0.2q/include/)
+# Added for the sql handler and its use of unixODBC
 include_directories(/usr/local/Cellar/openssl/1.0.2r/include/)
+include_directories(/usr/local/Cellar/openssl/1.0.2q/include/)
 include_directories(/usr/local/include/)
+include_directories(/usr/local/include/c++)
+include_directories(/usr/include/libxml2)
+include_directories(/usr/include/curl)
+
+# Added.
+include_directories(/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/libxml2)
+include_directories(/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/curl)
 
 # Where the hyrax project puts the dependencies' headers
 
