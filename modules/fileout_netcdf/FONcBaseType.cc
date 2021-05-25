@@ -202,9 +202,7 @@ libdap::AttrType FONcBaseType::getAttrType(nc_type nct)
     return atype;
 }
 
-// This function is only used for handling _FillValue. TODO: review all cases and generalize it.
-// Check FONcUtils:get_nc_type() for the datatype mapping. The limitation of the classic model
-// and DAP2 can be seen.
+// Obtain DAP4 attribute type for both classic and enhanced model..
 D4AttributeType FONcBaseType::getD4AttrType(nc_type nct)
 {
     D4AttributeType atype; // = attr_null_c;

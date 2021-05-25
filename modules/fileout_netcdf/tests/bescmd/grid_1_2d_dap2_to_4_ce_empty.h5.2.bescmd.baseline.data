@@ -20,6 +20,8 @@ variables:
 // global attributes:
 		:HDFEOS_INFORMATION.HDFEOSVersion = "HDFEOS_5.1.13" ;
 		:HDFEOS_INFORMATION.fullnamepath = "/HDFEOS INFORMATION" ;
+                :history = "removed date-timex grid_1_2d.h5" ;
+
 data:
 
  temperature =

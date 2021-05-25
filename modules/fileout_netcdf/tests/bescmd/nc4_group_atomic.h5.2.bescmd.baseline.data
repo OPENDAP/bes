@@ -4,6 +4,9 @@ dimensions:
 variables:
 	int dim1(dim1) ;
 	float d1(dim1) ;
+
+// global attributes:
+                :history = "removed date-timex nc4_group_atomic.h5" ;
 data:
 
  dim1 = 2, 4 ;
