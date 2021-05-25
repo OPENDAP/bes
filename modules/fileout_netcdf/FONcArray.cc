@@ -79,7 +79,7 @@ FONcArray::FONcArray(BaseType *b) :
 }
 
 FONcArray::FONcArray(BaseType *b, const vector<int> &fd4_dim_ids, const vector<bool> &fuse_d4_dim_ids,
-                     const vector<int> &rbs_nums) :
+                     const vector<int> &rds_nums) :
         FONcBaseType(), d_a(0), d_array_type(NC_NAT), d_ndims(0), d_actual_ndims(0), d_nelements(1), d_dim_ids(0),
         d_dim_sizes(0), d_str_data(0), d_dont_use_it(false), d_chunksizes(0), d_grid_maps(0) {
     d_a = dynamic_cast<Array *>(b);
@@ -92,7 +92,7 @@ FONcArray::FONcArray(BaseType *b, const vector<int> &fd4_dim_ids, const vector<b
         d4_dim_ids = fd4_dim_ids;
         use_d4_dim_ids = fuse_d4_dim_ids;
         d4_def_dim = true;
-        d4_rbs_nums = rbs_nums;
+        d4_rds_nums = rds_nums;
     }
 }
 
@@ -139,7 +139,6 @@ FONcArray::~FONcArray() {
 void FONcArray::convert(vector<string> embed, bool is_dap4_group) {
     FONcBaseType::convert(embed, is_dap4_group);
 
-    //TODO: don't use _d_dim_ids when has_dap4_group.
     _varname = FONcUtils::gen_name(embed, _varname, _orig_varname);
 
     BESDEBUG("fonc", "FONcArray::convert() - converting array " << _varname << endl);
@@ -192,9 +191,11 @@ void FONcArray::convert(vector<string> embed, bool is_dap4_group) {
             // same name and same size as another dimension, then it is a
             // shared dimension. Create it only once and share the FONcDim
             int ds_num = FONcDim::DimNameNum + 1;
-            while (find(d4_rbs_nums.begin(), d4_rbs_nums.end(), ds_num) != d4_rbs_nums.end()) {
+            while (find(d4_rds_nums.begin(), d4_rds_nums.end(), ds_num) != d4_rds_nums.end()) {
                 // This may be an optimization for rare cases. May do this when performance issue hurts
-                //d4_rbs_nums_visited.push_back(ds_num);
+                //d4_rds_nums_visited.push_back(ds_num);
+                // Now the following line ensure this dimension name dimds_num(ds_num is a number)
+                // is NOT created for the dimension that doesn't have a name in DAP4.
                 ds_num++;
             }
             FONcDim::DimNameNum = ds_num - 1;
@@ -262,6 +263,8 @@ void FONcArray::convert(vector<string> embed, bool is_dap4_group) {
 
         d_dim_sizes[d_ndims - 1] = use_dim->size();
         d_dim_ids[d_ndims - 1] = use_dim->dimid();
+
+        //DAP4 dimension ID is false.
         use_d4_dim_ids.push_back(false);
         d_dims.push_back(use_dim);
 
@@ -443,16 +446,7 @@ void FONcArray::define(int ncid) {
             }
         }
 
-        // If the array type is NC_SHORT it may have been an unsigned byte type before,
-        // so make sure the _FillValue is also 16 bits (SMAP NetCDF-3 reformatting issue
-        // for landcover_class).
-        //
-        // Contributed by abdul.g.khan@nasa.gov
-        //
-        // Question: Are there other cases where an unsigned type is 'promoted' and thus
-        // the type of the fill value attribute should be too? jhrg 10/12/15
-        // TODO: The following code is a hack. We may need to review all cases and re-implement it. KY 12/4/2020
-        // Largely revised the fillvalue check code and add the check for the DAP4 case.
+        // Largely revised the fillvalue check code and add the check for the DAP4 case. KY 2021-05-10
         if (is_dap4) {
             D4Attributes *d4_attrs = d_a->attributes();
             updateD4AttrType(d4_attrs, d_array_type);
