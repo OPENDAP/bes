@@ -72,6 +72,7 @@ FONc.ClassicModel=false
 H5.EnableCF=false
 H5.DefaultHandleDimension=true
 
+NC.PromoteByteToShort=true
 # For HDF4
 
 # Note that changing H4.EnableCF will change the output of the HDF4 tests.

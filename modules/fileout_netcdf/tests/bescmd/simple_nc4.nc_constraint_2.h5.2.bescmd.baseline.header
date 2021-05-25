@@ -5,6 +5,9 @@ dimensions:
 variables:
         ushort data(x, y) ;
 
+// global attributes:                                                                                       
+                :history = "removed date-timex simple_nc4.nc.h5" ;    
+
 group: grp2 {
   dimensions:
         y = 3 ;

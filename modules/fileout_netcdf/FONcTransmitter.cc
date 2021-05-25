@@ -186,7 +186,7 @@ void updateHistoryAttribute(DDS *dds, const string &ce)
     request_url = request_url.substr(request_url.find_last_of('/')+1);
     // remove 'uncompress' cache mangling
     request_url = request_url.substr(request_url.find_last_of('#')+1);
-    request_url += "?" + ce;
+    if(ce != "") request_url += "?" + ce;
 
     std::vector<std::string> hist_entry_vec = get_history_entry(request_url);
 
@@ -242,7 +242,7 @@ void updateHistoryAttribute(DMR *dmr, const string &ce)
     request_url = request_url.substr(request_url.find_last_of('/')+1);
     // remove 'uncompress' cache mangling
     request_url = request_url.substr(request_url.find_last_of('#')+1);
-    request_url += "?" + ce;
+    if(ce != "") request_url += "?" + ce;
     vector<string> hist_entry_vector = get_history_entry(request_url);
 
     BESDEBUG(MODULE, prolog << "hist_entry_vec.size(): " << hist_entry_vector.size() << endl);
@@ -260,7 +260,7 @@ void updateHistoryAttribute(DMR *dmr, const string &ce)
                 BESDEBUG(MODULE, prolog << "Adding history entry to " << name << endl);
                 auto *new_history = new D4Attribute("history", attr_str_c);
                 new_history->add_value_vector(hist_entry_vector);
-                (*attrs)->attributes()->add_attribute(new_history);
+                (*attrs)->attributes()->add_attribute_nocopy(new_history);
             } else {
                 (*attrs)->attributes()->find("history")->add_value_vector(hist_entry_vector);
             }
@@ -269,10 +269,10 @@ void updateHistoryAttribute(DMR *dmr, const string &ce)
     }
     if(!added_history){
         auto *dap_global = new D4Attribute("DAP_GLOBAL",attr_container_c);
-        root_attrs->add_attribute(dap_global);
+        root_attrs->add_attribute_nocopy(dap_global);
         auto *new_history = new D4Attribute("history", attr_str_c);
         new_history->add_value_vector(hist_entry_vector);
-        dap_global->attributes()->add_attribute(new_history);
+        dap_global->attributes()->add_attribute_nocopy(new_history);
     }
 }
 

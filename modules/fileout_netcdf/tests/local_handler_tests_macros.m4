@@ -311,12 +311,12 @@ m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR],  [dnl
 
          dnl the header
          AT_CHECK([ncdump -h test.nc > $baseline.header.tmp])
-         dnl REMOVE_DATE_TIME([$baseline.header.tmp])
+         REMOVE_DATE_TIME([$baseline.header.tmp])
          ],
          [
          AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input > test.nc])
          AT_CHECK([ncdump -h test.nc > tmp])
-         dnl REMOVE_DATE_TIME([tmp])
+         REMOVE_DATE_TIME([tmp])
          AT_CHECK([diff -b -B $baseline.header tmp])
          AT_XFAIL_IF([test z$2 = zxfail])
          ])

@@ -19,6 +19,9 @@ variables:
 	char scalar(scalar_len9) ;
 		scalar:value = "Parting is such sweet sorrow." ;
 
+// global attributes:                                                                                       
+                :history = "removed date-timex t_grp_string.h5" ;
+
 group: g {
   dimensions:
   	dim11 = 2 ;
