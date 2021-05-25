@@ -186,7 +186,7 @@ void updateHistoryAttribute(DDS *dds, const string &ce)
     request_url = request_url.substr(request_url.find_last_of('/')+1);
     // remove 'uncompress' cache mangling
     request_url = request_url.substr(request_url.find_last_of('#')+1);
-    request_url += "?" + ce;
+    if(ce != "") request_url += "?" + ce;
 
     std::vector<std::string> hist_entry_vec = get_history_entry(request_url);
 
@@ -242,7 +242,7 @@ void updateHistoryAttribute(DMR *dmr, const string &ce)
     request_url = request_url.substr(request_url.find_last_of('/')+1);
     // remove 'uncompress' cache mangling
     request_url = request_url.substr(request_url.find_last_of('#')+1);
-    request_url += "?" + ce;
+    if(ce != "") request_url += "?" + ce;
     vector<string> hist_entry_vector = get_history_entry(request_url);
 
     BESDEBUG(MODULE, prolog << "hist_entry_vec.size(): " << hist_entry_vector.size() << endl);
