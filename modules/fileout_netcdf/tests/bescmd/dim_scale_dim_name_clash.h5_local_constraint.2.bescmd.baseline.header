@@ -7,6 +7,9 @@ variables:
     int v(dim1) ;
     int v_mdim(dim2, dim3) ;
 
+// global attributes:                                                                                       
+                :history = "removed date-timex dim_scale_dim_name_clash.h5" ; 
+
 group: g {
   dimensions:
     dim2 = 2 ;
