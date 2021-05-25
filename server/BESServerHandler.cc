@@ -195,9 +195,11 @@ void BESServerHandler::execute(Connection *c)
         holder = cout.rdbuf();
         cout.rdbuf(&fds);
 
+        // This is where we actual save/assign the output stream used for the
+        // the response to (our modified) stdout
         BESXMLInterface cmd(cmd_str, &cout);
-        int status = cmd.execute_request(from);
 
+        int status = cmd.execute_request(from);
         if (status == 0) {
             cmd.finish(status);
             fds.finish();
