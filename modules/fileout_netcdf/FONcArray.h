@@ -123,13 +123,13 @@ public:
     }
 
     virtual void dump(std::ostream &strm) const override;
+    // The below line is not necessary. Still keep it here for the future use.
+    // KY 2021-05-25
+#if 0
     virtual libdap::AttrType getAttrType(nc_type nct) override;
+#endif
 
     static std::vector<FONcDim *> Dimensions;
-#if 0
-    libdap::AttrType getAttrType(nc_type t);
-    D4AttributeType getD4AttrType(nc_type t);
-#endif
 };
 
 #endif // FONcArray_h_
