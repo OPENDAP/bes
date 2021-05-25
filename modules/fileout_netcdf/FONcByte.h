@@ -35,7 +35,11 @@
 
 #include <Byte.h>
 
-using namespace libdap ;
+namespace libdap {
+class BaseType;
+
+class Byte;
+}
 
 #include "FONcBaseType.h"
 
@@ -45,22 +49,25 @@ using namespace libdap ;
  * needed to write it out to a netcdf file. Includes a reference to the
  * actual DAP Byte being converted
  */
-class FONcByte : public FONcBaseType
-{
+class FONcByte : public FONcBaseType {
 private:
-    Byte *			_b ;
+    libdap::Byte *_b;
+
 public:
-    				FONcByte( BaseType *b ) ;
-    virtual			~FONcByte() ;
+    FONcByte(libdap::BaseType *b);
 
-    virtual void		define( int ncid ) ;
-    virtual void		write( int ncid ) ;
+    virtual ~FONcByte() = default;
 
-    virtual string 		name() ;
-    virtual nc_type		type() ;
+    virtual void define(int ncid) override;
 
-    virtual void		dump( ostream &strm ) const ;
-} ;
+    virtual void write(int ncid) override;
+
+    virtual string name() override { return _b->name(); }
+
+    virtual nc_type type() override { return NC_BYTE; }
+
+    virtual void dump(ostream &strm)  const override;
+};
 
 #endif // FONcByte_h_
 

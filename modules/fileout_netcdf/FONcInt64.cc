@@ -115,6 +115,12 @@ FONcInt64::write( int ncid )
     size_t var_index[] = {0} ;
     //int64_t *data = new int64_t ;
     long long  *data = new long long ;
+
+    if (is_dap4)
+        _bt->intern_data();
+    else
+        _bt->intern_data(*get_eval(), *get_dds());
+
     _bt->buf2val( (void**)&data ) ;
     //int stax = nc_put_var1_longlong( ncid, _varid, var_index, (const long long*)data ) ;
     int stax = nc_put_var1_longlong( ncid, _varid, var_index, data ) ;
