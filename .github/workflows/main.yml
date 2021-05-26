@@ -78,7 +78,7 @@ jobs:
         run: autoreconf --force --install --verbose
 
       - name: configure
-        run: ./configure --prefix=$prefix --with-dependecies=$prefix/deps --enable-developer
+        run: ./configure --prefix=$prefix 
 
       - name: Make
         run: make -j7
