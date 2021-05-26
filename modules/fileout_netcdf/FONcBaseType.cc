@@ -124,8 +124,8 @@ void FONcBaseType::updateD4AttrType(libdap::D4Attributes *d4_attrs, nc_type t)
 {
     for (auto ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end(); ii != ee; ++ii) {
         if ((*ii)->name() == _FillValue) {
-            BESDEBUG("fonc", "FONcArray - attrtype " << getD4AttrType(t) << endl);
-            BESDEBUG("fonc", "FONcArray - attr_type " << (*ii)->type() << endl);
+            BESDEBUG("fonc", "FONcBaseType - attrtype " << getD4AttrType(t) << endl);
+            BESDEBUG("fonc", "FONcBaseType - attr_type " << (*ii)->type() << endl);
             D4AttributeType correct_d4_attr_type = getD4AttrType(t);
             if (correct_d4_attr_type != (*ii)->type())
                 (*ii)->set_type(correct_d4_attr_type);
@@ -141,8 +141,8 @@ void FONcBaseType::updateAttrType(libdap::AttrTable &attrs, nc_type t)
     if (attrs.get_size()) {
         for (auto iter = attrs.attr_begin(); iter != attrs.attr_end(); iter++) {
             if (attrs.get_name(iter) == _FillValue) {
-                BESDEBUG("fonc", "FONcArray - attrtype " << getAttrType(t) << endl);
-                BESDEBUG("fonc", "FONcArray - attr_type " << attrs.get_attr_type(iter) << endl);
+                BESDEBUG("fonc", "FONcBaseType - attrtype " << getAttrType(t) << endl);
+                BESDEBUG("fonc", "FONcBaseType - attr_type " << attrs.get_attr_type(iter) << endl);
                 if (getAttrType(t) != attrs.get_attr_type(iter)) {
                     (*iter)->type = getAttrType(t);
                 }
