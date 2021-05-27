@@ -59,7 +59,7 @@
 #include "BESStopWatch.h"
 
 using std::ostringstream;
-using std::cout;
+// using std::cout;
 using std::endl;
 using std::cerr;
 using std::flush;
@@ -191,19 +191,20 @@ void BESServerHandler::execute(Connection *c)
         int descript = c->getSocket()->getSocketDescriptor();
         unsigned int bufsize = c->getSendChunkSize();
         PPTStreamBuf fds(descript, bufsize);
-        std::streambuf *holder;
-        holder = cout.rdbuf();
-        cout.rdbuf(&fds);
+        ostream my_ostrm(&fds);
+        // std::streambuf *holder;
+        // holder = cout.rdbuf();
+        // cout.rdbuf(&fds);
 
         // This is where we actual save/assign the output stream used for the
         // the response to (our modified) stdout
-        BESXMLInterface cmd(cmd_str, &cout);
+        BESXMLInterface cmd(cmd_str, &my_ostrm);
 
         int status = cmd.execute_request(from);
         if (status == 0) {
             cmd.finish(status);
             fds.finish();
-            cout.rdbuf(holder);
+            // cout.rdbuf(holder);
         }
         else {
             BESDEBUG("server", "BESServerHandler::execute - " << "error occurred" << endl);
@@ -222,7 +223,7 @@ void BESServerHandler::execute(Connection *c)
             // we are finished, send the last chunk
             fds.finish();
             // reset the cout stream buffer
-            cout.rdbuf(holder);
+            // cout.rdbuf(holder);
 
             // If the status is fatal, then we want to exit. Otherwise,
             // continue, wait for the next request.
