@@ -527,7 +527,26 @@ void FONcTransform::transform()
  */
 void FONcTransform::transform_dap4()
 {
+
+    BESDapResponseBuilder responseBuilder;
+
+    BESUtil::conditional_timeout_cancel();
+    BESDEBUG("fonc", "FONcTransform::transform_dap4() Reading data into DataDMR" << endl);
+
+    bes::TempFile temp_file(FONcRequestHandler::temp_dir + "/ncXXXXXX");
+
     FONcUtils::reset();
+
+    d_dhi->first_container();
+
+    _dmr = responseBuilder.intern_dap4_data(d_obj, *d_dhi);
+
+    BESDapResponseBuilder besDRB;
+
+    besDRB.set_dataset_name(_dmr->filename());
+    besDRB.set_ce(d_dhi->data[POST_CONSTRAINT]);
+    besDRB.set_async_accepted(d_dhi->data[ASYNC]);
+    besDRB.set_store_result(d_dhi->data[STORE_RESULT]);
 
     // Convert the DMR into an internal format to keep track of
     // variables, arrays, shared dimensions, grids, common maps,
@@ -715,6 +734,8 @@ void FONcTransform::transform_dap4_no_group() {
        BESDEBUG("fonc", "FONcTransform::transform_dap4() - group name:  " << (*gi)->name() << endl);
 #endif
 
+    updateHistoryAttribute(_dmr, d_dhi->data[POST_CONSTRAINT]);
+
     // Open the file for writing
     int stax = -1;
     if (FONcTransform::_returnAs == RETURN_AS_NETCDF4 ) {
@@ -840,6 +861,9 @@ void FONcTransform::transform_dap4_group_internal(D4Group* grp,
     BESDEBUG("fonc", "transform_dap4_group_internal() - inside"<< endl);
     int grp_id = -1;
     int stax   = -1;
+
+    updateHistoryAttribute(_dmr, d_dhi->data[POST_CONSTRAINT]);
+
     if(is_root_grp == true)  
         grp_id = _ncid;
     else {

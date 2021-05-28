@@ -373,6 +373,8 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
     BESDEBUG(MODULE,  prolog << "BEGIN" << endl);
 
     try { // Expanded try block so all DAP errors are caught. ndp 12/23/2015
+
+#if 0
         BESDapResponseBuilder responseBuilder;
         // Use the DDS from the ResponseObject along with the parameters
         // from the DataHandlerInterface to load the DDS with values.
@@ -387,6 +389,7 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
         //DDS *loaded_dds = responseBuilder.intern_dap2_data(obj, dhi);
         DMR *loaded_dmr = responseBuilder.intern_dap4_data(obj, dhi);
         updateHistoryAttribute(loaded_dmr, dhi.data[POST_CONSTRAINT]);
+#endif
 
         // This object closes the file when it goes out of scope.
         bes::TempFile temp_file(FONcRequestHandler::temp_dir + "/ncXXXXXX");
@@ -394,7 +397,8 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
         BESDEBUG(MODULE,  prolog << "Building response file " << temp_file.get_name() << endl);
         // Note that 'RETURN_CMD' is the same as the string that determines the file type:
         // netcdf 3 or netcdf 4. Hack. jhrg 9/7/16
-        FONcTransform ft(loaded_dmr, dhi, temp_file.get_name(), dhi.data[RETURN_CMD]);
+        // FONcTransform ft(loaded_dmr, dhi, temp_file.get_name(), dhi.data[RETURN_CMD]);
+        FONcTransform ft(obj, &dhi, temp_file.get_name(), dhi.data[RETURN_CMD]);
 
         // Call the transform function for DAP4.
         ft.transform_dap4();
