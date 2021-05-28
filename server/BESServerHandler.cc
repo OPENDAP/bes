@@ -60,6 +60,7 @@
 
 #define NO_COUT 1
 
+using std::cout;
 
 using std::ostringstream;
 #if NO_COUT==0
@@ -72,6 +73,8 @@ using std::map;
 using std::ostream;
 using std::string;
 
+#define MODULE "server"
+#define prolog std::string("BESServerHandler::").append(__func__).append("() - ")
 
 // Default is to not exit on internal error. A bad idea, but the original
 // behavior of the server. jhrg 10/4/18
@@ -162,8 +165,7 @@ void BESServerHandler::execute(Connection *c)
             // the end chunk is read. That means that it will read the end chunk for the
             // PPT_EXIT_NOW chunk (and so we don't need to).
 
-            BESDEBUG("beslistener",
-                "BESServerHandler::execute() - Received PPT_EXIT_NOW in an extension chunk." << endl);
+            BESDEBUG(MODULE,prolog << "Received PPT_EXIT_NOW in an extension chunk." << endl);
 
             // This call closes the socket - it does minimal bookkeeping and
             // calls the the kernel's close() function. NB: The method is
@@ -171,8 +173,7 @@ void BESServerHandler::execute(Connection *c)
             // Socket instance held by the Connection.
             c->closeConnection();
 
-            BESDEBUG("beslistener",
-                "BESServerHandler::execute() - Calling exit(CHILD_SUBPROCESS_READY) which has a value of " << CHILD_SUBPROCESS_READY << endl);
+            BESDEBUG(MODULE,prolog << "Calling exit(CHILD_SUBPROCESS_READY) which has a value of " << CHILD_SUBPROCESS_READY << endl);
 
             INFO_LOG("Received exit command." << endl);
 
@@ -186,7 +187,7 @@ void BESServerHandler::execute(Connection *c)
         //string cmd_str = BESUtil::www2id( ss.str(), "%", "%20" ) ;
         string cmd_str = ss.str();
 
-        BESDEBUG("server", "BESServerHandler::execute - command ... " << cmd_str << endl);
+        BESDEBUG(MODULE, prolog << "Processing command" << endl << cmd_str << endl);
 
         BESStopWatch sw;
         if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("BESServerHandler::execute");
@@ -200,6 +201,10 @@ void BESServerHandler::execute(Connection *c)
         ostream my_ostrm(&fds);
         // This is where we actual save/assign the output stream used for the
         // the response
+        std::stringstream msg;
+        msg << prolog << "Using ostream: " << (void *) &my_ostrm << " cout: " << (void *) &cout << endl;
+        BESDEBUG(MODULE,  msg.str());
+        INFO_LOG( msg.str());
         BESXMLInterface cmd(cmd_str, &my_ostrm);
 #else
         std::streambuf *holder;
@@ -219,7 +224,7 @@ void BESServerHandler::execute(Connection *c)
 #endif
         }
         else {
-            BESDEBUG("server", "BESServerHandler::execute - " << "error occurred" << endl);
+            BESDEBUG(MODULE, prolog << "error occurred" << endl);
 
             // Send the extension status=error to the client so that it can reset. The finish()
             // method is called _after_ this so that the error response will be recognizable.
