@@ -78,7 +78,9 @@ jobs:
         run: autoreconf --force --install --verbose
 
       - name: configure
-        run: ./configure --prefix=$prefix 
+        run: |
+          ./configure --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer | tee foo
+          grep -e "^checking for libdap .* yes$" foo  
 
       - name: Make
         run: make -j7
