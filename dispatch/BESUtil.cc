@@ -1201,6 +1201,11 @@ void ios_state_msg(std::ios &ios_ref, std::stringstream &msg) {
  */
 void BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm)
 {
+    stringstream msg;
+    msg << prolog << "Using ostream: " << (void *) &o_strm << " cout: " << (void *) &cout << endl;
+    BESDEBUG(MODULE,  msg.str());
+    INFO_LOG( msg.str());
+
     char rbuffer[OUTPUT_FILE_BLOCK_SIZE];
     std::ifstream i_stream(file_name, std::ios_base::in | std::ios_base::binary);  // Use binary mode so we can
 
@@ -1265,8 +1270,8 @@ void BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm)
         INFO_LOG(msg.str());
     }
 
-    stringstream msg;
-    msg << prolog << "Sent "<< tcount << " bytes from file '" << file_name<< "'. " << endl;
+    msg.str(prolog);
+    msg << "Sent "<< tcount << " bytes from file '" << file_name<< "'. " << endl;
     BESDEBUG(MODULE,msg.str());
     INFO_LOG(msg.str());
 }

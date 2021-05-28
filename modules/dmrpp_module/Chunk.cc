@@ -221,13 +221,18 @@ void inflate(char *dest, unsigned long long dest_len, char *src, unsigned long l
 
         /* Check for error */
         if (Z_OK != status) {
+            stringstream err_msg;
+            err_msg << "Failed to inflate data chunk.";
+            char *err_msg_cstr = z_strm.msg;
+            if(err_msg_cstr)
+                err_msg << " zlib message: " << err_msg_cstr;
             (void) inflateEnd(&z_strm);
-            throw BESError("Failed to inflate data chunk.", BES_INTERNAL_ERROR, __FILE__, __LINE__);
+            throw BESError(err_msg.str(), BES_INTERNAL_ERROR, __FILE__, __LINE__);
         }
         else {
             /* If we're not done and just ran out of buffer space, it's an error.
              * The HDF5 library code would extend the buffer as needed, but for
-             * this handler, we always know the size of the uncompressed chunk.
+             * this handler, we should always know the size of the uncompressed chunk.
              */
             if (0 == z_strm.avail_out) {
                 throw BESError("Data buffer is not big enough for uncompressed data.", BES_INTERNAL_ERROR, __FILE__,
