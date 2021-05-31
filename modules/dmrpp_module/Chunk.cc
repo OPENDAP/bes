@@ -98,13 +98,16 @@ size_t chunk_header_callback(char *buffer, size_t /*size*/, size_t nitems, void 
  * @return The number of bytes read
  */
 size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
+    BESDEBUG(MODULE, prolog << "BEGIN " << endl);
     size_t nbytes = size * nmemb;
     auto chunk = reinterpret_cast<Chunk *>(data);
 
-    BESDEBUG(MODULE, prolog << "BEGIN chunk->get_response_content_type():" << chunk->get_response_content_type()
-                            << " chunk->get_data_url(): " << chunk->get_data_url()->str() << endl);
+
+    auto data_url = chunk->get_data_url();
+    BESDEBUG(MODULE, prolog << "chunk->get_data_url():" << data_url << endl);
 
     // When Content-Type is 'application/xml,' that's an error. jhrg 6/9/20
+    BESDEBUG(MODULE, prolog << "chunk->get_response_content_type():" << chunk->get_response_content_type() << endl);
     if (chunk->get_response_content_type().find("application/xml") != string::npos) {
         // At this point we no longer care about great performance - error msg readability
         // is more important. jhrg 12/30/19
@@ -127,7 +130,7 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
             if (string(code.GetString()) == "AccessDenied") {
                 stringstream msg;
                 msg << prolog << "ACCESS DENIED - The underlying object store has refused access to: ";
-                msg << chunk->get_data_url()->str() << " Object Store Message: " << json_message;
+                msg << data_url->str() << " Object Store Message: " << json_message;
                 BESDEBUG(MODULE, msg.str() << endl);
                 VERBOSE(msg.str() << endl);
                 throw BESForbiddenError(msg.str(), __FILE__, __LINE__);
@@ -135,7 +138,7 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
             else {
                 stringstream msg;
                 msg << prolog << "ERROR - The underlying object store returned an error. ";
-                msg << "(Tried: " << chunk->get_data_url()->str() << ") Object Store Message: " << json_message;
+                msg << "(Tried: " << data_url->str() << ") Object Store Message: " << json_message;
                 BESDEBUG(MODULE, msg.str() << endl);
                 VERBOSE(msg.str() << endl);
                 throw BESInternalError(msg.str(), __FILE__, __LINE__);
@@ -149,7 +152,7 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
         catch (std::exception &e) {
             stringstream msg;
             msg << prolog << "Caught std::exception when accessing object store data.";
-            msg << " (Tried: " << chunk->get_data_url()->str() << ")" << " Message: " << e.what();
+            msg << " (Tried: " << data_url->str() << ")" << " Message: " << e.what();
             BESDEBUG(MODULE, msg.str() << endl);
             throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
         }
