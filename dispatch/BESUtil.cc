@@ -34,6 +34,9 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <thread>         // std::this_thread::sleep_for
+#include <chrono>         // std::chrono::seconds
+#include <string>     // std::string, std::stol
 
 #if HAVE_UNISTD_H
 #include <unistd.h>
@@ -73,6 +76,8 @@ using std::ostream;
 
 #define MODULE "util"
 #define prolog string("BESUtil::").append(__func__).append("() - ")
+
+#define FILE_TO_STREAM_THROTTLE_KEY "FTS.Throttle"
 
 const string BES_KEY_TIMEOUT_CANCEL = "BES.CancelTimeoutOnSend";
 
@@ -1227,6 +1232,15 @@ void BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm)
         throw BESInternalError(msg.str(),__FILE__,__LINE__);
     }
 
+    // Throttle the response based on configuration value.
+    long long int throttle=0;
+    string throttle_str;
+    bool found_it;
+    TheBESKeys::TheKeys()->get_value(FILE_TO_STREAM_THROTTLE_KEY,throttle_str,found_it);
+    if(found_it){
+        throttle = stol(throttle_str);
+    }
+
     //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     // This is where the file is copied.
     uint64_t tcount = 0;
@@ -1234,6 +1248,7 @@ void BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm)
         i_stream.read(&rbuffer[0], OUTPUT_FILE_BLOCK_SIZE);      // Read at most n bytes into
         o_strm.write(&rbuffer[0], i_stream.gcount()); // buf, then write the buf to
         tcount += i_stream.gcount();
+        std::this_thread::sleep_for(std::chrono::milliseconds(throttle));
     }
     o_strm.flush();
 
