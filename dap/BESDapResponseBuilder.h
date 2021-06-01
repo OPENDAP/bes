@@ -173,7 +173,7 @@ public:
 	// Add the handling of DMR objects, including the function to handle expression constrainta.
     // May need to improve. 5/13/20
 	virtual libdap::DMR *intern_dap4_data(BESResponseObject *obj, BESDataHandlerInterface &dhi);
-	virtual void intern_dap4_data_using_ce(libdap::DMR &dmr);
+	virtual void dap4_process_ce_for_intern_data(libdap::DMR &dmr);
 
 	virtual void send_ddx(std::ostream &out, libdap::DDS **dds, libdap::ConstraintEvaluator &eval,
 			bool with_mime_headers = true);
