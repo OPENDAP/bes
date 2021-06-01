@@ -129,7 +129,7 @@ public:
      * @see Chunk::add_tracking_query_param()
      */
     Chunk() :
-        d_data_url(nullptr), d_query_marker(""), d_byte_order(""), d_size(0), d_offset(0),
+        d_data_url(nullptr), d_size(0), d_offset(0),
         d_read_buffer_is_mine(true), d_bytes_read(0), d_read_buffer(nullptr),
         d_read_buffer_size(0), d_is_read(false), d_is_inflated(false)
     {
@@ -152,7 +152,6 @@ public:
             unsigned long long offset,
             const std::string &pia_str = "") :
             d_data_url(std::move(data_url)),
-            d_query_marker(""),
             d_byte_order(std::move(order)),
             d_size(size),
             d_offset(offset),
@@ -182,7 +181,6 @@ public:
             unsigned long long size,
             unsigned long long offset,
             const std::string &pia_str = "") :
-            d_query_marker(""),
             d_byte_order(std::move(order)),
             d_size(size),
             d_offset(offset),
@@ -214,7 +212,6 @@ public:
             unsigned long long offset,
             const std::vector<unsigned long long> &pia_vec) :
             d_data_url(std::move(data_url)),
-            d_query_marker(""),
             d_byte_order(std::move(order)),
             d_size(size),
             d_offset(offset),
