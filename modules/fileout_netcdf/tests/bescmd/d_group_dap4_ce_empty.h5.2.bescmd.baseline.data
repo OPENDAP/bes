@@ -1,5 +1,8 @@
 netcdf test {
 
+// global attributes:                                                                                       
+                :history = "removed date-timex d_group.h5" ;   
+
 group: a {
 
   group: b {

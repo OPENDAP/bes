@@ -58,8 +58,14 @@
 #include "BESDebug.h"
 #include "BESStopWatch.h"
 
-using std::ostringstream;
+#define NO_COUT 1
+
 using std::cout;
+
+using std::ostringstream;
+#if NO_COUT==0
+using std::cout;
+#endif
 using std::endl;
 using std::cerr;
 using std::flush;
@@ -67,6 +73,8 @@ using std::map;
 using std::ostream;
 using std::string;
 
+#define MODULE "server"
+#define prolog std::string("BESServerHandler::").append(__func__).append("() - ")
 
 // Default is to not exit on internal error. A bad idea, but the original
 // behavior of the server. jhrg 10/4/18
@@ -157,8 +165,7 @@ void BESServerHandler::execute(Connection *c)
             // the end chunk is read. That means that it will read the end chunk for the
             // PPT_EXIT_NOW chunk (and so we don't need to).
 
-            BESDEBUG("beslistener",
-                "BESServerHandler::execute() - Received PPT_EXIT_NOW in an extension chunk." << endl);
+            BESDEBUG(MODULE,prolog << "Received PPT_EXIT_NOW in an extension chunk." << endl);
 
             // This call closes the socket - it does minimal bookkeeping and
             // calls the the kernel's close() function. NB: The method is
@@ -166,8 +173,7 @@ void BESServerHandler::execute(Connection *c)
             // Socket instance held by the Connection.
             c->closeConnection();
 
-            BESDEBUG("beslistener",
-                "BESServerHandler::execute() - Calling exit(CHILD_SUBPROCESS_READY) which has a value of " << CHILD_SUBPROCESS_READY << endl);
+            BESDEBUG(MODULE,prolog << "Calling exit(CHILD_SUBPROCESS_READY) which has a value of " << CHILD_SUBPROCESS_READY << endl);
 
             INFO_LOG("Received exit command." << endl);
 
@@ -181,7 +187,7 @@ void BESServerHandler::execute(Connection *c)
         //string cmd_str = BESUtil::www2id( ss.str(), "%", "%20" ) ;
         string cmd_str = ss.str();
 
-        BESDEBUG("server", "BESServerHandler::execute - command ... " << cmd_str << endl);
+        BESDEBUG(MODULE, prolog << "Processing command" << endl << cmd_str << endl);
 
         BESStopWatch sw;
         if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("BESServerHandler::execute");
@@ -191,20 +197,34 @@ void BESServerHandler::execute(Connection *c)
         int descript = c->getSocket()->getSocketDescriptor();
         unsigned int bufsize = c->getSendChunkSize();
         PPTStreamBuf fds(descript, bufsize);
+#if NO_COUT
+        ostream my_ostrm(&fds);
+        // This is where we actual save/assign the output stream used for the
+        // the response
+        std::stringstream msg;
+        msg << prolog << "Using ostream: " << (void *) &my_ostrm << " cout: " << (void *) &cout << endl;
+        BESDEBUG(MODULE,  msg.str());
+        INFO_LOG( msg.str());
+        BESXMLInterface cmd(cmd_str, &my_ostrm);
+#else
         std::streambuf *holder;
         holder = cout.rdbuf();
         cout.rdbuf(&fds);
-
+        // This is where we actual save/assign the output stream used for the
+        // the response to (our modified) stdout
         BESXMLInterface cmd(cmd_str, &cout);
-        int status = cmd.execute_request(from);
+#endif
 
+        int status = cmd.execute_request(from);
         if (status == 0) {
             cmd.finish(status);
             fds.finish();
-            cout.rdbuf(holder);
+#if NO_COUT==0
+            // cout.rdbuf(holder);
+#endif
         }
         else {
-            BESDEBUG("server", "BESServerHandler::execute - " << "error occurred" << endl);
+            BESDEBUG(MODULE, prolog << "error occurred" << endl);
 
             // Send the extension status=error to the client so that it can reset. The finish()
             // method is called _after_ this so that the error response will be recognizable.
@@ -219,8 +239,10 @@ void BESServerHandler::execute(Connection *c)
             cmd.finish(status);
             // we are finished, send the last chunk
             fds.finish();
+#if NO_COUT==0
             // reset the cout stream buffer
-            cout.rdbuf(holder);
+            // cout.rdbuf(holder);
+#endif
 
             // If the status is fatal, then we want to exit. Otherwise,
             // continue, wait for the next request.

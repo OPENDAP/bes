@@ -43,23 +43,25 @@ private:
     unsigned int count;
 
     PPTStreamBuf() :
-        d_bufsize(0), d_fd(-1), d_buffer(0), count(0)
+        d_bufsize(0), d_fd(-1), d_buffer(nullptr), count(0)
     {
     }
 public:
-    PPTStreamBuf(int fd, unsigned bufsize = 1);
-    virtual ~PPTStreamBuf();
+    explicit PPTStreamBuf(int fd, unsigned bufsize = 1);
+    ~PPTStreamBuf() override;
 
-    unsigned int how_many()
+#if 0
+    unsigned int how_many() const
     {
         return count;
     }
+#endif
 
     void open(int fd, unsigned bufsize = 1);
 
-    int sync();
+    int sync() override;
 
-    int overflow(int c);
+    int overflow(int c) override;
 
     void finish();
 };

@@ -6,6 +6,10 @@ dimensions:
 variables:
         int v(mydim1) ;
         int v_mdim(dim1, dim2) ;
+
+// global attributes:                                                                                       
+                :history = "removed date-timex dim_scale_smix.h5" ;
+
 data:
 
  v = 1, 2 ;

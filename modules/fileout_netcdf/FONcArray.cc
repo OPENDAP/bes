@@ -79,7 +79,7 @@ FONcArray::FONcArray(BaseType *b) :
 }
 
 FONcArray::FONcArray(BaseType *b, const vector<int> &fd4_dim_ids, const vector<bool> &fuse_d4_dim_ids,
-                     const vector<int> &rbs_nums) :
+                     const vector<int> &rds_nums) :
         FONcBaseType(), d_a(0), d_array_type(NC_NAT), d_ndims(0), d_actual_ndims(0), d_nelements(1), d_dim_ids(0),
         d_dim_sizes(0), d_str_data(0), d_dont_use_it(false), d_chunksizes(0), d_grid_maps(0) {
     d_a = dynamic_cast<Array *>(b);
@@ -92,7 +92,7 @@ FONcArray::FONcArray(BaseType *b, const vector<int> &fd4_dim_ids, const vector<b
         d4_dim_ids = fd4_dim_ids;
         use_d4_dim_ids = fuse_d4_dim_ids;
         d4_def_dim = true;
-        d4_rbs_nums = rbs_nums;
+        d4_rds_nums = rds_nums;
     }
 }
 
@@ -139,7 +139,6 @@ FONcArray::~FONcArray() {
 void FONcArray::convert(vector<string> embed, bool is_dap4_group) {
     FONcBaseType::convert(embed, is_dap4_group);
 
-    //TODO: don't use _d_dim_ids when has_dap4_group.
     _varname = FONcUtils::gen_name(embed, _varname, _orig_varname);
 
     BESDEBUG("fonc", "FONcArray::convert() - converting array " << _varname << endl);
@@ -192,9 +191,13 @@ void FONcArray::convert(vector<string> embed, bool is_dap4_group) {
             // same name and same size as another dimension, then it is a
             // shared dimension. Create it only once and share the FONcDim
             int ds_num = FONcDim::DimNameNum + 1;
-            while (find(d4_rbs_nums.begin(), d4_rbs_nums.end(), ds_num) != d4_rbs_nums.end()) {
+            while (find(d4_rds_nums.begin(), d4_rds_nums.end(), ds_num) != d4_rds_nums.end()) {
+#if 0
                 // This may be an optimization for rare cases. May do this when performance issue hurts
-                //d4_rbs_nums_visited.push_back(ds_num);
+                //d4_rds_nums_visited.push_back(ds_num);
+#endif
+                // Now the following line ensure this dimension name dimds_num(ds_num is a number)
+                // is NOT created for the dimension that doesn't have a name in DAP4.
                 ds_num++;
             }
             FONcDim::DimNameNum = ds_num - 1;
@@ -262,6 +265,8 @@ void FONcArray::convert(vector<string> embed, bool is_dap4_group) {
 
         d_dim_sizes[d_ndims - 1] = use_dim->size();
         d_dim_ids[d_ndims - 1] = use_dim->dimid();
+
+        //DAP4 dimension ID is false.
         use_d4_dim_ids.push_back(false);
         d_dims.push_back(use_dim);
 
@@ -443,16 +448,7 @@ void FONcArray::define(int ncid) {
             }
         }
 
-        // If the array type is NC_SHORT it may have been an unsigned byte type before,
-        // so make sure the _FillValue is also 16 bits (SMAP NetCDF-3 reformatting issue
-        // for landcover_class).
-        //
-        // Contributed by abdul.g.khan@nasa.gov
-        //
-        // Question: Are there other cases where an unsigned type is 'promoted' and thus
-        // the type of the fill value attribute should be too? jhrg 10/12/15
-        // TODO: The following code is a hack. We may need to review all cases and re-implement it. KY 12/4/2020
-        // Largely revised the fillvalue check code and add the check for the DAP4 case.
+        // Largely revised the fillvalue check code and add the check for the DAP4 case. KY 2021-05-10
         if (is_dap4) {
             D4Attributes *d4_attrs = d_a->attributes();
             updateD4AttrType(d4_attrs, d_array_type);
@@ -835,162 +831,3 @@ void FONcArray::write_for_nc4_types(int ncid) {
 
 }
 
-// This function is only used for handling _FillValue. TODO: review all cases and generalize it.
-libdap::AttrType FONcArray::getAttrType(nc_type nct) {
-    switch (nct) {
-        case NC_BYTE:
-            return Attr_byte;
-        case NC_SHORT:
-            return Attr_int16;
-        case NC_LONG:
-            return Attr_int32;
-        case NC_FLOAT:
-            return Attr_float32;
-        case NC_DOUBLE:
-            return Attr_float64;
-        case NC_CHAR:
-        case NC_STRING:
-            return Attr_string;
-        default:
-            return Attr_unknown;
-    }
-}
-
-#if 0
-// This function is only used for handling _FillValue now. But it is a general routine that can be
-// used for other purposes.
-libdap::AttrType FONcArray::getAttrType(nc_type nct) {
-    BESDEBUG("fonc", "FONcArray getAttrType "<< endl);
-    libdap::AttrType atype = Attr_unknown;
-    switch (nct)
-    {
-
-        case NC_BYTE:
-            // The original code maps to Attr_byte. This is not right. Attr_byte is uint8, NC_BYTE is int8.
-            // Change to 16-bit integer to be consistent with other parts for the classic model.
-            // Note; In DAP2, no 8-bit integer type. So regardless the netCDF model, this has to be
-            // Attr_int16.
-            atype = Attr_int16;
-            break;
-        case NC_SHORT:
-            atype = Attr_int16;
-            break;
-        case NC_INT:
-            atype = Attr_int32;
-            break;
-        case NC_FLOAT:
-            atype = Attr_float32;
-            break;
-        case NC_DOUBLE:
-            atype = Attr_float64;
-            break;
-        case NC_UBYTE:
-        {
-            atype = Attr_byte;
-        }
-           break;
-        case NC_USHORT:
-        {
-            if(isNetCDF4_ENHANCED())
-                atype = Attr_uint16;
-            else
-                atype = Attr_int32;
-        }
-           break;
-
-        case NC_UINT:
-        {
-            if(isNetCDF4_ENHANCED())
-                atype = Attr_uint32;
-            else
-                atype = Attr_int32;
-        }
-            break;
-        case NC_CHAR:
-        case NC_STRING:
-            atype = Attr_string;
-            break;
-        default:
-            ;
-    }
-    return atype;
-}
-
-// This function is only used for handling _FillValue. TODO: review all cases and generalize it.
-// Check FONcUtils:get_nc_type() for the datatype mapping. The limitation of the classic model
-// and DAP2 can be seen.
-D4AttributeType FONcArray::getD4AttrType(nc_type nct) {
-    BESDEBUG("fonc", "FONcArray getAttrType "<< endl);
-    D4AttributeType atype = attr_null_c;
-    switch (nct)
-    {
-
-        case NC_BYTE:
-        {
-            if(isNetCDF4_ENHANCED())
-                atype = attr_int8_c;
-            else
-                atype = attr_int16_c;
-        }
-            break;
-        case NC_SHORT:
-            atype = attr_int16_c;
-            break;
-        case NC_INT:
-            atype = attr_int32_c;
-            break;
-        case NC_FLOAT:
-            atype = attr_float32_c;
-            break;
-        case NC_DOUBLE:
-            atype = attr_float64_c;
-            break;
-        case NC_UBYTE:
-            atype = attr_byte_c;
-            break;
-        case NC_USHORT:
-        {
-            if(isNetCDF4_ENHANCED())
-                atype = attr_uint16_c;
-            else
-                atype = attr_int32_c;
-        }
-           break;
-
-        case NC_UINT:
-        {
-            if(isNetCDF4_ENHANCED())
-                atype = attr_uint32_c;
-            else
-                atype = attr_int32_c; //Overflow due to the limitation of classic model
-        }
-            break;
-
-        case NC_INT64:
-        {
-            if(isNetCDF4_ENHANCED())
-                atype = attr_int64_c;
-            else
-                atype = attr_int32_c; //Overflow due to the limitation of classic model
-        }
-            break;
-
-        case NC_UINT64:
-        {
-            if(isNetCDF4_ENHANCED())
-                atype = attr_uint64_c;
-            else
-                atype = attr_int32_c; //Overflow due to the limitation of classic model
-        }
-            break;
-
-        case NC_CHAR:
-        case NC_STRING:
-            atype = attr_str_c;
-            break;
-        default:
-            ;
-    }
-    return atype;
-}
-#endif

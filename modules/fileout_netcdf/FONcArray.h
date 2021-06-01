@@ -71,8 +71,8 @@ private:
     // The netcdf dimension ids for this array from DAP4
     std::vector<int> d4_dim_ids;
     std::vector<bool>use_d4_dim_ids;
-    std::vector<int> d4_rbs_nums;
-    //std::vector<int> d4_rbs_nums_visited;
+    std::vector<int> d4_rds_nums;
+    //std::vector<int> d4_rds_nums_visited;
 
     // The netcdf dimension ids for this array
     std::vector<int> d_dim_ids;
@@ -109,7 +109,7 @@ private:
 
 public:
     explicit FONcArray(libdap::BaseType *b);
-    FONcArray(libdap::BaseType *b,const std::vector<int>&dim_ids,const std::vector<bool>&use_dim_ids,const std::vector<int>&rbs_nums);
+    FONcArray(libdap::BaseType *b,const std::vector<int>&dim_ids,const std::vector<bool>&use_dim_ids,const std::vector<int>&rds_nums);
     virtual ~FONcArray() override;
 
     virtual void convert(std::vector<std::string> embed, bool is_dap4_group=false) override;
@@ -123,13 +123,13 @@ public:
     }
 
     virtual void dump(std::ostream &strm) const override;
+    // The below line is not necessary. Still keep it here for the future use.
+    // KY 2021-05-25
+#if 0
     virtual libdap::AttrType getAttrType(nc_type nct) override;
+#endif
 
     static std::vector<FONcDim *> Dimensions;
-#if 0
-    libdap::AttrType getAttrType(nc_type t);
-    D4AttributeType getD4AttrType(nc_type t);
-#endif
 };
 
 #endif // FONcArray_h_
