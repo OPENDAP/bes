@@ -69,24 +69,24 @@ jobs:
           make --jobs=$jobs
           make install
 
-      - name: checkout
-        uses: actions/checkout@v2
-        with:
-          submodules: 'recursive'
+     # - name: checkout
+     #   uses: actions/checkout@v2
+     #   with:
+     #     submodules: 'recursive'
 
-      - name: autoreconf
-        run: autoreconf --force --install --verbose
+     # - name: autoreconf
+     #   run: autoreconf --force --install --verbose
 
-      - name: configure
-        run: |
-          ./configure --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer | tee foo
-          grep -e "^checking for libdap .* yes$" foo  
+     # - name: configure
+     #   run: |
+     #     ./configure --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer | tee foo
+     #     grep -e "^checking for libdap .* yes$" foo  
 
-      - name: Make
-        run: make -j7
+     # - name: Make
+     #   run: make -j7
 
-      - name: Check
-        run: make -j7 check
+     # - name: Check
+     #   run: make -j7 check
 
-      - name: Install
-        run: make install
+     # - name: Install
+     #   run: make install
