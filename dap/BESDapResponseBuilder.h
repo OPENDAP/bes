@@ -26,7 +26,6 @@
 #define _response_builder_h
 
 #include <string>
-//#include <D4Group.h>
 
 #define DAP_PROTOCOL_VERSION "3.2"
 
@@ -189,6 +188,8 @@ public:
 	virtual void serialize_dap4_data(std::ostream &out, libdap::DMR &dmr, bool with_mime_headers = true);
 
 	virtual bool store_dap4_result(std::ostream &out, libdap::DMR &dmr);
+
+    unique_ptr<libdap::DMR> setup_dap4_intern_data(const BESResponseObject *obj, BESDataHandlerInterface &dhi);
 };
 
 
