@@ -77,6 +77,7 @@ using std::ostream;
 #define MODULE "util"
 #define prolog string("BESUtil::").append(__func__).append("() - ")
 
+// TODO - Set THROTTLE_FILE_TO_STREAM to zero to remove the throttling code from file_to_stream()
 #define THROTTLE_FILE_TO_STREAM 1
 #define FILE_TO_STREAM_THROTTLE_KEY "FTS.Throttle"
 
