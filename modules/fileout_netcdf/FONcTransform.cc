@@ -371,10 +371,6 @@ void FONcTransform::transform()
     BESUtil::conditional_timeout_cancel();
 
     BESDEBUG("fonc", "FONcTransmitter::send_data() - Reading data into DataDDS" << endl);
-    // FIXME Remove jhrg 5/30/21 : _dds = responseBuilder.intern_dap2_data(d_obj, *d_dhi);
-
-    // This object closes the file when it goes out of scope.
-    // FIXME Remove jhrg 5/30/21 : bes::TempFile temp_file(FONcRequestHandler::temp_dir + "/ncXXXXXX");
 
     FONcUtils::reset();
 
@@ -436,9 +432,6 @@ void FONcTransform::transform()
         }
     }
 
-    // FIXME Remove jhrg 5/30/21 : ResponseBuilder splits the CE, so use the DHI or make two calls and
-    //  glue the result together: responseBuilder.get_btp_func_ce() + " " + responseBuilder.get_ce()
-    //  jhrg 9/6/16
     updateHistoryAttribute(_dds, d_dhi->data[POST_CONSTRAINT]);
 
     // Open the file for writing
@@ -538,9 +531,6 @@ void FONcTransform::transform_dap4()
 
     BESUtil::conditional_timeout_cancel();
     BESDEBUG("fonc", "FONcTransform::transform_dap4() Reading data into DataDMR" << endl);
-
-    // FIXME: This can be removed. jheg 5/30/21
-    //  bes::TempFile temp_file(FONcRequestHandler::temp_dir + "/ncXXXXXX");
 
     FONcUtils::reset();
 
