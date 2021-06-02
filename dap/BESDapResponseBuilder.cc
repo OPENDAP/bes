@@ -1654,6 +1654,12 @@ bool BESDapResponseBuilder::store_dap4_result(ostream &out, libdap::DMR &dmr)
 libdap::DMR *
 BESDapResponseBuilder::intern_dap4_data(BESResponseObject *obj, BESDataHandlerInterface &dhi)
 {
+    // TODO Refactor this by taking the top section (down to 'HERE' below) and
+    //  making it a new method. Then: 1. use that in fonc code where this is now
+    //  called; amd 2. use that in this method. That way we keep this method
+    //  doing the same thing for other software that uses it and we avoid duplcation
+    //  of code. jhrg 6/2/21
+
     BESStopWatch sw;
     if (BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) sw.start(prolog + "Timer", "");
     BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() - BEGIN" << endl);
@@ -1712,6 +1718,9 @@ BESDapResponseBuilder::intern_dap4_data(BESResponseObject *obj, BESDataHandlerIn
         // Now use the results of running the functions for the remainder of the
         // send_data operation.
         dap4_process_ce_for_intern_data(function_result);
+        // FIXME Unless I'm mistaken, the 'function_result' DMR goes outof scope at the end
+        //  of this block and is deleted. I think function_result should be returned by this
+        //  method. jhrg 6/1/21
         root_grp = function_result.root();
     }
     else {
@@ -1720,10 +1729,7 @@ BESDapResponseBuilder::intern_dap4_data(BESResponseObject *obj, BESDataHandlerIn
         root_grp = dmr->root();
     }
 
-
-    // Iterate through the variables in the DataDDS and read
-    // in the data if the variable has the send flag set.
-    //D4Group* root_grp = dmr->root();
+    // TODO HERE
 
 #if 0
     for (D4Group::Vars_iter i = root_grp->var_begin(), e = root_grp->var_end(); i != e; ++i) {
@@ -1747,6 +1753,8 @@ BESDapResponseBuilder::intern_dap4_data(BESResponseObject *obj, BESDataHandlerIn
     }
     BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() - END"<< endl);
 #endif
+
+    intern_dap4_data_grp(root_grp);
 
     return dmr;
 }
