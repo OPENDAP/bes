@@ -75,7 +75,7 @@ string stare_sidecar_suffix = "_sidecar";
  * @brief Write a collection of STARE Matches to an ostream
  *
  * STARE matches is not a vector of stare_match objects. It's a self-contained
- * connection of vectors that holds a collection of STARE matches in a way that
+ * collection of vectors that holds a collection of STARE matches in a way that
  * can be dumped into libdap::Array instances easily and efficiently.
  *
  * @param out The ostream
@@ -150,6 +150,7 @@ extract_uint64_array(Array *var, vector<dods_uint64> &values) {
  * @param target_indices - stare values from a constraint expression
  * @param data_stare_indices - stare values being compared, retrieved from the sidecar file. These
  * are the index values that describe the coverage of the dataset.
+ * @return true if sny of the target indices appear in the dataset, otherwise false.
  */
 bool
 target_in_dataset(const vector<dods_uint64> &target_indices, const vector<dods_uint64> &data_stare_indices) {
@@ -182,6 +183,7 @@ target_in_dataset(const vector<dods_uint64> &target_indices, const vector<dods_u
  * @param all_target_matches If true this function counts every target index that
  * overlaps every dataset index. The default counts 1 for each datset index that matches _any_
  * target index.
+ * @return The number of indices common in both the target and dataset.
  */
 unsigned int
 count(const vector<dods_uint64> &target_indices, const vector<dods_uint64> &dataset_indices, bool all_target_matches /*= false*/) {
@@ -227,7 +229,9 @@ stare_subset_helper(const vector<dods_uint64> &target_indices, const vector<dods
         for (const dods_uint64 &j : target_indices) {
             if (cmpSpatial(i, j) != 0) {    // != 0 --> i is in j OR j is in i
                 subset->add(*x, *y, i, j);
-                // TODO Add a break call here? jhrg 6/17/20
+                // If i (the s-index from the dataset) is large, there might be
+                // many j's (the s-index from the target set) that are within i's
+                // spatial extent.
             }
         }
         ++x;
