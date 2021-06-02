@@ -419,7 +419,6 @@ void FONcTransform::transform()
     for (; vi != ve; vi++) {
         if ((*vi)->send_p()) {
             BaseType *v = *vi;
-            //v->intern_data(eval, *_dds);
 
             BESDEBUG("fonc", "FONcTransform::transform() - Converting variable '" << v->name() << "'" << endl);
 
@@ -537,6 +536,9 @@ void FONcTransform::transform_dap4()
     d_dhi->first_container();
 
     // TODO Replace responseBuilder.intern_dap4_data() below. jhrg 5/30/21
+    //  OR NOT, depenidng on the changes made to
+    //  ESDapResponseBuilder::intern_dap4_data(BESResponseObject *obj, BESDataHandlerInterface &dhi)
+    //  on 6/1/21 - jhrg
 #if 1
     BESDapResponseBuilder responseBuilder;
     _dmr = responseBuilder.intern_dap4_data(d_obj, *d_dhi);

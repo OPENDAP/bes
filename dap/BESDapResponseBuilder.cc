@@ -1654,9 +1654,15 @@ bool BESDapResponseBuilder::store_dap4_result(ostream &out, libdap::DMR &dmr)
 libdap::DMR *
 BESDapResponseBuilder::intern_dap4_data(BESResponseObject *obj, BESDataHandlerInterface &dhi)
 {
+    // TODO Refactor this by taking the top section (down to 'HERE' below) and
+    //  making it a new method. Then: 1. use that in fonc code where this is now
+    //  called; amd 2. use that in this method. That way we keep this method
+    //  doing the same thing for other software that uses it and we avoid duplcation
+    //  of code. jhrg 6/2/21
+
     BESStopWatch sw;
     if (BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) sw.start(prolog + "Timer", "");
-    BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() - BEGIN"<< endl);
+    BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() - BEGIN" << endl);
 
     dhi.first_container();
 
@@ -1678,9 +1684,9 @@ BESDapResponseBuilder::intern_dap4_data(BESResponseObject *obj, BESDataHandlerIn
     if (!bdmr) throw BESInternalFatalError("Expected a BESDMRResponse instance", __FILE__, __LINE__);
 
     DMR *dmr = bdmr->get_dmr();
-    
-    D4Group* root_grp=NULL;
-    BESDEBUG("dap", "BESDapResponseBuilder::dmr filename - END"<< dmr->filename() <<endl);
+
+    D4Group *root_grp = NULL;
+    BESDEBUG("dap", "BESDapResponseBuilder::dmr filename - END" << dmr->filename() << endl);
 
     // Set the correct context by following intern_dap2_data()
     set_dataset_name(dmr->filename());
@@ -1701,7 +1707,7 @@ BESDapResponseBuilder::intern_dap4_data(BESResponseObject *obj, BESDataHandlerIn
         // part of libdap, not the BES.
         if (!ServerFunctionsList::TheList())
             throw Error(
-                "The function expression could not be evaluated because there are no server functions defined on this server");
+                    "The function expression could not be evaluated because there are no server functions defined on this server");
 
         D4FunctionEvaluator parser(dmr, ServerFunctionsList::TheList());
         bool parse_ok = parser.parse(d_dap4function);
@@ -1712,30 +1718,30 @@ BESDapResponseBuilder::intern_dap4_data(BESResponseObject *obj, BESDataHandlerIn
         // Now use the results of running the functions for the remainder of the
         // send_data operation.
         dap4_process_ce_for_intern_data(function_result);
+        // FIXME Unless I'm mistaken, the 'function_result' DMR goes outof scope at the end
+        //  of this block and is deleted. I think function_result should be returned by this
+        //  method. jhrg 6/1/21
         root_grp = function_result.root();
     }
     else {
-        BESDEBUG("dap", "BESDapResponseBuilder:: going to the expression constraint. " <<endl);
+        BESDEBUG("dap", "BESDapResponseBuilder:: going to the expression constraint. " << endl);
         dap4_process_ce_for_intern_data(*dmr);
         root_grp = dmr->root();
     }
 
+    // TODO HERE
 
-    // Iterate through the variables in the DataDDS and read
-    // in the data if the variable has the send flag set.
-    //D4Group* root_grp = dmr->root();
-    
+#if 0
     for (D4Group::Vars_iter i = root_grp->var_begin(), e = root_grp->var_end(); i != e; ++i) {
         BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() - "<< (*i)->name() <<endl);
         if ((*i)->send_p()) {
             BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() Obtain data- "<< (*i)->name() <<endl);
-#if 0
+#if !NDEBUG
             D4Attributes *d4_attrs = (*i)->attributes();
             BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() number of attributes "<< d4_attrs <<endl);
             for (D4Attributes::D4AttributesIter ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end(); ii != ee; ++ii) {
-                         string name = (*ii)->name();
-                         BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() attribute name is "<<name <<endl);
-             }
+                BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() attribute name is "<<(*ii)->name() <<endl);
+            }
 #endif
             (*i)->intern_data();
         }
@@ -1746,6 +1752,9 @@ BESDapResponseBuilder::intern_dap4_data(BESResponseObject *obj, BESDataHandlerIn
         intern_dap4_data_grp(*gi);
     }
     BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() - END"<< endl);
+#endif
+
+    intern_dap4_data_grp(root_grp);
 
     return dmr;
 }
