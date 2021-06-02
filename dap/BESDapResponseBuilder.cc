@@ -1667,7 +1667,7 @@ BESDapResponseBuilder::intern_dap4_data(BESResponseObject *obj, BESDataHandlerIn
 }
 
 unique_ptr<DMR>
-BESDapResponseBuilder::setup_dap4_intern_data(const BESResponseObject *obj, BESDataHandlerInterface &dhi)
+BESDapResponseBuilder::setup_dap4_intern_data(BESResponseObject *obj, BESDataHandlerInterface &dhi)
 {
     dhi.first_container();
 

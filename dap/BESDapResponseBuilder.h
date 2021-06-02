@@ -26,6 +26,7 @@
 #define _response_builder_h
 
 #include <string>
+#include <memory>
 
 #define DAP_PROTOCOL_VERSION "3.2"
 
@@ -189,7 +190,7 @@ public:
 
 	virtual bool store_dap4_result(std::ostream &out, libdap::DMR &dmr);
 
-    unique_ptr<libdap::DMR> setup_dap4_intern_data(const BESResponseObject *obj, BESDataHandlerInterface &dhi);
+    unique_ptr<libdap::DMR> setup_dap4_intern_data(BESResponseObject *obj, BESDataHandlerInterface &dhi);
 };
 
 
