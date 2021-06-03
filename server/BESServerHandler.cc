@@ -58,13 +58,7 @@
 #include "BESDebug.h"
 #include "BESStopWatch.h"
 
-using std::ostringstream;
-using std::endl;
-using std::cerr;
-using std::flush;
-using std::map;
-using std::ostream;
-using std::string;
+using namespace std;
 
 #define MODULE "server"
 #define prolog std::string("BESServerHandler::").append(__func__).append("() - ")
@@ -193,8 +187,8 @@ void BESServerHandler::execute(Connection *c)
         ostream my_ostrm(&fds);
 
 #if !NDEBUG
-        std::stringstream msg;
-        msg << prolog << "Using ostream: " << (void *) &my_ostrm << " cout: " << (void *) &std::cout << endl;
+        stringstream msg;
+        msg << prolog << "Using ostream: " << (void *) &my_ostrm << " cout: " << (void *) &cout << endl;
         BESDEBUG(MODULE,  msg.str());
         INFO_LOG( msg.str());
 #endif
