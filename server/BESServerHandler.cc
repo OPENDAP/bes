@@ -58,6 +58,7 @@
 #include "BESDebug.h"
 #include "BESStopWatch.h"
 
+// TODO - Set NO_COUT to zero to return to using the cout stream for data transmission to the OLFS
 #define NO_COUT 1
 
 using std::cout;
