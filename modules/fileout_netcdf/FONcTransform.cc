@@ -575,7 +575,8 @@ void FONcTransform::transform_dap4()
         // Generate a list of the groups in the final netCDF file. 
         // The attributes of these groups should be included.
         gen_included_grp_list(root_grp);
-#if 0
+
+#if !NDEBUG
         for (std::set<string>::iterator it=_included_grp_names.begin(); it!=_included_grp_names.end(); ++it)
             BESDEBUG("fonc","included group list name is: "<<*it<<endl);
 #endif
@@ -584,7 +585,7 @@ void FONcTransform::transform_dap4()
         check_and_obtain_dimensions(root_grp, true);
 
         // Don't remove the following code, they are for debugging.
-#if 0
+#if !NDEBUG
         map<string,unsigned long>:: iterator it;
 
         for(it=GFQN_dimname_to_dimsize.begin();it!=GFQN_dimname_to_dimsize.end();++it) {
@@ -631,7 +632,7 @@ void FONcTransform::transform_dap4()
                 root_d4_dimname_list.push_back(d4_temp_dimname);
         }
 
-#if 0
+#if !NDEBUG
         for(unsigned int i = 0; i <root_d4_dimname_list.size();i++)
             BESDEBUG("fonc", "root_d4 dim name is: "<<root_d4_dimname_list[i]<<endl);
 #endif
@@ -660,7 +661,7 @@ void FONcTransform::transform_dap4()
             }
         }
 
-#if 0
+#if !NDEBUG
         for(unsigned int i = 0; i <root_dim_suffix_nums.size();i++)
             BESDEBUG("fonc", "root_dim_suffix_nums: "<<root_dim_suffix_nums[i]<<endl);
 
@@ -727,7 +728,7 @@ void FONcTransform::transform_dap4_no_group()
         }
     }
 
-#if 0
+#if !NDEBUG
     if(root_grp->grp_begin() == root_grp->grp_end()) 
         BESDEBUG("fonc", "FONcTransform::transform_dap4() - No group  " <<  endl);
     else 
@@ -790,7 +791,7 @@ void FONcTransform::transform_dap4_no_group()
 
             BESDEBUG("fonc",
                      "FONcTransform::transform_dap4_no_group() handle GLOBAL DAP4 attributes " << d4_attrs << endl);
-#if 0
+#if !NDEBUG
             for (D4Attributes::D4AttributesIter ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end(); ii != ee; ++ii) {
                 string name = (*ii)->name();
                 BESDEBUG("fonc", "FONcTransform::transform_dap4() GLOBAL attribute name is "<<name <<endl);
@@ -889,20 +890,14 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
 
     D4Dimensions *grp_dims = grp->dims();
     for (D4Dimensions::D4DimensionsIter di = grp_dims->dim_begin(), de = grp_dims->dim_end(); di != de; ++di) {
-#if 0
+
+#if !NDEBUG
         BESDEBUG("fonc", "transform_dap4() - check dimensions"<< endl);
         BESDEBUG("fonc", "transform_dap4() - dim name is: "<<(*di)->name()<<endl);
         BESDEBUG("fonc", "transform_dap4() - dim size is: "<<(*di)->size()<<endl);
         BESDEBUG("fonc", "transform_dap4() - fully_qualfied_dim name is: "<<(*di)->fully_qualified_name()<<endl);
 #endif
 
-#if 0
-        unsigned long dimsize = (*di)->size();
-        if((*di)->constrained()) {
-            dimsize = ((*di)->c_stop() -(*di)->c_start())/(*di)->c_stride() +1;
-
-        }
-#endif
         unsigned long dimsize = (*di)->size();
 
         // The dimension size may need to be updated because of the expression constraint.
@@ -947,7 +942,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
         }
     }
 
-#if 0
+#if !NDEBUG
     if(grp->grp_begin() == grp->grp_end()) 
         BESDEBUG("fonc", "FONcTransform::transform_dap4() - No group  " <<  endl);
     else 
@@ -1103,7 +1098,8 @@ void FONcTransform::check_and_obtain_dimensions_internal(D4Group *grp)
     D4Dimensions *grp_dims = grp->dims();
     if (grp_dims) {
         for (D4Dimensions::D4DimensionsIter di = grp_dims->dim_begin(), de = grp_dims->dim_end(); di != de; ++di) {
-#if 0
+
+#if !NDEBUG
             BESDEBUG("fonc", "transform_dap4() - check dimensions"<< endl);
             BESDEBUG("fonc", "transform_dap4() - dim name is: "<<(*di)->name()<<endl);
             BESDEBUG("fonc", "transform_dap4() - dim size is: "<<(*di)->size()<<endl);
@@ -1138,13 +1134,10 @@ void FONcTransform::check_and_obtain_dimensions_internal(D4Group *grp)
                             BESDEBUG("fonc", "transform_dap4() check dim- fully_qualfied_dim name is: "
                                     << d4dim->fully_qualified_name() << endl);
 
-#if 0
-                            unsigned long dimsize = d4dim->size();
-                            if(d4dim->constrained()) 
-                                dimsize = (d4dim->c_stop() -d4dim->c_start())/d4dim->c_stride() +1;
-                            BESDEBUG("fonc", "transform_dap4() check dim- final dim size is: "<<d4dim->size()<<endl);
-#endif
                             unsigned long dimsize = t_a->dimension_size(dim_i, true);
+#if !NDEBUG
+                            BESDEBUG("fonc", "transform_dap4() check dim- final dim size is: "<< dimsize << endl);
+#endif
                             pair<map<string, unsigned long>::iterator, bool> ret_it;
                             ret_it = VFQN_dimname_to_dimsize.insert(
                                     pair<string, unsigned long>(d4dim->fully_qualified_name(), dimsize));
@@ -1164,7 +1157,7 @@ void FONcTransform::check_and_obtain_dimensions_internal(D4Group *grp)
         }
     }
 
-#if 0
+#if !NDEBUG
     map<string,unsigned long>:: iterator it;
     for(it=GFQN_dimname_to_dimsize.begin();it!=GFQN_dimname_to_dimsize.end();++it) {
         BESDEBUG("fonc", "GFQN dim name is: "<<it->first<<endl);

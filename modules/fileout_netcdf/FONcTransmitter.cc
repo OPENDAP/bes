@@ -299,26 +299,6 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
 
     try { // Expanded try block so all DAP errors are caught. ndp 12/23/2015
 
-#if 0
-        BESDapResponseBuilder responseBuilder;
-        // Use the DDS from the ResponseObject along with the parameters
-        // from the DataHandlerInterface to load the DDS with values.
-        // Note that the BESResponseObject will manage the loaded_dds object's
-        // memory. Make this a shared_ptr<>. jhrg 9/6/16
-
-        // Now that we are ready to start reading the response data we
-        // cancel any pending timeout alarm according to the configuration.
-        BESUtil::conditional_timeout_cancel();
-
-        BESDEBUG(MODULE,  prolog << "Reading data into DataDDS" << endl);
-        DDS *loaded_dds = responseBuilder.intern_dap2_data(obj, dhi);
-
-        // ResponseBuilder splits the CE, so use the DHI or make two calls and
-        // glue the result together: responseBuilder.get_btp_func_ce() + " " + responseBuilder.get_ce()
-        // jhrg 9/6/16
-        updateHistoryAttribute(loaded_dds, dhi.data[POST_CONSTRAINT]);
-#endif
-
         // This object closes the file when it goes out of scope.
         bes::TempFile temp_file(FONcRequestHandler::temp_dir + "/ncXXXXXX");
 
@@ -374,23 +354,6 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
     BESDEBUG(MODULE,  prolog << "BEGIN" << endl);
 
     try { // Expanded try block so all DAP errors are caught. ndp 12/23/2015
-
-#if 0
-        BESDapResponseBuilder responseBuilder;
-        // Use the DDS from the ResponseObject along with the parameters
-        // from the DataHandlerInterface to load the DDS with values.
-        // Note that the BESResponseObject will manage the loaded_dds object's
-        // memory. Make this a shared_ptr<>. jhrg 9/6/16
-
-        // Now that we are ready to start reading the response data we
-        // cancel any pending timeout alarm according to the configuration.
-        BESUtil::conditional_timeout_cancel();
-
-        BESDEBUG(MODULE,  prolog << "Reading data into DMR" << endl);
-        //DDS *loaded_dds = responseBuilder.intern_dap2_data(obj, dhi);
-        DMR *loaded_dmr = responseBuilder.intern_dap4_data(obj, dhi);
-        updateHistoryAttribute(loaded_dmr, dhi.data[POST_CONSTRAINT]);
-#endif
 
         // This object closes the file when it goes out of scope.
         bes::TempFile temp_file(FONcRequestHandler::temp_dir + "/ncXXXXXX");

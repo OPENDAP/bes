@@ -1712,11 +1712,6 @@ BESDapResponseBuilder::setup_dap4_intern_data(BESResponseObject *obj, BESDataHan
     }
 }
 
-// TODO Replace the two loops above with a call to this method, e.g.,
-//  intern_dap4_data_grp(dmr->root());
-//  where the conditional assigns to 'root_grp.'
-//  jhrg 5/30/21
-
 void BESDapResponseBuilder::intern_dap4_data_grp(libdap::D4Group* grp) {
     for (D4Group::Vars_iter i = grp->var_begin(), e = grp->var_end(); i != e; ++i) {
         BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() - "<< (*i)->name() <<endl);
