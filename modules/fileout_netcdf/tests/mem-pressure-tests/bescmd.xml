@@ -9,7 +9,11 @@
   <bes:setContainer name="catalogContainer" space="catalog">/data/20020602090000-JPL-L4_GHRSST-SSTfnd-MUR-GLOB-v02.0-fv04.1.nc</bes:setContainer>
   <bes:define name="d1" space="default">
     <bes:container name="catalogContainer">
+<<<<<<< HEAD
+      <constraint>time,lat,lon,analysed_sst,analysis_error,mask,sea_ice_fraction</constraint>
+=======
       <!-- constraint>time,lat,lon,analysed_sst,analysis_error,mask,sea_ice_fraction</constraint -->
+>>>>>>> ef77f4b4d8141aab71ed050f033fb65b6f0d68ba
     </bes:container>
   </bes:define>
   <bes:get type="dods" definition="d1" returnAs="netcdf-4" />
