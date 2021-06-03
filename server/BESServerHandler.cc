@@ -194,7 +194,7 @@ void BESServerHandler::execute(Connection *c)
 
 #if !NDEBUG
         std::stringstream msg;
-        msg << prolog << "Using ostream: " << (void *) &my_ostrm << " cout: " << (void *) &cout << endl;
+        msg << prolog << "Using ostream: " << (void *) &my_ostrm << " cout: " << (void *) &std::cout << endl;
         BESDEBUG(MODULE,  msg.str());
         INFO_LOG( msg.str());
 #endif
