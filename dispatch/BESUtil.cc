@@ -77,10 +77,6 @@ using std::ostream;
 #define MODULE "util"
 #define prolog string("BESUtil::").append(__func__).append("() - ")
 
-// TODO - Set THROTTLE_FILE_TO_STREAM to zero to remove the throttling code from file_to_stream()
-#define THROTTLE_FILE_TO_STREAM 0
-#define FILE_TO_STREAM_THROTTLE_KEY "FTS.Throttle"
-
 const string BES_KEY_TIMEOUT_CANCEL = "BES.CancelTimeoutOnSend";
 
 /** @brief Generate an HTTP 1.0 response header for a text document.
@@ -1241,17 +1237,6 @@ void BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm)
         throw BESInternalError(msg.str(),__FILE__,__LINE__);
     }
 
-#if THROTTLE_FILE_TO_STREAM
-    // Throttle the response based on configuration value.
-    long long int throttle=0;
-    string throttle_str;
-    bool found_it;
-    TheBESKeys::TheKeys()->get_value(FILE_TO_STREAM_THROTTLE_KEY,throttle_str,found_it);
-    if(found_it){
-        throttle = stol(throttle_str);
-    }
-#endif
-
     //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     // This is where the file is copied.
     uint64_t tcount = 0;
@@ -1259,9 +1244,6 @@ void BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm)
         i_stream.read(&rbuffer[0], OUTPUT_FILE_BLOCK_SIZE);      // Read at most n bytes into
         o_strm.write(&rbuffer[0], i_stream.gcount()); // buf, then write the buf to
         tcount += i_stream.gcount();
-#if THROTTLE_FILE_TO_STREAM
-        std::this_thread::sleep_for(std::chrono::milliseconds(throttle));
-#endif
     }
     o_strm.flush();
 
