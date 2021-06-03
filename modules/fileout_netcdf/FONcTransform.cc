@@ -527,7 +527,6 @@ void FONcTransform::transform()
  */
 void FONcTransform::transform_dap4()
 {
-
     BESUtil::conditional_timeout_cancel();
     BESDEBUG("fonc", "FONcTransform::transform_dap4() Reading data into DataDMR" << endl);
 
@@ -535,19 +534,8 @@ void FONcTransform::transform_dap4()
 
     d_dhi->first_container();
 
-    // TODO Replace responseBuilder.intern_dap4_data() below. jhrg 5/30/21
-    //  OR NOT, depenidng on the changes made to
-    //  ESDapResponseBuilder::intern_dap4_data(BESResponseObject *obj, BESDataHandlerInterface &dhi)
-    //  on 6/1/21 - jhrg
-#if 1
     BESDapResponseBuilder responseBuilder;
-    _dmr = responseBuilder.intern_dap4_data(d_obj, *d_dhi);
-#else
-    BESDMRResponse *bdmr = dynamic_cast<BESDMRResponse *>(d_obj);
-    if (!bdmr) throw BESInternalFatalError("Expected a BESDataDDSResponse instance", __FILE__, __LINE__);
-
-    _dmr = bdmr->get_dmr();
-#endif
+    _dmr = responseBuilder.setup_dap4_intern_data(d_obj, *d_dhi).release();
 
     BESDapResponseBuilder besDRB;
 
@@ -556,10 +544,6 @@ void FONcTransform::transform_dap4()
     // Added set of DAP4 fields. jhrg 5/30/21
     besDRB.set_dap4ce(d_dhi->data[DAP4_CONSTRAINT]);
     besDRB.set_dap4function(d_dhi->data[DAP4_FUNCTION]);
-
-#if 0
-    besDRB.set_ce(d_dhi->data[POST_CONSTRAINT]);
-#endif
 
     besDRB.set_async_accepted(d_dhi->data[ASYNC]);
     besDRB.set_store_result(d_dhi->data[STORE_RESULT]);

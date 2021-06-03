@@ -1,0 +1,10 @@
+
+To run these tests use:
+
+time besstandalone -d cerr,fonc -c bes.nc4.conf -i mem-pressure-tests/bescmd-dap4.xml > ghrsst_1_dap4.nc4
+
+in the tests directory (or adjust the paths and run elsewhere).
+
+To see the memory profile, use the OSX Activity Monitor or some other memory
+profiling tool tat shows use over time.
+
