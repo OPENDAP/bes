@@ -396,24 +396,3 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
     BESDEBUG(MODULE,  prolog << "END  Transmitted as netcdf" << endl);
 }
 
-#if 0  // Moved to BESUtil.cc
-/** @brief stream the temporary netcdf file back to the requester
- *
- * Streams the temporary netcdf file specified by filename to the specified
- * C++ ostream
- *
- * @param filename The name of the file to stream back to the requester
- * @param strm C++ ostream to write the contents of the file to
- * @throws BESInternalError if problem opening the file
- */
-void FONcTransmitter::write_temp_file_to_stream(int fd, ostream &strm) //, const string &filename, const string &ncVersion)
-{
-    char block[OUTPUT_FILE_BLOCK_SIZE];
-
-    int nbytes = read(fd, block, sizeof block);
-    while (nbytes > 0) {
-        strm.write(block, nbytes /*os.gcount()*/);
-        nbytes = read(fd, block, sizeof block);
-    }
-}
-#endif
