@@ -400,11 +400,13 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
         // Call the transform function for DAP4.
         ft.transform_dap4();
 
+#if !NDEBUG
         stringstream msg;
         ostream &strm = dhi.get_output_stream();
         msg << prolog << "Using ostream: " << (void *) &strm << endl;
         BESDEBUG(MODULE,  msg.str());
         INFO_LOG( msg.str());
+#endif
 
         if (!strm) throw BESInternalError("Output stream is not set, can not return as", __FILE__, __LINE__);
 
