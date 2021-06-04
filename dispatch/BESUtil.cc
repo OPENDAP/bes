@@ -983,7 +983,7 @@ void BESUtil::conditional_timeout_cancel()
     string value;
 
     TheBESKeys::TheKeys()->get_value(BES_KEY_TIMEOUT_CANCEL, value, found);
-    if (true == found) {
+    if (found) {
         value = BESUtil::lowercase(value);
         if ( value == false_str || value == no_str) cancel_timeout_on_send = false;
     }
@@ -1277,7 +1277,8 @@ void BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm)
         auto crntpos = o_strm.tellp();
         msg << " current_position: " << crntpos << endl;
         BESDEBUG(MODULE, msg.str());
-        INFO_LOG(msg.str());
+        ERROR_LOG(msg.str());
+        // TODO Should we throw an exception here? Maybe BESInternalFatalError ??
     }
 
     msg.str(prolog);
