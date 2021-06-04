@@ -47,6 +47,8 @@
 #include <fstream>
 #include <exception>
 #include <sstream>      // std::stringstream
+#include <thread>
+#include <future>
 #include <libgen.h>
 
 #include <D4Group.h>
@@ -291,18 +293,44 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
         bes::TempFile temp_file(FONcRequestHandler::temp_dir + "/ncXXXXXX");
 
         BESDEBUG(MODULE,  prolog << "Building response file " << temp_file.get_name() << endl);
-        // Note that 'RETURN_CMD' is the same as the string that determines the file type:
-        // netcdf 3 or netcdf 4. Hack. jhrg 9/7/16
-        FONcTransform ft(obj, &dhi, temp_file.get_name(), dhi.data[RETURN_CMD]);
-        ft.transform();
 
         ostream &strm = dhi.get_output_stream();
         if (!strm) throw BESInternalError("Output stream is not set, can not return as", __FILE__, __LINE__);
 
         BESDEBUG(MODULE,  prolog << "Transmitting temp file " << temp_file.get_name() << endl);
 
+        // Note that 'RETURN_CMD' is the same as the string that determines the file type:
+        // netcdf 3 or netcdf 4. Hack. jhrg 9/7/16
+        FONcTransform ft(obj, &dhi, temp_file.get_name(), dhi.data[RETURN_CMD]);
+
+        atomic<bool> file_write_done(false);
+
+#if 0
+        std::packaged_task<uint64_t(const string &, atomic<bool>&, ostream&)> task(BESUtil::file_to_stream_task);
+        std::future<uint64_t> result = task.get_future();
+        task(temp_file.get_name(), file_write_done, strm);
+#endif
+
+        future<uint64_t> result = async(launch::async, &BESUtil::file_to_stream_task, temp_file.get_name(),
+                                        std::ref(file_write_done), std::ref(strm));
+
+        ft.transform();
+
+        file_write_done = true;
+
+        uint64_t tcount = result.get();
+
         // FONcTransmitter::write_temp_file_to_stream(temp_file.get_fd(), strm); //, loaded_dds->filename(), ncVersion);
-        BESUtil::file_to_stream(temp_file.get_name(),strm);
+        // FIXME BESUtil::file_to_stream(temp_file.get_name(),strm);
+#if 0
+        uint64_t tcount = BESUtil::file_to_stream_task(temp_file.get_name(), file_write_done, strm);
+// #else
+        std::packaged_task<uint64_t(const string &, atomic<bool>&, ostream&)> task(BESUtil::file_to_stream_task);
+        std::future<uint64_t> result = task.get_future();
+        task(temp_file.get_name(), file_write_done, strm);
+        uint64_t tcount = result.get();
+#endif
+        BESDEBUG(MODULE,  prolog << "NetCDF file bytes written " << tcount << endl);
     }
     catch (Error &e) {
         throw BESDapError("Failed to read data: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);

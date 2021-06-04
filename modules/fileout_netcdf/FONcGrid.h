@@ -63,18 +63,20 @@ private:
     libdap::Grid * _grid;
     FONcArray * _arr;
     vector<FONcMap *> _maps;
+
 public:
-    FONcGrid(libdap::BaseType *b);
+    explicit FONcGrid(libdap::BaseType *b);
     virtual ~FONcGrid();
 
-    virtual void convert(vector<string> embed,bool is_dap4_group=false);
-    virtual void define(int ncid);
-    virtual void write(int ncid);
+    virtual void convert(vector<string> embed, bool is_dap4_group = false) override;
+    virtual void define(int ncid) override;
+    virtual void write(int ncid) override;
 
     virtual string name();
 
-    virtual void dump(ostream &strm) const;
+    virtual void dump(ostream &strm) const override;
 
+    // TODO This should be moved to the FONcUtils code. jhrg 6/4/21
     static vector<FONcMap *> Maps;
     static FONcMap * InMaps(libdap::Array *array);
     static bool InGrid;

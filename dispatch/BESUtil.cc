@@ -34,6 +34,8 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <fcntl.h>
+
 #include <thread>         // std::this_thread::sleep_for
 #include <chrono>         // std::chrono::seconds
 #include <string>     // std::string, std::stol
@@ -1287,4 +1289,88 @@ void BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm)
     INFO_LOG(msg.str());
 }
 
+/**
+ * *brief child thread/task to stream a netCDF file as it is built
+ * @param file_name
+ * @param o_strm
+ */
+uint64_t BESUtil::file_to_stream_task(const std::string &file_name, std::atomic<bool> &file_write_done, std::ostream &o_strm) {
+    stringstream msg;
+    msg << prolog << "Using ostream: " << (void *) &o_strm << " cout: " << (void *) &cout << endl;
+    BESDEBUG(MODULE, msg.str());
+    INFO_LOG(msg.str());
 
+    char rbuffer[OUTPUT_FILE_BLOCK_SIZE];
+    // std::ifstream i_stream(file_name, std::ios_base::in | std::ios_base::binary);  // Use binary mode so we can
+
+    //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    // This is where the file is copied.
+    BESDEBUG(MODULE, "Starting transfer" << endl);
+    uint64_t tcount = 0;
+    int fd = open(file_name.c_str(), O_RDONLY | O_NONBLOCK);
+    int eof = false;
+    while (/*!i_stream.bad() && !i_stream.fail() &&*/ o_strm.good()) {
+        if (file_write_done && eof) {
+            BESDEBUG(MODULE, "breaking out of loop" << endl);
+            break;
+        }
+        else {
+            // i_stream.read(&rbuffer[0], OUTPUT_FILE_BLOCK_SIZE);      // Read at most n bytes into
+
+            int status = read(fd, &rbuffer[0], OUTPUT_FILE_BLOCK_SIZE);
+            if (status == 0) {
+                eof = true;
+            }
+            else if (status == -1) {
+                BESDEBUG(MODULE, "read() call error: " << errno << endl);
+            }
+
+            o_strm.write(&rbuffer[0], status); // buf, then write the buf to
+            tcount += status;
+            BESDEBUG(MODULE, "transfer bytes " << tcount << endl);
+        }
+    }
+
+    close(fd);
+    o_strm.flush();
+#if 0
+    // fail() is true if failbit || badbit got set, but does not consider eofbit
+    if(i_stream.fail() && !i_stream.eof()){
+        stringstream msg;
+        msg << prolog << "There was an ifstream error when reading from: " << file_name;
+        ios_state_msg(i_stream, msg);
+        msg << " last_lap: " << i_stream.gcount() << " bytes";
+        msg << " total_read: " << tcount << " bytes";
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+    }
+
+    // If we're not at the eof of the input stream then we have failed.
+    if (!i_stream.eof()){
+        stringstream msg;
+        msg << prolog << "Failed to reach EOF on source file: " << file_name;
+        ios_state_msg(i_stream, msg);
+        msg << " last_lap: " << i_stream.gcount() << " bytes";
+        msg << " total_read: " << tcount << " bytes";
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+    }
+#endif
+    // And if something went wrong on the output stream we have failed.
+    if(!o_strm.good()){
+        stringstream msg;
+        msg << prolog << "There was an ostream error during transmit. Transmitted " << tcount  << " bytes.";
+        ios_state_msg(o_strm, msg);
+        auto crntpos = o_strm.tellp();
+        msg << " current_position: " << crntpos << endl;
+        BESDEBUG(MODULE, msg.str());
+        INFO_LOG(msg.str());
+    }
+
+    msg.str(prolog);
+    msg << "Sent "<< tcount << " bytes from file '" << file_name<< "'. " << endl;
+    BESDEBUG(MODULE,msg.str());
+    INFO_LOG(msg.str());
+
+    return tcount;
+}
