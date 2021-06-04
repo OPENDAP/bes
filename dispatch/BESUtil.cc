@@ -1305,6 +1305,7 @@ uint64_t BESUtil::file_to_stream_task(const std::string &file_name, std::atomic<
 
     //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     // This is where the file is copied.
+    sleep(1);
     BESDEBUG(MODULE, "Starting transfer" << endl);
     uint64_t tcount = 0;
     int fd = open(file_name.c_str(), O_RDONLY | O_NONBLOCK);
