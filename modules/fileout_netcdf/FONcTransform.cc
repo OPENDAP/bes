@@ -376,7 +376,7 @@ void FONcTransform::transform()
 
     d_dhi->first_container();
 
-    BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *>(d_obj);
+    auto bdds = dynamic_cast<BESDataDDSResponse *>(d_obj);
     if (!bdds) throw BESInternalFatalError("Expected a BESDataDDSResponse instance", __FILE__, __LINE__);
 
     _dds = bdds->get_dds();
@@ -414,16 +414,12 @@ void FONcTransform::transform()
     // variables, arrays, shared dimensions, grids, common maps,
     // embedded structures. It only grabs the variables that are to be
     // sent.
-    DDS::Vars_iter vi = _dds->var_begin();
-    DDS::Vars_iter ve = _dds->var_end();
-    for (; vi != ve; vi++) {
+    for (auto vi = _dds->var_begin(), ve = _dds->var_end(); vi != ve; vi++) {
         if ((*vi)->send_p()) {
-            BaseType *v = *vi;
+            BESDEBUG("fonc", "FONcTransform::transform() - Converting variable '" << (*vi)->name() << "'" << endl);
 
-            BESDEBUG("fonc", "FONcTransform::transform() - Converting variable '" << v->name() << "'" << endl);
-
-            // This is a factory class call, and 'fg' is specialized for 'v'
-            FONcBaseType *fb = FONcUtils::convert(v, FONcTransform::_returnAs, FONcRequestHandler::classic_model);
+            // This is a factory class call, and 'fg' is specialized for '*vi'
+            FONcBaseType *fb = FONcUtils::convert((*vi), FONcTransform::_returnAs, FONcRequestHandler::classic_model);
 
             _fonc_vars.push_back(fb);
             vector<string> embed;
@@ -464,10 +460,7 @@ void FONcTransform::transform()
         // For each converted FONc object, call define on it to define
         // that object to the netcdf file. This also adds the attributes
         // for the variables to the netcdf file
-        vector<FONcBaseType *>::iterator i = _fonc_vars.begin();
-        vector<FONcBaseType *>::iterator e = _fonc_vars.end();
-        for (; i != e; i++) {
-            FONcBaseType *fbt = *i;
+        for (FONcBaseType *fbt: _fonc_vars) {
             BESDEBUG("fonc", "FONcTransform::transform() - Defining variable:  " << fbt->name() << endl);
             fbt->define(_ncid);
         }
@@ -492,21 +485,7 @@ void FONcTransform::transform()
             FONcUtils::handle_error(stax, "File out netcdf, unable to end the define mode: " + _localfile, __FILE__,
                                     __LINE__);
         }
-#if 0
-        // Write everything out
-        i = _fonc_vars.begin();
-        e = _fonc_vars.end();
-        for (; i != e; i++) {
-            FONcBaseType *fbt = *i;
-            BESDEBUG("fonc", "FONcTransform::transform() - Writing data for variable:  " << fbt->name() << endl);
-
-            fbt->set_dds(_dds);
-            fbt->set_eval(&eval);
-
-            fbt->write(_ncid);
-        }
-#endif
-        for (FONcBaseType *fbt: _fonc_vars) {
+       for (FONcBaseType *fbt: _fonc_vars) {
             BESDEBUG("fonc", "FONcTransform::transform() - Writing data for variable:  " << fbt->name() << endl);
 
             fbt->set_dds(_dds);
