@@ -1717,14 +1717,6 @@ void BESDapResponseBuilder::intern_dap4_data_grp(libdap::D4Group* grp) {
         BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() - "<< (*i)->name() <<endl);
         if ((*i)->send_p()) {
             BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() Obtain data- "<< (*i)->name() <<endl);
-#if 0
-            D4Attributes*d4_attrs = (*i)->attributes();
-            BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() number of attributes "<< d4_attrs <<endl);
-            for (D4Attributes::D4AttributesIter ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end(); ii != ee; ++ii) {
-                         string name = (*ii)->name();
-                         BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() attribute name is "<<name <<endl);
-             }
-#endif
             (*i)->intern_data();
         }
     }

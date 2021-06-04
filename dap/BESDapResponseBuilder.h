@@ -212,9 +212,7 @@ public:
 
     virtual bool store_dap4_result(std::ostream &out, libdap::DMR &dmr);
 
-
     std::unique_ptr<libdap::DMR> setup_dap4_intern_data(BESResponseObject *obj, BESDataHandlerInterface &dhi);
-
 };
 
 

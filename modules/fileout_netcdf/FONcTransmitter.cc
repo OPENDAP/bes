@@ -110,27 +110,15 @@ FONcTransmitter::FONcTransmitter() :
 }
 
 /**
- * Hack to ensure the file descriptor for the temporary file is closed.
- */
-struct wrap_temp_descriptor {
-    int d_fd;
-    wrap_temp_descriptor(int fd) : d_fd(fd) {}
-    ~wrap_temp_descriptor() { close(d_fd); }
-};
-
-
-/**
- * Creates the "history" text appended to source attribute "history".
- * We add:
- *  - Sub-setting information if any
- *  - SSFunction invocations
- *  - ResourceID? URL?
- *  - JSON?
- * @param request_url
+ * @brief Build a history entry. Used only if the cf_history_context is not set.
+ *
+ * @param request_url The request URL to add to the history value
+ * @return A history value string. The caller must actually add this to a 'history'
+ * attribute, etc.
  */
 string create_history_txt(const string &request_url)
 {
-    // This code will be used only when the 'cf_histroy_context' is not set,
+    // This code will be used only when the 'cf_history_context' is not set,
     // which should be never in an operating server. However, when we are
     // testing, often only the besstandalone code is running and the existing
     // baselines don't set the context, so we have this. It must do something
