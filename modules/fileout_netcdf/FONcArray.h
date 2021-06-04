@@ -81,7 +81,7 @@ private:
     std::vector<size_t> d_dim_sizes;
     // If string data, we need to do some comparison, so instead of
     // reading it more than once, read it once and save here
-    std::vector<std::string> d_str_data;
+    // FIXME std::vector<std::string> d_str_data;
 
     // If the array is already a map in a grid, then we don't want to
     // define it or write it.
