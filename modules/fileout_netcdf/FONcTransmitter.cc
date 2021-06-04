@@ -303,6 +303,8 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
         // netcdf 3 or netcdf 4. Hack. jhrg 9/7/16
         FONcTransform ft(obj, &dhi, temp_file.get_name(), dhi.data[RETURN_CMD]);
 
+        // This is used to signal the BESUtil::file_to_stream_task() this code is done
+        // writing to the file. WIP jhrg 6/4/21
         atomic<bool> file_write_done(false);
 
 #if 0
@@ -315,25 +317,38 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
         task(temp_file.get_name(), file_write_done, strm);
 #endif
 
+#define TOGGLE_TASK 1
+        // TOGGLE_TASK 1 besstandalone -c bes.nc4.conf -i mem-pressure-tests/bescmd.xml > tmp2.nc4
+        //      151.13s user 8.75s system 98% cpu 2:41.69 total
+        // TOGGLE_TASK 0 besstandalone -c bes.nc4.conf -i mem-pressure-tests/bescmd.xml > tmp2.nc4
+        //      154.71s user 8.99s system 99% cpu 2:45.27 total
+        // TOGGLE_TASK 0 as above, but using BESUtil::file_to_stream(temp_file.get_name(), strm);
+        // and not ESUtil::file_to_stream_task(temp_file.get_name(), file_write_done, strm);
+        // 148.61s user 7.54s system 99% cpu 2:36.35 total
+#if TOGGLE_TASK
         // This code works without the sleep(1) hack in BESUtil::file_to_stream_task().
         // Because it is marked as deferred, the task does not start until the future's
         // get() method is run, after transform() has written all the data. jhrg 6/4/21
         future<uint64_t> result = async(launch::deferred, &BESUtil::file_to_stream_task, temp_file.get_name(),
                                         std::ref(file_write_done), std::ref(strm));
-
+#endif
         ft.transform();
 
         file_write_done = true;
 
+#if TOGGLE_TASK
         uint64_t tcount = result.get();
-
+#endif
         // original call before the 'task' hack was added:
         // BESUtil::file_to_stream(temp_file.get_name(),strm);
         // jhrg 6/4/21
-#if 0
+
+#if !TOGGLE_TASK
         // The task can be called like this right here
         uint64_t tcount = BESUtil::file_to_stream_task(temp_file.get_name(), file_write_done, strm);
-#elif 0
+#endif
+
+#if 0
         // Or it can be run like this...
         std::packaged_task<uint64_t(const string &, atomic<bool>&, ostream&)> task(BESUtil::file_to_stream_task);
         std::future<uint64_t> result = task.get_future();
