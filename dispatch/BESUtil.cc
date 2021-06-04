@@ -1334,29 +1334,7 @@ uint64_t BESUtil::file_to_stream_task(const std::string &file_name, std::atomic<
 
     close(fd);
     o_strm.flush();
-#if 0
-    // fail() is true if failbit || badbit got set, but does not consider eofbit
-    if(i_stream.fail() && !i_stream.eof()){
-        stringstream msg;
-        msg << prolog << "There was an ifstream error when reading from: " << file_name;
-        ios_state_msg(i_stream, msg);
-        msg << " last_lap: " << i_stream.gcount() << " bytes";
-        msg << " total_read: " << tcount << " bytes";
-        BESDEBUG(MODULE, msg.str() << endl);
-        throw BESInternalError(msg.str(),__FILE__,__LINE__);
-    }
 
-    // If we're not at the eof of the input stream then we have failed.
-    if (!i_stream.eof()){
-        stringstream msg;
-        msg << prolog << "Failed to reach EOF on source file: " << file_name;
-        ios_state_msg(i_stream, msg);
-        msg << " last_lap: " << i_stream.gcount() << " bytes";
-        msg << " total_read: " << tcount << " bytes";
-        BESDEBUG(MODULE, msg.str() << endl);
-        throw BESInternalError(msg.str(),__FILE__,__LINE__);
-    }
-#endif
     // And if something went wrong on the output stream we have failed.
     if(!o_strm.good()){
         stringstream msg;

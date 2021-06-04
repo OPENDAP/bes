@@ -492,12 +492,21 @@ void FONcTransform::transform()
             FONcUtils::handle_error(stax, "File out netcdf, unable to end the define mode: " + _localfile, __FILE__,
                                     __LINE__);
         }
-
+#if 0
         // Write everything out
         i = _fonc_vars.begin();
         e = _fonc_vars.end();
         for (; i != e; i++) {
             FONcBaseType *fbt = *i;
+            BESDEBUG("fonc", "FONcTransform::transform() - Writing data for variable:  " << fbt->name() << endl);
+
+            fbt->set_dds(_dds);
+            fbt->set_eval(&eval);
+
+            fbt->write(_ncid);
+        }
+#endif
+        for (FONcBaseType *fbt: _fonc_vars) {
             BESDEBUG("fonc", "FONcTransform::transform() - Writing data for variable:  " << fbt->name() << endl);
 
             fbt->set_dds(_dds);
