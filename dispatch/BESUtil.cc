@@ -1289,6 +1289,10 @@ void BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm)
     INFO_LOG(msg.str());
 }
 
+// I added this because maybe using the low-level file calls was important. I'm not
+// sure and the iostreams in C++ are safer. jhrg 6/4/21
+#define FILE_CALLS 0
+
 /**
  * *brief child thread/task to stream a netCDF file as it is built
  * @param file_name
@@ -1301,23 +1305,31 @@ uint64_t BESUtil::file_to_stream_task(const std::string &file_name, std::atomic<
     INFO_LOG(msg.str());
 
     char rbuffer[OUTPUT_FILE_BLOCK_SIZE];
-    // std::ifstream i_stream(file_name, std::ios_base::in | std::ios_base::binary);  // Use binary mode so we can
+
+    // this hack gets the code past the tests when the task is launched
+    // using the async policy. It's not needed if the task is run as a
+    // deferred task. jhrg 6/4/21
+    //sleep(1);
+
+    std::ifstream i_stream(file_name, std::ios_base::in | std::ios_base::binary);
+#if FILE_CALLS
+    int fd = open(file_name.c_str(), O_RDONLY | O_NONBLOCK);
+    int eof = false;
+#endif
 
     //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     // This is where the file is copied.
-    sleep(1);
     BESDEBUG(MODULE, "Starting transfer" << endl);
     uint64_t tcount = 0;
-    int fd = open(file_name.c_str(), O_RDONLY | O_NONBLOCK);
-    int eof = false;
-    while (/*!i_stream.bad() && !i_stream.fail() &&*/ o_strm.good()) {
-        if (file_write_done && eof) {
+    while (!i_stream.bad() && !i_stream.fail() && o_strm.good()) {
+        if (file_write_done && i_stream.eof()) {
             BESDEBUG(MODULE, "breaking out of loop" << endl);
             break;
         }
         else {
-            // i_stream.read(&rbuffer[0], OUTPUT_FILE_BLOCK_SIZE);      // Read at most n bytes into
+            i_stream.read(&rbuffer[0], OUTPUT_FILE_BLOCK_SIZE);      // Read at most n bytes into
 
+#if FILE_CALLS
             int status = read(fd, &rbuffer[0], OUTPUT_FILE_BLOCK_SIZE);
             if (status == 0) {
                 eof = true;
@@ -1328,11 +1340,17 @@ uint64_t BESUtil::file_to_stream_task(const std::string &file_name, std::atomic<
 
             o_strm.write(&rbuffer[0], status); // buf, then write the buf to
             tcount += status;
+#endif
+
+            o_strm.write(&rbuffer[0], i_stream.gcount()); // buf, then write the buf to
+            tcount += i_stream.gcount();
             BESDEBUG(MODULE, "transfer bytes " << tcount << endl);
         }
     }
 
+#if FILE_CALLS
     close(fd);
+#endif
     o_strm.flush();
 
     // And if something went wrong on the output stream we have failed.

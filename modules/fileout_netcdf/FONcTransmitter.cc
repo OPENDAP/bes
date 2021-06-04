@@ -306,12 +306,19 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
         atomic<bool> file_write_done(false);
 
 #if 0
+        // Calling the 'packaged_task' here blocks, but we could have run the task in a thread.
+        // See: https://stackoverflow.com/questions/18143661/what-is-the-difference-between-packaged-task-and-async
+        // jhrg 6/4/21
+
         std::packaged_task<uint64_t(const string &, atomic<bool>&, ostream&)> task(BESUtil::file_to_stream_task);
         std::future<uint64_t> result = task.get_future();
         task(temp_file.get_name(), file_write_done, strm);
 #endif
 
-        future<uint64_t> result = async(launch::async, &BESUtil::file_to_stream_task, temp_file.get_name(),
+        // This code works without the sleep(1) hack in BESUtil::file_to_stream_task().
+        // Because it is marked as deferred, the task does not start until the future's
+        // get() method is run, after transform() has written all the data. jhrg 6/4/21
+        future<uint64_t> result = async(launch::deferred, &BESUtil::file_to_stream_task, temp_file.get_name(),
                                         std::ref(file_write_done), std::ref(strm));
 
         ft.transform();
@@ -320,11 +327,14 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
 
         uint64_t tcount = result.get();
 
-        // FONcTransmitter::write_temp_file_to_stream(temp_file.get_fd(), strm); //, loaded_dds->filename(), ncVersion);
-        // FIXME BESUtil::file_to_stream(temp_file.get_name(),strm);
+        // original call before the 'task' hack was added:
+        // BESUtil::file_to_stream(temp_file.get_name(),strm);
+        // jhrg 6/4/21
 #if 0
+        // The task can be called like this right here
         uint64_t tcount = BESUtil::file_to_stream_task(temp_file.get_name(), file_write_done, strm);
-// #else
+#elif 0
+        // Or it can be run like this...
         std::packaged_task<uint64_t(const string &, atomic<bool>&, ostream&)> task(BESUtil::file_to_stream_task);
         std::future<uint64_t> result = task.get_future();
         task(temp_file.get_name(), file_write_done, strm);
