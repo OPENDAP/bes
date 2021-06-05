@@ -655,9 +655,6 @@ void FONcArray::write(int ncid) {
         // create array to hold data hyperslab
         switch (d_array_type) {
             case NC_BYTE:
-                write_nc_variable(ncid, d_array_type);
-                break;
-
             case NC_FLOAT:
             case NC_DOUBLE:
                 write_nc_variable(ncid, d_array_type);
@@ -825,6 +822,5 @@ void FONcArray::write_for_nc4_types(int ncid) {
             string err = (string) "Failed to transform array of unknown type in file out netcdf";
             throw BESInternalError(err, __FILE__, __LINE__);
     }
-
 }
 
