@@ -58,21 +58,7 @@
 #include "BESDebug.h"
 #include "BESStopWatch.h"
 
-// TODO - Set NO_COUT to zero to return to using the cout stream for data transmission to the OLFS
-#define NO_COUT 1
-
-using std::cout;
-
-using std::ostringstream;
-#if NO_COUT==0
-using std::cout;
-#endif
-using std::endl;
-using std::cerr;
-using std::flush;
-using std::map;
-using std::ostream;
-using std::string;
+using namespace std;
 
 #define MODULE "server"
 #define prolog std::string("BESServerHandler::").append(__func__).append("() - ")
@@ -198,31 +184,22 @@ void BESServerHandler::execute(Connection *c)
         int descript = c->getSocket()->getSocketDescriptor();
         unsigned int bufsize = c->getSendChunkSize();
         PPTStreamBuf fds(descript, bufsize);
-#if NO_COUT
         ostream my_ostrm(&fds);
-        // This is where we actual save/assign the output stream used for the
-        // the response
-        std::stringstream msg;
+
+#if !NDEBUG
+        stringstream msg;
         msg << prolog << "Using ostream: " << (void *) &my_ostrm << " cout: " << (void *) &cout << endl;
         BESDEBUG(MODULE,  msg.str());
         INFO_LOG( msg.str());
-        BESXMLInterface cmd(cmd_str, &my_ostrm);
-#else
-        std::streambuf *holder;
-        holder = cout.rdbuf();
-        cout.rdbuf(&fds);
-        // This is where we actual save/assign the output stream used for the
-        // the response to (our modified) stdout
-        BESXMLInterface cmd(cmd_str, &cout);
 #endif
+        // This is where we actual save/assign the output stream used for the
+        // the response
+        BESXMLInterface cmd(cmd_str, &my_ostrm);
 
         int status = cmd.execute_request(from);
         if (status == 0) {
             cmd.finish(status);
             fds.finish();
-#if NO_COUT==0
-            // cout.rdbuf(holder);
-#endif
         }
         else {
             BESDEBUG(MODULE, prolog << "error occurred" << endl);
@@ -240,10 +217,6 @@ void BESServerHandler::execute(Connection *c)
             cmd.finish(status);
             // we are finished, send the last chunk
             fds.finish();
-#if NO_COUT==0
-            // reset the cout stream buffer
-            // cout.rdbuf(holder);
-#endif
 
             // If the status is fatal, then we want to exit. Otherwise,
             // continue, wait for the next request.

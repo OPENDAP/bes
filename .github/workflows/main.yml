@@ -9,9 +9,9 @@ env:
 
 on:
   push:
-    branches: [ master, actions-build ]
+    branches: [ actions-build ]
   pull_request:
-    branches: [ master, actions-build ]
+    branches: [ actions-build ]
   workflow_dispatch:
 
 jobs:

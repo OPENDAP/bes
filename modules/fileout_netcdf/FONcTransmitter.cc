@@ -110,27 +110,15 @@ FONcTransmitter::FONcTransmitter() :
 }
 
 /**
- * Hack to ensure the file descriptor for the temporary file is closed.
- */
-struct wrap_temp_descriptor {
-    int d_fd;
-    wrap_temp_descriptor(int fd) : d_fd(fd) {}
-    ~wrap_temp_descriptor() { close(d_fd); }
-};
-
-
-/**
- * Creates the "history" text appended to source attribute "history".
- * We add:
- *  - Sub-setting information if any
- *  - SSFunction invocations
- *  - ResourceID? URL?
- *  - JSON?
- * @param request_url
+ * @brief Build a history entry. Used only if the cf_history_context is not set.
+ *
+ * @param request_url The request URL to add to the history value
+ * @return A history value string. The caller must actually add this to a 'history'
+ * attribute, etc.
  */
 string create_history_txt(const string &request_url)
 {
-    // This code will be used only when the 'cf_histroy_context' is not set,
+    // This code will be used only when the 'cf_history_context' is not set,
     // which should be never in an operating server. However, when we are
     // testing, often only the besstandalone code is running and the existing
     // baselines don't set the context, so we have this. It must do something
@@ -299,26 +287,6 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
 
     try { // Expanded try block so all DAP errors are caught. ndp 12/23/2015
 
-#if 0
-        BESDapResponseBuilder responseBuilder;
-        // Use the DDS from the ResponseObject along with the parameters
-        // from the DataHandlerInterface to load the DDS with values.
-        // Note that the BESResponseObject will manage the loaded_dds object's
-        // memory. Make this a shared_ptr<>. jhrg 9/6/16
-
-        // Now that we are ready to start reading the response data we
-        // cancel any pending timeout alarm according to the configuration.
-        BESUtil::conditional_timeout_cancel();
-
-        BESDEBUG(MODULE,  prolog << "Reading data into DataDDS" << endl);
-        DDS *loaded_dds = responseBuilder.intern_dap2_data(obj, dhi);
-
-        // ResponseBuilder splits the CE, so use the DHI or make two calls and
-        // glue the result together: responseBuilder.get_btp_func_ce() + " " + responseBuilder.get_ce()
-        // jhrg 9/6/16
-        updateHistoryAttribute(loaded_dds, dhi.data[POST_CONSTRAINT]);
-#endif
-
         // This object closes the file when it goes out of scope.
         bes::TempFile temp_file(FONcRequestHandler::temp_dir + "/ncXXXXXX");
 
@@ -374,20 +342,6 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
     BESDEBUG(MODULE,  prolog << "BEGIN" << endl);
 
     try { // Expanded try block so all DAP errors are caught. ndp 12/23/2015
-        BESDapResponseBuilder responseBuilder;
-        // Use the DDS from the ResponseObject along with the parameters
-        // from the DataHandlerInterface to load the DDS with values.
-        // Note that the BESResponseObject will manage the loaded_dds object's
-        // memory. Make this a shared_ptr<>. jhrg 9/6/16
-
-        // Now that we are ready to start reading the response data we
-        // cancel any pending timeout alarm according to the configuration.
-        BESUtil::conditional_timeout_cancel();
-
-        BESDEBUG(MODULE,  prolog << "Reading data into DMR" << endl);
-        //DDS *loaded_dds = responseBuilder.intern_dap2_data(obj, dhi);
-        DMR *loaded_dmr = responseBuilder.intern_dap4_data(obj, dhi);
-        updateHistoryAttribute(loaded_dmr, dhi.data[POST_CONSTRAINT]);
 
         // This object closes the file when it goes out of scope.
         bes::TempFile temp_file(FONcRequestHandler::temp_dir + "/ncXXXXXX");
@@ -395,16 +349,20 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
         BESDEBUG(MODULE,  prolog << "Building response file " << temp_file.get_name() << endl);
         // Note that 'RETURN_CMD' is the same as the string that determines the file type:
         // netcdf 3 or netcdf 4. Hack. jhrg 9/7/16
-        FONcTransform ft(loaded_dmr, dhi, temp_file.get_name(), dhi.data[RETURN_CMD]);
+        // FONcTransform ft(loaded_dmr, dhi, temp_file.get_name(), dhi.data[RETURN_CMD]);
+        FONcTransform ft(obj, &dhi, temp_file.get_name(), dhi.data[RETURN_CMD]);
 
         // Call the transform function for DAP4.
         ft.transform_dap4();
 
-        stringstream msg;
         ostream &strm = dhi.get_output_stream();
+
+#if !NDEBUG
+        stringstream msg;
         msg << prolog << "Using ostream: " << (void *) &strm << endl;
         BESDEBUG(MODULE,  msg.str());
         INFO_LOG( msg.str());
+#endif
 
         if (!strm) throw BESInternalError("Output stream is not set, can not return as", __FILE__, __LINE__);
 
@@ -429,24 +387,3 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
     BESDEBUG(MODULE,  prolog << "END  Transmitted as netcdf" << endl);
 }
 
-#if 0  // Moved to BESUtil.cc
-/** @brief stream the temporary netcdf file back to the requester
- *
- * Streams the temporary netcdf file specified by filename to the specified
- * C++ ostream
- *
- * @param filename The name of the file to stream back to the requester
- * @param strm C++ ostream to write the contents of the file to
- * @throws BESInternalError if problem opening the file
- */
-void FONcTransmitter::write_temp_file_to_stream(int fd, ostream &strm) //, const string &filename, const string &ncVersion)
-{
-    char block[OUTPUT_FILE_BLOCK_SIZE];
-
-    int nbytes = read(fd, block, sizeof block);
-    while (nbytes > 0) {
-        strm.write(block, nbytes /*os.gcount()*/);
-        nbytes = read(fd, block, sizeof block);
-    }
-}
-#endif
