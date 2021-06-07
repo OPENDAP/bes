@@ -177,4 +177,8 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/d_group_dap4_ce_empty.h5.
 dnl Add a test to check if the compression is turned on for netCDF-4 
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_COMPRESSION(bescmd/gridT.3.compression.bescmd)
 
+bes_conf=bes.functions.conf
+
+AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/arrayT.4.function.bescmd)
+
 

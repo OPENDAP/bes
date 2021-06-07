@@ -1,6 +1,6 @@
 # Process with autom4te to create an -*- Autotest -*- test suite.
 
-AT_INIT([modules/fileout_netcdf/tests testsuite-functions --conf=bes.funtions.conf])
+AT_INIT([modules/fileout_netcdf/tests testsuite-functions --conf=bes.functions.conf])
 
 AT_TESTED([besstandalone])
 
