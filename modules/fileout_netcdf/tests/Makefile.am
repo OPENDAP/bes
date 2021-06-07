@@ -41,6 +41,8 @@ bes.nc4.conf: $(srcdir)/bes.nc4.conf.in $(top_srcdir)/configure.ac
 
 bes.nc4.grp.conf: $(srcdir)/bes.nc4.grp.conf.in $(top_srcdir)/configure.ac
 
+bes.functions.conf: $(srcdir)/bes.functions.conf.in $(top_srcdir)/configure.ac
+
 ############## Autotest follows #####################
 
 AUTOM4TE = autom4te
@@ -51,30 +53,28 @@ AUTOM4TE = autom4te
 # in the tar.gz distribution.
 TESTSUITE = $(srcdir)/testsuite
 # TESTSUITE_NC4 = $(srcdir)/testsuite_nc4
+TESTSUITE_FUNC = $(srcdir)/testsuite-functions
 
-check-local: $(TESTSUITE) $(TESTSUITE_NC4) atconfig atlocal
+check-local: $(TESTSUITE) $(TESTSUITE_FUNC) atconfig atlocal
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
-
-#	$(SHELL) '$(TESTSUITE_NC4)  --conf=bes.nc4.conf' $(TESTSUITEFLAGS)
+	$(SHELL) '$(TESTSUITE_FUNC) --conf=bes.functions.conf' $(TESTSUITEFLAGS)
 
 installcheck-local: $(TESTSUITE) atconfig atlocal 
 	$(SHELL) '$(TESTSUITE)' AUTOTEST_PATH='$(bindir)' $(TESTSUITEFLAGS)
-
-#	$(SHELL) '$(TESTSUITE_NC4)' AUTOTEST_PATH='$(bindir)' $(TESTSUITEFLAGS)
+	$(SHELL) '$(TESTSUITE_FUNC)' AUTOTEST_PATH='$(bindir)' $(TESTSUITEFLAGS)
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
 	-rm -f $(TESTSUITE)
-
-#	test ! -f '$(TESTSUITE_NC4)' || $(SHELL) '$(TESTSUITE_NC4)' --clean
-#	-rm -f $(TESTSUITE_NC4)
+	test ! -f '$(TESTSUITE_FUNC)' || $(SHELL) '$(TESTSUITE_FUNC)' --clean
+	-rm -f $(TESTSUITE_FUNC)
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
 $(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4 \
 $(srcdir)/local_handler_tests_macros.m4
 
-# $(TESTSUITE_NC4): $(TESTSUITE_NC4).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
+$(TESTSUITE_FUNC): $(TESTSUITE_FUNC).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
 
 %: %.at
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
