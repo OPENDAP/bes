@@ -39,14 +39,10 @@ TESTSUITE = $(srcdir)/testsuite
 # TESTSUITE_NC4 = $(srcdir)/testsuite_nc4
 TESTSUITE_FUNC = $(srcdir)/testsuite-functions
 
-check-$(TESTSUITE): $(TESTSUITE) atconfig atlocal
-	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
-
-check-$(TESTSUITE_FUNC): $(TESTSUITE) atconfig atlocal
-	$(SHELL) '$(TESTSUITE_FUNC)' --conf=bes.functions.conf $(TESTSUITEFLAGS)
-
 # NB: The bes conf files don't appear here because they are built as 'data' above.
-check-local: check-$(TESTSUITE) check-$(TESTSUITE_FUNC)
+check-local: $(TESTSUITE) $(TESTSUITE_FUNC) atconfig atlocal
+	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
+	$(SHELL) '$(TESTSUITE_FUNC)' --conf=bes.functions.conf $(TESTSUITEFLAGS)
 
 # $(TESTSUITE) $(TESTSUITE_FUNC) atconfig atlocal
 #	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
