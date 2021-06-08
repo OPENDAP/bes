@@ -53,7 +53,7 @@
 #include "ServerExitConditions.h"
 #include "BESUtil.h"
 #include "PPTStreamBuf.h"
-#include "PPTProtocol.h"
+#include "PPTProtocolNames.h"
 #include "BESLog.h"
 #include "BESDebug.h"
 #include "BESStopWatch.h"
@@ -119,15 +119,27 @@ void BESServerHandler::handle(Connection *c)
     }
 }
 
-void BESServerHandler::execute(Connection *c)
+void BESServerHandler::execute(Connection *connection)
 {
     // TODO This seems like a waste of time - do we really need to log this information?
     // jhrg 11/13/17
     ostringstream strm;
-    strm << "ip " << c->getSocket()->getIp() << ", port " << c->getSocket()->getPort();
+    strm << "ip " << connection->getSocket()->getIp() << ", port " << connection->getSocket()->getPort();
     string from = strm.str();
 
     map<string, string> extensions;
+
+    int socket_d = connection->getSocket()->getSocketDescriptor();
+    unsigned int bufsize = connection->getSendChunkSize();
+    PPTStreamBuf fds(socket_d, bufsize);
+    ostream my_ostrm(&fds);
+
+#if !NDEBUG
+    stringstream msg;
+    msg << prolog << "Using ostream: " << (void *) &my_ostrm << " cout: " << (void *) &cout << endl;
+    BESDEBUG(MODULE,  msg.str());
+    INFO_LOG( msg.str());
+#endif
 
     // we loop continuously waiting for messages. The only way we exit
     // this loop is: 1. we receive a status of exit from the client, 2.
@@ -138,12 +150,15 @@ void BESServerHandler::execute(Connection *c)
         ostringstream ss;
 
         bool done = false;
+        BESDEBUG(MODULE,prolog << "Waiting for client to send commands." << endl);
         while (!done)
-            done = c->receive(extensions, &ss);
+            done = connection->receive(extensions, &ss);
+
+        BESDEBUG(MODULE,prolog << "Received client command. status: '" << extensions["status"] << "'" << endl);
 
         // The server has been sent a message that the client is exiting
         // and closing the connection. So exit this process.
-        if (extensions["status"] == c->exit()) {
+        if (extensions["status"] == connection->exit()) {
             // The protocol docs indicate that the EXIT_NOW 'token' is followed
             // by a zero-length chunk (a chunk that has type 'd'). See section
             // 4.3 of the documentation (http://docs.opendap.org/index.php/Hyrax_-_BES_PPT).
@@ -158,7 +173,7 @@ void BESServerHandler::execute(Connection *c)
             // calls the the kernel's close() function. NB: The method is
             // implemented in PPTServer.cc and that calls Socket::close() on the
             // Socket instance held by the Connection.
-            c->closeConnection();
+            connection->closeConnection();
 
             BESDEBUG(MODULE,prolog << "Calling exit(CHILD_SUBPROCESS_READY) which has a value of " << CHILD_SUBPROCESS_READY << endl);
 
@@ -167,31 +182,14 @@ void BESServerHandler::execute(Connection *c)
             exit(CHILD_SUBPROCESS_READY);
         }
 
-        // This is code that was in place for the string commands. With xml
-        // documents everything is taken care of by libxml2. This should be
-        // happening in the Interface class before passing to the parser, if
-        // need be. pwest 06 Feb 2009
-        //string cmd_str = BESUtil::www2id( ss.str(), "%", "%20" ) ;
         string cmd_str = ss.str();
 
-        BESDEBUG(MODULE, prolog << "Processing command" << endl << cmd_str << endl);
+        BESDEBUG(MODULE, prolog << "Processing client command:" << endl << cmd_str << endl);
 
         BESStopWatch sw;
         if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("BESServerHandler::execute");
 
-        // Tie the cout stream to the PPTStreamBuf and save the cout buffer so that
-        // it can be reset once the command is complete. jhrg 1/25/17
-        int descript = c->getSocket()->getSocketDescriptor();
-        unsigned int bufsize = c->getSendChunkSize();
-        PPTStreamBuf fds(descript, bufsize);
-        ostream my_ostrm(&fds);
 
-#if !NDEBUG
-        stringstream msg;
-        msg << prolog << "Using ostream: " << (void *) &my_ostrm << " cout: " << (void *) &cout << endl;
-        BESDEBUG(MODULE,  msg.str());
-        INFO_LOG( msg.str());
-#endif
         // This is where we actual save/assign the output stream used for the
         // the response
         BESXMLInterface cmd(cmd_str, &my_ostrm);
@@ -200,9 +198,10 @@ void BESServerHandler::execute(Connection *c)
         if (status == 0) {
             cmd.finish(status);
             fds.finish();
+            BESDEBUG(MODULE, prolog << "Client command successfully processed." << endl);
         }
         else {
-            BESDEBUG(MODULE, prolog << "error occurred" << endl);
+            BESDEBUG(MODULE, prolog << "ERROR - status: " << status << endl);
 
             // Send the extension status=error to the client so that it can reset. The finish()
             // method is called _after_ this so that the error response will be recognizable.
@@ -212,7 +211,7 @@ void BESServerHandler::execute(Connection *c)
             if (status == BES_INTERNAL_FATAL_ERROR) {
                 extensions["exit"] = "true";
             }
-            c->sendExtensions(extensions);
+            connection->sendExtensions(extensions);
 
             cmd.finish(status);
             // we are finished, send the last chunk
@@ -225,7 +224,7 @@ void BESServerHandler::execute(Connection *c)
                 ERROR_LOG("BES Internal Fatal Error; child returning "
                     << SERVER_EXIT_ABNORMAL_TERMINATION << " to the master listener." << endl);
 
-                c->closeConnection();
+                connection->closeConnection();
                 exit(SERVER_EXIT_ABNORMAL_TERMINATION);
 
                 break;
@@ -236,7 +235,7 @@ void BESServerHandler::execute(Connection *c)
                     ERROR_LOG("BES Internal Error; child returning "
                         << SERVER_EXIT_ABNORMAL_TERMINATION << " to the master listener." << endl);
 
-                    c->closeConnection();
+                    connection->closeConnection();
                     exit(SERVER_EXIT_ABNORMAL_TERMINATION);
                 }
                 break;
@@ -251,7 +250,7 @@ void BESServerHandler::execute(Connection *c)
         }
     }	// This is the end of the infinite loop that processes commands.
 
-    c->closeConnection();
+    connection->closeConnection();
 }
 
 /** @brief dumps information about this object

@@ -48,7 +48,7 @@ class Connection;
 class BESServerHandler: public ServerHandler {
 private:
 	std::string _method;
-    void execute(Connection *c);
+    void execute(Connection *connection);
 public:
     BESServerHandler();
     virtual ~BESServerHandler()
