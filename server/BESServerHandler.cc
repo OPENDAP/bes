@@ -201,7 +201,7 @@ void BESServerHandler::execute(Connection *connection)
             BESDEBUG(MODULE, prolog << "Client command successfully processed." << endl);
         }
         else {
-            BESDEBUG(MODULE, prolog << "ERROR - status: " << status << endl);
+            BESDEBUG(MODULE, prolog << "ERROR - cmd.execute_request() returned: " << status << endl);
 
             // Send the extension status=error to the client so that it can reset. The finish()
             // method is called _after_ this so that the error response will be recognizable.
@@ -249,8 +249,6 @@ void BESServerHandler::execute(Connection *connection)
             }
         }
     }	// This is the end of the infinite loop that processes commands.
-
-    connection->closeConnection();
 }
 
 /** @brief dumps information about this object
