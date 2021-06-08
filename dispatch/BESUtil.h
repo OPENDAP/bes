@@ -38,6 +38,7 @@
 #include <iostream>
 #include <vector>
 #include <BESCatalog.h>
+#include <atomic>
 
 class BESUtil {
 private:
