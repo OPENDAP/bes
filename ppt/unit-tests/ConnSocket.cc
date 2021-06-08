@@ -42,7 +42,7 @@ using std::ostream ;
 
 #include "ConnSocket.h"
 #include "ConnTestStrs.h"
-#include "PPTProtocol.h"
+#include "PPTProtocolNames.h"
 
 ConnSocket::ConnSocket()
     : _test_num( 0 ),
