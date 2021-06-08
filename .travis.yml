@@ -60,10 +60,10 @@ env:
     - secure: "eUL/RY4kJD9sb3q98Xbfbcdhs6eyFWkfWNb0tvRzksBi/+tYiuojsek0qoBFZnRnO0wwyDAaDrZgu2yoLQTBxGSTqCsYaoDiFtw2m8aW3r+FdjpfmyVR52U9vMoZtpiPGYYM9utlyQ6YRNhzq+XzDJ4juygoIlzbp7qXTALqIL8="
     # GIT_PSWD for travis-ci-opendap
     - secure: "jdEmVdM35qoAmIXTqTCL11IbjEMh6I+jrov/nqQ4wdoJf79O7H7tuuDVkIJ+5RSIjUXsIYgfQAG8Cn+DIJRMnv7mj7TrWGS9LT22bBGErzCcCkrHGKMDH4okbd8cCNQcnb/9woYSYZ38U8QCBsYH1Ma2r4bFU4jAY2KiMOyaY6w="    
-    # WOO_UID for travis
-    # - secure: "YKSsiV7fjngZ+Xha9oyHUT2Xirz8Iy7bghAzlGk2TyXZwWGbZyFDMeTfE0ZGaAEykhNF9fsqsD6XMzFlwBcYIB5ocP6LfnQ1qMualHVTVbVldo/T2e8uv/9jVIAnfwwT2IbgWpVUXZ1I24kIqHCxnZWYZpbfclSEDnQnkYG9tMg="
-    # travis encrypt --org -r OPENDAP/bes WOO_PSWD=... Use with sshpass -p $WOO_PSWD scp ...
-    # - secure: "Bw3Jad8QbpJl+o3BnfTlHddaTaerIG/sgnOJsMzVeSJQoMnh9tccTZ7QaNKo1Vs8riNzTHLMZkJja3UgXV9f90HU9xujZhEcnEdR/t1RRiLUsxHZtl20IcL6AQni+LCW0y/K5V0fCqx0cE90aGzBUeP1to/q7fkoRudxHqpXTtc="
+    # DOCKER_HUB_UID for travis
+    - secure: "b0/W8+DA35StZB5BKRDn0yLxGE6n/Hc4vXRUBX2bylsSyw1IVplrl4PgKbafE0CT5PfFssOUH1cMlYcSOXgV3EWOeNWquIhwq1cASUJClTf55Y4kr1XPr6bNtdbPJ7UAKw1EG2TyZx0vy7A6TrKwgb9Al24ABm0ev4aFWUk+Sks="
+    # DOCKER_HUB_PSWD for travis
+    - secure: "Z+M0JHT3szHclksjh8ettN9OoDjX0+lgOaORnSH8H/xvaQp1YCYzmEajnknGGCop6arM+PaiArZEZl7e8X1kBqReitSISLCwbS6XU/juRi1OBqfkk1YzSOgU03jLXe3MG2CmfQRLdExjdHCsphHEXthU2Z0tY++Tq31IfFPy1JQ="
     - CMAC_ID="${AWS_ACCESS_KEY_ID}"
     - CMAC_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
     - CMAC_URL="https://s3.amazonaws.com/cloudydap/"
@@ -79,6 +79,7 @@ install:
   - tar -C $HOME -xzvf $TRAVIS_BUILD_DIR/hyrax-dependencies-build.tar.gz
   - aws s3 cp s3://opendap.travis.build/libdap-build.tar.gz $TRAVIS_BUILD_DIR
   - tar -C $HOME -xzvf $TRAVIS_BUILD_DIR/libdap-build.tar.gz
+  - echo $DOCKER_HUB_PSWD | docker login -u $DOCKER_HUB_ID --password-stdin
 
 before_script:
   # This is now done in each step. Doing that made the libdap4 build a bit faster/cleaner
