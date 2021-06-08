@@ -1,0 +1,7 @@
+netcdf test {
+dimensions:
+	byte_dim1 = 2 ;
+	byte_dim2 = 5 ;
+variables:
+	double byte_array(byte_dim1, byte_dim2) ;
+}

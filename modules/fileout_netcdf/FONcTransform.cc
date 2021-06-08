@@ -44,6 +44,7 @@
 #include <BESDataDDSResponse.h>
 #include <BESDMRResponse.h>
 #include <BESRequestHandlerList.h>
+#include <BESDapFunctionResponseCache.h>
 
 #include "FONcRequestHandler.h" // for the keys
 
@@ -401,7 +402,46 @@ void FONcTransform::transform()
 
     // Split constraint into two halves; stores the function and non-function parts in this instance.
     besDRB.split_ce(eval);
+    // If there are functions, parse them and eval.
+    // Use that DDS and parse the non-function ce
+    // Serialize using the second ce and the second dds
+    if (!besDRB.get_btp_func_ce().empty()) {
+        BESDEBUG("fonc","Found function(s) in CE: " << besDRB.get_btp_func_ce() << endl);
 
+        BESDapFunctionResponseCache *responseCache = BESDapFunctionResponseCache::get_instance();
+
+        ConstraintEvaluator func_eval;
+        DDS *fdds = 0; // nulll_ptr
+        if (responseCache && responseCache->can_be_cached(_dds, besDRB.get_btp_func_ce())) {
+            fdds = responseCache->get_or_cache_dataset(_dds, besDRB.get_btp_func_ce());
+        }
+        else {
+            func_eval.parse_constraint(besDRB.get_btp_func_ce(), *_dds);
+            fdds = func_eval.eval_function_clauses(*_dds);
+        }
+
+        delete _dds;             // Delete so that we can ...
+        bdds->set_dds(fdds);    // Transfer management responsibility
+        _dds = fdds;
+
+        // Server functions might mark (i.e. setting send_p) so variables will use their read()
+        // methods. Clear that so the CE in d_dap2ce will control what is
+        // sent. If that is empty (there was only a function call) all
+        // of the variables in the intermediate DDS (i.e., the function
+        // result) will be sent.
+        _dds->mark_all(false);
+
+        // Look for one or more top level Structures whose name indicates (by way of ending with
+        // "_uwrap") that their contents should be moved to the top level.
+        //
+        // This is in support of a hack around the current API where server side functions
+        // may only return a single DAP object and not a collection of objects. The name suffix
+        // "_unwrap" is used as a signal from the function to the the various response
+        // builders and transmitters that the representation needs to be altered before
+        // transmission, and that in fact is what happens in our friend
+        // promote_function_output_structures()
+        promote_function_output_structures(_dds);
+    }
 
     // evaluate the rest of the CE - the part that follows the function calls.
     eval.parse_constraint(besDRB.get_ce(), *_dds);
