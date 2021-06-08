@@ -237,7 +237,7 @@ void PPTServer::authenticateClient()
 #if defined HAVE_OPENSSL && defined NOTTHERE
 	BESDEBUG( MODULE, prolog << "Requiring secure connection: port = " << _securePort << endl );
 	// let the client know that it needs to authenticate
-	send( PPTProtocol::PPT_SERVER_AUTHENTICATE );
+	send(PPT_SERVER_AUTHENTICATE );
 
 	// wait for the client request for the secure port
 	// We are waiting for a ppt tocken requesting the secure port number.
@@ -248,12 +248,12 @@ void PPTServer::authenticateClient()
 	int bytesRead = _mySock->receive( inBuff, ppt_buffer_size );
 	string portRequest( inBuff, bytesRead );
 	// delete [] inBuff; jhrg 3/5/14
-	if( portRequest != PPTProtocol::PPT_CLIENT_REQUEST_AUTHPORT )
+	if( portRequest != PPT_CLIENT_REQUEST_AUTHPORT )
 		throw BESInternalError( string("Secure connection ... expecting request for port client requested ") + portRequest, __FILE__, __LINE__ );
 
 	// send the secure port number back to the client
 	ostringstream portResponse;
-	portResponse << _securePort << PPTProtocol::PPT_COMPLETE_DATA_TRANSMISSION;
+	portResponse << _securePort << PPT_COMPLETE_DATA_TRANSMISSION;
 	send( portResponse.str() );
 
 	// create a secure server object and authenticate
