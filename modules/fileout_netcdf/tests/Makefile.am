@@ -1,29 +1,13 @@
 
-AUTOMAKE_OPTIONS = foreign 
+AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir)
-AM_CXXFLAGS =
+noinst_DATA = bes.conf bes.nc4.conf bes.nc4.grp.conf bes.functions.conf
 
-# These are not used by automake but are often useful for certain types of
-# debugging. The best way to use these is to run configure as:
-#     export CXXFLAGS='...'; ./configure --disable-shared
-# the --disable-shared is not required, but it seems to help with debuggers.
-CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
-TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
+CLEANFILES = bes.conf bes.nc4.conf bes.nc4.grp.conf bes.functions.conf
 
-noinst_DATA = bes.conf bes.nc4.conf bes.nc4.grp.conf
-
-CLEANFILES = bes.conf bes.nc4.conf bes.nc4.grp.conf
-
-EXTRA_DIST = bescmd $(TESTSUITE).at $(TESTSUITE)  \
-atlocal.in bes.conf.in bes.nc4.conf.in bes.nc4.grp.conf.in package.m4 \
-local_handler_tests_macros.m4
-
-# I moved the tests back to one file and dropped the 'pass the alternate
-# conf file in using --conf=...' because that was not working with ncdump
-# for an unknown reason. jhrg 3/19/20
-
-# $(TESTSUITE_NC4).at $(TESTSUITE_NC4)
+EXTRA_DIST = bescmd $(TESTSUITE).at $(TESTSUITE) $(TESTSUITE_FUNC).at $(TESTSUITE_FUNC) \
+atlocal.in bes.conf.in bes.nc4.conf.in bes.nc4.grp.conf.in bes.functions.conf.in \
+package.m4 local_handler_tests_macros.m4
 
 DISTCLEANFILES = atconfig
 
@@ -41,6 +25,8 @@ bes.nc4.conf: $(srcdir)/bes.nc4.conf.in $(top_srcdir)/configure.ac
 
 bes.nc4.grp.conf: $(srcdir)/bes.nc4.grp.conf.in $(top_srcdir)/configure.ac
 
+bes.functions.conf: $(srcdir)/bes.functions.conf.in $(top_srcdir)/configure.ac
+
 ############## Autotest follows #####################
 
 AUTOM4TE = autom4te
@@ -51,30 +37,28 @@ AUTOM4TE = autom4te
 # in the tar.gz distribution.
 TESTSUITE = $(srcdir)/testsuite
 # TESTSUITE_NC4 = $(srcdir)/testsuite_nc4
+TESTSUITE_FUNC = $(srcdir)/testsuite-functions
 
-check-local: $(TESTSUITE) $(TESTSUITE_NC4) atconfig atlocal
+# NB: The bes conf files don't appear here because they are built as 'data' above.
+check-local: $(TESTSUITE) $(TESTSUITE_FUNC) atconfig atlocal
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
+	$(SHELL) '$(TESTSUITE_FUNC)' --conf=bes.functions.conf $(TESTSUITEFLAGS)
 
-#	$(SHELL) '$(TESTSUITE_NC4)  --conf=bes.nc4.conf' $(TESTSUITEFLAGS)
-
-installcheck-local: $(TESTSUITE) atconfig atlocal 
+installcheck-local: $(TESTSUITE) $(TESTSUITE_FUNC) atconfig atlocal
 	$(SHELL) '$(TESTSUITE)' AUTOTEST_PATH='$(bindir)' $(TESTSUITEFLAGS)
-
-#	$(SHELL) '$(TESTSUITE_NC4)' AUTOTEST_PATH='$(bindir)' $(TESTSUITEFLAGS)
+	$(SHELL) '$(TESTSUITE_FUNC)' AUTOTEST_PATH='$(bindir)' --conf=bes.functions.conf $(TESTSUITEFLAGS)
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
-	-rm -f $(TESTSUITE)
-
-#	test ! -f '$(TESTSUITE_NC4)' || $(SHELL) '$(TESTSUITE_NC4)' --clean
-#	-rm -f $(TESTSUITE_NC4)
+	test ! -f '$(TESTSUITE_FUNC)' || $(SHELL) '$(TESTSUITE_FUNC)' --clean
+	-rm -f $(TESTSUITE) $(TESTSUITE_FUNC)
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
 $(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4 \
 $(srcdir)/local_handler_tests_macros.m4
 
-# $(TESTSUITE_NC4): $(TESTSUITE_NC4).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
+$(TESTSUITE_FUNC): $(TESTSUITE_FUNC).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
 
 %: %.at
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at

@@ -1,0 +1,17 @@
+
+To run these tests use:
+
+time besstandalone -d cerr,fonc -c ../bes.nc4.conf -i bescmd-dap4.xml > ghrsst_1_dap4.nc4
+NB: The bes.nc4.conf file is above.
+
+or
+
+time bescmdln -i bescmd-dap4.xml > ghrsst_1_dap4.nc4
+
+in this directory (or adjust the paths and run elsewhere).
+
+NB: The bes.nc4.conf file
+
+To see the memory profile, use the OSX Activity Monitor or some other memory
+profiling tool tat shows use over time.
+

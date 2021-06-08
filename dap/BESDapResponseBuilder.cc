@@ -83,6 +83,7 @@
 #include <mime_util.h>	// for last_modified_time() and rfc_822_date()
 #include <escaping.h>
 #include <util.h>
+// #include <d4_function/D4FunctionEvaluator.h>
 
 #if USE_LOCAL_TIMEOUT_SCHEME
 #ifndef WIN32
@@ -1421,35 +1422,40 @@ void BESDapResponseBuilder::send_dap4_data_using_ce(ostream &out, DMR &dmr, bool
     }
 
     // The following block is for debugging purpose. KY 05/13/2020
-#if 0
-    for (D4Group::Vars_iter i = dmr.root()->var_begin(), e = dmr.root()->var_end(); i != e; ++i) {
-        BESDEBUG("dap", "BESDapResponseBuilder::send_dap4_data_ce() - "<< (*i)->name() <<endl);
+#if !NDEBUG
+    for (auto i = dmr.root()->var_begin(), e = dmr.root()->var_end(); i != e; ++i) {
+        BESDEBUG("dap", "BESDapResponseBuilder::send_dap4_data_ce() - " << (*i)->name() << endl);
         if ((*i)->send_p()) {
-            BESDEBUG("dap", "BESDapResponseBuilder::send_dap4_data() Obtain data- "<< (*i)->name() <<endl);
-            D4Attributes*d4_attrs = (*i)->attributes();
-            BESDEBUG("dap", "BESDapResponseBuilder::send_dap4_data() number of attributes "<< d4_attrs <<endl);
-            for (D4Attributes::D4AttributesIter ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end(); ii != ee; ++ii) {
-                         string name = (*ii)->name();
-                         BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() attribute name is "<<name <<endl);
-             }
-
-
+            BESDEBUG("dap", "BESDapResponseBuilder::send_dap4_data() Obtain data- " << (*i)->name() << endl);
+            D4Attributes *d4_attrs = (*i)->attributes();
+            BESDEBUG("dap", "BESDapResponseBuilder::send_dap4_data() number of attributes " << d4_attrs << endl);
+            for (auto ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end(); ii != ee; ++ii) {
+                BESDEBUG("dap",
+                         "BESDapResponseBuilder::intern_dap4_data() attribute name is " << (*ii)->name() << endl);
+            }
         }
     }
 #endif
-
 
     if (!store_dap4_result(out, dmr)) {
         serialize_dap4_data(out, dmr, with_mime_headers);
     }
 }
 
-void BESDapResponseBuilder::intern_dap4_data_using_ce(DMR &dmr)
+/**
+ * @brief Parse the DAP4 CE and throw if the request is too large
+ *
+ * The CE parsed is the one set in this BESDapREsponseBuilder
+ * instance and is parsed using the DMR passed to this method.
+ *
+ * @param dmr Parse the CE using this DMR
+ */
+void BESDapResponseBuilder::dap4_process_ce_for_intern_data(DMR &dmr)
 {
     BESStopWatch sw;
     if (BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) sw.start(prolog + "Timer", "");
     if (!d_dap4ce.empty()) {
-        BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data_using_ce() - expression constraint is not empty. " <<endl);
+        BESDEBUG("dap", "BESDapResponseBuilder::dap4_process_ce_for_intern_data() - expression constraint is not empty. " <<endl);
         D4ConstraintEvaluator parser(&dmr);
         bool parse_ok = parser.parse(d_dap4ce);
         if (!parse_ok) throw Error(malformed_expr, "Constraint Expression (" + d_dap4ce + ") failed to parse.");
@@ -1468,7 +1474,6 @@ void BESDapResponseBuilder::intern_dap4_data_using_ce(DMR &dmr)
             + "KB.";
         throw Error(msg);
     }
-
 }
 
 void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, bool with_mime_headers)
@@ -1629,8 +1634,6 @@ bool BESDapResponseBuilder::store_dap4_result(ostream &out, libdap::DMR &dmr)
     return false;
 }
 
-
-
 /**
  * The description is mostly cloned from the function intern_dap2_data().
  * Read data into the ResponseObject (a DAP4 DMR). Instead of serializing the data
@@ -1654,31 +1657,24 @@ BESDapResponseBuilder::intern_dap4_data(BESResponseObject *obj, BESDataHandlerIn
 {
     BESStopWatch sw;
     if (BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) sw.start(prolog + "Timer", "");
-    BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() - BEGIN"<< endl);
+    BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() - BEGIN" << endl);
 
+    unique_ptr<DMR> dmr = setup_dap4_intern_data(obj, dhi);
+
+    intern_dap4_data_grp(dmr->root());
+
+    return dmr.release();
+}
+
+unique_ptr<DMR>
+BESDapResponseBuilder::setup_dap4_intern_data(BESResponseObject *obj, BESDataHandlerInterface &dhi)
+{
     dhi.first_container();
 
-#if 0
-    BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *>(obj);
-    if (!bdds) throw BESInternalFatalError("Expected a BESDataDDSResponse instance", __FILE__, __LINE__);
-
-    DDS *dds = bdds->get_dds();
-
-    set_dataset_name(dds->filename());
-    set_ce(dhi.data[POST_CONSTRAINT]);
-    set_async_accepted(dhi.data[ASYNC]);
-    set_store_result(dhi.data[STORE_RESULT]);
-
-
-    ConstraintEvaluator &eval = bdds->get_ce();
-#endif
     BESDMRResponse *bdmr = dynamic_cast<BESDMRResponse *>(obj);
     if (!bdmr) throw BESInternalFatalError("Expected a BESDMRResponse instance", __FILE__, __LINE__);
 
-    DMR *dmr = bdmr->get_dmr();
-    
-    D4Group* root_grp=NULL;
-    BESDEBUG("dap", "BESDapResponseBuilder::dmr filename - END"<< dmr->filename() <<endl);
+    unique_ptr<DMR> dmr(bdmr->get_dmr());
 
     // Set the correct context by following intern_dap2_data()
     set_dataset_name(dmr->filename());
@@ -1687,65 +1683,33 @@ BESDapResponseBuilder::intern_dap4_data(BESResponseObject *obj, BESDataHandlerIn
     set_async_accepted(dhi.data[ASYNC]);
     set_store_result(dhi.data[STORE_RESULT]);
 
-    // Following send_dap4_data(),KY 05/13/2020.
-    // If a function was passed in with this request, evaluate it and use that DMR
-    // for the remainder of this request.
-    // TODO Add caching for these function invocations
     if (!d_dap4function.empty()) {
         D4BaseTypeFactory d4_factory;
-        DMR function_result(&d4_factory, "function_results");
+        unique_ptr<DMR> function_result(new DMR(&d4_factory, "function_results"));
 
         // Function modules load their functions onto this list. The list is
         // part of libdap, not the BES.
         if (!ServerFunctionsList::TheList())
             throw Error(
-                "The function expression could not be evaluated because there are no server functions defined on this server");
+                    "The function expression could not be evaluated because there are no server functions defined on this server");
 
-        D4FunctionEvaluator parser(dmr, ServerFunctionsList::TheList());
+        D4FunctionEvaluator parser(dmr.get(), ServerFunctionsList::TheList());
         bool parse_ok = parser.parse(d_dap4function);
         if (!parse_ok) throw Error("Function Expression (" + d_dap4function + ") failed to parse.");
 
-        parser.eval(&function_result);
+        parser.eval(function_result.get());
 
         // Now use the results of running the functions for the remainder of the
         // send_data operation.
-        intern_dap4_data_using_ce(function_result);
-        root_grp = function_result.root();
+        dap4_process_ce_for_intern_data(*function_result);
+
+        return function_result;
     }
     else {
-        BESDEBUG("dap", "BESDapResponseBuilder:: going to the expression constraint. " <<endl);
-        intern_dap4_data_using_ce(*dmr);
-        root_grp = dmr->root();
+        BESDEBUG("dap", "BESDapResponseBuilder:: going to the expression constraint. " << endl);
+        dap4_process_ce_for_intern_data(*dmr);
+        return dmr;
     }
-
-
-    // Iterate through the variables in the DataDDS and read
-    // in the data if the variable has the send flag set.
-    //D4Group* root_grp = dmr->root();
-    
-    for (D4Group::Vars_iter i = root_grp->var_begin(), e = root_grp->var_end(); i != e; ++i) {
-        BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() - "<< (*i)->name() <<endl);
-        if ((*i)->send_p()) {
-            BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() Obtain data- "<< (*i)->name() <<endl);
-#if 0
-            D4Attributes*d4_attrs = (*i)->attributes();
-            BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() number of attributes "<< d4_attrs <<endl);
-            for (D4Attributes::D4AttributesIter ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end(); ii != ee; ++ii) {
-                         string name = (*ii)->name();
-                         BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() attribute name is "<<name <<endl);
-             }
-#endif
-            (*i)->intern_data();
-        }
-    }
-
-    for (D4Group::groupsIter gi = root_grp->grp_begin(), ge = root_grp->grp_end(); gi != ge; ++gi) {
-        BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() root group- "<< (*gi)->name() <<endl);
-        intern_dap4_data_grp(*gi);
-    }
-    BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() - END"<< endl);
-
-    return dmr;
 }
 
 void BESDapResponseBuilder::intern_dap4_data_grp(libdap::D4Group* grp) {
@@ -1753,14 +1717,6 @@ void BESDapResponseBuilder::intern_dap4_data_grp(libdap::D4Group* grp) {
         BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() - "<< (*i)->name() <<endl);
         if ((*i)->send_p()) {
             BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() Obtain data- "<< (*i)->name() <<endl);
-#if 0
-            D4Attributes*d4_attrs = (*i)->attributes();
-            BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() number of attributes "<< d4_attrs <<endl);
-            for (D4Attributes::D4AttributesIter ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end(); ii != ee; ++ii) {
-                         string name = (*ii)->name();
-                         BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() attribute name is "<<name <<endl);
-             }
-#endif
             (*i)->intern_data();
         }
     }
@@ -1769,6 +1725,4 @@ void BESDapResponseBuilder::intern_dap4_data_grp(libdap::D4Group* grp) {
         BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() group- "<< (*gi)->name() <<endl);
         intern_dap4_data_grp(*gi);
     }
- 
-
 }

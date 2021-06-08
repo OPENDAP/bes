@@ -455,7 +455,6 @@ void FONcArray::define(int ncid) {
 #if 0
             for (D4Attributes::D4AttributesIter ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end(); ii != ee; ++ii) {
                 if((*ii)->name() == _FillValue) {
-                    // TODO: remove debug
                     BESDEBUG("fonc", "FONcArray - attrtype " << getD4AttrType(d_array_type) << endl);
                     BESDEBUG("fonc", "FONcArray - attr_type " << (*ii)->type() << endl);
                     D4AttributeType correct_d4_attr_type = getD4AttrType(d_array_type);

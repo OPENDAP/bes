@@ -77,8 +77,6 @@ using std::ostream;
 #define MODULE "util"
 #define prolog string("BESUtil::").append(__func__).append("() - ")
 
-#define FILE_TO_STREAM_THROTTLE_KEY "FTS.Throttle"
-
 const string BES_KEY_TIMEOUT_CANCEL = "BES.CancelTimeoutOnSend";
 
 /** @brief Generate an HTTP 1.0 response header for a text document.
@@ -955,13 +953,19 @@ bool BESUtil::endsWith(string const &fullString, string const &ending)
 }
 
 /**
- * If the value of the BES Key BES.CancelTimeoutOnSend is true, cancel the
- * timeout. The intent of this is to stop the timeout counter once the
+ * @brief Checks if the timeout alarm should be canceled based on the value of the BES key BES.CancelTimeoutOnSend
+ *
+ * If the value of the BES Key BES.CancelTimeoutOnSend is false || no, then
+ * do not cancel the timeout alarm.
+ * The intent of this is to stop the timeout counter once the
  * BES starts sending data back since, the network link used by a remote
  * client may be low-bandwidth and data providers might want to ensure those
  * users get their data (and don't submit second, third, ..., requests when/if
  * the first one fails). The timeout is initiated in the BES framework when it
  * first processes the request.
+ *
+ * Default: If the BES key BES.CancelTimeoutOnSend is not set, or if it is set
+ * to true || yes then the timeout alrm will be canceled.
  *
  * @note The BES timeout is set/controlled in bes/dispatch/BESInterface
  * in the 'int BESInterface::execute_request(const string &from)' method.
@@ -971,16 +975,17 @@ bool BESUtil::endsWith(string const &fullString, string const &ending)
  */
 void BESUtil::conditional_timeout_cancel()
 {
-    bool cancel_timeout_on_send = false;
-    bool found = false;
-    string doset = "";
-    const string dosettrue = "true";
-    const string dosetyes = "yes";
+    const string false_str = "false";
+    const string no_str = "no";
 
-    TheBESKeys::TheKeys()->get_value(BES_KEY_TIMEOUT_CANCEL, doset, found);
-    if (true == found) {
-        doset = BESUtil::lowercase(doset);
-        if (dosettrue == doset || dosetyes == doset) cancel_timeout_on_send = true;
+    bool cancel_timeout_on_send = true;
+    bool found = false;
+    string value;
+
+    TheBESKeys::TheKeys()->get_value(BES_KEY_TIMEOUT_CANCEL, value, found);
+    if (found) {
+        value = BESUtil::lowercase(value);
+        if ( value == false_str || value == no_str) cancel_timeout_on_send = false;
     }
     BESDEBUG(MODULE, __func__ << "() - cancel_timeout_on_send: " << (cancel_timeout_on_send ? "true" : "false") << endl);
     if (cancel_timeout_on_send) alarm(0);
@@ -1232,15 +1237,6 @@ void BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm)
         throw BESInternalError(msg.str(),__FILE__,__LINE__);
     }
 
-    // Throttle the response based on configuration value.
-    long long int throttle=0;
-    string throttle_str;
-    bool found_it;
-    TheBESKeys::TheKeys()->get_value(FILE_TO_STREAM_THROTTLE_KEY,throttle_str,found_it);
-    if(found_it){
-        throttle = stol(throttle_str);
-    }
-
     //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     // This is where the file is copied.
     uint64_t tcount = 0;
@@ -1248,7 +1244,6 @@ void BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm)
         i_stream.read(&rbuffer[0], OUTPUT_FILE_BLOCK_SIZE);      // Read at most n bytes into
         o_strm.write(&rbuffer[0], i_stream.gcount()); // buf, then write the buf to
         tcount += i_stream.gcount();
-        std::this_thread::sleep_for(std::chrono::milliseconds(throttle));
     }
     o_strm.flush();
 
@@ -1282,7 +1277,8 @@ void BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm)
         auto crntpos = o_strm.tellp();
         msg << " current_position: " << crntpos << endl;
         BESDEBUG(MODULE, msg.str());
-        INFO_LOG(msg.str());
+        ERROR_LOG(msg.str());
+        // TODO Should we throw an exception here? Maybe BESInternalFatalError ??
     }
 
     msg.str(prolog);

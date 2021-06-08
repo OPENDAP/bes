@@ -103,8 +103,6 @@ FONcByte::write(int ncid) {
     else
         _b->intern_data(*get_eval(), *get_dds());
 
-    // TODO repeat this for all the subsequent scalar types' write() methods
-    //  jhrg 4/14/21
     // For scalar types, assign the value to a local variable. Eliminate the
     // allocation of dynamic memory as well as the delete call. The amount of
     // memory used in this case is too small to warrant any more optimization.

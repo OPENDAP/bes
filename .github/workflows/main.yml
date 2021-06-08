@@ -9,22 +9,23 @@ env:
 
 on:
   push:
-    branches: [ master ]
-  # FIXME Remove these comments before merging. jhrg 3/25/21
-  # pull_request:
-  #   branches: [ master ]
+    branches: [ actions-build ]
+  pull_request:
+    branches: [ actions-build ]
   workflow_dispatch:
 
 jobs:
   ubuntu-build:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-20.04
     
     steps:
-      - name: Packages
-        run: sudo apt-get --yes install libxml2-dev uuid-dev libcurl4-openssl-dev libcppunit-dev libicu-dev
-
       - name: Set PATH
         run: echo "$prefix/bin:$prefix/deps/bin" >> $GITHUB_PATH
+        #run: echo "$prefix/deps/bin:$prefix/bin" >> $GITHUB_PATH
+        
+      - name: Packages
+        run: sudo apt-get --yes install libxml2-dev uuid-dev libcurl4-openssl-dev libcppunit-dev libfl-dev gcovr
+
 
       - name: cache-deps
         id: cache-deps
@@ -34,12 +35,12 @@ jobs:
           key: deps-${{ runner.os }}
 
       - name: build dependencies
-        if: steps.cache-deps.outputs.cache-hit != 'true'
+        if: steps.cache-bison.outputs.cache-hit != 'true'
         run: |
+          echo "PATH: $PATH"
           git clone https://github.com/OPENDAP/hyrax-dependencies
           cd hyrax-dependencies
           make --jobs=$jobs
-          gdal-config --formats
 
       - name: cache-libdap4
         id: cache-libdap4
@@ -56,22 +57,36 @@ jobs:
           autoreconf --force --install --verbose
           ./configure --prefix=$prefix --enable-developer
           make --jobs=$jobs
+          make check --jobs=$jobs
           make install
 
-      - name: checkout
-        uses: actions/checkout@v2
+      - name: build bes
+        run: |
+          git clone --recurse-submodules https://github.com/OPENDAP/bes
+          cd bes
+          autoreconf --force --install --verbose
+          ./configure --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+          make --jobs=$jobs
+          make install
 
-      - name: autoreconf
-        run: autoreconf --force --install --verbose
+     # - name: checkout
+     #   uses: actions/checkout@v2
+     #   with:
+     #     submodules: 'recursive'
 
-      - name: configure
-        run: ./configure --prefix=$prefix --with-dependecies=$prefix/deps --enable-developer
+     # - name: autoreconf
+     #   run: autoreconf --force --install --verbose
 
-      - name: Make
-        run: make --jobs=$jobs
+     # - name: configure
+     #   run: |
+     #     ./configure --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer | tee foo
+     #     grep -e "^checking for libdap .* yes$" foo  
 
-      - name: Check
-        run: make --jobs=$jobs check
+     # - name: Make
+     #   run: make -j7
 
-      - name: Install
-        run: make install
+     # - name: Check
+     #   run: make -j7 check
+
+     # - name: Install
+     #   run: make install
