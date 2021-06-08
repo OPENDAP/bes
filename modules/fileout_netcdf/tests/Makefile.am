@@ -5,7 +5,7 @@ noinst_DATA = bes.conf bes.nc4.conf bes.nc4.grp.conf bes.functions.conf
 
 CLEANFILES = bes.conf bes.nc4.conf bes.nc4.grp.conf bes.functions.conf
 
-EXTRA_DIST = bescmd $(TESTSUITE).at $(TESTSUITE)  \
+EXTRA_DIST = bescmd $(TESTSUITE).at $(TESTSUITE) $(TESTSUITE_FUNC).at $(TESTSUITE_FUNC) \
 atlocal.in bes.conf.in bes.nc4.conf.in bes.nc4.grp.conf.in bes.functions.conf.in \
 package.m4 local_handler_tests_macros.m4
 
@@ -44,13 +44,9 @@ check-local: $(TESTSUITE) $(TESTSUITE_FUNC) atconfig atlocal
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 	$(SHELL) '$(TESTSUITE_FUNC)' --conf=bes.functions.conf $(TESTSUITEFLAGS)
 
-# $(TESTSUITE) $(TESTSUITE_FUNC) atconfig atlocal
-#	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
-#	$(SHELL) '$(TESTSUITE_FUNC) --conf=bes.functions.conf' $(TESTSUITEFLAGS)
-
-installcheck-local: $(TESTSUITE) atconfig atlocal 
+installcheck-local: $(TESTSUITE) $(TESTSUITE_FUNC) atconfig atlocal
 	$(SHELL) '$(TESTSUITE)' AUTOTEST_PATH='$(bindir)' $(TESTSUITEFLAGS)
-	$(SHELL) '$(TESTSUITE_FUNC)' AUTOTEST_PATH='$(bindir)' $(TESTSUITEFLAGS)
+	$(SHELL) '$(TESTSUITE_FUNC)' AUTOTEST_PATH='$(bindir)' --conf=bes.functions.conf $(TESTSUITEFLAGS)
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean && rm -f $(TESTSUITE)
