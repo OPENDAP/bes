@@ -79,7 +79,6 @@ install:
   - tar -C $HOME -xzvf $TRAVIS_BUILD_DIR/hyrax-dependencies-build.tar.gz
   - aws s3 cp s3://opendap.travis.build/libdap-build.tar.gz $TRAVIS_BUILD_DIR
   - tar -C $HOME -xzvf $TRAVIS_BUILD_DIR/libdap-build.tar.gz
-  - echo $DOCKER_HUB_PSWD | docker login -u $DOCKER_HUB_ID --password-stdin
 
 before_script:
   # This is now done in each step. Doing that made the libdap4 build a bit faster/cleaner
@@ -176,6 +175,7 @@ jobs:
     - export BES_BUILD=centos7
     - mkdir -p $prefix/rpmbuild
     - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
+    - echo $DOCKER_HUB_PSWD | docker login -u $DOCKER_HUB_ID --password-stdin
     - docker run --volume $prefix/rpmbuild:/root/rpmbuild --volume $TRAVIS_BUILD_DIR:/root/travis
                  --env OS=centos7
                  --env DIST=el7
