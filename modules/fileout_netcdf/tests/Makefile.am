@@ -49,8 +49,9 @@ installcheck-local: $(TESTSUITE) $(TESTSUITE_FUNC) atconfig atlocal
 	$(SHELL) '$(TESTSUITE_FUNC)' AUTOTEST_PATH='$(bindir)' --conf=bes.functions.conf $(TESTSUITEFLAGS)
 
 clean-local:
-	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean && rm -f $(TESTSUITE)
-	test ! -f '$(TESTSUITE_FUNC)' || $(SHELL) '$(TESTSUITE_FUNC)' --clean && rm -f $(TESTSUITE_FUNC)
+	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
+	test ! -f '$(TESTSUITE_FUNC)' || $(SHELL) '$(TESTSUITE_FUNC)' --clean
+	-rm -f $(TESTSUITE) $(TESTSUITE_FUNC)
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
