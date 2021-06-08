@@ -150,10 +150,19 @@ bool FONcMap::compare(libdap::Array *tomap)
         // compare the values of the array
         char *map_buf = map->get_buf();
         char *tomap_buf = tomap->get_buf();
+
+        if (!map_buf || !tomap_buf)
+            isequal = false;
+        else if (0 != memcmp(map_buf, tomap_buf, map->width()))
+            isequal = false;
+
+#if 0
         int cmpres = memcmp(map_buf, tomap_buf, map->width());
         if (0 != cmpres) {
             isequal = false;
         }
+#endif
+
     }
 #endif
 
