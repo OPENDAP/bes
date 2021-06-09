@@ -30,28 +30,19 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef PPTProtocol_h_
-#define PPTProtocol_h_ 1
+#ifndef PPTProtocolNames_h_
+#define PPTProtocolNames_h_ 1
 
-#include <string>
 
-class PPTProtocol
-{
-public:
-    // Generic socket message when the mapper fails to find the proper
-    // protocol string
-    static std::string PPT_PROTOCOL_UNDEFINED ;
-    static std::string PPT_COMPLETE_DATA_TRANSMITION ;
-    static std::string PPT_EXIT_NOW ;
+#define PPT_PROTOCOL_UNDEFINED "PPT_PROTOCOL_UNDEFINED"
+#define PPT_COMPLETE_DATA_TRANSMISSION "PPT_COMPLETE_DATA_TRANSMITION"
+#define PPT_EXIT_NOW "PPT_EXIT_NOW"
 
-    // From client to server
-    static std::string PPTCLIENT_TESTING_CONNECTION ;
-    static std::string PPTCLIENT_REQUEST_AUTHPORT ;
+#define PPT_CLIENT_TESTING_CONNECTION "PPTCLIENT_TESTING_CONNECTION"
+#define PPT_CLIENT_REQUEST_AUTHPORT "PPTCLIENT_REQUEST_AUTHPORT"
 
-    // From server to client
-    static std::string PPTSERVER_CONNECTION_OK ;
-    static std::string PPTSERVER_AUTHENTICATE ;
-} ;
+#define PPT_SERVER_CONNECTION_OK "PPTSERVER_CONNECTION_OK"
+#define PPT_SERVER_AUTHENTICATE "PPTSERVER_AUTHENTICATE"
 
-#endif // PPTProtocol_h_
+#endif // PPTProtocolNames_h_
 

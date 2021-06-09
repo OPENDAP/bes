@@ -44,7 +44,7 @@ using std::ostream;
 #include "PPTClient.h"
 #include "TcpSocket.h"
 #include "UnixSocket.h"
-#include "PPTProtocol.h"
+#include "PPTProtocolNames.h"
 #include "BESInternalError.h"
 #include "BESSyntaxUserError.h"
 #include "TheBESKeys.h"
@@ -122,7 +122,7 @@ PPTClient::initConnection()
 {
     try
     {
-	send( PPTProtocol::PPTCLIENT_TESTING_CONNECTION ) ;
+	send(PPT_CLIENT_TESTING_CONNECTION ) ;
     }
     catch( BESInternalError &e )
     {
@@ -149,17 +149,17 @@ PPTClient::initConnection()
     string status( inBuff, 0, bytesRead ) ;
     delete [] inBuff ;
 
-    if( status == PPTProtocol::PPT_PROTOCOL_UNDEFINED )
+    if( status == PPT_PROTOCOL_UNDEFINED )
     {
 	string err = "Could not connect to server, server may be down or busy" ;
 	throw BESInternalError( err, __FILE__, __LINE__ ) ;
     }
 
-    if( status == PPTProtocol::PPTSERVER_AUTHENTICATE )
+    if(status == PPT_SERVER_AUTHENTICATE )
     {
 	authenticateWithServer() ;
     }
-    else if( status != PPTProtocol::PPTSERVER_CONNECTION_OK )
+    else if(status != PPT_SERVER_CONNECTION_OK )
     {
 	string err = "Server reported an invalid connection, \""
 	             + status + "\"" ;
@@ -175,7 +175,7 @@ PPTClient::authenticateWithServer()
     get_secure_files() ;
 
     // send request for the authentication port
-    send( PPTProtocol::PPTCLIENT_REQUEST_AUTHPORT ) ;
+    send(PPT_CLIENT_REQUEST_AUTHPORT ) ;
 
     // receive response with port, terminated with TERMINATE token. We are
     // exchanging a port number and a terminating token. The buffer doesn't

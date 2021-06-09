@@ -1959,8 +1959,7 @@ add_executable(bes
     ppt/PPTConnection.h
     ppt/PPTMarkFinder.cc
     ppt/PPTMarkFinder.h
-    ppt/PPTProtocol.cc
-    ppt/PPTProtocol.h
+    ppt/PPTProtocolNames.h
     ppt/PPTServer.cc
     ppt/PPTServer.h
     ppt/PPTStreamBuf.cc

@@ -42,7 +42,7 @@
 #include "BESInternalError.h"
 #include "BESInternalFatalError.h"
 #include "BESSyntaxUserError.h"
-#include "PPTProtocol.h"
+#include "PPTProtocolNames.h"
 #include "SocketListener.h"
 #include "ServerHandler.h"
 #include "Socket.h"
@@ -201,7 +201,7 @@ int PPTServer::welcomeClient()
 
 	string status(inBuff, bytesRead);
 
-	if (status != PPTProtocol::PPTCLIENT_TESTING_CONNECTION) {
+	if (status != PPT_CLIENT_TESTING_CONNECTION) {
 		/* If cannot negotiate with the client then we don't want to exit
 		 * by throwing an exception, we want to return and let the caller
 		 * clean up the connection
@@ -214,16 +214,16 @@ int PPTServer::welcomeClient()
 		// I think it would be better to send back a previously defined
 		// constant like this... but I don't want to break client code.
 		// jhrg 2/27/14
-		// send(PPTProtocol::PPT_PROTOCOL_UNDEFINED);
-		// BESDEBUG(MODULE, prolog << "Sent " << PPTProtocol::PPT_PROTOCOL_UNDEFINED << " to PPT client." << endl);
+		// send(PPT_PROTOCOL_UNDEFINED);
+		// BESDEBUG(MODULE, prolog << "Sent " << PPT_PROTOCOL_UNDEFINED << " to PPT client." << endl);
 
 		_mySock->close();
 		return -1;
 	}
 
 	if (!_secure) {
-		send(PPTProtocol::PPTSERVER_CONNECTION_OK);
-		BESDEBUG(MODULE, prolog << "Sent " << PPTProtocol::PPTSERVER_CONNECTION_OK << " to PPT client." << endl);
+		send(PPT_SERVER_CONNECTION_OK);
+		BESDEBUG(MODULE, prolog << "Sent " << PPT_SERVER_CONNECTION_OK << " to PPT client." << endl);
 	}
 	else {
 		authenticateClient();
@@ -237,7 +237,7 @@ void PPTServer::authenticateClient()
 #if defined HAVE_OPENSSL && defined NOTTHERE
 	BESDEBUG( MODULE, prolog << "Requiring secure connection: port = " << _securePort << endl );
 	// let the client know that it needs to authenticate
-	send( PPTProtocol::PPTSERVER_AUTHENTICATE );
+	send(PPT_SERVER_AUTHENTICATE );
 
 	// wait for the client request for the secure port
 	// We are waiting for a ppt tocken requesting the secure port number.
@@ -248,12 +248,12 @@ void PPTServer::authenticateClient()
 	int bytesRead = _mySock->receive( inBuff, ppt_buffer_size );
 	string portRequest( inBuff, bytesRead );
 	// delete [] inBuff; jhrg 3/5/14
-	if( portRequest != PPTProtocol::PPTCLIENT_REQUEST_AUTHPORT )
+	if( portRequest != PPT_CLIENT_REQUEST_AUTHPORT )
 		throw BESInternalError( string("Secure connection ... expecting request for port client requested ") + portRequest, __FILE__, __LINE__ );
 
 	// send the secure port number back to the client
 	ostringstream portResponse;
-	portResponse << _securePort << PPTProtocol::PPT_COMPLETE_DATA_TRANSMITION;
+	portResponse << _securePort << PPT_COMPLETE_DATA_TRANSMISSION;
 	send( portResponse.str() );
 
 	// create a secure server object and authenticate
