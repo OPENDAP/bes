@@ -48,7 +48,7 @@ using namespace std;
 #include "Connection.h"
 #include "Socket.h"
 #include "PPTStreamBuf.h"
-#include "PPTProtocol.h"
+#include "PPTProtocolNames.h"
 #include "BESXMLUtils.h"
 #include "BESInternalFatalError.h"
 #include "BESInternalError.h"

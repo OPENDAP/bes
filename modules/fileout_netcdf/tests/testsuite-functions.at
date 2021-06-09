@@ -1,0 +1,11 @@
+# Process with autom4te to create an -*- Autotest -*- test suite.
+
+AT_INIT([modules/fileout_netcdf/tests testsuite-functions --conf=bes.functions.conf])
+
+AT_TESTED([besstandalone])
+
+m4_include([../../handler_tests_macros.m4])
+# m4_include([local_handler_tests_macros.m4])
+
+AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/arrayT.4.function.bescmd)
+

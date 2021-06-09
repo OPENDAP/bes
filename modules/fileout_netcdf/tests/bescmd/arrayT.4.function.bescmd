@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="c" space="catalog">/data/arrayT.dods</setContainer>
+    <define name="d">
+	   <container name="c">
+	      <!-- y = mx + b; here m = 10 and b = 0 -->
+	      <constraint>linear_scale(byte_array,10,0)</constraint>
+	   </container>
+    </define>
+    <get type="dods" definition="d" returnAs="netcdf-4"/>
+</request>

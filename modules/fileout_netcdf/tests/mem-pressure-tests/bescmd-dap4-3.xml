@@ -6,11 +6,11 @@
   <bes:setContext name="dap_explicit_containers">no</bes:setContext>
   <bes:setContext name="errors">xml</bes:setContext>
   <bes:setContext name="max_response_size">0</bes:setContext>
-  <bes:setContainer name="catalogContainer" space="catalog">/data/20020602090000-JPL-L4_GHRSST-SSTfnd-MUR-GLOB-v02.0-fv04.1.nc</bes:setContainer>
+  <bes:setContainer name="catalogContainer" space="catalog">/data/ghrsst/20020602090000-JPL-L4_GHRSST-SSTfnd-MUR-GLOB-v02.0-fv04.1.nc</bes:setContainer>
   <bes:define name="d1" space="default">
     <bes:container name="catalogContainer">
-      <constraint>time,lat,lon,analysed_sst,analysis_error,mask,sea_ice_fraction</constraint>
+      <dap4constraint>/analysed_sst</dap4constraint>
     </bes:container>
   </bes:define>
-  <bes:get type="dods" definition="d1" returnAs="netcdf-4" />
+  <bes:get type="dap" definition="d1" returnAs="netcdf-4" />
 </bes:request>

@@ -15,14 +15,14 @@
 
 AT_TESTED([besstandalone])
 
-AT_ARG_OPTION_ARG([baselines],
+AT_ARG_OPTION_ARG([baselines b],
     [--baselines=yes|no   Build the baseline file for parser test 'arg'],
     [echo "baselines set to $at_arg_baselines";
      baselines=$at_arg_baselines],[baselines=])
 
-AT_ARG_OPTION_ARG([conf],
+AT_ARG_OPTION_ARG([conf c],
     [--conf=<file>   Use <file> for the bes.conf file],
-    [echo "bes_conf set to $at_arg_conf"; bes_conf=$at_arg_conf],
+    [echo "bes configuration file set to $at_arg_conf"; bes_conf=$at_arg_conf],
     [bes_conf=bes.conf])
 
 # Usage: _AT_TEST_*(<bescmd source>, <baseline file>, <xpass/xfail> [default is xpass] <repeat|cached> [default is no])
