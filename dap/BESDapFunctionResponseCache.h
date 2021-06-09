@@ -95,12 +95,12 @@ private:
     std::string get_resource_id(libdap::DDS *dds, const std::string &constraint);
     std::string get_hash_basename(const std::string &resource_id);
 
-    libdap::DDS *read_cached_data(istream &cached_data);
+    libdap::DDS *read_cached_data(std::istream &cached_data);
 
-    libdap::DDS *write_dataset_to_cache(libdap::DDS *dds, const string &resourceId, const string &constraint,
-        const string &cache_file_name);
+    libdap::DDS *write_dataset_to_cache(libdap::DDS *dds, const std::string &resourceId, const std::string &constraint,
+        const std::string &cache_file_name);
 
-    libdap::DDS *load_from_cache(const string &resource_id, string &cache_file_name);
+    libdap::DDS *load_from_cache(const std::string &resource_id, std::string &cache_file_name);
 
     friend class FunctionResponseCacheTest;
     friend class StoredResultTest;
@@ -120,17 +120,18 @@ protected:
      * @throws BESSyntaxUserError if keys not set, cache dir or prefix empty,
      * size is 0, or if cache dir does not exist.
      */
-    BESDapFunctionResponseCache(const string &cache_dir, const string &prefix, unsigned long long size) :
+    BESDapFunctionResponseCache(const std::string &cache_dir, const std::string &prefix, unsigned long long size) :
         BESFileLockingCache(cache_dir, prefix, size)
     {
     }
 
 public:
-    static const string PATH_KEY;
-    static const string PREFIX_KEY;
-    static const string SIZE_KEY;
+    static const std::string PATH_KEY;
+    static const std::string PREFIX_KEY;
+    static const std::string SIZE_KEY;
 
-    static BESDapFunctionResponseCache *get_instance(const string &cache_dir, const string &prefix, unsigned long long size);
+    static BESDapFunctionResponseCache *get_instance(const std::string &cache_dir, const std::string &prefix,
+                                                     unsigned long long size);
     static BESDapFunctionResponseCache *get_instance();
 
     virtual ~BESDapFunctionResponseCache()

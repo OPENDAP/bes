@@ -42,7 +42,7 @@
 #include <map>
 
 #include "PPTConnection.h"
-#include "PPTProtocol.h"
+#include "PPTProtocolNames.h"
 #include "Socket.h"
 #include "BESDebug.h"
 #include "BESInternalError.h"
@@ -125,7 +125,7 @@ void PPTConnection::send(const string &buffer, map<string, string> &extensions)
 void PPTConnection::sendExit()
 {
 	map<string, string> extensions;
-	extensions["status"] = PPTProtocol::PPT_EXIT_NOW;
+	extensions["status"] = PPT_EXIT_NOW;
 	send("", extensions);
 
 	// Need to send a zero-length chunk here

@@ -261,6 +261,7 @@ void RemoteResource::retrieveResource(const std::map<std::string, std::string> &
     BESDEBUG(MODULE, prolog << "BEGIN   resourceURL: " << d_remoteResourceUrl->str() << endl);
     bool mangle = true;
 
+    // TODO come back and visit this condition and determine if it is still needed jhrg/sbl 4.14.21
     if (d_initialized) {
         BESDEBUG(MODULE, prolog << "END  Already initialized." << endl);
         return;
@@ -514,8 +515,8 @@ void RemoteResource::writeResourceToFile(int fd) {
 
         // rewind the file
         // FIXME I think the idea here is that we have the file open and we should just keep
-        // reading from it. But the container mechanism works with file names, so we will
-        // likely have to open the file again. If that's true, lets remove this call. jhrg 3.2.18
+        //  reading from it. But the container mechanism works with file names, so we will
+        //  likely have to open the file again. If that's true, lets remove this call. jhrg 3.2.18
         status = lseek(fd, 0, SEEK_SET);
         if (-1 == status)
             throw BESNotFoundError("Could not seek within the response file.", __FILE__, __LINE__);

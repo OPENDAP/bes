@@ -26802,7 +26802,7 @@
 
 2006-09-15  Patrick West <pwest@ucar.edu>
 
-	Fixed problem where the PPT_COMPLETE_DATA_TRANSMITION token was
+	Fixed problem where the PPT_COMPLETE_DATA_TRANSMISSION token was
 	split between to reads of the buffer. This meant that the token is
 	written to the stream instead of being recognized as the end of the
 	transmission.

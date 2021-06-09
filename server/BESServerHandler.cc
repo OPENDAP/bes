@@ -53,20 +53,15 @@
 #include "ServerExitConditions.h"
 #include "BESUtil.h"
 #include "PPTStreamBuf.h"
-#include "PPTProtocol.h"
+#include "PPTProtocolNames.h"
 #include "BESLog.h"
 #include "BESDebug.h"
 #include "BESStopWatch.h"
 
-using std::ostringstream;
-using std::cout;
-using std::endl;
-using std::cerr;
-using std::flush;
-using std::map;
-using std::ostream;
-using std::string;
+using namespace std;
 
+#define MODULE "server"
+#define prolog std::string("BESServerHandler::").append(__func__).append("() - ")
 
 // Default is to not exit on internal error. A bad idea, but the original
 // behavior of the server. jhrg 10/4/18
@@ -124,15 +119,27 @@ void BESServerHandler::handle(Connection *c)
     }
 }
 
-void BESServerHandler::execute(Connection *c)
+void BESServerHandler::execute(Connection *connection)
 {
     // TODO This seems like a waste of time - do we really need to log this information?
     // jhrg 11/13/17
     ostringstream strm;
-    strm << "ip " << c->getSocket()->getIp() << ", port " << c->getSocket()->getPort();
+    strm << "ip " << connection->getSocket()->getIp() << ", port " << connection->getSocket()->getPort();
     string from = strm.str();
 
     map<string, string> extensions;
+
+    int socket_d = connection->getSocket()->getSocketDescriptor();
+    unsigned int bufsize = connection->getSendChunkSize();
+    PPTStreamBuf fds(socket_d, bufsize);
+    ostream my_ostrm(&fds);
+
+#if !NDEBUG
+    stringstream msg;
+    msg << prolog << "Using ostream: " << (void *) &my_ostrm << " cout: " << (void *) &cout << endl;
+    BESDEBUG(MODULE,  msg.str());
+    INFO_LOG( msg.str());
+#endif
 
     // we loop continuously waiting for messages. The only way we exit
     // this loop is: 1. we receive a status of exit from the client, 2.
@@ -143,12 +150,15 @@ void BESServerHandler::execute(Connection *c)
         ostringstream ss;
 
         bool done = false;
+        BESDEBUG(MODULE,prolog << "Waiting for client to send commands." << endl);
         while (!done)
-            done = c->receive(extensions, &ss);
+            done = connection->receive(extensions, &ss);
+
+        BESDEBUG(MODULE,prolog << "Received client command. status: '" << extensions["status"] << "'" << endl);
 
         // The server has been sent a message that the client is exiting
         // and closing the connection. So exit this process.
-        if (extensions["status"] == c->exit()) {
+        if (extensions["status"] == connection->exit()) {
             // The protocol docs indicate that the EXIT_NOW 'token' is followed
             // by a zero-length chunk (a chunk that has type 'd'). See section
             // 4.3 of the documentation (http://docs.opendap.org/index.php/Hyrax_-_BES_PPT).
@@ -157,54 +167,41 @@ void BESServerHandler::execute(Connection *c)
             // the end chunk is read. That means that it will read the end chunk for the
             // PPT_EXIT_NOW chunk (and so we don't need to).
 
-            BESDEBUG("beslistener",
-                "BESServerHandler::execute() - Received PPT_EXIT_NOW in an extension chunk." << endl);
+            BESDEBUG(MODULE,prolog << "Received PPT_EXIT_NOW in an extension chunk." << endl);
 
             // This call closes the socket - it does minimal bookkeeping and
             // calls the the kernel's close() function. NB: The method is
             // implemented in PPTServer.cc and that calls Socket::close() on the
             // Socket instance held by the Connection.
-            c->closeConnection();
+            connection->closeConnection();
 
-            BESDEBUG("beslistener",
-                "BESServerHandler::execute() - Calling exit(CHILD_SUBPROCESS_READY) which has a value of " << CHILD_SUBPROCESS_READY << endl);
+            BESDEBUG(MODULE,prolog << "Calling exit(CHILD_SUBPROCESS_READY) which has a value of " << CHILD_SUBPROCESS_READY << endl);
 
             INFO_LOG("Received exit command." << endl);
 
             exit(CHILD_SUBPROCESS_READY);
         }
 
-        // This is code that was in place for the string commands. With xml
-        // documents everything is taken care of by libxml2. This should be
-        // happening in the Interface class before passing to the parser, if
-        // need be. pwest 06 Feb 2009
-        //string cmd_str = BESUtil::www2id( ss.str(), "%", "%20" ) ;
         string cmd_str = ss.str();
 
-        BESDEBUG("server", "BESServerHandler::execute - command ... " << cmd_str << endl);
+        BESDEBUG(MODULE, prolog << "Processing client command:" << endl << cmd_str << endl);
 
         BESStopWatch sw;
         if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("BESServerHandler::execute");
 
-        // Tie the cout stream to the PPTStreamBuf and save the cout buffer so that
-        // it can be reset once the command is complete. jhrg 1/25/17
-        int descript = c->getSocket()->getSocketDescriptor();
-        unsigned int bufsize = c->getSendChunkSize();
-        PPTStreamBuf fds(descript, bufsize);
-        std::streambuf *holder;
-        holder = cout.rdbuf();
-        cout.rdbuf(&fds);
 
-        BESXMLInterface cmd(cmd_str, &cout);
+        // This is where we actual save/assign the output stream used for the
+        // the response
+        BESXMLInterface cmd(cmd_str, &my_ostrm);
+
         int status = cmd.execute_request(from);
-
         if (status == 0) {
             cmd.finish(status);
             fds.finish();
-            cout.rdbuf(holder);
+            BESDEBUG(MODULE, prolog << "Client command successfully processed." << endl);
         }
         else {
-            BESDEBUG("server", "BESServerHandler::execute - " << "error occurred" << endl);
+            BESDEBUG(MODULE, prolog << "ERROR - cmd.execute_request() returned: " << status << endl);
 
             // Send the extension status=error to the client so that it can reset. The finish()
             // method is called _after_ this so that the error response will be recognizable.
@@ -214,13 +211,11 @@ void BESServerHandler::execute(Connection *c)
             if (status == BES_INTERNAL_FATAL_ERROR) {
                 extensions["exit"] = "true";
             }
-            c->sendExtensions(extensions);
+            connection->sendExtensions(extensions);
 
             cmd.finish(status);
             // we are finished, send the last chunk
             fds.finish();
-            // reset the cout stream buffer
-            cout.rdbuf(holder);
 
             // If the status is fatal, then we want to exit. Otherwise,
             // continue, wait for the next request.
@@ -229,7 +224,7 @@ void BESServerHandler::execute(Connection *c)
                 ERROR_LOG("BES Internal Fatal Error; child returning "
                     << SERVER_EXIT_ABNORMAL_TERMINATION << " to the master listener." << endl);
 
-                c->closeConnection();
+                connection->closeConnection();
                 exit(SERVER_EXIT_ABNORMAL_TERMINATION);
 
                 break;
@@ -240,7 +235,7 @@ void BESServerHandler::execute(Connection *c)
                     ERROR_LOG("BES Internal Error; child returning "
                         << SERVER_EXIT_ABNORMAL_TERMINATION << " to the master listener." << endl);
 
-                    c->closeConnection();
+                    connection->closeConnection();
                     exit(SERVER_EXIT_ABNORMAL_TERMINATION);
                 }
                 break;
@@ -254,8 +249,6 @@ void BESServerHandler::execute(Connection *c)
             }
         }
     }	// This is the end of the infinite loop that processes commands.
-
-    c->closeConnection();
 }
 
 /** @brief dumps information about this object

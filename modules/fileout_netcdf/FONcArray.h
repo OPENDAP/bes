@@ -34,7 +34,9 @@
 
 #include <vector>
 #include <string>
-#include "AttrTable.h"
+
+#include <AttrTable.h>
+#include <D4Attributes.h>
 
 #include "FONcBaseType.h"
 
@@ -55,7 +57,7 @@ class Array;
 class FONcArray: public FONcBaseType {
 private:
     // The array being converted
-    libdap::Array * d_a;
+    libdap::Array *d_a;
     // The type of data stored in the array
     nc_type d_array_type;
     // The number of dimensions to be stored in netcdf (if string, 2)
@@ -69,8 +71,8 @@ private:
     // The netcdf dimension ids for this array from DAP4
     std::vector<int> d4_dim_ids;
     std::vector<bool>use_d4_dim_ids;
-    std::vector<int> d4_rbs_nums;
-    //std::vector<int> d4_rbs_nums_visited;
+    std::vector<int> d4_rds_nums;
+    //std::vector<int> d4_rds_nums_visited;
 
     // The netcdf dimension ids for this array
     std::vector<int> d_dim_ids;
@@ -102,25 +104,32 @@ private:
 
     void write_for_nc4_types(int ncid);
 
+    // Used in write()
+    void write_nc_variable(int ncid, nc_type var_type);
+
 public:
-    FONcArray(libdap::BaseType *b);
-    FONcArray(libdap::BaseType *b,const std::vector<int>&dim_ids,const std::vector<bool>&use_dim_ids,const std::vector<int>&rbs_nums);
-    virtual ~FONcArray();
+    explicit FONcArray(libdap::BaseType *b);
+    FONcArray(libdap::BaseType *b,const std::vector<int>&dim_ids,const std::vector<bool>&use_dim_ids,const std::vector<int>&rds_nums);
+    virtual ~FONcArray() override;
 
-    virtual void convert(std::vector<std::string> embed,bool is_dap4_group=false);
-    virtual void define(int ncid);
-    virtual void write(int ncid);
+    virtual void convert(std::vector<std::string> embed, bool is_dap4_group=false) override;
+    virtual void define(int ncid) override;
+    virtual void write(int ncid)override ;
 
-    virtual std::string name();
+    virtual std::string name() override;
     virtual libdap::Array *array()
     {
         return d_a;
     }
 
-    virtual void dump(std::ostream &strm) const;
+    virtual void dump(std::ostream &strm) const override;
+    // The below line is not necessary. Still keep it here for the future use.
+    // KY 2021-05-25
+#if 0
+    virtual libdap::AttrType getAttrType(nc_type nct) override;
+#endif
 
     static std::vector<FONcDim *> Dimensions;
-    static libdap::AttrType getAttrType(nc_type t);
 };
 
 #endif // FONcArray_h_

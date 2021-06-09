@@ -67,6 +67,7 @@
 
 #include <BESDapResponseBuilder.h>
 
+#include <BESLog.h>
 #include <BESError.h>
 #include <BESDapError.h>
 #include <BESForbiddenError.h>
@@ -109,27 +110,15 @@ FONcTransmitter::FONcTransmitter() :
 }
 
 /**
- * Hack to ensure the file descriptor for the temporary file is closed.
- */
-struct wrap_temp_descriptor {
-    int d_fd;
-    wrap_temp_descriptor(int fd) : d_fd(fd) {}
-    ~wrap_temp_descriptor() { close(d_fd); }
-};
-
-
-/**
- * Creates the "history" text appended to source attribute "history".
- * We add:
- *  - Sub-setting information if any
- *  - SSFunction invocations
- *  - ResourceID? URL?
- *  - JSON?
- * @param request_url
+ * @brief Build a history entry. Used only if the cf_history_context is not set.
+ *
+ * @param request_url The request URL to add to the history value
+ * @return A history value string. The caller must actually add this to a 'history'
+ * attribute, etc.
  */
 string create_history_txt(const string &request_url)
 {
-    // This code will be used only when the 'cf_histroy_context' is not set,
+    // This code will be used only when the 'cf_history_context' is not set,
     // which should be never in an operating server. However, when we are
     // testing, often only the besstandalone code is running and the existing
     // baselines don't set the context, so we have this. It must do something
@@ -161,16 +150,14 @@ string create_history_txt(const string &request_url)
 vector<string> get_history_entry (const string &request_url)
 {
     vector<string> hist_entry_vec;
-    string cf_history_entry;
-    string hyrax_history_txt = create_history_txt(request_url);
     bool foundIt = false;
-    string src_history_entry = BESContextManager::TheManager()->get_context("cf_history_entry", foundIt);
-    if (foundIt) {
-        // attribute history exists in source attributes
-        cf_history_entry.append(src_history_entry).append(hyrax_history_txt);
-    } else {
-        cf_history_entry.append(hyrax_history_txt);
+    string cf_history_entry = BESContextManager::TheManager()->get_context("cf_history_entry", foundIt);
+    if (!foundIt) {
+        // If the cf_history_entry context was not set by the incoming command then
+        // we compute and the value of the history string here.
+        cf_history_entry = create_history_txt(request_url);
     }
+    // And here we add to the returned vector.
     hist_entry_vec.push_back(cf_history_entry);
     return hist_entry_vec;
 }
@@ -188,7 +175,7 @@ void updateHistoryAttribute(DDS *dds, const string &ce)
     request_url = request_url.substr(request_url.find_last_of('/')+1);
     // remove 'uncompress' cache mangling
     request_url = request_url.substr(request_url.find_last_of('#')+1);
-    request_url += "?" + ce;
+    if(ce != "") request_url += "?" + ce;
 
     std::vector<std::string> hist_entry_vec = get_history_entry(request_url);
 
@@ -212,11 +199,11 @@ void updateHistoryAttribute(DDS *dds, const string &ce)
             string attr_name = globals.get_name(i);
             // Test the entry...
             if (attrType == Attr_container && BESUtil::endsWith(attr_name, "_GLOBAL")) {
-                // We are going to append to an existing history attributeif there is one
+                // We are going to append to an existing history attribute if there is one
                 // Or just add a histiry attribute if there is not one. In a most
                 // handy API moment, append_attr() does just this.
-                AttrTable *source_file_globals = globals.get_attr_table(i);
-                source_file_globals->append_attr("history", "string", &hist_entry_vec);
+                AttrTable *global_attr_tbl = globals.get_attr_table(i);
+                global_attr_tbl->append_attr("history", "string", &hist_entry_vec);
                 added_history = true;
                 BESDEBUG(MODULE, prolog << "Added history entry to " << attr_name << endl);
             }
@@ -237,14 +224,14 @@ void updateHistoryAttribute(DDS *dds, const string &ce)
 * @param dmr The DMR to modify
 * @param ce The constraint expression that produced this new netCDF file.
 */
-void updateHistoryAttribute(DMR *dmr, const string ce)
+void updateHistoryAttribute(DMR *dmr, const string &ce)
 {
     string request_url = dmr->filename();
     // remove path info
     request_url = request_url.substr(request_url.find_last_of('/')+1);
     // remove 'uncompress' cache mangling
     request_url = request_url.substr(request_url.find_last_of('#')+1);
-    request_url += "?" + ce;
+    if(ce != "") request_url += "?" + ce;
     vector<string> hist_entry_vector = get_history_entry(request_url);
 
     BESDEBUG(MODULE, prolog << "hist_entry_vec.size(): " << hist_entry_vector.size() << endl);
@@ -262,7 +249,7 @@ void updateHistoryAttribute(DMR *dmr, const string ce)
                 BESDEBUG(MODULE, prolog << "Adding history entry to " << name << endl);
                 auto *new_history = new D4Attribute("history", attr_str_c);
                 new_history->add_value_vector(hist_entry_vector);
-                (*attrs)->attributes()->add_attribute(new_history);
+                (*attrs)->attributes()->add_attribute_nocopy(new_history);
             } else {
                 (*attrs)->attributes()->find("history")->add_value_vector(hist_entry_vector);
             }
@@ -271,10 +258,10 @@ void updateHistoryAttribute(DMR *dmr, const string ce)
     }
     if(!added_history){
         auto *dap_global = new D4Attribute("DAP_GLOBAL",attr_container_c);
-        root_attrs->add_attribute(dap_global);
+        root_attrs->add_attribute_nocopy(dap_global);
         auto *new_history = new D4Attribute("history", attr_str_c);
         new_history->add_value_vector(hist_entry_vector);
-        dap_global->attributes()->add_attribute(new_history);
+        dap_global->attributes()->add_attribute_nocopy(new_history);
     }
 }
 
@@ -299,23 +286,6 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
     BESDEBUG(MODULE,  prolog << "BEGIN" << endl);
 
     try { // Expanded try block so all DAP errors are caught. ndp 12/23/2015
-        BESDapResponseBuilder responseBuilder;
-        // Use the DDS from the ResponseObject along with the parameters
-        // from the DataHandlerInterface to load the DDS with values.
-        // Note that the BESResponseObject will manage the loaded_dds object's
-        // memory. Make this a shared_ptr<>. jhrg 9/6/16
-
-        // Now that we are ready to start reading the response data we
-        // cancel any pending timeout alarm according to the configuration.
-        BESUtil::conditional_timeout_cancel();
-
-        BESDEBUG(MODULE,  prolog << "Reading data into DataDDS" << endl);
-        DDS *loaded_dds = responseBuilder.intern_dap2_data(obj, dhi);
-
-        // ResponseBuilder splits the CE, so use the DHI or make two calls and
-        // glue the result together: responseBuilder.get_btp_func_ce() + " " + responseBuilder.get_ce()
-        // jhrg 9/6/16
-        updateHistoryAttribute(loaded_dds, dhi.data[POST_CONSTRAINT]);
 
         // This object closes the file when it goes out of scope.
         bes::TempFile temp_file(FONcRequestHandler::temp_dir + "/ncXXXXXX");
@@ -323,7 +293,7 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
         BESDEBUG(MODULE,  prolog << "Building response file " << temp_file.get_name() << endl);
         // Note that 'RETURN_CMD' is the same as the string that determines the file type:
         // netcdf 3 or netcdf 4. Hack. jhrg 9/7/16
-        FONcTransform ft(loaded_dds, dhi, temp_file.get_name(), dhi.data[RETURN_CMD]);
+        FONcTransform ft(obj, &dhi, temp_file.get_name(), dhi.data[RETURN_CMD]);
         ft.transform();
 
         ostream &strm = dhi.get_output_stream();
@@ -372,20 +342,6 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
     BESDEBUG(MODULE,  prolog << "BEGIN" << endl);
 
     try { // Expanded try block so all DAP errors are caught. ndp 12/23/2015
-        BESDapResponseBuilder responseBuilder;
-        // Use the DDS from the ResponseObject along with the parameters
-        // from the DataHandlerInterface to load the DDS with values.
-        // Note that the BESResponseObject will manage the loaded_dds object's
-        // memory. Make this a shared_ptr<>. jhrg 9/6/16
-
-        // Now that we are ready to start reading the response data we
-        // cancel any pending timeout alarm according to the configuration.
-        BESUtil::conditional_timeout_cancel();
-
-        BESDEBUG(MODULE,  prolog << "Reading data into DMR" << endl);
-        //DDS *loaded_dds = responseBuilder.intern_dap2_data(obj, dhi);
-        DMR *loaded_dmr = responseBuilder.intern_dap4_data(obj, dhi);
-        updateHistoryAttribute(loaded_dmr, dhi.data[POST_CONSTRAINT]);
 
         // This object closes the file when it goes out of scope.
         bes::TempFile temp_file(FONcRequestHandler::temp_dir + "/ncXXXXXX");
@@ -393,12 +349,21 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
         BESDEBUG(MODULE,  prolog << "Building response file " << temp_file.get_name() << endl);
         // Note that 'RETURN_CMD' is the same as the string that determines the file type:
         // netcdf 3 or netcdf 4. Hack. jhrg 9/7/16
-        FONcTransform ft(loaded_dmr, dhi, temp_file.get_name(), dhi.data[RETURN_CMD]);
+        // FONcTransform ft(loaded_dmr, dhi, temp_file.get_name(), dhi.data[RETURN_CMD]);
+        FONcTransform ft(obj, &dhi, temp_file.get_name(), dhi.data[RETURN_CMD]);
 
         // Call the transform function for DAP4.
         ft.transform_dap4();
 
         ostream &strm = dhi.get_output_stream();
+
+#if !NDEBUG
+        stringstream msg;
+        msg << prolog << "Using ostream: " << (void *) &strm << endl;
+        BESDEBUG(MODULE,  msg.str());
+        INFO_LOG( msg.str());
+#endif
+
         if (!strm) throw BESInternalError("Output stream is not set, can not return as", __FILE__, __LINE__);
 
         BESDEBUG(MODULE,  prolog << "Transmitting temp file " << temp_file.get_name() << endl);
@@ -422,24 +387,3 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
     BESDEBUG(MODULE,  prolog << "END  Transmitted as netcdf" << endl);
 }
 
-#if 0  // Moved to BESUtil.cc
-/** @brief stream the temporary netcdf file back to the requester
- *
- * Streams the temporary netcdf file specified by filename to the specified
- * C++ ostream
- *
- * @param filename The name of the file to stream back to the requester
- * @param strm C++ ostream to write the contents of the file to
- * @throws BESInternalError if problem opening the file
- */
-void FONcTransmitter::write_temp_file_to_stream(int fd, ostream &strm) //, const string &filename, const string &ncVersion)
-{
-    char block[OUTPUT_FILE_BLOCK_SIZE];
-
-    int nbytes = read(fd, block, sizeof block);
-    while (nbytes > 0) {
-        strm.write(block, nbytes /*os.gcount()*/);
-        nbytes = read(fd, block, sizeof block);
-    }
-}
-#endif

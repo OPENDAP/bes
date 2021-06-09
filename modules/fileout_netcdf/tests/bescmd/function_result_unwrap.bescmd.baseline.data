@@ -1,9 +1,55 @@
 netcdf test {
 dimensions:
-	promoted_message_len = 121 ;
+	byte_dim1 = 2 ;
+	byte_dim2 = 5 ;
+	str_dim1 = 2 ;
+	str_dim2 = 3 ;
+	str_dim3 = 6 ;
+	str_array_len = 10 ;
 variables:
-	char promoted_message(promoted_message_len) ;
+	short byte_array(byte_dim1, byte_dim2) ;
+	char str_array(str_dim1, str_dim2, str_dim3, str_array_len) ;
 data:
 
- promoted_message = "This libdap:Str object should appear at the top level of the response and not as a member of a libdap::Constructor type." ;
+ byte_array =
+  0, 1, 2, 3, 4,
+  5, 6, 7, 8, 9 ;
+
+ str_array =
+  "str_0.0.0",
+  "str_0.0.1",
+  "str_0.0.2",
+  "str_0.0.3",
+  "str_0.0.4",
+  "str_0.0.5",
+  "str_0.1.0",
+  "str_0.1.1",
+  "str_0.1.2",
+  "str_0.1.3",
+  "str_0.1.4",
+  "str_0.1.5",
+  "str_0.2.0",
+  "str_0.2.1",
+  "str_0.2.2",
+  "str_0.2.3",
+  "str_0.2.4",
+  "str_0.2.5",
+  "str_1.0.0",
+  "str_1.0.1",
+  "str_1.0.2",
+  "str_1.0.3",
+  "str_1.0.4",
+  "str_1.0.5",
+  "str_1.1.0",
+  "str_1.1.1",
+  "str_1.1.2",
+  "str_1.1.3",
+  "str_1.1.4",
+  "str_1.1.5",
+  "str_1.2.0",
+  "str_1.2.1",
+  "str_1.2.2",
+  "str_1.2.3",
+  "str_1.2.4",
+  "str_1.2.5" ;
 }

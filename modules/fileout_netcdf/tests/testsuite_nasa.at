@@ -1,8 +1,8 @@
 # Process with autom4te to create an -*- Autotest -*- test suite.
 
-AT_INIT([modules/fileout_netcdf/tests testsuite])
+AT_INIT([modules/fileout_netcdf/tests testsuite_nasa])
 
-T_TESTED([besstandalone])
+AT_TESTED([besstandalone])
 
 m4_include([../../handler_tests_macros.m4])
 m4_include([local_handler_tests_macros.m4])

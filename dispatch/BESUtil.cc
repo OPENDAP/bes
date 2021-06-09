@@ -34,6 +34,9 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <thread>         // std::this_thread::sleep_for
+#include <chrono>         // std::chrono::seconds
+#include <string>     // std::string, std::stol
 
 #if HAVE_UNISTD_H
 #include <unistd.h>
@@ -950,13 +953,19 @@ bool BESUtil::endsWith(string const &fullString, string const &ending)
 }
 
 /**
- * If the value of the BES Key BES.CancelTimeoutOnSend is true, cancel the
- * timeout. The intent of this is to stop the timeout counter once the
+ * @brief Checks if the timeout alarm should be canceled based on the value of the BES key BES.CancelTimeoutOnSend
+ *
+ * If the value of the BES Key BES.CancelTimeoutOnSend is false || no, then
+ * do not cancel the timeout alarm.
+ * The intent of this is to stop the timeout counter once the
  * BES starts sending data back since, the network link used by a remote
  * client may be low-bandwidth and data providers might want to ensure those
  * users get their data (and don't submit second, third, ..., requests when/if
  * the first one fails). The timeout is initiated in the BES framework when it
  * first processes the request.
+ *
+ * Default: If the BES key BES.CancelTimeoutOnSend is not set, or if it is set
+ * to true || yes then the timeout alrm will be canceled.
  *
  * @note The BES timeout is set/controlled in bes/dispatch/BESInterface
  * in the 'int BESInterface::execute_request(const string &from)' method.
@@ -966,16 +975,17 @@ bool BESUtil::endsWith(string const &fullString, string const &ending)
  */
 void BESUtil::conditional_timeout_cancel()
 {
-    bool cancel_timeout_on_send = false;
-    bool found = false;
-    string doset = "";
-    const string dosettrue = "true";
-    const string dosetyes = "yes";
+    const string false_str = "false";
+    const string no_str = "no";
 
-    TheBESKeys::TheKeys()->get_value(BES_KEY_TIMEOUT_CANCEL, doset, found);
-    if (true == found) {
-        doset = BESUtil::lowercase(doset);
-        if (dosettrue == doset || dosetyes == doset) cancel_timeout_on_send = true;
+    bool cancel_timeout_on_send = true;
+    bool found = false;
+    string value;
+
+    TheBESKeys::TheKeys()->get_value(BES_KEY_TIMEOUT_CANCEL, value, found);
+    if (found) {
+        value = BESUtil::lowercase(value);
+        if ( value == false_str || value == no_str) cancel_timeout_on_send = false;
     }
     BESDEBUG(MODULE, __func__ << "() - cancel_timeout_on_send: " << (cancel_timeout_on_send ? "true" : "false") << endl);
     if (cancel_timeout_on_send) alarm(0);
@@ -1201,6 +1211,11 @@ void ios_state_msg(std::ios &ios_ref, std::stringstream &msg) {
  */
 void BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm)
 {
+    stringstream msg;
+    msg << prolog << "Using ostream: " << (void *) &o_strm << " cout: " << (void *) &cout << endl;
+    BESDEBUG(MODULE,  msg.str());
+    INFO_LOG( msg.str());
+
     char rbuffer[OUTPUT_FILE_BLOCK_SIZE];
     std::ifstream i_stream(file_name, std::ios_base::in | std::ios_base::binary);  // Use binary mode so we can
 
@@ -1260,13 +1275,14 @@ void BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm)
         msg << prolog << "There was an ostream error during transmit. Transmitted " << tcount  << " bytes.";
         ios_state_msg(i_stream, msg);
         auto crntpos = o_strm.tellp();
-        msg << " current_position: " << crntpos;
-        BESDEBUG(MODULE, msg.str() << endl);
-        INFO_LOG(msg.str());
+        msg << " current_position: " << crntpos << endl;
+        BESDEBUG(MODULE, msg.str());
+        ERROR_LOG(msg.str());
+        // TODO Should we throw an exception here? Maybe BESInternalFatalError ??
     }
 
-    stringstream msg;
-    msg << prolog << "Sent "<< tcount << " bytes from file '" << file_name<< "'. " << endl;
+    msg.str(prolog);
+    msg << "Sent "<< tcount << " bytes from file '" << file_name<< "'. " << endl;
     BESDEBUG(MODULE,msg.str());
     INFO_LOG(msg.str());
 }

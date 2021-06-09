@@ -34,7 +34,7 @@
 #define PPTConnection_h 1
 
 #include "Connection.h"
-#include "PPTProtocol.h"
+#include "PPTProtocolNames.h"
 
 class Socket;
 
@@ -77,7 +77,7 @@ public:
 
 	virtual std::string exit()
 	{
-		return PPTProtocol::PPT_EXIT_NOW;
+		return PPT_EXIT_NOW;
 	}
 
 	virtual void send(const std::string &buffer, std::map<std::string, std::string> &extensions);

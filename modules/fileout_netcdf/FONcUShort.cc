@@ -79,6 +79,16 @@ FONcUShort::define( int ncid )
 
     if( !_defined )
     {
+
+        if(is_dap4) {                                                                                       
+            D4Attributes *d4_attrs = _bt->attributes();                                                     
+            updateD4AttrType(d4_attrs,NC_USHORT);   
+        }
+        else {
+            AttrTable &attrs = _bt->get_attr_table();  
+            updateAttrType(attrs,NC_USHORT); 
+        }
+
 	FONcAttributes::add_variable_attributes( ncid, _varid, _bt,isNetCDF4_ENHANCED(),is_dap4 ) ;
 	FONcAttributes::add_original_name( ncid, _varid,
 					   _varname, _orig_varname ) ;
@@ -102,6 +112,12 @@ FONcUShort::write( int ncid )
     BESDEBUG( "fonc", "FONcUShort::write for var " << _varname << endl ) ;
     size_t var_index[] = {0} ;
     unsigned short *data = new unsigned short ;
+
+    if (is_dap4)
+        _bt->intern_data();
+    else
+        _bt->intern_data(*get_eval(), *get_dds());
+
     _bt->buf2val( (void**)&data ) ;
     int stax = nc_put_var1_ushort( ncid, _varid, var_index, data ) ;
     if( stax != NC_NOERR )

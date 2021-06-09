@@ -1,6 +1,12 @@
 netcdf test {
 dimensions:
-	promoted_message_len = 121 ;
+	byte_dim1 = 2 ;
+	byte_dim2 = 5 ;
+	str_dim1 = 2 ;
+	str_dim2 = 3 ;
+	str_dim3 = 6 ;
+	str_array_len = 10 ;
 variables:
-	char promoted_message(promoted_message_len) ;
+	short byte_array(byte_dim1, byte_dim2) ;
+	char str_array(str_dim1, str_dim2, str_dim3, str_array_len) ;
 }

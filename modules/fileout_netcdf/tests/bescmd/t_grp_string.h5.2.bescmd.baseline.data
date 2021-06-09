@@ -18,6 +18,10 @@ variables:
 		array_special_case:value = "A" ;
 	char scalar(scalar_len9) ;
 		scalar:value = "Parting is such sweet sorrow." ;
+
+// global attributes:                                                                                       
+                :history = "removed date-timex t_grp_string.h5" ;
+
 data:
 
  array_1d =

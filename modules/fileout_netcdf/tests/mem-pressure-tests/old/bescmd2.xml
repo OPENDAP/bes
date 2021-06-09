@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="http-bio-8080-exec-10:49">
+  <bes:setContext name="bes_timeout">300</bes:setContext>
+  <bes:setContext name="cf_history_entry">2021-05-21 21:02:32 GMT Hyrax-fonc-refactor-v2 GHRSST file</bes:setContext>
+  <bes:setContext name="xdap_accept">3.2</bes:setContext>
+  <bes:setContext name="dap_explicit_containers">no</bes:setContext>
+  <bes:setContext name="errors">xml</bes:setContext>
+  <bes:setContext name="max_response_size">0</bes:setContext>
+  <bes:setContainer name="catalogContainer" space="catalog">/data/20210102090000-JPL-L4_GHRSST-SSTfnd-MUR-GLOB-v02.0-fv04.1.nc</bes:setContainer>
+  <bes:define name="d1" space="default">
+    <bes:container name="catalogContainer">
+      <constraint></constraint>
+    </bes:container>
+  </bes:define>
+  <bes:get type="dods" definition="d1" returnAs="netcdf-4" />
+</bes:request>

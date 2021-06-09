@@ -32,11 +32,11 @@ libbes_ppt_la_LIBADD = ../dispatch/libbes_dispatch.la
 pkginclude_HEADERS = $(HDRS)
 
 SRCS = PPTClient.cc Socket.cc TcpSocket.cc UnixSocket.cc SocketUtilities.cc \
-	SocketListener.cc PPTServer.cc PPTProtocol.cc			    \
+	SocketListener.cc PPTServer.cc \
 	PPTConnection.cc Connection.cc PPTStreamBuf.cc
 
 HDRS = PPTClient.h Socket.h TcpSocket.h UnixSocket.h SocketUtilities.h	\
-	SocketConfig.h SocketListener.h PPTServer.h PPTProtocol.h	\
+	SocketConfig.h SocketListener.h PPTServer.h PPTProtocolNames.h	\
 	PPTConnection.h Connection.h ServerHandler.h PPTStreamBuf.h
 
 #if HAVE_OPENSSL

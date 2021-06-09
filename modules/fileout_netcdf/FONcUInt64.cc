@@ -84,6 +84,17 @@ FONcUInt64::define( int ncid )
 
     if( !_defined )
     {
+
+        if(is_dap4) {                                                                                       
+            D4Attributes *d4_attrs = _bt->attributes();                                                     
+            updateD4AttrType(d4_attrs,NC_UINT64);   
+        }
+        else {
+            AttrTable &attrs = _bt->get_attr_table();  
+            updateAttrType(attrs,NC_UINT64); 
+        }
+
+
 	FONcAttributes::add_variable_attributes( ncid, _varid, _bt ,isNetCDF4_ENHANCED(),is_dap4) ;
 	FONcAttributes::add_original_name( ncid, _varid,
 					   _varname, _orig_varname ) ;
@@ -106,6 +117,12 @@ FONcUInt64::write( int ncid )
     size_t var_index[] = {0} ;
     //uint64_t *data = new uint64_t ;
     unsigned long long  *data = new unsigned long long ;
+
+    if (is_dap4)
+        _bt->intern_data();
+    else
+        _bt->intern_data(*get_eval(), *get_dds());
+
     _bt->buf2val( (void**)&data ) ;
     int stax = nc_put_var1_ulonglong( ncid, _varid, var_index, data ) ;
     if( stax != NC_NOERR )

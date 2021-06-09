@@ -50,8 +50,8 @@ using std::setfill;
 const char* eod_marker = "0000000d";
 const size_t eod_marker_len = 8;
 
-PPTStreamBuf::PPTStreamBuf(int fd, unsigned bufsize) :
-    d_bufsize(bufsize), d_buffer(0), count(0)
+PPTStreamBuf::PPTStreamBuf(int fd, unsigned bufsize) : d_fd(fd),
+    d_bufsize(bufsize), d_buffer(nullptr), count(0)
 {
     open(fd, bufsize);
 }

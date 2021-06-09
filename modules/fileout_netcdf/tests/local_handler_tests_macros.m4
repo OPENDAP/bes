@@ -13,6 +13,7 @@ m4_define([AT_BESCMD_RESPONSE_TEST_NC4_ENHANCED], [dnl
     baseline=$abs_srcdir/$1.baseline
     pass=$2
     repeat=$3
+    bes_conf=bes.nc4.conf
 
     AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
 
@@ -20,11 +21,11 @@ m4_define([AT_BESCMD_RESPONSE_TEST_NC4_ENHANCED], [dnl
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
-        AT_CHECK([besstandalone $repeat -c $abs_builddir/bes.nc4.conf -i $input], [], [stdout])
+        AT_CHECK([besstandalone $repeat -c $abs_builddir/$bes_conf -i $input], [], [stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
-        AT_CHECK([besstandalone $repeat -c $abs_builddir/bes.nc4.conf -i $input], [], [stdout])
+        AT_CHECK([besstandalone $repeat -c $abs_builddir/$bes_conf -i $input], [], [stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         AT_XFAIL_IF([test z$2 = zxfail])
         ])
@@ -41,6 +42,7 @@ m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST_NC4_ENHANCED],  [dnl
     baseline=$abs_srcdir/$1.baseline
     pass=$2
     repeat=$3
+    bes_conf=bes.nc4.conf
 
     AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
 
@@ -48,11 +50,11 @@ m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST_NC4_ENHANCED],  [dnl
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/bes.nc4.conf -i $input | getdap -Ms -], [0], [stdout])
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap -Ms -], [0], [stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/bes.nc4.conf -i $input | getdap -Ms -], [0], [stdout])
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap -Ms -], [0], [stdout])
         AT_CHECK([diff -b -B $baseline stdout], [0], [ignore])
         AT_XFAIL_IF([test z$2 = zxfail])
         ])
@@ -69,6 +71,7 @@ m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST_NC4_ENHANCED],  [dnl
     baseline=$abs_srcdir/$1.baseline
     pass=$2
     repeat=$3
+    bes_conf=bes.nc4.conf
 
     AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
 
@@ -76,11 +79,11 @@ m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST_NC4_ENHANCED],  [dnl
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/bes.nc4.conf -i $input | getdap4 -D -M -s -], [], [stdout])
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap4 -D -M -s -], [], [stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/bes.nc4.conf -i $input | getdap4 -D -M -s -], [], [stdout])
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap4 -D -M -s -], [], [stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         AT_XFAIL_IF([test z$2 = zxfail])
         ])
@@ -102,6 +105,7 @@ m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED],  [dnl
     baseline=$abs_srcdir/$1.baseline
     pass=$2
     repeat=$3
+    bes_conf=bes.nc4.conf
 
     AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
 
@@ -109,7 +113,7 @@ m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED],  [dnl
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
          [
-         AT_CHECK([besstandalone -c $abs_builddir/bes.nc4.conf -i $input > test.nc])
+         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input > test.nc])
 
          dnl first get the version number, then the header, then the data
          AT_CHECK([ncdump -k test.nc > $baseline.ver.tmp])
@@ -119,7 +123,7 @@ m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED],  [dnl
          REMOVE_DATE_TIME([$baseline.data.tmp])
          ],
          [
-         AT_CHECK([besstandalone -c $abs_builddir/bes.nc4.conf -i $input > test.nc])
+         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input > test.nc])
         
          AT_CHECK([ncdump -k test.nc > tmp])
          AT_CHECK([diff -b -B $baseline.ver tmp])
@@ -152,6 +156,7 @@ m4_define([AT_BESCMD_RESPONSE_TEST_NC4_ENHANCED_GRP], [dnl
     baseline=$abs_srcdir/$1.baseline
     pass=$2
     repeat=$3
+    bes_conf=bes.nc4.grp.conf
 
     AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
 
@@ -159,11 +164,11 @@ m4_define([AT_BESCMD_RESPONSE_TEST_NC4_ENHANCED_GRP], [dnl
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
-        AT_CHECK([besstandalone $repeat -c $abs_builddir/bes.nc4.grp.conf -i $input], [], [stdout])
+        AT_CHECK([besstandalone $repeat -c $abs_builddir/$bes_conf -i $input], [], [stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
-        AT_CHECK([besstandalone $repeat -c $abs_builddir/bes.nc4.grp.conf -i $input], [], [stdout])
+        AT_CHECK([besstandalone $repeat -c $abs_builddir/$bes_conf -i $input], [], [stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         AT_XFAIL_IF([test z$2 = zxfail])
         ])
@@ -180,6 +185,7 @@ m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST_NC4_ENHANCED_GRP],  [dnl
     baseline=$abs_srcdir/$1.baseline
     pass=$2
     repeat=$3
+    bes_conf=bes.nc4.grp.conf
 
     AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
 
@@ -187,11 +193,11 @@ m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST_NC4_ENHANCED_GRP],  [dnl
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/bes.nc4.grp.conf -i $input | getdap -Ms -], [0], [stdout])
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap -Ms -], [0], [stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/bes.nc4.grp.conf -i $input | getdap -Ms -], [0], [stdout])
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap -Ms -], [0], [stdout])
         AT_CHECK([diff -b -B $baseline stdout], [0], [ignore])
         AT_XFAIL_IF([test z$2 = zxfail])
         ])
@@ -208,6 +214,7 @@ m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST_NC4_ENHANCED_GRP],  [dnl
     baseline=$abs_srcdir/$1.baseline
     pass=$2
     repeat=$3
+    bes_conf=bes.nc4.grp.conf
 
     AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
 
@@ -215,11 +222,11 @@ m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST_NC4_ENHANCED_GRP],  [dnl
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/bes.nc4.grp.conf -i $input | getdap4 -D -M -s -], [], [stdout])
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap4 -D -M -s -], [], [stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/bes.nc4.grp.conf -i $input | getdap4 -D -M -s -], [], [stdout])
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap4 -D -M -s -], [], [stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         AT_XFAIL_IF([test z$2 = zxfail])
         ])
@@ -241,6 +248,7 @@ m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP],  [dnl
     baseline=$abs_srcdir/$1.baseline
     pass=$2
     repeat=$3
+    bes_conf=bes.nc4.grp.conf
 
     AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
 
@@ -248,7 +256,7 @@ m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP],  [dnl
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
          [
-         AT_CHECK([besstandalone -c $abs_builddir/bes.nc4.grp.conf -i $input > test.nc])
+         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input > test.nc])
 
          dnl first get the version number, then the header, then the data
          AT_CHECK([ncdump -k test.nc > $baseline.ver.tmp])
@@ -258,7 +266,7 @@ m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP],  [dnl
          REMOVE_DATE_TIME([$baseline.data.tmp])
          ],
          [
-         AT_CHECK([besstandalone -c $abs_builddir/bes.nc4.grp.conf -i $input > test.nc])
+         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input > test.nc])
         
          AT_CHECK([ncdump -k test.nc > tmp])
          AT_CHECK([diff -b -B $baseline.ver tmp])
@@ -291,6 +299,7 @@ m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR],  [dnl
     baseline=$abs_srcdir/$1.baseline
     pass=$2
     repeat=$3
+    bes_conf=bes.nc4.grp.conf
 
     AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
 
@@ -298,16 +307,16 @@ m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR],  [dnl
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
          [
-         AT_CHECK([besstandalone -c $abs_builddir/bes.nc4.grp.conf -i $input > test.nc])
+         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input > test.nc])
 
          dnl the header
          AT_CHECK([ncdump -h test.nc > $baseline.header.tmp])
-         dnl REMOVE_DATE_TIME([$baseline.header.tmp])
+         REMOVE_DATE_TIME([$baseline.header.tmp])
          ],
          [
-         AT_CHECK([besstandalone -c $abs_builddir/bes.nc4.grp.conf -i $input > test.nc])
+         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input > test.nc])
          AT_CHECK([ncdump -h test.nc > tmp])
-         dnl REMOVE_DATE_TIME([tmp])
+         REMOVE_DATE_TIME([tmp])
          AT_CHECK([diff -b -B $baseline.header tmp])
          AT_XFAIL_IF([test z$2 = zxfail])
          ])
@@ -333,14 +342,14 @@ m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_COMPRESSION],  [dnl
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
          [
-         AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input > test.nc])
+         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input > test.nc])
 
          AT_CHECK([ncdump -sh test.nc > tmp])
          AT_CHECK([grep -m 1 $compression tmp >$baseline.comp.tmp]) 
  
          ],
          [
-         AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input > test.nc])
+         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input > test.nc])
          AT_CHECK([ncdump -sh test.nc > tmp])
          dnl only need to check if the deflate compression appears.
          AT_CHECK([grep -m 1 $compression tmp >tmp2]) 
@@ -352,5 +361,3 @@ m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_COMPRESSION],  [dnl
     AT_CLEANUP
 
 ])
-
-

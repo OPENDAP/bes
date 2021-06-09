@@ -1,0 +1,53 @@
+netcdf test {
+dimensions:
+	dim1 = 2 ;
+	dim2 = 2 ;
+	dim3 = 2 ;
+	dim4 = 2 ;
+	dim5 = 2 ;
+	dim6 = 2 ;
+	dim7 = 2 ;
+	dim8 = 2 ;
+	dim9 = 2 ;
+	dim10 = 2 ;
+variables:
+	float f32(dim1) ;
+		f32:_FillValue = 65535.f ;
+	double f64(dim2) ;
+		f64:_FillValue = -1.299999952 ;
+	short i16(dim3) ;
+		i16:_FillValue = -100s ;
+	int i32(dim4) ;
+		i32:_FillValue = -65535 ;
+	int64 i64(dim5) ;
+		i64:_FillValue = -65535LL ;
+	byte i8(dim6) ;
+		i8:_FillValue = -128b ;
+	short s_int16 ;
+		s_int16:_FillValue = 32767s ;
+	int s_int32 ;
+		s_int32:_FillValue = 2147483647 ;
+	int64 s_int64 ;
+		s_int64:_FillValue = 0LL ;
+	byte s_int8 ;
+		s_int8:_FillValue = -128b ;
+	ushort s_uint16 ;
+		s_uint16:_FillValue = 0US ;
+	uint s_uint32 ;
+		s_uint32:_FillValue = 0U ;
+	uint64 s_uint64 ;
+		s_uint64:_FillValue = 0ULL ;
+	ubyte s_uint8 ;
+		s_uint8:_FillValue = 0UB ;
+	ushort ui16(dim7) ;
+		ui16:_FillValue = 65535US ;
+	uint ui32(dim8) ;
+		ui32:_FillValue = 65535U ;
+	uint64 ui64(dim9) ;
+		ui64:_FillValue = 65535ULL ;
+	ubyte ui8(dim10) ;
+		ui8:_FillValue = 255UB ;
+
+// global attributes:                                                                                       
+                :history = "removed date-timex t_wrong_fvalue_type_all.h5" ; 
+}

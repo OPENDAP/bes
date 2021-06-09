@@ -85,6 +85,16 @@ FONcInt::define( int ncid )
 
     if( !_defined )
     {
+        if(is_dap4) {                                                                                       
+            D4Attributes *d4_attrs = _bt->attributes();                                                     
+            updateD4AttrType(d4_attrs,NC_INT);   
+        }
+        else {
+            AttrTable &attrs = _bt->get_attr_table();  
+            updateAttrType(attrs,NC_INT); 
+        }
+
+
 	FONcAttributes::add_variable_attributes( ncid, _varid, _bt ,isNetCDF4_ENHANCED(),is_dap4) ;
 	FONcAttributes::add_original_name( ncid, _varid,
 					   _varname, _orig_varname ) ;
@@ -106,6 +116,12 @@ FONcInt::write( int ncid )
     BESDEBUG( "fonc", "FONcInt::write for var " << _varname << endl ) ;
     size_t var_index[] = {0} ;
     int *data = new int ;
+
+    if (is_dap4)
+        _bt->intern_data();
+    else
+        _bt->intern_data(*get_eval(), *get_dds());
+
     _bt->buf2val( (void**)&data ) ;
     int stax = nc_put_var1_int( ncid, _varid, var_index, data ) ;
     if( stax != NC_NOERR )
