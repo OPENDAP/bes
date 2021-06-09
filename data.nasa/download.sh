@@ -6,7 +6,7 @@
 GET=""
 command -v  wget > /dev/null && GET="wget -N --retr-symlinks" 
 if [ -z "$GET" ]; then
-  command -v  curl > /dev/null && GET="curl -O"
+  command -v  curl > /dev/null && GET="curl -O -C -"
 fi
 
 if [ -z "$GET" ]; then
@@ -140,10 +140,3 @@ $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/NSIDC/S
 
 #GPM level 3 DPR
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/GESDISC/3A.GPM.DPR.algName.20180331-S221135-E234357.076185.V00B.HDF5 
-
-#PO DAAC SST
-$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/PODAAC/20160409062000-OSPO-L2P_GHRSST-SSTsubskin-VIIRS_NPP-ACSPO_V2.61-v02.0-fv01.0.nc.h5
-
-#GES DISC new AIRS
-$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/GESDISC/AIRS.AQUA.AIRS.20190901T0005.m06.g001.L1B.std.v07_01_00.E.210426151524.nc.h5
-

@@ -12,6 +12,9 @@
         <Attribute name="units" type="String">
             <value>Kelvin</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Longitude Latitude</value>
+        </Attribute>
         <Attribute name="_FillValue" type="Int16">
             <value>-32767</value>
         </Attribute>
@@ -27,9 +30,6 @@
         <Attribute name="fullnamepath" type="String">
             <value>/res_c2</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>Longitude Latitude</value>
-        </Attribute>
         <Int16/>
         <dimension name="nscan" size="2015"/>
         <dimension name="npix" size="243"/>
@@ -38,14 +38,14 @@
         <Attribute name="long_name" type="String">
             <value>Bit Mask</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Longitude Latitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>mask</value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/mask</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>Longitude Latitude</value>
         </Attribute>
         <Int16/>
         <dimension name="nscan" size="2015"/>
@@ -54,6 +54,9 @@
     <Array name="opt_depth_c2">
         <Attribute name="long_name" type="String">
             <value>Optical Depth from 7.3 GHz</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Longitude Latitude</value>
         </Attribute>
         <Attribute name="_FillValue" type="Int16">
             <value>-32767</value>
@@ -70,9 +73,6 @@
         <Attribute name="fullnamepath" type="String">
             <value>/opt_depth_c2</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>Longitude Latitude</value>
-        </Attribute>
         <Int16/>
         <dimension name="nscan" size="2015"/>
         <dimension name="npix" size="243"/>
@@ -83,6 +83,9 @@
         </Attribute>
         <Attribute name="units" type="String">
             <value>Kelvin</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Longitude Latitude</value>
         </Attribute>
         <Attribute name="_FillValue" type="Int16">
             <value>-32767</value>
@@ -99,9 +102,6 @@
         <Attribute name="fullnamepath" type="String">
             <value>/res_c1</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>Longitude Latitude</value>
-        </Attribute>
         <Int16/>
         <dimension name="nscan" size="2015"/>
         <dimension name="npix" size="243"/>
@@ -112,6 +112,9 @@
         </Attribute>
         <Attribute name="units" type="String">
             <value>percent</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Longitude Latitude</value>
         </Attribute>
         <Attribute name="_FillValue" type="Int16">
             <value>-32767</value>
@@ -128,9 +131,6 @@
         <Attribute name="fullnamepath" type="String">
             <value>/soil_moisture_c2</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>Longitude Latitude</value>
-        </Attribute>
         <Int16/>
         <dimension name="nscan" size="2015"/>
         <dimension name="npix" size="243"/>
@@ -141,6 +141,9 @@
         </Attribute>
         <Attribute name="units" type="String">
             <value>percent</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Longitude Latitude</value>
         </Attribute>
         <Attribute name="_FillValue" type="Int16">
             <value>-32767</value>
@@ -157,9 +160,6 @@
         <Attribute name="fullnamepath" type="String">
             <value>/soil_moisture_c1</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>Longitude Latitude</value>
-        </Attribute>
         <Int16/>
         <dimension name="nscan" size="2015"/>
         <dimension name="npix" size="243"/>
@@ -170,6 +170,9 @@
         </Attribute>
         <Attribute name="units" type="String">
             <value>percent</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Longitude Latitude</value>
         </Attribute>
         <Attribute name="_FillValue" type="Int16">
             <value>-32767</value>
@@ -186,9 +189,6 @@
         <Attribute name="fullnamepath" type="String">
             <value>/soil_moisture_c2_error</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>Longitude Latitude</value>
-        </Attribute>
         <Int16/>
         <dimension name="nscan" size="2015"/>
         <dimension name="npix" size="243"/>
@@ -196,6 +196,9 @@
     <Array name="opt_depth_c1">
         <Attribute name="long_name" type="String">
             <value>Optical Depth from 6.9 GHz</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Longitude Latitude</value>
         </Attribute>
         <Attribute name="_FillValue" type="Int16">
             <value>-32767</value>
@@ -212,9 +215,6 @@
         <Attribute name="fullnamepath" type="String">
             <value>/opt_depth_c1</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>Longitude Latitude</value>
-        </Attribute>
         <Int16/>
         <dimension name="nscan" size="2015"/>
         <dimension name="npix" size="243"/>
@@ -226,6 +226,9 @@
         <Attribute name="units" type="String">
             <value>seconds since 1993-01-01 00:00:00</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Longitude Latitude</value>
+        </Attribute>
         <Attribute name="_FillValue" type="Float64">
             <value>0.0000000000000000</value>
         </Attribute>
@@ -235,9 +238,6 @@
         <Attribute name="fullnamepath" type="String">
             <value>/scantime</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>Longitude Latitude</value>
-        </Attribute>
         <Float64/>
         <dimension name="nscan" size="2015"/>
         <dimension name="npix" size="243"/>
@@ -246,14 +246,14 @@
         <Attribute name="long_name" type="String">
             <value>RFI Code using 7.3 GHz</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Longitude Latitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>rfi_code2</value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/rfi_code2</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>Longitude Latitude</value>
         </Attribute>
         <Int16/>
         <dimension name="nscan" size="2015"/>
@@ -262,6 +262,9 @@
     <Array name="opt_depth_x">
         <Attribute name="long_name" type="String">
             <value>Optical Depth from 10.7 GHz</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Longitude Latitude</value>
         </Attribute>
         <Attribute name="_FillValue" type="Int16">
             <value>-32767</value>
@@ -278,9 +281,6 @@
         <Attribute name="fullnamepath" type="String">
             <value>/opt_depth_x</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>Longitude Latitude</value>
-        </Attribute>
         <Int16/>
         <dimension name="nscan" size="2015"/>
         <dimension name="npix" size="243"/>
@@ -291,6 +291,9 @@
         </Attribute>
         <Attribute name="units" type="String">
             <value>Kelvin</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Longitude Latitude</value>
         </Attribute>
         <Attribute name="_FillValue" type="Int16">
             <value>-32767</value>
@@ -307,9 +310,6 @@
         <Attribute name="fullnamepath" type="String">
             <value>/res_x</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>Longitude Latitude</value>
-        </Attribute>
         <Int16/>
         <dimension name="nscan" size="2015"/>
         <dimension name="npix" size="243"/>
@@ -320,6 +320,9 @@
         </Attribute>
         <Attribute name="units" type="String">
             <value>percent</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Longitude Latitude</value>
         </Attribute>
         <Attribute name="_FillValue" type="Int16">
             <value>-32767</value>
@@ -336,9 +339,6 @@
         <Attribute name="fullnamepath" type="String">
             <value>/soil_moisture_c1_error</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>Longitude Latitude</value>
-        </Attribute>
         <Int16/>
         <dimension name="nscan" size="2015"/>
         <dimension name="npix" size="243"/>
@@ -349,6 +349,9 @@
         </Attribute>
         <Attribute name="units" type="String">
             <value>Kelvin</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Longitude Latitude</value>
         </Attribute>
         <Attribute name="_FillValue" type="Int16">
             <value>-32767</value>
@@ -365,9 +368,6 @@
         <Attribute name="fullnamepath" type="String">
             <value>/ts</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>Longitude Latitude</value>
-        </Attribute>
         <Int16/>
         <dimension name="nscan" size="2015"/>
         <dimension name="npix" size="243"/>
@@ -376,14 +376,14 @@
         <Attribute name="long_name" type="String">
             <value>RFI Code using 6.9 GHz</value>
         </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Longitude Latitude</value>
+        </Attribute>
         <Attribute name="origname" type="String">
             <value>rfi_code1</value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/rfi_code1</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>Longitude Latitude</value>
         </Attribute>
         <Int16/>
         <dimension name="nscan" size="2015"/>
@@ -395,6 +395,9 @@
         </Attribute>
         <Attribute name="units" type="String">
             <value>percent</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Longitude Latitude</value>
         </Attribute>
         <Attribute name="_FillValue" type="Int16">
             <value>-32767</value>
@@ -411,9 +414,6 @@
         <Attribute name="fullnamepath" type="String">
             <value>/soil_moisture_x</value>
         </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>Longitude Latitude</value>
-        </Attribute>
         <Int16/>
         <dimension name="nscan" size="2015"/>
         <dimension name="npix" size="243"/>
@@ -424,6 +424,9 @@
         </Attribute>
         <Attribute name="units" type="String">
             <value>percent</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Longitude Latitude</value>
         </Attribute>
         <Attribute name="_FillValue" type="Int16">
             <value>-32767</value>
@@ -439,9 +442,6 @@
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/soil_moisture_x_error</value>
-        </Attribute>
-        <Attribute name="coordinates" type="String">
-            <value>Longitude Latitude</value>
         </Attribute>
         <Int16/>
         <dimension name="nscan" size="2015"/>

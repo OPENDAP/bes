@@ -1285,8 +1285,6 @@ void HDF5CFUtil::cha_co(string &co,const string & vpath) {
             string var_prefix = obtain_string_before_lastslash(vpath).substr(1);
             co = var_prefix +co;
 //cout<<"co full is " <<co <<endl;
-           
-
         }
     }
 

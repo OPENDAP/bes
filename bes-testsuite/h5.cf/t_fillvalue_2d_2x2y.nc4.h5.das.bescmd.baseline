@@ -1,9 +1,9 @@
 Attributes {
     FVattr_yes {
+        String coordinates "lat lon";
         Float32 _FillValue -9999.000000;
         String origname "FVattr_yes";
         String fullnamepath "/FVattr_yes";
-        String coordinates "lat lon";
     }
     lat {
         String units "degrees_north";
