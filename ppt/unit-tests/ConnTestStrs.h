@@ -35,7 +35,7 @@
 
 #include <string>
 
-#include "PPTProtocol.h"
+#include "PPTProtocolNames.h"
 
 //class ConnTestStrs
 //{
