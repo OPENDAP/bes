@@ -175,7 +175,7 @@ PPTClient::authenticateWithServer()
     get_secure_files() ;
 
     // send request for the authentication port
-    send( PPTProtocol::PPT_CLIENT_REQUEST_AUTHPORT ) ;
+    send(PPT_CLIENT_REQUEST_AUTHPORT ) ;
 
     // receive response with port, terminated with TERMINATE token. We are
     // exchanging a port number and a terminating token. The buffer doesn't

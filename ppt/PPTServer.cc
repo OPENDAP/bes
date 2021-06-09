@@ -214,8 +214,8 @@ int PPTServer::welcomeClient()
 		// I think it would be better to send back a previously defined
 		// constant like this... but I don't want to break client code.
 		// jhrg 2/27/14
-		// send(PPTProtocol::PPT_PROTOCOL_UNDEFINED);
-		// BESDEBUG(MODULE, prolog << "Sent " << PPTProtocol::PPT_PROTOCOL_UNDEFINED << " to PPT client." << endl);
+		// send(PPT_PROTOCOL_UNDEFINED);
+		// BESDEBUG(MODULE, prolog << "Sent " << PPT_PROTOCOL_UNDEFINED << " to PPT client." << endl);
 
 		_mySock->close();
 		return -1;
