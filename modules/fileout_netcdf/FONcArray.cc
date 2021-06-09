@@ -369,7 +369,7 @@ void FONcArray::define(int ncid) {
 
     if (!_defined && !d_dont_use_it) {
 
-        BESDEBUG("fonc", "FONcArray::define() - defining array ' defined already" << _varname << "'" << endl);
+        BESDEBUG("fonc", "FONcArray::define() - defining array ' defined already: " << _varname << "'" << endl);
 #if 0
         if(d4_dim_ids.size() >0) {
            if(d_array_type == NC_CHAR) {
