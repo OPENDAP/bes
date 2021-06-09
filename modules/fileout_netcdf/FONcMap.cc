@@ -145,133 +145,20 @@ bool FONcMap::compare(libdap::Array *tomap)
         isequal = false;
     }
 
-#if 1
     if (isequal) {
         // compare the values of the array
         char *map_buf = map->get_buf();
         char *tomap_buf = tomap->get_buf();
-        int cmpres = memcmp(map_buf, tomap_buf, map->width());
-        if (0 != cmpres) {
-            isequal = false;
-        }
-    }
-#endif
 
-#if 0
-        switch (tomap->var()->type()) {
-            case dods_byte_c: {
-                dods_byte my_values[map->length()];
-                map->value(my_values);
-                dods_byte to_values[map->length()];
-                tomap->value(to_values);
-                for (int i = 0; i < map->length(); i++) {
-                    if (my_values[i] != to_values[i]) {
-                        isequal = false;
-                        break;
-                    }
-                }
-            }
-            break;
-            case dods_int16_c: {
-                dods_int16 my_values[map->length()];
-                map->value(my_values);
-                dods_int16 to_values[map->length()];
-                tomap->value(to_values);
-                for (int i = 0; i < map->length(); i++) {
-                    if (my_values[i] != to_values[i]) {
-                        isequal = false;
-                        break;
-                    }
-                }
-            }
-            break;
-            case dods_uint16_c: {
-                dods_uint16 my_values[map->length()];
-                map->value(my_values);
-                dods_uint16 to_values[map->length()];
-                tomap->value(to_values);
-                for (int i = 0; i < map->length(); i++) {
-                    if (my_values[i] != to_values[i]) {
-                        isequal = false;
-                        break;
-                    }
-                }
-            }
-            break;
-            case dods_int32_c: {
-                dods_int32 my_values[map->length()];
-                map->value(my_values);
-                dods_int32 to_values[map->length()];
-                tomap->value(to_values);
-                for (int i = 0; i < map->length(); i++) {
-                    if (my_values[i] != to_values[i]) {
-                        isequal = false;
-                        break;
-                    }
-                }
-            }
-            break;
-            case dods_uint32_c: {
-                dods_uint32 my_values[map->length()];
-                map->value(my_values);
-                dods_uint32 to_values[map->length()];
-                tomap->value(to_values);
-                for (int i = 0; i < map->length(); i++) {
-                    if (my_values[i] != to_values[i]) {
-                        isequal = false;
-                        break;
-                    }
-                }
-            }
-            break;
-            case dods_float32_c: {
-                dods_float32 my_values[map->length()];
-                map->value(my_values);
-                dods_float32 to_values[map->length()];
-                tomap->value(to_values);
-                for (int i = 0; i < map->length(); i++) {
-                    if (my_values[i] != to_values[i]) {
-                        isequal = false;
-                        break;
-                    }
-                }
-            }
-            break;
-            case dods_float64_c: {
-                dods_float64 my_values[map->length()];
-                map->value(my_values);
-                dods_float64 to_values[map->length()];
-                tomap->value(to_values);
-                for (int i = 0; i < map->length(); i++) {
-                    if (my_values[i] != to_values[i]) {
-                        isequal = false;
-                        break;
-                    }
-                }
-            }
-            break;
-            case dods_str_c:
-            case dods_url_c: {
-                vector<string> my_values;
-                map->value(my_values);
-                vector<string> to_values;
-                tomap->value(to_values);
-                vector<string>::const_iterator mi = my_values.begin();
-                vector<string>::const_iterator me = my_values.end();
-                vector<string>::const_iterator ti = to_values.begin();
-                for (; mi != me; mi++, ti++) {
-                    if ((*mi) != (*ti)) {
-                        isequal = false;
-                        break;
-                    }
-                }
-            }
-            break;
-            default:    // Elide unknown types; this is the current behavior
-                        // but I made it explicit. jhrg 12.27.2011
-            break;
-        }
-#endif
+        // Only compare the values if both the value vectors are not null.
+        // Optimizations in this handler might cause one of these to be
+        // null, resulting in a segmenation fault. If one or both are null,
+        // assume that by this point in the series of tests, the two maps
+        // are equal. jhrg 6/8/21
+        if (map_buf && tomap_buf && 0 != memcmp(map_buf, tomap_buf, map->width()))
+            isequal = false;
+    }
+
     BESDEBUG("fonc",
              "FONcMap::compare - done comparing " << tomap->name() << " to " << map->name() << ": " << isequal << endl);
     return isequal;
