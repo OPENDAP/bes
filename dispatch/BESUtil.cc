@@ -1289,6 +1289,92 @@ void BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm)
     INFO_LOG(msg.str());
 }
 
+uint64_t BESUtil::file_to_stream_helper(const std::string &file_name, std::ostream &o_strm, uint64_t byteCount){
+
+    stringstream msg;
+    msg << prolog << "Using ostream: " << (void *) &o_strm << " cout: " << (void *) &cout << endl;
+    BESDEBUG(MODULE,  msg.str());
+    INFO_LOG( msg.str());
+
+    char rbuffer[OUTPUT_FILE_BLOCK_SIZE];
+    std::ifstream i_stream(file_name, std::ios_base::in | std::ios_base::binary);  // Use binary mode so we can
+
+    // good() returns true if !(eofbit || badbit || failbit)
+    if(!i_stream.good()){
+        stringstream msg;
+        msg << prolog << "Failed to open file " << file_name;
+        ios_state_msg(i_stream, msg);
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+    }
+
+    // good() returns true if !(eofbit || badbit || failbit)
+    if(!o_strm.good()){
+        stringstream msg;
+        msg << prolog << "Problem with ostream. " << file_name;
+        ios_state_msg(i_stream, msg);
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+    }
+
+    // this is where we advance to the last byte that was read
+    i_stream.seekg(byteCount);
+
+    //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    // This is where the file is copied.
+    while (i_stream.good() && o_strm.good()){
+        i_stream.read(&rbuffer[0], OUTPUT_FILE_BLOCK_SIZE);      // Read at most n bytes into
+        o_strm.write(&rbuffer[0], i_stream.gcount()); // buf, then write the buf to
+        BESDEBUG(MODULE, "i_stream: " << i_stream.gcount() << endl);
+        byteCount += i_stream.gcount();
+    }
+    o_strm.flush();
+
+    // fail() is true if failbit || badbit got set, but does not consider eofbit
+    if(i_stream.fail() && !i_stream.eof()){
+        stringstream msg;
+        msg << prolog << "There was an ifstream error when reading from: " << file_name;
+        ios_state_msg(i_stream, msg);
+        msg << " last_lap: " << i_stream.gcount() << " bytes";
+        msg << " total_read: " << byteCount << " bytes";
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+    }
+
+    // If we're not at the eof of the input stream then we have failed.
+    if (!i_stream.eof()){
+        stringstream msg;
+        msg << prolog << "Failed to reach EOF on source file: " << file_name;
+        ios_state_msg(i_stream, msg);
+        msg << " last_lap: " << i_stream.gcount() << " bytes";
+        msg << " total_read: " << byteCount << " bytes";
+        BESDEBUG(MODULE, msg.str() << endl);
+        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+    }
+
+    // And if something went wrong on the output stream we have failed.
+    if(!o_strm.good()){
+        stringstream msg;
+        msg << prolog << "There was an ostream error during transmit. Transmitted " << byteCount  << " bytes.";
+        ios_state_msg(o_strm, msg);
+        auto crntpos = o_strm.tellp();
+        msg << " current_position: " << crntpos << endl;
+        BESDEBUG(MODULE, msg.str());
+        ERROR_LOG(msg.str());
+        // TODO Should we throw an exception here? Maybe BESInternalFatalError ??
+    }
+
+    msg.str(prolog);
+    msg << "Sent "<< byteCount << " bytes from file '" << file_name<< "'. " << endl;
+    BESDEBUG(MODULE,msg.str());
+    INFO_LOG(msg.str());
+
+    i_stream.close();
+
+    return byteCount;
+}
+
+
 // I added this because maybe using the low-level file calls was important. I'm not
 // sure and the iostreams in C++ are safer. jhrg 6/4/21
 #define FILE_CALLS 0

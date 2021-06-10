@@ -303,11 +303,11 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
         // netcdf 3 or netcdf 4. Hack. jhrg 9/7/16
         FONcTransform ft(obj, &dhi, temp_file.get_name(), dhi.data[RETURN_CMD]);
 
+#if 0
         // This is used to signal the BESUtil::file_to_stream_task() this code is done
         // writing to the file. WIP jhrg 6/4/21
         atomic<bool> file_write_done(false);
 
-#if 0
         // Calling the 'packaged_task' here blocks, but we could have run the task in a thread.
         // See: https://stackoverflow.com/questions/18143661/what-is-the-difference-between-packaged-task-and-async
         // jhrg 6/4/21
@@ -317,7 +317,7 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
         task(temp_file.get_name(), file_write_done, strm);
 #endif
 
-#define TOGGLE_TASK 1
+#define TOGGLE_TASK 0
         // TOGGLE_TASK 1 besstandalone -c bes.nc4.conf -i mem-pressure-tests/bescmd.xml > tmp2.nc4
         //      151.13s user 8.75s system 98% cpu 2:41.69 total
         // TOGGLE_TASK 0 besstandalone -c bes.nc4.conf -i mem-pressure-tests/bescmd.xml > tmp2.nc4
@@ -332,30 +332,28 @@ void FONcTransmitter::send_data(BESResponseObject *obj, BESDataHandlerInterface 
         future<uint64_t> result = async(launch::deferred, &BESUtil::file_to_stream_task, temp_file.get_name(),
                                         std::ref(file_write_done), std::ref(strm));
 #endif
-        ft.transform();
-
-        file_write_done = true;
-
-#if TOGGLE_TASK
-        uint64_t tcount = result.get();
-#endif
-        // original call before the 'task' hack was added:
-        // BESUtil::file_to_stream(temp_file.get_name(),strm);
-        // jhrg 6/4/21
-
-#if !TOGGLE_TASK
-        // The task can be called like this right here
-        uint64_t tcount = BESUtil::file_to_stream_task(temp_file.get_name(), file_write_done, strm);
-#endif
+        ft.transform(strm);
 
 #if 0
+        file_write_done = true;
+        uint64_t tcount = result.get();
+#endif
+
+         //original call before the 'task' hack was added:
+         //BESUtil::file_to_stream(temp_file.get_name(),strm);
+         //jhrg 6/4/21
+
+#if 0
+        // The task can be called like this right here
+        uint64_t tcount = BESUtil::file_to_stream_task(temp_file.get_name(), file_write_done, strm);
+
         // Or it can be run like this...
         std::packaged_task<uint64_t(const string &, atomic<bool>&, ostream&)> task(BESUtil::file_to_stream_task);
         std::future<uint64_t> result = task.get_future();
         task(temp_file.get_name(), file_write_done, strm);
         uint64_t tcount = result.get();
 #endif
-        BESDEBUG(MODULE,  prolog << "NetCDF file bytes written " << tcount << endl);
+        //BESDEBUG(MODULE,  prolog << "NetCDF file bytes written " << tcount << endl);
     }
     catch (Error &e) {
         throw BESDapError("Failed to read data: " + e.get_error_message(), false, e.get_error_code(), __FILE__, __LINE__);

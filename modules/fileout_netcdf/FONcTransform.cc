@@ -358,7 +358,7 @@ void FONcTransform::transform()
  * particular netcdf type. Also write out any global variables stored at the
  * top level of the DataDDS.
  */
-void FONcTransform::transform()
+void FONcTransform::transform(ostream &strm)
 {
 #if 0
     BESDapResponseBuilder responseBuilder;
@@ -525,18 +525,31 @@ void FONcTransform::transform()
             FONcUtils::handle_error(stax, "File out netcdf, unable to end the define mode: " + _localfile, __FILE__,
                                     __LINE__);
         }
-       for (FONcBaseType *fbt: _fonc_vars) {
+        // write file data
+        uint64_t byteCount = 0;
+        byteCount = BESUtil::file_to_stream_helper(_localfile, strm, byteCount);
+        BESDEBUG("fonc", "FONcTransform::transform() - first write data to stream, count:  " << byteCount << endl);
+
+        for (FONcBaseType *fbt: _fonc_vars) {
             BESDEBUG("fonc", "FONcTransform::transform() - Writing data for variable:  " << fbt->name() << endl);
 
             fbt->set_dds(_dds);
             fbt->set_eval(&eval);
 
             fbt->write(_ncid);
+            nc_sync(_ncid);
+
+            // write the whats been written
+            byteCount = BESUtil::file_to_stream_helper(_localfile, strm, byteCount);
+            BESDEBUG("fonc", "FONcTransform::transform() - Writing data to stream, count:  " << byteCount << endl);
         }
 
         stax = nc_close(_ncid);
         if (stax != NC_NOERR)
             FONcUtils::handle_error(stax, "File out netcdf, unable to close: " + _localfile, __FILE__, __LINE__);
+
+        byteCount = BESUtil::file_to_stream_helper(_localfile, strm, byteCount);
+        BESDEBUG("fonc", "FONcTransform::transform() - after nc_close() count:  " << byteCount << endl);
     }
     catch (BESError &e) {
         (void) nc_close(_ncid); // ignore the error at this point

@@ -89,7 +89,7 @@ public:
 	FONcTransform(DMR *dmr, BESDataHandlerInterface &dhi, const string &localfile, const string &netcdfVersion = "netcdf");
     FONcTransform(BESResponseObject *obj, BESDataHandlerInterface *dhi, const string &localfile, const string &ncVersion = "netcdf");
     virtual ~FONcTransform();
-	virtual void transform();
+	virtual void transform(ostream &strm);
 	virtual void transform_dap4();
 
 
