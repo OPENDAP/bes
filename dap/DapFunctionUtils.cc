@@ -199,6 +199,7 @@ libdap::BaseType *wrapitup_worker(vector<libdap::BaseType*> argv, libdap::AttrTa
 
         libdap::AttrTable *newDatasetAttrTable = new libdap::AttrTable(globals);
         dapResult->set_attr_table(*newDatasetAttrTable);
+        delete newDatasetAttrTable;
         BESDEBUG(DEBUG_KEY, "DFU::wrapitup_worker() - Result Structure attrs: " << endl << dapResult->get_attr_table() << endl);
 
     }
