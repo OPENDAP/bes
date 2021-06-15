@@ -48,8 +48,10 @@ class FONcShort : public FONcBaseType
 {
 private:
     BaseType *			_bt ;
+    bool                        _unsigned_int8;
 public:
     				FONcShort( BaseType *b ) ;
+    				FONcShort( BaseType *b ,bool unsigned_int8) ;
     virtual			~FONcShort() ;
 
     virtual void		define( int ncid ) ;
