@@ -492,6 +492,13 @@ void FONcTransform::transform(ostream &strm)
         FONcUtils::handle_error(stax, "File out netcdf, unable to open: " + _localfile, __FILE__, __LINE__);
     }
 
+    int current_fill_prop_vaule;
+
+    stax = nc_set_fill(_ncid, NC_NOFILL, &current_fill_prop_vaule);
+    if (stax != NC_NOERR) {
+        FONcUtils::handle_error(stax, "File out netcdf, unable to set fill to NC_NOFILL: " + _localfile, __FILE__, __LINE__);
+    }
+
     try {
         // Here we will be defining the variables of the netcdf and
         // adding attributes. To do this we must be in define mode.
