@@ -116,7 +116,7 @@ FONcTransmitter::FONcTransmitter() :
  * @return A history value string. The caller must actually add this to a 'history'
  * attribute, etc.
  */
-string create_history_txt(const string &request_url)
+string create_cf_history_txt(const string &request_url)
 {
     // This code will be used only when the 'cf_history_context' is not set,
     // which should be never in an operating server. However, when we are
@@ -143,23 +143,78 @@ string create_history_txt(const string &request_url)
 }
 
 /**
-* Gets the "history" attribute context.
+ * @brief Build a history entry. Used only if the cf_history_context is not set.
+ *
+ * @param request_url The request URL to add to the history value
+ * @return A history value string. The caller must actually add this to a 'history'
+ * attribute, etc.
+ */
+string create_json_history_txt(const string &request_url)
+{
+    // This code will be used only when the 'history_json_context' is not set,
+    // which should be never in an operating server. However, when we are
+    // testing, often only the besstandalone code is running and the existing
+    // baselines don't set the context, so we have this. It must do something
+    // so the tests are not hopelessly obscure and filter out junk that varies
+    // by host (e.g., the names of cached files that have been decompressed).
+    // jhrg 6/3/16
+
+    string history_json_entry;
+    std::stringstream ss;
+    time_t raw_now;
+    struct tm *timeinfo;
+    time(&raw_now); /* get current time; same as: timer = time(NULL)  */
+    timeinfo = localtime(&raw_now);
+
+    char time_str[100];
+    strftime(time_str, 100, "%Y-%m-%d T %H:%M:%S", timeinfo);
+
+    //ss << time_str << " " << "Hyrax" << " " << request_url;
+    ss << "[{'$schema':'https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json','date_time':'2021-05-20T20:37:25Z','program':'hyrax','version':'1.16.3','parameters':['request_url=\thttp://opendap.uat.earthdata.nasa.gov/collections/C1234714698-EEDTEST/granules/EEDTEST-ATL08-003-ATL08_20200711T232648.nc'}]";
+
+    history_json_entry = ss.str();
+    //BESDEBUG(MODULE, prolog << "Adding cf_history_entry context. '" << cf_history_entry << "'" << endl);
+    return history_json_entry;
+}
+
+/**
+* Gets the "cf_history" attribute context.
 *
 * @request_url
 */
-vector<string> get_history_entry (const string &request_url)
+vector<string> get_cf_history_entry (const string &request_url)
 {
-    vector<string> hist_entry_vec;
+    vector<string> cf_hist_entry_vec;
     bool foundIt = false;
     string cf_history_entry = BESContextManager::TheManager()->get_context("cf_history_entry", foundIt);
     if (!foundIt) {
         // If the cf_history_entry context was not set by the incoming command then
         // we compute and the value of the history string here.
-        cf_history_entry = create_history_txt(request_url);
+        cf_history_entry = create_cf_history_txt(request_url);
     }
     // And here we add to the returned vector.
-    hist_entry_vec.push_back(cf_history_entry);
-    return hist_entry_vec;
+    cf_hist_entry_vec.push_back(cf_history_entry);
+    return cf_hist_entry_vec;
+}
+
+/**
+* Gets the "json_history" attribute context.
+*
+* @request_url
+*/
+vector<string> get_history_json_entry (const string &request_url)
+{
+    vector<string> hist_json_entry_vec;
+    bool foundIt = false;
+    string history_json_entry = BESContextManager::TheManager()->get_context("history_json_entry", foundIt);
+    if (!foundIt) {
+        // If the cf_history_entry context was not set by the incoming command then
+        // we compute and the value of the history string here.
+        history_json_entry = create_json_history_txt(request_url);
+    }
+    // And here we add to the returned vector.
+    hist_json_entry_vec.push_back(history_json_entry);
+    return hist_json_entry_vec;
 }
 
 /**
@@ -177,9 +232,11 @@ void updateHistoryAttribute(DDS *dds, const string &ce)
     request_url = request_url.substr(request_url.find_last_of('#')+1);
     if(ce != "") request_url += "?" + ce;
 
-    std::vector<std::string> hist_entry_vec = get_history_entry(request_url);
+    std::vector<std::string> cf_hist_entry_vec = get_cf_history_entry(request_url);
+    BESDEBUG(MODULE, prolog << "hist_cf_entry_vec.size(): " << cf_hist_entry_vec.size() << endl);
 
-    BESDEBUG(MODULE, prolog << "hist_entry_vec.size(): " << hist_entry_vec.size() << endl);
+    std::vector<std::string> hist_json_entry_vec = get_history_json_entry(request_url);
+    BESDEBUG(MODULE, prolog << "hist_cf_entry_vec.size(): " << hist_json_entry_vec.size() << endl);
 
     // Add the new entry to the "history" attribute
     // Get the top level Attribute table.
@@ -189,7 +246,7 @@ void updateHistoryAttribute(DDS *dds, const string &ce)
     // and we should add an entry to it if possible.
     bool added_history = false; // Used to indicate that we located a toplevel AttrTable whose name ends in "_GLOBAL" and that has an existing "history" attribute.
     unsigned int num_attrs = globals.get_size();
-    if (num_attrs) {
+    if (globals.is_global_attribute()) {
         // Here we look for a top level AttrTable whose name ends with "_GLOBAL" which is where, by convention,
         // data ingest handlers place global level attributes found in the source dataset.
         auto i = globals.attr_begin();
@@ -200,20 +257,22 @@ void updateHistoryAttribute(DDS *dds, const string &ce)
             // Test the entry...
             if (attrType == Attr_container && BESUtil::endsWith(attr_name, "_GLOBAL")) {
                 // We are going to append to an existing history attribute if there is one
-                // Or just add a histiry attribute if there is not one. In a most
+                // Or just add a history attribute if there is not one. In a most
                 // handy API moment, append_attr() does just this.
                 AttrTable *global_attr_tbl = globals.get_attr_table(i);
-                global_attr_tbl->append_attr("history", "string", &hist_entry_vec);
+                global_attr_tbl->append_attr("history", "string", &cf_hist_entry_vec);
+                global_attr_tbl->append_attr("history_json", "string", &hist_json_entry_vec);
                 added_history = true;
-                BESDEBUG(MODULE, prolog << "Added history entry to " << attr_name << endl);
+                BESDEBUG(MODULE, prolog << "Added history entries to " << attr_name << endl);
             }
         }
         if(!added_history){
             auto dap_global_at = globals.append_container("DAP_GLOBAL");
             dap_global_at->set_name("DAP_GLOBAL");
-            dap_global_at->append_attr("history", "string", &hist_entry_vec);
+            dap_global_at->append_attr("history", "string", &cf_hist_entry_vec);
+            dap_global_at->append_attr("history_json", "string", &hist_json_entry_vec);
             BESDEBUG(MODULE, prolog << "No top level AttributeTable name matched '*_GLOBAL'. "
-                                       "Created DAP_GLOBAL AttributeTable and added history Attribute to it." << endl);
+                                       "Created DAP_GLOBAL AttributeTable and added history attributes to it." << endl);
         }
     }
 }
@@ -232,7 +291,7 @@ void updateHistoryAttribute(DMR *dmr, const string &ce)
     // remove 'uncompress' cache mangling
     request_url = request_url.substr(request_url.find_last_of('#')+1);
     if(ce != "") request_url += "?" + ce;
-    vector<string> hist_entry_vector = get_history_entry(request_url);
+    vector<string> hist_entry_vector = get_cf_history_entry(request_url);
 
     BESDEBUG(MODULE, prolog << "hist_entry_vec.size(): " << hist_entry_vector.size() << endl);
     bool added_history = false;
