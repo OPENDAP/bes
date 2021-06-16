@@ -16,11 +16,11 @@ variables:
 		:platform = "Orbview-2" ;
 		:temporal_range = "other" ;
 		:processing_version = "2013.2NCDF" ;
-		:date_created = "2014-06-21T18:09:36.000Z" ;
-		:history = "smigen par=S20030602003090.L3m_MO_ST92_CHL_chlor_a_9km.nc.param" ;
+		:date_created = "removed date-time" ;
+		:history = "removed date-timex S20030602003090.L3m_MO_ST92_CHL_chlor_a_9km.h5" ;
 		:l2_flag_names = "ATMFAIL,LAND,HILT,HISATZEN,STRAYLIGHT,CLDICE,COCCOLITH,LOWLW,CHLWARN,CHLFAIL,NAVWARN,MAXAERITER,ATMWARN,HISOLZEN,NAVFAIL,FILTER,HIGLINT" ;
-		:time_coverage_start = "2003-02-28T18:30:48.000Z" ;
-		:time_coverage_end = "2003-03-30T20:00:03.000Z" ;
+		:time_coverage_start = "removed date-time" ;
+		:time_coverage_end = "removed date-time" ;
 		:start_orbit_number = 29684 ;
 		:end_orbit_number = 30143 ;
 		:map_projection = "Equidistant Cylindrical" ;
@@ -54,7 +54,7 @@ variables:
 		:suggested_image_scaling_maximum = 20.f ;
 		:suggested_image_scaling_type = "LOG" ;
 		:suggested_image_scaling_applied = "No" ;
-		:_lastModified = "2014-06-21T18:09:36.000Z" ;
+		:_lastModified = "removed date-time" ;
 		:Conventions = "CF-1.6" ;
 		:institution = "NASA/GSFC OBPG" ;
 		:standard_name_vocabulary = "NetCDF Climate and Forecast (CF) Metadata Convenention" ;
@@ -73,6 +73,42 @@ variables:
 		:identifier_product_doi = "http://dx.doi.org" ;
 		:keywords = "Oceans > Ocean Chemistry > Chlorophyll; Oceans > Ocean Optics > Ocean Color" ;
 		:keywords_vocabulary = "NASA Global Change Master Directory (GCMD) Science Keywords" ;
+
+group: processing_control {
+
+  // group attributes:
+  		:software_name = "smigen" ;
+  		:software_version = "5.03" ;
+  		:input_files = "S20030602003090.L3b_MO_ST92_CHL.nc" ;
+  		:l2_flag_names = "ATMFAIL,LAND,HILT,HISATZEN,STRAYLIGHT,CLDICE,COCCOLITH,LOWLW,CHLWARN,CHLFAIL,NAVWARN,MAXAERITER,ATMWARN,HISOLZEN,NAVFAIL,FILTER,HIGLINT" ;
+  } // group processing_control
+
+group: input_parameters {
+
+  // group attributes:
+  		:IFILE = "S20030602003090.L3b_MO_ST92_CHL.nc" ;
+  		:OFILE = "S20030602003090.L3m_MO_ST92_CHL_chlor_a_9km.nc" ;
+  		:PFILE = "" ;
+  		:PROD = "chlor_a" ;
+  		:PALFILE = "DEFAULT" ;
+  		:PROCESSING = "2013.2NCDF" ;
+  		:MEAS = "1" ;
+  		:STYPE = "0" ;
+  		:DATAMIN = "0.000000" ;
+  		:DATAMAX = "0.000000" ;
+  		:LONWEST = "-180.000000" ;
+  		:LONEAST = "180.000000" ;
+  		:LATSOUTH = "-90.000000" ;
+  		:LATNORTH = "90.000000" ;
+  		:RESOLUTION = "9km" ;
+  		:PROJECTION = "RECT" ;
+  		:GAP_FILL = "0" ;
+  		:SEAM_LON = "-180.000000" ;
+  		:MINOBS = "0" ;
+  		:DEFLATE = "0" ;
+  		:OFORMAT = "netCDF4" ;
+  		:PRECISION = "F" ;
+  } // group input_parameters
 
 group: geophysical_data {
   variables:

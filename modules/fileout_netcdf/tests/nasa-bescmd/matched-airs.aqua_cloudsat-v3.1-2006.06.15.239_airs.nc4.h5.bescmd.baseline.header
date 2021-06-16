@@ -14,6 +14,7 @@ dimensions:
 		:SOUTHBOUNDINGCOORDINATE = -1.76052165031433 ;
 		:EASTBOUNDINGCOORDINATE = -147.347473144531 ;
 		:WESTBOUNDINGCOORDINATE = -167.39973449707 ;
+		:history = "removed date-timex matched-airs.aqua_cloudsat-v3.1-2006.06.15.239_airs.nc4.h5" ;
 
 group: AIRS {
 
@@ -228,6 +229,9 @@ group: CloudSat {
     	int nray_2B-GEOPROF(airs_idx) ;
     		nray_2B-GEOPROF:fonc_original_name = "nray:2B-GEOPROF" ;
     } // group GEOPROF
+
+  group: GEOPROF-LIDAR {
+    } // group GEOPROF-LIDAR
 
   group: CLDCLASS {
     variables:

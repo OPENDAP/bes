@@ -185,7 +185,7 @@ variables:
 		solar_zenith_angle:valid_range = 0.f, 90.f ;
 		solar_zenith_angle:_FillValue = -999.f ;
 	int time_of_measurement(latitude, longitude) ;
-		time_of_measurement:units = "seconds since 1993-01-01 00:00:00" ;
+		time_of_measurement:units = "seconds since removed date-time" ;
 		time_of_measurement:long_name = "average time of measurement" ;
 		time_of_measurement:valid_range = 0.f, 5.679936e+08f ;
 		time_of_measurement:_FillValue = -999 ;
@@ -202,7 +202,7 @@ variables:
 		:comment = "SWDB_L310 data is the arithmetic mean of all SWDB_L2 data located in each grid element after filtering by confidence flag.  Only those L2 cells having a confidence flag equal to 3 over land or 2 or 3 over ocean are used." ;
 		:references = "http://disc.gsfc.nasa.gov/measures" ;
 		:institution = "NASA Goddard Space Flight Center" ;
-		:history = "20130604T133539Z ./bin/l3gen_swdb 2010 164 etc/config tmp/l3gen_swdb.kL11161" ;
+		:history = "removed date-timex DeepBlue-SeaWiFS-1.0_L3_20100613_v004-20130604T133539Z.h5" ;
 		:long_name = "SeaWiFS Deep Blue Aerosol Optical Depth and Angstrom Exponent Daily Level 3 Data Gridded at 1.0 Degrees" ;
 		:title = "SeaWiFS Deep Blue Aerosol Optical Depth and Angstrom Exponent Daily Level 3 Data Gridded at 1.0 Degrees" ;
 		:short_name = "SWDB_L310" ;
@@ -213,7 +213,7 @@ variables:
 		:range_beginning_time = "00:00:00" ;
 		:range_ending_date = "2010-06-13" ;
 		:range_ending_time = "23:59:59" ;
-		:production_datetime = "2013-06-04T13:35:39.013000Z" ;
+		:production_datetime = "removed date-time" ;
 		:instrument_long_name = "Sea-viewing Wide Field-of-View Sensor" ;
 		:instrument_short_name = "SeaWiFS" ;
 		:platform_long_name = "Orbview-2" ;

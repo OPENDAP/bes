@@ -17,10 +17,10 @@ variables:
 		:temporalResolution = "other" ;
 		:processing_version = "2013.2NCDF" ;
 		:date_created = "2014122133058000" ;
-		:history = "smigen par=A20030602003090.L3m_MO_AT108_CHL_chlor_a_4km.nc.param" ;
+		:history = "removed date-timex A20030602003090.L3m_MO_AT108_CHL_chlor_a_4km.h5" ;
 		:l2_flag_names = "ATMFAIL,LAND,HILT,HISATZEN,STRAYLIGHT,CLDICE,COCCOLITH,LOWLW,CHLWARN,CHLFAIL,NAVWARN,MAXAERITER,ATMWARN,HISOLZEN,NAVFAIL,FILTER,HIGLINT" ;
-		:time_coverage_start = "2003-03-01T00:30:06Z" ;
-		:time_coverage_end = "2003-04-01T02:25:04Z" ;
+		:time_coverage_start = "removed date-time" ;
+		:time_coverage_end = "removed date-time" ;
 		:orbit_number = 4606 ;
 		:start_orbit_number = 4380 ;
 		:end_orbit_numer = 4833 ;
@@ -73,6 +73,42 @@ variables:
 		:identifier_product_doi = "10.5067/AQUA/MODIS_OC.2014.0" ;
 		:keywords = "Oceans > Ocean Chemistry > Chlorophyll; Oceans > Ocean Optics > Ocean Color" ;
 		:keywords_vocabulary = "NASA Global Change Master Directory (GCMD) Science Keywords" ;
+
+group: processing_control {
+
+  // group attributes:
+  		:software_name = "smigen" ;
+  		:software_version = "5.02" ;
+  		:input_files = "A20030602003090.L3b_MO_AT108_CHL.nc" ;
+  		:l2_flag_names = "ATMFAIL,LAND,HILT,HISATZEN,STRAYLIGHT,CLDICE,COCCOLITH,LOWLW,CHLWARN,CHLFAIL,NAVWARN,MAXAERITER,ATMWARN,HISOLZEN,NAVFAIL,FILTER,HIGLINT" ;
+  } // group processing_control
+
+group: input_parameters {
+
+  // group attributes:
+  		:IFILE = "A20030602003090.L3b_MO_AT108_CHL.nc" ;
+  		:OFILE = "A20030602003090.L3m_MO_AT108_CHL_chlor_a_4km.nc" ;
+  		:PFILE = "" ;
+  		:PROD = "chlor_a" ;
+  		:PALFILE = "DEFAULT" ;
+  		:PROCESSING = "2013.2NCDF" ;
+  		:MEAS = "1" ;
+  		:STYPE = "0" ;
+  		:DATAMIN = "0.000000" ;
+  		:DATAMAX = "0.000000" ;
+  		:LONWEST = "-180.000000" ;
+  		:LONEAST = "180.000000" ;
+  		:LATSOUTH = "-90.000000" ;
+  		:LATNORTH = "90.000000" ;
+  		:RESOLUTION = "4km" ;
+  		:PROJECTION = "RECT" ;
+  		:GAP_FILL = "0" ;
+  		:SEAM_LON = "-180.000000" ;
+  		:MINOBS = "0" ;
+  		:DEFLATE = "0" ;
+  		:OFORMAT = "netCDF4" ;
+  		:PRECISION = "F" ;
+  } // group input_parameters
 
 group: geophysical_data {
   variables:

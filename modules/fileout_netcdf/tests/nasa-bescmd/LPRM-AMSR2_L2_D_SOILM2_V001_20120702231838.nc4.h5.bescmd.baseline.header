@@ -59,7 +59,7 @@ variables:
 		opt_depth_c1:add_offset = 0.f ;
 	double scantime(nscan, npix) ;
 		scantime:long_name = "Scan time" ;
-		scantime:units = "seconds since 1993-01-01 00:00:00" ;
+		scantime:units = "seconds since removed date-time" ;
 		scantime:coordinates = "Longitude Latitude" ;
 		scantime:_FillValue = 0. ;
 	float Latitude(nscan, npix) ;
@@ -116,4 +116,5 @@ variables:
 
 // global attributes:
 		:Conventions = "CF-1.0" ;
+		:history = "removed date-timex LPRM-AMSR2_L2_D_SOILM2_V001_20120702231838.nc4.h5" ;
 }
