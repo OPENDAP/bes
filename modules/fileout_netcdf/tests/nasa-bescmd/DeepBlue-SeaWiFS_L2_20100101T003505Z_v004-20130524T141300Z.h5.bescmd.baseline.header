@@ -174,7 +174,7 @@ variables:
 		solar_zenith_angle:valid_range = 0.f, 90.f ;
 		solar_zenith_angle:coordinates = "longitude latitude" ;
 	int time_of_measurement(natrack) ;
-		time_of_measurement:units = "seconds since 1993-01-01 00:00:00.0" ;
+		time_of_measurement:units = "seconds since removed date-time.0" ;
 		time_of_measurement:long_name = "time of measurement of row of cells" ;
 		time_of_measurement:standard_name = "time" ;
 	float viewing_zenith_angle(natrack, nxtrack) ;
@@ -190,7 +190,7 @@ variables:
 		:description = "SeaWiFS Deep Blue Level 2 Long-term Aerosol Data" ;
 		:references = "http://disc.gsfc.nasa.gov/measures" ;
 		:institution = "NASA Goddard Space Flight Center" ;
-		:history = "20130524T141300Z ./bin/apply_deep_blue 2010 001 etc/config ./tmp/S2010001003505.L1B_GAC ./tmp/S2010001021346.L1B_GAC ./tmp/S2010001035227.L1B_GAC ./tmp/S2010001053109.L1B_GAC ./tmp/S2010001070953.L1B_GAC ./tmp/S2010001084831.L1B_GAC ./tmp/S2010001102712.L1B_GAC ./tmp/S2010001120553.L1B_GAC ./tmp/S2010001134434.L1B_GAC ./tmp/S2010001152315.L1B_GAC ./tmp/S2010001170156.L1B_GAC ./tmp/S2010001183602.L1B_GAC ./tmp/S2010001184245.L1B_GAC ./tmp/S2010001201919.L1B_GAC ./tmp/S2010001215800.L1B_GAC ./tmp/S2010001233642.L1B_GAC" ;
+		:history = "removed date-timex DeepBlue-SeaWiFS_L2_20100101T003505Z_v004-20130524T141300Z.h5" ;
 		:long_name = "SeaWiFS Deep Blue Aerosol Optical Depth and Angstrom Exponent Level 2 Data" ;
 		:title = "SeaWiFS Deep Blue Aerosol Optical Depth and Angstrom Exponent Level 2 Data" ;
 		:input_data_products = " etc/seawifs_solar_eclipses.txt etc/seawifs_deep_blue_inputs.hdf etc/seawifs_ai_input.hdf etc/land_aerosol_luts_20100701.hdf etc/ocean_20110411.hdf etc/seawifs_surfdb_winter_20110208.hdf etc/seawifs_surfdb_spring_20110208.hdf etc/seawifs_surfdb_summer_20110208.hdf etc/seawifs_surfdb_fall_20110208.hdf etc/seawifs_brdfbase_20110415.hdf etc/seawifs_terrainflag_20130511.hdf /data1/corey/seawifs_l1a/ncep_ancillary etc/seawifs_dust_base.hdf etc/surface_pressure_20110406.hdf etc/landcover_20111114.hdf etc/landmask.hdf" ;
@@ -205,7 +205,7 @@ variables:
 		:equator_crossing_longitude = -160.901f ;
 		:equator_crossing_date = "2010-01-01" ;
 		:equator_crossing_time = "00:47:10.046000" ;
-		:production_datetime = "2013-05-24T14:13:00.620000Z" ;
+		:production_datetime = "removed date-time" ;
 		:instrument_long_name = "Sea-viewing Wide Field-of-View Sensor" ;
 		:instrument_short_name = "SeaWiFS" ;
 		:platform_long_name = "Orbview-2" ;

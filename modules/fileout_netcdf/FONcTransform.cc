@@ -738,15 +738,13 @@ void FONcTransform::transform_dap4_no_group()
 
     D4Group *root_grp = _dmr->root();
 
-#if 0
+#if !NDEBUG
     D4Dimensions *root_dims = root_grp->dims();
     for(D4Dimensions::D4DimensionsIter di = root_dims->dim_begin(), de = root_dims->dim_end(); di != de; ++di) {
         BESDEBUG("fonc", "transform_dap4() - check dimensions"<< endl);
         BESDEBUG("fonc", "transform_dap4() - dim name is: "<<(*di)->name()<<endl);
         BESDEBUG("fonc", "transform_dap4() - dim size is: "<<(*di)->size()<<endl);
         BESDEBUG("fonc", "transform_dap4() - fully_qualfied_dim name is: "<<(*di)->fully_qualified_name()<<endl);
-        //cout <<"dim size is: "<<(*di)->size()<<endl;
-        //cout <<"dim fully_qualified_name is: "<<(*di)->fully_qualified_name()<<endl;
     }
 #endif
     Constructor::Vars_iter vi = root_grp->var_begin();

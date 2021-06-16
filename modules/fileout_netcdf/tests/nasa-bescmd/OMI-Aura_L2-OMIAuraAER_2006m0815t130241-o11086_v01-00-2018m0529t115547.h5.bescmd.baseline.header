@@ -75,7 +75,8 @@ variables:
 		:VersionID = "1" ;
 		:WestBoundingCoordinate = -180.f ;
 		:TAI93At0zOfGranule = 429753606. ;
-		:ProductionDateTime = "2018-05-29T11:55:47.0Z" ;
+		:ProductionDateTime = "removed date-time.0Z" ;
+		:history = "removed date-timex OMI-Aura_L2-OMIAuraAER_2006m0815t130241-o11086_v01-00-2018m0529t115547.h5" ;
 
 group: ANCILLARY_DATA {
   variables:
@@ -205,8 +206,8 @@ group: GEOLOCATION_DATA {
   		TimeTAI93:_FillValue = -1.26765060022823e+30 ;
   	char TimeUTC(nTimes, TimeUTC_len1) ;
   		TimeUTC:long_name = "Time at Start of Scan (UTC)" ;
-  		TimeUTC:valid_min = "2004-07-15T00:00:00.000000Z" ;
-  		TimeUTC:valid_max = "2030-12-31T23:59:59.999999Z" ;
+  		TimeUTC:valid_min = "removed date-time" ;
+  		TimeUTC:valid_max = "removed date-time" ;
   		TimeUTC:description = "The UTC time at the start of the scan." ;
   	float ViewingZenithAngle(nTimes, nXtrack) ;
   		ViewingZenithAngle:coordinates = "/GEOLOCATION_DATA/TimeTAI93 /GEOLOCATION_DATA/Latitude /GEOLOCATION_DATA/Longitude" ;

@@ -4,7 +4,7 @@ netcdf test {
 		:title = "MABEL HDF5 Data Granule" ;
 		:institution = "NASA Goddard Space Flight Center" ;
 		:source = "Aircraft Observations" ;
-		:history = "Described in Metadata group" ;
+		:history = "removed date-timex mabel_l2a_20110322T165030_005_1.h5" ;
 		:references = "http://icesat.gsfc.nasa.gov/icesat2/data/mabel/mabel_docs.php" ;
 		:comment = "Please direct comments to David.W.Hancock@nasa.gov" ;
 		:Conventions = "CF-1.6" ;
@@ -2242,7 +2242,7 @@ group: metadata {
   	char flight_notes(flight_notes_len292) ;
   		flight_notes:Description = "Flight information provided by MABEL instrument team." ;
   	double gps_seconds_offset(dim293) ;
-  		gps_seconds_offset:Description = "Number of GPS seconds since GPS epoch (1980-01-06T00:00:00.000000Z UTC) corresponding to the first data point within the granule.  Add this value to the data [delta_time] parameter to compute [gps_seconds] for each data point." ;
+  		gps_seconds_offset:Description = "Number of GPS seconds since GPS epoch (removed date-time) corresponding to the first data point within the granule.  Add this value to the data [delta_time] parameter to compute [gps_seconds] for each data point." ;
   	char icesat2_deputy_project_scientist(icesat2_deputy_project_scientist_len294) ;
   		icesat2_deputy_project_scientist:Description = "ICESat2 deputy project scientist" ;
   	char icesat2_project_scientist(icesat2_project_scientist_len295) ;
