@@ -46,6 +46,7 @@ netcdf test {
 		:Radiometer_Calibration_Files = "coeff_loss_v2.txt,coeff_nl.txt" ;
 		:Radiometer_Data_Tables = "land_tables.h5,gain_ice.h5,tausq.h5,ocean_reflectance.h5,mk_sss_algo_tables.h5,sun_tables.h5,sun_bak_tables.h5,galaxy_wind_tables.h5,apc_matrix_051211.h5" ;
 		:Scatterometer_Coefficient_Files = "atc_prt_convert_v3.txt,ext_temps_constants_convert_v3.txt,scat_temps_convert_v1.txt,radiometer_constants_convert_v2.txt,cmd_gn.dat" ;
+		:history = "removed date-timex Q2011149002900.L2_SCI_V1.0.bz2.0.bz2.0.h5" ;
 
 group: Aquarius\ Data {
   dimensions:

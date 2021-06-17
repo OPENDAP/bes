@@ -11,9 +11,10 @@ netcdf test {
 		:GranuleDayOfYear = 348 ;
 		:TAI93At0zOfGranule = 408672005. ;
 		:PGEVersion = "0.9.26" ;
-		:StartUTC = "2005-12-13T18:00:00.000000Z" ;
-		:EndUTC = "2005-12-15T06:00:00.000000Z" ;
+		:StartUTC = "removed date-time" ;
+		:EndUTC = "removed date-time" ;
 		:Period = "Daily" ;
+		:history = "removed date-timex OMI_L3.nc4.h5" ;
 
 group: OMI_Column_Amount_O3 {
   dimensions:
