@@ -54,7 +54,7 @@ extern string stare_sidecar_suffix;
 std::string get_sidecar_file_pathname(const std::string &pathName, const string &token = "_sidecar");
 void get_sidecar_int32_values(hid_t file, const std::string &variable, std::vector<libdap::dods_int32> &values);
 void get_sidecar_uint64_values(hid_t file, const std::string &variable, std::vector<libdap::dods_uint64> &values);
-void get_sidecar_uint64_values_2(const std::string &filename, libdap::BaseType *variable, std::vector<libdap::dods_uint64> &values);
+void get_sidecar_uint64_values(const std::string &filename, const std::string &variable_name, std::vector<libdap::dods_uint64> &values);
 
 bool target_in_dataset(const std::vector<libdap::dods_uint64> &target_indices,
         const std::vector<libdap::dods_uint64> &data_stare_indices);

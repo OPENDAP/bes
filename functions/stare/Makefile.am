@@ -2,8 +2,6 @@
 
 AUTOMAKE_OPTIONS = foreign 
 
-# Headers in 'tests' are used by the arrayT unit tests.
-
 AM_CPPFLAGS = $(DAP_CFLAGS) -I$(top_srcdir)/functions/stare -I$(top_srcdir)/dispatch -I$(STARE_INC) \
 -I$(prefix)/deps/include $(NC_CPPFLAGS)
 # Added  -Wno-deprecated to suppress warnings about auto_ptr<>. jhrg 11/7/19
@@ -45,6 +43,6 @@ data/MYD09.A2019003_hacked_stare.h5 data/MYD09.A2019003_hacked_stare_res.h5 \
 data/Target_overlap_nw.h5 data/Target_overlap_nw_stare.h5 data/Target_overlap_nw_stare_res.h5 \
 data/t1_sidecar.nc
 
-CLEANFILES = 
+# CLEANFILES =
 
-DISTCLEANFILES = 
+# DISTCLEANFILES =

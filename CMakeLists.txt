@@ -527,6 +527,8 @@ add_executable(bes
     functions/stare/build_sidecar.cc
     functions/stare/StareFunctions.cc
     functions/stare/StareFunctions.h
+	functions/stare/GeoFile.cc
+	functions/stare/GeoFile.h
     functions/stare/unit-tests/StareFunctionsTest.cc
 
     functions/tests/gse-test.cc

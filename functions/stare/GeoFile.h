@@ -52,51 +52,47 @@ using namespace std;
  */
 class GeoFile
 {
+private:
+
 public:
-    GeoFile();
-    ~GeoFile();
-    
-    /** Read file. */
-    int readFile(const string fileName, int verbose, int quiet, int build_level);
+    GeoFile() : d_num_index(0) {};
+    virtual ~GeoFile() = default;
 
     /** Get STARE index sidecar filename. */
-    string sidecarFileName(const string fileName);
+    static string sidecar_filename(const string &file_name);
 
-    int readSidecarFile_int(const std::string fileName, int verbose, int &num_index,
-			    vector<string> &stare_index_name, vector<size_t> &size_i,
-			    vector<size_t> &size_j, vector<string> &variables,
-			    vector<int> &stare_varid, int &ncid);
-    int readSidecarFile(const std::string fileName, int verbose, int &ncid);
+    int read_sidecar_file(const std::string &file_name, int &ncid);
 
-    /** Get STARE index for data varaible. */
-    int getSTAREIndex_2(const std::string varName, int verbose, int ncid,
-			vector<unsigned long long> &values);
+    int get_stare_indices(const std::string &var_name, int ncid, vector<unsigned long long> &values);
 
-    /** Close sidecar file. */
-    int closeSidecarFile(int verbose, int ncid);
+    int close_sidecar_file(int ncid);
 
-    int num_index; /**< Number of STARE indicies needed for this file. */
+    ///< @name Fields
+    ///{
+    int d_num_index; ///< Number of STARE indices sets needed for this file.
+
+    vector<string> d_stare_index_name;
+    vector<string> stare_cover_name;
+    vector<string> d_variables; ///< Names of vars that use this index.
+    vector<size_t> d_size_i, d_size_j;
+    vector<int> d_stare_varid; ///< Use this varid to read the index values
+    ///}
+
     // int *geo_num_i1; /**< Number of I. */
     // int *geo_num_j1; /**< Number of J. */
     // double **geo_lat1; /**< Array of latitude values. */
     // double **geo_lon1; /**< Array of longitude values. */
     // unsigned long long **geo_index1; /**< Array of STARE index. */
 
+    // TODO These may be used by the STAREmaster library or createSidecarFile.
+    //  jhrg 6/17/21
     int num_cover;
-    unsigned long long **geo_cover1; /**< Array of STARE index intervals. */
+    unsigned long long **geo_cover1;
     int *geo_num_cover_values1;
-    vector<string> var_name[MAX_NUM_INDEX]; /**< Names of vars that use this index. */
     STARE_SpatialIntervals cover;
 
     int cover_level;
     int perimeter_stride;
-
-    vector<string> stare_index_name;
-    vector<string> stare_cover_name;
-    vector<string> variables;
-
-    vector<size_t> size_i, size_j;
-    vector<int> stare_varid;
 };
 
 #endif /* GEO_FILE_H_ */

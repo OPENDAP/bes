@@ -70,6 +70,8 @@ namespace functions {
 // If stare_storage_path is empty, expect the sidecar file in the same
 // place as the data file. jhrg 5/26/20
 string stare_storage_path = "";
+
+// TODO Remove this once change-over is complete. jhrg 6/17/21
 string stare_sidecar_suffix = "_sidecar";
 
 /**
@@ -125,8 +127,8 @@ static vector<dods_uint64> *extract_uint64_array(Array *var) {
 #endif
 
 void
-extract_uint64_array(Array *var, vector<dods_uint64> &values) {
-
+extract_uint64_array(Array *var, vector<dods_uint64> &values)
+{
     values.resize(var->length());
     var->value(&values[0]);    // Extract the values of 'var' to 'values'
 }
@@ -292,6 +294,8 @@ void stare_subset_array_helper(vector<T> &result_data, const vector<T> &src_data
  * of the region of interest
  * @param result A value-result parameter. The masked dependent_var data is
  * returned using this libdap::Array
+ *
+ * @todo FIXME jhrg 6/17/21
  */
 template <class T>
 void StareSubsetArrayFunction::build_masked_data(Array *dependent_var, const vector<dods_uint64> &dep_var_stare_indices,
@@ -308,6 +312,7 @@ void StareSubsetArrayFunction::build_masked_data(Array *dependent_var, const vec
     result->set_value(result_data, result_data.size());
 }
 
+#if 1
 /**
  * @brief Return the pathname to an STARE sidecar file for a given dataset.
  *
@@ -317,6 +322,8 @@ void StareSubsetArrayFunction::build_masked_data(Array *dependent_var, const vec
  * @param pathName The dataset pathname
  * @param token Optional extension to the main part of the file name (default '_sidecar').
  * @return The pathname to the matching sidecar file.
+ *
+ * @todo REMOVE jhrg 6/17/21
  */
 string
 get_sidecar_file_pathname(const string &pathName, const string &token)
@@ -343,11 +350,15 @@ get_sidecar_file_pathname(const string &pathName, const string &token)
     }
 
 }
+#endif
 
 /**
  * @brief Read the 32-bit integer array data
  * @param file The HDF5 Id of an open file
  * @param values Value-result parameter, a vector that can hold dods_int32 values
+ *
+ * @todo FIXME jhrg 6/17/21
+ * @todo This returns the x,y indices for stare indices. Calculate
  */
 void
 get_sidecar_int32_values(const string &filename, const string &variable, vector<dods_int32> &values)
@@ -389,72 +400,23 @@ get_sidecar_int32_values(const string &filename, const string &variable, vector<
  * @param values Value-result parameter, a vector that can hold dods_uint64 values
  */
 void
-get_sidecar_uint64_values_2(const string &filename, BaseType *variable, vector<dods_uint64> &values)
+get_sidecar_uint64_values(const string &filename, const string &variable_name, vector<dods_uint64> &values)
 {
     int ncid;
-    GeoFile *gf = new GeoFile();
-    vector<unsigned long long> my_values;
     int ret;
+    auto gf = unique_ptr<GeoFile>(new GeoFile());
 
     // Open and scan the sidecar file.
-    if ((ret = gf->readSidecarFile(filename.c_str(), 1, ncid)))
+    if ((ret = gf->read_sidecar_file(filename, ncid)))
         throw BESInternalError("Could not open file " + filename + " - " + nc_strerror(ret), __FILE__, __LINE__);
 
     // Get the STARE index data for variable.
-    // FIXME do not copy indices to temp storage. jhrg 5/19/21
-    if ((ret = gf->getSTAREIndex_2(variable->name(), 1, ncid, my_values)))
+    if ((ret = gf->get_stare_indices(variable_name, ncid, values)))
         throw BESInternalError("Could get stare indexes from file " + filename + " - " + nc_strerror(ret), __FILE__, __LINE__);
 
-    // Copy vector.
-    for (size_t i = 0; i < my_values.size(); i++)
-    	values.push_back(my_values.at(i));
-
     // Close the sidecar file.
-    if ((ret = gf->closeSidecarFile(1, ncid)))
+    if ((ret = gf->close_sidecar_file(ncid)))
         throw BESInternalError("Could not close file " + filename + " - " + nc_strerror(ret),  __FILE__, __LINE__);
-}
-
-/**
- * @brief Read the unsigned 64-bit integer array data
- * @param file The HDF5 Id of an open file
- * @param variable Get the stare indices for this dependent variable
- * @param values Value-result parameter, a vector that can hold dods_uint64 values
- * @deprecated This read from the old sidecar files
- */
-void
-get_sidecar_uint64_values(const string &filename, BaseType */*variable*/, vector<dods_uint64> &values)
-{
-    //Read the file and store the datasets
-    hid_t file = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
-    if (file < 0)
-        throw BESInternalError("Could not open file " + filename, __FILE__, __LINE__);
-
-    // Here we look up the name of the stare index data for 'variable.' For now,
-    // use the name stored in 's_index_name'. jhrg 6/3/20
-
-    hid_t dataset = H5Dopen(file, s_index_name.c_str(), H5P_DEFAULT);
-    if (dataset < 0)
-        throw BESInternalError(string("Could not open dataset: ").append(s_index_name), __FILE__, __LINE__);
-
-    hid_t dspace = H5Dget_space(dataset);
-    const int ndims = H5Sget_simple_extent_ndims(dspace);
-    vector<hsize_t> dims(ndims);
-
-    //Get the size of the dimension so that we know how big to make the memory space
-    //Each of the dataspaces should be the same size, if in the future they are different
-    // sizes then the size of each dataspace will need to be calculated.
-    H5Sget_simple_extent_dims(dspace, &dims[0], NULL);
-
-    //We need to get the filespace and memspace before reading the values from each dataset
-    hid_t filespace = H5Dget_space(dataset);
-
-    hid_t memspace = H5Screate_simple(ndims, &dims[0], NULL);
-
-    //Get the number of elements in the dataspace and use that to appropriate the proper size of the vectors
-    values.resize(H5Sget_select_npoints(filespace));
-
-    //Read the data file and store the values of each dataset into an array
-    H5Dread(dataset, H5T_NATIVE_ULLONG, memspace, filespace, H5P_DEFAULT, &values[0]);
 }
 
 void
@@ -502,7 +464,7 @@ StareIntersectionFunction::stare_intersection_dap4_function(D4RValueList *args, 
 
      // Read the data file and store the values of each dataset into an array
     vector<dods_uint64> dep_var_stare_indices;
-    get_sidecar_uint64_values_2(fullPath, dependent_var, dep_var_stare_indices);
+    get_sidecar_uint64_values(fullPath, dependent_var->name(), dep_var_stare_indices);
 
     // TODO: We can dump the values in 'stare_indices' here
     vector<dods_uint64> target_s_indices;
@@ -559,7 +521,7 @@ StareCountFunction::stare_count_dap4_function(D4RValueList *args, DMR &dmr)
 
     //Read the data file and store the values of each dataset into an array
     vector<dods_uint64> dep_var_stare_indices;
-    get_sidecar_uint64_values_2(fullPath, dependent_var, dep_var_stare_indices);
+    get_sidecar_uint64_values(fullPath, dependent_var->name(), dep_var_stare_indices);
 
     // TODO: We can dump the values in 'stare_indices' here
     vector<dods_uint64> target_s_indices;
@@ -606,7 +568,7 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
 
     //Read the data file and store the values of each dataset into an array
     vector<dods_uint64> dep_var_stare_indices;
-    get_sidecar_uint64_values_2(fullPath, dependent_var, dep_var_stare_indices);
+    get_sidecar_uint64_values(fullPath, dependent_var->name(), dep_var_stare_indices);
 
     // TODO: We can dump the values in 'stare_indices' here
     vector<dods_uint64> target_s_indices;
@@ -677,7 +639,7 @@ StareSubsetArrayFunction::stare_subset_array_dap4_function(D4RValueList *args, D
 
     //Read the data file and store the values of each dataset into an array
     vector<dods_uint64> dep_var_stare_indices;
-    get_sidecar_uint64_values_2(fullPath, dependent_var, dep_var_stare_indices);
+    get_sidecar_uint64_values(fullPath, dependent_var->name(), dep_var_stare_indices);
 
     vector<dods_uint64> target_s_indices;
     read_stare_indices_from_function_argument(raw_stare_indices, target_s_indices);
