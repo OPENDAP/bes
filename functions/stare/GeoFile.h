@@ -9,20 +9,14 @@
 #define GEO_FILE_H_
 
 #include <string>
-#include <sstream>
-#include <iostream>
-#include <iomanip>
 #include <vector>
-//#include "ssc.h"
+
 #include "STARE.h"
-using namespace std;
 
 #define SSC_LAT_NAME "Latitude"
 #define SSC_LON_NAME "Longitude"
 #define SSC_I_NAME "i"
 #define SSC_J_NAME "j"
-#define SSC_K_NAME "k"
-#define SSC_L_NAME "l"
 #define SSC_INDEX_NAME "STARE_index"
 #define SSC_COVER_NAME "STARE_cover"
 #define SSC_LONG_NAME "long_name"
@@ -59,11 +53,11 @@ public:
     virtual ~GeoFile() = default;
 
     /** Get STARE index sidecar filename. */
-    static string sidecar_filename(const string &file_name);
+    static std::string sidecar_filename(const std::string &file_name);
 
     int read_sidecar_file(const std::string &file_name, int &ncid);
 
-    int get_stare_indices(const std::string &var_name, int ncid, vector<unsigned long long> &values);
+    int get_stare_indices(const std::string &var_name, int ncid, std::vector<unsigned long long> &values);
 
     int close_sidecar_file(int ncid);
 
@@ -71,11 +65,11 @@ public:
     ///{
     int d_num_index; ///< Number of STARE indices sets needed for this file.
 
-    vector<string> d_stare_index_name;
-    vector<string> stare_cover_name;
-    vector<string> d_variables; ///< Names of vars that use this index.
-    vector<size_t> d_size_i, d_size_j;
-    vector<int> d_stare_varid; ///< Use this varid to read the index values
+    std::vector<std::string> d_stare_index_name;
+    std::vector<std::string> stare_cover_name;
+    std::vector<std::string> d_variables; ///< Names of vars that use this index.
+    std::vector<size_t> d_size_i, d_size_j;
+    std::vector<int> d_stare_varid; ///< Use this varid to read the index values
     ///}
 
     // int *geo_num_i1; /**< Number of I. */
