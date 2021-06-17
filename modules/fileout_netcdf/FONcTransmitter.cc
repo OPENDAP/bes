@@ -143,10 +143,10 @@ string create_cf_history_txt(const string &request_url)
 }
 
 /**
- * @brief Build a history entry. Used only if the cf_history_context is not set.
+ * @brief Build a history_json entry. Used only if the history_json_context is not set.
  *
  * @param request_url The request URL to add to the history value
- * @return A history value string. The caller must actually add this to a 'history'
+ * @return A history_json value string. The caller must actually add this to a 'history_json'
  * attribute, etc.
  */
 string create_json_history_txt(const string &request_url)
@@ -158,6 +158,7 @@ string create_json_history_txt(const string &request_url)
     // so the tests are not hopelessly obscure and filter out junk that varies
     // by host (e.g., the names of cached files that have been decompressed).
     // jhrg 6/3/16
+    // sk 6/17/21
 
     string history_json_entry;
     std::stringstream ss;
@@ -167,13 +168,12 @@ string create_json_history_txt(const string &request_url)
     timeinfo = localtime(&raw_now);
 
     char time_str[100];
-    strftime(time_str, 100, "%Y-%m-%d T %H:%M:%S", timeinfo);
+    strftime(time_str, 100, "%Y-%m-%dT%H:%M:%S", timeinfo);
 
     //ss << time_str << " " << "Hyrax" << " " << request_url;
-    ss << "[{'$schema':'https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json','date_time':'2021-05-20T20:37:25Z','program':'hyrax','version':'1.16.3','parameters':['request_url=\thttp://opendap.uat.earthdata.nasa.gov/collections/C1234714698-EEDTEST/granules/EEDTEST-ATL08-003-ATL08_20200711T232648.nc'}]";
-
+    ss << "[{'$schema':'https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json','date_time':'" << time_str << "','program':'hyrax','version':'1.16.3','parameters':['request_url=" << request_url << "']}]";
     history_json_entry = ss.str();
-    //BESDEBUG(MODULE, prolog << "Adding cf_history_entry context. '" << cf_history_entry << "'" << endl);
+    BESDEBUG(MODULE, prolog << "Adding cf_history_entry context. '" << history_json_entry << "'" << endl);
     return history_json_entry;
 }
 
