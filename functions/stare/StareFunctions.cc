@@ -30,24 +30,23 @@
 #include <hdf5.h>
 #include <netcdf.h>
 
-#include <BaseType.h>
-#include <Float64.h>
-#include <Str.h>
-#include <Array.h>
-#include <Grid.h>
-#include <Structure.h>
+#include <libdap/BaseType.h>
+#include <libdap/Float64.h>
+#include <libdap/Str.h>
+#include <libdap/Array.h>
+#include <libdap/Grid.h>
+#include <libdap/Structure.h>
 
-#include <DMR.h>
-#include <D4RValue.h>
+#include <libdap/DMR.h>
+#include <libdap/D4RValue.h>
 
-#include <Byte.h>
-#include <Int16.h>
-#include <Int32.h>
-#include <UInt16.h>
-#include <UInt32.h>
-#include <Float32.h>
-#include <Int64.h>
-#include <UInt64.h>
+#include <libdap/Byte.h>
+#include <libdap/Int16.h>
+#include <libdap/Int32.h>
+#include <libdap/UInt16.h>
+#include <libdap/UInt32.h>
+#include <libdap/Float32.h>
+#include <libdap/UInt64.h>
 
 #include "BESDebug.h"
 #include "BESUtil.h"
@@ -72,7 +71,7 @@ namespace functions {
 string stare_storage_path = "";
 
 // TODO Remove this once change-over is complete. jhrg 6/17/21
-string stare_sidecar_suffix = "_sidecar";
+string stare_sidecar_suffix = "_stare.nc";
 
 /**
  * @brief Write a collection of STARE Matches to an ostream
@@ -102,37 +101,12 @@ ostream & operator << (ostream &out, const stare_matches &m)
     return out;
 }
 
-#if 0
-// May need to be moved to libdap/util
-// This helper function assumes 'var' is the correct size.
-// Made this static to limit its scope to this file. jhrg 11/7/19
-
-/**
- * @brief extract values form a libdap::Array and return them in an unsigned 64-bit int vector
- * @param var The array
- * @return An unsigned 64-bit integer vector.
- * @throw libdap::Error if the array does not hold values that can be stored in a 64-bit unsigned integer vector
- */
-static vector<dods_uint64> *extract_uint64_array(Array *var) {
-    assert(var);
-
-    int length = var->length();
-
-    auto *newVar = new vector<dods_uint64>;
-    newVar->resize(length);
-    var->value(&(*newVar)[0]);    // Extract the values of 'var' to 'newVar'
-
-    return newVar;
-}
-#endif
-
-void
+static void
 extract_uint64_array(Array *var, vector<dods_uint64> &values)
 {
     values.resize(var->length());
     var->value(&values[0]);    // Extract the values of 'var' to 'values'
 }
-
 
 /**
  * Compare two spatial array index values a, b.
@@ -312,45 +286,37 @@ void StareSubsetArrayFunction::build_masked_data(Array *dependent_var, const vec
     result->set_value(result_data, result_data.size());
 }
 
-#if 1
 /**
  * @brief Return the pathname to an STARE sidecar file for a given dataset.
  *
  * This uses the value of the BES key FUNCTIONS.stareStoragePath to find
  * a the sidecar file that matches the given dataset. The lookup ignores
  * any path component of the dataset; only the file name is used.
- * @param pathName The dataset pathname
- * @param token Optional extension to the main part of the file name (default '_sidecar').
+ * @param pathname The dataset pathname
+ * @param token Optional extension to the main part of the file name (default '_stare.nc').
  * @return The pathname to the matching sidecar file.
- *
- * @todo REMOVE jhrg 6/17/21
  */
 string
-get_sidecar_file_pathname(const string &pathName, const string &token)
+get_sidecar_file_pathname(const string &pathname, const string &token)
 {
-    string granuleName = pathName;
+    // Look for the sidecar file in the same dir or in 'stare_storage_path'. jhrg 6/17/21
+    string filename = pathname;
     if (!stare_storage_path.empty()) {
-        granuleName = pathName.substr(pathName.find_last_of('/') + 1);
+        filename = pathname.substr(pathname.find_last_of('/') + 1);
     }
 
-    size_t findDot = granuleName.find_last_of('.');
-    // Added extraction of the extension since the files won't always be *.h5
-    // also switched to .append() instead of '+' because the former is faster.
-    // jhrg 11/5/19
-    string extension = granuleName.substr(findDot); // ext includes the dot
-    granuleName = granuleName.substr(0, findDot).append(token).append(extension);
+    size_t last_dot_pos = filename.find_last_of('.');
+    filename = filename.substr(0, last_dot_pos).append(token);
 
     if (!stare_storage_path.empty()) {
         // Above the path has been removed
-        return BESUtil::pathConcat(stare_storage_path, granuleName);
+        return BESUtil::pathConcat(stare_storage_path, filename);
     }
     else {
-        // stare_storage_path is empty, granuleName is the full path
-        return granuleName;
+        // stare_storage_path is empty, filename is the full path
+        return filename;
     }
-
 }
-#endif
 
 /**
  * @brief Read the 32-bit integer array data
@@ -457,24 +423,20 @@ StareIntersectionFunction::stare_intersection_dap4_function(D4RValueList *args, 
     }
 
     // Find the filename from the dmr
-    string fullPath = get_sidecar_file_pathname(dmr.filename(), stare_sidecar_suffix);
+    string sidecar_pathname = get_sidecar_file_pathname(dmr.filename(), stare_sidecar_suffix);
 
     BaseType *dependent_var = args->get_rvalue(0)->value(dmr);
     BaseType *raw_stare_indices = args->get_rvalue(1)->value(dmr);
 
      // Read the data file and store the values of each dataset into an array
     vector<dods_uint64> dep_var_stare_indices;
-    get_sidecar_uint64_values(fullPath, dependent_var->name(), dep_var_stare_indices);
+    get_sidecar_uint64_values(sidecar_pathname, dependent_var->name(), dep_var_stare_indices);
 
-    // TODO: We can dump the values in 'stare_indices' here
     vector<dods_uint64> target_s_indices;
     read_stare_indices_from_function_argument(raw_stare_indices, target_s_indices);
 
     bool status = target_in_dataset(target_s_indices, dep_var_stare_indices);
 
-#if 0
-     Int32 *result = new Int32("result");
-#endif
     unique_ptr<Int32> result(new Int32("result"));
     if (status) {
         result->set_value(1);

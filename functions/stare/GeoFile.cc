@@ -29,12 +29,12 @@ GeoFile::sidecar_filename(const string &file_name) {
  * @brief Read a sidecar file.
  *
  * Open and read information (except the actual stare indices) from a STARE sidecar
- * file. Each set of stare indices and the variables goelocation information they
+ * file. Each set of stare indices and the variables geolocation information they
  * describe is recorded in the GeoFile instance.
  *
  * The caller is responsible for calling close_sidecar_file().
  *
- * @param fileName Name of the sidecar file.
+ * @param fileName Full pathname of the sidecar file.
  * @param ncid Value-result parameter that returns the ncid of the open file
  * @return 0 for success, netCDF error code otherwise.
  */

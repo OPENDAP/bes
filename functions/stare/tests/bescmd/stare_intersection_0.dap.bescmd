@@ -4,11 +4,12 @@
   <bes:setContext name="errors">xml</bes:setContext>
   <bes:setContext name="max_response_size">0</bes:setContext>
   
-  <bes:setContainer name="c" space="catalog">/functions/stare/data/MYD09.A2019003_hacked.h5</bes:setContainer>
+  <bes:setContainer name="c" space="catalog">/functions/stare/data/sample_data/336/MOD05_L2.A2019336.0000.061.2019336211522.hdf</bes:setContainer>
   
   <bes:define name="d1" space="default">
     <bes:container name="c">
-      <bes:dap4function>stare_intersection(Latitude, $UInt64(3:9223372034707292159, 3440012343008821258, 3440016191299518400))</bes:dap4function>
+      <bes:dap4constraint>/Solar_Zenith</bes:dap4constraint>
+      <!-- bes:dap4function>stare_intersection(Solar_Zenith, $UInt64(3:4298473764500464809, 3440012343008821258, 3440016191299518400))</bes:dap4function -->
     </bes:container>
   </bes:define>
   

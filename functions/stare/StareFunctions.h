@@ -51,7 +51,7 @@ const std::string STARE_SIDECAR_SUFFIX_KEY = "FUNCTIONS.stareSidecarSuffix";
 extern string stare_storage_path;
 extern string stare_sidecar_suffix;
 
-std::string get_sidecar_file_pathname(const std::string &pathName, const string &token = "_sidecar");
+std::string get_sidecar_file_pathname(const std::string &pathname, const string &token = "_sidecar");
 void get_sidecar_int32_values(hid_t file, const std::string &variable, std::vector<libdap::dods_int32> &values);
 void get_sidecar_uint64_values(hid_t file, const std::string &variable, std::vector<libdap::dods_uint64> &values);
 void get_sidecar_uint64_values(const std::string &filename, const std::string &variable_name, std::vector<libdap::dods_uint64> &values);
@@ -132,8 +132,7 @@ public:
         setVersion("0.3");
     }
 
-    virtual ~StareIntersectionFunction() {
-    }
+    virtual ~StareIntersectionFunction() = default;
 };
 
 class StareCountFunction : public libdap::ServerFunction {
