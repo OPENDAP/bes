@@ -509,6 +509,7 @@ void FONcTransform::transform(ostream &strm)
         // for the variables to the netcdf file
         for (FONcBaseType *fbt: _fonc_vars) {
             BESDEBUG("fonc", "FONcTransform::transform() - Defining variable:  " << fbt->name() << endl);
+            nc_def_var_fill(_ncid, fbt->varid(), NC_NOFILL, NULL );
             fbt->define(_ncid);
         }
 

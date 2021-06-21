@@ -170,6 +170,7 @@ void FONcStructure::write(int ncid)
         fbt->set_eval(get_eval());
 
         fbt->write(ncid);
+        nc_sync(ncid);
     }
     BESDEBUG("fonc", "FONcStructure::define - done writing " << _varname << endl);
 }
