@@ -3580,7 +3580,6 @@ bool GMFile::Check_1DGeolocation_Dimscale()  {
     // We need to consider both 1-D lat/lon and the 1-D zonal average case(1-D lat only). 
     for (vector<GMCVar *>::iterator ircv = this->cvars.begin();
             ircv != this->cvars.end(); ++ircv) {
-
         if((*ircv)->cvartype == CV_EXIST) {
             string attr_name ="units";
             string lat_unit_value = "degrees_north";
@@ -4189,30 +4188,39 @@ bool GMFile::Flatten_VarPath_In_Coordinates_Attr(Var *var)  {
 
     BESDEBUG("h5", "Coming to Flatten_VarPath_In_Coordinates_Attr()"<<endl);
     string co_attrname = "coordinates";
-    bool has_coor_attr = false;
+    bool need_flatten_coor_attr = false;
     string orig_coor_value;
     string flatten_coor_value;
     // Assume the separator is always a space.
     char sc = ' ';
+    char backslash = '/';
 
     for (vector<Attribute *>:: iterator ira =var->attrs.begin(); ira !=var->attrs.end();) {
 
         // We only check the original attribute name
         // Remove the original "coordinates" attribute.
+        // There is a case that the "coordinates" attribute doesn't need to be flattened.
+        // We will skip this case. This is necessary since the "coordinates" may be revised
+        // to add a path to follow the CF. Without skipping the case, the "coordinates" is
+        // actually not handled but "makes the impression" it is handled. That makes the 
+        // this case ignored when the EnableCoorattrAddPath BES key is supposed to work on.
+        // https://bugs.earthdata.nasa.gov/browse/HDFFEATURE-45
         if((*ira)->name == co_attrname) {
             Retrieve_H5_Attr_Value((*ira),var->fullpath);
             string orig_attr_value((*ira)->value.begin(),(*ira)->value.end());
-            orig_coor_value = orig_attr_value;
-            has_coor_attr = true;
-            delete(*ira);
-            ira = var->attrs.erase(ira);
+            if(orig_attr_value.find_first_of(backslash)!=string::npos){ 
+                orig_coor_value = orig_attr_value;
+                need_flatten_coor_attr = true;
+                delete(*ira);
+                ira = var->attrs.erase(ira);
+            }
             break;
         }
         else 
             ++ira;
     }
 
-    if(true == has_coor_attr) {
+    if(true == need_flatten_coor_attr) {
 
         // We need to loop through each element in the "coordinates".
         size_t ele_start_pos = 0;
@@ -4235,6 +4243,7 @@ bool GMFile::Flatten_VarPath_In_Coordinates_Attr(Var *var)  {
         Add_Str_Attr(attr,co_attrname,flatten_coor_value);
         var->attrs.push_back(attr);
         var->coord_attr_add_path = false;
+        
     }
 
     return true;

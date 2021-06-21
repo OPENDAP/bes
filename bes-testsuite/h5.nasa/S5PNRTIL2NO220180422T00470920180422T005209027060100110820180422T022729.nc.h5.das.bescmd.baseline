@@ -2836,7 +2836,7 @@ Wrong version in Proc section in job order file: '1', expected '0.11.8'
         Float32 _FillValue 9.969209968e+36;
         String origname "nitrogendioxide_summed_total_column_precision";
         String fullnamepath "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_summed_total_column_precision";
-        String coordinates "longitude latitude";
+        String coordinates "PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_longitude PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_latitude";
     }
     PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_nitrogendioxide_summed_total_column {
         String units "mol m-2";
@@ -2847,7 +2847,7 @@ Wrong version in Proc section in job order file: '1', expected '0.11.8'
         Float32 _FillValue 9.969209968e+36;
         String origname "nitrogendioxide_summed_total_column";
         String fullnamepath "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_summed_total_column";
-        String coordinates "longitude latitude";
+        String coordinates "PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_longitude PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_latitude";
     }
     PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_wavelength_calibration_chi_square {
         String long_name "wavelength calibration chi square";
@@ -2910,7 +2910,7 @@ Wrong version in Proc section in job order file: '1', expected '0.11.8'
         Float32 _FillValue 9.969209968e+36;
         String origname "nitrogendioxide_total_column_precision";
         String fullnamepath "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_total_column_precision";
-        String coordinates "longitude latitude";
+        String coordinates "PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_longitude PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_latitude";
     }
     PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_wavelength_calibration_irradiance_chi_square {
         String long_name "wavelength calibration irradiance chi squared";
@@ -3004,7 +3004,7 @@ Wrong version in Proc section in job order file: '1', expected '0.11.8'
         Float32 _FillValue 9.969209968e+36;
         String origname "nitrogendioxide_total_column";
         String fullnamepath "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_total_column";
-        String coordinates "longitude latitude";
+        String coordinates "PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_longitude PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_latitude";
     }
     PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_wavelength_calibration_offset_precision {
         String long_name "wavelength offset precision";
@@ -3117,7 +3117,7 @@ Wrong version in Proc section in job order file: '1', expected '0.11.8'
         Float32 _FillValue 9.969209968e+36;
         String origname "nitrogendioxide_stratospheric_column";
         String fullnamepath "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_stratospheric_column";
-        String coordinates "longitude latitude";
+        String coordinates "PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_longitude PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_latitude";
     }
     PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_ring_coefficient_precision {
         String units "1";
@@ -3145,7 +3145,7 @@ Wrong version in Proc section in job order file: '1', expected '0.11.8'
         Float32 _FillValue 9.969209968e+36;
         String origname "nitrogendioxide_stratospheric_column_precision";
         String fullnamepath "/PRODUCT/SUPPORT_DATA/DETAILED_RESULTS/nitrogendioxide_stratospheric_column_precision";
-        String coordinates "longitude latitude";
+        String coordinates "PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_longitude PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_latitude";
     }
     PRODUCT_SUPPORT_DATA_DETAILED_RESULTS_ozone_slant_column_density {
         String units "mol m-2";
@@ -3321,7 +3321,7 @@ Wrong version in Proc section in job order file: '1', expected '0.11.8'
         Byte _FillValue 255;
         String origname "qa_value";
         String fullnamepath "/PRODUCT/qa_value";
-        String coordinates "longitude latitude";
+        String coordinates "PRODUCT_longitude PRODUCT_latitude";
     }
     PRODUCT_air_mass_factor_troposphere {
         String units "1";
@@ -3370,7 +3370,7 @@ Wrong version in Proc section in job order file: '1', expected '0.11.8'
         Float32 _FillValue 9.969209968e+36;
         String origname "nitrogendioxide_tropospheric_column_precision";
         String fullnamepath "/PRODUCT/nitrogendioxide_tropospheric_column_precision";
-        String coordinates "longitude latitude";
+        String coordinates "PRODUCT_longitude PRODUCT_latitude";
     }
     PRODUCT_time_utc {
         String long_name "Time of observation as ISO 8601 date-time string";
@@ -3393,7 +3393,7 @@ Wrong version in Proc section in job order file: '1', expected '0.11.8'
         Float32 _FillValue 9.969209968e+36;
         String origname "nitrogendioxide_tropospheric_column";
         String fullnamepath "/PRODUCT/nitrogendioxide_tropospheric_column";
-        String coordinates "longitude latitude";
+        String coordinates "PRODUCT_longitude PRODUCT_latitude";
     }
     PRODUCT_scanline {
         String units "1";

@@ -6,7 +6,7 @@
 GET=""
 command -v  wget > /dev/null && GET="wget -N --retr-symlinks" 
 if [ -z "$GET" ]; then
-  command -v  curl > /dev/null && GET="curl -O"
+  command -v  curl > /dev/null && GET="curl -O -C -"
 fi
 
 if [ -z "$GET" ]; then
