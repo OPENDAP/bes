@@ -66,7 +66,11 @@ void FONcBaseType::define(int ncid)
             string err = (string) "fileout.netcdf - " + "Failed to define variable " + _varname;
             FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
         }
-
+        stax = nc_def_var_fill(ncid, _varid, NC_NOFILL, NULL );
+        if (stax != NC_NOERR) {
+            string err = (string) "fileout.netcdf - " + "Failed to clear fill value for " + _varname;
+            FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+        }
 
         BESDEBUG("fonc", "FONcBaseType::define - done defining " << _varname << endl);
     }

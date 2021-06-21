@@ -428,6 +428,12 @@ void FONcArray::define(int ncid) {
             FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
         }
 
+        stax = nc_def_var_fill(ncid, _varid, NC_NOFILL, NULL );
+        if (stax != NC_NOERR) {
+            string err = (string) "fileout.netcdf - " + "Failed to clear fill value for " + _varname;
+            FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+        }
+
         BESDEBUG("fonc", "FONcArray::define() netcdf-4 version is " << _ncVersion << endl);
         if (isNetCDF4()) {
             BESDEBUG("fonc", "FONcArray::define() Working netcdf-4 branch " << endl);
