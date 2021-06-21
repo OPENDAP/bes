@@ -74,6 +74,18 @@ string stare_storage_path = "";
 string stare_sidecar_suffix = "_stare.nc";
 
 /**
+ * @brief Strip away path info. Use in error messages.
+ * @param path Full pathname, etc., to a file.
+ * @return Just the last part of a pathname
+ */
+static string sanitize_pathname(string path)
+{
+    string::size_type last_slash = path.find_last_of('/');
+    ++last_slash;   // don't include the slash in the returned string
+    return (last_slash == string::npos) ? path: path.substr(last_slash);
+}
+
+/**
  * @brief Write a collection of STARE Matches to an ostream
  *
  * STARE matches is not a vector of stare_match objects. It's a self-contained
@@ -373,16 +385,20 @@ get_sidecar_uint64_values(const string &filename, const string &variable_name, v
     auto gf = unique_ptr<GeoFile>(new GeoFile());
 
     // Open and scan the sidecar file.
-    if ((ret = gf->read_sidecar_file(filename, ncid)))
-        throw BESInternalError("Could not open file " + filename + " - " + nc_strerror(ret), __FILE__, __LINE__);
+    if ((ret = gf->read_sidecar_file(gf->sidecar_filename(filename), ncid)))
+        throw BESInternalError("Could not open file " + sanitize_pathname(filename)
+                                + " - " + nc_strerror(ret), __FILE__, __LINE__);
 
     // Get the STARE index data for variable.
     if ((ret = gf->get_stare_indices(variable_name, ncid, values)))
-        throw BESInternalError("Could get stare indexes from file " + filename + " - " + nc_strerror(ret), __FILE__, __LINE__);
+        throw BESInternalError("Could not get STARE indices from the sidecar file "
+                                + sanitize_pathname(gf->sidecar_filename(filename))
+                                + " for " + variable_name + " - " + nc_strerror(ret), __FILE__, __LINE__);
 
     // Close the sidecar file.
     if ((ret = gf->close_sidecar_file(ncid)))
-        throw BESInternalError("Could not close file " + filename + " - " + nc_strerror(ret),  __FILE__, __LINE__);
+        throw BESInternalError("Could not close file " + sanitize_pathname(filename)
+                                + " - " + nc_strerror(ret),  __FILE__, __LINE__);
 }
 
 void
@@ -422,19 +438,18 @@ StareIntersectionFunction::stare_intersection_dap4_function(D4RValueList *args, 
         throw BESSyntaxUserError(oss.str(), __FILE__, __LINE__);
     }
 
-    // Find the filename from the dmr
-    string sidecar_pathname = get_sidecar_file_pathname(dmr.filename(), stare_sidecar_suffix);
-
     BaseType *dependent_var = args->get_rvalue(0)->value(dmr);
     BaseType *raw_stare_indices = args->get_rvalue(1)->value(dmr);
 
-     // Read the data file and store the values of each dataset into an array
+     // Read the stare indices for the dependent var from the sidecar file.
     vector<dods_uint64> dep_var_stare_indices;
-    get_sidecar_uint64_values(sidecar_pathname, dependent_var->name(), dep_var_stare_indices);
+    get_sidecar_uint64_values(dmr.filename(), dependent_var->name(), dep_var_stare_indices);
 
+    // Put the stare indices passed into the function into a vector<>
     vector<dods_uint64> target_s_indices;
     read_stare_indices_from_function_argument(raw_stare_indices, target_s_indices);
 
+    // Are any of the target indices covered by this variable
     bool status = target_in_dataset(target_s_indices, dep_var_stare_indices);
 
     unique_ptr<Int32> result(new Int32("result"));

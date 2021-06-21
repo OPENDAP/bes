@@ -8,8 +8,9 @@
   
   <bes:define name="d1" space="default">
     <bes:container name="c">
-      <bes:dap4constraint>/Solar_Zenith</bes:dap4constraint>
-      <!-- bes:dap4function>stare_intersection(Solar_Zenith, $UInt64(3:4298473764500464809, 3440012343008821258, 3440016191299518400))</bes:dap4function -->
+      <!-- constraint>mod05.Data%20Fields.Solar_Zenith</constraint -->
+      <!-- dap4constraint>/mod05.Data%20Fields.Solar_Zenith</dap4constraint -->
+      <bes:dap4function>stare_intersection(Solar_Zenith, $UInt64(3:4298473764500464809, 3440012343008821258, 3440016191299518400))</bes:dap4function>
     </bes:container>
   </bes:define>
   
