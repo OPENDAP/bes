@@ -1,0 +1,21 @@
+netcdf test {
+
+// global attributes:
+		:history = "removed date-timex nc4_groups_mlls_cf.h5" ;
+
+group: g1 {
+  dimensions:
+  	lev = 2 ;
+  variables:
+  	int lev(lev) ;
+  	float d1(lev) ;
+  } // group g1
+
+group: g2 {
+  dimensions:
+  	lev = 2 ;
+  variables:
+  	int lev(lev) ;
+  	float d2(lev) ;
+  } // group g2
+}

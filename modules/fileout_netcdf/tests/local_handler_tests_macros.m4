@@ -335,6 +335,7 @@ m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_COMPRESSION],  [dnl
     pass=$2
     repeat=$3
     compression="Deflate"
+    bes_conf=bes.nc4.conf
 
     AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
 
