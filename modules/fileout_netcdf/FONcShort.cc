@@ -32,7 +32,7 @@
 #include <BESInternalError.h>
 #include <BESDebug.h>
 #include <Int16.h>
-#include <UInt16.h>
+#include <Byte.h>
 
 #include "FONcShort.h"
 #include "FONcUtils.h"
@@ -50,12 +50,33 @@ FONcShort::FONcShort(BaseType *b)
         : FONcBaseType(), _bt(b)
 {
     Int16 *i16 = dynamic_cast<Int16 *>(b);
-    UInt16 *u16 = dynamic_cast<UInt16 *>(b);
-    if (!i16 && !u16) {
+    if (!i16) {
         string s = (string) "File out netcdf, FONcShort was passed a "
-                   + "variable that is not a DAP Int16 or UInt16";
+                   + "variable that is not a DAP Int16";
         throw BESInternalError(s, __FILE__, __LINE__);
     }
+    _unsigned_int8 = false;
+}
+
+FONcShort::FONcShort(BaseType *b, bool unsigned_int8)
+        : FONcBaseType(), _bt(b), _unsigned_int8(unsigned_int8)
+{
+  if(!_unsigned_int8) {
+    Int16 *i16 = dynamic_cast<Int16 *>(b);
+    if (!i16) {
+        string s = (string) "File out netcdf, FONcShort was passed a "
+                   + "variable that is not a DAP Int16";
+        throw BESInternalError(s, __FILE__, __LINE__);
+    }
+  }
+  else {
+    Byte *ui8 = dynamic_cast<Byte *>(b);
+    if (!ui8) {
+        string s = (string) "File out netcdf, FONcShort was passed a "
+                   + "variable that is not a DAP Byte";
+        throw BESInternalError(s, __FILE__, __LINE__);
+    }
+  }
 }
 
 /** @brief Destructor that cleans up the short
@@ -117,22 +138,32 @@ FONcShort::write(int ncid)
 {
     BESDEBUG("fonc", "FONcShort::write for var " << _varname << endl);
     size_t var_index[] = {0};
-    short *data = new short;
+    int stax = 0;
 
     if (is_dap4)
         _bt->intern_data();
     else
         _bt->intern_data(*get_eval(), *get_dds());
 
-    _bt->buf2val((void **) &data);
-    int stax = nc_put_var1_short(ncid, _varid, var_index, data);
+    if(_unsigned_int8) {
+        unsigned char *data_8 = new unsigned char;
+        _bt->buf2val((void **) &data_8);
+        short temp_8 = (short)(*data_8);
+        stax = nc_put_var1_short(ncid, _varid, var_index, &temp_8);
+        delete data_8;
+    }
+    else {
+        short *data = new short;
+        _bt->buf2val((void **) &data);
+        stax = nc_put_var1_short(ncid, _varid, var_index, data);
+        delete data;
+    }
     if (stax != NC_NOERR) {
         string err = (string) "fileout.netcdf - "
                      + "Failed to write short data for "
                      + _varname;
         FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
     }
-    delete data;
     BESDEBUG("fonc", "FONcShort::done write for var " << _varname << endl);
 }
 

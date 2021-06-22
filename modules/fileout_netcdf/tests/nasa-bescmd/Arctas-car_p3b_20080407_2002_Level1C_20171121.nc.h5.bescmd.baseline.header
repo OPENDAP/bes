@@ -31,8 +31,8 @@ variables:
 		SpectralRange_382nm:long_name = "SpectralRange for CAR ch2 382nm" ;
 		SpectralRange_382nm:units = "nm" ;
 	double Time(Scans) ;
-		Time:long_name = "seconds since 2008-04-07 00:00:00.0 UTC" ;
-		Time:units = "seconds since 2008-04-07 00:00:00.0 UTC" ;
+		Time:long_name = "seconds since removed date-time.0 UTC" ;
+		Time:units = "seconds since removed date-time.0 UTC" ;
 	float SRF_2095nm(SpectralRange_2095nm) ;
 		SRF_2095nm:long_name = "Spectral Response Function 2095 nm" ;
 		SRF_2095nm:valid_range = 0.f, 1.f ;
@@ -278,7 +278,7 @@ variables:
 		:change_log = "R2: Data and Global Attributes updates" ;
 		:Identifier_Product_DOI_Authority = "http://dx.doi.org/" ;
 		:DOI = "10.5067/CAR/DATA104" ;
-		:production_date = "2017-11-21T21:45:05.0Z" ;
+		:production_date = "removed date-time.0Z" ;
 		:ShortName = "CAR_ARCTAS_L1C" ;
 		:LongName = "CAR ARCTAS Level 1C Arctic Atmospheric Composition and Climate" ;
 		:VersionID = "1" ;
@@ -286,4 +286,5 @@ variables:
 		:Format = "NetCDF4" ;
 		:ProcessingLevel = "1C" ;
 		:Conventions = "CF-1.7" ;
+		:history = "removed date-timex Arctas-car_p3b_20080407_2002_Level1C_20171121.nc.h5" ;
 }

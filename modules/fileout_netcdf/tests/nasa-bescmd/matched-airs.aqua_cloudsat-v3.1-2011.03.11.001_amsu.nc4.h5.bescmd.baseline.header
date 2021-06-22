@@ -15,6 +15,7 @@ dimensions:
 		:SOUTHBOUNDINGCOORDINATE = -78.0868835449219 ;
 		:EASTBOUNDINGCOORDINATE = 24.355131149292 ;
 		:WESTBOUNDINGCOORDINATE = -32.0012512207031 ;
+		:history = "removed date-timex matched-airs.aqua_cloudsat-v3.1-2011.03.11.001_amsu.nc4.h5" ;
 
 group: CloudSat {
   dimensions:
@@ -157,6 +158,9 @@ group: CloudSat {
     		nray_2B-GEOPROF:fonc_original_name = "nray:2B-GEOPROF" ;
     } // group GEOPROF
 
+  group: GEOPROF-LIDAR {
+    } // group GEOPROF-LIDAR
+
   group: CLDCLASS {
     variables:
     	int Data_quality(amsu_idx, cs_idx) ;
@@ -229,6 +233,9 @@ group: CloudSat {
     	int nbin_2B-CLDCLASS(amsu_idx) ;
     		nbin_2B-CLDCLASS:fonc_original_name = "nbin:2B-CLDCLASS" ;
     } // group CLDCLASS
+
+  group: CWC-RO {
+    } // group CWC-RO
   } // group CloudSat
 
 group: AIRS {

@@ -56,7 +56,7 @@ variables:
 		:PlatformShortName = "Nimbus 7" ;
 		:ProcessingCenter = "ACPS" ;
 		:ProcessLevel = "2" ;
-		:ProductionDateTimeHE5 = "2015-07-01T22:19:47.0Z" ;
+		:ProductionDateTimeHE5 = "removed date-time.0Z" ;
 		:ProductType = "L2 Swath" ;
 		:RangeBeginningDate = "1991-06-30" ;
 		:RangeBeginningTime = "09:15:43" ;
@@ -68,7 +68,8 @@ variables:
 		:VersionID = "2.00" ;
 		:WestBoundingCoordinate = -180.f ;
 		:TAI93At0zOfGranule = -47606401. ;
-		:ProductionDateTimeHDF = "2015-09-18T19:26:05.0Z" ;
+		:ProductionDateTimeHDF = "removed date-time.0Z" ;
+		:history = "removed date-timex TOMS-N7_L2-TOMSN7AERUV_1991m0630t0915-o64032_v02-00-2015m0918t123456.h5" ;
 
 group: ANCILLARY_DATA {
   variables:

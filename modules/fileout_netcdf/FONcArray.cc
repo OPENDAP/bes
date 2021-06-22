@@ -192,6 +192,8 @@ void FONcArray::convert(vector<string> embed, bool is_dap4_group) {
             // shared dimension. Create it only once and share the FONcDim
             int ds_num = FONcDim::DimNameNum + 1;
             while (find(d4_rds_nums.begin(), d4_rds_nums.end(), ds_num) != d4_rds_nums.end()) {
+            // Note: the following #if 0 #endif block is only for future development.
+            //       Don't delete or change it for debuggging. 
 #if 0
                 // This may be an optimization for rare cases. May do this when performance issue hurts
                 //d4_rds_nums_visited.push_back(ds_num);
@@ -369,7 +371,11 @@ void FONcArray::define(int ncid) {
 
     if (!_defined && !d_dont_use_it) {
 
-        BESDEBUG("fonc", "FONcArray::define() - defining array ' defined already" << _varname << "'" << endl);
+        BESDEBUG("fonc", "FONcArray::define() - defining array ' defined already: " << _varname << "'" << endl);
+
+        // Note: the following #if 0 #endif block is only for future development.
+        //       Don't delete or change it for debuggging. 
+
 #if 0
         if(d4_dim_ids.size() >0) {
            if(d_array_type == NC_CHAR) {
@@ -452,36 +458,9 @@ void FONcArray::define(int ncid) {
         if (is_dap4) {
             D4Attributes *d4_attrs = d_a->attributes();
             updateD4AttrType(d4_attrs, d_array_type);
-#if 0
-            for (D4Attributes::D4AttributesIter ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end(); ii != ee; ++ii) {
-                if((*ii)->name() == _FillValue) {
-                    BESDEBUG("fonc", "FONcArray - attrtype " << getD4AttrType(d_array_type) << endl);
-                    BESDEBUG("fonc", "FONcArray - attr_type " << (*ii)->type() << endl);
-                    D4AttributeType correct_d4_attr_type = getD4AttrType(d_array_type);
-                    if(correct_d4_attr_type != (*ii)->type()) 
-                        (*ii)->set_type(correct_d4_attr_type);
-                    break;
-                }
-            }
-#endif
         }
         else {
             AttrTable &attrs = d_a->get_attr_table();
-#if 0
-            if (attrs.get_size()) {
-                for (AttrTable::Attr_iter iter = attrs.attr_begin(); iter != attrs.attr_end(); iter++) {
-                    if (attrs.get_name(iter) == _FillValue){
-
-                        BESDEBUG("fonc", "FONcArray - attrtype " << getAttrType(d_array_type) << endl);
-                        BESDEBUG("fonc", "FONcArray - attr_type " << attrs.get_attr_type(iter) << endl);
-                        if(getAttrType(d_array_type) != attrs.get_attr_type(iter)) {
-                            (*iter)->type = getAttrType(d_array_type);
-                        }
-                        break;
-                    }
-                }
-            }
-#endif
             updateAttrType(attrs, d_array_type);
         }
 

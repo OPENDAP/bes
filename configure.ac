@@ -250,8 +250,8 @@ AS_IF([test -z "$CXX11_FLAG"],
       [CXX_FLAGS_CHECK([--std=c++0x], [CXX11_FLAG=--std=c++0x], [])])
 
 AS_IF([test -z "$CXX11_FLAG"],
-      [AC_MSG_ERROR([Not using C++-11 (or C++0x)])],
-      [AC_MSG_NOTICE([Using $CXX11_FLAG for C++-11 support])
+      [AC_MSG_ERROR([Not using C++11 (or C++0x)])],
+      [AC_MSG_NOTICE([Using $CXX11_FLAG for C++11 support])
        cxx_debug_flags="$cxx_debug_flags --pedantic $CXX11_FLAG"])
 
 AC_SUBST(CXX11_FLAG)

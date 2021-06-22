@@ -50,8 +50,10 @@ class FONcInt : public FONcBaseType
 {
 private:
     libdap::BaseType *			_bt ;
+    bool _unsigned_short;
 public:
     				FONcInt( libdap::BaseType *b ) ;
+                                FONcInt(libdap::BaseType *b, bool unsigned_promote);
     virtual			~FONcInt() ;
 
     virtual void		define( int ncid ) ;
