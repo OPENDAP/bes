@@ -182,7 +182,7 @@ CPPUNIT_TEST_SUITE(StareFunctionsTest);
         DBG(cerr << "--- test_stare_get_sidecar_uint64_values() test - BEGIN ---" << endl);
 
         try {
-            const string filename_1 = string(TOP_SRC_DIR) + "/functions/stare/data/t1_sidecar.nc";
+            const string filename_1 = string(TOP_SRC_DIR) + "/functions/stare/data/t1.nc";
             Float32 *variable = new Float32("Solar_Zenith");
             vector<dods_uint64> values;
 
