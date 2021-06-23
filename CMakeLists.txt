@@ -34,6 +34,8 @@ include_directories(/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/incl
 # Where the hyrax project puts the dependencies' headers
 
 include_directories(../build/deps/include)
+include_directories(../build//include)
+include_directories(../build//include/libdap)
 
 # These should not be referenced outside of libdap. jhrg 12/5/19
 # include_directories(../libdap4/d4_ce)
