@@ -89,7 +89,7 @@ using namespace rapidjson;
 #define MODULE "fonc"
 #define prolog string("FONcTransmitter::").append(__func__).append("() - ")
 
-void appendHistoryJson(AttrTable *pVector, basic_string<char, char_traits<char>, allocator<char>> pVector1);
+void appendHistoryJson(vector<string> *pVector, vector<string> vector);
 
 #if 0 // Moved to BESUtil.cc
 // size of the buffer used to read from the temporary file built on disk and
@@ -221,8 +221,9 @@ vector<string> get_cf_history_entry (const string &request_url)
 *
 * @request_url
 */
-string get_history_json_entry (const string &request_url)
+vector<string> get_history_json_entry (const string &request_url)
 {
+    vector<string> history_json_entry_vec;
     bool foundIt = false;
     string history_json_entry = BESContextManager::TheManager()->get_context("history_json_entry", foundIt);
 
@@ -236,7 +237,9 @@ string get_history_json_entry (const string &request_url)
         create_json_history_obj(request_url, writer);
         history_json_entry = buffer.GetString();
     }
-    return history_json_entry;
+    history_json_entry_vec.push_back(history_json_entry);
+
+    return history_json_entry_vec;
 }
 
 /**
@@ -257,7 +260,7 @@ void updateHistoryAttribute(DDS *dds, const string &ce)
     std::vector<std::string> cf_hist_entry_vec = get_cf_history_entry(request_url);
     BESDEBUG(MODULE, prolog << "hist_cf_entry_vec.size(): " << cf_hist_entry_vec.size() << endl);
 
-    string hist_json_entry = get_history_json_entry(request_url);
+    std::vector<std::string> history_json_entry_vec = get_history_json_entry(request_url);
 
     // Add the new entry to the "history" attribute
     // Get the top level Attribute table.
@@ -283,7 +286,16 @@ void updateHistoryAttribute(DDS *dds, const string &ce)
 
                 AttrTable *global_attr_tbl = globals.get_attr_table(i);
                 global_attr_tbl->append_attr("history", "string", &cf_hist_entry_vec);
-                appendHistoryJson(global_attr_tbl, hist_json_entry);
+
+                vector<string> *history_json_attr_vector = global_attr_tbl->get_attr_vector("history_json");
+                if (!history_json_attr_vector) {
+                    //if there is no source history_json attribute
+                    BESDEBUG(MODULE, prolog << "Adding history_json entry to " << attr_name << endl);
+                    global_attr_tbl->append_attr("history_json", "string", &history_json_entry_vec);
+                } else {
+                    appendHistoryJson(history_json_attr_vector, history_json_entry_vec);
+                }
+
                 added_history = true;
                 BESDEBUG(MODULE, prolog << "Added history entries to " << attr_name << endl);
             }
@@ -291,35 +303,33 @@ void updateHistoryAttribute(DDS *dds, const string &ce)
         if(!added_history){
             auto dap_global_at = globals.append_container("DAP_GLOBAL");
             dap_global_at->set_name("DAP_GLOBAL");
+
             dap_global_at->append_attr("history", "string", &cf_hist_entry_vec);
             BESDEBUG(MODULE, prolog << "No top level AttributeTable name matched '*_GLOBAL'. "
                                        "Created DAP_GLOBAL AttributeTable and added history attributes to it." << endl);
+            dap_global_at->append_attr("history_json", "string", &history_json_entry_vec);
         }
     }
 }
 
-void appendHistoryJson(AttrTable *global_attr_tbl, string jsonNew) {
-    vector<string> *attr_vector = global_attr_tbl->get_attr_vector("history_json");
-    if ( attr_vector != NULL) {
-        const char *oldJson = attr_vector->at(0).c_str();
-        Document doc;
-        Document::AllocatorType &allocator = doc.GetAllocator();
-        doc.SetArray();
-        Value valOld = Value(oldJson, allocator);
-        doc.PushBack(valOld, allocator);
-        Value valNew = Value(jsonNew.c_str(), allocator);
-        doc.PushBack(valNew, allocator);
-        // Stringify JSON
-        StringBuffer buffer;
-        Writer<StringBuffer> writer(buffer);
-        doc.Accept(writer);
-        attr_vector->clear();
-        attr_vector->push_back(buffer.GetString());
-    } else {
-        vector<string> newJsonVec;
-        newJsonVec.push_back(jsonNew);
-        global_attr_tbl->append_attr("history_json", "string", &newJsonVec);
-    }
+
+void appendHistoryJson(vector<string> *global_attr, vector<string> jsonNew) {
+    const char *oldJson = global_attr->at(0).c_str();
+    const char *newJson = jsonNew.at(0).c_str();
+    Document doc;
+    Document::AllocatorType &allocator = doc.GetAllocator();
+    doc.SetArray();
+    Value valOld = Value(oldJson, allocator);
+    doc.PushBack(valOld, allocator);
+    Value valNew = Value(newJson, allocator);
+    doc.PushBack(valNew, allocator);
+
+    // Stringify JSON
+    StringBuffer buffer;
+    Writer<StringBuffer> writer(buffer);
+    doc.Accept(writer);
+    global_attr->clear();
+    global_attr->push_back(buffer.GetString());
 }
 
 /**
@@ -337,6 +347,7 @@ void updateHistoryAttribute(DMR *dmr, const string &ce)
     request_url = request_url.substr(request_url.find_last_of('#')+1);
     if(ce != "") request_url += "?" + ce;
     vector<string> hist_entry_vector = get_cf_history_entry(request_url);
+    vector<string> hist_json_entry_vector = get_history_json_entry(request_url);
 
     BESDEBUG(MODULE, prolog << "hist_entry_vec.size(): " << hist_entry_vector.size() << endl);
     bool added_history = false;
@@ -347,7 +358,6 @@ void updateHistoryAttribute(DMR *dmr, const string &ce)
         BESDEBUG(MODULE, prolog << "Attribute name is "<<name <<endl);
         if ((*attrs)->type() && BESUtil::endsWith(name, "_GLOBAL")) {
             // Yup! Add our entry...
-            // TODO: Add history_json
             D4Attribute *history_attr = (*attrs)->attributes()->find("history");
             if (!history_attr) {
                 //if there is no source history attribute
@@ -358,14 +368,34 @@ void updateHistoryAttribute(DMR *dmr, const string &ce)
             } else {
                 (*attrs)->attributes()->find("history")->add_value_vector(hist_entry_vector);
             }
+
+            D4Attribute *history_json_attr = (*attrs)->attributes()->find("history_json");
+            if (!history_json_attr) {
+                //if there is no source history_json attribute
+                BESDEBUG(MODULE, prolog << "Adding history_json entry to " << name << endl);
+                auto *new_history_json = new D4Attribute("history_json", attr_str_c);
+                new_history_json->add_value_vector(hist_json_entry_vector);
+                (*attrs)->attributes()->add_attribute_nocopy(new_history_json);
+            } else {
+                vector<string> new_history_json_vec;
+                new_history_json_vec.push_back(*history_json_attr->value_begin());
+                appendHistoryJson(&new_history_json_vec, hist_json_entry_vector);
+                history_json_attr->add_value_vector(new_history_json_vec);
+            }
+
             added_history = true;
         }
     }
     if(!added_history){
         auto *dap_global = new D4Attribute("DAP_GLOBAL",attr_container_c);
         root_attrs->add_attribute_nocopy(dap_global);
+
         auto *new_history = new D4Attribute("history", attr_str_c);
         new_history->add_value_vector(hist_entry_vector);
+
+        auto *new_history_json = new D4Attribute("history_json", attr_str_c);
+        new_history_json->add_value_vector(hist_json_entry_vector);
+
         dap_global->attributes()->add_attribute_nocopy(new_history);
     }
 }
