@@ -406,8 +406,11 @@ static string::size_type find_closing_paren(const string &ce, string::size_type 
     int count = 1;
     do {
         pos = ce.find_first_of("()", pos + 1);
-        if (pos == string::npos)
-            throw Error(malformed_expr, "Expected to find a matching closing parenthesis in " + ce);
+        if (pos == string::npos){
+            stringstream msg;
+            msg << "Expected to find a matching closing parenthesis in: " << ce;
+            throw BESSyntaxUserError(msg.str(),__FILE__,__LINE__);
+        }
 
         if (ce[pos] == '(')
             ++count;
@@ -484,11 +487,33 @@ void BESDapResponseBuilder::split_ce(ConstraintEvaluator &eval, const string &ex
 static void
 throw_if_dap2_response_too_big(DDS *dds)
 {
-    if (dds->get_response_limit() != 0 && ((dds->get_request_size(true)) > dds->get_response_limit())) {
-        string msg = "The Request for " + long_to_string(dds->get_request_size(true) / 1024)
-            + "KB is too large; requests on this server are limited to "
+    if (dds->too_big()) {
+#if 0
+        stringstream msg;
+        msg << "The Request for " << request_size / 1024 << " kilobytes is too large; ";
+        msg << "requests on this server are limited to "
             + long_to_string(dds->get_response_limit() /1024) + "KB.";
-        throw Error(msg);
+        throw Error(msg.str());
+#endif
+        stringstream msg;
+        msg << "The submitted DAP2 request will generate a " << dds->get_request_size_kb(true);
+        msg <<  " kilobyte response, which is too large. ";
+        msg << "The maximum response size for this server is limited to " << dds->get_response_limit_kb();
+        msg << " kilobytes.";
+        throw BESSyntaxUserError(msg.str(),__FILE__,__LINE__);
+    }
+}
+
+static void
+throw_if_dap4_response_too_big(DMR &dmr)
+{
+    if (dmr.too_big()) {
+        stringstream msg;
+        msg << "The submitted DAP4 request will generate a " << dmr.request_size_kb(true);
+        msg <<  " kilobyte response, which is too large. ";
+        msg << "The maximum response size for this server is limited to " << dmr.response_limit_kb();
+        msg << " kilobytes.";
+        throw BESSyntaxUserError(msg.str(),__FILE__,__LINE__);
     }
 }
 
@@ -1028,7 +1053,7 @@ BESDapResponseBuilder::intern_dap2_data(BESResponseObject *obj, BESDataHandlerIn
         BESDapFunctionResponseCache *responseCache = BESDapFunctionResponseCache::get_instance();
 
         ConstraintEvaluator func_eval;
-        DDS *fdds = 0; // nulll_ptr
+        DDS *fdds = nullptr;
         if (responseCache && responseCache->can_be_cached(dds, get_btp_func_ce())) {
             fdds = responseCache->get_or_cache_dataset(dds, get_btp_func_ce());
         }
@@ -1210,11 +1235,11 @@ void BESDapResponseBuilder::send_dap2_data(BESDataHandlerInterface &dhi, DDS **d
         // So obtain the attributes if necessary. KY 2019-10-30
         {
             BESResponseObject *response = dhi.response_handler->get_response_object();
-            BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *> (response);
+            auto *bdds = dynamic_cast<BESDataDDSResponse *> (response);
             if (!bdds)
                 throw BESInternalError("cast error", __FILE__, __LINE__);
 
-            if(bdds->get_ia_flag() == false) {
+            if(!bdds->get_ia_flag()) {
                 BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler(dhi.container->get_container_type());
                 besRH->add_attributes(dhi);
             }
@@ -1222,7 +1247,7 @@ void BESDapResponseBuilder::send_dap2_data(BESDataHandlerInterface &dhi, DDS **d
 
         BESDapFunctionResponseCache *response_cache = BESDapFunctionResponseCache::get_instance();
         ConstraintEvaluator func_eval;
-        DDS *fdds = 0; // nulll_ptr
+        DDS *fdds = nullptr;
         if (response_cache && response_cache->can_be_cached(*dds, get_btp_func_ce())) {
             fdds = response_cache->get_or_cache_dataset(*dds, get_btp_func_ce());
         }
@@ -1231,7 +1256,8 @@ void BESDapResponseBuilder::send_dap2_data(BESDataHandlerInterface &dhi, DDS **d
             fdds = func_eval.eval_function_clauses(**dds);
         }
 
-        delete *dds; *dds = 0;
+        delete *dds;
+        *dds = nullptr;
         *dds = fdds;
 
         (*dds)->mark_all(false);
@@ -1378,7 +1404,11 @@ void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, bool with_mime_head
 
         D4ConstraintEvaluator parser(&dmr);
         bool parse_ok = parser.parse(d_dap4ce);
-        if (!parse_ok) throw Error(malformed_expr, "Constraint Expression (" + d_dap4ce + ") failed to parse.");
+        if (!parse_ok){
+            stringstream msg;
+            msg << "Failed to parse the provided DAP4 server-side function expression: " << d_dap4function;
+            throw BESSyntaxUserError(msg.str(),__FILE__,__LINE__);
+        }
     }
     // with an empty CE, send everything. Even though print_dap4() and serialize()
     // don't need this, other code may depend on send_p being set. This may change
@@ -1401,10 +1431,14 @@ void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, bool with_mime_head
 void BESDapResponseBuilder::send_dap4_data_using_ce(ostream &out, DMR &dmr, bool with_mime_headers)
 {
     if (!d_dap4ce.empty()) {
-        BESDEBUG("dap", "BESDapResponseBuilder::send_dap4_data_using_ce() - expression constraint is not empty. " <<endl);
+        BESDEBUG(MODULE , "BESDapResponseBuilder::send_dap4_data_using_ce() - expression constraint is not empty. " <<endl);
         D4ConstraintEvaluator parser(&dmr);
         bool parse_ok = parser.parse(d_dap4ce);
-        if (!parse_ok) throw Error(malformed_expr, "Constraint Expression (" + d_dap4ce + ") failed to parse.");
+        if (!parse_ok){
+            stringstream msg;
+            msg << "Failed to parse the provided DAP4 server-side function expression: " << d_dap4function;
+            throw BESSyntaxUserError(msg.str(),__FILE__,__LINE__);
+        }
     }
     // with an empty CE, send everything. Even though print_dap4() and serialize()
     // don't need this, other code may depend on send_p being set. This may change
@@ -1414,24 +1448,18 @@ void BESDapResponseBuilder::send_dap4_data_using_ce(ostream &out, DMR &dmr, bool
         dmr.root()->set_send_p(true);
     }
 
-    if (dmr.response_limit() != 0 && (dmr.request_size(true) > dmr.response_limit())) {
-        string msg = "The Request for " + long_to_string(dmr.request_size(true))
-            + "KB is too large; requests for this server are limited to " + long_to_string(dmr.response_limit())
-            + "KB.";
-        throw Error(msg);
-    }
+    throw_if_dap4_response_too_big(dmr);
 
     // The following block is for debugging purpose. KY 05/13/2020
 #if !NDEBUG
     for (auto i = dmr.root()->var_begin(), e = dmr.root()->var_end(); i != e; ++i) {
-        BESDEBUG("dap", "BESDapResponseBuilder::send_dap4_data_ce() - " << (*i)->name() << endl);
+        BESDEBUG(MODULE , prolog << (*i)->name() << endl);
         if ((*i)->send_p()) {
-            BESDEBUG("dap", "BESDapResponseBuilder::send_dap4_data() Obtain data- " << (*i)->name() << endl);
+            BESDEBUG(MODULE , prolog << "Obtain data- " << (*i)->name() << endl);
             D4Attributes *d4_attrs = (*i)->attributes();
-            BESDEBUG("dap", "BESDapResponseBuilder::send_dap4_data() number of attributes " << d4_attrs << endl);
+            BESDEBUG(MODULE , prolog << "Number of attributes " << d4_attrs << endl);
             for (auto ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end(); ii != ee; ++ii) {
-                BESDEBUG("dap",
-                         "BESDapResponseBuilder::intern_dap4_data() attribute name is " << (*ii)->name() << endl);
+                BESDEBUG(MODULE ,prolog << "Attribute name is " << (*ii)->name() << endl);
             }
         }
     }
@@ -1455,10 +1483,14 @@ void BESDapResponseBuilder::dap4_process_ce_for_intern_data(DMR &dmr)
     BESStopWatch sw;
     if (BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) sw.start(prolog + "Timer", "");
     if (!d_dap4ce.empty()) {
-        BESDEBUG("dap", "BESDapResponseBuilder::dap4_process_ce_for_intern_data() - expression constraint is not empty. " <<endl);
+        BESDEBUG(MODULE , prolog << "Expression constraint is not empty. " <<endl);
         D4ConstraintEvaluator parser(&dmr);
         bool parse_ok = parser.parse(d_dap4ce);
-        if (!parse_ok) throw Error(malformed_expr, "Constraint Expression (" + d_dap4ce + ") failed to parse.");
+        if (!parse_ok){
+            stringstream msg;
+            msg << "Failed to parse the provided DAP4 server-side function expression: " << d_dap4function;
+            throw BESSyntaxUserError(msg.str(),__FILE__,__LINE__);
+        }
     }
     // with an empty CE, send everything. Even though print_dap4() and serialize()
     // don't need this, other code may depend on send_p being set. This may change
@@ -1467,13 +1499,7 @@ void BESDapResponseBuilder::dap4_process_ce_for_intern_data(DMR &dmr)
         dmr.set_ce_empty(true);
         dmr.root()->set_send_p(true);
     }
-
-    if (dmr.response_limit() != 0 && (dmr.request_size(true) > dmr.response_limit())) {
-        string msg = "The Request for " + long_to_string(dmr.request_size(true))
-            + "KB is too large; requests for this server are limited to " + long_to_string(dmr.response_limit())
-            + "KB.";
-        throw Error(msg);
-    }
+    throw_if_dap4_response_too_big(dmr);
 }
 
 void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, bool with_mime_headers)
@@ -1487,14 +1513,20 @@ void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, bool with_mim
 
         // Function modules load their functions onto this list. The list is
         // part of libdap, not the BES.
-        if (!ServerFunctionsList::TheList())
-            throw Error(
-                "The function expression could not be evaluated because there are no server functions defined on this server");
+        if (!ServerFunctionsList::TheList()) {
+            stringstream msg;
+            msg << "The function expression could not be evaluated because ";
+            msg << "there are no server-side functions defined on this server.";
+            throw BESSyntaxUserError(msg.str(),__FILE__,__LINE__);
+        }
 
         D4FunctionEvaluator parser(&dmr, ServerFunctionsList::TheList());
         bool parse_ok = parser.parse(d_dap4function);
-        if (!parse_ok) throw Error("Function Expression (" + d_dap4function + ") failed to parse.");
-
+        if (!parse_ok){
+            stringstream msg;
+            msg << "Failed to parse the provided DAP4 server-side function expression: " << d_dap4function;
+            throw BESSyntaxUserError(msg.str(),__FILE__,__LINE__);
+        }
         parser.eval(&function_result);
 
         // Now use the results of running the functions for the remainder of the
@@ -1657,7 +1689,7 @@ BESDapResponseBuilder::intern_dap4_data(BESResponseObject *obj, BESDataHandlerIn
 {
     BESStopWatch sw;
     if (BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) sw.start(prolog + "Timer", "");
-    BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() - BEGIN" << endl);
+    BESDEBUG(MODULE , prolog << "BEGIN" << endl);
 
     unique_ptr<DMR> dmr = setup_dap4_intern_data(obj, dhi);
 
@@ -1689,13 +1721,20 @@ BESDapResponseBuilder::setup_dap4_intern_data(BESResponseObject *obj, BESDataHan
 
         // Function modules load their functions onto this list. The list is
         // part of libdap, not the BES.
-        if (!ServerFunctionsList::TheList())
-            throw Error(
-                    "The function expression could not be evaluated because there are no server functions defined on this server");
+        if (!ServerFunctionsList::TheList()) {
+            stringstream msg;
+            msg << "The function expression could not be evaluated because ";
+            msg << "there are no server-side functions defined on this server.";
+            throw BESSyntaxUserError(msg.str(),__FILE__,__LINE__);
+        }
 
         D4FunctionEvaluator parser(dmr.get(), ServerFunctionsList::TheList());
         bool parse_ok = parser.parse(d_dap4function);
-        if (!parse_ok) throw Error("Function Expression (" + d_dap4function + ") failed to parse.");
+        if (!parse_ok){
+            stringstream msg;
+            msg << "Failed to parse the provided DAP4 server-side function expression: " << d_dap4function;
+            throw BESSyntaxUserError(msg.str(),__FILE__,__LINE__);
+        }
 
         parser.eval(function_result.get());
 
@@ -1706,7 +1745,7 @@ BESDapResponseBuilder::setup_dap4_intern_data(BESResponseObject *obj, BESDataHan
         return function_result;
     }
     else {
-        BESDEBUG("dap", "BESDapResponseBuilder:: going to the expression constraint. " << endl);
+        BESDEBUG(MODULE , prolog << "Processing the constraint expression. " << endl);
         dap4_process_ce_for_intern_data(*dmr);
         return dmr;
     }
@@ -1714,15 +1753,15 @@ BESDapResponseBuilder::setup_dap4_intern_data(BESResponseObject *obj, BESDataHan
 
 void BESDapResponseBuilder::intern_dap4_data_grp(libdap::D4Group* grp) {
     for (D4Group::Vars_iter i = grp->var_begin(), e = grp->var_end(); i != e; ++i) {
-        BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() - "<< (*i)->name() <<endl);
+        BESDEBUG(MODULE , "BESDapResponseBuilder::intern_dap4_data() - "<< (*i)->name() <<endl);
         if ((*i)->send_p()) {
-            BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() Obtain data- "<< (*i)->name() <<endl);
+            BESDEBUG(MODULE , "BESDapResponseBuilder::intern_dap4_data() Obtain data- "<< (*i)->name() <<endl);
             (*i)->intern_data();
         }
     }
 
     for (D4Group::groupsIter gi = grp->grp_begin(), ge = grp->grp_end(); gi != ge; ++gi) {
-        BESDEBUG("dap", "BESDapResponseBuilder::intern_dap4_data() group- "<< (*gi)->name() <<endl);
+        BESDEBUG(MODULE , "BESDapResponseBuilder::intern_dap4_data() group- "<< (*gi)->name() <<endl);
         intern_dap4_data_grp(*gi);
     }
 }
