@@ -39,11 +39,12 @@
 
 using namespace libdap;
 
-void FONcBaseType::convert(const vector<string> embed, bool dap4_group)
+void FONcBaseType::convert(const vector<string> embed, bool _dap4, bool dap4_group)
 {
     _embed = embed;
     _varname = name();
     is_dap4_group = dap4_group;
+    is_dap4 = _dap4;
 }
 
 /** @brief Define the variable in the netcdf file

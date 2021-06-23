@@ -57,7 +57,7 @@ public:
     				FONcStructure( libdap::BaseType *b ) ;
     virtual			~FONcStructure() ;
 
-    virtual void		convert( vector<string> embed ,bool is_dap4_group=false) ;
+    virtual void		convert( vector<string> embed ,bool _dap4=false, bool is_dap4_group=false) ;
     virtual void		define( int ncid ) ;
     virtual void		write( int ncid ) ;
 
