@@ -534,8 +534,12 @@ void FONcTransform::transform(ostream &strm)
         }
         // write file data
         uint64_t byteCount = 0;
-        //byteCount = BESUtil::file_to_stream_helper(_localfile, strm, byteCount);
+
+        //if (is_dap2_streamable()) {
+        if (FONcTransform::_returnAs != RETURN_AS_NETCDF4) {
+        byteCount = BESUtil::file_to_stream_helper(_localfile, strm, byteCount);
         BESDEBUG("fonc", "FONcTransform::transform() - first write data to stream, count:  " << byteCount << endl);
+        }
 
         for (FONcBaseType *fbt: _fonc_vars) {
             BESDEBUG("fonc", "FONcTransform::transform() - Writing data for variable:  " << fbt->name() << endl);
@@ -546,9 +550,13 @@ void FONcTransform::transform(ostream &strm)
             fbt->write(_ncid);
             nc_sync(_ncid);
 
-            // write the whats been written
-            byteCount = BESUtil::file_to_stream_helper(_localfile, strm, byteCount);
-            BESDEBUG("fonc", "FONcTransform::transform() - Writing data to stream, count:  " << byteCount << endl);
+
+            //if (is_dap2_streamable()) {
+            if (FONcTransform::_returnAs != RETURN_AS_NETCDF4) {
+                // write the whats been written
+                byteCount = BESUtil::file_to_stream_helper(_localfile, strm, byteCount);
+                BESDEBUG("fonc", "FONcTransform::transform() - Writing data to stream, count:  " << byteCount << endl);
+            }
         }
 
         stax = nc_close(_ncid);
@@ -561,6 +569,42 @@ void FONcTransform::transform(ostream &strm)
     catch (BESError &e) {
         (void) nc_close(_ncid); // ignore the error at this point
         throw;
+    }
+}
+
+bool FONcTransform::is_dap2_streamable(){
+    if (FONcTransform::_returnAs != RETURN_AS_NETCDF4){
+        return false;
+    }
+
+    if (_dds != nullptr){
+        return is_dap2_dds_streamable();
+    }
+    else {
+        return is_dap2_dmr_streamable(*_dmr->root());
+    }
+}
+
+bool FONcTransform::is_dap2_dds_streamable(){
+    for (auto var = _dds->var_begin(), varEnd = _dds->var_end(); var != varEnd; var++) {
+        if ((*var)->type() == dods_structure_c) {
+            return false; // cannot be streamed
+        }
+    }
+    return true;
+}
+
+bool FONcTransform::is_dap2_dmr_streamable(D4Group &group){
+    // for (D4Group::groupsIter gi = grp->grp_begin(), ge = grp->grp_end(); gi != ge; ++gi)
+    for (auto var = group.var_begin(), varEnd = group.var_end(); var != varEnd; var++) {
+        if ((*var)->type() == dods_structure_c)
+            return false ; // cannot be streamed
+        if ((*var)->type() == dods_group_c) {
+            D4Group innerGroup = (*var); //TODO need to find the correct way to convert
+            if (! is_dap2_dmr_streamable(innerGroup)) {
+                return false;
+            }
+        }
     }
 }
 

@@ -103,6 +103,9 @@ private:
     virtual bool check_group_support();
     virtual void gen_included_grp_list(D4Group*grp);
 
+    virtual bool is_dap2_streamable();
+    virtual bool is_dap2_dds_streamable();
+    virtual bool is_dap2_dmr_streamable(D4Group &group);
 
 };
 
