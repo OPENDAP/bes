@@ -73,6 +73,9 @@
 #include <BESForbiddenError.h>
 #include <BESInternalFatalError.h>
 #include <DapFunctionUtils.h>
+#include <stringbuffer.h>
+#include <writer.h>
+#include "document.h"
 
 #include "FONcBaseType.h"
 #include "FONcRequestHandler.h"
@@ -81,9 +84,12 @@
 
 using namespace libdap;
 using namespace std;
+using namespace rapidjson;
 
 #define MODULE "fonc"
 #define prolog string("FONcTransmitter::").append(__func__).append("() - ")
+
+void appendHistoryJson(AttrTable *pVector, basic_string<char, char_traits<char>, allocator<char>> pVector1);
 
 #if 0 // Moved to BESUtil.cc
 // size of the buffer used to read from the temporary file built on disk and
@@ -149,7 +155,8 @@ string create_cf_history_txt(const string &request_url)
  * @return A history_json value string. The caller must actually add this to a 'history_json'
  * attribute, etc.
  */
-string create_json_history_txt(const string &request_url)
+template <typename Writer>
+void create_json_history_obj(const string &request_url, Writer& writer)
 {
     // This code will be used only when the 'history_json_context' is not set,
     // which should be never in an operating server. However, when we are
@@ -160,21 +167,33 @@ string create_json_history_txt(const string &request_url)
     // jhrg 6/3/16
     // sk 6/17/21
 
-    string history_json_entry;
-    std::stringstream ss;
+    // "$schema"
+    string schema = "https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json";
+    // "date_time"
     time_t raw_now;
     struct tm *timeinfo;
     time(&raw_now); /* get current time; same as: timer = time(NULL)  */
     timeinfo = localtime(&raw_now);
-
     char time_str[100];
     strftime(time_str, 100, "%Y-%m-%dT%H:%M:%S", timeinfo);
 
-    //ss << time_str << " " << "Hyrax" << " " << request_url;
-    ss << "[{'$schema':'https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json','date_time':'" << time_str << "','program':'hyrax','version':'1.16.3','parameters':['request_url=" << request_url << "']}]";
-    history_json_entry = ss.str();
-    BESDEBUG(MODULE, prolog << "Adding cf_history_entry context. '" << history_json_entry << "'" << endl);
-    return history_json_entry;
+    writer.StartObject();
+    writer.Key("$schema");
+    writer.String(schema.c_str());
+    writer.Key("date_time");
+    writer.String(time_str);
+    writer.Key("program");
+    writer.String("hyrax");
+    writer.Key("version");
+    writer.String("1.16.3");
+    writer.Key("parameters");
+        writer.StartArray();
+            writer.StartObject();
+                writer.Key("request_url");
+                writer.String(request_url.c_str());
+            writer.EndObject();
+        writer.EndArray();
+    writer.EndObject();
 }
 
 /**
@@ -202,19 +221,22 @@ vector<string> get_cf_history_entry (const string &request_url)
 *
 * @request_url
 */
-vector<string> get_history_json_entry (const string &request_url)
+string get_history_json_entry (const string &request_url)
 {
-    vector<string> hist_json_entry_vec;
     bool foundIt = false;
     string history_json_entry = BESContextManager::TheManager()->get_context("history_json_entry", foundIt);
+
     if (!foundIt) {
-        // If the cf_history_entry context was not set by the incoming command then
+        // If the history_json_entry context was not set by the incoming command then
         // we compute and the value of the history string here.
-        history_json_entry = create_json_history_txt(request_url);
+        Document  history_json_doc;
+        history_json_doc.SetObject();
+        StringBuffer buffer;
+        Writer<StringBuffer> writer(buffer);
+        create_json_history_obj(request_url, writer);
+        history_json_entry = buffer.GetString();
     }
-    // And here we add to the returned vector.
-    hist_json_entry_vec.push_back(history_json_entry);
-    return hist_json_entry_vec;
+    return history_json_entry;
 }
 
 /**
@@ -235,8 +257,7 @@ void updateHistoryAttribute(DDS *dds, const string &ce)
     std::vector<std::string> cf_hist_entry_vec = get_cf_history_entry(request_url);
     BESDEBUG(MODULE, prolog << "hist_cf_entry_vec.size(): " << cf_hist_entry_vec.size() << endl);
 
-    std::vector<std::string> hist_json_entry_vec = get_history_json_entry(request_url);
-    BESDEBUG(MODULE, prolog << "hist_cf_entry_vec.size(): " << hist_json_entry_vec.size() << endl);
+    string hist_json_entry = get_history_json_entry(request_url);
 
     // Add the new entry to the "history" attribute
     // Get the top level Attribute table.
@@ -245,7 +266,7 @@ void updateHistoryAttribute(DDS *dds, const string &ce)
     // Since many files support "CF" conventions the history tag may already exist in the source data
     // and we should add an entry to it if possible.
     bool added_history = false; // Used to indicate that we located a toplevel AttrTable whose name ends in "_GLOBAL" and that has an existing "history" attribute.
-    unsigned int num_attrs = globals.get_size();
+//    unsigned int num_attrs = globals.get_size();
     if (globals.is_global_attribute()) {
         // Here we look for a top level AttrTable whose name ends with "_GLOBAL" which is where, by convention,
         // data ingest handlers place global level attributes found in the source dataset.
@@ -259,9 +280,10 @@ void updateHistoryAttribute(DDS *dds, const string &ce)
                 // We are going to append to an existing history attribute if there is one
                 // Or just add a history attribute if there is not one. In a most
                 // handy API moment, append_attr() does just this.
+
                 AttrTable *global_attr_tbl = globals.get_attr_table(i);
                 global_attr_tbl->append_attr("history", "string", &cf_hist_entry_vec);
-                global_attr_tbl->append_attr("history_json", "string", &hist_json_entry_vec);
+                appendHistoryJson(global_attr_tbl, hist_json_entry);
                 added_history = true;
                 BESDEBUG(MODULE, prolog << "Added history entries to " << attr_name << endl);
             }
@@ -270,10 +292,33 @@ void updateHistoryAttribute(DDS *dds, const string &ce)
             auto dap_global_at = globals.append_container("DAP_GLOBAL");
             dap_global_at->set_name("DAP_GLOBAL");
             dap_global_at->append_attr("history", "string", &cf_hist_entry_vec);
-            dap_global_at->append_attr("history_json", "string", &hist_json_entry_vec);
             BESDEBUG(MODULE, prolog << "No top level AttributeTable name matched '*_GLOBAL'. "
                                        "Created DAP_GLOBAL AttributeTable and added history attributes to it." << endl);
         }
+    }
+}
+
+void appendHistoryJson(AttrTable *global_attr_tbl, string jsonNew) {
+    vector<string> *attr_vector = global_attr_tbl->get_attr_vector("history_json");
+    if ( attr_vector != NULL) {
+        const char *oldJson = attr_vector->at(0).c_str();
+        Document doc;
+        Document::AllocatorType &allocator = doc.GetAllocator();
+        doc.SetArray();
+        Value valOld = Value(oldJson, allocator);
+        doc.PushBack(valOld, allocator);
+        Value valNew = Value(jsonNew.c_str(), allocator);
+        doc.PushBack(valNew, allocator);
+        // Stringify JSON
+        StringBuffer buffer;
+        Writer<StringBuffer> writer(buffer);
+        doc.Accept(writer);
+        attr_vector->clear();
+        attr_vector->push_back(buffer.GetString());
+    } else {
+        vector<string> newJsonVec;
+        newJsonVec.push_back(jsonNew);
+        global_attr_tbl->append_attr("history_json", "string", &newJsonVec);
     }
 }
 
@@ -302,6 +347,7 @@ void updateHistoryAttribute(DMR *dmr, const string &ce)
         BESDEBUG(MODULE, prolog << "Attribute name is "<<name <<endl);
         if ((*attrs)->type() && BESUtil::endsWith(name, "_GLOBAL")) {
             // Yup! Add our entry...
+            // TODO: Add history_json
             D4Attribute *history_attr = (*attrs)->attributes()->find("history");
             if (!history_attr) {
                 //if there is no source history attribute
