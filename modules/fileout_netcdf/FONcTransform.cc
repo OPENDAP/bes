@@ -606,6 +606,7 @@ bool FONcTransform::is_dap2_dmr_streamable(D4Group &group){
             }
         }
     }
+    return true;
 }
 
 
