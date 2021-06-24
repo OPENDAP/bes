@@ -29,6 +29,7 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 //      kyang       Kent Yang <myang6@hdfgroup.org> (for DAP4/netCDF-4 enhancement)
+//      slloyd      Samuel Lloyd <slloyd@opendap.org> (netCDF file streaming)
 
 #include "config.h"
 
@@ -570,6 +571,13 @@ void FONcTransform::transform(ostream &strm)
     }
 }
 
+/** @brief checks if a netcdf file is streamable
+ *
+ * /!\ WARNING /!\ DDS/DMR object must be correctly constructed for this function to work
+ * checks if a netcdf file is to be returned as netcdf-4 and if so is not streamable
+ * if file is returned as netcdf-3 then checks if the dds/dmr has a structure datatype
+ * @return false if file returns as netcdf-4 OR has a structure datatype
+ */
 bool FONcTransform::is_streamable(){
     if (FONcTransform::_returnAs == RETURN_AS_NETCDF4){
         return false;
@@ -583,6 +591,11 @@ bool FONcTransform::is_streamable(){
     }
 }
 
+/** @brief checks if a DDS contains a Structure datatype in its variables
+ *
+ * checks the variable type for a structure datatype
+ * @return false if the dds contains a structure datatype
+ */
 bool FONcTransform::is_dds_streamable(){
     for (auto var = _dds->var_begin(), varEnd = _dds->var_end(); var != varEnd; ++var) {
         if ((*var)->type() == dods_structure_c) {
@@ -592,6 +605,12 @@ bool FONcTransform::is_dds_streamable(){
     return true;
 }
 
+/** checks if a DMR contains a Structure datatype in its variables
+ *
+ * checks the variable type for a structure datatype
+ * @param group the D4Group holding the variables to search through
+ * @return false if the dmr contains a structure datatype
+ */
 bool FONcTransform::is_dmr_streamable(D4Group *group){
     for (auto var = group->var_begin(), varEnd = group->var_end(); var != varEnd; ++var) {
         if ((*var)->type() == dods_structure_c)
