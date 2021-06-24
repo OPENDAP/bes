@@ -68,7 +68,7 @@ public:
     explicit FONcGrid(libdap::BaseType *b);
     virtual ~FONcGrid();
 
-    virtual void convert(vector<string> embed, bool is_dap4_group = false) override;
+    virtual void convert(vector<string> embed, bool _dap4, bool is_dap4_group) override;
     virtual void define(int ncid) override;
     virtual void write(int ncid) override;
 

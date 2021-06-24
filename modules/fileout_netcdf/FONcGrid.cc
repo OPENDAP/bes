@@ -135,7 +135,7 @@ void FONcGrid::define(int ncid)
  * @throws BESInternalError if there is a problem defining the
  * Byte
  */
-void FONcGrid::convert(vector<string> embed, bool _dap4,bool is_dap4_group)
+void FONcGrid::convert(vector<string> embed, bool _dap4, bool is_dap4_group)
 {
     FONcGrid::InGrid = true;
     FONcBaseType::convert(embed, _dap4, is_dap4_group);
