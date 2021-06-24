@@ -27,6 +27,8 @@
 #include <cassert>
 
 #include <STARE.h>
+#include <SpatialRange.h>
+
 #include <hdf5.h>
 #include <netcdf.h>
 
@@ -143,6 +145,8 @@ extract_uint64_array(Array *var, vector<dods_uint64> &values)
  */
 bool
 target_in_dataset(const vector<dods_uint64> &target_indices, const vector<dods_uint64> &data_stare_indices) {
+#if 1
+    // this took 0.23s and worked.
     // Changes to the range-for loop, fixed the type (was unsigned long long
     // which works on OSX but not CentOS7). jhrg 11/5/19
     for (const dods_uint64 &i : target_indices) {
@@ -155,7 +159,17 @@ target_in_dataset(const vector<dods_uint64> &target_indices, const vector<dods_u
                 return true;
         }
     }
+#else
+    // For one sample MOD05 file, this took 5.6s and failed to work.
+    // Problem: seg fault.
 
+    // Initialize the skiplists for the search
+    auto r = SpatialRange(data_stare_indices);
+    cerr << "built spatial range" << endl;
+    for (const dods_uint64 &sid : target_indices) {
+        if( r.contains(sid) ) { return true; }
+    }
+#endif
     return false;
 }
 
@@ -170,7 +184,7 @@ target_in_dataset(const vector<dods_uint64> &target_indices, const vector<dods_u
  * @param dataset_indices - stare values being compared, retrieved from the sidecar file. These
  * are the index values that describe the coverage of the dataset.
  * @param all_target_matches If true this function counts every target index that
- * overlaps every dataset index. The default counts 1 for each datset index that matches _any_
+ * overlaps every dataset index. The default counts 1 for each dataset index that matches _any_
  * target index.
  * @return The number of indices common in both the target and dataset.
  */
@@ -490,25 +504,19 @@ StareCountFunction::stare_count_dap4_function(D4RValueList *args, DMR &dmr)
         throw BESSyntaxUserError(oss.str(), __FILE__, __LINE__);
     }
 
-    //Find the filename from the dmr
-    string fullPath = get_sidecar_file_pathname(dmr.filename(), stare_sidecar_suffix);
-
     BaseType *dependent_var = args->get_rvalue(0)->value(dmr);
     BaseType *raw_stare_indices = args->get_rvalue(1)->value(dmr);
 
-    //Read the data file and store the values of each dataset into an array
+    // Read the stare indices for the dependent var from the sidecar file.
     vector<dods_uint64> dep_var_stare_indices;
-    get_sidecar_uint64_values(fullPath, dependent_var->name(), dep_var_stare_indices);
+    get_sidecar_uint64_values(dmr.filename(), dependent_var->name(), dep_var_stare_indices);
 
-    // TODO: We can dump the values in 'stare_indices' here
+    // Put the stare indices passed into the function into a vector<>
     vector<dods_uint64> target_s_indices;
     read_stare_indices_from_function_argument(raw_stare_indices, target_s_indices);
 
-    int num = count(target_s_indices, dep_var_stare_indices);
+    int num = count(target_s_indices, dep_var_stare_indices, true);
 
-#if 0
-    Int32 *result = new Int32("result");
-#endif
     unique_ptr<Int32> result(new Int32("result"));
     result->set_value(num);
     return result.release();

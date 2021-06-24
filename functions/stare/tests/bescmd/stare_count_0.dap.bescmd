@@ -4,13 +4,11 @@
   <bes:setContext name="errors">xml</bes:setContext>
   <bes:setContext name="max_response_size">0</bes:setContext>
   
-  <bes:setContainer name="c" space="catalog">/functions/stare/data/MYD09.A2019003_hacked.h5</bes:setContainer>
+  <bes:setContainer name="c" space="catalog">/functions/stare/data/sample_data/336-23xx.20201211/MOD05_L2.A2019336.2315.061.2019337071952.hdf</bes:setContainer>
   
   <bes:define name="d1" space="default">
     <bes:container name="c">
-      <!-- This index is a big trixel that covers the CONUS and a chunk of the Pacific -->
-      <!-- I Used 'Latitude' just because I needed a variable and it was there. It's a fill value -->
-      <bes:dap4function>stare_count(Latitude, $UInt64(0:3440016191299518400))</bes:dap4function>
+      <bes:dap4function>stare_count(Solar_Zenith, $UInt64(0:3526529227274484265))</bes:dap4function>
     </bes:container>
   </bes:define>
   

@@ -8,5 +8,5 @@
 </Dataset>
 
 The data:
-Int32 result = 1;
+Int32 result = 0;
 
