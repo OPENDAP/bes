@@ -136,8 +136,8 @@ FONcArray::~FONcArray() {
  * grids
  * @throws BESInternalError if there is a problem converting the Array
  */
-void FONcArray::convert(vector<string> embed, bool is_dap4_group) {
-    FONcBaseType::convert(embed, is_dap4_group);
+void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
+    FONcBaseType::convert(embed, _dap4, is_dap4_group);
 
     _varname = FONcUtils::gen_name(embed, _varname, _orig_varname);
 
@@ -285,21 +285,24 @@ void FONcArray::convert(vector<string> embed, bool is_dap4_group) {
     // If this array has a single dimension, and the name of the array
     // and the name of that dimension are the same, then this array
     // might be used as a map for a grid defined elsewhere.
-    //if(is_dap4_group ==false) {
-    if (!FONcGrid::InGrid && d_actual_ndims == 1 && d_a->name() == d_a->dimension_name(d_a->dim_begin())) {
-        // is it already in there?
-        FONcMap *map = FONcGrid::InMaps(d_a);
-        if (!map) {
-            // This memory is/was leaked. jhrg 8/28/13
-            FONcMap *new_map = new FONcMap(this);
-            d_grid_maps.push_back(new_map);        // save it here so we can free it later. jhrg 8/28/13
-            FONcGrid::Maps.push_back(new_map);
-        }
-        else {
-            d_dont_use_it = true;
+    // Notice: DAP4 doesn't have Grid and the d_dont_use_it=true causes some
+    // variables not written to the  netCDF-4 file with group hierarchy.
+    // So need to have the if check. KY 2021-06-21
+    if(is_dap4 == false) {
+        if (!FONcGrid::InGrid && d_actual_ndims == 1 && d_a->name() == d_a->dimension_name(d_a->dim_begin())) {
+            // is it already in there?
+            FONcMap *map = FONcGrid::InMaps(d_a);
+            if (!map) {
+                // This memory is/was leaked. jhrg 8/28/13
+                FONcMap *new_map = new FONcMap(this);
+                d_grid_maps.push_back(new_map);        // save it here so we can free it later. jhrg 8/28/13
+                FONcGrid::Maps.push_back(new_map);
+            }
+            else {
+                d_dont_use_it = true;
+            }
         }
     }
-    //}
 
     BESDEBUG("fonc", "FONcArray::convert() - done converting array " << _varname << endl);
 }

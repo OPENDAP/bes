@@ -1281,8 +1281,8 @@ void BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm)
         // TODO Should we throw an exception here? Maybe BESInternalFatalError ??
     }
 
-    msg.str(prolog);
-    msg << "Sent "<< tcount << " bytes from file '" << file_name<< "'. " << endl;
+    msg.str("");
+    msg << prolog << "Sent "<< tcount << " bytes from file '" << file_name<< "'. " << endl;
     BESDEBUG(MODULE,msg.str());
     INFO_LOG(msg.str());
 }
