@@ -212,6 +212,7 @@ vector<string> get_history_json_entry (const string &request_url)
         // we compute and the value of the history string here.
         history_json_entry = create_json_history_txt(request_url);
     }
+    BESDEBUG(MODULE,prolog << "Using history_json_entry: " << history_json_entry << endl);
     // And here we add to the returned vector.
     hist_json_entry_vec.push_back(history_json_entry);
     return hist_json_entry_vec;
@@ -233,10 +234,10 @@ void updateHistoryAttribute(DDS *dds, const string &ce)
     if(ce != "") request_url += "?" + ce;
 
     std::vector<std::string> cf_hist_entry_vec = get_cf_history_entry(request_url);
-    BESDEBUG(MODULE, prolog << "hist_cf_entry_vec.size(): " << cf_hist_entry_vec.size() << endl);
+    BESDEBUG(MODULE, prolog << "cf_hist_entry_vec.size(): " << cf_hist_entry_vec.size() << endl);
 
     std::vector<std::string> hist_json_entry_vec = get_history_json_entry(request_url);
-    BESDEBUG(MODULE, prolog << "hist_cf_entry_vec.size(): " << hist_json_entry_vec.size() << endl);
+    BESDEBUG(MODULE, prolog << "hist_json_entry_vec.size(): " << hist_json_entry_vec.size() << endl);
 
     // Add the new entry to the "history" attribute
     // Get the top level Attribute table.
@@ -291,9 +292,13 @@ void updateHistoryAttribute(DMR *dmr, const string &ce)
     // remove 'uncompress' cache mangling
     request_url = request_url.substr(request_url.find_last_of('#')+1);
     if(ce != "") request_url += "?" + ce;
-    vector<string> hist_entry_vector = get_cf_history_entry(request_url);
 
-    BESDEBUG(MODULE, prolog << "hist_entry_vec.size(): " << hist_entry_vector.size() << endl);
+    std::vector<std::string> cf_hist_entry_vec = get_cf_history_entry(request_url);
+    BESDEBUG(MODULE, prolog << "cf_hist_entry_vec.size(): " << cf_hist_entry_vec.size() << endl);
+
+    std::vector<std::string> hist_json_entry_vec = get_history_json_entry(request_url);
+    BESDEBUG(MODULE, prolog << "hist_json_entry_vec.size(): " << hist_json_entry_vec.size() << endl);
+
     bool added_history = false;
     D4Group* root_grp = dmr->root();
     D4Attributes *root_attrs = root_grp->attributes();
@@ -307,10 +312,10 @@ void updateHistoryAttribute(DMR *dmr, const string &ce)
                 //if there is no source history attribute
                 BESDEBUG(MODULE, prolog << "Adding history entry to " << name << endl);
                 auto *new_history = new D4Attribute("history", attr_str_c);
-                new_history->add_value_vector(hist_entry_vector);
+                new_history->add_value_vector(cf_hist_entry_vec);
                 (*attrs)->attributes()->add_attribute_nocopy(new_history);
             } else {
-                (*attrs)->attributes()->find("history")->add_value_vector(hist_entry_vector);
+                (*attrs)->attributes()->find("history")->add_value_vector(cf_hist_entry_vec);
             }
             added_history = true;
         }
@@ -319,7 +324,7 @@ void updateHistoryAttribute(DMR *dmr, const string &ce)
         auto *dap_global = new D4Attribute("DAP_GLOBAL",attr_container_c);
         root_attrs->add_attribute_nocopy(dap_global);
         auto *new_history = new D4Attribute("history", attr_str_c);
-        new_history->add_value_vector(hist_entry_vector);
+        new_history->add_value_vector(cf_hist_entry_vec);
         dap_global->attributes()->add_attribute_nocopy(new_history);
     }
 }
