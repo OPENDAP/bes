@@ -112,7 +112,7 @@ public:
     FONcArray(libdap::BaseType *b,const std::vector<int>&dim_ids,const std::vector<bool>&use_dim_ids,const std::vector<int>&rds_nums);
     virtual ~FONcArray() override;
 
-    virtual void convert(std::vector<std::string> embed, bool is_dap4_group=false) override;
+    virtual void convert(std::vector<std::string> embed, bool _dap4=false, bool is_dap4_group=false) override;
     virtual void define(int ncid) override;
     virtual void write(int ncid)override ;
 

@@ -3,7 +3,7 @@ netcdf test {
 // global attributes:
 		:Conventions = "CF-1.5" ;
 		:GranuleID = "GOZ-Source-MLP_HCl_ev1-00_2005.nc4" ;
-		:ProductionDateTime = "2012-10-22T23:32:49.000000Z" ;
+		:ProductionDateTime = "removed date-time" ;
 		:identifier_product_DOI = "10.5067/MEASURES/GOZCARDS/DATA3001" ;
 		:identifier_product_doi_authority = "http://dx.doi.org/" ;
 		:Format = "NetCDF-4" ;
@@ -34,8 +34,9 @@ netcdf test {
 		:LatitudeType = "Geodetic" ;
 		:LevelType = "Pressure" ;
 		:TimeResolution = "Monthly" ;
-		:History = "2012-10-22T23:32:49.000000Z : Initial file creation" ;
+		:History = "removed date-time: Initial file creation" ;
 		:SizeBytesDataGranule = 435282LL ;
+		:history = "removed date-timex GOZ-Source-MLP_HCl_ev1-00_2005.nc4.h5" ;
 
 group: HALOE {
   dimensions:
@@ -163,6 +164,10 @@ group: ACE-FTS {
   		lat_max:units = "degrees_north" ;
   		lat_max:description = "The maximum latitude of the usable data for each bin" ;
   		lat_max:_FillValue = -999.f ;
+  	int time(time) ;
+  		time:long_name = "Time" ;
+  		time:units = "days since 1950-01-01" ;
+  		time:description = "Day number referenced to 15th day of the month" ;
   	float std_error(time, lev, lat) ;
   		std_error:long_name = "Hydrogen Chloride Standard Error from ACE-FTS" ;
   		std_error:units = "mol/mol" ;
@@ -198,6 +203,10 @@ group: ACE-FTS {
   		sza_avg:units = "degrees" ;
   		sza_avg:description = "The average solar zenith angle of the usable data for each bin" ;
   		sza_avg:_FillValue = -999.f ;
+  	float lat(lat) ;
+  		lat:long_name = "Latitude" ;
+  		lat:units = "degrees_north" ;
+  		lat:description = "Center latitude" ;
   	float sza_max(time, lat) ;
   		sza_max:long_name = "Hydrogen Chloride Maximum Solar Zenith Angle from ACE-FTS" ;
   		sza_max:units = "degrees" ;
@@ -269,6 +278,10 @@ group: Aura\ MLS {
   		lat_max:units = "degrees_north" ;
   		lat_max:description = "The maximum latitude of the usable data for each bin" ;
   		lat_max:_FillValue = -999.f ;
+  	int time(time) ;
+  		time:long_name = "Time" ;
+  		time:units = "days since 1950-01-01" ;
+  		time:description = "Day number referenced to 15th day of the month" ;
   	float std_error(time, lev, lat) ;
   		std_error:long_name = "Hydrogen Chloride Standard Error from Aura MLS" ;
   		std_error:units = "mol/mol" ;
@@ -304,6 +317,10 @@ group: Aura\ MLS {
   		sza_avg:units = "degrees" ;
   		sza_avg:description = "The average solar zenith angle of the usable data for each bin" ;
   		sza_avg:_FillValue = -999.f ;
+  	float lat(lat) ;
+  		lat:long_name = "Latitude" ;
+  		lat:units = "degrees_north" ;
+  		lat:description = "Center latitude" ;
   	float sza_max(time, lat) ;
   		sza_max:long_name = "Hydrogen Chloride Maximum Solar Zenith Angle from Aura MLS" ;
   		sza_max:units = "degrees" ;

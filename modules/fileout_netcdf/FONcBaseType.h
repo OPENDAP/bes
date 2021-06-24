@@ -89,7 +89,7 @@ public:
     libdap::ConstraintEvaluator *get_eval() const {return d_eval;}
     void set_eval(libdap::ConstraintEvaluator *eval) {d_eval = eval;}
 
-    virtual void convert(std::vector<std::string> embed, bool is_dap4_group=false);
+    virtual void convert(std::vector<std::string> embed, bool is_dap4= false, bool is_dap4_group=false);
     virtual void define(int ncid);
     virtual void write(int ncid) = 0;
 

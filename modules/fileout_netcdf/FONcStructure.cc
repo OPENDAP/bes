@@ -95,9 +95,9 @@ FONcStructure::~FONcStructure()
  * @throws BESInternalError if there is a problem converting this
  * structure
  */
-void FONcStructure::convert(vector<string> embed,bool is_dap4_group)
+void FONcStructure::convert(vector<string> embed,bool _dap4, bool is_dap4_group)
 {
-    FONcBaseType::convert(embed,is_dap4_group);
+    FONcBaseType::convert(embed,_dap4,is_dap4_group);
     embed.push_back(name());
     Constructor::Vars_iter vi = _s->var_begin();
     Constructor::Vars_iter ve = _s->var_end();
@@ -113,7 +113,7 @@ void FONcStructure::convert(vector<string> embed,bool is_dap4_group)
             //if(true == isNetCDF4())
             //    fbt->setNC4DataModel(this->_nc4_datamodel);
             _vars.push_back(fbt);
-            fbt->convert(embed,is_dap4_group);
+            fbt->convert(embed,_dap4,is_dap4_group);
         }
     }
 }

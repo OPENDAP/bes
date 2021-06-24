@@ -12,8 +12,9 @@ variables:
 	char InputGenerationDateTimes(dim6, InputGenerationDateTimes_len3) ;
 
 // global attributes:
-		:FileHeader = "DOI=10.5067/GPM/GMI/MONTH/3A;\nAlgorithmID=3GPROF;\nAlgorithmVersion=GRID2014R1;\nFileName=3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A.HDF5;\nSatelliteName=GPM;\nInstrumentName=GMI;\nGenerationDateTime=2014-07-02T23:16:24.000Z;\nStartGranuleDateTime=2014-06-01T00:00:00.000Z;\nStopGranuleDateTime=2014-06-30T23:59:59.999Z;\nGranuleNumber=;\nNumberOfSwaths=0;\nNumberOfGrids=1;\nGranuleStart=;\nTimeInterval=MONTH;\nProcessingSystem=PPS;\nProductVersion=V03A;\nEmptyGranule=NOT_EMPTY;\nMissingData=;\n" ;
+		:FileHeader = "DOI=10.5067/GPM/GMI/MONTH/3A;\nAlgorithmID=3GPROF;\nAlgorithmVersion=GRID2014R1;\nFileName=3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A.HDF5;\nSatelliteName=GPM;\nInstrumentName=GMI;\nGenerationDateTime=removed date-time;\nStartGranuleDateTime=removed date-time;\nStopGranuleDateTime=removed date-time;\nGranuleNumber=;\nNumberOfSwaths=0;\nNumberOfGrids=1;\nGranuleStart=;\nTimeInterval=MONTH;\nProcessingSystem=PPS;\nProductVersion=V03A;\nEmptyGranule=NOT_EMPTY;\nMissingData=;\n" ;
 		:FileInfo = "DataFormatVersion=am;\nTKCodeBuildVersion=1;\nMetadataVersion=am;\nFormatPackage=HDF5-1.8.9;\nBlueprintFilename=GPM.V1.3GPROF.blueprint.xml;\nBlueprintVersion=BV_34;\nTKIOVersion=3.60.2;\nMetadataStyle=PVL;\nEndianType=LITTLE_ENDIAN;\n" ;
+		:history = "removed date-timex 3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A.h5" ;
 
 group: Grid {
   dimensions:

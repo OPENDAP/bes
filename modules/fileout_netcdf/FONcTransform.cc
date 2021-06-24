@@ -808,15 +808,13 @@ void FONcTransform::transform_dap4_no_group()
 
     D4Group *root_grp = _dmr->root();
 
-#if 0
+#if !NDEBUG
     D4Dimensions *root_dims = root_grp->dims();
     for(D4Dimensions::D4DimensionsIter di = root_dims->dim_begin(), de = root_dims->dim_end(); di != de; ++di) {
         BESDEBUG("fonc", "transform_dap4() - check dimensions"<< endl);
         BESDEBUG("fonc", "transform_dap4() - dim name is: "<<(*di)->name()<<endl);
         BESDEBUG("fonc", "transform_dap4() - dim size is: "<<(*di)->size()<<endl);
         BESDEBUG("fonc", "transform_dap4() - fully_qualfied_dim name is: "<<(*di)->fully_qualified_name()<<endl);
-        //cout <<"dim size is: "<<(*di)->size()<<endl;
-        //cout <<"dim fully_qualified_name is: "<<(*di)->fully_qualified_name()<<endl;
     }
 #endif
     Constructor::Vars_iter vi = root_grp->var_begin();
@@ -834,7 +832,7 @@ void FONcTransform::transform_dap4_no_group()
             _fonc_vars.push_back(fb);
 
             vector<string> embed;
-            fb->convert(embed);
+            fb->convert(embed,true,false);
         }
     }
 
@@ -889,7 +887,7 @@ void FONcTransform::transform_dap4_no_group()
         for (; i != e; i++) {
             FONcBaseType *fbt = *i;
             BESDEBUG("fonc", "FONcTransform::transform_dap4_no_group() - Defining variable:  " << fbt->name() << endl);
-            fbt->set_is_dap4(true);
+            //fbt->set_is_dap4(true);
             fbt->define(_ncid);
         }
 
@@ -989,10 +987,11 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
 
     updateHistoryAttribute(_dmr, d_dhi->data[POST_CONSTRAINT]);
 
-    if (is_root_grp == true)
+    if (is_root_grp == true) 
         grp_id = _ncid;
     else {
         stax = nc_def_grp(par_grp_id, (*grp).name().c_str(), &grp_id);
+        BESDEBUG("fonc", "transform_dap4_group_internal() - group name is " << (*grp).name() << endl);
         if (stax != NC_NOERR)
             FONcUtils::handle_error(stax, "File out netcdf, unable to define group: " + _localfile, __FILE__, __LINE__);
 
@@ -1048,7 +1047,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
             _total_fonc_vars_in_grp.push_back(fb);
 
             vector<string> embed;
-            fb->convert(embed, true);
+            fb->convert(embed, true,true);
         }
     }
 
@@ -1070,7 +1069,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
         for (; i != e; i++) {
             FONcBaseType *fbt = *i;
             BESDEBUG("fonc", "FONcTransform::transform_dap4_group() - Defining variable:  " << fbt->name() << endl);
-            fbt->set_is_dap4(true);
+            //fbt->set_is_dap4(true);
             fbt->define(grp_id);
         }
 
@@ -1098,7 +1097,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
         for (; i != e; i++) {
             FONcBaseType *fbt = *i;
             BESDEBUG("fonc",
-                     "FONcTransform::transform() - Writing data for variable in group:  " << fbt->name() << endl);
+                     "FONcTransform::transform_dap4_group() - Writing data for variable:  " << fbt->name() << endl);
             //fbt->write(_ncid);
             fbt->write(grp_id);
         }

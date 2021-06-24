@@ -137,8 +137,8 @@ FONcArray::~FONcArray() {
  * grids
  * @throws BESInternalError if there is a problem converting the Array
  */
-void FONcArray::convert(vector<string> embed, bool is_dap4_group) {
-    FONcBaseType::convert(embed, is_dap4_group);
+void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
+    FONcBaseType::convert(embed, _dap4, is_dap4_group);
 
     _varname = FONcUtils::gen_name(embed, _varname, _orig_varname);
 
@@ -193,6 +193,8 @@ void FONcArray::convert(vector<string> embed, bool is_dap4_group) {
             // shared dimension. Create it only once and share the FONcDim
             int ds_num = FONcDim::DimNameNum + 1;
             while (find(d4_rds_nums.begin(), d4_rds_nums.end(), ds_num) != d4_rds_nums.end()) {
+            // Note: the following #if 0 #endif block is only for future development.
+            //       Don't delete or change it for debuggging. 
 #if 0
                 // This may be an optimization for rare cases. May do this when performance issue hurts
                 //d4_rds_nums_visited.push_back(ds_num);
@@ -293,21 +295,24 @@ void FONcArray::convert(vector<string> embed, bool is_dap4_group) {
     // If this array has a single dimension, and the name of the array
     // and the name of that dimension are the same, then this array
     // might be used as a map for a grid defined elsewhere.
-    //if(is_dap4_group ==false) {
-    if (!FONcGrid::InGrid && d_actual_ndims == 1 && d_a->name() == d_a->dimension_name(d_a->dim_begin())) {
-        // is it already in there?
-        FONcMap *map = FONcGrid::InMaps(d_a);
-        if (!map) {
-            // This memory is/was leaked. jhrg 8/28/13
-            FONcMap *new_map = new FONcMap(this);
-            d_grid_maps.push_back(new_map);        // save it here so we can free it later. jhrg 8/28/13
-            FONcGrid::Maps.push_back(new_map);
-        }
-        else {
-            d_dont_use_it = true;
+    // Notice: DAP4 doesn't have Grid and the d_dont_use_it=true causes some
+    // variables not written to the  netCDF-4 file with group hierarchy.
+    // So need to have the if check. KY 2021-06-21
+    if(is_dap4 == false) {
+        if (!FONcGrid::InGrid && d_actual_ndims == 1 && d_a->name() == d_a->dimension_name(d_a->dim_begin())) {
+            // is it already in there?
+            FONcMap *map = FONcGrid::InMaps(d_a);
+            if (!map) {
+                // This memory is/was leaked. jhrg 8/28/13
+                FONcMap *new_map = new FONcMap(this);
+                d_grid_maps.push_back(new_map);        // save it here so we can free it later. jhrg 8/28/13
+                FONcGrid::Maps.push_back(new_map);
+            }
+            else {
+                d_dont_use_it = true;
+            }
         }
     }
-    //}
 
     BESDEBUG("fonc", "FONcArray::convert() - done converting array " << _varname << endl);
 }
@@ -380,6 +385,10 @@ void FONcArray::define(int ncid) {
     if (!_defined && !d_dont_use_it) {
 
         BESDEBUG("fonc", "FONcArray::define() - defining array ' defined already: " << _varname << "'" << endl);
+
+        // Note: the following #if 0 #endif block is only for future development.
+        //       Don't delete or change it for debuggging. 
+
 #if 0
         if(d4_dim_ids.size() >0) {
            if(d_array_type == NC_CHAR) {
@@ -468,36 +477,9 @@ void FONcArray::define(int ncid) {
         if (is_dap4) {
             D4Attributes *d4_attrs = d_a->attributes();
             updateD4AttrType(d4_attrs, d_array_type);
-#if 0
-            for (D4Attributes::D4AttributesIter ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end(); ii != ee; ++ii) {
-                if((*ii)->name() == _FillValue) {
-                    BESDEBUG("fonc", "FONcArray - attrtype " << getD4AttrType(d_array_type) << endl);
-                    BESDEBUG("fonc", "FONcArray - attr_type " << (*ii)->type() << endl);
-                    D4AttributeType correct_d4_attr_type = getD4AttrType(d_array_type);
-                    if(correct_d4_attr_type != (*ii)->type()) 
-                        (*ii)->set_type(correct_d4_attr_type);
-                    break;
-                }
-            }
-#endif
         }
         else {
             AttrTable &attrs = d_a->get_attr_table();
-#if 0
-            if (attrs.get_size()) {
-                for (AttrTable::Attr_iter iter = attrs.attr_begin(); iter != attrs.attr_end(); iter++) {
-                    if (attrs.get_name(iter) == _FillValue){
-
-                        BESDEBUG("fonc", "FONcArray - attrtype " << getAttrType(d_array_type) << endl);
-                        BESDEBUG("fonc", "FONcArray - attr_type " << attrs.get_attr_type(iter) << endl);
-                        if(getAttrType(d_array_type) != attrs.get_attr_type(iter)) {
-                            (*iter)->type = getAttrType(d_array_type);
-                        }
-                        break;
-                    }
-                }
-            }
-#endif
             updateAttrType(attrs, d_array_type);
         }
 

@@ -14,8 +14,10 @@ dnl handlers that are reading the data are still working as expected.
 
 AT_BESCMD_RESPONSE_SCRUB_DATES_TEST([bescmd/simpleT00.0.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([bescmd/simpleT00.1.bescmd])
-AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/simpleT00.2.bescmd)
-AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/simpleT00.3.bescmd)
+#AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/simpleT00.2.bescmd)
+AT_BESCMD_ERROR_RESPONSE_TEST(bescmd/simpleT00.2.bescmd)
+#AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/simpleT00.3.bescmd)
+AT_BESCMD_ERROR_RESPONSE_TEST(bescmd/simpleT00.3.bescmd)
 
 dnl The same data (bescmd/same .dods response) but with different constraints
 AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/simpleT00.4.bescmd)
@@ -26,8 +28,10 @@ AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/simpleT00.7.bescmd)
 
 AT_BESCMD_RESPONSE_SCRUB_DATES_TEST(bescmd/arrayT.0.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/arrayT.1.bescmd)
-AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/arrayT.2.bescmd)
-AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/arrayT.3.bescmd)
+#AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/arrayT.2.bescmd)
+AT_BESCMD_ERROR_RESPONSE_TEST(bescmd/arrayT.2.bescmd)
+#AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/arrayT.3.bescmd)
+AT_BESCMD_ERROR_RESPONSE_TEST(bescmd/arrayT.3.bescmd)
 
 AT_BESCMD_RESPONSE_SCRUB_DATES_TEST(bescmd/arrayT01.0.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/arrayT01.1.bescmd)
@@ -51,23 +55,33 @@ AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/gridT.3.bescmd)
 
 AT_BESCMD_RESPONSE_SCRUB_DATES_TEST(bescmd/namesT.0.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/namesT.1.bescmd)
-AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/namesT.2.bescmd)
-AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/namesT.3.bescmd)
+#AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/namesT.2.bescmd)
+AT_BESCMD_ERROR_RESPONSE_TEST(bescmd/namesT.2.bescmd)
+#AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/namesT.3.bescmd)
+AT_BESCMD_ERROR_RESPONSE_TEST(bescmd/namesT.3.bescmd)
 
 AT_BESCMD_RESPONSE_SCRUB_DATES_TEST(bescmd/structT00.0.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/structT00.1.bescmd)
-AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/structT00.2.bescmd)
-AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/structT00.3.bescmd)
+#AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/structT00.2.bescmd)
+AT_BESCMD_ERROR_RESPONSE_TEST(bescmd/structT00.2.bescmd)
+#AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/structT00.3.bescmd)
+AT_BESCMD_ERROR_RESPONSE_TEST(bescmd/structT00.3.bescmd)
 
 AT_BESCMD_RESPONSE_SCRUB_DATES_TEST(bescmd/structT01.0.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/structT01.1.bescmd)
-AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/structT01.2.bescmd)
-AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/structT01.3.bescmd)
+#AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/structT01.2.bescmd)
+AT_BESCMD_ERROR_RESPONSE_TEST(bescmd/structT01.2.bescmd)
+
+#AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/structT01.3.bescmd)
+AT_BESCMD_ERROR_RESPONSE_TEST(bescmd/structT01.3.bescmd)
 
 AT_BESCMD_RESPONSE_SCRUB_DATES_TEST(bescmd/structT02.0.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/structT02.1.bescmd)
-AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/structT02.2.bescmd)
-AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/structT02.3.bescmd)
+#AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/structT02.2.bescmd)
+AT_BESCMD_ERROR_RESPONSE_TEST(bescmd/structT02.2.bescmd)
+
+#AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/structT02.3.bescmd)
+AT_BESCMD_ERROR_RESPONSE_TEST(bescmd/structT02.3.bescmd)
 
 #AT_BESCMD_RESPONSE_SCRUB_DATES_TEST(bescmd/.0.bescmd)
 #AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/.1.bescmd)
@@ -87,7 +101,7 @@ dnl t_string is derived from an hdf5 file
 AT_BESCMD_RESPONSE_SCRUB_DATES_TEST(bescmd/t_string.0.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/t_string.1.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/t_string.2.bescmd)
-
+AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/t_wrong_fvalue_type_all_classic.h5.bescmd)
 dnl Tests that require handlers other than dapreader
 
 AT_BESCMD_RESPONSE_SCRUB_DATES_TEST(bescmd/hdf4.0.bescmd)
@@ -158,6 +172,7 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/t_wrong_fvalue_type_dap4_all.
 
 dnl Add response that supports group(HDF5 default response et al.)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/nc4_group_atomic.h5.2.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/nc4_group_mlls_cf.h5.2.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/t_cf_grp.h5.2.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/simple_nc4.nc.h5.2.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/t_group_scalar.h5.2.bescmd)

@@ -128,11 +128,6 @@ nc_type FONcUtils::get_nc_type(BaseType *element,bool IsNC4_ENHANCED)
         x_type = NC_CHAR;
     else if (var_type == "Int16")
         x_type = NC_SHORT;
-    // The attribute of UInt16 maps to NC_INT, so we need to map UInt16
-    // to NC_INT for the variable so that end_def won't complain about
-    // the inconsistent datatype between fillvalue and the variable. KY 2012-10-25
-    //else if( var_type == "UInt16" )
-    //  x_type = NC_SHORT ;
     else if (var_type == "UInt16"){
         if(IsNC4_ENHANCED) 
             x_type = NC_USHORT;
@@ -144,25 +139,24 @@ nc_type FONcUtils::get_nc_type(BaseType *element,bool IsNC4_ENHANCED)
     else if (var_type == "UInt32"){
         if(IsNC4_ENHANCED) 
             x_type = NC_UINT;
-        else 
-            x_type = NC_INT;
+        // classic model: don't support unsigned 32-bit int
     }
-    else if (var_type == "Int64")
+    else if (var_type == "Int64") {
         if(IsNC4_ENHANCED)
             x_type = NC_INT64;
-        else 
-            x_type = NC_INT;
+        // classic model: don't support 64-bit int
+    }
     else if (var_type == "UInt64"){
         if(IsNC4_ENHANCED) 
             x_type = NC_UINT64;
-        else 
-            x_type = NC_INT;
+        // classic model: don't support 64-bit int
     }
     else if (var_type == "Float32")
         x_type = NC_FLOAT;
     else if (var_type == "Float64")
         x_type = NC_DOUBLE;
 
+    BESDEBUG("fonc", "FONcUtils() - var_type returned"<< x_type <<endl);
     return x_type;
 }
 
@@ -269,6 +263,8 @@ FONcUtils::convert(BaseType *v,
     bool is_netcdf4_enhanced = false;
     if(ncdf_version == RETURN_AS_NETCDF4 && is_classic_model == false)
         is_netcdf4_enhanced = true;
+    
+    bool unsigned_promote = true;
 
     switch (v->type()) {
     case dods_str_c:
@@ -280,14 +276,11 @@ FONcUtils::convert(BaseType *v,
         if(true == is_netcdf4_enhanced)
             b = new FONcUByte(v);
         else 
-            b = new FONcByte(v);
+            b = new FONcShort(v,unsigned_promote);
         break;
     }
     case dods_int8_c: {
-        if(true == is_netcdf4_enhanced)
-            b = new FONcInt8(v);
-        else 
-            b = new FONcByte(v);
+        b = new FONcInt8(v);
         break;
     }
 
@@ -295,10 +288,7 @@ FONcUtils::convert(BaseType *v,
         if(true == is_netcdf4_enhanced)
             b = new FONcUShort(v); 
         else 
-            // Kent: This is the original handling. 
-            // It is not right but the main reason is
-            // due to the limitation of the classic model.
-            b = new FONcShort(v);
+            b = new FONcInt(v,unsigned_promote);
         break;
     }
     case dods_int16_c:
@@ -307,8 +297,11 @@ FONcUtils::convert(BaseType *v,
     case dods_uint32_c: {
         if(true == is_netcdf4_enhanced)
             b = new FONcUInt(v); 
-        else 
-            b = new FONcInt(v);
+        else { 
+            string err = (string) "file out netcdf, " + "classic model-doesn't support unsigned int.";
+            err += " Please use netCDF-4 enhanced model instead.";
+            throw BESInternalError(err, __FILE__, __LINE__);
+        }
         break;
     }
     case dods_int32_c:
@@ -317,15 +310,21 @@ FONcUtils::convert(BaseType *v,
     case dods_uint64_c: {
         if(true == is_netcdf4_enhanced)
             b = new FONcUInt64(v); 
-        else 
-            b = new FONcInt(v);
+        else { 
+            string err = (string) "file out netcdf, " + "classic model-doesn't support unsigned 64-bit int.";
+            err += " Please use netCDF-4 enhanced model instead.";
+            throw BESInternalError(err, __FILE__, __LINE__);
+        }
         break;
     }
     case dods_int64_c: {
         if(true == is_netcdf4_enhanced)
             b = new FONcInt64(v); 
-        else 
-            b = new FONcInt(v);
+        else {
+            string err = (string) "file out netcdf, " + "classic model-doesn't support unsigned 64-bit int.";
+            err += " Please use netCDF-4 enhanced model instead.";
+            throw BESInternalError(err, __FILE__, __LINE__);
+        }
         break;
     }
     case dods_float32_c:
