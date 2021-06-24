@@ -319,18 +319,18 @@ void updateHistoryAttribute(DDS *dds, const string &ce)
 void appendHistoryJson(vector<string> *global_attr, vector<string> jsonNew) {
     const char *oldJson = global_attr->at(0).c_str();
     const char *newJson = jsonNew.at(0).c_str();
-    Document doc;
-    Document::AllocatorType &allocator = doc.GetAllocator();
-    doc.SetArray();
-    Value valOld = Value(oldJson, allocator);
-    doc.PushBack(valOld, allocator);
-    Value valNew = Value(newJson, allocator);
-    doc.PushBack(valNew, allocator);
+    Document docNew, docOld;
+    Document::AllocatorType &allocator = docOld.GetAllocator();
+    docNew.SetArray();
+    docNew.Parse(newJson);
+    docOld.SetArray();
+    docOld.Parse(oldJson);
+    docNew.PushBack(docOld, allocator);
 
     // Stringify JSON
     StringBuffer buffer;
     Writer<StringBuffer> writer(buffer);
-    doc.Accept(writer);
+    docNew.Accept(writer);
     global_attr->clear();
     global_attr->push_back(buffer.GetString());
 }
@@ -375,7 +375,7 @@ void updateHistoryAttribute(DMR *dmr, const string &ce)
                 (*attrs)->attributes()->find("history")->add_value_vector(cf_hist_entry_vec);
             }
 
-            D4Attribute *history_json_attr = (*attrs)->attributes()->find("history_json");
+            D4Attribute * history_json_attr = (*attrs)->attributes()->find("history_json");
             if (!history_json_attr) {
                 //if there is no source history_json attribute
                 BESDEBUG(MODULE, prolog << "Adding history_json entry to " << name << endl);
