@@ -317,20 +317,25 @@ void updateHistoryAttribute(DDS *dds, const string &ce)
 
 
 void appendHistoryJson(vector<string> *global_attr, vector<string> jsonNew) {
-    const char *oldJson = global_attr->at(0).c_str();
-    const char *newJson = jsonNew.at(0).c_str();
-    Document doc;
-    Document::AllocatorType &allocator = doc.GetAllocator();
-    doc.SetArray();
-    Value valOld = Value(oldJson, allocator);
-    doc.PushBack(valOld, allocator);
+    //const char *oldJson = global_attr->at(0).c_str();
+    //const char *newJson = jsonNew.at(0).c_str();
+    Document hist_json;
+    hist_json.Parse((*global_attr)[0].c_str());
+
+    Document newJson;
+    newJson.Parse(jsonNew[0].c_str());
+
+    Document::AllocatorType &allocator = hist_json.GetAllocator();
+    hist_json.SetArray();
+    //Value valOld = Value(oldJson, allocator);
+    //doc.PushBack(valOld, allocator);
     Value valNew = Value(newJson, allocator);
-    doc.PushBack(valNew, allocator);
+    hist_json.PushBack(valNew, allocator);
 
     // Stringify JSON
     StringBuffer buffer;
     Writer<StringBuffer> writer(buffer);
-    doc.Accept(writer);
+    hist_json.Accept(writer);
     global_attr->clear();
     global_attr->push_back(buffer.GetString());
 }
