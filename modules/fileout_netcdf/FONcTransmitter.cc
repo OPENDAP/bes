@@ -317,6 +317,7 @@ void updateHistoryAttribute(DDS *dds, const string &ce)
 
 
 void appendHistoryJson(vector<string> *global_attr, vector<string> jsonNew) {
+
     const char *oldJson = global_attr->at(0).c_str();
     const char *newJson = jsonNew.at(0).c_str();
     Document docNew, docOld;
