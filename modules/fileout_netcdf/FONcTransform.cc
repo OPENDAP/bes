@@ -29,6 +29,7 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 //      kyang       Kent Yang <myang6@hdfgroup.org> (for DAP4/netCDF-4 enhancement)
+//      slloyd      Samuel Lloyd <slloyd@opendap.org> (netCDF file streaming)
 
 #include "config.h"
 
@@ -358,7 +359,7 @@ void FONcTransform::transform()
  * particular netcdf type. Also write out any global variables stored at the
  * top level of the DataDDS.
  */
-void FONcTransform::transform()
+void FONcTransform::transform(ostream &strm)
 {
 #if 0
     BESDapResponseBuilder responseBuilder;
@@ -377,7 +378,7 @@ void FONcTransform::transform()
 
     d_dhi->first_container();
 
-    BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *>(d_obj);
+    auto bdds = dynamic_cast<BESDataDDSResponse *>(d_obj);
     if (!bdds) throw BESInternalFatalError("Expected a BESDataDDSResponse instance", __FILE__, __LINE__);
 
     _dds = bdds->get_dds();
@@ -454,16 +455,12 @@ void FONcTransform::transform()
     // variables, arrays, shared dimensions, grids, common maps,
     // embedded structures. It only grabs the variables that are to be
     // sent.
-    DDS::Vars_iter vi = _dds->var_begin();
-    DDS::Vars_iter ve = _dds->var_end();
-    for (; vi != ve; vi++) {
+    for (auto vi = _dds->var_begin(), ve = _dds->var_end(); vi != ve; vi++) {
         if ((*vi)->send_p()) {
-            BaseType *v = *vi;
+            BESDEBUG("fonc", "FONcTransform::transform() - Converting variable '" << (*vi)->name() << "'" << endl);
 
-            BESDEBUG("fonc", "FONcTransform::transform() - Converting variable '" << v->name() << "'" << endl);
-
-            // This is a factory class call, and 'fg' is specialized for 'v'
-            FONcBaseType *fb = FONcUtils::convert(v, FONcTransform::_returnAs, FONcRequestHandler::classic_model);
+            // This is a factory class call, and 'fg' is specialized for '*vi'
+            FONcBaseType *fb = FONcUtils::convert((*vi), FONcTransform::_returnAs, FONcRequestHandler::classic_model);
 
             _fonc_vars.push_back(fb);
             vector<string> embed;
@@ -496,6 +493,13 @@ void FONcTransform::transform()
         FONcUtils::handle_error(stax, "File out netcdf, unable to open: " + _localfile, __FILE__, __LINE__);
     }
 
+    int current_fill_prop_vaule;
+
+    stax = nc_set_fill(_ncid, NC_NOFILL, &current_fill_prop_vaule);
+    if (stax != NC_NOERR) {
+        FONcUtils::handle_error(stax, "File out netcdf, unable to set fill to NC_NOFILL: " + _localfile, __FILE__, __LINE__);
+    }
+
     try {
         // Here we will be defining the variables of the netcdf and
         // adding attributes. To do this we must be in define mode.
@@ -504,10 +508,7 @@ void FONcTransform::transform()
         // For each converted FONc object, call define on it to define
         // that object to the netcdf file. This also adds the attributes
         // for the variables to the netcdf file
-        vector<FONcBaseType *>::iterator i = _fonc_vars.begin();
-        vector<FONcBaseType *>::iterator e = _fonc_vars.end();
-        for (; i != e; i++) {
-            FONcBaseType *fbt = *i;
+        for (FONcBaseType *fbt: _fonc_vars) {
             BESDEBUG("fonc", "FONcTransform::transform() - Defining variable:  " << fbt->name() << endl);
             fbt->define(_ncid);
         }
@@ -532,28 +533,97 @@ void FONcTransform::transform()
             FONcUtils::handle_error(stax, "File out netcdf, unable to end the define mode: " + _localfile, __FILE__,
                                     __LINE__);
         }
+        // write file data
+        uint64_t byteCount = 0;
 
-        // Write everything out
-        i = _fonc_vars.begin();
-        e = _fonc_vars.end();
-        for (; i != e; i++) {
-            FONcBaseType *fbt = *i;
+        if (is_streamable()) {
+        byteCount = BESUtil::file_to_stream_helper(_localfile, strm, byteCount);
+        BESDEBUG("fonc", "FONcTransform::transform() - first write data to stream, count:  " << byteCount << endl);
+        }
+
+        for (FONcBaseType *fbt: _fonc_vars) {
             BESDEBUG("fonc", "FONcTransform::transform() - Writing data for variable:  " << fbt->name() << endl);
 
             fbt->set_dds(_dds);
             fbt->set_eval(&eval);
 
             fbt->write(_ncid);
+            nc_sync(_ncid);
+
+
+            if (is_streamable()) {
+                // write the whats been written
+                byteCount = BESUtil::file_to_stream_helper(_localfile, strm, byteCount);
+                BESDEBUG("fonc", "FONcTransform::transform() - Writing data to stream, count:  " << byteCount << endl);
+            }
         }
 
         stax = nc_close(_ncid);
         if (stax != NC_NOERR)
             FONcUtils::handle_error(stax, "File out netcdf, unable to close: " + _localfile, __FILE__, __LINE__);
+
+        byteCount = BESUtil::file_to_stream_helper(_localfile, strm, byteCount);
+        BESDEBUG("fonc", "FONcTransform::transform() - after nc_close() count:  " << byteCount << endl);
     }
     catch (BESError &e) {
         (void) nc_close(_ncid); // ignore the error at this point
         throw;
     }
+}
+
+/** @brief checks if a netcdf file is streamable
+ *
+ * /!\ WARNING /!\ DDS/DMR object must be correctly constructed for this function to work
+ * checks if a netcdf file is to be returned as netcdf-4 and if so is not streamable
+ * if file is returned as netcdf-3 then checks if the dds/dmr has a structure datatype
+ * @return false if file returns as netcdf-4 OR has a structure datatype
+ */
+bool FONcTransform::is_streamable(){
+    if (FONcTransform::_returnAs == RETURN_AS_NETCDF4){
+        return false;
+    }
+
+    if (_dds != nullptr){
+        return is_dds_streamable();
+    }
+    else {
+        return is_dmr_streamable(_dmr->root());
+    }
+}
+
+/** @brief checks if a DDS contains a Structure datatype in its variables
+ *
+ * checks the variable type for a structure datatype
+ * @return false if the dds contains a structure datatype
+ */
+bool FONcTransform::is_dds_streamable(){
+    for (auto var = _dds->var_begin(), varEnd = _dds->var_end(); var != varEnd; ++var) {
+        if ((*var)->type() == dods_structure_c) {
+            return false; // cannot be streamed
+        }
+    }
+    return true;
+}
+
+/** checks if a DMR contains a Structure datatype in its variables
+ *
+ * checks the variable type for a structure datatype
+ * @param group the D4Group holding the variables to search through
+ * @return false if the dmr contains a structure datatype
+ */
+bool FONcTransform::is_dmr_streamable(D4Group *group){
+    for (auto var = group->var_begin(), varEnd = group->var_end(); var != varEnd; ++var) {
+        if ((*var)->type() == dods_structure_c)
+            return false ; // cannot be streamed
+
+        if ((*var)->type() == dods_group_c) {
+            D4Group *g = dynamic_cast<D4Group *>(*var);
+            if (g != nullptr && !is_dmr_streamable(g)) {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 
