@@ -16,7 +16,8 @@ BES.module.functions=@abs_top_builddir@/functions/.libs/libfunctions_module.so
 BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/netcdf_handler
 BES.Data.RootDirectory=/dev/null
 
-BES.Catalog.catalog.TypeMatch=nc:.*.nc(.bz2|.gz|.Z)?$;
+BES.Catalog.catalog.TypeMatch = nc:.*.nc(.bz2|.gz|.Z)?$;
+BES.Catalog.catalog.TypeMatch += nc:.*.nc4$;
 
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;
