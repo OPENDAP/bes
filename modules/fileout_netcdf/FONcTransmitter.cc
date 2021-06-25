@@ -416,6 +416,7 @@ void update_history_json_attr(D4Attribute *global_attribute, const string &reque
         // the document using rapidjson, and then serialize it to a new string value that
         // We will use to overwrite the current value in the existing history_json_attr.
         string history_json = *history_json_attr->value_begin();
+        history_json="[{\"$schema\":\"https:\\/\\/harmony.earthdata.nasa.gov\\/schemas\\/history\\/0.1.0\\/history-0.1.0.json\",\"date_time\":\"2021-06-25T13:28:48.951+0000\",\"program\":\"hyrax\",\"version\":\"@HyraxVersion@\",\"parameters\":[{\"request_url\":\"http:\\/\\/localhost:8080\\/opendap\\/hj\\/coads_climatology.nc.dap.nc4?GEN1\"}]}]";
         BESDEBUG(MODULE,prolog << "FOUND history_json: " << history_json << endl);
 
         history_json = json_append_hj_entry(history_json, hj_entry_str);
