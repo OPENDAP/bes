@@ -201,9 +201,8 @@ void create_json_history_obj(const string &request_url, Writer& writer)
 *
 * @request_url
 */
-vector<string> get_cf_history_entry (const string &request_url)
+string get_cf_history_entry (const string &request_url)
 {
-    vector<string> cf_hist_entry_vec;
     bool foundIt = false;
     string cf_history_entry = BESContextManager::TheManager()->get_context("cf_history_entry", foundIt);
     if (!foundIt) {
@@ -211,9 +210,7 @@ vector<string> get_cf_history_entry (const string &request_url)
         // we compute and the value of the history string here.
         cf_history_entry = create_cf_history_txt(request_url);
     }
-    // And here we add to the returned vector.
-    cf_hist_entry_vec.push_back(cf_history_entry);
-    return cf_hist_entry_vec;
+    return cf_history_entry;
 }
 
 /**
@@ -259,7 +256,9 @@ void updateHistoryAttribute(DDS *dds, const string &ce)
     request_url = request_url.substr(request_url.find_last_of('#')+1);
     if(!ce.empty()) request_url += "?" + ce;
 
-    std::vector<std::string> cf_hist_entry_vec = get_cf_history_entry(request_url);
+    std::vector<std::string> cf_hist_entry_vec;
+    cf_hist_entry_vec.push_back(get_cf_history_entry(request_url));
+
     BESDEBUG(MODULE, prolog << "cf_hist_entry_vec.size(): " << cf_hist_entry_vec.size() << endl);
 
     std::vector<std::string> history_json_entry_vec = get_history_json_entry(request_url);
@@ -397,16 +396,16 @@ void update_history_json_attr(D4Attribute *global_attribute, const string &reque
     } else {
         // We found an existing history_jason attribute!
         // We know the convention is that this should be a single valued DAP attribute
-        // We  need to get the existing json document, parse it, insert the entry into
+        // We need to get the existing json document, parse it, insert the entry into
         // the document using rapidjson, and then serialize it to a new string value that
         // We will use to overwrite the current value in the existing history_json_attr.
         string history_json = *history_json_attr->value_begin();
         BESDEBUG(MODULE,prolog << "FOUND history_json: " << history_json << endl);
 
-        string new_hj_entry = get_hj_entry(request_url);
-        BESDEBUG(MODULE,prolog << "New history_json entry: " << new_hj_entry << endl);
+        string hj_entry = get_hj_entry(request_url);
+        BESDEBUG(MODULE,prolog << "hj_entry: " << hj_entry << endl);
 
-        history_json = json_append_hj_entry(history_json, new_hj_entry);
+        history_json = json_append_hj_entry(history_json, hj_entry);
         BESDEBUG(MODULE,prolog << "NEW history_json: " << history_json << endl);
 
         // Now the we have the update history_json element, serialized to a string, we use it to
@@ -421,18 +420,32 @@ void update_history_json_attr(D4Attribute *global_attribute, const string &reque
 }
 void update_cf_history_attr(D4Attribute *global_attribute, const string &request_url){
 
-    std::vector<std::string> cf_hist_entry_vec = get_cf_history_entry(request_url);
-    BESDEBUG(MODULE, prolog << "cf_hist_entry_vec.size(): " << cf_hist_entry_vec.size() << endl);
+    string cf_hist_entry = get_cf_history_entry(request_url);
+    BESDEBUG(MODULE, prolog << "cf_hist_entry: " << cf_hist_entry << endl);
+
 
     D4Attribute *history_attr = global_attribute->attributes()->find("history");
     if (!history_attr) {
         //if there is no source history attribute
         BESDEBUG(MODULE, prolog << "Adding history entry to " << global_attribute->name() << endl);
         auto *new_history = new D4Attribute("history", attr_str_c);
+        std::vector<std::string> cf_hist_entry_vec;
+        cf_hist_entry_vec.push_back(cf_hist_entry);
         new_history->add_value_vector(cf_hist_entry_vec);
         global_attribute->attributes()->add_attribute_nocopy(new_history);
     } else {
-        history_attr->add_value_vector(cf_hist_entry_vec);
+        string newline("\n");
+        stringstream cf_hist;
+        cf_hist << history_attr->value(0);
+        if(!BESUtil::endsWith(cf_hist.str(),newline))
+            cf_hist << endl;
+        cf_hist << cf_hist_entry << endl;
+
+        BESDEBUG(MODULE, prolog << "cf_hist: " << cf_hist.str() << endl);
+
+        std::vector<std::string> cf_hist_vec;
+        cf_hist_vec.push_back(cf_hist.str());
+        history_attr->add_value_vector(cf_hist_vec);
     }
 }
 
