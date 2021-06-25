@@ -22,38 +22,20 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-//#include <cstdio>
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
 #include <unistd.h>
 
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
-#include <math.h>       /* atan */
 
-#include <DataDDS.h>
-#include <Byte.h>
-#include <Int16.h>
-#include <UInt16.h>
-#include <Int32.h>
-#include <UInt32.h>
-#include <Float32.h>
-#include <Float64.h>
-#include <Str.h>
-
-#include <Structure.h>
-#include <Sequence.h>
-#include <Grid.h>
-
-#include <debug.h>
-#include <util.h>
-
-#include <BESInternalError.h>
 #include <BESDebug.h>
 
 #include "test_config.h"
+
+using namespace std;
 
 static bool debug = false;
 static bool bes_debug = false;
@@ -61,10 +43,10 @@ static bool bes_debug = false;
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 
-#define prolog std::string("FONcTest::").append(__func__).append("() - ")
+#define prolog std::string("HistoryUtilsTest::").append(__func__).append("() - ")
 
 
-class FONcTest: public CppUnit::TestFixture {
+class HistoryUtilsTest: public CppUnit::TestFixture {
 
 private:
     string d_tmpDir;
@@ -96,14 +78,14 @@ private:
 public:
 
     // Called once before everything gets tested
-    FONcTest() :
+    HistoryUtilsTest() :
         d_tmpDir(string(TEST_BUILD_DIR) + "/tmp")
     {
         DBG(cerr << "FoJsonTest - Constructor" << endl);
     }
 
     // Called at the end of the test
-    ~FONcTest()
+    ~HistoryUtilsTest()
     {
         DBG(cerr << "FoJsonTest - Destructor" << endl);
     }
@@ -386,10 +368,12 @@ public:
 
     void json_append_entry_test()
     {
+        DBG(cerr << prolog << "BEGIN" << endl);
 
+        DBG(cerr << prolog << "END" << endl);
     }
 
-    CPPUNIT_TEST_SUITE( FONcTest );
+    CPPUNIT_TEST_SUITE( HistoryUtilsTest );
 
         CPPUNIT_TEST(json_append_entry_test);
 
@@ -398,7 +382,7 @@ public:
 
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(FONcTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(HistoryUtilsTest);
 
 
 int main(int argc, char *argv[])
@@ -433,7 +417,7 @@ int main(int argc, char *argv[])
         int i = 0;
         while (i < argc) {
             if (debug) cerr << prolog << "Running " << argv[i] << endl;
-            string test = FONcTest::suite()->getName().append("::").append(argv[i]);
+            string test = HistoryUtilsTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
             ++i;
         }

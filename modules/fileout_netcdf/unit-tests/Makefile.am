@@ -53,7 +53,7 @@ tmp:
 #
 
 if CPPUNIT
-UNIT_TESTS = FONcTest
+UNIT_TESTS = HistoryUtilsTest
 else
 UNIT_TESTS =
 
@@ -66,7 +66,7 @@ check-local:
 	@echo ""
 endif
 
-OBJS = ../*.o
+OBJS = ../history_utils.o
 
-FONcTest_SOURCES = FONcTest.cc
-FONcTest_LDADD = $(OBJS) $(LIBADD)
+HistoryUtilsTest_SOURCES = HistoryUtilsTest.cc
+HistoryUtilsTest_LDADD = $(OBJS) $(LIBADD)
