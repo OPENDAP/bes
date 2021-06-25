@@ -89,7 +89,7 @@ public:
 	FONcTransform(DMR *dmr, BESDataHandlerInterface &dhi, const string &localfile, const string &netcdfVersion = "netcdf");
     FONcTransform(BESResponseObject *obj, BESDataHandlerInterface *dhi, const string &localfile, const string &ncVersion = "netcdf");
     virtual ~FONcTransform();
-	virtual void transform();
+	virtual void transform(ostream &strm);
 	virtual void transform_dap4();
 
 
@@ -103,6 +103,9 @@ private:
     virtual bool check_group_support();
     virtual void gen_included_grp_list(D4Group*grp);
 
+    virtual bool is_streamable();
+    virtual bool is_dds_streamable();
+    virtual bool is_dmr_streamable(D4Group *group);
 
 };
 

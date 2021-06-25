@@ -38,12 +38,14 @@
 #include <iostream>
 #include <vector>
 #include <BESCatalog.h>
+#include <atomic>
 
 class BESUtil {
 private:
     static std::string rfc822_date(const time_t t);
 
     static std::string entity(char c);
+
 public:
     /** These functions are used to create the MIME headers for a message
      from a server to a client.
@@ -119,7 +121,9 @@ public:
     static BESCatalog *separateCatalogFromPath(std::string &path);
 
     static void file_to_stream(const std::string &file_name, std::ostream &o_strm);
-
+    static uint64_t file_to_stream_helper(const std::string &file_name, std::ostream &o_strm, uint64_t byteCount);
+    static uint64_t file_to_stream_task(const std::string &file_name, std::atomic<bool> &file_write_done,
+                                        std::ostream &o_strm);
 };
 
 #endif // E_BESUtil_h
