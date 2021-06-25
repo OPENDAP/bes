@@ -387,7 +387,7 @@ string json_append_hj_entry(const string&  current_doc_str, const string& new_en
 
 
 /**
- * @breifs Uodates/Creates a history_json child attribute in global_attribute.
+ * @breif Updates/Creates a history_json child attribute in global_attribute.
  * @param global_attribute
  * @param request_url
  */
@@ -429,6 +429,12 @@ void update_history_json_attr(D4Attribute *global_attribute, const string &reque
     }
 
 }
+
+/**
+ * @breif Updates/Creates a climate forcast (cf) history attribute in global_attribute.
+ * @param global_attribute
+ * @param request_url
+ */
 void update_cf_history_attr(D4Attribute *global_attribute, const string &request_url){
 
     string cf_hist_entry = get_cf_history_entry(request_url);
