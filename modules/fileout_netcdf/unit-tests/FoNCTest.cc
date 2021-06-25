@@ -23,13 +23,16 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 //#include <cstdio>
+#include <ctype.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include <math.h>       /* atan */
 
-#include <GetOpt.h>
 #include <DataDDS.h>
 #include <Byte.h>
 #include <Int16.h>
@@ -53,9 +56,12 @@
 #include "test_config.h"
 
 static bool debug = false;
+static bool bes_debug = false;
 
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
+
+#define prolog std::string("FONcTest::").append(__func__).append("() - ")
 
 
 class FONcTest: public CppUnit::TestFixture {
@@ -103,8 +109,11 @@ public:
     }
 
     // Called before each test
-    void setUp()
+    void setUp() override
     {
+        DBG(cerr << endl);
+        // The following will show threads joined after an exception was thrown by a thread
+        if (bes_debug) BESDebug::SetUp("cerr,fonc");
     }
 
     // Called after each test
@@ -375,10 +384,6 @@ public:
     }
 #endif
 
-
-
-
-
     void json_append_entry_test()
     {
 
@@ -396,48 +401,41 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION(FONcTest);
 
 
-int main(int argc, char*argv[])
+int main(int argc, char *argv[])
 {
-    GetOpt getopt(argc, argv, "dh");
-    int option_char;
-    while ((option_char = getopt()) != -1)
-        switch (option_char) {
-        case 'd':
-            debug = 1;  // debug is a static global
-            cerr << "##### DEBUG is ON" << endl;
-            break;
-        case 'h': {     // help - show test names
-            std::cerr << "Usage: FoJsonTest has the following tests:" << std::endl;
-            const std::vector<CppUnit::Test*> &tests = FONcTest::suite()->getTests();
-            unsigned int prefix_len = FONcTest::suite()->getName().append("::").length();
-            for (std::vector<CppUnit::Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
-                std::cerr << (*i)->getName().replace(0, prefix_len, "") << std::endl;
-            }
-            break;
-        }
-        default:
-            // I'd like the output to be clean unless -d is on so
-            // nightly builds are easier to read/understand. jhrg 2/20/15
-            // cerr << "##### DEBUG is OFF" << endl;
-            break;
-        }
-
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
+
+    int option_char;
+    while ((option_char = getopt(argc, argv, "db")) != -1)
+        switch (option_char) {
+            case 'd':
+                debug = true;  // debug is a static global
+                break;
+            case 'b':
+                debug = true;  // debug is a static global
+                bes_debug = true;  // debug is a static global
+                break;
+            default:
+                break;
+        }
+
+    argc -= optind;
+    argv += optind;
+
     bool wasSuccessful = true;
-    string test = "";
-    int i = getopt.optind;
-    if (i == argc) {
+    if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
     }
     else {
+        int i = 0;
         while (i < argc) {
-            if (debug) cerr << "Running " << argv[i] << endl;
-            test = FONcTest::suite()->getName().append("::").append(argv[i]);
+            if (debug) cerr << prolog << "Running " << argv[i] << endl;
+            string test = FONcTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
-	    ++i;
+            ++i;
         }
     }
 
