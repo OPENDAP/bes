@@ -368,18 +368,15 @@ string get_hj_entry (const string &request_url)
  * @return
  */
 string json_append_hj_entry(const string& current_doc_str, const string& new_entry_str) {
-    Document hj_doc;
+    Document hj_doc, new_hj_doc;
     hj_doc.SetArray();
     Document::AllocatorType &allocator = hj_doc.GetAllocator();
 
-    Value new_hj_val(kObjectType);
-    new_hj_val.SetString(new_entry_str.c_str(), new_entry_str.size(), allocator);
-    hj_doc.PushBack(new_hj_val, allocator);
+    hj_doc.Parse(current_doc_str.c_str()); // Parse attribute from file
 
-    Value hj_array(kArrayType);
-    hj_array.SetArray();
-    hj_array.SetString(current_doc_str.c_str(), current_doc_str.size(),allocator);
-    hj_doc.PushBack(hj_array, allocator);
+    new_hj_doc.Parse(new_entry_str.c_str()); // Parse frontend entry
+
+    hj_doc.PushBack(new_hj_doc, allocator);
 
     // Stringify JSON
     StringBuffer buffer;
@@ -415,8 +412,8 @@ void update_history_json_attr(D4Attribute *global_attribute, const string &reque
         // We need to get the existing json document, parse it, insert the entry into
         // the document using rapidjson, and then serialize it to a new string value that
         // We will use to overwrite the current value in the existing history_json_attr.
-        string history_json = *history_json_attr->value_begin();
-        history_json="[{\"$schema\":\"https:\\/\\/harmony.earthdata.nasa.gov\\/schemas\\/history\\/0.1.0\\/history-0.1.0.json\",\"date_time\":\"2021-06-25T13:28:48.951+0000\",\"program\":\"hyrax\",\"version\":\"@HyraxVersion@\",\"parameters\":[{\"request_url\":\"http:\\/\\/localhost:8080\\/opendap\\/hj\\/coads_climatology.nc.dap.nc4?GEN1\"}]}]";
+//        string history_json = *history_json_attr->value_begin();
+        string history_json="[{\"$schema\":\"https:\\/\\/harmony.earthdata.nasa.gov\\/schemas\\/history\\/0.1.0\\/history-0.1.0.json\",\"date_time\":\"2021-06-25T13:28:48.951+0000\",\"program\":\"hyrax\",\"version\":\"@HyraxVersion@\",\"parameters\":[{\"request_url\":\"http:\\/\\/localhost:8080\\/opendap\\/hj\\/coads_climatology.nc.dap.nc4?GEN1\"}]}]";
         BESDEBUG(MODULE,prolog << "FOUND history_json: " << history_json << endl);
 
         history_json = json_append_hj_entry(history_json, hj_entry_str);
