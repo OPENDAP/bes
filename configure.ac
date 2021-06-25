@@ -1105,6 +1105,7 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
 	
     modules/fileout_netcdf/Makefile 	
     modules/fileout_netcdf/tests/Makefile 
+    modules/fileout_netcdf/unit-tests/Makefile
     modules/fileout_netcdf/tests/atlocal
     modules/fileout_netcdf/data/build_test_data/Makefile 
 	

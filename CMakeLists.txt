@@ -919,6 +919,8 @@ add_executable(bes
     modules/fileout_netcdf/FONcTransmitter.h
     modules/fileout_netcdf/FONcUtils.cc
     modules/fileout_netcdf/FONcUtils.h
+    modules/fileout_netcdf/unit-tests/FONcTest.cc
+    modules/fileout_netcdf/unit-tests/test_config.h
 
     modules/fits_handler/BESAutoPtr.h
     modules/fits_handler/fits_read_attributes.cc

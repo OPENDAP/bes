@@ -22,9 +22,7 @@ AM_CXXFLAGS=
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
-SUBDIRS = . data/build_test_data tests 
-# I'm switching from the older tests in 'unit-tests' to the newer ones in 'tests'
-# jhrg 6/2/17 DIST_SUBDIRS = data/build_test_data tests unit-tests 
+SUBDIRS = . data/build_test_data unit-tests tests
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libfonc_module.la
