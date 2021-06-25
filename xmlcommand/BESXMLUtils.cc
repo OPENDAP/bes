@@ -32,10 +32,14 @@
 
 #include "BESXMLUtils.h"
 #include "BESUtil.h"
+#include "BESDebug.h"
 
 using std::vector;
 using std::string;
 using std::map;
+
+#define MODULE "xmlutils"
+#define prolog string("BESXMLUtils::").append(__func__).append("() - ")
 
 /** @brief error function used by libxml2 to report errors
  *
@@ -73,7 +77,7 @@ void BESXMLUtils::GetProps(xmlNode *node, map<string, string> &props)
         return;
     }
 
-    if (node->properties == NULL) {
+    if (node->properties == nullptr) {
         return;
     }
 
@@ -113,8 +117,10 @@ void BESXMLUtils::GetNodeInfo(xmlNode *node, string &name, string &value, map<st
         while (child_node && !done) {
             if (child_node->type == XML_TEXT_NODE) {
                 if (child_node->content) {
+                    BESDEBUG(MODULE, prolog << "child_node->content: " << child_node->content << std::endl);
                     value = BESUtil::xml2id((char *)child_node->content);
                     BESUtil::removeLeadingAndTrailingBlanks(value);
+                    BESDEBUG(MODULE, prolog << "value: " << value << std::endl);
                 }
                 else {
                     value = "";
@@ -136,7 +142,7 @@ void BESXMLUtils::GetNodeInfo(xmlNode *node, string &name, string &value, map<st
 xmlNode *
 BESXMLUtils::GetFirstChild(xmlNode *node, string &child_name, string &child_value, map<string, string> &child_props)
 {
-    xmlNode *child_node = NULL;
+    xmlNode *child_node = nullptr;
     if (node) {
         child_node = node->children;
         bool done = false;
@@ -189,7 +195,7 @@ BESXMLUtils::GetNextChild(xmlNode *child_node, string &next_name, string &next_v
 xmlNode *
 BESXMLUtils::GetChild(xmlNode *node, const string &child_name, string &child_value, map<string, string> &child_props)
 {
-    xmlNode *child_node = NULL;
+    xmlNode *child_node = nullptr;
     if (node) {
         child_node = node->children;
         bool done = false;
