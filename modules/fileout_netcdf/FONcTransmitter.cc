@@ -340,7 +340,7 @@ string get_hj_entry (const string &request_url)
     bool foundIt = false;
     string history_json_entry = BESContextManager::TheManager()->get_context("history_json_entry", foundIt);
     if (!foundIt) {
-        // If the history_json_entry context was not set by the incoming command then
+        // If the history_json_entry context was not set as a context key on BESContextManager
         // we compute and the value of the history string here.
         Document  history_json_doc;
         history_json_doc.SetObject();
@@ -354,7 +354,7 @@ string get_hj_entry (const string &request_url)
     return history_json_entry;
 }
 
-string json_append_hj_entry(string  current_doc_str, string new_entry_str) {
+string json_append_hj_entry(const string&  current_doc_str, const string& new_entry_str) {
 
     Document new_hj_entry;
     new_hj_entry.SetArray();
