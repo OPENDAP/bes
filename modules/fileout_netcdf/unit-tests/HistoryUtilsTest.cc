@@ -34,6 +34,7 @@
 #include <BESDebug.h>
 
 #include "test_config.h"
+#include "history_utils.h"
 
 using namespace std;
 
@@ -366,16 +367,39 @@ public:
     }
 #endif
 
-    void json_append_entry_test()
+    void json_append_entry_to_array_test()
     {
         DBG(cerr << prolog << "BEGIN" << endl);
+        //string hj_entry_str = get_hj_entry("OHMYOHMYOHMY");
+       // string history_json=R"([{"$schema":"https:\/\/harmony.earthdata.nasa.gov\/schemas\/history\/0.1.0\/history-0.1.0.json","date_time":"2021-06-25T13:28:48.951+0000","program":"hyrax","version":"@HyraxVersion@","parameters":[{"request_url":"http:\/\/localhost:8080\/opendap\/hj\/coads_climatology.nc.dap.nc4?GEN1"}]}])";
+
+        string target_array = R"([ {"thing1":"one_fish"}, {"thing2":"two_fish"} ])";
+        string new_entry = R"({"thing3":"red_fish"})";
+        string expected = R"([{"thing1":"one_fish"},{"thing2":"two_fish"},{"thing3":"red_fish"}])";
+        string result = json_append_entry_to_array(target_array,new_entry);
+
+        DBG(cerr << prolog << "target_array: " << target_array << endl);
+        DBG(cerr << prolog << "new_entry: " << new_entry << endl);
+        DBG(cerr << prolog << "result: " << result << endl);
+
+        CPPUNIT_ASSERT( result == expected );
+
+        new_entry = R"({"thing4":"blue_fish"})";
+        expected = R"([{"thing1":"one_fish"},{"thing2":"two_fish"},{"thing3":"red_fish"},{"thing4":"blue_fish"}])";
+
+        result = json_append_entry_to_array(result,new_entry);
+        DBG(cerr << prolog << "new_entry: " << new_entry << endl);
+        DBG(cerr << prolog << "result: " << result << endl);
+        CPPUNIT_ASSERT( result == expected );
+
+
 
         DBG(cerr << prolog << "END" << endl);
     }
 
     CPPUNIT_TEST_SUITE( HistoryUtilsTest );
 
-        CPPUNIT_TEST(json_append_entry_test);
+        CPPUNIT_TEST(json_append_entry_to_array_test);
 
     CPPUNIT_TEST_SUITE_END();
 

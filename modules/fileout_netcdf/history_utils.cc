@@ -33,41 +33,28 @@
 
 #include <sys/stat.h>
 
-#include <iostream>
 #include <fstream>
-#include <exception>
 #include <sstream>      // std::stringstream
 #include <thread>
 #include <future>
 
-#include <D4Group.h>
-#include <D4Attributes.h>
-#include <DataDDS.h>
-#include <escaping.h>
-
-#include <TheBESKeys.h>
-#include <BESContextManager.h>
-#include <BESDataDDSResponse.h>
-#include <BESDapNames.h>
-#include <BESDataNames.h>
-#include <BESDebug.h>
-#include <BESUtil.h>
-#include <TempFile.h>
-
-#include <BESDapResponseBuilder.h>
-
-#include <BESLog.h>
-#include <BESError.h>
-#include <BESDapError.h>
-#include <BESForbiddenError.h>
-#include <BESInternalFatalError.h>
-#include <DapFunctionUtils.h>
+// rapidjson
 #include <stringbuffer.h>
 #include <writer.h>
 #include "document.h"
 
+#include <D4Group.h>
+#include <D4Attributes.h>
+#include <DataDDS.h>
+
+#include "BESContextManager.h"
+#include "BESDapResponseBuilder.h"
+#include "DapFunctionUtils.h"
+#include "BESDebug.h"
+#include "BESUtil.h"
+#include "TempFile.h"
+
 #include "FONcBaseType.h"
-#include "FONcRequestHandler.h"
 #include "FONcTransmitter.h"
 #include "FONcTransform.h"
 
@@ -263,22 +250,23 @@ string get_hj_entry (const string &request_url)
  * @param new_entry_str
  * @return
  */
-string json_append_entry_to_array(const string& current_doc_str, const string& new_entry_str)
+string json_append_entry_to_array(const string& source_array_str, const string& new_entry_str)
 {
-    Document hj_doc, new_hj_doc;
-    hj_doc.SetArray();
-    Document::AllocatorType &allocator = hj_doc.GetAllocator();
+    Document target_array;
+    target_array.SetArray();
+    Document::AllocatorType &allocator = target_array.GetAllocator();
 
-    hj_doc.Parse(current_doc_str.c_str()); // Parse attribute from file
+    target_array.Parse(source_array_str.c_str()); // Parse json array
 
-    new_hj_doc.Parse(new_entry_str.c_str()); // Parse frontend entry
+    Document entry;
+    entry.Parse(new_entry_str.c_str()); // Parse new entry
 
-    hj_doc.PushBack(new_hj_doc, allocator);
+    target_array.PushBack(entry, allocator);
 
     // Stringify JSON
     StringBuffer buffer;
     Writer<StringBuffer> writer(buffer);
-    hj_doc.Accept(writer);
+    target_array.Accept(writer);
     return buffer.GetString();
 }
 
