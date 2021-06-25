@@ -335,6 +335,11 @@ void appendHistoryJson(vector<string> *global_attr, vector<string> jsonNew) {
     global_attr->push_back(buffer.GetString());
 }
 
+/**
+ * @brief Makes a history_json entry using the request URL with constraint expression
+ * @param request_url The request URL including the constraint expression (query string)
+ * @return A history_json entry for this request url.
+ */
 string get_hj_entry (const string &request_url)
 {
     bool foundIt = false;
@@ -354,6 +359,12 @@ string get_hj_entry (const string &request_url)
     return history_json_entry;
 }
 
+/**
+ *
+ * @param current_doc_str
+ * @param new_entry_str
+ * @return
+ */
 string json_append_hj_entry(const string&  current_doc_str, const string& new_entry_str) {
 
     Document new_hj_entry;
@@ -423,7 +434,6 @@ void update_cf_history_attr(D4Attribute *global_attribute, const string &request
     string cf_hist_entry = get_cf_history_entry(request_url);
     BESDEBUG(MODULE, prolog << "cf_hist_entry: " << cf_hist_entry << endl);
 
-
     D4Attribute *history_attr = global_attribute->attributes()->find("history");
     if (!history_attr) {
         //if there is no source history attribute
@@ -440,7 +450,6 @@ void update_cf_history_attr(D4Attribute *global_attribute, const string &request
         if(!BESUtil::endsWith(cf_hist.str(),newline))
             cf_hist << endl;
         cf_hist << cf_hist_entry << endl;
-
         BESDEBUG(MODULE, prolog << "cf_hist: " << cf_hist.str() << endl);
 
         std::vector<std::string> cf_hist_vec;
