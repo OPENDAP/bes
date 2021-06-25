@@ -365,18 +365,19 @@ string get_hj_entry (const string &request_url)
  * @param new_entry_str
  * @return
  */
-string json_append_hj_entry(const string&  current_doc_str, const string& new_entry_str) {
-
-    Document new_hj_entry;
-    new_hj_entry.SetArray();
-    new_hj_entry.Parse(new_entry_str.c_str());
-
+string json_append_hj_entry(const string& current_doc_str, const string& new_entry_str) {
     Document hj_doc;
-    Document::AllocatorType &allocator = hj_doc.GetAllocator();
     hj_doc.SetArray();
-    hj_doc.Parse(current_doc_str.c_str());
+    Document::AllocatorType &allocator = hj_doc.GetAllocator();
 
-    hj_doc.PushBack(new_hj_entry, allocator);
+    Value new_hj_val(kObjectType);
+    new_hj_val.SetString(new_entry_str.c_str(), new_entry_str.size(), allocator);
+    hj_doc.PushBack(new_hj_val, allocator);
+
+    Value hj_array(kArrayType);
+    hj_array.SetArray();
+    hj_array.SetString(current_doc_str.c_str(), current_doc_str.size(),allocator);
+    hj_doc.PushBack(hj_array, allocator);
 
     // Stringify JSON
     StringBuffer buffer;
@@ -385,24 +386,26 @@ string json_append_hj_entry(const string&  current_doc_str, const string& new_en
     return buffer.GetString();
 }
 
-
 /**
- * @breif Updates/Creates a history_json child attribute in global_attribute.
+ * @breif Updates/Creates a history_json attribute in global_attribute.
  * @param global_attribute
  * @param request_url
  */
 void update_history_json_attr(D4Attribute *global_attribute, const string &request_url){
 
-    std::vector<std::string> hist_json_entry_vec = get_history_json_entry(request_url);
-    BESDEBUG(MODULE, prolog << "hist_json_entry_vec.size(): " << hist_json_entry_vec.size() << endl);
+    string hj_entry_str = get_hj_entry(request_url);
+    BESDEBUG(MODULE,prolog << "hj_entry: " << hj_entry_str << endl);
 
     D4Attribute *history_json_attr = global_attribute->attributes()->find("history_json");
     if (!history_json_attr) {
         // If there is no source history_json attribute then we make one from scratch
         // and add it to the global_attribute
         BESDEBUG(MODULE, prolog << "Adding history_json entry to global_attribute " << global_attribute->name() << endl);
+        string hj_array_str = "[" + hj_entry_str +"]";
+        vector<string> attr_vals;
+        attr_vals.push_back(hj_array_str);
         auto new_history_json = new D4Attribute("history_json", attr_str_c);
-        new_history_json->add_value_vector(hist_json_entry_vec);
+        new_history_json->add_value_vector(attr_vals);
         global_attribute->attributes()->add_attribute_nocopy(new_history_json);
     } else {
         // We found an existing history_jason attribute!
@@ -413,10 +416,7 @@ void update_history_json_attr(D4Attribute *global_attribute, const string &reque
         string history_json = *history_json_attr->value_begin();
         BESDEBUG(MODULE,prolog << "FOUND history_json: " << history_json << endl);
 
-        string hj_entry = get_hj_entry(request_url);
-        BESDEBUG(MODULE,prolog << "hj_entry: " << hj_entry << endl);
-
-        history_json = json_append_hj_entry(history_json, hj_entry);
+        history_json = json_append_hj_entry(history_json, hj_entry_str);
         BESDEBUG(MODULE,prolog << "NEW history_json: " << history_json << endl);
 
         // Now the we have the update history_json element, serialized to a string, we use it to
@@ -484,7 +484,7 @@ void updateHistoryAttribute(DMR *dmr, const string &ce)
     D4Attributes *root_attrs = root_grp->attributes();
     for (auto attrs = root_attrs->attribute_begin(); attrs != root_attrs->attribute_end(); ++attrs) {
         string name = (*attrs)->name();
-        BESDEBUG(MODULE, prolog << "Attribute name is "<<name <<endl);
+        BESDEBUG(MODULE, prolog << "Attribute name is "<< name << endl);
         if ((*attrs)->type() && BESUtil::endsWith(name, "_GLOBAL")) {
             // Yup! Add our entries...
 
