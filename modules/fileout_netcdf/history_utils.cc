@@ -124,7 +124,7 @@ string create_cf_history_txt(const string &request_url)
 
     ss << time_str << " " << "Hyrax" << " " << request_url << '\n';
     cf_history_entry = ss.str();
-    BESDEBUG(MODULE, prolog << "Adding cf_history_entry context. '" << cf_history_entry << "'" << endl);
+    BESDEBUG(MODULE, prolog << "New cf history entry: '" << cf_history_entry << "'" << endl);
     return cf_history_entry;
 }
 
@@ -283,6 +283,8 @@ string json_append_entry_to_array(const string& source_array_str, const string& 
  */
 void update_history_json_attr(D4Attribute *global_attribute, const string &request_url)
 {
+    BESDEBUG(MODULE,prolog << "Updating history_json entry for global DAP4 attribute: " << global_attribute->name() << endl);
+
     string hj_entry_str = get_history_json_entry(request_url);
     BESDEBUG(MODULE,prolog << "hj_entry_str: " << hj_entry_str << endl);
 
@@ -353,9 +355,10 @@ string append_cf_history_entry(string cf_history, string cf_history_entry){
  * @param request_url
  */
 void update_cf_history_attr(D4Attribute *global_attribute, const string &request_url){
+    BESDEBUG(MODULE,prolog << "Updating cf history entry for global DAP4 attribute: " << global_attribute->name() << endl);
 
     string cf_hist_entry = get_cf_history_entry(request_url);
-    BESDEBUG(MODULE, prolog << "cf_hist_entry: " << cf_hist_entry << endl);
+    BESDEBUG(MODULE, prolog << "New cf history entry: " << cf_hist_entry << endl);
     string cf_history;
     D4Attribute *history_attr = global_attribute->attributes()->find(CF_HISTORY_KEY);
     if (!history_attr) {
@@ -382,12 +385,20 @@ void update_cf_history_attr(D4Attribute *global_attribute, const string &request
  */
 void update_cf_history_attr(AttrTable *global_attr_tbl, const string &request_url) {
 
+    BESDEBUG(MODULE,prolog << "Updating cf history entry for global DAP2 attribute: " << global_attr_tbl->get_name() << endl);
+
     string cf_hist_entry = get_cf_history_entry(request_url);
+    BESDEBUG(MODULE,prolog << "New cf history entry: '" << cf_hist_entry << "'" <<endl);
 
     string cf_history = global_attr_tbl->get_attr(CF_HISTORY_KEY); // returns empty string if not found
+    BESDEBUG(MODULE,prolog << "Previous cf history: '" << cf_history << "'" << endl);
+
     cf_history = append_cf_history_entry(cf_history,cf_hist_entry);
+    BESDEBUG(MODULE,prolog << "Updated cf history: '" << cf_history << "'" << endl);
+
     global_attr_tbl->del_attr(CF_HISTORY_KEY, -1);
-    global_attr_tbl->append_attr(CF_HISTORY_KEY, "string", cf_history);
+    int attr_count = global_attr_tbl->append_attr(CF_HISTORY_KEY, "string", cf_history);
+    BESDEBUG(MODULE,prolog << "Found " << attr_count << " value(s) for the cf history attribute." << endl);
 }
 
 /**
@@ -397,10 +408,14 @@ void update_cf_history_attr(AttrTable *global_attr_tbl, const string &request_ur
  */
 void update_history_json_attr(AttrTable *global_attr_tbl, const string &request_url) {
 
+    BESDEBUG(MODULE,prolog << "Updating history_json entry for global DAP2 attribute: " << global_attr_tbl->get_name() << endl);
+
     string hj_entry_str = get_history_json_entry(request_url);
-    BESDEBUG(MODULE,prolog << "hj_entry_str: " << hj_entry_str << endl);
+    BESDEBUG(MODULE,prolog << "New history_json entry: " << hj_entry_str << endl);
 
     string history_json = global_attr_tbl->get_attr(HISTORY_JSON_KEY);
+    BESDEBUG(MODULE,prolog << "Previous history_json: " << history_json << endl);
+
     if (history_json.empty()) {
         //if there is no source history_json attribute
         BESDEBUG(MODULE, prolog << "Creating new history_json entry to global attribute: " << global_attr_tbl->get_name() << endl);
@@ -409,7 +424,10 @@ void update_history_json_attr(AttrTable *global_attr_tbl, const string &request_
         history_json = json_append_entry_to_array(history_json,hj_entry_str);
         global_attr_tbl->del_attr(HISTORY_JSON_KEY, -1);
     }
-    global_attr_tbl->append_attr(HISTORY_JSON_KEY, "string", history_json);
+    BESDEBUG(MODULE,prolog << "New history_json: " << history_json << endl);
+    int attr_count = global_attr_tbl->append_attr(HISTORY_JSON_KEY, "string", history_json);
+    BESDEBUG(MODULE,prolog << "Found " << attr_count << " value(s) for the history_json attribute." << endl);
+
 }
 
 
@@ -460,6 +478,8 @@ void updateHistoryAttributes(DDS *dds, const string &ce)
         if(!added_history){
             auto dap_global_at = globals.append_container("DAP_GLOBAL");
             dap_global_at->set_name("DAP_GLOBAL");
+            dap_global_at->set_is_global_attribute(true);
+
             update_cf_history_attr(dap_global_at,request_url);
             update_history_json_attr(dap_global_at,request_url);
             BESDEBUG(MODULE, prolog << "No top level AttributeTable name matched '*_GLOBAL'. "
