@@ -469,7 +469,7 @@ void FONcTransform::transform_dap2(ostream &strm)
         }
     }
 
-    updateHistoryAttribute(_dds, d_dhi->data[POST_CONSTRAINT]);
+    updateHistoryAttributes(_dds, d_dhi->data[POST_CONSTRAINT]);
 
     // Open the file for writing
     int stax;
@@ -847,7 +847,7 @@ void FONcTransform::transform_dap4_no_group()
        BESDEBUG("fonc", "FONcTransform::transform_dap4() - group name:  " << (*gi)->name() << endl);
 #endif
 
-    updateHistoryAttribute(_dmr, d_dhi->data[POST_CONSTRAINT]);
+    updateHistoryAttributes(_dmr, d_dhi->data[POST_CONSTRAINT]);
 
     // Open the file for writing
     int stax = -1;
@@ -994,7 +994,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
     int grp_id = -1;
     int stax = -1;
 
-    updateHistoryAttribute(_dmr, d_dhi->data[POST_CONSTRAINT]);
+    updateHistoryAttributes(_dmr, d_dhi->data[POST_CONSTRAINT]);
 
     if (is_root_grp == true) 
         grp_id = _ncid;

@@ -29,13 +29,10 @@
 #include <D4Attributes.h>
 
 // OLD
-void updateHistoryAttribute(libdap::DDS *dds, const string &ce);
-vector<std::string> get_history_json_entry (const std::string &request_url);
-void appendHistoryJson(std::vector<std::string> *pVector, std::vector<std::string> vector);
-
+void updateHistoryAttributes(libdap::DDS *dds, const string &ce);
 
 // NEW
-void updateHistoryAttribute(libdap::DMR *dmr, const std::string &ce);
+void updateHistoryAttributes(libdap::DMR *dmr, const std::string &ce);
 
 void update_cf_history_attr(libdap::D4Attribute *global_attribute, const std::string &request_url);
 void update_history_json_attr(libdap::D4Attribute *global_attribute, const std::string &request_url);
@@ -43,7 +40,7 @@ void update_history_json_attr(libdap::D4Attribute *global_attribute, const std::
 std::string create_cf_history_txt(const std::string &request_url);
 std::string get_cf_history_entry (const std::string &request_url);
 
-std::string get_hj_entry (const std::string &request_url);
+std::string get_history_json_entry (const std::string &request_url);
 
 std::string json_append_entry_to_array(const std::string &current_doc_str, const std::string &new_entry_str);
 #endif //HYRAX_GIT_HISTORY_UTILS_H
