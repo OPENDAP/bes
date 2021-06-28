@@ -3275,14 +3275,23 @@ void HDFCFUtil::map_eos2_one_object_attrs(libdap:: DAS &das,int32 file_id, int32
     return;
 }
 
+// Part of a large fix for attributes. Escaping the values of the attributes
+// may have been a bad idea. It breaks using JSON, for example. If this is a
+// bad idea - to turn of escaping - then we'll have to figure out how to store
+// 'serialized JSON' in attributes because it's being used in netcdf/hdf files.
+// If we stick with this, there's clearly a more performant solution - eliminate
+// the calls to this code.
+// jhrg 6/25/21
+#define ESCAPE_STRING_ATTRIBUTES 0
+
 string HDFCFUtil::escattr(string s)
 {
     const string printable = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~`!@#$%^&*()_-+={[}]|\\:;<,>.?/'\"\n\t\r";
     const string ESC = "\\";
+#if ESCAPE_STRING_ATTRIBUTES
     const string DOUBLE_ESC = ESC + ESC;
     const string QUOTE = "\"";
     const string ESCQUOTE = ESC + QUOTE;
-
 
     // escape \ with a second backslash
     size_t ind = 0;
@@ -3291,46 +3300,18 @@ string HDFCFUtil::escattr(string s)
         ind += DOUBLE_ESC.length();
     }
 
-    // Coverity complains the possiblity of using a negative number as an index. 
-    // But this will never happen. I will try to see if I can make coverity understand this.
-    ind = 0;
-    while ((ind = s.find_first_not_of(printable, ind)) != string::npos) {
-        s.replace(ind, 1, ESC + octstring(s[ind]));
-    }
-
-    // escape non-printing characters with octal escape
-#if 0
-    // Coverity complains the possiblity of using a negative number as an index. 
-    // Here is a potential fix.
-    ind = 0;
-    while ((ind = s.find_first_not_of(printable, ind)) != s.npos) {
-        if(ind >=0) // Make coverity happy,
-            s.replace(ind, 1, ESC + octstring(s[ind]));
-    }
-#endif 
-
-#if 0
-    // escape non-printing characters with octal escape
-    // Coverity complains the possiblity of using a negative number as an index. 
-    // The original code is fine, Here is another fix.
-   ind = 0;
-    size_t temp_ind = 0;
-    while ((temp_ind = s.find_first_not_of(printable, ind)) != s.npos) {
-        // Comment out the following line since it wastes the CPU operation.
-        //if(ind >=0) // Make coverity happy,
-        ind = temp_ind;
-        s.replace(ind, 1, ESC + octstring(s[ind]));
-        temp_ind = ind;
-    }
-#endif
-
-
     // escape " with backslash
     ind = 0;
     while ((ind = s.find(QUOTE, ind)) != string::npos) {
         //comment out the following line since it wastes the CPU operation.
         s.replace(ind, 1, ESCQUOTE);
         ind += ESCQUOTE.length();
+    }
+#endif
+
+    size_t ind = 0;
+    while ((ind = s.find_first_not_of(printable, ind)) != string::npos) {
+        s.replace(ind, 1, ESC + octstring(s[ind]));
     }
 
     return s;
