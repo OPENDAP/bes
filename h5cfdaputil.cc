@@ -40,10 +40,20 @@
 using namespace std;
 using namespace libdap;
 
+// Part of a large fix for attributes. Escaping the values of the attributes
+// may have been a bad idea. It breaks using JSON, for example. If this is a
+// bad idea - to turn of escaping - then we'll have to figure out how to store
+// 'serialized JSON' in attributes because it's being used in netcdf/hdf files.
+// If we stick with this, there's clearly a more performant solution - eliminate
+// the calls to this code.
+// jhrg 6/25/21
+#define ESCAPE_STRING_ATTRIBUTES 0
+
 string HDF5CFDAPUtil::escattr(string s)
 {
     const string printable = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~`!@#$%^&*()_-+={[}]|\\:;<,>.?/'\"\n\t\r";
     const string ESC = "\\";
+#if ESCAPE_STRING_ATTRIBUTES
     const string DOUBLE_ESC = ESC + ESC;
     const string QUOTE = "\"";
     const string ESCQUOTE = ESC + QUOTE;
@@ -55,18 +65,18 @@ string HDF5CFDAPUtil::escattr(string s)
         ind += DOUBLE_ESC.length();
     }
 
-    // escape non-printing characters with octal escape
-    ind = 0;
-    while ((ind = s.find_first_not_of(printable, ind)) != string::npos)
-        s.replace(ind, 1, ESC + octstring(s[ind]));
-
-
     // escape " with backslash
     ind = 0;
     while ((ind = s.find(QUOTE, ind)) != string::npos) {
         s.replace(ind, 1, ESCQUOTE);
         ind += ESCQUOTE.length();
     }
+#endif
+
+    // escape non-printing characters with octal escape
+    size_t ind = 0;
+    while ((ind = s.find_first_not_of(printable, ind)) != string::npos)
+        s.replace(ind, 1, ESC + octstring(s[ind]));
 
     return s;
 }
