@@ -36,6 +36,12 @@ client tools such as IDV, Panoply, GrADS, Ferret, NCL, MATLAB, and IDL.
  A comprehensive list of the improvements since the 2.0.0 release is
 available on the next section.
 
+What's new for Hyrax 1.16.4
+CF option:
+1. Bug fix: Ensure the path inside the coordinates attribute for TROPOMI AI product to be flattened. 
+2. Update the handling of escaping special characters due to NASA request.
+   The '\' and the '"' are no longer escaped. 
+
 What's new for Hyrax 1.16.3
 Default option:
 1. Significantly enhance the handling of netCDF-4 like HDF5 files for the DAP4(DMR) response.
