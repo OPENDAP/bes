@@ -87,7 +87,7 @@ extern "C" {
 #endif       /* HAVE_READLINE_HISTORY */
 
 
-#define SIZE_COMMUNICATION_BUFFER 4096*4096
+#define SIZE_COMMUNICATION_BUFFER (4096*4096)
 
 #include "BESXMLInterface.h"
 #include "BESStopWatch.h"
@@ -102,7 +102,7 @@ StandAloneClient::~StandAloneClient()
 	if (_strmCreated && _strm) {
 		_strm->flush();
 		delete _strm;
-		_strm = 0;
+		_strm = nullptr;
 	}
 	else if (_strm) {
 		_strm->flush();
@@ -153,7 +153,7 @@ void StandAloneClient::executeClientCommand(const string &cmd)
 {
 	string suppress = "suppress";
 	if (cmd.compare(0, suppress.length(), suppress) == 0) {
-		setOutput( NULL, false);
+		setOutput(nullptr, false);
 		return;
 	}
 
@@ -167,8 +167,8 @@ void StandAloneClient::executeClientCommand(const string &cmd)
 		else {
 			// subcmd is the name of the file - then semicolon
 			string file = subcmd.substr(0, subcmd.length() - 1);
-			ofstream *fstrm = new ofstream(file.c_str(), ios::app);
-			if (fstrm && !(*fstrm)) {
+			auto *fstrm = new ofstream(file.c_str(), ios::app);
+			if (!(*fstrm)) {
 				delete fstrm;
 				cerr << "Unable to set client output to file " << file << endl;
 			}
@@ -219,7 +219,7 @@ void StandAloneClient::executeCommand(const string & cmd, int repeat)
 	else {
 		if (repeat < 1) repeat = 1;
 		for (int i = 0; i < repeat; i++) {
-			ostringstream *show_stream = 0;
+			ostringstream *show_stream = nullptr;
 			if (CmdTranslation::is_show()) {
 				show_stream = new ostringstream;
 			}
@@ -229,7 +229,7 @@ void StandAloneClient::executeCommand(const string & cmd, int repeat)
 	        BESStopWatch sw;
 	        if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("StandAloneClient::executeCommand");
 
-			BESXMLInterface *interface = 0;
+			BESXMLInterface *interface = nullptr;
 			if (show_stream) {
 				interface = new BESXMLInterface(cmd, show_stream);
 			}
@@ -257,24 +257,23 @@ void StandAloneClient::executeCommand(const string & cmd, int repeat)
                     cerr << "Status not OK, dispatcher returned value " << status << endl;
                     exit(1);
                 }
-                    break;
+
                 case BES_INTERNAL_ERROR:
                 case BES_SYNTAX_USER_ERROR:
                 case BES_FORBIDDEN_ERROR:
                 case BES_NOT_FOUND_ERROR:
-
                 default:
                     break;
                 }
             }
 
 			delete interface;
-			interface = 0;
+			interface = nullptr;
 
 			if (show_stream) {
 				*(_strm) << show_stream->str() << endl;
 				delete show_stream;
-				show_stream = 0;
+				show_stream = nullptr;
 			}
 
 			_strm->flush();
@@ -377,7 +376,7 @@ void StandAloneClient::interact()
 
 	bool done = false;
 	while (!done) {
-		string message = "";
+		string message;
 		size_t len = this->readLine(message);
 		if ( /*len == -1 || */message == "exit" || message == "exit;") {
 			done = true;
@@ -388,7 +387,7 @@ void StandAloneClient::interact()
 		else if (message.length() > 6 && message.substr(0, 6) == "client") {
 			this->executeCommand(message, 1);
 		}
-		else if (len != 0 && message != "") {
+		else if (len != 0 && !message.empty()) {
 			CmdTranslation::set_show(false);
 			try {
 				string doc = CmdTranslation::translate(message);
@@ -415,7 +414,7 @@ void StandAloneClient::interact()
 size_t StandAloneClient::readLine(string & msg)
 {
 	size_t len = 0;
-	char *buf = (char *) NULL;
+	char *buf = (char *) nullptr;
 	buf = ::readline("BESClient> ");
 	if (buf && *buf) {
 		len = strlen(buf);
@@ -443,7 +442,7 @@ size_t StandAloneClient::readLine(string & msg)
 	}
 	if (buf) {
 		free(buf);
-		buf = (char *) NULL;
+		buf = (char *) nullptr;
 	}
 	return len;
 }
