@@ -61,7 +61,7 @@
 using namespace std;
 using namespace rapidjson;
 
-#define NEW_LINE '\n'
+#define NEW_LINE ((char)0x0a)
 #define CF_HISTORY_KEY "history"
 #define CF_HISTORY_CONTEXT "cf_history_entry"
 #define HISTORY_JSON_KEY "history_json"
@@ -333,20 +333,18 @@ void update_history_json_attr(D4Attribute *global_attribute, const string &reque
  */
 string append_cf_history_entry(string cf_history, string cf_history_entry){
 
-    if(cf_history.empty())
-        return cf_history_entry;
-
-    stringstream cf_hist;
-
-    cf_hist << cf_history;
-    if(cf_history.back() != NEW_LINE)
-        cf_hist << NEW_LINE;
-
-    cf_hist << cf_history_entry;
+    stringstream cf_hist_new;
+    if(!cf_history.empty()){
+        cf_hist_new << cf_history;
+        if(cf_history.back() != NEW_LINE)
+            cf_hist_new << NEW_LINE;
+    }
+    cf_hist_new << cf_history_entry;
     if(cf_history_entry.back() != NEW_LINE)
-        cf_hist << NEW_LINE;
+        cf_hist_new << NEW_LINE;
 
-    BESDEBUG(MODULE, prolog << "cf_hist: '" << cf_hist.str() << "'" << endl);
+    BESDEBUG(MODULE, prolog << "Updated cf history: '" << cf_hist_new.str() << "'" << endl);
+    return cf_hist_new.str();
 }
 
 /**
