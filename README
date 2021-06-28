@@ -1,3 +1,9 @@
+What's new for Hyrax 1.16.4
+----------------------------
+1. Update the handling of escaping special characters due to NASA request.
+   The '\' and the '"' are no longer escaped. 
+
+
 What's new for Hyrax 1.16.3
 ----------------------------
 CF option:
