@@ -7,7 +7,7 @@ Attributes {
         String DODS_Name "UWind";
         Byte b 128;
         Int32 i 32000;
-        String WOA01 "\"http://localhost/junk\"";
+        String WOA01 "http://localhost/junk";
     }
     v {
         String units "meter per second";
