@@ -5,7 +5,7 @@ Attributes {
         Int32 dsp_ModificationDate 20070409;
         Int32 dsp_ModificationTime 120728;
         Int32 dsp_SubImageFlag 64;
-        String dsp_SubImageTitle "\\\\NLC Postage Stamp";
+        String dsp_SubImageTitle "\\NLC Postage Stamp";
         Int32 dsp_StartDate 20060105;
         Float32 dsp_StartTime 132305.1562;
         Int32 dsp_SizeX 8192;
@@ -112,7 +112,7 @@ Attributes {
 \004PATHNLC  45d coeffs used (2) =    1.481   0.968   0.073   1.200   0.000
 \004PATHNLC  45d coeffs used (3) =    0.000   0.000   0.000   0.000   0.000
 \004PATHNLC  GETOZONE I     0.0900    0.0000
-\001PATHBIN May 23 15:08:36 2006 PATHBIN RESOLVE=4 BINMODEL=1     ASC=A GRID=(16, 16) IN=/i1/gacsst/gacsst//06005132305.sst@ingest@sst NLC=1      DATADAY=2006006 DAYSTR=06005100127 DAYEND=06006105736     OUT=/i1/gacsst/gacpst//06005132305.b04p3pfrt@pst\\NLC Postage Stamp     ALLB=4 SEAMLON=-180.0     LAND=/i1/gacsst/gacmask//pfv50-land.b04bit-180
+\001PATHBIN May 23 15:08:36 2006 PATHBIN RESOLVE=4 BINMODEL=1     ASC=A GRID=(16, 16) IN=/i1/gacsst/gacsst//06005132305.sst@ingest@sst NLC=1      DATADAY=2006006 DAYSTR=06005100127 DAYEND=06006105736     OUT=/i1/gacsst/gacpst//06005132305.b04p3pfrt@pst\NLC Postage Stamp     ALLB=4 SEAMLON=-180.0     LAND=/i1/gacsst/gacmask//pfv50-land.b04bit-180
 \001PATHTIME May 23 15:08:55 2006 PATHTIME WQ=B ASC=A IN=/tmp/06005115441-2006005-3.filespfrt OUT=/i1/gacsst/gaclpst//06005115441-2006005.b04o3pfrt@pst@bin_number
 \002PATHTIME /i1/gacsst/gacpst//06005124937-2006005.b04p3pfrt@pst@bin_number
 \002PATHTIME /i1/gacsst/gacpst//06005132305-2006005.b04p3pfrt@pst@bin_number

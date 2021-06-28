@@ -8,6 +8,24 @@ AC_CONFIG_MACRO_DIR([conf])
 
 AM_INIT_AUTOMAKE([1.10 tar-pax])
 
+dnl add c++11 flag, copied from bes. 
+cxx_debug_flags="-g -O2"
+CXX11_FLAG=""
+
+CXX_FLAGS_CHECK([--std=c++11], [CXX11_FLAG=--std=c++11], [])
+
+AS_IF([test -z "$CXX11_FLAG"],
+      [CXX_FLAGS_CHECK([--std=c++0x], [CXX11_FLAG=--std=c++0x], [])])
+
+AS_IF([test -z "$CXX11_FLAG"],
+      [AC_MSG_ERROR([Not using C++-11 (or C++0x)])],
+      [AC_MSG_NOTICE([Using $CXX11_FLAG for C++-11 support])
+       cxx_debug_flags="$cxx_debug_flags --pedantic $CXX11_FLAG"])
+
+AC_SUBST(CXX11_FLAG)
+
+AS_IF([test -n "$cxx_debug_flags"], [CXXFLAGS="$cxx_debug_flags"])
+
 AM_CONDITIONAL([DAP_BUILTIN_MODULES], [false])
 
 # The handler is a shared object library, so we don't normally need
