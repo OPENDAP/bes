@@ -80,6 +80,7 @@ variables:
 			"s_uint8\n",
 			"ui16\n",
 			"ui8" ;
-		:history = "removed date-timex t_wrong_fvalue_type_all_classic.h5" ;
-		:history_json = "{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"t_wrong_fvalue_type_all_classic.h5\"}]}" ;
+		:history = "removed date-timex t_wrong_fvalue_type_all_classic.h5\n",
+			"" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"t_wrong_fvalue_type_all_classic.h5\"}]}]" ;
 }

@@ -31,7 +31,8 @@ variables:
 // global attributes:
 		:base_time = "88- 10-00:00:00" ;
 		:title = " FNOC UV wind components from 1988- 10 to 1988- 13." ;
-		:history = "removed date-timex fnoc1_nan_vector.nc" ;
-		:history_json = "{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"fnoc1_nan_vector.nc\"}]}" ;
+		:history = "removed date-timex fnoc1_nan_vector.nc\n",
+			"" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"fnoc1_nan_vector.nc\"}]}]" ;
 		:DODS_EXTRA.Unlimited_Dimension = "time_a" ;
 }
