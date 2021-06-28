@@ -61,7 +61,8 @@
 #include "NCRequestHandler.h"
 #include "nc_util.h"
 
-#define ATTR_STRING_QUOTE_FIX
+#define ATTR_STRING_QUOTE_FIX 1
+#define STOP_ESCAPING_STRING_ATTRS 1
 
 #define NETCDF_VERSION 4
 
@@ -133,6 +134,8 @@ static string print_attr(nc_type type, int loc, void *vals)
 #ifndef ATTR_STRING_QUOTE_FIX
         rep << "\"" << escattr(static_cast<const char*>(vals)) << "\"";
         return rep.str();
+#elif STOP_ESCAPING_STRING_ATTRS
+        return string(static_cast<const char*>(vals));
 #else
         return escattr(static_cast<const char*>(vals));
 #endif

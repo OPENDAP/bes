@@ -17,7 +17,7 @@ Attributes {
     f {
     }
     d {
-        String c "\200\177AZ$&";
+        String c "€AZ$&";
     }
     cr {
         Int32 string_length 2;
@@ -302,7 +302,7 @@ Attributes {
     i444 {
     }
     NC_GLOBAL {
-        String Gc "\200";
+        String Gc "€";
         Byte Gb 128, 127;
         Int16 Gs -32768, 32767, 32767;
         Int32 Gi -2147483648, 2147483647, -2147483648, 2147483647;

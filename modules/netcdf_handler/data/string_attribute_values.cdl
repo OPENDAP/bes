@@ -1,0 +1,33 @@
+// string_attribute_values.cdl
+
+// To make a netcdf3 file, use ncgen -o string_attribute_values.nc string_attribute_values.cdl
+// To make a netcdf4 enhanced model, use ncgen -k3 -o string_attribute_values.nc4 string_attribute_values.cdl
+// See 'man ncgen' for more info (i.e., https://linux.die.net/man/1/ncgen).
+// NB: it really is -k3 and not -k4 for a netcdf4 enhanced model. jhrg 6/25/21
+
+netcdf string_attribute_values {
+     
+     dimensions:
+     lat = 6, lon = 5;
+     
+     variables:
+       int     lat(lat), lon(lon);
+
+       lat:units = "degrees_north";
+       lon:units = "degrees_east";
+
+       :title = "Hyrax/netcdf handler test file for string attribute values";
+       :version = 1.0;
+       :description = "Test string attribute values in a data handler.";
+
+        // '\\' ---> results in a single \ in the netcdf3/4 file. Verified using
+        // 'strings <file>'. jhrg 6/25/21
+       :test_backslash = "Escape a URL: http:\\/\\/machine\\/host\\/file.txt";
+       :test_embedded_dquote = "Escape a double quote \\\"json makes me happy\\\".";
+       :test_null_value = "";
+            
+     data:
+       lat   = 0, 10, 20, 30, 40, 50;
+       lon   = -140, -118, -96, -84, -52;
+}
+

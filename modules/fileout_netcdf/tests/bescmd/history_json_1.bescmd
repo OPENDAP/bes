@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="[thread:http-nio-8080-exec-6-37][bes_client:/-0]">
+  <bes:setContext name="bes_timeout">600</bes:setContext>
+  <bes:setContext name="history_json_entry">{"$schema":"https:\/\/harmony.earthdata.nasa.gov\/schemas\/history\/0.1.0\/history-0.1.0.json","date_time":"2021-06-25T13:28:48.951+0000","program":"hyrax","version":"@HyraxVersion@","parameters":[{"request_url":"http:\/\/localhost:8080\/opendap\/hj\/coads_climatology.nc.dap.nc4?MOOOOOOOOOOWOOOOOOOOOOOO"}]}</bes:setContext>
+  <bes:setContext name="cf_history_entry">2021-06-25 13:28:48 GMT hyrax-@HyraxVersion@ http://localhost:8080/opendap/hj/coads_climatology.nc.dap.nc4?THIRD_GEN</bes:setContext>
+  <bes:setContext name="dap_explicit_containers">no</bes:setContext>
+  <bes:setContext name="errors">xml</bes:setContext>
+  <bes:setContext name="olfsLog">0:0:0:0:0:0:0:1|&amp;|curl/7.64.1|&amp;|-|&amp;|-|&amp;|1624627728945|&amp;|10|&amp;|HTTP-GET|&amp;|/opendap/hyrax/hj/coads_climatology.nc.dap.nc4|&amp;|-</bes:setContext>
+  <bes:setContext name="max_response_size">0</bes:setContext>
+  <bes:setContext name="uid">not_logged_in</bes:setContext>
+
+  <bes:setContainer name="catalogContainer" space="catalog">/hj/coads_climatology.nc</bes:setContainer>
+
+<!--
+  <bes:setContainer name="catalogContainer" space="catalog">/hj/foo.nc4</bes:setContainer>
+  <bes:setContainer name="catalogContainer" space="catalog">/hj/coads_climatology.nc</bes:setContainer>
+  <bes:setContainer name="catalogContainer" space="catalog">/hj/foo.nc4</bes:setContainer>
+-->
+
+  <bes:define name="d1" space="default">
+    <bes:container name="catalogContainer" />
+  </bes:define>
+  <bes:get type="dap" definition="d1" returnAs="netcdf-4" />
+</bes:request>

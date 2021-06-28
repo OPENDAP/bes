@@ -31,10 +31,12 @@ AT_BESCMD_RESPONSE_TEST([nc/fnoc1.nc.dmr.bescmd])
 # AT_BESCMD_DAP4DATA_RESPONSE_TEST
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([nc/fnoc1.nc.dap.bescmd])
 
-AT_BESCMD_RESPONSE_TEST([nc/test.nc.dmr.bescmd])
-AT_BESCMD_RESPONSE_TEST([nc/test.nc.dmr_1.bescmd])
+# Removed (*) tests for the netcdf-str-attr branch to see the more complete
+# ramifications of the changes to attribute escaping. jhrg 6/25/21
+# * AT_BESCMD_RESPONSE_TEST([nc/test.nc.dmr.bescmd])
+# * AT_BESCMD_RESPONSE_TEST([nc/test.nc.dmr_1.bescmd])
 # AT_BESCMD_DAP4DATA_RESPONSE_TEST([nc/test.nc.dap.bescmd])
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([nc/test.nc.dap.bescmd])
+# * AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([nc/test.nc.dap.bescmd])
 
 # DAP2 and 4 tests for zero-length arrays
 
@@ -71,4 +73,6 @@ AT_BESCMD_MDS_RESPONSE_TEST([nc/fnoc1.nc.mds.dds.bescmd])
 AT_BESCMD_MDS_BINARYDATA_RESPONSE_TEST([nc/fnoc1.nc.mds.dods.bescmd])
 AT_BESCMD_MDS_BINARYDATA_RESPONSE_TEST([nc/fnoc1.nc.mds.function.dods.bescmd])
 
+AT_BESCMD_RESPONSE_TEST([nc/string_attribute_values.nc.0.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc/string_attribute_values.nc.1.bescmd])
 
