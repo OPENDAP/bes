@@ -1441,4 +1441,8 @@ variables:
 	short mfp920504a.data_record_32.MPAR.e_vnpnh(dim478) ;
 	short mfp920504a.data_record_32.MPAR.vnpe(dim479) ;
 	short mfp920504a.data_record_32.MPAR.e_vnpe(dim480) ;
+
+// global attributes:
+		:history = "removed date-timex cedar.dods\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"cedar.dods\"}]}]" ;
 }

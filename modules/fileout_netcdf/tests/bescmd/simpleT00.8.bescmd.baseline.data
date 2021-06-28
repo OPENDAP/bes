@@ -10,6 +10,10 @@ variables:
 	float f32 ;
 	double f64 ;
 	char str(str_len) ;
+
+// global attributes:
+		:history = "removed date-timex simpleT00.dods\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"simpleT00.dods\"}]}]" ;
 data:
 
  byte = 28 ;

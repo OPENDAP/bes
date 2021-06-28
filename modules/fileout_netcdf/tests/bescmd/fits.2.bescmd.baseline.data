@@ -1188,6 +1188,11 @@ variables:
 	char c.HDU_2.key_121.value(c.HDU_2.key_121.value_len) ;
 	char c.HDU_2.key_121.comment(c.HDU_2.key_121.comment_len) ;
 	short c.HDU_2.HDU_2_IMAGE(c.HDU_2.NAXIS0) ;
+
+// global attributes:
+		:history = "removed date-timex fits.dods\n",
+			"" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"fits.dods\"}]}]" ;
 data:
 
  c.HDU_1.key_1.name = "SIMPLE" ;

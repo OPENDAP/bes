@@ -4,6 +4,11 @@ dimensions:
 	j = 3 ;
 variables:
 	int gstruct.shot(i, j) ;
+
+// global attributes:
+		:history = "removed date-timex gridT.dods?gstruct.shot.shot\n",
+			"" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"gridT.dods?gstruct.shot.shot\"}]}]" ;
 data:
 
  gstruct.shot =

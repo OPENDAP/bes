@@ -30,7 +30,7 @@
             <Value>32000</Value>
         </Attribute>
         <Attribute name="WOA01" type="String">
-            <Value>\&quot;http://localhost/junk\&quot;</Value>
+            <Value>&quot;http://localhost/junk&quot;</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
             removed checksum

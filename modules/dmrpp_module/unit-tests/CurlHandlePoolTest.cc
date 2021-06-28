@@ -61,7 +61,6 @@
 
 using namespace std;
 
-// FIXME Reset these to false before merging this code to master. jhrg 9/25/20
 static bool debug = false;
 static bool bes_debug = false;
 

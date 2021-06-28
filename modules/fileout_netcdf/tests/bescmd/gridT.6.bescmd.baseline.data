@@ -3,6 +3,11 @@ dimensions:
 	j = 3 ;
 variables:
 	float j(j) ;
+
+// global attributes:
+		:history = "removed date-timex gridT.dods?gstruct.shot.j\n",
+			"" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"gridT.dods?gstruct.shot.j\"}]}]" ;
 data:
 
  j = 3.3, 6.6, 9.9 ;

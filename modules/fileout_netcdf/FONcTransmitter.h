@@ -60,11 +60,8 @@ public:
 	FONcTransmitter();
 	virtual ~FONcTransmitter() {}
 
-	static void send_data(BESResponseObject *obj, BESDataHandlerInterface &dhi);
+	static void send_dap2_data(BESResponseObject *obj, BESDataHandlerInterface &dhi);
 	static void send_dap4_data(BESResponseObject *obj, BESDataHandlerInterface &dhi);
 };
-
-void updateHistoryAttribute(DDS *dds, const string &ce);
-void updateHistoryAttribute(DMR *dmr, const string &ce);
 
 #endif // A_FONcTransmitter_h

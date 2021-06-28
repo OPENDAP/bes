@@ -13,7 +13,7 @@ ACLOCAL_AMFLAGS = -I conf
 M_NAME=fileout_netcdf
 M_VER=1.5.1
 
-AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(NC_CPPFLAGS) $(DAP_CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/rapidjson $(NC_CPPFLAGS) $(DAP_CFLAGS)
 LIBADD = $(NC_LDFLAGS) $(NC_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
@@ -22,9 +22,7 @@ AM_CXXFLAGS=
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
-SUBDIRS = . data/build_test_data tests 
-# I'm switching from the older tests in 'unit-tests' to the newer ones in 'tests'
-# jhrg 6/2/17 DIST_SUBDIRS = data/build_test_data tests unit-tests 
+SUBDIRS = . data/build_test_data unit-tests tests
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libfonc_module.la
@@ -39,14 +37,14 @@ FONC_SRC = FONcTransform.cc FONcTransmitter.cc FONcRequestHandler.cc	\
 	FONcFloat.cc FONcDouble.cc FONcStructure.cc FONcArray.cc	\
 	FONcGrid.cc FONcSequence.cc FONcByte.cc FONcBaseType.cc		\
 	FONcDim.cc FONcMap.cc FONcAttributes.cc FONcUShort.cc FONcUInt.cc	\
-	FONcUByte.cc FONcInt64.cc FONcUInt64.cc FONcInt8.cc
+	FONcUByte.cc FONcInt64.cc FONcUInt64.cc FONcInt8.cc history_utils.cc
 
 FONC_HDR = FONcTransform.h FONcTransmitter.h FONcRequestHandler.h	\
 	FONcModule.h FONcUtils.h FONcStr.h FONcShort.h FONcInt.h	\
 	FONcFloat.h FONcDouble.h FONcStructure.h FONcArray.h		\
 	FONcGrid.h FONcSequence.h FONcByte.h FONcBaseType.h		\
 	FONcDim.h FONcMap.h FONcAttributes.h FONcUShort.h FONcUInt.h	\
-	FONcUByte.h FONcInt64.h FONcUInt64.h FONcInt8.h
+	FONcUByte.h FONcInt64.h FONcUInt64.h FONcInt8.h history_utils.h
 
 EXTRA_DIST = data fonc.conf.in
 

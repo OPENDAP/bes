@@ -27,6 +27,10 @@ variables:
 	float f32_array(f32_dim1) ;
 	double f64_array(f64_dim1, f64_dim2, f64_dim3) ;
 	char str_array(str_dim1, str_dim2, str_dim3, str_array_len) ;
+
+// global attributes:
+		:history = "removed date-timex arrayT.dods\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"arrayT.dods\"}]}]" ;
 data:
 
  byte_array =

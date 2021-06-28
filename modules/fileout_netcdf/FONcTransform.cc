@@ -54,6 +54,7 @@
 #include "FONcBaseType.h"
 #include "FONcAttributes.h"
 #include "FONcTransmitter.h"
+#include "history_utils.h"
 
 #include <DDS.h>
 #include <DMR.h>
@@ -359,7 +360,7 @@ void FONcTransform::transform()
  * particular netcdf type. Also write out any global variables stored at the
  * top level of the DataDDS.
  */
-void FONcTransform::transform(ostream &strm)
+void FONcTransform::transform_dap2(ostream &strm)
 {
 #if 0
     BESDapResponseBuilder responseBuilder;
@@ -468,7 +469,7 @@ void FONcTransform::transform(ostream &strm)
         }
     }
 
-    updateHistoryAttribute(_dds, d_dhi->data[POST_CONSTRAINT]);
+    updateHistoryAttributes(_dds, d_dhi->data[POST_CONSTRAINT]);
 
     // Open the file for writing
     int stax;
@@ -800,14 +801,15 @@ void FONcTransform::transform_dap4()
     return;
 }
 
-// Transform the DMR to a netCDF-4 file when there are no DAP4 groups.
-// This routine is similar to transform() that handles DAP2 objects.  However, DAP4 routines are needed. 
-// So still keep a separate function. May combine this function with the transform()  in the future.
+/**
+ * @brief Transform the DMR to a netCDF-4 file when there are no DAP4 groups.
+ * This routine is similar to transform() that handles DAP2 objects.  However, DAP4 routines are needed.
+ * So still keep a separate function. May combine this function with the transform()  in the future.
+ */
 void FONcTransform::transform_dap4_no_group()
 {
 
     D4Group *root_grp = _dmr->root();
-
 #if !NDEBUG
     D4Dimensions *root_dims = root_grp->dims();
     for(D4Dimensions::D4DimensionsIter di = root_dims->dim_begin(), de = root_dims->dim_end(); di != de; ++di) {
@@ -845,7 +847,7 @@ void FONcTransform::transform_dap4_no_group()
        BESDEBUG("fonc", "FONcTransform::transform_dap4() - group name:  " << (*gi)->name() << endl);
 #endif
 
-    updateHistoryAttribute(_dmr, d_dhi->data[POST_CONSTRAINT]);
+    updateHistoryAttributes(_dmr, d_dhi->data[POST_CONSTRAINT]);
 
     // Open the file for writing
     int stax = -1;
@@ -974,7 +976,14 @@ void FONcTransform::transform_dap4_group(D4Group *grp,
     return;
 }
 
-// The internal routine to transform DMR to netCDF-4 when there are gorups.
+/**
+ * @ brief The internal routine to transform DMR to netCDF-4 when there are groups.
+ * @param grp
+ * @param is_root_grp
+ * @param par_grp_id
+ * @param fdimname_to_id
+ * @param rds_nums
+ */
 void FONcTransform::transform_dap4_group_internal(D4Group *grp,
                                                   bool is_root_grp,
                                                   int par_grp_id, map<string, int> &fdimname_to_id,
@@ -985,7 +994,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
     int grp_id = -1;
     int stax = -1;
 
-    updateHistoryAttribute(_dmr, d_dhi->data[POST_CONSTRAINT]);
+    updateHistoryAttributes(_dmr, d_dhi->data[POST_CONSTRAINT]);
 
     if (is_root_grp == true) 
         grp_id = _ncid;

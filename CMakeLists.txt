@@ -919,6 +919,8 @@ add_executable(bes
     modules/fileout_netcdf/FONcTransmitter.h
     modules/fileout_netcdf/FONcUtils.cc
     modules/fileout_netcdf/FONcUtils.h
+        modules/fileout_netcdf/unit-tests/HistoryUtilsTest.cc
+    modules/fileout_netcdf/unit-tests/test_config.h
 
     modules/fits_handler/BESAutoPtr.h
     modules/fits_handler/fits_read_attributes.cc
@@ -2086,4 +2088,4 @@ add_executable(bes
     xmlcommand/XMLSetContextsCommand.h
 
     standalone/besstandalone.cc
-)
+        modules/fileout_netcdf/history_utils.cc modules/fileout_netcdf/history_utils.h)
