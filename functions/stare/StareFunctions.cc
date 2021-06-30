@@ -322,6 +322,7 @@ void StareSubsetArrayFunction::build_masked_data(Array *dependent_var, const vec
  * @param pathname The dataset pathname
  * @param token Optional extension to the main part of the file name (default '_stare.nc').
  * @return The pathname to the matching sidecar file.
+ * @todo this is not used - see teh code in GeoFile. jhrg 6/30/21
  */
 string
 get_sidecar_file_pathname(const string &pathname, const string &token)
@@ -546,6 +547,18 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
         throw BESSyntaxUserError(oss.str(), __FILE__, __LINE__);
     }
 
+    BaseType *dependent_var = args->get_rvalue(0)->value(dmr);
+    BaseType *raw_stare_indices = args->get_rvalue(1)->value(dmr);
+
+    // Read the stare indices for the dependent var from the sidecar file.
+    vector<dods_uint64> dep_var_stare_indices;
+    get_sidecar_uint64_values(dmr.filename(), dependent_var->name(), dep_var_stare_indices);
+
+    // Put the stare indices passed into the function into a vector<>
+    vector<dods_uint64> target_s_indices;
+    read_stare_indices_from_function_argument(raw_stare_indices, target_s_indices);
+
+#if 0
     //Find the filename from the dmr
     string fullPath = get_sidecar_file_pathname(dmr.filename(), stare_sidecar_suffix);
 
@@ -559,11 +572,12 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
     // TODO: We can dump the values in 'stare_indices' here
     vector<dods_uint64> target_s_indices;
     read_stare_indices_from_function_argument(raw_stare_indices, target_s_indices);
+#endif
 
-    vector<dods_int32> dataset_x_coords;
-    get_sidecar_int32_values(fullPath, "X", dataset_x_coords);
-    vector<dods_int32> dataset_y_coords;
-    get_sidecar_int32_values(fullPath, "Y", dataset_y_coords);
+    vector<dods_uint32> dataset_x_coords;
+    get_sidecar_int32_values(dmr.filename(), "X", dataset_x_coords);
+    vector<dods_uint32> dataset_y_coords;
+    get_sidecar_int32_values(dmr.filename(), "Y", dataset_y_coords);
 
     unique_ptr <stare_matches> subset = stare_subset_helper(target_s_indices, dep_var_stare_indices, dataset_x_coords, dataset_y_coords);
 
