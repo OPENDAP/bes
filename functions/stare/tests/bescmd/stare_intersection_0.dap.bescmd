@@ -19,7 +19,7 @@
 
       <!-- dap4constraint>Solar_Zenith</dap4constraint -->
 
-      <bes:dap4function>stare_intersection(Solar_Zenith, $UInt64(3:4015281913904386217, 3440012343008821258, 3526529227274484265))</bes:dap4function>
+      <bes:dap4function>stare_intersection(/Solar_Zenith, $UInt64(3:4015281913904386217, 3440012343008821258, 3526529227274484265))</bes:dap4function>
     </bes:container>
   </bes:define>
   

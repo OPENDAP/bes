@@ -51,7 +51,14 @@ DR.UseTestTypes=true
 DR.UseSeriesValues=true
 
 # Where to find stare sidecar files - with the data
+# Not currently used. jhrg 6/30/21
 FUNCTIONS.stareStoragePath = @abs_top_srcdir@/functions/stare/data
 
 # The sidecar file suffix
-FUNCTIONS.stareSidecarSuffix = _stare_res
+# Not currently used. jhrg 6/30/21
+FUNCTIONS.stareSidecarSuffix = _stare.nc
+
+# This is needed for the tests to pass. jhrg 6/30/21
+H5.EnableCF=true
+H4.EnableCF=true
+

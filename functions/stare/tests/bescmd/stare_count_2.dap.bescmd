@@ -8,7 +8,10 @@
   
   <bes:define name="d1" space="default">
     <bes:container name="c">
-      <!-- 3 * 21 sids = 63 sids -->
+      <!-- 3 * 21 sids = 63 sids; NB: the last sid does not match one of the
+           dataset sids (because I didn't copy the last digit, but that makes
+           for a better test. NB: There are level 9 and 10 indices straight
+           from the sidecar file (except for the last one). -->
       <bes:dap4function>stare_count(Solar_Zenith, $UInt64(0:4015281913904386217, 4015310654433098569, 4015291327038445353,
                                                         4015285975857013417, 4015284527751034857, 4015392231813720073,
                                                         4015396865818895721, 4015413097917532649, 4015414608566121673,

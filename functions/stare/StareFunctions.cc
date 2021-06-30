@@ -176,29 +176,30 @@ target_in_dataset(const vector<dods_uint64> &target_indices, const vector<dods_u
 /**
  * @brief How many of the dataset's STARE indices overlap the target STARE indices?
  *
- * This method should return the number of indices of the dataset's spatial coverage
- * that overlap the spatial coverage passed to the server as defined by the target
- * STARE indices.
+ * This method should return the number of indices from the target set
+ * that overlap the of the dataset's spatial coverage.
+ *
+ * @todo Currently does not use the coverage but the larger index set.
  *
  * @param target_indices - stare values from a constraint expression
  * @param dataset_indices - stare values being compared, retrieved from the sidecar file. These
  * are the index values that describe the coverage of the dataset.
- * @param all_target_matches If true this function counts every target index that
- * overlaps every dataset index. The default counts 1 for each dataset index that matches _any_
- * target index.
- * @return The number of indices common in both the target and dataset.
+ * @param all_dataset_matches If true this function counts every dataset index that
+ * overlaps every target index. The default counts 1 for each target index that matches _any_
+ * dataset index.
+ * @return The number of target indices in the dataset.
  */
 unsigned int
-count(const vector<dods_uint64> &target_indices, const vector<dods_uint64> &dataset_indices, bool all_target_matches /*= false*/) {
+count(const vector<dods_uint64> &target_indices, const vector<dods_uint64> &dataset_indices, bool all_dataset_matches /*= false*/) {
     unsigned int counter = 0;
-    for (const dods_uint64 &i : dataset_indices) {
-        for (const dods_uint64 &j : target_indices)
+    for (const dods_uint64 &i : target_indices) {
+        for (const dods_uint64 &j : dataset_indices)
             // Here we are counting the number of target indices that overlap the
             // dataset indices.
             if (cmpSpatial(i, j) != 0) {
                 counter++;
                 BESDEBUG(STARE, "Matching (dataset, target) indices: " << i << ", " << j << endl);
-                if (!all_target_matches)
+                if (!all_dataset_matches)
                     break;  // exit the inner loop
             }
     }
@@ -515,7 +516,7 @@ StareCountFunction::stare_count_dap4_function(D4RValueList *args, DMR &dmr)
     vector<dods_uint64> target_s_indices;
     read_stare_indices_from_function_argument(raw_stare_indices, target_s_indices);
 
-    int num = count(target_s_indices, dep_var_stare_indices, true);
+    int num = count(target_s_indices, dep_var_stare_indices, false);
 
     unique_ptr<Int32> result(new Int32("result"));
     result->set_value(num);

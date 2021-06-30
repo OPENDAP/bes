@@ -220,9 +220,13 @@ CPPUNIT_TEST_SUITE(StareFunctionsTest);
                                               3440016191299518401};
         vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
 
-        DBG(cerr << "test_count_2, count(target, dataset): " << count(target_indices, data_indices) << endl);
+        // 3440016191299518474 matches 3440016191299518474
+        // 3440016191299518400 and 3440016191299518401 match 3440012343008821258
+        // Thus three indices in the target set match the dataset indices.
+        int matches = count(target_indices, data_indices);
+        DBG(cerr << "test_count_2, count(target, dataset): " << matches << endl);
 
-        CPPUNIT_ASSERT(count(target_indices, data_indices) == 2);
+        CPPUNIT_ASSERT(matches == 3);
     }
 
     // Of the two target_indices, none are in the 'dataset.'
