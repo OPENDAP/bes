@@ -115,7 +115,7 @@ CPPUNIT_TEST_SUITE(StareFunctionsTest);
 
         CPPUNIT_TEST(test_stare_subset);
 
-        CPPUNIT_TEST(test_stare_get_sidecar_uint64_values);
+       // CPPUNIT_TEST(test_stare_get_sidecar_uint64_values);
 
         // fails; rewrite to use the new sidecar files. jhrg 6/17/21
         // CPPUNIT_TEST(intersection_function_test_2);
@@ -178,6 +178,7 @@ CPPUNIT_TEST_SUITE(StareFunctionsTest);
         CPPUNIT_ASSERT(result->y_indices.at(2) == 2);
     }
 
+#if 0
     void test_stare_get_sidecar_uint64_values() {
         DBG(cerr << "--- test_stare_get_sidecar_uint64_values() test - BEGIN ---" << endl);
 
@@ -198,9 +199,10 @@ CPPUNIT_TEST_SUITE(StareFunctionsTest);
         catch (BESError &e) {
             DBG(cerr << e.get_verbose_message() << endl);
             cout << e.get_verbose_message() << endl;
-            CPPUNIT_FAIL("test_stare_get_sidecar_uint64_values() test failed" + e.get_verbose_message());
+            CPPUNIT_FAIL("test_stare_get_sidecar_uint64_values() test failed: " + e.get_verbose_message());
         }
     }
+#endif
 
     // The one and only target index is in the 'dataset'
     void test_count_1() {

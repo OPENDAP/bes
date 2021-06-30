@@ -13,8 +13,22 @@
 
 #define MODULE "geofile"
 
+/**
+ * @brief Strip away path info. Use in error messages.
+ * @param path Full pathname, etc., to a file.
+ * @return Just the last part of a pathname
+ */
 string
-GeoFile::sidecar_filename(const string &file_name) {
+GeoFile::sanitize_pathname(string path) const
+{
+    string::size_type last_slash = path.find_last_of('/');
+    ++last_slash;   // don't include the slash in the returned string
+    return (last_slash == string::npos) ? path: path.substr(last_slash);
+}
+
+string
+GeoFile::sidecar_filename(const string &file_name) const
+{
     // Is there a file extension?
     size_t f = file_name.rfind(".");
     if (f != string::npos)
@@ -39,24 +53,24 @@ GeoFile::sidecar_filename(const string &file_name) {
  * @return 0 for success, netCDF error code otherwise.
  */
 int
-GeoFile::read_sidecar_file(const string &fileName, int &ncid) {
+GeoFile::read_sidecar_file(const string &fileName) {
     BESDEBUG(MODULE, "Reading sidecar file " << fileName << endl);
 
     // Open the sidecar file.
     int ret;
-    if ((ret = nc_open(fileName.c_str(), NC_NOWRITE, &ncid)))
+    if ((ret = nc_open(fileName.c_str(), NC_NOWRITE, &d_ncid)))
         return ret;
 
     // Check the title attribute to make sure this is a sidecar file.
     char title_in[NC_MAX_NAME + 1];
-    if ((ret = nc_get_att_text(ncid, NC_GLOBAL, SSC_TITLE_NAME, title_in)))
+    if ((ret = nc_get_att_text(d_ncid, NC_GLOBAL, SSC_TITLE_NAME, title_in)))
         return ret;
     if (strncmp(title_in, SSC_TITLE, NC_MAX_NAME))
         return SSC_NOT_SIDECAR;
 
     // How many vars and dims in the index file?
     int ndims, nvars;
-    if ((ret = nc_inq(ncid, &ndims, &nvars, NULL, NULL)))
+    if ((ret = nc_inq(d_ncid, &ndims, &nvars, NULL, NULL)))
         return ret;
 
     // Find all variables that are STARE indexes.
@@ -66,14 +80,14 @@ GeoFile::read_sidecar_file(const string &fileName, int &ncid) {
         char var_name[NC_MAX_NAME + 1];
         nc_type xtype;
         int ndims, dimids[NDIM2], natts;
-        if ((ret = nc_inq_var(ncid, v, var_name, &xtype, &ndims, dimids, &natts)))
+        if ((ret = nc_inq_var(d_ncid, v, var_name, &xtype, &ndims, dimids, &natts)))
             return ret;
 
         BESDEBUG(MODULE, "var " << var_name << " type " << xtype << " ndims " << ndims << endl);
 
         // Get the long_name attribute value.
         char long_name_in[NC_MAX_NAME + 1];
-        if ((ret = nc_get_att_text(ncid, v, SSC_LONG_NAME, long_name_in)))
+        if ((ret = nc_get_att_text(d_ncid, v, SSC_LONG_NAME, long_name_in)))
             continue;
 
         // If this is a STARE index, learn about it.
@@ -83,14 +97,14 @@ GeoFile::read_sidecar_file(const string &fileName, int &ncid) {
 
             // Find the length of the dimensions.
             size_t dimlen[NDIM2];
-            if ((ret = nc_inq_dimlen(ncid, dimids[0], &dimlen[0])))
+            if ((ret = nc_inq_dimlen(d_ncid, dimids[0], &dimlen[0])))
                 return ret;
-            if ((ret = nc_inq_dimlen(ncid, dimids[1], &dimlen[1])))
+            if ((ret = nc_inq_dimlen(d_ncid, dimids[1], &dimlen[1])))
                 return ret;
 
             // What variables does this STARE index apply to?
             char variables_in[NC_MAX_NAME + 1];
-            if ((ret = nc_get_att_text(ncid, v, SSC_INDEX_VAR_ATT_NAME, variables_in)))
+            if ((ret = nc_get_att_text(d_ncid, v, SSC_INDEX_VAR_ATT_NAME, variables_in)))
                 return ret;
 
             d_variables.emplace_back(string(variables_in));
@@ -119,10 +133,10 @@ GeoFile::read_sidecar_file(const string &fileName, int &ncid) {
  * @param values Value-result parameter; holds the returned stare indices.
  * @return 0 for success, NetCDF library error code otherwise.
  */
-int
-GeoFile::get_stare_indices(const std::string &varName, const int ncid, vector<unsigned long long> &values) {
+void
+GeoFile::get_stare_indices(const std::string &variable_name, vector<unsigned long long> &values) {
 
-    BESDEBUG(MODULE, "get_stare_indices called for '" << varName << "'" << endl);
+    BESDEBUG(MODULE, "get_stare_indices called for '" << variable_name << "'" << endl);
 
     // Check all of the sets of STARE indices. 'variables[v]' lists all of the variables
     // that are indexed by stare_varid[v].
@@ -130,15 +144,41 @@ GeoFile::get_stare_indices(const std::string &varName, const int ncid, vector<un
         BESDEBUG(MODULE, "Looking st: '" << d_variables[v] << "'" << endl);
 
         // Is the desired variable listed in the variables[v] string?
-        if (d_variables[v].find(varName) != string::npos) {
+        if (d_variables[v].find(variable_name) != string::npos) {
             BESDEBUG(MODULE, "found" << endl);
 
             values.resize(d_size_i[v] * d_size_j[v]);
-            return nc_get_var(ncid, d_stare_varid[v], &values[0]);
+            int status = nc_get_var(d_ncid, d_stare_varid[v], &values[0]);
+            if (status != NC_NOERR)
+                throw BESInternalError("Could not get STARE indices from the sidecar file "
+                                   + sanitize_pathname(sidecar_filename(d_data_file_name))
+                                   + " for " + variable_name + " - " + nc_strerror(status), __FILE__, __LINE__);
+        }
+    }
+}
+
+size_t GeoFile::get_variable_rows(string variable_name) const {
+    for (unsigned long v = 0; v < d_variables.size(); ++v) {
+        if (d_variables[v].find(variable_name) != string::npos) {
+            return d_size_i[v];
         }
     }
 
-    return NC_ENOTVAR;
+    throw BESInternalError("Could not get row size from the sidecar file "
+                           + sanitize_pathname(sidecar_filename(d_data_file_name))
+                           + " for " + variable_name, __FILE__, __LINE__);
+}
+
+size_t GeoFile::get_variable_cols(string variable_name) const {
+    for (unsigned long v = 0; v < d_variables.size(); ++v) {
+        if (d_variables[v].find(variable_name) != string::npos) {
+            return d_size_j[v];
+        }
+    }
+
+    throw BESInternalError("Could not get column size from the sidecar file "
+                           + sanitize_pathname(sidecar_filename(d_data_file_name))
+                           + " for " + variable_name, __FILE__, __LINE__);
 }
 
 /**
@@ -147,11 +187,15 @@ GeoFile::get_stare_indices(const std::string &varName, const int ncid, vector<un
  * @param ncid ID of the sidecar file.
  * @return 0 for success, error code otherwise.
  */
-int
-GeoFile::close_sidecar_file(int ncid)
+void
+GeoFile::close_sidecar_file()
 {
-    BESDEBUG(MODULE, "Closing sidecar file with ncid " << ncid << endl);
-    return nc_close(ncid);
+    BESDEBUG(MODULE, "Closing sidecar file with ncid " << d_ncid << endl);
+
+    if (d_ncid != -1) {
+        (void) nc_close(d_ncid);
+        d_ncid = -1;
+    }
 }
 
 

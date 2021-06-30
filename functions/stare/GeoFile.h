@@ -11,7 +11,9 @@
 #include <string>
 #include <vector>
 
-#include "STARE.h"
+#include <STARE.h>
+
+#include "BESInternalError.h"
 
 #define SSC_LAT_NAME "Latitude"
 #define SSC_LON_NAME "Longitude"
@@ -47,30 +49,15 @@
 class GeoFile
 {
 private:
-
-public:
-    GeoFile() : d_num_index(0) {};
-    virtual ~GeoFile() = default;
-
-    /** Get STARE index sidecar filename. */
-    static std::string sidecar_filename(const std::string &file_name);
-
-    int read_sidecar_file(const std::string &file_name, int &ncid);
-
-    int get_stare_indices(const std::string &var_name, int ncid, std::vector<unsigned long long> &values);
-
-    int close_sidecar_file(int ncid);
-
-    ///< @name Fields
-    ///{
+    int d_ncid; ///< id of the open netCDF4 file
     int d_num_index; ///< Number of STARE indices sets needed for this file.
+    std::string d_data_file_name;
 
     std::vector<std::string> d_stare_index_name;
     std::vector<std::string> stare_cover_name;
     std::vector<std::string> d_variables; ///< Names of vars that use this index.
     std::vector<size_t> d_size_i, d_size_j;
     std::vector<int> d_stare_varid; ///< Use this varid to read the index values
-    ///}
 
     // int *geo_num_i1; /**< Number of I. */
     // int *geo_num_j1; /**< Number of J. */
@@ -80,13 +67,45 @@ public:
 
     // TODO These may be used by the STAREmaster library or createSidecarFile.
     //  jhrg 6/17/21
-    int num_cover;
-    unsigned long long **geo_cover1;
-    int *geo_num_cover_values1;
-    STARE_SpatialIntervals cover;
+//    int num_cover;
+//    unsigned long long **geo_cover1;
+//    int *geo_num_cover_values1;
+//    STARE_SpatialIntervals cover;
+//
+//    int cover_level;
+//    int perimeter_stride;
 
-    int cover_level;
-    int perimeter_stride;
+protected:
+    std::string sanitize_pathname(string path) const;
+
+    /** Get STARE index sidecar filename. */
+    std::string sidecar_filename(const std::string &file_name) const;
+
+    int read_sidecar_file(const std::string &file_name);
+
+public:
+    GeoFile() : d_ncid(-1), d_num_index(0) {};
+
+    /**
+     * @brief Open and read the sidecar file for a given data file
+     * @param data_file_name
+     */
+    explicit GeoFile(const std::string &data_file_name)  : d_ncid(-1), d_num_index(0), d_data_file_name(data_file_name) {
+        // load much of the info and set d_ncid
+        int ret = read_sidecar_file(sidecar_filename(data_file_name));
+        if (ret != NC_NOERR)
+            throw BESInternalError("Could not open file " + sanitize_pathname(data_file_name)
+                                    + " - " + nc_strerror(ret), __FILE__, __LINE__);
+    };
+
+    virtual ~GeoFile() { close_sidecar_file(); };
+
+    void get_stare_indices(const std::string &var_name, std::vector<unsigned long long> &values);
+
+    size_t get_variable_rows(std::string variable_name) const;
+    size_t get_variable_cols(std::string variable_name) const;
+
+    void close_sidecar_file();
 };
 
 #endif /* GEO_FILE_H_ */

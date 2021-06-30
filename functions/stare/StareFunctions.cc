@@ -76,18 +76,6 @@ string stare_storage_path = "";
 string stare_sidecar_suffix = "_stare.nc";
 
 /**
- * @brief Strip away path info. Use in error messages.
- * @param path Full pathname, etc., to a file.
- * @return Just the last part of a pathname
- */
-static string sanitize_pathname(string path)
-{
-    string::size_type last_slash = path.find_last_of('/');
-    ++last_slash;   // don't include the slash in the returned string
-    return (last_slash == string::npos) ? path: path.substr(last_slash);
-}
-
-/**
  * @brief Write a collection of STARE Matches to an ostream
  *
  * STARE matches is not a vector of stare_match objects. It's a self-contained
@@ -245,6 +233,28 @@ stare_subset_helper(const vector<dods_uint64> &target_indices, const vector<dods
     return subset;
 }
 
+unique_ptr<stare_matches>
+stare_subset_helper(const vector<dods_uint64> &target_indices,
+                    const vector<dods_uint64> &dataset_indices,
+                    size_t dataset_rows, size_t dataset_cols)
+{
+    //auto subset = new stare_matches;
+    unique_ptr<stare_matches> subset(new stare_matches());
+
+   auto sid_iter = dataset_indices.begin();
+    for (auto i = 0; i < dataset_rows; ++i) {
+        for (auto j = 0; j < dataset_cols; ++j) {
+            auto sid = *sid_iter++;
+            for (auto &target : target_indices) {
+                if (cmpSpatial(sid, target) != 0) {     // != 0 --> sid is in target OR target is in sid
+                    subset->add(i, j, sid, target);
+                }
+            }
+        }
+    }
+
+    return subset;
+}
 /**
  * @brief Build the result data as masked values from src_data
  *
@@ -354,8 +364,14 @@ get_sidecar_file_pathname(const string &pathname, const string &token)
  * @todo FIXME jhrg 6/17/21
  * @todo This returns the x,y indices for stare indices. Calculate
  */
+
+enum axis {
+    row = 1,
+    col = 2
+};
+
 void
-get_sidecar_int32_values(const string &filename, const string &variable, vector<dods_int32> &values)
+get_sidecar_int32_values(const string &filename, const string &variable, enum axis axis, vector<dods_int32> &values)
 {
     //Read the file and store the datasets
     hid_t file = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
@@ -394,6 +410,16 @@ get_sidecar_int32_values(const string &filename, const string &variable, vector<
  * @param values Value-result parameter, a vector that can hold dods_uint64 values
  */
 void
+get_sidecar_uint64_values(GeoFile *gf, const string &variable_name, vector<dods_uint64> &values)
+{
+    // Get the STARE index data for variable.
+    gf->get_stare_indices(variable_name, values);
+}
+
+
+#if 0
+
+void
 get_sidecar_uint64_values(const string &filename, const string &variable_name, vector<dods_uint64> &values)
 {
     int ncid;
@@ -401,21 +427,23 @@ get_sidecar_uint64_values(const string &filename, const string &variable_name, v
     auto gf = unique_ptr<GeoFile>(new GeoFile());
 
     // Open and scan the sidecar file.
-    if ((ret = gf->read_sidecar_file(gf->sidecar_filename(filename), ncid)))
+    if ((ret = gf->read_sidecar_file(gf->sidecar_filename(filename))))
         throw BESInternalError("Could not open file " + sanitize_pathname(filename)
                                 + " - " + nc_strerror(ret), __FILE__, __LINE__);
 
     // Get the STARE index data for variable.
-    if ((ret = gf->get_stare_indices(variable_name, ncid, values)))
+    if ((ret = gf->get_stare_indices(variable_name, values)))
         throw BESInternalError("Could not get STARE indices from the sidecar file "
                                 + sanitize_pathname(gf->sidecar_filename(filename))
                                 + " for " + variable_name + " - " + nc_strerror(ret), __FILE__, __LINE__);
 
     // Close the sidecar file.
-    if ((ret = gf->close_sidecar_file(ncid)))
+    if ((ret = gf->close_sidecar_file()))
         throw BESInternalError("Could not close file " + sanitize_pathname(filename)
                                 + " - " + nc_strerror(ret),  __FILE__, __LINE__);
 }
+
+#endif
 
 void
 read_stare_indices_from_function_argument(BaseType *raw_stare_indices, vector<dods_uint64>&s_indices) {
@@ -457,9 +485,11 @@ StareIntersectionFunction::stare_intersection_dap4_function(D4RValueList *args, 
     BaseType *dependent_var = args->get_rvalue(0)->value(dmr);
     BaseType *raw_stare_indices = args->get_rvalue(1)->value(dmr);
 
-     // Read the stare indices for the dependent var from the sidecar file.
+    unique_ptr<GeoFile> gf(new GeoFile(dmr.filename()));
+
+    // Read the stare indices for the dependent var from the sidecar file.
     vector<dods_uint64> dep_var_stare_indices;
-    get_sidecar_uint64_values(dmr.filename(), dependent_var->name(), dep_var_stare_indices);
+    gf->get_stare_indices(dependent_var->name(), dep_var_stare_indices);
 
     // Put the stare indices passed into the function into a vector<>
     vector<dods_uint64> target_s_indices;
@@ -509,9 +539,14 @@ StareCountFunction::stare_count_dap4_function(D4RValueList *args, DMR &dmr)
     BaseType *dependent_var = args->get_rvalue(0)->value(dmr);
     BaseType *raw_stare_indices = args->get_rvalue(1)->value(dmr);
 
+    unique_ptr<GeoFile> gf(new GeoFile(dmr.filename()));
+
     // Read the stare indices for the dependent var from the sidecar file.
     vector<dods_uint64> dep_var_stare_indices;
-    get_sidecar_uint64_values(dmr.filename(), dependent_var->name(), dep_var_stare_indices);
+    gf->get_stare_indices(dependent_var->name(), dep_var_stare_indices);
+#if 0
+    get_sidecar_uint64_values(gf.get(), dependent_var->name(), dep_var_stare_indices);
+#endif
 
     // Put the stare indices passed into the function into a vector<>
     vector<dods_uint64> target_s_indices;
@@ -550,9 +585,11 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
     BaseType *dependent_var = args->get_rvalue(0)->value(dmr);
     BaseType *raw_stare_indices = args->get_rvalue(1)->value(dmr);
 
+    unique_ptr<GeoFile> gf(new GeoFile(dmr.filename()));
+
     // Read the stare indices for the dependent var from the sidecar file.
     vector<dods_uint64> dep_var_stare_indices;
-    get_sidecar_uint64_values(dmr.filename(), dependent_var->name(), dep_var_stare_indices);
+    gf->get_stare_indices(dependent_var->name(), dep_var_stare_indices);
 
     // Put the stare indices passed into the function into a vector<>
     vector<dods_uint64> target_s_indices;
@@ -574,10 +611,14 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
     read_stare_indices_from_function_argument(raw_stare_indices, target_s_indices);
 #endif
 
-    vector<dods_uint32> dataset_x_coords;
+    vector<dods_int32> dataset_x_coords;
+#if 0
     get_sidecar_int32_values(dmr.filename(), "X", dataset_x_coords);
-    vector<dods_uint32> dataset_y_coords;
+#endif
+    vector<dods_int32> dataset_y_coords;
+#if 0
     get_sidecar_int32_values(dmr.filename(), "Y", dataset_y_coords);
+#endif
 
     unique_ptr <stare_matches> subset = stare_subset_helper(target_s_indices, dep_var_stare_indices, dataset_x_coords, dataset_y_coords);
 
@@ -637,9 +678,11 @@ StareSubsetArrayFunction::stare_subset_array_dap4_function(D4RValueList *args, D
     if (!raw_stare_indices)
         throw BESSyntaxUserError("stare_subset_array() expected an Array as the third argument.", __FILE__, __LINE__);
 
-    //Read the data file and store the values of each dataset into an array
+    unique_ptr<GeoFile> gf(new GeoFile(dmr.filename()));
+
+    // Read the stare indices for the dependent var from the sidecar file.
     vector<dods_uint64> dep_var_stare_indices;
-    get_sidecar_uint64_values(fullPath, dependent_var->name(), dep_var_stare_indices);
+    gf->get_stare_indices(dependent_var->name(), dep_var_stare_indices);
 
     vector<dods_uint64> target_s_indices;
     read_stare_indices_from_function_argument(raw_stare_indices, target_s_indices);

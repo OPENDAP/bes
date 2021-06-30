@@ -33,15 +33,15 @@ build_test_s_indices_LDADD = $(AM_LDADD)
 
 sample_datadir = $(datadir)/hyrax/data/stare
 
-sample_data_DATA = data/README data/MYD09.A2019003_hacked.h5 \
-data/MYD09.A2019003_hacked_stare.h5 data/MYD09.A2019003_hacked_stare_res.h5 \
-data/Target_overlap_nw.h5 data/Target_overlap_nw_stare.h5 data/Target_overlap_nw_stare_res.h5 \
-data/t1_sidecar.nc
+sample_data_DATA = data/README data/t1_stare.nc \
+                   data/Target_overlap_nw.h5 \
+                   data/Target_overlap_nw_stare.h5 \
+                   data/Target_overlap_nw_stare_res.h5
 
-EXTRA_DIST = data/README data/MYD09.A2019003_hacked.h5 \
-data/MYD09.A2019003_hacked_stare.h5 data/MYD09.A2019003_hacked_stare_res.h5 \
-data/Target_overlap_nw.h5 data/Target_overlap_nw_stare.h5 data/Target_overlap_nw_stare_res.h5 \
-data/t1_sidecar.nc
+EXTRA_DIST = data/README data/t1_stare.nc \
+             data/Target_overlap_nw.h5 \
+             data/Target_overlap_nw_stare.h5 \
+             data/Target_overlap_nw_stare_res.h5
 
 # CLEANFILES =
 

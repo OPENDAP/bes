@@ -88,22 +88,22 @@ struct stare_match {
 
 /// Hold the result from the subset helper function as a collection of vectors
 struct stare_matches {
-    std::vector<libdap::dods_int32> x_indices;
-    std::vector<libdap::dods_int32> y_indices;
+    std::vector<libdap::dods_int32> row_indices;
+    std::vector<libdap::dods_int32> col_indices;
 
     std::vector<libdap::dods_uint64> stare_indices;
     std::vector<libdap::dods_uint64> target_indices;
 
     // Pass by value and use move
-    stare_matches(std::vector<libdap::dods_int32> x, const std::vector<libdap::dods_int32> y,
-            const std::vector<libdap::dods_uint64> si, const std::vector<libdap::dods_uint64> ti)
-        : x_indices(std::move(x)), y_indices(std::move(y)), stare_indices(std::move(si)), target_indices(std::move(ti)) {}
+    stare_matches(std::vector<libdap::dods_int32> row, std::vector<libdap::dods_int32> col,
+            std::vector<libdap::dods_uint64> si, std::vector<libdap::dods_uint64> ti)
+        : row_indices(std::move(xrow), col_indices(std::move(col)), stare_indices(std::move(si)), target_indices(std::move(ti)) {}
 
     stare_matches() {}
 
-    void add(libdap::dods_int32 x, libdap::dods_int32 y, libdap::dods_uint64 si, libdap::dods_uint64 ti) {
-        x_indices.push_back(x);
-        y_indices.push_back(y);
+    void add(libdap::dods_int32 row, libdap::dods_int32 col, libdap::dods_uint64 si, libdap::dods_uint64 ti) {
+        row_indices.push_back(row);
+        col_indices.push_back(col);
         stare_indices.push_back(si);
         target_indices.push_back(ti);
     }
