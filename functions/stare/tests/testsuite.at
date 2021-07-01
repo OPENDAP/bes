@@ -15,16 +15,13 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_count_1.dap.bescmd, xpass)
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_count_2.dap.bescmd, xpass)
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_count_3.dap.bescmd, xpass)
 
-# AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_subset_0.dap.bescmd, xpass)
-# AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_subset_1.dap.bescmd, xpass)
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_subset_0.dap.bescmd, xpass)
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_subset_1.dap.bescmd, xpass)
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_subset_2.dap.bescmd, xpass)
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_subset_3.dap.bescmd, xpass)
+
 
 # AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_subset_array_0.dap.bescmd, xpass)
 # AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_subset_array_1.dap.bescmd, xpass)
-
-
-
-# AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_subset_2.dap.bescmd, xpass)
-# AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_subset_3.dap.bescmd, xpass)
-
 # AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_subset_array_2.dap.bescmd, xpass)
 # AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_subset_array_3.dap.bescmd, xpass)

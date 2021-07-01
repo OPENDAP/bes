@@ -88,16 +88,16 @@ string stare_sidecar_suffix = "_stare.nc";
  */
 ostream & operator << (ostream &out, const stare_matches &m)
 {
-    assert(m.stare_indices.size() == m.x_indices.size()
-        && m.x_indices.size() == m.y_indices.size());
+    assert(m.stare_indices.size() == m.row_indices.size()
+        && m.row_indices.size() == m.col_indices.size());
 
     auto ti = m.target_indices.begin();
     auto si = m.stare_indices.begin();
-    auto xi = m.x_indices.begin();
-    auto yi = m.y_indices.begin();
+    auto xi = m.row_indices.begin();
+    auto yi = m.col_indices.begin();
 
     while (si != m.stare_indices.end()) {
-        out << "Target: " << *ti++ << ", Dataset Index: " << *si++ << ", coord: x: " << *xi++ << ", y: " << *yi++ << endl;
+        out << "Target: " << *ti++ << ", Dataset Index: " << *si++ << ", coord: row: " << *xi++ << ", col: " << *yi++ << endl;
     }
 
     return out;
@@ -195,6 +195,7 @@ count(const vector<dods_uint64> &target_indices, const vector<dods_uint64> &data
     return counter;
 }
 
+#if 0
 /**
  * @brief Return a collection of STARE Matches
  * @param target_indices Target STARE indices (passed in by a client)
@@ -232,6 +233,7 @@ stare_subset_helper(const vector<dods_uint64> &target_indices, const vector<dods
 
     return subset;
 }
+#endif
 
 unique_ptr<stare_matches>
 stare_subset_helper(const vector<dods_uint64> &target_indices,
@@ -609,7 +611,7 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
     // TODO: We can dump the values in 'stare_indices' here
     vector<dods_uint64> target_s_indices;
     read_stare_indices_from_function_argument(raw_stare_indices, target_s_indices);
-#endif
+
 
     vector<dods_int32> dataset_x_coords;
 #if 0
@@ -619,15 +621,18 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
 #if 0
     get_sidecar_int32_values(dmr.filename(), "Y", dataset_y_coords);
 #endif
-
-    unique_ptr <stare_matches> subset = stare_subset_helper(target_s_indices, dep_var_stare_indices, dataset_x_coords, dataset_y_coords);
+#endif
+    
+    unique_ptr <stare_matches> subset = stare_subset_helper(target_s_indices, dep_var_stare_indices,
+                                                            gf->get_variable_rows(dependent_var->name()),
+                                                            gf->get_variable_cols(dependent_var->name()));
 
     // When no subset is found (none of the target indices match those in the dataset)
     if (subset->stare_indices.size() == 0) {
         subset->stare_indices.push_back(0);
         subset->target_indices.push_back(0);
-        subset->x_indices.push_back(-1);
-        subset->y_indices.push_back(-1);
+        subset->row_indices.push_back(-1);
+        subset->col_indices.push_back(-1);
     }
     // Transfer values to a Structure
     unique_ptr<Structure> result(new Structure("result"));
@@ -642,14 +647,14 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
     target->append_dim(subset->target_indices.size());
     result->add_var_nocopy(target.release());
 
-    unique_ptr<Array> x(new Array("x", new Int32("x")));
-    x->set_value(subset->x_indices, subset->x_indices.size());
-    x->append_dim(subset->x_indices.size());
+    unique_ptr<Array> x(new Array("row", new Int32("row")));
+    x->set_value(subset->row_indices, subset->row_indices.size());
+    x->append_dim(subset->row_indices.size());
     result->add_var_nocopy(x.release());
 
-    unique_ptr<Array> y(new Array("y", new Int32("y")));
-    y->set_value(subset->y_indices, subset->y_indices.size());
-    y->append_dim(subset->y_indices.size());
+    unique_ptr<Array> y(new Array("col", new Int32("col")));
+    y->set_value(subset->col_indices, subset->col_indices.size());
+    y->append_dim(subset->col_indices.size());
     result->add_var_nocopy(y.release());
 
     return result.release();

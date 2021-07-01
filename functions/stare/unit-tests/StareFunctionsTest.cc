@@ -155,27 +155,29 @@ CPPUNIT_TEST_SUITE(StareFunctionsTest);
         // and 3440016191299518474 overlaps 3440016191299518474, 3440016191299518400, 3440016191299518401
         // I think this is kind of a degenerate example since the three target indices seem to be at different
         // levels. jhrg 1.14.20
-        vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
-        vector<int> x_indices = {0, 1, 2};
-        vector<int> y_indices = {0, 1, 2};
+        vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474, 3440016191299518528};
 
-        unique_ptr<stare_matches> result = stare_subset_helper(target_indices, data_indices, x_indices, y_indices);
+        unique_ptr<stare_matches> result = stare_subset_helper(target_indices, data_indices, 2, 2);
 
-        DBG(cerr << "result->x_indices.size(): " << result->x_indices.size() << endl);
+        DBG(cerr << "result->row_indices.size(): " << result->row_indices.size() << endl);
 
-        CPPUNIT_ASSERT(result->x_indices.size() == 5);
-        CPPUNIT_ASSERT(result->y_indices.size() == 5);
-        CPPUNIT_ASSERT(result->stare_indices.size() == 5);
+        CPPUNIT_ASSERT(result->row_indices.size() == 8);
+        CPPUNIT_ASSERT(result->col_indices.size() == 8);
+        CPPUNIT_ASSERT(result->stare_indices.size() == 8);
 
         DBG(cerr << *result << endl);
 
         CPPUNIT_ASSERT(result->stare_indices.at(0) == 3440012343008821258);
-        CPPUNIT_ASSERT(result->x_indices.at(0) == 1);
-        CPPUNIT_ASSERT(result->y_indices.at(0) == 1);
+        CPPUNIT_ASSERT(result->row_indices.at(0) == 0);
+        CPPUNIT_ASSERT(result->col_indices.at(0) == 1);
 
         CPPUNIT_ASSERT(result->stare_indices.at(2) == 3440016191299518474);
-        CPPUNIT_ASSERT(result->x_indices.at(2) == 2);
-        CPPUNIT_ASSERT(result->y_indices.at(2) == 2);
+        CPPUNIT_ASSERT(result->row_indices.at(2) == 1);
+        CPPUNIT_ASSERT(result->col_indices.at(2) == 0);
+
+        CPPUNIT_ASSERT(result->stare_indices.at(5) == 3440016191299518528);
+        CPPUNIT_ASSERT(result->row_indices.at(5) == 1);
+        CPPUNIT_ASSERT(result->col_indices.at(5) == 1);
     }
 
 #if 0

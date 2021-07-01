@@ -97,9 +97,9 @@ struct stare_matches {
     // Pass by value and use move
     stare_matches(std::vector<libdap::dods_int32> row, std::vector<libdap::dods_int32> col,
             std::vector<libdap::dods_uint64> si, std::vector<libdap::dods_uint64> ti)
-        : row_indices(std::move(xrow), col_indices(std::move(col)), stare_indices(std::move(si)), target_indices(std::move(ti)) {}
+        : row_indices(std::move(row)), col_indices(std::move(col)), stare_indices(std::move(si)), target_indices(std::move(ti)) {}
 
-    stare_matches() {}
+    stare_matches() = default;
 
     void add(libdap::dods_int32 row, libdap::dods_int32 col, libdap::dods_uint64 si, libdap::dods_uint64 ti) {
         row_indices.push_back(row);
@@ -113,7 +113,7 @@ struct stare_matches {
 
 unique_ptr<stare_matches> stare_subset_helper(const std::vector<libdap::dods_uint64> &target_indices,
                                               const std::vector<libdap::dods_uint64> &dataset_indices,
-                                              const std::vector<int> &dataset_x_coords, const std::vector<int> &dataset_y_coords);
+                                              size_t row, size_t cols);
 
 class StareIntersectionFunction : public libdap::ServerFunction {
 public:
