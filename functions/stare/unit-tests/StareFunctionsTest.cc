@@ -127,7 +127,7 @@ CPPUNIT_TEST_SUITE(StareFunctionsTest);
     CPPUNIT_TEST_SUITE_END();
 
     void test_stare_subset_array_helper() {
-#if 0
+#if 1
         DBG(cerr << "--- test_stare_subset_array_helper() test - BEGIN ---" << endl);
 
         vector<dods_uint64> target_indices = {3440016191299518474, 3440016191299518400, 3440016191299518401};

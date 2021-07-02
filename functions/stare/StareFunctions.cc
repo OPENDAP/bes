@@ -334,6 +334,7 @@ void StareSubsetArrayFunction::build_masked_data(Array *dependent_var, const vec
     result->set_value(result_data, result_data.size());
 }
 
+#if 0
 /**
  * @brief Return the pathname to an STARE sidecar file for a given dataset.
  *
@@ -366,6 +367,7 @@ get_sidecar_file_pathname(const string &pathname, const string &token)
         return filename;
     }
 }
+#endif
 
 #if 0
 /**
