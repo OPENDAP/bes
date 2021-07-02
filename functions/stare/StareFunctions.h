@@ -51,10 +51,12 @@ const std::string STARE_SIDECAR_SUFFIX_KEY = "FUNCTIONS.stareSidecarSuffix";
 extern string stare_storage_path;
 extern string stare_sidecar_suffix;
 
+#if 0
 std::string get_sidecar_file_pathname(const std::string &pathname, const string &token = "_sidecar");
 void get_sidecar_int32_values(hid_t file, const std::string &variable, std::vector<libdap::dods_int32> &values);
 void get_sidecar_uint64_values(hid_t file, const std::string &variable, std::vector<libdap::dods_uint64> &values);
 void get_sidecar_uint64_values(const std::string &filename, const std::string &variable_name, std::vector<libdap::dods_uint64> &values);
+#endif
 
 bool target_in_dataset(const std::vector<libdap::dods_uint64> &target_indices,
         const std::vector<libdap::dods_uint64> &data_stare_indices);
@@ -199,7 +201,8 @@ public:
 
     template <class T>
     static void build_masked_data(libdap::Array *dependent_var, const vector<libdap::dods_uint64> &dep_var_stare_indices,
-                                const vector<libdap::dods_uint64> &target_s_indices, unique_ptr<libdap::Array> &result);
+                                const vector<libdap::dods_uint64> &target_s_indices, T mask_value,
+                                unique_ptr<libdap::Array> &result);
 };
 
 } // functions namespace
