@@ -235,6 +235,14 @@ stare_subset_helper(const vector<dods_uint64> &target_indices, const vector<dods
 }
 #endif
 
+/**
+ * @brief Return a set of stare matches
+ * @param target_indices Look for these indices
+ * @param dataset_indices Look in these indices
+ * @param dataset_rows The number of rows in the dataset
+ * @param dataset_cols The number of columns in the dataset
+ * @return
+ */
 unique_ptr<stare_matches>
 stare_subset_helper(const vector<dods_uint64> &target_indices,
                     const vector<dods_uint64> &dataset_indices,
@@ -257,6 +265,7 @@ stare_subset_helper(const vector<dods_uint64> &target_indices,
 
     return subset;
 }
+
 /**
  * @brief Build the result data as masked values from src_data
  *
@@ -358,6 +367,7 @@ get_sidecar_file_pathname(const string &pathname, const string &token)
     }
 }
 
+#if 0
 /**
  * @brief Read the 32-bit integer array data
  * @param file The HDF5 Id of an open file
@@ -404,7 +414,9 @@ get_sidecar_int32_values(const string &filename, const string &variable, enum ax
     //Read the data file and store the values of each dataset into an array
     H5Dread(dataset, H5T_NATIVE_INT, memspace, filespace, H5P_DEFAULT, &values[0]);
 }
+#endif
 
+#if 0
 /**
  * @brief Read the unsigned 64-bit integer array data
  * @param filename The name of the netCDF/HDF5 sidecar file
@@ -417,10 +429,9 @@ get_sidecar_uint64_values(GeoFile *gf, const string &variable_name, vector<dods_
     // Get the STARE index data for variable.
     gf->get_stare_indices(variable_name, values);
 }
-
+#endif
 
 #if 0
-
 void
 get_sidecar_uint64_values(const string &filename, const string &variable_name, vector<dods_uint64> &values)
 {
@@ -444,7 +455,6 @@ get_sidecar_uint64_values(const string &filename, const string &variable_name, v
         throw BESInternalError("Could not close file " + sanitize_pathname(filename)
                                 + " - " + nc_strerror(ret),  __FILE__, __LINE__);
 }
-
 #endif
 
 void
