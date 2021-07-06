@@ -485,6 +485,7 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
     return result.release();
 }
 
+// FIXME jhrg 7/6/21
 double get_mask_value(BaseType *)
 {
     return 17;
@@ -521,7 +522,7 @@ StareSubsetArrayFunction::stare_subset_array_dap4_function(D4RValueList *args, D
     // ptr_duplicate() does not copy data values
     unique_ptr<Array> result(dynamic_cast<Array*>(dependent_var->ptr_duplicate()));
 
-    // TODO Add more types. jhrg 6/17/20
+    // FIXME Add more types. jhrg 6/17/20
     switch(dependent_var->var()->type()) {
         case dods_int16_c: {
             build_masked_data<dods_int16>(dependent_var, dep_var_stare_indices, target_s_indices, mask_value, result);

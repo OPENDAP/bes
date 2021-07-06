@@ -100,8 +100,8 @@ public:
 
     virtual ~GeoFile() { close_sidecar_file(); };
 
-    // STARE_ArrayIndexSpatialValue
-    // STARE_SpatialIntervals
+    // The data types for STARESTARE_ArrayIndexSpatialValue
+    // STARE_SpatialIntervals (which is std::vector<STARE_ArrayIndexSpatialValue>
     void get_stare_indices(const std::string &var_name, std::vector<STARE_ArrayIndexSpatialValue> &values);
 
     size_t get_variable_rows(std::string variable_name) const;
