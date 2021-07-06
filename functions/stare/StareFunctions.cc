@@ -27,9 +27,9 @@
 #include <cassert>
 
 #include <STARE.h>
-#include <SpatialRange.h>
+//#include <SpatialRange.h>
 
-#include <hdf5.h>
+//#include <hdf5.h>
 #include <netcdf.h>
 
 #include <libdap/BaseType.h>
@@ -132,13 +132,14 @@ extract_uint64_array(Array *var, vector<dods_uint64> &values)
  * @return true if sny of the target indices appear in the dataset, otherwise false.
  */
 bool
-target_in_dataset(const vector<dods_uint64> &target_indices, const vector<dods_uint64> &data_stare_indices) {
+target_in_dataset(const vector<STARE_ArrayIndexSpatialValue> &target_indices,
+                  const vector<STARE_ArrayIndexSpatialValue> &data_stare_indices) {
 #if 1
     // this took 0.23s and worked.
     // Changes to the range-for loop, fixed the type (was unsigned long long
     // which works on OSX but not CentOS7). jhrg 11/5/19
-    for (const dods_uint64 &i : target_indices) {
-        for (const dods_uint64 &j :data_stare_indices ) {
+    for (const STARE_ArrayIndexSpatialValue &i : target_indices) {
+        for (const STARE_ArrayIndexSpatialValue &j :data_stare_indices ) {
             // Check to see if the index 'i' overlaps the index 'j'. The cmpSpatial()
             // function returns -1, 0, 1 depending on i in j, no overlap or, j in i.
             // testing for !0 covers the general overlap case.
@@ -178,10 +179,12 @@ target_in_dataset(const vector<dods_uint64> &target_indices, const vector<dods_u
  * @return The number of target indices in the dataset.
  */
 unsigned int
-count(const vector<dods_uint64> &target_indices, const vector<dods_uint64> &dataset_indices, bool all_dataset_matches /*= false*/) {
+count(const vector<STARE_ArrayIndexSpatialValue> &target_indices,
+      const vector<STARE_ArrayIndexSpatialValue> &dataset_indices,
+      bool all_dataset_matches /*= false*/) {
     unsigned int counter = 0;
-    for (const dods_uint64 &i : target_indices) {
-        for (const dods_uint64 &j : dataset_indices)
+    for (const auto &i : target_indices) {
+        for (const auto &j : dataset_indices)
             // Here we are counting the number of target indices that overlap the
             // dataset indices.
             if (cmpSpatial(i, j) != 0) {
@@ -204,8 +207,8 @@ count(const vector<dods_uint64> &target_indices, const vector<dods_uint64> &data
  * @return
  */
 unique_ptr<stare_matches>
-stare_subset_helper(const vector<dods_uint64> &target_indices,
-                    const vector<dods_uint64> &dataset_indices,
+stare_subset_helper(const vector<STARE_ArrayIndexSpatialValue> &target_indices,
+                    const vector<STARE_ArrayIndexSpatialValue> &dataset_indices,
                     size_t dataset_rows, size_t dataset_cols)
 {
     //auto subset = new stare_matches;
@@ -215,7 +218,7 @@ stare_subset_helper(const vector<dods_uint64> &target_indices,
     for (auto i = 0; i < dataset_rows; ++i) {
         for (auto j = 0; j < dataset_cols; ++j) {
             auto sid = *sid_iter++;
-            for (auto &target : target_indices) {
+            for (const auto &target : target_indices) {
                 if (cmpSpatial(sid, target) != 0) {     // != 0 --> sid is in target OR target is in sid
                     subset->add(i, j, sid, target);
                 }
@@ -242,15 +245,16 @@ stare_subset_helper(const vector<dods_uint64> &target_indices,
  */
 template <class T>
 void stare_subset_array_helper(vector<T> &result_data, const vector<T> &src_data,
-        const vector<dods_uint64> &target_indices, const vector<dods_uint64> &dataset_indices)
+        const vector<STARE_ArrayIndexSpatialValue> &target_indices,
+        const vector<STARE_ArrayIndexSpatialValue> &dataset_indices)
 {
     assert(dataset_indices.size() == src_data.size());
     assert(dataset_indices.size() == result_data.size());
 
     auto r = result_data.begin();
     auto s = src_data.begin();
-    for (const dods_uint64 &i : dataset_indices) {
-        for (const dods_uint64 &j : target_indices) {
+    for (const auto &i : dataset_indices) {
+        for (const auto &j : target_indices) {
             if (cmpSpatial(i, j) != 0) {        // != 0 --> i is in j OR j is in i
                 *r = *s;
                 break;
@@ -280,8 +284,9 @@ void stare_subset_array_helper(vector<T> &result_data, const vector<T> &src_data
  * @todo FIXME jhrg 6/17/21
  */
 template <class T>
-void StareSubsetArrayFunction::build_masked_data(Array *dependent_var, const vector<dods_uint64> &dep_var_stare_indices,
-                                                 const vector<dods_uint64> &target_s_indices, T mask_value,
+void StareSubsetArrayFunction::build_masked_data(Array *dependent_var,
+                                                 const vector<STARE_ArrayIndexSpatialValue> &dep_var_stare_indices,
+                                                 const vector<STARE_ArrayIndexSpatialValue> &target_s_indices, T mask_value,
                                                  unique_ptr<Array> &result) {
     vector<T> src_data(dependent_var->length());
     dependent_var->read();  // TODO Do we need to call read() here? jhrg 6/16/20
@@ -296,7 +301,8 @@ void StareSubsetArrayFunction::build_masked_data(Array *dependent_var, const vec
 }
 
 void
-read_stare_indices_from_function_argument(BaseType *raw_stare_indices, vector<dods_uint64>&s_indices) {
+read_stare_indices_from_function_argument(BaseType *raw_stare_indices,
+                                          vector<STARE_ArrayIndexSpatialValue> &s_indices) {
 
     Array *stare_indices = dynamic_cast<Array *>(raw_stare_indices);
     if (stare_indices == nullptr)
@@ -338,11 +344,11 @@ StareIntersectionFunction::stare_intersection_dap4_function(D4RValueList *args, 
     unique_ptr<GeoFile> gf(new GeoFile(dmr.filename()));
 
     // Read the stare indices for the dependent var from the sidecar file.
-    vector<dods_uint64> dep_var_stare_indices;
+    vector<STARE_ArrayIndexSpatialValue> dep_var_stare_indices;
     gf->get_stare_indices(dependent_var->name(), dep_var_stare_indices);
 
     // Put the stare indices passed into the function into a vector<>
-    vector<dods_uint64> target_s_indices;
+    vector<STARE_ArrayIndexSpatialValue> target_s_indices;
     read_stare_indices_from_function_argument(raw_stare_indices, target_s_indices);
 
     // Are any of the target indices covered by this variable
@@ -392,11 +398,11 @@ StareCountFunction::stare_count_dap4_function(D4RValueList *args, DMR &dmr)
     unique_ptr<GeoFile> gf(new GeoFile(dmr.filename()));
 
     // Read the stare indices for the dependent var from the sidecar file.
-    vector<dods_uint64> dep_var_stare_indices;
+    vector<STARE_ArrayIndexSpatialValue> dep_var_stare_indices;
     gf->get_stare_indices(dependent_var->name(), dep_var_stare_indices);
 
     // Put the stare indices passed into the function into a vector<>
-    vector<dods_uint64> target_s_indices;
+    vector<STARE_ArrayIndexSpatialValue> target_s_indices;
     read_stare_indices_from_function_argument(raw_stare_indices, target_s_indices);
 
     int num = count(target_s_indices, dep_var_stare_indices, false);
@@ -435,11 +441,11 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
     unique_ptr<GeoFile> gf(new GeoFile(dmr.filename()));
 
     // Read the stare indices for the dependent var from the sidecar file.
-    vector<dods_uint64> dep_var_stare_indices;
+    vector<STARE_ArrayIndexSpatialValue> dep_var_stare_indices;
     gf->get_stare_indices(dependent_var->name(), dep_var_stare_indices);
 
     // Put the stare indices passed into the function into a vector<>
-    vector<dods_uint64> target_s_indices;
+    vector<STARE_ArrayIndexSpatialValue> target_s_indices;
     read_stare_indices_from_function_argument(raw_stare_indices, target_s_indices);
 
     unique_ptr <stare_matches> subset = stare_subset_helper(target_s_indices, dep_var_stare_indices,
@@ -505,11 +511,11 @@ StareSubsetArrayFunction::stare_subset_array_dap4_function(D4RValueList *args, D
     unique_ptr<GeoFile> gf(new GeoFile(dmr.filename()));
 
     // Read the stare indices for the dependent var from the sidecar file.
-    vector<dods_uint64> dep_var_stare_indices;
+    vector<STARE_ArrayIndexSpatialValue> dep_var_stare_indices;
     gf->get_stare_indices(dependent_var->name(), dep_var_stare_indices);
 
     // Put the stare indices passed into the function into a vector<>
-    vector<dods_uint64> target_s_indices;
+    vector<STARE_ArrayIndexSpatialValue> target_s_indices;
     read_stare_indices_from_function_argument(raw_stare_indices, target_s_indices);
 
     // ptr_duplicate() does not copy data values
