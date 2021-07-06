@@ -47,6 +47,8 @@
 #include <BESError.h>
 #include <BESDebug.h>
 
+#include <STARE.h>
+
 #include "StareFunctions.h"
 
 #include "test_config.h"
@@ -130,12 +132,12 @@ CPPUNIT_TEST_SUITE(StareFunctionsTest);
 #if 1
         DBG(cerr << "--- test_stare_subset_array_helper() test - BEGIN ---" << endl);
 
-        vector<dods_uint64> target_indices = {3440016191299518474, 3440016191299518400, 3440016191299518401};
+        vector<STARE_ArrayIndexSpatialValue> target_indices = {3440016191299518474, 3440016191299518400, 3440016191299518401};
         // // In these data indices, 3440012343008821258 overlaps 3440016191299518400, 3440016191299518401
         // // and 3440016191299518474 overlaps 3440016191299518474, 3440016191299518400, 3440016191299518401
         // // I think this is kind of a degenerate example since the three target indices seem to be at different
         // // levels. jhrg 1.14.20
-        vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
+        vector<STARE_ArrayIndexSpatialValue> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
 
         vector<dods_int16> src_data{100, 200, 300};
         vector<dods_int16> result_data{0, 0, 0};    // result_data is initialized to the mask value
@@ -153,12 +155,12 @@ CPPUNIT_TEST_SUITE(StareFunctionsTest);
     void test_stare_subset() {
         DBG(cerr << "--- test_stare_subset() test - BEGIN ---" << endl);
 
-        vector<dods_uint64> target_indices = {3440016191299518474, 3440016191299518400, 3440016191299518401};
+        vector<STARE_ArrayIndexSpatialValue> target_indices = {3440016191299518474, 3440016191299518400, 3440016191299518401};
         // In these data indices, 3440012343008821258 overlaps 3440016191299518400, 3440016191299518401
         // and 3440016191299518474 overlaps 3440016191299518474, 3440016191299518400, 3440016191299518401
         // I think this is kind of a degenerate example since the three target indices seem to be at different
         // levels. jhrg 1.14.20
-        vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474, 3440016191299518528};
+        vector<STARE_ArrayIndexSpatialValue> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474, 3440016191299518528};
 
         unique_ptr<stare_matches> result = stare_subset_helper(target_indices, data_indices, 2, 2);
 
@@ -190,7 +192,7 @@ CPPUNIT_TEST_SUITE(StareFunctionsTest);
         try {
             const string filename_1 = string(TOP_SRC_DIR) + "/functions/stare/data/t1.nc";
             Float32 *variable = new Float32("Solar_Zenith");
-            vector<dods_uint64> values;
+            vector<STARE_ArrayIndexSpatialValue> values;
 
             // Call our function.
             get_sidecar_uint64_values(filename_1, variable->name(), values);
@@ -213,8 +215,8 @@ CPPUNIT_TEST_SUITE(StareFunctionsTest);
     void test_count_1() {
         DBG(cerr << "--- test_count_1() test - BEGIN ---" << endl);
 
-        vector<dods_uint64> target_indices = {3440016191299518474};
-        vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
+        vector<STARE_ArrayIndexSpatialValue> target_indices = {3440016191299518474};
+        vector<STARE_ArrayIndexSpatialValue> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
 
         CPPUNIT_ASSERT(count(target_indices, data_indices) == 1);
     }
@@ -223,9 +225,9 @@ CPPUNIT_TEST_SUITE(StareFunctionsTest);
     void test_count_2() {
         DBG(cerr << "--- test_count_2() test - BEGIN ---" << endl);
 
-        vector<dods_uint64> target_indices = {3440016191299518474, 5440016191299518475, 3440016191299518400,
+        vector<STARE_ArrayIndexSpatialValue> target_indices = {3440016191299518474, 5440016191299518475, 3440016191299518400,
                                               3440016191299518401};
-        vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
+        vector<STARE_ArrayIndexSpatialValue> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
 
         // 3440016191299518474 matches 3440016191299518474
         // 3440016191299518400 and 3440016191299518401 match 3440012343008821258
@@ -240,8 +242,8 @@ CPPUNIT_TEST_SUITE(StareFunctionsTest);
     void test_count_3() {
         DBG(cerr << "--- test_count_3() test - BEGIN ---" << endl);
 
-        vector<dods_uint64> target_indices = {3440016191299518400, 3440016191299518401};
-        vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
+        vector<STARE_ArrayIndexSpatialValue> target_indices = {3440016191299518400, 3440016191299518401};
+        vector<STARE_ArrayIndexSpatialValue> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
 
         DBG(cerr << "test_count_3, count(target, dataset): " << count(target_indices, data_indices) << endl);
 
@@ -252,8 +254,8 @@ CPPUNIT_TEST_SUITE(StareFunctionsTest);
     void test_target_in_dataset() {
         DBG(cerr << "--- test_target_in_dagtaset() test - BEGIN ---" << endl);
 
-        vector<dods_uint64> target_indices = {3440016191299518474};
-        vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
+        vector<STARE_ArrayIndexSpatialValue> target_indices = {3440016191299518474};
+        vector<STARE_ArrayIndexSpatialValue> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
 
         CPPUNIT_ASSERT(target_in_dataset(target_indices, data_indices));
     }
@@ -262,8 +264,8 @@ CPPUNIT_TEST_SUITE(StareFunctionsTest);
     void test_target_in_dataset_2() {
         DBG(cerr << "--- test_target_in_dagtaset_2() test - BEGIN ---" << endl);
 
-        vector<dods_uint64> target_indices = {5440016191299518475};// {3440016191299518500};
-        vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
+        vector<STARE_ArrayIndexSpatialValue> target_indices = {5440016191299518475};// {3440016191299518500};
+        vector<STARE_ArrayIndexSpatialValue> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
 
         CPPUNIT_ASSERT(!target_in_dataset(target_indices, data_indices));
     }
@@ -272,8 +274,8 @@ CPPUNIT_TEST_SUITE(StareFunctionsTest);
     void test_target_in_dataset_3() {
         DBG(cerr << "--- test_target_in_dagtaset_3() test - BEGIN ---" << endl);
 
-        vector<dods_uint64> target_indices = {3440016191299518500, 3440016191299518474};
-        vector<dods_uint64> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
+        vector<STARE_ArrayIndexSpatialValue> target_indices = {3440016191299518500, 3440016191299518474};
+        vector<STARE_ArrayIndexSpatialValue> data_indices = {9223372034707292159, 3440012343008821258, 3440016191299518474};
 
         CPPUNIT_ASSERT(target_in_dataset(target_indices, data_indices));
     }
@@ -295,7 +297,7 @@ CPPUNIT_TEST_SUITE(StareFunctionsTest);
 
             //The first index is an actual stare value from: MYD09.A2019003.2040.006.2019005020913_sidecar.h5
             //The final value is made up.
-            vector<dods_uint64> target_indices = {3440016721727979534, 3440012343008821258, 3440016322296021006};
+            vector<STARE_ArrayIndexSpatialValue> target_indices = {3440016721727979534, 3440012343008821258, 3440016322296021006};
 
             D4RValueList params;
             params.add_rvalue(new D4RValue(a_var));
@@ -333,7 +335,7 @@ CPPUNIT_TEST_SUITE(StareFunctionsTest);
 
             //The first index is an actual stare value from: MYD09.A2019003.2040.006.2019005020913_sidecar.h5
             //The final value is made up.
-            vector<dods_uint64> target_indices = {3440016721727979534, 3440012343008821258, 3440016322296021006};
+            vector<STARE_ArrayIndexSpatialValue> target_indices = {3440016721727979534, 3440012343008821258, 3440016322296021006};
 
             D4RValueList params;
             params.add_rvalue(new D4RValue(a_var));
@@ -371,7 +373,7 @@ CPPUNIT_TEST_SUITE(StareFunctionsTest);
             //Array a_var - uint64 for stare indices
             //The first index is an actual stare value from: MYD09.A2019003.2040.006.2019005020913_stare.h5
             //The final value is made up.
-            vector<dods_uint64> target_indices = {3440016721727979534, 3440012343008821258, 3440016322296021006};
+            vector<STARE_ArrayIndexSpatialValue> target_indices = {3440016721727979534, 3440012343008821258, 3440016322296021006};
 
             D4RValueList params;
             params.add_rvalue(new D4RValue(a_var));
@@ -408,7 +410,7 @@ CPPUNIT_TEST_SUITE(StareFunctionsTest);
         //     //Array a_var - uint64 for stare indices
         //     //The first index is an actual stare value from: MYD09.A2019003.2040.006.2019005020913_stare.h5
         //     //The final value is made up.
-        //     vector<dods_uint64> target_indices = {3440016721727979534, 3440012343008821258, 3440016322296021006};
+        //     vector<STARE_ArrayIndexSpatialValue> target_indices = {3440016721727979534, 3440012343008821258, 3440016322296021006};
 
         //     D4RValueList params;
         //     params.add_rvalue(new D4RValue(a_var));
@@ -445,7 +447,7 @@ CPPUNIT_TEST_SUITE(StareFunctionsTest);
             //Array a_var - uint64 for stare indices
             //The first index is an actual stare value from: MYD09.A2019003.2040.006.2019005020913_sidecar.h5
             //The final value is made up.
-            vector<dods_uint64> target_indices = {3440016721727979534, 3440012343008821258, 3440016322296021006};
+            vector<STARE_ArrayIndexSpatialValue> target_indices = {3440016721727979534, 3440012343008821258, 3440016322296021006};
 
             D4RValueList params;
             params.add_rvalue(new D4RValue(a_var));
@@ -459,7 +461,7 @@ CPPUNIT_TEST_SUITE(StareFunctionsTest);
             Array *stare = dynamic_cast<Array *>(subset_result->var("stare"));
 
             CPPUNIT_ASSERT(stare != nullptr);
-            vector<dods_uint64> result_s_indices;
+            vector<STARE_ArrayIndexSpatialValue> result_s_indices;
             stare->value(&result_s_indices[0]);
 
             DBG(cerr << "S Indices length: " << result_s_indices.size() << endl);
@@ -491,7 +493,7 @@ CPPUNIT_TEST_SUITE(StareFunctionsTest);
         //     //Array a_var - uint64 for stare indices
         //     //The first index is an actual stare value from: MYD09.A2019003.2040.006.2019005020913_sidecar.h5
         //     //The final value is made up.
-        //     vector<dods_uint64> target_indices = {3440016721727979534, 3440012343008821258, 3440016322296021006};
+        //     vector<STARE_ArrayIndexSpatialValue> target_indices = {3440016721727979534, 3440012343008821258, 3440016322296021006};
 
         //     D4RValueList params;
         //     params.add_rvalue(new D4RValue(a_var));
@@ -505,7 +507,7 @@ CPPUNIT_TEST_SUITE(StareFunctionsTest);
         //     Array *stare = dynamic_cast<Array*>(subset_result->var("stare"));
 
         //     CPPUNIT_ASSERT(stare != nullptr);
-        //     vector<dods_uint64> result_s_indices;
+        //     vector<STARE_ArrayIndexSpatialValue> result_s_indices;
         //     stare->value(&result_s_indices[0]);
 
         //     DBG(cerr << "S Indices length: " << result_s_indices.size() << endl);
