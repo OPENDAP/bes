@@ -104,10 +104,14 @@ ostream & operator << (ostream &out, const stare_matches &m)
 }
 
 static void
-extract_uint64_array(Array *var, vector<dods_uint64> &values)
+extract_stare_index_array(Array *var, vector<STARE_ArrayIndexSpatialValue> &values)
 {
+    if (var->var()->type() != dods_uint64_c)
+        throw BESSyntaxUserError("STARE server function passed an invalid Index array (" + var->name()
+        + " is type: " + var->var()->type_name() + ").", __FILE__, __LINE__);
+
     values.resize(var->length());
-    var->value(&values[0]);    // Extract the values of 'var' to 'values'
+    var->value((dods_uint64*)&values[0]);    // Extract the values of 'var' to 'values'
 }
 
 /**
@@ -215,8 +219,8 @@ stare_subset_helper(const vector<STARE_ArrayIndexSpatialValue> &target_indices,
     unique_ptr<stare_matches> subset(new stare_matches());
 
    auto sid_iter = dataset_indices.begin();
-    for (auto i = 0; i < dataset_rows; ++i) {
-        for (auto j = 0; j < dataset_cols; ++j) {
+    for (size_t i = 0; i < dataset_rows; ++i) {
+        for (size_t j = 0; j < dataset_cols; ++j) {
             auto sid = *sid_iter++;
             for (const auto &target : target_indices) {
                 if (cmpSpatial(sid, target) != 0) {     // != 0 --> sid is in target OR target is in sid
@@ -316,7 +320,7 @@ read_stare_indices_from_function_argument(BaseType *raw_stare_indices,
 
     stare_indices->read();
 
-    extract_uint64_array(stare_indices, s_indices);
+    extract_stare_index_array(stare_indices, s_indices);
 }
 
  /**
@@ -463,12 +467,12 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
     unique_ptr<Structure> result(new Structure("result"));
 
     unique_ptr<Array> stare(new Array("stare", new UInt64("stare")));
-    stare->set_value(&(subset->stare_indices[0]), subset->stare_indices.size());
+    stare->set_value((dods_uint64*)&(subset->stare_indices[0]), subset->stare_indices.size());
     stare->append_dim(subset->stare_indices.size());
     result->add_var_nocopy(stare.release());
 
     unique_ptr<Array> target(new Array("target", new UInt64("target")));
-    target->set_value(&(subset->target_indices[0]), subset->target_indices.size());
+    target->set_value((dods_uint64*)&(subset->target_indices[0]), subset->target_indices.size());
     target->append_dim(subset->target_indices.size());
     result->add_var_nocopy(target.release());
 
