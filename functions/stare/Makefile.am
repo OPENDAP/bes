@@ -5,7 +5,7 @@ AUTOMAKE_OPTIONS = foreign
 AM_CPPFLAGS = $(DAP_CFLAGS) -I$(top_srcdir)/functions/stare -I$(top_srcdir)/dispatch -I$(STARE_INC) \
 -I$(prefix)/deps/include $(NC_CPPFLAGS)
 # Added  -Wno-deprecated to suppress warnings about auto_ptr<>. jhrg 11/7/19
-AM_CXXFLAGS = -Wno-deprecated -Wno-vla-extension
+AM_CXXFLAGS = -Wno-deprecated -Wno-vla-extension -Wno-c++14-extensions
 AM_LDADD =  $(DAP_CLIENT_LIBS) -L$(abs_top_builddir)/dispatch -lbes_dispatch $(H5_LDFLAGS) $(H5_LIBS) \
 $(STARE_LDFLAGS) $(STARE_LIBS) $(NC_LDFLAGS) $(NC_LIBS)
 

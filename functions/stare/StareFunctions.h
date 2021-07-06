@@ -31,6 +31,9 @@
 
 #include "ServerFunction.h"
 
+#define STARE_STORAGE_PATH_KEY "FUNCTIONS.stareStoragePath"
+#define STARE_SIDECAR_SUFFIX_KEY "FUNCTIONS.stareSidecarSuffix"
+
 namespace libdap {
 class BaseType;
 
@@ -42,11 +45,6 @@ class DMR;
 }
 
 namespace functions {
-
-const string s_index_name = "Stare_Index";
-
-const std::string STARE_STORAGE_PATH_KEY = "FUNCTIONS.stareStoragePath";
-const std::string STARE_SIDECAR_SUFFIX_KEY = "FUNCTIONS.stareSidecarSuffix";
 
 // These default values can be overridden using BES keys.
 // See DapFunctions.cc. jhrg 5/21/20
@@ -69,8 +67,8 @@ struct stare_matches {
     std::vector<libdap::dods_int32> row_indices;
     std::vector<libdap::dods_int32> col_indices;
 
-    std::vector<libdap::dods_uint64> stare_indices;
-    std::vector<libdap::dods_uint64> target_indices;
+    std::vector<STARE_ArrayIndexSpatialValue> stare_indices;
+    std::vector<STARE_ArrayIndexSpatialValue> target_indices;
 
     // Pass by value and use move
     stare_matches(std::vector<libdap::dods_int32> row, std::vector<libdap::dods_int32> col,
@@ -80,7 +78,7 @@ struct stare_matches {
 
     stare_matches() = default;
 
-    void add(libdap::dods_int32 row, libdap::dods_int32 col, libdap::dods_uint64 si, libdap::dods_uint64 ti) {
+    void add(libdap::dods_int32 row, libdap::dods_int32 col, STARE_ArrayIndexSpatialValue si, STARE_ArrayIndexSpatialValue ti) {
         row_indices.push_back(row);
         col_indices.push_back(col);
         stare_indices.push_back(si);
@@ -113,7 +111,7 @@ public:
         setVersion("0.3");
     }
 
-    virtual ~StareIntersectionFunction() override = default;
+    ~StareIntersectionFunction() override = default;
 };
 
 class StareCountFunction : public libdap::ServerFunction {
@@ -135,7 +133,7 @@ public:
         setVersion("0.3");
     }
 
-    virtual ~StareCountFunction() override = default;
+    ~StareCountFunction() override = default;
 };
 
 class StareSubsetFunction : public libdap::ServerFunction {
@@ -156,7 +154,7 @@ public:
         setVersion("0.3");
     }
 
-    virtual ~StareSubsetFunction() override = default;
+    ~StareSubsetFunction() override = default;
 };
 
 class StareSubsetArrayFunction : public libdap::ServerFunction {
@@ -177,7 +175,7 @@ public:
         setVersion("0.1");
     }
 
-    virtual ~StareSubsetArrayFunction() override = default;
+    ~StareSubsetArrayFunction() override = default;
 
     template<class T>
     static void build_masked_data(libdap::Array *dependent_var,
