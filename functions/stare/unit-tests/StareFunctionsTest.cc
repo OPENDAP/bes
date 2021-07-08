@@ -297,7 +297,12 @@ CPPUNIT_TEST_SUITE(StareFunctionsTest);
 
             //The first index is an actual stare value from: MYD09.A2019003.2040.006.2019005020913_sidecar.h5
             //The final value is made up.
-            vector<STARE_ArrayIndexSpatialValue> target_indices = {3440016721727979534, 3440012343008821258, 3440016322296021006};
+            //
+            // This should be a vector<STARE_ArrayIndexSpatialValue> and on OSX that's fine but
+            // on CentOS 7 there's an issue because it appears that dods_uint64 is not 'unsigned long long'
+            // but instead 'unsigned long int'. This may be an issue all through the unit test code. See
+            // below. jhrg 7/8/21
+            vector<dods_uint64> target_indices = {3440016721727979534, 3440012343008821258, 3440016322296021006};
 
             D4RValueList params;
             params.add_rvalue(new D4RValue(a_var));
@@ -335,7 +340,7 @@ CPPUNIT_TEST_SUITE(StareFunctionsTest);
 
             //The first index is an actual stare value from: MYD09.A2019003.2040.006.2019005020913_sidecar.h5
             //The final value is made up.
-            vector<STARE_ArrayIndexSpatialValue> target_indices = {3440016721727979534, 3440012343008821258, 3440016322296021006};
+            vector<dods_uint64> target_indices = {3440016721727979534, 3440012343008821258, 3440016322296021006};
 
             D4RValueList params;
             params.add_rvalue(new D4RValue(a_var));
@@ -373,7 +378,7 @@ CPPUNIT_TEST_SUITE(StareFunctionsTest);
             //Array a_var - uint64 for stare indices
             //The first index is an actual stare value from: MYD09.A2019003.2040.006.2019005020913_stare.h5
             //The final value is made up.
-            vector<STARE_ArrayIndexSpatialValue> target_indices = {3440016721727979534, 3440012343008821258, 3440016322296021006};
+            vector<dods_uint64> target_indices = {3440016721727979534, 3440012343008821258, 3440016322296021006};
 
             D4RValueList params;
             params.add_rvalue(new D4RValue(a_var));
@@ -447,7 +452,7 @@ CPPUNIT_TEST_SUITE(StareFunctionsTest);
             //Array a_var - uint64 for stare indices
             //The first index is an actual stare value from: MYD09.A2019003.2040.006.2019005020913_sidecar.h5
             //The final value is made up.
-            vector<STARE_ArrayIndexSpatialValue> target_indices = {3440016721727979534, 3440012343008821258, 3440016322296021006};
+            vector<dods_uint64> target_indices = {3440016721727979534, 3440012343008821258, 3440016322296021006};
 
             D4RValueList params;
             params.add_rvalue(new D4RValue(a_var));
