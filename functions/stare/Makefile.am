@@ -36,12 +36,16 @@ sample_datadir = $(datadir)/hyrax/data/stare
 sample_data_DATA = data/README data/t1_stare.nc \
                    data/Target_overlap_nw.h5 \
                    data/Target_overlap_nw_stare.h5 \
-                   data/Target_overlap_nw_stare_res.h5
+                   data/Target_overlap_nw_stare_res.h5 \
+                   data/sample_data/336-23xx.20201211/MOD05_L2.A2019336.2315.061.2019337071952.hdf \
+                   data/sample_data/336-23xx.20201211/MOD05_L2.A2019336.2315.061.2019337071952_stare.nc
 
 EXTRA_DIST = data/README data/t1_stare.nc \
              data/Target_overlap_nw.h5 \
              data/Target_overlap_nw_stare.h5 \
-             data/Target_overlap_nw_stare_res.h5
+             data/Target_overlap_nw_stare_res.h5 \
+             data/sample_data/336-23xx.20201211/MOD05_L2.A2019336.2315.061.2019337071952.hdf \
+             data/sample_data/336-23xx.20201211/MOD05_L2.A2019336.2315.061.2019337071952_stare.nc
 
 # CLEANFILES =
 
