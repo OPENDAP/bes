@@ -9,20 +9,16 @@
 #define GEO_FILE_H_
 
 #include <string>
-#include <sstream>
-#include <iostream>
-#include <iomanip>
 #include <vector>
-//#include "ssc.h"
-#include "STARE.h"
-using namespace std;
+
+#include <STARE.h>
+
+#include "BESInternalError.h"
 
 #define SSC_LAT_NAME "Latitude"
 #define SSC_LON_NAME "Longitude"
 #define SSC_I_NAME "i"
 #define SSC_J_NAME "j"
-#define SSC_K_NAME "k"
-#define SSC_L_NAME "l"
 #define SSC_INDEX_NAME "STARE_index"
 #define SSC_COVER_NAME "STARE_cover"
 #define SSC_LONG_NAME "long_name"
@@ -52,53 +48,66 @@ using namespace std;
  */
 class GeoFile
 {
-public:
-    GeoFile();
-    ~GeoFile();
-    
-    /** Read file. */
-    int readFile(const string fileName, int verbose, int quiet, int build_level);
+private:
+    int d_ncid; ///< id of the open netCDF4 file
+    int d_num_index; ///< Number of STARE indices sets needed for this file.
+    std::string d_data_file_name;
+
+    std::vector<std::string> d_stare_index_name;
+    std::vector<std::string> stare_cover_name;
+    std::vector<std::string> d_variables; ///< Names of vars that use this index.
+    std::vector<size_t> d_size_i, d_size_j;
+    std::vector<int> d_stare_varid; ///< Use this varid to read the index values
+
+    // int *geo_num_i1; /**< Number of I. */
+    // int *geo_num_j1; /**< Number of J. */
+    // double **geo_lat1; /**< Array of latitude values. */
+    // double **geo_lon1; /**< Array of longitude values. */
+    // unsigned long long **geo_index1; /**< Array of STARE index. */
+
+    // TODO These may be used by the STAREmaster library or createSidecarFile.
+    //  jhrg 6/17/21
+//    int num_cover;
+//    unsigned long long **geo_cover1;
+//    int *geo_num_cover_values1;
+//    STARE_SpatialIntervals cover;
+//
+//    int cover_level;
+//    int perimeter_stride;
+
+protected:
+    std::string sanitize_pathname(string path) const;
 
     /** Get STARE index sidecar filename. */
-    string sidecarFileName(const string fileName);
+    std::string sidecar_filename(const std::string &file_name) const;
 
-    int readSidecarFile_int(const std::string fileName, int verbose, int &num_index,
-			    vector<string> &stare_index_name, vector<size_t> &size_i,
-			    vector<size_t> &size_j, vector<string> &variables,
-			    vector<int> &stare_varid, int &ncid);
-    int readSidecarFile(const std::string fileName, int verbose, int &ncid);
+    int read_sidecar_file(const std::string &file_name);
 
-    /** Get STARE index for data varaible. */
-    int getSTAREIndex(const std::string varName, int verbose, int ncid, int &varid,
-		      size_t &my_size_i, size_t &my_size_j);
-    int getSTAREIndex_2(const std::string varName, int verbose, int ncid,
-			vector<unsigned long long> &values);
+public:
+    GeoFile() : d_ncid(-1), d_num_index(0) {};
 
-    /** Close sidecar file. */
-    int closeSidecarFile(int verbose, int ncid);
+    /**
+     * @brief Open and read the sidecar file for a given data file
+     * @param data_file_name
+     */
+    explicit GeoFile(const std::string &data_file_name)  : d_ncid(-1), d_num_index(0), d_data_file_name(data_file_name) {
+        // load much of the info and set d_ncid
+        int ret = read_sidecar_file(sidecar_filename(data_file_name));
+        if (ret != NC_NOERR)
+            throw BESInternalError("Could not open file " + sanitize_pathname(data_file_name)
+                                    + " - " + nc_strerror(ret), __FILE__, __LINE__);
+    };
 
-    int num_index; /**< Number of STARE indicies needed for this file. */
-    int *geo_num_i1; /**< Number of I. */
-    int *geo_num_j1; /**< Number of J. */
-    double **geo_lat1; /**< Array of latitude values. */
-    double **geo_lon1; /**< Array of longitude values. */
-    unsigned long long **geo_index1; /**< Array of STARE index. */
+    virtual ~GeoFile() { close_sidecar_file(); };
 
-    int num_cover;
-    unsigned long long **geo_cover1; /**< Array of STARE index intervals. */
-    int *geo_num_cover_values1;
-    vector<string> var_name[MAX_NUM_INDEX]; /**< Names of vars that use this index. */
-    STARE_SpatialIntervals cover;
+    // The data types for STARESTARE_ArrayIndexSpatialValue
+    // STARE_SpatialIntervals (which is std::vector<STARE_ArrayIndexSpatialValue>
+    void get_stare_indices(const std::string &var_name, std::vector<STARE_ArrayIndexSpatialValue> &values);
 
-    int cover_level;
-    int perimeter_stride;
+    size_t get_variable_rows(std::string variable_name) const;
+    size_t get_variable_cols(std::string variable_name) const;
 
-    vector<string> stare_index_name;
-    vector<string> stare_cover_name;
-    vector<string> variables;
-
-    vector<size_t> size_i, size_j;
-    vector<int> stare_varid;
+    void close_sidecar_file();
 };
 
 #endif /* GEO_FILE_H_ */

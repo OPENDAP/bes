@@ -6,7 +6,7 @@ BES.LogName=./bes.log
 BES.LogVerbose=no
 
 # FIXME hdf5 should not be here. jhrg 12/31/19
-BES.modules=dap,cmd,dapreader,functions,h5
+BES.modules=dap,cmd,dapreader,functions,h5,h4
 
 # Load BES modules from the source dirs
 BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
@@ -16,6 +16,9 @@ BES.module.functions=@abs_top_builddir@/functions/.libs/libfunctions_module.so
 
 BES.module.h5 = @abs_top_builddir@/modules/hdf5_handler/.libs/libhdf5_module.so
 BES.Catalog.catalog.TypeMatch += h5:.*\.h5$;
+
+BES.module.h4 = @abs_top_builddir@/modules/hdf4_handler/.libs/libhdf4_module.so
+BES.Catalog.catalog.TypeMatch += h4:.*\.hdf$;
 
 BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@
 BES.Data.RootDirectory=/dev/null
@@ -48,7 +51,14 @@ DR.UseTestTypes=true
 DR.UseSeriesValues=true
 
 # Where to find stare sidecar files - with the data
+# Not currently used. jhrg 6/30/21
 FUNCTIONS.stareStoragePath = @abs_top_srcdir@/functions/stare/data
 
 # The sidecar file suffix
-FUNCTIONS.stareSidecarSuffix = _stare_res
+# Not currently used. jhrg 6/30/21
+FUNCTIONS.stareSidecarSuffix = _stare.nc
+
+# This is needed for the tests to pass. jhrg 6/30/21
+H5.EnableCF=true
+H4.EnableCF=true
+

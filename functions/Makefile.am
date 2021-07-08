@@ -18,7 +18,7 @@ LIBADD = $(DAP_LIBS) $(GDAL_LDFLAGS) $(NC_LDFLAGS) $(NC_LIBS)
 # Added -Wno-deprecated to quite warings about auto_ptr<>. jhrg 11/6/19
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Wno-deprecated
 
-AM_CXXFLAGS=
+AM_CXXFLAGS = -Wno-c++14-extensions
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 

@@ -7,10 +7,10 @@
         <UInt64 name="target">
             <Dim size="2"/>
         </UInt64>
-        <Int32 name="x">
+        <Int32 name="row">
             <Dim size="2"/>
         </Int32>
-        <Int32 name="y">
+        <Int32 name="col">
             <Dim size="2"/>
         </Int32>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
@@ -23,7 +23,7 @@ The data:
 Structure {
     UInt64 stare[2];
     UInt64 target[2];
-    Int32 x[2];
-    Int32 y[2];
-} result = { {3440016635821480910, 3440016633823675278}, {3440016633681149966, 3440016633681149966}, {0, 0}, {0, 1} };
+    Int32 row[2];
+    Int32 col[2];
+} result = { {3526528291638322633, 3526529227274484265}, {3526529227274484265, 3526529227274484265}, {404, 405}, {269, 269} };
 

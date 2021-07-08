@@ -6,12 +6,10 @@ AUTOMAKE_OPTIONS = foreign
 # Removed jhrg 9.22.17 in an attempt to fix distcheck's build
 # subdir-objects
 
-# Headers in 'tests' are used by the arrayT unit tests.
-
-AM_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
-	-I$(top_srcdir)/functions -I$(top_srcdir)/functions/stare $(DAP_CFLAGS) $(NC_CPPFLAGS)
-AM_LDADD =  $(DAP_LIBS) $(top_builddir)/dispatch/libbes_dispatch.la  \
-	-ltest-types $(H5_LDFLAGS) $(H5_LIBS) $(STARE_LDFLAGS) $(STARE_LIBS) $(NC_LDFLAGS) $(NC_LIBS)
+AM_CPPFLAGS = $(BES_CPPFLAGS) -I$(top_srcdir)/functions/stare -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
+-I$(top_srcdir)/functions -I$(top_srcdir)/functions/stare $(DAP_CFLAGS) $(NC_CPPFLAGS)
+AM_LDADD = $(top_builddir)/dispatch/libbes_dispatch.la -ltest-types $(DAP_LIBS) \
+$(H5_LDFLAGS) $(H5_LIBS) $(STARE_LDFLAGS) $(STARE_LIBS) $(NC_LDFLAGS) $(NC_LIBS)
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
@@ -87,14 +85,7 @@ check-local:
 	@echo ""
 endif
 
-# These are used to read in baselines from files
-#TEST_SRC = test_utils.cc test_utils.h 
-
-# Many of the tests use these - build once
-#TEST_OBJ = ../roi_util.o ../functions_util.o
-
 # Listing the objects here keeps from having to link with the module - not a portable
 # solution - and listing these as source breaks distcheck jhrg 9/24/15
 StareFunctionsTest_SOURCES = StareFunctionsTest.cc  $(TEST_SRC)
-StareFunctionsTest_OBJ = ../StareFunctions.o ../GeoFile.o
-StareFunctionsTest_LDADD = $(StareFunctionsTest_OBJ) $(TEST_OBJ) $(AM_LDADD)
+StareFunctionsTest_LDADD = $(top_builddir)/functions/.libs/libfunctions_module.a  $(AM_LDADD)
