@@ -81,8 +81,7 @@ public:
         if (bes_debug) BESDebug::SetUp("cerr,stare,geofile");
     }
 
-    virtual ~StareFunctionsTest() {
-    }
+    virtual ~StareFunctionsTest() = default;
 
     virtual void setUp() {
         d4_btf = new D4BaseTypeFactory();
@@ -129,7 +128,6 @@ CPPUNIT_TEST_SUITE(StareFunctionsTest);
     CPPUNIT_TEST_SUITE_END();
 
     void test_stare_subset_array_helper() {
-#if 1
         DBG(cerr << "--- test_stare_subset_array_helper() test - BEGIN ---" << endl);
 
         vector<STARE_ArrayIndexSpatialValue> target_indices = {3440016191299518474, 3440016191299518400, 3440016191299518401};
@@ -148,7 +146,6 @@ CPPUNIT_TEST_SUITE(StareFunctionsTest);
         CPPUNIT_ASSERT(result_data[0] == 0);
         CPPUNIT_ASSERT(result_data[1] == 200);
         CPPUNIT_ASSERT(result_data[2] == 300);
-#endif
     }
 
 
@@ -323,6 +320,7 @@ CPPUNIT_TEST_SUITE(StareFunctionsTest);
         }
     }
 
+#if 0
     void intersection_function_test_2() {
         DBG(cerr << "--- intersection_function_test_2() test - BEGIN ---" << endl);
 
@@ -398,43 +396,6 @@ CPPUNIT_TEST_SUITE(StareFunctionsTest);
         }
     }
 
-    void count_function_test_2() {
-        DBG(cerr << "--- count_function_test_2() test - BEGIN ---" << endl);
-
-        // try {
-        //     Array *a_var = new TestArray("a_var", new TestByte("a_var"));
-        //      a_var->append_dim(10);
-
-        //     two_arrays_dmr->root()->add_var_nocopy(a_var);
-
-        //     //MYD09.A2019003.2040.006.2019005020913_sidecar.h5 values:
-        //     //Lat - 32.2739, 32.2736, 32.2733, 32.2731, 32.2728, 32.2725, 32.2723, 32.272, 32.2718, 32.2715
-        //     //Lon - -98.8324, -98.8388, -98.8452, -98.8516, -98.858, -98.8644, -98.8708, -98.8772, -98.8836, -98.8899
-        //     //Stare - 3440016191299518474 x 10
-
-        //     //Array a_var - uint64 for stare indices
-        //     //The first index is an actual stare value from: MYD09.A2019003.2040.006.2019005020913_stare.h5
-        //     //The final value is made up.
-        //     vector<STARE_ArrayIndexSpatialValue> target_indices = {3440016721727979534, 3440012343008821258, 3440016322296021006};
-
-        //     D4RValueList params;
-        //     params.add_rvalue(new D4RValue(a_var));
-        //     params.add_rvalue(new D4RValue(target_indices));
-
-        //     BaseType *checkHasValue = StareCountFunction::stare_count_dap4_function(&params, *two_arrays_dmr);
-
-        //     CPPUNIT_ASSERT(dynamic_cast<Int32*> (checkHasValue)->value() == 3);
-        // }
-        // catch(Error &e) {
-        //     DBG(cerr << e.get_error_message() << endl);
-        //     CPPUNIT_FAIL("count_function_test() test failed");
-        // }
-        // catch(BESError &e) {
-        //     DBG(cerr << e.get_verbose_message() << endl);
-        //     CPPUNIT_FAIL("count_function_test() test failed");
-        // }
-    }
-
     void subset_function_test() {
         DBG(cerr << "--- subset_function_test() test - BEGIN ---" << endl);
 
@@ -484,49 +445,49 @@ CPPUNIT_TEST_SUITE(StareFunctionsTest);
     void subset_function_test_2() {
         DBG(cerr << "--- subset_function_test_2() test - BEGIN ---" << endl);
 
-        // try {
-        //     Array *a_var = new TestArray("a_var", new TestByte("a_var"));
-        //     a_var->append_dim(10);
+         try {
+             Array *a_var = new TestArray("a_var", new TestByte("a_var"));
+             a_var->append_dim(10);
 
-        //     two_arrays_dmr->root()->add_var_nocopy(a_var);
+             two_arrays_dmr->root()->add_var_nocopy(a_var);
 
-        //     //MYD09.A2019003.2040.006.2019005020913_sidecar.h5 values:
-        //     //Lat - 32.2739, 32.2736, 32.2733, 32.2731, 32.2728, 32.2725, 32.2723, 32.272, 32.2718, 32.2715
-        //     //Lon - -98.8324, -98.8388, -98.8452, -98.8516, -98.858, -98.8644, -98.8708, -98.8772, -98.8836, -98.8899
-        //     //Stare - 3440016191299518474 x 10
+             //MYD09.A2019003.2040.006.2019005020913_sidecar.h5 values:
+             //Lat - 32.2739, 32.2736, 32.2733, 32.2731, 32.2728, 32.2725, 32.2723, 32.272, 32.2718, 32.2715
+             //Lon - -98.8324, -98.8388, -98.8452, -98.8516, -98.858, -98.8644, -98.8708, -98.8772, -98.8836, -98.8899
+             //Stare - 3440016191299518474 x 10
 
-        //     //Array a_var - uint64 for stare indices
-        //     //The first index is an actual stare value from: MYD09.A2019003.2040.006.2019005020913_sidecar.h5
-        //     //The final value is made up.
-        //     vector<STARE_ArrayIndexSpatialValue> target_indices = {3440016721727979534, 3440012343008821258, 3440016322296021006};
+             //Array a_var - uint64 for stare indices
+             //The first index is an actual stare value from: MYD09.A2019003.2040.006.2019005020913_sidecar.h5
+             //The final value is made up.
+             vector<STARE_ArrayIndexSpatialValue> target_indices = {3440016721727979534, 3440012343008821258, 3440016322296021006};
 
-        //     D4RValueList params;
-        //     params.add_rvalue(new D4RValue(a_var));
-        //     params.add_rvalue(new D4RValue(target_indices));
+             D4RValueList params;
+             params.add_rvalue(new D4RValue(a_var));
+             params.add_rvalue(new D4RValue(target_indices));
 
-        //     BaseType *result = StareSubsetFunction::stare_subset_dap4_function(&params, *two_arrays_dmr);
+             BaseType *result = StareSubsetFunction::stare_subset_dap4_function(&params, *two_arrays_dmr);
 
-        //     CPPUNIT_ASSERT(dynamic_cast<Structure*>(result) != nullptr);
+             CPPUNIT_ASSERT(dynamic_cast<Structure*>(result) != nullptr);
 
-        //     Structure *subset_result = dynamic_cast<Structure*>(result);
-        //     Array *stare = dynamic_cast<Array*>(subset_result->var("stare"));
+             Structure *subset_result = dynamic_cast<Structure*>(result);
+             Array *stare = dynamic_cast<Array*>(subset_result->var("stare"));
 
-        //     CPPUNIT_ASSERT(stare != nullptr);
-        //     vector<STARE_ArrayIndexSpatialValue> result_s_indices;
-        //     stare->value(&result_s_indices[0]);
+             CPPUNIT_ASSERT(stare != nullptr);
+             vector<STARE_ArrayIndexSpatialValue> result_s_indices;
+             stare->value(&result_s_indices[0]);
 
-        //     DBG(cerr << "S Indices length: " << result_s_indices.size() << endl);
-        // }
-        // catch(Error &e) {
-        //     DBG(cerr << e.get_error_message() << endl);
-        //     CPPUNIT_FAIL("count_function_test() test failed");
-        // }
-        // catch(BESError &e) {
-        //     DBG(cerr << e.get_verbose_message() << endl);
-        //     CPPUNIT_FAIL("count_function_test() test failed");
-        // }
+             DBG(cerr << "S Indices length: " << result_s_indices.size() << endl);
+         }
+         catch(Error &e) {
+             DBG(cerr << e.get_error_message() << endl);
+             CPPUNIT_FAIL("count_function_test() test failed");
+         }
+         catch(BESError &e) {
+             DBG(cerr << e.get_verbose_message() << endl);
+             CPPUNIT_FAIL("count_function_test() test failed");
+         }
     }
-
+#endif
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(StareFunctionsTest);
