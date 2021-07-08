@@ -545,4 +545,19 @@ StareSubsetArrayFunction::stare_subset_array_dap4_function(D4RValueList *args, D
     return result.release();
 }
 
+// TODO code to build a lat/lon box. From Mike Rilee. 7/6/21
+
+#if 0
+// STARE.h
+// Signature: STARE::STARE_SpatialIntervals CoverBoundingBoxFromLatLonDegrees(LatLonDegrees64ValueVector corners, int force_resolution_level = -1);
+
+LatLonDegrees64ValueVector latlonbox;
+latlonbox.push_back(LatLonDegrees64(0,0));
+latlonbox.push_back(LatLonDegrees64(2,0));
+latlonbox.push_back(LatLonDegrees64(2,2));
+latlonbox.push_back(LatLonDegrees64(0,2));
+int force_resolution = 6; // defaults to -1
+STARE_SpatialIntervals sivs = sIndex.CoverBoundingBoxFromLatLonDegrees(latlonbox,force_resolution);
+#endif
+
 } // namespace functions
