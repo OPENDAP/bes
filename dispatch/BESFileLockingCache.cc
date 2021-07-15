@@ -962,7 +962,7 @@ void BESFileLockingCache::update_and_purge(const string &new_file)
                 // just move on to the next file. Also test to see if the current file is the file
                 // this process just added to the cache - don't purge that!
                 int cfile_fd;
-                if (i->name != new_file && getExclusiveLockNB(i->name, cfile_fd)) {
+                if (i->name != new_file && get_exclusive_lock_nb(i->name, cfile_fd)) {
                     BESDEBUG(CACHE, prolog << "purge: " << i->name << " removed." << endl);
 
                     if (unlink(i->name.c_str()) != 0)
@@ -1076,7 +1076,7 @@ void BESFileLockingCache::purge_file(const string &file)
 
         // Grab an exclusive lock on the file
         int cfile_fd;
-        if (getExclusiveLock(file, cfile_fd)) {
+        if (get_exclusive_lock(file, cfile_fd)) {
             // Get the file's size
             unsigned long long size = 0;
             struct stat buf;
