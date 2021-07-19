@@ -27,6 +27,7 @@
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include <unistd.h>
 
 #include <sys/types.h>
 #include <stdio.h>
@@ -57,8 +58,6 @@
 #include <D4Group.h>
 #include <D4ParserSax2.h>
 #include <test/D4TestTypeFactory.h>
-
-#include <GetOpt.h>
 
 #include <GNURegex.h>
 #include <util.h>
@@ -815,9 +814,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(ResponseBuilderTest);
 
 int main(int argc, char*argv[])
 {
-    GetOpt getopt(argc, argv, "dDh");
     int option_char;
-    while ((option_char = getopt()) != -1)
+    while ((option_char = getopt(argc, argv, "dDh")) != -1)
         switch (option_char) {
         case 'd':
             debug = 1;  // debug is a static global
@@ -838,6 +836,9 @@ int main(int argc, char*argv[])
             break;
         }
 
+    argc -= optind;
+    argv += optind;
+
     // clean out the response_cache dir
 
     CppUnit::TextTestRunner runner;
@@ -845,12 +846,12 @@ int main(int argc, char*argv[])
 
     bool wasSuccessful = true;
     string test = "";
-    int i = getopt.optind;
-    if (i == argc) {
+    if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
     }
     else {
+        int i = 0;
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
             test = ResponseBuilderTest::suite()->getName().append("::").append(argv[i]);
