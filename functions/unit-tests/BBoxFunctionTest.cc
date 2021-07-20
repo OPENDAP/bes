@@ -40,7 +40,7 @@
 #include <Structure.h>
 #include <DDS.h>
 #include <util.h>
-#include <GetOpt.h>
+#include <unistd.h>
 #include <debug.h>
 
 #include <test/TestTypeFactory.h>
@@ -395,10 +395,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(BBoxFunctionTest);
 
 int main(int argc, char *argv[])
 {
-
-    GetOpt getopt(argc, argv, "dDh");
     int option_char;
-    while ((option_char = getopt()) != -1)
+    while ((option_char = getopt(argc, argv, "dDh")) != -1)
         switch (option_char) {
         case 'd':
             debug = 1;  // debug is a static global
@@ -419,17 +417,20 @@ int main(int argc, char *argv[])
             break;
         }
 
+    argc -= optind;
+    argv += optind;
+
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
     bool wasSuccessful = true;
     string test = "";
-    int i = getopt.optind;
-    if (i == argc) {
+    if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
     }
     else {
+        int i = 0;
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
             test = BBoxFunctionTest::suite()->getName().append("::").append(argv[i]);
