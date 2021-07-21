@@ -5,11 +5,11 @@
   <bes:setContext name="errors">xml</bes:setContext>
   <bes:setContext name="max_response_size">0</bes:setContext>
   
-  <bes:setContainer name="c" space="catalog">/functions/stare/data/MYD09.A2019003_hacked.h5</bes:setContainer>
+  <bes:setContainer name="c" space="catalog">/functions/stare/data/sample_data/336-23xx.20201211/MOD05_L2.A2019336.2315.061.2019337071952.hdf</bes:setContainer>
   
   <bes:define name="d1" space="default">
     <bes:container name="c">
-      <bes:dap4function>stare_subset_array(Latitude, 17, $UInt64(1:3440016691617463259))</bes:dap4function>
+      <bes:dap4function>stare_subset_array(Solar_Zenith, 17, $UInt64(0:3526529227274484265))</bes:dap4function>
     </bes:container>stare_1.dap.bescmd
   </bes:define>
   
