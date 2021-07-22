@@ -6,29 +6,22 @@ m4_include(AT_TOP_SRCDIR/modules/handler_tests_macros.m4)
 
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_intersection_0.dap.bescmd, xpass)
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_intersection_1.dap.bescmd, xpass)
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_intersection_2.dap.bescmd, xpass)
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_intersection_3.dap.bescmd, xpass)
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_intersection_4.dap.bescmd, xpass)
 
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_count_0.dap.bescmd, xpass)
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_count_1.dap.bescmd, xpass)
-
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_subset_0.dap.bescmd, xpass)
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_subset_1.dap.bescmd, xpass)
-
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_subset_array_0.dap.bescmd, xpass)
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_subset_array_1.dap.bescmd, xpass)
-
-# These tests use the stare indices from Target_overlap_nw.h5 against the
-# MYD09.A2019003_hacked.h5 base dataset. The #2 tests using the level 27
-# Target s-indices against the MYD09 Base, the #3 tests use the Target s-indices
-# with the resolution bits set (level 14 for these data).
-
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_intersection_2.dap.bescmd, xpass)
-AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_intersection_3.dap.bescmd, xpass)
-
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_count_2.dap.bescmd, xpass)
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_count_3.dap.bescmd, xpass)
 
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_subset_0.dap.bescmd, xpass)
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_subset_1.dap.bescmd, xpass)
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_subset_2.dap.bescmd, xpass)
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_subset_3.dap.bescmd, xpass)
 
+
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_subset_array_0.dap.bescmd, xpass)
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_subset_array_1.dap.bescmd, xpass)
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_subset_array_2.dap.bescmd, xpass)
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_subset_array_3.dap.bescmd, xpass)

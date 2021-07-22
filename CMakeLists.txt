@@ -10,6 +10,9 @@
 # the installed headers. This might make for some consistency issues if the
 # libdap code is edited and not installed. jhrg 12/5/19
 include_directories(../libdap4)
+include_directories(../libdap4/d4_ce)
+include_directories(../libdap4/d4_function)
+include_directories(../libdap4/geo)
 
 # Does including this _and_ the above bork CLion? jhrg 1.15.20
 #include_directories(../build/include/libdap)
@@ -23,12 +26,16 @@ include_directories(/usr/include/libxml2)
 include_directories(/usr/include/curl)
 
 # Added.
+include_directories(/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/)
+
 include_directories(/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/libxml2)
 include_directories(/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/curl)
 
 # Where the hyrax project puts the dependencies' headers
 
 include_directories(../build/deps/include)
+include_directories(../build//include)
+include_directories(../build//include/libdap)
 
 # These should not be referenced outside of libdap. jhrg 12/5/19
 # include_directories(../libdap4/d4_ce)
@@ -525,6 +532,8 @@ add_executable(bes
     functions/stare/build_sidecar.cc
     functions/stare/StareFunctions.cc
     functions/stare/StareFunctions.h
+	functions/stare/GeoFile.cc
+	functions/stare/GeoFile.h
     functions/stare/unit-tests/StareFunctionsTest.cc
 
     functions/tests/gse-test.cc
