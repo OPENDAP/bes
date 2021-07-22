@@ -31,7 +31,7 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <GetOpt.h>
+#include <unistd.h>
 #include <util.h>
 #include <debug.h>
 
@@ -361,9 +361,8 @@ int main(int argc, char*argv[])
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    GetOpt getopt(argc, argv, "dbc:");
     int option_char;
-    while ((option_char = getopt()) != -1)
+    while ((option_char = getopt(argc, argv, "dbc:")) != -1)
         switch (option_char) {
         case 'd':
             debug = true;  // debug is a static global
@@ -373,22 +372,22 @@ int main(int argc, char*argv[])
             bes_debug = true;  // bes_debug is a static global
             break;
         case 'c':
-        {
-            bes_conf_file = getopt.optarg;  // bes_conf_file is a static global
+            bes_conf_file = optarg;  // bes_conf_file is a static global
+            break;
+        default:
             break;
         }
 
-            default:
-            break;
-        }
+    argc -= optind;
+    argv += optind;
 
     bool wasSuccessful = true;
-    int i = getopt.optind;
-    if (i == argc) {
+    if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
     }
     else {
+        int i = 0;
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
             string test = CredentialsManagerTest::suite()->getName().append("::").append(argv[i]);
