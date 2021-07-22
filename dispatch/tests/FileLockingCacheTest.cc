@@ -41,8 +41,6 @@
 #include <time.h>
 #include <ctime>
 
-#include <GetOpt.h> // I think this is an error
-
 #include "TheBESKeys.h"
 #include "BESError.h"
 #include "BESDebug.h"
@@ -193,13 +191,12 @@ int main(int argc, char*argv[])
 {
     FileLockingCacheTest flc_test;
 
-    GetOpt getopt(argc, argv, "vdb:pr:x:hf:c:");
     int option_char;
     long int time;
     int retVal=0;
     string file_name = LOCK_TEST_FILE;
     string cache_dir = TEST_CACHE_DIR;
-    while (!retVal && (option_char = getopt()) != EOF) {
+    while (!retVal && (option_char = getopt(argc, argv, "vdb:pr:x:hf:c:")) != EOF) {
         switch (option_char) {
         case 'v':
             cerr << version << endl;
@@ -212,17 +209,17 @@ int main(int argc, char*argv[])
 
         case 'b':
             bes_debug = true;  // bes_debug is a static global
-            BESDebug::SetUp(string(getopt.optarg));
+            BESDebug::SetUp(string(optarg));
             cerr << "BES debug enabled." << endl;
             break;
 
         case 'f':
-            file_name = string(getopt.optarg);
+            file_name = optarg;
             DBG(cerr << __func__ << "() - use filename " << file_name << endl);
             break;
 
         case 'c':
-            cache_dir = BESUtil::assemblePath(TEST_BUILD_DIR, string(getopt.optarg));
+            cache_dir = BESUtil::assemblePath(TEST_BUILD_DIR, optarg);
             DBG(cerr << __func__ << "() - use cache dir " << cache_dir << endl);
             break;
 
@@ -233,13 +230,13 @@ int main(int argc, char*argv[])
             break;
 
         case 'r':
-            std::istringstream(getopt.optarg) >> time;
+            std::istringstream(optarg) >> time;
             DBG(cerr << __func__ << "() - get_and_hold_read_lock for " << time << " seconds" << endl);
             retVal = flc_test.get_and_hold_read_lock(time, file_name, cache_dir);
             break;
 
         case 'x':
-            std::istringstream(getopt.optarg) >> time;
+            std::istringstream(optarg) >> time;
             DBG(cerr << __func__ << "() -  get_and_hold_exclusive_lock for " << time << " seconds." << endl);
             retVal = flc_test.get_and_hold_exclusive_lock(time, file_name, cache_dir);
             break;
@@ -282,7 +279,7 @@ int main(int argc, char*argv[])
             cerr << "    # Enable all debugging." << endl;
             cerr << "    # Purge test files from cache." << endl;
             cerr << "    # Get and hold an exclusive write lock for 10 seconds." << endl;
-            cerr << "       FileLockingCacheTest -d b \"cerr,all\" -p -x 10" << endl;
+            cerr << "       FileLockingCacheTest -d -b \"cerr,all\" -p -x 10" << endl;
             cerr << "" << endl;
             cerr << "FileLockingCacheTest                 (END)                 FileLockingCacheTest" << endl;
             cerr << "" << endl;
