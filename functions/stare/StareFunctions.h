@@ -184,4 +184,25 @@ public:
                                   unique_ptr<libdap::Array> &result);
 };
 
+class StareBoxFunction : public libdap::ServerFunction {
+public:
+    static libdap::BaseType *stare_box_dap4_function(libdap::D4RValueList *args, libdap::DMR &dmr);
+
+    friend class StareFunctionsTest;
+
+public:
+    StareBoxFunction() {
+        setName("stare_box");
+        setDescriptionString(
+                "The stare_box() function: Returns a STARE cover for the region within the four lat/lon corner points.");
+        setUsageString("stare_box(tl_lat, tl_lon, br_lat, br_lon) or stare_box(p1_lat, p1_lon, ..., p4_lat, p4_lon)");
+        setRole("http://services.opendap.org/dap4/server-side-function/stare_box");
+        setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#stare_box");
+        setFunction(stare_box_dap4_function);
+        setVersion("0.1");
+    }
+
+    ~StareBoxFunction() override = default;
+};
+
 } // functions namespace
