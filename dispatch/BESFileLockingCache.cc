@@ -867,49 +867,45 @@ unsigned long long BESFileLockingCache::m_collect_cache_dir_info(CacheFiles &con
  * @exception BESInternalError is thrown on any condition other than the file
  * not existing or the lock being unavailable.
  */
-static bool getExclusiveLockNB(const string &file_name, int &ref_fd)
+bool BESFileLockingCache::get_exclusive_lock_nb(const string &file_name, int &ref_fd)
 {
-    BESDEBUG(LOCK, "getExclusiveLock_nonblocking: " << file_name <<endl);
+    BESDEBUG(LOCK, prolog << "BEGIN filename: " << file_name <<endl);
 
     int fd;
     if ((fd = open(file_name.c_str(), O_RDWR)) < 0) {
         switch (errno) {
-        case ENOENT:
-            return false;
+            case ENOENT:
+                return false;
 
-        default:
-            throw BESInternalError(prolog + "errno: " + get_errno(), __FILE__, __LINE__);
+            default:
+                throw BESInternalError(prolog + "errno: " + get_errno(), __FILE__, __LINE__);
         }
     }
 
     struct flock *l = lock(F_WRLCK);
     if (fcntl(fd, F_SETLK, l) == -1) {
         switch (errno) {
-        case EAGAIN:
-        case EACCES:
-            BESDEBUG(LOCK,prolog << "exit (false): " << file_name << " by: " << l->l_pid << endl);
-            close(fd);
-            return false;
+            case EAGAIN:
+            case EACCES:
+                BESDEBUG(LOCK,prolog << "exit (false): " << file_name << " by: " << l->l_pid << endl);
+                close(fd);
+                return false;
 
-        default: {
-            close(fd);
-            ostringstream oss;
-            oss << prolog << "cache process: " << l->l_pid << " triggered a locking error for '" << file_name << "': " << get_errno();
-            throw BESInternalError(oss.str(), __FILE__, __LINE__);
-        }
+            default: {
+                close(fd);
+                ostringstream oss;
+                oss << prolog << "cache process: " << l->l_pid << " triggered a locking error for '" << file_name << "': " << get_errno();
+                throw BESInternalError(oss.str(), __FILE__, __LINE__);
+            }
         }
     }
 
-    BESDEBUG(LOCK, prolog << "exit (true): " << file_name <<endl);
 
     // Success
+    m_record_descriptor(file_name,fd);
     ref_fd = fd;
+    BESDEBUG(LOCK, prolog << "END filename: " << file_name <<endl);
     return true;
-}
-
-bool BESFileLockingCache::get_exclusive_lock_nb(const string &target, int &fd)
-{
-    return getExclusiveLockNB(target, fd);
 }
 
 
@@ -966,7 +962,7 @@ void BESFileLockingCache::update_and_purge(const string &new_file)
                 // just move on to the next file. Also test to see if the current file is the file
                 // this process just added to the cache - don't purge that!
                 int cfile_fd;
-                if (i->name != new_file && getExclusiveLockNB(i->name, cfile_fd)) {
+                if (i->name != new_file && get_exclusive_lock_nb(i->name, cfile_fd)) {
                     BESDEBUG(CACHE, prolog << "purge: " << i->name << " removed." << endl);
 
                     if (unlink(i->name.c_str()) != 0)
@@ -1025,22 +1021,22 @@ void BESFileLockingCache::update_and_purge(const string &new_file)
  * @exception BESInternalError is thrown on any condition other than the file
  * not existing
  */
-static bool getExclusiveLock(const string &file_name, int &ref_fd)
+bool BESFileLockingCache::get_exclusive_lock(const string &file_name, int &ref_fd)
 {
-    BESDEBUG(LOCK, prolog << "BEGIN file: " << file_name <<endl);
+    BESDEBUG(LOCK, prolog << "BEGIN filename: " << file_name <<endl);
 
     int fd;
     if ((fd = open(file_name.c_str(), O_RDWR)) < 0) {
         switch (errno) {
-        case ENOENT:
-            return false;
+            case ENOENT:
+                return false;
 
-        default:
+            default:
             {
-            stringstream msg;
-            msg << prolog << "FAILED to open file: " << file_name << " errno: " << get_errno();
-            BESDEBUG(LOCK, msg.str() << endl);
-            throw BESInternalError(msg.str() , __FILE__, __LINE__);
+                stringstream msg;
+                msg << prolog << "FAILED to open file: " << file_name << " errno: " << get_errno();
+                BESDEBUG(LOCK, msg.str() << endl);
+                throw BESInternalError(msg.str() , __FILE__, __LINE__);
             }
         }
     }
@@ -1053,16 +1049,12 @@ static bool getExclusiveLock(const string &file_name, int &ref_fd)
         throw BESInternalError(oss.str(), __FILE__, __LINE__);
     }
 
-    BESDEBUG(LOCK, prolog << "END file: " << file_name <<endl);
-
     // Success
+    m_record_descriptor(file_name,fd);
     ref_fd = fd;
-    return true;
-}
 
-bool BESFileLockingCache::get_exclusive_lock(const string &target, int &fd)
-{
-	return getExclusiveLock(target, fd);
+    BESDEBUG(LOCK, prolog << "END filename: " << file_name <<endl);
+    return true;
 }
 
 /**
@@ -1084,7 +1076,7 @@ void BESFileLockingCache::purge_file(const string &file)
 
         // Grab an exclusive lock on the file
         int cfile_fd;
-        if (getExclusiveLock(file, cfile_fd)) {
+        if (get_exclusive_lock(file, cfile_fd)) {
             // Get the file's size
             unsigned long long size = 0;
             struct stat buf;

@@ -146,6 +146,7 @@ void TheBESKeys::initialize_keys()
 {
     kvp::load_keys(d_keys_file_name, d_ingested_key_files, *d_the_keys);
     *d_the_original_keys = *d_the_keys;
+    BESDEBUG(MODULE, prolog << "          d_keys_file_name: " << d_keys_file_name << endl);
     BESDEBUG(MODULE, prolog << "         d_the_keys.size(): " << d_the_keys->size() << endl);
     BESDEBUG(MODULE, prolog << "d_the_original_keys.size(): " << d_the_original_keys->size() << endl);
 }
