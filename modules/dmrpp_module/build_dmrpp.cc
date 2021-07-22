@@ -97,7 +97,7 @@ static bool verbose = false;
 /// \fn get_data(hid_t dset, void *buf)
 /// will get all data of a \a dset dataset and put it into \a buf.
 /// Note: this routine is only used to access HDF5 integer,float and fixed-size string.
-//  variable length string is handled by function read_vlen_string.
+///  variable length string is handled by function read_vlen_string.
 ///
 /// \param[in] dset dataset id(dset)
 /// \param[out] buf pointer to a buffer
