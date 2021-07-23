@@ -49,7 +49,7 @@ using std::ostringstream;
 #include "ConnTest.h"
 #include "ConnTestStrs.h"
 #include "BESError.h"
-#include <GetOpt.h>
+#include <unistd.h>
 
 static bool debug = false;
 
@@ -166,10 +166,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION( connT );
 
 int main(int argc, char*argv[])
 {
-
-    GetOpt getopt(argc, argv, "dh");
     int option_char;
-    while ((option_char = getopt()) != EOF)
+    while ((option_char = getopt(argc, argv, "dh")) != EOF)
         switch (option_char) {
         case 'd':
             debug = 1;  // debug is a static global
@@ -187,17 +185,20 @@ int main(int argc, char*argv[])
             break;
         }
 
+    argc -= optind;
+    argv += optind;
+
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
     bool wasSuccessful = true;
     string test = "";
-    int i = getopt.optind;
-    if (i == argc) {
+    if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
     }
     else {
+        int i = 0;
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
             test = connT::suite()->getName().append("::").append(argv[i]);
