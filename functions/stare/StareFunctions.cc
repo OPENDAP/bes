@@ -566,6 +566,56 @@ StareSubsetArrayFunction::stare_subset_array_dap4_function(D4RValueList *args, D
 
 // TODO code to build a lat/lon box. From Mike Rilee. 7/6/21
 
+struct point {
+    double lat;
+    double lon;
+    point(double lat_, double lon_) : lat(lat_), lon(lon_) {}
+};
+
+/**
+ * @brief Build a STARE cover using a collection of points
+ * This version of the function builds a cover using a set of lat,lon
+ * points that are added to the 'box' in the order given.
+ * @param points A vector of lat,lon point objects
+ * @return The STARE_SpatialIntervals of the cover for the points
+ */
+STARE_SpatialIntervals
+stare_box_helper(const vector<point> &points) {
+    LatLonDegrees64ValueVector latlonbox;
+    for (auto &p: points) {
+        latlonbox.push_back(LatLonDegrees64(p.lat, p.lon));
+    }
+
+    int force_resolution = 6; // defaults to -1
+    int level = 27;
+    STARE index(level, force_resolution);
+    return index.CoverBoundingBoxFromLatLonDegrees(latlonbox, force_resolution);
+}
+
+/**
+ * @brief Build a STARE cover using a top-left and bottom-right point
+ * This version of the function builds a cover using two lat,lon
+ * points that are added to the 'box' as the top-left and bottom-right
+ * location.
+ * @param top_left
+ * @param bottom_right
+ * @return The STARE_SpatialIntervals of the cover for the points
+ */
+
+STARE_SpatialIntervals
+stare_box_helper(const point &top_left, const point &bottom_right) {
+    LatLonDegrees64ValueVector latlonbox;
+    latlonbox.push_back(LatLonDegrees64(top_left.lat, top_left.lon));
+    latlonbox.push_back(LatLonDegrees64(bottom_right.lat, top_left.lon));
+    latlonbox.push_back(LatLonDegrees64(bottom_right.lat, bottom_right.lon));
+    latlonbox.push_back(LatLonDegrees64(top_left.lat, bottom_right.lon));
+
+    int force_resolution = 6; // defaults to -1
+    int level = 27;
+    STARE index(level, force_resolution);
+    return index.CoverBoundingBoxFromLatLonDegrees(latlonbox, force_resolution);
+}
+
 BaseType *
 StareBoxFunction::stare_box_dap4_function(libdap::D4RValueList *args, libdap::DMR &dmr)
 {
@@ -578,6 +628,7 @@ StareBoxFunction::stare_box_dap4_function(libdap::D4RValueList *args, libdap::DM
         double br_lat = get_double_value(args->get_rvalue(2)->value(dmr));
         double br_lon = get_double_value(args->get_rvalue(3)->value(dmr));
 
+#if 0
         LatLonDegrees64ValueVector latlonbox;
         latlonbox.push_back(LatLonDegrees64(tl_lat, tl_lon));
         latlonbox.push_back(LatLonDegrees64(br_lat, tl_lon));
@@ -588,6 +639,9 @@ StareBoxFunction::stare_box_dap4_function(libdap::D4RValueList *args, libdap::DM
         int level = 27;
         STARE index(level, force_resolution);
         sivs = index.CoverBoundingBoxFromLatLonDegrees(latlonbox, force_resolution);
+#endif
+
+        sivs = stare_box_helper(point(tl_lat, tl_lon), point(br_lat, br_lon));
     }
 #if 0
     else if (args->size() >= 6 && (args->size() % 2) == 0) {
