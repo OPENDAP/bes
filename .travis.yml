@@ -1,7 +1,7 @@
 #
 # The bes build
 #
-# Initial Travic-CI control file. 6.5.15 jhrg
+# Initial Travis-CI control file. 6.5.15 jhrg
 # Hacked quite a bit; added support for parallel autotest tests
 # and removed unused parts. jhrg 8.23.17
 #
@@ -24,6 +24,7 @@ branches:
   - master
 
 addons:
+  # NB: We no longer run the sonarcloud scans from Travis. See the comment at 'stages' below. jhrg 7/23/21
   sonarcloud: true
   apt:
     packages:
@@ -51,6 +52,7 @@ env:
     - secure: "V3fMZgzMRRB0xFQMTvXf2fFPHIdwvg2y6bNFKqSGI5HP2sZEtc7XqSC4hjboR9RjnyZY/H1L/EuYQCS45gmJMsmtzo4g1Cn0oTfuPRJzDSi00jRlB1wUl5p1pU0Fdv2ffrGF4m6/SRfYFT0KkR/Tp8hdIoYx5/8R4MajysABMT4="
     # SONAR_SUBMODULES_LOGIN, using "travis encrypt --org -r OPENDAP/bes SONAR_SUBMODULES_LOGIN=Q4aWrvS..."
     - secure: "Q4aWrvSlKUY7413FNI6tHlWJdhVtjJxrtSBApJRe5fGTn/HEmod5n3O4o0elFhuYh0O57aYsYclD7t0lriKMPvPdY/s8CFAaIPSANhNRkD44MWYWCPyivl83BBUlhWgkqgWFcCEaTqCpF/8A0HlOF1TsE1KKyQSns7snqgWTfSA="    # AWS_ACCESS_KEY_ID
+    # AWS_ACCESS_KEY_ID
     # user == travis-bes
     - secure: "ZfL1IPX5zab1HWkJTlNPHroyUOp2lhAlcCH6UXDEL/yXpKoRCNkSo/CILM20DsjBckGys/7chom6uIoOilLu9Tp/6nPwkYlOe5DjgDt/qqKutclk9QBfrwU7WHRUOiEOESZl3Knd6B+GzuBZe8nrJzJhZWT54VFiOlEAGeIiFwo="
     # AWS_SECRET_ACCESS_KEY
@@ -82,9 +84,6 @@ install:
   - echo $DOCKER_HUB_PSWD | docker login -u $DOCKER_HUB_UID --password-stdin
 
 before_script:
-  # This is now done in each step. Doing that made the libdap4 build a bit faster/cleaner
-  # and hopefully that will be true here too. jhrg 3/24/21
-  # - autoreconf --force --install --verbose
   - source travis/travis_bes_build_offset.sh
   - export BES_BUILD_NUMBER=$(expr $TRAVIS_BUILD_NUMBER - $BES_TRAVIS_BUILD_OFFSET)
   - echo "BES_BUILD_NUMBER is ${BES_BUILD_NUMBER} = ${TRAVIS_BUILD_NUMBER} - ${BES_TRAVIS_BUILD_OFFSET}"
@@ -93,13 +92,21 @@ before_script:
   - printenv
 
 
-# Build all the stages for 'master'. For a PR, run the 'build' and 'package' stages,
-# but do not run the scan.
+# We have varied our approach to scanning over time. As of 7/23/21, we do not
+# use Travis to run our sonarcloud scans. These are very time consuming and
+# can be done on the SonarScan.com web site in a way that links those results
+# to the GitHub PR page. That linkage provides the required behavior that a
+# failed scan can block merging a PR onto the main branch.
+#
+# I have left the sonarscan stages in this file because we might decide they
+# are needed after all and it'll be a pain to redo them, even with the miracle
+# of git. jhrg 7/23/21
+
 stages:
   - name: build
     if: branch = master
   - name: scan
-    if:  branch = master
+    if:  false
   - name: package
     if: branch = master
   - name: hyrax-olfs-trigger
