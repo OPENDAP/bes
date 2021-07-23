@@ -713,7 +713,7 @@ void BESFileLockingCache::unlock_and_close(const string &file_name)
     }
 
     BESDEBUG(LOCK_STATUS,  prolog << "lock status: " << lockStatus(d_cache_info_fd) << endl);
-    BESDEBUG(LOCK,  prolog << "END"<< endl);
+    BESDEBUG(LOCK,  prolog << "END file: "<< file_name<< endl);
 }
 
 /** @brief Update the cache info file to include 'target'
