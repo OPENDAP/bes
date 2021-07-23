@@ -32,7 +32,6 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <GetOpt.h>
 #include <util.h>
 
 #include "BESError.h"
@@ -633,9 +632,8 @@ int main(int argc, char*argv[])
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    GetOpt getopt(argc, argv, "dbDPN");
     int option_char;
-    while ((option_char = getopt()) != -1)
+    while ((option_char = getopt(argc, argv, "dbDPN")) != -1)
         switch (option_char) {
         case 'd':
             debug = true;  // debug is a static global
@@ -658,21 +656,24 @@ int main(int argc, char*argv[])
             cerr << "purge_cache enabled" << endl;
             break;
         case 't':
-            token = getopt.optarg; // token is a static global
+            token = optarg; // token is a static global
             cerr << "Authorization header value: " << token << endl;
             break;
         default:
             break;
         }
 
+    argc -= optind;
+    argv += optind;
+
     bool wasSuccessful = true;
     string test = "";
-    int i = getopt.optind;
-    if (i == argc) {
+    if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
     }
     else {
+        int i = 0;
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
             test = http::RemoteResourceTest::suite()->getName().append("::").append(argv[i]);

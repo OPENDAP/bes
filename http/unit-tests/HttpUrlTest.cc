@@ -34,7 +34,7 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <GetOpt.h>
+#include <unistd.h>
 #include <util.h>
 
 #include "BESError.h"
@@ -427,9 +427,8 @@ int main(int argc, char*argv[])
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    GetOpt getopt(argc, argv, "dbDP");
     int option_char;
-    while ((option_char = getopt()) != -1)
+    while ((option_char = getopt(argc, argv, "dbDP")) != -1)
         switch (option_char) {
             case 'd':
                 debug = true;  // debug is a static global
@@ -451,14 +450,17 @@ int main(int argc, char*argv[])
                 break;
         }
 
+    argc -= optind;
+    argv += optind;
+
     bool wasSuccessful = true;
     string test = "";
-    int i = getopt.optind;
-    if (i == argc) {
+    if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
     }
     else {
+        int i = 0;
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
             test = http::HttpUrlTest::suite()->getName().append("::").append(argv[i]);
