@@ -196,7 +196,7 @@ int main(int argc, char*argv[])
     int retVal=0;
     string file_name = LOCK_TEST_FILE;
     string cache_dir = TEST_CACHE_DIR;
-    while (!retVal && (option_char = getopt(argc, argv, "vdb:pr:x:hf:c:")) != EOF) {
+    while (!retVal && ((option_char = getopt(argc, argv, "vdb:pr:x:hf:c:")) != EOF)) {
         switch (option_char) {
         case 'v':
             cerr << version << endl;
