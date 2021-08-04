@@ -27,7 +27,7 @@
 #include <cassert>
 
 #include <STARE.h>
-//#include <SpatialRange.h>
+#include <SpatialRange.h>
 
 //#include <hdf5.h>
 #include <netcdf.h>
@@ -49,6 +49,7 @@
 #include <libdap/UInt32.h>
 #include <libdap/Float32.h>
 #include <libdap/UInt64.h>
+#include <libdap/Int64.h>
 
 #include "BESDebug.h"
 #include "BESUtil.h"
@@ -59,7 +60,7 @@
 #include "GeoFile.h"
 
 // Used with BESDEBUG
-#define STARE "stare"
+#define STARE_FUNC "stare"
 
 using namespace libdap;
 using namespace std;
@@ -193,7 +194,7 @@ count(const vector<STARE_ArrayIndexSpatialValue> &target_indices,
             // dataset indices.
             if (cmpSpatial(i, j) != 0) {
                 counter++;
-                BESDEBUG(STARE, "Matching (dataset, target) indices: " << i << ", " << j << endl);
+                BESDEBUG(STARE_FUNC, "Matching (dataset, target) indices: " << i << ", " << j << endl);
                 if (!all_dataset_matches)
                     break;  // exit the inner loop
             }
@@ -489,10 +490,28 @@ StareSubsetFunction::stare_subset_dap4_function(D4RValueList *args, DMR &dmr)
     return result.release();
 }
 
-// FIXME jhrg 7/6/21
-double get_mask_value(BaseType *)
+/**
+ * @brief Get a scalar value for a constant passed to a DAP4 function.
+ *
+ * If the value is an integer, it will be cast to a double.
+ *
+ * @param btp The BaseType used to wrap the function value
+ * @return The value, as a double
+ */
+double get_double_value(BaseType *btp)
 {
-    return 17;
+    switch (btp->type()) {
+        case libdap::dods_float64_c:
+            return dynamic_cast<Float64*>(btp)->value();
+        case libdap::dods_int64_c:
+            return dynamic_cast<Int64*>(btp)->value();
+        case libdap::dods_uint64_c:
+            return dynamic_cast<UInt64*>(btp)->value();
+        default: {
+            throw BESSyntaxUserError(string("Expected a constant value, but got ").append(btp->type_name())
+                                            .append(" instead."), __FILE__, __LINE__);
+        }
+    }
 }
 
 BaseType *
@@ -509,7 +528,7 @@ StareSubsetArrayFunction::stare_subset_array_dap4_function(D4RValueList *args, D
         throw BESSyntaxUserError("Expected an Array as teh first argument to stare_subset_array()", __FILE__, __LINE__);
 
     BaseType *mask_val_var = args->get_rvalue(1)->value(dmr);
-    double mask_value = get_mask_value(mask_val_var);
+    double mask_value = get_double_value(mask_val_var);
 
     BaseType *raw_stare_indices = args->get_rvalue(2)->value(dmr);
 
@@ -547,17 +566,103 @@ StareSubsetArrayFunction::stare_subset_array_dap4_function(D4RValueList *args, D
 
 // TODO code to build a lat/lon box. From Mike Rilee. 7/6/21
 
-#if 0
-// STARE.h
-// Signature: STARE::STARE_SpatialIntervals CoverBoundingBoxFromLatLonDegrees(LatLonDegrees64ValueVector corners, int force_resolution_level = -1);
+struct point {
+    double lat;
+    double lon;
+    point(double lat_, double lon_) : lat(lat_), lon(lon_) {}
+};
 
-LatLonDegrees64ValueVector latlonbox;
-latlonbox.push_back(LatLonDegrees64(0,0));
-latlonbox.push_back(LatLonDegrees64(2,0));
-latlonbox.push_back(LatLonDegrees64(2,2));
-latlonbox.push_back(LatLonDegrees64(0,2));
-int force_resolution = 6; // defaults to -1
-STARE_SpatialIntervals sivs = sIndex.CoverBoundingBoxFromLatLonDegrees(latlonbox,force_resolution);
+/**
+ * @brief Build a STARE cover using a collection of points
+ * This version of the function builds a cover using a set of lat,lon
+ * points that are added to the 'box' in the order given.
+ * @param points A vector of lat,lon point objects
+ * @return The STARE_SpatialIntervals of the cover for the points
+ */
+STARE_SpatialIntervals
+stare_box_helper(const vector<point> &points) {
+    LatLonDegrees64ValueVector latlonbox;
+    for (auto &p: points) {
+        latlonbox.push_back(LatLonDegrees64(p.lat, p.lon));
+    }
+
+    int force_resolution = 6; // defaults to -1
+    int level = 27;
+    STARE index(level, force_resolution);
+    return index.CoverBoundingBoxFromLatLonDegrees(latlonbox, force_resolution);
+}
+
+/**
+ * @brief Build a STARE cover using a top-left and bottom-right point
+ * This version of the function builds a cover using two lat,lon
+ * points that are added to the 'box' as the top-left and bottom-right
+ * location.
+ * @param top_left
+ * @param bottom_right
+ * @return The STARE_SpatialIntervals of the cover for the points
+ */
+
+STARE_SpatialIntervals
+stare_box_helper(const point &top_left, const point &bottom_right) {
+    LatLonDegrees64ValueVector latlonbox;
+    latlonbox.push_back(LatLonDegrees64(top_left.lat, top_left.lon));
+    latlonbox.push_back(LatLonDegrees64(bottom_right.lat, top_left.lon));
+    latlonbox.push_back(LatLonDegrees64(bottom_right.lat, bottom_right.lon));
+    latlonbox.push_back(LatLonDegrees64(top_left.lat, bottom_right.lon));
+
+    int force_resolution = 6; // defaults to -1
+    int level = 27;
+    STARE index(level, force_resolution);
+    return index.CoverBoundingBoxFromLatLonDegrees(latlonbox, force_resolution);
+}
+
+BaseType *
+StareBoxFunction::stare_box_dap4_function(libdap::D4RValueList *args, libdap::DMR &dmr)
+{
+    STARE_SpatialIntervals sivs;
+
+    if (args->size() == 4) {
+        // build cover from simple box
+        double tl_lat = get_double_value(args->get_rvalue(0)->value(dmr));
+        double tl_lon = get_double_value(args->get_rvalue(1)->value(dmr));
+        double br_lat = get_double_value(args->get_rvalue(2)->value(dmr));
+        double br_lon = get_double_value(args->get_rvalue(3)->value(dmr));
+
+#if 0
+        LatLonDegrees64ValueVector latlonbox;
+        latlonbox.push_back(LatLonDegrees64(tl_lat, tl_lon));
+        latlonbox.push_back(LatLonDegrees64(br_lat, tl_lon));
+        latlonbox.push_back(LatLonDegrees64(br_lat, br_lon));
+        latlonbox.push_back(LatLonDegrees64(tl_lat, br_lon));
+
+        int force_resolution = 6; // defaults to -1
+        int level = 27;
+        STARE index(level, force_resolution);
+        sivs = index.CoverBoundingBoxFromLatLonDegrees(latlonbox, force_resolution);
 #endif
+
+        sivs = stare_box_helper(point(tl_lat, tl_lon), point(br_lat, br_lon));
+    }
+#if 0
+    else if (args->size() >= 6 && (args->size() % 2) == 0) {
+        // build cover from list of three or more points (lat, lon)
+    }
+#endif
+    else {
+        ostringstream oss;
+        oss << "stare_box(): Expected four corner lat/lon values or a list of three or more points, but got "
+            << args->size() << " values.";
+        throw BESSyntaxUserError(oss.str(), __FILE__, __LINE__);
+    }
+
+    unique_ptr<Array> cover(new Array("cover", new UInt64("cover")));
+    cover->set_value((dods_uint64*)(&sivs[0]), sivs.size());
+    cover->append_dim(sivs.size());
+
+    return cover.release();
+}
+
+
+
 
 } // namespace functions

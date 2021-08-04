@@ -10,7 +10,7 @@
     <bes:container name="c">
       <!-- Test intersection using level 27 indices _without_ resolution data -->
       <!-- This list of stare indices comes from the file Target_overlap_nw_stare.h5 -->
-      <bes:dap4function>stare_subset_array(Solar_Zenith, -1, $UInt64(0:4015281913904386217, 4015310654433098569, 4015291327038445353,
+      <bes:dap4function>stare_subset_array(Solar_Zenith, 17, $UInt64(0:4015281913904386217, 4015310654433098569, 4015291327038445353,
                                                                      4015285975857013417, 4015284527751034857, 4015392231813720073,
                                                                      4015396865818895721, 4015413097917532649, 4015414608566121673,
                                                                      4015386076224552169, 4015137449501129833, 4015166957632727369,
