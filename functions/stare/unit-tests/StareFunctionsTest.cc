@@ -131,6 +131,7 @@ public:
     CPPUNIT_TEST(test_stare_box_helper_4); // This takes ~ 1s
     CPPUNIT_TEST(test_stare_box_helper_5);
     CPPUNIT_TEST(test_stare_box_helper_6);
+    CPPUNIT_TEST(test_stare_box_helper_7);
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -259,7 +260,7 @@ public:
 
         STARE_SpatialIntervals sids = stare_box_helper(pt1, pt2, 10);
         DBG(cerr << "Number of SIDs: " << sids.size() << endl);
-        //CPPUNIT_ASSERT(sids.size() == 9816);
+        CPPUNIT_ASSERT(sids.size() == 9816);
 
         point tl, br;
         stare_box_extent(sids, tl, br);
@@ -267,6 +268,26 @@ public:
         CPPUNIT_ASSERT(d_eq(tl.lat, 47.5207) && d_eq(tl.lon, 359.135));
         CPPUNIT_ASSERT(d_eq(br.lat, 19.9817) && d_eq(br.lon, 279.89));
         // Box extent: 47.5207,359.135: 19.9817,279.89
+    }
+
+    // This is a box we can use in regression tests with
+    // data/sample_data/336-23xx.20201211/MOD05_L2.A2019336.2315.061.2019337071952.hdf
+    void test_stare_box_helper_7() {
+        DBG(cerr << "--- test_stare_box_helper() test - BEGIN ---" << endl);
+
+        point pt1(76.0, -144);
+        point pt2(72.0, -138.0);
+
+        STARE_SpatialIntervals sids = stare_box_helper(pt1, pt2, 10);
+        DBG(cerr << "Number of SIDs: " << sids.size() << endl);
+        CPPUNIT_ASSERT(sids.size() == 359);
+
+        point tl, br;
+        stare_box_extent(sids, tl, br);
+        DBG(cerr << "Box extent: " << tl.lat << "," << tl.lon << ": " << br.lat << "," << br.lon << endl);
+        CPPUNIT_ASSERT(d_eq(tl.lat, 76.1106) && d_eq(tl.lon, 222.448));
+        CPPUNIT_ASSERT(d_eq(br.lat, 71.9216) && d_eq(br.lon, 215.599));
+        // Box extent: 76.1106,222.448: 71.9216,215.599
     }
 
     void test_stare_subset_array_helper() {
