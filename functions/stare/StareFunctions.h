@@ -36,11 +36,8 @@
 
 namespace libdap {
 class BaseType;
-
 class DDS;
-
 class D4RValueList;
-
 class DMR;
 }
 
@@ -183,6 +180,19 @@ public:
                                   const std::vector<STARE_ArrayIndexSpatialValue> &target_s_indices, T mask_value,
                                   unique_ptr<libdap::Array> &result);
 };
+
+/**
+ * Wrapper for a lat/lon point. Used by the Stare Box code.
+ */
+struct point {
+    double lat;
+    double lon;
+    point() = default;
+    point(double lat_, double lon_) : lat(lat_), lon(lon_) {}
+};
+
+STARE_SpatialIntervals stare_box_helper(const vector<point> &points, int resolution = 6);
+STARE_SpatialIntervals stare_box_helper(const point &top_left, const point &bottom_right, int resolution = 6);
 
 class StareBoxFunction : public libdap::ServerFunction {
 public:

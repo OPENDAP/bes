@@ -102,30 +102,172 @@ public:
         d4_btf = 0;
     }
 
-CPPUNIT_TEST_SUITE(StareFunctionsTest);
+    CPPUNIT_TEST_SUITE(StareFunctionsTest);
 
-        // Deprecated test - breaks distcheck CPPUNIT_TEST(test_get_sidecar_file_pathname);
-        // jhrg 1.14.20
-        CPPUNIT_TEST(test_target_in_dataset);
-        CPPUNIT_TEST(test_target_in_dataset_2);
-        CPPUNIT_TEST(test_target_in_dataset_3);
+    // Deprecated test - breaks distcheck CPPUNIT_TEST(test_get_sidecar_file_pathname);
+    // jhrg 1.14.20
+    CPPUNIT_TEST(test_target_in_dataset);
+    CPPUNIT_TEST(test_target_in_dataset_2);
+    CPPUNIT_TEST(test_target_in_dataset_3);
 
-        CPPUNIT_TEST(test_count_1);
-        CPPUNIT_TEST(test_count_2);
-        CPPUNIT_TEST(test_count_3);
+    CPPUNIT_TEST(test_count_1);
+    CPPUNIT_TEST(test_count_2);
+    CPPUNIT_TEST(test_count_3);
 
-        CPPUNIT_TEST(test_stare_subset);
+    CPPUNIT_TEST(test_stare_subset);
 
-       // CPPUNIT_TEST(test_stare_get_sidecar_uint64_values);
+   // CPPUNIT_TEST(test_stare_get_sidecar_uint64_values);
 
-        // fails; rewrite to use the new sidecar files. jhrg 6/17/21
-        // CPPUNIT_TEST(intersection_function_test_2);
-        // CPPUNIT_TEST(count_function_test_2);
-        // CPPUNIT_TEST(subset_function_test_2);
+    // fails; rewrite to use the new sidecar files. jhrg 6/17/21
+    // CPPUNIT_TEST(intersection_function_test_2);
+    // CPPUNIT_TEST(count_function_test_2);
+    // CPPUNIT_TEST(subset_function_test_2);
 
-        CPPUNIT_TEST(test_stare_subset_array_helper);
+    CPPUNIT_TEST(test_stare_subset_array_helper);
+
+    CPPUNIT_TEST(test_stare_box_helper_1);
+    CPPUNIT_TEST(test_stare_box_helper_2);
+    CPPUNIT_TEST(test_stare_box_helper_3);
+    CPPUNIT_TEST(test_stare_box_helper_4); // This takes ~ 1s
+    CPPUNIT_TEST(test_stare_box_helper_5);
+    CPPUNIT_TEST(test_stare_box_helper_6);
 
     CPPUNIT_TEST_SUITE_END();
+
+    // STARE_SpatialIntervals stare_box_helper(const point &top_left, const point &bottom_right);
+
+    void stare_box_extent(const STARE_SpatialIntervals &sids, point &tl, point &br) {
+        tl.lat = -90, tl.lon = 0;
+        br.lat = 90, br.lon = 360;
+        
+        STARE index(27, 6);
+        for (STARE_ArrayIndexSpatialValue sid: sids) {
+            DBG2(cerr << "SID: " << sid << endl);
+            LatLonDegrees64 lat_lon = index.LatLonDegreesFromValue(sid);
+            DBG2(cerr << "lat lon degrees: " << lat_lon.lat << ", " << lat_lon.lon << endl);
+            if (lat_lon.lat > tl.lat) tl.lat = lat_lon.lat;
+            if (lat_lon.lon > tl.lon) tl.lon = lat_lon.lon;
+            if (lat_lon.lat < br.lat) br.lat = lat_lon.lat;
+            if (lat_lon.lon < br.lon) br.lon = lat_lon.lon;
+        }
+    }
+
+    bool d_eq(double t, double v, double delta = 0.001) {
+        return abs(t - v) < delta;
+    }
+    
+    void test_stare_box_helper_1() {
+        DBG(cerr << "--- test_stare_box_helper() test - BEGIN ---" << endl);
+
+        point pt1(45.0, 315);
+        point pt2(44.0, 314);
+
+        STARE_SpatialIntervals sids = stare_box_helper(pt1, pt2);
+        DBG(cerr << "Number of SIDs: " << sids.size() << endl);
+        CPPUNIT_ASSERT(sids.size() == 3);
+
+        point tl, br;
+        stare_box_extent(sids, tl, br);
+        DBG(cerr << "Box extent: " << tl.lat << "," << tl.lon << ": " << br.lat << "," << br.lon << endl);
+        CPPUNIT_ASSERT(d_eq(tl.lat, 45.0) && d_eq(tl.lon, 315.0));
+        CPPUNIT_ASSERT(d_eq(br.lat, 43.0105) && d_eq(br.lon, 315));
+    }
+
+    void test_stare_box_helper_2() {
+        DBG(cerr << "--- test_stare_box_helper() test - BEGIN ---" << endl);
+
+        point pt1(45.0, 315); // aka 45, 315
+        point pt2(44.0, 314); // 44, 314
+
+        STARE_SpatialIntervals sids = stare_box_helper(pt1, pt2, 10);
+        DBG(cerr << "Number of SIDs: " << sids.size() << endl);
+        CPPUNIT_ASSERT(sids.size() == 186);
+
+        point tl, br;
+        stare_box_extent(sids, tl, br);
+        DBG(cerr << "Box extent: " << tl.lat << "," << tl.lon << ": " << br.lat << "," << br.lon << endl);
+        CPPUNIT_ASSERT(d_eq(tl.lat, 45.1242) && d_eq(tl.lon, 315.175));
+        CPPUNIT_ASSERT(d_eq(br.lat, 43.9394) && d_eq(br.lon, 313.876));
+
+    }
+
+    void test_stare_box_helper_3() {
+        DBG(cerr << "--- test_stare_box_helper() test - BEGIN ---" << endl);
+
+        point pt1(45.0, 315.0); // 315 == -45 == 45w
+        point pt2(44.0, 314.0);
+
+        STARE_SpatialIntervals sids = stare_box_helper(pt1, pt2, 13);
+        DBG(cerr << "Number of SIDs: " << sids.size() << endl);
+        CPPUNIT_ASSERT(sids.size() == 1729);
+
+        point tl, br;
+        stare_box_extent(sids, tl, br);
+        DBG(cerr << "Box extent: " << tl.lat << "," << tl.lon << ": " << br.lat << "," << br.lon << endl);
+        CPPUNIT_ASSERT(d_eq(tl.lat, 45.0155) && d_eq(tl.lon, 315.022));
+        CPPUNIT_ASSERT(d_eq(br.lat, 43.9935) && d_eq(br.lon, 313.98));
+    }
+
+    void test_stare_box_helper_4() {
+        DBG(cerr << "--- test_stare_box_helper() test - BEGIN ---" << endl);
+
+        point pt1(45.0, 315.0);
+        point pt2(44.0, 314.0);
+
+        STARE_SpatialIntervals sids = stare_box_helper(pt1, pt2, 15);
+        DBG(cerr << "Number of SIDs: " << sids.size() << endl);
+        CPPUNIT_ASSERT(sids.size() == 7407);
+
+        point tl, br;
+        stare_box_extent(sids, tl, br);
+        DBG(cerr << "Box extent: " << tl.lat << "," << tl.lon << ": " << br.lat << "," << br.lon << endl);
+        CPPUNIT_ASSERT(d_eq(tl.lat, 45.0049) && d_eq(tl.lon, 315.005));
+        CPPUNIT_ASSERT(d_eq(br.lat, 43.9987) && d_eq(br.lon, 313.995));
+        // 45.0049,315.005: 43.9987,313.995
+    }
+
+    void test_stare_box_helper_5() {
+        DBG(cerr << "--- test_stare_box_helper() test - BEGIN ---" << endl);
+
+        vector<point> points;
+        point pt;
+        pt.lat = 45.0, pt.lon = 315.0;
+        points.push_back(pt);
+        pt.lat = 45.0, pt.lon = 314.0;
+        points.push_back(pt);
+        pt.lat = 44.0, pt.lon = 314.0;
+        points.push_back(pt);
+        pt.lat = 44.0, pt.lon = 315.0;
+        points.push_back(pt);
+
+        STARE_SpatialIntervals sids = stare_box_helper(points, 13);
+        DBG(cerr << "Number of SIDs: " << sids.size() << endl);
+        CPPUNIT_ASSERT(sids.size() == 1729);
+
+        point tl, br;
+        stare_box_extent(sids, tl, br);
+        DBG(cerr << "Box extent: " << tl.lat << "," << tl.lon << ": " << br.lat << "," << br.lon << endl);
+        CPPUNIT_ASSERT(d_eq(tl.lat, 45.0155) && d_eq(tl.lon, 315.022));
+        CPPUNIT_ASSERT(d_eq(br.lat, 43.9935) && d_eq(br.lon, 313.98));
+    }
+
+    void test_stare_box_helper_6() {
+        DBG(cerr << "--- test_stare_box_helper() test - BEGIN ---" << endl);
+
+        point pt1(40.0, 280.0);
+        point pt2(20.0, 359.0);
+
+        STARE_SpatialIntervals sids = stare_box_helper(pt1, pt2, 10);
+        DBG(cerr << "Number of SIDs: " << sids.size() << endl);
+        //CPPUNIT_ASSERT(sids.size() == 9816);
+
+        point tl, br;
+        stare_box_extent(sids, tl, br);
+        DBG(cerr << "Box extent: " << tl.lat << "," << tl.lon << ": " << br.lat << "," << br.lon << endl);
+        CPPUNIT_ASSERT(d_eq(tl.lat, 47.5207) && d_eq(tl.lon, 359.135));
+        CPPUNIT_ASSERT(d_eq(br.lat, 19.9817) && d_eq(br.lon, 279.89));
+        // Box extent: 47.5207,359.135: 19.9817,279.89
+    }
 
     void test_stare_subset_array_helper() {
         DBG(cerr << "--- test_stare_subset_array_helper() test - BEGIN ---" << endl);
