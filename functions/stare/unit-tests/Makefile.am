@@ -31,7 +31,7 @@ include $(top_srcdir)/coverage.mk
 BUILT_SOURCES = test_config.h bes.conf
 
 # This determines what gets built by make check
-check_PROGRAMS = StareFunctionsTest $(UNIT_TESTS)
+check_PROGRAMS = $(UNIT_TESTS)
 
 # This determines what gets run by 'make check.'
 TESTS = $(UNIT_TESTS)
@@ -67,16 +67,14 @@ bes.conf: $(srcdir)/bes.conf.in Makefile
 #
 
 if CPPUNIT
-UNIT_TESTS =
-
-# StareFunctionsTest
+UNIT_TESTS = StareFunctionsTest
 
 # Dap4_TabularFunctionTest Removed since the DAP2 code has moved so far 
 # in front of the DAP4 version, which has had virtually no testing.
 # jhrg 3/12/15
 
-check-local:
-	./StareFunctionsTest -d
+# check-local:
+#	./StareFunctionsTest -d
 
 else
 UNIT_TESTS =
