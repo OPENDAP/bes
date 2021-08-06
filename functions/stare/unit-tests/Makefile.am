@@ -31,7 +31,7 @@ include $(top_srcdir)/coverage.mk
 BUILT_SOURCES = test_config.h bes.conf
 
 # This determines what gets built by make check
-check_PROGRAMS = $(UNIT_TESTS)
+check_PROGRAMS = StareFunctionsTest $(UNIT_TESTS)
 
 # This determines what gets run by 'make check.'
 TESTS = $(UNIT_TESTS)
