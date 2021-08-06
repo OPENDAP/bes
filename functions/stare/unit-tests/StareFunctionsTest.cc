@@ -71,7 +71,7 @@ private:
     DMR *two_arrays_dmr;
     D4BaseTypeFactory *d4_btf;
 public:
-    StareFunctionsTest() : two_arrays_dmr(0), d4_btf(0) {
+    StareFunctionsTest() : two_arrays_dmr(nullptr), d4_btf(nullptr) {
         TheBESKeys::ConfigFile = "bes.conf";
         // The key names and module variables used here are defined in StareFunctions.cc
         // These two lines duplicate DapFunctions Module behavior. jhrg 5/21/20
