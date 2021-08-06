@@ -1707,6 +1707,13 @@ BESDapResponseBuilder::setup_dap4_intern_data(BESResponseObject *obj, BESDataHan
     if (!bdmr) throw BESInternalFatalError("Expected a BESDMRResponse instance", __FILE__, __LINE__);
 
     unique_ptr<DMR> dmr(bdmr->get_dmr());
+    // TL;DR Set the DMR managed by the BESResponseObject to nullptr to avoid calling ~DMR
+    // twice on the same object.
+    bdmr->set_dmr(nullptr);
+    // Why this is here: In the past we designed the BESResponseObject class hierarchy to
+    // manage the response object, which effectively means delete it when the BES is done
+    // processing the request. We pass nullptr to set_dmr so that the BESResponseObject
+    // does not call ~DMR since unique_ptr<> will do that for us.
 
     // Set the correct context by following intern_dap2_data()
     set_dataset_name(dmr->filename());

@@ -161,6 +161,29 @@ public:
         return abs(t - v) < delta;
     }
 
+    // Values from the Ubuntu Travis system:
+//    .--- test_stare_box_helper() test - BEGIN ---
+//    Number of SIDs: 3
+//    Box extent: 45,315: 43.0105,315
+//    .--- test_stare_box_helper() test - BEGIN ---
+//    Number of SIDs: 185
+//    Box extent: 45.1242,315.175: 43.9394,313.876
+//    .--- test_stare_box_helper() test - BEGIN ---
+//    Number of SIDs: 1725
+//    Box extent: 45.0155,315.022: 43.9935,313.98
+//    .--- test_stare_box_helper() test - BEGIN ---
+//    Number of SIDs: 7394
+//    Box extent: 45.0049,315.005: 43.9987,313.995
+//    .--- test_stare_box_helper() test - BEGIN ---
+//    Number of SIDs: 1725
+//    Box extent: 45.0155,315.022: 43.9935,313.98
+//    .--- test_stare_box_helper() test - BEGIN ---
+//    Number of SIDs: 9816
+//    Box extent: 47.5207,359.135: 19.9817,279.89
+//    .--- test_stare_box_helper() test - BEGIN ---
+//    Number of SIDs: 359
+//    Box extent: 76.1106,222.448: 71.9216,215.599
+
     void test_stare_box_helper_1() {
         DBG(cerr << "--- test_stare_box_helper() test - BEGIN ---" << endl);
 
@@ -196,7 +219,6 @@ public:
         DBG(cerr << "Box extent: " << tl.lat << "," << tl.lon << ": " << br.lat << "," << br.lon << endl);
         CPPUNIT_ASSERT(d_eq(tl.lat, 45.1242) && d_eq(tl.lon, 315.175));
         CPPUNIT_ASSERT(d_eq(br.lat, 43.9394) && d_eq(br.lon, 313.876));
-
     }
 
     void test_stare_box_helper_3() {

@@ -52,6 +52,7 @@
 #include "BBoxCombFunction.h"
 #include "ScaleGrid.h"
 #include "TestFunction.h"
+#include "IdentityFunction.h"
 
 #if HAVE_STARE
 #include "stare/StareFunctions.h"
@@ -102,6 +103,8 @@ void DapFunctions::initialize(const string &modname)
     libdap::ServerFunctionsList::TheList()->add_function(new Scale3DArray());
 
     libdap::ServerFunctionsList::TheList()->add_function(new TestFunction());
+
+    libdap::ServerFunctionsList::TheList()->add_function(new IdentityFunction());
 
 #if HAVE_STARE
     libdap::ServerFunctionsList::TheList()->add_function(new StareIntersectionFunction());

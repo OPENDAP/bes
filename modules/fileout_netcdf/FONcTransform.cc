@@ -413,7 +413,7 @@ void FONcTransform::transform_dap2(ostream &strm)
         BESDapFunctionResponseCache *responseCache = BESDapFunctionResponseCache::get_instance();
 
         ConstraintEvaluator func_eval;
-        DDS *fdds = 0; // nulll_ptr
+        DDS *fdds = nullptr;
         if (responseCache && responseCache->can_be_cached(_dds, besDRB.get_btp_func_ce())) {
             fdds = responseCache->get_or_cache_dataset(_dds, besDRB.get_btp_func_ce());
         }

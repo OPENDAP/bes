@@ -148,7 +148,7 @@ BaseType *function_linear_scale_worker(BaseType *bt, double m, double b, double 
 {
     // Read the data, scale and return the result. Must replace the new data
     // in a constructor (i.e., Array part of a Grid).
-    BaseType *dest = 0;
+    BaseType *dest = nullptr;
     double *data;
     if (bt->type() == dods_grid_c) {
         // Grab the whole Grid; note that the scaling is done only on the array part
