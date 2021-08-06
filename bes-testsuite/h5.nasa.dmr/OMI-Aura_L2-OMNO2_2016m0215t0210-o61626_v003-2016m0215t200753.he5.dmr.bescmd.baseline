@@ -1,0 +1,2788 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="OMI-Aura_L2-OMNO2_2016m0215t0210-o61626_v003-2016m0215t200753.he5">
+    <Dimension name="nTimes" size="1644"/>
+    <Dimension name="nXtrack" size="60"/>
+    <Dimension name="nPolynomial" size="6"/>
+    <Dimension name="nSWLevels" size="35"/>
+    <Dimension name="nTimesSmallPixel" size="10"/>
+    <Dimension name="nSmallPixelPointer" size="2"/>
+    <Dimension name="nCorners" size="4"/>
+    <UInt16 name="AlgorithmFlags">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="UInt16">
+            <Value>65535</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Algorithm flags                                                                                                         </Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits                                                                                                                 </Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="UInt16">
+            <Value>65535</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AlgorithmFlags</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/AlgorithmFlags</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </UInt16>
+    <UInt16 name="AmfQualityFlags">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="UInt16">
+            <Value>65535</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Bit level AMF quality flags at ground pixel level</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="UInt16">
+            <Value>65535</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AmfQualityFlags</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/AmfQualityFlags</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </UInt16>
+    <Float32 name="AmfStrat">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Stratospheric air mass factor                                                  </Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific                                                                                                            </Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AmfStrat</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/AmfStrat</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="AmfStratClear">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Stratospheric air mass factor for clear sky condition                          </Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific                                                                                                            </Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AmfStratClear</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/AmfStratClear</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="AmfStratCloudy">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Stratospheric air mass factor for cloudy condition                             </Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific                                                                                                            </Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AmfStratCloudy</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/AmfStratCloudy</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="AmfStratStd">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Precision of stratospheric air mass factor                                     </Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific                                                                                                            </Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AmfStratStd</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/AmfStratStd</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="AmfTrop">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Tropospheric air mass factor                                                   </Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific                                                                                                            </Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AmfTrop</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/AmfTrop</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="AmfTropClear">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Tropospheric air mass factor for clear sky condition                           </Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific                                                                                                            </Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AmfTropClear</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/AmfTropClear</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="AmfTropCloudy">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Tropospheric air mass factor for cloudy condition                              </Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific                                                                                                            </Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AmfTropCloudy</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/AmfTropCloudy</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="AmfTropStd">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Precision of tropospheric air mass factor                                      </Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific                                                                                                            </Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AmfTropStd</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/AmfTropStd</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="ChiSquaredOfFit">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Chi-squared diagnostics of DOAS fit</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ChiSquaredOfFit</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/ChiSquaredOfFit</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Float32>
+    <Int16 name="CloudFraction">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>0.0010000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Effective cloud fraction</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>CloudFraction</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/CloudFraction</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Int16>
+    <Int16 name="CloudFractionStd">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>0.0010000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Effective cloud fraction precision</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>CloudFractionStd</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/CloudFractionStd</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Int16>
+    <Int16 name="CloudPressure">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Effective cloud pressure</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>hPa</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>CloudPressure</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/CloudPressure</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Int16>
+    <Int16 name="CloudPressureStd">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Effective cloud pressure precision</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>hPa</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>CloudPressureStd</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/CloudPressureStd</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Int16>
+    <Int16 name="CloudRadianceFraction">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>0.0010000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Fraction of the radiance from the cloudy part</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>CloudRadianceFraction</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/CloudRadianceFraction</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Int16>
+    <Float32 name="ColumnAmountNO2">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>NO2 vertical column density</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>molec/cm^2</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ColumnAmountNO2</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/ColumnAmountNO2</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="ColumnAmountNO2Std">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Precision of the NO2 vertical column density</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>molec/cm^2</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ColumnAmountNO2Std</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/ColumnAmountNO2Std</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="ColumnAmountNO2Strat">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>NO2 stratospheric column density                                                                                        </Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>molec/cm^2                                                                                                              </Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific                                                                                                            </Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ColumnAmountNO2Strat</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/ColumnAmountNO2Strat</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="ColumnAmountNO2StratStd">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Precision of the NO2 stratospheric column                                                                               </Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>molec/cm^2                                                                                                              </Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific                                                                                                            </Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ColumnAmountNO2StratStd</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/ColumnAmountNO2StratStd</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="ColumnAmountNO2Trop">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>NO2 tropospheric column density</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>molec/cm^2</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ColumnAmountNO2Trop</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/ColumnAmountNO2Trop</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="ColumnAmountNO2TropStd">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Precision of the NO2 tropospheric column density</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>molec/cm^2</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ColumnAmountNO2TropStd</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/ColumnAmountNO2TropStd</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Float32>
+    <UInt16 name="FitQualityFlags">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="UInt16">
+            <Value>65535</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="UInt16">
+            <Value>65535</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Bit level DOAS fit quality flags at ground pixel level</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>FitQualityFlags</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/FitQualityFlags</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </UInt16>
+    <Byte name="InstrumentConfigurationId">
+        <Dim name="/nTimes"/>
+        <Attribute name="_FillValue" type="Byte">
+            <Value>255</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Byte">
+            <Value>255</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Unique ID for instrument settings for current measurement</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>InstrumentConfigurationId</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/InstrumentConfigurationId</Value>
+        </Attribute>
+    </Byte>
+    <Byte name="MeasurementQualityFlags">
+        <Dim name="/nTimes"/>
+        <Attribute name="_FillValue" type="Byte">
+            <Value>255</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Byte">
+            <Value>255</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Bit level quality flags at measurement level</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>MeasurementQualityFlags</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/MeasurementQualityFlags</Value>
+        </Attribute>
+    </Byte>
+    <Float32 name="PolynomialCoefficients">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Dim name="/nPolynomial"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Polynomial Coefficients</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>PolynomialCoefficients</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/PolynomialCoefficients</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude nPolynomial</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="PolynomialCoefficientsStd">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Dim name="/nPolynomial"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Precision of the Polynomial Coefficients</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>PolynomialCoefficientsStd</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/PolynomialCoefficientsStd</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude nPolynomial</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="RingCoefficient">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Fitted amount of Ring effect</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>RingCoefficient</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/RingCoefficient</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="RingCoefficientStd">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Precision of the fitted amount of Ring effect</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>RingCoefficientStd</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/RingCoefficientStd</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="RootMeanSquareErrorOfFit">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Root-Mean-Square error of DOAS fit</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>sr^-1</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>RootMeanSquareErrorOfFit</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/RootMeanSquareErrorOfFit</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="ScatteringWeight">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Dim name="/nSWLevels"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Scattering weight vertical profile                                                                                      </Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits                                                                                                                 </Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific                                                                                                            </Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ScatteringWeight</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/ScatteringWeight</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude nSWLevels</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="ScatteringWtPressure">
+        <Dim name="/nSWLevels"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Scattering weight pressure                                                                                              </Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>hPa                                                                                                                     </Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific                                                                                                            </Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ScatteringWtPressure</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/ScatteringWtPressure</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>nSWLevels</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SlantColumnAmountH2O">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>H2O slant column density</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>molec/cm^2</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SlantColumnAmountH2O</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/SlantColumnAmountH2O</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SlantColumnAmountH2OStd">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Precision of the H2O slant column density</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>molec/cm^2</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SlantColumnAmountH2OStd</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/SlantColumnAmountH2OStd</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SlantColumnAmountNO2">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>NO2 slant column density</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>molec/cm^2</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SlantColumnAmountNO2</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/SlantColumnAmountNO2</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SlantColumnAmountNO2Destriped">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>molec/cm^2                                                                                                              </Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific                                                                                                            </Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Destriped slant column amount NO2                                                                                       </Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SlantColumnAmountNO2Destriped</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/SlantColumnAmountNO2Destriped</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SlantColumnAmountNO2Std">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Precision of the NO2 slant column density</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>molec/cm^2</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SlantColumnAmountNO2Std</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/SlantColumnAmountNO2Std</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SlantColumnAmountO2O2">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000e+47</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>O2-O2 slant column density</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>molec/cm^2</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SlantColumnAmountO2O2</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/SlantColumnAmountO2O2</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SlantColumnAmountO2O2Std">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000e+47</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Precision of the O2-O2 slant column density</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>molec/cm^2</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SlantColumnAmountO2O2Std</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/SlantColumnAmountO2O2Std</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SlantColumnAmountO3">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>O3 slant column density</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>molec/cm^2</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SlantColumnAmountO3</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/SlantColumnAmountO3</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SlantColumnAmountO3Std">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Precision of the O3 slant column density</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>molec/cm^2</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SlantColumnAmountO3Std</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/SlantColumnAmountO3Std</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SmallPixelRadiance">
+        <Dim name="/nTimesSmallPixel"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Radiance of small pixel data column</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>photons/ (s.nm.cm^2.sr)</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SmallPixelRadiance</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/SmallPixelRadiance</Value>
+        </Attribute>
+    </Float32>
+    <Int16 name="SmallPixelRadiancePointer">
+        <Dim name="/nTimes"/>
+        <Dim name="/nSmallPixelPointer"/>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Offset and count of nTimesSmallPixel wrt nTimes</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SmallPixelRadiancePointer</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/SmallPixelRadiancePointer</Value>
+        </Attribute>
+    </Int16>
+    <Int16 name="TerrainHeight">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Terrain height at for center co-ordinate of the ground pixel</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>m</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>TerrainHeight</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/TerrainHeight</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Int16>
+    <Int16 name="TerrainPressure">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Pressure of the center of the ground pixel</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>hPa</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>TerrainPressure</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/TerrainPressure</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Int16>
+    <Int16 name="TerrainReflectivity">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>0.0010000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Reflectivity of the ground pixel</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>TerrainReflectivity</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/TerrainReflectivity</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Int16>
+    <Float32 name="TropopausePressure">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Tropopause pressure                                                            </Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>hPa</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific                                                                                                            </Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>TropopausePressure</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/TropopausePressure</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Float32>
+    <UInt16 name="VcdQualityFlags">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="UInt16">
+            <Value>65535</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Vertical column density quality flags                                                                                   </Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits                                                                                                                 </Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific                                                                                                            </Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="UInt16">
+            <Value>65535</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>VcdQualityFlags</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/VcdQualityFlags</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </UInt16>
+    <Float32 name="WavelengthRegistrationCheck">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Correction applied to the L1B wavelength assignment based on the position of Fraunhofer absorption lines</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>WavelengthRegistrationCheck</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/WavelengthRegistrationCheck</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="WavelengthRegistrationCheckStd">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Precision of the correction which was applied to the L1B wavelength assignment</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>WavelengthRegistrationCheckStd</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/WavelengthRegistrationCheckStd</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Float32>
+    <Byte name="XTrackQualityFlags">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Byte">
+            <Value>255</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Byte">
+            <Value>255</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Across Track Quality Flags</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>XTrackQualityFlags</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Data Fields/XTrackQualityFlags</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Byte>
+    <Float32 name="FoV75CornerLatitude">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Dim name="/nCorners"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Latitudes of corners of the groundpixel                                                                                 </Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>deg                                                                                                                     </Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific                                                                                                            </Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>FoV75CornerLatitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation Fields/FoV75CornerLatitude</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude nCorners</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="FoV75CornerLongitude">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Dim name="/nCorners"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Longitudes of corners of the groundpixel                                                                                </Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>deg                                                                                                                     </Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific                                                                                                            </Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>FoV75CornerLongitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation Fields/FoV75CornerLongitude</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude nCorners</Value>
+        </Attribute>
+    </Float32>
+    <UInt16 name="GroundPixelQualityFlags">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="UInt16">
+            <Value>65535</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="UInt16">
+            <Value>65535</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Ground Pixel Quality Flags</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>GroundPixelQualityFlags</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation Fields/GroundPixelQualityFlags</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </UInt16>
+    <Float32 name="OrbitPhase">
+        <Dim name="/nTimes"/>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>The place of OMI in orbit</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>OrbitPhase</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation Fields/OrbitPhase</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SolarAzimuthAngle">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Solar azimuth angle at WGS84 ellipsoid for center co-ordinate of the ground pixel, defined East-of-North</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>deg</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-TES-Shared</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SolarAzimuthAngle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation Fields/SolarAzimuthAngle</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SolarZenithAngle">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>deg</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Solar zenith angle at WGS84 ellipsoid for center co-ordinate of the ground pixel</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>Aura-Shared</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SolarZenithAngle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation Fields/SolarZenithAngle</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SpacecraftAltitude">
+        <Dim name="/nTimes"/>
+        <Attribute name="units" type="String">
+            <Value>m</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Altitude above WGS84 ellipsoid</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>HIRDLS-OMI-TES-Shared</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SpacecraftAltitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation Fields/SpacecraftAltitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SpacecraftLatitude">
+        <Dim name="/nTimes"/>
+        <Attribute name="units" type="String">
+            <Value>deg</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Geodetic Latitude above WGS84 ellipsoid</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>HIRDLS-OMI-TES-Shared</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SpacecraftLatitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation Fields/SpacecraftLatitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SpacecraftLongitude">
+        <Dim name="/nTimes"/>
+        <Attribute name="units" type="String">
+            <Value>deg</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Geodetic Longitude above WGS84 ellipsoid</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>HIRDLS-OMI-TES-Shared</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SpacecraftLongitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation Fields/SpacecraftLongitude</Value>
+        </Attribute>
+    </Float32>
+    <Float64 name="Time">
+        <Dim name="/nTimes"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-1.2676506002282294e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <Value>-1.2676506002282294e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Time at Start of Scan (s, TAI93)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>s</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>Aura-Shared</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation Fields/Time</Value>
+        </Attribute>
+    </Float64>
+    <Float32 name="ViewingAzimuthAngle">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Viewing azimuth angle at WGS84 ellipsoid for center co-ordinate of the ground pixel, defined East-of-North</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>deg</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ViewingAzimuthAngle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation Fields/ViewingAzimuthAngle</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="ViewingZenithAngle">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>deg</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Viewing zenith angle at WGS84 ellipsoid for center co-ordinate of the ground pixel</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ViewingZenithAngle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation Fields/ViewingZenithAngle</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+    </Float32>
+    <String name="ArchivedMetadata_0">
+        <Attribute name="origname" type="String">
+            <Value>ArchivedMetadata.0</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION/ArchivedMetadata.0</Value>
+        </Attribute>
+    </String>
+    <String name="CoreMetadata_0">
+        <Attribute name="origname" type="String">
+            <Value>CoreMetadata.0</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION/CoreMetadata.0</Value>
+        </Attribute>
+    </String>
+    <String name="StructMetadata_0">
+        <Attribute name="origname" type="String">
+            <Value>StructMetadata.0</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
+        </Attribute>
+    </String>
+    <Float32 name="Latitude">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Latitude of the center of the groundpixel</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>Aura-Shared</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation Fields/Latitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Longitude">
+        <Dim name="/nTimes"/>
+        <Dim name="/nXtrack"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Longitude of the center of the groundpixel</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>Aura-Shared</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2/Geolocation Fields/Longitude</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="nCorners">
+        <Dim name="/nCorners"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="nPolynomial">
+        <Dim name="/nPolynomial"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="nSWLevels">
+        <Dim name="/nSWLevels"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="nSmallPixelPointer">
+        <Dim name="/nSmallPixelPointer"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="nTimesSmallPixel">
+        <Dim name="/nTimesSmallPixel"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Attribute name="HDFEOS" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL_FILE_ATTRIBUTES" type="Container">
+        <Attribute name="InstrumentName" type="String">
+            <Value>OMI</Value>
+        </Attribute>
+        <Attribute name="ProcessLevel" type="String">
+            <Value>2A</Value>
+        </Attribute>
+        <Attribute name="PGEVersion" type="String">
+            <Value>1.2.3.1</Value>
+        </Attribute>
+        <Attribute name="ProcessingSystem" type="String">
+            <Value>OFFLINE</Value>
+        </Attribute>
+        <Attribute name="TAI93At0zOfGranule" type="Float64">
+            <Value>729648009.00000000</Value>
+        </Attribute>
+        <Attribute name="GranuleMonth" type="Int32">
+            <Value>2</Value>
+        </Attribute>
+        <Attribute name="GranuleDay" type="Int32">
+            <Value>15</Value>
+        </Attribute>
+        <Attribute name="GranuleYear" type="Int32">
+            <Value>2016</Value>
+        </Attribute>
+        <Attribute name="NO2ColumnAmountHistogram" type="Int32">
+            <Value>3332</Value>
+            <Value>14526</Value>
+            <Value>31438</Value>
+            <Value>29474</Value>
+            <Value>7689</Value>
+            <Value>985</Value>
+            <Value>4</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="CloudAlbedo" type="Float32">
+            <Value>0.8000000119</Value>
+        </Attribute>
+        <Attribute name="SolarProductMissing" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="SolarProductOutOfDate" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="SolarIrradianceWarning" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="BackupSolarProductUsed" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="ParametersInconsistent" type="Int32">
+            <Value>-1</Value>
+        </Attribute>
+        <Attribute name="RadianceParametersMissing" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="RadianceScienceQualityFlag" type="String">
+            <Value>Not Investigated</Value>
+        </Attribute>
+        <Attribute name="IrradianceScienceQualityFlag" type="String">
+            <Value>Not Investigated</Value>
+        </Attribute>
+        <Attribute name="CloudProductMissing" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="SolarIrradianceWavelengthRegistrationWarning" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="WavelengthCalibrationMethod" type="String">
+            <Value>assigned</Value>
+        </Attribute>
+        <Attribute name="QAPctSunGlint" type="Int32">
+            <Value>11</Value>
+        </Attribute>
+        <Attribute name="QAPctEclipse" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="QAPctIrradianceWarning" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="QAPctRadianceMissing" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="QAPctRadianceError" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="QAPctRadianceWarning" type="Int32">
+            <Value>44</Value>
+        </Attribute>
+        <Attribute name="QAPctCloudDataError" type="Int32">
+            <Value>11</Value>
+        </Attribute>
+        <Attribute name="QAPctCloudDataWarning" type="Int32">
+            <Value>51</Value>
+        </Attribute>
+        <Attribute name="QAPctSnowIceDataError" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="QAPctSCDError" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="QAPctSCDWarning" type="Int32">
+            <Value>2</Value>
+        </Attribute>
+        <Attribute name="QAPctIAMFError" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="QAPctIAMFWarning" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="QAPctIVCDError" type="Int32">
+            <Value>11</Value>
+        </Attribute>
+        <Attribute name="QAPctIVCDWarning" type="Int32">
+            <Value>40</Value>
+        </Attribute>
+        <Attribute name="QAPctMeasMissing" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="QAPctMeasError" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="QAPctMeasWarning" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="QAPctRebinned" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="QAPctSAA" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="QAPctSpacecraftManeuver" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="QAPctInstrumentSettingsError" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="QAPctCloudDataNotSynchronized" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="QAPctWavelengthRegistrationWarning" type="Int32">
+            <Value>19</Value>
+        </Attribute>
+        <Attribute name="QAPctAmfTableExtrapolation" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="QAPctAmfTableValueProblem" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="QAPctAmfProfileProblem" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="QAPctAmfPollutedHighTerrain" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="QAPctAmfLargeWarning" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="QAPctAmfSmallWarning" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="QAPctAmfStratWarning" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="QAPctAmfTropWarning" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="QAPctVcdTooSmall" type="Int32">
+            <Value>15</Value>
+        </Attribute>
+        <Attribute name="QAPctVcdTooLarge" type="Int32">
+            <Value>11</Value>
+        </Attribute>
+        <Attribute name="UnpolFldNumberOfOrbits" type="Int32">
+            <Value>-1</Value>
+        </Attribute>
+        <Attribute name="UnpolFldOrbitList" type="Int32">
+            <Value>-1</Value>
+        </Attribute>
+        <Attribute name="OPF_fittingWindow" type="String">
+            <Value>405.0, 465.0</Value>
+        </Attribute>
+        <Attribute name="OPF_fittingWindowColumnRange" type="String">
+            <Value>0, 1200</Value>
+        </Attribute>
+        <Attribute name="OPF_level1ReadBufferSize" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="OPF_level2WriteBufferSize" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="OPF_fittingPolydegree" type="String">
+            <Value>5</Value>
+        </Attribute>
+        <Attribute name="OPF_meritFunction" type="String">
+            <Value>6 </Value>
+        </Attribute>
+        <Attribute name="OPF_interpolationMethod" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="OPF_amfAngleUpperLimit" type="String">
+            <Value>88</Value>
+        </Attribute>
+        <Attribute name="OPF_NO2ReferenceTemperature" type="String">
+            <Value>220</Value>
+        </Attribute>
+        <Attribute name="OPF_O3ReferenceTemperature" type="String">
+            <Value>220</Value>
+        </Attribute>
+        <Attribute name="OPF_O2O2ReferenceTemperature" type="String">
+            <Value>220</Value>
+        </Attribute>
+        <Attribute name="OPF_H2OReferenceTemperature" type="String">
+            <Value>220</Value>
+        </Attribute>
+        <Attribute name="OPF_maxNSolarWavelengthsFlagged" type="String">
+            <Value>20</Value>
+        </Attribute>
+        <Attribute name="OPF_maxNEarthWavelengthsFlagged" type="String">
+            <Value>20</Value>
+        </Attribute>
+        <Attribute name="OPF_maxNEarthWavelengthsFlaggedMissing" type="String">
+            <Value>20</Value>
+        </Attribute>
+        <Attribute name="OPF_maxSolarWavelnPrecision" type="String">
+            <Value>999E39</Value>
+        </Attribute>
+        <Attribute name="OPF_maxEarthWavelnPrecision" type="String">
+            <Value>999E39</Value>
+        </Attribute>
+        <Attribute name="OPF_maxScdPrecision" type="String">
+            <Value>5E15</Value>
+        </Attribute>
+        <Attribute name="OPF_maxFitRms" type="String">
+            <Value>5E-4</Value>
+        </Attribute>
+        <Attribute name="OPF_opfVersion" type="String">
+            <Value>1.0</Value>
+        </Attribute>
+        <Attribute name="OPF_limitsSCD" type="String">
+            <Value>5E13,    1E17</Value>
+        </Attribute>
+        <Attribute name="OPF_limitsVCD" type="String">
+            <Value>5E13,    1E17</Value>
+        </Attribute>
+        <Attribute name="OPF_limitsAMF" type="String">
+            <Value>1E-4,    1E4 </Value>
+        </Attribute>
+        <Attribute name="OPF_limitsEarthRad" type="String">
+            <Value>0,       1E20</Value>
+        </Attribute>
+        <Attribute name="OPF_limitsSolarIrrad" type="String">
+            <Value>0,       1E20</Value>
+        </Attribute>
+        <Attribute name="OPF_maxEarthRadPrecision" type="String">
+            <Value>1E20</Value>
+        </Attribute>
+        <Attribute name="OPF_maxSolarIrradPrecision" type="String">
+            <Value>1E20</Value>
+        </Attribute>
+        <Attribute name="OPF_limitsLatitude" type="String">
+            <Value>-90,      90</Value>
+        </Attribute>
+        <Attribute name="OPF_limitsLongitude" type="String">
+            <Value>-180,     180</Value>
+        </Attribute>
+        <Attribute name="OPF_limitsSZA" type="String">
+            <Value>-90,      90</Value>
+        </Attribute>
+        <Attribute name="OPF_limitsSAZ" type="String">
+            <Value>-180,     180</Value>
+        </Attribute>
+        <Attribute name="OPF_limitsVZA" type="String">
+            <Value>-90,      90</Value>
+        </Attribute>
+        <Attribute name="OPF_limitsVAZ" type="String">
+            <Value>-180,     180</Value>
+        </Attribute>
+        <Attribute name="OPF_limitsRAZ" type="String">
+            <Value>0,     180</Value>
+        </Attribute>
+        <Attribute name="OPF_limitsSurfaceHeigth" type="String">
+            <Value>-9000,    9000</Value>
+        </Attribute>
+        <Attribute name="OPF_limitsSurfacePressure" type="String">
+            <Value>100,    1200</Value>
+        </Attribute>
+        <Attribute name="OPF_limitsSurfaceAlbedo" type="String">
+            <Value>0,       1</Value>
+        </Attribute>
+        <Attribute name="OPF_albedoSnow" type="String">
+            <Value>0.6</Value>
+        </Attribute>
+        <Attribute name="OPF_albedoDefault" type="String">
+            <Value>0.065</Value>
+        </Attribute>
+        <Attribute name="OPF_albedoLandThreshold" type="String">
+            <Value>0.1</Value>
+        </Attribute>
+        <Attribute name="OPF_albedoWaterThreshold" type="String">
+            <Value>0.1</Value>
+        </Attribute>
+        <Attribute name="OPF_albedoSeaIceNH" type="String">
+            <Value>0.70, 0.73, 0.76, 0.80, 0.84, 0.78, 0.61, 0.61, 0.62, 0.68, 0.67, 0.71</Value>
+        </Attribute>
+        <Attribute name="OPF_albedoSeaIceSH" type="String">
+            <Value>0.53, 0.50, 0.44, 0.60, 0.61, 0.64, 0.68, 0.76, 0.80, 0.83, 0.78, 0.66</Value>
+        </Attribute>
+        <Attribute name="OPF_maxSCDCovariance" type="String">
+            <Value>1E20</Value>
+        </Attribute>
+        <Attribute name="OPF_maxSolarIrradianceAgeInDays" type="String">
+            <Value>10000</Value>
+        </Attribute>
+        <Attribute name="OPF_automaticQualityFailed" type="String">
+            <Value>50</Value>
+        </Attribute>
+        <Attribute name="OPF_automaticQualitySuspect" type="String">
+            <Value>20</Value>
+        </Attribute>
+        <Attribute name="OPF_wavelengthRegistrationLimit" type="String">
+            <Value>0.01</Value>
+        </Attribute>
+        <Attribute name="OPF_wavelengthRegistrationFittingWindow" type="String">
+            <Value>408.0, 423.0</Value>
+        </Attribute>
+        <Attribute name="OPF_intermediateProductWavelengths" type="String">
+            <Value>300</Value>
+        </Attribute>
+        <Attribute name="OPF_UseWavelengthFitCoefficient" type="String">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="OPF_XTrackQualityFlagsErrorMask" type="String">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="PGE_Version_OMNO2B" type="String">
+            <Value>1.2.1.0</Value>
+        </Attribute>
+        <Attribute name="Product_Version_OMNO2B" type="String">
+            <Value>2.1.3</Value>
+        </Attribute>
+        <Attribute name="Product_Cycle_OMNO2B" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="InputPointer_OMNO2B" type="String">
+            <Value>(&quot;OMNO2B.opf&quot;,&quot;OMI-Aura_L2A-OMNO2_2016m0215t0210-o61626_v003-2016m0215t082913.he5&quot;,&quot;OMI-Aura_L2-OMPIXCOR_2016m0215t0210-o61626_v003-2016m0215t080458.he5&quot;,&quot;DifferentialAmfProfiles.txt&quot;,&quot;gmiTPPm02.txt&quot;,&quot;gmiTMPm02.txt&quot;,&quot;gmiNO2m02.txt&quot;,&quot;gmiNO2COVm02.txt&quot;)</Value>
+        </Attribute>
+        <Attribute name="OPF_B_pressureTropopause" type="Float32">
+            <Value>120.0000000</Value>
+        </Attribute>
+        <Attribute name="OPF_B_temperatureNo2Fit" type="Float32">
+            <Value>220.0000000</Value>
+        </Attribute>
+        <Attribute name="OPF_B_cloudReflectivity" type="Float32">
+            <Value>0.8000000119</Value>
+        </Attribute>
+        <Attribute name="OPF_B_maxCloudPresAboveTerrain" type="Float32">
+            <Value>50.00000000</Value>
+        </Attribute>
+        <Attribute name="OPF_B_minCloudPresBelowTpause" type="Float32">
+            <Value>50.00000000</Value>
+        </Attribute>
+        <Attribute name="PGE_Version_OMNO2" type="String">
+            <Value>1.1.13.0</Value>
+        </Attribute>
+        <Attribute name="Product_Version_OMNO2" type="String">
+            <Value>2.1.6</Value>
+        </Attribute>
+        <Attribute name="Product_Cycle_OMNO2" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="InputPointer_OMNO2" type="String">
+            <Value>(&quot;OMNO2.opf&quot;,&quot;OMI-Aura_L2B-OMNO2_2016m0215t0210-o61626_v003-2016m0215t033200.he5&quot;,&quot;OMI-Aura_L2B-OMNO2_2016m0215t0210-o61626_v003-2016m0215t033200.he5&quot;,&quot;OMI-Aura_L2B-OMNO2_2016m0214t1438-o61619_v003-2016m0214t172151.he5&quot;,&quot;OMI-Aura_L2B-OMNO2_2016m0214t1617-o61620_v003-2016m0214t172335.he5&quot;,&quot;OMI-Aura_L2B-OMNO2_2016m0214t1756-o61621_v003-2016m0214t191423.he5&quot;,&quot;OMI-Aura_L2B-OMNO2_2016m0214t1935-o61622_v003-2016m0214t204217.he5&quot;,&quot;OMI-Aura_L2B-OMNO2_2016m0214t2113-o61623_v003-2016m0215t001713.he5&quot;,&quot;OMI-Aura_L2B-OMNO2_2016m0214t2252-o61624_v003-2016m0215t021103.he5&quot;,&quot;OMI-Aura_L2B-OMNO2_2016m0215t0031-o61625_v003-2016m0215t033359.he5&quot;,&quot;OMI-Aura_L2B-OMNO2_2016m0215t0210-o61626_v003-2016m0215t033200.he5&quot;,&quot;OMI-Aura_L2B-OMNO2_2016m0215t0349-o61627_v003-2016m0215t052151.he5&quot;,&quot;OMI-Aura_L2B-OMNO2_2016m0215t0528-o61628_v003-2016m0215t070236.he5&quot;,&quot;OMI-Aura_L2B-OMNO2_2016m0215t0707-o61629_v003-2016m0215t083754.he5&quot;,&quot;OMI-Aura_L2B-OMNO2_2016m0215t0846-o61630_v003-2016m0215t114309.he5&quot;,&quot;OMI-Aura_L2B-OMNO2_2016m0215t1025-o61631_v003-2016m0215t133002.he5&quot;,&quot;OMI-Aura_L2B-OMNO2_2016m0215t1203-o61632_v003-2016m0215t134133.he5&quot;)</Value>
+        </Attribute>
+        <Attribute name="OPF_C_pressureTropopause" type="Float32">
+            <Value>120.0000000</Value>
+        </Attribute>
+        <Attribute name="OPF_C_temperatureNo2Fit" type="Float32">
+            <Value>220.0000000</Value>
+        </Attribute>
+        <Attribute name="OPF_C_cloudReflectivity" type="Int32">
+            <Value>800</Value>
+        </Attribute>
+        <Attribute name="OPF_C_nLon" type="Int32">
+            <Value>360</Value>
+        </Attribute>
+        <Attribute name="OPF_C_nLat" type="Int32">
+            <Value>180</Value>
+        </Attribute>
+        <Attribute name="OPF_C_nUnpolFldCoefs" type="Int32">
+            <Value>5</Value>
+        </Attribute>
+        <Attribute name="OPF_C_lonStart" type="Float32">
+            <Value>-180.0000000</Value>
+        </Attribute>
+        <Attribute name="OPF_C_lonEnd" type="Float32">
+            <Value>180.0000000</Value>
+        </Attribute>
+        <Attribute name="OPF_C_latStart" type="Float32">
+            <Value>-90.00000000</Value>
+        </Attribute>
+        <Attribute name="OPF_C_latEnd" type="Float32">
+            <Value>90.00000000</Value>
+        </Attribute>
+        <Attribute name="OPF_C_latBandWidth" type="Float32">
+            <Value>9.000000000</Value>
+        </Attribute>
+        <Attribute name="OPF_C_maxVcdForLatBand" type="Float32">
+            <Value>1.000000027e+16</Value>
+        </Attribute>
+        <Attribute name="OPF_C_minVcdForLatBand" type="Float32">
+            <Value>9.999999828e+12</Value>
+        </Attribute>
+        <Attribute name="OPF_C_latBandStdClamp" type="Float32">
+            <Value>5.000000019e+13</Value>
+        </Attribute>
+        <Attribute name="OPF_C_nStdUpperLimitForSmooth" type="Float32">
+            <Value>2.000000000</Value>
+        </Attribute>
+        <Attribute name="OPF_C_nStdLowerLimitForSmooth" type="Float32">
+            <Value>-20.00000000</Value>
+        </Attribute>
+        <Attribute name="OPF_C_nStdUpperThreshForVcd" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="OPF_C_nStdLowerThreshForVcd" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="OPF_C_xTrackAnomalyCorrection" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="xTrackAnomaly" type="Float32">
+            <Value>1.922753242e+15</Value>
+            <Value>1.569640359e+15</Value>
+            <Value>1.762668000e+15</Value>
+            <Value>-6.384007177e+14</Value>
+            <Value>-3.541501183e+14</Value>
+            <Value>2.685433671e+14</Value>
+            <Value>2.897046709e+14</Value>
+            <Value>1.090009013e+13</Value>
+            <Value>-4.763730764e+14</Value>
+            <Value>8.938326233e+14</Value>
+            <Value>-1.093627523e+14</Value>
+            <Value>-2.935067907e+14</Value>
+            <Value>-3.518936499e+14</Value>
+            <Value>4.197074254e+14</Value>
+            <Value>-4.433426304e+13</Value>
+            <Value>6.607860872e+13</Value>
+            <Value>1.379732474e+15</Value>
+            <Value>-5.746242114e+14</Value>
+            <Value>5.341264279e+14</Value>
+            <Value>-3.960013534e+14</Value>
+            <Value>1.097577819e+15</Value>
+            <Value>-5.859715150e+14</Value>
+            <Value>-1.040480524e+15</Value>
+            <Value>3.711087967e+14</Value>
+            <Value>2.381897594e+14</Value>
+            <Value>-1.595048043e+15</Value>
+            <Value>-7.408641418e+14</Value>
+            <Value>1.930485794e+14</Value>
+            <Value>2.210958970e+15</Value>
+            <Value>-4.215043323e+14</Value>
+            <Value>2.403489469e+15</Value>
+            <Value>2.666822503e+15</Value>
+            <Value>1.559721132e+15</Value>
+            <Value>2.588571421e+15</Value>
+            <Value>1.228069126e+15</Value>
+            <Value>-7.548893575e+14</Value>
+            <Value>-5.477699284e+14</Value>
+            <Value>-2.419576806e+15</Value>
+            <Value>1.549189335e+15</Value>
+            <Value>-1.009973371e+15</Value>
+            <Value>-2.079369225e+15</Value>
+            <Value>-2.921754851e+15</Value>
+            <Value>-1.598907071e+15</Value>
+            <Value>-1.917552842e+15</Value>
+            <Value>-1.087270971e+14</Value>
+            <Value>-3.414037291e+14</Value>
+            <Value>3.151684583e+14</Value>
+            <Value>-9.837450793e+14</Value>
+            <Value>2.801290413e+14</Value>
+            <Value>-3.513589265e+14</Value>
+            <Value>6.154484124e+14</Value>
+            <Value>-6.260210113e+14</Value>
+            <Value>1.226820364e+15</Value>
+            <Value>-2.350496552e+15</Value>
+            <Value>-4.890894008e+14</Value>
+            <Value>9.762734468e+14</Value>
+            <Value>-1.387167599e+15</Value>
+            <Value>6.248017775e+14</Value>
+            <Value>-1.507843295e+15</Value>
+            <Value>-6.862445058e+14</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="HDFEOS_SWATHS" type="Container"/>
+    <Attribute name="HDFEOS_SWATHS_ColumnAmountNO2" type="Container">
+        <Attribute name="NumTimes" type="Int32">
+            <Value>1644</Value>
+        </Attribute>
+        <Attribute name="NumTimesSmallPixel" type="Int32">
+            <Value>6488</Value>
+        </Attribute>
+        <Attribute name="VerticalCoordinate" type="String">
+            <Value>Total Column</Value>
+        </Attribute>
+        <Attribute name="NumSWLevels" type="Int32">
+            <Value>35</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/ColumnAmountNO2</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="HDFEOS_SWATHS_ColumnAmountNO2_Data_Fields" type="Container"/>
+    <Attribute name="HDFEOS_SWATHS_ColumnAmountNO2_Geolocation_Fields" type="Container"/>
+    <Attribute name="HDFEOS_INFORMATION" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <Value>HDFEOS_5.1.12</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

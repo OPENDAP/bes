@@ -1,0 +1,2393 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="TES-Aura_L2-O3-Nadir_r0000011015_F05_07.he5">
+    <Dimension name="Latitude" size="2293"/>
+    <Dimension name="Pressure_CV" size="67"/>
+    <Dimension name="Pressure_CV_1" size="67"/>
+    <Dimension name="nFreq" size="25"/>
+    <Float32 name="AirDensity">
+        <Dim name="/Latitude"/>
+        <Dim name="/Pressure_CV"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>AirDensity</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Molec/m^3</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AirDensity</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/AirDensity</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nTimes nLevels</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Altitude">
+        <Dim name="/Latitude"/>
+        <Dim name="/Pressure_CV"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Altitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>HIRDLS-TES-SHARED</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Altitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/Altitude</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nTimes nLevels</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="AverageCloudEffOpticalDepth">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>AverageCloudEffOpticalDepth</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>N/A</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AverageCloudEffOpticalDepth</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/AverageCloudEffOpticalDepth</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="AverageCloudEffOpticalDepthError">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>AverageCloudEffOpticalDepthError</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>N/A</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AverageCloudEffOpticalDepthError</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/AverageCloudEffOpticalDepthError</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="AveragingKernel">
+        <Dim name="/Latitude"/>
+        <Dim name="/Pressure_CV"/>
+        <Dim name="/Pressure_CV_1"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>AveragingKernel</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>N/A</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AveragingKernel</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/AveragingKernel</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nTimes nLevels nLevels_1</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="AveragingKernelDiagonal">
+        <Dim name="/Latitude"/>
+        <Dim name="/Pressure_CV"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>AveragingKernelDiagonal</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>N/A</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AveragingKernelDiagonal</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/AveragingKernelDiagonal</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nTimes nLevels</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Calibration_QA">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Calibration_QA</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>N/A</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Calibration_QA</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/Calibration_QA</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="CloudEffectiveOpticalDepth">
+        <Dim name="/Latitude"/>
+        <Dim name="/nFreq"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>CloudEffectiveOpticalDepth</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>N/A</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>CloudEffectiveOpticalDepth</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/CloudEffectiveOpticalDepth</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nTimes nFreq</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="CloudEffectiveOpticalDepthError">
+        <Dim name="/Latitude"/>
+        <Dim name="/nFreq"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>CloudEffectiveOpticalDepthError</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>N/A</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>CloudEffectiveOpticalDepthError</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/CloudEffectiveOpticalDepthError</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nTimes nFreq</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="CloudTopPressure">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>CloudTopPressure</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>hPa</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>CloudTopPressure</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/CloudTopPressure</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="CloudTopPressureError">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>CloudTopPressureError</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>ln(hPa)</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>CloudTopPressureError</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/CloudTopPressureError</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="CloudVariability_QA">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>CloudVariability_QA</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>N/A</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>CloudVariability_QA</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/CloudVariability_QA</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="ConstraintVector">
+        <Dim name="/Latitude"/>
+        <Dim name="/Pressure_CV"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>ConstraintVector</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>ln(vmr) or K</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ConstraintVector</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/ConstraintVector</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nTimes nLevels</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="DegreesOfFreedomForSignal">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>DegreesOfFreedomForSignal</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>N/A</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>DegreesOfFreedomForSignal</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/DegreesOfFreedomForSignal</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="DeviationVsRetrievalCovariance">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>DeviationVsRetrievalCovariance</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>N/A</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>DeviationVsRetrievalCovariance</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/DeviationVsRetrievalCovariance</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="H2O_HDO_Corr_QA">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>H2O_HDO_Corr_QA</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>N/A</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>H2O_HDO_Corr_QA</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/H2O_HDO_Corr_QA</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="InformationContent">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>InformationContent</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>N/A</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>InformationContent</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/InformationContent</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Initial">
+        <Dim name="/Latitude"/>
+        <Dim name="/Pressure_CV"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Initial</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>vmr or K</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Initial</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/Initial</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nTimes nLevels</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="KDotDL_QA">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>KDotDL_QA</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>N/A</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>KDotDL_QA</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/KDotDL_QA</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="LDotDL_QA">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>LDotDL_QA</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>N/A</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>LDotDL_QA</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/LDotDL_QA</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Int8 name="MaxNumIterations">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-99</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int8">
+            <Value>-99</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>MaxNumIterations</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>N/A</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>MaxNumIterations</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/MaxNumIterations</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Int8>
+    <Float32 name="MeasurementErrorCovariance">
+        <Dim name="/Latitude"/>
+        <Dim name="/Pressure_CV"/>
+        <Dim name="/Pressure_CV_1"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>MeasurementErrorCovariance</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>ln(vmr)^2 or K^2</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>MeasurementErrorCovariance</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/MeasurementErrorCovariance</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nTimes nLevels nLevels_1</Value>
+        </Attribute>
+    </Float32>
+    <Int8 name="NumberIterPerformed">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-99</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int8">
+            <Value>-99</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>NumberIterPerformed</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Integer</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>NumberIterPerformed</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/NumberIterPerformed</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Int8>
+    <Float32 name="O3">
+        <Dim name="/Latitude"/>
+        <Dim name="/Pressure_CV"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>O3</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>vmr or K</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>HIRDLS-MLS-TES-SHARED</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>O3</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/O3</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nTimes nLevels</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="O3Precision">
+        <Dim name="/Latitude"/>
+        <Dim name="/Pressure_CV"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>O3Precision</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>ln(vmr) or K</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>HIRDLS-MLS-TES-SHARED</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>O3Precision</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/O3Precision</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nTimes nLevels</Value>
+        </Attribute>
+    </Float32>
+    <Int8 name="O3_Ccurve_QA">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-99</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int8">
+            <Value>-99</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>O3_Ccurve_QA</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>N/A</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>O3_Ccurve_QA</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/O3_Ccurve_QA</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Int8>
+    <Float32 name="ObservationErrorCovariance">
+        <Dim name="/Latitude"/>
+        <Dim name="/Pressure_CV"/>
+        <Dim name="/Pressure_CV_1"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>ObservationErrorCovariance</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>ln(vmr)^2 or K^2</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ObservationErrorCovariance</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/ObservationErrorCovariance</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nTimes nLevels nLevels_1</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Pressure">
+        <Dim name="/Latitude"/>
+        <Dim name="/Pressure_CV"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Pressure</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>hPa</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>AURA-SHARED</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Pressure</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/Pressure</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nTimes nLevels</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="RadianceResidualMax">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>RadianceResidualMax</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>N/A</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>RadianceResidualMax</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/RadianceResidualMax</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="RadianceResidualMean">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>RadianceResidualMean</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>N/A</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>RadianceResidualMean</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/RadianceResidualMean</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="RadianceResidualRMS">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>RadianceResidualRMS</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>N/A</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>RadianceResidualRMS</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/RadianceResidualRMS</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Int8 name="Scan_Averaged_Count">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-99</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int8">
+            <Value>-99</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Scan_Averaged_Count</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>N/A</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Scan_Averaged_Count</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/Scan_Averaged_Count</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Int8>
+    <Int8 name="SpeciesRetrievalConverged">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-99</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int8">
+            <Value>-99</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>SpeciesRetrievalConverged</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>N/A</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SpeciesRetrievalConverged</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/SpeciesRetrievalConverged</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Int8>
+    <Int8 name="SpeciesRetrievalQuality">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-99</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int8">
+            <Value>-99</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>SpeciesRetrievalQuality</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>N/A</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SpeciesRetrievalQuality</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/SpeciesRetrievalQuality</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Int8>
+    <Float32 name="SurfaceEmissMean_QA">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>SurfaceEmissMean_QA</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>N/A</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SurfaceEmissMean_QA</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/SurfaceEmissMean_QA</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SurfaceEmissionLayer_QA">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>SurfaceEmissionLayer_QA</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>N/A</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SurfaceEmissionLayer_QA</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/SurfaceEmissionLayer_QA</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SurfaceTempConstraint">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>SurfaceTempConstraint</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>K</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SurfaceTempConstraint</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/SurfaceTempConstraint</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SurfaceTempDegreesOfFreedom">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>SurfaceTempDegreesOfFreedom</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>N/A</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SurfaceTempDegreesOfFreedom</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/SurfaceTempDegreesOfFreedom</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SurfaceTempError">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>SurfaceTempError</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>K</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SurfaceTempError</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/SurfaceTempError</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SurfaceTempInitial">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>SurfaceTempInitial</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>K</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SurfaceTempInitial</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/SurfaceTempInitial</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SurfaceTempObservationError">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>SurfaceTempObservationError</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>K</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SurfaceTempObservationError</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/SurfaceTempObservationError</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SurfaceTempPrecision">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>SurfaceTempPrecision</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>K</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SurfaceTempPrecision</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/SurfaceTempPrecision</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SurfaceTempVsApriori_QA">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>SurfaceTempVsApriori_QA</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>K</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SurfaceTempVsApriori_QA</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/SurfaceTempVsApriori_QA</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SurfaceTempVsAtmTemp_QA">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>SurfaceTempVsAtmTemp_QA</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>K</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SurfaceTempVsAtmTemp_QA</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/SurfaceTempVsAtmTemp_QA</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SurfaceTemperature">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>SurfaceTemperature</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>K</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SurfaceTemperature</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/SurfaceTemperature</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="TotalColumnDensity">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>TotalColumnDensity</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Molec/cm^2</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>TotalColumnDensity</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/TotalColumnDensity</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="TotalColumnDensityError">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>TotalColumnDensityError</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Molec/cm^2</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>TotalColumnDensityError</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/TotalColumnDensityError</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="TotalColumnDensityInitial">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>TotalColumnDensityInitial</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Molec/cm^2</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>TotalColumnDensityInitial</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/TotalColumnDensityInitial</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="TotalError">
+        <Dim name="/Latitude"/>
+        <Dim name="/Pressure_CV"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>TotalError</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>ln(vmr) or K</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>TotalError</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/TotalError</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nTimes nLevels</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="TotalErrorCovariance">
+        <Dim name="/Latitude"/>
+        <Dim name="/Pressure_CV"/>
+        <Dim name="/Pressure_CV_1"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>TotalErrorCovariance</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>ln(vmr)^2 or K^2</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>TotalErrorCovariance</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/TotalErrorCovariance</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nTimes nLevels nLevels_1</Value>
+        </Attribute>
+    </Float32>
+    <String name="UTCTime">
+        <Dim name="/Latitude"/>
+        <Attribute name="ARRAYOFSTRINGS" type="Int32">
+            <Value>57</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="String">
+            <Value> </Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>UTCTime</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>N/A</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="StringLengthAttribute" type="Int32">
+            <Value>27</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>UTCTime</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/UTCTime</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </String>
+    <Float32 name="VerticalResolution">
+        <Dim name="/Latitude"/>
+        <Dim name="/Pressure_CV"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>VerticalResolution</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>VerticalResolution</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Data Fields/VerticalResolution</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nTimes nLevels</Value>
+        </Attribute>
+    </Float32>
+    <Float64 name="BoresightAzimuth">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>BoresightAzimuth</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Decimal degrees</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>BoresightAzimuth</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/BoresightAzimuth</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="BoresightNadirAngle">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>BoresightNadirAngle</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Decimal degrees</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>BoresightNadirAngle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/BoresightNadirAngle</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="BoresightNadirAngleUnc">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>BoresightNadirAngleUnc</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Decimal degrees</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>BoresightNadirAngleUnc</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/BoresightNadirAngleUnc</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float64>
+    <Int8 name="DayNightFlag">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-99</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int8">
+            <Value>-99</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>DayNightFlag</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>N/A</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>DayNightFlag</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/DayNightFlag</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Int8>
+    <Int8 name="DominantSurfaceType">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-99</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int8">
+            <Value>-99</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>DominantSurfaceType</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Enumerated</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>DominantSurfaceType</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/DominantSurfaceType</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Int8>
+    <Float64 name="Latitude_Footprint_1">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Latitude_Footprint_1</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Decimal degrees</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Latitude_Footprint_1</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/Latitude_Footprint_1</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="Latitude_Footprint_2">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Latitude_Footprint_2</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Decimal degrees</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Latitude_Footprint_2</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/Latitude_Footprint_2</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="Latitude_Footprint_3">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Latitude_Footprint_3</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Decimal degrees</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Latitude_Footprint_3</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/Latitude_Footprint_3</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="Latitude_Footprint_4">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Latitude_Footprint_4</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Decimal degrees</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Latitude_Footprint_4</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/Latitude_Footprint_4</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float64>
+    <Float32 name="LocalSolarTime">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>LocalSolarTime</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>hours</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>HIRDLS-MLS-TES-SHARED</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>LocalSolarTime</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/LocalSolarTime</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Longitude">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Decimal degrees</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>HIRDLS-MLS-TES-SHARED</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/Longitude</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float64 name="Longitude_Footprint_1">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Longitude_Footprint_1</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Decimal degrees</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Longitude_Footprint_1</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/Longitude_Footprint_1</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="Longitude_Footprint_2">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Longitude_Footprint_2</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Decimal degrees</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Longitude_Footprint_2</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/Longitude_Footprint_2</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="Longitude_Footprint_3">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Longitude_Footprint_3</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Decimal degrees</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Longitude_Footprint_3</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/Longitude_Footprint_3</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="Longitude_Footprint_4">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Longitude_Footprint_4</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Decimal degrees</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Longitude_Footprint_4</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/Longitude_Footprint_4</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float64>
+    <Int16 name="Scan">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-1</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <Value>-1</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Scan</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>N/A</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Scan</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/Scan</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Int16>
+    <Int16 name="Sequence">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-1</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <Value>-1</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Sequence</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>N/A</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Sequence</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/Sequence</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Int16>
+    <Float32 name="SolarZenithAngle">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>SolarZenithAngle</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>HIRDLS-MLS-TES-SHARED</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SolarZenithAngle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/SolarZenithAngle</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SurfaceElevStandardDeviation">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>SurfaceElevStandardDeviation</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SurfaceElevStandardDeviation</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/SurfaceElevStandardDeviation</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Int8 name="SurfaceTypeFootprint">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Int8">
+            <Value>-99</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int8">
+            <Value>-99</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>SurfaceTypeFootprint</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>Enumerated</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SurfaceTypeFootprint</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/SurfaceTypeFootprint</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Int8>
+    <Float32 name="Tgt_SpacecraftAzimuth">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Tgt_SpacecraftAzimuth</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees (of north)</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Tgt_SpacecraftAzimuth</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/Tgt_SpacecraftAzimuth</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Tgt_SpacecraftZenith">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Tgt_SpacecraftZenith</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TES-SPECIFIC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Tgt_SpacecraftZenith</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/Tgt_SpacecraftZenith</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float64 name="Time">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>sec</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>AURA-SHARED</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/Time</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float64>
+    <String name="StructMetadata_0">
+        <Attribute name="origname" type="String">
+            <Value>StructMetadata.0</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
+        </Attribute>
+    </String>
+    <String name="coremetadata">
+        <Attribute name="origname" type="String">
+            <Value>coremetadata</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION/coremetadata</Value>
+        </Attribute>
+    </String>
+    <Float32 name="Latitude">
+        <Dim name="/Latitude"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>HIRDLS-MLS-TES-SHARED</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath/Geolocation Fields/Latitude</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nTimes</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Pressure_CV">
+        <Dim name="/Pressure_CV"/>
+        <Attribute name="units" type="String">
+            <Value>hPa</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Pressure_CV_1">
+        <Dim name="/Pressure_CV_1"/>
+        <Attribute name="units" type="String">
+            <Value>hPa</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="nFreq">
+        <Dim name="/nFreq"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Attribute name="HDFEOS" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL_FILE_ATTRIBUTES" type="Container">
+        <Attribute name="InstrumentName" type="String">
+            <Value>TES</Value>
+        </Attribute>
+        <Attribute name="ProcessLevel" type="String">
+            <Value>L2</Value>
+        </Attribute>
+        <Attribute name="TAI93At0zOfGranule" type="Float64">
+            <Value>535457767.19505298</Value>
+        </Attribute>
+        <Attribute name="GlobalSurveyNumber" type="Int32">
+            <Value>11015</Value>
+        </Attribute>
+        <Attribute name="GranuleMonth" type="Int8">
+            <Value>12</Value>
+        </Attribute>
+        <Attribute name="GranuleDay" type="Int8">
+            <Value>20</Value>
+        </Attribute>
+        <Attribute name="GranuleYear" type="Int32">
+            <Value>2009</Value>
+        </Attribute>
+        <Attribute name="SurveyMode" type="String">
+            <Value>Global</Value>
+        </Attribute>
+        <Attribute name="PGEVersion" type="String">
+            <Value>R11.01.00</Value>
+        </Attribute>
+        <Attribute name="Command_Seq_ID" type="Int32">
+            <Value>41</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="HDFEOS_SWATHS" type="Container"/>
+    <Attribute name="HDFEOS_SWATHS_O3NadirSwath" type="Container">
+        <Attribute name="VerticalCoordinate" type="String">
+            <Value>Pressure</Value>
+        </Attribute>
+        <Attribute name="CloudFrequency" type="Float32">
+            <Value>600.0000000</Value>
+            <Value>650.0000000</Value>
+            <Value>700.0000000</Value>
+            <Value>750.0000000</Value>
+            <Value>800.0000000</Value>
+            <Value>850.0000000</Value>
+            <Value>900.0000000</Value>
+            <Value>950.0000000</Value>
+            <Value>975.0000000</Value>
+            <Value>1000.000000</Value>
+            <Value>1025.000000</Value>
+            <Value>1050.000000</Value>
+            <Value>1075.000000</Value>
+            <Value>1100.000000</Value>
+            <Value>1150.000000</Value>
+            <Value>1200.000000</Value>
+            <Value>1250.000000</Value>
+            <Value>1300.000000</Value>
+            <Value>1350.000000</Value>
+            <Value>1400.000000</Value>
+            <Value>1900.000000</Value>
+            <Value>2000.000000</Value>
+            <Value>2100.000000</Value>
+            <Value>2200.000000</Value>
+            <Value>2250.000000</Value>
+        </Attribute>
+        <Attribute name="EmissivityWavenumber" type="Float32">
+            <Value>600.0000000</Value>
+            <Value>650.0000000</Value>
+            <Value>675.0000000</Value>
+            <Value>700.0000000</Value>
+            <Value>725.0000000</Value>
+            <Value>750.0000000</Value>
+            <Value>770.0000000</Value>
+            <Value>780.0000000</Value>
+            <Value>790.0000000</Value>
+            <Value>800.0000000</Value>
+            <Value>810.0000000</Value>
+            <Value>830.0000000</Value>
+            <Value>850.0000000</Value>
+            <Value>900.0000000</Value>
+            <Value>910.0000000</Value>
+            <Value>920.0000000</Value>
+            <Value>930.0000000</Value>
+            <Value>940.0000000</Value>
+            <Value>950.0000000</Value>
+            <Value>960.0000000</Value>
+            <Value>970.0000000</Value>
+            <Value>980.0000000</Value>
+            <Value>990.0000000</Value>
+            <Value>1000.000000</Value>
+            <Value>1020.000000</Value>
+            <Value>1030.000000</Value>
+            <Value>1040.000000</Value>
+            <Value>1050.000000</Value>
+            <Value>1060.000000</Value>
+            <Value>1070.000000</Value>
+            <Value>1080.000000</Value>
+            <Value>1090.000000</Value>
+            <Value>1100.000000</Value>
+            <Value>1105.000000</Value>
+            <Value>1110.000000</Value>
+            <Value>1115.000000</Value>
+            <Value>1120.000000</Value>
+            <Value>1125.000000</Value>
+            <Value>1130.000000</Value>
+            <Value>1135.000000</Value>
+            <Value>1140.000000</Value>
+            <Value>1145.000000</Value>
+            <Value>1150.000000</Value>
+            <Value>1155.000000</Value>
+            <Value>1160.000000</Value>
+            <Value>1165.000000</Value>
+            <Value>1170.000000</Value>
+            <Value>1175.000000</Value>
+            <Value>1180.000000</Value>
+            <Value>1185.000000</Value>
+            <Value>1190.000000</Value>
+            <Value>1195.000000</Value>
+            <Value>1200.000000</Value>
+            <Value>1205.000000</Value>
+            <Value>1210.000000</Value>
+            <Value>1215.000000</Value>
+            <Value>1220.000000</Value>
+            <Value>1225.000000</Value>
+            <Value>1230.000000</Value>
+            <Value>1235.000000</Value>
+            <Value>1240.000000</Value>
+            <Value>1245.000000</Value>
+            <Value>1250.000000</Value>
+            <Value>1255.000000</Value>
+            <Value>1260.000000</Value>
+            <Value>1265.000000</Value>
+            <Value>1270.000000</Value>
+            <Value>1275.000000</Value>
+            <Value>1280.000000</Value>
+            <Value>1285.000000</Value>
+            <Value>1290.000000</Value>
+            <Value>1295.000000</Value>
+            <Value>1300.000000</Value>
+            <Value>1350.000000</Value>
+            <Value>1400.000000</Value>
+            <Value>1450.000000</Value>
+            <Value>1500.000000</Value>
+            <Value>1550.000000</Value>
+            <Value>1600.000000</Value>
+            <Value>1650.000000</Value>
+            <Value>1700.000000</Value>
+            <Value>1750.000000</Value>
+            <Value>1800.000000</Value>
+            <Value>1830.000000</Value>
+            <Value>1850.000000</Value>
+            <Value>1870.000000</Value>
+            <Value>1900.000000</Value>
+            <Value>1930.000000</Value>
+            <Value>1950.000000</Value>
+            <Value>1960.000000</Value>
+            <Value>1980.000000</Value>
+            <Value>2000.000000</Value>
+            <Value>2030.000000</Value>
+            <Value>2050.000000</Value>
+            <Value>2060.000000</Value>
+            <Value>2100.000000</Value>
+            <Value>2120.000000</Value>
+            <Value>2140.000000</Value>
+            <Value>2160.000000</Value>
+            <Value>2180.000000</Value>
+            <Value>2200.000000</Value>
+            <Value>2220.000000</Value>
+            <Value>2240.000000</Value>
+            <Value>2260.000000</Value>
+            <Value>2280.000000</Value>
+            <Value>2300.000000</Value>
+            <Value>2320.000000</Value>
+            <Value>2340.000000</Value>
+            <Value>2360.000000</Value>
+            <Value>2380.000000</Value>
+            <Value>2400.000000</Value>
+            <Value>2460.000000</Value>
+            <Value>2500.000000</Value>
+            <Value>2540.000000</Value>
+            <Value>2560.000000</Value>
+            <Value>2600.000000</Value>
+            <Value>2700.000000</Value>
+            <Value>2800.000000</Value>
+            <Value>2900.000000</Value>
+            <Value>3000.000000</Value>
+            <Value>3100.000000</Value>
+        </Attribute>
+        <Attribute name="Scan_Resolution" type="String">
+            <Value>Low</Value>
+        </Attribute>
+        <Attribute name="Pressure" type="Float32">
+            <Value>1211.530029</Value>
+            <Value>1100.699951</Value>
+            <Value>1000.000000</Value>
+            <Value>908.5139771</Value>
+            <Value>825.4019775</Value>
+            <Value>749.8930054</Value>
+            <Value>681.2910156</Value>
+            <Value>618.9660034</Value>
+            <Value>562.3419800</Value>
+            <Value>510.8980103</Value>
+            <Value>464.1600037</Value>
+            <Value>421.6979980</Value>
+            <Value>383.1170044</Value>
+            <Value>348.0690002</Value>
+            <Value>316.2269897</Value>
+            <Value>287.2980042</Value>
+            <Value>261.0159912</Value>
+            <Value>237.1369934</Value>
+            <Value>215.4440002</Value>
+            <Value>195.7350006</Value>
+            <Value>177.8289948</Value>
+            <Value>161.5610046</Value>
+            <Value>146.7790070</Value>
+            <Value>133.3520050</Value>
+            <Value>121.1520004</Value>
+            <Value>110.0690002</Value>
+            <Value>100.0000000</Value>
+            <Value>90.85179901</Value>
+            <Value>82.54060364</Value>
+            <Value>74.98960114</Value>
+            <Value>68.12950134</Value>
+            <Value>61.89630127</Value>
+            <Value>56.23389816</Value>
+            <Value>51.08959961</Value>
+            <Value>46.41579819</Value>
+            <Value>42.16960144</Value>
+            <Value>38.31190109</Value>
+            <Value>34.80709839</Value>
+            <Value>31.62290001</Value>
+            <Value>28.72990036</Value>
+            <Value>26.10169983</Value>
+            <Value>23.71360016</Value>
+            <Value>21.54430008</Value>
+            <Value>19.57340050</Value>
+            <Value>17.78280067</Value>
+            <Value>16.15600014</Value>
+            <Value>14.67800045</Value>
+            <Value>13.33520031</Value>
+            <Value>12.11530018</Value>
+            <Value>11.00699997</Value>
+            <Value>10.00000000</Value>
+            <Value>9.085140228</Value>
+            <Value>8.254019737</Value>
+            <Value>6.812910080</Value>
+            <Value>5.108980179</Value>
+            <Value>4.641600132</Value>
+            <Value>3.162270069</Value>
+            <Value>2.610160112</Value>
+            <Value>2.154429913</Value>
+            <Value>1.615599990</Value>
+            <Value>1.333520055</Value>
+            <Value>1.000000000</Value>
+            <Value>0.6812919974</Value>
+            <Value>0.3831180036</Value>
+            <Value>0.2154430002</Value>
+            <Value>0.1000000015</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/SWATHS/O3NadirSwath</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="HDFEOS_SWATHS_O3NadirSwath_Data_Fields" type="Container"/>
+    <Attribute name="HDFEOS_SWATHS_O3NadirSwath_Geolocation_Fields" type="Container"/>
+    <Attribute name="HDFEOS_INFORMATION" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <Value>HDFEOS_5.1.10.1</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

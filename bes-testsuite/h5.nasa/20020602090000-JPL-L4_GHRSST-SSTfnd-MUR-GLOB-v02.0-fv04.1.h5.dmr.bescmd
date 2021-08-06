@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="fnc4test" space="catalog">/data/20020602090000-JPL-L4_GHRSST-SSTfnd-MUR-GLOB-v02.0-fv04.1.h5</setContainer>
+    <define name="d">
+    <container name="fnc4test" />
+    </define>
+    <get type="dmr" definition="d" />
+</request>

@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A.h5">
+    <Dimension name="nlon" size="1440"/>
+    <Dimension name="nlat" size="720"/>
+    <Dimension name="nlayer" size="28"/>
+    <Float32 name="fractionQuality2">
+        <Dim name="/nlon"/>
+        <Dim name="/nlat"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nlon,nlat</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>percent</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.900391</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>fractionQuality2</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Grid/fractionQuality2</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="fractionQuality1">
+        <Dim name="/nlon"/>
+        <Dim name="/nlat"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nlon,nlat</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>percent</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.900391</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>fractionQuality1</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Grid/fractionQuality1</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="mixedWater">
+        <Dim name="/nlayer"/>
+        <Dim name="/nlon"/>
+        <Dim name="/nlat"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nlayer,nlon,nlat</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>g/m^3</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.900391</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>mixedWater</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Grid/mixedWater</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="iceWaterPath">
+        <Dim name="/nlon"/>
+        <Dim name="/nlat"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nlon,nlat</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>kg/m^2</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.900391</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>iceWaterPath</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Grid/iceWaterPath</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="surfacePrecipitation">
+        <Dim name="/nlon"/>
+        <Dim name="/nlat"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nlon,nlat</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>mm/hr</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.900391</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>surfacePrecipitation</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Grid/surfacePrecipitation</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="fractionQuality0">
+        <Dim name="/nlon"/>
+        <Dim name="/nlat"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nlon,nlat</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>percent</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.900391</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>fractionQuality0</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Grid/fractionQuality0</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="npixTotal">
+        <Dim name="/nlon"/>
+        <Dim name="/nlat"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nlon,nlat</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-9999</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>npixTotal</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Grid/npixTotal</Value>
+        </Attribute>
+    </Int32>
+    <Float32 name="cloudWaterPath">
+        <Dim name="/nlon"/>
+        <Dim name="/nlat"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nlon,nlat</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>kg/m^2</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.900391</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>cloudWaterPath</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Grid/cloudWaterPath</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="npixPrecipitation">
+        <Dim name="/nlon"/>
+        <Dim name="/nlat"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nlon,nlat</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-9999</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>npixPrecipitation</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Grid/npixPrecipitation</Value>
+        </Attribute>
+    </Int32>
+    <Float32 name="mixedWaterPath">
+        <Dim name="/nlon"/>
+        <Dim name="/nlat"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nlon,nlat</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>kg/m^2</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.900391</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>mixedWaterPath</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Grid/mixedWaterPath</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="rainWater">
+        <Dim name="/nlayer"/>
+        <Dim name="/nlon"/>
+        <Dim name="/nlat"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nlayer,nlon,nlat</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>g/m^3</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.900391</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rainWater</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Grid/rainWater</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="cloudWater">
+        <Dim name="/nlayer"/>
+        <Dim name="/nlon"/>
+        <Dim name="/nlat"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nlayer,nlon,nlat</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>g/m^3</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.900391</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>cloudWater</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Grid/cloudWater</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="iceWater">
+        <Dim name="/nlayer"/>
+        <Dim name="/nlon"/>
+        <Dim name="/nlat"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nlayer,nlon,nlat</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>g/m^3</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.900391</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>iceWater</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Grid/iceWater</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="surfaceTypeIndex">
+        <Dim name="/nlon"/>
+        <Dim name="/nlat"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nlon,nlat</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-9999</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>surfaceTypeIndex</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Grid/surfaceTypeIndex</Value>
+        </Attribute>
+    </Int32>
+    <Float32 name="liquidPrecipFraction">
+        <Dim name="/nlon"/>
+        <Dim name="/nlat"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nlon,nlat</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.900391</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>liquidPrecipFraction</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Grid/liquidPrecipFraction</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="rainWaterPath">
+        <Dim name="/nlon"/>
+        <Dim name="/nlat"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nlon,nlat</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>kg/m^2</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.900391</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>rainWaterPath</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Grid/rainWaterPath</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="convectPrecipFraction">
+        <Dim name="/nlon"/>
+        <Dim name="/nlat"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nlon,nlat</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.900391</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>convectPrecipFraction</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Grid/convectPrecipFraction</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="latentHeat">
+        <Dim name="/nlayer"/>
+        <Dim name="/nlon"/>
+        <Dim name="/nlat"/>
+        <Attribute name="DimensionNames" type="String">
+            <Value>nlayer,nlon,nlat</Value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <Value>C/hr</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.900391</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>latentHeat</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Grid/latentHeat</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="nlat">
+        <Dim name="/nlat"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="nlayer">
+        <Dim name="/nlayer"/>
+        <Attribute name="units" type="String">
+            <Value>km</Value>
+        </Attribute>
+        <Attribute name="axis" type="String">
+            <Value>Z</Value>
+        </Attribute>
+        <Attribute name="positive" type="String">
+            <Value>up</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="nlon">
+        <Dim name="/nlon"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+    </Float32>
+    <Attribute name="FileHeader" type="String">
+        <Value>DOI=10.5067/GPM/GMI/MONTH/3A;
+AlgorithmID=3GPROF;
+AlgorithmVersion=GRID2014R1;
+FileName=3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A.HDF5;
+SatelliteName=GPM;
+InstrumentName=GMI;
+GenerationDateTime=2014-07-02T23:16:24.000Z;
+StartGranuleDateTime=2014-06-01T00:00:00.000Z;
+StopGranuleDateTime=2014-06-30T23:59:59.999Z;
+GranuleNumber=;
+NumberOfSwaths=0;
+NumberOfGrids=1;
+GranuleStart=;
+TimeInterval=MONTH;
+ProcessingSystem=PPS;
+ProductVersion=V03A;
+EmptyGranule=NOT_EMPTY;
+MissingData=;
+</Value>
+    </Attribute>
+    <Attribute name="FileInfo" type="String">
+        <Value>DataFormatVersion=am;
+TKCodeBuildVersion=1;
+MetadataVersion=am;
+FormatPackage=HDF5-1.8.9;
+BlueprintFilename=GPM.V1.3GPROF.blueprint.xml;
+BlueprintVersion=BV_34;
+TKIOVersion=3.60.2;
+MetadataStyle=PVL;
+EndianType=LITTLE_ENDIAN;
+</Value>
+    </Attribute>
+    <Attribute name="Grid" type="Container">
+        <Attribute name="GridHeader" type="String">
+            <Value>BinMethod=ARITHMETIC_MEAN;
+Registration=CENTER;
+LatitudeResolution=0.25;
+LongitudeResolution=0.25;
+NorthBoundingCoordinate=90;
+SouthBoundingCoordinate=-90;
+EastBoundingCoordinate=180;
+WestBoundingCoordinate=-180;
+Origin=SOUTHWEST;
+</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Grid</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

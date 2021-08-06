@@ -1,0 +1,1572 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="OMI-Aura_L2G-OMTO3G_2004m1001_v003-2009m0602t123920.he5">
+    <Dimension name="nCandidate" size="15"/>
+    <Dimension name="nLayers" size="7"/>
+    <Dimension name="YDim" size="720"/>
+    <Dimension name="XDim" size="1440"/>
+    <Dimension name="nWavel" size="12"/>
+    <Float32 name="APrioriLayerO3">
+        <Dim name="/nCandidate"/>
+        <Dim name="/nLayers"/>
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>DU</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>A Priori Ozone Profile</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TOMS-OMI-Shared</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>125.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>APrioriLayerO3</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/APrioriLayerO3</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nCandidate nLayers YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <Byte name="AlgorithmFlags">
+        <Dim name="/nCandidate"/>
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Byte">
+            <Value>255</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Algorithm Flags</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TOMS-OMI-Shared</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Byte">
+            <Value>0</Value>
+            <Value>13</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Byte">
+            <Value>255</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AlgorithmFlags</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/AlgorithmFlags</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nCandidate YDim XDim</Value>
+        </Attribute>
+    </Byte>
+    <Float32 name="CloudPressure">
+        <Dim name="/nCandidate"/>
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>hPa</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Effective Cloud Pressure</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TOMS-OMI-Shared</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>1013.250000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>CloudPressure</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/CloudPressure</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nCandidate YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="ColumnAmountO3">
+        <Dim name="/nCandidate"/>
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>DU</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Best Total Ozone Solution</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TOMS-OMI-Shared</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>50.00000000</Value>
+            <Value>700.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ColumnAmountO3</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/ColumnAmountO3</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nCandidate YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <UInt16 name="GroundPixelQualityFlags">
+        <Dim name="/nCandidate"/>
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="UInt16">
+            <Value>65535</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Ground Pixel Quality Flags</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TOMS-OMI-Shared</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="UInt16">
+            <Value>0</Value>
+            <Value>65534</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="UInt16">
+            <Value>65535</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>GroundPixelQualityFlags</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/GroundPixelQualityFlags</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nCandidate YDim XDim</Value>
+        </Attribute>
+    </UInt16>
+    <Byte name="InstrumentConfigurationId">
+        <Dim name="/nCandidate"/>
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Byte">
+            <Value>255</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Instrument Configuration ID</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Byte">
+            <Value>0</Value>
+            <Value>200</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Byte">
+            <Value>255</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>InstrumentConfigurationId</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/InstrumentConfigurationId</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nCandidate YDim XDim</Value>
+        </Attribute>
+    </Byte>
+    <Float32 name="Latitude">
+        <Dim name="/nCandidate"/>
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>deg</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Geodetic Latitude</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TOMS-Aura-Shared</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-90.00000000</Value>
+            <Value>90.00000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/Latitude</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nCandidate YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="LayerEfficiency">
+        <Dim name="/nCandidate"/>
+        <Dim name="/nLayers"/>
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Algorithmic Layer Efficiency</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TOMS-OMI-Shared</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>10.00000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>LayerEfficiency</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/LayerEfficiency</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nCandidate nLayers YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="LineNumber">
+        <Dim name="/nCandidate"/>
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-2000000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Line Number of Candidate Scene</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int32">
+            <Value>1</Value>
+            <Value>1700</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int32">
+            <Value>-2000000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>LineNumber</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/LineNumber</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nCandidate YDim XDim</Value>
+        </Attribute>
+    </Int32>
+    <Float32 name="Longitude">
+        <Dim name="/nCandidate"/>
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>deg</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Geodetic Longitude</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TOMS-Aura-Shared</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-180.0000000</Value>
+            <Value>180.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/Longitude</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nCandidate YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <Byte name="MeasurementQualityFlags">
+        <Dim name="/nCandidate"/>
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Byte">
+            <Value>255</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Measurement Quality Flags</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TOMS-OMI-Shared</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Byte">
+            <Value>0</Value>
+            <Value>254</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Byte">
+            <Value>255</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>MeasurementQualityFlags</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/MeasurementQualityFlags</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nCandidate YDim XDim</Value>
+        </Attribute>
+    </Byte>
+    <Int32 name="NumberOfCandidateScenes">
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Number of Candidate Scenes</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int32">
+            <Value>0</Value>
+            <Value>15</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>NumberOfCandidateScenes</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/NumberOfCandidateScenes</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>YDim XDim</Value>
+        </Attribute>
+    </Int32>
+    <Byte name="NumberSmallPixelColumns">
+        <Dim name="/nCandidate"/>
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Byte">
+            <Value>255</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Number of Small Pixel Columns</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Byte">
+            <Value>0</Value>
+            <Value>5</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Byte">
+            <Value>255</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>NumberSmallPixelColumns</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/NumberSmallPixelColumns</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nCandidate YDim XDim</Value>
+        </Attribute>
+    </Byte>
+    <Float32 name="O3BelowCloud">
+        <Dim name="/nCandidate"/>
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>DU</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Ozone Below Fractional Cloud</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TOMS-OMI-Shared</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>100.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>O3BelowCloud</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/O3BelowCloud</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nCandidate YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="OrbitNumber">
+        <Dim name="/nCandidate"/>
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-2000000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Orbit Number of Candidate Scene</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int32">
+            <Value>1</Value>
+            <Value>999999</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int32">
+            <Value>-2000000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>OrbitNumber</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/OrbitNumber</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nCandidate YDim XDim</Value>
+        </Attribute>
+    </Int32>
+    <Float32 name="PathLength">
+        <Dim name="/nCandidate"/>
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Path Length</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>2.000000000</Value>
+            <Value>100.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>PathLength</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/PathLength</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nCandidate YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <UInt16 name="QualityFlags">
+        <Dim name="/nCandidate"/>
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="UInt16">
+            <Value>65535</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Quality Flags</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TOMS-OMI-Shared</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="UInt16">
+            <Value>0</Value>
+            <Value>65534</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="UInt16">
+            <Value>65535</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>QualityFlags</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/QualityFlags</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nCandidate YDim XDim</Value>
+        </Attribute>
+    </UInt16>
+    <Float32 name="RadiativeCloudFraction">
+        <Dim name="/nCandidate"/>
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Radiative Cloud Fraction = fc*Ic331/Im331</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TOMS-OMI-Shared</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>RadiativeCloudFraction</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/RadiativeCloudFraction</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nCandidate YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Reflectivity331">
+        <Dim name="/nCandidate"/>
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>%</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Effective Surface Reflectivity at 331 nm</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TOMS-OMI-Shared</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-15.00000000</Value>
+            <Value>115.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Reflectivity331</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/Reflectivity331</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nCandidate YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Reflectivity360">
+        <Dim name="/nCandidate"/>
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>%</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Effective Surface Reflectivity at 360 nm</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TOMS-OMI-Shared</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-15.00000000</Value>
+            <Value>115.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Reflectivity360</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/Reflectivity360</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nCandidate YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="RelativeAzimuthAngle">
+        <Dim name="/nCandidate"/>
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>deg(EastofNorth)</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Relative Azimuth Angle (sun + 180 - view)</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TOMS-OMI-Shared</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-180.0000000</Value>
+            <Value>180.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>RelativeAzimuthAngle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/RelativeAzimuthAngle</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nCandidate YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Residual">
+        <Dim name="/nCandidate"/>
+        <Dim name="/nWavel"/>
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>N-Value Residual</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TOMS-OMI-Shared</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-32.00000000</Value>
+            <Value>32.00000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Residual</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/Residual</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nCandidate nWavel YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SO2index">
+        <Dim name="/nCandidate"/>
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>SO2 Index</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TOMS-OMI-Shared</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-300.0000000</Value>
+            <Value>300.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SO2index</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/SO2index</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nCandidate YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="SceneNumber">
+        <Dim name="/nCandidate"/>
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-2000000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Scene Number of Candidate Scene</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int32">
+            <Value>1</Value>
+            <Value>60</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int32">
+            <Value>-2000000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SceneNumber</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/SceneNumber</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nCandidate YDim XDim</Value>
+        </Attribute>
+    </Int32>
+    <Float32 name="SecondsInDay">
+        <Dim name="/nCandidate"/>
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>s</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Seconds after UTC midnight</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TOMS-Aura-Shared</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>86401.00000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SecondsInDay</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/SecondsInDay</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nCandidate YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <Int16 name="SmallPixelColumn">
+        <Dim name="/nCandidate"/>
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Small Pixel Column</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <Value>0</Value>
+            <Value>1000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SmallPixelColumn</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/SmallPixelColumn</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nCandidate YDim XDim</Value>
+        </Attribute>
+    </Int16>
+    <Float32 name="SolarZenithAngle">
+        <Dim name="/nCandidate"/>
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>deg</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Solar Zenith Angle</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TOMS-Aura-Shared</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>180.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SolarZenithAngle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/SolarZenithAngle</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nCandidate YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="StepTwoO3">
+        <Dim name="/nCandidate"/>
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>DU</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Step 2 Ozone Solution</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TOMS-OMI-Shared</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>5.000000000</Value>
+            <Value>700.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>StepTwoO3</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/StepTwoO3</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nCandidate YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <Int16 name="TerrainHeight">
+        <Dim name="/nCandidate"/>
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>m</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Terrain Height</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TOMS-Aura-Shared</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <Value>-200</Value>
+            <Value>10000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Int16">
+            <Value>-32767</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>TerrainHeight</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/TerrainHeight</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nCandidate YDim XDim</Value>
+        </Attribute>
+    </Int16>
+    <Float32 name="TerrainPressure">
+        <Dim name="/nCandidate"/>
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>hPa</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Terrain Pressure</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TOMS-OMI-Shared</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>1013.250000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>TerrainPressure</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/TerrainPressure</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nCandidate YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <Float64 name="Time">
+        <Dim name="/nCandidate"/>
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-1.2676506002282294e+30</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>s</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Time at Start of Scan (TAI93)</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TOMS-Aura-Shared</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <Value>-5000000000.0000000</Value>
+            <Value>10000000000.000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float64">
+            <Value>-1.2676506002282294e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/Time</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nCandidate YDim XDim</Value>
+        </Attribute>
+    </Float64>
+    <Float32 name="UVAerosolIndex">
+        <Dim name="/nCandidate"/>
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>UV Aerosol Index</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TOMS-OMI-Shared</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-30.00000000</Value>
+            <Value>30.00000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>UVAerosolIndex</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/UVAerosolIndex</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nCandidate YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="ViewingZenithAngle">
+        <Dim name="/nCandidate"/>
+        <Dim name="/YDim"/>
+        <Dim name="/XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>deg</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Viewing Zenith Angle</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TOMS-OMI-Shared</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>70.00000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ViewingZenithAngle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/ViewingZenithAngle</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>nCandidate YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Wavelength">
+        <Dim name="/nWavel"/>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Wavelength</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>TOMS-OMI-Shared</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>300.0000000</Value>
+            <Value>400.0000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Wavelength</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/Wavelength</Value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <Value>nWavel</Value>
+        </Attribute>
+    </Float32>
+    <String name="ArchivedMetadata">
+        <Attribute name="origname" type="String">
+            <Value>ArchivedMetadata</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION/ArchivedMetadata</Value>
+        </Attribute>
+    </String>
+    <String name="CoreMetadata">
+        <Attribute name="origname" type="String">
+            <Value>CoreMetadata</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION/CoreMetadata</Value>
+        </Attribute>
+    </String>
+    <String name="StructMetadata_0">
+        <Attribute name="origname" type="String">
+            <Value>StructMetadata.0</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
+        </Attribute>
+    </String>
+    <Attribute name="HDFEOS" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL_FILE_ATTRIBUTES" type="Container">
+        <Attribute name="OrbitNumber" type="Int32">
+            <Value>1132</Value>
+            <Value>1133</Value>
+            <Value>1134</Value>
+            <Value>1135</Value>
+            <Value>1136</Value>
+            <Value>1137</Value>
+            <Value>1138</Value>
+            <Value>1139</Value>
+            <Value>1140</Value>
+            <Value>1141</Value>
+            <Value>1142</Value>
+            <Value>1143</Value>
+            <Value>1144</Value>
+            <Value>1145</Value>
+            <Value>1146</Value>
+        </Attribute>
+        <Attribute name="FirstLineInOrbit" type="Int32">
+            <Value>43</Value>
+            <Value>43</Value>
+            <Value>43</Value>
+            <Value>43</Value>
+            <Value>43</Value>
+            <Value>43</Value>
+            <Value>43</Value>
+            <Value>43</Value>
+            <Value>43</Value>
+            <Value>42</Value>
+            <Value>43</Value>
+            <Value>43</Value>
+            <Value>42</Value>
+            <Value>42</Value>
+            <Value>43</Value>
+        </Attribute>
+        <Attribute name="LastLineInOrbit" type="Int32">
+            <Value>1607</Value>
+            <Value>1607</Value>
+            <Value>1607</Value>
+            <Value>1607</Value>
+            <Value>1607</Value>
+            <Value>1607</Value>
+            <Value>1608</Value>
+            <Value>1607</Value>
+            <Value>1607</Value>
+            <Value>1607</Value>
+            <Value>1496</Value>
+            <Value>1607</Value>
+            <Value>1607</Value>
+            <Value>1607</Value>
+            <Value>915</Value>
+        </Attribute>
+        <Attribute name="NumberOfLinesMissingGeolocation" type="Int32">
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="OrbitPeriod" type="Float64">
+            <Value>5933.0000000000000</Value>
+            <Value>5932.0000000000000</Value>
+            <Value>5933.0000000000000</Value>
+            <Value>5932.0000000000000</Value>
+            <Value>5933.0000000000000</Value>
+            <Value>5932.0000000000000</Value>
+            <Value>5933.0000000000000</Value>
+            <Value>5932.0000000000000</Value>
+            <Value>5933.0000000000000</Value>
+            <Value>5932.0000000000000</Value>
+            <Value>5933.0000000000000</Value>
+            <Value>5932.0000000000000</Value>
+            <Value>5933.0000000000000</Value>
+            <Value>5932.0000000000000</Value>
+            <Value>5933.0000000000000</Value>
+        </Attribute>
+        <Attribute name="InstrumentName" type="String">
+            <Value>OMI</Value>
+        </Attribute>
+        <Attribute name="ProcessLevel" type="String">
+            <Value>2G</Value>
+        </Attribute>
+        <Attribute name="GranuleMonth" type="Int32">
+            <Value>10</Value>
+        </Attribute>
+        <Attribute name="GranuleDay" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="GranuleYear" type="Int32">
+            <Value>2004</Value>
+        </Attribute>
+        <Attribute name="GranuleDayOfYear" type="Int32">
+            <Value>275</Value>
+        </Attribute>
+        <Attribute name="TAI93At0zOfGranule" type="Float64">
+            <Value>370742405.00000000</Value>
+        </Attribute>
+        <Attribute name="PGEVersion" type="String">
+            <Value>&quot;1.0.3.1&quot;</Value>
+        </Attribute>
+        <Attribute name="StartUTC" type="String">
+            <Value>2004-10-01T00:00:00.000000Z</Value>
+        </Attribute>
+        <Attribute name="EndUTC" type="String">
+            <Value>2004-10-01T23:59:59.999999Z</Value>
+        </Attribute>
+        <Attribute name="Period" type="String">
+            <Value>Daily</Value>
+        </Attribute>
+        <Attribute name="QAPercentMissingData" type="Int32">
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="HDFEOS_GRIDS" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_OMI_Column_Amount_O3" type="Container">
+        <Attribute name="GCTPProjectionCode" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="Projection" type="String">
+            <Value>Geographic</Value>
+        </Attribute>
+        <Attribute name="GridOrigin" type="String">
+            <Value>Center</Value>
+        </Attribute>
+        <Attribute name="GridSpacing" type="String">
+            <Value>(0.25,0.25)</Value>
+        </Attribute>
+        <Attribute name="GridSpacingUnit" type="String">
+            <Value>deg</Value>
+        </Attribute>
+        <Attribute name="GridSpan" type="String">
+            <Value>(-180,180,-90,90)</Value>
+        </Attribute>
+        <Attribute name="GridSpanUnit" type="String">
+            <Value>deg</Value>
+        </Attribute>
+        <Attribute name="NumberOfLongitudesInGrid" type="Int32">
+            <Value>1440</Value>
+        </Attribute>
+        <Attribute name="NumberOfLatitudesInGrid" type="Int32">
+            <Value>720</Value>
+        </Attribute>
+        <Attribute name="NumberOfGridCells" type="Int32">
+            <Value>1036800</Value>
+        </Attribute>
+        <Attribute name="NumberOfEmptyGridCells" type="Int32">
+            <Value>363977</Value>
+        </Attribute>
+        <Attribute name="NumberOfPopulatedGridCells" type="Int32">
+            <Value>672823</Value>
+        </Attribute>
+        <Attribute name="NumberOfMultiplyPopulatedGridCells" type="Int32">
+            <Value>473934</Value>
+        </Attribute>
+        <Attribute name="MinimumNumberOfCandidatesPerGridCell" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="MaximumNumberOfCandidatesPerGridCell" type="Int32">
+            <Value>8</Value>
+        </Attribute>
+        <Attribute name="NumberOfScenesConsideredForGrid" type="Int32">
+            <Value>1426680</Value>
+        </Attribute>
+        <Attribute name="NumberOfScenesAcceptedIntoGrid" type="Int32">
+            <Value>1269207</Value>
+        </Attribute>
+        <Attribute name="NumberOfDuplicateScenesAcceptedIntoGrid" type="Int32">
+            <Value>596384</Value>
+        </Attribute>
+        <Attribute name="NumberOfScenesRejectedFromGrid" type="Int32">
+            <Value>157473</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/OMI Column Amount O3</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="HDFEOS_GRIDS_OMI_Column_Amount_O3_Data_Fields" type="Container"/>
+    <Attribute name="HDFEOS_INFORMATION" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <Value>HDFEOS_5.1.8</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>
