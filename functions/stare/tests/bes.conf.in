@@ -6,7 +6,7 @@ BES.LogName=./bes.log
 BES.LogVerbose=no
 
 # FIXME hdf5 should not be here. jhrg 12/31/19
-BES.modules=dap,cmd,dapreader,functions,h5,h4
+BES.modules=dap,cmd,dapreader,functions,h5,h4,fonc
 
 # Load BES modules from the source dirs
 BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
@@ -14,6 +14,7 @@ BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
 BES.module.dapreader=@abs_top_builddir@/dapreader/.libs/libdapreader_module.so
 BES.module.functions=@abs_top_builddir@/functions/.libs/libfunctions_module.so
 
+BES.module.fonc=@abs_top_builddir@/modules/fileout_netcdf/.libs/libfonc_module.so
 BES.module.h5 = @abs_top_builddir@/modules/hdf5_handler/.libs/libhdf5_module.so
 BES.Catalog.catalog.TypeMatch += h5:.*\.h5$;
 

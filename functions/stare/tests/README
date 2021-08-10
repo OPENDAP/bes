@@ -1,4 +1,6 @@
 
+These are old comments and might not be accurate. jhrg 8/6/21
+
 This directory holds tests for the count(), subset() and intersection()
 STARE server functions. The tests use the MYD09 dataset at the 'base'
 with s indices computed to level 27 but with the resolution set to ~level 14
