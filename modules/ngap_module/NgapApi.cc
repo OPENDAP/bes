@@ -377,7 +377,13 @@ std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::stri
                                     " SubType: '" << (noSubtype ? "Absent" : "Present") << "'" << endl);
 
             if ((r_type.GetString() == string(CMR_URL_TYPE_GET_DATA)) && noSubtype) {
-                data_access_url = r_url.GetString();
+                
+                // Because a member of RelatedUrls may contain a URL of Type GET DATA with the s3:// protocol
+                // as well as a Type GET DATA URL which uses https:// or http://
+                string candidate_url = r_url.GetString();
+                if(candidate_url.substr(0,8) == "https://" || candidate_url.substr(0,7) == "http://"){
+                    data_access_url = candidate_url;
+                }
             }
         }
     }
