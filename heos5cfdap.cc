@@ -1833,7 +1833,7 @@ void map_eos5_cfdmr(D4Group *d4_root, hid_t file_id, const string &filename) {
     string subset_str="";
     string product_str="";
     string other_str ="";
-    bool st_only = true;
+    bool st_only = false;
 
     // Read ECS metadata: merge them into one C++ string
     read_ecs_metadata(file_id,st_str,core_str,arch_str,xml_str, subset_str,product_str,other_str,st_only); 
@@ -1843,6 +1843,33 @@ void map_eos5_cfdmr(D4Group *d4_root, hid_t file_id, const string &filename) {
         throw InternalErr(__FILE__, __LINE__, msg);
     }
      
+    bool disable_ecsmetadata = HDF5RequestHandler::get_disable_ecsmeta();
+    if(disable_ecsmetadata == false) {
+
+        bool is_check_disable_smetadata = HDF5RequestHandler::get_disable_structmeta();
+
+        if (false == is_check_disable_smetadata) 
+            add_grp_dap4_attr(d4_root,"StructMetadata",attr_str_c,st_str);
+        
+        if(core_str != "")
+            add_grp_dap4_attr(d4_root,"CoreMetadata",attr_str_c,core_str);
+        
+        if(arch_str != "")
+            add_grp_dap4_attr(d4_root,"ArchiveMetadata",attr_str_c,arch_str);
+        
+        if(xml_str != "")
+            add_grp_dap4_attr(d4_root,"XMLMetadata",attr_str_c,xml_str);
+
+        if(subset_str !="")
+            add_grp_dap4_attr(d4_root,"SubsetMetadata",attr_str_c,subset_str);
+            
+        if(product_str != "")
+            add_grp_dap4_attr(d4_root,"ProductMetadata",attr_str_c,product_str);
+
+        if(other_str !="")
+            add_grp_dap4_attr(d4_root,"OtherMetadata",attr_str_c,other_str);
+    }
+
     bool is_check_nameclashing = HDF5RequestHandler::get_check_name_clashing();
 
     bool is_add_path_attrs = HDF5RequestHandler::get_add_path_attrs();
@@ -2083,6 +2110,55 @@ void gen_eos5_cfdmr(D4Group *d4_root,  HDF5CF::EOS5File *f) {
     for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
         BESDEBUG("h5","variable full path= "<< (*it_cv)->getFullPath() <<endl);
         gen_dap_oneeos5cvar_dmr(d4_root,*it_cv,file_id,filename);
+
+    }
+
+    // CHECK ALL UNLIMITED DIMENSIONS from the coordinate variables based on the names. 
+    if(f->HaveUnlimitedDim() == true) {
+
+        string dods_extra = "DODS_EXTRA";
+
+        // If DODS_EXTRA exists, we will not create the unlimited dimensions. 
+        if(d4_root->attributes() != NULL) {
+        //if((d4_root->attributes()->find(dods_extra))==NULL) {
+
+            string unlimited_dim_names ="";
+
+            for (it_cv = cvars.begin();
+                it_cv != cvars.end(); it_cv++) {
+    
+                // Check unlimited dimension names.
+                for (vector<Dimension*>::const_iterator ird = (*it_cv)->getDimensions().begin();
+                     ird != (*it_cv)->getDimensions().end(); ++ird) {
+    
+                    // Currently we only check one unlimited dimension, which is the most
+                    // common case. When receiving the conventions from JG, will add
+                    // the support of multi-unlimited dimension. KY 2016-02-09
+                    if((*ird)->HaveUnlimitedDim() == true) {
+                        
+                        if(unlimited_dim_names=="") 
+                           unlimited_dim_names = (*ird)->getNewName();
+                        else {
+                            if(unlimited_dim_names.rfind((*ird)->getNewName()) == string::npos) {
+                                unlimited_dim_names = unlimited_dim_names+" "+(*ird)->getNewName();
+                            }
+                        }
+                    }
+                }
+            }
+
+            if(unlimited_dim_names != "") {
+                D4Attribute *dods_extra_attr = new D4Attribute(dods_extra,attr_container_c);
+                D4Attribute *unlimited_dim_attr = new D4Attribute("Unlimited_Dimension",attr_str_c);
+                unlimited_dim_attr->add_value(unlimited_dim_names);
+                dods_extra_attr->attributes()->add_attribute_nocopy(unlimited_dim_attr);
+                d4_root->attributes()->add_attribute_nocopy(dods_extra_attr);
+                
+            }
+            else 
+                throw InternalErr(__FILE__, __LINE__, "Unlimited dimension should exist.");  
+        //}    
+       }
 
     }
 

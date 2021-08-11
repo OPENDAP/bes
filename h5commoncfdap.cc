@@ -1603,7 +1603,14 @@ void add_gm_spcvs_attrs(libdap::BaseType *var,const bool is_dim0) {
 
 }
 
+// Direct CF to DAP4, helper function to DAP4 group  attributes.  
+void add_grp_dap4_attr(D4Group *d4_grp,const string& attr_name, D4AttributeType attr_type, const string& attr_value){
 
+    D4Attribute *d4_attr = new D4Attribute(attr_name,attr_type);
+    d4_attr->add_value(attr_value);
+    d4_grp->attributes()->add_attribute_nocopy(d4_attr);
+
+}
 // Direct CF to DAP4, helper function to DAP4 variable  attributes.  
 void add_var_dap4_attr(BaseType *var,const string& attr_name, D4AttributeType attr_type, const string& attr_value){
 

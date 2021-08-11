@@ -90,6 +90,8 @@ void add_gm_oneproj_var_dap4_attrs(libdap::BaseType *d4_var,EOS5GridPCType cv_pr
 
 void add_var_dap4_attr(libdap::BaseType *d4_var,const std::string& attr_name, D4AttributeType attr_type, const std::string& attr_value);
 
+void add_grp_dap4_attr(libdap::D4Group *d4_grp,const std::string& attr_name, D4AttributeType attr_type, const std::string& attr_value);
+
 
 
 
