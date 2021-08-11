@@ -84,30 +84,21 @@ void TcpSocket::connect()
         throw BESInternalError(err, __FILE__, __LINE__);
     }
 
-    if (_host == "") _host = "localhost";
+    if (_host.empty()) _host = "localhost";
 
     struct protoent *pProtoEnt;
-    struct sockaddr_in sin; // = {};
+    struct sockaddr_in sin{};
     struct hostent *ph;
-#if 0
-    long address;
-#endif
     if (isdigit(_host[0])) {
         if (0 == inet_aton(_host.c_str(), &sin.sin_addr)) {
             throw BESInternalError(string("Invalid host ip address ") + _host, __FILE__, __LINE__);
         }
-#if 0
-        if ((address = inet_addr(_host.c_str())) == -1) {
-            string err("Invalid host ip address ");
-            err += _host;
-            throw BESInternalError(err, __FILE__, __LINE__);
-        }
-        sin.sin_addr.s_addr = address;
-#endif
+
         sin.sin_family = AF_INET;
     }
     else {
-        if ((ph = gethostbyname(_host.c_str())) == NULL) {
+        // FIXME Replace gethostbyname() (obsolete) with getnameinfo() jhrg 8/11/21
+        if ((ph = gethostbyname(_host.c_str())) == nullptr) {
             switch (h_errno) {
             case HOST_NOT_FOUND: {
                 string err("No such host ");

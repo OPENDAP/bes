@@ -428,11 +428,16 @@ static void dump_time(ostream &os, bool use_local_time)
     //
     // Apologies for the twisted logic - UTC is the default. Override to
     // local time using BES.LogTimeLocal=yes in bes.conf. jhrg 11/15/17
-    if (!use_local_time)
-        status = strftime(buf, sizeof buf, "%FT%T%Z", gmtime(&now));
-    else
-        status = strftime(buf, sizeof buf, "%FT%T%Z", localtime(&now));
-
+    //struct tm * gmtime_r(const time_t *clock, struct tm *result);
+    struct tm result;
+    if (!use_local_time) {
+        gmtime_r(&now, &result);
+        status = strftime(buf, sizeof buf, "%FT%T%Z", &result);
+    }
+    else {
+        localtime_r(&now, &result);
+        status = strftime(buf, sizeof buf, "%FT%T%Z", &result);
+    }
     if (!status)
         ERROR_LOG(prolog << "Error getting time for Metadata Store ledger.");
 
@@ -1215,7 +1220,7 @@ GlobalMetadataStore::get_dmr_object(const string &name)
     write_dmr_response(name, oss);    // throws BESInternalError if not found
 
     D4BaseTypeFactory d4_btf;
-    auto_ptr<DMR> dmr(new DMR(&d4_btf, "mds"));
+    unique_ptr<DMR> dmr(new DMR(&d4_btf, "mds"));
 
     D4ParserSax2 parser;
     parser.intern(oss.str(), dmr.get());
@@ -1262,7 +1267,7 @@ GlobalMetadataStore::get_dds_object(const string &name)
     }
 
     BaseTypeFactory btf;
-    auto_ptr<DDS> dds(new DDS(&btf));
+    unique_ptr<DDS> dds(new DDS(&btf));
     dds->parse(dds_tmp.get_name());
 
     TempFile das_tmp(get_cache_directory() + "/opendapXXXXXX");
@@ -1276,11 +1281,11 @@ GlobalMetadataStore::get_dds_object(const string &name)
         throw;
     }
 
-    auto_ptr<DAS> das(new DAS());
+    unique_ptr<DAS> das(new DAS());
     das->parse(das_tmp.get_name());
 
     dds->transfer_attributes(das.get());
-    dds->set_factory(0);
+    dds->set_factory(nullptr);
 
     return dds.release();
 }

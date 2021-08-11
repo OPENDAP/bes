@@ -99,8 +99,9 @@ template<class T>
 void
 GSEClause::set_start_stop()
 {
-    T *vals = new T[d_map->length()];
-    d_map->value(vals);
+    // T *vals = new T[d_map->length()];
+    vector<T> vals(d_map->length());
+    d_map->value(&vals[0]);
 
     // Set the map's max and min values for use in error messages (it's a lot
     // easier to do here, now, than later... 9/20/2001 jhrg)
@@ -114,15 +115,14 @@ GSEClause::set_start_stop()
     int i = d_start;
     int end = d_stop;
     while (i <= end && !compare<T>(vals[i], d_op1, d_value1))
-        i++;
-
+        ++i;
     d_start = i;
 
-    // Now scan backward from the end. We scan all the way to the actual start
+    // Now scan backward from the end. We scan all the way to the actual start,
     // although it would probably work to stop at 'i >= d_start'.
     i = end;
     while (i >= 0 && !compare<T>(vals[i], d_op1, d_value1))
-        i--;
+        --i;
     d_stop = i;
 
     // Every clause must have one operator but the second is optional since
@@ -133,18 +133,18 @@ GSEClause::set_start_stop()
         int i = d_start;
         int end = d_stop;
         while (i <= end && !compare<T>(vals[i], d_op2, d_value2))
-            i++;
+            ++i;
 
         d_start = i;
 
         i = end;
         while (i >= 0 && !compare<T>(vals[i], d_op2, d_value2))
-            i--;
+            --i;
 
         d_stop = i;
     }
     
-    delete[] vals;
+    // delete[] vals;
 }
 
 void
