@@ -828,7 +828,6 @@ void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
             if (NULL == at)
                 at = das.add_table((*it_cv)->getNewName(), new AttrTable);
 
-
             for (it_ra = (*it_cv)->getAttributes().begin();
                  it_ra != (*it_cv)->getAttributes().end(); ++it_ra) {
                  gen_dap_oneobj_das(at,*it_ra,*it_cv);
@@ -2007,11 +2006,11 @@ void map_eos5_cfdmr(D4Group *d4_root, hid_t file_id, const string &filename) {
         // the choking of netCDF Java tools. So this special variable routine
         // is listed at last. We may need to turn off this if netCDF can handle
         // long string better.
-        f->Handle_SpVar();
+        f->Handle_SpVar_DMR();
 
         // Handle coordinate attributes
         f->Handle_Coor_Attr();
-        f->Handle_SpVar_Attr();
+        //f->Handle_SpVar_Attr();
     }
     catch (HDF5CF::Exception &e){
         if(f != NULL)

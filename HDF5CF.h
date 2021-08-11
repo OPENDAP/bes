@@ -644,6 +644,9 @@ public:
     /// Handle special variable attributes
     virtual void Handle_SpVar_Attr() = 0;
 
+    /// Handle Special variable and attributes for DMR
+    virtual void Handle_SpVar_DMR() = 0;
+
     /// Adjust object names based on different products
     virtual void Adjust_Obj_Name() = 0;
 
@@ -893,6 +896,10 @@ public:
 
     /// Handle special variable attributes for general NASA HDF5 products
     virtual void Handle_SpVar_Attr() ;
+
+    /// Handle special variables and attributes for general NASA HDF5 files(for DMR)
+    /// Note this function is not used.
+    virtual void Handle_SpVar_DMR() { };
 
     /// Adjust object names based on different general NASA HDF5 products
     virtual void Adjust_Obj_Name() ;
@@ -1255,6 +1262,9 @@ public:
     /// Handle special variables for HDF-EOS5 files
     virtual void Handle_SpVar_Attr() ;
 
+    /// Handle special variables and attributes for HDF-EOS5 files(for DMR)
+    virtual void Handle_SpVar_DMR() ;
+     
     /// Adjust variable dimension names before the flattening for HDF-EOS5 files.
     void Adjust_Var_Dim_NewName_Before_Flattening() ;
 

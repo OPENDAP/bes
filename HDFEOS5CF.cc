@@ -3711,7 +3711,7 @@ void EOS5File::Add_Supplement_Attrs(bool add_path)
                 string orig_dimname = (((*irv)->dims)[0])->name;
                 orig_dimname = HDF5CFUtil::obtain_string_after_lastslash(orig_dimname);
                 if ("" == orig_dimname)
-                throw2("wrong dimension name ", orig_dimname);
+                    throw2("wrong dimension name ", orig_dimname);
                 if (orig_dimname.find("FakeDim") != string::npos) orig_dimname = "";
                 Add_Str_Attr(attr, attrname, orig_dimname);
                 (*irv)->attrs.push_back(attr);
@@ -4017,7 +4017,6 @@ void EOS5File::Handle_SpVar()
                                 }
                             }
                         }
-                        //break;//Just for debugging
                     }
                 }
             }
@@ -4130,6 +4129,64 @@ void EOS5File::Handle_SpVar_Attr()
         } // for (itmm = dimname_to_dupdimnamelist.begin();
     } // if(dimname_to_dupdimnamelist.size() > 0)
 }
+
+// Handle special variables, various speical cases are handled here.
+void EOS5File::Handle_SpVar_DMR() 
+{
+
+    BESDEBUG("h5", "Coming to Handle_SpVar_DMR()"<<endl);
+    if (true == this->isaura && TES == this->aura_name) {
+        const string ProHist_full_path = "/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES/ProductionHistory";
+        for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
+            if (ProHist_full_path == (*irv)->fullpath) {
+                delete (*irv);
+                this->vars.erase(irv);
+                break;
+            }
+        }
+    }
+
+    // First, if the duplicate dimension exists,
+    if (dimname_to_dupdimnamelist.size() > 0) {
+        for (vector<EOS5CVar *>::iterator ircv = this->cvars.begin(); ircv != this->cvars.end(); ircv++) {
+            if ((*ircv)->cvartype == CV_EXIST) {
+                pair<multimap<string, string>::iterator, multimap<string, string>::iterator> mm_er_ret;
+                multimap<string, string>::iterator itmm;
+                for (itmm = dimname_to_dupdimnamelist.begin(); itmm != dimname_to_dupdimnamelist.end(); ++itmm) {
+
+                    // Find the original dimension(the coordinate variable)
+                    if ((*ircv)->cfdimname == (*itmm).first) {
+
+                        // Loop through the cv again,this time just check CV_NONLATLON_MISS
+                        for (vector<EOS5CVar *>::iterator irv2 = this->cvars.begin(); irv2 != this->cvars.end();
+                            irv2++) {
+                            if ((*irv2)->cvartype == CV_NONLATLON_MISS) {
+                                //cerr<<"the duplicate cf dimension name "<<(*irv2)->cfdimname <<endl;
+                                // Obtain the fake CV that has the duplicate dimension.
+                                //if((*irv2)->cfdimname == (*ircv)->cfdimname) {
+                                if ((*irv2)->cfdimname == (*itmm).second) {
+
+                                    Replace_Var_Attrs((*ircv), (*irv2));
+                                    //find the duplicate dimension name 
+                                    string dup_var_name = (*irv2)->newname;
+                                    Replace_Var_Info((*ircv), (*irv2));
+                                    
+                                    // The following two lines are key to make sure duplicate CV
+                                    //  using a different name but keep all other info.
+                                    (*irv2)->newname = dup_var_name;
+                                    (*irv2)->getDimensions()[0]->newname = dup_var_name;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+
 void EOS5File::Adjust_Obj_Name() 
 {
     //Intentionally unimplemented, may have use cases for the future.
