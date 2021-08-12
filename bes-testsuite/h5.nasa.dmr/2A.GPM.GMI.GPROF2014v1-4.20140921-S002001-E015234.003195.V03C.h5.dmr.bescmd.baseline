@@ -1049,4 +1049,9 @@ ScanType=CONICAL;
     </Attribute>
     <Attribute name="S1_ScanTime" type="Container"/>
     <Attribute name="S1_SCstatus" type="Container"/>
+    <Attribute name="DODS_EXTRA" type="Container">
+        <Attribute name="Unlimited_Dimension" type="String">
+            <Value>nscan</Value>
+        </Attribute>
+    </Attribute>
 </Dataset>

@@ -272,6 +272,157 @@
             <Value>90.0</Value>
         </Attribute>
     </Float64>
+    <Attribute name="CoreMetadata" type="String">
+        <Value>GROUP = INVENTORYMETADATA
+   GROUPTYPE = MASTERGROUP
+   GROUP = ECSDATAGRANULE
+      OBJECT = LOCALGRANULEID
+         NUM_VAL = 1
+         VALUE = &quot;AMSR_2_L3_DailySnow_P00_20160831.he5&quot;
+      END_OBJECT = LOCALGRANULEID
+      OBJECT = PRODUCTIONDATETIME
+         NUM_VAL = 1
+         VALUE = &quot;2016-08-31T15:42:53Z&quot;
+      END_OBJECT = PRODUCTIONDATETIME
+   END_GROUP = ECSDATAGRANULE
+   GROUP = MEASUREDPARAMETER
+      OBJECT = MEASUREDPARAMETERCONTAINER
+         CLASS = &quot;1&quot;
+         OBJECT = PARAMETERNAME
+            NUM_VAL = 1
+            CLASS = &quot;1&quot;
+            VALUE = &quot;Snow Water Equivalent&quot;
+         END_OBJECT = PARAMETERNAME
+         GROUP = QASTATS
+            CLASS = &quot;1&quot;
+            OBJECT = QAPERCENTMISSINGDATA
+               NUM_VAL = 1
+               CLASS = &quot;1&quot;
+               VALUE = 45
+            END_OBJECT = QAPERCENTMISSINGDATA
+            OBJECT = QAPERCENTOUTOFBOUNDSDATA
+               NUM_VAL = 1
+               CLASS = &quot;1&quot;
+               VALUE = 0
+            END_OBJECT = QAPERCENTOUTOFBOUNDSDATA
+         END_GROUP = QASTATS
+      END_OBJECT = MEASUREDPARAMETERCONTAINER
+   END_GROUP = MEASUREDPARAMETER
+   GROUP = COLLECTIONDESCRIPTIONCLASS
+      OBJECT = SHORTNAME
+         NUM_VAL = 1
+         VALUE = &quot;A2_DySno_NRT&quot;
+      END_OBJECT = SHORTNAME
+      OBJECT = LONGNAME
+         NUM_VAL = 1
+         VALUE = &quot;NRT AMSR2 Daily L3 Global Snow Water Equivalent EASE-Grids&quot;
+      END_OBJECT = LONGNAME
+      OBJECT = VERSIONID
+         NUM_VAL = 1
+         VALUE = &quot;0&quot;
+      END_OBJECT = VERSIONID
+      OBJECT = COLLECTIONDATATYPE
+         NUM_VAL = 1
+         VALUE = &quot;NEAR_REAL_TIME&quot;
+      END_OBJECT = COLLECTIONDATATYPE
+   END_GROUP = COLLECTIONDESCRIPTIONCLASS
+   GROUP = INPUTGRANULE
+      OBJECT = INPUTPOINTER
+         NUM_VAL = 8
+         VALUE = (&quot;GW1AM2_201608310105_191D_L1SNRTBR_2220220.h5&quot;,
+                  &quot;GW1AM2_201608310244_207D_L1SNRTBR_2220220.h5&quot;,
+                  &quot;GW1AM2_201608310420_223D_L1SNRTBR_2220220.h5&quot;,
+                  &quot;GW1AM2_201608310559_006D_L1SNRTBR_2220220.h5&quot;,
+                  &quot;GW1AM2_201608310735_022D_L1SNRTBR_2220220.h5&quot;,
+                  &quot;GW1AM2_201608310914_038D_L1SNRTBR_2220220.h5&quot;,
+                  &quot;GW1AM2_201608311053_054D_L1SNRTBR_2220220.h5&quot;,
+                  &quot;GW1AM2_201608311229_070D_L1SNRTBR_2220220.h5&quot;)
+      END_OBJECT = INPUTPOINTER
+   END_GROUP = INPUTGRANULE
+   GROUP = SPATIALDOMAINCONTAINER
+      GROUP = HORIZONTALSPATIALDOMAINCONTAINER
+         GROUP = BOUNDINGRECTANGLE
+            OBJECT = WESTBOUNDINGCOORDINATE
+               NUM_VAL = 1
+               VALUE = -180.0
+            END_OBJECT = WESTBOUNDINGCOORDINATE
+            OBJECT = NORTHBOUNDINGCOORDINATE
+               NUM_VAL = 1
+               VALUE = 90.0
+            END_OBJECT = NORTHBOUNDINGCOORDINATE
+            OBJECT = EASTBOUNDINGCOORDINATE
+               NUM_VAL = 1
+               VALUE = 180.0
+            END_OBJECT = EASTBOUNDINGCOORDINATE
+            OBJECT = SOUTHBOUNDINGCOORDINATE
+               NUM_VAL = 1
+               VALUE = -90.0
+            END_OBJECT = SOUTHBOUNDINGCOORDINATE
+         END_GROUP = BOUNDINGRECTANGLE
+      END_GROUP = HORIZONTALSPATIALDOMAINCONTAINER
+   END_GROUP = SPATIALDOMAINCONTAINER
+   GROUP = RANGEDATETIME
+      OBJECT = RANGEBEGINNINGDATE
+         NUM_VAL = 1
+         VALUE = &quot;2016-08-31&quot;
+      END_OBJECT = RANGEBEGINNINGDATE
+      OBJECT = RANGEBEGINNINGTIME
+         NUM_VAL = 1
+         VALUE = &quot;01:05:20.572041Z&quot;
+      END_OBJECT = RANGEBEGINNINGTIME
+      OBJECT = RANGEENDINGDATE
+         NUM_VAL = 1
+         VALUE = &quot;2016-08-31&quot;
+      END_OBJECT = RANGEENDINGDATE
+      OBJECT = RANGEENDINGTIME
+         NUM_VAL = 1
+         VALUE = &quot;13:19:19.335593Z&quot;
+      END_OBJECT = RANGEENDINGTIME
+   END_GROUP = RANGEDATETIME
+   GROUP = PGEVERSIONCLASS
+      OBJECT = PGEVERSION
+         NUM_VAL = 1
+         VALUE = &quot;00&quot;
+      END_OBJECT = PGEVERSION
+   END_GROUP = PGEVERSIONCLASS
+   GROUP = ADDITIONALATTRIBUTES
+       OBJECT = ADDITIONALATTRIBUTESCONTAINER
+         CLASS = &quot;1&quot;
+         OBJECT = ADDITIONALATTRIBUTENAME
+            CLASS = &quot;1&quot;
+            NUM_VAL = 1
+            VALUE = &quot;identifier_product_doi&quot;
+         END_OBJECT = ADDITIONALATTRIBUTENAME
+         GROUP = INFORMATIONCONTENT
+            CLASS = &quot;1&quot;
+            OBJECT = PARAMETERVALUE
+               NUM_VAL = 1
+               CLASS = &quot;1&quot;
+               VALUE = &quot;10.5067/AMSR2/A2_DySno_NRT&quot;
+            END_OBJECT = PARAMETERVALUE
+         END_GROUP = INFORMATIONCONTENT
+      END_OBJECT = ADDITIONALATTRIBUTESCONTAINER
+      OBJECT = ADDITIONALATTRIBUTESCONTAINER
+         CLASS = &quot;2&quot;
+         OBJECT = ADDITIONALATTRIBUTENAME
+            CLASS = &quot;2&quot;
+            NUM_VAL = 1
+            VALUE = &quot;identifier_product_doi_authority&quot;
+         END_OBJECT = ADDITIONALATTRIBUTENAME
+         GROUP = INFORMATIONCONTENT
+            CLASS = &quot;2&quot;
+            OBJECT = PARAMETERVALUE
+               NUM_VAL = 1
+               CLASS = &quot;2&quot;
+               VALUE = &quot;http://dx.doi.org&quot;
+            END_OBJECT = PARAMETERVALUE
+         END_GROUP = INFORMATIONCONTENT
+      END_OBJECT = ADDITIONALATTRIBUTESCONTAINER
+   END_GROUP = ADDITIONALATTRIBUTES
+END_GROUP = INVENTORYMETADATA
+END
+</Value>
+    </Attribute>
     <Attribute name="Conventions" type="String">
         <Value>CF-1.7</Value>
     </Attribute>

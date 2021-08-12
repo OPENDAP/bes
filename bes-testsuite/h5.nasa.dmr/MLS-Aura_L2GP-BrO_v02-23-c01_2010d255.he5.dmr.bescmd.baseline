@@ -398,6 +398,290 @@
             <Value>nLevels</Value>
         </Attribute>
     </Float32>
+    <Attribute name="CoreMetadata" type="String">
+        <Value>
+GROUP                  = INVENTORYMETADATA
+  GROUPTYPE            = MASTERGROUP
+
+  GROUP                  = ECSDATAGRANULE
+
+    OBJECT                 = LOCALGRANULEID
+      NUM_VAL              = 1
+      VALUE                = &quot;MLS-Aura_L2GP-BrO_v02-23-c01_2010d255.he5&quot;
+    END_OBJECT             = LOCALGRANULEID
+
+    OBJECT                 = PRODUCTIONDATETIME
+      NUM_VAL              = 1
+      VALUE                = &quot;2010-09-14T21:44:48.000Z&quot;
+    END_OBJECT             = PRODUCTIONDATETIME
+
+    OBJECT                 = DAYNIGHTFLAG
+      NUM_VAL              = 1
+      VALUE                = &quot;Both&quot;
+    END_OBJECT             = DAYNIGHTFLAG
+
+    OBJECT                 = LOCALVERSIONID
+      NUM_VAL              = 1
+      VALUE                = &quot;c01&quot;
+    END_OBJECT             = LOCALVERSIONID
+
+    OBJECT                 = REPROCESSINGPLANNED
+      NUM_VAL              = 1
+      VALUE                = &quot;further update anticipated using enhanced PGE&quot;
+    END_OBJECT             = REPROCESSINGPLANNED
+
+  END_GROUP              = ECSDATAGRANULE
+
+  GROUP                  = MEASUREDPARAMETER
+
+    OBJECT                 = MEASUREDPARAMETERCONTAINER
+      CLASS                = &quot;1&quot;
+
+      GROUP                  = QAFLAGS
+        CLASS                = &quot;1&quot;
+
+        OBJECT                 = SCIENCEQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Inferred Passed&quot;
+          CLASS                = &quot;1&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAG
+
+        OBJECT                 = AUTOMATICQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          VALUE                = &quot;Validated&quot;
+          CLASS                = &quot;1&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAGEXPLANATION
+
+        OBJECT                 = AUTOMATICQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Passed&quot;
+          CLASS                = &quot;1&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAG
+
+        OBJECT                 = OPERATIONALQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          VALUE                = &quot;Not Investigated&quot;
+          CLASS                = &quot;1&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAGEXPLANATION
+
+        OBJECT                 = OPERATIONALQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Not Investigated&quot;
+          CLASS                = &quot;1&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAG
+
+        OBJECT                 = SCIENCEQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          VALUE                = &quot;Validated, see http://disc.gsfc.nasa.gov/Aura/MLS/ for quality document&quot;
+          CLASS                = &quot;1&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAGEXPLANATION
+
+      END_GROUP              = QAFLAGS
+
+      GROUP                  = QASTATS
+        CLASS                = &quot;1&quot;
+
+        OBJECT                 = QAPERCENTMISSINGDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;1&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTMISSINGDATA
+
+        OBJECT                 = QAPERCENTOUTOFBOUNDSDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;1&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTOUTOFBOUNDSDATA
+
+        OBJECT                 = QAPERCENTINTERPOLATEDDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;1&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTINTERPOLATEDDATA
+
+      END_GROUP              = QASTATS
+
+      OBJECT                 = PARAMETERNAME
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;BrO&quot;
+      END_OBJECT             = PARAMETERNAME
+
+    END_OBJECT             = MEASUREDPARAMETERCONTAINER
+
+  END_GROUP              = MEASUREDPARAMETER
+
+  GROUP                  = ORBITCALCULATEDSPATIALDOMAIN
+
+    OBJECT                 = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+      CLASS                = &quot;1&quot;
+
+      OBJECT                 = STARTORBITNUMBER
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = 32761
+      END_OBJECT             = STARTORBITNUMBER
+
+      OBJECT                 = EQUATORCROSSINGDATE
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;2010-09-12&quot;
+      END_OBJECT             = EQUATORCROSSINGDATE
+
+      OBJECT                 = EQUATORCROSSINGTIME
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;00:00:00&quot;
+      END_OBJECT             = EQUATORCROSSINGTIME
+
+      OBJECT                 = EQUATORCROSSINGLONGITUDE
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = 0.0
+      END_OBJECT             = EQUATORCROSSINGLONGITUDE
+
+      OBJECT                 = STOPORBITNUMBER
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = 32775
+      END_OBJECT             = STOPORBITNUMBER
+
+    END_OBJECT             = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+
+  END_GROUP              = ORBITCALCULATEDSPATIALDOMAIN
+
+  GROUP                  = COLLECTIONDESCRIPTIONCLASS
+
+    OBJECT                 = VERSIONID
+      NUM_VAL              = 1
+      VALUE                = 2
+    END_OBJECT             = VERSIONID
+
+    OBJECT                 = SHORTNAME
+      NUM_VAL              = 1
+      VALUE                = &quot;ML2BRO&quot;
+    END_OBJECT             = SHORTNAME
+
+  END_GROUP              = COLLECTIONDESCRIPTIONCLASS
+
+  GROUP                  = INPUTGRANULE
+
+    OBJECT                 = INPUTPOINTER
+      NUM_VAL              = 1
+      VALUE                = &quot;Found at /HDFEOS/ADDITIONAL/FILE_ATTRIBUTES/PCF&quot;
+    END_OBJECT             = INPUTPOINTER
+
+  END_GROUP              = INPUTGRANULE
+
+  GROUP                  = SPATIALDOMAINCONTAINER
+
+    GROUP                  = HORIZONTALSPATIALDOMAINCONTAINER
+
+      GROUP                  = BOUNDINGRECTANGLE
+
+        OBJECT                 = EASTBOUNDINGCOORDINATE
+          NUM_VAL              = 1
+          VALUE                = 180.0
+        END_OBJECT             = EASTBOUNDINGCOORDINATE
+
+        OBJECT                 = WESTBOUNDINGCOORDINATE
+          NUM_VAL              = 1
+          VALUE                = -180.0
+        END_OBJECT             = WESTBOUNDINGCOORDINATE
+
+        OBJECT                 = SOUTHBOUNDINGCOORDINATE
+          NUM_VAL              = 1
+          VALUE                = -90.0
+        END_OBJECT             = SOUTHBOUNDINGCOORDINATE
+
+        OBJECT                 = NORTHBOUNDINGCOORDINATE
+          NUM_VAL              = 1
+          VALUE                = 90.0
+        END_OBJECT             = NORTHBOUNDINGCOORDINATE
+
+      END_GROUP              = BOUNDINGRECTANGLE
+
+      GROUP                  = ZONEIDENTIFIERCLASS
+
+        OBJECT                 = ZONEIDENTIFIER
+          NUM_VAL              = 1
+          VALUE                = &quot;Other Grid System&quot;
+        END_OBJECT             = ZONEIDENTIFIER
+
+      END_GROUP              = ZONEIDENTIFIERCLASS
+
+    END_GROUP              = HORIZONTALSPATIALDOMAINCONTAINER
+
+    GROUP                  = VERTICALSPATIALDOMAIN
+
+      OBJECT                 = VERTICALSPATIALDOMAINCONTAINER
+        CLASS                = &quot;1&quot;
+
+        OBJECT                 = VERTICALSPATIALDOMAINTYPE
+          CLASS                = &quot;1&quot;
+          NUM_VAL              = 1
+          VALUE                = &quot;Atmosphere Layer&quot;
+        END_OBJECT             = VERTICALSPATIALDOMAINTYPE
+
+        OBJECT                 = VERTICALSPATIALDOMAINVALUE
+          CLASS                = &quot;1&quot;
+          NUM_VAL              = 1
+          VALUE                = &quot;Atmosphere Profile&quot;
+        END_OBJECT             = VERTICALSPATIALDOMAINVALUE
+
+      END_OBJECT             = VERTICALSPATIALDOMAINCONTAINER
+
+    END_GROUP              = VERTICALSPATIALDOMAIN
+
+    GROUP                  = GRANULELOCALITY
+
+      OBJECT                 = LOCALITYVALUE
+        NUM_VAL              = 1
+        VALUE                = &quot;Limb&quot;
+      END_OBJECT             = LOCALITYVALUE
+
+    END_GROUP              = GRANULELOCALITY
+
+  END_GROUP              = SPATIALDOMAINCONTAINER
+
+  GROUP                  = RANGEDATETIME
+
+    OBJECT                 = RANGEENDINGDATE
+      NUM_VAL              = 1
+      VALUE                = &quot;2010-09-12&quot;
+    END_OBJECT             = RANGEENDINGDATE
+
+    OBJECT                 = RANGEENDINGTIME
+      NUM_VAL              = 1
+      VALUE                = &quot;23:59:59.999999Z&quot;
+    END_OBJECT             = RANGEENDINGTIME
+
+    OBJECT                 = RANGEBEGINNINGDATE
+      NUM_VAL              = 1
+      VALUE                = &quot;2010-09-12&quot;
+    END_OBJECT             = RANGEBEGINNINGDATE
+
+    OBJECT                 = RANGEBEGINNINGTIME
+      NUM_VAL              = 1
+      VALUE                = &quot;00:00:00.000000Z&quot;
+    END_OBJECT             = RANGEBEGINNINGTIME
+
+  END_GROUP              = RANGEDATETIME
+
+  GROUP                  = PGEVERSIONCLASS
+
+    OBJECT                 = PGEVERSION
+      NUM_VAL              = 1
+      VALUE                = &quot;V02-23&quot;
+    END_OBJECT             = PGEVERSION
+
+  END_GROUP              = PGEVERSIONCLASS
+
+END_GROUP              = INVENTORYMETADATA
+
+END
+</Value>
+    </Attribute>
     <Attribute name="HDFEOS" type="Container"/>
     <Attribute name="HDFEOS_ADDITIONAL" type="Container"/>
     <Attribute name="HDFEOS_ADDITIONAL_FILE_ATTRIBUTES" type="Container">

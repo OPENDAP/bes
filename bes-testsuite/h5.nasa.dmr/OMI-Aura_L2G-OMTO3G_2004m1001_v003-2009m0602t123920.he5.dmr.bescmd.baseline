@@ -1355,6 +1355,927 @@
             <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
         </Attribute>
     </String>
+    <Attribute name="CoreMetadata" type="String">
+        <Value>
+GROUP                  = INVENTORYMETADATA
+  GROUPTYPE            = MASTERGROUP
+
+  GROUP                  = ECSDATAGRANULE
+
+    OBJECT                 = LOCALGRANULEID
+      NUM_VAL              = 1
+      VALUE                = &quot;OMI-Aura_L2G-OMTO3G_2004m1001_v003-2009m0602t123920.he5&quot;
+    END_OBJECT             = LOCALGRANULEID
+
+    OBJECT                 = PRODUCTIONDATETIME
+      NUM_VAL              = 1
+      VALUE                = &quot;2009-06-02T12:39:20.000Z&quot;
+    END_OBJECT             = PRODUCTIONDATETIME
+
+    OBJECT                 = DAYNIGHTFLAG
+      NUM_VAL              = 1
+      VALUE                = &quot;Day&quot;
+    END_OBJECT             = DAYNIGHTFLAG
+
+    OBJECT                 = REPROCESSINGACTUAL
+      NUM_VAL              = 1
+      VALUE                = (&quot;processed 1 time&quot;)
+    END_OBJECT             = REPROCESSINGACTUAL
+
+    OBJECT                 = LOCALVERSIONID
+      NUM_VAL              = 1
+      VALUE                = (&quot;RFC1321 MD5 = not yet calculated&quot;)
+    END_OBJECT             = LOCALVERSIONID
+
+    OBJECT                 = REPROCESSINGPLANNED
+      NUM_VAL              = 1
+      VALUE                = &quot;further update is anticipated&quot;
+    END_OBJECT             = REPROCESSINGPLANNED
+
+  END_GROUP              = ECSDATAGRANULE
+
+  GROUP                  = MEASUREDPARAMETER
+
+    OBJECT                 = MEASUREDPARAMETERCONTAINER
+      CLASS                = &quot;1&quot;
+
+      GROUP                  = QAFLAGS
+        CLASS                = &quot;1&quot;
+
+        OBJECT                 = SCIENCEQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Not Investigated&quot;
+          CLASS                = &quot;1&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAG
+
+        OBJECT                 = AUTOMATICQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;1&quot;
+          VALUE                = &quot;An automatic quality investigation has not yet been devised.&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAGEXPLANATION
+
+        OBJECT                 = AUTOMATICQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;1&quot;
+          VALUE                = &quot;Failed&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAG
+
+        OBJECT                 = OPERATIONALQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          VALUE                = &quot;This granule passed operational tests that were administered by the OMI SIPS.  QA metadata was extracted and the file was successfully read using standard HDF-EOS utilities.&quot;
+          CLASS                = &quot;1&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAGEXPLANATION
+
+        OBJECT                 = OPERATIONALQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Passed&quot;
+          CLASS                = &quot;1&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAG
+
+        OBJECT                 = SCIENCEQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          VALUE                = &quot;An updated science quality flag and explanation is put in the product .met file when a granule has been evaluated.  The flag value in this file, Not Investigated, is an automatic default that is put into every granule during production.&quot;
+          CLASS                = &quot;1&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAGEXPLANATION
+
+      END_GROUP              = QAFLAGS
+
+      GROUP                  = QASTATS
+        CLASS                = &quot;1&quot;
+
+        OBJECT                 = QAPERCENTMISSINGDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;1&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTMISSINGDATA
+
+      END_GROUP              = QASTATS
+
+      OBJECT                 = PARAMETERNAME
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;Total Column Ozone Gridded&quot;
+      END_OBJECT             = PARAMETERNAME
+
+    END_OBJECT             = MEASUREDPARAMETERCONTAINER
+
+  END_GROUP              = MEASUREDPARAMETER
+
+  GROUP                  = ORBITCALCULATEDSPATIALDOMAIN
+
+    OBJECT                 = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+      CLASS                = &quot;1&quot;
+
+      OBJECT                 = EQUATORCROSSINGDATE
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;2004-10-01&quot;
+      END_OBJECT             = EQUATORCROSSINGDATE
+
+      OBJECT                 = EQUATORCROSSINGTIME
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;00:52:22.000000&quot;
+      END_OBJECT             = EQUATORCROSSINGTIME
+
+      OBJECT                 = ORBITNUMBER
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = 1132
+      END_OBJECT             = ORBITNUMBER
+
+      OBJECT                 = EQUATORCROSSINGLONGITUDE
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = -167.57
+      END_OBJECT             = EQUATORCROSSINGLONGITUDE
+
+    END_OBJECT             = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+
+    OBJECT                 = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+      CLASS                = &quot;2&quot;
+
+      OBJECT                 = EQUATORCROSSINGDATE
+        CLASS                = &quot;2&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;2004-10-01&quot;
+      END_OBJECT             = EQUATORCROSSINGDATE
+
+      OBJECT                 = EQUATORCROSSINGTIME
+        CLASS                = &quot;2&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;02:31:15.000000&quot;
+      END_OBJECT             = EQUATORCROSSINGTIME
+
+      OBJECT                 = ORBITNUMBER
+        CLASS                = &quot;2&quot;
+        NUM_VAL              = 1
+        VALUE                = 1133
+      END_OBJECT             = ORBITNUMBER
+
+      OBJECT                 = EQUATORCROSSINGLONGITUDE
+        CLASS                = &quot;2&quot;
+        NUM_VAL              = 1
+        VALUE                = 167.71
+      END_OBJECT             = EQUATORCROSSINGLONGITUDE
+
+    END_OBJECT             = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+
+    OBJECT                 = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+      CLASS                = &quot;3&quot;
+
+      OBJECT                 = EQUATORCROSSINGDATE
+        CLASS                = &quot;3&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;2004-10-01&quot;
+      END_OBJECT             = EQUATORCROSSINGDATE
+
+      OBJECT                 = EQUATORCROSSINGTIME
+        CLASS                = &quot;3&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;04:10:08.000000&quot;
+      END_OBJECT             = EQUATORCROSSINGTIME
+
+      OBJECT                 = ORBITNUMBER
+        CLASS                = &quot;3&quot;
+        NUM_VAL              = 1
+        VALUE                = 1134
+      END_OBJECT             = ORBITNUMBER
+
+      OBJECT                 = EQUATORCROSSINGLONGITUDE
+        CLASS                = &quot;3&quot;
+        NUM_VAL              = 1
+        VALUE                = 142.99
+      END_OBJECT             = EQUATORCROSSINGLONGITUDE
+
+    END_OBJECT             = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+
+    OBJECT                 = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+      CLASS                = &quot;4&quot;
+
+      OBJECT                 = EQUATORCROSSINGDATE
+        CLASS                = &quot;4&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;2004-10-01&quot;
+      END_OBJECT             = EQUATORCROSSINGDATE
+
+      OBJECT                 = EQUATORCROSSINGTIME
+        CLASS                = &quot;4&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;05:49:01.000000&quot;
+      END_OBJECT             = EQUATORCROSSINGTIME
+
+      OBJECT                 = ORBITNUMBER
+        CLASS                = &quot;4&quot;
+        NUM_VAL              = 1
+        VALUE                = 1135
+      END_OBJECT             = ORBITNUMBER
+
+      OBJECT                 = EQUATORCROSSINGLONGITUDE
+        CLASS                = &quot;4&quot;
+        NUM_VAL              = 1
+        VALUE                = 118.27
+      END_OBJECT             = EQUATORCROSSINGLONGITUDE
+
+    END_OBJECT             = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+
+    OBJECT                 = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+      CLASS                = &quot;5&quot;
+
+      OBJECT                 = EQUATORCROSSINGDATE
+        CLASS                = &quot;5&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;2004-10-01&quot;
+      END_OBJECT             = EQUATORCROSSINGDATE
+
+      OBJECT                 = EQUATORCROSSINGTIME
+        CLASS                = &quot;5&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;07:27:54.000000&quot;
+      END_OBJECT             = EQUATORCROSSINGTIME
+
+      OBJECT                 = ORBITNUMBER
+        CLASS                = &quot;5&quot;
+        NUM_VAL              = 1
+        VALUE                = 1136
+      END_OBJECT             = ORBITNUMBER
+
+      OBJECT                 = EQUATORCROSSINGLONGITUDE
+        CLASS                = &quot;5&quot;
+        NUM_VAL              = 1
+        VALUE                = 93.55
+      END_OBJECT             = EQUATORCROSSINGLONGITUDE
+
+    END_OBJECT             = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+
+    OBJECT                 = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+      CLASS                = &quot;6&quot;
+
+      OBJECT                 = EQUATORCROSSINGDATE
+        CLASS                = &quot;6&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;2004-10-01&quot;
+      END_OBJECT             = EQUATORCROSSINGDATE
+
+      OBJECT                 = EQUATORCROSSINGTIME
+        CLASS                = &quot;6&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;09:06:47.000000&quot;
+      END_OBJECT             = EQUATORCROSSINGTIME
+
+      OBJECT                 = ORBITNUMBER
+        CLASS                = &quot;6&quot;
+        NUM_VAL              = 1
+        VALUE                = 1137
+      END_OBJECT             = ORBITNUMBER
+
+      OBJECT                 = EQUATORCROSSINGLONGITUDE
+        CLASS                = &quot;6&quot;
+        NUM_VAL              = 1
+        VALUE                = 68.83
+      END_OBJECT             = EQUATORCROSSINGLONGITUDE
+
+    END_OBJECT             = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+
+    OBJECT                 = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+      CLASS                = &quot;7&quot;
+
+      OBJECT                 = EQUATORCROSSINGDATE
+        CLASS                = &quot;7&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;2004-10-01&quot;
+      END_OBJECT             = EQUATORCROSSINGDATE
+
+      OBJECT                 = EQUATORCROSSINGTIME
+        CLASS                = &quot;7&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;10:45:40.000000&quot;
+      END_OBJECT             = EQUATORCROSSINGTIME
+
+      OBJECT                 = ORBITNUMBER
+        CLASS                = &quot;7&quot;
+        NUM_VAL              = 1
+        VALUE                = 1138
+      END_OBJECT             = ORBITNUMBER
+
+      OBJECT                 = EQUATORCROSSINGLONGITUDE
+        CLASS                = &quot;7&quot;
+        NUM_VAL              = 1
+        VALUE                = 44.1
+      END_OBJECT             = EQUATORCROSSINGLONGITUDE
+
+    END_OBJECT             = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+
+    OBJECT                 = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+      CLASS                = &quot;8&quot;
+
+      OBJECT                 = EQUATORCROSSINGDATE
+        CLASS                = &quot;8&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;2004-10-01&quot;
+      END_OBJECT             = EQUATORCROSSINGDATE
+
+      OBJECT                 = EQUATORCROSSINGTIME
+        CLASS                = &quot;8&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;12:24:33.000000&quot;
+      END_OBJECT             = EQUATORCROSSINGTIME
+
+      OBJECT                 = ORBITNUMBER
+        CLASS                = &quot;8&quot;
+        NUM_VAL              = 1
+        VALUE                = 1139
+      END_OBJECT             = ORBITNUMBER
+
+      OBJECT                 = EQUATORCROSSINGLONGITUDE
+        CLASS                = &quot;8&quot;
+        NUM_VAL              = 1
+        VALUE                = 19.38
+      END_OBJECT             = EQUATORCROSSINGLONGITUDE
+
+    END_OBJECT             = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+
+    OBJECT                 = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+      CLASS                = &quot;9&quot;
+
+      OBJECT                 = EQUATORCROSSINGDATE
+        CLASS                = &quot;9&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;2004-10-01&quot;
+      END_OBJECT             = EQUATORCROSSINGDATE
+
+      OBJECT                 = EQUATORCROSSINGTIME
+        CLASS                = &quot;9&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;14:03:26.000000&quot;
+      END_OBJECT             = EQUATORCROSSINGTIME
+
+      OBJECT                 = ORBITNUMBER
+        CLASS                = &quot;9&quot;
+        NUM_VAL              = 1
+        VALUE                = 1140
+      END_OBJECT             = ORBITNUMBER
+
+      OBJECT                 = EQUATORCROSSINGLONGITUDE
+        CLASS                = &quot;9&quot;
+        NUM_VAL              = 1
+        VALUE                = -5.34
+      END_OBJECT             = EQUATORCROSSINGLONGITUDE
+
+    END_OBJECT             = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+
+    OBJECT                 = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+      CLASS                = &quot;10&quot;
+
+      OBJECT                 = EQUATORCROSSINGDATE
+        CLASS                = &quot;10&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;2004-10-01&quot;
+      END_OBJECT             = EQUATORCROSSINGDATE
+
+      OBJECT                 = EQUATORCROSSINGTIME
+        CLASS                = &quot;10&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;15:42:19.000000&quot;
+      END_OBJECT             = EQUATORCROSSINGTIME
+
+      OBJECT                 = ORBITNUMBER
+        CLASS                = &quot;10&quot;
+        NUM_VAL              = 1
+        VALUE                = 1141
+      END_OBJECT             = ORBITNUMBER
+
+      OBJECT                 = EQUATORCROSSINGLONGITUDE
+        CLASS                = &quot;10&quot;
+        NUM_VAL              = 1
+        VALUE                = -30.06
+      END_OBJECT             = EQUATORCROSSINGLONGITUDE
+
+    END_OBJECT             = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+
+    OBJECT                 = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+      CLASS                = &quot;11&quot;
+
+      OBJECT                 = EQUATORCROSSINGDATE
+        CLASS                = &quot;11&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;2004-10-01&quot;
+      END_OBJECT             = EQUATORCROSSINGDATE
+
+      OBJECT                 = EQUATORCROSSINGTIME
+        CLASS                = &quot;11&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;17:21:12.000000&quot;
+      END_OBJECT             = EQUATORCROSSINGTIME
+
+      OBJECT                 = ORBITNUMBER
+        CLASS                = &quot;11&quot;
+        NUM_VAL              = 1
+        VALUE                = 1142
+      END_OBJECT             = ORBITNUMBER
+
+      OBJECT                 = EQUATORCROSSINGLONGITUDE
+        CLASS                = &quot;11&quot;
+        NUM_VAL              = 1
+        VALUE                = -54.78
+      END_OBJECT             = EQUATORCROSSINGLONGITUDE
+
+    END_OBJECT             = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+
+    OBJECT                 = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+      CLASS                = &quot;12&quot;
+
+      OBJECT                 = EQUATORCROSSINGDATE
+        CLASS                = &quot;12&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;2004-10-01&quot;
+      END_OBJECT             = EQUATORCROSSINGDATE
+
+      OBJECT                 = EQUATORCROSSINGTIME
+        CLASS                = &quot;12&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;19:00:05.000000&quot;
+      END_OBJECT             = EQUATORCROSSINGTIME
+
+      OBJECT                 = ORBITNUMBER
+        CLASS                = &quot;12&quot;
+        NUM_VAL              = 1
+        VALUE                = 1143
+      END_OBJECT             = ORBITNUMBER
+
+      OBJECT                 = EQUATORCROSSINGLONGITUDE
+        CLASS                = &quot;12&quot;
+        NUM_VAL              = 1
+        VALUE                = -79.5
+      END_OBJECT             = EQUATORCROSSINGLONGITUDE
+
+    END_OBJECT             = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+
+    OBJECT                 = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+      CLASS                = &quot;13&quot;
+
+      OBJECT                 = EQUATORCROSSINGDATE
+        CLASS                = &quot;13&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;2004-10-01&quot;
+      END_OBJECT             = EQUATORCROSSINGDATE
+
+      OBJECT                 = EQUATORCROSSINGTIME
+        CLASS                = &quot;13&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;20:38:58.000000&quot;
+      END_OBJECT             = EQUATORCROSSINGTIME
+
+      OBJECT                 = ORBITNUMBER
+        CLASS                = &quot;13&quot;
+        NUM_VAL              = 1
+        VALUE                = 1144
+      END_OBJECT             = ORBITNUMBER
+
+      OBJECT                 = EQUATORCROSSINGLONGITUDE
+        CLASS                = &quot;13&quot;
+        NUM_VAL              = 1
+        VALUE                = -104.22
+      END_OBJECT             = EQUATORCROSSINGLONGITUDE
+
+    END_OBJECT             = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+
+    OBJECT                 = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+      CLASS                = &quot;14&quot;
+
+      OBJECT                 = EQUATORCROSSINGDATE
+        CLASS                = &quot;14&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;2004-10-01&quot;
+      END_OBJECT             = EQUATORCROSSINGDATE
+
+      OBJECT                 = EQUATORCROSSINGTIME
+        CLASS                = &quot;14&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;22:17:51.000000&quot;
+      END_OBJECT             = EQUATORCROSSINGTIME
+
+      OBJECT                 = ORBITNUMBER
+        CLASS                = &quot;14&quot;
+        NUM_VAL              = 1
+        VALUE                = 1145
+      END_OBJECT             = ORBITNUMBER
+
+      OBJECT                 = EQUATORCROSSINGLONGITUDE
+        CLASS                = &quot;14&quot;
+        NUM_VAL              = 1
+        VALUE                = -128.94
+      END_OBJECT             = EQUATORCROSSINGLONGITUDE
+
+    END_OBJECT             = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+
+    OBJECT                 = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+      CLASS                = &quot;15&quot;
+
+      OBJECT                 = EQUATORCROSSINGDATE
+        CLASS                = &quot;15&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;2004-10-01&quot;
+      END_OBJECT             = EQUATORCROSSINGDATE
+
+      OBJECT                 = EQUATORCROSSINGTIME
+        CLASS                = &quot;15&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;23:56:44.000000&quot;
+      END_OBJECT             = EQUATORCROSSINGTIME
+
+      OBJECT                 = ORBITNUMBER
+        CLASS                = &quot;15&quot;
+        NUM_VAL              = 1
+        VALUE                = 1146
+      END_OBJECT             = ORBITNUMBER
+
+      OBJECT                 = EQUATORCROSSINGLONGITUDE
+        CLASS                = &quot;15&quot;
+        NUM_VAL              = 1
+        VALUE                = -153.66
+      END_OBJECT             = EQUATORCROSSINGLONGITUDE
+
+    END_OBJECT             = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+
+  END_GROUP              = ORBITCALCULATEDSPATIALDOMAIN
+
+  GROUP                  = COLLECTIONDESCRIPTIONCLASS
+
+    OBJECT                 = VERSIONID
+      NUM_VAL              = 1
+      VALUE                = (3)
+    END_OBJECT             = VERSIONID
+
+    OBJECT                 = SHORTNAME
+      NUM_VAL              = 1
+      VALUE                = &quot;OMTO3G&quot;
+    END_OBJECT             = SHORTNAME
+
+  END_GROUP              = COLLECTIONDESCRIPTIONCLASS
+
+  GROUP                  = INPUTGRANULE
+
+    OBJECT                 = INPUTPOINTER
+      NUM_VAL              = 15
+      VALUE                = (&quot;OMI-Aura_L2-OMTO3_2004m1001t0003-o01132_v003-2009m0531t100121.he5&quot;, &quot;OMI-Aura_L2-OMTO3_2004m1001t0141-o01133_v003-2009m0531t095703.he5&quot;, &quot;OMI-Aura_L2-OMTO3_2004m1001t0320-o01134_v003-2009m0531t095656.he5&quot;, &quot;
+          OMI-Aura_L2-OMTO3_2004m1001t0459-o01135_v003-2009m0531t100110.he5&quot;, &quot;OMI-Aura_L2-OMTO3_2004m1001t0638-o01136_v003-2009m0531t095551.he5&quot;, &quot;OMI-Aura_L2-OMTO3_2004m1001t0817-o01137_v003-2009m0531t100145.he5&quot;, &quot;OMI-Aura_L2-OMTO3_2004m1001t0956-o01138_v003-2009m0531t095639.he5&quot;, &quot;
+          OMI-Aura_L2-OMTO3_2004m1001t1135-o01139_v003-2009m0531t095651.he5&quot;, &quot;OMI-Aura_L2-OMTO3_2004m1001t1314-o01140_v003-2009m0531t095815.he5&quot;, &quot;OMI-Aura_L2-OMTO3_2004m1001t1452-o01141_v003-2009m0531t095647.he5&quot;, &quot;OMI-Aura_L2-OMTO3_2004m1001t1631-o01142_v003-2009m0531t095639.he5&quot;, &quot;
+          OMI-Aura_L2-OMTO3_2004m1001t1810-o01143_v003-2009m0531t095702.he5&quot;, &quot;OMI-Aura_L2-OMTO3_2004m1001t1949-o01144_v003-2009m0531t100315.he5&quot;, &quot;OMI-Aura_L2-OMTO3_2004m1001t2128-o01145_v003-2009m0531t095712.he5&quot;, &quot;OMI-Aura_L2-OMTO3_2004m1001t2307-o01146_v003-2009m0531t095143.he5&quot;)
+    END_OBJECT             = INPUTPOINTER
+
+  END_GROUP              = INPUTGRANULE
+
+  GROUP                  = SPATIALDOMAINCONTAINER
+
+    GROUP                  = HORIZONTALSPATIALDOMAINCONTAINER
+
+      GROUP                  = BOUNDINGRECTANGLE
+
+        OBJECT                 = EASTBOUNDINGCOORDINATE
+          NUM_VAL              = 1
+          VALUE                = 180.0
+        END_OBJECT             = EASTBOUNDINGCOORDINATE
+
+        OBJECT                 = WESTBOUNDINGCOORDINATE
+          NUM_VAL              = 1
+          VALUE                = -180.0
+        END_OBJECT             = WESTBOUNDINGCOORDINATE
+
+        OBJECT                 = SOUTHBOUNDINGCOORDINATE
+          NUM_VAL              = 1
+          VALUE                = -90.0
+        END_OBJECT             = SOUTHBOUNDINGCOORDINATE
+
+        OBJECT                 = NORTHBOUNDINGCOORDINATE
+          NUM_VAL              = 1
+          VALUE                = 90.0
+        END_OBJECT             = NORTHBOUNDINGCOORDINATE
+
+      END_GROUP              = BOUNDINGRECTANGLE
+
+    END_GROUP              = HORIZONTALSPATIALDOMAINCONTAINER
+
+    GROUP                  = GRANULELOCALITY
+
+      OBJECT                 = LOCALITYVALUE
+        NUM_VAL              = 1
+        VALUE                = &quot;Global&quot;
+      END_OBJECT             = LOCALITYVALUE
+
+    END_GROUP              = GRANULELOCALITY
+
+  END_GROUP              = SPATIALDOMAINCONTAINER
+
+  GROUP                  = RANGEDATETIME
+
+    OBJECT                 = RANGEENDINGDATE
+      NUM_VAL              = 1
+      VALUE                = &quot;2004-10-01&quot;
+    END_OBJECT             = RANGEENDINGDATE
+
+    OBJECT                 = RANGEENDINGTIME
+      NUM_VAL              = 1
+      VALUE                = &quot;23:59:59.999999&quot;
+    END_OBJECT             = RANGEENDINGTIME
+
+    OBJECT                 = RANGEBEGINNINGDATE
+      NUM_VAL              = 1
+      VALUE                = &quot;2004-10-01&quot;
+    END_OBJECT             = RANGEBEGINNINGDATE
+
+    OBJECT                 = RANGEBEGINNINGTIME
+      NUM_VAL              = 1
+      VALUE                = &quot;00:00:00.000000&quot;
+    END_OBJECT             = RANGEBEGINNINGTIME
+
+  END_GROUP              = RANGEDATETIME
+
+  GROUP                  = PGEVERSIONCLASS
+
+    OBJECT                 = PGEVERSION
+      NUM_VAL              = 1
+      VALUE                = (&quot;1.0.3.1&quot;)
+    END_OBJECT             = PGEVERSION
+
+  END_GROUP              = PGEVERSIONCLASS
+
+  GROUP                  = ASSOCIATEDPLATFORMINSTRUMENTSENSOR
+
+    OBJECT                 = ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER
+      CLASS                = &quot;1&quot;
+
+      OBJECT                 = ASSOCIATEDSENSORSHORTNAME
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;CCD Ultra Violet&quot;
+      END_OBJECT             = ASSOCIATEDSENSORSHORTNAME
+
+      OBJECT                 = ASSOCIATEDPLATFORMSHORTNAME
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;Aura&quot;
+      END_OBJECT             = ASSOCIATEDPLATFORMSHORTNAME
+
+      OBJECT                 = ASSOCIATEDINSTRUMENTSHORTNAME
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;OMI&quot;
+      END_OBJECT             = ASSOCIATEDINSTRUMENTSHORTNAME
+
+    END_OBJECT             = ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER
+
+  END_GROUP              = ASSOCIATEDPLATFORMINSTRUMENTSENSOR
+
+  GROUP                  = ADDITIONALATTRIBUTES
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;1&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;NrMeasurements&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;1&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;1&quot;
+          VALUE                = &quot;23778&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;2&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;2&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;NrZoom&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;2&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;2&quot;
+          VALUE                = &quot;0&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;3&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;3&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;NrSpatialZoom&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;3&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;3&quot;
+          VALUE                = &quot;0&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;4&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;4&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;NrSpectralZoom&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;4&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;4&quot;
+          VALUE                = &quot;0&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;5&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;5&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;ExpeditedData&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;5&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;5&quot;
+          VALUE                = &quot;FALSE&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;6&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;6&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;SouthAtlanticAnomalyCrossing&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;6&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;6&quot;
+          VALUE                = &quot;TRUE&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;7&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;7&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;SpacecraftManeuverFlag&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;7&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;7&quot;
+          VALUE                = &quot;FALSE&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;8&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;8&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;SolarEclipse&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;8&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;8&quot;
+          VALUE                = &quot;FALSE&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;9&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;9&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;MasterClockPeriods&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;9&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;9&quot;
+          VALUE                = &quot;2.000400&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;10&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;10&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;ExposureTimes&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;10&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 3
+          CLASS                = &quot;10&quot;
+          VALUE                = (&quot;1.000200&quot;, &quot;0.500100&quot;, &quot;0.400080&quot;)
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+  END_GROUP              = ADDITIONALATTRIBUTES
+
+END_GROUP              = INVENTORYMETADATA
+
+END
+</Value>
+    </Attribute>
+    <Attribute name="ArchiveMetadata" type="String">
+        <Value>
+GROUP                  = ARCHIVEDMETADATA
+  GROUPTYPE            = MASTERGROUP
+
+  OBJECT                 = LONGNAME
+    NUM_VAL              = 1
+    VALUE                = &quot;OMI/Aura Ozone (O3) Total Column Daily L2 Global 0.25deg Lat/Lon Grid&quot;
+  END_OBJECT             = LONGNAME
+
+  OBJECT                 = ESDTDESCRIPTORREVISION
+    NUM_VAL              = 1
+    VALUE                = &quot;2.0.00&quot;
+  END_OBJECT             = ESDTDESCRIPTORREVISION
+
+END_GROUP              = ARCHIVEDMETADATA
+
+END
+</Value>
+    </Attribute>
     <Attribute name="HDFEOS" type="Container"/>
     <Attribute name="HDFEOS_ADDITIONAL" type="Container"/>
     <Attribute name="HDFEOS_ADDITIONAL_FILE_ATTRIBUTES" type="Container">

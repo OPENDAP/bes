@@ -213,4 +213,9 @@
     <Attribute name="references" type="String">
         <Value>Please see http://daymet.ornl.gov/ for current information on Daymet references</Value>
     </Attribute>
+    <Attribute name="DODS_EXTRA" type="Container">
+        <Attribute name="Unlimited_Dimension" type="String">
+            <Value>time</Value>
+        </Attribute>
+    </Attribute>
 </Dataset>

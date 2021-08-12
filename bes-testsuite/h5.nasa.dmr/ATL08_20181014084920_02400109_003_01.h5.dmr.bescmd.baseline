@@ -6977,4 +6977,9 @@ i          &lt;gmd:extent&gt;&#13;
             <Value>/ancillary_data/land</Value>
         </Attribute>
     </Attribute>
+    <Attribute name="DODS_EXTRA" type="Container">
+        <Attribute name="Unlimited_Dimension" type="String">
+            <Value>gt1r_land_segments_delta_time gt1r_signal_photons_delta_time orbit_info_crossing_time orbit_info_sc_orient_time</Value>
+        </Attribute>
+    </Attribute>
 </Dataset>

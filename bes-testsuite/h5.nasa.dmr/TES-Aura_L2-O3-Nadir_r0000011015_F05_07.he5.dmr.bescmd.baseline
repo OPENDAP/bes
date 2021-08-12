@@ -2113,6 +2113,191 @@
             <Value>level</Value>
         </Attribute>
     </Int32>
+    <Attribute name="CoreMetadata" type="String">
+        <Value>
+GROUP                  = INVENTORYMETADATA
+  GROUPTYPE            = MASTERGROUP
+
+  GROUP                  = ECSDATAGRANULE
+
+    OBJECT                 = LOCALGRANULEID
+      NUM_VAL              = 1
+      VALUE                = &quot;TES-Aura_L2-O3-Nadir_r0000011015_F05_07.he5&quot;
+    END_OBJECT             = LOCALGRANULEID
+
+    OBJECT                 = PRODUCTIONDATETIME
+      NUM_VAL              = 1
+      VALUE                = &quot;2009-12-31T00:59:19.000Z&quot;
+    END_OBJECT             = PRODUCTIONDATETIME
+
+    OBJECT                 = LOCALVERSIONID
+      NUM_VAL              = 1
+      VALUE                = &quot;L2_Products_Main:R11.01.00&quot;
+    END_OBJECT             = LOCALVERSIONID
+
+  END_GROUP              = ECSDATAGRANULE
+
+  GROUP                  = MEASUREDPARAMETER
+
+    OBJECT                 = MEASUREDPARAMETERCONTAINER
+      CLASS                = &quot;1&quot;
+
+      GROUP                  = QAFLAGS
+        CLASS                = &quot;1&quot;
+
+        OBJECT                 = SCIENCEQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Not Investigated&quot;
+          CLASS                = &quot;1&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAG
+
+      END_GROUP              = QAFLAGS
+
+      OBJECT                 = PARAMETERNAME
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;Granule&quot;
+      END_OBJECT             = PARAMETERNAME
+
+    END_OBJECT             = MEASUREDPARAMETERCONTAINER
+
+  END_GROUP              = MEASUREDPARAMETER
+
+  GROUP                  = COLLECTIONDESCRIPTIONCLASS
+
+    OBJECT                 = SHORTNAME
+      NUM_VAL              = 1
+      VALUE                = &quot;TL2O3N&quot;
+    END_OBJECT             = SHORTNAME
+
+    OBJECT                 = VERSIONID
+      NUM_VAL              = 1
+      VALUE                = 4
+    END_OBJECT             = VERSIONID
+
+  END_GROUP              = COLLECTIONDESCRIPTIONCLASS
+
+  GROUP                  = INPUTGRANULE
+
+    OBJECT                 = INPUTPOINTER
+      NUM_VAL              = 1
+      VALUE                = &quot;Production History at block: /HDFEOS/ADDITIONAL/FILE_ATTRIBUTES/PRODUCTION_HISTORY&quot;
+    END_OBJECT             = INPUTPOINTER
+
+  END_GROUP              = INPUTGRANULE
+
+  GROUP                  = SPATIALDOMAINCONTAINER
+
+    GROUP                  = HORIZONTALSPATIALDOMAINCONTAINER
+
+      GROUP                  = BOUNDINGRECTANGLE
+
+        OBJECT                 = NORTHBOUNDINGCOORDINATE
+          NUM_VAL              = 1
+          VALUE                = 90.00000000000000
+        END_OBJECT             = NORTHBOUNDINGCOORDINATE
+
+        OBJECT                 = SOUTHBOUNDINGCOORDINATE
+          NUM_VAL              = 1
+          VALUE                = -90.00000000000000
+        END_OBJECT             = SOUTHBOUNDINGCOORDINATE
+
+        OBJECT                 = WESTBOUNDINGCOORDINATE
+          NUM_VAL              = 1
+          VALUE                = -180.0000000000000
+        END_OBJECT             = WESTBOUNDINGCOORDINATE
+
+        OBJECT                 = EASTBOUNDINGCOORDINATE
+          NUM_VAL              = 1
+          VALUE                = 180.0000000000000
+        END_OBJECT             = EASTBOUNDINGCOORDINATE
+
+      END_GROUP              = BOUNDINGRECTANGLE
+
+    END_GROUP              = HORIZONTALSPATIALDOMAINCONTAINER
+
+    GROUP                  = GRANULELOCALITY
+
+      OBJECT                 = LOCALITYVALUE
+        NUM_VAL              = 1
+        VALUE                = &quot;Global&quot;
+      END_OBJECT             = LOCALITYVALUE
+
+    END_GROUP              = GRANULELOCALITY
+
+  END_GROUP              = SPATIALDOMAINCONTAINER
+
+  GROUP                  = RANGEDATETIME
+
+    OBJECT                 = RANGEBEGINNINGDATE
+      NUM_VAL              = 1
+      VALUE                = &quot;2009-12-20&quot;
+    END_OBJECT             = RANGEBEGINNINGDATE
+
+    OBJECT                 = RANGEBEGINNINGTIME
+      NUM_VAL              = 1
+      VALUE                = &quot;10:16:00.195053Z&quot;
+    END_OBJECT             = RANGEBEGINNINGTIME
+
+    OBJECT                 = RANGEENDINGTIME
+      NUM_VAL              = 1
+      VALUE                = &quot;12:15:06.119552Z&quot;
+    END_OBJECT             = RANGEENDINGTIME
+
+    OBJECT                 = RANGEENDINGDATE
+      NUM_VAL              = 1
+      VALUE                = &quot;2009-12-21&quot;
+    END_OBJECT             = RANGEENDINGDATE
+
+  END_GROUP              = RANGEDATETIME
+
+  GROUP                  = PGEVERSIONCLASS
+
+    OBJECT                 = PGEVERSION
+      NUM_VAL              = 1
+      VALUE                = &quot;R11.01.00&quot;
+    END_OBJECT             = PGEVERSION
+
+  END_GROUP              = PGEVERSIONCLASS
+
+  GROUP                  = ASSOCIATEDPLATFORMINSTRUMENTSENSOR
+
+    OBJECT                 = ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER
+      CLASS                = &quot;1&quot;
+
+      OBJECT                 = OPERATIONMODE
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;Routine&quot;
+      END_OBJECT             = OPERATIONMODE
+
+      OBJECT                 = ASSOCIATEDPLATFORMSHORTNAME
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;Aura&quot;
+      END_OBJECT             = ASSOCIATEDPLATFORMSHORTNAME
+
+      OBJECT                 = ASSOCIATEDSENSORSHORTNAME
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;FTS&quot;
+      END_OBJECT             = ASSOCIATEDSENSORSHORTNAME
+
+      OBJECT                 = ASSOCIATEDINSTRUMENTSHORTNAME
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;TES&quot;
+      END_OBJECT             = ASSOCIATEDINSTRUMENTSHORTNAME
+
+    END_OBJECT             = ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER
+
+  END_GROUP              = ASSOCIATEDPLATFORMINSTRUMENTSENSOR
+
+END_GROUP              = INVENTORYMETADATA
+
+END
+</Value>
+    </Attribute>
     <Attribute name="HDFEOS" type="Container"/>
     <Attribute name="HDFEOS_ADDITIONAL" type="Container"/>
     <Attribute name="HDFEOS_ADDITIONAL_FILE_ATTRIBUTES" type="Container">

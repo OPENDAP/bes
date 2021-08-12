@@ -80,4 +80,9 @@
             <Value>/HDFEOS INFORMATION</Value>
         </Attribute>
     </Attribute>
+    <Attribute name="DODS_EXTRA" type="Container">                                                          
+        <Attribute name="Unlimited_Dimension" type="String">                                                
+            <Value>Bands Res2tr Res2xtr</Value>                                                             
+        </Attribute>                                                                                        
+    </Attribute> 
 </Dataset>

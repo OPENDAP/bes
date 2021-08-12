@@ -1716,6 +1716,577 @@
             <Value>level</Value>
         </Attribute>
     </Int32>
+    <Attribute name="CoreMetadata" type="String">
+        <Value>
+GROUP                  = INVENTORYMETADATA
+  GROUPTYPE            = MASTERGROUP
+
+  GROUP                  = ECSDATAGRANULE
+
+    OBJECT                 = LOCALGRANULEID
+      NUM_VAL              = 1
+      VALUE                = &quot;OMI-Aura_L2-OMBRO_2012m1204t1200-o44623_v003-2012m1204t185453.he5&quot;
+    END_OBJECT             = LOCALGRANULEID
+
+    OBJECT                 = PRODUCTIONDATETIME
+      NUM_VAL              = 1
+      VALUE                = &quot;2012-12-04T18:54:53.000Z&quot;
+    END_OBJECT             = PRODUCTIONDATETIME
+
+    OBJECT                 = DAYNIGHTFLAG
+      NUM_VAL              = 1
+      VALUE                = &quot;Day&quot;
+    END_OBJECT             = DAYNIGHTFLAG
+
+    OBJECT                 = REPROCESSINGACTUAL
+      NUM_VAL              = 1
+      VALUE                = (&quot;processed 1 time&quot;)
+    END_OBJECT             = REPROCESSINGACTUAL
+
+    OBJECT                 = LOCALVERSIONID
+      NUM_VAL              = 1
+      VALUE                = (&quot;RFC1321 MD5 = not yet calculated&quot;)
+    END_OBJECT             = LOCALVERSIONID
+
+    OBJECT                 = REPROCESSINGPLANNED
+      NUM_VAL              = 1
+      VALUE                = &quot;further update is anticipated&quot;
+    END_OBJECT             = REPROCESSINGPLANNED
+
+  END_GROUP              = ECSDATAGRANULE
+
+  GROUP                  = MEASUREDPARAMETER
+
+    OBJECT                 = MEASUREDPARAMETERCONTAINER
+      CLASS                = &quot;1&quot;
+
+      GROUP                  = QAFLAGS
+        CLASS                = &quot;1&quot;
+
+        OBJECT                 = SCIENCEQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Not Investigated&quot;
+          CLASS                = &quot;1&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAG
+
+        OBJECT                 = AUTOMATICQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;1&quot;
+          VALUE                = &quot;Flag set to Passed if NrofGoodOutputSamples &gt;= 75% of NrofGoodInputSamples, to Suspect if NrofGoodOutputSamples &gt;= 50% but &lt; 75% of NrofGoodInputSamples, and to Failed if NrofGoodOutputSamples &lt; 50% of NrofGoodInputSamples.&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAGEXPLANATION
+
+        OBJECT                 = AUTOMATICQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;1&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAG
+
+        OBJECT                 = OPERATIONALQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          VALUE                = &quot;This granule passed operational tests that were administered by the OMI SIPS.  QA metadata was extracted and the file was successfully read using standard HDF-EOS utilities.&quot;
+          CLASS                = &quot;1&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAGEXPLANATION
+
+        OBJECT                 = OPERATIONALQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Passed&quot;
+          CLASS                = &quot;1&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAG
+
+        OBJECT                 = SCIENCEQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          VALUE                = &quot;An updated science quality flag and explanation is put in the product .met file when a granule has been evaluated.  The flag value in this file, Not Investigated, is an automatic default that is put into every granule during production.&quot;
+          CLASS                = &quot;1&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAGEXPLANATION
+
+      END_GROUP              = QAFLAGS
+
+      GROUP                  = QASTATS
+        CLASS                = &quot;1&quot;
+
+        OBJECT                 = QAPERCENTMISSINGDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;1&quot;
+          VALUE                = 10
+        END_OBJECT             = QAPERCENTMISSINGDATA
+
+        OBJECT                 = QAPERCENTOUTOFBOUNDSDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;1&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTOUTOFBOUNDSDATA
+
+      END_GROUP              = QASTATS
+
+      OBJECT                 = PARAMETERNAME
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;Total Column Bromine Oxide&quot;
+      END_OBJECT             = PARAMETERNAME
+
+    END_OBJECT             = MEASUREDPARAMETERCONTAINER
+
+  END_GROUP              = MEASUREDPARAMETER
+
+  GROUP                  = ORBITCALCULATEDSPATIALDOMAIN
+
+    OBJECT                 = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+      CLASS                = &quot;1&quot;
+
+      OBJECT                 = EQUATORCROSSINGDATE
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;2012-12-04&quot;
+      END_OBJECT             = EQUATORCROSSINGDATE
+
+      OBJECT                 = EQUATORCROSSINGTIME
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;12:55:50.000000&quot;
+      END_OBJECT             = EQUATORCROSSINGTIME
+
+      OBJECT                 = ORBITNUMBER
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = 44623
+      END_OBJECT             = ORBITNUMBER
+
+      OBJECT                 = EQUATORCROSSINGLONGITUDE
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = 12.04
+      END_OBJECT             = EQUATORCROSSINGLONGITUDE
+
+    END_OBJECT             = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+
+  END_GROUP              = ORBITCALCULATEDSPATIALDOMAIN
+
+  GROUP                  = COLLECTIONDESCRIPTIONCLASS
+
+    OBJECT                 = VERSIONID
+      NUM_VAL              = 1
+      VALUE                = (3)
+    END_OBJECT             = VERSIONID
+
+    OBJECT                 = SHORTNAME
+      NUM_VAL              = 1
+      VALUE                = &quot;OMBRO&quot;
+    END_OBJECT             = SHORTNAME
+
+  END_GROUP              = COLLECTIONDESCRIPTIONCLASS
+
+  GROUP                  = INPUTGRANULE
+
+    OBJECT                 = INPUTPOINTER
+      NUM_VAL              = 20
+      VALUE                = (&quot;OMI-Aura_L1-OML1BRUG_2012m1204t1200-o44623_v003-2012m1204t175600.he4&quot;, &quot;OMI-Aura_L2-OMCLDO2_2012m1204t1200-o44623_v003-2012m1204t180700.he5&quot;)
+    END_OBJECT             = INPUTPOINTER
+
+  END_GROUP              = INPUTGRANULE
+
+  GROUP                  = RANGEDATETIME
+
+    OBJECT                 = RANGEENDINGDATE
+      NUM_VAL              = 1
+      VALUE                = &quot;2012-12-04&quot;
+    END_OBJECT             = RANGEENDINGDATE
+
+    OBJECT                 = RANGEENDINGTIME
+      NUM_VAL              = 1
+      VALUE                = &quot;13:39:24.000000&quot;
+    END_OBJECT             = RANGEENDINGTIME
+
+    OBJECT                 = RANGEBEGINNINGDATE
+      NUM_VAL              = 1
+      VALUE                = &quot;2012-12-04&quot;
+    END_OBJECT             = RANGEBEGINNINGDATE
+
+    OBJECT                 = RANGEBEGINNINGTIME
+      NUM_VAL              = 1
+      VALUE                = &quot;12:00:32.000000&quot;
+    END_OBJECT             = RANGEBEGINNINGTIME
+
+  END_GROUP              = RANGEDATETIME
+
+  GROUP                  = PGEVERSIONCLASS
+
+    OBJECT                 = PGEVERSION
+      NUM_VAL              = 1
+      VALUE                = (&quot;3.0.2&quot;)
+    END_OBJECT             = PGEVERSION
+
+  END_GROUP              = PGEVERSIONCLASS
+
+  GROUP                  = ASSOCIATEDPLATFORMINSTRUMENTSENSOR
+
+    OBJECT                 = ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER
+      CLASS                = &quot;1&quot;
+
+      OBJECT                 = ASSOCIATEDSENSORSHORTNAME
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;CCD Ultra Violet&quot;
+      END_OBJECT             = ASSOCIATEDSENSORSHORTNAME
+
+      OBJECT                 = ASSOCIATEDPLATFORMSHORTNAME
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;Aura&quot;
+      END_OBJECT             = ASSOCIATEDPLATFORMSHORTNAME
+
+      OBJECT                 = OPERATIONMODE
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = (&quot;Test&quot;)
+      END_OBJECT             = OPERATIONMODE
+
+      OBJECT                 = ASSOCIATEDINSTRUMENTSHORTNAME
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;OMI&quot;
+      END_OBJECT             = ASSOCIATEDINSTRUMENTSHORTNAME
+
+    END_OBJECT             = ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER
+
+  END_GROUP              = ASSOCIATEDPLATFORMINSTRUMENTSENSOR
+
+  GROUP                  = ADDITIONALATTRIBUTES
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;1&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;NrMeasurements&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;1&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;1&quot;
+          VALUE                = &quot;1643&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;2&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;2&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;NrZoom&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;2&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;2&quot;
+          VALUE                = &quot;0&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;3&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;3&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;NrSpatialZoom&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;3&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;3&quot;
+          VALUE                = &quot;0&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;4&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;4&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;NrSpectralZoom&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;4&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;4&quot;
+          VALUE                = &quot;0&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;5&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;5&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;ExpeditedData&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;5&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;5&quot;
+          VALUE                = &quot;FALSE&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;6&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;6&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;SouthAtlanticAnomalyCrossing&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;6&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;6&quot;
+          VALUE                = &quot;TRUE&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;7&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;7&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;SpacecraftManeuverFlag&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;7&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;7&quot;
+          VALUE                = &quot;FALSE&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;8&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;8&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;SolarEclipse&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;8&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;8&quot;
+          VALUE                = &quot;FALSE&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;9&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;9&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;InstrumentConfigurationIDs&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;9&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 3
+          CLASS                = &quot;9&quot;
+          VALUE                = (&quot;0&quot;, &quot;1&quot;, &quot;2&quot;)
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;10&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;10&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;MasterClockPeriods&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;10&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;10&quot;
+          VALUE                = &quot;2.000400&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;11&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;11&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;ExposureTimes&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;11&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 3
+          CLASS                = &quot;11&quot;
+          VALUE                = (&quot;1.000200&quot;, &quot;0.500100&quot;, &quot;0.400080&quot;)
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;12&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;12&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;PathNr&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;12&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;12&quot;
+          VALUE                = &quot;124&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;13&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;13&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;StartBlockNr&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;13&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;13&quot;
+          VALUE                = &quot;9&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = &quot;14&quot;
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = &quot;14&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;EndBlockNr&quot;
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = &quot;14&quot;
+
+        OBJECT                 = PARAMETERVALUE
+          NUM_VAL              = 1
+          CLASS                = &quot;14&quot;
+          VALUE                = &quot;36&quot;
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+  END_GROUP              = ADDITIONALATTRIBUTES
+
+END_GROUP              = INVENTORYMETADATA
+
+END
+</Value>
+    </Attribute>
+    <Attribute name="ArchiveMetadata" type="String">
+        <Value>
+GROUP                  = ARCHIVEDMETADATA
+  GROUPTYPE            = MASTERGROUP
+
+  OBJECT                 = LONGNAME
+    NUM_VAL              = 1
+    VALUE                = &quot;OMI/Aura Bromine Monoxide (BrO) Total Column 1-Orbit L2 Swath 13x24km&quot;
+  END_OBJECT             = LONGNAME
+
+  OBJECT                 = ESDTDESCRIPTORREVISION
+    NUM_VAL              = 1
+    VALUE                = &quot;3.0.2&quot;
+  END_OBJECT             = ESDTDESCRIPTORREVISION
+
+END_GROUP              = ARCHIVEDMETADATA
+
+END
+</Value>
+    </Attribute>
     <Attribute name="HDFEOS" type="Container"/>
     <Attribute name="HDFEOS_ADDITIONAL" type="Container"/>
     <Attribute name="HDFEOS_ADDITIONAL_FILE_ATTRIBUTES" type="Container">

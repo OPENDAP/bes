@@ -2625,6 +2625,1207 @@
             <Value>nLevels</Value>
         </Attribute>
     </Float32>
+    <Attribute name="CoreMetadata" type="String">
+        <Value>
+GROUP                  = INVENTORYMETADATA
+  GROUPTYPE            = MASTERGROUP
+
+  GROUP                  = ECSDATAGRANULE
+
+    OBJECT                 = REPROCESSINGPLANNED
+      NUM_VAL              = 1
+      VALUE                = &quot;further update anticipated using enhanced PGE&quot;
+    END_OBJECT             = REPROCESSINGPLANNED
+
+    OBJECT                 = REPROCESSINGACTUAL
+      NUM_VAL              = 1
+      VALUE                = &quot;processed once&quot;
+    END_OBJECT             = REPROCESSINGACTUAL
+
+    OBJECT                 = LOCALGRANULEID
+      NUM_VAL              = 1
+      VALUE                = &quot;./HIRDLS2ALL_v06-00-00-c03_2008d001.he5&quot;
+    END_OBJECT             = LOCALGRANULEID
+
+    OBJECT                 = DAYNIGHTFLAG
+      NUM_VAL              = 1
+      VALUE                = &quot;Both&quot;
+    END_OBJECT             = DAYNIGHTFLAG
+
+    OBJECT                 = PRODUCTIONDATETIME
+      NUM_VAL              = 1
+      VALUE                = &quot;2011-06-15T00:57:09.000Z&quot;
+    END_OBJECT             = PRODUCTIONDATETIME
+
+    OBJECT                 = LOCALVERSIONID
+      NUM_VAL              = 1
+      VALUE                = &quot;6.00.00&quot;
+    END_OBJECT             = LOCALVERSIONID
+
+  END_GROUP              = ECSDATAGRANULE
+
+  GROUP                  = MEASUREDPARAMETER
+
+    OBJECT                 = MEASUREDPARAMETERCONTAINER
+      CLASS                = &quot;1&quot;
+
+      OBJECT                 = PARAMETERNAME
+        NUM_VAL              = 1
+        CLASS                = &quot;1&quot;
+        VALUE                = &quot;Atmospheric Pressure&quot;
+      END_OBJECT             = PARAMETERNAME
+
+      GROUP                  = QAFLAGS
+        CLASS                = &quot;1&quot;
+
+        OBJECT                 = AUTOMATICQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;1&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAG
+
+        OBJECT                 = AUTOMATICQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;1&quot;
+          VALUE                = &quot;Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAGEXPLANATION
+
+        OBJECT                 = OPERATIONALQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;1&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAG
+
+        OBJECT                 = OPERATIONALQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;1&quot;
+          VALUE                = &quot;Data believed to be good, but there may be isolated exceptions&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAGEXPLANATION
+
+        OBJECT                 = SCIENCEQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Passed&quot;
+          CLASS                = &quot;1&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAG
+
+        OBJECT                 = SCIENCEQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          VALUE                = &quot;Check HIRDLS Data Description and Quality document for more information on the quality&quot;
+          CLASS                = &quot;1&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAGEXPLANATION
+
+      END_GROUP              = QAFLAGS
+
+      GROUP                  = QASTATS
+        CLASS                = &quot;1&quot;
+
+        OBJECT                 = QAPERCENTMISSINGDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;1&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTMISSINGDATA
+
+        OBJECT                 = QAPERCENTOUTOFBOUNDSDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;1&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTOUTOFBOUNDSDATA
+
+      END_GROUP              = QASTATS
+
+    END_OBJECT             = MEASUREDPARAMETERCONTAINER
+
+    OBJECT                 = MEASUREDPARAMETERCONTAINER
+      CLASS                = &quot;2&quot;
+
+      OBJECT                 = PARAMETERNAME
+        NUM_VAL              = 1
+        CLASS                = &quot;2&quot;
+        VALUE                = &quot;Temperature Profile&quot;
+      END_OBJECT             = PARAMETERNAME
+
+      GROUP                  = QAFLAGS
+        CLASS                = &quot;2&quot;
+
+        OBJECT                 = AUTOMATICQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;2&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAG
+
+        OBJECT                 = AUTOMATICQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;2&quot;
+          VALUE                = &quot;Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAGEXPLANATION
+
+        OBJECT                 = OPERATIONALQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;2&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAG
+
+        OBJECT                 = OPERATIONALQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;2&quot;
+          VALUE                = &quot;Data believed to be good, but there may be isolated exceptions&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAGEXPLANATION
+
+        OBJECT                 = SCIENCEQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Passed&quot;
+          CLASS                = &quot;2&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAG
+
+        OBJECT                 = SCIENCEQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          VALUE                = &quot;Check HIRDLS Data Description and Quality document for more information on the quality&quot;
+          CLASS                = &quot;2&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAGEXPLANATION
+
+      END_GROUP              = QAFLAGS
+
+      GROUP                  = QASTATS
+        CLASS                = &quot;2&quot;
+
+        OBJECT                 = QAPERCENTMISSINGDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;2&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTMISSINGDATA
+
+        OBJECT                 = QAPERCENTOUTOFBOUNDSDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;2&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTOUTOFBOUNDSDATA
+
+      END_GROUP              = QASTATS
+
+    END_OBJECT             = MEASUREDPARAMETERCONTAINER
+
+    OBJECT                 = MEASUREDPARAMETERCONTAINER
+      CLASS                = &quot;3&quot;
+
+      OBJECT                 = PARAMETERNAME
+        NUM_VAL              = 1
+        CLASS                = &quot;3&quot;
+        VALUE                = &quot;Water Vapor&quot;
+      END_OBJECT             = PARAMETERNAME
+
+      GROUP                  = QAFLAGS
+        CLASS                = &quot;3&quot;
+
+        OBJECT                 = AUTOMATICQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;3&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAG
+
+        OBJECT                 = AUTOMATICQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;3&quot;
+          VALUE                = &quot;Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAGEXPLANATION
+
+        OBJECT                 = OPERATIONALQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;3&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAG
+
+        OBJECT                 = OPERATIONALQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;3&quot;
+          VALUE                = &quot;Data believed to be good, but there may be isolated exceptions&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAGEXPLANATION
+
+        OBJECT                 = SCIENCEQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Passed&quot;
+          CLASS                = &quot;3&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAG
+
+        OBJECT                 = SCIENCEQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          VALUE                = &quot;Check HIRDLS Data Description and Quality document for more information on the quality&quot;
+          CLASS                = &quot;3&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAGEXPLANATION
+
+      END_GROUP              = QAFLAGS
+
+      GROUP                  = QASTATS
+        CLASS                = &quot;3&quot;
+
+        OBJECT                 = QAPERCENTMISSINGDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;3&quot;
+          VALUE                = 100
+        END_OBJECT             = QAPERCENTMISSINGDATA
+
+        OBJECT                 = QAPERCENTOUTOFBOUNDSDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;3&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTOUTOFBOUNDSDATA
+
+      END_GROUP              = QASTATS
+
+    END_OBJECT             = MEASUREDPARAMETERCONTAINER
+
+    OBJECT                 = MEASUREDPARAMETERCONTAINER
+      CLASS                = &quot;4&quot;
+
+      OBJECT                 = PARAMETERNAME
+        NUM_VAL              = 1
+        CLASS                = &quot;4&quot;
+        VALUE                = &quot;Chlorofluorocarbon-11&quot;
+      END_OBJECT             = PARAMETERNAME
+
+      GROUP                  = QAFLAGS
+        CLASS                = &quot;4&quot;
+
+        OBJECT                 = AUTOMATICQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;4&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAG
+
+        OBJECT                 = AUTOMATICQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;4&quot;
+          VALUE                = &quot;Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAGEXPLANATION
+
+        OBJECT                 = OPERATIONALQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;4&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAG
+
+        OBJECT                 = OPERATIONALQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;4&quot;
+          VALUE                = &quot;Data believed to be good, but there may be isolated exceptions&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAGEXPLANATION
+
+        OBJECT                 = SCIENCEQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Passed&quot;
+          CLASS                = &quot;4&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAG
+
+        OBJECT                 = SCIENCEQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          VALUE                = &quot;Check HIRDLS Data Description and Quality document for more information on the quality&quot;
+          CLASS                = &quot;4&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAGEXPLANATION
+
+      END_GROUP              = QAFLAGS
+
+      GROUP                  = QASTATS
+        CLASS                = &quot;4&quot;
+
+        OBJECT                 = QAPERCENTMISSINGDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;4&quot;
+          VALUE                = 50
+        END_OBJECT             = QAPERCENTMISSINGDATA
+
+        OBJECT                 = QAPERCENTOUTOFBOUNDSDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;4&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTOUTOFBOUNDSDATA
+
+      END_GROUP              = QASTATS
+
+    END_OBJECT             = MEASUREDPARAMETERCONTAINER
+
+    OBJECT                 = MEASUREDPARAMETERCONTAINER
+      CLASS                = &quot;5&quot;
+
+      OBJECT                 = PARAMETERNAME
+        NUM_VAL              = 1
+        CLASS                = &quot;5&quot;
+        VALUE                = &quot;Chlorofluorocarbon-12&quot;
+      END_OBJECT             = PARAMETERNAME
+
+      GROUP                  = QAFLAGS
+        CLASS                = &quot;5&quot;
+
+        OBJECT                 = AUTOMATICQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;5&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAG
+
+        OBJECT                 = AUTOMATICQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;5&quot;
+          VALUE                = &quot;Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAGEXPLANATION
+
+        OBJECT                 = OPERATIONALQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;5&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAG
+
+        OBJECT                 = OPERATIONALQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;5&quot;
+          VALUE                = &quot;Data believed to be good, but there may be isolated exceptions&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAGEXPLANATION
+
+        OBJECT                 = SCIENCEQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Passed&quot;
+          CLASS                = &quot;5&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAG
+
+        OBJECT                 = SCIENCEQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          VALUE                = &quot;Check HIRDLS Data Description and Quality document for more information on the quality&quot;
+          CLASS                = &quot;5&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAGEXPLANATION
+
+      END_GROUP              = QAFLAGS
+
+      GROUP                  = QASTATS
+        CLASS                = &quot;5&quot;
+
+        OBJECT                 = QAPERCENTMISSINGDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;5&quot;
+          VALUE                = 50
+        END_OBJECT             = QAPERCENTMISSINGDATA
+
+        OBJECT                 = QAPERCENTOUTOFBOUNDSDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;5&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTOUTOFBOUNDSDATA
+
+      END_GROUP              = QASTATS
+
+    END_OBJECT             = MEASUREDPARAMETERCONTAINER
+
+    OBJECT                 = MEASUREDPARAMETERCONTAINER
+      CLASS                = &quot;6&quot;
+
+      OBJECT                 = PARAMETERNAME
+        NUM_VAL              = 1
+        CLASS                = &quot;6&quot;
+        VALUE                = &quot;Ozone&quot;
+      END_OBJECT             = PARAMETERNAME
+
+      GROUP                  = QAFLAGS
+        CLASS                = &quot;6&quot;
+
+        OBJECT                 = AUTOMATICQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;6&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAG
+
+        OBJECT                 = AUTOMATICQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;6&quot;
+          VALUE                = &quot;Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAGEXPLANATION
+
+        OBJECT                 = OPERATIONALQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;6&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAG
+
+        OBJECT                 = OPERATIONALQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;6&quot;
+          VALUE                = &quot;Data believed to be good, but there may be isolated exceptions&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAGEXPLANATION
+
+        OBJECT                 = SCIENCEQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Passed&quot;
+          CLASS                = &quot;6&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAG
+
+        OBJECT                 = SCIENCEQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          VALUE                = &quot;Check HIRDLS Data Description and Quality document for more information on the quality&quot;
+          CLASS                = &quot;6&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAGEXPLANATION
+
+      END_GROUP              = QAFLAGS
+
+      GROUP                  = QASTATS
+        CLASS                = &quot;6&quot;
+
+        OBJECT                 = QAPERCENTMISSINGDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;6&quot;
+          VALUE                = 26
+        END_OBJECT             = QAPERCENTMISSINGDATA
+
+        OBJECT                 = QAPERCENTOUTOFBOUNDSDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;6&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTOUTOFBOUNDSDATA
+
+      END_GROUP              = QASTATS
+
+    END_OBJECT             = MEASUREDPARAMETERCONTAINER
+
+    OBJECT                 = MEASUREDPARAMETERCONTAINER
+      CLASS                = &quot;7&quot;
+
+      OBJECT                 = PARAMETERNAME
+        NUM_VAL              = 1
+        CLASS                = &quot;7&quot;
+        VALUE                = &quot;Nitric Acid&quot;
+      END_OBJECT             = PARAMETERNAME
+
+      GROUP                  = QAFLAGS
+        CLASS                = &quot;7&quot;
+
+        OBJECT                 = AUTOMATICQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;7&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAG
+
+        OBJECT                 = AUTOMATICQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;7&quot;
+          VALUE                = &quot;Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAGEXPLANATION
+
+        OBJECT                 = OPERATIONALQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;7&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAG
+
+        OBJECT                 = OPERATIONALQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;7&quot;
+          VALUE                = &quot;Data believed to be good, but there may be isolated exceptions&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAGEXPLANATION
+
+        OBJECT                 = SCIENCEQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Passed&quot;
+          CLASS                = &quot;7&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAG
+
+        OBJECT                 = SCIENCEQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          VALUE                = &quot;Check HIRDLS Data Description and Quality document for more information on the quality&quot;
+          CLASS                = &quot;7&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAGEXPLANATION
+
+      END_GROUP              = QAFLAGS
+
+      GROUP                  = QASTATS
+        CLASS                = &quot;7&quot;
+
+        OBJECT                 = QAPERCENTMISSINGDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;7&quot;
+          VALUE                = 50
+        END_OBJECT             = QAPERCENTMISSINGDATA
+
+        OBJECT                 = QAPERCENTOUTOFBOUNDSDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;7&quot;
+          VALUE                = 4
+        END_OBJECT             = QAPERCENTOUTOFBOUNDSDATA
+
+      END_GROUP              = QASTATS
+
+    END_OBJECT             = MEASUREDPARAMETERCONTAINER
+
+    OBJECT                 = MEASUREDPARAMETERCONTAINER
+      CLASS                = &quot;8&quot;
+
+      OBJECT                 = PARAMETERNAME
+        NUM_VAL              = 1
+        CLASS                = &quot;8&quot;
+        VALUE                = &quot;Dinitrogen Pentoxide&quot;
+      END_OBJECT             = PARAMETERNAME
+
+      GROUP                  = QAFLAGS
+        CLASS                = &quot;8&quot;
+
+        OBJECT                 = AUTOMATICQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;8&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAG
+
+        OBJECT                 = AUTOMATICQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;8&quot;
+          VALUE                = &quot;Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAGEXPLANATION
+
+        OBJECT                 = OPERATIONALQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;8&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAG
+
+        OBJECT                 = OPERATIONALQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;8&quot;
+          VALUE                = &quot;Data believed to be good, but there may be isolated exceptions&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAGEXPLANATION
+
+        OBJECT                 = SCIENCEQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Passed&quot;
+          CLASS                = &quot;8&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAG
+
+        OBJECT                 = SCIENCEQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          VALUE                = &quot;Check HIRDLS Data Description and Quality document for more information on the quality&quot;
+          CLASS                = &quot;8&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAGEXPLANATION
+
+      END_GROUP              = QAFLAGS
+
+      GROUP                  = QASTATS
+        CLASS                = &quot;8&quot;
+
+        OBJECT                 = QAPERCENTMISSINGDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;8&quot;
+          VALUE                = 100
+        END_OBJECT             = QAPERCENTMISSINGDATA
+
+        OBJECT                 = QAPERCENTOUTOFBOUNDSDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;8&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTOUTOFBOUNDSDATA
+
+      END_GROUP              = QASTATS
+
+    END_OBJECT             = MEASUREDPARAMETERCONTAINER
+
+    OBJECT                 = MEASUREDPARAMETERCONTAINER
+      CLASS                = &quot;9&quot;
+
+      OBJECT                 = PARAMETERNAME
+        NUM_VAL              = 1
+        CLASS                = &quot;9&quot;
+        VALUE                = &quot;Nitrous Oxide&quot;
+      END_OBJECT             = PARAMETERNAME
+
+      GROUP                  = QAFLAGS
+        CLASS                = &quot;9&quot;
+
+        OBJECT                 = AUTOMATICQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;9&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAG
+
+        OBJECT                 = AUTOMATICQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;9&quot;
+          VALUE                = &quot;Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAGEXPLANATION
+
+        OBJECT                 = OPERATIONALQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;9&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAG
+
+        OBJECT                 = OPERATIONALQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;9&quot;
+          VALUE                = &quot;Data believed to be good, but there may be isolated exceptions&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAGEXPLANATION
+
+        OBJECT                 = SCIENCEQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Passed&quot;
+          CLASS                = &quot;9&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAG
+
+        OBJECT                 = SCIENCEQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          VALUE                = &quot;Check HIRDLS Data Description and Quality document for more information on the quality&quot;
+          CLASS                = &quot;9&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAGEXPLANATION
+
+      END_GROUP              = QAFLAGS
+
+      GROUP                  = QASTATS
+        CLASS                = &quot;9&quot;
+
+        OBJECT                 = QAPERCENTMISSINGDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;9&quot;
+          VALUE                = 100
+        END_OBJECT             = QAPERCENTMISSINGDATA
+
+        OBJECT                 = QAPERCENTOUTOFBOUNDSDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;9&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTOUTOFBOUNDSDATA
+
+      END_GROUP              = QASTATS
+
+    END_OBJECT             = MEASUREDPARAMETERCONTAINER
+
+    OBJECT                 = MEASUREDPARAMETERCONTAINER
+      CLASS                = &quot;10&quot;
+
+      OBJECT                 = PARAMETERNAME
+        NUM_VAL              = 1
+        CLASS                = &quot;10&quot;
+        VALUE                = &quot;Chlorine Nitrate&quot;
+      END_OBJECT             = PARAMETERNAME
+
+      GROUP                  = QAFLAGS
+        CLASS                = &quot;10&quot;
+
+        OBJECT                 = AUTOMATICQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;10&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAG
+
+        OBJECT                 = AUTOMATICQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;10&quot;
+          VALUE                = &quot;Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAGEXPLANATION
+
+        OBJECT                 = OPERATIONALQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;10&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAG
+
+        OBJECT                 = OPERATIONALQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;10&quot;
+          VALUE                = &quot;Data believed to be good, but there may be isolated exceptions&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAGEXPLANATION
+
+        OBJECT                 = SCIENCEQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Passed&quot;
+          CLASS                = &quot;10&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAG
+
+        OBJECT                 = SCIENCEQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          VALUE                = &quot;Check HIRDLS Data Description and Quality document for more information on the quality&quot;
+          CLASS                = &quot;10&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAGEXPLANATION
+
+      END_GROUP              = QAFLAGS
+
+      GROUP                  = QASTATS
+        CLASS                = &quot;10&quot;
+
+        OBJECT                 = QAPERCENTMISSINGDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;10&quot;
+          VALUE                = 100
+        END_OBJECT             = QAPERCENTMISSINGDATA
+
+        OBJECT                 = QAPERCENTOUTOFBOUNDSDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;10&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTOUTOFBOUNDSDATA
+
+      END_GROUP              = QASTATS
+
+    END_OBJECT             = MEASUREDPARAMETERCONTAINER
+
+    OBJECT                 = MEASUREDPARAMETERCONTAINER
+      CLASS                = &quot;11&quot;
+
+      OBJECT                 = PARAMETERNAME
+        NUM_VAL              = 1
+        CLASS                = &quot;11&quot;
+        VALUE                = &quot;Nitrogen Dioxide&quot;
+      END_OBJECT             = PARAMETERNAME
+
+      GROUP                  = QAFLAGS
+        CLASS                = &quot;11&quot;
+
+        OBJECT                 = AUTOMATICQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;11&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAG
+
+        OBJECT                 = AUTOMATICQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;11&quot;
+          VALUE                = &quot;Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAGEXPLANATION
+
+        OBJECT                 = OPERATIONALQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;11&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAG
+
+        OBJECT                 = OPERATIONALQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;11&quot;
+          VALUE                = &quot;Data believed to be good, but there may be isolated exceptions&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAGEXPLANATION
+
+        OBJECT                 = SCIENCEQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Passed&quot;
+          CLASS                = &quot;11&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAG
+
+        OBJECT                 = SCIENCEQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          VALUE                = &quot;Check HIRDLS Data Description and Quality document for more information on the quality&quot;
+          CLASS                = &quot;11&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAGEXPLANATION
+
+      END_GROUP              = QAFLAGS
+
+      GROUP                  = QASTATS
+        CLASS                = &quot;11&quot;
+
+        OBJECT                 = QAPERCENTMISSINGDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;11&quot;
+          VALUE                = 100
+        END_OBJECT             = QAPERCENTMISSINGDATA
+
+        OBJECT                 = QAPERCENTOUTOFBOUNDSDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;11&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTOUTOFBOUNDSDATA
+
+      END_GROUP              = QASTATS
+
+    END_OBJECT             = MEASUREDPARAMETERCONTAINER
+
+    OBJECT                 = MEASUREDPARAMETERCONTAINER
+      CLASS                = &quot;12&quot;
+
+      OBJECT                 = PARAMETERNAME
+        NUM_VAL              = 1
+        CLASS                = &quot;12&quot;
+        VALUE                = &quot;Methane&quot;
+      END_OBJECT             = PARAMETERNAME
+
+      GROUP                  = QAFLAGS
+        CLASS                = &quot;12&quot;
+
+        OBJECT                 = AUTOMATICQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;12&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAG
+
+        OBJECT                 = AUTOMATICQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;12&quot;
+          VALUE                = &quot;Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAGEXPLANATION
+
+        OBJECT                 = OPERATIONALQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;12&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAG
+
+        OBJECT                 = OPERATIONALQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;12&quot;
+          VALUE                = &quot;Data believed to be good, but there may be isolated exceptions&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAGEXPLANATION
+
+        OBJECT                 = SCIENCEQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Passed&quot;
+          CLASS                = &quot;12&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAG
+
+        OBJECT                 = SCIENCEQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          VALUE                = &quot;Check HIRDLS Data Description and Quality document for more information on the quality&quot;
+          CLASS                = &quot;12&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAGEXPLANATION
+
+      END_GROUP              = QAFLAGS
+
+      GROUP                  = QASTATS
+        CLASS                = &quot;12&quot;
+
+        OBJECT                 = QAPERCENTMISSINGDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;12&quot;
+          VALUE                = 100
+        END_OBJECT             = QAPERCENTMISSINGDATA
+
+        OBJECT                 = QAPERCENTOUTOFBOUNDSDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;12&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTOUTOFBOUNDSDATA
+
+      END_GROUP              = QASTATS
+
+    END_OBJECT             = MEASUREDPARAMETERCONTAINER
+
+    OBJECT                 = MEASUREDPARAMETERCONTAINER
+      CLASS                = &quot;13&quot;
+
+      OBJECT                 = PARAMETERNAME
+        NUM_VAL              = 1
+        CLASS                = &quot;13&quot;
+        VALUE                = &quot;12.20 Micron Aerosol Extinction&quot;
+      END_OBJECT             = PARAMETERNAME
+
+      GROUP                  = QAFLAGS
+        CLASS                = &quot;13&quot;
+
+        OBJECT                 = AUTOMATICQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;13&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAG
+
+        OBJECT                 = AUTOMATICQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;13&quot;
+          VALUE                = &quot;Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAGEXPLANATION
+
+        OBJECT                 = OPERATIONALQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;13&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAG
+
+        OBJECT                 = OPERATIONALQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;13&quot;
+          VALUE                = &quot;Data believed to be good, but there may be isolated exceptions&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAGEXPLANATION
+
+        OBJECT                 = SCIENCEQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Passed&quot;
+          CLASS                = &quot;13&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAG
+
+        OBJECT                 = SCIENCEQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          VALUE                = &quot;Check HIRDLS Data Description and Quality document for more information on the quality&quot;
+          CLASS                = &quot;13&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAGEXPLANATION
+
+      END_GROUP              = QAFLAGS
+
+      GROUP                  = QASTATS
+        CLASS                = &quot;13&quot;
+
+        OBJECT                 = QAPERCENTMISSINGDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;13&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTMISSINGDATA
+
+        OBJECT                 = QAPERCENTOUTOFBOUNDSDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;13&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTOUTOFBOUNDSDATA
+
+      END_GROUP              = QASTATS
+
+    END_OBJECT             = MEASUREDPARAMETERCONTAINER
+
+    OBJECT                 = MEASUREDPARAMETERCONTAINER
+      CLASS                = &quot;14&quot;
+
+      OBJECT                 = PARAMETERNAME
+        NUM_VAL              = 1
+        CLASS                = &quot;14&quot;
+        VALUE                = &quot;Potential Temperature&quot;
+      END_OBJECT             = PARAMETERNAME
+
+      GROUP                  = QAFLAGS
+        CLASS                = &quot;14&quot;
+
+        OBJECT                 = AUTOMATICQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;14&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAG
+
+        OBJECT                 = AUTOMATICQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;14&quot;
+          VALUE                = &quot;Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAGEXPLANATION
+
+        OBJECT                 = OPERATIONALQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;14&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAG
+
+        OBJECT                 = OPERATIONALQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;14&quot;
+          VALUE                = &quot;Data believed to be good, but there may be isolated exceptions&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAGEXPLANATION
+
+        OBJECT                 = SCIENCEQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Passed&quot;
+          CLASS                = &quot;14&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAG
+
+        OBJECT                 = SCIENCEQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          VALUE                = &quot;Check HIRDLS Data Description and Quality document for more information on the quality&quot;
+          CLASS                = &quot;14&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAGEXPLANATION
+
+      END_GROUP              = QAFLAGS
+
+      GROUP                  = QASTATS
+        CLASS                = &quot;14&quot;
+
+        OBJECT                 = QAPERCENTMISSINGDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;14&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTMISSINGDATA
+
+        OBJECT                 = QAPERCENTOUTOFBOUNDSDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;14&quot;
+          VALUE                = 95
+        END_OBJECT             = QAPERCENTOUTOFBOUNDSDATA
+
+      END_GROUP              = QASTATS
+
+    END_OBJECT             = MEASUREDPARAMETERCONTAINER
+
+    OBJECT                 = MEASUREDPARAMETERCONTAINER
+      CLASS                = &quot;15&quot;
+
+      OBJECT                 = PARAMETERNAME
+        NUM_VAL              = 1
+        CLASS                = &quot;15&quot;
+        VALUE                = &quot;Geopotential Height&quot;
+      END_OBJECT             = PARAMETERNAME
+
+      GROUP                  = QAFLAGS
+        CLASS                = &quot;15&quot;
+
+        OBJECT                 = AUTOMATICQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;15&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAG
+
+        OBJECT                 = AUTOMATICQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;15&quot;
+          VALUE                = &quot;Process terminated normally - Check HIRDLS Data Description and Quality document for more information on the quality&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAGEXPLANATION
+
+        OBJECT                 = OPERATIONALQUALITYFLAG
+          NUM_VAL              = 1
+          CLASS                = &quot;15&quot;
+          VALUE                = &quot;Passed&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAG
+
+        OBJECT                 = OPERATIONALQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          CLASS                = &quot;15&quot;
+          VALUE                = &quot;Data believed to be good, but there may be isolated exceptions&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAGEXPLANATION
+
+        OBJECT                 = SCIENCEQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Passed&quot;
+          CLASS                = &quot;15&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAG
+
+        OBJECT                 = SCIENCEQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          VALUE                = &quot;Check HIRDLS Data Description and Quality document for more information on the quality&quot;
+          CLASS                = &quot;15&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAGEXPLANATION
+
+      END_GROUP              = QAFLAGS
+
+      GROUP                  = QASTATS
+        CLASS                = &quot;15&quot;
+
+        OBJECT                 = QAPERCENTMISSINGDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;15&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTMISSINGDATA
+
+        OBJECT                 = QAPERCENTOUTOFBOUNDSDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;15&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTOUTOFBOUNDSDATA
+
+      END_GROUP              = QASTATS
+
+    END_OBJECT             = MEASUREDPARAMETERCONTAINER
+
+  END_GROUP              = MEASUREDPARAMETER
+
+  GROUP                  = COLLECTIONDESCRIPTIONCLASS
+
+    OBJECT                 = SHORTNAME
+      NUM_VAL              = 1
+      VALUE                = &quot;HIRDLS2&quot;
+    END_OBJECT             = SHORTNAME
+
+    OBJECT                 = VERSIONID
+      NUM_VAL              = 1
+      VALUE                = 6
+    END_OBJECT             = VERSIONID
+
+  END_GROUP              = COLLECTIONDESCRIPTIONCLASS
+
+  GROUP                  = INPUTGRANULE
+
+    OBJECT                 = INPUTPOINTER
+      NUM_VAL              = 1
+      VALUE                = &quot;See Production History File for this information&quot;
+    END_OBJECT             = INPUTPOINTER
+
+  END_GROUP              = INPUTGRANULE
+
+  GROUP                  = SPATIALDOMAINCONTAINER
+
+    GROUP                  = GRANULELOCALITY
+
+      OBJECT                 = LOCALITYVALUE
+        NUM_VAL              = 1
+        VALUE                = &quot;Global&quot;
+      END_OBJECT             = LOCALITYVALUE
+
+    END_GROUP              = GRANULELOCALITY
+
+    GROUP                  = VERTICALSPATIALDOMAIN
+
+      OBJECT                 = VERTICALSPATIALDOMAINCONTAINER
+        CLASS                = &quot;1&quot;
+
+        OBJECT                 = VERTICALSPATIALDOMAINTYPE
+          CLASS                = &quot;1&quot;
+          NUM_VAL              = 1
+          VALUE                = &quot;Atmosphere Layer&quot;
+        END_OBJECT             = VERTICALSPATIALDOMAINTYPE
+
+        OBJECT                 = VERTICALSPATIALDOMAINVALUE
+          CLASS                = &quot;1&quot;
+          NUM_VAL              = 1
+          VALUE                = &quot;Atmosphere Profile&quot;
+        END_OBJECT             = VERTICALSPATIALDOMAINVALUE
+
+      END_OBJECT             = VERTICALSPATIALDOMAINCONTAINER
+
+    END_GROUP              = VERTICALSPATIALDOMAIN
+
+    GROUP                  = HORIZONTALSPATIALDOMAINCONTAINER
+
+      GROUP                  = BOUNDINGRECTANGLE
+
+        OBJECT                 = WESTBOUNDINGCOORDINATE
+          NUM_VAL              = 1
+          VALUE                = -180.0
+        END_OBJECT             = WESTBOUNDINGCOORDINATE
+
+        OBJECT                 = NORTHBOUNDINGCOORDINATE
+          NUM_VAL              = 1
+          VALUE                = 80.0
+        END_OBJECT             = NORTHBOUNDINGCOORDINATE
+
+        OBJECT                 = EASTBOUNDINGCOORDINATE
+          NUM_VAL              = 1
+          VALUE                = 180.0
+        END_OBJECT             = EASTBOUNDINGCOORDINATE
+
+        OBJECT                 = SOUTHBOUNDINGCOORDINATE
+          NUM_VAL              = 1
+          VALUE                = -64.0
+        END_OBJECT             = SOUTHBOUNDINGCOORDINATE
+
+      END_GROUP              = BOUNDINGRECTANGLE
+
+    END_GROUP              = HORIZONTALSPATIALDOMAINCONTAINER
+
+  END_GROUP              = SPATIALDOMAINCONTAINER
+
+  GROUP                  = RANGEDATETIME
+
+    OBJECT                 = RANGEBEGINNINGDATE
+      NUM_VAL              = 1
+      VALUE                = &quot;2008-01-01&quot;
+    END_OBJECT             = RANGEBEGINNINGDATE
+
+    OBJECT                 = RANGEBEGINNINGTIME
+      NUM_VAL              = 1
+      VALUE                = &quot;00:00:09.58&quot;
+    END_OBJECT             = RANGEBEGINNINGTIME
+
+    OBJECT                 = RANGEENDINGDATE
+      NUM_VAL              = 1
+      VALUE                = &quot;2008-01-01&quot;
+    END_OBJECT             = RANGEENDINGDATE
+
+    OBJECT                 = RANGEENDINGTIME
+      NUM_VAL              = 1
+      VALUE                = &quot;23:59:48.24&quot;
+    END_OBJECT             = RANGEENDINGTIME
+
+  END_GROUP              = RANGEDATETIME
+
+  GROUP                  = PGEVERSIONCLASS
+
+    OBJECT                 = PGEVERSION
+      NUM_VAL              = 1
+      VALUE                = &quot;V1.33.0&quot;
+    END_OBJECT             = PGEVERSION
+
+  END_GROUP              = PGEVERSIONCLASS
+
+END_GROUP              = INVENTORYMETADATA
+
+END
+</Value>
+    </Attribute>
     <Attribute name="HDFEOS" type="Container"/>
     <Attribute name="HDFEOS_ADDITIONAL" type="Container"/>
     <Attribute name="HDFEOS_ADDITIONAL_FILE_ATTRIBUTES" type="Container">

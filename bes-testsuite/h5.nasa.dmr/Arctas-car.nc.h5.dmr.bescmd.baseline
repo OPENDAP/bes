@@ -1202,4 +1202,9 @@
     <Attribute name="Conventions" type="String">
         <Value>CF-1.7</Value>
     </Attribute>
+    <Attribute name="DODS_EXTRA" type="Container">
+        <Attribute name="Unlimited_Dimension" type="String">
+            <Value>Scans</Value>
+        </Attribute>
+    </Attribute>
 </Dataset>

@@ -13276,4 +13276,9 @@
             <Value>/gt3r</Value>
         </Attribute>
     </Attribute>
+    <Attribute name="DODS_EXTRA" type="Container">
+        <Attribute name="Unlimited_Dimension" type="String">
+            <Value>gt1l_delta_time gt1r_delta_time gt2l_delta_time gt2r_delta_time gt3l_delta_time gt3r_delta_time orbit_info_crossing_time orbit_info_sc_orient_time</Value>
+        </Attribute>
+    </Attribute>
 </Dataset>

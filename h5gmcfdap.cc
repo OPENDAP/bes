@@ -743,7 +743,7 @@ void gen_gmh5_cfdmr(D4Group* d4_root,HDF5CF::GMFile *f) {
         gen_dap_onegmspvar_dmr(d4_root,*it_spv,fileid, filename);
     }
 
-    // We use the container since we claim to have no hierarchy.
+    // We use the attribute container to store the group attributes.
     if (false == grps.empty()) {
         for (it_g = grps.begin();
              it_g != grps.end(); ++it_g) {
@@ -762,6 +762,88 @@ void gen_gmh5_cfdmr(D4Group* d4_root,HDF5CF::GMFile *f) {
             d4_root->attributes()->add_attribute_nocopy(tmp_grp);
         }
     }
+
+    // CHECK ALL UNLIMITED DIMENSIONS from the coordinate variables based on the names. 
+    if(f->HaveUnlimitedDim() == true) {
+
+        BESDEBUG("h5","Find unlimited dimension in the GM DMR generation function gen_gmh5_cfdmr()  "<<endl);
+
+        // Currently there is no way for DAP to present the unlimited dimension info.
+        // when there are no dimension names. So don't create DODS_EXTRA even if
+        // there is an unlimited dimension in the file. KY 2016-02-18
+        if(cvars.empty()==false ){
+
+            // First check if we do have unlimited dimension in the coordinate variables.
+            // Since unsupported fakedims are removed, we may not have unlimited dimensions.
+            bool still_has_unlimited = false;
+            for (it_cv = cvars.begin();
+                it_cv != cvars.end(); ++it_cv) {
+                // Check unlimited dimension names.
+                for (vector<Dimension*>::const_iterator ird = (*it_cv)->getDimensions().begin();
+                     ird != (*it_cv)->getDimensions().end(); ++ird) {
+
+                    // Currently we only check one unlimited dimension, which is the most
+                    // common case. When receiving the conventions from JG, will add
+                    // the support of multi-unlimited dimension. KY 2016-02-09
+                    if((*ird)->HaveUnlimitedDim() == true) {
+                        still_has_unlimited = true;
+                        break;
+                    }// if((*ird) is HaveUnlimitedDim()
+                }// for (vector<Dimension*>::
+                if(true == still_has_unlimited) 
+                    break;
+            }// for (it_cv=cvars.begin();
+ 
+            if(true == still_has_unlimited) {
+ 
+                string dods_extra = "DODS_EXTRA";
+
+                // If DODS_EXTRA exists, we will not create the unlimited dimensions. 
+                if(d4_root->attributes() != NULL) {
+                // The following lines cause seg. fault in libdap4, needs to investigate
+                //if((d4_root->attributes()->find(dods_extra))==NULL) 
+        
+                    string unlimited_dim_names ="";
+        
+                    for (it_cv = cvars.begin();
+                        it_cv != cvars.end(); it_cv++) {
+            
+                        // Check unlimited dimension names.
+                        for (vector<Dimension*>::const_iterator ird = (*it_cv)->getDimensions().begin();
+                             ird != (*it_cv)->getDimensions().end(); ++ird) {
+            
+                            // Currently we only check one unlimited dimension, which is the most
+                            // common case. When receiving the conventions from JG, will add
+                            // the support of multi-unlimited dimension. KY 2016-02-09
+                            if((*ird)->HaveUnlimitedDim() == true) {
+                                
+                                string unlimited_dim_name = (*ird)->getNewName();
+                                if(unlimited_dim_names=="") 
+                                   unlimited_dim_names = unlimited_dim_name;
+                                else {
+                                    if(unlimited_dim_names.rfind(unlimited_dim_name) == string::npos) 
+                                        unlimited_dim_names = unlimited_dim_names+" "+unlimited_dim_name;
+                                }
+                            }
+                        }
+                    }
+        
+                    if(unlimited_dim_names != "") {
+                        D4Attribute *dods_extra_attr = new D4Attribute(dods_extra,attr_container_c);
+                        D4Attribute *unlimited_dim_attr = new D4Attribute("Unlimited_Dimension",attr_str_c);
+                        unlimited_dim_attr->add_value(unlimited_dim_names);
+                        dods_extra_attr->attributes()->add_attribute_nocopy(unlimited_dim_attr);
+                        d4_root->attributes()->add_attribute_nocopy(dods_extra_attr);
+                        
+                    }
+                    else 
+                        throw InternalErr(__FILE__, __LINE__, "Unlimited dimension should exist.");  
+               }
+        
+            }
+        }
+   }
+   
 
 }
 

@@ -406,6 +406,375 @@
             <Value>nLevels</Value>
         </Attribute>
     </Float32>
+    <Attribute name="CoreMetadata" type="String">
+        <Value>
+GROUP                  = INVENTORYMETADATA
+  GROUPTYPE            = MASTERGROUP
+
+  GROUP                  = ECSDATAGRANULE
+
+    OBJECT                 = LOCALGRANULEID
+      NUM_VAL              = 1
+      VALUE                = &quot;MLS-Aura_L2GP-O3_v03-40-NRT-06-c01_2013d024t0010.he5&quot;
+    END_OBJECT             = LOCALGRANULEID
+
+    OBJECT                 = PRODUCTIONDATETIME
+      NUM_VAL              = 1
+      VALUE                = &quot;2013-01-24T02:55:33.000Z&quot;
+    END_OBJECT             = PRODUCTIONDATETIME
+
+    OBJECT                 = DAYNIGHTFLAG
+      NUM_VAL              = 1
+      VALUE                = &quot;Both&quot;
+    END_OBJECT             = DAYNIGHTFLAG
+
+    OBJECT                 = LOCALVERSIONID
+      NUM_VAL              = 1
+      VALUE                = &quot;c01&quot;
+    END_OBJECT             = LOCALVERSIONID
+
+    OBJECT                 = REPROCESSINGPLANNED
+      NUM_VAL              = 1
+      VALUE                = &quot;further update anticipated using enhanced PGE&quot;
+    END_OBJECT             = REPROCESSINGPLANNED
+
+  END_GROUP              = ECSDATAGRANULE
+
+  GROUP                  = MEASUREDPARAMETER
+
+    OBJECT                 = MEASUREDPARAMETERCONTAINER
+      CLASS                = &quot;1&quot;
+
+      GROUP                  = QAFLAGS
+        CLASS                = &quot;1&quot;
+
+        OBJECT                 = SCIENCEQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Inferred Passed&quot;
+          CLASS                = &quot;1&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAG
+
+        OBJECT                 = AUTOMATICQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          VALUE                = &quot;Validated&quot;
+          CLASS                = &quot;1&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAGEXPLANATION
+
+        OBJECT                 = AUTOMATICQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Passed&quot;
+          CLASS                = &quot;1&quot;
+        END_OBJECT             = AUTOMATICQUALITYFLAG
+
+        OBJECT                 = OPERATIONALQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          VALUE                = &quot;Not Investigated&quot;
+          CLASS                = &quot;1&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAGEXPLANATION
+
+        OBJECT                 = OPERATIONALQUALITYFLAG
+          NUM_VAL              = 1
+          VALUE                = &quot;Not Investigated&quot;
+          CLASS                = &quot;1&quot;
+        END_OBJECT             = OPERATIONALQUALITYFLAG
+
+        OBJECT                 = SCIENCEQUALITYFLAGEXPLANATION
+          NUM_VAL              = 1
+          VALUE                = &quot;Near Real Time, see http://mls.jpl.nasa.gov/Aura/MLS/ for quality document&quot;
+          CLASS                = &quot;1&quot;
+        END_OBJECT             = SCIENCEQUALITYFLAGEXPLANATION
+
+      END_GROUP              = QAFLAGS
+
+      GROUP                  = QASTATS
+        CLASS                = &quot;1&quot;
+
+        OBJECT                 = QAPERCENTMISSINGDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;1&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTMISSINGDATA
+
+        OBJECT                 = QAPERCENTOUTOFBOUNDSDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;1&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTOUTOFBOUNDSDATA
+
+        OBJECT                 = QAPERCENTINTERPOLATEDDATA
+          NUM_VAL              = 1
+          CLASS                = &quot;1&quot;
+          VALUE                = 0
+        END_OBJECT             = QAPERCENTINTERPOLATEDDATA
+
+      END_GROUP              = QASTATS
+
+      OBJECT                 = PARAMETERNAME
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;O3&quot;
+      END_OBJECT             = PARAMETERNAME
+
+    END_OBJECT             = MEASUREDPARAMETERCONTAINER
+
+  END_GROUP              = MEASUREDPARAMETER
+
+  GROUP                  = ORBITCALCULATEDSPATIALDOMAIN
+
+    OBJECT                 = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+      CLASS                = &quot;1&quot;
+
+      OBJECT                 = STARTORBITNUMBER
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = 45357
+      END_OBJECT             = STARTORBITNUMBER
+
+      OBJECT                 = EQUATORCROSSINGDATE
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;2013-01-24&quot;
+      END_OBJECT             = EQUATORCROSSINGDATE
+
+      OBJECT                 = EQUATORCROSSINGTIME
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = &quot;00:00:00&quot;
+      END_OBJECT             = EQUATORCROSSINGTIME
+
+      OBJECT                 = EQUATORCROSSINGLONGITUDE
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = 0.0
+      END_OBJECT             = EQUATORCROSSINGLONGITUDE
+
+      OBJECT                 = STOPORBITNUMBER
+        CLASS                = &quot;1&quot;
+        NUM_VAL              = 1
+        VALUE                = 45358
+      END_OBJECT             = STOPORBITNUMBER
+
+    END_OBJECT             = ORBITCALCULATEDSPATIALDOMAINCONTAINER
+
+  END_GROUP              = ORBITCALCULATEDSPATIALDOMAIN
+
+  GROUP                  = COLLECTIONDESCRIPTIONCLASS
+
+    OBJECT                 = VERSIONID
+      NUM_VAL              = 1
+      VALUE                = 3
+    END_OBJECT             = VERSIONID
+
+    OBJECT                 = SHORTNAME
+      NUM_VAL              = 1
+      VALUE                = &quot;ML2O3_NRT&quot;
+    END_OBJECT             = SHORTNAME
+
+  END_GROUP              = COLLECTIONDESCRIPTIONCLASS
+
+  GROUP                  = INPUTGRANULE
+
+    OBJECT                 = INPUTPOINTER
+      NUM_VAL              = 1
+      VALUE                = &quot;Found at /HDFEOS/ADDITIONAL/FILE_ATTRIBUTES/PCF&quot;
+    END_OBJECT             = INPUTPOINTER
+
+  END_GROUP              = INPUTGRANULE
+
+  GROUP                  = SPATIALDOMAINCONTAINER
+
+    GROUP                  = HORIZONTALSPATIALDOMAINCONTAINER
+
+      GROUP                  = BOUNDINGRECTANGLE
+
+        OBJECT                 = EASTBOUNDINGCOORDINATE
+          NUM_VAL              = 1
+          VALUE                = 178.867233276367
+        END_OBJECT             = EASTBOUNDINGCOORDINATE
+
+        OBJECT                 = WESTBOUNDINGCOORDINATE
+          NUM_VAL              = 1
+          VALUE                = -179.651336669922
+        END_OBJECT             = WESTBOUNDINGCOORDINATE
+
+        OBJECT                 = SOUTHBOUNDINGCOORDINATE
+          NUM_VAL              = 1
+          VALUE                = 4.45368719100952
+        END_OBJECT             = SOUTHBOUNDINGCOORDINATE
+
+        OBJECT                 = NORTHBOUNDINGCOORDINATE
+          NUM_VAL              = 1
+          VALUE                = 70.267578125
+        END_OBJECT             = NORTHBOUNDINGCOORDINATE
+
+      END_GROUP              = BOUNDINGRECTANGLE
+
+      GROUP                  = ZONEIDENTIFIERCLASS
+
+        OBJECT                 = ZONEIDENTIFIER
+          NUM_VAL              = 1
+          VALUE                = &quot;Other Grid System&quot;
+        END_OBJECT             = ZONEIDENTIFIER
+
+      END_GROUP              = ZONEIDENTIFIERCLASS
+
+    END_GROUP              = HORIZONTALSPATIALDOMAINCONTAINER
+
+    GROUP                  = VERTICALSPATIALDOMAIN
+
+      OBJECT                 = VERTICALSPATIALDOMAINCONTAINER
+        CLASS                = &quot;1&quot;
+
+        OBJECT                 = VERTICALSPATIALDOMAINTYPE
+          CLASS                = &quot;1&quot;
+          NUM_VAL              = 1
+          VALUE                = &quot;Atmosphere Layer&quot;
+        END_OBJECT             = VERTICALSPATIALDOMAINTYPE
+
+        OBJECT                 = VERTICALSPATIALDOMAINVALUE
+          CLASS                = &quot;1&quot;
+          NUM_VAL              = 1
+          VALUE                = &quot;Atmosphere Profile&quot;
+        END_OBJECT             = VERTICALSPATIALDOMAINVALUE
+
+      END_OBJECT             = VERTICALSPATIALDOMAINCONTAINER
+
+    END_GROUP              = VERTICALSPATIALDOMAIN
+
+    GROUP                  = GRANULELOCALITY
+
+      OBJECT                 = LOCALITYVALUE
+        NUM_VAL              = 1
+        VALUE                = &quot;Limb&quot;
+      END_OBJECT             = LOCALITYVALUE
+
+    END_GROUP              = GRANULELOCALITY
+
+  END_GROUP              = SPATIALDOMAINCONTAINER
+
+  GROUP                  = RANGEDATETIME
+
+    OBJECT                 = RANGEENDINGDATE
+      NUM_VAL              = 1
+      VALUE                = &quot;2013-01-24&quot;
+    END_OBJECT             = RANGEENDINGDATE
+
+    OBJECT                 = RANGEENDINGTIME
+      NUM_VAL              = 1
+      VALUE                = &quot;00:29:59.999999Z&quot;
+    END_OBJECT             = RANGEENDINGTIME
+
+    OBJECT                 = RANGEBEGINNINGDATE
+      NUM_VAL              = 1
+      VALUE                = &quot;2013-01-24&quot;
+    END_OBJECT             = RANGEBEGINNINGDATE
+
+    OBJECT                 = RANGEBEGINNINGTIME
+      NUM_VAL              = 1
+      VALUE                = &quot;00:10:00.000000Z&quot;
+    END_OBJECT             = RANGEBEGINNINGTIME
+
+  END_GROUP              = RANGEDATETIME
+
+  GROUP                  = PGEVERSIONCLASS
+
+    OBJECT                 = PGEVERSION
+      NUM_VAL              = 1
+      VALUE                = &quot;v3-40NRT06&quot;
+    END_OBJECT             = PGEVERSION
+
+  END_GROUP              = PGEVERSIONCLASS
+
+END_GROUP              = INVENTORYMETADATA
+
+END
+</Value>
+    </Attribute>
+    <Attribute name="XMLMetadata" type="String">
+        <Value>&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;!DOCTYPE GranuleMetaDataFile SYSTEM &quot;http://ecsinfo.gsfc.nasa.gov/ECSInfo/ecsmetadata/dtds/DPL/ECS/ScienceGranuleMetadata.dtd&quot;&gt;
+&lt;GranuleMetaDataFile&gt;
+  &lt;DTDVersion&gt;1.0&lt;/DTDVersion&gt;
+  &lt;DataCenterId&gt;SDPTK&lt;/DataCenterId&gt;
+  &lt;GranuleURMetaData&gt;
+    &lt;CollectionMetaData&gt;
+      &lt;ShortName&gt;ML2O3_NRT&lt;/ShortName&gt;
+      &lt;VersionID&gt;3&lt;/VersionID&gt;
+    &lt;/CollectionMetaData&gt;
+    &lt;ECSDataGranule&gt;
+      &lt;ReprocessingPlanned&gt;further update anticipated using enhanced PGE&lt;/ReprocessingPlanned&gt;
+      &lt;LocalGranuleID&gt;MLS-Aura_L2GP-O3_v03-40-NRT-06-c01_2013d024t0010.he5&lt;/LocalGranuleID&gt;
+      &lt;DayNightFlag&gt;Both&lt;/DayNightFlag&gt;
+      &lt;ProductionDateTime&gt;2013-01-24 02:55:33.000&lt;/ProductionDateTime&gt;
+      &lt;LocalVersionID&gt;c01&lt;/LocalVersionID&gt;
+    &lt;/ECSDataGranule&gt;
+    &lt;PGEVersionClass&gt;
+      &lt;PGEVersion&gt;v3-40NRT06&lt;/PGEVersion&gt;
+    &lt;/PGEVersionClass&gt;
+    &lt;RangeDateTime&gt;
+      &lt;RangeEndingTime&gt;00:29:59.999999&lt;/RangeEndingTime&gt;
+      &lt;RangeEndingDate&gt;2013-01-24&lt;/RangeEndingDate&gt;
+      &lt;RangeBeginningTime&gt;00:10:00.000000&lt;/RangeBeginningTime&gt;
+      &lt;RangeBeginningDate&gt;2013-01-24&lt;/RangeBeginningDate&gt;
+    &lt;/RangeDateTime&gt;
+    &lt;SpatialDomainContainer&gt;
+      &lt;GranuleLocality&gt;
+        &lt;LocalityValue&gt;Limb&lt;/LocalityValue&gt;
+      &lt;/GranuleLocality&gt;
+      &lt;VerticalSpatialDomain&gt;
+        &lt;VerticalSpatialDomainContainer&gt;
+          &lt;VerticalSpatialDomainType&gt;Atmosphere Layer&lt;/VerticalSpatialDomainType&gt;
+          &lt;VerticalSpatialDomainValue&gt;Atmosphere Profile&lt;/VerticalSpatialDomainValue&gt;
+        &lt;/VerticalSpatialDomainContainer&gt;
+      &lt;/VerticalSpatialDomain&gt;
+      &lt;HorizontalSpatialDomainContainer&gt;
+        &lt;ZoneIdentifierClass&gt;
+          &lt;ZoneIdentifier&gt;Other Grid System&lt;/ZoneIdentifier&gt;
+        &lt;/ZoneIdentifierClass&gt;
+        &lt;BoundingRectangle&gt;
+          &lt;WestBoundingCoordinate&gt;-179.651336669922&lt;/WestBoundingCoordinate&gt;
+          &lt;NorthBoundingCoordinate&gt;70.267578125&lt;/NorthBoundingCoordinate&gt;
+          &lt;EastBoundingCoordinate&gt;178.867233276367&lt;/EastBoundingCoordinate&gt;
+          &lt;SouthBoundingCoordinate&gt;4.45368719100952&lt;/SouthBoundingCoordinate&gt;
+        &lt;/BoundingRectangle&gt;
+      &lt;/HorizontalSpatialDomainContainer&gt;
+    &lt;/SpatialDomainContainer&gt;
+    &lt;OrbitCalculatedSpatialDomain&gt;
+      &lt;OrbitCalculatedSpatialDomainContainer&gt;
+        &lt;OrbitRange&gt;
+          &lt;StartOrbitNumber&gt;45357&lt;/StartOrbitNumber&gt;
+          &lt;StopOrbitNumber&gt;45358&lt;/StopOrbitNumber&gt;
+        &lt;/OrbitRange&gt;
+        &lt;EquatorCrossingLongitude&gt;0.0&lt;/EquatorCrossingLongitude&gt;
+        &lt;EquatorCrossingDate&gt;2013-01-24&lt;/EquatorCrossingDate&gt;
+        &lt;EquatorCrossingTime&gt;00:00:00&lt;/EquatorCrossingTime&gt;
+      &lt;/OrbitCalculatedSpatialDomainContainer&gt;
+    &lt;/OrbitCalculatedSpatialDomain&gt;
+    &lt;MeasuredParameter&gt;
+      &lt;MeasuredParameterContainer&gt;
+        &lt;ParameterName&gt;O3&lt;/ParameterName&gt;
+        &lt;QAStats&gt;
+          &lt;QAPercentMissingData&gt;0&lt;/QAPercentMissingData&gt;
+          &lt;QAPercentOutofBoundsData&gt;0&lt;/QAPercentOutofBoundsData&gt;
+          &lt;QAPercentInterpolatedData&gt;0&lt;/QAPercentInterpolatedData&gt;
+        &lt;/QAStats&gt;
+        &lt;QAFlags&gt;
+          &lt;AutomaticQualityFlag&gt;Passed&lt;/AutomaticQualityFlag&gt;
+          &lt;AutomaticQualityFlagExplanation&gt;Validated&lt;/AutomaticQualityFlagExplanation&gt;
+          &lt;OperationalQualityFlag&gt;Not Investigated&lt;/OperationalQualityFlag&gt;
+          &lt;OperationalQualityFlagExplanation&gt;Not Investigated&lt;/OperationalQualityFlagExplanation&gt;
+          &lt;ScienceQualityFlag&gt;Inferred Passed&lt;/ScienceQualityFlag&gt;
+          &lt;ScienceQualityFlagExplanation&gt;Near Real Time, see http://mls.jpl.nasa.gov/Aura/MLS/ for quality document&lt;/ScienceQualityFlagExplanation&gt;
+        &lt;/QAFlags&gt;
+      &lt;/MeasuredParameterContainer&gt;
+    &lt;/MeasuredParameter&gt;
+    &lt;InputGranule&gt;
+      &lt;InputPointer&gt;Found at /HDFEOS/ADDITIONAL/FILE_ATTRIBUTES/PCF&lt;/InputPointer&gt;
+    &lt;/InputGranule&gt;
+  &lt;/GranuleURMetaData&gt;
+&lt;/GranuleMetaDataFile&gt;
+</Value>
+    </Attribute>
     <Attribute name="HDFEOS" type="Container"/>
     <Attribute name="HDFEOS_ADDITIONAL" type="Container"/>
     <Attribute name="HDFEOS_ADDITIONAL_FILE_ATTRIBUTES" type="Container">
