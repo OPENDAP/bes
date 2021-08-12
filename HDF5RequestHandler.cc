@@ -1298,6 +1298,12 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
                     }
                     read_cfdmr(dmr,filename,cf_fileid);
                     H5Fclose(cf_fileid);
+                    bes_dmr_response.set_dap4_constraint(dhi);
+                    bes_dmr_response.set_dap4_function(dhi);
+                    dmr->set_factory(0);
+
+                    BESDEBUG(HDF5_NAME, prolog << "END" << endl);
+
                     return true;
                 }
 
