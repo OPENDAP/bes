@@ -622,3 +622,10 @@ AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_int64_dap4_ce_empty.h5.dap.bescmd])
 #AT_BESCMD_RESPONSE_TEST_DEFAULT([dynaconf_default.dmr.bescmd])
 #AT_BESCMD_RESPONSE_TEST_DEFAULT([dynaconf_dynamic.dmr.bescmd])
 
+# CF DMR tests
+AT_BESCMD_CFDMR_RESPONSE_TEST([d_int8.h5.dmr.bescmd])
+AT_BESCMD_CFDMR_DAP4DATA_RESPONSE_TEST([d_int8.h5.dap.bescmd])
+AT_BESCMD_CFDMR_RESPONSE_TEST([d_int64.h5.dmr.bescmd])
+AT_BESCMD_CFDMR_DAP4DATA_RESPONSE_TEST([d_int64.h5.dap.bescmd])
+AT_BESCMD_CFDMR_RESPONSE_TEST([t_scalar_dset.h5.dmr.bescmd])
+AT_BESCMD_CFDMR_DAP4DATA_RESPONSE_TEST([t_scalar_dset.h5.dap.bescmd])

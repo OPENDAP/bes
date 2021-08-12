@@ -4,22 +4,22 @@
 # ------------------------------
 #
 
-AT_INIT([bes.cfdmr.conf besstandalone getdap])
+AT_INIT([bes.conf besstandalone getdap])
 # AT_COPYRIGHT([])
 
 AT_TESTED([besstandalone])
 
 # Usage: _AT_TEST_*(<bescmd source>, <baseline file>)
 
-#The first part is for CF option. The testing files are under h5.cf. It is using bes.cfdmr.conf
+#The first part is for CF option. The testing files are under h5.cf. It is using bes.conf
 m4_define([_AT_BESCMD_TEST],   
 [AT_SETUP([BESCMD $1])
 AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK to generate baseline file.
-#AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 > $2|| true], [], [stdout], [stderr])
+#AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 > $2|| true], [], [stdout], [stderr])
 
-AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 || true], [], [stdout], [stderr])
+AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 || true], [], [stdout], [stderr])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_CLEANUP])
 
@@ -28,9 +28,9 @@ m4_define([_AT_BESCMD_BINARYDATA_TEST],
 AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK to generate baseline file.
-#AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 | getdap -M - >$2|| true], [], [stdout], [stderr])
+#AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 | getdap -M - >$2|| true], [], [stdout], [stderr])
 
-AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 | getdap -M - || true], [], [stdout], [stderr])
+AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 | getdap -M - || true], [], [stdout], [stderr])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_CLEANUP])
 
@@ -39,9 +39,9 @@ m4_define([_AT_BESCMD_DAP4DATA_TEST],
 AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK to generate baseline file.
-#AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 | getdap4 -D -M - > $2|| true], [], [stdout], [stderr])
+#AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 | getdap4 -D -M - > $2|| true], [], [stdout], [stderr])
 
-AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 | getdap4 -D -M - || true], [], [stdout], [stderr])
+AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 | getdap4 -D -M - || true], [], [stdout], [stderr])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_CLEANUP])
 
@@ -50,20 +50,12 @@ m4_define([AT_BESCMD_RESPONSE_TEST],
 [_AT_BESCMD_TEST([$abs_srcdir/h5.cf/$1], [$abs_srcdir/h5.cf/$1.baseline])
 ])
 
-m4_define([AT_BESCMD_CFDMR_RESPONSE_TEST],
-[_AT_BESCMD_TEST([$abs_srcdir/h5.cf/$1], [$abs_srcdir/h5.cf.dmr/$1.baseline])
-])
-
 m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST],
 [_AT_BESCMD_BINARYDATA_TEST([$abs_srcdir/h5.cf/$1], [$abs_srcdir/h5.cf/$1.baseline])
 ])
 
 m4_define([AT_BESCMD_DAP4DATA_RESPONSE_TEST],
 [_AT_BESCMD_DAP4DATA_TEST([$abs_srcdir/h5.cf/$1], [$abs_srcdir/h5.cf/$1.baseline])
-])
-
-m4_define([AT_BESCMD_CFDMR_DAP4DATA_RESPONSE_TEST],
-[_AT_BESCMD_DAP4DATA_TEST([$abs_srcdir/h5.cf/$1], [$abs_srcdir/h5.cf.dmr/$1.baseline])
 ])
 
 
@@ -438,8 +430,7 @@ AT_BESCMD_RESPONSE_TEST([t_cf_non_geo_grp_2dll.h5.dds.bescmd])
 
 #FakeDim pure dimension scale
 AT_BESCMD_RESPONSE_TEST([nc4_multi_dscales.h5.dds.bescmd])
-#AT_BESCMD_RESPONSE_TEST([nc4_multi_dscales.h5.dmr.bescmd])
-AT_BESCMD_CFDMR_RESPONSE_TEST([nc4_multi_dscales.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_multi_dscales.h5.dmr.bescmd])
 #wrong fill value type
 AT_BESCMD_RESPONSE_TEST([t_wrong_fvalue_type.h5.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_wrong_fvalue_type.h5.dds.bescmd])
@@ -452,22 +443,15 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_1_3d.h5.data.subset_middle.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_1_3d.h5.data.subset_last.bescmd])
 
 #CF DAP4 test
-#AT_BESCMD_RESPONSE_TEST([grid_1_2d.h5.dmr.bescmd])
-#AT_BESCMD_DAP4DATA_RESPONSE_TEST([grid_1_2d.h5.dap.bescmd])
-#AT_BESCMD_RESPONSE_TEST([t_int64_dap4.h5.dmr.bescmd])
-#AT_BESCMD_DAP4DATA_RESPONSE_TEST([t_int64_dap4.h5.dap.bescmd])
-
-AT_BESCMD_CFDMR_RESPONSE_TEST([grid_1_2d.h5.dmr.bescmd])
-AT_BESCMD_CFDMR_DAP4DATA_RESPONSE_TEST([grid_1_2d.h5.dap.bescmd])
-AT_BESCMD_CFDMR_RESPONSE_TEST([t_int64_dap4.h5.dmr.bescmd])
-AT_BESCMD_CFDMR_DAP4DATA_RESPONSE_TEST([t_int64_dap4.h5.dap.bescmd])
-
+AT_BESCMD_RESPONSE_TEST([grid_1_2d.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST([grid_1_2d.h5.dap.bescmd])
+AT_BESCMD_RESPONSE_TEST([t_int64_dap4.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST([t_int64_dap4.h5.dap.bescmd])
 
 #AT_BESCMD_DAP4DATA_RESPONSE_TEST([grid_1_2d.h5.dap_ce_1.bescmd])
 #AT_BESCMD_DAP4DATA_RESPONSE_TEST([grid_1_2d.h5.dap_ce_2.bescmd])
 
-#AT_BESCMD_RESPONSE_TEST([swath_unlim.h5.dmr.bescmd])
-AT_BESCMD_CFDMR_RESPONSE_TEST([swath_unlim.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([swath_unlim.h5.dmr.bescmd])
 
 # These tests call a function 'test(<name>)' that does not actually use variables
 # from the dataset named in the 'URL,' but does pull attributes from the dataset.
@@ -611,8 +595,7 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST_DEFAULT([d_int8.h5.function.dods.bescmd])
 
 # The empty constraint that transfers the whole file. 
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_1_2d.h5.ce_empty.data.bescmd])
-#AT_BESCMD_DAP4DATA_RESPONSE_TEST([t_int64_dap4_ce_empty_cf.h5.dap.bescmd])
-AT_BESCMD_CFDMR_DAP4DATA_RESPONSE_TEST([t_int64_dap4_ce_empty_cf.h5.dap.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST([t_int64_dap4_ce_empty_cf.h5.dap.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_int64_dap4_ce_empty.h5.dap.bescmd])
 
 
@@ -622,11 +605,3 @@ AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_int64_dap4_ce_empty.h5.dap.bescmd])
 #AT_BESCMD_RESPONSE_TEST_DEFAULT([dynaconf_default.dmr.bescmd])
 #AT_BESCMD_RESPONSE_TEST_DEFAULT([dynaconf_dynamic.dmr.bescmd])
 
-
-# CF DMR tests
-AT_BESCMD_CFDMR_RESPONSE_TEST([d_int8.h5.dmr.bescmd])
-AT_BESCMD_CFDMR_DAP4DATA_RESPONSE_TEST([d_int8.h5.dap.bescmd])
-AT_BESCMD_CFDMR_RESPONSE_TEST([d_int64.h5.dmr.bescmd])
-AT_BESCMD_CFDMR_DAP4DATA_RESPONSE_TEST([d_int64.h5.dap.bescmd])
-AT_BESCMD_CFDMR_RESPONSE_TEST([t_scalar_dset.h5.dmr.bescmd])
-AT_BESCMD_CFDMR_DAP4DATA_RESPONSE_TEST([t_scalar_dset.h5.dap.bescmd])
