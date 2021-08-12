@@ -40,9 +40,11 @@
 #include <Array.h>
 #include <Grid.h>
 #include <dods-datatypes.h>
-#include <Error.h>
-#include <InternalErr.h>
+//#include <Error.h>
+//#include <InternalErr.h>
 #include <debug.h>
+
+#include "BESInternalError.h"
 
 #include "GSEClause.h"
 #include "parser.h"
@@ -95,13 +97,19 @@ GSEClause::set_map_min_max_value(T min, T max)
 }
 
 // Read the map array, scan, set start and stop.
+//
+// I switched to vals.at(x) instead of vals[x] because sonar scan was
+// complaining about access beyond the end of memory. The 'at()' method
+// is much more complex, so if we can go back to the
 template<class T>
 void
 GSEClause::set_start_stop()
 {
-    // T *vals = new T[d_map->length()];
     vector<T> vals(d_map->length());
     d_map->value(&vals[0]);
+
+    if (!((unsigned long)d_start < vals.size() && (unsigned long)d_stop < vals.size()))
+        throw BESInternalError("Access beyond the bounds of a Grid Map.", __FILE__, __LINE__);
 
     // Set the map's max and min values for use in error messages (it's a lot
     // easier to do here, now, than later... 9/20/2001 jhrg)
@@ -143,8 +151,6 @@ GSEClause::set_start_stop()
 
         d_stop = i;
     }
-    
-    // delete[] vals;
 }
 
 void

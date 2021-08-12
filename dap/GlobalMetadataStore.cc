@@ -428,7 +428,6 @@ static void dump_time(ostream &os, bool use_local_time)
     //
     // Apologies for the twisted logic - UTC is the default. Override to
     // local time using BES.LogTimeLocal=yes in bes.conf. jhrg 11/15/17
-    //struct tm * gmtime_r(const time_t *clock, struct tm *result);
     struct tm result;
     if (!use_local_time) {
         gmtime_r(&now, &result);
