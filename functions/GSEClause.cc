@@ -138,8 +138,8 @@ GSEClause::set_start_stop()
     // loops took care of constraints like 'x < 7' but we need the following
     // for ones like '3 < x < 7'.
     if (d_op2 != dods_nop_op) {
-        int i = d_start;
-        int end = d_stop;
+        i = d_start;
+        end = d_stop;
         while (i <= end && !compare<T>(vals[i], d_op2, d_value2))
             ++i;
 
