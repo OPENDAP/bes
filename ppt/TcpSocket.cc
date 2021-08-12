@@ -97,7 +97,7 @@ void TcpSocket::connect()
         sin.sin_family = AF_INET;
     }
     else {
-        // FIXME Replace gethostbyname() (obsolete) with getnameinfo() jhrg 8/11/21
+        // TODO Replace gethostbyname() (obsolete) with getaddrinfo() jhrg 8/11/21
         if ((ph = gethostbyname(_host.c_str())) == nullptr) {
             switch (h_errno) {
             case HOST_NOT_FOUND: {
