@@ -129,7 +129,7 @@ FONcTransform::FONcTransform(DMR *dmr, BESDataHandlerInterface &dhi, const strin
         _ncid(0), _dds(nullptr), _dmr(nullptr), d_obj(nullptr), d_dhi(nullptr)
 {
     if (!dmr) {
-        string s = (string) "File out netcdf, " + "null DDS passed to constructor";
+        string s = (string) "File out netcdf, null DMR passed to constructor";
         throw BESInternalError(s, __FILE__, __LINE__);
     }
     if (localfile.empty()) {
@@ -168,7 +168,8 @@ FONcTransform::FONcTransform(DMR *dmr, BESDataHandlerInterface &dhi, const strin
  */
 FONcTransform::FONcTransform(BESResponseObject *obj, BESDataHandlerInterface *dhi, const string &localfile,
                              const string &ncVersion) :
-        _ncid(0), _dds(nullptr), d_obj(obj), d_dhi(dhi), _localfile(localfile), _returnAs(ncVersion)
+                             _ncid(0), _dds(nullptr), _dmr(nullptr), d_obj(obj), d_dhi(dhi), _localfile(localfile),
+                             _returnAs(ncVersion)
 {
     if (!d_obj) {
         string s = (string) "File out netcdf, " + "null BESResponseObject passed to constructor";
@@ -201,6 +202,16 @@ FONcTransform::FONcTransform(BESResponseObject *obj, BESDataHandlerInterface *dh
  */
 FONcTransform::~FONcTransform()
 {
+    for (auto &b: _fonc_vars) {
+        delete b;
+    }
+    for (auto &b: _total_fonc_vars_in_grp) {
+        delete b;
+    }
+    // _dmr is not managed by the BESDMRResponse class in this code. However
+    // _dds still is. jhrg 8/13/21
+    delete _dmr;
+#if 0
     bool done = false;
     while (!done) {
         vector<FONcBaseType *>::iterator i = _fonc_vars.begin();
@@ -229,7 +240,7 @@ FONcTransform::~FONcTransform()
             _total_fonc_vars_in_grp.erase(i);
         }
     }
-
+#endif
 }
 
 // previous transform() fct, keep for rollback purposes. sbl 5.14.21
