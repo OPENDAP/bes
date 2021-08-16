@@ -140,3 +140,12 @@ $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/NSIDC/S
 
 #GPM level 3 DPR
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/GESDISC/3A.GPM.DPR.algName.20180331-S221135-E234357.076185.V00B.HDF5 
+#PODAAC GHRSST
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/PODAAC/20020602090000-JPL-L4_GHRSST-SSTfnd-MUR-GLOB-v02.0-fv04.1.h5
+
+#daymet
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/ORNL/daymet_v4_daily_na_prcp_2010.nc.h5
+
+#f16ssmi
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/others/f16_ssmis_20031026v7.nc.h5
+

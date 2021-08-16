@@ -38,8 +38,14 @@ available on the next section.
 
 What's new for Hyrax 1.16.4
 CF option:
-1. Bug fix: Ensure the path inside the coordinates attribute for TROPOMI AI product to be flattened. 
-2. Update the handling of escaping special characters due to NASA request.
+1. The DMR response can be  directly generated rather from DDS and DAS. 
+   To take advantage of this feature, the H5.EnableCFDMR key needs to be set to true in the configuration 
+   file(h5.conf etc.)
+   The biggest advantage of this implementation is that the signed 8-bit integer mapping is kept. 
+   The DMR generation from DDS and DAS maps the signed 8-bit integer to 16-bit integer because of 
+   the limitation in the DAP2 data model.
+2. Bug fix: Ensure the path inside the coordinates attribute for TROPOMI AI product to be flattened. 
+3. Update the handling of escaping special characters due to NASA request.
    The '\' and the '"' are no longer escaped. 
 
 What's new for Hyrax 1.16.3
