@@ -290,7 +290,14 @@ void update_history_json_attr(D4Attribute *global_attribute, const string &reque
 
     string history_json;
 
-    D4Attribute *history_json_attr = global_attribute->attributes()->find(HISTORY_JSON_KEY);
+    D4Attribute *history_json_attr = nullptr;
+    if(global_attribute->type() == D4AttributeType::attr_container_c){
+        history_json_attr = global_attribute->attributes()->find(HISTORY_JSON_KEY);
+    }
+    else if( global_attribute->name() == HISTORY_JSON_KEY){
+        history_json_attr = global_attribute;
+    }
+
     if (!history_json_attr) {
         // If there is no source history_json attribute then we make one from scratch
         // and add it to the global_attribute
@@ -357,8 +364,16 @@ void update_cf_history_attr(D4Attribute *global_attribute, const string &request
 
     string cf_hist_entry = get_cf_history_entry(request_url);
     BESDEBUG(MODULE, prolog << "New cf history entry: " << cf_hist_entry << endl);
+
     string cf_history;
-    D4Attribute *history_attr = global_attribute->attributes()->find(CF_HISTORY_KEY);
+    D4Attribute *history_attr = nullptr;
+    if(global_attribute->type() == D4AttributeType::attr_container_c){
+        history_attr = global_attribute->attributes()->find(CF_HISTORY_KEY);
+    }
+    else if( global_attribute->name() == CF_HISTORY_KEY){
+        history_attr = global_attribute;
+    }
+
     if (!history_attr) {
         //if there is no source cf history attribute make one and add it to the global_attribute.
         BESDEBUG(MODULE, prolog << "Adding history entry to " << global_attribute->name() << endl);
@@ -502,26 +517,41 @@ void updateHistoryAttributes(DMR *dmr, const string &ce)
     request_url = request_url.substr(request_url.find_last_of('#')+1);
     if(!ce.empty()) request_url += "?" + ce;
 
-    bool added_history = false;
+    bool added_cf_history = false;
+    bool added_json_history = false;
     D4Group* root_grp = dmr->root();
     D4Attributes *root_attrs = root_grp->attributes();
     for (auto attrs = root_attrs->attribute_begin(); attrs != root_attrs->attribute_end(); ++attrs) {
         string name = (*attrs)->name();
         BESDEBUG(MODULE, prolog << "Attribute name is "<< name << endl);
-        if ((*attrs)->type() && BESUtil::endsWith(name, "_GLOBAL")) {
+        if ((*attrs)->type() == D4AttributeType::attr_container_c && BESUtil::endsWith(name, "_GLOBAL")) {
             // Update Climate Forecast history attribute.
             update_cf_history_attr(*attrs, request_url);
+            added_cf_history = true;
+
             // Update NASA's history_json attribute
             update_history_json_attr(*attrs, request_url);
-            added_history = true;
+            added_json_history = true;
+        }
+        else if(name == CF_HISTORY_KEY){ // A top level cf history attribute
+            update_cf_history_attr(*attrs, request_url);
+            added_cf_history = true;
+        }
+        else if( name == HISTORY_JSON_KEY){ // A top level history_json attribute
+            update_cf_history_attr(*attrs, request_url);
+            added_json_history = true;
         }
     }
-    if(!added_history){
+    if(!added_cf_history || !added_json_history){
         auto *dap_global = new D4Attribute("DAP_GLOBAL",attr_container_c);
         root_attrs->add_attribute_nocopy(dap_global);
         // CF history attribute
-        update_cf_history_attr(dap_global, request_url);
+        if(!added_cf_history){
+            update_cf_history_attr(dap_global, request_url);
+        }
         // NASA's history_json attribute
-        update_history_json_attr(dap_global,request_url);
+        if(!added_json_history){
+            update_history_json_attr(dap_global,request_url);
+        }
     }
 }

@@ -83,7 +83,8 @@ void BESDap4ResponseHandler::execute(BESDataHandlerInterface &dhi)
         }
     }
 
-	auto_ptr<DMR> dmr(new DMR());
+	//auto_ptr<DMR> dmr(new DMR());
+	unique_ptr<DMR> dmr(new DMR());
 
     bool found;
     int response_size_limit = BESContextManager::TheManager()->get_context_int("max_response_size", found);
