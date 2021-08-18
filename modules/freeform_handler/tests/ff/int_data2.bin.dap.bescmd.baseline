@@ -6,7 +6,7 @@
         <Dim name="/r"/>
         <Dim name="/c"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>116aa82c</Value>
+            removed checksum
         </Attribute>
     </Int32>
     <Attribute name="FF_GLOBAL" type="Container">
