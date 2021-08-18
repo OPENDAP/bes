@@ -268,7 +268,7 @@ bool FFRequestHandler::ff_build_data(BESDataHandlerInterface & dhi)
         string accessed = dhi.container->access();
         dds->filename(accessed);
         ff_read_descriptors(*dds, accessed);
-        Ancillary::read_ancillary_dds(*dds, dhi.container->get_real_name() /*accessed*/);
+        Ancillary::read_ancillary_dds(*dds, accessed);
 
         DAS *das = new DAS;
         BESDASResponse bdas(das);
@@ -326,7 +326,7 @@ bool FFRequestHandler::ff_build_dmr(BESDataHandlerInterface &dhi)
 
 		DAS das;
 		ff_get_attributes(das, data_path);
-		Ancillary::read_ancillary_das(das, /*dhi.container->get_real_name()*/ data_path);
+		Ancillary::read_ancillary_das(das, dhi.container->get_real_name() /*data_path*/);
 		dds.transfer_attributes(&das);
 	}
 	catch (InternalErr &e) {

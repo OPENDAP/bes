@@ -1,0 +1,11 @@
+Attributes {
+    FF_GLOBAL {
+        String Server "DODS FreeFrom based on FFND release 4.2.3";
+        Int16 count 13;
+        String description "This is a file header";
+    }
+    value {
+        String description "A value for a test dataset";
+        Int32 number_of_values 13;
+    }
+}
