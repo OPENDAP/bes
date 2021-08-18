@@ -107,7 +107,8 @@ FONc.NoGlobalAttrs=true
 #   (true,yes|false,no, defaults to false)
 #
 H5.EnableCF=false
-H5.EnableDMR64bitInt=true
+H5.EnableCFDMR=true
+
 H5.DefaultHandleDimension=true
 H5.KeepVarLeadingUnderscore=false
 H5.EnableCheckNameClashing=true
