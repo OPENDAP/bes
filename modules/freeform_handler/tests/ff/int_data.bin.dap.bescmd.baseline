@@ -4,7 +4,7 @@
     <Int32 name="x">
         <Dim name="/stuff"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>9ff7ef3f</Value>
+            removed checksum
         </Attribute>
     </Int32>
     <Attribute name="FF_GLOBAL" type="Container">
