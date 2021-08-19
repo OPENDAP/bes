@@ -7,7 +7,7 @@
         <Float64 name="Bz"/>
         <Float64 name="Bx2"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>cccccccd</Value>
+            removed checksum
         </Attribute>
     </Sequence>
     <Attribute name="FF_GLOBAL" type="Container">
@@ -43,5 +43,6 @@ Sequence {
 15: { 59972.4, 4.92424, 1.24016, 1.72423, 24.2563 }, 
 16: { 60139, 4.91499, 1.13582, 1.61638, 24.1653 }, 
 17: { 59972.4, 4.83039, 0.402431, 1.82957, 23.3454 }, 
-18: { 59972.4, 4.92885, 0.19408, 1.50658, 24.3171 } };
+18: { 59972.4, 4.92885, 0.19408, 1.50658, 24.3171 }, 
+19: { 59972.4, 5.0177, 0.36466, 1.0775, 25.1883 } };
 
