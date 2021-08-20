@@ -9,7 +9,7 @@
         <Int32 name="seconds"/>
         <String name="DODS_URL"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>000007d2</Value>
+            removed checksum
         </Attribute>
     </Sequence>
     <Attribute name="FF_GLOBAL" type="Container">
@@ -31580,5 +31580,6 @@ Sequence {
 31467: { 2002, 4, 3, 17, 52, 23, "http://dods.gso.uri.edu/cgi-bin/nph-dods/avhrr/2002/4/d02093175223.pvu.Z" }, 
 31468: { 2002, 4, 3, 21, 25, 37, "http://dods.gso.uri.edu/cgi-bin/nph-dods/avhrr/2002/4/f02093212537.pvu.Z" }, 
 31469: { 2002, 4, 3, 22, 37, 34, "http://dods.gso.uri.edu/cgi-bin/nph-dods/avhrr/2002/4/e02093223734.pvu.Z" }, 
-31470: { 2002, 4, 4, 6, 16, 59, "http://dods.gso.uri.edu/cgi-bin/nph-dods/avhrr/2002/4/d02094061659.pvu.Z" } };
+31470: { 2002, 4, 4, 6, 16, 59, "http://dods.gso.uri.edu/cgi-bin/nph-dods/avhrr/2002/4/d02094061659.pvu.Z" }, 
+31471: { 2002, 4, 4, 9, 49, 17, "http://dods.gso.uri.edu/cgi-bin/nph-dods/avhrr/2002/4/f02094094917.pvu.Z" } };
 

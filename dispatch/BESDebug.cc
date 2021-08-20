@@ -61,12 +61,13 @@ string get_debug_log_line_prefix()
     ostringstream strm;
     // Time Field
     const time_t sctime = time(NULL);
-    const struct tm *sttime = localtime(&sctime);
+    struct tm sttime;
+    localtime_r(&sctime, &sttime);
     char zone_name[10];
-    strftime(zone_name, sizeof(zone_name), "%Z", sttime);
+    strftime(zone_name, sizeof(zone_name), "%Z", &sttime);
 
     char b[32]; // The linux man-page for asctime_r() says "at least 26 bytes".
-    asctime_r(sttime,b);
+    asctime_r(&sttime,b);
     strm << "[" << zone_name << " ";
     for (size_t j = 0; b[j] != '\n' && j<32; j++)
         strm << b[j];

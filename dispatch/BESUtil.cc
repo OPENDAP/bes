@@ -165,16 +165,17 @@ static const char *months[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul",
  */
 string BESUtil::rfc822_date(const time_t t)
 {
-    struct tm *stm = gmtime(&t);
+    struct tm stm{};
+    gmtime_r(&t, &stm);
     char d[256];
 
-    snprintf(d, 255, "%s, %02d %s %4d %02d:%02d:%02d GMT", days[stm->tm_wday], stm->tm_mday, months[stm->tm_mon], 1900 + stm->tm_year, stm->tm_hour,
-        stm->tm_min, stm->tm_sec);
+    snprintf(d, 255, "%s, %02d %s %4d %02d:%02d:%02d GMT", days[stm.tm_wday], stm.tm_mday,
+             months[stm.tm_mon], 1900 + stm.tm_year, stm.tm_hour, stm.tm_min, stm.tm_sec);
     d[255] = '\0';
-    return string(d);
+    return {d};
 }
 
-string BESUtil::unhexstring(string s)
+string BESUtil::unhexstring(const string& s)
 {
     int val;
     istringstream ss(s);
@@ -182,7 +183,7 @@ string BESUtil::unhexstring(string s)
     char tmp_str[2];
     tmp_str[0] = static_cast<char>(val);
     tmp_str[1] = '\0';
-    return string(tmp_str);
+    return {tmp_str};
 }
 
 // I modified this to mirror the version in libdap. The change allows several
@@ -1114,10 +1115,15 @@ string BESUtil::get_time(time_t the_time, bool use_local_time)
     //
     // UTC is the default. Override to local time based on the
     // passed parameter 'use_local_time'
-    if (!use_local_time)
-        status = strftime(buf, sizeof buf, "%FT%T%Z", gmtime(&the_time));
-    else
-        status = strftime(buf, sizeof buf, "%FT%T%Z", localtime(&the_time));
+    struct tm result{};
+    if (!use_local_time) {
+        gmtime_r(&the_time, &result);
+        status = strftime(buf, sizeof buf, "%FT%T%Z", &result);
+    }
+    else {
+        localtime_r(&the_time, &result);
+        status = strftime(buf, sizeof buf, "%FT%T%Z", &result);
+    }
 
     if (!status) {
         ERROR_LOG(prolog + "Error formatting time value!");
@@ -1149,13 +1155,6 @@ vector<string> BESUtil::split(const string &s, char delim /* '/' */, bool skip_e
             continue;
 
         tokens.push_back(item);
-
-#if 0
-        // If skip_empty is false, item is not ever pushed, regardless of whether it's empty. jhrg 1/24/19
-        if (skip_empty && !item.empty())
-            tokens.push_back(item);
-#endif
-
     }
 
     return tokens;

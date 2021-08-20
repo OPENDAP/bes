@@ -25,3 +25,23 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_subset_array_0.dap.bescmd, xpas
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_subset_array_1.dap.bescmd, xpass)
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_subset_array_2.dap.bescmd, xpass)
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_subset_array_3.dap.bescmd, xpass)
+
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_box_intersection_0.dap.bescmd, xpass)
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_box_intersection_1.dap.bescmd, xpass)
+
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_box_count_0.dap.bescmd, xpass)
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_box_count_1.dap.bescmd, xpass)
+
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_box_subset_0.dap.bescmd, xpass)
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_box_subset_1.dap.bescmd, xpass)
+
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_box_subset_array_0.dap.bescmd, xpass)
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(bescmd/stare_box_subset_array_1.dap.bescmd, xpass)
+
+AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/stare_box_subset_array_0.dap.nc4.bescmd, xpass)
+AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/stare_box_subset_array_1.dap.nc4.bescmd, xpass)
+
+# This one subsets for Tasmania ;-)
+# Get the netCDF4 file using:
+# besstandalone  -c bes.conf -i bescmd/stare_box_subset_array_tasmania.dap.nc4.bescmd > tasmania2.nc
+AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/stare_box_subset_array_tasmania.dap.nc4.bescmd, xpass)

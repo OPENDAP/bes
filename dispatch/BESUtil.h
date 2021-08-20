@@ -62,7 +62,7 @@ public:
 
     /** This functions are used to unescape hex characters from strings **/
     static std::string www2id(const std::string &in, const std::string &escape = "%", const std::string &except = "");
-    static std::string unhexstring(std::string s);
+    static std::string unhexstring(const std::string& s);
 
     /** Convert a string to all lower case **/
     static std::string lowercase(const std::string &s);

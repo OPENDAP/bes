@@ -24,7 +24,8 @@ BES.Data.RootDirectory=/dev/null
 BES.Catalog.catalog.TypeMatch=dr:.*\.dods$;
 BES.Catalog.catalog.TypeMatch+=nc:.*\.nc(\.bz2|\.gz|\.Z)?$;
 BES.Catalog.catalog.TypeMatch+=h4:.*\.(hdf|HDF)(\.bz2|\.gz|\.Z)?$;
-BES.Catalog.catalog.TypeMatch+=h5:.*\.h5(\.bz2|\.gz|\.Z)?$;
+#BES.Catalog.catalog.TypeMatch+=h5:.*\.h5(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.catalog.TypeMatch+=h5:.*\.(h5|he5|HDF5)(\.bz2|\.gz|\.Z)?$;
 
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;
@@ -69,7 +70,6 @@ FONc.ClassicModel=false
 # Uncomment the following line to suppress the output of global attributes.
 #FONc.NoGlobalAttrs=true
 
-NC.PromoteByteToShort=true
 
 # For HDF5
 # Note enabling the CF option changes the behavior of testFillValue test.
@@ -84,8 +84,11 @@ H5.DisableStructMetaAttr=true
 H5.EnableFillValueCheck=true
 H5.CheckIgnoreObj=false
 H5.ForceFlattenNDCoorAttr=true
+H5.EnableCoorattrAddPath=true
 H5.RmConventionAttrPath=true
 H5.EnableDMR64bitInt=true
+H5.NoZeroSizeFullnameAttr=true
+#H5.EnableCFDMR=true
 
 H5.MetaDataMemCacheEntries=300
 H5.LargeDataMemCacheEntries=0

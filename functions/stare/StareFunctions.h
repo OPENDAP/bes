@@ -36,11 +36,8 @@
 
 namespace libdap {
 class BaseType;
-
 class DDS;
-
 class D4RValueList;
-
 class DMR;
 }
 
@@ -182,6 +179,40 @@ public:
                                   const std::vector<STARE_ArrayIndexSpatialValue> &dep_var_stare_indices,
                                   const std::vector<STARE_ArrayIndexSpatialValue> &target_s_indices, T mask_value,
                                   unique_ptr<libdap::Array> &result);
+};
+
+/**
+ * Wrapper for a lat/lon point. Used by the Stare Box code.
+ */
+struct point {
+    double lat;
+    double lon;
+    point() = default;
+    point(double lat_, double lon_) : lat(lat_), lon(lon_) {}
+};
+
+STARE_SpatialIntervals stare_box_helper(const vector<point> &points, int resolution = 6);
+STARE_SpatialIntervals stare_box_helper(const point &top_left, const point &bottom_right, int resolution = 6);
+
+class StareBoxFunction : public libdap::ServerFunction {
+public:
+    static libdap::BaseType *stare_box_dap4_function(libdap::D4RValueList *args, libdap::DMR &dmr);
+
+    friend class StareFunctionsTest;
+
+public:
+    StareBoxFunction() {
+        setName("stare_box");
+        setDescriptionString(
+                "The stare_box() function: Returns a STARE cover for the region within the four lat/lon corner points.");
+        setUsageString("stare_box(tl_lat, tl_lon, br_lat, br_lon) or stare_box(p1_lat, p1_lon, ..., p4_lat, p4_lon)");
+        setRole("http://services.opendap.org/dap4/server-side-function/stare_box");
+        setDocUrl("http://docs.opendap.org/index.php/Server_Side_Processing_Functions#stare_box");
+        setFunction(stare_box_dap4_function);
+        setVersion("0.1");
+    }
+
+    ~StareBoxFunction() override = default;
 };
 
 } // functions namespace

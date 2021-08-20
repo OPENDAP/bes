@@ -73,6 +73,9 @@ UNIT_TESTS = StareFunctionsTest
 # in front of the DAP4 version, which has had virtually no testing.
 # jhrg 3/12/15
 
+# check-local:
+#	./StareFunctionsTest -d
+
 else
 UNIT_TESTS =
 

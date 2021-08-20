@@ -103,13 +103,12 @@ FONc.NoGlobalAttrs=true
 #-----------------------------------------------------------------------#
 # HDF5 handler specific parameters:
 #-----------------------------------------------------------------------#
-# EnableCF: Handle HDF data to follow the CF conventions
+# EnableCF: Groom the HDF5 data to follow the CF conventions
 #   (true,yes|false,no, defaults to false)
-# Since most centers  would like to handle HDF5 data that follows CF now,
-# I set the EnableCF to be true, KY 2011-8-4
 #
-H5.EnableDMR64bitInt=true
 H5.EnableCF=false
+H5.EnableCFDMR=true
+
 H5.DefaultHandleDimension=true
 H5.KeepVarLeadingUnderscore=false
 H5.EnableCheckNameClashing=true

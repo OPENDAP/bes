@@ -1361,36 +1361,42 @@ FONcAttributes::write_dap4_attrs_for_nc4_types(int ncid,
         case attr_otherxml_c:    // Added. jhrg 12.27.2011
         {
 
-            D4Attribute::D4AttributeIter vi,ve;
-            vi = attr->value_begin();
-            ve = attr->value_end();
+            if(attr->num_values()==0) 
+                stax = nc_put_att_text(ncid, varid, var_attr_name.c_str(), 0, "");
+            else {
 
-            string val = (*vi);
-
-            vi++;
-            for (; vi != ve; vi++) {
-                val += "\n" + *vi;
-            }
-
-            if (var_attr_name != _FillValue) {
-                stax = nc_put_att_text(ncid, varid, var_attr_name.c_str(), val.length(), val.c_str());
-            } else {
-                BESDEBUG("fonc",
-                             "FONcAttributes::add_attributes_worker - Original attribute value is first character: "
-                                     << val.c_str()[0] << endl);
-                stax = nc_put_att_text(ncid, varid, var_attr_name.c_str(), 1, val.c_str());
-                if (stax == NC_NOERR) {
-                        // New name for attribute _FillValue with original value
-                    string var_attr_name_fillvalue = "Orig_FillValue";
+                D4Attribute::D4AttributeIter vi,ve;
+                vi = attr->value_begin();
+                ve = attr->value_end();
+                
+    
+                string val = (*vi);
+    
+                vi++;
+                for (; vi != ve; vi++) {
+                    val += "\n" + *vi;
+                }
+    
+                if (var_attr_name != _FillValue) {
+                    stax = nc_put_att_text(ncid, varid, var_attr_name.c_str(), val.length(), val.c_str());
+                } else {
                     BESDEBUG("fonc",
-                                 "FONcAttributes::add_attributes_worker - New attribute value is original value: "
-                                         << val.c_str() << endl);
-                        // This line causes the segmentation fault since attrs is changed and the original iterator of attrs doesn't exist anymore.
-                        // So it causes the segmentation fault when next attribute is fetched in the for loop of the add_attributes(). KY 2019-12-13
-#if 0
-                        attrs.append_attr(var_attr_name_fillvalue,"String", val);
-#endif
-                    stax = nc_put_att_text(ncid, varid, var_attr_name_fillvalue.c_str(), val.length(), val.c_str());
+                                 "FONcAttributes::add_attributes_worker - Original attribute value is first character: "
+                                         << val.c_str()[0] << endl);
+                    stax = nc_put_att_text(ncid, varid, var_attr_name.c_str(), 1, val.c_str());
+                    if (stax == NC_NOERR) {
+                            // New name for attribute _FillValue with original value
+                        string var_attr_name_fillvalue = "Orig_FillValue";
+                        BESDEBUG("fonc",
+                                     "FONcAttributes::add_attributes_worker - New attribute value is original value: "
+                                             << val.c_str() << endl);
+                            // This line causes the segmentation fault since attrs is changed and the original iterator of attrs doesn't exist anymore.
+                            // So it causes the segmentation fault when next attribute is fetched in the for loop of the add_attributes(). KY 2019-12-13
+    #if 0
+                            attrs.append_attr(var_attr_name_fillvalue,"String", val);
+    #endif
+                        stax = nc_put_att_text(ncid, varid, var_attr_name_fillvalue.c_str(), val.length(), val.c_str());
+                    }
                 }
             }
 
