@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -30,40 +30,35 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include "BESStatus.h" 
+#include "BESStatus.h"
 
 using std::string;
 
-string BESStatus::boot_time ;
-int BESStatus::_counter ;
+string BESStatus::boot_time;
+int BESStatus::_counter;
 
-BESStatus::BESStatus()
-{
-    if( _counter++ == 0 ) 
-    {   
-	const time_t sctime = time( NULL ) ;
-	const struct tm *sttime = localtime( &sctime ) ;
-	char zone_name[10] ;
-	strftime( zone_name, sizeof( zone_name ), "%Z", sttime ) ;
-#if 0
-	boot_time = string( zone_name ) + " " + string( asctime( sttime ) ) ;
-#endif
-	boot_time = "foo";
-	string::size_type index = boot_time.find( '\n' ) ;
-	if( index != string::npos )
-	    boot_time.erase( index ) ;
+BESStatus::BESStatus() {
+    if (_counter++ == 0) {
+        const time_t sctime = time(NULL);
+        struct tm sttime;
+        localtime_r(&sctime, &sttime);
+        char zone_name[10];
+        strftime(zone_name, sizeof(zone_name), "%Z", &sttime);
+
+        boot_time = "foo";
+        string::size_type index = boot_time.find('\n');
+        if (index != string::npos)
+            boot_time.erase(index);
     }
 }
 
-BESStatus::BESStatus( const BESStatus & )
-{
-    _counter++ ;
-} 
-
-BESStatus::~BESStatus()
-{
-    _counter-- ;
+BESStatus::BESStatus(const BESStatus &) {
+    _counter++;
 }
 
-static BESStatus _static_status ;
+BESStatus::~BESStatus() {
+    _counter--;
+}
+
+static BESStatus _static_status;
 

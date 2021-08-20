@@ -57,11 +57,6 @@
 
 using namespace std;
 
-#if 0
-map<string, BESCatalogUtils *> BESCatalogUtils::_instances;
-#endif
-
-
 /**
  * @brief Initialize the file system catalog utilities
  *
@@ -421,7 +416,7 @@ void BESCatalogUtils::display_entry(BESCatalogEntry *entry, BESInfo *info)
 std::string
 BESCatalogUtils::get_handler_name(const std::string &item) const
 {
-    for (BESCatalogUtils::match_citer i = match_list_begin(), e = match_list_end(); i != e; ++i) {
+    for (auto i = match_list_begin(), e = match_list_end(); i != e; ++i) {
         BESRegex expr((*i).regex.c_str());
         if (expr.match(item.c_str(), item.length()) == (int)item.length()) {
             return (*i).handler;
@@ -446,7 +441,7 @@ BESCatalogUtils::get_handler_name(const std::string &item) const
 bool
 BESCatalogUtils::is_data(const std::string &item) const
 {
-    for (BESCatalogUtils::match_citer i = match_list_begin(), e = match_list_end(); i != e; ++i) {
+    for (auto i = match_list_begin(), e = match_list_end(); i != e; ++i) {
         BESRegex expr((*i).regex.c_str());
         if (expr.match(item.c_str(), item.length()) == (int)item.length()) {
             return true;
@@ -480,11 +475,12 @@ void BESCatalogUtils::bes_add_stat_info(BESCatalogEntry *entry, struct stat &buf
     // %T = %H:%M:%S
     // %F = %Y-%m-%d
     time_t mod = buf.st_mtime;
-    struct tm *stm = gmtime(&mod);
+    struct tm stm;
+    gmtime_r(&mod, &stm);
     char mdate[64];
-    strftime(mdate, 64, "%Y-%m-%d", stm);
+    strftime(mdate, 64, "%Y-%m-%d", &stm);
     char mtime[64];
-    strftime(mtime, 64, "%T", stm);
+    strftime(mtime, 64, "%T", &stm);
 
     ostringstream sdt;
     sdt << mdate;

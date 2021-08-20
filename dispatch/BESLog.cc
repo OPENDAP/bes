@@ -114,7 +114,7 @@ BESLog::BESLog() :
         throw BESInternalFatalError(err.str(), __FILE__, __LINE__);
     }
 
-    if (d_file_name == "") {
+    if (d_file_name.empty()) {
         stringstream err;
         err << prolog << "FATAL ERROR: unable to determine log file name. ";
         err << "Please set BES.LogName in your initialization file" << endl;
@@ -192,14 +192,14 @@ void BESLog::dump_time()
         (*d_file_buffer) << now;
     }
     else {
-        struct tm * dat_time;
+        struct tm dat_time;
         if (!d_use_local_time){
-            dat_time = gmtime(&now);
+            gmtime_r(&now, &dat_time);
         }
         else{
-            dat_time = localtime(&now);
+            localtime_r(&now, &dat_time);
         }
-        status = strftime(buf, sizeof buf, "%FT%T %Z", dat_time);
+        status = strftime(buf, sizeof buf, "%FT%T %Z", &dat_time);
         (*d_file_buffer) << buf;
     }
 
