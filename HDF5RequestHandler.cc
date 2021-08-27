@@ -141,23 +141,26 @@ ObjMemCache *HDF5RequestHandler::dmr_cache = 0;
 ObjMemCache *HDF5RequestHandler::lrdata_mem_cache = 0;
 ObjMemCache *HDF5RequestHandler::srdata_mem_cache = 0;
 
-// Set default values of all BES keys be false.
-bool HDF5RequestHandler::_usecf                       = false;
+// Set default values of all BES keys according to h5.conf.in.
+// This will help the generation of DMRPP. No need to
+// set multiple keys if the user's setting is the same as
+// the h5.conf.in. KY 2021-08-23
+bool HDF5RequestHandler::_usecf                       = true;
 bool HDF5RequestHandler::_pass_fileid                 = false;
-bool HDF5RequestHandler::_disable_structmeta          = false;
+bool HDF5RequestHandler::_disable_structmeta          = true;
 bool HDF5RequestHandler::_disable_ecsmeta             = false;
 bool HDF5RequestHandler::_keep_var_leading_underscore = false;
 bool HDF5RequestHandler::_check_name_clashing         = false;
-bool HDF5RequestHandler::_add_path_attrs              = false;
-bool HDF5RequestHandler::_drop_long_string            = false;
-bool HDF5RequestHandler::_fillvalue_check             = false;
+bool HDF5RequestHandler::_add_path_attrs              = true;
+bool HDF5RequestHandler::_drop_long_string            = true;
+bool HDF5RequestHandler::_fillvalue_check             = true;
 bool HDF5RequestHandler::_check_ignore_obj            = false;
-bool HDF5RequestHandler::_flatten_coor_attr           = false;
-bool HDF5RequestHandler::_default_handle_dimension    = false;
+bool HDF5RequestHandler::_flatten_coor_attr           = true;
+bool HDF5RequestHandler::_default_handle_dimension    = true; //Ignored when _usecf=true.
 bool HDF5RequestHandler::_eos5_rm_convention_attr_path = true;
-bool HDF5RequestHandler::_dmr_long_int                = false;
+bool HDF5RequestHandler::_dmr_long_int                = true;
 bool HDF5RequestHandler::_no_zero_size_fullnameattr   = false;
-bool HDF5RequestHandler::_enable_coord_attr_add_path  = false;
+bool HDF5RequestHandler::_enable_coord_attr_add_path  = true;
 
 bool HDF5RequestHandler::_usecfdmr                    = false;
 
