@@ -1,6 +1,7 @@
 bes.conf
 bes.default.conf
 bes.ignore.conf
+bes.cfdmr.conf
 hdf5_handlerTest
 package.m4
 *.dir
