@@ -148,6 +148,7 @@ url::~url()
  */
 void url::parse() {
     const string protcol_end("://");
+    BESDEBUG(MODULE, prolog << "BEGIN: parsing" << d_source_url_str << endl);
 
     // If the supplied string does not start with a protocol, we assume it must be a
     // path relative the BES.Catalog.catalog.RootDirectory because that's the only
