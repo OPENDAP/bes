@@ -148,6 +148,7 @@ url::~url()
  */
 void url::parse() {
     const string protcol_end("://");
+    BESDEBUG(MODULE, prolog << "BEGIN (parsing: '" << d_source_url_str << "')" << endl);
 
     // If the supplied string does not start with a protocol, we assume it must be a
     // path relative the BES.Catalog.catalog.RootDirectory because that's the only
@@ -192,7 +193,7 @@ void url::parse() {
         return;
 
     if (d_protocol == FILE_PROTOCOL) {
-        d_path = parse_url_target.substr(parse_url_target.find(protcol_end) + protcol_end.length());
+        d_path = parse_url_target.substr(d_protocol.length());
         BESDEBUG(MODULE, prolog << "FILE_PROTOCOL d_path: " << d_path << endl);
     }
     else if( d_protocol == HTTP_PROTOCOL || d_protocol == HTTPS_PROTOCOL){
@@ -238,6 +239,8 @@ void url::parse() {
         BESDEBUG(MODULE, msg.str() << endl);
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
+    BESDEBUG(MODULE, prolog << "END (parsing: '" << d_source_url_str << "')" << endl);
+
 }
 
 

@@ -68,8 +68,8 @@ public:
 
     static AllowedHosts *theHosts();
 
-    bool is_allowed(const std::string &candidate_url);
     bool is_allowed(std::shared_ptr<http::url> candidate_url);
+    bool is_allowed(std::shared_ptr<http::url> candidate_url, std::string &whynot);
 
 };
 
