@@ -396,7 +396,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
     string reason = "The requested resource does not match any of the AllowedHost rules.";
 ;    if (!http::AllowedHosts::theHosts()->is_allowed(chunk->get_data_url(),reason)) {
         stringstream ss;
-        ss << "ERROR! The chunk url "<< chunk->get_data_url()->str() << "was rejected. reaspn: " << reason;
+        ss << "ERROR! The chunk url "<< chunk->get_data_url()->str() << " was rejected because: " << reason;
         throw BESForbiddenError(ss.str(), __FILE__, __LINE__);
     }
 
