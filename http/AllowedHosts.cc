@@ -154,10 +154,15 @@ bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url, std::string &
                 why_not = "Path is out of scope from configuration.";
                 isAllowed = false;
             } else {
+                BESDEBUG(MODULE, prolog << "file_path: " << file_path << endl);
+                BESDEBUG(MODULE, prolog << "catalog_root: " << catalog_root << endl);
                 size_t ret = file_path.find(catalog_root);
                 BESDEBUG(MODULE, prolog << "file_path.find(catalog_root): " << ret << endl);
                 isAllowed = (ret == 0);
                 relative_path = file_path.substr(catalog_root.length());
+                BESDEBUG(MODULE, prolog << "relative_path: " << relative_path << endl);
+                BESDEBUG(MODULE, prolog << "isAllowed: " << (isAllowed?"true":"false") << endl);
+
             }
         } else {
             BESDEBUG(MODULE, prolog << "Relative path detected");
