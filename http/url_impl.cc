@@ -192,7 +192,7 @@ void url::parse() {
         return;
 
     if (d_protocol == FILE_PROTOCOL) {
-        d_path = parse_url_target.substr(parse_url_target.find(protcol_end) + protcol_end.length());
+        d_path = parse_url_target.substr(d_protocol.length());
         BESDEBUG(MODULE, prolog << "FILE_PROTOCOL d_path: " << d_path << endl);
     }
     else if( d_protocol == HTTP_PROTOCOL || d_protocol == HTTPS_PROTOCOL){

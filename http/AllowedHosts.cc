@@ -127,7 +127,8 @@ bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url, std::string &
         // We know that when a file URL is parsed by http::url it stores everything in after the "file://" mark in
         // the path, as there is no hostname.
         string file_path = candidate_url->path();
-
+        BESDEBUG(MODULE, prolog << "   file_path: '" << file_path <<
+                                "' (length: " << file_path.length() << " size: " << file_path.size() << ")" <<endl);
         // Get the BES Catalog
         BESCatalogList *bcl = BESCatalogList::TheCatalogList();
         string default_catalog_name = bcl->default_catalog_name();
@@ -144,8 +145,6 @@ bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url, std::string &
         string catalog_root = bcat->get_root();
         BESDEBUG(MODULE, prolog << "catalog_root: '" << catalog_root <<
             "' (length: " << catalog_root.length() << " size: " << catalog_root.size() << ")" << endl);
-        BESDEBUG(MODULE, prolog << "   file_path: '" << file_path <<
-            "' (length: " << file_path.length() << " size: " << file_path.size() << ")" <<endl);
 
         string relative_path;
         if (file_path[0] == '/') {
