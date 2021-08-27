@@ -393,9 +393,11 @@ dmrpp_easy_handle *
 CurlHandlePool::get_easy_handle(Chunk *chunk) {
     // Here we check to make sure that the we are only going to
     // access an approved location with this easy_handle
-    if (!http::AllowedHosts::theHosts()->is_allowed(chunk->get_data_url())) {
-        string msg = "ERROR!! The chunk url " + chunk->get_data_url()->str() + " does not match any of the AllowedHost rules. ";
-        throw BESForbiddenError(msg, __FILE__, __LINE__);
+    string reason = "The requested resource does not match any of the AllowedHost rules.";
+;    if (!http::AllowedHosts::theHosts()->is_allowed(chunk->get_data_url(),reason)) {
+        stringstream ss;
+        ss << "ERROR! The chunk url "<< chunk->get_data_url()->str() << "was rejected. reaspn: " << reason;
+        throw BESForbiddenError(ss.str(), __FILE__, __LINE__);
     }
 
     Lock lock(d_get_easy_handle_mutex); // RAII

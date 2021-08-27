@@ -110,13 +110,12 @@ void AllowedHosts::delete_instance() {
  * false otherwise.
  */
 
-bool AllowedHosts::is_allowed(const std::string &candidate_url) {
-    shared_ptr<http::url> c_url(new http::url(candidate_url));
-    return is_allowed(c_url);
+bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url) {
+    string error_msg;
+    return is_allowed(candidate_url, error_msg);
 }
 
-
-bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url) {
+bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url, std::string &why_not) {
     BESDEBUG(MODULE, prolog << "BEGIN candidate_url: " << candidate_url->str() << endl);
     bool isAllowed = false;
 
@@ -129,16 +128,17 @@ bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url) {
         // the path, as there is no hostname.
         string file_path = candidate_url->path();
 
+        // Get the BES Catalog
         BESCatalogList *bcl = BESCatalogList::TheCatalogList();
         string default_catalog_name = bcl->default_catalog_name();
-        BESDEBUG(MODULE, prolog << "Searching for  catalog: " << default_catalog_name << endl);
+        BESDEBUG(MODULE, prolog << "Searching for catalog named: '" << default_catalog_name << "'" << endl);
         BESCatalog *bcat = bcl->find_catalog(default_catalog_name);
         if (bcat) {
-            BESDEBUG(MODULE, prolog << "Found catalog: " << bcat->get_catalog_name() << endl);
+            BESDEBUG(MODULE, prolog << "Found catalog named: '" << bcat->get_catalog_name() << "'" << endl);
         } else {
-            string msg = "OUCH! Unable to locate default catalog!";
-            BESDEBUG(MODULE, prolog << msg << endl);
-            throw BESInternalError(msg, __FILE__, __LINE__);
+            string error_msg = "INTERNAL_ERROR: Unable to locate default catalog. Check BES configuration.";
+            BESDEBUG(MODULE, prolog << error_msg << endl);
+            throw BESInternalError(error_msg, __FILE__, __LINE__);
         }
 
         string catalog_root = bcat->get_root();
@@ -150,6 +150,8 @@ bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url) {
         string relative_path;
         if (file_path[0] == '/') {
             if (file_path.length() < catalog_root.length()) {
+                // Upward traversal is not allowed (specified resource path is shorter than data root path)
+                why_not = "Path is out of scope from configuration.";
                 isAllowed = false;
             } else {
                 size_t ret = file_path.find(catalog_root);
@@ -174,9 +176,11 @@ bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url) {
                 BESUtil::check_path(relative_path, catalog_root, follow_sym_links);
             }
             catch (BESNotFoundError &e) {
+                why_not = e.get_message();
                 isAllowed = false;
             }
             catch (BESForbiddenError &e) {
+                why_not = e.get_message();
                 isAllowed = false;
             }
         }
@@ -191,10 +195,10 @@ bool AllowedHosts::is_allowed(shared_ptr<http::url> candidate_url) {
         BESDEBUG(MODULE, prolog << "HTTP Access Allowed: " << (isAllowed ? "true " : "false ") << endl);
     }
     else {
-        stringstream msg;
-        msg << prolog << "The candidate_url utilizes an unsupported protocol '" << candidate_url->protocol() << "'" ;
-        BESDEBUG(MODULE, msg.str() << endl);
-        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+        stringstream ss;
+        ss << "The candidate_url utilizes an unsupported protocol '" << candidate_url->protocol() << "'" ;
+        BESDEBUG(MODULE, prolog << ss.str() << endl);
+        throw BESInternalError(ss.str(),__FILE__,__LINE__);
     }
     BESDEBUG(MODULE, prolog << "END Access Allowed: " << (isAllowed ? "true " : "false ") << endl);
     return isAllowed;
