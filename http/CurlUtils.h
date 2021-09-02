@@ -95,6 +95,7 @@ bool eval_curl_easy_perform_code(CURL *ceh,
 
 bool eval_http_get_response(CURL *ceh, char *error_buffer, const std::string &requested_url);
 
+void super_easy_perform(CURL *ceh, const int fd);
 void super_easy_perform(CURL *ceh);
 
 std::string get_effective_url(CURL *ceh, std::string requested_url);
