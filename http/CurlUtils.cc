@@ -23,19 +23,24 @@
 //      ndp       Nathan Potter <ndp@opendap.org>
 #include "config.h"
 
+#include <unistd.h>
+#include <sys/types.h>
+#include <fcntl.h>
+#include <time.h>
+
 #include <curl/curl.h>
+
 #include <cstdio>
 #include <sstream>
+#include <iostream>
 #include <map>
 #include <vector>
-#include <unistd.h>
 #include <algorithm>    // std::for_each
-#include <time.h>
-#include <BESContextManager.h>
+#include <utility>
 
 #include "rapidjson/document.h"
 
-
+#include <BESContextManager.h>
 #include "BESSyntaxUserError.h"
 #include "BESForbiddenError.h"
 #include "BESNotFoundError.h"
@@ -824,7 +829,7 @@ void http_get_and_write_resource(const std::shared_ptr<http::url>& target_url,
 #endif
         unset_error_buffer(ceh);
 
-        super_easy_perform(ceh);
+        super_easy_perform(ceh, fd);
 
         // Free the header list
         if (req_headers)
@@ -1058,7 +1063,13 @@ CURL *set_up_easy_handle(const string &target_url, struct curl_slist *request_he
  *
  * @param c_handle The CURL easy handle on which to operate
  */
-void super_easy_perform(CURL *c_handle) {
+void super_easy_perform(CURL *c_handle){
+    int fd = -1;
+    super_easy_perform(c_handle, fd);
+}
+
+void super_easy_perform(CURL *c_handle, const int fd)
+{
     unsigned int attempts = 0;
     useconds_t retry_time = uone_second / 4;
     bool success;
@@ -1089,15 +1100,63 @@ void super_easy_perform(CURL *c_handle) {
         // we keep trying until we have exceeded the retry_limit.
         if (!success) {
             if (attempts == retry_limit) {
-                string msg = prolog + "ERROR - Problem with data transfer. Number of re-tries exceeded. Giving up.";
-                ERROR_LOG(msg << endl);
-                throw BESInternalError(msg, __FILE__, __LINE__);
+                stringstream msg;
+                msg << prolog <<  "ERROR - Made " << retry_limit << " failed attempts to retrieve the URL " << target_url;
+                msg << " The retry limit has been exceeded. Giving up!";
+                ERROR_LOG(msg.str() << endl);
+                throw BESInternalError(msg.str(), __FILE__, __LINE__);
             }
             else {
                 ERROR_LOG(prolog << "ERROR - Problem with data transfer. Will retry (url: " << target_url <<
                            " attempt: " << attempts << ")." << endl);
                 usleep(retry_time);
                 retry_time *= 2;
+
+                if( fd >= 0 ){
+                    // Thanks to Stevens APitUE
+
+                    // Check the output file descriptor
+                    int val = fcntl(fd, F_GETFL, 0);
+                    if(val < 0){
+                        stringstream ss;
+                         ss << prolog << "Encountered fcntl error " << val << " for fd: " << fd << endl;
+                        BESDEBUG(MODULE, ss.str());
+                        ERROR_LOG(ss.str());
+                    }
+                    else {
+                        int accmode = val & O_ACCMODE;
+#if 1
+                        // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+                        if (accmode == O_RDONLY) {
+                            BESDEBUG(MODULE, prolog << " FILE " << fd << " is open and read only" << endl);
+                        }
+                        else if (accmode == O_WRONLY) {
+                            BESDEBUG(MODULE, prolog << " FILE " << fd << " is open and write only" << endl);
+                        }
+                        else if (accmode == O_RDWR) {
+                            BESDEBUG(MODULE, prolog << " FILE " << fd << " is open for read and write" << endl);
+                        }
+                        else {
+                            stringstream ss;
+                            ss << prolog << "ERROR Unknown access mode mode for FILE '" << fd << "'" << endl;
+                            BESDEBUG(MODULE, ss.str());
+                            ERROR_LOG(ss.str());
+                        }
+                        // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+#endif
+                        // Reset output file pointer here to clear any document returned with the error response
+                        if (accmode == O_WRONLY || accmode == O_RDWR){
+                            int status = ftruncate(fd, 0);
+                            if (-1 == status)
+                                throw BESInternalError("Could not truncate the file prior to retrying from remote. ", __FILE__, __LINE__);
+                            BESDEBUG(MODULE, prolog << "Truncated file, length is zero." << endl);
+                        }
+
+                        // FIXME Now what about the memory buffer case? How do we solve the same issue there?
+                    }
+
+                }
+
             }
         }
     } while (!success);
