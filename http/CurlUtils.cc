@@ -1100,9 +1100,11 @@ void super_easy_perform(CURL *c_handle, const int fd)
         // we keep trying until we have exceeded the retry_limit.
         if (!success) {
             if (attempts == retry_limit) {
-                string msg = prolog + "ERROR - Problem with data transfer. Number of re-tries exceeded. Giving up.";
-                ERROR_LOG(msg << endl);
-                throw BESInternalError(msg, __FILE__, __LINE__);
+                stringstream msg;
+                msg << prolog <<  "ERROR - Made " << retry_limit << " failed attempts to retrieve the URL " << target_url;
+                msg << " The retry limit has been exceeded. Giving up!";
+                ERROR_LOG(msg.str() << endl);
+                throw BESInternalError(msg.str(), __FILE__, __LINE__);
             }
             else {
                 ERROR_LOG(prolog << "ERROR - Problem with data transfer. Will retry (url: " << target_url <<
