@@ -1124,9 +1124,7 @@ void super_easy_perform(CURL *c_handle, const int fd)
                     else {
                         int accmode = val & O_ACCMODE;
 #if 1
-
                         // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-                        // We can
                         if (accmode == O_RDONLY) {
                             BESDEBUG(MODULE, prolog << " FILE " << fd << " is open and read only" << endl);
                         }
@@ -1144,7 +1142,6 @@ void super_easy_perform(CURL *c_handle, const int fd)
                         }
                         // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 #endif
-
                         // Reset output file pointer here to clear any document returned with the error response
                         if (accmode == O_WRONLY || accmode == O_RDWR){
                             int status = ftruncate(fd, 0);
