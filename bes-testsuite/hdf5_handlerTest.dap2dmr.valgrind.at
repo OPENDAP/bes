@@ -4,24 +4,24 @@
 # ------------------------------
 #
 
-AT_INIT([bes.cfdmr.conf besstandalone getdap])
+AT_INIT([bes.conf besstandalone getdap])
 # AT_COPYRIGHT([])
 
 AT_TESTED([besstandalone])
 
 # Usage: _AT_TEST_*(<bescmd source>, <baseline file>)
 
-#The first part is for CF option. The testing files are under h5.cf. It is using bes.cfdmr.conf
+#The first part is for CF option. The testing files are under h5.cf. It is using bes.conf
 m4_define([_AT_BESCMD_TEST],   
 [AT_SETUP([BESCMD $1])
 AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK to generate baseline file.
-#AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 > $2|| true], [], [stdout], [stderr])
+#AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 > $2|| true], [], [stdout], [stderr])
 
-AT_CHECK([valgrind --leak-check=full --log-file=valgrind.txt besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 || true], [], [stdout], [stderr])
+AT_CHECK([valgrind --leak-check=full --log-file=valgrind.txt besstandalone -c $abs_builddir/bes.conf -i $1 || true], [], [stdout], [stderr])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
-AT_CHECK([cat valgrind.txt >> /tmp/h5.cf.dmr.valgrind.log], [], [ignore],[],[])
+AT_CHECK([cat valgrind.txt >> /tmp/h5.valgrind.log], [], [ignore],[],[])
 AT_CLEANUP])
 
 m4_define([_AT_BESCMD_BINARYDATA_TEST],   
@@ -29,11 +29,11 @@ m4_define([_AT_BESCMD_BINARYDATA_TEST],
 AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK to generate baseline file.
-#AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 | getdap -M - >$2|| true], [], [stdout], [stderr])
+# AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 | getdap -M - >$2|| true], [], [stdout], [stderr])
 
-AT_CHECK([valgrind --leak-check=full --log-file=valgrind.txt besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 | getdap -M - || true], [], [stdout], [stderr])
+AT_CHECK([valgrind --leak-check=full --log-file=valgrind.txt besstandalone -c $abs_builddir/bes.conf -i $1 | getdap -M - || true], [], [stdout], [stderr])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
-AT_CHECK([cat valgrind.txt >> /tmp/h5.cf.dmr.valgrind.log], [], [ignore],[],[])
+AT_CHECK([cat valgrind.txt >> /tmp/h5.valgrind.log], [], [ignore],[],[])
 AT_CLEANUP])
 
 m4_define([_AT_BESCMD_DAP4DATA_TEST],
@@ -41,20 +41,16 @@ m4_define([_AT_BESCMD_DAP4DATA_TEST],
 AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK to generate baseline file.
-#AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 | getdap4 -D -M - > $2|| true], [], [stdout], [stderr])
+#AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 | getdap4 -D -M - > $2|| true], [], [stdout], [stderr])
 
-AT_CHECK([valgrind --leak-check=full --log-file=valgrind.txt besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 | getdap4 -D -M - || true], [], [stdout], [stderr])
+AT_CHECK([valgrind --leak-check=full --log-file=valgrind.txt besstandalone -c $abs_builddir/bes.conf -i $1 | getdap4 -D -M - || true], [], [stdout], [stderr])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
-AT_CHECK([cat valgrind.txt >> /tmp/h5.cf.dmr.valgrind.log], [], [ignore],[],[])
+AT_CHECK([cat valgrind.txt >> /tmp/h5.valgrind.log], [], [ignore],[],[])
 AT_CLEANUP])
 
 
 m4_define([AT_BESCMD_RESPONSE_TEST],
 [_AT_BESCMD_TEST([$abs_srcdir/h5.cf/$1], [$abs_srcdir/h5.cf/$1.baseline])
-])
-
-m4_define([AT_BESCMD_CFDMR_RESPONSE_TEST],
-[_AT_BESCMD_TEST([$abs_srcdir/h5.cf/$1], [$abs_srcdir/h5.cf.dmr/$1.baseline])
 ])
 
 m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST],
@@ -63,10 +59,6 @@ m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST],
 
 m4_define([AT_BESCMD_DAP4DATA_RESPONSE_TEST],
 [_AT_BESCMD_DAP4DATA_TEST([$abs_srcdir/h5.cf/$1], [$abs_srcdir/h5.cf/$1.baseline])
-])
-
-m4_define([AT_BESCMD_CFDMR_DAP4DATA_RESPONSE_TEST],
-[_AT_BESCMD_DAP4DATA_TEST([$abs_srcdir/h5.cf/$1], [$abs_srcdir/h5.cf.dmr/$1.baseline])
 ])
 
 
@@ -79,8 +71,9 @@ AT_KEYWORDS([bescmd])
 # Use the following AT_CHECK to generate baseline file.
 #AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 > $2|| true], [], [stdout], [stderr])
 
-AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 || true], [], [stdout], [stderr])
+AT_CHECK([valgrind --leak-check=full --log-file=valgrind.txt besstandalone -c $abs_builddir/bes.default.conf -i $1 || true], [], [stdout], [stderr])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
+AT_CHECK([cat valgrind.txt >> /tmp/h5.valgrind.log], [], [ignore],[],[])
 AT_CLEANUP])
 
 m4_define([_AT_BESCMD_BINARYDATA_TEST_DEFAULT],   
@@ -88,10 +81,11 @@ m4_define([_AT_BESCMD_BINARYDATA_TEST_DEFAULT],
 AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK to generate baseline file.
-#AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 | getdap -M - >$2|| true], [], [stdout], [stderr])
+# AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 | getdap -M - >$2|| true], [], [stdout], [stderr])
 
-AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 | getdap -M - || true], [], [stdout], [stderr])
+AT_CHECK([valgrind --leak-check=full --log-file=valgrind.txt besstandalone -c $abs_builddir/bes.default.conf -i $1 | getdap -M - || true], [], [stdout], [stderr])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
+AT_CHECK([cat valgrind.txt >> /tmp/h5.valgrind.log], [], [ignore],[],[])
 AT_CLEANUP])
 
 m4_define([_AT_BESCMD_DAP4DATA_TEST_DEFAULT],
@@ -101,8 +95,9 @@ AT_KEYWORDS([bescmd])
 # Use the following AT_CHECK to generate baseline file.
 #AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 | getdap4 -D -M - > $2|| true], [], [stdout], [stderr])
 
-AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 | getdap4 -D -M - || true], [], [stdout], [stderr])
+AT_CHECK([valgrind --leak-check=full --log-file=valgrind.txt besstandalone -c $abs_builddir/bes.default.conf -i $1 | getdap4 -D -M - || true], [], [stdout], [stderr])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
+AT_CHECK([cat valgrind.txt >> /tmp/h5.valgrind.log], [], [ignore],[],[])
 AT_CLEANUP])
 
 
@@ -117,7 +112,6 @@ m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST_DEFAULT],
 m4_define([AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT],
 [_AT_BESCMD_DAP4DATA_TEST_DEFAULT([$abs_srcdir/h5.default/$1], [$abs_srcdir/h5.default/$1.baseline])
 ])
-
 
 ##########
 # Test generic cases.
@@ -183,6 +177,7 @@ AT_BESCMD_RESPONSE_TEST([dim_scale2.h5.das.bescmd])
 # Check the handling of NAME attributes. "NAME" is removed for coordinate variables 
 # and dim. scale variables(they are not always overlapped.)
 AT_BESCMD_RESPONSE_TEST([dim_scale2_name.h5.das.bescmd])
+
 
 #generic cf 1d,2d latlon tests, only include das and dds.
 AT_BESCMD_RESPONSE_TEST([t_cf_1dll.h5.dds.bescmd])
@@ -274,20 +269,13 @@ AT_BESCMD_RESPONSE_TEST([t_scale_2d_2x2y.nc4.h5.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_scale_2d_2x2y.nc4.h5.ddx.bescmd])
 
 # Fillvalue out of range.
-# Turn off this test for the being because the new
-# change in the BES print out the line number of source code.
-# This is not desirable since the source code may change from
-# time to time and the line number may also get changed.
-# Given that this test case really rarely occurs and
-# we have a BES key to switch back and forth, the impact
-# should be minimum. KY 2016-05-12
+# Turn it off for the time being. See comments at hdf5_handlerTest.at
 #AT_BESCMD_RESPONSE_TEST([t_invalid_fvalue.h5.das.bescmd])
 
 #Test the removal of FakeDims from unsupported datatypes
 AT_BESCMD_RESPONSE_TEST([FakeDim_remove.h5.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([FakeDim_remove.h5.dds.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([FakeDim_remove.h5.data.bescmd])
-
 
 # Test simple HDF-EOS5 cases.
 AT_BESCMD_RESPONSE_TEST([grid_1_2d.h5.das.bescmd])
@@ -408,6 +396,7 @@ AT_BESCMD_RESPONSE_TEST([swath_unlim.h5.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([swath_unlim.h5.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST([swath_unlim.h5.ddx.bescmd])
 
+
 #HDF-EOS5 extra field cases(the handler will not treat them as HDF-EOS5 files)
 AT_BESCMD_RESPONSE_TEST([grid_2_2d_ef.h5.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([grid_2_2d_ef.h5.dds.bescmd])
@@ -415,6 +404,7 @@ AT_BESCMD_RESPONSE_TEST([swath_2_3d_2x2yz_ef.h5.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([swath_2_3d_2x2yz_ef.h5.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST([za_1_2d_yz_ef.h5.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([za_1_2d_yz_ef.h5.dds.bescmd])
+
 
 #HDF-EOS5 CF "Conventions" attribute group path removed
 AT_BESCMD_RESPONSE_TEST([grid_1_2d_convention.h5.das.bescmd])
@@ -427,9 +417,9 @@ AT_BESCMD_RESPONSE_TEST([t_big_str.h5.dds.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([t_big_str_dset.h5.data.bescmd])
 
 # netcdf4 that only has the dimensional scale.
-AT_BESCMD_RESPONSE_TEST([nc4_dscale_only.h5.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([nc4_dscale_only.h5.dds.bescmd])
-
+AT_BESCMD_RESPONSE_TEST([nc4_dscale_only.h5.das.bescmd])
+ 
 # 2d latlon to support CF if the lat and lon are located
 # under the "Geolocation" or the "GeolocationData" group
 AT_BESCMD_RESPONSE_TEST([t_cf_geo_grp_2dll.h5.das.bescmd])
@@ -441,12 +431,10 @@ AT_BESCMD_RESPONSE_TEST([t_cf_non_geo_grp_2dll.h5.dds.bescmd])
 
 #FakeDim pure dimension scale
 AT_BESCMD_RESPONSE_TEST([nc4_multi_dscales.h5.dds.bescmd])
-#AT_BESCMD_RESPONSE_TEST([nc4_multi_dscales.h5.dmr.bescmd])
-AT_BESCMD_CFDMR_RESPONSE_TEST([nc4_multi_dscales.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_multi_dscales.h5.dmr.bescmd])
 #wrong fill value type
 AT_BESCMD_RESPONSE_TEST([t_wrong_fvalue_type.h5.das.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_wrong_fvalue_type.h5.dds.bescmd])
-
 
 # Test subsetting.
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_1_3d.h5.data.subset.bescmd])
@@ -455,31 +443,15 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_1_3d.h5.data.subset_middle.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_1_3d.h5.data.subset_last.bescmd])
 
 #CF DAP4 test
-#AT_BESCMD_RESPONSE_TEST([grid_1_2d.h5.dmr.bescmd])
-#AT_BESCMD_DAP4DATA_RESPONSE_TEST([grid_1_2d.h5.dap.bescmd])
-#AT_BESCMD_RESPONSE_TEST([t_int64_dap4.h5.dmr.bescmd])
-#AT_BESCMD_DAP4DATA_RESPONSE_TEST([t_int64_dap4.h5.dap.bescmd])
-
-AT_BESCMD_CFDMR_RESPONSE_TEST([grid_1_2d.h5.dmr.bescmd])
-AT_BESCMD_CFDMR_DAP4DATA_RESPONSE_TEST([grid_1_2d.h5.dap.bescmd])
-AT_BESCMD_CFDMR_RESPONSE_TEST([t_int64_dap4.h5.dmr.bescmd])
-AT_BESCMD_CFDMR_DAP4DATA_RESPONSE_TEST([t_int64_dap4.h5.dap.bescmd])
-
+AT_BESCMD_RESPONSE_TEST([grid_1_2d.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST([grid_1_2d.h5.dap.bescmd])
+AT_BESCMD_RESPONSE_TEST([t_int64_dap4.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST([t_int64_dap4.h5.dap.bescmd])
 
 #AT_BESCMD_DAP4DATA_RESPONSE_TEST([grid_1_2d.h5.dap_ce_1.bescmd])
 #AT_BESCMD_DAP4DATA_RESPONSE_TEST([grid_1_2d.h5.dap_ce_2.bescmd])
 
-#AT_BESCMD_RESPONSE_TEST([swath_unlim.h5.dmr.bescmd])
-AT_BESCMD_CFDMR_RESPONSE_TEST([swath_unlim.h5.dmr.bescmd])
-
-# These tests call a function 'test(<name>)' that does not actually use variables
-# from the dataset named in the 'URL,' but does pull attributes from the dataset.
-# This tests that the DDS used as an argument to a function does contain attributes.
-# ky 11/1/19
-AT_BESCMD_RESPONSE_TEST([grid_1_2d.h5.function.ddx.bescmd])
-AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_1_2d.h5.function.dods.bescmd])
-
-
+AT_BESCMD_RESPONSE_TEST([swath_unlim.h5.dmr.bescmd])
 # Test default cases.
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_compound.h5.das.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST_DEFAULT([d_compound.h5.data.bescmd])
@@ -551,7 +523,7 @@ AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_link_soft.h5.dap.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_link_hard.h5.dmr.bescmd])
 
 # https://opendap.atlassian.net/browse/HR-68 
-# May update this later.
+# May need to update this later.
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_link_hard.h5.dap.bescmd])
 
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_int8.h5.dmr.bescmd])
@@ -571,10 +543,7 @@ AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_string_cstr.h5.dap.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([t_vl_string_cstr.h5.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_vl_string_cstr.h5.dap.bescmd])
 
-#COMMENT OUT the following four tests until the pure-dim case is resolved.
-#HFVHANDLER-340
-
-#AT_BESCMD_RESPONSE_TEST_DEFAULT([comp_complex_more.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([comp_complex_more.h5.dmr.bescmd])
 
 # Cannot generate correct DAP4 for the all data in the current DAP4 implementation. 
 # https://opendap.atlassian.net/projects/LIBDAP/issues/LIBDAP-18
@@ -589,11 +558,11 @@ AT_BESCMD_RESPONSE_TEST_DEFAULT([nest_comp_scalar.h5.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([nest_comp_scalar.h5.dap.bescmd])
 
 #netcdf4 classic simple
-#AT_BESCMD_RESPONSE_TEST_DEFAULT([t_2d_2dll.nc4.h5.dmr.bescmd])
-#AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_2d_2dll.nc4.h5.dap.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([t_2d_2dll.nc4.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_2d_2dll.nc4.h5.dap.bescmd])
 
 #HDF-EOS5 augmented
-#AT_BESCMD_RESPONSE_TEST_DEFAULT([grid_1_3d_xyz_aug.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([grid_1_3d_xyz_aug.h5.dmr.bescmd])
 
 
 #netcdf4 enhanced simple
@@ -614,8 +583,7 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST_DEFAULT([d_int8.h5.function.dods.bescmd])
 
 # The empty constraint that transfers the whole file. 
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_1_2d.h5.ce_empty.data.bescmd])
-#AT_BESCMD_DAP4DATA_RESPONSE_TEST([t_int64_dap4_ce_empty_cf.h5.dap.bescmd])
-AT_BESCMD_CFDMR_DAP4DATA_RESPONSE_TEST([t_int64_dap4_ce_empty_cf.h5.dap.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST([t_int64_dap4_ce_empty_cf.h5.dap.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_int64_dap4_ce_empty.h5.dap.bescmd])
 
 

@@ -93,7 +93,10 @@ if test x"$FLEX" = x""; then
 	AC_MSG_ERROR([Please install flex])
 else
 	V=`$FLEX --version | awk '{print $2}'`
-   	W=`echo $V | awk -F. '{if (((($1*100 + $2)*100 + $3) < 20535) || $3 == 4) print "no"}'`
+        # Not sure why $3 == 4 is needed. On MacOS Big Sur, Flex version is 2.6.4. 
+        # Remove ($3 == 4)
+   	W=`echo $V | awk -F. '{if (((($1*100 + $2)*100 + $3) < 20535))  print "no"}'`
+   	#W=`echo $V | awk -F. '{if (((($1*100 + $2)*100 + $3) < 20535) || $3 == 4) print "no"}'`
    	if test "x$W" != x ; then
 	   AC_MSG_WARN([Adjust your FLEX environment variable])
       	   AC_MSG_ERROR([Flex version 2.5.35 or above is needed. You have $V])
