@@ -75,6 +75,7 @@ private:
 	bool d_deflate;
 	bool d_shuffle;
 	bool d_compact;
+	bool d_fletcher;
 	std::string d_byte_order;
 	std::vector<unsigned long long> d_chunk_dimension_sizes;
 	std::vector<std::shared_ptr<Chunk>> d_chunks;
@@ -85,6 +86,7 @@ protected:
     	d_deflate = dc.d_deflate;
     	d_shuffle = dc.d_shuffle;
     	d_compact = dc.d_compact;
+    	d_fletcher = dc.d_fletcher;
     	d_chunk_dimension_sizes = dc.d_chunk_dimension_sizes;
     	d_chunks = dc.d_chunks;
     	d_byte_order = dc.d_byte_order;
@@ -123,6 +125,16 @@ public:
     /// @brief Set the value of the deflate property
     void set_deflate(bool value) {
         d_deflate = value;
+    }
+
+    /// @brief Returns true if this object utilizes fletcher32 compression.
+    virtual bool is_fletcher_compression() const {
+        return d_fletcher;
+    }
+
+    /// @brief Set the value of the fletcher32 property
+    void set_fletcher(bool value) {
+        d_fletcher = value;
     }
 
     /// @brief Returns true if this object utilizes shuffle compression.

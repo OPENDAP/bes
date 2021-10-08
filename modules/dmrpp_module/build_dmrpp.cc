@@ -449,6 +449,10 @@ static void set_filter_information(hid_t dataset_id, DmrppCommon *dc) {
                     VERBOSE(cerr << "H5Z_FILTER_SHUFFLE" << endl);
                     dc->set_shuffle(true);
                     break;
+                case H5Z_FILTER_FLETCHER32:
+                    VERBOSE(cerr << "H5Z_FILTER_FLETCHER32" << endl);
+                    dc->set_fletcher(true);
+                    break;
                 default: {
                     ostringstream oss("Unsupported HDF5 filter: ", std::ios::ate);
                     oss << filter_type;
