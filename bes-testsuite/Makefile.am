@@ -19,7 +19,7 @@ CLEANFILES = bes.conf bes.default.conf bes.ignore.conf bes.cfdmr.conf
 EXTRA_DIST = $(TESTSUITE).at $(TESTSUITE) atlocal.in		\
 $(srcdir)/package.m4 h5.cf h5.cf.ignore h5.default h5.cf.dmr h5.nasa bes.conf.in \
 bes.default.conf.in bes.ignore.conf.in bes.cfdmr.conf.in bes.conf.modules.in \
-bes.default.conf.modules.in bes.ignore.conf.modules.in 
+bes.default.conf.modules.in bes.ignore.conf.modules.in bes.cfdmr.conf.modules.in
 
 # hdf5_handlerTest.nasa.at 
 # Do not prefix the DISTCLEANFILES with $(srcdir) because that
@@ -30,6 +30,7 @@ if DAP_BUILTIN_MODULES
 BES_CONF_IN = bes.conf.modules.in
 BES_DEFAULT_CONF_IN = bes.default.conf.modules.in
 BES_IGNORE_CONF_IN = bes.ignore.conf.modules.in
+BES_CFDMR_CONF_IN = bes.cfdmr.conf.modules.in
 else
 BES_CONF_IN = bes.conf.in
 BES_DEFAULT_CONF_IN = bes.default.conf.in
