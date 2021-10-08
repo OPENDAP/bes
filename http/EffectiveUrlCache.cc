@@ -223,11 +223,11 @@ shared_ptr<http::EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr<h
     shared_ptr<http::EffectiveUrl> effective_url = get_cached_eurl(source_url->str());
 
     // If the source_url does not have an associated EffectiveUrl instance in the cache
-    // the we know we have to get one.
+    // then we know we have to get one.
     bool retrieve_and_cache = !effective_url;
 
     // But, if there is a value in the cache, we must check to see
-    // if it is expired, in which case we will retrive and cache it.
+    // if it is expired, in which case we will retrieve and cache it.
     if(effective_url){
         // It was in the cache. w00t. But, is it expired?.
         BESDEBUG(MODULE, prolog << "Cache hit for: " << source_url->str() << endl);

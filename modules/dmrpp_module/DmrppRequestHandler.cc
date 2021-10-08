@@ -190,6 +190,9 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
 
     // This and the matching cleanup function can be called many times as long as
     // they are called in balanced pairs. jhrg 9/3/20
+    // TODO 10/8/21 move this into the http at the top level of the BES. That is, all
+    //  calls to this should be moved out of handlers and handlers can/should
+    //  assume that curl is present and init'd. jhrg
     curl_global_init(CURL_GLOBAL_DEFAULT);
 }
 
@@ -273,6 +276,7 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
     if (!bdmr) throw BESInternalError("Cast error, expected a BESDMRResponse object.", __FILE__, __LINE__);
 
     try {
+        // TODO 10/8/21 This block of code is used several times. Factor it out. jhrg
         // Check the Container to see if the handler should get the response from the MDS.
         if (dhi.container->get_attributes().find(MDS_HAS_DMRPP) != string::npos) {
             DmrppMetadataStore *mds = DmrppMetadataStore::get_instance();
@@ -293,6 +297,8 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
         bdmr->set_dap4_constraint(dhi);
         bdmr->set_dap4_function(dhi);
     }
+    // TODO 10/8/21 Add catch clause for std::exception. jhrg
+    //  One way to do that would be to define a macro for these catch() clauses.
     catch (BESError &e) {
         throw e;
     }

@@ -92,6 +92,8 @@ protected:
     }
 
     /// @brief Returns a reference to the internal Chunk vector.
+    /// @todo Fix this comment block and make either this or get_immutable_chunks
+    ///        work correctly (i.e., not return a copy). jhrg 10/7/21
     /// @see get_immutable_chunks()
     virtual std::vector<std::shared_ptr<Chunk>> get_chunks() {
     	return d_chunks;
@@ -100,9 +102,9 @@ protected:
     virtual char *read_atomic(const std::string &name);
 
 public:
-    static bool d_print_chunks;     ///< if true, print_dap4() prints chunk elements
-    static std::string d_dmrpp_ns;       ///< The DMR++ XML namespace
-    static std::string d_ns_prefix;      ///< The XML namespace prefix to use
+    static bool d_print_chunks;         ///< if true, print_dap4() prints chunk elements
+    static std::string d_dmrpp_ns;      ///< The DMR++ XML namespace
+    static std::string d_ns_prefix;     ///< The XML namespace prefix to use
 
     DmrppCommon() : d_deflate(false), d_shuffle(false), d_compact(false),d_byte_order(""), d_twiddle_bytes(false)
     {
@@ -149,6 +151,7 @@ public:
     virtual bool twiddle_bytes() const { return d_twiddle_bytes; }
 
     /// @brief A const reference to the vector of chunks
+    /// @todo Fix this comment block
     /// @see get_chunks()
     virtual std::vector< std::shared_ptr<Chunk>> get_immutable_chunks() const {
         return d_chunks;

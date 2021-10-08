@@ -53,8 +53,8 @@ private:
 	static void build_dmr_from_file(BESContainer *container, libdap::DMR* dmr);
 
 public:
-	DmrppRequestHandler(const std::string &name);
-	virtual ~DmrppRequestHandler();
+	explicit DmrppRequestHandler(const std::string &name);
+	~DmrppRequestHandler() override;
 
     static CurlHandlePool *curl_handle_pool;
 
@@ -75,7 +75,7 @@ public:
 	static bool dap_build_vers(BESDataHandlerInterface &dhi);
 	static bool dap_build_help(BESDataHandlerInterface &dhi);
 
-	virtual void dump(std::ostream &strm) const;
+	void dump(std::ostream &strm) const override;
 };
 
 } // namespace dmrpp

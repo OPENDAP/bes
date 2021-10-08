@@ -33,18 +33,18 @@
 
 #include <libxml/parserInternals.h>
 
-#include <DMR.h>
+#include <libdap/DMR.h>
 
-#include <BaseType.h>
-#include <Array.h>
-#include <D4Group.h>
-#include <D4Attributes.h>
-#include <D4Maps.h>
-#include <D4Enum.h>
-#include <D4BaseTypeFactory.h>
+#include <libdap/BaseType.h>
+#include <libdap/Array.h>
+#include <libdap/D4Group.h>
+#include <libdap/D4Attributes.h>
+#include <libdap/D4Maps.h>
+#include <libdap/D4Enum.h>
+#include <libdap/D4BaseTypeFactory.h>
 
-#include <DapXmlNamespaces.h>
-#include <util.h>
+#include <libdap/DapXmlNamespaces.h>
+#include <libdap/util.h>
 
 #include <BESInternalError.h>
 #include <BESDebug.h>
@@ -922,6 +922,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
             parser->dmrpp_dataset_href  = shared_ptr<http::url>(new http::url(href,trusted));
             BESDEBUG(PARSER, prolog << "Processed 'href' value into data_url. href: " << parser->dmrpp_dataset_href->str() << (trusted?"(trusted)":"") << endl);
             BESDEBUG(PARSER, prolog << "Attempting to locate and cache the effective URL for Dataset URL: " << parser->dmrpp_dataset_href->str() << endl);
+            // TODO 10/8/21 Remove. jhrg.
             auto effective_url = EffectiveUrlCache::TheCache()->get_effective_url(parser->dmrpp_dataset_href);
             BESDEBUG(PARSER, prolog << "EffectiveUrlCache::get_effective_url() returned: " << effective_url->str() << endl);
         }
@@ -1151,6 +1152,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 // We may have to cache the last accessed/redirect URL for data_url here because this URL
                 // may be unique to this chunk.
                 BESDEBUG(PARSER, prolog << "Attempting to locate and cache the effective URL for Chunk URL: " << data_url->str() << endl);
+                // FIXME 10/8/21 Don't call this here. jhrg
                 auto effective_url = EffectiveUrlCache::TheCache()->get_effective_url(data_url);
                 BESDEBUG(PARSER, prolog << "EffectiveUrlCache::get_effective_url() returned: " << effective_url->str() << endl);
             }

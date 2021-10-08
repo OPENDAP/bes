@@ -131,7 +131,7 @@ void DmrppCommon::parse_chunk_dimension_sizes(const string &chunk_dims_string)
         }
     }
 
-    // If it's multi valued there's still one more value left to process
+    // If it's multivalued there's still one more value left to process
     // If it's single valued the same is true, so let's ingest that.
     d_chunk_dimension_sizes.push_back(strtol(chunk_dims.c_str(), nullptr, 10));
 }
@@ -203,7 +203,6 @@ unsigned long DmrppCommon::add_chunk(
         unsigned long long size,
         unsigned long long offset,
         const string &position_in_array)
-
 {
     vector<unsigned long long> cpia_vector;
     Chunk::parse_chunk_position_in_array_string(position_in_array, cpia_vector);
@@ -272,7 +271,6 @@ unsigned long DmrppCommon::add_chunk(
         unsigned long long size,
         unsigned long long offset,
         const string &position_in_array)
-
 {
     vector<unsigned long long> cpia_vector;
     Chunk::parse_chunk_position_in_array_string(position_in_array, cpia_vector);
@@ -290,10 +288,6 @@ unsigned long DmrppCommon::add_chunk(
     d_chunks.push_back(chunk);
     return d_chunks.size();
 }
-
-
-
-
 
 /**
  * @brief read method for the atomic types
@@ -315,7 +309,7 @@ unsigned long DmrppCommon::add_chunk(
 char *
 DmrppCommon::read_atomic(const string &name)
 {
-    auto chunk_refs = get_chunks();
+    auto chunk_refs = get_chunks(); // FIXME They are not refs. It's a copy. jhrg 10/7/21
 
     if (chunk_refs.size() != 1)
         throw BESInternalError(string("Expected only a single chunk for variable ") + name, __FILE__, __LINE__);
@@ -329,6 +323,9 @@ DmrppCommon::read_atomic(const string &name)
 
 /**
  * @brief Print the Chunk information.
+ * @note Should not be called when the d_chunks vector has no elements because it
+ * will write out a <chunks> element that is going to be empty when it might just
+ * be the case that the chunks have not been read.
  */
 void
 DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
@@ -456,6 +453,7 @@ void DmrppCommon::print_dmrpp(XMLWriter &xml, bool constrained /*false*/)
         bt.get_attr_table().print_xml_writer(xml);
 
     // This is the code added to libdap::BaseType::print_dap4(). jhrg 5/10/18
+    // TODO get_immutable_chunks() returns a copy. Replace with a simple accessor. jhrg 10/7/21
     if (DmrppCommon::d_print_chunks && get_immutable_chunks().size() > 0)
         print_chunks_element(xml, DmrppCommon::d_ns_prefix);
 

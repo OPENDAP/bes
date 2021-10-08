@@ -174,6 +174,7 @@ string NgapContainer::access() {
     BESDEBUG(MODULE, prolog << "       dmrpp_url: " << dmrpp_url_str << endl);
     BESDEBUG(MODULE, prolog << "missing_data_url: " << missing_data_url_str << endl);
 
+    // TODO 10/8/21 Is this a syntax error? Should the \" be after 'true'. jhrg
     string trusted_url_hack="\" dmrpp:trust=\"true";
     string data_access_url_with_trusted_attr_str = data_access_url_str + trusted_url_hack;
     string dmrpp_url_with_trusted_attr_str = dmrpp_url_str + trusted_url_hack;
@@ -207,6 +208,7 @@ string NgapContainer::access() {
     }
 
     // TODO This file should be read locked before leaving this method.
+    //  10/8/21 I think the RemoteResource should do that. jhrg
     string cachedResource = d_dmrpp_rresource->getCacheFileName();
     BESDEBUG(MODULE, prolog << "Using local cache file: " << cachedResource << endl);
 
@@ -228,6 +230,7 @@ string NgapContainer::access() {
  */
 bool NgapContainer::release() {
     // TODO The cache file (that will be) read locked in the access() method must be unlocked here.
+    //  If we make that part of the RemoteResource dtor, the unlock will happen here. jhrg
     if (d_dmrpp_rresource) {
         BESDEBUG(MODULE, prolog << "Releasing RemoteResource" << endl);
         delete d_dmrpp_rresource;
