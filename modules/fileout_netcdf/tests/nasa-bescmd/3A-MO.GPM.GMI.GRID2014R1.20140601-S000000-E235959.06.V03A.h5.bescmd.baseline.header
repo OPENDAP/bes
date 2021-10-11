@@ -14,7 +14,8 @@ variables:
 // global attributes:
 		:FileHeader = "DOI=10.5067/GPM/GMI/MONTH/3A;\nAlgorithmID=3GPROF;\nAlgorithmVersion=GRID2014R1;\nFileName=3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A.HDF5;\nSatelliteName=GPM;\nInstrumentName=GMI;\nGenerationDateTime=removed date-time;\nStartGranuleDateTime=removed date-time;\nStopGranuleDateTime=removed date-time;\nGranuleNumber=;\nNumberOfSwaths=0;\nNumberOfGrids=1;\nGranuleStart=;\nTimeInterval=MONTH;\nProcessingSystem=PPS;\nProductVersion=V03A;\nEmptyGranule=NOT_EMPTY;\nMissingData=;\n" ;
 		:FileInfo = "DataFormatVersion=am;\nTKCodeBuildVersion=1;\nMetadataVersion=am;\nFormatPackage=HDF5-1.8.9;\nBlueprintFilename=GPM.V1.3GPROF.blueprint.xml;\nBlueprintVersion=BV_34;\nTKIOVersion=3.60.2;\nMetadataStyle=PVL;\nEndianType=LITTLE_ENDIAN;\n" ;
-		:history = "removed date-timex 3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A.h5" ;
+		:history = "removed date-timex 3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A.h5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A.h5\"}]}]" ;
 
 group: Grid {
   dimensions:
