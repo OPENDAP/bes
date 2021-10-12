@@ -149,9 +149,11 @@ void DmrppCommon::ingest_compression_type(const string &compression_type_string)
     // Clear previous state
     d_deflate = false;
     d_shuffle = false;
+    d_fletcher32 = false;
 
     string deflate("deflate");
     string shuffle("shuffle");
+    string fletcher32("fletcher32");
 
     // Process content
     if (compression_type_string.find(deflate) != string::npos) {
@@ -160,6 +162,10 @@ void DmrppCommon::ingest_compression_type(const string &compression_type_string)
 
     if (compression_type_string.find(shuffle) != string::npos) {
         d_shuffle = true;
+    }
+
+    if (compression_type_string.find(fletcher32) != string::npos) {
+        d_fletcher32 = true;
     }
 }
 
