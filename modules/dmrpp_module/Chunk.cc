@@ -560,6 +560,30 @@ void *inflate_chunk(void *arg_list)
 }
 #endif
 
+uint32_t fletcher32_chunk(char *chunk, unsigned long long chunk_size) {
+//void Chunk::fletcher32_chunk(unsigned long long chunk_size, unsigned long long elem_width) {
+//    fletcher32 algorthm
+//    uint32_t c0, c1;
+//    len = (len + 1) & ~1;      /* Round up len to words */
+//
+//    /* We similarly solve for n > 0 and n * (n+1) / 2 * (2^16-1) < (2^32-1) here. */
+//    /* On modern computers, using a 64-bit c0/c1 could allow a group size of 23726746. */
+//    for (c0 = c1 = 0; len > 0; ) {
+//        size_t blocklen = len;
+//        if (blocklen > 360*2) {
+//            blocklen = 360*2;
+//        }
+//        len -= blocklen;
+//        do {
+//            c0 = c0 + *data++;
+//            c1 = c1 + c0;
+//        } while ((blocklen -= 2));
+//        c0 = c0 % 65535;
+//        c1 = c1 % 65535;
+//    }
+//    return (c1 << 16 | c0);
+}
+
 /**
  * @brief Decompress data in the chunk, managing the Chunk's data buffers
  *
@@ -571,7 +595,8 @@ void *inflate_chunk(void *arg_list)
  * @param chunk_size The _expected_ chunk size, in elements; used to allocate storage
  * @param elem_width The number of bytes per element
  */
-void Chunk::inflate_chunk(bool deflate, bool shuffle, unsigned long long chunk_size, unsigned long long elem_width) {
+void Chunk::inflate_chunk(bool deflate, bool shuffle, unsigned long long chunk_size,
+                          unsigned long long elem_width) {
     // This code is pretty naive - there are apparently a number of
     // different ways HDF5 can compress data, and it does also use a scheme
     // where several algorithms can be applied in sequence. For now, get
@@ -622,9 +647,26 @@ void Chunk::inflate_chunk(bool deflate, bool shuffle, unsigned long long chunk_s
         }
     }
 
+#define FLETCHER32_CHECKSUM 4
+#define ACTUALLY_USE_CHECKSUM 0
+
+    if (fletcher32) {
+        // Compute the fletcher32 checksum and compare to the value of the last four bytes of the chunk.
+        int32_t *f_checksum = get_rbuf() + get_rbuf_size() - FLETCHER32_CHECKSUM;
+        if (ACTUALLY_USE_CHECKSUM && f_checksum != fletcher32_chunk(get_rbuf(), get_rbuf_size() - FLETCHER32_CHECKSUM)) {
+            // this is an error
+        }
+
+        if (d_read_buffer_size > FLETCHER32_CHECKSUM)
+            d_read_buffer_size -= FLETCHER32_CHECKSUM;
+        else {
+            // this is an error
+        }
+    }
+
     d_is_inflated = true;
 
-#if 0 // This was handy during development for debugging. Keep it for awhile (year or two) before we drop it ndp - 01/18/17
+#if 0 // This was handy during development for debugging. Keep it for a while (year or two) before we drop it ndp - 01/18/17
     if(BESDebug::IsSet(MODULE)) {
         unsigned long long chunk_buf_size = get_rbuf_size();
         dods_float32 *vals = (dods_float32 *) get_rbuf();
@@ -636,29 +678,6 @@ void Chunk::inflate_chunk(bool deflate, bool shuffle, unsigned long long chunk_s
         }
     }
 #endif
-}
-
-void Chunk::fletcher32_chunk(unsigned long long chunk_size, unsigned long long elem_width) {
-//    fletcher32 algorthm
-//    uint32_t c0, c1;
-//    len = (len + 1) & ~1;      /* Round up len to words */
-//
-//    /* We similarly solve for n > 0 and n * (n+1) / 2 * (2^16-1) < (2^32-1) here. */
-//    /* On modern computers, using a 64-bit c0/c1 could allow a group size of 23726746. */
-//    for (c0 = c1 = 0; len > 0; ) {
-//        size_t blocklen = len;
-//        if (blocklen > 360*2) {
-//            blocklen = 360*2;
-//        }
-//        len -= blocklen;
-//        do {
-//            c0 = c0 + *data++;
-//            c1 = c1 + c0;
-//        } while ((blocklen -= 2));
-//        c0 = c0 % 65535;
-//        c1 = c1 % 65535;
-//    }
-//    return (c1 << 16 | c0);
 }
 
 /**
