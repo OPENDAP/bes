@@ -338,12 +338,15 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
         throw BESInternalError("Could not start chunks element.", __FILE__, __LINE__);
 
     string compression = "";
-    if (is_shuffle_compression() && is_deflate_compression())
-        compression = "deflate shuffle";
-    else if (is_shuffle_compression())
+
+    if (is_shuffle_compression())
         compression.append("shuffle");
-    else if (is_deflate_compression())
+
+    if (is_deflate_compression())
         compression.append("deflate");
+
+    if (is_fletcher32_compression())
+        compression.append("fletcher32");
 
     if (!compression.empty())
         if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "compressionType", (const xmlChar*) compression.c_str()) < 0)

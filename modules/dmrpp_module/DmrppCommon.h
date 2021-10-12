@@ -128,12 +128,12 @@ public:
     }
 
     /// @brief Returns true if this object utilizes fletcher32 compression.
-    virtual bool is_fletcher_compression() const {
+    virtual bool is_fletcher32_compression() const {
         return d_fletcher;
     }
 
     /// @brief Set the value of the fletcher32 property
-    void set_fletcher(bool value) {
+    void set_fletcher32(bool value) {
         d_fletcher = value;
     }
 
