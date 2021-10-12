@@ -337,6 +337,8 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
     if (xmlTextWriterStartElementNS(xml.get_writer(), (const xmlChar*)name_space.c_str(), (const xmlChar*) "chunks", NULL) < 0)
         throw BESInternalError("Could not start chunks element.", __FILE__, __LINE__);
 
+    // TODO We will want to capture the order the filters are applied. For now, assume
+    //  a 'sane' order for our support of shuffle, deflate, and fletcher32. jhrg 10/8/21
     string compression = "";
 
     if (is_shuffle_compression())
