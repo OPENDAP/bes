@@ -107,7 +107,7 @@ char* obtain_str(char*temp_ptr,string & str);
 char* get_attr_info_from_dc(char*temp_pointer,DAS *das,AttrTable *at);
 
 // Check if the BES key is set.
-bool check_beskeys(const string);
+//bool check_and_set_beskeys(const string);
 
 // Obtain the BES key as an integer
 static unsigned int get_uint_key(const string &key,unsigned int def_val);
@@ -118,6 +118,9 @@ static float get_float_key(const string &key, float def_val);
 
 // Obtain the BES key as a string.
 static string get_beskeys(const string&);
+
+//static bool is_beskeys_set_true(const string &);
+bool obtain_beskeys_info(const string &, bool &);
 
 // For the CF option
 extern void read_cfdas(DAS &das, const string & filename,hid_t fileid);
@@ -261,58 +264,188 @@ void HDF5RequestHandler::load_config()
         dmr_cache = new ObjMemCache(get_mdcache_entries(), get_cache_purge_level());
     }
 
+    // Starting from hyrax 1.16.5, users don't need to explicitly set the BES keys if
+    // they are happy with the default settings in the h5.conf.in.
+    // In the previous releases, we required users to set BES key values. Otherwise,
+    // the BES key values of true/false will always be false if the key is not found.
+    // Hopefully this change will make it convenient for the general users.
+    // In the mean time, the explicit BES key settings will not be affected.
+    // KY 2021-10-13
+    //
     // Check if the EnableCF key is set.
-    _usecf                       = check_beskeys("H5.EnableCF");
+    bool has_key = false;
+    bool key_value = obtain_beskeys_info("H5.EnableCF",has_key);
+    if(has_key) 
+        _usecf                   = key_value;
     BESDEBUG(HDF5_NAME, prolog << "H5.EnableCF: " << (_usecf?"true":"false") << endl);
 
-    // The following keys are only effective when usecf is true.
-    _pass_fileid                 = check_beskeys("H5.EnablePassFileID");
-    _disable_structmeta          = check_beskeys("H5.DisableStructMetaAttr");
-    _disable_ecsmeta             = check_beskeys("H5.DisableECSMetaAttr");
-    _keep_var_leading_underscore = check_beskeys("H5.KeepVarLeadingUnderscore");
-    _check_name_clashing         = check_beskeys("H5.EnableCheckNameClashing");
-    _add_path_attrs              = check_beskeys("H5.EnableAddPathAttrs");
-    _drop_long_string            = check_beskeys("H5.EnableDropLongString");
-    _fillvalue_check             = check_beskeys("H5.EnableFillValueCheck");
-    _check_ignore_obj            = check_beskeys("H5.CheckIgnoreObj");
-    _flatten_coor_attr           = check_beskeys("H5.ForceFlattenNDCoorAttr");
-    _default_handle_dimension   = check_beskeys("H5.DefaultHandleDimension");
-    _eos5_rm_convention_attr_path= check_beskeys("H5.RmConventionAttrPath");
-    _dmr_long_int                = check_beskeys("H5.EnableDMR64bitInt");
-    _no_zero_size_fullnameattr   = check_beskeys("H5.NoZeroSizeFullnameAttr");
-    _enable_coord_attr_add_path  = check_beskeys("H5.EnableCoorattrAddPath");
+    // The DefaultHandleDimension is effective only when EnableCF=false 
+    //_default_handle_dimension   = check_and_set_beskeys("H5.DefaultHandleDimension");
+    key_value = obtain_beskeys_info("H5.DefaultHandleDimension",has_key);
+    if(has_key) 
+        _default_handle_dimension  = key_value;
+    BESDEBUG(HDF5_NAME, prolog << "H5.DefaultHandleDimension: " << (_default_handle_dimension?"true":"false") << endl);
 
-    _usecfdmr                    = check_beskeys("H5.EnableCFDMR");
+    // The following keys are only effective when EnableCF is true or unset(EnableCF is true if users don't set the key).
+    //_pass_fileid                 = obtain_beskeys_info("H5.EnablePassFileID",has_key);
+    key_value = obtain_beskeys_info("H5.EnablePassFileID",has_key);
+    if(has_key) 
+        _pass_fileid                   = key_value;
+    BESDEBUG(HDF5_NAME, prolog << "H5.EnablePassFileID: " << (_pass_fileid?"true":"false") << endl);
 
-    _use_disk_cache              = check_beskeys("H5.EnableDiskDataCache");
+    //_disable_structmeta          = check_and_set_beskeys("H5.DisableStructMetaAttr");
+    key_value = obtain_beskeys_info("H5.DisableStructMetaAttr",has_key);
+    if(has_key) 
+        _disable_structmeta                   = key_value;
+    BESDEBUG(HDF5_NAME, prolog << "H5.DisableStructMetaAttr: " << (_disable_structmeta?"true":"false") << endl);
+
+    //_disable_ecsmeta             = check_and_set_beskeys("H5.DisableECSMetaAttr");
+    key_value = obtain_beskeys_info("H5.DisableECSMetaAttr",has_key);
+    if(has_key) 
+        _disable_ecsmeta                   = key_value;
+    BESDEBUG(HDF5_NAME, prolog << "H5.DisableECSMetaAttr: " << (_disable_ecsmeta?"true":"false") << endl);
+
+    //_keep_var_leading_underscore = check_and_set_beskeys("H5.KeepVarLeadingUnderscore");
+    key_value = obtain_beskeys_info("H5.KeepVarLeadingUnderscore",has_key);
+    if(has_key) 
+        _keep_var_leading_underscore  = key_value;
+    BESDEBUG(HDF5_NAME, prolog << "H5.KeepVarLeadingUnderscore: " << (_keep_var_leading_underscore?"true":"false") << endl);
+
+    //_check_name_clashing         = check_and_set_beskeys("H5.EnableCheckNameClashing");
+    key_value = obtain_beskeys_info("H5.EnableCheckNameClashing",has_key);
+    if(has_key) 
+        _check_name_clashing  = key_value;
+    BESDEBUG(HDF5_NAME, prolog << "H5.EnableCheckNameClashing: " << (_check_name_clashing?"true":"false") << endl);
+
+    //_add_path_attrs              = check_and_set_beskeys("H5.EnableAddPathAttrs");
+    key_value = obtain_beskeys_info("H5.EnableAddPathAttrs",has_key);
+    if(has_key) 
+        _add_path_attrs  = key_value;
+    BESDEBUG(HDF5_NAME, prolog << "H5.EnableAddPathAttrs: " << (_add_path_attrs?"true":"false") << endl);
+
+    //_drop_long_string            = check_and_set_beskeys("H5.EnableDropLongString");
+    key_value = obtain_beskeys_info("H5.EnableDropLongString",has_key);
+    if(has_key) 
+        _drop_long_string  = key_value;
+    BESDEBUG(HDF5_NAME, prolog << "H5.EnableDropLongString: " << (_drop_long_string?"true":"false") << endl);
+
+    //_fillvalue_check             = check_and_set_beskeys("H5.EnableFillValueCheck");
+    key_value = obtain_beskeys_info("H5.EnableFillValueCheck",has_key);
+    if(has_key) 
+        _fillvalue_check  = key_value;
+    BESDEBUG(HDF5_NAME, prolog << "H5.EnableFillValueCheck: " << (_fillvalue_check?"true":"false") << endl);
+
+
+    //_check_ignore_obj            = check_and_set_beskeys("H5.CheckIgnoreObj");
+    key_value = obtain_beskeys_info("H5.CheckIgnoreObj",has_key);
+    if(has_key) 
+        _check_ignore_obj  = key_value;
+    BESDEBUG(HDF5_NAME, prolog << "H5.CheckIgnoreObj: " << (_check_ignore_obj?"true":"false") << endl);
+
+    //_flatten_coor_attr           = check_and_set_beskeys("H5.ForceFlattenNDCoorAttr");
+    key_value = obtain_beskeys_info("H5.ForceFlattenNDCoorAttr",has_key);
+    if(has_key) 
+        _flatten_coor_attr  = key_value;
+    BESDEBUG(HDF5_NAME, prolog << "H5.ForceFlattenNDCoorAttr: " << (_flatten_coor_attr?"true":"false") << endl);
+
+
+    //_eos5_rm_convention_attr_path= check_and_set_beskeys("H5.RmConventionAttrPath");
+    key_value = obtain_beskeys_info("H5.RmConventionAttrPath",has_key);
+    if(has_key) 
+        _eos5_rm_convention_attr_path  = key_value;
+    BESDEBUG(HDF5_NAME, prolog << "H5.RmConventionAttrPath: " << (_eos5_rm_convention_attr_path?"true":"false") << endl);
+   
+    //_dmr_long_int                = check_and_set_beskeys("H5.EnableDMR64bitInt");
+    key_value = obtain_beskeys_info("H5.EnableDMR64bitInt",has_key);
+    if(has_key) 
+        _dmr_long_int  = key_value;
+    BESDEBUG(HDF5_NAME, prolog << "H5.EnableDMR64bitInt: " << (_dmr_long_int?"true":"false") << endl);
+ 
+    //_no_zero_size_fullnameattr   = check_and_set_beskeys("H5.NoZeroSizeFullnameAttr");
+    key_value = obtain_beskeys_info("H5.NoZeroSizeFullnameAttr",has_key);
+    if(has_key) 
+        _no_zero_size_fullnameattr  = key_value;
+    BESDEBUG(HDF5_NAME, prolog << "H5.NoZeroSizeFullnameAttr: " << (_no_zero_size_fullnameattr?"true":"false") << endl);
+ 
+    //_enable_coord_attr_add_path  = check_and_set_beskeys("H5.EnableCoorattrAddPath");
+    key_value = obtain_beskeys_info("H5.EnableCoorattrAddPath",has_key);
+    if(has_key) 
+        _enable_coord_attr_add_path  = key_value;
+    BESDEBUG(HDF5_NAME, prolog << "H5.EnableCoorattrAddPath: " << (_enable_coord_attr_add_path?"true":"false") << endl);
+ 
+    //_usecfdmr                    = check_and_set_beskeys("H5.EnableCFDMR");
+    key_value = obtain_beskeys_info("H5.EnableCFDMR",has_key);
+    if(has_key) 
+        _usecfdmr  = key_value;
+    BESDEBUG(HDF5_NAME, prolog << "H5.EnableCFDMR: " << (_usecfdmr?"true":"false") << endl);
+ 
+    //_use_disk_cache              = check_and_set_beskeys("H5.EnableDiskDataCache");
+    key_value = obtain_beskeys_info("H5.EnableDiskDataCache",has_key);
+    if(has_key) 
+        _use_disk_cache  = key_value;
+    BESDEBUG(HDF5_NAME, prolog << "H5.EnableDiskDataCache: " << (_use_disk_cache?"true":"false") << endl);
     _disk_cache_dir              = get_beskeys("H5.DiskCacheDataPath");
     _disk_cachefile_prefix       = get_beskeys("H5.DiskCacheFilePrefix");
     _disk_cache_size             = get_ulong_key("H5.DiskCacheSize",0);
 
-    _disk_cache_comp_data        = check_beskeys("H5.DiskCacheComp");
-    _disk_cache_float_only_comp_data = check_beskeys("H5.DiskCacheFloatOnlyComp");
+    //_disk_cache_comp_data        = check_and_set_beskeys("H5.DiskCacheComp");
+    key_value = obtain_beskeys_info("H5.DiskCacheComp",has_key);
+    if(has_key) 
+        _disk_cache_comp_data  = key_value;
+    BESDEBUG(HDF5_NAME, prolog << "H5.DiskCacheComp: " << (_disk_cache_comp_data?"true":"false") << endl);
+ 
+    //_disk_cache_float_only_comp_data = check_and_set_beskeys("H5.DiskCacheFloatOnlyComp");
+    key_value = obtain_beskeys_info("H5.DiskCacheFloatOnlyComp",has_key);
+    if(has_key) 
+        _disk_cache_float_only_comp_data  = key_value;
+    BESDEBUG(HDF5_NAME, prolog << "H5.DiskCacheFloatOnlyComp: " << (_disk_cache_float_only_comp_data?"true":"false") << endl);
     _disk_cache_comp_threshold   = get_float_key("H5.DiskCacheCompThreshold",1.0);
     _disk_cache_var_size         = 1024*get_uint_key("H5.DiskCacheCompVarSize",0);
 
-    _use_disk_meta_cache         = check_beskeys("H5.EnableDiskMetaDataCache");
-    _use_disk_dds_cache          = check_beskeys("H5.EnableDiskDDSCache");
+    //_use_disk_meta_cache         = check_and_set_beskeys("H5.EnableDiskMetaDataCache");
+    key_value = obtain_beskeys_info("H5.EnableDiskMetaDataCache",has_key);
+    if(has_key) 
+        _use_disk_meta_cache  = key_value;
+    BESDEBUG(HDF5_NAME, prolog << "H5.EnableDiskMetaDataCache: " << (_use_disk_meta_cache?"true":"false") << endl);
+   
+    //_use_disk_dds_cache          = check_and_set_beskeys("H5.EnableDiskDDSCache");
+    key_value = obtain_beskeys_info("H5.EnableDiskDDSCache",has_key);
+    if(has_key) 
+        _use_disk_dds_cache  = key_value;
+    BESDEBUG(HDF5_NAME, prolog << "H5.EnableDiskDDSCache: " << (_use_disk_dds_cache?"true":"false") << endl);
     _disk_meta_cache_path        = get_beskeys("H5.DiskMetaDataCachePath");
 
-    _use_latlon_disk_cache       = check_beskeys("H5.EnableEOSGeoCacheFile");
+    //_use_latlon_disk_cache       = check_and_set_beskeys("H5.EnableEOSGeoCacheFile");
+    key_value = obtain_beskeys_info("H5.EnableEOSGeoCacheFile",has_key);
+    if(has_key) 
+        _use_latlon_disk_cache  = key_value;
+    BESDEBUG(HDF5_NAME, prolog << "H5.EnableEOSGeoCacheFile: " << (_use_latlon_disk_cache?"true":"false") << endl);
     _latlon_disk_cache_size      = get_uint_key("H5.Cache.latlon.size",0);
     _latlon_disk_cache_dir       = get_beskeys("H5.Cache.latlon.path");
     _latlon_disk_cachefile_prefix= get_beskeys("H5.Cache.latlon.prefix");
 
+#if 0
+    //_default_handle_dimension   = check_and_set_beskeys("H5.DefaultHandleDimension");
+    key_value = obtain_beskeys_info("H5.DefaultHandleDimension",has_key);
+    if(has_key) 
+        _default_handle_dimension  = key_value;
+    BESDEBUG(HDF5_NAME, prolog << "H5.DefaultHandleDimension: " << (_default_handle_dimension?"true":"false") << endl);
+#endif
+
     if(get_usecf()) {
         if(get_lrdcache_entries()) {
             lrdata_mem_cache = new ObjMemCache(get_lrdcache_entries(), get_cache_purge_level());
-            if(true == check_beskeys("H5.LargeDataMemCacheConfig")) {
+            bool has_LFMC_config = false;
+            key_value = obtain_beskeys_info("H5.LargeDataMemCacheConfig",has_key);                                   
+            if(has_key)                                                                                             
+                has_LFMC_config  = key_value;                                                             
+            BESDEBUG(HDF5_NAME, prolog << "H5.LargeDataMemCacheConfig: " << (has_LFMC_config?"true":"false") << endl);
+            if(true == has_LFMC_config) {
                 _common_cache_dirs =obtain_lrd_common_cache_dirs();
 #if 0
                 if(false == _common_cache_dirs)
 cerr<<"No specific cache info"<<endl;
 #endif
-
             }
         }
         if(get_srdcache_entries()) {
@@ -2163,7 +2296,30 @@ void HDF5RequestHandler::add_das_to_dds(DDS *dds, const string &/*container_name
     
 }
 
-bool check_beskeys(const string key) {
+bool obtain_beskeys_info(const string& key, bool & has_key) {
+
+    bool ret_value = false;
+    string doset ="";
+    TheBESKeys::TheKeys()->get_value( key, doset, has_key ) ;
+    if(has_key) {
+        const string dosettrue ="true";
+        const string dosetyes = "yes";
+        doset = BESUtil::lowercase(doset) ;
+        ret_value = (dosettrue == doset  || dosetyes == doset);
+    }
+    return ret_value;
+}
+
+#if 0
+bool is_beskeys_set_true(const string& bes_value) {
+
+    const string dosettrue ="true";
+    const string dosetyes = "yes";
+    string doset = BESUtil::lowercase(bes_value) ;
+    return (dosettrue == doset  || dosetyes == doset);
+
+}
+bool check_and_set_beskeys(const string key) {
 
     bool found = false;
     string doset ="";
@@ -2178,6 +2334,7 @@ bool check_beskeys(const string key) {
     return found && (dosettrue == doset  || dosetyes == doset);
 
 }
+#endif
 
 // get_uint_key and get_float_key are copied from the netCDF handler. 
 

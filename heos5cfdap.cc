@@ -896,7 +896,6 @@ if(other_str!="") "h5","Final othermetadata "<<other_str <<endl;
 #if 0
         string check_disable_smetadata_key ="H5.DisableStructMetaAttr";
         bool is_check_disable_smetadata = false;
-        is_check_disable_smetadata = HDF5CFDAPUtil::check_beskeys(check_disable_smetadata_key);
 #endif
         bool is_check_disable_smetadata = HDF5RequestHandler::get_disable_structmeta();
 
