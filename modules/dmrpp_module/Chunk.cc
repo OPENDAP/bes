@@ -561,27 +561,27 @@ void *inflate_chunk(void *arg_list)
 #endif
 
 uint32_t fletcher32_chunk(char *chunk, unsigned long long chunk_size) {
-//void Chunk::fletcher32_chunk(unsigned long long chunk_size, unsigned long long elem_width) {
 //    fletcher32 algorthm
-//    uint32_t c0, c1;
-//    len = (len + 1) & ~1;      /* Round up len to words */
-//
-//    /* We similarly solve for n > 0 and n * (n+1) / 2 * (2^16-1) < (2^32-1) here. */
-//    /* On modern computers, using a 64-bit c0/c1 could allow a group size of 23726746. */
-//    for (c0 = c1 = 0; len > 0; ) {
-//        size_t blocklen = len;
-//        if (blocklen > 360*2) {
-//            blocklen = 360*2;
-//        }
-//        len -= blocklen;
-//        do {
-//            c0 = c0 + *data++;
-//            c1 = c1 + c0;
-//        } while ((blocklen -= 2));
-//        c0 = c0 % 65535;
-//        c1 = c1 % 65535;
-//    }
-//    return (c1 << 16 | c0);
+    uint32_t c0, c1;
+    unsigned long long len = chunk_size;
+    len = (len + 1) & ~1;      /* Round up len to words */
+
+    /* We similarly solve for n > 0 and n * (n+1) / 2 * (2^16-1) < (2^32-1) here. */
+    /* On modern computers, using a 64-bit c0/c1 could allow a group size of 23726746. */
+    for (c0 = c1 = 0; len > 0; ) {
+        size_t blocklen = len;
+        if (blocklen > 360*2) {
+            blocklen = 360*2;
+        }
+        len -= blocklen;
+        do {
+            c0 = c0 + *data++;
+            c1 = c1 + c0;
+        } while ((blocklen -= 2));
+        c0 = c0 % 65535;
+        c1 = c1 % 65535;
+    }
+    return (c1 << 16 | c0);
 }
 
 /**
@@ -595,7 +595,7 @@ uint32_t fletcher32_chunk(char *chunk, unsigned long long chunk_size) {
  * @param chunk_size The _expected_ chunk size, in elements; used to allocate storage
  * @param elem_width The number of bytes per element
  */
-void Chunk::inflate_chunk(bool deflate, bool shuffle, unsigned long long chunk_size,
+void Chunk::inflate_chunk(bool deflate, bool shuffle, bool fletcher32, unsigned long long chunk_size,
                           unsigned long long elem_width) {
     // This code is pretty naive - there are apparently a number of
     // different ways HDF5 can compress data, and it does also use a scheme
