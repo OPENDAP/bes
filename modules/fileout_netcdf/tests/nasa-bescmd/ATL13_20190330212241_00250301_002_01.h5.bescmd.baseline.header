@@ -22,7 +22,7 @@ netcdf test {
 		:time_type = "CCSDS UTC-A" ;
 		:date_created = "removed date-time" ;
 		:hdfversion = "HDF5 1.10.3" ;
-		:history = "removed date-timex ATL13_20190330212241_00250301_002_01.h5" ;
+		:history = "removed date-time;f9ce9365-de8f-3ea8-b744-93887d239290;Created by PGE atlas_l3a_iw Version 3.2\000\000\000\000\nremoved date-timex ATL13_20190330212241_00250301_002_01.h5\n" ;
 		:identifier_file_uuid = "f9ce9365-de8f-3ea8-b744-93887d239290" ;
 		:identifier_product_format_version = "3.2" ;
 		:time_coverage_duration = 22630. ;
@@ -49,6 +49,7 @@ netcdf test {
 		:instrument = "ATLAS > Advanced Topographic Laser Altimeter System" ;
 		:platform = "ICESat-2 > Ice, Cloud, and land Elevation Satellite-2" ;
 		:source = "Spacecraft" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"ATL13_20190330212241_00250301_002_01.h5\"}]}]" ;
 
 group: orbit_info {
   dimensions:

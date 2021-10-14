@@ -286,5 +286,6 @@ variables:
 		:Format = "NetCDF4" ;
 		:ProcessingLevel = "1C" ;
 		:Conventions = "CF-1.7" ;
-		:history = "removed date-timex Arctas-car_p3b_20080407_2002_Level1C_20171121.nc.h5" ;
+		:history = "removed date-timex Arctas-car_p3b_20080407_2002_Level1C_20171121.nc.h5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"Arctas-car_p3b_20080407_2002_Level1C_20171121.nc.h5\"}]}]" ;
 }

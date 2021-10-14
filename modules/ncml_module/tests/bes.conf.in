@@ -84,6 +84,7 @@ Http.Cache.expires.time=3600
 #                                                                       #
 #-----------------------------------------------------------------------#
 
+H5.EnableCF=false
 NCML.TempDirectory=@abs_top_builddir@/modules/ncml_module/tests/cache
 NCML.GlobalAttributesContainerName=NC_GLOBAL
 
