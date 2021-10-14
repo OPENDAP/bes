@@ -862,11 +862,8 @@ void DmrppArray::read_contiguous()
     }
 
     // Now that the_one_chunk has been read, we do the needful...
-    if (is_deflate_compression() || is_shuffle_compression())
-       the_one_chunk->inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(),var()->width());
-
-    if (is_fletcher32_compression())
-        the_one_chunk->fletcher32_chunk(get_chunk_size_in_elements(),var()->width());
+    if (is_deflate_compression() || is_shuffle_compression() || is_fletcher32_compression())
+       the_one_chunk->inflate_chunk(is_deflate_compression(), is_shuffle_compression(), is_fletcher32_compression(), get_chunk_size_in_elements(),var()->width());
 
     // The 'the_one_chunk' now holds the data values. Transfer it to the Array.
     if (!is_projected()) {  // if there is no projection constraint

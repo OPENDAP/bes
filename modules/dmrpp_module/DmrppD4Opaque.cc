@@ -174,7 +174,7 @@ void DmrppD4Opaque::read_chunks()
 {
     for (auto chunk : get_chunks()) {
         chunk->read_chunk();
-        chunk->inflate_chunk(is_deflate_compression(), is_shuffle_compression(), get_chunk_size_in_elements(), 1 /*elem width*/);
+        chunk->inflate_chunk(is_deflate_compression(), is_shuffle_compression(), is_fletcher32_compression(), get_chunk_size_in_elements(), 1 /*elem width*/);
         insert_chunk(chunk);
     }
 

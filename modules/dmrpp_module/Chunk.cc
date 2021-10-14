@@ -560,10 +560,8 @@ void *inflate_chunk(void *arg_list)
 }
 #endif
 
-uint32_t fletcher32_chunk(char *chunk, unsigned long long chunk_size) {
-//    fletcher32 algorthm
+uint32_t fletcher32(const uint16_t *data, size_t len) {
     uint32_t c0, c1;
-    unsigned long long len = chunk_size;
     len = (len + 1) & ~1;      /* Round up len to words */
 
     /* We similarly solve for n > 0 and n * (n+1) / 2 * (2^16-1) < (2^32-1) here. */
@@ -583,6 +581,33 @@ uint32_t fletcher32_chunk(char *chunk, unsigned long long chunk_size) {
     }
     return (c1 << 16 | c0);
 }
+
+#if 0
+uint32_t fletcher32_chunk(char *chunk, unsigned long long chunk_size) {
+//    fletcher32 algorthm
+    uint32_t c0, c1;
+    unsigned long long len = chunk_size;
+    uint32_t *data = (uint32_t*)chunk;
+    len = (len + 1) & ~1;      /* Round up len to words */
+
+    /* We similarly solve for n > 0 and n * (n+1) / 2 * (2^16-1) < (2^32-1) here. */
+    /* On modern computers, using a 64-bit c0/c1 could allow a group size of 23726746. */
+    for (c0 = c1 = 0; len > 0; ) {
+        size_t blocklen = len;
+        if (blocklen > 360*2) {
+            blocklen = 360*2;
+        }
+        len -= blocklen;
+        do {
+            c0 = c0 + *data++;
+            c1 = c1 + c0;
+        } while ((blocklen -= 2));
+        c0 = c0 % 65535;
+        c1 = c1 % 65535;
+    }
+    return (c1 << 16 | c0);
+}
+#endif
 
 /**
  * @brief Decompress data in the chunk, managing the Chunk's data buffers
@@ -652,11 +677,12 @@ void Chunk::inflate_chunk(bool deflate, bool shuffle, bool fletcher32, unsigned 
 
     if (fletcher32) {
         // Compute the fletcher32 checksum and compare to the value of the last four bytes of the chunk.
+#if 0
         int32_t *f_checksum = get_rbuf() + get_rbuf_size() - FLETCHER32_CHECKSUM;
-        if (ACTUALLY_USE_CHECKSUM && f_checksum != fletcher32_chunk(get_rbuf(), get_rbuf_size() - FLETCHER32_CHECKSUM)) {
+        if (ACTUALLY_USE_CHECKSUM && f_checksum != fletcher32(get_rbuf(), get_rbuf_size() - FLETCHER32_CHECKSUM)) {
             // this is an error
         }
-
+#endif
         if (d_read_buffer_size > FLETCHER32_CHECKSUM)
             d_read_buffer_size -= FLETCHER32_CHECKSUM;
         else {
