@@ -215,6 +215,7 @@ public:
         CPPUNIT_ASSERT(d_chunk.d_query_marker.empty());
     }
 
+#if ENABLE_TRACKING_QUERY_PARAMETER
     // Test the non-default ctor
     void add_tracking_query_param_test_5()
     {
@@ -241,6 +242,7 @@ public:
             CPPUNIT_FAIL(prolog + "Caught std::exception. Message: "+e.what());
         }
     }
+#endif
 
     void add_tracking_query_param_test_5_1()
     {
@@ -284,7 +286,11 @@ public:
     CPPUNIT_TEST(add_tracking_query_param_test_3);
     CPPUNIT_TEST(add_tracking_query_param_test_4);
     CPPUNIT_TEST(add_tracking_query_param_test_4_1);
+
+#if ENABLE_TRACKING_QUERY_PARAMETER
     CPPUNIT_TEST(add_tracking_query_param_test_5);
+#endif
+
     CPPUNIT_TEST(add_tracking_query_param_test_5_1);
 
     CPPUNIT_TEST_SUITE_END();
