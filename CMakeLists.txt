@@ -61,6 +61,7 @@ include_directories(dapreader)
 include_directories(dispatch)
 include_directories(http)
 include_directories(rapidjson)
+include_directories(rapidxml)
 
 include_directories(dispatch/PicoSHA2)
 include_directories(dispatch/tests)
@@ -164,8 +165,13 @@ include_directories(xmlcommand/unit-tests)
 #include_directories(xmlcommand/unused)
 
 
+
 add_executable(bes
     config.h
+
+	rapidjson/rapidjson.h
+	rapidxml/rapidxml.hpp
+
     cmdln/unit-tests/test_config.h.in
     cmdln/unit-tests/translateT.cc
     cmdln/CmdApp.cc
@@ -2003,7 +2009,7 @@ add_executable(bes
 
     standalone/besstandalone.cc
 	modules/fileout_netcdf/history_utils.cc
-	modules/fileout_netcdf/history_utils.h)
+	modules/fileout_netcdf/history_utils.h modules/dmrpp_module/unit-tests/rapid_xml_test.cc)
 
 if (EXISTS modules/sql_handler)
 	add_executable(bes

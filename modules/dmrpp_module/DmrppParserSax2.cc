@@ -66,9 +66,10 @@
 
 #include "Base64.h"
 
-#define FIVE_12K  524288;
-#define ONE_MB   1048576;
-#define MAX_INPUT_LINE_LENGTH ONE_MB;
+#define FIVE_12K  524288
+#define ONE_MB   1048576
+#define MAX_INPUT_LINE_LENGTH ONE_MB
+#define INCLUDE_BESDEBUG_ISSET 0
 
 #define prolog std::string("DmrppParserSax2::").append(__func__).append("() - ")
 
@@ -840,12 +841,14 @@ void DmrppParserSax2::dmr_end_document(void * p)
         DmrppParserSax2::dmr_error(parser,
             "The document did not contain a valid root Group or contained unbalanced tags.");
 
+#if INCLUDE_BESDEBUG_ISSET
     if(BESDebug::IsSet(PARSER)){
         ostream *os = BESDebug::GetStrm();
         *os << prolog << "parser->top_group() BEGIN " << endl;
         parser->top_group()->dump(*os);
         *os << endl << prolog << "parser->top_group() END " << endl;
     }
+#endif
 
     parser->pop_group();     // leave the stack 'clean'
     parser->pop_attributes();

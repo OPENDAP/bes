@@ -489,12 +489,12 @@ void Chunk::add_tracking_query_param() {
      */
 
     // All S3 buckets, virtual host style URL
-    string s3_vh_regex_str = R"(^https?:\/\/([a-z]|[0-9])(([a-z]|[0-9]|\.|-){1,61})([a-z]|[0-9])\.s3((\.|-)us-(east|west)-(1|2))?\.amazonaws\.com\/.*$)";
-    BESRegex s3_vh_regex(s3_vh_regex_str.c_str());
+    const string s3_vh_regex_str = R"(^https?:\/\/([a-z]|[0-9])(([a-z]|[0-9]|\.|-){1,61})([a-z]|[0-9])\.s3((\.|-)us-(east|west)-(1|2))?\.amazonaws\.com\/.*$)";
+    static BESRegex s3_vh_regex(s3_vh_regex_str.c_str());
 
     // All S3 buckets, path style URL
-    string  s3_path_regex_str = R"(^https?:\/\/s3((\.|-)us-(east|west)-(1|2))?\.amazonaws\.com\/([a-z]|[0-9])(([a-z]|[0-9]|\.|-){1,61})([a-z]|[0-9])\/.*$)";
-    BESRegex s3_path_regex(s3_path_regex_str.c_str());
+    const string  s3_path_regex_str = R"(^https?:\/\/s3((\.|-)us-(east|west)-(1|2))?\.amazonaws\.com\/([a-z]|[0-9])(([a-z]|[0-9]|\.|-){1,61})([a-z]|[0-9])\/.*$)";
+    static BESRegex s3_path_regex(s3_path_regex_str.c_str());
 
 
     bool add_tracking = false;
@@ -624,7 +624,7 @@ void Chunk::inflate_chunk(bool deflate, bool shuffle, unsigned long long chunk_s
 
     d_is_inflated = true;
 
-#if 0 // This was handy during development for debugging. Keep it for awhile (year or two) before we drop it ndp - 01/18/17
+#if 0 // This was handy during development for debugging. Keep it for a while (year or two) before we drop it ndp - 01/18/17
     if(BESDebug::IsSet(MODULE)) {
         unsigned long long chunk_buf_size = get_rbuf_size();
         dods_float32 *vals = (dods_float32 *) get_rbuf();
