@@ -347,14 +347,17 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
     //  a 'sane' order for our support of shuffle, deflate, and fletcher32. jhrg 10/8/21
     string compression = "";
 
-    if (is_shuffle_compression())
-        compression.append("shuffle");
-
     if (is_deflate_compression())
-        compression.append("deflate");
+        compression.append("deflate ");
+
+    if (is_shuffle_compression())
+        compression.append("shuffle ");
 
     if (is_fletcher32_compression())
-        compression.append("fletcher32");
+        compression.append("fletcher32 ");
+
+    //trimming trailing space from compression (aka filter) string
+    compression = compression.substr(0, compression.length() - 1);
 
     if (!compression.empty())
         if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "compressionType", (const xmlChar*) compression.c_str()) < 0)
