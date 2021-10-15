@@ -560,7 +560,7 @@ void *inflate_chunk(void *arg_list)
 }
 #endif
 
-uint32_t fletcher32(const uint16_t *data, size_t len) {
+uint32_t fletcher32_checksum(const uint16_t *data, size_t len) {
     uint32_t c0, c1;
     len = (len + 1) & ~1;      /* Round up len to words */
 
@@ -677,16 +677,23 @@ void Chunk::inflate_chunk(bool deflate, bool shuffle, bool fletcher32, unsigned 
 
     if (fletcher32) {
         // Compute the fletcher32 checksum and compare to the value of the last four bytes of the chunk.
-#if 0
-        int32_t *f_checksum = get_rbuf() + get_rbuf_size() - FLETCHER32_CHECKSUM;
-        if (ACTUALLY_USE_CHECKSUM && f_checksum != fletcher32(get_rbuf(), get_rbuf_size() - FLETCHER32_CHECKSUM)) {
-            // this is an error
+#if ACTUALLY_USE_CHECKSUM
+        // Get the last four bytes of chunk's data (which is a byte array) and treat that as the four-byte
+        // integer fletcher32 checksum. jhrg 10/15/21
+        int32_t f_checksum = *(int32_t *)(get_rbuf() + get_rbuf_size() - FLETCHER32_CHECKSUM);
+        // If the code should actually use the checksum (they can be expensive to compute), does it match
+        // with once computed on the data actually read? Maybe make this a bes.conf parameter?
+        // jhrg 10/15/21
+        if (ACTUALLY_USE_CHECKSUM && f_checksum != fletcher32_checksum((uint16_t*)get_rbuf(), get_rbuf_size() - FLETCHER32_CHECKSUM)) {
+            throw BESInternalError("Data read from the DMR++ handler did not match the Fletcher32 checksum.",
+                                   __FILE__, __LINE__);
         }
 #endif
         if (d_read_buffer_size > FLETCHER32_CHECKSUM)
             d_read_buffer_size -= FLETCHER32_CHECKSUM;
         else {
-            // this is an error
+            throw BESInternalError("Data filtered with fletcher32 don't include the four-byte checksum.",
+                                   __FILE__, __LINE__);
         }
     }
 
