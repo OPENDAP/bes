@@ -4,7 +4,7 @@ netcdf test {
 		:Conventions = "CF-1.7" ;
 		:institution = "KNMI" ;
 		:source = "Sentinel 5 precursor, TROPOMI, space-borne remote sensing, L2" ;
-		:history = "removed date-timex S5PNRTIL2NO220180422T00470920180422T005209027060100110820180422T022729.nc.h5" ;
+		:history = "removed date-time_s5pops tropnll2dp /mnt/data1/storage_nrt/cache_nrt/WORKING-559136776/JobOrder.559136633.xml\000\000\000\nremoved date-timex S5PNRTIL2NO220180422T00470920180422T005209027060100110820180422T022729.nc.h5\n" ;
 		:summary = "TROPOMI/S5P NO2 1-Orbit L2 Swath 7x3.5km, processed in degraded mode" ;
 		:tracking_id = "0a7d62a3-b15c-4713-8455-357f060f5514" ;
 		:id = "S5P_NRTI_L2__NO2____20180422T004709_20180422T005209_02706_01_001108_20180422T022729" ;
@@ -53,6 +53,7 @@ netcdf test {
 		:Status_MET_2D = "Nominal" ;
 		:Status_NISE__ = "ECMWF_Fallback" ;
 		:Status_CTMFCT = "Nominal" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"S5PNRTIL2NO220180422T00470920180422T005209027060100110820180422T022729.nc.h5\"}]}]" ;
 
 group: METADATA {
 

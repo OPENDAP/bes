@@ -69,7 +69,8 @@ variables:
 		:WestBoundingCoordinate = -180.f ;
 		:TAI93At0zOfGranule = -47606401. ;
 		:ProductionDateTimeHDF = "removed date-time.0Z" ;
-		:history = "removed date-timex TOMS-N7_L2-TOMSN7AERUV_1991m0630t0915-o64032_v02-00-2015m0918t123456.h5" ;
+		:history = "removed date-timex TOMS-N7_L2-TOMSN7AERUV_1991m0630t0915-o64032_v02-00-2015m0918t123456.h5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"TOMS-N7_L2-TOMSN7AERUV_1991m0630t0915-o64032_v02-00-2015m0918t123456.h5\"}]}]" ;
 
 group: ANCILLARY_DATA {
   variables:

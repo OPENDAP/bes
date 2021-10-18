@@ -36,7 +36,8 @@ netcdf test {
 		:TimeResolution = "Monthly" ;
 		:History = "removed date-time: Initial file creation" ;
 		:SizeBytesDataGranule = 435282LL ;
-		:history = "removed date-timex GOZ-Source-MLP_HCl_ev1-00_2005.nc4.h5" ;
+		:history = "removed date-timex GOZ-Source-MLP_HCl_ev1-00_2005.nc4.h5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"GOZ-Source-MLP_HCl_ev1-00_2005.nc4.h5\"}]}]" ;
 
 group: HALOE {
   dimensions:

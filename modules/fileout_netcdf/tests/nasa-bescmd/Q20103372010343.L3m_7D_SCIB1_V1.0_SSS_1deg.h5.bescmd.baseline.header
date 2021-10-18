@@ -75,5 +75,6 @@ variables:
 		:Suggested_Image_Scaling_Maximum = 38.f ;
 		:Suggested_Image_Scaling_Type = "LINEAR" ;
 		:Suggested_Image_Scaling_Applied = "No" ;
-		:history = "removed date-timex Q20103372010343.L3m_7D_SCIB1_V1.0_SSS_1deg.h5" ;
+		:history = "removed date-timex Q20103372010343.L3m_7D_SCIB1_V1.0_SSS_1deg.h5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"Q20103372010343.L3m_7D_SCIB1_V1.0_SSS_1deg.h5\"}]}]" ;
 }

@@ -202,7 +202,7 @@ variables:
 		:comment = "SWDB_L310 data is the arithmetic mean of all SWDB_L2 data located in each grid element after filtering by confidence flag.  Only those L2 cells having a confidence flag equal to 3 over land or 2 or 3 over ocean are used." ;
 		:references = "http://disc.gsfc.nasa.gov/measures" ;
 		:institution = "NASA Goddard Space Flight Center" ;
-		:history = "removed date-timex DeepBlue-SeaWiFS-1.0_L3_20100613_v004-20130604T133539Z.h5" ;
+		:history = "20130604T133539Z ./bin/l3gen_swdb 2010 164 etc/config tmp/l3gen_swdb.kL11161\000\000\000\000\nremoved date-timex DeepBlue-SeaWiFS-1.0_L3_20100613_v004-20130604T133539Z.h5\n" ;
 		:long_name = "SeaWiFS Deep Blue Aerosol Optical Depth and Angstrom Exponent Daily Level 3 Data Gridded at 1.0 Degrees" ;
 		:title = "SeaWiFS Deep Blue Aerosol Optical Depth and Angstrom Exponent Daily Level 3 Data Gridded at 1.0 Degrees" ;
 		:short_name = "SWDB_L310" ;
@@ -237,6 +237,7 @@ variables:
 		:spatial_completeness_definition = "ratio of number of grid elements covered by input swath data to total grid size" ;
 		:spatial_completeness_comment = "little or no data missing" ;
 		:spatial_completeness_ratio = 0.6370988f ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"DeepBlue-SeaWiFS-1.0_L3_20100613_v004-20130604T133539Z.h5\"}]}]" ;
 
 group: diagnostics {
   variables:

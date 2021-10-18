@@ -78,6 +78,7 @@ BES.DefaultResponseMethod=POST
 # Data Handler Specific key/value parameters                            #
 #                                                                       #
 #-----------------------------------------------------------------------#
+H5.EnableCF=false
 NCML.TempDirectory=@abs_top_srcdir@/modules/ncml_module/tests/cache
 NCML.GlobalAttributesContainerName=NC_GLOBAL
 
