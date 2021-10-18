@@ -531,35 +531,6 @@ void Chunk::add_tracking_query_param() {
     }
 }
 
-#if 0
-/**
- * @brief function version of Chunk::inflate_chunk for use with pthreads
- *
- * @note Only use this with child threads
- * @todo Rewrite this as glue to the method?
- *
- * @param arg_list Pointer to an inflate_chunk_args instance. That struct contains
- * The Chunk object, booleans that describe if the chunk is compressed or shuffled,
- * the expected chunk size and the element size (chunk size is in elements, not bytes).
- * @see Chunk::inflate_chunk()
- */
-void *inflate_chunk(void *arg_list)
-{
-    inflate_chunk_args *args = reinterpret_cast<inflate_chunk_args*>(arg_list);
-
-    try {
-        args->chunk->inflate_chunk(args->deflate, args->shuffle, args->chunk_size, args->elem_width);
-    }
-    catch (BESError &error) {
-        delete args;
-        pthread_exit(new BESError(error));
-    }
-
-    delete args;
-    pthread_exit(NULL);
-}
-#endif
-
 uint32_t
 checksum_fletcher32(const void *_data, size_t _len)
 {
@@ -599,56 +570,6 @@ checksum_fletcher32(const void *_data, size_t _len)
 
     return ((sum2 << 16) | sum1);
 } /* end H5_checksum_fletcher32() */
-
-#if 0
-
-uint32_t fletcher32_checksum(const uint16_t *data, size_t len) {
-    uint32_t c0, c1;
-    len = (len + 1) & ~1;      /* Round up len to words */
-
-    /* We similarly solve for n > 0 and n * (n+1) / 2 * (2^16-1) < (2^32-1) here. */
-    /* On modern computers, using a 64-bit c0/c1 could allow a group size of 23726746. */
-    for (c0 = c1 = 0; len > 0; ) {
-        size_t blocklen = len;
-        if (blocklen > 360*2) {
-            blocklen = 360*2;
-        }
-        len -= blocklen;
-        do {
-            c0 = c0 + *data++;
-            c1 = c1 + c0;
-        } while ((blocklen -= 2));
-        c0 = c0 % 65535;
-        c1 = c1 % 65535;
-    }
-    return (c1 << 16 | c0);
-}
-
-uint32_t fletcher32_chunk(char *chunk, unsigned long long chunk_size) {
-//    fletcher32 algorthm
-    uint32_t c0, c1;
-    unsigned long long len = chunk_size;
-    uint32_t *data = (uint32_t*)chunk;
-    len = (len + 1) & ~1;      /* Round up len to words */
-
-    /* We similarly solve for n > 0 and n * (n+1) / 2 * (2^16-1) < (2^32-1) here. */
-    /* On modern computers, using a 64-bit c0/c1 could allow a group size of 23726746. */
-    for (c0 = c1 = 0; len > 0; ) {
-        size_t blocklen = len;
-        if (blocklen > 360*2) {
-            blocklen = 360*2;
-        }
-        len -= blocklen;
-        do {
-            c0 = c0 + *data++;
-            c1 = c1 + c0;
-        } while ((blocklen -= 2));
-        c0 = c0 % 65535;
-        c1 = c1 % 65535;
-    }
-    return (c1 << 16 | c0);
-}
-#endif
 
 /**
  * @brief Decompress data in the chunk, managing the Chunk's data buffers
