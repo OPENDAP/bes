@@ -165,16 +165,17 @@ static const char *months[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul",
  */
 string BESUtil::rfc822_date(const time_t t)
 {
-    struct tm *stm = gmtime(&t);
+    struct tm stm{};
+    gmtime_r(&t, &stm);
     char d[256];
 
-    snprintf(d, 255, "%s, %02d %s %4d %02d:%02d:%02d GMT", days[stm->tm_wday], stm->tm_mday, months[stm->tm_mon], 1900 + stm->tm_year, stm->tm_hour,
-        stm->tm_min, stm->tm_sec);
+    snprintf(d, 255, "%s, %02d %s %4d %02d:%02d:%02d GMT", days[stm.tm_wday], stm.tm_mday,
+             months[stm.tm_mon], 1900 + stm.tm_year, stm.tm_hour, stm.tm_min, stm.tm_sec);
     d[255] = '\0';
-    return string(d);
+    return {d};
 }
 
-string BESUtil::unhexstring(string s)
+string BESUtil::unhexstring(const string& s)
 {
     int val;
     istringstream ss(s);
@@ -182,7 +183,7 @@ string BESUtil::unhexstring(string s)
     char tmp_str[2];
     tmp_str[0] = static_cast<char>(val);
     tmp_str[1] = '\0';
-    return string(tmp_str);
+    return {tmp_str};
 }
 
 // I modified this to mirror the version in libdap. The change allows several
@@ -267,7 +268,7 @@ void BESUtil::check_path(const string &path, const string &root, bool follow_sym
     // function for the eval operation.
     int (*ye_old_stat_function)(const char *pathname, struct stat *buf);
     if (follow_sym_links) {
-        BESDEBUG(MODULE, "check_path() - Using 'stat' function (follow_sym_links = true)" << endl);
+        BESDEBUG(MODULE, prolog << "Using 'stat' function (follow_sym_links = true)" << endl);
         ye_old_stat_function = &stat;
     }
     else {
@@ -279,51 +280,57 @@ void BESUtil::check_path(const string &path, const string &root, bool follow_sym
     // not allowed.
     string::size_type dotdot = path.find("..");
     if (dotdot != string::npos) {
-        string s = (string) "You are not allowed to access the node " + path;
+        string s ("Upward path traversal (i.e. '..') is not supported. path: ");
+        s.append(path);
         throw BESForbiddenError(s, __FILE__, __LINE__);
     }
 
     // What I want to do is to take each part of path and check to see if it
     // is a symbolic link and it is accessible. If everything is ok, add the
-    // next part of the path.
-    bool done = false;
+    // next part of the path. This is a downward traversal, staring with the
+    // the root directory (aka BES.Catalog.catalog.RootDirectory in the config)
+    // add the left most remaining path component to the end of the full_path,
+    // stat that, and proceed to the next until done.
+    //
+    // Initialize and normalize the remaining_path, stripping leading and trailing slashes
+    string remaining_path  = path;
+    BESDEBUG(MODULE, prolog  << "remaining_path: " << remaining_path << endl);
+    if (remaining_path[0] == '/') {
+        remaining_path = remaining_path.substr(1);
+    }
+    if (remaining_path[remaining_path.length() - 1] == '/') {
+        remaining_path = remaining_path.substr(0, remaining_path.length() - 1);
+    }
 
-    // what is remaining to check
-    string rem = path;
-    if (rem[0] == '/') rem = rem.substr(1); // substr(1, rem.length() - 1); jhrg 3/5/18
-    if (rem[rem.length() - 1] == '/') rem = rem.substr(0, rem.length() - 1);
-
-    // full path of the thing to check
+    // The fullpath is our "graph" starting with root and becoming the request resource.
     string fullpath = root;
+    // Normalize the fullpath, stripping only the trailing slash (it's a fully qualifed path)
     if (fullpath[fullpath.length() - 1] == '/') {
         fullpath = fullpath.substr(0, fullpath.length() - 1);
     }
 
-    // path checked so far
-    //string checked;
+    bool done = false;
     while (!done) {
-        size_t slash = rem.find('/');
+        // Find the end of the leftmost path component on the remaining_path.
+        size_t slash = remaining_path.find('/');
         if (slash == string::npos) {
-            // fullpath = fullpath + "/" + rem; jhrg 3/5/18
-            fullpath.append("/").append(rem);
-            // checked = checked + "/" + rem;
+            // no more slashes, we're done,
+            fullpath.append("/").append(remaining_path);
+            remaining_path="";
             done = true;
         }
         else {
-            // fullpath = fullpath + "/" + rem.substr(0, slash);
-            fullpath.append("/").append(rem.substr(0, slash));
-            // checked = checked + "/" + rem.substr(0, slash);
-            //checked.append("/").append(rem.substr(0, slash));
-            rem = rem.substr(slash + 1, rem.length() - slash);
+            // otherwise, append & remove
+            fullpath.append("/").append(remaining_path.substr(0, slash));
+            remaining_path = remaining_path.substr(slash + 1, remaining_path.length() - slash);
         }
-
-        //checked = fullpath;
-
+        // Test...
+        BESDEBUG(MODULE, prolog  << "Testing: " << fullpath << endl);
         struct stat buf;
         int statret = ye_old_stat_function(fullpath.c_str(), &buf);
         if (statret == -1) {
-            int errsv = errno;
             // stat failed, so not accessible. Get the error string,
+            int errsv = errno;
             // store in error, and throw exception
             char *s_err = strerror(errsv);
             //string error = "Unable to access node " + checked + ": ";
@@ -333,17 +340,21 @@ void BESUtil::check_path(const string &path, const string &root, bool follow_sym
             else
                 error.append("unknown error");
 
-            BESDEBUG(MODULE, "check_path() - error: " << error << "   errno: " << errno << endl);
-
             // ENOENT means that the node wasn't found.
             // On some systems a file that doesn't exist returns ENOTDIR because: w.f.t?
             // Otherwise, access is being denied for some other reason
             if (errsv == ENOENT || errsv == ENOTDIR) {
                 // On some systems a file that doesn't exist returns ENOTDIR because: w.f.t?
-                throw BESNotFoundError(error, __FILE__, __LINE__);
+                stringstream ss;
+                ss << "Failed to locate resource " << fullpath;
+                BESDEBUG(MODULE, prolog << "ERROR: " << ss.str() << "  errno: " << errno << endl);
+                throw BESNotFoundError(ss.str(), __FILE__, __LINE__);
             }
             else {
-                throw BESForbiddenError(error, __FILE__, __LINE__);
+                stringstream ss;
+                ss << "Unable to access node " << fullpath;
+                BESDEBUG(MODULE, prolog << "ERROR: " << ss.str() << "  errno: " << errno << endl);
+                throw BESForbiddenError(ss.str(), __FILE__, __LINE__);
             }
         }
         else {
@@ -353,7 +364,10 @@ void BESUtil::check_path(const string &path, const string &root, bool follow_sym
             // and return information about the file/dir pointed to by the symlink
             if (S_ISLNK(buf.st_mode)) {
                 //string error = "You do not have permission to access " + checked;
-                throw BESForbiddenError(string("You do not have permission to access ") + fullpath, __FILE__, __LINE__);
+                stringstream ss;
+                ss << "You do not have permission to access " << fullpath;
+                BESDEBUG(MODULE, prolog << "ERROR: " << ss.str() << "  errno: " << errno << endl);
+                throw BESForbiddenError(ss.str(), __FILE__, __LINE__);
             }
         }
     }
@@ -1114,10 +1128,15 @@ string BESUtil::get_time(time_t the_time, bool use_local_time)
     //
     // UTC is the default. Override to local time based on the
     // passed parameter 'use_local_time'
-    if (!use_local_time)
-        status = strftime(buf, sizeof buf, "%FT%T%Z", gmtime(&the_time));
-    else
-        status = strftime(buf, sizeof buf, "%FT%T%Z", localtime(&the_time));
+    struct tm result{};
+    if (!use_local_time) {
+        gmtime_r(&the_time, &result);
+        status = strftime(buf, sizeof buf, "%FT%T%Z", &result);
+    }
+    else {
+        localtime_r(&the_time, &result);
+        status = strftime(buf, sizeof buf, "%FT%T%Z", &result);
+    }
 
     if (!status) {
         ERROR_LOG(prolog + "Error formatting time value!");
@@ -1149,13 +1168,6 @@ vector<string> BESUtil::split(const string &s, char delim /* '/' */, bool skip_e
             continue;
 
         tokens.push_back(item);
-
-#if 0
-        // If skip_empty is false, item is not ever pushed, regardless of whether it's empty. jhrg 1/24/19
-        if (skip_empty && !item.empty())
-            tokens.push_back(item);
-#endif
-
     }
 
     return tokens;

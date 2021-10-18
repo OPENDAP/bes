@@ -474,6 +474,11 @@ void Chunk::add_tracking_query_param() {
     if(d_data_url == nullptr)
         return;
 
+    bool found = false;
+    string cloudydap_context_value = BESContextManager::TheManager()->get_context(S3_TRACKING_CONTEXT, found);
+    if (!found)
+        return;
+
     /** - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
      * Cloudydap test hack where we tag the S3 URLs with a query string for the S3 log
      * in order to track S3 requests. The tag is submitted as a BESContext with the
@@ -488,17 +493,14 @@ void Chunk::add_tracking_query_param() {
      * Well, it's a function now... ;-) jhrg 8/6/18
      */
 
-    // All S3 buckets, virtual host style URL
-    const string s3_vh_regex_str = R"(^https?:\/\/([a-z]|[0-9])(([a-z]|[0-9]|\.|-){1,61})([a-z]|[0-9])\.s3((\.|-)us-(east|west)-(1|2))?\.amazonaws\.com\/.*$)";
-    static BESRegex s3_vh_regex(s3_vh_regex_str.c_str());
-
-    // All S3 buckets, path style URL
-    const string  s3_path_regex_str = R"(^https?:\/\/s3((\.|-)us-(east|west)-(1|2))?\.amazonaws\.com\/([a-z]|[0-9])(([a-z]|[0-9]|\.|-){1,61})([a-z]|[0-9])\/.*$)";
-    static BESRegex s3_path_regex(s3_path_regex_str.c_str());
-
-
     bool add_tracking = false;
 
+    // All S3 buckets, virtual host style URL
+    // Simpler regex that's likely equivalent:
+    // ^https?:\/\/[a-z0-9]([-.a-z0-9]){1,61}[a-z0-9]\.s3[-.]us-(east|west)-[12])?\.amazonaws\.com\/.*$
+    string s3_vh_regex_str = R"(^https?:\/\/([a-z]|[0-9])(([a-z]|[0-9]|\.|-){1,61})([a-z]|[0-9])\.s3((\.|-)us-(east|west)-(1|2))?\.amazonaws\.com\/.*$)";
+
+    BESRegex s3_vh_regex(s3_vh_regex_str.c_str());
     int match_result = s3_vh_regex.match(d_data_url->str().c_str(), d_data_url->str().length());
     if(match_result>=0) {
         auto match_length = (unsigned int) match_result;
@@ -510,6 +512,9 @@ void Chunk::add_tracking_query_param() {
     }
 
     if(!add_tracking){
+        // All S3 buckets, path style URL
+        string  s3_path_regex_str = R"(^https?:\/\/s3((\.|-)us-(east|west)-(1|2))?\.amazonaws\.com\/([a-z]|[0-9])(([a-z]|[0-9]|\.|-){1,61})([a-z]|[0-9])\/.*$)";
+        BESRegex s3_path_regex(s3_path_regex_str.c_str());
         match_result = s3_path_regex.match(d_data_url->str().c_str(), d_data_url->str().length());
         if(match_result>=0) {
             auto match_length = (unsigned int) match_result;
@@ -523,11 +528,7 @@ void Chunk::add_tracking_query_param() {
 
     if (add_tracking) {
         // Yup, headed to S3.
-        bool found = false;
-        string cloudydap_context_value = BESContextManager::TheManager()->get_context(S3_TRACKING_CONTEXT, found);
-        if (found) {
-            d_query_marker.append(S3_TRACKING_CONTEXT).append("=").append(cloudydap_context_value);
-        }
+        d_query_marker.append(S3_TRACKING_CONTEXT).append("=").append(cloudydap_context_value);
     }
 }
 

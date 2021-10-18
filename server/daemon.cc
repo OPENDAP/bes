@@ -796,6 +796,7 @@ static void set_group_id()
     else {
         // specified group is a group name
         struct group *ent;
+        // FIXME replace getgrname() and getpwnam() with the _r versions. jhrg 8/11/21
         ent = getgrnam(group_str.c_str());
         if (!ent) {
             BESDEBUG("server", "beslistener: FAILED" << endl);

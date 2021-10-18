@@ -7,7 +7,7 @@
         <String name="Bz"/>
         <String name="Bx2"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>0000000c</Value>
+            removed checksum
         </Attribute>
     </Sequence>
     <Attribute name="FF_GLOBAL" type="Container">
@@ -23,22 +23,22 @@
         <Attribute name="isc" type="String">
             <Value>3</Value>
         </Attribute>
-        <Attribute name="traj1" type="Float32">
+        <Attribute name="traj1" type="Float64">
             <Value>1356310000.000000</Value>
         </Attribute>
-        <Attribute name="traj2" type="Float32">
+        <Attribute name="traj2" type="Float64">
             <Value>637963000.000000</Value>
         </Attribute>
-        <Attribute name="traj3" type="Float32">
+        <Attribute name="traj3" type="Float64">
             <Value>1716290.000000</Value>
         </Attribute>
-        <Attribute name="traj4" type="Float32">
+        <Attribute name="traj4" type="Float64">
             <Value>0.000000</Value>
         </Attribute>
-        <Attribute name="traj5" type="Float32">
+        <Attribute name="traj5" type="Float64">
             <Value>0.000000</Value>
         </Attribute>
-        <Attribute name="traj6" type="Float32">
+        <Attribute name="traj6" type="Float64">
             <Value>0.000000</Value>
         </Attribute>
         <Attribute name="text" type="String">
@@ -73,5 +73,6 @@ Sequence {
 15: { "0.599724E 05", 4.92424, "0.124016E 01", "0.172423E 01", "0.242563E 02" }, 
 16: { "0.601390E 05", 4.91499, "0.113582E 01", "0.161638E 01", "0.241653E 02" }, 
 17: { "0.599724E 05", 4.83039, "0.402431E 00", "0.182957E 01", "0.233454E 02" }, 
-18: { "0.599724E 05", 4.92885, "0.194080E 00", "0.150658E 01", "0.243171E 02" } };
+18: { "0.599724E 05", 4.92885, "0.194080E 00", "0.150658E 01", "0.243171E 02" }, 
+19: { "0.599724E 05", 5.0177, "0.364660E 00", "0.107750E 01", "0.251883E 02" } };
 

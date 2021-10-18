@@ -6,35 +6,35 @@
         <Dim name="/r"/>
         <Dim name="/c"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>116aa82c</Value>
+            removed checksum
         </Attribute>
     </Int32>
     <Int32 name="y">
         <Dim name="/r"/>
         <Dim name="/c"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>34d7e4f8</Value>
+            removed checksum
         </Attribute>
     </Int32>
     <Int32 name="z">
         <Dim name="/r"/>
         <Dim name="/c"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>f471e0c9</Value>
+            removed checksum
         </Attribute>
     </Int32>
     <Int32 name="t">
         <Dim name="/r"/>
         <Dim name="/c"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>e616ec84</Value>
+            removed checksum
         </Attribute>
     </Int32>
     <Int32 name="u">
         <Dim name="/r"/>
         <Dim name="/c"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>116aa82c</Value>
+            removed checksum
         </Attribute>
     </Int32>
     <Attribute name="FF_GLOBAL" type="Container">

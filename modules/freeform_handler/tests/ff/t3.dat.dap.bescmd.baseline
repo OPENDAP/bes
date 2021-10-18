@@ -5,26 +5,26 @@
     <Int32 name="inger1">
         <Dim name="/j"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>2918a990</Value>
+            removed checksum
         </Attribute>
     </Int32>
     <Int32 name="inger2">
         <Dim name="/j"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>2918a990</Value>
+            removed checksum
         </Attribute>
     </Int32>
     <Float32 name="reel1">
         <Dim name="/i"/>
         <Dim name="/j"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>3ca8f6a1</Value>
+            removed checksum
         </Attribute>
     </Float32>
     <Int32 name="inger3">
         <Dim name="/j"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>49c3d0b7</Value>
+            removed checksum
         </Attribute>
     </Int32>
     <Attribute name="FF_GLOBAL" type="Container">

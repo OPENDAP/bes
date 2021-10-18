@@ -40,10 +40,7 @@
 // by adding a query string that will show up in those logs. This is
 // activated by using a special BES context with the name 'cloudydap.'
 #define S3_TRACKING_CONTEXT "cloudydap"
-
-// Adding the S3 tracking was done for the original POC code. Suppres.
-// jhrg 10/15/21
-#define ENABLE_TRACKING 1
+#define ENABLE_TRACKING_QUERY_PARAMETER 0
 
 namespace dmrpp {
 
@@ -166,7 +163,7 @@ public:
             d_is_read(false),
             d_is_inflated(false)
     {
-#if ENABLE_TRACKING
+#if ENABLE_TRACKING_QUERY_PARAMETER
         add_tracking_query_param();
 #endif
         set_position_in_array(pia_str);
@@ -197,7 +194,7 @@ public:
             d_is_read(false),
             d_is_inflated(false)
     {
-#if ENABLE_TRACKING
+#if ENABLE_TRACKING_QUERY_PARAMETER
         add_tracking_query_param();
 #endif
         set_position_in_array(pia_str);
@@ -230,7 +227,7 @@ public:
             d_is_read(false),
             d_is_inflated(false)
     {
-#if ENABLE_TRACKING
+#if ENABLE_TRACKING_QUERY_PARAMETER
         add_tracking_query_param();
 #endif
         set_position_in_array(pia_vec);
@@ -262,7 +259,7 @@ public:
             d_is_read(false),
             d_is_inflated(false)
     {
-#if ENABLE_TRACKING
+#if ENABLE_TRACKING_QUERY_PARAMETER
         add_tracking_query_param();
 #endif
         set_position_in_array(pia_vec);
@@ -451,6 +448,7 @@ public:
     {
         return d_chunk_position_in_array;
     }
+
 
     void add_tracking_query_param();
 

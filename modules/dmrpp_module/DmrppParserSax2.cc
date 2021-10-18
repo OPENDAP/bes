@@ -924,10 +924,21 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
             string href  = parser->get_attribute_val("href", attributes, nb_attributes);
             parser->dmrpp_dataset_href  = shared_ptr<http::url>(new http::url(href,trusted));
             BESDEBUG(PARSER, prolog << "Processed 'href' value into data_url. href: " << parser->dmrpp_dataset_href->str() << (trusted?"(trusted)":"") << endl);
-            BESDEBUG(PARSER, prolog << "Attempting to locate and cache the effective URL for Dataset URL: " << parser->dmrpp_dataset_href->str() << endl);
-            // TODO 10/8/21 Remove. jhrg.
-            auto effective_url = EffectiveUrlCache::TheCache()->get_effective_url(parser->dmrpp_dataset_href);
-            BESDEBUG(PARSER, prolog << "EffectiveUrlCache::get_effective_url() returned: " << effective_url->str() << endl);
+
+            //######################################################################################################
+            // Stop parser EffectiveUrl resolution (ndp - 08/27/2021)
+            // I dropped this because:
+            // - The Chunk::get_data_url() method calls EffectiveUrlCache::TheCache()->get_effective_url(data_url)
+            // - EffectiveUrlCache::TheCache()->get_effective_url(data_url) method is thread safe
+            // - By dropping these calls from the parser, which is in a single threaded section of the code we can
+            //   resolve the URL during a multithreaded operation (reading the chunks) and reduce the overall
+            //   time cost of resolving all of the chunk URLs with concurrency.
+            // -----------------------------------------------------------------------------------------------------
+            //BESDEBUG(PARSER, prolog << "Attempting to locate and cache the effective URL for Dataset URL: " << parser->dmrpp_dataset_href->str() << endl);
+            //auto effective_url = EffectiveUrlCache::TheCache()->get_effective_url(parser->dmrpp_dataset_href);
+            //BESDEBUG(PARSER, prolog << "EffectiveUrlCache::get_effective_url() returned: " << effective_url->str() << endl);
+            //######################################################################################################
+
         }
         BESDEBUG(PARSER, prolog << "Dataset dmrpp:href is set to '" << parser->dmrpp_dataset_href->str() << "'" << endl);
 
@@ -1152,12 +1163,23 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 data_url_str = parser->get_attribute_val("href", attributes, nb_attributes);
                 data_url = shared_ptr<http::url> ( new http::url(data_url_str,trusted));
                 BESDEBUG(PARSER, prolog << "Processed 'href' value into data_url. href: " << data_url->str() << (trusted?"":"(trusted)") << endl);
+                //######################################################################################################
+                // Stop parser EffectiveUrl resolution (ndp - 08/27/2021)
+                // I dropped this because:
+                // - The Chunk::get_data_url() method calls EffectiveUrlCache::TheCache()->get_effective_url(data_url)
+                // - EffectiveUrlCache::TheCache()->get_effective_url(data_url) method is thread safe
+                // - By dropping these calls from the parser, which is in a single threaded section of the code, we can
+                //   resolve the URL during a multi-threaded operation (reading the chunks) and reduce the overall
+                //   time cost of resolving all of the chunk URLs with concurrency.
+                // -----------------------------------------------------------------------------------------------------
                 // We may have to cache the last accessed/redirect URL for data_url here because this URL
                 // may be unique to this chunk.
-                BESDEBUG(PARSER, prolog << "Attempting to locate and cache the effective URL for Chunk URL: " << data_url->str() << endl);
-                // FIXME 10/8/21 Don't call this here. jhrg
-                auto effective_url = EffectiveUrlCache::TheCache()->get_effective_url(data_url);
-                BESDEBUG(PARSER, prolog << "EffectiveUrlCache::get_effective_url() returned: " << effective_url->str() << endl);
+
+                //BESDEBUG(PARSER, prolog << "Attempting to locate and cache the effective URL for Chunk URL: " << data_url->str() << endl);
+                //auto effective_url = EffectiveUrlCache::TheCache()->get_effective_url(data_url);
+                //BESDEBUG(PARSER, prolog << "EffectiveUrlCache::get_effective_url() returned: " << effective_url->str() << endl);
+                //######################################################################################################
+
             }
             else {
                 BESDEBUG(PARSER, prolog << "No attribute 'href' located. Trying Dataset/@dmrpp:href..." << endl);
@@ -1168,15 +1190,6 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 // done in the evaluation of the parser_start case.
                 BESDEBUG(PARSER, prolog << "Processing dmrpp:href into data_url. dmrpp:href='" << data_url->str() << "'" << endl);
             }
-            // First we see if it's an HTTP URL, and if not we
-            // make a local file url based on the Catalog Root
-#if 0
-            std::string http("http://");
-            std::string https("https://");
-            std::string file("file://");
-            if (data_url.compare(0, http.size(), http) && data_url.compare(0, https.size(), https)
-                && data_url.compare(0, file.size(), file))
-#endif
 
             if (data_url->protocol() != HTTP_PROTOCOL && data_url->protocol() != HTTPS_PROTOCOL && data_url->protocol() != FILE_PROTOCOL) {
                 BESDEBUG(PARSER, prolog << "data_url does NOT start with 'http://', 'https://' or 'file://'. "
@@ -1254,9 +1267,6 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
 
     BESDEBUG(PARSER, prolog << "Start element exit state: " << states[parser->get_state()] << endl);
 }
-
-
-
 
 void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *prefix, const xmlChar *URI)
 {

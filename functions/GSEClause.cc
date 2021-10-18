@@ -40,9 +40,11 @@
 #include <Array.h>
 #include <Grid.h>
 #include <dods-datatypes.h>
-#include <Error.h>
-#include <InternalErr.h>
+//#include <Error.h>
+//#include <InternalErr.h>
 #include <debug.h>
+
+#include "BESInternalError.h"
 
 #include "GSEClause.h"
 #include "parser.h"
@@ -95,12 +97,19 @@ GSEClause::set_map_min_max_value(T min, T max)
 }
 
 // Read the map array, scan, set start and stop.
+//
+// I switched to vals.at(x) instead of vals[x] because sonar scan was
+// complaining about access beyond the end of memory. The 'at()' method
+// is much more complex, so if we can go back to the
 template<class T>
 void
 GSEClause::set_start_stop()
 {
-    T *vals = new T[d_map->length()];
-    d_map->value(vals);
+    vector<T> vals(d_map->length());
+    d_map->value(&vals[0]);
+
+    if (!((unsigned long)d_start < vals.size() && (unsigned long)d_stop < vals.size()))
+        throw BESInternalError("Access beyond the bounds of a Grid Map.", __FILE__, __LINE__);
 
     // Set the map's max and min values for use in error messages (it's a lot
     // easier to do here, now, than later... 9/20/2001 jhrg)
@@ -114,15 +123,14 @@ GSEClause::set_start_stop()
     int i = d_start;
     int end = d_stop;
     while (i <= end && !compare<T>(vals[i], d_op1, d_value1))
-        i++;
-
+        ++i;
     d_start = i;
 
-    // Now scan backward from the end. We scan all the way to the actual start
+    // Now scan backward from the end. We scan all the way to the actual start,
     // although it would probably work to stop at 'i >= d_start'.
     i = end;
     while (i >= 0 && !compare<T>(vals[i], d_op1, d_value1))
-        i--;
+        --i;
     d_stop = i;
 
     // Every clause must have one operator but the second is optional since
@@ -130,21 +138,19 @@ GSEClause::set_start_stop()
     // loops took care of constraints like 'x < 7' but we need the following
     // for ones like '3 < x < 7'.
     if (d_op2 != dods_nop_op) {
-        int i = d_start;
-        int end = d_stop;
+        i = d_start;
+        end = d_stop;
         while (i <= end && !compare<T>(vals[i], d_op2, d_value2))
-            i++;
+            ++i;
 
         d_start = i;
 
         i = end;
         while (i >= 0 && !compare<T>(vals[i], d_op2, d_value2))
-            i--;
+            --i;
 
         d_stop = i;
     }
-    
-    delete[] vals;
 }
 
 void

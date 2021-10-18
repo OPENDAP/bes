@@ -76,7 +76,8 @@ variables:
 		:WestBoundingCoordinate = -180.f ;
 		:TAI93At0zOfGranule = 429753606. ;
 		:ProductionDateTime = "removed date-time.0Z" ;
-		:history = "removed date-timex OMI-Aura_L2-OMIAuraAER_2006m0815t130241-o11086_v01-00-2018m0529t115547.h5" ;
+		:history = "removed date-timex OMI-Aura_L2-OMIAuraAER_2006m0815t130241-o11086_v01-00-2018m0529t115547.h5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"OMI-Aura_L2-OMIAuraAER_2006m0815t130241-o11086_v01-00-2018m0529t115547.h5\"}]}]" ;
 
 group: ANCILLARY_DATA {
   variables:

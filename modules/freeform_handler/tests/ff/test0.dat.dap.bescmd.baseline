@@ -3,7 +3,7 @@
     <Sequence name="data">
         <Int16 name="value"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>40ba000d</Value>
+            removed checksum
         </Attribute>
     </Sequence>
     <Attribute name="FF_GLOBAL" type="Container">
@@ -34,5 +34,6 @@ Sequence {
 8: { 9 }, 
 9: { 10 }, 
 10: { 11 }, 
-11: { 12 } };
+11: { 12 }, 
+12: { 13 } };
 

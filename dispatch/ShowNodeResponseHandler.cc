@@ -103,7 +103,7 @@ void ShowNodeResponseHandler::execute(BESDataHandlerInterface &dhi)
     BESDEBUG(MODULE, prolog << "use_container: " << container << endl);
 
     // Get the node info from the catalog.
-    auto_ptr<CatalogNode> node(catalog->get_node(container));
+    unique_ptr<CatalogNode> node(catalog->get_node(container));
 
     // If the path name passed into this command is '/' we are using the default
     // catalog and must add any other catalogs to the set of nodes shown at the
@@ -113,16 +113,16 @@ void ShowNodeResponseHandler::execute(BESDataHandlerInterface &dhi)
 
         BESDEBUG(MODULE, prolog << "Adding additional catalog nodes to top level node." << endl);
 
-        BESCatalogList::catalog_citer i = BESCatalogList::TheCatalogList()->first_catalog();
-        BESCatalogList::catalog_citer e = BESCatalogList::TheCatalogList()->end_catalog();
+        auto i = BESCatalogList::TheCatalogList()->first_catalog();
+        auto e = BESCatalogList::TheCatalogList()->end_catalog();
         for (; i != e; i++) {
             string catalog_name = i->first;
-            BESCatalog *catalog = i->second;
+            BESCatalog *cat = i->second;
 
-            BESDEBUG(MODULE, prolog << "Checking catalog '" << catalog_name << "' ptr: " << (void *) catalog << endl);
+            BESDEBUG(MODULE, prolog << "Checking catalog '" << catalog_name << "' ptr: " << (void *) cat << endl);
 
-            if (catalog != BESCatalogList::TheCatalogList()->default_catalog()) {
-                CatalogItem *collection = new CatalogItem(catalog_name, 0, BESUtil::get_time(), false, CatalogItem::node);
+            if (cat != BESCatalogList::TheCatalogList()->default_catalog()) {
+                auto *collection = new CatalogItem(catalog_name, 0, BESUtil::get_time(), false, CatalogItem::node);
                 node->add_node(collection);
 
                 BESDEBUG(MODULE, prolog << "Added catalog node " << catalog_name << " to top level node." << endl);

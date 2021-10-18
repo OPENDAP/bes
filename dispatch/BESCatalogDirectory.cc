@@ -167,7 +167,7 @@ BESCatalogDirectory::show_catalog(const string &node, BESCatalogEntry *entry)
     // Is this node a directory?
     // TODO use stat() instead. jhrg 2.26.18
     DIR *dip = opendir(fullnode.c_str());
-    if (dip != NULL) {
+    if (dip != nullptr) {
         try {
             // The node is a directory
 
@@ -283,10 +283,15 @@ static string get_time(time_t the_time, bool use_local_time = false)
     //
     // Apologies for the twisted logic - UTC is the default. Override to
     // local time using BES.LogTimeLocal=yes in bes.conf. jhrg 11/15/17
-    if (!use_local_time)
-        status = strftime(buf, sizeof buf, "%FT%T%Z", gmtime(&the_time));
-    else
-        status = strftime(buf, sizeof buf, "%FT%T%Z", localtime(&the_time));
+    struct tm result;
+    if (!use_local_time) {
+        gmtime_r(&the_time, &result);
+        status = strftime(buf, sizeof buf, "%FT%T%Z", &result);
+    }
+    else {
+        localtime_r(&the_time, &result);
+        status = strftime(buf, sizeof buf, "%FT%T%Z", &result);
+    }
 
     if (!status)
         ERROR_LOG("Error getting last modified time time for a leaf item in BESCatalogDirectory.");
@@ -626,7 +631,7 @@ BESCatalogDirectory::get_node(const string &path) const
 void BESCatalogDirectory::get_site_map(const string &prefix, const string &node_suffix, const string &leaf_suffix,
     ostream &out, const string &path) const
 {
-    auto_ptr<CatalogNode> node(get_node(path));
+    unique_ptr<CatalogNode> node(get_node(path));
 
 #if ITEMS
     for (CatalogNode::item_citer i = node->items_begin(), e = node->items_end(); i != e; ++i) {

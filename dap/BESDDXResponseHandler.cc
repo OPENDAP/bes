@@ -130,24 +130,24 @@ void BESDDXResponseHandler::execute(BESDataHandlerInterface &dhi)
         dhi.first_container();  // must reset container; execute_each() iterates over all of them
 
 #if ANNOTATION_SYSTEM
-            // Support for the experimental Dataset Annotation system. jhrg 12/19/18
-            if (!d_annotation_service_url.empty()) {
-                // resp_dds is a convenience object
-                BESDDSResponse *resp_dds = static_cast<BESDDSResponse*>(d_response_object);
+        // Support for the experimental Dataset Annotation system. jhrg 12/19/18
+        if (!d_annotation_service_url.empty()) {
+            // resp_dds is a convenience object
+            BESDDSResponse *resp_dds = static_cast<BESDDSResponse*>(d_response_object);
 
-                // Add the Annotation Service URL attribute in the DODS_EXTRA container.
-                AttrTable *dods_extra = resp_dds->get_dds()->get_attr_table().find_container(DODS_EXTRA_ATTR_TABLE);
-                if (dods_extra)
-                    dods_extra->append_attr(DODS_EXTRA_ANNOTATION_ATTR, "String", d_annotation_service_url);
-                else {
-                    auto_ptr<AttrTable> new_dods_extra(new AttrTable);
-                    new_dods_extra->append_attr(DODS_EXTRA_ANNOTATION_ATTR, "String", d_annotation_service_url);
-                    resp_dds->get_dds()->get_attr_table().append_container(new_dods_extra.release(), DODS_EXTRA_ATTR_TABLE);
-                }
+            // Add the Annotation Service URL attribute in the DODS_EXTRA container.
+            AttrTable *dods_extra = resp_dds->get_dds()->get_attr_table().find_container(DODS_EXTRA_ATTR_TABLE);
+            if (dods_extra)
+                dods_extra->append_attr(DODS_EXTRA_ANNOTATION_ATTR, "String", d_annotation_service_url);
+            else {
+                unique_ptr<AttrTable> new_dods_extra(new AttrTable);
+                new_dods_extra->append_attr(DODS_EXTRA_ANNOTATION_ATTR, "String", d_annotation_service_url);
+                resp_dds->get_dds()->get_attr_table().append_container(new_dods_extra.release(), DODS_EXTRA_ATTR_TABLE);
             }
+        }
 #endif
 
-            if (mds && !function_in_ce(dhi.container->get_constraint())) {
+        if (mds && !function_in_ce(dhi.container->get_constraint())) {
             // dhi.first_container();  // must reset container; execute_each() iterates over all of them
             mds->add_responses(static_cast<BESDDSResponse*>(d_response_object)->get_dds(), dhi.container->get_relative_name());
         }

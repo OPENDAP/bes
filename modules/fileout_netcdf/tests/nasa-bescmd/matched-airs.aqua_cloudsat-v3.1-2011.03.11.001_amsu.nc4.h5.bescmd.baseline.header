@@ -15,7 +15,8 @@ dimensions:
 		:SOUTHBOUNDINGCOORDINATE = -78.0868835449219 ;
 		:EASTBOUNDINGCOORDINATE = 24.355131149292 ;
 		:WESTBOUNDINGCOORDINATE = -32.0012512207031 ;
-		:history = "removed date-timex matched-airs.aqua_cloudsat-v3.1-2011.03.11.001_amsu.nc4.h5" ;
+		:history = "removed date-timex matched-airs.aqua_cloudsat-v3.1-2011.03.11.001_amsu.nc4.h5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"matched-airs.aqua_cloudsat-v3.1-2011.03.11.001_amsu.nc4.h5\"}]}]" ;
 
 group: CloudSat {
   dimensions:

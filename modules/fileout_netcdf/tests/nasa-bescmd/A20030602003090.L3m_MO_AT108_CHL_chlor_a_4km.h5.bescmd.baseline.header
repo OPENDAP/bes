@@ -17,7 +17,7 @@ variables:
 		:temporalResolution = "other" ;
 		:processing_version = "2013.2NCDF" ;
 		:date_created = "2014122133058000" ;
-		:history = "removed date-timex A20030602003090.L3m_MO_AT108_CHL_chlor_a_4km.h5" ;
+		:history = "smigen par=A20030602003090.L3m_MO_AT108_CHL_chlor_a_4km.nc.param\000\000\000\000\nremoved date-timex A20030602003090.L3m_MO_AT108_CHL_chlor_a_4km.h5\n" ;
 		:l2_flag_names = "ATMFAIL,LAND,HILT,HISATZEN,STRAYLIGHT,CLDICE,COCCOLITH,LOWLW,CHLWARN,CHLFAIL,NAVWARN,MAXAERITER,ATMWARN,HISOLZEN,NAVFAIL,FILTER,HIGLINT" ;
 		:time_coverage_start = "removed date-time" ;
 		:time_coverage_end = "removed date-time" ;
@@ -73,6 +73,7 @@ variables:
 		:identifier_product_doi = "10.5067/AQUA/MODIS_OC.2014.0" ;
 		:keywords = "Oceans > Ocean Chemistry > Chlorophyll; Oceans > Ocean Optics > Ocean Color" ;
 		:keywords_vocabulary = "NASA Global Change Master Directory (GCMD) Science Keywords" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"A20030602003090.L3m_MO_AT108_CHL_chlor_a_4km.h5\"}]}]" ;
 
 group: processing_control {
 

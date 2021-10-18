@@ -6,35 +6,35 @@
         <Dim name="/r"/>
         <Dim name="/c"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>9193ef65</Value>
+            removed checksum
         </Attribute>
     </Float64>
     <Float64 name="yf">
         <Dim name="/r"/>
         <Dim name="/c"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>696d641c</Value>
+            removed checksum
         </Attribute>
     </Float64>
     <Float64 name="zf">
         <Dim name="/r"/>
         <Dim name="/c"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>73135bfd</Value>
+            removed checksum
         </Attribute>
     </Float64>
     <Float64 name="tf">
         <Dim name="/r"/>
         <Dim name="/c"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>5405d21a</Value>
+            removed checksum
         </Attribute>
     </Float64>
     <Float64 name="uf">
         <Dim name="/r"/>
         <Dim name="/c"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>20d76c29</Value>
+            removed checksum
         </Attribute>
     </Float64>
     <Attribute name="FF_GLOBAL" type="Container">

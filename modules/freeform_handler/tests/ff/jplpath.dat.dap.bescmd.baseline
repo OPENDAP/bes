@@ -8,7 +8,7 @@
         <Int32 name="seconds"/>
         <String name="DODS_URL"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>000007cb</Value>
+            removed checksum
         </Attribute>
     </Sequence>
     <Attribute name="FF_GLOBAL" type="Container">
@@ -5462,5 +5462,6 @@ Sequence {
 5424: { 1995, 362, 0, 0, 0, "http://podaac.jpl.nasa.gov/dods-bin/nph-hdf/dods/pathfinder/data_v4/best_sst/daily/descending/09km/1995/1995362h09dd-gdm.hdf.Z" }, 
 5425: { 1995, 363, 12, 0, 0, "http://podaac.jpl.nasa.gov/dods-bin/nph-hdf/dods/pathfinder/data_v4/best_sst/daily/ascending/09km/1995/1995363h09da-gdm.hdf.Z" }, 
 5426: { 1995, 363, 0, 0, 0, "http://podaac.jpl.nasa.gov/dods-bin/nph-hdf/dods/pathfinder/data_v4/best_sst/daily/descending/09km/1995/1995363h09dd-gdm.hdf.Z" }, 
-5427: { 1995, 364, 12, 0, 0, "http://podaac.jpl.nasa.gov/dods-bin/nph-hdf/dods/pathfinder/data_v4/best_sst/daily/ascending/09km/1995/1995364h09da-gdm.hdf.Z" } };
+5427: { 1995, 364, 12, 0, 0, "http://podaac.jpl.nasa.gov/dods-bin/nph-hdf/dods/pathfinder/data_v4/best_sst/daily/ascending/09km/1995/1995364h09da-gdm.hdf.Z" }, 
+5428: { 1995, 364, 0, 0, 0, "http://podaac.jpl.nasa.gov/dods-bin/nph-hdf/dods/pathfinder/data_v4/best_sst/daily/descending/09km/1995/1995364h09dd-gdm.hdf.Z" } };
 
