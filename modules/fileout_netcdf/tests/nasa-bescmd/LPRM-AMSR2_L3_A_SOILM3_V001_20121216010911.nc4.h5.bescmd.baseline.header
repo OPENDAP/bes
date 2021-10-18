@@ -100,5 +100,6 @@ variables:
 
 // global attributes:
 		:Conventions = "CF-1.0" ;
-		:history = "removed date-timex LPRM-AMSR2_L3_A_SOILM3_V001_20121216010911.nc4.h5" ;
+		:history = "removed date-timex LPRM-AMSR2_L3_A_SOILM3_V001_20121216010911.nc4.h5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"LPRM-AMSR2_L3_A_SOILM3_V001_20121216010911.nc4.h5\"}]}]" ;
 }

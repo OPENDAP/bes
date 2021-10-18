@@ -362,3 +362,186 @@ m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_COMPRESSION],  [dnl
     AT_CLEANUP
 
 ])
+
+# More macros for the CF DMR direct mapping in the HDF5 handler. 
+# This is mainly used for the NASA tests. KY 2021-10-11
+
+dnl Add NC4 enhanced macros, mainly I have to use another BES conf for these tests.
+m4_define([AT_BESCMD_RESPONSE_TEST_NC4_ENHANCED_CFDMR], [dnl
+
+    AT_SETUP([$1])
+    AT_KEYWORDS([nc4 enhanced])
+
+    input=$abs_srcdir/$1
+    baseline=$abs_srcdir/$1.baseline
+    pass=$2
+    repeat=$3
+    bes_conf=bes.nc4.cfdmr.conf
+
+    AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone $repeat -c $abs_builddir/$bes_conf -i $input], [], [stdout])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone $repeat -c $abs_builddir/$bes_conf -i $input], [], [stdout])
+        AT_CHECK([diff -b -B $baseline stdout])
+        AT_XFAIL_IF([test z$2 = zxfail])
+        ])
+
+    AT_CLEANUP
+])
+
+m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST_NC4_ENHANCED_CFDMR],  [dnl
+
+    AT_SETUP([$1])
+    AT_KEYWORDS([nc4 enhanced binary])
+    
+    input=$abs_srcdir/$1
+    baseline=$abs_srcdir/$1.baseline
+    pass=$2
+    repeat=$3
+    bes_conf=bes.nc4.cfdmr.conf
+
+    AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap -Ms -], [0], [stdout])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap -Ms -], [0], [stdout])
+        AT_CHECK([diff -b -B $baseline stdout], [0], [ignore])
+        AT_XFAIL_IF([test z$2 = zxfail])
+        ])
+
+    AT_CLEANUP
+])
+
+m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST_NC4_ENHANCED_CFDMR],  [dnl
+
+    AT_SETUP([$1])
+    AT_KEYWORDS([nc4 enhanced binary DAP4])
+
+    input=$abs_srcdir/$1
+    baseline=$abs_srcdir/$1.baseline
+    pass=$2
+    repeat=$3
+    bes_conf=bes.nc4.cfdmr.conf
+
+    AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap4 -D -M -s -], [], [stdout])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap4 -D -M -s -], [], [stdout])
+        AT_CHECK([diff -b -B $baseline stdout])
+        AT_XFAIL_IF([test z$2 = zxfail])
+        ])
+
+    AT_CLEANUP
+])
+
+dnl This is similar to the "binary data" macro above, but instead assumes the
+dnl output of besstandalone is a netcdf4 file. The binary stream is read using
+dnl ncdump and the output of that is compared to a baseline. Of course, this
+dnl requires ncdump be accessible. The netcdf4 file is in netCDF-4 enhanced model.
+
+m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR],  [dnl
+
+    AT_SETUP([$1])
+    AT_KEYWORDS([nc4 enhanced binary ncdump])
+
+    input=$abs_srcdir/$1
+    baseline=$abs_srcdir/$1.baseline
+    pass=$2
+    repeat=$3
+    bes_conf=bes.nc4.cfdmr.conf
+
+    AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+         [
+         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input > test.nc])
+
+         dnl first get the version number, then the header, then the data
+         AT_CHECK([ncdump -k test.nc > $baseline.ver.tmp])
+         AT_CHECK([ncdump -h test.nc > $baseline.header.tmp])
+         REMOVE_DATE_TIME([$baseline.header.tmp])
+         AT_CHECK([ncdump test.nc > $baseline.data.tmp])
+         REMOVE_DATE_TIME([$baseline.data.tmp])
+         ],
+         [
+         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input > test.nc])
+        
+         AT_CHECK([ncdump -k test.nc > tmp])
+         AT_CHECK([diff -b -B $baseline.ver tmp])
+        
+         AT_CHECK([ncdump -h test.nc > tmp])
+         REMOVE_DATE_TIME([tmp])
+         AT_CHECK([diff -b -B $baseline.header tmp])
+        
+         AT_CHECK([ncdump test.nc > tmp])
+         REMOVE_DATE_TIME([tmp])
+         AT_CHECK([diff -b -B $baseline.data tmp])
+        
+         AT_XFAIL_IF([test z$2 = zxfail])
+         ])
+
+    AT_CLEANUP
+])
+
+dnl This is similar to the "binary data" macro above, but instead assumes the
+dnl output of besstandalone is a netcdf4 file. The binary stream is read using
+dnl ncdump and the output of that is compared to a baseline. Of course, this
+dnl requires ncdump be accessible. This one only checks the header of ncdump.
+
+m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR_HDR],  [dnl
+
+    AT_SETUP([$1])
+    AT_KEYWORDS([nc4 enhanced binary ncdump])
+
+    input=$abs_srcdir/$1
+    baseline=$abs_srcdir/$1.baseline
+    pass=$2
+    repeat=$3
+    bes_conf=bes.nc4.cfdmr.conf
+
+    AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+         [
+         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input > test.nc])
+
+         dnl the header
+         AT_CHECK([ncdump -h test.nc > $baseline.header.tmp])
+         REMOVE_DATE_TIME([$baseline.header.tmp])
+         ],
+         [
+         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input > test.nc])
+         AT_CHECK([ncdump -h test.nc > tmp])
+         REMOVE_DATE_TIME([tmp])
+         AT_CHECK([diff -b -B $baseline.header tmp])
+         AT_XFAIL_IF([test z$2 = zxfail])
+         ])
+
+    AT_CLEANUP
+])
+
+

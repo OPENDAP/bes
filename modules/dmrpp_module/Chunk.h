@@ -40,6 +40,7 @@
 // by adding a query string that will show up in those logs. This is
 // activated by using a special BES context with the name 'cloudydap.'
 #define S3_TRACKING_CONTEXT "cloudydap"
+#define ENABLE_TRACKING_QUERY_PARAMETER 0
 
 namespace dmrpp {
 
@@ -162,7 +163,9 @@ public:
             d_is_read(false),
             d_is_inflated(false)
     {
+#if ENABLE_TRACKING_QUERY_PARAMETER
         add_tracking_query_param();
+#endif
         set_position_in_array(pia_str);
     }
 
@@ -191,7 +194,9 @@ public:
             d_is_read(false),
             d_is_inflated(false)
     {
+#if ENABLE_TRACKING_QUERY_PARAMETER
         add_tracking_query_param();
+#endif
         set_position_in_array(pia_str);
     }
 
@@ -222,7 +227,9 @@ public:
             d_is_read(false),
             d_is_inflated(false)
     {
+#if ENABLE_TRACKING_QUERY_PARAMETER
         add_tracking_query_param();
+#endif
         set_position_in_array(pia_vec);
     }
 
@@ -252,7 +259,9 @@ public:
             d_is_read(false),
             d_is_inflated(false)
     {
+#if ENABLE_TRACKING_QUERY_PARAMETER
         add_tracking_query_param();
+#endif
         set_position_in_array(pia_vec);
     }
 
@@ -439,6 +448,7 @@ public:
     {
         return d_chunk_position_in_array;
     }
+
 
     void add_tracking_query_param();
 

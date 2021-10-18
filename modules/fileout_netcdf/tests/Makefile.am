@@ -1,12 +1,12 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-noinst_DATA = bes.conf bes.nc4.conf bes.nc4.grp.conf bes.functions.conf
+noinst_DATA = bes.conf bes.nc4.conf bes.nc4.grp.conf bes.nc4.cfdmr.conf bes.functions.conf
 
-CLEANFILES = bes.conf bes.nc4.conf bes.nc4.grp.conf bes.functions.conf
+CLEANFILES = bes.conf bes.nc4.conf bes.nc4.grp.conf bes.nc4.cfdmr.conf bes.functions.conf
 
 EXTRA_DIST = bescmd $(TESTSUITE).at $(TESTSUITE) $(TESTSUITE_FUNC).at $(TESTSUITE_FUNC) \
-atlocal.in bes.conf.in bes.nc4.conf.in bes.nc4.grp.conf.in bes.functions.conf.in \
+atlocal.in bes.conf.in bes.nc4.conf.in bes.nc4.grp.conf.in bes.nc4.cfdmr.conf.in bes.functions.conf.in \
 package.m4 local_handler_tests_macros.m4
 
 DISTCLEANFILES = atconfig
@@ -24,6 +24,8 @@ bes.conf: $(srcdir)/bes.conf.in $(top_srcdir)/configure.ac
 bes.nc4.conf: $(srcdir)/bes.nc4.conf.in $(top_srcdir)/configure.ac
 
 bes.nc4.grp.conf: $(srcdir)/bes.nc4.grp.conf.in $(top_srcdir)/configure.ac
+
+bes.nc4.cfdmr.conf: $(srcdir)/bes.nc4.cfdmr.conf.in $(top_srcdir)/configure.ac
 
 bes.functions.conf: $(srcdir)/bes.functions.conf.in $(top_srcdir)/configure.ac
 
