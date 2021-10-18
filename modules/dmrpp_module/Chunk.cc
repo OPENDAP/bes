@@ -50,8 +50,10 @@ using http::EffectiveUrlCache;
 
 #define prolog std::string("Chunk::").append(__func__).append("() - ")
 
-namespace dmrpp {
+#define FLETCHER32_CHECKSUM 4               // Bytes in the fletcher32 checksum
+#define ACTUALLY_USE_FLETCHER32_CHECKSUM 1  // Computing checksums takes time...
 
+namespace dmrpp {
 
 /**
  * @brief Read the response headers, save the Content-Type header
@@ -560,6 +562,48 @@ void *inflate_chunk(void *arg_list)
 }
 #endif
 
+uint32_t
+checksum_fletcher32(const void *_data, size_t _len)
+{
+    const auto *data = (const uint8_t *)_data;  // Pointer to the data to be summed
+    size_t len = _len / 2;                      // Length in 16-bit words
+    uint32_t sum1 = 0, sum2 = 0;
+
+    // Sanity check
+    assert(_data);
+    assert(_len > 0);
+
+    // Compute checksum for pairs of bytes
+    // (the magic "360" value is the largest number of sums that can be performed without numeric overflow)
+    while (len) {
+        size_t tlen = len > 360 ? 360 : len;
+        len -= tlen;
+        do {
+            sum1 += (uint32_t)(((uint16_t)data[0]) << 8) | ((uint16_t)data[1]);
+            data += 2;
+            sum2 += sum1;
+        } while (--tlen);
+        sum1 = (sum1 & 0xffff) + (sum1 >> 16);
+        sum2 = (sum2 & 0xffff) + (sum2 >> 16);
+    }
+
+    /* Check for odd # of bytes */
+    if(_len % 2) {
+        sum1 += (uint32_t)(((uint16_t)*data) << 8);
+        sum2 += sum1;
+        sum1 = (sum1 & 0xffff) + (sum1 >> 16);
+        sum2 = (sum2 & 0xffff) + (sum2 >> 16);
+    } /* end if */
+
+    /* Second reduction step to reduce sums to 16 bits */
+    sum1 = (sum1 & 0xffff) + (sum1 >> 16);
+    sum2 = (sum2 & 0xffff) + (sum2 >> 16);
+
+    return ((sum2 << 16) | sum1);
+} /* end H5_checksum_fletcher32() */
+
+#if 0
+
 uint32_t fletcher32_checksum(const uint16_t *data, size_t len) {
     uint32_t c0, c1;
     len = (len + 1) & ~1;      /* Round up len to words */
@@ -582,7 +626,6 @@ uint32_t fletcher32_checksum(const uint16_t *data, size_t len) {
     return (c1 << 16 | c0);
 }
 
-#if 0
 uint32_t fletcher32_chunk(char *chunk, unsigned long long chunk_size) {
 //    fletcher32 algorthm
     uint32_t c0, c1;
@@ -672,19 +715,22 @@ void Chunk::inflate_chunk(bool deflate, bool shuffle, bool fletcher32, unsigned 
         }
     }
 
-#define FLETCHER32_CHECKSUM 4
-#define ACTUALLY_USE_CHECKSUM 0
-
     if (fletcher32) {
         // Compute the fletcher32 checksum and compare to the value of the last four bytes of the chunk.
-#if ACTUALLY_USE_CHECKSUM
+#if ACTUALLY_USE_FLETCHER32_CHECKSUM
         // Get the last four bytes of chunk's data (which is a byte array) and treat that as the four-byte
         // integer fletcher32 checksum. jhrg 10/15/21
-        int32_t f_checksum = *(int32_t *)(get_rbuf() + get_rbuf_size() - FLETCHER32_CHECKSUM);
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-align"
+        assert(get_rbuf_size() - FLETCHER32_CHECKSUM >= 0);
+        assert((get_rbuf_size() - FLETCHER32_CHECKSUM) % 4 == 0);
+        auto f_checksum = *(uint32_t *)(get_rbuf() + get_rbuf_size() - FLETCHER32_CHECKSUM);
+#pragma GCC diagnostic pop
+
         // If the code should actually use the checksum (they can be expensive to compute), does it match
         // with once computed on the data actually read? Maybe make this a bes.conf parameter?
         // jhrg 10/15/21
-        if (ACTUALLY_USE_CHECKSUM && f_checksum != fletcher32_checksum((uint16_t*)get_rbuf(), get_rbuf_size() - FLETCHER32_CHECKSUM)) {
+        if (f_checksum != checksum_fletcher32((const void *)get_rbuf(), get_rbuf_size() - FLETCHER32_CHECKSUM)) {
             throw BESInternalError("Data read from the DMR++ handler did not match the Fletcher32 checksum.",
                                    __FILE__, __LINE__);
         }
