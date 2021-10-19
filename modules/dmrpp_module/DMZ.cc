@@ -59,11 +59,11 @@ DMZ::DMZ(string file_name)
     ifstream::pos_type file_size = ifs.tellg();
     ifs.seekg(0, ios::beg);
 
-    d_bytes.resize(file_size + 1LL);   // Add space for text and null termination
-    ifs.read(d_bytes.data(), file_size);
-    d_bytes[file_size] = '\0';
+    d_xml_text.resize(file_size + 1LL);   // Add space for text and null termination
+    ifs.read(d_xml_text.data(), file_size);
+    d_xml_text[file_size] = '\0';
 
-    d_doc.parse<0>(d_bytes.data());    // 0 means default parse flags
+    d_xml_doc.parse<0>(d_xml_text.data());    // 0 means default parse flags
 }
 
 void DMZ::build_thin_dmr(DMR &dmr)

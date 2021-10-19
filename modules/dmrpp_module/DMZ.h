@@ -45,8 +45,8 @@ namespace dmrpp {
 class DMZ {
 
 private:
-    std::vector<char> d_bytes;  // Holds XML text
-    rapidxml::xml_document<> d_doc;    // character type defaults to char
+    std::vector<char> d_xml_text;  // Holds XML text
+    rapidxml::xml_document<> d_xml_doc;    // character type defaults to char
 
     void m_duplicate_common(const DMZ &) {
     }

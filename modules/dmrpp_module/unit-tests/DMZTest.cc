@@ -28,6 +28,8 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
+#include <libdap/debug.h>
+
 #include "BESInternalError.h"
 #include "BESDebug.h"
 
@@ -78,12 +80,14 @@ public:
     void test_DMZ_ctor_1() {
         d_dmz = new DMZ(chunked_fourD_dmrpp);
         CPPUNIT_ASSERT(d_dmz);
-        CPPUNIT_ASSERT(d_dmz->d_bytes.size() > 0);
-        // CPPUNIT_ASSERT(d_dmz->d_doc-> > 0);
+        DBG(cerr << "d_dmz->d_xml_text.size(): " << d_dmz->d_xml_text.size() << endl);
+        CPPUNIT_ASSERT(d_dmz->d_xml_text.size() > 0);
+        DBG(cerr << "d_dmz->d_xml_doc.first_node()->name(): " << d_dmz->d_xml_doc.first_node()->name() << endl);
+        CPPUNIT_ASSERT(strcmp(d_dmz->d_xml_doc.first_node()->name(), "Dataset") == 0);
     }
 
     void test_DMZ_ctor_2() {
-        try{
+        try {
             d_dmz = new DMZ("no-such-file");
             CPPUNIT_FAIL("DMZ ctor should not succeed with bad path");
         }
