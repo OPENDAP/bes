@@ -875,7 +875,7 @@ function dap4_array_test() {
     return 1
   fi
 
-  pick_var=$(echo "${var_count}*${RANDOM}/32767" | bc)
+  pick_var=$(echo "${var_count}*${RANDOM}/32767+1" | bc)
   if test -n "${verbose}"; then echo "Picked variable: ${pick_var}" >&2; fi
 
   name_and_dim=$(dap4_array_dim_counter ${dmr_file} ${type} ${pick_var})
