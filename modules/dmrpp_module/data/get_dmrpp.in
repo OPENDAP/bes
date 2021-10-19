@@ -1027,7 +1027,10 @@ function dmrpp_value_test() {
     echo "dvt TARGET_DATAFILE: ${output_file}" >&2
     echo "dvt      SOURCE_DMR: ${SOURCE_DMR}" >&2
   fi
-  dap4_array_test "${SOURCE_DMR}" "Float32"
+  for datatype in Int8 UInt8 Int16 UInt16 Int32 UInt32 Float32 Float64
+  do
+      dap4_array_test "${SOURCE_DMR}" "${datatype}"
+  done
   return $?
 }
 ########################################################################################################################
