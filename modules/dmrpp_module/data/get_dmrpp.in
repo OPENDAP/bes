@@ -219,8 +219,9 @@ output_file=
 reduce_missing_files=
 MASTER_SHA256=
 BES_DATA_ROOT="/tmp"
+existing_dmrpp=
 
-while getopts "h?vVDu:o:c:b:s:p:r:TIFM" opt; do
+while getopts "h?vVDu:o:c:b:s:p:r:e:TIFM" opt; do
   case "$opt" in
   h | \?)
     show_usage
@@ -275,6 +276,9 @@ while getopts "h?vVDu:o:c:b:s:p:r:TIFM" opt; do
   F)
     run_value_tests="yes"
     ;;
+  e)
+    existing_dmrpp="$OPTARG"
+    ;;
   esac
 done
 
@@ -306,11 +310,12 @@ fi
 
 # If we are running tests then we need to have the output filename for the dmr++ content.
 if [ -n "${run_inventory_tests}" ] || [ -n "${run_value_tests}" ]; then
-  if [ -z "${output_file}" ]; then
+  if [ -z "${output_file}" ] && [ -z "${existing_dmrpp}" ]; then
     echo "" >&2
     echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" >&2
     echo "" >&2
-    echo "OUCH! In order to run the tests the dmr++ output must be written to a file using the -o option. " >&2
+    echo "OUCH! In order to run the tests, either specify the DMR++ output file with the -o option, or " >&2
+    echo "      provide a pre-existing DMR++ file to test using the -e option. " >&2
     echo "" >&2
     exit 1
   fi
@@ -864,7 +869,8 @@ function dap4_array_dim_counter() {
 #
 function dap4_array_test() {
   dmr_file=${1}
-  type=${2}
+  target_file=${2}
+  type=${3}
   #echo "    dmr_file: ${dmr_file}" >&2;
   #echo "   DAP4 type: ${type}" >&2;
 
@@ -905,7 +911,7 @@ function dap4_array_test() {
     cat ${dap2_source_response} >&2
   fi
 
-  bes_cmd_file=$(mkDAP2BesCmd "${output_file}" "dods" "${query_string}")
+  bes_cmd_file=$(mkDAP2BesCmd "${target_file}" "dods" "${query_string}")
   #if test -n "$verbose"; then echo "bes_cmd_file: ${bes_cmd_file}" >&2; fi
   dap2_dmrpp_response=$(mktemp -t d4_array_test_XXXX)
   besstandalone -c ${BES_CONF} -i ${bes_cmd_file} >${dap2_dmrpp_response}
@@ -986,6 +992,11 @@ function dmrpp_inventory_test() {
     target_file=$(basename ${output_file})
   fi
 
+  if test -n "${existing_dmrpp}"
+  then
+    target_file=$existing_dmrpp
+  fi
+
   if test -n "${verbose}"; then
     echo "       BES_CONF: ${BES_CONF}" >&2
     echo "SOURCE_DATAFILE: ${input_data_file}" >&2
@@ -1021,13 +1032,20 @@ function dmrpp_inventory_test() {
 }
 
 function dmrpp_value_test() {
+  if test -n $existing_dmrpp
+  then
+    target_file=$output_file
+  else
+    target_file=$existing_dmrpp
+  fi
+
   if test -n "${very_verbose}"; then
     echo "dvt        BES_CONF: ${BES_CONF}" >&2
     echo "dvt SOURCE_DATAFILE: ${input_data_file}" >&2
-    echo "dvt TARGET_DATAFILE: ${output_file}" >&2
+    echo "dvt TARGET_DATAFILE: ${target_file}" >&2
     echo "dvt      SOURCE_DMR: ${SOURCE_DMR}" >&2
   fi
-  dap4_array_test "${SOURCE_DMR}" "Float32"
+  dap4_array_test "${SOURCE_DMR}" "${target_file}" "Float32"
   return $?
 }
 ########################################################################################################################
