@@ -70,4 +70,9 @@ void DMZ::build_thin_dmr(DMR &dmr)
 {
 }
 
+std::string get_variable_xml(std::string path)
+{
+    
+}
+
 } // namespace dmrpp
