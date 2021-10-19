@@ -3,7 +3,7 @@ AUTOMAKE_OPTIONS = foreign
 ACLOCAL_AMFLAGS = -I conf
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/http $(DAP_CFLAGS)
-AM_CXXFLAGS = -Wno-vla-extension -Wno-c++14-extensions
+AM_CXXFLAGS = -Wno-vla-extension
 
 BES_STANDALONE_LIB = -L$(top_builddir)/standalone -lbes_standalone
 
@@ -53,8 +53,7 @@ DmrppInt8.cc DmrppUInt16.cc DmrppUInt32.cc DmrppUInt64.cc DmrppStr.cc  \
 DmrppStructure.cc DmrppUrl.cc DmrppD4Enum.cc DmrppD4Group.cc DmrppD4Opaque.cc \
 DmrppD4Sequence.cc  DmrppTypeFactory.cc DmrppParserSax2.cc DmrppMetadataStore.cc \
 CredentialsManager.cc AccessCredentials.cc NgapS3Credentials.cc \
-SuperChunk.cc \
-awsv4.cc
+SuperChunk.cc awsv4.cc DMZ.cc
 
 BES_HDRS = DMRpp.h DmrppCommon.h Chunk.h  CurlHandlePool.h DmrppByte.h \
 DmrppArray.h DmrppFloat32.h DmrppFloat64.h DmrppInt16.h DmrppInt32.h \
@@ -63,8 +62,7 @@ DmrppStr.h DmrppStructure.h DmrppUrl.h DmrppD4Enum.h DmrppD4Group.h \
 DmrppD4Opaque.h DmrppD4Sequence.h DmrppTypeFactory.h DmrppParserSax2.h \
 CredentialsManager.h AccessCredentials.h NgapS3Credentials.h \
 DmrppMetadataStore.h awsv4.h DmrppNames.h byteswap_compat.h  \
-SuperChunk.h \
-Base64.h
+SuperChunk.h ase64.h DMZ.h
 
 DMRPP_MODULE = DmrppModule.cc DmrppRequestHandler.cc DmrppModule.h DmrppRequestHandler.h
 

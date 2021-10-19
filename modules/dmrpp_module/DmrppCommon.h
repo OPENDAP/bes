@@ -29,8 +29,6 @@
 #include <vector>
 #include <memory>
 
-//#include <H5Ppublic.h>
-
 #include "dods-datatypes.h"
 #include "Chunk.h"
 #include "SuperChunk.h"
@@ -108,7 +106,7 @@ public:
     static std::string d_dmrpp_ns;      ///< The DMR++ XML namespace
     static std::string d_ns_prefix;     ///< The XML namespace prefix to use
 
-    DmrppCommon() : d_deflate(false), d_shuffle(false), d_fletcher32(false), d_compact(false),d_byte_order(""), d_twiddle_bytes(false)
+    DmrppCommon() : d_deflate(false), d_shuffle(false), d_compact(false), d_fletcher32(false), d_byte_order(""), d_twiddle_bytes(false)
     {
     }
 

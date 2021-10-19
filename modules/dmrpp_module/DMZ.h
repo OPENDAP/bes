@@ -1,0 +1,77 @@
+
+// -*- mode: c++; c-basic-offset:4 -*-
+
+// This file is part of the BES
+
+// Copyright (c) 2021 OPeNDAP, Inc.
+// Author: James Gallagher <jgallagher@opendap.org>
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+//
+// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+
+#ifndef _dmz_h
+#define _dmz_h 1
+
+#include "config.h"
+
+#include <string>
+#include <vector>
+
+namespace libdap {
+class DMR;
+}
+
+namespace dmrpp {
+
+/**
+ * @brief Interface to hide the DMR++ information storage format.
+ *
+ */
+class DMZ {
+
+private:
+    std::vector<char> d_bytes;  // Holds XML text
+    rapidxml::xml_document<> d_doc;    // character type defaults to char
+
+    void m_duplicate_common(const DMZ &dmz) {
+
+    }
+
+    friend class DMZTest;
+
+public:
+
+    DMZ() = default;
+    explicit DMZ(std::string xml_file_name);
+
+    DMZ(const DMZ &dmz) {
+        m_duplicate_common(dmz);
+    }
+
+    virtual ~DMZ()= default;
+
+    void build_thin_dmr(libdap::DMR &dmr);
+    void load_attributes(libdap::DMR &dmr, std::string path);
+    void load_chunks(libdap::DMR &dmr, std::string path);
+
+    std::string get_attribute_xml(std::string path);
+    std::string get_variable_xml(std::string path);
+};
+
+} // namepsace dmrpp
+
+#endif // _dmz_h
+
