@@ -97,7 +97,7 @@ $(CREDS_CONF):
 
 if CPPUNIT
 UNIT_TESTS = DmrppArrayTest NgapCredentialsTest SuperChunkTest ChunkTest DmrppParserTest DmrppCommonTest \
-DmrppMetadataStoreTest CredentialsManagerTest awsv4_test CurlHandlePoolTest
+DmrppMetadataStoreTest CredentialsManagerTest awsv4_test CurlHandlePoolTest DMZTest
 else
 UNIT_TESTS =
 
@@ -143,3 +143,6 @@ DmrppMetadataStoreTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
 DmrppArrayTest_SOURCES = DmrppArrayTest.cc $(top_srcdir)/modules/read_test_baseline.cc
 DmrppArrayTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
+
+DMZTest_SOURCES = DMZTest.cc
+DMZTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)

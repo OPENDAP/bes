@@ -30,6 +30,8 @@
 #include <string>
 #include <vector>
 
+#include "rapidxml/rapidxml.hpp"
+
 namespace libdap {
 class DMR;
 }
@@ -46,8 +48,7 @@ private:
     std::vector<char> d_bytes;  // Holds XML text
     rapidxml::xml_document<> d_doc;    // character type defaults to char
 
-    void m_duplicate_common(const DMZ &dmz) {
-
+    void m_duplicate_common(const DMZ &) {
     }
 
     friend class DMZTest;

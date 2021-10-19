@@ -28,11 +28,10 @@
 #include <iostream>
 #include <fstream>
 
-#include <DMR.h>
+#include <libdap/DMR.h>
 
-#include "rapidxml/rapidxml.hpp"
-
-#include "DMZ.h"
+#include "DMZ.h" // this includes the rapidxml header
+#include "BESInternalError.h"
 
 using namespace rapidxml;
 using namespace std;
@@ -54,6 +53,8 @@ std::string get_variable_xml(std::string path);
 DMZ::DMZ(string file_name)
 {
     ifstream ifs(file_name, ios::in | ios::binary | ios::ate);
+    if (!ifs)
+        throw BESInternalError(string("Could not open file: ").append(file_name), __FILE__, __LINE__);
 
     ifstream::pos_type file_size = ifs.tellg();
     ifs.seekg(0, ios::beg);

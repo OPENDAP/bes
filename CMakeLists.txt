@@ -827,6 +827,7 @@ add_executable(bes
 
 	modules/dmrpp_module/DMZ.h
 	modules/dmrpp_module/DMZ.cc
+	modules/dmrpp_module/unit-tests/DMZTest.cc
 
     modules/dmrpp_module/unit-tests/awsv4_test.cc
     modules/dmrpp_module/AccessCredentials.cc
