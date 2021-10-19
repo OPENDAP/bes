@@ -50,8 +50,10 @@ using http::EffectiveUrlCache;
 
 #define prolog std::string("Chunk::").append(__func__).append("() - ")
 
-namespace dmrpp {
+#define FLETCHER32_CHECKSUM 4               // Bytes in the fletcher32 checksum
+#define ACTUALLY_USE_FLETCHER32_CHECKSUM 1  // Computing checksums takes time...
 
+namespace dmrpp {
 
 /**
  * @brief Read the response headers, save the Content-Type header
@@ -532,34 +534,45 @@ void Chunk::add_tracking_query_param() {
     }
 }
 
-#if 0
-/**
- * @brief function version of Chunk::inflate_chunk for use with pthreads
- *
- * @note Only use this with child threads
- * @todo Rewrite this as glue to the method?
- *
- * @param arg_list Pointer to an inflate_chunk_args instance. That struct contains
- * The Chunk object, booleans that describe if the chunk is compressed or shuffled,
- * the expected chunk size and the element size (chunk size is in elements, not bytes).
- * @see Chunk::inflate_chunk()
- */
-void *inflate_chunk(void *arg_list)
+uint32_t
+checksum_fletcher32(const void *_data, size_t _len)
 {
-    inflate_chunk_args *args = reinterpret_cast<inflate_chunk_args*>(arg_list);
+    const auto *data = (const uint8_t *)_data;  // Pointer to the data to be summed
+    size_t len = _len / 2;                      // Length in 16-bit words
+    uint32_t sum1 = 0, sum2 = 0;
 
-    try {
-        args->chunk->inflate_chunk(args->deflate, args->shuffle, args->chunk_size, args->elem_width);
-    }
-    catch (BESError &error) {
-        delete args;
-        pthread_exit(new BESError(error));
+    // Sanity check
+    assert(_data);
+    assert(_len > 0);
+
+    // Compute checksum for pairs of bytes
+    // (the magic "360" value is the largest number of sums that can be performed without numeric overflow)
+    while (len) {
+        size_t tlen = len > 360 ? 360 : len;
+        len -= tlen;
+        do {
+            sum1 += (uint32_t)(((uint16_t)data[0]) << 8) | ((uint16_t)data[1]);
+            data += 2;
+            sum2 += sum1;
+        } while (--tlen);
+        sum1 = (sum1 & 0xffff) + (sum1 >> 16);
+        sum2 = (sum2 & 0xffff) + (sum2 >> 16);
     }
 
-    delete args;
-    pthread_exit(NULL);
-}
-#endif
+    /* Check for odd # of bytes */
+    if(_len % 2) {
+        sum1 += (uint32_t)(((uint16_t)*data) << 8);
+        sum2 += sum1;
+        sum1 = (sum1 & 0xffff) + (sum1 >> 16);
+        sum2 = (sum2 & 0xffff) + (sum2 >> 16);
+    } /* end if */
+
+    /* Second reduction step to reduce sums to 16 bits */
+    sum1 = (sum1 & 0xffff) + (sum1 >> 16);
+    sum2 = (sum2 & 0xffff) + (sum2 >> 16);
+
+    return ((sum2 << 16) | sum1);
+} /* end H5_checksum_fletcher32() */
 
 /**
  * @brief Decompress data in the chunk, managing the Chunk's data buffers
@@ -572,7 +585,8 @@ void *inflate_chunk(void *arg_list)
  * @param chunk_size The _expected_ chunk size, in elements; used to allocate storage
  * @param elem_width The number of bytes per element
  */
-void Chunk::inflate_chunk(bool deflate, bool shuffle, unsigned long long chunk_size, unsigned long long elem_width) {
+void Chunk::inflate_chunk(bool deflate, bool shuffle, bool fletcher32, unsigned long long chunk_size,
+                          unsigned long long elem_width) {
     // This code is pretty naive - there are apparently a number of
     // different ways HDF5 can compress data, and it does also use a scheme
     // where several algorithms can be applied in sequence. For now, get
@@ -620,6 +634,34 @@ void Chunk::inflate_chunk(bool deflate, bool shuffle, unsigned long long chunk_s
         catch (...) {
             delete[] dest;
             throw;
+        }
+    }
+
+    if (fletcher32) {
+        // Compute the fletcher32 checksum and compare to the value of the last four bytes of the chunk.
+#if ACTUALLY_USE_FLETCHER32_CHECKSUM
+        // Get the last four bytes of chunk's data (which is a byte array) and treat that as the four-byte
+        // integer fletcher32 checksum. jhrg 10/15/21
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-align"
+        assert(get_rbuf_size() - FLETCHER32_CHECKSUM >= 0);
+        assert((get_rbuf_size() - FLETCHER32_CHECKSUM) % 4 == 0);
+        auto f_checksum = *(uint32_t *)(get_rbuf() + get_rbuf_size() - FLETCHER32_CHECKSUM);
+#pragma GCC diagnostic pop
+
+        // If the code should actually use the checksum (they can be expensive to compute), does it match
+        // with once computed on the data actually read? Maybe make this a bes.conf parameter?
+        // jhrg 10/15/21
+        if (f_checksum != checksum_fletcher32((const void *)get_rbuf(), get_rbuf_size() - FLETCHER32_CHECKSUM)) {
+            throw BESInternalError("Data read from the DMR++ handler did not match the Fletcher32 checksum.",
+                                   __FILE__, __LINE__);
+        }
+#endif
+        if (d_read_buffer_size > FLETCHER32_CHECKSUM)
+            d_read_buffer_size -= FLETCHER32_CHECKSUM;
+        else {
+            throw BESInternalError("Data filtered with fletcher32 don't include the four-byte checksum.",
+                                   __FILE__, __LINE__);
         }
     }
 

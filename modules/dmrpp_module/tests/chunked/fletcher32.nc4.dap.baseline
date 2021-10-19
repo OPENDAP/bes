@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="test32v3.nc4">
+    <Dimension name="nodes" size="9"/>
+    <Int32 name="fvcom_mesh">
+        <Attribute name="face_node_connectivity" type="String">
+            <Value>fnca</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>mesh_topology</Value>
+        </Attribute>
+        <Attribute name="topology_dimension" type="Int32">
+            <Value>2</Value>
+        </Attribute>
+        <Attribute name="node_coordinates" type="String">
+            <Value>X Y</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </Int32>
+    <Int16 name="varShort">
+        <Attribute name="description" type="String">
+            <Value>Short people got no reason to...</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </Int16>
+    <Float32 name="varFloat">
+        <Attribute name="description" type="String">
+            <Value>Floating in blissful silence through time and space.</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </Float32>
+    <Int32 name="varInt">
+        <Attribute name="description" type="String">
+            <Value>More like 4 dollars.</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </Int32>
+    <Float32 name="Y">
+        <Dim name="/nodes"/>
+        <Attribute name="grid" type="String">
+            <Value>element</Value>
+        </Attribute>
+        <Attribute name="grid_location" type="String">
+            <Value>node</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </Float32>
+    <Int32 name="varLong">
+        <Attribute name="description" type="String">
+            <Value>Too long have I wandered this barren wasteland my friend.</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </Int32>
+    <Float32 name="X">
+        <Dim name="/nodes"/>
+        <Attribute name="grid" type="String">
+            <Value>element</Value>
+        </Attribute>
+        <Attribute name="grid_location" type="String">
+            <Value>node</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </Float32>
+    <Float64 name="varDouble">
+        <Attribute name="description" type="String">
+            <Value>When in doubt, double down.</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </Float64>
+    <Int8 name="varByte">
+        <Attribute name="description" type="String">
+            <Value>Byte me.</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </Int8>
+</Dataset>
+
+The data:
+Int32 fvcom_mesh = 666;
+Int16 varShort = 1568;
+Float32 varFloat = 3.14159;
+Int32 varInt = 16073;
+Float32 Y[nodes = 9] = {1, 1.5, 1, 0, -1, -1.5, -1, 0, 0};
+Int32 varLong = 9861235;
+Float32 X[nodes = 9] = {-1, 0, 1, 1.5, 1, 0, -1, -1.5, 0};
+Float64 varDouble = 2.71828182845905;
+Int8 varByte = 127;
+
