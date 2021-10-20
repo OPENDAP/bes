@@ -65,8 +65,11 @@ public:
     virtual ~DMZ()= default;
 
     void build_thin_dmr(libdap::DMR &dmr);
+
+    // Make these take a Variable/DmrppCommon and not a DMR
     void load_attributes(libdap::DMR &dmr, std::string path);
     void load_chunks(libdap::DMR &dmr, std::string path);
+    void load_compact_data();
 
     std::string get_attribute_xml(std::string path);
     std::string get_variable_xml(std::string path);

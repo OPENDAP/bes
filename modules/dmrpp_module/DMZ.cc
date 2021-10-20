@@ -54,13 +54,19 @@ DMZ::DMZ(string file_name)
 {
     ifstream ifs(file_name, ios::in | ios::binary | ios::ate);
     if (!ifs)
-        throw BESInternalError(string("Could not open file: ").append(file_name), __FILE__, __LINE__);
+        throw BESInternalError(string("Could not open DMR++ XML file: ").append(file_name), __FILE__, __LINE__);
 
     ifstream::pos_type file_size = ifs.tellg();
+    if (file_size == 0)
+        throw BESInternalError(string("DMR++ XML file is empty: ").append(file_name), __FILE__, __LINE__);
+
     ifs.seekg(0, ios::beg);
 
     d_xml_text.resize(file_size + 1LL);   // Add space for text and null termination
     ifs.read(d_xml_text.data(), file_size);
+    if (!ifs)
+        throw BESInternalError(string("DMR++ XML file seek or read failure: ").append(file_name), __FILE__, __LINE__);
+
     d_xml_text[file_size] = '\0';
 
     d_xml_doc.parse<0>(d_xml_text.data());    // 0 means default parse flags
@@ -72,7 +78,7 @@ void DMZ::build_thin_dmr(DMR &dmr)
 
 std::string get_variable_xml(std::string path)
 {
-    
+
 }
 
 } // namespace dmrpp

@@ -55,7 +55,7 @@ class DMZTest: public CppUnit::TestFixture {
 private:
     DMZ *d_dmz;
 
-    const string chunked_fourD_dmrpp = string(TEST_SRC_DIR).append("/input-files/chunked_fourD.h5.dmrpp");
+    // const string chunked_fourD_dmrpp = string(TEST_SRC_DIR).append("/input-files/chunked_fourD.h5.dmrpp");
 
 public:
     // Called once before everything gets tested
@@ -78,7 +78,7 @@ public:
     }
 
     void test_DMZ_ctor_1() {
-        d_dmz = new DMZ(chunked_fourD_dmrpp);
+        d_dmz = new DMZ(string(TEST_SRC_DIR).append("/input-files/chunked_fourD.h5.dmrpp"));
         CPPUNIT_ASSERT(d_dmz);
         DBG(cerr << "d_dmz->d_xml_text.size(): " << d_dmz->d_xml_text.size() << endl);
         CPPUNIT_ASSERT(d_dmz->d_xml_text.size() > 0);
@@ -88,7 +88,28 @@ public:
 
     void test_DMZ_ctor_2() {
         try {
-            d_dmz = new DMZ("no-such-file");
+            d_dmz = new DMZ("no-such-file");    // Should return could not open
+            CPPUNIT_FAIL("DMZ ctor should not succeed with bad path.");
+        }
+        catch (BESInternalError &e) {
+            CPPUNIT_ASSERT("Caught BESInternalError with xml pathname fail");
+        }
+    }
+
+    void test_DMZ_ctor_3() {
+        try {
+            d_dmz = new DMZ(string(TEST_SRC_DIR).append("/input-files/empty-file.txt"));    // Should return could not open
+            CPPUNIT_FAIL("DMZ ctor should not succeed with empty file.");
+        }
+        catch (BESInternalError &e) {
+            CPPUNIT_ASSERT("Caught BESInternalError with xml pathname fail");
+        }
+    }
+
+
+    void test_DMZ_ctor_4() {
+        try {
+            d_dmz = new DMZ(""); // zero length
             CPPUNIT_FAIL("DMZ ctor should not succeed with bad path");
         }
         catch (BESInternalError &e) {
@@ -100,6 +121,8 @@ public:
 
     CPPUNIT_TEST(test_DMZ_ctor_1);
     CPPUNIT_TEST(test_DMZ_ctor_2);
+    CPPUNIT_TEST(test_DMZ_ctor_3);
+    CPPUNIT_TEST(test_DMZ_ctor_4);
 
     CPPUNIT_TEST_SUITE_END();
 };
