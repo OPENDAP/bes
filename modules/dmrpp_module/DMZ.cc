@@ -33,6 +33,7 @@
 #include "url_impl.h"        // see bes/http
 #include "DMZ.h"        // this includes the rapidxml header
 #include "BESInternalError.h"
+#include "BESDebug.h"
 
 using namespace rapidxml;
 using namespace std;
@@ -537,7 +538,7 @@ void DMZ::process_dataset(DMR &dmr, xml_node<> *xml_root)
         }
         else if (is_eq(attr->name(), "base")) {
             dmr.set_request_xml_base(attr->value());
-            //BESDEBUG(PARSER, prolog << "Dataset xml:base is set to '" << dmr.request_xml_base() << "'" << endl);
+            BESDEBUG(PARSER, prolog << "Dataset xml:base is set to '" << dmr.request_xml_base() << "'" << endl);
         }
         // TODO Namespaces? jhrg 10/2/0/21
         else if (is_eq(attr->name(), "xmlns")) {
@@ -554,7 +555,7 @@ void DMZ::process_dataset(DMR &dmr, xml_node<> *xml_root)
     }
 
     d_dataset_elem_href = new http::url(href_attr, href_trusted);
-    //BESDEBUG(PARSER, prolog << "Dataset dmrpp:href is set to '" << d_dataset_elem_href->str() << "'" << endl);
+    BESDEBUG(PARSER, prolog << "Dataset dmrpp:href is set to '" << d_dataset_elem_href->str() << "'" << endl);
 }
 
 static void print_xml_node(xml_node<> *node)
