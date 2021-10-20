@@ -29,11 +29,16 @@
 
 #include <string>
 #include <vector>
+#include <set>
 
 #include "rapidxml/rapidxml.hpp"
 
 namespace libdap {
 class DMR;
+}
+
+namespace http {
+class url;
 }
 
 namespace dmrpp {
@@ -46,10 +51,14 @@ class DMZ {
 
 private:
     std::vector<char> d_xml_text;  // Holds XML text
-    rapidxml::xml_document<> d_xml_doc;    // character type defaults to char
+    rapidxml::xml_document<> d_xml_doc{};    // character type defaults to char
+
+    http::url *d_dataset_elem_href;
 
     void m_duplicate_common(const DMZ &) {
     }
+
+    void process_dataset(libdap::DMR &dmr, rapidxml::xml_node<> *xml_root);
 
     friend class DMZTest;
 
@@ -58,7 +67,7 @@ public:
     DMZ() = default;
     explicit DMZ(std::string xml_file_name);
 
-    DMZ(const DMZ &dmz) {
+    DMZ(const DMZ &dmz) : d_xml_doc() {
         m_duplicate_common(dmz);
     }
 

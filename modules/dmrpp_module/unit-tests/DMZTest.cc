@@ -29,6 +29,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <libdap/debug.h>
+#include <libdap/DMR.h>
 
 #include "BESInternalError.h"
 #include "BESDebug.h"
@@ -55,7 +56,7 @@ class DMZTest: public CppUnit::TestFixture {
 private:
     DMZ *d_dmz;
 
-    // const string chunked_fourD_dmrpp = string(TEST_SRC_DIR).append("/input-files/chunked_fourD.h5.dmrpp");
+    const string chunked_fourD_dmrpp = string(TEST_SRC_DIR).append("/input-files/chunked_fourD.h5.dmrpp");
 
 public:
     // Called once before everything gets tested
@@ -78,7 +79,7 @@ public:
     }
 
     void test_DMZ_ctor_1() {
-        d_dmz = new DMZ(string(TEST_SRC_DIR).append("/input-files/chunked_fourD.h5.dmrpp"));
+        d_dmz = new DMZ(chunked_fourD_dmrpp);
         CPPUNIT_ASSERT(d_dmz);
         DBG(cerr << "d_dmz->d_xml_text.size(): " << d_dmz->d_xml_text.size() << endl);
         CPPUNIT_ASSERT(d_dmz->d_xml_text.size() > 0);
@@ -117,12 +118,26 @@ public:
         }
     }
 
-    CPPUNIT_TEST_SUITE( DMZTest );
+    void test_build_thin_dmr() {
+        try {
+            d_dmz = new DMZ(chunked_fourD_dmrpp);
+            DMR local_dmr;
+            d_dmz->build_thin_dmr(local_dmr);
+            CPPUNIT_ASSERT("woo hoo");
+        }
+        catch (BESInternalError &e) {
+            CPPUNIT_FAIL("DMZ ctor should not succeed with an empty path");
+        }
+    }
+
+CPPUNIT_TEST_SUITE( DMZTest );
 
     CPPUNIT_TEST(test_DMZ_ctor_1);
     CPPUNIT_TEST(test_DMZ_ctor_2);
     CPPUNIT_TEST(test_DMZ_ctor_3);
     CPPUNIT_TEST(test_DMZ_ctor_4);
+
+    CPPUNIT_TEST(test_build_thin_dmr);
 
     CPPUNIT_TEST_SUITE_END();
 };
