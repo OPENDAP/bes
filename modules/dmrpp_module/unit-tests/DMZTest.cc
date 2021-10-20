@@ -110,7 +110,7 @@ public:
     void test_DMZ_ctor_4() {
         try {
             d_dmz = new DMZ(""); // zero length
-            CPPUNIT_FAIL("DMZ ctor should not succeed with bad path");
+            CPPUNIT_FAIL("DMZ ctor should not succeed with an empty path");
         }
         catch (BESInternalError &e) {
             CPPUNIT_ASSERT("Caught BESInternalError with xml pathname fail");
