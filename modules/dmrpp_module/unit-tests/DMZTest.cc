@@ -32,6 +32,8 @@
 #include <libdap/debug.h>
 #include <libdap/DMR.h>
 
+#include "url_impl.h"
+#include "TheBESKeys.h"
 #include "BESInternalError.h"
 #include "BESDebug.h"
 
@@ -58,6 +60,7 @@ private:
     DMZ *d_dmz;
 
     const string chunked_fourD_dmrpp = string(TEST_SRC_DIR).append("/input-files/chunked_fourD.h5.dmrpp");
+    const string broken_dmrpp = string(TEST_SRC_DIR).append("/input-files/broken_elements.dmrpp");
 
 public:
     // Called once before everything gets tested
@@ -69,6 +72,7 @@ public:
     // Called before each test
     void setUp()
     {
+        TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
         if (debug) cerr << endl;
         if (bes_debug) BESDebug::SetUp("cerr,dmz");
     }
@@ -119,12 +123,18 @@ public:
         }
     }
 
-    void test_process_dataset() {
+    void test_process_dataset_1() {
         try {
             d_dmz = new DMZ(chunked_fourD_dmrpp);
             DMR dmr;
             d_dmz->process_dataset(dmr, d_dmz->d_xml_doc.first_node());
             DBG(cerr << "dmr.dap_version(): " << dmr.dap_version() << endl);
+            CPPUNIT_ASSERT(dmr.dap_version() == "4.0");
+            CPPUNIT_ASSERT(dmr.dmr_version() == "1.0");
+            CPPUNIT_ASSERT(dmr.get_namespace() == "http://xml.opendap.org/ns/DAP/4.0#");
+            CPPUNIT_ASSERT(dmr.name() == "chunked_fourD.h5");
+            DBG(cerr << "d_dmz->d_dataset_elem_href->str(): " << d_dmz->d_dataset_elem_href->str() << endl);
+            CPPUNIT_ASSERT(d_dmz->d_dataset_elem_href->str() == string("file://") + TEST_DMRPP_CATALOG + "/data/dmrpp/chunked_fourD.h5");
         }
         catch (BESInternalError &e) {
             CPPUNIT_FAIL("Caught BESInternalError " + e.get_verbose_message());
@@ -132,14 +142,24 @@ public:
         catch (BESError &e) {
             CPPUNIT_FAIL("Caught BESError " + e.get_verbose_message());
         }
-
         catch (std::exception &e) {
             CPPUNIT_FAIL("Caught std::exception " + string(e.what()));
         }
         catch (...) {
             CPPUNIT_FAIL("Caught ? ");
         }
+    }
 
+    void test_process_dataset_2() {
+        try {
+            d_dmz = new DMZ(broken_dmrpp);
+            DMR dmr;
+            d_dmz->process_dataset(dmr, d_dmz->d_xml_doc.first_node());
+            CPPUNIT_FAIL("DMZ ctor should fail when the Dataset element lacks a name attribute.");
+        }
+        catch (BESInternalError &e) {
+            CPPUNIT_ASSERT("Caught BESInternalError with missing Dataset name attribute");
+        }
     }
 
     void test_build_thin_dmr() {
@@ -161,7 +181,9 @@ CPPUNIT_TEST_SUITE( DMZTest );
     CPPUNIT_TEST(test_DMZ_ctor_3);
     CPPUNIT_TEST(test_DMZ_ctor_4);
 
-    CPPUNIT_TEST(test_process_dataset);
+    CPPUNIT_TEST(test_process_dataset_1);
+    CPPUNIT_TEST(test_process_dataset_2);
+
     CPPUNIT_TEST(test_build_thin_dmr);
 
     CPPUNIT_TEST_SUITE_END();

@@ -510,11 +510,12 @@ static inline bool is_eq(const char *value, const char *key)
 {
     return strcmp(value, key) == 0;
 }
+#if 0
 static inline bool is_not(const char *value, const char *key)
 {
     return strcmp(value, key) != 0;
 }
-
+#endif
 /**
  * @brief process a Dataset element
  * @param dmr
@@ -553,6 +554,9 @@ void DMZ::process_dataset(DMR &dmr, xml_node<> *xml_root)
         }
         // We allow other, non recognized attributes, so there is no 'else' jhrg 10/20/21
     }
+
+    if (required_attrs_found != 1)
+        throw BESInternalError("DMR++ XML dataset element missing one or more required attributes.", __FILE__, __LINE__);
 
     d_dataset_elem_href = new http::url(href_attr, href_trusted);
     BESDEBUG(PARSER, prolog << "Dataset dmrpp:href is set to '" << d_dataset_elem_href->str() << "'" << endl);

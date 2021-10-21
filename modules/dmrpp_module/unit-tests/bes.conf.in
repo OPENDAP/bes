@@ -12,7 +12,7 @@ BES.Catalog.default.TypeMatch=null:*;
 # We cache the "effective URL" for each to improve speed and reduce authentication churn
 Http.cache.effective.urls=true
 
-# For these tests we don't want to tyry to cache the effective url of a fictious
+# For these tests we don't want to try to cache the effective url of a fictitious
 # s3 bucket so we exclude it.
 Http.cache.effective.urls.skip.regex.pattern=^https?:\/\/s3\.amazonaws\.com\/.*$
 
