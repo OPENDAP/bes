@@ -28,10 +28,19 @@
 #include <iostream>
 #include <fstream>
 
+#include <libdap/BaseType.h>
+#include <libdap/Array.h>
+#include <libdap/Type.h>
+#include <libdap/D4Dimensions.h>
+#include <libdap/D4Group.h>
+#include <libdap/D4BaseTypeFactory.h>
+#include <libdap/D4Enum.h>
+#include <libdap/D4EnumDefs.h>
 #include <libdap/DMR.h>
+#include <libdap/util.h>        // is_simple_type()
 
-#include "url_impl.h"        // see bes/http
-#include "DMZ.h"        // this includes the rapidxml header
+#include "url_impl.h"           // see bes/http
+#include "DMZ.h"                // this includes the rapidxml header
 #include "BESInternalError.h"
 #include "BESDebug.h"
 
@@ -46,15 +55,6 @@ namespace dmrpp {
 
 const std::set<std::string> elements_in_thin_dmr{"Byte", "Float32", "Int16", "Group", "Dim", "Dimension"};
 static const string dmrpp_namespace = "http://xml.opendap.org/dap/dmrpp/1.0.0#";
-
-#if 0
-void build_thin_dmr(libdap::DMR &dmr);
-void load_attributes(libdap::DMR &dmr, std::string path);
-void load_chunks(libdap::DMR &dmr, std::string path);
-
-std::string get_attribute_xml(std::string path);
-std::string get_variable_xml(std::string path);
-#endif
 
 /**
  * @brief Build a DMZ object and initialize it using a DMR++ XML document
@@ -510,17 +510,187 @@ static inline bool is_eq(const char *value, const char *key)
 {
     return strcmp(value, key) == 0;
 }
+
 #if 0
 static inline bool is_not(const char *value, const char *key)
 {
     return strcmp(value, key) != 0;
 }
 #endif
+
+// 'process' functions from the sax parser.
+#if 0
+bool DmrppParserSax2::process_group(const char *name, const xmlChar **attrs, int nb_attributes)
+{
+    if (is_not(name, "Group")) return false;
+
+#if 0
+    transfer_xml_attrs(attrs, nb_attributes);
+#endif
+
+    if (!check_required_attribute("name", attrs, nb_attributes)) {
+        dmr_error(this, "The required attribute 'name' was missing from a Group element.");
+        return false;
+    }
+
+    BaseType *btp = dmr()->factory()->NewVariable(dods_group_c, get_attribute_val("name", attrs, nb_attributes));
+    if (!btp) {
+        dmr_fatal_error(this, "Could not instantiate the Group '%s'.", get_attribute_val("name", attrs, nb_attributes).c_str());
+        return false;
+    }
+
+    D4Group *grp = static_cast<D4Group*>(btp);
+
+    // Need to set this to get the D4Attribute behavior in the type classes
+    // shared between DAP2 and DAP4. jhrg 4/18/13
+    grp->set_is_dap4(true);
+
+    // link it up and change the current group
+    D4Group *parent = top_group();
+    if (!parent) {
+        dmr_fatal_error(this, "No Group on the Group stack.");
+        return false;
+    }
+
+    grp->set_parent(parent);
+    parent->add_group_nocopy(grp);
+
+    push_group(grp);
+    push_attributes(grp->attributes());
+    return true;
+}
+
+/** Check to see if the current tag is either an \c Attribute or an \c Alias
+ start tag. This method is a glorified macro...
+
+ @param name The start tag name
+ @param attrs The tag's XML attributes
+ @return True if the tag was an \c Attribute or \c Alias tag */
+inline bool DmrppParserSax2::process_attribute(const char *name, const xmlChar **attrs, int nb_attributes)
+{
+    if (is_not(name, "Attribute")) return false;
+
+#if 0
+    // These methods set the state to parser_error if a problem is found.
+    transfer_xml_attrs(attrs, nb_attributes);
+#endif
+
+    // add error
+    if (!(check_required_attribute(string("name"), attrs, nb_attributes) && check_required_attribute(string("type"), attrs, nb_attributes))) {
+        dmr_error(this, "The required attribute 'name' or 'type' was missing from an Attribute element.");
+        return false;
+    }
+
+    if (get_attribute_val("type", attrs, nb_attributes) == "Container") {
+        push_state(inside_attribute_container);
+
+        BESDEBUG(PARSER, prolog << "Pushing attribute container " << get_attribute_val("name", attrs, nb_attributes) << endl);
+        D4Attribute *child = new D4Attribute(get_attribute_val("name", attrs, nb_attributes), attr_container_c);
+
+        D4Attributes *tos = top_attributes();
+        // add return
+        if (!tos) {
+            delete child;
+            dmr_fatal_error(this, "Expected an Attribute container on the top of the attribute stack.");
+            return false;
+        }
+
+        tos->add_attribute_nocopy(child);
+        push_attributes(child->attributes());
+    }
+    else if (get_attribute_val("type", attrs, nb_attributes) == "OtherXML") {
+        push_state(inside_other_xml_attribute);
+
+        dods_attr_name = get_attribute_val("name", attrs, nb_attributes);
+        dods_attr_type = get_attribute_val("type", attrs, nb_attributes);
+    }
+    else {
+        push_state(inside_attribute);
+
+        dods_attr_name = get_attribute_val("name", attrs, nb_attributes);
+        dods_attr_type = get_attribute_val("type", attrs, nb_attributes);
+    }
+
+    return true;
+}
+
+/** Check to see if the current tag is an \c Enumeration start tag.
+
+ @param name The start tag name
+ @param attrs The tag's XML attributes
+ @return True if the tag was an \c Enumeration */
+inline bool DmrppParserSax2::process_enum_def(const char *name, const xmlChar **attrs, int nb_attributes)
+{
+    if (is_not(name, "Enumeration")) return false;
+
+#if 0
+    transfer_xml_attrs(attrs, nb_attributes);
+#endif
+
+    if (!(check_required_attribute("name", attrs, nb_attributes) && check_required_attribute("basetype", attrs, nb_attributes))) {
+        dmr_error(this, "The required attribute 'name' or 'basetype' was missing from an Enumeration element.");
+        return false;
+    }
+
+    Type t = get_type(get_attribute_val("basetype", attrs, nb_attributes).c_str());
+    if (!is_integer_type(t)) {
+        dmr_error(this, "The Enumeration '%s' must have an integer type, instead the type '%s' was used.",
+                  get_attribute_val("name", attrs, nb_attributes).c_str(), get_attribute_val("basetype", attrs, nb_attributes).c_str());
+        return false;
+    }
+
+    // This getter allocates a new object if needed.
+    string enum_def_path = get_attribute_val("name", attrs, nb_attributes);
+#if 0
+    // Use FQNs when things are referenced, not when they are defined
+    if (xml_attrs["name"].value[0] != '/')
+    enum_def_path = top_group()->FQN() + enum_def_path;
+#endif
+    enum_def()->set_name(enum_def_path);
+    enum_def()->set_type(t);
+
+    return true;
+}
+
+inline bool DmrppParserSax2::process_enum_const(const char *name, const xmlChar **attrs, int nb_attributes)
+{
+    if (is_not(name, "EnumConst")) return false;
+
+#if 0
+    // These methods set the state to parser_error if a problem is found.
+    transfer_xml_attrs(attrs, nb_attributes);
+#endif
+
+    if (!(check_required_attribute("name", attrs, nb_attributes) && check_required_attribute("value", attrs, nb_attributes))) {
+        dmr_error(this, "The required attribute 'name' or 'value' was missing from an EnumConst element.");
+        return false;
+    }
+
+    istringstream iss(get_attribute_val("value", attrs, nb_attributes));
+    long long value = 0;
+    iss >> skipws >> value;
+    if (iss.fail() || iss.bad()) {
+        dmr_error(this, "Expected an integer value for an Enumeration constant, got '%s' instead.",
+                  get_attribute_val("value", attrs, nb_attributes).c_str());
+    }
+    else if (!enum_def()->is_valid_enum_value(value)) {
+        dmr_error(this, "In an Enumeration constant, the value '%s' cannot fit in a variable of type '%s'.",
+                  get_attribute_val("value", attrs, nb_attributes).c_str(), D4type_name(d_enum_def->type()).c_str());
+    }
+    else {
+        // unfortunate choice of names... args are 'label' and 'value'
+        enum_def()->add_value(get_attribute_val("name", attrs, nb_attributes), value);
+    }
+
+    return true;
+}
+#endif
+
 /**
  * @brief process a Dataset element
  * @param dmr
  */
-void DMZ::process_dataset(DMR &dmr, xml_node<> *xml_root)
+void DMZ::process_dataset(DMR *dmr, xml_node<> *xml_root)
 {
     // Process the attributes
     int required_attrs_found = 0;   // there are 1
@@ -529,21 +699,21 @@ void DMZ::process_dataset(DMR &dmr, xml_node<> *xml_root)
     for (xml_attribute<> *attr = xml_root->first_attribute(); attr; attr = attr->next_attribute()) {
         if (is_eq(attr->name(), "name")) {
             ++required_attrs_found;
-            dmr.set_name(attr->value());
+            dmr->set_name(attr->value());
         }
         else if (is_eq(attr->name(), "dapVersion")) {
-            dmr.set_dap_version(attr->value());
+            dmr->set_dap_version(attr->value());
         }
         else if (is_eq(attr->name(), "dmrVersion")) {
-            dmr.set_dmr_version(attr->value());
+            dmr->set_dmr_version(attr->value());
         }
         else if (is_eq(attr->name(), "base")) {
-            dmr.set_request_xml_base(attr->value());
-            BESDEBUG(PARSER, prolog << "Dataset xml:base is set to '" << dmr.request_xml_base() << "'" << endl);
+            dmr->set_request_xml_base(attr->value());
+            BESDEBUG(PARSER, prolog << "Dataset xml:base is set to '" << dmr->request_xml_base() << "'" << endl);
         }
         // TODO Namespaces? jhrg 10/2/0/21
         else if (is_eq(attr->name(), "xmlns")) {
-            dmr.set_namespace(attr->value());
+            dmr->set_namespace(attr->value());
         }
         // TODO what to do with namespaced attributes? jhrg 10/20/21
         else if (is_eq(attr->name(), "dmrpp:href")) {
@@ -562,6 +732,188 @@ void DMZ::process_dataset(DMR &dmr, xml_node<> *xml_root)
     BESDEBUG(PARSER, prolog << "Dataset dmrpp:href is set to '" << d_dataset_elem_href->str() << "'" << endl);
 }
 
+/**
+ * @brief Process a Dim node. Add it to the given BaseType
+ * @param dmr
+ * @param grp The group we are currently inside (could be the root group)
+ * @param array The variable we are inside
+ * @param dim_node The Dim node itself
+ */
+void DMZ::process_dim(DMR *dmr, D4Group *grp, Array *array, xml_node<> *dim_node)
+{
+    assert(array->is_vector_type());
+
+    string name_value;
+    string size_value;
+    for (xml_attribute<> *attr = dim_node->first_attribute(); attr; attr = attr->next_attribute()) {
+        if (is_eq(attr->name(), "name")) {
+            name_value = attr->value();
+        }
+        else if (is_eq(attr->name(), "size")) {
+            size_value = attr->value();
+        }
+    }
+
+    if (name_value.empty() && size_value.empty())
+        throw BESInternalError("Either 'size' or 'name' must be used in a Dim element.", __FILE__, __LINE__);
+    if (!name_value.empty() && !size_value.empty())
+        throw BESInternalError("Only one of 'size' and 'name' are allowed in a Dim element, but both were used.", __FILE__, __LINE__);
+
+    if (!size_value.empty()) {
+        BESDEBUG(PARSER, prolog << "Processing nameless Dim of size: " << stoi(size_value) << endl);
+#if 0
+        D4Dimension *d = new D4Dimension();
+        d->set_size(size_value);
+#endif
+        array->append_dim(stoi(size_value));
+    }
+    else if (!name_value.empty()) {
+        BESDEBUG(PARSER, prolog << "Processing Dim with named Dimension reference: " << name_value << endl);
+
+        D4Dimension *dim = nullptr;
+        if (name_value[0] == '/')		// lookup the Dimension in the root group
+            dim = dmr->root()->find_dim(name_value);
+        else
+            // get enclosing Group and lookup Dimension there
+            dim = grp->find_dim(name_value);
+
+        if (!dim)
+            throw BESInternalError("The dimension '" + name_value + "' was not found while parsing the variable '" + array->name() + "'.",__FILE__,__LINE__);
+
+        array->append_dim(dim);
+    }
+}
+
+static inline bool has_dim_nodes(xml_node<> *var_node)
+{
+    for (auto *child = var_node->first_node(); child; child = child->next_sibling()) {
+        if (is_eq(child->name(), "Dim"))    // just one is enough
+            return true;
+    }
+
+    return false;
+}
+
+/**
+ * @brief Check to see if the current element is the start of a variable declaration.
+ * @param dmr
+ * @param grp
+ * @param btp
+ * @param var_node
+ */
+void DMZ::process_variable(DMR *dmr, D4Group *grp, xml_node<> *var_node)
+{
+    // Variables are declared using nodes with type names (e.g., <Float32...>)
+    // Variables are arrays if they have one or more <Dim...> child nodes.
+    Type t = get_type(var_node->name());
+    bool is_array_type = has_dim_nodes(var_node);
+    if (is_simple_type(t)) {
+        if (is_array_type) {
+            add_array_variable(dmr, grp, t, var_node);
+        }
+        else {
+            add_scalar_variable(dmr, grp, t, var_node);
+        }
+    }
+    else {
+        switch (t) {
+            case dods_structure_c:
+            case dods_sequence_c:
+            case dods_group_c:
+
+            default:
+                throw BESInternalError(string("The variable type '") + var_node->name() + "' is unknown.", __FILE__, __LINE__);
+        }
+    }
+}
+
+/**
+ * @brief helper code to build a BaseType that may wind up a scalar or an array
+ * @param dmr
+ * @param grp
+ * @param t
+ * @param var_node
+ */
+BaseType *DMZ::build_scalar_variable(DMR *dmr, D4Group *grp, Type t, xml_node<> *var_node)
+{
+    assert(dmr->factory());
+
+    string name_value;
+    string enum_value;
+    for (xml_attribute<> *attr = var_node->first_attribute(); attr; attr = attr->next_attribute()) {
+        if (is_eq(attr->name(), "name")) {
+            name_value = attr->value();
+        }
+        if (is_eq(attr->name(), "enum")) {
+            enum_value = attr->value();
+        }
+    }
+
+    if (name_value.empty())
+        throw BESInternalError("The variable 'name' attribute was missing.", __FILE__, __LINE__);
+
+    BaseType *btp = dmr->factory()->NewVariable(t, name_value);
+    if (!btp)
+        throw BESInternalError("Could not instantiate the variable ' "+ name_value +"'.", __FILE__, __LINE__);
+
+    btp->set_is_dap4(true);
+
+    if (t == dods_enum_c) {
+        if (enum_value.empty())
+            throw BESInternalError("The variable ' " + name_value + "' lacks an 'enum' attribute.", __FILE__, __LINE__);
+
+        D4EnumDef *enum_def = nullptr;
+        if (enum_value[0] == '/')
+            enum_def = dmr->root()->find_enum_def(enum_value);
+        else
+            enum_def = grp->find_enum_def(enum_value);
+
+        if (!enum_def)
+            throw BESInternalError("Could not find the Enumeration definition '" + enum_value + "'.", __FILE__, __LINE__);
+
+        static_cast<D4Enum*>(btp)->set_enumeration(enum_def);
+    }
+
+    return btp;
+}
+/**
+ * Given that a tag which opens a variable declaration has just been read,
+ * create the variable.
+ * @param dmr
+ * @param grp
+ * @param t
+ * @param var_node
+ * @return The new variable
+ */
+void DMZ::add_scalar_variable(DMR *dmr, D4Group *grp, Type t, xml_node<> *var_node)
+{
+    BaseType *btp = build_scalar_variable(dmr, grp,t, var_node);
+    grp->add_var_nocopy(btp);
+}
+
+void DMZ::add_array_variable(DMR *dmr, D4Group *grp, Type t, xml_node<> *var_node)
+{
+    BaseType *btp = build_scalar_variable(dmr, grp,t, var_node);
+
+    // Transform the scalar to an array
+    Array *array = static_cast<Array*>(dmr->factory()->NewVariable(dods_array_c, btp->name()));
+    array->set_is_dap4(true);
+    array->add_var_nocopy(btp);
+
+    // The SAX parser set up the parse of attributes here. For the thin DMR, we won't
+    // parse those from the DMR now. jhrg 10/21/21
+
+    // Now grab the dimension elements
+    for (auto *child = var_node->first_node(); child; child = child->next_sibling()) {
+        if (is_eq(child->name(), "Dim")) {
+            process_dim(dmr, grp, array, child);
+        }
+    }
+
+    grp->add_var_nocopy(array);
+}
+
+#if 0
 static void print_xml_node(xml_node<> *node)
 {
     cerr << "Node " << node->name() <<" has value " << node->value() << endl;
@@ -570,28 +922,30 @@ static void print_xml_node(xml_node<> *node)
         cerr << "with value " << attr->value() << endl;
     }
 }
+#endif
 
 static inline bool member_of(const set<string> &elements_set, const string &element_name)
 {
     return elements_set.find(element_name) != elements_set.end();
 }
 
-static void print_xml_nodes_depth_first(xml_node<> *node)
-{
-    print_xml_node(node);
-    for (xml_node<> *child = node->first_node(); child; child = child->next_sibling())
-        if (member_of(elements_in_thin_dmr, child->name()))
-            print_xml_nodes_depth_first(child);
-}
-
 /**
  * @brief populate the DMR instance as a 'thin DMR'
  * @note Assume the DMZ holds valid DMR++ metadata.
- * @param dmr
+ * @param dmr Pointer to a DMR instnace that should be populated
  */
-void DMZ::build_thin_dmr(DMR &)
+void DMZ::build_thin_dmr(DMR *dmr)
 {
-    print_xml_nodes_depth_first(d_xml_doc.first_node());
+    auto xml_root_node = d_xml_doc.first_node();
+
+    process_dataset(dmr, xml_root_node);
+
+    D4Group *root_group = dmr->root();
+    for (auto *child = xml_root_node->first_node(); child; child = child->next_sibling()) {
+        if (member_of(elements_in_thin_dmr, child->name())) {
+            process_variable(dmr, root_group, child);
+        }
+    }
 }
 
 std::string get_variable_xml(std::string /*path*/)

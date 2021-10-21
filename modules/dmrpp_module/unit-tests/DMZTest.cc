@@ -31,6 +31,9 @@
 
 #include <libdap/debug.h>
 #include <libdap/DMR.h>
+#include <libdap/D4Group.h>
+#include <libdap/Array.h>
+#include <libdap/XMLWriter.h>
 
 #include "url_impl.h"
 #include "TheBESKeys.h"
@@ -38,6 +41,7 @@
 #include "BESDebug.h"
 
 #include "DMZ.h"
+#include "DmrppTypeFactory.h"
 
 #include "read_test_baseline.h"
 #include "test_config.h"
@@ -127,7 +131,7 @@ public:
         try {
             d_dmz = new DMZ(chunked_fourD_dmrpp);
             DMR dmr;
-            d_dmz->process_dataset(dmr, d_dmz->d_xml_doc.first_node());
+            d_dmz->process_dataset(&dmr, d_dmz->d_xml_doc.first_node());
             DBG(cerr << "dmr.dap_version(): " << dmr.dap_version() << endl);
             CPPUNIT_ASSERT(dmr.dap_version() == "4.0");
             CPPUNIT_ASSERT(dmr.dmr_version() == "1.0");
@@ -153,8 +157,9 @@ public:
     void test_process_dataset_2() {
         try {
             d_dmz = new DMZ(broken_dmrpp);
-            DMR dmr;
-            d_dmz->process_dataset(dmr, d_dmz->d_xml_doc.first_node());
+            DmrppTypeFactory factory;
+            DMR dmr(&factory);
+            d_dmz->process_dataset(&dmr, d_dmz->d_xml_doc.first_node());
             CPPUNIT_FAIL("DMZ ctor should fail when the Dataset element lacks a name attribute.");
         }
         catch (BESInternalError &e) {
@@ -165,12 +170,30 @@ public:
     void test_build_thin_dmr() {
         try {
             d_dmz = new DMZ(chunked_fourD_dmrpp);
-            DMR local_dmr;
-            d_dmz->build_thin_dmr(local_dmr);
-            CPPUNIT_ASSERT("woo hoo");
+            DmrppTypeFactory factory;
+            DMR dmr(&factory);
+            d_dmz->build_thin_dmr(&dmr);
+
+            XMLWriter xml;
+            dmr.print_dap4(xml);
+            DBG(cerr << "DMR: " << xml.get_doc() << endl);
+
+            // Look for one var, with four dims each size 40
+            D4Group *root = dmr.root();
+            CPPUNIT_ASSERT(root->var_end() - root->var_begin() == 1);
+            BaseType *btp = *(root->var_begin());
+            CPPUNIT_ASSERT(btp->type() == dods_array_c && btp->var()->type() == dods_float32_c);
+            CPPUNIT_ASSERT(btp->name() == "d_16_chunks");
+            Array *array = dynamic_cast<Array*>(btp);
+            CPPUNIT_ASSERT(array->dim_end() - array->dim_begin() == 4);
+            CPPUNIT_ASSERT(array->dimension_size(array->dim_begin()) == 40);
+            CPPUNIT_ASSERT(array->dimension_size(array->dim_begin()+1) == 40);
+            CPPUNIT_ASSERT(array->dimension_size(array->dim_begin()+2) == 40);
+            CPPUNIT_ASSERT(array->dimension_size(array->dim_begin()+3) == 40);
         }
         catch (BESInternalError &e) {
-            CPPUNIT_FAIL("DMZ ctor should not succeed with an empty path");
+            DBG(cerr << "BESInternalError: " << e.get_verbose_message() << endl);
+            CPPUNIT_FAIL("build_thin_dmr should not throw");
         }
     }
 

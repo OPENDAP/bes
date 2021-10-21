@@ -33,8 +33,13 @@
 
 #include "rapidxml/rapidxml.hpp"
 
+#include <libdap/Type.h>
+
 namespace libdap {
 class DMR;
+class BaseType;
+class Array;
+class D4Group;
 }
 
 namespace http {
@@ -58,7 +63,13 @@ private:
     void m_duplicate_common(const DMZ &) {
     }
 
-    void process_dataset(libdap::DMR &dmr, rapidxml::xml_node<> *xml_root);
+    void process_dataset(libdap::DMR *dmr, rapidxml::xml_node<> *xml_root);
+    void process_dim(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Array *arry, rapidxml::xml_node<> *dim_node);
+    void process_variable(libdap::DMR *dmr, libdap::D4Group *grp, rapidxml::xml_node<> *var_node);
+    libdap::BaseType *build_scalar_variable(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Type t, rapidxml::xml_node<> *var_node);
+    void add_scalar_variable(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Type t, rapidxml::xml_node<> *var_node);
+    void add_array_variable(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Type t, rapidxml::xml_node<> *var_node);
+
 
     friend class DMZTest;
 
@@ -73,7 +84,7 @@ public:
 
     virtual ~DMZ()= default;
 
-    void build_thin_dmr(libdap::DMR &dmr);
+    void build_thin_dmr(libdap::DMR *dmr);
 
     // Make these take a Variable/DmrppCommon and not a DMR
     void load_attributes(libdap::DMR &dmr, std::string path);
