@@ -23,6 +23,7 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 #include <memory>
+#include <exception>
 
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
@@ -118,6 +119,29 @@ public:
         }
     }
 
+    void test_process_dataset() {
+        try {
+            d_dmz = new DMZ(chunked_fourD_dmrpp);
+            DMR dmr;
+            d_dmz->process_dataset(dmr, d_dmz->d_xml_doc.first_node());
+            DBG(cerr << "dmr.dap_version(): " << dmr.dap_version() << endl);
+        }
+        catch (BESInternalError &e) {
+            CPPUNIT_FAIL("Caught BESInternalError " + e.get_verbose_message());
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL("Caught BESError " + e.get_verbose_message());
+        }
+
+        catch (std::exception &e) {
+            CPPUNIT_FAIL("Caught std::exception " + string(e.what()));
+        }
+        catch (...) {
+            CPPUNIT_FAIL("Caught ? ");
+        }
+
+    }
+
     void test_build_thin_dmr() {
         try {
             d_dmz = new DMZ(chunked_fourD_dmrpp);
@@ -137,6 +161,7 @@ CPPUNIT_TEST_SUITE( DMZTest );
     CPPUNIT_TEST(test_DMZ_ctor_3);
     CPPUNIT_TEST(test_DMZ_ctor_4);
 
+    CPPUNIT_TEST(test_process_dataset);
     CPPUNIT_TEST(test_build_thin_dmr);
 
     CPPUNIT_TEST_SUITE_END();
