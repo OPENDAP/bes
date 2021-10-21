@@ -7,7 +7,7 @@ AT_TESTED([besstandalone])
 m4_include([../../handler_tests_macros.m4])
 m4_include([local_handler_tests_macros.m4])
 
-dnl Add response that supports (HDF5 CF direct DMR response et al.) for NASA files
+dnl Add HDF5 CF direct DMR response tests for NASA files
 dnl ncdump header only
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR_HDR(nasa-bescmd-h5cfdmr/OMI_L3.nc4.h5.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR_HDR(nasa-bescmd-h5cfdmr/1A.GPM.GMI.COUNT2014v3.20140305-S061920-E075148.000087.V03A.h5.bescmd)
