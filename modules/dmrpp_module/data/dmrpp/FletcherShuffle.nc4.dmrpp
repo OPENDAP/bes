@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="FletcherShuffle.nc4" dmrpp:href="data/dmrpp/FletcherShuffle.nc4">
+    <Dimension name="nodes" size="9"/>
+    <Int32 name="fvcom_mesh">
+        <Attribute name="face_node_connectivity" type="String">
+            <Value>fnca</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>mesh_topology</Value>
+        </Attribute>
+        <Attribute name="topology_dimension" type="Int32">
+            <Value>2</Value>
+        </Attribute>
+        <Attribute name="node_coordinates" type="String">
+            <Value>X Y</Value>
+        </Attribute>
+        <dmrpp:chunks byteOrder="LE">
+            <dmrpp:chunk offset="11588" nBytes="4"/>
+        </dmrpp:chunks>
+    </Int32>
+    <Int16 name="varShort">
+        <Attribute name="description" type="String">
+            <Value>Short people got no reason to...</Value>
+        </Attribute>
+        <dmrpp:chunks byteOrder="LE">
+            <dmrpp:chunk offset="11594" nBytes="2"/>
+        </dmrpp:chunks>
+    </Int16>
+    <Float32 name="varFloat">
+        <Attribute name="description" type="String">
+            <Value>Floating in blissful silence through time and space.</Value>
+        </Attribute>
+        <dmrpp:chunks byteOrder="LE">
+            <dmrpp:chunk offset="11604" nBytes="4"/>
+        </dmrpp:chunks>
+    </Float32>
+    <Int32 name="varInt">
+        <Attribute name="description" type="String">
+            <Value>More like 4 dollars.</Value>
+        </Attribute>
+        <dmrpp:chunks byteOrder="LE">
+            <dmrpp:chunk offset="11596" nBytes="4"/>
+        </dmrpp:chunks>
+    </Int32>
+    <Float32 name="Y">
+        <Dim name="/nodes"/>
+        <Attribute name="grid" type="String">
+            <Value>element</Value>
+        </Attribute>
+        <Attribute name="grid_location" type="String">
+            <Value>node</Value>
+        </Attribute>
+        <dmrpp:chunks compressionType="shuffledeflatefletcher32" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>9</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="11652" nBytes="51" chunkPositionInArray="[0]"/>
+        </dmrpp:chunks>
+    </Float32>
+    <Int32 name="varLong">
+        <Attribute name="description" type="String">
+            <Value>Too long have I wandered this barren wasteland my friend.</Value>
+        </Attribute>
+        <dmrpp:chunks byteOrder="LE">
+            <dmrpp:chunk offset="11600" nBytes="4"/>
+        </dmrpp:chunks>
+    </Int32>
+    <Float32 name="X">
+        <Dim name="/nodes"/>
+        <Attribute name="grid" type="String">
+            <Value>element</Value>
+        </Attribute>
+        <Attribute name="grid_location" type="String">
+            <Value>node</Value>
+        </Attribute>
+        <dmrpp:chunks byteOrder="LE">
+            <dmrpp:chunk offset="11616" nBytes="36"/>
+        </dmrpp:chunks>
+    </Float32>
+    <Float64 name="varDouble">
+        <Attribute name="description" type="String">
+            <Value>When in doubt, double down.</Value>
+        </Attribute>
+        <dmrpp:chunks byteOrder="LE">
+            <dmrpp:chunk offset="11608" nBytes="8"/>
+        </dmrpp:chunks>
+    </Float64>
+    <Int8 name="varByte">
+        <Attribute name="description" type="String">
+            <Value>Byte me.</Value>
+        </Attribute>
+        <dmrpp:chunks byteOrder="LE">
+            <dmrpp:chunk offset="11593" nBytes="1"/>
+        </dmrpp:chunks>
+    </Int8>
+    <String name="letter">
+        <Attribute name="description" type="String">
+            <Value>A deficiency in character my friend.</Value>
+        </Attribute>
+        <dmrpp:chunks>
+            <dmrpp:chunk offset="11592" nBytes="1"/>
+        </dmrpp:chunks>
+    </String>
+</Dataset>
