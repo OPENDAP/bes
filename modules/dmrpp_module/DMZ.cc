@@ -37,6 +37,7 @@
 #include <libdap/D4Enum.h>
 #include <libdap/D4EnumDefs.h>
 #include <libdap/D4Dimensions.h>
+#include <libdap/D4Attributes.h>
 #include <libdap/DMR.h>
 #include <libdap/util.h>        // is_simple_type()
 
@@ -101,59 +102,6 @@ static inline bool is_eq(const char *value, const char *key)
 
 // 'process' functions from the sax parser.
 #if 0
-/** Check to see if the current tag is either an \c Attribute or an \c Alias
- start tag. This method is a glorified macro...
-
- @param name The start tag name
- @param attrs The tag's XML attributes
- @return True if the tag was an \c Attribute or \c Alias tag */
-inline bool DmrppParserSax2::process_attribute(const char *name, const xmlChar **attrs, int nb_attributes)
-{
-    if (is_not(name, "Attribute")) return false;
-
-#if 0
-    // These methods set the state to parser_error if a problem is found.
-    transfer_xml_attrs(attrs, nb_attributes);
-#endif
-
-    // add error
-    if (!(check_required_attribute(string("name"), attrs, nb_attributes) && check_required_attribute(string("type"), attrs, nb_attributes))) {
-        dmr_error(this, "The required attribute 'name' or 'type' was missing from an Attribute element.");
-        return false;
-    }
-
-    if (get_attribute_val("type", attrs, nb_attributes) == "Container") {
-        push_state(inside_attribute_container);
-
-        BESDEBUG(PARSER, prolog << "Pushing attribute container " << get_attribute_val("name", attrs, nb_attributes) << endl);
-        D4Attribute *child = new D4Attribute(get_attribute_val("name", attrs, nb_attributes), attr_container_c);
-
-        D4Attributes *tos = top_attributes();
-        // add return
-        if (!tos) {
-            delete child;
-            dmr_fatal_error(this, "Expected an Attribute container on the top of the attribute stack.");
-            return false;
-        }
-
-        tos->add_attribute_nocopy(child);
-        push_attributes(child->attributes());
-    }
-    else if (get_attribute_val("type", attrs, nb_attributes) == "OtherXML") {
-        push_state(inside_other_xml_attribute);
-
-        dods_attr_name = get_attribute_val("name", attrs, nb_attributes);
-        dods_attr_type = get_attribute_val("type", attrs, nb_attributes);
-    }
-    else {
-        push_state(inside_attribute);
-
-        dods_attr_name = get_attribute_val("name", attrs, nb_attributes);
-        dods_attr_type = get_attribute_val("type", attrs, nb_attributes);
-    }
-
-    return true;
-}
 
 /** Check to see if the current tag is an \c Enumeration start tag.
 
@@ -577,17 +525,6 @@ void DMZ::process_group(DMR *dmr, D4Group *parent, xml_node<> *var_node)
     }
 }
 
-#if 0
-static void print_xml_node(xml_node<> *node)
-{
-    cerr << "Node " << node->name() <<" has value " << node->value() << endl;
-    for (xml_attribute<> *attr = node->first_attribute(); attr; attr = attr->next_attribute()) {
-        cerr << "Node has attribute " << attr->name() << " ";
-        cerr << "with value " << attr->value() << endl;
-    }
-}
-#endif
-
 /**
  * @brief populate the DMR instance as a 'thin DMR'
  * @note Assume the DMZ holds valid DMR++ metadata.
@@ -612,5 +549,101 @@ void DMZ::build_thin_dmr(DMR *dmr)
         }
     }
 }
+
+/** Check to see if the current tag is either an \c Attribute or an \c Alias
+ start tag. This method is a glorified macro...
+
+ @param name The start tag name
+ @param attrs The tag's XML attributes
+ @return True if the tag was an \c Attribute or \c Alias tag */
+void DMZ::process_attribute(D4Attributes *attributes, xml_node<> *dap_attr_node)
+{
+    string name_value;
+    string type_value;
+    for (xml_attribute<> *attr = dap_attr_node->first_attribute(); attr; attr = attr->next_attribute()) {
+        if (is_eq(attr->name(), "name")) {
+            name_value = attr->value();
+        }
+        if (is_eq(attr->name(), "type")) {
+            type_value = attr->value();
+        }
+    }
+
+    if (name_value.empty() || type_value.empty())
+        throw BESInternalError("The required attribute 'name' or 'type' was missing from an Attribute element.", __FILE__, __LINE__);
+
+    if (type_value == "Container") {
+        D4Attribute *child = new D4Attribute(name_value, attr_container_c);
+        attributes->add_attribute_nocopy(child);
+
+        // recursive calls here
+    }
+    else if (type_value == "OtherXML") {
+
+    }
+    else {
+
+    }
+}
+#if 0
+    if (get_attribute_val("type", attrs, nb_attributes) == "Container") {
+        push_state(inside_attribute_container);
+
+        BESDEBUG(PARSER, prolog << "Pushing attribute container " << get_attribute_val("name", attrs, nb_attributes) << endl);
+        D4Attribute *child = new D4Attribute(get_attribute_val("name", attrs, nb_attributes), attr_container_c);
+
+        D4Attributes *tos = top_attributes();
+        // add return
+        if (!tos) {
+            delete child;
+            dmr_fatal_error(this, "Expected an Attribute container on the top of the attribute stack.");
+            return false;
+        }
+
+        tos->add_attribute_nocopy(child);
+        push_attributes(child->attributes());
+    }
+    else if (get_attribute_val("type", attrs, nb_attributes) == "OtherXML") {
+        push_state(inside_other_xml_attribute);
+
+        dods_attr_name = get_attribute_val("name", attrs, nb_attributes);
+        dods_attr_type = get_attribute_val("type", attrs, nb_attributes);
+    }
+    else {
+        push_state(inside_attribute);
+
+        dods_attr_name = get_attribute_val("name", attrs, nb_attributes);
+        dods_attr_type = get_attribute_val("type", attrs, nb_attributes);
+    }
+
+    return true;
+}
+#endif
+
+void DMZ::load_attributes(BaseType *btp)
+{
+    // goto the DOM tree node for this variable
+    xml_node<> *var_node = d_xml_doc.first_node(btp->FQN().c_str());
+
+    // Attributes for this node will be held in the var_node siblings
+    auto attributes = new D4Attributes();
+    for (auto *child = var_node->first_node(); child; child = child->next_sibling()) {
+        if (is_eq(child->name(), "Attribute")) {
+            process_attribute(attributes, child);
+        }
+    }
+}
+
+
+#if 0
+static void print_xml_node(xml_node<> *node)
+{
+    cerr << "Node " << node->name() <<" has value " << node->value() << endl;
+    for (xml_attribute<> *attr = node->first_attribute(); attr; attr = attr->next_attribute()) {
+        cerr << "Node has attribute " << attr->name() << " ";
+        cerr << "with value " << attr->value() << endl;
+    }
+}
+#endif
 
 } // namespace dmrpp

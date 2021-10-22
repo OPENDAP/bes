@@ -31,7 +31,7 @@
 #include <vector>
 #include <set>
 
-#include "rapidxml/rapidxml.hpp"
+#include <rapidxml/rapidxml.hpp>
 
 #include <libdap/Type.h>
 
@@ -40,6 +40,7 @@ class DMR;
 class BaseType;
 class Array;
 class D4Group;
+class D4Attributes;
 }
 
 namespace http {
@@ -72,6 +73,8 @@ private:
     static libdap::BaseType *add_scalar_variable(libdap::DMR *dmr, libdap::D4Group *group, libdap::Constructor *parent, libdap::Type t, rapidxml::xml_node<> *var_node);
     static libdap::BaseType *add_array_variable(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Constructor *parent, libdap::Type t, rapidxml::xml_node<> *var_node);
 
+    static void process_attribute(libdap::D4Attributes *attributes, rapidxml::xml_node<> *dap_attr_node);
+
     friend class DMZTest;
 
 public:
@@ -88,9 +91,9 @@ public:
     void build_thin_dmr(libdap::DMR *dmr);
 
     // Make these take a Variable/DmrppCommon and not a DMR
-    void load_attributes(libdap::DMR &dmr, std::string path);
-    void load_chunks(libdap::DMR &dmr, std::string path);
-    void load_compact_data();
+    void load_attributes(libdap::BaseType *btp);
+    void load_chunks(libdap::BaseType *btp);
+    void load_compact_data(libdap::BaseType *btp);
 
     std::string get_attribute_xml(std::string path);
     std::string get_variable_xml(std::string path);
