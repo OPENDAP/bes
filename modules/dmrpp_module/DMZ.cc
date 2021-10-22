@@ -36,6 +36,7 @@
 #include <libdap/D4BaseTypeFactory.h>
 #include <libdap/D4Enum.h>
 #include <libdap/D4EnumDefs.h>
+#include <libdap/D4Dimensions.h>
 #include <libdap/DMR.h>
 #include <libdap/util.h>        // is_simple_type()
 
@@ -695,6 +696,34 @@ void DMZ::process_dataset(DMR *dmr, xml_node<> *xml_root)
     BESDEBUG(PARSER, prolog << "Dataset dmrpp:href is set to '" << d_dataset_elem_href->str() << "'" << endl);
 }
 
+void DMZ::process_dimension(D4Group *grp, xml_node<> *dimension_node)
+{
+    string name_value;
+    string size_value;
+    for (xml_attribute<> *attr = dimension_node->first_attribute(); attr; attr = attr->next_attribute()) {
+        if (is_eq(attr->name(), "name")) {
+            name_value = attr->value();
+        }
+        else if (is_eq(attr->name(), "size")) {
+            size_value = attr->value();
+        }
+    }
+
+    if (name_value.empty() || size_value.empty())
+        throw BESInternalError("The required attribute 'name' or 'size' was missing from a Dimension element.", __FILE__, __LINE__);
+
+    // This getter (dim_def) allocates a new object if needed.
+    try {
+        auto *dimension = new D4Dimension();
+        dimension->set_name(name_value);
+        dimension->set_size(size_value);
+        grp->dims()->add_dim_nocopy(dimension);
+    }
+    catch (Error &e) {
+        throw BESInternalError(e.get_error_message(), __FILE__, __LINE__);
+    }
+}
+
 /**
  * @brief Process a Dim node. Add it to the given BaseType
  * @param dmr
@@ -782,7 +811,6 @@ void DMZ::process_variable(DMR *dmr, D4Group *grp, xml_node<> *var_node)
         switch (t) {
             case dods_structure_c:
             case dods_sequence_c:
-            case dods_group_c:
 
             default:
                 throw BESInternalError(string("The variable type '") + var_node->name() + "' is unknown.", __FILE__, __LINE__);
@@ -911,10 +939,13 @@ void DMZ::process_group(DMR *dmr, D4Group *parent, xml_node<> *var_node)
     // Now parse all the child nodes of the Group.
     // NB: this is the same block of code as in build_thin_dmr(); refactor. jhrg 10/21/21
     for (auto *child = var_node->first_node(); child; child = child->next_sibling()) {
-        if (is_eq(child->name(), "Group")) {
+        if (is_eq(child->name(), "Dimension")) {
+            process_dimension(new_group, child);
+        }
+        else if (is_eq(child->name(), "Group")) {
             process_group(dmr, new_group, child);
         }
-        if (member_of(variable_elements, child->name())) {
+        else if (member_of(variable_elements, child->name())) {
             process_variable(dmr, new_group, child);
         }
     }
@@ -944,10 +975,13 @@ void DMZ::build_thin_dmr(DMR *dmr)
 
     D4Group *root_group = dmr->root();
     for (auto *child = xml_root_node->first_node(); child; child = child->next_sibling()) {
-        if (is_eq(child->name(), "Group")) {
+        if (is_eq(child->name(), "Dimension")) {
+            process_dimension(root_group, child);
+        }
+        else if (is_eq(child->name(), "Group")) {
             process_group(dmr, root_group, child);
         }
-        if (member_of(variable_elements, child->name())) {
+        else if (member_of(variable_elements, child->name())) {
             process_variable(dmr, root_group, child);
         }
     }

@@ -70,6 +70,7 @@ private:
     void add_scalar_variable(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Type t, rapidxml::xml_node<> *var_node);
     void add_array_variable(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Type t, rapidxml::xml_node<> *var_node);
     void process_group(libdap::DMR *dmr, libdap::D4Group *parent, rapidxml::xml_node<> *var_node);
+    void  process_dimension(libdap::D4Group *grp, rapidxml::xml_node<> *dimension_node);
 
     friend class DMZTest;
 
