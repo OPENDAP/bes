@@ -22,8 +22,8 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-#ifndef _dmz_h
-#define _dmz_h 1
+#ifndef h_dmz_h
+#define h_dmz_h 1
 
 #include "config.h"
 
@@ -58,26 +58,26 @@ private:
     std::vector<char> d_xml_text;  // Holds XML text
     rapidxml::xml_document<> d_xml_doc{};    // character type defaults to char
 
-    http::url *d_dataset_elem_href;
+    http::url *d_dataset_elem_href{nullptr};
 
     void m_duplicate_common(const DMZ &) {
     }
 
     void process_dataset(libdap::DMR *dmr, rapidxml::xml_node<> *xml_root);
-    void process_dim(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Array *arry, rapidxml::xml_node<> *dim_node);
-    void process_variable(libdap::DMR *dmr, libdap::D4Group *grp, rapidxml::xml_node<> *var_node);
-    libdap::BaseType *build_scalar_variable(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Type t, rapidxml::xml_node<> *var_node);
-    void add_scalar_variable(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Type t, rapidxml::xml_node<> *var_node);
-    void add_array_variable(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Type t, rapidxml::xml_node<> *var_node);
-    void process_group(libdap::DMR *dmr, libdap::D4Group *parent, rapidxml::xml_node<> *var_node);
-    void  process_dimension(libdap::D4Group *grp, rapidxml::xml_node<> *dimension_node);
+    static void process_dim(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Array *array, rapidxml::xml_node<> *dim_node);
+    static void process_variable(libdap::DMR *dmr, libdap::D4Group *grp, rapidxml::xml_node<> *var_node);
+    static libdap::BaseType *build_scalar_variable(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Type t, rapidxml::xml_node<> *var_node);
+    static void add_scalar_variable(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Type t, rapidxml::xml_node<> *var_node);
+    static void add_array_variable(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Type t, rapidxml::xml_node<> *var_node);
+    static void process_group(libdap::DMR *dmr, libdap::D4Group *parent, rapidxml::xml_node<> *var_node);
+    static void  process_dimension(libdap::D4Group *grp, rapidxml::xml_node<> *dimension_node);
 
     friend class DMZTest;
 
 public:
 
     DMZ() = default;
-    explicit DMZ(std::string xml_file_name);
+    explicit DMZ(const std::string &xml_file_name);
 
     DMZ(const DMZ &dmz) : d_xml_doc() {
         m_duplicate_common(dmz);
@@ -96,7 +96,7 @@ public:
     std::string get_variable_xml(std::string path);
 };
 
-} // namepsace dmrpp
+} // namespace dmrpp
 
-#endif // _dmz_h
+#endif // h_dmz_h
 

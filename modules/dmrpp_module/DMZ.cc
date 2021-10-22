@@ -54,7 +54,6 @@ using namespace libdap;
 
 namespace dmrpp {
 
-const std::set<std::string> elements_in_thin_dmr{"Byte", "Float32", "Int16", "Group", "Dim", "Dimension"};
 const std::set<std::string> variable_elements{"Byte", "Float32", "Int16"};
 
 static const string dmrpp_namespace = "http://xml.opendap.org/dap/dmrpp/1.0.0#";
@@ -64,7 +63,7 @@ static const string dmrpp_namespace = "http://xml.opendap.org/dap/dmrpp/1.0.0#";
  * @param file_name The DMR++ XML document to parse.
  * @exception BESInternalError if file_name cannot be parsed
  */
-DMZ::DMZ(string file_name)
+DMZ::DMZ(const string &file_name)
 {
     ifstream ifs(file_name, ios::in | ios::binary | ios::ate);
     if (!ifs)
@@ -862,7 +861,7 @@ BaseType *DMZ::build_scalar_variable(DMR *dmr, D4Group *grp, Type t, xml_node<> 
         if (!enum_def)
             throw BESInternalError("Could not find the Enumeration definition '" + enum_value + "'.", __FILE__, __LINE__);
 
-        static_cast<D4Enum*>(btp)->set_enumeration(enum_def);
+        dynamic_cast<D4Enum&>(*btp).set_enumeration(enum_def);
     }
 
     return btp;
@@ -926,7 +925,7 @@ void DMZ::process_group(DMR *dmr, D4Group *parent, xml_node<> *var_node)
     if (!btp)
         throw BESInternalError("Could not instantiate the Group '" + name_value + "'.", __FILE__, __LINE__);
 
-    D4Group *new_group = static_cast<D4Group*>(btp);
+    auto new_group = dynamic_cast<D4Group*>(btp);
 
     // Need to set this to get the D4Attribute behavior in the type classes
     // shared between DAP2 and DAP4. jhrg 4/18/13
@@ -973,7 +972,7 @@ void DMZ::build_thin_dmr(DMR *dmr)
 
     process_dataset(dmr, xml_root_node);
 
-    D4Group *root_group = dmr->root();
+    auto root_group = dmr->root();
     for (auto *child = xml_root_node->first_node(); child; child = child->next_sibling()) {
         if (is_eq(child->name(), "Dimension")) {
             process_dimension(root_group, child);
