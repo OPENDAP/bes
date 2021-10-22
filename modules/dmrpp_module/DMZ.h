@@ -64,13 +64,13 @@ private:
     }
 
     void process_dataset(libdap::DMR *dmr, rapidxml::xml_node<> *xml_root);
-    static void process_dim(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Array *array, rapidxml::xml_node<> *dim_node);
-    static void process_variable(libdap::DMR *dmr, libdap::D4Group *grp, rapidxml::xml_node<> *var_node);
-    static libdap::BaseType *build_scalar_variable(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Type t, rapidxml::xml_node<> *var_node);
-    static void add_scalar_variable(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Type t, rapidxml::xml_node<> *var_node);
-    static void add_array_variable(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Type t, rapidxml::xml_node<> *var_node);
     static void process_group(libdap::DMR *dmr, libdap::D4Group *parent, rapidxml::xml_node<> *var_node);
     static void  process_dimension(libdap::D4Group *grp, rapidxml::xml_node<> *dimension_node);
+    static void process_variable(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Constructor *parent, rapidxml::xml_node<> *var_node);
+    static void process_dim(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Array *array, rapidxml::xml_node<> *dim_node);
+    static libdap::BaseType *build_variable(libdap::DMR *dmr, libdap::D4Group *group, libdap::Type t, rapidxml::xml_node<> *var_node);
+    static libdap::BaseType *add_scalar_variable(libdap::DMR *dmr, libdap::D4Group *group, libdap::Constructor *parent, libdap::Type t, rapidxml::xml_node<> *var_node);
+    static libdap::BaseType *add_array_variable(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Constructor *parent, libdap::Type t, rapidxml::xml_node<> *var_node);
 
     friend class DMZTest;
 
