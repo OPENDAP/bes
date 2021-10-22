@@ -67,6 +67,8 @@ private:
     const string broken_dmrpp = string(TEST_SRC_DIR).append("/input-files/broken_elements.dmrpp");
     const string grid_2_2d_dmrpp = string(TEST_SRC_DIR).append("/input-files/grid_2_2d.h5.dmrpp");
     const string coads_climatology_dmrpp = string(TEST_SRC_DIR).append("/input-files/coads_climatology.dmrpp");
+    const string test_array_6_1_dmrpp = string(TEST_SRC_DIR).append("/input-files/test_array_6.1.xml");
+    const string test_simple_6_dmrpp = string(TEST_SRC_DIR).append("/input-files/test_simple_6.xml");
 
 public:
     // Called once before everything gets tested
@@ -246,7 +248,7 @@ public:
             // Look for one var, with four dims each size 40
             D4Group *root = dmr.root();
             DBG(cerr << "vars:" << root->var_end() - root->var_begin() << endl);
-            CPPUNIT_ASSERT(root->var_end() - root->var_begin() == 4);
+            CPPUNIT_ASSERT(root->var_end() - root->var_begin() == 7);
 
             BaseType *btp = root->find_var("/SST");
             CPPUNIT_ASSERT(btp->type() == dods_array_c && btp->var()->type() == dods_float32_c);
@@ -265,6 +267,89 @@ public:
         }
     }
 
+    void test_build_thin_dmr_4() {
+        try {
+            d_dmz = new DMZ(test_simple_6_dmrpp);
+            DmrppTypeFactory factory;
+            DMR dmr(&factory);
+            d_dmz->build_thin_dmr(&dmr);
+
+            XMLWriter xml;
+            dmr.print_dap4(xml);
+            DBG(cerr << "DMR: " << xml.get_doc() << endl);
+
+            // Look for one var, with four dims each size 40
+            D4Group *root = dmr.root();
+            DBG(cerr << "vars:" << root->var_end() - root->var_begin() << endl);
+            CPPUNIT_ASSERT(root->var_end() - root->var_begin() == 1);
+
+            BaseType *btp = root->find_var("/s");
+            CPPUNIT_ASSERT(btp->type() == dods_structure_c);
+            DBG(cerr << "btp->FQN(): " << btp->FQN() << endl);
+            CPPUNIT_ASSERT(btp->FQN() == "/s");
+            auto ctor = dynamic_cast<Constructor*>(btp);
+            CPPUNIT_ASSERT(ctor);
+            DBG(cerr << "struct vars:" << ctor->var_end() - ctor->var_begin() << endl);
+            CPPUNIT_ASSERT(ctor->var_end() - ctor->var_begin() == 2);
+        }
+        catch (BESInternalError &e) {
+            DBG(cerr << "BESInternalError: " << e.get_verbose_message() << endl);
+            CPPUNIT_FAIL("build_thin_dmr should not throw");
+        }
+    }
+
+    void test_build_thin_dmr_5() {
+        try {
+            d_dmz = new DMZ(test_array_6_1_dmrpp);
+            DmrppTypeFactory factory;
+            DMR dmr(&factory);
+            d_dmz->build_thin_dmr(&dmr);
+
+            XMLWriter xml;
+            dmr.print_dap4(xml);
+            DBG(cerr << "DMR: " << xml.get_doc() << endl);
+
+            // Look for one var, with four dims each size 40
+            D4Group *root = dmr.root();
+            DBG(cerr << "vars:" << root->var_end() - root->var_begin() << endl);
+            CPPUNIT_ASSERT(root->var_end() - root->var_begin() == 1);
+
+            BaseType *btp = root->find_var("/a");
+            CPPUNIT_ASSERT(btp);
+            CPPUNIT_ASSERT(btp->type() == dods_array_c && btp->var()->type() == dods_structure_c);
+            DBG(cerr << "btp->FQN(): " << btp->FQN() << endl);
+            CPPUNIT_ASSERT(btp->FQN() == "/a");
+
+            Array *array = dynamic_cast<Array*>(btp);
+            CPPUNIT_ASSERT(array->dim_end() - array->dim_begin() == 2);
+            CPPUNIT_ASSERT(array->dimension_size(array->dim_begin()) == 3);
+            CPPUNIT_ASSERT(array->dimension_size(array->dim_begin()+1) == 4);
+
+            btp = root->find_var("/a.i");
+            CPPUNIT_ASSERT(btp);
+            CPPUNIT_ASSERT(btp->type() == dods_array_c && btp->var()->type() == dods_int32_c);
+            DBG(cerr << "btp->FQN(): " << btp->FQN() << endl);
+            CPPUNIT_ASSERT(btp->FQN() == "/a.i");
+
+            array = dynamic_cast<Array*>(btp);
+            CPPUNIT_ASSERT(array->dim_end() - array->dim_begin() == 2);
+            CPPUNIT_ASSERT(array->dimension_size(array->dim_begin()) == 3);
+            CPPUNIT_ASSERT(array->dimension_size(array->dim_begin()+1) == 6);
+        }
+        catch (BESInternalError &e) {
+            CPPUNIT_FAIL("Caught BESInternalError: " + e.get_verbose_message());
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL("Caught BESError: " + e.get_verbose_message());
+        }
+        catch (std::exception &e) {
+            CPPUNIT_FAIL("Caught std::exception: " + string(e.what()));
+        }
+        catch (...) {
+            CPPUNIT_FAIL("Caught ... WTF");
+        }
+    }
+
     CPPUNIT_TEST_SUITE( DMZTest );
 
     CPPUNIT_TEST(test_DMZ_ctor_1);
@@ -278,6 +363,8 @@ public:
     CPPUNIT_TEST(test_build_thin_dmr_1);
     CPPUNIT_TEST(test_build_thin_dmr_2);
     CPPUNIT_TEST(test_build_thin_dmr_3);
+    CPPUNIT_TEST(test_build_thin_dmr_4);
+    CPPUNIT_TEST(test_build_thin_dmr_5);
 
     CPPUNIT_TEST_SUITE_END();
 };

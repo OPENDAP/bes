@@ -55,7 +55,8 @@ using namespace libdap;
 namespace dmrpp {
 
 const std::set<std::string> variable_elements{"Byte", "Int8", "Int16", "Int32", "Int64", "UInt8", "UInt16", "UInt32",
-                                              "UInt64", "Float32", "Float64", "Structure", "Sequence", "Enum"};
+                                              "UInt64", "Float32", "Float64", "String", "Structure", "Sequence",
+                                              "Enum", "Opaque"};
 
 static const string dmrpp_namespace = "http://xml.opendap.org/dap/dmrpp/1.0.0#";
 
@@ -368,6 +369,12 @@ static inline bool has_dim_nodes(xml_node<> *var_node)
     return false;
 }
 
+/// Simple set membership; used to test for variable elements
+static inline bool member_of(const set<string> &elements_set, const string &element_name)
+{
+    return elements_set.find(element_name) != elements_set.end();
+}
+
 /**
  * @brief Process an element that is a variable
  *
@@ -385,7 +392,7 @@ static inline bool has_dim_nodes(xml_node<> *var_node)
  */
 void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, xml_node<> *var_node)
 {
-    assert(!(group && parent));
+    assert(group);
 
     // Variables are declared using nodes with type names (e.g., <Float32...>)
     // Variables are arrays if they have one or more <Dim...> child nodes.
@@ -397,19 +404,29 @@ void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, xml_no
     BaseType *btp;
     if (is_array_type) {
         btp = add_array_variable(dmr, group, parent, t, var_node);
+        if (t == dods_structure_c || t == dods_sequence_c) {
+            assert(btp->type() == dods_array_c && btp->var()->type() == t);
+            // for each of var_node's child nodes, call process_variable with group null and parent set
+            // NB: For an array of a Constructor, add children to the Constructor, not the array
+            auto parent = dynamic_cast<Constructor*>(btp->var());
+            assert(parent);
+            for (auto *child = var_node->first_node(); child; child = child->next_sibling()) {
+                if (member_of(variable_elements, child->name()))
+                    process_variable(dmr, group, parent, child);
+            }
+        }
     }
     else {
         btp = add_scalar_variable(dmr, group, parent, t, var_node);
-    }
-
-    if (t == dods_structure_c || t == dods_sequence_c) {
-        assert(btp->type() == t);
-        //add_constructor_variable(DMR *dmr, D4Group * group, xml_node<> * var_node))
-        // for each of var_node's child nodes, call process_variable with group null and parent set
-        auto parent = dynamic_cast<Constructor*>(btp);
-        assert(parent);
-        for (auto *child = var_node->first_node(); child; child = child->next_sibling()) {
-            process_variable(dmr, nullptr, parent, child);
+        if (t == dods_structure_c || t == dods_sequence_c) {
+            assert(btp->type() == t);
+            // for each of var_node's child nodes, call process_variable with group null and parent set
+            auto parent = dynamic_cast<Constructor*>(btp);
+            assert(parent);
+            for (auto *child = var_node->first_node(); child; child = child->next_sibling()) {
+                if (member_of(variable_elements, child->name()))
+                    process_variable(dmr, group, parent, child);
+            }
         }
     }
 }
@@ -418,7 +435,7 @@ void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, xml_no
  * @brief helper code to build a BaseType that may wind up a scalar or an array
  * @param dmr
  * @param group If this is an enum, look in this group for am enum definition with a relative path
- * @param t
+ * @param t What DAP type is the new variable?
  * @param var_node
  */
 BaseType *DMZ::build_variable(DMR *dmr, D4Group *group, Type t, xml_node<> *var_node)
@@ -467,27 +484,31 @@ BaseType *DMZ::build_variable(DMR *dmr, D4Group *group, Type t, xml_node<> *var_
  * Given that a tag which opens a variable declaration has just been read,
  * create the variable.
  * @param dmr
- * @param group
- * @param t
+ * @param group If parent is null, add the new var to this group
+ * @param parent If non-null, add the new var to this constructor
+ * @param t What DAP type is the variable?
  * @param var_node
  * @return The new variable
  */
 BaseType *DMZ::add_scalar_variable(DMR *dmr, D4Group *group, Constructor *parent, Type t, xml_node<> *var_node)
 {
-    assert(!(group && parent));
+    assert(group);
 
     BaseType *btp = build_variable(dmr, group, t, var_node);
-    if (group)
-        group->add_var_nocopy(btp);
-    else
+
+    // if parent is non-null, the code should add the new var to a constructor,
+    // else add the new var to the group.
+    if (parent)
         parent->add_var_nocopy(btp);
+    else
+        group->add_var_nocopy(btp);
 
     return btp;
 }
 
 BaseType *DMZ::add_array_variable(DMR *dmr, D4Group *group, Constructor *parent, Type t, xml_node<> *var_node)
 {
-    assert(!(group && parent));
+    assert(group);
 
     BaseType *btp = build_variable(dmr, group, t, var_node);
 
@@ -506,17 +527,12 @@ BaseType *DMZ::add_array_variable(DMR *dmr, D4Group *group, Constructor *parent,
         }
     }
 
-    if (group)
-        group->add_var_nocopy(array);
-    else
+    if (parent)
         parent->add_var_nocopy(array);
+    else
+        group->add_var_nocopy(array);
 
     return array;
-}
-
-static inline bool member_of(const set<string> &elements_set, const string &element_name)
-{
-    return elements_set.find(element_name) != elements_set.end();
 }
 
 void DMZ::process_group(DMR *dmr, D4Group *parent, xml_node<> *var_node)
