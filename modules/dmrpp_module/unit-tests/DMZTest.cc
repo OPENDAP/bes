@@ -66,6 +66,7 @@ private:
     const string chunked_fourD_dmrpp = string(TEST_SRC_DIR).append("/input-files/chunked_fourD.h5.dmrpp");
     const string broken_dmrpp = string(TEST_SRC_DIR).append("/input-files/broken_elements.dmrpp");
     const string grid_2_2d_dmrpp = string(TEST_SRC_DIR).append("/input-files/grid_2_2d.h5.dmrpp");
+    const string coads_climatology_dmrpp = string(TEST_SRC_DIR).append("/input-files/coads_climatology.dmrpp");
 
 public:
     // Called once before everything gets tested
@@ -230,7 +231,41 @@ public:
             CPPUNIT_FAIL("build_thin_dmr should not throw");
         }
     }
-CPPUNIT_TEST_SUITE( DMZTest );
+
+    void test_build_thin_dmr_3() {
+        try {
+            d_dmz = new DMZ(coads_climatology_dmrpp);
+            DmrppTypeFactory factory;
+            DMR dmr(&factory);
+            d_dmz->build_thin_dmr(&dmr);
+
+            XMLWriter xml;
+            dmr.print_dap4(xml);
+            DBG(cerr << "DMR: " << xml.get_doc() << endl);
+
+            // Look for one var, with four dims each size 40
+            D4Group *root = dmr.root();
+            DBG(cerr << "vars:" << root->var_end() - root->var_begin() << endl);
+            CPPUNIT_ASSERT(root->var_end() - root->var_begin() == 4);
+
+            BaseType *btp = root->find_var("/SST");
+            CPPUNIT_ASSERT(btp->type() == dods_array_c && btp->var()->type() == dods_float32_c);
+            DBG(cerr << "btp->FQN(): " << btp->FQN() << endl);
+            CPPUNIT_ASSERT(btp->FQN() == "/SST");
+
+            Array *array = dynamic_cast<Array*>(btp);
+            CPPUNIT_ASSERT(array->dim_end() - array->dim_begin() == 3);
+            CPPUNIT_ASSERT(array->dimension_size(array->dim_begin()) == 12);
+            CPPUNIT_ASSERT(array->dimension_size(array->dim_begin()+1) == 90);
+            CPPUNIT_ASSERT(array->dimension_size(array->dim_begin()+2) == 180);
+        }
+        catch (BESInternalError &e) {
+            DBG(cerr << "BESInternalError: " << e.get_verbose_message() << endl);
+            CPPUNIT_FAIL("build_thin_dmr should not throw");
+        }
+    }
+
+    CPPUNIT_TEST_SUITE( DMZTest );
 
     CPPUNIT_TEST(test_DMZ_ctor_1);
     CPPUNIT_TEST(test_DMZ_ctor_2);
@@ -242,6 +277,7 @@ CPPUNIT_TEST_SUITE( DMZTest );
 
     CPPUNIT_TEST(test_build_thin_dmr_1);
     CPPUNIT_TEST(test_build_thin_dmr_2);
+    CPPUNIT_TEST(test_build_thin_dmr_3);
 
     CPPUNIT_TEST_SUITE_END();
 };
