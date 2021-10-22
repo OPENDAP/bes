@@ -54,6 +54,8 @@ using namespace libdap;
 namespace dmrpp {
 
 const std::set<std::string> elements_in_thin_dmr{"Byte", "Float32", "Int16", "Group", "Dim", "Dimension"};
+const std::set<std::string> variable_elements{"Byte", "Float32", "Int16"};
+
 static const string dmrpp_namespace = "http://xml.opendap.org/dap/dmrpp/1.0.0#";
 
 /**
@@ -519,47 +521,8 @@ static inline bool is_not(const char *value, const char *key)
 #endif
 
 // 'process' functions from the sax parser.
-#if 0
-bool DmrppParserSax2::process_group(const char *name, const xmlChar **attrs, int nb_attributes)
-{
-    if (is_not(name, "Group")) return false;
 
 #if 0
-    transfer_xml_attrs(attrs, nb_attributes);
-#endif
-
-    if (!check_required_attribute("name", attrs, nb_attributes)) {
-        dmr_error(this, "The required attribute 'name' was missing from a Group element.");
-        return false;
-    }
-
-    BaseType *btp = dmr()->factory()->NewVariable(dods_group_c, get_attribute_val("name", attrs, nb_attributes));
-    if (!btp) {
-        dmr_fatal_error(this, "Could not instantiate the Group '%s'.", get_attribute_val("name", attrs, nb_attributes).c_str());
-        return false;
-    }
-
-    D4Group *grp = static_cast<D4Group*>(btp);
-
-    // Need to set this to get the D4Attribute behavior in the type classes
-    // shared between DAP2 and DAP4. jhrg 4/18/13
-    grp->set_is_dap4(true);
-
-    // link it up and change the current group
-    D4Group *parent = top_group();
-    if (!parent) {
-        dmr_fatal_error(this, "No Group on the Group stack.");
-        return false;
-    }
-
-    grp->set_parent(parent);
-    parent->add_group_nocopy(grp);
-
-    push_group(grp);
-    push_attributes(grp->attributes());
-    return true;
-}
-
 /** Check to see if the current tag is either an \c Attribute or an \c Alias
  start tag. This method is a glorified macro...
 
@@ -913,6 +876,50 @@ void DMZ::add_array_variable(DMR *dmr, D4Group *grp, Type t, xml_node<> *var_nod
     grp->add_var_nocopy(array);
 }
 
+static inline bool member_of(const set<string> &elements_set, const string &element_name)
+{
+    return elements_set.find(element_name) != elements_set.end();
+}
+
+void DMZ::process_group(DMR *dmr, D4Group *parent, xml_node<> *var_node)
+{
+    string name_value;
+    for (xml_attribute<> *attr = var_node->first_attribute(); attr; attr = attr->next_attribute()) {
+        if (is_eq(attr->name(), "name")) {
+            name_value = attr->value();
+        }
+    }
+
+    if (name_value.empty())
+        throw BESInternalError("The required attribute 'name' was missing from a Group element.", __FILE__, __LINE__);
+
+
+    BaseType *btp = dmr->factory()->NewVariable(dods_group_c, name_value);
+    if (!btp)
+        throw BESInternalError("Could not instantiate the Group '" + name_value + "'.", __FILE__, __LINE__);
+
+    D4Group *new_group = static_cast<D4Group*>(btp);
+
+    // Need to set this to get the D4Attribute behavior in the type classes
+    // shared between DAP2 and DAP4. jhrg 4/18/13
+    new_group->set_is_dap4(true);
+
+    // link it up and change the current group
+    new_group->set_parent(parent);
+    parent->add_group_nocopy(new_group);
+
+    // Now parse all the child nodes of the Group.
+    // NB: this is the same block of code as in build_thin_dmr(); refactor. jhrg 10/21/21
+    for (auto *child = var_node->first_node(); child; child = child->next_sibling()) {
+        if (is_eq(child->name(), "Group")) {
+            process_group(dmr, new_group, child);
+        }
+        if (member_of(variable_elements, child->name())) {
+            process_variable(dmr, new_group, child);
+        }
+    }
+}
+
 #if 0
 static void print_xml_node(xml_node<> *node)
 {
@@ -923,11 +930,6 @@ static void print_xml_node(xml_node<> *node)
     }
 }
 #endif
-
-static inline bool member_of(const set<string> &elements_set, const string &element_name)
-{
-    return elements_set.find(element_name) != elements_set.end();
-}
 
 /**
  * @brief populate the DMR instance as a 'thin DMR'
@@ -942,7 +944,10 @@ void DMZ::build_thin_dmr(DMR *dmr)
 
     D4Group *root_group = dmr->root();
     for (auto *child = xml_root_node->first_node(); child; child = child->next_sibling()) {
-        if (member_of(elements_in_thin_dmr, child->name())) {
+        if (is_eq(child->name(), "Group")) {
+            process_group(dmr, root_group, child);
+        }
+        if (member_of(variable_elements, child->name())) {
             process_variable(dmr, root_group, child);
         }
     }
