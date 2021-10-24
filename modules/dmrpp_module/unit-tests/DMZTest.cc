@@ -49,6 +49,7 @@
 using namespace std;
 using namespace libdap;
 using namespace bes;
+using namespace rapidxml;
 
 static bool debug = false;
 static bool bes_debug = false;
@@ -350,6 +351,104 @@ public:
         }
     }
 
+#if 0
+    void test_build_xml_path_to_variable_1() {
+        d_dmz = new DMZ(chunked_fourD_dmrpp);
+        DmrppTypeFactory factory;
+        DMR dmr(&factory);
+        d_dmz->build_thin_dmr(&dmr);
+        BaseType *btp = *(dmr.root()->var_begin());
+        string xml_path = d_dmz->build_xml_path_to_variable(btp);
+        DBG(cerr << "build_xml_path_to_variable(): " << xml_path << endl);
+    }
+#endif
+
+    void test_get_variable_xml_node_1() {
+        d_dmz = new DMZ(chunked_fourD_dmrpp);
+        DmrppTypeFactory factory;
+        DMR dmr(&factory);
+        d_dmz->build_thin_dmr(&dmr);
+        BaseType *btp = *(dmr.root()->var_begin());
+        xml_node<> *node = d_dmz->get_variable_xml_node(btp);
+        CPPUNIT_ASSERT(node);
+        DBG(cerr << "get_variable_xml_node(): " << node->name() << ", " << node->first_attribute()->value() << endl);
+        CPPUNIT_ASSERT(btp->type() == dods_array_c && node->name() == btp->var()->type_name());
+        CPPUNIT_ASSERT(node->first_attribute()->value() == btp->name());
+    }
+
+    void test_get_variable_xml_node_2() {
+        d_dmz = new DMZ(grid_2_2d_dmrpp);
+        DmrppTypeFactory factory;
+        DMR dmr(&factory);
+        d_dmz->build_thin_dmr(&dmr);
+
+        BaseType *btp = dmr.root()->find_var("/HDFEOS/GRIDS/GeoGrid2/Data Fields/temperature");
+        xml_node<> *node = d_dmz->get_variable_xml_node(btp);
+        CPPUNIT_ASSERT(node);
+        DBG(cerr << "get_variable_xml_node(): " << node->name() << ", " << node->first_attribute()->value() << endl);
+        CPPUNIT_ASSERT(btp->type() == dods_array_c && node->name() == btp->var()->type_name());
+        CPPUNIT_ASSERT(node->first_attribute()->value() == btp->name());
+    }
+
+    void test_get_variable_xml_node_3() {
+        d_dmz = new DMZ(coads_climatology_dmrpp);
+        DmrppTypeFactory factory;
+        DMR dmr(&factory);
+        d_dmz->build_thin_dmr(&dmr);
+
+        BaseType *btp = dmr.root()->find_var("/TIME");
+        xml_node<> *node = d_dmz->get_variable_xml_node(btp);
+        CPPUNIT_ASSERT(node);
+        DBG(cerr << "get_variable_xml_node(): " << node->name() << ", " << node->first_attribute()->value() << endl);
+        CPPUNIT_ASSERT(btp->type() == dods_array_c && node->name() == btp->var()->type_name());
+        CPPUNIT_ASSERT(node->first_attribute()->value() == btp->name());
+    }
+
+    void test_get_variable_xml_node_4() {
+        d_dmz = new DMZ(test_array_6_1_dmrpp);
+        DmrppTypeFactory factory;
+        DMR dmr(&factory);
+        d_dmz->build_thin_dmr(&dmr);
+
+        BaseType *btp = dmr.root()->find_var("/a.j");
+        CPPUNIT_ASSERT(btp);
+        xml_node<> *node = d_dmz->get_variable_xml_node(btp);
+        CPPUNIT_ASSERT(node);
+        DBG(cerr << "get_variable_xml_node(): " << node->name() << ", " << node->first_attribute()->value() << endl);
+        CPPUNIT_ASSERT(btp->type() == dods_array_c && node->name() == btp->var()->type_name());
+        CPPUNIT_ASSERT(node->first_attribute()->value() == btp->name());
+    }
+    void test_load_attributes_1() {
+        try {
+            d_dmz = new DMZ(chunked_fourD_dmrpp);
+            DmrppTypeFactory factory;
+            DMR dmr(&factory);
+            d_dmz->build_thin_dmr(&dmr);
+
+            XMLWriter xml;
+            dmr.print_dap4(xml);
+            DBG(cerr << "DMR: " << xml.get_doc() << endl);
+
+            // Given a thin DMR, load in the attributes of the first variable
+            BaseType *btp = *(dmr.root()->var_begin());
+            d_dmz->load_attributes(btp);
+            dmr.print_dap4(xml);
+            DBG(cerr << "DMR with attributes: " << xml.get_doc() << endl);
+        }
+        catch (BESInternalError &e) {
+            CPPUNIT_FAIL("Caught BESInternalError " + e.get_verbose_message());
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL("Caught BESError " + e.get_verbose_message());
+        }
+        catch (std::exception &e) {
+            CPPUNIT_FAIL("Caught std::exception " + string(e.what()));
+        }
+        catch (...) {
+            CPPUNIT_FAIL("Caught ? ");
+        }
+    }
+
     CPPUNIT_TEST_SUITE( DMZTest );
 
     CPPUNIT_TEST(test_DMZ_ctor_1);
@@ -365,6 +464,13 @@ public:
     CPPUNIT_TEST(test_build_thin_dmr_3);
     CPPUNIT_TEST(test_build_thin_dmr_4);
     CPPUNIT_TEST(test_build_thin_dmr_5);
+
+    CPPUNIT_TEST(test_get_variable_xml_node_1);
+    CPPUNIT_TEST(test_get_variable_xml_node_2);
+    CPPUNIT_TEST(test_get_variable_xml_node_3);
+    CPPUNIT_TEST_FAIL(test_get_variable_xml_node_4);
+
+    CPPUNIT_TEST(test_load_attributes_1);
 
     CPPUNIT_TEST_SUITE_END();
 };

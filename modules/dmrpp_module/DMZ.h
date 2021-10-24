@@ -65,6 +65,11 @@ private:
     }
 
     void process_dataset(libdap::DMR *dmr, rapidxml::xml_node<> *xml_root);
+    rapidxml::xml_node<> *get_variable_xml_node(libdap::BaseType *btp);
+
+    static rapidxml::xml_node<> *get_variable_xml_node_helper(rapidxml::xml_node<> *var_node, std::stack<libdap::BaseType*> &bt);
+    static void build_basetype_chain(libdap::BaseType *btp, std::stack<libdap::BaseType*> &bt);
+
     static void process_group(libdap::DMR *dmr, libdap::D4Group *parent, rapidxml::xml_node<> *var_node);
     static void  process_dimension(libdap::D4Group *grp, rapidxml::xml_node<> *dimension_node);
     static void process_variable(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Constructor *parent, rapidxml::xml_node<> *var_node);
@@ -73,7 +78,10 @@ private:
     static libdap::BaseType *add_scalar_variable(libdap::DMR *dmr, libdap::D4Group *group, libdap::Constructor *parent, libdap::Type t, rapidxml::xml_node<> *var_node);
     static libdap::BaseType *add_array_variable(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Constructor *parent, libdap::Type t, rapidxml::xml_node<> *var_node);
 
+    //static void build_xml_path_to_variable_helper(libdap::BaseType *btp, std::vector<std::string> &xml_path);
+    //static std::string build_xml_path_to_variable(libdap::BaseType *btp);
     static void process_attribute(libdap::D4Attributes *attributes, rapidxml::xml_node<> *dap_attr_node);
+
 
     friend class DMZTest;
 

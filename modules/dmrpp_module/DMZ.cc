@@ -573,17 +573,27 @@ void DMZ::process_attribute(D4Attributes *attributes, xml_node<> *dap_attr_node)
         throw BESInternalError("The required attribute 'name' or 'type' was missing from an Attribute element.", __FILE__, __LINE__);
 
     if (type_value == "Container") {
+        // Make the new attribute container and add it to current container
         D4Attribute *child = new D4Attribute(name_value, attr_container_c);
         attributes->add_attribute_nocopy(child);
-
-        // recursive calls here
+        // In this call, 'attributes()' will allocate the D4Attributes object
+        // that will hold the container's attributes.
+        process_attribute(child->attributes(), dap_attr_node->first_node());
     }
     else if (type_value == "OtherXML") {
-
+        // TODO Add suport for this
     }
     else {
-
-    }
+        // Make the D4Attribute and add it to the D4Attributes attribute container
+        D4Attribute *attribute = new D4Attribute(name_value, StringToD4AttributeType(type_value));
+        attributes->add_attribute_nocopy(attribute);
+        // Process one or more Value elements
+        for (auto value_elem = dap_attr_node->first_node(); value_elem; value_elem = value_elem->next_sibling()) {
+            if (is_eq(value_elem->name(), "Value")) {
+                attribute->add_value(value_elem->value());  // returns the text of the first data node
+            }
+        }
+     }
 }
 #if 0
     if (get_attribute_val("type", attrs, nb_attributes) == "Container") {
@@ -619,11 +629,102 @@ void DMZ::process_attribute(D4Attributes *attributes, xml_node<> *dap_attr_node)
     return true;
 }
 #endif
+#if 0
+void DMZ::build_xml_path_to_variable_helper(BaseType *btp, vector<string> &xml_path)
+{
+    xml_path.push_back(string("/").append( btp->type_name() == "Array"? btp->var()->type_name(): btp->type_name()));
+
+    auto parent = btp->get_parent();
+    // The parent must be non-null and not the root group.
+    if (parent && !(parent->type() == dods_group_c && parent->get_parent() == nullptr))
+        build_xml_path_to_variable_helper(btp->get_parent(), xml_path);
+}
+
+// build_xml_path_to_variable(): /Group/Float32, knows to not include Array
+string DMZ::build_xml_path_to_variable(BaseType *btp)
+{
+    // look at the parent objects to build the xml path
+    vector<string> xml_path{};
+    build_xml_path_to_variable_helper(btp, xml_path);
+
+    string path_string;
+    for (auto si = xml_path.rbegin(), se = xml_path.rend(); si != se; ++si)
+        path_string.append(*si);
+
+    return path_string;
+}
+
+xml_node<> *DMZ::get_variable_xml_node(BaseType *btp)
+{
+    string xml_path = build_xml_path_to_variable(btp);
+    // Notw look for the node with the correct element type and matching name
+    for (auto var_node = d_xml_doc.first_node(xml_path.c_str()); var_node; var_node = var_node->next_sibling()) {
+        if (var_node->name() == btp->name())
+            return var_node;
+    }
+
+    return nullptr;
+}
+#endif
+
+// load BaseTypes on a stack.
+void DMZ::build_basetype_chain(BaseType *btp, stack<BaseType*> &bt)
+{
+    bt.push(btp);
+
+    auto parent = btp->get_parent();
+    // The parent must be non-null and not the root group.
+    if (parent && !(parent->type() == dods_group_c && parent->get_parent() == nullptr))
+        build_basetype_chain(parent, bt);
+}
+
+xml_node<> *DMZ::get_variable_xml_node_helper(xml_node<> *parent_node, stack<BaseType*> &bt)
+{
+    // The DMR XML stores both scalar and array variables on XML elements
+    // named for the cardinal type. For an array that is the type of the
+    // element, so we use BaseType->var()->type_name() for an Array.
+    string type_name = bt.top()->type() == dods_array_c ? bt.top()->var()->type_name(): bt.top()->type_name();
+    string var_name = bt.top()->name();
+    bt.pop();
+
+    // Now look for the node with the correct element type and matching name
+    for (auto node = parent_node->first_node(type_name.c_str()); node; node = node->next_sibling()) {
+        for (xml_attribute<> *attr = node->first_attribute(); attr; attr = attr->next_attribute()) {
+            if (is_eq(attr->name(), "name") && is_eq(attr->value(), var_name.c_str())) {
+                // if this is the last BaseType on the stack, return the node
+                if (bt.empty())
+                    return node;
+                else
+                    return get_variable_xml_node_helper(node, bt);
+            }
+        }
+    }
+
+    return nullptr;
+}
+
+xml_node<> *DMZ::get_variable_xml_node(BaseType *btp)
+{
+    // load the BaseType objects onto a stack, since we start at the leaf and
+    // go backward using its 'parent' pointer, the order of BaseTypes on the
+    // stack will match the order in the hierarchy of the DOM tree.
+    stack<BaseType*> bt;
+    build_basetype_chain(btp, bt);
+
+    xml_node<> *dataset = d_xml_doc.first_node();
+    if (!dataset || !is_eq(dataset->name(), "Dataset"))
+        throw BESInternalError("No DMR++ has been parsed.", __FILE__, __LINE__);
+
+    auto node = get_variable_xml_node_helper(dataset, bt);
+    return node;
+}
 
 void DMZ::load_attributes(BaseType *btp)
 {
     // goto the DOM tree node for this variable
-    xml_node<> *var_node = d_xml_doc.first_node(btp->FQN().c_str());
+    xml_node<> *var_node = get_variable_xml_node(btp);
+    if (var_node == nullptr)
+        throw BESInternalError("Could not find location of variable in the DMR++ XML document.", __FILE__, __LINE__);
 
     // Attributes for this node will be held in the var_node siblings
     auto attributes = new D4Attributes();
@@ -633,7 +734,6 @@ void DMZ::load_attributes(BaseType *btp)
         }
     }
 }
-
 
 #if 0
 static void print_xml_node(xml_node<> *node)
