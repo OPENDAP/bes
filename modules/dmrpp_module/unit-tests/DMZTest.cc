@@ -32,6 +32,7 @@
 #include <libdap/debug.h>
 #include <libdap/DMR.h>
 #include <libdap/D4Group.h>
+#include <libdap/D4Attributes.h>
 #include <libdap/Array.h>
 #include <libdap/XMLWriter.h>
 
@@ -431,9 +432,15 @@ public:
 
             // Given a thin DMR, load in the attributes of the first variable
             BaseType *btp = *(dmr.root()->var_begin());
+            CPPUNIT_ASSERT(btp->attributes()->empty());
+
             d_dmz->load_attributes(btp);
-            dmr.print_dap4(xml);
-            DBG(cerr << "DMR with attributes: " << xml.get_doc() << endl);
+            XMLWriter xml2;
+            dmr.print_dap4(xml2);
+            DBG(cerr << "DMR with attributes: " << xml2.get_doc() << endl);
+
+            CPPUNIT_ASSERT(!btp->attributes()->empty());
+            CPPUNIT_ASSERT(btp->attributes()->attribute_end() - btp->attributes()->attribute_begin() == 2);
         }
         catch (BESInternalError &e) {
             CPPUNIT_FAIL("Caught BESInternalError " + e.get_verbose_message());

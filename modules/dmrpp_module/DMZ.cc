@@ -726,8 +726,12 @@ void DMZ::load_attributes(BaseType *btp)
     if (var_node == nullptr)
         throw BESInternalError("Could not find location of variable in the DMR++ XML document.", __FILE__, __LINE__);
 
-    // Attributes for this node will be held in the var_node siblings
-    auto attributes = new D4Attributes();
+    // Attributes for this node will be held in the var_node siblings.
+    // NB: Make an exlict call to the BaseType implementation in case
+    // the attributes() method is specialized for this DMR++ code to
+    // trigger a lazy-load of the variables' attributes. jhrg 10/24/21
+    // Could also use BaseType::set_attributes(). jhrg
+    auto attributes = btp->BaseType::attributes(); // new D4Attributes();
     for (auto *child = var_node->first_node(); child; child = child->next_sibling()) {
         if (is_eq(child->name(), "Attribute")) {
             process_attribute(attributes, child);
