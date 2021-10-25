@@ -12,7 +12,11 @@
         <Dim name="row"/>
         <Dim size="6"/>
     </Int32>
-    <Int32 name="j"/>
+    <Int32 name="j">
+      <Attribute name="origname" type="String">
+        <Value>foobar</Value>
+      </Attribute>
+    </Int32>
     <Dim name="row"/>
     <Dim name="col"/>   
   </Structure>

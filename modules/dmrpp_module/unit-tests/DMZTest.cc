@@ -352,17 +352,55 @@ public:
         }
     }
 
-#if 0
-    void test_build_xml_path_to_variable_1() {
+    void test_build_basetype_chain_1() {
         d_dmz = new DMZ(chunked_fourD_dmrpp);
         DmrppTypeFactory factory;
         DMR dmr(&factory);
         d_dmz->build_thin_dmr(&dmr);
-        BaseType *btp = *(dmr.root()->var_begin());
-        string xml_path = d_dmz->build_xml_path_to_variable(btp);
-        DBG(cerr << "build_xml_path_to_variable(): " << xml_path << endl);
+        BaseType *btp = dmr.root()->find_var("/d_16_chunks");
+
+        stack<BaseType*> bt;
+        d_dmz->build_basetype_chain(btp, bt);
+        CPPUNIT_ASSERT(bt.size() == 1);
     }
-#endif
+
+    void test_build_basetype_chain_2() {
+        d_dmz = new DMZ(grid_2_2d_dmrpp);
+        DmrppTypeFactory factory;
+        DMR dmr(&factory);
+        d_dmz->build_thin_dmr(&dmr);
+        BaseType *btp = dmr.root()->find_var("/HDFEOS/GRIDS/GeoGrid2/Data Fields/temperature");
+
+        stack<BaseType*> bt;
+        d_dmz->build_basetype_chain(btp, bt);
+        CPPUNIT_ASSERT(bt.size() == 5);
+
+        DBG(cerr << "bt.top()->name(): " << bt.top()->name() << endl);
+        CPPUNIT_ASSERT(bt.top()->name() == "HDFEOS");
+        bt.pop(); bt.pop(); bt.pop(); bt.pop();
+        DBG(cerr << "four pop() operations, then bt.top()->name(): " << bt.top()->name() << endl);
+        CPPUNIT_ASSERT(bt.top()->name() == "temperature");
+    }
+
+    void test_build_basetype_chain_3() {
+        d_dmz = new DMZ(test_array_6_1_dmrpp);
+        DmrppTypeFactory factory;
+        DMR dmr(&factory);
+        d_dmz->build_thin_dmr(&dmr);
+
+        BaseType *btp = dmr.root()->find_var("/a.j");
+        CPPUNIT_ASSERT(btp);
+
+        stack<BaseType*> bt;
+        d_dmz->build_basetype_chain(btp, bt);
+        CPPUNIT_ASSERT(bt.size() == 3);
+
+        DBG(cerr << "bt.top()->name(): " << bt.top()->name() << endl);
+        CPPUNIT_ASSERT(bt.top()->name() == "a");
+        bt.pop(); bt.pop();
+        DBG(cerr << "two pop() operations, then bt.top()->name(): " << bt.top()->name() << endl);
+        CPPUNIT_ASSERT(bt.top()->name() == "j");
+    }
 
     void test_get_variable_xml_node_1() {
         d_dmz = new DMZ(chunked_fourD_dmrpp);
@@ -370,6 +408,7 @@ public:
         DMR dmr(&factory);
         d_dmz->build_thin_dmr(&dmr);
         BaseType *btp = *(dmr.root()->var_begin());
+        CPPUNIT_ASSERT(btp);
         xml_node<> *node = d_dmz->get_variable_xml_node(btp);
         CPPUNIT_ASSERT(node);
         DBG(cerr << "get_variable_xml_node(): " << node->name() << ", " << node->first_attribute()->value() << endl);
@@ -419,6 +458,7 @@ public:
         CPPUNIT_ASSERT(btp->type() == dods_array_c && node->name() == btp->var()->type_name());
         CPPUNIT_ASSERT(node->first_attribute()->value() == btp->name());
     }
+
     void test_load_attributes_1() {
         try {
             d_dmz = new DMZ(chunked_fourD_dmrpp);
@@ -456,6 +496,81 @@ public:
         }
     }
 
+    void test_load_attributes_2() {
+        try {
+            d_dmz = new DMZ(grid_2_2d_dmrpp);
+            DmrppTypeFactory factory;
+            DMR dmr(&factory);
+            d_dmz->build_thin_dmr(&dmr);
+
+            XMLWriter xml;
+            dmr.print_dap4(xml);
+            DBG(cerr << "DMR: " << xml.get_doc() << endl);
+
+            // Given a thin DMR, load in the attributes of the first variable
+            BaseType *btp = dmr.root()->find_var("/HDFEOS/GRIDS/GeoGrid2/Data Fields/temperature");
+            CPPUNIT_ASSERT(btp->attributes()->empty());
+
+            d_dmz->load_attributes(btp);
+            XMLWriter xml2;
+            dmr.print_dap4(xml2);
+            DBG(cerr << "DMR with attributes: " << xml2.get_doc() << endl);
+
+            CPPUNIT_ASSERT(!btp->attributes()->empty());
+            CPPUNIT_ASSERT(btp->attributes()->attribute_end() - btp->attributes()->attribute_begin() == 1);
+        }
+        catch (BESInternalError &e) {
+            CPPUNIT_FAIL("Caught BESInternalError " + e.get_verbose_message());
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL("Caught BESError " + e.get_verbose_message());
+        }
+        catch (std::exception &e) {
+            CPPUNIT_FAIL("Caught std::exception " + string(e.what()));
+        }
+        catch (...) {
+            CPPUNIT_FAIL("Caught ? ");
+        }
+    }
+
+    void test_load_attributes_3() {
+        try {
+            d_dmz = new DMZ(test_array_6_1_dmrpp);
+            DmrppTypeFactory factory;
+            DMR dmr(&factory);
+            d_dmz->build_thin_dmr(&dmr);
+
+            XMLWriter xml;
+            dmr.print_dap4(xml);
+            DBG(cerr << "DMR: " << xml.get_doc() << endl);
+
+            // Given a thin DMR, load in the attributes of the first variable
+            BaseType *btp = dmr.root()->find_var("/a.j");
+            CPPUNIT_ASSERT(btp->attributes()->empty());
+
+            d_dmz->load_attributes(btp);
+            XMLWriter xml2;
+            dmr.print_dap4(xml2);
+            DBG(cerr << "DMR with attributes: " << xml2.get_doc() << endl);
+
+            CPPUNIT_ASSERT(!btp->attributes()->empty());
+            CPPUNIT_ASSERT(btp->attributes()->attribute_end() - btp->attributes()->attribute_begin() == 1);
+        }
+        catch (BESInternalError &e) {
+            CPPUNIT_FAIL("Caught BESInternalError " + e.get_verbose_message());
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL("Caught BESError " + e.get_verbose_message());
+        }
+        catch (std::exception &e) {
+            CPPUNIT_FAIL("Caught std::exception " + string(e.what()));
+        }
+        catch (...) {
+            CPPUNIT_FAIL("Caught ? ");
+        }
+    }
+
+
     CPPUNIT_TEST_SUITE( DMZTest );
 
     CPPUNIT_TEST(test_DMZ_ctor_1);
@@ -472,12 +587,18 @@ public:
     CPPUNIT_TEST(test_build_thin_dmr_4);
     CPPUNIT_TEST(test_build_thin_dmr_5);
 
+    CPPUNIT_TEST(test_build_basetype_chain_1);
+    CPPUNIT_TEST(test_build_basetype_chain_2);
+    CPPUNIT_TEST(test_build_basetype_chain_3);
+
     CPPUNIT_TEST(test_get_variable_xml_node_1);
     CPPUNIT_TEST(test_get_variable_xml_node_2);
     CPPUNIT_TEST(test_get_variable_xml_node_3);
     CPPUNIT_TEST_FAIL(test_get_variable_xml_node_4);
 
     CPPUNIT_TEST(test_load_attributes_1);
+    CPPUNIT_TEST(test_load_attributes_2);
+    CPPUNIT_TEST(test_load_attributes_3);
 
     CPPUNIT_TEST_SUITE_END();
 };

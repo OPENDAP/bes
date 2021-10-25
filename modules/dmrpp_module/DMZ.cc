@@ -595,85 +595,16 @@ void DMZ::process_attribute(D4Attributes *attributes, xml_node<> *dap_attr_node)
         }
      }
 }
-#if 0
-    if (get_attribute_val("type", attrs, nb_attributes) == "Container") {
-        push_state(inside_attribute_container);
-
-        BESDEBUG(PARSER, prolog << "Pushing attribute container " << get_attribute_val("name", attrs, nb_attributes) << endl);
-        D4Attribute *child = new D4Attribute(get_attribute_val("name", attrs, nb_attributes), attr_container_c);
-
-        D4Attributes *tos = top_attributes();
-        // add return
-        if (!tos) {
-            delete child;
-            dmr_fatal_error(this, "Expected an Attribute container on the top of the attribute stack.");
-            return false;
-        }
-
-        tos->add_attribute_nocopy(child);
-        push_attributes(child->attributes());
-    }
-    else if (get_attribute_val("type", attrs, nb_attributes) == "OtherXML") {
-        push_state(inside_other_xml_attribute);
-
-        dods_attr_name = get_attribute_val("name", attrs, nb_attributes);
-        dods_attr_type = get_attribute_val("type", attrs, nb_attributes);
-    }
-    else {
-        push_state(inside_attribute);
-
-        dods_attr_name = get_attribute_val("name", attrs, nb_attributes);
-        dods_attr_type = get_attribute_val("type", attrs, nb_attributes);
-    }
-
-    return true;
-}
-#endif
-#if 0
-void DMZ::build_xml_path_to_variable_helper(BaseType *btp, vector<string> &xml_path)
-{
-    xml_path.push_back(string("/").append( btp->type_name() == "Array"? btp->var()->type_name(): btp->type_name()));
-
-    auto parent = btp->get_parent();
-    // The parent must be non-null and not the root group.
-    if (parent && !(parent->type() == dods_group_c && parent->get_parent() == nullptr))
-        build_xml_path_to_variable_helper(btp->get_parent(), xml_path);
-}
-
-// build_xml_path_to_variable(): /Group/Float32, knows to not include Array
-string DMZ::build_xml_path_to_variable(BaseType *btp)
-{
-    // look at the parent objects to build the xml path
-    vector<string> xml_path{};
-    build_xml_path_to_variable_helper(btp, xml_path);
-
-    string path_string;
-    for (auto si = xml_path.rbegin(), se = xml_path.rend(); si != se; ++si)
-        path_string.append(*si);
-
-    return path_string;
-}
-
-xml_node<> *DMZ::get_variable_xml_node(BaseType *btp)
-{
-    string xml_path = build_xml_path_to_variable(btp);
-    // Notw look for the node with the correct element type and matching name
-    for (auto var_node = d_xml_doc.first_node(xml_path.c_str()); var_node; var_node = var_node->next_sibling()) {
-        if (var_node->name() == btp->name())
-            return var_node;
-    }
-
-    return nullptr;
-}
-#endif
 
 // load BaseTypes on a stack.
 void DMZ::build_basetype_chain(BaseType *btp, stack<BaseType*> &bt)
 {
-    bt.push(btp);
-
     auto parent = btp->get_parent();
-    // The parent must be non-null and not the root group.
+/// FIXME    if (btp->type() != dods_array_c)        // don't push array BaseType objects
+        bt.push(btp);
+
+
+    // The parent must be non-null and not the root group (the root group has no parent).
     if (parent && !(parent->type() == dods_group_c && parent->get_parent() == nullptr))
         build_basetype_chain(parent, bt);
 }
@@ -681,8 +612,12 @@ void DMZ::build_basetype_chain(BaseType *btp, stack<BaseType*> &bt)
 xml_node<> *DMZ::get_variable_xml_node_helper(xml_node<> *parent_node, stack<BaseType*> &bt)
 {
     // The DMR XML stores both scalar and array variables on XML elements
-    // named for the cardinal type. For an array that is the type of the
+    // named for the cardinal type. For an array, that is the type of the
     // element, so we use BaseType->var()->type_name() for an Array.
+    /// FIXME string type_name = bt.top()->type() == dods_array_c ? bt.top()->var()->type_name(): bt.top()->type_name();
+    if (bt.top()->type() == dods_array_c && bt.top()->var()->is_constructor_type())
+        bt.pop();
+
     string type_name = bt.top()->type() == dods_array_c ? bt.top()->var()->type_name(): bt.top()->type_name();
     string var_name = bt.top()->name();
     bt.pop();
