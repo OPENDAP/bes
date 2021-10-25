@@ -596,13 +596,27 @@ void DMZ::process_attribute(D4Attributes *attributes, xml_node<> *dap_attr_node)
      }
 }
 
-// load BaseTypes on a stack.
+/**
+ * @brief Build the lineage of a variable on a stack
+ *
+ * This function builds a stack of BaseTypes so that the top-most
+ * variable will be at the top level of the DOM tree (a child of
+ * the Dataset node) and each successive variable can be found
+ * by looking further in the tree.
+ *
+ * @note Because this function works by starting with the leaf node
+ * and visiting each parent in succession, it will include Array BaseTypes
+ * but the XML DOM tree _does not_. This function could be improved
+ * by making sure that Array objects are not pushed on the stack.
+ * See get_variable_xml_node_helper() below.
+ *
+ * @param btp Push thisBaseType on the stack, then push it's ancestors
+ * @param bt The stack
+ */
 void DMZ::build_basetype_chain(BaseType *btp, stack<BaseType*> &bt)
 {
     auto parent = btp->get_parent();
-/// FIXME    if (btp->type() != dods_array_c)        // don't push array BaseType objects
-        bt.push(btp);
-
+    bt.push(btp);
 
     // The parent must be non-null and not the root group (the root group has no parent).
     if (parent && !(parent->type() == dods_group_c && parent->get_parent() == nullptr))
@@ -611,13 +625,18 @@ void DMZ::build_basetype_chain(BaseType *btp, stack<BaseType*> &bt)
 
 xml_node<> *DMZ::get_variable_xml_node_helper(xml_node<> *parent_node, stack<BaseType*> &bt)
 {
-    // The DMR XML stores both scalar and array variables on XML elements
-    // named for the cardinal type. For an array, that is the type of the
-    // element, so we use BaseType->var()->type_name() for an Array.
-    /// FIXME string type_name = bt.top()->type() == dods_array_c ? bt.top()->var()->type_name(): bt.top()->type_name();
+    // When we have an array of Structure or Sequence, both the Array and the
+    // Structure BaseType are pushed on the stack. This happens because, for
+    // constructors, other variables reference them as a parent node (while that's
+    // not the case for the cardinal types held by an array). Here we pop the
+    // Array off the stack. A better solution might be to better control what gets
+    // pushed by build_basetype_chain(). jhrg 10/24/21
     if (bt.top()->type() == dods_array_c && bt.top()->var()->is_constructor_type())
         bt.pop();
 
+    // The DMR XML stores both scalar and array variables using XML elements
+    // named for the cardinal type. For an array, that is the type of the
+    // element, so we use BaseType->var()->type_name() for an Array.
     string type_name = bt.top()->type() == dods_array_c ? bt.top()->var()->type_name(): bt.top()->type_name();
     string var_name = bt.top()->name();
     bt.pop();
@@ -638,6 +657,12 @@ xml_node<> *DMZ::get_variable_xml_node_helper(xml_node<> *parent_node, stack<Bas
     return nullptr;
 }
 
+/**
+ * @brief For a given variable find its corresponding xml_node
+ * @param btp The variable (nominally, a child node from the DMR
+ * that corresponds to the DMR++ XML document this class manages).
+ * @return The xml_node<> pointer
+ */
 xml_node<> *DMZ::get_variable_xml_node(BaseType *btp)
 {
     // load the BaseType objects onto a stack, since we start at the leaf and
@@ -654,6 +679,17 @@ xml_node<> *DMZ::get_variable_xml_node(BaseType *btp)
     return node;
 }
 
+/**
+ * @brief Load the DAP attributes from the DMR++ XML for a variable
+ *
+ * This method assumes the DMR++ XML has alerady been parsed and that
+ * the BaseType* points to a variable defined in that XML.
+ *
+ * Use build_thin_dmr() to load the variable information in a DNR, then
+ * use D4Group::find_var()() to get a BaseType* to a particular variable.
+ *
+ * @param btp The variable
+ */
 void DMZ::load_attributes(BaseType *btp)
 {
     // goto the DOM tree node for this variable

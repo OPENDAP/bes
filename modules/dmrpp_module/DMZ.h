@@ -77,9 +77,6 @@ private:
     static libdap::BaseType *build_variable(libdap::DMR *dmr, libdap::D4Group *group, libdap::Type t, rapidxml::xml_node<> *var_node);
     static libdap::BaseType *add_scalar_variable(libdap::DMR *dmr, libdap::D4Group *group, libdap::Constructor *parent, libdap::Type t, rapidxml::xml_node<> *var_node);
     static libdap::BaseType *add_array_variable(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Constructor *parent, libdap::Type t, rapidxml::xml_node<> *var_node);
-
-    //static void build_xml_path_to_variable_helper(libdap::BaseType *btp, std::vector<std::string> &xml_path);
-    //static std::string build_xml_path_to_variable(libdap::BaseType *btp);
     static void process_attribute(libdap::D4Attributes *attributes, rapidxml::xml_node<> *dap_attr_node);
 
 
@@ -100,6 +97,7 @@ public:
 
     // Make these take a Variable/DmrppCommon and not a DMR
     void load_attributes(libdap::BaseType *btp);
+
     void load_chunks(libdap::BaseType *btp);
     void load_compact_data(libdap::BaseType *btp);
 

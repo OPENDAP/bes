@@ -47,6 +47,11 @@
 #include "read_test_baseline.h"
 #include "test_config.h"
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "ConstantConditionsOC"
+#pragma ide diagnostic ignored "UnusedValue"
+#pragma ide diagnostic ignored "UnreachableCode"
+#pragma ide diagnostic ignored "UnusedLocalVariable"
 using namespace std;
 using namespace libdap;
 using namespace bes;
@@ -121,8 +126,7 @@ public:
             CPPUNIT_ASSERT("Caught BESInternalError with xml pathname fail");
         }
     }
-
-
+    
     void test_DMZ_ctor_4() {
         try {
             d_dmz = new DMZ(""); // zero length
@@ -570,7 +574,6 @@ public:
         }
     }
 
-
     CPPUNIT_TEST_SUITE( DMZTest );
 
     CPPUNIT_TEST(test_DMZ_ctor_1);
@@ -647,3 +650,5 @@ int main(int argc, char*argv[])
 
     return wasSuccessful ? 0 : 1;
 }
+
+#pragma clang diagnostic pop
