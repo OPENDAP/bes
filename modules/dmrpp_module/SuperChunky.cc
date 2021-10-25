@@ -22,6 +22,7 @@
 //
 // Created by ndp on 12/2/20.
 //
+
 #include "config.h"
 
 #include <vector>
@@ -57,13 +58,12 @@ namespace dmrpp {
 
 bool debug = true;
 
-
 void compute_super_chunks(dmrpp::DmrppArray *array, bool only_constrained, vector<SuperChunk *> &super_chunks){
 
         // Now we get the chunkyness
         auto chunk_dim_sizes = array->get_chunk_dimension_sizes();
         //unsigned int chunk_size_in_elements = array->get_chunk_size_in_elements();
-        auto chunks = array->get_immutable_chunks();
+        auto chunks = array->get_chunks(); //array->get_immutable_chunks();
 
         unsigned long long sc_count=0;
         stringstream sc_id;
@@ -127,6 +127,7 @@ void compute_super_chunks(dmrpp::DmrppArray *array, bool only_constrained, vecto
             }
         }
 }
+
 void compute_super_chunks(libdap::BaseType *var, bool only_constrained, vector<SuperChunk *> &super_chunks) {
     if (var->is_simple_type())
         return;
@@ -239,13 +240,11 @@ void inventory_super_chunks(libdap::BaseType *var, bool only_constrained, vector
             compute_super_chunks(*vtr++, only_constrained, super_chunks);
             //inventory_super_chunks(*vtr++, only_constrained);
         }
-
     }
 
     void inventory_super_chunks(DMRpp &dmr, bool only_constrained, vector<SuperChunk *> &super_chunks){
         inventory_super_chunks(dmr.root(), only_constrained, super_chunks);
     }
-
 
     dmrpp::DMRpp *get_dmrpp(const string dmrpp_filename){
         ifstream dmrpp_ifs (dmrpp_filename);
@@ -261,7 +260,6 @@ void inventory_super_chunks(libdap::BaseType *var, bool only_constrained, vector
             throw BESInternalFatalError("The provided file could not be opened. filename: '"+dmrpp_filename+"'",__FILE__,__LINE__);
         }
     }
-
 
     void inventory_super_chunks(const string dmrpp_filename){
         cout << "DMR++ file:  " << dmrpp_filename << endl;
@@ -284,8 +282,6 @@ void inventory_super_chunks(libdap::BaseType *var, bool only_constrained, vector
         delete dmr;
     }
 
-
-
     void dump_vars(libdap::D4Group *group){
         // Process Groups - RECURSION HAPPENS HERE.
         auto gtr = group->grp_begin();
@@ -301,16 +297,11 @@ void inventory_super_chunks(libdap::BaseType *var, bool only_constrained, vector
             bt->dump(cout);
             cout << endl;
         }
-
     }
+
     void dump_vars(DMRpp &dmr){
         dump_vars(dmr.root());
     }
-
-
-
-
-
 } // namespace dmrpp
 
 int main(int argc, char *argv[]) {

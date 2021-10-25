@@ -42,6 +42,7 @@
 #include "BESDebug.h"
 
 #include "DMZ.h"
+#include "DmrppCommon.h"
 #include "DmrppTypeFactory.h"
 
 #include "read_test_baseline.h"
@@ -574,7 +575,166 @@ public:
         }
     }
 
-    CPPUNIT_TEST_SUITE( DMZTest );
+    void test_process_cds_node_1() {
+        try {
+            d_dmz = new DMZ(chunked_fourD_dmrpp);
+            DmrppTypeFactory factory;
+            DMR dmr(&factory);
+            d_dmz->build_thin_dmr(&dmr);
+
+            XMLWriter xml;
+            dmr.print_dap4(xml);
+            DBG(cerr << "DMR: " << xml.get_doc() << endl);
+
+            // Given a thin DMR, load in the attributes of the first variable
+            BaseType *btp = *(dmr.root()->var_begin());
+            auto *dc = dynamic_cast<DmrppCommon *>(btp);
+            CPPUNIT_ASSERT(dc);
+
+            // goto the DOM tree node for this variable
+            xml_node<> *var_node = d_dmz->get_variable_xml_node(btp);
+            if (var_node == nullptr)
+                throw BESInternalError("Could not find location of variable in the DMR++ XML document.", __FILE__,
+                                       __LINE__);
+
+            // Chunks for this node will be held in the var_node siblings.
+            int chunks_nodes = 0;
+            for (auto *child = var_node->first_node("dmrpp:chunks"); child; child = child->next_sibling()) {
+                ++chunks_nodes;
+                d_dmz->process_cds_node(dc, child);
+            }
+
+            CPPUNIT_ASSERT(chunks_nodes == 1);
+            vector<unsigned long long> c_sizes = dc->get_chunk_dimension_sizes();
+            CPPUNIT_ASSERT(c_sizes.size() == 4);
+            CPPUNIT_ASSERT(c_sizes.at(0) == 20);
+            CPPUNIT_ASSERT(c_sizes.at(1) == 20);
+            CPPUNIT_ASSERT(c_sizes.at(2) == 20);
+            CPPUNIT_ASSERT(c_sizes.at(3) == 20);
+        }
+        catch (BESInternalError &e) {
+            CPPUNIT_FAIL("Caught BESInternalError " + e.get_verbose_message());
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL("Caught BESError " + e.get_verbose_message());
+        }
+        catch (std::exception &e) {
+            CPPUNIT_FAIL("Caught std::exception " + string(e.what()));
+        }
+        catch (...) {
+            CPPUNIT_FAIL("Caught ? ");
+        }
+    }
+
+    void test_load_chunks_1() {
+        try {
+            d_dmz = new DMZ(chunked_fourD_dmrpp);
+            DmrppTypeFactory factory;
+            DMR dmr(&factory);
+            d_dmz->build_thin_dmr(&dmr);
+
+            XMLWriter xml;
+            dmr.print_dap4(xml);
+            DBG(cerr << "DMR: " << xml.get_doc() << endl);
+
+            // Given a thin DMR, load in the attributes of the first variable
+            auto *btp = *(dmr.root()->var_begin());
+            CPPUNIT_ASSERT(btp);
+
+            d_dmz->load_chunks(btp);
+
+            auto *dc = dynamic_cast<DmrppCommon *>(btp);
+            auto c_sizes = dc->get_chunk_dimension_sizes();
+            CPPUNIT_ASSERT(c_sizes.size() == 4);
+            CPPUNIT_ASSERT(c_sizes.at(0) == 20);
+            CPPUNIT_ASSERT(c_sizes.at(1) == 20);
+            CPPUNIT_ASSERT(c_sizes.at(2) == 20);
+            CPPUNIT_ASSERT(c_sizes.at(3) == 20);
+
+            auto chunks = dc->get_immutable_chunks();
+            DBG(cerr << "chunks.size(): " << chunks.size() << endl);
+            CPPUNIT_ASSERT(chunks.size() == 16);
+            CPPUNIT_ASSERT(chunks.at(0)->get_offset() == 4728);
+            CPPUNIT_ASSERT(chunks.at(0)->get_size() == 640000);
+            CPPUNIT_ASSERT(chunks.at(0)->get_position_in_array().size() == 4);
+            CPPUNIT_ASSERT(chunks.at(0)->get_position_in_array().at(0) == 0);
+            CPPUNIT_ASSERT(chunks.at(0)->get_position_in_array().at(3) == 0);
+
+            CPPUNIT_ASSERT(chunks.at(15)->get_offset() == 9606776);
+            CPPUNIT_ASSERT(chunks.at(15)->get_size() == 640000);
+            CPPUNIT_ASSERT(chunks.at(15)->get_position_in_array().size() == 4);
+            CPPUNIT_ASSERT(chunks.at(15)->get_position_in_array().at(0) == 20);
+            CPPUNIT_ASSERT(chunks.at(15)->get_position_in_array().at(3) == 20);
+        }
+        catch (BESInternalError &e) {
+            CPPUNIT_FAIL("Caught BESInternalError " + e.get_verbose_message());
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL("Caught BESError " + e.get_verbose_message());
+        }
+        catch (std::exception &e) {
+            CPPUNIT_FAIL("Caught std::exception " + string(e.what()));
+        }
+        catch (...) {
+            CPPUNIT_FAIL("Caught ? ");
+        }
+    }
+
+    void test_load_chunks_2() {
+        try {
+            d_dmz = new DMZ(coads_climatology_dmrpp);
+            DmrppTypeFactory factory;
+            DMR dmr(&factory);
+            d_dmz->build_thin_dmr(&dmr);
+
+            XMLWriter xml;
+            dmr.print_dap4(xml);
+            DBG(cerr << "DMR: " << xml.get_doc() << endl);
+
+            // Given a thin DMR, load in the attributes of the first variable
+            auto *btp = dmr.root()->find_var("/TIME");
+            CPPUNIT_ASSERT(btp);
+
+            d_dmz->load_chunks(btp);
+
+            auto *dc = dynamic_cast<DmrppCommon *>(btp);
+            auto c_sizes = dc->get_chunk_dimension_sizes();
+            CPPUNIT_ASSERT(c_sizes.size() == 4);
+            CPPUNIT_ASSERT(c_sizes.at(0) == 20);
+            CPPUNIT_ASSERT(c_sizes.at(1) == 20);
+            CPPUNIT_ASSERT(c_sizes.at(2) == 20);
+            CPPUNIT_ASSERT(c_sizes.at(3) == 20);
+
+            auto chunks = dc->get_immutable_chunks();
+            DBG(cerr << "chunks.size(): " << chunks.size() << endl);
+            CPPUNIT_ASSERT(chunks.size() == 16);
+            CPPUNIT_ASSERT(chunks.at(0)->get_offset() == 4728);
+            CPPUNIT_ASSERT(chunks.at(0)->get_size() == 640000);
+            CPPUNIT_ASSERT(chunks.at(0)->get_position_in_array().size() == 4);
+            CPPUNIT_ASSERT(chunks.at(0)->get_position_in_array().at(0) == 0);
+            CPPUNIT_ASSERT(chunks.at(0)->get_position_in_array().at(3) == 0);
+
+            CPPUNIT_ASSERT(chunks.at(15)->get_offset() == 9606776);
+            CPPUNIT_ASSERT(chunks.at(15)->get_size() == 640000);
+            CPPUNIT_ASSERT(chunks.at(15)->get_position_in_array().size() == 4);
+            CPPUNIT_ASSERT(chunks.at(15)->get_position_in_array().at(0) == 20);
+            CPPUNIT_ASSERT(chunks.at(15)->get_position_in_array().at(3) == 20);
+        }
+        catch (BESInternalError &e) {
+            CPPUNIT_FAIL("Caught BESInternalError " + e.get_verbose_message());
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL("Caught BESError " + e.get_verbose_message());
+        }
+        catch (std::exception &e) {
+            CPPUNIT_FAIL("Caught std::exception " + string(e.what()));
+        }
+        catch (...) {
+            CPPUNIT_FAIL("Caught ? ");
+        }
+    }
+
+CPPUNIT_TEST_SUITE( DMZTest );
 
     CPPUNIT_TEST(test_DMZ_ctor_1);
     CPPUNIT_TEST(test_DMZ_ctor_2);
@@ -602,6 +762,10 @@ public:
     CPPUNIT_TEST(test_load_attributes_1);
     CPPUNIT_TEST(test_load_attributes_2);
     CPPUNIT_TEST(test_load_attributes_3);
+
+    CPPUNIT_TEST(test_process_cds_node_1);
+
+    CPPUNIT_TEST(test_load_chunks_1);
 
     CPPUNIT_TEST_SUITE_END();
 };

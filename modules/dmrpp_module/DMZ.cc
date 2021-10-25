@@ -43,6 +43,7 @@
 
 #include "url_impl.h"           // see bes/http
 #include "DMZ.h"                // this includes the rapidxml header
+#include "DmrppCommon.h"
 #include "BESInternalError.h"
 #include "BESDebug.h"
 
@@ -102,7 +103,6 @@ static inline bool is_eq(const char *value, const char *key)
 
 // 'process' functions from the sax parser.
 #if 0
-
 /** Check to see if the current tag is an \c Enumeration start tag.
 
  @param name The start tag name
@@ -221,7 +221,7 @@ void DMZ::process_dataset(DMR *dmr, xml_node<> *xml_root)
     if (required_attrs_found != 1)
         throw BESInternalError("DMR++ XML dataset element missing one or more required attributes.", __FILE__, __LINE__);
 
-    d_dataset_elem_href = new http::url(href_attr, href_trusted);
+    d_dataset_elem_href.reset(new http::url(href_attr, href_trusted));
     BESDEBUG(PARSER, prolog << "Dataset dmrpp:href is set to '" << d_dataset_elem_href->str() << "'" << endl);
 }
 
@@ -698,7 +698,7 @@ void DMZ::load_attributes(BaseType *btp)
         throw BESInternalError("Could not find location of variable in the DMR++ XML document.", __FILE__, __LINE__);
 
     // Attributes for this node will be held in the var_node siblings.
-    // NB: Make an exlict call to the BaseType implementation in case
+    // NB: Make an explict call to the BaseType implementation in case
     // the attributes() method is specialized for this DMR++ code to
     // trigger a lazy-load of the variables' attributes. jhrg 10/24/21
     // Could also use BaseType::set_attributes(). jhrg
@@ -706,6 +706,109 @@ void DMZ::load_attributes(BaseType *btp)
     for (auto *child = var_node->first_node(); child; child = child->next_sibling()) {
         if (is_eq(child->name(), "Attribute")) {
             process_attribute(attributes, child);
+        }
+    }
+}
+
+/**
+ * @brief Parse a chunk node
+ * There are several different forms a chunk node can take and this handles
+ * all of them.
+ * @param dc
+ * @param chunk
+ */
+void DMZ::process_chunk(DmrppCommon *dc, xml_node<> *chunk)
+{
+    string href;
+    string trust;
+    string offset;
+    string size;
+    string chunk_position_in_array;
+
+    bool href_trusted = false;
+
+    for (xml_attribute<> *attr = chunk->first_attribute(); attr; attr = attr->next_attribute()) {
+        if (is_eq(attr->name(), "href")) {
+            href = attr->value();
+        }
+        else if (is_eq(attr->name(), "trust")) {
+            href_trusted = is_eq(attr->value(), "true");
+        }
+        else if (is_eq(attr->name(), "offset")) {
+            offset = attr->value();
+        }
+        else if (is_eq(attr->name(), "nBytes")) {
+            size = attr->value();
+        }
+        else if (is_eq(attr->name(), "chunkPositionInArray")) {
+            chunk_position_in_array = attr->value();
+        }
+    }
+
+    if (offset.empty() || size.empty())
+        throw BESInternalError("Both size and offset are required for a chunk node.", __FILE__, __LINE__);
+
+    if (!href.empty()) {
+        shared_ptr<http::url> data_url(new http::url(href, href_trusted));
+        dc->add_chunk(data_url, dc->get_byte_order(), stoi(size), stoi(offset), chunk_position_in_array);
+    }
+    else {
+        dc->add_chunk(d_dataset_elem_href, dc->get_byte_order(), stoi(size), stoi(offset), chunk_position_in_array);
+    }
+}
+
+/**
+ * @brief find the first chunkDimensionSizes node and use its value
+ * This method ignores any 'extra' chunkDimensionSizes nodes.
+ * @param dc
+ * @param chunks
+ */
+void DMZ::process_cds_node(DmrppCommon *dc, xml_node<> *chunks)
+{
+    bool cds_found = false;
+    for (auto *child = chunks->first_node("dmrpp:chunkDimensionSizes"); child && !cds_found; child = child->next_sibling()) {
+        if (is_eq(child->name(), "dmrpp:chunkDimensionSizes")) {
+            string sizes = child->value();
+            dc->parse_chunk_dimension_sizes(sizes);
+            cds_found = true;
+        }
+    }
+
+    if (!cds_found)
+        throw BESInternalError("Could not find a chunkDimensionSizes node.", __FILE__, __LINE__);
+}
+
+// a 'dmrpp:chunks' node has a chunkDimensionSizes node and then one or more chunks
+// nodes, and they have to be in that order.
+void DMZ::process_chunks(BaseType *btp, xml_node<> *chunks)
+{
+    auto *dc = dynamic_cast<DmrppCommon*>(btp);   // Get the Dmrpp common info
+    if (!dc)
+        throw BESInternalError("Could not cast BaseType to DmrppType in the drmpp handler.", __FILE__, __LINE__);
+
+    process_cds_node(dc, chunks);
+
+    // TODO Add support for compact. jhrg 10/25/21
+
+    // Chunks for this node will be held in the var_node siblings.
+    for (auto *chunk = chunks->first_node("dmrpp:chunk"); chunk; chunk = chunk->next_sibling()) {
+        if (is_eq(chunk->name(), "dmrpp:chunk")) {
+            process_chunk(dc, chunk);
+        }
+    }
+}
+
+void DMZ::load_chunks(BaseType *btp)
+{
+    // goto the DOM tree node for this variable
+    xml_node<> *var_node = get_variable_xml_node(btp);
+    if (var_node == nullptr)
+        throw BESInternalError("Could not find location of variable in the DMR++ XML document.", __FILE__, __LINE__);
+
+    // Chunks for this node will be held in the var_node siblings.
+    for (auto *child = var_node->first_node("dmrpp:chunks"); child; child = child->next_sibling()) {
+        if (is_eq(child->name(), "dmrpp:chunks")) {
+            process_chunks(btp, child);
         }
     }
 }

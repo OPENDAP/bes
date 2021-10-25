@@ -212,7 +212,7 @@ unsigned long DmrppCommon::add_chunk(
 {
     vector<unsigned long long> cpia_vector;
     Chunk::parse_chunk_position_in_array_string(position_in_array, cpia_vector);
-    return add_chunk(data_url, byte_order, size, offset, cpia_vector);
+    return add_chunk(move(data_url), byte_order, size, offset, cpia_vector);
 }
 
 unsigned long DmrppCommon::add_chunk(
@@ -222,7 +222,7 @@ unsigned long DmrppCommon::add_chunk(
         unsigned long long offset,
         const vector<unsigned long long> &position_in_array)
 {
-    std::shared_ptr<Chunk> chunk(new Chunk(data_url, byte_order, size, offset, position_in_array));
+    std::shared_ptr<Chunk> chunk(new Chunk(move(data_url), byte_order, size, offset, position_in_array));
 #if 0
     auto array = dynamic_cast<dmrpp::DmrppArray *>(this);
     if(!array){
@@ -268,9 +268,6 @@ unsigned long DmrppCommon::add_chunk(
     d_chunks.push_back(chunk);
     return d_chunks.size();
 }
-
-
-
 
 unsigned long DmrppCommon::add_chunk(
         const string &byte_order,

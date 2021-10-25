@@ -91,15 +91,17 @@ protected:
     	d_twiddle_bytes = dc.d_twiddle_bytes;
     }
 
-    /// @brief Returns a reference to the internal Chunk vector.
-    /// @todo Fix this comment block and make either this or get_immutable_chunks
-    ///        work correctly (i.e., not return a copy). jhrg 10/7/21
+    /// @brief Returns a copy of the internal Chunk vector.
     /// @see get_immutable_chunks()
     virtual std::vector<std::shared_ptr<Chunk>> get_chunks() {
     	return d_chunks;
     }
 
     virtual char *read_atomic(const std::string &name);
+
+    // This declaration allows code in the SuperChunky program to use the protected method.
+    // jhrg 10/25/21
+    friend void compute_super_chunks(dmrpp::DmrppArray *array, bool only_constrained, vector<SuperChunk *> &super_chunks);
 
 public:
     static bool d_print_chunks;         ///< if true, print_dap4() prints chunk elements
@@ -161,12 +163,13 @@ public:
     virtual bool twiddle_bytes() const { return d_twiddle_bytes; }
 
     /// @brief A const reference to the vector of chunks
-    /// @todo Fix this comment block
     /// @see get_chunks()
-    virtual std::vector< std::shared_ptr<Chunk>> get_immutable_chunks() const {
+    virtual const std::vector<std::shared_ptr<Chunk>> &get_immutable_chunks() const {
         return d_chunks;
     }
 
+    /// @brief The chunk dimension sizes held in a const vector
+    /// @return A reference to a const vector of chunk dimension sizes
     virtual const std::vector<unsigned long long> &get_chunk_dimension_sizes() const {
     	return d_chunk_dimension_sizes;
     }
@@ -214,25 +217,25 @@ public:
             const std::string &byte_order,
             unsigned long long size,
             unsigned long long offset,
-            const std::string &position_in_array = "");
+            const std::string &position_in_array);
 
     virtual unsigned long add_chunk(
             std::shared_ptr<http::url> d_data_url,
             const std::string &byte_order,
             unsigned long long size,
-            const unsigned long long offset,
+            unsigned long long offset,
             const std::vector<unsigned long long> &position_in_array);
 
     virtual unsigned long add_chunk(
             const std::string &byte_order,
             unsigned long long size,
             unsigned long long offset,
-            const std::string &position_in_array = "");
+            const std::string &position_in_array);
 
     virtual unsigned long add_chunk(
             const std::string &byte_order,
             unsigned long long size,
-            const unsigned long long offset,
+            unsigned long long offset,
             const std::vector<unsigned long long> &position_in_array);
 
     virtual void dump(std::ostream & strm) const;

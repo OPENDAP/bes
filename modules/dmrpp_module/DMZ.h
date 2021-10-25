@@ -49,6 +49,8 @@ class url;
 
 namespace dmrpp {
 
+class DmrppCommon;
+
 /**
  * @brief Interface to hide the DMR++ information storage format.
  *
@@ -58,14 +60,15 @@ class DMZ {
 private:
     std::vector<char> d_xml_text;  // Holds XML text
     rapidxml::xml_document<> d_xml_doc{};    // character type defaults to char
-
-    http::url *d_dataset_elem_href{nullptr};
+    shared_ptr<http::url> d_dataset_elem_href{};
 
     void m_duplicate_common(const DMZ &) {
     }
 
     void process_dataset(libdap::DMR *dmr, rapidxml::xml_node<> *xml_root);
     rapidxml::xml_node<> *get_variable_xml_node(libdap::BaseType *btp);
+    void process_chunk(dmrpp::DmrppCommon *dc, rapidxml::xml_node<> *chunk);
+    void process_chunks(libdap::BaseType *btp, rapidxml::xml_node<> *chunks);
 
     static rapidxml::xml_node<> *get_variable_xml_node_helper(rapidxml::xml_node<> *var_node, std::stack<libdap::BaseType*> &bt);
     static void build_basetype_chain(libdap::BaseType *btp, std::stack<libdap::BaseType*> &bt);
@@ -79,6 +82,7 @@ private:
     static libdap::BaseType *add_array_variable(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Constructor *parent, libdap::Type t, rapidxml::xml_node<> *var_node);
     static void process_attribute(libdap::D4Attributes *attributes, rapidxml::xml_node<> *dap_attr_node);
 
+    static void process_cds_node(dmrpp::DmrppCommon *dc, rapidxml::xml_node<> *chunks);
 
     friend class DMZTest;
 
