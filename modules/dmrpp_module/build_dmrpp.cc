@@ -433,6 +433,7 @@ static void set_filter_information(hid_t dataset_id, DmrppCommon *dc) {
     try {
         int numfilt = H5Pget_nfilters(plist_id);
         VERBOSE(cerr << "Number of filters associated with dataset: " << numfilt << endl);
+        string filters;
 
         for (int filter = 0; filter < numfilt; filter++) {
             size_t nelmts = 0;
@@ -443,15 +444,18 @@ static void set_filter_information(hid_t dataset_id, DmrppCommon *dc) {
             switch (filter_type) {
                 case H5Z_FILTER_DEFLATE:
                     VERBOSE(cerr << "H5Z_FILTER_DEFLATE" << endl);
-                    dc->set_deflate(true);
+                    // dc->set_deflate(true);
+                    filters.append("deflate ");
                     break;
                 case H5Z_FILTER_SHUFFLE:
                     VERBOSE(cerr << "H5Z_FILTER_SHUFFLE" << endl);
-                    dc->set_shuffle(true);
+                    // dc->set_shuffle(true);
+                    filters.append("shuffle ");
                     break;
                 case H5Z_FILTER_FLETCHER32:
                     VERBOSE(cerr << "H5Z_FILTER_FLETCHER32" << endl);
-                    dc->set_fletcher32(true);
+                    // dc->set_fletcher32(true);
+                    filters.append("fletcher32 ");
                     break;
                 default: {
                     ostringstream oss("Unsupported HDF5 filter: ", std::ios::ate);
@@ -460,6 +464,9 @@ static void set_filter_information(hid_t dataset_id, DmrppCommon *dc) {
                 }
             }
         }
+        //trimming trailing space from compression (aka filter) string
+        filters = filters.substr(0, filters.length() - 1);
+        dc->set_filter(filters);
     }
     catch (...) {
         H5Pclose(plist_id);

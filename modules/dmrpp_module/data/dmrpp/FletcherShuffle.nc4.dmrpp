@@ -42,7 +42,7 @@
             <dmrpp:chunk offset="11596" nBytes="4"/>
         </dmrpp:chunks>
     </Int32>
-    <Float32 name="Y">
+    <Int8 name="Y">
         <Dim name="/nodes"/>
         <Attribute name="grid" type="String">
             <Value>element</Value>
@@ -50,11 +50,11 @@
         <Attribute name="grid_location" type="String">
             <Value>node</Value>
         </Attribute>
-        <dmrpp:chunks compressionType="shuffledeflatefletcher32" byteOrder="LE">
+        <dmrpp:chunks compressionType="shuffle deflate fletcher32" byteOrder="LE">
             <dmrpp:chunkDimensionSizes>9</dmrpp:chunkDimensionSizes>
-            <dmrpp:chunk offset="11652" nBytes="51" chunkPositionInArray="[0]"/>
+            <dmrpp:chunk offset="11652" nBytes="24" chunkPositionInArray="[0]"/>
         </dmrpp:chunks>
-    </Float32>
+    </Int8>
     <Int32 name="varLong">
         <Attribute name="description" type="String">
             <Value>Too long have I wandered this barren wasteland my friend.</Value>

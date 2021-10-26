@@ -140,12 +140,15 @@ void DmrppCommon::parse_chunk_dimension_sizes(const string &chunk_dims_string)
  * @brief Parses the text content of the XML element h4:chunkDimensionSizes
  * into the internal vector<unsigned int> representation.
  *
- * @param compression_type_string One of "deflate" or "shuffle."
+ * @param compression_type_string
  */
 void DmrppCommon::ingest_compression_type(const string &compression_type_string)
 {
     if (compression_type_string.empty()) return;
+    d_filters = compression_type_string;
 
+#if 0
+    // old code utilizing booleans, SBL 10.26.21
     // Clear previous state
     d_deflate = false;
     d_shuffle = false;
@@ -167,6 +170,7 @@ void DmrppCommon::ingest_compression_type(const string &compression_type_string)
     if (compression_type_string.find(fletcher32) != string::npos) {
         d_fletcher32 = true;
     }
+#endif
 }
 
 /**

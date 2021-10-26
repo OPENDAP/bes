@@ -32,11 +32,12 @@ variables:
 	float X(nodes) ;
 		X:grid = "element" ;
 		X:grid_location = "node" ;
-	float Y(nodes) ;
+	byte Y(nodes) ;
 		Y:grid = "element" ;
 		Y:grid_location = "node" ;
 		Y:_Fletcher32 = 1;
 		Y:_Shuffle = 1;
+		Y:_Deflate = 0;
 
 data:
 
