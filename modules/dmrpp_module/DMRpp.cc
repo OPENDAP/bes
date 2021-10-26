@@ -84,7 +84,7 @@ void DMRpp::print_dmrpp(XMLWriter &xml, const string &href, bool constrained, bo
         if (DmrppCommon::d_print_chunks)
             if (xmlTextWriterWriteAttribute(xml.get_writer(),
                 (const xmlChar*)string("xmlns:").append(DmrppCommon::d_ns_prefix).c_str(),
-                (const xmlChar*)DmrppCommon::d_dmrpp_ns.c_str()) < 0)
+                    (const xmlChar*)DmrppCommon::d_dmrpp_ns.c_str()) < 0)
                 throw InternalErr(__FILE__, __LINE__, "Could not write attribute for xmlns:dmrpp");
 
         if (!request_xml_base().empty()) {

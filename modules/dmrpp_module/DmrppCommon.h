@@ -79,6 +79,11 @@ private:
 	std::vector<std::shared_ptr<Chunk>> d_chunks;
 	bool d_twiddle_bytes;
 
+    // These indicate that the chunks or attributes have been loaded into the
+    // variable when the DMR++ handler is using lazy-loading of this data.
+    bool d_chunks_loaded;
+    bool d_attributes_loaded;
+
 protected:
     void m_duplicate_common(const DmrppCommon &dc) {
     	d_deflate = dc.d_deflate;
@@ -89,6 +94,8 @@ protected:
     	d_chunks = dc.d_chunks;
     	d_byte_order = dc.d_byte_order;
     	d_twiddle_bytes = dc.d_twiddle_bytes;
+        d_chunks_loaded = dc.d_chunks_loaded;
+        d_attributes_loaded = dc.d_attributes_loaded;
     }
 
     /// @brief Returns a copy of the internal Chunk vector.
@@ -108,7 +115,8 @@ public:
     static std::string d_dmrpp_ns;      ///< The DMR++ XML namespace
     static std::string d_ns_prefix;     ///< The XML namespace prefix to use
 
-    DmrppCommon() : d_deflate(false), d_shuffle(false), d_compact(false), d_fletcher32(false), d_byte_order(""), d_twiddle_bytes(false)
+    DmrppCommon() : d_deflate(false), d_shuffle(false), d_compact(false), d_fletcher32(false), d_byte_order(""),
+    d_twiddle_bytes(false), d_chunks_loaded(false), d_attributes_loaded(false)
     {
     }
 
@@ -161,6 +169,14 @@ public:
 
     /// @brief Returns true if this object utilizes shuffle compression.
     virtual bool twiddle_bytes() const { return d_twiddle_bytes; }
+
+    /// @brief Have the chunks been loaded?
+    virtual bool get_chunks_loaded()  const { return d_chunks_loaded; }
+    // TODO Needed? virtual void set_chunks_loaded(bool state) {  d_chunks_loaded = state; }
+
+    /// @brief Have the attributes been loaded?
+    virtual bool get_attributes_loaded()  const { return d_attributes_loaded; }
+    // TODO Needed? virtual void set_attributes_loaded(bool state) {  d_attributes_loaded = state; }
 
     /// @brief A const reference to the vector of chunks
     /// @see get_chunks()

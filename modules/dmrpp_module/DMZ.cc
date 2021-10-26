@@ -101,87 +101,14 @@ static inline bool is_eq(const char *value, const char *key)
     return strcmp(value, key) == 0;
 }
 
-// 'process' functions from the sax parser.
-#if 0
-/** Check to see if the current tag is an \c Enumeration start tag.
-
- @param name The start tag name
- @param attrs The tag's XML attributes
- @return True if the tag was an \c Enumeration */
-inline bool DmrppParserSax2::process_enum_def(const char *name, const xmlChar **attrs, int nb_attributes)
-{
-    if (is_not(name, "Enumeration")) return false;
-
-#if 0
-    transfer_xml_attrs(attrs, nb_attributes);
-#endif
-
-    if (!(check_required_attribute("name", attrs, nb_attributes) && check_required_attribute("basetype", attrs, nb_attributes))) {
-        dmr_error(this, "The required attribute 'name' or 'basetype' was missing from an Enumeration element.");
-        return false;
-    }
-
-    Type t = get_type(get_attribute_val("basetype", attrs, nb_attributes).c_str());
-    if (!is_integer_type(t)) {
-        dmr_error(this, "The Enumeration '%s' must have an integer type, instead the type '%s' was used.",
-                  get_attribute_val("name", attrs, nb_attributes).c_str(), get_attribute_val("basetype", attrs, nb_attributes).c_str());
-        return false;
-    }
-
-    // This getter allocates a new object if needed.
-    string enum_def_path = get_attribute_val("name", attrs, nb_attributes);
-#if 0
-    // Use FQNs when things are referenced, not when they are defined
-    if (xml_attrs["name"].value[0] != '/')
-    enum_def_path = top_group()->FQN() + enum_def_path;
-#endif
-    enum_def()->set_name(enum_def_path);
-    enum_def()->set_type(t);
-
-    return true;
-}
-
-inline bool DmrppParserSax2::process_enum_const(const char *name, const xmlChar **attrs, int nb_attributes)
-{
-    if (is_not(name, "EnumConst")) return false;
-
-#if 0
-    // These methods set the state to parser_error if a problem is found.
-    transfer_xml_attrs(attrs, nb_attributes);
-#endif
-
-    if (!(check_required_attribute("name", attrs, nb_attributes) && check_required_attribute("value", attrs, nb_attributes))) {
-        dmr_error(this, "The required attribute 'name' or 'value' was missing from an EnumConst element.");
-        return false;
-    }
-
-    istringstream iss(get_attribute_val("value", attrs, nb_attributes));
-    long long value = 0;
-    iss >> skipws >> value;
-    if (iss.fail() || iss.bad()) {
-        dmr_error(this, "Expected an integer value for an Enumeration constant, got '%s' instead.",
-                  get_attribute_val("value", attrs, nb_attributes).c_str());
-    }
-    else if (!enum_def()->is_valid_enum_value(value)) {
-        dmr_error(this, "In an Enumeration constant, the value '%s' cannot fit in a variable of type '%s'.",
-                  get_attribute_val("value", attrs, nb_attributes).c_str(), D4type_name(d_enum_def->type()).c_str());
-    }
-    else {
-        // unfortunate choice of names... args are 'label' and 'value'
-        enum_def()->add_value(get_attribute_val("name", attrs, nb_attributes), value);
-    }
-
-    return true;
-}
-#endif
-
 /**
  * @brief process a Dataset element
  *
  * Given the root node of a DOM tree for the DMR++ XML document, populate the
- * libdap a DMR instance with information from that Dataset node. This sets the
+ * libdap DMR instance with information from that Dataset node. This sets the
  * stage for the parse of rest of the information in the DOM tree.
- * @param dmr
+ * @param dmr Dump the information in this instance of DMR
+ * @param xml_root The root node of the DOM tree
  */
 void DMZ::process_dataset(DMR *dmr, xml_node<> *xml_root)
 {
@@ -222,13 +149,12 @@ void DMZ::process_dataset(DMR *dmr, xml_node<> *xml_root)
         throw BESInternalError("DMR++ XML dataset element missing one or more required attributes.", __FILE__, __LINE__);
 
     d_dataset_elem_href.reset(new http::url(href_attr, href_trusted));
-    BESDEBUG(PARSER, prolog << "Dataset dmrpp:href is set to '" << d_dataset_elem_href->str() << "'" << endl);
 }
 
 /**
  * @brief Parse information from a Dimension element
- * @param grp
- * @param dimension_node
+ * @param grp The group we are currently processing (could be the root group)
+ * @param dimension_node The node in the DOM tree of the <Dimension> element
  */
 void DMZ::process_dimension(D4Group *grp, xml_node<> *dimension_node)
 {
@@ -261,9 +187,9 @@ void DMZ::process_dimension(D4Group *grp, xml_node<> *dimension_node)
 /**
  * @brief Process a Dim element and add it to the given Array
  * @param dmr
- * @param grp The group we are currently inside (could be the root group)
- * @param array The variable we are inside
- * @param dim_node The Dim node itself
+ * @param grp The group we are currently processing (could be the root group)
+ * @param array The variable we are processing
+ * @param dim_node The node in the DOM tree of the Dim element
  */
 void DMZ::process_dim(DMR *dmr, D4Group *grp, Array *array, xml_node<> *dim_node)
 {
@@ -306,7 +232,7 @@ void DMZ::process_dim(DMR *dmr, D4Group *grp, Array *array, xml_node<> *dim_node
     }
 }
 
-/// Are any of the child nodes 'Dim' elements?
+/// @brief Are any of the child nodes 'Dim' elements?
 static inline bool has_dim_nodes(xml_node<> *var_node)
 {
     for (auto *child = var_node->first_node(); child; child = child->next_sibling()) {
@@ -317,7 +243,7 @@ static inline bool has_dim_nodes(xml_node<> *var_node)
     return false;
 }
 
-/// Simple set membership; used to test for variable elements
+/// @brief Simple set membership; used to test for variable elements, et cetera.
 static inline bool member_of(const set<string> &elements_set, const string &element_name)
 {
     return elements_set.find(element_name) != elements_set.end();
@@ -326,10 +252,9 @@ static inline bool member_of(const set<string> &elements_set, const string &elem
 /**
  * @brief Process an element that is a variable
  *
- * This method processes both scalar and array variables, but not Structures
- * or Sequences or Groups - those are handled separately. This method does
- * process all of the elements contained by the scalar or array variable element,
- * however.
+ * This method processes both scalar and array variables, but not Groups since
+ * those are handled separately. This method  process all of the elements contained
+ * by the scalar or array variable element.
  *
  * @note Only one of group or parent can be non-null
  *
@@ -354,7 +279,6 @@ void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, xml_no
         btp = add_array_variable(dmr, group, parent, t, var_node);
         if (t == dods_structure_c || t == dods_sequence_c) {
             assert(btp->type() == dods_array_c && btp->var()->type() == t);
-            // for each of var_node's child nodes, call process_variable with group null and parent set
             // NB: For an array of a Constructor, add children to the Constructor, not the array
             auto parent = dynamic_cast<Constructor*>(btp->var());
             assert(parent);
@@ -368,7 +292,6 @@ void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, xml_no
         btp = add_scalar_variable(dmr, group, parent, t, var_node);
         if (t == dods_structure_c || t == dods_sequence_c) {
             assert(btp->type() == t);
-            // for each of var_node's child nodes, call process_variable with group null and parent set
             auto parent = dynamic_cast<Constructor*>(btp);
             assert(parent);
             for (auto *child = var_node->first_node(); child; child = child->next_sibling()) {
@@ -483,6 +406,14 @@ BaseType *DMZ::add_array_variable(DMR *dmr, D4Group *group, Constructor *parent,
     return array;
 }
 
+/**
+ * @brief Process a Group element
+ * This processes the information in a Group element and then processes the contained
+ * Dimension, Group and variable elements.
+ * @param dmr
+ * @param parent
+ * @param var_node
+ */
 void DMZ::process_group(DMR *dmr, D4Group *parent, xml_node<> *var_node)
 {
     string name_value;
@@ -494,7 +425,6 @@ void DMZ::process_group(DMR *dmr, D4Group *parent, xml_node<> *var_node)
 
     if (name_value.empty())
         throw BESInternalError("The required attribute 'name' was missing from a Group element.", __FILE__, __LINE__);
-
 
     BaseType *btp = dmr->factory()->NewVariable(dods_group_c, name_value);
     if (!btp)
@@ -550,12 +480,14 @@ void DMZ::build_thin_dmr(DMR *dmr)
     }
 }
 
-/** Check to see if the current tag is either an \c Attribute or an \c Alias
- start tag. This method is a glorified macro...
-
- @param name The start tag name
- @param attrs The tag's XML attributes
- @return True if the tag was an \c Attribute or \c Alias tag */
+/**
+ * Check to see if the current tag is either an \c Attribute or an \c Alias
+ * start tag. This method is a glorified macro...
+ *
+ * @param name The start tag name
+ * @param attrs The tag's XML attributes
+ * @return True if the tag was an \c Attribute or \c Alias tag
+ */
 void DMZ::process_attribute(D4Attributes *attributes, xml_node<> *dap_attr_node)
 {
     string name_value;
@@ -788,8 +720,6 @@ void DMZ::process_chunks(BaseType *btp, xml_node<> *chunks)
 
     process_cds_node(dc, chunks);
 
-    // TODO Add support for compact. jhrg 10/25/21
-
     // Chunks for this node will be held in the var_node siblings.
     for (auto *chunk = chunks->first_node("dmrpp:chunk"); chunk; chunk = chunk->next_sibling()) {
         if (is_eq(chunk->name(), "dmrpp:chunk")) {
@@ -798,6 +728,14 @@ void DMZ::process_chunks(BaseType *btp, xml_node<> *chunks)
     }
 }
 
+/**
+ * @brief Load the chunk information into a variable
+ *
+ * Process the chunks, chunk, etc., elements from the DMR++ information. Once this is called,
+ * the variable's read() method should be able to read the data for this variable.
+ *
+ * @param btp The variable
+ */
 void DMZ::load_chunks(BaseType *btp)
 {
     // goto the DOM tree node for this variable
@@ -826,19 +764,12 @@ void DMZ::load_chunks(BaseType *btp)
         }
     }
 
+    // TODO Add support for compact. jhrg 10/25/21
+    //  Compact data is stored in the XML using <dmrpp:compact> elements. These are at the same level
+    //  as the <dmrpp:chunk> (and <Attribute>) elements.
+
     if (chunks_found > 1 || chunk_found > 1 || (chunks_found && chunk_found) || !(chunks_found || chunk_found))
         throw BESInternalError("Unsupported chunk information in the DMR++ data.", __FILE__, __LINE__);
 }
-
-#if 0
-static void print_xml_node(xml_node<> *node)
-{
-    cerr << "Node " << node->name() <<" has value " << node->value() << endl;
-    for (xml_attribute<> *attr = node->first_attribute(); attr; attr = attr->next_attribute()) {
-        cerr << "Node has attribute " << attr->name() << " ";
-        cerr << "with value " << attr->value() << endl;
-    }
-}
-#endif
 
 } // namespace dmrpp
