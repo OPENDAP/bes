@@ -149,11 +149,8 @@ public:
         d_filters = value;
     }
 
-    virtual bool is_filters_empty(){
-        if (d_filters == ""){
-            return true;
-        }
-        return false;
+    virtual bool is_filters_empty() const {
+        return d_filters.empty();
     }
 
     /// @brief Returns true if this object utilizes shuffle compression.

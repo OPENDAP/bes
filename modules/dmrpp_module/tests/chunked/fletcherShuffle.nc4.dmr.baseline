@@ -30,7 +30,7 @@
             <Value>More like 4 dollars.</Value>
         </Attribute>
     </Int32>
-    <Float32 name="Y">
+    <Int8 name="Y">
         <Dim name="/nodes"/>
         <Attribute name="grid" type="String">
             <Value>element</Value>
@@ -38,7 +38,7 @@
         <Attribute name="grid_location" type="String">
             <Value>node</Value>
         </Attribute>
-    </Float32>
+    </Int8>
     <Int32 name="varLong">
         <Attribute name="description" type="String">
             <Value>Too long have I wandered this barren wasteland my friend.</Value>
