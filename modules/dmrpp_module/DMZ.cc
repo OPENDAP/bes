@@ -528,7 +528,7 @@ void DMZ::process_group(DMR *dmr, D4Group *parent, xml_node<> *var_node)
 /**
  * @brief populate the DMR instance as a 'thin DMR'
  * @note Assume the DMZ holds valid DMR++ metadata.
- * @param dmr Pointer to a DMR instnace that should be populated
+ * @param dmr Pointer to a DMR instance that should be populated
  */
 void DMZ::build_thin_dmr(DMR *dmr)
 {
@@ -581,7 +581,7 @@ void DMZ::process_attribute(D4Attributes *attributes, xml_node<> *dap_attr_node)
         process_attribute(child->attributes(), dap_attr_node->first_node());
     }
     else if (type_value == "OtherXML") {
-        // TODO Add suport for this
+        // TODO Add support for this
     }
     else {
         // Make the D4Attribute and add it to the D4Attributes attribute container
@@ -682,7 +682,7 @@ xml_node<> *DMZ::get_variable_xml_node(BaseType *btp)
 /**
  * @brief Load the DAP attributes from the DMR++ XML for a variable
  *
- * This method assumes the DMR++ XML has alerady been parsed and that
+ * This method assumes the DMR++ XML has already been parsed and that
  * the BaseType* points to a variable defined in that XML.
  *
  * Use build_thin_dmr() to load the variable information in a DNR, then
@@ -784,7 +784,7 @@ void DMZ::process_chunks(BaseType *btp, xml_node<> *chunks)
 {
     auto *dc = dynamic_cast<DmrppCommon*>(btp);   // Get the Dmrpp common info
     if (!dc)
-        throw BESInternalError("Could not cast BaseType to DmrppType in the drmpp handler.", __FILE__, __LINE__);
+        throw BESInternalError("Could not cast BaseType to DmrppType in the DMR++ handler.", __FILE__, __LINE__);
 
     process_cds_node(dc, chunks);
 
@@ -805,12 +805,29 @@ void DMZ::load_chunks(BaseType *btp)
     if (var_node == nullptr)
         throw BESInternalError("Could not find location of variable in the DMR++ XML document.", __FILE__, __LINE__);
 
-    // Chunks for this node will be held in the var_node siblings.
+    // Chunks for this node will be held in the var_node siblings. For a given BaseType, there should
+    // be only one chunks node xor one chunk node.
+    int chunks_found = 0;
+    int chunk_found = 0;
     for (auto *child = var_node->first_node("dmrpp:chunks"); child; child = child->next_sibling()) {
         if (is_eq(child->name(), "dmrpp:chunks")) {
+            chunks_found++;
             process_chunks(btp, child);
         }
     }
+
+    for (auto *chunk = var_node->first_node("dmrpp:chunk"); chunk; chunk = chunk->next_sibling()) {
+        if (is_eq(chunk->name(), "dmrpp:chunk")) {
+            auto *dc = dynamic_cast<DmrppCommon*>(btp);   // Get the Dmrpp common info
+            if (!dc)
+                throw BESInternalError("Could not cast BaseType to DmrppCommon in the DMR++ handler.", __FILE__, __LINE__);
+            chunk_found++;
+            process_chunk(dc, chunk);
+        }
+    }
+
+    if (chunks_found > 1 || chunk_found > 1 || (chunks_found && chunk_found) || !(chunks_found || chunk_found))
+        throw BESInternalError("Unsupported chunk information in the DMR++ data.", __FILE__, __LINE__);
 }
 
 #if 0

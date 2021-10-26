@@ -699,26 +699,14 @@ public:
 
             auto *dc = dynamic_cast<DmrppCommon *>(btp);
             auto c_sizes = dc->get_chunk_dimension_sizes();
-            CPPUNIT_ASSERT(c_sizes.size() == 4);
-            CPPUNIT_ASSERT(c_sizes.at(0) == 20);
-            CPPUNIT_ASSERT(c_sizes.at(1) == 20);
-            CPPUNIT_ASSERT(c_sizes.at(2) == 20);
-            CPPUNIT_ASSERT(c_sizes.at(3) == 20);
+            CPPUNIT_ASSERT(c_sizes.size() == 0);
 
             auto chunks = dc->get_immutable_chunks();
             DBG(cerr << "chunks.size(): " << chunks.size() << endl);
-            CPPUNIT_ASSERT(chunks.size() == 16);
-            CPPUNIT_ASSERT(chunks.at(0)->get_offset() == 4728);
-            CPPUNIT_ASSERT(chunks.at(0)->get_size() == 640000);
-            CPPUNIT_ASSERT(chunks.at(0)->get_position_in_array().size() == 4);
-            CPPUNIT_ASSERT(chunks.at(0)->get_position_in_array().at(0) == 0);
-            CPPUNIT_ASSERT(chunks.at(0)->get_position_in_array().at(3) == 0);
-
-            CPPUNIT_ASSERT(chunks.at(15)->get_offset() == 9606776);
-            CPPUNIT_ASSERT(chunks.at(15)->get_size() == 640000);
-            CPPUNIT_ASSERT(chunks.at(15)->get_position_in_array().size() == 4);
-            CPPUNIT_ASSERT(chunks.at(15)->get_position_in_array().at(0) == 20);
-            CPPUNIT_ASSERT(chunks.at(15)->get_position_in_array().at(3) == 20);
+            CPPUNIT_ASSERT(chunks.size() == 1);
+            CPPUNIT_ASSERT(chunks.at(0)->get_offset() == 3112560);
+            CPPUNIT_ASSERT(chunks.at(0)->get_size() == 96);
+            CPPUNIT_ASSERT(chunks.at(0)->get_position_in_array().size() == 0);
         }
         catch (BESInternalError &e) {
             CPPUNIT_FAIL("Caught BESInternalError " + e.get_verbose_message());
@@ -766,6 +754,7 @@ CPPUNIT_TEST_SUITE( DMZTest );
     CPPUNIT_TEST(test_process_cds_node_1);
 
     CPPUNIT_TEST(test_load_chunks_1);
+    CPPUNIT_TEST(test_load_chunks_2);
 
     CPPUNIT_TEST_SUITE_END();
 };
