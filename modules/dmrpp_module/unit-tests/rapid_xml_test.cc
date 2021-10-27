@@ -35,7 +35,7 @@ void read_xml(const string &file_name, vector<char> &bytes)
     ifstream::pos_type file_size = ifs.tellg();
     ifs.seekg(0, ios::beg);
 
-    bytes.resize(file_size + 1LL);   // Add space for null termination
+    bytes.resize(file_size + ifstream::pos_type(1LL));   // Add space for null termination
     ifs.read(bytes.data(), file_size);
 
     bytes[file_size] = '\0';
