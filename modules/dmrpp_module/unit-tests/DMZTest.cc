@@ -49,11 +49,6 @@
 #include "read_test_baseline.h"
 #include "test_config.h"
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "ConstantConditionsOC"
-#pragma ide diagnostic ignored "UnusedValue"
-#pragma ide diagnostic ignored "UnreachableCode"
-#pragma ide diagnostic ignored "UnusedLocalVariable"
 using namespace std;
 using namespace libdap;
 using namespace bes;
@@ -804,5 +799,3 @@ int main(int argc, char*argv[])
 
     return wasSuccessful ? 0 : 1;
 }
-
-#pragma clang diagnostic pop
