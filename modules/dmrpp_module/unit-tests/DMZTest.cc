@@ -54,8 +54,8 @@ using namespace libdap;
 using namespace bes;
 using namespace rapidxml;
 
-static bool debug = false;
-static bool bes_debug = false;
+static bool debug = true;
+static bool bes_debug = true;
 
 #undef DBG
 #define DBG(x) do { if (debug) x; } while(false)

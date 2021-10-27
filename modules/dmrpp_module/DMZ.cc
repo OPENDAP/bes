@@ -80,8 +80,7 @@ DMZ::DMZ(const string &file_name)
         throw BESInternalError(string("DMR++ XML file is empty: ").append(file_name), __FILE__, __LINE__);
 
     ifs.seekg(0, ios::beg);
-
-
+    
     d_xml_text.resize(file_size + ifstream::pos_type(1LL));   // Add space for text and null termination
     ifs.read(d_xml_text.data(), file_size);
     if (!ifs)
