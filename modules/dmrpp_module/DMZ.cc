@@ -28,6 +28,8 @@
 #include <iostream>
 #include <fstream>
 
+#include <cstring>
+
 #include <libdap/BaseType.h>
 #include <libdap/Array.h>
 #include <libdap/Type.h>
@@ -79,7 +81,8 @@ DMZ::DMZ(const string &file_name)
 
     ifs.seekg(0, ios::beg);
 
-    d_xml_text.resize(file_size + 1LL);   // Add space for text and null termination
+
+    d_xml_text.resize(file_size + ifstream::pos_type(1LL));   // Add space for text and null termination
     ifs.read(d_xml_text.data(), file_size);
     if (!ifs)
         throw BESInternalError(string("DMR++ XML file seek or read failure: ").append(file_name), __FILE__, __LINE__);
