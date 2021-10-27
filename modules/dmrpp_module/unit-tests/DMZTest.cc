@@ -24,6 +24,7 @@
 
 #include <memory>
 #include <exception>
+#include <cstring>
 
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
