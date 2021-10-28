@@ -31,8 +31,9 @@
 #include <vector>
 #include <set>
 #include <stack>
+#include <memory>
 
-#include <rapidxml/rapidxml.hpp>
+#include <pugixml.hpp>
 
 #include <libdap/Type.h>
 
@@ -56,35 +57,43 @@ class DmrppCommon;
 /**
  * @brief Interface to hide the DMR++ information storage format.
  *
+ * This class uses a XML library that uses the document text for all the
+ * string values (tag/element names, attribute names and values, etc.,
+ * so the text of the XML document must persist for as long as the xml_document
+ * object itself. For files, the class uses the pugixml load function.
+ * For strings, it uses a local vector<char>.
  */
 class DMZ {
 
 private:
-    std::vector<char> d_xml_text;  // Holds XML text
-    rapidxml::xml_document<> d_xml_doc{};    // character type defaults to char
-    std::shared_ptr<http::url> d_dataset_elem_href{};
+#if 0
+    // TODO add this back if needed
+    std::vector<char> d_xml_text;       // Holds XML text if needed
+#endif
+    pugi::xml_document d_xml_doc;
+    std::shared_ptr<http::url> d_dataset_elem_href;
 
     void m_duplicate_common(const DMZ &) {
     }
 
-    void process_dataset(libdap::DMR *dmr, rapidxml::xml_node<> *xml_root);
-    rapidxml::xml_node<> *get_variable_xml_node(libdap::BaseType *btp);
-    void process_chunk(dmrpp::DmrppCommon *dc, rapidxml::xml_node<> *chunk);
-    void process_chunks(libdap::BaseType *btp, rapidxml::xml_node<> *chunks);
+    void process_dataset(libdap::DMR *dmr, const pugi::xml_node &xml_root);
+    pugi::xml_node get_variable_xml_node(libdap::BaseType *btp);
+    void process_chunk(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunk);
+    void process_chunks(libdap::BaseType *btp, const pugi::xml_node &chunks);
 
-    static rapidxml::xml_node<> *get_variable_xml_node_helper(rapidxml::xml_node<> *var_node, std::stack<libdap::BaseType*> &bt);
+    static pugi::xml_node get_variable_xml_node_helper(const pugi::xml_node &var_node, std::stack<libdap::BaseType*> &bt);
     static void build_basetype_chain(libdap::BaseType *btp, std::stack<libdap::BaseType*> &bt);
 
-    static void process_group(libdap::DMR *dmr, libdap::D4Group *parent, rapidxml::xml_node<> *var_node);
-    static void  process_dimension(libdap::D4Group *grp, rapidxml::xml_node<> *dimension_node);
-    static void process_variable(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Constructor *parent, rapidxml::xml_node<> *var_node);
-    static void process_dim(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Array *array, rapidxml::xml_node<> *dim_node);
-    static libdap::BaseType *build_variable(libdap::DMR *dmr, libdap::D4Group *group, libdap::Type t, rapidxml::xml_node<> *var_node);
-    static libdap::BaseType *add_scalar_variable(libdap::DMR *dmr, libdap::D4Group *group, libdap::Constructor *parent, libdap::Type t, rapidxml::xml_node<> *var_node);
-    static libdap::BaseType *add_array_variable(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Constructor *parent, libdap::Type t, rapidxml::xml_node<> *var_node);
-    static void process_attribute(libdap::D4Attributes *attributes, rapidxml::xml_node<> *dap_attr_node);
+    static void process_group(libdap::DMR *dmr, libdap::D4Group *parent, const pugi::xml_node &var_node);
+    static void  process_dimension(libdap::D4Group *grp, const pugi::xml_node &dimension_node);
+    static void process_variable(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Constructor *parent, const pugi::xml_node &var_node);
+    static void process_dim(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Array *array, const pugi::xml_node &dim_node);
+    static libdap::BaseType *build_variable(libdap::DMR *dmr, libdap::D4Group *group, libdap::Type t, const pugi::xml_node &var_node);
+    static libdap::BaseType *add_scalar_variable(libdap::DMR *dmr, libdap::D4Group *group, libdap::Constructor *parent, libdap::Type t, const pugi::xml_node &var_node);
+    static libdap::BaseType *add_array_variable(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Constructor *parent, libdap::Type t, const pugi::xml_node &var_node);
+    static void process_attribute(libdap::D4Attributes *attributes, const pugi::xml_node &dap_attr_node);
 
-    static void process_cds_node(dmrpp::DmrppCommon *dc, rapidxml::xml_node<> *chunks);
+    static void process_cds_node(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunks);
 
     friend class DMZTest;
 
@@ -99,12 +108,12 @@ public:
 
     virtual ~DMZ()= default;
 
-    void build_thin_dmr(libdap::DMR *dmr);
+    virtual void build_thin_dmr(libdap::DMR *dmr);
 
     // Make these take a Variable/DmrppCommon and not a DMR
-    void load_attributes(libdap::BaseType *btp);
+    virtual void load_attributes(libdap::BaseType *btp);
 
-    void load_chunks(libdap::BaseType *btp);
+    virtual void load_chunks(libdap::BaseType *btp);
     void load_compact_data(libdap::BaseType *btp);
 
     std::string get_attribute_xml(std::string path);

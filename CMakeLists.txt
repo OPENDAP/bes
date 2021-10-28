@@ -40,8 +40,8 @@ endif()
 # Where the hyrax project puts the dependencies' headers
 
 include_directories(../build/deps/include)
-include_directories(../build//include)
-include_directories(../build//include/libdap)
+include_directories(../build/include)
+include_directories(../build/include/libdap)
 
 # These should not be referenced outside of libdap. jhrg 12/5/19
 # include_directories(../libdap4/d4_ce)
@@ -62,6 +62,7 @@ include_directories(dispatch)
 include_directories(http)
 include_directories(rapidjson)
 include_directories(rapidxml)
+include_directories(pugixml/src)
 
 include_directories(dispatch/PicoSHA2)
 include_directories(dispatch/tests)

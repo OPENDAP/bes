@@ -9,7 +9,8 @@ OPENSSL_INC=-I/usr/local/opt/openssl/include
 OPENSSL_LDFLAGS=-L/usr/local/opt/openssl/lib
 
 AM_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir) -I$(top_srcdir)/modules -I$(top_srcdir)/modules/dmrpp_module \
--I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/http $(DAP_CFLAGS) $(OPENSSL_INC)
+-I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/http -I$(top_srcdir)/pugixml/src \
+$(DAP_CFLAGS) $(OPENSSL_INC)
 
 # FIXME with configure.ac jhrg 9/2/20
 BES_DAP_LIB_STATIC = $(abs_top_builddir)/dap/.libs/libdap_module.a
@@ -39,10 +40,12 @@ include $(top_srcdir)/coverage.mk
 # This determines what gets built by make check
 check_PROGRAMS = $(UNIT_TESTS)
 
-bin_PROGRAMS = rapid_xml_test
+bin_PROGRAMS = rapid_xml_test pugi_xml_test
 
 rapid_xml_test_CPPFLAGS = -I$(top_srcdir)
 rapid_xml_test_SOURCES = rapid_xml_test.cc
+
+pugi_xml_test_SOURCES = pugi_xml_test.cc
 
 # This determines what gets run by 'make check.'
 TESTS = $(UNIT_TESTS)
