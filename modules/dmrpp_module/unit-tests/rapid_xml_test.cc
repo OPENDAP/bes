@@ -64,7 +64,8 @@ int main(int argc, char *argv[])
 #if 0
     // Print to stream using operator <<
     std::cout << doc;
-
+#endif
+#if 0
     // Print to stream using print function, specifying printing flags
     print(std::cout, doc, 0);   // 0 means default printing flags
 
