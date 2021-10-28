@@ -58,6 +58,9 @@ AC_CONFIG_MACRO_DIR([conf])
 AM_INIT_AUTOMAKE([1.10 tar-pax])
 LT_INIT
 
+AC_DEFINE_UNQUOTED(CVER, "$PACKAGE_VERSION", [Client version number])
+AC_SUBST(CVER)
+
 dnl flags for the compilers and linkers - set these before locating the
 dnl actual tools since some of the AC_PROG macros set these 'flag variables'
 dnl to default values otherwise.
