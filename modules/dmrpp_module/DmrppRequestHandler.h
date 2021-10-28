@@ -27,6 +27,7 @@
 #include <ostream>
 
 #include "BESRequestHandler.h"
+#include "DMZ.h"
 
 class ObjMemCache;  // in bes/dap
 class BESContainer;
@@ -51,6 +52,7 @@ private:
 
 	// These are static because they are used by the static public methods.
 	static void build_dmr_from_file(BESContainer *container, libdap::DMR* dmr);
+    static DMZ *dmz;
 
 public:
 	explicit DmrppRequestHandler(const std::string &name);

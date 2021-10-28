@@ -30,6 +30,7 @@
 #include <string>
 #include <vector>
 #include <set>
+#include <stack>
 
 #include <rapidxml/rapidxml.hpp>
 
@@ -41,6 +42,7 @@ class BaseType;
 class Array;
 class D4Group;
 class D4Attributes;
+class Constructor;
 }
 
 namespace http {
@@ -60,7 +62,7 @@ class DMZ {
 private:
     std::vector<char> d_xml_text;  // Holds XML text
     rapidxml::xml_document<> d_xml_doc{};    // character type defaults to char
-    shared_ptr<http::url> d_dataset_elem_href{};
+    std::shared_ptr<http::url> d_dataset_elem_href{};
 
     void m_duplicate_common(const DMZ &) {
     }
