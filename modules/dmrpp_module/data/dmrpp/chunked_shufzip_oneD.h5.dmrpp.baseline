@@ -8,7 +8,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/d_4_shufzip_chunks</Value>
         </Attribute>
-        <dmrpp:chunks compressionType="deflate shuffle" byteOrder="LE">
+        <dmrpp:chunks compressionType="shuffle deflate" byteOrder="LE">
             <dmrpp:chunkDimensionSizes>10000</dmrpp:chunkDimensionSizes>
             <dmrpp:chunk offset="3496" nBytes="1865" chunkPositionInArray="[0]"/>
             <dmrpp:chunk offset="5361" nBytes="624" chunkPositionInArray="[10000]"/>

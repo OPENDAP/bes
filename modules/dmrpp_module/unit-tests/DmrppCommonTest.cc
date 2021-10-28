@@ -446,7 +446,7 @@ public:
         try {
             string url_str = "http://url";
             shared_ptr<http::url> target_url(new http::url(url_str));
-            d_dc.d_deflate = true;
+            d_dc.d_filters = "deflate";
             d_dc.parse_chunk_dimension_sizes("51 17");
             d_dc.add_chunk(target_url, "", 100, 200, "[10,20]");
             int size = d_dc.add_chunk(target_url, "", 100, 300, "[20,30]");
@@ -482,8 +482,7 @@ public:
         try {
             string url_str = "http://url";
             shared_ptr<http::url> target_url(new http::url(url_str));
-            d_dc.d_deflate = true;
-            d_dc.d_shuffle = true;
+            d_dc.d_filters = "deflate shuffle";
             d_dc.parse_chunk_dimension_sizes("51 17");
             d_dc.add_chunk(target_url, "", 100, 200, "[10,20]");
             int size = d_dc.add_chunk(target_url, "", 100, 300, "[20,30]");
@@ -519,8 +518,7 @@ public:
         try {
             string url_str = "http://url";
             shared_ptr<http::url> target_url(new http::url(url_str));
-            d_dc.d_deflate = false;
-            d_dc.d_shuffle = true;
+            d_dc.d_filters = "shuffle";
             d_dc.parse_chunk_dimension_sizes("51 17");
             d_dc.add_chunk(target_url, "", 100, 200, "[10,20]");
             int size = d_dc.add_chunk(target_url, "", 100, 300, "[20,30]");

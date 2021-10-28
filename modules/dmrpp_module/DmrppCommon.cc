@@ -347,24 +347,8 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
     if (xmlTextWriterStartElementNS(xml.get_writer(), (const xmlChar*)name_space.c_str(), (const xmlChar*) "chunks", NULL) < 0)
         throw BESInternalError("Could not start chunks element.", __FILE__, __LINE__);
 
-    // TODO We will want to capture the order the filters are applied. For now, assume
-    //  a 'sane' order for our support of shuffle, deflate, and fletcher32. jhrg 10/8/21
-    string compression = "";
-
-    if (is_deflate_compression())
-        compression.append("deflate ");
-
-    if (is_shuffle_compression())
-        compression.append("shuffle ");
-
-    if (is_fletcher32_compression())
-        compression.append("fletcher32 ");
-
-    //trimming trailing space from compression (aka filter) string
-    compression = compression.substr(0, compression.length() - 1);
-
-    if (!compression.empty())
-        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "compressionType", (const xmlChar*) compression.c_str()) < 0)
+    if (!d_filters.empty())
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "compressionType", (const xmlChar*) d_filters.c_str()) < 0)
             throw BESInternalError("Could not write compression attribute.", __FILE__, __LINE__);
 
 
