@@ -11,3 +11,6 @@
 	url = https://github.com/OPENDAP/rapidxml.git
 	branch = master
 	
+[submodule "pugixml"]
+	path = pugixml
+	url = ./pugixml
