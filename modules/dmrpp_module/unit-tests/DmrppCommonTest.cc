@@ -256,8 +256,7 @@ public:
     {
         try {
             d_dc.ingest_compression_type("");
-            CPPUNIT_ASSERT(d_dc.d_deflate == false);
-            CPPUNIT_ASSERT(d_dc.d_shuffle == false);
+            CPPUNIT_ASSERT(d_dc.d_filters == "");
         }
         catch(BESError &be){
             stringstream msg;

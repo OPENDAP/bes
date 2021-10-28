@@ -154,11 +154,8 @@ public:
         append_dim(10, "mock_dim");
     }
 
-    bool is_deflate_compression() const override
-    { return false; }
-
-    bool is_shuffle_compression() const override
-    { return false; }
+    bool is_filters_empty() const override
+    { return true; }
 
     virtual void insert_chunk(unsigned int, vector<unsigned long long> *, vector<unsigned long long> *,
                               shared_ptr<Chunk>, const vector<unsigned long long> &) override

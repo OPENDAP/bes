@@ -467,8 +467,8 @@ void DmrppCommon::print_dmrpp(XMLWriter &xml, bool constrained /*false*/)
 
 void DmrppCommon::dump(ostream & strm) const
 {
-    strm << BESIndent::LMarg << "is_deflate:             " << (is_deflate_compression() ? "true" : "false") << endl;
-    strm << BESIndent::LMarg << "is_shuffle_compression: " << (is_shuffle_compression() ? "true" : "false") << endl;
+    strm << BESIndent::LMarg << "is_filters_empty:             " << (is_filters_empty() ? "true" : "false") << endl;
+    strm << BESIndent::LMarg << "filters: " << (d_filters.c_str()) << endl;
 
     const vector<unsigned long long> &chunk_dim_sizes = get_chunk_dimension_sizes();
 
