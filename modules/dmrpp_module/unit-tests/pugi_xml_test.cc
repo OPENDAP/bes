@@ -7,6 +7,7 @@
 #include <iostream>
 #include <fstream>
 
+#define PUGIXML_HEADER_ONLY
 #include <pugixml.hpp>
 
 using namespace pugi;

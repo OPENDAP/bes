@@ -43,6 +43,9 @@
 #include <libdap/DMR.h>
 #include <libdap/util.h>        // is_simple_type()
 
+#define PUGIXML_HEADER_ONLY
+#include <pugixml.hpp>
+
 #include "url_impl.h"           // see bes/http
 #include "DMZ.h"                // this includes the pugixml header
 #include "DmrppCommon.h"
@@ -96,6 +99,9 @@ DMZ::DMZ(const string &file_name)
     std::ifstream stream(file_name);
     pugi::xml_parse_result result = d_xml_doc.load(stream);
 
+    if (!result)
+        throw BESInternalError(string("DMR++ parse error: ").append(result.description()), __FILE__, __LINE__);
+
     if (!d_xml_doc.document_element())
         throw BESInternalError("No DMR++ data present.", __FILE__, __LINE__);
 }
@@ -117,13 +123,13 @@ static inline bool is_eq(const char *value, const char *key)
  * @param dmr Dump the information in this instance of DMR
  * @param xml_root The root node of the DOM tree
  */
-void DMZ::process_dataset(DMR *dmr, xml_node *xml_root)
+void DMZ::process_dataset(DMR *dmr, const xml_node &xml_root)
 {
     // Process the attributes
     int required_attrs_found = 0;   // there are 1
     string href_attr;
     bool href_trusted = false;
-    for (xml_attribute attr = xml_root->first_attribute(); attr; attr = attr.next_attribute()) {
+    for (xml_attribute attr = xml_root.first_attribute(); attr; attr = attr.next_attribute()) {
         if (is_eq(attr.name(), "name")) {
             ++required_attrs_found;
             dmr->set_name(attr.value());
@@ -163,11 +169,11 @@ void DMZ::process_dataset(DMR *dmr, xml_node *xml_root)
  * @param grp The group we are currently processing (could be the root group)
  * @param dimension_node The node in the DOM tree of the <Dimension> element
  */
-void DMZ::process_dimension(D4Group *grp, xml_node *dimension_node)
+void DMZ::process_dimension(D4Group *grp, const xml_node &dimension_node)
 {
     string name_value;
     string size_value;
-    for (xml_attribute attr = dimension_node->first_attribute(); attr; attr = attr.next_attribute()) {
+    for (xml_attribute attr = dimension_node.first_attribute(); attr; attr = attr.next_attribute()) {
         if (is_eq(attr.name(), "name")) {
             name_value = attr.value();
         }
@@ -198,13 +204,13 @@ void DMZ::process_dimension(D4Group *grp, xml_node *dimension_node)
  * @param array The variable we are processing
  * @param dim_node The node in the DOM tree of the Dim element
  */
-void DMZ::process_dim(DMR *dmr, D4Group *grp, Array *array, xml_node *dim_node)
+void DMZ::process_dim(DMR *dmr, D4Group *grp, Array *array, const xml_node &dim_node)
 {
     assert(array->is_vector_type());
 
     string name_value;
     string size_value;
-    for (xml_attribute attr = dim_node->first_attribute(); attr; attr = attr.next_attribute()) {
+    for (xml_attribute attr = dim_node.first_attribute(); attr; attr = attr.next_attribute()) {
         if (is_eq(attr.name(), "name")) {
             name_value = attr.value();
         }
@@ -240,9 +246,9 @@ void DMZ::process_dim(DMR *dmr, D4Group *grp, Array *array, xml_node *dim_node)
 }
 
 /// @brief Are any of the child nodes 'Dim' elements?
-static inline bool has_dim_nodes(xml_node *var_node)
+static inline bool has_dim_nodes(const xml_node &var_node)
 {
-    return  var_node->child("Dim"); // just one is enough
+    return  var_node.child("Dim"); // just one is enough
 #if 0
     for (auto child = var_node->child("Dim"); child; child = child.next_sibling()) {
         if (is_eq(child.name(), "Dim"))    // just one is enough
@@ -273,13 +279,13 @@ static inline bool member_of(const set<string> &elements_set, const string &elem
  * @param parent If not null add this new variable to this constructor
  * @param var_node
  */
-void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, xml_node *var_node)
+void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, const xml_node &var_node)
 {
     assert(group);
 
     // Variables are declared using nodes with type names (e.g., <Float32...>)
     // Variables are arrays if they have one or more <Dim...> child nodes.
-    Type t = get_type(var_node->name());
+    Type t = get_type(var_node.name());
 
     assert(t != dods_group_c);  // Groups are special and handled elsewhere
 
@@ -292,7 +298,7 @@ void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, xml_no
             // NB: For an array of a Constructor, add children to the Constructor, not the array
             auto parent = dynamic_cast<Constructor*>(btp->var());
             assert(parent);
-            for (auto child = var_node->first_child(); child; child = child.next_sibling()) {
+            for (auto child = var_node.first_child(); child; child = child.next_sibling()) {
                 if (member_of(variable_elements, child.name()))
                     process_variable(dmr, group, parent, child);
             }
@@ -304,7 +310,7 @@ void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, xml_no
             assert(btp->type() == t);
             auto parent = dynamic_cast<Constructor*>(btp);
             assert(parent);
-            for (auto child = var_node->first_child(); child; child = child.next_sibling()) {
+            for (auto child = var_node.first_child(); child; child = child.next_sibling()) {
                 if (member_of(variable_elements, child.name()))
                     process_variable(dmr, group, parent, child);
             }
@@ -319,13 +325,13 @@ void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, xml_no
  * @param t What DAP type is the new variable?
  * @param var_node
  */
-BaseType *DMZ::build_variable(DMR *dmr, D4Group *group, Type t, xml_node *var_node)
+BaseType *DMZ::build_variable(DMR *dmr, D4Group *group, Type t, const xml_node &var_node)
 {
     assert(dmr->factory());
 
     string name_value;
     string enum_value;
-    for (xml_attribute attr = var_node->first_attribute(); attr; attr = attr.next_attribute()) {
+    for (xml_attribute attr = var_node.first_attribute(); attr; attr = attr.next_attribute()) {
         if (is_eq(attr.name(), "name")) {
             name_value = attr.value();
         }
@@ -371,7 +377,7 @@ BaseType *DMZ::build_variable(DMR *dmr, D4Group *group, Type t, xml_node *var_no
  * @param var_node
  * @return The new variable
  */
-BaseType *DMZ::add_scalar_variable(DMR *dmr, D4Group *group, Constructor *parent, Type t, xml_node *var_node)
+BaseType *DMZ::add_scalar_variable(DMR *dmr, D4Group *group, Constructor *parent, Type t, const xml_node &var_node)
 {
     assert(group);
 
@@ -387,7 +393,7 @@ BaseType *DMZ::add_scalar_variable(DMR *dmr, D4Group *group, Constructor *parent
     return btp;
 }
 
-BaseType *DMZ::add_array_variable(DMR *dmr, D4Group *group, Constructor *parent, Type t, xml_node *var_node)
+BaseType *DMZ::add_array_variable(DMR *dmr, D4Group *group, Constructor *parent, Type t, const xml_node &var_node)
 {
     assert(group);
 
@@ -402,7 +408,7 @@ BaseType *DMZ::add_array_variable(DMR *dmr, D4Group *group, Constructor *parent,
     // parse those from the DMR now. jhrg 10/21/21
 
     // Now grab the dimension elements
-    for (auto child = var_node->first_child(); child; child = child.next_sibling()) {
+    for (auto child = var_node.first_child(); child; child = child.next_sibling()) {
         if (is_eq(child.name(), "Dim")) {
             process_dim(dmr, group, array, child);
         }
@@ -424,10 +430,10 @@ BaseType *DMZ::add_array_variable(DMR *dmr, D4Group *group, Constructor *parent,
  * @param parent
  * @param var_node
  */
-void DMZ::process_group(DMR *dmr, D4Group *parent, xml_node *var_node)
+void DMZ::process_group(DMR *dmr, D4Group *parent, const xml_node &var_node)
 {
     string name_value;
-    for (xml_attribute attr = var_node->first_attribute(); attr; attr = attr.next_attribute()) {
+    for (xml_attribute attr = var_node.first_attribute(); attr; attr = attr.next_attribute()) {
         if (is_eq(attr.name(), "name")) {
             name_value = attr.value();
         }
@@ -452,7 +458,7 @@ void DMZ::process_group(DMR *dmr, D4Group *parent, xml_node *var_node)
 
     // Now parse all the child nodes of the Group.
     // NB: this is the same block of code as in build_thin_dmr(); refactor. jhrg 10/21/21
-    for (auto child = var_node->first_child(); child; child = child.next_sibling()) {
+    for (auto child = var_node.first_child(); child; child = child.next_sibling()) {
         if (is_eq(child.name(), "Dimension")) {
             process_dimension(new_group, child);
         }
@@ -477,7 +483,7 @@ void DMZ::build_thin_dmr(DMR *dmr)
     process_dataset(dmr, xml_root_node);
 
     auto root_group = dmr->root();
-    for (auto child = xml_root_node->first_child(); child; child = child.next_sibling()) {
+    for (auto child = xml_root_node.first_child(); child; child = child.next_sibling()) {
         if (is_eq(child.name(), "Dimension")) {
             process_dimension(root_group, child);
         }
@@ -498,11 +504,11 @@ void DMZ::build_thin_dmr(DMR *dmr)
  * @param attrs The tag's XML attributes
  * @return True if the tag was an \c Attribute or \c Alias tag
  */
-void DMZ::process_attribute(D4Attributes *attributes, xml_node *dap_attr_node)
+void DMZ::process_attribute(D4Attributes *attributes, const xml_node &dap_attr_node)
 {
     string name_value;
     string type_value;
-    for (xml_attribute attr = dap_attr_node->first_attribute(); attr; attr = attr.next_attribute()) {
+    for (xml_attribute attr = dap_attr_node.first_attribute(); attr; attr = attr.next_attribute()) {
         if (is_eq(attr.name(), "name")) {
             name_value = attr.value();
         }
@@ -516,11 +522,11 @@ void DMZ::process_attribute(D4Attributes *attributes, xml_node *dap_attr_node)
 
     if (type_value == "Container") {
         // Make the new attribute container and add it to current container
-        D4Attribute *child = new D4Attribute(name_value, attr_container_c);
-        attributes->add_attribute_nocopy(child);
+        D4Attribute *dap_attr_cont = new D4Attribute(name_value, attr_container_c);
+        attributes->add_attribute_nocopy(dap_attr_cont);
         // In this call, 'attributes()' will allocate the D4Attributes object
         // that will hold the container's attributes.
-        process_attribute(child.attributes(), dap_attr_node->first_child());
+        process_attribute(dap_attr_cont->attributes(), dap_attr_node.first_child());
     }
     else if (type_value == "OtherXML") {
         // TODO Add support for this
@@ -530,9 +536,9 @@ void DMZ::process_attribute(D4Attributes *attributes, xml_node *dap_attr_node)
         D4Attribute *attribute = new D4Attribute(name_value, StringToD4AttributeType(type_value));
         attributes->add_attribute_nocopy(attribute);
         // Process one or more Value elements
-        for (auto value_elem = dap_attr_node->first_child(); value_elem; value_elem = value_elem->next_sibling()) {
-            if (is_eq(value_elem->name(), "Value")) {
-                attribute->add_value(value_elem->value());  // returns the text of the first data node
+        for (auto value_elem = dap_attr_node.first_child(); value_elem; value_elem = value_elem.next_sibling()) {
+            if (is_eq(value_elem.name(), "Value")) {
+                attribute->add_value(value_elem.child_value());  // returns the text of the first data node
             }
         }
      }
@@ -565,7 +571,7 @@ void DMZ::build_basetype_chain(BaseType *btp, stack<BaseType*> &bt)
         build_basetype_chain(parent, bt);
 }
 
-xml_node *DMZ::get_variable_xml_node_helper(xml_node *parent_node, stack<BaseType*> &bt)
+xml_node DMZ::get_variable_xml_node_helper(const xml_node &parent_node, stack<BaseType*> &bt)
 {
     // When we have an array of Structure or Sequence, both the Array and the
     // Structure BaseType are pushed on the stack. This happens because, for
@@ -584,8 +590,8 @@ xml_node *DMZ::get_variable_xml_node_helper(xml_node *parent_node, stack<BaseTyp
     bt.pop();
 
     // Now look for the node with the correct element type and matching name
-    for (auto node = parent_node->first_child(type_name.c_str()); node; node = node->next_sibling()) {
-        for (xml_attribute attr = node->first_attribute(); attr; attr = attr.next_attribute()) {
+    for (auto node = parent_node.child(type_name.c_str()); node; node = node.next_sibling()) {
+        for (xml_attribute attr = node.first_attribute(); attr; attr = attr.next_attribute()) {
             if (is_eq(attr.name(), "name") && is_eq(attr.value(), var_name.c_str())) {
                 // if this is the last BaseType on the stack, return the node
                 if (bt.empty())
@@ -596,7 +602,7 @@ xml_node *DMZ::get_variable_xml_node_helper(xml_node *parent_node, stack<BaseTyp
         }
     }
 
-    return nullptr;
+    return xml_node();      // return an empty node
 }
 
 /**
@@ -605,7 +611,7 @@ xml_node *DMZ::get_variable_xml_node_helper(xml_node *parent_node, stack<BaseTyp
  * that corresponds to the DMR++ XML document this class manages).
  * @return The xml_node pointer
  */
-xml_node *DMZ::get_variable_xml_node(BaseType *btp)
+xml_node DMZ::get_variable_xml_node(BaseType *btp)
 {
     // load the BaseType objects onto a stack, since we start at the leaf and
     // go backward using its 'parent' pointer, the order of BaseTypes on the
@@ -613,8 +619,8 @@ xml_node *DMZ::get_variable_xml_node(BaseType *btp)
     stack<BaseType*> bt;
     build_basetype_chain(btp, bt);
 
-    xml_node *dataset = d_xml_doc.first_child();
-    if (!dataset || !is_eq(dataset->name(), "Dataset"))
+    xml_node dataset = d_xml_doc.first_child();
+    if (!dataset || !is_eq(dataset.name(), "Dataset"))
         throw BESInternalError("No DMR++ has been parsed.", __FILE__, __LINE__);
 
     auto node = get_variable_xml_node_helper(dataset, bt);
@@ -635,7 +641,7 @@ xml_node *DMZ::get_variable_xml_node(BaseType *btp)
 void DMZ::load_attributes(BaseType *btp)
 {
     // goto the DOM tree node for this variable
-    xml_node *var_node = get_variable_xml_node(btp);
+    xml_node var_node = get_variable_xml_node(btp);
     if (var_node == nullptr)
         throw BESInternalError("Could not find location of variable in the DMR++ XML document.", __FILE__, __LINE__);
 
@@ -645,7 +651,7 @@ void DMZ::load_attributes(BaseType *btp)
     // trigger a lazy-load of the variables' attributes. jhrg 10/24/21
     // Could also use BaseType::set_attributes(). jhrg
     auto attributes = btp->BaseType::attributes(); // new D4Attributes();
-    for (auto child = var_node->first_child(); child; child = child.next_sibling()) {
+    for (auto child = var_node.first_child(); child; child = child.next_sibling()) {
         if (is_eq(child.name(), "Attribute")) {
             process_attribute(attributes, child);
         }
@@ -659,7 +665,7 @@ void DMZ::load_attributes(BaseType *btp)
  * @param dc
  * @param chunk
  */
-void DMZ::process_chunk(DmrppCommon *dc, xml_node *chunk)
+void DMZ::process_chunk(DmrppCommon *dc, const xml_node &chunk)
 {
     string href;
     string trust;
@@ -669,7 +675,7 @@ void DMZ::process_chunk(DmrppCommon *dc, xml_node *chunk)
 
     bool href_trusted = false;
 
-    for (xml_attribute attr = chunk->first_attribute(); attr; attr = attr.next_attribute()) {
+    for (xml_attribute attr = chunk.first_attribute(); attr; attr = attr.next_attribute()) {
         if (is_eq(attr.name(), "href")) {
             href = attr.value();
         }
@@ -705,12 +711,12 @@ void DMZ::process_chunk(DmrppCommon *dc, xml_node *chunk)
  * @param dc
  * @param chunks
  */
-void DMZ::process_cds_node(DmrppCommon *dc, xml_node *chunks)
+void DMZ::process_cds_node(DmrppCommon *dc, const xml_node &chunks)
 {
     bool cds_found = false;
-    for (auto child = chunks->first_child("dmrpp:chunkDimensionSizes"); child && !cds_found; child = child.next_sibling()) {
+    for (auto child = chunks.child("dmrpp:chunkDimensionSizes"); child && !cds_found; child = child.next_sibling()) {
         if (is_eq(child.name(), "dmrpp:chunkDimensionSizes")) {
-            string sizes = child.value();
+            string sizes = child.child_value();
             dc->parse_chunk_dimension_sizes(sizes);
             cds_found = true;
         }
@@ -722,7 +728,7 @@ void DMZ::process_cds_node(DmrppCommon *dc, xml_node *chunks)
 
 // a 'dmrpp:chunks' node has a chunkDimensionSizes node and then one or more chunks
 // nodes, and they have to be in that order.
-void DMZ::process_chunks(BaseType *btp, xml_node *chunks)
+void DMZ::process_chunks(BaseType *btp, const xml_node &chunks)
 {
     auto *dc = dynamic_cast<DmrppCommon*>(btp);   // Get the Dmrpp common info
     if (!dc)
@@ -731,8 +737,8 @@ void DMZ::process_chunks(BaseType *btp, xml_node *chunks)
     process_cds_node(dc, chunks);
 
     // Chunks for this node will be held in the var_node siblings.
-    for (auto *chunk = chunks->first_child("dmrpp:chunk"); chunk; chunk = chunk->next_sibling()) {
-        if (is_eq(chunk->name(), "dmrpp:chunk")) {
+    for (auto chunk = chunks.child("dmrpp:chunk"); chunk; chunk = chunk.next_sibling()) {
+        if (is_eq(chunk.name(), "dmrpp:chunk")) {
             process_chunk(dc, chunk);
         }
     }
@@ -749,23 +755,39 @@ void DMZ::process_chunks(BaseType *btp, xml_node *chunks)
 void DMZ::load_chunks(BaseType *btp)
 {
     // goto the DOM tree node for this variable
-    xml_node *var_node = get_variable_xml_node(btp);
+    xml_node var_node = get_variable_xml_node(btp);
     if (var_node == nullptr)
         throw BESInternalError("Could not find location of variable in the DMR++ XML document.", __FILE__, __LINE__);
 
     // Chunks for this node will be held in the var_node siblings. For a given BaseType, there should
     // be only one chunks node xor one chunk node.
-    int chunks_found = 0;
-    int chunk_found = 0;
-    for (auto child = var_node->first_child("dmrpp:chunks"); child; child = child.next_sibling()) {
+    bool chunks_found = false;
+    bool chunk_found = false;
+    auto child = var_node.child("dmrpp:chunks");
+    if (child) {
+        chunks_found = true;
+        process_chunks(btp, child);
+    }
+#if 0
+    for (auto child = var_node.child("dmrpp:chunks"); child; child = child.next_sibling()) {
         if (is_eq(child.name(), "dmrpp:chunks")) {
             chunks_found++;
             process_chunks(btp, child);
         }
     }
+#endif
+    auto chunk = var_node.child("dmrpp:chunk");
+    if (chunk) {
+        auto *dc = dynamic_cast<DmrppCommon*>(btp);   // Get the Dmrpp common info
+        if (!dc)
+            throw BESInternalError("Could not cast BaseType to DmrppCommon in the DMR++ handler.", __FILE__, __LINE__);
+        chunk_found =true;
+        process_chunk(dc, chunk);
 
-    for (auto *chunk = var_node->first_child("dmrpp:chunk"); chunk; chunk = chunk->next_sibling()) {
-        if (is_eq(chunk->name(), "dmrpp:chunk")) {
+    }
+#if 0
+    for (auto chunk = var_node.child("dmrpp:chunk"); chunk; chunk = chunk.next_sibling()) {
+        if (is_eq(chunk.name(), "dmrpp:chunk")) {
             auto *dc = dynamic_cast<DmrppCommon*>(btp);   // Get the Dmrpp common info
             if (!dc)
                 throw BESInternalError("Could not cast BaseType to DmrppCommon in the DMR++ handler.", __FILE__, __LINE__);
@@ -773,12 +795,12 @@ void DMZ::load_chunks(BaseType *btp)
             process_chunk(dc, chunk);
         }
     }
-
+#endif
     // TODO Add support for compact. jhrg 10/25/21
     //  Compact data is stored in the XML using <dmrpp:compact> elements. These are at the same level
     //  as the <dmrpp:chunk> (and <Attribute>) elements.
 
-    if (chunks_found > 1 || chunk_found > 1 || (chunks_found && chunk_found) || !(chunks_found || chunk_found))
+    if ((chunks_found && chunk_found) || !(chunks_found || chunk_found))
         throw BESInternalError("Unsupported chunk information in the DMR++ data.", __FILE__, __LINE__);
 }
 

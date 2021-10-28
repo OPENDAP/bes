@@ -46,16 +46,21 @@
 #include "DmrppCommon.h"
 #include "DmrppTypeFactory.h"
 
+#define PUGIXML_HEADER_ONLY
+#include <pugixml.hpp>
+
 #include "read_test_baseline.h"
 #include "test_config.h"
 
 using namespace std;
 using namespace libdap;
 using namespace bes;
+#if 0
 using namespace rapidxml;
+#endif
 
-static bool debug = true;
-static bool bes_debug = true;
+static bool debug = false;
+static bool bes_debug = false;
 
 #undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
@@ -98,10 +103,10 @@ public:
     void test_DMZ_ctor_1() {
         d_dmz = new DMZ(chunked_fourD_dmrpp);
         CPPUNIT_ASSERT(d_dmz);
-        DBG(cerr << "d_dmz->d_xml_text.size(): " << d_dmz->d_xml_text.size() << endl);
-        CPPUNIT_ASSERT(d_dmz->d_xml_text.size() > 0);
-        DBG(cerr << "d_dmz->d_xml_doc.first_node()->name(): " << d_dmz->d_xml_doc.first_node()->name() << endl);
-        CPPUNIT_ASSERT(strcmp(d_dmz->d_xml_doc.first_node()->name(), "Dataset") == 0);
+        // DBG(cerr << "d_dmz->d_xml_text.size(): " << d_dmz->d_xml_text.size() << endl);
+        // CPPUNIT_ASSERT(d_dmz->d_xml_text.size() > 0);
+        DBG(cerr << "d_dmz->d_xml_doc.document_element().name(): " << d_dmz->d_xml_doc.document_element().name() << endl);
+        CPPUNIT_ASSERT(strcmp(d_dmz->d_xml_doc.document_element().name(), "Dataset") == 0);
     }
 
     void test_DMZ_ctor_2() {
@@ -138,7 +143,7 @@ public:
         try {
             d_dmz = new DMZ(chunked_fourD_dmrpp);
             DMR dmr;
-            d_dmz->process_dataset(&dmr, d_dmz->d_xml_doc.first_node());
+            d_dmz->process_dataset(&dmr, d_dmz->d_xml_doc.first_child());
             DBG(cerr << "dmr.dap_version(): " << dmr.dap_version() << endl);
             CPPUNIT_ASSERT(dmr.dap_version() == "4.0");
             CPPUNIT_ASSERT(dmr.dmr_version() == "1.0");
@@ -166,7 +171,7 @@ public:
             d_dmz = new DMZ(broken_dmrpp);
             DmrppTypeFactory factory;
             DMR dmr(&factory);
-            d_dmz->process_dataset(&dmr, d_dmz->d_xml_doc.first_node());
+            d_dmz->process_dataset(&dmr, d_dmz->d_xml_doc.first_child());
             CPPUNIT_FAIL("DMZ ctor should fail when the Dataset element lacks a name attribute.");
         }
         catch (BESInternalError &e) {
@@ -410,11 +415,11 @@ public:
         d_dmz->build_thin_dmr(&dmr);
         BaseType *btp = *(dmr.root()->var_begin());
         CPPUNIT_ASSERT(btp);
-        xml_node<> *node = d_dmz->get_variable_xml_node(btp);
+        pugi::xml_node node = d_dmz->get_variable_xml_node(btp);
         CPPUNIT_ASSERT(node);
-        DBG(cerr << "get_variable_xml_node(): " << node->name() << ", " << node->first_attribute()->value() << endl);
-        CPPUNIT_ASSERT(btp->type() == dods_array_c && node->name() == btp->var()->type_name());
-        CPPUNIT_ASSERT(node->first_attribute()->value() == btp->name());
+        DBG(cerr << "get_variable_xml_node(): " << node.name() << ", " << node.first_attribute().value() << endl);
+        CPPUNIT_ASSERT(btp->type() == dods_array_c && node.name() == btp->var()->type_name());
+        CPPUNIT_ASSERT(node.first_attribute().value() == btp->name());
     }
 
     void test_get_variable_xml_node_2() {
@@ -424,11 +429,11 @@ public:
         d_dmz->build_thin_dmr(&dmr);
 
         BaseType *btp = dmr.root()->find_var("/HDFEOS/GRIDS/GeoGrid2/Data Fields/temperature");
-        xml_node<> *node = d_dmz->get_variable_xml_node(btp);
+        pugi::xml_node node = d_dmz->get_variable_xml_node(btp);
         CPPUNIT_ASSERT(node);
-        DBG(cerr << "get_variable_xml_node(): " << node->name() << ", " << node->first_attribute()->value() << endl);
-        CPPUNIT_ASSERT(btp->type() == dods_array_c && node->name() == btp->var()->type_name());
-        CPPUNIT_ASSERT(node->first_attribute()->value() == btp->name());
+        DBG(cerr << "get_variable_xml_node(): " << node.name() << ", " << node.first_attribute().value() << endl);
+        CPPUNIT_ASSERT(btp->type() == dods_array_c && node.name() == btp->var()->type_name());
+        CPPUNIT_ASSERT(node.first_attribute().value() == btp->name());
     }
 
     void test_get_variable_xml_node_3() {
@@ -438,11 +443,11 @@ public:
         d_dmz->build_thin_dmr(&dmr);
 
         BaseType *btp = dmr.root()->find_var("/TIME");
-        xml_node<> *node = d_dmz->get_variable_xml_node(btp);
+        pugi::xml_node node = d_dmz->get_variable_xml_node(btp);
         CPPUNIT_ASSERT(node);
-        DBG(cerr << "get_variable_xml_node(): " << node->name() << ", " << node->first_attribute()->value() << endl);
-        CPPUNIT_ASSERT(btp->type() == dods_array_c && node->name() == btp->var()->type_name());
-        CPPUNIT_ASSERT(node->first_attribute()->value() == btp->name());
+        DBG(cerr << "get_variable_xml_node(): " << node.name() << ", " << node.first_attribute().value() << endl);
+        CPPUNIT_ASSERT(btp->type() == dods_array_c && node.name() == btp->var()->type_name());
+        CPPUNIT_ASSERT(node.first_attribute().value() == btp->name());
     }
 
     void test_get_variable_xml_node_4() {
@@ -453,11 +458,11 @@ public:
 
         BaseType *btp = dmr.root()->find_var("/a.j");
         CPPUNIT_ASSERT(btp);
-        xml_node<> *node = d_dmz->get_variable_xml_node(btp);
+        pugi::xml_node node = d_dmz->get_variable_xml_node(btp);
         CPPUNIT_ASSERT(node);
-        DBG(cerr << "get_variable_xml_node(): " << node->name() << ", " << node->first_attribute()->value() << endl);
-        CPPUNIT_ASSERT(btp->type() == dods_array_c && node->name() == btp->var()->type_name());
-        CPPUNIT_ASSERT(node->first_attribute()->value() == btp->name());
+        DBG(cerr << "get_variable_xml_node(): " << node.name() << ", " << node.first_attribute().value() << endl);
+        CPPUNIT_ASSERT(btp->type() == dods_array_c && node.name() == btp->var()->type_name());
+        CPPUNIT_ASSERT(node.first_attribute().value() == btp->name());
     }
 
     void test_load_attributes_1() {
@@ -588,14 +593,14 @@ public:
             CPPUNIT_ASSERT(dc);
 
             // goto the DOM tree node for this variable
-            xml_node<> *var_node = d_dmz->get_variable_xml_node(btp);
+            pugi::xml_node var_node = d_dmz->get_variable_xml_node(btp);
             if (var_node == nullptr)
                 throw BESInternalError("Could not find location of variable in the DMR++ XML document.", __FILE__,
                                        __LINE__);
 
             // Chunks for this node will be held in the var_node siblings.
             int chunks_nodes = 0;
-            for (auto *child = var_node->first_node("dmrpp:chunks"); child; child = child->next_sibling()) {
+            for (auto child = var_node.child("dmrpp:chunks"); child; child = child.next_sibling()) {
                 ++chunks_nodes;
                 d_dmz->process_cds_node(dc, child);
             }
