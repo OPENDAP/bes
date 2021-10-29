@@ -100,6 +100,40 @@ public:
         delete d_dmz;
     }
 
+    // This is a 'function try block' and provides a way to abstract the many
+    // exception types. jhrg 10/28/21
+    void handle_fatal_exceptions() try {
+        throw;
+    }
+    catch (BESInternalError &e) {
+        CPPUNIT_FAIL("Caught BESInternalError " + e.get_verbose_message());
+    }
+    catch (BESError &e) {
+        CPPUNIT_FAIL("Caught BESError " + e.get_verbose_message());
+    }
+    catch (const std::exception &e) {
+        CPPUNIT_FAIL("Caught std::exception " + string(e.what()));
+    }
+    catch (...) {
+        CPPUNIT_FAIL("Caught ? ");
+    }
+
+    // The above replaces this block of code:
+#if 0
+    catch (BESInternalError &e) {
+        CPPUNIT_FAIL("Caught BESInternalError " + e.get_verbose_message());
+    }
+    catch (BESError &e) {
+        CPPUNIT_FAIL("Caught BESError " + e.get_verbose_message());
+    }
+    catch (std::exception &e) {
+        CPPUNIT_FAIL("Caught std::exception " + string(e.what()));
+    }
+    catch (...) {
+        CPPUNIT_FAIL("Caught ? ");
+    }
+#endif
+
     void test_DMZ_ctor_1() {
         d_dmz = new DMZ(chunked_fourD_dmrpp);
         CPPUNIT_ASSERT(d_dmz);
@@ -114,7 +148,7 @@ public:
             d_dmz = new DMZ("no-such-file");    // Should return could not open
             CPPUNIT_FAIL("DMZ ctor should not succeed with bad path.");
         }
-        catch (BESInternalError &e) {
+        catch (const BESInternalError &e) {
             CPPUNIT_ASSERT("Caught BESInternalError with xml pathname fail");
         }
     }
@@ -152,17 +186,8 @@ public:
             DBG(cerr << "d_dmz->d_dataset_elem_href->str(): " << d_dmz->d_dataset_elem_href->str() << endl);
             CPPUNIT_ASSERT(d_dmz->d_dataset_elem_href->str() == string("file://") + TEST_DMRPP_CATALOG + "/data/dmrpp/chunked_fourD.h5");
         }
-        catch (BESInternalError &e) {
-            CPPUNIT_FAIL("Caught BESInternalError " + e.get_verbose_message());
-        }
-        catch (BESError &e) {
-            CPPUNIT_FAIL("Caught BESError " + e.get_verbose_message());
-        }
-        catch (std::exception &e) {
-            CPPUNIT_FAIL("Caught std::exception " + string(e.what()));
-        }
         catch (...) {
-            CPPUNIT_FAIL("Caught ? ");
+            handle_fatal_exceptions();
         }
     }
 
@@ -203,9 +228,8 @@ public:
             CPPUNIT_ASSERT(array->dimension_size(array->dim_begin()+2) == 40);
             CPPUNIT_ASSERT(array->dimension_size(array->dim_begin()+3) == 40);
         }
-        catch (BESInternalError &e) {
-            DBG(cerr << "BESInternalError: " << e.get_verbose_message() << endl);
-            CPPUNIT_FAIL("build_thin_dmr should not throw");
+        catch (...) {
+            handle_fatal_exceptions();
         }
     }
 
@@ -236,9 +260,8 @@ public:
             CPPUNIT_ASSERT(array->dimension_size(array->dim_begin()) == 4);
             CPPUNIT_ASSERT(array->dimension_size(array->dim_begin()+1) == 8);
         }
-        catch (BESInternalError &e) {
-            DBG(cerr << "BESInternalError: " << e.get_verbose_message() << endl);
-            CPPUNIT_FAIL("build_thin_dmr should not throw");
+        catch (...) {
+            handle_fatal_exceptions();
         }
     }
 
@@ -269,9 +292,8 @@ public:
             CPPUNIT_ASSERT(array->dimension_size(array->dim_begin()+1) == 90);
             CPPUNIT_ASSERT(array->dimension_size(array->dim_begin()+2) == 180);
         }
-        catch (BESInternalError &e) {
-            DBG(cerr << "BESInternalError: " << e.get_verbose_message() << endl);
-            CPPUNIT_FAIL("build_thin_dmr should not throw");
+        catch (...) {
+            handle_fatal_exceptions();
         }
     }
 
@@ -300,9 +322,8 @@ public:
             DBG(cerr << "struct vars:" << ctor->var_end() - ctor->var_begin() << endl);
             CPPUNIT_ASSERT(ctor->var_end() - ctor->var_begin() == 2);
         }
-        catch (BESInternalError &e) {
-            DBG(cerr << "BESInternalError: " << e.get_verbose_message() << endl);
-            CPPUNIT_FAIL("build_thin_dmr should not throw");
+        catch (...) {
+            handle_fatal_exceptions();
         }
     }
 
@@ -344,17 +365,8 @@ public:
             CPPUNIT_ASSERT(array->dimension_size(array->dim_begin()) == 3);
             CPPUNIT_ASSERT(array->dimension_size(array->dim_begin()+1) == 6);
         }
-        catch (BESInternalError &e) {
-            CPPUNIT_FAIL("Caught BESInternalError: " + e.get_verbose_message());
-        }
-        catch (BESError &e) {
-            CPPUNIT_FAIL("Caught BESError: " + e.get_verbose_message());
-        }
-        catch (std::exception &e) {
-            CPPUNIT_FAIL("Caught std::exception: " + string(e.what()));
-        }
         catch (...) {
-            CPPUNIT_FAIL("Caught ... WTF");
+            handle_fatal_exceptions();
         }
     }
 
@@ -488,17 +500,8 @@ public:
             CPPUNIT_ASSERT(!btp->attributes()->empty());
             CPPUNIT_ASSERT(btp->attributes()->attribute_end() - btp->attributes()->attribute_begin() == 2);
         }
-        catch (BESInternalError &e) {
-            CPPUNIT_FAIL("Caught BESInternalError " + e.get_verbose_message());
-        }
-        catch (BESError &e) {
-            CPPUNIT_FAIL("Caught BESError " + e.get_verbose_message());
-        }
-        catch (std::exception &e) {
-            CPPUNIT_FAIL("Caught std::exception " + string(e.what()));
-        }
         catch (...) {
-            CPPUNIT_FAIL("Caught ? ");
+            handle_fatal_exceptions();
         }
     }
 
@@ -525,17 +528,8 @@ public:
             CPPUNIT_ASSERT(!btp->attributes()->empty());
             CPPUNIT_ASSERT(btp->attributes()->attribute_end() - btp->attributes()->attribute_begin() == 1);
         }
-        catch (BESInternalError &e) {
-            CPPUNIT_FAIL("Caught BESInternalError " + e.get_verbose_message());
-        }
-        catch (BESError &e) {
-            CPPUNIT_FAIL("Caught BESError " + e.get_verbose_message());
-        }
-        catch (std::exception &e) {
-            CPPUNIT_FAIL("Caught std::exception " + string(e.what()));
-        }
         catch (...) {
-            CPPUNIT_FAIL("Caught ? ");
+            handle_fatal_exceptions();
         }
     }
 
@@ -562,17 +556,8 @@ public:
             CPPUNIT_ASSERT(!btp->attributes()->empty());
             CPPUNIT_ASSERT(btp->attributes()->attribute_end() - btp->attributes()->attribute_begin() == 1);
         }
-        catch (BESInternalError &e) {
-            CPPUNIT_FAIL("Caught BESInternalError " + e.get_verbose_message());
-        }
-        catch (BESError &e) {
-            CPPUNIT_FAIL("Caught BESError " + e.get_verbose_message());
-        }
-        catch (std::exception &e) {
-            CPPUNIT_FAIL("Caught std::exception " + string(e.what()));
-        }
         catch (...) {
-            CPPUNIT_FAIL("Caught ? ");
+            handle_fatal_exceptions();
         }
     }
 
@@ -613,17 +598,8 @@ public:
             CPPUNIT_ASSERT(c_sizes.at(2) == 20);
             CPPUNIT_ASSERT(c_sizes.at(3) == 20);
         }
-        catch (BESInternalError &e) {
-            CPPUNIT_FAIL("Caught BESInternalError " + e.get_verbose_message());
-        }
-        catch (BESError &e) {
-            CPPUNIT_FAIL("Caught BESError " + e.get_verbose_message());
-        }
-        catch (std::exception &e) {
-            CPPUNIT_FAIL("Caught std::exception " + string(e.what()));
-        }
         catch (...) {
-            CPPUNIT_FAIL("Caught ? ");
+            handle_fatal_exceptions();
         }
     }
 
@@ -667,17 +643,8 @@ public:
             CPPUNIT_ASSERT(chunks.at(15)->get_position_in_array().at(0) == 20);
             CPPUNIT_ASSERT(chunks.at(15)->get_position_in_array().at(3) == 20);
         }
-        catch (BESInternalError &e) {
-            CPPUNIT_FAIL("Caught BESInternalError " + e.get_verbose_message());
-        }
-        catch (BESError &e) {
-            CPPUNIT_FAIL("Caught BESError " + e.get_verbose_message());
-        }
-        catch (std::exception &e) {
-            CPPUNIT_FAIL("Caught std::exception " + string(e.what()));
-        }
         catch (...) {
-            CPPUNIT_FAIL("Caught ? ");
+            handle_fatal_exceptions();
         }
     }
 
@@ -709,17 +676,8 @@ public:
             CPPUNIT_ASSERT(chunks.at(0)->get_size() == 96);
             CPPUNIT_ASSERT(chunks.at(0)->get_position_in_array().size() == 0);
         }
-        catch (BESInternalError &e) {
-            CPPUNIT_FAIL("Caught BESInternalError " + e.get_verbose_message());
-        }
-        catch (BESError &e) {
-            CPPUNIT_FAIL("Caught BESError " + e.get_verbose_message());
-        }
-        catch (std::exception &e) {
-            CPPUNIT_FAIL("Caught std::exception " + string(e.what()));
-        }
         catch (...) {
-            CPPUNIT_FAIL("Caught ? ");
+            handle_fatal_exceptions();
         }
     }
 
