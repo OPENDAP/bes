@@ -77,8 +77,9 @@ using namespace std;
 
 #define prolog std::string("DmrppRequestHandler::").append(__func__).append("() - ")
 
-namespace dmrpp {
+#define USE_DMZ_TO_MANAGE_XML 0
 
+namespace dmrpp {
 
 ObjMemCache *DmrppRequestHandler::das_cache = 0;
 ObjMemCache *DmrppRequestHandler::dds_cache = 0;
@@ -214,15 +215,16 @@ void DmrppRequestHandler::build_dmr_from_file(BESContainer *container, DMR* dmr)
     DmrppTypeFactory BaseFactory;   // Use the factory for this handler's types
     dmr->set_factory(&BaseFactory);
 
+#if USE_DMZ_TO_MANAGE_XML
     // Instantiate DMZ with pathname to DMRPP, then build_thin_dmr()
     dmz = new DMZ(data_pathname);
     dmz->build_thin_dmr(dmr);
-
+#else
     // Following lines replaced by DMZ::build_thin_dmr()
-    //DmrppParserSax2 parser;
-    //ifstream in(data_pathname.c_str(), ios::in);
-
-    //parser.intern(in, dmr);
+    DmrppParserSax2 parser;
+    ifstream in(data_pathname.c_str(), ios::in);
+    parser.intern(in, dmr);
+#endif
 
     dmr->set_factory(0);
 }
