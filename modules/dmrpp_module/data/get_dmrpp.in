@@ -4,18 +4,9 @@ set -e
 
 ###############################################################################
 #
-# Returns the get_dmrpp version information.
-#
-function version(){
-    zname=`basename ${0}`
-    bes-config --version | sed "s+bes+${zname}+g"
-}
-
-
-###############################################################################
-#
 # Default BES Configuration.
 #
+
 function mk_default_bes_conf() {
   BES_CONF_DOC=$(
     cat <<EOF
@@ -162,9 +153,7 @@ EOF
 # Print the usage information.
 #
 show_usage() {
-    echo ""
-    echo " ["`version`"]"
-    cat <<EOF
+  cat <<EOF
 
  Usage: $0 [options] <hdf5 file>
 
@@ -177,7 +166,6 @@ show_usage() {
  configuration file found here.
 
  -h: Show help
- -z: Show version information (Verbose got here first.)
  -v: Verbose: Print the DMR too
  -V: Very Verbose: print the DMR, the command and the configuration
      file used to build the DMR, and do not remove temporary files.
@@ -213,7 +201,6 @@ show_usage() {
 
  Limitations:
  * The name of the hdf5 file must be expressed relative to the BES_DATA_ROOT
-
 EOF
 }
 
@@ -233,14 +220,10 @@ reduce_missing_files=
 MASTER_SHA256=
 BES_DATA_ROOT="/tmp"
 
-while getopts "h?vVDu:o:c:b:s:p:r:zTIFM" opt; do
+while getopts "h?vVDu:o:c:b:s:p:r:TIFM" opt; do
   case "$opt" in
   h | \?)
-    show_usage >&2
-    exit 0
-    ;;
-  z)
-    version >&2
+    show_usage
     exit 0
     ;;
   v)
@@ -296,6 +279,7 @@ while getopts "h?vVDu:o:c:b:s:p:r:zTIFM" opt; do
 done
 
 shift $((OPTIND - 1))
+
 [ "$1" = "--" ] && shift
 
 if test -n "$very_verbose"; then
