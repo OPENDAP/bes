@@ -529,6 +529,11 @@ function mkDapRequest() {
   # This is the return value of the function!
   echo "${DAP_RESPONSE}"
 
+#----------------------------------------------------------
+# I commented this out because it was screwing things up
+# to delete the configuration after the DMR was created but
+# before build_dmrpp had been run. ndp 11/01/21
+#
   # Clean up temporary files if not in debug mode
   #if test -z "${verbose}"; then
     #echo "DAP_CMD: ${DAP_CMD}"
@@ -536,6 +541,7 @@ function mkDapRequest() {
     # rm -f ${DAP_CMD} ${BES_CONF}
   #  ;
   #fi
+#----------------------------------------------------------
 
 }
 ########################################################################################################################
@@ -552,7 +558,7 @@ function mk_dmrpp() {
     echo "  BES_DATA_ROOT: ${BES_DATA_ROOT}"
     echo "       datafile: ${datafile}"
     echo " full_data_path: ${full_data_path}"
-    echo "       bes.conf: ${BES_CONF} "`ls -l  ${BES_CONF}`
+    echo "       bes.conf: ${BES_CONF} "
     echo "       dmr_file: ${SOURCE_DMR}"
     echo "      dmrpp_url: ${dmrpp_url}"
     echo "    output_file: ${output_file}"
@@ -564,6 +570,7 @@ function mk_dmrpp() {
     prms="${prms} -f ${full_data_path} "
     prms="${prms} -r ${SOURCE_DMR} "
     prms="${prms} -u ${dmrpp_url} "
+    prms="${prms} -M " # Adds the production metadata (version numbers and configuration) to the dmr++ result.
     if test -n "$verbose"; then echo "   build_params: ${prms}" >&2; fi
     if test -n "$output_file"; then
       build_dmrpp ${prms} >"${output_file}"
@@ -1056,7 +1063,6 @@ function dmrpp_value_test() {
 ########################################################################################################################
 
 BES_CONF=$(make_bes_conf "${bes_conf_file}" "${site_conf_file}")
-
 SOURCE_DMR=$(mkDapRequest "${input_data_file}" dmr)
 
 # If 'just_dmr' is set redirect SOURCE_DMR to either <stdout> or $output_file

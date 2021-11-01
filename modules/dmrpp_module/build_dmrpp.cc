@@ -32,7 +32,6 @@
 #include <libgen.h>
 
 #include <D4Attributes.h>
-
 #include <Array.h>
 
 //#define H5D_FRIEND		// Workaround, needed to use H5D_chunk_rec_t
@@ -790,7 +789,7 @@ string cmdln(int argc, char *argv[]){
     return ss.str();
 }
 
-void inject_version_and_config(int argc, char *argv[], shared_ptr<DMRpp> dmrpp){
+void inject_version_and_configuration(int argc, char **argv, shared_ptr<DMRpp> dmrpp){
 
     // Build the version attributes for the DMR++
     D4Attribute *version = new D4Attribute("build_dmrpp_meta", StringToD4AttributeType("container"));
@@ -835,8 +834,9 @@ int main(int argc, char *argv[]) {
     string dmr_name = "";
     string url_name = "";
     int status = 0;
+    bool add_production_metadata = false;
 
-    GetOpt getopt(argc, argv, "c:f:r:u:dhvV");
+    GetOpt getopt(argc, argv, "c:f:r:u:dhvVM");
     int option_char;
     while ((option_char = getopt()) != -1) {
         switch (option_char) {
@@ -856,15 +856,23 @@ int main(int argc, char *argv[]) {
             case 'f':
                 h5_file_name = getopt.optarg;
                 break;
+
             case 'r':
                 dmr_name = getopt.optarg;
                 break;
+
             case 'u':
                 url_name = getopt.optarg;
                 break;
+
             case 'c':
                 TheBESKeys::ConfigFile = getopt.optarg;
                 break;
+
+            case 'M':
+                add_production_metadata = true;
+                break;
+
             case 'h':
                 cerr
                         << "build_dmrpp [-v] -c <bes.conf> -f <data file>  [-u <href url>] | build_dmrpp -f <data file> -r <dmr file> | build_dmrpp -h"
@@ -905,7 +913,9 @@ int main(int argc, char *argv[]) {
                 return 1;
             }
 
-            inject_version_and_config(argc, argv, dmrpp);
+            if(add_production_metadata) {
+                inject_version_and_configuration(argc, argv, dmrpp);
+            }
 
             // iterate over all the variables in the DMR
             get_chunks_for_all_variables(file, dmrpp->root());
