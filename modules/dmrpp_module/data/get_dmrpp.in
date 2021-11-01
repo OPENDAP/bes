@@ -530,11 +530,12 @@ function mkDapRequest() {
   echo "${DAP_RESPONSE}"
 
   # Clean up temporary files if not in debug mode
-  if test -z "$verbose"; then
+  #if test -z "${verbose}"; then
     #echo "DAP_CMD: ${DAP_CMD}"
     #echo "BES_CONF: ${BES_CONF}"
-    rm -f ${DAP_CMD} ${BES_CONF}
-  fi
+    # rm -f ${DAP_CMD} ${BES_CONF}
+  #  ;
+  #fi
 
 }
 ########################################################################################################################
@@ -551,7 +552,7 @@ function mk_dmrpp() {
     echo "  BES_DATA_ROOT: ${BES_DATA_ROOT}"
     echo "       datafile: ${datafile}"
     echo " full_data_path: ${full_data_path}"
-    echo "       bes.conf: ${BES_CONF}"
+    echo "       bes.conf: ${BES_CONF} "`ls -l  ${BES_CONF}`
     echo "       dmr_file: ${SOURCE_DMR}"
     echo "      dmrpp_url: ${dmrpp_url}"
     echo "    output_file: ${output_file}"
@@ -784,7 +785,10 @@ function dap4_attributes() {
 #
 function dap4_vars() {
   grep \
+    -e "<Int8" \
+    -e "<UInt8" \
     -e "<Byte" \
+    -e "<Char" \
     -e "<Int" \
     -e "<UInt" \
     -e "<Float" \
@@ -1052,6 +1056,7 @@ function dmrpp_value_test() {
 ########################################################################################################################
 
 BES_CONF=$(make_bes_conf "${bes_conf_file}" "${site_conf_file}")
+
 SOURCE_DMR=$(mkDapRequest "${input_data_file}" dmr)
 
 # If 'just_dmr' is set redirect SOURCE_DMR to either <stdout> or $output_file
@@ -1067,9 +1072,15 @@ if [ -n "${just_dmr}" ]; then
   exit 0
 fi
 
+
 mk_dmrpp "${input_data_file}"
 retval=$?
 #echo "retval: ${retval}";
+
+if test -z "${verbose}"; then
+    if test -f "${BES_CONF}" ; then rm -f "${BES_CONF}"; fi
+    if test -f "${DAP_CMD}" ; then rm -f "${DAP_CMD}"; fi
+fi
 
 if test -n "${merge_missing_vars}"; then
 
