@@ -866,11 +866,6 @@ void DmrppArray::read_contiguous()
         the_one_chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(),var()->width());
     }
 
-    /* // old code utilizing booleans, SBL 10.26.21
-    if (is_deflate_compression() || is_shuffle_compression() || is_fletcher32_compression())
-       the_one_chunk->inflate_chunk(is_deflate_compression(), is_shuffle_compression(), is_fletcher32_compression(), get_chunk_size_in_elements(),var()->width());
-    */
-
     // The 'the_one_chunk' now holds the data values. Transfer it to the Array.
     if (!is_projected()) {  // if there is no projection constraint
         reserve_value_capacity(get_size(false));

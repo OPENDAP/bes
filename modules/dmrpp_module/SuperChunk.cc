@@ -80,12 +80,6 @@ void process_one_chunk(shared_ptr<Chunk> chunk, DmrppArray *array, const vector<
         if (!array->is_filters_empty())
             chunk->filter_chunk(array->get_filters(), array->get_chunk_size_in_elements(), array->var()->width());
 
-        /* // old code utilizing booleans, SBL 10.26.21
-        if (array->is_deflate_compression() || array->is_shuffle_compression() || array->is_fletcher32_compression())
-            chunk->inflate_chunk(array->is_deflate_compression(), array->is_shuffle_compression(), array->is_fletcher32_compression(),
-                                 array->get_chunk_size_in_elements(), array->var()->width());
-                                 */
-
         vector<unsigned long long> target_element_address = chunk->get_position_in_array();
         vector<unsigned long long> chunk_source_address(array->dimensions(), 0);
 
@@ -125,12 +119,6 @@ void process_one_chunk_unconstrained(shared_ptr<Chunk> chunk, const vector<unsig
         if (!array->is_filters_empty())
             chunk->filter_chunk(array->get_filters(), array->get_chunk_size_in_elements(), array->var()->width());
 
-        /* // old code utilizing booleans, SBL 10.26.21
-        if (array->is_deflate_compression() || array->is_shuffle_compression() || array->is_fletcher32_compression())
-            chunk->inflate_chunk(array->is_deflate_compression(), array->is_shuffle_compression(), array->is_fletcher32_compression(),
-                                 array->get_chunk_size_in_elements(),
-                                 array->var()->width());
-                                 */
         array->insert_chunk_unconstrained(chunk, 0, 0, array_shape, 0, chunk_shape, chunk->get_position_in_array());
     }
     BESDEBUG(SUPER_CHUNK_MODULE, prolog << "END" << endl );

@@ -146,31 +146,6 @@ void DmrppCommon::ingest_compression_type(const string &compression_type_string)
 {
     if (compression_type_string.empty()) return;
     d_filters = compression_type_string;
-
-#if 0
-    // old code utilizing booleans, SBL 10.26.21
-    // Clear previous state
-    d_deflate = false;
-    d_shuffle = false;
-    d_fletcher32 = false;
-
-    string deflate("deflate");
-    string shuffle("shuffle");
-    string fletcher32("fletcher32");
-
-    // Process content
-    if (compression_type_string.find(deflate) != string::npos) {
-        d_deflate = true;
-    }
-
-    if (compression_type_string.find(shuffle) != string::npos) {
-        d_shuffle = true;
-    }
-
-    if (compression_type_string.find(fletcher32) != string::npos) {
-        d_fletcher32 = true;
-    }
-#endif
 }
 
 /**
