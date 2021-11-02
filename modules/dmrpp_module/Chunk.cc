@@ -750,7 +750,8 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
             // If the code should actually use the checksum (they can be expensive to compute), does it match
             // with once computed on the data actually read? Maybe make this a bes.conf parameter?
             // jhrg 10/15/21
-            if (f_checksum != checksum_fletcher32((const void *)get_rbuf(), get_rbuf_size() - FLETCHER32_CHECKSUM)) {
+            uint32_t calc_checksum = checksum_fletcher32((const void *)get_rbuf(), get_rbuf_size() - FLETCHER32_CHECKSUM);
+            if (f_checksum != calc_checksum) {
                 throw BESInternalError("Data read from the DMR++ handler did not match the Fletcher32 checksum.",
                                        __FILE__, __LINE__);
             }
