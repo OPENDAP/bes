@@ -77,7 +77,7 @@ using namespace std;
 
 #define prolog std::string("DmrppRequestHandler::").append(__func__).append("() - ")
 
-#define USE_DMZ_TO_MANAGE_XML 0
+#define USE_DMZ_TO_MANAGE_XML 1
 
 namespace dmrpp {
 
@@ -219,6 +219,7 @@ void DmrppRequestHandler::build_dmr_from_file(BESContainer *container, DMR* dmr)
     // Instantiate DMZ with pathname to DMRPP, then build_thin_dmr()
     dmz = new DMZ(data_pathname);
     dmz->build_thin_dmr(dmr);
+    dmz->load_everything(dmr);
 #else
     // Following lines replaced by DMZ::build_thin_dmr()
     DmrppParserSax2 parser;

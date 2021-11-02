@@ -33,7 +33,7 @@
 #include <future>
 #include <list>
 
-#include <Array.h>
+#include <libdap/Array.h>
 
 #include "DmrppCommon.h"
 #include "SuperChunk.h"

@@ -43,6 +43,7 @@
 #include <libdap/DMR.h>
 #include <libdap/util.h>        // is_simple_type()
 
+#define PUGIXML_NO_XPATH
 #define PUGIXML_HEADER_ONLY
 #include <pugixml.hpp>
 
@@ -55,6 +56,13 @@
 using namespace pugi;
 using namespace std;
 using namespace libdap;
+
+// The pugixml library does not grok namespaces. So, for a tag named 'dmrpp:chunks'
+// if TREAT_NAMESPACES_AS_LITERALS is '1' the parser matches the whole string. If it
+// is '0' the parser only matches the characters after the colon. In both cases the
+// namespace (as XML intends) is not used. Using '1' is a bit more efficient.
+// jhrg 11/2/21
+#define TREAT_NAMESPACES_AS_LITERALS 1
 
 #define PARSER "dmz"
 #define prolog std::string("DMZ::").append(__func__).append("() - ")
@@ -74,28 +82,6 @@ static const string dmrpp_namespace = "http://xml.opendap.org/dap/dmrpp/1.0.0#";
  */
 DMZ::DMZ(const string &file_name)
 {
-#if 0
-    ifstream ifs(file_name, ios::in | ios::binary | ios::ate);
-    if (!ifs)
-        throw BESInternalError(string("Could not open DMR++ XML file: ").append(file_name), __FILE__, __LINE__);
-
-    ifstream::pos_type file_size = ifs.tellg();
-    if (file_size == 0)
-        throw BESInternalError(string("DMR++ XML file is empty: ").append(file_name), __FILE__, __LINE__);
-
-    ifs.seekg(0, ios::beg);
-
-    d_xml_text.resize(file_size + ifstream::pos_type(1LL));   // Add space for text and null termination
-    ifs.read(d_xml_text.data(), file_size);
-    if (!ifs)
-        throw BESInternalError(string("DMR++ XML file seek or read failure: ").append(file_name), __FILE__, __LINE__);
-
-    d_xml_text[file_size] = '\0';
-
-    // TODO catch  rapidxml::parse_error
-    //d_xml_doc.parse<0>(d_xml_text.data());    // 0 means default parse flags
-    d_xml_doc.load_buffer_inplace(d_xml_text.data());
-#endif
     std::ifstream stream(file_name);
     pugi::xml_parse_result result = d_xml_doc.load(stream);
 
@@ -107,11 +93,24 @@ DMZ::DMZ(const string &file_name)
 }
 
 // NB: If we use this for string compares, we cannot use the 'fastest' parsing option
-// of rapidxml. For that, we will need to modify this so that the length of 's1' is passed
+// of rapidxml. For that, we will need to modify this so that the length of 'value' is passed
 // in (names, etc., are not null terminated with the fastest parsing option). jhrg 10/20/21
+//
+// Modified to look for and ignore a namespace prefix
 static inline bool is_eq(const char *value, const char *key)
 {
+#if TREAT_NAMESPACES_AS_LITERALS
     return strcmp(value, key) == 0;
+#else
+    bool found = strcmp(value, key) == 0;
+    if (found) {
+        return true;
+    }
+    else {
+        const char* colon = strchr(value, ':');
+        return colon && strcmp(colon + 1, key) == 0;
+    }
+#endif
 }
 
 /**
@@ -144,11 +143,12 @@ void DMZ::process_dataset(DMR *dmr, const xml_node &xml_root)
             dmr->set_request_xml_base(attr.value());
             BESDEBUG(PARSER, prolog << "Dataset xml:base is set to '" << dmr->request_xml_base() << "'" << endl);
         }
-        // TODO Namespaces? jhrg 10/2/0/21
+        // The pugixml library does not use XML namespaces AFAIK. jhrg 11/2/21
         else if (is_eq(attr.name(), "xmlns")) {
             dmr->set_namespace(attr.value());
         }
-        // TODO what to do with namespaced attributes? jhrg 10/20/21
+        // This code does not use namespaces. By default, we assume the DMR++ elements
+        // all use the namespace prefix 'dmrpp'. jhrg 11/2/21
         else if (is_eq(attr.name(), "dmrpp:href")) {
             href_attr = attr.value();
         }
@@ -249,14 +249,6 @@ void DMZ::process_dim(DMR *dmr, D4Group *grp, Array *array, const xml_node &dim_
 static inline bool has_dim_nodes(const xml_node &var_node)
 {
     return  var_node.child("Dim"); // just one is enough
-#if 0
-    for (auto child = var_node->child("Dim"); child; child = child.next_sibling()) {
-        if (is_eq(child.name(), "Dim"))    // just one is enough
-            return true;
-    }
-
-    return false;
-#endif
 }
 
 /// @brief Simple set membership; used to test for variable elements, et cetera.
@@ -291,12 +283,13 @@ void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, const 
 
     bool is_array_type = has_dim_nodes(var_node);
     BaseType *btp;
+    //Constructor *parent;
     if (is_array_type) {
         btp = add_array_variable(dmr, group, parent, t, var_node);
         if (t == dods_structure_c || t == dods_sequence_c) {
             assert(btp->type() == dods_array_c && btp->var()->type() == t);
             // NB: For an array of a Constructor, add children to the Constructor, not the array
-            auto parent = dynamic_cast<Constructor*>(btp->var());
+            parent = dynamic_cast<Constructor*>(btp->var());
             assert(parent);
             for (auto child = var_node.first_child(); child; child = child.next_sibling()) {
                 if (member_of(variable_elements, child.name()))
@@ -308,7 +301,7 @@ void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, const 
         btp = add_scalar_variable(dmr, group, parent, t, var_node);
         if (t == dods_structure_c || t == dods_sequence_c) {
             assert(btp->type() == t);
-            auto parent = dynamic_cast<Constructor*>(btp);
+            parent = dynamic_cast<Constructor*>(btp);
             assert(parent);
             for (auto child = var_node.first_child(); child; child = child.next_sibling()) {
                 if (member_of(variable_elements, child.name()))
@@ -367,6 +360,7 @@ BaseType *DMZ::build_variable(DMR *dmr, D4Group *group, Type t, const xml_node &
 
     return btp;
 }
+
 /**
  * Given that a tag which opens a variable declaration has just been read,
  * create the variable.
@@ -490,6 +484,8 @@ void DMZ::build_thin_dmr(DMR *dmr)
         else if (is_eq(child.name(), "Group")) {
             process_group(dmr, root_group, child);
         }
+        // TODO Add EnumDef
+        // TODO Add Attributes
         else if (member_of(variable_elements, child.name())) {
             process_variable(dmr, root_group, nullptr, child);
         }
@@ -713,17 +709,20 @@ void DMZ::process_chunk(DmrppCommon *dc, const xml_node &chunk)
  */
 void DMZ::process_cds_node(DmrppCommon *dc, const xml_node &chunks)
 {
-    bool cds_found = false;
-    for (auto child = chunks.child("dmrpp:chunkDimensionSizes"); child && !cds_found; child = child.next_sibling()) {
+    // FIXME bool cds_found = false;
+    // TODO there should be zero or one of these nodes
+    for (auto child = chunks.child("dmrpp:chunkDimensionSizes"); child /*&& !cds_found*/; child = child.next_sibling()) {
         if (is_eq(child.name(), "dmrpp:chunkDimensionSizes")) {
             string sizes = child.child_value();
             dc->parse_chunk_dimension_sizes(sizes);
-            cds_found = true;
+            // FIXME cds_found = true;
         }
     }
 
+#if 0
     if (!cds_found)
         throw BESInternalError("Could not find a chunkDimensionSizes node.", __FILE__, __LINE__);
+#endif
 }
 
 // a 'dmrpp:chunks' node has a chunkDimensionSizes node and then one or more chunks
@@ -768,14 +767,7 @@ void DMZ::load_chunks(BaseType *btp)
         chunks_found = true;
         process_chunks(btp, child);
     }
-#if 0
-    for (auto child = var_node.child("dmrpp:chunks"); child; child = child.next_sibling()) {
-        if (is_eq(child.name(), "dmrpp:chunks")) {
-            chunks_found++;
-            process_chunks(btp, child);
-        }
-    }
-#endif
+
     auto chunk = var_node.child("dmrpp:chunk");
     if (chunk) {
         auto *dc = dynamic_cast<DmrppCommon*>(btp);   // Get the Dmrpp common info
@@ -785,23 +777,75 @@ void DMZ::load_chunks(BaseType *btp)
         process_chunk(dc, chunk);
 
     }
-#if 0
-    for (auto chunk = var_node.child("dmrpp:chunk"); chunk; chunk = chunk.next_sibling()) {
-        if (is_eq(chunk.name(), "dmrpp:chunk")) {
-            auto *dc = dynamic_cast<DmrppCommon*>(btp);   // Get the Dmrpp common info
-            if (!dc)
-                throw BESInternalError("Could not cast BaseType to DmrppCommon in the DMR++ handler.", __FILE__, __LINE__);
-            chunk_found++;
-            process_chunk(dc, chunk);
-        }
-    }
-#endif
+
     // TODO Add support for compact. jhrg 10/25/21
     //  Compact data is stored in the XML using <dmrpp:compact> elements. These are at the same level
     //  as the <dmrpp:chunk> (and <Attribute>) elements.
 
     if ((chunks_found && chunk_found) || !(chunks_found || chunk_found))
         throw BESInternalError("Unsupported chunk information in the DMR++ data.", __FILE__, __LINE__);
+}
+
+void
+DMZ::load_everything_helper(Constructor *constructor)
+{
+    for (auto i = constructor->var_begin(), e = constructor->var_end(); i != e; ++i) {
+        if ((*i)->is_constructor_type()) {
+            load_everything_helper(static_cast<Constructor*>(*i));
+            load_attributes(*i);
+        }
+        else {
+            load_attributes(*i);
+            load_chunks(*i);
+        }
+    }
+
+    D4Group *group = dynamic_cast<D4Group*>(constructor);
+    if (!group)
+        return;
+
+    for (auto i = group->grp_begin(), e = group->grp_end(); i != e; ++i) {
+        if ((*i)->is_constructor_type()) {
+            load_everything_helper(static_cast<Constructor*>(*i));
+            load_attributes(*i);
+        }
+        else {
+            load_attributes(*i);
+            load_chunks(*i);
+        }
+    }
+}
+
+/**
+ * @brief Method that will enable testing
+ * @param dmr
+ */
+void
+DMZ::load_everything(DMR *dmr)
+{
+    // For each variable, load both attributes and chunks. Depth-first traversal
+    D4Group *root = dmr->root();
+    for (auto i = root->var_begin(), e = root->var_end(); i != e; ++i) {
+        if ((*i)->is_constructor_type()) {
+            load_everything_helper(static_cast<Constructor*>(*i));
+            load_attributes(*i);
+        }
+        else {
+            load_attributes(*i);
+            load_chunks(*i);
+        }
+    }
+
+    for (auto i = root->grp_begin(), e = root->grp_end(); i != e; ++i) {
+        if ((*i)->is_constructor_type()) {
+            load_everything_helper(static_cast<Constructor*>(*i));
+            load_attributes(*i);
+        }
+        else {
+            load_attributes(*i);
+            load_chunks(*i);
+        }
+    }
 }
 
 } // namespace dmrpp

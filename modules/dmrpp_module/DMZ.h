@@ -95,6 +95,9 @@ private:
 
     static void process_cds_node(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunks);
 
+    // This is for testing. jhrg 11/2/21
+    void load_everything_helper(libdap::Constructor *constructor);
+
     friend class DMZTest;
 
 public:
@@ -118,6 +121,9 @@ public:
 
     std::string get_attribute_xml(std::string path);
     std::string get_variable_xml(std::string path);
+
+    // These are for testing. jhrg 11/2/21
+    void load_everything(libdap::DMR *dmr);
 };
 
 } // namespace dmrpp
