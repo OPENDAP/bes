@@ -789,7 +789,7 @@ string cmdln(int argc, char *argv[]){
     return ss.str();
 }
 
-void inject_version_and_configuration(int argc, char **argv, shared_ptr<DMRpp> dmrpp){
+void inject_version_and_configuration(int argc, char **argv, DMRpp *dmrpp){
 
     // Build the version attributes for the DMR++
     D4Attribute *version = new D4Attribute("build_dmrpp_meta", StringToD4AttributeType("container"));
@@ -898,13 +898,13 @@ int main(int argc, char *argv[]) {
         // given HDF5 dataset
         if (!dmr_name.empty()) {
             // Get dmr:
-            shared_ptr<DMRpp> dmrpp(new DMRpp);
+            DMRpp dmrpp;
             DmrppTypeFactory dtf;
-            dmrpp->set_factory(&dtf);
+            dmrpp.set_factory(&dtf);
 
             ifstream in(dmr_name.c_str());
             D4ParserSax2 parser;
-            parser.intern(in, dmrpp.get(), false);
+            parser.intern(in, &dmrpp, false);
 
             // Open the hdf5 file
             file = H5Fopen(h5_file_name.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
@@ -914,14 +914,14 @@ int main(int argc, char *argv[]) {
             }
 
             if(add_production_metadata) {
-                inject_version_and_configuration(argc, argv, dmrpp);
+                inject_version_and_configuration(argc, argv, &dmrpp);
             }
 
             // iterate over all the variables in the DMR
-            get_chunks_for_all_variables(file, dmrpp->root());
+            get_chunks_for_all_variables(file, dmrpp.root());
 
             XMLWriter writer;
-            dmrpp->print_dmrpp(writer, url_name);
+            dmrpp.print_dmrpp(writer, url_name);
 
             cout << writer.get_doc();
         } else {
