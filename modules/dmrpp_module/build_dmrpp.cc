@@ -29,7 +29,9 @@
 #include <algorithm>
 
 #include <cstdlib>
+#include <libgen.h>
 
+#include <D4Attributes.h>
 #include <Array.h>
 
 //#define H5D_FRIEND		// Workaround, needed to use H5D_chunk_rec_t
@@ -784,6 +786,54 @@ static void get_chunks_for_all_variables(hid_t file, D4Group *group) {
         get_chunks_for_all_variables(file, *g++);
 }
 
+string cmdln(int argc, char *argv[]){
+    stringstream ss;
+    for(int i=0; i<argc; i++) {
+        if (i > 0)
+            ss << " ";
+        ss << argv[i];
+    }
+    return ss.str();
+}
+
+void inject_version_and_configuration(int argc, char **argv, DMRpp *dmrpp){
+
+    // Build the version attributes for the DMR++
+    D4Attribute *version = new D4Attribute("build_dmrpp_meta", StringToD4AttributeType("container"));
+
+    D4Attribute *build_dmrpp_version = new D4Attribute("build_dmrpp", StringToD4AttributeType("string"));
+    build_dmrpp_version->add_value(CVER);
+    version->attributes()->add_attribute_nocopy(build_dmrpp_version);
+
+    D4Attribute *bes_version = new D4Attribute("bes", StringToD4AttributeType("string"));
+    bes_version->add_value(CVER);
+    version->attributes()->add_attribute_nocopy(bes_version);
+
+    stringstream ldv;
+    ldv << libdap_name() << "-" << libdap_version();
+    D4Attribute *libdap4_version =  new D4Attribute("libdap", StringToD4AttributeType("string"));
+    libdap4_version->add_value(ldv.str());
+    version->attributes()->add_attribute_nocopy(libdap4_version);
+
+
+    if(!TheBESKeys::ConfigFile.empty()) {
+        // What is the BES configuration inplay?
+        D4Attribute *config = new D4Attribute("configuration", StringToD4AttributeType("string"));
+        config->add_value(TheBESKeys::TheKeys()->get_as_config());
+        version->attributes()->add_attribute_nocopy(config);
+    }
+   // How was build_dmrpp invoked>
+    D4Attribute *invoke = new D4Attribute("invocation", StringToD4AttributeType("string"));
+    invoke->add_value(cmdln(argc,argv));
+    version->attributes()->add_attribute_nocopy(invoke);
+
+    // Inject version and configuration attributes into DMR here.
+    D4Attributes *top_level_attrs = dmrpp->root()->attributes();
+    top_level_attrs->add_attribute_nocopy(version);
+}
+
+
+
 
 int main(int argc, char *argv[]) {
     string h5_file_name = "";
@@ -791,11 +841,17 @@ int main(int argc, char *argv[]) {
     string dmr_name = "";
     string url_name = "";
     int status = 0;
+    bool add_production_metadata = false;
 
-    GetOpt getopt(argc, argv, "c:f:r:u:dhv");
+    GetOpt getopt(argc, argv, "c:f:r:u:dhvVM");
     int option_char;
     while ((option_char = getopt()) != -1) {
         switch (option_char) {
+            case 'V':
+            {
+                cerr << basename(argv[0]) << "-" << CVER << " (bes-"<< CVER << ", " << libdap_name() << "-" << libdap_version() << ")" << endl;
+                return 0;
+            }
             case 'v':
                 verbose = true; // verbose hdf5 errors
                 break;
@@ -807,15 +863,23 @@ int main(int argc, char *argv[]) {
             case 'f':
                 h5_file_name = getopt.optarg;
                 break;
+
             case 'r':
                 dmr_name = getopt.optarg;
                 break;
+
             case 'u':
                 url_name = getopt.optarg;
                 break;
+
             case 'c':
                 TheBESKeys::ConfigFile = getopt.optarg;
                 break;
+
+            case 'M':
+                add_production_metadata = true;
+                break;
+
             case 'h':
                 cerr
                         << "build_dmrpp [-v] -c <bes.conf> -f <data file>  [-u <href url>] | build_dmrpp -f <data file> -r <dmr file> | build_dmrpp -h"
@@ -841,13 +905,13 @@ int main(int argc, char *argv[]) {
         // given HDF5 dataset
         if (!dmr_name.empty()) {
             // Get dmr:
-            unique_ptr<DMRpp> dmrpp(new DMRpp);
+            DMRpp dmrpp;
             DmrppTypeFactory dtf;
-            dmrpp->set_factory(&dtf);
+            dmrpp.set_factory(&dtf);
 
             ifstream in(dmr_name.c_str());
             D4ParserSax2 parser;
-            parser.intern(in, dmrpp.get(), false);
+            parser.intern(in, &dmrpp, false);
 
             // Open the hdf5 file
             file = H5Fopen(h5_file_name.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
@@ -856,11 +920,15 @@ int main(int argc, char *argv[]) {
                 return 1;
             }
 
+            if(add_production_metadata) {
+                inject_version_and_configuration(argc, argv, &dmrpp);
+            }
+
             // iterate over all the variables in the DMR
-            get_chunks_for_all_variables(file, dmrpp->root());
+            get_chunks_for_all_variables(file, dmrpp.root());
 
             XMLWriter writer;
-            dmrpp->print_dmrpp(writer, url_name);
+            dmrpp.print_dmrpp(writer, url_name);
 
             cout << writer.get_doc();
         } else {

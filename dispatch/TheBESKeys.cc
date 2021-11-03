@@ -523,6 +523,30 @@ string TheBESKeys::dump() const
 }
 
 
+string TheBESKeys::get_as_config() const
+{
+    stringstream ss;
+    ss << endl;
+    ss << "# TheBESKeys::get_as_config()" << endl;
+    if (d_the_keys && d_the_keys->size()) {
+        Keys_citer i = d_the_keys->begin();
+        Keys_citer ie = d_the_keys->end();
+        for (; i != ie; i++) {
+            string name = (*i).first;
+            vector<string> values = (*i).second;
+            bool first = true;
+            for(string value: values){
+                ss << name << (first?"=":"+=") << value << endl;
+                first = false;
+            }
+        }
+    }
+    else {
+        ss << "# TheBESKeys are empty()" << endl;
+    }
+    return ss.str();
+}
+
 
 #define MAP_SEPARATOR ":"
 
