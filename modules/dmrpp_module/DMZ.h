@@ -88,6 +88,7 @@ private:
     static void  process_dimension(libdap::D4Group *grp, const pugi::xml_node &dimension_node);
     static void process_variable(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Constructor *parent, const pugi::xml_node &var_node);
     static void process_dim(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Array *array, const pugi::xml_node &dim_node);
+    static void process_map(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Array *array, const pugi::xml_node &map_node);
     static libdap::BaseType *build_variable(libdap::DMR *dmr, libdap::D4Group *group, libdap::Type t, const pugi::xml_node &var_node);
     static libdap::BaseType *add_scalar_variable(libdap::DMR *dmr, libdap::D4Group *group, libdap::Constructor *parent, libdap::Type t, const pugi::xml_node &var_node);
     static libdap::BaseType *add_array_variable(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Constructor *parent, libdap::Type t, const pugi::xml_node &var_node);

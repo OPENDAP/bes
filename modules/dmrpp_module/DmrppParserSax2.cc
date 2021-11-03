@@ -548,7 +548,7 @@ bool DmrppParserSax2::process_map(const char *name, const xmlChar **attrs, int n
         map_source = top_group()->find_map_source(map_name);
 
     // Change: If the parser is in 'strict' mode (the default) and the Array named by
-    // the Map cannot be fond, it is an error. If 'strict' mode is false (permissive
+    // the Map cannot be found, it is an error. If 'strict' mode is false (permissive
     // mode), then this is not an error. However, the Array referenced by the Map will
     // be null. This is a change in the parser's behavior to accommodate requests for
     // Arrays that include Maps that do not also include the Map(s) in the request.

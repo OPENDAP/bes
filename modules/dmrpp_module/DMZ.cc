@@ -40,6 +40,7 @@
 #include <libdap/D4EnumDefs.h>
 #include <libdap/D4Dimensions.h>
 #include <libdap/D4Attributes.h>
+#include <libdap/D4Maps.h>
 #include <libdap/DMR.h>
 #include <libdap/util.h>        // is_simple_type()
 
@@ -253,6 +254,40 @@ void DMZ::process_dim(DMR *dmr, D4Group *grp, Array *array, const xml_node &dim_
     }
 }
 
+void DMZ::process_map(DMR *dmr, D4Group *grp, Array *array, const xml_node &map_node)
+{
+    assert(array->is_vector_type());
+
+    string name_value;
+    string size_value;
+    for (xml_attribute attr = map_node.first_attribute(); attr; attr = attr.next_attribute()) {
+        if (is_eq(attr.name(), "name")) {
+            name_value = attr.value();
+        }
+    }
+
+    // All map names are FQNs. If we get one that isn't, assume it's within the most current group.
+    if (name_value[0] != '/')
+        name_value = grp->FQN() + name_value;
+
+    // The array variable that holds the data for the Map
+    Array *map_source = dmr->root()->find_map_source(name_value);
+
+    // In the SAX2 parser, we had 'strict' and 'permissive' modes. For Maps, permissive
+    // allowed the DAP variable for a Map to be missing so that users could request just
+    // the data with the maps. I'm implementing that behavior. Below is the original
+    // comment from DmrppParserSAX2.cc. jhrg 11/3/21
+
+    // Change: If the parser is in 'strict' mode (the default) and the Array named by
+    // the Map cannot be fond, it is an error. If 'strict' mode is false (permissive
+    // mode), then this is not an error. However, the Array referenced by the Map will
+    // be null. This is a change in the parser's behavior to accommodate requests for
+    // Arrays that include Maps that do not also include the Map(s) in the request.
+    // See https://opendap.atlassian.net/browse/HYRAX-98. jhrg 4/13/16
+
+    array->maps()->add_map(new D4Map(name_value, map_source));
+}
+
 /// @brief Are any of the child nodes 'Dim' elements?
 static inline bool has_dim_nodes(const xml_node &var_node)
 {
@@ -413,6 +448,9 @@ BaseType *DMZ::add_array_variable(DMR *dmr, D4Group *group, Constructor *parent,
     for (auto child = var_node.first_child(); child; child = child.next_sibling()) {
         if (is_eq(child.name(), "Dim")) {
             process_dim(dmr, group, array, child);
+        }
+        else if (is_eq(child.name(), "Map")) {
+            process_map(dmr, group, array, child);
         }
     }
 
