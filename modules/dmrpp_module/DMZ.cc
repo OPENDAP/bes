@@ -89,7 +89,9 @@ void
 DMZ::parse_xml_doc(const std::string &file_name)
 {
     std::ifstream stream(file_name);
-    pugi::xml_parse_result result = d_xml_doc.load(stream);
+    // parse_ws_pcdata_single will include the space when it appears in a <Value> </Value>
+    // DAP Attribute element. jhrg 11/3/21
+    pugi::xml_parse_result result = d_xml_doc.load(stream,  pugi::parse_default | pugi::parse_ws_pcdata_single);
 
     if (!result)
         throw BESInternalError(string("DMR++ parse error: ").append(result.description()), __FILE__, __LINE__);
@@ -832,7 +834,6 @@ DMZ::load_everything_constructor(Constructor *constructor)
 
         if ((*i)->is_constructor_type()) {
             load_everything_constructor(static_cast<Constructor*>(*i));
-            // load_attributes(*i);
         }
         else {
             load_attributes(*i);
@@ -863,7 +864,6 @@ DMZ::load_everything_group(D4Group *group, bool is_root) {
 
         if ((*i)->is_constructor_type()) {
             load_everything_constructor(static_cast<Constructor*>(*i));
-            //load_attributes(*i);
         }
         else {
             load_attributes(*i);
@@ -874,11 +874,9 @@ DMZ::load_everything_group(D4Group *group, bool is_root) {
     for (auto i = group->grp_begin(), e = group->grp_end(); i != e; ++i) {
         if ((*i)->type() == dods_group_c) {
             load_everything_group(static_cast<D4Group*>(*i));
-            //load_attributes(*i);
         }
         else if ((*i)->is_constructor_type()) {
             load_everything_constructor(static_cast<Constructor*>(*i));
-            //load_attributes(*i);
         }
         else {
             load_attributes(*i);
@@ -889,11 +887,20 @@ DMZ::load_everything_group(D4Group *group, bool is_root) {
 
 /**
  * @brief Method that will enable testing
- * @param dmr
+ *
+ * Calling this once a 'thin DMR' has been built will load everything, but
+ * using the DMZ methods that support lazy loading, exercising them. The
+ * end result should be the same as calling the old SAX2 parser.
+ *
+ * This method assumes that the DMZ holds a parsed DMR++ XML document and
+ * that it matches the 'thin DMR' that is passed as the method's argument.
+ *
+ * @param dmr Load up all the variables in this DMR assuming it is a 'thin DMR'
  */
 void
 DMZ::load_everything(DMR *dmr)
 {
+    assert(d_xml_doc != nullptr);
     load_everything_group(dmr->root(), true);
 }
 
