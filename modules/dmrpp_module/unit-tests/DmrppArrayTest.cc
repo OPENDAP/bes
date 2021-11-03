@@ -106,8 +106,7 @@ public:
 
         DmrppArray tiat(string("foo"), new libdap::Byte("foo"));
         tiat.append_dim(target_file_size,"test_dim");
-        tiat.set_shuffle(false);
-        tiat.set_deflate(false);
+        tiat.set_filter("");
 
         vector<size_t> chunk_dim_sizes = {1};
         tiat.set_chunk_dimension_sizes(chunk_dim_sizes);
@@ -154,8 +153,7 @@ public:
 
         DmrppArray tiat(string("foo"), new libdap::Byte("foo"));
         tiat.append_dim(target_file_size,"test_dim");
-        tiat.set_shuffle(false);
-        tiat.set_deflate(false);
+        tiat.set_filter("");
 
         vector<size_t> chunk_dim_sizes = {1};
         tiat.set_chunk_dimension_sizes(chunk_dim_sizes);

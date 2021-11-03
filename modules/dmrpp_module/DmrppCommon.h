@@ -69,13 +69,11 @@ class DmrppCommon {
 
 	friend class DmrppCommonTest;
     friend class DmrppParserTest;
-    friend class DmrppTypeReadTest;
+    // friend class DmrppTypeReadTest;
 
 private:
-	bool d_deflate;
-	bool d_shuffle;
-	bool d_compact;
-	bool d_fletcher32;
+    bool d_compact;
+	std::string d_filters;
 	std::string d_byte_order;
 	std::vector<unsigned long long> d_chunk_dimension_sizes;
 	std::vector<std::shared_ptr<Chunk>> d_chunks;
@@ -90,10 +88,8 @@ private:
 
 protected:
     void m_duplicate_common(const DmrppCommon &dc) {
-    	d_deflate = dc.d_deflate;
-    	d_shuffle = dc.d_shuffle;
     	d_compact = dc.d_compact;
-        d_fletcher32 = dc.d_fletcher32;
+        d_filters = dc.d_filters;
     	d_chunk_dimension_sizes = dc.d_chunk_dimension_sizes;
     	d_chunks = dc.d_chunks;
     	d_byte_order = dc.d_byte_order;
@@ -119,13 +115,12 @@ public:
     static std::string d_dmrpp_ns;      ///< The DMR++ XML namespace
     static std::string d_ns_prefix;     ///< The XML namespace prefix to use
 
-    DmrppCommon() : d_deflate(false), d_shuffle(false), d_compact(false), d_fletcher32(false), d_byte_order(""),
-    d_twiddle_bytes(false), d_chunks_loaded(false), d_attributes_loaded(false)
+    DmrppCommon() : d_compact(false), d_twiddle_bytes(false), d_chunks_loaded(false), d_attributes_loaded(false)
     {
     }
 
-    DmrppCommon(std::shared_ptr<DMZ> dmz) : d_deflate(false), d_shuffle(false), d_compact(false), d_fletcher32(false), d_byte_order(""),
-    d_twiddle_bytes(false), d_chunks_loaded(false), d_attributes_loaded(false), d_dmz(dmz)
+    DmrppCommon(std::shared_ptr<DMZ> dmz) : d_compact(false), d_twiddle_bytes(false), d_chunks_loaded(false),
+        d_attributes_loaded(false), d_dmz(dmz)
     {
     }
 
@@ -137,33 +132,17 @@ public:
     virtual ~DmrppCommon()= default;
 
     /// @brief Returns true if this object utilizes deflate compression.
-    virtual bool is_deflate_compression() const {
-        return d_deflate;
+    virtual std::string get_filters() const {
+        return d_filters;
     }
 
     /// @brief Set the value of the deflate property
-    void set_deflate(bool value) {
-        d_deflate = value;
+    void set_filter(const std::string &value) {
+        d_filters = value;
     }
 
-    /// @brief Returns true if this object utilizes fletcher32 compression.
-    virtual bool is_fletcher32_compression() const {
-        return d_fletcher32;
-    }
-
-    /// @brief Set the value of the fletcher32 property
-    void set_fletcher32(bool value) {
-        d_fletcher32 = value;
-    }
-
-    /// @brief Returns true if this object utilizes shuffle compression.
-    virtual bool is_shuffle_compression() const {
-        return d_shuffle;
-    }
-
-    /// @brief Set the value of the shuffle property
-    void set_shuffle(bool value) {
-        d_shuffle = value;
+    virtual bool is_filters_empty() const {
+        return d_filters.empty();
     }
 
     /// @brief Returns true if this object utilizes COMPACT layout.
@@ -266,7 +245,7 @@ public:
     virtual void dump(std::ostream & strm) const;
 };
 
-} // namepsace dmrpp
+} // namespace dmrpp
 
 #endif // _dmrpp_common_h
 

@@ -141,33 +141,12 @@ void DmrppCommon::parse_chunk_dimension_sizes(const string &chunk_dims_string)
  * @brief Parses the text content of the XML element h4:chunkDimensionSizes
  * into the internal vector<unsigned int> representation.
  *
- * @param compression_type_string One of "deflate" or "shuffle."
+ * @param compression_type_string
  */
 void DmrppCommon::ingest_compression_type(const string &compression_type_string)
 {
     if (compression_type_string.empty()) return;
-
-    // Clear previous state
-    d_deflate = false;
-    d_shuffle = false;
-    d_fletcher32 = false;
-
-    string deflate("deflate");
-    string shuffle("shuffle");
-    string fletcher32("fletcher32");
-
-    // Process content
-    if (compression_type_string.find(deflate) != string::npos) {
-        d_deflate = true;
-    }
-
-    if (compression_type_string.find(shuffle) != string::npos) {
-        d_shuffle = true;
-    }
-
-    if (compression_type_string.find(fletcher32) != string::npos) {
-        d_fletcher32 = true;
-    }
+    d_filters = compression_type_string;
 }
 
 /**
@@ -338,24 +317,8 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
     if (xmlTextWriterStartElementNS(xml.get_writer(), (const xmlChar*)name_space.c_str(), (const xmlChar*) "chunks", NULL) < 0)
         throw BESInternalError("Could not start chunks element.", __FILE__, __LINE__);
 
-    // TODO We will want to capture the order the filters are applied. For now, assume
-    //  a 'sane' order for our support of shuffle, deflate, and fletcher32. jhrg 10/8/21
-    string compression = "";
-
-    if (is_deflate_compression())
-        compression.append("deflate ");
-
-    if (is_shuffle_compression())
-        compression.append("shuffle ");
-
-    if (is_fletcher32_compression())
-        compression.append("fletcher32 ");
-
-    //trimming trailing space from compression (aka filter) string
-    compression = compression.substr(0, compression.length() - 1);
-
-    if (!compression.empty())
-        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "compressionType", (const xmlChar*) compression.c_str()) < 0)
+    if (!d_filters.empty())
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*) "compressionType", (const xmlChar*) d_filters.c_str()) < 0)
             throw BESInternalError("Could not write compression attribute.", __FILE__, __LINE__);
 
 
@@ -475,8 +438,8 @@ void DmrppCommon::print_dmrpp(XMLWriter &xml, bool constrained /*false*/)
 
 void DmrppCommon::dump(ostream & strm) const
 {
-    strm << BESIndent::LMarg << "is_deflate:             " << (is_deflate_compression() ? "true" : "false") << endl;
-    strm << BESIndent::LMarg << "is_shuffle_compression: " << (is_shuffle_compression() ? "true" : "false") << endl;
+    strm << BESIndent::LMarg << "is_filters_empty:             " << (is_filters_empty() ? "true" : "false") << endl;
+    strm << BESIndent::LMarg << "filters: " << (d_filters.c_str()) << endl;
 
     const vector<unsigned long long> &chunk_dim_sizes = get_chunk_dimension_sizes();
 

@@ -457,8 +457,7 @@ public:
 
     virtual void read_chunk();
 
-    virtual void inflate_chunk(bool deflate, bool shuffle, bool fletcher32, unsigned long long chunk_size, unsigned long long elem_width);
-    //virtual void fletcher32_chunk(unsigned long long chunk_size, unsigned long long elem_width);
+    virtual void filter_chunk(const std::string &filters, unsigned long long chunk_size, unsigned long long elem_width);
 
     virtual bool get_is_read() { return d_is_read; }
     virtual void set_is_read(bool state) { d_is_read = state; }

@@ -91,7 +91,7 @@ void BESVersionResponseHandler::execute(BESDataHandlerInterface &dhi)
     }
     info->add_tag("Administrator", admin_email);
 
-    info->add_library( PACKAGE_NAME, PACKAGE_VERSION);
+    info->add_library( PACKAGE_NAME, CVER);
 
     BESRequestHandlerList::TheList()->execute_all(dhi);
 

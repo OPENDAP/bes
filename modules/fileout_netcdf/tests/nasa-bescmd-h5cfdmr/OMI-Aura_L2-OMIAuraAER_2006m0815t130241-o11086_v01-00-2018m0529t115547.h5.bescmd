@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="fnc4test" space="catalog">/data/OMI-Aura_L2-OMIAuraAER_2006m0815t130241-o11086_v01-00-2018m0529t115547.h5</setContainer>
+    <define name="d">
+    <container name="fnc4test" />
+    </define>
+    <get type="dap" definition="d" returnAs="netcdf-4"/>
+</request>

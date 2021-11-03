@@ -1,0 +1,72 @@
+netcdf test {
+dimensions:
+	OMI_Column_Amount_O3_lat = 720 ;
+	OMI_Column_Amount_O3_lon = 1440 ;
+variables:
+	float OMI_Column_Amount_O3_Data_Fields_ColumnAmountO3(OMI_Column_Amount_O3_lat, OMI_Column_Amount_O3_lon) ;
+		OMI_Column_Amount_O3_Data_Fields_ColumnAmountO3:_FillValue = -1.267651e+30f ;
+		OMI_Column_Amount_O3_Data_Fields_ColumnAmountO3:Units = "DU" ;
+		OMI_Column_Amount_O3_Data_Fields_ColumnAmountO3:Title = "Best Total Ozone Solution" ;
+		OMI_Column_Amount_O3_Data_Fields_ColumnAmountO3:UniqueFieldDefinition = "TOMS-OMI-Shared" ;
+		OMI_Column_Amount_O3_Data_Fields_ColumnAmountO3:ScaleFactor = 1. ;
+		OMI_Column_Amount_O3_Data_Fields_ColumnAmountO3:Offset = 0. ;
+		OMI_Column_Amount_O3_Data_Fields_ColumnAmountO3:ValidRange = 50.f, 700.f ;
+		OMI_Column_Amount_O3_Data_Fields_ColumnAmountO3:MissingValue = -1.267651e+30f ;
+		OMI_Column_Amount_O3_Data_Fields_ColumnAmountO3:origname = "ColumnAmountO3" ;
+		OMI_Column_Amount_O3_Data_Fields_ColumnAmountO3:fullnamepath = "/OMI_Column_Amount_O3/Data_Fields/ColumnAmountO3" ;
+	float OMI_Column_Amount_O3_Data_Fields_Reflectivity331(OMI_Column_Amount_O3_lat, OMI_Column_Amount_O3_lon) ;
+		OMI_Column_Amount_O3_Data_Fields_Reflectivity331:_FillValue = -1.267651e+30f ;
+		OMI_Column_Amount_O3_Data_Fields_Reflectivity331:Units = "%" ;
+		OMI_Column_Amount_O3_Data_Fields_Reflectivity331:Title = "Effective Surface Reflectivity at 331 nm" ;
+		OMI_Column_Amount_O3_Data_Fields_Reflectivity331:UniqueFieldDefinition = "TOMS-OMI-Shared" ;
+		OMI_Column_Amount_O3_Data_Fields_Reflectivity331:ScaleFactor = 1. ;
+		OMI_Column_Amount_O3_Data_Fields_Reflectivity331:Offset = 0. ;
+		OMI_Column_Amount_O3_Data_Fields_Reflectivity331:ValidRange = -15.f, 115.f ;
+		OMI_Column_Amount_O3_Data_Fields_Reflectivity331:MissingValue = -1.267651e+30f ;
+		OMI_Column_Amount_O3_Data_Fields_Reflectivity331:origname = "Reflectivity331" ;
+		OMI_Column_Amount_O3_Data_Fields_Reflectivity331:fullnamepath = "/OMI_Column_Amount_O3/Data_Fields/Reflectivity331" ;
+	float OMI_Column_Amount_O3_Data_Fields_UVAerosolIndex(OMI_Column_Amount_O3_lat, OMI_Column_Amount_O3_lon) ;
+		OMI_Column_Amount_O3_Data_Fields_UVAerosolIndex:_FillValue = -1.267651e+30f ;
+		OMI_Column_Amount_O3_Data_Fields_UVAerosolIndex:Title = "UV Aerosol Index" ;
+		OMI_Column_Amount_O3_Data_Fields_UVAerosolIndex:UniqueFieldDefinition = "TOMS-OMI-Shared" ;
+		OMI_Column_Amount_O3_Data_Fields_UVAerosolIndex:ScaleFactor = 1. ;
+		OMI_Column_Amount_O3_Data_Fields_UVAerosolIndex:Offset = 0. ;
+		OMI_Column_Amount_O3_Data_Fields_UVAerosolIndex:ValidRange = -30.f, 30.f ;
+		OMI_Column_Amount_O3_Data_Fields_UVAerosolIndex:MissingValue = -1.267651e+30f ;
+		OMI_Column_Amount_O3_Data_Fields_UVAerosolIndex:Units = "NoUnits" ;
+		OMI_Column_Amount_O3_Data_Fields_UVAerosolIndex:origname = "UVAerosolIndex" ;
+		OMI_Column_Amount_O3_Data_Fields_UVAerosolIndex:fullnamepath = "/OMI_Column_Amount_O3/Data_Fields/UVAerosolIndex" ;
+	double OMI_Column_Amount_O3_lat(OMI_Column_Amount_O3_lat) ;
+		OMI_Column_Amount_O3_lat:long_name = "latitude " ;
+		OMI_Column_Amount_O3_lat:units = "degrees_north " ;
+		OMI_Column_Amount_O3_lat:origname = "lat" ;
+		OMI_Column_Amount_O3_lat:fullnamepath = "/OMI_Column_Amount_O3/lat" ;
+	double OMI_Column_Amount_O3_lon(OMI_Column_Amount_O3_lon) ;
+		OMI_Column_Amount_O3_lon:long_name = "longitude " ;
+		OMI_Column_Amount_O3_lon:units = "degrees_east " ;
+		OMI_Column_Amount_O3_lon:origname = "lon" ;
+		OMI_Column_Amount_O3_lon:fullnamepath = "/OMI_Column_Amount_O3/lon" ;
+
+// global attributes:
+		:OrbitNumber = 7510, 7511, 7512, 7513, 7514, 7515, 7516, 7517, 7518, 7519, 7520, 7521, 7522, 7523, 7524, 7525, 7526, 7527, 7528, 7529, 7530, 7531, 7532, 7533, 7534, 7535, 7536, 7537, 7538, 7539, 7540, 7541, 7542, 7543, 7544, 7545, 7546, 7547, 7548, 7549, 7550, 7551, 7552, 7553, 7554 ;
+		:OrbitPeriod = 5933., 5933., 5933., 5932., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5932., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933., 5933. ;
+		:InstrumentName = "OMI" ;
+		:ProcessLevel = "3e" ;
+		:GranuleMonth = 12 ;
+		:GranuleDay = 14 ;
+		:GranuleYear = 2005 ;
+		:GranuleDayOfYear = 348 ;
+		:TAI93At0zOfGranule = 408672005. ;
+		:PGEVersion = "0.9.26" ;
+		:StartUTC = "removed date-time" ;
+		:EndUTC = "removed date-time" ;
+		:Period = "Daily" ;
+		:OMI_Column_Amount_O3.GCTPProjectionCode = 0 ;
+		:OMI_Column_Amount_O3.Projection = "Geographic" ;
+		:OMI_Column_Amount_O3.GridOrigin = "Center" ;
+		:OMI_Column_Amount_O3.NumberOfLongitudesInGrid = 1440 ;
+		:OMI_Column_Amount_O3.NumberOfLatitudesInGrid = 720 ;
+		:OMI_Column_Amount_O3.fullnamepath = "/OMI_Column_Amount_O3" ;
+		:history = "removed date-timex OMI_L3.nc4.h5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"OMI_L3.nc4.h5\"}]}]" ;
+}

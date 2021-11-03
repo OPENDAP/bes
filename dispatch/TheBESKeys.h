@@ -177,6 +177,7 @@ public:
     virtual void dump(std::ostream &strm) const;
     virtual std::string dump() const;
 
+    std::string get_as_config() const;
     /**
      * TheBESKeys::ConfigFile provides a way for the daemon and test code to
      * set the location of a particular configuration file.
