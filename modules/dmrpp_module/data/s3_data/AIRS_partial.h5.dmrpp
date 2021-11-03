@@ -17,7 +17,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CO_VMR_TqJ_D_ct</Value>
         </Attribute>
-        <dmrpp:chunks compressionType="deflate shuffle">
+        <dmrpp:chunks compressionType="shuffle deflate">
             <dmrpp:chunkDimensionSizes>24 180 360</dmrpp:chunkDimensionSizes>
             <dmrpp:chunk offset="118174" nBytes="850912" chunkPositionInArray="[0,0,0]"/>
         </dmrpp:chunks>
@@ -37,7 +37,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/ClrOLR_A</Value>
         </Attribute>
-        <dmrpp:chunks compressionType="deflate shuffle">
+        <dmrpp:chunks compressionType="shuffle deflate">
             <dmrpp:chunkDimensionSizes>180 360</dmrpp:chunkDimensionSizes>
             <dmrpp:chunk offset="3416" nBytes="71704" chunkPositionInArray="[0,0]"/>
         </dmrpp:chunks>
@@ -58,7 +58,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/CoarseCloudTemp_TqJ_A_max</Value>
         </Attribute>
-        <dmrpp:chunks compressionType="deflate shuffle">
+        <dmrpp:chunks compressionType="shuffle deflate">
             <dmrpp:chunkDimensionSizes>3 180 360</dmrpp:chunkDimensionSizes>
             <dmrpp:chunk offset="4371230" nBytes="229580" chunkPositionInArray="[0,0,0]"/>
         </dmrpp:chunks>
@@ -79,7 +79,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/GPHeight_MW_A_sdev</Value>
         </Attribute>
-        <dmrpp:chunks compressionType="deflate shuffle">
+        <dmrpp:chunks compressionType="shuffle deflate">
             <dmrpp:chunkDimensionSizes>12 90 180</dmrpp:chunkDimensionSizes>
             <dmrpp:chunk offset="83109" nBytes="3421" chunkPositionInArray="[0,0,0]"/>
             <dmrpp:chunk offset="86530" nBytes="3421" chunkPositionInArray="[0,0,180]"/>
@@ -107,7 +107,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/H2O_MMR_Lyr_A_err</Value>
         </Attribute>
-        <dmrpp:chunks compressionType="deflate shuffle">
+        <dmrpp:chunks compressionType="shuffle deflate">
             <dmrpp:chunkDimensionSizes>12 180 360</dmrpp:chunkDimensionSizes>
             <dmrpp:chunk offset="3524111" nBytes="839070" chunkPositionInArray="[0,0,0]"/>
         </dmrpp:chunks>
@@ -128,7 +128,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/RelHum_liquid_A_max</Value>
         </Attribute>
-        <dmrpp:chunks compressionType="deflate shuffle">
+        <dmrpp:chunks compressionType="shuffle deflate">
             <dmrpp:chunkDimensionSizes>12 180 360</dmrpp:chunkDimensionSizes>
             <dmrpp:chunk offset="976763" nBytes="770210" chunkPositionInArray="[0,0,0]"/>
         </dmrpp:chunks>
@@ -148,7 +148,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/SurfPres_Forecast_A_sdev</Value>
         </Attribute>
-        <dmrpp:chunks compressionType="deflate shuffle">
+        <dmrpp:chunks compressionType="shuffle deflate">
             <dmrpp:chunkDimensionSizes>180 360</dmrpp:chunkDimensionSizes>
             <dmrpp:chunk offset="3436048" nBytes="80402" chunkPositionInArray="[0,0]"/>
         </dmrpp:chunks>
@@ -169,7 +169,7 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/Temperature_A_err</Value>
         </Attribute>
-        <dmrpp:chunks compressionType="deflate shuffle">
+        <dmrpp:chunks compressionType="shuffle deflate">
             <dmrpp:chunkDimensionSizes>12 90 180</dmrpp:chunkDimensionSizes>
             <dmrpp:chunk offset="1754670" nBytes="206481" chunkPositionInArray="[0,0,0]"/>
             <dmrpp:chunk offset="1961151" nBytes="208088" chunkPositionInArray="[0,0,180]"/>

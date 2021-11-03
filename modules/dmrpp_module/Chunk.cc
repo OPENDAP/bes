@@ -35,6 +35,7 @@
 #include <BESSyntaxUserError.h>
 #include <BESForbiddenError.h>
 #include <BESContextManager.h>
+#include <BESUtil.h>
 
 #include "xml2json/include/xml2json.hpp"
 
@@ -571,6 +572,7 @@ checksum_fletcher32(const void *_data, size_t _len)
     return ((sum2 << 16) | sum1);
 } /* end H5_checksum_fletcher32() */
 
+#if 0
 /**
  * @brief Decompress data in the chunk, managing the Chunk's data buffers
  *
@@ -676,6 +678,93 @@ void Chunk::inflate_chunk(bool deflate, bool shuffle, bool fletcher32, unsigned 
         }
     }
 #endif
+}
+#endif
+
+/**
+ * @brief filter data in the chunk
+ *
+ * This method tracks if a chunk has already been decompressed, so, like read_chunk()
+ * it can be called for a chunk that has already been decompressed without error.
+ *
+ * @param filters Space separated list of filters
+ * @param chunk_size The _expected_ chunk size, in elements; used to allocate storage
+ * @param elem_width The number of bytes per element
+ */
+void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, unsigned long long elem_width) {
+
+    if (d_is_inflated)
+        return;
+
+    chunk_size *= elem_width;
+
+    vector<string> filter_array = BESUtil::split(filters, ' ' );
+
+    for (auto i = filter_array.rbegin(), e = filter_array.rend(); i != e; ++i){
+        string filter = *i;
+
+        if (filter == "deflate"){
+            char *dest = new char[chunk_size];
+            try {
+                inflate(dest, chunk_size, get_rbuf(), get_rbuf_size());
+                // This replaces (and deletes) the original read_buffer with dest.
+#if DMRPP_USE_SUPER_CHUNKS
+                set_read_buffer(dest, chunk_size, chunk_size, true);
+#else
+                set_rbuf(dest, chunk_size);
+#endif
+            }
+            catch (...) {
+                delete[] dest;
+                throw;
+            }
+        }// end if(filter == deflate)
+        else if (filter == "shuffle"){
+            // The internal buffer is chunk's full size at this point.
+            char *dest = new char[get_rbuf_size()];
+            try {
+                unshuffle(dest, get_rbuf(), get_rbuf_size(), elem_width);
+#if DMRPP_USE_SUPER_CHUNKS
+                set_read_buffer(dest,get_rbuf_size(),get_rbuf_size(), true);
+#else
+                set_rbuf(dest, get_rbuf_size());
+#endif
+            }
+            catch (...) {
+                delete[] dest;
+                throw;
+            }
+        }//end if(filter == shuffle)
+        else if (filter == "fletcher32"){
+            // Compute the fletcher32 checksum and compare to the value of the last four bytes of the chunk.
+#if ACTUALLY_USE_FLETCHER32_CHECKSUM
+            // Get the last four bytes of chunk's data (which is a byte array) and treat that as the four-byte
+            // integer fletcher32 checksum. jhrg 10/15/21
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-align"
+            assert(get_rbuf_size() - FLETCHER32_CHECKSUM >= 0);
+            //assert((get_rbuf_size() - FLETCHER32_CHECKSUM) % 4 == 0); //probably wrong
+            auto f_checksum = *(uint32_t *)(get_rbuf() + get_rbuf_size() - FLETCHER32_CHECKSUM);
+#pragma GCC diagnostic pop
+
+            // If the code should actually use the checksum (they can be expensive to compute), does it match
+            // with once computed on the data actually read? Maybe make this a bes.conf parameter?
+            // jhrg 10/15/21
+            uint32_t calc_checksum = checksum_fletcher32((const void *)get_rbuf(), get_rbuf_size() - FLETCHER32_CHECKSUM);
+            if (f_checksum != calc_checksum) {
+                throw BESInternalError("Data read from the DMR++ handler did not match the Fletcher32 checksum.",
+                                       __FILE__, __LINE__);
+            }
+#endif
+            if (d_read_buffer_size > FLETCHER32_CHECKSUM)
+                d_read_buffer_size -= FLETCHER32_CHECKSUM;
+            else {
+                throw BESInternalError("Data filtered with fletcher32 don't include the four-byte checksum.",
+                                       __FILE__, __LINE__);
+            }
+        } //end if(filter == fletcher32)
+    }// end for loop
+    d_is_inflated = true;
 }
 
 /**

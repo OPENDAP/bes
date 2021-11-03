@@ -72,10 +72,13 @@ class DmrppCommon {
     friend class DmrppTypeReadTest;
 
 private:
+#if 0
 	bool d_deflate;
 	bool d_shuffle;
-	bool d_compact;
 	bool d_fletcher32;
+#endif
+    bool d_compact;
+	std::string d_filters;
 	std::string d_byte_order;
 	std::vector<unsigned long long> d_chunk_dimension_sizes;
 	std::vector<std::shared_ptr<Chunk>> d_chunks;
@@ -83,10 +86,11 @@ private:
 
 protected:
     void m_duplicate_common(const DmrppCommon &dc) {
-    	d_deflate = dc.d_deflate;
-    	d_shuffle = dc.d_shuffle;
+    	//d_deflate = dc.d_deflate;
+    	//d_shuffle = dc.d_shuffle;
     	d_compact = dc.d_compact;
-        d_fletcher32 = dc.d_fletcher32;
+        //d_fletcher32 = dc.d_fletcher32;
+        d_filters = dc.d_filters;
     	d_chunk_dimension_sizes = dc.d_chunk_dimension_sizes;
     	d_chunks = dc.d_chunks;
     	d_byte_order = dc.d_byte_order;
@@ -106,7 +110,13 @@ public:
     static std::string d_dmrpp_ns;       ///< The DMR++ XML namespace
     static std::string d_ns_prefix;      ///< The XML namespace prefix to use
 
-    DmrppCommon() : d_deflate(false), d_shuffle(false), d_fletcher32(false), d_compact(false),d_byte_order(""), d_twiddle_bytes(false)
+#if 0
+    DmrppCommon() : d_deflate(false), d_shuffle(false), d_fletcher32(false), d_filters(""), d_compact(false),d_byte_order(""), d_twiddle_bytes(false)
+    {
+    }
+#endif
+
+    DmrppCommon() : d_filters(""), d_compact(false),d_byte_order(""), d_twiddle_bytes(false)
     {
     }
 
@@ -117,6 +127,7 @@ public:
 
     virtual ~DmrppCommon()= default;
 
+#if 0
     /// @brief Returns true if this object utilizes deflate compression.
     virtual bool is_deflate_compression() const {
         return d_deflate;
@@ -145,6 +156,21 @@ public:
     /// @brief Set the value of the shuffle property
     void set_shuffle(bool value) {
         d_shuffle = value;
+    }
+#endif
+
+    /// @brief Returns true if this object utilizes deflate compression.
+    virtual std::string get_filters() const {
+        return d_filters;
+    }
+
+    /// @brief Set the value of the deflate property
+    void set_filter(const std::string &value) {
+        d_filters = value;
+    }
+
+    virtual bool is_filters_empty() const {
+        return d_filters.empty();
     }
 
     /// @brief Returns true if this object utilizes COMPACT layout.

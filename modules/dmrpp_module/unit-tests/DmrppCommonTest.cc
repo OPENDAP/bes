@@ -210,7 +210,7 @@ public:
     {
         try {
             d_dc.ingest_compression_type("deflate");
-            CPPUNIT_ASSERT(d_dc.d_deflate == true);
+            CPPUNIT_ASSERT(d_dc.d_filters == "deflate");
         }
         catch(BESError &be){
             stringstream msg;
@@ -220,7 +220,7 @@ public:
         }
         catch(std::exception &se){
             stringstream msg;
-            msg << prolog << "Caught std::excpetion! Message: " << se.what();
+            msg << prolog << "Caught std::exception! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
         }
@@ -233,7 +233,7 @@ public:
     {
         try {
             d_dc.ingest_compression_type("shuffle");
-            CPPUNIT_ASSERT(d_dc.d_shuffle == true);
+            CPPUNIT_ASSERT(d_dc.d_filters == "shuffle");
         }
         catch(BESError &be){
             stringstream msg;
@@ -243,7 +243,7 @@ public:
         }
         catch(std::exception &se){
             stringstream msg;
-            msg << prolog << "Caught std::excpetion! Message: " << se.what();
+            msg << prolog << "Caught std::exception! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
         }
@@ -256,8 +256,7 @@ public:
     {
         try {
             d_dc.ingest_compression_type("");
-            CPPUNIT_ASSERT(d_dc.d_deflate == false);
-            CPPUNIT_ASSERT(d_dc.d_shuffle == false);
+            CPPUNIT_ASSERT(d_dc.d_filters == "");
         }
         catch(BESError &be){
             stringstream msg;
@@ -279,11 +278,8 @@ public:
     void test_ingest_compression_type_4()
     {
         try {
-            d_dc.d_deflate = true;
-            d_dc.d_shuffle = true;
-            d_dc.ingest_compression_type("");
-            CPPUNIT_ASSERT(d_dc.d_deflate == true);
-            CPPUNIT_ASSERT(d_dc.d_shuffle == true);
+            d_dc.ingest_compression_type("fletcher32");
+            CPPUNIT_ASSERT(d_dc.d_filters == "fletcher32");
         }
         catch(BESError &be){
             stringstream msg;
@@ -293,7 +289,7 @@ public:
         }
         catch(std::exception &se){
             stringstream msg;
-            msg << prolog << "Caught std::excpetion! Message: " << se.what();
+            msg << prolog << "Caught std::exception! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
         }
@@ -301,31 +297,6 @@ public:
             CPPUNIT_FAIL(prolog + "Caught unknown exception.");
         }
     }
-
-    void test_ingest_compression_type_5()
-    {
-        try {
-            d_dc.ingest_compression_type("foobar");
-            CPPUNIT_ASSERT(d_dc.d_deflate == false);
-            CPPUNIT_ASSERT(d_dc.d_shuffle == false);
-        }
-        catch(BESError &be){
-            stringstream msg;
-            msg << prolog << "Caught BESError! Message: " << be.get_verbose_message();
-            cerr << msg.str() << endl;
-            CPPUNIT_FAIL(msg.str());
-        }
-        catch(std::exception &se){
-            stringstream msg;
-            msg << prolog << "Caught std::excpetion! Message: " << se.what();
-            cerr << msg.str() << endl;
-            CPPUNIT_FAIL(msg.str());
-        }
-        catch(...){
-            CPPUNIT_FAIL(prolog + "Caught unknown exception.");
-        }
-    }
-
     // add_chunk(const string &data_url, unsigned long long size, unsigned long long offset, string position_in_array)
 
     void test_add_chunk_1()
@@ -474,7 +445,7 @@ public:
         try {
             string url_str = "http://url";
             shared_ptr<http::url> target_url(new http::url(url_str));
-            d_dc.d_deflate = true;
+            d_dc.d_filters = "deflate";
             d_dc.parse_chunk_dimension_sizes("51 17");
             d_dc.add_chunk(target_url, "", 100, 200, "[10,20]");
             int size = d_dc.add_chunk(target_url, "", 100, 300, "[20,30]");
@@ -510,8 +481,7 @@ public:
         try {
             string url_str = "http://url";
             shared_ptr<http::url> target_url(new http::url(url_str));
-            d_dc.d_deflate = true;
-            d_dc.d_shuffle = true;
+            d_dc.d_filters = "deflate shuffle";
             d_dc.parse_chunk_dimension_sizes("51 17");
             d_dc.add_chunk(target_url, "", 100, 200, "[10,20]");
             int size = d_dc.add_chunk(target_url, "", 100, 300, "[20,30]");
@@ -547,8 +517,7 @@ public:
         try {
             string url_str = "http://url";
             shared_ptr<http::url> target_url(new http::url(url_str));
-            d_dc.d_deflate = false;
-            d_dc.d_shuffle = true;
+            d_dc.d_filters = "shuffle";
             d_dc.parse_chunk_dimension_sizes("51 17");
             d_dc.add_chunk(target_url, "", 100, 200, "[10,20]");
             int size = d_dc.add_chunk(target_url, "", 100, 300, "[20,30]");
@@ -591,7 +560,6 @@ CPPUNIT_TEST_SUITE( DmrppCommonTest );
         CPPUNIT_TEST(test_ingest_compression_type_2);
         CPPUNIT_TEST(test_ingest_compression_type_3);
         CPPUNIT_TEST(test_ingest_compression_type_4);
-        CPPUNIT_TEST(test_ingest_compression_type_5);
 
         CPPUNIT_TEST(test_add_chunk_1);
         CPPUNIT_TEST(test_add_chunk_2);
