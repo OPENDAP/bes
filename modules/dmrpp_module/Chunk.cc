@@ -119,6 +119,7 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
         // which maybe in this error text, may have < or > chars in them. the XML parser
         // will be sad if that happens. jhrg 12/30/19
         try {
+            // TODO replace this with pugixml. jhrg 11/3/21
             string json_message = xml2json(xml_message.c_str());
             rapidjson::Document d;
             d.Parse(json_message.c_str());

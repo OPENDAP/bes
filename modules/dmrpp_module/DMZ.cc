@@ -82,6 +82,12 @@ static const string dmrpp_namespace = "http://xml.opendap.org/dap/dmrpp/1.0.0#";
  */
 DMZ::DMZ(const string &file_name)
 {
+    parse_xml_doc(file_name);
+}
+
+void
+DMZ::parse_xml_doc(const std::string &file_name)
+{
     std::ifstream stream(file_name);
     pugi::xml_parse_result result = d_xml_doc.load(stream);
 
@@ -634,13 +640,38 @@ xml_node DMZ::get_variable_xml_node(BaseType *btp)
  *
  * @param btp The variable
  */
-void DMZ::load_attributes(BaseType *btp)
+void
+DMZ::load_attributes(BaseType *btp)
 {
     // goto the DOM tree node for this variable
     xml_node var_node = get_variable_xml_node(btp);
     if (var_node == nullptr)
         throw BESInternalError("Could not find location of variable in the DMR++ XML document.", __FILE__, __LINE__);
 
+    load_attributes(btp, var_node);
+#if 0
+    // Attributes for this node will be held in the var_node siblings.
+    // NB: Make an explict call to the BaseType implementation in case
+    // the attributes() method is specialized for this DMR++ code to
+    // trigger a lazy-load of the variables' attributes. jhrg 10/24/21
+    // Could also use BaseType::set_attributes(). jhrg
+    auto attributes = btp->BaseType::attributes(); // new D4Attributes();
+    for (auto child = var_node.first_child(); child; child = child.next_sibling()) {
+        if (is_eq(child.name(), "Attribute")) {
+            process_attribute(attributes, child);
+        }
+    }
+#endif
+}
+
+/**
+ * @brief Skip looking for the location in the DOM tree of the DAP Attributes
+ * @param btp
+ * @param var_node
+ */
+void
+DMZ::load_attributes(BaseType *btp, xml_node var_node)
+{
     // Attributes for this node will be held in the var_node siblings.
     // NB: Make an explict call to the BaseType implementation in case
     // the attributes() method is specialized for this DMR++ code to
@@ -786,13 +817,53 @@ void DMZ::load_chunks(BaseType *btp)
         throw BESInternalError("Unsupported chunk information in the DMR++ data.", __FILE__, __LINE__);
 }
 
+/**
+ * @brief Load all chunks and attributes for the constructor and its children
+ * @note Constructors other than groups can never hold instances of D4Group. Thus,
+ * once we have found a Structure or Sequence, there can be no more Groups.
+ * @param constructor
+ */
 void
-DMZ::load_everything_helper(Constructor *constructor)
+DMZ::load_everything_constructor(Constructor *constructor)
 {
+    load_attributes(constructor);
     for (auto i = constructor->var_begin(), e = constructor->var_end(); i != e; ++i) {
+        assert((*i)->type() != dods_group_c);
+
         if ((*i)->is_constructor_type()) {
-            load_everything_helper(static_cast<Constructor*>(*i));
+            load_everything_constructor(static_cast<Constructor*>(*i));
+            // load_attributes(*i);
+        }
+        else {
             load_attributes(*i);
+            load_chunks(*i);
+        }
+    }
+}
+
+void
+DMZ::load_everything_group(D4Group *group, bool is_root) {
+    // The root group is special; look for its DAP Attributes in the Dataset element
+    if (is_root) {
+        xml_node dataset = d_xml_doc.child("Dataset");
+        if (!dataset)
+            throw BESInternalError("Could not find the 'Dataset' element in the DMR++ XML document.", __FILE__, __LINE__);
+        load_attributes(group, dataset);
+    }
+    else {
+        load_attributes(group);
+    }
+
+    for (auto i = group->var_begin(), e = group->var_end(); i != e; ++i) {
+        // Even though is_constructor_type() returns true for instances of D4Group,
+        // Groups are kept under a separate container from variables because they
+        // have a different function than the Structure and Sequence types (Groups
+        // never hold data).
+        assert((*i)->type() != dods_group_c);
+
+        if ((*i)->is_constructor_type()) {
+            load_everything_constructor(static_cast<Constructor*>(*i));
+            //load_attributes(*i);
         }
         else {
             load_attributes(*i);
@@ -800,14 +871,14 @@ DMZ::load_everything_helper(Constructor *constructor)
         }
     }
 
-    D4Group *group = dynamic_cast<D4Group*>(constructor);
-    if (!group)
-        return;
-
     for (auto i = group->grp_begin(), e = group->grp_end(); i != e; ++i) {
-        if ((*i)->is_constructor_type()) {
-            load_everything_helper(static_cast<Constructor*>(*i));
-            load_attributes(*i);
+        if ((*i)->type() == dods_group_c) {
+            load_everything_group(static_cast<D4Group*>(*i));
+            //load_attributes(*i);
+        }
+        else if ((*i)->is_constructor_type()) {
+            load_everything_constructor(static_cast<Constructor*>(*i));
+            //load_attributes(*i);
         }
         else {
             load_attributes(*i);
@@ -823,29 +894,7 @@ DMZ::load_everything_helper(Constructor *constructor)
 void
 DMZ::load_everything(DMR *dmr)
 {
-    // For each variable, load both attributes and chunks. Depth-first traversal
-    D4Group *root = dmr->root();
-    for (auto i = root->var_begin(), e = root->var_end(); i != e; ++i) {
-        if ((*i)->is_constructor_type()) {
-            load_everything_helper(static_cast<Constructor*>(*i));
-            load_attributes(*i);
-        }
-        else {
-            load_attributes(*i);
-            load_chunks(*i);
-        }
-    }
-
-    for (auto i = root->grp_begin(), e = root->grp_end(); i != e; ++i) {
-        if ((*i)->is_constructor_type()) {
-            load_everything_helper(static_cast<Constructor*>(*i));
-            load_attributes(*i);
-        }
-        else {
-            load_attributes(*i);
-            load_chunks(*i);
-        }
-    }
+    load_everything_group(dmr->root(), true);
 }
 
 } // namespace dmrpp

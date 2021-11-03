@@ -95,14 +95,19 @@ private:
 
     static void process_cds_node(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunks);
 
+    void load_attributes(libdap::BaseType *btp, pugi::xml_node var_node);
+
     // This is for testing. jhrg 11/2/21
-    void load_everything_helper(libdap::Constructor *constructor);
+    void load_everything_constructor(libdap::Constructor *constructor);
+    void load_everything_group(libdap::D4Group *group, bool is_root = false);
 
     friend class DMZTest;
 
 public:
 
+    /// @brief Build a DMZ without simultaneously parsing an XML document
     DMZ() = default;
+
     explicit DMZ(const std::string &xml_file_name);
 
     DMZ(const DMZ &dmz) : d_xml_doc() {
@@ -111,6 +116,7 @@ public:
 
     virtual ~DMZ()= default;
 
+    virtual void parse_xml_doc(const std::string &filename);
     virtual void build_thin_dmr(libdap::DMR *dmr);
 
     // Make these take a Variable/DmrppCommon and not a DMR

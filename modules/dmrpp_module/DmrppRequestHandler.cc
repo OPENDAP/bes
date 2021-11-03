@@ -85,7 +85,8 @@ ObjMemCache *DmrppRequestHandler::das_cache = 0;
 ObjMemCache *DmrppRequestHandler::dds_cache = 0;
 ObjMemCache *DmrppRequestHandler::dmr_cache = 0;
 
-DMZ *DmrppRequestHandler::dmz = 0;
+// TODO Remove? DMZ *DmrppRequestHandler::dmz = 0;
+shared_ptr<DMZ> DmrppRequestHandler::dmz(nullptr);
 
 // This is used to maintain a pool of reusable curl handles that enable connection
 // reuse. jhrg
@@ -212,22 +213,27 @@ void DmrppRequestHandler::build_dmr_from_file(BESContainer *container, DMR* dmr)
     dmr->set_filename(data_pathname);
     dmr->set_name(name_path(data_pathname));
 
-    DmrppTypeFactory BaseFactory;   // Use the factory for this handler's types
+#if USE_DMZ_TO_MANAGE_XML
+    dmz = shared_ptr<DMZ>(new DMZ);
+
+    // Enable adding the DMZ to the BaseTypes built by the factory
+    DmrppTypeFactory BaseFactory(dmz);
     dmr->set_factory(&BaseFactory);
 
-#if USE_DMZ_TO_MANAGE_XML
-    // Instantiate DMZ with pathname to DMRPP, then build_thin_dmr()
-    dmz = new DMZ(data_pathname);
+    dmz->parse_xml_doc(data_pathname);
     dmz->build_thin_dmr(dmr);
     dmz->load_everything(dmr);
 #else
+    DmrppTypeFactory BaseFactory;   // Use the factory for this handler's types
+    dmr->set_factory(&BaseFactory);
 
-#endif  // Following lines replaced by DMZ::build_thin_dmr()
     DmrppParserSax2 parser;
     ifstream in(data_pathname.c_str(), ios::in);
     parser.intern(in, dmr);
 
     dmr->set_factory(0);
+#endif  // Following lines replaced by DMZ::build_thin_dmr()
+
 }
 
 /**

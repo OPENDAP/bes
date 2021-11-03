@@ -563,6 +563,16 @@ DmrppArray::DmrppArray(const string &n, const string &d, BaseType *v) :
 {
 }
 
+DmrppArray::DmrppArray(const string &n, BaseType *v, shared_ptr<DMZ> dmz) :
+        Array(n, v, true), DmrppCommon(dmz)
+{
+}
+
+DmrppArray::DmrppArray(const string &n, const string &d, BaseType *v, shared_ptr<DMZ> dmz) :
+        Array(n, d, v, true), DmrppCommon(dmz)
+{
+}
+
 BaseType *
 DmrppArray::ptr_duplicate()
 {

@@ -52,7 +52,13 @@ private:
 
 	// These are static because they are used by the static public methods.
 	static void build_dmr_from_file(BESContainer *container, libdap::DMR* dmr);
-    static DMZ *dmz;
+
+    // TODO Remove? static DMZ *dmz;
+    // Allocate a new DMZ for each request? This should work, but may result in more
+    // cycling of data in and out of memory. The shared_ptr<> will be passed into
+    // instances of BaseType and used from withing the specialized read methods.
+    // jhrg 11/3/21
+    static std::shared_ptr<DMZ> dmz;
 
 public:
 	explicit DmrppRequestHandler(const std::string &name);
