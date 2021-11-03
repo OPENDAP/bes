@@ -124,6 +124,10 @@ private:
 
     DmrppArray(const std::string &n, const std::string &d, libdap::BaseType *v);
 
+    DmrppArray(const std::string &n, libdap::BaseType *v, std::shared_ptr<DMZ> dmz);
+
+    DmrppArray(const std::string &n, const std::string &d, libdap::BaseType *v, std::shared_ptr<DMZ> dmz);
+
     DmrppArray(const DmrppArray &rhs);
 
     virtual ~DmrppArray() {

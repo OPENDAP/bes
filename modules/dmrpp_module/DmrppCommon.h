@@ -49,6 +49,8 @@ class XMLWriter;
 
 namespace dmrpp {
 
+class DMZ;
+
 void join_threads(pthread_t threads[], unsigned int num_threads);
 
 /**
@@ -84,6 +86,8 @@ private:
     bool d_chunks_loaded;
     bool d_attributes_loaded;
 
+    std::shared_ptr<DMZ> d_dmz;
+
 protected:
     void m_duplicate_common(const DmrppCommon &dc) {
     	d_deflate = dc.d_deflate;
@@ -117,6 +121,11 @@ public:
 
     DmrppCommon() : d_deflate(false), d_shuffle(false), d_compact(false), d_fletcher32(false), d_byte_order(""),
     d_twiddle_bytes(false), d_chunks_loaded(false), d_attributes_loaded(false)
+    {
+    }
+
+    DmrppCommon(std::shared_ptr<DMZ> dmz) : d_deflate(false), d_shuffle(false), d_compact(false), d_fletcher32(false), d_byte_order(""),
+    d_twiddle_bytes(false), d_chunks_loaded(false), d_attributes_loaded(false), d_dmz(dmz)
     {
     }
 

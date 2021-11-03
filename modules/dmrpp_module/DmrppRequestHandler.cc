@@ -221,11 +221,11 @@ void DmrppRequestHandler::build_dmr_from_file(BESContainer *container, DMR* dmr)
     dmz->build_thin_dmr(dmr);
     dmz->load_everything(dmr);
 #else
-    // Following lines replaced by DMZ::build_thin_dmr()
+
+#endif  // Following lines replaced by DMZ::build_thin_dmr()
     DmrppParserSax2 parser;
     ifstream in(data_pathname.c_str(), ios::in);
     parser.intern(in, dmr);
-#endif
 
     dmr->set_factory(0);
 }

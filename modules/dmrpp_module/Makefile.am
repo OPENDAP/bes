@@ -143,7 +143,7 @@ EXTRA_DIST = dmrpp.conf.in xml2json bes_default_conf_template.h.in
 
 # removed from EXTRA_DIST: libdmrpp_module.la
 
-CLEANFILES = *~ bes_default_conf.h dmrpp.conf
+CLEANFILES = *~ *.gcda *.gcno *.gcov bes_default_conf.h dmrpp.conf
 
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = dmrpp.conf
