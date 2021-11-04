@@ -22,13 +22,14 @@ dist_bin_SCRIPTS = get_dmrpp ingest_filesystem ingest_s3bucket
 # Build the get_dmrpp script so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
 # configure's value for the parameter when running the distcheck target.
-get_dmrpp: get_dmrpp.in $(top_builddir)/config.status
+get_dmrpp: get_dmrpp.in $(top_builddir)/config.status Makefile
 	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
                 -e "s%[@]sysconfdir[@]%${sysconfdir}%" \
                 -e "s%[@]pkglibdir[@]%${pkglibdir}%" \
                 -e "s%[@]datarootdir[@]%${datarootdir}%" \
                 -e "s%[@]datadir[@]%${datadir}%" \
                 -e "s%[@]bindir[@]%${bindir}%" \
+                -e "s%[@]get_dmrpp_version[@]%${PACKAGE_VERSION}%" \
                 -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > get_dmrpp
 
 EXTRA_PROGRAMS = 

@@ -2,15 +2,7 @@
 set -e
 #set -x;
 
-###############################################################################
-#
-# Returns the get_dmrpp version information.
-#
-function version(){
-    zname=`basename ${0}`
-    bes-config --version | sed "s+bes+${zname}+g"
-}
-
+GET_DMRPP_VERSION="get_dmrpp-@get_dmrpp_version@";
 
 ###############################################################################
 #
@@ -240,7 +232,7 @@ while getopts "h?vVDu:o:c:b:s:p:r:zTIFM" opt; do
     exit 0
     ;;
   z)
-    version >&2
+    echo "${GET_DMRPP_VERSION}" >&2
     exit 0
     ;;
   v)
