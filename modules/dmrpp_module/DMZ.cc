@@ -804,6 +804,13 @@ void DMZ::process_chunks(BaseType *btp, const xml_node &chunks)
     if (!dc)
         throw BESInternalError("Could not cast BaseType to DmrppType in the DMR++ handler.", __FILE__, __LINE__);
 
+    for (xml_attribute attr = chunks.first_attribute(); attr; attr = attr.next_attribute()) {
+        if (is_eq(attr.name(), "compressionType")) {
+            dc->set_filter(attr.value());
+        }
+    }
+
+    // Look for the chunksDimensionSizes element - it will not be present for contiguous data
     process_cds_node(dc, chunks);
 
     // Chunks for this node will be held in the var_node siblings.
