@@ -209,6 +209,8 @@ public:
         }
     }
 
+    void load_chunks(libdap::BaseType *btp);
+
     virtual void parse_chunk_dimension_sizes(const std::string &chunk_dim_sizes_string);
 
     virtual void ingest_compression_type(const std::string &compression_type_string);
