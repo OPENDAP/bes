@@ -570,7 +570,11 @@ void DMZ::process_attribute(D4Attributes *attributes, const xml_node &dap_attr_n
         attributes->add_attribute_nocopy(dap_attr_cont);
         // In this call, 'attributes()' will allocate the D4Attributes object
         // that will hold the container's attributes.
-        process_attribute(dap_attr_cont->attributes(), dap_attr_node.first_child());
+        // Test to see if there really are child "Attribute" nodes - empty containers
+        // are allowed. jhrg 11/4/21
+        auto attr = dap_attr_node.first_child();
+        if (attr)
+            process_attribute(dap_attr_cont->attributes(), attr);
     }
     else if (type_value == "OtherXML") {
         // TODO Add support for this
