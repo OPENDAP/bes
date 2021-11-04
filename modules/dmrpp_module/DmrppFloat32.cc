@@ -90,6 +90,10 @@ DmrppFloat32::read()
     if (read_p())
         return true;
 
+#if USE_DMZ_TO_MANAGE_XML
+    // Load XML <chunks> from DMZ when read() is invoked on variable.
+    load_chunks(this);
+#endif
     set_value(*reinterpret_cast<dods_float32*>(read_atomic(name())));
 
     set_read_p(true);
