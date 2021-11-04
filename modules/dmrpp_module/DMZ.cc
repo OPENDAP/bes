@@ -780,20 +780,12 @@ void DMZ::process_chunk(DmrppCommon *dc, const xml_node &chunk)
  */
 void DMZ::process_cds_node(DmrppCommon *dc, const xml_node &chunks)
 {
-    // FIXME bool cds_found = false;
-    // TODO there should be zero or one of these nodes
     for (auto child = chunks.child("dmrpp:chunkDimensionSizes"); child /*&& !cds_found*/; child = child.next_sibling()) {
         if (is_eq(child.name(), "dmrpp:chunkDimensionSizes")) {
             string sizes = child.child_value();
             dc->parse_chunk_dimension_sizes(sizes);
-            // FIXME cds_found = true;
         }
     }
-
-#if 0
-    if (!cds_found)
-        throw BESInternalError("Could not find a chunkDimensionSizes node.", __FILE__, __LINE__);
-#endif
 }
 
 // a 'dmrpp:chunks' node has a chunkDimensionSizes node and then one or more chunks
