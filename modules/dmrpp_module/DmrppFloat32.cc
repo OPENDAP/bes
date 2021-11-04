@@ -49,6 +49,14 @@ DmrppFloat32::DmrppFloat32(const string &n, const string &d) : Float32(n, d), Dm
 {
 }
 
+DmrppFloat32::DmrppFloat32(const string &n, shared_ptr<DMZ> dmz) : Float32(n), DmrppCommon(dmz)
+{
+}
+
+DmrppFloat32::DmrppFloat32(const string &n, const string &d, shared_ptr<DMZ> dmz) : Float32(n, d), DmrppCommon(dmz)
+{
+}
+
 BaseType *
 DmrppFloat32::ptr_duplicate()
 {

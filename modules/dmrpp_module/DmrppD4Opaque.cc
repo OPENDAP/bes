@@ -55,6 +55,14 @@ DmrppD4Opaque::DmrppD4Opaque(const string &n, const string &d) : D4Opaque(n, d),
 {
 }
 
+DmrppD4Opaque::DmrppD4Opaque(const string &n, shared_ptr<DMZ> dmz) : D4Opaque(n), DmrppCommon(dmz)
+{
+}
+
+DmrppD4Opaque::DmrppD4Opaque(const string &n, const string &d, shared_ptr<DMZ> dmz) : D4Opaque(n, d), DmrppCommon(dmz)
+{
+}
+
 BaseType *
 DmrppD4Opaque::ptr_duplicate()
 {

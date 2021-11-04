@@ -49,6 +49,14 @@ DmrppD4Sequence::DmrppD4Sequence(const string &n, const string &d) : D4Sequence(
 {
 }
 
+DmrppD4Sequence::DmrppD4Sequence(const string &n, shared_ptr<DMZ> dmz) : D4Sequence(n), DmrppCommon(dmz)
+{
+}
+
+DmrppD4Sequence::DmrppD4Sequence(const string &n, const string &d, shared_ptr<DMZ> dmz) : D4Sequence(n, d), DmrppCommon(dmz)
+{
+}
+
 BaseType *
 DmrppD4Sequence::ptr_duplicate()
 {

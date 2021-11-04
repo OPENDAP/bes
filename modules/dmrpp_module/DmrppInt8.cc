@@ -49,6 +49,14 @@ DmrppInt8::DmrppInt8(const string &n, const string &d) : Int8(n, d), DmrppCommon
 {
 }
 
+DmrppInt8::DmrppInt8(const string &n, shared_ptr<DMZ> dmz) : Int8(n), DmrppCommon(dmz)
+{
+}
+
+DmrppInt8::DmrppInt8(const string &n, const string &d, shared_ptr<DMZ> dmz) : Int8(n, d), DmrppCommon(dmz)
+{
+}
+
 BaseType *
 DmrppInt8::ptr_duplicate()
 {

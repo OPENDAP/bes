@@ -44,6 +44,9 @@ public:
     DmrppUrl(const std::string &n, const std::string &d);
     DmrppUrl(const DmrppUrl &rhs);
 
+    DmrppUrl(const std::string &n, std::shared_ptr<DMZ> dmz);
+    DmrppUrl(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz);
+
     virtual ~DmrppUrl() {}
 
     DmrppUrl &operator=(const DmrppUrl &rhs);

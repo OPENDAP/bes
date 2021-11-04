@@ -48,6 +48,14 @@ DmrppByte::DmrppByte(const string &n, const string &d) : Byte(n, d), DmrppCommon
 {
 }
 
+DmrppByte::DmrppByte(const string &n, shared_ptr<DMZ> dmz) : Byte(n), DmrppCommon(dmz)
+{
+}
+
+DmrppByte::DmrppByte(const string &n, const string &d, shared_ptr<DMZ> dmz) : Byte(n, d), DmrppCommon(dmz)
+{
+}
+
 BaseType *
 DmrppByte::ptr_duplicate()
 {

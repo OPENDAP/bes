@@ -51,6 +51,14 @@ DmrppStructure::DmrppStructure(const string &n, const string &d) : Structure(n, 
 {
 }
 
+DmrppStructure::DmrppStructure(const string &n, shared_ptr<DMZ> dmz) : Structure(n), DmrppCommon(dmz)
+{
+}
+
+DmrppStructure::DmrppStructure(const string &n, const string &d, shared_ptr<DMZ> dmz) : Structure(n, d), DmrppCommon(dmz)
+{
+}
+
 BaseType *
 DmrppStructure::ptr_duplicate()
 {

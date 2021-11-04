@@ -49,6 +49,14 @@ DmrppStr::DmrppStr(const string &n, const string &d) : Str(n, d), DmrppCommon()
 {
 }
 
+DmrppStr::DmrppStr(const string &n, shared_ptr<DMZ> dmz) : Str(n), DmrppCommon(dmz)
+{
+}
+
+DmrppStr::DmrppStr(const string &n, const string &d, shared_ptr<DMZ> dmz) : Str(n, d), DmrppCommon(dmz)
+{
+}
+
 BaseType *
 DmrppStr::ptr_duplicate()
 {

@@ -44,6 +44,9 @@ public:
     DmrppFloat64(const std::string &n, const std::string &d);
     DmrppFloat64(const DmrppFloat64 &rhs);
 
+    DmrppFloat64(const std::string &n, std::shared_ptr<DMZ> dmz);
+    DmrppFloat64(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz);
+
     virtual ~DmrppFloat64() {}
 
     DmrppFloat64 &operator=(const DmrppFloat64 &rhs);

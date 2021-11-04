@@ -40,6 +40,9 @@ public:
     DmrppD4Sequence(const std::string &n, const std::string &d);
     DmrppD4Sequence(const DmrppD4Sequence &rhs);
 
+    DmrppD4Sequence(const std::string &n, std::shared_ptr<DMZ> dmz);
+    DmrppD4Sequence(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz);
+
     virtual ~DmrppD4Sequence() {}
 
     DmrppD4Sequence &operator=(const DmrppD4Sequence &rhs);

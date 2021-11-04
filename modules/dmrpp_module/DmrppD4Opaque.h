@@ -48,6 +48,9 @@ public:
     DmrppD4Opaque(const std::string &n, const std::string &d);
     DmrppD4Opaque(const DmrppD4Opaque &rhs);
 
+    DmrppD4Opaque(const std::string &n, std::shared_ptr<DMZ> dmz);
+    DmrppD4Opaque(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz);
+
     virtual ~DmrppD4Opaque() {}
 
     DmrppD4Opaque &operator=(const DmrppD4Opaque &rhs);
