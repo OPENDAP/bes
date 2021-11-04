@@ -51,6 +51,8 @@
 #include "url_impl.h"           // see bes/http
 #include "DMZ.h"                // this includes the pugixml header
 #include "DmrppCommon.h"
+#include "DmrppArray.h"
+#include "Base64.h"
 #include "BESInternalError.h"
 #include "BESDebug.h"
 
@@ -725,6 +727,66 @@ DMZ::load_attributes(BaseType *btp, xml_node var_node)
     }
 }
 
+void
+DMZ::process_compact(BaseType *btp, const xml_node &compact)
+{
+    DmrppCommon *dc = dynamic_cast<DmrppCommon*>(btp);   // Get the Dmrpp common info
+    if (!dc)
+        throw BESInternalError("Could not cast BaseType to DmrppCommon in the drmpp handler.", __FILE__, __LINE__);
+
+    dc->set_compact(true);
+
+    auto char_data = compact.child_value();
+    if (!char_data)
+        throw BESInternalError("The dmrpp::compact is missing data values.",__FILE__,__LINE__);
+
+    std::vector <u_int8_t> decoded = base64::Base64::decode(char_data);
+
+    if (btp->type() != dods_array_c)
+        throw BESInternalError("The dmrpp::compact element must be the child of an array variable",__FILE__,__LINE__);
+
+    // We know from the above that this is an Array, so accessing btp->var() is OK.
+    switch (btp->var()->type()) {
+        case dods_array_c:
+            throw BESInternalError("DMR++ document fail: An Array may not be the template for an Array.", __FILE__, __LINE__);
+            break;
+
+        case dods_byte_c:
+        case dods_char_c:
+        case dods_int8_c:
+        case dods_uint8_c:
+        case dods_int16_c:
+        case dods_uint16_c:
+        case dods_int32_c:
+        case dods_uint32_c:
+        case dods_int64_c:
+        case dods_uint64_c:
+
+        case dods_enum_c:
+
+        case dods_float32_c:
+        case dods_float64_c:
+            btp->val2buf(reinterpret_cast<void *>(&decoded[0]));
+            btp->set_read_p(true);
+            break;
+
+        case dods_str_c:
+        case dods_url_c: {
+            std::string str(decoded.begin(), decoded.end());
+            auto *st = static_cast<DmrppArray *>(btp);
+            // Although val2buf() takes a void*, for DAP Str and Url types, it casts
+            // that to std::string*. jhrg 11/4/21
+            st->val2buf(&str);
+            st->set_read_p(true);
+            break;
+        }
+
+        default:
+            throw BESInternalError("Unsupported COMPACT storage variable type in the drmpp handler.", __FILE__, __LINE__);
+            break;
+    }
+}
+
 /**
  * @brief Parse a chunk node
  * There are several different forms a chunk node can take and this handles
@@ -830,11 +892,12 @@ void DMZ::load_chunks(BaseType *btp)
 
     // Chunks for this node will be held in the var_node siblings. For a given BaseType, there should
     // be only one chunks node xor one chunk node.
-    bool chunks_found = false;
-    bool chunk_found = false;
+    int chunks_found = 0;
+    int chunk_found = 0;
+    int compact_found = 0;
     auto child = var_node.child("dmrpp:chunks");
     if (child) {
-        chunks_found = true;
+        chunks_found = 1;
         process_chunks(btp, child);
     }
 
@@ -843,17 +906,27 @@ void DMZ::load_chunks(BaseType *btp)
         auto *dc = dynamic_cast<DmrppCommon*>(btp);   // Get the Dmrpp common info
         if (!dc)
             throw BESInternalError("Could not cast BaseType to DmrppCommon in the DMR++ handler.", __FILE__, __LINE__);
-        chunk_found =true;
+        chunk_found =1;
         process_chunk(dc, chunk);
 
     }
 
-    // TODO Add support for compact. jhrg 10/25/21
-    //  Compact data is stored in the XML using <dmrpp:compact> elements. These are at the same level
-    //  as the <dmrpp:chunk> (and <Attribute>) elements.
+    auto compact = var_node.child("dmrpp:compact");
+    if (compact) {
+        auto *dc = dynamic_cast<DmrppCommon*>(btp);   // Get the Dmrpp common info
+        if (!dc)
+            throw BESInternalError("Could not cast BaseType to DmrppCommon in the DMR++ handler.", __FILE__, __LINE__);
+        compact_found = 1;
+        process_compact(btp, compact);
+    }
 
-    if ((chunks_found && chunk_found) || !(chunks_found || chunk_found))
-        throw BESInternalError("Unsupported chunk information in the DMR++ data.", __FILE__, __LINE__);
+    // Here we check that exactly one of the three types of node was found
+    int elements_found = chunks_found + chunk_found + compact_found;
+    if (elements_found != 1) {
+        ostringstream oss("Expected chunk, chunks or compact information in the DMR++ data. Found ");
+        oss << elements_found << " types of nodes.";
+        throw BESInternalError(oss.str(), __FILE__, __LINE__);
+    }
 }
 
 /**

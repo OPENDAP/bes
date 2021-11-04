@@ -81,6 +81,8 @@ private:
     void process_chunk(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunk);
     void process_chunks(libdap::BaseType *btp, const pugi::xml_node &chunks);
 
+    static void process_compact(libdap::BaseType *btp, const pugi::xml_node &compact);
+
     static pugi::xml_node get_variable_xml_node_helper(const pugi::xml_node &var_node, std::stack<libdap::BaseType*> &bt);
     static void build_basetype_chain(libdap::BaseType *btp, std::stack<libdap::BaseType*> &bt);
 
