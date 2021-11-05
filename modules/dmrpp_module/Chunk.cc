@@ -37,7 +37,9 @@
 #include <BESContextManager.h>
 #include <BESUtil.h>
 
-#include "xml2json/include/xml2json.hpp"
+#define PUGIXML_NO_XPATH
+#define PUGIXML_HEADER_ONLY
+#include <pugixml.hpp>
 
 #include "Chunk.h"
 #include "CurlUtils.h"
@@ -121,20 +123,35 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
         // will be sad if that happens. jhrg 12/30/19
         try {
             // TODO replace this with pugixml. jhrg 11/3/21
+#if 0
             string json_message = xml2json(xml_message.c_str());
             rapidjson::Document d;
             d.Parse(json_message.c_str());
             // rapidjson::Value &message = d["Error"]["Message"];
             rapidjson::Value &code = d["Error"]["Code"];
+#endif
+            // See https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html
+            // for the low-down on this XML document.
+            pugi::xml_document error;
+            pugi::xml_parse_result result = error.load_string(xml_message.c_str());
+            if (!result)
+                throw BESInternalError("The underlying data store returned an unintelligible error message.", __FILE__, __LINE__);
+
+            pugi::xml_node err_elmnt = error.document_element().child("Error");
+            if (!err_elmnt)
+                throw BESInternalError("The underlying data store returned an bogus error message.", __FILE__, __LINE__);
+
+            string code = err_elmnt.child("Code").child_value();
+            string message =err_elmnt.child("Message").child_value();
 
             // We might want to get the "Code" from the "Error" if these text messages
             // are not good enough. But the "Code" is not really suitable for normal humans...
             // jhrg 12/31/19
 
-            if (string(code.GetString()) == "AccessDenied") {
+            if (string(code /*code.GetString()*/) == "AccessDenied") {
                 stringstream msg;
                 msg << prolog << "ACCESS DENIED - The underlying object store has refused access to: ";
-                msg << data_url->str() << " Object Store Message: " << json_message;
+                msg << data_url->str() << " Object Store Message: " << message; //json_message;
                 BESDEBUG(MODULE, msg.str() << endl);
                 VERBOSE(msg.str() << endl);
                 throw BESForbiddenError(msg.str(), __FILE__, __LINE__);
@@ -142,7 +159,7 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
             else {
                 stringstream msg;
                 msg << prolog << "ERROR - The underlying object store returned an error. ";
-                msg << "(Tried: " << data_url->str() << ") Object Store Message: " << json_message;
+                msg << "(Tried: " << data_url->str() << ") Object Store Message: " << message; // json_message;
                 BESDEBUG(MODULE, msg.str() << endl);
                 VERBOSE(msg.str() << endl);
                 throw BESInternalError(msg.str(), __FILE__, __LINE__);
@@ -364,8 +381,28 @@ void unshuffle(char *dest, const char *src, unsigned long long src_size, unsigne
     } /* end if width and elems both > 1 */
 }
 
+/// Stolen from our friends at Stack Overflow and modified for our use.
+/// This is far faster than the istringstream code it replaces (for one
+/// test, run time for parse_chunk_position_in_array_string() dropped from
+/// 20ms to ~3ms). It also fixes a test we could never get to pass.
+/// jhrg 11/5/21
+static void split_by_comma (const string &s, vector<unsigned long long> &res)
+{
+    const string delimiter = ",";
+    const size_t delim_len = delimiter.length();
 
-void Chunk::parse_chunk_position_in_array_string(const string &pia, vector<unsigned long long> &cpia_vect){
+    size_t pos_start = 0, pos_end;
+
+    while ((pos_end = s.find (delimiter, pos_start)) != string::npos) {
+        res.push_back (stoull(s.substr(pos_start, pos_end - pos_start)));
+        pos_start = pos_end + delim_len;
+    }
+
+    res.push_back (stoull(s.substr (pos_start)));
+}
+
+void Chunk::parse_chunk_position_in_array_string(const string &pia, vector<unsigned long long> &cpia_vect)
+{
     if (pia.empty()) return;
 
     if (!cpia_vect.empty()) cpia_vect.clear();
@@ -378,6 +415,7 @@ void Chunk::parse_chunk_position_in_array_string(const string &pia, vector<unsig
     if (pia.find_first_not_of("[]1234567890,") != string::npos)
         throw BESInternalError("while parsing a DMR++, chunk position string illegal character(s)", __FILE__, __LINE__);
 
+#if 0
     // strip off []; iss holds x,y,...,z
     istringstream iss(pia.substr(1, pia.length() - 2));
 
@@ -388,6 +426,14 @@ void Chunk::parse_chunk_position_in_array_string(const string &pia, vector<unsig
         cpia_vect.push_back(i);
         iss >> c; // read a separator (,)
     }
+#else
+    try {
+        split_by_comma(pia.substr(1, pia.length() - 2), cpia_vect);
+    }
+    catch(std::invalid_argument &e) {
+        throw BESInternalError(string("while parsing a DMR++, chunk position string illegal character(s): ").append(e.what()), __FILE__, __LINE__);
+    }
+#endif
 }
 
 

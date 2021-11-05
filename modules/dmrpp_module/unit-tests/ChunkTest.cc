@@ -278,8 +278,7 @@ public:
     CPPUNIT_TEST_EXCEPTION(set_position_in_array_test_3, BESError);
     CPPUNIT_TEST_EXCEPTION(set_position_in_array_test_4, BESError);
     CPPUNIT_TEST_EXCEPTION(set_position_in_array_test_5, BESError);
-
-    CPPUNIT_TEST_FAIL(set_position_in_array_test_6);
+    CPPUNIT_TEST_EXCEPTION(set_position_in_array_test_6, BESError);
 
     CPPUNIT_TEST(add_tracking_query_param_test);
     CPPUNIT_TEST(add_tracking_query_param_test_2);

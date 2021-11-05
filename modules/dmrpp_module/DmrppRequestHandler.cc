@@ -184,7 +184,6 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
     msg << prolog << "Contiguous Concurrency Threshold: " << d_contiguous_concurrent_threshold << " bytes." << endl;
     INFO_LOG(msg.str() );
 
-
 #if !HAVE_CURL_MULTI_API
     if (DmrppRequestHandler::d_use_transfer_threads)
         ERROR_LOG("The DMR++ handler is configured to use parallel transfers, but the libcurl Multi API is not present, defaulting to serial transfers");
