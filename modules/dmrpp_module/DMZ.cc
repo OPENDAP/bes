@@ -53,6 +53,7 @@
 #include "DmrppCommon.h"
 #include "DmrppArray.h"
 #include "Base64.h"
+#include "DmrppRequestHandler.h"
 #include "BESInternalError.h"
 #include "BESDebug.h"
 
@@ -92,6 +93,10 @@ void
 DMZ::parse_xml_doc(const std::string &file_name)
 {
     std::ifstream stream(file_name);
+
+    // Free memory used by a previously parsed document.
+    d_xml_doc.reset();
+
     // parse_ws_pcdata_single will include the space when it appears in a <Value> </Value>
     // DAP Attribute element. jhrg 11/3/21
     pugi::xml_parse_result result = d_xml_doc.load(stream,  pugi::parse_default | pugi::parse_ws_pcdata_single);
@@ -689,25 +694,20 @@ xml_node DMZ::get_variable_xml_node(BaseType *btp)
 void
 DMZ::load_attributes(BaseType *btp)
 {
+    auto *dc = dynamic_cast<DmrppCommon*>(btp);   // Get the Dmrpp common info
+    if (!dc)
+        throw BESInternalError("Could not cast BaseType to DmrppType in the DMR++ handler.", __FILE__, __LINE__);
+    if (dc->get_attributes_loaded())
+        return;
+
     // goto the DOM tree node for this variable
     xml_node var_node = get_variable_xml_node(btp);
     if (var_node == nullptr)
         throw BESInternalError("Could not find location of variable in the DMR++ XML document.", __FILE__, __LINE__);
 
     load_attributes(btp, var_node);
-#if 0
-    // Attributes for this node will be held in the var_node siblings.
-    // NB: Make an explict call to the BaseType implementation in case
-    // the attributes() method is specialized for this DMR++ code to
-    // trigger a lazy-load of the variables' attributes. jhrg 10/24/21
-    // Could also use BaseType::set_attributes(). jhrg
-    auto attributes = btp->BaseType::attributes(); // new D4Attributes();
-    for (auto child = var_node.first_child(); child; child = child.next_sibling()) {
-        if (is_eq(child.name(), "Attribute")) {
-            process_attribute(attributes, child);
-        }
-    }
-#endif
+
+    dc->set_attributes_loaded(true);
 }
 
 /**
@@ -887,8 +887,13 @@ void DMZ::process_chunks(BaseType *btp, const xml_node &chunks)
  *
  * @param btp The variable
  */
-void DMZ::load_chunks(BaseType *btp)
-{
+void DMZ::load_chunks(BaseType *btp) {
+    auto *dc = dynamic_cast<DmrppCommon *>(btp);   // Get the Dmrpp common info
+    if (!dc)
+        throw BESInternalError("Could not cast BaseType to DmrppType in the DMR++ handler.", __FILE__, __LINE__);
+    if (dc->get_chunks_loaded())
+        return;
+
     // goto the DOM tree node for this variable
     xml_node var_node = get_variable_xml_node(btp);
     if (var_node == nullptr)
@@ -907,30 +912,34 @@ void DMZ::load_chunks(BaseType *btp)
 
     auto chunk = var_node.child("dmrpp:chunk");
     if (chunk) {
-        auto *dc = dynamic_cast<DmrppCommon*>(btp);   // Get the Dmrpp common info
+        auto *dc = dynamic_cast<DmrppCommon *>(btp);   // Get the Dmrpp common info
         if (!dc)
             throw BESInternalError("Could not cast BaseType to DmrppCommon in the DMR++ handler.", __FILE__, __LINE__);
-        chunk_found =1;
+        chunk_found = 1;
         process_chunk(dc, chunk);
 
     }
 
     auto compact = var_node.child("dmrpp:compact");
     if (compact) {
-        auto *dc = dynamic_cast<DmrppCommon*>(btp);   // Get the Dmrpp common info
+        auto *dc = dynamic_cast<DmrppCommon *>(btp);   // Get the Dmrpp common info
         if (!dc)
             throw BESInternalError("Could not cast BaseType to DmrppCommon in the DMR++ handler.", __FILE__, __LINE__);
         compact_found = 1;
         process_compact(btp, compact);
     }
 
-    // Here we check that exactly one of the three types of node was found
-    int elements_found = chunks_found + chunk_found + compact_found;
-    if (elements_found != 1) {
-        ostringstream oss("Expected chunk, chunks or compact information in the DMR++ data. Found ");
-        oss << elements_found << " types of nodes.";
-        throw BESInternalError(oss.str(), __FILE__, __LINE__);
+    // Here we (optionally) check that exactly one of the three types of node was found
+    if (DmrppRequestHandler::d_require_chunks) {
+        int elements_found = chunks_found + chunk_found + compact_found;
+        if (elements_found != 1) {
+            ostringstream oss;
+            oss << "Expected chunk, chunks or compact information in the DMR++ data. Found " << elements_found
+                << " types of nodes.";
+            throw BESInternalError(oss.str(), __FILE__, __LINE__);
+        }
     }
+    dc->set_chunks_loaded(true);
 }
 
 /**

@@ -53,7 +53,6 @@ private:
 	// These are static because they are used by the static public methods.
 	static void build_dmr_from_file(BESContainer *container, libdap::DMR* dmr);
 
-    // TODO Remove? static DMZ *dmz;
     // Allocate a new DMZ for each request? This should work, but may result in more
     // cycling of data in and out of memory. The shared_ptr<> will be passed into
     // instances of BaseType and used from withing the specialized read methods.
@@ -73,6 +72,8 @@ public:
     static unsigned int d_max_compute_threads;
 
     static unsigned long long d_contiguous_concurrent_threshold;
+
+    static bool d_require_chunks;
 
 	static bool dap_build_dmr(BESDataHandlerInterface &dhi);
 	static bool dap_build_dap4data(BESDataHandlerInterface &dhi);

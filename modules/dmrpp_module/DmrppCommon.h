@@ -69,7 +69,6 @@ class DmrppCommon {
 
 	friend class DmrppCommonTest;
     friend class DmrppParserTest;
-    // friend class DmrppTypeReadTest;
 
 private:
     bool d_compact;
@@ -160,11 +159,11 @@ public:
 
     /// @brief Have the chunks been loaded?
     virtual bool get_chunks_loaded()  const { return d_chunks_loaded; }
-    // TODO Needed? virtual void set_chunks_loaded(bool state) {  d_chunks_loaded = state; }
+    virtual void set_chunks_loaded(bool state) {  d_chunks_loaded = state; }
 
     /// @brief Have the attributes been loaded?
     virtual bool get_attributes_loaded()  const { return d_attributes_loaded; }
-    // TODO Needed? virtual void set_attributes_loaded(bool state) {  d_attributes_loaded = state; }
+    virtual void set_attributes_loaded(bool state) {  d_attributes_loaded = state; }
 
     /// @brief A const reference to the vector of chunks
     /// @see get_chunks()

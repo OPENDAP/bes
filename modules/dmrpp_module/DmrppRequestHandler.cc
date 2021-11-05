@@ -85,7 +85,6 @@ ObjMemCache *DmrppRequestHandler::das_cache = 0;
 ObjMemCache *DmrppRequestHandler::dds_cache = 0;
 ObjMemCache *DmrppRequestHandler::dmr_cache = 0;
 
-// TODO Remove? DMZ *DmrppRequestHandler::dmz = 0;
 shared_ptr<DMZ> DmrppRequestHandler::dmz(nullptr);
 
 // This is used to maintain a pool of reusable curl handles that enable connection
@@ -100,6 +99,10 @@ unsigned int DmrppRequestHandler::d_max_compute_threads = 8;
 
 // Default minimum value is 2MB: 2 * (1024*1024)
 unsigned long long DmrppRequestHandler::d_contiguous_concurrent_threshold = DMRPP_DEFAULT_CONTIGUOUS_CONCURRENT_THRESHOLD;
+
+// This behavior mirrors the SAX2 parser. We could make this a run-time
+// option if needed. jhrg 11/4/21
+bool DmrppRequestHandler::d_require_chunks = false;
 
 static void read_key_value(const std::string &key_name, bool &key_value)
 {
@@ -159,7 +162,7 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
     else{
         msg << "Disabled." << endl;
     }
-    // BESDEBUG(MODULE, msg.str());
+
     INFO_LOG(msg.str() );
     msg.str(std::string());
 
@@ -172,7 +175,7 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
     else{
         msg << "Disabled." << endl;
     }
-    // BESDEBUG(MODULE, msg.str());
+
     INFO_LOG(msg.str() );
     msg.str(std::string());
 

@@ -62,6 +62,10 @@ class DmrppCommon;
  * so the text of the XML document must persist for as long as the xml_document
  * object itself. For files, the class uses the pugixml load function.
  * For strings, it uses a local vector<char>.
+ *
+ * @note This class holds a pugi::xml_document and a shared_ptr<http::url>
+ * but does not define its own copy ctor or assignment operator, so copies
+ * of an instance of DMZ will share those objects
  */
 class DMZ {
 
@@ -72,9 +76,6 @@ private:
 #endif
     pugi::xml_document d_xml_doc;
     std::shared_ptr<http::url> d_dataset_elem_href;
-
-    void m_duplicate_common(const DMZ &) {
-    }
 
     void process_dataset(libdap::DMR *dmr, const pugi::xml_node &xml_root);
     pugi::xml_node get_variable_xml_node(libdap::BaseType *btp);
@@ -113,10 +114,6 @@ public:
 
     explicit DMZ(const std::string &xml_file_name);
 
-    DMZ(const DMZ &dmz) : d_xml_doc() {
-        m_duplicate_common(dmz);
-    }
-
     virtual ~DMZ()= default;
 
     virtual void parse_xml_doc(const std::string &filename);
@@ -126,7 +123,6 @@ public:
     virtual void load_attributes(libdap::BaseType *btp);
 
     virtual void load_chunks(libdap::BaseType *btp);
-    void load_compact_data(libdap::BaseType *btp);
 
     std::string get_attribute_xml(std::string path);
     std::string get_variable_xml(std::string path);
