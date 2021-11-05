@@ -44,6 +44,9 @@ public:
     DmrppInt16(const std::string &n, const std::string &d);
     DmrppInt16(const DmrppInt16 &rhs);
 
+    DmrppInt16(const std::string &n, std::shared_ptr<DMZ> dmz);
+    DmrppInt16(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz);
+
     virtual ~DmrppInt16() {}
 
     DmrppInt16 &operator=(const DmrppInt16 &rhs);

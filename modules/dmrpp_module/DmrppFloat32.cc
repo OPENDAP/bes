@@ -49,6 +49,14 @@ DmrppFloat32::DmrppFloat32(const string &n, const string &d) : Float32(n, d), Dm
 {
 }
 
+DmrppFloat32::DmrppFloat32(const string &n, shared_ptr<DMZ> dmz) : Float32(n), DmrppCommon(dmz)
+{
+}
+
+DmrppFloat32::DmrppFloat32(const string &n, const string &d, shared_ptr<DMZ> dmz) : Float32(n, d), DmrppCommon(dmz)
+{
+}
+
 BaseType *
 DmrppFloat32::ptr_duplicate()
 {
@@ -82,6 +90,10 @@ DmrppFloat32::read()
     if (read_p())
         return true;
 
+#if USE_DMZ_TO_MANAGE_XML
+    // Load XML <chunks> from DMZ when read() is invoked on variable.
+    load_chunks(this);
+#endif
     set_value(*reinterpret_cast<dods_float32*>(read_atomic(name())));
 
     set_read_p(true);

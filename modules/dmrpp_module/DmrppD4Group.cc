@@ -56,6 +56,14 @@ DmrppD4Group::DmrppD4Group(const string &n, const string &d) : D4Group(n, d), Dm
 {
 }
 
+DmrppD4Group::DmrppD4Group(const string &n, shared_ptr<DMZ> dmz) : D4Group(n),  DmrppCommon(dmz)
+{
+}
+
+DmrppD4Group::DmrppD4Group(const string &n, const string &d, shared_ptr<DMZ> dmz) : D4Group(n, d), DmrppCommon(dmz)
+{
+}
+
 BaseType *
 DmrppD4Group::ptr_duplicate()
 {

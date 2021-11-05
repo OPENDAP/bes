@@ -44,6 +44,10 @@ public:
     DmrppD4Group(const std::string &n, const std::string &d);
     DmrppD4Group(const DmrppD4Group &rhs);
 
+    DmrppD4Group(const std::string &n, std::shared_ptr<DMZ> dmz);
+    DmrppD4Group(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz);
+
+
     virtual ~DmrppD4Group() {}
 
     DmrppD4Group &operator=(const DmrppD4Group &rhs);

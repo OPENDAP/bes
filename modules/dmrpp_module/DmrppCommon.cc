@@ -459,5 +459,10 @@ void DmrppCommon::dump(ostream & strm) const
     }
 }
 
+void
+DmrppCommon::load_chunks(BaseType *btp) {
+    d_dmz->load_chunks(btp);
+}
+
 } // namepsace dmrpp
 

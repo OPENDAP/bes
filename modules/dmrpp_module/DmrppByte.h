@@ -44,6 +44,9 @@ public:
     DmrppByte(const std::string &n, const std::string &d);
     DmrppByte(const DmrppByte &rhs);
 
+    DmrppByte(const std::string &n, std::shared_ptr<DMZ> dmz);
+    DmrppByte(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz);
+
     virtual ~DmrppByte() {}
 
     DmrppByte &operator=(const DmrppByte &rhs);

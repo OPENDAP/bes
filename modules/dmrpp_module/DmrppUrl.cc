@@ -49,6 +49,14 @@ DmrppUrl::DmrppUrl(const string &n, const string &d) : Url(n, d), DmrppCommon()
 {
 }
 
+DmrppUrl::DmrppUrl(const string &n, shared_ptr<DMZ> dmz) : Url(n), DmrppCommon(dmz)
+{
+}
+
+DmrppUrl::DmrppUrl(const string &n, const string &d, shared_ptr<DMZ> dmz) : Url(n, d), DmrppCommon(dmz)
+{
+}
+
 BaseType *
 DmrppUrl::ptr_duplicate()
 {

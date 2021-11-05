@@ -50,6 +50,14 @@ DmrppInt64::DmrppInt64(const string &n, const string &d) : Int64(n, d), DmrppCom
 {
 }
 
+DmrppInt64::DmrppInt64(const string &n, shared_ptr<DMZ> dmz) : Int64(n), DmrppCommon(dmz)
+{
+}
+
+DmrppInt64::DmrppInt64(const string &n, const string &d, shared_ptr<DMZ> dmz) : Int64(n, d), DmrppCommon(dmz)
+{
+}
+
 BaseType *
 DmrppInt64::ptr_duplicate()
 {

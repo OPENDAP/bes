@@ -49,6 +49,14 @@ DmrppFloat64::DmrppFloat64(const string &n, const string &d) : Float64(n, d), Dm
 {
 }
 
+DmrppFloat64::DmrppFloat64(const string &n, shared_ptr<DMZ> dmz) : Float64(n), DmrppCommon(dmz)
+{
+}
+
+DmrppFloat64::DmrppFloat64(const string &n, const string &d, shared_ptr<DMZ> dmz) : Float64(n, d), DmrppCommon(dmz)
+{
+}
+
 BaseType *
 DmrppFloat64::ptr_duplicate()
 {

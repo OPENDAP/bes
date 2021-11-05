@@ -44,6 +44,9 @@ public:
     DmrppStructure(const std::string &n, const std::string &d);
     DmrppStructure(const DmrppStructure &rhs);
 
+    DmrppStructure(const std::string &n, std::shared_ptr<DMZ> dmz);
+    DmrppStructure(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz);
+
     virtual ~DmrppStructure() {}
 
     DmrppStructure &operator=(const DmrppStructure &rhs);

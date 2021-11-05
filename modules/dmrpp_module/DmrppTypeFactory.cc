@@ -129,13 +129,15 @@ BaseType *DmrppTypeFactory::NewVariable(Type t, const string &name) const
 Byte *
 DmrppTypeFactory::NewByte(const string &n) const
 {
-	return new DmrppByte(n);
+    BESDEBUG(MODULE, prolog << "Making a new DmrppByte object named: " << n << endl);
+	return new DmrppByte(n, d_dmz);
 }
 
 Byte *
 DmrppTypeFactory::NewChar(const string &n) const
 {
-	Byte *b = new DmrppByte(n);
+    BESDEBUG(MODULE, prolog << "Making a new DmrppByte object named: " << n << endl);
+	Byte *b = new DmrppByte(n, d_dmz);
 	b->set_type(dods_char_c);
 	return b;
 }
@@ -143,7 +145,8 @@ DmrppTypeFactory::NewChar(const string &n) const
 Byte *
 DmrppTypeFactory::NewUInt8(const string &n) const
 {
-	Byte *b = new DmrppByte(n);
+    BESDEBUG(MODULE, prolog << "Making a new DmrppUInt8 object named: " << n << endl);
+	Byte *b = new DmrppByte(n, d_dmz);
 	b->set_type(dods_uint8_c);
 	return b;
 }
@@ -151,69 +154,77 @@ DmrppTypeFactory::NewUInt8(const string &n) const
 Int8 *
 DmrppTypeFactory::NewInt8(const string &n) const
 {
-	return new DmrppInt8(n);
+    BESDEBUG(MODULE, prolog << "Making a new DmrppInt8 object named: " << n << endl);
+	return new DmrppInt8(n, d_dmz);
 }
 
 Int16 *
 DmrppTypeFactory::NewInt16(const string &n) const
 {
-	return new DmrppInt16(n);
+    BESDEBUG(MODULE, prolog << "Making a new DmrppInt16 object named: " << n << endl);
+	return new DmrppInt16(n, d_dmz);
 }
 
 UInt16 *
 DmrppTypeFactory::NewUInt16(const string &n) const
 {
-	return new DmrppUInt16(n);
+    BESDEBUG(MODULE, prolog << "Making a new DmrppUInt16 object named: " << n << endl);
+	return new DmrppUInt16(n, d_dmz);
 }
 
 Int32 *
 DmrppTypeFactory::NewInt32(const string &n) const
 {
 	BESDEBUG(MODULE, prolog << "Making a new DmrppInt32 object named: " << n << endl);
-	return new DmrppInt32(n);
+	return new DmrppInt32(n, d_dmz);
 }
 
 UInt32 *
 DmrppTypeFactory::NewUInt32(const string &n) const
 {
-	return new DmrppUInt32(n);
+    BESDEBUG(MODULE, prolog << "Making a new DmrppUInt32 object named: " << n << endl);
+	return new DmrppUInt32(n, d_dmz);
 }
 
 Int64 *
 DmrppTypeFactory::NewInt64(const string &n) const
 {
     BESDEBUG(MODULE, prolog << "Making a new DmrppInt64 object named: " << n << endl);
-	return new DmrppInt64(n);
+	return new DmrppInt64(n, d_dmz);
 }
 
 UInt64 *
 DmrppTypeFactory::NewUInt64(const string &n) const
 {
-	return new DmrppUInt64(n);
+    BESDEBUG(MODULE, prolog << "Making a new DmrppUInt64 object named: " << n << endl);
+	return new DmrppUInt64(n, d_dmz);
 }
 
 Float32 *
 DmrppTypeFactory::NewFloat32(const string &n) const
 {
-	return new DmrppFloat32(n);
+    BESDEBUG(MODULE, prolog << "Making a new DmrppFloat32 object named: " << n << endl);
+	return new DmrppFloat32(n, d_dmz);
 }
 
 Float64 *
 DmrppTypeFactory::NewFloat64(const string &n) const
 {
-	return new DmrppFloat64(n);
+    BESDEBUG(MODULE, prolog << "Making a new DmrppFloat64 object named: " << n << endl);
+	return new DmrppFloat64(n, d_dmz);
 }
 
 Str *
 DmrppTypeFactory::NewStr(const string &n) const
 {
-	return new DmrppStr(n);
+    BESDEBUG(MODULE, prolog << "Making a new DmrppStr object named: " << n << endl);
+	return new DmrppStr(n, d_dmz);
 }
 
 Url *
 DmrppTypeFactory::NewUrl(const string &n) const
 {
-	return new DmrppUrl(n);
+	return new DmrppUrl(n, d_dmz);
 }
 
 /** Note that this method is called NewURL - URL in caps.
@@ -227,7 +238,7 @@ DmrppTypeFactory::NewURL(const string &n) const
 D4Opaque *
 DmrppTypeFactory::NewOpaque(const string &n) const
 {
-	return new DmrppD4Opaque(n);
+	return new DmrppD4Opaque(n, d_dmz);
 }
 
 D4Enum *
@@ -245,19 +256,19 @@ DmrppTypeFactory::NewArray(const string &n, BaseType *v) const
 Structure *
 DmrppTypeFactory::NewStructure(const string &n) const
 {
-	return new DmrppStructure(n);
+	return new DmrppStructure(n, d_dmz);
 }
 
 D4Sequence *
 DmrppTypeFactory::NewD4Sequence(const string &n) const
 {
-	return new DmrppD4Sequence(n);
+	return new DmrppD4Sequence(n, d_dmz);
 }
 
 D4Group *
 DmrppTypeFactory::NewGroup(const string &n) const
 {
-	return new DmrppD4Group(n);
+	return new DmrppD4Group(n, d_dmz);
 }
 
 } // namespace dmrpp

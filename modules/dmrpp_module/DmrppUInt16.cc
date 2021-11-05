@@ -50,6 +50,14 @@ DmrppUInt16::DmrppUInt16(const string &n, const string &d) : UInt16(n, d), Dmrpp
 {
 }
 
+DmrppUInt16::DmrppUInt16(const string &n, shared_ptr<DMZ> dmz) : UInt16(n), DmrppCommon(dmz)
+{
+}
+
+DmrppUInt16::DmrppUInt16(const string &n, const string &d, shared_ptr<DMZ> dmz) : UInt16(n, d), DmrppCommon(dmz)
+{
+}
+
 BaseType *
 DmrppUInt16::ptr_duplicate()
 {
