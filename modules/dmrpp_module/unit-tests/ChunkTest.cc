@@ -45,6 +45,7 @@
 #include "test_config.h"
 
 using namespace libdap;
+using namespace std;
 
 static bool debug = false;
 static bool bes_debug = false;
@@ -54,7 +55,17 @@ static string bes_conf_file = "/bes.conf";
 #define DBG(x) do { if (debug) x; } while(false)
 #define prolog std::string("ChunkTest::").append(__func__).append("() - ")
 
+namespace http {
+class mock_url: public url {
+public:
+    mock_url(): url() {
+    }
+    string str() const { return "http://test.url.tld/"; }
+};
+}
+
 namespace dmrpp {
+
 
 class ChunkTest: public CppUnit::TestFixture {
 private:
@@ -83,6 +94,86 @@ public:
     void tearDown()
     {
     }
+
+    void test_process_s3_error_response_1() {
+        string document = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                          "<Error>\n"
+                          "  <Code>AccessDenied</Code>\n"
+                          "  <Message>Go away!</Message>\n"
+                          "  <Resource>/mybucket/myfoto.jpg</Resource> \n"
+                          "  <RequestId>4442587FB7D0A2F9</RequestId>\n"
+                          "</Error>";
+        shared_ptr<http::mock_url> murl(new http::mock_url());
+
+        // we could catch the exception with a macro, but I want to look at the text
+        try {
+            process_s3_error_response(murl, document);
+            CPPUNIT_FAIL("Expected an BESError to be thrown");
+        }
+        catch(BESError &e) {
+            DBG(cerr << "Caught a BESError: " << e.get_verbose_message() << endl);
+            CPPUNIT_ASSERT("Correctly caught a BESError");
+        }
+    }
+
+    // Test the bad code
+    void test_process_s3_error_response_2() {
+        string document = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                          "<Error>\n"
+                          "  <Code>Bogus</Code>\n"
+                          "  <Message>We're just fussy!</Message>\n"
+                          "  <Resource>/mybucket/myfoto.jpg</Resource> \n"
+                          "  <RequestId>4442587FB7D0A2F9</RequestId>\n"
+                          "</Error>";
+        shared_ptr<http::mock_url> murl(new http::mock_url());
+
+        // we could catch the exception with a macro, but I want to look at the text
+        try {
+            process_s3_error_response(murl, document);
+            CPPUNIT_FAIL("Expected an BESError to be thrown");
+        }
+        catch(BESError &e) {
+            DBG(cerr << "Caught a BESError: " << e.get_verbose_message() << endl);
+            CPPUNIT_ASSERT("Correctly caught a BESError");
+        }
+    }
+
+    // What if we get something that's not XML?
+    void test_process_s3_error_response_3() {
+        string document = "it's not xml!\n";
+        shared_ptr<http::mock_url> murl(new http::mock_url());
+
+        // we could catch the exception with a macro, but I want to look at the text
+        try {
+            process_s3_error_response(murl, document);
+            CPPUNIT_FAIL("Expected an BESError to be thrown");
+        }
+        catch(BESError &e) {
+            DBG(cerr << "Caught a BESError: " << e.get_verbose_message() << endl);
+            CPPUNIT_ASSERT("Correctly caught a BESError");
+        }
+    }
+
+    // What if we get an XML doc that is not an error
+    void test_process_s3_error_response_4() {
+        string document = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                          "<Information>\n"
+                          "  <Word>Bogus</Word>\n"
+                          "  <Sentence>We're just fussy!</Sentence>\n"
+                          "</Information>";
+        shared_ptr<http::mock_url> murl(new http::mock_url());
+
+        // we could catch the exception with a macro, but I want to look at the text
+        try {
+            process_s3_error_response(murl, document);
+            CPPUNIT_FAIL("Expected an BESError to be thrown");
+        }
+        catch(BESError &e) {
+            DBG(cerr << "Caught a BESError: " << e.get_verbose_message() << endl);
+            CPPUNIT_ASSERT("Correctly caught a BESError");
+        }
+    }
+
 
     void set_position_in_array_test()
     {
@@ -279,6 +370,11 @@ public:
     CPPUNIT_TEST_EXCEPTION(set_position_in_array_test_4, BESError);
     CPPUNIT_TEST_EXCEPTION(set_position_in_array_test_5, BESError);
     CPPUNIT_TEST_EXCEPTION(set_position_in_array_test_6, BESError);
+
+    CPPUNIT_TEST(test_process_s3_error_response_1);
+    CPPUNIT_TEST(test_process_s3_error_response_2);
+    CPPUNIT_TEST(test_process_s3_error_response_3);
+    CPPUNIT_TEST(test_process_s3_error_response_4);
 
     CPPUNIT_TEST(add_tracking_query_param_test);
     CPPUNIT_TEST(add_tracking_query_param_test_2);

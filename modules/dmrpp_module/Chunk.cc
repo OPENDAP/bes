@@ -89,6 +89,8 @@ size_t chunk_header_callback(char *buffer, size_t /*size*/, size_t nitems, void 
     return nitems;
 }
 
+void process_s3_error_response(const shared_ptr<http::url> &data_url, const string &xml_message);
+
 /**
  * @brief Callback passed to libcurl to handle reading bytes.
  *
@@ -122,48 +124,7 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
         // which maybe in this error text, may have < or > chars in them. the XML parser
         // will be sad if that happens. jhrg 12/30/19
         try {
-            // TODO replace this with pugixml. jhrg 11/3/21
-#if 0
-            string json_message = xml2json(xml_message.c_str());
-            rapidjson::Document d;
-            d.Parse(json_message.c_str());
-            // rapidjson::Value &message = d["Error"]["Message"];
-            rapidjson::Value &code = d["Error"]["Code"];
-#endif
-            // See https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html
-            // for the low-down on this XML document.
-            pugi::xml_document error;
-            pugi::xml_parse_result result = error.load_string(xml_message.c_str());
-            if (!result)
-                throw BESInternalError("The underlying data store returned an unintelligible error message.", __FILE__, __LINE__);
-
-            pugi::xml_node err_elmnt = error.document_element().child("Error");
-            if (!err_elmnt)
-                throw BESInternalError("The underlying data store returned an bogus error message.", __FILE__, __LINE__);
-
-            string code = err_elmnt.child("Code").child_value();
-            string message =err_elmnt.child("Message").child_value();
-
-            // We might want to get the "Code" from the "Error" if these text messages
-            // are not good enough. But the "Code" is not really suitable for normal humans...
-            // jhrg 12/31/19
-
-            if (string(code /*code.GetString()*/) == "AccessDenied") {
-                stringstream msg;
-                msg << prolog << "ACCESS DENIED - The underlying object store has refused access to: ";
-                msg << data_url->str() << " Object Store Message: " << message; //json_message;
-                BESDEBUG(MODULE, msg.str() << endl);
-                VERBOSE(msg.str() << endl);
-                throw BESForbiddenError(msg.str(), __FILE__, __LINE__);
-            }
-            else {
-                stringstream msg;
-                msg << prolog << "ERROR - The underlying object store returned an error. ";
-                msg << "(Tried: " << data_url->str() << ") Object Store Message: " << message; // json_message;
-                BESDEBUG(MODULE, msg.str() << endl);
-                VERBOSE(msg.str() << endl);
-                throw BESInternalError(msg.str(), __FILE__, __LINE__);
-            }
+            process_s3_error_response(data_url, xml_message);   // throws a BESError
         }
         catch (BESError) {
             // re-throw any BESError - added for the future if we make BESError a child
@@ -201,6 +162,56 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
     BESDEBUG(MODULE, prolog << "END" << endl);
 
     return nbytes;
+}
+
+/**
+ * @brief Extract something useful from the S3 error response, throw
+ * @param data_url
+ * @param xml_message
+ */
+void process_s3_error_response(const shared_ptr<http::url> &data_url, const string &xml_message)
+{
+#if 0
+    string json_message = xml2json(xml_message.c_str());
+            rapidjson::Document d;
+            d.Parse(json_message.c_str());
+            // rapidjson::Value &message = d["Error"]["Message"];
+            rapidjson::Value &code = d["Error"]["Code"];
+#endif
+    // See https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html
+    // for the low-down on this XML document.
+    pugi::xml_document error;
+    pugi::xml_parse_result result = error.load_string(xml_message.c_str());
+    if (!result)
+        throw BESInternalError("The underlying data store returned an unintelligible error message.", __FILE__, __LINE__);
+
+    pugi::xml_node err_elmnt = error.document_element();
+    if (!err_elmnt || (strcmp(err_elmnt.name(), "Error") != 0))
+        throw BESInternalError("The underlying data store returned a bogus error message.", __FILE__, __LINE__);
+
+    string code = err_elmnt.child_value("Code");
+    string message =err_elmnt.child_value("Message");
+
+    // We might want to get the "Code" from the "Error" if these text messages
+    // are not good enough. But the "Code" is not really suitable for normal humans...
+    // jhrg 12/31/19
+
+    if (code /*code.GetString()*/ == "AccessDenied") {
+        stringstream msg;
+        msg << prolog << "ACCESS DENIED - The underlying object store has refused access to: ";
+        msg << data_url->str() << " Object Store Message: " << message; //json_message;
+        BESDEBUG(MODULE, msg.str() << endl);
+        VERBOSE(msg.str() << endl);
+        throw BESForbiddenError(msg.str(), __FILE__, __LINE__);
+    }
+    else {
+        stringstream msg;
+        msg << prolog << "ERROR - The underlying object store returned an error. ";
+        msg << "(Tried: " << data_url->str() << ") Object Store Message: " << message; // json_message;
+        BESDEBUG(MODULE, msg.str() << endl);
+        VERBOSE(msg.str() << endl);
+        throw BESInternalError(msg.str(), __FILE__, __LINE__);
+    }
 }
 
 /**
