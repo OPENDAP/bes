@@ -799,7 +799,7 @@ string cmdln(int argc, char *argv[]){
 void inject_version_and_configuration(int argc, char **argv, DMRpp *dmrpp){
 
     // Build the version attributes for the DMR++
-    D4Attribute *version = new D4Attribute("build_dmrpp_meta", StringToD4AttributeType("container"));
+    D4Attribute *version = new D4Attribute("build_dmrpp_metadata", StringToD4AttributeType("container"));
 
     D4Attribute *build_dmrpp_version = new D4Attribute("build_dmrpp", StringToD4AttributeType("string"));
     build_dmrpp_version->add_value(CVER);
