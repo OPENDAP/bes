@@ -40,10 +40,7 @@ include $(top_srcdir)/coverage.mk
 # This determines what gets built by make check
 check_PROGRAMS = $(UNIT_TESTS)
 
-bin_PROGRAMS = rapid_xml_test pugi_xml_test
-
-rapid_xml_test_CPPFLAGS = -I$(top_srcdir)
-rapid_xml_test_SOURCES = rapid_xml_test.cc
+bin_PROGRAMS = pugi_xml_test
 
 pugi_xml_test_SOURCES = pugi_xml_test.cc
 

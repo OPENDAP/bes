@@ -79,8 +79,8 @@ size_t chunk_header_callback(char *buffer, size_t /*size*/, size_t nitems, void 
     string header(buffer, buffer + nitems - 2);
 
     // Look for the content type header and store its value in the Chunk
-    string::size_type pos;
-    if ((pos = header.find("Content-Type")) != string::npos) {
+    // string::size_type pos;
+    if (/*(pos = */ header.find("Content-Type") /*)*/ != string::npos) {
         // Header format 'Content-Type: <value>'
         auto c_ptr = reinterpret_cast<Chunk *>(data);
         c_ptr->set_response_content_type(header.substr(header.find_last_of(' ') + 1));
@@ -89,7 +89,55 @@ size_t chunk_header_callback(char *buffer, size_t /*size*/, size_t nitems, void 
     return nitems;
 }
 
-void process_s3_error_response(const shared_ptr<http::url> &data_url, const string &xml_message);
+/**
+ * @brief Extract something useful from the S3 error response, throw a BESError
+ * @param data_url
+ * @param xml_message
+ */
+void process_s3_error_response(const shared_ptr<http::url> &data_url, const string &xml_message)
+{
+#if 0
+    string json_message = xml2json(xml_message.c_str());
+            rapidjson::Document d;
+            d.Parse(json_message.c_str());
+            // rapidjson::Value &message = d["Error"]["Message"];
+            rapidjson::Value &code = d["Error"]["Code"];
+#endif
+    // See https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html
+    // for the low-down on this XML document.
+    pugi::xml_document error;
+    pugi::xml_parse_result result = error.load_string(xml_message.c_str());
+    if (!result)
+        throw BESInternalError("The underlying data store returned an unintelligible error message.", __FILE__, __LINE__);
+
+    pugi::xml_node err_elmnt = error.document_element();
+    if (!err_elmnt || (strcmp(err_elmnt.name(), "Error") != 0))
+        throw BESInternalError("The underlying data store returned a bogus error message.", __FILE__, __LINE__);
+
+    string code = err_elmnt.child_value("Code");
+    string message = err_elmnt.child_value("Message");
+
+    // We might want to get the "Code" from the "Error" if these text messages
+    // are not good enough. But the "Code" is not really suitable for normal humans...
+    // jhrg 12/31/19
+
+    if (code == "AccessDenied") {
+        stringstream msg;
+        msg << prolog << "ACCESS DENIED - The underlying object store has refused access to: ";
+        msg << data_url->str() << " Object Store Message: " << message; //json_message;
+        BESDEBUG(MODULE, msg.str() << endl);
+        VERBOSE(msg.str() << endl);
+        throw BESForbiddenError(msg.str(), __FILE__, __LINE__);
+    }
+    else {
+        stringstream msg;
+        msg << prolog << "ERROR - The underlying object store returned an error. ";
+        msg << "(Tried: " << data_url->str() << ") Object Store Message: " << message; // json_message;
+        BESDEBUG(MODULE, msg.str() << endl);
+        VERBOSE(msg.str() << endl);
+        throw BESInternalError(msg.str(), __FILE__, __LINE__);
+    }
+}
 
 /**
  * @brief Callback passed to libcurl to handle reading bytes.
@@ -165,56 +213,6 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
 }
 
 /**
- * @brief Extract something useful from the S3 error response, throw
- * @param data_url
- * @param xml_message
- */
-void process_s3_error_response(const shared_ptr<http::url> &data_url, const string &xml_message)
-{
-#if 0
-    string json_message = xml2json(xml_message.c_str());
-            rapidjson::Document d;
-            d.Parse(json_message.c_str());
-            // rapidjson::Value &message = d["Error"]["Message"];
-            rapidjson::Value &code = d["Error"]["Code"];
-#endif
-    // See https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html
-    // for the low-down on this XML document.
-    pugi::xml_document error;
-    pugi::xml_parse_result result = error.load_string(xml_message.c_str());
-    if (!result)
-        throw BESInternalError("The underlying data store returned an unintelligible error message.", __FILE__, __LINE__);
-
-    pugi::xml_node err_elmnt = error.document_element();
-    if (!err_elmnt || (strcmp(err_elmnt.name(), "Error") != 0))
-        throw BESInternalError("The underlying data store returned a bogus error message.", __FILE__, __LINE__);
-
-    string code = err_elmnt.child_value("Code");
-    string message =err_elmnt.child_value("Message");
-
-    // We might want to get the "Code" from the "Error" if these text messages
-    // are not good enough. But the "Code" is not really suitable for normal humans...
-    // jhrg 12/31/19
-
-    if (code /*code.GetString()*/ == "AccessDenied") {
-        stringstream msg;
-        msg << prolog << "ACCESS DENIED - The underlying object store has refused access to: ";
-        msg << data_url->str() << " Object Store Message: " << message; //json_message;
-        BESDEBUG(MODULE, msg.str() << endl);
-        VERBOSE(msg.str() << endl);
-        throw BESForbiddenError(msg.str(), __FILE__, __LINE__);
-    }
-    else {
-        stringstream msg;
-        msg << prolog << "ERROR - The underlying object store returned an error. ";
-        msg << "(Tried: " << data_url->str() << ") Object Store Message: " << message; // json_message;
-        BESDEBUG(MODULE, msg.str() << endl);
-        VERBOSE(msg.str() << endl);
-        throw BESInternalError(msg.str(), __FILE__, __LINE__);
-    }
-}
-
-/**
  * @brief Deflate data. This is the zlib algorithm.
  *
  * @note Stolen from the HDF5 library and hacked to fit.
@@ -234,14 +232,14 @@ void inflate(char *dest, unsigned long long dest_len, char *src, unsigned long l
     /* Input; uncompress */
     z_stream z_strm; /* zlib parameters */
 
-    /* Set the uncompression parameters */
+    /* Set the decompression parameters */
     memset(&z_strm, 0, sizeof(z_strm));
     z_strm.next_in = (Bytef *) src;
     z_strm.avail_in = src_len;
     z_strm.next_out = (Bytef *) dest;
     z_strm.avail_out = dest_len;
 
-    /* Initialize the uncompression routines */
+    /* Initialize the decompression routines */
     if (Z_OK != inflateInit(&z_strm))
         throw BESError("Failed to initialize inflate software.", BES_INTERNAL_ERROR, __FILE__, __LINE__);
 
@@ -251,7 +249,7 @@ void inflate(char *dest, unsigned long long dest_len, char *src, unsigned long l
         /* Uncompress some data */
         status = inflate(&z_strm, Z_SYNC_FLUSH);
 
-        /* Check if we are done uncompressing data */
+        /* Check if we are done decompressing data */
         if (Z_STREAM_END == status) break; /*done*/
 
         /* Check for error */
@@ -266,12 +264,11 @@ void inflate(char *dest, unsigned long long dest_len, char *src, unsigned long l
         }
         else {
             /* If we're not done and just ran out of buffer space, it's an error.
-             * The HDF5 library code would extend the buffer as needed, but for
-             * this handler, we should always know the size of the uncompressed chunk.
+             * The HDF5 library code would extend the buffer as-needed, but for
+             * this handler, we should always know the size of the decompressed chunk.
              */
             if (0 == z_strm.avail_out) {
-                throw BESError("Data buffer is not big enough for uncompressed data.", BES_INTERNAL_ERROR, __FILE__,
-                               __LINE__);
+                throw BESError("Data buffer is not big enough for uncompressed data.", BES_INTERNAL_ERROR, __FILE__, __LINE__);
 #if 0
                 /* Here's how to extend the buffer if needed. This might be useful some day... */
                 void *new_outbuf; /* Pointer to new output buffer */
@@ -290,12 +287,10 @@ void inflate(char *dest, unsigned long long dest_len, char *src, unsigned long l
 #endif
             } /* end if */
         } /* end else */
-    } while (status == Z_OK);
+    } while (true /* status == Z_OK */);    // Exit via the break statement after the call to inflate(). jhrg 11/8/21
 
-    /* Finish uncompressing the stream */
+    /* Finish decompressing the stream */
     (void) inflateEnd(&z_strm);
-
-
 }
 
 // #define this to enable the duff's device loop unrolling code.
@@ -397,7 +392,7 @@ void unshuffle(char *dest, const char *src, unsigned long long src_size, unsigne
 /// test, run time for parse_chunk_position_in_array_string() dropped from
 /// 20ms to ~3ms). It also fixes a test we could never get to pass.
 /// jhrg 11/5/21
-static void split_by_comma (const string &s, vector<unsigned long long> &res)
+static void split_by_comma(const string &s, vector<unsigned long long> &res)
 {
     const string delimiter = ",";
     const size_t delim_len = delimiter.length();
@@ -593,6 +588,12 @@ void Chunk::add_tracking_query_param() {
     }
 }
 
+/**
+ * @brief Compute the Fletcher32 checksum for a block of bytes
+ * @param _data Pointer to a block of byte data
+ * @param _len Number of bytes to checksum
+ * @return The Fletcher32 checksum
+ */
 uint32_t
 checksum_fletcher32(const void *_data, size_t _len)
 {
