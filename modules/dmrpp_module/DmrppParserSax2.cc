@@ -915,10 +915,10 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
             auto dmrpp = dynamic_cast<DMRpp*>(parser->dmr());
             if (dmrpp)
                 dmrpp->set_version(parser->get_attribute_val("builderVersion", attributes, nb_attributes));
-            DmrppRequestHandler::d_emulate_original_filter_order = false;
+            DmrppRequestHandler::d_emulate_original_filter_order_behavior = false;
         }
         else {
-            DmrppRequestHandler::d_emulate_original_filter_order = true;
+            DmrppRequestHandler::d_emulate_original_filter_order_behavior = true;
         }
 
         if (parser->check_attribute("dapVersion", attributes, nb_attributes))

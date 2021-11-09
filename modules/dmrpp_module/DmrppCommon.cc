@@ -98,7 +98,7 @@ void join_threads(pthread_t threads[], unsigned int num_threads)
 
 /// @brief Set the value of the filters property
 void DmrppCommon::set_filter(const string &value) {
-    if (DmrppRequestHandler::d_emulate_original_filter_order) {
+    if (DmrppRequestHandler::d_emulate_original_filter_order_behavior) {
         d_filters = "";
         if (value.find("shuffle") != string::npos)
             d_filters.append(" shuffle");

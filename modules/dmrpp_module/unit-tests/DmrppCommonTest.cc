@@ -23,6 +23,7 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 #include <memory>
+#include <sstream>
 
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
@@ -43,6 +44,7 @@
 #include "read_test_baseline.h"
 #include "test_config.h"
 
+using namespace std;
 using namespace libdap;
 using namespace bes;
 
@@ -91,14 +93,14 @@ public:
             CPPUNIT_ASSERT(d_dc.d_chunk_dimension_sizes.at(1) == 17);
         }
         catch(BESError &be){
-            stringstream msg;
+            ostringstream msg;
             msg << prolog << "Caught BESError! Message: " << be.get_verbose_message();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
         }
         catch(std::exception &se){
-            stringstream msg;
-            msg << prolog << "Caught std::excpetion! Message: " << se.what();
+            ostringstream msg;
+            msg << prolog << "Caught std::exception! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
         }
@@ -122,7 +124,7 @@ public:
         }
         catch(std::exception &se){
             stringstream msg;
-            msg << prolog << "Caught std::excpetion! Message: " << se.what();
+            msg << prolog << "Caught std::exception! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
         }
@@ -149,7 +151,7 @@ public:
         }
         catch(std::exception &se){
             stringstream msg;
-            msg << prolog << "Caught std::excpetion! Message: " << se.what();
+            msg << prolog << "Caught std::exception! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
         }
@@ -176,7 +178,7 @@ public:
         }
         catch(std::exception &se){
             stringstream msg;
-            msg << prolog << "Caught std::excpetion! Message: " << se.what();
+            msg << prolog << "Caught std::exception! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
         }
@@ -199,7 +201,7 @@ public:
         }
         catch(std::exception &se){
             stringstream msg;
-            msg << prolog << "Caught std::excpetion! Message: " << se.what();
+            msg << prolog << "Caught std::exception! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
         }
@@ -268,7 +270,7 @@ public:
         }
         catch(std::exception &se){
             stringstream msg;
-            msg << prolog << "Caught std::excpetion! Message: " << se.what();
+            msg << prolog << "Caught std::exception! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
         }
@@ -327,7 +329,7 @@ public:
         }
         catch(std::exception &se){
             stringstream msg;
-            msg << prolog << "Caught std::excpetion! Message: " << se.what();
+            msg << prolog << "Caught std::exception! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
         }
@@ -366,7 +368,7 @@ public:
         }
         catch(std::exception &se){
             stringstream msg;
-            msg << prolog << "Caught std::excpetion! Message: " << se.what();
+            msg << prolog << "Caught std::exception! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
         }
@@ -398,7 +400,7 @@ public:
         }
         catch(std::exception &se){
             stringstream msg;
-            msg << prolog << "Caught std::excpetion! Message: " << se.what();
+            msg << prolog << "Caught std::exception! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
         }
@@ -433,7 +435,7 @@ public:
         }
         catch(std::exception &se){
             stringstream msg;
-            msg << prolog << "Caught std::excpetion! Message: " << se.what();
+            msg << prolog << "Caught std::exception! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
         }
@@ -469,7 +471,7 @@ public:
         }
         catch(std::exception &se){
             stringstream msg;
-            msg << prolog << "Caught std::excpetion! Message: " << se.what();
+            msg << prolog << "Caught std::exception! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
         }
@@ -505,7 +507,7 @@ public:
         }
         catch(std::exception &se){
             stringstream msg;
-            msg << prolog << "Caught std::excpetion! Message: " << se.what();
+            msg << prolog << "Caught std::exception! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
         }
@@ -541,7 +543,7 @@ public:
         }
         catch(std::exception &se){
             stringstream msg;
-            msg << prolog << "Caught std::excpetion! Message: " << se.what();
+            msg << prolog << "Caught std::exception! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
         }

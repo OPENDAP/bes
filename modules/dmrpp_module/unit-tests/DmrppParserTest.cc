@@ -23,6 +23,7 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+
 #include "config.h"
 
 #include <memory>
@@ -31,7 +32,7 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <DMR.h>
+#include <libdap/DMR.h>
 
 #include <TheBESKeys.h>
 #include <BESDebug.h>
@@ -64,15 +65,6 @@
 
 #include <unistd.h>
 #include "test_config.h"
-#include "util.h"
-
-#if 0
-#include "H5Ppublic.h"
-#include "HDF5RequestHandler.h"
-#include "h5get.h"
-#include "HDF5CF.h"
-#include "H5Dpublic.h"
-#endif
 
 #define BES_CATALOG_ROOT_KEY "BES.Catalog.default.RootDirectory"
 
@@ -119,14 +111,12 @@ public:
         }
 
         parser = new DmrppParserSax2();
-
     }
 
     // Called after each test
     void tearDown()
     {
-        if(parser)
-            delete parser;
+        delete parser;
     }
 
     /**
@@ -206,8 +196,6 @@ public:
         if(debug) cerr << prolog << "The D4Group '" << grp->name() << "' has " << numVars << " child variables." << endl;
         CPPUNIT_ASSERT( numVars == expectedNumVars);
     }
-
-
 
     /******************************************************
      *
@@ -727,24 +715,24 @@ public:
         if(debug) cerr << prolog << "END " << endl;
     }
 
-CPPUNIT_TEST_SUITE( DmrppParserTest );
+    CPPUNIT_TEST_SUITE( DmrppParserTest );
 
-        //CPPUNIT_TEST(test_integer_scalar_compact);
-        CPPUNIT_TEST(test_integer_array_compact);
-        //CPPUNIT_TEST(test_string_compact);
+    //CPPUNIT_TEST(test_integer_scalar_compact);
+    CPPUNIT_TEST(test_integer_array_compact);
+    //CPPUNIT_TEST(test_string_compact);
 
-        CPPUNIT_TEST(test_integer_scalar);
-        CPPUNIT_TEST(test_integer_arrays);
-        CPPUNIT_TEST(test_float_arrays);
+    CPPUNIT_TEST(test_integer_scalar);
+    CPPUNIT_TEST(test_integer_arrays);
+    CPPUNIT_TEST(test_float_arrays);
 
-        CPPUNIT_TEST(test_grid_1_2d);
-        CPPUNIT_TEST(test_nc4_group_atomic);
-        CPPUNIT_TEST(test_trusted_href);
+    CPPUNIT_TEST(test_grid_1_2d);
+    CPPUNIT_TEST(test_nc4_group_atomic);
+    CPPUNIT_TEST(test_trusted_href);
 
 
-        // CPPUNIT_TEST(test_flattened_grid_1_2d);
+    // CPPUNIT_TEST(test_flattened_grid_1_2d);
 #if 0
-        CPPUNIT_TEST(test_chunked_dmr_print);
+    CPPUNIT_TEST(test_chunked_dmr_print);
     CPPUNIT_TEST(test_chunked_hdf5);
 #endif
 
