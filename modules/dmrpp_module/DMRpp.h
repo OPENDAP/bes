@@ -46,7 +46,6 @@ class DmrppTypeFactory;
 class DMRpp : public libdap::DMR {
 private:
     std::string d_href;
-    std::string d_version;
     bool d_print_chunks;
 
 public:
@@ -59,9 +58,6 @@ public:
 
     virtual std::string get_href() const { return d_href; }
     virtual void set_href(const std::string &h) { d_href = h; }
-
-    virtual std::string get_version() const { return d_version; }
-    virtual void set_version(const std::string &version) { d_version = version; }
 
     virtual bool get_print_chunks() const { return d_print_chunks; }
     virtual void set_print_chunks(bool pc) { d_print_chunks = pc; }

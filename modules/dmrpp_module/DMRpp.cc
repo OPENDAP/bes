@@ -107,13 +107,8 @@ void DMRpp::print_dmrpp(XMLWriter &xml, const string &href, bool constrained, bo
         // cerr << "DMRpp::" <<__func__ << "() href: "<< href << endl;
         if (!href.empty())
             if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*)string(DmrppCommon::d_ns_prefix).append(":href").c_str(),
-                                            (const xmlChar*) href.c_str()) < 0)
+                (const xmlChar*) href.c_str()) < 0)
                 throw InternalErr(__FILE__, __LINE__, "Could not write attribute for href");
-
-        if (!get_version().empty())
-            if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar*)string(DmrppCommon::d_ns_prefix).append(":version").c_str(),
-                                            (const xmlChar*) get_version().c_str()) < 0)
-                throw InternalErr(__FILE__, __LINE__, "Could not write attribute for version");
 
 
         root()->print_dap4(xml, constrained);
