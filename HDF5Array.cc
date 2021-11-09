@@ -1546,6 +1546,8 @@ BaseType* HDF5Array::h5dims_transform_to_dap4(D4Group *grp,const vector<string> 
             // Not find this dimension in any of the ancestor groups, add it to this group.
             // The following block is fine, but to avoid the complaint from sonarcloud.
             // Use a bool.
+// Temp turned off 
+#if 0
             if(true == is_dim_nonc4_grp) {
                  string err= "The variable " + var_path +" has dimension ";
                  err += dimpath[k] + ". This dimension is not under its ancestor or the current group.";
@@ -1553,6 +1555,7 @@ BaseType* HDF5Array::h5dims_transform_to_dap4(D4Group *grp,const vector<string> 
                  delete dest;
                  throw InternalErr(__FILE__,__LINE__,err); 
             }
+#endif
 
             bool d4_dim_null = ((d4_dim==NULL)?true:false);
             if(d4_dim_null == true) {

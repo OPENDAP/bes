@@ -1,3 +1,4 @@
+// This file is part of hdf5_handler: an HDF5 file handler for the OPeNDAP
 // data server.
 
 // Copyright (c) 2007-2016 The HDF Group, Inc. and OPeNDAP, Inc.
@@ -55,6 +56,13 @@
 #include <sstream>
 
 using namespace libdap;
+
+typedef struct {
+    haddr_t  link_addr;
+    vector<string> link_paths;
+} tmp_link_info_t;
+
+vector<tmp_link_info_t> tmp_hdf5_hls;
 
 // H5Ovisit call back function. When finding the dimension scale attributes, return 1. 
 static int
@@ -434,10 +442,147 @@ void close_fileid(hid_t fid)
 
 void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
 {
+    BESDEBUG("h5", ">get_dataset()" << endl);
 
-    bool is_pure_dim = false;
-    get_dataset(pid,dname,dt_inst_ptr,false,is_pure_dim);
+    // Obtain the dataset ID
+    hid_t dset = -1;
+    if ((dset = H5Dopen(pid, dname.c_str(),H5P_DEFAULT)) < 0) {
+        string msg = "cannot open the HDF5 dataset  ";
+        msg += dname;
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+
+    // Obtain the datatype ID
+    hid_t dtype = -1;
+    if ((dtype = H5Dget_type(dset)) < 0) {
+        H5Dclose(dset);
+        string msg = "cannot get the the datatype of HDF5 dataset  ";
+        msg += dname;
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+
+    // Obtain the datatype class 
+    H5T_class_t ty_class = H5Tget_class(dtype);
+    if (ty_class < 0) {
+        H5Tclose(dtype);
+        H5Dclose(dset);
+        string msg = "cannot get the datatype class of HDF5 dataset  ";
+        msg += dname;
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+
+    // These datatype classes are unsupported. Note we do support
+    // variable length string and the variable length string class is
+    // H5T_STRING rather than H5T_VLEN.
+    if ((ty_class == H5T_TIME) || (ty_class == H5T_BITFIELD)
+        || (ty_class == H5T_OPAQUE) || (ty_class == H5T_ENUM) || (ty_class == H5T_VLEN)) {
+        string msg = "unexpected datatype of HDF5 dataset  ";
+        msg += dname;
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+   
+    hid_t dspace = -1;
+    if ((dspace = H5Dget_space(dset)) < 0) {
+        H5Tclose(dtype);
+        H5Dclose(dset);
+        string msg = "cannot get the the dataspace of HDF5 dataset  ";
+        msg += dname;
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+
+    // It is better to use the dynamic allocation of the array.
+    // However, since the DODS_MAX_RANK is not big and it is also
+    // used in other location, we still keep the original code.
+    // KY 2011-11-17
+
+    int ndims = H5Sget_simple_extent_ndims(dspace);
+    if (ndims < 0) {
+        H5Tclose(dtype);
+        H5Sclose(dspace);
+        H5Dclose(dset);
+        string msg = "cannot get hdf5 dataspace number of dimension for dataset ";
+        msg += dname;
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+
+    // Check if the dimension size exceeds the maximum number of dimension DAP supports
+    if (ndims > DODS_MAX_RANK) {
+        string msg = "number of dimensions exceeds allowed for dataset ";
+        msg += dname;
+        H5Tclose(dtype);
+        H5Sclose(dspace);
+        H5Dclose(dset);
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+
+    hsize_t size[DODS_MAX_RANK];
+    hsize_t maxsize[DODS_MAX_RANK];
+
+    // Retrieve size. DAP4 doesn't have a convention to support multi-unlimited dimension yet.
+    if (H5Sget_simple_extent_dims(dspace, size, maxsize)<0){
+        string msg = "cannot obtain the dim. info for the dataset ";
+        msg += dname;
+        H5Tclose(dtype);
+        H5Sclose(dspace);
+        H5Dclose(dset);
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+
+    // return ndims and size[ndims]. 
+    hsize_t nelmts = 1;
+    if (ndims !=0) {
+        for (int j = 0; j < ndims; j++)
+            nelmts *= size[j];
+    }
+
+    size_t dtype_size = H5Tget_size(dtype);
+    if (dtype_size == 0) {
+        string msg = "cannot obtain the data type size for the dataset ";
+        msg += dname;
+        H5Tclose(dtype);
+        H5Sclose(dspace);
+        H5Dclose(dset);
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+ 
+    size_t need = nelmts * dtype_size;
+
+    hid_t memtype = H5Tget_native_type(dtype, H5T_DIR_ASCEND);
+    if (memtype < 0){
+        string msg = "cannot obtain the memory data type for the dataset ";
+        msg += dname;
+        H5Tclose(dtype);
+        H5Sclose(dspace);
+        H5Dclose(dset);
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+
+    (*dt_inst_ptr).type = memtype;
+    (*dt_inst_ptr).ndims = ndims;
+    (*dt_inst_ptr).nelmts = nelmts;
+    (*dt_inst_ptr).need = need;
+    strncpy((*dt_inst_ptr).name, dname.c_str(), dname.length());
+    (*dt_inst_ptr).name[dname.length()] = '\0';
+    for (int j = 0; j < ndims; j++) 
+        (*dt_inst_ptr).size[j] = size[j];
+
+    if(H5Tclose(dtype)<0) {
+        H5Sclose(dspace);
+        H5Dclose(dset);
+        throw InternalErr(__FILE__, __LINE__, "Cannot close the HDF5 datatype.");
+    }
+
+    if(H5Sclose(dspace)<0) {
+        H5Dclose(dset);
+        throw InternalErr(__FILE__, __LINE__, "Cannot close the HDF5 dataspace.");
+    }
+
+    if(H5Dclose(dset)<0) {
+        throw InternalErr(__FILE__, __LINE__, "Cannot close the HDF5 dataset.");
+    }
+
 }
+
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
 /// obtain data information in a dataset datatype, dataspace(dimension sizes)
@@ -449,7 +594,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
 /// \param[in] use_dimscale whether dimscale is used. Should always be false for DDS building.
 /// \param[out] dt_inst_ptr  pointer to the attribute struct(* attr_inst_ptr)
 ///////////////////////////////////////////////////////////////////////////////
-void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr,bool use_dimscale, bool &is_pure_dim)
+void get_dataset_dmr(hid_t pid, const string &dname, DS_t * dt_inst_ptr,bool use_dimscale, bool &is_pure_dim, vector<link_info_t> &hdf5_hls)
 {
 
     BESDEBUG("h5", ">get_dataset()" << endl);
@@ -610,7 +755,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr,bool use_dim
 
             // This will check if "NAME" and "REFERENCE_LIST" exists.
             //herr_t ret = H5Aiterate2(dset, H5_INDEX_NAME, H5_ITER_INC, NULL, attr_info, &dim_attr_mark[0]);
-                herr_t ret = H5Aiterate2(dset, H5_INDEX_NAME, H5_ITER_INC, NULL, attr_info_dimscale, dim_attr_mark);
+            herr_t ret = H5Aiterate2(dset, H5_INDEX_NAME, H5_ITER_INC, NULL, attr_info_dimscale, dim_attr_mark);
             if(ret < 0) {
                 string msg = "cannot interate the attributes of the dataset ";
                 msg += dname;
@@ -654,7 +799,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr,bool use_dim
          }
 
          else if(false == is_pure_dim) // Except pure dimension,we need to save all dimension names in this dimension. 
-            obtain_dimnames(dset,ndims,dt_inst_ptr);
+            obtain_dimnames(dset,ndims,dt_inst_ptr,hdf5_hls);
     }
     
     if(H5Tclose(dtype)<0) {
@@ -1745,7 +1890,7 @@ attr_info_dimscale(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void
 /// \param[in] ndims  number of dimensions
 /// \param[out] dt_inst_ptr  pointer to the dataset struct that saves the dim. names
 ///////////////////////////////////////////////////////////////////////////////
-void obtain_dimnames(hid_t dset,int ndims, DS_t *dt_inst_ptr) {
+void obtain_dimnames(hid_t dset,int ndims, DS_t *dt_inst_ptr,vector<link_info_t> & hdf5_hls) {
 
     htri_t has_dimension_list = -1;
     
@@ -1827,6 +1972,27 @@ void obtain_dimnames(hid_t dset,int ndims, DS_t *dt_inst_ptr) {
 
                 // Must trim the string delimter.
                 string trim_objname = objname_str.substr(0,objnamelen);
+ 
+                H5O_info_t obj_info;
+                if(H5Oget_info(ref_dset,&obj_info)<0) {
+                    H5Dclose(ref_dset);
+                    string msg = "Cannot obtain the object info for the dimension variable " + objname_str;
+                    throw InternalErr(__FILE__,__LINE__,msg);
+                }
+                if(obj_info.rc > 1) {
+cerr<<" this dimension variable "<< objname_str <<" has a hard-link."<<endl;
+                    tmp_link_info_t hls;
+                     hls.link_addr = obj_info.addr;
+                     hls.link_paths.push_back(trim_objname);
+                     tmp_hdf5_hls.push_back(hls);
+for(int i = 0; i<tmp_hdf5_hls.size();i++) {
+    cerr<< "tmp_hdf5_hls.link_addr = "<< tmp_hdf5_hls[i].link_addr <<endl;
+    for(int j = 0; j<tmp_hdf5_hls[i].link_paths.size();j++)
+        cerr<< "tmp_hdf5_hls["<<i<<"].link_paths = "<< tmp_hdf5_hls[i].link_paths[j] <<endl;
+}
+
+                }
+
                 // Need to save the dimension names without the path
  
                 dt_inst_ptr->dimnames.push_back(trim_objname.substr(trim_objname.find_last_of("/")+1));
