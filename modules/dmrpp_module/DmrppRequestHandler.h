@@ -66,7 +66,7 @@ public:
 
     static unsigned long long d_contiguous_concurrent_threshold;
 
-    static bool d_emulate_original_filter_order_if_needed;
+    static bool d_emulate_original_filter_order;
 
 	static bool dap_build_dmr(BESDataHandlerInterface &dhi);
 	static bool dap_build_dap4data(BESDataHandlerInterface &dhi);

@@ -25,17 +25,18 @@
 #ifndef _dmrpp_common_h
 #define _dmrpp_common_h 1
 
+//#include "config.h"
+
 #include <string>
 #include <vector>
 #include <memory>
 
-//#include <H5Ppublic.h>
+#include <libdap/dods-datatypes.h>
+#include <BESUtil.h>
 
-#include "dods-datatypes.h"
+#include "DmrppRequestHandler.h"
 #include "Chunk.h"
 #include "SuperChunk.h"
-
-#include "config.h"
 #include "byteswap_compat.h"
 
 namespace libdap {
@@ -101,20 +102,14 @@ protected:
     }
 
     virtual char *read_atomic(const std::string &name);
-    virtual bool is_original_dmrpp_doc();
+    // virtual bool is_original_dmrpp_doc();
 
 public:
     static bool d_print_chunks;     ///< if true, print_dap4() prints chunk elements
     static std::string d_dmrpp_ns;       ///< The DMR++ XML namespace
     static std::string d_ns_prefix;      ///< The XML namespace prefix to use
 
-#if 0
-    DmrppCommon() : d_deflate(false), d_shuffle(false), d_fletcher32(false), d_filters(""), d_compact(false),d_byte_order(""), d_twiddle_bytes(false)
-    {
-    }
-#endif
-
-    DmrppCommon() : d_filters(""), d_compact(false),d_byte_order(""), d_twiddle_bytes(false)
+    DmrppCommon() :d_compact(false), d_twiddle_bytes(false)
     {
     }
 
@@ -125,38 +120,6 @@ public:
 
     virtual ~DmrppCommon()= default;
 
-#if 0
-    /// @brief Returns true if this object utilizes deflate compression.
-    virtual bool is_deflate_compression() const {
-        return d_deflate;
-    }
-
-    /// @brief Set the value of the deflate property
-    void set_deflate(bool value) {
-        d_deflate = value;
-    }
-
-    /// @brief Returns true if this object utilizes fletcher32 compression.
-    virtual bool is_fletcher32_compression() const {
-        return d_fletcher32;
-    }
-
-    /// @brief Set the value of the fletcher32 property
-    void set_fletcher32(bool value) {
-        d_fletcher32 = value;
-    }
-
-    /// @brief Returns true if this object utilizes shuffle compression.
-    virtual bool is_shuffle_compression() const {
-        return d_shuffle;
-    }
-
-    /// @brief Set the value of the shuffle property
-    void set_shuffle(bool value) {
-        d_shuffle = value;
-    }
-#endif
-
     /// @brief Return the names of all the filters in the order they were applied
     virtual std::string get_filters() const {
         return d_filters;
@@ -164,9 +127,15 @@ public:
 
     /// @brief Set the value of the deflate property
     void set_filter(const std::string &value) {
-        // TODO Add hack for the original dmrpp format here. jhrg 11/08/21
-        if (DmrppRequestHandler::d_emulate_original_filter_order_if_needed && is_original_dmrpp_doc()) {
-
+        if (DmrppRequestHandler::d_emulate_original_filter_order) {
+            d_filters = "";
+            if (value.find("shuffle") != string::npos)
+                d_filters.append(" shuffle");
+            if (value.find("deflate") != string::npos)
+                d_filters.append(" deflate");
+            if (value.find("fletcher32") != string::npos)
+                d_filters.append(" fletcher32");
+            BESUtil::removeLeadingAndTrailingBlanks(d_filters);
         }
         else {
             d_filters = value;

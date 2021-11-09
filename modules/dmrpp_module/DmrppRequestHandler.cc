@@ -98,7 +98,7 @@ unsigned int DmrppRequestHandler::d_max_compute_threads = 8;
 unsigned long long DmrppRequestHandler::d_contiguous_concurrent_threshold = DMRPP_DEFAULT_CONTIGUOUS_CONCURRENT_THRESHOLD;
 
 // We could turn this off with a run-time param if we need to, later on. jhrg 11/8/21
-bool DmrppRequestHandler::d_emulate_original_filter_order_if_needed = true;
+bool DmrppRequestHandler::d_emulate_original_filter_order = false;
 
 static void read_key_value(const std::string &key_name, bool &key_value)
 {

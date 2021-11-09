@@ -1469,3 +1469,52 @@ uint64_t BESUtil::file_to_stream_task(const std::string &file_name, std::atomic<
 
     return tcount;
 }
+
+/// Stolen from our friends at Stack Overflow and modified for our use.
+/// This is far faster than the istringstream code it replaces (for one
+/// test, run time for parse_chunk_position_in_array_string() dropped from
+/// 20ms to ~3ms). It also fixes a test we could never get to pass.
+/// jhrg 11/5/21
+
+/**
+ * @brief Split a string using delimiter. Store values as unsigned long longs
+ * @param s The string to split
+ * @param delimiter The delimiter
+ * @param res Return the result in this vector
+ */
+void BESUtil::split(const string &s, const string &delimiter, vector<uint64_t> &res)
+{
+    const size_t delim_len = delimiter.length();
+
+    size_t pos_start = 0, pos_end;
+
+    while ((pos_end = s.find (delimiter, pos_start)) != string::npos) {
+        res.push_back (stoull(s.substr(pos_start, pos_end - pos_start)));
+        pos_start = pos_end + delim_len;
+    }
+
+    res.push_back (stoull(s.substr (pos_start)));
+}
+
+/**
+ * @brief Split a string using delimiter. Store values as strings
+ * @param s The string to split
+ * @param delimiter The delimiter
+ * @param res Return the result in this vector
+ *
+ * @note Maybe we could combine this and the previous function using a lambda
+ * to wrap stoull()? jhrg 11/9/21
+ */
+void BESUtil::split(const string &s, const string &delimiter, vector<string> &res)
+{
+    const size_t delim_len = delimiter.length();
+
+    size_t pos_start = 0, pos_end;
+
+    while ((pos_end = s.find (delimiter, pos_start)) != string::npos) {
+        res.push_back(s.substr(pos_start, pos_end - pos_start));
+        pos_start = pos_end + delim_len;
+    }
+
+    res.push_back(s.substr (pos_start));
+}

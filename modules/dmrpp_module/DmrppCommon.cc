@@ -28,7 +28,6 @@
 #include <vector>
 #include <iterator>
 #include <cstdlib>
-// #include <cstring>
 
 #include <curl/curl.h>
 
@@ -40,12 +39,10 @@
 #include "BESIndent.h"
 #include "BESDebug.h"
 #include "BESUtil.h"
-// #include "BESLog.h"
 #include "BESInternalError.h"
 
 #include "DmrppRequestHandler.h"
 #include "DmrppCommon.h"
-// #include "DmrppArray.h"
 #include "Chunk.h"
 
 
@@ -146,7 +143,7 @@ void DmrppCommon::parse_chunk_dimension_sizes(const string &chunk_dims_string)
 void DmrppCommon::ingest_compression_type(const string &compression_type_string)
 {
     if (compression_type_string.empty()) return;
-    d_filters = compression_type_string;
+    set_filter(compression_type_string);
 }
 
 /**
@@ -242,9 +239,6 @@ unsigned long DmrppCommon::add_chunk(
     d_chunks.push_back(chunk);
     return d_chunks.size();
 }
-
-
-
 
 unsigned long DmrppCommon::add_chunk(
         const string &byte_order,
