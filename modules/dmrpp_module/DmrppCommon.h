@@ -166,7 +166,13 @@ public:
 
     /// @brief Set the value of the deflate property
     void set_filter(const std::string &value) {
-        d_filters = value;
+        // TODO Add hack for the original dmrpp format here. jhrg 11/08/21
+        if (DmrppRequestHandler::d_emulate_original_filter_order_if_needed && is_original_dmrpp_doc()) {
+
+        }
+        else {
+            d_filters = value;
+        }
     }
 
     virtual bool is_filters_empty() const {
