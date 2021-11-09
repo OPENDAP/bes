@@ -86,10 +86,7 @@ private:
 
 protected:
     void m_duplicate_common(const DmrppCommon &dc) {
-    	//d_deflate = dc.d_deflate;
-    	//d_shuffle = dc.d_shuffle;
     	d_compact = dc.d_compact;
-        //d_fletcher32 = dc.d_fletcher32;
         d_filters = dc.d_filters;
     	d_chunk_dimension_sizes = dc.d_chunk_dimension_sizes;
     	d_chunks = dc.d_chunks;
@@ -104,6 +101,7 @@ protected:
     }
 
     virtual char *read_atomic(const std::string &name);
+    virtual bool is_original_dmrpp_doc();
 
 public:
     static bool d_print_chunks;     ///< if true, print_dap4() prints chunk elements
@@ -159,7 +157,7 @@ public:
     }
 #endif
 
-    /// @brief Returns true if this object utilizes deflate compression.
+    /// @brief Return the names of all the filters in the order they were applied
     virtual std::string get_filters() const {
         return d_filters;
     }

@@ -437,7 +437,7 @@ bool DmrppRequestHandler::dap_build_dds(BESDataHandlerInterface & dhi)
         }
         else {
             // Not in cache, make one...
-            DMR *dmr = new DMR();   // FIXME is this leaked? jhrg 6/1/18
+            DMR *dmr = new DMR();   // FIXME is this leaked? jhrg 6/1/18 YES!!
             build_dmr_from_file(dhi.container, dmr);
 
             // delete the current one;
