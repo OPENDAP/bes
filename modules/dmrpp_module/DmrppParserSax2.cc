@@ -33,18 +33,18 @@
 
 #include <libxml/parserInternals.h>
 
-#include <DMR.h>
+#include <libdap/DMR.h>
 
-#include <BaseType.h>
-#include <Array.h>
-#include <D4Group.h>
-#include <D4Attributes.h>
-#include <D4Maps.h>
-#include <D4Enum.h>
-#include <D4BaseTypeFactory.h>
+#include <libdap/BaseType.h>
+#include <libdap/Array.h>
+#include <libdap/D4Group.h>
+#include <libdap/D4Attributes.h>
+#include <libdap/D4Maps.h>
+#include <libdap/D4Enum.h>
+#include <libdap/D4BaseTypeFactory.h>
 
-#include <DapXmlNamespaces.h>
-#include <util.h>
+#include <libdap/DapXmlNamespaces.h>
+#include <libdap/util.h>
 
 #include <BESInternalError.h>
 #include <BESDebug.h>
@@ -55,6 +55,8 @@
 #include <TheBESKeys.h>
 #include <BESRegex.h>
 
+#include "DmrppRequestHandler.h"
+#include "DMRpp.h"
 #include "DmrppParserSax2.h"
 #include "DmrppCommon.h"
 #include "DmrppStr.h"
@@ -908,9 +910,11 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
         // current version of the handler code _expects_ this. The old version of the DMR++ had
         // the order reversed (at least for most - all? - data). So we have this kludge to enable
         // those old DMR++ files to work. See DmrppCommon::set_filter() for the other half of the
-        // hack. jhrg 11/9/21
-        if (parser->check_attribute("dmrppBuilderVersion", attributes, nb_attributes)) {
-            parser->dmr()->set_dap_version(parser->get_attribute_val("dmrppBuilderVersion", attributes, nb_attributes));
+        // hack. Note that the attribute 'builderVersion' is in the dmrpp xml namespace. jhrg 11/9/21
+        if (parser->check_attribute("builderVersion", attributes, nb_attributes)) {
+            auto dmrpp = dynamic_cast<DMRpp*>(parser->dmr());
+            if (dmrpp)
+                dmrpp->set_version(parser->get_attribute_val("builderVersion", attributes, nb_attributes));
             DmrppRequestHandler::d_emulate_original_filter_order = false;
         }
         else {

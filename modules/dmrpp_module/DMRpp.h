@@ -25,12 +25,13 @@
 #ifndef MODULES_DMRPP_MODULE_DMRPP_H_
 #define MODULES_DMRPP_MODULE_DMRPP_H_
 
-#include "config.h"
+// #include "config.h"
 
 #include <string>
 
-#include "DMR.h"
-#include "url_impl.h"
+#include <libdap/DMR.h>
+
+//#include "url_impl.h"
 
 namespace libdap {
 class XMLWriter;
@@ -60,6 +61,8 @@ public:
     virtual std::string get_href() const { return d_href; }
     virtual void set_href(const std::string &h) { d_href = h; }
 
+    // These new methods hold the DMR++ builder version. I changed the XML attribute
+    // to 'dmrppBuilderVersion.' jhrg 11/9/21
     virtual std::string get_version() const { return d_version; }
     virtual void set_version(const std::string &version) { d_version = version; }
 

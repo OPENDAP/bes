@@ -35,8 +35,10 @@
 
 #include <BESError.h>
 #include <BESDebug.h>
+#include <url_impl.h>
 
 #include "DmrppCommon.h"
+#include "Chunk.h"
 
 #include "read_test_baseline.h"
 #include "test_config.h"

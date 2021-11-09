@@ -25,19 +25,16 @@
 #ifndef _dmrpp_common_h
 #define _dmrpp_common_h 1
 
-//#include "config.h"
-
 #include <string>
 #include <vector>
 #include <memory>
 
-#include <libdap/dods-datatypes.h>
-#include <BESUtil.h>
+//#include <libdap/dods-datatypes.h>
+//#include <BESUtil.h>
 
-#include "DmrppRequestHandler.h"
-#include "Chunk.h"
-#include "SuperChunk.h"
-#include "byteswap_compat.h"
+//#include "DmrppRequestHandler.h"
+//#include "Chunk.h"
+//#include "SuperChunk.h"
 
 namespace libdap {
 class DMR;
@@ -50,7 +47,13 @@ class D4Dimension;
 class XMLWriter;
 }
 
+namespace http {
+class url;
+}
+
 namespace dmrpp {
+
+class Chunk;
 
 void join_threads(pthread_t threads[], unsigned int num_threads);
 
@@ -73,11 +76,6 @@ class DmrppCommon {
     friend class DmrppTypeReadTest;
 
 private:
-#if 0
-	bool d_deflate;
-	bool d_shuffle;
-	bool d_fletcher32;
-#endif
     bool d_compact;
 	std::string d_filters;
 	std::string d_byte_order;
@@ -102,7 +100,6 @@ protected:
     }
 
     virtual char *read_atomic(const std::string &name);
-    // virtual bool is_original_dmrpp_doc();
 
 public:
     static bool d_print_chunks;     ///< if true, print_dap4() prints chunk elements
@@ -125,22 +122,7 @@ public:
         return d_filters;
     }
 
-    /// @brief Set the value of the deflate property
-    void set_filter(const std::string &value) {
-        if (DmrppRequestHandler::d_emulate_original_filter_order) {
-            d_filters = "";
-            if (value.find("shuffle") != string::npos)
-                d_filters.append(" shuffle");
-            if (value.find("deflate") != string::npos)
-                d_filters.append(" deflate");
-            if (value.find("fletcher32") != string::npos)
-                d_filters.append(" fletcher32");
-            BESUtil::removeLeadingAndTrailingBlanks(d_filters);
-        }
-        else {
-            d_filters = value;
-        }
-    }
+    void set_filter(const std::string &value);
 
     virtual bool is_filters_empty() const {
         return d_filters.empty();
@@ -161,7 +143,7 @@ public:
 
     /// @brief A const reference to the vector of chunks
     /// @see get_chunks()
-    virtual std::vector< std::shared_ptr<Chunk>> get_immutable_chunks() const {
+    virtual std::vector<std::shared_ptr<Chunk>> get_immutable_chunks() const {
         return d_chunks;
     }
 

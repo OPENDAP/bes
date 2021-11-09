@@ -36,6 +36,7 @@
 #include "libdap/XMLWriter.h"
 #include "libdap/util.h"
 
+#include "url_impl.h"
 #include "BESIndent.h"
 #include "BESDebug.h"
 #include "BESUtil.h"
@@ -44,6 +45,7 @@
 #include "DmrppRequestHandler.h"
 #include "DmrppCommon.h"
 #include "Chunk.h"
+#include "byteswap_compat.h"
 
 
 using namespace std;
@@ -91,6 +93,24 @@ void join_threads(pthread_t threads[], unsigned int num_threads)
                 BESDEBUG(dmrpp_3, "Joined thread " << i << ", successful exit." << endl);
             }
         }
+    }
+}
+
+/// @brief Set the value of the filters property
+void DmrppCommon::set_filter(const string &value) {
+    if (DmrppRequestHandler::d_emulate_original_filter_order) {
+        d_filters = "";
+        if (value.find("shuffle") != string::npos)
+            d_filters.append(" shuffle");
+        if (value.find("deflate") != string::npos)
+            d_filters.append(" deflate");
+        if (value.find("fletcher32") != string::npos)
+            d_filters.append(" fletcher32");
+
+        BESUtil::removeLeadingAndTrailingBlanks(d_filters);
+    }
+    else {
+        d_filters = value;
     }
 }
 
