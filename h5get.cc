@@ -56,6 +56,8 @@
 #include <sstream>
 
 using namespace libdap;
+static int visit_obj_cb(hid_t  group_id, const char *name, const H5L_info_t *oinfo,
+    void *_op_data);
 
 typedef struct {
     haddr_t  link_addr;
@@ -594,7 +596,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
 /// \param[in] use_dimscale whether dimscale is used. Should always be false for DDS building.
 /// \param[out] dt_inst_ptr  pointer to the attribute struct(* attr_inst_ptr)
 ///////////////////////////////////////////////////////////////////////////////
-void get_dataset_dmr(hid_t pid, const string &dname, DS_t * dt_inst_ptr,bool use_dimscale, bool &is_pure_dim, vector<link_info_t> &hdf5_hls)
+void get_dataset_dmr(const hid_t file_id, hid_t pid, const string &dname, DS_t * dt_inst_ptr,bool use_dimscale, bool &is_pure_dim, vector<link_info_t> &hdf5_hls)
 {
 
     BESDEBUG("h5", ">get_dataset()" << endl);
@@ -799,7 +801,7 @@ void get_dataset_dmr(hid_t pid, const string &dname, DS_t * dt_inst_ptr,bool use
          }
 
          else if(false == is_pure_dim) // Except pure dimension,we need to save all dimension names in this dimension. 
-            obtain_dimnames(dset,ndims,dt_inst_ptr,hdf5_hls);
+            obtain_dimnames(file_id,dset,ndims,dt_inst_ptr,hdf5_hls);
     }
     
     if(H5Tclose(dtype)<0) {
@@ -1890,7 +1892,7 @@ attr_info_dimscale(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void
 /// \param[in] ndims  number of dimensions
 /// \param[out] dt_inst_ptr  pointer to the dataset struct that saves the dim. names
 ///////////////////////////////////////////////////////////////////////////////
-void obtain_dimnames(hid_t dset,int ndims, DS_t *dt_inst_ptr,vector<link_info_t> & hdf5_hls) {
+void obtain_dimnames(const hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_ptr,vector<link_info_t> & hdf5_hls) {
 
     htri_t has_dimension_list = -1;
     
@@ -1979,6 +1981,7 @@ void obtain_dimnames(hid_t dset,int ndims, DS_t *dt_inst_ptr,vector<link_info_t>
                     string msg = "Cannot obtain the object info for the dimension variable " + objname_str;
                     throw InternalErr(__FILE__,__LINE__,msg);
                 }
+#if 0
                 if(obj_info.rc > 1) {
 cerr<<" this dimension variable "<< objname_str <<" has a hard-link."<<endl;
                     tmp_link_info_t hls;
@@ -1992,7 +1995,8 @@ for(int i = 0; i<tmp_hdf5_hls.size();i++) {
 }
 
                 }
-
+#endif
+          
                 if(obj_info.rc > 1) {
 
                     // 1. Search the hdf5_hls to see if the address is inside
@@ -2002,6 +2006,18 @@ for(int i = 0; i<tmp_hdf5_hls.size();i++) {
                     //    else 
                     //       hard-way, search all the hardlinks with callbacks.
                     //       obtain the shortest path, add this to hdf5_hls.
+                    typedef struct {
+                        unsigned link_unvisited;
+                        haddr_t  link_addr;
+                        vector<string> hl_names;
+                    } t_link_info_t;
+
+                    t_link_info_t t_li_info;
+                    t_li_info.link_unvisited = obj_info.rc;
+                    t_li_info.link_addr = obj_info.addr;
+                    // TODO
+                    //H5Lvisit(file_id, H5_INDEX_NAME, H5_ITER_NATIVE, visit_obj_cb, (void*)&t_li_info);
+              
 
                 }
                 // Need to save the dimension names without the path

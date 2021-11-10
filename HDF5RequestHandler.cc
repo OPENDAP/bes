@@ -1511,7 +1511,7 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
                 BESDEBUG("h5", "use_dimscale is "<< use_dimscale <<endl);
 
                 vector<link_info_t> hdf5_hls;
-                breadth_first(fileid,(char*)"/",root_grp,filename.c_str(),use_dimscale,hdf5_hls);
+                breadth_first(fileid, fileid,(char*)"/",root_grp,filename.c_str(),use_dimscale,hdf5_hls);
 #if 0
                 BESDEBUG("h5", "build_dmr - before obtain dimensions"<< endl);
                 D4Dimensions *root_dims = root_grp->dims();

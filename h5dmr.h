@@ -61,7 +61,7 @@ typedef struct {
 } link_info_t;
 
 
-bool breadth_first(hid_t, char *, libdap::D4Group* par_grp, const char *,bool,std::vector<link_info_t>&);
+bool breadth_first(const hid_t, hid_t, char *, libdap::D4Group* par_grp, const char *,bool,std::vector<link_info_t>&);
 
 void read_objects(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t);
 void read_objects_base_type(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,const hid_t);
