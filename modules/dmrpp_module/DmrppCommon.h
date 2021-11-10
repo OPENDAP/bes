@@ -29,14 +29,12 @@
 #include <vector>
 #include <memory>
 
-//#include <H5Ppublic.h>
+//#include <libdap/dods-datatypes.h>
+//#include <BESUtil.h>
 
-#include "dods-datatypes.h"
-#include "Chunk.h"
-#include "SuperChunk.h"
-
-#include "config.h"
-#include "byteswap_compat.h"
+//#include "DmrppRequestHandler.h"
+//#include "Chunk.h"
+//#include "SuperChunk.h"
 
 namespace libdap {
 class DMR;
@@ -49,7 +47,13 @@ class D4Dimension;
 class XMLWriter;
 }
 
+namespace http {
+class url;
+}
+
 namespace dmrpp {
+
+class Chunk;
 
 void join_threads(pthread_t threads[], unsigned int num_threads);
 
@@ -72,11 +76,6 @@ class DmrppCommon {
     friend class DmrppTypeReadTest;
 
 private:
-#if 0
-	bool d_deflate;
-	bool d_shuffle;
-	bool d_fletcher32;
-#endif
     bool d_compact;
 	std::string d_filters;
 	std::string d_byte_order;
@@ -86,10 +85,7 @@ private:
 
 protected:
     void m_duplicate_common(const DmrppCommon &dc) {
-    	//d_deflate = dc.d_deflate;
-    	//d_shuffle = dc.d_shuffle;
     	d_compact = dc.d_compact;
-        //d_fletcher32 = dc.d_fletcher32;
         d_filters = dc.d_filters;
     	d_chunk_dimension_sizes = dc.d_chunk_dimension_sizes;
     	d_chunks = dc.d_chunks;
@@ -110,13 +106,7 @@ public:
     static std::string d_dmrpp_ns;       ///< The DMR++ XML namespace
     static std::string d_ns_prefix;      ///< The XML namespace prefix to use
 
-#if 0
-    DmrppCommon() : d_deflate(false), d_shuffle(false), d_fletcher32(false), d_filters(""), d_compact(false),d_byte_order(""), d_twiddle_bytes(false)
-    {
-    }
-#endif
-
-    DmrppCommon() : d_filters(""), d_compact(false),d_byte_order(""), d_twiddle_bytes(false)
+    DmrppCommon() :d_compact(false), d_twiddle_bytes(false)
     {
     }
 
@@ -127,47 +117,12 @@ public:
 
     virtual ~DmrppCommon()= default;
 
-#if 0
-    /// @brief Returns true if this object utilizes deflate compression.
-    virtual bool is_deflate_compression() const {
-        return d_deflate;
-    }
-
-    /// @brief Set the value of the deflate property
-    void set_deflate(bool value) {
-        d_deflate = value;
-    }
-
-    /// @brief Returns true if this object utilizes fletcher32 compression.
-    virtual bool is_fletcher32_compression() const {
-        return d_fletcher32;
-    }
-
-    /// @brief Set the value of the fletcher32 property
-    void set_fletcher32(bool value) {
-        d_fletcher32 = value;
-    }
-
-    /// @brief Returns true if this object utilizes shuffle compression.
-    virtual bool is_shuffle_compression() const {
-        return d_shuffle;
-    }
-
-    /// @brief Set the value of the shuffle property
-    void set_shuffle(bool value) {
-        d_shuffle = value;
-    }
-#endif
-
-    /// @brief Returns true if this object utilizes deflate compression.
+    /// @brief Return the names of all the filters in the order they were applied
     virtual std::string get_filters() const {
         return d_filters;
     }
 
-    /// @brief Set the value of the deflate property
-    void set_filter(const std::string &value) {
-        d_filters = value;
-    }
+    void set_filter(const std::string &value);
 
     virtual bool is_filters_empty() const {
         return d_filters.empty();
@@ -188,7 +143,7 @@ public:
 
     /// @brief A const reference to the vector of chunks
     /// @see get_chunks()
-    virtual std::vector< std::shared_ptr<Chunk>> get_immutable_chunks() const {
+    virtual std::vector<std::shared_ptr<Chunk>> get_immutable_chunks() const {
         return d_chunks;
     }
 

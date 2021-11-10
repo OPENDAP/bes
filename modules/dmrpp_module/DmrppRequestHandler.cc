@@ -97,6 +97,9 @@ unsigned int DmrppRequestHandler::d_max_compute_threads = 8;
 // Default minimum value is 2MB: 2 * (1024*1024)
 unsigned long long DmrppRequestHandler::d_contiguous_concurrent_threshold = DMRPP_DEFAULT_CONTIGUOUS_CONCURRENT_THRESHOLD;
 
+// See the comment in the header for more about this kludge. jhrg 11/9/21
+bool DmrppRequestHandler::d_emulate_original_filter_order_behavior = false;
+
 static void read_key_value(const std::string &key_name, bool &key_value)
 {
     bool key_found = false;
@@ -434,7 +437,7 @@ bool DmrppRequestHandler::dap_build_dds(BESDataHandlerInterface & dhi)
         }
         else {
             // Not in cache, make one...
-            DMR *dmr = new DMR();   // FIXME is this leaked? jhrg 6/1/18
+            DMR *dmr = new DMR();   // FIXME is this leaked? jhrg 6/1/18 YES!!
             build_dmr_from_file(dhi.container, dmr);
 
             // delete the current one;

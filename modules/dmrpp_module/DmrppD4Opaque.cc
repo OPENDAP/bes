@@ -36,6 +36,7 @@
 #include "CurlHandlePool.h"
 #include "DmrppRequestHandler.h"
 #include "DmrppD4Opaque.h"
+#include "Chunk.h"
 
 using namespace libdap;
 using namespace std;
@@ -80,7 +81,7 @@ DmrppD4Opaque::operator=(const DmrppD4Opaque &rhs)
     return *this;
 }
 
-void DmrppD4Opaque::insert_chunk(shared_ptr<Chunk>  chunk)
+void DmrppD4Opaque::insert_chunk(shared_ptr<Chunk> chunk)
 {
     // The size, in elements, of each of the chunk's dimensions.
     const vector<unsigned long long> &chunk_shape = get_chunk_dimension_sizes();

@@ -33,18 +33,18 @@
 
 #include <libxml/parserInternals.h>
 
-#include <DMR.h>
+#include <libdap/DMR.h>
 
-#include <BaseType.h>
-#include <Array.h>
-#include <D4Group.h>
-#include <D4Attributes.h>
-#include <D4Maps.h>
-#include <D4Enum.h>
-#include <D4BaseTypeFactory.h>
+#include <libdap/BaseType.h>
+#include <libdap/Array.h>
+#include <libdap/D4Group.h>
+#include <libdap/D4Attributes.h>
+#include <libdap/D4Maps.h>
+#include <libdap/D4Enum.h>
+#include <libdap/D4BaseTypeFactory.h>
 
-#include <DapXmlNamespaces.h>
-#include <util.h>
+#include <libdap/DapXmlNamespaces.h>
+#include <libdap/util.h>
 
 #include <BESInternalError.h>
 #include <BESDebug.h>
@@ -55,6 +55,8 @@
 #include <TheBESKeys.h>
 #include <BESRegex.h>
 
+#include "DmrppRequestHandler.h"
+#include "DMRpp.h"
 #include "DmrppParserSax2.h"
 #include "DmrppCommon.h"
 #include "DmrppStr.h"
@@ -899,10 +901,28 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
         parser->transfer_xml_attrs(attributes, nb_attributes);
 #endif
 
-        if (parser->check_required_attribute(string("name"), attributes, nb_attributes)) parser->dmr()->set_name(parser->get_attribute_val("name", attributes, nb_attributes));
+        if (parser->check_required_attribute(string("name"), attributes, nb_attributes))
+            parser->dmr()->set_name(parser->get_attribute_val("name", attributes, nb_attributes));
+
+        // Record the DMR++ builder version number. For now, if this is present, we have a 'new'
+        // DMR++ and if it is not present, we have an old DMR++. One (the?) important difference
+        // between the two is that the new version has the order of the filters correct and the
+        // current version of the handler code _expects_ this. The old version of the DMR++ had
+        // the order reversed (at least for most - all? - data). So we have this kludge to enable
+        // those old DMR++ files to work. See DmrppCommon::set_filter() for the other half of the
+        // hack. Note that the attribute 'builderVersion' is in the dmrpp xml namespace. jhrg 11/9/21
+        if (parser->check_attribute("builderVersion", attributes, nb_attributes)) {
+            auto dmrpp = dynamic_cast<DMRpp*>(parser->dmr());
+            if (dmrpp)
+                dmrpp->set_version(parser->get_attribute_val("builderVersion", attributes, nb_attributes));
+            DmrppRequestHandler::d_emulate_original_filter_order_behavior = false;
+        }
+        else {
+            DmrppRequestHandler::d_emulate_original_filter_order_behavior = true;
+        }
 
         if (parser->check_attribute("dapVersion", attributes, nb_attributes))
-            parser->dmr()->set_dap_version(parser->get_attribute_val("dapVersion", attributes, nb_attributes));
+        parser->dmr()->set_dap_version(parser->get_attribute_val("dapVersion", attributes, nb_attributes));
 
         if (parser->check_attribute("dmrVersion", attributes, nb_attributes))
             parser->dmr()->set_dmr_version(parser->get_attribute_val("dmrVersion", attributes, nb_attributes));
