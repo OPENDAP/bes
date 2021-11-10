@@ -1974,7 +1974,7 @@ void obtain_dimnames(hid_t dset,int ndims, DS_t *dt_inst_ptr,vector<link_info_t>
                 string trim_objname = objname_str.substr(0,objnamelen);
  
                 H5O_info_t obj_info;
-                if(H5Oget_info(ref_dset,&obj_info)<0) {
+                if(H5Oget_info2(ref_dset,&obj_info,H5O_INFO_BASIC)<0) {
                     H5Dclose(ref_dset);
                     string msg = "Cannot obtain the object info for the dimension variable " + objname_str;
                     throw InternalErr(__FILE__,__LINE__,msg);
@@ -1993,6 +1993,17 @@ for(int i = 0; i<tmp_hdf5_hls.size();i++) {
 
                 }
 
+                if(obj_info.rc > 1) {
+
+                    // 1. Search the hdf5_hls to see if the address is inside
+                    //    if yes, 
+                    //       find all hard-link already,
+                    //       obtain the shortest path, use this as the dimension name.
+                    //    else 
+                    //       hard-way, search all the hardlinks with callbacks.
+                    //       obtain the shortest path, add this to hdf5_hls.
+
+                }
                 // Need to save the dimension names without the path
  
                 dt_inst_ptr->dimnames.push_back(trim_objname.substr(trim_objname.find_last_of("/")+1));
