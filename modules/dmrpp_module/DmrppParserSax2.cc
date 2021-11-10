@@ -910,11 +910,11 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
         // current version of the handler code _expects_ this. The old version of the DMR++ had
         // the order reversed (at least for most - all? - data). So we have this kludge to enable
         // those old DMR++ files to work. See DmrppCommon::set_filter() for the other half of the
-        // hack. Note that the attribute 'builderVersion' is in the dmrpp xml namespace. jhrg 11/9/21
-        if (parser->check_attribute("builderVersion", attributes, nb_attributes)) {
+        // hack. Note that the attribute 'version' is in the dmrpp xml namespace. jhrg 11/9/21
+        if (parser->check_attribute("version", attributes, nb_attributes)) {
             auto dmrpp = dynamic_cast<DMRpp*>(parser->dmr());
             if (dmrpp)
-                dmrpp->set_version(parser->get_attribute_val("builderVersion", attributes, nb_attributes));
+                dmrpp->set_version(parser->get_attribute_val("version", attributes, nb_attributes));
             DmrppRequestHandler::d_emulate_original_filter_order_behavior = false;
         }
         else {
