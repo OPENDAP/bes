@@ -62,7 +62,7 @@ public:
     virtual void set_href(const std::string &h) { d_href = h; }
 
     // These new methods hold the DMR++ builder version. I changed the XML attribute
-    // to 'dmrppBuilderVersion.' jhrg 11/9/21
+    // to 'dmrpp:version' jhrg 11/9/21
     virtual std::string get_version() const { return d_version; }
     virtual void set_version(const std::string &version) { d_version = version; }
 
