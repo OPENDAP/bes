@@ -1470,6 +1470,7 @@ uint64_t BESUtil::file_to_stream_task(const std::string &file_name, std::atomic<
     return tcount;
 }
 
+#if 0
 /// Stolen from our friends at Stack Overflow and modified for our use.
 /// This is far faster than the istringstream code it replaces (for one
 /// test, run time for parse_chunk_position_in_array_string() dropped from
@@ -1518,3 +1519,4 @@ void BESUtil::split(const string &s, const string &delimiter, vector<string> &re
 
     res.push_back(s.substr (pos_start));
 }
+#endif

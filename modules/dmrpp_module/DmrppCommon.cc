@@ -27,6 +27,7 @@
 #include <sstream>
 #include <vector>
 #include <iterator>
+#include <cstdio>
 #include <cstdlib>
 
 #include <curl/curl.h>
