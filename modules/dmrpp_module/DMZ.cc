@@ -49,6 +49,7 @@
 #include <pugixml.hpp>
 
 #include "url_impl.h"           // see bes/http
+#include "DMRpp.h"
 #include "DMZ.h"                // this includes the pugixml header
 #include "DmrppCommon.h"
 #include "DmrppArray.h"
@@ -144,6 +145,7 @@ void DMZ::process_dataset(DMR *dmr, const xml_node &xml_root)
     int required_attrs_found = 0;   // there are 1
     string href_attr;
     bool href_trusted = false;
+    string dmrpp_version;           // empty or holds a value if dmrpp::version is present
     for (xml_attribute attr = xml_root.first_attribute(); attr; attr = attr.next_attribute()) {
         if (is_eq(attr.name(), "name")) {
             ++required_attrs_found;
@@ -168,10 +170,23 @@ void DMZ::process_dataset(DMR *dmr, const xml_node &xml_root)
         else if (is_eq(attr.name(), "dmrpp:href")) {
             href_attr = attr.value();
         }
-        else if (is_eq(attr.name(), "trust")) {
+        else if (is_eq(attr.name(), "dmrpp:trust")) {
             href_trusted = is_eq(attr.value(), "true");
         }
+        else if (is_eq(attr.name(), "dmrpp:version")) {
+            dmrpp_version = attr.value();
+        }
         // We allow other, non recognized attributes, so there is no 'else' jhrg 10/20/21
+    }
+
+    if (dmrpp_version.empty()) {    // old style DMR++, set enable-kludge flag
+        DmrppRequestHandler::d_emulate_original_filter_order_behavior = true;
+    }
+    else {
+        auto dmrpp = dynamic_cast<DMRpp*>(dmr);
+        if (dmrpp) {
+            dmrpp->set_version(dmrpp_version);
+        }
     }
 
     if (required_attrs_found != 1)

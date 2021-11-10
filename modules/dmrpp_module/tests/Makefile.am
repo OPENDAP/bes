@@ -49,6 +49,8 @@ TESTSUITE_MDS = $(srcdir)/testsuite_mds_tests
 
 TESTSUITE_S3 = $(srcdir)/testsuite_s3_tests
 
+TESTSUITE_DMRPP = $(srcdir)/testsuite_dmrpp_tests
+
 s3-tests: $(TESTSUITE_S3) bes.conf bes_serial.conf
 	@echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
 	@if [ -n "$${CMAC_ID}" ] \
@@ -63,6 +65,9 @@ s3-tests: $(TESTSUITE_S3) bes.conf bes_serial.conf
 		true;\
 	fi
 	@echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
+
+dmrpp-tests: $(TESTSUITE_DMRPP) bes.conf
+		$(SHELL) '$(TESTSUITE_DMRPP)' $(TESTSUITEFLAGS)
 
 check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_MDS) $(TESTSUITE_S3) bes.conf bes_serial.conf bes_mds_tests.conf mds_for_tests
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
@@ -89,6 +94,7 @@ clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
 	test ! -f '$(TESTSUITE_MDS)' || $(SHELL) '$(TESTSUITE_MDS)' --clean
 	test ! -f '$(TESTSUITE_S3)' || $(SHELL) '$(TESTSUITE_S3)' --clean
+	test ! -f '$(TESTSUITE_DMRPP)' || $(SHELL) '$(TESTSUITE_DMRPP)' --clean
 	test ! -d $(builddir)/mds_for_tests || rm -rf $(builddir)/mds_for_tests
 
 %: %.at 
@@ -99,6 +105,8 @@ $(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler
 $(TESTSUITE_MDS): $(TESTSUITE_MDS).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
 
 $(TESTSUITE_S3): $(TESTSUITE_S3).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
+
+$(TESTSUITE_DMRPP): $(TESTSUITE_DMRPP).at $(srcdir)/package.m4
 
 # The `:;' works around a Bash 3.2 bug when the output is not writable.
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac

@@ -1,0 +1,59 @@
+# Macros and tests for get_dmrpp
+#
+# James Gallagher
+# Nov 10 2021
+
+AT_INIT([bes/modules/dmrpp_module/tests testsuite_dmrpp_tests])
+
+AT_TESTED([get_dmrpp])
+
+AT_ARG_OPTION_ARG([baselines b],
+    [--baselines=yes|no   Build the baseline file for parser test 'arg'],
+    [echo "baselines set to $at_arg_baselines";
+     baselines=$at_arg_baselines],[baselines=])
+
+AT_ARG_OPTION_ARG([conf c],
+    [--conf=<file>   Use <file> for the bes.conf file],
+    [echo "bes configuration file set to $at_arg_conf"; bes_conf=$at_arg_conf],
+    [bes_conf=bes.conf])
+
+# @brief Run the given bes command file
+#
+# @param $1 The command file, assumes that the baseline is $1.baseline
+# @param $2 If not null, 'xfail' means the test is expected to fail, 'xpass' ... pass
+# @param $3 If 'repeat' or 'cached', run besstandalone using '-r 3'
+
+root=$abs_srcdir/../
+get_dmrpp='sh ../data/get_dmrpp'
+
+m4_define([AT_GET_DMRPP], [dnl
+
+    AT_SETUP([$1])
+    AT_KEYWORDS([dmrpp])
+
+    input=$abs_srcdir/$1
+    baseline=$abs_srcdir/$1.baseline
+    # Oddly, setting 'pass' to $2 and then using $pass in AT_XFAIL_IF() does not work,
+    # but using $2 does. This might be a function of when the AT_XFAIL_IF() macro is
+    # expanded. jhrg 3.20.20
+    pass=$2
+    #root=$abs_srcdir/../
+    #get_dmrpp='sh ../data/get_dmrpp'
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: $get_dmrpp -b $root $input"])
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([$get_dmrpp -b $root $input], [], [stdout])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        AT_CHECK([$get_dmrpp -b $root $input], [], [stdout])
+        AT_CHECK([diff -b -B $baseline stdout])
+        AT_XFAIL_IF([test z$2 = zxfail])
+        ])
+
+    AT_CLEANUP
+])
+
+AT_GET_DMRPP(/data/1A.GPM.GMI.COUNT2014v3.20140305-S061920-E075148.000087.V03A.h5, xpass)

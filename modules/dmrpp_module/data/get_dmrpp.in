@@ -39,7 +39,7 @@ BES.Data.RootDirectory=/dev/null
 
 # The order is crucial here. The dmr++ files must be associated
 # with the dmrpp_module while everything else is being
-# gobbled up by bthe greedy regex for the hdf5_handler.
+# gobbled up by the greedy regex for the hdf5_handler.
 # If the dmrpp.TypeMatch doesn't come first then the
 # hdf5_handler will claim the dmr++ files too.
 BES.Catalog.catalog.TypeMatch=dmrpp:.*\.(dmrpp)$;

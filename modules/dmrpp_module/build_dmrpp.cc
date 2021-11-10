@@ -30,6 +30,7 @@
 #include <iterator>
 #include <algorithm>
 
+#include <unistd.h>
 #include <cstdlib>
 #include <libgen.h>
 
@@ -97,7 +98,7 @@ static bool verbose = false;
 #define DEBUG_KEY "metadata_store,dmrpp_store,dmrpp"
 #define ROOT_DIRECTORY "BES.Catalog.catalog.RootDirectory"
 
-
+#if 0
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn get_data(hid_t dset, void *buf)
 /// will get all data of a \a dset dataset and put it into \a buf.
@@ -107,7 +108,7 @@ static bool verbose = false;
 /// \param[in] dset dataset id(dset)
 /// \param[out] buf pointer to a buffer
 ///////////////////////////////////////////////////////////////////////////////
-/*
+
 void get_data(hid_t dset, void *buf)
 {
     BESDEBUG("h5", ">get_data()" << endl);
@@ -286,9 +287,9 @@ bool read_vlen_string(hid_t dsetid, int nelms, hsize_t *hoffset, hsize_t *hstep,
     return true;
 
 }
-*/
+#endif
 
-
+#if 0
 /**
  * @brief Print information about the data type
  *
@@ -414,6 +415,7 @@ static void print_dataset_type_info(hid_t dataset, uint8_t layout_type) {
                 << endl;
     }
 }
+#endif
 
 // FYI: Filter IDs
 // H5Z_FILTER_ERROR         (-1) no filter
@@ -602,9 +604,6 @@ static void get_variable_chunk_info(hid_t dataset, DmrppCommon *dc) {
                         chunk_coords[j] = temp_coords[j];
                     }
 
-                    // FIXME Modify add_chunk so that it takes a vector<unsigned long long> or <unsined long>
-                    // (depending on the machine/OS/compiler). Limiting the offset to 32-bits won't work
-                    // for large files. jhrg 5/21/19
                     if (dc) dc->add_chunk(byteOrder, size, addr, chunk_coords);
                 }
 
@@ -759,8 +758,6 @@ static void get_chunks_for_all_variables(hid_t file, D4Group *group) {
             if (dataset < 0)
                 continue;
         }
-
-
 #if 0
         if (attr && attr->num_values() == 1)
             FQN = attr->value(0);
@@ -820,14 +817,14 @@ void inject_version_and_configuration(int argc, char **argv, DMRpp *dmrpp){
     libdap4_version->add_value(ldv.str());
     version->attributes()->add_attribute_nocopy(libdap4_version);
 
-
     if(!TheBESKeys::ConfigFile.empty()) {
         // What is the BES configuration in play?
         D4Attribute *config = new D4Attribute("configuration", StringToD4AttributeType("string"));
         config->add_value(TheBESKeys::TheKeys()->get_as_config());
         version->attributes()->add_attribute_nocopy(config);
     }
-   // How was build_dmrpp invoked>
+
+    // How was build_dmrpp invoked?
     D4Attribute *invoke = new D4Attribute("invocation", StringToD4AttributeType("string"));
     invoke->add_value(cmdln(argc,argv));
     version->attributes()->add_attribute_nocopy(invoke);
@@ -845,6 +842,52 @@ int main(int argc, char *argv[]) {
     int status = 0;
     bool add_production_metadata = false;
 
+    int option_char;
+    while ((option_char = getopt(argc, argv, "c:f:r:u:dhvVM")) != -1) {
+        switch (option_char) {
+            case 'V':
+                cerr << basename(argv[0]) << "-" << CVER << " (bes-"<< CVER << ", " << libdap_name() << "-" << libdap_version() << ")" << endl;
+                return 0;
+
+            case 'v':
+                verbose = true; // verbose hdf5 errors
+                break;
+
+            case 'd':
+                BESDebug::SetUp(string("cerr,").append(DEBUG_KEY));
+                break;
+
+            case 'f':
+                h5_file_name = optarg;
+                break;
+
+            case 'r':
+                dmr_name = optarg;
+                break;
+
+            case 'u':
+                url_name = optarg;
+                break;
+
+            case 'c':
+                TheBESKeys::ConfigFile = optarg;
+                break;
+
+            case 'M':
+                add_production_metadata = true;
+                break;
+
+            case 'h':
+                cerr
+                        << "build_dmrpp [-v] -c <bes.conf> -f <data file>  [-u <href url>] | build_dmrpp -f <data file> -r <dmr file> | build_dmrpp -h"
+                        << endl;
+                exit(1);
+            default:
+                break;
+        }
+    }
+
+#if 0
     GetOpt getopt(argc, argv, "c:f:r:u:dhvVM");
     int option_char;
     while ((option_char = getopt()) != -1) {
@@ -891,6 +934,7 @@ int main(int argc, char *argv[]) {
                 break;
         }
     }
+#endif
 
     if (h5_file_name.empty()) {
         cerr << "HDF5 file name must be given (-f <input>)." << endl;
@@ -957,7 +1001,7 @@ int main(int argc, char *argv[]) {
 
             // Use the full path to open the file, but use the 'name' (which is the
             // path relative to the BES Data Root) with the MDS.
-            // Changed this to utilze assmeblePath() because simply concatenating the strings
+            // Changed this to utilize assemblePath() because simply concatenating the strings
             // is fragile. - ndp 6/6/18
             string h5_file_path = BESUtil::assemblePath(bes_data_root, h5_file_name);
 

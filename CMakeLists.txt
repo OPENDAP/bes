@@ -165,13 +165,11 @@ include_directories(xmlcommand/tests)
 include_directories(xmlcommand/unit-tests)
 #include_directories(xmlcommand/unused)
 
-
-
 add_executable(bes
     config.h
 
 	rapidjson/rapidjson.h
-	rapidxml/rapidxml.hpp
+	pugixml/src/pugixml.hpp
 
     cmdln/unit-tests/test_config.h.in
     cmdln/unit-tests/translateT.cc
