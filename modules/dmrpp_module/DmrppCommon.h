@@ -29,13 +29,6 @@
 #include <vector>
 #include <memory>
 
-#include "dods-datatypes.h"
-#include "Chunk.h"
-#include "SuperChunk.h"
-
-#include "config.h"
-#include "byteswap_compat.h"
-
 namespace libdap {
 class DMR;
 class BaseType;
@@ -47,9 +40,16 @@ class D4Dimension;
 class XMLWriter;
 }
 
+namespace http {
+class url;
+}
+
 namespace dmrpp {
 
 class DMZ;
+class Chunk;
+class DmrppArray;
+class SuperChunk;
 
 void join_threads(pthread_t threads[], unsigned int num_threads);
 
@@ -107,7 +107,7 @@ protected:
 
     // This declaration allows code in the SuperChunky program to use the protected method.
     // jhrg 10/25/21
-    friend void compute_super_chunks(dmrpp::DmrppArray *array, bool only_constrained, vector<SuperChunk *> &super_chunks);
+    friend void compute_super_chunks(dmrpp::DmrppArray *array, bool only_constrained, std::vector<dmrpp::SuperChunk *> &super_chunks);
 
 public:
     static bool d_print_chunks;         ///< if true, print_dap4() prints chunk elements
@@ -130,15 +130,12 @@ public:
 
     virtual ~DmrppCommon()= default;
 
-    /// @brief Returns true if this object utilizes deflate compression.
+    /// @brief Return the names of all the filters in the order they were applied
     virtual std::string get_filters() const {
         return d_filters;
     }
 
-    /// @brief Set the value of the deflate property
-    void set_filter(const std::string &value) {
-        d_filters = value;
-    }
+    void set_filter(const std::string &value);
 
     virtual bool is_filters_empty() const {
         return d_filters.empty();

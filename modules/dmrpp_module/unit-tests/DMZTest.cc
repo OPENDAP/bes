@@ -43,6 +43,7 @@
 #include "BESDebug.h"
 
 #include "DMZ.h"
+#include "Chunk.h"
 #include "DmrppCommon.h"
 #include "DmrppTypeFactory.h"
 
@@ -55,9 +56,6 @@
 using namespace std;
 using namespace libdap;
 using namespace bes;
-#if 0
-using namespace rapidxml;
-#endif
 
 static bool debug = false;
 static bool bes_debug = false;

@@ -21,6 +21,8 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
+#include "config.h"
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -31,8 +33,9 @@
 #include <cstdlib>
 #include <libgen.h>
 
-#include <D4Attributes.h>
-#include <Array.h>
+#include <libdap/D4Attributes.h>
+#include <libdap/Array.h>
+#include <libdap/util.h>
 
 //#define H5D_FRIEND		// Workaround, needed to use H5D_chunk_rec_t
 //#include <H5Dpkg.h>
@@ -798,8 +801,10 @@ string cmdln(int argc, char *argv[]){
 
 void inject_version_and_configuration(int argc, char **argv, DMRpp *dmrpp){
 
+    dmrpp->set_version(CVER);
+
     // Build the version attributes for the DMR++
-    D4Attribute *version = new D4Attribute("build_dmrpp_meta", StringToD4AttributeType("container"));
+    D4Attribute *version = new D4Attribute("build_dmrpp_metadata", StringToD4AttributeType("container"));
 
     D4Attribute *build_dmrpp_version = new D4Attribute("build_dmrpp", StringToD4AttributeType("string"));
     build_dmrpp_version->add_value(CVER);
@@ -817,7 +822,7 @@ void inject_version_and_configuration(int argc, char **argv, DMRpp *dmrpp){
 
 
     if(!TheBESKeys::ConfigFile.empty()) {
-        // What is the BES configuration inplay?
+        // What is the BES configuration in play?
         D4Attribute *config = new D4Attribute("configuration", StringToD4AttributeType("string"));
         config->add_value(TheBESKeys::TheKeys()->get_as_config());
         version->attributes()->add_attribute_nocopy(config);
@@ -831,9 +836,6 @@ void inject_version_and_configuration(int argc, char **argv, DMRpp *dmrpp){
     D4Attributes *top_level_attrs = dmrpp->root()->attributes();
     top_level_attrs->add_attribute_nocopy(version);
 }
-
-
-
 
 int main(int argc, char *argv[]) {
     string h5_file_name = "";

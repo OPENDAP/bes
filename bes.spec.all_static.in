@@ -98,7 +98,7 @@ developing applications that use %{name}.
 chmod a-x dispatch/BESStreamResponseHandler*
 
 %build
-%configure --disable-static --disable-dependency-tracking --with-dependencies=$prefix/deps
+%configure --disable-static --disable-dependency-tracking --with-dependencies=$prefix/deps --with-build=@PACKAGE_BUILD_NUMBER@
 make %{?_smp_mflags}
 
 # make docs

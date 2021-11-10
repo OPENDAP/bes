@@ -124,6 +124,11 @@ public:
     static uint64_t file_to_stream_helper(const std::string &file_name, std::ostream &o_strm, uint64_t byteCount);
     static uint64_t file_to_stream_task(const std::string &file_name, std::atomic<bool> &file_write_done,
                                         std::ostream &o_strm);
+#if 0
+    // Added jhrg 11/9/21
+    static void split(const std::string &s, const std::string &delimiter, std::vector<uint64_t> &res);
+    static void split(const std::string &s, const std::string &delimiter, std::vector<std::string> &res);
+#endif
 };
 
 #endif // E_BESUtil_h

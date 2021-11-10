@@ -804,7 +804,7 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
             // integer fletcher32 checksum. jhrg 10/15/21
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wcast-align"
-            assert(get_rbuf_size() - FLETCHER32_CHECKSUM >= 0);
+            assert(get_rbuf_size() > FLETCHER32_CHECKSUM);
             //assert((get_rbuf_size() - FLETCHER32_CHECKSUM) % 4 == 0); //probably wrong
             auto f_checksum = *(uint32_t *)(get_rbuf() + get_rbuf_size() - FLETCHER32_CHECKSUM);
 #pragma GCC diagnostic pop
