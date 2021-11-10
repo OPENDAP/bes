@@ -29,6 +29,7 @@
 #include <iterator>
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 
 #include <curl/curl.h>
 
