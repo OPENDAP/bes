@@ -2016,7 +2016,9 @@ for(int i = 0; i<tmp_hdf5_hls.size();i++) {
                     t_li_info.link_unvisited = obj_info.rc;
                     t_li_info.link_addr = obj_info.addr;
                     // TODO
-                    //H5Lvisit(file_id, H5_INDEX_NAME, H5_ITER_NATIVE, visit_obj_cb, (void*)&t_li_info);
+                    H5Lvisit(file_id, H5_INDEX_NAME, H5_ITER_NATIVE, visit_obj_cb, (void*)&t_li_info);
+for(int i = 0; i<t_li_info.hl_names.size();i++)
+    cerr<<"hl name is "<<t_li_info.hl_names[i] <<endl;
               
 
                 }
@@ -2252,3 +2254,40 @@ bool check_str_attr_value(hid_t attr_id,hid_t atype_id,const string & value_to_c
     }
     return ret_value;
 }
+
+static int 
+visit_obj_cb(hid_t  group_id, const char *name, const H5L_info_t *linfo,
+    void *_op_data)
+{
+   typedef struct {
+       unsigned link_unvisited;
+       haddr_t link_addr;
+       vector<string> hl_names;
+   } t_link_info_t;
+   
+
+
+    //lvisit_ud_t *op_data = (lvisit_ud_t *)_op_data;
+    t_link_info_t *op_data = (t_link_info_t *)_op_data;
+    int ret = 0;
+
+    //printf("name is %s\n", name);
+    if(linfo->type == H5L_TYPE_HARD) {
+        if(op_data->link_addr == linfo->u.address) {
+            
+            op_data->link_unvisited = op_data->link_unvisited -1;
+            printf("link_unvisited is %u\n",op_data->link_unvisited);
+            printf("name is %s\n",name);
+            string tmp_str(name,name+strlen(name));
+            op_data->hl_names.push_back(tmp_str);
+            if(op_data->link_unvisited == 0) 
+                ret = 1;
+        }
+
+    }
+    return ret;
+ 
+}
+
+
+
