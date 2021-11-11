@@ -8,3 +8,4 @@
 *.bin
 AIRS_test_data/*
 /mds_for_tests_ledger.txt
+export_for_tests.sh

@@ -834,6 +834,27 @@ void inject_version_and_configuration(int argc, char **argv, DMRpp *dmrpp){
     top_level_attrs->add_attribute_nocopy(version);
 }
 
+void usage() {
+    const char *help = R"(
+    build_dmrpp -h: Show this help
+
+    build_dmrpp -V: Show build versions for componets that make up the program
+
+    build_dmrpp -c <bes.conf> -f <data file> [-u <href url>]: Build the DMR++ using the <bes.conf>
+       options to initialize the software for the <data file>. Optionally substitue the <href url>.
+       Builds the DMR using the HDF5 handler as configued using the options in the <bes.conf>.
+
+    build_dmrpp build_dmrpp -f <data file> -r <dmr file> [-u <href url>]: As above, but uses the DMR
+       read from the given file (so it does not run the HDF5 handler code.
+
+    Other options:
+        -v: Verbose
+        -d: Turn on BES software debugging output
+        -M: Add information about the build_dmrpp software, incl versions, to the built DMR++)";
+
+    cerr << help << endl;
+}
+
 int main(int argc, char *argv[]) {
     string h5_file_name = "";
     string h5_dset_path = "";
@@ -878,63 +899,12 @@ int main(int argc, char *argv[]) {
                 break;
 
             case 'h':
-                cerr
-                        << "build_dmrpp [-v] -c <bes.conf> -f <data file>  [-u <href url>] | build_dmrpp -f <data file> -r <dmr file> | build_dmrpp -h"
-                        << endl;
+                usage();
                 exit(1);
             default:
                 break;
         }
     }
-
-#if 0
-    GetOpt getopt(argc, argv, "c:f:r:u:dhvVM");
-    int option_char;
-    while ((option_char = getopt()) != -1) {
-        switch (option_char) {
-            case 'V':
-            {
-                cerr << basename(argv[0]) << "-" << CVER << " (bes-"<< CVER << ", " << libdap_name() << "-" << libdap_version() << ")" << endl;
-                return 0;
-            }
-            case 'v':
-                verbose = true; // verbose hdf5 errors
-                break;
-
-            case 'd':
-                BESDebug::SetUp(string("cerr,").append(DEBUG_KEY));
-                break;
-
-            case 'f':
-                h5_file_name = getopt.optarg;
-                break;
-
-            case 'r':
-                dmr_name = getopt.optarg;
-                break;
-
-            case 'u':
-                url_name = getopt.optarg;
-                break;
-
-            case 'c':
-                TheBESKeys::ConfigFile = getopt.optarg;
-                break;
-
-            case 'M':
-                add_production_metadata = true;
-                break;
-
-            case 'h':
-                cerr
-                        << "build_dmrpp [-v] -c <bes.conf> -f <data file>  [-u <href url>] | build_dmrpp -f <data file> -r <dmr file> | build_dmrpp -h"
-                        << endl;
-                exit(1);
-            default:
-                break;
-        }
-    }
-#endif
 
     if (h5_file_name.empty()) {
         cerr << "HDF5 file name must be given (-f <input>)." << endl;

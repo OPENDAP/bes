@@ -32,7 +32,7 @@ AT_ARG_OPTION_ARG([conf],
 # @param $3 If 'repeat' or 'cached', run besstandalone using '-r 3'
 
 
-m4_define([AT_BESCMD_BUILD_DMRPP_RESPONSE_TEST],  [dnl
+m4_define([AT_BUILD_DMRPP],  [dnl
 
     AT_SETUP([$1])
     AT_KEYWORDS([bescmd data dap4 DAP4])
@@ -57,4 +57,32 @@ m4_define([AT_BESCMD_BUILD_DMRPP_RESPONSE_TEST],  [dnl
 
     AT_CLEANUP
 ])
+
+m4_define([AT_BUILD_DMRPP_M],  [dnl
+
+    AT_SETUP([$1])
+    AT_KEYWORDS([bescmd data dap4 DAP4])
+
+    input=$abs_top_srcdir/$1
+    dmr=$abs_top_srcdir/$1.dmr
+    baseline=$abs_top_srcdir/$1.dmrpp.M.baseline
+    repeat=$3
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: build_dmrpp -M -f $input -r $dmr"])
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+    [
+        AT_CHECK([build_dmrpp -M -f $input -r $dmr], [], [stdout])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        AT_CHECK([build_dmrpp -M -f $input -r $dmr], [], [stdout])
+        AT_CHECK([diff -b -B $baseline stdout])
+        AT_XFAIL_IF([test z$2 = zxfail])
+        ])
+
+    AT_CLEANUP
+])
+
+
 
