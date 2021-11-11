@@ -867,7 +867,8 @@ int main(int argc, char *argv[]) {
     while ((option_char = getopt(argc, argv, "c:f:r:u:dhvVM")) != -1) {
         switch (option_char) {
             case 'V':
-                cerr << basename(argv[0]) << "-" << CVER << " (bes-"<< CVER << ", " << libdap_name() << "-" << libdap_version() << ")" << endl;
+                cerr << basename(argv[0]) << "-" << CVER << " (bes-"<< CVER << ", " << libdap_name() << "-"
+                    << libdap_version() << ")" << endl;
                 return 0;
 
             case 'v':
@@ -901,6 +902,7 @@ int main(int argc, char *argv[]) {
             case 'h':
                 usage();
                 exit(1);
+
             default:
                 break;
         }
