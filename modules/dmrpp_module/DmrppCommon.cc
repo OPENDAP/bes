@@ -471,6 +471,10 @@ void DmrppCommon::dump(ostream & strm) const
     }
 }
 
+/**
+ * @brief Load chunk information for this variable.
+ * @param btp Load the chunk information for/into this variable
+ */
 void
 DmrppCommon::load_chunks(BaseType *btp) {
     d_dmz->load_chunks(btp);

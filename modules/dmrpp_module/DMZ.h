@@ -121,11 +121,16 @@ public:
 
     // Make these take a Variable/DmrppCommon and not a DMR
     virtual void load_attributes(libdap::BaseType *btp);
+    virtual void load_attributes(libdap::Constructor *constructor);
+    virtual void load_attributes(libdap::D4Group *group);
 
     virtual void load_chunks(libdap::BaseType *btp);
 
     std::string get_attribute_xml(std::string path);
     std::string get_variable_xml(std::string path);
+
+    void load_all_attributes(libdap::DMR *dmr);
+    void load_global_attributes(libdap::DMR *dmr);
 
     // These are for testing. jhrg 11/2/21
     void load_everything(libdap::DMR *dmr);

@@ -679,7 +679,65 @@ public:
         }
     }
 
-CPPUNIT_TEST_SUITE( DMZTest );
+    void test_load_global_attributes_1() {
+        try {
+            d_dmz = new DMZ(coads_climatology_dmrpp);
+            DmrppTypeFactory factory;
+            DMR dmr(&factory);
+            d_dmz->build_thin_dmr(&dmr);
+
+            XMLWriter xml;
+            dmr.print_dap4(xml);
+            DBG(cerr << "DMR: " << xml.get_doc() << endl);
+
+            d_dmz->load_global_attributes(&dmr);
+
+            XMLWriter xml2;
+            dmr.print_dap4(xml2);
+            DBG(cerr << "DMR: " << xml2.get_doc() << endl);
+
+            auto *attrs = dmr.root()->attributes();
+            CPPUNIT_ASSERT(!attrs->empty());
+            D4Attribute *history = attrs->get("NC_GLOBAL.history");
+            CPPUNIT_ASSERT(history);
+            CPPUNIT_ASSERT(history->name() == "history");
+            CPPUNIT_ASSERT(history->value(0).find("FERRET") != string::npos);
+        }
+        catch (...) {
+            handle_fatal_exceptions();
+        }
+    }
+
+    void test_load_all_attributes_1() {
+        try {
+            d_dmz = new DMZ(coads_climatology_dmrpp);
+            DmrppTypeFactory factory;
+            DMR dmr(&factory);
+            d_dmz->build_thin_dmr(&dmr);
+
+            XMLWriter xml;
+            dmr.print_dap4(xml);
+            DBG(cerr << "DMR: " << xml.get_doc() << endl);
+
+            d_dmz->load_all_attributes(&dmr);
+
+            XMLWriter xml2;
+            dmr.print_dap4(xml2);
+            DBG(cerr << "DMR: " << xml2.get_doc() << endl);
+
+            auto *attrs = dmr.root()->attributes();
+            CPPUNIT_ASSERT(!attrs->empty());
+            D4Attribute *history = attrs->get("NC_GLOBAL.history");
+            CPPUNIT_ASSERT(history);
+            CPPUNIT_ASSERT(history->name() == "history");
+            CPPUNIT_ASSERT(history->value(0).find("FERRET") != string::npos);
+        }
+        catch (...) {
+            handle_fatal_exceptions();
+        }
+    }
+
+    CPPUNIT_TEST_SUITE( DMZTest );
 
     CPPUNIT_TEST(test_DMZ_ctor_1);
     CPPUNIT_TEST(test_DMZ_ctor_2);
@@ -712,6 +770,10 @@ CPPUNIT_TEST_SUITE( DMZTest );
 
     CPPUNIT_TEST(test_load_chunks_1);
     CPPUNIT_TEST(test_load_chunks_2);
+
+    CPPUNIT_TEST(test_load_global_attributes_1);
+
+    CPPUNIT_TEST(test_load_all_attributes_1);
 
     CPPUNIT_TEST_SUITE_END();
 };

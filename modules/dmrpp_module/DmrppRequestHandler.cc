@@ -227,7 +227,8 @@ void DmrppRequestHandler::build_dmr_from_file(BESContainer *container, DMR* dmr)
 
     dmz->parse_xml_doc(data_pathname);
     dmz->build_thin_dmr(dmr);
-    dmz->load_everything(dmr);
+    // dmz->load_everything(dmr);
+    dmz->load_global_attributes(dmr);
 #else
     DmrppTypeFactory BaseFactory;   // Use the factory for this handler's types
     dmr->set_factory(&BaseFactory);
@@ -237,8 +238,7 @@ void DmrppRequestHandler::build_dmr_from_file(BESContainer *container, DMR* dmr)
     parser.intern(in, dmr);
 
     dmr->set_factory(0);
-#endif  // Following lines replaced by DMZ::build_thin_dmr()
-
+#endif
 }
 
 /**
@@ -263,6 +263,8 @@ bool DmrppRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
 
     try {
         build_dmr_from_file(dhi.container, bdmr->get_dmr());
+
+        dmz->load_all_attributes(bdmr->get_dmr());
 
         bdmr->set_dap4_constraint(dhi);
         bdmr->set_dap4_function(dhi);
@@ -313,6 +315,7 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
         }
         else {
             build_dmr_from_file(dhi.container, bdmr->get_dmr());
+            dmz->load_all_attributes(bdmr->get_dmr());
         }
 
         bdmr->set_dap4_constraint(dhi);
@@ -538,8 +541,10 @@ bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi)
         else {
             // Not in cache, better make one!
             // 1) Build a DMR
+            // TODO remove 'new' jhrg 11/12/21
             DMR *dmr = new DMR();
             build_dmr_from_file(dhi.container, dmr);
+            dmz->load_all_attributes(dmr);
 
             // Get a DDS from the DMR
             DDS *dds = dmr->getDDS();

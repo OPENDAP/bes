@@ -34,17 +34,6 @@ include $(top_srcdir)/coverage.mk
 
 SUBDIRS = . unit-tests tests tests_build_dmrpp data
 
-BUILT_SOURCES = bes_default_conf.h
-
-# Build the bes_default_conf script so that the value substituted for
-# @abs_top_srcdir@ does not contain '../'. This happens when using 
-# configure's value for the parameter when running the distcheck target.
-bes_default_conf.h: $(srcdir)/bes_default_conf_template.h.in $(top_srcdir)/configure.ac
-	@clean_abs_top_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
-	cat $(srcdir)/bes_default_conf_template.h.in | sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
-		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" \
-		-e "s%[@]modulesdir[@]%${modulesdir}%" > bes_default_conf.h
-
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libdmrpp_module.la
 
@@ -86,7 +75,6 @@ $(OPENSSL_LIBS) $(XML2_LIBS) $(BYTESWAP_LIBS) -lz
 
 # check_dmrpp config
 check_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS)
- # -I$(srcdir)/../hdf5_handler
 check_dmrpp_SOURCES = check_dmrpp.cc
 
 # merge_dmrpp config
@@ -96,54 +84,27 @@ merge_dmrpp_SOURCES = merge_dmrpp.cc
 # reduce_mdf config
 reduce_mdf_CPPFLAGS = $(AM_CPPFLAGS)
 reduce_mdf_SOURCES = reduce_mdf.cc
-reduce_mdf_LDADD =   $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) -lz
+reduce_mdf_LDADD = $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) -lz
 
 # retriever config
 retriever_CPPFLAGS = $(AM_CPPFLAGS)
 retriever_SOURCES = $(BES_SRCS) $(BES_HDRS) $(BUILD_DMRPP) retriever.cc
-retriever_LDADD =   $(BES_DAP_LIB) $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) \
+retriever_LDADD = $(BES_DAP_LIB) $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) \
 $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) \
 $(OPENSSL_LIBS) $(XML2_LIBS) $(BYTESWAP_LIBS) -lz
 
 # superchunky config
 superchunky_CPPFLAGS = $(AM_CPPFLAGS)
 superchunky_SOURCES = $(BES_SRCS) $(BES_HDRS) $(BUILD_DMRPP) SuperChunky.cc
-superchunky_LDADD =   $(BES_DAP_LIB) $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) \
+superchunky_LDADD = $(BES_DAP_LIB) $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) \
 $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) \
 $(OPENSSL_LIBS) $(XML2_LIBS) $(BYTESWAP_LIBS) -lz
 
-
-#ngap_build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS)  -I$(top_srcdir)/standalone
-#
-#ngap_build_dmrpp_SOURCES = $(BES_SRCS) $(BES_HDRS) $(BUILD_DMRPP) bes_default_conf.h ngap_build_dmrpp.cc
-#
-#ngap_build_dmrpp_LDADD =  \
-#    $(abs_top_builddir)/cmdln/CmdTranslation.o \
-#    $(abs_top_builddir)/xmlcommand/libbes_xml_command.la \
-#    $(BES_DAP_LIB) \
-#    $(BES_STANDALONE_LIB)  $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) \
-#    $(BES_XML_CMD_LIB) \
-#    $(BES_EXTRA_LIBS) $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) \
-#    $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) \
-#    $(XML2_LIBS) $(READLINE_LIBS) -lz
-#    $(abs_top_builddir)/modules/hdf5_handler/gctp/src/libGctp.a
-#    $(HDF5_MODULE_OBJS)
-# Cruft
-# $(HDF5_MODULE_OBJS)
-#   $(abs_top_builddir)/modules/hdf5_handler/libhdf5_module.la
-#
-
 EXTRA_PROGRAMS = 
 
-# Adding the xml2json dir here is all we need to get it in the dist tar ball.
-# If it was added to DIST_SUBDIRS, some targets would be run, within the directory,
-# by automake and that would break since the dir does not have automake files.
-# jhrg 12/30/19
-EXTRA_DIST = dmrpp.conf.in xml2json bes_default_conf_template.h.in
+EXTRA_DIST = dmrpp.conf.in
 
-# removed from EXTRA_DIST: libdmrpp_module.la
-
-CLEANFILES = *~ *.gcda *.gcno *.gcov bes_default_conf.h dmrpp.conf
+CLEANFILES = *~ *.gcda *.gcno *.gcov dmrpp.conf
 
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = dmrpp.conf
@@ -157,69 +118,3 @@ C4_DIR=./cccc
 .PHONY: cccc
 cccc:	
 	cccc --outdir=$(C4_DIR) $(libdmrpp_module_la_SOURCES)
-
-HDF5_MODULE_OBJS = \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5Array.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5BaseArray.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5Byte.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5CF.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5CFArray.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5CFByte.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5CFFloat32.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5CFFloat64.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5CFGeoCF1D.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5CFGeoCFProj.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5CFInt16.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5CFInt32.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5CFInt64.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5CFModule.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5CFStr.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5CFUInt16.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5CFUInt32.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5CFUInt64.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5CFUtil.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5DiskCache.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5Float32.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5Float64.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5GCFProduct.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5GMCF.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5GMCFFillIndexArray.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5GMCFMissLLArray.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5GMCFMissNonLLCVArray.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5GMCFSpecialCVArray.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5GMSPCFArray.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5Int16.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5Int32.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5Int64.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5Int8.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5Module.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5PathFinder.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5RequestHandler.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5Sequence.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5Str.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5Structure.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5UInt16.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5UInt32.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5UInt64.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5Url.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDF5_DataMemCache.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDFEOS5CF.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDFEOS5CFMissLLArray.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDFEOS5CFMissNonLLCVArray.o \
-$(abs_top_builddir)/modules/hdf5_handler/HDFEOS5CFSpecialCVArray.o \
-$(abs_top_builddir)/modules/hdf5_handler/HE5Checker.o \
-$(abs_top_builddir)/modules/hdf5_handler/HE5Parser.o \
-$(abs_top_builddir)/modules/hdf5_handler/h5cfdap.o \
-$(abs_top_builddir)/modules/hdf5_handler/h5cfdaputil.o \
-$(abs_top_builddir)/modules/hdf5_handler/h5common.o \
-$(abs_top_builddir)/modules/hdf5_handler/h5commoncfdap.o \
-$(abs_top_builddir)/modules/hdf5_handler/h5das.o \
-$(abs_top_builddir)/modules/hdf5_handler/h5dds.o \
-$(abs_top_builddir)/modules/hdf5_handler/h5dmr.o \
-$(abs_top_builddir)/modules/hdf5_handler/h5get.o \
-$(abs_top_builddir)/modules/hdf5_handler/h5gmcfdap.o \
-$(abs_top_builddir)/modules/hdf5_handler/he5das.tab.o \
-$(abs_top_builddir)/modules/hdf5_handler/he5dds.tab.o \
-$(abs_top_builddir)/modules/hdf5_handler/heos5cfdap.o \
-$(abs_top_builddir)/modules/hdf5_handler/lex.he5das.o \
-$(abs_top_builddir)/modules/hdf5_handler/lex.he5dds.o

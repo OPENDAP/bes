@@ -46,6 +46,12 @@ class DmrppRequestHandler: public BESRequestHandler {
 private:
     // These are not used. See the netcdf handler for an example of their use.
     // jhrg 4/24/18
+    // These are now used - not sure when we started using them. We might also
+    // look into whether these and the MDS are really appropriate for the DMR++
+    // code since it is, effectively, using cached metadata. The MDS caches info
+    // as XML, and the DMR++ is XML, so the difference is negligible. In the case
+    // of the memory cache, the size of the DMZ in memory may be an issue.
+    // jhrg 11/12/21
     static ObjMemCache *das_cache;
     static ObjMemCache *dds_cache;
     static ObjMemCache *dmr_cache;

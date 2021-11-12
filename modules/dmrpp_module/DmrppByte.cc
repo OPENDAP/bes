@@ -25,6 +25,7 @@
 #include "config.h"
 
 #include <string>
+#include <memory>
 
 #include <BESError.h>
 #include <BESDebug.h>
@@ -87,6 +88,8 @@ bool DmrppByte::read()
 
     if (read_p())
         return true;
+
+    load_chunks(this);
 
     set_value(*reinterpret_cast<dods_byte*>(read_atomic(name())));
 

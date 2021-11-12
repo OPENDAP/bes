@@ -154,6 +154,10 @@ public:
     /// @brief Returns true if this object utilizes shuffle compression.
     virtual bool twiddle_bytes() const { return d_twiddle_bytes; }
 
+    // TODO Remove this. jhrg 11/12/21
+    /// @brief Provide access to the DMZ instance bound to this variable
+    virtual const std::shared_ptr<DMZ> &get_dmz() const { return d_dmz; }
+
     /// @brief Have the chunks been loaded?
     virtual bool get_chunks_loaded()  const { return d_chunks_loaded; }
     virtual void set_chunks_loaded(bool state) {  d_chunks_loaded = state; }
@@ -161,6 +165,7 @@ public:
     /// @brief Have the attributes been loaded?
     virtual bool get_attributes_loaded()  const { return d_attributes_loaded; }
     virtual void set_attributes_loaded(bool state) {  d_attributes_loaded = state; }
+
 
     /// @brief A const reference to the vector of chunks
     /// @see get_chunks()
@@ -205,7 +210,10 @@ public:
         }
     }
 
+#if 1
+    // TODO remove since this duplicates code in DMZ. jhrg 11/12/21
     void load_chunks(libdap::BaseType *btp);
+#endif
 
     virtual void parse_chunk_dimension_sizes(const std::string &chunk_dim_sizes_string);
 

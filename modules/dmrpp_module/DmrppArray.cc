@@ -1497,6 +1497,8 @@ bool DmrppArray::read()
 {
     if (read_p()) return true;
 
+    load_chunks(this);
+
     // Single chunk and 'contiguous' are the same for this code.
 
     if (get_immutable_chunks().size() == 1) { // Removed: || get_chunk_dimension_sizes().empty()) {

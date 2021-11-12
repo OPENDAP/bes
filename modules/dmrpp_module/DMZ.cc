@@ -716,6 +716,7 @@ DMZ::load_attributes(BaseType *btp)
         return;
 
     // goto the DOM tree node for this variable
+    // TODO Will this work for the root group? If so, consolidate methods? jhrg 11/12/21
     xml_node var_node = get_variable_xml_node(btp);
     if (var_node == nullptr)
         throw BESInternalError("Could not find location of variable in the DMR++ XML document.", __FILE__, __LINE__);
@@ -742,6 +743,67 @@ DMZ::load_attributes(BaseType *btp, xml_node var_node)
     for (auto child = var_node.first_child(); child; child = child.next_sibling()) {
         if (is_eq(child.name(), "Attribute")) {
             process_attribute(attributes, child);
+        }
+    }
+}
+
+/**
+ * @brief
+ * @param constructor
+ */
+void
+DMZ::load_attributes(Constructor *constructor)
+{
+    load_attributes(static_cast<BaseType*>(constructor));
+    for (auto i = constructor->var_begin(), e = constructor->var_end(); i != e; ++i) {
+        assert((*i)->type() != dods_group_c);
+
+        if ((*i)->is_constructor_type()) {
+            load_attributes(static_cast<Constructor*>(*i));
+        }
+        else {
+            load_attributes(*i);
+        }
+    }
+}
+
+void
+DMZ::load_attributes(D4Group *group) {
+    // The root group is special; look for its DAP Attributes in the Dataset element
+    if (group->get_parent() == nullptr) {
+        xml_node dataset = d_xml_doc.child("Dataset");
+        if (!dataset)
+            throw BESInternalError("Could not find the 'Dataset' element in the DMR++ XML document.", __FILE__, __LINE__);
+        load_attributes(static_cast<BaseType*>(group), dataset);
+    }
+    else {
+        load_attributes(static_cast<BaseType*>(group));
+    }
+
+    for (auto i = group->var_begin(), e = group->var_end(); i != e; ++i) {
+        // Even though is_constructor_type() returns true for instances of D4Group,
+        // Groups are kept under a separate container from variables because they
+        // have a different function than the Structure and Sequence types (Groups
+        // never hold data).
+        assert((*i)->type() != dods_group_c);
+
+        if ((*i)->is_constructor_type()) {
+            load_everything_constructor(static_cast<Constructor*>(*i));
+        }
+        else {
+            load_attributes(*i);
+        }
+    }
+
+    for (auto i = group->grp_begin(), e = group->grp_end(); i != e; ++i) {
+        if ((*i)->type() == dods_group_c) {
+            load_everything_group(static_cast<D4Group*>(*i));
+        }
+        else if ((*i)->is_constructor_type()) {
+            load_everything_constructor(static_cast<Constructor*>(*i));
+        }
+        else {
+            load_attributes(*i);
         }
     }
 }
@@ -955,6 +1017,34 @@ void DMZ::load_chunks(BaseType *btp) {
         }
     }
     dc->set_chunks_loaded(true);
+}
+
+void DMZ::load_all_attributes(libdap::DMR *dmr)
+{
+    assert(d_xml_doc != nullptr);
+    load_attributes(dmr->root());
+}
+
+/**
+ * @brief Load the Global attributes
+ *
+ * This exists as a separate method from load_attributes(D4Group*) because that
+ * method will proceed to load the attributes for all the contained variables and
+ * Groups. In this case we are loading only the attributes for the root group
+ * so that other code that processes individual variables can control which (and
+ * when) attributes are loaded into the DMR.
+ *
+ * @param dmr Load information into this DMR and variables it holds
+ */
+void DMZ::load_global_attributes(libdap::DMR *dmr)
+{
+    assert(d_xml_doc != nullptr);
+
+    xml_node dataset = d_xml_doc.child("Dataset");
+    if (!dataset)
+        throw BESInternalError("Could not find the 'Dataset' element in the DMR++ XML document.", __FILE__, __LINE__);
+
+    load_attributes(dmr->root(), dataset);
 }
 
 /**
