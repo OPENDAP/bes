@@ -2020,6 +2020,15 @@ for(int i = 0; i<tmp_hdf5_hls.size();i++) {
 for(int i = 0; i<t_li_info.hl_names.size();i++)
     cerr<<"hl name is "<<t_li_info.hl_names[i] <<endl;
               
+                   string shortest_hl = obtain_shortest_ancestor_path(t_li_info.hl_names);
+cerr<<"shortest_hl is "<<shortest_hl <<endl;
+                   if(shortest_hl =="") {
+                        H5Dclose(ref_dset);
+                        string err_msg;
+                        err_msg = "The shortest hardlink is not located under an ancestor group of all links.";
+                        err_msg +="This is not supported by netCDF4 data model and the current Hyrax DAP4 implementation.";
+                        throw InternalErr(__FILE__,__LINE__,err_msg);
+                   }
 
                 }
                 // Need to save the dimension names without the path
@@ -2289,5 +2298,54 @@ visit_obj_cb(hid_t  group_id, const char *name, const H5L_info_t *linfo,
  
 }
 
+std::string obtain_shortest_ancestor_path(const std::vector<std::string> & hls) {
 
+    vector<string> hls_path;
+    char slash = '/';
+    bool hl_under_root = false;
+    string ret_str ="A";
+    unsigned i = 0;
 
+cerr<<"hls.size() "<<hls.size() <<endl;
+    for (i= 0; i<hls.size(); i++) {
+        size_t path_pos = hls[i].find_last_of(slash);
+        if(path_pos == std::string::npos) {
+            //Found
+            hl_under_root = true;
+            break; 
+        }
+        else {
+            string tmp_str = hls[i].substr(0,path_pos+1);
+            hls_path.push_back(tmp_str);
+        }
+    }
+
+    if(hl_under_root)
+        ret_str =  hls[i];
+    else {
+        unsigned short_path_index = 0;
+        unsigned min_path_size = hls_path[0].size();
+
+        // Find the shortest path index
+        for(unsigned j = 1; j <hls_path.size();j++) {
+            if(min_path_size>hls_path[j].size()) {
+                min_path_size = hls_path[j].size();
+                short_path_index = j;
+            }
+        }
+        string tmp_sp = hls_path[short_path_index];
+        ret_str = hls[short_path_index];
+
+        //check if all hardlinks have a common ancestor link
+        // If not, set the return value be the empty string.
+        for(unsigned j = 0; j <hls_path.size();j++) {
+            if(hls_path[j].find(tmp_sp)!=0) {
+                ret_str ="";
+                break;               
+            }
+        }       
+    }
+    return ret_str;
+
+    
+}
