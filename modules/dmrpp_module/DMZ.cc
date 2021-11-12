@@ -1016,6 +1016,7 @@ void DMZ::load_chunks(BaseType *btp) {
             throw BESInternalError(oss.str(), __FILE__, __LINE__);
         }
     }
+
     dc->set_chunks_loaded(true);
 }
 
