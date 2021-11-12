@@ -1975,61 +1975,75 @@ void obtain_dimnames(const hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_ptr
                 // Must trim the string delimter.
                 string trim_objname = objname_str.substr(0,objnamelen);
  
+                // We need to check if there are hardlinks for this variable. 
+                // If yes, we need to find the hardlink that has the shortest path and at the ancestor group
+                // of all links.
                 H5O_info_t obj_info;
                 if(H5Oget_info2(ref_dset,&obj_info,H5O_INFO_BASIC)<0) {
                     H5Dclose(ref_dset);
                     string msg = "Cannot obtain the object info for the dimension variable " + objname_str;
                     throw InternalErr(__FILE__,__LINE__,msg);
                 }
-#if 0
-                if(obj_info.rc > 1) {
-cerr<<" this dimension variable "<< objname_str <<" has a hard-link."<<endl;
-                    tmp_link_info_t hls;
-                     hls.link_addr = obj_info.addr;
-                     hls.link_paths.push_back(trim_objname);
-                     tmp_hdf5_hls.push_back(hls);
-for(int i = 0; i<tmp_hdf5_hls.size();i++) {
-    cerr<< "tmp_hdf5_hls.link_addr = "<< tmp_hdf5_hls[i].link_addr <<endl;
-    for(int j = 0; j<tmp_hdf5_hls[i].link_paths.size();j++)
-        cerr<< "tmp_hdf5_hls["<<i<<"].link_paths = "<< tmp_hdf5_hls[i].link_paths[j] <<endl;
-}
-
-                }
-#endif
           
+                // This dimension indeed has hard links.
                 if(obj_info.rc > 1) {
 
                     // 1. Search the hdf5_hls to see if the address is inside
                     //    if yes, 
-                    //       find all hard-link already,
-                    //       obtain the shortest path, use this as the dimension name.
+                    //       obtain the hard link which is the shortest path, use this as the dimension name.
                     //    else 
-                    //       hard-way, search all the hardlinks with callbacks.
+                    //       search all the hardlinks with callbacks.
                     //       obtain the shortest path, add this to hdf5_hls.
-                    typedef struct {
-                        unsigned link_unvisited;
-                        haddr_t  link_addr;
-                        vector<string> hl_names;
-                    } t_link_info_t;
 
-                    t_link_info_t t_li_info;
-                    t_li_info.link_unvisited = obj_info.rc;
-                    t_li_info.link_addr = obj_info.addr;
-                    // TODO
-                    H5Lvisit(file_id, H5_INDEX_NAME, H5_ITER_NATIVE, visit_obj_cb, (void*)&t_li_info);
+                    bool link_find = false;
+
+                    // If find the object in the hdf5_hls, obtain the hardlink and make it the dimension name(trim_objname).
+                    for (int i = 0; i <hdf5_hls.size();i++) {
+                        if(obj_info.addr == hdf5_hls[i].link_addr) { 
+                            trim_objname = '/'+hdf5_hls[i].slink_path;
+                            link_find = true;
+                            break;
+                        }
+                    }
+
+                    if(link_find == false) {
+
+                        typedef struct {
+                            unsigned link_unvisited;
+                            haddr_t  link_addr;
+                            vector<string> hl_names;
+                        } t_link_info_t;
+    
+                        t_link_info_t t_li_info;
+                        t_li_info.link_unvisited = obj_info.rc;
+                        t_li_info.link_addr = obj_info.addr;
+                        if(H5Lvisit(file_id, H5_INDEX_NAME, H5_ITER_NATIVE, visit_obj_cb, (void*)&t_li_info) < 0) {
+                            H5Dclose(ref_dset);
+                            string err_msg;
+                            err_msg = "Find all hardlinks: H5Lvisit failed to iterate all the objects";
+                            throw InternalErr(__FILE__,__LINE__,err_msg);
+                        }
 for(int i = 0; i<t_li_info.hl_names.size();i++)
-    cerr<<"hl name is "<<t_li_info.hl_names[i] <<endl;
-              
-                   string shortest_hl = obtain_shortest_ancestor_path(t_li_info.hl_names);
+        cerr<<"hl name is "<<t_li_info.hl_names[i] <<endl;
+                  
+                       string shortest_hl = obtain_shortest_ancestor_path(t_li_info.hl_names);
 cerr<<"shortest_hl is "<<shortest_hl <<endl;
-                   if(shortest_hl =="") {
-                        H5Dclose(ref_dset);
-                        string err_msg;
-                        err_msg = "The shortest hardlink is not located under an ancestor group of all links.";
-                        err_msg +="This is not supported by netCDF4 data model and the current Hyrax DAP4 implementation.";
-                        throw InternalErr(__FILE__,__LINE__,err_msg);
-                   }
+                       if(shortest_hl =="") {
+                            H5Dclose(ref_dset);
+                            string err_msg;
+                            err_msg = "The shortest hardlink is not located under an ancestor group of all links.";
+                            err_msg +="This is not supported by netCDF4 data model and the current Hyrax DAP4 implementation.";
+                            throw InternalErr(__FILE__,__LINE__,err_msg);
+                       }
+    
+                       // Save this link that holds the shortest path for future use.
+                       link_info_t new_hdf5_hl;
+                       new_hdf5_hl.link_addr = obj_info.addr;
+                       new_hdf5_hl.slink_path = shortest_hl;
+                       hdf5_hls.push_back(new_hdf5_hl);
+                       trim_objname = '/'+shortest_hl;
 
+                   }
                 }
                 // Need to save the dimension names without the path
  
@@ -2264,31 +2278,28 @@ bool check_str_attr_value(hid_t attr_id,hid_t atype_id,const string & value_to_c
     return ret_value;
 }
 
+// Call back function used by H5Lvisit that iterates all HDF5 objects.
 static int 
 visit_obj_cb(hid_t  group_id, const char *name, const H5L_info_t *linfo,
     void *_op_data)
 {
-   typedef struct {
-       unsigned link_unvisited;
-       haddr_t link_addr;
-       vector<string> hl_names;
-   } t_link_info_t;
+
+    typedef struct {
+        unsigned link_unvisited;
+        haddr_t link_addr;
+        vector<string> hl_names;
+    } t_link_info_t;
    
-
-
-    //lvisit_ud_t *op_data = (lvisit_ud_t *)_op_data;
     t_link_info_t *op_data = (t_link_info_t *)_op_data;
     int ret = 0;
 
-    //printf("name is %s\n", name);
+    // We only need the hard link info.
     if(linfo->type == H5L_TYPE_HARD) {
         if(op_data->link_addr == linfo->u.address) {
-            
             op_data->link_unvisited = op_data->link_unvisited -1;
-            printf("link_unvisited is %u\n",op_data->link_unvisited);
-            printf("name is %s\n",name);
             string tmp_str(name,name+strlen(name));
             op_data->hl_names.push_back(tmp_str);
+            // Once visiting all hard links, stop. 
             if(op_data->link_unvisited == 0) 
                 ret = 1;
         }
@@ -2298,17 +2309,21 @@ visit_obj_cb(hid_t  group_id, const char *name, const H5L_info_t *linfo,
  
 }
 
+// Obtain the shortest path of all hard links of the object.
 std::string obtain_shortest_ancestor_path(const std::vector<std::string> & hls) {
 
     vector<string> hls_path;
     char slash = '/';
     bool hl_under_root = false;
-    string ret_str ="A";
+    string ret_str ="";
     unsigned i = 0;
 
-cerr<<"hls.size() "<<hls.size() <<endl;
     for (i= 0; i<hls.size(); i++) {
+
         size_t path_pos = hls[i].find_last_of(slash);
+
+        // The hard link may be under the root group, 
+        // This is the shortest path, we will return this path.
         if(path_pos == std::string::npos) {
             //Found
             hl_under_root = true;
@@ -2322,7 +2337,9 @@ cerr<<"hls.size() "<<hls.size() <<endl;
 
     if(hl_under_root)
         ret_str =  hls[i];
+
     else {
+        // We just need to find the minimum size.
         unsigned short_path_index = 0;
         unsigned min_path_size = hls_path[0].size();
 
