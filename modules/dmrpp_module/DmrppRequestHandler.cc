@@ -202,6 +202,33 @@ DmrppRequestHandler::~DmrppRequestHandler()
     curl_global_cleanup();
 }
 
+/**
+ * @brief function-try-block to reduce catch() clause duplication
+ * @param file
+ * @param line
+ */
+void
+handle_exception(const string &file, int line)
+    try {
+        throw;
+    }
+    catch (BESError &e) {
+        throw e;
+    }
+    catch (InternalErr &e) {
+        throw BESDapError(e.get_error_message(), true, e.get_error_code(), file, line);
+    }
+    catch (Error &e) {
+        throw BESDapError(e.get_error_message(), false, e.get_error_code(), file, line);
+    }
+    catch (std::exception &e) {
+        BESInternalFatalError(string("C++ exception: ").append(e.what()), file, line);
+    }
+    catch (...) {
+        throw BESInternalFatalError("Unknown exception caught building DAP4 Data response", file, line);
+    }
+
+
 void DmrppRequestHandler::build_dmr_from_file(BESContainer *container, DMR* dmr)
 {
     string data_pathname = container->access();
@@ -246,6 +273,10 @@ bool DmrppRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
         bdmr->set_dap4_constraint(dhi);
         bdmr->set_dap4_function(dhi);
     }
+    catch (...) {
+        handle_exception(__FILE__, __LINE__);
+    }
+#if 0
     catch (BESError &e) {
         throw e;
     }
@@ -258,7 +289,7 @@ bool DmrppRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
     catch (...) {
         throw BESInternalFatalError("Unknown exception caught building a DMR", __FILE__, __LINE__);
     }
-
+#endif
     BESDEBUG(MODULE, prolog << "END" << endl);
 
     return true;
@@ -296,6 +327,10 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
         bdmr->set_dap4_constraint(dhi);
         bdmr->set_dap4_function(dhi);
     }
+    catch (...) {
+        handle_exception(__FILE__, __LINE__);
+    }
+#if 0
     catch (BESError &e) {
         throw e;
     }
@@ -308,7 +343,7 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
     catch (...) {
         throw BESInternalFatalError("Unknown exception caught building DAP4 Data response", __FILE__, __LINE__);
     }
-
+#endif
     BESDEBUG(MODULE, prolog << "END" << endl);
 
     return false;
@@ -381,6 +416,10 @@ bool DmrppRequestHandler::dap_build_dap2data(BESDataHandlerInterface & dhi)
 
         bdds->clear_container();
     }
+    catch (...) {
+        handle_exception(__FILE__, __LINE__);
+    }
+#if 0
     catch (BESError &e) {
         throw;
     }
@@ -402,7 +441,7 @@ bool DmrppRequestHandler::dap_build_dap2data(BESDataHandlerInterface & dhi)
         BESInternalFatalError ex(s, __FILE__, __LINE__);
         throw ex;
     }
-
+#endif
     BESDEBUG(MODULE, prolog << "END" << endl);
     return true;
 }
@@ -459,6 +498,10 @@ bool DmrppRequestHandler::dap_build_dds(BESDataHandlerInterface & dhi)
 
         bdds->clear_container();
     }
+    catch (...) {
+        handle_exception(__FILE__, __LINE__);
+    }
+#if 0
     catch (BESError &e) {
         throw;
     }
@@ -480,6 +523,7 @@ bool DmrppRequestHandler::dap_build_dds(BESDataHandlerInterface & dhi)
         BESInternalFatalError ex(s, __FILE__, __LINE__);
         throw ex;
     }
+#endif
 
     BESDEBUG(MODULE, prolog << "END" << endl);
     return true;
@@ -535,6 +579,10 @@ bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi)
 
         bdas->clear_container();
     }
+    catch (...) {
+        handle_exception(__FILE__, __LINE__);
+    }
+#if 0
     catch (BESError &e) {
         throw;
     }
@@ -556,6 +604,7 @@ bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi)
         BESInternalFatalError ex(s, __FILE__, __LINE__);
         throw ex;
     }
+#endif
 
     BESDEBUG(MODULE, prolog << "END" << endl);
     return true;
