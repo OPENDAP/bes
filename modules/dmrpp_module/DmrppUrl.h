@@ -37,18 +37,19 @@ class XMLWriter;
 namespace dmrpp {
 
 class DmrppUrl: public libdap::Url, public DmrppCommon {
-    void _duplicate(const DmrppUrl &ts);
 
 public:
-    DmrppUrl(const std::string &n);
-    DmrppUrl(const std::string &n, const std::string &d);
-    DmrppUrl(const DmrppUrl &rhs);
+    DmrppUrl(const std::string &n) : libdap::Url(n), DmrppCommon() { }
+    DmrppUrl(const std::string &n, const std::string &d) : libdap::Url(n, d), DmrppCommon() { }
+    DmrppUrl(const DmrppUrl &rhs) = default;
 
-    virtual ~DmrppUrl() {}
+    virtual ~DmrppUrl() = default;
 
     DmrppUrl &operator=(const DmrppUrl &rhs);
 
-    virtual libdap::BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate() {
+        return new DmrppUrl(*this);
+    }
 
     virtual bool read();
 

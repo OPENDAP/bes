@@ -37,18 +37,19 @@ class XMLWriter;
 namespace dmrpp {
 
 class DmrppInt64: public libdap::Int64, public DmrppCommon {
-    void _duplicate(const DmrppInt64 &ts);
 
 public:
-    DmrppInt64(const std::string &n);
-    DmrppInt64(const std::string &n, const std::string &d);
-    DmrppInt64(const DmrppInt64 &rhs);
+    DmrppInt64(const std::string &n) : libdap::Int64(n), DmrppCommon() { }
+    DmrppInt64(const std::string &n, const std::string &d) : libdap::Int64(n, d), DmrppCommon() { }
+    DmrppInt64(const DmrppInt64 &rhs) = default;
 
-    virtual ~DmrppInt64() {}
+    virtual ~DmrppInt64() = default;
 
     DmrppInt64 &operator=(const DmrppInt64 &rhs);
 
-    virtual libdap::BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate() {
+        return new DmrppInt64(*this);
+    }
 
     virtual bool read();
 

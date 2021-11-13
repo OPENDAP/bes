@@ -38,30 +38,6 @@ using namespace std;
 
 namespace dmrpp {
 
-void
-DmrppStructure::_duplicate(const DmrppStructure &)
-{
-}
-
-DmrppStructure::DmrppStructure(const string &n) : Structure(n), DmrppCommon()
-{
-}
-
-DmrppStructure::DmrppStructure(const string &n, const string &d) : Structure(n, d), DmrppCommon()
-{
-}
-
-BaseType *
-DmrppStructure::ptr_duplicate()
-{
-    return new DmrppStructure(*this);
-}
-
-DmrppStructure::DmrppStructure(const DmrppStructure &rhs) : Structure(rhs), DmrppCommon(rhs)
-{
-    _duplicate(rhs);
-}
-
 DmrppStructure &
 DmrppStructure::operator=(const DmrppStructure &rhs)
 {
@@ -70,8 +46,8 @@ DmrppStructure::operator=(const DmrppStructure &rhs)
 
     dynamic_cast<Structure &>(*this) = rhs; // run Constructor=
 
-    _duplicate(rhs);
-    DmrppCommon::m_duplicate_common(rhs);
+    dynamic_cast<DmrppCommon &>(*this) = rhs;
+    //DmrppCommon::m_duplicate_common(rhs);
 
     return *this;
 }
@@ -113,7 +89,6 @@ DmrppStructure::print_dap4(XMLWriter &xml, bool constrained)
     throw InternalErr(__FILE__, __LINE__, "Could not end " + type_name() + " element");
 }
 #endif
-
 
 void DmrppStructure::dump(ostream & strm) const
 {

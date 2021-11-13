@@ -27,7 +27,7 @@
 
 #include <string>
 
-#include <Byte.h>
+#include <libdap/Byte.h>
 #include "DmrppCommon.h"
 
 namespace libdap {
@@ -37,18 +37,19 @@ class XMLWriter;
 namespace dmrpp {
 
 class DmrppByte: public libdap::Byte, public DmrppCommon {
-    void _duplicate(const DmrppByte &ts);
 
 public:
-    DmrppByte(const std::string &n);
-    DmrppByte(const std::string &n, const std::string &d);
-    DmrppByte(const DmrppByte &rhs);
+    DmrppByte(const std::string &n) : Byte(n), DmrppCommon() { }
+    DmrppByte(const std::string &n, const std::string &d) : Byte(n, d), DmrppCommon() { }
+    DmrppByte(const DmrppByte &rhs) = default;
 
-    virtual ~DmrppByte() {}
+    virtual ~DmrppByte() = default;
 
     DmrppByte &operator=(const DmrppByte &rhs);
 
-    virtual libdap::BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate() {
+        return new DmrppByte(*this);
+    }
 
     virtual bool read();
 

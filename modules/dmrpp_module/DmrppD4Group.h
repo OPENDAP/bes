@@ -37,23 +37,19 @@ class XMLWriter;
 namespace dmrpp {
 
 class DmrppD4Group: public libdap::D4Group, public DmrppCommon {
-    void _duplicate(const DmrppD4Group &ts);
 
 public:
-    DmrppD4Group(const std::string &n);
-    DmrppD4Group(const std::string &n, const std::string &d);
-    DmrppD4Group(const DmrppD4Group &rhs);
+    DmrppD4Group(const std::string &n) : D4Group(n), DmrppCommon() { }
+    DmrppD4Group(const std::string &n, const std::string &d) : D4Group(n, d), DmrppCommon() { }
+    DmrppD4Group(const DmrppD4Group &rhs) = default;
 
-    virtual ~DmrppD4Group() {}
+    virtual ~DmrppD4Group() = default;
 
     DmrppD4Group &operator=(const DmrppD4Group &rhs);
 
-    virtual libdap::BaseType *ptr_duplicate();
-
-#if 0
-    void print_dap4(libdap::XMLWriter &xml, bool constrained);
-#endif
-
+    virtual libdap::BaseType *ptr_duplicate(){
+        return new DmrppD4Group(*this);
+    }
 
     virtual void dump(ostream & strm) const;
 };

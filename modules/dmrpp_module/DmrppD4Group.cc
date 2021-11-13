@@ -43,30 +43,6 @@ using namespace std;
 
 namespace dmrpp {
 
-void
-DmrppD4Group::_duplicate(const DmrppD4Group &)
-{
-}
-
-DmrppD4Group::DmrppD4Group(const string &n) : D4Group(n), DmrppCommon()
-{
-}
-
-DmrppD4Group::DmrppD4Group(const string &n, const string &d) : D4Group(n, d), DmrppCommon()
-{
-}
-
-BaseType *
-DmrppD4Group::ptr_duplicate()
-{
-    return new DmrppD4Group(*this);
-}
-
-DmrppD4Group::DmrppD4Group(const DmrppD4Group &rhs) : D4Group(rhs), DmrppCommon(rhs)
-{
-    _duplicate(rhs);
-}
-
 DmrppD4Group &
 DmrppD4Group::operator=(const DmrppD4Group &rhs)
 {
@@ -75,8 +51,8 @@ DmrppD4Group::operator=(const DmrppD4Group &rhs)
 
     dynamic_cast<D4Group &>(*this) = rhs; // run Constructor=
 
-    _duplicate(rhs);
-    DmrppCommon::m_duplicate_common(rhs);
+    dynamic_cast<DmrppCommon &>(*this) = rhs;
+    //DmrppCommon::m_duplicate_common(rhs);
 
     return *this;
 }
@@ -126,7 +102,6 @@ DmrppD4Group::print_dap4(XMLWriter &xml, bool constrained)
     }
 }
 #endif
-
 
 void DmrppD4Group::dump(ostream & strm) const
 {

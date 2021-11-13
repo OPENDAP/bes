@@ -38,21 +38,21 @@ class XMLWriter;
 namespace dmrpp {
 
 class DmrppD4Opaque: public libdap::D4Opaque, public DmrppCommon {
-    void _duplicate(const DmrppD4Opaque &ts);
-
     void insert_chunk(std::shared_ptr<Chunk>  chunk);
     void read_chunks();
 
 public:
-    DmrppD4Opaque(const std::string &n);
-    DmrppD4Opaque(const std::string &n, const std::string &d);
-    DmrppD4Opaque(const DmrppD4Opaque &rhs);
+    DmrppD4Opaque(const std::string &n) : libdap::D4Opaque(n), DmrppCommon() { }
+    DmrppD4Opaque(const std::string &n, const std::string &d) : libdap::D4Opaque(n, d), DmrppCommon() { }
+    DmrppD4Opaque(const DmrppD4Opaque &rhs) = default;
 
-    virtual ~DmrppD4Opaque() {}
+    virtual ~DmrppD4Opaque() = default;
 
     DmrppD4Opaque &operator=(const DmrppD4Opaque &rhs);
 
-    virtual libdap::BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate() {
+        return new DmrppD4Opaque(*this);
+    }
 
     /**
      * @brief Get a pointer to start of the Opaque data buffer

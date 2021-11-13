@@ -37,30 +37,6 @@ using namespace std;
 
 namespace dmrpp {
 
-void
-DmrppInt32::_duplicate(const DmrppInt32 &)
-{
-}
-
-DmrppInt32::DmrppInt32(const string &n) : Int32(n), DmrppCommon()
-{
-}
-
-DmrppInt32::DmrppInt32(const string &n, const string &d) : Int32(n, d), DmrppCommon()
-{
-}
-
-BaseType *
-DmrppInt32::ptr_duplicate()
-{
-    return new DmrppInt32(*this);
-}
-
-DmrppInt32::DmrppInt32(const DmrppInt32 &rhs) : Int32(rhs), DmrppCommon(rhs)
-{
-    _duplicate(rhs);
-}
-
 DmrppInt32 &
 DmrppInt32::operator=(const DmrppInt32 &rhs)
 {
@@ -69,8 +45,8 @@ DmrppInt32::operator=(const DmrppInt32 &rhs)
 
     dynamic_cast<Int32 &>(*this) = rhs; // run Constructor=
 
-    _duplicate(rhs);
-    DmrppCommon::m_duplicate_common(rhs);
+    dynamic_cast<DmrppCommon &>(*this) = rhs;
+    //DmrppCommon::m_duplicate_common(rhs);
 
     return *this;
 }
