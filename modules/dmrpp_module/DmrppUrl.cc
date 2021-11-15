@@ -85,10 +85,11 @@ DmrppUrl::operator=(const DmrppUrl &rhs)
 bool
 DmrppUrl::read()
 {
+    if (!get_chunks_loaded())
+        load_chunks(this);
+
     if (read_p())
         return true;
-
-    load_chunks(this);
 
     string value = read_atomic(name());
 

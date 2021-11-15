@@ -88,16 +88,18 @@ DmrppInt16::read()
 {
     BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
 
+    if (!get_chunks_loaded())
+        load_chunks(this);
+
     if (read_p())
         return true;
-
-    load_chunks(this);
 
     set_value(*reinterpret_cast<dods_int16*>(read_atomic(name())));
 
     if ( this->twiddle_bytes() ) {
         d_buf = bswap_16(d_buf);
     }
+
     set_read_p(true);
 
     return true;

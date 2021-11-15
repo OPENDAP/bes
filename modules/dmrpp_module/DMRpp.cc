@@ -23,10 +23,11 @@
 
 #include "config.h"
 
-#include <XMLWriter.h>
-#include <D4Group.h>
-#include <D4BaseTypeFactory.h>
-#include <InternalErr.h>
+#include <libdap/DDS.h>
+#include <libdap/XMLWriter.h>
+#include <libdap/D4Group.h>
+#include <libdap/D4BaseTypeFactory.h>
+#include <libdap/InternalErr.h>
 
 #include "DMRpp.h"
 #include "DmrppCommon.h"
@@ -139,6 +140,21 @@ void
 DMRpp::print_dap4(XMLWriter &xml, bool constrained /* false */)
 {
     print_dmrpp(xml, get_href(), constrained, get_print_chunks());
+}
+
+libdap::DDS *DMRpp::getDDS() {
+    DmrppTypeFactory factory;
+    unique_ptr<DDS> dds(new DDS(&factory, name()));
+    dds->filename(filename());
+
+    // Now copy the global attributes
+    unique_ptr<vector<BaseType *>> top_vars(root()->transform_to_dap2(&(dds->get_attr_table())/*, true*/));
+    for (vector<BaseType *>::iterator i = top_vars->begin(), e = top_vars->end(); i != e; i++) {
+        dds->add_var_nocopy(*i);
+    }
+
+    dds->set_factory(0);
+    return dds.get();
 }
 
 } /* namespace dmrpp */

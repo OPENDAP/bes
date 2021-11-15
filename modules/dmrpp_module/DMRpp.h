@@ -25,15 +25,12 @@
 #ifndef MODULES_DMRPP_MODULE_DMRPP_H_
 #define MODULES_DMRPP_MODULE_DMRPP_H_
 
-// #include "config.h"
-
 #include <string>
 
 #include <libdap/DMR.h>
 
-//#include "url_impl.h"
-
 namespace libdap {
+class DDS;
 class XMLWriter;
 }
 
@@ -69,7 +66,9 @@ public:
     virtual bool get_print_chunks() const { return d_print_chunks; }
     virtual void set_print_chunks(bool pc) { d_print_chunks = pc; }
 
-    virtual void print_dap4(libdap::XMLWriter &xml, bool constrained = false);
+    virtual libdap::DDS *getDDS();
+
+    void print_dap4(libdap::XMLWriter &xml, bool constrained = false);
 
     virtual void print_dmrpp(libdap::XMLWriter &xml, const std::string &href ="", bool constrained = false, bool print_chunks = true);
 };

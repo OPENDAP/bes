@@ -386,7 +386,9 @@ bool DmrppRequestHandler::dap_build_dap2data(BESDataHandlerInterface & dhi)
                     throw BESInternalError("DMR++ module error: Null DMR++ object read from the MDS", __FILE__, __LINE__);
             }
             else {
-                dmr = new DMR();
+                // Build a DMR++ here to pick up the specialized version of getDDS().
+                // jhrg 11/15/21
+                dmr = new DMRpp();
                 build_dmr_from_file(dhi.container, dmr);
             }
 
@@ -465,7 +467,7 @@ bool DmrppRequestHandler::dap_build_dds(BESDataHandlerInterface & dhi)
         }
         else {
             // Not in cache, make one...
-            DMR *dmr = new DMR();   // FIXME is this leaked? jhrg 6/1/18 YES!!
+            DMR *dmr = new DMRpp();   // FIXME is this leaked? jhrg 6/1/18 YES!!
             build_dmr_from_file(dhi.container, dmr);
 
             // delete the current one;

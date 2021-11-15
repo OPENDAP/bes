@@ -205,9 +205,10 @@ void DmrppD4Opaque::read_chunks()
 bool
 DmrppD4Opaque::read()
 {
-    if (read_p()) return true;
+    if (!get_chunks_loaded())
+        load_chunks(this);
 
-    load_chunks(this);
+    if (read_p()) return true;
 
     // if there are no chunks, use read a single contiguous block of data
     // and store it in the object. Note that DmrppCommon uses a single Chunk
