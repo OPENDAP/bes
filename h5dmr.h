@@ -56,7 +56,7 @@
 #include <D4Attributes.h>
 
 // This struct stores the link object address and the shortest path link. 
-// Note: if it is necessary to retrieve all the link path, uncomment
+// Note: if it is necessary to retrieve all the link paths, uncomment
 // vector<string>link_paths and change corresponding code.
 typedef struct {
     haddr_t  link_addr;

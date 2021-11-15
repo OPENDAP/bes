@@ -56,17 +56,9 @@
 #include <sstream>
 
 using namespace libdap;
-static int visit_obj_cb(hid_t  group_id, const char *name, const H5L_info_t *oinfo,
+static int visit_link_cb(hid_t  group_id, const char *name, const H5L_info_t *oinfo,
     void *_op_data);
 
-typedef struct {
-    haddr_t  link_addr;
-    vector<string> link_paths;
-} tmp_link_info_t;
-
-vector<tmp_link_info_t> tmp_hdf5_hls;
-
-// H5Ovisit call back function. When finding the dimension scale attributes, return 1. 
 static int
 visit_obj_cb(hid_t o_id, const char *name, const H5O_info_t *oinfo,
     void *_op_data);
@@ -597,11 +589,12 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/// \fn get_dataset_dmr(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
+/// \fn get_dataset_dmr(const hid_t file_id, hid_t pid, const string &dname, DS_t * dt_inst_ptr)
 /// For DAP4, obtain data information in a dataset datatype, dataspace(dimension sizes)
 /// ,number of dimensions,dimension and hardlink information for dimensions
 /// and put these information into a pointer of data struct.
 ///
+/// \param[in] file_id  HDF5 file_id(need for searching all hard links.)
 /// \param[in] pid    parent object id(group id)
 /// \param[in] dname  dataset name
 /// \param[in] use_dimscale whether dimscale is used. 
@@ -2034,7 +2027,7 @@ void obtain_dimnames(const hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_ptr
                         t_li_info.link_unvisited = obj_info.rc;
                         t_li_info.link_addr = obj_info.addr;
 
-                        if(H5Lvisit(file_id, H5_INDEX_NAME, H5_ITER_NATIVE, visit_obj_cb, (void*)&t_li_info) < 0) {
+                        if(H5Lvisit(file_id, H5_INDEX_NAME, H5_ITER_NATIVE, visit_link_cb, (void*)&t_li_info) < 0) {
                             H5Dclose(ref_dset);
                             string err_msg;
                             err_msg = "Find all hardlinks: H5Lvisit failed to iterate all the objects";
@@ -2299,7 +2292,7 @@ bool check_str_attr_value(hid_t attr_id,hid_t atype_id,const string & value_to_c
 
 // Call back function used by H5Lvisit that iterates all HDF5 objects.
 static int 
-visit_obj_cb(hid_t  group_id, const char *name, const H5L_info_t *linfo,
+visit_link_cb(hid_t  group_id, const char *name, const H5L_info_t *linfo,
     void *_op_data)
 {
 

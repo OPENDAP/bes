@@ -295,7 +295,8 @@ bool depth_first(hid_t pid, char *gname,  D4Group* par_grp, const char *fname)
 }
 #endif
 //////////////////////////////////////////////////////////////////////////////////////////
-/// bool breadth_first(hid_t pid, char *gname, DMR & dmr, D4Group* par_grp, const char *fname,bool use_dimscale, vector <link_info_t> & hdf5_hls)
+/// bool breadth_first(const hid_t file_id,hid_t pid, char *gname, DMR & dmr, D4Group* par_grp, const char *fname,bool use_dimscale, vector <link_info_t> & hdf5_hls)
+/// \param file_id file_id(this is necessary for searching the hardlinks of a dataset)
 /// \param pid group id
 /// \param gname group name (the absolute path from the root group)
 /// \param dmr reference of DMR object
