@@ -56,9 +56,13 @@
 #include <sstream>
 
 using namespace libdap;
+
+
+// H5Lvisit call back function.  After finding all the hard links, return 1. 
 static int visit_link_cb(hid_t  group_id, const char *name, const H5L_info_t *oinfo,
     void *_op_data);
 
+// H5Ovisit call back function. When finding the dimension scale attributes, return 1. 
 static int
 visit_obj_cb(hid_t o_id, const char *name, const H5O_info_t *oinfo,
     void *_op_data);
