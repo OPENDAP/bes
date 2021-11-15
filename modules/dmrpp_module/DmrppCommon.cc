@@ -480,5 +480,5 @@ DmrppCommon::load_chunks(BaseType *btp) {
     d_dmz->load_chunks(btp);
 }
 
-} // namepsace dmrpp
+} // namespace dmrpp
 

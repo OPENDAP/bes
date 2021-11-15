@@ -228,7 +228,7 @@ void DmrppRequestHandler::build_dmr_from_file(BESContainer *container, DMR* dmr)
     dmz->parse_xml_doc(data_pathname);
     dmz->build_thin_dmr(dmr);
     // dmz->load_everything(dmr);
-    dmz->load_global_attributes(dmr);
+    // dmz->load_global_attributes(dmr);
 #else
     DmrppTypeFactory BaseFactory;   // Use the factory for this handler's types
     dmr->set_factory(&BaseFactory);

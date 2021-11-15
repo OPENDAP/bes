@@ -207,6 +207,8 @@ DmrppD4Opaque::read()
 {
     if (read_p()) return true;
 
+    load_chunks(this);
+
     // if there are no chunks, use read a single contiguous block of data
     // and store it in the object. Note that DmrppCommon uses a single Chunk
     // instance to hold 'contiguous' data.

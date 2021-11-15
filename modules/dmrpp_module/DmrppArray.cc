@@ -1495,9 +1495,14 @@ void DmrppArray::read_chunks_serial()
  */
 bool DmrppArray::read()
 {
-    if (read_p()) return true;
+    // If the chunks are not loaded, load them now. NB: load_chunks()
+    // reads data for HDF5 COMPACT storage, so read_p() will be true.
+    // Thus, call load_chunks() before testing read_p() to cover that
+    // case. jhrg 11/15/21
+    if (!get_chunks_loaded())
+        load_chunks(this);
 
-    load_chunks(this);
+    if (read_p()) return true;
 
     // Single chunk and 'contiguous' are the same for this code.
 

@@ -88,6 +88,8 @@ DmrppStr::read()
     if (read_p())
         return true;
 
+    load_chunks(this);
+
     string value = read_atomic(name());
 
     set_value(value);   // sets read_p too

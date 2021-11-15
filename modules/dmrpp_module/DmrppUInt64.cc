@@ -91,6 +91,8 @@ DmrppUInt64::read()
     if (read_p())
         return true;
 
+    load_chunks(this);
+
     set_value(*reinterpret_cast<dods_uint64*>(read_atomic(name())));
 
     if ( this->twiddle_bytes() ) {

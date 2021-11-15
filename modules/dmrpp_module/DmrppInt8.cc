@@ -90,6 +90,8 @@ DmrppInt8::read()
     if (read_p())
         return true;
 
+    load_chunks(this);
+
     set_value(*reinterpret_cast<dods_int8*>(read_atomic(name())));
 
     set_read_p(true);
