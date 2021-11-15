@@ -1,3 +1,4 @@
+// This file is part of hdf5_handler: an HDF5 file handler for the OPeNDAP
 // data server.
 
 // Copyright (c) 2007-2016 The HDF Group, Inc. and OPeNDAP, Inc.
@@ -55,6 +56,11 @@
 #include <sstream>
 
 using namespace libdap;
+
+
+// H5Lvisit call back function.  After finding all the hard links, return 1. 
+static int visit_link_cb(hid_t  group_id, const char *name, const H5L_info_t *oinfo,
+    void *_op_data);
 
 // H5Ovisit call back function. When finding the dimension scale attributes, return 1. 
 static int
@@ -432,24 +438,175 @@ void close_fileid(hid_t fid)
 
 }
 
-void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
-{
-
-    bool is_pure_dim = false;
-    get_dataset(pid,dname,dt_inst_ptr,false,is_pure_dim);
-}
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
-/// obtain data information in a dataset datatype, dataspace(dimension sizes)
+/// For DAP2, obtain data information in a dataset datatype, dataspace(dimension sizes)
 /// and number of dimensions and put these information into a pointer of data
 /// struct.
 ///
 /// \param[in] pid    parent object id(group id)
 /// \param[in] dname  dataset name
-/// \param[in] use_dimscale whether dimscale is used. Should always be false for DDS building.
 /// \param[out] dt_inst_ptr  pointer to the attribute struct(* attr_inst_ptr)
 ///////////////////////////////////////////////////////////////////////////////
-void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr,bool use_dimscale, bool &is_pure_dim)
+
+void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
+{
+    BESDEBUG("h5", ">get_dataset()" << endl);
+
+    // Obtain the dataset ID
+    hid_t dset = -1;
+    if ((dset = H5Dopen(pid, dname.c_str(),H5P_DEFAULT)) < 0) {
+        string msg = "cannot open the HDF5 dataset  ";
+        msg += dname;
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+
+    // Obtain the datatype ID
+    hid_t dtype = -1;
+    if ((dtype = H5Dget_type(dset)) < 0) {
+        H5Dclose(dset);
+        string msg = "cannot get the the datatype of HDF5 dataset  ";
+        msg += dname;
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+
+    // Obtain the datatype class 
+    H5T_class_t ty_class = H5Tget_class(dtype);
+    if (ty_class < 0) {
+        H5Tclose(dtype);
+        H5Dclose(dset);
+        string msg = "cannot get the datatype class of HDF5 dataset  ";
+        msg += dname;
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+
+    // These datatype classes are unsupported. Note we do support
+    // variable length string and the variable length string class is
+    // H5T_STRING rather than H5T_VLEN.
+    if ((ty_class == H5T_TIME) || (ty_class == H5T_BITFIELD)
+        || (ty_class == H5T_OPAQUE) || (ty_class == H5T_ENUM) || (ty_class == H5T_VLEN)) {
+        string msg = "unexpected datatype of HDF5 dataset  ";
+        msg += dname;
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+   
+    hid_t dspace = -1;
+    if ((dspace = H5Dget_space(dset)) < 0) {
+        H5Tclose(dtype);
+        H5Dclose(dset);
+        string msg = "cannot get the the dataspace of HDF5 dataset  ";
+        msg += dname;
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+
+    // It is better to use the dynamic allocation of the array.
+    // However, since the DODS_MAX_RANK is not big and it is also
+    // used in other location, we still keep the original code.
+    // KY 2011-11-17
+
+    int ndims = H5Sget_simple_extent_ndims(dspace);
+    if (ndims < 0) {
+        H5Tclose(dtype);
+        H5Sclose(dspace);
+        H5Dclose(dset);
+        string msg = "cannot get hdf5 dataspace number of dimension for dataset ";
+        msg += dname;
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+
+    // Check if the dimension size exceeds the maximum number of dimension DAP supports
+    if (ndims > DODS_MAX_RANK) {
+        string msg = "number of dimensions exceeds allowed for dataset ";
+        msg += dname;
+        H5Tclose(dtype);
+        H5Sclose(dspace);
+        H5Dclose(dset);
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+
+    hsize_t size[DODS_MAX_RANK];
+    hsize_t maxsize[DODS_MAX_RANK];
+
+    // Retrieve size. DAP4 doesn't have a convention to support multi-unlimited dimension yet.
+    if (H5Sget_simple_extent_dims(dspace, size, maxsize)<0){
+        string msg = "cannot obtain the dim. info for the dataset ";
+        msg += dname;
+        H5Tclose(dtype);
+        H5Sclose(dspace);
+        H5Dclose(dset);
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+
+    // return ndims and size[ndims]. 
+    hsize_t nelmts = 1;
+    if (ndims !=0) {
+        for (int j = 0; j < ndims; j++)
+            nelmts *= size[j];
+    }
+
+    size_t dtype_size = H5Tget_size(dtype);
+    if (dtype_size == 0) {
+        string msg = "cannot obtain the data type size for the dataset ";
+        msg += dname;
+        H5Tclose(dtype);
+        H5Sclose(dspace);
+        H5Dclose(dset);
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+ 
+    size_t need = nelmts * dtype_size;
+
+    hid_t memtype = H5Tget_native_type(dtype, H5T_DIR_ASCEND);
+    if (memtype < 0){
+        string msg = "cannot obtain the memory data type for the dataset ";
+        msg += dname;
+        H5Tclose(dtype);
+        H5Sclose(dspace);
+        H5Dclose(dset);
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
+
+    (*dt_inst_ptr).type = memtype;
+    (*dt_inst_ptr).ndims = ndims;
+    (*dt_inst_ptr).nelmts = nelmts;
+    (*dt_inst_ptr).need = need;
+    strncpy((*dt_inst_ptr).name, dname.c_str(), dname.length());
+    (*dt_inst_ptr).name[dname.length()] = '\0';
+    for (int j = 0; j < ndims; j++) 
+        (*dt_inst_ptr).size[j] = size[j];
+
+    if(H5Tclose(dtype)<0) {
+        H5Sclose(dspace);
+        H5Dclose(dset);
+        throw InternalErr(__FILE__, __LINE__, "Cannot close the HDF5 datatype.");
+    }
+
+    if(H5Sclose(dspace)<0) {
+        H5Dclose(dset);
+        throw InternalErr(__FILE__, __LINE__, "Cannot close the HDF5 dataspace.");
+    }
+
+    if(H5Dclose(dset)<0) {
+        throw InternalErr(__FILE__, __LINE__, "Cannot close the HDF5 dataset.");
+    }
+
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \fn get_dataset_dmr(const hid_t file_id, hid_t pid, const string &dname, DS_t * dt_inst_ptr)
+/// For DAP4, obtain data information in a dataset datatype, dataspace(dimension sizes)
+/// ,number of dimensions,dimension and hardlink information for dimensions
+/// and put these information into a pointer of data struct.
+///
+/// \param[in] file_id  HDF5 file_id(need for searching all hard links.)
+/// \param[in] pid    parent object id(group id)
+/// \param[in] dname  dataset name
+/// \param[in] use_dimscale whether dimscale is used. 
+/// \param[in] is_pure_dim whether this dimension is a pure dimension. 
+/// \param[in\out] vector to store hardlink info. of a dataset.
+/// \param[out] dt_inst_ptr  pointer to the attribute struct(* attr_inst_ptr)
+///////////////////////////////////////////////////////////////////////////////
+void get_dataset_dmr(const hid_t file_id, hid_t pid, const string &dname, DS_t * dt_inst_ptr,bool use_dimscale, bool &is_pure_dim, vector<link_info_t> &hdf5_hls)
 {
 
     BESDEBUG("h5", ">get_dataset()" << endl);
@@ -610,7 +767,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr,bool use_dim
 
             // This will check if "NAME" and "REFERENCE_LIST" exists.
             //herr_t ret = H5Aiterate2(dset, H5_INDEX_NAME, H5_ITER_INC, NULL, attr_info, &dim_attr_mark[0]);
-                herr_t ret = H5Aiterate2(dset, H5_INDEX_NAME, H5_ITER_INC, NULL, attr_info_dimscale, dim_attr_mark);
+            herr_t ret = H5Aiterate2(dset, H5_INDEX_NAME, H5_ITER_INC, NULL, attr_info_dimscale, dim_attr_mark);
             if(ret < 0) {
                 string msg = "cannot interate the attributes of the dataset ";
                 msg += dname;
@@ -654,7 +811,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr,bool use_dim
          }
 
          else if(false == is_pure_dim) // Except pure dimension,we need to save all dimension names in this dimension. 
-            obtain_dimnames(dset,ndims,dt_inst_ptr);
+            obtain_dimnames(file_id,dset,ndims,dt_inst_ptr,hdf5_hls);
     }
     
     if(H5Tclose(dtype)<0) {
@@ -1739,13 +1896,15 @@ attr_info_dimscale(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void
 
 
 ///////////////////////////////////////////////////////////////////////////////
-/// \fn obtain_dimnames(hid_t dset, int ndims, DS_t * dt_inst_ptr)
+/// \fn obtain_dimnames(hid_t dset, int ndims, DS_t * dt_inst_ptr, vector<link_info_t> & hdf5_hls)
 /// Obtain the dimension names of an HDF5 dataset and save the dimension names.
 /// \param[in] dset   HDF5 dataset ID
 /// \param[in] ndims  number of dimensions
 /// \param[out] dt_inst_ptr  pointer to the dataset struct that saves the dim. names
+/// \param[in/out] hdf5_hls  vector that stores the hard link info of this dimension.
+
 ///////////////////////////////////////////////////////////////////////////////
-void obtain_dimnames(hid_t dset,int ndims, DS_t *dt_inst_ptr) {
+void obtain_dimnames(const hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_ptr,vector<link_info_t> & hdf5_hls) {
 
     htri_t has_dimension_list = -1;
     
@@ -1827,6 +1986,81 @@ void obtain_dimnames(hid_t dset,int ndims, DS_t *dt_inst_ptr) {
 
                 // Must trim the string delimter.
                 string trim_objname = objname_str.substr(0,objnamelen);
+ 
+                // We need to check if there are hardlinks for this variable. 
+                // If yes, we need to find the hardlink that has the shortest path and at the ancestor group
+                // of all links.
+                H5O_info_t obj_info;
+                if(H5Oget_info2(ref_dset,&obj_info,H5O_INFO_BASIC)<0) {
+                    H5Dclose(ref_dset);
+                    string msg = "Cannot obtain the object info for the dimension variable " + objname_str;
+                    throw InternalErr(__FILE__,__LINE__,msg);
+                }
+          
+                // This dimension indeed has hard links.
+                if(obj_info.rc > 1) {
+
+                    // 1. Search the hdf5_hls to see if the address is inside
+                    //    if yes, 
+                    //       obtain the hard link which has the shortest path, use this as the dimension name.
+                    //    else 
+                    //       search all the hardlinks with the callback.
+                    //       obtain the shortest path, add this to hdf5_hls.
+
+                    bool link_find = false;
+
+                    // If finding the object in the hdf5_hls, obtain the hardlink and make it the dimension name(trim_objname).
+                    for (int i = 0; i <hdf5_hls.size();i++) {
+                        if(obj_info.addr == hdf5_hls[i].link_addr) { 
+                            trim_objname = '/'+hdf5_hls[i].slink_path;
+                            link_find = true;
+                            break;
+                        }
+                    }
+
+                    // The hard link is not in the hdf5_hls, need to iterate all objects and find those hardlinks.
+                    if(link_find == false) {
+
+                        typedef struct {
+                            unsigned link_unvisited;
+                            haddr_t  link_addr;
+                            vector<string> hl_names;
+                        } t_link_info_t;
+    
+                        t_link_info_t t_li_info;
+                        t_li_info.link_unvisited = obj_info.rc;
+                        t_li_info.link_addr = obj_info.addr;
+
+                        if(H5Lvisit(file_id, H5_INDEX_NAME, H5_ITER_NATIVE, visit_link_cb, (void*)&t_li_info) < 0) {
+                            H5Dclose(ref_dset);
+                            string err_msg;
+                            err_msg = "Find all hardlinks: H5Lvisit failed to iterate all the objects";
+                            throw InternalErr(__FILE__,__LINE__,err_msg);
+                        }
+#if 0
+for(int i = 0; i<t_li_info.hl_names.size();i++)
+        cerr<<"hl name is "<<t_li_info.hl_names[i] <<endl;
+#endif
+                  
+                       string shortest_hl = obtain_shortest_ancestor_path(t_li_info.hl_names);
+//cerr<<"shortest_hl is "<<shortest_hl <<endl;
+                       if(shortest_hl =="") {
+                            H5Dclose(ref_dset);
+                            string err_msg;
+                            err_msg = "The shortest hardlink is not located under an ancestor group of all links.";
+                            err_msg +="This is not supported by netCDF4 data model and the current Hyrax DAP4 implementation.";
+                            throw InternalErr(__FILE__,__LINE__,err_msg);
+                       }
+    
+                       // Save this link that holds the shortest path for future use.
+                       link_info_t new_hdf5_hl;
+                       new_hdf5_hl.link_addr = obj_info.addr;
+                       new_hdf5_hl.slink_path = shortest_hl;
+                       hdf5_hls.push_back(new_hdf5_hl);
+                       trim_objname = '/'+shortest_hl;
+
+                   }
+                }
                 // Need to save the dimension names without the path
  
                 dt_inst_ptr->dimnames.push_back(trim_objname.substr(trim_objname.find_last_of("/")+1));
@@ -2058,4 +2292,93 @@ bool check_str_attr_value(hid_t attr_id,hid_t atype_id,const string & value_to_c
         }
     }
     return ret_value;
+}
+
+// Call back function used by H5Lvisit that iterates all HDF5 objects.
+static int 
+visit_link_cb(hid_t  group_id, const char *name, const H5L_info_t *linfo,
+    void *_op_data)
+{
+
+    typedef struct {
+        unsigned link_unvisited;
+        haddr_t link_addr;
+        vector<string> hl_names;
+    } t_link_info_t;
+   
+    t_link_info_t *op_data = (t_link_info_t *)_op_data;
+    int ret = 0;
+
+    // We only need the hard link info.
+    if(linfo->type == H5L_TYPE_HARD) {
+        if(op_data->link_addr == linfo->u.address) {
+            op_data->link_unvisited = op_data->link_unvisited -1;
+            string tmp_str(name,name+strlen(name));
+            op_data->hl_names.push_back(tmp_str);
+            // Once visiting all hard links, stop. 
+            if(op_data->link_unvisited == 0) 
+                ret = 1;
+        }
+
+    }
+    return ret;
+ 
+}
+
+// Obtain the shortest path of all hard links of the object.
+std::string obtain_shortest_ancestor_path(const std::vector<std::string> & hls) {
+
+    vector<string> hls_path;
+    char slash = '/';
+    bool hl_under_root = false;
+    string ret_str ="";
+    unsigned i = 0;
+
+    for (i= 0; i<hls.size(); i++) {
+
+        size_t path_pos = hls[i].find_last_of(slash);
+
+        // The hard link may be under the root group, 
+        // This is the shortest path, we will return this path.
+        if(path_pos == std::string::npos) {
+            //Found
+            hl_under_root = true;
+            break; 
+        }
+        else {
+            string tmp_str = hls[i].substr(0,path_pos+1);
+            hls_path.push_back(tmp_str);
+        }
+    }
+
+    if(hl_under_root)
+        ret_str =  hls[i];
+
+    else {
+        // We just need to find the minimum size.
+        unsigned short_path_index = 0;
+        unsigned min_path_size = hls_path[0].size();
+
+        // Find the shortest path index
+        for(unsigned j = 1; j <hls_path.size();j++) {
+            if(min_path_size>hls_path[j].size()) {
+                min_path_size = hls_path[j].size();
+                short_path_index = j;
+            }
+        }
+        string tmp_sp = hls_path[short_path_index];
+        ret_str = hls[short_path_index];
+
+        //check if all hardlinks have a common ancestor link
+        // If not, set the return value be the empty string.
+        for(unsigned j = 0; j <hls_path.size();j++) {
+            if(hls_path[j].find(tmp_sp)!=0) {
+                ret_str ="";
+                break;               
+            }
+        }       
+    }
+    return ret_str;
+
+    
 }

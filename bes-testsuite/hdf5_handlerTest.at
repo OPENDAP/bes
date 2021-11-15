@@ -615,6 +615,12 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_1_2d.h5.ce_empty.data.bescmd])
 AT_BESCMD_CFDMR_DAP4DATA_RESPONSE_TEST([t_int64_dap4_ce_empty_cf.h5.dap.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_int64_dap4_ce_empty.h5.dap.bescmd])
 
+# Test the case when a dimension has multiple hardlinks(HYRAX-588)
+AT_BESCMD_RESPONSE_TEST_DEFAULT([dim_link.h5.dmr.bescmd])
+# This test will generate error message like 
+# "The shortest hardlink is not located under an ancestor group of all links.This is not supported by netCDF4 data model and the current Hyrax DAP4 implementation.
+# Please report this to support@opendap.org
+#AT_BESCMD_RESPONSE_TEST_DEFAULT([dim_link_no_nc4.h5.dmr.bescmd])
 
 # These two tests check the dynamic configuration change.  The target files are identical
 # and the default configuration contains a DynamicConfig that matches the second file

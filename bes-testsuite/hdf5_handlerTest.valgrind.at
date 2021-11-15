@@ -605,6 +605,12 @@ AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_comp.h5.dmr.bescmd])
 #group attributes(including the root)
 AT_BESCMD_RESPONSE_TEST_DEFAULT([t_group_scalar_attrs.h5.dmr.bescmd])
 
+#HYRAX-588, check the handling of hardlinks
+AT_BESCMD_RESPONSE_TEST_DEFAULT([dim_link.h5.dmr.bescmd])
+# The hardlinks that doesn't follow the netCDF-4 model fails.
+# This test is commented out.
+#AT_BESCMD_RESPONSE_TEST_DEFAULT([dim_link_no_nc4.h5.dmr.bescmd])
+
 # These tests call a function 'test(<name>)' that does not actually use variables
 # from the dataset named in the 'URL,' but does pull attributes from the dataset.
 # This tests that the DDS used as an argument to a function does contain attributes.

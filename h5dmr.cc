@@ -295,13 +295,15 @@ bool depth_first(hid_t pid, char *gname,  D4Group* par_grp, const char *fname)
 }
 #endif
 //////////////////////////////////////////////////////////////////////////////////////////
-/// bool breadth_first(hid_t pid, char *gname, DMR & dmr, D4Group* par_grp, const char *fname,bool use_dimscale)
+/// bool breadth_first(const hid_t file_id,hid_t pid, char *gname, DMR & dmr, D4Group* par_grp, const char *fname,bool use_dimscale, vector <link_info_t> & hdf5_hls)
+/// \param file_id file_id(this is necessary for searching the hardlinks of a dataset)
 /// \param pid group id
 /// \param gname group name (the absolute path from the root group)
 /// \param dmr reference of DMR object
 //  \param par_grp DAP4 parent group
 /// \param fname the HDF5 file name
 /// \param use_dimscale whether dimension scales are used.
+/// \param hdf5_hls the vector to save all the hardlink info.
 /// \return 0, if failed.
 /// \return 1, if succeeded.
 ///
@@ -316,7 +318,7 @@ bool depth_first(hid_t pid, char *gname,  D4Group* par_grp, const char *fname)
 // The reason to use breadth_first is that the DMR representation needs to show the dimension names and the variables under the group first and then the group names.
 // So we use this search. In the future, we may just use the breadth_first search for all cases.?? 
 //bool breadth_first(hid_t pid, char *gname, DMR & dmr, D4Group* par_grp, const char *fname,bool use_dimscale)
-bool breadth_first(hid_t pid, char *gname, D4Group* par_grp, const char *fname,bool use_dimscale)
+bool breadth_first(const hid_t file_id, hid_t pid, char *gname, D4Group* par_grp, const char *fname,bool use_dimscale,vector<link_info_t> & hdf5_hls )
 {
     BESDEBUG("h5",
         ">breadth_first() for dmr " 
@@ -413,7 +415,7 @@ bool breadth_first(hid_t pid, char *gname, D4Group* par_grp, const char *fname,b
             // Work on this later, redundant for dmr since dataset is opened twice. KY 2015-07-01
             // Dimension scale is handled in this routine. So need to keep it. KY 2020-06-10
             bool is_pure_dim = false;
-            get_dataset(pid, full_path_name, &dt_inst,use_dimscale,is_pure_dim);
+            get_dataset_dmr(file_id, pid, full_path_name, &dt_inst,use_dimscale,is_pure_dim,hdf5_hls);
                
             if(false == is_pure_dim) {
                 hid_t dset_id = -1;
@@ -544,7 +546,7 @@ bool breadth_first(hid_t pid, char *gname, D4Group* par_grp, const char *fname,b
                     par_grp->add_group_nocopy(tem_d4_cgroup);
 
                     // Continue searching the objects under this group
-                    breadth_first(cgroup, &t_fpn[0], tem_d4_cgroup,fname,use_dimscale);
+                    breadth_first(file_id,cgroup, &t_fpn[0], tem_d4_cgroup,fname,use_dimscale,hdf5_hls);
                 }
                 catch(...) {
                     H5Gclose(cgroup);
