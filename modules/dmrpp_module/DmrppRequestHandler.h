@@ -30,6 +30,7 @@
 
 class ObjMemCache;  // in bes/dap
 class BESContainer;
+class BESDataDDSResponse;
 
 namespace libdap {
 	class DMR;
@@ -51,6 +52,7 @@ private:
 
 	// These are static because they are used by the static public methods.
 	static void build_dmr_from_file(BESContainer *container, libdap::DMR* dmr);
+    template <class T> static void get_dds_from_dmr_or_cache(BESDataHandlerInterface &dhi, T *bdds);
 
 public:
 	DmrppRequestHandler(const std::string &name);

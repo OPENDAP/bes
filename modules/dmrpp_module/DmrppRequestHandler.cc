@@ -384,62 +384,8 @@ bool DmrppRequestHandler::dap_build_dap2data(BESDataHandlerInterface & dhi)
     if (!bdds) throw BESInternalError("Cast error, expected a BESDataDDSResponse object.", __FILE__, __LINE__);
 
     try {
-        string container_name_str = bdds->get_explicit_containers() ? dhi.container->get_symbolic_name() : "";
-
-        DDS *dds = bdds->get_dds();
-        if (!container_name_str.empty()) dds->container_name(container_name_str);
-        string accessed = dhi.container->access();
-
-        // Look in memory cache, if it's initialized
-        DDS *cached_dds_ptr = 0;
-        if (dds_cache && (cached_dds_ptr = static_cast<DDS*>(dds_cache->get(accessed)))) {
-            // copy the cached DAS into the BES response object
-            BESDEBUG(MODULE, prolog << "DDS Cached hit for : " << accessed << endl);
-            *dds = *cached_dds_ptr;
-            bdds->set_constraint(dhi);
-        }
-        else {
-            // Not in the local binary cache, make one...
-            //DMR *dmr = NULL;
-
-#if 0
-            // Check the Container to see if the handler should get the response from the MDS.
-            if (dhi.container->get_attributes().find(MDS_HAS_DMRPP) != string::npos) {
-                DmrppMetadataStore *mds = DmrppMetadataStore::get_instance();
-                if (!mds)
-                    throw BESInternalError("MDS configuration error: The DMR++ module could not find the MDS", __FILE__, __LINE__);
-
-                dmr = mds->get_dmrpp_object(dhi.container->get_relative_name());
-                if (!dmr)
-                    throw BESInternalError("DMR++ module error: Null DMR++ object read from the MDS", __FILE__, __LINE__);
-            }
-            else {
-                dmr = new DMR();
-                build_dmr_from_file(dhi.container, dmr);
-            }
-#endif
-            // TODO Improve this - remove needless 'new'
-            //dmr = new DMR();
-            DMR dmr;
-            build_dmr_from_file(dhi.container, &dmr);
-
-            // delete the current one;
-            delete dds;
-            // assign the new one.
-            dds = dmr.getDDS();
-
-            // Stuff it into the response.
-            bdds->set_dds(dds);
-            bdds->set_constraint(dhi);
-
-            //delete dmr;
-
-            // Cache it, if the cache is active.
-            if (dds_cache) {
-                dds_cache->add(new DDS(*dds), accessed);
-            }
-        }
-
+        get_dds_from_dmr_or_cache<BESDataDDSResponse>(dhi, bdds);
+        bdds->set_constraint(dhi);
         bdds->clear_container();
     }
     catch (...) {
@@ -470,7 +416,57 @@ bool DmrppRequestHandler::dap_build_dap2data(BESDataHandlerInterface & dhi)
 #endif
     BESDEBUG(MODULE, prolog << "END" << endl);
     return true;
+}
 
+template <class T>
+void DmrppRequestHandler::get_dds_from_dmr_or_cache(BESDataHandlerInterface &dhi, T *bdds) {
+    string container_name_str = bdds->get_explicit_containers() ? dhi.container->get_symbolic_name() : "";
+
+    DDS *dds = bdds->get_dds();
+    if (!container_name_str.empty()) dds->container_name(container_name_str);
+    string accessed = dhi.container->access();
+
+    // Look in memory cache, if it's initialized
+    DDS *cached_dds_ptr = 0;
+    if (dds_cache && (cached_dds_ptr = static_cast<DDS*>(dds_cache->get(accessed)))) {
+        BESDEBUG(MODULE, prolog << "DDS Cached hit for : " << accessed << endl);
+        *dds = *cached_dds_ptr;
+        //bdds->set_constraint(dhi);
+    }
+    else {
+#if 0
+        // Check the Container to see if the handler should get the response from the MDS.
+        if (dhi.container->get_attributes().find(MDS_HAS_DMRPP) != string::npos) {
+            DmrppMetadataStore *mds = DmrppMetadataStore::get_instance();
+            if (!mds)
+                throw BESInternalError("MDS configuration error: The DMR++ module could not find the MDS", __FILE__, __LINE__);
+
+            dmr = mds->get_dmrpp_object(dhi.container->get_relative_name());
+            if (!dmr)
+                throw BESInternalError("DMR++ module error: Null DMR++ object read from the MDS", __FILE__, __LINE__);
+        }
+        else {
+            dmr = new DMR();
+            build_dmr_from_file(dhi.container, dmr);
+        }
+#endif
+        DMR dmr;
+        build_dmr_from_file(dhi.container, &dmr);
+
+        delete dds;                         // delete the current one;
+        dds = dmr.getDDS();                 // assign the new one.
+
+        // Stuff it into the response.
+        bdds->set_dds(dds);
+        //bdds->set_constraint(dhi);
+
+        // Cache it, if the cache is active.
+        if (dds_cache) {
+            dds_cache->add(new DDS(*dds), accessed);
+        }
+    }
+
+    //bdds->clear_container();
 }
 
 /**
@@ -488,6 +484,10 @@ bool DmrppRequestHandler::dap_build_dds(BESDataHandlerInterface & dhi)
     if (!bdds) throw BESInternalError("Cast error, expected a BESDDSResponse object.", __FILE__, __LINE__);
 
     try {
+        get_dds_from_dmr_or_cache<BESDDSResponse>(dhi, bdds);
+        bdds->set_constraint(dhi);
+        bdds->clear_container();
+#if 0
         string container_name_str = bdds->get_explicit_containers() ? dhi.container->get_symbolic_name() : "";
 
         DDS *dds = bdds->get_dds();
@@ -525,6 +525,7 @@ bool DmrppRequestHandler::dap_build_dds(BESDataHandlerInterface & dhi)
         }
 
         bdds->clear_container();
+#endif
     }
     catch (...) {
         handle_exception(__FILE__, __LINE__);
@@ -584,9 +585,6 @@ bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi)
             *das = *cached_das_ptr;
         }
         else {
-            // Not in cache, better make one!
-            // 1) Build a DMR
-            //DMR *dmr = new DMR();
             DMR dmr;
             build_dmr_from_file(dhi.container, &dmr);
 
@@ -599,11 +597,8 @@ bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi)
 
             // Load the BESDASResponse DAS from the DDS
             dds->get_das(das);
-
-            // delete dds;
-            // delete dmr;
-
             Ancillary::read_ancillary_das(*das, accessed);
+            
             // Add to cache if cache is active
             if (das_cache) {
                 // copy because the BES deletes the DAS held by the DHI.
