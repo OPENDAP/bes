@@ -442,6 +442,17 @@ void close_fileid(hid_t fid)
 
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// \fn get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
+/// For DAP2, obtain data information in a dataset datatype, dataspace(dimension sizes)
+/// and number of dimensions and put these information into a pointer of data
+/// struct.
+///
+/// \param[in] pid    parent object id(group id)
+/// \param[in] dname  dataset name
+/// \param[out] dt_inst_ptr  pointer to the attribute struct(* attr_inst_ptr)
+///////////////////////////////////////////////////////////////////////////////
+
 void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
 {
     BESDEBUG("h5", ">get_dataset()" << endl);
@@ -586,14 +597,16 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/// \fn get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
-/// obtain data information in a dataset datatype, dataspace(dimension sizes)
-/// and number of dimensions and put these information into a pointer of data
-/// struct.
+/// \fn get_dataset_dmr(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
+/// For DAP4, obtain data information in a dataset datatype, dataspace(dimension sizes)
+/// ,number of dimensions,dimension and hardlink information for dimensions
+/// and put these information into a pointer of data struct.
 ///
 /// \param[in] pid    parent object id(group id)
 /// \param[in] dname  dataset name
-/// \param[in] use_dimscale whether dimscale is used. Should always be false for DDS building.
+/// \param[in] use_dimscale whether dimscale is used. 
+/// \param[in] is_pure_dim whether this dimension is a pure dimension. 
+/// \param[in\out] vector to store hardlink info. of a dataset.
 /// \param[out] dt_inst_ptr  pointer to the attribute struct(* attr_inst_ptr)
 ///////////////////////////////////////////////////////////////////////////////
 void get_dataset_dmr(const hid_t file_id, hid_t pid, const string &dname, DS_t * dt_inst_ptr,bool use_dimscale, bool &is_pure_dim, vector<link_info_t> &hdf5_hls)
@@ -1886,11 +1899,13 @@ attr_info_dimscale(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void
 
 
 ///////////////////////////////////////////////////////////////////////////////
-/// \fn obtain_dimnames(hid_t dset, int ndims, DS_t * dt_inst_ptr)
+/// \fn obtain_dimnames(hid_t dset, int ndims, DS_t * dt_inst_ptr, vector<link_info_t> & hdf5_hls)
 /// Obtain the dimension names of an HDF5 dataset and save the dimension names.
 /// \param[in] dset   HDF5 dataset ID
 /// \param[in] ndims  number of dimensions
 /// \param[out] dt_inst_ptr  pointer to the dataset struct that saves the dim. names
+/// \param[in/out] hdf5_hls  vector that stores the hard link info of this dimension.
+
 ///////////////////////////////////////////////////////////////////////////////
 void obtain_dimnames(const hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_ptr,vector<link_info_t> & hdf5_hls) {
 
@@ -1990,14 +2005,14 @@ void obtain_dimnames(const hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_ptr
 
                     // 1. Search the hdf5_hls to see if the address is inside
                     //    if yes, 
-                    //       obtain the hard link which is the shortest path, use this as the dimension name.
+                    //       obtain the hard link which has the shortest path, use this as the dimension name.
                     //    else 
-                    //       search all the hardlinks with callbacks.
+                    //       search all the hardlinks with the callback.
                     //       obtain the shortest path, add this to hdf5_hls.
 
                     bool link_find = false;
 
-                    // If find the object in the hdf5_hls, obtain the hardlink and make it the dimension name(trim_objname).
+                    // If finding the object in the hdf5_hls, obtain the hardlink and make it the dimension name(trim_objname).
                     for (int i = 0; i <hdf5_hls.size();i++) {
                         if(obj_info.addr == hdf5_hls[i].link_addr) { 
                             trim_objname = '/'+hdf5_hls[i].slink_path;
@@ -2006,6 +2021,7 @@ void obtain_dimnames(const hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_ptr
                         }
                     }
 
+                    // The hard link is not in the hdf5_hls, need to iterate all objects and find those hardlinks.
                     if(link_find == false) {
 
                         typedef struct {
@@ -2017,17 +2033,20 @@ void obtain_dimnames(const hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_ptr
                         t_link_info_t t_li_info;
                         t_li_info.link_unvisited = obj_info.rc;
                         t_li_info.link_addr = obj_info.addr;
+
                         if(H5Lvisit(file_id, H5_INDEX_NAME, H5_ITER_NATIVE, visit_obj_cb, (void*)&t_li_info) < 0) {
                             H5Dclose(ref_dset);
                             string err_msg;
                             err_msg = "Find all hardlinks: H5Lvisit failed to iterate all the objects";
                             throw InternalErr(__FILE__,__LINE__,err_msg);
                         }
+#if 0
 for(int i = 0; i<t_li_info.hl_names.size();i++)
         cerr<<"hl name is "<<t_li_info.hl_names[i] <<endl;
+#endif
                   
                        string shortest_hl = obtain_shortest_ancestor_path(t_li_info.hl_names);
-cerr<<"shortest_hl is "<<shortest_hl <<endl;
+//cerr<<"shortest_hl is "<<shortest_hl <<endl;
                        if(shortest_hl =="") {
                             H5Dclose(ref_dset);
                             string err_msg;

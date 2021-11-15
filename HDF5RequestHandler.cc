@@ -1510,6 +1510,12 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
                 D4Group* root_grp = dmr->root();
                 BESDEBUG("h5", "use_dimscale is "<< use_dimscale <<endl);
 
+                // It is possible that a dimension variable has hardlinks. To make it
+                // right for the netCDF-4 data model and the current DAP4 implementation,
+                // we need to choose the shortest path of all hardlinks as the dimension path.
+                // So to avoid iterate all HDF5 objects multiple times, save the found
+                // hardlinks and search them when necessary.  Note we have to search hardlinks from the root.
+                // KY 2021-11-15
                 vector<link_info_t> hdf5_hls;
                 breadth_first(fileid, fileid,(char*)"/",root_grp,filename.c_str(),use_dimscale,hdf5_hls);
 #if 0

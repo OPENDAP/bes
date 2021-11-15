@@ -295,13 +295,14 @@ bool depth_first(hid_t pid, char *gname,  D4Group* par_grp, const char *fname)
 }
 #endif
 //////////////////////////////////////////////////////////////////////////////////////////
-/// bool breadth_first(hid_t pid, char *gname, DMR & dmr, D4Group* par_grp, const char *fname,bool use_dimscale)
+/// bool breadth_first(hid_t pid, char *gname, DMR & dmr, D4Group* par_grp, const char *fname,bool use_dimscale, vector <link_info_t> & hdf5_hls)
 /// \param pid group id
 /// \param gname group name (the absolute path from the root group)
 /// \param dmr reference of DMR object
 //  \param par_grp DAP4 parent group
 /// \param fname the HDF5 file name
 /// \param use_dimscale whether dimension scales are used.
+/// \param hdf5_hls the vector to save all the hardlink info.
 /// \return 0, if failed.
 /// \return 1, if succeeded.
 ///
