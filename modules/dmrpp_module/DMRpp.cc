@@ -154,7 +154,7 @@ libdap::DDS *DMRpp::getDDS() {
     }
 
     dds->set_factory(0);
-    return dds.get();
+    return dds.release();
 }
 
 } /* namespace dmrpp */

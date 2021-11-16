@@ -95,6 +95,7 @@ protected:
     	d_twiddle_bytes = dc.d_twiddle_bytes;
         d_chunks_loaded = dc.d_chunks_loaded;
         d_attributes_loaded = dc.d_attributes_loaded;
+        d_dmz = dc.d_dmz;
     }
 
     /// @brief Returns a copy of the internal Chunk vector.
