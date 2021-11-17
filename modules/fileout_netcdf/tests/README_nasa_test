@@ -10,3 +10,8 @@ One can manually test the fileout-netCDF-4 for DAP4 with some sample NASA files.
   (2) To test the output generated from the HDF5 handler CF direct DMR option,
       cp testsuite_nasa.dmr.at testsuite.at 
 6) Run 'make check', you should see the testing of filenetCDF-4 with the NASA files.
+7) valgrind memory check tests
+   The tests include general tests, nasa cf dmr tests and nasa default dap4 tests.
+   cd tests
+   Run ./valgrind_whole.sh
+   If everything works fine, you should see "no memory leak found".

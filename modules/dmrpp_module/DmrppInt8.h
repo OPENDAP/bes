@@ -37,21 +37,21 @@ class XMLWriter;
 namespace dmrpp {
 
 class DmrppInt8: public libdap::Int8, public DmrppCommon {
-    void _duplicate(const DmrppInt8 &ts);
 
 public:
-    DmrppInt8(const std::string &n);
-    DmrppInt8(const std::string &n, const std::string &d);
-    DmrppInt8(const DmrppInt8 &rhs);
+    DmrppInt8(const std::string &n) : libdap::Int8(n), DmrppCommon() { }
+    DmrppInt8(const std::string &n, const std::string &d) : libdap::Int8(n, d), DmrppCommon() { }
+    DmrppInt8(const std::string &n, std::shared_ptr<DMZ> dmz) : libdap::Int8(n), DmrppCommon(dmz) { }
+    DmrppInt8(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : libdap::Int8(n, d), DmrppCommon(dmz) { }
+    DmrppInt8(const DmrppInt8 &rhs) = default;
 
-    DmrppInt8(const std::string &n, std::shared_ptr<DMZ> dmz);
-    DmrppInt8(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz);
-
-    virtual ~DmrppInt8() {}
+    virtual ~DmrppInt8() =default;
 
     DmrppInt8 &operator=(const DmrppInt8 &rhs);
 
-    virtual libdap::BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate() {
+        return new DmrppInt8(*this);
+    }
 
     virtual bool read();
 

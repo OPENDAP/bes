@@ -68,7 +68,7 @@ namespace dmrpp {
 class DmrppArray : public libdap::Array, public dmrpp::DmrppCommon {
 
 private:
-    void _duplicate(const DmrppArray &ts);
+    //void _duplicate(const DmrppArray &ts);
 
     bool is_projected();
 
@@ -117,25 +117,25 @@ private:
             std::shared_ptr<Chunk> chunk,
             const vector<unsigned long long> &constrained_array_shape);
 
+public:
+    DmrppArray(const std::string &n, libdap::BaseType *v) : libdap::Array(n, v, true /*is dap4*/), DmrppCommon() { }
 
+    DmrppArray(const std::string &n, const std::string &d, libdap::BaseType *v) :
+            libdap::Array(n, d, v, true), DmrppCommon() { }
 
-    public:
-    DmrppArray(const std::string &n, libdap::BaseType *v);
+    DmrppArray(const string &n, BaseType *v, shared_ptr<DMZ> dmz) :
+            libdap::Array(n, v, true), DmrppCommon(dmz) { }
 
-    DmrppArray(const std::string &n, const std::string &d, libdap::BaseType *v);
+    DmrppArray(const string &n, const string &d, BaseType *v, shared_ptr<DMZ> dmz) :
+            libdap::Array(n, d, v, true), DmrppCommon(dmz) { }
 
-    DmrppArray(const std::string &n, libdap::BaseType *v, std::shared_ptr<DMZ> dmz);
+    DmrppArray(const DmrppArray &rhs) = default;
 
-    DmrppArray(const std::string &n, const std::string &d, libdap::BaseType *v, std::shared_ptr<DMZ> dmz);
-
-    DmrppArray(const DmrppArray &rhs);
-
-    virtual ~DmrppArray() {
-    }
+    virtual ~DmrppArray() = default;
 
     DmrppArray &operator=(const DmrppArray &rhs);
 
-    virtual libdap::BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate() { return new DmrppArray(*this); }
 
     virtual bool read();
 

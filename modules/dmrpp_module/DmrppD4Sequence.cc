@@ -25,7 +25,7 @@
 #include "config.h"
 
 #include <string>
-#
+
 #include <BESError.h>
 #include <BESDebug.h>
 
@@ -36,38 +36,6 @@ using namespace std;
 
 namespace dmrpp {
 
-void
-DmrppD4Sequence::_duplicate(const DmrppD4Sequence &)
-{
-}
-
-DmrppD4Sequence::DmrppD4Sequence(const string &n) : D4Sequence(n), DmrppCommon()
-{
-}
-
-DmrppD4Sequence::DmrppD4Sequence(const string &n, const string &d) : D4Sequence(n, d), DmrppCommon()
-{
-}
-
-DmrppD4Sequence::DmrppD4Sequence(const string &n, shared_ptr<DMZ> dmz) : D4Sequence(n), DmrppCommon(dmz)
-{
-}
-
-DmrppD4Sequence::DmrppD4Sequence(const string &n, const string &d, shared_ptr<DMZ> dmz) : D4Sequence(n, d), DmrppCommon(dmz)
-{
-}
-
-BaseType *
-DmrppD4Sequence::ptr_duplicate()
-{
-    return new DmrppD4Sequence(*this);
-}
-
-DmrppD4Sequence::DmrppD4Sequence(const DmrppD4Sequence &rhs) : D4Sequence(rhs), DmrppCommon(rhs)
-{
-    _duplicate(rhs);
-}
-
 DmrppD4Sequence &
 DmrppD4Sequence::operator=(const DmrppD4Sequence &rhs)
 {
@@ -76,8 +44,8 @@ DmrppD4Sequence::operator=(const DmrppD4Sequence &rhs)
 
     dynamic_cast<D4Sequence &>(*this) = rhs; // run Constructor=
 
-    _duplicate(rhs);
-    DmrppCommon::m_duplicate_common(rhs);
+    dynamic_cast<DmrppCommon &>(*this) = rhs;
+    //DmrppCommon::m_duplicate_common(rhs);
 
     return *this;
 }

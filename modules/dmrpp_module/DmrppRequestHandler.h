@@ -31,6 +31,7 @@
 
 class ObjMemCache;  // in bes/dap
 class BESContainer;
+class BESDataDDSResponse;
 
 namespace libdap {
 	class DMR;
@@ -58,6 +59,7 @@ private:
 
 	// These are static because they are used by the static public methods.
 	static void build_dmr_from_file(BESContainer *container, libdap::DMR* dmr);
+    template <class T> static void get_dds_from_dmr_or_cache(BESDataHandlerInterface &dhi, T *bdds);
 
     // Allocate a new DMZ for each request? This should work, but may result in more
     // cycling of data in and out of memory. The shared_ptr<> will be passed into

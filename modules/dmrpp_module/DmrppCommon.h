@@ -86,18 +86,6 @@ private:
     std::shared_ptr<DMZ> d_dmz;
 
 protected:
-    void m_duplicate_common(const DmrppCommon &dc) {
-    	d_compact = dc.d_compact;
-        d_filters = dc.d_filters;
-    	d_chunk_dimension_sizes = dc.d_chunk_dimension_sizes;
-    	d_chunks = dc.d_chunks;
-    	d_byte_order = dc.d_byte_order;
-    	d_twiddle_bytes = dc.d_twiddle_bytes;
-        d_chunks_loaded = dc.d_chunks_loaded;
-        d_attributes_loaded = dc.d_attributes_loaded;
-        d_dmz = dc.d_dmz;
-    }
-
     /// @brief Returns a copy of the internal Chunk vector.
     /// @see get_immutable_chunks()
     virtual std::vector<std::shared_ptr<Chunk>> get_chunks() {
@@ -124,10 +112,7 @@ public:
     {
     }
 
-    DmrppCommon(const DmrppCommon &dc)
-    {
-        m_duplicate_common(dc);
-    }
+    DmrppCommon(const DmrppCommon &dc) = default;
 
     virtual ~DmrppCommon()= default;
 

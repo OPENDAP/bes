@@ -36,37 +36,6 @@ using namespace libdap;
 using namespace std;
 
 namespace dmrpp {
-void
-DmrppByte::_duplicate(const DmrppByte &)
-{
-}
-
-DmrppByte::DmrppByte(const string &n) : Byte(n), DmrppCommon()
-{
-}
-
-DmrppByte::DmrppByte(const string &n, const string &d) : Byte(n, d), DmrppCommon()
-{
-}
-
-DmrppByte::DmrppByte(const string &n, shared_ptr<DMZ> dmz) : Byte(n), DmrppCommon(dmz)
-{
-}
-
-DmrppByte::DmrppByte(const string &n, const string &d, shared_ptr<DMZ> dmz) : Byte(n, d), DmrppCommon(dmz)
-{
-}
-
-BaseType *
-DmrppByte::ptr_duplicate()
-{
-    return new DmrppByte(*this);
-}
-
-DmrppByte::DmrppByte(const DmrppByte &rhs) : Byte(rhs), DmrppCommon(rhs)
-{
-    _duplicate(rhs);
-}
 
 DmrppByte &
 DmrppByte::operator=(const DmrppByte &rhs)
@@ -76,8 +45,8 @@ DmrppByte::operator=(const DmrppByte &rhs)
 
     dynamic_cast<Byte &>(*this) = rhs; // run Constructor=
 
-    _duplicate(rhs);
-    DmrppCommon::m_duplicate_common(rhs);
+    dynamic_cast<DmrppCommon &>(*this) = rhs;
+    // DmrppCommon::m_duplicate_common(rhs);
 
     return *this;
 }
