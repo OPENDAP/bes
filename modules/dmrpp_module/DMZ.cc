@@ -788,6 +788,9 @@ DMZ::load_attributes(BaseType *btp)
                 break;
             }
         }
+
+        default:
+            break;
     }
 }
 
