@@ -25,7 +25,7 @@
 #ifndef h_dmz_h
 #define h_dmz_h 1
 
-#include "config.h"
+//#include "config.h"
 
 #include <string>
 #include <vector>
@@ -107,12 +107,13 @@ private:
 
     friend class DMZTest;
 
+    // Used for testing only
+    explicit DMZ(const std::string &file_name);
+
 public:
 
     /// @brief Build a DMZ without simultaneously parsing an XML document
     DMZ() = default;
-
-    explicit DMZ(const std::string &xml_file_name);
 
     virtual ~DMZ()= default;
 
@@ -126,8 +127,10 @@ public:
 
     virtual void load_chunks(libdap::BaseType *btp);
 
+#if 0
     std::string get_attribute_xml(std::string path);
     std::string get_variable_xml(std::string path);
+#endif
 
     void load_all_attributes(libdap::DMR *dmr);
     void load_global_attributes(libdap::DMR *dmr);

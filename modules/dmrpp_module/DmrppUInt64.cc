@@ -37,38 +37,6 @@ using namespace std;
 
 namespace dmrpp {
 
-void
-DmrppUInt64::_duplicate(const DmrppUInt64 &)
-{
-}
-
-DmrppUInt64::DmrppUInt64(const string &n) : UInt64(n), DmrppCommon()
-{
-}
-
-DmrppUInt64::DmrppUInt64(const string &n, const string &d) : UInt64(n, d), DmrppCommon()
-{
-}
-
-DmrppUInt64::DmrppUInt64(const string &n, shared_ptr<DMZ> dmz) : UInt64(n), DmrppCommon(dmz)
-{
-}
-
-DmrppUInt64::DmrppUInt64(const string &n, const string &d, shared_ptr<DMZ> dmz) : UInt64(n, d), DmrppCommon(dmz)
-{
-}
-
-BaseType *
-DmrppUInt64::ptr_duplicate()
-{
-    return new DmrppUInt64(*this);
-}
-
-DmrppUInt64::DmrppUInt64(const DmrppUInt64 &rhs) : UInt64(rhs), DmrppCommon(rhs)
-{
-    _duplicate(rhs);
-}
-
 DmrppUInt64 &
 DmrppUInt64::operator=(const DmrppUInt64 &rhs)
 {
@@ -77,8 +45,8 @@ DmrppUInt64::operator=(const DmrppUInt64 &rhs)
 
     dynamic_cast<UInt64 &>(*this) = rhs; // run Constructor=
 
-    _duplicate(rhs);
-    DmrppCommon::m_duplicate_common(rhs);
+    dynamic_cast<DmrppCommon &>(*this) = rhs;
+    //DmrppCommon::m_duplicate_common(rhs);
 
     return *this;
 }

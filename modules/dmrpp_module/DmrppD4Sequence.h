@@ -33,21 +33,21 @@
 namespace dmrpp {
 
 class DmrppD4Sequence: public libdap::D4Sequence, public DmrppCommon {
-    void _duplicate(const DmrppD4Sequence &ts);
 
 public:
-    DmrppD4Sequence(const std::string &n);
-    DmrppD4Sequence(const std::string &n, const std::string &d);
-    DmrppD4Sequence(const DmrppD4Sequence &rhs);
+    DmrppD4Sequence(const std::string &n) : D4Sequence(n), DmrppCommon() { }
+    DmrppD4Sequence(const std::string &n, const std::string &d) : D4Sequence(n, d), DmrppCommon() { }
+    DmrppD4Sequence(const std::string &n, std::shared_ptr<DMZ> dmz) : D4Sequence(n), DmrppCommon(dmz) { }
+    DmrppD4Sequence(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : D4Sequence(n, d), DmrppCommon(dmz) { }
+    DmrppD4Sequence(const DmrppD4Sequence &rhs) = default;
 
-    DmrppD4Sequence(const std::string &n, std::shared_ptr<DMZ> dmz);
-    DmrppD4Sequence(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz);
-
-    virtual ~DmrppD4Sequence() {}
+    virtual ~DmrppD4Sequence() = default;
 
     DmrppD4Sequence &operator=(const DmrppD4Sequence &rhs);
 
-    virtual libdap::BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate() {
+        return new DmrppD4Sequence(*this);
+    }
 
     virtual bool read();
 

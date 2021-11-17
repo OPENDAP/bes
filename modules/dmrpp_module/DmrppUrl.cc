@@ -36,38 +36,6 @@ using namespace std;
 
 namespace dmrpp {
 
-void
-DmrppUrl::_duplicate(const DmrppUrl &)
-{
-}
-
-DmrppUrl::DmrppUrl(const string &n) : Url(n), DmrppCommon()
-{
-}
-
-DmrppUrl::DmrppUrl(const string &n, const string &d) : Url(n, d), DmrppCommon()
-{
-}
-
-DmrppUrl::DmrppUrl(const string &n, shared_ptr<DMZ> dmz) : Url(n), DmrppCommon(dmz)
-{
-}
-
-DmrppUrl::DmrppUrl(const string &n, const string &d, shared_ptr<DMZ> dmz) : Url(n, d), DmrppCommon(dmz)
-{
-}
-
-BaseType *
-DmrppUrl::ptr_duplicate()
-{
-    return new DmrppUrl(*this);
-}
-
-DmrppUrl::DmrppUrl(const DmrppUrl &rhs) : Url(rhs), DmrppCommon(rhs)
-{
-    _duplicate(rhs);
-}
-
 DmrppUrl &
 DmrppUrl::operator=(const DmrppUrl &rhs)
 {
@@ -76,8 +44,8 @@ DmrppUrl::operator=(const DmrppUrl &rhs)
 
     dynamic_cast<Url &>(*this) = rhs; // run Constructor=
 
-    _duplicate(rhs);
-    DmrppCommon::m_duplicate_common(rhs);
+    dynamic_cast<DmrppCommon &>(*this) = rhs;
+    //DmrppCommon::m_duplicate_common(rhs);
 
     return *this;
 }

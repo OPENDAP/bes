@@ -37,20 +37,21 @@ class XMLWriter;
 namespace dmrpp {
 
 class DmrppD4Enum: public libdap::D4Enum, public DmrppCommon {
-    void _duplicate(const DmrppD4Enum &ts);
 
 public:
-    DmrppD4Enum(const std::string &n, const string &enum_type);
-    DmrppD4Enum(const std::string &n, libdap::Type type);
-    DmrppD4Enum(const std::string &n, const std::string &d, libdap::Type type);
+    DmrppD4Enum(const std::string &n, const string &enum_type) : libdap::D4Enum(n, enum_type), DmrppCommon() { }
+    DmrppD4Enum(const std::string &n, libdap::Type type) : libdap::D4Enum(n, type), DmrppCommon() { }
+    DmrppD4Enum(const std::string &n, const std::string &d, libdap::Type type) : libdap::D4Enum(n, d, type), DmrppCommon() { }
 
-    DmrppD4Enum(const DmrppD4Enum &rhs);
+    DmrppD4Enum(const DmrppD4Enum &rhs) = default;
 
-    virtual ~DmrppD4Enum() {}
+    virtual ~DmrppD4Enum() = default;
 
     DmrppD4Enum &operator=(const DmrppD4Enum &rhs);
 
-    virtual libdap::BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate() {
+        return new DmrppD4Enum(*this);
+    }
 
     bool read() override;
     void set_send_p(bool state) override;

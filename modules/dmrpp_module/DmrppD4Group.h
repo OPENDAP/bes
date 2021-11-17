@@ -37,23 +37,23 @@ class XMLWriter;
 namespace dmrpp {
 
 class DmrppD4Group: public libdap::D4Group, public DmrppCommon {
-    void _duplicate(const DmrppD4Group &ts);
 
 public:
-    DmrppD4Group(const std::string &n);
-    DmrppD4Group(const std::string &n, const std::string &d);
-    DmrppD4Group(const DmrppD4Group &rhs);
+    DmrppD4Group(const std::string &n) : D4Group(n), DmrppCommon() { }
+    DmrppD4Group(const std::string &n, const std::string &d) : D4Group(n, d), DmrppCommon() { }
+    DmrppD4Group(const std::string &n, std::shared_ptr<DMZ> dmz) : D4Group(n), DmrppCommon(dmz) { }
+    DmrppD4Group(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : D4Group(n, d), DmrppCommon(dmz) { }
+    DmrppD4Group(const DmrppD4Group &rhs) = default;
 
-    DmrppD4Group(const std::string &n, std::shared_ptr<DMZ> dmz);
-    DmrppD4Group(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz);
-
-    virtual ~DmrppD4Group() {}
+    virtual ~DmrppD4Group() = default;
 
     DmrppD4Group &operator=(const DmrppD4Group &rhs);
 
-    virtual libdap::BaseType *ptr_duplicate();
+    virtual libdap::BaseType *ptr_duplicate(){
+        return new DmrppD4Group(*this);
+    }
 
-#if 0
+#if 1
     void set_send_p(bool state) override;
 #endif
 

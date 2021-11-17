@@ -29,7 +29,7 @@ FONc.Reference = http://docs.opendap.org/index.php/BES_-_Modules_-_FileOut_Netcd
 # The default values for these keys
 FONc.UseCompression = true
 FONc.ChunkSize = 4096
-FONc.ClassicModel = true
+FONc.ClassicModel = false
 
 # The old default value was: FONc.ClassicModel = true. This breaks Int64 support.
 # jhrg 6/15/20

@@ -537,53 +537,11 @@ static unsigned long multiplier(const vector<unsigned long long> &shape, unsigne
     return multiplier;
 }
 
-
-
-
-//#####################################################################################################################
-//#####################################################################################################################
 //#####################################################################################################################
 //
 // DmrppArray code begins here.
 //
 // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
-
-
-void DmrppArray::_duplicate(const DmrppArray &)
-{
-}
-
-DmrppArray::DmrppArray(const string &n, BaseType *v) :
-        Array(n, v, true /*is dap4*/), DmrppCommon()
-{
-}
-
-DmrppArray::DmrppArray(const string &n, const string &d, BaseType *v) :
-        Array(n, d, v, true), DmrppCommon()
-{
-}
-
-DmrppArray::DmrppArray(const string &n, BaseType *v, shared_ptr<DMZ> dmz) :
-        Array(n, v, true), DmrppCommon(dmz)
-{
-}
-
-DmrppArray::DmrppArray(const string &n, const string &d, BaseType *v, shared_ptr<DMZ> dmz) :
-        Array(n, d, v, true), DmrppCommon(dmz)
-{
-}
-
-BaseType *
-DmrppArray::ptr_duplicate()
-{
-    return new DmrppArray(*this);
-}
-
-DmrppArray::DmrppArray(const DmrppArray &rhs) :
-        Array(rhs), DmrppCommon(rhs)
-{
-    _duplicate(rhs);
-}
 
 DmrppArray &
 DmrppArray::operator=(const DmrppArray &rhs)
@@ -592,8 +550,8 @@ DmrppArray::operator=(const DmrppArray &rhs)
 
     dynamic_cast<Array &>(*this) = rhs; // run Constructor=
 
-    _duplicate(rhs);
-    DmrppCommon::m_duplicate_common(rhs);
+    dynamic_cast<DmrppCommon &>(*this) = rhs;
+    // Removed DmrppCommon::m_duplicate_common(rhs); jhrg 11/12/21
 
     return *this;
 }
@@ -609,7 +567,6 @@ bool DmrppArray::is_projected()
 
     return false;
 }
-
 
 /**
  * @brief Return the total number of elements in this Array
