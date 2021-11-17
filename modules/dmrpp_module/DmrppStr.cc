@@ -98,6 +98,15 @@ DmrppStr::read()
     return true;
 }
 
+void
+DmrppStr::set_send_p(bool state)
+{
+    if (!get_attributes_loaded())
+        load_attribtues(this);
+
+    Str::set_send_p(state);
+}
+
 void DmrppStr::dump(ostream & strm) const
 {
     strm << BESIndent::LMarg << "DmrppStr::dump - (" << (void *) this << ")" << endl;

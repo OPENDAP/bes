@@ -316,7 +316,8 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
         else {
             build_dmr_from_file(dhi.container, bdmr->get_dmr());
             // FIXME
-            dmz->load_all_attributes(bdmr->get_dmr());
+            // dmz->load_all_attributes(bdmr->get_dmr());
+            dmz->load_global_attributes(bdmr->get_dmr());
         }
 
         bdmr->set_dap4_constraint(dhi);

@@ -227,6 +227,15 @@ DmrppD4Opaque::read()
     return true;
 }
 
+void
+DmrppD4Opaque::set_send_p(bool state)
+{
+    if (!get_attributes_loaded())
+        load_attribtues(this);
+
+    D4Opaque::set_send_p(state);
+}
+
 void DmrppD4Opaque::dump(ostream & strm) const
 {
     strm << BESIndent::LMarg << "DmrppD4Opaque::dump - (" << (void *) this << ")" << endl;

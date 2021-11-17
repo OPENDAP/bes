@@ -101,6 +101,15 @@ DmrppInt8::read()
 
 }
 
+void
+DmrppInt8::set_send_p(bool state)
+{
+    if (!get_attributes_loaded())
+        load_attribtues(this);
+
+    Int8::set_send_p(state);
+}
+
 void DmrppInt8::dump(ostream & strm) const
 {
     strm << BESIndent::LMarg << "DmrppInt8::dump - (" << (void *) this << ")" << endl;

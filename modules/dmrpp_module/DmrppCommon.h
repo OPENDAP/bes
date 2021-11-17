@@ -211,10 +211,11 @@ public:
         }
     }
 
-#if 1
-    // TODO remove since this duplicates code in DMZ. jhrg 11/12/21
-    void load_chunks(libdap::BaseType *btp);
-#endif
+    // This duplicates code in DMZ but provides access to the DMZ::load_chunks()
+    // method without having to cast a BaseType to a DmrppCommon in orer to use
+    // it. jhrg 11/12/21
+    virtual void load_chunks(libdap::BaseType *btp);
+    virtual void load_attribtues(libdap::BaseType *btp);
 
     virtual void parse_chunk_dimension_sizes(const std::string &chunk_dim_sizes_string);
 

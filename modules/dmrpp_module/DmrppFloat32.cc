@@ -101,6 +101,15 @@ DmrppFloat32::read()
 
 }
 
+void
+DmrppFloat32::set_send_p(bool state)
+{
+    if (!get_attributes_loaded())
+        load_attribtues(this);
+
+    Float32::set_send_p(state);
+}
+
 void DmrppFloat32::dump(ostream & strm) const
 {
     strm << BESIndent::LMarg << "DmrppFloat32::dump - (" << (void *) this << ")" << endl;

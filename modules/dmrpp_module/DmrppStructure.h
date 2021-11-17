@@ -53,11 +53,6 @@ public:
 
     virtual libdap::BaseType *ptr_duplicate();
 
-#if 0
-    virtual void print_dap4(libdap::XMLWriter &xml, bool constrained);
-#endif
-
-
     virtual void dump(ostream & strm) const;
 };
 

@@ -105,6 +105,15 @@ DmrppUInt64::read()
 
 }
 
+void
+DmrppUInt64::set_send_p(bool state)
+{
+    if (!get_attributes_loaded())
+        load_attribtues(this);
+
+    UInt64::set_send_p(state);
+}
+
 void DmrppUInt64::dump(ostream & strm) const
 {
     strm << BESIndent::LMarg << "DmrppUInt64::dump - (" << (void *) this << ")" << endl;

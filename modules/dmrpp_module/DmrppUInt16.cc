@@ -105,6 +105,14 @@ DmrppUInt16::read()
 
 }
 
+void
+DmrppUInt16::set_send_p(bool state)
+{
+    if (!get_attributes_loaded())
+        load_attribtues(this);
+
+    UInt16::set_send_p(state);
+}
 
 void DmrppUInt16::dump(ostream & strm) const
 {

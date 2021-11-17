@@ -137,7 +137,8 @@ private:
 
     virtual libdap::BaseType *ptr_duplicate();
 
-    virtual bool read();
+    bool read() override;
+    void set_send_p(bool state) override;
 
     virtual unsigned long long get_size(bool constrained = false);
 

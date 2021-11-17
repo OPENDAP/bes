@@ -105,6 +105,14 @@ DmrppInt64::read()
 
 }
 
+void
+DmrppInt64::set_send_p(bool state)
+{
+    if (!get_attributes_loaded())
+        load_attribtues(this);
+
+    Int64::set_send_p(state);
+}
 
 void DmrppInt64::dump(ostream & strm) const
 {

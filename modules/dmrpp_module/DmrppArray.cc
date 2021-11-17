@@ -42,10 +42,10 @@
 
 #include <unistd.h>
 
-#include <D4Enum.h>
-#include <D4Attributes.h>
-#include <D4Maps.h>
-#include <D4Group.h>
+#include <libdap/D4Enum.h>
+#include <libdap/D4Attributes.h>
+#include <libdap/D4Maps.h>
+#include <libdap/D4Group.h>
 
 #include "BESInternalError.h"
 #include "BESDebug.h"
@@ -1481,6 +1481,15 @@ void DmrppArray::read_chunks_serial()
     BESDEBUG("dmrpp", "DmrppArray::"<< __func__ << "() for " << name() << " END"<< endl);
 }
 #endif
+
+void
+DmrppArray::set_send_p(bool state)
+{
+    if (!get_attributes_loaded())
+        load_attribtues(this);
+
+    Array::set_send_p(state);
+}
 
 /**
  * @brief Read data for the array

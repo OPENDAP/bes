@@ -52,7 +52,8 @@ public:
 
     virtual libdap::BaseType *ptr_duplicate();
 
-    virtual bool read();
+    bool read() override;
+    void set_send_p(bool state) override;
 
     virtual void print_dap4(libdap::XMLWriter &writer, bool constrained = false)
     {

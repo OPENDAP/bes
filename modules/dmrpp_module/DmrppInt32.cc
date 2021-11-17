@@ -104,6 +104,15 @@ DmrppInt32::read()
     return true;
 }
 
+void
+DmrppInt32::set_send_p(bool state)
+{
+    if (!get_attributes_loaded())
+        load_attribtues(this);
+
+    Int32::set_send_p(state);
+}
+
 void DmrppInt32::dump(ostream & strm) const
 {
     strm << BESIndent::LMarg << "DmrppInt32::dump - (" << (void *) this << ")" << endl;

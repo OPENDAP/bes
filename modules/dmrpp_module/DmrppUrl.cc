@@ -98,6 +98,15 @@ DmrppUrl::read()
     return true;
 }
 
+void
+DmrppUrl::set_send_p(bool state)
+{
+    if (!get_attributes_loaded())
+        load_attribtues(this);
+
+    Url::set_send_p(state);
+}
+
 void DmrppUrl::dump(ostream & strm) const
 {
     strm << BESIndent::LMarg << "DmrppUrl::dump - (" << (void *) this << ")" << endl;

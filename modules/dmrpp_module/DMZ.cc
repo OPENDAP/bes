@@ -719,11 +719,43 @@ DMZ::load_attributes(BaseType *btp)
     // TODO Will this work for the root group? If so, consolidate methods? jhrg 11/12/21
     xml_node var_node = get_variable_xml_node(btp);
     if (var_node == nullptr)
-        throw BESInternalError("Could not find location of variable in the DMR++ XML document.", __FILE__, __LINE__);
+        throw BESInternalError(string("Could not find location of variable '").append(btp->name()).append("' in the DMR++ XML document."), __FILE__, __LINE__);
 
     load_attributes(btp, var_node);
 
     dc->set_attributes_loaded(true);
+
+    switch (btp->type()) {
+        // When we load attributes for an Array, the set_send_p() method
+        // is called for its 'template' variable, but that call fails (and
+        // the attributes are already loaded). This block marks the attributes
+        // as loaded so the 'var_node == nullptr' exception above does not
+        // get thrown. Maybe a better fix would be to mark 'child variables'
+        // as having their attributes loaded. jhrg 11/16/21
+        case dods_array_c: {
+            auto *dcp = dynamic_cast<DmrppCommon*>(btp->var());
+            if (dcp)
+                dcp->set_attributes_loaded(true);
+            break;
+        }
+
+        // FIXME There are no tests for this code. The above bock for Array
+        //  was needed, so it seems likely that this will be too, but ...
+        //  jhrg 11/16/21
+        case dods_structure_c:
+        case dods_sequence_c:
+        case dods_grid_c: {
+            auto *c = dynamic_cast<Constructor*>(btp);
+            if (c) {
+                for (auto i = c->var_begin(), e = c->var_end(); i != e; i++) {
+                    auto *dcp = dynamic_cast<DmrppCommon*>(*i);
+                    if (dcp)
+                        dcp->set_attributes_loaded(true);
+                }
+                break;
+            }
+        }
+    }
 }
 
 /**

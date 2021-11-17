@@ -480,5 +480,15 @@ DmrppCommon::load_chunks(BaseType *btp) {
     d_dmz->load_chunks(btp);
 }
 
+/**
+ * @brief Load the attribute information for this variable
+ * @param btp
+ */
+void
+DmrppCommon::load_attribtues(libdap::BaseType *btp)
+{
+    d_dmz->load_attributes(btp);
+}
+
 } // namespace dmrpp
 

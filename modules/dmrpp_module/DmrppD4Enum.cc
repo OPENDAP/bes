@@ -98,6 +98,15 @@ DmrppD4Enum::read()
 
 }
 
+void
+DmrppD4Enum::set_send_p(bool state)
+{
+    if (!get_attributes_loaded())
+        load_attribtues(this);
+
+    D4Enum::set_send_p(state);
+}
+
 void DmrppD4Enum::dump(ostream & strm) const
 {
     strm << BESIndent::LMarg << "DmrppD4Enum::dump - (" << (void *) this << ")" << endl;

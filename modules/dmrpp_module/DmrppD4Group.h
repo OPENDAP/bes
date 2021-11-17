@@ -47,17 +47,11 @@ public:
     DmrppD4Group(const std::string &n, std::shared_ptr<DMZ> dmz);
     DmrppD4Group(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz);
 
-
     virtual ~DmrppD4Group() {}
 
     DmrppD4Group &operator=(const DmrppD4Group &rhs);
 
     virtual libdap::BaseType *ptr_duplicate();
-
-#if 0
-    void print_dap4(libdap::XMLWriter &xml, bool constrained);
-#endif
-
 
     virtual void dump(ostream & strm) const;
 };

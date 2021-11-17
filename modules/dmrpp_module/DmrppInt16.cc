@@ -103,7 +103,15 @@ DmrppInt16::read()
     set_read_p(true);
 
     return true;
+}
 
+void
+DmrppInt16::set_send_p(bool state)
+{
+    if (!get_attributes_loaded())
+        load_attribtues(this);
+
+    Int16::set_send_p(state);
 }
 
 void DmrppInt16::dump(ostream & strm) const

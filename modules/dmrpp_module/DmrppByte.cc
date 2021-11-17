@@ -99,6 +99,15 @@ bool DmrppByte::read()
     return true;
 }
 
+void
+DmrppByte::set_send_p(bool state)
+{
+    if (!get_attributes_loaded())
+        load_attribtues(this);
+
+    Byte::set_send_p(state);
+}
+
 void DmrppByte::dump(ostream & strm) const
 {
     strm << BESIndent::LMarg << "DmrppByte::dump - (" << (void *) this << ")" << endl;
