@@ -53,6 +53,7 @@
 #include "DMZ.h"                // this includes the pugixml header
 #include "DmrppCommon.h"
 #include "DmrppArray.h"
+#include "DmrppD4Group.h"
 #include "Base64.h"
 #include "DmrppRequestHandler.h"
 #include "BESInternalError.h"
@@ -69,6 +70,12 @@ using namespace libdap;
 // jhrg 11/2/21
 #define TREAT_NAMESPACES_AS_LITERALS 1
 
+// THe code can either search for a DAP variable's information in the XML or it can
+// record that during the parse process. Set this when/if the code does the latter.
+// using this simplifies the lazy-load process, particularly for the DAP2 dds and
+// data responses (which have not yet been coded completely). jhrg 11/17/21
+#define USE_CACHED_XML_NODE 1
+
 #define PARSER "dmz"
 #define prolog std::string("DMZ::").append(__func__).append("() - ")
 
@@ -80,6 +87,7 @@ const std::set<std::string> variable_elements{"Byte", "Int8", "Int16", "Int32", 
 
 static const string dmrpp_namespace = "http://xml.opendap.org/dap/dmrpp/1.0.0#";
 
+#if 1
 /**
  * @brief Build a DMZ object and initialize it using a DMR++ XML document
  * @param file_name The DMR++ XML document to parse.
@@ -89,6 +97,7 @@ DMZ::DMZ(const string &file_name)
 {
     parse_xml_doc(file_name);
 }
+#endif
 
 void
 DMZ::parse_xml_doc(const std::string &file_name)
@@ -374,6 +383,11 @@ void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, const 
             }
         }
     }
+
+    auto *dc = dynamic_cast<DmrppCommon*>(btp);
+    if (!dc)
+        throw BESInternalError("Expected a BaseType that was also a DmrppCommon instance.", __FILE__, __LINE__);
+    dc->set_xml_node(var_node);
 }
 
 /**
@@ -508,7 +522,7 @@ void DMZ::process_group(DMR *dmr, D4Group *parent, const xml_node &var_node)
     if (!btp)
         throw BESInternalError("Could not instantiate the Group '" + name_value + "'.", __FILE__, __LINE__);
 
-    auto new_group = dynamic_cast<D4Group*>(btp);
+    auto new_group = dynamic_cast<DmrppD4Group*>(btp);
 
     // Need to set this to get the D4Attribute behavior in the type classes
     // shared between DAP2 and DAP4. jhrg 4/18/13
@@ -517,6 +531,9 @@ void DMZ::process_group(DMR *dmr, D4Group *parent, const xml_node &var_node)
     // link it up and change the current group
     new_group->set_parent(parent);
     parent->add_group_nocopy(new_group);
+
+    // Save the xml_node so that we can later find unprocessed XML without searching
+    new_group->set_xml_node(var_node);
 
     // Now parse all the child nodes of the Group.
     // NB: this is the same block of code as in build_thin_dmr(); refactor. jhrg 10/21/21
@@ -545,6 +562,11 @@ void DMZ::build_thin_dmr(DMR *dmr)
     process_dataset(dmr, xml_root_node);
 
     auto root_group = dmr->root();
+    auto *dg = dynamic_cast<DmrppD4Group*>(root_group);
+    if (!dg)
+        throw BESInternalError("Expected the root group to also be an instance of DmrppD4Group.", __FILE__, __LINE__);
+    dg->set_xml_node(xml_root_node);
+
     for (auto child = xml_root_node.first_child(); child; child = child.next_sibling()) {
         if (is_eq(child.name(), "Dimension")) {
             process_dimension(root_group, child);
@@ -553,7 +575,6 @@ void DMZ::build_thin_dmr(DMR *dmr)
             process_group(dmr, root_group, child);
         }
         // TODO Add EnumDef
-        // TODO Add Attributes
         else if (member_of(variable_elements, child.name())) {
             process_variable(dmr, root_group, nullptr, child);
         }
@@ -681,6 +702,17 @@ xml_node DMZ::get_variable_xml_node_helper(const xml_node &parent_node, stack<Ba
  */
 xml_node DMZ::get_variable_xml_node(BaseType *btp)
 {
+#if USE_CACHED_XML_NODE
+    xml_node dataset = d_xml_doc.first_child();
+    if (!dataset || !is_eq(dataset.name(), "Dataset"))
+        throw BESInternalError("No DMR++ has been parsed.", __FILE__, __LINE__);
+
+    auto *dc = dynamic_cast<DmrppCommon*>(btp);
+    auto node = dc->get_xml_node();
+    if (node == nullptr)
+        throw BESInternalError("The xml_node was not recorded.", __FILE__, __LINE__);
+    return node;
+#else
     // load the BaseType objects onto a stack, since we start at the leaf and
     // go backward using its 'parent' pointer, the order of BaseTypes on the
     // stack will match the order in the hierarchy of the DOM tree.
@@ -693,6 +725,7 @@ xml_node DMZ::get_variable_xml_node(BaseType *btp)
 
     auto node = get_variable_xml_node_helper(dataset, bt);
     return node;
+#endif
 }
 
 /**

@@ -29,6 +29,9 @@
 #include <vector>
 #include <memory>
 
+#define PUGIXML_NO_XPATH
+#include <pugixml.hpp>
+
 namespace libdap {
 class DMR;
 class BaseType;
@@ -42,6 +45,10 @@ class XMLWriter;
 
 namespace http {
 class url;
+}
+
+namespace pugi {
+class xml_node;
 }
 
 namespace dmrpp {
@@ -71,19 +78,20 @@ class DmrppCommon {
     friend class DmrppParserTest;
 
 private:
-    bool d_compact;
+    bool d_compact = false;
 	std::string d_filters;
 	std::string d_byte_order;
 	std::vector<unsigned long long> d_chunk_dimension_sizes;
 	std::vector<std::shared_ptr<Chunk>> d_chunks;
-	bool d_twiddle_bytes;
+	bool d_twiddle_bytes = false;
 
     // These indicate that the chunks or attributes have been loaded into the
     // variable when the DMR++ handler is using lazy-loading of this data.
-    bool d_chunks_loaded;
-    bool d_attributes_loaded;
+    bool d_chunks_loaded = false;
+    bool d_attributes_loaded = false;
 
     std::shared_ptr<DMZ> d_dmz;
+    pugi::xml_node d_xml_node;
 
 protected:
     /// @brief Returns a copy of the internal Chunk vector.
@@ -103,14 +111,9 @@ public:
     static std::string d_dmrpp_ns;      ///< The DMR++ XML namespace
     static std::string d_ns_prefix;     ///< The XML namespace prefix to use
 
-    DmrppCommon() : d_compact(false), d_twiddle_bytes(false), d_chunks_loaded(false), d_attributes_loaded(false)
-    {
-    }
+    DmrppCommon() = default;
 
-    DmrppCommon(std::shared_ptr<DMZ> dmz) : d_compact(false), d_twiddle_bytes(false), d_chunks_loaded(false),
-        d_attributes_loaded(false), d_dmz(dmz)
-    {
-    }
+    DmrppCommon(std::shared_ptr<DMZ> dmz) : d_dmz(dmz) { }
 
     DmrppCommon(const DmrppCommon &dc) = default;
 
@@ -152,6 +155,9 @@ public:
     virtual bool get_attributes_loaded()  const { return d_attributes_loaded; }
     virtual void set_attributes_loaded(bool state) {  d_attributes_loaded = state; }
 
+    // FIXME Make this a const method. jhrg 11/17/21
+    virtual pugi::xml_node &get_xml_node() { return d_xml_node; }
+    virtual void set_xml_node(pugi::xml_node node) { d_xml_node = node; }
 
     /// @brief A const reference to the vector of chunks
     /// @see get_chunks()
