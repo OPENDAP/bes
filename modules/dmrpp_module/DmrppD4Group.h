@@ -53,6 +53,10 @@ public:
 
     virtual libdap::BaseType *ptr_duplicate();
 
+#if 0
+    void set_send_p(bool state) override;
+#endif
+
     virtual void dump(ostream & strm) const;
 };
 

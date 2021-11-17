@@ -135,6 +135,16 @@ DmrppD4Group::print_dap4(XMLWriter &xml, bool constrained)
 }
 #endif
 
+#if 0
+void
+DmrppD4Group::set_send_p(bool state)
+{
+    if (!get_attributes_loaded())
+        load_attribtues(this);
+
+    D4Group::set_send_p(state);
+}
+#endif
 
 void DmrppD4Group::dump(ostream & strm) const
 {
