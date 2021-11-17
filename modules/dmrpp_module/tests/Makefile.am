@@ -3,17 +3,17 @@ AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir)
 
-noinst_DATA = bes.conf bes_mds_tests.conf mds_for_tests
+noinst_DATA = bes.conf
 
 CLEANFILES = bes.conf bes.log $(srcdir)/package.m4 $(TESTSUITE) \
-bes_mds_tests.conf bes_serial.conf $(TESTSUITE_MDS) $(TESTSUITE_S3)
+bes_serial.conf $(TESTSUITE_S3)
 
-EXTRA_DIST = contiguous chunked compact new_types mds_tests s3 \
-$(srcdir)/package.m4 $(TESTSUITE) $(TESTSUITE).at $(TESTSUITE_MDS) \
-$(TESTSUITE_MDS).at $(TESTSUITE_S3)  $(TESTSUITE_S3).at \
-atlocal.in bes.conf.in bes_mds_tests.conf.in  bes_serial.conf.in
+EXTRA_DIST = contiguous chunked compact new_types s3 \
+$(srcdir)/package.m4 $(TESTSUITE) $(TESTSUITE).at \
+$(TESTSUITE_S3)  $(TESTSUITE_S3).at \
+atlocal.in bes.conf.in bes_serial.conf.in
 
-DISTCLEANFILES = atconfig mds_for_tests_ledger.txt
+DISTCLEANFILES = atconfig
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
@@ -27,16 +27,16 @@ bes.conf: $(top_srcdir)/configure.ac $(srcdir)/bes.conf.in
 
 bes_serial.conf: $(top_srcdir)/configure.ac $(srcdir)/bes_serial.conf.in
 
-bes_mds_tests.conf: $(top_srcdir)/configure.ac $(srcdir)/bes_mds_tests.conf.in
+# bes_mds_tests.conf: $(top_srcdir)/configure.ac $(srcdir)/bes_mds_tests.conf.in
 
-$(builddir)/mds_for_tests:
-	cp -r $(top_srcdir)/modules/dmrpp_module/data/mds_for_tests $(builddir)/mds_for_tests
-	chmod -R a+w $(builddir)/mds_for_tests
-	(cd $(builddir)/mds_for_tests && \
-	 clean_abs_top_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
-	 for d in *.in; \
-		do sed -e "s%[@]abs_top_srcdir[@]%$${clean_abs_top_srcdir}%" $$d > `basename $$d .in`; \
-	 done)
+# $(builddir)/mds_for_tests:
+# 	cp -r $(top_srcdir)/modules/dmrpp_module/data/mds_for_tests $(builddir)/mds_for_tests
+# 	chmod -R a+w $(builddir)/mds_for_tests
+# 	(cd $(builddir)/mds_for_tests && \
+# 	 clean_abs_top_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
+# 	 for d in *.in; \
+# 		do sed -e "s%[@]abs_top_srcdir[@]%$${clean_abs_top_srcdir}%" $$d > `basename $$d .in`; \
+# 	 done)
 
 ############## Autotest follows #####################
 
@@ -45,7 +45,7 @@ AUTOTEST = $(AUTOM4TE) --language=autotest
 
 TESTSUITE = $(srcdir)/testsuite
 
-TESTSUITE_MDS = $(srcdir)/testsuite_mds_tests
+# TESTSUITE_MDS = $(srcdir)/testsuite_mds_tests
 
 TESTSUITE_S3 = $(srcdir)/testsuite_s3_tests
 
@@ -64,10 +64,9 @@ s3-tests: $(TESTSUITE_S3) bes.conf bes_serial.conf
 	fi
 	@echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
 
-check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_MDS) $(TESTSUITE_S3) bes.conf bes_serial.conf bes_mds_tests.conf mds_for_tests
+check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_S3) bes.conf bes_serial.conf 
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS) --conf=bes_serial.conf
-	$(SHELL) '$(TESTSUITE_MDS)' $(TESTSUITEFLAGS) --conf=bes_mds_tests.conf
 	@echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
 	@if [ -n "$${CMAC_ID}" ] \
 		&& [ -n "$${CMAC_ACCESS_KEY}" ] \
@@ -85,18 +84,21 @@ check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_MDS) $(TESTSUITE_S3) bes.
 	fi
 	@echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
 
+# $(SHELL) '$(TESTSUITE_MDS)' $(TESTSUITEFLAGS) --conf=bes_mds_tests.conf
+
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
-	test ! -f '$(TESTSUITE_MDS)' || $(SHELL) '$(TESTSUITE_MDS)' --clean
 	test ! -f '$(TESTSUITE_S3)' || $(SHELL) '$(TESTSUITE_S3)' --clean
-	test ! -d $(builddir)/mds_for_tests || rm -rf $(builddir)/mds_for_tests
+
+# test ! -d $(builddir)/mds_for_tests || rm -rf $(builddir)/mds_for_tests
+# test ! -f '$(TESTSUITE_MDS)' || $(SHELL) '$(TESTSUITE_MDS)' --clean
 
 %: %.at 
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
 
 $(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
 
-$(TESTSUITE_MDS): $(TESTSUITE_MDS).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
+# $(TESTSUITE_MDS): $(TESTSUITE_MDS).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
 
 $(TESTSUITE_S3): $(TESTSUITE_S3).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
 

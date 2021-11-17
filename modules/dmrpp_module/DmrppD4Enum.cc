@@ -36,35 +36,6 @@ using namespace std;
 
 namespace dmrpp {
 
-void
-DmrppD4Enum::_duplicate(const DmrppD4Enum &)
-{
-}
-
-DmrppD4Enum::DmrppD4Enum(const string &n, const string &enum_type) : D4Enum(n, enum_type), DmrppCommon()
-{
-
-}
-
-DmrppD4Enum::DmrppD4Enum(const string &n, Type type) : D4Enum(n, type), DmrppCommon()
-{
-}
-
-DmrppD4Enum::DmrppD4Enum(const string &n, const string &d, Type type) : D4Enum(n, d, type), DmrppCommon()
-{
-}
-
-BaseType *
-DmrppD4Enum::ptr_duplicate()
-{
-    return new DmrppD4Enum(*this);
-}
-
-DmrppD4Enum::DmrppD4Enum(const DmrppD4Enum &rhs) : D4Enum(rhs), DmrppCommon(rhs)
-{
-    _duplicate(rhs);
-}
-
 DmrppD4Enum &
 DmrppD4Enum::operator=(const DmrppD4Enum &rhs)
 {
@@ -73,8 +44,8 @@ DmrppD4Enum::operator=(const DmrppD4Enum &rhs)
 
     dynamic_cast<D4Enum &>(*this) = rhs; // run Constructor=
 
-    _duplicate(rhs);
-    DmrppCommon::m_duplicate_common(rhs);
+    dynamic_cast<DmrppCommon &>(*this) = rhs;
+    //DmrppCommon::m_duplicate_common(rhs);
 
     return *this;
 }

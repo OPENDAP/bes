@@ -84,6 +84,7 @@ private:
 	bool d_twiddle_bytes;
 
 protected:
+#if 0
     void m_duplicate_common(const DmrppCommon &dc) {
     	d_compact = dc.d_compact;
         d_filters = dc.d_filters;
@@ -92,8 +93,8 @@ protected:
     	d_byte_order = dc.d_byte_order;
     	d_twiddle_bytes = dc.d_twiddle_bytes;
     }
-
-    /// @brief Returns a reference to the internal Chunk vector.
+#endif
+    /// @brief Returns a copy of the internal Chunk vector.
     /// @see get_immutable_chunks()
     virtual std::vector<std::shared_ptr<Chunk>> get_chunks() {
     	return d_chunks;
@@ -110,11 +111,12 @@ public:
     {
     }
 
-    DmrppCommon(const DmrppCommon &dc)
+    DmrppCommon(const DmrppCommon &dc) = default;
+#if 0
     {
         m_duplicate_common(dc);
     }
-
+#endif
     virtual ~DmrppCommon()= default;
 
     /// @brief Return the names of all the filters in the order they were applied

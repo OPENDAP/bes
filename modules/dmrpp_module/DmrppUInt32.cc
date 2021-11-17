@@ -37,30 +37,6 @@ using namespace std;
 
 namespace dmrpp {
 
-void
-DmrppUInt32::_duplicate(const DmrppUInt32 &)
-{
-}
-
-DmrppUInt32::DmrppUInt32(const string &n) : UInt32(n), DmrppCommon()
-{
-}
-
-DmrppUInt32::DmrppUInt32(const string &n, const string &d) : UInt32(n, d), DmrppCommon()
-{
-}
-
-BaseType *
-DmrppUInt32::ptr_duplicate()
-{
-    return new DmrppUInt32(*this);
-}
-
-DmrppUInt32::DmrppUInt32(const DmrppUInt32 &rhs) : UInt32(rhs), DmrppCommon(rhs)
-{
-    _duplicate(rhs);
-}
-
 DmrppUInt32 &
 DmrppUInt32::operator=(const DmrppUInt32 &rhs)
 {
@@ -69,8 +45,8 @@ DmrppUInt32::operator=(const DmrppUInt32 &rhs)
 
     dynamic_cast<UInt32 &>(*this) = rhs; // run Constructor=
 
-    _duplicate(rhs);
-    DmrppCommon::m_duplicate_common(rhs);
+    dynamic_cast<DmrppCommon &>(*this) = rhs;
+    //DmrppCommon::m_duplicate_common(rhs);
 
     return *this;
 }

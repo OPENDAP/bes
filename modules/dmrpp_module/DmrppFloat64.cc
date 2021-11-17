@@ -36,30 +36,6 @@ using namespace std;
 
 namespace dmrpp {
 
-void
-DmrppFloat64::_duplicate(const DmrppFloat64 &)
-{
-}
-
-DmrppFloat64::DmrppFloat64(const string &n) : Float64(n), DmrppCommon()
-{
-}
-
-DmrppFloat64::DmrppFloat64(const string &n, const string &d) : Float64(n, d), DmrppCommon()
-{
-}
-
-BaseType *
-DmrppFloat64::ptr_duplicate()
-{
-    return new DmrppFloat64(*this);
-}
-
-DmrppFloat64::DmrppFloat64(const DmrppFloat64 &rhs) : Float64(rhs), DmrppCommon(rhs)
-{
-    _duplicate(rhs);
-}
-
 DmrppFloat64 &
 DmrppFloat64::operator=(const DmrppFloat64 &rhs)
 {
@@ -68,8 +44,8 @@ DmrppFloat64::operator=(const DmrppFloat64 &rhs)
 
     dynamic_cast<Float64 &>(*this) = rhs; // run Constructor=
 
-    _duplicate(rhs);
-    DmrppCommon::m_duplicate_common(rhs);
+    dynamic_cast<DmrppCommon &>(*this) = rhs;
+    //DmrppCommon::m_duplicate_common(rhs);
 
     return *this;
 }
