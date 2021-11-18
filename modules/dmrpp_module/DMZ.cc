@@ -70,7 +70,7 @@ using namespace libdap;
 // jhrg 11/2/21
 #define TREAT_NAMESPACES_AS_LITERALS 1
 
-// THe code can either search for a DAP variable's information in the XML or it can
+// THe code can either search for a DAP variable's information in the XML, or it can
 // record that during the parse process. Set this when/if the code does the latter.
 // using this simplifies the lazy-load process, particularly for the DAP2 dds and
 // data responses (which have not yet been coded completely). jhrg 11/17/21
@@ -84,39 +84,9 @@ namespace dmrpp {
 const std::set<std::string> variable_elements{"Byte", "Int8", "Int16", "Int32", "Int64", "UInt8", "UInt16", "UInt32",
                                               "UInt64", "Float32", "Float64", "String", "Structure", "Sequence",
                                               "Enum", "Opaque"};
-
-static const string dmrpp_namespace = "http://xml.opendap.org/dap/dmrpp/1.0.0#";
-
-#if 1
-/**
- * @brief Build a DMZ object and initialize it using a DMR++ XML document
- * @param file_name The DMR++ XML document to parse.
- * @exception BESInternalError if file_name cannot be parsed
- */
-DMZ::DMZ(const string &file_name)
-{
-    parse_xml_doc(file_name);
-}
+#if 0
+static const string dmrpp_namespace = "https://xml.opendap.org/dap/dmrpp/1.0.0#";
 #endif
-
-void
-DMZ::parse_xml_doc(const std::string &file_name)
-{
-    std::ifstream stream(file_name);
-
-    // Free memory used by a previously parsed document.
-    d_xml_doc.reset();
-
-    // parse_ws_pcdata_single will include the space when it appears in a <Value> </Value>
-    // DAP Attribute element. jhrg 11/3/21
-    pugi::xml_parse_result result = d_xml_doc.load(stream,  pugi::parse_default | pugi::parse_ws_pcdata_single);
-
-    if (!result)
-        throw BESInternalError(string("DMR++ parse error: ").append(result.description()), __FILE__, __LINE__);
-
-    if (!d_xml_doc.document_element())
-        throw BESInternalError("No DMR++ data present.", __FILE__, __LINE__);
-}
 
 // NB: If we use this for string compares, we cannot use the 'fastest' parsing option
 // of rapidxml. For that, we will need to modify this so that the length of 'value' is passed
@@ -137,6 +107,62 @@ static inline bool is_eq(const char *value, const char *key)
         return colon && strcmp(colon + 1, key) == 0;
     }
 #endif
+}
+
+/// @brief Are any of the child nodes 'Dim' elements?
+static inline bool has_dim_nodes(const xml_node &var_node)
+{
+    return var_node.child("Dim"); // just one is enough
+}
+
+/// @brief Simple set membership; used to test for variable elements, et cetera.
+static inline bool member_of(const set<string> &elements_set, const string &element_name)
+{
+    return elements_set.find(element_name) != elements_set.end();
+}
+
+static inline DmrppCommon *dc(BaseType *btp)
+{
+    auto *dc = dynamic_cast<DmrppCommon*>(btp);
+    if (!dc)
+        throw BESInternalError(string("Expected a BaseType that was also a DmrppCommon instance (")
+                                       .append(btp->name()).append(")."), __FILE__, __LINE__);
+    return dc;
+}
+
+#if 1
+/**
+ * @brief Build a DMZ object and initialize it using a DMR++ XML document
+ * @param file_name The DMR++ XML document to parse.
+ * @exception BESInternalError if file_name cannot be parsed
+ */
+DMZ::DMZ(const string &file_name)
+{
+    parse_xml_doc(file_name);
+}
+#endif
+
+/**
+ * @brief Build the DOM tree for a DMR++ XML document
+ * @param file_name
+ */
+void
+DMZ::parse_xml_doc(const std::string &file_name)
+{
+    std::ifstream stream(file_name);
+
+    // Free memory used by a previously parsed document.
+    d_xml_doc.reset();
+
+    // parse_ws_pcdata_single will include the space when it appears in a <Value> </Value>
+    // DAP Attribute element. jhrg 11/3/21
+    pugi::xml_parse_result result = d_xml_doc.load(stream,  pugi::parse_default | pugi::parse_ws_pcdata_single);
+
+    if (!result)
+        throw BESInternalError(string("DMR++ parse error: ").append(result.description()), __FILE__, __LINE__);
+
+    if (!d_xml_doc.document_element())
+        throw BESInternalError("No DMR++ data present.", __FILE__, __LINE__);
 }
 
 /**
@@ -319,17 +345,6 @@ void DMZ::process_map(DMR *dmr, D4Group *grp, Array *array, const xml_node &map_
     array->maps()->add_map(new D4Map(name_value, map_source));
 }
 
-/// @brief Are any of the child nodes 'Dim' elements?
-static inline bool has_dim_nodes(const xml_node &var_node)
-{
-    return  var_node.child("Dim"); // just one is enough
-}
-
-/// @brief Simple set membership; used to test for variable elements, et cetera.
-static inline bool member_of(const set<string> &elements_set, const string &element_name)
-{
-    return elements_set.find(element_name) != elements_set.end();
-}
 
 /**
  * @brief Process an element that is a variable
@@ -384,10 +399,12 @@ void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, const 
         }
     }
 
+#if 0
     auto *dc = dynamic_cast<DmrppCommon*>(btp);
     if (!dc)
         throw BESInternalError("Expected a BaseType that was also a DmrppCommon instance.", __FILE__, __LINE__);
-    dc->set_xml_node(var_node);
+#endif
+    dc(btp)->set_xml_node(var_node);
 }
 
 /**
@@ -662,6 +679,7 @@ void DMZ::build_basetype_chain(BaseType *btp, stack<BaseType*> &bt)
 
 xml_node DMZ::get_variable_xml_node_helper(const xml_node &parent_node, stack<BaseType*> &bt)
 {
+#if !USE_CACHED_XML_NODE
     // When we have an array of Structure or Sequence, both the Array and the
     // Structure BaseType are pushed on the stack. This happens because, for
     // constructors, other variables reference them as a parent node (while that's
@@ -692,6 +710,10 @@ xml_node DMZ::get_variable_xml_node_helper(const xml_node &parent_node, stack<Ba
     }
 
     return xml_node();      // return an empty node
+#else
+    return xml_node();      // return an empty node
+#endif
+
 }
 
 /**
@@ -707,10 +729,11 @@ xml_node DMZ::get_variable_xml_node(BaseType *btp)
     if (!dataset || !is_eq(dataset.name(), "Dataset"))
         throw BESInternalError("No DMR++ has been parsed.", __FILE__, __LINE__);
 
-    auto *dc = dynamic_cast<DmrppCommon*>(btp);
-    auto node = dc->get_xml_node();
+    // auto *dc = dynamic_cast<DmrppCommon*>(btp);
+    auto node = dc(btp)->get_xml_node();
     if (node == nullptr)
-        throw BESInternalError("The xml_node was not recorded.", __FILE__, __LINE__);
+        throw BESInternalError(string("The xml_node for '").append(btp->name()).append("' was not recorded."), __FILE__, __LINE__);
+
     return node;
 #else
     // load the BaseType objects onto a stack, since we start at the leaf and
@@ -742,10 +765,12 @@ xml_node DMZ::get_variable_xml_node(BaseType *btp)
 void
 DMZ::load_attributes(BaseType *btp)
 {
+#if 0
     auto *dc = dynamic_cast<DmrppCommon*>(btp);   // Get the Dmrpp common info
     if (!dc)
         throw BESInternalError("Could not cast BaseType to DmrppType in the DMR++ handler.", __FILE__, __LINE__);
-    if (dc->get_attributes_loaded())
+#endif
+    if (dc(btp)->get_attributes_loaded())
         return;
 
     // goto the DOM tree node for this variable
@@ -756,7 +781,7 @@ DMZ::load_attributes(BaseType *btp)
 
     load_attributes(btp, var_node);
 
-    dc->set_attributes_loaded(true);
+    dc(btp)->set_attributes_loaded(true);
 
     switch (btp->type()) {
         // When we load attributes for an Array, the set_send_p() method
@@ -766,9 +791,12 @@ DMZ::load_attributes(BaseType *btp)
         // get thrown. Maybe a better fix would be to mark 'child variables'
         // as having their attributes loaded. jhrg 11/16/21
         case dods_array_c: {
+#if 0
             auto *dcp = dynamic_cast<DmrppCommon*>(btp->var());
             if (dcp)
                 dcp->set_attributes_loaded(true);
+#endif
+            dc(btp->var())->set_attributes_loaded(true);
             break;
         }
 
@@ -781,9 +809,12 @@ DMZ::load_attributes(BaseType *btp)
             auto *c = dynamic_cast<Constructor*>(btp);
             if (c) {
                 for (auto i = c->var_begin(), e = c->var_end(); i != e; i++) {
+#if 0
                     auto *dcp = dynamic_cast<DmrppCommon*>(*i);
                     if (dcp)
                         dcp->set_attributes_loaded(true);
+#endif
+                    dc(btp->var())->set_attributes_loaded(true);
                 }
                 break;
             }
@@ -802,11 +833,13 @@ DMZ::load_attributes(BaseType *btp)
 void
 DMZ::load_attributes(BaseType *btp, xml_node var_node)
 {
+#if 0
     auto *dc = dynamic_cast<DmrppCommon*>(btp);
     if (!dc)
         throw BESInternalError("Could not get a DmrppCommon for the DAP variable.", __FILE__, __LINE__);
+#endif
 
-    if (dc->get_attributes_loaded())
+    if (dc(btp)->get_attributes_loaded())
         return;
     
     // Attributes for this node will be held in the var_node siblings.
@@ -821,7 +854,7 @@ DMZ::load_attributes(BaseType *btp, xml_node var_node)
         }
     }
 
-    dc->set_attributes_loaded(true);
+    dc(btp)->set_attributes_loaded(true);
 }
 
 /**
@@ -888,11 +921,13 @@ DMZ::load_attributes(D4Group *group) {
 void
 DMZ::process_compact(BaseType *btp, const xml_node &compact)
 {
+#if 0
     DmrppCommon *dc = dynamic_cast<DmrppCommon*>(btp);   // Get the Dmrpp common info
     if (!dc)
         throw BESInternalError("Could not cast BaseType to DmrppCommon in the drmpp handler.", __FILE__, __LINE__);
+#endif
 
-    dc->set_compact(true);
+    dc(btp)->set_compact(true);
 
     auto char_data = compact.child_value();
     if (!char_data)
@@ -1010,11 +1045,15 @@ void DMZ::process_cds_node(DmrppCommon *dc, const xml_node &chunks)
 
 // a 'dmrpp:chunks' node has a chunkDimensionSizes node and then one or more chunks
 // nodes, and they have to be in that order.
-void DMZ::process_chunks(BaseType *btp, const xml_node &chunks)
+void DMZ::process_chunks(DmrppCommon *dc, const xml_node &chunks)
 {
+#if 0
     auto *dc = dynamic_cast<DmrppCommon*>(btp);   // Get the Dmrpp common info
     if (!dc)
         throw BESInternalError("Could not cast BaseType to DmrppType in the DMR++ handler.", __FILE__, __LINE__);
+#endif
+
+    //auto *dcp = dc(btp);
 
     for (xml_attribute attr = chunks.first_attribute(); attr; attr = attr.next_attribute()) {
         if (is_eq(attr.name(), "compressionType")) {
@@ -1041,11 +1080,14 @@ void DMZ::process_chunks(BaseType *btp, const xml_node &chunks)
  *
  * @param btp The variable
  */
-void DMZ::load_chunks(BaseType *btp) {
+void DMZ::load_chunks(BaseType *btp)
+{
+#if 0
     auto *dc = dynamic_cast<DmrppCommon *>(btp);   // Get the Dmrpp common info
     if (!dc)
         throw BESInternalError("Could not cast BaseType to DmrppType in the DMR++ handler.", __FILE__, __LINE__);
-    if (dc->get_chunks_loaded())
+#endif
+    if (dc(btp)->get_chunks_loaded())
         return;
 
     // goto the DOM tree node for this variable
@@ -1061,24 +1103,28 @@ void DMZ::load_chunks(BaseType *btp) {
     auto child = var_node.child("dmrpp:chunks");
     if (child) {
         chunks_found = 1;
-        process_chunks(btp, child);
+        process_chunks(dc(btp), child);
     }
 
     auto chunk = var_node.child("dmrpp:chunk");
     if (chunk) {
+#if 0
         auto *dc = dynamic_cast<DmrppCommon *>(btp);   // Get the Dmrpp common info
         if (!dc)
             throw BESInternalError("Could not cast BaseType to DmrppCommon in the DMR++ handler.", __FILE__, __LINE__);
+#endif
         chunk_found = 1;
-        process_chunk(dc, chunk);
+        process_chunk(dc(btp), chunk);
 
     }
 
     auto compact = var_node.child("dmrpp:compact");
     if (compact) {
+#if 0
         auto *dc = dynamic_cast<DmrppCommon *>(btp);   // Get the Dmrpp common info
         if (!dc)
             throw BESInternalError("Could not cast BaseType to DmrppCommon in the DMR++ handler.", __FILE__, __LINE__);
+#endif
         compact_found = 1;
         process_compact(btp, compact);
     }
@@ -1094,7 +1140,7 @@ void DMZ::load_chunks(BaseType *btp) {
         }
     }
 
-    dc->set_chunks_loaded(true);
+    dc(btp)->set_chunks_loaded(true);
 }
 
 void DMZ::load_all_attributes(libdap::DMR *dmr)

@@ -341,6 +341,38 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
     return true;
 }
 
+template <class T>
+void DmrppRequestHandler::get_dds_from_dmr_or_cache(BESDataHandlerInterface &dhi, T *bdds) {
+    string container_name_str = bdds->get_explicit_containers() ? dhi.container->get_symbolic_name() : "";
+
+    DDS *dds = bdds->get_dds();
+    if (!container_name_str.empty()) dds->container_name(container_name_str);
+    string accessed = dhi.container->access();
+
+    // Look in memory cache, if it's initialized
+    DDS *cached_dds_ptr = 0;
+    if (dds_cache && (cached_dds_ptr = static_cast<DDS*>(dds_cache->get(accessed)))) {
+        BESDEBUG(MODULE, prolog << "DDS Cached hit for : " << accessed << endl);
+        *dds = *cached_dds_ptr;
+    }
+    else {
+        DMR dmr;
+        build_dmr_from_file(dhi.container, &dmr);
+        dmz->load_all_attributes(&dmr);
+
+        delete dds;                         // delete the current one;
+        dds = dmr.getDDS();                 // assign the new one.
+
+        // Stuff it into the response.
+        bdds->set_dds(dds);
+
+        // Cache it, if the cache is active.
+        if (dds_cache) {
+            dds_cache->add(new DDS(*dds), accessed);
+        }
+    }
+}
+
 /**
  * Produce a DAP2 Data Response (.dods) response from a DMRPP file.
  */
@@ -368,36 +400,6 @@ bool DmrppRequestHandler::dap_build_dap2data(BESDataHandlerInterface & dhi)
     return true;
 }
 
-template <class T>
-void DmrppRequestHandler::get_dds_from_dmr_or_cache(BESDataHandlerInterface &dhi, T *bdds) {
-    string container_name_str = bdds->get_explicit_containers() ? dhi.container->get_symbolic_name() : "";
-
-    DDS *dds = bdds->get_dds();
-    if (!container_name_str.empty()) dds->container_name(container_name_str);
-    string accessed = dhi.container->access();
-
-    // Look in memory cache, if it's initialized
-    DDS *cached_dds_ptr = 0;
-    if (dds_cache && (cached_dds_ptr = static_cast<DDS*>(dds_cache->get(accessed)))) {
-        BESDEBUG(MODULE, prolog << "DDS Cached hit for : " << accessed << endl);
-        *dds = *cached_dds_ptr;
-    }
-    else {
-        DMR dmr;
-        build_dmr_from_file(dhi.container, &dmr);
-
-        delete dds;                         // delete the current one;
-        dds = dmr.getDDS();                 // assign the new one.
-
-        // Stuff it into the response.
-        bdds->set_dds(dds);
-
-        // Cache it, if the cache is active.
-        if (dds_cache) {
-            dds_cache->add(new DDS(*dds), accessed);
-        }
-    }
-}
 
 /**
  * Produce a DAP2 DDS response from a DMRPP file.

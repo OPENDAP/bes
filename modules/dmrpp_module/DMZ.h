@@ -80,7 +80,7 @@ private:
     void process_dataset(libdap::DMR *dmr, const pugi::xml_node &xml_root);
     pugi::xml_node get_variable_xml_node(libdap::BaseType *btp);
     void process_chunk(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunk);
-    void process_chunks(libdap::BaseType *btp, const pugi::xml_node &chunks);
+    void process_chunks(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunks);
 
     static void process_compact(libdap::BaseType *btp, const pugi::xml_node &compact);
 

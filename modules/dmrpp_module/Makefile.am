@@ -4,7 +4,7 @@ ACLOCAL_AMFLAGS = -I conf
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/http \
 -I$(top_srcdir)/pugixml/src $(DAP_CFLAGS)
-AM_CXXFLAGS = -Wno-vla-extension
+AM_CXXFLAGS = -Wno-vla-extension -Wno-inconsistent-missing-override
 
 BES_STANDALONE_LIB = -L$(top_builddir)/standalone -lbes_standalone
 
