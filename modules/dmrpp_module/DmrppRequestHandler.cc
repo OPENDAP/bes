@@ -103,8 +103,9 @@ unsigned int DmrppRequestHandler::d_max_compute_threads = 8;
 // Default minimum value is 2MB: 2 * (1024*1024)
 unsigned long long DmrppRequestHandler::d_contiguous_concurrent_threshold = DMRPP_DEFAULT_CONTIGUOUS_CONCURRENT_THRESHOLD;
 
-// This behavior mirrors the SAX2 parser. We could make this a run-time
-// option if needed. jhrg 11/4/21
+// This behavior mirrors the SAX2 parser behavior where the software doesn't require that
+// a variable actually have chunks (that is, some variable might not have any data).
+// We could make this a run-time option if needed. jhrg 11/4/21
 bool DmrppRequestHandler::d_require_chunks = false;
 
 // See the comment in the header for more about this kludge. jhrg 11/9/21
@@ -341,6 +342,12 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
     return true;
 }
 
+/**
+ * @brief Build a DDS that is loaded with attributes
+ * @tparam T BESResponseObject specialization (BESDataDDSResponse, BESDDSResponse)
+ * @param dhi The Data handler interface object
+ * @param bdds A pointer to a BESDDSResponse or BESDataDDSResponse
+ */
 template <class T>
 void DmrppRequestHandler::get_dds_from_dmr_or_cache(BESDataHandlerInterface &dhi, T *bdds) {
     string container_name_str = bdds->get_explicit_containers() ? dhi.container->get_symbolic_name() : "";
@@ -506,8 +513,8 @@ bool DmrppRequestHandler::dap_build_help(BESDataHandlerInterface &dhi)
     // This is an example. If you had a help file you could load it like
     // this and if your handler handled the following responses.
     map<string, string> attrs;
-    attrs["name"] = MODULE_NAME /* PACKAGE_NAME */;
-    attrs["version"] = MODULE_VERSION /* PACKAGE_VERSION */;
+    attrs["name"] = MODULE_NAME;
+    attrs["version"] = MODULE_VERSION;
     list<string> services;
     BESServiceRegistry::TheRegistry()->services_handled(MODULE, services);
     if (services.size() > 0) {

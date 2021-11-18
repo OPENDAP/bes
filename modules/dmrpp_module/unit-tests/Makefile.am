@@ -33,7 +33,7 @@ endif
 # debugging. Set CXXFLAGS to this in the nightly build using export ...
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -Wcast-align
 
-AM_CXXFLAGS=
+AM_CXXFLAGS = -Wno-vla-extension -Wno-inconsistent-missing-override -Wno-unused-variable
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 

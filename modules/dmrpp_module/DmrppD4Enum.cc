@@ -73,7 +73,7 @@ void
 DmrppD4Enum::set_send_p(bool state)
 {
     if (!get_attributes_loaded())
-        load_attribtues(this);
+        load_attributes(this);
 
     D4Enum::set_send_p(state);
 }

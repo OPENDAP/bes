@@ -77,7 +77,7 @@ void
 DmrppInt64::set_send_p(bool state)
 {
     if (!get_attributes_loaded())
-        load_attribtues(this);
+        load_attributes(this);
 
     Int64::set_send_p(state);
 }

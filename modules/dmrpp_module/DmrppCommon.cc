@@ -304,12 +304,12 @@ unsigned long DmrppCommon::add_chunk(
 char *
 DmrppCommon::read_atomic(const string &name)
 {
-    auto chunk_refs = get_chunks(); // FIXME They are not refs. It's a copy. jhrg 10/7/21
+    // auto chunk_refs = get_immutable_chunks(); // FIXME They are not refs. It's a copy. jhrg 10/7/21
 
-    if (chunk_refs.size() != 1)
+    if (get_chunks_size() != 1) // FIXMEchunk_refs.size() != 1)
         throw BESInternalError(string("Expected only a single chunk for variable ") + name, __FILE__, __LINE__);
 
-    auto chunk = chunk_refs[0];
+    auto chunk = get_immutable_chunks()[0];
 
     chunk->read_chunk();
 
@@ -334,8 +334,8 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
             throw BESInternalError("Could not write compression attribute.", __FILE__, __LINE__);
 
 
-    if(!get_chunks().empty()){
-        auto first_chunk = get_chunks().front();
+    if(get_chunks_size() != 0) { // FIXME !get_chunks().empty()){
+        auto first_chunk = get_immutable_chunks().front();
         if (!first_chunk->get_byte_order().empty()) {
             if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "byteOrder",
                                         (const xmlChar *) first_chunk->get_byte_order().c_str()) < 0)
@@ -357,7 +357,7 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
     // Start elements "chunk" with dmrpp namespace and attributes:
     // for (vector<Chunk>::iterator i = get_chunks().begin(), e = get_chunks().end(); i != e; ++i) {
 
-    for(auto chunk: get_chunks()){
+    for(auto chunk: get_immutable_chunks()){
 
         if (xmlTextWriterStartElementNS(xml.get_writer(), (const xmlChar*)name_space.c_str(), (const xmlChar*) "chunk", NULL) < 0)
             throw BESInternalError("Could not start element chunk", __FILE__, __LINE__);
@@ -441,7 +441,7 @@ void DmrppCommon::print_dmrpp(XMLWriter &xml, bool constrained /*false*/)
 
     // This is the code added to libdap::BaseType::print_dap4(). jhrg 5/10/18
     // TODO get_immutable_chunks() returns a copy. Replace with a simple accessor. jhrg 10/7/21
-    if (DmrppCommon::d_print_chunks && get_immutable_chunks().size() > 0)
+    if (DmrppCommon::d_print_chunks && get_chunks_size() > 0) // FIXME get_immutable_chunks().size() > 0)
         print_chunks_element(xml, DmrppCommon::d_ns_prefix);
 
     if (xmlTextWriterEndElement(xml.get_writer()) < 0)
@@ -485,7 +485,7 @@ DmrppCommon::load_chunks(BaseType *btp) {
  * @param btp
  */
 void
-DmrppCommon::load_attribtues(libdap::BaseType *btp)
+DmrppCommon::load_attributes(libdap::BaseType *btp)
 {
     d_dmz->load_attributes(btp);
 }

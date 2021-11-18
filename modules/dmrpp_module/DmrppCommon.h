@@ -90,15 +90,22 @@ private:
     bool d_chunks_loaded = false;
     bool d_attributes_loaded = false;
 
+    // Each instance of DmrppByte, ..., holds a shared pointer to the DMZ so that
+    // it can fetch more information from the XML if needed - this is how the lazy-load
+    // feature is implemented. The xml_node object is used to simplify finding where
+    // in the XML information about a variable is stored - to limit searching the
+    // document, the code caches the XML node.
     std::shared_ptr<DMZ> d_dmz;
     pugi::xml_node d_xml_node;
 
 protected:
+#if 0
     /// @brief Returns a copy of the internal Chunk vector.
     /// @see get_immutable_chunks()
     virtual std::vector<std::shared_ptr<Chunk>> get_chunks() {
     	return d_chunks;
     }
+#endif
 
     virtual char *read_atomic(const std::string &name);
 
@@ -143,9 +150,8 @@ public:
     /// @brief Returns true if this object utilizes shuffle compression.
     virtual bool twiddle_bytes() const { return d_twiddle_bytes; }
 
-    // TODO Remove this. jhrg 11/12/21
-    /// @brief Provide access to the DMZ instance bound to this variable
-    virtual const std::shared_ptr<DMZ> &get_dmz() const { return d_dmz; }
+    // @brief Provide access to the DMZ instance bound to this variable
+    // virtual const std::shared_ptr<DMZ> &get_dmz() const { return d_dmz; }
 
     /// @brief Have the chunks been loaded?
     virtual bool get_chunks_loaded()  const { return d_chunks_loaded; }
@@ -155,15 +161,17 @@ public:
     virtual bool get_attributes_loaded()  const { return d_attributes_loaded; }
     virtual void set_attributes_loaded(bool state) {  d_attributes_loaded = state; }
 
-    // FIXME Make this a const method. jhrg 11/17/21
-    virtual pugi::xml_node &get_xml_node() { return d_xml_node; }
+    virtual const pugi::xml_node &get_xml_node() const { return d_xml_node; }
     virtual void set_xml_node(pugi::xml_node node) { d_xml_node = node; }
 
     /// @brief A const reference to the vector of chunks
-    /// @see get_chunks()
     virtual const std::vector<std::shared_ptr<Chunk>> &get_immutable_chunks() const {
         return d_chunks;
     }
+
+    /// @brief Use this when the number of chunks is needed
+    /// @return the number of Chunk objects for this variable
+    virtual size_t get_chunks_size() const { return d_chunks.size(); }
 
     /// @brief The chunk dimension sizes held in a const vector
     /// @return A reference to a const vector of chunk dimension sizes
@@ -171,11 +179,8 @@ public:
     	return d_chunk_dimension_sizes;
     }
 
-    /**
-     * @brief Get the number of elements in this chunk
-     *
-     * @return The number of elements; multiply by element size to get the number of bytes.
-     */
+    /// @brief Get the number of elements in this chunk
+    /// @return The number of elements; multiply by element size to get the number of bytes.
     virtual unsigned long long get_chunk_size_in_elements() const {
         unsigned long long elements = 1;
         for (auto d_chunk_dimension_size : d_chunk_dimension_sizes) {
@@ -202,11 +207,11 @@ public:
         }
     }
 
-    // This duplicates code in DMZ but provides access to the DMZ::load_chunks()
-    // method without having to cast a BaseType to a DmrppCommon in orer to use
+    // These functions duplicate code in DMZ but provides access to the DMZ::load_chunks()
+    // method without having to cast a BaseType to a DmrppCommon in order to use
     // it. jhrg 11/12/21
     virtual void load_chunks(libdap::BaseType *btp);
-    virtual void load_attribtues(libdap::BaseType *btp);
+    virtual void load_attributes(libdap::BaseType *btp);
 
     virtual void parse_chunk_dimension_sizes(const std::string &chunk_dim_sizes_string);
 

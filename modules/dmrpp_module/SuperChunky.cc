@@ -63,7 +63,7 @@ void compute_super_chunks(dmrpp::DmrppArray *array, bool only_constrained, vecto
         // Now we get the chunkyness
         auto chunk_dim_sizes = array->get_chunk_dimension_sizes();
         //unsigned int chunk_size_in_elements = array->get_chunk_size_in_elements();
-        auto chunks = array->get_chunks(); //array->get_immutable_chunks();
+        auto chunks = array->get_immutable_chunks();
 
         unsigned long long sc_count=0;
         stringstream sc_id;

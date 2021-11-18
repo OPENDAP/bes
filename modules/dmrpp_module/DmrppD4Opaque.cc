@@ -74,7 +74,7 @@ void DmrppD4Opaque::insert_chunk(shared_ptr<Chunk> chunk)
 
 void DmrppD4Opaque::read_chunks()
 {
-    for (auto chunk : get_chunks()) {
+    for (auto chunk : get_immutable_chunks()) {
         chunk->read_chunk();
         if (!is_filters_empty()){
             chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(), 1 /*elem width*/);
@@ -124,7 +124,7 @@ void
 DmrppD4Opaque::set_send_p(bool state)
 {
     if (!get_attributes_loaded())
-        load_attribtues(this);
+        load_attributes(this);
 
     D4Opaque::set_send_p(state);
 }

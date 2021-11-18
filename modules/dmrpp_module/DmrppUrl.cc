@@ -70,7 +70,7 @@ void
 DmrppUrl::set_send_p(bool state)
 {
     if (!get_attributes_loaded())
-        load_attribtues(this);
+        load_attributes(this);
 
     Url::set_send_p(state);
 }
