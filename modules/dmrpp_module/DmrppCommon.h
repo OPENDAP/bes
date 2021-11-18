@@ -198,8 +198,7 @@ public:
 
     // Replaced hsize_t with size_t. This eliminates a dependency on hdf5. jhrg 9/7/18
     /// @brief Set the value of the chunk dimension sizes given a vector of HDF5 hsize_t
-    void set_chunk_dimension_sizes(const std::vector<size_t> &chunk_dims)
-    {
+    void set_chunk_dimension_sizes(const std::vector<size_t> &chunk_dims) {
         // tried using copy(chunk_dims.begin(), chunk_dims.end(), d_chunk_dimension_sizes.begin())
         // it didn't work, maybe because of the differing element types?
         for (auto chunk_dim : chunk_dims) {
@@ -207,9 +206,8 @@ public:
         }
     }
 
-    // These functions duplicate code in DMZ but provides access to the DMZ::load_chunks()
-    // method without having to cast a BaseType to a DmrppCommon in order to use
-    // it. jhrg 11/12/21
+    // These two functions duplicate code in DMZ but provides access to the DMZ::load_chunks()
+    // method without having to cast a BaseType to a DmrppCommon in order to use it. jhrg 11/12/21
     virtual void load_chunks(libdap::BaseType *btp);
     virtual void load_attributes(libdap::BaseType *btp);
 
