@@ -977,6 +977,8 @@ void DmrppArray::read_chunks_unconstrained()
             auto super_chunk = super_chunks.front();
             super_chunks.pop();
             BESDEBUG(dmrpp_3, prolog << super_chunk->to_string(true) << endl );
+            // FIXME Since this is read_chunks_unconstrained, should call SuperChunk::read_unconstrained()
+            //  jhrg 11/19/21
             super_chunk->read();
         }
     }

@@ -70,10 +70,6 @@ class DmrppCommon;
 class DMZ {
 
 private:
-#if 0
-    // TODO add this back if needed
-    std::vector<char> d_xml_text;       // Holds XML text if needed
-#endif
     pugi::xml_document d_xml_doc;
     std::shared_ptr<http::url> d_dataset_elem_href;
 
@@ -115,12 +111,11 @@ public:
     /// @brief Build a DMZ without simultaneously parsing an XML document
     DMZ() = default;
 
-    virtual ~DMZ()= default;
+    virtual ~DMZ() = default;
 
     virtual void parse_xml_doc(const std::string &filename);
     virtual void build_thin_dmr(libdap::DMR *dmr);
 
-    // Make these take a Variable/DmrppCommon and not a DMR
     virtual void load_attributes(libdap::BaseType *btp);
     virtual void load_attributes(libdap::Constructor *constructor);
     virtual void load_attributes(libdap::D4Group *group);
@@ -132,10 +127,10 @@ public:
     std::string get_variable_xml(std::string path);
 #endif
 
-    void load_all_attributes(libdap::DMR *dmr);
-    void load_global_attributes(libdap::DMR *dmr);
+    virtual void load_all_attributes(libdap::DMR *dmr);
+    virtual void load_global_attributes(libdap::DMR *dmr);
 
-    // These are for testing. jhrg 11/2/21
+    // This is for testing. jhrg 11/2/21
     void load_everything(libdap::DMR *dmr);
 };
 

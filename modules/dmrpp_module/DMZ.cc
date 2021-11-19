@@ -130,7 +130,6 @@ static inline DmrppCommon *dc(BaseType *btp)
     return dc;
 }
 
-#if 1
 /**
  * @brief Build a DMZ object and initialize it using a DMR++ XML document
  * @param file_name The DMR++ XML document to parse.
@@ -140,7 +139,6 @@ DMZ::DMZ(const string &file_name)
 {
     parse_xml_doc(file_name);
 }
-#endif
 
 /**
  * @brief Build the DOM tree for a DMR++ XML document
@@ -399,11 +397,6 @@ void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, const 
         }
     }
 
-#if 0
-    auto *dc = dynamic_cast<DmrppCommon*>(btp);
-    if (!dc)
-        throw BESInternalError("Expected a BaseType that was also a DmrppCommon instance.", __FILE__, __LINE__);
-#endif
     dc(btp)->set_xml_node(var_node);
 }
 
@@ -765,11 +758,6 @@ xml_node DMZ::get_variable_xml_node(BaseType *btp)
 void
 DMZ::load_attributes(BaseType *btp)
 {
-#if 0
-    auto *dc = dynamic_cast<DmrppCommon*>(btp);   // Get the Dmrpp common info
-    if (!dc)
-        throw BESInternalError("Could not cast BaseType to DmrppType in the DMR++ handler.", __FILE__, __LINE__);
-#endif
     if (dc(btp)->get_attributes_loaded())
         return;
 
@@ -791,11 +779,6 @@ DMZ::load_attributes(BaseType *btp)
         // get thrown. Maybe a better fix would be to mark 'child variables'
         // as having their attributes loaded. jhrg 11/16/21
         case dods_array_c: {
-#if 0
-            auto *dcp = dynamic_cast<DmrppCommon*>(btp->var());
-            if (dcp)
-                dcp->set_attributes_loaded(true);
-#endif
             dc(btp->var())->set_attributes_loaded(true);
             break;
         }
@@ -809,11 +792,6 @@ DMZ::load_attributes(BaseType *btp)
             auto *c = dynamic_cast<Constructor*>(btp);
             if (c) {
                 for (auto i = c->var_begin(), e = c->var_end(); i != e; i++) {
-#if 0
-                    auto *dcp = dynamic_cast<DmrppCommon*>(*i);
-                    if (dcp)
-                        dcp->set_attributes_loaded(true);
-#endif
                     dc(btp->var())->set_attributes_loaded(true);
                 }
                 break;
@@ -833,12 +811,6 @@ DMZ::load_attributes(BaseType *btp)
 void
 DMZ::load_attributes(BaseType *btp, xml_node var_node)
 {
-#if 0
-    auto *dc = dynamic_cast<DmrppCommon*>(btp);
-    if (!dc)
-        throw BESInternalError("Could not get a DmrppCommon for the DAP variable.", __FILE__, __LINE__);
-#endif
-
     if (dc(btp)->get_attributes_loaded())
         return;
     
@@ -921,12 +893,6 @@ DMZ::load_attributes(D4Group *group) {
 void
 DMZ::process_compact(BaseType *btp, const xml_node &compact)
 {
-#if 0
-    DmrppCommon *dc = dynamic_cast<DmrppCommon*>(btp);   // Get the Dmrpp common info
-    if (!dc)
-        throw BESInternalError("Could not cast BaseType to DmrppCommon in the drmpp handler.", __FILE__, __LINE__);
-#endif
-
     dc(btp)->set_compact(true);
 
     auto char_data = compact.child_value();
@@ -1047,14 +1013,6 @@ void DMZ::process_cds_node(DmrppCommon *dc, const xml_node &chunks)
 // nodes, and they have to be in that order.
 void DMZ::process_chunks(DmrppCommon *dc, const xml_node &chunks)
 {
-#if 0
-    auto *dc = dynamic_cast<DmrppCommon*>(btp);   // Get the Dmrpp common info
-    if (!dc)
-        throw BESInternalError("Could not cast BaseType to DmrppType in the DMR++ handler.", __FILE__, __LINE__);
-#endif
-
-    //auto *dcp = dc(btp);
-
     for (xml_attribute attr = chunks.first_attribute(); attr; attr = attr.next_attribute()) {
         if (is_eq(attr.name(), "compressionType")) {
             dc->set_filter(attr.value());
@@ -1082,11 +1040,6 @@ void DMZ::process_chunks(DmrppCommon *dc, const xml_node &chunks)
  */
 void DMZ::load_chunks(BaseType *btp)
 {
-#if 0
-    auto *dc = dynamic_cast<DmrppCommon *>(btp);   // Get the Dmrpp common info
-    if (!dc)
-        throw BESInternalError("Could not cast BaseType to DmrppType in the DMR++ handler.", __FILE__, __LINE__);
-#endif
     if (dc(btp)->get_chunks_loaded())
         return;
 
@@ -1108,11 +1061,6 @@ void DMZ::load_chunks(BaseType *btp)
 
     auto chunk = var_node.child("dmrpp:chunk");
     if (chunk) {
-#if 0
-        auto *dc = dynamic_cast<DmrppCommon *>(btp);   // Get the Dmrpp common info
-        if (!dc)
-            throw BESInternalError("Could not cast BaseType to DmrppCommon in the DMR++ handler.", __FILE__, __LINE__);
-#endif
         chunk_found = 1;
         process_chunk(dc(btp), chunk);
 
@@ -1120,11 +1068,6 @@ void DMZ::load_chunks(BaseType *btp)
 
     auto compact = var_node.child("dmrpp:compact");
     if (compact) {
-#if 0
-        auto *dc = dynamic_cast<DmrppCommon *>(btp);   // Get the Dmrpp common info
-        if (!dc)
-            throw BESInternalError("Could not cast BaseType to DmrppCommon in the DMR++ handler.", __FILE__, __LINE__);
-#endif
         compact_found = 1;
         process_compact(btp, compact);
     }
