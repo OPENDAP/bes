@@ -21,7 +21,7 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-#include "config.h"
+// #include "config.h"
 
 #include <vector>
 #include <string>
@@ -38,7 +38,6 @@
 #include <libdap/D4BaseTypeFactory.h>
 #include <libdap/D4Enum.h>
 #include <libdap/D4EnumDefs.h>
-#include <libdap/D4Dimensions.h>
 #include <libdap/D4Attributes.h>
 #include <libdap/D4Maps.h>
 #include <libdap/DMR.h>
@@ -84,9 +83,6 @@ namespace dmrpp {
 const std::set<std::string> variable_elements{"Byte", "Int8", "Int16", "Int32", "Int64", "UInt8", "UInt16", "UInt32",
                                               "UInt64", "Float32", "Float64", "String", "Structure", "Sequence",
                                               "Enum", "Opaque"};
-#if 0
-static const string dmrpp_namespace = "https://xml.opendap.org/dap/dmrpp/1.0.0#";
-#endif
 
 // NB: If we use this for string compares, we cannot use the 'fastest' parsing option
 // of rapidxml. For that, we will need to modify this so that the length of 'value' is passed
@@ -295,7 +291,7 @@ void DMZ::process_dim(DMR *dmr, D4Group *grp, Array *array, const xml_node &dim_
     else if (!name_value.empty()) {
         BESDEBUG(PARSER, prolog << "Processing Dim with named Dimension reference: " << name_value << endl);
 
-        D4Dimension *dim = nullptr;
+        D4Dimension *dim;
         if (name_value[0] == '/')		// lookup the Dimension in the root group
             dim = dmr->root()->find_dim(name_value);
         else
@@ -435,7 +431,7 @@ BaseType *DMZ::build_variable(DMR *dmr, D4Group *group, Type t, const xml_node &
         if (enum_value.empty())
             throw BESInternalError("The variable ' " + name_value + "' lacks an 'enum' attribute.", __FILE__, __LINE__);
 
-        D4EnumDef *enum_def = nullptr;
+        D4EnumDef *enum_def;
         if (enum_value[0] == '/')
             enum_def = dmr->root()->find_enum_def(enum_value);
         else
@@ -511,7 +507,7 @@ BaseType *DMZ::add_array_variable(DMR *dmr, D4Group *group, Constructor *parent,
 /**
  * @brief Process a Group element
  * This processes the information in a Group element and then processes the contained
- * Dimension, Group and variable elements.
+ * Dimension, Group and Variable elements.
  * @param dmr
  * @param parent
  * @param var_node
@@ -557,6 +553,11 @@ void DMZ::process_group(DMR *dmr, D4Group *parent, const xml_node &var_node)
         else if (member_of(variable_elements, child.name())) {
             process_variable(dmr, new_group, nullptr, child);
         }
+#if 0
+        else if (is_eq(child.name(), "Attribute")) {
+            process_attribute(new_group->attributes(), child);
+        }
+#endif
     }
 }
 
@@ -572,22 +573,29 @@ void DMZ::build_thin_dmr(DMR *dmr)
     process_dataset(dmr, xml_root_node);
 
     auto root_group = dmr->root();
+
     auto *dg = dynamic_cast<DmrppD4Group*>(root_group);
     if (!dg)
         throw BESInternalError("Expected the root group to also be an instance of DmrppD4Group.", __FILE__, __LINE__);
+
     dg->set_xml_node(xml_root_node);
 
     for (auto child = xml_root_node.first_child(); child; child = child.next_sibling()) {
         if (is_eq(child.name(), "Dimension")) {
-            process_dimension(root_group, child);
+            process_dimension(dg, child);
         }
         else if (is_eq(child.name(), "Group")) {
-            process_group(dmr, root_group, child);
+            process_group(dmr, dg, child);
         }
         // TODO Add EnumDef
         else if (member_of(variable_elements, child.name())) {
-            process_variable(dmr, root_group, nullptr, child);
+            process_variable(dmr, dg, nullptr, child);
         }
+#if 0
+        else if (is_eq(child.name(), "Attribute")) {
+            process_attribute(dg->attributes(), child);
+        }
+#endif
     }
 }
 
@@ -623,9 +631,13 @@ void DMZ::process_attribute(D4Attributes *attributes, const xml_node &dap_attr_n
         // that will hold the container's attributes.
         // Test to see if there really are child "Attribute" nodes - empty containers
         // are allowed. jhrg 11/4/21
-        auto attr = dap_attr_node.first_child();
-        if (attr)
-            process_attribute(dap_attr_cont->attributes(), attr);
+        // auto attr = ;
+        // process_attribute(dap_attr_cont->attributes(), attr);
+        if (dap_attr_node.first_child()) {
+            for (auto attr_node: dap_attr_node.children("Attribute")) {
+                process_attribute(dap_attr_cont->attributes(), attr_node);
+            }
+        }
     }
     else if (type_value == "OtherXML") {
         // TODO Add support for this
@@ -908,7 +920,6 @@ DMZ::process_compact(BaseType *btp, const xml_node &compact)
     switch (btp->var()->type()) {
         case dods_array_c:
             throw BESInternalError("DMR++ document fail: An Array may not be the template for an Array.", __FILE__, __LINE__);
-            break;
 
         case dods_byte_c:
         case dods_char_c:
@@ -942,7 +953,6 @@ DMZ::process_compact(BaseType *btp, const xml_node &compact)
 
         default:
             throw BESInternalError("Unsupported COMPACT storage variable type in the drmpp handler.", __FILE__, __LINE__);
-            break;
     }
 }
 

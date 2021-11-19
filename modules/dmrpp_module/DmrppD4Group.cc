@@ -59,7 +59,7 @@ DmrppD4Group::operator=(const DmrppD4Group &rhs)
 void
 DmrppD4Group::set_send_p(bool state)
 {
-    if (!get_attributes_loaded())
+    if (state && !get_attributes_loaded())
         load_attributes(this);
 
     D4Group::set_send_p(state);

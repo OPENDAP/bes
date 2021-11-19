@@ -424,6 +424,7 @@ bool DmrppRequestHandler::dap_build_dds(BESDataHandlerInterface & dhi)
 
     try {
         get_dds_from_dmr_or_cache<BESDDSResponse>(dhi, bdds);
+
         bdds->set_constraint(dhi);
         bdds->clear_container();
     }

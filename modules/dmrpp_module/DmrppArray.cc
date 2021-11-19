@@ -84,7 +84,7 @@ atomic_uint transfer_thread_counter(0);
  *
  * When a valid, ready future is found future::get() is called and the thead_counter is decremented.
  * Returns true when it successfully "get"s a future (joins a thread), or if a future turns up as not valid, then
- * it is discarded and the thread is ":finsihed" and true is returned.
+ * it is discarded and the thread is ":finished" and true is returned.
  *
  * @param futures The list of futures to scan
  * @param thread_counter This counter will be decremented when a future is "finished".
@@ -146,6 +146,7 @@ bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_count
                 future_finished = true;
             }
         }
+
         if (futr!=fend && future_finished) {
             futures.erase(futr);
             thread_counter--;
@@ -153,8 +154,10 @@ bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_count
                                   << (future_is_valid?"":"not ") << "valid at start.) There are currently " <<
                                   futures.size() << " futures in process. thread_counter: " << thread_counter << endl);
         }
+
         done = future_finished || futures.empty();
     }
+
     return future_finished;
 }
 
@@ -188,7 +191,7 @@ bool one_child_chunk_thread_new(unique_ptr<one_child_chunk_args_new> args)
     // and child_3_offset - the_one_chunk_offset == 12.
     // Those are the starting locations with in the data buffer of the the_one_chunk
     // where that child chunk should be written.
-    // Note: all of the offset values start at the beginning of the file.
+    // Note: all the offset values start at the beginning of the file.
 
     unsigned long long  offset_within_the_one_chunk = args->child_chunk->get_offset() - args->the_one_chunk->get_offset();
 
@@ -299,7 +302,7 @@ bool start_super_chunk_unconstrained_transfer_thread(list<std::future<bool>> &fu
 /**
  * @brief Uses std::async() and std::future to process the SuperChunks in super_chunks into the DmrppArray array.
  *
- * For each SuperChunk in the queue, retrive the chunked data by using std::async() to generate a std::future which will
+ * For each SuperChunk in the queue, retrieve the chunked data by using std::async() to generate a std::future which will
  * perform the data retrieval and subsequent computational steps(inflate/shuffle/etc) and finally insertion into the
  * DmrppArray's internal data buffer.
  *
@@ -369,7 +372,7 @@ void read_super_chunks_unconstrained_concurrent(queue<shared_ptr<SuperChunk>> &s
         }
     }
     catch (...) {
-        // Complete all of the futures, otherwise we'll have threads out there using up resources
+        // Complete all the futures, otherwise we'll have threads out there using up resources
         while(!futures.empty()){
             if(futures.back().valid())
                 futures.back().get();
@@ -386,7 +389,7 @@ void read_super_chunks_unconstrained_concurrent(queue<shared_ptr<SuperChunk>> &s
 /**
  * @brief Uses std::async and std::future to process the SuperChunks in super_chunks into the DmrppArray array.
  *
- * For each SuperChunk in the queue, retrive the chunked data by using std::async() to generate a std::future which will
+ * For each SuperChunk in the queue, retrieve the chunked data by using std::async() to generate a std::future which will
  * perform the data retrieval and subsequent computational steps(inflate/shuffle/etc) and finally insertion into the
  * DmrppArray's internal data buffer.
  *
@@ -456,7 +459,7 @@ void read_super_chunks_concurrent(queue<shared_ptr<SuperChunk>> &super_chunks, D
         }
     }
     catch (...) {
-        // Complete all of the futures, otherwise we'll have threads out there using up resources
+        // Complete all the futures, otherwise we'll have threads out there using up resources
         while(!futures.empty()){
             if(futures.back().valid())
                 futures.back().get();
@@ -592,7 +595,7 @@ unsigned long long DmrppArray::get_size(bool constrained)
  */
 vector<unsigned long long> DmrppArray::get_shape(bool constrained)
 {
-    Dim_iter dim = dim_begin(), edim = dim_end();
+    auto dim = dim_begin(), edim = dim_end();
     vector<unsigned long long> shape;
 
     // For a 3d array, this method took 14ms without reserve(), 5ms with
@@ -682,7 +685,7 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
                 subset_addr.pop_back();
             }
             else {
-                // We are at the last (inner most) dimension, so it's time to copy values.
+                // We are at the last (innermost) dimension, so it's time to copy values.
                 subset_addr.push_back(myDimIndex);
                 unsigned int sourceIndex = get_index(subset_addr, array_shape);
                 subset_addr.pop_back();
@@ -746,7 +749,7 @@ void DmrppArray::read_contiguous()
         the_one_chunk->set_rbuf_to_size();
 
         // The number of child chunks are determined based on the size of the data.
-        // If the size of the the_one_chunk is 3MB then 3 chunks will be made. We will round down
+        // If the size of the the_one_chunk is 3 MB then 3 chunks will be made. We will round down
         // when necessary and handle the remainder later on (3.3MB = 3 chunks, 4.2MB = 4 chunks, etc.)
         unsigned long long num_chunks = floor(the_one_chunk_size / MB);
         if (num_chunks >= DmrppRequestHandler::d_max_transfer_threads)
@@ -762,7 +765,7 @@ void DmrppArray::read_contiguous()
 
         auto chunk_url = the_one_chunk->get_data_url();
 
-        // Setup a queue to break up the original the_one_chunk and keep track of the pieces
+        // Set up a queue to break up the original the_one_chunk and keep track of the pieces
         queue<shared_ptr<Chunk>> chunks_to_read;
 
         // Make the Chunk objects
@@ -771,7 +774,7 @@ void DmrppArray::read_contiguous()
             chunks_to_read.push(shared_ptr<Chunk>(new Chunk(chunk_url, chunk_byteorder, chunk_size, chunk_offset)));
             chunk_offset += chunk_size;
         }
-        // Make the the remainder Chunk, see above for details.
+        // Make the remainder Chunk, see above for details.
         chunks_to_read.push(shared_ptr<Chunk>(new Chunk(chunk_url, chunk_byteorder, chunk_size + chunk_remainder, chunk_offset)));
 
         // We maintain a list  of futures to track our parallel activities.
@@ -817,7 +820,7 @@ void DmrppArray::read_contiguous()
             }
         }
         catch (...) {
-            // Complete all of the futures, otherwise we'll have threads out there using up resources
+            // Complete all the futures, otherwise we'll have threads out there using up resources
             while (!futures.empty()) {
                 if (futures.back().valid())
                     futures.back().get();
@@ -828,7 +831,7 @@ void DmrppArray::read_contiguous()
         }
     }
 
-    // Now that the_one_chunk has been read, we do the needful...
+    // Now that the_one_chunk has been read, we do what is necessary...
     if (!is_filters_empty()){
         the_one_chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(),var()->width());
     }
@@ -1021,7 +1024,7 @@ unsigned long long DmrppArray::get_chunk_start(const dimension &thisDim, unsigne
             first_element_offset = (chunk_origin - thisDim.start) % thisDim.stride;
             // If it's zero great!
             if (first_element_offset != 0) {
-                // otherwise we adjustment to get correct first element.
+                // otherwise, adjust to get correct first element.
                 first_element_offset = thisDim.stride - first_element_offset;
             }
         }
@@ -1518,7 +1521,7 @@ bool DmrppArray::read()
                 }
                 break;
             }
-            default: break; // Do nothing for all other types..
+            default: break; // Do nothing for all other types.
         }
     }
 
@@ -1544,7 +1547,7 @@ public:
     void operator()(Array::dimension &d)
     {
         // This duplicates code in D4Dimensions (where D4Dimension::print_dap4() is defined
-        // because of the need to print the constrained size of a dimension. I think that
+        // because of the need to print the constrained size of a dimension). I think that
         // the constraint information has to be kept here and not in the dimension (since they
         // are shared dims). Could hack print_dap4() to take the constrained size, however.
         if (xmlTextWriterStartElement(xml.get_writer(), (const xmlChar *) "Dim") < 0)
@@ -1668,7 +1671,7 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
 
     for_each(maps()->map_begin(), maps()->map_end(), PrintD4MapXMLWriter(xml));
 
-    // Only print the chunks info if there. This is the code added to libdap::Array::print_dap4().
+    // Only print the chunks' info if there. This is the code added to libdap::Array::print_dap4().
     // jhrg 5/10/18
     if (DmrppCommon::d_print_chunks && get_chunks_size() > 0) // FIXME get_immutable_chunks().size() > 0)
         print_chunks_element(xml, DmrppCommon::d_ns_prefix);
@@ -1676,7 +1679,7 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
     // If this variable uses the COMPACT layout, encode the values for
     // the array using base64. Note that strings are a special case; each
     // element of the array is a string and is encoded in its own base64
-    // xml element. So, wghile an array of 10 int32 will be encoded in a
+    // xml element. So, while an array of 10 int32 will be encoded in a
     // single base64 element, an array of 10 strings will use 10 base64
     // elements. This is because the size of each string's value is different.
     // Not so for an int32.
@@ -1701,8 +1704,8 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
                 try {
                     size_t size = buf2val(reinterpret_cast<void **>(&values));
                     string encoded = base64::Base64::encode(values, size);
-                    delete[] values;
                     print_compact_element(xml, DmrppCommon::d_ns_prefix, encoded);
+                    delete[] values;
                 }
                 catch (...) {
                     delete[] values;
