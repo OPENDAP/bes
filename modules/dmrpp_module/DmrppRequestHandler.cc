@@ -258,6 +258,8 @@ void DmrppRequestHandler::build_dmr_from_file(BESContainer *container, DMR* dmr)
 
     dmz->parse_xml_doc(data_pathname);
     dmz->build_thin_dmr(dmr);
+
+    dmz->load_all_attributes(dmr);
 #else
     DmrppTypeFactory BaseFactory;   // Use the factory for this handler's types
     dmr->set_factory(&BaseFactory);
@@ -293,7 +295,7 @@ bool DmrppRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
     try {
         build_dmr_from_file(dhi.container, bdmr->get_dmr());
 
-        dmz->load_all_attributes(bdmr->get_dmr());
+        //dmz->load_all_attributes(bdmr->get_dmr());
 
         bdmr->set_dap4_constraint(dhi);
         bdmr->set_dap4_function(dhi);
@@ -328,7 +330,8 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
 
         // We don't need all the attributes, so use the lazy-load feature implemented
         // using overloads of the BaseType::set_send_p() method.
-        dmz->load_global_attributes(bdmr->get_dmr());
+        // dmz->load_global_attributes(bdmr->get_dmr());
+        //dmz->load_all_attributes(bdmr->get_dmr());
 
         bdmr->set_dap4_constraint(dhi);
         bdmr->set_dap4_function(dhi);
@@ -365,7 +368,7 @@ void DmrppRequestHandler::get_dds_from_dmr_or_cache(BESDataHandlerInterface &dhi
     else {
         DMR dmr;
         build_dmr_from_file(dhi.container, &dmr);
-        dmz->load_all_attributes(&dmr);
+        //dmz->load_all_attributes(&dmr);
 
         delete dds;                         // delete the current one;
         dds = dmr.getDDS();                 // assign the new one.
@@ -465,7 +468,7 @@ bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi)
         else {
             DMR dmr;
             build_dmr_from_file(dhi.container, &dmr);
-            dmz->load_all_attributes(&dmr);
+            //dmz->load_all_attributes(&dmr);
 
             // Get a DDS from the DMR, getDDS() allocates all new objects. Use unique_ptr
             // to ensure this is deleted. jhrg 11/12/21
