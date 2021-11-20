@@ -103,17 +103,18 @@ private:
 
     friend class DMZTest;
 
-    // Used for testing only
-    explicit DMZ(const std::string &file_name);
-
 public:
 
     /// @brief Build a DMZ without simultaneously parsing an XML document
     DMZ() = default;
 
+    explicit DMZ(const std::string &file_name);
+
     virtual ~DMZ() = default;
 
-    virtual void parse_xml_doc(const std::string &filename);
+    // This is not virtual because we call it from a ctor
+    void parse_xml_doc(const std::string &filename);
+
     virtual void build_thin_dmr(libdap::DMR *dmr);
 
     virtual void load_attributes(libdap::BaseType *btp);

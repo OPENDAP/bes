@@ -730,10 +730,13 @@ xml_node DMZ::get_variable_xml_node_helper(const xml_node &parent_node, stack<Ba
 xml_node DMZ::get_variable_xml_node(BaseType *btp)
 {
 #if USE_CACHED_XML_NODE
+#if 0
+    // If this test is needed, put it in public methods to reduce redundant testing.
+    // jhrg 11/19/21
     xml_node dataset = d_xml_doc.first_child();
     if (!dataset || !is_eq(dataset.name(), "Dataset"))
         throw BESInternalError("No DMR++ has been parsed.", __FILE__, __LINE__);
-
+#endif
     // auto *dc = dynamic_cast<DmrppCommon*>(btp);
     auto node = dc(btp)->get_xml_node();
     if (node == nullptr)
@@ -775,12 +778,16 @@ DMZ::load_attributes(BaseType *btp)
 
     // goto the DOM tree node for this variable
     // TODO Will this work for the root group? If so, consolidate methods? jhrg 11/12/21
-    xml_node var_node = get_variable_xml_node(btp);
+    // xml_node var_node = get_variable_xml_node(btp);
+#if 0
+    // redundant testing. jhrg 11/19/21
     if (var_node == nullptr)
         throw BESInternalError(string("Could not find location of variable '").append(btp->name()).append("' in the DMR++ XML document."), __FILE__, __LINE__);
+#endif
 
-    load_attributes(btp, var_node);
+    load_attributes(btp, get_variable_xml_node(btp));
 
+    // TODO Remove redundant
     dc(btp)->set_attributes_loaded(true);
 
     switch (btp->type()) {
@@ -848,8 +855,10 @@ DMZ::load_attributes(BaseType *btp, xml_node var_node)
 void
 DMZ::load_attributes(Constructor *constructor)
 {
+#if 0
     load_attributes(static_cast<BaseType*>(constructor));
     for (auto i = constructor->var_begin(), e = constructor->var_end(); i != e; ++i) {
+        // Groups are not allowed inside a Constructor
         assert((*i)->type() != dods_group_c);
 
         if ((*i)->is_constructor_type()) {
@@ -858,6 +867,13 @@ DMZ::load_attributes(Constructor *constructor)
         else {
             load_attributes(*i);
         }
+    }
+#endif
+    load_attributes(constructor,  get_variable_xml_node(constructor));
+    for (auto i = constructor->var_begin(), e = constructor->var_end(); i != e; ++i) {
+        // Groups are not allowed inside a Constructor
+        assert((*i)->type() != dods_group_c);
+        load_attributes(*i);
     }
 }
 
@@ -868,10 +884,12 @@ DMZ::load_attributes(D4Group *group) {
         xml_node dataset = d_xml_doc.child("Dataset");
         if (!dataset)
             throw BESInternalError("Could not find the 'Dataset' element in the DMR++ XML document.", __FILE__, __LINE__);
-        load_attributes(static_cast<BaseType*>(group), dataset);
+        // FIXME load_attributes(static_cast<BaseType*>(group), dataset);
+        load_attributes(group, dataset);
     }
     else {
-        load_attributes(static_cast<BaseType*>(group));
+        // FIXME load_attributes(static_cast<BaseType*>(group));
+        load_attributes(group, get_variable_xml_node(group));
     }
 
     for (auto i = group->var_begin(), e = group->var_end(); i != e; ++i) {
@@ -880,16 +898,20 @@ DMZ::load_attributes(D4Group *group) {
         // have a different function than the Structure and Sequence types (Groups
         // never hold data).
         assert((*i)->type() != dods_group_c);
-
+        load_attributes(*i);
+#if 0
         if ((*i)->is_constructor_type()) {
             load_everything_constructor(static_cast<Constructor*>(*i));
         }
         else {
             load_attributes(*i);
         }
+#endif
     }
 
     for (auto i = group->grp_begin(), e = group->grp_end(); i != e; ++i) {
+        load_attributes(*i);
+#if 0
         if ((*i)->type() == dods_group_c) {
             load_everything_group(static_cast<D4Group*>(*i));
         }
@@ -899,6 +921,7 @@ DMZ::load_attributes(D4Group *group) {
         else {
             load_attributes(*i);
         }
+#endif
     }
 }
 
