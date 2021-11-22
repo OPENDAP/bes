@@ -8,7 +8,7 @@
 # Include this using 'm4_include([../../handler_tests_macros.m4])' or similar.
 
 # Before including these, use AT_INIT([ <name> ]) in the testsuite.at file. By including
-# the pathname to the test drectory in the AC_INIT() macro, you will make it much easier
+# the pathname to the test directory in the AC_INIT() macro, you will make it much easier
 # to identify the tests in a large build like the CI builds. jhrg 4/25/18
 
 AT_TESTED([build_dmrpp])
@@ -66,17 +66,18 @@ m4_define([AT_BUILD_DMRPP_M],  [dnl
     input=$abs_top_srcdir/$1
     dmr=$abs_top_srcdir/$1.dmr
     baseline=$abs_top_srcdir/$1.dmrpp.M.baseline
-    repeat=$3
 
     AS_IF([test -z "$at_verbose"], [echo "COMMAND: build_dmrpp -M -f $input -r $dmr"])
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
     [
         AT_CHECK([build_dmrpp -M -f $input -r $dmr], [], [stdout])
+        REMOVE_PATH_COMPONENTS([stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
         AT_CHECK([build_dmrpp -M -f $input -r $dmr], [], [stdout])
+        REMOVE_PATH_COMPONENTS([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         AT_XFAIL_IF([test z$2 = zxfail])
         ])
@@ -84,5 +85,12 @@ m4_define([AT_BUILD_DMRPP_M],  [dnl
     AT_CLEANUP
 ])
 
+dnl Remove path components of DAP DMR Attributes that may vary with builds.
+dml jhrg 11/22/21
+dnl Usage: REMOVE_PATH_COMPONENTS(file_name)
+m4_define([REMOVE_PATH_COMPONENTS], [dnl
+    sed -e 's@/[[A-z0-9]][[-A-z0-9_/.]]*/dmrpp_module/@/path_removed/@g' < $1 > $1.sed
+    mv $1.sed $1
+])
 
 

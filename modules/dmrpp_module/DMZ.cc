@@ -84,11 +84,7 @@ const std::set<std::string> variable_elements{"Byte", "Int8", "Int16", "Int32", 
                                               "UInt64", "Float32", "Float64", "String", "Structure", "Sequence",
                                               "Enum", "Opaque"};
 
-// NB: If we use this for string compares, we cannot use the 'fastest' parsing option
-// of rapidxml. For that, we will need to modify this so that the length of 'value' is passed
-// in (names, etc., are not null terminated with the fastest parsing option). jhrg 10/20/21
-//
-// Modified to look for and ignore a namespace prefix
+/// @brief Are the C-style strings equal?
 static inline bool is_eq(const char *value, const char *key)
 {
 #if TREAT_NAMESPACES_AS_LITERALS
@@ -117,6 +113,7 @@ static inline bool member_of(const set<string> &elements_set, const string &elem
     return elements_set.find(element_name) != elements_set.end();
 }
 
+/// @brief syntactic sugar for a dynamic cast to DmrppCommon
 static inline DmrppCommon *dc(BaseType *btp)
 {
     auto *dc = dynamic_cast<DmrppCommon*>(btp);
@@ -339,7 +336,6 @@ void DMZ::process_map(DMR *dmr, D4Group *grp, Array *array, const xml_node &map_
     array->maps()->add_map(new D4Map(name_value, map_source));
 }
 
-
 /**
  * @brief Process an element that is a variable
  *
@@ -448,7 +444,7 @@ BaseType *DMZ::build_variable(DMR *dmr, D4Group *group, Type t, const xml_node &
 
 /**
  * Given that a tag which opens a variable declaration has just been read,
- * create the variable.
+ * create the variable. This is used when the variable is a scalar.
  * @param dmr
  * @param group If parent is null, add the new var to this group
  * @param parent If non-null, add the new var to this constructor
@@ -472,6 +468,20 @@ BaseType *DMZ::add_scalar_variable(DMR *dmr, D4Group *group, Constructor *parent
     return btp;
 }
 
+/**
+ * Given that a tag which opens a variable declaration has just been read,
+ * create the variable. This is used when the variable is an Array.
+ *
+ * This follows the same basic logic as add_scalar_variable() but adds
+ * processing of an Array's Dim and Map elements.
+ *
+ * @param dmr
+ * @param group
+ * @param parent
+ * @param t
+ * @param var_node
+ * @return
+ */
 BaseType *DMZ::add_array_variable(DMR *dmr, D4Group *group, Constructor *parent, Type t, const xml_node &var_node)
 {
     assert(group);
@@ -553,11 +563,6 @@ void DMZ::process_group(DMR *dmr, D4Group *parent, const xml_node &var_node)
         else if (member_of(variable_elements, child.name())) {
             process_variable(dmr, new_group, nullptr, child);
         }
-#if 0
-        else if (is_eq(child.name(), "Attribute")) {
-            process_attribute(new_group->attributes(), child);
-        }
-#endif
     }
 }
 
@@ -591,11 +596,6 @@ void DMZ::build_thin_dmr(DMR *dmr)
         else if (member_of(variable_elements, child.name())) {
             process_variable(dmr, dg, nullptr, child);
         }
-#if 0
-        else if (is_eq(child.name(), "Attribute")) {
-            process_attribute(dg->attributes(), child);
-        }
-#endif
     }
 }
 
@@ -640,7 +640,7 @@ void DMZ::process_attribute(D4Attributes *attributes, const xml_node &dap_attr_n
         }
     }
     else if (type_value == "OtherXML") {
-        // TODO Add support for this
+        // TODO Add support for OtherXML
     }
     else {
         // Make the D4Attribute and add it to the D4Attributes attribute container
@@ -729,14 +729,6 @@ xml_node DMZ::get_variable_xml_node_helper(const xml_node &parent_node, stack<Ba
 xml_node DMZ::get_variable_xml_node(BaseType *btp)
 {
 #if USE_CACHED_XML_NODE
-#if 0
-    // If this test is needed, put it in public methods to reduce redundant testing.
-    // jhrg 11/19/21
-    xml_node dataset = d_xml_doc.first_child();
-    if (!dataset || !is_eq(dataset.name(), "Dataset"))
-        throw BESInternalError("No DMR++ has been parsed.", __FILE__, __LINE__);
-#endif
-    // auto *dc = dynamic_cast<DmrppCommon*>(btp);
     auto node = dc(btp)->get_xml_node();
     if (node == nullptr)
         throw BESInternalError(string("The xml_node for '").append(btp->name()).append("' was not recorded."), __FILE__, __LINE__);
@@ -774,15 +766,6 @@ DMZ::load_attributes(BaseType *btp)
 {
     if (dc(btp)->get_attributes_loaded())
         return;
-
-    // goto the DOM tree node for this variable
-    // TODO Will this work for the root group? If so, consolidate methods? jhrg 11/12/21
-    // xml_node var_node = get_variable_xml_node(btp);
-#if 0
-    // redundant testing. jhrg 11/19/21
-    if (var_node == nullptr)
-        throw BESInternalError(string("Could not find location of variable '").append(btp->name()).append("' in the DMR++ XML document."), __FILE__, __LINE__);
-#endif
 
     load_attributes(btp, get_variable_xml_node(btp));
 
@@ -854,20 +837,6 @@ DMZ::load_attributes(BaseType *btp, xml_node var_node)
 void
 DMZ::load_attributes(Constructor *constructor)
 {
-#if 0
-    load_attributes(static_cast<BaseType*>(constructor));
-    for (auto i = constructor->var_begin(), e = constructor->var_end(); i != e; ++i) {
-        // Groups are not allowed inside a Constructor
-        assert((*i)->type() != dods_group_c);
-
-        if ((*i)->is_constructor_type()) {
-            load_attributes(static_cast<Constructor*>(*i));
-        }
-        else {
-            load_attributes(*i);
-        }
-    }
-#endif
     load_attributes(constructor,  get_variable_xml_node(constructor));
     for (auto i = constructor->var_begin(), e = constructor->var_end(); i != e; ++i) {
         // Groups are not allowed inside a Constructor
@@ -883,11 +852,9 @@ DMZ::load_attributes(D4Group *group) {
         xml_node dataset = d_xml_doc.child("Dataset");
         if (!dataset)
             throw BESInternalError("Could not find the 'Dataset' element in the DMR++ XML document.", __FILE__, __LINE__);
-        // FIXME load_attributes(static_cast<BaseType*>(group), dataset);
         load_attributes(group, dataset);
     }
     else {
-        // FIXME load_attributes(static_cast<BaseType*>(group));
         load_attributes(group, get_variable_xml_node(group));
     }
 
@@ -898,31 +865,21 @@ DMZ::load_attributes(D4Group *group) {
         // never hold data).
         assert((*i)->type() != dods_group_c);
         load_attributes(*i);
-#if 0
-        if ((*i)->is_constructor_type()) {
-            load_everything_constructor(static_cast<Constructor*>(*i));
-        }
-        else {
-            load_attributes(*i);
-        }
-#endif
     }
 
     for (auto i = group->grp_begin(), e = group->grp_end(); i != e; ++i) {
         load_attributes(*i);
-#if 0
-        if ((*i)->type() == dods_group_c) {
-            load_everything_group(static_cast<D4Group*>(*i));
-        }
-        else if ((*i)->is_constructor_type()) {
-            load_everything_constructor(static_cast<Constructor*>(*i));
-        }
-        else {
-            load_attributes(*i);
-        }
-#endif
     }
 }
+
+void DMZ::load_all_attributes(libdap::DMR *dmr)
+{
+    assert(d_xml_doc != nullptr);
+    load_attributes(dmr->root());
+}
+
+/// These are the functions specific to loading chunk data
+/// @{
 
 void
 DMZ::process_compact(BaseType *btp, const xml_node &compact)
@@ -1017,6 +974,9 @@ void DMZ::process_chunk(DmrppCommon *dc, const xml_node &chunk)
         throw BESInternalError("Both size and offset are required for a chunk node.", __FILE__, __LINE__);
 
     if (!href.empty()) {
+        // TODO For many cases, there are many chunks that share a URL. We could store
+        //  a hash_map of known URLs and cut down on the total number of shared pointers.
+        //  jhrg 11/22/21
         shared_ptr<http::url> data_url(new http::url(href, href_trusted));
         dc->add_chunk(data_url, dc->get_byte_order(), stoi(size), stoi(offset), chunk_position_in_array);
     }
@@ -1118,125 +1078,6 @@ void DMZ::load_chunks(BaseType *btp)
     dc(btp)->set_chunks_loaded(true);
 }
 
-void DMZ::load_all_attributes(libdap::DMR *dmr)
-{
-    assert(d_xml_doc != nullptr);
-    load_attributes(dmr->root());
-}
-
-#if 0
-
-/**
- * @brief Load the Global attributes
- *
- * This exists as a separate method from load_attributes(D4Group*) because that
- * method will proceed to load the attributes for all the contained variables and
- * Groups. In this case we are loading only the attributes for the root group
- * so that other code that processes individual variables can control which (and
- * when) attributes are loaded into the DMR.
- *
- * @param dmr Load information into this DMR and variables it holds
- */
-void DMZ::load_global_attributes(libdap::DMR *dmr)
-{
-    assert(d_xml_doc != nullptr);
-
-    xml_node dataset = d_xml_doc.child("Dataset");
-    if (!dataset)
-        throw BESInternalError("Could not find the 'Dataset' element in the DMR++ XML document.", __FILE__, __LINE__);
-
-    load_attributes(dmr->root(), dataset);
-}
-
-#endif
-
-#if 0
-
-/**
- * @brief Load all chunks and attributes for the constructor and its children
- * @note Constructors other than groups can never hold instances of D4Group. Thus,
- * once we have found a Structure or Sequence, there can be no more Groups.
- * @param constructor
- */
-void
-DMZ::load_everything_constructor(Constructor *constructor)
-{
-    load_attributes(constructor);
-    for (auto i = constructor->var_begin(), e = constructor->var_end(); i != e; ++i) {
-        assert((*i)->type() != dods_group_c);
-
-        if ((*i)->is_constructor_type()) {
-            load_everything_constructor(static_cast<Constructor*>(*i));
-        }
-        else {
-            load_attributes(*i);
-            load_chunks(*i);
-        }
-    }
-}
-
-void
-DMZ::load_everything_group(D4Group *group, bool is_root) {
-    // The root group is special; look for its DAP Attributes in the Dataset element
-    if (is_root) {
-        xml_node dataset = d_xml_doc.child("Dataset");
-        if (!dataset)
-            throw BESInternalError("Could not find the 'Dataset' element in the DMR++ XML document.", __FILE__, __LINE__);
-        load_attributes(group, dataset);
-    }
-    else {
-        load_attributes(group);
-    }
-
-    for (auto i = group->var_begin(), e = group->var_end(); i != e; ++i) {
-        // Even though is_constructor_type() returns true for instances of D4Group,
-        // Groups are kept under a separate container from variables because they
-        // have a different function than the Structure and Sequence types (Groups
-        // never hold data).
-        assert((*i)->type() != dods_group_c);
-
-        if ((*i)->is_constructor_type()) {
-            load_everything_constructor(static_cast<Constructor*>(*i));
-        }
-        else {
-            load_attributes(*i);
-            load_chunks(*i);
-        }
-    }
-
-    for (auto i = group->grp_begin(), e = group->grp_end(); i != e; ++i) {
-        if ((*i)->type() == dods_group_c) {
-            load_everything_group(static_cast<D4Group*>(*i));
-        }
-        else if ((*i)->is_constructor_type()) {
-            load_everything_constructor(static_cast<Constructor*>(*i));
-        }
-        else {
-            load_attributes(*i);
-            load_chunks(*i);
-        }
-    }
-}
-
-/**
- * @brief Method that will enable testing
- *
- * Calling this once a 'thin DMR' has been built will load everything, but
- * using the DMZ methods that support lazy loading, exercising them. The
- * end result should be the same as calling the old SAX2 parser.
- *
- * This method assumes that the DMZ holds a parsed DMR++ XML document and
- * that it matches the 'thin DMR' that is passed as the method's argument.
- *
- * @param dmr Load up all the variables in this DMR assuming it is a 'thin DMR'
- */
-void
-DMZ::load_everything(DMR *dmr)
-{
-    assert(d_xml_doc != nullptr);
-    load_everything_group(dmr->root(), true);
-}
-
-#endif
+/// @}
 
 } // namespace dmrpp

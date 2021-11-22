@@ -46,7 +46,7 @@
             <Value>libdap-3.20.8</Value>
         </Attribute>
         <Attribute name="invocation" type="String">
-            <Value>/Users/jimg/src/opendap/hyrax_git/bes/modules/dmrpp_module/.libs/build_dmrpp -M -f /Users/jimg/src/opendap/hyrax_git/bes/modules/dmrpp_module/data/dmrpp/chunked_enum.h5 -r /Users/jimg/src/opendap/hyrax_git/bes/modules/dmrpp_module/data/dmrpp/chunked_enum.h5.dmr</Value>
+            <Value>/path_removed/.libs/build_dmrpp -M -f /path_removed/data/dmrpp/chunked_enum.h5 -r /path_removed/data/dmrpp/chunked_enum.h5.dmr</Value>
         </Attribute>
     </Attribute>
 </Dataset>

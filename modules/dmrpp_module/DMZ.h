@@ -97,14 +97,6 @@ private:
 
     void load_attributes(libdap::BaseType *btp, pugi::xml_node var_node);
 
-#if 0
-
-    // This is for testing. jhrg 11/2/21
-    void load_everything_constructor(libdap::Constructor *constructor);
-    void load_everything_group(libdap::D4Group *group, bool is_root = false);
-
-#endif
-
     friend class DMZTest;
 
 public:
@@ -128,6 +120,9 @@ public:
     virtual void load_chunks(libdap::BaseType *btp);
 
 #if 0
+    // These were originally part of the design and intended to speed the delivery
+    // of the metadata responses, but the pugixml parser is so fast I don't think
+    // they are needed. Add them later if we really need them. jhrg 11/22/21
     std::string get_attribute_xml(std::string path);
     std::string get_variable_xml(std::string path);
 #endif
@@ -135,14 +130,11 @@ public:
     virtual void load_all_attributes(libdap::DMR *dmr);
 
 #if 0
+    // This was here because with lazy loading of attributes, the glabal values did
+    // not show up. But I've dropped the lazy attr load feature since it provides
+    // no measureable benefit for the test data we have. If we need lazy-attrs, the
+    // software is still in the handler, just mostly disabled. jhrg 11/22/21
     virtual void load_global_attributes(libdap::DMR *dmr);
-#endif
-
-#if 0
-
-    // This is for testing. jhrg 11/2/21
-    void load_everything(libdap::DMR *dmr);
-
 #endif
 };
 

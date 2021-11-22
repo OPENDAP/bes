@@ -49,5 +49,4 @@ int main(int argc, char *argv[])
     pugi::xml_parse_result result = doc.load_file(argv[1]);
 
     std::cout << "Load result: " << result.description() << ", mesh name: " << doc.child("Dataset").attribute("name").value() << std::endl;
-
 }
