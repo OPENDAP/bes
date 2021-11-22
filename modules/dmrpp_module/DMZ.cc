@@ -718,7 +718,6 @@ xml_node DMZ::get_variable_xml_node_helper(const xml_node &parent_node, stack<Ba
 #else
     return xml_node();      // return an empty node
 #endif
-
 }
 
 /**
@@ -1125,6 +1124,8 @@ void DMZ::load_all_attributes(libdap::DMR *dmr)
     load_attributes(dmr->root());
 }
 
+#if 0
+
 /**
  * @brief Load the Global attributes
  *
@@ -1146,6 +1147,10 @@ void DMZ::load_global_attributes(libdap::DMR *dmr)
 
     load_attributes(dmr->root(), dataset);
 }
+
+#endif
+
+#if 0
 
 /**
  * @brief Load all chunks and attributes for the constructor and its children
@@ -1231,5 +1236,7 @@ DMZ::load_everything(DMR *dmr)
     assert(d_xml_doc != nullptr);
     load_everything_group(dmr->root(), true);
 }
+
+#endif
 
 } // namespace dmrpp

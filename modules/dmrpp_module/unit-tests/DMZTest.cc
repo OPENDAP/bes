@@ -680,6 +680,7 @@ public:
         }
     }
 
+#if 0
     void test_load_global_attributes_1() {
         try {
             d_dmz = new DMZ(coads_climatology_dmrpp);
@@ -708,6 +709,7 @@ public:
             handle_fatal_exceptions();
         }
     }
+#endif
 
     void test_load_all_attributes_1() {
         try {
@@ -772,7 +774,9 @@ public:
     CPPUNIT_TEST(test_load_chunks_1);
     CPPUNIT_TEST(test_load_chunks_2);
 
+#if 0
     CPPUNIT_TEST(test_load_global_attributes_1);
+#endif
 
     CPPUNIT_TEST(test_load_all_attributes_1);
 

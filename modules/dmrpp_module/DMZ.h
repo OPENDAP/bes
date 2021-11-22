@@ -97,9 +97,13 @@ private:
 
     void load_attributes(libdap::BaseType *btp, pugi::xml_node var_node);
 
+#if 0
+
     // This is for testing. jhrg 11/2/21
     void load_everything_constructor(libdap::Constructor *constructor);
     void load_everything_group(libdap::D4Group *group, bool is_root = false);
+
+#endif
 
     friend class DMZTest;
 
@@ -129,10 +133,17 @@ public:
 #endif
 
     virtual void load_all_attributes(libdap::DMR *dmr);
+
+#if 0
     virtual void load_global_attributes(libdap::DMR *dmr);
+#endif
+
+#if 0
 
     // This is for testing. jhrg 11/2/21
     void load_everything(libdap::DMR *dmr);
+
+#endif
 };
 
 } // namespace dmrpp
