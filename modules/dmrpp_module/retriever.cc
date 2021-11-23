@@ -656,7 +656,7 @@ int main(int argc, char *argv[]) {
     string http_netrc_file;
     unsigned int reps=10;
     unsigned pwr2_parallel_reads = 0;
-    bool aws_sign_request_url = false;
+    // Unused bool aws_sign_request_url = false;
 
     char *prefixCstr = getenv("prefix");
     if (prefixCstr) {
@@ -667,7 +667,7 @@ int main(int argc, char *argv[]) {
     auto bes_config_file = BESUtil::assemblePath(prefix, "/etc/bes/bes.conf", true);
 
 
-    GetOpt getopt(argc, argv, "h:r:n:C:c:o:u:l:S:dbDp:A");
+    GetOpt getopt(argc, argv, "h:r:n:C:c:o:u:l:S:dbDp:");   // Removed A. Unused jhrg 11/23/21
     int option_char;
     while ((option_char = getopt()) != -1) {
         switch (option_char) {
@@ -681,9 +681,11 @@ int main(int argc, char *argv[]) {
             case 'b':
                 bes_debug = true;
                 break;
+#if 0
             case 'A':
-                aws_sign_request_url = true;
+                // Unused aws_sign_request_url = true;
                 break;
+#endif
             case 'c':
                 bes_config_file = getopt.optarg;
                 break;

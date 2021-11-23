@@ -58,7 +58,7 @@ namespace dmrpp {
 
 bool debug = true;
 
-void compute_super_chunks(dmrpp::DmrppArray *array, bool only_constrained, vector<SuperChunk *> &super_chunks){
+void compute_super_chunks(dmrpp::DmrppArray *array, bool /*only_constrained*/, vector<SuperChunk *> &super_chunks){
 
         // Now we get the chunkyness
         auto chunk_dim_sizes = array->get_chunk_dimension_sizes();

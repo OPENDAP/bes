@@ -683,7 +683,7 @@ void DMZ::build_basetype_chain(BaseType *btp, stack<BaseType*> &bt)
         build_basetype_chain(parent, bt);
 }
 
-xml_node DMZ::get_variable_xml_node_helper(const xml_node &parent_node, stack<BaseType*> &bt)
+xml_node DMZ::get_variable_xml_node_helper(const xml_node &/*parent_node*/, stack<BaseType*> &/*bt*/)
 {
 #if !USE_CACHED_XML_NODE
     // When we have an array of Structure or Sequence, both the Array and the
