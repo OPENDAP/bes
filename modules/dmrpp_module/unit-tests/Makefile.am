@@ -12,11 +12,8 @@ AM_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir) -I$(top_srcdir)/modules -I$(top_src
 -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/http -I$(top_srcdir)/pugixml/src \
 $(DAP_CFLAGS) $(OPENSSL_INC)
 
-# FIXME with configure.ac jhrg 9/2/20
-BES_DAP_LIB_STATIC = $(abs_top_builddir)/dap/.libs/libdap_module.a
-
 # Added -lz for ubuntu
-LIBADD = $(BES_DISPATCH_LIB) $(BES_DAP_LIB_STATIC) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) \
+LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) \
 $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) \
 $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) -lz
 
@@ -34,13 +31,13 @@ endif
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -Wcast-align
 
 AM_CXXFLAGS = -Wno-vla-extension -Wno-inconsistent-missing-override -Wno-unused-variable
-AM_LDFLAGS =
+AM_LDFLAGS = $(BES_DAP_LIB_LDFLAGS)
 include $(top_srcdir)/coverage.mk
 
 # This determines what gets built by make check
 check_PROGRAMS = $(UNIT_TESTS)
 
-bin_PROGRAMS = pugi_xml_test
+noinst_PROGRAMS = pugi_xml_test
 
 pugi_xml_test_SOURCES = pugi_xml_test.cc
 
