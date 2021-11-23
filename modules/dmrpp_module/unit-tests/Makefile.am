@@ -13,7 +13,7 @@ AM_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir) -I$(top_srcdir)/modules -I$(top_src
 $(DAP_CFLAGS) $(OPENSSL_INC)
 
 # Added -lz for ubuntu
-LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) \
+LIBADD = $(BES_DISPATCH_LIB) $(BES_DAP_LIB) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) \
 $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) \
 $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) -lz
 
@@ -31,7 +31,7 @@ endif
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -Wcast-align
 
 AM_CXXFLAGS = -Wno-vla-extension -Wno-inconsistent-missing-override -Wno-unused-variable
-AM_LDFLAGS = $(BES_DAP_LIB_LDFLAGS)
+AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
 # This determines what gets built by make check
