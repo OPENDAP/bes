@@ -42,7 +42,7 @@ void read_xml(const string &file_name, vector<char> &bytes)
     //    text.push_back('\0');
 }
 
-int main(int argc, char *argv[])
+int main(int, char *argv[])
 {
     pugi::xml_document doc;
 
