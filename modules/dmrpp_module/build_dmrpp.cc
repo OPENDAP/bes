@@ -34,21 +34,64 @@
 #include <cstdlib>
 #include <libgen.h>
 
-#include <libdap/D4Attributes.h>
-#include <libdap/Array.h>
-#include <libdap/util.h>
-
-//#define H5D_FRIEND		// Workaround, needed to use H5D_chunk_rec_t
-//#include <H5Dpkg.h>
-#define H5S_MAX_RANK    32
-#define H5O_LAYOUT_NDIMS    (H5S_MAX_RANK+1)
-
 #include <H5Ppublic.h>
 #include <H5Dpublic.h>
 #include <H5Epublic.h>
 #include <H5Zpublic.h>  // Constants for compression filters
 #include <H5Spublic.h>
 #include "h5common.h"
+
+//#include <libdap/D4Attributes.h>
+#include <libdap/Array.h>
+#include <libdap/util.h>
+
+
+#if 0
+/*
+ * "Generic" chunk record.  Each chunk is keyed by the minimum logical
+ * N-dimensional coordinates and the datatype size of the chunk.
+ * The fastest-varying dimension is assumed to reference individual bytes of
+ * the array, so a 100-element 1-D array of 4-byte integers would really be a
+ * 2-D array with the slow varying dimension of size 100 and the fast varying
+ * dimension of size 4 (the storage dimensionality has very little to do with
+ * the real dimensionality).
+ *
+ * The chunk's file address, filter mask and size on disk are not key values.
+ */
+typedef struct H5D_chunk_rec_t {
+    hsize_t scaled[H5O_LAYOUT_NDIMS];    /* Logical offset to start */
+    uint32_t nbytes;                      /* Size of stored data */
+    uint32_t filter_mask;                 /* Excluded filters */
+    haddr_t chunk_addr;                  /* Address of chunk in file */
+} H5D_chunk_rec_t;
+#endif
+
+//#include <DMRpp.h>
+#include <libdap/D4Attributes.h>
+#include <libdap/BaseType.h>
+#include <libdap/D4ParserSax2.h>
+//#include <GetOpt.h>
+
+//#include <BESDapNames.h>
+#include <TheBESKeys.h>
+#include <BESUtil.h>
+#include <BESDebug.h>
+
+#include <BESError.h>
+#include <BESNotFoundError.h>
+#include <BESInternalError.h>
+#include <BESDataHandlerInterface.h>
+
+#include "DMRpp.h"
+#include "DmrppTypeFactory.h"
+#include "DmrppD4Group.h"
+#include "DmrppMetadataStore.h"
+//#include "BESDapNames.h"
+#if 0
+//#define H5D_FRIEND		// Workaround, needed to use H5D_chunk_rec_t
+//#include <H5Dpkg.h>
+#define H5S_MAX_RANK    32
+#define H5O_LAYOUT_NDIMS    (H5S_MAX_RANK+1)
 
 /*
  * "Generic" chunk record.  Each chunk is keyed by the minimum logical
@@ -67,26 +110,7 @@ typedef struct H5D_chunk_rec_t {
     uint32_t filter_mask;                 /* Excluded filters */
     haddr_t chunk_addr;                  /* Address of chunk in file */
 } H5D_chunk_rec_t;
-
-#include <DMRpp.h>
-#include <D4Attributes.h>
-#include <BaseType.h>
-#include <D4ParserSax2.h>
-#include <GetOpt.h>
-
-#include <TheBESKeys.h>
-#include <BESUtil.h>
-#include <BESDebug.h>
-
-#include <BESError.h>
-#include <BESNotFoundError.h>
-#include <BESInternalError.h>
-#include <BESDataHandlerInterface.h>
-
-#include "DmrppTypeFactory.h"
-#include "DmrppD4Group.h"
-#include "DmrppMetadataStore.h"
-#include "BESDapNames.h"
+#endif
 
 using namespace std;
 using namespace libdap;
