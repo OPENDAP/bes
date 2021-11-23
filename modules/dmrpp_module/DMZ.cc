@@ -878,6 +878,8 @@ void DMZ::load_all_attributes(libdap::DMR *dmr)
     load_attributes(dmr->root());
 }
 
+
+/// @name Chunks
 /// These are the functions specific to loading chunk data
 /// @{
 

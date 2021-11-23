@@ -33,6 +33,7 @@
 #include <stack>
 #include <memory>
 
+#define PUGIXML_NO_XPATH
 #include <pugixml.hpp>
 
 #include <libdap/Type.h>

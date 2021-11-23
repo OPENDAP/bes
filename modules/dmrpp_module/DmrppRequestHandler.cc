@@ -60,6 +60,12 @@
 #include <BESDebug.h>
 #include <BESStopWatch.h>
 
+#if 1
+#define PUGIXML_NO_XPATH
+#define PUGIXML_HEADER_ONLY
+#include <pugixml.hpp>
+#endif
+
 #include "DmrppNames.h"
 //#include "DMRpp.h"
 #include "DmrppTypeFactory.h"

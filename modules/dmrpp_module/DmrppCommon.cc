@@ -33,10 +33,16 @@
 
 #include <curl/curl.h>
 
-#include "libdap/BaseType.h"
-#include "libdap/D4Attributes.h"
-#include "libdap/XMLWriter.h"
-#include "libdap/util.h"
+#include <libdap/BaseType.h>
+#include <libdap/D4Attributes.h>
+#include <libdap/XMLWriter.h>
+#include <libdap/util.h>
+
+#if 1
+#define PUGIXML_NO_XPATH
+#define PUGIXML_HEADER_ONLY
+#include <pugixml.hpp>
+#endif
 
 #include "url_impl.h"
 #include "BESIndent.h"
