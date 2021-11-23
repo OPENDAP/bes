@@ -43,7 +43,7 @@ public:
     DmrppFloat64(const std::string &n, const std::string &d) : libdap::Float64(n, d), DmrppCommon() { }
     DmrppFloat64(const std::string &n, std::shared_ptr<DMZ> dmz) : libdap::Float64(n), DmrppCommon(dmz) { }
     DmrppFloat64(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : libdap::Float64(n, d), DmrppCommon(dmz) { }
-    DmrppFloat64(const DmrppFloat64 &rhs) = default;
+    DmrppFloat64(const DmrppFloat64 &) = default;
 
     virtual ~DmrppFloat64() = default;
 

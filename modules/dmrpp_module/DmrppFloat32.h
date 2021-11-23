@@ -43,7 +43,7 @@ public:
     DmrppFloat32(const std::string &n, const std::string &d) : Float32(n, d), DmrppCommon() { }
     DmrppFloat32(const std::string &n, std::shared_ptr<DMZ> dmz) : Float32(n), DmrppCommon(dmz) { }
     DmrppFloat32(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : Float32(n, d), DmrppCommon(dmz) { }
-    DmrppFloat32(const DmrppFloat32 &rhs) = default;
+    DmrppFloat32(const DmrppFloat32 &) = default;
 
     virtual ~DmrppFloat32() = default;
 

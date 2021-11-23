@@ -43,7 +43,7 @@ public:
     DmrppByte(const std::string &n, const std::string &d) : Byte(n, d), DmrppCommon() { }
     DmrppByte(const std::string &n, shared_ptr<DMZ> dmz) : Byte(n), DmrppCommon(dmz) { }
     DmrppByte(const std::string &n, const std::string &d, shared_ptr<DMZ> dmz) : Byte(n, d), DmrppCommon(dmz) { }
-    DmrppByte(const DmrppByte &rhs) = default;
+    DmrppByte(const DmrppByte &) = default;
 
     virtual ~DmrppByte() = default;
 

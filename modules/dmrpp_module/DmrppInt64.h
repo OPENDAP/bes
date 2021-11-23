@@ -43,7 +43,7 @@ public:
     DmrppInt64(const std::string &n, const std::string &d) : libdap::Int64(n, d), DmrppCommon() { }
     DmrppInt64(const std::string &n, std::shared_ptr<DMZ> dmz) : libdap::Int64(n), DmrppCommon(dmz) { }
     DmrppInt64(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : libdap::Int64(n, d), DmrppCommon(dmz) { }
-    DmrppInt64(const DmrppInt64 &rhs) = default;
+    DmrppInt64(const DmrppInt64 &) = default;
 
     virtual ~DmrppInt64() = default;
 

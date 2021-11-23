@@ -68,7 +68,8 @@ noinst_PROGRAMS = retriever superchunky
 # build_dmrpp config
 build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS) -I$(srcdir)/../hdf5_handler
 build_dmrpp_SOURCES = $(BES_SRCS) $(BES_HDRS) $(BUILD_DMRPP) build_dmrpp.cc $(srcdir)/../hdf5_handler/h5common.cc
-build_dmrpp_LDADD = $(BES_DAP_LIB) $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) \
+build_dmrpp_LDFLAGS = $(BES_DAP_LIB_LDFLAGS)
+build_dmrpp_LDADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) \
 $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) \
 $(OPENSSL_LIBS) $(XML2_LIBS) $(BYTESWAP_LIBS) -lz
 
@@ -88,16 +89,20 @@ reduce_mdf_LDADD = $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) -lz
 # retriever config
 retriever_CPPFLAGS = $(AM_CPPFLAGS)
 retriever_SOURCES = $(BES_SRCS) $(BES_HDRS) $(BUILD_DMRPP) retriever.cc
-retriever_LDADD = $(BES_DAP_LIB) $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) \
+retriever_LDFLAGS = $(BES_DAP_LIB_LDFLAGS)
+retriever_LDADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) \
 $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) \
 $(OPENSSL_LIBS) $(XML2_LIBS) $(BYTESWAP_LIBS) -lz
 
 # superchunky config
 superchunky_CPPFLAGS = $(AM_CPPFLAGS)
 superchunky_SOURCES = $(BES_SRCS) $(BES_HDRS) $(BUILD_DMRPP) SuperChunky.cc
-superchunky_LDADD = $(BES_DAP_LIB) $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) \
+superchunky_LDFLAGS = $(BES_DAP_LIB_LDFLAGS)
+superchunky_LDADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) \
 $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) \
 $(OPENSSL_LIBS) $(XML2_LIBS) $(BYTESWAP_LIBS) -lz
+
+# $(BES_DAP_LIB)
 
 EXTRA_PROGRAMS = 
 

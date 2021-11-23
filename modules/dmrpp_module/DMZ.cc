@@ -43,6 +43,7 @@
 #include <libdap/DMR.h>
 #include <libdap/util.h>        // is_simple_type()
 
+// TODO Needed? jhrg 11/23/21
 #define PUGIXML_NO_XPATH
 #define PUGIXML_HEADER_ONLY
 #include <pugixml.hpp>
@@ -750,6 +751,12 @@ xml_node DMZ::get_variable_xml_node(BaseType *btp)
 #endif
 }
 
+/// @name Attributes
+/// These are functions specific to loading attributes. Originally intended to
+/// be part of a lazy-load scheme, this code is used to load attribute data into
+/// a 'thin DMR.' jhrg 11/23/21
+/// @{
+
 /**
  * @brief Load the DAP attributes from the DMR++ XML for a variable
  *
@@ -878,11 +885,22 @@ void DMZ::load_all_attributes(libdap::DMR *dmr)
     load_attributes(dmr->root());
 }
 
+/// @}
 
 /// @name Chunks
-/// These are the functions specific to loading chunk data
+/// These are the functions specific to loading chunk data. They implement
+/// the lazy-load feature for DMR++ chunk information.
 /// @{
 
+/**
+ * @brief Process HDF5 COMPACT data
+ * HDF5 stores some data - smaller amounts of information - locally to save time
+ * given that the chunking scheme(s) can have too much overhead to be practical
+ * for small variables. This code processes those DMR++ XML elements and loads
+ * the data into the BaseType variable. Effectively, this reads the data.
+ * @param btp The BaseType that will hold the data values
+ * @param compact The location in the DMR++ of the Base64 encoded values
+ */
 void
 DMZ::process_compact(BaseType *btp, const xml_node &compact)
 {

@@ -30,6 +30,7 @@
 #include <memory>
 
 #define PUGIXML_NO_XPATH
+#define PUGIXML_HEADER_ONLY
 #include <pugixml.hpp>
 
 namespace libdap {
@@ -122,7 +123,7 @@ public:
 
     DmrppCommon(std::shared_ptr<DMZ> dmz) : d_dmz(dmz) { }
 
-    DmrppCommon(const DmrppCommon &dc) = default;
+    DmrppCommon(const DmrppCommon &) = default;
 
     virtual ~DmrppCommon()= default;
 

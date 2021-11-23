@@ -43,7 +43,7 @@ public:
     DmrppD4Enum(const std::string &n, libdap::Type type) : libdap::D4Enum(n, type), DmrppCommon() { }
     DmrppD4Enum(const std::string &n, const std::string &d, libdap::Type type) : libdap::D4Enum(n, d, type), DmrppCommon() { }
 
-    DmrppD4Enum(const DmrppD4Enum &rhs) = default;
+    DmrppD4Enum(const DmrppD4Enum &) = default;
 
     virtual ~DmrppD4Enum() = default;
 

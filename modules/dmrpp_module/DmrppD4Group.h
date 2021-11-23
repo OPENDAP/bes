@@ -43,7 +43,7 @@ public:
     DmrppD4Group(const std::string &n, const std::string &d) : D4Group(n, d), DmrppCommon() { }
     DmrppD4Group(const std::string &n, std::shared_ptr<DMZ> dmz) : D4Group(n), DmrppCommon(dmz) { }
     DmrppD4Group(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : D4Group(n, d), DmrppCommon(dmz) { }
-    DmrppD4Group(const DmrppD4Group &rhs) = default;
+    DmrppD4Group(const DmrppD4Group &) = default;
 
     virtual ~DmrppD4Group() = default;
 

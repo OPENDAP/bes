@@ -472,6 +472,13 @@ BES_PPT_LIB="-L\$(top_builddir)/ppt -lbes_ppt"
 AC_SUBST(BES_PPT_LIB)
 BES_DAP_LIB="-L\$(top_builddir)/dap -ldap_module"
 AC_SUBST(BES_DAP_LIB)
+
+dnl This enables code to link with the dap_module without a warning. Use this not
+dnl with xxxx_LDADD but with xxxx_LDFLAGS. For test code, which is never installed,
+dnl link with .libs/libdap_module.a instead if that's easier.
+BES_DAP_LIB_LDFLAGS="-L\$(top_builddir)/dap -static -ldap_module -dynamic"
+AC_SUBST(BES_DAP_LIB_LDFLAGS)
+
 BES_EXTRA_LIBS="$LIBS $openssl_libs"
 AC_SUBST(BES_EXTRA_LIBS)
 BES_HTTP_LIB="-L\$(top_builddir)/http -lbes_http"

@@ -43,7 +43,7 @@ public:
     DmrppUrl(const std::string &n, const std::string &d) : libdap::Url(n, d), DmrppCommon() { }
     DmrppUrl(const std::string &n, std::shared_ptr<DMZ> dmz) : libdap::Url(n), DmrppCommon(dmz) { }
     DmrppUrl(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : libdap::Url(n, d), DmrppCommon(dmz) { }
-    DmrppUrl(const DmrppUrl &rhs) = default;
+    DmrppUrl(const DmrppUrl &) = default;
 
     virtual ~DmrppUrl() = default;
 

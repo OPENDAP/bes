@@ -129,7 +129,7 @@ public:
     DmrppArray(const string &n, const string &d, BaseType *v, shared_ptr<DMZ> dmz) :
             libdap::Array(n, d, v, true), DmrppCommon(dmz) { }
 
-    DmrppArray(const DmrppArray &rhs) = default;
+    DmrppArray(const DmrppArray &) = default;
 
     virtual ~DmrppArray() = default;
 

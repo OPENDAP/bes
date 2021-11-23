@@ -34,6 +34,7 @@
 #include <memory>
 
 #define PUGIXML_NO_XPATH
+#define PUGIXML_HEADER_ONLY
 #include <pugixml.hpp>
 
 #include <libdap/Type.h>
@@ -58,11 +59,10 @@ class DmrppCommon;
 /**
  * @brief Interface to hide the DMR++ information storage format.
  *
- * This class uses a XML library that uses the document text for all the
- * string values (tag/element names, attribute names and values, etc.,
+ * This class uses an XML library that uses the document text for all the
+ * string values (tag/element names, attribute names and values, etc.)
  * so the text of the XML document must persist for as long as the xml_document
  * object itself. For files, the class uses the pugixml load function.
- * For strings, it uses a local vector<char>.
  *
  * @note This class holds a pugi::xml_document and a shared_ptr<http::url>
  * but does not define its own copy ctor or assignment operator, so copies

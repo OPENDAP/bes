@@ -43,7 +43,7 @@ public:
     DmrppStructure(const std::string &n, const std::string &d) : libdap::Structure(n, d), DmrppCommon() { }
     DmrppStructure(const std::string &n, std::shared_ptr<DMZ> dmz) : libdap::Structure(n), DmrppCommon(dmz) { }
     DmrppStructure(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : libdap::Structure(n, d), DmrppCommon(dmz) { }
-    DmrppStructure(const DmrppStructure &rhs) = default;
+    DmrppStructure(const DmrppStructure &) = default;
 
     virtual ~DmrppStructure() = default;
 
