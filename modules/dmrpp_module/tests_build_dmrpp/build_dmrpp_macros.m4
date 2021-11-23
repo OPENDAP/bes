@@ -72,11 +72,13 @@ m4_define([AT_BUILD_DMRPP_M],  [dnl
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
     [
         AT_CHECK([build_dmrpp -M -f $input -r $dmr], [], [stdout])
+        NORMAILZE_EXEC_NAME([stdout])
         REMOVE_PATH_COMPONENTS([stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
         AT_CHECK([build_dmrpp -M -f $input -r $dmr], [], [stdout])
+        NORMAILZE_EXEC_NAME([stdout])
         REMOVE_PATH_COMPONENTS([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         AT_XFAIL_IF([test z$2 = zxfail])
@@ -90,6 +92,16 @@ dml jhrg 11/22/21
 dnl Usage: REMOVE_PATH_COMPONENTS(file_name)
 m4_define([REMOVE_PATH_COMPONENTS], [dnl
     sed -e 's@/[[A-z0-9]][[-A-z0-9_/.]]*/dmrpp_module/@/path_removed/@g' < $1 > $1.sed
+    mv $1.sed $1
+])
+
+dnl Normalize binary name. Sometime the build_dmrpp program is named 'build_dmrpp,'
+dnl othertimes it is named 'lt-build_dmrpp.' This ensure it always has the same name
+dnl in the baselines and test output.
+dml jhrg 11/22/21
+dnl Usage: NORMAILZE_EXEC_NAME(file_name)
+m4_define([NORMAILZE_EXEC_NAME], [dnl
+    sed -e 's@/[[A-z0-9]][[-A-z0-9_/.]]*build_dmrpp @build_dmrpp @g' < $1 > $1.sed
     mv $1.sed $1
 ])
 

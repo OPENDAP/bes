@@ -22,7 +22,7 @@
             <Value>libdap-3.20.8</Value>
         </Attribute>
         <Attribute name="invocation" type="String">
-            <Value>/path_removed/.libs/build_dmrpp -M -f /path_removed/data/dmrpp/chunked_opaque.h5 -r /path_removed/data/dmrpp/chunked_opaque.h5.dmr</Value>
+            <Value>build_dmrpp -M -f /path_removed/data/dmrpp/chunked_opaque.h5 -r /path_removed/data/dmrpp/chunked_opaque.h5.dmr</Value>
         </Attribute>
     </Attribute>
 </Dataset>
