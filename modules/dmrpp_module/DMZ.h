@@ -75,8 +75,8 @@ private:
     std::shared_ptr<http::url> d_dataset_elem_href;
 
     void process_dataset(libdap::DMR *dmr, const pugi::xml_node &xml_root);
-    pugi::xml_node get_variable_xml_node(libdap::BaseType *btp);
-    void process_chunk(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunk);
+    pugi::xml_node get_variable_xml_node(libdap::BaseType *btp) const;
+    void process_chunk(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunk) const;
     void process_chunks(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunks);
 
     static void process_compact(libdap::BaseType *btp, const pugi::xml_node &compact);
@@ -96,7 +96,7 @@ private:
 
     static void process_cds_node(dmrpp::DmrppCommon *dc, const pugi::xml_node &chunks);
 
-    void load_attributes(libdap::BaseType *btp, pugi::xml_node var_node);
+    void load_attributes(libdap::BaseType *btp, pugi::xml_node var_node) const;
 
     friend class DMZTest;
 

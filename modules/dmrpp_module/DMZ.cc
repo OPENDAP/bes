@@ -120,7 +120,7 @@ static inline DmrppCommon *dc(BaseType *btp)
     auto *dc = dynamic_cast<DmrppCommon*>(btp);
     if (!dc)
         throw BESInternalError(string("Expected a BaseType that was also a DmrppCommon instance (")
-                                       .append(btp->name()).append(")."), __FILE__, __LINE__);
+                                       .append((btp) ? btp->name() : "unknown").append(")."), __FILE__, __LINE__);
     return dc;
 }
 
@@ -363,7 +363,6 @@ void DMZ::process_variable(DMR *dmr, D4Group *group, Constructor *parent, const 
 
     bool is_array_type = has_dim_nodes(var_node);
     BaseType *btp;
-    //Constructor *parent;
     if (is_array_type) {
         btp = add_array_variable(dmr, group, parent, t, var_node);
         if (t == dods_structure_c || t == dods_sequence_c) {
@@ -490,7 +489,7 @@ BaseType *DMZ::add_array_variable(DMR *dmr, D4Group *group, Constructor *parent,
     BaseType *btp = build_variable(dmr, group, t, var_node);
 
     // Transform the scalar to an array
-    Array *array = static_cast<Array*>(dmr->factory()->NewVariable(dods_array_c, btp->name()));
+    auto *array = static_cast<Array*>(dmr->factory()->NewVariable(dods_array_c, btp->name()));
     array->set_is_dap4(true);
     array->add_var_nocopy(btp);
 
@@ -626,14 +625,12 @@ void DMZ::process_attribute(D4Attributes *attributes, const xml_node &dap_attr_n
 
     if (type_value == "Container") {
         // Make the new attribute container and add it to current container
-        D4Attribute *dap_attr_cont = new D4Attribute(name_value, attr_container_c);
+        auto *dap_attr_cont = new D4Attribute(name_value, attr_container_c);
         attributes->add_attribute_nocopy(dap_attr_cont);
         // In this call, 'attributes()' will allocate the D4Attributes object
         // that will hold the container's attributes.
         // Test to see if there really are child "Attribute" nodes - empty containers
         // are allowed. jhrg 11/4/21
-        // auto attr = ;
-        // process_attribute(dap_attr_cont->attributes(), attr);
         if (dap_attr_node.first_child()) {
             for (auto attr_node: dap_attr_node.children("Attribute")) {
                 process_attribute(dap_attr_cont->attributes(), attr_node);
@@ -645,7 +642,7 @@ void DMZ::process_attribute(D4Attributes *attributes, const xml_node &dap_attr_n
     }
     else {
         // Make the D4Attribute and add it to the D4Attributes attribute container
-        D4Attribute *attribute = new D4Attribute(name_value, StringToD4AttributeType(type_value));
+        auto *attribute = new D4Attribute(name_value, StringToD4AttributeType(type_value));
         attributes->add_attribute_nocopy(attribute);
         // Process one or more Value elements
         for (auto value_elem = dap_attr_node.first_child(); value_elem; value_elem = value_elem.next_sibling()) {
@@ -727,7 +724,7 @@ xml_node DMZ::get_variable_xml_node_helper(const xml_node &/*parent_node*/, stac
  * that corresponds to the DMR++ XML document this class manages).
  * @return The xml_node pointer
  */
-xml_node DMZ::get_variable_xml_node(BaseType *btp)
+xml_node DMZ::get_variable_xml_node(BaseType *btp) const
 {
 #if USE_CACHED_XML_NODE
     auto node = dc(btp)->get_xml_node();
@@ -817,7 +814,7 @@ DMZ::load_attributes(BaseType *btp)
  * @param var_node
  */
 void
-DMZ::load_attributes(BaseType *btp, xml_node var_node)
+DMZ::load_attributes(BaseType *btp, xml_node var_node) const
 {
     if (dc(btp)->get_attributes_loaded())
         return;
@@ -827,7 +824,7 @@ DMZ::load_attributes(BaseType *btp, xml_node var_node)
     // the attributes() method is specialized for this DMR++ code to
     // trigger a lazy-load of the variables' attributes. jhrg 10/24/21
     // Could also use BaseType::set_attributes(). jhrg
-    auto attributes = btp->BaseType::attributes(); // new D4Attributes();
+    auto attributes = btp->BaseType::attributes();
     for (auto child = var_node.first_child(); child; child = child.next_sibling()) {
         if (is_eq(child.name(), "Attribute")) {
             process_attribute(attributes, child);
@@ -962,7 +959,7 @@ DMZ::process_compact(BaseType *btp, const xml_node &compact)
  * @param dc
  * @param chunk
  */
-void DMZ::process_chunk(DmrppCommon *dc, const xml_node &chunk)
+void DMZ::process_chunk(DmrppCommon *dc, const xml_node &chunk) const
 {
     string href;
     string trust;

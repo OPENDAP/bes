@@ -300,9 +300,6 @@ bool DmrppRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
 
     try {
         build_dmr_from_file(dhi.container, bdmr->get_dmr());
-
-        //dmz->load_all_attributes(bdmr->get_dmr());
-
         bdmr->set_dap4_constraint(dhi);
         bdmr->set_dap4_function(dhi);
     }
@@ -328,7 +325,7 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
-    BESDMRResponse *bdmr = dynamic_cast<BESDMRResponse *>(response);
+    auto *bdmr = dynamic_cast<BESDMRResponse *>(response);
     if (!bdmr) throw BESInternalError("Cast error, expected a BESDMRResponse object.", __FILE__, __LINE__);
 
     try {
@@ -336,8 +333,6 @@ bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
 
         // We don't need all the attributes, so use the lazy-load feature implemented
         // using overloads of the BaseType::set_send_p() method.
-        // dmz->load_global_attributes(bdmr->get_dmr());
-        //dmz->load_all_attributes(bdmr->get_dmr());
 
         bdmr->set_dap4_constraint(dhi);
         bdmr->set_dap4_function(dhi);
@@ -374,7 +369,6 @@ void DmrppRequestHandler::get_dds_from_dmr_or_cache(BESDataHandlerInterface &dhi
     else {
         DMR dmr;
         build_dmr_from_file(dhi.container, &dmr);
-        //dmz->load_all_attributes(&dmr);
 
         delete dds;                         // delete the current one;
         dds = dmr.getDDS();                 // assign the new one.
@@ -474,7 +468,6 @@ bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface & dhi)
         else {
             DMR dmr;
             build_dmr_from_file(dhi.container, &dmr);
-            //dmz->load_all_attributes(&dmr);
 
             // Get a DDS from the DMR, getDDS() allocates all new objects. Use unique_ptr
             // to ensure this is deleted. jhrg 11/12/21

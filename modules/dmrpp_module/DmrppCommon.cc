@@ -310,9 +310,7 @@ unsigned long DmrppCommon::add_chunk(
 char *
 DmrppCommon::read_atomic(const string &name)
 {
-    // auto chunk_refs = get_immutable_chunks(); // FIXME They are not refs. It's a copy. jhrg 10/7/21
-
-    if (get_chunks_size() != 1) // FIXMEchunk_refs.size() != 1)
+    if (get_chunks_size() != 1)
         throw BESInternalError(string("Expected only a single chunk for variable ") + name, __FILE__, __LINE__);
 
     auto chunk = get_immutable_chunks()[0];
@@ -446,8 +444,7 @@ void DmrppCommon::print_dmrpp(XMLWriter &xml, bool constrained /*false*/)
         bt.get_attr_table().print_xml_writer(xml);
 
     // This is the code added to libdap::BaseType::print_dap4(). jhrg 5/10/18
-    // TODO get_immutable_chunks() returns a copy. Replace with a simple accessor. jhrg 10/7/21
-    if (DmrppCommon::d_print_chunks && get_chunks_size() > 0) // FIXME get_immutable_chunks().size() > 0)
+    if (DmrppCommon::d_print_chunks && get_chunks_size() > 0)
         print_chunks_element(xml, DmrppCommon::d_ns_prefix);
 
     if (xmlTextWriterEndElement(xml.get_writer()) < 0)

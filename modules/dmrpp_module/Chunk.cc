@@ -79,8 +79,7 @@ size_t chunk_header_callback(char *buffer, size_t /*size*/, size_t nitems, void 
     string header(buffer, buffer + nitems - 2);
 
     // Look for the content type header and store its value in the Chunk
-    // string::size_type pos;
-    if (/*(pos = */ header.find("Content-Type") /*)*/ != string::npos) {
+    if (header.find("Content-Type") != string::npos) {
         // Header format 'Content-Type: <value>'
         auto c_ptr = reinterpret_cast<Chunk *>(data);
         c_ptr->set_response_content_type(header.substr(header.find_last_of(' ') + 1));
@@ -124,7 +123,7 @@ void process_s3_error_response(const shared_ptr<http::url> &data_url, const stri
     if (code == "AccessDenied") {
         stringstream msg;
         msg << prolog << "ACCESS DENIED - The underlying object store has refused access to: ";
-        msg << data_url->str() << " Object Store Message: " << message; //json_message;
+        msg << data_url->str() << " Object Store Message: " << message;
         BESDEBUG(MODULE, msg.str() << endl);
         VERBOSE(msg.str() << endl);
         throw BESForbiddenError(msg.str(), __FILE__, __LINE__);
@@ -132,7 +131,7 @@ void process_s3_error_response(const shared_ptr<http::url> &data_url, const stri
     else {
         stringstream msg;
         msg << prolog << "ERROR - The underlying object store returned an error. ";
-        msg << "(Tried: " << data_url->str() << ") Object Store Message: " << message; // json_message;
+        msg << "(Tried: " << data_url->str() << ") Object Store Message: " << message;
         BESDEBUG(MODULE, msg.str() << endl);
         VERBOSE(msg.str() << endl);
         throw BESInternalError(msg.str(), __FILE__, __LINE__);

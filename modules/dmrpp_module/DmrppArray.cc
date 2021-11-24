@@ -725,8 +725,7 @@ void DmrppArray::read_contiguous()
     if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+name(), "");
 
     // Get the single chunk that makes up this CONTIGUOUS variable.
-    //auto chunk_refs = get_chunks();
-    if (get_chunks_size() != 1) // FIXME chunk_refs.size() != 1)
+    if (get_chunks_size() != 1)
         throw BESInternalError(string("Expected only a single chunk for variable ") + name(), __FILE__, __LINE__);
 
     // This is the original chunk for this 'contiguous' variable.
@@ -931,9 +930,7 @@ void DmrppArray::insert_chunk_unconstrained(shared_ptr<Chunk> chunk, unsigned in
  */
 void DmrppArray::read_chunks_unconstrained()
 {
-
-    // auto chunk_refs = get_chunks();
-    if (get_chunks_size() < 2) // FIXME chunk_refs.size() < 2)
+    if (get_chunks_size() < 2)
         throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
 
     // Find all the required chunks to read. I used a queue to preserve the chunk order, which
@@ -1224,8 +1221,7 @@ void DmrppArray::insert_chunk(
  */
 void DmrppArray::read_chunks()
 {
-    // auto chunk_refs = get_chunks();
-    if (get_chunks_size() < 2) // FIXME chunk_refs.size() < 2)
+    if (get_chunks_size() < 2)
         throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
 
     // Find all the required chunks to read. I used a queue to preserve the chunk order, which
@@ -1474,7 +1470,7 @@ bool DmrppArray::read()
 
     // Single chunk and 'contiguous' are the same for this code.
 
-    if (get_chunks_size() == 1) { // FIXME get_immutable_chunks().size() == 1) { // Removed: || get_chunk_dimension_sizes().empty()) {
+    if (get_chunks_size() == 1) {
         BESDEBUG(dmrpp_4, "Calling read_contiguous() for " << name() << endl);
         read_contiguous();    // Throws on various errors
     }
@@ -1673,7 +1669,7 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/)
 
     // Only print the chunks' info if there. This is the code added to libdap::Array::print_dap4().
     // jhrg 5/10/18
-    if (DmrppCommon::d_print_chunks && get_chunks_size() > 0) // FIXME get_immutable_chunks().size() > 0)
+    if (DmrppCommon::d_print_chunks && get_chunks_size() > 0)
         print_chunks_element(xml, DmrppCommon::d_ns_prefix);
 
     // If this variable uses the COMPACT layout, encode the values for
