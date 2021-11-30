@@ -53,6 +53,9 @@ DmrppUrl::operator=(const DmrppUrl &rhs)
 bool
 DmrppUrl::read()
 {
+    if (!get_chunks_loaded())
+        load_chunks(this);
+
     if (read_p())
         return true;
 
@@ -61,6 +64,15 @@ DmrppUrl::read()
     set_value(value);   // sets read_p too
 
     return true;
+}
+
+void
+DmrppUrl::set_send_p(bool state)
+{
+    if (!get_attributes_loaded())
+        load_attributes(this);
+
+    Url::set_send_p(state);
 }
 
 void DmrppUrl::dump(ostream & strm) const

@@ -25,6 +25,7 @@
 #include "config.h"
 
 #include <string>
+#include <memory>
 
 #include <BESError.h>
 #include <BESDebug.h>
@@ -54,14 +55,26 @@ bool DmrppByte::read()
 {
     BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for " << name() << endl);
 
+    if (!get_chunks_loaded())
+        load_chunks(this);
+
     if (read_p())
         return true;
 
-    set_value(*reinterpret_cast<dods_byte*>(read_atomic(name())));
+     set_value(*reinterpret_cast<dods_byte*>(read_atomic(name())));
 
     set_read_p(true);
 
     return true;
+}
+
+void
+DmrppByte::set_send_p(bool state)
+{
+    if (!get_attributes_loaded())
+        load_attributes(this);
+
+    Byte::set_send_p(state);
 }
 
 void DmrppByte::dump(ostream & strm) const

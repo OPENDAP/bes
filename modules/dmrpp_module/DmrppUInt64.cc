@@ -56,6 +56,9 @@ DmrppUInt64::read()
 {
     BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
 
+    if (!get_chunks_loaded())
+        load_chunks(this);
+
     if (read_p())
         return true;
 
@@ -68,6 +71,15 @@ DmrppUInt64::read()
 
     return true;
 
+}
+
+void
+DmrppUInt64::set_send_p(bool state)
+{
+    if (!get_attributes_loaded())
+        load_attributes(this);
+
+    UInt64::set_send_p(state);
 }
 
 void DmrppUInt64::dump(ostream & strm) const

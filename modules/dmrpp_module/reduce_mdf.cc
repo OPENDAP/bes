@@ -1,9 +1,9 @@
-#include<iostream>
-#include<sstream>
-#include<fstream>
-#include<string.h>
-#include<stdio.h>
-#include<vector>
+#include <iostream>
+#include <sstream>
+#include <fstream>
+#include <string.h>
+#include <stdio.h>
+#include <vector>
 #include <openssl/sha.h>
 #include <unistd.h>
 
@@ -204,7 +204,7 @@ string retrieve_data_sha256(FILE*fp,const vector<size_t> &offsets,const vector<s
         // Seek according to offset
         if(fseek(fp,offsets[i],SEEK_SET)!=0)
             return ret_str;
-        size_t result = fread(&buf[cur_size],1,nbytes[i],fp);
+        /* unused size_t result =*/ fread(&buf[cur_size],1,nbytes[i],fp);
         cur_size +=nbytes[i];
     }
 
@@ -229,8 +229,11 @@ bool retrieve_chunk_info(FILE*fp,vector<size_t> &offsets,vector<size_t> &nbytes)
     if(fseek(fp,0,SEEK_END)!=0) 
         return false;
     fSize = ftell(fp);
-    if(fSize <0) 
+#if 0
+    // fSize is unsigned. jhrg 11/23/21
+    if(fSize <0)
         return false;
+#endif
     
     if(fseek(fp,0,SEEK_SET)!=0)
         return false;

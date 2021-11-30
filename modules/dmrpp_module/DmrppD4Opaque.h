@@ -44,7 +44,9 @@ class DmrppD4Opaque: public libdap::D4Opaque, public DmrppCommon {
 public:
     DmrppD4Opaque(const std::string &n) : libdap::D4Opaque(n), DmrppCommon() { }
     DmrppD4Opaque(const std::string &n, const std::string &d) : libdap::D4Opaque(n, d), DmrppCommon() { }
-    DmrppD4Opaque(const DmrppD4Opaque &rhs) = default;
+    DmrppD4Opaque(const std::string &n, std::shared_ptr<DMZ> dmz) : libdap::D4Opaque(n), DmrppCommon(dmz) { }
+    DmrppD4Opaque(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : libdap::D4Opaque(n, d), DmrppCommon(dmz) { }
+    DmrppD4Opaque(const DmrppD4Opaque &) = default;
 
     virtual ~DmrppD4Opaque() = default;
 
@@ -75,7 +77,8 @@ public:
         d_buf.resize(size);
     }
 
-    virtual bool read();
+    bool read() override;
+    void set_send_p(bool state) override;
 
     virtual void print_dap4(libdap::XMLWriter &writer, bool constrained = false)
     {

@@ -41,7 +41,9 @@ class DmrppInt8: public libdap::Int8, public DmrppCommon {
 public:
     DmrppInt8(const std::string &n) : libdap::Int8(n), DmrppCommon() { }
     DmrppInt8(const std::string &n, const std::string &d) : libdap::Int8(n, d), DmrppCommon() { }
-    DmrppInt8(const DmrppInt8 &rhs) = default;
+    DmrppInt8(const std::string &n, std::shared_ptr<DMZ> dmz) : libdap::Int8(n), DmrppCommon(dmz) { }
+    DmrppInt8(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : libdap::Int8(n, d), DmrppCommon(dmz) { }
+    DmrppInt8(const DmrppInt8 &) = default;
 
     virtual ~DmrppInt8() =default;
 
@@ -51,7 +53,8 @@ public:
         return new DmrppInt8(*this);
     }
 
-    virtual bool read();
+    bool read() override;
+    void set_send_p(bool state) override;
 
     virtual void print_dap4(libdap::XMLWriter &writer, bool constrained = false)
     {

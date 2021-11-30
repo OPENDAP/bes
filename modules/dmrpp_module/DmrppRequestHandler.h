@@ -27,6 +27,7 @@
 #include <ostream>
 
 #include "BESRequestHandler.h"
+#include "DMZ.h"
 
 class ObjMemCache;  // in bes/dap
 class BESContainer;
@@ -46,6 +47,12 @@ class DmrppRequestHandler: public BESRequestHandler {
 private:
     // These are not used. See the netcdf handler for an example of their use.
     // jhrg 4/24/18
+    // These are now used - not sure when we started using them. We might also
+    // look into whether these and the MDS are really appropriate for the DMR++
+    // code since it is, effectively, using cached metadata. The MDS caches info
+    // as XML, and the DMR++ is XML, so the difference is negligible. In the case
+    // of the memory cache, the size of the DMZ in memory may be an issue.
+    // jhrg 11/12/21
     static ObjMemCache *das_cache;
     static ObjMemCache *dds_cache;
     static ObjMemCache *dmr_cache;
@@ -54,9 +61,15 @@ private:
 	static void build_dmr_from_file(BESContainer *container, libdap::DMR* dmr);
     template <class T> static void get_dds_from_dmr_or_cache(BESDataHandlerInterface &dhi, T *bdds);
 
+    // Allocate a new DMZ for each request? This should work, but may result in more
+    // cycling of data in and out of memory. The shared_ptr<> will be passed into
+    // instances of BaseType and used from withing the specialized read methods.
+    // jhrg 11/3/21
+    static std::shared_ptr<DMZ> dmz;
+
 public:
-	DmrppRequestHandler(const std::string &name);
-	virtual ~DmrppRequestHandler();
+	explicit DmrppRequestHandler(const std::string &name);
+	~DmrppRequestHandler() override;
 
     static CurlHandlePool *curl_handle_pool;
 
@@ -67,6 +80,8 @@ public:
     static unsigned int d_max_compute_threads;
 
     static unsigned long long d_contiguous_concurrent_threshold;
+
+    static bool d_require_chunks;
 
     // In the original DMR++ documents, the order of the filters used by the HDF5
     // library when writing chunks was ignored. This lead to an unfortunate situation
@@ -90,7 +105,7 @@ public:
 	static bool dap_build_vers(BESDataHandlerInterface &dhi);
 	static bool dap_build_help(BESDataHandlerInterface &dhi);
 
-	virtual void dump(std::ostream &strm) const;
+	void dump(std::ostream &strm) const override;
 };
 
 } // namespace dmrpp

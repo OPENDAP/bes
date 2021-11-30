@@ -55,6 +55,9 @@ DmrppFloat64::read()
 {
 	BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
 
+    if (!get_chunks_loaded())
+        load_chunks(this);
+
     if (read_p())
         return true;
 
@@ -63,10 +66,15 @@ DmrppFloat64::read()
     set_read_p(true);
 
     return true;
+}
 
+void
+DmrppFloat64::set_send_p(bool state)
+{
+    if (!get_attributes_loaded())
+        load_attributes(this);
 
-
-
+    Float64::set_send_p(state);
 }
 
 void DmrppFloat64::dump(ostream & strm) const

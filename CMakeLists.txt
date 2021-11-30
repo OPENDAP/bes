@@ -40,8 +40,8 @@ endif()
 # Where the hyrax project puts the dependencies' headers
 
 include_directories(../build/deps/include)
-include_directories(../build//include)
-include_directories(../build//include/libdap)
+include_directories(../build/include)
+include_directories(../build/include/libdap)
 
 # These should not be referenced outside of libdap. jhrg 12/5/19
 # include_directories(../libdap4/d4_ce)
@@ -61,6 +61,8 @@ include_directories(dapreader)
 include_directories(dispatch)
 include_directories(http)
 include_directories(rapidjson)
+include_directories(rapidxml)
+include_directories(pugixml/src)
 
 include_directories(dispatch/PicoSHA2)
 include_directories(dispatch/tests)
@@ -163,9 +165,12 @@ include_directories(xmlcommand/tests)
 include_directories(xmlcommand/unit-tests)
 #include_directories(xmlcommand/unused)
 
-
 add_executable(bes
     config.h
+
+	rapidjson/rapidjson.h
+	pugixml/src/pugixml.hpp
+
     cmdln/unit-tests/test_config.h.in
     cmdln/unit-tests/translateT.cc
     cmdln/CmdApp.cc
@@ -818,6 +823,11 @@ add_executable(bes
     modules/dmrpp_module/check_dmrpp.cc
     modules/dmrpp_module/merge_dmrpp.cc
     modules/dmrpp_module/DmrppNames.h
+
+	modules/dmrpp_module/DMZ.h
+	modules/dmrpp_module/DMZ.cc
+	modules/dmrpp_module/unit-tests/DMZTest.cc
+
     modules/dmrpp_module/unit-tests/awsv4_test.cc
     modules/dmrpp_module/AccessCredentials.cc
     modules/dmrpp_module/AccessCredentials.h
@@ -2003,7 +2013,7 @@ add_executable(bes
 
     standalone/besstandalone.cc
 	modules/fileout_netcdf/history_utils.cc
-	modules/fileout_netcdf/history_utils.h)
+	modules/fileout_netcdf/history_utils.h modules/dmrpp_module/unit-tests/rapid_xml_test.cc)
 
 if (EXISTS modules/sql_handler)
 	add_executable(bes

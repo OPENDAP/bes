@@ -48,6 +48,8 @@ namespace dmrpp {
 size_t chunk_header_callback(char *buffer, size_t size, size_t nitems, void *data);
 size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data);
 
+void process_s3_error_response(const std::shared_ptr<http::url> &data_url, const std::string &xml_message);
+
 /**
  * This class is used to encapsulate the state and behavior needed for reading
  * chunked data associated with a DAP variable. In particular it is based on the
@@ -93,6 +95,7 @@ private:
     std::string d_response_content_type;
 
     // static const std::string tracking_context;
+
 
     friend class ChunkTest;
     friend class DmrppCommonTest;

@@ -41,7 +41,9 @@ class DmrppByte: public libdap::Byte, public DmrppCommon {
 public:
     DmrppByte(const std::string &n) : Byte(n), DmrppCommon() { }
     DmrppByte(const std::string &n, const std::string &d) : Byte(n, d), DmrppCommon() { }
-    DmrppByte(const DmrppByte &rhs) = default;
+    DmrppByte(const std::string &n, shared_ptr<DMZ> dmz) : Byte(n), DmrppCommon(dmz) { }
+    DmrppByte(const std::string &n, const std::string &d, shared_ptr<DMZ> dmz) : Byte(n, d), DmrppCommon(dmz) { }
+    DmrppByte(const DmrppByte &) = default;
 
     virtual ~DmrppByte() = default;
 
@@ -51,7 +53,8 @@ public:
         return new DmrppByte(*this);
     }
 
-    virtual bool read();
+    bool read() override;
+    void set_send_p(bool state) override;
 
     virtual void print_dap4(libdap::XMLWriter &writer, bool constrained = false)
     {

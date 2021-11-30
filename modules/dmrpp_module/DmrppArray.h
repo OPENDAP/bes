@@ -123,7 +123,13 @@ public:
     DmrppArray(const std::string &n, const std::string &d, libdap::BaseType *v) :
             libdap::Array(n, d, v, true), DmrppCommon() { }
 
-    DmrppArray(const DmrppArray &rhs) = default;
+    DmrppArray(const string &n, BaseType *v, shared_ptr<DMZ> dmz) :
+            libdap::Array(n, v, true), DmrppCommon(dmz) { }
+
+    DmrppArray(const string &n, const string &d, BaseType *v, shared_ptr<DMZ> dmz) :
+            libdap::Array(n, d, v, true), DmrppCommon(dmz) { }
+
+    DmrppArray(const DmrppArray &) = default;
 
     virtual ~DmrppArray() = default;
 
@@ -131,7 +137,8 @@ public:
 
     virtual libdap::BaseType *ptr_duplicate() { return new DmrppArray(*this); }
 
-    virtual bool read();
+    bool read() override;
+    void set_send_p(bool state) override;
 
     virtual unsigned long long get_size(bool constrained = false);
 

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="chunked_scalar_string.h5" dmrpp:version="3.20.9">
+    <String name="scalar_big_string">
+        <Attribute name="origname" type="String">
+            <Value>scalar_big_string</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/scalar_big_string</Value>
+        </Attribute>
+        <dmrpp:chunks byteOrder="LE">
+            <dmrpp:chunk offset="2144" nBytes="16"/>
+        </dmrpp:chunks>
+    </String>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.20.9</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.20.9</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.20.8</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -M -f /path_removed/data/dmrpp/chunked_scalar_string.h5 -r /path_removed/data/dmrpp/chunked_scalar_string.h5.dmr</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

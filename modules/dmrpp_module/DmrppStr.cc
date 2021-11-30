@@ -53,6 +53,9 @@ DmrppStr::operator=(const DmrppStr &rhs)
 bool
 DmrppStr::read()
 {
+    if (!get_chunks_loaded())
+        load_chunks(this);
+
     if (read_p())
         return true;
 
@@ -61,6 +64,15 @@ DmrppStr::read()
     set_value(value);   // sets read_p too
 
     return true;
+}
+
+void
+DmrppStr::set_send_p(bool state)
+{
+    if (!get_attributes_loaded())
+        load_attributes(this);
+
+    Str::set_send_p(state);
 }
 
 void DmrppStr::dump(ostream & strm) const

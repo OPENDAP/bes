@@ -33,10 +33,16 @@
 
 #include <curl/curl.h>
 
-#include "libdap/BaseType.h"
-#include "libdap/D4Attributes.h"
-#include "libdap/XMLWriter.h"
-#include "libdap/util.h"
+#include <libdap/BaseType.h>
+#include <libdap/D4Attributes.h>
+#include <libdap/XMLWriter.h>
+#include <libdap/util.h>
+
+#if 1
+#define PUGIXML_NO_XPATH
+#define PUGIXML_HEADER_ONLY
+#include <pugixml.hpp>
+#endif
 
 #include "url_impl.h"
 #include "BESIndent.h"
@@ -151,7 +157,7 @@ void DmrppCommon::parse_chunk_dimension_sizes(const string &chunk_dims_string)
         }
     }
 
-    // If it's multi valued there's still one more value left to process
+    // If it's multivalued there's still one more value left to process
     // If it's single valued the same is true, so let's ingest that.
     d_chunk_dimension_sizes.push_back(strtol(chunk_dims.c_str(), nullptr, 10));
 }
@@ -201,11 +207,10 @@ unsigned long DmrppCommon::add_chunk(
         unsigned long long size,
         unsigned long long offset,
         const string &position_in_array)
-
 {
     vector<unsigned long long> cpia_vector;
     Chunk::parse_chunk_position_in_array_string(position_in_array, cpia_vector);
-    return add_chunk(data_url, byte_order, size, offset, cpia_vector);
+    return add_chunk(move(data_url), byte_order, size, offset, cpia_vector);
 }
 
 unsigned long DmrppCommon::add_chunk(
@@ -215,7 +220,7 @@ unsigned long DmrppCommon::add_chunk(
         unsigned long long offset,
         const vector<unsigned long long> &position_in_array)
 {
-    std::shared_ptr<Chunk> chunk(new Chunk(data_url, byte_order, size, offset, position_in_array));
+    std::shared_ptr<Chunk> chunk(new Chunk(move(data_url), byte_order, size, offset, position_in_array));
 #if 0
     auto array = dynamic_cast<dmrpp::DmrppArray *>(this);
     if(!array){
@@ -267,7 +272,6 @@ unsigned long DmrppCommon::add_chunk(
         unsigned long long size,
         unsigned long long offset,
         const string &position_in_array)
-
 {
     vector<unsigned long long> cpia_vector;
     Chunk::parse_chunk_position_in_array_string(position_in_array, cpia_vector);
@@ -306,12 +310,10 @@ unsigned long DmrppCommon::add_chunk(
 char *
 DmrppCommon::read_atomic(const string &name)
 {
-    auto chunk_refs = get_chunks();
-
-    if (chunk_refs.size() != 1)
+    if (get_chunks_size() != 1)
         throw BESInternalError(string("Expected only a single chunk for variable ") + name, __FILE__, __LINE__);
 
-    auto chunk = chunk_refs[0];
+    auto chunk = get_immutable_chunks()[0];
 
     chunk->read_chunk();
 
@@ -320,6 +322,9 @@ DmrppCommon::read_atomic(const string &name)
 
 /**
  * @brief Print the Chunk information.
+ * @note Should not be called when the d_chunks vector has no elements because it
+ * will write out a <chunks> element that is going to be empty when it might just
+ * be the case that the chunks have not been read.
  */
 void
 DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
@@ -333,8 +338,8 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
             throw BESInternalError("Could not write compression attribute.", __FILE__, __LINE__);
 
 
-    if(!get_chunks().empty()){
-        auto first_chunk = get_chunks().front();
+    if(get_chunks_size() != 0) { // FIXME !get_chunks().empty()){
+        auto first_chunk = get_immutable_chunks().front();
         if (!first_chunk->get_byte_order().empty()) {
             if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "byteOrder",
                                         (const xmlChar *) first_chunk->get_byte_order().c_str()) < 0)
@@ -356,7 +361,7 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
     // Start elements "chunk" with dmrpp namespace and attributes:
     // for (vector<Chunk>::iterator i = get_chunks().begin(), e = get_chunks().end(); i != e; ++i) {
 
-    for(auto chunk: get_chunks()){
+    for(auto chunk: get_immutable_chunks()){
 
         if (xmlTextWriterStartElementNS(xml.get_writer(), (const xmlChar*)name_space.c_str(), (const xmlChar*) "chunk", NULL) < 0)
             throw BESInternalError("Could not start element chunk", __FILE__, __LINE__);
@@ -439,7 +444,7 @@ void DmrppCommon::print_dmrpp(XMLWriter &xml, bool constrained /*false*/)
         bt.get_attr_table().print_xml_writer(xml);
 
     // This is the code added to libdap::BaseType::print_dap4(). jhrg 5/10/18
-    if (DmrppCommon::d_print_chunks && get_immutable_chunks().size() > 0)
+    if (DmrppCommon::d_print_chunks && get_chunks_size() > 0)
         print_chunks_element(xml, DmrppCommon::d_ns_prefix);
 
     if (xmlTextWriterEndElement(xml.get_writer()) < 0)
@@ -469,5 +474,24 @@ void DmrppCommon::dump(ostream & strm) const
     }
 }
 
-} // namepsace dmrpp
+/**
+ * @brief Load chunk information for this variable.
+ * @param btp Load the chunk information for/into this variable
+ */
+void
+DmrppCommon::load_chunks(BaseType *btp) {
+    d_dmz->load_chunks(btp);
+}
+
+/**
+ * @brief Load the attribute information for this variable
+ * @param btp
+ */
+void
+DmrppCommon::load_attributes(libdap::BaseType *btp)
+{
+    d_dmz->load_attributes(btp);
+}
+
+} // namespace dmrpp
 

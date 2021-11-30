@@ -262,7 +262,7 @@ public:
             auto itr = dmr->root()->var_begin();
             while(itr != dmr->root()->var_end()){
                 DmrppCommon *dc = dynamic_cast<DmrppCommon*>(*itr);
-                for(auto chunk : dc->get_chunks()){
+                for(auto chunk : dc->get_immutable_chunks()){
                     if(debug) cerr << prolog << "Chunk URL: " << chunk->get_data_url()->str() << " ("
                                    << (chunk->get_data_url()->is_trusted()?"":"NOT ") << "trusted)" << endl;
                     CPPUNIT_ASSERT(chunk->get_data_url()->is_trusted());

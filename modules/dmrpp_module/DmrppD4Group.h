@@ -41,7 +41,9 @@ class DmrppD4Group: public libdap::D4Group, public DmrppCommon {
 public:
     DmrppD4Group(const std::string &n) : D4Group(n), DmrppCommon() { }
     DmrppD4Group(const std::string &n, const std::string &d) : D4Group(n, d), DmrppCommon() { }
-    DmrppD4Group(const DmrppD4Group &rhs) = default;
+    DmrppD4Group(const std::string &n, std::shared_ptr<DMZ> dmz) : D4Group(n), DmrppCommon(dmz) { }
+    DmrppD4Group(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : D4Group(n, d), DmrppCommon(dmz) { }
+    DmrppD4Group(const DmrppD4Group &) = default;
 
     virtual ~DmrppD4Group() = default;
 
@@ -50,6 +52,10 @@ public:
     virtual libdap::BaseType *ptr_duplicate(){
         return new DmrppD4Group(*this);
     }
+
+#if 1
+    void set_send_p(bool state) override;
+#endif
 
     virtual void dump(ostream & strm) const;
 };

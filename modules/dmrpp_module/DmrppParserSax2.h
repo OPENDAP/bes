@@ -73,8 +73,7 @@ private:
 
         inside_dataset,
 
-        // inside_group is the state just after parsing the start of a Group
-        // element.
+        // inside_group is the state just after parsing the start of a Group element.
         inside_group,
 
         inside_attribute_container,
@@ -96,9 +95,6 @@ private:
 
         inside_constructor,
 
-        // inside_sequence, Removed from merged code jhrg 5/2/14
-
-        // FIXMEinside_dmrpp_byte_stream,
         not_dap4_element,
         inside_dmrpp_object,
         inside_dmrpp_chunkDimensionSizes_element,
@@ -119,10 +115,6 @@ private:
     // This is passed into the parser using the intern() methods.
     libdap::DMR *d_dmr;   // dump DMR here
     libdap::DMR *dmr() const { return d_dmr; }
-
-
-
-
 
     // These stacks hold the state of the parse as it progresses.
     std::stack<ParseState> s; // Current parse state
@@ -174,7 +166,6 @@ private:
     std::string dods_attr_type; // ... not XML ...
     std::string char_data;  // char data in value elements; null after use
     std::string root_ns;     // What is the namespace of the root node (Group)
-
 
     bool d_strict;
 

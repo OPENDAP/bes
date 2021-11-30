@@ -147,16 +147,16 @@ url::~url()
  * @param source_url
  */
 void url::parse() {
-    const string protcol_end("://");
+    const string protocol_end("://");
     BESDEBUG(MODULE, prolog << "BEGIN (parsing: '" << d_source_url_str << "')" << endl);
 
     // If the supplied string does not start with a protocol, we assume it must be a
     // path relative the BES.Catalog.catalog.RootDirectory because that's the only
     // thing we are going to allow, even when it starts with slash '/'. Basically
     // we force it to be in the BES.Catalog.catalog.RootDirectory tree.
-    if(d_source_url_str.find(protcol_end) == string::npos){
-        // Since we want a valid path in the file system tree for data we make it so by adding the
-        // the file path starts with the catalog root dir.
+    if(d_source_url_str.find(protocol_end) == string::npos){
+        // Since we want a valid path in the file system tree for data, we make it so by adding
+        // the file path that starts with the catalog root dir.
         BESCatalogList *bcl = BESCatalogList::TheCatalogList();
         string default_catalog_name = bcl->default_catalog_name();
         BESDEBUG(MODULE, prolog << "Searching for  catalog: " << default_catalog_name << endl);
@@ -180,10 +180,10 @@ void url::parse() {
     const string parse_url_target(d_source_url_str);
 
     string::const_iterator prot_i = search(parse_url_target.begin(), parse_url_target.end(),
-                                           protcol_end.begin(), protcol_end.end());
+                                           protocol_end.begin(), protocol_end.end());
 
     if (prot_i != parse_url_target.end())
-        advance(prot_i, protcol_end.length());
+        advance(prot_i, protocol_end.length());
 
     d_protocol.reserve(distance(parse_url_target.begin(), prot_i));
     transform(parse_url_target.begin(), prot_i,
@@ -420,7 +420,5 @@ string url::dump(){
     ss << indent << "d_ingest_time:      " << d_ingest_time.time_since_epoch().count() << endl;
     return ss.str();
 }
-
-
 
 } // namespace http

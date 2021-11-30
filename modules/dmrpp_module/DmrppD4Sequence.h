@@ -37,7 +37,9 @@ class DmrppD4Sequence: public libdap::D4Sequence, public DmrppCommon {
 public:
     DmrppD4Sequence(const std::string &n) : D4Sequence(n), DmrppCommon() { }
     DmrppD4Sequence(const std::string &n, const std::string &d) : D4Sequence(n, d), DmrppCommon() { }
-    DmrppD4Sequence(const DmrppD4Sequence &rhs) = default;
+    DmrppD4Sequence(const std::string &n, std::shared_ptr<DMZ> dmz) : D4Sequence(n), DmrppCommon(dmz) { }
+    DmrppD4Sequence(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : D4Sequence(n, d), DmrppCommon(dmz) { }
+    DmrppD4Sequence(const DmrppD4Sequence &) = default;
 
     virtual ~DmrppD4Sequence() = default;
 

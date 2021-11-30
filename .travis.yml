@@ -104,11 +104,12 @@ before_script:
 # Update: it's back in. There may be a way to skip the scan for a DRAFT pull request,
 # but I won't know until I hear back from Travis-CI support. jhrg 7/23/21
 
+# FIXME Remove 'AND type != pull_request' on build and scan before merge
 stages:
   - name: build
-    if: branch = master
+    if: branch = master AND type != pull_request
   - name: scan
-    if:  branch = master
+    if:  branch = master AND type != pull_request
   - name: package
     if: branch = master
   - name: hyrax-olfs-trigger

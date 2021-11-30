@@ -5,13 +5,11 @@ AM_CPPFLAGS = -I$(top_srcdir)
 
 noinst_DATA = bes.conf
 
-CLEANFILES = bes.conf bes.log $(srcdir)/package.m4 $(TESTSUITE) \
-bes_serial.conf $(TESTSUITE_S3)
+CLEANFILES = bes.conf bes.log bes_serial.conf $(TESTSUITE) $(TESTSUITE_S3) $(srcdir)/package.m4
 
-EXTRA_DIST = contiguous chunked compact new_types s3 \
-$(srcdir)/package.m4 $(TESTSUITE) $(TESTSUITE).at \
-$(TESTSUITE_S3)  $(TESTSUITE_S3).at \
-atlocal.in bes.conf.in bes_serial.conf.in
+EXTRA_DIST = contiguous chunked compact new_types s3 $(TESTSUITE) $(TESTSUITE).at \
+$(TESTSUITE_S3)  $(TESTSUITE_S3).at atlocal.in bes.conf.in bes_serial.conf.in \
+$(srcdir)/package.m4
 
 DISTCLEANFILES = atconfig
 
@@ -27,17 +25,6 @@ bes.conf: $(top_srcdir)/configure.ac $(srcdir)/bes.conf.in
 
 bes_serial.conf: $(top_srcdir)/configure.ac $(srcdir)/bes_serial.conf.in
 
-# bes_mds_tests.conf: $(top_srcdir)/configure.ac $(srcdir)/bes_mds_tests.conf.in
-
-# $(builddir)/mds_for_tests:
-# 	cp -r $(top_srcdir)/modules/dmrpp_module/data/mds_for_tests $(builddir)/mds_for_tests
-# 	chmod -R a+w $(builddir)/mds_for_tests
-# 	(cd $(builddir)/mds_for_tests && \
-# 	 clean_abs_top_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
-# 	 for d in *.in; \
-# 		do sed -e "s%[@]abs_top_srcdir[@]%$${clean_abs_top_srcdir}%" $$d > `basename $$d .in`; \
-# 	 done)
-
 ############## Autotest follows #####################
 
 AUTOM4TE = autom4te
@@ -45,24 +32,9 @@ AUTOTEST = $(AUTOM4TE) --language=autotest
 
 TESTSUITE = $(srcdir)/testsuite
 
-# TESTSUITE_MDS = $(srcdir)/testsuite_mds_tests
-
 TESTSUITE_S3 = $(srcdir)/testsuite_s3_tests
 
-s3-tests: $(TESTSUITE_S3) bes.conf bes_serial.conf
-	@echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
-	@if [ -n "$${CMAC_ID}" ] \
-		&& [ -n "$${CMAC_ACCESS_KEY}" ] \
-		&& [ -n "$${CMAC_REGION}" ]  \
-		&& [ -n "$${CMAC_BUCKET}" ]   \
-		&& [ -n "$${CMAC_URL}" ] ; then \
-		echo "--- S3 Auth Tests ---"; \
-		$(SHELL) '$(TESTSUITE_S3)' $(TESTSUITEFLAGS); \
-	else \
-		echo "No access credentials available, skipping S3 authentication tests"; \
-		true;\
-	fi
-	@echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
+TESTSUITE_DMRPP = $(srcdir)/testsuite_dmrpp_tests
 
 check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_S3) bes.conf bes_serial.conf 
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
@@ -84,21 +56,14 @@ check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_S3) bes.conf bes_serial.c
 	fi
 	@echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
 
-# $(SHELL) '$(TESTSUITE_MDS)' $(TESTSUITEFLAGS) --conf=bes_mds_tests.conf
-
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
 	test ! -f '$(TESTSUITE_S3)' || $(SHELL) '$(TESTSUITE_S3)' --clean
-
-# test ! -d $(builddir)/mds_for_tests || rm -rf $(builddir)/mds_for_tests
-# test ! -f '$(TESTSUITE_MDS)' || $(SHELL) '$(TESTSUITE_MDS)' --clean
 
 %: %.at 
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
 
 $(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
-
-# $(TESTSUITE_MDS): $(TESTSUITE_MDS).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
 
 $(TESTSUITE_S3): $(TESTSUITE_S3).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
 

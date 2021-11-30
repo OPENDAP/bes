@@ -41,7 +41,9 @@ class DmrppUInt64: public libdap::UInt64, public DmrppCommon {
 public:
     DmrppUInt64(const std::string &n) : libdap::UInt64(n), DmrppCommon() { }
     DmrppUInt64(const std::string &n, const std::string &d) : libdap::UInt64(n, d), DmrppCommon() { }
-    DmrppUInt64(const DmrppUInt64 &rhs) = default;
+    DmrppUInt64(const std::string &n, std::shared_ptr<DMZ> dmz) : libdap::UInt64(n), DmrppCommon(dmz) { }
+    DmrppUInt64(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : libdap::UInt64(n, d), DmrppCommon(dmz) { }
+    DmrppUInt64(const DmrppUInt64 &) = default;
 
     virtual ~DmrppUInt64() = default;
 
@@ -52,7 +54,8 @@ public:
     }
 
 
-    virtual bool read();
+    bool read() override;
+    void set_send_p(bool state) override;
 
     virtual void print_dap4(libdap::XMLWriter &writer, bool constrained = false)
     {

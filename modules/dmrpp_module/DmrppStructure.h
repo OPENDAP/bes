@@ -41,7 +41,9 @@ class DmrppStructure: public libdap::Structure, public DmrppCommon {
 public:
     DmrppStructure(const std::string &n) : libdap::Structure(n), DmrppCommon() { }
     DmrppStructure(const std::string &n, const std::string &d) : libdap::Structure(n, d), DmrppCommon() { }
-    DmrppStructure(const DmrppStructure &rhs) = default;
+    DmrppStructure(const std::string &n, std::shared_ptr<DMZ> dmz) : libdap::Structure(n), DmrppCommon(dmz) { }
+    DmrppStructure(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : libdap::Structure(n, d), DmrppCommon(dmz) { }
+    DmrppStructure(const DmrppStructure &) = default;
 
     virtual ~DmrppStructure() = default;
 
@@ -50,11 +52,6 @@ public:
     virtual libdap::BaseType *ptr_duplicate()  {
         return new DmrppStructure(*this);
     }
-
-#if 0
-    virtual void print_dap4(libdap::XMLWriter &xml, bool constrained);
-#endif
-
 
     virtual void dump(ostream & strm) const;
 };

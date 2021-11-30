@@ -68,9 +68,10 @@
 
 #include "Base64.h"
 
-#define FIVE_12K  524288;
-#define ONE_MB   1048576;
-#define MAX_INPUT_LINE_LENGTH ONE_MB;
+#define FIVE_12K  524288
+#define ONE_MB   1048576
+#define MAX_INPUT_LINE_LENGTH ONE_MB
+#define INCLUDE_BESDEBUG_ISSET 0
 
 #define prolog std::string("DmrppParserSax2::").append(__func__).append("() - ")
 
@@ -549,7 +550,7 @@ bool DmrppParserSax2::process_map(const char *name, const xmlChar **attrs, int n
         map_source = top_group()->find_map_source(map_name);
 
     // Change: If the parser is in 'strict' mode (the default) and the Array named by
-    // the Map cannot be fond, it is an error. If 'strict' mode is false (permissive
+    // the Map cannot be found, it is an error. If 'strict' mode is false (permissive
     // mode), then this is not an error. However, the Array referenced by the Map will
     // be null. This is a change in the parser's behavior to accommodate requests for
     // Arrays that include Maps that do not also include the Map(s) in the request.
@@ -842,12 +843,14 @@ void DmrppParserSax2::dmr_end_document(void * p)
         DmrppParserSax2::dmr_error(parser,
             "The document did not contain a valid root Group or contained unbalanced tags.");
 
+#if INCLUDE_BESDEBUG_ISSET
     if(BESDebug::IsSet(PARSER)){
         ostream *os = BESDebug::GetStrm();
         *os << prolog << "parser->top_group() BEGIN " << endl;
         parser->top_group()->dump(*os);
         *os << endl << prolog << "parser->top_group() END " << endl;
     }
+#endif
 
     parser->pop_group();     // leave the stack 'clean'
     parser->pop_attributes();
@@ -941,6 +944,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
             string href  = parser->get_attribute_val("href", attributes, nb_attributes);
             parser->dmrpp_dataset_href  = shared_ptr<http::url>(new http::url(href,trusted));
             BESDEBUG(PARSER, prolog << "Processed 'href' value into data_url. href: " << parser->dmrpp_dataset_href->str() << (trusted?"(trusted)":"") << endl);
+
             //######################################################################################################
             // Stop parser EffectiveUrl resolution (ndp - 08/27/2021)
             // I dropped this because:
@@ -954,6 +958,7 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
             //auto effective_url = EffectiveUrlCache::TheCache()->get_effective_url(parser->dmrpp_dataset_href);
             //BESDEBUG(PARSER, prolog << "EffectiveUrlCache::get_effective_url() returned: " << effective_url->str() << endl);
             //######################################################################################################
+
         }
         BESDEBUG(PARSER, prolog << "Dataset dmrpp:href is set to '" << parser->dmrpp_dataset_href->str() << "'" << endl);
 
@@ -1189,10 +1194,12 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 // -----------------------------------------------------------------------------------------------------
                 // We may have to cache the last accessed/redirect URL for data_url here because this URL
                 // may be unique to this chunk.
+
                 //BESDEBUG(PARSER, prolog << "Attempting to locate and cache the effective URL for Chunk URL: " << data_url->str() << endl);
                 //auto effective_url = EffectiveUrlCache::TheCache()->get_effective_url(data_url);
                 //BESDEBUG(PARSER, prolog << "EffectiveUrlCache::get_effective_url() returned: " << effective_url->str() << endl);
                 //######################################################################################################
+
             }
             else {
                 BESDEBUG(PARSER, prolog << "No attribute 'href' located. Trying Dataset/@dmrpp:href..." << endl);
@@ -1203,15 +1210,6 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
                 // done in the evaluation of the parser_start case.
                 BESDEBUG(PARSER, prolog << "Processing dmrpp:href into data_url. dmrpp:href='" << data_url->str() << "'" << endl);
             }
-            // First we see if it's an HTTP URL, and if not we
-            // make a local file url based on the Catalog Root
-#if 0
-            std::string http("http://");
-            std::string https("https://");
-            std::string file("file://");
-            if (data_url.compare(0, http.size(), http) && data_url.compare(0, https.size(), https)
-                && data_url.compare(0, file.size(), file))
-#endif
 
             if (data_url->protocol() != HTTP_PROTOCOL && data_url->protocol() != HTTPS_PROTOCOL && data_url->protocol() != FILE_PROTOCOL) {
                 BESDEBUG(PARSER, prolog << "data_url does NOT start with 'http://', 'https://' or 'file://'. "
@@ -1289,9 +1287,6 @@ void DmrppParserSax2::dmr_start_element(void *p, const xmlChar *l, const xmlChar
 
     BESDEBUG(PARSER, prolog << "Start element exit state: " << states[parser->get_state()] << endl);
 }
-
-
-
 
 void DmrppParserSax2::dmr_end_element(void *p, const xmlChar *l, const xmlChar *prefix, const xmlChar *URI)
 {

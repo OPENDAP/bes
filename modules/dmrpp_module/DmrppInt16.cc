@@ -56,6 +56,9 @@ DmrppInt16::read()
 {
     BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
 
+    if (!get_chunks_loaded())
+        load_chunks(this);
+
     if (read_p())
         return true;
 
@@ -64,10 +67,19 @@ DmrppInt16::read()
     if ( this->twiddle_bytes() ) {
         d_buf = bswap_16(d_buf);
     }
+
     set_read_p(true);
 
     return true;
+}
 
+void
+DmrppInt16::set_send_p(bool state)
+{
+    if (!get_attributes_loaded())
+        load_attributes(this);
+
+    Int16::set_send_p(state);
 }
 
 void DmrppInt16::dump(ostream & strm) const

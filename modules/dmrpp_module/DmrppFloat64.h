@@ -41,7 +41,9 @@ class DmrppFloat64: public libdap::Float64, public DmrppCommon {
 public:
     DmrppFloat64(const std::string &n) : libdap::Float64(n), DmrppCommon() { }
     DmrppFloat64(const std::string &n, const std::string &d) : libdap::Float64(n, d), DmrppCommon() { }
-    DmrppFloat64(const DmrppFloat64 &rhs) = default;
+    DmrppFloat64(const std::string &n, std::shared_ptr<DMZ> dmz) : libdap::Float64(n), DmrppCommon(dmz) { }
+    DmrppFloat64(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : libdap::Float64(n, d), DmrppCommon(dmz) { }
+    DmrppFloat64(const DmrppFloat64 &) = default;
 
     virtual ~DmrppFloat64() = default;
 
@@ -51,7 +53,8 @@ public:
         return new DmrppFloat64(*this);
     }
 
-    virtual bool read();
+    bool read() override;
+    void set_send_p(bool state) override;
 
     virtual void print_dap4(libdap::XMLWriter &writer, bool constrained = false)
     {

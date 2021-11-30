@@ -55,6 +55,9 @@ DmrppD4Enum::read()
 {
     BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
 
+    if (!get_chunks_loaded())
+        load_chunks(this);
+
     if (read_p())
         return true;
 
@@ -64,6 +67,15 @@ DmrppD4Enum::read()
 
     return true;
 
+}
+
+void
+DmrppD4Enum::set_send_p(bool state)
+{
+    if (!get_attributes_loaded())
+        load_attributes(this);
+
+    D4Enum::set_send_p(state);
 }
 
 void DmrppD4Enum::dump(ostream & strm) const

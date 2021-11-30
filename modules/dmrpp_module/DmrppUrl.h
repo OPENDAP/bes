@@ -41,7 +41,9 @@ class DmrppUrl: public libdap::Url, public DmrppCommon {
 public:
     DmrppUrl(const std::string &n) : libdap::Url(n), DmrppCommon() { }
     DmrppUrl(const std::string &n, const std::string &d) : libdap::Url(n, d), DmrppCommon() { }
-    DmrppUrl(const DmrppUrl &rhs) = default;
+    DmrppUrl(const std::string &n, std::shared_ptr<DMZ> dmz) : libdap::Url(n), DmrppCommon(dmz) { }
+    DmrppUrl(const std::string &n, const std::string &d, std::shared_ptr<DMZ> dmz) : libdap::Url(n, d), DmrppCommon(dmz) { }
+    DmrppUrl(const DmrppUrl &) = default;
 
     virtual ~DmrppUrl() = default;
 
@@ -51,7 +53,8 @@ public:
         return new DmrppUrl(*this);
     }
 
-    virtual bool read();
+    bool read() override;
+    void set_send_p(bool state) override;
 
     virtual void print_dap4(libdap::XMLWriter &writer, bool constrained = false)
     {

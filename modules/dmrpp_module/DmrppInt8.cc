@@ -55,6 +55,9 @@ DmrppInt8::read()
 {
     BESDEBUG("dmrpp", "Entering " <<__PRETTY_FUNCTION__ << " for '" << name() << "'" << endl);
 
+    if (!get_chunks_loaded())
+        load_chunks(this);
+
     if (read_p())
         return true;
 
@@ -64,6 +67,15 @@ DmrppInt8::read()
 
     return true;
 
+}
+
+void
+DmrppInt8::set_send_p(bool state)
+{
+    if (!get_attributes_loaded())
+        load_attributes(this);
+
+    Int8::set_send_p(state);
 }
 
 void DmrppInt8::dump(ostream & strm) const
