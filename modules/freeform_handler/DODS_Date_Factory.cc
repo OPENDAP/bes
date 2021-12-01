@@ -39,10 +39,10 @@ static char rcsid[] not_used = "$Id$";
 #include <cstdlib>
 #include <string>
 
-#include <AttrTable.h>
-#include <Error.h>
-#include <dods-datatypes.h>
-#include <dods-limits.h>
+#include <libdap/AttrTable.h>
+#include <libdap/Error.h>
+#include <libdap/dods-datatypes.h>
+#include <libdap/dods-limits.h>
 
 #include "DODS_Date_Factory.h"
 #include "util_ff.h"

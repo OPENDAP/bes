@@ -31,22 +31,22 @@
 #include "MyBaseTypeFactory.h"
 
 #include <libdap/BaseType.h>
-#include "BaseTypeFactory.h"
+#include <libdap/BaseTypeFactory.h>
 
 #include <libdap/Array.h>
-#include "Byte.h"
-#include "Float32.h"
-#include "Float64.h"
+#include <libdap/Byte.h>
+#include <libdap/Float32.h>
+#include <libdap/Float64.h>
 #include <libdap/Grid.h>
-#include "Int16.h"
-#include "Int32.h"
+#include <libdap/Int16.h>
+#include <libdap/Int32.h>
 #include "NCMLArray.h"
-#include "Sequence.h"
-#include "Str.h"
+#include <libdap/Sequence.h>
+#include <libdap/Str.h>
 #include <libdap/Structure.h>
-#include "UInt16.h"
-#include "UInt32.h"
-#include "Url.h"
+#include <libdap/UInt16.h>
+#include <libdap/UInt32.h>
+#include <libdap/Url.h>
 
 using namespace libdap;
 using namespace std;

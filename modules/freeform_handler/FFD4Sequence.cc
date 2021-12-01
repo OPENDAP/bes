@@ -31,8 +31,8 @@ using std::ostringstream;
 
 // #define DODS_DEBUG
 
-#include "Error.h"
-#include "debug.h"
+#include <libdap/Error.h>
+#include <libdap/debug.h>
 
 #include "FFStr.h"
 #include "FFD4Sequence.h"

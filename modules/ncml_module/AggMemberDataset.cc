@@ -29,8 +29,8 @@
 #include "AggMemberDataset.h"
 
 #include "BESDataDDSResponse.h" // bes
-#include "DataDDS.h"
-#include "DDS.h" // libdap
+#include <libdap/DataDDS.h>
+#include <libdap/DDS.h> // libdap
 #include "DDSLoader.h" // agg_util
 #include "NCMLDebug.h" // ncml_module
 #include "NCMLUtil.h" // ncml_module

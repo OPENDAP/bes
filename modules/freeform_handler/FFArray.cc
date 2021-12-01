@@ -43,15 +43,15 @@ static char rcsid[] not_used = { "$Id$" };
 
 #include <BESDebug.h>
 
-#include <dods-datatypes.h>
-#include <D4Attributes.h>
-#include <D4Group.h>
-#include <Error.h>
+#include <libdap/dods-datatypes.h>
+#include <libdap/D4Attributes.h>
+#include <libdap/D4Group.h>
+#include <libdap/Error.h>
 #include <libdap/InternalErr.h>
 
 #include "FFArray.h"
 #include "util_ff.h"
-#include "util.h"
+#include <libdap/util.h>
 
 BaseType *
 FFArray::ptr_duplicate()

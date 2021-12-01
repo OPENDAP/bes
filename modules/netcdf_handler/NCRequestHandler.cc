@@ -30,10 +30,10 @@
 #include <sstream>
 #include <exception>
 
-#include <DMR.h>
-#include <DataDDS.h>
-#include <mime_util.h>
-#include <D4BaseTypeFactory.h>
+#include <libdap/DMR.h>
+#include <libdap/DataDDS.h>
+#include <libdap/mime_util.h>
+#include <libdap/D4BaseTypeFactory.h>
 
 #include <BESResponseHandler.h>
 #include <BESResponseNames.h>
@@ -57,7 +57,7 @@
 #include <ObjMemCache.h>
 
 #include <libdap/InternalErr.h>
-#include <Ancillary.h>
+#include <libdap/Ancillary.h>
 
 #include "NCRequestHandler.h"
 #include "GlobalMetadataStore.h"

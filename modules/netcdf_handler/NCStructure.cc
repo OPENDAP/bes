@@ -45,8 +45,8 @@ static char rcsid[] not_used ={"$Id$"};
 
 #include <netcdf.h>
 
-#include <D4Attributes.h>
-#include <util.h>
+#include <libdap/D4Attributes.h>
+#include <libdap/util.h>
 #include <libdap/InternalErr.h>
 
 #include "nc_util.h"

@@ -6,16 +6,16 @@ using std::cerr;
 using std::endl;
 using std::ofstream;
 
-#include <Connect.h>
-#include <DataDDS.h>
-#include <Response.h>
-#include <Sequence.h>
-#include <Error.h>
-#include <DataDDS.h>
-#include <DDS.h>
+#include <libdap/Connect.h>
+#include <libdap/DataDDS.h>
+#include <libdap/Response.h>
+#include <libdap/Sequence.h>
+#include <libdap/Error.h>
+#include <libdap/DataDDS.h>
+#include <libdap/DDS.h>
 #include <libdap/Structure.h>
-#include <Sequence.h>
-#include <ConstraintEvaluator.h>
+#include <libdap/Sequence.h>
+#include <libdap/ConstraintEvaluator.h>
 
 using namespace libdap;
 

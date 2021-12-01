@@ -38,11 +38,11 @@ static char rcsid[] not_used ="$Id$";
 
 #include <string>
 
-#include "AttrTable.h"
-#include "Error.h"
+#include <libdap/AttrTable.h>
+#include <libdap/Error.h>
 #include <libdap/InternalErr.h>
-#include "dods-datatypes.h"
-#include "util.h"
+#include <libdap/dods-datatypes.h>
+#include <libdap/util.h>
 #include "util_ff.h"
 
 #include "DODS_Time_Factory.h"

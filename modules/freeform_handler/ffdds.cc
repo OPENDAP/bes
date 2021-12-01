@@ -44,14 +44,14 @@
 #include <iostream>
 #include <string>
 
-#include <Error.h>
+#include <libdap/Error.h>
 #include <libdap/InternalErr.h>
-#include <mime_util.h>
-#include <util.h>
+#include <libdap/mime_util.h>
+#include <libdap/util.h>
 
 #include "FreeFormCPP.h"
 
-#include <DDS.h>
+#include <libdap/DDS.h>
 
 #include "FFInt16.h"
 #include "FFUInt16.h"

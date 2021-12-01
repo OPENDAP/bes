@@ -36,7 +36,7 @@
 #ifndef _wwwurl_h
 #define _wwwurl_h 1
 
-#include "Url.h"
+#include <libdap/Url.h>
 
 using namespace libdap ;
 

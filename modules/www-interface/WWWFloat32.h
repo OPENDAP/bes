@@ -36,7 +36,7 @@
 #ifndef _wwwfloat32_h
 #define _wwwfloat32_h 1
 
-#include "Float32.h"
+#include <libdap/Float32.h>
 
 using namespace libdap ;
 

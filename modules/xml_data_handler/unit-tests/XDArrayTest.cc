@@ -36,8 +36,8 @@
 //#define DODS_DEBUG2
 //#define DODS_DEBUG2
 
-#include <DDS.h>
-#include <debug.h>
+#include <libdap/DDS.h>
+#include <libdap/debug.h>
 
 #include "XDInt32.h"
 #include "XDStructure.h"

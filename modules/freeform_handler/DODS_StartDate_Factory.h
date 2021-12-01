@@ -59,7 +59,7 @@
 #include "DODS_Date.h"
 #include "DODS_Date_Factory.h"
 #include <libdap/DAS.h>
-#include "DDS.h"
+#include <libdap/DDS.h>
 #include <libdap/BaseType.h>
 
 /** Read dates from datasets based on text configuration values. Dates are

@@ -24,9 +24,9 @@
 #ifndef HYRAX_GIT_HISTORY_UTILS_H
 #define HYRAX_GIT_HISTORY_UTILS_H
 
-#include <DDS.h>
-#include <DMR.h>
-#include <D4Attributes.h>
+#include <libdap/DDS.h>
+#include <libdap/DMR.h>
+#include <libdap/D4Attributes.h>
 
 // OLD
 void updateHistoryAttributes(libdap::DDS *dds, const string &ce);

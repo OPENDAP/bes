@@ -32,8 +32,8 @@
 #include <time.h>
 #include <curl/curl.h>
 
-#include <util.h>
-#include <debug.h>
+#include <libdap/util.h>
+#include <libdap/debug.h>
 
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"

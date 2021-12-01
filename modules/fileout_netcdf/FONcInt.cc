@@ -31,8 +31,8 @@
 
 #include <BESInternalError.h>
 #include <BESDebug.h>
-#include <Int32.h>
-#include <UInt16.h>
+#include <libdap/Int32.h>
+#include <libdap/UInt16.h>
 
 #include "FONcInt.h"
 #include "FONcUtils.h"

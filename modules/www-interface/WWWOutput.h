@@ -36,7 +36,7 @@
 #include <iostream>
 
 #include <libdap/BaseType.h>
-#include <DDS.h>
+#include <libdap/DDS.h>
 #include <libdap/DAS.h>
 
 using namespace libdap ;

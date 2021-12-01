@@ -49,7 +49,7 @@
 #include "SimpleTimeParser.h"
 #include "XMLHelpers.h"
 
-#include "Error.h" // libdap
+#include <libdap/Error.h> // libdap
 
 // ICU includes for the SimpleDateFormat used in this file only
 #include <unicode/smpdtfmt.h> // class SimpleDateFormat

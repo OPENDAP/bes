@@ -43,9 +43,9 @@ using namespace std;
 #include <BESDebug.h>
 
 #include <libdap/InternalErr.h>
-#include <escaping.h>
-#include <util.h>
-#include <debug.h>
+#include <libdap/escaping.h>
+#include <libdap/util.h>
+#include <libdap/debug.h>
 
 #include "XDArray.h"
 #include "get_xml_data.h"

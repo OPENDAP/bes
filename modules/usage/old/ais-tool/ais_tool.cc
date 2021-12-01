@@ -42,14 +42,14 @@ static char rcsid[] not_used = {"$Id$"};
 
 #define DODS_DEBUG
 
-#include "AISConnect.h"
+#include <libdap/AISConnect.h>
 #include "../../../usage/old/ais-tool/AISDODSFilter.h"
 #include <libdap/DAS.h>
-#include "DDS.h"
-#include "DataDDS.h"
-#include "ObjectType.h"
-#include "mime_util.h"
-#include "debug.h"
+#include <libdap/DDS.h>
+#include <libdap/DataDDS.h>
+#include <libdap/ObjectType.h>
+#include <libdap/mime_util.h>
+#include <libdap/debug.h>
 
 static void
 usage(string name)

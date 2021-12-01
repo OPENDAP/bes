@@ -30,11 +30,11 @@
 
 #include <memory>
 
-#include <DMR.h>
-#include <DataDDS.h>
+#include <libdap/DMR.h>
+#include <libdap/DataDDS.h>
 
-#include <mime_util.h>
-#include <D4BaseTypeFactory.h>
+#include <libdap/mime_util.h>
+#include <libdap/D4BaseTypeFactory.h>
 
 #include "NCMLRequestHandler.h"
 

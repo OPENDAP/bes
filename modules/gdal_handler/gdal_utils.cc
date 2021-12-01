@@ -30,25 +30,25 @@
 
 //#define DODS_DEBUG 1
 
-#include <Byte.h>
-#include <UInt16.h>
-#include <Int16.h>
-#include <UInt32.h>
-#include <Int32.h>
-#include <Float32.h>
-#include <Float64.h>
+#include <libdap/Byte.h>
+#include <libdap/UInt16.h>
+#include <libdap/Int16.h>
+#include <libdap/UInt32.h>
+#include <libdap/Int32.h>
+#include <libdap/Float32.h>
+#include <libdap/Float64.h>
 
-#include <DDS.h>
+#include <libdap/DDS.h>
 #include <libdap/DAS.h>
-#include <BaseTypeFactory.h>
+#include <libdap/BaseTypeFactory.h>
 
-#include <DMR.h>
-#include <D4Group.h>
-#include <D4Dimensions.h>
-#include <D4Maps.h>
-#include <D4Attributes.h>
-#include <D4BaseTypeFactory.h>
-#include <debug.h>
+#include <libdap/DMR.h>
+#include <libdap/D4Group.h>
+#include <libdap/D4Dimensions.h>
+#include <libdap/D4Maps.h>
+#include <libdap/D4Attributes.h>
+#include <libdap/D4BaseTypeFactory.h>
+#include <libdap/debug.h>
 
 #include "GDALTypes.h"
 

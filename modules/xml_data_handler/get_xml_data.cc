@@ -32,7 +32,7 @@
 using std::cerr;
 using std::endl;
 
-#include <DDS.h>
+#include <libdap/DDS.h>
 
 #include <BESDebug.h>
 

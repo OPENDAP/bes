@@ -28,15 +28,15 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include <libdap/BaseType.h>
-#include <Sequence.h>
-#include <ConstraintEvaluator.h>
-#include <DataDDS.h>
+#include <libdap/Sequence.h>
+#include <libdap/ConstraintEvaluator.h>
+#include <libdap/DataDDS.h>
 
-#include <escaping.h>
+#include <libdap/escaping.h>
 #include <libdap/InternalErr.h>
-#include <util.h>
-#include <mime_util.h>
-#include <XMLWriter.h>
+#include <libdap/util.h>
+#include <libdap/mime_util.h>
+#include <libdap/XMLWriter.h>
 
 #include <BESUtil.h>
 #include <BESDapTransmit.h>

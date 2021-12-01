@@ -41,8 +41,8 @@ static char rcsid[] not_used ="$Id$";
 
 #include <libdap/BaseType.h>
 #include "DODS_Time.h"
-#include "debug.h" 
-#include "Error.h"
+#include <libdap/debug.h> 
+#include <libdap/Error.h>
 
 using namespace std;
 

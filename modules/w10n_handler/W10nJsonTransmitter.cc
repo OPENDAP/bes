@@ -41,10 +41,10 @@
 #include <iostream>
 #include <fstream>
 
-#include <DataDDS.h>
+#include <libdap/DataDDS.h>
 #include <libdap/BaseType.h>
-#include <escaping.h>
-#include <ConstraintEvaluator.h>
+#include <libdap/escaping.h>
+#include <libdap/ConstraintEvaluator.h>
 
 #include <BESUtil.h>
 #include <BESInternalError.h>

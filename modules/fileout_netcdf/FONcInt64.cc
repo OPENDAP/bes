@@ -32,7 +32,7 @@
 
 #include <BESInternalError.h>
 #include <BESDebug.h>
-#include <Int64.h>
+#include <libdap/Int64.h>
 
 #include "FONcInt64.h"
 #include "FONcUtils.h"

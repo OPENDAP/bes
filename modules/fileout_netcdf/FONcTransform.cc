@@ -56,14 +56,14 @@
 #include "FONcTransmitter.h"
 #include "history_utils.h"
 
-#include <DDS.h>
-#include <DMR.h>
-#include <D4Group.h>
-#include <D4Attributes.h>
+#include <libdap/DDS.h>
+#include <libdap/DMR.h>
+#include <libdap/D4Group.h>
+#include <libdap/D4Attributes.h>
 #include <libdap/Structure.h>
 #include <libdap/Array.h>
 #include <libdap/Grid.h>
-#include <Sequence.h>
+#include <libdap/Sequence.h>
 #include <BESDebug.h>
 #include <BESInternalError.h>
 #include <BESInternalFatalError.h>

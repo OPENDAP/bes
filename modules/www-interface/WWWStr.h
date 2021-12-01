@@ -36,8 +36,8 @@
 #ifndef _wwwstr_h
 #define _wwwstr_h 1
 
-#include "dods-limits.h"
-#include "Str.h"
+#include <libdap/dods-limits.h>
+#include <libdap/Str.h>
 
 using namespace libdap ;
 

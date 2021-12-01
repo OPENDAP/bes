@@ -31,8 +31,8 @@
 #define UGR5_H_
 
 #include <libdap/BaseType.h>
-#include "DDS.h"
-#include "ServerFunction.h"
+#include <libdap/DDS.h>
+#include <libdap/ServerFunction.h>
 
 namespace ugrid {
 

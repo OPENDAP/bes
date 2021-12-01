@@ -32,7 +32,7 @@
 #include <string>
 #include <vector>
 
-#include <Array.h>
+#include <libdap/Array.h>
 
 namespace focovjson {
 

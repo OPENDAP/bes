@@ -11,15 +11,15 @@ using std::cerr;
 using std::endl;
 using std::ostringstream;
 
-#include <DataDDS.h>
+#include <libdap/DataDDS.h>
 #include <libdap/Array.h>
 #include <libdap/Grid.h>
 #include <libdap/Structure.h>
-#include <Int16.h>
-#include <Int32.h>
-#include <UInt32.h>
-#include <Float32.h>
-#include <Str.h>
+#include <libdap/Int16.h>
+#include <libdap/Int32.h>
+#include <libdap/UInt32.h>
+#include <libdap/Float32.h>
+#include <libdap/Str.h>
 
 using namespace ::libdap;
 

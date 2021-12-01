@@ -35,9 +35,9 @@
 #include <iostream>
 #include <fstream>
 
-#include <DataDDS.h>
+#include <libdap/DataDDS.h>
 #include <libdap/BaseType.h>
-#include <escaping.h>
+#include <libdap/escaping.h>
 
 using namespace libdap;
 

@@ -51,7 +51,7 @@
 #include <BESDebug.h>
 
 #include <GNURegex.h>
-#include <util.h>
+#include <libdap/util.h>
 
 using namespace libdap;
 using namespace ngap;

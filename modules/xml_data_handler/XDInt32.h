@@ -33,7 +33,7 @@
 #ifndef _xdint32_h
 #define _xdint32_h 1
 
-#include <Int32.h>
+#include <libdap/Int32.h>
 #include "XDOutput.h"
 
 class XDInt32 : public libdap::Int32, public XDOutput {

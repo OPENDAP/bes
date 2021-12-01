@@ -37,13 +37,13 @@
 #define _ce_functions_h
 
 #include <libdap/BaseType.h>
-#include <DDS.h>
+#include <libdap/DDS.h>
 
 #if 0
 #include <libdap/Array.h>
-#include "Error.h"
-#include "ConstraintEvaluator.h"
-#include <Str.h>
+#include <libdap/Error.h>
+#include <libdap/ConstraintEvaluator.h>
+#include <libdap/Str.h>
 #endif
 
 void function_ugrid_restrict(int argc, BaseType * argv[], DDS &dds, BaseType **btpp) ;

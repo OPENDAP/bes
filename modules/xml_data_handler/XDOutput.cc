@@ -40,7 +40,7 @@
 //#define DODS_DEBUG
 
 #include <libdap/BaseType.h>
-#include <debug.h>
+#include <libdap/debug.h>
 
 #include <BESInternalFatalError.h>
 #include <BESDebug.h>

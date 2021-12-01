@@ -42,9 +42,9 @@
 #include "GridJoinExistingAggregation.h" // agg_util
 #include "AggMemberDatasetDimensionCache.h"
 
-#include <AttrTable.h> // libdap
+#include <libdap/AttrTable.h> // libdap
 #include <libdap/Array.h> // libdap
-#include <AttrTable.h> // libdap
+#include <libdap/AttrTable.h> // libdap
 #include "DDSAccessInterface.h" // agg_util
 #include "Dimension.h" // agg_util
 #include "DimensionElement.h"

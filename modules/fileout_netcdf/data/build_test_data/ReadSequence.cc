@@ -39,8 +39,8 @@
 #include <string>
 
 #include <libdap/InternalErr.h>
-#include <util.h>
-#include <debug.h>
+#include <libdap/util.h>
+#include <libdap/debug.h>
 
 #include "ReadSequence.h"
 

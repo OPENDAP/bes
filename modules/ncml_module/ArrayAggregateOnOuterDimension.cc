@@ -32,8 +32,8 @@
 #include "ArrayAggregateOnOuterDimension.h"
 #include "AggregationException.h"
 
-#include <DataDDS.h> // libdap::DataDDS
-#include <Marshaller.h>
+#include <libdap/DataDDS.h> // libdap::DataDDS
+#include <libdap/Marshaller.h>
 
 // only NCML backlinks we want in this agg_util class.
 #include "NCMLDebug.h" // BESDEBUG and throw macros

@@ -31,8 +31,8 @@
 #include <memory> // auto_ptr
 
 
-#include "DataDDS.h" // libdap
-#include "DDS.h" // libdap
+#include <libdap/DataDDS.h> // libdap
+#include <libdap/DDS.h> // libdap
 #include <libdap/Grid.h> // libdap
 
 #include "DDSLoader.h" // agg_util

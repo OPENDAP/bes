@@ -32,7 +32,7 @@
 #ifndef FONcStructure_h_
 #define FONcStructure_h_ 1
 
-#include <Structure.h>
+#include <libdap/Structure.h>
 
 namespace libdap {
     class Structure;

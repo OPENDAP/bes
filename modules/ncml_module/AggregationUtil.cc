@@ -37,10 +37,10 @@
 
 // libdap includes
 #include <libdap/Array.h> // libdap
-#include <AttrTable.h>
+#include <libdap/AttrTable.h>
 #include <libdap/BaseType.h>
-#include <DataDDS.h>
-#include <DDS.h>
+#include <libdap/DataDDS.h>
+#include <libdap/DDS.h>
 #include <libdap/Grid.h>
 #include "BESDebug.h"
 #include "BESStopWatch.h"

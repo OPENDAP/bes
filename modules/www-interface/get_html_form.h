@@ -27,7 +27,7 @@
 // Server3.
 
 #include <libdap/BaseType.h>
-#include <DDS.h>
+#include <libdap/DDS.h>
 #include "WWWOutput.h"
 
 namespace dap_html_form {

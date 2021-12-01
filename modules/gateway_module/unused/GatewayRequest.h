@@ -32,7 +32,7 @@
 
 #include <string>
 
-#include <HTTPResponse.h>
+#include <libdap/HTTPResponse.h>
 
 using namespace libdap;
 

@@ -37,14 +37,14 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "debug.h"
-#include "util.h"
+#include <libdap/debug.h>
+#include <libdap/util.h>
 
 #include <unistd.h>
 #include <libdap/BaseType.h>
-#include "Str.h"
-#include "DDS.h"
-#include "ServerFunction.h"
+#include <libdap/Str.h>
+#include <libdap/DDS.h>
+#include <libdap/ServerFunction.h>
 
 static pthread_once_t instance_control = PTHREAD_ONCE_INIT;
 static bool debug = false;

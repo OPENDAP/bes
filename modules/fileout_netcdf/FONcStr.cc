@@ -30,7 +30,7 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include <sstream>
-#include <Str.h>
+#include <libdap/Str.h>
 
 #include <BESInternalError.h>
 #include <BESDebug.h>

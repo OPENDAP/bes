@@ -47,11 +47,11 @@ static char rcsid[] not_used =
 
 #include <libdap/BaseType.h>
 #include <libdap/Grid.h>
-#include <DDS.h>
+#include <libdap/DDS.h>
 
-#include <debug.h>
-#include <mime_util.h>	// remove if write_html_headers() not needed
-#include <util.h>
+#include <libdap/debug.h>
+#include <libdap/mime_util.h>	// remove if write_html_headers() not needed
+#include <libdap/util.h>
 
 #include "WWWOutput.h"
 

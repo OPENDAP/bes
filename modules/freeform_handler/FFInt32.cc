@@ -41,7 +41,7 @@ static char rcsid[] not_used = {"$Id$"};
 
 #include "FFInt32.h"
 #include "util_ff.h"
-#include "util.h"
+#include <libdap/util.h>
 
 #include <cstring>
 

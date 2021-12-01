@@ -39,15 +39,15 @@
 //#define DODS_DEBUG
 
 #include <libdap/BaseType.h>
-#include <Str.h>
+#include <libdap/Str.h>
 #include <libdap/Structure.h>
-#include <Sequence.h>
-#include <DDS.h>
-#include <ConstraintEvaluator.h>
-#include <ServerFunctionsList.h>
-#include <Error.h>
-#include <util.h>
-#include <debug.h>
+#include <libdap/Sequence.h>
+#include <libdap/DDS.h>
+#include <libdap/ConstraintEvaluator.h>
+#include <libdap/ServerFunctionsList.h>
+#include <libdap/Error.h>
+#include <libdap/util.h>
+#include <libdap/debug.h>
 
 #include "date_proc.h"
 #include "DODS_Date.h"

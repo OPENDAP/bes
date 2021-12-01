@@ -35,17 +35,17 @@
 #include <sstream>
 #include <memory>
 
-#include <DDS.h>
+#include <libdap/DDS.h>
 #include <libdap/Structure.h>
-#include <Str.h>
+#include <libdap/Str.h>
 #include <libdap/Array.h>
-#include <Byte.h>
-#include <Int16.h>
-#include <Int32.h>
-#include <Float32.h>
-#include <Float64.h>
-#include <Error.h>
-#include <mime_util.h>
+#include <libdap/Byte.h>
+#include <libdap/Int16.h>
+#include <libdap/Int32.h>
+#include <libdap/Float32.h>
+#include <libdap/Float64.h>
+#include <libdap/Error.h>
+#include <libdap/mime_util.h>
 
 #include <BESDebug.h>
 

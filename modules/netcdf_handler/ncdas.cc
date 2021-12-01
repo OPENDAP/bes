@@ -52,8 +52,8 @@
 
 #include <netcdf.h>
 
-#include <util.h>
-#include <escaping.h>
+#include <libdap/util.h>
+#include <libdap/escaping.h>
 #include <libdap/DAS.h>
 
 #include <BESDebug.h>

@@ -37,7 +37,7 @@
 #include <string>
 
 #include <libdap/BaseType.h>
-#include <D4Attributes.h>
+#include <libdap/D4Attributes.h>
 using namespace libdap ;
 
 class FONcBaseType ;

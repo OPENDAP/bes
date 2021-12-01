@@ -30,7 +30,7 @@
 
 #include "rapidjson/document.h"
 
-#include "util.h"
+#include <libdap/util.h>
 #include "BESDebug.h"
 #include "BESSyntaxUserError.h"
 #include "BESError.h"

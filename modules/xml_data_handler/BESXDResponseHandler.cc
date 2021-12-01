@@ -27,7 +27,7 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <DataDDS.h>
+#include <libdap/DataDDS.h>
 
 #include <BESRequestHandlerList.h>
 #include <BESDapNames.h>

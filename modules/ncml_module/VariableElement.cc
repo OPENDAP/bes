@@ -34,7 +34,7 @@
 #include <libdap/BaseType.h>
 #include <libdap/Structure.h>
 #include <libdap/Grid.h>
-#include <dods-limits.h>
+#include <libdap/dods-limits.h>
 
 
 #include "MyBaseTypeFactory.h"

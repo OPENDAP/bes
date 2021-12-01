@@ -59,15 +59,15 @@ static char rcsid[] not_used = {"$Id$"};
 
 #include <libdap/Array.h>
 #include <libdap/Structure.h>
-#include <Sequence.h>
+#include <libdap/Sequence.h>
 #include <libdap/Grid.h>
-#include <Ancillary.h>
+#include <libdap/Ancillary.h>
 
 #include <libdap/DAS.h>
-//#include <mime_util.h>
-#include <util.h>
+//#include <libdap/mime_util.h>
+#include <libdap/util.h>
 
-#include <debug.h>
+#include <libdap/debug.h>
 
 using namespace libdap ;
 

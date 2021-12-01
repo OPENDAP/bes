@@ -43,8 +43,8 @@
 #include <iomanip>
 
 #include <libdap/BaseType.h>
-#include <DDS.h>
-#include <Constructor.h>
+#include <libdap/DDS.h>
+#include <libdap/Constructor.h>
 #include <libdap/Array.h>
 
 using std::istringstream;

@@ -44,12 +44,12 @@ static char rcsid[] not_used ={"$Id$"};
 
 #include <netcdf.h>
 
-#include <Error.h>
+#include <libdap/Error.h>
 #include <libdap/InternalErr.h>
-#include <util.h>
+#include <libdap/util.h>
 
 #include "NCGrid.h"
-#include <debug.h>
+#include <libdap/debug.h>
 
 // protected
 
