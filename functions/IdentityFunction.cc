@@ -28,17 +28,17 @@
 #include <sstream>
 
 #include <libdap/BaseType.h>
-#include <Float64.h>
-#include <Str.h>
+#include <libdap/Float64.h>
+#include <libdap/Str.h>
 #include <libdap/Array.h>
 #include <libdap/Grid.h>
-#include "D4RValue.h"
+#include <libdap/D4RValue.h>
 
-#include <Error.h>
-#include <DDS.h>
+#include <libdap/Error.h>
+#include <libdap/DDS.h>
 
-#include <debug.h>
-#include <util.h>
+#include <libdap/debug.h>
+#include <libdap/util.h>
 
 #include "BESDebug.h"
 

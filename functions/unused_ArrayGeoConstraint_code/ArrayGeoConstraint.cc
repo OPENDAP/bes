@@ -36,11 +36,11 @@
 
 //#define DODS_DEBUG
 
-#include "debug.h"
-#include "dods-datatypes.h"
-#include "Float64.h"
+#include <libdap/debug.h>
+#include <libdap/dods-datatypes.h>
+#include <libdap/Float64.h>
 
-#include "Error.h"
+#include <libdap/Error.h>
 #include <libdap/InternalErr.h>
 
 using namespace std;

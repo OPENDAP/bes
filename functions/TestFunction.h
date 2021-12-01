@@ -2,13 +2,13 @@
 #ifndef DAP_UNIT_TESTS_TESTFUNCTION_H_
 #define DAP_UNIT_TESTS_TESTFUNCTION_H_
 
-#include <Array.h>
-#include <Byte.h>
-#include <ServerFunctionsList.h>
+#include <libdap/Array.h>
+#include <libdap/Byte.h>
+#include <libdap/ServerFunctionsList.h>
 
 #include <libdap/DAS.h>
-#include <DDS.h>
-#include <util.h>
+#include <libdap/DDS.h>
+#include <libdap/util.h>
 
 #include "BESInternalFatalError.h"
 

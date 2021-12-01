@@ -10,8 +10,8 @@
 
 #include <iostream>
 
-#include <ServerFunction.h>
-#include <dods-limits.h>
+#include <libdap/ServerFunction.h>
+#include <libdap/dods-limits.h>
 
 namespace libdap {
 class BaseType;

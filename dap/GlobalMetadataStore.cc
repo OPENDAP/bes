@@ -39,7 +39,7 @@
 #include <memory>
 #include <sys/stat.h>
 
-#include <DapObj.h>
+#include <libdap/DapObj.h>
 #include <libdap/DDS.h>
 #include <libdap/DMR.h>
 #include <libdap/D4ParserSax2.h>

@@ -50,27 +50,27 @@
 // use keywords instead.
 
 #include <libdap/BaseType.h>
-#include "Byte.h"
-#include "Int16.h"
-#include "UInt16.h"
-#include "Int32.h"
-#include "UInt32.h"
-#include "Float32.h"
-#include "Float64.h"
-#include "Str.h"
-#include "Url.h"
+#include <libdap/Byte.h>
+#include <libdap/Int16.h>
+#include <libdap/UInt16.h>
+#include <libdap/Int32.h>
+#include <libdap/UInt32.h>
+#include <libdap/Float32.h>
+#include <libdap/Float64.h>
+#include <libdap/Str.h>
+#include <libdap/Url.h>
 #include <libdap/Array.h>
 #include <libdap/Structure.h>
-#include "Sequence.h"
+#include <libdap/Sequence.h>
 #include <libdap/Grid.h>
-#include "ServerFunctionsList.h"
+#include <libdap/ServerFunctionsList.h>
 
 #include "BESDebug.h"
-#include "Error.h"
+#include <libdap/Error.h>
 
 #include "grid_utils.h"
 
-#include "RValue.h"
+#include <libdap/RValue.h>
 #include "GSEClause.h"
 #include "GridGeoConstraint.h"
 //#include "ArrayGeoConstraint.h"
@@ -84,8 +84,8 @@
 
 #include "gse_parser.h"
 #include "gse.tab.hh"
-#include "debug.h"
-#include "util.h"
+#include <libdap/debug.h>
+#include <libdap/util.h>
 
 // GRIDFIELDS should never be defined since this was moved to the netcdf
 // handler. 4/19/12 jhrg

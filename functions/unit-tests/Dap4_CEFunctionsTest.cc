@@ -32,22 +32,22 @@
 
 #include <unistd.h>
 #include <libdap/BaseType.h>
-#include <Int32.h>
-#include <Float64.h>
+#include <libdap/Int32.h>
+#include <libdap/Float64.h>
 #include <libdap/Array.h>
-#include <Str.h>
+#include <libdap/Str.h>
 #include <libdap/Array.h>
 #include <libdap/Grid.h>
-#include <DDS.h>
+#include <libdap/DDS.h>
 #include <libdap/DAS.h>
-#include <DMR.h>
-#include <D4Group.h>
-#include <D4ParserSax2.h>
-#include <D4BaseTypeFactory.h>
-#include <D4RValue.h>
+#include <libdap/DMR.h>
+#include <libdap/D4Group.h>
+#include <libdap/D4ParserSax2.h>
+#include <libdap/D4BaseTypeFactory.h>
+#include <libdap/D4RValue.h>
 
-#include <util.h>
-#include <debug.h>
+#include <libdap/util.h>
+#include <libdap/debug.h>
 
 #include <BESDebug.h>
 
@@ -62,7 +62,7 @@
 
 #include "test/TestTypeFactory.h"
 
-#include "debug.h"
+#include <libdap/debug.h>
 
 #if 1
 #define TWO_ARRAYS_DMR "ce-functions-testsuite/two_arrays.dmr"

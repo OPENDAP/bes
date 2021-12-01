@@ -32,24 +32,24 @@
 #include <vector>
 #include <algorithm>
 
-#include <Type.h>
+#include <libdap/Type.h>
 #include <libdap/BaseType.h>
-#include <Byte.h>
-#include <Str.h>
+#include <libdap/Byte.h>
+#include <libdap/Str.h>
 
 #include <libdap/Array.h>
-#include <Error.h>
-#include <DDS.h>
+#include <libdap/Error.h>
+#include <libdap/DDS.h>
 
 #if 0
 // No DAP4 support yet...
-#include <DMR.h>
-#include <D4Group.h>
-#include <D4RValue.h>
+#include <libdap/DMR.h>
+#include <libdap/D4Group.h>
+#include <libdap/D4RValue.h>
 #endif
 
-#include <debug.h>
-#include <util.h>
+#include <libdap/debug.h>
+#include <libdap/util.h>
 
 #include <BESDebug.h>
 

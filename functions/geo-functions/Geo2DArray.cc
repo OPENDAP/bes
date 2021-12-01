@@ -40,12 +40,12 @@
 
 #include <libdap/Array.h>
 #include <libdap/Grid.h>
-#include "Float64.h"
+#include <libdap/Float64.h>
 
-#include "Error.h"
+#include <libdap/Error.h>
 
-#include "util.h"
-#include "debug.h"
+#include <libdap/util.h>
+#include <libdap/debug.h>
 
 using namespace libdap;
 using namespace std;

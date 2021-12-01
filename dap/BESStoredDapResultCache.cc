@@ -38,7 +38,7 @@
 
 #include <libdap/DDS.h>
 #include <libdap/DMR.h>
-#include <DapXmlNamespaces.h>
+#include <libdap/DapXmlNamespaces.h>
 #include <libdap/ConstraintEvaluator.h>
 #include <libdap/DDXParserSAX2.h>
 

@@ -30,9 +30,9 @@
 #include <vector>
 
 #include <libdap/Array.h>      // libdap
-#include <dods-datatypes.h>
+#include <libdap/dods-datatypes.h>
 #include <libdap/InternalErr.h>
-#include <debug.h>
+#include <libdap/debug.h>
 
 #include "test_utils.h"
 

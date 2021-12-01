@@ -33,9 +33,9 @@
 #include <libdap/BaseType.h>
 #include <libdap/Array.h>
 #include <libdap/Grid.h>
-#include <Str.h>
-#include <Error.h>
-#include <util.h>
+#include <libdap/Str.h>
+#include <libdap/Error.h>
+#include <libdap/util.h>
 
 #include <BESDebug.h>
 

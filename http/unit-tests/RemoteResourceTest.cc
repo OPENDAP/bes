@@ -32,7 +32,7 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <util.h>
+#include <libdap/util.h>
 
 #include "BESError.h"
 #include "BESDebug.h"

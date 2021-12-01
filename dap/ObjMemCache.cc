@@ -31,7 +31,7 @@
 #include <string>
 #include <map>
 
-#include <DapObj.h>
+#include <libdap/DapObj.h>
 #include <libdap/InternalErr.h>
 
 #include "ObjMemCache.h"

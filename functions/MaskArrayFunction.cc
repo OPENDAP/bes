@@ -30,22 +30,22 @@
 #include <vector>
 #include <algorithm>
 
-#include <Type.h>
+#include <libdap/Type.h>
 #include <libdap/BaseType.h>
-#include <Str.h>
+#include <libdap/Str.h>
 #include <libdap/Array.h>
 #include <libdap/Structure.h>
-#include <Error.h>
-#include <DDS.h>
+#include <libdap/Error.h>
+#include <libdap/DDS.h>
 
-#include <DMR.h>
-#include <D4Group.h>
-#include <D4RValue.h>
+#include <libdap/DMR.h>
+#include <libdap/D4Group.h>
+#include <libdap/D4RValue.h>
 
-#include <debug.h>
-#include <util.h>
+#include <libdap/debug.h>
+#include <libdap/util.h>
 
-#include <BaseTypeFactory.h>
+#include <libdap/BaseTypeFactory.h>
 
 #include <BESDebug.h>
 

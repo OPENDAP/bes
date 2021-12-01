@@ -27,7 +27,7 @@
 #include <libdap/BaseType.h>
 #include <libdap/Structure.h>
 #include <libdap/Grid.h>
-#include <util.h>
+#include <libdap/util.h>
 
 #include <BESDebug.h>
 

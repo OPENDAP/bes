@@ -36,19 +36,19 @@
 #include "GetOpt.h"
 
 #include <libdap/BaseType.h>
-#include "Byte.h"
-#include "Int32.h"
-#include "Float64.h"
-#include "Str.h"
+#include <libdap/Byte.h>
+#include <libdap/Int32.h>
+#include <libdap/Float64.h>
+#include <libdap/Str.h>
 #include <libdap/Array.h>
 #include <libdap/Grid.h>
-#include "DDS.h"
+#include <libdap/DDS.h>
 #include <libdap/DAS.h>
 
 #include "test/TestArray.h"
 #include "test/TestTypeFactory.h"
 
-#include "debug.h"
+#include <libdap/debug.h>
 
 using namespace CppUnit;
 using namespace libdap;

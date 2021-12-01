@@ -62,7 +62,7 @@
 #include <libdap/Structure.h>
 #include <libdap/ConstraintEvaluator.h>
 #include <libdap/DDXParserSAX2.h>
-#include <Ancillary.h>
+#include <libdap/Ancillary.h>
 #include <libdap/XDRStreamMarshaller.h>
 #include <libdap/XDRFileUnMarshaller.h>
 
@@ -81,15 +81,15 @@
 #include <libdap/ServerFunctionsList.h>
 
 #include <libdap/mime_util.h>	// for last_modified_time() and rfc_822_date()
-#include <escaping.h>
+#include <libdap/escaping.h>
 #include <libdap/util.h>
 // #include <d4_function/D4FunctionEvaluator.h>
 
 #if USE_LOCAL_TIMEOUT_SCHEME
 #ifndef WIN32
-#include <SignalHandler.h>
-#include <EventHandler.h>
-#include <AlarmHandler.h>
+#include <libdap/SignalHandler.h>
+#include <libdap/EventHandler.h>
+#include <libdap/AlarmHandler.h>
 #endif
 #endif
 

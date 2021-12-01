@@ -27,9 +27,9 @@
 #include <hdf5.h>
 
 #include <libdap/BaseType.h>
-#include <dods-datatypes.h>
+#include <libdap/dods-datatypes.h>
 
-#include "ServerFunction.h"
+#include <libdap/ServerFunction.h>
 
 #define STARE_STORAGE_PATH_KEY "FUNCTIONS.stareStoragePath"
 #define STARE_SIDECAR_SUFFIX_KEY "FUNCTIONS.stareSidecarSuffix"

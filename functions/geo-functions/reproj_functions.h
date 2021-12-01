@@ -27,8 +27,8 @@
 #define _reproj_functions_h
 
 // #include "BESAbstractModule.h"
-#include "ServerFunction.h"
-//#include "ServerFunctionsList.h"
+#include <libdap/ServerFunction.h>
+//#include <libdap/ServerFunctionsList.h>
 
 namespace libdap {
 

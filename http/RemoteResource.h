@@ -36,7 +36,7 @@
 
 #if 0
 #include <libdap/InternalErr.h>
-#include "RCReader.h"
+#include <libdap/RCReader.h>
 #endif
 
 #include "url_impl.h"

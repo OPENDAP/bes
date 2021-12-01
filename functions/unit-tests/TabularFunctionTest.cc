@@ -31,17 +31,17 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <libdap/BaseType.h>
-#include <Byte.h>
-#include <Int32.h>
-#include <UInt32.h>
-#include <Float32.h>
-#include <Float64.h>
+#include <libdap/Byte.h>
+#include <libdap/Int32.h>
+#include <libdap/UInt32.h>
+#include <libdap/Float32.h>
+#include <libdap/Float64.h>
 #include <libdap/Array.h>
-#include <Sequence.h>
-#include <DDS.h>
-#include <util.h>
+#include <libdap/Sequence.h>
+#include <libdap/DDS.h>
+#include <libdap/util.h>
 #include <unistd.h>
-#include <debug.h>
+#include <libdap/debug.h>
 
 #include "test/TestTypeFactory.h"
 

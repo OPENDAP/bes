@@ -41,14 +41,14 @@
 #include <ogr_spatialref.h>
 #include <gdalwarper.h>
 
-#include <Str.h>
-#include <Float32.h>
-#include <Int16.h>
+#include <libdap/Str.h>
+#include <libdap/Float32.h>
+#include <libdap/Int16.h>
 #include <libdap/Array.h>
 #include <libdap/Grid.h>
 
-#include <util.h>
-#include <Error.h>
+#include <libdap/util.h>
+#include <libdap/Error.h>
 #include <BESDebug.h>
 #include <BESError.h>
 #include <BESDapError.h>

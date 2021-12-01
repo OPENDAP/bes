@@ -25,10 +25,10 @@
 
 #include <STARE.h>
 
-#include <D4Connect.h>
-#include <Connect.h>
+#include <libdap/D4Connect.h>
+#include <libdap/Connect.h>
 #include <libdap/Array.h>
-#include <Error.h>
+#include <libdap/Error.h>
 
 using namespace std;
 using namespace libdap;

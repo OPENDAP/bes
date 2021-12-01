@@ -29,10 +29,10 @@
 #include <libdap/BaseType.h>
 #include <libdap/Structure.h>
 #include <libdap/Array.h>
-#include <Int32.h>
-#include <Str.h>
+#include <libdap/Int32.h>
+#include <libdap/Str.h>
 
-#include <util.h>
+#include <libdap/util.h>
 
 #include "roi_util.h"
 

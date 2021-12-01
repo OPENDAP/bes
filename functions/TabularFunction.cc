@@ -32,15 +32,15 @@
 #include <algorithm>
 
 #include <libdap/BaseType.h>
-#include <UInt32.h>
+#include <libdap/UInt32.h>
 #include <libdap/Array.h>
-#include <Sequence.h>
-#include <D4Sequence.h>
-#include <D4RValue.h>
-#include <Error.h>
-#include <debug.h>
-#include <util.h>
-#include <ServerFunctionsList.h>
+#include <libdap/Sequence.h>
+#include <libdap/D4Sequence.h>
+#include <libdap/D4RValue.h>
+#include <libdap/Error.h>
+#include <libdap/debug.h>
+#include <libdap/util.h>
+#include <libdap/ServerFunctionsList.h>
 
 #include "TabularSequence.h"
 #include "TabularFunction.h"

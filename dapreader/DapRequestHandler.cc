@@ -46,22 +46,22 @@
 #include <BESInternalFatalError.h>
 #include <BESDebug.h>
 
-#include <BaseTypeFactory.h>
+#include <libdap/BaseTypeFactory.h>
 #include <test/TestTypeFactory.h>
-#include <D4BaseTypeFactory.h>
+#include <libdap/D4BaseTypeFactory.h>
 #include <test/D4TestTypeFactory.h>
 #include <test/TestCommon.h>
 
-#include <DMR.h>
-#include <D4Group.h>
-#include <D4Connect.h>
-#include <D4ParserSax2.h>
+#include <libdap/DMR.h>
+#include <libdap/D4Group.h>
+#include <libdap/D4Connect.h>
+#include <libdap/D4ParserSax2.h>
 
-#include <Ancillary.h>
-#include <Connect.h>
-#include <Response.h>
+#include <libdap/Ancillary.h>
+#include <libdap/Connect.h>
+#include <libdap/Response.h>
 #include <libdap/InternalErr.h>
-#include <mime_util.h>
+#include <libdap/mime_util.h>
 
 using namespace libdap;
 

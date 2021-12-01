@@ -2,7 +2,7 @@
 #ifndef DAP_UNIT_TESTS_TESTFUNCTION_H_
 #define DAP_UNIT_TESTS_TESTFUNCTION_H_
 
-#include <Array.h>
+#include <libdap/Array.h>
 #include <libdap/Byte.h>
 #include <libdap/ServerFunctionsList.h>
 
