@@ -47,7 +47,7 @@ using namespace std;
 #include <libdap/debug.h>
 
 #include "AsciiArray.h"
-#include "util.h"
+#include <libdap/util.h>
 #include "get_ascii.h"
 
 using namespace dap_asciival;
