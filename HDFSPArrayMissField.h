@@ -15,7 +15,7 @@
 #ifndef HDFSPARRAY_MISSFIELD_H
 #define HDFSPARRAY_MISSFIELD_H
 
-#include "Array.h"
+#include <libdap/Array.h>
 
 class HDFSPArrayMissGeoField:public libdap::Array
 {

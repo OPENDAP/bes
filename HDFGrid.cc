@@ -49,10 +49,10 @@
 #include <hdfclass.h>
 #include <hcstream.h>
 
-#include <Error.h>
-#include <InternalErr.h>
-#include <debug.h>
-#include <escaping.h>
+#include <libdap/Error.h>
+#include <libdap/InternalErr.h>
+#include <libdap/debug.h>
+#include <libdap/escaping.h>
 
 #include <BESDebug.h>
 

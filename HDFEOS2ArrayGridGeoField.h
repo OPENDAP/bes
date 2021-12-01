@@ -19,7 +19,7 @@
 
 #include <cmath>
 
-#include <Array.h>
+#include <libdap/Array.h>
 
 #include "mfhdf.h"
 #include "hdf.h"

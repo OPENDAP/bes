@@ -14,7 +14,7 @@
 #include "hdf.h"
 #include "mfhdf.h"
 
-#include "Array.h"
+#include <libdap/Array.h>
 
 class HDFSPArray_VDField:public libdap::Array
 {

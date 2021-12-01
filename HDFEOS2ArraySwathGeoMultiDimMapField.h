@@ -10,7 +10,7 @@
 #ifndef HDFEOS2ARRAY_SWATHGEOMULTIDIMMAPFIELD_H
 #define HDFEOS2ARRAY_SWATHGEOMULTIDIMMAPFIELD_H
 
-#include "Array.h"
+#include <libdap/Array.h>
 #include "HDFCFUtil.h"
 #include "HdfEosDef.h"
 

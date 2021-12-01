@@ -39,7 +39,7 @@
 
 #include "config_hdf.h"
 
-#include "InternalErr.h"
+#include <libdap/InternalErr.h>
 #include "HDFStr.h"
 
 using namespace libdap;

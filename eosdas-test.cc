@@ -40,8 +40,8 @@
 
 #define YYSTYPE char *
 
-#include <DAS.h>
-#include <parser.h>
+#include <libdap/DAS.h>
+#include <libdap/parser.h>
 
 #include "hdfeos.tab.hh"
 

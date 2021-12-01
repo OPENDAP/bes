@@ -28,7 +28,7 @@
 
 #include "config_hdf.h"
 
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 
 #include "HDFUInt16.h"
 

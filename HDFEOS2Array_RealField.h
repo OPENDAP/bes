@@ -9,7 +9,7 @@
 #ifndef HDFEOS2ARRAY_REALFIELD_H
 #define HDFEOS2ARRAY_REALFIELD_H
 
-#include "Array.h"
+#include <libdap/Array.h>
 
 #include "HDFCFUtil.h"
 #include "HdfEosDef.h"

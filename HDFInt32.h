@@ -44,7 +44,7 @@
 #include <string>
 
 // DODS includes
-#include <Int32.h>
+#include <libdap/Int32.h>
 
 
 class HDFInt32:public libdap::Int32 {

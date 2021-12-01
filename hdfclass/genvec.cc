@@ -52,7 +52,7 @@
 #include <string>
 #include <vector>
 
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 
 #include <hcerr.h>
 #include <hdfclass.h>

@@ -44,7 +44,7 @@
 #include <string>
 
 // DODS includes
-#include <Sequence.h>
+#include <libdap/Sequence.h>
 
 #include <hdfclass.h>
 #include "ReadTagRef.h"

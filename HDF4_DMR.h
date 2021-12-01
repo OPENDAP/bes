@@ -18,8 +18,8 @@
 #include "HdfEosDef.h"
 #endif
 
-#include <DMR.h>
-#include <InternalErr.h>
+#include <libdap/DMR.h>
+#include <libdap/InternalErr.h>
 
 
 /**

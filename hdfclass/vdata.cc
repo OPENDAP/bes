@@ -58,9 +58,9 @@ using std::set;
 using std::less;
 
 // libdap
-#include <InternalErr.h>
-#include <util.h>
-#include <debug.h>
+#include <libdap/InternalErr.h>
+#include <libdap/util.h>
+#include <libdap/debug.h>
 
 // bes
 #include <BESDebug.h>

@@ -80,12 +80,12 @@
 #include <mfhdf.h>
 
 // DODS includes
-#include <DDS.h>
-#include <DAS.h>
-#include <escaping.h>
-#include <parser.h>
-#include <InternalErr.h>
-#include <debug.h>
+#include <libdap/DDS.h>
+#include <libdap/DAS.h>
+#include <libdap/escaping.h>
+#include <libdap/parser.h>
+#include <libdap/InternalErr.h>
+#include <libdap/debug.h>
 
 #include <BESDebug.h>
 #include <BESLog.h>

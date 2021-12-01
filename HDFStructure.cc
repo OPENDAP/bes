@@ -51,10 +51,10 @@
 #include <hdfclass.h>
 #include <hcstream.h>
 
-#include <Error.h>
-#include <escaping.h>
-#include <Sequence.h>
-#include <debug.h>
+#include <libdap/Error.h>
+#include <libdap/escaping.h>
+#include <libdap/Sequence.h>
+#include <libdap/debug.h>
 #include <BESDebug.h>
 
 #include "HDFStructure.h"

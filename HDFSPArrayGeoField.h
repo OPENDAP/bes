@@ -10,7 +10,7 @@
 #ifndef HDFSPARRAYGeoField_H
 #define HDFSPARRAYGeoField_H
 
-#include "Array.h"
+#include <libdap/Array.h>
 #include "hdf.h"
 #include "mfhdf.h"
 #include "HDFSPEnumType.h"

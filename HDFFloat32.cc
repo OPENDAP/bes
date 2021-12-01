@@ -27,7 +27,7 @@
 
 #include "config_hdf.h"
 
-#include "InternalErr.h"
+#include <libdap/InternalErr.h>
 #include "HDFFloat32.h"
 
 using namespace libdap;

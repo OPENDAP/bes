@@ -13,7 +13,7 @@
 #ifndef HDFEOS2ARRAY_MISSFIELD_H
 #define HDFEOS2ARRAY_MISSFIELD_H
 
-#include "Array.h"
+#include <libdap/Array.h>
 
 class HDFEOS2ArrayMissGeoField:public libdap::Array
 {

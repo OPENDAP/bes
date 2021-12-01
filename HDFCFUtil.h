@@ -32,11 +32,11 @@
 
 #include <TheBESKeys.h>
 #include <BESUtil.h>
-#include <DDS.h>
-#include <DAS.h>
-#include <InternalErr.h>
+#include <libdap/DDS.h>
+#include <libdap/DAS.h>
+#include <libdap/InternalErr.h>
 
-#include "escaping.h" // for escattr
+#include <libdap/escaping.h> // for escattr
 
 // This is the maximum number of MODIS special values.
 const int MAX_NON_SCALE_SPECIAL_VALUE=65535;

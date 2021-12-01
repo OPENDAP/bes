@@ -33,7 +33,7 @@
 #include <iostream>
 #include <sstream>
 
-#include "InternalErr.h"
+#include <libdap/InternalErr.h>
 #include "HDFCFStr.h"
 #include <BESDebug.h>
 #include "HDFCFUtil.h"

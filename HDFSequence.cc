@@ -51,9 +51,9 @@
 #include <hcstream.h>
 #include "HDFSequence.h"
 #include "HDFStructure.h"
-#include "escaping.h"
+#include <libdap/escaping.h>
 
-#include "Error.h"
+#include <libdap/Error.h>
 
 using namespace libdap;
 using namespace std;
