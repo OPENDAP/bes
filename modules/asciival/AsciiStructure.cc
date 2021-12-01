@@ -39,7 +39,7 @@
 #include <BESDebug.h>
 
 #include <libdap/InternalErr.h>
-#include "D4Group.h"
+#include <libdap/D4Group.h>
 #include "AsciiStructure.h"
 #include "AsciiSequence.h"
 //#include "name_map.h"

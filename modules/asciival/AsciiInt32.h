@@ -36,7 +36,7 @@
 #ifndef _asciiint32_h
 #define _asciiint32_h 1
 
-#include <Int32.h>
+#include <libdap/Int32.h>
 #include "AsciiOutput.h"
 
 class AsciiInt32 : public Int32, public AsciiOutput {

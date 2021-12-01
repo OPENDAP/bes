@@ -39,7 +39,7 @@
 #include <iostream>
 
 #include <libdap/BaseType.h>
-#include "debug.h"
+#include <libdap/debug.h>
 
 #include "AsciiOutput.h"
 #include "get_ascii.h"

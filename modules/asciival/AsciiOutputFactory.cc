@@ -40,10 +40,10 @@
 #include "AsciiSequence.h"
 #include "AsciiGrid.h"
 
-#include "BaseTypeFactory.h"
+#include <libdap/BaseTypeFactory.h>
 #include "AsciiOutputFactory.h"
 
-#include "debug.h"
+#include <libdap/debug.h>
 
 Byte *
 AsciiOutputFactory::NewByte(const string &n ) const 

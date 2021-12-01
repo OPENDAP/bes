@@ -30,15 +30,15 @@
 #include <sstream>
 #include <iomanip>
 
-#include <DMR.h>
+#include <libdap/DMR.h>
 #include <libdap/BaseType.h>
 #include <libdap/Structure.h>
 #include <libdap/Array.h>
-#include <D4Sequence.h>
-#include <D4Enum.h>
-#include <D4Opaque.h>
-#include <D4Group.h>
-#include <crc.h>
+#include <libdap/D4Sequence.h>
+#include <libdap/D4Enum.h>
+#include <libdap/D4Opaque.h>
+#include <libdap/D4Group.h>
+#include <libdap/crc.h>
 #include <libdap/InternalErr.h>
 
 #include "get_ascii_dap4.h"

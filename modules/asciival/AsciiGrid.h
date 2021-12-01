@@ -36,7 +36,7 @@
 #ifndef _asciigrid_h
 #define _asciigrid_h 1
 
-#include "Grid.h"
+#include <libdap/Grid.h>
 #include "AsciiOutput.h"
 
 class AsciiGrid: public Grid, public AsciiOutput {

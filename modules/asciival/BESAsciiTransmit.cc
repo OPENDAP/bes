@@ -33,19 +33,19 @@
 #include <memory>
 
 #include <libdap/BaseType.h>
-#include <Sequence.h>
-#include <ConstraintEvaluator.h>
-#include <D4Group.h>
-#include <DMR.h>
+#include <libdap/Sequence.h>
+#include <libdap/ConstraintEvaluator.h>
+#include <libdap/D4Group.h>
+#include <libdap/DMR.h>
 #include <D4ConstraintEvaluator.h>
-#include <D4BaseTypeFactory.h>
-#include <ServerFunctionsList.h>
+#include <libdap/D4BaseTypeFactory.h>
+#include <libdap/ServerFunctionsList.h>
 #include <D4FunctionEvaluator.h>
-#include <crc.h>
+#include <libdap/crc.h>
 #include <libdap/InternalErr.h>
-#include <util.h>
-#include <escaping.h>
-#include <mime_util.h>
+#include <libdap/util.h>
+#include <libdap/escaping.h>
+#include <libdap/mime_util.h>
 
 #include <BESUtil.h>
 #include <BESDapNames.h>

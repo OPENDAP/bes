@@ -43,7 +43,7 @@
 #include "AsciiSequence.h"
 #include "AsciiStructure.h"
 #include "get_ascii.h"
-#include "debug.h"
+#include <libdap/debug.h>
 
 using std::endl;
 using namespace dap_asciival;
