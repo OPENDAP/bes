@@ -44,7 +44,7 @@ using namespace std;
 // #define DODS_DEBUG
 
 #include <libdap/InternalErr.h>
-#include "debug.h"
+#include <libdap/debug.h>
 
 #include "AsciiArray.h"
 #include "util.h"
