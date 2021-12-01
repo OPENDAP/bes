@@ -39,7 +39,7 @@
 #include <Float64.h>
 
 #include <DDS.h>
-#include <DAS.h>
+#include <libdap/DAS.h>
 #include <BaseTypeFactory.h>
 
 #include <DMR.h>

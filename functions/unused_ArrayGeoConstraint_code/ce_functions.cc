@@ -49,7 +49,7 @@
 #undef FUNCTION_DAP	// undef so the dap() function always returns an error;
 // use keywords instead.
 
-#include "BaseType.h"
+#include <libdap/BaseType.h>
 #include "Byte.h"
 #include "Int16.h"
 #include "UInt16.h"

@@ -30,7 +30,7 @@
 
 #include <sstream>
 
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <Byte.h>
 #include <Int32.h>
 #include <Float32.h>

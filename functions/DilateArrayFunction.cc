@@ -32,7 +32,7 @@
 #include <vector>
 
 #include <Type.h>
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <Byte.h>
 #include <Int16.h>
 #include <UInt16.h>

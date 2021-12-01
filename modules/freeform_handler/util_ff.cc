@@ -53,7 +53,7 @@ static char rcsid[] not_used =
 #include <BESRegex.h>
 #include <BESDebug.h>
 
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <Byte.h>
 #include <Int16.h>
 #include <Int32.h>

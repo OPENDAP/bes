@@ -26,7 +26,7 @@
 // the same basic processing software can be used both by Hyrax and tie older
 // Server3.
 
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <DDS.h>
 #include "WWWOutput.h"
 

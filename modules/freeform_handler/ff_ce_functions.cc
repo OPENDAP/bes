@@ -38,7 +38,7 @@
 
 //#define DODS_DEBUG
 
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <Str.h>
 #include <libdap/Structure.h>
 #include <Sequence.h>

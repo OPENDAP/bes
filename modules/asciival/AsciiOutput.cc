@@ -38,7 +38,7 @@
 #include <algorithm>
 #include <iostream>
 
-#include "BaseType.h"
+#include <libdap/BaseType.h>
 #include "debug.h"
 
 #include "AsciiOutput.h"

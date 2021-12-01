@@ -27,7 +27,7 @@
 
 #include <sstream>
 
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <Float64.h>
 #include <Str.h>
 #include <libdap/Array.h>

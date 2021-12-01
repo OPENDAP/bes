@@ -31,7 +31,7 @@
 #include <sstream>
 #include <vector>
 
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <Str.h>
 
 #include <Error.h>

@@ -46,7 +46,7 @@
 
 #include <unistd.h>
 
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <Float32.h>
 #include <Float64.h>
 #include <libdap/Array.h>

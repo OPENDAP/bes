@@ -33,7 +33,7 @@
 
 #include <libdap/Array.h>
 #include "Constructor.h"
-#include "DAS.h"
+#include <libdap/DAS.h>
 #include "DDS.h"
 #include <libdap/Grid.h>
 #include <DataDDS.h>

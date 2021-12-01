@@ -34,7 +34,7 @@
 
 #include "FreeFormCPP.h"
 
-#include "BaseType.h"
+#include <libdap/BaseType.h>
 #include "Error.h"
 #include <libdap/InternalErr.h>
 #include "dods-datatypes.h"

@@ -6,7 +6,7 @@
 #include <Byte.h>
 #include <ServerFunctionsList.h>
 
-#include <DAS.h>
+#include <libdap/DAS.h>
 #include <DDS.h>
 #include <util.h>
 

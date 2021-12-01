@@ -31,7 +31,7 @@
 
 #include <dods-datatypes.h>
 #include <Array.h>
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <Vector.h>
 #include <memory>
 // #include "MyBaseTypeFactory.h"

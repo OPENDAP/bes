@@ -42,7 +42,7 @@
 
 #include <curl/curl.h>
 
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <Int32.h>
 #include <Str.h>
 #include <libdap/Array.h>

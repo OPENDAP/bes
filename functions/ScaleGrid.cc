@@ -30,7 +30,7 @@
 #include <memory>
 #include <string>
 
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <libdap/Array.h>
 #include <libdap/Grid.h>
 #include <Str.h>

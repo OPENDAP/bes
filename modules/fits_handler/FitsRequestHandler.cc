@@ -32,7 +32,7 @@
 
 #include "config.h"
 
-#include <DAS.h>
+#include <libdap/DAS.h>
 #include <DDS.h>
 #include <DataDDS.h>
 #include <DMR.h>

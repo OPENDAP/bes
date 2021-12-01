@@ -34,7 +34,7 @@
 
 // libdap
 #include <libdap/Array.h>
-#include "BaseType.h" // need the Type enum...
+#include <libdap/BaseType.h> // need the Type enum...
 
 namespace libdap {
 class BaseTypeFactory;

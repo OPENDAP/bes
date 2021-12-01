@@ -39,7 +39,7 @@
 #include <fitsio.h>
 
 #include <AttrTable.h>
-#include <DAS.h>
+#include <libdap/DAS.h>
 
 #include "fits_read_attributes.h"
 

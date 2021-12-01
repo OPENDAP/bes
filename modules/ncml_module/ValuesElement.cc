@@ -29,7 +29,7 @@
 
 #include "ValuesElement.h"
 
-#include "BaseType.h"
+#include <libdap/BaseType.h>
 #include <libdap/Array.h>
 #include "Byte.h"
 #include "Float32.h"

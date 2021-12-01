@@ -39,8 +39,8 @@
 #include "DDSLoader.h" // ncml_module
 #include "DimensionElement.h"  // ncml_module
 #include <AttrTable.h> // libdap
-#include <BaseType.h> // libdap
-#include <DAS.h> // libdap
+#include <libdap/BaseType.h> // libdap
+#include <libdap/DAS.h> // libdap
 #include <DDS.h> // libdap
 //#include <mime_util.h>
 #include <libdap/Structure.h> // libdap

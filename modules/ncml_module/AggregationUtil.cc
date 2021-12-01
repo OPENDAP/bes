@@ -38,7 +38,7 @@
 // libdap includes
 #include <libdap/Array.h> // libdap
 #include <AttrTable.h>
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <DataDDS.h>
 #include <DDS.h>
 #include <libdap/Grid.h>

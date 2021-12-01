@@ -34,7 +34,7 @@
 #include <map>
 
 
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <DDS.h>
 #include <Array.h>
 

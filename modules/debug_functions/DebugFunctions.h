@@ -27,7 +27,7 @@
 
 #include <stdlib.h>     
 
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <DDS.h>
 #include <ServerFunction.h>
 #include "BESAbstractModule.h"

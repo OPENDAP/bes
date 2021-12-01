@@ -36,7 +36,7 @@
 
 #include <string>
 
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <D4Attributes.h>
 using namespace libdap ;
 

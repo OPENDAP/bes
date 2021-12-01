@@ -42,7 +42,7 @@
 #include <gridfields/array.h>
 #include <gridfields/GFError.h>
 
-#include "BaseType.h"
+#include <libdap/BaseType.h>
 #include "Int32.h"
 #include "Float64.h"
 #include <libdap/Array.h>

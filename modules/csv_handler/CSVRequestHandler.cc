@@ -35,7 +35,7 @@
 #include "config.h"
 
 #include <DDS.h>
-#include <DAS.h>
+#include <libdap/DAS.h>
 #include <DataDDS.h>
 #include <BaseTypeFactory.h>
 #include <Ancillary.h>

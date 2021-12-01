@@ -30,7 +30,7 @@
 #ifndef UGR5_H_
 #define UGR5_H_
 
-#include "BaseType.h"
+#include <libdap/BaseType.h>
 #include "DDS.h"
 #include "ServerFunction.h"
 

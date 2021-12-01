@@ -39,7 +39,7 @@ static char rcsid[] not_used ="$Id$";
 #include <sstream>
 #include <iomanip>
 
-#include "BaseType.h"
+#include <libdap/BaseType.h>
 #include "DODS_Time.h"
 #include "debug.h" 
 #include "Error.h"

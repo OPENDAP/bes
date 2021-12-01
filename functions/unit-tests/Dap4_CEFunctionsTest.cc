@@ -31,7 +31,7 @@
 //#define DODS_DEBUG
 
 #include <unistd.h>
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <Int32.h>
 #include <Float64.h>
 #include <libdap/Array.h>
@@ -39,7 +39,7 @@
 #include <libdap/Array.h>
 #include <libdap/Grid.h>
 #include <DDS.h>
-#include <DAS.h>
+#include <libdap/DAS.h>
 #include <DMR.h>
 #include <D4Group.h>
 #include <D4ParserSax2.h>

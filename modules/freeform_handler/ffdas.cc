@@ -43,7 +43,7 @@
 #include <string>
 
 #include <util.h>
-#include <DAS.h>
+#include <libdap/DAS.h>
 #include <Error.h>
 #include <libdap/InternalErr.h>
 

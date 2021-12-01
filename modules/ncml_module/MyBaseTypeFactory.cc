@@ -30,7 +30,7 @@
 
 #include "MyBaseTypeFactory.h"
 
-#include "BaseType.h"
+#include <libdap/BaseType.h>
 #include "BaseTypeFactory.h"
 
 #include <libdap/Array.h>

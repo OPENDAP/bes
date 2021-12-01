@@ -32,7 +32,7 @@
 
 #include <libdap/Array.h>
 #include <Byte.h>
-#include <DAS.h>
+#include <libdap/DAS.h>
 #include <DDS.h>
 #include <DDXParserSAX2.h>
 #include <DMR.h>

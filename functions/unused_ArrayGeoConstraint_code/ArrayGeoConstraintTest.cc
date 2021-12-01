@@ -35,7 +35,7 @@
 
 #include "GetOpt.h"
 
-#include "BaseType.h"
+#include <libdap/BaseType.h>
 #include "Byte.h"
 #include "Int32.h"
 #include "Float64.h"
@@ -43,7 +43,7 @@
 #include <libdap/Array.h>
 #include <libdap/Grid.h>
 #include "DDS.h"
-#include "DAS.h"
+#include <libdap/DAS.h>
 
 #include "test/TestArray.h"
 #include "test/TestTypeFactory.h"

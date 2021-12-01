@@ -26,7 +26,7 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <Float32.h>
 #include <libdap/Array.h>
 #include <Byte.h>

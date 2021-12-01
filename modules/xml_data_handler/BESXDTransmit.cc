@@ -27,7 +27,7 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <Sequence.h>
 #include <ConstraintEvaluator.h>
 #include <DataDDS.h>

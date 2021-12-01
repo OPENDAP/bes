@@ -31,7 +31,7 @@
 #include <iomanip>
 
 #include <DMR.h>
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <libdap/Structure.h>
 #include <libdap/Array.h>
 #include <D4Sequence.h>

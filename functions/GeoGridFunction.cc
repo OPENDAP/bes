@@ -26,7 +26,7 @@
 
 #include "config.h"
 
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <Str.h>
 #include <libdap/Array.h>
 #include <libdap/Grid.h>

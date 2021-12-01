@@ -29,7 +29,7 @@
 #include <sstream>
 #include <vector>
 
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <libdap/Array.h>
 #include <Str.h>
 

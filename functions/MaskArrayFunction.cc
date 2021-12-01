@@ -31,7 +31,7 @@
 #include <algorithm>
 
 #include <Type.h>
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <Str.h>
 #include <libdap/Array.h>
 #include <libdap/Structure.h>

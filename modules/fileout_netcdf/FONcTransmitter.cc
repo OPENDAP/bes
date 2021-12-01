@@ -44,7 +44,7 @@
 
 #include <D4Group.h>
 #include <D4Attributes.h>
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <escaping.h>
 
 #include <BESContextManager.h>

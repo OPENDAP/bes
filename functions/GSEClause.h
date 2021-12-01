@@ -38,7 +38,7 @@
 #include <sstream>
 
 #if 0
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <Array.h>
 #include <Grid.h>
 #endif

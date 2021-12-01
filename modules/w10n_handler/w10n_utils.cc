@@ -42,7 +42,7 @@
 #include <iostream>
 #include <iomanip>
 
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <DDS.h>
 #include <Constructor.h>
 #include <libdap/Array.h>

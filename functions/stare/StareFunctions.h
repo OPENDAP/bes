@@ -26,7 +26,7 @@
 #include <STARE.h>
 #include <hdf5.h>
 
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <dods-datatypes.h>
 
 #include "ServerFunction.h"

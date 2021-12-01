@@ -29,7 +29,7 @@
 #include "RenamedArrayWrapper.h"
 
 #include <AttrTable.h>
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <DDS.h>
 #include <dods-datatypes.h>
 #include <Marshaller.h>

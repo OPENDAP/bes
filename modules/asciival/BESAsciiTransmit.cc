@@ -32,7 +32,7 @@
 
 #include <memory>
 
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <Sequence.h>
 #include <ConstraintEvaluator.h>
 #include <D4Group.h>

@@ -31,7 +31,7 @@
 #endif
 
 #ifndef _das_h
-#include "DAS.h"
+#include <libdap/DAS.h>
 #endif
 
 #ifndef _dds_h

@@ -28,14 +28,14 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <Int32.h>
 #include <Float64.h>
 #include <Str.h>
 #include <libdap/Array.h>
 #include <libdap/Grid.h>
 #include <DDS.h>
-#include <DAS.h>
+#include <libdap/DAS.h>
 #include <unistd.h>
 #include <GridGeoConstraint.h>
 #include <util.h>

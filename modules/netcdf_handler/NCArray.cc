@@ -46,7 +46,7 @@
 
 // #define DODS_DEBUG 1
 
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <Error.h>
 #include <libdap/InternalErr.h>
 #include <util.h>

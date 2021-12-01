@@ -44,7 +44,7 @@ static char rcsid[] not_used = {"$Id$"};
 
 #include "AISConnect.h"
 #include "../../../usage/old/ais-tool/AISDODSFilter.h"
-#include "DAS.h"
+#include <libdap/DAS.h>
 #include "DDS.h"
 #include "DataDDS.h"
 #include "ObjectType.h"

@@ -39,7 +39,7 @@
 #include <vector>
 
 #include <libdap/InternalErr.h>
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 
 using namespace libdap;
 

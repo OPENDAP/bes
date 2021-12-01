@@ -36,7 +36,7 @@
 
 // libdap4 includes
 #include <D4Attributes.h>
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <D4ParserSax2.h>
 
 // bes includes

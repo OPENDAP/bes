@@ -49,7 +49,7 @@
 
 #include <unistd.h>
 
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <Float32.h>
 #include <libdap/Array.h>
 #include <libdap/Grid.h>

@@ -54,7 +54,7 @@
 
 #include <util.h>
 #include <escaping.h>
-#include <DAS.h>
+#include <libdap/DAS.h>
 
 #include <BESDebug.h>
 

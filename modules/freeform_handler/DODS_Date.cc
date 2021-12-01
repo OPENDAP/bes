@@ -44,7 +44,7 @@ static char rcsid[] not_used ="$Id$";
 #include "DODS_Date.h"
 #include "date_proc.h"
 
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <Str.h>
 #include <debug.h>
 

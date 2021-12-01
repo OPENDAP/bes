@@ -41,7 +41,7 @@
 #include "util.h"
 
 #include <unistd.h>
-#include "BaseType.h"
+#include <libdap/BaseType.h>
 #include "Str.h"
 #include "DDS.h"
 #include "ServerFunction.h"

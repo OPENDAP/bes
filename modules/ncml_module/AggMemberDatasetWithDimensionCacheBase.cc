@@ -38,7 +38,7 @@
 #include <fstream>
 
 #include <libdap/Array.h> // libdap
-#include "BaseType.h" // libdap
+#include <libdap/BaseType.h> // libdap
 #include "Constructor.h" // libdap
 #include "DataDDS.h" // libdap
 #include "DDS.h" // libdap

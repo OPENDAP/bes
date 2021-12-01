@@ -36,7 +36,7 @@
 #ifndef _ce_functions_h
 #define _ce_functions_h
 
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <DDS.h>
 
 #if 0

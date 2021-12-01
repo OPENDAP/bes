@@ -31,7 +31,7 @@
 #include <sstream>
 
 #include <libdap/Array.h>
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <libdap/Structure.h>
 #include <libdap/Grid.h>
 #include <dods-limits.h>

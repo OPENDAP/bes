@@ -31,7 +31,7 @@
 #include <memory>
 #include <algorithm>
 
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 #include <UInt32.h>
 #include <libdap/Array.h>
 #include <Sequence.h>
