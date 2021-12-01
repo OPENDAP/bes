@@ -27,7 +27,7 @@
 
 #include <string>
 
-#include <D4Group.h>
+#include <libdap/D4Group.h>
 #include "DmrppCommon.h"
 
 namespace libdap {

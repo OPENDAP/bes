@@ -35,7 +35,7 @@
 
 #include "GetOpt.h"
 #include "test_config.h"
-#include "util.h"
+#include <libdap/util.h>
 
 using namespace libdap;
 

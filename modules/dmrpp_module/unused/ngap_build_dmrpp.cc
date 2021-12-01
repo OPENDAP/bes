@@ -35,9 +35,9 @@
 #include <GetOpt.h>
 
 // libdap4 includes
-#include <D4Attributes.h>
+#include <libdap/D4Attributes.h>
 #include <libdap/BaseType.h>
-#include <D4ParserSax2.h>
+#include <libdap/D4ParserSax2.h>
 
 // bes includes
 #include "TheBESKeys.h"

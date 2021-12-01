@@ -32,7 +32,7 @@
 #include <fstream>
 
 #include <libdap/BaseType.h>
-#include "D4Group.h"
+#include <libdap/D4Group.h>
 
 #include "BESInternalError.h"
 #include "BESInternalFatalError.h"

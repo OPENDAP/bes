@@ -28,7 +28,7 @@
 #include <memory>
 #include <string>
 
-#include <D4Opaque.h>
+#include <libdap/D4Opaque.h>
 #include "DmrppCommon.h"
 
 namespace libdap {

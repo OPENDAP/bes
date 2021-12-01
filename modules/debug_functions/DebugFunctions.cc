@@ -34,11 +34,11 @@
 
 #include "DebugFunctions.h"
 
-#include "ServerFunctionsList.h"
+#include <libdap/ServerFunctionsList.h>
 #include "BESDebug.h"
-#include <Int32.h>
+#include <libdap/Int32.h>
 #include <libdap/Structure.h>
-#include <Str.h>
+#include <libdap/Str.h>
 #include <BESError.h>
 #include <BESInternalError.h>
 #include <BESInternalFatalError.h>

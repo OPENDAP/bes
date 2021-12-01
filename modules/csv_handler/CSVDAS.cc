@@ -38,7 +38,7 @@
 #include "CSVDAS.h"
 
 #include <libdap/DAS.h>
-#include "Error.h"
+#include <libdap/Error.h>
 
 #include "CSV_Obj.h"
 
