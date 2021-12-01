@@ -36,7 +36,7 @@
 
 #include "BaseType.h"
 #include "Error.h"
-#include "InternalErr.h"
+#include <libdap/InternalErr.h>
 #include "dods-datatypes.h"
 
 using namespace libdap ;

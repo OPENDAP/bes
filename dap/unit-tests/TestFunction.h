@@ -3,12 +3,12 @@
 #define DAP_UNIT_TESTS_TESTFUNCTION_H_
 
 #include <Array.h>
-#include <Byte.h>
-#include <ServerFunctionsList.h>
+#include <libdap/Byte.h>
+#include <libdap/ServerFunctionsList.h>
 
-#include <DAS.h>
-#include <DDS.h>
-#include <util.h>
+#include <libdap/DAS.h>
+#include <libdap/DDS.h>
+#include <libdap/util.h>
 
 //#define KEY "response_cache"
 

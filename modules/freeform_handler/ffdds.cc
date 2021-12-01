@@ -45,7 +45,7 @@
 #include <string>
 
 #include <Error.h>
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 #include <mime_util.h>
 #include <util.h>
 

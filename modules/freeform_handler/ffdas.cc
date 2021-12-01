@@ -45,7 +45,7 @@
 #include <util.h>
 #include <DAS.h>
 #include <Error.h>
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 
 #include "FreeFormCPP.h"
 #include "FFRequestHandler.h"

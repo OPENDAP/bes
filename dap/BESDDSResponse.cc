@@ -30,7 +30,7 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <DDS.h>
+#include <libdap/DDS.h>
 
 #include "BESDDSResponse.h"
 

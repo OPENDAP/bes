@@ -37,7 +37,7 @@
 
 #include <BESDebug.h>
 
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 #include <util.h>
 #include <debug.h>
 

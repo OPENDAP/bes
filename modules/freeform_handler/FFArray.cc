@@ -47,7 +47,7 @@ static char rcsid[] not_used = { "$Id$" };
 #include <D4Attributes.h>
 #include <D4Group.h>
 #include <Error.h>
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 
 #include "FFArray.h"
 #include "util_ff.h"

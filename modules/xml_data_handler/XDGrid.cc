@@ -36,7 +36,7 @@
 
 using namespace std;
 
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 
 #include <BESDebug.h>
 

@@ -39,7 +39,7 @@
 #include <libdap/Grid.h>
 #include <dods-datatypes.h>
 #include <Error.h>
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 #include <util.h>
 #include <debug.h>
 

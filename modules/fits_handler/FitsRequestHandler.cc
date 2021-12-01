@@ -38,7 +38,7 @@
 #include <DMR.h>
 #include <D4BaseTypeFactory.h>
 #include <Ancillary.h>
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 #include <mime_util.h>
 
 #include <BESResponseHandler.h>

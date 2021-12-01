@@ -60,7 +60,7 @@
 #include <Ancillary.h>
 #include <Connect.h>
 #include <Response.h>
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 #include <mime_util.h>
 
 using namespace libdap;

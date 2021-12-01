@@ -33,7 +33,7 @@
 #include <DataDDS.h>
 
 #include <escaping.h>
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 #include <util.h>
 #include <mime_util.h>
 #include <XMLWriter.h>

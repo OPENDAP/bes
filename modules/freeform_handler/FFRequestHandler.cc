@@ -37,7 +37,7 @@
 #include <D4BaseTypeFactory.h>
 #include <Ancillary.h>
 #include <Error.h>
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 #include <mime_util.h>
 #include <escaping.h>
 

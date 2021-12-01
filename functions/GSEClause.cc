@@ -41,7 +41,7 @@
 #include <libdap/Grid.h>
 #include <dods-datatypes.h>
 //#include <Error.h>
-//#include <InternalErr.h>
+//#include <libdap/InternalErr.h>
 #include <debug.h>
 
 #include "BESInternalError.h"

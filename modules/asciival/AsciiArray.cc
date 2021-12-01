@@ -43,7 +43,7 @@ using namespace std;
 
 // #define DODS_DEBUG
 
-#include "InternalErr.h"
+#include <libdap/InternalErr.h>
 #include "debug.h"
 
 #include "AsciiArray.h"

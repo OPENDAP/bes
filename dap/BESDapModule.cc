@@ -74,7 +74,7 @@
 #include "BESDapError.h"
 
 #include "DapFunctionUtils.h"
-#include "ServerFunctionsList.h"
+#include <libdap/ServerFunctionsList.h>
 #include "ShowPathInfoResponseHandler.h"
 
 using std::endl;

@@ -27,10 +27,10 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include <unistd.h>
 
-#include <DDS.h>
+#include <libdap/DDS.h>
 
-#include <GNURegex.h>
-#include <debug.h>
+#include <libdap/GNURegex.h>
+#include <libdap/debug.h>
 
 #include "ObjMemCache.h"
 

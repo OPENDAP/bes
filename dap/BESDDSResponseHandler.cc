@@ -34,7 +34,7 @@
 
 #include <memory>
 
-#include <DDS.h>
+#include <libdap/DDS.h>
 
 #include "BESDDSResponseHandler.h"
 #include "BESDDSResponse.h"

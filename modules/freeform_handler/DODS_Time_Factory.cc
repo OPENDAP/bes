@@ -40,7 +40,7 @@ static char rcsid[] not_used ="$Id$";
 
 #include "AttrTable.h"
 #include "Error.h"
-#include "InternalErr.h"
+#include <libdap/InternalErr.h>
 #include "dods-datatypes.h"
 #include "util.h"
 #include "util_ff.h"

@@ -28,7 +28,7 @@
 #include <string>
 
 #include <DapXmlNamespaces.h>   // needed for libdap::DAPVersion
-//#include <DMR.h>
+//#include <libdap/DMR.h>
 
 #include "BESFileLockingCache.h"
 

@@ -36,7 +36,7 @@
 #include <DMR.h>
 #include <mime_util.h>  // name_path
 #include <D4BaseTypeFactory.h>
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 #include <Ancillary.h>
 
 #include <BESResponseHandler.h>

@@ -31,7 +31,7 @@
 
 #include <libdap/Array.h>      // libdap
 #include <dods-datatypes.h>
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 #include <debug.h>
 
 #include "test_utils.h"

@@ -42,7 +42,7 @@
 #include <ServerFunctionsList.h>
 #include <D4FunctionEvaluator.h>
 #include <crc.h>
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 #include <util.h>
 #include <escaping.h>
 #include <mime_util.h>

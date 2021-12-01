@@ -27,11 +27,11 @@
 #include <iostream>
 #include <typeinfo>
 
-#include <DDS.h>
+#include <libdap/DDS.h>
 #include <libdap/Structure.h>
-#include <Sequence.h>
-#include <ConstraintEvaluator.h>
-#include <mime_util.h>
+#include <libdap/Sequence.h>
+#include <libdap/ConstraintEvaluator.h>
+#include <libdap/mime_util.h>
 
 #include "BESResponseHandler.h"
 #include "BESDataHandlerInterface.h"

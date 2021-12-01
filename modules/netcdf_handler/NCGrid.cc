@@ -45,7 +45,7 @@ static char rcsid[] not_used ={"$Id$"};
 #include <netcdf.h>
 
 #include <Error.h>
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 #include <util.h>
 
 #include "NCGrid.h"

@@ -39,7 +39,7 @@
 #include <Float64.h>
 #include <libdap/Array.h>
 #include <Error.h>
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 #include <dods-datatypes.h>
 #include <util.h>
 #include <debug.h>

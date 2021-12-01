@@ -61,7 +61,7 @@ static char rcsid[] not_used =
 #include <UInt32.h>
 #include <Float32.h>
 #include <Float64.h>
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 #include <dods-limits.h>
 #include <util.h>
 #include <debug.h>

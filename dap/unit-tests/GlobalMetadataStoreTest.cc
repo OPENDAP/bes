@@ -34,19 +34,19 @@
 #include <unistd.h>
 
 #include <libdap/Array.h>
-#include <Byte.h>
-#include <DAS.h>
-#include <DDS.h>
-#include <DDXParserSAX2.h>
-#include <DMR.h>
-#include <D4ParserSax2.h>
+#include <libdap/Byte.h>
+#include <libdap/DAS.h>
+#include <libdap/DDS.h>
+#include <libdap/DDXParserSAX2.h>
+#include <libdap/DMR.h>
+#include <libdap/D4ParserSax2.h>
 
-#include <GNURegex.h>
-#include <util.h>
-#include <debug.h>
+#include <libdap/GNURegex.h>
+#include <libdap/util.h>
+#include <libdap/debug.h>
 
-#include <BaseTypeFactory.h>
-#include <D4BaseTypeFactory.h>
+#include <libdap/BaseTypeFactory.h>
+#include <libdap/D4BaseTypeFactory.h>
 
 #include "TheBESKeys.h"
 #include "BESContextManager.h"

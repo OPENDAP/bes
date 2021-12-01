@@ -39,7 +39,7 @@
 #include <D4Opaque.h>
 #include <D4Group.h>
 #include <crc.h>
-#include "InternalErr.h"
+#include <libdap/InternalErr.h>
 
 #include "get_ascii_dap4.h"
 

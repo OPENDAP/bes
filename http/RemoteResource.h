@@ -35,7 +35,7 @@
 #include <vector>
 
 #if 0
-#include "InternalErr.h"
+#include <libdap/InternalErr.h>
 #include "RCReader.h"
 #endif
 

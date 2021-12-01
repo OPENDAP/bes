@@ -41,7 +41,7 @@
 #include "Float64.h"
 
 #include "Error.h"
-#include "InternalErr.h"
+#include <libdap/InternalErr.h>
 
 using namespace std;
 

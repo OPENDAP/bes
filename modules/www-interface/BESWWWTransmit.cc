@@ -42,7 +42,7 @@
 #include <mime_util.h>
 #include <BESWWW.h>
 #include <util.h>
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 #include <BESError.h>
 #include <BESDapError.h>
 #include <BESInternalFatalError.h>

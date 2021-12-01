@@ -30,16 +30,16 @@
 
 #include <memory>
 
-#include <DDS.h>
-#include <DataDDS.h>
-#include <Int32.h>
-#include <Float32.h>
-#include <Sequence.h>
+#include <libdap/DDS.h>
+#include <libdap/DataDDS.h>
+#include <libdap/Int32.h>
+#include <libdap/Float32.h>
+#include <libdap/Sequence.h>
 #include <libdap/Structure.h>
 
-#include <GetOpt.h>
+#include <libdap/GetOpt.h>
 
-#include <debug.h>
+#include <libdap/debug.h>
 
 #include <test/TestTypeFactory.h>
 

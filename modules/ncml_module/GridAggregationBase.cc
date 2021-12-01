@@ -32,7 +32,7 @@
 #include <D4Group.h>
 #include <Constructor.h>
 #include <D4Maps.h>
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 
 #include "BESStopWatch.h"
 

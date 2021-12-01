@@ -40,16 +40,16 @@
 #include <unistd.h>
 
 #include <libdap/Array.h>
-#include <Byte.h>
-#include <ServerFunctionsList.h>
-#include <ConstraintEvaluator.h>
-#include <DAS.h>
-#include <DDS.h>
-#include <DDXParserSAX2.h>
+#include <libdap/Byte.h>
+#include <libdap/ServerFunctionsList.h>
+#include <libdap/ConstraintEvaluator.h>
+#include <libdap/DAS.h>
+#include <libdap/DDS.h>
+#include <libdap/DDXParserSAX2.h>
 
-#include <GNURegex.h>
-#include <util.h>
-#include <debug.h>
+#include <libdap/GNURegex.h>
+#include <libdap/util.h>
+#include <libdap/debug.h>
 
 #include <test/TestTypeFactory.h>
 

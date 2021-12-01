@@ -24,13 +24,13 @@
 
 #include "config.h"
 
-#include <D4RValue.h>
-#include <DMR.h>
-#include <DDS.h>
-#include <BaseType.h>
-#include <Str.h>
+#include <libdap/D4RValue.h>
+#include <libdap/DMR.h>
+#include <libdap/DDS.h>
+#include <libdap/BaseType.h>
+#include <libdap/Str.h>
 #include <libdap/Structure.h>
-#include <D4Group.h>
+#include <libdap/D4Group.h>
 
 #include <BESDebug.h>
 #include <BESUtil.h>

@@ -35,7 +35,7 @@
 #include <vector>
 
 //#include "util.h"
-#include "InternalErr.h"
+#include <libdap/InternalErr.h>
 #include "RCReader.h"
 
 namespace gateway {
