@@ -39,7 +39,7 @@
 #include <ctype.h>
 
 #include "HDF5Sequence.h"
-#include "InternalErr.h"
+#include <libdap/InternalErr.h>
 
 using namespace std;
 using namespace libdap;

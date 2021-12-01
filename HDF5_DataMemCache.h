@@ -8,8 +8,8 @@
 #define HDF5_DATA_MEM_CACHE_H_
 
 
-#include <DapObj.h>
-#include <InternalErr.h>
+#include <libdap/DapObj.h>
+#include <libdap/InternalErr.h>
 #include<vector>
 #include<string>
 

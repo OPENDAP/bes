@@ -47,11 +47,11 @@
 
 #include <H5public.h>
 
-#include <DDS.h>
+#include <libdap/DDS.h>
 
 
-#include <D4Group.h>
-#include <D4Attributes.h>
+#include <libdap/D4Group.h>
+#include <libdap/D4Attributes.h>
 
 bool breadth_first(hid_t, char *, libdap::D4Group* par_grp, const char *,bool);
 

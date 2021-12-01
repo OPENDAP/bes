@@ -15,8 +15,8 @@
 #include "hdf5.h"
 
 
-#include <DDS.h>
-#include <InternalErr.h>
+#include <libdap/DDS.h>
+#include <libdap/InternalErr.h>
 
 
 /**

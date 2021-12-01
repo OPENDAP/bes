@@ -38,7 +38,7 @@
 
 // DODS includes
 #include "HDF5CF.h"
-//#include <Array.h>
+//#include <libdap/Array.h>
 #include "HDF5BaseArray.h"
 
 

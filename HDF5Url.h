@@ -32,7 +32,7 @@
 #include <string.h>
 #include <H5Ipublic.h>
 
-#include "Url.h"
+#include <libdap/Url.h>
 #include "h5get.h"
 
 

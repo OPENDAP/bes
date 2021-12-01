@@ -18,8 +18,8 @@
 //#define USE_DAP4 1
 //#undef USE_DAP4
 //#ifdef USE_DAP4
-#include <DMR.h>
-//#include <InternalErr.h>
+#include <libdap/DMR.h>
+//#include <libdap/InternalErr.h>
 
 
 /**

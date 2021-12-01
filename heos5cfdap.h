@@ -33,8 +33,8 @@
 
 #ifndef _HEOS5CFDAP_H
 #define _HEOS5CFDAP_H
-#include <DDS.h>
-#include <DAS.h>
+#include <libdap/DDS.h>
+#include <libdap/DAS.h>
 #include "hdf5.h"
 #include "HDF5CF.h"
 #include "h5commoncfdap.h"

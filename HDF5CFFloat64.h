@@ -35,7 +35,7 @@
 #include <string>
 
 // DODS includes
-#include <Float64.h>
+#include <libdap/Float64.h>
 
 
 class HDF5CFFloat64:public libdap::Float64 {

@@ -42,7 +42,7 @@
 #include "config_hdf5.h"
 #include "BESDebug.h"
 #include "h5dds.h"
-#include "InternalErr.h"
+#include <libdap/InternalErr.h>
 #include "HDF5Float32.h"
 
 

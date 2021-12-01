@@ -32,7 +32,7 @@
 #include <string.h>
 #include <H5Ipublic.h>
 
-#include "UInt16.h"
+#include <libdap/UInt16.h>
 #include "h5get.h"
 
 

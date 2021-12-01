@@ -41,8 +41,8 @@
 #include <ctype.h>
 
 #include <BESDebug.h>
-#include <Error.h>
-#include <InternalErr.h>
+#include <libdap/Error.h>
+#include <libdap/InternalErr.h>
 
 #include "HDF5Array.h"
 #include "HDF5Structure.h"

@@ -35,10 +35,10 @@
 
 #include <string>
 
-#include <DMR.h>
-#include <DDS.h>
-#include <DAS.h>
-#include <D4Attributes.h>
+#include <libdap/DMR.h>
+#include <libdap/DDS.h>
+#include <libdap/DAS.h>
+#include <libdap/D4Attributes.h>
 #include "hdf5.h"
 
 #include "HDF5CF.h"

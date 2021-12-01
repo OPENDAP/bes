@@ -32,7 +32,7 @@
 #include "hdf5.h"
 #include "h5dds.h"
 #include "HDF5Structure.h"
-#include "InternalErr.h"
+#include <libdap/InternalErr.h>
 #include "BESDebug.h"
 
 using namespace std;

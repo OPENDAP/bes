@@ -38,7 +38,7 @@
 #include <sstream>
 
 #include <BESDebug.h>
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 
 #include "HDF5RequestHandler.h"
 #include "h5cfdaputil.h"

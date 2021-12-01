@@ -31,7 +31,7 @@
 
 #include <H5Ipublic.h>
 
-#include "Byte.h"
+#include <libdap/Byte.h>
 #include "h5get.h"
 
 

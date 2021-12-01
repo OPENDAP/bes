@@ -37,7 +37,7 @@
 #include <string>
 
 // DODS includes
-#include <Byte.h>
+#include <libdap/Byte.h>
 
 
 class HDF5CFByte:public libdap::Byte {

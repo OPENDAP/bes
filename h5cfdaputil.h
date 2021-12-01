@@ -38,7 +38,7 @@
 #include <iomanip>
 #include <TheBESKeys.h>
 #include <BESUtil.h>
-#include <D4Attributes.h>
+#include <libdap/D4Attributes.h>
 
 const size_t  NC_JAVA_STR_SIZE_LIMIT=32767;
 
