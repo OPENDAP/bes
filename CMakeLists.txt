@@ -2013,7 +2013,7 @@ add_executable(bes
 
     standalone/besstandalone.cc
 	modules/fileout_netcdf/history_utils.cc
-	modules/fileout_netcdf/history_utils.h modules/dmrpp_module/unit-tests/rapid_xml_test.cc)
+	modules/fileout_netcdf/history_utils.h)
 
 if (EXISTS modules/sql_handler)
 	add_executable(bes

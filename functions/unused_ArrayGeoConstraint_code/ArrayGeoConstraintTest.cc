@@ -40,8 +40,8 @@
 #include "Int32.h"
 #include "Float64.h"
 #include "Str.h"
-#include "Array.h"
-#include "Grid.h"
+#include <libdap/Array.h>
+#include <libdap/Grid.h>
 #include "DDS.h"
 #include "DAS.h"
 

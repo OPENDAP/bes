@@ -37,8 +37,8 @@
 #include <iostream>
 #include <sstream>
 
-#include <Array.h>
-#include <Grid.h>
+#include <libdap/Array.h>
+#include <libdap/Grid.h>
 #include <dods-datatypes.h>
 //#include <Error.h>
 //#include <InternalErr.h>

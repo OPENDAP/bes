@@ -29,7 +29,7 @@
 #include <ogr_spatialref.h>
 
 #include <DDS.h>
-#include <Grid.h>
+#include <libdap/Grid.h>
 // #include <ce_functions.h>
 #include <util.h>
 

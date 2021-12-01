@@ -42,7 +42,7 @@
 #include "Float32.h"
 #include "Float64.h"
 #include "Str.h"
-#include <Array.h>
+#include <libdap/Array.h>
 #include <Error.h>
 #include <util.h>
 

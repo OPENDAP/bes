@@ -43,12 +43,12 @@
 #include "AggMemberDatasetDimensionCache.h"
 
 #include <AttrTable.h> // libdap
-#include <Array.h> // libdap
+#include <libdap/Array.h> // libdap
 #include <AttrTable.h> // libdap
 #include "DDSAccessInterface.h" // agg_util
 #include "Dimension.h" // agg_util
 #include "DimensionElement.h"
-#include <Grid.h> // libdap
+#include <libdap/Grid.h> // libdap
 #include "MyBaseTypeFactory.h"
 #include "NCMLBaseArray.h"
 #include "NCMLDebug.h"

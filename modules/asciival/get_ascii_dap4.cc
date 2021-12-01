@@ -32,8 +32,8 @@
 
 #include <DMR.h>
 #include <BaseType.h>
-#include <Structure.h>
-#include <Array.h>
+#include <libdap/Structure.h>
+#include <libdap/Array.h>
 #include <D4Sequence.h>
 #include <D4Enum.h>
 #include <D4Opaque.h>

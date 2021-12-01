@@ -32,7 +32,7 @@
 
 #include "util.h"
 #include "debug.h"
-#include "Array.h"
+#include <libdap/Array.h>
 #include "Int32.h"
 #include "Float64.h"
 #include "NDimensionalArray.h"

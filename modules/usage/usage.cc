@@ -57,10 +57,10 @@ static char rcsid[] not_used = {"$Id$"};
 
 #include <GNURegex.h>
 
-#include <Array.h>
-#include <Structure.h>
+#include <libdap/Array.h>
+#include <libdap/Structure.h>
 #include <Sequence.h>
-#include <Grid.h>
+#include <libdap/Grid.h>
 #include <Ancillary.h>
 
 #include <DAS.h>

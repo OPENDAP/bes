@@ -30,10 +30,10 @@
 #include <memory>
 #include <sstream>
 
-#include <Array.h>
+#include <libdap/Array.h>
 #include <BaseType.h>
-#include <Structure.h>
-#include <Grid.h>
+#include <libdap/Structure.h>
+#include <libdap/Grid.h>
 #include <dods-limits.h>
 
 

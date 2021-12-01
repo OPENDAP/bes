@@ -29,7 +29,7 @@
 #include <sstream>
 #include <vector>
 
-#include <Array.h>      // libdap
+#include <libdap/Array.h>      // libdap
 #include <dods-datatypes.h>
 #include <InternalErr.h>
 #include <debug.h>

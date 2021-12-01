@@ -29,7 +29,7 @@
 #include <DDS.h>
 #include <BaseType.h>
 #include <Str.h>
-#include <Structure.h>
+#include <libdap/Structure.h>
 #include <D4Group.h>
 
 #include <BESDebug.h>

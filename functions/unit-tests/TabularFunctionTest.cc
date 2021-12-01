@@ -36,7 +36,7 @@
 #include <UInt32.h>
 #include <Float32.h>
 #include <Float64.h>
-#include <Array.h>
+#include <libdap/Array.h>
 #include <Sequence.h>
 #include <DDS.h>
 #include <util.h>

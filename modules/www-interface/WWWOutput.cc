@@ -46,7 +46,7 @@ static char rcsid[] not_used =
 #endif
 
 #include <BaseType.h>
-#include <Grid.h>
+#include <libdap/Grid.h>
 #include <DDS.h>
 
 #include <debug.h>

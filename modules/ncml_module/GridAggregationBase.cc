@@ -28,7 +28,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-#include <Array.h> // libdap
+#include <libdap/Array.h> // libdap
 #include <D4Group.h>
 #include <Constructor.h>
 #include <D4Maps.h>

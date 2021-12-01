@@ -31,8 +31,8 @@
 #include <string>
 
 #include <BaseType.h>
-#include <Array.h>
-#include <Grid.h>
+#include <libdap/Array.h>
+#include <libdap/Grid.h>
 #include <Str.h>
 #include <Error.h>
 #include <util.h>

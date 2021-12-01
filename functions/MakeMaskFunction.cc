@@ -37,7 +37,7 @@
 #include <Byte.h>
 #include <Str.h>
 
-#include <Array.h>
+#include <libdap/Array.h>
 #include <Error.h>
 #include <DDS.h>
 

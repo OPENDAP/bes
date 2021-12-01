@@ -51,7 +51,7 @@
 #include <Float64.h>
 #include <mime_util.h>
 
-#include <Array.h>
+#include <libdap/Array.h>
 
 #include <BESDebug.h>
 

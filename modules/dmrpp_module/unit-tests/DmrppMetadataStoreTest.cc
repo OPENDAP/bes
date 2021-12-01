@@ -30,7 +30,7 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <Array.h>
+#include <libdap/Array.h>
 #include <Byte.h>
 #include <DAS.h>
 #include <DDS.h>

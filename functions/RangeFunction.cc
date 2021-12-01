@@ -31,9 +31,9 @@
 #include <Float64.h>
 #include <Byte.h>
 #include <Str.h>
-#include <Structure.h>
-#include <Array.h>
-#include <Grid.h>
+#include <libdap/Structure.h>
+#include <libdap/Array.h>
+#include <libdap/Grid.h>
 #include "D4RValue.h"
 
 #include <Error.h>

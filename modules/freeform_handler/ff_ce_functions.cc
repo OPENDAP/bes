@@ -40,7 +40,7 @@
 
 #include <BaseType.h>
 #include <Str.h>
-#include <Structure.h>
+#include <libdap/Structure.h>
 #include <Sequence.h>
 #include <DDS.h>
 #include <ConstraintEvaluator.h>

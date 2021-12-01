@@ -12,7 +12,7 @@ using std::endl;
 using std::ostringstream;
 
 #include <DataDDS.h>
-#include <Structure.h>
+#include <libdap/Structure.h>
 #include <Byte.h>
 #include <Int16.h>
 #include <Int32.h>

@@ -33,7 +33,7 @@
 #include <string>
 
 // libdap
-#include "Array.h"
+#include <libdap/Array.h>
 #include "BaseType.h" // need the Type enum...
 
 namespace libdap {

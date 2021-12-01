@@ -29,7 +29,7 @@
 
 #include <gridfields/array.h>
 
-#include <Array.h>
+#include <libdap/Array.h>
 #include <util.h>
 
 #include <BESDebug.h>

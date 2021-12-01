@@ -38,8 +38,8 @@
 
 #include "Geo2DArray.h"
 
-#include "Array.h"
-#include "Grid.h"
+#include <libdap/Array.h>
+#include <libdap/Grid.h>
 #include "Float64.h"
 
 #include "Error.h"

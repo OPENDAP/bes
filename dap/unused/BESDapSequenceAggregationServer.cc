@@ -28,7 +28,7 @@
 #include <typeinfo>
 
 #include <DDS.h>
-#include <Structure.h>
+#include <libdap/Structure.h>
 #include <Sequence.h>
 #include <ConstraintEvaluator.h>
 #include <mime_util.h>

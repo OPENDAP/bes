@@ -25,8 +25,8 @@
 #include "config.h"
 
 #include <BaseType.h>
-#include <Structure.h>
-#include <Grid.h>
+#include <libdap/Structure.h>
+#include <libdap/Grid.h>
 #include <util.h>
 
 #include <BESDebug.h>

@@ -30,7 +30,7 @@
 #include <vector>
 
 #include <BaseType.h>
-#include <Array.h>
+#include <libdap/Array.h>
 #include <Str.h>
 
 #include <Error.h>

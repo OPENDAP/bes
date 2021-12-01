@@ -60,9 +60,9 @@
 #include <DMR.h>
 #include <D4Group.h>
 #include <D4Attributes.h>
-#include <Structure.h>
-#include <Array.h>
-#include <Grid.h>
+#include <libdap/Structure.h>
+#include <libdap/Array.h>
+#include <libdap/Grid.h>
 #include <Sequence.h>
 #include <BESDebug.h>
 #include <BESInternalError.h>

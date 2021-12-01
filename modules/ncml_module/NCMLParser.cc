@@ -43,7 +43,7 @@
 #include <DAS.h> // libdap
 #include <DDS.h> // libdap
 //#include <mime_util.h>
-#include <Structure.h> // libdap
+#include <libdap/Structure.h> // libdap
 #include <map>
 #include <memory>
 #include "NCMLDebug.h" // ncml_module

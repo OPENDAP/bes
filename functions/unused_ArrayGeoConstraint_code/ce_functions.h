@@ -37,7 +37,7 @@
 #define _ce_functions_h
 
 #include "BaseType.h"
-#include "Array.h"
+#include <libdap/Array.h>
 #include "Error.h"
 #include "ConstraintEvaluator.h"
 #include "Sequence.h"

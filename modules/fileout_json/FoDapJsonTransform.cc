@@ -41,10 +41,10 @@ using std::ostringstream;
 using std::istringstream;
 
 #include <DDS.h>
-#include <Structure.h>
+#include <libdap/Structure.h>
 #include <Constructor.h>
-#include <Array.h>
-#include <Grid.h>
+#include <libdap/Array.h>
+#include <libdap/Grid.h>
 #include <Sequence.h>
 #include <Float64.h>
 #include <Str.h>

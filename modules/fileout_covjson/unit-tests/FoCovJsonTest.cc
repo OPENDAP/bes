@@ -44,9 +44,9 @@
 #include <Float64.h>
 #include <Str.h>
 
-#include <Structure.h>
+#include <libdap/Structure.h>
 #include <Sequence.h>
-#include <Grid.h>
+#include <libdap/Grid.h>
 
 #include <debug.h>
 #include <util.h>

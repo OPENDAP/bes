@@ -45,7 +45,7 @@
 #include "BaseType.h"
 #include "Int32.h"
 #include "Float64.h"
-#include "Array.h"
+#include <libdap/Array.h>
 #include "util.h"
 
 #include "ugrid_utils.h"

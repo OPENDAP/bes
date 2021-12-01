@@ -35,10 +35,10 @@
 #include <Float64.h>
 #include <Str.h>
 #include <Url.h>
-#include <Array.h>
-#include <Structure.h>
+#include <libdap/Array.h>
+#include <libdap/Structure.h>
 #include <ReadSequence.h>
-#include <Grid.h>
+#include <libdap/Grid.h>
 #include <debug.h>
 
 #include "ReadTypeFactory.h"

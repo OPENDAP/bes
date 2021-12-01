@@ -49,9 +49,9 @@
 #include <BaseType.h>
 #include <Float32.h>
 #include <Float64.h>
-#include <Array.h>
-#include <Structure.h>
-#include <Grid.h>
+#include <libdap/Array.h>
+#include <libdap/Structure.h>
+#include <libdap/Grid.h>
 
 #include <test/TestTypeFactory.h>
 

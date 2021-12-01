@@ -27,7 +27,7 @@
 
 #include <D4Connect.h>
 #include <Connect.h>
-#include <Array.h>
+#include <libdap/Array.h>
 #include <Error.h>
 
 using namespace std;

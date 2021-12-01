@@ -31,8 +31,8 @@
 #include <BaseType.h>
 #include <Int32.h>
 #include <Str.h>
-#include <Array.h>
-#include <Structure.h>
+#include <libdap/Array.h>
+#include <libdap/Structure.h>
 
 #include <D4RValue.h>
 #include <Error.h>

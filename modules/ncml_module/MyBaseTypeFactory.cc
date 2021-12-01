@@ -33,17 +33,17 @@
 #include "BaseType.h"
 #include "BaseTypeFactory.h"
 
-#include "Array.h"
+#include <libdap/Array.h>
 #include "Byte.h"
 #include "Float32.h"
 #include "Float64.h"
-#include "Grid.h"
+#include <libdap/Grid.h>
 #include "Int16.h"
 #include "Int32.h"
 #include "NCMLArray.h"
 #include "Sequence.h"
 #include "Str.h"
-#include "Structure.h"
+#include <libdap/Structure.h>
 #include "UInt16.h"
 #include "UInt32.h"
 #include "Url.h"

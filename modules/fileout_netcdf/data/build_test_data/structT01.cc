@@ -10,8 +10,8 @@ using std::cerr;
 using std::endl;
 
 #include <DataDDS.h>
-#include <Structure.h>
-#include <Array.h>
+#include <libdap/Structure.h>
+#include <libdap/Array.h>
 #include <Byte.h>
 #include <Int16.h>
 #include <Int32.h>

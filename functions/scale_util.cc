@@ -44,8 +44,8 @@
 #include <Str.h>
 #include <Float32.h>
 #include <Int16.h>
-#include <Array.h>
-#include <Grid.h>
+#include <libdap/Array.h>
+#include <libdap/Grid.h>
 
 #include <util.h>
 #include <Error.h>

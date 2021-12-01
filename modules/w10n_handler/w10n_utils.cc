@@ -45,7 +45,7 @@
 #include <BaseType.h>
 #include <DDS.h>
 #include <Constructor.h>
-#include <Array.h>
+#include <libdap/Array.h>
 
 using std::istringstream;
 using std::cout;

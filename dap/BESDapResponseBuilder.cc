@@ -59,7 +59,7 @@
 
 #include <DAS.h>
 #include <DDS.h>
-#include <Structure.h>
+#include <libdap/Structure.h>
 #include <ConstraintEvaluator.h>
 #include <DDXParserSAX2.h>
 #include <Ancillary.h>

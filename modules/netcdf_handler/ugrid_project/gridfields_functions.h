@@ -40,7 +40,7 @@
 #include <DDS.h>
 
 #if 0
-#include "Array.h"
+#include <libdap/Array.h>
 #include "Error.h"
 #include "ConstraintEvaluator.h"
 #include <Str.h>

@@ -28,11 +28,11 @@
 
 #include <BaseType.h>
 #include <Float32.h>
-#include <Array.h>
+#include <libdap/Array.h>
 #include <Byte.h>
 #include <Int32.h>
 #include <UInt64.h>
-#include <Structure.h>
+#include <libdap/Structure.h>
 #include <D4Group.h>
 #include <D4RValue.h>
 #include <DMR.h>

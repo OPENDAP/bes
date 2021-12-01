@@ -35,9 +35,9 @@
 #include <DDS.h>
 #include <ConstraintEvaluator.h>
 
-#include <Structure.h>
-#include <Array.h>
-#include <Grid.h>
+#include <libdap/Structure.h>
+#include <libdap/Array.h>
+#include <libdap/Grid.h>
 #include <util.h>
 #include <Error.h>
 

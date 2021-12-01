@@ -34,10 +34,10 @@
 #include <BaseType.h>
 #include <Int32.h>
 #include <Float64.h>
-#include <Array.h>
+#include <libdap/Array.h>
 #include <Str.h>
-#include <Array.h>
-#include <Grid.h>
+#include <libdap/Array.h>
+#include <libdap/Grid.h>
 #include <DDS.h>
 #include <DAS.h>
 #include <DMR.h>

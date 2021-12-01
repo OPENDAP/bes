@@ -33,7 +33,7 @@
 
 #include <BaseType.h>
 #include <UInt32.h>
-#include <Array.h>
+#include <libdap/Array.h>
 #include <Sequence.h>
 #include <D4Sequence.h>
 #include <D4RValue.h>

@@ -39,7 +39,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include <unistd.h>
 
-#include <Array.h>
+#include <libdap/Array.h>
 #include <Byte.h>
 #include <ServerFunctionsList.h>
 #include <ConstraintEvaluator.h>

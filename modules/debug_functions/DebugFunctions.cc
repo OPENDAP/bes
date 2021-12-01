@@ -37,7 +37,7 @@
 #include "ServerFunctionsList.h"
 #include "BESDebug.h"
 #include <Int32.h>
-#include <Structure.h>
+#include <libdap/Structure.h>
 #include <Str.h>
 #include <BESError.h>
 #include <BESInternalError.h>

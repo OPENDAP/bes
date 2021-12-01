@@ -30,8 +30,8 @@
 #include <BaseType.h>
 #include <Float64.h>
 #include <Str.h>
-#include <Array.h>
-#include <Grid.h>
+#include <libdap/Array.h>
+#include <libdap/Grid.h>
 #include "D4RValue.h"
 
 #include <Error.h>

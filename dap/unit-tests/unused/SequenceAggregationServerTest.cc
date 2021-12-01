@@ -35,7 +35,7 @@
 #include <Int32.h>
 #include <Float32.h>
 #include <Sequence.h>
-#include <Structure.h>
+#include <libdap/Structure.h>
 
 #include <GetOpt.h>
 

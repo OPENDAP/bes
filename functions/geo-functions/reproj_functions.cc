@@ -37,8 +37,8 @@
 #include <gdalwarper.h>
 
 #include <Str.h>
-#include <Array.h>
-#include <Grid.h>
+#include <libdap/Array.h>
+#include <libdap/Grid.h>
 
 #include <util.h>
 #include <Error.h>

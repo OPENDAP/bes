@@ -37,7 +37,7 @@
 //#define DODS_DEBUG2
 
 #include <Float64.h>
-#include <Array.h>
+#include <libdap/Array.h>
 #include <Error.h>
 #include <InternalErr.h>
 #include <dods-datatypes.h>

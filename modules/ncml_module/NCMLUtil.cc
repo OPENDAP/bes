@@ -31,11 +31,11 @@
 
 #include <ctype.h>
 
-#include <Array.h>
+#include <libdap/Array.h>
 #include "Constructor.h"
 #include "DAS.h"
 #include "DDS.h"
-#include "Grid.h"
+#include <libdap/Grid.h>
 #include <DataDDS.h>
 #include <AttrTable.h>
 

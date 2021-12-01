@@ -51,8 +51,8 @@
 
 #include <BaseType.h>
 #include <Float32.h>
-#include <Array.h>
-#include <Grid.h>
+#include <libdap/Array.h>
+#include <libdap/Grid.h>
 #include <assert.h>
 
 #include <test/TestTypeFactory.h>

@@ -13,7 +13,7 @@ using std::ofstream;
 #include <Error.h>
 #include <DataDDS.h>
 #include <DDS.h>
-#include <Structure.h>
+#include <libdap/Structure.h>
 #include <Sequence.h>
 #include <ConstraintEvaluator.h>
 

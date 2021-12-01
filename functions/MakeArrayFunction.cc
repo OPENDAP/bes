@@ -41,7 +41,7 @@
 #include <Float64.h>
 #include <Str.h>
 #include <Url.h>
-#include <Array.h>
+#include <libdap/Array.h>
 #include <Error.h>
 #include <DDS.h>
 

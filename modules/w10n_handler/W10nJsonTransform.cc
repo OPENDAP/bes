@@ -42,10 +42,10 @@ using std::istringstream;
 
 #include <DDS.h>
 #include <Type.h>
-#include <Structure.h>
+#include <libdap/Structure.h>
 #include <Constructor.h>
-#include <Array.h>
-#include <Grid.h>
+#include <libdap/Array.h>
+#include <libdap/Grid.h>
 #include <Str.h>
 #include <Sequence.h>
 #include <Str.h>

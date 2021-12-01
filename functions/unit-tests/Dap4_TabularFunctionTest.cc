@@ -33,7 +33,7 @@
 #include <Int32.h>
 #include <Float32.h>
 #include <Float64.h>
-#include <Array.h>
+#include <libdap/Array.h>
 #include <Sequence.h>
 #include <DDS.h>
 #include <D4Group.h>

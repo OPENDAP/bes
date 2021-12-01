@@ -36,8 +36,8 @@
 #include <Float32.h>
 #include <Float64.h>
 #include <Str.h>
-#include <Array.h>
-#include <Structure.h>
+#include <libdap/Array.h>
+#include <libdap/Structure.h>
 #include <DDS.h>
 #include <util.h>
 #include <unistd.h>

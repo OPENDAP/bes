@@ -35,7 +35,7 @@
 #include <gridfields/array.h>
 
 #include "BaseType.h"
-#include "Array.h"
+#include <libdap/Array.h>
 #include "debug.h"
 #include "util.h"
 

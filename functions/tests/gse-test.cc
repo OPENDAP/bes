@@ -47,7 +47,7 @@ static char rcsid[] not_used =
 
 #include "dods-datatypes.h"
 #include "BaseType.h"
-#include "Grid.h"
+#include <libdap/Grid.h>
 #include "DDS.h"
 #include "GSEClause.h"
 #include "parser.h"

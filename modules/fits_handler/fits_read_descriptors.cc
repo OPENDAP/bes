@@ -36,9 +36,9 @@
 #include <memory>
 
 #include <DDS.h>
-#include <Structure.h>
+#include <libdap/Structure.h>
 #include <Str.h>
-#include <Array.h>
+#include <libdap/Array.h>
 #include <Byte.h>
 #include <Int16.h>
 #include <Int32.h>

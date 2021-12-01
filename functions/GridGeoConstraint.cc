@@ -36,7 +36,7 @@
 //#define DODS_DEBUG
 
 #include <Float64.h>
-#include <Grid.h>
+#include <libdap/Grid.h>
 #include <dods-datatypes.h>
 #include <Error.h>
 #include <InternalErr.h>

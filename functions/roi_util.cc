@@ -27,8 +27,8 @@
 #include <memory>
 
 #include <BaseType.h>
-#include <Structure.h>
-#include <Array.h>
+#include <libdap/Structure.h>
+#include <libdap/Array.h>
 #include <Int32.h>
 #include <Str.h>
 

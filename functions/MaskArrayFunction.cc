@@ -33,8 +33,8 @@
 #include <Type.h>
 #include <BaseType.h>
 #include <Str.h>
-#include <Array.h>
-#include <Structure.h>
+#include <libdap/Array.h>
+#include <libdap/Structure.h>
 #include <Error.h>
 #include <DDS.h>
 
