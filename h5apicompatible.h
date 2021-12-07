@@ -14,8 +14,6 @@
 
 
 #if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR == 8)
-
-
 #define H5RDEREFERENCE(obj_id,ref_type,ref) H5Rdereference(obj_id,ref_type,ref)
 #else
 

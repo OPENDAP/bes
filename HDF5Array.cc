@@ -584,6 +584,7 @@ bool HDF5Array::m_array_of_reference(hid_t dset_id,hid_t dtype_id)
     hdset_reg_ref_t *rbuf = NULL;
 
     try {
+
 	vector<int> offset(d_num_dim);
 	vector<int> count(d_num_dim);
 	vector<int> step(d_num_dim);
@@ -667,7 +668,7 @@ bool HDF5Array::m_array_of_reference(hid_t dset_id,hid_t dtype_id)
 			    throw InternalErr(__FILE__, __LINE__, "H5Sget_select_elem_pointlist() failed.");
 			}
 
-#ifdef DODS_DEBUG
+#if 0
 			for (int j = 0; j < npoints * ndim; j++) {
                             "h5", "=read() npoints buf[0] =" << buf[j] <<endl;
 			}
@@ -692,20 +693,36 @@ bool HDF5Array::m_array_of_reference(hid_t dset_id,hid_t dtype_id)
 		    case H5S_SEL_HYPERSLABS: {
 			vector<hsize_t> start(ndim);
 			vector<hsize_t> end(ndim);
+                        vector<hsize_t>stride(ndim);
+                        vector<hsize_t>count(ndim);
+                        vector<hsize_t>block(ndim);
 
 			BESDEBUG("h5", "=read() Slabs selected." << endl);
 			BESDEBUG("h5", "=read() nblock is " <<
 				H5Sget_select_hyper_nblocks(space_id) << endl);
 
+#if 0
 			if (H5Sget_select_bounds(space_id, &start[0], &end[0]) < 0) {
 			    throw InternalErr(__FILE__, __LINE__, "H5Sget_select_bounds() failed.");
+			}
+#endif
+			if (H5Sget_regular_hyperslab(space_id, &start[0], &stride[0], &count[0], &block[0]) < 0) {
+			    throw InternalErr(__FILE__, __LINE__, "H5Sget_regular_hyperslab() failed.");
 			}
 
 			for (int j = 0; j < ndim; j++) {
 			    ostringstream oss;
+			    BESDEBUG("h5", "start " << start[j]
+                                     << "stride "<<stride[j] 
+                                     << "count "<< count[j]
+                                     << "block "<< block[j] 
+                                     <<endl);
+
+                            // Map from HDF5's start,stride,count,block to DAP's start,stride,end.
+                            end[j] = start[j] + stride[j]*(count[j]-1)+(block[j]-1);
 			    BESDEBUG("h5", "=read() start is " << start[j]
 				    << "=read() end is " << end[j] << endl);
-			    oss << "[" << (int) start[j] << ":" << (int) end[j] << "]";
+			    oss << "[" << start[j] << ":" << stride[j] << ":" << end[j] << "]";
 			    expression.append(oss.str());
 			    BESDEBUG("h5", "=read() expression is "
 				    << expression << endl)
