@@ -29,8 +29,9 @@
 #include "Error.h"
 
 using namespace std;
+using namespace libdap;
 
-namespace libdap {
+//namespace dispatch {
 
 /** Does the regular expression match the string? 
 
@@ -39,10 +40,10 @@ namespace libdap {
     @param pos Start looking at this position in the string
     @return The number of characters that match, -1 if there's no match. */
 int 
-Regex::match(const char *s, int len, int pos) const
+BESRegex::match(const char *s, int len, int pos) const
 {
     if (pos > len)
-        throw Error("Position exceed length in Regex::match()");
+        throw Error("Position exceed length in BESRegex::match()");
 
     smatch match;
     auto target = string(s+pos, len-pos);
@@ -59,7 +60,7 @@ Regex::match(const char *s, int len, int pos) const
  * @return The length of the matching substring, or -1 if no match was found
  */
 int
-Regex::match(const string &s) const
+BESRegex::match(const string &s) const
 {
     smatch match;
     bool found = regex_search(s, match, d_exp);
@@ -80,7 +81,7 @@ Regex::match(const string &s) const
     POSIX regular expressions, whcih return the start position of the 
     longest match. */
 int 
-Regex::search(const char *s, int len, int& matchlen, int pos) const
+BESRegex::search(const char *s, int len, int& matchlen, int pos) const
 {
     smatch match;
     // This is needed because in C++14, the first arg to regex_search() cannot be a
@@ -102,7 +103,7 @@ Regex::search(const char *s, int len, int& matchlen, int pos) const
  * @return The starting position of the first set of matching characters
  */
 int
-Regex::search(const string &s, int& matchlen) const
+BESRegex::search(const string &s, int& matchlen) const
 {
     smatch match;
     bool found = regex_search(s, match, d_exp);
@@ -113,5 +114,5 @@ Regex::search(const string &s, int& matchlen) const
         return -1;
 }
 
-} // namespace libdap
+//} // namespace libdap
 

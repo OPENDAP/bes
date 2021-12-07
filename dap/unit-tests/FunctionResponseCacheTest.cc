@@ -47,7 +47,7 @@
 #include <DDS.h>
 #include <DDXParserSAX2.h>
 
-#include <GNURegex.h>
+// #include "BESRegex.h"
 #include <util.h>
 #include <debug.h>
 
@@ -184,7 +184,7 @@ public:
         DBG(cerr << "tearDown() - END" << endl);
     }
 
-    bool re_match(Regex &r, const string &s)
+    bool re_match(BESRegex &r, const string &s)
     {
         DBG(cerr << "s.length(): " << s.length() << endl);
         int pos = r.match(s.c_str(), s.length());
@@ -192,7 +192,7 @@ public:
         return pos > 0 && static_cast<unsigned>(pos) == s.length();
     }
 
-    bool re_match_binary(Regex &r, const string &s)
+    bool re_match_binary(BESRegex &r, const string &s)
     {
         DBG(cerr << "s.length(): " << s.length() << endl);
         int pos = r.match(s.c_str(), s.length());

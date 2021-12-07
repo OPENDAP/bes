@@ -703,7 +703,7 @@ void VariableElement::addNewVariableAndEnterScope(NCMLParser& p, const std::stri
             "Cannot add a new scalar variable at current scope!  TypedScope='" + p.getTypedScopeString()+"'");
     }
 
-    // Destroy it no matter what sicne add_var copies it
+    // Destroy it no matter what since add_var copies it
     auto_ptr<BaseType> pNewVar = MyBaseTypeFactory::makeVariable(dapType, _name);
     NCML_ASSERT_MSG(pNewVar.get(),
         "VariableElement::addNewVariable: factory failed to make a new variable of type: '" + dapType + "' for element: '"

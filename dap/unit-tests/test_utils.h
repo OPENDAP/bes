@@ -23,7 +23,7 @@
 
 #if 0
 namespace libdap {
-class Regex;
+class BESRegex;
 }
 #endif
 
@@ -31,6 +31,6 @@ std::string read_test_baseline(const std::string &fn);
 void clean_cache_dir(const std::string &cache);
 
 #if 0
-bool re_match_binary(libdap::Regex &r, const std::string &s);
-bool re_match(libdap::Regex &r, const std::string &s);
+bool re_match_binary(libdap::BESRegex &r, const std::string &s);
+bool re_match(libdap::BESRegex &r, const std::string &s);
 #endif

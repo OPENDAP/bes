@@ -59,7 +59,7 @@
 #include <D4ParserSax2.h>
 #include <test/D4TestTypeFactory.h>
 
-#include <GNURegex.h>
+#include "BESRegex.h"
 #include <util.h>
 #include <mime_util.h>
 #include <debug.h>
@@ -320,7 +320,7 @@ public:
         DBG2(cerr << plog << "END" << endl);
     }
 
-    bool re_match(Regex &r, const string &s)
+    bool re_match(BESRegex &r, const string &s)
     {
         DBG(cerr << plog << "s.length(): " << s.length() << endl);
         int pos = r.match(s.c_str(), s.length());
@@ -328,7 +328,7 @@ public:
         return pos > 0 && static_cast<unsigned>(pos) == s.length();
     }
 
-    bool re_match_binary(Regex &r, const string &s)
+    bool re_match_binary(BESRegex &r, const string &s)
     {
         DBG(cerr << plog << "s.length(): " << s.length() << endl);
         int pos = r.match(s.c_str(), s.length());
@@ -348,7 +348,7 @@ public:
         try {
             string baseline = read_test_baseline((string) TEST_SRC_DIR + "/input-files/send_das_baseline.txt");
             DBG(cerr << plog << "---- start baseline ----" << endl << baseline << "---- end baseline ----" << endl);
-            Regex r1(baseline.c_str());
+            BESRegex r1(baseline.c_str());
 
             drb->send_das(oss, *das);
 
@@ -369,7 +369,7 @@ public:
         try {
             string baseline = read_test_baseline((string) TEST_SRC_DIR + "/input-files/send_dds_baseline.txt");
             DBG(cerr << plog << "---- start baseline ----" << endl << baseline << "---- end baseline ----" << endl);
-            Regex r1(baseline.c_str());
+            BESRegex r1(baseline.c_str());
 
             ConstraintEvaluator ce;
 
@@ -391,7 +391,7 @@ public:
         DBG(cerr << endl << plog << "BEGIN" << endl);
 
         string baseline = read_test_baseline((string) TEST_SRC_DIR + "/input-files/response_builder_send_ddx_test.xml");
-        Regex r1(baseline.c_str());
+        BESRegex r1(baseline.c_str());
         ConstraintEvaluator ce;
 
         try {
@@ -500,7 +500,7 @@ public:
             // is a any single digit. The *Test classes implement a counter and return strings where
             // <number> is 1, 2, ..., and running several of the tests here in a row will get a range of
             // values for <number>.
-            Regex regex(
+            BESRegex regex(
                 "2551234567894026531840320006400099.99999.999\"Silly test string: [0-9]\"\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\"");
             CPPUNIT_ASSERT(re_match(regex, oss.str()));
             delete cache_dds;
@@ -723,7 +723,7 @@ public:
 
         try {
             string baseline = read_test_baseline((string) TEST_SRC_DIR + "/input-files/simple_function_baseline.txt");
-            Regex r1(baseline.c_str());
+            BESRegex r1(baseline.c_str());
 
             DBG(cerr << plog << "---- start baseline ----" << endl << baseline << "---- end baseline ----" << endl);
 

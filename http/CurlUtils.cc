@@ -21,6 +21,7 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 // Authors:
 //      ndp       Nathan Potter <ndp@opendap.org>
+
 #include "config.h"
 
 #include <unistd.h>
@@ -393,7 +394,7 @@ public:
                 BESRegex r(no_proxy_regex.c_str());
                 if (r.match(target_url.c_str(), target_url.length()) != -1) {
                     BESDEBUG(MODULE,
-                             prolog << "Found NoProxy match. Regex: " << no_proxy_regex << "; Url: " << target_url
+                             prolog << "Found NoProxy match. BESRegex: " << no_proxy_regex << "; Url: " << target_url
                                     << endl);
                     using_proxy = false;
                 }
@@ -489,7 +490,7 @@ public:
                 BESRegex r(no_proxy_regex.c_str());
                 if (r.match(target_url.c_str(), target_url.length()) != -1) {
                     BESDEBUG(MODULE,
-                             prolog << "Found NoProxy match. Regex: " << no_proxy_regex << "; Url: " << target_url
+                             prolog << "Found NoProxy match. BESRegex: " << no_proxy_regex << "; Url: " << target_url
                                     << endl);
                     using_proxy = false;
                 }
@@ -1285,11 +1286,13 @@ void clear_cookies() {
 
 
 /**
- * Checks to see if the entire url matches any of the  "no retry" regular expressions held in the TheBESKeys
- * under the HTTP_NO_RETRY_URL_REGEX_KEY which atm, is set to "Http.No.Retry.Regex"
+ * Checks to see if the entire url matches any of the "no retry" regular expressions held in the TheBESKeys
+ * under the HTTP_NO_RETRY_URL_REGEX_KEY which atm, is set to "Http.No.Retry.BESRegex"
  * @param target_url The URL to be examined
  * @return True if the target_url does not match a no retry regex, false if the entire target_url matches
  * a "no retry" regex.
+ *
+ * @todo If these regexes are complex, they will take a significant amount of time to compile. Fix.
  */
 bool is_retryable(std::string target_url) {
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);

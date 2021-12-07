@@ -50,7 +50,7 @@
 #include <BESSyntaxUserError.h>
 #include <BESDebug.h>
 
-#include <GNURegex.h>
+#include "BESRegex.h"
 #include <util.h>
 
 using namespace libdap;
@@ -242,7 +242,7 @@ NgapUtils::Get_tempfile_template( char *file_template )
 {
 #ifdef WIN32
     // white list for a WIN32 directory
-    Regex directory("[-a-zA-Z0-9_\\]*");
+    BESRegex directory("[-a-zA-Z0-9_\\]*");
 
     string c = getenv("TEMP") ? getenv("TEMP") : "";
     if (!c.empty() && directory.match(c.c_str(), c.length()) && (access(c.c_str(), 6) == 0))
@@ -253,7 +253,7 @@ NgapUtils::Get_tempfile_template( char *file_template )
     goto valid_temp_directory;
 #else
     // white list for a directory
-    Regex directory("[-a-zA-Z0-9_/]*");
+    BESRegex directory("[-a-zA-Z0-9_/]*");
 
     string c = getenv("TMPDIR") ? getenv("TMPDIR") : "";
     if (!c.empty() && directory.match(c.c_str(), c.length())

@@ -602,13 +602,13 @@ private:
     bool anchorEnd_;
 };
 
-template <typename RegexType, typename Allocator = CrtAllocator>
+template <typename BESRegexType, typename Allocator = CrtAllocator>
 class GenericRegexSearch {
 public:
-    typedef typename RegexType::EncodingType Encoding;
+    typedef typename BESRegexType::EncodingType Encoding;
     typedef typename Encoding::Ch Ch;
 
-    GenericRegexSearch(const RegexType& regex, Allocator* allocator = 0) : 
+    GenericRegexSearch(const BESRegexType& regex, Allocator* allocator = 0) :
         regex_(regex), allocator_(allocator), ownAllocator_(0),
         state0_(allocator, 0), state1_(allocator, 0), stateSet_()
     {
@@ -646,8 +646,8 @@ public:
     }
 
 private:
-    typedef typename RegexType::State State;
-    typedef typename RegexType::Range Range;
+    typedef typename BESRegexType::State State;
+    typedef typename BESRegexType::Range Range;
 
     template <typename InputStream>
     bool SearchWithAnchoring(InputStream& is, bool anchorBegin, bool anchorEnd) {
@@ -667,8 +667,8 @@ private:
             for (const SizeType* s = current->template Bottom<SizeType>(); s != current->template End<SizeType>(); ++s) {
                 const State& sr = regex_.GetState(*s);
                 if (sr.codepoint == codepoint ||
-                    sr.codepoint == RegexType::kAnyCharacterClass || 
-                    (sr.codepoint == RegexType::kRangeCharacterClass && MatchRange(sr.rangeStart, codepoint)))
+                    sr.codepoint == BESRegexType::kAnyCharacterClass ||
+                    (sr.codepoint == BESRegexType::kRangeCharacterClass && MatchRange(sr.rangeStart, codepoint)))
                 {
                     matched = AddState(*next, sr.out) || matched;
                     if (!anchorEnd && matched)
@@ -704,17 +704,17 @@ private:
     }
 
     bool MatchRange(SizeType rangeIndex, unsigned codepoint) const {
-        bool yes = (regex_.GetRange(rangeIndex).start & RegexType::kRangeNegationFlag) == 0;
+        bool yes = (regex_.GetRange(rangeIndex).start & BESRegexType::kRangeNegationFlag) == 0;
         while (rangeIndex != kRegexInvalidRange) {
             const Range& r = regex_.GetRange(rangeIndex);
-            if (codepoint >= (r.start & ~RegexType::kRangeNegationFlag) && codepoint <= r.end)
+            if (codepoint >= (r.start & ~BESRegexType::kRangeNegationFlag) && codepoint <= r.end)
                 return yes;
             rangeIndex = r.next;
         }
         return !yes;
     }
 
-    const RegexType& regex_;
+    const BESRegexType& regex_;
     Allocator* allocator_;
     Allocator* ownAllocator_;
     Stack<Allocator> state0_;
@@ -722,8 +722,8 @@ private:
     uint32_t* stateSet_;
 };
 
-typedef GenericRegex<UTF8<> > Regex;
-typedef GenericRegexSearch<Regex> RegexSearch;
+typedef GenericRegex<UTF8<> > BESRegex;
+typedef GenericRegexSearch<BESRegex> BESRegexSearch;
 
 } // namespace internal
 RAPIDJSON_NAMESPACE_END

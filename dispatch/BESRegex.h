@@ -29,8 +29,7 @@
 #include <string>
 #include <regex>
 
-namespace libdap
-{
+//namespace dispatch {
 
 /**
  * @brief Regular expression matching
@@ -42,12 +41,12 @@ namespace libdap
  * was being used.
  *
  * @note Make sure to compile the regular expressions only when really
- * needed (e.g., make Regex instances const, etc., when possible) since
+ * needed (e.g., make BESRegex instances const, etc., when possible) since
  * it is an expensive operation
  *
  * @author James Gallagher <jgallagher@opendap.org>
  */
-class Regex
+class BESRegex
 {
 private:
     std::regex d_exp;
@@ -57,14 +56,14 @@ private:
     void init(const std::string &s) { d_exp = std::regex(s); d_pattern = s; }
     
 public:
-    /// @brief initialize a Regex with a C string
-    explicit Regex(const char *s) { init(s); }
+    /// @brief initialize a BESRegex with a C string
+    explicit BESRegex(const char *s) { init(s); }
     /// @deprecated
-    Regex(const char *s, int) { init(s); }
-    /// @brief nitialize a Regex with a C++ string
-    explicit Regex(const std::string &s) { init(s); }
+    BESRegex(const char *s, int) { init(s); }
+    /// @brief nitialize a BESRegex with a C++ string
+    explicit BESRegex(const std::string &s) { init(s); }
 
-    ~Regex() = default;
+    ~BESRegex() = default;
 
     std::string pattern() const { return d_pattern; }
 
@@ -79,6 +78,6 @@ public:
     int search(const std::string &s, int &matchlen) const;
 };
 
-} // namespace libdap
+//} // namespace libdap
 
 #endif
