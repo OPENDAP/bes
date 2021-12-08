@@ -166,7 +166,7 @@ private:
 
     void loadServerSideFunction()
     {
-        rbSSF = new libdap::ServerFunction(
+        rbSSF = new ServerFunction(
         // The name of the function as it will appear in a constraint expression
             "rbSimpleFunc",
             // The version of the function
@@ -284,12 +284,6 @@ public:
     void tearDown()
     {
         DBG2(cerr << plog << "BEGIN" << endl);
-        /*
-          *
-         Str *response = new Str("result");
-         rbSSF = new libdap::ServerFunction(
-         cont_a = new AttrTable;
-          */
 
         delete drb;
         drb = 0;
