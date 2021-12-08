@@ -45,8 +45,6 @@ namespace gateway {
 // Set this to 1 to turn on libcurl's verbose mode (for debugging).
 int curl_trace = 0;
 
-
-
 #define CLIENT_ERR_MIN 400
 #define CLIENT_ERR_MAX 417
 const char *http_client_errors[CLIENT_ERR_MAX - CLIENT_ERR_MIN +1] =
@@ -56,8 +54,8 @@ const char *http_client_errors[CLIENT_ERR_MAX - CLIENT_ERR_MIN +1] =
         "Payment Required.",
         "Forbidden: Contact the server administrator.",
         "Not Found: The data source or server could not be found. "
-            "Often this means that the OPeNDAP server is missing or needs attention. "
-            "Please contact the server administrator.",
+        "Often this means that the OPeNDAP server is missing or needs attention. "
+        "Please contact the server administrator.",
         "Method Not Allowed.",
         "Not Acceptable.",
         "Proxy Authentication Required.",

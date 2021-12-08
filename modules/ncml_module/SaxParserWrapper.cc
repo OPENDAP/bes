@@ -134,7 +134,7 @@ static int toXMLAttributeMapNoNamespaces(XMLAttributeMap& attrMap, const xmlChar
       catch (std::exception& ex) \
       { \
         BESDEBUG("ncml", "Caught std::exception&, wrapping and deferring..." << endl); \
-        BESInternalError _badness_("Wrapped std::exception.what()=" + string(ex.what()), __FILE__, __LINE__);\
+        BESInternalError _badness_("ParseError: " + string(ex.what()), __FILE__, __LINE__);\
         _spw_->deferException(_badness_); \
       } \
       catch (...)  \
