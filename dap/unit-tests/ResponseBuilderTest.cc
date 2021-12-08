@@ -59,7 +59,6 @@
 #include <D4ParserSax2.h>
 #include <test/D4TestTypeFactory.h>
 
-#include "BESRegex.h"
 #include <util.h>
 #include <mime_util.h>
 #include <debug.h>
@@ -67,6 +66,7 @@
 #include <test/TestTypeFactory.h>
 #include <test/TestByte.h>
 
+#include "BESRegex.h"
 #include "BESDebug.h"
 #include "TheBESKeys.h"
 #include "BESDapResponseBuilder.h"
@@ -797,8 +797,8 @@ CPPUNIT_TEST_SUITE( ResponseBuilderTest );
     CPPUNIT_TEST(send_ddx_test);
 
     CPPUNIT_TEST(escape_code_test);
-        CPPUNIT_TEST(invoke_server_side_function_test);
-        CPPUNIT_TEST(dummy_test);
+    CPPUNIT_TEST(invoke_server_side_function_test);
+    CPPUNIT_TEST(dummy_test);
 
 #if 0
     // FIXME These tests have baselines that rely on hash values that are
@@ -806,8 +806,7 @@ CPPUNIT_TEST_SUITE( ResponseBuilderTest );
     CPPUNIT_TEST(store_dap2_result_test);
     CPPUNIT_TEST(store_dap4_result_test);
 #endif
-    CPPUNIT_TEST_SUITE_END()
-    ;
+    CPPUNIT_TEST_SUITE_END();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(ResponseBuilderTest);

@@ -83,7 +83,7 @@ namespace http {
                 cerr << "FAILED TO OPEN FILE: " << filename << endl;
             }
         }
-
+#if 0
         std::string get_file_as_string(string filename)
         {
             ifstream t(filename.c_str());
@@ -117,8 +117,7 @@ namespace http {
             if(debug) cerr << prolog << "data_file_url: " << data_file_url << endl;
             return data_file_url;
         }
-
-
+#endif
 
     public:
         string d_data_dir;
@@ -168,12 +167,12 @@ namespace http {
                 isRetryable = curl::is_retryable(url);
                 if(debug) cerr << prolog << "is_retryable('" << url << "'): " << (isRetryable ? "true" : "false") << endl;
                 CPPUNIT_ASSERT(isRetryable);
-#if 0
+
                 url = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc?A-userid=hyrax&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIASF4N-AWS-Creds-00808%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200808T032623Z&X-Amz-Expires=86400&X-Amz-Security-Token=FwoGZXIvYXdzE-AWS-Sec-Token-MWRLIZGYvDx1ONzd0ffK8VtxO8JP7thrGIQ%3D%3D&X-Amz-SignedHeaders=host&X-Amz-Signature=260a7c4dd4-AWS-SIGGY-0c7a39ee899";
                 isRetryable = curl::is_retryable(url);
                 if(debug) cerr << prolog << "is_retryable('" << url << "'): " << (isRetryable ? "true" : "false") << endl;
                 CPPUNIT_ASSERT(!isRetryable);
-#endif
+
                 url = "https://d1jecqxxv88lkr.cloudfront.net/ghrcwuat-protected/rss_demo/rssmif16d__7/f16_ssmis_20040107v7.nc";
                 isRetryable = curl::is_retryable(url);
                 if(debug) cerr << prolog << "is_retryable('" << url << "'): " << (isRetryable ? "true" : "false") << endl;

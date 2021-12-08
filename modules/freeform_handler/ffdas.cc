@@ -239,7 +239,7 @@ void read_attributes(string filename, AttrTable *at)
         iff = find_ancillary_rss_formats(filename);
         SetUps->input_format_file = const_cast<char*>(iff.c_str());
     }
-    // BESRegex support
+    // Regex support
     if (FFRequestHandler::get_Regex_format_support()) {
         iff = get_Regex_format_file(filename);
         if (!iff.empty())
@@ -309,7 +309,7 @@ static void add_variable_containers(DAS &das, const string &filename) throw (Err
         SetUps->input_format_file = const_cast<char*>(iff.c_str());
     }
 
-    // BESRegex support
+    // Regex support
     if (FFRequestHandler::get_Regex_format_support()) {
         iff = get_Regex_format_file(filename);
         if (!iff.empty())

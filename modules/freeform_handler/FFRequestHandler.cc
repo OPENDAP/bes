@@ -124,7 +124,7 @@ FFRequestHandler::FFRequestHandler(const string &name) :
     // Set regex support for format files
     key_found = false;
     string regex_doset;
-    TheBESKeys::TheKeys()->get_value("FF.BESRegexFormatSupport", regex_doset, key_found);
+    TheBESKeys::TheKeys()->get_value("FF.RegexFormatSupport", regex_doset, key_found);
     if (key_found) {
         regex_doset = BESUtil::lowercase(regex_doset);
         if (regex_doset == "true" || regex_doset == "yes")
@@ -139,7 +139,7 @@ FFRequestHandler::FFRequestHandler(const string &name) :
     // Fill a map with regex and format file path
     key_found = false;
     vector<string> regex_fmt_files;
-    TheBESKeys::TheKeys()->get_values("FF.BESRegex", regex_fmt_files, key_found);
+    TheBESKeys::TheKeys()->get_values("FF.Regex", regex_fmt_files, key_found);
     vector<string>::iterator it;
     for (it = regex_fmt_files.begin(); it != regex_fmt_files.end(); it++) {
         string fmt_entry = *it;
@@ -152,7 +152,7 @@ FFRequestHandler::FFRequestHandler(const string &name) :
         } else {
             throw BESInternalError(
                     string("The configuration entry for the ")
-                            + "FF.BESRegex"
+                            + "FF.Regex"
                             + " was incorrectly formatted. entry: "
                             + fmt_entry, __FILE__, __LINE__);
         }

@@ -65,7 +65,7 @@
 #define HTTP_URL_BASE_KEY "url_base"
 #define HTTP_INGEST_TIME_KEY "ingest_time"
 
-#define HTTP_NO_RETRY_URL_REGEX_KEY "Http.No.Retry.BESRegex"
+#define HTTP_NO_RETRY_URL_REGEX_KEY "Http.No.Retry.Regex"
 #define HTTP_CACHE_EFFECTIVE_URLS_KEY "Http.cache.effective.urls"
 #define HTTP_CACHE_EFFECTIVE_URLS_SKIP_REGEX_KEY "Http.cache.effective.urls.skip.regex.pattern"
 

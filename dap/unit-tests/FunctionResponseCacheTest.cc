@@ -47,7 +47,7 @@
 #include <DDS.h>
 #include <DDXParserSAX2.h>
 
-// #include "BESRegex.h"
+#include "BESRegex.h"
 #include <util.h>
 #include <debug.h>
 

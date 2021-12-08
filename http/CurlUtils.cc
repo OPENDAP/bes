@@ -549,8 +549,6 @@ public:
     }
 #endif
 
-
-
 CURL *init(const string &target_url,
            const struct curl_slist *http_request_headers,
            vector<string> *http_response_hdrs) {

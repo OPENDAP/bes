@@ -30,7 +30,6 @@
 #include <HTTPConnect.h>
 #include <RCReader.h>
 #include <Error.h>
-#include "BESRegex.h"
 
 using namespace libdap;
 
