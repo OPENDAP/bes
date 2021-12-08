@@ -107,9 +107,9 @@ before_script:
 # FIXME Remove 'AND type != pull_request' on build and scan before merge
 stages:
   - name: build
-    if: branch = master AND type != pull_request
+    if: branch = master
   - name: scan
-    if:  branch = master AND type != pull_request
+    if:  branch = master
   - name: package
     if: branch = master
   - name: hyrax-olfs-trigger
