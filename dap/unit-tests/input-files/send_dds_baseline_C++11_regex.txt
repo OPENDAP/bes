@@ -1,0 +1,12 @@
+HTTP/1.0 200 OK[[:print:]\r\n]*
+XDODS-Server:[[:print:]\r\n]*
+XOPeNDAP-Server:[[:print:]\r\n]*
+XDAP:[[:print:]\r\n]*
+Date:[[:print:]\r\n]*
+Last-Modified:[[:print:]\r\n]*
+Content-Type: text/plain[[:print:]\r\n]*
+Content-Description: dods_dds[[:print:]\r\n]*
+[[:print:]\r\n]*
+Dataset \{
+    Byte a;
+\} test;[[:print:]\r\n]*
