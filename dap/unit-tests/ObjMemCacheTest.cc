@@ -29,7 +29,7 @@
 
 #include <DDS.h>
 
-#include <GNURegex.h>
+#include "BESRegex.h"
 #include <debug.h>
 
 #include "ObjMemCache.h"

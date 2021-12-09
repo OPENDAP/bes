@@ -36,7 +36,7 @@
 
 #include <curl/curl.h>
 
-#include <GNURegex.h>
+#include "BESRegex.h"
 #include <util.h>
 
 #include <BESUtil.h>

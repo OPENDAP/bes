@@ -26,7 +26,7 @@
 #include <algorithm>    // std::for_each
 #include <sstream>
 
-#include <GNURegex.h>
+#include "BESRegex.h"
 
 #include "rapidjson/document.h"
 
@@ -342,9 +342,9 @@ bool configureProxy(CURL *curl, const string &url) {
         // Don't create the regex if the string is empty
         if (!ngap::NgapUtils::NoProxyRegex.empty()) {
             BESDEBUG(MODULE, "curl_utils::configureProxy() - Found NoProxyRegex." << endl);
-            libdap::Regex r(ngap::NgapUtils::NoProxyRegex.c_str());
+            libdap::BESRegex r(ngap::NgapUtils::NoProxyRegex.c_str());
             if (r.match(url.c_str(), url.length()) != -1) {
-                BESDEBUG(MODULE, prolog << "Found NoProxy match. Regex: " << ngap::NgapUtils::NoProxyRegex
+                BESDEBUG(MODULE, prolog << "Found NoProxy match. BESRegex: " << ngap::NgapUtils::NoProxyRegex
                                                                                        << "; Url: " << url << endl);
                 using_proxy = false;
             }

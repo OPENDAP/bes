@@ -66,6 +66,9 @@ static char rcsid[] not_used =
 #include <util.h>
 #include <debug.h>
 
+#include "BESRegex.h"
+#include "BESDebug.h"
+
 #include "FFRequestHandler.h"
 #include "util_ff.h"
 

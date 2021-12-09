@@ -55,7 +55,7 @@ static char rcsid[] not_used = {"$Id$"};
 #include <string>
 #include <sstream>
 
-#include <GNURegex.h>
+#include "BESRegex.h"
 
 #include <Array.h>
 #include <Structure.h>
@@ -100,7 +100,7 @@ namespace dap_usage {
 // once. If the pthread package is not present when libdap++ is built, this
 // code is *not* MT-Safe.
 
-static Regex *dim_ptr = 0 ;
+static BESRegex *dim_ptr = 0 ;
 #if HAVE_PTHREAD_H
 static pthread_once_t dim_once_control = PTHREAD_ONCE_INIT;
 #endif
@@ -109,7 +109,7 @@ static void
 init_dim_regex()
 {
     // MT-Safe if called via pthread_once or similar
-    static Regex dim(".*_dim_[0-9]*", 1); // HDF `dim' attributes.
+    static BESRegex dim(".*_dim_[0-9]*", 1); // HDF `dim' attributes.
     dim_ptr = &dim;
 }
 
@@ -129,7 +129,7 @@ name_in_kill_file(const string &name)
     return ret ;
 }
 
-static Regex *global_ptr = 0 ;
+static BESRegex *global_ptr = 0 ;
 #if HAVE_PTHREAD_H
 static pthread_once_t global_once_control = PTHREAD_ONCE_INIT;
 #endif
@@ -138,7 +138,7 @@ static void
 init_global_regex()
 {
     // MT-Safe if called via pthread_once or similar
-    static Regex global("(.*global.*)|(.*dods.*)", 1);
+    static BESRegex global("(.*global.*)|(.*dods.*)", 1);
     global_ptr = &global;
 }
 

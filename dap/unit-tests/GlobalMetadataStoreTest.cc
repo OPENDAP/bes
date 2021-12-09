@@ -41,7 +41,7 @@
 #include <DMR.h>
 #include <D4ParserSax2.h>
 
-#include <GNURegex.h>
+// #include "BESRegex.h"
 #include <util.h>
 #include <debug.h>
 

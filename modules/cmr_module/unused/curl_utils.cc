@@ -26,7 +26,7 @@
 #include <sstream>
 #include <algorithm>    // std::for_each
 
-#include <GNURegex.h>
+#include "BESRegex.h"
 
 #include "util.h"
 #include "BESDebug.h"
@@ -344,9 +344,9 @@ bool configureProxy(CURL *curl, const string &url) {
         // Don't create the regex if the string is empty
         if (!CmrUtils::NoProxyRegex.empty()) {
             BESDEBUG( MODULE, "curl_utils::configureProxy() - Found NoProxyRegex." << endl);
-            libdap::Regex r(CmrUtils::NoProxyRegex.c_str());
+            libdap::BESRegex r(CmrUtils::NoProxyRegex.c_str());
             if (r.match(url.c_str(), url.length()) != -1) {
-                BESDEBUG( MODULE, "curl_utils::configureProxy() - Found NoProxy match. Regex: " << CmrUtils::NoProxyRegex << "; Url: " << url << endl);
+                BESDEBUG( MODULE, "curl_utils::configureProxy() - Found NoProxy match. BESRegex: " << CmrUtils::NoProxyRegex << "; Url: " << url << endl);
                 using_proxy = false;
             }
         }

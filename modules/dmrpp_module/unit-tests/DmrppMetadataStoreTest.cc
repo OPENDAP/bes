@@ -39,7 +39,7 @@
 #include <D4ParserSax2.h>
 
 #include <unistd.h>
-#include <GNURegex.h>
+// #include "BESRegex.h"
 #include <util.h>
 #include <debug.h>
 

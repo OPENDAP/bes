@@ -59,7 +59,7 @@ Gateway.MimeTypes+=h5:application/x-hdf5
 # Gateway.Cache.prefix - defines the prefix for cache files so that 
 # they will be easily identifiable.
 
-# Gateway.Cache.size - The maxium size of the Gateway cache, in megabytes.
+# Gateway.Cache.size - The maximum size of the Gateway cache, in megabytes.
 
 Gateway.Cache.dir=/tmp/hyrax_gw
 Gateway.Cache.prefix=gw_

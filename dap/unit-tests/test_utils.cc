@@ -28,7 +28,7 @@
 #include <string>
 #include <vector>
 
-// #include <Regex.h>      // libdap includes
+// #include <BESRegex.h>      // libdap includes
 #include <InternalErr.h>
 
 #include "test_utils.h"
@@ -81,7 +81,7 @@ void clean_cache_dir(const string &cache)
 }
 
 #if 0
-bool re_match(Regex &r, const string &s)
+bool re_match(BESRegex &r, const string &s)
 {
     DBG(cerr << "s.length(): " << s.length() << endl);
     int pos = r.match(s.c_str(), s.length());
@@ -89,7 +89,7 @@ bool re_match(Regex &r, const string &s)
     return pos > 0 && static_cast<unsigned>(pos) == s.length();
 }
 
-bool re_match_binary(Regex &r, const string &s)
+bool re_match_binary(BESRegex &r, const string &s)
 {
     DBG(cerr << "s.length(): " << s.length() << endl);
     int pos = r.match(s.c_str(), s.length());

@@ -83,7 +83,7 @@ namespace http {
                 cerr << "FAILED TO OPEN FILE: " << filename << endl;
             }
         }
-
+#if 0
         std::string get_file_as_string(string filename)
         {
             ifstream t(filename.c_str());
@@ -117,8 +117,7 @@ namespace http {
             if(debug) cerr << prolog << "data_file_url: " << data_file_url << endl;
             return data_file_url;
         }
-
-
+#endif
 
     public:
         string d_data_dir;

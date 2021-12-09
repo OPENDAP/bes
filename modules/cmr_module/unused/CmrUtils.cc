@@ -52,7 +52,7 @@
 #include "CmrUtils.h"
 #include "CmrApi.h"
 
-#include <GNURegex.h>
+#include "BESRegex.h"
 #include <util.h>
 
 using namespace libdap;
