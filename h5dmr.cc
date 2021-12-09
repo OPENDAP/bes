@@ -1155,9 +1155,21 @@ string get_hardlink_dmr( hid_t h5obj_id, const string & oname) {
 
     if (obj_info.rc >1) {
 
+        string objno;
+
+#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR == 12)
+        char *obj_tok_str = NULL;
+        if(H5Otoken_to_str(h5obj_id, &(obj_info.token), &obj_tok_str) <0) {
+            throw InternalErr(__FILE__, __LINE__, "H5Otoken_to_str failed.");
+        } 
+        objno.assign(obj_tok_str,obj_tok_str+strlen(obj_tok_str));
+        H5free_memory(obj_tok_str);
+
+#else
         ostringstream oss;
         oss << hex << obj_info.addr;
-        string objno = oss.str();
+        objno = oss.str();
+#endif
 
         BESDEBUG("h5", "dap4->get_hardlink_dmr() objno=" << objno << endl);
 

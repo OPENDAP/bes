@@ -36,6 +36,7 @@
 #include <BESDebug.h>
 #include <libdap/InternalErr.h>
 #include "HDF5RequestHandler.h"
+#include "h5apicompatible.h"
 
 #include "HDF5GMCFMissLLArray.h"
 

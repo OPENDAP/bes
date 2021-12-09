@@ -33,6 +33,7 @@
 #include <libdap/InternalErr.h>
 #include <assert.h>
 #include "HDF5GCFProduct.h"
+#include "h5apicompatible.h"
 
 using namespace std;
 using namespace libdap;

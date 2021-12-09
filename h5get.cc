@@ -2011,7 +2011,14 @@ void obtain_dimnames(const hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_ptr
 
                     // If finding the object in the hdf5_hls, obtain the hardlink and make it the dimension name(trim_objname).
                     for (int i = 0; i <hdf5_hls.size();i++) {
+#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR == 12)
+                        int token_cmp = -1;                                                                                 
+                        if(H5Otoken_cmp(ref_dset,&(obj_info.token),&(hdf5_hls[i].link_addr),&token_cmp) <0)                   
+                            throw InternalErr(__FILE__,__LINE__,"H5Otoken_cmp failed");
+                        if(!token_cmp) {                    
+#else
                         if(obj_info.addr == hdf5_hls[i].link_addr) { 
+#endif
                             trim_objname = '/'+hdf5_hls[i].slink_path;
                             link_find = true;
                             break;
@@ -2021,15 +2028,28 @@ void obtain_dimnames(const hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_ptr
                     // The hard link is not in the hdf5_hls, need to iterate all objects and find those hardlinks.
                     if(link_find == false) {
 
+#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR == 12)
+                        typedef struct {
+                            unsigned link_unvisited;
+                            H5O_token_t  link_addr;
+                            vector<string> hl_names;
+                        } t_link_info_t;
+#else
                         typedef struct {
                             unsigned link_unvisited;
                             haddr_t  link_addr;
                             vector<string> hl_names;
                         } t_link_info_t;
+#endif
     
                         t_link_info_t t_li_info;
                         t_li_info.link_unvisited = obj_info.rc;
+
+#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR == 12)
+                        memcpy(&t_li_info.link_addr,&obj_info.token,sizeof(H5O_token_t));
+#else
                         t_li_info.link_addr = obj_info.addr;
+#endif
 
                         if(H5Lvisit(file_id, H5_INDEX_NAME, H5_ITER_NATIVE, visit_link_cb, (void*)&t_li_info) < 0) {
                             H5Dclose(ref_dset);
@@ -2054,7 +2074,11 @@ for(int i = 0; i<t_li_info.hl_names.size();i++)
     
                        // Save this link that holds the shortest path for future use.
                        link_info_t new_hdf5_hl;
+#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR == 12)
+                        memcpy(&new_hdf5_hl.link_addr,&obj_info.token,sizeof(H5O_token_t));
+#else
                        new_hdf5_hl.link_addr = obj_info.addr;
+#endif
                        new_hdf5_hl.slink_path = shortest_hl;
                        hdf5_hls.push_back(new_hdf5_hl);
                        trim_objname = '/'+shortest_hl;
@@ -2299,19 +2323,33 @@ static int
 visit_link_cb(hid_t  group_id, const char *name, const H5L_info_t *linfo,
     void *_op_data)
 {
-
+#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR == 12)
+     typedef struct {
+        unsigned link_unvisited;
+        H5O_token_t  link_addr;
+        vector<string> hl_names;
+     } t_link_info_t;
+#else
     typedef struct {
         unsigned link_unvisited;
         haddr_t link_addr;
         vector<string> hl_names;
     } t_link_info_t;
+#endif
    
     t_link_info_t *op_data = (t_link_info_t *)_op_data;
     int ret = 0;
 
     // We only need the hard link info.
     if(linfo->type == H5L_TYPE_HARD) {
+#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR == 12)
+    int token_cmp = -1;
+    if(H5Otoken_cmp(group_id,&(op_data->link_addr),&(linfo->u.token),&token_cmp) <0)
+        throw InternalErr(__FILE__,__LINE__,"H5Otoken_cmp failed");
+    if(!token_cmp) {
+#else
         if(op_data->link_addr == linfo->u.address) {
+#endif
             op_data->link_unvisited = op_data->link_unvisited -1;
             string tmp_str(name,name+strlen(name));
             op_data->hl_names.push_back(tmp_str);
