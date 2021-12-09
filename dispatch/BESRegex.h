@@ -26,10 +26,13 @@
 #ifndef _Regex_h
 #define _Regex_h 1
 
-#include <string>
-#include <regex>
+#define USE_CPP_11_REGEX 0
 
-//namespace dispatch {
+#if USE_CPP_11_REGEX
+#include <regex>
+#else
+#include <string>
+#endif
 
 /**
  * @brief Regular expression matching
@@ -41,7 +44,7 @@
  * was being used.
  *
  * @note Make sure to compile the regular expressions only when really
- * needed (e.g., make BESRegex instances const, etc., when possible) since
+ * needed (e.g., make Regex instances const, etc., when possible) since
  * it is an expensive operation
  *
  * @author James Gallagher <jgallagher@opendap.org>
@@ -49,12 +52,26 @@
 class BESRegex
 {
 private:
+#if USE_CPP_11_REGEX
     std::regex d_exp;
     std::string d_pattern;
 
-    void init(const char *s) { d_exp = std::regex(s); d_pattern = s; }
-    void init(const std::string &s) { d_exp = std::regex(s); d_pattern = s; }
-    
+    void init(const char *s) { d_exp = std::regex(s); }
+    void init(const std::string &s) { d_exp = std::regex(s); } // , std::regex::basic
+#else
+    // d_preg was a regex_t* but I needed to include both regex.h and config.h
+    // to make the gnulib code work. Because this header is installed (and is
+    // used by other libraries) it cannot include config.h, so I moved the 
+    // regex.h and config.h (among other) includes to the implementation. It
+    // would be cleaner to use a special class, but for one field that seems
+    // like overkill.
+    void *d_preg;
+    std::string d_pattern;
+
+    void init(const char *t);
+    void init(const std::string &s) { init(s.c_str()); d_pattern = s; } // std::regex::ECMAScript
+#endif
+
 public:
     /// @brief initialize a BESRegex with a C string
     explicit BESRegex(const char *s) { init(s); }
@@ -63,7 +80,11 @@ public:
     /// @brief nitialize a BESRegex with a C++ string
     explicit BESRegex(const std::string &s) { init(s); }
 
+#if USE_CPP_11_REGEX
     ~BESRegex() = default;
+#else
+    ~BESRegex();
+#endif
 
     std::string pattern() const { return d_pattern; }
 
@@ -77,7 +98,5 @@ public:
     /// @brief How much of the string does the pattern match.
     int search(const std::string &s, int &matchlen) const;
 };
-
-//} // namespace libdap
 
 #endif
