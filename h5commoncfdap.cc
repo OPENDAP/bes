@@ -37,7 +37,7 @@
 #include <iostream>
 #include <sstream>
 
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 #include <BESDebug.h>
 
 #include "HDF5RequestHandler.h"

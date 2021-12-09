@@ -44,7 +44,7 @@
 #include <cassert>
 #include <algorithm>
 #include <BESDebug.h>
-#include "InternalErr.h"
+#include <libdap/InternalErr.h>
 
 #include "HDF5BaseArray.h"
 #include "HDF5RequestHandler.h"

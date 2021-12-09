@@ -31,7 +31,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <H5Ipublic.h>
-#include "Int16.h"
+#include <libdap/Int16.h>
 #include "h5get.h"
 
 

@@ -35,7 +35,7 @@
 #include <string>
 
 // DODS includes
-#include <Int64.h>
+#include <libdap/Int64.h>
 
 
 class HDF5CFInt64:public libdap::Int64 {

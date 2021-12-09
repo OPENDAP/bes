@@ -36,11 +36,11 @@
 
 // DODS includes
 #include "HDF5CF.h"
-//#include <Array.h>
+//#include <libdap/Array.h>
 #include "HDF5BaseArray.h"
 #include "HDF5DiskCache.h"
-#include <D4Group.h>
-#include <D4Attributes.h>
+#include <libdap/D4Group.h>
+#include <libdap/D4Attributes.h>
 
 
 

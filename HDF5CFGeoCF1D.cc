@@ -8,9 +8,9 @@
 #include <iostream>
 #include <sstream>
 #include <cassert>
-#include <debug.h>
+#include <libdap/debug.h>
 
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 #include <BESDebug.h>
 using namespace std;
 using namespace libdap;

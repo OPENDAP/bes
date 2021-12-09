@@ -30,7 +30,7 @@
 ///
 /// All rights reserved.
 
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 #include "HDF5CFModule.h"
 
 using namespace libdap;

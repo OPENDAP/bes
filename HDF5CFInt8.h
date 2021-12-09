@@ -35,7 +35,7 @@
 #include <string>
 
 // DODS includes
-#include <Int8.h>
+#include <libdap/Int8.h>
 
 
 class HDF5CFInt8:public libdap::Int8 {

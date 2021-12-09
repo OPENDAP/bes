@@ -51,11 +51,11 @@
 #include <vector>
 #include <sstream>
 
-#include <DAS.h>
-#include <DDS.h>
-#include <parser.h>
-#include <ConstraintEvaluator.h>
-#include <InternalErr.h>
+#include <libdap/DAS.h>
+#include <libdap/DDS.h>
+#include <libdap/parser.h>
+#include <libdap/ConstraintEvaluator.h>
+#include <libdap/InternalErr.h>
 #include <hdf5.h>
 
 

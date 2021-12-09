@@ -35,8 +35,8 @@
 #include <sstream>
 #include <cassert>
 #include <BESDebug.h>
-#include "InternalErr.h"
-//#include <Array.h>
+#include <libdap/InternalErr.h>
+//#include <libdap/Array.h>
 
 #include "HDFEOS5CFMissLLArray.h"
 #include "HDF5RequestHandler.h"
