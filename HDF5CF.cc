@@ -38,10 +38,10 @@
 #include <algorithm>
 #include <functional>
 #include <climits>
-#include "h5apicompatible.h"
 #include "HDF5CF.h"
 #include "h5cfdaputil.h"
 #include "HDF5RequestHandler.h"
+#include "h5apicompatible.h"
 #include "BESDebug.h"
 
 using namespace HDF5CF;

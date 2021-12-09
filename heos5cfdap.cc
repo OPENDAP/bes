@@ -42,7 +42,6 @@
 #include <BESDebug.h>
 
 #include <libdap/parser.h>
-#include "h5apicompatible.h"
 #include "heos5cfdap.h"
 #include "h5cfdaputil.h"
 #include "HDF5CFByte.h"
@@ -63,6 +62,7 @@
 #include "HDF5CFGeoCF1D.h"                                                             
 #include "HDF5CFGeoCFProj.h"  
 #include "HDF5RequestHandler.h"
+#include "h5apicompatible.h"
 
 #include "he5dds.tab.hh"
 #include "HE5Parser.h"
