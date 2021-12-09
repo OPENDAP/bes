@@ -39,7 +39,7 @@
 #include "HDFSequence.h"
 #include "HDFGrid.h"
 #include "HDFTypeFactory.h"
-#include "debug.h"
+#include <libdap/debug.h>
 #include <BESDebug.h>
 
 Byte *HDFTypeFactory::NewByte(const string & n) const

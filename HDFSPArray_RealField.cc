@@ -8,10 +8,10 @@
 #include <iostream>
 #include <sstream>
 #include <cassert>
-#include <debug.h>
+#include <libdap/debug.h>
 #include "hdf.h"
 #include "mfhdf.h"
-#include "InternalErr.h"
+#include <libdap/InternalErr.h>
 #include <BESDebug.h>
 #include "BESInternalError.h"
 #include "HDFCFUtil.h"

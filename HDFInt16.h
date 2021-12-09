@@ -31,7 +31,7 @@
 #include <string>
 
 // DODS includes
-#include <Int16.h>
+#include <libdap/Int16.h>
 
 
 class HDFInt16:public libdap::Int16 {

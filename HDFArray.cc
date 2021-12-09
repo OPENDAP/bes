@@ -42,7 +42,7 @@
 
 #include <vector>
 
-// Include this on linux to suppres an annoying warning about multiple
+// Include this on linux to suppress an annoying warning about multiple
 // definitions of MIN and MAX.
 #ifdef HAVE_SYS_PARAM_H
 #include <sys/param.h>
@@ -52,9 +52,9 @@
 #include <hdfclass.h>
 #include <hcstream.h>
 
-#include <escaping.h>
-#include <Error.h>
-#include <debug.h>
+#include <libdap/escaping.h>
+#include <libdap/Error.h>
+#include <libdap/debug.h>
 #include <BESDebug.h>
 
 #include "HDFArray.h"

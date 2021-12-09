@@ -11,7 +11,7 @@
 #include"HDFEOS2GeoCFProj.h"
 #include"HDFEOS2GeoCF1D.h"
 
-#include <debug.h>
+#include <libdap/debug.h>
 
 #define SIGNED_BYTE_TO_INT32 1
 

@@ -46,7 +46,7 @@
 #include <string>
 
 // DODS includes
-#include <Grid.h>
+#include <libdap/Grid.h>
 
 #include <hdfclass.h>
 

@@ -12,7 +12,7 @@
 #ifndef HDFEOS2ARRAYSWATHDIMMAPFIELD_H
 #define HDFEOS2ARRAYSWATHDIMMAPFIELD_H
 
-#include "Array.h"
+#include <libdap/Array.h>
 using namespace libdap;
 
 #include "HDFCFUtil.h"

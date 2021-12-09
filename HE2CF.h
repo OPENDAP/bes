@@ -31,8 +31,8 @@
 #include <vector>
 #include <map>
 #include <algorithm>
-#include "debug.h"
-#include "DAS.h"
+#include <libdap/debug.h>
+#include <libdap/DAS.h>
 #include "HDFCFUtil.h"
 
 

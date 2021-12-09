@@ -5,7 +5,7 @@
 // Copyright (c) 2010-2012 The HDF Group
 /////////////////////////////////////////////////////////////////////////////
 
-//#include "InternalErr.h"
+//#include <libdap/InternalErr.h>
 #ifdef USE_HDFEOS2_LIB
 
 #ifndef _HDFEOS2_H

@@ -29,7 +29,7 @@
 
 using std::string ;
 
-#include "BaseTypeFactory.h"
+#include <libdap/BaseTypeFactory.h>
 
 using namespace libdap;
 

@@ -44,7 +44,7 @@
 #include <string>
 
 // DODS includes
-#include <Structure.h>
+#include <libdap/Structure.h>
 
 #include "ReadTagRef.h"
 

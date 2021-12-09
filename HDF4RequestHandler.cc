@@ -34,13 +34,13 @@
 #include <iostream>
 #include <sstream>
 
-#include <DMR.h>
-#include <D4BaseTypeFactory.h>
+#include <libdap/DMR.h>
+#include <libdap/D4BaseTypeFactory.h>
 #include <BESDMRResponse.h>
-#include <mime_util.h>
-#include <InternalErr.h>
-#include <Ancillary.h>
-#include <debug.h>
+#include <libdap/mime_util.h>
+#include <libdap/InternalErr.h>
+#include <libdap/Ancillary.h>
+#include <libdap/debug.h>
 
 #include "HDF4RequestHandler.h"
 #include <BESResponseNames.h>
@@ -54,14 +54,14 @@
 #include <BESServiceRegistry.h>
 #include <BESUtil.h>
 #include <TheBESKeys.h>
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 #include <BESInternalError.h>
 #include <BESDapError.h>
 #include <BESStopWatch.h>
 #include <BESDebug.h>
 #include "BESDataNames.h"
-//#include <ConstraintEvaluator.h>
-#include <Ancillary.h>
+//#include <libdap/ConstraintEvaluator.h>
+#include <libdap/Ancillary.h>
 #include "config_hdf.h"
 
 #define HDF4_NAME "h4"

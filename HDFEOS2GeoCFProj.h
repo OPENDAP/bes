@@ -6,7 +6,7 @@
 #define _HDFEOS2GEOCFPROJ_H
 
 // DODS includes
-#include <Byte.h>
+#include <libdap/Byte.h>
 
 
 class HDFEOS2GeoCFProj:public libdap::Byte {

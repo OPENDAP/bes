@@ -41,7 +41,7 @@
 
 #ifndef DONT_HAVE_UINT
 
-#include "InternalErr.h"
+#include <libdap/InternalErr.h>
 #include "HDFUInt32.h"
 
 using namespace libdap;

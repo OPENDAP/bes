@@ -119,10 +119,10 @@
 
 using namespace std;
 
-#include "DAS.h"
-#include "Error.h"
-#include "debug.h"
-#include "parser.h"
+#include <libdap/DAS.h>
+#include <libdap/Error.h>
+#include <libdap/debug.h>
+#include <libdap/parser.h>
 #include "hdfeos.tab.h"
 
 #ifdef TRACE_NEW

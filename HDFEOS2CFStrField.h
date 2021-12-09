@@ -35,8 +35,8 @@
 #include <string>
 
 // DODS includes
-#include <dods-limits.h>
-#include <Array.h>
+#include <libdap/dods-limits.h>
+#include <libdap/Array.h>
 #include "mfhdf.h"
 #include "hdf.h"
 #include "HdfEosDef.h"

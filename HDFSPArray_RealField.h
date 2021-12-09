@@ -11,7 +11,7 @@
 #include "mfhdf.h"
 #include "hdf.h"
 
-#include "Array.h"
+#include <libdap/Array.h>
 
 #include "HDFSPEnumType.h"
 #include "BESH4MCache.h"

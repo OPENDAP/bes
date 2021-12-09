@@ -44,7 +44,7 @@
 #include <string>
 
 // DODS includes
-#include <Url.h>
+#include <libdap/Url.h>
 
 
 class HDFUrl:public libdap::Url {

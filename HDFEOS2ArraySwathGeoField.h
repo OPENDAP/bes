@@ -11,7 +11,7 @@
 #ifndef HDFEOS2ARRAY_SWATHGEOFIELD_H
 #define HDFEOS2ARRAY_SWATHGEOFIELD_H
 
-#include "Array.h"
+#include <libdap/Array.h>
 #include "HDFCFUtil.h"
 #include "HdfEosDef.h"
 

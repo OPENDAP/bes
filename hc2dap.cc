@@ -58,7 +58,7 @@
 #include <algorithm>
 #include <iostream>
 #include <BESDebug.h>
-#include <debug.h>
+#include <libdap/debug.h>
 
 
 using namespace std;
@@ -73,7 +73,7 @@ using namespace std;
 #include <hcstream.h>
 
 // DODS/HDF includes
-#include "escaping.h"
+#include <libdap/escaping.h>
 #include "HDFInt32.h"
 #include "HDFInt16.h"
 #include "HDFUInt32.h"
@@ -89,7 +89,7 @@ using namespace std;
 #include "hdfutil.h"
 #include "dhdferr.h"
 #include "hdf-maps.h"
-#include "debug.h"
+#include <libdap/debug.h>
 
 
 // Undefine the following to send signed bytes using unsigned bytes. 1/13/98

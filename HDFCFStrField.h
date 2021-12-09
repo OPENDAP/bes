@@ -8,7 +8,7 @@
 #ifndef HDFCFSTR_FIELD_H
 #define HDFCFSTR_FIELD_H
 
-#include "Array.h"
+#include <libdap/Array.h>
 #include "HDFCFUtil.h"
 
 

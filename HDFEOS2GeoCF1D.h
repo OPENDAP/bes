@@ -8,7 +8,7 @@
 #ifndef HDFEOS2GEO_CF1D_H
 #define HDFEOS2GEO_CF1D_H
 
-#include "Array.h"
+#include <libdap/Array.h>
 
 class HDFEOS2GeoCF1D:public libdap::Array
 {

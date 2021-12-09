@@ -44,8 +44,8 @@
 #include <string>
 
 // DODS includes
-#include <dods-limits.h>
-#include <Str.h>
+#include <libdap/dods-limits.h>
+#include <libdap/Str.h>
 
 
 class HDFStr:public libdap::Str {
