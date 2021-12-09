@@ -69,7 +69,7 @@ private:
     std::string d_pattern;
 
     void init(const char *t);
-    void init(const std::string &s) { init(s.c_str()); d_pattern = s; } // std::regex::ECMAScript
+    void init(const std::string &s) { init(s.c_str()); d_pattern = s; }
 #endif
 
 public:
@@ -77,7 +77,7 @@ public:
     explicit BESRegex(const char *s) { init(s); }
     /// @deprecated
     BESRegex(const char *s, int) { init(s); }
-    /// @brief nitialize a BESRegex with a C++ string
+    /// @brief initialize a BESRegex with a C++ string
     explicit BESRegex(const std::string &s) { init(s); }
 
 #if USE_CPP_11_REGEX
