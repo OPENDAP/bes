@@ -62,7 +62,7 @@ using namespace libdap;
 static int visit_link_cb(hid_t  group_id, const char *name, const H5L_info_t *oinfo,
     void *_op_data);
 
-// H5Ovisit call back function. When finding the dimension scale attributes, return 1. 
+// H5OVISIT call back function. When finding the dimension scale attributes, return 1. 
 static int
 visit_obj_cb(hid_t o_id, const char *name, const H5O_info_t *oinfo,
     void *_op_data);
@@ -1477,13 +1477,13 @@ Structure *Get_structure(const string &varname,const string &vpath,
 ///
 ///////////////////////////////////////////////////////////////////////////////
 
-// Function to use H5Ovisit to check if dimension scale attributes exist.
+// Function to use H5OVISIT to check if dimension scale attributes exist.
 bool check_dimscale(hid_t fileid) {
 
     bool ret_value = false;
-    herr_t ret_o= H5Ovisit(fileid, H5_INDEX_NAME, H5_ITER_INC, visit_obj_cb, NULL);
+    herr_t ret_o= H5OVISIT(fileid, H5_INDEX_NAME, H5_ITER_INC, visit_obj_cb, NULL);
     if(ret_o < 0)
-        throw InternalErr(__FILE__, __LINE__, "H5Ovisit fails");
+        throw InternalErr(__FILE__, __LINE__, "H5OVISIT fails");
     else 
        ret_value =(ret_o >0)?true:false;
 
@@ -1501,13 +1501,13 @@ visit_obj_cb(hid_t  group_id, const char *name, const H5O_info_t *oinfo,
         hid_t dataset = -1;
         dataset = H5Dopen2(group_id,name,H5P_DEFAULT);
         if(dataset <0) 
-            throw InternalErr(__FILE__, __LINE__, "H5Dopen2 fails in the H5Ovisit call back function.");
+            throw InternalErr(__FILE__, __LINE__, "H5Dopen2 fails in the H5OVISIT call back function.");
 
         hid_t dspace = -1;
         dspace = H5Dget_space(dataset);
         if(dspace <0) {
             H5Dclose(dataset);
-            throw InternalErr(__FILE__, __LINE__, "H5Dget_space fails in the H5Ovisit call back function.");
+            throw InternalErr(__FILE__, __LINE__, "H5Dget_space fails in the H5OVISIT call back function.");
         }
 
         // We only support netCDF-4 like dimension scales, that is the dimension scale dataset is 1-D dimension.
@@ -1537,7 +1537,7 @@ visit_obj_cb(hid_t  group_id, const char *name, const H5O_info_t *oinfo,
             if(ret < 0) {
                 H5Sclose(dspace);
                 H5Dclose(dataset);
-                throw InternalErr(__FILE__, __LINE__, "H5Aiterate2 fails in the H5Ovisit call back function.");
+                throw InternalErr(__FILE__, __LINE__, "H5Aiterate2 fails in the H5OVISIT call back function.");
             }
 
     BESDEBUG("h5", "<dset name is " << name <<endl);
@@ -1991,7 +1991,7 @@ void obtain_dimnames(const hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_ptr
                 // If yes, we need to find the hardlink that has the shortest path and at the ancestor group
                 // of all links.
                 H5O_info_t obj_info;
-                if(H5Oget_info2(ref_dset,&obj_info,H5O_INFO_BASIC)<0) {
+                if(H5OGET_INFO(ref_dset,&obj_info)<0) {
                     H5Dclose(ref_dset);
                     string msg = "Cannot obtain the object info for the dimension variable " + objname_str;
                     throw InternalErr(__FILE__,__LINE__,msg);

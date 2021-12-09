@@ -62,6 +62,7 @@ class HDF5Array:public libdap::Array {
     bool m_array_of_structure(hid_t dsetid, std::vector<char>&values,bool has_values,int values_offset,int nelms,int* offset,int*count,int*step);
     bool m_array_in_structure();
     bool m_array_of_reference(hid_t dset_id,hid_t dtype_id);
+    bool m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id);
     void m_intern_plain_array_data(char *convbuf,hid_t memtype);
     void m_array_of_atomic(hid_t, hid_t,int,int*,int*,int*);
 

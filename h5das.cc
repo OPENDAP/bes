@@ -117,7 +117,7 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
 
         // Obtain the object type
         H5O_info_t oinfo;
-        if (H5Oget_info_by_idx(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE, i, &oinfo, H5P_DEFAULT) < 0) {
+        if (H5OGET_INFO_BY_IDX(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE, i, &oinfo, H5P_DEFAULT) < 0) {
             string msg = "Cannot obtain the object info ";
             msg += gname;
             throw InternalErr(__FILE__, __LINE__, msg);
@@ -144,7 +144,7 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
 
             // Get the object info
             H5O_info_t obj_info;
-            if (H5Oget_info(cgroup, &obj_info) < 0) {
+            if (H5OGET_INFO(cgroup, &obj_info) < 0) {
                 H5Gclose(cgroup);
                 string msg = "Obtaining the hdf5 group info. failed for ";
                 msg += full_path_name;
@@ -216,7 +216,7 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
 
             // Get the object info
             H5O_info_t obj_info;
-            if (H5Oget_info(dset, &obj_info) < 0) {
+            if (H5OGET_INFO(dset, &obj_info) < 0) {
                 H5Dclose(dset);
                 string msg = "Obtaining the info. failed for the dataset ";
                 msg += full_path_name;
@@ -508,7 +508,7 @@ void find_gloattr(hid_t file, DAS & das)
         // Obtain the number of "real" attributes of the root group.
         int num_attrs;
         H5O_info_t obj_info;
-        if (H5Oget_info(root, &obj_info) < 0) {
+        if (H5OGET_INFO(root, &obj_info) < 0) {
             H5Gclose(root);
             string msg = "Obtaining the info. failed for the root group ";
             throw InternalErr(__FILE__, __LINE__, msg);
@@ -623,8 +623,8 @@ string get_hardlink(hid_t pgroup, const string & oname)
 
     // Get the object info
     H5O_info_t obj_info;
-    if (H5Oget_info(pgroup, &obj_info) < 0) {
-        throw InternalErr(__FILE__, __LINE__, "H5Oget_info() failed.");
+    if (H5OGET_INFO(pgroup, &obj_info) < 0) {
+        throw InternalErr(__FILE__, __LINE__, "H5OGET_INFO() failed.");
     }
 
     // If the reference count is greater than 1,that means 

@@ -166,7 +166,7 @@ bool check_gpm_l1(hid_t s_root_id) {
 
                 // Obtain the object type, such as group or dataset. 
                 H5O_info_t soinfo;
-                if(H5Oget_info_by_idx(s_root_id,".",H5_INDEX_NAME,H5_ITER_NATIVE, (hsize_t)i,&soinfo,H5P_DEFAULT)<0) 
+                if(H5OGET_INFO_BY_IDX(s_root_id,".",H5_INDEX_NAME,H5_ITER_NATIVE, (hsize_t)i,&soinfo,H5P_DEFAULT)<0) 
                     throw InternalErr(__FILE__,__LINE__,"Cannot get the HDF5 object info. successfully. ");
 
                 H5O_type_t obj_type = soinfo.type;
@@ -358,7 +358,7 @@ bool check_gpmm_l3(hid_t s_root_id) {
 
                     // Obtain the object type, such as group or dataset. 
                     H5O_info_t soinfo;
-                    if(H5Oget_info_by_idx(cgroup_id,".",H5_INDEX_NAME,H5_ITER_NATIVE, (hsize_t)i,&soinfo,H5P_DEFAULT)<0) 
+                    if(H5OGET_INFO_BY_IDX(cgroup_id,".",H5_INDEX_NAME,H5_ITER_NATIVE, (hsize_t)i,&soinfo,H5P_DEFAULT)<0) 
                         throw InternalErr(__FILE__,__LINE__,"Cannot get the HDF5 object info. successfully. ");
 
                     H5O_type_t obj_type = soinfo.type;

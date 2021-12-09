@@ -202,7 +202,7 @@ void File::Retrieve_H5_Info(const char * /*path*/, hid_t file_id, bool include_a
         H5O_info_t oinfo;
         int num_attrs = 0;
 
-        if (H5Oget_info(root_id, &oinfo) < 0)
+        if (H5OGET_INFO(root_id, &oinfo) < 0)
         throw1("Error obtaining the info for the root group");
 
         num_attrs = oinfo.num_attrs;
@@ -289,7 +289,7 @@ void File::Retrieve_H5_Obj(hid_t grp_id, const char*gname, bool include_attr)
             // Obtain the object type, such as group or dataset. 
             H5O_info_t oinfo;
 
-            if (H5Oget_info_by_idx(grp_id, ".", H5_INDEX_NAME, H5_ITER_NATIVE, i, &oinfo, H5P_DEFAULT) < 0)
+            if (H5OGET_INFO_BY_IDX(grp_id, ".", H5_INDEX_NAME, H5_ITER_NATIVE, i, &oinfo, H5P_DEFAULT) < 0)
             throw2("Error obtaining the info for the object ", string(oname.begin(), oname.end()));
 
             H5O_type_t obj_type = oinfo.type;

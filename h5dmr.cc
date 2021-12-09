@@ -169,7 +169,7 @@ bool depth_first(hid_t pid, char *gname,  D4Group* par_grp, const char *fname)
         // Obtain the object type, such as group or dataset. 
         H5O_info_t oinfo;
 
-        if (H5Oget_info_by_idx(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE,
+        if (H5OGET_INFO_BY_IDX(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE,
                               i, &oinfo, H5P_DEFAULT)<0) {
             string msg = "h5_dmr handler: Error obtaining the info for the object";
             msg += string(oname.begin(),oname.end());
@@ -395,7 +395,7 @@ bool breadth_first(const hid_t file_id, hid_t pid, char *gname, D4Group* par_grp
         // Obtain the object type, such as group or dataset. 
         H5O_info_t oinfo;
 
-        if (H5Oget_info_by_idx(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE,
+        if (H5OGET_INFO_BY_IDX(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE,
                               i, &oinfo, H5P_DEFAULT)<0) {
             string msg = "h5_dmr handler: Error obtaining the info for the object";
             msg += string(oname.begin(),oname.end());
@@ -506,7 +506,7 @@ bool breadth_first(const hid_t file_id, hid_t pid, char *gname, D4Group* par_grp
         // Obtain the object type, such as group or dataset. 
         H5O_info_t oinfo;
 
-        if (H5Oget_info_by_idx(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE,
+        if (H5OGET_INFO_BY_IDX(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE,
                               i, &oinfo, H5P_DEFAULT)<0) {
             string msg = "h5_dmr handler: Error obtaining the info for the object in the breadth_first.";
             throw InternalErr(__FILE__, __LINE__, msg);
@@ -867,7 +867,7 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
 
     // Get the object info
     H5O_info_t obj_info;
-    if (H5Oget_info(h5_objid, &obj_info) <0) {
+    if (H5OGET_INFO(h5_objid, &obj_info) <0) {
         string msg = "Fail to obtain the HDF5 object info. .";
         throw InternalErr(__FILE__, __LINE__, msg);
     }
@@ -1145,8 +1145,8 @@ string get_hardlink_dmr( hid_t h5obj_id, const string & oname) {
 
     // Get the object info
     H5O_info_t obj_info;
-    if (H5Oget_info(h5obj_id, &obj_info) <0) { 
-        throw InternalErr(__FILE__, __LINE__, "H5Oget_info() failed.");
+    if (H5OGET_INFO(h5obj_id, &obj_info) <0) { 
+        throw InternalErr(__FILE__, __LINE__, "H5OGET_INFO() failed.");
     }
 
     // If the reference count is greater than 1,that means 

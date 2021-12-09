@@ -552,10 +552,10 @@ void HDF5GMCFMissLLArray::obtain_gpm_l3_new_grid_info(hid_t file,
    attr_na.name = NULL;
    attr_na.value = NULL;
 
-   herr_t ret_o= H5Ovisit(file, H5_INDEX_NAME, H5_ITER_INC, visit_obj_cb, (void*)&attr_na);
+   herr_t ret_o= H5OVISIT(file, H5_INDEX_NAME, H5_ITER_INC, visit_obj_cb, (void*)&attr_na);
    if(ret_o < 0){
         H5Fclose(file);
-        throw InternalErr(__FILE__, __LINE__, "H5Ovisit failed. ");
+        throw InternalErr(__FILE__, __LINE__, "H5OVISIT failed. ");
    }
    else if(ret_o >0) {
 #if 0
@@ -582,10 +582,10 @@ void HDF5GMCFMissLLArray::obtain_gpm_l3_new_grid_info(hid_t file,
         // Note: the memory allocated for the first grid info is released 
         // by the attribute callback function.
         // In this round, we need to release the memory allocated for the second grid info.
-        herr_t ret_o2= H5Ovisit(file, H5_INDEX_NAME, H5_ITER_INC, visit_obj_cb, (void*)&attr_na);
+        herr_t ret_o2= H5OVISIT(file, H5_INDEX_NAME, H5_ITER_INC, visit_obj_cb, (void*)&attr_na);
         if(ret_o2 < 0) {
             H5Fclose(file);
-            throw InternalErr(__FILE__, __LINE__, "H5Ovisit failed again. ");
+            throw InternalErr(__FILE__, __LINE__, "H5OVISIT failed again. ");
         }
         else if(ret_o2>0) {
             if(attr_na.name) {

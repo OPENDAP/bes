@@ -1169,7 +1169,7 @@ void read_ecs_metadata(hid_t s_file_id,
 
         // Obtain the object type
         H5O_info_t oinfo;
-        if (H5Oget_info_by_idx(ecs_grp_id, ".", H5_INDEX_NAME, H5_ITER_NATIVE,
+        if (H5OGET_INFO_BY_IDX(ecs_grp_id, ".", H5_INDEX_NAME, H5_ITER_NATIVE,
                               i, &oinfo, H5P_DEFAULT)<0) {
             string msg = "Cannot obtain the object info ";
             msg += ecs_group;

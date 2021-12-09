@@ -575,6 +575,7 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
 bool HDF5Array::m_array_of_reference(hid_t dset_id,hid_t dtype_id)
 {
 
+#if (H5_VERS_MAJOR == 1 && (H5_VERS_MINOR == 10 || H5_VERS_MINOR == 8 || H5_VERS_MINOR == 6))
     hid_t memtype = H5Tget_native_type(dtype_id, H5T_DIR_ASCEND);
     if (memtype < 0)
         throw InternalErr(__FILE__, __LINE__, "cannot obtain the memory data type for the dataset.");
@@ -595,6 +596,7 @@ bool HDF5Array::m_array_of_reference(hid_t dset_id,hid_t dtype_id)
 
 	BESDEBUG("h5", "=read() URL type is detected. "
 		<< "nelms=" << nelms << " full_size=" << d_num_elm << endl);
+
 
 	// Handle regional reference.
 	if (H5Tequal(d_ty_id, H5T_STD_REF_DSETREG) < 0) {
@@ -701,14 +703,15 @@ bool HDF5Array::m_array_of_reference(hid_t dset_id,hid_t dtype_id)
 			BESDEBUG("h5", "=read() nblock is " <<
 				H5Sget_select_hyper_nblocks(space_id) << endl);
 
-#if 0
+#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR == 8)
 			if (H5Sget_select_bounds(space_id, &start[0], &end[0]) < 0) {
 			    throw InternalErr(__FILE__, __LINE__, "H5Sget_select_bounds() failed.");
 			}
-#endif
+#else
 			if (H5Sget_regular_hyperslab(space_id, &start[0], &stride[0], &count[0], &block[0]) < 0) {
 			    throw InternalErr(__FILE__, __LINE__, "H5Sget_regular_hyperslab() failed.");
 			}
+#endif
 
 			for (int j = 0; j < ndim; j++) {
 			    ostringstream oss;
@@ -794,7 +797,22 @@ bool HDF5Array::m_array_of_reference(hid_t dset_id,hid_t dtype_id)
             H5Tclose(memtype);
 	throw;
     }
+#else
+    return m_array_of_reference_new_h5_apis(dset_id,dtype_id);
+
+#endif
 }
+
+bool HDF5Array::m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id) {
+
+#if (H5_VERS_MAJOR == 1 && (H5_VERS_MINOR == 10 || H5_VERS_MINOR == 8 || H5_VERS_MINOR == 6))
+    throw InternalErr(__FILE__, __LINE__, 
+       "The HDF5 handler compiled with earlier version (<=110)of the HDF5 library should not call method that uses new reference APIs");
+    return false;
+#else
+    return true;
+#endif
+} 
 
 void HDF5Array::m_intern_plain_array_data(char *convbuf,hid_t memtype)
 {
