@@ -34,9 +34,9 @@
 #include <cassert>
 #include <BESDebug.h>
 #include <sys/stat.h>
-#include "InternalErr.h"
+#include <libdap/InternalErr.h>
 
-#include "Str.h"
+#include <libdap/Str.h>
 #include "HDF5RequestHandler.h"
 #include "HDF5CFArray.h"
 #include "h5cfdaputil.h"

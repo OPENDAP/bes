@@ -29,7 +29,7 @@
 
 #include <string>
 #include <H5Ipublic.h>
-#include "Structure.h"
+#include <libdap/Structure.h>
 #include "HDF5Array.h"
 #include "h5get.h"
 

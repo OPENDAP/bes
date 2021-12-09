@@ -31,9 +31,9 @@
 #include <vector>
 
 // DODS includes
-#include <Array.h>
+#include <libdap/Array.h>
 #include <HDF5CFUtil.h>
-#include <D4Group.h>
+#include <libdap/D4Group.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \file HDF5BaseArray.h

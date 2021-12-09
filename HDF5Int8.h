@@ -31,7 +31,7 @@
 
 #include <H5Ipublic.h>
 
-#include "Int8.h"
+#include <libdap/Int8.h>
 #include "h5get.h"
 
 

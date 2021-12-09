@@ -41,13 +41,13 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#include <DMR.h>
-#include <D4BaseTypeFactory.h>
+#include <libdap/DMR.h>
+#include <libdap/D4BaseTypeFactory.h>
 #include <BESDMRResponse.h>
 #include <ObjMemCache.h>
 #include "HDF5_DMR.h"
 
-#include <mime_util.h>
+#include <libdap/mime_util.h>
 #include "hdf5_handler.h"
 #include "HDF5RequestHandler.h"
 #include "HDF5_DDS.h"
@@ -55,7 +55,7 @@
 #include <BESDASResponse.h>
 #include <BESDDSResponse.h>
 #include <BESDataDDSResponse.h>
-#include <Ancillary.h>
+#include <libdap/Ancillary.h>
 #include <BESInfo.h>
 #include <BESDapNames.h>
 #include <BESResponseNames.h>

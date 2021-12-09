@@ -39,9 +39,9 @@
 
 #ifndef _H5CFDAP_H
 #define _H5CFDAP_H
-#include <DMR.h>
-#include <DDS.h>
-#include <DAS.h>
+#include <libdap/DMR.h>
+#include <libdap/DDS.h>
+#include <libdap/DAS.h>
 
 #include "HDF5CFModule.h"
 #include "heos5cfdap.h"

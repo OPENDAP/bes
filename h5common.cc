@@ -31,7 +31,7 @@
 #include "h5common.h"
 
 #include<string.h>
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 #include <BESDebug.h>
 
 

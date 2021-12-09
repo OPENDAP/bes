@@ -30,7 +30,7 @@
 #include <string>
 #include <H5Ipublic.h>
 
-#include "Float32.h"
+#include <libdap/Float32.h>
 #include "h5get.h"
 
 

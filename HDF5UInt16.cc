@@ -38,7 +38,7 @@
 #include <string>
 #include <ctype.h>
 
-#include "InternalErr.h"
+#include <libdap/InternalErr.h>
 
 #include "h5dds.h"
 #include "HDF5UInt16.h"

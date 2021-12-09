@@ -36,7 +36,7 @@
 #include <string>
 
 // DODS includes
-#include <UInt32.h>
+#include <libdap/UInt32.h>
 
 
 class HDF5CFUInt32:public libdap::UInt32 {

@@ -5,7 +5,7 @@
 #define _HDF5CFGeoCFPROJ_H
 
 // DODS includes
-#include <Byte.h>
+#include <libdap/Byte.h>
 
 
 class HDF5CFGeoCFProj:public libdap::Byte {

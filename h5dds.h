@@ -47,7 +47,7 @@
 
 #include <H5public.h>
 
-#include <DDS.h>
+#include <libdap/DDS.h>
 
 
 bool depth_first(hid_t, char *, libdap::DDS &, const char *);

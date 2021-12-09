@@ -27,7 +27,7 @@
 #ifndef _HDF5Sequence_h
 #define _HDF5Sequence_h 
 
-#include "Sequence.h"
+#include <libdap/Sequence.h>
 #include "h5get.h"
 
 

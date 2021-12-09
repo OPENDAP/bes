@@ -24,7 +24,7 @@
 // Suite 203, Champaign, IL 61820  
 
 #include "HE5Parser.h"
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 #include <HDF5CFUtil.h>
 #include <stdlib.h>
 

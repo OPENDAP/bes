@@ -39,8 +39,8 @@
 #define _h5das_H
 
 #include <hdf5.h>
-#include <DAS.h>
-#include <Str.h>
+#include <libdap/DAS.h>
+#include <libdap/Str.h>
 
 void add_group_structure_info(libdap::DAS & das, const char *gname, char *oname,
                               bool is_group);

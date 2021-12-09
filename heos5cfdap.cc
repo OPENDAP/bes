@@ -41,7 +41,7 @@
 #include <BESLog.h>
 #include <BESDebug.h>
 
-#include "parser.h"
+#include <libdap/parser.h>
 #include "heos5cfdap.h"
 #include "h5cfdaputil.h"
 #include "HDF5CFByte.h"

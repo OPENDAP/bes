@@ -49,11 +49,11 @@
 
 #include <H5public.h>
 
-#include <DDS.h>
+#include <libdap/DDS.h>
 
 
-#include <D4Group.h>
-#include <D4Attributes.h>
+#include <libdap/D4Group.h>
+#include <libdap/D4Attributes.h>
 
 // This struct stores the link object address and the shortest path link. 
 // Note: if it is necessary to retrieve all the link paths, uncomment

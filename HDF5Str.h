@@ -42,7 +42,7 @@
 #endif
 #endif
 
-#include "Str.h"
+#include <libdap/Str.h>
 #include "h5get.h"
 
 

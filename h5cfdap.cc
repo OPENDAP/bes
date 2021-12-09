@@ -31,9 +31,9 @@
 /// \author Muqun Yang    <myang6@hdfgroup.org>
 ///
 
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 #include <BESDebug.h>
-#include <mime_util.h>
+#include <libdap/mime_util.h>
 #include "config_hdf5.h"
 #include "h5cfdap.h"
 

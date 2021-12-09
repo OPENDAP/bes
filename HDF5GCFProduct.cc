@@ -30,7 +30,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 #include <assert.h>
 #include "HDF5GCFProduct.h"
 
