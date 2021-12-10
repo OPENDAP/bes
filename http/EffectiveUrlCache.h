@@ -37,7 +37,6 @@
 #include "BESRegex.h"
 #include "EffectiveUrl.h"
 
-
 namespace http {
 
 
@@ -86,5 +85,5 @@ public:
 
 } // namespace http
 
-#endif // BES_http_EffectiveUrlCache_h_
+#endif // _bes_http_EffectiveUrlCache_h_
 

@@ -28,10 +28,9 @@
 #include <unistd.h>
 
 #include <libdap/DDS.h>
-
-#include <libdap/GNURegex.h>
 #include <libdap/debug.h>
 
+#include "BESRegex.h"
 #include "ObjMemCache.h"
 
 static bool debug = false;

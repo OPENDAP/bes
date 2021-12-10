@@ -1,0 +1,15 @@
+HTTP/1.0 200 OK[[:print:]\r\n]*
+XDODS-Server:[[:print:]\r\n]*
+XOPeNDAP-Server:[[:print:]\r\n]*
+XDAP:[[:print:]\r\n]*
+Date:[[:print:]\r\n]*
+Last-Modified:[[:print:]\r\n]*
+Content-Type: text/plain[[:print:]\r\n]*
+Content-Description: dods_das[[:print:]\r\n]*
+[[:print:]\r\n]*
+Attributes \{
+    a \{
+        Int32 size 7;
+        String type "cars";
+    \}
+\}[[:print:]\r\n]*

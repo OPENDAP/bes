@@ -32,12 +32,14 @@
 
 #include "config.h"
 
+#include <memory>
 #include <limits.h>
 
 #include "BESScrub.h"
 #include "BESRegex.h"
 
 using std::string;
+using std::unique_ptr;
 
 /** @name Security functions */
 //@{
@@ -91,7 +93,17 @@ BESScrub::pathname_ok(const string &path, bool strict)
 {
     if (path.length() > 255)
         return false;
-    
+
+    if (strict) {
+        const BESRegex name("[[:alpha:][:digit:]_./-]+");
+        return name.match(path) == static_cast<int>(path.length());
+    }
+    else {
+        const BESRegex name("[:print:]+");
+        return name.match(path) == static_cast<int>(path.length());
+    }
+
+#if 0
     BESRegex name("[[:alpha:][:digit:]_./-]+");
     if (!strict)
         name = "[:print:]+";
@@ -101,6 +113,7 @@ BESScrub::pathname_ok(const string &path, bool strict)
     if( ret != static_cast<int>(len) )
         return false ;
     return true ;
+#endif
 }
 
 //@}

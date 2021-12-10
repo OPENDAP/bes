@@ -58,8 +58,6 @@
 #include <libdap/D4Group.h>
 #include <libdap/D4ParserSax2.h>
 #include <test/D4TestTypeFactory.h>
-
-#include <libdap/GNURegex.h>
 #include <libdap/util.h>
 #include <libdap/mime_util.h>
 #include <libdap/debug.h>
@@ -67,6 +65,7 @@
 #include <test/TestTypeFactory.h>
 #include <test/TestByte.h>
 
+#include "BESRegex.h"
 #include "BESDebug.h"
 #include "TheBESKeys.h"
 #include "BESDapResponseBuilder.h"
@@ -166,7 +165,7 @@ private:
 
     void loadServerSideFunction()
     {
-        rbSSF = new libdap::ServerFunction(
+        rbSSF = new ServerFunction(
         // The name of the function as it will appear in a constraint expression
             "rbSimpleFunc",
             // The version of the function
@@ -284,12 +283,6 @@ public:
     void tearDown()
     {
         DBG2(cerr << plog << "BEGIN" << endl);
-        /*
-          *
-         Str *response = new Str("result");
-         rbSSF = new libdap::ServerFunction(
-         cont_a = new AttrTable;
-          */
 
         delete drb;
         drb = 0;
@@ -320,7 +313,7 @@ public:
         DBG2(cerr << plog << "END" << endl);
     }
 
-    bool re_match(Regex &r, const string &s)
+    bool re_match(BESRegex &r, const string &s)
     {
         DBG(cerr << plog << "s.length(): " << s.length() << endl);
         int pos = r.match(s.c_str(), s.length());
@@ -328,7 +321,7 @@ public:
         return pos > 0 && static_cast<unsigned>(pos) == s.length();
     }
 
-    bool re_match_binary(Regex &r, const string &s)
+    bool re_match_binary(BESRegex &r, const string &s)
     {
         DBG(cerr << plog << "s.length(): " << s.length() << endl);
         int pos = r.match(s.c_str(), s.length());
@@ -348,7 +341,7 @@ public:
         try {
             string baseline = read_test_baseline((string) TEST_SRC_DIR + "/input-files/send_das_baseline.txt");
             DBG(cerr << plog << "---- start baseline ----" << endl << baseline << "---- end baseline ----" << endl);
-            Regex r1(baseline.c_str());
+            BESRegex r1(baseline.c_str());
 
             drb->send_das(oss, *das);
 
@@ -369,7 +362,7 @@ public:
         try {
             string baseline = read_test_baseline((string) TEST_SRC_DIR + "/input-files/send_dds_baseline.txt");
             DBG(cerr << plog << "---- start baseline ----" << endl << baseline << "---- end baseline ----" << endl);
-            Regex r1(baseline.c_str());
+            BESRegex r1(baseline.c_str());
 
             ConstraintEvaluator ce;
 
@@ -391,7 +384,7 @@ public:
         DBG(cerr << endl << plog << "BEGIN" << endl);
 
         string baseline = read_test_baseline((string) TEST_SRC_DIR + "/input-files/response_builder_send_ddx_test.xml");
-        Regex r1(baseline.c_str());
+        BESRegex r1(baseline.c_str());
         ConstraintEvaluator ce;
 
         try {
@@ -500,7 +493,7 @@ public:
             // is a any single digit. The *Test classes implement a counter and return strings where
             // <number> is 1, 2, ..., and running several of the tests here in a row will get a range of
             // values for <number>.
-            Regex regex(
+            BESRegex regex(
                 "2551234567894026531840320006400099.99999.999\"Silly test string: [0-9]\"\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\"");
             CPPUNIT_ASSERT(re_match(regex, oss.str()));
             delete cache_dds;
@@ -723,7 +716,7 @@ public:
 
         try {
             string baseline = read_test_baseline((string) TEST_SRC_DIR + "/input-files/simple_function_baseline.txt");
-            Regex r1(baseline.c_str());
+            BESRegex r1(baseline.c_str());
 
             DBG(cerr << plog << "---- start baseline ----" << endl << baseline << "---- end baseline ----" << endl);
 
@@ -797,8 +790,8 @@ CPPUNIT_TEST_SUITE( ResponseBuilderTest );
     CPPUNIT_TEST(send_ddx_test);
 
     CPPUNIT_TEST(escape_code_test);
-        CPPUNIT_TEST(invoke_server_side_function_test);
-        CPPUNIT_TEST(dummy_test);
+    CPPUNIT_TEST(invoke_server_side_function_test);
+    CPPUNIT_TEST(dummy_test);
 
 #if 0
     // FIXME These tests have baselines that rely on hash values that are
@@ -806,8 +799,7 @@ CPPUNIT_TEST_SUITE( ResponseBuilderTest );
     CPPUNIT_TEST(store_dap2_result_test);
     CPPUNIT_TEST(store_dap4_result_test);
 #endif
-    CPPUNIT_TEST_SUITE_END()
-    ;
+    CPPUNIT_TEST_SUITE_END();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(ResponseBuilderTest);

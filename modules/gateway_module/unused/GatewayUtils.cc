@@ -51,8 +51,13 @@
 #include <BESSyntaxUserError.h>
 #include <BESDebug.h>
 
+<<<<<<< HEAD
 #include <GNURegex.h>
 #include <libdap/util.h>
+=======
+#include "BESRegex.h"
+#include <util.h>
+>>>>>>> master
 
 using namespace libdap;
 using namespace gateway;
@@ -229,7 +234,7 @@ GatewayUtils::Get_tempfile_template( char *file_template )
 {
 #ifdef WIN32
     // AllowHosts list for a WIN32 directory
-    Regex directory("[-a-zA-Z0-9_\\]*");
+    BESRegex directory("[-a-zA-Z0-9_\\]*");
 
     string c = getenv("TEMP") ? getenv("TEMP") : "";
     if (!c.empty() && directory.match(c.c_str(), c.length()) && (access(c.c_str(), 6) == 0))
@@ -240,7 +245,7 @@ GatewayUtils::Get_tempfile_template( char *file_template )
     goto valid_temp_directory;
 #else
     // AllowHosts list for a directory
-    Regex directory("[-a-zA-Z0-9_/]*");
+    BESRegex directory("[-a-zA-Z0-9_/]*");
 
     string c = getenv("TMPDIR") ? getenv("TMPDIR") : "";
     if (!c.empty() && directory.match(c.c_str(), c.length())

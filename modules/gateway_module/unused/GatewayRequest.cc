@@ -27,10 +27,16 @@
 // Authors:
 //      pcw       Patrick West <pwest@ucar.edu>
 
+<<<<<<< HEAD
 #include <libdap/HTTPConnect.h>
 #include <libdap/RCReader.h>
 #include <libdap/Error.h>
 #include <GNURegex.h>
+=======
+#include <HTTPConnect.h>
+#include <RCReader.h>
+#include <Error.h>
+>>>>>>> master
 
 using namespace libdap;
 
@@ -76,10 +82,10 @@ GatewayRequest::make_request(const string &url, string &type)
     bool configure_proxy = true;
     // Don't create the regex if the string is empty
     if (!GatewayUtils::NoProxyRegex.empty()) {
-        Regex r(GatewayUtils::NoProxyRegex.c_str());
+        BESRegex r(GatewayUtils::NoProxyRegex.c_str());
         if (r.match(url.c_str(), url.length()) != -1) {
             BESDEBUG("gateway",
-                "Gateway found NoProxy match. Regex: " << GatewayUtils::NoProxyRegex << "; Url: " << url << endl);
+                "Gateway found NoProxy match. BESRegex: " << GatewayUtils::NoProxyRegex << "; Url: " << url << endl);
             configure_proxy = false;
         }
     }

@@ -35,10 +35,7 @@
 
 #include <time.h> // for time_t
 
-namespace libdap {
-class Regex;
-// GNU regular expression lib wrapper
-}
+class BESRegex;
 
 namespace agg_util {
 /** Class to hold info on files as we get them. */
@@ -225,7 +222,7 @@ private:
 
     // If a regular expression is specified, this will be
     // non-null and used to match each filename.
-    libdap::Regex* _pRegExp;
+    BESRegex* _pRegExp;
 
     // True if there was a newest modtime filter set.
     bool _filteringModTimes;

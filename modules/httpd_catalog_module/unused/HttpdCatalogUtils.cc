@@ -36,8 +36,13 @@
 
 #include <curl/curl.h>
 
+<<<<<<< HEAD
 #include <GNURegex.h>
 #include <libdap/util.h>
+=======
+#include "BESRegex.h"
+#include <util.h>
+>>>>>>> master
 
 #include <BESUtil.h>
 #include <BESCatalogUtils.h>

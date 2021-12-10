@@ -1,0 +1,13 @@
+HTTP/1.0 200 OK[[:print:]\r\n]*
+XDODS-Server:[[:print:]\r\n]*
+XOPeNDAP-Server:[[:print:]\r\n]*
+XDAP:[[:print:]\r\n]*
+Date:[[:print:]\r\n]*
+Last-Modified:[[:print:]\r\n]*
+Content-Type: application/octet-stream[[:print:]\r\n]*
+Content-Description: dods_data[[:print:]\r\n]*
+[[:print:]\r\n]*
+Dataset \{
+    String result;
+\} function_result_test;
+[[:print:]\r\n]*

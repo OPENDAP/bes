@@ -37,7 +37,7 @@
 
 static char rcsid[] not_used = {"$Id$"};
 
-#include <GNURegex.h>
+#include "BESRegex.h"
 
 #include <libdap/escaping.h>
 
@@ -76,7 +76,7 @@ name_map::lookup(string name, const bool canonical_names)
 		return p->to;
 	    }
 	    else {
-		static Regex ident("[A-Za-z_][A-Za-z0-9_]*", 1);
+		static BESRegex ident("[A-Za-z_][A-Za-z0-9_]*", 1);
 		string tmp_n = p->to;
 		if (ident.match(tmp_n.c_str(), tmp_n.length())) 
 		    return munge(tmp_n);

@@ -52,8 +52,13 @@
 #include "CmrUtils.h"
 #include "CmrApi.h"
 
+<<<<<<< HEAD
 #include <GNURegex.h>
 #include <libdap/util.h>
+=======
+#include "BESRegex.h"
+#include <util.h>
+>>>>>>> master
 
 using namespace libdap;
 using namespace cmr;

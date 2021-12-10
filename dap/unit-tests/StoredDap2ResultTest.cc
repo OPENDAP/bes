@@ -37,13 +37,13 @@
 #include <libdap/DDXParserSAX2.h>
 #include <libdap/D4AsyncUtil.h>
 
-#include <libdap/GNURegex.h>
 #include <libdap/util.h>
 #include <libdap/debug.h>
 
 #include <test/TestTypeFactory.h>
 
 #include "TheBESKeys.h"
+#include "BESRegex.h"
 #include "BESStoredDapResultCache.h"
 #include "BESDapResponseBuilder.h"
 #include "BESInternalError.h"
@@ -124,7 +124,7 @@ public:
         DBG(cerr << "tearDown() - END" << endl);
     }
 
-    bool re_match(Regex &r, const string &s)
+    bool re_match(BESRegex &r, const string &s)
     {
         DBG(cerr << "s.length(): " << s.length() << endl);
         int pos = r.match(s.c_str(), s.length());
@@ -132,7 +132,7 @@ public:
         return pos > 0 && static_cast<unsigned>(pos) == s.length();
     }
 
-    bool re_match_binary(Regex &r, const string &s)
+    bool re_match_binary(BESRegex &r, const string &s)
     {
         DBG(cerr << "s.length(): " << s.length() << endl);
         int pos = r.match(s.c_str(), s.length());
@@ -314,7 +314,7 @@ public:
             // is a any single digit. The *Test classes implement a counter and return strings where
             // <number> is 1, 2, ..., and running several of the tests here in a row will get a range of
             // values for <number>.
-            Regex regex(
+            BESRegex regex(
                 "2551234567894026531840320006400099.99999.999\"Silly test string: [0-9]\"\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\"");
             CPPUNIT_ASSERT(re_match(regex, oss.str()));
             delete cache_dds;
@@ -382,7 +382,7 @@ public:
             // is a any single digit. The *Test classes implement a counter and return strings where
             // <number> is 1, 2, ..., and running several of the tests here in a row will get a range of
             // values for <number>.
-            Regex regex(
+            BESRegex regex(
                 "2551234567894026531840320006400099.99999.999\"Silly test string: [0-9]\"\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\"");
             CPPUNIT_ASSERT(re_match(regex, oss.str()));
             delete cache_dds;
@@ -463,7 +463,7 @@ public:
             // is a any single digit. The *Test classes implement a counter and return strings where
             // <number> is 1, 2, ..., and running several of the tests here in a row will get a range of
             // values for <number>.
-            Regex regex(
+            BESRegex regex(
                 "2551234567894026531840320006400099.99999.999\"Silly test string: [0-9]\"\"http://dcz.gso.uri.edu/avhrr-archive/archive.html\"");
             CPPUNIT_ASSERT(re_match(regex, oss.str()));
             delete cache_dds;

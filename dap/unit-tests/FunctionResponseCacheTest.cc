@@ -47,13 +47,13 @@
 #include <libdap/DDS.h>
 #include <libdap/DDXParserSAX2.h>
 
-#include <libdap/GNURegex.h>
 #include <libdap/util.h>
 #include <libdap/debug.h>
 
 #include <test/TestTypeFactory.h>
 
 #include "BESDapFunctionResponseCache.h"
+#include "BESRegex.h"
 #include "BESError.h"
 #include "TheBESKeys.h"
 #include "BESDebug.h"
@@ -184,7 +184,7 @@ public:
         DBG(cerr << "tearDown() - END" << endl);
     }
 
-    bool re_match(Regex &r, const string &s)
+    bool re_match(BESRegex &r, const string &s)
     {
         DBG(cerr << "s.length(): " << s.length() << endl);
         int pos = r.match(s.c_str(), s.length());
@@ -192,7 +192,7 @@ public:
         return pos > 0 && static_cast<unsigned>(pos) == s.length();
     }
 
-    bool re_match_binary(Regex &r, const string &s)
+    bool re_match_binary(BESRegex &r, const string &s)
     {
         DBG(cerr << "s.length(): " << s.length() << endl);
         int pos = r.match(s.c_str(), s.length());

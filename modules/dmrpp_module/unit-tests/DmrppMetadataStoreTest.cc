@@ -38,8 +38,6 @@
 #include <libdap/DMR.h>
 #include <libdap/D4ParserSax2.h>
 
-#include <unistd.h>
-#include <GNURegex.h>
 #include <libdap/util.h>
 #include <libdap/debug.h>
 

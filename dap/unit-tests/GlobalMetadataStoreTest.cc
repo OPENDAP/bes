@@ -41,7 +41,6 @@
 #include <libdap/DMR.h>
 #include <libdap/D4ParserSax2.h>
 
-#include <libdap/GNURegex.h>
 #include <libdap/util.h>
 #include <libdap/debug.h>
 
@@ -56,7 +55,7 @@
 #include "BESDebug.h"
 #include "BESInternalError.h"
 #include "BESNotFoundError.h"
-
+#include "BESRegex.h"
 #include "GlobalMetadataStore.h"
 
 #include "test_utils.h"

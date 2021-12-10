@@ -26,9 +26,13 @@
 #include <sstream>
 #include <algorithm>    // std::for_each
 
-#include <GNURegex.h>
-
 #include <libdap/util.h>
+
+<<<<<<< HEAD
+#include <libdap/util.h>
+=======
+#include "BESRegex.h"
+>>>>>>> master
 #include "BESDebug.h"
 #include "BESInternalError.h"
 #include "GatewayUtils.h"
@@ -45,8 +49,6 @@ namespace gateway {
 // Set this to 1 to turn on libcurl's verbose mode (for debugging).
 int curl_trace = 0;
 
-
-
 #define CLIENT_ERR_MIN 400
 #define CLIENT_ERR_MAX 417
 const char *http_client_errors[CLIENT_ERR_MAX - CLIENT_ERR_MIN +1] =
@@ -56,8 +58,8 @@ const char *http_client_errors[CLIENT_ERR_MAX - CLIENT_ERR_MIN +1] =
         "Payment Required.",
         "Forbidden: Contact the server administrator.",
         "Not Found: The data source or server could not be found. "
-            "Often this means that the OPeNDAP server is missing or needs attention. "
-            "Please contact the server administrator.",
+        "Often this means that the OPeNDAP server is missing or needs attention. "
+        "Please contact the server administrator.",
         "Method Not Allowed.",
         "Not Acceptable.",
         "Proxy Authentication Required.",
@@ -343,9 +345,9 @@ bool configureProxy(CURL *curl, const string &url) {
         // Don't create the regex if the string is empty
         if (!GatewayUtils::NoProxyRegex.empty()) {
             BESDEBUG( MODULE, prolog << "Found NoProxyRegex." << endl);
-            libdap::Regex r(GatewayUtils::NoProxyRegex.c_str());
+            BESRegex r(GatewayUtils::NoProxyRegex.c_str());
             if (r.match(url.c_str(), url.length()) != -1) {
-                BESDEBUG( MODULE, prolog << "Found NoProxy match. Regex: " << GatewayUtils::NoProxyRegex << "; Url: " << url << endl);
+                BESDEBUG( MODULE, prolog << "Found NoProxy match. BESRegex: " << GatewayUtils::NoProxyRegex << "; Url: " << url << endl);
                 using_proxy = false;
             }
         }
