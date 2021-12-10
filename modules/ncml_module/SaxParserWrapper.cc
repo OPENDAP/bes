@@ -129,7 +129,8 @@ static int toXMLAttributeMapNoNamespaces(XMLAttributeMap& attrMap, const xmlChar
       catch (BESError& theErr) \
       { \
         BESDEBUG("ncml", "Caught BESError&, deferring..." << endl); \
-        _spw_->deferException(theErr); \
+        BESInternalError _badness_("ParseError: " + theErr.get_message() , theErr.get_file(), theErr.get_line());\
+        _spw_->deferException(_badness_); \
       } \
       catch (std::exception& ex) \
       { \
