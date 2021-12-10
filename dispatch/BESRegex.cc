@@ -43,6 +43,7 @@
 #include <stdexcept>
 #endif
 
+#include <string>
 #include <vector>
 
 #include <regex.h>
@@ -65,33 +66,19 @@ void
 BESRegex::init(const char *t)
 {
 #if !USE_CPP_11_REGEX
-    DBG( cerr << "Regex::init() - BEGIN" << endl);
-
-    DBG( cerr << "BESRegex::init() - creating new regex..." << endl);
     d_preg = static_cast<void*>(new regex_t);
 
-    DBG( cerr << "BESRegex::init() - Calling regcomp()..." << endl);
     int result = regcomp(static_cast<regex_t*>(d_preg), t, REG_EXTENDED);
-
     if  (result != 0) {
-        DBG( cerr << "BESRegex::init() - Call to regcomp FAILED" << endl);
-        DBG( cerr << "BESRegex::init() - Calling regerror()..." << endl);
         size_t msg_len = regerror(result, static_cast<regex_t*>(d_preg),
-                                  static_cast<char*>(NULL),
+                                  static_cast<char*>(nullptr),
                                   static_cast<size_t>(0));
 
-        DBG( cerr << "BESRegex::init() - Creating message" << endl);
         vector<char> msg(msg_len+1);
-        //char *msg = new char[msg_len+1];
-        DBG( cerr << "BESRegex::init() - Calling regerror() again..." << endl);
         regerror(result, static_cast<regex_t*>(d_preg), &msg[0], msg_len);
-        DBG( cerr << "BESRegex::init() - Throwing libdap::Error" << endl);
-        throw BESError(string("BESRegex error: ") + string(&msg[0]), BES_SYNTAX_USER_ERROR, __FILE__, __LINE__);
-        //delete[] msg;
-        //throw e;
+        string err = string("BESRegex error: ") + string(&msg[0], msg_len);
+        throw BESError(err, BES_SYNTAX_USER_ERROR, __FILE__, __LINE__);
     }
-    DBG( cerr << "BESRegex::init() - Call to regcomp() SUCCEEDED" << endl);
-    DBG( cerr << "BESRegex::init() - END" << endl);
 #else
     d_exp = regex(t);
 #endif
