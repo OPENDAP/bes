@@ -576,11 +576,6 @@ bool HDF5Array::m_array_of_reference(hid_t dset_id,hid_t dtype_id)
 {
 
 #if (H5_VERS_MAJOR == 1 && (H5_VERS_MINOR == 10 || H5_VERS_MINOR == 8 || H5_VERS_MINOR == 6))
-    hid_t memtype = H5Tget_native_type(dtype_id, H5T_DIR_ASCEND);
-    if (memtype < 0)
-        throw InternalErr(__FILE__, __LINE__, "cannot obtain the memory data type for the dataset.");
-    
-    hid_t d_ty_id = memtype;
     hid_t d_dset_id = dset_id;
     hdset_reg_ref_t *rbuf = NULL;
 
@@ -599,11 +594,11 @@ bool HDF5Array::m_array_of_reference(hid_t dset_id,hid_t dtype_id)
 
 
 	// Handle regional reference.
-	if (H5Tequal(d_ty_id, H5T_STD_REF_DSETREG) < 0) {
+	if (H5Tequal(dtype_id, H5T_STD_REF_DSETREG) < 0) {
 	    throw InternalErr(__FILE__, __LINE__, "H5Tequal() failed");
 	}
 
-	if (H5Tequal(d_ty_id, H5T_STD_REF_DSETREG) > 0) {
+	if (H5Tequal(dtype_id, H5T_STD_REF_DSETREG) > 0) {
 	    BESDEBUG("h5", "=read() Got regional reference. " << endl);
             // Vector doesn't work for this case. somehow it doesn't support the type.
             rbuf = new hdset_reg_ref_t[d_num_elm];
@@ -756,11 +751,11 @@ bool HDF5Array::m_array_of_reference(hid_t dset_id,hid_t dtype_id)
 	}
 
 	// Handle object reference.
-	if (H5Tequal(d_ty_id, H5T_STD_REF_OBJ) < 0) {
+	if (H5Tequal(dtype_id, H5T_STD_REF_OBJ) < 0) {
 	    throw InternalErr(__FILE__, __LINE__, "H5Tequal() failed.");
 	}
 
-	if (H5Tequal(d_ty_id, H5T_STD_REF_OBJ) > 0) {
+	if (H5Tequal(dtype_id, H5T_STD_REF_OBJ) > 0) {
 	    BESDEBUG("h5", "=read() Got object reference. " << endl);
             vector<hobj_ref_t> orbuf;
             orbuf.resize(d_num_elm);
@@ -787,14 +782,11 @@ bool HDF5Array::m_array_of_reference(hid_t dset_id,hid_t dtype_id)
 	    }
 	}
 	set_value(&v_str[0], nelms);
-        H5Tclose(memtype);
 	return false;
     }
     catch (...) {
         if(rbuf!= NULL)
             delete[] rbuf;
-        if(memtype != -1)
-            H5Tclose(memtype);
 	throw;
     }
 #else
@@ -810,9 +802,268 @@ bool HDF5Array::m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id) {
        "The HDF5 handler compiled with earlier version (<=110)of the HDF5 library should not call method that uses new reference APIs");
     return false;
 #else
-    return true;
+    
+    H5R_ref_t *rbuf = NULL;
+    hid_t  mem_space_id;
+    hid_t  file_space_id;
+        
+    try {
+
+        // First we need to read the reference data from DAP's hyperslab selection.
+	vector<int> offset(d_num_dim);
+	vector<int> count(d_num_dim);
+	vector<int> step(d_num_dim);
+        vector<hsize_t> hoffset(d_num_dim);
+        vector<hsize_t>hcount(d_num_dim);
+        vector<hsize_t>hstep(d_num_dim);
+
+	int nelms = format_constraint(&offset[0], &step[0], &count[0]); 
+        for (int i = 0; i <d_num_dim; i++) {
+            hoffset[i] = (hsize_t) offset[i];
+            hcount[i] = (hsize_t) count[i];
+            hstep[i] = (hsize_t) step[i];
+        }
+
+	BESDEBUG("h5", "=read() URL type is detected. "
+		<< "nelms=" << nelms << endl);
+
+        rbuf = new H5R_ref_t[nelms];
+
+	file_space_id = H5Dget_space(dset_id);
+        if(file_space_id < 0)
+            throw InternalErr(__FILE__, __LINE__, "Fail to obtain reference dataset file space.");
+
+        if (H5Sselect_hyperslab(file_space_id, H5S_SELECT_SET,
+                               &hoffset[0], &hstep[0],
+                               &hcount[0], NULL) < 0) 
+            throw InternalErr (__FILE__, __LINE__, "Fail to select the hyperslab for reference dataset.");
+      
+
+        mem_space_id = H5Screate_simple(d_num_dim,&hcount[0],NULL);
+        if(mem_space_id < 0) 
+            throw InternalErr(__FILE__, __LINE__, "Fail to obtain reference dataset memory space.");
+
+        if(H5Dread(dset_id,H5T_STD_REF,mem_space_id,file_space_id,H5P_DEFAULT,&rbuf[0])<0) 
+            throw InternalErr(__FILE__, __LINE__, "Fail to read hyperslab reference dataset.");
+
+        H5Sclose(mem_space_id);
+        H5Sclose(file_space_id);
+
+        // Now we need to retrieve the reference info. fot the nelms elements.
+        vector<string> v_str;
+
+        H5R_type_t ref_type = H5Rget_type((const H5R_ref_t *)&rbuf[0]);
+
+        // The referenced objects can only be either objects or dataset regions.
+        if(ref_type != H5R_OBJECT2 && ref_type !=H5R_DATASET_REGION2)
+            throw InternalErr(__FILE__, __LINE__, "Unsupported reference: neither object nor region references");
+           
+        for (int i = 0; i < nelms; i++) {
+
+            hid_t obj_id = H5Ropen_object((H5R_ref_t *)&rbuf[i], H5P_DEFAULT, H5P_DEFAULT);
+            if(obj_id < 0) 
+                throw InternalErr(__FILE__, __LINE__, "Cannot open the object the reference points to");
+                
+            vector<char> objname;
+            ssize_t objnamelen = -1;
+            if ((objnamelen= H5Iget_name(obj_id,NULL,0))<=0) {
+                H5Oclose(obj_id);
+                throw InternalErr(__FILE__, __LINE__, "Cannot obtain the name length of the object the reference points to");
+            }
+            objname.resize(objnamelen+1);
+            if ((objnamelen= H5Iget_name(obj_id,&objname[0],objnamelen+1))<=0) {
+                H5Oclose(obj_id);
+                throw InternalErr(__FILE__, __LINE__, "Cannot obtain the name length of the object the reference points to");
+            }
+
+            string objname_str = string(objname.begin(),objname.end());
+            string trim_objname = objname_str.substr(0,objnamelen);
+            
+            // For object references, we just need to save the object full path.
+            if(ref_type == H5R_OBJECT2) 
+                v_str.push_back(trim_objname);
+            else {// Must be region reference.
+                H5O_type_t obj_type;
+                if(H5Rget_obj_type3((H5R_ref_t *)&rbuf[i], H5P_DEFAULT, &obj_type) < 0){
+                    H5Oclose(obj_id);
+                    throw InternalErr(__FILE__, __LINE__, "H5Rget_obj_type3() failed.");
+                }
+                if(obj_type != H5O_TYPE_DATASET) {
+                    H5Oclose(obj_id);
+                    throw InternalErr(__FILE__, __LINE__, "Region reference must point to a dataset.");
+                }
+                hid_t region_space_id = H5Ropen_region(&rbuf[i],H5P_DEFAULT,H5P_DEFAULT);
+                if (region_space_id < 0) {
+                    H5Oclose(obj_id);
+                    throw InternalErr(__FILE__, __LINE__, "Cannot obtain the space ID the reference points to");
+                }
+
+                int ndim = H5Sget_simple_extent_ndims(region_space_id);
+                if (ndim < 0) {
+                    H5Sclose(region_space_id);
+                    H5Oclose(obj_id);
+                    throw InternalErr(__FILE__, __LINE__, "H5Sget_simple_extent_ndims() failed.");
+	        }
+
+		string expression;
+		switch (H5Sget_select_type(region_space_id)) {
+
+		    case H5S_SEL_NONE:
+			BESDEBUG("h5", "=read() None selected." << endl);
+			break;
+
+		    case H5S_SEL_POINTS: {
+			BESDEBUG("h5", "=read() Points selected." << endl);
+			hssize_t npoints = H5Sget_select_npoints(region_space_id);
+			if (npoints < 0) { 
+                            H5Sclose(region_space_id);
+                            H5Oclose(obj_id);
+			    throw InternalErr(__FILE__, __LINE__,
+				    "Cannot determine number of elements in the dataspace selection");
+			}
+
+			BESDEBUG("h5", "=read() npoints are " << npoints
+				<< endl);
+			vector<hsize_t> buf(npoints * ndim);
+			if (H5Sget_select_elem_pointlist(region_space_id, 0, npoints, &buf[0]) < 0) {
+                            H5Sclose(region_space_id);
+                            H5Oclose(obj_id);
+			    throw InternalErr(__FILE__, __LINE__, "H5Sget_select_elem_pointlist() failed.");
+			}
+
+#if 0
+			for (int j = 0; j < npoints * ndim; j++) {
+                            "h5", "=read() npoints buf[0] =" << buf[j] <<endl;
+			}
+#endif
+
+			for (int j = 0; j < (int) npoints; j++) {
+			    // Name of the dataset.
+			    expression.append(trim_objname);
+			    for (int k = 0; k < ndim; k++) {
+				ostringstream oss;
+				oss << "[" << (int) buf[j * ndim + k] << "]";
+				expression.append(oss.str());
+			    }
+			    if (j != (int) (npoints - 1)) {
+				expression.append(",");
+			    }
+			}
+			v_str.push_back(expression);
+
+			break;
+		    }
+		    case H5S_SEL_HYPERSLABS: {
+			vector<hsize_t> start(ndim);
+			vector<hsize_t> end(ndim);
+                        vector<hsize_t>stride(ndim);
+                        vector<hsize_t>count(ndim);
+                        vector<hsize_t>block(ndim);
+
+			BESDEBUG("h5", "=read() Slabs selected." << endl);
+			BESDEBUG("h5", "=read() nblock is " <<
+				H5Sget_select_hyper_nblocks(region_space_id) << endl);
+
+			if (H5Sget_regular_hyperslab(region_space_id, &start[0], &stride[0], &count[0], &block[0]) < 0) {
+	                    H5Sclose(region_space_id);
+                            H5Oclose(obj_id);
+			    throw InternalErr(__FILE__, __LINE__, "H5Sget_regular_hyperslab() failed.");
+			}
+
+			expression.append(trim_objname);
+			for (int j = 0; j < ndim; j++) {
+			    ostringstream oss;
+			    BESDEBUG("h5", "start " << start[j]
+                                     << "stride "<<stride[j] 
+                                     << "count "<< count[j]
+                                     << "block "<< block[j] 
+                                     <<endl);
+
+                            // Map from HDF5's start,stride,count,block to DAP's start,stride,end.
+                            end[j] = start[j] + stride[j]*(count[j]-1)+(block[j]-1);
+			    BESDEBUG("h5", "=read() start is " << start[j]
+				    << "=read() end is " << end[j] << endl);
+			    oss << "[" << start[j] << ":" << stride[j] << ":" << end[j] << "]";
+			    expression.append(oss.str());
+			    BESDEBUG("h5", "=read() expression is "
+				    << expression << endl)
+			    ;
+			}
+			v_str.push_back(expression);
+			// Constraint expression. [start:stride:end]
+			break;
+		    }
+		    case H5S_SEL_ALL:
+			BESDEBUG("h5", "=read() All selected." << endl);
+			break;
+
+		    default:
+			BESDEBUG("h5", "Unknown space type." << endl);
+			break;
+		}
+                H5Sclose(region_space_id);
+            }
+            H5Oclose(obj_id);
+        }
+        for (int i = 0; i<nelms; i++)
+            H5Rdestroy(&rbuf[i]);
+        delete[] rbuf;
+        H5Sclose(mem_space_id);
+        H5Sclose(file_space_id);
+	set_value(&v_str[0], nelms);
+        return false;
+    }
+    catch (...) {
+        if(rbuf!= NULL)
+            delete[] rbuf;
+        H5Sclose(mem_space_id);
+        H5Sclose(file_space_id);
+	throw;
+    }
 #endif
 } 
+
+        // Unused code, keep it for a while.
+        // Decide not check if the datatype is reference or not. This should be done by URL.
+#if 0
+        bool is_new_ref = false;
+        bool is_obj_ref = false;
+        bool is_reg_ref = false;
+
+       htri_t ref_ret = H5Tequal(dtype_id, H5T_STD_REF);
+
+	// Check if this is a new reference(>= HDF5 1.12).
+        if(ref_ret < 0)
+	    throw InternalErr(__FILE__, __LINE__, "H5Tequal() failed to compare H5T_STD_REF");
+	else if (ref_ret > 0) 
+            is_new_ref = true;
+
+        if(false == is_new_ref) {
+
+            ref_ret = H5Tequal(dtype_id,H5T_STD_REF_OBJ);
+	    // Check if this is the old object reference(< HDF5 1.12).
+            if(ref_ret < 0)
+	        throw InternalErr(__FILE__, __LINE__, "H5Tequal() failed to compare H5T_STD_REF_OBJ");
+	    else if (ref_ret > 0) 
+                is_obj_ref = true;
+
+            if(ref_ret == 0) {
+                // Check if this is the old region reference(< HDF5 1.12)
+                ref_ret =  H5Tequal(dtype_id,H5T_STD_REF_DSETREG);
+                if(ref_ret < 0)
+                    throw InternalErr(__FILE__, __LINE__, "H5Tequal() failed to compare H5T_STD_REF_DSETREG");
+                else if (ref_ret > 0)
+                    is_reg_ref = true;
+            }
+        }
+        else {
+            H5R_ref_t ref_type;
+            ......
+        }
+        if(is_obj_ref == false && is_reg_ref == false) 
+            throw InternalErr(__FILE__, __LINE__, "datatype must be either object ref. or region ref.");
+#endif
+
 
 void HDF5Array::m_intern_plain_array_data(char *convbuf,hid_t memtype)
 {
