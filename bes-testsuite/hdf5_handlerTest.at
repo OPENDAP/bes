@@ -535,12 +535,11 @@ AT_BESCMD_RESPONSE_TEST_DEFAULT([d_int.h5.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_int.h5.dap.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_int.h5.dap_ce.bescmd])
 
-#handle this later.
-#AT_BESCMD_RESPONSE_TEST_DEFAULT([d_objref.h5.dmr.bescmd])
-#AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_objref.h5.dap.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([d_objref.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_objref.h5.dap.bescmd])
 
-#AT_BESCMD_RESPONSE_TEST_DEFAULT([d_regref.h5.dmr.bescmd])
-#AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_regref.h5.dap.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([d_regref.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_regref.h5.dap.bescmd])
 
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_link_soft.h5.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_link_soft.h5.dap.bescmd])
