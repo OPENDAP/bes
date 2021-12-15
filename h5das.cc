@@ -634,8 +634,7 @@ string get_hardlink(hid_t pgroup, const string & oname)
     if (obj_info.rc > 1) {
         string objno;
 
-// STOP HERE
-#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR == 12)
+#if (H5_VERS_MAJOR == 1 && ((H5_VERS_MINOR == 12) || (H5_VERS_MINOR == 13)))
         char *obj_tok_str = NULL;
         if(H5Otoken_to_str(pgroup, &(obj_info.token), &obj_tok_str) <0) {
             throw InternalErr(__FILE__, __LINE__, "H5Otoken_to_str failed.");

@@ -600,19 +600,19 @@ void File::Retrieve_H5_Attr_Info(Attribute * attr, hid_t obj_id, const int j, bo
         // Obtain the attribute ID.
         if ((attrid = H5Aopen_by_idx(obj_id, ".", H5_INDEX_CRT_ORDER, H5_ITER_INC, (hsize_t) j, H5P_DEFAULT,
             H5P_DEFAULT)) < 0)
-        throw1("Unable to open attribute by index ");
+            throw1("Unable to open attribute by index ");
 
         // Obtain the size of attribute name.
         ssize_t name_size = H5Aget_name(attrid, 0, NULL);
         if (name_size < 0)
-        throw1("Unable to obtain the size of the hdf5 attribute name  ");
+            throw1("Unable to obtain the size of the hdf5 attribute name  ");
 
         string attr_name;
         attr_name.resize(name_size + 1);
 
         // Obtain the attribute name.    
         if ((H5Aget_name(attrid, name_size + 1, &attr_name[0])) < 0)
-        throw1("unable to obtain the hdf5 attribute name  ");
+            throw1("unable to obtain the hdf5 attribute name  ");
 
         // Obtain the type of the attribute. 
         if ((ty_id = H5Aget_type(attrid)) < 0)

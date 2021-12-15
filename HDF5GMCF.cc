@@ -995,6 +995,7 @@ void GMFile::Add_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(Var *var,Attribute*
     BESDEBUG("h5", "Coming to Add_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone()"<<endl);
     ssize_t objnamelen = -1;
     hobj_ref_t rbuf;
+
     vector<hvl_t> vlbuf;
     
     hid_t dset_id = -1;
@@ -1046,10 +1047,26 @@ void GMFile::Add_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(Var *var,Attribute*
 
             if(vlbuf[vlbuf_index].p== NULL) 
                 throw4("The dimension doesn't exist. Var name is ",var->name,"; the dimension index is ",vlbuf_index);
+
             rbuf =((hobj_ref_t*)vlbuf[vlbuf_index].p)[0];
             if ((ref_dset = H5RDEREFERENCE(attr_id, H5R_OBJECT, &rbuf)) < 0) 
                 throw2("Cannot dereference from the DIMENSION_LIST attribute  for the variable ",var->name);
+            // The above code works with dereferencing references generated with new H5R(H5R_ref_t) APIs with 1.12 and 1.13.
+            // However, in case this h5rdeference2 API stops working with new APIs, the following #if 0 #endif block is a 
+            // way to handle this issue.
+#if 0
+     
+            rbuf =((hobj_ref_t*)vl_ref[0].p)[0];
+            H5E_BEGIN_TRY {
+                dset1 =  H5Rdereference2(attr_id,H5P_DEFAULT,H5R_OBJECT,&ds_ref_buf);
+            } H5E_END_TRY;
 
+            H5R_ref_t new_rbuf =((H5R_ref_t*)vlbuf[vlbuf_index].p)[0];
+            if ((ref_dset = H5Ropen_object((H5R_ref_t *)&new_rbuf, H5P_DEFAULT, H5P_DEFAULT))<0)
+                throw2("Cannot dereference from the DIMENSION_LIST attribute  for the variable ",var->name);
+            H5Rdestroy(&new_rbuf);
+
+#endif
             if ((objnamelen= H5Iget_name(ref_dset,NULL,0))<=0) 
                 throw2("Cannot obtain the dataset name dereferenced from the DIMENSION_LIST attribute  for the variable ",var->name);
             objname.resize(objnamelen+1);
