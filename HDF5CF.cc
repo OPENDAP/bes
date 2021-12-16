@@ -41,6 +41,7 @@
 #include "HDF5CF.h"
 #include "h5cfdaputil.h"
 #include "HDF5RequestHandler.h"
+#include "h5apicompatible.h"
 #include "BESDebug.h"
 
 using namespace HDF5CF;
@@ -202,7 +203,7 @@ void File::Retrieve_H5_Info(const char * /*path*/, hid_t file_id, bool include_a
         H5O_info_t oinfo;
         int num_attrs = 0;
 
-        if (H5Oget_info(root_id, &oinfo) < 0)
+        if (H5OGET_INFO(root_id, &oinfo) < 0)
         throw1("Error obtaining the info for the root group");
 
         num_attrs = oinfo.num_attrs;
@@ -289,7 +290,7 @@ void File::Retrieve_H5_Obj(hid_t grp_id, const char*gname, bool include_attr)
             // Obtain the object type, such as group or dataset. 
             H5O_info_t oinfo;
 
-            if (H5Oget_info_by_idx(grp_id, ".", H5_INDEX_NAME, H5_ITER_NATIVE, i, &oinfo, H5P_DEFAULT) < 0)
+            if (H5OGET_INFO_BY_IDX(grp_id, ".", H5_INDEX_NAME, H5_ITER_NATIVE, i, &oinfo, H5P_DEFAULT) < 0)
             throw2("Error obtaining the info for the object ", string(oname.begin(), oname.end()));
 
             H5O_type_t obj_type = oinfo.type;
@@ -599,19 +600,19 @@ void File::Retrieve_H5_Attr_Info(Attribute * attr, hid_t obj_id, const int j, bo
         // Obtain the attribute ID.
         if ((attrid = H5Aopen_by_idx(obj_id, ".", H5_INDEX_CRT_ORDER, H5_ITER_INC, (hsize_t) j, H5P_DEFAULT,
             H5P_DEFAULT)) < 0)
-        throw1("Unable to open attribute by index ");
+            throw1("Unable to open attribute by index ");
 
         // Obtain the size of attribute name.
         ssize_t name_size = H5Aget_name(attrid, 0, NULL);
         if (name_size < 0)
-        throw1("Unable to obtain the size of the hdf5 attribute name  ");
+            throw1("Unable to obtain the size of the hdf5 attribute name  ");
 
         string attr_name;
         attr_name.resize(name_size + 1);
 
         // Obtain the attribute name.    
         if ((H5Aget_name(attrid, name_size + 1, &attr_name[0])) < 0)
-        throw1("unable to obtain the hdf5 attribute name  ");
+            throw1("unable to obtain the hdf5 attribute name  ");
 
         // Obtain the type of the attribute. 
         if ((ty_id = H5Aget_type(attrid)) < 0)

@@ -181,6 +181,16 @@ AT_BESCMD_RESPONSE_TEST([dim_scale2.h5.das.bescmd])
 # and dim. scale variables(they are not always overlapped.)
 AT_BESCMD_RESPONSE_TEST([dim_scale2_name.h5.das.bescmd])
 
+#Later: may need to check the dim scale generated with new reference APIs in 1.12 and later.
+#Now H5Rdereference2 works with dim scales generated with new reference APIs. KY 2021-12-15
+#ds_nr.h5 is the file created with new reference APIs.
+#ds_or.h5 is the file created with old reference APIs.
+#AT_BESCMD_RESPONSE_TEST([ds_or.h5.dds.bescmd])
+#AT_BESCMD_RESPONSE_TEST([ds_or.h5.dmr.bescmd])
+#AT_BESCMD_RESPONSE_TEST([ds_nr.h5.dds.bescmd])
+#AT_BESCMD_RESPONSE_TEST([ds_nr.h5.dmr.bescmd])
+
+
 #generic cf 1d,2d latlon tests, only include das and dds.
 AT_BESCMD_RESPONSE_TEST([t_cf_1dll.h5.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST([t_cf_1dll.h5.das.bescmd])
@@ -535,12 +545,11 @@ AT_BESCMD_RESPONSE_TEST_DEFAULT([d_int.h5.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_int.h5.dap.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_int.h5.dap_ce.bescmd])
 
-#handle this later.
-#AT_BESCMD_RESPONSE_TEST_DEFAULT([d_objref.h5.dmr.bescmd])
-#AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_objref.h5.dap.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([d_objref.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_objref.h5.dap.bescmd])
 
-#AT_BESCMD_RESPONSE_TEST_DEFAULT([d_regref.h5.dmr.bescmd])
-#AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_regref.h5.dap.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([d_regref.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_regref.h5.dap.bescmd])
 
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_link_soft.h5.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([d_link_soft.h5.dap.bescmd])
@@ -621,6 +630,15 @@ AT_BESCMD_RESPONSE_TEST_DEFAULT([dim_link.h5.dmr.bescmd])
 # "The shortest hardlink is not located under an ancestor group of all links.This is not supported by netCDF4 data model and the current Hyrax DAP4 implementation.
 # Please report this to support@opendap.org
 #AT_BESCMD_RESPONSE_TEST_DEFAULT([dim_link_no_nc4.h5.dmr.bescmd])
+
+#Later: may need to check the dim scale generated with new reference APIs in 1.12 and later.
+#Now H5Rdereference2 works with dim scales generated with new reference APIs. KY 2021-12-15
+#ds_nr.h5 is the file created with new reference APIs.
+#ds_or.h5 is the file created with old reference APIs.
+#AT_BESCMD_RESPONSE_TEST_DEFAULT([ds_nr.h5.dmr.bescmd])
+#AT_BESCMD_RESPONSE_TEST_DEFAULT([ds_or.h5.dmr.bescmd])
+
+
 
 # These two tests check the dynamic configuration change.  The target files are identical
 # and the default configuration contains a DynamicConfig that matches the second file
