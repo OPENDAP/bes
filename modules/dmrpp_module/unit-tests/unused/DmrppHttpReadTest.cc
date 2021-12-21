@@ -23,6 +23,8 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
+#include <unistd.h>
+
 #include <memory>
 #include <iterator>
 
@@ -59,7 +61,7 @@
 #include "DmrppRequestHandler.h"
 #include "DmrppTypeFactory.h"
 
-#include "GetOpt.h"
+//#include "GetOpt.h"
 #include "test_config.h"
 
 using namespace libdap;
@@ -276,9 +278,8 @@ int main(int argc, char*argv[])
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
-    GetOpt getopt(argc, argv, "d");
     int option_char;
-    while ((option_char = getopt()) != -1){
+    while ((option_char = getopt(argc, argv, "db")) != -1) {
         switch (option_char) {
         case 'd':
             debug = true;  // debug is a static global
@@ -290,7 +291,7 @@ int main(int argc, char*argv[])
 
     bool wasSuccessful = true;
     string test = "";
-    int i = getopt.optind;
+    int i = optind;
     if (i == argc) {
         // run them all
         wasSuccessful = runner.run("");
