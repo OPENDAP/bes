@@ -32,7 +32,7 @@
 #ifndef FONcSequence_h_
 #define FONcSequence_h_ 1
 
-#include <Sequence.h>
+#include <libdap/Sequence.h>
 
 namespace libdap {
     class BaseType;

@@ -30,8 +30,8 @@
 
 // #define DODS_DEBUG
 
-#include <DDS.h>
-#include <debug.h>
+#include <libdap/DDS.h>
+#include <libdap/debug.h>
 
 #include "XDOutput.h"
 #include "XDOutputFactory.h"

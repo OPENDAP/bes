@@ -47,7 +47,7 @@
 #include "BESTextInfo.h"
 
 #include <unistd.h>
-#include <debug.h>
+#include <libdap/debug.h>
 
 #include "test_config.h"
 

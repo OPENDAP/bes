@@ -31,8 +31,8 @@
 #include <iostream>
 #include <fstream>
 
-#include "BaseType.h"
-#include "D4Group.h"
+#include <libdap/BaseType.h>
+#include <libdap/D4Group.h>
 
 #include "BESInternalError.h"
 #include "BESInternalFatalError.h"

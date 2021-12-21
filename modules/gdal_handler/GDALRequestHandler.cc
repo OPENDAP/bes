@@ -33,11 +33,11 @@
 
 #include <gdal.h>
 
-#include <DMR.h>
-#include <mime_util.h>  // name_path
-#include <D4BaseTypeFactory.h>
-#include <InternalErr.h>
-#include <Ancillary.h>
+#include <libdap/DMR.h>
+#include <libdap/mime_util.h>  // name_path
+#include <libdap/D4BaseTypeFactory.h>
+#include <libdap/InternalErr.h>
+#include <libdap/Ancillary.h>
 
 #include <BESResponseHandler.h>
 #include <BESServiceRegistry.h>

@@ -34,7 +34,7 @@ static char rcsid[] not_used = {"$Id$"};
 #include <GetOpt.h>
 
 #include "../../../usage/old/ais-tool/AISDODSFilter.h"
-#include "debug.h"
+#include <libdap/debug.h>
 
 AISDODSFilter::AISDODSFilter(int argc, char *argv[]) 
 {

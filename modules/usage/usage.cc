@@ -57,17 +57,17 @@ static char rcsid[] not_used = {"$Id$"};
 
 #include "BESRegex.h"
 
-#include <Array.h>
-#include <Structure.h>
-#include <Sequence.h>
-#include <Grid.h>
-#include <Ancillary.h>
+#include <libdap/Array.h>
+#include <libdap/Structure.h>
+#include <libdap/Sequence.h>
+#include <libdap/Grid.h>
+#include <libdap/Ancillary.h>
 
-#include <DAS.h>
-//#include <mime_util.h>
-#include <util.h>
+#include <libdap/DAS.h>
+//#include <libdap/mime_util.h>
+#include <libdap/util.h>
 
-#include <debug.h>
+#include <libdap/debug.h>
 
 using namespace libdap ;
 

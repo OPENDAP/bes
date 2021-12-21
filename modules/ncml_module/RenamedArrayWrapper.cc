@@ -28,12 +28,12 @@
 /////////////////////////////////////////////////////////////////////////////
 #include "RenamedArrayWrapper.h"
 
-#include <AttrTable.h>
-#include <BaseType.h>
-#include <DDS.h>
-#include <dods-datatypes.h>
-#include <Marshaller.h>
-#include <UnMarshaller.h>
+#include <libdap/AttrTable.h>
+#include <libdap/BaseType.h>
+#include <libdap/DDS.h>
+#include <libdap/dods-datatypes.h>
+#include <libdap/Marshaller.h>
+#include <libdap/UnMarshaller.h>
 #include "NCMLDebug.h"
 #include "NCMLUtil.h"
 #include <sstream>

@@ -36,7 +36,7 @@
 
 #include <BESDebug.h>
 
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 
 #include "XDStructure.h"
 #include "XDSequence.h"

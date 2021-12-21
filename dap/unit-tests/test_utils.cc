@@ -28,8 +28,7 @@
 #include <string>
 #include <vector>
 
-// #include <BESRegex.h>      // libdap includes
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 
 #include "test_utils.h"
 

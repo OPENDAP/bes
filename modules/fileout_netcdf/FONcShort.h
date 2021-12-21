@@ -32,7 +32,7 @@
 #ifndef FONcShort_h_
 #define FONcShort_h_ 1
 
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 
 using namespace libdap ;
 

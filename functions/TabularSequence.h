@@ -42,7 +42,7 @@
 #ifndef _tabular_sequence_h
 #define _tabular_sequence_h 1
 
-#include <Sequence.h>
+#include <libdap/Sequence.h>
 
 namespace libdap {
 class ConstraintEvaluator;

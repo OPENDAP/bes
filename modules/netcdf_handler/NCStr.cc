@@ -42,10 +42,10 @@ static char rcsid[] not_used = { "$Id$" };
 // #define DODS_DEBUG 1
 #include <netcdf.h>
 
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 #include "NCStr.h"
 
-#include <debug.h>
+#include <libdap/debug.h>
 
 NCStr::NCStr(const string &n, const string &d) :
     Str(n, d)

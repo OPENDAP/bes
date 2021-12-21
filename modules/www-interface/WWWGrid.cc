@@ -43,9 +43,9 @@ static char rcsid[] not_used =
 #include <sstream>
 #include <string>
 
-#include "Array.h"
-#include "escaping.h"
-#include "InternalErr.h"
+#include <libdap/Array.h>
+#include <libdap/escaping.h>
+#include <libdap/InternalErr.h>
 
 #include "WWWGrid.h"
 #include "WWWOutput.h"

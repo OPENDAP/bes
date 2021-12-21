@@ -30,14 +30,14 @@
 
 #include <BESDebug.h>
 
-#include "util.h"
-#include "debug.h"
-#include "Array.h"
-#include "Int32.h"
-#include "Float64.h"
+#include <libdap/util.h>
+#include <libdap/debug.h>
+#include <libdap/Array.h>
+#include <libdap/Int32.h>
+#include <libdap/Float64.h>
 #include "DebugFunctions.h"
 
-#include <BaseTypeFactory.h>
+#include <libdap/BaseTypeFactory.h>
 #include <BESInternalError.h>
 #include <BESInternalFatalError.h>
 #include <BESSyntaxUserError.h>

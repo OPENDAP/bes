@@ -31,13 +31,13 @@
 
 #include <ctype.h>
 
-#include <Array.h>
-#include "Constructor.h"
-#include "DAS.h"
-#include "DDS.h"
-#include "Grid.h"
-#include <DataDDS.h>
-#include <AttrTable.h>
+#include <libdap/Array.h>
+#include <libdap/Constructor.h>
+#include <libdap/DAS.h>
+#include <libdap/DDS.h>
+#include <libdap/Grid.h>
+#include <libdap/DataDDS.h>
+#include <libdap/AttrTable.h>
 
 #include "BESDapResponse.h"
 #include "BESDataDDSResponse.h"

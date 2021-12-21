@@ -43,7 +43,7 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <Byte.h>
+#include <libdap/Byte.h>
 
 #include "BESInternalError.h"
 #include "TheBESKeys.h"

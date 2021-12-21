@@ -28,11 +28,11 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-#include <Array.h> // libdap
-#include <D4Group.h>
-#include <Constructor.h>
-#include <D4Maps.h>
-#include <InternalErr.h>
+#include <libdap/Array.h> // libdap
+#include <libdap/D4Group.h>
+#include <libdap/Constructor.h>
+#include <libdap/D4Maps.h>
+#include <libdap/InternalErr.h>
 
 #include "BESStopWatch.h"
 

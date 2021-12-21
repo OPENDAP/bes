@@ -39,10 +39,10 @@
 #include "WWWSequence.h"
 #include "WWWGrid.h"
 
-#include "BaseTypeFactory.h"
+#include <libdap/BaseTypeFactory.h>
 #include "WWWOutputFactory.h"
 
-#include "debug.h"
+#include <libdap/debug.h>
 
 Byte *
 WWWOutputFactory::NewByte(const string &n ) const 

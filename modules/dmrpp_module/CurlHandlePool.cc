@@ -37,7 +37,7 @@
 
 #include <time.h>
 
-#include "util.h"   // long_to_string()
+#include <libdap/util.h>   // long_to_string()
 
 #include "BESLog.h"
 #include "BESDebug.h"

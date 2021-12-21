@@ -32,7 +32,7 @@
 #ifndef FONcGrid_h_
 #define FONcGrid_h_ 1
 
-#include <Grid.h>
+#include <libdap/Grid.h>
 
 namespace libdap {
     class BaseType;

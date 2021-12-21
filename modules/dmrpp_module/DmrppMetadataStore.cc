@@ -30,8 +30,8 @@
 #include <memory>
 #include <typeinfo>
 
-#include <DMR.h>
-#include <XMLWriter.h>
+#include <libdap/DMR.h>
+#include <libdap/XMLWriter.h>
 
 #include "BESDebug.h"
 

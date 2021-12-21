@@ -34,10 +34,10 @@
 
 #include <gridfields/array.h>
 
-#include "BaseType.h"
-#include "Array.h"
-#include "debug.h"
-#include "util.h"
+#include <libdap/BaseType.h>
+#include <libdap/Array.h>
+#include <libdap/debug.h>
+#include <libdap/util.h>
 
 #include "BESDebug.h"
 

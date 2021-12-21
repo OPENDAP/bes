@@ -29,7 +29,7 @@
 #include "CachedSequence.h"
 
 #include "CacheTypeFactory.h"
-#include "debug.h"
+#include <libdap/debug.h>
 
 using namespace std;
 using namespace libdap;

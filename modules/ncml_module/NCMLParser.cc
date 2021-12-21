@@ -38,12 +38,12 @@
 #include <BESStopWatch.h>
 #include "DDSLoader.h" // ncml_module
 #include "DimensionElement.h"  // ncml_module
-#include <AttrTable.h> // libdap
-#include <BaseType.h> // libdap
-#include <DAS.h> // libdap
-#include <DDS.h> // libdap
-//#include <mime_util.h>
-#include <Structure.h> // libdap
+#include <libdap/AttrTable.h> // libdap
+#include <libdap/BaseType.h> // libdap
+#include <libdap/DAS.h> // libdap
+#include <libdap/DDS.h> // libdap
+//#include <libdap/mime_util.h>
+#include <libdap/Structure.h> // libdap
 #include <map>
 #include <memory>
 #include "NCMLDebug.h" // ncml_module
@@ -51,7 +51,7 @@
 #include "NCMLUtil.h"  // ncml_module
 #include "NetcdfElement.h"  // ncml_module
 #include "OtherXMLParser.h" // ncml_module
-#include <parser.h> // libdap  for the type checking...
+#include <libdap/parser.h> // libdap  for the type checking...
 #include "SaxParserWrapper.h"  // ncml_module
 #include <sstream>
 

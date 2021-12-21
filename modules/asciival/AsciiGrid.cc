@@ -39,7 +39,7 @@
 
 using namespace std;
 
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 
 #include <BESDebug.h>
 
@@ -47,7 +47,7 @@ using namespace std;
 
 #include "AsciiGrid.h"
 #include "AsciiArray.h"
-#include "debug.h"
+#include <libdap/debug.h>
 #include "get_ascii.h"
 
 using namespace dap_asciival;

@@ -33,7 +33,7 @@
 #ifndef _xdstructure_h
 #define _xdstructure_h 1
 
-#include "Structure.h"
+#include <libdap/Structure.h>
 #include "XDOutput.h"
 
 class XDStructure: public libdap::Structure, public XDOutput {

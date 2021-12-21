@@ -33,7 +33,7 @@
 
 #include <cstring>
 
-#include <Array.h>
+#include <libdap/Array.h>
 
 #include <BESDebug.h>
 

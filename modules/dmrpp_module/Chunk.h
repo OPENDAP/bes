@@ -33,7 +33,7 @@
 #include "url_impl.h"
 
 // libdap4
-#include "util.h"
+#include <libdap/util.h>
 
 
 // This is used to track access to 'cloudydap' accesses in the S3 logs

@@ -37,14 +37,14 @@
 #include <string>
 #include <typeinfo>
 
-#include <DDS.h>
-#include <Structure.h>
-#include <Constructor.h>
-#include <Array.h>
-#include <Grid.h>
-#include <Sequence.h>
-#include <Str.h>
-#include <Url.h>
+#include <libdap/DDS.h>
+#include <libdap/Structure.h>
+#include <libdap/Constructor.h>
+#include <libdap/Array.h>
+#include <libdap/Grid.h>
+#include <libdap/Sequence.h>
+#include <libdap/Str.h>
+#include <libdap/Url.h>
 
 #include <BESDebug.h>
 #include <BESInternalError.h>

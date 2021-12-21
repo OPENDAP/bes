@@ -39,7 +39,7 @@
 #ifndef _ncuint32_h
 #define _ncuint32_h 1
 
-#include "UInt32.h"
+#include <libdap/UInt32.h>
 
 using namespace libdap ;
 

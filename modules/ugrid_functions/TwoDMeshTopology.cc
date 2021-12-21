@@ -42,11 +42,11 @@
 #include <gridfields/array.h>
 #include <gridfields/GFError.h>
 
-#include "BaseType.h"
-#include "Int32.h"
-#include "Float64.h"
-#include "Array.h"
-#include "util.h"
+#include <libdap/BaseType.h>
+#include <libdap/Int32.h>
+#include <libdap/Float64.h>
+#include <libdap/Array.h>
+#include <libdap/util.h>
 
 #include "ugrid_utils.h"
 //#include "NDimensionalArray.h"

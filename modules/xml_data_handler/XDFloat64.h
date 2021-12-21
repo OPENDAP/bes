@@ -33,7 +33,7 @@
 #ifndef _xdfloat64_h
 #define _xdfloat64_h 1
 
-#include <Float64.h>
+#include <libdap/Float64.h>
 #include "XDOutput.h"
 
 class XDFloat64: public libdap::Float64, public XDOutput {

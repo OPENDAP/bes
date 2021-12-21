@@ -25,7 +25,7 @@
 
 #include <string>
 
-#include "BaseTypeFactory.h"
+#include <libdap/BaseTypeFactory.h>
 
 class XDByte;
 class XDInt16;

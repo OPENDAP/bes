@@ -8,8 +8,8 @@
 #include <iostream>
 #include <fstream>
 
-#include <DataDDS.h>
-#include <ConstraintEvaluator.h>
+#include <libdap/DataDDS.h>
+#include <libdap/ConstraintEvaluator.h>
 
 #include <BESDapResponseBuilder.h>
 

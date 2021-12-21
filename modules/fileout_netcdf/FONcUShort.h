@@ -27,7 +27,7 @@
 #ifndef FONcUShort_h_
 #define FONcUShort_h_ 1
 
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 
 namespace libdap {
     class BaseType;

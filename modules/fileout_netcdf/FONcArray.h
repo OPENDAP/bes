@@ -35,8 +35,8 @@
 #include <vector>
 #include <string>
 
-#include <AttrTable.h>
-#include <D4Attributes.h>
+#include <libdap/AttrTable.h>
+#include <libdap/D4Attributes.h>
 
 #include "FONcBaseType.h"
 

@@ -42,10 +42,10 @@
 #include <thread>
 #include <future>
 
-#include <D4Group.h>
-#include <D4Attributes.h>
-#include <BaseType.h>
-#include <escaping.h>
+#include <libdap/D4Group.h>
+#include <libdap/D4Attributes.h>
+#include <libdap/BaseType.h>
+#include <libdap/escaping.h>
 
 #include <BESContextManager.h>
 #include <BESDataDDSResponse.h>

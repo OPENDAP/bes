@@ -27,7 +27,7 @@
 
 #include <string>
 
-#include <UInt64.h>
+#include <libdap/UInt64.h>
 #include "DmrppCommon.h"
 
 namespace libdap {

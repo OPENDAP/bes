@@ -34,10 +34,10 @@
 
 #include "FreeFormCPP.h"
 
-#include "BaseType.h"
-#include "Error.h"
-#include "InternalErr.h"
-#include "dods-datatypes.h"
+#include <libdap/BaseType.h>
+#include <libdap/Error.h>
+#include <libdap/InternalErr.h>
+#include <libdap/dods-datatypes.h>
 
 using namespace libdap ;
 

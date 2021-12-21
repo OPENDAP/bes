@@ -27,7 +27,7 @@
 
 #include <BESInternalError.h>
 #include <BESDebug.h>
-#include <UInt16.h>
+#include <libdap/UInt16.h>
 
 #include "FONcUShort.h"
 #include "FONcUtils.h"

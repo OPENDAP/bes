@@ -31,7 +31,7 @@
 #include "AggMemberDatasetUsingLocationRef.h"
 
 #include "BESDataDDSResponse.h" // bes
-#include "DDS.h" // libdap
+#include <libdap/DDS.h> // libdap
 #include "NCMLDebug.h" // ncml_module
 #include "NCMLUtil.h" // ncml_module
 #include "BESDebug.h"

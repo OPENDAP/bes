@@ -39,21 +39,21 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include <unistd.h>
 
-#include <Array.h>
-#include <Byte.h>
-#include <ServerFunctionsList.h>
-#include <ConstraintEvaluator.h>
-#include <DAS.h>
-#include <DDS.h>
-#include <DDXParserSAX2.h>
+#include <libdap/Array.h>
+#include <libdap/Byte.h>
+#include <libdap/ServerFunctionsList.h>
+#include <libdap/ConstraintEvaluator.h>
+#include <libdap/DAS.h>
+#include <libdap/DDS.h>
+#include <libdap/DDXParserSAX2.h>
 
-#include "BESRegex.h"
-#include <util.h>
-#include <debug.h>
+#include <libdap/util.h>
+#include <libdap/debug.h>
 
 #include <test/TestTypeFactory.h>
 
 #include "BESDapFunctionResponseCache.h"
+#include "BESRegex.h"
 #include "BESError.h"
 #include "TheBESKeys.h"
 #include "BESDebug.h"

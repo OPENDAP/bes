@@ -29,7 +29,7 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <D4Attributes.h>
+#include <libdap/D4Attributes.h>
 
 #include <BESInternalError.h>
 #include <BESDebug.h>

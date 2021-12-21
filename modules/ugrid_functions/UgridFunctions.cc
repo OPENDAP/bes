@@ -29,7 +29,7 @@
 using std::endl;
 
 #include "UgridFunctions.h"
-#include "ServerFunctionsList.h"
+#include <libdap/ServerFunctionsList.h>
 #include "BESDebug.h"
 #include "ugrid_restrict.h"
 

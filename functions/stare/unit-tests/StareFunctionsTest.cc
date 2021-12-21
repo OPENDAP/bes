@@ -26,22 +26,22 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <BaseType.h>
-#include <Float32.h>
-#include <Array.h>
-#include <Byte.h>
-#include <Int32.h>
-#include <UInt64.h>
-#include <Structure.h>
-#include <D4Group.h>
-#include <D4RValue.h>
-#include <DMR.h>
+#include <libdap/BaseType.h>
+#include <libdap/Float32.h>
+#include <libdap/Array.h>
+#include <libdap/Byte.h>
+#include <libdap/Int32.h>
+#include <libdap/UInt64.h>
+#include <libdap/Structure.h>
+#include <libdap/D4Group.h>
+#include <libdap/D4RValue.h>
+#include <libdap/DMR.h>
 #include <test/D4TestTypeFactory.h>
 #include <test/TestByte.h>
 #include <test/TestArray.h>
 
-#include <util.h>
-#include <debug.h>
+#include <libdap/util.h>
+#include <libdap/debug.h>
 
 #include <TheBESKeys.h>
 #include <BESError.h>

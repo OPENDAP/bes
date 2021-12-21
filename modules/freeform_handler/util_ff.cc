@@ -53,18 +53,18 @@ static char rcsid[] not_used =
 #include <BESRegex.h>
 #include <BESDebug.h>
 
-#include <BaseType.h>
-#include <Byte.h>
-#include <Int16.h>
-#include <Int32.h>
-#include <UInt16.h>
-#include <UInt32.h>
-#include <Float32.h>
-#include <Float64.h>
-#include <InternalErr.h>
-#include <dods-limits.h>
-#include <util.h>
-#include <debug.h>
+#include <libdap/BaseType.h>
+#include <libdap/Byte.h>
+#include <libdap/Int16.h>
+#include <libdap/Int32.h>
+#include <libdap/UInt16.h>
+#include <libdap/UInt32.h>
+#include <libdap/Float32.h>
+#include <libdap/Float64.h>
+#include <libdap/InternalErr.h>
+#include <libdap/dods-limits.h>
+#include <libdap/util.h>
+#include <libdap/debug.h>
 
 #include "BESRegex.h"
 #include "BESDebug.h"

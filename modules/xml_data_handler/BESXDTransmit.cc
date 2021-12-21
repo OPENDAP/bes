@@ -27,16 +27,16 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <BaseType.h>
-#include <Sequence.h>
-#include <ConstraintEvaluator.h>
-#include <DataDDS.h>
+#include <libdap/BaseType.h>
+#include <libdap/Sequence.h>
+#include <libdap/ConstraintEvaluator.h>
+#include <libdap/DataDDS.h>
 
-#include <escaping.h>
-#include <InternalErr.h>
-#include <util.h>
-#include <mime_util.h>
-#include <XMLWriter.h>
+#include <libdap/escaping.h>
+#include <libdap/InternalErr.h>
+#include <libdap/util.h>
+#include <libdap/mime_util.h>
+#include <libdap/XMLWriter.h>
 
 #include <BESUtil.h>
 #include <BESDapTransmit.h>

@@ -36,7 +36,7 @@
 #include <string>
 
 #include "BESInfo.h"
-#include "Error.h"
+#include <libdap/Error.h>
 
 using namespace libdap;
 

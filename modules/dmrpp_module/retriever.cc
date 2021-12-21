@@ -42,8 +42,8 @@
 #include <curl/curl.h>
 
 
-#include "D4Dimensions.h"
-#include "D4StreamMarshaller.h"
+#include <libdap/D4Dimensions.h>
+#include <libdap/D4StreamMarshaller.h>
 
 #include "BESInternalError.h"
 #include "BESUtil.h"

@@ -31,7 +31,7 @@ class BaseType;
 class Array;
 }
 
-// These functions are part of libdap. Use #include <util.h>. jhrg 4/28/15
+// These functions are part of libdap. Use #include <libdap/util.h>. jhrg 4/28/15
 //
 //bool libdap::double_eq(double lhs, double rhs, double epsilon /* = 1.0e-5 */);
 

@@ -32,7 +32,7 @@
 #define _ffint16_h 1
 
 
-#include "Int16.h"
+#include <libdap/Int16.h>
 
 using namespace libdap ;
 

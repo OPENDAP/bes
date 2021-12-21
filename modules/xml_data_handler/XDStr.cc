@@ -33,7 +33,7 @@
 
 // #include <string>
 
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 #include <BESDebug.h>
 
 #include "XDStr.h"

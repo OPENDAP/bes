@@ -74,7 +74,7 @@
 
 #include <string>
 
-#include "BaseType.h"
+#include <libdap/BaseType.h>
 #include "date_proc.h"
 
 using namespace libdap ;

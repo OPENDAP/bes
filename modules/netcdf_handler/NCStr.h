@@ -39,7 +39,7 @@
 #ifndef _ncstr_h
 #define _ncstr_h 1
 
-#include "Str.h"
+#include <libdap/Str.h>
 
 using namespace libdap ;
 

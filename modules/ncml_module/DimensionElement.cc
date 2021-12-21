@@ -32,7 +32,7 @@
 #include "NCMLUtil.h"
 #include "NetcdfElement.h"
 #include <sstream>
-#include <Array.h>
+#include <libdap/Array.h>
 
 using std::string;
 using std::stringstream;

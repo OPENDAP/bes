@@ -36,12 +36,12 @@
 #include "Dimension.h"
 
 // libdap includes
-#include <Array.h> // libdap
-#include <AttrTable.h>
-#include <BaseType.h>
-#include <DataDDS.h>
-#include <DDS.h>
-#include <Grid.h>
+#include <libdap/Array.h> // libdap
+#include <libdap/AttrTable.h>
+#include <libdap/BaseType.h>
+#include <libdap/DataDDS.h>
+#include <libdap/DDS.h>
+#include <libdap/Grid.h>
 #include "BESDebug.h"
 #include "BESStopWatch.h"
 

@@ -30,7 +30,7 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <DMR.h>
+#include <libdap/DMR.h>
 
 #include <BESDebug.h>
 #include <BESUtil.h>
@@ -63,7 +63,7 @@
 
 #include "GetOpt.h"
 #include "test_config.h"
-#include "util.h"
+#include <libdap/util.h>
 
 #include "H5Ppublic.h"
 //#include "HDF5RequestHandler.h"

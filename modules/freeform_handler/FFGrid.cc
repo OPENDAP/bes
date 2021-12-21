@@ -40,7 +40,7 @@ static char rcsid[] not_used ={"$Id$"};
 
 
 #include "FFGrid.h"
-#include "util.h"
+#include <libdap/util.h>
 
 // protected
 

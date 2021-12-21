@@ -32,7 +32,7 @@
 #ifndef FONcDouble_h_
 #define FONcDouble_h_ 1
 
-#include <Float64.h>
+#include <libdap/Float64.h>
 
 using namespace libdap;
 namespace libdap {

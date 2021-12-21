@@ -36,7 +36,7 @@
 #ifndef _asciisequence_h
 #define _asciisequence_h 1
 
-#include "Sequence.h"
+#include <libdap/Sequence.h>
 
 using namespace libdap ;
 

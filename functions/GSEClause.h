@@ -38,9 +38,9 @@
 #include <sstream>
 
 #if 0
-#include <BaseType.h>
-#include <Array.h>
-#include <Grid.h>
+#include <libdap/BaseType.h>
+#include <libdap/Array.h>
+#include <libdap/Grid.h>
 #endif
 
 namespace libdap {

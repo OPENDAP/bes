@@ -30,7 +30,7 @@
 
 #include "AggregationUtil.h" // agg_util
 #include "ArrayJoinExistingAggregation.h" // agg_util
-#include <Array.h> // libdap
+#include <libdap/Array.h> // libdap
 #include "DDSLoader.h"
 #include "NCMLDebug.h"
 

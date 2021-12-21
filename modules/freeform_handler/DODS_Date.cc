@@ -44,9 +44,9 @@ static char rcsid[] not_used ="$Id$";
 #include "DODS_Date.h"
 #include "date_proc.h"
 
-#include <BaseType.h>
-#include <Str.h>
-#include <debug.h>
+#include <libdap/BaseType.h>
+#include <libdap/Str.h>
+#include <libdap/debug.h>
 
 using namespace std;
 
@@ -58,7 +58,7 @@ using namespace std;
 // at the least. However, the real problem is that it is pretty hard to read
 // values from DODS types. 1/8/99 jhrg
 
-#include "Error.h"
+#include <libdap/Error.h>
 
 using namespace std;
 

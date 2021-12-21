@@ -30,11 +30,11 @@
 #include <memory>
 #include <sstream>
 
-#include <Array.h>
-#include <BaseType.h>
-#include <Structure.h>
-#include <Grid.h>
-#include <dods-limits.h>
+#include <libdap/Array.h>
+#include <libdap/BaseType.h>
+#include <libdap/Structure.h>
+#include <libdap/Grid.h>
+#include <libdap/dods-limits.h>
 
 
 #include "MyBaseTypeFactory.h"

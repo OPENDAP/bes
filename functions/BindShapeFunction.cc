@@ -29,17 +29,17 @@
 #include <sstream>
 #include <vector>
 
-#include <BaseType.h>
-#include <Array.h>
-#include <Str.h>
+#include <libdap/BaseType.h>
+#include <libdap/Array.h>
+#include <libdap/Str.h>
 
-#include <Error.h>
-#include <DDS.h>
-#include <DMR.h>
-#include <D4RValue.h>
-#include <D4Dimensions.h>
-#include <debug.h>
-#include <util.h>
+#include <libdap/Error.h>
+#include <libdap/DDS.h>
+#include <libdap/DMR.h>
+#include <libdap/D4RValue.h>
+#include <libdap/D4Dimensions.h>
+#include <libdap/debug.h>
+#include <libdap/util.h>
 
 #include <BESDebug.h>
 

@@ -50,9 +50,9 @@
 
 #include <netcdf.h>
 
-#include <DDS.h>
-#include <mime_util.h>
-#include <util.h>
+#include <libdap/DDS.h>
+#include <libdap/mime_util.h>
+#include <libdap/util.h>
 
 #include "NCRequestHandler.h"
 #include "nc_util.h"

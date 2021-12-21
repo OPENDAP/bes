@@ -33,8 +33,8 @@
 #include "NCMLDebug.h"
 #include "BESDebug.h"
 #include "BESStopWatch.h"
-#include "Marshaller.h"
-#include "ConstraintEvaluator.h"
+#include <libdap/Marshaller.h>
+#include <libdap/ConstraintEvaluator.h>
 
 // BES debug channel we output to
 static const string DEBUG_CHANNEL("agg_util");

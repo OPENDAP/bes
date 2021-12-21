@@ -57,39 +57,39 @@
 #define CLEAR_LOCAL_DATA
 #undef USE_LOCAL_TIMEOUT_SCHEME
 
-#include <DAS.h>
-#include <DDS.h>
-#include <Structure.h>
-#include <ConstraintEvaluator.h>
-#include <DDXParserSAX2.h>
-#include <Ancillary.h>
-#include <XDRStreamMarshaller.h>
-#include <XDRFileUnMarshaller.h>
+#include <libdap/DAS.h>
+#include <libdap/DDS.h>
+#include <libdap/Structure.h>
+#include <libdap/ConstraintEvaluator.h>
+#include <libdap/DDXParserSAX2.h>
+#include <libdap/Ancillary.h>
+#include <libdap/XDRStreamMarshaller.h>
+#include <libdap/XDRFileUnMarshaller.h>
 
-#include <DMR.h>
-#include <D4Group.h>
-#include <D4Attributes.h>
-#include <XMLWriter.h>
-#include <D4AsyncUtil.h>
-#include <D4StreamMarshaller.h>
-#include <chunked_ostream.h>
-#include <chunked_istream.h>
-#include <D4ConstraintEvaluator.h>
-#include <D4FunctionEvaluator.h>
-#include <D4BaseTypeFactory.h>
+#include <libdap/DMR.h>
+#include <libdap/D4Group.h>
+#include <libdap/D4Attributes.h>
+#include <libdap/XMLWriter.h>
+#include <libdap/D4AsyncUtil.h>
+#include <libdap/D4StreamMarshaller.h>
+#include <libdap/chunked_ostream.h>
+#include <libdap/chunked_istream.h>
+#include <libdap/D4ConstraintEvaluator.h>
+#include <libdap/D4FunctionEvaluator.h>
+#include <libdap/D4BaseTypeFactory.h>
 
-#include <ServerFunctionsList.h>
+#include <libdap/ServerFunctionsList.h>
 
-#include <mime_util.h>	// for last_modified_time() and rfc_822_date()
-#include <escaping.h>
-#include <util.h>
+#include <libdap/mime_util.h>	// for last_modified_time() and rfc_822_date()
+#include <libdap/escaping.h>
+#include <libdap/util.h>
 // #include <d4_function/D4FunctionEvaluator.h>
 
 #if USE_LOCAL_TIMEOUT_SCHEME
 #ifndef WIN32
-#include <SignalHandler.h>
-#include <EventHandler.h>
-#include <AlarmHandler.h>
+#include <libdap/SignalHandler.h>
+#include <libdap/EventHandler.h>
+#include <libdap/AlarmHandler.h>
 #endif
 #endif
 

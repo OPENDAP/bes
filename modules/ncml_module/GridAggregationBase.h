@@ -32,7 +32,7 @@
 
 #include "AggMemberDataset.h" // agg_util
 #include "DDSLoader.h" // agg_util
-#include <Grid.h> // libdap
+#include <libdap/Grid.h> // libdap
 #include <memory> // std
 
 namespace libdap {

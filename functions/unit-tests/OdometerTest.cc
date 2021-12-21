@@ -34,9 +34,9 @@
 #include <sstream>
 #include <vector>
 
-#include <util.h>
+#include <libdap/util.h>
 #include <unistd.h>
-#include <debug.h>
+#include <libdap/debug.h>
 
 #include "test_config.h"
 #include "test_utils.h"

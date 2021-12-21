@@ -36,13 +36,13 @@
 //#define DODS_DEBUG
 //#define DODS_DEBUG2
 
-#include <Float64.h>
-#include <Array.h>
-#include <Error.h>
-#include <InternalErr.h>
-#include <dods-datatypes.h>
-#include <util.h>
-#include <debug.h>
+#include <libdap/Float64.h>
+#include <libdap/Array.h>
+#include <libdap/Error.h>
+#include <libdap/InternalErr.h>
+#include <libdap/dods-datatypes.h>
+#include <libdap/util.h>
+#include <libdap/debug.h>
 
 #include "GeoConstraint.h"
 

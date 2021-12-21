@@ -37,11 +37,11 @@
 #include <algorithm>
 #include <fstream>
 
-#include "Array.h" // libdap
-#include "BaseType.h" // libdap
-#include "Constructor.h" // libdap
-#include "DataDDS.h" // libdap
-#include "DDS.h" // libdap
+#include <libdap/Array.h> // libdap
+#include <libdap/BaseType.h> // libdap
+#include <libdap/Constructor.h> // libdap
+#include <libdap/DataDDS.h> // libdap
+#include <libdap/DDS.h> // libdap
 
 #include "AggregationException.h" // agg_util
 #include "AggMemberDatasetDimensionCache.h"

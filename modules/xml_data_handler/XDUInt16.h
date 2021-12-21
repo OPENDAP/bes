@@ -33,7 +33,7 @@
 #ifndef _xduint16_h
 #define _xduint16_h 1
 
-#include "UInt16.h"
+#include <libdap/UInt16.h>
 #include "XDOutput.h"
 
 class XDUInt16: public libdap::UInt16, public XDOutput {

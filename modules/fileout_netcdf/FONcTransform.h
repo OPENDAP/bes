@@ -39,9 +39,9 @@
 #include <map>
 #include <set>
 
-#include <DDS.h>
-#include <DMR.h>
-#include <Array.h>
+#include <libdap/DDS.h>
+#include <libdap/DMR.h>
+#include <libdap/Array.h>
 
 using namespace::libdap ;
 

@@ -27,7 +27,7 @@
 
 #include <string>
 
-#include <Float64.h>
+#include <libdap/Float64.h>
 #include "DmrppCommon.h"
 
 namespace libdap {
