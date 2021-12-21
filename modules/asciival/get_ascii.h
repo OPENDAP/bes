@@ -23,7 +23,7 @@
 #ifndef E_get_ascii_h
 #define E_get_ascii_h 1
 
-#include <DDS.h>
+#include <libdap/DDS.h>
 
 namespace libdap {
     class BaseType ;

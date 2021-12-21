@@ -39,7 +39,7 @@ static char rcsid[] not_used = {"$Id$"};
 
 #include "BESRegex.h"
 
-#include <escaping.h>
+#include <libdap/escaping.h>
 
 #include "name_map.h"
 

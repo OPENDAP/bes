@@ -27,7 +27,7 @@
 #define geo_2d_array_h_
 
 #include <string>
-#include <Array.h>
+#include <libdap/Array.h>
 
 //#include "wcsUtil.h"
 

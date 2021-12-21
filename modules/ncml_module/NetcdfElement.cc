@@ -29,7 +29,7 @@
 
 #include "config.h"
 
-#include <BaseType.h> // libdap
+#include <libdap/BaseType.h> // libdap
 #include <BESDapResponse.h> // bes
 
 #include "AggMemberDataset.h" // agg_util

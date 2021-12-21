@@ -39,7 +39,7 @@
 #ifndef _ncgrid_h
 #define _ncgrid_h 1
 
-#include "Grid.h"
+#include <libdap/Grid.h>
 
 using namespace libdap ;
 

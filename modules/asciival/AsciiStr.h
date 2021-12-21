@@ -36,7 +36,7 @@
 #ifndef _asciistr_h
 #define _asciistr_h 1
 
-#include "Str.h"
+#include <libdap/Str.h>
 #include "AsciiOutput.h"
 
 class AsciiStr: public Str, public AsciiOutput {

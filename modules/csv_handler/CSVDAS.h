@@ -37,7 +37,7 @@
 
 #include<string>
 
-#include "DAS.h"
+#include <libdap/DAS.h>
 
 using namespace libdap ;
 

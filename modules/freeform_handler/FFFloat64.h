@@ -38,7 +38,7 @@
 #define _fffloat64_h 1
 
 
-#include "Float64.h"
+#include <libdap/Float64.h>
 
 using namespace libdap ;
 

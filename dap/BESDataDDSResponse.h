@@ -33,7 +33,7 @@
 #ifndef I_BESDataDDSResponse
 #define I_BESDataDDSResponse 1
 
-#include <ConstraintEvaluator.h>
+#include <libdap/ConstraintEvaluator.h>
 
 #include "BESDapResponse.h"
 

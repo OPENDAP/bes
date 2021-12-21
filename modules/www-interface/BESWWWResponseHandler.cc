@@ -32,7 +32,7 @@
 
 #include "config.h"
 
-#include <DDS.h>
+#include <libdap/DDS.h>
 
 #include "GlobalMetadataStore.h"
 #include "BESWWWResponseHandler.h"

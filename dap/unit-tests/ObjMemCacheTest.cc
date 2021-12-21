@@ -27,11 +27,10 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include <unistd.h>
 
-#include <DDS.h>
+#include <libdap/DDS.h>
+#include <libdap/debug.h>
 
 #include "BESRegex.h"
-#include <debug.h>
-
 #include "ObjMemCache.h"
 
 static bool debug = false;

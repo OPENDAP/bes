@@ -35,17 +35,17 @@
 #include <fstream>
 #include <sstream>
 #include <functional>
-#include <DAS.h>
+#include <libdap/DAS.h>
 #include <memory>
 #include <sys/stat.h>
 
-#include <DapObj.h>
-#include <DDS.h>
-#include <DMR.h>
-#include <D4ParserSax2.h>
-#include <XMLWriter.h>
-#include <BaseTypeFactory.h>
-#include <D4BaseTypeFactory.h>
+#include <libdap/DapObj.h>
+#include <libdap/DDS.h>
+#include <libdap/DMR.h>
+#include <libdap/D4ParserSax2.h>
+#include <libdap/XMLWriter.h>
+#include <libdap/BaseTypeFactory.h>
+#include <libdap/D4BaseTypeFactory.h>
 
 #include "PicoSHA2/picosha2.h"
 

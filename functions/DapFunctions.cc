@@ -28,7 +28,7 @@
 
 #include <gdal.h>   // needed for scale_{grid,array}
 
-#include <ServerFunctionsList.h>
+#include <libdap/ServerFunctionsList.h>
 
 #include <BESRequestHandlerList.h>
 #include <TheBESKeys.h>

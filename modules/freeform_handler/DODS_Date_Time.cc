@@ -44,10 +44,10 @@ static char rcsid[] not_used ="$Id$";
 #include <sstream>
 #include <string>
 
-#include "Error.h"
+#include <libdap/Error.h>
 #include "DODS_Date_Time.h"
 #include "date_proc.h"
-#include "debug.h" 
+#include <libdap/debug.h> 
 
 using namespace std;
 

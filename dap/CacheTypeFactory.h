@@ -28,7 +28,7 @@
 
 #include <string>
 
-#include <BaseTypeFactory.h>
+#include <libdap/BaseTypeFactory.h>
 #include "CachedSequence.h"
 
 //class CachedSequence;

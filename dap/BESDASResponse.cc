@@ -30,7 +30,7 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <DAS.h>
+#include <libdap/DAS.h>
 
 #include "BESDASResponse.h"
 

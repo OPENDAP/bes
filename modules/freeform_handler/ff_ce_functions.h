@@ -33,7 +33,7 @@
 #ifndef _ff_ce_functions_h
 #define _ff_ce_functions_h 1
 
-#include "ConstraintEvaluator.h"
+#include <libdap/ConstraintEvaluator.h>
 
 using namespace libdap ;
 

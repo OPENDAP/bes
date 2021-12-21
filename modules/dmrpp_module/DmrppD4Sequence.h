@@ -27,7 +27,7 @@
 
 #include <string>
 
-#include <D4Sequence.h>
+#include <libdap/D4Sequence.h>
 #include "DmrppCommon.h"
 
 namespace dmrpp {

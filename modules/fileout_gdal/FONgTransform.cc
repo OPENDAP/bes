@@ -32,14 +32,14 @@
 #include <gdal_priv.h>
 #include <gdal_utils.h>
 
-#include <DDS.h>
-#include <ConstraintEvaluator.h>
+#include <libdap/DDS.h>
+#include <libdap/ConstraintEvaluator.h>
 
-#include <Structure.h>
-#include <Array.h>
-#include <Grid.h>
-#include <util.h>
-#include <Error.h>
+#include <libdap/Structure.h>
+#include <libdap/Array.h>
+#include <libdap/Grid.h>
+#include <libdap/util.h>
+#include <libdap/Error.h>
 
 #include <BESDebug.h>
 #include <BESInternalError.h>

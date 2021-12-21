@@ -33,7 +33,7 @@
 #ifndef _xdarray_h
 #define _xdarray_h 1
 
-#include <Array.h>
+#include <libdap/Array.h>
 
 #include "XDOutput.h"
 

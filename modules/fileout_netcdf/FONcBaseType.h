@@ -36,9 +36,9 @@
 #include <vector>
 #include <string>
 
-#include <AttrTable.h>
-#include <D4Attributes.h>
-#include <D4AttributeType.h>
+#include <libdap/AttrTable.h>
+#include <libdap/D4Attributes.h>
+#include <libdap/D4AttributeType.h>
 #include <BESObj.h>
 
 #define RETURN_AS_NETCDF "netcdf"

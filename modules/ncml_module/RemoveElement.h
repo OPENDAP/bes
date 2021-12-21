@@ -30,7 +30,7 @@
 #define __NCML_MODULE__REMOVE_ELEMENT_H__
 
 #include "NCMLElement.h"
-#include <Array.h>
+#include <libdap/Array.h>
 
 namespace ncml_module {
 // FDecls

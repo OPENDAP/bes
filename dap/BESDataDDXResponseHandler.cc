@@ -32,7 +32,7 @@
 
 #include "config.h"
 
-#include <DataDDS.h>
+#include <libdap/DataDDS.h>
 
 #include "BESDataDDXResponseHandler.h"
 #include "BESDataDDSResponse.h"

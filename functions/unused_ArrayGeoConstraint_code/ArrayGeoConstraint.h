@@ -35,7 +35,7 @@
 #endif
 
 #ifndef _util_h
-#include "util.h"
+#include <libdap/util.h>
 #endif
 
 namespace libdap

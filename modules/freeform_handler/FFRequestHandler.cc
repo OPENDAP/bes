@@ -31,15 +31,15 @@
 #include <sstream>
 #include <exception>
 
-#include <DDS.h>
-#include <DataDDS.h>
-#include <DMR.h>
-#include <D4BaseTypeFactory.h>
-#include <Ancillary.h>
-#include <Error.h>
-#include <InternalErr.h>
-#include <mime_util.h>
-#include <escaping.h>
+#include <libdap/DDS.h>
+#include <libdap/DataDDS.h>
+#include <libdap/DMR.h>
+#include <libdap/D4BaseTypeFactory.h>
+#include <libdap/Ancillary.h>
+#include <libdap/Error.h>
+#include <libdap/InternalErr.h>
+#include <libdap/mime_util.h>
+#include <libdap/escaping.h>
 
 #include <BESResponseHandler.h>
 #include <BESResponseNames.h>

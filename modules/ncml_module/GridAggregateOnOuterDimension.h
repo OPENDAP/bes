@@ -37,7 +37,7 @@
 #include "AggMemberDataset.h" // agg_util
 #include "Dimension.h" // agg_util
 #include "DDSLoader.h" // agg_util
-#include <Grid.h> // libdap
+#include <libdap/Grid.h> // libdap
 #include "GridAggregationBase.h" // agg_util
 
 namespace libdap {

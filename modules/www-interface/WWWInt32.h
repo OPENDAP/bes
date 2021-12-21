@@ -36,7 +36,7 @@
 #ifndef _wwwint32_h
 #define _wwwint32_h 1
 
-#include "Int32.h"
+#include <libdap/Int32.h>
 
 using namespace libdap ;
 

@@ -14,7 +14,7 @@
 #include <sstream>
 #include <sys/stat.h>
 
-#include "util.h"
+#include <libdap/util.h>
 #include "BESInternalError.h"
 #include "BESUtil.h"
 #include "BESDebug.h"

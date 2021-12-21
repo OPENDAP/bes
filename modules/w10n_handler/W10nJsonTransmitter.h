@@ -30,8 +30,8 @@
 #ifndef A_W10nJsonTransmitter_h
 #define A_W10nJsonTransmitter_h 1
 
-#include <DataDDS.h>
-#include <ConstraintEvaluator.h>
+#include <libdap/DataDDS.h>
+#include <libdap/ConstraintEvaluator.h>
 
 #include <BESTransmitter.h>
 

@@ -31,7 +31,7 @@
 
 #include <BESInternalError.h>
 #include <BESDebug.h>
-#include <Float32.h>
+#include <libdap/Float32.h>
 
 #include "FONcFloat.h"
 #include "FONcUtils.h"

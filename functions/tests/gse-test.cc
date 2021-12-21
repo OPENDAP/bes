@@ -45,14 +45,14 @@ static char rcsid[] not_used =
 
 #include <GetOpt.h>
 
-#include "dods-datatypes.h"
-#include "BaseType.h"
-#include "Grid.h"
-#include "DDS.h"
+#include <libdap/dods-datatypes.h>
+#include <libdap/BaseType.h>
+#include <libdap/Grid.h>
+#include <libdap/DDS.h>
 #include "GSEClause.h"
-#include "parser.h"
+#include <libdap/parser.h>
 #include "gse.tab.hh"
-#include "debug.h"
+#include <libdap/debug.h>
 
 #define YY_BUFFER_STATE (void *)
 

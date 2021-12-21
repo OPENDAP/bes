@@ -37,7 +37,7 @@
 #define _testgrid_h 1
 
 
-#include "Grid.h"
+#include <libdap/Grid.h>
 #include "TestCommon.h"
 
 using namespace libdap ;

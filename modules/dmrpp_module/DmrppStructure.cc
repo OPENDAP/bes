@@ -26,7 +26,7 @@
 
 #include <string>
 
-#include <XMLWriter.h>
+#include <libdap/XMLWriter.h>
 
 #include <BESError.h>
 #include <BESDebug.h>

@@ -28,7 +28,7 @@
 #include <cassert>
 #include <istream>
 
-#include <UnMarshaller.h>   // from libdap
+#include <libdap/UnMarshaller.h>   // from libdap
 
 // namespace bes {
 

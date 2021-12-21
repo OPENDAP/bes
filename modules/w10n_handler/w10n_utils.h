@@ -32,9 +32,9 @@
 #include <list>
 #include <iostream>
 
-#include <DDS.h>
-#include <Array.h>
-#include <Constructor.h>
+#include <libdap/DDS.h>
+#include <libdap/Array.h>
+#include <libdap/Constructor.h>
 
 namespace w10n {
 /** Check if the specified path is valid **/

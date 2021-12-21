@@ -40,7 +40,7 @@ static char rcsid[] not_used = {"$Id$"};
 #include <iostream>
 #include <string>
 
-#include "InternalErr.h"
+#include <libdap/InternalErr.h>
 
 #include "WWWFloat64.h"
 #include "WWWOutput.h"

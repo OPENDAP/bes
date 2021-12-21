@@ -28,17 +28,17 @@
 #include <sstream>
 #include <memory>
 
-#include <BaseType.h>
-#include <Int32.h>
-#include <Str.h>
-#include <Array.h>
-#include <Structure.h>
+#include <libdap/BaseType.h>
+#include <libdap/Int32.h>
+#include <libdap/Str.h>
+#include <libdap/Array.h>
+#include <libdap/Structure.h>
 
-#include <D4RValue.h>
-#include <Error.h>
-#include <debug.h>
-#include <util.h>
-#include <ServerFunctionsList.h>
+#include <libdap/D4RValue.h>
+#include <libdap/Error.h>
+#include <libdap/debug.h>
+#include <libdap/util.h>
+#include <libdap/ServerFunctionsList.h>
 
 #include "BBoxCombFunction.h"
 #include "roi_util.h"

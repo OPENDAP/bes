@@ -28,7 +28,7 @@
 
 #include "BESRegex.h"
 
-#include "util.h"
+#include <libdap/util.h>
 #include "BESDebug.h"
 #include "BESLog.h"
 #include "BESSyntaxUserError.h"

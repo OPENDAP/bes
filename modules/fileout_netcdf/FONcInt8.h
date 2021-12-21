@@ -29,7 +29,7 @@
 #ifndef FONcInt8_h_
 #define FONcInt8_h_ 1
 
-#include <Int8.h>
+#include <libdap/Int8.h>
 
 namespace libdap {
     class BaseType;

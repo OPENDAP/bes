@@ -32,7 +32,7 @@
 #include <sstream>
 #include <algorithm>
 
-#include <DataDDS.h>
+#include <libdap/DataDDS.h>
 
 #include <BESConstraintFuncs.h>
 #include <BESContainerStorage.h>

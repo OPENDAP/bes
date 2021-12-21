@@ -46,15 +46,15 @@
 
 #include <unistd.h>
 
-#include <BaseType.h>
-#include <Float32.h>
-#include <Array.h>
-#include <Grid.h>
+#include <libdap/BaseType.h>
+#include <libdap/Float32.h>
+#include <libdap/Array.h>
+#include <libdap/Grid.h>
 
 #include <test/TestTypeFactory.h>
 
-#include <util.h>
-#include <debug.h>
+#include <libdap/util.h>
+#include <libdap/debug.h>
 
 #include "ScaleGrid.h"
 

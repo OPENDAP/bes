@@ -36,7 +36,7 @@
 #ifndef _wwwgrid_h
 #define _wwwgrid_h 1
 
-#include "Grid.h"
+#include <libdap/Grid.h>
 
 using namespace libdap ;
 

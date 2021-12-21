@@ -31,12 +31,12 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 #include "config.h"
 
-#include <DDS.h>
-#include <DAS.h>
-#include <DataDDS.h>
-#include <ConstraintEvaluator.h>
-// #include <DMR.h>
-#include <Error.h>
+#include <libdap/DDS.h>
+#include <libdap/DAS.h>
+#include <libdap/DataDDS.h>
+#include <libdap/ConstraintEvaluator.h>
+// #include <libdap/DMR.h>
+#include <libdap/Error.h>
 
 #include "BESDapTransmit.h"
 #include "BESContainer.h"

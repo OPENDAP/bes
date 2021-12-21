@@ -31,7 +31,7 @@
 
 #include <sstream>
 
-#include <Marshaller.h>
+#include <libdap/Marshaller.h>
 
 #include "BESDebug.h"
 #include "BESStopWatch.h"

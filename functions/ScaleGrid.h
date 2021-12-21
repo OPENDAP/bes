@@ -33,7 +33,7 @@
 #include <gdal.h>
 #include <gdal_priv.h>
 
-#include <ServerFunction.h>
+#include <libdap/ServerFunction.h>
 
 
 namespace libdap {

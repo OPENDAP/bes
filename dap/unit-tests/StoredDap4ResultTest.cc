@@ -29,23 +29,25 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include <unistd.h>
 
-#include <ConstraintEvaluator.h>
-#include <DAS.h>
-#include <DDS.h>
+#include <libdap/ConstraintEvaluator.h>
+#include <libdap/DAS.h>
+#include <libdap/DDS.h>
 
-#include "BESRegex.h"
-#include <util.h>
-#include <mime_util.h>
-#include <debug.h>
+#include <libdap/GNURegex.h>
+#include <libdap/util.h>
+#include <libdap/mime_util.h>
+#include <libdap/debug.h>
 
-#include <DMR.h>
-#include <D4Group.h>
-#include <D4ParserSax2.h>
+#include <libdap/DMR.h>
+#include <libdap/D4Group.h>
+#include <libdap/D4ParserSax2.h>
+
 #include <test/D4TestTypeFactory.h>
 
 #include "TheBESKeys.h"
 #include "BESStoredDapResultCache.h"
 #include "BESDapResponseBuilder.h"
+#include "BESRegex.h"
 #include "BESDebug.h"
 
 #include "test_utils.h"

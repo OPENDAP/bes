@@ -30,29 +30,29 @@
 #include <sstream>
 #include <vector>
 
-#include <Type.h>
-#include <BaseType.h>
-#include <Byte.h>
-#include <Int16.h>
-#include <UInt16.h>
-#include <Int32.h>
-#include <UInt32.h>
-#include <Float32.h>
-#include <Float64.h>
-#include <Str.h>
-#include <Url.h>
-#include <Array.h>
-#include <Error.h>
-#include <DDS.h>
+#include <libdap/Type.h>
+#include <libdap/BaseType.h>
+#include <libdap/Byte.h>
+#include <libdap/Int16.h>
+#include <libdap/UInt16.h>
+#include <libdap/Int32.h>
+#include <libdap/UInt32.h>
+#include <libdap/Float32.h>
+#include <libdap/Float64.h>
+#include <libdap/Str.h>
+#include <libdap/Url.h>
+#include <libdap/Array.h>
+#include <libdap/Error.h>
+#include <libdap/DDS.h>
 
-#include <DMR.h>
-#include <D4Group.h>
-#include <D4RValue.h>
+#include <libdap/DMR.h>
+#include <libdap/D4Group.h>
+#include <libdap/D4RValue.h>
 
-#include <debug.h>
-#include <util.h>
+#include <libdap/debug.h>
+#include <libdap/util.h>
 
-#include <BaseTypeFactory.h>
+#include <libdap/BaseTypeFactory.h>
 
 #include <BESDebug.h>
 

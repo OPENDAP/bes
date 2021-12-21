@@ -43,10 +43,10 @@ static char rcsid[] not_used ="$Id$";
 #include <cstdlib>
 #include <sstream>
 
-#include "Error.h"
+#include <libdap/Error.h>
 #include "DODS_Decimal_Year.h"
 #include "date_proc.h"
-#include "debug.h"
+#include <libdap/debug.h>
 
 #define seconds_per_day 86400.0
 #define seconds_per_hour 3600.0

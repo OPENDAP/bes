@@ -34,16 +34,16 @@
 
 #include "config.h"
 
-#include <DDS.h>
-#include <DAS.h>
-#include <DataDDS.h>
-#include <BaseTypeFactory.h>
-#include <Ancillary.h>
+#include <libdap/DDS.h>
+#include <libdap/DAS.h>
+#include <libdap/DataDDS.h>
+#include <libdap/BaseTypeFactory.h>
+#include <libdap/Ancillary.h>
 
-#include <DMR.h>
-#include <D4BaseTypeFactory.h>
-#include <mime_util.h>
-#include <InternalErr.h>
+#include <libdap/DMR.h>
+#include <libdap/D4BaseTypeFactory.h>
+#include <libdap/mime_util.h>
+#include <libdap/InternalErr.h>
 
 #include <BESDASResponse.h>
 #include <BESDDSResponse.h>

@@ -29,10 +29,10 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <XMLWriter.h>
+#include <libdap/XMLWriter.h>
 #include <unistd.h>
-#include <util.h>
-#include <debug.h>
+#include <libdap/util.h>
+#include <libdap/debug.h>
 
 #include <BESError.h>
 #include <BESDebug.h>

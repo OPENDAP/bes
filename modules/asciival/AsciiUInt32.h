@@ -36,7 +36,7 @@
 #ifndef _asciiuint32_h
 #define _asciiuint32_h 1
 
-#include "UInt32.h"
+#include <libdap/UInt32.h>
 #include "AsciiOutput.h"
 
 class AsciiUInt32: public UInt32, public AsciiOutput {

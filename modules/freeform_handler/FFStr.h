@@ -40,7 +40,7 @@
 
 #include <limits.h>
 
-#include <Str.h>
+#include <libdap/Str.h>
 
 using namespace libdap ;
 

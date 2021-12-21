@@ -37,7 +37,7 @@
 #ifndef _wwwbyte_h
 #define _wwwbyte_h 1
 
-#include "Byte.h"
+#include <libdap/Byte.h>
 
 using namespace libdap ;
 

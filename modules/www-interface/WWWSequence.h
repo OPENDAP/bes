@@ -36,7 +36,7 @@
 #ifndef _wwwsequence_h
 #define _wwwsequence_h 1
 
-#include "Sequence.h"
+#include <libdap/Sequence.h>
 
 using namespace libdap ;
 

@@ -38,7 +38,7 @@
 #define _ffurl_h 1
 
 
-#include "Url.h"
+#include <libdap/Url.h>
 
 using namespace libdap ;
 

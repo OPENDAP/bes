@@ -36,7 +36,7 @@
 #ifndef _asciifloat64_h
 #define _asciifloat64_h 1
 
-#include "Float64.h"
+#include <libdap/Float64.h>
 #include "AsciiOutput.h"
 
 class AsciiFloat64: public Float64, public AsciiOutput {

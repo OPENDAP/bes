@@ -33,8 +33,8 @@
 #include <iostream>
 #include <sstream>
 
-#include <DataDDS.h>
-#include <escaping.h>
+#include <libdap/DataDDS.h>
+#include <libdap/escaping.h>
 
 #include "get_html_form.h"
 #include "WWWOutput.h"

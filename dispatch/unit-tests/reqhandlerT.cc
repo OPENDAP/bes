@@ -39,7 +39,7 @@ using namespace CppUnit;
 #include <iostream>
 #include <sys/stat.h>
 #include <string.h>
-#include <util.h>
+#include <libdap/util.h>
 #include <fcntl.h>
 #include <unistd.h>
 

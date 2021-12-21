@@ -27,8 +27,8 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 /////////////////////////////////////////////////////////////////////////////
 #include "AggMemberDatasetDDSWrapper.h"
-#include <DataDDS.h> // libdap
-#include <DDS.h> // libdap
+#include <libdap/DataDDS.h> // libdap
+#include <libdap/DDS.h> // libdap
 #include "DDSAccessInterface.h"
 #include "NCMLDebug.h"
 

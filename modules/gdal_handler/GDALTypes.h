@@ -24,8 +24,8 @@
 
 #include <gdal.h>
 
-#include <Array.h>
-#include <Grid.h>
+#include <libdap/Array.h>
+#include <libdap/Grid.h>
 
 /************************************************************************/
 /*                              GDALArray                               */

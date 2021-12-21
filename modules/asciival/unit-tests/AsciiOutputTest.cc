@@ -28,8 +28,8 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <DDS.h>
-#include <debug.h>
+#include <libdap/DDS.h>
+#include <libdap/debug.h>
 
 #include "AsciiOutput.h"
 #include "AsciiOutputFactory.h"

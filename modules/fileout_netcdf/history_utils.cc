@@ -43,9 +43,9 @@
 #include <writer.h>
 #include "document.h"
 
-#include <D4Group.h>
-#include <D4Attributes.h>
-#include <DataDDS.h>
+#include <libdap/D4Group.h>
+#include <libdap/D4Attributes.h>
+#include <libdap/DataDDS.h>
 
 #include "BESContextManager.h"
 #include "BESDapResponseBuilder.h"

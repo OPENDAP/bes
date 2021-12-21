@@ -25,7 +25,7 @@
 #ifndef _cached_sequence_h
 #define _cached_sequence_h 1
 
-#include <Sequence.h>
+#include <libdap/Sequence.h>
 
 namespace libdap {
 class ConstraintEvaluator;

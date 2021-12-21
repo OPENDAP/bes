@@ -42,19 +42,19 @@
 
 #include <curl/curl.h>
 
-#include <BaseType.h>
-#include <Int32.h>
-#include <Str.h>
-#include <Array.h>
-#include <Structure.h>
-#include <Error.h>
-#include <util.h>
-#include <escaping.h>
+#include <libdap/BaseType.h>
+#include <libdap/Int32.h>
+#include <libdap/Str.h>
+#include <libdap/Array.h>
+#include <libdap/Structure.h>
+#include <libdap/Error.h>
+#include <libdap/util.h>
+#include <libdap/escaping.h>
 
 #include "BESDebug.h"
 #include "BESError.h"
 #include "BESStopWatch.h"
-#include "util.h"
+#include <libdap/util.h>
 
 #include "ugrid_utils.h"
 #include "MeshDataVariable.h"

@@ -34,7 +34,7 @@
 #include <sstream>
 #include <iomanip>
 
-#include <Vector.h>
+#include <libdap/Vector.h>
 
 #include "BESIndent.h"
 #include "CacheMarshaller.h"

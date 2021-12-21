@@ -33,7 +33,7 @@
 #ifndef _xdsciisequence_h
 #define _xdsciisequence_h 1
 
-#include "Sequence.h"
+#include <libdap/Sequence.h>
 #include "XDOutput.h"
 
 class XDSequence: public libdap::Sequence, public XDOutput {

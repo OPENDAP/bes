@@ -31,22 +31,22 @@
 #include <sstream>
 #include <cassert>
 
-#include <BaseType.h>
-#include <Byte.h>
-#include <Int16.h>
-#include <Int32.h>
-#include <UInt16.h>
-#include <UInt32.h>
-#include <Float32.h>
-#include <Float64.h>
-#include <Str.h>
-#include <Url.h>
+#include <libdap/BaseType.h>
+#include <libdap/Byte.h>
+#include <libdap/Int16.h>
+#include <libdap/Int32.h>
+#include <libdap/UInt16.h>
+#include <libdap/UInt32.h>
+#include <libdap/Float32.h>
+#include <libdap/Float64.h>
+#include <libdap/Str.h>
+#include <libdap/Url.h>
 
-#include <DDS.h>
-#include <ConstraintEvaluator.h>
-#include <Marshaller.h>
-//#include <UnMarshaller.h>
-#include <debug.h>
+#include <libdap/DDS.h>
+#include <libdap/ConstraintEvaluator.h>
+#include <libdap/Marshaller.h>
+//#include <libdap/UnMarshaller.h>
+#include <libdap/debug.h>
 
 #include "BESIndent.h"
 #include "CachedSequence.h"

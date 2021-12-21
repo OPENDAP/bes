@@ -29,7 +29,7 @@
 #ifndef STREAMSTRING_H_
 #define STREAMSTRING_H_
 
-#include <Str.h>
+#include <libdap/Str.h>
 
 namespace libdap {
 

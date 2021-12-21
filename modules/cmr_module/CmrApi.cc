@@ -40,8 +40,8 @@
 #include <sstream>
 
 
-#include <util.h>
-#include <debug.h>
+#include <libdap/util.h>
+#include <libdap/debug.h>
 
 #include <BESError.h>
 #include <BESSyntaxUserError.h>

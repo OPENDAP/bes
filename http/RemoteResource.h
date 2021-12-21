@@ -35,8 +35,8 @@
 #include <vector>
 
 #if 0
-#include "InternalErr.h"
-#include "RCReader.h"
+#include <libdap/InternalErr.h>
+#include <libdap/RCReader.h>
 #endif
 
 #include "url_impl.h"

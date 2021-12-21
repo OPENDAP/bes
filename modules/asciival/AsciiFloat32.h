@@ -36,7 +36,7 @@
 #ifndef _asciifloat32_h
 #define _asciifloat32_h 1
 
-#include "Float32.h"
+#include <libdap/Float32.h>
 #include "AsciiOutput.h"
 
 class AsciiFloat32: public Float32, public AsciiOutput {

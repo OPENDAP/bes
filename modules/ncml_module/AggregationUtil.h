@@ -29,7 +29,7 @@
 #ifndef __AGG_UTIL__AGGREGATION_UTIL_H__
 #define __AGG_UTIL__AGGREGATION_UTIL_H__
 
-#include <AttrTable.h>
+#include <libdap/AttrTable.h>
 #include <iostream>
 #include <string>
 #include <vector>
