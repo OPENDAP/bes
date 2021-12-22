@@ -1,0 +1,4 @@
+The data:
+Int16 dim[dim = 2] = {-128, 127};
+Int16 sca = -128;
+
