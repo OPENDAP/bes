@@ -27,19 +27,19 @@
 #define ais_dods_filter_h
 
 #ifndef _dodsfilter_h
-#include "DODSFilter.h"
+#include <libdap/DODSFilter.h>
 #endif
 
 #ifndef _das_h
-#include "DAS.h"
+#include <libdap/DAS.h>
 #endif
 
 #ifndef _dds_h
-#include "DDS.h"
+#include <libdap/DDS.h>
 #endif
 
 #ifndef _objecttype_h
-#include "ObjectType.h"
+#include <libdap/ObjectType.h>
 #endif
 
 /** Specialization of DODSFilter to add AIS processing.

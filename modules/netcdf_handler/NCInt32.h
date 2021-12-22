@@ -39,7 +39,7 @@
 #ifndef _ncint32_h
 #define _ncint32_h 1
 
-#include "Int32.h"
+#include <libdap/Int32.h>
 
 using namespace libdap ;
 

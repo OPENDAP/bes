@@ -33,7 +33,7 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "DDS.h"
+#include <libdap/DDS.h>
 
 //#include "name_map.h"
 #include "AsciiArray.h"

@@ -33,7 +33,7 @@
 #ifndef _xdint16_h
 #define _xdint16_h 1
 
-#include <Int16.h>
+#include <libdap/Int16.h>
 #include "XDOutput.h"
 
 class XDInt16: public libdap::Int16, public XDOutput {

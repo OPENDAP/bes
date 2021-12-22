@@ -35,9 +35,9 @@
 
 
 #include "DODS_Date.h"
-#include "DAS.h"
-#include "DDS.h"
-#include "BaseType.h"
+#include <libdap/DAS.h>
+#include <libdap/DDS.h>
+#include <libdap/BaseType.h>
 
 using namespace libdap ;
 

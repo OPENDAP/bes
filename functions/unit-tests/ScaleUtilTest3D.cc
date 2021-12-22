@@ -49,28 +49,28 @@
 
 #include <unistd.h>
 
-#include <BaseType.h>
-#include <Float32.h>
-#include <Array.h>
-#include <Grid.h>
+#include <libdap/BaseType.h>
+#include <libdap/Float32.h>
+#include <libdap/Array.h>
+#include <libdap/Grid.h>
 #include <assert.h>
 
 #include <test/TestTypeFactory.h>
 
-#include <util.h>
-#include <debug.h>
+#include <libdap/util.h>
+#include <libdap/debug.h>
 
 #include "ScaleGrid.h"
 
 #include "test_config.h"
 #include "test_utils.h"
 
-#include <util.h>
-#include <Error.h>
+#include <libdap/util.h>
+#include <libdap/Error.h>
 #include <BESDebug.h>
 #include <BESError.h>
 #include <BESDapError.h>
-#include <dods-datatypes.h>
+#include <libdap/dods-datatypes.h>
 
 static bool debug = false;
 static bool bes_debug = false;

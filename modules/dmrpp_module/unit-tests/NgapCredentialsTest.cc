@@ -34,8 +34,8 @@
 #include <time.h>
 
 #include <unistd.h>
-#include <util.h>
-#include <debug.h>
+#include <libdap/util.h>
+#include <libdap/debug.h>
 
 #include <curl/curl.h>
 

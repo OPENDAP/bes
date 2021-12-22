@@ -30,21 +30,21 @@
 #include <sstream>
 #include <vector>
 
-#include "BaseType.h"
-#include "Byte.h"
-#include "Int16.h"
-#include "Int32.h"
-#include "UInt16.h"
-#include "UInt32.h"
-#include "Int64.h"
-#include "UInt64.h"
-#include "Int8.h"
-#include "Float32.h"
-#include "Float64.h"
-#include "Str.h"
-#include <Array.h>
-#include <Error.h>
-#include <util.h>
+#include <libdap/BaseType.h>
+#include <libdap/Byte.h>
+#include <libdap/Int16.h>
+#include <libdap/Int32.h>
+#include <libdap/UInt16.h>
+#include <libdap/UInt32.h>
+#include <libdap/Int64.h>
+#include <libdap/UInt64.h>
+#include <libdap/Int8.h>
+#include <libdap/Float32.h>
+#include <libdap/Float64.h>
+#include <libdap/Str.h>
+#include <libdap/Array.h>
+#include <libdap/Error.h>
+#include <libdap/util.h>
 
 using namespace std;
 using namespace libdap;

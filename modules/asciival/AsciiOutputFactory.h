@@ -25,7 +25,7 @@
 
 #include <string>
 
-#include "BaseTypeFactory.h"
+#include <libdap/BaseTypeFactory.h>
 
 class AsciiByte;
 class AsciiInt16;

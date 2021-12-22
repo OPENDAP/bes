@@ -9,9 +9,9 @@
 #include <sys/types.h>                  // For umask
 #include <sys/stat.h>
 
-#include <DataDDS.h>
-#include <ConstraintEvaluator.h>
-#include <escaping.h>
+#include <libdap/DataDDS.h>
+#include <libdap/ConstraintEvaluator.h>
+#include <libdap/escaping.h>
 
 #include <TheBESKeys.h>
 #include <BESContextManager.h>

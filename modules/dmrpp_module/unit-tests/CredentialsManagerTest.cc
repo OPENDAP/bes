@@ -32,8 +32,8 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <unistd.h>
-#include <util.h>
-#include <debug.h>
+#include <libdap/util.h>
+#include <libdap/debug.h>
 
 #include "BESContextManager.h"
 #include "BESError.h"

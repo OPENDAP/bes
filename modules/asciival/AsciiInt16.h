@@ -36,7 +36,7 @@
 #ifndef _asciiint16_h
 #define _asciiint16_h 1
 
-#include <Int16.h>
+#include <libdap/Int16.h>
 #include "AsciiOutput.h"
 
 class AsciiInt16: public Int16, public AsciiOutput {

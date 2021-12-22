@@ -32,7 +32,7 @@
 
 #include "../usage/BESUsageResponseHandler.h"
 
-#include <DDS.h>
+#include <libdap/DDS.h>
 #include "../usage/BESUsage.h"
 #include "../usage/BESUsageNames.h"
 #include "../usage/BESUsageTransmit.h"

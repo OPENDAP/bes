@@ -29,7 +29,7 @@
 #ifndef FONcUByte_h_
 #define FONcUByte_h_ 1
 
-#include <Byte.h>
+#include <libdap/Byte.h>
 
 namespace libdap {
     class BaseType;

@@ -39,7 +39,7 @@
 static char rcsid[] not_used = {"$Id$"};
 
 
-#include "InternalErr.h"
+#include <libdap/InternalErr.h>
 #include "FFUrl.h"
 
 FFUrl::FFUrl(const string &n, const string &d) : Url(n, d)

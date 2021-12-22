@@ -36,7 +36,7 @@ static char rcsid[]not_used = {
 
 #include <cassert>
 
-#include "Error.h"
+#include <libdap/Error.h>
 
 using namespace libdap;
 

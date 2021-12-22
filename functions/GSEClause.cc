@@ -37,17 +37,17 @@
 #include <iostream>
 #include <sstream>
 
-#include <Array.h>
-#include <Grid.h>
-#include <dods-datatypes.h>
-//#include <Error.h>
-//#include <InternalErr.h>
-#include <debug.h>
+#include <libdap/Array.h>
+#include <libdap/Grid.h>
+#include <libdap/dods-datatypes.h>
+//#include <libdap/Error.h>
+//#include <libdap/InternalErr.h>
+#include <libdap/debug.h>
 
 #include "BESInternalError.h"
 
 #include "GSEClause.h"
-#include "parser.h"
+#include <libdap/parser.h>
 #include "gse.tab.hh"
 
 using namespace std;

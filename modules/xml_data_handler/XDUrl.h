@@ -33,7 +33,7 @@
 #ifndef _xdurl_h
 #define _xdurl_h 1
 
-#include <Url.h>
+#include <libdap/Url.h>
 
 #include "XDOutput.h"
 

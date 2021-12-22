@@ -36,7 +36,7 @@
 #ifndef _asciistructure_h
 #define _asciistructure_h 1
 
-#include "Structure.h"
+#include <libdap/Structure.h>
 #include "AsciiOutput.h"
 
 class AsciiStructure: public libdap::Structure, public AsciiOutput {

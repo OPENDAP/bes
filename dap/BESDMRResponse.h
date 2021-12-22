@@ -25,8 +25,8 @@
 #ifndef I_BESDMRResponse
 #define I_BESDMRResponse 1
 
-#include <DMR.h>
-//#include <ConstraintEvaluator.h>
+#include <libdap/DMR.h>
+//#include <libdap/ConstraintEvaluator.h>
 
 #include "BESDapResponse.h"
 
@@ -39,7 +39,7 @@ class ConstraintEvaluator;
 }
 #endif
 // Remove this if we can get the ConstraintEvalutor out of this code.
-#include <ConstraintEvaluator.h>
+#include <libdap/ConstraintEvaluator.h>
 
 
 //class DMR;

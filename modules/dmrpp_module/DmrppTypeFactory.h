@@ -28,7 +28,7 @@
 #include <string>
 #include <memory>
 
-#include <D4BaseTypeFactory.h>
+#include <libdap/D4BaseTypeFactory.h>
 
 namespace dmrpp {
 

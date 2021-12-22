@@ -38,7 +38,7 @@
 
 #include <string>
 
-#include "Array.h"
+#include <libdap/Array.h>
 
 using namespace libdap;
 

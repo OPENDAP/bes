@@ -33,8 +33,8 @@
 #include <string>
 
 // libdap
-#include "Array.h"
-#include "BaseType.h" // need the Type enum...
+#include <libdap/Array.h>
+#include <libdap/BaseType.h> // need the Type enum...
 
 namespace libdap {
 class BaseTypeFactory;

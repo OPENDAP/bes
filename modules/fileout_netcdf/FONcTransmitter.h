@@ -32,8 +32,8 @@
 #ifndef A_FONcTransmitter_h
 #define A_FONcTransmitter_h 1
 
-#include <DataDDS.h>
-#include <ConstraintEvaluator.h>
+#include <libdap/DataDDS.h>
+#include <libdap/ConstraintEvaluator.h>
 
 #include <BESTransmitter.h>
 

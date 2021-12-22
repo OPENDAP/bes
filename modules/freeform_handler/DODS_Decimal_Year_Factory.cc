@@ -36,7 +36,7 @@
 
 static char rcsid[] not_used ="$Id$";
 
-#include "Error.h"
+#include <libdap/Error.h>
 #include "DODS_Decimal_Year_Factory.h"
 
 // Build DODS_Date_Factory and DODS_Time_Factory objects using the DAS

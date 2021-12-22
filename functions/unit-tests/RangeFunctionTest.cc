@@ -46,17 +46,17 @@
 
 #include <unistd.h>
 
-#include <BaseType.h>
-#include <Float32.h>
-#include <Float64.h>
-#include <Array.h>
-#include <Structure.h>
-#include <Grid.h>
+#include <libdap/BaseType.h>
+#include <libdap/Float32.h>
+#include <libdap/Float64.h>
+#include <libdap/Array.h>
+#include <libdap/Structure.h>
+#include <libdap/Grid.h>
 
 #include <test/TestTypeFactory.h>
 
-#include <util.h>
-#include <debug.h>
+#include <libdap/util.h>
+#include <libdap/debug.h>
 
 #include "RangeFunction.h"
 

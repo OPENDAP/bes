@@ -37,7 +37,7 @@
 
 #include <string>
 
-#include "InternalErr.h"
+#include <libdap/InternalErr.h>
 #include "AsciiFloat32.h"
 
 BaseType *

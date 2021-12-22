@@ -29,8 +29,8 @@
 
 #include <gridfields/array.h>
 
-#include <Array.h>
-#include <util.h>
+#include <libdap/Array.h>
+#include <libdap/util.h>
 
 #include <BESDebug.h>
 #include <BESUtil.h>

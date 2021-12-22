@@ -39,7 +39,7 @@
 #include "BESDataHandlerInterface.h"
 #endif
 
-#include "Error.h"
+#include <libdap/Error.h>
 
 #if 0
 typedef int (*ptr_bes_ehm)(BESError &e, BESDataHandlerInterface &dhi);

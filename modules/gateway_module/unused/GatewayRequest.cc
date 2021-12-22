@@ -27,9 +27,16 @@
 // Authors:
 //      pcw       Patrick West <pwest@ucar.edu>
 
+<<<<<<< HEAD
+#include <libdap/HTTPConnect.h>
+#include <libdap/RCReader.h>
+#include <libdap/Error.h>
+#include <GNURegex.h>
+=======
 #include <HTTPConnect.h>
 #include <RCReader.h>
 #include <Error.h>
+>>>>>>> master
 
 using namespace libdap;
 

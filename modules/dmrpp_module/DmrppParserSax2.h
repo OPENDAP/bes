@@ -39,7 +39,7 @@
 
 #include <libxml/parserInternals.h>
 
-#include <Type.h>   // from libdap
+#include <libdap/Type.h>   // from libdap
 #include "BESRegex.h"
 #include "url_impl.h"
 #include "EffectiveUrlCache.h"

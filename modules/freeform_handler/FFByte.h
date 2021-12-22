@@ -44,7 +44,7 @@
 #define _ffbyte_h 1
 
 
-#include "Byte.h"
+#include <libdap/Byte.h>
 
 using namespace libdap ;
 

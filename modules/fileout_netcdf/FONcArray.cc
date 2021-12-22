@@ -33,7 +33,7 @@
 #include <sstream>
 #include <algorithm>
 
-#include <Array.h>
+#include <libdap/Array.h>
 
 #include <BESInternalError.h>
 #include <BESSyntaxUserError.h>

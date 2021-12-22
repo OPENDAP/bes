@@ -24,7 +24,7 @@
 
 #include <memory>
 
-#include <DMR.h>
+#include <libdap/DMR.h>
 
 #include "BESDap4ResponseHandler.h"
 #include "BESDMRResponse.h"

@@ -42,7 +42,7 @@
 #include "BESInternalError.h"
 #include "BESForbiddenError.h"
 #include "BESNotFoundError.h"
-#include "util.h"
+#include <libdap/util.h>
 
 #include "test_config.h"
 #include "w10n_utils.h"

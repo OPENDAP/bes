@@ -40,10 +40,10 @@
 #include "XDSequence.h"
 #include "XDGrid.h"
 
-#include "BaseTypeFactory.h"
+#include <libdap/BaseTypeFactory.h>
 #include "XDOutputFactory.h"
 
-#include "debug.h"
+#include <libdap/debug.h>
 
 Byte *
 XDOutputFactory::NewByte(const string &n ) const 

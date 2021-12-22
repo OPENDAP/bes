@@ -43,11 +43,11 @@ using namespace std;
 
 // #define DODS_DEBUG
 
-#include "InternalErr.h"
-#include "debug.h"
+#include <libdap/InternalErr.h>
+#include <libdap/debug.h>
 
 #include "AsciiArray.h"
-#include "util.h"
+#include <libdap/util.h>
 #include "get_ascii.h"
 
 using namespace dap_asciival;

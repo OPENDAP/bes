@@ -39,7 +39,7 @@
 #ifndef _ncsequence_h
 #define _ncsequence_h 1
 
-#include <Sequence.h>
+#include <libdap/Sequence.h>
 
 using namespace libdap ;
 

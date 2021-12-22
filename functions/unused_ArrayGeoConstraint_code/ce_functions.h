@@ -36,13 +36,13 @@
 #ifndef _ce_functions_h
 #define _ce_functions_h
 
-#include "BaseType.h"
-#include "Array.h"
-#include "Error.h"
-#include "ConstraintEvaluator.h"
-#include "Sequence.h"
-#include "Structure.h"
-#include "ServerFunction.h"
+#include <libdap/BaseType.h>
+#include <libdap/Array.h>
+#include <libdap/Error.h>
+#include <libdap/ConstraintEvaluator.h>
+#include <libdap/Sequence.h>
+#include <libdap/Structure.h>
+#include <libdap/ServerFunction.h>
 
 //#include "GeoGridFunction.h"
 

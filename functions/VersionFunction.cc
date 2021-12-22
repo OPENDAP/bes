@@ -28,11 +28,11 @@
 
 #include <sstream>
 
-#include <BaseType.h>
-#include <Str.h>
-#include <Error.h>
-#include <debug.h>
-#include <ServerFunctionsList.h>
+#include <libdap/BaseType.h>
+#include <libdap/Str.h>
+#include <libdap/Error.h>
+#include <libdap/debug.h>
+#include <libdap/ServerFunctionsList.h>
 
 #include "LinearScaleFunction.h"
 

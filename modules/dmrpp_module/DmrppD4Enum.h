@@ -27,7 +27,7 @@
 
 #include <string>
 
-#include <D4Enum.h>
+#include <libdap/D4Enum.h>
 #include "DmrppCommon.h"
 
 namespace libdap {

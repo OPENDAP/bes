@@ -33,7 +33,7 @@
 #ifndef _xdfloat32_h
 #define _xdfloat32_h 1
 
-#include <Float32.h>
+#include <libdap/Float32.h>
 #include "XDOutput.h"
 
 class XDFloat32: public libdap::Float32, public XDOutput {

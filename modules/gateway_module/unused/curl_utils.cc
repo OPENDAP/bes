@@ -28,7 +28,11 @@
 
 #include <libdap/util.h>
 
+<<<<<<< HEAD
+#include <libdap/util.h>
+=======
 #include "BESRegex.h"
+>>>>>>> master
 #include "BESDebug.h"
 #include "BESInternalError.h"
 #include "GatewayUtils.h"

@@ -30,7 +30,7 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <util.h>
+#include <libdap/util.h>
 
 using namespace libdap ;
 

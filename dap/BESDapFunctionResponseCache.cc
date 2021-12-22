@@ -40,22 +40,22 @@
 #include <tr1/functional>
 #endif
 
-#include <DDS.h>
-#include <ConstraintEvaluator.h>
-#include <DDXParserSAX2.h>
+#include <libdap/DDS.h>
+#include <libdap/ConstraintEvaluator.h>
+#include <libdap/DDXParserSAX2.h>
 
-#include <XDRStreamMarshaller.h>
-#include <XDRStreamUnMarshaller.h>
-#include <XDRFileUnMarshaller.h>
+#include <libdap/XDRStreamMarshaller.h>
+#include <libdap/XDRStreamUnMarshaller.h>
+#include <libdap/XDRFileUnMarshaller.h>
 
-#include <D4StreamMarshaller.h>
-#include <D4StreamUnMarshaller.h>
+#include <libdap/D4StreamMarshaller.h>
+#include <libdap/D4StreamUnMarshaller.h>
 
-#include <Sequence.h>   // We have to special-case these; see read_data_ddx()
+#include <libdap/Sequence.h>   // We have to special-case these; see read_data_ddx()
 
-#include <debug.h>
-#include <mime_util.h>	// for last_modified_time() and rfc_822_date()
-#include <util.h>
+#include <libdap/debug.h>
+#include <libdap/mime_util.h>	// for last_modified_time() and rfc_822_date()
+#include <libdap/util.h>
 
 #include "CacheTypeFactory.h"
 #include "CacheMarshaller.h"

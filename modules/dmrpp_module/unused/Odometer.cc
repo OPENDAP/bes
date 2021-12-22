@@ -26,7 +26,7 @@
 
 #include <vector>
 
-#include <Error.h>
+#include <libdap/Error.h>
 
 #include "Odometer.h"
 

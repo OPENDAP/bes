@@ -26,14 +26,14 @@
 
 #include "config.h"
 
-#include <BaseType.h>
-#include <Str.h>
-#include <Array.h>
-#include <Grid.h>
-#include <Error.h>
-#include <DDS.h>
-#include <debug.h>
-#include <util.h>
+#include <libdap/BaseType.h>
+#include <libdap/Str.h>
+#include <libdap/Array.h>
+#include <libdap/Grid.h>
+#include <libdap/Error.h>
+#include <libdap/DDS.h>
+#include <libdap/debug.h>
+#include <libdap/util.h>
 
 #include "GeoGridFunction.h"
 #include "GridGeoConstraint.h"

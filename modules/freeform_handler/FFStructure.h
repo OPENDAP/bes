@@ -38,7 +38,7 @@
 #define _ffstructure_h 1
 
 
-#include "Structure.h"
+#include <libdap/Structure.h>
 
 using namespace libdap ;
 

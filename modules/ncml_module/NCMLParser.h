@@ -37,7 +37,7 @@
 #include <string>
 #include <vector>
 
-#include <AttrTable.h> // needed due to parameter with AttrTable::Attr_iter
+#include <libdap/AttrTable.h> // needed due to parameter with AttrTable::Attr_iter
 
 #include "DDSLoader.h"
 #include "NCMLElement.h" // NCMLElement::Factory

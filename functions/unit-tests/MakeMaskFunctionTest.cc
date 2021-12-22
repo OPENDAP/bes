@@ -29,20 +29,20 @@
 #include <sstream>
 #include <iterator>
 
-#include <BaseType.h>
-#include <Byte.h>
-#include <Int32.h>
-#include <Float32.h>
-#include <Float64.h>
-#include <Str.h>
-#include <Array.h>
-#include <Structure.h>
-#include <DDS.h>
-#include <DMR.h>
-#include <D4RValue.h>
-#include <util.h>
+#include <libdap/BaseType.h>
+#include <libdap/Byte.h>
+#include <libdap/Int32.h>
+#include <libdap/Float32.h>
+#include <libdap/Float64.h>
+#include <libdap/Str.h>
+#include <libdap/Array.h>
+#include <libdap/Structure.h>
+#include <libdap/DDS.h>
+#include <libdap/DMR.h>
+#include <libdap/D4RValue.h>
+#include <libdap/util.h>
 #include <unistd.h>
-#include <debug.h>
+#include <libdap/debug.h>
 
 #include <test/TestTypeFactory.h>
 #include <test/TestCommon.h>

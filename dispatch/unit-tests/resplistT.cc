@@ -39,7 +39,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <unistd.h>
-#include <Error.h>
+#include <libdap/Error.h>
 
 #include "BESResponseHandlerList.h"
 #include "TheBESKeys.h"

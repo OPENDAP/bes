@@ -30,8 +30,8 @@
 
 #include <unistd.h>
 
-#include "debug.h"
-#include "util.h"
+#include <libdap/debug.h>
+#include <libdap/util.h>
 
 #include "gridfields/grid.h"
 #include "gridfields/gridfield.h"

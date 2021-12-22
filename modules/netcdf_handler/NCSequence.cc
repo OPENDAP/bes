@@ -45,8 +45,8 @@ static char rcsid[] not_used ={"$Id$"};
 
 // #define DODS_DEBUG 1
 
-#include <InternalErr.h>
-#include <debug.h>
+#include <libdap/InternalErr.h>
+#include <libdap/debug.h>
 
 #include "NCSequence.h"
 

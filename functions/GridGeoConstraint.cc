@@ -35,13 +35,13 @@
 
 //#define DODS_DEBUG
 
-#include <Float64.h>
-#include <Grid.h>
-#include <dods-datatypes.h>
-#include <Error.h>
-#include <InternalErr.h>
-#include <util.h>
-#include <debug.h>
+#include <libdap/Float64.h>
+#include <libdap/Grid.h>
+#include <libdap/dods-datatypes.h>
+#include <libdap/Error.h>
+#include <libdap/InternalErr.h>
+#include <libdap/util.h>
+#include <libdap/debug.h>
 
 #include "GridGeoConstraint.h"
 

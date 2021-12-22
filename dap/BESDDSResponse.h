@@ -43,7 +43,7 @@ class ConstraintEvaluator;
 }
 
 // Remove this if we can get the ConstraintEvalutor out of this code.
-#include <ConstraintEvaluator.h>
+#include <libdap/ConstraintEvaluator.h>
 
 /** @brief Holds a DDS object within the BES
  */

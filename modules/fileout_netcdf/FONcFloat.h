@@ -32,7 +32,7 @@
 #ifndef FONcFloat_h_
 #define FONcFloat_h_ 1
 
-#include <Float32.h>
+#include <libdap/Float32.h>
 
 namespace libdap {
     class BaseType;

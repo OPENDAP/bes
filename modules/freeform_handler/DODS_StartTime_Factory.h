@@ -37,9 +37,9 @@
 
 #include "DODS_Time.h"
 #include "DODS_Time_Factory.h"
-#include "DAS.h"
-#include "DDS.h"
-#include "BaseType.h"
+#include <libdap/DAS.h>
+#include <libdap/DDS.h>
+#include <libdap/BaseType.h>
 
 /** Read times from datasets based on text configuration values. Times are
     returned using DODS\_Time objects.

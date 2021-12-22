@@ -30,9 +30,9 @@
 #ifndef UGR5_H_
 #define UGR5_H_
 
-#include "BaseType.h"
-#include "DDS.h"
-#include "ServerFunction.h"
+#include <libdap/BaseType.h>
+#include <libdap/DDS.h>
+#include <libdap/ServerFunction.h>
 
 namespace ugrid {
 

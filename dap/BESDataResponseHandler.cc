@@ -32,8 +32,8 @@
 
 #include "config.h"
 
-#include <DDS.h>
-#include <DataDDS.h>
+#include <libdap/DDS.h>
+#include <libdap/DataDDS.h>
 
 #include "BESDataResponseHandler.h"
 #include "BESDataDDSResponse.h"

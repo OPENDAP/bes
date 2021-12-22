@@ -45,7 +45,7 @@
 #include <cstring>
 
 #include "FFStr.h"
-#include "util.h"
+#include <libdap/util.h>
 
 extern long BufPtr;   // set by read functions
 extern char * BufVal; // set by first call to sequence

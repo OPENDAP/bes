@@ -44,7 +44,7 @@
 #define _ffgrid_h 1
 
 
-#include "Grid.h"
+#include <libdap/Grid.h>
 
 using namespace libdap ;
 

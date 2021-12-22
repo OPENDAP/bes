@@ -32,7 +32,7 @@
 #ifndef FONcInt_h_
 #define FONcInt_h_ 1
 
-#include <BaseType.h>
+#include <libdap/BaseType.h>
 
 namespace libdap {
     class BaseType;

@@ -29,10 +29,10 @@
 #ifndef __NCML_MODULE__NCMLARRAY_H__
 #define __NCML_MODULE__NCMLARRAY_H__
 
-#include <dods-datatypes.h>
-#include <Array.h>
-#include <BaseType.h>
-#include <Vector.h>
+#include <libdap/dods-datatypes.h>
+#include <libdap/Array.h>
+#include <libdap/BaseType.h>
+#include <libdap/Vector.h>
 #include <memory>
 // #include "MyBaseTypeFactory.h"
 #include "NCMLBaseArray.h"

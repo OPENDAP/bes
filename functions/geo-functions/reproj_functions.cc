@@ -36,13 +36,13 @@
 #include <ogr_spatialref.h>
 #include <gdalwarper.h>
 
-#include <Str.h>
-#include <Array.h>
-#include <Grid.h>
+#include <libdap/Str.h>
+#include <libdap/Array.h>
+#include <libdap/Grid.h>
 
-#include <util.h>
-#include <Error.h>
-#include <debug.h>
+#include <libdap/util.h>
+#include <libdap/Error.h>
+#include <libdap/debug.h>
 
 #include "reproj_functions.h"
 #include "DAP_Dataset.h"

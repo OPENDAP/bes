@@ -26,12 +26,12 @@
 
 #include <string>
 
-//#include <D4Enum.h>
-//#include <D4EnumDefs.h>
-#include <D4Attributes.h>
-#include <D4Maps.h>
-#include <D4Group.h>
-#include <XMLWriter.h>
+//#include <libdap/D4Enum.h>
+//#include <libdap/D4EnumDefs.h>
+#include <libdap/D4Attributes.h>
+#include <libdap/D4Maps.h>
+#include <libdap/D4Group.h>
+#include <libdap/XMLWriter.h>
 
 #include <BESError.h>
 //#include <BESDebug.h>

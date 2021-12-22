@@ -55,7 +55,7 @@
 
 #include <BESInternalError.h>
 #include <BESDebug.h>
-#include <D4Dimensions.h>
+#include <libdap/D4Dimensions.h>
 
 /** @brief If a variable name, dimension name, or attribute name begins
  * with a character that is not supported by netcdf, then use this

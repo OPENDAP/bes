@@ -36,7 +36,7 @@
 
 using namespace std;
 
-#include <InternalErr.h>
+#include <libdap/InternalErr.h>
 
 #include <BESDebug.h>
 
@@ -44,7 +44,7 @@ using namespace std;
 
 #include "XDGrid.h"
 #include "XDArray.h"
-#include "debug.h"
+#include <libdap/debug.h>
 #include "get_xml_data.h"
 
 using namespace xml_data;

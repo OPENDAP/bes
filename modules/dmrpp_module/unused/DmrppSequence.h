@@ -27,7 +27,7 @@
 
 #include <string>
 
-#include <Sequence.h>
+#include <libdap/Sequence.h>
 #include "DmrppCommon.h"
 
 /**

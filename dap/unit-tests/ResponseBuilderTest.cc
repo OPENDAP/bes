@@ -43,25 +43,24 @@
 #include <unistd.h>  // for stat
 #include <sstream>
 
-#include <ObjectType.h>
-#include <EncodingType.h>
-#include <ServerFunction.h>
-#include <ServerFunctionsList.h>
-#include <ConstraintEvaluator.h>
-#include <DAS.h>
-#include <DDS.h>
-#include <Str.h>
-#include <DDXParserSAX2.h>
-#include <D4AsyncUtil.h>
+#include <libdap/ObjectType.h>
+#include <libdap/EncodingType.h>
+#include <libdap/ServerFunction.h>
+#include <libdap/ServerFunctionsList.h>
+#include <libdap/ConstraintEvaluator.h>
+#include <libdap/DAS.h>
+#include <libdap/DDS.h>
+#include <libdap/Str.h>
+#include <libdap/DDXParserSAX2.h>
+#include <libdap/D4AsyncUtil.h>
 
-#include <DMR.h>
-#include <D4Group.h>
-#include <D4ParserSax2.h>
+#include <libdap/DMR.h>
+#include <libdap/D4Group.h>
+#include <libdap/D4ParserSax2.h>
 #include <test/D4TestTypeFactory.h>
-
-#include <util.h>
-#include <mime_util.h>
-#include <debug.h>
+#include <libdap/util.h>
+#include <libdap/mime_util.h>
+#include <libdap/debug.h>
 
 #include <test/TestTypeFactory.h>
 #include <test/TestByte.h>

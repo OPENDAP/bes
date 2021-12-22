@@ -36,7 +36,7 @@
 #ifndef _wwwint16_h
 #define _wwwint16_h 1
 
-#include "Int16.h"
+#include <libdap/Int16.h>
 
 using namespace libdap ;
 
