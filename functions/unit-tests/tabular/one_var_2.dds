@@ -1,3 +1,0 @@
-Dataset {
-	Int32 a[4][3];
-} one_var_2;

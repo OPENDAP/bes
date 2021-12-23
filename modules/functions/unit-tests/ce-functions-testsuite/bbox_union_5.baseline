@@ -1,0 +1,5 @@
+Structure {
+    Int32 start;
+    Int32 stop;
+    String name;
+} union[union = 2] = {{ 3, 7, "a_values" }, { 3, 7, "a_values" }};

@@ -1,0 +1,38 @@
+Dataset {
+    # SST1 will have a lon map that uses 0/360 notation
+    Grid {
+      Array:
+        Byte SST[lon=10][lat=10];
+      Maps:
+        Float64 lon[10];
+        Float64 lat[10];
+    } SST1;
+    
+    # SST1_1 will have a lon map that uses 0/360 notation; this has lon as its 
+    # rightmost dimension so it can be used with a CE that requires 'stitching'
+    Grid {
+      Array:
+        Byte SST[lat=10][lon=10];
+      Maps:
+        Float64 lat[10];
+        Float64 lon[10];
+    } SST1_1;
+    
+    # SST2 will have a lon map that uses -180/180 notation
+    Grid {
+      Array:
+        Byte SST[lon=10][lat=10];
+      Maps:
+        Float64 lon[10];
+        Float64 lat[10];
+    } SST2;
+    
+    # SST3 will have a lon map that uses 0/360 notation and runs from 20 to 379
+    Grid {
+      Array:
+        Byte SST[lat=10][lon=10];
+      Maps:
+        Float64 lat[10];
+        Float64 lon[10];
+    } SST3;
+} geo_grid;

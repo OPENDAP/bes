@@ -1,0 +1,10 @@
+Dataset {
+    # SST4 will be a three dimensional Grid
+    Grid {
+      Array:
+        Byte SST5[lon=15][lat=5];
+      Maps:
+        Float64 lon[15];
+        Float64 lat[5];
+    } SST5;
+} geo_grid_coads_lon;

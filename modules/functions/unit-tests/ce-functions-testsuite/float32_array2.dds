@@ -1,0 +1,4 @@
+Dataset {
+	Float32 a[values = 30];
+	Float32 b[values = 40];
+} two_var;

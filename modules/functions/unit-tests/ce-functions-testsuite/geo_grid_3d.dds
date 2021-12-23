@@ -1,0 +1,11 @@
+Dataset {
+    # SST4 will be a three dimensional Grid
+    Grid {
+      Array:
+        Byte SST4[time=3][lon=5][lat=5];
+      Maps:
+        Int32 time[3];
+        Float64 lon[5];
+        Float64 lat[5];
+    } SST4;
+} geo_grid_3d;

@@ -2,7 +2,7 @@
 
 AT_INIT([bes/modules/csv_handler/tests testsuite])
 
-m4_include([../../handler_tests_macros.m4])
+m4_include([../../..//modules/handler_tests_macros.m4])
 
 # m4_include([handler_tests_macros.m4])
 

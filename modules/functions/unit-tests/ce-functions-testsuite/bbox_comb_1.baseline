@@ -1,0 +1,5 @@
+Structure {
+    Int32 start;
+    Int32 stop;
+    String name;
+} bbox[bbox = 2] = {{ 3, 10, "cols" }, { 5, 9, "x" }};

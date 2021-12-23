@@ -1009,16 +1009,8 @@ AC_CONFIG_FILES([Makefile
 		 dapreader/Makefile
 		 dapreader/tests/Makefile
 		 dapreader/tests/atlocal
-
-		 functions/Makefile
-		 functions/tests/Makefile
-		 functions/tests/atlocal
-		 functions/unit-tests/Makefile
-		 functions/stare/Makefile
-		 functions/stare/unit-tests/Makefile
-		 functions/stare/tests/Makefile
-		 functions/stare/tests/atlocal
 		 ])
+
 dnl These need to be moved into the AC_CONFIG_FILES above 
 dnl when geo-functions is reenabled.
 dnl		 functions/geo-functions/Makefile
@@ -1038,8 +1030,6 @@ AC_CONFIG_TESTDIR(cmdln/tests, [standalone])
 AC_CONFIG_TESTDIR(hello_world/tests, [standalone])
 AC_CONFIG_TESTDIR(dapreader/tests, [standalone])
 AC_CONFIG_TESTDIR(dap/tests, [standalone])
-AC_CONFIG_TESTDIR(functions/tests, [standalone])
-AC_CONFIG_TESTDIR(functions/stare/tests, [standalone])
 AC_CONFIG_TESTDIR(dispatch/tests, [dispatch/tests])
 AC_CONFIG_TESTDIR(xmlcommand/tests, [standalone])
 
@@ -1103,6 +1093,15 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/freeform_handler/tests/Makefile
     modules/freeform_handler/tests/atlocal
     modules/freeform_handler/FFND/Makefile
+
+    modules/functions/Makefile
+    modules/functions/tests/Makefile
+    modules/functions/tests/atlocal
+    modules/functions/unit-tests/Makefile
+    modules/functions/stare/Makefile
+    modules/functions/stare/unit-tests/Makefile
+    modules/functions/stare/tests/Makefile
+    modules/functions/stare/tests/atlocal
 
     modules/xml_data_handler/Makefile
     modules/xml_data_handler/unit-tests/Makefile
@@ -1202,9 +1201,11 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     AC_CONFIG_TESTDIR(modules/ugrid_functions/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/w10n_handler/tests, [standalone])
 
+    AC_CONFIG_TESTDIR(modules/functions/tests, [standalone])
+    AC_CONFIG_TESTDIR(modules/functions/stare/tests, [standalone])
+
     AC_CONFIG_TESTDIR(modules/hdf4_handler/bes-testsuite, [standalone])
     AC_CONFIG_TESTDIR(modules/hdf5_handler/bes-testsuite, [standalone])
-    
     ]
 )
 
