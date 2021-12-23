@@ -2,7 +2,7 @@
 
 AT_INIT([bes/modules/dmrpp_module/tests testsuite])
 
-m4_include([../../handler_tests_macros.m4])
+m4_include([../../..//modules/handler_tests_macros.m4])
 
 dnl Using the file:/... URLs
 AT_BESCMD_RESPONSE_TEST([contiguous/t_int_scalar.h5.dmr])

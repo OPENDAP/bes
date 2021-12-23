@@ -40,7 +40,7 @@ endif
 SUBDIRS +=  httpd_catalog_module ngap_module fileout_json w10n_handler gateway_module xml_data_handler
 
 if BUILD_GDAL
-SUBDIRS += fileout_gdal gdal_handler
+SUBDIRS += functions fileout_gdal gdal_handler
 endif
 
 if BUILD_FITS

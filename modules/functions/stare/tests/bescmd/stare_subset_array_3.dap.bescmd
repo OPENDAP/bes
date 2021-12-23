@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="[http-8080-1:27:bes_request]">
+  <bes:setContext name="dap_explicit_containers">no</bes:setContext>
+  <bes:setContext name="errors">xml</bes:setContext>
+  <bes:setContext name="max_response_size">0</bes:setContext>
+  
+  <bes:setContainer name="c" space="catalog">/functions/stare/data/sample_data/336-23xx.20201211/MOD05_L2.A2019336.2315.061.2019337071952.hdf</bes:setContainer>
+  
+  <bes:define name="d1" space="default">
+    <bes:container name="c">
+      <!-- Test intersection using level 27 indices with resolution data -->
+      <!-- This list of stare indices comes from the file Target_overlap_nw_stare_res.h5 -->
+      <bes:dap4function>stare_subset_array(Solar_Zenith, 17,
+                                            $UInt64(0:4015281913904386235, 4015310654433098587, 4015291327038445371))</bes:dap4function>
+    </bes:container>
+  </bes:define>
+  
+  <bes:get type="dap" definition="d1" />
+  
+</bes:request>

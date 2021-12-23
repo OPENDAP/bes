@@ -2,7 +2,7 @@
 
 AT_INIT([bes/modules/fileout_covjson/tests ./testsuite])
 
-m4_include(AT_TOP_SRCDIR/modules/handler_tests_macros.m4)
+m4_include(../../..//modules/handler_tests_macros.m4)
 
 AT_BESCMD_RESPONSE_TEST([covjson/fnoc1_abstract_object_METADATA.bescmd])
 AT_BESCMD_RESPONSE_TEST([covjson/fnoc1_abstract_object_DATA.bescmd])

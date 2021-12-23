@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Array name="float_2d_array">
+    <Float32/>
+    <dimension name="one" size="10"/>
+    <dimension name="two" size="5"/>
+</Array>

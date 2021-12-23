@@ -1,4 +1,0 @@
-Dataset {
-    Float64 a[10];
-    Int32 b[10][5];
-} mask_array_data;
