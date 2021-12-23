@@ -2,7 +2,7 @@
 
 AT_INIT([DMR++ MDS])
 
-m4_include([../../..//modules/handler_tests_macros.m4])
+m4_include([../../handler_tests_macros.m4])
 
 dnl The four dim files make output so large that the print representation of the
 dnl values does not work on linux - it switches to scientific notation at some

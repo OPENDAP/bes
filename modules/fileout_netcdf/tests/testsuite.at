@@ -4,7 +4,7 @@ AT_INIT([modules/fileout_netcdf/tests testsuite])
 
 AT_TESTED([besstandalone])
 
-m4_include([../../..//modules/handler_tests_macros.m4])
+m4_include([../../handler_tests_macros.m4])
 m4_include([local_handler_tests_macros.m4])
 
 dnl These DDS and Data responses are here as a sanity check so that when/if a test 

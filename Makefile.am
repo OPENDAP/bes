@@ -35,8 +35,7 @@ if LIBDAP
 SUBDIRS += dap dapreader
 
 if DAP_BUILTIN_MODULES
-SUBDIRS += modules
-# moved functions to the modules directory. jhrg 12.22.21
+SUBDIRS += functions modules
 endif
 
 endif

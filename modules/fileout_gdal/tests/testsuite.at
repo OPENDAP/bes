@@ -4,7 +4,7 @@
 
 AT_INIT([bes/modules/fileout_gdal/tests ./testsuite])
 
-m4_include(../../..//modules/handler_tests_macros.m4)
+m4_include(AT_TOP_SRCDIR/modules/handler_tests_macros.m4)
 
 # geotiff files
 AT_BESCMD_GDAL_BINARY_FILE_RESPONSE_TEST([gdal/coads_climatology.nc.0.bescmd], [info], [pass])

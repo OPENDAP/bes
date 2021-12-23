@@ -1,3 +1,0 @@
-Dataset {
-	Float32 a[rows = 30][cols = 34];
-} one_var;

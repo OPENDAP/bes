@@ -1,2 +1,0 @@
-The data:
-String info = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\012<function name=\"make_array\" version=\"1.0\" href=\"http://docs.opendap.org/index.php/Server_Side_Processing_Functions#bind_name\">\012</function>";

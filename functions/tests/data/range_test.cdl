@@ -1,0 +1,35 @@
+
+netcdf monotonicity_test {
+dimensions:
+	muhsize = 10 ;
+variables:
+	float v1(muhsize) ;
+		v1:montonic = "true" ;
+	float v2(muhsize) ;
+		v2:montonic = "false" ;
+	float v3(muhsize) ;
+		v3:montonic = "false" ;
+	float v4(muhsize) ;
+		v4:montonic = "false" ;
+	float v5(muhsize) ;
+		v5:montonic = "true" ;
+	float v6(muhsize) ;
+		v6:montonic = "false" ;
+	float v7(muhsize) ;
+		v7:montonic = "false" ;
+	float v8(muhsize) ;
+		v8:montonic = "false" ;
+data:
+ 
+ v1 = 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0;
+ v2 = 1.0, 0.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0;
+ v3 = 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, -9.0;
+ v4 = 0.0, -1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0;
+ 
+ v5 = 9.0, 8.0, 7.0, 6.0, 5.0, 4.0, 3.0, 2.0, 1.0, 0.0;
+ v6 = 8.0, 9.0, 7.0, 6.0, 5.0, 4.0, 3.0, 2.0, 1.0, 0.0;
+ v7 = 9.0, 8.0, 7.0, 6.0, 5.0, 4.0, 3.0, 2.0, -1.0, 0.0;
+ v8 = 9.0, -8.0, 7.0, 6.0, 5.0, 4.0, 3.0, 2.0, 1.0, 0.0;
+
+
+}

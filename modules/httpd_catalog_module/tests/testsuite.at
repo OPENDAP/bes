@@ -2,7 +2,7 @@
 
 AT_INIT([bes/modules/httpd_catalog_module testsuite])
 AT_TESTED([besstandalone])
-m4_include([../../..//modules/handler_tests_macros.m4])
+m4_include([../../handler_tests_macros.m4])
 
 AT_BESCMD_RESPONSE_SCRUB_DATES_TEST([httpd_catalog/show_test_node.bescmd])
 AT_BESCMD_RESPONSE_SCRUB_DATES_TEST([httpd_catalog/show_test_item.bescmd])
