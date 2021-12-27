@@ -137,6 +137,55 @@ m4_define([_AT_BESCMD_MDS_BINARYDATA_TEST],  [dnl
     AT_CLEANUP
 ])
 
+# Clone the AT_BESCMD_TEST and AT_BESCMD_BINARYDATA_TEST above. Just change bes.conf to bes_byte2short.conf
+# KY 2021-12-22
+m4_define([_AT_BESCMD_BTS_TEST], [dnl
+
+    AT_SETUP([BESCMD $1])
+    AT_KEYWORDS([bescmd])
+
+    input=$1
+    baseline=$2
+    pass=$3
+    cached=$4
+    AS_IF([test -n "$cached" -a x$cached = xcached], [cached="-r 3"])
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone $cached -c $abs_builddir/bes_byte2short.conf -i $input], [], [stdout])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone $cached -c $abs_builddir/bes_byte2short.conf -i $input], [], [stdout])
+        AT_CHECK([diff -b -B $baseline stdout])
+        AT_XFAIL_IF([test z$pass = zxfail])
+        ])
+
+    AT_CLEANUP
+])
+
+m4_define([_AT_BESCMD_BTS_BINARYDATA_TEST],  [dnl
+
+    AT_SETUP([BESCMD $1])
+    AT_KEYWORDS([binary])
+    
+    input=$1
+    baseline=$2
+    pass=$3
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/bes_byte2short.conf -i $input | getdap -Ms -], [], [stdout])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/bes_byte2short.conf -i $input | getdap -Ms -], [], [stdout])
+        AT_CHECK([diff -b -B $baseline stdout])
+        AT_XFAIL_IF([test z$pass = zxfail])
+        ])
+
+    AT_CLEANUP
+])
 
 dnl AT_CHECK (commands, [status = `0'], [stdout = `'], [stderr = `'], [run-if-fail], [run-if-pass])
 
@@ -198,6 +247,11 @@ m4_define([AT_BESCMD_MDS_RESPONSE_TEST],
 m4_define([AT_BESCMD_MDS_BINARYDATA_RESPONSE_TEST],
 [_AT_BESCMD_MDS_BINARYDATA_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2])])
 
+m4_define([AT_BESCMD_BTS_RESPONSE_TEST],
+[_AT_BESCMD_BTS_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline])])
+
+m4_define([AT_BESCMD_BTS_BINARYDATA_RESPONSE_TEST],
+[_AT_BESCMD_BTS_BINARYDATA_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2])])
 
 m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST],
 [_AT_BESCMD_NETCDF_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2])])

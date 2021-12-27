@@ -11,19 +11,20 @@ AM_CXXFLAGS =
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
-noinst_DATA = bes.conf bes_mds.conf
+noinst_DATA = bes.conf bes_mds.conf bes_byte2short.conf
 
-CLEANFILES = bes.conf bes_mds.conf $(srcdir)/package.m4
+CLEANFILES = bes.conf bes_mds.conf bes_byte2short.conf $(srcdir)/package.m4
 
 EXTRA_DIST = nc netcdf_handlerTest netcdf_handlerTest.at \
 nc4_netcdf_handler_tests nc4_netcdf_handler_tests.at \
-atlocal.in $(BES_CONF_IN) $(BES_MDS_CONF_IN) $(srcdir)/package.m4 \
+atlocal.in $(BES_CONF_IN) $(BES_MDS_CONF_IN) $(BES_BTS_CONF_IN) $(srcdir)/package.m4 \
 handler_tests_macros.m4
 
 DISTCLEANFILES = atconfig
 
 BES_CONF_IN = bes.conf.modules.in
 BES_MDS_CONF_IN = bes_mds.conf.modules.in
+BES_BTS_CONF_IN = bes_byte2short.conf.modules.in
 
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using 
@@ -37,6 +38,13 @@ bes_mds.conf: $(srcdir)/$(BES_MDS_CONF_IN) $(top_srcdir)/configure.ac
 	@clean_abs_top_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes_mds.conf
+
+bes_byte2short.conf: $(srcdir)/$(BES_BTS_CONF_IN) $(top_srcdir)/configure.ac
+	@clean_abs_top_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
+	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
+		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes_byte2short.conf
+
+
 ############## Autotest follows #####################
 
 AUTOM4TE = autom4te

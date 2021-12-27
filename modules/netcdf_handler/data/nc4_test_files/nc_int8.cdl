@@ -1,0 +1,11 @@
+netcdf nc_8_bit{    
+dimensions:
+ dim= 2; 
+variables:
+  byte   dim(dim);
+  byte     sca;
+data:
+  dim   = -128, 127;
+  sca   = -128;
+}
+

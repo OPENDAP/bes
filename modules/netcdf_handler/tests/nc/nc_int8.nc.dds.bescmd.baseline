@@ -1,0 +1,4 @@
+Dataset {
+    Int16 dim[dim = 2];
+    Int16 sca;
+} nc_int8.nc;

@@ -66,7 +66,7 @@ AT_BESCMD_CACHED_RESPONSE_TEST([nc/fnoc1.nc.dmr.cached.bescmd])
 AT_BESCMD_RESPONSE_TEST([nc/fnoc1.nc.function.ddx.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([nc/fnoc1.nc.function.dods.bescmd])
 
-# 
+# MDS tests 
 AT_BESCMD_MDS_RESPONSE_TEST([nc/fnoc1.nc.mds.ddx.bescmd])
 AT_BESCMD_MDS_RESPONSE_TEST([nc/fnoc1.nc.mds.das.bescmd])
 AT_BESCMD_MDS_RESPONSE_TEST([nc/fnoc1.nc.mds.dds.bescmd])
@@ -76,3 +76,6 @@ AT_BESCMD_MDS_BINARYDATA_RESPONSE_TEST([nc/fnoc1.nc.mds.function.dods.bescmd])
 AT_BESCMD_RESPONSE_TEST([nc/string_attribute_values.nc.0.bescmd])
 AT_BESCMD_RESPONSE_TEST([nc/string_attribute_values.nc.1.bescmd])
 
+# ByteToPromote test
+AT_BESCMD_BTS_RESPONSE_TEST([nc/nc_int8.nc.dds.bescmd])
+AT_BESCMD_BTS_BINARYDATA_RESPONSE_TEST([nc/nc_int8.nc.dods.bescmd])
