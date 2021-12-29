@@ -418,6 +418,25 @@ m4_define([REMOVE_DATE_TIME], [dnl
     mv $1.sed $1
 ])
 
+dnl Given a filename, remove any version string of the form <Value>3.20.9</Value>
+dnl or <Value>libdap-3.20.8</Value> in that file and put "removed version" in its
+dnl place. This hack keeps the baselines more or less true to form without the
+dnl obvious issue of baselines being broken when versions of the software are changed.
+dnl
+dnl Added support for 'dmrpp:version="3.20.9"' in the root node of the dmrpp.
+dnl
+dnl Note that the macro depends on the baseline being a file.
+dnl
+dnl jhrg 12/29/21
+
+m4_define([REMOVE_VERSIONS], [dnl
+      sed -e 's@<Value>[[0-9]]*\.[[0-9]]*\.[[0-9]]*</Value>@<Value>removed version</Value>@g' \
+      -e 's@<Value>[[A-z_.]]*-[[0-9]]*\.[[0-9]]*\.[[0-9]]*</Value>@<Value>removed version</Value>@g' \
+      -e 's@dmrpp:version="[[0-9]]*\.[[0-9]]*\.[[0-9]]*"@removed dmrpp:version@g' \
+      < $1 > $1.sed
+      mv $1.sed $1
+  ])
+
 dnl Given a filename, remove the <Value> element of a DAP4 data response as
 dnl printed by getdap4 so that we don't have issues with comparing data values
 dnl on big- and little-endian machines. The value of the checksum is a function

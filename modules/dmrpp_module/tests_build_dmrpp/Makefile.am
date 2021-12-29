@@ -26,7 +26,7 @@ clean-local:
 %: %.at 
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
 
-$(TESTSUITE_DMRPP): $(TESTSUITE_DMRPP).at $(srcdir)/package.m4 $(srcdir)/build_dmrpp_macros.m4
+$(TESTSUITE_DMRPP): $(TESTSUITE_DMRPP).at $(srcdir)/package.m4 $(srcdir)/build_dmrpp_macros.m4 $(top_srcdir)/modules/handler_tests_macros.m4
 
 #$(top_srcdir)/modules/dmrpp_module/tests_build_dmrpp/build_dmrpp_macros.m4
 

@@ -11,17 +11,20 @@
 # the pathname to the test directory in the AC_INIT() macro, you will make it much easier
 # to identify the tests in a large build like the CI builds. jhrg 4/25/18
 
+# I added this to pull in the REMOVE_VERSIONS() macro. jhrg 12/29/21
+m4_include([../../handler_tests_macros.m4])
+
 AT_TESTED([build_dmrpp])
 
-AT_ARG_OPTION_ARG([baselines],
-    [--baselines=yes|no   Build the baseline file for parser test 'arg'],
-    [echo "baselines set to $at_arg_baselines";
-     baselines=$at_arg_baselines],[baselines=])
+# AT_ARG_OPTION_ARG([baselines],
+#    [--baselines=yes|no   Build the baseline file for parser test 'arg'],
+#    [echo "baselines set to $at_arg_baselines";
+#     baselines=$at_arg_baselines],[baselines=])
 
-AT_ARG_OPTION_ARG([conf],
-    [--conf=<file>   Use <file> for the bes.conf file],
-    [echo "bes_conf set to $at_arg_conf"; bes_conf=$at_arg_conf],
-    [bes_conf=bes.conf])
+#AT_ARG_OPTION_ARG([conf],
+#    [--conf=<file>   Use <file> for the bes.conf file],
+#    [echo "bes_conf set to $at_arg_conf"; bes_conf=$at_arg_conf],
+#    [bes_conf=bes.conf])
 
 # Usage: _AT_TEST_*(<bescmd source>, <baseline file>, <xpass/xfail> [default is xpass] <repeat|cached> [default is no])
 
@@ -47,10 +50,12 @@ m4_define([AT_BUILD_DMRPP],  [dnl
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
     [
         AT_CHECK([build_dmrpp -f $input -r $dmr], [], [stdout])
+        REMOVE_VERSIONS([stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
         AT_CHECK([build_dmrpp -f $input -r $dmr], [], [stdout])
+        REMOVE_VERSIONS([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         AT_XFAIL_IF([test z$2 = zxfail])
         ])
@@ -74,12 +79,14 @@ m4_define([AT_BUILD_DMRPP_M],  [dnl
         AT_CHECK([build_dmrpp -M -f $input -r $dmr], [], [stdout])
         NORMAILZE_EXEC_NAME([stdout])
         REMOVE_PATH_COMPONENTS([stdout])
+        REMOVE_VERSIONS([stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
         AT_CHECK([build_dmrpp -M -f $input -r $dmr], [], [stdout])
         NORMAILZE_EXEC_NAME([stdout])
         REMOVE_PATH_COMPONENTS([stdout])
+        REMOVE_VERSIONS([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         AT_XFAIL_IF([test z$2 = zxfail])
         ])
@@ -96,7 +103,7 @@ m4_define([REMOVE_PATH_COMPONENTS], [dnl
 ])
 
 dnl Normalize binary name. Sometime the build_dmrpp program is named 'build_dmrpp,'
-dnl othertimes it is named 'lt-build_dmrpp.' This ensure it always has the same name
+dnl other times it is named 'lt-build_dmrpp.' This ensure it always has the same name
 dnl in the baselines and test output.
 dml jhrg 11/22/21
 dnl Usage: NORMAILZE_EXEC_NAME(file_name)
