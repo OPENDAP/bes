@@ -1,0 +1,6 @@
+The data:
+Structure {
+    Int32 start;
+    Int32 stop;
+    String name;
+} Latitude[Latitude = 2] = {{ 3, 4, "Cell_Along_Swath" }, { 1, 8, "Cell_Across_Swath" }};

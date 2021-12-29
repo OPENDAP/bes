@@ -18,7 +18,7 @@ BES.module.dr=@abs_top_builddir@/dapreader/.libs/libdapreader_module.so
 BES.module.fonc=@abs_top_builddir@/modules/fileout_netcdf/.libs/libfonc_module.so
 
 BES.module.nc=@abs_top_builddir@/modules/netcdf_handler/.libs/libnc_module.so
-BES.module.functions=@abs_top_builddir@/functions/.libs/libfunctions_module.so
+BES.module.functions=@abs_top_builddir@/modules/functions/.libs/libfunctions_module.so
 BES.module.h5=@abs_top_builddir@/modules/hdf5_handler/.libs/libhdf5_module.so
 
 BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/fileout_netcdf

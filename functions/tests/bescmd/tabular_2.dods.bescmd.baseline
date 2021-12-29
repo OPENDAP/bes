@@ -1,9 +1,0 @@
-The data:
-Sequence {
-    Float32 lat;
-} table = { 
-0: { 17.5 }, 
-1: { 15 }, 
-2: { 12.5 }, 
-3: { 10 } };
-

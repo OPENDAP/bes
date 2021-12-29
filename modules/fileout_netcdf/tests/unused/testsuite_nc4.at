@@ -4,7 +4,7 @@ AT_INIT([modules/fileout_netcdf/tests testsuite_nc4 --conf=bes.nc4.conf])
 
 AT_TESTED([besstandalone])
 
-m4_include([../../handler_tests_macros.m4])
+m4_include([../../../modules/handler_tests_macros.m4])
 
 dnl NC4 test
 AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/simpleT00.8.bescmd)

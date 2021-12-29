@@ -1,0 +1,8 @@
+The data:
+Sequence {
+    Float32 Latitude;
+    Float32 Longitude;
+} table = { 
+0: { 49.9799, 166.815 }, 
+1: { 49.4234, 169.518 } };
+
