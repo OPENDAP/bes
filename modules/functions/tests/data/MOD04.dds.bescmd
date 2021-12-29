@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="[http-8080-1:27:bes_request]">
+  <bes:setContext name="xdap_accept">3.2</bes:setContext>
+  <bes:setContext name="dap_explicit_containers">no</bes:setContext>
+  <bes:setContext name="errors">xml</bes:setContext>
+  <bes:setContext name="max_response_size">0</bes:setContext>
+  
+  <bes:setContainer name="c" space="catalog">/functions/tests/data/MOD04_L2.A2015021.0020.051.NRT.hdf</bes:setContainer>
+  
+  <bes:define name="d1" space="default">
+    <bes:container name="c"/>
+    <!-- If the hdf4 handler balks at this CE, check to make sure that EnableCF is true -->
+    <constraint>Latitude,Longitude,Mean_Reflectance_Land_All,Optical_Depth_Land_And_Ocean</constraint>
+    
+    <!-- Subset/sample the data to make the data file used for tests -->
+    <!-- constraint>Latitude[0:10:202][0:10:134],Longitude[0:10:202][0:10:134],Mean_Reflectance_Land_All[0:2][0:10:202][0:10:134],Optical_Depth_Land_And_Ocean[0:10:202][0:10:134]</constraint -->
+
+  </bes:define>
+  
+  <bes:get type="dds" definition="d1" />
+  
+</bes:request>

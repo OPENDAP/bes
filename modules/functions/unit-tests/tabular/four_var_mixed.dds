@@ -1,0 +1,10 @@
+#
+# This DDS helps test the case where the dependent vars are 'larger'
+# than the independent vars (because they are a function of some
+# additional parameters like sensor band).
+Dataset {
+	Byte a[2];
+	Int32 b[2];
+	Float32 c[4][2];
+	Float64 d[3][4][2];
+} four_var_2;

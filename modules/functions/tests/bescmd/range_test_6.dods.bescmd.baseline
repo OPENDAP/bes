@@ -1,0 +1,5 @@
+The data:
+Float64 min = 0;
+Float64 max = 9;
+Byte is_monotonic = 0;
+
