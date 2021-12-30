@@ -268,11 +268,11 @@ void BESUtil::check_path(const string &path, const string &root, bool follow_sym
     // function for the eval operation.
     int (*ye_old_stat_function)(const char *pathname, struct stat *buf);
     if (follow_sym_links) {
-        BESDEBUG(MODULE, prolog << "Using 'stat' function (follow_sym_links = true)" << endl);
+        BESDEBUG(MODULE, prolog << "Using 'stat' function" << endl);
         ye_old_stat_function = &stat;
     }
     else {
-        BESDEBUG(MODULE, "check_path() - Using 'lstat' function (follow_sym_links = false)" << endl);
+        BESDEBUG(MODULE, prolog << "Using 'lstat' function" << endl);
         ye_old_stat_function = &lstat;
     }
 
@@ -298,14 +298,18 @@ void BESUtil::check_path(const string &path, const string &root, bool follow_sym
     if (remaining_path[0] == '/') {
         remaining_path = remaining_path.substr(1);
     }
-    if (remaining_path[remaining_path.length() - 1] == '/') {
+
+    // FIXME I added tests to guard against string length == 0 and the [-1] access
+    // but there are much better ways to solve this problem. See below, too. jhrg 12/30/21
+
+    if (remaining_path.length() > 0 && remaining_path[remaining_path.length() - 1] == '/') {
         remaining_path = remaining_path.substr(0, remaining_path.length() - 1);
     }
 
     // The fullpath is our "graph" starting with root and becoming the request resource.
     string fullpath = root;
     // Normalize the fullpath, stripping only the trailing slash (it's a fully qualifed path)
-    if (fullpath[fullpath.length() - 1] == '/') {
+    if (fullpath.length() > 0 && fullpath[fullpath.length() - 1] == '/') {
         fullpath = fullpath.substr(0, fullpath.length() - 1);
     }
 
