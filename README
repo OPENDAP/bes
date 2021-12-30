@@ -36,9 +36,16 @@ client tools such as IDV, Panoply, GrADS, Ferret, NCL, MATLAB, and IDL.
  A comprehensive list of the improvements since the 2.0.0 release is
 available on the next section.
 
+What's new for Hyrax 1.16.5
+ - Now based on HDF5-1.12.1
+ - Updated libdap headers references.
+ - Repaired a problem with the evaluation of "hard links" in dataset dimensions.
+ - Added the use of default configuration when the user fails to specify configuration
+   values.
+
 What's new for Hyrax 1.16.4
 CF option:
-1. The DMR response can be  directly generated rather from DDS and DAS. 
+1. The DMR response can be directly generated from the hdf5 file rather from DDS and DAS.
    To take advantage of this feature, the H5.EnableCFDMR key needs to be set to true in the configuration 
    file(h5.conf etc.)
    The biggest advantage of this implementation is that the signed 8-bit integer mapping is kept. 

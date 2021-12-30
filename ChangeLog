@@ -1,3 +1,155 @@
+
+## Hyrax-1.16.5
+
+2021-12-29  James Gallagher  <jgallagher@opendap.org>
+
+	Merge branch 'move-functions'
+
+2021-12-23  James Gallagher  <jgallagher@opendap.org>
+
+	I'm not sure the hdf5 handler tests need the function module.
+
+2021-12-20  myang6  <myang6@hdfgroup.org>
+
+	HFVHANDLER-363, update grid_1_2d.h5.ce_empty.bescmd and the baseline file. This is the dap2 response. The dap_format should be dap2 instead of dap4.
+
+2021-12-17  Kent Yang  <myang6@hdfgroup.org>
+
+	Correct minor errors in the script
+
+	HFVHANDLER-359, add the scripts for valgrind tests.
+
+2021-12-16  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #23 from OPENDAP/hfv-360
+	Hfv 360
+
+2021-12-15  myang6  <myang6@hdfgroup.org>
+
+	HFVHANDLER-360, add comments for reference work with HDF5 1.12.
+
+2021-12-14  myang6  <myang6@hdfgroup.org>
+
+	HFVHANDLER-362, update .at files for object/region reference support for DMR.
+
+	HFVHANDLER-362, add the support of region/object reference support for DAP4
+
+	HFVHANDLER-360, make object reference/region reference work with 1.12.1
+
+2021-12-09  myang6  <myang6@hdfgroup.org>
+
+	HFVHANDLER-360, correct the order of the header file to put h5api_compatible.h at the .cc file. It matters to determine which HDF5 API to use for different HDF5 versions.
+
+	HFVHANDLER-360, update H5Oget_info etc. related routines for HDF5 1.12.1. H5O_token_t is used.
+
+	Merge branch 'master' of https://github.com/opendap/hdf5_handler
+
+	HFVHANDLER-360, first cut to update with 1.12.1, not compiled.
+
+2021-12-09  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #22 from OPENDAP/fix-libdap-headers
+	Fixes to the libdap header include statements
+
+2021-12-07  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #21 from OPENDAP/hfv-360
+	HFVHANDLER-361, Fix the representation of HDF5's region references fo…
+
+2021-12-07  myang6  <myang6@hdfgroup.org>
+
+	HFVHANDLER-361, Fix the representation of HDF5's region references for hyperslab. Need to include the stride information in the representation.
+
+2021-12-01  James Gallagher  <jgallagher@opendap.org>
+
+	Fixes to the libdap header include statements
+
+2021-11-15  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #20 from OPENDAP/hyrax-588
+	Hyrax 588
+
+2021-11-15  Kent Yang  <myang6@hdfgroup.org>
+
+	HYRAX-588, add comments
+
+	HYRAX-588, clean up code
+
+	HYRAX-588 Add the dimension hardlink test.
+
+	HYRAX-588, add a GLAH06 to the valgrind test.
+
+2021-11-15  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-588, add comments, add GLAH06 test to the NASA testsuite.
+
+2021-11-12  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-588, add a test to check the multiple hardlink case for a dimension variable.
+
+	HYRAX-588, clean up code, add comments
+
+	HYRAX-588, 1) Obtain the hardlinks. 2) Add the testing files and the corresponding python scripts.
+
+2021-11-11  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-588, store the hardlink names to a vector string
+
+2021-11-10  myang6  <myang6@hdfgroup.org>
+
+	Need to keep the HDF5 file ID for searching the hardlinks.
+
+2021-11-10  Kent Yang  <myang6@hdfgroup.org>
+
+	Add comments to retrieve hard link info.
+
+2021-11-09  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-588, adding function arguments for hard-link handling
+
+2021-10-13  Kent Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-356, make the run-time behavior of the HDF5 handler follow
+	the BES keys set at the h5.conf.in even if users don't set any BES
+	keys in their behavior.
+
+2021-10-11  Kent Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLEr-356, delete an unused .at file.
+
+2021-10-08  Kent Yang  <myang6@hdfgroup.org>
+
+	Merge branch 'master' of https://github.com/opendap/hdf5_handler
+
+	HFVHANDLER-356, remove a redundant at file.
+
+2021-10-08  myang6  <myang6@hdfgroup.org>
+
+	HFVHANDLER-356, add a new modules.in file for the direct CF DMR test.
+
+	HFVHANDLER-356, the Makefile.am under the test directory needs to be updated for BES to pass.
+
+2021-10-07  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #19 from OPENDAP/hyrax-532
+	Hyrax 532
+
+2021-10-07  Kent Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-356, update the configuration file, delete the redundant at files.
+
+2021-10-06  Kent Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-356, change the original default test to different names.
+
+	HFVHANDLER-356, makes the default test to CF direct DMR
+
+2021-09-23  dh-opendap  <dholloway@opendap.org>
+
+	Updated version number.
+
+## Hyrax-1.16.4
+
 2020-12-21  James Gallagher  <jgallagher@opendap.org>
 
 	Added support for code coverage
@@ -77,6 +229,8 @@
 2020-09-08  ndp-opendap  <ndp@opendap.org>
 
 	Disabling dynaconf correctly
+
+## Hyrax-1.16.4
 
 2020-09-02  ndp-opendap  <ndp@opendap.org>
 
