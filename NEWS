@@ -1,4 +1,49 @@
-### News for 3.20.9
+## News for 3.20.10
+
+#### DMR++ Improvements
+
+* Added support for the HDF5 filter Fletcher32 to the dmr++ creation and
+  processing code.
+
+* Implemented lazy evaluation of dmr++ files. This change greatly 
+  improves efficiency/speed for requests that subset a dataset that
+  contains a large number of variables as only the variables requested
+  will have their Chunk information read and parsed.
+
+* Added version and configuration information to dmr++ files built using
+  the build_dmrpp and get_dmrpp applications. This will enable people to 
+  recreate and understand the conditions which resulted in a particular
+  dmr++ instance. This also includes a -z switch for get_dmrpp which 
+  will return its version.
+
+#### Handler Updates
+
+* Added new netcdf_handler configuration parameter:
+  NC.PromoteByteToShort 
+  Which, when set to true will cause signed 8-bit
+  integer values to be promoted to Int16 (Because the DAP2 data 
+  model does not support signed 8-bit integers)
+
+* By default the NetCDF Fileout feature will ship with 
+  FONc.ClassicModel=false 
+
+* Added new configuration option to the HDF5 handler:
+  EnableCFDMR=true which will allow the generation of CF compliant DMR output.
+  
+#### General Houskeeping
+
+* Code organization changes to facilitate development
+  and compilation on different platforms.
+  - Moved functions into modules directory
+  - Improved Test scripts to handle version string updates.
+  - Changed libdap includ paths to "libdap/*.h" to prevent 
+    include file collisions.
+  - Started migrating to C++11 regex implementation (away from
+    older less efficient GNU implementation) This is controlled
+    by a compile time switch for now.
+
+
+## News for 3.20.9
 
 #### NGAP & DMR++ Improvements
 

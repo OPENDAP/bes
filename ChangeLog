@@ -1,3 +1,368 @@
+
+## BES Version 3.20.10
+
+2021-12-30  ndp-opendap  <ndp@opendap.org>
+
+	Update hdf4_handler hash
+
+2021-12-29  James Gallagher  <jgallagher@opendap.org>
+
+	Stop including the handler_tests_macros.m4 file in build_dmrpp_macros.m4
+	See comment in the latter for an explanation.
+
+	Updates for distcheck
+
+	Added the .M.baselines for the build_dmrpp tests
+
+	Added REMOVE_VERSIONS macro to handler_tests_macros.m4
+	This is mostly for the DMR++ code, but the pattern can be
+	extended to other tests if needed. Also, looking at
+	build_dmrpp_macros.m4 shows how to extend handler_tests_macros.m4
+	instead of ignoring it.
+
+	Found one more use of 'functions' in the tests
+	This is only an include of the module. We should comb our tests for
+	instnaces of module includes that are not actually used - which I
+	think is the case here.
+
+	Merge branch 'master' of https://github.com/OPENDAP/bes
+
+	Move the functions code to the modules directory (#559)
+	Moved 'functions' from the framework code; it's in modules now
+	hdf5 handler edits on the hdf5_handler branch move-functions
+	Removed broken 'modules' path in tests.
+
+	Merge branch 'master' of https://github.com/OPENDAP/bes
+
+2021-12-28  ndp-opendap  <ndp@opendap.org>
+
+	Updating hdf4 and hdf5 handlers
+
+2021-12-28  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.9-0 2021-12-28T19:23:45+0000 Triggering BES build for snapshots.
+
+	libdap4-3.20.9-62 2021-12-28T18:44:04+0000 Triggering BES build for snapshots.
+
+2021-12-27  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #558 from OPENDAP/hyrax-476
+	Hyrax 476
+
+2021-12-23  James Gallagher  <jgallagher@opendap.org>
+
+	Revert "First moved code builds; maybe keep this or maybe try 'git mv'"
+	This reverts commit abadfd380806b62cc7816c325a6d5482e3ef0d15.
+
+	First moved code builds; maybe keep this or maybe try 'git mv'
+
+2021-12-22  myang6  <myang6@hdfgroup.org>
+
+	Merge branch 'master' into hyrax-476
+
+	HYRAX-476, make signed 8-bit integer map to 16-bit integer when NC.promoteBytetoShort is true. Also add tests for both netCDF-3 and netCDF-4 files.
+
+2021-12-21  James Gallagher  <jgallagher@opendap.org>
+
+	More a getopt fixes (#557)
+
+2021-12-20  James Gallagher  <jgallagher@opendap.org>
+
+	Fix libdap paths (#554)
+	Patching file includes so they use <libdap/...>
+	This fixes a long-standing issue where libdap headers with names
+	line Array.h, debug.h, ... clash with headers of other libraries.
+	Added python code to automate this process (because we might
+	find that some #include lines were missed).
+
+2021-12-20  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-476, add the netCDF 8-bit integer netCDF3 and netCDF4 files, also CDL file and DODS bescmd files.
+
+2021-12-17  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.8-53 2021-12-17T20:38:42+0000 Triggering BES build for snapshots.
+
+2021-12-09  James Gallagher  <jgallagher@opendap.org>
+
+	Regex backward (#556)
+	Reverse regex changes - using a compile-time switch
+	In BESRegex, use the symbol USE_CPP_11_REGEX to toggle the new
+	c++11 regex code or the old code based on the unix regex_t software.
+	This branch uses the old way while we wait for CentOS8 to replace
+	CentOS7. The gcc 4.8.5 compiler on C7 has a broken C++11 regex library.
+
+2021-12-09  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.8-52 2021-12-09T23:56:07+0000 Triggering BES build for snapshots.
+
+2021-12-08  James Gallagher  <jgallagher@opendap.org>
+
+	Regex fix (#555)
+	Moving GNURegex in this code to BESRegex
+	* For a strict impl of emacs regexes, \r and \n are not part of the . metachar
+	and so [[:print:]\r\n]* should be used instead of .* when our baselines need
+	to match any char or a newline or a carriage return.
+	* Added timing tests to regexT
+
+2021-12-06  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-602, remove the ^M at the end of each line in this file
+
+2021-12-03  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.8-50 2021-12-03T21:39:27+0000 Triggering BES build for snapshots.
+
+2021-12-01  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.8-41 2021-12-02T00:57:33+0000 Triggering BES build for snapshots.
+
+2021-11-30  James Gallagher  <jgallagher@opendap.org>
+	    The-Robot-Travis  <npotter@opendap.org>
+	    dh-opendap  <dholloway@opendap.org>
+
+	Dmrpp lazy eval (#553)
+	Added the DMZ class which manages reading the DMR++ XML documents
+	The pugixml library is used (in its header-library mode) to parse the DMR++. The
+	DMZ isolates the rest of the handler from the XML parsing and implements a limited
+	lazy-load feature for the XML. This combined with the 'regex fix' from 14 Oct provides
+	substantial performance improvements over previous versions of the DMR++ handler.
+	What's missing: Lazy-load of attributes was added, but did not correctly process
+	global attributes in all cases and broke tests in the NCML handler when that software
+	was used to aggregate datasets that were individually accessed using DMR++. In addition,
+	EnumDef and OtherXML elements allowed in the DMR are not processed correctly.
+
+2021-11-24  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.8-40 2021-11-24T06:02:45+0000 Triggering BES build for snapshots.
+
+2021-11-23  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.8-38 2021-11-24T04:13:08+0000 Triggering BES build for snapshots.
+
+	libdap4-3.20.8-34 2021-11-23T21:24:38+0000 Triggering BES build for snapshots.
+
+2021-11-17  James Gallagher  <jgallagher@opendap.org>
+
+	Dmrpp refactor 42 (#552)
+	Reduce code duplication in the DMR++ RequestHandler code
+	Added a function-try-block to reduce catch() clause duplication
+	Use meta programming to collapse the build_dds and build_dap2_data methods
+
+2021-11-17  Kent Yang  <myang6@hdfgroup.org>
+
+	HYRAX-468, add valgrind tests and script for NASA CF DMR and NASA DAP4 tests.
+
+2021-11-16  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-454, change the FONc.ClassicModel = false for the future Hyrax distribution.
+
+2021-11-15  myang6  <myang6@hdfgroup.org>
+
+	HYRAX-468, 1) temporarily comment out the NASA tests that cause the output difference at Mac. 2) Add GLAH06 test for the default option. This reflects the fix of HYRAX-588.
+
+2021-11-10  Nathan Potter  <ndp@opendap.org>
+
+	The naming semantics for dmrpp:builderVersion where (#551)
+	making me crazy so I changed it to dmrpp:version which is
+	a more accurate tag
+
+2021-11-10  James Gallagher  <jgallagher@opendap.org>
+	    ndp-opendap  <ndp@opendap.org>
+
+	Filter back patch (#550)
+	Patch for the DMR++ old -vs- new issue
+	Adding version as a state variable in DMRpp
+	Added kludge for 'old' DMR++ documents and the new order-aware filter code
+	Code working, tests pass. No new tests for the buildVersion attribute, however
+	Removed unused code from BESUtil I thought was going to be needed
+
+2021-11-08  ndp-opendap  <ndp@opendap.org>
+
+	Revert "Adding dmrpp version number to Dataset element"
+	This reverts commit e2f0f9d296aa1c85b5da45ba36cd236f53adec4c.
+
+	Adding dmrpp version number to Dataset element
+
+	Fixed spelling oversight in build_dmrpp
+
+2021-11-04  Nathan Potter  <ndp@opendap.org>
+
+	Adding the build number to the configure call in *.spec (#548)
+
+2021-11-04  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.8-33 2021-11-04T20:11:07+0000 Triggering BES build for snapshots.
+
+2021-11-04  Nathan Potter  <ndp@opendap.org>
+
+	Reimplmented get_dmrpp version response. (#547)
+
+2021-11-03  Nathan Potter  <ndp@opendap.org>
+
+	Added new dmr++ metadata including bes and libdap version (#546)
+	* Added new dmr++ metadata including bes and libdap version
+	and TheBESKeys contents to dmr++ files built by build_dmrpp
+	* Made the inclusion of production metadata in the dmr++ files
+	a commandline switch on build_dmrpp
+	* Dropped shared_ptr for declaration on the stack.
+
+2021-11-03  Sam Lloyd  <slloyd@opendap.org>
+
+	Hdf5 shuffle (#554)
+	* added dmr and dap tests for fletcher-shuffle combo
+	* switch from filter boolean flags to filter string parsing
+	* switch from filter boolean flags to filter string parsing
+	* suppressing flectherShuffle dap test .. for now
+	* suppressing flectherShuffle dap test .. for now
+	* completed removal of filter booleans and fixed ripple errors
+	* completed removal of filter booleans and fixed ripple errors
+	* fixing of AIRS compressionType filter order
+	* clean up of commented outdated code
+	* clean up of commented outdated code
+	* suppressed fletcherShuffle dap test
+
+2021-11-01  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.8-31 2021-11-01T22:57:56+0000 Triggering BES build for snapshots.
+
+2021-10-29  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.8-30 2021-10-29T20:09:04+0000 Triggering BES build for snapshots.
+
+	libdap4-3.20.8-29 2021-10-29T20:03:33+0000 Triggering BES build for snapshots.
+
+	libdap4-3.20.8-25 2021-10-29T19:10:23+0000 Triggering BES build for snapshots.
+
+	libdap4-3.20.8-23 2021-10-29T18:27:51+0000 Triggering BES build for snapshots.
+
+2021-10-29  ndp-opendap  <ndp@opendap.org>
+
+	Added a -z version response to get_dmrpp
+
+	Revert "Added a -z version response to get_dmrpp"
+	This reverts commit 1f8cfbbfa2455f1721bd521113659ccfc018cffb.
+
+	Added a -z version response to get_dmrpp
+
+2021-10-28  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.8-12 2021-10-28T21:31:12+0000 Triggering BES build for snapshots.
+
+2021-10-28  ndp-opendap  <ndp@opendap.org>
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Adding build number to bes version response.
+
+2021-10-28  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.8-9 2021-10-28T17:35:06+0000 Triggering BES build for snapshots.
+
+2021-10-27  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.8-8 2021-10-27T23:17:30+0000 Triggering BES build for snapshots.
+
+	libdap4-3.20.8-6 2021-10-27T18:54:12+0000 Triggering BES build for snapshots.
+
+2021-10-21  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #543 from OPENDAP/hyrax-532
+	Hyrax 532
+
+2021-10-21  Kent Yang  <myang6@hdfgroup.org>
+
+	HYRAX-532 Modify the comments for .at file.
+
+	HYRAX-532, add bescmd and ncdump header files for NASA samples. A valgrind shell script is also checked-in. On how to run the test, check README_nasa_test
+
+2021-10-18  Sam Lloyd  <slloyd@opendap.org>
+	    The-Robot-Travis  <npotter@opendap.org>
+
+	Fletcher32 (#536)
+	* first implementation of fletcher32 support
+	* first implementation of fletcher32 support
+	* updated a comment in DmrppCommon.cc
+	* second implementation of fletcher32 support
+	* adding parsing of fletcher32 filter
+	* Added tempated f32 checksum stuff
+	* adding parsing of fletcher32 filter
+	* adding parsing of fletcher32 filter
+	* added parsing of fletcher32 filter
+	* added fletcher32 test
+	* added fletcher32 test #2
+	* Added a bit to the fletcher32 checksum computation.
+	I found that the checksum might not be computed correctly since the
+	value we read does not seem to match the computed value. We can pick
+	this up next week. The data values read for the test _do_ match the
+	vaues in the data set. Could this be that the checksum needs to have
+	its word order twiddled depending on the machine's endianness?
+	* Changed the fletcher32 algorithm code to match the HDF5 version
+	Also added source pragmas to suppress warnings about alignment and
+	asserts to test that the data are correctly aligned at least when the
+	tests are run.
+	* added working fletcher32 checksum
+
+2021-10-15  Nathan Potter  <ndp@opendap.org>
+
+	Patched Chunk::add_tracking_query_param() so that it doesn't do anyth… (#535)
+	* Patched Chunk::add_tracking_query_param() so that it doesn't do anything if not parameter is submitted.
+	* Disabled s3 query tracking for now
+	* hdf5 hash update
+
+2021-10-14  kyang2014  <kyang2014@users.noreply.github.com>
+
+	Merge pull request #534 from OPENDAP/hyrax-532
+	Hyrax 532
+
+2021-10-13  tester  <tester@bear.ad.hdfgroup.org>
+
+	HYRAX-532, need to explicitly set the EnableCFDMR key in the test to make travis happy.
+
+2021-10-13  Kent Yang  <myang6@hdfgroup.org>
+
+	HFHVAHDLER-356, HYRAX-532, since HDF5 handler run-time is default with CF and CF direct DMR, the tests configuration for the modules that use the HDF5 handler needs to be updated to be compatiable with the current tests.
+
+2021-10-11  Kent Yang  <myang6@hdfgroup.org>
+
+	HFVHANDLER-532, add more tests for the CF direct DMR feature. Need to update the macro.
+
+	HYRAX-532, update NASA DAP4 with H5 default option baseline header files because the history attribute is updated.
+
+2021-09-23  dh-opendap  <dholloway@opendap.org>
+
+	Updated HDF submodules.
+	[skip-ci]
+
+2021-09-21  dh-opendap  <dholloway@opendap.org>
+
+	Updated version number in bes.spec, configure.ac, modules/Makefile.am
+
+	[skip-ci] Removed DOI references from README.md
+
+2021-09-17  dh-opendap  <dholloway@opendap.org>
+
+	Updated for Release 3.20.9 [skip-ci]
+
+	Updated for Release 3.20.9 [skip-ci]
+
+	Merge branch 'master' of https://github.com/opendap/bes
+
+	Updated for Release 3.20.9 [skip ci]
+
+2021-09-16  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.8-1 2021-09-16T19:23:27+0000 Triggering BES build for snapshots.
+
+2021-09-15  The-Robot-Travis  <npotter@opendap.org>
+
+	libdap4-3.20.7-62 2021-09-15T21:52:45+0000 Triggering BES build for snapshots.
+
+2021-09-15  dh-opendap  <dholloway@opendap.org>
+
+	Updated on 2021-09-15
+	
+## BES Version 3.20.9
 2021-09-02  Nathan Potter  <ndp@opendap.org>
 
 	First pass at truncating the download file on retries. (#533)
