@@ -12,19 +12,21 @@
 # to identify the tests in a large build like the CI builds. jhrg 4/25/18
 
 # I added this to pull in the REMOVE_VERSIONS() macro. jhrg 12/29/21
-m4_include([../../handler_tests_macros.m4])
+# including handler_tests_macros.m4 broke the distcheck on Ubuntu because it could not
+# find 'standalone,' try not including it... jhrg 12/29/21
+# m4_include([../../handler_tests_macros.m4])
 
 AT_TESTED([build_dmrpp])
 
-# AT_ARG_OPTION_ARG([baselines],
-#    [--baselines=yes|no   Build the baseline file for parser test 'arg'],
-#    [echo "baselines set to $at_arg_baselines";
-#     baselines=$at_arg_baselines],[baselines=])
+AT_ARG_OPTION_ARG([baselines],
+    [--baselines=yes|no   Build the baseline file for parser test 'arg'],
+    [echo "baselines set to $at_arg_baselines";
+     baselines=$at_arg_baselines],[baselines=])
 
-#AT_ARG_OPTION_ARG([conf],
-#    [--conf=<file>   Use <file> for the bes.conf file],
-#    [echo "bes_conf set to $at_arg_conf"; bes_conf=$at_arg_conf],
-#    [bes_conf=bes.conf])
+AT_ARG_OPTION_ARG([conf],
+    [--conf=<file>   Use <file> for the bes.conf file],
+    [echo "bes_conf set to $at_arg_conf"; bes_conf=$at_arg_conf],
+    [bes_conf=bes.conf])
 
 # Usage: _AT_TEST_*(<bescmd source>, <baseline file>, <xpass/xfail> [default is xpass] <repeat|cached> [default is no])
 
@@ -112,4 +114,22 @@ m4_define([NORMAILZE_EXEC_NAME], [dnl
     mv $1.sed $1
 ])
 
+dnl Given a filename, remove any version string of the form <Value>3.20.9</Value>
+dnl or <Value>libdap-3.20.8</Value> in that file and put "removed version" in its
+dnl place. This hack keeps the baselines more or less true to form without the
+dnl obvious issue of baselines being broken when versions of the software are changed.
+dnl
+dnl Added support for 'dmrpp:version="3.20.9"' in the root node of the dmrpp.
+dnl
+dnl Note that the macro depends on the baseline being a file.
+dnl
+dnl jhrg 12/29/21
+
+m4_define([REMOVE_VERSIONS], [dnl
+      sed -e 's@<Value>[[0-9]]*\.[[0-9]]*\.[[0-9]]*</Value>@<Value>removed version</Value>@g' \
+      -e 's@<Value>[[A-z_.]]*-[[0-9]]*\.[[0-9]]*\.[[0-9]]*</Value>@<Value>removed version</Value>@g' \
+      -e 's@dmrpp:version="[[0-9]]*\.[[0-9]]*\.[[0-9]]*"@removed dmrpp:version@g' \
+      < $1 > $1.sed
+      mv $1.sed $1
+  ])
 
