@@ -1188,7 +1188,7 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     AC_CONFIG_TESTDIR(modules/fileout_covjson/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/debug_functions/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/dmrpp_module/tests, [standalone])
-    AC_CONFIG_TESTDIR(modules/dmrpp_module/tests_build_dmrpp, [modules/dmrpp_module])
+    AC_CONFIG_TESTDIR(modules/dmrpp_module/tests_build_dmrpp, [modules/dmrpp_module standalone])
     AC_CONFIG_TESTDIR(modules/freeform_handler/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/xml_data_handler/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/netcdf_handler/tests, [standalone])

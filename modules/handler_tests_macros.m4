@@ -10,7 +10,7 @@
 # to the package.m4 target in Makefile.am.
 
 # Before including these, use AT_INIT([ <name> ]) in the testsuite.at file. By including
-# the pathname to the test drectory in the AC_INIT() macro, you will make it much easier
+# the pathname to the test directory in the AC_INIT() macro, you will make it much easier
 # to identify the tests in a large build like the CI builds. jhrg 4/25/18
 
 AT_TESTED([besstandalone])
