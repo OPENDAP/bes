@@ -236,32 +236,74 @@ string BESUtil::unescape(const string &s)
 }
 
 /**
- * @brief Check if the specified path is valid
- *
- * Checks to see if the specified path is a valid path or not. The root
- * directory specified is assumed to be valid, so we don't check that
- * part of the path. The path parameter is relative to the root
- * directory.
- *
- * If follow_sym_links is false, then if any part of the specified path
- * is a symbolic link, this function will return false, set the passed
- * has_sym_link parameter. No error message is specified.
- *
- * If there is a problem accessing the specified path then the error
- * string will be filled with whatever system error message is provided.
- *
- * param path path to check
- * param root root directory path, assumed to be valid
- * param follow_sym_links specifies whether allowed to follow symbolic links
- * throws BESForbiddenError if the user is not allowed to traverse the path
- * throws BESNotFoundError if there is a problem accessing the path or the
- * path does not exist.
- **/
-void BESUtil::check_path(const string &path, const string &root, bool follow_sym_links)
+ * @brief convenience routine for check_path() error messages.
+ * @param pathname The pathname that failed
+ * @param error_number The error number (from errno)
+ */
+void throw_access_not_allowed_error(const string &pathname, int error_number)
 {
-    // if nothing is passed in path, then the path checks out since root is
-    // assumed to be valid.
+    switch(error_number) {
+        case ENOENT:
+        case ENOTDIR: {
+            string message = string("Failed to locate '").append(pathname).append("'");
+            INFO_LOG(message);
+            throw BESNotFoundError(message, __FILE__, __LINE__);
+        }
+
+        default: {
+            string message = string("Not allowed to access '").append(pathname).append("'");
+            INFO_LOG(message);
+            throw BESForbiddenError(message, __FILE__, __LINE__);
+        }
+    }
+}
+
+/**
+ * @param pathname
+ * @return Return true if the any part of the given pathname contains a symbolic link
+ */
+bool pathname_contains_symlink(const string &pathname)
+{
+    // FIXME jhrg 12/30/21
+    struct stat buf;
+    int status = lstat(pathname.c_str(), &buf);
+    return status != 0 || S_ISLNK(buf.st_mode);
+}
+
+/**
+ * @brief Is the combination of root + path a pathname the BES can/should access?
+ *
+ * @note If follow_sym_links is false and any part of the specified path is a
+ * symbolic link, this function will return false.
+ *
+ * @param path The path relative to the BES catalog root directory
+ * @param root The BES catalog root directory
+ * @param follow_sym_links True if the bes conf allows symbolic links, false by default
+ */
+void BESUtil::check_path(const string &path, const string &root, bool follow_sym_links) {
+    // if nothing is passed in path, then the path checks out since root is assumed to be valid.
     if (path == "") return;
+
+    if (path.find("..") != string::npos) {
+        throw_access_not_allowed_error(path, EACCES);   // use the code for 'access would be denied'
+    }
+
+    // Check if the combination of root + path exists on this machine. If so, check if it
+    // has symbolic links. Return BESNotFoundError if it does not exist and BESForbiddenError
+    // if it does exist but contains symbolic links and follow_sym_links is false. jhrg 12/30/21
+
+    string pathname = root;
+    pathname.append(path);
+    if (access(pathname.c_str(), R_OK) != 0) {
+        throw_access_not_allowed_error(pathname, errno);
+    }
+
+    if (follow_sym_links == false && pathname_contains_symlink(pathname)) {
+       throw_access_not_allowed_error(pathname, EACCES);   // use the code for 'access would be denied'
+    }
+
+#if 0
+// OLD code with a patch follows
 
     // Rather than have two basically identical code paths for the two cases (follow and !follow symlinks)
     // We evaluate the follow_sym_links switch and use a function pointer to get the correct "stat"
@@ -375,6 +417,7 @@ void BESUtil::check_path(const string &path, const string &root, bool follow_sym
             }
         }
     }
+#endif
 
 #if 0
     while (!done) {
@@ -451,7 +494,6 @@ void BESUtil::check_path(const string &path, const string &root, bool follow_sym
             }
         }
     }
-
 #endif
 }
 
