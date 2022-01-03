@@ -240,7 +240,7 @@ string BESUtil::unescape(const string &s)
  * @param pathname The pathname that failed
  * @param error_number The error number (from errno)
  */
-void throw_access_not_allowed_error(const string &pathname, int error_number)
+static void throw_access_error(const string &pathname, int error_number)
 {
     switch(error_number) {
         case ENOENT:
@@ -262,12 +262,33 @@ void throw_access_not_allowed_error(const string &pathname, int error_number)
  * @param pathname
  * @return Return true if the any part of the given pathname contains a symbolic link
  */
-bool pathname_contains_symlink(const string &pathname)
+bool pathname_contains_symlink(const string &path)
 {
-    // FIXME jhrg 12/30/21
-    struct stat buf;
-    int status = lstat(pathname.c_str(), &buf);
-    return status != 0 || S_ISLNK(buf.st_mode);
+    // This kludge to remove a trailing '/' is needed because readlinkat fails to detect
+    // a dir symlink when the dir name ends in '/'. It does detect paths with embedded
+    // sym links. jhrg 1/3/22
+    string pathname = path;
+    if (!pathname.empty() && pathname.back() == '/') {
+        pathname.pop_back();
+    }
+
+    // ssize_t readlink(const char *restrict pathname, char *restrict buf, size_t bufsiz);
+    // readlinkat (or readlink) can be used to detect sym links in a path or to get the path
+    // to the linked file. Here we used it to test for sym links. 1/3/22 jhrg
+    ssize_t len = readlinkat(AT_FDCWD, pathname.c_str(), nullptr, 0);
+    if (len == -1) {
+        // either errno is EINVAL meaning this is not a link or there's really an error
+        switch (errno) {
+            case EINVAL:
+                return false;
+            default:
+                string msg = "Could not resolve path when testing for symbolic links: ";
+                msg.append(strerror(errno));
+                throw BESInternalError(msg, __FILE__, __LINE__);
+        }
+    }
+
+    return true;    // If readlinkat() does not return -1, it's a symlink
 }
 
 /**
@@ -285,7 +306,7 @@ void BESUtil::check_path(const string &path, const string &root, bool follow_sym
     if (path == "") return;
 
     if (path.find("..") != string::npos) {
-        throw_access_not_allowed_error(path, EACCES);   // use the code for 'access would be denied'
+        throw_access_error(path, EACCES);   // use the code for 'access would be denied'
     }
 
     // Check if the combination of root + path exists on this machine. If so, check if it
@@ -295,11 +316,11 @@ void BESUtil::check_path(const string &path, const string &root, bool follow_sym
     string pathname = root;
     pathname.append(path);
     if (access(pathname.c_str(), R_OK) != 0) {
-        throw_access_not_allowed_error(pathname, errno);
+        throw_access_error(pathname, errno);
     }
 
     if (follow_sym_links == false && pathname_contains_symlink(pathname)) {
-       throw_access_not_allowed_error(pathname, EACCES);   // use the code for 'access would be denied'
+       throw_access_error(pathname, EACCES);   // use the code for 'access would be denied'
     }
 
 #if 0
@@ -841,7 +862,7 @@ string BESUtil::pathConcat(const string &firstPart, const string &secondPart, ch
     string sep(1,separator);
 
     // make sure there are not multiple slashes at the end of the first part...
-    // Note that this removes all of the slashes. jhrg 9/27/16
+    // Note that this removes all the slashes. jhrg 9/27/16
     while (!first.empty() && *first.rbegin() == separator) {
         // C++-11 first.pop_back();
         first = first.substr(0, first.length() - 1);
@@ -874,14 +895,15 @@ string BESUtil::pathConcat(const string &firstPart, const string &secondPart, ch
  * arguments do not contain multiple consecutive slashes - I don't think the original
  * version will work in cases where the string is only slashes because it will dereference
  * the return value of begin()
+ *
  * @param firstPart The first string to concatenate.
  * @param secondPart The second string to concatenate.
  * @param leadingSlash If this bool value is true then the returned string will have a leading slash.
  *  If the value of leadingSlash is false then the first character  of the returned string will
- *  be the first character of the passed firstPart.
+ *  be the first character of the passed firstPart. Default False.
  *  @param trailingSlash If this bool is true then the returned string will end it a slash. If
  *   trailingSlash is false, then the returned string will not end with a slash. If trailing
- *   slash(es) need to be removed to accomplish this, then they will be removed.
+ *   slash(es) need to be removed to accomplish this, then they will be removed. Default False.
  */
 string BESUtil::assemblePath(const string &firstPart, const string &secondPart, bool leadingSlash, bool trailingSlash)
 {
@@ -943,7 +965,7 @@ string BESUtil::assemblePath(const string &firstPart, const string &secondPart, 
     }
 #endif
 
-    string newPath = BESUtil::pathConcat(firstPart,secondPart);
+    string newPath = BESUtil::pathConcat(firstPart, secondPart);
     if (leadingSlash) {
         if (newPath.empty()) {
             newPath = "/";

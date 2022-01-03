@@ -68,6 +68,7 @@ static bool debug2 = false;
 #define DBG2(x) do { if (debug2) (x); } while(false)
 
 class checkT: public TestFixture {
+
 public:
     checkT() = default;
 
@@ -110,14 +111,24 @@ public:
         ret = symlink("./testfile.nc", "./testdir/nc/link_to_testfile.nc");
         myerrno = errno;
         CPPUNIT_ASSERT(ret == 0 || myerrno == EEXIST);
-
     }
 
     CPPUNIT_TEST_SUITE(checkT);
 
+    CPPUNIT_TEST(test_slash_path);
+    CPPUNIT_TEST(test_slash_path_no_sym_links);
+    CPPUNIT_TEST(test_empty_path);
+    CPPUNIT_TEST(test_empty_path_no_sym_links);
+
+    CPPUNIT_TEST(test_slash_root);
+    CPPUNIT_TEST(test_empty_root);
+    CPPUNIT_TEST(test_slash_root_no_sym_links);
+    CPPUNIT_TEST(test_empty_root_no_sym_links);
+
     CPPUNIT_TEST(test_one_dir);
     CPPUNIT_TEST(test_two_dirs);
     CPPUNIT_TEST(test_file);
+    CPPUNIT_TEST(test_file_abs_root);
     CPPUNIT_TEST(test_sym_link_when_allowed);
     CPPUNIT_TEST(test_sym_link_to_file_allowed);
     CPPUNIT_TEST(test_sym_link_dir_not_allowed);
@@ -134,6 +145,58 @@ public:
     CPPUNIT_TEST(test_no_file_linked_dir_syn_link_not_allowed);
 
     CPPUNIT_TEST_SUITE_END();
+
+    // NB: void BESUtil::check_path(const string &path, const string &root, bool follow_sym_links)
+    // check_path() throws when the root + path item does not exist or is a sym link if follow_sym_links
+    // is false. Otherwise, it simply returns.
+
+    void test_slash_path()
+    {
+        DBG(cerr << "checking /" << endl);
+        CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /", BESUtil::check_path("/", "./", true));
+    }
+
+    void test_slash_path_no_sym_links()
+    {
+        DBG(cerr << "checking /, follow_sym_links == false" << endl);
+        CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /, follow_sym_links == false", BESUtil::check_path("/", "./", false));
+    }
+
+    void test_empty_path()
+    {
+        DBG(cerr << "checking /" << endl);
+        CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /", BESUtil::check_path("", "./", true));
+    }
+
+    void test_empty_path_no_sym_links()
+    {
+        DBG(cerr << "checking /, follow_sym_links == false" << endl);
+        CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /, follow_sym_links == false", BESUtil::check_path("", "./", false));
+    }
+
+    void test_slash_root()
+    {
+        DBG(cerr << "checking /" << endl);
+        CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /", BESUtil::check_path("/", TEST_BUILD_DIR, true));
+    }
+
+    void test_empty_root()
+    {
+        DBG(cerr << "checking /" << endl);
+        CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /", BESUtil::check_path("", TEST_BUILD_DIR, true));
+    }
+
+    void test_slash_root_no_sym_links()
+    {
+        DBG(cerr << "checking /" << endl);
+        CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /", BESUtil::check_path("/", TEST_BUILD_DIR, false));
+    }
+
+    void test_empty_root_no_sym_links()
+    {
+        DBG(cerr << "checking /" << endl);
+        CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /", BESUtil::check_path("", TEST_BUILD_DIR, false));
+    }
 
     void test_one_dir()
     {
@@ -154,6 +217,13 @@ public:
         DBG(cerr << "checking /testdir/nc/testfile.nc" << endl);
         CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /testdir/nc/testfile.nc",
                                         BESUtil::check_path("/testdir/nc/testfile.nc", "./", true));
+    }
+
+    void test_file_abs_root()
+    {
+        DBG(cerr << "checking /testdir/nc/testfile.nc" << endl);
+        CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /testdir/nc/testfile.nc",
+                                        BESUtil::check_path("/testdir/nc/testfile.nc", TEST_BUILD_DIR, true));
     }
 
     void test_sym_link_when_allowed()
