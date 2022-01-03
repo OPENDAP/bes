@@ -1,4 +1,4 @@
-#/bin/sh
+#!/bin/sh
 #
 # When the release numbers are edited in configure.ac, update this
 # to the current Travis number so that the 'build number' in

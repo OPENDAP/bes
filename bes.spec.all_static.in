@@ -28,7 +28,7 @@ Source0:        http://www.opendap.org/pub/source/bes-%{version}.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Requires:       libdap >= 3.20.7
+Requires:       libdap >= 3.20.9
 Requires:       readline bzip2 zlib
 Requires:	    libicu >= 3.6 
 Requires:       libxml2 >= 2.7.0
@@ -45,7 +45,7 @@ Requires:       openssl
 
 Requires(pre):  shadow-utils
 
-BuildRequires:  libdap-devel >= 3.20.7
+BuildRequires:  libdap-devel >= 3.20.9
 BuildRequires:  readline-devel
 BuildRequires:  bzip2-devel zlib-devel
 BuildRequires:  libxml2-devel >= 2.7.0

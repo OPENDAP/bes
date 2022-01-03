@@ -16,6 +16,12 @@
   dmr++ instance. This also includes a -z switch for get_dmrpp which 
   will return its version.
 
+* Performance improvement: By patching Chunk::add_tracking_query_param() so
+  that it doesn't do anything if no parameter is submitted we eliminated a
+  very time costly regular expression evaluation that was being performed
+  during the read operation for every Chunk. This improved read performance
+  by a factor of 2-3 orders of magnitude!
+
 #### Handler Updates
 
 * Added new netcdf_handler configuration parameter:
