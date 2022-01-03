@@ -314,6 +314,10 @@ void BESUtil::check_path(const string &path, const string &root, bool follow_sym
     // if it does exist but contains symbolic links and follow_sym_links is false. jhrg 12/30/21
 
     string pathname = root;
+    
+    if (pathname.back() != '/' && path.front() != '/')
+        pathname.append("/");
+
     pathname.append(path);
     if (access(pathname.c_str(), R_OK) != 0) {
         throw_access_error(pathname, errno);

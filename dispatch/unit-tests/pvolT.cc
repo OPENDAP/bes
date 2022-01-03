@@ -118,6 +118,15 @@ public:
     {
     }
 
+    CPPUNIT_TEST_SUITE(pvolT);
+
+    CPPUNIT_TEST(add_container_test);
+    CPPUNIT_TEST(add_overlapping_container);
+    CPPUNIT_TEST(test_look_for_containers);
+    CPPUNIT_TEST(test_del_container);
+
+    CPPUNIT_TEST_SUITE_END();
+
     // The rest of the tests depend on these settings; call this 'test' from
     // them to set up the those tests.
     //
@@ -229,16 +238,6 @@ public:
             }
         }
     }
-
-CPPUNIT_TEST_SUITE( pvolT );
-
-    CPPUNIT_TEST(add_container_test);
-    CPPUNIT_TEST(add_overlapping_container);
-    CPPUNIT_TEST(test_look_for_containers);
-    CPPUNIT_TEST(test_del_container);
-
-    CPPUNIT_TEST_SUITE_END()
-    ;
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(pvolT);
@@ -283,7 +282,7 @@ int main(int argc, char*argv[])
         int i = 0;
         while (i < argc) {
             if (debug) cerr << "Running " << argv[i] << endl;
-            test = pvolT::suite()->getName().append("::").append(argv[i]);
+            test = pvolT::suite()->getName().append("::").append(argv[i++]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
     }

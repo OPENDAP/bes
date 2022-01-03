@@ -29,7 +29,7 @@ AM_CXXFLAGS=
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
-SUBDIRS = http dispatch xmlcommand ppt server cmdln standalone docs bin templates hello_world
+SUBDIRS = dispatch xmlcommand ppt server http cmdln standalone docs bin templates hello_world
 
 if LIBDAP
 SUBDIRS += dap dapreader
