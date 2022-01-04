@@ -35,15 +35,14 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-
-#include <thread>         // std::this_thread::sleep_for
-#include <chrono>         // std::chrono::seconds
-#include <string>     // std::string, std::stol
-
 #if HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 
+
+#include <thread>         // std::this_thread::sleep_for
+#include <chrono>         // std::chrono::seconds
+#include <string>     // std::string, std::stol
 #include <cstdio>
 #include <cerrno>
 #include <cstring>
@@ -52,18 +51,9 @@
 #include <cassert>
 #include <vector>
 #include <list>
-
 #include <sstream>
 #include <iostream>
-
-using std::stringstream;
-using std::istringstream;
-using std::cout;
-using std::endl;
-using std::vector;
-using std::string;
-using std::list;
-using std::ostream;
+#include <algorithm>
 
 #include "TheBESKeys.h"
 #include "BESUtil.h"
@@ -73,6 +63,8 @@ using std::ostream;
 #include "BESInternalError.h"
 #include "BESLog.h"
 #include "BESCatalogList.h"
+
+using namespace std;
 
 #define CRLF "\r\n"
 
