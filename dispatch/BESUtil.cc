@@ -358,7 +358,7 @@ void BESUtil::check_path(const string &path, const string &root, bool follow_sym
     }
 
     if (follow_sym_links == false) {
-        size_t n = std::count(path.begin(), path.end(), '/');
+        auto n = count(path.begin(), path.end(), '/');
         // using 'n' for the search_limit may not be optimal (when path ends in '/', an extra
         // component may be searched) but it's better than testing for a trailing '/' on every call.
         if (pathname_contains_symlink(pathname, n)) {
