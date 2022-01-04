@@ -272,6 +272,18 @@ bool pathname_contains_symlink(const string &path)
         pathname.pop_back();
     }
 
+    struct stat buf;
+    int status = lstat(pathname.c_str(), &buf);
+    if (status == 0) {
+        return S_ISLNK(buf.st_mode);
+    }
+    else {
+        string msg = "Could not resolve path when testing for symbolic links: ";
+        msg.append(strerror(errno));
+        BESDEBUG(MODULE, prolog << msg << endl);
+        throw BESInternalError(msg, __FILE__, __LINE__);
+    }
+#if 0
     // ssize_t readlink(const char *restrict pathname, char *restrict buf, size_t bufsiz);
     // readlinkat (or readlink) can be used to detect sym links in a path or to get the path
     // to the linked file. Here we used it to test for sym links. 1/3/22 jhrg
@@ -289,6 +301,7 @@ bool pathname_contains_symlink(const string &path)
     }
 
     return true;    // If readlinkat() does not return -1, it's a symlink
+#endif
 }
 
 /**
@@ -309,12 +322,16 @@ void BESUtil::check_path(const string &path, const string &root, bool follow_sym
         throw_access_error(path, EACCES);   // use the code for 'access would be denied'
     }
 
+    // FIXME This code (and related util functions) spends time checking the 'root' repeatedly.
+    //  we could put an end to that and still be lenient with the root dir values by adding
+    //  tests to the BESKeys code that include special case tests when the keys are set. jheg 1/3/22
+
     // Check if the combination of root + path exists on this machine. If so, check if it
     // has symbolic links. Return BESNotFoundError if it does not exist and BESForbiddenError
     // if it does exist but contains symbolic links and follow_sym_links is false. jhrg 12/30/21
 
     string pathname = root;
-    
+
     if (pathname.back() != '/' && path.front() != '/')
         pathname.append("/");
 
@@ -326,200 +343,6 @@ void BESUtil::check_path(const string &path, const string &root, bool follow_sym
     if (follow_sym_links == false && pathname_contains_symlink(pathname)) {
        throw_access_error(pathname, EACCES);   // use the code for 'access would be denied'
     }
-
-#if 0
-// OLD code with a patch follows
-
-    // Rather than have two basically identical code paths for the two cases (follow and !follow symlinks)
-    // We evaluate the follow_sym_links switch and use a function pointer to get the correct "stat"
-    // function for the eval operation.
-    int (*ye_old_stat_function)(const char *pathname, struct stat *buf);
-    if (follow_sym_links) {
-        BESDEBUG(MODULE, prolog << "Using 'stat' function" << endl);
-        ye_old_stat_function = &stat;
-    }
-    else {
-        BESDEBUG(MODULE, prolog << "Using 'lstat' function" << endl);
-        ye_old_stat_function = &lstat;
-    }
-
-    // make sure there are no ../ in the directory, backing up in any way is
-    // not allowed.
-    string::size_type dotdot = path.find("..");
-    if (dotdot != string::npos) {
-        string s ("Upward path traversal (i.e. '..') is not supported. path: ");
-        s.append(path);
-        throw BESForbiddenError(s, __FILE__, __LINE__);
-    }
-
-    // What I want to do is to take each part of path and check to see if it
-    // is a symbolic link and it is accessible. If everything is ok, add the
-    // next part of the path. This is a downward traversal, staring with the
-    // the root directory (aka BES.Catalog.catalog.RootDirectory in the config)
-    // add the left most remaining path component to the end of the full_path,
-    // stat that, and proceed to the next until done.
-    //
-    // Initialize and normalize the remaining_path, stripping leading and trailing slashes
-    string remaining_path  = path;
-    BESDEBUG(MODULE, prolog  << "remaining_path: " << remaining_path << endl);
-    if (remaining_path[0] == '/') {
-        remaining_path = remaining_path.substr(1);
-    }
-
-    // FIXME I added tests to guard against string length == 0 and the [-1] access
-    // but there are much better ways to solve this problem. See below, too. jhrg 12/30/21
-
-    if (remaining_path.length() > 0 && remaining_path[remaining_path.length() - 1] == '/') {
-        remaining_path = remaining_path.substr(0, remaining_path.length() - 1);
-    }
-
-    // The fullpath is our "graph" starting with root and becoming the request resource.
-    string fullpath = root;
-    // Normalize the fullpath, stripping only the trailing slash (it's a fully qualifed path)
-    if (fullpath.length() > 0 && fullpath[fullpath.length() - 1] == '/') {
-        fullpath = fullpath.substr(0, fullpath.length() - 1);
-    }
-
-    bool done = false;
-    while (!done) {
-        // Find the end of the leftmost path component on the remaining_path.
-        size_t slash = remaining_path.find('/');
-        if (slash == string::npos) {
-            // no more slashes, we're done,
-            fullpath.append("/").append(remaining_path);
-            remaining_path="";
-            done = true;
-        }
-        else {
-            // otherwise, append & remove
-            fullpath.append("/").append(remaining_path.substr(0, slash));
-            remaining_path = remaining_path.substr(slash + 1, remaining_path.length() - slash);
-        }
-        // Test...
-        BESDEBUG(MODULE, prolog  << "Testing: " << fullpath << endl);
-        struct stat buf;
-        int statret = ye_old_stat_function(fullpath.c_str(), &buf);
-        if (statret == -1) {
-            // stat failed, so not accessible. Get the error string,
-            int errsv = errno;
-            // store in error, and throw exception
-            char *s_err = strerror(errsv);
-            //string error = "Unable to access node " + checked + ": ";
-            string error = "Unable to access node " + fullpath + ": ";
-            if (s_err)
-                error.append(s_err);
-            else
-                error.append("unknown error");
-
-            // ENOENT means that the node wasn't found.
-            // On some systems a file that doesn't exist returns ENOTDIR because: w.f.t?
-            // Otherwise, access is being denied for some other reason
-            if (errsv == ENOENT || errsv == ENOTDIR) {
-                // On some systems a file that doesn't exist returns ENOTDIR because: w.f.t?
-                stringstream ss;
-                ss << "Failed to locate resource " << fullpath;
-                BESDEBUG(MODULE, prolog << "ERROR: " << ss.str() << "  errno: " << errno << endl);
-                throw BESNotFoundError(ss.str(), __FILE__, __LINE__);
-            }
-            else {
-                stringstream ss;
-                ss << "Unable to access node " << fullpath;
-                BESDEBUG(MODULE, prolog << "ERROR: " << ss.str() << "  errno: " << errno << endl);
-                throw BESForbiddenError(ss.str(), __FILE__, __LINE__);
-            }
-        }
-        else {
-            // The call to (stat | lstat) was successful, now check to see if it's a symlink.
-            // Note that if follow_symlinks is true then this will never evaluate as true
-            // because we'll be using 'stat' and not 'lstat' and stat will follow the link
-            // and return information about the file/dir pointed to by the symlink
-            if (S_ISLNK(buf.st_mode)) {
-                //string error = "You do not have permission to access " + checked;
-                stringstream ss;
-                ss << "You do not have permission to access " << fullpath;
-                BESDEBUG(MODULE, prolog << "ERROR: " << ss.str() << "  errno: " << errno << endl);
-                throw BESForbiddenError(ss.str(), __FILE__, __LINE__);
-            }
-        }
-    }
-#endif
-
-#if 0
-    while (!done) {
-        size_t slash = rem.find('/');
-        if (slash == string::npos) {
-            fullpath = fullpath + "/" + rem;
-            checked = checked + "/" + rem;
-            done = true;
-        }
-        else {
-            fullpath = fullpath + "/" + rem.substr(0, slash);
-            checked = checked + "/" + rem.substr(0, slash);
-            rem = rem.substr(slash + 1, rem.length() - slash);
-        }
-
-        if (!follow_sym_links) {
-            struct stat buf;
-            int statret = lstat(fullpath.c_str(), &buf);
-            if (statret == -1) {
-                int errsv = errno;
-                // stat failed, so not accessible. Get the error string,
-                // store in error, and throw exception
-                char *s_err = strerror(errsv);
-                string error = "Unable to access node " + checked + ": ";
-                if (s_err) {
-                    error = error + s_err;
-                }
-                else {
-                    error = error + "unknown access error";
-                }
-                // ENOENT means that the node wasn't found. Otherwise, access
-                // is denied for some reason
-                if (errsv == ENOENT) {
-                    throw BESNotFoundError(error, __FILE__, __LINE__);
-                }
-                else {
-                    throw BESForbiddenError(error, __FILE__, __LINE__);
-                }
-            }
-            else {
-                // lstat was successful, now check if sym link
-                if (S_ISLNK( buf.st_mode )) {
-                    string error = "You do not have permission to access "
-                    + checked;
-                    throw BESForbiddenError(error, __FILE__, __LINE__);
-                }
-            }
-        }
-        else {
-            // just do a stat and see if we can access the thing. If we
-            // can't, get the error information and throw an exception
-            struct stat buf;
-            int statret = stat(fullpath.c_str(), &buf);
-            if (statret == -1) {
-                int errsv = errno;
-                // stat failed, so not accessible. Get the error string,
-                // store in error, and throw exception
-                char *s_err = strerror(errsv);
-                string error = "Unable to access node " + checked + ": ";
-                if (s_err) {
-                    error = error + s_err;
-                }
-                else {
-                    error = error + "unknown access error";
-                }
-                // ENOENT means that the node wasn't found. Otherwise, access
-                // is denied for some reason
-                if (errsv == ENOENT) {
-                    throw BESNotFoundError(error, __FILE__, __LINE__);
-                }
-                else {
-                    throw BESForbiddenError(error, __FILE__, __LINE__);
-                }
-            }
-        }
-    }
-#endif
 }
 
 char *
