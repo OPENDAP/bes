@@ -76,7 +76,7 @@ public:
 
     virtual void setUp()
     {
-        string bes_conf = (string) TEST_SRC_DIR + "/bes.conf";
+        string bes_conf = (string) TEST_BUILD_DIR + "/bes.conf";
         TheBESKeys::ConfigFile = bes_conf;
 
         DBG2(cerr << "*****************************************" << endl);
