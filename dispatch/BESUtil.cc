@@ -232,7 +232,7 @@ string BESUtil::unescape(const string &s)
  * @param pathname The pathname that failed
  * @param error_number The error number (from errno)
  */
-static void throw_access_error(const string &pathname, int error_number)
+static void throw_access_error(const string &pathname, long error_number)
 {
     switch(error_number) {
         case ENOENT:
@@ -330,10 +330,6 @@ void BESUtil::check_path(const string &path, const string &root, bool follow_sym
     if (path.find("..") != string::npos) {
         throw_access_error(path, EACCES);   // use the code for 'access would be denied'
     }
-
-    // FIXME This code (and related util functions) spends time checking the 'root' repeatedly.
-    //  we could put an end to that and still be lenient with the root dir values by adding
-    //  tests to the BESKeys code that include special case tests when the keys are set. jheg 1/3/22
 
     // Check if the combination of root + path exists on this machine. If so, check if it
     // has symbolic links. Return BESNotFoundError if it does not exist and BESForbiddenError
