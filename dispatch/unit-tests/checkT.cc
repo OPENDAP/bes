@@ -135,6 +135,7 @@ public:
     CPPUNIT_TEST(test_dirs_sym_link_not_allowed);
     CPPUNIT_TEST(test_file_sym_link_not_allowed);
     CPPUNIT_TEST(test_sym_link_sym_links_not_allowed);
+    CPPUNIT_TEST(test_link_to_file_in_sym_link_dir_sym_links_not_allowed);
     CPPUNIT_TEST(test_file_in_sym_link_dir_sym_links_not_allowed);
     CPPUNIT_TEST(test_link_to_file_syn_link_not_allowed);
     CPPUNIT_TEST(test_no_dir_syn_link_allowed_1);
@@ -269,10 +270,17 @@ public:
                                      BESForbiddenError);
     }
 
-    void test_file_in_sym_link_dir_sym_links_not_allowed() {
+    void test_link_to_file_in_sym_link_dir_sym_links_not_allowed() {
         DBG(cerr << "checking /testdir/link_to_nc/link_to_testfile.nc, " << "follow syms = false" << endl);
         CPPUNIT_ASSERT_THROW_MESSAGE("checking /testdir/link_to_nc/link_to_testfile.nc, follow syms = false",
                                      BESUtil::check_path("/testdir/link_to_nc/link_to_testfile.nc", "./", false),
+                                     BESForbiddenError);
+    }
+
+    void test_file_in_sym_link_dir_sym_links_not_allowed() {
+        DBG(cerr << "checking /testdir/link_to_nc/testfile.nc, " << "follow syms = false" << endl);
+        CPPUNIT_ASSERT_THROW_MESSAGE("checking /testdir/link_to_nc/testfile.nc, follow syms = false",
+                                     BESUtil::check_path("/testdir/link_to_nc/testfile.nc", "./", false),
                                      BESForbiddenError);
     }
 

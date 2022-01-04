@@ -259,30 +259,47 @@ static void throw_access_error(const string &pathname, int error_number)
 }
 
 /**
- * @param pathname
+ * @param path Look for symbolic links in this path
+ * @param search_limit Search only the first N nodes of path. Used to avoid searching
+ * a root component of path that is known to be free of sym links.
  * @return Return true if the any part of the given pathname contains a symbolic link
  */
-bool pathname_contains_symlink(const string &path)
+bool pathname_contains_symlink(const string &path, int search_limit)
 {
-    // This kludge to remove a trailing '/' is needed because readlinkat fails to detect
-    // a dir symlink when the dir name ends in '/'. It does detect paths with embedded
-    // sym links. jhrg 1/3/22
+    // This kludge to remove a trailing '/' is needed because lstat and readlinkat fail
+    // to detect a dir symlink when the dir name ends in '/'. On OSX readlinkat (and readlink)
+    // does detect embedded links, but not on Linux. The lstat() service doesn't detect
+    // embedded links anywhere. jhrg 1/3/22
     string pathname = path;
     if (!pathname.empty() && pathname.back() == '/') {
         pathname.pop_back();
     }
 
-    struct stat buf;
-    int status = lstat(pathname.c_str(), &buf);
-    if (status == 0) {
-        return S_ISLNK(buf.st_mode);
-    }
-    else {
-        string msg = "Could not resolve path when testing for symbolic links: ";
-        msg.append(strerror(errno));
-        BESDEBUG(MODULE, prolog << msg << endl);
-        throw BESInternalError(msg, __FILE__, __LINE__);
-    }
+    bool is_link = false;
+    size_t pos;
+    int i = 0; // used with search_limit
+    do {
+        // test pathname
+        struct stat buf;
+        int status = lstat(pathname.c_str(), &buf);
+        if (status == 0) {
+            is_link = S_ISLNK(buf.st_mode);
+        }
+        else {
+            string msg = "Could not resolve path when testing for symbolic links: ";
+            msg.append(strerror(errno));
+            BESDEBUG(MODULE, prolog << msg << endl);
+            throw BESInternalError(msg, __FILE__, __LINE__);
+        }
+
+        // remove the last part of pathname, including the trailing '/'
+        pos = pathname.find_last_of('/');
+        if (pos != string::npos)    // find_last_of returns npos if the char is not found
+            pathname.erase(pos);
+    } while (++i < search_limit && !is_link && pos != string::npos && !pathname.empty());
+
+    return is_link;
+
 #if 0
     // ssize_t readlink(const char *restrict pathname, char *restrict buf, size_t bufsiz);
     // readlinkat (or readlink) can be used to detect sym links in a path or to get the path
@@ -340,8 +357,13 @@ void BESUtil::check_path(const string &path, const string &root, bool follow_sym
         throw_access_error(pathname, errno);
     }
 
-    if (follow_sym_links == false && pathname_contains_symlink(pathname)) {
-       throw_access_error(pathname, EACCES);   // use the code for 'access would be denied'
+    if (follow_sym_links == false) {
+        size_t n = std::count(path.begin(), path.end(), '/');
+        // using 'n' for the search_limit may not be optimal (when path ends in '/', an extra
+        // component may be searched) but it's better than testing for a trailing '/' on every call.
+        if (pathname_contains_symlink(pathname, n)) {
+            throw_access_error(pathname, EACCES);   // use the code for 'access would be denied'
+        }
     }
 }
 
