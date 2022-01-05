@@ -69,7 +69,7 @@
 
  #
  # Default server port and unix socket information and whether the server
- #is secure or not.
+ # is secure or not.
  #
  BES.ServerPort=10022
  BES.ServerUnixSocket=/tmp/bes.socket

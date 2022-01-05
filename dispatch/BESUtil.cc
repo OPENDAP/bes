@@ -35,15 +35,14 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-
-#include <thread>         // std::this_thread::sleep_for
-#include <chrono>         // std::chrono::seconds
-#include <string>     // std::string, std::stol
-
 #if HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 
+
+#include <thread>         // std::this_thread::sleep_for
+#include <chrono>         // std::chrono::seconds
+#include <string>     // std::string, std::stol
 #include <cstdio>
 #include <cerrno>
 #include <cstring>
@@ -52,18 +51,9 @@
 #include <cassert>
 #include <vector>
 #include <list>
-
 #include <sstream>
 #include <iostream>
-
-using std::stringstream;
-using std::istringstream;
-using std::cout;
-using std::endl;
-using std::vector;
-using std::string;
-using std::list;
-using std::ostream;
+#include <algorithm>
 
 #include "TheBESKeys.h"
 #include "BESUtil.h"
@@ -73,6 +63,8 @@ using std::ostream;
 #include "BESInternalError.h"
 #include "BESLog.h"
 #include "BESCatalogList.h"
+
+using namespace std;
 
 #define CRLF "\r\n"
 
@@ -236,219 +228,131 @@ string BESUtil::unescape(const string &s)
 }
 
 /**
- * @brief Check if the specified path is valid
- *
- * Checks to see if the specified path is a valid path or not. The root
- * directory specified is assumed to be valid, so we don't check that
- * part of the path. The path parameter is relative to the root
- * directory.
- *
- * If follow_sym_links is false, then if any part of the specified path
- * is a symbolic link, this function will return false, set the passed
- * has_sym_link parameter. No error message is specified.
- *
- * If there is a problem accessing the specified path then the error
- * string will be filled with whatever system error message is provided.
- *
- * param path path to check
- * param root root directory path, assumed to be valid
- * param follow_sym_links specifies whether allowed to follow symbolic links
- * throws BESForbiddenError if the user is not allowed to traverse the path
- * throws BESNotFoundError if there is a problem accessing the path or the
- * path does not exist.
- **/
-void BESUtil::check_path(const string &path, const string &root, bool follow_sym_links)
+ * @brief convenience routine for check_path() error messages.
+ * @param pathname The pathname that failed
+ * @param error_number The error number (from errno)
+ */
+static void throw_access_error(const string &pathname, long error_number)
 {
-    // if nothing is passed in path, then the path checks out since root is
-    // assumed to be valid.
-    if (path == "") return;
-
-    // Rather than have two basically identical code paths for the two cases (follow and !follow symlinks)
-    // We evaluate the follow_sym_links switch and use a function pointer to get the correct "stat"
-    // function for the eval operation.
-    int (*ye_old_stat_function)(const char *pathname, struct stat *buf);
-    if (follow_sym_links) {
-        BESDEBUG(MODULE, prolog << "Using 'stat' function (follow_sym_links = true)" << endl);
-        ye_old_stat_function = &stat;
-    }
-    else {
-        BESDEBUG(MODULE, "check_path() - Using 'lstat' function (follow_sym_links = false)" << endl);
-        ye_old_stat_function = &lstat;
-    }
-
-    // make sure there are no ../ in the directory, backing up in any way is
-    // not allowed.
-    string::size_type dotdot = path.find("..");
-    if (dotdot != string::npos) {
-        string s ("Upward path traversal (i.e. '..') is not supported. path: ");
-        s.append(path);
-        throw BESForbiddenError(s, __FILE__, __LINE__);
-    }
-
-    // What I want to do is to take each part of path and check to see if it
-    // is a symbolic link and it is accessible. If everything is ok, add the
-    // next part of the path. This is a downward traversal, staring with the
-    // the root directory (aka BES.Catalog.catalog.RootDirectory in the config)
-    // add the left most remaining path component to the end of the full_path,
-    // stat that, and proceed to the next until done.
-    //
-    // Initialize and normalize the remaining_path, stripping leading and trailing slashes
-    string remaining_path  = path;
-    BESDEBUG(MODULE, prolog  << "remaining_path: " << remaining_path << endl);
-    if (remaining_path[0] == '/') {
-        remaining_path = remaining_path.substr(1);
-    }
-    if (remaining_path[remaining_path.length() - 1] == '/') {
-        remaining_path = remaining_path.substr(0, remaining_path.length() - 1);
-    }
-
-    // The fullpath is our "graph" starting with root and becoming the request resource.
-    string fullpath = root;
-    // Normalize the fullpath, stripping only the trailing slash (it's a fully qualifed path)
-    if (fullpath[fullpath.length() - 1] == '/') {
-        fullpath = fullpath.substr(0, fullpath.length() - 1);
-    }
-
-    bool done = false;
-    while (!done) {
-        // Find the end of the leftmost path component on the remaining_path.
-        size_t slash = remaining_path.find('/');
-        if (slash == string::npos) {
-            // no more slashes, we're done,
-            fullpath.append("/").append(remaining_path);
-            remaining_path="";
-            done = true;
+    switch(error_number) {
+        case ENOENT:
+        case ENOTDIR: {
+            string message = string("Failed to locate '").append(pathname).append("'");
+            INFO_LOG(message);
+            throw BESNotFoundError(message, __FILE__, __LINE__);
         }
-        else {
-            // otherwise, append & remove
-            fullpath.append("/").append(remaining_path.substr(0, slash));
-            remaining_path = remaining_path.substr(slash + 1, remaining_path.length() - slash);
+
+        default: {
+            string message = string("Not allowed to access '").append(pathname).append("'");
+            INFO_LOG(message);
+            throw BESForbiddenError(message, __FILE__, __LINE__);
         }
-        // Test...
-        BESDEBUG(MODULE, prolog  << "Testing: " << fullpath << endl);
+    }
+}
+
+/**
+ * @param path Look for symbolic links in this path
+ * @param search_limit Search only the first N nodes of path. Used to avoid searching
+ * a root component of path that is known to be free of sym links.
+ * @return Return true if the any part of the given pathname contains a symbolic link
+ */
+bool pathname_contains_symlink(const string &path, int search_limit)
+{
+    // This kludge to remove a trailing '/' is needed because lstat and readlinkat fail
+    // to detect a dir symlink when the dir name ends in '/'. On OSX readlinkat (and readlink)
+    // does detect embedded links, but not on Linux. The lstat() service doesn't detect
+    // embedded links anywhere. jhrg 1/3/22
+    string pathname = path;
+    if (!pathname.empty() && pathname.back() == '/') {
+        pathname.pop_back();
+    }
+
+    bool is_link = false;
+    size_t pos;
+    int i = 0; // used with search_limit
+    do {
+        // test pathname
         struct stat buf;
-        int statret = ye_old_stat_function(fullpath.c_str(), &buf);
-        if (statret == -1) {
-            // stat failed, so not accessible. Get the error string,
-            int errsv = errno;
-            // store in error, and throw exception
-            char *s_err = strerror(errsv);
-            //string error = "Unable to access node " + checked + ": ";
-            string error = "Unable to access node " + fullpath + ": ";
-            if (s_err)
-                error.append(s_err);
-            else
-                error.append("unknown error");
-
-            // ENOENT means that the node wasn't found.
-            // On some systems a file that doesn't exist returns ENOTDIR because: w.f.t?
-            // Otherwise, access is being denied for some other reason
-            if (errsv == ENOENT || errsv == ENOTDIR) {
-                // On some systems a file that doesn't exist returns ENOTDIR because: w.f.t?
-                stringstream ss;
-                ss << "Failed to locate resource " << fullpath;
-                BESDEBUG(MODULE, prolog << "ERROR: " << ss.str() << "  errno: " << errno << endl);
-                throw BESNotFoundError(ss.str(), __FILE__, __LINE__);
-            }
-            else {
-                stringstream ss;
-                ss << "Unable to access node " << fullpath;
-                BESDEBUG(MODULE, prolog << "ERROR: " << ss.str() << "  errno: " << errno << endl);
-                throw BESForbiddenError(ss.str(), __FILE__, __LINE__);
-            }
+        int status = lstat(pathname.c_str(), &buf);
+        if (status == 0) {
+            is_link = S_ISLNK(buf.st_mode);
         }
         else {
-            // The call to (stat | lstat) was successful, now check to see if it's a symlink.
-            // Note that if follow_symlinks is true then this will never evaluate as true
-            // because we'll be using 'stat' and not 'lstat' and stat will follow the link
-            // and return information about the file/dir pointed to by the symlink
-            if (S_ISLNK(buf.st_mode)) {
-                //string error = "You do not have permission to access " + checked;
-                stringstream ss;
-                ss << "You do not have permission to access " << fullpath;
-                BESDEBUG(MODULE, prolog << "ERROR: " << ss.str() << "  errno: " << errno << endl);
-                throw BESForbiddenError(ss.str(), __FILE__, __LINE__);
-            }
+            string msg = "Could not resolve path when testing for symbolic links: ";
+            msg.append(strerror(errno));
+            BESDEBUG(MODULE, prolog << msg << endl);
+            throw BESInternalError(msg, __FILE__, __LINE__);
         }
-    }
+
+        // remove the last part of pathname, including the trailing '/'
+        pos = pathname.find_last_of('/');
+        if (pos != string::npos)    // find_last_of returns npos if the char is not found
+            pathname.erase(pos);
+    } while (++i < search_limit && !is_link && pos != string::npos && !pathname.empty());
+
+    return is_link;
 
 #if 0
-    while (!done) {
-        size_t slash = rem.find('/');
-        if (slash == string::npos) {
-            fullpath = fullpath + "/" + rem;
-            checked = checked + "/" + rem;
-            done = true;
-        }
-        else {
-            fullpath = fullpath + "/" + rem.substr(0, slash);
-            checked = checked + "/" + rem.substr(0, slash);
-            rem = rem.substr(slash + 1, rem.length() - slash);
-        }
-
-        if (!follow_sym_links) {
-            struct stat buf;
-            int statret = lstat(fullpath.c_str(), &buf);
-            if (statret == -1) {
-                int errsv = errno;
-                // stat failed, so not accessible. Get the error string,
-                // store in error, and throw exception
-                char *s_err = strerror(errsv);
-                string error = "Unable to access node " + checked + ": ";
-                if (s_err) {
-                    error = error + s_err;
-                }
-                else {
-                    error = error + "unknown access error";
-                }
-                // ENOENT means that the node wasn't found. Otherwise, access
-                // is denied for some reason
-                if (errsv == ENOENT) {
-                    throw BESNotFoundError(error, __FILE__, __LINE__);
-                }
-                else {
-                    throw BESForbiddenError(error, __FILE__, __LINE__);
-                }
-            }
-            else {
-                // lstat was successful, now check if sym link
-                if (S_ISLNK( buf.st_mode )) {
-                    string error = "You do not have permission to access "
-                    + checked;
-                    throw BESForbiddenError(error, __FILE__, __LINE__);
-                }
-            }
-        }
-        else {
-            // just do a stat and see if we can access the thing. If we
-            // can't, get the error information and throw an exception
-            struct stat buf;
-            int statret = stat(fullpath.c_str(), &buf);
-            if (statret == -1) {
-                int errsv = errno;
-                // stat failed, so not accessible. Get the error string,
-                // store in error, and throw exception
-                char *s_err = strerror(errsv);
-                string error = "Unable to access node " + checked + ": ";
-                if (s_err) {
-                    error = error + s_err;
-                }
-                else {
-                    error = error + "unknown access error";
-                }
-                // ENOENT means that the node wasn't found. Otherwise, access
-                // is denied for some reason
-                if (errsv == ENOENT) {
-                    throw BESNotFoundError(error, __FILE__, __LINE__);
-                }
-                else {
-                    throw BESForbiddenError(error, __FILE__, __LINE__);
-                }
-            }
+    // ssize_t readlink(const char *restrict pathname, char *restrict buf, size_t bufsiz);
+    // readlinkat (or readlink) can be used to detect sym links in a path or to get the path
+    // to the linked file. Here we used it to test for sym links. 1/3/22 jhrg
+    ssize_t len = readlinkat(AT_FDCWD, pathname.c_str(), nullptr, 0);
+    if (len == -1) {
+        // either errno is EINVAL meaning this is not a link or there's really an error
+        switch (errno) {
+            case EINVAL:
+                return false;
+            default:
+                string msg = "Could not resolve path when testing for symbolic links: ";
+                msg.append(strerror(errno));
+                throw BESInternalError(msg, __FILE__, __LINE__);
         }
     }
 
+    return true;    // If readlinkat() does not return -1, it's a symlink
 #endif
+}
+
+/**
+ * @brief Is the combination of root + path a pathname the BES can/should access?
+ *
+ * @note If follow_sym_links is false and any part of the specified path is a
+ * symbolic link, this function will return false.
+ *
+ * @param path The path relative to the BES catalog root directory
+ * @param root The BES catalog root directory
+ * @param follow_sym_links True if the bes conf allows symbolic links, false by default
+ */
+void BESUtil::check_path(const string &path, const string &root, bool follow_sym_links) {
+    // if nothing is passed in path, then the path checks out since root is assumed to be valid.
+    if (path == "") return;
+
+    if (path.find("..") != string::npos) {
+        throw_access_error(path, EACCES);   // use the code for 'access would be denied'
+    }
+
+    // Check if the combination of root + path exists on this machine. If so, check if it
+    // has symbolic links. Return BESNotFoundError if it does not exist and BESForbiddenError
+    // if it does exist but contains symbolic links and follow_sym_links is false. jhrg 12/30/21
+
+    string pathname = root;
+
+    if (pathname.back() != '/' && path.front() != '/')
+        pathname.append("/");
+
+    pathname.append(path);
+    if (access(pathname.c_str(), R_OK) != 0) {
+        throw_access_error(pathname, errno);
+    }
+
+    if (follow_sym_links == false) {
+        auto n = count(path.begin(), path.end(), '/');
+        // using 'n' for the search_limit may not be optimal (when path ends in '/', an extra
+        // component may be searched) but it's better than testing for a trailing '/' on every call.
+        if (pathname_contains_symlink(pathname, n)) {
+            throw_access_error(pathname, EACCES);   // use the code for 'access would be denied'
+        }
+    }
 }
 
 char *
@@ -795,7 +699,7 @@ string BESUtil::pathConcat(const string &firstPart, const string &secondPart, ch
     string sep(1,separator);
 
     // make sure there are not multiple slashes at the end of the first part...
-    // Note that this removes all of the slashes. jhrg 9/27/16
+    // Note that this removes all the slashes. jhrg 9/27/16
     while (!first.empty() && *first.rbegin() == separator) {
         // C++-11 first.pop_back();
         first = first.substr(0, first.length() - 1);
@@ -828,14 +732,15 @@ string BESUtil::pathConcat(const string &firstPart, const string &secondPart, ch
  * arguments do not contain multiple consecutive slashes - I don't think the original
  * version will work in cases where the string is only slashes because it will dereference
  * the return value of begin()
+ *
  * @param firstPart The first string to concatenate.
  * @param secondPart The second string to concatenate.
  * @param leadingSlash If this bool value is true then the returned string will have a leading slash.
  *  If the value of leadingSlash is false then the first character  of the returned string will
- *  be the first character of the passed firstPart.
+ *  be the first character of the passed firstPart. Default False.
  *  @param trailingSlash If this bool is true then the returned string will end it a slash. If
  *   trailingSlash is false, then the returned string will not end with a slash. If trailing
- *   slash(es) need to be removed to accomplish this, then they will be removed.
+ *   slash(es) need to be removed to accomplish this, then they will be removed. Default False.
  */
 string BESUtil::assemblePath(const string &firstPart, const string &secondPart, bool leadingSlash, bool trailingSlash)
 {
@@ -897,7 +802,7 @@ string BESUtil::assemblePath(const string &firstPart, const string &secondPart, 
     }
 #endif
 
-    string newPath = BESUtil::pathConcat(firstPart,secondPart);
+    string newPath = BESUtil::pathConcat(firstPart, secondPart);
     if (leadingSlash) {
         if (newPath.empty()) {
             newPath = "/";

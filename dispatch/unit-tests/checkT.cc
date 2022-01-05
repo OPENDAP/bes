@@ -34,291 +34,339 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace CppUnit;
-
 #include "config.h"
 
-#include <sys/types.h>
+//#include <sys/types.h>
 #include <sys/stat.h>
+
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 
 #include <cerrno>
-#include <cstdlib>
+//#include <cstdlib>
 #include <iostream>
-#include <fstream>
-
-using std::cerr;
-using std::cout;
-using std::endl;
-using std::ifstream;
-using std::string;
+//#include <fstream>
 
 #include "BESUtil.h"
-#include "BESError.h"
+//#include "BESError.h"
+#include "BESForbiddenError.h"
+#include "BESNotFoundError.h"
 #include "TheBESKeys.h"
-#include <test_config.h>
-#include <unistd.h>
+#include "test_config.h"
+
+using namespace std;
+using namespace CppUnit;
 
 static bool debug = false;
+static bool debug2 = false;
 
 #undef DBG
-#define DBG(x) do { if (debug) (x); } while(false);
+#define DBG(x) do { if (debug) (x); } while(false)
+
+#undef DBG2
+#define DBG2(x) do { if (debug2) (x); } while(false)
 
 class checkT: public TestFixture {
-private:
 
 public:
-    checkT()
-    {
-    }
-    ~checkT()
-    {
-    }
+    checkT() = default;
 
-    void setUp()
+    virtual ~checkT() = default;
+
+    virtual void setUp()
     {
-        string bes_conf = (string) TEST_SRC_DIR + "/bes.conf";
+        string bes_conf = (string) TEST_BUILD_DIR + "/bes.conf";
         TheBESKeys::ConfigFile = bes_conf;
-    }
 
-    void tearDown()
-    {
-    }
-
-CPPUNIT_TEST_SUITE( checkT );
-
-    CPPUNIT_TEST(do_test);
-
-    CPPUNIT_TEST_SUITE_END()
-    ;
-
-    void do_test()
-    {
-        cout << "*****************************************" << endl;
-        cout << "Entered checkT::run" << endl;
-
-        cout << "*****************************************" << endl;
-        cout << "create the desired directory structure" << endl;
+        DBG2(cerr << "*****************************************" << endl);
+        DBG2(cerr << "create the desired directory structure" << endl);
         // testdir
         // testdir/nc
         // testdir/link_to_nc -> testdir/nc
         // testdir/nc/testfile.nc
         // testdir/nc/link_to_testfile.nc -> testdir/nc/testfile.nc
-        cout << "    creating ./testdir/" << endl;
+        DBG2(cerr << "    creating ./testdir/" << endl);
         int ret = mkdir("./testdir", S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
         int myerrno = errno;
         CPPUNIT_ASSERT(ret == 0 || myerrno == EEXIST);
 
-        cout << "    creating ./testdir/nc/" << endl;
+        DBG2(cerr << "    creating ./testdir/nc/" << endl);
         ret = mkdir("./testdir/nc", S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
         myerrno = errno;
         CPPUNIT_ASSERT(ret == 0 || myerrno == EEXIST);
 
-        cout << "    creating ./testdir/nc/testfile.nc" << endl;
+        DBG2(cerr << "    creating ./testdir/nc/testfile.nc" << endl);
         FILE *fp = fopen("./testdir/nc/testfile.nc", "w+");
         CPPUNIT_ASSERT(fp);
 
-        cout << "    creating symlink ./testdir/nc/link_to_nc" << endl;
+        DBG2(cerr << "    creating symlink ./testdir/nc/link_to_nc" << endl);
         fprintf(fp, "This is a test file");
         fclose(fp);
         ret = symlink("./nc", "./testdir/link_to_nc");
         myerrno = errno;
         CPPUNIT_ASSERT(ret == 0 || myerrno == EEXIST);
 
-        cout << "    creating symlink ./testdir/nc/link_to_testfile.nc" << endl;
+        DBG2(cerr << "    creating symlink ./testdir/nc/link_to_testfile.nc" << endl);
         ret = symlink("./testfile.nc", "./testdir/nc/link_to_testfile.nc");
         myerrno = errno;
         CPPUNIT_ASSERT(ret == 0 || myerrno == EEXIST);
+    }
 
-        cout << "*****************************************" << endl;
-        cout << "checking /testdir/" << endl;
-        try {
-            BESUtil::check_path("/testdir/", "./", true);
-        }
-        catch (BESError &e) {
-            cerr << e.get_message() << endl;
-            CPPUNIT_ASSERT(!"check failed for /testdir/");
-        }
+    CPPUNIT_TEST_SUITE(checkT);
 
-        cout << "*****************************************" << endl;
-        cout << "checking /testdir/nc/" << endl;
-        try {
-            BESUtil::check_path("/testdir/nc/", "./", true);
-        }
-        catch (BESError &e) {
-            cerr << e.get_message() << endl;
-            CPPUNIT_ASSERT(!"check failed for /testdir/nc/");
-        }
+    CPPUNIT_TEST(test_slash_path);
+    CPPUNIT_TEST(test_slash_path_no_sym_links);
+    CPPUNIT_TEST(test_empty_path);
+    CPPUNIT_TEST(test_empty_path_no_sym_links);
 
-        cout << "*****************************************" << endl;
-        cout << "checking /testdir/nc/testfile.nc" << endl;
-        try {
-            BESUtil::check_path("/testdir/nc/testfile.nc", "./", true);
-        }
-        catch (BESError &e) {
-            cerr << e.get_message() << endl;
-            CPPUNIT_ASSERT(!"check failed for /testdir/nc/testfile.nc");
-        }
+    CPPUNIT_TEST(test_slash_root);
+    CPPUNIT_TEST(test_empty_root);
+    CPPUNIT_TEST(test_slash_root_no_sym_links);
+    CPPUNIT_TEST(test_empty_root_no_sym_links);
 
-        cout << "*****************************************" << endl;
-        cout << "checking /testdir/link_to_nc/" << endl;
-        try {
-            BESUtil::check_path("/testdir/link_to_nc/", "./", true);
-        }
-        catch (BESError &e) {
-            cerr << e.get_message() << endl;
-            CPPUNIT_ASSERT(!"check failed for /testdir/link_to_nc/");
-        }
+    CPPUNIT_TEST(test_one_dir);
+    CPPUNIT_TEST(test_two_dirs);
+    CPPUNIT_TEST(test_file);
+    CPPUNIT_TEST(test_file_abs_root);
+    CPPUNIT_TEST(test_sym_link_when_allowed);
+    CPPUNIT_TEST(test_sym_link_to_file_allowed);
+    CPPUNIT_TEST(test_sym_link_dir_not_allowed);
+    CPPUNIT_TEST(test_dirs_sym_link_not_allowed);
+    CPPUNIT_TEST(test_file_sym_link_not_allowed);
+    CPPUNIT_TEST(test_sym_link_sym_links_not_allowed);
+    CPPUNIT_TEST(test_link_to_file_in_sym_link_dir_sym_links_not_allowed);
+    CPPUNIT_TEST(test_file_in_sym_link_dir_sym_links_not_allowed);
+    CPPUNIT_TEST(test_link_to_file_syn_link_not_allowed);
+    CPPUNIT_TEST(test_no_dir_syn_link_allowed_1);
+    CPPUNIT_TEST(test_no_dir_syn_link_not_allowed);
+    CPPUNIT_TEST(test_no_dir_syn_link_allowed_2);
+    CPPUNIT_TEST(test_no_file_syn_link_allowed);
+    CPPUNIT_TEST(test_no_file_linked_dir_syn_link_allowed);
+    CPPUNIT_TEST(test_no_file_linked_dir_syn_link_not_allowed);
 
-        cout << "*****************************************" << endl;
-        cout << "checking /testdir/link_to_nc/link_to_testfile.nc" << endl;
-        try {
-            BESUtil::check_path("/testdir/link_to_nc/link_to_testfile.nc", "./", true);
-        }
-        catch (BESError &e) {
-            cerr << e.get_message() << endl;
-            CPPUNIT_ASSERT(!"check failed for /testdir/link_to_nc/link_to_testfile.nc");
-        }
+    CPPUNIT_TEST_SUITE_END();
 
-        cout << "*****************************************" << endl;
-        cout << "checking /testdir/, folllow syms = false" << endl;
-        try {
-            BESUtil::check_path("/testdir/", "./", false);
-        }
-        catch (BESError &e) {
-            cerr << e.get_message() << endl;
-            CPPUNIT_ASSERT(!"check failed for /testdir/");
-        }
+    // NB: void BESUtil::check_path(const string &path, const string &root, bool follow_sym_links)
+    // check_path() throws when the root + path item does not exist or is a sym link if follow_sym_links
+    // is false. Otherwise, it simply returns.
 
-        cout << "*****************************************" << endl;
-        cout << "checking /testdir/nc/, folllow syms = false" << endl;
-        try {
-            BESUtil::check_path("/testdir/nc/", "./", false);
-        }
-        catch (BESError &e) {
-            cerr << e.get_message() << endl;
-            CPPUNIT_ASSERT(!"check failed for /testdir/nc/");
-        }
+    void test_slash_path()
+    {
+        DBG(cerr << "checking /" << endl);
+        CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /", BESUtil::check_path("/", "./", true));
+    }
 
-        cout << "*****************************************" << endl;
-        cout << "checking /testdir/nc/testfile.nc, folllow syms = false" << endl;
-        try {
-            BESUtil::check_path("/testdir/nc/testfile.nc", "./", false);
-        }
-        catch (BESError &e) {
-            cerr << e.get_message() << endl;
-            CPPUNIT_ASSERT(!"check failed for /testdir/nc/testfile.nc");
-        }
+    void test_slash_path_no_sym_links()
+    {
+        DBG(cerr << "checking /, follow_sym_links == false" << endl);
+        CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /, follow_sym_links == false", BESUtil::check_path("/", "./", false));
+    }
 
-        cout << "*****************************************" << endl;
-        cout << "checking /testdir/link_to_nc/, follow_syms = false" << endl;
-        try {
-            BESUtil::check_path("/testdir/link_to_nc/", "./", false);
-            CPPUNIT_ASSERT(!"check succeeded");
-        }
-        catch (BESError &e) {
-        }
+    void test_empty_path()
+    {
+        DBG(cerr << "checking /" << endl);
+        CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /", BESUtil::check_path("", "./", true));
+    }
 
-        cout << "*****************************************" << endl;
-        cout << "checking /testdir/link_to_nc/link_to_testfile.nc, " << "follow syms = false" << endl;
-        try {
-            BESUtil::check_path("/testdir/link_to_nc/link_to_testfile.nc", "./", false);
-            CPPUNIT_ASSERT(!"check succeeded");
-        }
-        catch (BESError &e) {
-        }
+    void test_empty_path_no_sym_links()
+    {
+        DBG(cerr << "checking /, follow_sym_links == false" << endl);
+        CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /, follow_sym_links == false", BESUtil::check_path("", "./", false));
+    }
 
-        cout << "*****************************************" << endl;
-        cout << "checking /testdir/nc/link_to_testfile.nc, " << "follow syms = false" << endl;
-        try {
-            BESUtil::check_path("/testdir/nc/link_to_testfile.nc", "./", false);
-            CPPUNIT_ASSERT(!"check succeeded");
-        }
-        catch (BESError &e) {
-        }
+    void test_slash_root()
+    {
+        DBG(cerr << "checking /" << endl);
+        CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /", BESUtil::check_path("/", TEST_BUILD_DIR, true));
+    }
 
-        cout << "*****************************************" << endl;
-        cout << "checking /nodir/" << endl;
-        try {
-            BESUtil::check_path("/nodir/", "./", true);
-            CPPUNIT_ASSERT(!"check succeeded");
-        }
-        catch (BESError &e) {
-        }
+    void test_empty_root()
+    {
+        DBG(cerr << "checking /" << endl);
+        CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /", BESUtil::check_path("", TEST_BUILD_DIR, true));
+    }
 
-        cout << "*****************************************" << endl;
-        cout << "checking /nodir/, follow syms = false" << endl;
-        try {
-            BESUtil::check_path("/nodir/", "./", false);
-            CPPUNIT_ASSERT(!"check succeeded");
-        }
-        catch (BESError &e) {
-        }
+    void test_slash_root_no_sym_links()
+    {
+        DBG(cerr << "checking /" << endl);
+        CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /", BESUtil::check_path("/", TEST_BUILD_DIR, false));
+    }
 
-        cout << "*****************************************" << endl;
-        cout << "checking /testdir/nodir/" << endl;
-        try {
-            BESUtil::check_path("/testdir/nodir/", "./", true);
-            CPPUNIT_ASSERT(!"check succeeded");
-        }
-        catch (BESError &e) {
-        }
+    void test_empty_root_no_sym_links()
+    {
+        DBG(cerr << "checking /" << endl);
+        CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /", BESUtil::check_path("", TEST_BUILD_DIR, false));
+    }
 
-        cout << "*****************************************" << endl;
-        cout << "checking /testdir/nc/nofile.nc" << endl;
-        try {
-            BESUtil::check_path("/testdir/nc/nofile.nc", "./", true);
-            CPPUNIT_ASSERT(!"check succeeded");
-        }
-        catch (BESError &e) {
-        }
+    void test_one_dir()
+    {
+        DBG(cerr << "checking /testdir/" << endl);
+        CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /testdir/",
+                                        BESUtil::check_path("/testdir/", "./", true));
+    }
 
-        cout << "*****************************************" << endl;
-        cout << "checking /testdir/link_to_nc/nofile.nc" << endl;
-        try {
-            BESUtil::check_path("/testdir/link_to_nc/nofile.nc", "./", true);
-            CPPUNIT_ASSERT(!"check succeeded");
-        }
-        catch (BESError &e) {
-        }
+    void test_two_dirs()
+    {
+        DBG(cerr << "checking /testdir/nc/" << endl);
+        CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /testdir/nc/",
+                                        BESUtil::check_path("/testdir/nc/", "./", true));
+    }
 
-        cout << "*****************************************" << endl;
-        cout << "checking /testdir/link_to_nc/nofile.nc, follow syms = false" << endl;
-        try {
-            BESUtil::check_path("/testdir/link_to_nc/nofile.nc", "./", false);
-            CPPUNIT_ASSERT(!"check succeeded");
-        }
-        catch (BESError &e) {
-        }
+    void test_file()
+    {
+        DBG(cerr << "checking /testdir/nc/testfile.nc" << endl);
+        CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /testdir/nc/testfile.nc",
+                                        BESUtil::check_path("/testdir/nc/testfile.nc", "./", true));
+    }
 
-        cout << "*****************************************" << endl;
-        cout << "Returning from checkT::run" << endl;
+    void test_file_abs_root()
+    {
+        DBG(cerr << "checking /testdir/nc/testfile.nc" << endl);
+        CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /testdir/nc/testfile.nc",
+                                        BESUtil::check_path("/testdir/nc/testfile.nc", TEST_BUILD_DIR, true));
+    }
+
+    void test_sym_link_when_allowed()
+    {
+        DBG(cerr << "checking /testdir/link_to_nc/" << endl);
+        CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /testdir/link_to_nc/",
+                                        BESUtil::check_path("/testdir/link_to_nc/", "./", true));
+    }
+
+    void test_sym_link_to_file_allowed()
+    {
+        DBG(cerr << "checking /testdir/link_to_nc/link_to_testfile.nc" << endl);
+        CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /testdir/link_to_nc/link_to_testfile.nc",
+                                        BESUtil::check_path("/testdir/link_to_nc/link_to_testfile.nc", "./", true));
+    }
+
+    void test_sym_link_dir_not_allowed()
+    {
+        DBG(cerr << "checking /testdir/, follow syms = false" << endl);
+        CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /testdir/, follow syms = false",
+                                        BESUtil::check_path("/testdir/", "./", false));
+    }
+
+    void test_dirs_sym_link_not_allowed()
+    {
+        DBG(cerr << "checking /testdir/nc/, follow syms = false" << endl);
+        CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /testdir/nc/, follow syms = false",
+                                        BESUtil::check_path("/testdir/nc/", "./", false));
+    }
+
+    void test_file_sym_link_not_allowed()
+    {
+        DBG(cerr << "checking /testdir/nc/testfile.nc, follow syms = false" << endl);
+        CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /testdir/nc/testfile.nc, follow syms = false",
+                                        BESUtil::check_path("/testdir/nc/testfile.nc", "./", false));
+    }
+
+    void test_sym_link_sym_links_not_allowed()
+    {
+        DBG(cerr << "checking /testdir/link_to_nc/, follow_syms = false" << endl);
+        CPPUNIT_ASSERT_THROW_MESSAGE("checking /testdir/link_to_nc/, follow_syms = false",
+                                     BESUtil::check_path("/testdir/link_to_nc/", "./", false),
+                                     BESForbiddenError);
+    }
+
+    void test_link_to_file_in_sym_link_dir_sym_links_not_allowed() {
+        DBG(cerr << "checking /testdir/link_to_nc/link_to_testfile.nc, " << "follow syms = false" << endl);
+        CPPUNIT_ASSERT_THROW_MESSAGE("checking /testdir/link_to_nc/link_to_testfile.nc, follow syms = false",
+                                     BESUtil::check_path("/testdir/link_to_nc/link_to_testfile.nc", "./", false),
+                                     BESForbiddenError);
+    }
+
+    void test_file_in_sym_link_dir_sym_links_not_allowed() {
+        DBG(cerr << "checking /testdir/link_to_nc/testfile.nc, " << "follow syms = false" << endl);
+        CPPUNIT_ASSERT_THROW_MESSAGE("checking /testdir/link_to_nc/testfile.nc, follow syms = false",
+                                     BESUtil::check_path("/testdir/link_to_nc/testfile.nc", "./", false),
+                                     BESForbiddenError);
+    }
+
+    void test_link_to_file_syn_link_not_allowed()
+    {
+        DBG(cerr << "checking /testdir/nc/link_to_testfile.nc, " << "follow syms = false" << endl);
+        CPPUNIT_ASSERT_THROW_MESSAGE("checking /testdir/nc/link_to_testfile.nc, follow syms = false",
+                                     BESUtil::check_path("/testdir/nc/link_to_testfile.nc", "./", false),
+                                     BESForbiddenError);
+    }
+
+    void test_no_dir_syn_link_allowed_1()
+    {
+        DBG(cerr << "checking /nodir/" << endl);
+        CPPUNIT_ASSERT_THROW_MESSAGE("checking /nodir/",
+                                     BESUtil::check_path("/nodir/", "./", true),
+                                     BESNotFoundError);
+    }
+
+    void test_no_dir_syn_link_not_allowed()
+    {
+        DBG(cerr << "checking /nodir/, follow syms = false" << endl);
+        CPPUNIT_ASSERT_THROW_MESSAGE("checking /nodir/, follow syms = false",
+                                     BESUtil::check_path("/nodir/", "./", false),
+                                     BESNotFoundError);
+    }
+
+    void test_no_dir_syn_link_allowed_2()
+    {
+        DBG(cerr << "checking /testdir/nodir/" << endl);
+        CPPUNIT_ASSERT_THROW_MESSAGE("checking /testdir/nodir/",
+                                     BESUtil::check_path("/testdir/nodir/", "./", true),
+                                     BESNotFoundError);
+    }
+    void test_no_file_syn_link_allowed()
+    {
+        DBG(cerr << "checking /testdir/nc/nofile.nc" << endl);
+        CPPUNIT_ASSERT_THROW_MESSAGE("checking /testdir/nc/nofile.nc",
+                                     BESUtil::check_path("/testdir/nc/nofile.nc", "./", true),
+                                     BESNotFoundError);
+    }
+
+    void test_no_file_linked_dir_syn_link_allowed()
+    {
+        // This and the next test return NotFoundError because that is checked
+        // before the tests for the sym link (which, for this case would return
+        // BESForbiddenError). jhrg 12/31/21
+        DBG(cerr << "checking /testdir/link_to_nc/nofile.nc" << endl);
+        CPPUNIT_ASSERT_THROW_MESSAGE("checking /testdir/link_to_nc/nofile.nc",
+                                     BESUtil::check_path("/testdir/link_to_nc/nofile.nc", "./", true),
+                                     BESNotFoundError);
+    }
+
+    void test_no_file_linked_dir_syn_link_not_allowed()
+    {
+        DBG(cerr << "checking /testdir/link_to_nc/nofile.nc, follow syms = false" << endl);
+        CPPUNIT_ASSERT_THROW_MESSAGE("checking /testdir/link_to_nc/nofile.nc, follow syms = false",
+                                     BESUtil::check_path("/testdir/link_to_nc/nofile.nc", "./", false),
+                                     BESNotFoundError);
     }
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(checkT);
 
-int main(int argc, char*argv[])
-{
+int main(int argc, char *argv[]) {
     int option_char;
-    while ((option_char = getopt(argc, argv, "dh")) != EOF)
+    while ((option_char = getopt(argc, argv, "dDh")) != EOF)
         switch (option_char) {
-        case 'd':
-            debug = 1;  // debug is a static global
-            break;
-        case 'h': {     // help - show test names
-            cerr << "Usage: checkT has the following tests:" << endl;
-            const std::vector<Test*> &tests = checkT::suite()->getTests();
-            unsigned int prefix_len = checkT::suite()->getName().append("::").length();
-            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
-                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            case 'd':
+                debug = true;  // debug is a static global
+                break;
+            case 'D':
+                debug2 = true;  // debug is a static global
+                break;
+            case 'h': {     // help - show test names
+                cerr << "Usage: checkT has the following tests:" << endl;
+                const std::vector<Test *> &tests = checkT::suite()->getTests();
+                unsigned int prefix_len = checkT::suite()->getName().append("::").length();
+                for (auto test: tests) {
+                    cerr << test->getName().replace(0, prefix_len, "") << endl;
+                }
+
+                return 0;
             }
-            break;
-        }
-        default:
-            break;
+            default:
+                break;
         }
 
     argc -= optind;
@@ -336,8 +384,8 @@ int main(int argc, char*argv[])
     else {
         int i = 0;
         while (i < argc) {
-            if (debug) cerr << "Running " << argv[i] << endl;
-            test = checkT::suite()->getName().append("::").append(argv[i]);
+            DBG(cerr << "Running " << argv[i] << endl);
+            test = checkT::suite()->getName().append("::").append(argv[i++]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
     }

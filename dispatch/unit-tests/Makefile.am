@@ -19,8 +19,7 @@ AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
 LDADD += $(CPPUNIT_LIBS)
 endif
 
-# These are not used by automake but are often useful for certain types of
-# debugging. 
+# These are not used by automake but are often useful for certain types of debugging.
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
 
 AM_CXXFLAGS=
@@ -41,14 +40,14 @@ checkT servicesT fsT urlT containerT uncompressT cacheT			\
 BESCatalogListTest CatalogNodeTest CatalogItemTest \
 ServerAdministratorTest kvp_utils_test
 
-# Debugging code is compiled if the project when
+# Debugging code is compiled out of the project when
 # BES_DEVELOPER is not set, and so running the debugT tests
 # produces no useful result.
 if BES_DEVELOPER
 TESTS += debugT
 endif
 
-# This is tool to look at CatalogEntry objects. jhrg 3.5.18
+# This is a tool to look at CatalogEntry objects. jhrg 3.5.18
 # complete_catalog_lister agglistT 
 
 if LIBDAP
@@ -68,8 +67,8 @@ check-local:
 	@echo ""
 endif
 
-# This limits the files copied to just these eliminating the files
-# created when tests are run. jhrg 5/13/07
+# Limit the files copied to just these, eliminating the files created when tests are run.
+# jhrg 5/13/07
 CACHE = cache/template.txt cache/testfile.txt.bz2 cache/testfile.txt.gz cache/testfile.txt.Z
 
 EXTRA_DIST = $(CACHE) catalog_test catalog_test_baselines bad_keys1.ini \
@@ -193,8 +192,6 @@ BESCatalogListTest_CPPFLAGS = $(AM_CPPFLAGS) -Wno-deprecated
 # complete_catalog_lister_OBJ = ../BESCatalogResponseHandler.o
 # complete_catalog_lister_CPPFLAGS =  $(AM_CPPFLAGS) $(XML2_CFLAGS)
 # complete_catalog_lister_LDADD = $(complete_catalog_lister_OBJ) $(LDADD)
-
-
 
 ServerAdministratorTest_SOURCES = ServerAdministratorTest.cc
 ServerAdministratorTest_LDADD = ../ServerAdministrator.o $(LDADD)

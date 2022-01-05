@@ -98,8 +98,9 @@ TheBESKeys *TheBESKeys::TheKeys()
     if (access(try_ini.c_str(), R_OK) == 0) {
         TheBESKeys::ConfigFile = try_ini;
         d_instance = new TheBESKeys(TheBESKeys::ConfigFile);
-    return d_instance;
-}
+        return d_instance;
+    }
+
     throw BESInternalFatalError("Unable to locate a BES configuration file.", __FILE__, __LINE__);
 }
 
@@ -153,7 +154,6 @@ void TheBESKeys::initialize_keys()
 
 void TheBESKeys::clean()
 {
-
     if (d_the_keys && d_own_keys) {
         delete d_the_keys;
         d_the_keys = 0;
@@ -673,7 +673,6 @@ bool TheBESKeys::using_dynamic_config(){
     return d_dynamic_config_in_use;
 }
 
-
 /**
  * @brief Loads the the applicable dynamic configuration or nothing if no configuration is applicable.
  * @param name
@@ -681,7 +680,6 @@ bool TheBESKeys::using_dynamic_config(){
 void TheBESKeys::load_dynamic_config(const string name)
 {
 #if DYNAMIC_CONFIG_ENABLED
-
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
     // Clear the active keys and copy the original keys into
