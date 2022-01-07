@@ -1,0 +1,23 @@
+Attributes {
+    x {
+        String Description "Test coordinate variable x.";
+    }
+    x_dim_0 {
+        String name "x";
+    }
+    time {
+        String Description "Test coordinate variable time.";
+    }
+    time_dim_0 {
+        String name "time";
+    }
+    v {
+        String Description "Test output data array v";
+    }
+    v_dim_0 {
+        String name "time";
+    }
+    v_dim_1 {
+        String name "x";
+    }
+}

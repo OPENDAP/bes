@@ -1,0 +1,37 @@
+Attributes {
+    pressure {
+        String long_name "Swath1:pressure";
+    }
+    Latitude {
+        String units "degrees_north";
+        String long_name "Swath1:Latitude";
+    }
+    Longitude {
+        String units "degrees_east";
+        String long_name "Swath1:Longitude";
+    }
+    temperature {
+        String coordinates "pressure Latitude Longitude";
+        Float32 _FillValue -9999.000000;
+        String long_name "Swath1:temperature";
+    }
+    pressure_1 {
+        String long_name "Swath2:pressure";
+    }
+    Latitude_1 {
+        String units "degrees_north";
+        String long_name "Swath2:Latitude";
+    }
+    Longitude_1 {
+        String units "degrees_east";
+        String long_name "Swath2:Longitude";
+    }
+    temperature_1 {
+        String coordinates "pressure_1 Latitude_1 Longitude_1";
+        Float32 _FillValue -9999.000000;
+        String long_name "Swath2:temperature";
+    }
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.18";
+    }
+}

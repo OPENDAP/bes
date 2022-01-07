@@ -1,0 +1,21 @@
+Dataset {
+    Float32 _1_0_deg__regional_colat__zones[_1_0_deg__regional_colat__zones = 180];
+    Float32 _1_0_deg__regional_long__zones[_1_0_deg__regional_long__zones = 360];
+    Float32 Number_Of_Observations___MH[Monthly_Hourly_Avgs = 8][_1_0_deg__regional_colat__zones = 180][_1_0_deg__regional_long__zones = 360];
+    Float32 Total_Cloud_Area_Fraction___MH[Monthly_Hourly_Avgs = 8][_1_0_deg__regional_colat__zones = 180][_1_0_deg__regional_long__zones = 360];
+    Float32 Cloud_Area_Fraction___MH[Monthly_Hourly_Avgs = 8][_thin__thick_and_low__high__Cu_Sc_St_Ac_As_Ns_Ci_Cs_Dc = 18][_1_0_deg__regional_colat__zones = 180][_1_0_deg__regional_long__zones = 360];
+    Float32 Effective_Pressure___MH[Monthly_Hourly_Avgs = 8][_thin__thick_and_low__high__Cu_Sc_St_Ac_As_Ns_Ci_Cs_Dc = 18][_1_0_deg__regional_colat__zones = 180][_1_0_deg__regional_long__zones = 360];
+    Float32 Effective_Temperature___MH[Monthly_Hourly_Avgs = 8][_thin__thick_and_low__high__Cu_Sc_St_Ac_As_Ns_Ci_Cs_Dc = 18][_1_0_deg__regional_colat__zones = 180][_1_0_deg__regional_long__zones = 360];
+    Float32 Log__Visible__Optical_Depth___MH[Monthly_Hourly_Avgs = 8][_thin__thick_and_low__high__Cu_Sc_St_Ac_As_Ns_Ci_Cs_Dc = 18][_1_0_deg__regional_colat__zones = 180][_1_0_deg__regional_long__zones = 360];
+    Float32 Liquid_Ice_Water_Path___MH[Monthly_Hourly_Avgs = 8][_thin__thick_and_low__high__Cu_Sc_St_Ac_As_Ns_Ci_Cs_Dc = 18][_1_0_deg__regional_colat__zones = 180][_1_0_deg__regional_long__zones = 360];
+    Float32 Monthly_Total_Number_Of_Observations___M[Monthly_Avgs = 1][_1_0_deg__regional_colat__zones = 180][_1_0_deg__regional_long__zones = 360];
+    Float32 Total_Cloud_Area_Fraction___M[Monthly_Avgs = 1][_1_0_deg__regional_colat__zones = 180][_1_0_deg__regional_long__zones = 360];
+    Float32 Cloud_Area_Fraction___M[Monthly_Avgs = 1][_thin__thick_and_low__high__Cu_Sc_St_Ac_As_Ns_Ci_Cs_Dc = 18][_1_0_deg__regional_colat__zones = 180][_1_0_deg__regional_long__zones = 360];
+    Float32 Effective_Pressure___M[Monthly_Avgs = 1][_thin__thick_and_low__high__Cu_Sc_St_Ac_As_Ns_Ci_Cs_Dc = 18][_1_0_deg__regional_colat__zones = 180][_1_0_deg__regional_long__zones = 360];
+    Float32 Effective_Temperature___M[Monthly_Avgs = 1][_thin__thick_and_low__high__Cu_Sc_St_Ac_As_Ns_Ci_Cs_Dc = 18][_1_0_deg__regional_colat__zones = 180][_1_0_deg__regional_long__zones = 360];
+    Float32 Log__Visible__Optical_Depth___M[Monthly_Avgs = 1][_thin__thick_and_low__high__Cu_Sc_St_Ac_As_Ns_Ci_Cs_Dc = 18][_1_0_deg__regional_colat__zones = 180][_1_0_deg__regional_long__zones = 360];
+    Float32 Liquid_Ice_Water_Path___M[Monthly_Avgs = 1][_thin__thick_and_low__high__Cu_Sc_St_Ac_As_Ns_Ci_Cs_Dc = 18][_1_0_deg__regional_colat__zones = 180][_1_0_deg__regional_long__zones = 360];
+    Int32 _thin__thick_and_low__high__Cu_Sc_St_Ac_As_Ns_Ci_Cs_Dc[_thin__thick_and_low__high__Cu_Sc_St_Ac_As_Ns_Ci_Cs_Dc = 18];
+    Int32 Monthly_Avgs[Monthly_Avgs = 1];
+    Int32 Monthly_Hourly_Avgs[Monthly_Hourly_Avgs = 8];
+} CER_ISCCP-D2like-GEO_Composite_Beta1_023031.200510.hdf;

@@ -1,0 +1,12 @@
+The data:
+Int32 SDS_DFNT_INT32[fakeDim0 = 2] = {1, -1};
+UInt32 SDS_DFNT_UINT32[fakeDim1 = 1] = {1};
+Int16 SDS_DFNT_INT16[fakeDim2 = 2] = {1, -1};
+UInt16 SDS_DFNT_UINT16[fakeDim3 = 1] = {0};
+Int32 SDS_DFNT_INT8[fakeDim4 = 1] = {0};
+Byte SDS_DFNT_UINT8[fakeDim5 = 1] = {255};
+Float32 SDS_DFNT_FLOAT32[fakeDim6 = 2] = {-1, 3.40282e+38};
+Float64 SDS_DFNT_FLOAT64[fakeDim7 = 7] = {0, 1, -1, 1.79769313486232e+308, 4.94065645841247e-324, -1.79769313486232e+308, -4.94065645841247e-324};
+String SDS_DFNT_CHAR8 = "";
+Byte SDS_DFNT_UCHAR8[fakeDim9 = 2] = {0, 1};
+

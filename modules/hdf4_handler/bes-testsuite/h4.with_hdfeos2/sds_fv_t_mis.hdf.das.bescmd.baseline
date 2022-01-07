@@ -1,0 +1,12 @@
+Attributes {
+    data1 {
+        String long_name "data1";
+        UInt16 _FillValue 2147483647;
+    }
+    data1_dim_0 {
+        String name "fakeDim0";
+    }
+    data1_dim_1 {
+        String name "fakeDim1";
+    }
+}

@@ -1,0 +1,6 @@
+Dataset {
+    Float32 Ice_Surface_Temperature[Along_swath_lines_1km = 2030][Cross_swath_pixels_1km = 1354];
+    Byte Ice_Surface_Temperature_Pixel_QA[Along_swath_lines_1km = 2030][Cross_swath_pixels_1km = 1354];
+    Float32 Latitude[Along_swath_lines_1km = 2030][Cross_swath_pixels_1km = 1354];
+    Float32 Longitude[Along_swath_lines_1km = 2030][Cross_swath_pixels_1km = 1354];
+} MOD29.A2013196.1250.005.2013196195940.hdf;

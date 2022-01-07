@@ -1,0 +1,75 @@
+Attributes {
+    Grid {
+        String GridHeader "BinMethod=ARITHMETIC_MEAN;
+Registration=CENTER;
+LatitudeResolution=0.25;
+LongitudeResolution=0.25;
+NorthBoundingCoordinate=50;
+SouthBoundingCoordinate=-50;
+EastBoundingCoordinate=180;
+WestBoundingCoordinate=-180;
+Origin=SOUTHWEST;
+";
+    }
+    HDF_GLOBAL {
+        String FileHeader "AlgorithmID=3B43;
+AlgorithmVersion=3B43_7.0;
+FileName=3B43.20130901.7.HDF;
+GenerationDateTime=2013-12-04T15:42:50.000Z;
+StartGranuleDateTime=2013-09-01T00:00:00.000Z;
+StopGranuleDateTime=2013-09-30T23:59:59.999Z;
+GranuleNumber=;
+NumberOfSwaths=0;
+NumberOfGrids=1;
+GranuleStart=;
+TimeInterval=MONTH;
+ProcessingSystem=PPS;
+ProductVersion=7;
+MissingData=;
+";
+        String FileInfo "DataFormatVersion=m;
+TKCodeBuildVersion=1;
+MetadataVersion=m;
+FormatPackage=HDF Version 4.2 Release 4, January 25, 2009;
+BlueprintFilename=TRMM.V7.3B43.blueprint.xml;
+BlueprintVersion=BV_13;
+TKIOVersion=1.6;
+MetadataStyle=PVL;
+EndianType=LITTLE_ENDIAN;
+";
+        String GridHeader "BinMethod=ARITHMETIC_MEAN;
+Registration=CENTER;
+LatitudeResolution=0.25;
+LongitudeResolution=0.25;
+NorthBoundingCoordinate=50;
+SouthBoundingCoordinate=-50;
+EastBoundingCoordinate=180;
+WestBoundingCoordinate=-180;
+Origin=SOUTHWEST;
+";
+    }
+    precipitation {
+        String units "mm/hr";
+        String coordinates "nlon nlat";
+        Float32 _FillValue -9999.9;
+    }
+    relativeError {
+        String units "mm/hr";
+        String coordinates "nlon nlat";
+        Float32 _FillValue -9999.9;
+    }
+    gaugeRelativeWeighting {
+        String units "percent";
+        String coordinates "nlon nlat";
+    }
+    nlon {
+        String long_name "longitude";
+        String standard_name "longitude";
+        String units "degrees_east";
+    }
+    nlat {
+        String long_name "latitude";
+        String standard_name "latitude";
+        String units "degrees_north";
+    }
+}

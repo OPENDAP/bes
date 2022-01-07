@@ -1,0 +1,38 @@
+Attributes {
+    SDS_RLE {
+        String long_name "SDS_RLE";
+    }
+    SDS_RLE_dim_0 {
+        String name "fakeDim0";
+    }
+    SDS_RLE_dim_1 {
+        String name "fakeDim1";
+    }
+    SDS_N_bit {
+        String long_name "SDS_N-bit";
+    }
+    SDS_N_bit_dim_0 {
+        String name "fakeDim2";
+    }
+    SDS_N_bit_dim_1 {
+        String name "fakeDim3";
+    }
+    SDS_Skip_Huffman {
+        String long_name "SDS_Skip_Huffman";
+    }
+    SDS_Skip_Huffman_dim_0 {
+        String name "fakeDim4";
+    }
+    SDS_Skip_Huffman_dim_1 {
+        String name "fakeDim5";
+    }
+    SDS_Deflate {
+        String long_name "SDS_Deflate";
+    }
+    SDS_Deflate_dim_0 {
+        String name "fakeDim6";
+    }
+    SDS_Deflate_dim_1 {
+        String name "fakeDim7";
+    }
+}

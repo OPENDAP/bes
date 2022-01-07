@@ -1,0 +1,6 @@
+The data:
+Float32 DATA_GRANULE_PlanetaryGrid_precipitation[scan = 1][longitude = 2][latitude = 2] = {{{0.0123333, 0.130917},{0.00633333, 0.126542}}};
+Float32 latitude[latitude = 2] = {-49.875, 49.875};
+Float32 longitude[longitude = 2] = {-179.875, 179.875};
+Int32 scan[scan = 1] = {0};
+

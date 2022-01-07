@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response xmlns="http://xml.opendap.org/ns/bes/1.0#" reqID="some_unique_value">
+    <getDAS>
+        <BESError>
+            <Type>2</Type>
+            <Message>libdap exception building response: error_code = 1002: An internal error was encountered:
+HDFEOS2.cc:3337: lack of data fields GEOGrid
+Please report this to support@opendap.org
+</Message>
+            <Administrator>admin.email.address@your.domain.name</Administrator>
+        </BESError>
+    </getDAS>
+</response>

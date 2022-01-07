@@ -1,0 +1,26 @@
+Attributes {
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.18";
+    }
+    Swath_Data_Fields_temperature {
+        String long_name "temperature";
+    }
+    Swath_Data_Fields_temperature_dim_0 {
+        String name "ZDim:Swath";
+    }
+    Swath_Data_Fields_temperature_dim_1 {
+        String name "NDim:Swath";
+    }
+    Swath_Geolocation_Fields_pressure {
+        Float32 Vdata_field_pressure 0.000000000, 1.000000000, 2.000000000, 3.000000000;
+    }
+    Swath_Geolocation_Fields_level {
+        Float32 Vdata_field_level 0.000000000, 1.000000000, 2.000000000, 3.000000000;
+    }
+    Swath_Geolocation_Fields_Latitude {
+        Float32 Vdata_field_Latitude 0.000000000, 1.000000000, 2.000000000, 3.000000000, 4.000000000, 5.000000000, 6.000000000, 7.000000000;
+    }
+    Swath_Geolocation_Fields_Longitude {
+        Float32 Vdata_field_Longitude 0.000000000, 1.000000000, 2.000000000, 3.000000000, 4.000000000, 5.000000000, 6.000000000, 7.000000000;
+    }
+}

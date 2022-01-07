@@ -1,0 +1,6 @@
+Dataset {
+    Float32 temperature[ZDim = 2][Latitude = 4][Longitude = 8];
+    Int32 ZDim[ZDim = 2];
+    Float64 Latitude[Latitude = 4];
+    Float64 Longitude[Longitude = 8];
+} grid_1_3d.hdf;

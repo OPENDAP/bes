@@ -1,0 +1,114 @@
+Attributes {
+    HDF_GLOBAL {
+        Int32 GLOBAL_ATTR_DFNT_INT32 0, 1, -1, 2147483647, -2147483648;
+        UInt32 GLOBAL_ATTR_DFNT_UINT32 0, 1, 4294967295;
+        Int16 GLOBAL_ATTR_DFNT_INT16 0, 1, -1, 32767, -32768;
+        UInt16 GLOBAL_ATTR_DFNT_UINT16 0, 1, 65535;
+        Int32 GLOBAL_ATTR_DFNT_INT8 0, 1, -1, 127, -128;
+        Byte GLOBAL_ATTR_DFNT_UINT8 0, 1, 255;
+        Float32 GLOBAL_ATTR_DFNT_FLOAT32 0.000000000, 1.000000000, -1.000000000, 3.402823466e+38, 1.175494351e-38, -3.402823466e+38, -1.175494351e-38;
+        Float64 GLOBAL_ATTR_DFNT_FLOAT64 0.0000000000000000, 1.0000000000000000, -1.0000000000000000, 1.7976931348623157e+308, 2.2250738585072014e-308, -1.7976931348623157e+308, -2.2250738585072014e-308;
+        String GLOBAL_ATTR_DFNT_CHAR8 "";
+        String GLOBAL_ATTR_DFNT_UCHAR8 "";
+    }
+    SDS_DFNT_INT32 {
+        String long_name "SDS_DFNT_INT32";
+        Int32 valid_range -2147483648, 2147483647;
+        Int32 SDS_ATTR_DFNT_INT32 0, 1, -1, 2147483647, -2147483648;
+        String coordinates "Axis_DFNT_INT32";
+    }
+    Axis_DFNT_INT32 {
+        String long_name "Axis_DFNT_INT32";
+        Int32 DIM_ATTR_DFNT_INT32 0, 1, -1, 2147483647, -2147483648;
+    }
+    SDS_DFNT_UINT32 {
+        String long_name "SDS_DFNT_UINT32";
+        UInt32 valid_range 0, 4294967295;
+        UInt32 SDS_ATTR_DFNT_UINT32 0, 1, 4294967295;
+        String coordinates "Axis_DFNT_UINT32";
+    }
+    Axis_DFNT_UINT32 {
+        String long_name "Axis_DFNT_UINT32";
+        UInt32 DIM_ATTR_DFNT_UINT32 0, 1, 4294967295;
+    }
+    SDS_DFNT_INT16 {
+        String long_name "SDS_DFNT_INT16";
+        Int16 valid_range -32768, 32767;
+        Int16 SDS_ATTR_DFNT_INT16 0, 1, -1, 32767, -32768;
+        String coordinates "Axis_DFNT_INT16";
+    }
+    Axis_DFNT_INT16 {
+        String long_name "Axis_DFNT_INT16";
+        Int16 DIM_ATTR_DFNT_INT16 0, 1, -1, 32767, -32768;
+    }
+    SDS_DFNT_UINT16 {
+        String long_name "SDS_DFNT_UINT16";
+        UInt16 valid_range 0, 65535;
+        UInt16 SDS_ATTR_DFNT_UINT16 0, 1, 65535;
+        String coordinates "Axis_DFNT_UINT16";
+    }
+    Axis_DFNT_UINT16 {
+        String long_name "Axis_DFNT_UINT16";
+        UInt16 DIM_ATTR_DFNT_UINT16 0, 1, 65535;
+    }
+    SDS_DFNT_INT8 {
+        String long_name "SDS_DFNT_INT8";
+        Int32 valid_range -128, 127;
+        Int32 SDS_ATTR_DFNT_INT8 0, 1, -1, 127, -128;
+        String coordinates "Axis_DFNT_INT8";
+    }
+    Axis_DFNT_INT8 {
+        String long_name "Axis_DFNT_INT8";
+        Int32 DIM_ATTR_DFNT_INT8 0, 1, -1, 127, -128;
+    }
+    SDS_DFNT_UINT8 {
+        String long_name "SDS_DFNT_UINT8";
+        Byte valid_range 0, 255;
+        Byte SDS_ATTR_DFNT_UINT8 0, 1, 255;
+        String coordinates "Axis_DFNT_UINT8";
+    }
+    Axis_DFNT_UINT8 {
+        String long_name "Axis_DFNT_UINT8";
+        Byte DIM_ATTR_DFNT_UINT8 0, 1, 255;
+    }
+    SDS_DFNT_FLOAT32 {
+        String long_name "SDS_DFNT_FLOAT32";
+        Float32 valid_range -3.402823466e+38, 3.402823466e+38;
+        Float32 SDS_ATTR_DFNT_FLOAT32 0.000000000, 1.000000000, -1.000000000, 3.402823466e+38, 1.175494351e-38, -3.402823466e+38, -1.175494351e-38;
+        String coordinates "Axis_DFNT_FLOAT32";
+    }
+    Axis_DFNT_FLOAT32 {
+        String long_name "Axis_DFNT_FLOAT32";
+        Float32 DIM_ATTR_DFNT_FLOAT32 0.000000000, 1.000000000, -1.000000000, 3.402823466e+38, 1.175494351e-38, -3.402823466e+38, -1.175494351e-38;
+    }
+    SDS_DFNT_FLOAT64 {
+        String long_name "SDS_DFNT_FLOAT64";
+        Float64 valid_range -1.7976931348623157e+308, 1.7976931348623157e+308;
+        Float64 SDS_ATTR_DFNT_FLOAT64 0.0000000000000000, 1.0000000000000000, -1.0000000000000000, 1.7976931348623157e+308, 2.2250738585072014e-308, -1.7976931348623157e+308, -2.2250738585072014e-308;
+        String coordinates "Axis_DFNT_FLOAT64";
+    }
+    Axis_DFNT_FLOAT64 {
+        String long_name "Axis_DFNT_FLOAT64";
+        Float64 DIM_ATTR_DFNT_FLOAT64 0.0000000000000000, 1.0000000000000000, -1.0000000000000000, 1.7976931348623157e+308, 2.2250738585072014e-308, -1.7976931348623157e+308, -2.2250738585072014e-308;
+    }
+    SDS_DFNT_CHAR8 {
+        String long_name "SDS_DFNT_CHAR8";
+        String valid_range "\200\177";
+        String SDS_ATTR_DFNT_CHAR8 "";
+        String coordinates "Axis_DFNT_CHAR8";
+    }
+    Axis_DFNT_CHAR8 {
+        String long_name "Axis_DFNT_CHAR8";
+        String DIM_ATTR_DFNT_CHAR8 "";
+    }
+    SDS_DFNT_UCHAR8 {
+        String long_name "SDS_DFNT_UCHAR8";
+        String valid_range "";
+        String SDS_ATTR_DFNT_UCHAR8 "";
+        String coordinates "Axis_DFNT_UCHAR8";
+    }
+    Axis_DFNT_UCHAR8 {
+        String long_name "Axis_DFNT_UCHAR8";
+        String DIM_ATTR_DFNT_UCHAR8 "";
+    }
+}

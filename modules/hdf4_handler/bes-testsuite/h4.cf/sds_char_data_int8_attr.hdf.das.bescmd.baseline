@@ -1,0 +1,12 @@
+Attributes {
+    char_1D {
+        String long_name "char_1D";
+    }
+    char_2D {
+        String long_name "char_2D";
+        Int32 valid_range -128, 127;
+    }
+    char_2D_dim_0 {
+        String name "fakeDim1";
+    }
+}

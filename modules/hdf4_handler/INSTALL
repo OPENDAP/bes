@@ -1,0 +1,222 @@
+Installing the HDF4 handler for the OPeNDAP server.
+
+Hyrax 1.13.2 to 1.16.5
+
+Since the hyrax 1.13.2, HDF5 handler is just treated as a BES module. A standalone
+RPM and library is not necessary. Please check the INSTALL under the BES on how
+to install the BES including the HDF4 and HDF5 handlers.
+
+Updated for 3.11.6
+
+---------------------------------------------------------------------------
+
+BUILDING THE SOFTWARE
+REQUIREMENTS
+NOTES
+
+---------------------------------------------------------------------------
+
+BUILDING THE SOFTWARE
+
+Please skim REQUIREMENTS and NOTES sections of this file and README file 
+before reporting problems. Thanks.
+
+   IMPORTANT NOTE: The versions of HDF4 that are installed by the package
+    managers such as yum and rpm often are not capable of being linked with a
+    shared library/module, which is how the HDF4 handler must be built. To
+    correct this, you may need to build the HDF4 library from source and
+    specify the '--with-pic' option to configure. This may be a problem only
+    on non-i386 Linux machines; reports vary. To build the handler on OS/X
+    and an AMD 64-bit machine running Fedora Core 10 Linux (very similar to
+    Red Hat or CentOS) it was necessary to build HDF4. To do so I ran
+    configure as './configure --with-pic --disable-fortran --disable-netcdf'
+
+   If hdf4_handler reports an error  or  fileout_nectdf module dumps an netcdf 
+   file with size 0, please configure and build the HDF4 library with
+   './configure --with-pic --disable-netcdf' option.
+
+1. In this version of the release, the handler is enhanced to support
+   the access of many NASA HDF-EOS2 products and some NASA pure HDF4
+   products by many CF-compliant visualization clients such as IDV
+   and Panoply. To take advantage of this feature, the handler's
+   configuration options are different, please read carefully about
+   the following the note.
+
+1.1. Build from the source, one MUST use HDF-EOS2 library and configure with
+    the following option:
+   ./configure --with-hdf4=<Your HDF4 library path> 
+   	       --with-hdfeos2=<Your HDF-EOS2 library path> 
+	       --prefix=<Your installation path>
+
+   Without specifying the option "--with-hdfeos2" will result in
+   configuring the default HDF4 OPeNDAP handler. The HDF4 handler with
+   the default options can NOT make the NASA HDF-EOS2 products and
+   some NASA pure HDF4 products work with CF-compliant visualization
+   clients
+
+   Please add '--with-pic' option for 64-bit build.
+
+   To find the information on how to build the HDF-EOS2 library, please
+   check 
+
+       http://hdfeos.org/software/hdfeos.php#ref_sec:hdf-eos2
+
+   Again, you need '--with-pic' option when you build the HDF-EOS2 library if 
+   your system is not i386 Linux system.
+
+1.2. Install from RPMs
+
+  You can download custom RPMs with HDF-EOS2 option from
+
+    http://hdfeos.org/software/hdf4_handler/rpm/
+   
+1.3. To build the handler with the default option, 
+   Type `./configure' at the system prompt. On some systems you may have to
+   type `sh configure.' If you want this part of the server to install
+   someplace other than /usr/local/bin, use --prefix to change the prefix
+   from the default "/use/local/."
+
+2. Type `make' to build the HDF4 handler.
+
+3. Install the HDF4 handler in $prefix by running `make install'. This
+   will also add the new h4.conf file to the $prefix/etc/bes/modules directory.
+   The BES configuration file bes.conf will automatically load any module
+   configuration files in that directory. The h4.conf file contains 
+   HDF4 handler specific configurations for use with the BES Framework. 
+   This includes some parameters that used to be in the bes.conf file, 
+   such as the TypeMatch parameter for finding your files.
+
+4. For some installations, you must arrange for your operating system to find
+   the shared libraries installed by default in $prefix/lib. Do this by
+   either setting an environment variable such as LD_LIBRARY_PATH or by
+   editing /etc/ld.so.conf. Different operating systems handle this in
+   different ways.
+
+5. If you want to build your own RPM using '--with-hdfeos2' option, please 
+   refer to hdf4_handler.spec.cf file.
+
+6. Building from Our SVN Repository
+
+  If you are building from a SVN checkout, run 'autoreconf --verbose'
+  before './configure; make'. If you try to run autoconf, etc., by
+  hand and wind up with build files that don't work, use 'autoreconf
+  --force --install --verbose'. Once autoreconf has made the configure
+  and Makefile.in files, do ./configure; make; make install as
+  outlined above.
+
+7. Optional Testing
+  
+  After you build the handler with 'make' command, you can test the build
+  with 'make check'. 'make check' may fail due to the double escaping bug in 
+  libdap. (See https://scm.opendap.org/trac/ticket/2016)
+
+7.1 If you want to test generic handler with sample files in the testsuite,
+please follow the steps below.
+
+7.1.1 Clean up any existing build using 'make distclean'. 
+
+7.1.2 Change the bes.conf.in file so that it can have EnableCF=true.
+
+ %cp bes-testsuite/bes.conf.with_hdfeos2.in bes-testsuite/bes.conf.in
+
+7.1.3 Change the autotest script file so that it can compare outputs against
+ a  different set of expected outputs.
+
+  %cp bes-testsuite/hdf4_handlerTest.cf.at \
+      bes-testsuite/hdf4_handlerTest.at
+
+7.1.4 Confgiure, build, and test.
+
+  %./configure --with-hdf4=/hdfdap/local && make && make check
+
+
+7.2 If you want to test real NASA sample files with the hdfeos2 handler, please 
+follow the steps below.
+
+7.2.1 Make sure that you have 1.0G of disk space and "wget" or "curl" program 
+      is available.
+
+7.2.2 Edit the sample test.nasa.with_hdfeos2.sh script under the top level 
+    source directory. You may need to adjust the paths in the shell script.
+    
+    set path=(/hdfdap/hyrax/bin $path)
+    setenv LD_LIBRARY_PATH /hdfdap/hyrax/lib
+    setenv PKG_CONFIG_PATH /hdfdap/hyrax/lib/pkgconfig:/usr/lib/pkgconfig/
+
+    The path should point to the Hyrax installation directory so that 
+    besstandalone program and OPeNDAP libraries can be found. 
+
+7.2.3 Run the (t)csh script.
+
+   %./test.nasa.with_hdfeos2.sh
+
+   It configures, builds, tests and cleans up the source directory 
+   and will take up to 5 minutes.
+
+   It will create two log files at the end:
+
+   1) test.nasa.with_hdfeos2.txt
+   2) test.nasa.with_hdfeos2.log.txt   
+
+   If there is no test failure, you'll see a message
+
+   "All {number of tests} tests were successful."
+
+   at the end of log file 1).
+
+   The 1) will tell you which NASA product failed the test.
+   The 2) will tell you the difference that caused the test failure.
+ 
+   Grep 'diff' line from 2) and you can see the expected output.
+
+
+
+REQUIREMENTS
+
+  o You need the libdap library version 3.13.1 to build and install this
+    software. If you're using Linux, this means either building form source
+    or using the libdap and libdap-devel RPM packages.
+
+  o If you're planning on using this with the OPeNDAP 4 Data Server (Hyrax),
+    you'll need version 3.13.0 of the BES software. Make sure to build that 
+    first.
+
+  o You also need a recent copy of HDF4. We've tested this server with
+    version 4.2.10, although any recent version should work fine. 
+    In order to link with 4.2.9 on Linux (and maybe other platforms) I had to
+    compile HDF4 using --without-fortran --with-pic and I also used 
+    --disable-netcdf (because some sites need their HDF4 libraries built that
+    way and I wanted to be sure the handler would build with that 
+    configuration). If the configure script cannot find your copy of HDF4, use
+    the --with-hdf4 options to tell it where to look (see configure --help).
+
+NOTES
+
+  o This handler uses a configuration parameter, set in the bes.conf file, to
+    control where copies of some metadata objects built by the server are 
+    cached. By default this cache is in /tmp - you are encouraged to change
+    that. Set the location using the 'HDF4.CacheDir' parameter. For example,
+    if you have set the BES.CacheDir parameter to /var/run/bes/cache you might
+    set HDF4.CacheDir to /var/run/bes/hdf4_cache. 
+
+  o DEBUGGING AIDS
+
+    - The OPeNDAP libdap library includes the following debugging aids that
+      may be of help to you in developing new applications.
+
+    - DBG: simple program instrumentation -- see the file debug.h distributed
+      with libdap (which is installed in the libdap header directory; use
+      'config-libdap --cflags' and look at the value if -I).
+
+    - DBG2: more elaborate program instrumentation -- by convention this is
+      used for output that is half a page or more, while DEBUG is used for
+      single line output.
+
+    - To build with program instrumentation use `--enable-debug=<level>'
+      where <level> is 1 or 2.
+
+    - By default, both debug and dbnew are *not* enabled. Thus, if you want
+      to build a straight version of the libraries and test code, use
+      `./configure'. If you want the extra features, use:
+
+      ./configure --enable-dbnew --enable-debug=2

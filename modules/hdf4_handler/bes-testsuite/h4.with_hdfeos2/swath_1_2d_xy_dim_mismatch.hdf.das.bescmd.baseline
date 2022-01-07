@@ -1,0 +1,22 @@
+Attributes {
+    Latitude {
+        String units "degrees_north";
+        String long_name "Latitude";
+    }
+    Longitude {
+        String coordinates "Latitude";
+        String long_name "Longitude";
+    }
+    Unlim {
+        String units "level";
+        String long_name "Unlim(fake)";
+    }
+    temperature {
+        String coordinates "Unlim Latitude";
+        Float32 _FillValue -9999.000000;
+        String long_name "temperature";
+    }
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.18";
+    }
+}

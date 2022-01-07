@@ -1,0 +1,16 @@
+Attributes {
+    ZDim {
+        String units "level";
+        String long_name "ZDim(fake)";
+    }
+    NDim {
+        String units "level";
+        String long_name "NDim(fake)";
+    }
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.19";
+    }
+    GeoSwath {
+        UInt16 sattr 65535;
+    }
+}

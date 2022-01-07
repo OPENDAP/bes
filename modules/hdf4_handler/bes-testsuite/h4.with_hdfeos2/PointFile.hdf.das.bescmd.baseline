@@ -1,0 +1,16 @@
+Attributes {
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.0";
+    }
+    Simple_Point_LevelWritten {
+        Byte Vdata_field_LevelWritten 1, 0, 0, 0, 0, 0, 0, 0;
+    }
+    Simple_Point_Data_Vgroup_Sensor {
+    }
+    FixedBuoy_Point_LevelWritten {
+        Byte Vdata_field_LevelWritten 0, 0, 0, 0, 0, 0, 0, 0;
+    }
+    FloatBuoy_Point_LevelWritten {
+        Byte Vdata_field_LevelWritten 0, 0, 0, 0, 0, 0, 0, 0;
+    }
+}

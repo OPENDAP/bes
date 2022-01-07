@@ -1,0 +1,37 @@
+Attributes {
+    temperature {
+        String coordinates "ZDim Latitude Longitude";
+        String long_name "GeoGrid1:temperature";
+    }
+    ZDim {
+        String long_name "GeoGrid1:ZDim(fake)";
+        String units "level";
+    }
+    Latitude {
+        String long_name "GeoGrid1:Latitude";
+        String units "degrees_north";
+    }
+    Longitude {
+        String long_name "GeoGrid1:Longitude";
+        String units "degrees_east";
+    }
+    temperature_1 {
+        String coordinates "ZDim_1 Latitude_1 Longitude_1";
+        String long_name "GeoGrid2:temperature";
+    }
+    ZDim_1 {
+        String long_name "GeoGrid2:ZDim(fake)";
+        String units "level";
+    }
+    Latitude_1 {
+        String long_name "GeoGrid2:Latitude";
+        String units "degrees_north";
+    }
+    Longitude_1 {
+        String long_name "GeoGrid2:Longitude";
+        String units "degrees_east";
+    }
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.18";
+    }
+}

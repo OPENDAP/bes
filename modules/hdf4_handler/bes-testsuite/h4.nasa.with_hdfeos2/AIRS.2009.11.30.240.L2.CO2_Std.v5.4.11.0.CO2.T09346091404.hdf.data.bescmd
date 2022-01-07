@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="AIRS.2009.11.30.240.L2.CO2_Std.v5.4.11.0.CO2.T09346091404" space="catalog">/data/AIRS.2009.11.30.240.L2.CO2_Std.v5.4.11.0.CO2.T09346091404.hdf</setContainer>
+    <define name="d">
+	<container name="AIRS.2009.11.30.240.L2.CO2_Std.v5.4.11.0.CO2.T09346091404">
+           <constraint>
+ Minute[0:21:21][0:14:14],
+ Seconds[0:21:21][0:14:14],
+ AvgKern[0:21:21][0:14:14][0:99:99],
+ Latitude[0:21:21][0:14:14],
+ Longitude[0:21:21][0:14:14],
+ Time[0:21:21][0:14:14],
+ AvgKernDim[0:99:99]
+           </constraint>
+        </container>
+    </define>
+    <get type="dods" definition="d" />
+</request>

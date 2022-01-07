@@ -1,0 +1,1318 @@
+Attributes {
+    Latitude {
+        String units "degrees_north";
+        String long_name "Latitude";
+        String Nadir_Data_Resolution "1km";
+        Float32 valid_range -90.00000000, 90.00000000;
+        Float32 _FillValue 0.000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+    }
+    Longitude {
+        String units "degrees_east";
+        String long_name "Longitude";
+        String Nadir_Data_Resolution "1km";
+        Float32 valid_range -180.0000000, 180.0000000;
+        Float32 _FillValue 0.000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+    }
+    Latitude_1 {
+        String units "degrees_north";
+        String long_name "Latitude_1";
+    }
+    Longitude_1 {
+        String units "degrees_east";
+        String long_name "Longitude_1";
+    }
+    Latitude_2 {
+        String units "degrees_north";
+        String long_name "Latitude_2";
+    }
+    Longitude_2 {
+        String units "degrees_east";
+        String long_name "Longitude_2";
+    }
+    _1km_Atmospheric_Optical_Depth_Band_1 {
+        String coordinates "Latitude Longitude";
+        String long_name "1km Atmospheric Optical Depth Band 1";
+        String units "unitless";
+        String Nadir_Data_Resolution "1km";
+        Int16 valid_range 0, 5000;
+        Int16 _FillValue 60;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        String Note "SDS actually contains chosen model residual values, scaled by 100000";
+        Float64 scale_factor 1.0000000000000001e-05;
+        Float64 add_offset 0.0000000000000000;
+    }
+    _1km_Atmospheric_Optical_Depth_Band_3 {
+        String coordinates "Latitude Longitude";
+        String long_name "1km Atmospheric Optical Depth Band 3";
+        String units "unitless";
+        String Nadir_Data_Resolution "1km";
+        Int16 valid_range 0, 5000;
+        Int16 _FillValue 60;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor 0.0010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+    }
+    _1km_Atmospheric_Optical_Depth_Band_8 {
+        String coordinates "Latitude Longitude";
+        String long_name "1km Atmospheric Optical Depth Band 8";
+        String units "unitless";
+        String Nadir_Data_Resolution "1km";
+        Int16 valid_range 0, 5000;
+        Int16 _FillValue 0;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        String Note "SDS actually contains angstrom exponent values, scaled by 1000";
+        Float64 scale_factor 0.0010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+    }
+    _1km_Atmospheric_Optical_Depth_Model {
+        String coordinates "Latitude Longitude";
+        String long_name "1km Atmospheric Optical Depth Model";
+        String units "unitless";
+        String Nadir_Data_Resolution "1km";
+        Byte valid_range 1, 5;
+        Byte _FillValue 0;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        String Model_values "0 = no AOTR, 1 = SMKL, 2 = SMKH, 3 = DUST, 4 = URBANPOLU, 5 = URBANCLEAN";
+        Float64 scale_factor 1.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+    }
+    _1km_water_vapor {
+        String coordinates "Latitude Longitude";
+        String long_name "1km water_vapor";
+        String units "g/cm^2";
+        String Nadir_Data_Resolution "1km";
+        UInt16 valid_range 0, 5000;
+        UInt16 _FillValue 0;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor 0.010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+    }
+    _1km_Atmospheric_Optical_Depth_Band_QA {
+        String coordinates "Latitude Longitude";
+        String QA_index "
+	Bits are listed from the MSB (bit 15) to the LSB (bit 0):
+	Bit    Description
+	15     Pixel has interpolated TR, PR or SA data;
+	       1 -- yes
+	       0 -- no
+	14     AOT has climatological values;
+	       1 -- yes
+	       0 -- no
+	13     criteria used for aerosol retrieval; 
+	       1 -- criterion 2
+	       0 -- criterion 1
+	12     pan flag; 
+	       1 -- salt pan
+	       0 -- no salt pan
+	10-11  cirrus; 
+	       00 -- none
+	       01 -- small
+	       10 -- average
+	       11 -- high
+	9      pixel is adjacent to cloud;
+	       1 -- yes
+	       0 -- no
+	8      cloud shadow;
+	       1 -- yes
+	       0 -- no
+	7      dust; 
+	       1 -- yes
+	       0 -- no
+	6      sun glint;
+	       1 -- yes
+	       0 -- no
+	5      fire;
+	       1 -- yes
+	       0 -- no
+	4      snow;
+	       1 -- yes
+	       0 -- no
+	3      low clouds;
+	       1 -- yes
+	       0 -- no
+	2      high clouds;
+	       1 -- yes
+	       0 -- no
+	1      clear;
+	       1 -- yes
+	       0 -- no
+	0      cloudy;
+	       1 -- yes
+	       0 -- no
+";
+        String long_name "1km Atmospheric Optical Depth Band QA";
+        String units "bitmap";
+        String Nadir_Data_Resolution "1km";
+        UInt16 valid_range 0, 65535;
+        UInt16 _FillValue 0;
+    }
+    _1km_Atmospheric_Optical_Depth_Band_CM {
+        String coordinates "Latitude Longitude";
+        String QA_index "
+	Not bitmapped, but with the following values:
+	0      inital value;
+	1      None of the 500m pixels that correspond to this 1km pixel 
+	         has data that reaches either criteria for containing aerosols;
+	2      Pixel is over water;
+	3      One or more of the retrieved aerosol values has saturated
+	         (and then all are set to a fill value);
+	4      Pixel is cloudy or mixed or has a high band 26 value;
+	5      Pixel had been flagged as water, but also had positive NDVI;
+	6      Pixel is flagged as water and tests clear;
+	7      Pixel is flagged as water and tests for turbidity;
+	8      Snow (set in aot_filter());
+	9      Bad geolocation, or high solar zenith;
+	10     Snow, or sunglint, or fire;
+	11     Bad 500m data, no aerosol retrieval;
+	12     Subpixel cloud (set in aot_filter());
+	13     Aerosol retrieval anomalies;
+	14     Possible salt-pan;
+	15     Desert;
+	16     Aerosol retrieval rejection (from global_AOTR_rejection_mask.hdf);
+	17     Anomalous atmospheric correction in 500m cloud test;
+	18     AOT set to zero in routine check_correction();
+	19     Adjacent to cloud;
+	20     Anomalous atmospheric correction in 500m cloud test (b1/b3 over 2.0);
+	21     Flagged as clear in third pass of cloudmasking;
+	22     Flagged as cloudy in third pass of cloudmasking;
+";
+        String long_name "1km Atmospheric Optical Depth Band CM";
+        String units "bitmap";
+        String Nadir_Data_Resolution "1km";
+        Byte valid_range 0, 19;
+        Byte _FillValue 0;
+    }
+    _250m_Surface_Reflectance_Band_1 {
+        String coordinates "Latitude_2 Longitude_2";
+        String long_name "250m Surface Reflectance Band 1";
+        String units "reflectance";
+        String Nadir_Data_Resolution "250m";
+        Int16 valid_range -100, 16000;
+        Int16 _FillValue -28672;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+    }
+    _250m_Surface_Reflectance_Band_2 {
+        String coordinates "Latitude_2 Longitude_2";
+        String long_name "250m Surface Reflectance Band 2";
+        String units "reflectance";
+        String Nadir_Data_Resolution "250m";
+        Int16 valid_range -100, 16000;
+        Int16 _FillValue -28672;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+    }
+    _500m_Surface_Reflectance_Band_1 {
+        String coordinates "Latitude_1 Longitude_1";
+        String long_name "500m Surface Reflectance Band 1";
+        String units "reflectance";
+        String Nadir_Data_Resolution "500m";
+        Int16 valid_range -100, 16000;
+        Int16 _FillValue -28672;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+    }
+    _500m_Surface_Reflectance_Band_2 {
+        String coordinates "Latitude_1 Longitude_1";
+        String long_name "500m Surface Reflectance Band 2";
+        String units "reflectance";
+        String Nadir_Data_Resolution "500m";
+        Int16 valid_range -100, 16000;
+        Int16 _FillValue -28672;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+    }
+    _500m_Surface_Reflectance_Band_3 {
+        String coordinates "Latitude_1 Longitude_1";
+        String long_name "500m Surface Reflectance Band 3";
+        String units "reflectance";
+        String Nadir_Data_Resolution "500m";
+        Int16 valid_range -100, 16000;
+        Int16 _FillValue -28672;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+    }
+    _500m_Surface_Reflectance_Band_4 {
+        String coordinates "Latitude_1 Longitude_1";
+        String long_name "500m Surface Reflectance Band 4";
+        String units "reflectance";
+        String Nadir_Data_Resolution "500m";
+        Int16 valid_range -100, 16000;
+        Int16 _FillValue -28672;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+    }
+    _500m_Surface_Reflectance_Band_5 {
+        String coordinates "Latitude_1 Longitude_1";
+        String long_name "500m Surface Reflectance Band 5";
+        String units "reflectance";
+        String Nadir_Data_Resolution "500m";
+        Int16 valid_range -100, 16000;
+        Int16 _FillValue -28672;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+    }
+    _500m_Surface_Reflectance_Band_6 {
+        String coordinates "Latitude_1 Longitude_1";
+        String long_name "500m Surface Reflectance Band 6";
+        String units "reflectance";
+        String Nadir_Data_Resolution "500m";
+        Int16 valid_range -100, 16000;
+        Int16 _FillValue -28672;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+    }
+    _500m_Surface_Reflectance_Band_7 {
+        String coordinates "Latitude_1 Longitude_1";
+        String long_name "500m Surface Reflectance Band 7";
+        String units "reflectance";
+        String Nadir_Data_Resolution "500m";
+        Int16 valid_range -100, 16000;
+        Int16 _FillValue -28672;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+    }
+    _1km_Surface_Reflectance_Band_1 {
+        String coordinates "Latitude Longitude";
+        String long_name "1km Surface Reflectance Band 1";
+        String units "reflectance";
+        String Nadir_Data_Resolution "1km";
+        Int16 valid_range -100, 16000;
+        Int16 _FillValue -28672;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+    }
+    _1km_Surface_Reflectance_Band_2 {
+        String coordinates "Latitude Longitude";
+        String long_name "1km Surface Reflectance Band 2";
+        String units "reflectance";
+        String Nadir_Data_Resolution "1km";
+        Int16 valid_range -100, 16000;
+        Int16 _FillValue -28672;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+    }
+    _1km_Surface_Reflectance_Band_3 {
+        String coordinates "Latitude Longitude";
+        String long_name "1km Surface Reflectance Band 3";
+        String units "reflectance";
+        String Nadir_Data_Resolution "1km";
+        Int16 valid_range -100, 16000;
+        Int16 _FillValue -28672;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+    }
+    _1km_Surface_Reflectance_Band_4 {
+        String coordinates "Latitude Longitude";
+        String long_name "1km Surface Reflectance Band 4";
+        String units "reflectance";
+        String Nadir_Data_Resolution "1km";
+        Int16 valid_range -100, 16000;
+        Int16 _FillValue -28672;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+    }
+    _1km_Surface_Reflectance_Band_5 {
+        String coordinates "Latitude Longitude";
+        String long_name "1km Surface Reflectance Band 5";
+        String units "reflectance";
+        String Nadir_Data_Resolution "1km";
+        Int16 valid_range -100, 16000;
+        Int16 _FillValue -28672;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+    }
+    _1km_Surface_Reflectance_Band_6 {
+        String coordinates "Latitude Longitude";
+        String long_name "1km Surface Reflectance Band 6";
+        String units "reflectance";
+        String Nadir_Data_Resolution "1km";
+        Int16 valid_range -100, 16000;
+        Int16 _FillValue -28672;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+    }
+    _1km_Surface_Reflectance_Band_7 {
+        String coordinates "Latitude Longitude";
+        String long_name "1km Surface Reflectance Band 7";
+        String units "reflectance";
+        String Nadir_Data_Resolution "1km";
+        Int16 valid_range -100, 16000;
+        Int16 _FillValue -28672;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+    }
+    _1km_Surface_Reflectance_Band_8 {
+        String coordinates "Latitude Longitude";
+        String long_name "1km Surface Reflectance Band 8";
+        String units "reflectance";
+        String Nadir_Data_Resolution "1km";
+        Int16 valid_range -100, 16000;
+        Int16 _FillValue -28672;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+    }
+    _1km_Surface_Reflectance_Band_9 {
+        String coordinates "Latitude Longitude";
+        String long_name "1km Surface Reflectance Band 9";
+        String units "reflectance";
+        String Nadir_Data_Resolution "1km";
+        Int16 valid_range -100, 16000;
+        Int16 _FillValue -28672;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+    }
+    _1km_Surface_Reflectance_Band_10 {
+        String coordinates "Latitude Longitude";
+        String long_name "1km Surface Reflectance Band 10";
+        String units "reflectance";
+        String Nadir_Data_Resolution "1km";
+        Int16 valid_range -100, 16000;
+        Int16 _FillValue -28672;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+    }
+    _1km_Surface_Reflectance_Band_11 {
+        String coordinates "Latitude Longitude";
+        String long_name "1km Surface Reflectance Band 11";
+        String units "reflectance";
+        String Nadir_Data_Resolution "1km";
+        Int16 valid_range -100, 16000;
+        Int16 _FillValue -28672;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+    }
+    _1km_Surface_Reflectance_Band_12 {
+        String coordinates "Latitude Longitude";
+        String long_name "1km Surface Reflectance Band 12";
+        String units "reflectance";
+        String Nadir_Data_Resolution "1km";
+        Int16 valid_range -100, 16000;
+        Int16 _FillValue -28672;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+    }
+    _1km_Surface_Reflectance_Band_13 {
+        String coordinates "Latitude Longitude";
+        String long_name "1km Surface Reflectance Band 13";
+        String units "reflectance";
+        String Nadir_Data_Resolution "1km";
+        Int16 valid_range -100, 16000;
+        Int16 _FillValue -28672;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+    }
+    _1km_Surface_Reflectance_Band_14 {
+        String coordinates "Latitude Longitude";
+        String long_name "1km Surface Reflectance Band 14";
+        String units "reflectance";
+        String Nadir_Data_Resolution "1km";
+        Int16 valid_range -100, 16000;
+        Int16 _FillValue -28672;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+    }
+    _1km_Surface_Reflectance_Band_15 {
+        String coordinates "Latitude Longitude";
+        String long_name "1km Surface Reflectance Band 15";
+        String units "reflectance";
+        String Nadir_Data_Resolution "1km";
+        Int16 valid_range -100, 16000;
+        Int16 _FillValue -28672;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+    }
+    _1km_Surface_Reflectance_Band_16 {
+        String coordinates "Latitude Longitude";
+        String long_name "1km Surface Reflectance Band 16";
+        String units "reflectance";
+        String Nadir_Data_Resolution "1km";
+        Int16 valid_range -100, 16000;
+        Int16 _FillValue -28672;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+    }
+    BAND20 {
+        String coordinates "Latitude Longitude";
+        String long_name "BAND20";
+        String units "degrees K";
+        String Nadir_Data_Resolution "1km";
+        UInt16 valid_range 0, 33300;
+        UInt16 _FillValue 0;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor 0.010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+    }
+    _1km_Surface_Reflectance_Band_26 {
+        String coordinates "Latitude Longitude";
+        String long_name "1km Surface Reflectance Band 26";
+        String units "reflectance";
+        String Nadir_Data_Resolution "1km";
+        Int16 valid_range -100, 16000;
+        Int16 _FillValue -28672;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+    }
+    BAND31 {
+        String coordinates "Latitude Longitude";
+        String long_name "BAND31";
+        String units "degrees K";
+        String Nadir_Data_Resolution "1km";
+        UInt16 valid_range 0, 37800;
+        UInt16 _FillValue 0;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor 0.010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+    }
+    BAND32 {
+        String coordinates "Latitude Longitude";
+        String long_name "BAND32";
+        String units "degrees K";
+        String Nadir_Data_Resolution "1km";
+        UInt16 valid_range 0, 41900;
+        UInt16 _FillValue 0;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor 0.010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+    }
+    BAND20ALBEDO {
+        String coordinates "Latitude Longitude";
+        String long_name "BAND20ALBEDO";
+        String units "reflectance";
+        String Nadir_Data_Resolution "1km";
+        Int16 valid_range 0, 5000;
+        Int16 _FillValue -28672;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+    }
+    _250m_Reflectance_Band_Quality {
+        String coordinates "Latitude_2 Longitude_2";
+        String long_name "250m Reflectance Band Quality";
+        String units "bitmap";
+        String Nadir_Data_Resolution "250m";
+        UInt16 valid_range 0, 16383;
+        UInt16 _FillValue 65535;
+        String QA_index "
+	Bits are listed from the MSB (bit 15) to the LSB (bit 0):
+	Bit    Description
+	14-15  spare (unused); 
+	13     adjacency correction performed; 
+	       1 -- yes
+	       0 -- no
+	12     atmospheric correction performed; 
+	       1 -- yes
+	       0 -- no
+	8-11   band 2 data quality four bit range;
+	       0000 -- highest quality
+	       0111 -- noisy detector
+	       1000 -- dead detector, data interpolated in L1B
+	       1001 -- solar zenith >= 86 degrees
+	       1010 -- solar zenith >= 85 and < 86 degrees
+	       1011 -- missing input
+	       1100 -- internal constant used in place of climatological data 
+	               for at least one atmospheric constant
+	       1101 -- correction out of bounds pixel constrained to extreme 
+	               allowable value
+	       1110 -- L1B data faulty
+	       1111 -- not processed due to deep ocean or clouds
+	4-7    band 1 data quality four bit range;
+	       SAME AS ABOVE
+	2-3    spare (unused);
+	0-1    MODLAND QA bits; 
+	       corrected product produced at
+	       00 -- ideal quality all bands 
+	       01 -- less than ideal quality some or all bands
+	       corrected product not produced due to
+	       10 -- cloud effects all bands 
+	       11 -- other reasons some or all bands may be fill value
+	       [Note that a value of (11) overrides a value of (01)].
+";
+    }
+    _500m_Reflectance_Band_Quality {
+        String coordinates "Latitude_1 Longitude_1";
+        String long_name "500m Reflectance Band Quality";
+        String units "bitmap";
+        String Nadir_Data_Resolution "500m";
+        UInt32 valid_range 0, 4294967295;
+        UInt32 _FillValue 3;
+        String QA_index "
+	Bits are listed from the MSB (bit 31) to the LSB (bit 0):
+	Bit    Description
+	31     adjacency correction performed; 
+	       1 -- yes
+	       0 -- no
+	30     atmospheric correction performed; 
+	       1 -- yes
+	       0 -- no
+	26-29  band 7 data quality four bit range;
+	       0000 -- highest quality
+	       0111 -- noisy detector
+	       1000 -- dead detector, data interpolated in L1B
+	       1001 -- solar zenith >= 86 degrees
+	       1010 -- solar zenith >= 85 and < 86 degrees
+	       1011 -- missing input
+	       1100 -- internal constant used in place of climatological data 
+	               for at least one atmospheric constant
+	       1101 -- correction out of bounds pixel constrained to extreme 
+	               allowable value
+	       1110 -- L1B data faulty
+	       1111 -- not processed due to deep ocean or clouds
+	22-25  band 6 data quality four bit range;
+	       SAME AS ABOVE
+	18-21  band 5 data quality four bit range;
+	       SAME AS ABOVE
+	14-17  band 4 data quality four bit range;
+	       SAME AS ABOVE
+	10-13  band 3 data quality four bit range;
+	       SAME AS ABOVE
+	6-9    band 2 data quality four bit range;
+	       SAME AS ABOVE
+	2-5    band 1 data quality four bit range;
+	       SAME AS ABOVE
+	0-1    MODLAND QA bits; 
+	       corrected product produced at
+	       00 -- ideal quality all bands 
+	       01 -- less than ideal quality some or all bands
+	       corrected product not produced due to
+	       10 -- cloud effects all bands 
+	       11 -- other reasons some or all bands may be fill value
+	       [Note that a value of (11) overrides a value of (01)].
+";
+    }
+    _1km_Reflectance_Band_Quality {
+        String coordinates "Latitude Longitude";
+        String long_name "1km Reflectance Band Quality";
+        String units "bitmap";
+        String Nadir_Data_Resolution "1km";
+        UInt32 valid_range 0, 4294967295;
+        UInt32 _FillValue 3;
+        String QA_index "
+	Bits are listed from the MSB (bit 31) to the LSB (bit 0):
+	Bit    Description
+	31     adjacency correction performed; 
+	       1 -- yes
+	       0 -- no
+	30     atmospheric correction performed; 
+	       1 -- yes
+	       0 -- no
+	26-29  band 7 data quality four bit range;
+	       0000 -- highest quality
+	       0111 -- noisy detector
+	       1000 -- dead detector, data interpolated in L1B
+	       1001 -- solar zenith >= 86 degrees
+	       1010 -- solar zenith >= 85 and < 86 degrees
+	       1011 -- missing input
+	       1100 -- internal constant used in place of climatological data 
+	               for at least one atmospheric constant
+	       1101 -- correction out of bounds pixel constrained to extreme 
+	               allowable value
+	       1110 -- L1B data faulty
+	       1111 -- not processed due to deep ocean or clouds
+	22-25  band 6 data quality four bit range;
+	       SAME AS ABOVE
+	18-21  band 5 data quality four bit range;
+	       SAME AS ABOVE
+	14-17  band 4 data quality four bit range;
+	       SAME AS ABOVE
+	10-13  band 3 data quality four bit range;
+	       SAME AS ABOVE
+	6-9    band 2 data quality four bit range;
+	       SAME AS ABOVE
+	2-5    band 1 data quality four bit range;
+	       SAME AS ABOVE
+	0-1    MODLAND QA bits; 
+	       corrected product produced at
+	       00 -- ideal quality all bands 
+	       01 -- less than ideal quality some or all bands
+	       corrected product not produced due to
+	       10 -- cloud effects all bands 
+	       11 -- other reasons some or all bands may be fill value
+	       [Note that a value of (11) overrides a value of (01)].
+";
+    }
+    _1km_b8_15_Reflectance_Band_Quality {
+        String coordinates "Latitude Longitude";
+        String long_name "1km b8-15 Reflectance Band Quality";
+        String units "bitmap";
+        String Nadir_Data_Resolution "1km";
+        UInt32 valid_range 0, 4294967295;
+        UInt32 _FillValue 3;
+        String QA_index "
+	Bits are listed from the MSB (bit 31) to the LSB (bit 0):
+	Bit    Description
+	28-31  band 15 data quality four bit range;
+	       0000 -- highest quality
+	       0111 -- noisy detector
+	       1000 -- dead detector, data interpolated in L1B
+	       1001 -- solar zenith >= 86 degrees
+	       1010 -- solar zenith >= 85 and < 86 degrees
+	       1011 -- missing input
+	       1100 -- internal constant used in place of climatological data 
+	               for at least one atmospheric constant
+	       1101 -- correction out of bounds pixel constrained to extreme 
+	               allowable value
+	       1110 -- L1B data faulty
+	       1111 -- not processed due to deep ocean or clouds
+	24-27  band 14 data quality four bit range;
+	       SAME AS ABOVE
+	20-23  band 13 data quality four bit range;
+	       SAME AS ABOVE
+	16-19  band 12 data quality four bit range;
+	       SAME AS ABOVE
+	12-15  band 11 data quality four bit range;
+	       SAME AS ABOVE
+	8-11   band 10 data quality four bit range;
+	       SAME AS ABOVE
+	4-7    band 9 data quality four bit range;
+	       SAME AS ABOVE
+	0-3    band 8 data quality four bit range;
+	       SAME AS ABOVE
+
+";
+    }
+    _1km_b16_Reflectance_Band_Quality {
+        String coordinates "Latitude Longitude";
+        String long_name "1km b16 Reflectance Band Quality";
+        String units "bitmap";
+        String Nadir_Data_Resolution "1km";
+        Byte valid_range 0, 255;
+        Byte _FillValue 3;
+        String QA_index "
+	Bits are listed from the MSB (bit 31) to the LSB (bit 0):
+	Bit    Description
+	4-7    band 16 data quality four bit range;
+	       0000 -- highest quality
+	       0111 -- noisy detector
+	       1000 -- dead detector, data interpolated in L1B
+	       1001 -- solar zenith >= 86 degrees
+	       1010 -- solar zenith >= 85 and < 86 degrees
+	       1011 -- missing input
+	       1100 -- internal constant used in place of climatological data 
+	               for at least one atmospheric constant
+	       1101 -- correction out of bounds pixel constrained to extreme 
+	               allowable value
+	       1110 -- L1B data faulty
+	       1111 -- not processed due to deep ocean or clouds
+	0-3    spare (unused); 
+
+";
+    }
+    _1km_Reflectance_Data_State_QA {
+        String coordinates "Latitude Longitude";
+        String long_name "1km Reflectance Data State QA";
+        String units "bitmap";
+        String Nadir_Data_Resolution "1km";
+        UInt16 valid_range 0, 49151;
+        UInt16 _FillValue 65535;
+        String QA_index "
+	Bits are listed from the MSB (bit 15) to the LSB (bit 0):
+	Bit    Description
+	15     internal snow algorithm flag; 
+	       1 -- yes, 27.13%
+	       0 -- no, 72.87%
+	14     Salt pan;
+	       1 -- yes, 0.01%
+	       0 -- no, 99.99%
+	13     Pixel is adjacent to cloud;
+	       1 -- yes, 0.00%
+	       0 -- no, 100.00%
+	12     MOD35 snow/ice flag;
+	       1 -- yes, 18.91%
+	       0 -- no, 81.09%
+	11     internal fire algorithm flag;
+	       1 -- fire, 0.00%
+	       0 -- no fire, 100.00%
+	10     internal cloud algorithm flag;
+	       1 -- cloud, 42.31%
+	       0 -- no cloud, 57.69%
+	8-9    cirrus detected;
+	       00 -- none, 94.70%
+	       01 -- small, 0.22%
+	       10 -- average, 0.31%
+	       11 -- high, 4.76%
+	6-7    aerosol quantity;
+	       00 -- climatology, 70.51%
+	       01 -- low, 22.13%
+	       10 -- average, 4.16%
+	       11 -- high, 3.20%
+	3-5    land/water flag;
+	       000 -- shallow ocean, 1.27%
+	       001 -- land, 84.06%
+	       010 -- ocean coastlines and lake shorelines, 3.28%
+	       011 -- shallow inland water, 0.84%
+	       100 -- ephemeral water, 0.00%
+	       101 -- deep inland water, 0.00%
+	       110 -- continental/moderate ocean, 0.58%
+	       111 -- deep ocean, 9.96%
+	2      cloud shadow;
+	       1 -- yes, 0.00%
+	       0 -- no, 100.00%
+	0-1    cloud state;
+	       00 -- clear, 44.55%
+	       01 -- cloudy, 51.16%
+	       10 -- mixed, 4.29%
+	       11 -- not set, assumed clear, 0.00%
+";
+    }
+    _1km_Band_3_Path_Radiance {
+        String coordinates "Latitude Longitude";
+        String long_name "1km Band 3 Path Radiance";
+        String units "unitless";
+        String Nadir_Data_Resolution "1km";
+        Int16 valid_range 0, 16000;
+        Int16 _FillValue -28672;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 add_offset 0.0000000000000000;
+    }
+    CoreMetadata {
+        INVENTORYMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            ECSDATAGRANULE {
+                LOCALGRANULEID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MYD09.A2019003.2040.006.2019005020913.hdf";
+                }
+                PRODUCTIONDATETIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2019-01-05T02:09:13.000Z";
+                }
+                DAYNIGHTFLAG {
+                    Int32 NUM_VAL 1;
+                    String VALUE "Day";
+                }
+                REPROCESSINGACTUAL {
+                    Int32 NUM_VAL 1;
+                    String VALUE "reprocessed";
+                }
+                REPROCESSINGPLANNED {
+                    Int32 NUM_VAL 1;
+                    String VALUE "further update is anticipated";
+                }
+            }
+            MEASUREDPARAMETER {
+                MEASUREDPARAMETERCONTAINER {
+                    String CLASS "1";
+                    QAFLAGS {
+                        String CLASS "1";
+                        SCIENCEQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String VALUE "Not Investigated";
+                            String CLASS "1";
+                        }
+                        AUTOMATICQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Always 'Passed'.";
+                        }
+                        AUTOMATICQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Passed";
+                        }
+                        SCIENCEQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String VALUE "See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=aqua for the product Science Quality status.";
+                            String CLASS "1";
+                        }
+                    }
+                    QASTATS {
+                        String CLASS "1";
+                        QAPERCENTMISSINGDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 0;
+                        }
+                        QAPERCENTOUTOFBOUNDSDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 2;
+                        }
+                    }
+                    PARAMETERNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "MODIS Atmos Corrected Surf Refl";
+                    }
+                }
+            }
+            ORBITCALCULATEDSPATIALDOMAIN {
+                ORBITCALCULATEDSPATIALDOMAINCONTAINER {
+                    String CLASS "1";
+                    EQUATORCROSSINGDATE {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "2019-01-03";
+                    }
+                    EQUATORCROSSINGTIME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "21:20:46.144634";
+                    }
+                    ORBITNUMBER {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        Int32 VALUE 88666;
+                    }
+                    EQUATORCROSSINGLONGITUDE {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        Float64 VALUE 63.7083382082782;
+                    }
+                }
+            }
+            COLLECTIONDESCRIPTIONCLASS {
+                VERSIONID {
+                    Int32 NUM_VAL 1;
+                    Int32 VALUE 6;
+                }
+                SHORTNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MYD09";
+                }
+            }
+            INPUTGRANULE {
+                INPUTPOINTER {
+                    Int32 NUM_VAL 75;
+                    String VALUE "gdas1.PGrbF00.190103.18z", "gdas1.PGrbF00.190104.00z", "MYD02PCQKM.A2019003.2040.006.2019004170150.hdf", "MYDPCHKMDS.A2019003.2040.006.2019004170148.hdf", "MYDPC1KMDS.A2019003.2040.006.2019004170144.hdf", "MYD03.A2019003.2040.006.2019004162253.hdf", "
+          MYD35_L2.A2019003.2040.006.2019004163133.hdf";
+                }
+            }
+            SPATIALDOMAINCONTAINER {
+                HORIZONTALSPATIALDOMAINCONTAINER {
+                    GPOLYGON {
+                        GPOLYGONCONTAINER {
+                            String CLASS "1";
+                            GRINGPOINT {
+                                String CLASS "1";
+                                GRINGPOINTLONGITUDE {
+                                    Int32 NUM_VAL 4;
+                                    String CLASS "1";
+                                    Float64 VALUE -98.5237623615703, -122.850628653365, -131.876160780343, -100.731496143619;
+                                }
+                                GRINGPOINTLATITUDE {
+                                    Int32 NUM_VAL 4;
+                                    String CLASS "1";
+                                    Float64 VALUE 32.2896394803434, 28.8233206294747, 45.7674150696915, 50.568369947233;
+                                }
+                                GRINGPOINTSEQUENCENO {
+                                    Int32 NUM_VAL 4;
+                                    String CLASS "1";
+                                    Float64 VALUE 1, 2, 3, 4;
+                                }
+                            }
+                            GRING {
+                                String CLASS "1";
+                                EXCLUSIONGRINGFLAG {
+                                    Int32 NUM_VAL 1;
+                                    String CLASS "1";
+                                    String VALUE "N";
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            RANGEDATETIME {
+                RANGEENDINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2019-01-03";
+                }
+                RANGEENDINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "20:45:00.000000";
+                }
+                RANGEBEGINNINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2019-01-03";
+                }
+                RANGEBEGINNINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "20:40:00.000000";
+                }
+            }
+            PGEVERSIONCLASS {
+                PGEVERSION {
+                    Int32 NUM_VAL 1;
+                    String VALUE "6.3.16";
+                }
+            }
+            ANCILLARYINPUTGRANULE {
+                ANCILLARYINPUTGRANULECONTAINER {
+                    String CLASS "1";
+                    ANCILLARYINPUTPOINTER {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "MYD03.A2019003.2040.006.2019004162253.hdf";
+                    }
+                    ANCILLARYINPUTTYPE {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "Geolocation";
+                    }
+                }
+            }
+            ASSOCIATEDPLATFORMINSTRUMENTSENSOR {
+                ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER {
+                    String CLASS "1";
+                    ASSOCIATEDPLATFORMSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "Aqua";
+                    }
+                    ASSOCIATEDINSTRUMENTSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "MODIS";
+                    }
+                    ASSOCIATEDSENSORSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "MODIS";
+                    }
+                }
+            }
+            ADDITIONALATTRIBUTES {
+                ADDITIONALATTRIBUTESCONTAINER {
+                    String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "23", "24", "22";
+                    ADDITIONALATTRIBUTENAME {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "23", "24", "22";
+                        Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                        String VALUE "QAPERCENTGOODQUALITY", "QAPERCENTOTHERQUALITY", "QAPERCENTNOTPRODUCEDCLOUD", "QAPERCENTNOTPRODUCEDOTHER", "QAPERCENTPOOROUTPUT250MBAND1", "QAPERCENTPOOROUTPUT250MBAND2", "QAPERCENTPOOROUTPUT500MBAND1", "QAPERCENTPOOROUTPUT500MBAND2", "QAPERCENTPOOROUTPUT500MBAND3", "QAPERCENTPOOROUTPUT500MBAND4", "QAPERCENTPOOROUTPUT500MBAND5", "QAPERCENTPOOROUTPUT500MBAND6", "QAPERCENTPOOROUTPUT500MBAND7", "QAPERCENTPOOROUTPUT1KMBAND1", "QAPERCENTPOOROUTPUT1KMBAND2", "QAPERCENTPOOROUTPUT1KMBAND3", "QAPERCENTPOOROUTPUT1KMBAND4", "QAPERCENTPOOROUTPUT1KMBAND5", "QAPERCENTPOOROUTPUT1KMBAND6", "QAPERCENTPOOROUTPUT1KMBAND7", "GRANULENUMBER", "identifier_product_doi", "identifier_product_doi_authority", "PROCESSVERSION";
+                    }
+                    INFORMATIONCONTENT {
+                        String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "23", "24", "22";
+                        PARAMETERVALUE {
+                            Int32 NUM_VAL 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1;
+                            String CLASS "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "23", "24", "22";
+                            String VALUE "72", "4", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "250", "10.5067/MODIS/MYD09.006", "http://dx.doi.org", "6.3.16";
+                        }
+                    }
+                }
+            }
+            LOCALVERSIONID {
+                Int32 NUM_VAL 1;
+                String VALUE "6.3.16";
+            }
+        }
+    }
+    ArchiveMetadata {
+        ARCHIVEDMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            ALGORITHMPACKAGEACCEPTANCEDATE {
+                Int32 NUM_VAL 1;
+                String VALUE "1998-01-01";
+            }
+            ALGORITHMPACKAGEMATURITYCODE {
+                Int32 NUM_VAL 1;
+                String VALUE "pre-launch";
+            }
+            ALGORITHMPACKAGENAME {
+                Int32 NUM_VAL 1;
+                String VALUE "MOD09 L2";
+            }
+            ALGORITHMPACKAGEVERSION {
+                Int32 NUM_VAL 1;
+                String VALUE "version 4";
+            }
+            SYSTEMFILENAME {
+                Int32 NUM_VAL 75;
+                String VALUE "gdas1.PGrbF00.190103.18z", "gdas1.PGrbF00.190104.00z", "MYD02PCQKM.A2019003.2040.006.2019004170150.hdf", "MYDPCHKMDS.A2019003.2040.006.2019004170148.hdf", "MYDPC1KMDS.A2019003.2040.006.2019004170144.hdf", "MYD03.A2019003.2040.006.2019004162253.hdf", "
+        MYD35_L2.A2019003.2040.006.2019004163133.hdf";
+            }
+            ANCILLARYSYSTEMFILENAME {
+                Int32 NUM_VAL 75;
+                String VALUE "MYD03.A2019003.2040.006.2019004162253.hdf";
+            }
+            LONGNAME {
+                Int32 NUM_VAL 1;
+                String VALUE "MODIS/Aqua Atmospherically Corrected Surface Reflectance 5-Min L2 Swath 250m, 500m, 1km";
+            }
+            PROCESSINGCENTER {
+                Int32 NUM_VAL 1;
+                String VALUE "MODAPS";
+            }
+            SPSOPARAMETERS {
+                Int32 NUM_VAL 1;
+                String VALUE "2015";
+            }
+            QUALITYCLASSPERCENTAGE1KMBAND1 {
+                Int32 NUM_VAL 16;
+                Float64 VALUE 99, 0, 0, 0, 0, 0, 0, 0, 78, 0, 0, 0, 0, 1, 0, 0;
+            }
+            QUALITYCLASSPERCENTAGE1KMBAND2 {
+                Int32 NUM_VAL 16;
+                Float64 VALUE 95, 0, 0, 0, 0, 0, 0, 0, 78, 0, 0, 0, 0, 5, 0, 0;
+            }
+            QUALITYCLASSPERCENTAGE1KMBAND3 {
+                Int32 NUM_VAL 16;
+                Float64 VALUE 99, 0, 0, 0, 0, 0, 0, 0, 78, 0, 0, 0, 0, 1, 0, 0;
+            }
+            QUALITYCLASSPERCENTAGE1KMBAND4 {
+                Int32 NUM_VAL 16;
+                Float64 VALUE 100, 0, 0, 0, 0, 0, 0, 0, 78, 0, 0, 0, 0, 0, 0, 0;
+            }
+            QUALITYCLASSPERCENTAGE1KMBAND5 {
+                Int32 NUM_VAL 16;
+                Float64 VALUE 98, 0, 0, 0, 0, 0, 0, 0, 78, 0, 0, 0, 0, 2, 0, 0;
+            }
+            QUALITYCLASSPERCENTAGE1KMBAND6 {
+                Int32 NUM_VAL 16;
+                Float64 VALUE 60, 0, 0, 0, 0, 0, 0, 0, 78, 0, 0, 0, 0, 0, 40, 0;
+            }
+            QUALITYCLASSPERCENTAGE1KMBAND7 {
+                Int32 NUM_VAL 16;
+                Float64 VALUE 100, 0, 0, 0, 0, 0, 0, 0, 78, 0, 0, 0, 0, 0, 0, 0;
+            }
+            QUALITYCLASSPERCENTAGE250MBAND1 {
+                Int32 NUM_VAL 16;
+                Float64 VALUE 98, 0, 0, 0, 0, 0, 0, 0, 78, 0, 0, 0, 0, 2, 0, 0;
+            }
+            QUALITYCLASSPERCENTAGE250MBAND2 {
+                Int32 NUM_VAL 16;
+                Float64 VALUE 95, 0, 0, 0, 0, 0, 0, 0, 78, 0, 0, 0, 0, 5, 0, 0;
+            }
+            QUALITYCLASSPERCENTAGE500MBAND1 {
+                Int32 NUM_VAL 16;
+                Float64 VALUE 99, 0, 0, 0, 0, 0, 0, 0, 78, 0, 0, 0, 0, 1, 0, 0;
+            }
+            QUALITYCLASSPERCENTAGE500MBAND2 {
+                Int32 NUM_VAL 16;
+                Float64 VALUE 95, 0, 0, 0, 0, 0, 0, 0, 78, 0, 0, 0, 0, 5, 0, 0;
+            }
+            QUALITYCLASSPERCENTAGE500MBAND3 {
+                Int32 NUM_VAL 16;
+                Float64 VALUE 99, 0, 0, 0, 0, 0, 0, 0, 78, 0, 0, 0, 0, 1, 0, 0;
+            }
+            QUALITYCLASSPERCENTAGE500MBAND4 {
+                Int32 NUM_VAL 16;
+                Float64 VALUE 99, 0, 0, 0, 0, 0, 0, 0, 78, 0, 0, 0, 0, 1, 0, 0;
+            }
+            QUALITYCLASSPERCENTAGE500MBAND5 {
+                Int32 NUM_VAL 16;
+                Float64 VALUE 93, 0, 0, 0, 0, 0, 0, 0, 78, 0, 0, 0, 0, 2, 0, 0;
+            }
+            QUALITYCLASSPERCENTAGE500MBAND6 {
+                Int32 NUM_VAL 16;
+                Float64 VALUE 25, 0, 0, 0, 0, 0, 0, 15, 78, 0, 0, 0, 0, 0, 0, 0;
+            }
+            QUALITYCLASSPERCENTAGE500MBAND7 {
+                Int32 NUM_VAL 16;
+                Float64 VALUE 100, 0, 0, 0, 0, 0, 0, 0, 78, 0, 0, 0, 0, 0, 0, 0;
+            }
+            ADJACENCYCORRECTIONATTEMPTED {
+                Int32 NUM_VAL 1;
+                String VALUE "no";
+            }
+            ATMOSPHERICCORRECTIONATTEMPTED {
+                Int32 NUM_VAL 1;
+                String VALUE "yes";
+            }
+            NORTHBOUNDINGCOORDINATE {
+                Int32 NUM_VAL 1;
+                Float64 VALUE 50.2701833884673;
+            }
+            SOUTHBOUNDINGCOORDINATE {
+                Int32 NUM_VAL 1;
+                Float64 VALUE 28.8376746231501;
+            }
+            EASTBOUNDINGCOORDINATE {
+                Int32 NUM_VAL 1;
+                Float64 VALUE -98.8325473898497;
+            }
+            WESTBOUNDINGCOORDINATE {
+                Int32 NUM_VAL 1;
+                Float64 VALUE -131.666649673637;
+            }
+            BRDFCORRECTIONATTEMPTED {
+                Int32 NUM_VAL 1;
+                String VALUE "no";
+            }
+            INSTRUMENTSCANSPROCESSED {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 203;
+            }
+            PERCENTNOTSEA {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 68;
+            }
+            SEAPROCESSED {
+                Int32 NUM_VAL 1;
+                String VALUE "yes";
+            }
+            SCIABNORM {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 1;
+            }
+            SCISTATE {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 1;
+            }
+            NUMBEROFHIGHSOLARZENITHPIXELS1KM {
+                Int32 NUM_VAL 1;
+                Int32 VALUE 0;
+            }
+            AEROSOLQUANTITYCLMH {
+                Int32 NUM_VAL 4;
+                Float64 VALUE 71, 22, 4, 3;
+            }
+            DESCRREVISION {
+                Int32 NUM_VAL 1;
+                String VALUE "6.0";
+            }
+            PRODUCTIONHISTORY {
+                Int32 NUM_VAL 1;
+                String VALUE "PGE11:6.3.16;PGE128:6.0.17;PGE02:6.1.37.25;PGE01:6.0.27";
+            }
+            PROCESSINGENVIRONMENT {
+                Int32 NUM_VAL 1;
+                String VALUE "Linux minion7043 3.10.0-862.11.6.el7.x86_64 #1 SMP Tue Aug 14 21:49:04 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux";
+            }
+        }
+    }
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.19";
+        Float32 HDFEOS_FractionalOffset_500m_Data_Lines_MODIS_SWATH_TYPE_L2 0.5000000000;
+        Float32 HDFEOS_FractionalOffset_500m_Data_Samples_MODIS_SWATH_TYPE_L2 0.000000000;
+        Float32 HDFEOS_FractionalOffset_250m_Data_Lines_MODIS_SWATH_TYPE_L2 0.5000000000;
+        Float32 HDFEOS_FractionalOffset_250m_Data_Samples_MODIS_SWATH_TYPE_L2 0.000000000;
+        String Number_of_instrument_scans "203";
+        String Number_of_scans_with_possible_solar_eclipse "0";
+        String Percentages_of_pixels_in_each_State_QA_state "
+	Internal snow mask:	27
+	Pan:	0
+	Adjacent to cloud:	0
+	MOD35 Snow or ice:	19
+	Internal fire mask:	0
+	Internal cloud mask:	42
+	No cirrus:	95
+	Small cirrus:	0
+	Average cirrus:	0
+	High cirrus:	5
+	Aerosol quality, climatology:	71
+	Aerosol quality, low:	22
+	Aerosol quality, average:	4
+	Aerosol quality, high:	3
+	Shallow ocean:	1
+	Land:	84
+	Coastlines, shorelines:	3
+	Shallow inland water:	1
+	Ephemeral water:	0
+	Deep inland water:	0
+	Continental ocean:	1
+	Deep ocean:	10
+	Cloud shadow:	0
+	Clear:	45
+	Cloudy:	51
+	Mixed (partly cloudy):	4
+	Cloud not set:	0
+";
+        String identifier_product_doi "10.5067/MODIS/MYD09.006";
+        String identifier_product_doi_authority "http://dx.doi.org";
+    }
+}

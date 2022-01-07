@@ -1,0 +1,366 @@
+Attributes {
+    Latitude {
+        String units "degrees_north";
+        String long_name "Coarse 5 km resolution latitude";
+        Float32 valid_range -90.00000000, 90.00000000;
+        Float32 _FillValue -999.0000000;
+        String Source "MOD03 geolocation product; data read from center pixel in 5 km box";
+    }
+    Longitude {
+        String units "degrees_east";
+        String long_name "Coarse 5 km resolution longitude";
+        Float32 valid_range -180.0000000, 180.0000000;
+        Float32 _FillValue -999.0000000;
+        String Source "MOD03 geolocation product; data read from center pixel in 5 km box";
+    }
+    Ice_Surface_Temperature {
+        String coordinates "Latitude Longitude";
+        String long_name "Ice Surface Temperature by split-window method";
+        String units "degree_Kelvin";
+        String format "F3.2";
+        String coordsys "cartesian";
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        String Key "0.0=missing, 1.0=no decision, 11.0=night, 25.0=land, 37.0=inland water, 39.0=open ocean, 50.0=cloud, 243.0-273.0 expected IST range, 655.35=fill";
+        Float32 Valid_EV_Obs_Band_31____ 99.99163818;
+        Float32 Valid_EV_Obs_Band_32____ 99.99163818;
+        Float32 Saturated_EV_Obs_Band_31____ 0.000000000;
+        Float32 Saturated_EV_Obs_Band_32____ 0.000000000;
+        Float64 orig_scale_factor 0.010000000000000000;
+        Float64 orig_add_offset 0.0000000000000000;
+        Float32 _FillValue 65535;
+        Float32 valid_min 210.0000000;
+        Float32 valid_max 313.0000000;
+    }
+    Ice_Surface_Temperature_Pixel_QA {
+        String coordinates "Latitude Longitude";
+        String long_name "Ice surface temperature pixel QA";
+        String units "none";
+        String format "I3";
+        String coordsys "cartesian";
+        Byte valid_range 0, 254;
+        Byte _FillValue 255;
+        String Key "0=good quality, 1=other quality, 252=Antarctica mask, 253=land mask, 254=ocean mask, 255=fill";
+    }
+    CoreMetadata {
+        INVENTORYMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            ECSDATAGRANULE {
+                LOCALGRANULEID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MOD29.A2013196.1250.005.2013196195940.hdf";
+                }
+                PRODUCTIONDATETIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2013-07-15T19:59:49.000Z";
+                }
+                DAYNIGHTFLAG {
+                    Int32 NUM_VAL 1;
+                    String VALUE "Night";
+                }
+                REPROCESSINGACTUAL {
+                    Int32 NUM_VAL 1;
+                    String VALUE "processed once";
+                }
+                LOCALVERSIONID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "SCF V5.0.1";
+                }
+                REPROCESSINGPLANNED {
+                    Int32 NUM_VAL 1;
+                    String VALUE "further update is anticipated";
+                }
+            }
+            MEASUREDPARAMETER {
+                MEASUREDPARAMETERCONTAINER {
+                    String CLASS "1", "2";
+                    QAFLAGS {
+                        String CLASS "1", "2";
+                        SCIENCEQUALITYFLAG {
+                            Int32 NUM_VAL 1, 1;
+                            String VALUE "Not Investigated", "Not Investigated";
+                            String CLASS "1", "2";
+                        }
+                        AUTOMATICQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1, 1;
+                            String CLASS "1", "2";
+                            String VALUE "No automatic quality assessment done in the PGE", "No automatic quality assessment done in the PGE";
+                        }
+                        AUTOMATICQUALITYFLAG {
+                            Int32 NUM_VAL 1, 1;
+                            String CLASS "1", "2";
+                            String VALUE "Passed", "Passed";
+                        }
+                        SCIENCEQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1, 1;
+                            String CLASS "1", "2";
+                            String VALUE "See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra for the product Science Quality status.", "See http://landweb.nascom.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra for the product Science Quality status.";
+                        }
+                    }
+                    QASTATS {
+                        String CLASS "1", "2";
+                        QAPERCENTMISSINGDATA {
+                            Int32 NUM_VAL 1, 1;
+                            String CLASS "1", "2";
+                            Int32 VALUE 0, 0;
+                        }
+                        QAPERCENTCLOUDCOVER {
+                            Int32 NUM_VAL 1, 1;
+                            String CLASS "1", "2";
+                            Int32 VALUE 0, 67;
+                        }
+                    }
+                    PARAMETERNAME {
+                        String CLASS "1", "2";
+                        Int32 NUM_VAL 1, 1;
+                        String VALUE "Sea_Ice_by_Reflectance", "Ice_Surface_Temperature";
+                    }
+                }
+            }
+            ORBITCALCULATEDSPATIALDOMAIN {
+                ORBITCALCULATEDSPATIALDOMAINCONTAINER {
+                    String CLASS "1";
+                    EQUATORCROSSINGDATE {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "2013-07-15";
+                    }
+                    EQUATORCROSSINGTIME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "12:25:58.477108";
+                    }
+                    ORBITNUMBER {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        Int32 VALUE 72203;
+                    }
+                    EQUATORCROSSINGLONGITUDE {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        Float64 VALUE -28.9600321094641;
+                    }
+                }
+            }
+            COLLECTIONDESCRIPTIONCLASS {
+                VERSIONID {
+                    Int32 NUM_VAL 1;
+                    Int32 VALUE 5;
+                }
+                SHORTNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MOD29";
+                }
+            }
+            SPATIALDOMAINCONTAINER {
+                HORIZONTALSPATIALDOMAINCONTAINER {
+                    GPOLYGON {
+                        GPOLYGONCONTAINER {
+                            String CLASS "1";
+                            GRINGPOINT {
+                                String CLASS "1";
+                                GRINGPOINTLONGITUDE {
+                                    Int32 NUM_VAL 4;
+                                    String CLASS "1";
+                                    Float64 VALUE -116.933646930086, 14.1538824191567, 133.108996454245, -164.744705395617;
+                                }
+                                GRINGPOINTLATITUDE {
+                                    Int32 NUM_VAL 4;
+                                    String CLASS "1";
+                                    Float64 VALUE -70.7689663206645, -86.0274964452104, -74.0967213586253, -65.2375134443866;
+                                }
+                                GRINGPOINTSEQUENCENO {
+                                    Int32 NUM_VAL 4;
+                                    String CLASS "1";
+                                    Float64 VALUE 1, 2, 3, 4;
+                                }
+                            }
+                            GRING {
+                                String CLASS "1";
+                                EXCLUSIONGRINGFLAG {
+                                    Int32 NUM_VAL 1;
+                                    String CLASS "1";
+                                    String VALUE "N";
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            RANGEDATETIME {
+                RANGEENDINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2013-07-15";
+                }
+                RANGEENDINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "12:55:00.000000";
+                }
+                RANGEBEGINNINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2013-07-15";
+                }
+                RANGEBEGINNINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "12:50:00.000000";
+                }
+            }
+            PGEVERSIONCLASS {
+                PGEVERSION {
+                    Int32 NUM_VAL 1;
+                    String VALUE "5.0.8";
+                }
+            }
+            INPUTGRANULE {
+                INPUTPOINTER {
+                    Int32 NUM_VAL 3;
+                    String VALUE "MOD021KM.A2013196.1250.005.2013196195356.hdf", "MOD35_L2.A2013196.1250.005.2013196195510.hdf", "MOD03.A2013196.1250.005.2013196194144.hdf";
+                }
+            }
+            ANCILLARYINPUTGRANULE {
+                ANCILLARYINPUTGRANULECONTAINER {
+                    String CLASS "1";
+                    ANCILLARYINPUTPOINTER {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "MOD03.A2013196.1250.005.2013196194144.hdf";
+                    }
+                    ANCILLARYINPUTTYPE {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "Geolocation";
+                    }
+                }
+            }
+            ASSOCIATEDPLATFORMINSTRUMENTSENSOR {
+                ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER {
+                    String CLASS "1";
+                    ASSOCIATEDSENSORSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "MODIS";
+                    }
+                    ASSOCIATEDPLATFORMSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "Terra";
+                    }
+                    ASSOCIATEDINSTRUMENTSHORTNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "MODIS";
+                    }
+                }
+            }
+            ADDITIONALATTRIBUTES {
+                ADDITIONALATTRIBUTESCONTAINER {
+                    String CLASS "1", "2", "3", "4";
+                    ADDITIONALATTRIBUTENAME {
+                        String CLASS "1", "2", "3", "4";
+                        Int32 NUM_VAL 1, 1, 1, 1;
+                        String VALUE "QAPERCENTGOODQUALITY", "QAPERCENTOTHERQUALITY", "GRANULENUMBER", "SEAICEPERCENT";
+                    }
+                    INFORMATIONCONTENT {
+                        String CLASS "1", "2", "3", "4";
+                        PARAMETERVALUE {
+                            Int32 NUM_VAL 1, 1, 1, 1;
+                            String CLASS "1", "2", "3", "4";
+                            String VALUE "100", "0", "156", "nan";
+                        }
+                    }
+                }
+            }
+        }
+    }
+    ArchiveMetadata {
+        ARCHIVEDMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            ALGORITHMPACKAGEACCEPTANCEDATE {
+                Int32 NUM_VAL 1;
+                String VALUE "05-2005";
+            }
+            ALGORITHMPACKAGEMATURITYCODE {
+                Int32 NUM_VAL 1;
+                String VALUE "Normal";
+            }
+            ALGORITHMPACKAGENAME {
+                Int32 NUM_VAL 1;
+                String VALUE "MOD_PR29";
+            }
+            ALGORITHMPACKAGEVERSION {
+                Int32 NUM_VAL 1;
+                String VALUE "5";
+            }
+            INSTRUMENTNAME {
+                Int32 NUM_VAL 1;
+                String VALUE "Moderate-Resolution Imaging SpectroRadiometer";
+            }
+            PROCESSINGCENTER {
+                Int32 NUM_VAL 1;
+                String VALUE "MODAPS";
+            }
+            PROCESSINGDATETIME {
+                Int32 NUM_VAL 1;
+                String VALUE "2013-07-15T19:59:49.000Z";
+            }
+            SPSOPARAMETERS {
+                Int32 NUM_VAL 1;
+                String VALUE "none";
+            }
+            LONGNAME {
+                Int32 NUM_VAL 1;
+                String VALUE "MODIS/Terra Sea Ice Extent 5-Min L2 Swath 1km";
+            }
+            LOCALINPUTGRANULEID {
+                Int32 NUM_VAL 3;
+                String VALUE "MOD021KM.A2013196.1250.005.2013196195356.hdf", "MOD35_L2.A2013196.1250.005.2013196195510.hdf", "MOD03.A2013196.1250.005.2013196194144.hdf";
+            }
+            WESTBOUNDINGCOORDINATE {
+                Int32 NUM_VAL 1;
+                Float64 VALUE -180.0;
+            }
+            NORTHBOUNDINGCOORDINATE {
+                Int32 NUM_VAL 1;
+                Float64 VALUE -65.5514279470189;
+            }
+            EASTBOUNDINGCOORDINATE {
+                Int32 NUM_VAL 1;
+                Float64 VALUE 180.0;
+            }
+            SOUTHBOUNDINGCOORDINATE {
+                Int32 NUM_VAL 1;
+                Float64 VALUE -89.9976156260554;
+            }
+            PROCESSINGENVIRONMENT {
+                Int32 NUM_VAL 1;
+                String VALUE "Linux minion5053 2.6.18-348.6.1.el5PAE #1 SMP Tue May 21 16:17:08 EDT 2013 i686 i686 i386 GNU/Linux";
+            }
+            DESCRREVISION {
+                Int32 NUM_VAL 1;
+                String VALUE "5.0";
+            }
+        }
+    }
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.9";
+        String L1BCalibrationQuality "marginal";
+        String L1BMissionPhase "EXECUTION";
+        String L1BAutoQA_EV_1KM_RefsB "Suspect";
+        String L1BNadirPointing "Y";
+        String L1BVersionID "2013-07-15";
+        String SCF_Algorithm_Version "	$Id: MOD_PR29_AAmain.c,v 1.3 2005/05/19 18:53:02 powell Exp $
+	$Id: MOD_PR29_ActionMessages.h,v 1.1 2004/10/01 13:36:57 powell Exp $
+	$Id: MOD_PR29.h,v 1.2 2004/11/01 14:23:10 powell Exp $
+	$Id: MOD_PR29_Process_L1B.c,v 1.1 2004/10/01 13:27:00 powell Exp $
+	$Id: MOD_PR29_Process_GEO.c,v 1.1 2004/10/01 13:26:49 powell Exp $
+	$Id: MOD_PR29_Process_Cloud.c,v 1.1 2004/10/01 13:32:39 powell Exp $
+	$Id: MOD_PR29_Process_5kmSeaIceFile.c,v 1.2 2004/11/01 14:26:01 powell Exp $
+	$Id: MOD_PR29_Process_SurfTemp.c,v 1.4 2005/05/19 18:59:32 powell Exp $
+	$Id: MOD_PR29_ComputeSurfTemp.c,v 1.1 2004/10/04 17:45:30 powell Exp $
+	$Id: MOD_PR29_CopyL1BmetaToSeaIce.c,v 1.1 2004/10/01 13:24:55 powell Exp $
+	$Id: MOD_PR29_CopyGEOmetaToSeaIce.c,v 1.1 2004/10/01 13:24:35 powell Exp $
+	$Id: MOD_PR29_MakeMeta.c,v 1.3 2005/05/19 18:54:50 powell Exp $
+";
+    }
+}

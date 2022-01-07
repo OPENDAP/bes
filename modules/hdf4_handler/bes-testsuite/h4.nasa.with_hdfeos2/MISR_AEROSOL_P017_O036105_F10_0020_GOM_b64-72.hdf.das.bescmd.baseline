@@ -1,0 +1,846 @@
+Attributes {
+    RegBestEstimateSpectralOptDepth {
+        String coordinates "Longitude Latitude NBandDim";
+        String long_name "RegParamsAer:RegBestEstimateSpectralOptDepth";
+        Float32 _FillValue -9999.000000;
+    }
+    RegBestEstimateSpectralOptDepthUnc {
+        String coordinates "Longitude Latitude NBandDim";
+        String long_name "RegParamsAer:RegBestEstimateSpectralOptDepthUnc";
+        Float32 _FillValue -9999.000000;
+    }
+    RegBestEstimateAngstromExponent {
+        String coordinates "Longitude Latitude";
+        String long_name "RegParamsAer:RegBestEstimateAngstromExponent";
+        Float32 _FillValue -9999.000000;
+    }
+    RegBestEstimateAngstromExponentUnc {
+        String coordinates "Longitude Latitude";
+        String long_name "RegParamsAer:RegBestEstimateAngstromExponentUnc";
+        Float32 _FillValue -9999.000000;
+    }
+    RegBestEstimateSpectralSSA {
+        String coordinates "Longitude Latitude NBandDim";
+        String long_name "RegParamsAer:RegBestEstimateSpectralSSA";
+        Float32 _FillValue -9999.000000;
+    }
+    RegBestEstimateSpectralSSAUnc {
+        String coordinates "Longitude Latitude NBandDim";
+        String long_name "RegParamsAer:RegBestEstimateSpectralSSAUnc";
+        Float32 _FillValue -9999.000000;
+    }
+    RegBestEstimateSpectralOptDepthFraction {
+        String coordinates "Longitude Latitude NBandDim NParticleTypeDim";
+        String long_name "RegParamsAer:RegBestEstimateSpectralOptDepthFraction";
+        Float32 _FillValue -9999.000000;
+    }
+    RegBestEstimateSpectralOptDepthFractionUnc {
+        String coordinates "Longitude Latitude NBandDim NParticleTypeDim";
+        String long_name "RegParamsAer:RegBestEstimateSpectralOptDepthFractionUnc";
+        Float32 _FillValue -9999.000000;
+    }
+    RegBestEstimateNumberFraction {
+        String coordinates "Longitude Latitude NParticleTypeDim";
+        String long_name "RegParamsAer:RegBestEstimateNumberFraction";
+        Float32 _FillValue -9999.000000;
+    }
+    RegBestEstimateNumberFractionUnc {
+        String coordinates "Longitude Latitude NParticleTypeDim";
+        String long_name "RegParamsAer:RegBestEstimateNumberFractionUnc";
+        Float32 _FillValue -9999.000000;
+    }
+    RegBestEstimateVolumeFraction {
+        String coordinates "Longitude Latitude NParticleTypeDim";
+        String long_name "RegParamsAer:RegBestEstimateVolumeFraction";
+        Float32 _FillValue -9999.000000;
+    }
+    RegBestEstimateVolumeFractionUnc {
+        String coordinates "Longitude Latitude NParticleTypeDim";
+        String long_name "RegParamsAer:RegBestEstimateVolumeFractionUnc";
+        Float32 _FillValue -9999.000000;
+    }
+    RegBestEstimateQA {
+        String coordinates "Longitude Latitude";
+        String long_name "RegParamsAer:RegBestEstimateQA";
+        Byte _FillValue 253;
+    }
+    RegMeanSpectralOptDepth {
+        String coordinates "Longitude Latitude NBandDim";
+        String long_name "RegParamsAer:RegMeanSpectralOptDepth";
+        Float32 _FillValue -9999.000000;
+    }
+    RegMedianSpectralOptDepth {
+        String coordinates "Longitude Latitude NBandDim";
+        String long_name "RegParamsAer:RegMedianSpectralOptDepth";
+        Float32 _FillValue -9999.000000;
+    }
+    RegStDevSpectralOptDepth {
+        String coordinates "Longitude Latitude NBandDim";
+        String long_name "RegParamsAer:RegStDevSpectralOptDepth";
+        Float32 _FillValue -9999.000000;
+    }
+    RegWgtdMeanSpectralOptDepth {
+        String coordinates "Longitude Latitude NBandDim";
+        String long_name "RegParamsAer:RegWgtdMeanSpectralOptDepth";
+        Float32 _FillValue -9999.000000;
+    }
+    RegWgtdStDevSpectralOptDepth {
+        String coordinates "Longitude Latitude NBandDim";
+        String long_name "RegParamsAer:RegWgtdStDevSpectralOptDepth";
+        Float32 _FillValue -9999.000000;
+    }
+    RegLowestResidSpectralOptDepth {
+        String coordinates "Longitude Latitude NBandDim";
+        String long_name "RegParamsAer:RegLowestResidSpectralOptDepth";
+        Float32 _FillValue -9999.000000;
+    }
+    RegMeanAngstromExponent {
+        String coordinates "Longitude Latitude";
+        String long_name "RegParamsAer:RegMeanAngstromExponent";
+        Float32 _FillValue -9999.000000;
+    }
+    RegStDevAngstromExponent {
+        String coordinates "Longitude Latitude";
+        String long_name "RegParamsAer:RegStDevAngstromExponent";
+        Float32 _FillValue -9999.000000;
+    }
+    RegLowestResidAngstromExponent {
+        String coordinates "Longitude Latitude";
+        String long_name "RegParamsAer:RegLowestResidAngstromExponent";
+        Float32 _FillValue -9999.000000;
+    }
+    RegLowestResidChisq {
+        String coordinates "Longitude Latitude";
+        String long_name "RegParamsAer:RegLowestResidChisq";
+        Float32 _FillValue -9999.000000;
+    }
+    RegLowestResidCombinedResidual {
+        String coordinates "Longitude Latitude";
+        String long_name "RegParamsAer:RegLowestResidCombinedResidual";
+        Float32 _FillValue -9999.000000;
+    }
+    RegLowestResidMixture {
+        String coordinates "Longitude Latitude";
+        String long_name "RegParamsAer:RegLowestResidMixture";
+        Byte _FillValue 253;
+    }
+    RegLowestResidMixtureEqRefl {
+        String coordinates "Longitude Latitude NBandDim NCamDim";
+        String long_name "RegParamsAer:RegLowestResidMixtureEqRefl";
+        Float32 _FillValue -9999.000000;
+    }
+    AlgTypeFlag {
+        String coordinates "Longitude Latitude";
+        String long_name "RegParamsAer:AlgTypeFlag";
+        Byte _FillValue 253;
+    }
+    RegClassInd {
+        String coordinates "Longitude Latitude";
+        String long_name "RegParamsAer:RegClassInd";
+        Byte _FillValue 253;
+    }
+    RegSurfTypeFlag {
+        String coordinates "Longitude Latitude";
+        String long_name "RegParamsAer:RegSurfTypeFlag";
+        Byte _FillValue 253;
+    }
+    AerRetrSuccFlag {
+        String coordinates "Longitude Latitude";
+        String long_name "RegParamsAer:AerRetrSuccFlag";
+        Byte _FillValue 253;
+    }
+    NumSuccAerMixture {
+        String coordinates "Longitude Latitude";
+        String long_name "RegParamsAer:NumSuccAerMixture";
+        Byte _FillValue 253;
+    }
+    NumCamUsed {
+        String coordinates "Longitude Latitude NBandDim";
+        String long_name "RegParamsAer:NumCamUsed";
+        Byte _FillValue 253;
+    }
+    CamRainbowFlag {
+        String coordinates "Longitude Latitude";
+        String long_name "RegParamsAer:CamRainbowFlag";
+        UInt16 _FillValue 65533;
+    }
+    NumEofUsed {
+        String coordinates "Longitude Latitude NBandDim";
+        String long_name "RegParamsAer:NumEofUsed";
+        Byte _FillValue 253;
+    }
+    NumAcceptHetOptDepth {
+        String coordinates "Longitude Latitude NAerMixtureDim";
+        String long_name "RegParamsAer:NumAcceptHetOptDepth";
+        Byte _FillValue 253;
+    }
+    HetContrast {
+        String coordinates "Longitude Latitude NBandDim";
+        String long_name "RegParamsAer:HetContrast";
+        Float32 _FillValue -9999.000000;
+    }
+    RegSfcRetrOptDepth {
+        String coordinates "Longitude Latitude";
+        String long_name "RegParamsAer:RegSfcRetrOptDepth";
+        Float32 _FillValue -9999.000000;
+    }
+    RegSfcRetrMixture {
+        String coordinates "Longitude Latitude";
+        String long_name "RegParamsAer:RegSfcRetrMixture";
+        Byte _FillValue 253;
+    }
+    RegSfcRetrAlgTypeFlag {
+        String coordinates "Longitude Latitude";
+        String long_name "RegParamsAer:RegSfcRetrAlgTypeFlag";
+        Byte _FillValue 253;
+    }
+    NumAcceptSubr {
+        String coordinates "Longitude Latitude NBandDim NCamDim";
+        String long_name "RegParamsAer:NumAcceptSubr";
+        UInt16 _FillValue 65533;
+    }
+    RegEqRefl {
+        String coordinates "Longitude Latitude NBandDim NCamDim";
+        String long_name "RegParamsAer:RegEqRefl";
+        Float32 _FillValue -9999.000000;
+    }
+    RegEqReflStDev {
+        String coordinates "Longitude Latitude NBandDim NCamDim";
+        String long_name "RegParamsAer:RegEqReflStDev";
+        Float32 _FillValue -9999.000000;
+    }
+    RegEqReflDarkest {
+        String coordinates "Longitude Latitude NBandDim NCamDim";
+        String long_name "RegParamsAer:RegEqReflDarkest";
+        Float32 _FillValue -9999.000000;
+    }
+    SolZenAng {
+        String coordinates "Longitude Latitude";
+        String long_name "RegParamsAer:SolZenAng";
+        Float32 _FillValue -9999.000000;
+    }
+    ViewZenAng {
+        String coordinates "Longitude Latitude NCamDim";
+        String long_name "RegParamsAer:ViewZenAng";
+        Float32 _FillValue -9999.000000;
+    }
+    RelViewCamAziAng {
+        String coordinates "Longitude Latitude NCamDim";
+        String long_name "RegParamsAer:RelViewCamAziAng";
+        Float32 _FillValue -9999.000000;
+    }
+    ScatterAng {
+        String coordinates "Longitude Latitude NCamDim";
+        String long_name "RegParamsAer:ScatterAng";
+        Float32 _FillValue -9999.000000;
+    }
+    GlitterAng {
+        String coordinates "Longitude Latitude NCamDim";
+        String long_name "RegParamsAer:GlitterAng";
+        Float32 _FillValue -9999.000000;
+    }
+    AerRetrSuccFlagPerMixture {
+        String coordinates "Longitude Latitude NAerMixtureDim";
+        String long_name "RegParamsAer:AerRetrSuccFlagPerMixture";
+        Byte _FillValue 253;
+    }
+    OptDepthPerMixture {
+        String coordinates "Longitude Latitude NAerMixtureDim";
+        String long_name "RegParamsAer:OptDepthPerMixture";
+        Float32 _FillValue -9999.000000;
+    }
+    OptDepthUncPerMixture {
+        String coordinates "Longitude Latitude NAerMixtureDim";
+        String long_name "RegParamsAer:OptDepthUncPerMixture";
+        Float32 _FillValue -9999.000000;
+    }
+    OptDepthUpBd {
+        String coordinates "Longitude Latitude NAerMixtureDim";
+        String long_name "RegParamsAer:OptDepthUpBd";
+        Float32 _FillValue -9999.000000;
+    }
+    OptDepthUpBdCam {
+        String coordinates "Longitude Latitude NAerMixtureDim";
+        String long_name "RegParamsAer:OptDepthUpBdCam";
+        Byte _FillValue 253;
+    }
+    OptDepthUpBdBand {
+        String coordinates "Longitude Latitude NAerMixtureDim";
+        String long_name "RegParamsAer:OptDepthUpBdBand";
+        Byte _FillValue 253;
+    }
+    ChisqAbs {
+        String coordinates "Longitude Latitude NAerMixtureDim";
+        String long_name "RegParamsAer:ChisqAbs";
+        Float32 _FillValue -9999.000000;
+    }
+    ChisqGeom {
+        String coordinates "Longitude Latitude NAerMixtureDim";
+        String long_name "RegParamsAer:ChisqGeom";
+        Float32 _FillValue -9999.000000;
+    }
+    ChisqSpec {
+        String coordinates "Longitude Latitude NAerMixtureDim";
+        String long_name "RegParamsAer:ChisqSpec";
+        Float32 _FillValue -9999.000000;
+    }
+    ChisqMaxdev {
+        String coordinates "Longitude Latitude NAerMixtureDim";
+        String long_name "RegParamsAer:ChisqMaxdev";
+        Float32 _FillValue -9999.000000;
+    }
+    ChisqHet {
+        String coordinates "Longitude Latitude NAerMixtureDim";
+        String long_name "RegParamsAer:ChisqHet";
+        Float32 _FillValue -9999.000000;
+    }
+    ChisqHomog {
+        String coordinates "Longitude Latitude NAerMixtureDim";
+        String long_name "RegParamsAer:ChisqHomog";
+        Float32 _FillValue -9999.000000;
+    }
+    OptDepthHetCalcPerBand {
+        String coordinates "Longitude Latitude NAerMixtureDim NBandDim";
+        String long_name "RegParamsAer:OptDepthHetCalcPerBand";
+        Float32 _FillValue -9999.000000;
+    }
+    OptDepthHomogCalcPerBand {
+        String coordinates "Longitude Latitude NAerMixtureDim NBandDim";
+        String long_name "RegParamsAer:OptDepthHomogCalcPerBand";
+        Float32 _FillValue -9999.000000;
+    }
+    ChisqHetCalcPerBand {
+        String coordinates "Longitude Latitude NAerMixtureDim NBandDim";
+        String long_name "RegParamsAer:ChisqHetCalcPerBand";
+        Float32 _FillValue -9999.000000;
+    }
+    ChisqHomogCalcPerBand {
+        String coordinates "Longitude Latitude NAerMixtureDim NBandDim";
+        String long_name "RegParamsAer:ChisqHomogCalcPerBand";
+        Float32 _FillValue -9999.000000;
+    }
+    RegMeanSpectralSSA {
+        String coordinates "Longitude Latitude NBandDim";
+        String long_name "RegParamsAer:RegMeanSpectralSSA";
+        Float32 _FillValue -9999.000000;
+    }
+    RegStDevSpectralSSA {
+        String coordinates "Longitude Latitude NBandDim";
+        String long_name "RegParamsAer:RegStDevSpectralSSA";
+        Float32 _FillValue -9999.000000;
+    }
+    RegLowestResidSpectralSSA {
+        String coordinates "Longitude Latitude NBandDim";
+        String long_name "RegParamsAer:RegLowestResidSpectralSSA";
+        Float32 _FillValue -9999.000000;
+    }
+    RegMeanSpectralOptDepthFraction {
+        String coordinates "Longitude Latitude NBandDim NParticleTypeDim";
+        String long_name "RegParamsAer:RegMeanSpectralOptDepthFraction";
+        Float32 _FillValue -9999.000000;
+    }
+    RegStDevSpectralOptDepthFraction {
+        String coordinates "Longitude Latitude NBandDim NParticleTypeDim";
+        String long_name "RegParamsAer:RegStDevSpectralOptDepthFraction";
+        Float32 _FillValue -9999.000000;
+    }
+    RegLowestResidSpectralOptDepthFraction {
+        String coordinates "Longitude Latitude NBandDim NParticleTypeDim";
+        String long_name "RegParamsAer:RegLowestResidSpectralOptDepthFraction";
+        Float32 _FillValue -9999.000000;
+    }
+    RegMeanNumberFraction {
+        String coordinates "Longitude Latitude NParticleTypeDim";
+        String long_name "RegParamsAer:RegMeanNumberFraction";
+        Float32 _FillValue -9999.000000;
+    }
+    RegStDevNumberFraction {
+        String coordinates "Longitude Latitude NParticleTypeDim";
+        String long_name "RegParamsAer:RegStDevNumberFraction";
+        Float32 _FillValue -9999.000000;
+    }
+    RegLowestResidNumberFraction {
+        String coordinates "Longitude Latitude NParticleTypeDim";
+        String long_name "RegParamsAer:RegLowestResidNumberFraction";
+        Float32 _FillValue -9999.000000;
+    }
+    RegMeanVolumeFraction {
+        String coordinates "Longitude Latitude NParticleTypeDim";
+        String long_name "RegParamsAer:RegMeanVolumeFraction";
+        Float32 _FillValue -9999.000000;
+    }
+    RegStDevVolumeFraction {
+        String coordinates "Longitude Latitude NParticleTypeDim";
+        String long_name "RegParamsAer:RegStDevVolumeFraction";
+        Float32 _FillValue -9999.000000;
+    }
+    RegLowestResidVolumeFraction {
+        String coordinates "Longitude Latitude NParticleTypeDim";
+        String long_name "RegParamsAer:RegLowestResidVolumeFraction";
+        Float32 _FillValue -9999.000000;
+    }
+    RegSpectralSSAHistogramCounts {
+        String coordinates "Longitude Latitude NBandDim NSSABinDim";
+        String long_name "RegParamsAer:RegSpectralSSAHistogramCounts";
+        Byte _FillValue 253;
+    }
+    RegSpectralSSAHistogramMeans {
+        String coordinates "Longitude Latitude NBandDim NSSABinDim";
+        String long_name "RegParamsAer:RegSpectralSSAHistogramMeans";
+        Float32 _FillValue -9999.000000;
+    }
+    RegSpectralNonsphericalOptDepthFractionHistogramCounts {
+        String coordinates "Longitude Latitude NBandDim NNonSphericalFractionBinDim";
+        String long_name "RegParamsAer:RegSpectralNonsphericalOptDepthFractionHistogramCounts";
+        Byte _FillValue 253;
+    }
+    RegSpectralNonsphericalOptDepthFractionHistogramMeans {
+        String coordinates "Longitude Latitude NBandDim NNonSphericalFractionBinDim";
+        String long_name "RegParamsAer:RegSpectralNonsphericalOptDepthFractionHistogramMeans";
+        Float32 _FillValue -9999.000000;
+    }
+    RegNonsphericalNumberFractionHistogramCounts {
+        String coordinates "Longitude Latitude NNonSphericalFractionBinDim";
+        String long_name "RegParamsAer:RegNonsphericalNumberFractionHistogramCounts";
+        Byte _FillValue 253;
+    }
+    RegNonsphericalNumberFractionHistogramMeans {
+        String coordinates "Longitude Latitude NNonSphericalFractionBinDim";
+        String long_name "RegParamsAer:RegNonsphericalNumberFractionHistogramMeans";
+        Float32 _FillValue -9999.000000;
+    }
+    RegNonsphericalVolumeFractionHistogramCounts {
+        String coordinates "Longitude Latitude NNonSphericalFractionBinDim";
+        String long_name "RegParamsAer:RegNonsphericalVolumeFractionHistogramCounts";
+        Byte _FillValue 253;
+    }
+    RegNonsphericalVolumeFractionHistogramMeans {
+        String coordinates "Longitude Latitude NNonSphericalFractionBinDim";
+        String long_name "RegParamsAer:RegNonsphericalVolumeFractionHistogramMeans";
+        Float32 _FillValue -9999.000000;
+    }
+    RegLamSurfEqRefl {
+        String coordinates "Longitude Latitude NAerMixtureDim NBandDim";
+        String long_name "RegParamsAer:RegLamSurfEqRefl";
+        Float32 _FillValue -9999.000000;
+    }
+    ColOzAbund {
+        String coordinates "Longitude Latitude";
+        String long_name "RegParamsAer:ColOzAbund";
+        Float32 _FillValue -9999.000000;
+    }
+    ColOzAbundSrc {
+        String coordinates "Longitude Latitude";
+        String long_name "RegParamsAer:ColOzAbundSrc";
+        Byte _FillValue 253;
+    }
+    SfcWindsp {
+        String coordinates "Longitude Latitude";
+        String long_name "RegParamsAer:SfcWindsp";
+        Float32 _FillValue -9999.000000;
+    }
+    SfcWindspSrc {
+        String coordinates "Longitude Latitude";
+        String long_name "RegParamsAer:SfcWindspSrc";
+        Byte _FillValue 253;
+    }
+    SfcPres {
+        String coordinates "Longitude Latitude";
+        String long_name "RegParamsAer:SfcPres";
+        Float32 _FillValue -9999.000000;
+    }
+    SfcPresSrc {
+        String coordinates "Longitude Latitude";
+        String long_name "RegParamsAer:SfcPresSrc";
+        Byte _FillValue 253;
+    }
+    RegAltPres {
+        String coordinates "Longitude Latitude";
+        String long_name "RegParamsAer:RegAltPres";
+        Float32 _FillValue -9999.000000;
+    }
+    RegAltPresSrc {
+        String coordinates "Longitude Latitude";
+        String long_name "RegParamsAer:RegAltPresSrc";
+        Byte _FillValue 253;
+    }
+    SfcAirTemp {
+        String coordinates "Longitude Latitude";
+        String long_name "RegParamsAer:SfcAirTemp";
+        Float32 _FillValue -9999.000000;
+    }
+    SfcAirTempSrc {
+        String coordinates "Longitude Latitude";
+        String long_name "RegParamsAer:SfcAirTempSrc";
+        Byte _FillValue 253;
+    }
+    RegAltAirTemp {
+        String coordinates "Longitude Latitude";
+        String long_name "RegParamsAer:RegAltAirTemp";
+        Float32 _FillValue -9999.000000;
+    }
+    RegAltAirTempSrc {
+        String coordinates "Longitude Latitude";
+        String long_name "RegParamsAer:RegAltAirTempSrc";
+        Byte _FillValue 253;
+    }
+    ColPrecipWater {
+        String coordinates "Longitude Latitude";
+        String long_name "RegParamsAer:ColPrecipWater";
+        Float32 _FillValue -9999.000000;
+    }
+    ColPrecipWaterSrc {
+        String coordinates "Longitude Latitude";
+        String long_name "RegParamsAer:ColPrecipWaterSrc";
+        Byte _FillValue 253;
+    }
+    Latitude {
+        String long_name "RegParamsAer:Latitude";
+        String units "degrees_north";
+    }
+    Longitude {
+        String long_name "RegParamsAer:Longitude";
+        String units "degrees_east";
+    }
+    RetrAppMask {
+        String coordinates "Longitude_1 Latitude_1 NBandDim_1 NCamDim_1";
+        String long_name "SubregParamsAer:RetrAppMask";
+        Byte _FillValue 253;
+    }
+    WaterLeavEqReflExp {
+        String coordinates "Longitude_1 Latitude_1 NBandDim_1";
+        String long_name "SubregParamsAer:WaterLeavEqReflExp";
+        Byte _FillValue 253;
+    }
+    Latitude_1 {
+        String long_name "SubregParamsAer:Latitude";
+        String units "degrees_north";
+    }
+    Longitude_1 {
+        String long_name "SubregParamsAer:Longitude";
+        String units "degrees_east";
+    }
+    DomMeanOptDepth {
+        String coordinates "Longitude_2 Latitude_2";
+        String long_name "DomParamsAer:DomMeanOptDepth";
+        Float32 _FillValue -9999.000000;
+    }
+    DomMedOptDepth {
+        String coordinates "Longitude_2 Latitude_2";
+        String long_name "DomParamsAer:DomMedOptDepth";
+        Float32 _FillValue -9999.000000;
+    }
+    OptDepthHistogram {
+        String coordinates "Longitude_2 Latitude_2 NAerMixtureDim_1 NTauBinDim";
+        String long_name "DomParamsAer:OptDepthHistogram";
+        Byte _FillValue 253;
+    }
+    Latitude_2 {
+        String long_name "DomParamsAer:Latitude";
+        String units "degrees_north";
+    }
+    Longitude_2 {
+        String long_name "DomParamsAer:Longitude";
+        String units "degrees_east";
+    }
+    coremetadata {
+        INVENTORYMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            ECSDATAGRANULE {
+                LOCALGRANULEID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MISR_AM1_AS_AEROSOL_P017_O036105_F10_0020.hdf";
+                }
+                PRODUCTIONDATETIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2006-10-03T01:41:47.000Z";
+                }
+                LOCALVERSIONID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MISR_EXEC_VERSION: V4.1_PGE9 MISR_EXEC_NAME:AS_main.cc";
+                }
+            }
+            PGEVERSIONCLASS {
+                PGEVERSION {
+                    Int32 NUM_VAL 1;
+                    String VALUE "V4.1";
+                }
+            }
+            MEASUREDPARAMETER {
+                MEASUREDPARAMETERCONTAINER {
+                    String CLASS "1";
+                    QAFLAGS {
+                        String CLASS "1";
+                        AUTOMATICQUALITYFLAGEXPLANATION {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Automatic quality determination software not yet implemented";
+                        }
+                        AUTOMATICQUALITYFLAG {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            String VALUE "Not Investigated";
+                        }
+                    }
+                    QASTATS {
+                        String CLASS "1";
+                        QAPERCENTMISSINGDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 0;
+                        }
+                    }
+                    PARAMETERNAME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "Granule";
+                    }
+                }
+            }
+            ORBITCALCULATEDSPATIALDOMAIN {
+                ORBITCALCULATEDSPATIALDOMAINCONTAINER {
+                    String CLASS "1";
+                    EQUATORCROSSINGDATE {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "2006-10-01";
+                    }
+                    EQUATORCROSSINGTIME {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        String VALUE "16:26:22.582319Z";
+                    }
+                    ORBITNUMBER {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        Int32 VALUE 36105;
+                    }
+                    EQUATORCROSSINGLONGITUDE {
+                        String CLASS "1";
+                        Int32 NUM_VAL 1;
+                        Float64 VALUE -89.2212743849677;
+                    }
+                }
+            }
+            COLLECTIONDESCRIPTIONCLASS {
+                VERSIONID {
+                    Int32 NUM_VAL 1;
+                    Int32 VALUE 2;
+                }
+                SHORTNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "MIL2ASAE";
+                }
+            }
+            INPUTGRANULE {
+                INPUTPOINTER {
+                    Int32 NUM_VAL 55;
+                    String VALUE "MISR_AM1_ACP_APOP_F05_0014.hdf", "MISR_AM1_ACP_MIXTURE_F05_0020.hdf", "MISR_AM1_AS_SCI_CONFIG_F10_0018.txt", "MISR_AM1_AGP_P017_F01_24.hdf", "MISR_AM1_SMART_TOA_RHO_ATM_SS_F02_0009.hdf", "MISR_AM1_SMART_TOA_RHO_ATM_MS_F02_0009.hdf", "
+          MISR_AM1_SMART_TOA_RHO_SURF_WS1_F02_0009.hdf", "MISR_AM1_SMART_TOA_RHO_SURF_WS2_F02_0009.hdf", "MISR_AM1_SMART_TOA_RHO_SURF_WS3_F02_0009.hdf", "MISR_AM1_SMART_BOA_EDIFF_F02_0009.hdf", "MISR_AM1_SMART_TDIFF_F02_0009.hdf", "MISR_AM1_SMART_BOA_BIHEM_ALB_F02_0009.hdf", "
+          MISR_AM1_SMART_T0_CAM_F02_0009.hdf", "MISR_AM1_SMART_T0_SUN_F02_0009.hdf", "MISR_AM1_SMART_T1_CAM_F02_0009.hdf", "MISR_AM1_SMART_T1_SUN_F02_0009.hdf", "MISR_AM1_CART_F01_0002.hdf", "LGID:MIL2TCST:002:MISR_AM1_TC_STEREO_P017_O036105_F08_0016.hdf", "
+          LGID:MIL2TCCL:003:MISR_AM1_TC_CLASSIFIERS_P017_O036105_F05_0009.hdf", "MISR_AM1_PGE9_PCS_CONFIG_F01_0006.txt", "LGID:MI1B2T:003:MISR_AM1_GRP_TERRAIN_GM_P017_O036105_DF_F03_0024.hdf", "LGID:MI1B2T:003:MISR_AM1_GRP_TERRAIN_GM_P017_O036105_CF_F03_0024.hdf", "
+          LGID:MI1B2T:003:MISR_AM1_GRP_TERRAIN_GM_P017_O036105_BF_F03_0024.hdf", "LGID:MI1B2T:003:MISR_AM1_GRP_TERRAIN_GM_P017_O036105_AF_F03_0024.hdf", "LGID:MI1B2T:003:MISR_AM1_GRP_TERRAIN_GM_P017_O036105_AN_F03_0024.hdf", "LGID:MI1B2T:003:MISR_AM1_GRP_TERRAIN_GM_P017_O036105_DA_F03_0024.hdf", "LGID:MI1B2T:003:MISR_AM1_GRP_TERRAIN_GM_P017_O036105_CA_F03_0024.hdf", "LGID:MI1B2T:003:MISR_AM1_GRP_TERRAIN_GM_P017_O036105_BA_F03_0024.hdf", "LGID:MI1B2T:003:MISR_AM1_GRP_TERRAIN_GM_P017_O036105_AA_F03_0024.hdf", "
+          LGID:MI1B2E:003:MISR_AM1_GRP_ELLIPSOID_GM_P017_O036105_DF_F03_0024.hdf", "LGID:MI1B2E:003:MISR_AM1_GRP_ELLIPSOID_GM_P017_O036105_CF_F03_0024.hdf", "LGID:MI1B2E:003:MISR_AM1_GRP_ELLIPSOID_GM_P017_O036105_BF_F03_0024.hdf", "
+          LGID:MI1B2E:003:MISR_AM1_GRP_ELLIPSOID_GM_P017_O036105_AF_F03_0024.hdf", "LGID:MI1B2E:003:MISR_AM1_GRP_ELLIPSOID_GM_P017_O036105_AN_F03_0024.hdf", "LGID:MI1B2E:003:MISR_AM1_GRP_ELLIPSOID_GM_P017_O036105_DA_F03_0024.hdf", "
+          LGID:MI1B2E:003:MISR_AM1_GRP_ELLIPSOID_GM_P017_O036105_CA_F03_0024.hdf", "LGID:MI1B2E:003:MISR_AM1_GRP_ELLIPSOID_GM_P017_O036105_BA_F03_0024.hdf", "LGID:MI1B2E:003:MISR_AM1_GRP_ELLIPSOID_GM_P017_O036105_AA_F03_0024.hdf", "
+          LGID:MIRCCM:004:MISR_AM1_GRP_RCCM_GM_P017_O036105_DF_F04_0024.hdf", "LGID:MIRCCM:004:MISR_AM1_GRP_RCCM_GM_P017_O036105_CF_F04_0024.hdf", "LGID:MIRCCM:004:MISR_AM1_GRP_RCCM_GM_P017_O036105_BF_F04_0024.hdf", "LGID:MIRCCM:004:MISR_AM1_GRP_RCCM_GM_P017_O036105_AF_F04_0024.hdf", "
+          LGID:MIRCCM:004:MISR_AM1_GRP_RCCM_GM_P017_O036105_AN_F04_0024.hdf", "LGID:MIRCCM:004:MISR_AM1_GRP_RCCM_GM_P017_O036105_DA_F04_0024.hdf", "LGID:MIRCCM:004:MISR_AM1_GRP_RCCM_GM_P017_O036105_CA_F04_0024.hdf", "LGID:MIRCCM:004:MISR_AM1_GRP_RCCM_GM_P017_O036105_BA_F04_0024.hdf", "
+          LGID:MIRCCM:004:MISR_AM1_GRP_RCCM_GM_P017_O036105_AA_F04_0024.hdf", "LGID:MIB2GEOP:002:MISR_AM1_GP_GMP_P017_O036105_F03_0013.hdf", "MISR_AM1_TASC_OCT_F01_01.hdf", "MISR_AM1_ARP_PRFLTCHAR_F02_0002.hdf", "MISR_AM1_ARP_PRFLTCAL_F02_0005.hdf", "MISR_AM1_ARP_INFLTCAL_T041_F02_0010.hdf", "MISR_AM1_ARP_CONFIG_F03_0003.hdf";
+                }
+            }
+            SPATIALDOMAINCONTAINER {
+                HORIZONTALSPATIALDOMAINCONTAINER {
+                    GPOLYGON {
+                        GPOLYGONCONTAINER {
+                            String CLASS "1";
+                            GRINGPOINT {
+                                String CLASS "1";
+                                GRINGPOINTLONGITUDE {
+                                    Int32 NUM_VAL 720;
+                                    String CLASS "1";
+                                    Float64 VALUE 25.1160217214483, 13.1513773090091, 10.2356035615327, 16.8658091492114, 13.1513773090091, 0.628308306829485, 3.51614630353248, 10.2356035615327, 0.628308306829485, -11.3415257272485, -3.11491526141707, 3.51614630353248, -11.3415257272485, -21.9049180746644, -9.49346478606563, -3.11491526141707, -21.9049180746644, -30.7356516881932, -15.4912570150408, -9.49346478606563, -30.7356516881932, -37.9170245710725, -21.0266474345287, -15.4912570150408, -37.9170245710725, -43.7098457470942, -26.0632548737201, -21.0266474345287, -43.7098457470942, -48.3986467800256, -30.6008295487701, -26.0632548737201, -48.3986467800256, -52.2291838914836, -34.6635687660407, -30.6008295487701, -52.2291838914836, -55.3953992061904, -38.2895241015484, -34.6635687660407, -56.0572957016945, -58.6652725983182, -41.9459907695059, -38.7147476030804, -58.6652725983182, -60.8704545314745, -44.82498863884, -41.9459907695059, -60.8704545314745, -62.7569183353509, -47.3954441191594, -44.82498863884, -62.7569183353509, -64.388086909468, -49.696887479623, -47.3954441191594, -64.9054068969311, -66.2999857358698, -52.1546989561948, -50.0990492231711, -66.2999857358698, -67.5278659852539, -54.0062551072623, -52.1546989561948, -67.5278659852539, -68.6178414620391, -55.6802574113769, -54.0062551072623, -69.0564971613085, -70.0091954718345, -57.5560284496088, -56.0490269769828, -70.0091954718345, -70.8668438220223, -58.9279981959867, -57.5560284496088, -70.8668438220223, -71.6437354130093, -60.1816030388047, -58.9279981959867, -72.0233681833827, -72.7144960697683, -61.6553209498578, -60.5167918614626, -72.7144960697683, -73.3474516887044, -62.7024731731743, -61.6553209498578, -73.6961171172024, -74.2646493429804, -63.9738895122154, -63.0176057906489, -74.2646493429804, -74.7902741366184, -64.8588150636189, -63.9738895122154, -75.1128125170636, -75.5889714718706, -65.96799067688, -65.1556182349477, -75.5889714718706, -76.0328292586003, -66.7239694831841, -65.96799067688, -76.3331547659438, -76.7383049043091, -67.7016296669766, -67.0042338123651, -77.0289498829023, -77.4000052346151, -68.6193718271967, -67.9746255042295, -77.4000052346151, -77.7496149452587, -69.2238553968708, -68.6193718271967, -78.0225644521246, -78.3448612435308, -70.0440671525676, -69.4827664703636, -78.3448612435308, -78.6503695112275, -70.5726504100995, -70.0440671525676, -78.9080172121519, -79.1913522614894, -71.3118023439756, -70.8189936940211, -79.4422212970268, -79.7057181944276, -72.0128831049637, -71.5525896798479, -79.7057181944276, -79.9575342931394, -72.4489153026269, -72.0128831049637, -80.1959483882626, -80.4313913748962, -73.087813065487, -72.6790809849797, -80.6642466233725, -80.8849403864751, -73.6970378233041, -73.3132637073294, -81.1125769710985, -81.3199615462162, -74.2789350303145, -73.9180159118606, -81.3199615462162, -81.5200274143679, -74.6231494038196, -74.2789350303145, -81.7380519207247, -81.9269463773129, -75.1603546729539, -74.8356280301406, -82.1406486124536, -82.3194138594296, -75.675834800372, -75.3690429258009, -82.5290485985261, -82.698620108449, -76.1711934591841, -75.8809303684984, -82.9044257652388, -83.0656455353912, -76.6478943181023, -76.3728846734415, -83.0656455353912, -83.2227265937973, -76.9120192500766, -76.6478943181023, -83.4214735396713, -83.5714463837183, -77.3581860353618, -77.1072758143611, -83.767001637983, -83.9105023782339, -77.7892308243489, -77.5505641866507, -84.1030511522064, -84.2406585438855, -78.2061955870095, -77.9788849929217, -84.4303756693683, -84.5626176612424, -78.6100404287303, -78.3932733074098, -84.7496684520694, -84.8770279122894, -79.0016516424611, -78.7946827648881, -85.0615689493123, -85.1844886867598, -79.381848880649, -79.1839935974681, -85.3666685341578, -85.4855557151927, -79.7513915552662, -79.5620197897517, -85.6655155751605, -85.7807456202296, -80.1109845599997, -79.9295154613531, -85.9586199323632, -86.0705399641093, -80.4612833964056, -80.2871805713813, -86.2464569551421, -86.3553888589799, -80.8028987752668, -80.6356660270671, -86.5294710479304, -86.6357141971334, -81.1364007552925, -80.9755782680526, -86.8080788603956, -86.9119125502739, -81.4623224734473, -81.3074833886687, -87.0826721507127, -87.184357780183, -81.7811635144233, -81.6319108526248, -87.3536203638802, -87.453403397455, -82.0933929609211, -81.9493568477071, -87.6212729613786, -87.7193847001418, -82.3994521613454, -82.2602873222025, -87.8859615336876, -87.9826207200627, -82.6997572471488, -82.5651407396808, -88.1480017231224, -88.2434160010512, -82.9947014282697, -82.8643305843757, -88.4076949810068, -88.5020622304528, -83.2846570918252, -83.1582476456027, -88.6653301774624, -88.7588397398034, -83.5699777263838, -83.4472621063673, -88.9211850990528, -89.0140189083588, -83.8509996916682, -83.7317254584608, -89.1755278096409, -89.2678614422163, -84.1280438514087, -84.0119722638772, -89.4286179432997, -89.5206215977961, -84.4014170852146, -84.2883217802452, -89.6807079022621, -89.7725473204761, -84.6714136937249, -84.5610794661187, -89.9320439876162, -90.0238813255111, -84.9383167099238, -84.8305383803664, -90.1828674708727, -90.2748621284672, -85.2023991283075, -85.0969804885219, -90.5919578022191, -90.6839226625676, -85.6218939612055, -85.5189838528276, -90.8421077666633, -90.9346207736964, -85.8808844712019, -85.7798884378044, -91.0925247002241, -91.1857409646532, -86.1378986008673, -86.0386421369706, -91.3434388966023, -91.4375140117479, -86.3931799521203, -86.295493718674, -91.595080580806, -91.6901713535498, -86.646967508294, -86.5506865315549, -91.8476808067751, -91.9439459899411, -86.899496568853, -86.8044594666367, -92.1014723539092, -92.1990733862428, -87.1509996634973, -87.0570478922857, -92.356690629481, -92.455792389433, -87.4017074527324, -87.3086845693298, -92.6135745839311, -92.7143461635669, -87.6518496218759, -87.5596005534307, -92.8723676461399, -92.9749831517023, -87.9016557754564, -87.8100260917058, -93.1333186859685, -93.2379580719125, -88.1513563390311, -88.060191520582, -93.5553801465151, -93.6627234099661, -88.5606692948525, -88.4693112280497, -93.8218842416051, -93.9317112377558, -88.8114510002255, -88.7201651209155, -94.0914126812272, -94.2039275736614, -89.0629132365695, -88.9715387495642, -94.3642476266944, -94.4796644400527, -89.3153008049382, -89.2236735181256, -94.6406823584804, -94.7592261056881, -89.568864422229, -89.4768158844128, -94.9210225840079, -95.0429304808111, -89.8238618425214, -89.7312184326893, -95.2055878386822, -95.3311106175345, -90.0805590471136, -89.9871410057676, -95.4947129930508, -95.6241163297486, -90.3392315124848, -90.2448519045912, -95.7887498803513, -95.9223159483956, -90.6001655844287, -90.5046291829828, -96.0880690603174, -96.226098229803, -90.8636599343541, -90.7667620106887, -96.3930617369625, -96.5358744369132, -91.1300271661239, -91.031552173429, -96.7041418502083, -96.8520806157227, -91.3995955523312, -91.2993156854709, -97.0217483636948, -97.1751800921035, -91.6727109369302, -91.5703845499548, -97.3463477739651, -97.5056662174804, -91.9497388253272, -91.8451086853094, -97.6784368695133, -97.8440653956612, -92.23106668916, -92.1238580418287, -98.0185457719913, -98.1909404275304, -92.5171065170183, -92.4070249359393, -98.3672412962716, -98.5468942154332, -92.8082976471146, -92.6950266337475, -98.7251306711537, -98.9125738750043, -93.1051099235241, -92.9883082202567, -99.0928656683968, -99.2886753090688, -93.4080472242714, -93.287345796309, -99.4711471945921, -99.6759483062281, -93.7176514174355, -93.592650052011, -99.8607304083136, -100.075202236018, -94.0345068108511, -93.9047702733693, -100.262430434183, -100.487312423318, -94.3592451722074, -94.2242988483301, -100.677128756176, -100.913227297257, -94.6925514097804, -94.5518763497186, -101.105780384914, -101.353976424478, -95.0351700201683, -94.8881972860949, -101.353976424478, -101.612011703247, -95.1856059259447, -95.0351700201683, -101.810679553681, -102.08264734847, -95.545742455101, -95.3879124288298, -102.284556818206, -102.571608052259, -95.9176365180602, -95.7516653727, -102.776940266546, -103.080341731902, -96.302340611994, -96.1274005026237, -103.289286917587, -103.610435588558, -96.7010144537655, -96.5161854179681, -103.823193568581, -104.163632950922, -97.1149395387899, -96.9191963880467, -104.163632950922, -104.520546422921, -97.3177116507016, -97.1149395387899, -104.741852459677, -105.121400952714, -97.7613189105475, -97.5455360454968, -105.347209953127, -105.751485539026, -98.2245932981344, -97.9943825325924, -105.982043471103, -106.413377204158, -98.709476316644, -98.4632389738699, -106.413377204158, -106.868681467843, -98.966997008259, -98.709476316644, -107.109936499915, -107.597487081232, -99.4950973321634, -99.2181470275207, -107.844345310078, -108.367390492523, -100.051740000908, -99.7530594473393, -108.367390492523, -108.922808644937, -100.366692913314, -100.051740000908, -109.182342035771, -109.780636665194, -100.981767271212, -100.640030279509, -109.780636665194, -110.418810065236, -101.344326523227, -100.981767271212, -110.692565648365, -111.383060336884, -102.031473566484, -101.635456400002, -111.664170729226, -112.412919008711, -102.766379012643, -102.332350215805, -112.412919008711, -113.217631798258, -103.231871282062, -102.766379012643, -113.515484343363, -114.392424903903, -104.069226518295, -103.555115118128, -114.392424903903, -115.340283515322, -104.625210318284, -104.069226518295, -115.656732584282, -116.695179067302, -105.594168670556, -104.974796083446, -116.695179067302, -117.824596943155, -106.270426337873, -105.594168670556, -117.824596943155, -119.057216457283, -107.012716712276, -106.270426337873, -119.405794258489, -120.768222331968, -108.251959375666, -107.412045575783, -120.768222331968, -122.265514964362, -109.185114796594, -108.251959375666, -122.636716681971, -124.301347476084, -110.694495727911, -109.625740650968, -124.301347476084, -126.143834487582, -111.898957552105, -110.694495727911, -126.143834487582, -128.191089157588, -113.26768840848, -111.898957552105, -128.596847496028, -130.89160715261, -115.391851917453, -113.788416238085, -130.89160715261, -133.457392201059, -117.248056497703, -115.391851917453, -133.457392201059, -136.334755735422, -119.420621550632, -117.248056497703, -136.334755735422, -139.568769608396, -121.994256310108, -119.420621550632, -139.568769608396, -143.207665520255, -125.082879536722, -121.994256310108, -143.635319225708, -147.715839526649, -129.600143991422, -125.798157671673, -147.715839526649, -152.281800996647, -134.270738123151, -129.600143991422, -152.281800996647, -157.359708963713, -140.067617395941, -134.270738123151, -157.359708963713, -162.950989876849, -147.295089798147, -140.067617395941, -162.950989876849, -169.019482048736, -156.241467185695, -147.295089798147, -169.019482048736, -175.481468648403, -167.014621942965, -156.241467185695, -175.481468648403, 177.796031394124, -179.282008471902, -167.014621942965;
+                                }
+                                GRINGPOINTLATITUDE {
+                                    Int32 NUM_VAL 720;
+                                    String CLASS "1";
+                                    Float64 VALUE 83.9496395427734, 84.2163055926423, 79.1904933900317, 79.0448433919401, 84.2163055926423, 84.2169700983555, 79.190850533469, 79.1904933900317, 84.2169700983555, 83.951545420912, 79.045900624041, 79.190850533469, 83.951545420912, 83.4522988926661, 78.7612593020518, 79.045900624041, 83.4522988926661, 82.7674675564649, 78.3471487224798, 78.7612593020518, 82.7674675564649, 81.9442130425482, 77.8167495219789, 78.3471487224798, 81.9442130425482, 81.0204911668484, 77.1844741933441, 77.8167495219789, 81.0204911668484, 80.0241307744871, 76.4645707886463, 77.1844741933441, 80.0241307744871, 78.9747635275871, 75.670216329616, 76.4645707886463, 78.9747635275871, 77.8861103725862, 74.8130629669991, 75.670216329616, 77.9610783511792, 76.836648968599, 74.008511452286, 74.9247712420301, 76.836648968599, 75.6903302762959, 73.0482997382028, 74.008511452286, 75.6903302762959, 74.5269356324926, 72.0511581574938, 73.0482997382028, 74.5269356324926, 73.3499927485409, 71.0228760370323, 72.0511581574938, 73.4038543873039, 72.2126458038231, 70.051799699302, 71.1110681118251, 72.2126458038231, 71.0129242552374, 68.970456109784, 70.051799699302, 71.0129242552374, 69.8061549220072, 67.8702407111402, 68.970456109784, 69.8500582385327, 68.6351438855248, 66.8249182642297, 67.9449003831943, 68.6351438855248, 67.4154647342452, 65.6911957162977, 66.8249182642297, 67.4154647342452, 66.1917019407733, 64.5455365579836, 65.6911957162977, 66.2286591935969, 64.9998024421632, 63.4508277125791, 64.6096525822769, 64.9998024421632, 63.7680080122098, 62.2830558430658, 63.4508277125791, 63.801156493016, 62.5655357890468, 61.1632144449634, 62.3411974749225, 62.5655357890468, 61.3277217889438, 59.978402129349, 61.1632144449634, 61.3577468963361, 60.1169757300121, 58.8385477044197, 60.0314165273873, 60.1169757300121, 58.8745088061137, 57.6403750802594, 58.8385477044197, 58.9019423844543, 57.6571306331904, 56.4843282927967, 57.688960217287, 57.6830974096697, 56.4362257738286, 55.3202425662676, 56.530625138975, 56.4362257738286, 55.1881563184843, 54.1061679627677, 55.3202425662676, 55.212156791301, 53.962396920061, 52.9300978013439, 54.1488838796856, 53.962396920061, 52.7116346854587, 51.7083326984658, 52.9300978013439, 52.7339681000691, 51.4817905138098, 50.5222273112577, 51.7479036426977, 51.5031165011985, 50.2496624681592, 49.330905959172, 50.5601203016216, 50.2496624681592, 48.9954174226868, 48.099507777397, 49.330905959172, 49.015447981185, 47.7601050835226, 46.9004118927392, 48.1347990672285, 47.7793219175662, 46.5229757112603, 45.6971783024495, 46.9342911868239, 46.5414398034523, 45.2841728943813, 44.4901223363155, 45.7297268698529, 45.2841728943813, 44.0262861670613, 43.2490286658772, 44.4901223363155, 44.0438254098672, 42.7851233559088, 42.0362876642318, 43.279528188045, 42.8020492260232, 41.5425911903658, 40.8204365679269, 42.0656526923605, 41.5589492087638, 40.2987880104524, 39.601690880065, 40.8487285904123, 40.3146205808968, 39.0538034685199, 38.380246964936, 39.6289673600215, 39.0538034685199, 37.7924869903373, 37.1305623308006, 38.380246964936, 37.8077196407402, 36.5458080933145, 35.9051224848505, 37.1562842210859, 36.5606119879636, 35.2981420189355, 34.6774343563049, 35.9299669794291, 35.3125501889898, 34.0495553340556, 33.4476395690942, 34.7014461649748, 34.0635988653712, 32.8001100070803, 32.2158688729656, 33.4708607548159, 32.8138182136806, 31.5498639777463, 30.9822432910319, 32.238339060081, 31.5632645585677, 30.2988716568781, 29.7468751331133, 31.0039998554131, 30.3119908377993, 29.0471843658162, 28.5098688922311, 29.7679533760626, 29.060047028716, 27.7948507237305, 27.2713220391357, 28.5303021997649, 27.8074805240943, 26.5419169897946, 26.0313257276552, 27.2911420281151, 26.5543364641961, 25.2884273661721, 24.7899654218847, 26.0505623800767, 25.3006580307963, 24.034424266914, 23.547321454731, 24.8086472085055, 24.0464867081395, 22.7799485571446, 22.303469526049, 23.5654754490839, 22.7918625150899, 21.5250397663221, 21.0584811475227, 22.3211215097954, 21.5368242121483, 20.2697362788493, 19.8124240405119, 21.0756557079938, 20.2814094865265, 19.0140755048904, 18.5653624922935, 19.829144661204, 19.0256551180543, 17.7580940338907, 17.3173576754463, 18.5816516370092, 17.7695971283484, 16.5018277729925, 16.0684679345449, 17.3332368667032, 16.5132709153819, 15.2453120722913, 14.8187490438277, 16.0839578268171, 15.2567114134324, 13.9885818775227, 13.5682544390699, 14.8338694921286, 13.9999530545656, 12.7316716813535, 12.3170354265237, 13.5830245633436, 12.7430300894637, 11.4746158434953, 11.0651413714667, 12.331473672265, 11.4859765371499, 10.2174485318862, 9.81261986861691, 11.0792655669573, 10.2288263063226, 8.96020384083904, 8.55951689644309, 9.82644727913193, 8.97161327575201, 7.70291586810709, 7.30587695718252, 8.57306427575322, 7.71437136991994, 6.44561878792048, 6.05174320420571, 7.31916059665322, 6.46860139255556, 5.19993728723711, 4.80996097549587, 6.0777690406949, 5.21148817303739, 3.94281382119698, 3.55474705140412, 4.8227281978162, 3.95446291988023, 2.68579903441352, 2.29917668868817, 3.56730658928468, 2.69756042965594, 1.42892811358276, 1.04328847133159, 2.31154341974601, 1.44081592243545, 0.172236696530304, -0.2128798308763, 1.05547703756971, 0.184265107798333, -1.08423906036533, -1.46929118451979, -0.200854983070036, -1.07205574762832, -2.34046241258714, -2.72590921900066, -1.45741576510182, -2.32810975027408, -3.59639595488482, -3.98269815636283, -2.71416905552893, -3.58385930652275, -4.85200154479123, -5.23962274364852, -3.97107915558736, -4.83926604552236, -6.10724022133356, -6.49664818695706, -5.22811085323958, -6.0942907369848, -7.36207211796929, -7.75374008639448, -6.48522935717652, -7.33565875553353, -8.603032222817, -8.9995893303529, -7.73100144401693, -8.58954294124153, -9.85666542949336, -10.2567627314293, -8.98824564958703, -9.84290506356576, -11.1097491971665, -11.5138866679344, -10.2454598134987, -11.0957010416195, -12.36223851766, -12.7709274577164, -11.5026100041187, -12.3478853631934, -13.6140868649556, -14.0278514289057, -12.7596623324605, -13.5994109468431, -14.865246045939, -15.2846248410227, -14.0165828764181, -14.8502289899498, -16.11566603565, -16.5412138005328, -15.2733376002146, -16.100288800956, -17.3652947950627, -17.7975841360856, -16.5298922330122, -17.34953761378, -18.6140780691962, -19.0537014371347, -17.7862123184577, -18.5979203821717, -19.8619591630807, -20.3095307348378, -19.0422628943964, -19.8453795515011, -21.1088786927955, -21.5650365269496, -20.2980085305657, -21.0918548051533, -22.3547743084321, -22.820182609958, -21.5534131684569, -22.3372827823366, -23.5995803854157, -24.0749319337844, -22.8084399863723, -23.5815967636829, -24.8432276801284, -25.3292464402444, -24.063051249832, -24.8247263205249, -26.0856429452079, -26.5830868828966, -25.3172081451828, -26.0665969231558, -27.3267484992337, -27.8364126255752, -26.5708705939746, -27.3071295027054, -28.5664617447306, -29.0891814164931, -27.8239970453189, -28.5462399604791, -29.804694627518, -30.3413491343348, -29.0765442430293, -29.7838386176873, -31.0413530293581, -31.5928695021822, -30.328466963856, -31.019829597414, -32.2763360846119, -32.8436937644433, -31.5797177225385, -32.2541101294043, -33.509535410127, -34.0937703211404, -32.8302464387056, -33.4865697667621, -34.7408342358428, -35.3430443129399, -34.0800000598126, -34.7170895018859, -35.9701064215357, -36.5914571491321, -35.3289221333089, -35.9455407668917, -37.1972153426806, -37.8389459693557, -36.5769523200195, -37.1972153426806, -38.4480232613988, -39.1004628906994, -37.8389459693557, -38.4220126255009, -39.6712965160085, -40.3463663816992, -39.0854430281407, -39.6443367078194, -40.8919736698486, -41.5911641498758, -40.3308749892592, -40.8640111981926, -42.1098653080576, -42.8347719053192, -41.5751621143212, -42.0808430008769, -43.3247634996716, -44.0770972320661, -42.8182173269328, -43.294620168253, -44.5364393669503, -45.3180383682426, -44.0599451298871, -44.5364393669503, -45.7768033194823, -46.5755255095486, -45.3180383682426, -45.7446402865735, -46.9825658922187, -47.8140831998779, -46.5574827845689, -46.9490866587497, -48.1843445446089, -49.0509401299955, -47.7953055217302, -48.1494681678589, -49.3818002044319, -50.2859454564666, -49.0313672381074, -49.3818002044319, -50.6119996908606, -51.5397573761426, -50.2859454564666, -50.5745543111743, -51.8012903560222, -52.7715149693739, -51.5189295500947, -51.7621829905657, -52.9850892495415, -54.0009264847943, -52.7497008461156, -52.9850892495415, -54.2050863834951, -55.2511870919297, -54.0009264847943, -54.1628694195282, -55.3782519445662, -56.4763907815822, -55.227752640565, -55.3782519445662, -56.5900282749254, -57.7238797773865, -56.4763907815822, -56.5442676723624, -57.7504092370441, -58.9440441454844, -57.6985309575068, -57.7023778625242, -58.902187241193, -60.1605188975585, -58.9172557069011, -58.902187241193, -60.0968106846026, -61.4021608341789, -60.1605188975585, -60.0443891138643, -61.2311088528941, -62.6116467257955, -61.3728422159253, -61.2311088528941, -62.4111449057672, -63.8483571456273, -62.6116467257955, -62.3536354926995, -63.5236442949209, -65.0490221432681, -63.8159843778797, -63.5236442949209, -64.6848858137584, -66.2792561566344, -65.0490221432681, -64.6848858137584, -65.8361326022248, -67.5062852685348, -66.2792561566344, -65.7697363742799, -66.9063166315564, -68.6899344087989, -67.4684936729422, -66.9063166315564, -68.0294000961419, -69.9068250863593, -68.6899344087989, -67.9554616985543, -69.0590620885995, -71.0729712640719, -69.8639168591281, -69.0590620885995, -70.1440808017031, -72.2752811338834, -71.0729712640719, -70.1440808017031, -71.2073377843847, -73.4694388229321, -72.2752811338834, -71.1198884278436, -72.1524909697626, -74.5971302972255, -73.4167407291276, -72.1524909697626, -73.1542895995679, -75.7644939496559, -74.5971302972255, -73.1542895995679, -74.1194913324076, -76.9154107034852, -75.7644939496559, -74.1194913324076, -75.0410474794284, -78.0451958128288, -76.9154107034852, -75.0410474794284, -75.9104272085477, -79.1473142339174, -78.0451958128288, -75.792627858387, -76.5925756532099, -80.1232918906786, -79.0665836601817, -76.5925756532099, -77.3179975781961, -81.1281361317432, -80.1232918906786, -77.3179975781961, -77.9554490442751, -82.0614591044496, -81.1281361317432, -77.9554490442751, -78.4903294675192, -82.8950768525509, -82.0614591044496, -78.4903294675192, -78.9078115927153, -83.5900222823136, -82.8950768525509, -78.9078115927153, -79.1942959245998, -84.0971548462644, -83.5900222823136, -79.1942959245998, -79.3392274059823, -84.3655610271963, -84.0971548462644;
+                                }
+                                GRINGPOINTSEQUENCENO {
+                                    Int32 NUM_VAL 720;
+                                    String CLASS "1";
+                                    Float64 VALUE 576, 575, 2, 1, 574, 573, 4, 3, 572, 571, 6, 5, 570, 569, 8, 7, 568, 567, 10, 9, 566, 565, 12, 11, 564, 563, 14, 13, 562, 561, 16, 15, 560, 559, 18, 17, 558, 557, 20, 19, 556, 555, 22, 21, 554, 553, 24, 23, 552, 551, 26, 25, 550, 549, 28, 27, 548, 547, 30, 29, 546, 545, 32, 31, 544, 543, 34, 33, 542, 541, 36, 35, 540, 539, 38, 37, 538, 537, 40, 39, 536, 535, 42, 41, 534, 533, 44, 43, 532, 531, 46, 45, 530, 529, 48, 47, 528, 527, 50, 49, 526, 525, 52, 51, 524, 523, 54, 53, 522, 521, 56, 55, 520, 519, 58, 57, 518, 517, 60, 59, 516, 515, 62, 61, 514, 513, 64, 63, 512, 511, 66, 65, 510, 509, 68, 67, 508, 507, 70, 69, 506, 505, 72, 71, 504, 503, 74, 73, 502, 501, 76, 75, 500, 499, 78, 77, 498, 497, 80, 79, 496, 495, 82, 81, 494, 493, 84, 83, 492, 491, 86, 85, 490, 489, 88, 87, 488, 487, 90, 89, 486, 485, 92, 91, 484, 483, 94, 93, 482, 481, 96, 95, 480, 479, 98, 97, 478, 477, 100, 99, 476, 475, 102, 101, 474, 473, 104, 103, 472, 471, 106, 105, 470, 469, 108, 107, 468, 467, 110, 109, 466, 465, 112, 111, 464, 463, 114, 113, 462, 461, 116, 115, 460, 459, 118, 117, 458, 457, 120, 119, 456, 455, 122, 121, 454, 453, 124, 123, 452, 451, 126, 125, 450, 449, 128, 127, 448, 447, 130, 129, 446, 445, 132, 131, 444, 443, 134, 133, 442, 441, 136, 135, 440, 439, 138, 137, 438, 437, 140, 139, 436, 435, 142, 141, 434, 433, 144, 143, 432, 431, 146, 145, 430, 429, 148, 147, 428, 427, 150, 149, 426, 425, 152, 151, 424, 423, 154, 153, 422, 421, 156, 155, 420, 419, 158, 157, 418, 417, 160, 159, 416, 415, 162, 161, 414, 413, 164, 163, 412, 411, 166, 165, 410, 409, 168, 167, 408, 407, 170, 169, 406, 405, 172, 171, 404, 403, 174, 173, 402, 401, 176, 175, 400, 399, 178, 177, 398, 397, 180, 179, 396, 395, 182, 181, 394, 393, 184, 183, 392, 391, 186, 185, 390, 389, 188, 187, 388, 387, 190, 189, 386, 385, 192, 191, 384, 383, 194, 193, 382, 381, 196, 195, 380, 379, 198, 197, 378, 377, 200, 199, 376, 375, 202, 201, 374, 373, 204, 203, 372, 371, 206, 205, 370, 369, 208, 207, 368, 367, 210, 209, 366, 365, 212, 211, 364, 363, 214, 213, 362, 361, 216, 215, 360, 359, 218, 217, 358, 357, 220, 219, 356, 355, 222, 221, 354, 353, 224, 223, 352, 351, 226, 225, 350, 349, 228, 227, 348, 347, 230, 229, 346, 345, 232, 231, 344, 343, 234, 233, 342, 341, 236, 235, 340, 339, 238, 237, 338, 337, 240, 239, 336, 335, 242, 241, 334, 333, 244, 243, 332, 331, 246, 245, 330, 329, 248, 247, 328, 327, 250, 249, 326, 325, 252, 251, 324, 323, 254, 253, 322, 321, 256, 255, 320, 319, 258, 257, 318, 317, 260, 259, 316, 315, 262, 261, 314, 313, 264, 263, 312, 311, 266, 265, 310, 309, 268, 267, 308, 307, 270, 269, 306, 305, 272, 271, 304, 303, 274, 273, 302, 301, 276, 275, 300, 299, 278, 277, 298, 297, 280, 279, 296, 295, 282, 281, 294, 293, 284, 283, 292, 291, 286, 285, 290, 289, 288, 287;
+                                }
+                            }
+                            GRING {
+                                String CLASS "1";
+                                EXCLUSIONGRINGFLAG {
+                                    Int32 NUM_VAL 1;
+                                    String CLASS "1";
+                                    String VALUE "N";
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            RANGEDATETIME {
+                RANGEENDINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2006-10-01";
+                }
+                RANGEENDINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "16:54:56.000000Z";
+                }
+                RANGEBEGINNINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2006-10-01";
+                }
+                RANGEBEGINNINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "15:57:57.000000Z";
+                }
+            }
+            ADDITIONALATTRIBUTES {
+                ADDITIONALATTRIBUTESCONTAINER {
+                    String CLASS "1", "2", "3", "4";
+                    ADDITIONALATTRIBUTENAME {
+                        String CLASS "1", "2", "3", "4";
+                        Int32 NUM_VAL 1, 1, 1, 1;
+                        String VALUE "SP_AM_PATH_NO", "SP_AM_MISR_StartBlock", "SP_AM_MISR_EndBlock", "SP_AM_MISR_ProductVersion";
+                    }
+                    INFORMATIONCONTENT {
+                        String CLASS "1", "2", "3", "4";
+                        PARAMETERVALUE {
+                            Int32 NUM_VAL 1, 1, 1, 1;
+                            String CLASS "1", "2", "3", "4";
+                            String VALUE "017", "18", "161", "20";
+                        }
+                    }
+                }
+            }
+        }
+    }
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.13";
+        Int32 Path_number 17;
+        Int32 AGP_version_id 2;
+        Int32 DID_version_id 4;
+        Int32 Number_blocks 180;
+        Int32 Ocean_blocks_size 180;
+        Int32 Ocean_blocks_count 67;
+        Int32 Ocean_blocks_numbers 8, 11, 12, 19, 20, 84, 85, 87, 88, 89, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
+        Float64 SOM_parameters_som_ellipsoid_a 6378137.0000000000;
+        Float64 SOM_parameters_som_ellipsoid_e2 0.0066943480000000001;
+        Float64 SOM_parameters_som_orbit_aprime 1.0000000000000000;
+        Float64 SOM_parameters_som_orbit_eprime 1.0000000000000000;
+        Float64 SOM_parameters_som_orbit_gama 1.0000000000000000;
+        Int32 SOM_parameters_som_orbit_nrev 233;
+        Float64 SOM_parameters_som_orbit_ro 7078040.7999999998;
+        Float64 SOM_parameters_som_orbit_i 1.7157253262878522;
+        Float64 SOM_parameters_som_orbit_P2P1 0.068666666666666668;
+        Float64 SOM_parameters_som_orbit_lambda0 1.7983786319875825;
+        Float64 Origin_block_ulc_x 7460750.0000000000;
+        Float64 Origin_block_ulc_y 527450.00000000000;
+        Float64 Origin_block_lrc_x 7601550.0000000000;
+        Float64 Origin_block_lrc_y 1090650.0000000000;
+        Int32 Start_block 64;
+        Int32 End_block 72;
+        Int32 Cam_mode 1;
+        Int32 Num_local_modes 0;
+        String Local_mode_site_name "";
+        Float32 Orbit_QA 0.000000000;
+        String SubsetMetadata "
+GROUP = SUBSET
+  PARENT_FILE = MISR_AM1_AS_AEROSOL_P017_O036105_F10_0020.hdf
+  BLOCKS = (64,65,66,67,68,69,70,71,72)
+  PARAMETERS = (ALL)
+END GROUP = SUBSET
+";
+    }
+    RegParamsAer {
+        Int32 Block_size_resolution_x 17600;
+        Int32 Block_size_resolution_y 17600;
+        Int32 Block_size_size_x 8;
+        Int32 Block_size_size_y 32;
+    }
+    SubregParamsAer {
+        Int32 Block_size_resolution_x 1100;
+        Int32 Block_size_resolution_y 1100;
+        Int32 Block_size_size_x 128;
+        Int32 Block_size_size_y 512;
+        Float32 Min_WaterLeavEqReflExp 0.000000000;
+        Float32 Max_WaterLeavEqReflExp 0.2520000041;
+        Float32 Scale_WaterLeavEqReflExp 0.001000000047;
+        Float32 Offset_WaterLeavEqReflExp 0.000000000;
+        Byte Fill_WaterLeavEqReflExp 253;
+        Byte Underflow_WaterLeavEqReflExp 254;
+        Byte Overflow_WaterLeavEqReflExp 255;
+    }
+    DomParamsAer {
+        Int32 Block_size_resolution_x 70400;
+        Int32 Block_size_resolution_y 70400;
+        Int32 Block_size_size_x 2;
+        Int32 Block_size_size_y 8;
+    }
+    PerBlockMetadataCommon {
+    }
+    Common_Per_Block_Metadata {
+    }
+    PerBlockMetadataTime {
+    }
+    RetrAppMask_Flag_Legend {
+    }
+    OptDepthUpBdCam_Flag_Legend {
+        Byte Vdata_field_Value 1, 2, 3, 4, 5, 6, 7, 8, 9;
+        String Vdata_field_Description "'D forward'", "'C forward'", "'B forward'", "'A forward'", "'A nadir'", "'A aftward'", "'B aftward'", "'C aftward'", "'D aftward'";
+    }
+    OptDepthUpBdBand_Flag_Legend {
+        Byte Vdata_field_Value 1, 2, 3, 4;
+        String Vdata_field_Description "'Blue'", "'Green'", "'Red'", "'NIR'";
+    }
+    AlgTypeFlag_Flag_Legend {
+        Byte Vdata_field_Value 0, 1, 2, 3, 4, 5, 6, 7, 8, 9;
+        String Vdata_field_Description "'no retrieval'", "'dark water retrieval'", "'OTA retrieval'", "'heterogeneous land retrieval'", "'low optical depth default'", "'previous region default'", "'rayleigh only default'", "'optical depth upper bound default'", "'homogeneous land retrieval'", "'water retrieval'";
+    }
+    RegClassInd_Flag_Legend {
+        Byte Vdata_field_Value 0, 1, 2, 3, 4;
+        String Vdata_field_Description "'clear region'", "'solar oblique region'", "'topo. complex region'", "'cloudy region'", "'no valid data in region'";
+    }
+    CamRainbowFlag_Flag_Legend {
+        Byte Vdata_field_Value 0, 1;
+        String Vdata_field_Description "'rainbow-free'", "'rainbow-influenced'";
+    }
+    AerRetrSuccFlag_Flag_Legend {
+        Byte Vdata_field_Value 1, 2, 3, 4, 5, 6, 7, 8;
+        String Vdata_field_Description "'no success matches with aerosol models'", "'no potential matches'", "'aerosol retrieval algorithm failure'", "'aerosol retrieval not attempted'", "'insufficient data to perform aerosol retrieval'", "'inadequate scene contrast to perform aerosol retrieval'", "'successful aerosol retrieval'", "'unsuccessful aerosol retrieval.  default optical depth reported.'";
+    }
+    ColOzAbundSrc_Flag_Legend {
+        Byte Vdata_field_Value 0, 1, 2, 3;
+        String Vdata_field_Description "'no data available'", "'TASC -> DAO not available'", "'TASC -> DAO out of bounds'", "'DAO'";
+    }
+    SfcWindspSrc_Flag_Legend {
+        Byte Vdata_field_Value 0, 1, 2, 3;
+        String Vdata_field_Description "'no data available'", "'TASC -> DAO not available'", "'TASC -> DAO out of bounds'", "'DAO'";
+    }
+    SfcPresSrc_Flag_Legend {
+        Byte Vdata_field_Value 0, 1, 2, 3;
+        String Vdata_field_Description "'no data available'", "'TASC -> DAO not available'", "'TASC -> DAO out of bounds'", "'DAO'";
+    }
+    RegAltPresSrc_Flag_Legend {
+        Byte Vdata_field_Value 0, 1, 2, 3;
+        String Vdata_field_Description "'no data available'", "'TASC -> DAO not available'", "'TASC -> DAO out of bounds'", "'DAO'";
+    }
+    SfcAirTempSrc_Flag_Legend {
+        Byte Vdata_field_Value 0, 1, 2, 3;
+        String Vdata_field_Description "'no data available'", "'TASC -> DAO not available'", "'TASC -> DAO out of bounds'", "'DAO'";
+    }
+    RegAltAirTempSrc_Flag_Legend {
+        Byte Vdata_field_Value 0, 1, 2, 3;
+        String Vdata_field_Description "'no data available'", "'TASC -> DAO not available'", "'TASC -> DAO out of bounds'", "'DAO'";
+    }
+    ColPrecipWaterSrc_Flag_Legend {
+        Byte Vdata_field_Value 0, 1, 2, 3, 4, 5;
+        String Vdata_field_Description "'no data available'", "'TASC -> DAO not available'", "'TASC -> DAO out of bounds'", "'DAO -> MODIS not available'", "'DAO -> MODIS out of bounds'", "'MODIS'";
+    }
+}

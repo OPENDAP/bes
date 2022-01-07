@@ -1,0 +1,37 @@
+Attributes {
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.18";
+    }
+    GeoGrid1_Data_Fields_Latitude {
+        String long_name "Latitude";
+        String units "degrees_north";
+    }
+    GeoGrid1_Data_Fields_Latitude_dim_0 {
+        String name "YDim:GeoGrid1";
+    }
+    GeoGrid1_Data_Fields_Longitude {
+        String long_name "Longitude";
+        String units "degrees_east";
+    }
+    GeoGrid1_Data_Fields_Longitude_dim_0 {
+        String name "XDim:GeoGrid1";
+    }
+    GeoGrid1_Data_Fields_temperature {
+        String long_name "temperature";
+    }
+    GeoGrid1_Data_Fields_temperature_dim_0 {
+        String name "YDim:GeoGrid1";
+    }
+    GeoGrid1_Data_Fields_temperature_dim_1 {
+        String name "XDim:GeoGrid1";
+    }
+    GeoGrid2_Data_Fields_temperature {
+        String long_name "temperature";
+    }
+    GeoGrid2_Data_Fields_temperature_dim_0 {
+        String name "YDim:GeoGrid2";
+    }
+    GeoGrid2_Data_Fields_temperature_dim_1 {
+        String name "XDim:GeoGrid2";
+    }
+}

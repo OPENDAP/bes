@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="MYD21A1N.A2018304.h06v03.006.2018327044516" space="catalog">/data/MYD21A1N.A2018304.h06v03.006.2018327044516.hdf</setContainer>
+    <define name="d">
+	<container name="MYD21A1N.A2018304.h06v03.006.2018327044516" />
+    </define>
+    <get type="das" definition="d" />
+</request>

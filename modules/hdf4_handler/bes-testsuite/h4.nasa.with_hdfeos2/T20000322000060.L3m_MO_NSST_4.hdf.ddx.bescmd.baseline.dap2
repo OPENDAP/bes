@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="T20000322000060.L3m_MO_NSST_4.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="HDF_GLOBAL" type="Container">
+        <Attribute name="Product_Name" type="String">
+            <value>T20000322000060.L3m_MO_NSST_4</value>
+        </Attribute>
+        <Attribute name="Sensor_Name" type="String">
+            <value>MODIST</value>
+        </Attribute>
+        <Attribute name="Sensor" type="String">
+            <value></value>
+        </Attribute>
+        <Attribute name="Title" type="String">
+            <value>MODIST Level-3 Standard Mapped Image</value>
+        </Attribute>
+        <Attribute name="Data_Center" type="String">
+            <value></value>
+        </Attribute>
+        <Attribute name="Station_Name" type="String">
+            <value></value>
+        </Attribute>
+        <Attribute name="Station_Latitude" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="Station_Longitude" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="Mission" type="String">
+            <value></value>
+        </Attribute>
+        <Attribute name="Mission_Characteristics" type="String">
+            <value></value>
+        </Attribute>
+        <Attribute name="Sensor_Characteristics" type="String">
+            <value></value>
+        </Attribute>
+        <Attribute name="Product_Type" type="String">
+            <value>month</value>
+        </Attribute>
+        <Attribute name="Replacement_Flag" type="String">
+            <value>ORIGINAL</value>
+        </Attribute>
+        <Attribute name="Software_Name" type="String">
+            <value>smigen</value>
+        </Attribute>
+        <Attribute name="Software_Version" type="String">
+            <value>3.38</value>
+        </Attribute>
+        <Attribute name="Processing_Time" type="String">
+            <value>2007116194049000</value>
+        </Attribute>
+        <Attribute name="Input_Files" type="String">
+            <value>T20000322000060.L3b_MO_NSST.main</value>
+        </Attribute>
+        <Attribute name="Processing_Control" type="String">
+            <value>smigen par=T20000322000060.L3m_MO_NSST_4.param</value>
+        </Attribute>
+        <Attribute name="Input_Parameters" type="String">
+            <value>IFILE = /data1/vdc/sdpsoper/vpu0/workbuf/T20000322000060.L3b_MO_NSST.main|OFILE = T20000322000060.L3m_MO_NSST_4|PFILE = |PROD = sst|PALFILE = DEFAULT|RFLAG = ORIGINAL|MEAS = 1|STYPE = 0|DATAMIN = 0.000000|DATAMAX = 0.000000|LONWEST = -180.000000|LONEAST = 180.000000|LATSOUTH = -90.000000|LATNORTH = 90.000000|RESOLUTION = 4km|PROJECTION = RECT|GAP_FILL = 0|SEAM_LON = -180.000000|PRECISION=I</value>
+        </Attribute>
+        <Attribute name="L2_Flag_Names" type="String">
+            <value>LAND,~HISOLZ</value>
+        </Attribute>
+        <Attribute name="Period_Start_Year" type="Int16">
+            <value>2000</value>
+        </Attribute>
+        <Attribute name="Period_Start_Day" type="Int16">
+            <value>56</value>
+        </Attribute>
+        <Attribute name="Period_End_Year" type="Int16">
+            <value>2000</value>
+        </Attribute>
+        <Attribute name="Period_End_Day" type="Int16">
+            <value>60</value>
+        </Attribute>
+        <Attribute name="Start_Time" type="String">
+            <value>2000055105506000</value>
+        </Attribute>
+        <Attribute name="End_Time" type="String">
+            <value>2000060233504000</value>
+        </Attribute>
+        <Attribute name="Start_Year" type="Int16">
+            <value>2000</value>
+        </Attribute>
+        <Attribute name="Start_Day" type="Int16">
+            <value>55</value>
+        </Attribute>
+        <Attribute name="Start_Millisec" type="Int32">
+            <value>39306000</value>
+        </Attribute>
+        <Attribute name="End_Year" type="Int16">
+            <value>2000</value>
+        </Attribute>
+        <Attribute name="End_Day" type="Int16">
+            <value>60</value>
+        </Attribute>
+        <Attribute name="End_Millisec" type="Int32">
+            <value>84904000</value>
+        </Attribute>
+        <Attribute name="Start_Orbit" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="End_Orbit" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="Orbit" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="Map_Projection" type="String">
+            <value>Equidistant Cylindrical</value>
+        </Attribute>
+        <Attribute name="Latitude_Units" type="String">
+            <value>degrees North</value>
+        </Attribute>
+        <Attribute name="Longitude_Units" type="String">
+            <value>degrees East</value>
+        </Attribute>
+        <Attribute name="Northernmost_Latitude" type="Float32">
+            <value>90.00000000</value>
+        </Attribute>
+        <Attribute name="Southernmost_Latitude" type="Float32">
+            <value>-90.00000000</value>
+        </Attribute>
+        <Attribute name="Westernmost_Longitude" type="Float32">
+            <value>-180.0000000</value>
+        </Attribute>
+        <Attribute name="Easternmost_Longitude" type="Float32">
+            <value>180.0000000</value>
+        </Attribute>
+        <Attribute name="Latitude_Step" type="Float32">
+            <value>0.04166666791</value>
+        </Attribute>
+        <Attribute name="Longitude_Step" type="Float32">
+            <value>0.04166666791</value>
+        </Attribute>
+        <Attribute name="SW_Point_Latitude" type="Float32">
+            <value>-89.97916412</value>
+        </Attribute>
+        <Attribute name="SW_Point_Longitude" type="Float32">
+            <value>-179.9791718</value>
+        </Attribute>
+        <Attribute name="Data_Bins" type="Int32">
+            <value>11159339</value>
+        </Attribute>
+        <Attribute name="Number_of_Lines" type="Int32">
+            <value>4320</value>
+        </Attribute>
+        <Attribute name="Number_of_Columns" type="Int32">
+            <value>8640</value>
+        </Attribute>
+        <Attribute name="Parameter" type="String">
+            <value>Sea Surface Temperature</value>
+        </Attribute>
+        <Attribute name="Measure" type="String">
+            <value>Mean</value>
+        </Attribute>
+        <Attribute name="Units" type="String">
+            <value>deg-C</value>
+        </Attribute>
+        <Attribute name="Scaling" type="String">
+            <value>linear</value>
+        </Attribute>
+        <Attribute name="Scaling_Equation" type="String">
+            <value>(Slope*l3m_data) + Intercept = Parameter value</value>
+        </Attribute>
+        <Attribute name="Slope" type="Float32">
+            <value>0.0007171849720</value>
+        </Attribute>
+        <Attribute name="Intercept" type="Float32">
+            <value>-2.000000000</value>
+        </Attribute>
+        <Attribute name="Scaled_Data_Minimum" type="Float32">
+            <value>-2.000000000</value>
+        </Attribute>
+        <Attribute name="Scaled_Data_Maximum" type="Float32">
+            <value>45.00000000</value>
+        </Attribute>
+        <Attribute name="Data_Minimum" type="Float32">
+            <value>-1.999999046</value>
+        </Attribute>
+        <Attribute name="Data_Maximum" type="Float32">
+            <value>34.03499985</value>
+        </Attribute>
+    </Attribute>
+    <Array name="l3m_data">
+        <Attribute name="long_name" type="String">
+            <value>l3m_data</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <value>0.0007171849720</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <value>-2.000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="UInt16">
+            <value>65535</value>
+        </Attribute>
+        <Attribute name="Scaling" type="String">
+            <value>linear</value>
+        </Attribute>
+        <Attribute name="Scaling_Equation" type="String">
+            <value>(Slope*l3m_data) + Intercept = Parameter value</value>
+        </Attribute>
+        <Attribute name="Slope" type="Float32">
+            <value>0.0007171849720</value>
+        </Attribute>
+        <Attribute name="Intercept" type="Float32">
+            <value>-2.000000000</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Number_of_Lines Number_of_Columns</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="Number_of_Lines" size="4320"/>
+        <dimension name="Number_of_Columns" size="8640"/>
+    </Array>
+    <Array name="l3m_qual">
+        <Attribute name="long_name" type="String">
+            <value>l3m_qual</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <value>0.0007171849720</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <value>-2.000000000</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int32">
+            <value>0</value>
+            <value>2</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>Number_of_Lines Number_of_Columns</value>
+        </Attribute>
+        <Byte/>
+        <dimension name="Number_of_Lines" size="4320"/>
+        <dimension name="Number_of_Columns" size="8640"/>
+    </Array>
+    <Array name="Number_of_Lines">
+        <Attribute name="long_name" type="String">
+            <value>latitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Number_of_Lines" size="4320"/>
+    </Array>
+    <Array name="Number_of_Columns">
+        <Attribute name="long_name" type="String">
+            <value>longitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Number_of_Columns" size="8640"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

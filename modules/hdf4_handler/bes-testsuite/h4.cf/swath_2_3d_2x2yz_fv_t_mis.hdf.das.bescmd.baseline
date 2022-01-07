@@ -1,0 +1,78 @@
+Attributes {
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.18";
+    }
+    Swath1_Geolocation_Fields_Latitude {
+        String long_name "Latitude";
+        UInt32 fill 4294967295;
+        Float32 _FillValue 4294967295;
+    }
+    Swath1_Geolocation_Fields_Latitude_dim_0 {
+        String name "xtrack:Swath1";
+    }
+    Swath1_Geolocation_Fields_Latitude_dim_1 {
+        String name "ytrack:Swath1";
+    }
+    Swath1_Geolocation_Fields_Longitude {
+        String long_name "Longitude";
+        Float32 _FillValue 65535;
+    }
+    Swath1_Geolocation_Fields_Longitude_dim_0 {
+        String name "xtrack:Swath1";
+    }
+    Swath1_Geolocation_Fields_Longitude_dim_1 {
+        String name "ytrack:Swath1";
+    }
+    Swath1_Data_Fields_temperature {
+        String long_name "temperature";
+        Float32 _FillValue 97;
+    }
+    Swath1_Data_Fields_temperature_dim_0 {
+        String name "ZDim:Swath1";
+    }
+    Swath1_Data_Fields_temperature_dim_1 {
+        String name "xtrack:Swath1";
+    }
+    Swath1_Data_Fields_temperature_dim_2 {
+        String name "ytrack:Swath1";
+    }
+    Swath2_Geolocation_Fields_Latitude {
+        String long_name "Latitude";
+        Float32 _FillValue -2147483648;
+    }
+    Swath2_Geolocation_Fields_Latitude_dim_0 {
+        String name "xtrack:Swath2";
+    }
+    Swath2_Geolocation_Fields_Latitude_dim_1 {
+        String name "ytrack:Swath2";
+    }
+    Swath2_Geolocation_Fields_Longitude {
+        String long_name "Longitude";
+        Float32 _FillValue -32768;
+    }
+    Swath2_Geolocation_Fields_Longitude_dim_0 {
+        String name "xtrack:Swath2";
+    }
+    Swath2_Geolocation_Fields_Longitude_dim_1 {
+        String name "ytrack:Swath2";
+    }
+    Swath2_Data_Fields_temperature {
+        String long_name "temperature";
+        Float32 _FillValue -128;
+    }
+    Swath2_Data_Fields_temperature_dim_0 {
+        String name "ZDim:Swath2";
+    }
+    Swath2_Data_Fields_temperature_dim_1 {
+        String name "xtrack:Swath2";
+    }
+    Swath2_Data_Fields_temperature_dim_2 {
+        String name "ytrack:Swath2";
+    }
+    Swath1_Geolocation_Fields_pressure {
+        Float32 Vdata_field_pressure 0.000000000, 1.000000000, 2.000000000, 3.000000000;
+    }
+    Swath2_Geolocation_Fields_pressure {
+        Float32 Vdata_field_pressure 0.000000000, 1.000000000, 2.000000000, 3.000000000, 4.000000000, 5.000000000, 6.000000000, 7.000000000;
+    }
+}

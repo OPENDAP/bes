@@ -1,0 +1,10 @@
+Dataset {
+    Float32 Latitude[Latitude = 8];
+    Float32 Longitude[Longitude = 16];
+    Float32 pressure[pressure = 2];
+    Float32 temperature[pressure = 2][Latitude = 8][Longitude = 16];
+    Float32 Latitude_1[Latitude_1 = 4];
+    Float32 Longitude_1[Longitude_1 = 8];
+    Float32 pressure_1[pressure_1 = 2];
+    Float32 temperature_1[pressure_1 = 2][Latitude_1 = 4][Longitude_1 = 8];
+} grid_2_3d_xyz.hdf;

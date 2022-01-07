@@ -1,0 +1,7 @@
+Dataset {
+    Float32 precipitation[nlon = 1440][nlat = 400];
+    Float32 relativeError[nlon = 1440][nlat = 400];
+    Int32 gaugeRelativeWeighting[nlon = 1440][nlat = 400];
+    Float32 nlon[nlon = 1440];
+    Float32 nlat[nlat = 400];
+} 3B43.20130901.7.hdf;

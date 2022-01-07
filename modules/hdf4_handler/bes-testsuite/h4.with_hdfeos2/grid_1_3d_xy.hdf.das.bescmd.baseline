@@ -1,0 +1,21 @@
+Attributes {
+    Latitude {
+        String long_name "Latitude";
+        String units "degrees_north";
+    }
+    Longitude {
+        String long_name "Longitude";
+        String units "degrees_east";
+    }
+    temperature {
+        String coordinates "ZDim Latitude Longitude";
+        String long_name "temperature";
+    }
+    ZDim {
+        String long_name "ZDim(fake)";
+        String units "level";
+    }
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.18";
+    }
+}

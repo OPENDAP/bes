@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <request reqID="some_unique_value" >
+     <setContext name="dap_format">dap2</setContext>
+     <setContainer name="swath_1_1d_t" space="catalog">/data/swath_1_1d_t.hdf</setContainer>
+     <define name="d">
+ 	<container name="swath_1_1d_t">
+            <constraint>
+
+            </constraint>
+         </container>
+     </define>
+     <get type="dods" definition="d" />
+ </request>

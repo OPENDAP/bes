@@ -1,0 +1,5 @@
+The data:
+Int32 x[x = 3] = {0, 1, 2};
+Int32 time[time = 1] = {0};
+Float32 v[time = 1][x = 3] = {{0, 0.1, 0.2}};
+
