@@ -1,0 +1,25 @@
+Attributes {
+    SDS_1 {
+        Float64 scale_factor 5.0000000000000000;
+        Float64 scale_factor_err 0.0010000000000000000;
+        Float64 add_offset 42.000000000000000;
+        Float64 add_offset_err 0.0020000000000000000;
+        Int32 calibrated_nt 20;
+        Int32 _FillValue 42;
+        String long_name "label";
+        String units "unit";
+        String format "F7.2";
+        String coordsys "cartesian";
+        String coordinates "Y_Axis X_Axis";
+    }
+    Y_Axis {
+        String long_name "Ylabel";
+        String units "Yunit";
+        String format "Yformat";
+    }
+    X_Axis {
+        String long_name "Xlabel";
+        String units "Xunit";
+        String format "Xformat";
+    }
+}

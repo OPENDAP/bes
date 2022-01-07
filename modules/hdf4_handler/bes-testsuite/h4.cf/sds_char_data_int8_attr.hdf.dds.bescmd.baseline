@@ -1,0 +1,4 @@
+Dataset {
+    String char_1D;
+    String char_2D[fakeDim1 = 10];
+} sds_char_data_int8_attr.hdf;

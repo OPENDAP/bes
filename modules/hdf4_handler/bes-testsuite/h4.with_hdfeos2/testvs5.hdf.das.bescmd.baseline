@@ -1,0 +1,32 @@
+Attributes {
+    Main_Vgroup {
+        String Main_Attr "Hello";
+    }
+    Main_Vgroup_Array_Vgroup {
+        String Array_Attr "Hello";
+    }
+    Main_Vgroup_Grid_Vgroup {
+        String Grid_Attr "Hello";
+    }
+    Main_Vgroup_GR_Vgroup {
+        String GR_Attr "Hello";
+    }
+    Main_Vgroup_Vdata_Vgroup {
+        String Vdata_Attr "Hello";
+    }
+    Main_Vgroup_Array_Vgroup_SDS_Array {
+        String long_name "SDS_Array";
+    }
+    Main_Vgroup_Array_Vgroup_SDS_Array_dim_0 {
+        String name "fakeDim0";
+    }
+    Main_Vgroup_Grid_Vgroup_SDS_Grid {
+        String long_name "SDS_Grid";
+    }
+    fakeDim1 {
+        String long_name "fakeDim1";
+    }
+    Main_Vgroup_Vdata_Vgroup_Vdata {
+        Int32 Vdata_field_Field 1, 2, 3, 4, 5;
+    }
+}

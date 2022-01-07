@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <request reqID="some_unique_value" >
+     <setContext name="dap_format">dap2</setContext>
+     <setContainer name="sds_fv_t_mis" space="catalog">/data/sds_fv_t_mis.hdf</setContainer>
+     <define name="d">
+ 	<container name="sds_fv_t_mis">
+            <constraint>
+data1[0:4:9][0:1:4]
+            </constraint>
+         </container>
+     </define>
+     <get type="dods" definition="d" />
+ </request>

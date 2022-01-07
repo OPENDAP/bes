@@ -1,0 +1,6 @@
+Dataset {
+    Float32 GeoGrid_Data_Fields_Latitude[YDim_GeoGrid = 4];
+    Float32 GeoGrid_Data_Fields_Longitude[XDim_GeoGrid = 8];
+    Float32 GeoGrid_Data_Fields_temperature[ZDim_GeoGrid = 2][YDim_GeoGrid = 4][XDim_GeoGrid = 8];
+    Float32 GeoGrid_Data_Fields_pressure[ZDim_GeoGrid = 2];
+} grid_1_3d_xyz.hdf;

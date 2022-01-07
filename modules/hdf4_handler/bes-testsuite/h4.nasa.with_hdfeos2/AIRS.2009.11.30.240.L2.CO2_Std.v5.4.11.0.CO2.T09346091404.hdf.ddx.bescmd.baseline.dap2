@@ -1,0 +1,1808 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="AIRS.2009.11.30.240.L2.CO2_Std.v5.4.11.0.CO2.T09346091404.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="coremetadata" type="Container">
+        <Attribute name="INVENTORYMETADATA" type="Container">
+            <Attribute name="GROUPTYPE" type="String">
+                <value>MASTERGROUP</value>
+            </Attribute>
+            <Attribute name="ECSDATAGRANULE" type="Container">
+                <Attribute name="LOCALGRANULEID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;AIRS.2009.11.30.240.L2.CO2_Std.v5.4.11.0.CO2.T09346091404.hdf&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="PRODUCTIONDATETIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2009-12-12T17:14:04.000Z&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="DAYNIGHTFLAG" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;Day&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="LOCALVERSIONID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;CO2&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="MEASUREDPARAMETER" type="Container">
+                <Attribute name="MEASUREDPARAMETERCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                    </Attribute>
+                    <Attribute name="QAFLAGS" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="AUTOMATICQUALITYFLAGEXPLANATION" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Based on percentage of product that is good. Suspect used where true quality is not known.&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="AUTOMATICQUALITYFLAG" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Passed&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="QASTATS" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="QAPERCENTMISSINGDATA" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Int32">
+                                <value>0</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="QAPERCENTCLOUDCOVER" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Int32">
+                                <value>0</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="PARAMETERNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;Carbon Dioxide Column Density&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ORBITCALCULATEDSPATIALDOMAIN" type="Container">
+                <Attribute name="ORBITCALCULATEDSPATIALDOMAINCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                    </Attribute>
+                    <Attribute name="STARTORBITNUMBER" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="Int32">
+                            <value>40306</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="EQUATORCROSSINGDATE" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;2009-12-01&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="EQUATORCROSSINGTIME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;00:47:21.975823Z&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="EQUATORCROSSINGLONGITUDE" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="Float64">
+                            <value>12.6770153045654</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="STOPORBITNUMBER" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="Int32">
+                            <value>40306</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="COLLECTIONDESCRIPTIONCLASS" type="Container">
+                <Attribute name="VERSIONID" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="Int32">
+                        <value>5</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="SHORTNAME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;AIRX2STC&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="INPUTGRANULE" type="Container">
+                <Attribute name="INPUTPOINTER" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>100</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;/dom/files/ops/airs/gdaac/v5/2009/11/30/airx2ret/AIRS.2009.11.30.240.L2.RetStd.v5.2.2.0.G09336000717.hdf&quot;</value>
+                        <value>&quot;/dom/files/ops/airs/gdaac/v5/2009/11/30/airx2sup/AIRS.2009.11.30.240.L2.RetSup.v5.2.2.0.G09336000717.hdf&quot;</value>
+                        <value>&quot;
+          /dom/files/ops/airs/gdaac/v5/2009/11/30/airi2ccf/AIRS.2009.11.30.240.L2.CC.v5.2.2.0.G09336000717.hdf&quot;</value>
+                        <value>&quot;/tdswork/PGS2TDS/5.4.11.0/STORE/ancillary/L2.CO2.tropo_t.v1.1.0.anc&quot;</value>
+                        <value>&quot;/tdswork/PGS2TDS/5.4.11.0/STORE/ancillary/L2.CO2.tropo_h2o.v1.1.0.anc&quot;</value>
+                        <value>&quot;
+          /tdswork/PGS2TDS/5.4.11.0/STORE/ancillary/L2.CO2.tropo_o3.v1.0.0.anc&quot;</value>
+                        <value>&quot;/tdswork/PGS2TDS/5.4.11.0/STORE/ancillary/L2.CO2.tropo_co2.v1.1.0.anc&quot;</value>
+                        <value>&quot;/tdswork/PGS2TDS/5.4.11.0/STORE/ancillary/L2.sarta.set1.v1.0.5.anc&quot;</value>
+                        <value>&quot;/tdswork/PGS2TDS/5.4.11.0/STORE/ancillary/L2.sarta.set2.v1.0.5.anc&quot;</value>
+                        <value>&quot;
+          /tdswork/PGS2TDS/5.4.11.0/STORE/ancillary/L2.sarta.set3.v1.0.5.anc&quot;</value>
+                        <value>&quot;/tdswork/PGS2TDS/5.4.11.0/STORE/ancillary/L2.sarta.set4.v1.0.5.anc&quot;</value>
+                        <value>&quot;/tdswork/PGS2TDS/5.4.11.0/STORE/ancillary/L2.sarta.set5.v1.0.5.anc&quot;</value>
+                        <value>&quot;/tdswork/PGS2TDS/5.4.11.0/STORE/ancillary/L2.sarta.set6.v1.0.5.anc&quot;</value>
+                        <value>&quot;
+          /tdswork/PGS2TDS/5.4.11.0/STORE/ancillary/L2.sarta.set7.v1.0.5.anc&quot;</value>
+                        <value>&quot;/tdswork/PGS2TDS/5.4.11.0/STORE/ancillary/L2.sarta.co2.v1.0.5.anc&quot;</value>
+                        <value>&quot;/tdswork/PGS2TDS/5.4.11.0/STORE/ancillary/L2.sarta.so2.v1.0.5.anc&quot;</value>
+                        <value>&quot;/tdswork/PGS2TDS/5.4.11.0/STORE/ancillary/L2.sarta.hno3.v1.0.5.anc&quot;</value>
+                        <value>&quot;
+          /tdswork/PGS2TDS/5.4.11.0/STORE/ancillary/L2.sarta.n2o.v1.0.5.anc&quot;</value>
+                        <value>&quot;/tdswork/PGS2TDS/5.4.11.0/STORE/ancillary/L2.sarta.optran.v1.0.5.anc&quot;</value>
+                        <value>&quot;/tdswork/PGS2TDS/5.4.11.0/STORE/ancillary/L2.sarta.therm.v1.0.5.anc&quot;</value>
+                        <value>&quot;/tdswork/PGS2TDS/5.4.11.0/STORE/ancillary/L2.sarta.fx.v1.0.5.anc&quot;</value>
+                        <value>&quot;
+          /tdswork/PGS2TDS/5.4.11.0/STORE/ancillary/L2.sarta.pref_trace.v1.0.5.anc&quot;</value>
+                        <value>&quot;/tdswork/PGS2TDS/5.4.11.0/STORE/ancillary/L2.sarta.solar_data.v1.0.5.anc&quot;</value>
+                        <value>&quot;/tdswork/PGS2TDS/5.4.11.0/STORE/ancillary/L2.sarta.setnte.v1.0.5.anc&quot;</value>
+                        <value>&quot;
+          /tdswork/PGS2TDS/5.4.11.0/STORE/ancillary/L2.sarta.tunmlt.v1.0.5.anc&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="SPATIALDOMAINCONTAINER" type="Container">
+                <Attribute name="HORIZONTALSPATIALDOMAINCONTAINER" type="Container">
+                    <Attribute name="BOUNDINGRECTANGLE" type="Container">
+                        <Attribute name="EASTBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>-148.692031860352</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="WESTBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>-169.309234619141</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="SOUTHBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>4.56015825271606</value>
+                            </Attribute>
+                        </Attribute>
+                        <Attribute name="NORTHBOUNDINGCOORDINATE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="Float64">
+                                <value>28.0320224761963</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="ZONEIDENTIFIERCLASS" type="Container">
+                        <Attribute name="ZONEIDENTIFIER" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;Other Grid System&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="RANGEDATETIME" type="Container">
+                <Attribute name="RANGEENDINGDATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2009-12-01&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEENDINGTIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;00:05:23.999999Z&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEBEGINNINGDATE" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;2009-11-30&quot;</value>
+                    </Attribute>
+                </Attribute>
+                <Attribute name="RANGEBEGINNINGTIME" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;23:59:24.000000Z&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="PGEVERSIONCLASS" type="Container">
+                <Attribute name="PGEVERSION" type="Container">
+                    <Attribute name="NUM_VAL" type="Int32">
+                        <value>1</value>
+                    </Attribute>
+                    <Attribute name="VALUE" type="String">
+                        <value>&quot;5.4.11.0&quot;</value>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ASSOCIATEDPLATFORMINSTRUMENTSENSOR" type="Container">
+                <Attribute name="ASSOCIATEDPLATFORMINSTRUMENTSENSORCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                        <value>&quot;2&quot;</value>
+                        <value>&quot;3&quot;</value>
+                        <value>&quot;4&quot;</value>
+                        <value>&quot;5&quot;</value>
+                        <value>&quot;6&quot;</value>
+                        <value>&quot;7&quot;</value>
+                        <value>&quot;8&quot;</value>
+                        <value>&quot;9&quot;</value>
+                        <value>&quot;10&quot;</value>
+                        <value>&quot;11&quot;</value>
+                        <value>&quot;12&quot;</value>
+                        <value>&quot;13&quot;</value>
+                        <value>&quot;14&quot;</value>
+                        <value>&quot;15&quot;</value>
+                        <value>&quot;16&quot;</value>
+                        <value>&quot;17&quot;</value>
+                        <value>&quot;18&quot;</value>
+                        <value>&quot;19&quot;</value>
+                        <value>&quot;20&quot;</value>
+                        <value>&quot;21&quot;</value>
+                        <value>&quot;22&quot;</value>
+                        <value>&quot;23&quot;</value>
+                        <value>&quot;24&quot;</value>
+                        <value>&quot;25&quot;</value>
+                        <value>&quot;26&quot;</value>
+                        <value>&quot;27&quot;</value>
+                        <value>&quot;28&quot;</value>
+                        <value>&quot;29&quot;</value>
+                        <value>&quot;30&quot;</value>
+                        <value>&quot;31&quot;</value>
+                        <value>&quot;32&quot;</value>
+                        <value>&quot;33&quot;</value>
+                        <value>&quot;34&quot;</value>
+                        <value>&quot;35&quot;</value>
+                        <value>&quot;36&quot;</value>
+                        <value>&quot;37&quot;</value>
+                        <value>&quot;38&quot;</value>
+                        <value>&quot;39&quot;</value>
+                        <value>&quot;40&quot;</value>
+                        <value>&quot;41&quot;</value>
+                    </Attribute>
+                    <Attribute name="ASSOCIATEDSENSORSHORTNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                            <value>&quot;3&quot;</value>
+                            <value>&quot;4&quot;</value>
+                            <value>&quot;5&quot;</value>
+                            <value>&quot;6&quot;</value>
+                            <value>&quot;7&quot;</value>
+                            <value>&quot;8&quot;</value>
+                            <value>&quot;9&quot;</value>
+                            <value>&quot;10&quot;</value>
+                            <value>&quot;11&quot;</value>
+                            <value>&quot;12&quot;</value>
+                            <value>&quot;13&quot;</value>
+                            <value>&quot;14&quot;</value>
+                            <value>&quot;15&quot;</value>
+                            <value>&quot;16&quot;</value>
+                            <value>&quot;17&quot;</value>
+                            <value>&quot;18&quot;</value>
+                            <value>&quot;19&quot;</value>
+                            <value>&quot;20&quot;</value>
+                            <value>&quot;21&quot;</value>
+                            <value>&quot;22&quot;</value>
+                            <value>&quot;23&quot;</value>
+                            <value>&quot;24&quot;</value>
+                            <value>&quot;25&quot;</value>
+                            <value>&quot;26&quot;</value>
+                            <value>&quot;27&quot;</value>
+                            <value>&quot;28&quot;</value>
+                            <value>&quot;29&quot;</value>
+                            <value>&quot;30&quot;</value>
+                            <value>&quot;31&quot;</value>
+                            <value>&quot;32&quot;</value>
+                            <value>&quot;33&quot;</value>
+                            <value>&quot;34&quot;</value>
+                            <value>&quot;35&quot;</value>
+                            <value>&quot;36&quot;</value>
+                            <value>&quot;37&quot;</value>
+                            <value>&quot;38&quot;</value>
+                            <value>&quot;39&quot;</value>
+                            <value>&quot;40&quot;</value>
+                            <value>&quot;41&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;HSB Channel 1&quot;</value>
+                            <value>&quot;HSB Channel 2&quot;</value>
+                            <value>&quot;HSB Channel 3&quot;</value>
+                            <value>&quot;HSB Channel 4&quot;</value>
+                            <value>&quot;HSB Channel 5&quot;</value>
+                            <value>&quot;AMSU-A Channel 3&quot;</value>
+                            <value>&quot;AMSU-A Channel 4&quot;</value>
+                            <value>&quot;AMSU-A Channel 5&quot;</value>
+                            <value>&quot;AMSU-A Channel 6&quot;</value>
+                            <value>&quot;AMSU-A Channel 7&quot;</value>
+                            <value>&quot;AMSU-A Channel 8&quot;</value>
+                            <value>&quot;AMSU-A Channel 9&quot;</value>
+                            <value>&quot;AMSU-A Channel 10&quot;</value>
+                            <value>&quot;AMSU-A Channel 11&quot;</value>
+                            <value>&quot;AMSU-A Channel 12&quot;</value>
+                            <value>&quot;AMSU-A Channel 13&quot;</value>
+                            <value>&quot;AMSU-A Channel 14&quot;</value>
+                            <value>&quot;AMSU-A Channel 15&quot;</value>
+                            <value>&quot;AMSU-A Channel 1&quot;</value>
+                            <value>&quot;AMSU-A Channel 2&quot;</value>
+                            <value>&quot;M1a Detector Array&quot;</value>
+                            <value>&quot;M1b Detector Array&quot;</value>
+                            <value>&quot;M2a Detector Array&quot;</value>
+                            <value>&quot;M2b Detector Array&quot;</value>
+                            <value>&quot;M3 Detector Array&quot;</value>
+                            <value>&quot;M4a Detector Array&quot;</value>
+                            <value>&quot;M4b Detector Array&quot;</value>
+                            <value>&quot;M4c Detector Array&quot;</value>
+                            <value>&quot;M4d Detector Array&quot;</value>
+                            <value>&quot;M5 Detector Array&quot;</value>
+                            <value>&quot;M6 Detector Array&quot;</value>
+                            <value>&quot;M7 Detector Array&quot;</value>
+                            <value>&quot;M8 Detector Array&quot;</value>
+                            <value>&quot;M9 Detector Array&quot;</value>
+                            <value>&quot;M10 Detector Array&quot;</value>
+                            <value>&quot;M11 Detector Array&quot;</value>
+                            <value>&quot;M12 Detector Array&quot;</value>
+                            <value>&quot;VNIR Channel 1&quot;</value>
+                            <value>&quot;VNIR Channel 2&quot;</value>
+                            <value>&quot;VNIR Channel 3&quot;</value>
+                            <value>&quot;VNIR Channel 4&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="ASSOCIATEDPLATFORMSHORTNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                            <value>&quot;3&quot;</value>
+                            <value>&quot;4&quot;</value>
+                            <value>&quot;5&quot;</value>
+                            <value>&quot;6&quot;</value>
+                            <value>&quot;7&quot;</value>
+                            <value>&quot;8&quot;</value>
+                            <value>&quot;9&quot;</value>
+                            <value>&quot;10&quot;</value>
+                            <value>&quot;11&quot;</value>
+                            <value>&quot;12&quot;</value>
+                            <value>&quot;13&quot;</value>
+                            <value>&quot;14&quot;</value>
+                            <value>&quot;15&quot;</value>
+                            <value>&quot;16&quot;</value>
+                            <value>&quot;17&quot;</value>
+                            <value>&quot;18&quot;</value>
+                            <value>&quot;19&quot;</value>
+                            <value>&quot;20&quot;</value>
+                            <value>&quot;21&quot;</value>
+                            <value>&quot;22&quot;</value>
+                            <value>&quot;23&quot;</value>
+                            <value>&quot;24&quot;</value>
+                            <value>&quot;25&quot;</value>
+                            <value>&quot;26&quot;</value>
+                            <value>&quot;27&quot;</value>
+                            <value>&quot;28&quot;</value>
+                            <value>&quot;29&quot;</value>
+                            <value>&quot;30&quot;</value>
+                            <value>&quot;31&quot;</value>
+                            <value>&quot;32&quot;</value>
+                            <value>&quot;33&quot;</value>
+                            <value>&quot;34&quot;</value>
+                            <value>&quot;35&quot;</value>
+                            <value>&quot;36&quot;</value>
+                            <value>&quot;37&quot;</value>
+                            <value>&quot;38&quot;</value>
+                            <value>&quot;39&quot;</value>
+                            <value>&quot;40&quot;</value>
+                            <value>&quot;41&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                            <value>&quot;Aqua&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="OPERATIONMODE" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                            <value>&quot;3&quot;</value>
+                            <value>&quot;4&quot;</value>
+                            <value>&quot;5&quot;</value>
+                            <value>&quot;6&quot;</value>
+                            <value>&quot;7&quot;</value>
+                            <value>&quot;8&quot;</value>
+                            <value>&quot;9&quot;</value>
+                            <value>&quot;10&quot;</value>
+                            <value>&quot;11&quot;</value>
+                            <value>&quot;12&quot;</value>
+                            <value>&quot;13&quot;</value>
+                            <value>&quot;14&quot;</value>
+                            <value>&quot;15&quot;</value>
+                            <value>&quot;16&quot;</value>
+                            <value>&quot;17&quot;</value>
+                            <value>&quot;18&quot;</value>
+                            <value>&quot;19&quot;</value>
+                            <value>&quot;20&quot;</value>
+                            <value>&quot;21&quot;</value>
+                            <value>&quot;22&quot;</value>
+                            <value>&quot;23&quot;</value>
+                            <value>&quot;24&quot;</value>
+                            <value>&quot;25&quot;</value>
+                            <value>&quot;26&quot;</value>
+                            <value>&quot;27&quot;</value>
+                            <value>&quot;28&quot;</value>
+                            <value>&quot;29&quot;</value>
+                            <value>&quot;30&quot;</value>
+                            <value>&quot;31&quot;</value>
+                            <value>&quot;32&quot;</value>
+                            <value>&quot;33&quot;</value>
+                            <value>&quot;34&quot;</value>
+                            <value>&quot;35&quot;</value>
+                            <value>&quot;36&quot;</value>
+                            <value>&quot;37&quot;</value>
+                            <value>&quot;38&quot;</value>
+                            <value>&quot;39&quot;</value>
+                            <value>&quot;40&quot;</value>
+                            <value>&quot;41&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                            <value>&quot;Normal&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="ASSOCIATEDINSTRUMENTSHORTNAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                            <value>&quot;3&quot;</value>
+                            <value>&quot;4&quot;</value>
+                            <value>&quot;5&quot;</value>
+                            <value>&quot;6&quot;</value>
+                            <value>&quot;7&quot;</value>
+                            <value>&quot;8&quot;</value>
+                            <value>&quot;9&quot;</value>
+                            <value>&quot;10&quot;</value>
+                            <value>&quot;11&quot;</value>
+                            <value>&quot;12&quot;</value>
+                            <value>&quot;13&quot;</value>
+                            <value>&quot;14&quot;</value>
+                            <value>&quot;15&quot;</value>
+                            <value>&quot;16&quot;</value>
+                            <value>&quot;17&quot;</value>
+                            <value>&quot;18&quot;</value>
+                            <value>&quot;19&quot;</value>
+                            <value>&quot;20&quot;</value>
+                            <value>&quot;21&quot;</value>
+                            <value>&quot;22&quot;</value>
+                            <value>&quot;23&quot;</value>
+                            <value>&quot;24&quot;</value>
+                            <value>&quot;25&quot;</value>
+                            <value>&quot;26&quot;</value>
+                            <value>&quot;27&quot;</value>
+                            <value>&quot;28&quot;</value>
+                            <value>&quot;29&quot;</value>
+                            <value>&quot;30&quot;</value>
+                            <value>&quot;31&quot;</value>
+                            <value>&quot;32&quot;</value>
+                            <value>&quot;33&quot;</value>
+                            <value>&quot;34&quot;</value>
+                            <value>&quot;35&quot;</value>
+                            <value>&quot;36&quot;</value>
+                            <value>&quot;37&quot;</value>
+                            <value>&quot;38&quot;</value>
+                            <value>&quot;39&quot;</value>
+                            <value>&quot;40&quot;</value>
+                            <value>&quot;41&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;HSB&quot;</value>
+                            <value>&quot;HSB&quot;</value>
+                            <value>&quot;HSB&quot;</value>
+                            <value>&quot;HSB&quot;</value>
+                            <value>&quot;HSB&quot;</value>
+                            <value>&quot;AMSU-A&quot;</value>
+                            <value>&quot;AMSU-A&quot;</value>
+                            <value>&quot;AMSU-A&quot;</value>
+                            <value>&quot;AMSU-A&quot;</value>
+                            <value>&quot;AMSU-A&quot;</value>
+                            <value>&quot;AMSU-A&quot;</value>
+                            <value>&quot;AMSU-A&quot;</value>
+                            <value>&quot;AMSU-A&quot;</value>
+                            <value>&quot;AMSU-A&quot;</value>
+                            <value>&quot;AMSU-A&quot;</value>
+                            <value>&quot;AMSU-A&quot;</value>
+                            <value>&quot;AMSU-A&quot;</value>
+                            <value>&quot;AMSU-A&quot;</value>
+                            <value>&quot;AMSU-A&quot;</value>
+                            <value>&quot;AMSU-A&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                            <value>&quot;AIRS&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+            <Attribute name="ADDITIONALATTRIBUTES" type="Container">
+                <Attribute name="ADDITIONALATTRIBUTESCONTAINER" type="Container">
+                    <Attribute name="CLASS" type="String">
+                        <value>&quot;1&quot;</value>
+                        <value>&quot;2&quot;</value>
+                        <value>&quot;3&quot;</value>
+                        <value>&quot;4&quot;</value>
+                        <value>&quot;5&quot;</value>
+                        <value>&quot;6&quot;</value>
+                        <value>&quot;7&quot;</value>
+                        <value>&quot;8&quot;</value>
+                        <value>&quot;9&quot;</value>
+                        <value>&quot;10&quot;</value>
+                        <value>&quot;11&quot;</value>
+                        <value>&quot;12&quot;</value>
+                        <value>&quot;13&quot;</value>
+                        <value>&quot;14&quot;</value>
+                        <value>&quot;15&quot;</value>
+                        <value>&quot;16&quot;</value>
+                        <value>&quot;17&quot;</value>
+                        <value>&quot;18&quot;</value>
+                        <value>&quot;19&quot;</value>
+                        <value>&quot;20&quot;</value>
+                        <value>&quot;21&quot;</value>
+                        <value>&quot;22&quot;</value>
+                        <value>&quot;23&quot;</value>
+                        <value>&quot;24&quot;</value>
+                        <value>&quot;25&quot;</value>
+                        <value>&quot;26&quot;</value>
+                        <value>&quot;27&quot;</value>
+                        <value>&quot;28&quot;</value>
+                        <value>&quot;29&quot;</value>
+                        <value>&quot;30&quot;</value>
+                        <value>&quot;31&quot;</value>
+                        <value>&quot;32&quot;</value>
+                        <value>&quot;33&quot;</value>
+                        <value>&quot;34&quot;</value>
+                        <value>&quot;35&quot;</value>
+                        <value>&quot;36&quot;</value>
+                        <value>&quot;37&quot;</value>
+                        <value>&quot;38&quot;</value>
+                        <value>&quot;39&quot;</value>
+                        <value>&quot;40&quot;</value>
+                        <value>&quot;41&quot;</value>
+                        <value>&quot;42&quot;</value>
+                        <value>&quot;43&quot;</value>
+                        <value>&quot;44&quot;</value>
+                        <value>&quot;45&quot;</value>
+                        <value>&quot;46&quot;</value>
+                        <value>&quot;47&quot;</value>
+                        <value>&quot;48&quot;</value>
+                        <value>&quot;49&quot;</value>
+                        <value>&quot;50&quot;</value>
+                        <value>&quot;51&quot;</value>
+                        <value>&quot;52&quot;</value>
+                        <value>&quot;53&quot;</value>
+                        <value>&quot;54&quot;</value>
+                        <value>&quot;55&quot;</value>
+                        <value>&quot;56&quot;</value>
+                        <value>&quot;57&quot;</value>
+                    </Attribute>
+                    <Attribute name="ADDITIONALATTRIBUTENAME" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                            <value>&quot;3&quot;</value>
+                            <value>&quot;4&quot;</value>
+                            <value>&quot;5&quot;</value>
+                            <value>&quot;6&quot;</value>
+                            <value>&quot;7&quot;</value>
+                            <value>&quot;8&quot;</value>
+                            <value>&quot;9&quot;</value>
+                            <value>&quot;10&quot;</value>
+                            <value>&quot;11&quot;</value>
+                            <value>&quot;12&quot;</value>
+                            <value>&quot;13&quot;</value>
+                            <value>&quot;14&quot;</value>
+                            <value>&quot;15&quot;</value>
+                            <value>&quot;16&quot;</value>
+                            <value>&quot;17&quot;</value>
+                            <value>&quot;18&quot;</value>
+                            <value>&quot;19&quot;</value>
+                            <value>&quot;20&quot;</value>
+                            <value>&quot;21&quot;</value>
+                            <value>&quot;22&quot;</value>
+                            <value>&quot;23&quot;</value>
+                            <value>&quot;24&quot;</value>
+                            <value>&quot;25&quot;</value>
+                            <value>&quot;26&quot;</value>
+                            <value>&quot;27&quot;</value>
+                            <value>&quot;28&quot;</value>
+                            <value>&quot;29&quot;</value>
+                            <value>&quot;30&quot;</value>
+                            <value>&quot;31&quot;</value>
+                            <value>&quot;32&quot;</value>
+                            <value>&quot;33&quot;</value>
+                            <value>&quot;34&quot;</value>
+                            <value>&quot;35&quot;</value>
+                            <value>&quot;36&quot;</value>
+                            <value>&quot;37&quot;</value>
+                            <value>&quot;38&quot;</value>
+                            <value>&quot;39&quot;</value>
+                            <value>&quot;40&quot;</value>
+                            <value>&quot;41&quot;</value>
+                            <value>&quot;42&quot;</value>
+                            <value>&quot;43&quot;</value>
+                            <value>&quot;44&quot;</value>
+                            <value>&quot;45&quot;</value>
+                            <value>&quot;46&quot;</value>
+                            <value>&quot;47&quot;</value>
+                            <value>&quot;48&quot;</value>
+                            <value>&quot;49&quot;</value>
+                            <value>&quot;50&quot;</value>
+                            <value>&quot;51&quot;</value>
+                            <value>&quot;52&quot;</value>
+                            <value>&quot;53&quot;</value>
+                            <value>&quot;54&quot;</value>
+                            <value>&quot;55&quot;</value>
+                            <value>&quot;56&quot;</value>
+                            <value>&quot;57&quot;</value>
+                        </Attribute>
+                        <Attribute name="NUM_VAL" type="Int32">
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                            <value>1</value>
+                        </Attribute>
+                        <Attribute name="VALUE" type="String">
+                            <value>&quot;NumBadData&quot;</value>
+                            <value>&quot;NumSpecialData&quot;</value>
+                            <value>&quot;NumProcessData&quot;</value>
+                            <value>&quot;NumMissingData&quot;</value>
+                            <value>&quot;NumTotalData&quot;</value>
+                            <value>&quot;NumLandSurface&quot;</value>
+                            <value>&quot;NumOceanSurface&quot;</value>
+                            <value>&quot;NumFpe&quot;</value>
+                            <value>&quot;ScanLineCount&quot;</value>
+                            <value>&quot;AIRSGranuleNumber&quot;</value>
+                            <value>&quot;OrbitPath&quot;</value>
+                            <value>&quot;SP_STARTING_PATH&quot;</value>
+                            <value>&quot;SP_STARTING_ROW&quot;</value>
+                            <value>&quot;SP_ENDING_ROW&quot;</value>
+                            <value>&quot;NumGeoQA&quot;</value>
+                            <value>&quot;NumSunGlint&quot;</value>
+                            <value>&quot;LonGranuleCen&quot;</value>
+                            <value>&quot;LatGranuleCen&quot;</value>
+                            <value>&quot;LocTimeGranuleCen&quot;</value>
+                            <value>&quot;NodeType&quot;</value>
+                            <value>&quot;VersionRetrieval&quot;</value>
+                            <value>&quot;NumBadL1B&quot;</value>
+                            <value>&quot;NumBadL1BAMSU&quot;</value>
+                            <value>&quot;NumBadL1BHSB&quot;</value>
+                            <value>&quot;NumBadL1BAIRS&quot;</value>
+                            <value>&quot;NumBadL1BVIS&quot;</value>
+                            <value>&quot;NumNoPsurfGuess&quot;</value>
+                            <value>&quot;NumNoTuning&quot;</value>
+                            <value>&quot;NumNoAngCorr&quot;</value>
+                            <value>&quot;NumPrecipMW&quot;</value>
+                            <value>&quot;NumCloudIceMW&quot;</value>
+                            <value>&quot;NumClearMW&quot;</value>
+                            <value>&quot;NumClearIR&quot;</value>
+                            <value>&quot;NumMWStratIrRetOnly&quot;</value>
+                            <value>&quot;NumRetInvalid&quot;</value>
+                            <value>&quot;MoonInViewMWCount&quot;</value>
+                            <value>&quot;NumNoHSB&quot;</value>
+                            <value>&quot;NumNoAMSUA&quot;</value>
+                            <value>&quot;NumNoAIRS&quot;</value>
+                            <value>&quot;NumNoVis&quot;</value>
+                            <value>&quot;DCRCount&quot;</value>
+                            <value>&quot;PopCount&quot;</value>
+                            <value>&quot;PhotoCalibrationOn&quot;</value>
+                            <value>&quot;AIRSMode&quot;</value>
+                            <value>&quot;PercentHighContrast&quot;</value>
+                            <value>&quot;NumBadIRScans&quot;</value>
+                            <value>&quot;NumBadIROffsetChans&quot;</value>
+                            <value>&quot;NumBadIRGainChans&quot;</value>
+                            <value>&quot;NumBadIRSpecChans&quot;</value>
+                            <value>&quot;NumIRPopChans&quot;</value>
+                            <value>&quot;NumBadIRSceneChans&quot;</value>
+                            <value>&quot;NumHighNoiseIRChans&quot;</value>
+                            <value>&quot;NumBadAIRSTelemChans&quot;</value>
+                            <value>&quot;NumSO2FOVs&quot;</value>
+                            <value>&quot;ProductGenerationFacility&quot;</value>
+                            <value>&quot;AIRSRunTag&quot;</value>
+                            <value>&quot;ProductGenerationHostInformation&quot;</value>
+                        </Attribute>
+                    </Attribute>
+                    <Attribute name="INFORMATIONCONTENT" type="Container">
+                        <Attribute name="CLASS" type="String">
+                            <value>&quot;1&quot;</value>
+                            <value>&quot;2&quot;</value>
+                            <value>&quot;3&quot;</value>
+                            <value>&quot;4&quot;</value>
+                            <value>&quot;5&quot;</value>
+                            <value>&quot;6&quot;</value>
+                            <value>&quot;7&quot;</value>
+                            <value>&quot;8&quot;</value>
+                            <value>&quot;9&quot;</value>
+                            <value>&quot;10&quot;</value>
+                            <value>&quot;11&quot;</value>
+                            <value>&quot;12&quot;</value>
+                            <value>&quot;13&quot;</value>
+                            <value>&quot;14&quot;</value>
+                            <value>&quot;15&quot;</value>
+                            <value>&quot;16&quot;</value>
+                            <value>&quot;17&quot;</value>
+                            <value>&quot;18&quot;</value>
+                            <value>&quot;19&quot;</value>
+                            <value>&quot;20&quot;</value>
+                            <value>&quot;21&quot;</value>
+                            <value>&quot;22&quot;</value>
+                            <value>&quot;23&quot;</value>
+                            <value>&quot;24&quot;</value>
+                            <value>&quot;25&quot;</value>
+                            <value>&quot;26&quot;</value>
+                            <value>&quot;27&quot;</value>
+                            <value>&quot;28&quot;</value>
+                            <value>&quot;29&quot;</value>
+                            <value>&quot;30&quot;</value>
+                            <value>&quot;31&quot;</value>
+                            <value>&quot;32&quot;</value>
+                            <value>&quot;33&quot;</value>
+                            <value>&quot;34&quot;</value>
+                            <value>&quot;35&quot;</value>
+                            <value>&quot;36&quot;</value>
+                            <value>&quot;37&quot;</value>
+                            <value>&quot;38&quot;</value>
+                            <value>&quot;39&quot;</value>
+                            <value>&quot;40&quot;</value>
+                            <value>&quot;41&quot;</value>
+                            <value>&quot;42&quot;</value>
+                            <value>&quot;43&quot;</value>
+                            <value>&quot;44&quot;</value>
+                            <value>&quot;45&quot;</value>
+                            <value>&quot;46&quot;</value>
+                            <value>&quot;47&quot;</value>
+                            <value>&quot;48&quot;</value>
+                            <value>&quot;49&quot;</value>
+                            <value>&quot;50&quot;</value>
+                            <value>&quot;51&quot;</value>
+                            <value>&quot;52&quot;</value>
+                            <value>&quot;53&quot;</value>
+                            <value>&quot;54&quot;</value>
+                            <value>&quot;55&quot;</value>
+                            <value>&quot;56&quot;</value>
+                            <value>&quot;57&quot;</value>
+                        </Attribute>
+                        <Attribute name="PARAMETERVALUE" type="Container">
+                            <Attribute name="NUM_VAL" type="Int32">
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                                <value>1</value>
+                            </Attribute>
+                            <Attribute name="CLASS" type="String">
+                                <value>&quot;1&quot;</value>
+                                <value>&quot;2&quot;</value>
+                                <value>&quot;3&quot;</value>
+                                <value>&quot;4&quot;</value>
+                                <value>&quot;5&quot;</value>
+                                <value>&quot;6&quot;</value>
+                                <value>&quot;7&quot;</value>
+                                <value>&quot;8&quot;</value>
+                                <value>&quot;9&quot;</value>
+                                <value>&quot;10&quot;</value>
+                                <value>&quot;11&quot;</value>
+                                <value>&quot;12&quot;</value>
+                                <value>&quot;13&quot;</value>
+                                <value>&quot;14&quot;</value>
+                                <value>&quot;15&quot;</value>
+                                <value>&quot;16&quot;</value>
+                                <value>&quot;17&quot;</value>
+                                <value>&quot;18&quot;</value>
+                                <value>&quot;19&quot;</value>
+                                <value>&quot;20&quot;</value>
+                                <value>&quot;21&quot;</value>
+                                <value>&quot;22&quot;</value>
+                                <value>&quot;23&quot;</value>
+                                <value>&quot;24&quot;</value>
+                                <value>&quot;25&quot;</value>
+                                <value>&quot;26&quot;</value>
+                                <value>&quot;27&quot;</value>
+                                <value>&quot;28&quot;</value>
+                                <value>&quot;29&quot;</value>
+                                <value>&quot;30&quot;</value>
+                                <value>&quot;31&quot;</value>
+                                <value>&quot;32&quot;</value>
+                                <value>&quot;33&quot;</value>
+                                <value>&quot;34&quot;</value>
+                                <value>&quot;35&quot;</value>
+                                <value>&quot;36&quot;</value>
+                                <value>&quot;37&quot;</value>
+                                <value>&quot;38&quot;</value>
+                                <value>&quot;39&quot;</value>
+                                <value>&quot;40&quot;</value>
+                                <value>&quot;41&quot;</value>
+                                <value>&quot;42&quot;</value>
+                                <value>&quot;43&quot;</value>
+                                <value>&quot;44&quot;</value>
+                                <value>&quot;45&quot;</value>
+                                <value>&quot;46&quot;</value>
+                                <value>&quot;47&quot;</value>
+                                <value>&quot;48&quot;</value>
+                                <value>&quot;49&quot;</value>
+                                <value>&quot;50&quot;</value>
+                                <value>&quot;51&quot;</value>
+                                <value>&quot;52&quot;</value>
+                                <value>&quot;53&quot;</value>
+                                <value>&quot;54&quot;</value>
+                                <value>&quot;55&quot;</value>
+                                <value>&quot;56&quot;</value>
+                                <value>&quot;57&quot;</value>
+                            </Attribute>
+                            <Attribute name="VALUE" type="String">
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;74&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;330&quot;</value>
+                                <value>&quot;1&quot;</value>
+                                <value>&quot;1334&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;45&quot;</value>
+                                <value>&quot;240&quot;</value>
+                                <value>&quot;168&quot;</value>
+                                <value>&quot;168&quot;</value>
+                                <value>&quot;190&quot;</value>
+                                <value>&quot;205&quot;</value>
+                                <value>&quot;1&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;-159&quot;</value>
+                                <value>&quot;16&quot;</value>
+                                <value>&quot;819&quot;</value>
+                                <value>&quot;Ascending&quot;</value>
+                                <value>&quot;5.2.2.0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;1350&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;151&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;1350&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;1&quot;</value>
+                                <value>&quot;559&quot;</value>
+                                <value>&quot;FALSE&quot;</value>
+                                <value>&quot;Operate&quot;</value>
+                                <value>&quot;79.00&quot;</value>
+                                <value>&quot;133&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;34&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;48&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;0&quot;</value>
+                                <value>&quot;T&quot;</value>
+                                <value>&quot;09346091404&quot;</value>
+                                <value>&quot;airsc16.jpl.nasa.gov Linux 2.6.9-89.0.16.ELsmp #1_SMP_Tue_Oct_27_03:51:52_EDT_2009 x86_64&quot;</value>
+                            </Attribute>
+                        </Attribute>
+                    </Attribute>
+                </Attribute>
+            </Attribute>
+        </Attribute>
+    </Attribute>
+    <Attribute name="HDF_GLOBAL" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <value>HDFEOS_V2.12</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="CO2" type="Container">
+        <Attribute name="PresLvls" type="Float32">
+            <value>0.004999999888</value>
+            <value>0.01610000059</value>
+            <value>0.03840000182</value>
+            <value>0.07689999789</value>
+            <value>0.1369999945</value>
+            <value>0.2243999988</value>
+            <value>0.3454000056</value>
+            <value>0.5063999891</value>
+            <value>0.7139999866</value>
+            <value>0.9753000140</value>
+            <value>1.297199965</value>
+            <value>1.687199950</value>
+            <value>2.152600050</value>
+            <value>2.700900078</value>
+            <value>3.339799881</value>
+            <value>4.077000141</value>
+            <value>4.920400143</value>
+            <value>5.877600193</value>
+            <value>6.956699848</value>
+            <value>8.165499687</value>
+            <value>9.511899948</value>
+            <value>11.00380039</value>
+            <value>12.64920044</value>
+            <value>14.45590019</value>
+            <value>16.43180084</value>
+            <value>18.58469963</value>
+            <value>20.92239952</value>
+            <value>23.45260048</value>
+            <value>26.18289948</value>
+            <value>29.12100029</value>
+            <value>32.27439880</value>
+            <value>35.65050125</value>
+            <value>39.25659943</value>
+            <value>43.10010147</value>
+            <value>47.18820190</value>
+            <value>51.52780151</value>
+            <value>56.12599945</value>
+            <value>60.98949814</value>
+            <value>66.12529755</value>
+            <value>71.53980255</value>
+            <value>77.23960114</value>
+            <value>83.23100281</value>
+            <value>89.52040100</value>
+            <value>96.11380005</value>
+            <value>103.0171967</value>
+            <value>110.2366028</value>
+            <value>117.7774963</value>
+            <value>125.6455994</value>
+            <value>133.8462067</value>
+            <value>142.3847961</value>
+            <value>151.2664032</value>
+            <value>160.4958954</value>
+            <value>170.0783997</value>
+            <value>180.0182953</value>
+            <value>190.3202972</value>
+            <value>200.9886932</value>
+            <value>212.0276947</value>
+            <value>223.4414978</value>
+            <value>235.2337952</value>
+            <value>247.4084930</value>
+            <value>259.9690857</value>
+            <value>272.9190979</value>
+            <value>286.2616882</value>
+            <value>300.0000000</value>
+            <value>314.1369019</value>
+            <value>328.6752930</value>
+            <value>343.6176147</value>
+            <value>358.9664917</value>
+            <value>374.7240906</value>
+            <value>390.8926086</value>
+            <value>407.4737854</value>
+            <value>424.4697876</value>
+            <value>441.8818970</value>
+            <value>459.7117920</value>
+            <value>477.9606934</value>
+            <value>496.6297913</value>
+            <value>515.7199707</value>
+            <value>535.2321777</value>
+            <value>555.1668701</value>
+            <value>575.5247803</value>
+            <value>596.3062134</value>
+            <value>617.5112305</value>
+            <value>639.1397705</value>
+            <value>661.1920166</value>
+            <value>683.6672974</value>
+            <value>706.5654297</value>
+            <value>729.8856812</value>
+            <value>753.6275024</value>
+            <value>777.7896729</value>
+            <value>802.3713989</value>
+            <value>827.3712769</value>
+            <value>852.7880249</value>
+            <value>878.6201172</value>
+            <value>904.8659058</value>
+            <value>931.5236206</value>
+            <value>958.5911255</value>
+            <value>986.0665894</value>
+            <value>1013.947998</value>
+            <value>1042.232056</value>
+            <value>1070.916992</value>
+            <value>1100.000000</value>
+        </Attribute>
+        <Attribute name="PresLyrs" type="Float32">
+            <value>0.008972179145</value>
+            <value>0.02486442961</value>
+            <value>0.05434114113</value>
+            <value>0.1026415974</value>
+            <value>0.1753361970</value>
+            <value>0.2784020901</value>
+            <value>0.4182231128</value>
+            <value>0.6013066173</value>
+            <value>0.8344843984</value>
+            <value>1.124793053</value>
+            <value>1.479403973</value>
+            <value>1.905745983</value>
+            <value>2.411215067</value>
+            <value>3.003408909</value>
+            <value>3.690036058</value>
+            <value>4.478891850</value>
+            <value>5.377745152</value>
+            <value>6.394426823</value>
+            <value>7.536904812</value>
+            <value>8.813025475</value>
+            <value>10.23069000</value>
+            <value>11.79784966</value>
+            <value>13.52241039</value>
+            <value>15.41222000</value>
+            <value>17.47513008</value>
+            <value>19.71894073</value>
+            <value>22.15139961</value>
+            <value>24.78017044</value>
+            <value>27.61289978</value>
+            <value>30.65718079</value>
+            <value>33.92047882</value>
+            <value>37.41012955</value>
+            <value>41.13348007</value>
+            <value>45.09785080</value>
+            <value>49.31029129</value>
+            <value>53.77777863</value>
+            <value>58.50722885</value>
+            <value>63.50550079</value>
+            <value>68.77928925</value>
+            <value>74.33509064</value>
+            <value>80.17935944</value>
+            <value>86.31844330</value>
+            <value>92.75852966</value>
+            <value>99.50565338</value>
+            <value>106.5658035</value>
+            <value>113.9447021</value>
+            <value>121.6479034</value>
+            <value>129.6811066</value>
+            <value>138.0494995</value>
+            <value>146.7584076</value>
+            <value>155.8128052</value>
+            <value>165.2176971</value>
+            <value>174.9777985</value>
+            <value>185.0975952</value>
+            <value>195.5818024</value>
+            <value>206.4344025</value>
+            <value>217.6598053</value>
+            <value>229.2617950</value>
+            <value>241.2444000</value>
+            <value>253.6109924</value>
+            <value>266.3653870</value>
+            <value>279.5108032</value>
+            <value>293.0504150</value>
+            <value>306.9870911</value>
+            <value>321.3239136</value>
+            <value>336.0633850</value>
+            <value>351.2081909</value>
+            <value>366.7607117</value>
+            <value>382.7229919</value>
+            <value>399.0971069</value>
+            <value>415.8850098</value>
+            <value>433.0882874</value>
+            <value>450.7087097</value>
+            <value>468.7474060</value>
+            <value>487.2058105</value>
+            <value>506.0848999</value>
+            <value>525.3854980</value>
+            <value>545.1083984</value>
+            <value>565.2542114</value>
+            <value>585.8234253</value>
+            <value>606.8161011</value>
+            <value>628.2324219</value>
+            <value>650.0723877</value>
+            <value>672.3358154</value>
+            <value>695.0220947</value>
+            <value>718.1309204</value>
+            <value>741.6616211</value>
+            <value>765.6132812</value>
+            <value>789.9849243</value>
+            <value>814.7755127</value>
+            <value>839.9835205</value>
+            <value>865.6077271</value>
+            <value>891.6464233</value>
+            <value>918.0980225</value>
+            <value>944.9603882</value>
+            <value>972.2318115</value>
+            <value>999.9099121</value>
+            <value>1027.991943</value>
+            <value>1056.477051</value>
+            <value>1085.360962</value>
+        </Attribute>
+        <Attribute name="CO2retType" type="String">
+            <value>CO2 stddev &gt;= 0 and &lt;= 2</value>
+        </Attribute>
+        <Attribute name="CO2retNum" type="Int32">
+            <value>74</value>
+        </Attribute>
+    </Attribute>
+    <Array name="Year">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Year</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <value>-9999</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Track" size="22"/>
+        <dimension name="XTrack" size="15"/>
+    </Array>
+    <Array name="Month">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Month</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <value>-9999</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Track" size="22"/>
+        <dimension name="XTrack" size="15"/>
+    </Array>
+    <Array name="Day">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Day</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <value>-9999</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Track" size="22"/>
+        <dimension name="XTrack" size="15"/>
+    </Array>
+    <Array name="Hour">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Hour</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <value>-9999</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Track" size="22"/>
+        <dimension name="XTrack" size="15"/>
+    </Array>
+    <Array name="Minute">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Minute</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <value>-9999</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="Track" size="22"/>
+        <dimension name="XTrack" size="15"/>
+    </Array>
+    <Array name="Seconds">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Seconds</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Track" size="22"/>
+        <dimension name="XTrack" size="15"/>
+    </Array>
+    <Array name="LandFrac">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>LandFrac</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Track" size="22"/>
+        <dimension name="XTrack" size="15"/>
+    </Array>
+    <Array name="CO2ret">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>CO2ret</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Track" size="22"/>
+        <dimension name="XTrack" size="15"/>
+    </Array>
+    <Array name="CO2std">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>CO2std</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Track" size="22"/>
+        <dimension name="XTrack" size="15"/>
+    </Array>
+    <Array name="Solzen">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Solzen</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Track" size="22"/>
+        <dimension name="XTrack" size="15"/>
+    </Array>
+    <Array name="AvgKern">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude AvgKernDim</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AvgKern</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Track" size="22"/>
+        <dimension name="XTrack" size="15"/>
+        <dimension name="AvgKernDim" size="100"/>
+    </Array>
+    <Array name="Latitude">
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Latitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Track" size="22"/>
+        <dimension name="XTrack" size="15"/>
+    </Array>
+    <Array name="Longitude">
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Longitude</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Track" size="22"/>
+        <dimension name="XTrack" size="15"/>
+    </Array>
+    <Array name="Time">
+        <Attribute name="coordinates" type="String">
+            <value>Latitude Longitude</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Time</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-9999.000000</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="Track" size="22"/>
+        <dimension name="XTrack" size="15"/>
+    </Array>
+    <Array name="AvgKernDim">
+        <Attribute name="units" type="String">
+            <value>level</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AvgKernDim(fake)</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="AvgKernDim" size="100"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

@@ -1,0 +1,4 @@
+Dataset {
+    Float32 Swath_Data_Fields_temperature[ZDim_Swath = 4][NDim_Swath = 8];
+    Float32 temperature[fakeDim2 = 4][fakeDim3 = 8];
+} h_swath.hdf;

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="grid_2_2d.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xml.opendap.org/ns/DAP/3.2# http://xml.opendap.org/dap/dap3.2.xsd" xmlns:grddl="http://www.w3.org/2003/g/data-view#" grddl:transformation="http://xml.opendap.org/transforms/ddxToRdfTriples.xsl" xmlns="http://xml.opendap.org/ns/DAP/3.2#" xmlns:dap="http://xml.opendap.org/ns/DAP/3.2#" dapVersion="3.2">
+    <Attribute name="HDF_GLOBAL" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <value>HDFEOS_V2.18</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="GeoGrid1_Data_Fields_temperature_dim_0" type="Container">
+        <Attribute name="name" type="String">
+            <value>YDim:GeoGrid1</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="GeoGrid1_Data_Fields_temperature_dim_1" type="Container">
+        <Attribute name="name" type="String">
+            <value>XDim:GeoGrid1</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="GeoGrid2_Data_Fields_temperature_dim_0" type="Container">
+        <Attribute name="name" type="String">
+            <value>YDim:GeoGrid2</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="GeoGrid2_Data_Fields_temperature_dim_1" type="Container">
+        <Attribute name="name" type="String">
+            <value>XDim:GeoGrid2</value>
+        </Attribute>
+    </Attribute>
+    <Array name="GeoGrid1_Data_Fields_temperature">
+        <Attribute name="long_name" type="String">
+            <value>temperature</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="YDim_GeoGrid1" size="4"/>
+        <dimension name="XDim_GeoGrid1" size="8"/>
+    </Array>
+    <Array name="GeoGrid2_Data_Fields_temperature">
+        <Attribute name="long_name" type="String">
+            <value>temperature</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="YDim_GeoGrid2" size="4"/>
+        <dimension name="XDim_GeoGrid2" size="8"/>
+    </Array>
+    <blob href="cid:"/>
+</Dataset>

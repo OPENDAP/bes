@@ -1,0 +1,6 @@
+Dataset {
+    Float32 temperature[ZDim = 4][ZDim = 4][NDim = 8];
+    Float32 pressure[ZDim = 4];
+    Float32 Latitude[NDim = 8];
+    Float32 Longitude[NDim = 8];
+} swath_1_3d_xyz_2dim.hdf;

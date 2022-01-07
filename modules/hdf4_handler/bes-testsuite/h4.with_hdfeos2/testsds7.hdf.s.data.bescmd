@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <request reqID="some_unique_value" >
+     <setContext name="dap_format">dap2</setContext>
+     <setContainer name="testsds7" space="catalog">/hdf-testfiles/testsds7.hdf</setContainer>
+     <define name="d">
+ 	<container name="testsds7">
+            <constraint>
+SDS_None[0:3:8][0:1:3],SDS_RLE[0:3:8][0:1:3],SDS_N_bit[0:3:8][0:1:3],SDS_Skip_Huffman[0:3:8][0:1:3],SDS_Deflate[0:3:8][0:1:3]
+            </constraint>
+         </container>
+     </define>
+     <get type="dods" definition="d" />
+ </request>

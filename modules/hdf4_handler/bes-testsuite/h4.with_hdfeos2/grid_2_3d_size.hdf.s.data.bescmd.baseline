@@ -1,0 +1,10 @@
+The data:
+Float32 temperature[ZDim = 2][Latitude = 3][Longitude = 3] = {{{1, 8, 15},{49, 56, 63},{97, 104, 111}},{{129, 136, 143},{177, 184, 191},{225, 232, 239}}};
+Int32 ZDim[ZDim = 2] = {0, 1};
+Float64 Latitude[Latitude = 3] = {7.5, 4.5, 1.5};
+Float64 Longitude[Longitude = 3] = {0.5, 7.5, 14.5};
+Float32 temperature_1[ZDim_1 = 2][Latitude_1 = 4][Longitude_1 = 3] = {{{1, 4, 7},{9, 12, 15},{17, 20, 23},{25, 28, 31}},{{33, 36, 39},{41, 44, 47},{49, 52, 55},{57, 60, 63}}};
+Int32 ZDim_1[ZDim_1 = 2] = {0, 1};
+Float64 Latitude_1[Latitude_1 = 4] = {3.5, 2.5, 1.5, 0.5};
+Float64 Longitude_1[Longitude_1 = 3] = {0.5, 3.5, 6.5};
+

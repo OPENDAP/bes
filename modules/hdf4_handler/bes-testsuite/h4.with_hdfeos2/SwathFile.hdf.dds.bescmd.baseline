@@ -1,0 +1,14 @@
+Dataset {
+    Float32 Density[GeoTrack = 20];
+    Float32 Temperature[GeoTrack = 20][GeoXtrack = 10];
+    Float64 Pressure[Res2tr = 40][Res2xtr = 20];
+    Float64 Spectra[Bands = 15][Res2tr = 40][Res2xtr = 20];
+    Int16 Count[Unlim = 6];
+    Float64 Time[GeoTrack = 20];
+    Float32 Longitude[GeoTrack = 20][GeoXtrack = 10];
+    Float32 Latitude[GeoTrack = 20][GeoXtrack = 10];
+    Float32 Latitude_1[Res2tr = 40][Res2xtr = 20];
+    Float32 Longitude_1[Res2tr = 40][Res2xtr = 20];
+    Int32 Bands[Bands = 15];
+    Int32 IndxTrack[IndxTrack = 12];
+} SwathFile.hdf;

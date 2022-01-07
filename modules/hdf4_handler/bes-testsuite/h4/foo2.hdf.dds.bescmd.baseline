@@ -1,0 +1,5 @@
+Dataset {
+    Int32 x[x = 3];
+    Int32 time[time = 1];
+    Float32 v[time = 1][x = 3];
+} foo2.hdf;

@@ -1,0 +1,10 @@
+Dataset {
+    Int16 sur_refl_b01[YDim = 4800][XDim = 4800];
+    Int16 sur_refl_b02[YDim = 4800][XDim = 4800];
+    UInt16 sur_refl_qc_250m[YDim = 4800][XDim = 4800];
+    Float64 Latitude[YDim = 4800][XDim = 4800];
+    Float64 Longitude[YDim = 4800][XDim = 4800];
+    Float64 YDim[YDim = 4800];
+    Float64 XDim[XDim = 4800];
+    Byte MOD_Grid_250m_Surface_Reflectance_eos_cf_projection;
+} MYD09Q1.A2007001.h00v09.005.2007085230839.hdf;

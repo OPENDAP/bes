@@ -1,0 +1,194 @@
+# Process with autom4te to create an -*- Autotest -*- test suite.
+
+
+# ------------------------------
+#
+
+AT_INIT([bes.conf besstandalone getdap])
+# AT_COPYRIGHT([])
+
+AT_TESTED([besstandalone])
+
+AT_ARG_OPTION_ARG([generate g],
+    [  -g, --generate=arg	Build the baseline file for test 'arg'],
+    [if ./generate_metadata_baseline.sh $at_arg_generate; then
+         echo "Built baseline for $at_arg_generate"
+     else
+         echo "Could not generate baseline for $at_arg_generate"
+     fi     
+     exit],[])
+
+# Usage: _AT_TEST_*(<bescmd source>, <baseline file>)
+
+m4_define([_AT_BESCMD_TEST],   
+#Use the following AT_CHECK to generate baseline file.
+#[AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $1 > $2 || true], [], [stdout], [stderr])
+
+#This is the original.
+[AT_CHECK([valgrind --leak-check=full --log-file=valgrind.txt besstandalone -c $abs_builddir/bes.conf -i $1 || true], [], [stdout], [stderr])
+AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
+AT_CHECK([cat valgrind.txt >> /tmp/h4.valgrind.log], [], [ignore],[],[])
+AT_XFAIL_IF([test "$3" = "xfail"])])
+
+m4_define([AT_BESCMD_DAS_RESPONSE_TEST],
+[AT_SETUP([BESCMD $1])
+AT_KEYWORDS([das])
+_AT_BESCMD_TEST($abs_srcdir/h4/$1, $abs_srcdir/h4/$1.baseline, $2)
+AT_CLEANUP]
+])
+
+m4_define([AT_BESCMD_DDS_RESPONSE_TEST],
+[AT_SETUP([BESCMD $1])
+AT_KEYWORDS([dds])
+_AT_BESCMD_TEST($abs_srcdir/h4/$1, $abs_srcdir/h4/$1.baseline, $2)
+AT_CLEANUP]
+])
+
+m4_define([AT_BESCMD_DDX_RESPONSE_TEST],
+[AT_SETUP([BESCMD $1])
+AT_KEYWORDS([ddx])
+_AT_BESCMD_TEST($abs_srcdir/h4/$1, $abs_srcdir/h4/$1.baseline, $2)
+AT_CLEANUP]
+])
+
+m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST],
+[AT_SETUP([BESCMD $1])
+AT_KEYWORDS([data])
+AT_CHECK([valgrind --leak-check=full --log-file=valgrind.txt besstandalone -c $abs_builddir/bes.conf -i $abs_srcdir/h4/$1 | getdap -M - || true], [], [stdout], [stderr])
+AT_CHECK([cat valgrind.txt >> /tmp/h4.valgrind.log], [], [ignore],[],[])
+AT_CHECK([diff -b -B $abs_srcdir/h4/$1.baseline stdout || diff -b -B $abs_srcdir/h4/$1.baseline stderr], [], [ignore],[],[])
+AT_XFAIL_IF([test "$3" = "xfail"])
+AT_CLEANUP]
+])
+
+AT_BESCMD_DAS_RESPONSE_TEST([S2000415.HDF.0.bescmd], [pass])
+AT_BESCMD_DDS_RESPONSE_TEST([S2000415.HDF.1.bescmd], [pass])
+AT_BESCMD_DDX_RESPONSE_TEST([S2000415.HDF.2.bescmd], [pass])
+#The baseline file for this test(data) is too big.
+#Remove this test from the release 3.11.7. Obtain the baseline file from older versions for testing.
+#AT_BESCMD_BINARYDATA_RESPONSE_TEST([S2000415.HDF.3.bescmd], [pass])
+
+AT_BESCMD_DAS_RESPONSE_TEST([f97182070958.hdf.das.bescmd], [pass])
+AT_BESCMD_DDS_RESPONSE_TEST([f97182070958.hdf.dds.bescmd], [pass])
+AT_BESCMD_DDX_RESPONSE_TEST([f97182070958.hdf.ddx.bescmd], [pass])
+
+# The testing files are either bigger or redundant. So remove them starting from
+# the release 3.11.7. Obtain these testng files from older versions if necessary.
+#AT_BESCMD_DDS_RESPONSE_TEST([1990-S1700101.HDF.dds.bescmd], [pass])
+
+#AT_BESCMD_DAS_RESPONSE_TEST([1C21.19980101.00539.7.hdf.das.bescmd], [pass])
+#AT_BESCMD_DDS_RESPONSE_TEST([1C21.19980101.00539.7.hdf.dds.bescmd], [pass])
+#AT_BESCMD_DDX_RESPONSE_TEST([1C21.19980101.00539.7.hdf.ddx.bescmd], [pass])
+
+AT_BESCMD_DAS_RESPONSE_TEST([foo2.hdf.das.bescmd], [pass])
+AT_BESCMD_DDS_RESPONSE_TEST([foo2.hdf.dds.bescmd], [pass])
+AT_BESCMD_DDX_RESPONSE_TEST([foo2.hdf.ddx.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([foo2.hdf.data.bescmd], [pass])
+
+AT_BESCMD_DAS_RESPONSE_TEST([testsds1.hdf.das.bescmd], [pass])
+AT_BESCMD_DDS_RESPONSE_TEST([testsds1.hdf.dds.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testsds1.hdf.data.bescmd], [pass])
+
+AT_BESCMD_DAS_RESPONSE_TEST([testan1.hdf.das.bescmd], [pass])
+AT_BESCMD_DDS_RESPONSE_TEST([testan1.hdf.dds.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testan1.hdf.data.bescmd], [pass])
+
+AT_BESCMD_DAS_RESPONSE_TEST([testdfp1.hdf.das.bescmd], [pass])
+AT_BESCMD_DDS_RESPONSE_TEST([testdfp1.hdf.dds.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testdfp1.hdf.data.bescmd], [pass])
+
+AT_BESCMD_DAS_RESPONSE_TEST([testdfr1.hdf.das.bescmd], [pass])
+AT_BESCMD_DDS_RESPONSE_TEST([testdfr1.hdf.dds.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testdfr1.hdf.data.bescmd], [pass])
+
+AT_BESCMD_DAS_RESPONSE_TEST([testdfr2.hdf.das.bescmd], [pass])
+AT_BESCMD_DDS_RESPONSE_TEST([testdfr2.hdf.dds.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testdfr2.hdf.data.bescmd], [pass])
+
+AT_BESCMD_DAS_RESPONSE_TEST([testdfr3.hdf.das.bescmd], [pass])
+AT_BESCMD_DDS_RESPONSE_TEST([testdfr3.hdf.dds.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testdfr3.hdf.data.bescmd], [pass])
+
+AT_BESCMD_DAS_RESPONSE_TEST([testgr1.hdf.das.bescmd], [pass])
+AT_BESCMD_DDS_RESPONSE_TEST([testgr1.hdf.dds.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testgr1.hdf.data.bescmd], [pass])
+
+AT_BESCMD_DAS_RESPONSE_TEST([testgr2.hdf.das.bescmd], [pass])
+AT_BESCMD_DDS_RESPONSE_TEST([testgr2.hdf.dds.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testgr2.hdf.data.bescmd], [pass])
+
+AT_BESCMD_DAS_RESPONSE_TEST([testgr3.hdf.das.bescmd], [pass])
+AT_BESCMD_DDS_RESPONSE_TEST([testgr3.hdf.dds.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testgr3.hdf.data.bescmd], [pass])
+
+AT_BESCMD_DAS_RESPONSE_TEST([testgr4.hdf.das.bescmd], [pass])
+AT_BESCMD_DDS_RESPONSE_TEST([testgr4.hdf.dds.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testgr4.hdf.data.bescmd], [pass])
+
+AT_BESCMD_DAS_RESPONSE_TEST([testgr5.hdf.das.bescmd], [pass])
+AT_BESCMD_DDS_RESPONSE_TEST([testgr5.hdf.dds.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testgr5.hdf.data.bescmd], [pass])
+
+AT_BESCMD_DAS_RESPONSE_TEST([testsds2.hdf.das.bescmd], [pass])
+AT_BESCMD_DDS_RESPONSE_TEST([testsds2.hdf.dds.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testsds2.hdf.data.bescmd], [pass])
+
+AT_BESCMD_DAS_RESPONSE_TEST([testsds3.hdf.das.bescmd], [pass])
+AT_BESCMD_DDS_RESPONSE_TEST([testsds3.hdf.dds.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testsds3.hdf.data.bescmd], [pass])
+
+AT_BESCMD_DAS_RESPONSE_TEST([testsds4.hdf.das.bescmd], [pass])
+AT_BESCMD_DDS_RESPONSE_TEST([testsds4.hdf.dds.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testsds4.hdf.data.bescmd], [pass])
+
+AT_BESCMD_DAS_RESPONSE_TEST([testsds5.hdf.das.bescmd], [pass])
+AT_BESCMD_DDS_RESPONSE_TEST([testsds5.hdf.dds.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testsds5.hdf.data.bescmd], [pass])
+
+AT_BESCMD_DAS_RESPONSE_TEST([testsds6.hdf.das.bescmd], [pass])
+AT_BESCMD_DDS_RESPONSE_TEST([testsds6.hdf.dds.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testsds6.hdf.data.bescmd], [pass])
+
+AT_BESCMD_DAS_RESPONSE_TEST([testsds7.hdf.das.bescmd], [pass])
+AT_BESCMD_DDS_RESPONSE_TEST([testsds7.hdf.dds.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testsds7.hdf.data.bescmd], [pass])
+
+AT_BESCMD_DAS_RESPONSE_TEST([testvs1.hdf.das.bescmd], [pass])
+AT_BESCMD_DDS_RESPONSE_TEST([testvs1.hdf.dds.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testvs1.hdf.data.bescmd], [pass])
+
+AT_BESCMD_DAS_RESPONSE_TEST([testvs2.hdf.das.bescmd], [pass])
+AT_BESCMD_DDS_RESPONSE_TEST([testvs2.hdf.dds.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testvs2.hdf.data.bescmd], [pass])
+
+AT_BESCMD_DAS_RESPONSE_TEST([testvs3.hdf.das.bescmd], [pass])
+AT_BESCMD_DDS_RESPONSE_TEST([testvs3.hdf.dds.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testvs3.hdf.data.bescmd], [pass])
+
+AT_BESCMD_DAS_RESPONSE_TEST([testvs4.hdf.das.bescmd], [pass])
+AT_BESCMD_DDS_RESPONSE_TEST([testvs4.hdf.dds.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testvs4.hdf.data.bescmd], [pass])
+
+AT_BESCMD_DAS_RESPONSE_TEST([testvs5.hdf.das.bescmd], [pass])
+AT_BESCMD_DDS_RESPONSE_TEST([testvs5.hdf.dds.bescmd], [pass])
+AT_BESCMD_DDx_RESPONSE_TEST([testvs5.hdf.ddx.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testvs5.hdf.data.bescmd], [pass])
+
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testgr1.hdf.data1.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testsds1.hdf.data1.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testsds3.hdf.data1.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([testvs1.hdf.data1.bescmd], [pass])
+
+AT_BESCMD_DAS_RESPONSE_TEST([GridFile.hdf.das.bescmd], [pass])
+AT_BESCMD_DDS_RESPONSE_TEST([GridFile.hdf.dds.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([GridFile.hdf.data.bescmd], [pass])
+
+AT_BESCMD_DAS_RESPONSE_TEST([PointFile.hdf.das.bescmd], [pass])
+AT_BESCMD_DDS_RESPONSE_TEST([PointFile.hdf.dds.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([PointFile.hdf.data.bescmd], [pass])
+
+AT_BESCMD_DAS_RESPONSE_TEST([SwathFile.hdf.das.bescmd], [pass])
+AT_BESCMD_DDS_RESPONSE_TEST([SwathFile.hdf.dds.bescmd], [pass])
+AT_BESCMD_BINARYDATA_RESPONSE_TEST([SwathFile.hdf.data.bescmd], [pass])
+
+

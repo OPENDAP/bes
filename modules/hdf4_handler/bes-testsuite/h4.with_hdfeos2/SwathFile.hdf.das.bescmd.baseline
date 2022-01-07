@@ -1,0 +1,51 @@
+Attributes {
+    Time {
+        String coordinates "Latitude";
+        String long_name "Time";
+    }
+    Longitude {
+        String units "degrees_east";
+        String long_name "Longitude";
+    }
+    Latitude {
+        String units "degrees_north";
+        String long_name "Latitude";
+    }
+    Bands {
+        String units "level";
+        String long_name "Bands(fake)";
+    }
+    IndxTrack {
+        String units "level";
+        String long_name "IndxTrack(fake)";
+    }
+    Density {
+        String coordinates "Latitude";
+        Float32 _FillValue -9999.000000;
+        String long_name "Density";
+    }
+    Temperature {
+        String coordinates "Latitude Longitude";
+        Float32 _FillValue -9999.000000;
+        String long_name "Temperature";
+    }
+    Pressure {
+        String coordinates "Latitude Longitude";
+        Float64 _FillValue -9999.0000000000000;
+        String long_name "Pressure";
+    }
+    Spectra {
+        String coordinates "Bands Latitude Longitude";
+        Float64 _FillValue -9999.0000000000000;
+        String long_name "Spectra";
+    }
+    Count {
+        String long_name "Count";
+    }
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.0";
+    }
+    Swath1 {
+        Int32 TestAttr 3, 5, 7, 11;
+    }
+}

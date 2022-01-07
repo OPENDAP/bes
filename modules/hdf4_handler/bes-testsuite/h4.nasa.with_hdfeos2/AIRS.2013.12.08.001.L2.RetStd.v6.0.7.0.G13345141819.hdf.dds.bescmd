@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="AIRS.2013.12.08.001.L2.RetStd.v6.0.7.0.G13345141819" space="catalog">/data/AIRS.2013.12.08.001.L2.RetStd.v6.0.7.0.G13345141819.hdf</setContainer>
+    <define name="d">
+	<container name="AIRS.2013.12.08.001.L2.RetStd.v6.0.7.0.G13345141819" />
+    </define>
+    <get type="dds" definition="d" />
+</request>

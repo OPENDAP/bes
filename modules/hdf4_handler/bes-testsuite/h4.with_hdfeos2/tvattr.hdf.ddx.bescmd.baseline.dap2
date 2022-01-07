@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="tvattr.hdf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="vgname0" type="Container">
+        <Attribute name="attname1" type="UInt32">
+            <value>10032</value>
+            <value>10064</value>
+        </Attribute>
+        <Attribute name="attname2" type="UInt16">
+            <value>16</value>
+            <value>32</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="vgname2" type="Container">
+        <Attribute name="attname9" type="UInt32">
+            <value>100</value>
+        </Attribute>
+        <Attribute name="attname10" type="UInt16">
+            <value>16</value>
+            <value>32</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="vgname1_vsname1" type="Container">
+        <Attribute name="Vdata_field_fldname1" type="String">
+            <value>ACE</value>
+        </Attribute>
+        <Attribute name="Vdata_field_fldname2" type="String">
+            <value>BDF</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="vgname2_vsname0" type="Container">
+        <Attribute name="Vdata_field_fldname0" type="Int32">
+            <value>0</value>
+            <value>10</value>
+            <value>20</value>
+        </Attribute>
+        <Attribute name="Vdata_field_fldname1" type="Int32">
+            <value>-1</value>
+            <value>11</value>
+            <value>21</value>
+        </Attribute>
+    </Attribute>
+    <dataBLOB href=""/>
+</Dataset>

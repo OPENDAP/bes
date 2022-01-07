@@ -1,0 +1,825 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="S2000415.HDF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="HDF_GLOBAL" type="Container">
+        <Attribute name="Producer_Agency" type="String">
+            <value>NASA</value>
+        </Attribute>
+        <Attribute name="Producer_Institution" type="String">
+            <value>JPL</value>
+        </Attribute>
+        <Attribute name="Sensor_Name" type="String">
+            <value>NSCAT</value>
+        </Attribute>
+        <Attribute name="Project_ID" type="String">
+            <value>NSCAT</value>
+        </Attribute>
+        <Attribute name="SIS_ID" type="String">
+            <value>597-512-24/1996-07-01</value>
+        </Attribute>
+        <Attribute name="Build_ID" type="String">
+            <value>3.2.1/1996-11-05</value>
+        </Attribute>
+        <Attribute name="ADEOS_Data_Package_ID" type="String">
+            <value>S2</value>
+        </Attribute>
+        <Attribute name="ADEOS_Data_Package_Type" type="String">
+            <value>S</value>
+        </Attribute>
+        <Attribute name="Product_Creation_Time" type="String">
+            <value>1996-318T01:35:16.000</value>
+        </Attribute>
+        <Attribute name="Data_Type" type="String">
+            <value>L2</value>
+        </Attribute>
+        <Attribute name="Data_Status" type="String">
+            <value>COMPLETE</value>
+        </Attribute>
+        <Attribute name="First_Rev_Number" type="Int32">
+            <value>415</value>
+        </Attribute>
+        <Attribute name="First_Rev_Eq_Crossing_Time" type="String">
+            <value>1996-259T04:01:28.226</value>
+        </Attribute>
+        <Attribute name="First_Rev_Eq_Crossing_Lon" type="Float32">
+            <value>279.9830017</value>
+        </Attribute>
+        <Attribute name="First_Data_Time" type="String">
+            <value>1996-259T03:43:48.945</value>
+        </Attribute>
+        <Attribute name="Last_Data_Time" type="String">
+            <value>1996-259T05:09:48.997</value>
+        </Attribute>
+        <Attribute name="Num_Expected_Output_Records" type="Int32">
+            <value>458</value>
+        </Attribute>
+        <Attribute name="Num_Actual_Output_Records" type="Int32">
+            <value>458</value>
+        </Attribute>
+        <Attribute name="Ambig_Removal_Method" type="String">
+            <value>Baseline used</value>
+        </Attribute>
+        <Attribute name="HDF_Build_ID" type="String">
+            <value>JPL D-xxxxx 12/15/94</value>
+        </Attribute>
+        <Attribute name="HDF_SIS_ID" type="String">
+            <value>JPL D-12060 12/15/94</value>
+        </Attribute>
+        <Attribute name="HDF_Conversion_Organization" type="String">
+            <value>JPL PO.DAAC</value>
+        </Attribute>
+        <Attribute name="HDF_Conversion_Time" type="String">
+            <value>1996-320T17:32:34       </value>
+        </Attribute>
+        <Attribute name="Data_Format_Type" type="String">
+            <value>HDF</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_WVC_Lat_dim_0" type="Container">
+        <Attribute name="long_name" type="String">
+            <value>WVC row</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>row</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_WVC_Lat_dim_1" type="Container">
+        <Attribute name="long_name" type="String">
+            <value>WVC index</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>WVC</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_WVC_Lon_dim_0" type="Container">
+        <Attribute name="long_name" type="String">
+            <value>WVC row</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>row</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_WVC_Lon_dim_1" type="Container">
+        <Attribute name="long_name" type="String">
+            <value>WVC index</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>WVC</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_Num_Sigma0_dim_0" type="Container">
+        <Attribute name="long_name" type="String">
+            <value>WVC row</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>row</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_Num_Sigma0_dim_1" type="Container">
+        <Attribute name="long_name" type="String">
+            <value>WVC index</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>WVC</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_Num_Beam_12_dim_0" type="Container">
+        <Attribute name="long_name" type="String">
+            <value>WVC row</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>row</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_Num_Beam_12_dim_1" type="Container">
+        <Attribute name="long_name" type="String">
+            <value>WVC index</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>WVC</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_Num_Beam_34_dim_0" type="Container">
+        <Attribute name="long_name" type="String">
+            <value>WVC row</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>row</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_Num_Beam_34_dim_1" type="Container">
+        <Attribute name="long_name" type="String">
+            <value>WVC index</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>WVC</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_Num_Beam_56_dim_0" type="Container">
+        <Attribute name="long_name" type="String">
+            <value>WVC row</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>row</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_Num_Beam_56_dim_1" type="Container">
+        <Attribute name="long_name" type="String">
+            <value>WVC index</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>WVC</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_Num_Beam_78_dim_0" type="Container">
+        <Attribute name="long_name" type="String">
+            <value>WVC row</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>row</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_Num_Beam_78_dim_1" type="Container">
+        <Attribute name="long_name" type="String">
+            <value>WVC index</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>WVC</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_WVC_Quality_Flag_dim_0" type="Container">
+        <Attribute name="long_name" type="String">
+            <value>WVC row</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>row</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_WVC_Quality_Flag_dim_1" type="Container">
+        <Attribute name="long_name" type="String">
+            <value>WVC index</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>WVC</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_Mean_Wind_dim_0" type="Container">
+        <Attribute name="long_name" type="String">
+            <value>WVC row</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>row</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_Mean_Wind_dim_1" type="Container">
+        <Attribute name="long_name" type="String">
+            <value>WVC index</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>WVC</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_Wind_Speed_dim_0" type="Container">
+        <Attribute name="long_name" type="String">
+            <value>WVC row</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>row</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_Wind_Speed_dim_1" type="Container">
+        <Attribute name="long_name" type="String">
+            <value>WVC index</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>WVC</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_Wind_Speed_dim_2" type="Container">
+        <Attribute name="long_name" type="String">
+            <value>position of the ambiguities</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>position</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_Wind_Dir_dim_0" type="Container">
+        <Attribute name="long_name" type="String">
+            <value>WVC row</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>row</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_Wind_Dir_dim_1" type="Container">
+        <Attribute name="long_name" type="String">
+            <value>WVC index</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>WVC</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_Wind_Dir_dim_2" type="Container">
+        <Attribute name="long_name" type="String">
+            <value>position of the ambiguities</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>position</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_Error_Speed_dim_0" type="Container">
+        <Attribute name="long_name" type="String">
+            <value>WVC row</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>row</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_Error_Speed_dim_1" type="Container">
+        <Attribute name="long_name" type="String">
+            <value>WVC index</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>WVC</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_Error_Speed_dim_2" type="Container">
+        <Attribute name="long_name" type="String">
+            <value>position of the ambiguities</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>position</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_Error_Dir_dim_0" type="Container">
+        <Attribute name="long_name" type="String">
+            <value>WVC row</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>row</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_Error_Dir_dim_1" type="Container">
+        <Attribute name="long_name" type="String">
+            <value>WVC index</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>WVC</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_Error_Dir_dim_2" type="Container">
+        <Attribute name="long_name" type="String">
+            <value>position of the ambiguities</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>position</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_MLE_Likelihood_dim_0" type="Container">
+        <Attribute name="long_name" type="String">
+            <value>WVC row</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>row</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_MLE_Likelihood_dim_1" type="Container">
+        <Attribute name="long_name" type="String">
+            <value>WVC index</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>WVC</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_MLE_Likelihood_dim_2" type="Container">
+        <Attribute name="long_name" type="String">
+            <value>position of the ambiguities</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>position</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_Num_Ambigs_dim_0" type="Container">
+        <Attribute name="long_name" type="String">
+            <value>WVC row</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>row</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_Num_Ambigs_dim_1" type="Container">
+        <Attribute name="long_name" type="String">
+            <value>WVC index</value>
+        </Attribute>
+        <Attribute name="name" type="String">
+            <value>WVC</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="NSCAT_Rev_20_SwathIndex" type="Container"/>
+    <Attribute name="NSCAT_Rev_20_NSCAT_L2" type="Container"/>
+    <Array name="NSCAT_Rev_20_WVC_Lat">
+        <Attribute name="long_name" type="String">
+            <value>latitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>deg</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>0.010000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <value>22</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <value>-9000</value>
+            <value>7771</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="row" size="458"/>
+        <dimension name="WVC" size="24"/>
+    </Array>
+    <Array name="NSCAT_Rev_20_WVC_Lon">
+        <Attribute name="long_name" type="String">
+            <value>longitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>deg</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>0.010000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <value>22</value>
+        </Attribute>
+        <Attribute name="valid_range" type="UInt16">
+            <value>0</value>
+            <value>31242</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="row" size="458"/>
+        <dimension name="WVC" size="24"/>
+    </Array>
+    <Array name="NSCAT_Rev_20_Num_Sigma0">
+        <Attribute name="long_name" type="String">
+            <value>The total number of sigma-0 measurements</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>counts</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <value>21</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Byte">
+            <value>0</value>
+            <value>19</value>
+        </Attribute>
+        <Byte/>
+        <dimension name="row" size="458"/>
+        <dimension name="WVC" size="24"/>
+    </Array>
+    <Array name="NSCAT_Rev_20_Num_Beam_12">
+        <Attribute name="long_name" type="String">
+            <value>The total number of sigma-0s received from beam 1 or 2</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>counts</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <value>21</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Byte">
+            <value>0</value>
+            <value>6</value>
+        </Attribute>
+        <Byte/>
+        <dimension name="row" size="458"/>
+        <dimension name="WVC" size="24"/>
+    </Array>
+    <Array name="NSCAT_Rev_20_Num_Beam_34">
+        <Attribute name="long_name" type="String">
+            <value>The total number of sigma-0s received from beam 3 or 4</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>counts</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <value>21</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Byte">
+            <value>0</value>
+            <value>6</value>
+        </Attribute>
+        <Byte/>
+        <dimension name="row" size="458"/>
+        <dimension name="WVC" size="24"/>
+    </Array>
+    <Array name="NSCAT_Rev_20_Num_Beam_56">
+        <Attribute name="long_name" type="String">
+            <value>The total number of sigma-0s received from beam 5 or 6</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>counts</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <value>21</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Byte">
+            <value>0</value>
+            <value>6</value>
+        </Attribute>
+        <Byte/>
+        <dimension name="row" size="458"/>
+        <dimension name="WVC" size="24"/>
+    </Array>
+    <Array name="NSCAT_Rev_20_Num_Beam_78">
+        <Attribute name="long_name" type="String">
+            <value>The total number of sigma-0s received from beam 7 or 8</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>counts</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <value>21</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Byte">
+            <value>0</value>
+            <value>6</value>
+        </Attribute>
+        <Byte/>
+        <dimension name="row" size="458"/>
+        <dimension name="WVC" size="24"/>
+    </Array>
+    <Array name="NSCAT_Rev_20_WVC_Quality_Flag">
+        <Attribute name="long_name" type="String">
+            <value>WVC Quality Flag</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <value>21</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Byte">
+            <value>0</value>
+            <value>3</value>
+        </Attribute>
+        <Byte/>
+        <dimension name="row" size="458"/>
+        <dimension name="WVC" size="24"/>
+    </Array>
+    <Array name="NSCAT_Rev_20_Mean_Wind">
+        <Attribute name="long_name" type="String">
+            <value>Mean Wind Speed</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>m/s</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>0.010000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <value>23</value>
+        </Attribute>
+        <Attribute name="valid_range" type="UInt16">
+            <value>0</value>
+            <value>2374</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="row" size="458"/>
+        <dimension name="WVC" size="24"/>
+    </Array>
+    <Array name="NSCAT_Rev_20_Wind_Speed">
+        <Attribute name="long_name" type="String">
+            <value>Wind speed associated with a WVC</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>m/s</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>0.010000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <value>23</value>
+        </Attribute>
+        <Attribute name="valid_range" type="UInt16">
+            <value>0</value>
+            <value>2571</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="row" size="458"/>
+        <dimension name="WVC" size="24"/>
+        <dimension name="position" size="4"/>
+    </Array>
+    <Array name="NSCAT_Rev_20_Wind_Dir">
+        <Attribute name="long_name" type="String">
+            <value>Wind direction solution associated with a WVC</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>deg</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>0.010000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <value>23</value>
+        </Attribute>
+        <Attribute name="valid_range" type="UInt16">
+            <value>0</value>
+            <value>35997</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="row" size="458"/>
+        <dimension name="WVC" size="24"/>
+        <dimension name="position" size="4"/>
+    </Array>
+    <Array name="NSCAT_Rev_20_Error_Speed">
+        <Attribute name="long_name" type="String">
+            <value>Uncertainty estimated for the wind speed value</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>m/s</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>0.010000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <value>23</value>
+        </Attribute>
+        <Attribute name="valid_range" type="UInt16">
+            <value>0</value>
+            <value>2410</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="row" size="458"/>
+        <dimension name="WVC" size="24"/>
+        <dimension name="position" size="4"/>
+    </Array>
+    <Array name="NSCAT_Rev_20_Error_Dir">
+        <Attribute name="long_name" type="String">
+            <value>Uncertainty estimated for the wind direction value</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>deg</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>0.010000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <value>23</value>
+        </Attribute>
+        <Attribute name="valid_range" type="UInt16">
+            <value>0</value>
+            <value>2435</value>
+        </Attribute>
+        <UInt16/>
+        <dimension name="row" size="458"/>
+        <dimension name="WVC" size="24"/>
+        <dimension name="position" size="4"/>
+    </Array>
+    <Array name="NSCAT_Rev_20_MLE_Likelihood">
+        <Attribute name="long_name" type="String">
+            <value>Relative likelihood that a given win vector solution is correct</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>0.10000000000000001</value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <value>22</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Int16">
+            <value>-32768</value>
+            <value>2825</value>
+        </Attribute>
+        <Int16/>
+        <dimension name="row" size="458"/>
+        <dimension name="WVC" size="24"/>
+        <dimension name="position" size="4"/>
+    </Array>
+    <Array name="NSCAT_Rev_20_Num_Ambigs">
+        <Attribute name="long_name" type="String">
+            <value>Number of ambiguous wind vectors reported for a given cell</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>counts</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <value>1.0000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="add_offset_err" type="Float64">
+            <value>0.0000000000000000</value>
+        </Attribute>
+        <Attribute name="calibrated_nt" type="Int32">
+            <value>21</value>
+        </Attribute>
+        <Attribute name="valid_range" type="Byte">
+            <value>0</value>
+            <value>4</value>
+        </Attribute>
+        <Byte/>
+        <dimension name="row" size="458"/>
+        <dimension name="WVC" size="24"/>
+    </Array>
+    <Array name="vdata_NSCAT_Rev_20_SwathIndex_vdf_begin">
+        <Int16/>
+        <dimension name="VDFDim0_vdata_NSCAT_Rev_20_SwathIndex_vdf_begin" size="820"/>
+    </Array>
+    <Array name="vdata_NSCAT_Rev_20_NSCAT_L2_vdf_Mean_Time">
+        <String/>
+        <dimension name="VDFDim0_vdata_NSCAT_Rev_20_NSCAT_L2_vdf_Mean_Time" size="458"/>
+    </Array>
+    <Array name="vdata_NSCAT_Rev_20_NSCAT_L2_vdf_Low_Wind_Speed_Flag">
+        <UInt32/>
+        <dimension name="VDFDim0_vdata_NSCAT_Rev_20_NSCAT_L2_vdf_Low_Wind_Speed_Flag" size="458"/>
+    </Array>
+    <Array name="vdata_NSCAT_Rev_20_NSCAT_L2_vdf_High_Wind_Speed_Flag">
+        <UInt32/>
+        <dimension name="VDFDim0_vdata_NSCAT_Rev_20_NSCAT_L2_vdf_High_Wind_Speed_Flag" size="458"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

@@ -1,0 +1,231 @@
+Attributes {
+    Swath {
+        String SwathHeader "NumberScansInSet=1;
+MaximumNumberScansTotal=10000;
+NumberScansBeforeGranule=0;
+NumberScansGranule=9247;
+NumberScansAfterGranule=0;
+NumberPixels=49;
+ScanType=CROSSTRACK;
+";
+    }
+    HDF_GLOBAL {
+        String FileHeader "AlgorithmID=2A23;
+AlgorithmVersion=7.12;
+FileName=2A23.20120925.84650.7.HDF;
+GenerationDateTime=2012-09-26T17:14:55.000Z;
+StartGranuleDateTime=2012-09-25T00:55:23.917Z;
+StopGranuleDateTime=2012-09-25T02:27:46.540Z;
+GranuleNumber=84650;
+NumberOfSwaths=1;
+NumberOfGrids=0;
+GranuleStart=SOUTHERNMOST_LATITUDE;
+TimeInterval=ORBIT;
+ProcessingSystem=PPS;
+ProductVersion=7;
+MissingData=0;
+";
+        String InputRecord "InputFileNames=1C21.20120925.84650.7.HDF;
+InputAlgorithmVersions=7.53;
+InputGenerationDateTimes=2012-09-26T14:20:07.000Z;
+";
+        String NavigationRecord "LongitudeOfMaximumLatitude=48.685921;
+SolarBetaAngleAtBeginningOfGranule=7.864673;
+SolarBetaAngleAtEndOfGranule=8.107783;
+";
+        String FileInfo "DataFormatVersion=m;
+TKCodeBuildVersion=1;
+MetadataVersion=m;
+FormatPackage=HDF Version 4.2 Release 4, January 25, 2009;
+BlueprintFilename=TRMM.V7.2A23.blueprint.xml;
+BlueprintVersion=BV_13;
+TKIOVersion=1.6;
+MetadataStyle=PVL;
+EndianType=LITTLE_ENDIAN;
+";
+        String JAXAInfo "CalibrationCoefficientVersion=2;
+GranuleFirstScanUTCDate=2012/09/25;
+GranuleFirstScanUTCTime=00:55:24;
+GranuleFirstScanUTCMilliseconds=045;
+GranuleLastScanUTCDate=2012/09/25;
+GranuleLastScanUTCTime=02:27:46;
+GranuleLastScanUTCMilliseconds=475;
+SoftwareVersion=3;
+DatabaseVersion=5;
+TotalQualityCode=G;
+LongitudeOnEquator=-35.402836;
+UTCDateOnEquator=2012/09/25;
+UTCTimeOnEquator=01:18:30;
+UTCMillisecondsOnEquator=300;
+CenterScanUTCDate=2012/09/25;
+CenterScanUTCTime=01:41:34;
+CenterScanUTCMilliseconds=661;
+FirstScanLat=-35.115978;
+FirstScanLon=-119.473137;
+LastScanLat=-35.115189;
+LastScanLon=-143.068878;
+NumberOfRainScans=1821;
+";
+        String SwathHeader "NumberScansInSet=1;
+MaximumNumberScansTotal=10000;
+NumberScansBeforeGranule=0;
+NumberScansGranule=9247;
+NumberScansAfterGranule=0;
+NumberPixels=49;
+ScanType=CROSSTRACK;
+";
+        String comment "The HDF4 OPeNDAP handler adds _FillValue, valid_min and valid_max for some TRMM level 1 and level 2 products. It also changes scale_factor to follow CF conventions. ";
+        String references "http://pps.gsfc.nasa.gov/Documents/filespec.TRMM.V7.pdf";
+    }
+    ScanTime_Year {
+        String units "years";
+    }
+    ScanTime_Month {
+        String units "months";
+    }
+    ScanTime_DayOfMonth {
+        String units "days";
+    }
+    ScanTime_Hour {
+        String units "hours";
+    }
+    ScanTime_Minute {
+        String units "minutes";
+    }
+    ScanTime_Second {
+        String units "s";
+    }
+    ScanTime_MilliSecond {
+        String units "ms";
+    }
+    ScanTime_DayOfYear {
+        String units "days";
+    }
+    scanTime_sec {
+        String units "s";
+    }
+    Latitude {
+        String standard_name "latitude";
+        String units "degrees_north";
+    }
+    Longitude {
+        String standard_name "longitude";
+        String units "degrees_east";
+    }
+    scanStatus_missing {
+    }
+    scanStatus_validity {
+    }
+    scanStatus_qac {
+    }
+    scanStatus_geoQuality {
+    }
+    scanStatus_dataQuality {
+    }
+    scanStatus_SCorientation {
+        String units "degrees";
+    }
+    scanStatus_acsMode {
+    }
+    scanStatus_yawUpdateS {
+    }
+    scanStatus_prMode {
+    }
+    scanStatus_prStatus1 {
+    }
+    scanStatus_prStatus2 {
+    }
+    scanStatus_FractionalGranuleNumber {
+    }
+    navigation_scPosX {
+        String units "m";
+    }
+    navigation_scPosY {
+        String units "m";
+    }
+    navigation_scPosZ {
+        String units "m";
+    }
+    navigation_scVelX {
+        String units "m/s";
+    }
+    navigation_scVelY {
+        String units "m/s";
+    }
+    navigation_scVelZ {
+        String units "m/s";
+    }
+    navigation_scLat {
+        String units "degrees";
+    }
+    navigation_scLon {
+        String units "degrees";
+    }
+    navigation_scAlt {
+        String units "m";
+    }
+    navigation_scAttRoll {
+        String units "degrees";
+    }
+    navigation_scAttPitch {
+        String units "degrees";
+    }
+    navigation_scAttYaw {
+        String units "degrees";
+    }
+    navigation_SensorOrientationMatrix {
+    }
+    navigation_greenHourAng {
+        String units "degrees";
+    }
+    rainFlag {
+        String coordinates "Latitude Longitude";
+    }
+    rainType {
+        String coordinates "Latitude Longitude";
+    }
+    shallowRain {
+        String coordinates "Latitude Longitude";
+    }
+    status {
+        String coordinates "Latitude Longitude";
+    }
+    binBBpeak {
+        String coordinates "Latitude Longitude";
+    }
+    HBB {
+        String units "m";
+        String coordinates "Latitude Longitude";
+    }
+    BBintensity {
+        String units "dBZ";
+        String coordinates "Latitude Longitude";
+    }
+    freezH {
+        String units "m";
+        String coordinates "Latitude Longitude";
+    }
+    stormH {
+        String units "m";
+        String coordinates "Latitude Longitude";
+    }
+    spare {
+        String coordinates "Latitude Longitude";
+    }
+    BBboundary {
+        String coordinates "Latitude Longitude fakeDim4";
+    }
+    BBwidth {
+        String units "m";
+        String coordinates "Latitude Longitude";
+    }
+    BBstatus {
+        String coordinates "Latitude Longitude";
+    }
+    fakeDim2 {
+        String units "level";
+    }
+    fakeDim4 {
+        String units "level";
+    }
+}

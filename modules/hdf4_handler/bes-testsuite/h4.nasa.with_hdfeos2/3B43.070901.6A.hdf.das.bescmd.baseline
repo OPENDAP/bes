@@ -1,0 +1,626 @@
+Attributes {
+    CoreMetadata {
+        OrbitNumber {
+            Int32 Value -9999;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        RangeBeginningDate {
+            String Value "2007/09/01";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        RangeBeginningTime {
+            String Value "00:00:00";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        RangeEndingDate {
+            String Value "2007/10/01";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        RangeEndingTime {
+            String Value "00:00:00";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        GranulePointer {
+            String Value "3B43.070901.6A.HDF";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        ShortName {
+            String Value "Surface Rain from all Satellite and Surface";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        SizeMBECSDataGranule {
+            Float64 Value 4.394812;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        LongitudeOfMaximumLatitude {
+            Float64 Value -9999.9;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        SpatialCoverageType {
+            String Value "Horizontal";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        EllipsoidName {
+            String Value "NULL";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        EquatorialRadius {
+            Float64 Value -9999.9;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        DenominatorFlatteningRatio {
+            Float64 Value -9999.9;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        OrbitalModelName {
+            String Value "NULL";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        SemiMajorAxis {
+            Float64 Value -9999.9;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        MeanAnomaly {
+            Float64 Value -9999.9;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        RightAscensionNode {
+            Float64 Value -9999.9;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        ArgumentOfPerigee {
+            Float64 Value -9999.9;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        Eccentricity {
+            Float64 Value -9999.9;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        Inclination {
+            Float64 Value -9999.9;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        EpochTime {
+            String Value "99:99:99";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        EpochDate {
+            String Value "9999/99/99";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        EpochMillisec {
+            Float64 Value -9999.9;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        WestBoundingCoordinate {
+            Int32 Value -180;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        EastBoundingCoordinate {
+            Int32 Value 180;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        NorthBoundingCoordinate {
+            Int32 Value 50;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        SouthBoundingCoordinate {
+            Int32 Value -50;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        CenterLatitude {
+            Float64 Value -9999.9;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        CenterLongitude {
+            Float64 Value -9999.9;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        RadiusValue {
+            Float64 Value -9999.9;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        LatitudeResolution {
+            String Value ".25deg";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        LongitudeResolution {
+            String Value ".25deg";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        GeographicCoordinateUnits {
+            String Value "Decimal Degrees";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        TemporalRangeType {
+            String Value "Continuous Range";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        QualityAssuranceParameterName {
+            String Value "ScienceQualityFlag";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        QualityAssuranceParameterValue {
+            String Value "NOT BEING INVESTIGATED";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        ReprocessingActual {
+            String Value "NULL";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        BrowsePointer {
+            String Value "3B43_BR.070901.6A.BRO";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        ScienceContact {
+            String Value "George Huffman";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        MeanMotion {
+            Float64 Value -9999.9;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        OrbitAdjustFlag {
+            Int32 Value -9999;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        AttitudeModeFlag {
+            Int32 Value -9999;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        SolarBetaAngleAtBeginningOfGranule {
+            Float64 Value -9999.9;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        SolarBetaAngleAtEndOfGranule {
+            Float64 Value -9999.9;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        SensorAlignment {
+            String Value "NULL";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        SensorAlignmentChannelOffsets {
+            String Value "NULL";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        ScanPathModel {
+            String Value "NULL";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        ScanPathModelParam {
+            String Value "NULL";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        EphemerisFileID {
+            String Value "NULL";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+    }
+    ArchiveMetadata {
+        DataGaps {
+            Float64 Value -9999.9;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        NumberOfDataGaps {
+            Float64 Value -9999.9;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        AlgorithmVersion {
+            String Value "6.43";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        ProductVersion {
+            String Value "6A";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        ToolkitVersion {
+            String Value "6.38";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        CalibrationCoefficientVersion {
+            Int32 Value -9999;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        MissingData {
+            Int32 Value -9999;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        PercentOfBadOrMissingPixels {
+            String Value "NULL";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        MaximumValidValueofChannel {
+            String Value "NULL";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        MinimumValidValueofChannel {
+            String Value "NULL";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        MinMaxUnits {
+            String Value "NULL";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        OrbitSize {
+            Int32 Value -9999;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        RadarWavelength {
+            Float64 Value -9999.9;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        MinimumReflectivityThreshold {
+            Float64 Value -9999.9;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        AlgorithmID {
+            String Value "3B43";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        DataAccuracy {
+            String Value "NULL";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        InputFiles {
+            String Value "NULL";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        DateOfGenerationOfInputFiles {
+            String Value "NULL";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        DataCenterSourceOfInputFiles {
+            String Value "NULL";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        GenerationDate {
+            String Value "2007-10-18T20:09:52.000Z";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        DayNight {
+            Float64 Value -9999.9;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        SolarChannelGains {
+            String Value "(-9999.9,-9999.9,-9999.9,-9999.9)";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        TMIRolloverCoef {
+            String Value "(-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9,-9999.9)";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        OrbitFirstScanUTCDate {
+            String Value "9999/99/99";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        OrbitFirstScanUTCTime {
+            String Value "99:99:99";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        OrbitFirstScanUTCMilliseconds {
+            Int32 Value -9999;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        OrbitFirstSCSecs {
+            Int32 Value -9999;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        OrbitFirstSCSubsecs {
+            Int32 Value -9999;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        OrbitLastScanUTCDate {
+            String Value "9999/99/99";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        OrbitLastScanUTCTime {
+            String Value "99:99:99";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        OrbitLastScanUTCmilliseconds {
+            Int32 Value -9999;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        OrbitLastSCSecs {
+            Int32 Value -9999;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        OrbitLastSCSubsecs {
+            Int32 Value -9999;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        UTCFSeconds {
+            Int32 Value -9999;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        UTCFSubseconds {
+            Int32 Value -9999;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        UTCFflag {
+            Int32 Value -9999;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        LeapSecondsFlag {
+            String Value "Data_Location", "Error processing EOS attributes", "Error processing EOS attributes";
+            String PGE "Error processing EOS attributes";
+            String Mandatory "FALSE";
+        }
+        RadarSiteName {
+            String Value "NULL";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        RadarCity {
+            String Value "NULL";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        RadarState {
+            String Value "NULL";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        RadarCountry {
+            String Value "NULL";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        NumberOfVOS {
+            Int32 Value -9999;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        RadarGridOriginLatitude {
+            Float64 Value -9999.9;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        RadarGridOriginLongitude {
+            Float64 Value -9999.9;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        RadarGridOriginAltitude {
+            Float64 Value -9999.9;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        RadarGridSpacingX {
+            Float64 Value -9999.9;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        RadarGridSpacingY {
+            Float64 Value -9999.9;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        RadarGridSpacingZ {
+            Float64 Value -9999.9;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        RadarGridSizeX {
+            Int32 Value -9999;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        RadarGridSizeY {
+            Int32 Value -9999;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        RadarGridSizeZ {
+            Int32 Value -9999;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        DZCal {
+            Float64 Value -9999.9;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        GVL1C_Scale {
+            Float64 Value -9999.9;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        Alpha {
+            Float64 Value -9999.9;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        RuntimeOptions {
+            String Value "NULL";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        AnomalyFlag {
+            String Value "NOT EMPTY";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        SoftwareVersion {
+            Int32 Value -9999;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        DatabaseVersion {
+            Int32 Value -9999;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        TotalQualityCode {
+            String Value "NULL";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        LongitudeOnEquator {
+            Float64 Value -9999.9;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        UTCDateOnEquator {
+            String Value "9999/99/99";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        UTCTimeOnEquator {
+            String Value "99:99:99";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        UTCMillisecsOnEquator {
+            Int32 Value -9999;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        CenterScanUTCDate {
+            String Value "9999/99/99";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        CenterScanUTCTime {
+            String Value "99:99:99";
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        CenterScanUTCMillisec {
+            Int32 Value -9999;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        FirstScanLat {
+            Float64 Value -9999.9;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        FirstScanLon {
+            Float64 Value -9999.9;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        LastScanLat {
+            Float64 Value -9999.9;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        LastScanLon {
+            Float64 Value -9999.9;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+        NumberOfRainScans {
+            Int32 Value -9999;
+            String Data_Location "PGE";
+            String Mandatory "FALSE";
+        }
+    }
+    DATA_GRANULE_PlanetaryGrid_precipitation {
+        String long_name "precipitation";
+        String coordinates "scan longitude latitude";
+    }
+    DATA_GRANULE_PlanetaryGrid_relativeError {
+        String long_name "relativeError";
+        String coordinates "scan longitude latitude";
+    }
+    latitude {
+        String long_name "latitude";
+        String units "degrees_north";
+    }
+    longitude {
+        String long_name "longitude";
+        String units "degrees_east";
+    }
+    scan {
+        String long_name "scan";
+        String units "level";
+    }
+}

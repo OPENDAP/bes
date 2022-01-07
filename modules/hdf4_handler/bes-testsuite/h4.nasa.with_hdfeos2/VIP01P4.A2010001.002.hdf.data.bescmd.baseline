@@ -1,0 +1,15 @@
+The data:
+Float32 CMG_0_05_Deg_NDVI[Latitude = 3][Longitude = 3] = {{-15000, -15000, -15000},{-15000, -15000, -15000},{-14000, -14000, -14000}};
+Float32 CMG_0_05_Deg_EVI2[Latitude = 3][Longitude = 3] = {{-15000, -15000, -15000},{-15000, -15000, -15000},{-14000, -14000, -14000}};
+UInt16 CMG_0_05_Deg_VI_Quality[Latitude = 3][Longitude = 3] = {{0, 0, 0},{0, 0, 0},{0, 0, 0}};
+Int32 CMG_0_05_Deg_Pixel_Reliability[Latitude = 3][Longitude = 3] = {{-1, -1, -1},{-1, -1, -1},{-2, -2, -2}};
+Float32 CMG_0_05_Deg_RED[Latitude = 3][Longitude = 3] = {{-28672, -28672, -28672},{-28672, -28672, -28672},{-28672, -28672, -28672}};
+Float32 CMG_0_05_Deg_NIR[Latitude = 3][Longitude = 3] = {{-28672, -28672, -28672},{-28672, -28672, -28672},{-28672, -28672, -28672}};
+Float32 CMG_0_05_Deg_BLUE[Latitude = 3][Longitude = 3] = {{-28672, -28672, -28672},{-28672, -28672, -28672},{-28672, -28672, -28672}};
+Float32 CMG_0_05_Deg_MIR[Latitude = 3][Longitude = 3] = {{-28672, -28672, -28672},{-28672, -28672, -28672},{-28672, -28672, -28672}};
+Float32 CMG_0_05_Deg_SZA[Latitude = 3][Longitude = 3] = {{0, 0, 0},{0, 0, 0},{0, 0, 0}};
+Float32 CMG_0_05_Deg_VZA[Latitude = 3][Longitude = 3] = {{0, 0, 0},{0, 0, 0},{0, 0, 0}};
+Float32 CMG_0_05_Deg_RAA[Latitude = 3][Longitude = 3] = {{0, 0, 0},{0, 0, 0},{0, 0, 0}};
+Float64 Latitude[Latitude = 3] = {89.975, 0.0249999999999915, -89.925};
+Float64 Longitude[Longitude = 3] = {-179.975, -0.0249999999999773, 179.925};
+

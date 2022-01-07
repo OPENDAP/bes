@@ -1,0 +1,6 @@
+Dataset {
+    Float32 Swath1_Data_Fields_temperature[ZDim_Swath1 = 4][NDim_Swath1 = 8];
+    Float32 Swath2_Data_Fields_temperature[ZDim_Swath2 = 8][NDim_Swath2 = 16];
+    Float32 vdata_Swath2_Geolocation_Fields_Latitude_vdf_Latitude[VDFDim0_vdata_Swath2_Geolocation_Fields_Latitude_vdf_Latitude = 16];
+    Float32 vdata_Swath2_Geolocation_Fields_Longitude_vdf_Longitude[VDFDim0_vdata_Swath2_Geolocation_Fields_Longitude_vdf_Longitude = 16];
+} swath_2_2d_xyz.hdf;

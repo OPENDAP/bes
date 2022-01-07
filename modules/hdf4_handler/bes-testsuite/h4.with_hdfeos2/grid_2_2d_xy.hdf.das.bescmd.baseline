@@ -1,0 +1,29 @@
+Attributes {
+    Latitude {
+        String long_name "GeoGrid1:Latitude";
+        String units "degrees_north";
+    }
+    Longitude {
+        String long_name "GeoGrid1:Longitude";
+        String units "degrees_east";
+    }
+    temperature {
+        String coordinates "Latitude Longitude";
+        String long_name "GeoGrid1:temperature";
+    }
+    temperature_1 {
+        String coordinates "Latitude_1 Longitude_1";
+        String long_name "GeoGrid2:temperature";
+    }
+    Latitude_1 {
+        String long_name "GeoGrid2:Latitude";
+        String units "degrees_north";
+    }
+    Longitude_1 {
+        String long_name "GeoGrid2:Longitude";
+        String units "degrees_east";
+    }
+    HDF_GLOBAL {
+        String HDFEOSVersion "HDFEOS_V2.18";
+    }
+}

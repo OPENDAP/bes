@@ -1,0 +1,3 @@
+Dataset {
+    Float32 GeoGrid_Data_Fields_temperature[ZDim_GeoGrid = 2][YDim_GeoGrid = 4][XDim_GeoGrid = 8];
+} grid_1_3d.hdf;

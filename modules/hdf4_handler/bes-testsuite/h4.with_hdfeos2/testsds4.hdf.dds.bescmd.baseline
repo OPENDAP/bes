@@ -1,0 +1,5 @@
+Dataset {
+    Int32 SDS_1[Y_Axis = 16][X_Axis = 5];
+    Float64 Y_Axis[Y_Axis = 16];
+    Int16 X_Axis[X_Axis = 5];
+} testsds4.hdf;

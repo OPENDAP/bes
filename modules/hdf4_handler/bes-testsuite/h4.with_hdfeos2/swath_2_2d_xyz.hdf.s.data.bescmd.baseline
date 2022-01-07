@@ -1,0 +1,10 @@
+The data:
+Float32 temperature[ZDim = 4][NDim = 3] = {{1, 4, 7},{9, 12, 15},{17, 20, 23},{25, 28, 31}};
+Float32 pressure[ZDim = 4] = {0, 1, 2, 3};
+Float32 Latitude[NDim = 3] = {0, 3, 6};
+Float32 Longitude[NDim = 3] = {0, 3, 6};
+Float32 temperature_1[ZDim_1 = 3][NDim_1 = 3] = {{1, 8, 15},{49, 56, 63},{97, 104, 111}};
+Float32 pressure_1[ZDim_1 = 3] = {0, 3, 6};
+Float32 Latitude_1[NDim_1 = 3] = {0, 7, 14};
+Float32 Longitude_1[NDim_1 = 3] = {0, 7, 14};
+

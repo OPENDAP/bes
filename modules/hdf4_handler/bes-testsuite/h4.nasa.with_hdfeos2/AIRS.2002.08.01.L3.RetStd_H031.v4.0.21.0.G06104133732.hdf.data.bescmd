@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="AIRS.2002.08.01.L3.RetStd_H031.v4.0.21.0.G06104133732.hdf" space="catalog">/data/AIRS.2002.08.01.L3.RetStd_H031.v4.0.21.0.G06104133732.hdf</setContainer>
+    <define name="d">
+	<container name="AIRS.2002.08.01.L3.RetStd_H031.v4.0.21.0.G06104133732.hdf" />
+	     <constraint>H2OPrsLvls[0:3:11],EmisLvls[0:1:3],TotO3_D_ct[177:1:179][357:1:359],Temperature_D[0:3:23][0:19:179][0:39:359],TempPrsLvls_1[0:2:23],H2OPrsLvls_1[0:3:11],EmisLvls_1[0:1:3],Latitude[0:89:179],Longitude[0:89:359]</constraint>
+    </define>
+    <get type="dods" definition="d" />
+</request>

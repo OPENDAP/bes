@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="VIP01P4.A2010001.002" space="catalog">/data/VIP01P4.A2010001.002.hdf</setContainer>
+    <define name="d">
+	<container name="VIP01P4.A2010001.002">
+           <constraint>
+CMG_0_05_Deg_NDVI[0:1799:3599][0:3599:7199],
+CMG_0_05_Deg_EVI2[0:1799:3599][0:3599:7199],
+CMG_0_05_Deg_VI_Quality[0:1799:3599][0:3599:7199],
+CMG_0_05_Deg_Pixel_Reliability[0:1799:3599][0:3599:7199],
+CMG_0_05_Deg_RED[0:1799:3599][0:3599:7199],
+CMG_0_05_Deg_NIR[0:1799:3599][0:3599:7199],
+CMG_0_05_Deg_BLUE[0:1799:3599][0:3599:7199],
+CMG_0_05_Deg_MIR[0:1799:3599][0:3599:7199],
+CMG_0_05_Deg_SZA[0:1799:3599][0:3599:7199],
+CMG_0_05_Deg_VZA[0:1799:3599][0:3599:7199],
+CMG_0_05_Deg_RAA[0:1799:3599][0:3599:7199],
+Latitude[0:1799:3599],
+Longitude[0:3599:7199]
+           </constraint>
+        </container>
+    </define>
+    <get type="dods" definition="d" />
+</request>
