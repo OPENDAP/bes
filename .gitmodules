@@ -1,14 +1,5 @@
-# [submodule "modules/hdf4_handler"]
-# 	path = modules/hdf4_handler
-#	url = https://github.com/OPENDAP/hdf4_handler
-#	branch = master
-
 [submodule "modules/hdf5_handler"]
 	path = modules/hdf5_handler
 	url = https://github.com/OPENDAP/hdf5_handler
 	branch = master
 
-[submodule "pugixml"]
-	path = pugixml
-	url = https://github.com/zeux/pugixml.git
-        branch = master
