@@ -1,0 +1,76 @@
+Currently there are a few tests that the normal "make check" doesn't cover. Depending on one's need, they can be easily tested manually. Eventually if it is necessary, a kind of automatic tests should be implemented.
+
+1. mv hdf5_handlerTest.at hdf5_handlerTest.at.orig
+
+2. CF DMR from DDS and DAS option test with fake data
+We still keep an option to generate the DMR from DDS and DAS when H5.EnableCF=true. 
+To test this option, under the current directory(bes-testsuite),
+cp hdf5_handlerTest.dap2dmr.at hdf5_handlerTest.at
+cd ..
+make check
+You should see "all tests get passed".
+
+3. Tests with NASA tests
+1) Obtain NASA data
+cd data.nasa
+./download.sh
+./download_dap4.sh
+cd ../data
+ln -s /Users/myang6/work/opendap/esdis-585/hdf5_handler/data.nasa .
+
+1) CF DMR from DDS and DAS option test with NASA data
+cd ../bes-testsuite
+cp hdf5_handlerTest.nasa.at hdf5_handlerTest.at
+cd ..
+make check
+You should see "all tests get passed"
+
+2) CF DMR option test with NASA data
+(1) DAS and DDS generation with CFDMR key on/missing  
+cd bes-testsuite
+cp hdf5_handlerTest.cfdmr.at hdf5_handlerTest.at
+cd ..
+make check
+You should see "all tests get passed"
+
+(2) DMR generation with CFDMR key on/missing
+cd bes-testsuite
+cp hdf5_handlerTest.cfdmr_only.at hdf5_handlerTest.at
+cd ..
+make check
+You should see "all tests get passed"
+
+3) Non-CF option test with NASA data
+This test is for when the EnableCF=false
+cd bes-testsuite
+cp hdf5_handlerTest.default.dap4.at hdf5_handlerTest.at
+cd ..
+make check
+You should see "all tests get passed"
+
+Note:The tests for NASA data may take some time.
+
+4. Valgrind tests
+
+1) Quick test
+cd bes-testsuite
+cp hdf5_handlerTest.valgrind.at hdf5_handlerTest.at
+cd ..
+make check
+pushd /tmp
+grep "definitely lost: " h5.valgrind.log
+You should only see ""definitely lost: 0 bytes in 0 blocks"
+pushd 
+
+2) Comprehensive test
+./test.valgrind.sh >&tt.out&
+If everything is right, you should see "OK" in the output.
+This test includes the valgrind memory check for all the
+fake and NASA tests.
+
+Note: the comprehensive test takes much longer time.
+
+At the end of all the tests, 
+cd bes-testsuite
+mv hdf5_handlerTest.at.orig hdf5_handlerTest.at
+
