@@ -16,7 +16,7 @@ cd data.nasa
 ./download.sh
 ./download_dap4.sh
 cd ../data
-ln -s /Users/myang6/work/opendap/esdis-585/hdf5_handler/data.nasa .
+ln -s ../data.nasa .
 
 1) CF DMR from DDS and DAS option test with NASA data
 cd ../bes-testsuite
