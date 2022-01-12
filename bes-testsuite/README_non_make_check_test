@@ -8,7 +8,7 @@ To test this option, under the current directory(bes-testsuite),
 cp hdf5_handlerTest.dap2dmr.at hdf5_handlerTest.at
 cd ..
 make check
-You should see "all tests get passed".
+All tests should get passed.
 
 3. Tests with NASA tests
 1) Obtain NASA data
@@ -23,7 +23,7 @@ cd ../bes-testsuite
 cp hdf5_handlerTest.nasa.at hdf5_handlerTest.at
 cd ..
 make check
-You should see "all tests get passed"
+All tests should get passed.
 
 2) CF DMR option test with NASA data
 (1) DAS and DDS generation with CFDMR key on/missing  
@@ -31,22 +31,22 @@ cd bes-testsuite
 cp hdf5_handlerTest.cfdmr.at hdf5_handlerTest.at
 cd ..
 make check
-You should see "all tests get passed"
+All tests should get passed.
 
 (2) DMR generation with CFDMR key on/missing
 cd bes-testsuite
 cp hdf5_handlerTest.cfdmr_only.at hdf5_handlerTest.at
 cd ..
 make check
-You should see "all tests get passed"
+All tests should get passed.
 
-3) Non-CF option test with NASA data
+) Non-CF option test with NASA data
 This test is for when the EnableCF=false
 cd bes-testsuite
 cp hdf5_handlerTest.default.dap4.at hdf5_handlerTest.at
 cd ..
 make check
-You should see "all tests get passed"
+All tests should get passed.
 
 Note:The tests for NASA data may take some time.
 
@@ -63,6 +63,9 @@ You should only see ""definitely lost: 0 bytes in 0 blocks"
 pushd 
 
 2) Comprehensive test
+
+Before running the test script, make sure all the NASA data
+are either linked or copied to the data directory.
 ./test.valgrind.sh >&tt.out&
 If everything is right, you should see "OK" in the output.
 This test includes the valgrind memory check for all the
