@@ -108,7 +108,7 @@ before_script:
 
 stages:
   - name: build
-    if: branch = build-deps-test
+    if: branch = master
   - name: scan
     if:  branch = master
   - name: package
