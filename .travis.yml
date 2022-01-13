@@ -14,14 +14,16 @@
 # arch: amd64           # optional, this is default, routes to a full VM
 # os: linux             # optional, this is default
 dist: xenial            # or bionic | xenial | trusty | precise with xenial as default
+vm:
+  size: x-large
 
 language: cpp
-
 compiler: gcc
 
 branches:
   only:
   - master
+  - build-deps-test
 
 addons:
   sonarcloud: true
@@ -106,11 +108,11 @@ before_script:
 
 stages:
   - name: build
-    if: branch = master
+    if: branch = build-deps-test
   - name: scan
     if:  branch = master
   - name: package
-    if: branch = master
+    if: branch = build-deps-test
   - name: hyrax-olfs-trigger
     if: branch = master AND type != pull_request
 
