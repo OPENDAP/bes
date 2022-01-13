@@ -166,7 +166,7 @@ jobs:
     - export BES_BUILD=main
     - autoreconf --force --install --verbose
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-    - make -j7 && make install && besctl start && make check -j7 && besctl stop
+    - make -j16 && make install && besctl start && make check -j16 && besctl stop
 
   - stage: build
     name: "distcheck"
@@ -174,7 +174,7 @@ jobs:
     - export BES_BUILD=distcheck
     - autoreconf --force --install --verbose
     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-    - make distcheck -j7
+    - make distcheck -j16
 
     # NB: ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} supplies the name of the PR branch for a PR,
     # or the name of the branch for a regular push. The reason for this is not that we want special

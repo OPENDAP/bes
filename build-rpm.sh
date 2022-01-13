@@ -25,7 +25,8 @@ echo "env:"
 printenv
 
 # yum install -y awscli
-yum install -y libpng-devel
+# yum install -y libpng-devel
+yum -y install sqlite-devel
 
 # Get the pre-built dependencies (all static libraries). $OS is 'centos6' or 'centos7'
 # aws s3 cp s3://opendap.travis.build/
@@ -59,7 +60,7 @@ autoreconf -fiv
 mkdir -pv $HOME/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
 
 # This will leave the package in $HOME/rpmbuild/RPMS/x86_64/*.rpm
-make -j4 all-static-rpm
+make -j16 all-static-rpm
 
 # Just a little reassurance... jhrg 3/23/21
 ls -l $HOME/rpmbuild/RPMS/x86_64/
