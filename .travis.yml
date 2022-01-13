@@ -26,6 +26,13 @@ branches:
   only:
   - master
 
+# This cache is used to speed up sonar scan runs. See https://docs.travis-ci.com/user/caching.
+# Each branch gets its own cache. The three different sonar scan runs each use their own cache
+# directory set in the three sonar-bes-*.properties files. jhrg 1/13/22
+cache:
+  directories:
+    - ./.cache/sonar/
+
 addons:
   sonarcloud: true
   apt:
@@ -166,7 +173,7 @@ jobs:
     - stage: scan
       name: "scan bes-submodules"
       script:
-        - export BES_BUILD=sonar-bes-submodules
+        - export BES_BUILD=sonar-bes-hdf-handlers
         - autoreconf --force --install --verbose
         - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer  --enable-coverage
         - build-wrapper-linux-x86-64 --out-dir bw-output make -j16
@@ -174,8 +181,8 @@ jobs:
         - make check -j16
         - make coverage
 
-        - sonar-scanner -Dproject.settings=sonar-bes-submodules.properties -Dsonar.login=$SONAR_SUBMODULES_LOGIN
-        - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-submodules | grep "QUALITY GATE PASS"
+        - sonar-scanner -Dproject.settings=sonar-bes-hdf-handlers.properties -Dsonar.login=$SONAR_SUBMODULES_LOGIN
+        - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-hdf-handlers | grep "QUALITY GATE PASS"
 
       # NB: ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} supplies the name of the PR branch for a PR,
       # or the name of the branch for a regular push. The reason for this is not that we want special
