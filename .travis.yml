@@ -102,24 +102,24 @@ before_script:
 
 
 # We have varied our approach to scanning over time. As of 7/23/21, we do not
-# use Travis to run our sonarcloud scans. These are very time consuming and
-# can be done on the SonarScan.com web site in a way that links those results
+# use Travis to run our sonarcloud scans. These are very time-consuming and
+# can be done on the SonarScan.com website in a way that links those results
 # to the GitHub PR page. That linkage provides the required behavior that a
 # failed scan can block merging a PR onto the main branch.
 #
 # I have left the sonarscan stages in this file because we might decide they
-# are needed after all and it'll be a pain to redo them, even with the miracle
+# are needed after all, and it'll be a pain to redo them, even with the miracle
 # of git. jhrg 7/23/21
 #
 # Update: it's back in. There may be a way to skip the scan for a DRAFT pull request,
 # but I won't know until I hear back from Travis-CI support. jhrg 7/23/21
 
 stages:
-  - name: build AND type != pull_request
+  - name: build
     if: branch = master
   - name: scan
     if:  branch = master
-  - name: package AND type != pull_request
+  - name: package
     if: branch = master
   - name: hyrax-olfs-trigger
     if: branch = master AND type != pull_request
@@ -150,8 +150,8 @@ jobs:
       - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer --enable-coverage
       - build-wrapper-linux-x86-64 --out-dir bw-output make -j16
 
-      - make check -j16
-      - make coverage
+      # - make check -j16
+      # - make coverage
 
       - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.login=$SONAR_LOGIN
       - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes | grep "QUALITY GATE PASS"
@@ -164,8 +164,8 @@ jobs:
         - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer  --enable-coverage
         - build-wrapper-linux-x86-64 --out-dir bw-output make -j16
 
-        - make check -j16
-        - make coverage
+        # - make check -j16
+        # - make coverage
 
         - sonar-scanner -Dproject.settings=sonar-bes-modules.properties -Dsonar.login=$SONAR_MODULES_LOGIN
         - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-modules | grep "QUALITY GATE PASS"
@@ -178,8 +178,8 @@ jobs:
         - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer  --enable-coverage
         - build-wrapper-linux-x86-64 --out-dir bw-output make -j16
 
-        - make check -j16
-        - make coverage
+        # - make check -j16
+        # - make coverage
 
         - sonar-scanner -Dproject.settings=sonar-bes-hdf-handlers.properties -Dsonar.login=$SONAR_SUBMODULES_LOGIN
         # We call the hdf4/5 handlers scan opendap-bes-submodules for historical reasons. jhrg 1/13/22
