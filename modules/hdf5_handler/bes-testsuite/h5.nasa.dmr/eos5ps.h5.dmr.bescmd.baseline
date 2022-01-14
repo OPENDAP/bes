@@ -1,0 +1,1301 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="AMSR_2_L3_SeaIce12km_P00_20160831.he5">
+    <Dimension name="NpPolarGrid12km_YDim" size="896"/>
+    <Dimension name="NpPolarGrid12km_XDim" size="608"/>
+    <Dimension name="SpPolarGrid12km_YDim" size="664"/>
+    <Dimension name="SpPolarGrid12km_XDim" size="632"/>
+    <Int32 name="NpPolarGrid12km_SI_12km_NH_18H_ASC">
+        <Dim name="/NpPolarGrid12km_YDim"/>
+        <Dim name="/NpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_NH_18H_ASC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_18H_ASC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>NpPolarGrid12km_lat NpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_1</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="NpPolarGrid12km_SI_12km_NH_18H_DAY">
+        <Dim name="/NpPolarGrid12km_YDim"/>
+        <Dim name="/NpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_NH_18H_DAY</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_18H_DAY</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>NpPolarGrid12km_lat NpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_1</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="NpPolarGrid12km_SI_12km_NH_18H_DSC">
+        <Dim name="/NpPolarGrid12km_YDim"/>
+        <Dim name="/NpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_NH_18H_DSC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_18H_DSC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>NpPolarGrid12km_lat NpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_1</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="NpPolarGrid12km_SI_12km_NH_18V_ASC">
+        <Dim name="/NpPolarGrid12km_YDim"/>
+        <Dim name="/NpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_NH_18V_ASC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_18V_ASC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>NpPolarGrid12km_lat NpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_1</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="NpPolarGrid12km_SI_12km_NH_18V_DAY">
+        <Dim name="/NpPolarGrid12km_YDim"/>
+        <Dim name="/NpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_NH_18V_DAY</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_18V_DAY</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>NpPolarGrid12km_lat NpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_1</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="NpPolarGrid12km_SI_12km_NH_18V_DSC">
+        <Dim name="/NpPolarGrid12km_YDim"/>
+        <Dim name="/NpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_NH_18V_DSC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_18V_DSC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>NpPolarGrid12km_lat NpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_1</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="NpPolarGrid12km_SI_12km_NH_23H_ASC">
+        <Dim name="/NpPolarGrid12km_YDim"/>
+        <Dim name="/NpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_NH_23H_ASC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_23H_ASC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>NpPolarGrid12km_lat NpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_1</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="NpPolarGrid12km_SI_12km_NH_23H_DAY">
+        <Dim name="/NpPolarGrid12km_YDim"/>
+        <Dim name="/NpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_NH_23H_DAY</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_23H_DAY</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>NpPolarGrid12km_lat NpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_1</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="NpPolarGrid12km_SI_12km_NH_23H_DSC">
+        <Dim name="/NpPolarGrid12km_YDim"/>
+        <Dim name="/NpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_NH_23H_DSC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_23H_DSC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>NpPolarGrid12km_lat NpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_1</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="NpPolarGrid12km_SI_12km_NH_23V_ASC">
+        <Dim name="/NpPolarGrid12km_YDim"/>
+        <Dim name="/NpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_NH_23V_ASC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_23V_ASC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>NpPolarGrid12km_lat NpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_1</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="NpPolarGrid12km_SI_12km_NH_23V_DAY">
+        <Dim name="/NpPolarGrid12km_YDim"/>
+        <Dim name="/NpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_NH_23V_DAY</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_23V_DAY</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>NpPolarGrid12km_lat NpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_1</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="NpPolarGrid12km_SI_12km_NH_23V_DSC">
+        <Dim name="/NpPolarGrid12km_YDim"/>
+        <Dim name="/NpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_NH_23V_DSC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_23V_DSC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>NpPolarGrid12km_lat NpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_1</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="NpPolarGrid12km_SI_12km_NH_36H_ASC">
+        <Dim name="/NpPolarGrid12km_YDim"/>
+        <Dim name="/NpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_NH_36H_ASC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_36H_ASC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>NpPolarGrid12km_lat NpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_1</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="NpPolarGrid12km_SI_12km_NH_36H_DAY">
+        <Dim name="/NpPolarGrid12km_YDim"/>
+        <Dim name="/NpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_NH_36H_DAY</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_36H_DAY</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>NpPolarGrid12km_lat NpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_1</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="NpPolarGrid12km_SI_12km_NH_36H_DSC">
+        <Dim name="/NpPolarGrid12km_YDim"/>
+        <Dim name="/NpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_NH_36H_DSC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_36H_DSC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>NpPolarGrid12km_lat NpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_1</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="NpPolarGrid12km_SI_12km_NH_36V_ASC">
+        <Dim name="/NpPolarGrid12km_YDim"/>
+        <Dim name="/NpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_NH_36V_ASC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_36V_ASC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>NpPolarGrid12km_lat NpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_1</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="NpPolarGrid12km_SI_12km_NH_36V_DAY">
+        <Dim name="/NpPolarGrid12km_YDim"/>
+        <Dim name="/NpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_NH_36V_DAY</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_36V_DAY</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>NpPolarGrid12km_lat NpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_1</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="NpPolarGrid12km_SI_12km_NH_36V_DSC">
+        <Dim name="/NpPolarGrid12km_YDim"/>
+        <Dim name="/NpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_NH_36V_DSC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_36V_DSC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>NpPolarGrid12km_lat NpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_1</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="NpPolarGrid12km_SI_12km_NH_89H_ASC">
+        <Dim name="/NpPolarGrid12km_YDim"/>
+        <Dim name="/NpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_NH_89H_ASC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_89H_ASC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>NpPolarGrid12km_lat NpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_1</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="NpPolarGrid12km_SI_12km_NH_89H_DAY">
+        <Dim name="/NpPolarGrid12km_YDim"/>
+        <Dim name="/NpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_NH_89H_DAY</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_89H_DAY</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>NpPolarGrid12km_lat NpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_1</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="NpPolarGrid12km_SI_12km_NH_89H_DSC">
+        <Dim name="/NpPolarGrid12km_YDim"/>
+        <Dim name="/NpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_NH_89H_DSC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_89H_DSC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>NpPolarGrid12km_lat NpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_1</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="NpPolarGrid12km_SI_12km_NH_89V_ASC">
+        <Dim name="/NpPolarGrid12km_YDim"/>
+        <Dim name="/NpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_NH_89V_ASC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_89V_ASC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>NpPolarGrid12km_lat NpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_1</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="NpPolarGrid12km_SI_12km_NH_89V_DAY">
+        <Dim name="/NpPolarGrid12km_YDim"/>
+        <Dim name="/NpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_NH_89V_DAY</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_89V_DAY</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>NpPolarGrid12km_lat NpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_1</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="NpPolarGrid12km_SI_12km_NH_89V_DSC">
+        <Dim name="/NpPolarGrid12km_YDim"/>
+        <Dim name="/NpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_NH_89V_DSC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_89V_DSC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>NpPolarGrid12km_lat NpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_1</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="NpPolarGrid12km_SI_12km_NH_ICECON_ASC">
+        <Dim name="/NpPolarGrid12km_YDim"/>
+        <Dim name="/NpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_NH_ICECON_ASC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_ICECON_ASC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>NpPolarGrid12km_lat NpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_1</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="NpPolarGrid12km_SI_12km_NH_ICECON_DAY">
+        <Dim name="/NpPolarGrid12km_YDim"/>
+        <Dim name="/NpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_NH_ICECON_DAY</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_ICECON_DAY</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>NpPolarGrid12km_lat NpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_1</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="NpPolarGrid12km_SI_12km_NH_ICECON_DSC">
+        <Dim name="/NpPolarGrid12km_YDim"/>
+        <Dim name="/NpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_NH_ICECON_DSC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_ICECON_DSC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>NpPolarGrid12km_lat NpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_1</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="NpPolarGrid12km_SI_12km_NH_ICEDIFF_ASC">
+        <Dim name="/NpPolarGrid12km_YDim"/>
+        <Dim name="/NpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_NH_ICEDIFF_ASC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_ICEDIFF_ASC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>NpPolarGrid12km_lat NpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_1</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="NpPolarGrid12km_SI_12km_NH_ICEDIFF_DAY">
+        <Dim name="/NpPolarGrid12km_YDim"/>
+        <Dim name="/NpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_NH_ICEDIFF_DAY</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_ICEDIFF_DAY</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>NpPolarGrid12km_lat NpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_1</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="NpPolarGrid12km_SI_12km_NH_ICEDIFF_DSC">
+        <Dim name="/NpPolarGrid12km_YDim"/>
+        <Dim name="/NpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_NH_ICEDIFF_DSC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NpPolarGrid12km/Data Fields/SI_12km_NH_ICEDIFF_DSC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>NpPolarGrid12km_lat NpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_1</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="SpPolarGrid12km_SI_12km_SH_18H_ASC">
+        <Dim name="/SpPolarGrid12km_YDim"/>
+        <Dim name="/SpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_SH_18H_ASC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_18H_ASC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>SpPolarGrid12km_lat SpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_2</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="SpPolarGrid12km_SI_12km_SH_18H_DAY">
+        <Dim name="/SpPolarGrid12km_YDim"/>
+        <Dim name="/SpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_SH_18H_DAY</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_18H_DAY</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>SpPolarGrid12km_lat SpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_2</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="SpPolarGrid12km_SI_12km_SH_18H_DSC">
+        <Dim name="/SpPolarGrid12km_YDim"/>
+        <Dim name="/SpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_SH_18H_DSC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_18H_DSC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>SpPolarGrid12km_lat SpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_2</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="SpPolarGrid12km_SI_12km_SH_18V_ASC">
+        <Dim name="/SpPolarGrid12km_YDim"/>
+        <Dim name="/SpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_SH_18V_ASC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_18V_ASC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>SpPolarGrid12km_lat SpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_2</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="SpPolarGrid12km_SI_12km_SH_18V_DAY">
+        <Dim name="/SpPolarGrid12km_YDim"/>
+        <Dim name="/SpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_SH_18V_DAY</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_18V_DAY</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>SpPolarGrid12km_lat SpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_2</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="SpPolarGrid12km_SI_12km_SH_18V_DSC">
+        <Dim name="/SpPolarGrid12km_YDim"/>
+        <Dim name="/SpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_SH_18V_DSC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_18V_DSC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>SpPolarGrid12km_lat SpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_2</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="SpPolarGrid12km_SI_12km_SH_23H_ASC">
+        <Dim name="/SpPolarGrid12km_YDim"/>
+        <Dim name="/SpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_SH_23H_ASC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_23H_ASC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>SpPolarGrid12km_lat SpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_2</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="SpPolarGrid12km_SI_12km_SH_23H_DAY">
+        <Dim name="/SpPolarGrid12km_YDim"/>
+        <Dim name="/SpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_SH_23H_DAY</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_23H_DAY</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>SpPolarGrid12km_lat SpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_2</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="SpPolarGrid12km_SI_12km_SH_23H_DSC">
+        <Dim name="/SpPolarGrid12km_YDim"/>
+        <Dim name="/SpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_SH_23H_DSC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_23H_DSC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>SpPolarGrid12km_lat SpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_2</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="SpPolarGrid12km_SI_12km_SH_23V_ASC">
+        <Dim name="/SpPolarGrid12km_YDim"/>
+        <Dim name="/SpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_SH_23V_ASC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_23V_ASC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>SpPolarGrid12km_lat SpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_2</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="SpPolarGrid12km_SI_12km_SH_23V_DAY">
+        <Dim name="/SpPolarGrid12km_YDim"/>
+        <Dim name="/SpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_SH_23V_DAY</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_23V_DAY</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>SpPolarGrid12km_lat SpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_2</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="SpPolarGrid12km_SI_12km_SH_23V_DSC">
+        <Dim name="/SpPolarGrid12km_YDim"/>
+        <Dim name="/SpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_SH_23V_DSC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_23V_DSC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>SpPolarGrid12km_lat SpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_2</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="SpPolarGrid12km_SI_12km_SH_36H_ASC">
+        <Dim name="/SpPolarGrid12km_YDim"/>
+        <Dim name="/SpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_SH_36H_ASC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_36H_ASC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>SpPolarGrid12km_lat SpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_2</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="SpPolarGrid12km_SI_12km_SH_36H_DAY">
+        <Dim name="/SpPolarGrid12km_YDim"/>
+        <Dim name="/SpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_SH_36H_DAY</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_36H_DAY</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>SpPolarGrid12km_lat SpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_2</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="SpPolarGrid12km_SI_12km_SH_36H_DSC">
+        <Dim name="/SpPolarGrid12km_YDim"/>
+        <Dim name="/SpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_SH_36H_DSC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_36H_DSC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>SpPolarGrid12km_lat SpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_2</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="SpPolarGrid12km_SI_12km_SH_36V_ASC">
+        <Dim name="/SpPolarGrid12km_YDim"/>
+        <Dim name="/SpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_SH_36V_ASC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_36V_ASC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>SpPolarGrid12km_lat SpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_2</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="SpPolarGrid12km_SI_12km_SH_36V_DAY">
+        <Dim name="/SpPolarGrid12km_YDim"/>
+        <Dim name="/SpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_SH_36V_DAY</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_36V_DAY</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>SpPolarGrid12km_lat SpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_2</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="SpPolarGrid12km_SI_12km_SH_36V_DSC">
+        <Dim name="/SpPolarGrid12km_YDim"/>
+        <Dim name="/SpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_SH_36V_DSC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_36V_DSC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>SpPolarGrid12km_lat SpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_2</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="SpPolarGrid12km_SI_12km_SH_89H_ASC">
+        <Dim name="/SpPolarGrid12km_YDim"/>
+        <Dim name="/SpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_SH_89H_ASC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_89H_ASC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>SpPolarGrid12km_lat SpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_2</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="SpPolarGrid12km_SI_12km_SH_89H_DAY">
+        <Dim name="/SpPolarGrid12km_YDim"/>
+        <Dim name="/SpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_SH_89H_DAY</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_89H_DAY</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>SpPolarGrid12km_lat SpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_2</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="SpPolarGrid12km_SI_12km_SH_89H_DSC">
+        <Dim name="/SpPolarGrid12km_YDim"/>
+        <Dim name="/SpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_SH_89H_DSC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_89H_DSC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>SpPolarGrid12km_lat SpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_2</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="SpPolarGrid12km_SI_12km_SH_89V_ASC">
+        <Dim name="/SpPolarGrid12km_YDim"/>
+        <Dim name="/SpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_SH_89V_ASC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_89V_ASC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>SpPolarGrid12km_lat SpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_2</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="SpPolarGrid12km_SI_12km_SH_89V_DAY">
+        <Dim name="/SpPolarGrid12km_YDim"/>
+        <Dim name="/SpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_SH_89V_DAY</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_89V_DAY</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>SpPolarGrid12km_lat SpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_2</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="SpPolarGrid12km_SI_12km_SH_89V_DSC">
+        <Dim name="/SpPolarGrid12km_YDim"/>
+        <Dim name="/SpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_SH_89V_DSC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_89V_DSC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>SpPolarGrid12km_lat SpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_2</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="SpPolarGrid12km_SI_12km_SH_ICECON_ASC">
+        <Dim name="/SpPolarGrid12km_YDim"/>
+        <Dim name="/SpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_SH_ICECON_ASC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_ICECON_ASC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>SpPolarGrid12km_lat SpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_2</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="SpPolarGrid12km_SI_12km_SH_ICECON_DAY">
+        <Dim name="/SpPolarGrid12km_YDim"/>
+        <Dim name="/SpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_SH_ICECON_DAY</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_ICECON_DAY</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>SpPolarGrid12km_lat SpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_2</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="SpPolarGrid12km_SI_12km_SH_ICECON_DSC">
+        <Dim name="/SpPolarGrid12km_YDim"/>
+        <Dim name="/SpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_SH_ICECON_DSC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_ICECON_DSC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>SpPolarGrid12km_lat SpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_2</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="SpPolarGrid12km_SI_12km_SH_ICEDIFF_ASC">
+        <Dim name="/SpPolarGrid12km_YDim"/>
+        <Dim name="/SpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_SH_ICEDIFF_ASC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_ICEDIFF_ASC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>SpPolarGrid12km_lat SpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_2</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="SpPolarGrid12km_SI_12km_SH_ICEDIFF_DAY">
+        <Dim name="/SpPolarGrid12km_YDim"/>
+        <Dim name="/SpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_SH_ICEDIFF_DAY</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_ICEDIFF_DAY</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>SpPolarGrid12km_lat SpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_2</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="SpPolarGrid12km_SI_12km_SH_ICEDIFF_DSC">
+        <Dim name="/SpPolarGrid12km_YDim"/>
+        <Dim name="/SpPolarGrid12km_XDim"/>
+        <Attribute name="origname" type="String">
+            <Value>SI_12km_SH_ICEDIFF_DSC</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SpPolarGrid12km/Data Fields/SI_12km_SH_ICEDIFF_DSC</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>SpPolarGrid12km_lat SpPolarGrid12km_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_2</Value>
+        </Attribute>
+    </Int32>
+    <String name="CoreMetadata_0">
+        <Attribute name="origname" type="String">
+            <Value>CoreMetadata.0</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION/CoreMetadata.0</Value>
+        </Attribute>
+    </String>
+    <String name="StructMetadata_0">
+        <Attribute name="origname" type="String">
+            <Value>StructMetadata.0</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
+        </Attribute>
+    </String>
+    <Byte name="eos_cf_projection_1">
+        <Attribute name="grid_mapping_name" type="String">
+            <Value>polar_stereographic</Value>
+        </Attribute>
+        <Attribute name="straight_vertical_longitude_from_pole" type="Float64">
+            <Value>-45</Value>
+        </Attribute>
+        <Attribute name="standard_parallel" type="Float64">
+            <Value>70</Value>
+        </Attribute>
+        <Attribute name="false_easting" type="Float64">
+            <Value>0.0</Value>
+        </Attribute>
+        <Attribute name="false_northing" type="Float64">
+            <Value>0.0</Value>
+        </Attribute>
+        <Attribute name="latitude_of_projection_origin" type="Float64">
+            <Value>+90.0</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisTypes" type="String">
+            <Value>GeoX GeoY</Value>
+        </Attribute>
+    </Byte>
+    <Byte name="eos_cf_projection_2">
+        <Attribute name="grid_mapping_name" type="String">
+            <Value>polar_stereographic</Value>
+        </Attribute>
+        <Attribute name="straight_vertical_longitude_from_pole" type="Float64">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="standard_parallel" type="Float64">
+            <Value>-70</Value>
+        </Attribute>
+        <Attribute name="false_easting" type="Float64">
+            <Value>0.0</Value>
+        </Attribute>
+        <Attribute name="false_northing" type="Float64">
+            <Value>0.0</Value>
+        </Attribute>
+        <Attribute name="latitude_of_projection_origin" type="Float64">
+            <Value>-90.0</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisTypes" type="String">
+            <Value>GeoX GeoY</Value>
+        </Attribute>
+    </Byte>
+    <Float64 name="NpPolarGrid12km_YDim">
+        <Dim name="NpPolarGrid12km_YDim"/>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_y_coordinate</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>y coordinate of projection </Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meter</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoY</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="NpPolarGrid12km_XDim">
+        <Dim name="NpPolarGrid12km_XDim"/>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_x_coordinate</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>x coordinate of projection </Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meter</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoX</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="SpPolarGrid12km_YDim">
+        <Dim name="SpPolarGrid12km_YDim"/>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_y_coordinate</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>y coordinate of projection </Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meter</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoY</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="SpPolarGrid12km_XDim">
+        <Dim name="SpPolarGrid12km_XDim"/>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_x_coordinate</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>x coordinate of projection </Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meter</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoX</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="NpPolarGrid12km_lon">
+        <Dim name="/NpPolarGrid12km_YDim"/>
+        <Dim name="/NpPolarGrid12km_XDim"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="NpPolarGrid12km_lat">
+        <Dim name="/NpPolarGrid12km_YDim"/>
+        <Dim name="/NpPolarGrid12km_XDim"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="SpPolarGrid12km_lon">
+        <Dim name="/SpPolarGrid12km_YDim"/>
+        <Dim name="/SpPolarGrid12km_XDim"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="SpPolarGrid12km_lat">
+        <Dim name="/SpPolarGrid12km_YDim"/>
+        <Dim name="/SpPolarGrid12km_XDim"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+    </Float64>
+    <Attribute name="CoreMetadata" type="String">
+        <Value>GROUP = INVENTORYMETADATA
+   GROUPTYPE = MASTERGROUP
+   GROUP = ECSDATAGRANULE
+      OBJECT = LOCALGRANULEID
+         NUM_VAL = 1
+         VALUE = &quot;AMSR_2_L3_SeaIce12km_P00_20160831.he5&quot;
+      END_OBJECT = LOCALGRANULEID
+      OBJECT = PRODUCTIONDATETIME
+         NUM_VAL = 1
+         VALUE = &quot;2016-08-31T15:45:01Z&quot;
+      END_OBJECT = PRODUCTIONDATETIME
+   END_GROUP = ECSDATAGRANULE
+   GROUP = MEASUREDPARAMETER
+      OBJECT = MEASUREDPARAMETERCONTAINER
+         CLASS = 1
+         OBJECT = PARAMETERNAME
+            CLASS = 1
+            NUM_VAL = 1
+            VALUE =&quot;Brightness Temperature&quot;
+         END_OBJECT = PARAMETERNAME
+         OBJECT = PARAMETERDESCRIPTION
+            NUM_VAL = 1
+            CLASS = 2
+            VALUE = &quot;The apparent temperature of the surface assuming a surface emissivity of 1.0. Setting the emissivity to one is equivalent to assuming the target is a blackbody, so the brightness temperature is defined as the temperature a blackbody would be in order to produce the radiance perceived by the sensor.&quot;
+         END_OBJECT = PARAMETERDESCRIPTION
+      END_OBJECT = MEASUREDPARAMETERCONTAINER 
+      OBJECT = MEASUREDPARAMETERCONTAINER
+          CLASS = 2
+          OBJECT = PARAMETERNAME
+             CLASS = 1
+             NUM_VAL = 1
+             VALUE = &quot;Sea Ice Concentration&quot;
+          END_OBJECT = PARAMETERNAME
+          OBJECT = PARAMETERDESCRIPTION
+             CLASS = 2
+             NUM_VAL = 1
+             VALUE = &quot;The ratio of the area of the water surface covered by ice as a fraction of the whole area. Sea ice concentration has been monitored by polar orbiting satellites at all wavelengths.&quot;
+          END_OBJECT = PARAMETERDESCRIPTION
+      END_OBJECT = MEASUREDPARAMETERCONTAINER
+   END_GROUP = MEASUREDPARAMETER
+   GROUP = COLLECTIONDESCRIPTIONCLASS
+      OBJECT = SHORTNAME
+         NUM_VAL = 1
+         VALUE = &quot;A2_SI12_NRT&quot;
+      END_OBJECT = SHORTNAME
+      OBJECT = LONGNAME
+         NUM_VAL = 1
+         VALUE = &quot;NRT AMSR2 Daily L3 12.5 km Tb and Sea Ice Concentration Polar Grids&quot;
+      END_OBJECT = LONGNAME
+      OBJECT = VERSIONID
+         NUM_VAL = 1
+         VALUE = &quot;0&quot;
+      END_OBJECT = VERSIONID
+      OBJECT = COLLECTIONDATATYPE
+         NUM_VAL = 1
+         VALUE = &quot;NEAR_REAL_TIME&quot;
+      END_OBJECT = COLLECTIONDATATYPE
+   END_GROUP = COLLECTIONDESCRIPTIONCLASS
+   GROUP = INPUTGRANULE
+      OBJECT = INPUTPOINTER
+         NUM_VAL = 17
+         VALUE = (&quot;GW1AM2_201608310008_175A_L1SNRTBR_2220220.h5&quot;,
+                  &quot;GW1AM2_201608310105_191D_L1SNRTBR_2220220.h5&quot;,
+                  &quot;GW1AM2_201608310147_191A_L1SNRTBR_2220220.h5&quot;,
+                  &quot;GW1AM2_201608310244_207D_L1SNRTBR_2220220.h5&quot;,
+                  &quot;GW1AM2_201608310325_207A_L1SNRTBR_2220220.h5&quot;,
+                  &quot;GW1AM2_201608310420_223D_L1SNRTBR_2220220.h5&quot;,
+                  &quot;GW1AM2_201608310504_223A_L1SNRTBR_2220220.h5&quot;,
+                  &quot;GW1AM2_201608310559_006D_L1SNRTBR_2220220.h5&quot;,
+                  &quot;GW1AM2_201608310643_006A_L1SNRTBR_2220220.h5&quot;,
+                  &quot;GW1AM2_201608310735_022D_L1SNRTBR_2220220.h5&quot;,
+                  &quot;GW1AM2_201608310822_022A_L1SNRTBR_2220220.h5&quot;,
+                  &quot;GW1AM2_201608310914_038D_L1SNRTBR_2220220.h5&quot;,
+                  &quot;GW1AM2_201608311001_038A_L1SNRTBR_2220220.h5&quot;,
+                  &quot;GW1AM2_201608311053_054D_L1SNRTBR_2220220.h5&quot;,
+                  &quot;GW1AM2_201608311140_054A_L1SNRTBR_2220220.h5&quot;,
+                  &quot;GW1AM2_201608311229_070D_L1SNRTBR_2220220.h5&quot;,
+                  &quot;GW1AM2_201608311319_070A_L1SNRTBR_2220220.h5&quot;)
+      END_OBJECT = INPUTPOINTER
+   END_GROUP = INPUTGRANULE
+   GROUP = SPATIALDOMAINCONTAINER
+      GROUP = HORIZONTALSPATIALDOMAINCONTAINER
+         GROUP = BOUNDINGRECTANGLE
+            OBJECT = WESTBOUNDINGCOORDINATE
+               NUM_VAL = 1
+               VALUE = -180.0
+            END_OBJECT = WESTBOUNDINGCOORDINATE
+            OBJECT = NORTHBOUNDINGCOORDINATE
+               NUM_VAL = 1
+               VALUE = 90.0
+            END_OBJECT = NORTHBOUNDINGCOORDINATE
+            OBJECT = EASTBOUNDINGCOORDINATE
+               NUM_VAL = 1
+               VALUE = 180.0
+            END_OBJECT = EASTBOUNDINGCOORDINATE
+            OBJECT = SOUTHBOUNDINGCOORDINATE
+               NUM_VAL = 1
+               VALUE = -90.0
+            END_OBJECT = SOUTHBOUNDINGCOORDINATE
+         END_GROUP = BOUNDINGRECTANGLE
+      END_GROUP = HORIZONTALSPATIALDOMAINCONTAINER
+   END_GROUP = SPATIALDOMAINCONTAINER
+   GROUP = RANGEDATETIME
+      OBJECT = RANGEBEGINNINGDATE
+         NUM_VAL = 1
+         VALUE = &quot;2016-08-31&quot;
+      END_OBJECT = RANGEBEGINNINGDATE
+      OBJECT = RANGEBEGINNINGTIME
+         NUM_VAL = 1
+         VALUE = &quot;00:08:13.403785Z&quot;
+      END_OBJECT = RANGEBEGINNINGTIME
+      OBJECT = RANGEENDINGDATE
+         NUM_VAL = 1
+         VALUE = &quot;2016-08-31&quot;
+      END_OBJECT = RANGEENDINGDATE
+      OBJECT = RANGEENDINGTIME
+         NUM_VAL = 1
+         VALUE = &quot;14:05:20.571673Z&quot;
+      END_OBJECT = RANGEENDINGTIME
+   END_GROUP = RANGEDATETIME
+   GROUP = PGEVERSIONCLASS
+      OBJECT = PGEVERSION
+         NUM_VAL = 1
+         VALUE = &quot;00&quot;
+      END_OBJECT = PGEVERSION
+   END_GROUP = PGEVERSIONCLASS
+   GROUP = ADDITIONALATTRIBUTES
+       OBJECT = ADDITIONALATTRIBUTESCONTAINER
+         CLASS = &quot;1&quot;
+         OBJECT = ADDITIONALATTRIBUTENAME
+            CLASS = &quot;1&quot;
+            NUM_VAL = 1
+            VALUE = &quot;identifier_product_doi&quot;
+         END_OBJECT = ADDITIONALATTRIBUTENAME
+         GROUP = INFORMATIONCONTENT
+            CLASS = &quot;1&quot;
+            OBJECT = PARAMETERVALUE
+               NUM_VAL = 1
+               CLASS = &quot;1&quot;
+               VALUE = &quot;10.5067/AMSR2/A2_SI12_NRT&quot;
+            END_OBJECT = PARAMETERVALUE
+         END_GROUP = INFORMATIONCONTENT
+      END_OBJECT = ADDITIONALATTRIBUTESCONTAINER
+      OBJECT = ADDITIONALATTRIBUTESCONTAINER
+         CLASS = &quot;2&quot;
+         OBJECT = ADDITIONALATTRIBUTENAME
+            CLASS = &quot;2&quot;
+            NUM_VAL = 1
+            VALUE = &quot;identifier_product_doi_authority&quot;
+         END_OBJECT = ADDITIONALATTRIBUTENAME
+         GROUP = INFORMATIONCONTENT
+            CLASS = &quot;2&quot;
+            OBJECT = PARAMETERVALUE
+               NUM_VAL = 1
+               CLASS = &quot;2&quot;
+               VALUE = &quot;http://dx.doi.org&quot;
+            END_OBJECT = PARAMETERVALUE
+         END_GROUP = INFORMATIONCONTENT
+      END_OBJECT = ADDITIONALATTRIBUTESCONTAINER
+   END_GROUP = ADDITIONALATTRIBUTES
+END_GROUP = INVENTORYMETADATA
+END
+</Value>
+    </Attribute>
+    <Attribute name="Conventions" type="String">
+        <Value>CF-1.7</Value>
+    </Attribute>
+    <Attribute name="HDFEOS" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL_FILE_ATTRIBUTES" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_NpPolarGrid12km" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_NpPolarGrid12km_Data_Fields" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_SpPolarGrid12km" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_SpPolarGrid12km_Data_Fields" type="Container"/>
+    <Attribute name="HDFEOS_INFORMATION" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <Value>HDFEOS_5.1.15</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="dynamic_conf_test.h5">
+    <Dimension name="science_grids_data_latitude" size="180"/>
+    <Dimension name="science_grids_data_longitude" size="360"/>
+    <Dimension name="wkt_length" size="452"/>
+    <Float32 name="science_grids_data_amplitude">
+        <Dim name="/science_grids_data_latitude"/>
+        <Dim name="/science_grids_data_longitude"/>
+    </Float32>
+    <Float64 name="science_grids_data_latitude">
+        <Dim name="/science_grids_data_latitude"/>
+    </Float64>
+    <Float64 name="science_grids_data_longitude">
+        <Dim name="/science_grids_data_longitude"/>
+    </Float64>
+    <Float32 name="wkt_length">
+        <Dim name="/wkt_length"/>
+    </Float32>
+    <Attribute name="science" type="Container"/>
+    <Attribute name="science_grids" type="Container"/>
+    <Attribute name="science_grids_data" type="Container"/>
+</Dataset>

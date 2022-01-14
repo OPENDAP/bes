@@ -1,0 +1,3019 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="TOMS-N7_L2-TOMSN7AERUV_1991m0630t0915-o64032_v02-00-2015m0918t123456.h5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="HDF5_GLOBAL" type="Container">
+        <Attribute name="AuthorAffiliation" type="String">
+            <value>NASA/GSFC </value>
+        </Attribute>
+        <Attribute name="AuthorName" type="String">
+            <value>O. Torres, et al. </value>
+        </Attribute>
+        <Attribute name="Conventions" type="String">
+            <value>CF-1.0 </value>
+        </Attribute>
+        <Attribute name="DayNightFlag" type="String">
+            <value>Day </value>
+        </Attribute>
+        <Attribute name="EastBoundingCoordinate" type="Float32">
+            <value>180.0000000</value>
+        </Attribute>
+        <Attribute name="EquatorCrossingDate" type="String">
+            <value>1991-06-30 </value>
+        </Attribute>
+        <Attribute name="EquatorCrossingLongitude" type="Float32">
+            <value>20.59000015</value>
+        </Attribute>
+        <Attribute name="EquatorCrossingTime" type="String">
+            <value>09:35:09 </value>
+        </Attribute>
+        <Attribute name="GranuleDay" type="Int32">
+            <value>30</value>
+        </Attribute>
+        <Attribute name="GranuleDayOfYear" type="Int32">
+            <value>181</value>
+        </Attribute>
+        <Attribute name="GranuleMonth" type="Int32">
+            <value>6</value>
+        </Attribute>
+        <Attribute name="GranuleYear" type="Int32">
+            <value>1991</value>
+        </Attribute>
+        <Attribute name="HDFVersion" type="String">
+            <value>5-1.8.11 </value>
+        </Attribute>
+        <Attribute name="identifier_product_doi" type="String">
+            <value>10.5067/MEASURES/AERUV/DATA201 </value>
+        </Attribute>
+        <Attribute name="identifier_product_doi_authority" type="String">
+            <value>http://dx.doi.org/ </value>
+        </Attribute>
+        <Attribute name="InputPointer" type="String">
+            <value>TOMS-N7_L2-N7AERUV_1991m0630t0915-o64032_v002-2015m0701t221947.he5 </value>
+        </Attribute>
+        <Attribute name="InstrumentShortName" type="String">
+            <value>TOMS </value>
+        </Attribute>
+        <Attribute name="LocalGranuleID" type="String">
+            <value>TOMS-N7_L2-TOMSN7AERUV_1991m0630t0915-o64032_v02-00-2015m0918t192605.h5 </value>
+        </Attribute>
+        <Attribute name="LocalityValue" type="String">
+            <value>Global </value>
+        </Attribute>
+        <Attribute name="LongName" type="String">
+            <value>TOMS/N7 Near UV Aerosol Optical Depth and Single Scattering Albedo 1-Orbit L2 Swath 50x50 km </value>
+        </Attribute>
+        <Attribute name="NorthBoundingCoordinate" type="Float32">
+            <value>89.74810791</value>
+        </Attribute>
+        <Attribute name="NumTimes" type="Int32">
+            <value>392</value>
+        </Attribute>
+        <Attribute name="OrbitNumber" type="Int32">
+            <value>64032</value>
+        </Attribute>
+        <Attribute name="ParameterName" type="String">
+            <value>Near UV Aerosol Properties </value>
+        </Attribute>
+        <Attribute name="PGEVersion" type="String">
+            <value>0.0.1 </value>
+        </Attribute>
+        <Attribute name="PlatformShortName" type="String">
+            <value>Nimbus 7 </value>
+        </Attribute>
+        <Attribute name="ProcessingCenter" type="String">
+            <value>ACPS </value>
+        </Attribute>
+        <Attribute name="ProcessLevel" type="String">
+            <value>2 </value>
+        </Attribute>
+        <Attribute name="ProductionDateTimeHE5" type="String">
+            <value>2015-07-01T22:19:47.0Z </value>
+        </Attribute>
+        <Attribute name="ProductType" type="String">
+            <value>L2 Swath </value>
+        </Attribute>
+        <Attribute name="RangeBeginningDate" type="String">
+            <value>1991-06-30 </value>
+        </Attribute>
+        <Attribute name="RangeBeginningTime" type="String">
+            <value>09:15:43 </value>
+        </Attribute>
+        <Attribute name="RangeEndingDate" type="String">
+            <value>1991-06-30 </value>
+        </Attribute>
+        <Attribute name="RangeEndingTime" type="String">
+            <value>10:09:51 </value>
+        </Attribute>
+        <Attribute name="SensorShortName" type="String">
+            <value>Single Monochromator </value>
+        </Attribute>
+        <Attribute name="ShortName" type="String">
+            <value>TOMSN7AERUV </value>
+        </Attribute>
+        <Attribute name="SouthBoundingCoordinate" type="Float32">
+            <value>-67.31681061</value>
+        </Attribute>
+        <Attribute name="VersionID" type="String">
+            <value>2.00 </value>
+        </Attribute>
+        <Attribute name="WestBoundingCoordinate" type="Float32">
+            <value>-180.0000000</value>
+        </Attribute>
+        <Attribute name="TAI93At0zOfGranule" type="Float64">
+            <value>-47606401.000000000</value>
+        </Attribute>
+        <Attribute name="ProductionDateTimeHDF" type="String">
+            <value>2015-09-18T19:26:05.0Z </value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="ANCILLARY_DATA" type="Container"/>
+    <Attribute name="GEOLOCATION_DATA" type="Container"/>
+    <Attribute name="SCIENCE_DATA" type="Container"/>
+    <Attribute name="SENSOR_DATA" type="Container"/>
+    <Array name="ANCILLARY_DATA_SurfaceAlbedo331">
+        <Attribute name="long_name" type="String">
+            <value>Surface Albedo at 331 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Surface Albedo at 331 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SurfaceAlbedo331</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/ANCILLARY_DATA/SurfaceAlbedo331</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="ANCILLARY_DATA_SurfaceAlbedo340">
+        <Attribute name="long_name" type="String">
+            <value>Surface Albedo at 340 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Surface Albedo at 340 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SurfaceAlbedo340</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/ANCILLARY_DATA/SurfaceAlbedo340</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="ANCILLARY_DATA_SurfaceAlbedo360">
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Surface Albedo at 360 nm.</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Surface Albedo at 360 nm</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SurfaceAlbedo360</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/ANCILLARY_DATA/SurfaceAlbedo360</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="ANCILLARY_DATA_SurfaceAlbedo380">
+        <Attribute name="long_name" type="String">
+            <value>Surface Albedo at 380 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Surface Albedo at 380 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SurfaceAlbedo380</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/ANCILLARY_DATA/SurfaceAlbedo380</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="ANCILLARY_DATA_SurfaceAlbedoOC331">
+        <Attribute name="long_name" type="String">
+            <value>Surface Albedo Ocean Corrected at 331 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Surface Albedo Ocean Corrected at 331 nm.</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SurfaceAlbedoOC331</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/ANCILLARY_DATA/SurfaceAlbedoOC331</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="ANCILLARY_DATA_SurfaceAlbedoOC340">
+        <Attribute name="long_name" type="String">
+            <value>Surface Albedo Ocean Corrected at 340 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Surface Albedo Ocean Corrected at 340 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SurfaceAlbedoOC340</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/ANCILLARY_DATA/SurfaceAlbedoOC340</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="ANCILLARY_DATA_SurfaceAlbedoOC360">
+        <Attribute name="long_name" type="String">
+            <value>Surface Albedo Ocean Corrected at 360 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Surface Albedo Ocean Corrected at 360 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SurfaceAlbedoOC360</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/ANCILLARY_DATA/SurfaceAlbedoOC360</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="ANCILLARY_DATA_SurfaceAlbedoOC380">
+        <Attribute name="valid_max" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Surface Albedo Ocean Corrected at 380 nm</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Surface Albedo Ocean Corrected at 380 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SurfaceAlbedoOC380</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/ANCILLARY_DATA/SurfaceAlbedoOC380</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="ANCILLARY_DATA_TerrainPressure">
+        <Attribute name="units" type="String">
+            <value>hPa</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>TerrainPressure</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>The terrain pressure (in hPa) at the center of the ground pixel (from the TOMS Level 1B file).</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>-20.00000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>1000.000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>TerrainPressure</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/ANCILLARY_DATA/TerrainPressure</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="GEOLOCATION_DATA_CornerLatitude">
+        <Attribute name="long_name" type="String">
+            <value>Corner Latitudes for Pixels on the WGS-85 Ellipsoid (CCW relative to flight direction: LL,LR,UR,UL)</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>The geodetic latitudes (in degrees) of the corner coordinates of the ground pixels (from TOMSN7PIXCOR).</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>-90.00000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>90.00000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>CornerLatitude</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/GEOLOCATION_DATA/CornerLatitude</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude nCorners</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+        <dimension name="nCorners" size="4"/>
+    </Array>
+    <Array name="GEOLOCATION_DATA_CornerLongitude">
+        <Attribute name="long_name" type="String">
+            <value>Corner Longitudes for Pixels on the WGS-85 Ellipsoid (CCW relative to flight direction: LL,LR,UR,UL)</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>The geodetic longitudes (in degrees) of the corner coordinates of the ground pixels (from TOMSN7PIXCOR).</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>-180.0000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>180.0000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>CornerLongitude</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/GEOLOCATION_DATA/CornerLongitude</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude nCorners</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+        <dimension name="nCorners" size="4"/>
+    </Array>
+    <Array name="GEOLOCATION_DATA_GroundPixelQualityFlags">
+        <Attribute name="long_name" type="String">
+            <value>Ground Pixel Quality Flags</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int32">
+            <value>65534</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>The ground pixel quality flags (for the ground pixel):  Bits 0 to 3 together contain the land/water flags:  0 - shallow ocean, 1 - land, 2 - shallow inland water, 3 - ocean coastline/lake shoreline, 4 - ephemeral (intermittent) water, 5 - deep inland water, 6 - continental shelf ocean, 7 - deep ocean, 8 to 14 - not used, 15 - error flag for land/water, Bits 4 to 6 are flags that are set to 0 for FALSE or 1 for TRUE:  Bit 4 - sun glint possibility flag, Bit 5 - solar eclipse possibility flag, Bit 6 - geolocation error flag, Bit 7 is reserved for future use (currently set to 0), Bits 8 to 14 together contain the snow/ice flags (based on NISE):  0 - snow-free land, 1 to 100 - sea ice concentration (percent), 101 - permanent ice (Greenland, Antarctica), 102 - not used, 103 - dry snow, 104 - ocean (NISE-255), 105 to 123 - reserved for future use, 124 - mixed pixels at coastline (NISE-252), 125 - suspect ice value (NISE-253), 126 - corners undefined (NISE-254), 127 - error, Bit 15 - NISE nearest neighbor filling flag.</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <value>-2147483647</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>GroundPixelQualityFlags</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/GEOLOCATION_DATA/GroundPixelQualityFlags</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="GEOLOCATION_DATA_RelativeAzimuthAngle">
+        <Attribute name="long_name" type="String">
+            <value>Relative Azimuth Angle (sun + 180 - view)</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_eastofnorth</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>The relative (sun + 180 - view) azimuth angle (in degrees) at the center of the ground pixel.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>-180.0000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>180.0000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>RelativeAzimuthAngle</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/GEOLOCATION_DATA/RelativeAzimuthAngle</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="GEOLOCATION_DATA_SecondsInDay">
+        <Attribute name="long_name" type="String">
+            <value>Seconds After UTC Midnight</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>s</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>The time (in s) after UTC midnight at the start of the observation.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>86401.00000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SecondsInDay</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/GEOLOCATION_DATA/SecondsInDay</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+    </Array>
+    <Array name="GEOLOCATION_DATA_SolarZenithAngle">
+        <Attribute name="long_name" type="String">
+            <value>Solar Zenith Angle</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>The solar zenith angle (in degrees) at the center of the ground pixel.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>90.00000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>SolarZenithAngle</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/GEOLOCATION_DATA/SolarZenithAngle</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="GEOLOCATION_DATA_Time">
+        <Attribute name="description" type="String">
+            <value>The TAI93 time (in continuous seconds since 12 a.m. UTC on January 1, 1993) of the start of the scan.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <value>-5000000000.0000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <value>10000000000.000000</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Time at Start of Scan (TAI93)</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>s</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <value>-1.2676506002282294e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Time</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/GEOLOCATION_DATA/Time</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="nTimes" size="392"/>
+    </Array>
+    <Array name="GEOLOCATION_DATA_ViewingZenithAngle">
+        <Attribute name="long_name" type="String">
+            <value>Viewing Zenith Angle</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>The viewing zenith angle (in degrees) at the center of the ground pixel.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>70.00000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>ViewingZenithAngle</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/GEOLOCATION_DATA/ViewingZenithAngle</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_AIRS_CO_Value">
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>AIRS CO Value</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>AIRS CO Value.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>10.00000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AIRS_CO_Value</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/AIRS_CO_Value</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_AerosolAbsorptionOpticalDepthVsHeight331">
+        <Attribute name="long_name" type="String">
+            <value>Aerosol Absorption Optical Depth vs. Height at 331 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Aerosol Absorption Optical Depth vs. Height at 331 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>100.0000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AerosolAbsorptionOpticalDepthVsHeight331</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/AerosolAbsorptionOpticalDepthVsHeight331</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude nLevels</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+        <dimension name="nLevels" size="5"/>
+    </Array>
+    <Array name="SCIENCE_DATA_AerosolAbsorptionOpticalDepthVsHeight340">
+        <Attribute name="long_name" type="String">
+            <value>Aerosol Absorption Optical Depth vs. Height at 340 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Aerosol Absorption Optical Depth vs. Height at 340 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>100.0000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AerosolAbsorptionOpticalDepthVsHeight340</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/AerosolAbsorptionOpticalDepthVsHeight340</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude nLevels</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+        <dimension name="nLevels" size="5"/>
+    </Array>
+    <Array name="SCIENCE_DATA_AerosolAbsorptionOpticalDepthVsHeight360">
+        <Attribute name="long_name" type="String">
+            <value>Aerosol Absorption Optical Depth vs. Height at 360 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Aerosol Absorption Optical Depth vs. Height at 360 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>100.0000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AerosolAbsorptionOpticalDepthVsHeight360</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/AerosolAbsorptionOpticalDepthVsHeight360</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude nLevels</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+        <dimension name="nLevels" size="5"/>
+    </Array>
+    <Array name="SCIENCE_DATA_AerosolAbsorptionOpticalDepthVsHeight380">
+        <Attribute name="long_name" type="String">
+            <value>Aerosol Absorption Optical Depth vs. Height at 380 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Aerosol Absorption Optical Depth vs. Height at 380 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>100.0000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AerosolAbsorptionOpticalDepthVsHeight380</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/AerosolAbsorptionOpticalDepthVsHeight380</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude nLevels</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+        <dimension name="nLevels" size="5"/>
+    </Array>
+    <Array name="SCIENCE_DATA_AerosolAbsorptionOpticalDepthVsHeight500a">
+        <Attribute name="long_name" type="String">
+            <value>Aerosol Absorption Optical Depth vs. Height at 500 nm from 331- and 360-nm Analysis</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Aerosol Absorption Optical Depth vs. Height at 500 nm from 331- and 360-nm Analysis.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>100.0000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AerosolAbsorptionOpticalDepthVsHeight500a</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/AerosolAbsorptionOpticalDepthVsHeight500a</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude nLevels</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+        <dimension name="nLevels" size="5"/>
+    </Array>
+    <Array name="SCIENCE_DATA_AerosolAbsorptionOpticalDepthVsHeight500b">
+        <Attribute name="long_name" type="String">
+            <value>Aerosol Absorption Optical Depth vs. Height at 500 nm from 340- and 380-nm Analysis</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Aerosol Absorption Optical Depth vs. Height at 500 nm from 340- and 380-nm Analysis.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>100.0000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AerosolAbsorptionOpticalDepthVsHeight500b</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/AerosolAbsorptionOpticalDepthVsHeight500b</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude nLevels</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+        <dimension name="nLevels" size="5"/>
+    </Array>
+    <Array name="SCIENCE_DATA_AerosolOpticalDepthVsHeight331">
+        <Attribute name="long_name" type="String">
+            <value>Aerosol Optical Depth vs. Height at 331 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Aerosol Optical Depth vs. Height at 331 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>100.0000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AerosolOpticalDepthVsHeight331</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/AerosolOpticalDepthVsHeight331</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude nLevels</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+        <dimension name="nLevels" size="5"/>
+    </Array>
+    <Array name="SCIENCE_DATA_AerosolOpticalDepthVsHeight340">
+        <Attribute name="description" type="String">
+            <value>Aerosol Optical Depth vs. Height at 340 nm.</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Aerosol Optical Depth vs. Height at 340 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>100.0000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AerosolOpticalDepthVsHeight340</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/AerosolOpticalDepthVsHeight340</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude nLevels</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+        <dimension name="nLevels" size="5"/>
+    </Array>
+    <Array name="SCIENCE_DATA_AerosolOpticalDepthVsHeight360">
+        <Attribute name="long_name" type="String">
+            <value>Aerosol Optical Depth vs. Height at 360 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Aerosol Optical Depth vs. Height at 360 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>100.0000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AerosolOpticalDepthVsHeight360</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/AerosolOpticalDepthVsHeight360</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude nLevels</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+        <dimension name="nLevels" size="5"/>
+    </Array>
+    <Array name="SCIENCE_DATA_AerosolOpticalDepthVsHeight380">
+        <Attribute name="long_name" type="String">
+            <value>Aerosol Optical Depth vs. Height at 380 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Aerosol Optical Depth vs. Height at 380 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>100.0000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AerosolOpticalDepthVsHeight380</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/AerosolOpticalDepthVsHeight380</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude nLevels</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+        <dimension name="nLevels" size="5"/>
+    </Array>
+    <Array name="SCIENCE_DATA_AerosolOpticalDepthVsHeight500a">
+        <Attribute name="long_name" type="String">
+            <value>Aerosol Optical Depth vs. Height at 500 nm from 331- and 360-nm Analysis</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Aerosol Optical Depth vs. Height at 500 nm from 331- and 360-nm Analysis.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>100.0000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AerosolOpticalDepthVsHeight500a</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/AerosolOpticalDepthVsHeight500a</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude nLevels</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+        <dimension name="nLevels" size="5"/>
+    </Array>
+    <Array name="SCIENCE_DATA_AerosolOpticalDepthVsHeight500b">
+        <Attribute name="long_name" type="String">
+            <value>Aerosol Optical Depth vs. Height at 500 nm from 340- and 380-nm Analysis</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Aerosol Optical Depth vs. Height at 500 nm from 340- and 380-nm Analysis.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>100.0000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AerosolOpticalDepthVsHeight500b</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/AerosolOpticalDepthVsHeight500b</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude nLevels</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+        <dimension name="nLevels" size="5"/>
+    </Array>
+    <Array name="SCIENCE_DATA_AerosolSingleScatteringAlbedoVsHeight331">
+        <Attribute name="long_name" type="String">
+            <value>Aerosol Single Scattering Albedo vs. Height at 331 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Aerosol Single Scattering Albedo vs. Height at 331 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AerosolSingleScatteringAlbedoVsHeight331</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/AerosolSingleScatteringAlbedoVsHeight331</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude nLevels</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+        <dimension name="nLevels" size="5"/>
+    </Array>
+    <Array name="SCIENCE_DATA_AerosolSingleScatteringAlbedoVsHeight340">
+        <Attribute name="long_name" type="String">
+            <value>Aerosol Single Scattering Albedo vs. Height at 340 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Aerosol Single Scattering Albedo vs. Height at 340 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AerosolSingleScatteringAlbedoVsHeight340</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/AerosolSingleScatteringAlbedoVsHeight340</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude nLevels</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+        <dimension name="nLevels" size="5"/>
+    </Array>
+    <Array name="SCIENCE_DATA_AerosolSingleScatteringAlbedoVsHeight360">
+        <Attribute name="long_name" type="String">
+            <value>Aerosol Single Scattering Albedo vs. Height at 360 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Aerosol Single Scattering Albedo vs. Height at 360 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AerosolSingleScatteringAlbedoVsHeight360</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/AerosolSingleScatteringAlbedoVsHeight360</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude nLevels</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+        <dimension name="nLevels" size="5"/>
+    </Array>
+    <Array name="SCIENCE_DATA_AerosolSingleScatteringAlbedoVsHeight380">
+        <Attribute name="long_name" type="String">
+            <value>Aerosol Single Scattering Albedo vs. Height at 380 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Aerosol Single Scattering Albedo vs. Height at 380 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AerosolSingleScatteringAlbedoVsHeight380</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/AerosolSingleScatteringAlbedoVsHeight380</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude nLevels</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+        <dimension name="nLevels" size="5"/>
+    </Array>
+    <Array name="SCIENCE_DATA_AerosolSingleScatteringAlbedoVsHeight500a">
+        <Attribute name="description" type="String">
+            <value>Aerosol Single Scattering Albedo vs. Height at 500 nm from 331- and 360-nm Analysis.</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Aerosol Single Scattering Albedo vs. Height at 500 nm from 331- and 360-nm Analysis</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AerosolSingleScatteringAlbedoVsHeight500a</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/AerosolSingleScatteringAlbedoVsHeight500a</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude nLevels</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+        <dimension name="nLevels" size="5"/>
+    </Array>
+    <Array name="SCIENCE_DATA_AerosolSingleScatteringAlbedoVsHeight500b">
+        <Attribute name="long_name" type="String">
+            <value>Aerosol Single Scattering Albedo vs. Height at 500 nm from 340- and 380-nm Analysis</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Aerosol Single Scattering Albedo vs. Height at 500 nm from 340- and 380-nm Analysis.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AerosolSingleScatteringAlbedoVsHeight500b</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/AerosolSingleScatteringAlbedoVsHeight500b</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude nLevels</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+        <dimension name="nLevels" size="5"/>
+    </Array>
+    <Array name="SCIENCE_DATA_AerosolType_331and360">
+        <Attribute name="long_name" type="String">
+            <value>Aerosol Type (331 and 360 nm)</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Aerosol Type (331 and 360 nm).</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int32">
+            <value>65534</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <value>-2147483647</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AerosolType_331and360</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/AerosolType_331and360</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_AerosolType_340and380">
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Aerosol Type (340 and 380 nm)</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Aerosol Type (340 and 380 nm).</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int32">
+            <value>65534</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <value>-2147483647</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AerosolType_340and380</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/AerosolType_340and380</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_AlgorithmFlagsVsHeight_331and360">
+        <Attribute name="long_name" type="String">
+            <value>Algorithm Flags vs. Heights (331 and 360 nm)</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Algorithm Flags vs. Heights (331 and 360 nm).</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int32">
+            <value>65534</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <value>-2147483647</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AlgorithmFlagsVsHeight_331and360</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/AlgorithmFlagsVsHeight_331and360</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude nLevels</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+        <dimension name="nLevels" size="5"/>
+    </Array>
+    <Array name="SCIENCE_DATA_AlgorithmFlagsVsHeight_340and380">
+        <Attribute name="long_name" type="String">
+            <value>Algorithm Flags vs. Heights (340 and 380 nm)</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Algorithm Flags vs. Heights (340 and 380 nm).</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int32">
+            <value>65534</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <value>-2147483647</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>AlgorithmFlagsVsHeight_340and380</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/AlgorithmFlagsVsHeight_340and380</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude nLevels</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+        <dimension name="nLevels" size="5"/>
+    </Array>
+    <Array name="SCIENCE_DATA_CloudFraction360">
+        <Attribute name="long_name" type="String">
+            <value>Cloud Fraction at 360 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>The effective cloud fraction at 360 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>CloudFraction360</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/CloudFraction360</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_CloudFraction380">
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Cloud Fraction at 380 nm</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>The effective cloud fraction at 380 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>CloudFraction380</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/CloudFraction380</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_CloudOpticalDepth360">
+        <Attribute name="long_name" type="String">
+            <value>Cloud Optical Depth at 360 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Cloud Optical Depth at 360 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>1000.000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>CloudOpticalDepth360</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/CloudOpticalDepth360</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_CloudOpticalDepth380">
+        <Attribute name="long_name" type="String">
+            <value>Cloud Optical Depth at 380 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Cloud Optical Depth at 380 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>1000.000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>CloudOpticalDepth380</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/CloudOpticalDepth380</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_FinalAerosolAbsorptionOpticalDepth331">
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Final Aerosol Absorption Optical Depth at 331 nm</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Final Aerosol Absorption Optical Depth at 331 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>100.0000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>FinalAerosolAbsorptionOpticalDepth331</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/FinalAerosolAbsorptionOpticalDepth331</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_FinalAerosolAbsorptionOpticalDepth340">
+        <Attribute name="long_name" type="String">
+            <value>Final Aerosol Absorption Optical Depth at 340 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Final Aerosol Absorption Optical Depth at 340 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>100.0000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>FinalAerosolAbsorptionOpticalDepth340</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/FinalAerosolAbsorptionOpticalDepth340</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_FinalAerosolAbsorptionOpticalDepth360">
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Final Aerosol Absorption Optical Depth at 360 nm</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Final Aerosol Absorption Optical Depth at 360 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>100.0000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>FinalAerosolAbsorptionOpticalDepth360</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/FinalAerosolAbsorptionOpticalDepth360</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_FinalAerosolAbsorptionOpticalDepth380">
+        <Attribute name="long_name" type="String">
+            <value>Final Aerosol Absorption Optical Depth at 380 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Final Aerosol Absorption Optical Depth at 380 nm.</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>100.0000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>FinalAerosolAbsorptionOpticalDepth380</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/FinalAerosolAbsorptionOpticalDepth380</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_FinalAerosolAbsorptionOpticalDepth500a">
+        <Attribute name="long_name" type="String">
+            <value>Final Aerosol Absorption Optical Depth at 500 nm from 331- and 360-nm Analysis.</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Final Aerosol Absorption Optical Depth at 500 nm from 331- and 360-nm Analysis.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>100.0000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>FinalAerosolAbsorptionOpticalDepth500a</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/FinalAerosolAbsorptionOpticalDepth500a</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_FinalAerosolAbsorptionOpticalDepth500b">
+        <Attribute name="long_name" type="String">
+            <value>Final Aerosol Absorption Optical Depth at 500 nm from 340- and 380-nm Analysis.</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Final Aerosol Absorption Optical Depth at 500 nm from 340- and 380-nm Analysis.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>100.0000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>FinalAerosolAbsorptionOpticalDepth500b</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/FinalAerosolAbsorptionOpticalDepth500b</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_FinalAerosolLayerHeight_331and360">
+        <Attribute name="description" type="String">
+            <value>Final Aerosol Layer Height (331 and 360 nm).</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>10.00000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Final Aerosol Layer Height (331 and 360 nm)</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>km</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>FinalAerosolLayerHeight_331and360</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/FinalAerosolLayerHeight_331and360</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_FinalAerosolLayerHeight_340and380">
+        <Attribute name="units" type="String">
+            <value>km</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Final Aerosol Layer Height (340 and 380 nm)</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Final Aerosol Layer Height (340 and 380 nm).</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>10.00000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>FinalAerosolLayerHeight_340and380</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/FinalAerosolLayerHeight_340and380</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_FinalAerosolOpticalDepth331">
+        <Attribute name="long_name" type="String">
+            <value>Final Aerosol Optical Depth at 331 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Final Aerosol Optical Depth at 331 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>100.0000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>FinalAerosolOpticalDepth331</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/FinalAerosolOpticalDepth331</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_FinalAerosolOpticalDepth340">
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Final Aerosol Optical Depth at 340 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>100.0000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Final Aerosol Optical Depth at 340 nm</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>FinalAerosolOpticalDepth340</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/FinalAerosolOpticalDepth340</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_FinalAerosolOpticalDepth360">
+        <Attribute name="long_name" type="String">
+            <value>Final Aerosol Optical Depth at 360 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Final Aerosol Optical Depth at 360 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>100.0000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>FinalAerosolOpticalDepth360</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/FinalAerosolOpticalDepth360</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_FinalAerosolOpticalDepth380">
+        <Attribute name="long_name" type="String">
+            <value>Final Aerosol Optical Depth at 380 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Final Aerosol Optical Depth at 380 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>100.0000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>FinalAerosolOpticalDepth380</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/FinalAerosolOpticalDepth380</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_FinalAerosolOpticalDepth500a">
+        <Attribute name="long_name" type="String">
+            <value>Final Aerosol Optical Depth at 500 nm from 331- and 360-nm Analysis.</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Final Aerosol Optical Depth at 500 nm from 331- and 360-nm Analysis.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>100.0000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>FinalAerosolOpticalDepth500a</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/FinalAerosolOpticalDepth500a</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_FinalAerosolOpticalDepth500b">
+        <Attribute name="long_name" type="String">
+            <value>Final Aerosol Optical Depth at 500 nm from 340- and 380-nm Analysis.</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Final Aerosol Optical Depth at 500 nm from 340- and 380-nm Analysis.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>100.0000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>FinalAerosolOpticalDepth500b</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/FinalAerosolOpticalDepth500b</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_FinalAerosolSingleScatteringAlbedo331">
+        <Attribute name="long_name" type="String">
+            <value>Final Aerosol Single Scattering Albedo at 331 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Final Aerosol Single Scattering Albedo at 331 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>FinalAerosolSingleScatteringAlbedo331</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/FinalAerosolSingleScatteringAlbedo331</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_FinalAerosolSingleScatteringAlbedo340">
+        <Attribute name="long_name" type="String">
+            <value>Final Aerosol Single Scattering Albedo at 340 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Final Aerosol Single Scattering Albedo at 340 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>FinalAerosolSingleScatteringAlbedo340</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/FinalAerosolSingleScatteringAlbedo340</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_FinalAerosolSingleScatteringAlbedo360">
+        <Attribute name="long_name" type="String">
+            <value>Final Aerosol Single Scattering Albedo at 360 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Final Aerosol Single Scattering Albedo at 360 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>FinalAerosolSingleScatteringAlbedo360</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/FinalAerosolSingleScatteringAlbedo360</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_FinalAerosolSingleScatteringAlbedo380">
+        <Attribute name="long_name" type="String">
+            <value>Final Aerosol Single Scattering Albedo at 380 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Final Aerosol Single Scattering Albedo at 380 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>FinalAerosolSingleScatteringAlbedo380</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/FinalAerosolSingleScatteringAlbedo380</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_FinalAerosolSingleScatteringAlbedo500a">
+        <Attribute name="long_name" type="String">
+            <value>Final Aerosol Single Scattering Albedo at 500 nm from 331- and 360-nm Analysis.</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Final Aerosol Single Scattering Albedo at 500 nm from 331- and 360-nm Analysis.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>FinalAerosolSingleScatteringAlbedo500a</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/FinalAerosolSingleScatteringAlbedo500a</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_FinalAerosolSingleScatteringAlbedo500b">
+        <Attribute name="long_name" type="String">
+            <value>Final Aerosol Single Scattering Albedo at 500 nm from 340- and 380-nm Analysis.</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Final Aerosol Single Scattering Albedo at 500 nm from 340- and 380-nm Analysis.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>FinalAerosolSingleScatteringAlbedo500b</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/FinalAerosolSingleScatteringAlbedo500b</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_FinalAlgorithmFlags_331and360">
+        <Attribute name="long_name" type="String">
+            <value>Final Algorithm Flags (331 and 360 nm)</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Final Algorithm Flags (331 and 360 nm).</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int32">
+            <value>65534</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <value>-2147483647</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>FinalAlgorithmFlags_331and360</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/FinalAlgorithmFlags_331and360</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_FinalAlgorithmFlags_340and380">
+        <Attribute name="long_name" type="String">
+            <value>Final Algorithm Flags (340 and 380 nm)</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Final Algorithm Flags (340 and 380 nm).</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int32">
+            <value>65534</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <value>-2147483647</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>FinalAlgorithmFlags_340and380</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/FinalAlgorithmFlags_340and380</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_ImaginaryRefractiveIndex331">
+        <Attribute name="description" type="String">
+            <value>Imaginary Part of Refractive Index at 331 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Imaginary Part of Refractive Index at 331 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>ImaginaryRefractiveIndex331</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/ImaginaryRefractiveIndex331</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude nLevels</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+        <dimension name="nLevels" size="5"/>
+    </Array>
+    <Array name="SCIENCE_DATA_ImaginaryRefractiveIndex340">
+        <Attribute name="long_name" type="String">
+            <value>Imaginary Part of Refractive Index at 340 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Imaginary Part of Refractive Index at 340 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>ImaginaryRefractiveIndex340</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/ImaginaryRefractiveIndex340</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude nLevels</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+        <dimension name="nLevels" size="5"/>
+    </Array>
+    <Array name="SCIENCE_DATA_ImaginaryRefractiveIndex360">
+        <Attribute name="long_name" type="String">
+            <value>Imaginary Part of Refractive Index at 360 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Imaginary Part of Refractive Index at 360 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>ImaginaryRefractiveIndex360</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/ImaginaryRefractiveIndex360</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude nLevels</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+        <dimension name="nLevels" size="5"/>
+    </Array>
+    <Array name="SCIENCE_DATA_ImaginaryRefractiveIndex380">
+        <Attribute name="long_name" type="String">
+            <value>Imaginary Part of Refractive Index at 380 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Imaginary Part of Refractive Index at 380 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>ImaginaryRefractiveIndex380</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/ImaginaryRefractiveIndex380</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude nLevels</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+        <dimension name="nLevels" size="5"/>
+    </Array>
+    <Array name="SCIENCE_DATA_ImaginaryRefractiveIndex500a">
+        <Attribute name="long_name" type="String">
+            <value>Imaginary Part of Refractive Index at 500 nm from 331- and 360-nm Analysis.</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Imaginary Part of Refractive Index at 500 nm from 331- and 360-nm Analysis.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>ImaginaryRefractiveIndex500a</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/ImaginaryRefractiveIndex500a</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude nLevels</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+        <dimension name="nLevels" size="5"/>
+    </Array>
+    <Array name="SCIENCE_DATA_ImaginaryRefractiveIndex500b">
+        <Attribute name="long_name" type="String">
+            <value>Imaginary Part of Refractive Index at 500 nm from 340- and 380-nm Analysis.</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Imaginary Part of Refractive Index at 500 nm from 340- and 380-nm Analysis.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>ImaginaryRefractiveIndex500b</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/ImaginaryRefractiveIndex500b</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude nLevels</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+        <dimension name="nLevels" size="5"/>
+    </Array>
+    <Array name="SCIENCE_DATA_NormalizedRadiance">
+        <Attribute name="long_name" type="String">
+            <value>Normalized Radiances at 331, 340, 360 and 380 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Normalized Radiances at 331, 340, 360 and 380 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>NormalizedRadiance</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/NormalizedRadiance</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude nWavel</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+        <dimension name="nWavel" size="4"/>
+    </Array>
+    <Array name="SCIENCE_DATA_Reflectivity331">
+        <Attribute name="long_name" type="String">
+            <value>Lambertian Equivalent Reflectivity at 331 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>%</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Lambertian Equivalent Reflectivity at 331 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>-15.00000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>115.0000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Reflectivity331</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/Reflectivity331</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_Reflectivity340">
+        <Attribute name="units" type="String">
+            <value>%</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Lambertian Equivalent Reflectivity at 340 nm</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Lambertian Equivalent Reflectivity at 340 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>-15.00000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>115.0000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Reflectivity340</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/Reflectivity340</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_Reflectivity360">
+        <Attribute name="long_name" type="String">
+            <value>Lambertian Equivalent Reflectivity at 360 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>%</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Lambertian Equivalent Reflectivity at 360 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>-15.00000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>115.0000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Reflectivity360</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/Reflectivity360</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_Reflectivity380">
+        <Attribute name="long_name" type="String">
+            <value>Lambertian Equivalent Reflectivity at 380 nm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>%</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Lambertian Equivalent Reflectivity at 380 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>-15.00000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>115.0000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Reflectivity380</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/Reflectivity380</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_Residue_331and360">
+        <Attribute name="long_name" type="String">
+            <value>Residue (331 and 360 nm)</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>The Residue (331 and 360 nm).</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>-50.00000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>50.00000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Residue_331and360</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/Residue_331and360</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_Residue_340and380">
+        <Attribute name="long_name" type="String">
+            <value>Residue (340 and 380 nm)</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>The Residue (340 and 380 nm).</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>-50.00000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>50.00000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Residue_340and380</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/Residue_340and380</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_UVAerosolIndex_331and360">
+        <Attribute name="long_name" type="String">
+            <value>UV Aerosol Index (331 and 360 nm)</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>The UV Aerosol Index (331 and 360 nm).</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>-50.00000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>50.00000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>UVAerosolIndex_331and360</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/UVAerosolIndex_331and360</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_UVAerosolIndex_340and380">
+        <Attribute name="long_name" type="String">
+            <value>UV Aerosol Index (340 and 380 nm)</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>The UV Aerosol Index (340 and 380 nm).</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>-50.00000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>50.00000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>UVAerosolIndex_340and380</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/UVAerosolIndex_340and380</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_UVAerosolIndex_Mie_331and360">
+        <Attribute name="long_name" type="String">
+            <value>UV Aerosol Index (Mie 331 and 360 nm)</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>The UV Aerosol Index (Mie 331 and 360 nm).</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>-50.00000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>50.00000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>UVAerosolIndex_Mie_331and360</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/UVAerosolIndex_Mie_331and360</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SCIENCE_DATA_UVAerosolIndex_Mie_340and380">
+        <Attribute name="long_name" type="String">
+            <value>UV Aerosol Index (Mie 340 and 380 nm)</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>The UV Aerosol Index (Mie 340 and 380 nm).</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>-50.00000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>50.00000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>UVAerosolIndex_Mie_340and380</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SCIENCE_DATA/UVAerosolIndex_Mie_340and380</value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <value>GEOLOCATION_DATA_Latitude GEOLOCATION_DATA_Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="SENSOR_DATA_MeasurementQualityFlags">
+        <Attribute name="long_name" type="String">
+            <value>Measurement Quality Flags</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>Measurement Quality Flags</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Int32">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Int32">
+            <value>65534</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Int32">
+            <value>-2147483647</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>MeasurementQualityFlags</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SENSOR_DATA/MeasurementQualityFlags</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="nTimes" size="392"/>
+    </Array>
+    <Array name="SENSOR_DATA_Wavelength">
+        <Attribute name="long_name" type="String">
+            <value>TOMS Wavelengths</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>nm</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>The TOMS wavelengths.  There are twelve wavelengths that range from 308 to 373 nm.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>300.0000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>400.0000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Wavelength</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/SENSOR_DATA/Wavelength</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nWavel" size="4"/>
+    </Array>
+    <Array name="nTimes">
+        <Attribute name="long_name" type="String">
+            <value>Time</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>seconds since 1993-01-01</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>The dimension representing the observation times in the granule.  The values are in TAI93 (time in continuous seconds since 12 a.m. UTC on January 1, 1993).</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>nTimes</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/nTimes</value>
+        </Attribute>
+        <Float64/>
+        <dimension name="nTimes" size="392"/>
+    </Array>
+    <Array name="nXtrack">
+        <Attribute name="long_name" type="String">
+            <value>Cross-Track Position (1-Based)</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>The dimension representing the cross-track position of the observation in the scan line.  The values range from 1 to 35.</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>nXtrack</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/nXtrack</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="nCorners">
+        <Attribute name="long_name" type="String">
+            <value>Ground Pixel Corner</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>The dimension representing the ground pixel corners.  There are four corners per ground pixel.</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>nCorners</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/nCorners</value>
+        </Attribute>
+        <Int32/>
+        <dimension name="nCorners" size="4"/>
+    </Array>
+    <Array name="nLevels">
+        <Attribute name="long_name" type="String">
+            <value>Atmospheric Levels</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>km</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>The dimension representing the atmospheric levels.  The values range from 0.0 to 10.0 km.</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>nLevels</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/nLevels</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nLevels" size="5"/>
+    </Array>
+    <Array name="nWavel">
+        <Attribute name="long_name" type="String">
+            <value>TOMS Wavelength</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>nm</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>The dimension representing the TOMS wavelengths.  The values range from 331 to 380 nm.</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>nWavel</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/nWavel</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nWavel" size="4"/>
+    </Array>
+    <Array name="GEOLOCATION_DATA_Latitude">
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <value>Latitude</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>The terrestrial latitude (in degrees) at the center of the ground pixel.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>-90.00000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>90.00000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Latitude</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/GEOLOCATION_DATA/Latitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <Array name="GEOLOCATION_DATA_Longitude">
+        <Attribute name="long_name" type="String">
+            <value>Longitude</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Attribute name="description" type="String">
+            <value>The terrestrial longitude (in degrees) at the center of the ground pixel.</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>-180.0000000</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>180.0000000</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-1.267650600e+30</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Longitude</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/GEOLOCATION_DATA/Longitude</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="nTimes" size="392"/>
+        <dimension name="nXtrack" size="35"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

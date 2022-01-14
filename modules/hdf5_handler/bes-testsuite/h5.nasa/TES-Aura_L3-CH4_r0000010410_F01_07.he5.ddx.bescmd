@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="TES-Aura_L3-CH4_r0000010410_F01_07" space="catalog">/data/TES-Aura_L3-CH4_r0000010410_F01_07.he5</setContainer>
+    <define name="d">
+	<container name="TES-Aura_L3-CH4_r0000010410_F01_07" />
+    </define>
+    <get type="ddx" definition="d" />
+</request>

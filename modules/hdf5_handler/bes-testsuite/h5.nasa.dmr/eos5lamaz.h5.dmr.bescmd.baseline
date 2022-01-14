@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="AMSR_2_L3_DailySnow_P00_20160831.he5">
+    <Dimension name="Northern_Hemisphere_YDim" size="721"/>
+    <Dimension name="Northern_Hemisphere_XDim" size="721"/>
+    <Dimension name="Southern_Hemisphere_YDim" size="721"/>
+    <Dimension name="Southern_Hemisphere_XDim" size="721"/>
+    <Byte name="Northern_Hemisphere_Flags_NorthernDaily">
+        <Dim name="/Northern_Hemisphere_YDim"/>
+        <Dim name="/Northern_Hemisphere_XDim"/>
+        <Attribute name="_FillValue" type="Byte">
+            <Value>255</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Flags_NorthernDaily</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/Northern Hemisphere/Data Fields/Flags_NorthernDaily</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Northern_Hemisphere_lat Northern_Hemisphere_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_1</Value>
+        </Attribute>
+    </Byte>
+    <Byte name="Northern_Hemisphere_SWE_NorthernDaily">
+        <Dim name="/Northern_Hemisphere_YDim"/>
+        <Dim name="/Northern_Hemisphere_XDim"/>
+        <Attribute name="_FillValue" type="Byte">
+            <Value>255</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Daily snow water equivalent (SWE)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>mm</Value>
+        </Attribute>
+        <Attribute name="format" type="String">
+            <Value>f3.0</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>2.000000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SWE_NorthernDaily</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/Northern Hemisphere/Data Fields/SWE_NorthernDaily</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Northern_Hemisphere_lat Northern_Hemisphere_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_1</Value>
+        </Attribute>
+    </Byte>
+    <Byte name="Southern_Hemisphere_Flags_SouthernDaily">
+        <Dim name="/Southern_Hemisphere_YDim"/>
+        <Dim name="/Southern_Hemisphere_XDim"/>
+        <Attribute name="_FillValue" type="Byte">
+            <Value>255</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Flags_SouthernDaily</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/Southern Hemisphere/Data Fields/Flags_SouthernDaily</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Southern_Hemisphere_lat Southern_Hemisphere_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_2</Value>
+        </Attribute>
+    </Byte>
+    <Byte name="Southern_Hemisphere_SWE_SouthernDaily">
+        <Dim name="/Southern_Hemisphere_YDim"/>
+        <Dim name="/Southern_Hemisphere_XDim"/>
+        <Attribute name="_FillValue" type="Byte">
+            <Value>255</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Daily snow water equivalent (SWE)</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>mm</Value>
+        </Attribute>
+        <Attribute name="format" type="String">
+            <Value>f3.0</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <Value>2.000000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SWE_SouthernDaily</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/Southern Hemisphere/Data Fields/SWE_SouthernDaily</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Southern_Hemisphere_lat Southern_Hemisphere_lon</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>eos_cf_projection_2</Value>
+        </Attribute>
+    </Byte>
+    <String name="CoreMetadata_0">
+        <Attribute name="origname" type="String">
+            <Value>CoreMetadata.0</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION/CoreMetadata.0</Value>
+        </Attribute>
+    </String>
+    <String name="StructMetadata_0">
+        <Attribute name="origname" type="String">
+            <Value>StructMetadata.0</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
+        </Attribute>
+    </String>
+    <Byte name="eos_cf_projection_1">
+        <Attribute name="grid_mapping_name" type="String">
+            <Value>lambert_azimuthal_equal_area</Value>
+        </Attribute>
+        <Attribute name="longitude_of_projection_origin" type="Float64">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="latitude_of_projection_origin" type="Float64">
+            <Value>90</Value>
+        </Attribute>
+        <Attribute name="false_easting" type="Float64">
+            <Value>0.0</Value>
+        </Attribute>
+        <Attribute name="false_northing" type="Float64">
+            <Value>0.0</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisTypes" type="String">
+            <Value>GeoX GeoY</Value>
+        </Attribute>
+    </Byte>
+    <Byte name="eos_cf_projection_2">
+        <Attribute name="grid_mapping_name" type="String">
+            <Value>lambert_azimuthal_equal_area</Value>
+        </Attribute>
+        <Attribute name="longitude_of_projection_origin" type="Float64">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="latitude_of_projection_origin" type="Float64">
+            <Value>-90</Value>
+        </Attribute>
+        <Attribute name="false_easting" type="Float64">
+            <Value>0.0</Value>
+        </Attribute>
+        <Attribute name="false_northing" type="Float64">
+            <Value>0.0</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisTypes" type="String">
+            <Value>GeoX GeoY</Value>
+        </Attribute>
+    </Byte>
+    <Float64 name="Northern_Hemisphere_YDim">
+        <Dim name="Northern_Hemisphere_YDim"/>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_y_coordinate</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>y coordinate of projection </Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meter</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoY</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="Northern_Hemisphere_XDim">
+        <Dim name="Northern_Hemisphere_XDim"/>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_x_coordinate</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>x coordinate of projection </Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meter</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoX</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="Southern_Hemisphere_YDim">
+        <Dim name="Southern_Hemisphere_YDim"/>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_y_coordinate</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>y coordinate of projection </Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meter</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoY</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="Southern_Hemisphere_XDim">
+        <Dim name="Southern_Hemisphere_XDim"/>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_x_coordinate</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>x coordinate of projection </Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meter</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoX</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="Northern_Hemisphere_lon">
+        <Dim name="/Northern_Hemisphere_YDim"/>
+        <Dim name="/Northern_Hemisphere_XDim"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <Value>-180.0</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <Value>180.0</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="Northern_Hemisphere_lat">
+        <Dim name="/Northern_Hemisphere_YDim"/>
+        <Dim name="/Northern_Hemisphere_XDim"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <Value>-90.0</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <Value>90.0</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="Southern_Hemisphere_lon">
+        <Dim name="/Southern_Hemisphere_YDim"/>
+        <Dim name="/Southern_Hemisphere_XDim"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <Value>-180.0</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <Value>180.0</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="Southern_Hemisphere_lat">
+        <Dim name="/Southern_Hemisphere_YDim"/>
+        <Dim name="/Southern_Hemisphere_XDim"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float64">
+            <Value>-90.0</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float64">
+            <Value>90.0</Value>
+        </Attribute>
+    </Float64>
+    <Attribute name="CoreMetadata" type="String">
+        <Value>GROUP = INVENTORYMETADATA
+   GROUPTYPE = MASTERGROUP
+   GROUP = ECSDATAGRANULE
+      OBJECT = LOCALGRANULEID
+         NUM_VAL = 1
+         VALUE = &quot;AMSR_2_L3_DailySnow_P00_20160831.he5&quot;
+      END_OBJECT = LOCALGRANULEID
+      OBJECT = PRODUCTIONDATETIME
+         NUM_VAL = 1
+         VALUE = &quot;2016-08-31T15:42:53Z&quot;
+      END_OBJECT = PRODUCTIONDATETIME
+   END_GROUP = ECSDATAGRANULE
+   GROUP = MEASUREDPARAMETER
+      OBJECT = MEASUREDPARAMETERCONTAINER
+         CLASS = &quot;1&quot;
+         OBJECT = PARAMETERNAME
+            NUM_VAL = 1
+            CLASS = &quot;1&quot;
+            VALUE = &quot;Snow Water Equivalent&quot;
+         END_OBJECT = PARAMETERNAME
+         GROUP = QASTATS
+            CLASS = &quot;1&quot;
+            OBJECT = QAPERCENTMISSINGDATA
+               NUM_VAL = 1
+               CLASS = &quot;1&quot;
+               VALUE = 45
+            END_OBJECT = QAPERCENTMISSINGDATA
+            OBJECT = QAPERCENTOUTOFBOUNDSDATA
+               NUM_VAL = 1
+               CLASS = &quot;1&quot;
+               VALUE = 0
+            END_OBJECT = QAPERCENTOUTOFBOUNDSDATA
+         END_GROUP = QASTATS
+      END_OBJECT = MEASUREDPARAMETERCONTAINER
+   END_GROUP = MEASUREDPARAMETER
+   GROUP = COLLECTIONDESCRIPTIONCLASS
+      OBJECT = SHORTNAME
+         NUM_VAL = 1
+         VALUE = &quot;A2_DySno_NRT&quot;
+      END_OBJECT = SHORTNAME
+      OBJECT = LONGNAME
+         NUM_VAL = 1
+         VALUE = &quot;NRT AMSR2 Daily L3 Global Snow Water Equivalent EASE-Grids&quot;
+      END_OBJECT = LONGNAME
+      OBJECT = VERSIONID
+         NUM_VAL = 1
+         VALUE = &quot;0&quot;
+      END_OBJECT = VERSIONID
+      OBJECT = COLLECTIONDATATYPE
+         NUM_VAL = 1
+         VALUE = &quot;NEAR_REAL_TIME&quot;
+      END_OBJECT = COLLECTIONDATATYPE
+   END_GROUP = COLLECTIONDESCRIPTIONCLASS
+   GROUP = INPUTGRANULE
+      OBJECT = INPUTPOINTER
+         NUM_VAL = 8
+         VALUE = (&quot;GW1AM2_201608310105_191D_L1SNRTBR_2220220.h5&quot;,
+                  &quot;GW1AM2_201608310244_207D_L1SNRTBR_2220220.h5&quot;,
+                  &quot;GW1AM2_201608310420_223D_L1SNRTBR_2220220.h5&quot;,
+                  &quot;GW1AM2_201608310559_006D_L1SNRTBR_2220220.h5&quot;,
+                  &quot;GW1AM2_201608310735_022D_L1SNRTBR_2220220.h5&quot;,
+                  &quot;GW1AM2_201608310914_038D_L1SNRTBR_2220220.h5&quot;,
+                  &quot;GW1AM2_201608311053_054D_L1SNRTBR_2220220.h5&quot;,
+                  &quot;GW1AM2_201608311229_070D_L1SNRTBR_2220220.h5&quot;)
+      END_OBJECT = INPUTPOINTER
+   END_GROUP = INPUTGRANULE
+   GROUP = SPATIALDOMAINCONTAINER
+      GROUP = HORIZONTALSPATIALDOMAINCONTAINER
+         GROUP = BOUNDINGRECTANGLE
+            OBJECT = WESTBOUNDINGCOORDINATE
+               NUM_VAL = 1
+               VALUE = -180.0
+            END_OBJECT = WESTBOUNDINGCOORDINATE
+            OBJECT = NORTHBOUNDINGCOORDINATE
+               NUM_VAL = 1
+               VALUE = 90.0
+            END_OBJECT = NORTHBOUNDINGCOORDINATE
+            OBJECT = EASTBOUNDINGCOORDINATE
+               NUM_VAL = 1
+               VALUE = 180.0
+            END_OBJECT = EASTBOUNDINGCOORDINATE
+            OBJECT = SOUTHBOUNDINGCOORDINATE
+               NUM_VAL = 1
+               VALUE = -90.0
+            END_OBJECT = SOUTHBOUNDINGCOORDINATE
+         END_GROUP = BOUNDINGRECTANGLE
+      END_GROUP = HORIZONTALSPATIALDOMAINCONTAINER
+   END_GROUP = SPATIALDOMAINCONTAINER
+   GROUP = RANGEDATETIME
+      OBJECT = RANGEBEGINNINGDATE
+         NUM_VAL = 1
+         VALUE = &quot;2016-08-31&quot;
+      END_OBJECT = RANGEBEGINNINGDATE
+      OBJECT = RANGEBEGINNINGTIME
+         NUM_VAL = 1
+         VALUE = &quot;01:05:20.572041Z&quot;
+      END_OBJECT = RANGEBEGINNINGTIME
+      OBJECT = RANGEENDINGDATE
+         NUM_VAL = 1
+         VALUE = &quot;2016-08-31&quot;
+      END_OBJECT = RANGEENDINGDATE
+      OBJECT = RANGEENDINGTIME
+         NUM_VAL = 1
+         VALUE = &quot;13:19:19.335593Z&quot;
+      END_OBJECT = RANGEENDINGTIME
+   END_GROUP = RANGEDATETIME
+   GROUP = PGEVERSIONCLASS
+      OBJECT = PGEVERSION
+         NUM_VAL = 1
+         VALUE = &quot;00&quot;
+      END_OBJECT = PGEVERSION
+   END_GROUP = PGEVERSIONCLASS
+   GROUP = ADDITIONALATTRIBUTES
+       OBJECT = ADDITIONALATTRIBUTESCONTAINER
+         CLASS = &quot;1&quot;
+         OBJECT = ADDITIONALATTRIBUTENAME
+            CLASS = &quot;1&quot;
+            NUM_VAL = 1
+            VALUE = &quot;identifier_product_doi&quot;
+         END_OBJECT = ADDITIONALATTRIBUTENAME
+         GROUP = INFORMATIONCONTENT
+            CLASS = &quot;1&quot;
+            OBJECT = PARAMETERVALUE
+               NUM_VAL = 1
+               CLASS = &quot;1&quot;
+               VALUE = &quot;10.5067/AMSR2/A2_DySno_NRT&quot;
+            END_OBJECT = PARAMETERVALUE
+         END_GROUP = INFORMATIONCONTENT
+      END_OBJECT = ADDITIONALATTRIBUTESCONTAINER
+      OBJECT = ADDITIONALATTRIBUTESCONTAINER
+         CLASS = &quot;2&quot;
+         OBJECT = ADDITIONALATTRIBUTENAME
+            CLASS = &quot;2&quot;
+            NUM_VAL = 1
+            VALUE = &quot;identifier_product_doi_authority&quot;
+         END_OBJECT = ADDITIONALATTRIBUTENAME
+         GROUP = INFORMATIONCONTENT
+            CLASS = &quot;2&quot;
+            OBJECT = PARAMETERVALUE
+               NUM_VAL = 1
+               CLASS = &quot;2&quot;
+               VALUE = &quot;http://dx.doi.org&quot;
+            END_OBJECT = PARAMETERVALUE
+         END_GROUP = INFORMATIONCONTENT
+      END_OBJECT = ADDITIONALATTRIBUTESCONTAINER
+   END_GROUP = ADDITIONALATTRIBUTES
+END_GROUP = INVENTORYMETADATA
+END
+</Value>
+    </Attribute>
+    <Attribute name="Conventions" type="String">
+        <Value>CF-1.7</Value>
+    </Attribute>
+    <Attribute name="HDFEOS" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL_FILE_ATTRIBUTES" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_Northern_Hemisphere" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_Northern_Hemisphere_Data_Fields" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_Southern_Hemisphere" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_Southern_Hemisphere_Data_Fields" type="Container"/>
+    <Attribute name="HDFEOS_INFORMATION" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <Value>HDFEOS_5.1.15</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

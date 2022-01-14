@@ -1,0 +1,31 @@
+netcdf t_group_comp {
+types:
+ compound cmp1{
+    short i;
+    int j;
+ };
+dimensions:
+        dim1 = 2 ;
+variables:
+        int dim1(dim1) ;
+        cmp1 d1(dim1);
+data:
+        dim1 = 2,4;
+        d1   = {1,4},{2,3};
+group: g1 {
+ types:
+ compound cmp2{
+    int k;
+    float f;
+ };
+ dimensions:
+       dim2 = 3;
+ variables:
+   int dim2(dim2);
+   cmp2 d2(dim1,dim2);
+ data:
+       dim2 = 10,20,30;
+       d2 = {1,10.0},{2,20.0},{3,30.0},{4,40.0},{5,50.0},{6,60.0};
+ }
+
+}

@@ -1,0 +1,5 @@
+The data:
+Float32 OMI_Column_Amount_O3_Data_Fields_ColumnAmountO3[OMI_Column_Amount_O3_lat = 2][OMI_Column_Amount_O3_lon = 2] = {{283.9, 272.1},{-1.26765e+30, -1.26765e+30}};
+Float64 OMI_Column_Amount_O3_lat[OMI_Column_Amount_O3_lat = 2] = {89.875, -89.875};
+Float64 OMI_Column_Amount_O3_lon[OMI_Column_Amount_O3_lon = 2] = {-179.875, 179.875};
+

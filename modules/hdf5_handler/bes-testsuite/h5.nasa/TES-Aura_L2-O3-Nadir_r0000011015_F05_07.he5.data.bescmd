@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="TES-Aura_L2-O3-Nadir_r0000011015_F05_07" space="catalog">/data/TES-Aura_L2-O3-Nadir_r0000011015_F05_07.he5</setContainer>
+    <define name="d">
+	<container name="TES-Aura_L2-O3-Nadir_r0000011015_F05_07">
+	    <constraint>Latitude[0:1146:2292],Longitude[0:1146:2292],MeasurementErrorCovariance[0][0][0],ObservationErrorCovariance[2292][66][66],AveragingKernel[0:1:2292][0:33:66][66:66:66],TotalErrorCovariance[2292:2292:2292][0:33:66][0:1:66],Pressure_CV,Pressure_CV_1,nFreq</constraint>  
+	</container>
+    </define>
+    <get type="dods" definition="d" />
+</request>

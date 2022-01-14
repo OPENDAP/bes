@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="d_objref.h5">
+    <URL name="DS1">
+        <Dim size="2"/>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>fc06f88a</Value>
+        </Attribute>
+    </URL>
+    <Int32 name="DS2">
+        <Dim size="5"/>
+        <Dim size="6"/>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>4872234d</Value>
+        </Attribute>
+    </Int32>
+    <Group name="G1"/>
+</Dataset>
+
+The data:
+URL DS1[2] = {"/G1", "/DS2"};
+Int32 DS2[5][6] = {{0, 1, 2, 3, 4, 5},{1, 2, 3, 4, 5, 6},{2, 3, 4, 5, 6, 7},{3, 4, 5, 6, 7, 8},{4, 5, 6, 7, 8, 9}};
+

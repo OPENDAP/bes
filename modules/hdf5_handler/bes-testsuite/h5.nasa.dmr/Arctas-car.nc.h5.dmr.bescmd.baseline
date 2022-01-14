@@ -1,0 +1,1210 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="Arctas-car_p3b_20080407_2002_Level1C_20171121.nc.h5">
+    <Dimension name="SpectralRange_1222nm" size="75"/>
+    <Dimension name="Scans" size="46546"/>
+    <Dimension name="SpectralRange_2095nm" size="121"/>
+    <Dimension name="SpectralRange_1731nm" size="131"/>
+    <Dimension name="CAR_Viewing_Angles" size="361"/>
+    <Dimension name="SpectralRange_1275nm" size="84"/>
+    <Dimension name="SpectralRange_382nm" size="21"/>
+    <Dimension name="CentralWavelength" size="14"/>
+    <Dimension name="SpectralRange_677nm" size="71"/>
+    <Dimension name="SpectralRange_339nm" size="21"/>
+    <Dimension name="SpectralRange_1559nm" size="95"/>
+    <Dimension name="SpectralRange_2196nm" size="121"/>
+    <Dimension name="SpectralRange_1032nm" size="86"/>
+    <Dimension name="SpectralRange_480nm" size="46"/>
+    <Dimension name="SpectralRange_2291nm" size="121"/>
+    <Dimension name="SpectralRange_1649nm" size="110"/>
+    <Dimension name="SpectralRange_873nm" size="76"/>
+    <Float32 name="SRF_1222nm">
+        <Dim name="/SpectralRange_1222nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>Spectral Response Function 1222 nm</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>_nc4_non_coord_SRF_1222nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/_nc4_non_coord_SRF_1222nm</Value>
+        </Attribute>
+    </Float32>
+    <Float64 name="Time">
+        <Dim name="/Scans"/>
+        <Attribute name="long_name" type="String">
+            <Value>seconds since 2008-04-07 00:00:00.0 UTC</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2008-04-07 00:00:00.0 UTC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Time</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Time</Value>
+        </Attribute>
+    </Float64>
+    <Float32 name="SRF_2095nm">
+        <Dim name="/SpectralRange_2095nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>Spectral Response Function 2095 nm</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>_nc4_non_coord_SRF_2095nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/_nc4_non_coord_SRF_2095nm</Value>
+        </Attribute>
+    </Float32>
+    <String name="Date">
+        <Dim name="/Scans"/>
+        <Attribute name="long_name" type="String">
+            <Value>Data Acquisition Date in the format of YYYYMMDDhhmmss.s UTC</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Date</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Date</Value>
+        </Attribute>
+    </String>
+    <Float32 name="SRF_1731nm">
+        <Dim name="/SpectralRange_1731nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>Spectral Response Function 1731 nm</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>_nc4_non_coord_SRF_1731nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/_nc4_non_coord_SRF_1731nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SolarAzimuthAngle">
+        <Dim name="/Scans"/>
+        <Attribute name="long_name" type="String">
+            <Value>Solar Azimuth Angle relative to the local geodetic north</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SolarAzimuthAngle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SolarAzimuthAngle</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="radiance_2095nm">
+        <Dim name="/Scans"/>
+        <Dim name="/CAR_Viewing_Angles"/>
+        <Attribute name="long_name" type="String">
+            <Value>2095 nm radiance</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>W m-2 sr-1</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>radiance_2095nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/radiance_2095nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Scan_Start_Angle">
+        <Dim name="/Scans"/>
+        <Attribute name="long_name" type="String">
+            <Value>Scan start angle relative to the local sky-earth normal</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="scan_start_angle__90_0" type="String">
+            <Value>upward-looking imaging mode</Value>
+        </Attribute>
+        <Attribute name="scan_start_angle_0_0" type="String">
+            <Value>Starboard</Value>
+        </Attribute>
+        <Attribute name="scan_start_angle_90_0" type="String">
+            <Value>downward-looking imaging mode</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Scan_Start_Angle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Scan_Start_Angle</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SRF_1275nm">
+        <Dim name="/SpectralRange_1275nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>Spectral Response Function 1275 nm</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>_nc4_non_coord_SRF_1275nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/_nc4_non_coord_SRF_1275nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="radiance_873nm">
+        <Dim name="/Scans"/>
+        <Dim name="/CAR_Viewing_Angles"/>
+        <Attribute name="long_name" type="String">
+            <Value>873 nm radiance</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>W m-2 sr-1</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>radiance_873nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/radiance_873nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="radiance_2196nm">
+        <Dim name="/Scans"/>
+        <Dim name="/CAR_Viewing_Angles"/>
+        <Attribute name="long_name" type="String">
+            <Value>2196 nm radiance</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>W m-2 sr-1</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>radiance_2196nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/radiance_2196nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="radiance_1032nm">
+        <Dim name="/Scans"/>
+        <Dim name="/CAR_Viewing_Angles"/>
+        <Attribute name="long_name" type="String">
+            <Value>1032 nm radiance</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>W m-2 sr-1</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>radiance_1032nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/radiance_1032nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="ViewingZenithAngle">
+        <Dim name="/Scans"/>
+        <Dim name="/CAR_Viewing_Angles"/>
+        <Attribute name="long_name" type="String">
+            <Value>CAR pixel viewing zenith angle relative to the local sky-earth normal</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>180.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ViewingZenithAngle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/ViewingZenithAngle</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="radiance_1649nm">
+        <Dim name="/Scans"/>
+        <Dim name="/CAR_Viewing_Angles"/>
+        <Attribute name="long_name" type="String">
+            <Value>1649 nm radiance</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>W m-2 sr-1</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>radiance_1649nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/radiance_1649nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="radiance_382nm">
+        <Dim name="/Scans"/>
+        <Dim name="/CAR_Viewing_Angles"/>
+        <Attribute name="long_name" type="String">
+            <Value>382 nm radiance</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>W m-2 sr-1</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>radiance_382nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/radiance_382nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SRF_382nm">
+        <Dim name="/SpectralRange_382nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>Spectral Response Function 382 nm</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>_nc4_non_coord_SRF_382nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/_nc4_non_coord_SRF_382nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="radiance_2291nm">
+        <Dim name="/Scans"/>
+        <Dim name="/CAR_Viewing_Angles"/>
+        <Attribute name="long_name" type="String">
+            <Value>2291 nm radiance</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>W m-2 sr-1</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>radiance_2291nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/radiance_2291nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SolarIrradiance">
+        <Dim name="/CentralWavelength"/>
+        <Attribute name="long_name" type="String">
+            <Value>Solar Spectral Irradiance</Value>
+        </Attribute>
+        <Attribute name="unit" type="String">
+            <Value>W m-2</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SolarIrradiance</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SolarIrradiance</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SRF_677nm">
+        <Dim name="/SpectralRange_677nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>Spectral Response Function 677 nm</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>_nc4_non_coord_SRF_677nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/_nc4_non_coord_SRF_677nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="AircraftHeading">
+        <Dim name="/Scans"/>
+        <Attribute name="long_name" type="String">
+            <Value>Aircraft Heading Degrees relative to the local geodetic north</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>360.0000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AircraftHeading</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/AircraftHeading</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SRF_339nm">
+        <Dim name="/SpectralRange_339nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>Spectral Response Function 339 nm</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>_nc4_non_coord_SRF_339nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/_nc4_non_coord_SRF_339nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="AircraftAltitude">
+        <Dim name="/Scans"/>
+        <Attribute name="long_name" type="String">
+            <Value>GPS height in Meters above the mean sea level</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>m</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AircraftAltitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/AircraftAltitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="radiance_339nm">
+        <Dim name="/Scans"/>
+        <Dim name="/CAR_Viewing_Angles"/>
+        <Attribute name="long_name" type="String">
+            <Value>382 nm radiance</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>W m-2 sr-1</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>radiance_339nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/radiance_339nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SRF_1559nm">
+        <Dim name="/SpectralRange_1559nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>Spectral Response Function 1559 nm</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>_nc4_non_coord_SRF_1559nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/_nc4_non_coord_SRF_1559nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="ViewingAzimuthAngle">
+        <Dim name="/Scans"/>
+        <Dim name="/CAR_Viewing_Angles"/>
+        <Attribute name="long_name" type="String">
+            <Value>CAR pixel viewing azimuth angle relative to the local geodetic north</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>360.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>ViewingAzimuthAngle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/ViewingAzimuthAngle</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SolarZenithAngle">
+        <Dim name="/Scans"/>
+        <Attribute name="long_name" type="String">
+            <Value>Solar Zenith Angle relative to the local sky-earth normal</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SolarZenithAngle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SolarZenithAngle</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="AircraftLongitude">
+        <Dim name="/Scans"/>
+        <Attribute name="long_name" type="String">
+            <Value>Aircraft Longitude Degrees</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-180.0000000</Value>
+            <Value>180.0000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AircraftLongitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/AircraftLongitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="AircraftPitch">
+        <Dim name="/Scans"/>
+        <Attribute name="long_name" type="String">
+            <Value>Aircraft Pitch Degrees relative to the local sky-earth normal</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-90.00000000</Value>
+            <Value>90.00000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="Positive" type="String">
+            <Value>nose_up</Value>
+        </Attribute>
+        <Attribute name="Negative" type="String">
+            <Value>nose_down</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AircraftPitch</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/AircraftPitch</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="CoordinatedUniversalTime">
+        <Dim name="/Scans"/>
+        <Attribute name="long_name" type="String">
+            <Value>UTC time in the format of HHMMSS.s</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="time_format" type="String">
+            <Value>HHMMSS.10thSecond</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>CoordinatedUniversalTime</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/CoordinatedUniversalTime</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="radiance_677nm">
+        <Dim name="/Scans"/>
+        <Dim name="/CAR_Viewing_Angles"/>
+        <Attribute name="long_name" type="String">
+            <Value>677 nm radiance</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>W m-2 sr-1</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>radiance_677nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/radiance_677nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SRF_2196nm">
+        <Dim name="/SpectralRange_2196nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>Spectral Response Function 2196 nm</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>_nc4_non_coord_SRF_2196nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/_nc4_non_coord_SRF_2196nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SRF_1032nm">
+        <Dim name="/SpectralRange_1032nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>Spectral Response Function 1032 nm</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>_nc4_non_coord_SRF_1032nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/_nc4_non_coord_SRF_1032nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SRF_480nm">
+        <Dim name="/SpectralRange_480nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>Spectral Response Function 480 nm</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>_nc4_non_coord_SRF_480nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/_nc4_non_coord_SRF_480nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="radiance_1222nm">
+        <Dim name="/Scans"/>
+        <Dim name="/CAR_Viewing_Angles"/>
+        <Attribute name="long_name" type="String">
+            <Value>1222 nm radiance</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>W m-2 sr-1</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>radiance_1222nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/radiance_1222nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="radiance_1275nm">
+        <Dim name="/Scans"/>
+        <Dim name="/CAR_Viewing_Angles"/>
+        <Attribute name="long_name" type="String">
+            <Value>1275 nm radiance</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>W m-2 sr-1</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>radiance_1275nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/radiance_1275nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="radiance_1731nm">
+        <Dim name="/Scans"/>
+        <Dim name="/CAR_Viewing_Angles"/>
+        <Attribute name="long_name" type="String">
+            <Value>1731 nm radiance</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>W m-2 sr-1</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>radiance_1731nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/radiance_1731nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="radiance_1559nm">
+        <Dim name="/Scans"/>
+        <Dim name="/CAR_Viewing_Angles"/>
+        <Attribute name="long_name" type="String">
+            <Value>1559 nm radiance</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>W m-2 sr-1</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>radiance_1559nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/radiance_1559nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SRF_2291nm">
+        <Dim name="/SpectralRange_2291nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>Spectral Response Function 2291 nm</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>_nc4_non_coord_SRF_2291nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/_nc4_non_coord_SRF_2291nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="AircraftLatitude">
+        <Dim name="/Scans"/>
+        <Attribute name="long_name" type="String">
+            <Value>Aircraft Latitude Degrees</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>-90.00000000</Value>
+            <Value>90.00000000</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AircraftLatitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/AircraftLatitude</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SRF_1649nm">
+        <Dim name="/SpectralRange_1649nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>Spectral Response Function 1649 nm</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>_nc4_non_coord_SRF_1649nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/_nc4_non_coord_SRF_1649nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="radiance_480nm">
+        <Dim name="/Scans"/>
+        <Dim name="/CAR_Viewing_Angles"/>
+        <Attribute name="long_name" type="String">
+            <Value>480 nm radiance</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>W m-2 sr-1</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>radiance_480nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/radiance_480nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SRF_873nm">
+        <Dim name="/SpectralRange_873nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>Spectral Response Function 873 nm</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float32">
+            <Value>0.000000000</Value>
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>_nc4_non_coord_SRF_873nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/_nc4_non_coord_SRF_873nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="CAR_Viewing_Angles">
+        <Dim name="/CAR_Viewing_Angles"/>
+        <Attribute name="long_name" type="String">
+            <Value>CAR viewing angles</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>CAR_Viewing_Angles</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/CAR_Viewing_Angles</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="CentralWavelength">
+        <Dim name="/CentralWavelength"/>
+        <Attribute name="long_name" type="String">
+            <Value>CAR Central Wavelength</Value>
+        </Attribute>
+        <Attribute name="unit" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>CentralWavelength</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/CentralWavelength</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="Scans">
+        <Dim name="/Scans"/>
+        <Attribute name="long_name" type="String">
+            <Value>Scan line count from data start</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Scans</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Scans</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SpectralRange_1032nm">
+        <Dim name="/SpectralRange_1032nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>SpectralRange for CAR ch6 1032nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SpectralRange_1032nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SpectralRange_1032nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SpectralRange_1222nm">
+        <Dim name="/SpectralRange_1222nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>SpectralRange for CAR ch7 1222nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SpectralRange_1222nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SpectralRange_1222nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SpectralRange_1275nm">
+        <Dim name="/SpectralRange_1275nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>SpectralRange for CAR ch8 1275nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SpectralRange_1275nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SpectralRange_1275nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SpectralRange_1559nm">
+        <Dim name="/SpectralRange_1559nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>SpectralRange for CAR ch9 1559nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SpectralRange_1559nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SpectralRange_1559nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SpectralRange_1649nm">
+        <Dim name="/SpectralRange_1649nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>SpectralRange for CAR ch10 1649nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SpectralRange_1649nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SpectralRange_1649nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SpectralRange_1731nm">
+        <Dim name="/SpectralRange_1731nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>SpectralRange for CAR ch11 1731nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SpectralRange_1731nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SpectralRange_1731nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SpectralRange_2095nm">
+        <Dim name="/SpectralRange_2095nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>SpectralRange for CAR ch12 2095nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SpectralRange_2095nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SpectralRange_2095nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SpectralRange_2196nm">
+        <Dim name="/SpectralRange_2196nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>SpectralRange for CAR ch13 2196nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SpectralRange_2196nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SpectralRange_2196nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SpectralRange_2291nm">
+        <Dim name="/SpectralRange_2291nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>SpectralRange for CAR ch14 2291nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SpectralRange_2291nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SpectralRange_2291nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SpectralRange_339nm">
+        <Dim name="/SpectralRange_339nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>SpectralRange for CAR ch1 339nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SpectralRange_339nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SpectralRange_339nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SpectralRange_382nm">
+        <Dim name="/SpectralRange_382nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>SpectralRange for CAR ch2 382nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SpectralRange_382nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SpectralRange_382nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SpectralRange_480nm">
+        <Dim name="/SpectralRange_480nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>SpectralRange for CAR ch3 480nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SpectralRange_480nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SpectralRange_480nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SpectralRange_677nm">
+        <Dim name="/SpectralRange_677nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>SpectralRange for CAR ch4 677nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SpectralRange_677nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SpectralRange_677nm</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SpectralRange_873nm">
+        <Dim name="/SpectralRange_873nm"/>
+        <Attribute name="long_name" type="String">
+            <Value>SpectralRange for CAR ch5 873nm</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>nm</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SpectralRange_873nm</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SpectralRange_873nm</Value>
+        </Attribute>
+    </Float32>
+    <Attribute name="title" type="String">
+        <Value>Cloud Absorption Radiometer (CAR) Level-1C NetCDF data</Value>
+    </Attribute>
+    <Attribute name="experiment_name" type="String">
+        <Value>ARCTAS</Value>
+    </Attribute>
+    <Attribute name="flight_number" type="String">
+        <Value>2002</Value>
+    </Attribute>
+    <Attribute name="aircraft" type="String">
+        <Value>NASA - P3</Value>
+    </Attribute>
+    <Attribute name="primary_navigation_system" type="String">
+        <Value>CAR Autonomous Navigation System</Value>
+    </Attribute>
+    <Attribute name="start_date" type="String">
+        <Value>2008-04-07:10:59:24.7</Value>
+    </Attribute>
+    <Attribute name="end_date" type="String">
+        <Value>2008-04-08:18:44:52.6</Value>
+    </Attribute>
+    <Attribute name="lat_min" type="Float32">
+        <Value>65.79630280</Value>
+    </Attribute>
+    <Attribute name="lat_max" type="Float32">
+        <Value>80.66130066</Value>
+    </Attribute>
+    <Attribute name="lon_min" type="Float32">
+        <Value>-146.3280945</Value>
+    </Attribute>
+    <Attribute name="lon_max" type="Float32">
+        <Value>-70.23336029</Value>
+    </Attribute>
+    <Attribute name="flight_summary" type="String">
+        <Value>https://car.gsfc.nasa.gov/flights/data-arctas-2008-flight-2002</Value>
+    </Attribute>
+    <Attribute name="Instrument_PI" type="String">
+        <Value>Charles K. Gatebe</Value>
+    </Attribute>
+    <Attribute name="Email" type="String">
+        <Value>Charles.K.Gatebe@nasa.gov</Value>
+    </Attribute>
+    <Attribute name="Website" type="String">
+        <Value>https://car.gsfc.nasa.gov</Value>
+    </Attribute>
+    <Attribute name="Reference" type="String">
+        <Value>Gatebe CK, King MD. Airborne spectral BRDF of various surface types (ocean, vegetation, snow, desert, wetlands, cloud decks, smoke layers) for remote sensing applications. Remote Sensing of Environment. 2016;179:131 - 148. </Value>
+    </Attribute>
+    <Attribute name="change_log" type="String">
+        <Value>R2: Data and Global Attributes updates</Value>
+    </Attribute>
+    <Attribute name="Identifier_Product_DOI_Authority" type="String">
+        <Value>http://dx.doi.org/</Value>
+    </Attribute>
+    <Attribute name="DOI" type="String">
+        <Value>10.5067/CAR/DATA104</Value>
+    </Attribute>
+    <Attribute name="production_date" type="String">
+        <Value>2017-11-21T21:45:05.0Z</Value>
+    </Attribute>
+    <Attribute name="ShortName" type="String">
+        <Value>CAR_ARCTAS_L1C</Value>
+    </Attribute>
+    <Attribute name="LongName" type="String">
+        <Value>CAR ARCTAS Level 1C Arctic Atmospheric Composition and Climate</Value>
+    </Attribute>
+    <Attribute name="VersionID" type="String">
+        <Value>1</Value>
+    </Attribute>
+    <Attribute name="GranuleID" type="String">
+        <Value>Arctas-car_p3b_20080407_2002_Level1C_20171121.nc</Value>
+    </Attribute>
+    <Attribute name="Format" type="String">
+        <Value>NetCDF4</Value>
+    </Attribute>
+    <Attribute name="ProcessingLevel" type="String">
+        <Value>1C</Value>
+    </Attribute>
+    <Attribute name="Conventions" type="String">
+        <Value>CF-1.7</Value>
+    </Attribute>
+    <Attribute name="DODS_EXTRA" type="Container">
+        <Attribute name="Unlimited_Dimension" type="String">
+            <Value>Scans</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

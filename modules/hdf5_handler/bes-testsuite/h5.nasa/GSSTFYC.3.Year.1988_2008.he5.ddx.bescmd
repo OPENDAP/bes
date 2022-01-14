@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="GSSTFYC.3.Year.1988_2008" space="catalog">/data/GSSTFYC.3.Year.1988_2008.he5</setContainer>
+    <define name="d">
+	<container name="GSSTFYC.3.Year.1988_2008" />
+    </define>
+    <get type="ddx" definition="d" />
+</request>

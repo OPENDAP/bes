@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <request reqID="some_unique_value" >
+     <setContext name="dap_format">dap2</setContext>
+     <setContainer name="3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A" space="catalog">/data/3A.GPM.DPR.algName.20180331-S221135-E234357.076185.V00B.HDF5</setContainer>
+     <define name="d">
+ 	<container name="3A-MO.GPM.GMI.GRID2014R1.20140601-S000000-E235959.06.V03A">
+            <constraint>
+FS_FS_G1_zeta_mean[0:1:0][0:1:0][0:1:0][0:1:0][0:1:1][0:1:1],lnH[0:100:1439],ltH[0:100:535],ltL[0:5:27],lnL[0:10:71]
+            </constraint>
+         </container>
+     </define>
+     <get type="dods" definition="d" />
+ </request>

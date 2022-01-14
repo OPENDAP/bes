@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="comp_complex_more.h5">
+    <Structure name="phony_compound_var">
+        <Structure name="yy">
+            <Float64 name="y">
+                <Dim size="3"/>
+            </Float64>
+            <Dim size="3"/>
+        </Structure>
+        <Dim size="4"/>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>1a1cf5e3</Value>
+        </Attribute>
+    </Structure>
+</Dataset>
+
+The data:
+Structure {
+    Structure {
+        Float64 y[3];
+    } yy[3];
+} phony_compound_var[4] = {{ {{ {100000.285657, 100.1, 1.1415926} }, { {200000.151617, 200.2, 273.15} }, { {-100000.285657, -100.1, -1.1415926} }} }, { {{ {300000.285657, 300.3, 3.1415926} }, { {400000.151617, 400.4, 473.15} }, { {-200000.285657, -200.2, -2.1415926} }} }, { {{ {500000.285657, 500.5, 5.1415926} }, { {600000.151617, 600.6, 673.15} }, { {-300000.285657, -300.3, -3.1415926} }} }, { {{ {700000.275657, 700.7, 7.1415926} }, { {800000.151617, 800.8, 873.15} }, { {-400000.285657, -400.4, -4.1415926} }} }};
+

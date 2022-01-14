@@ -1,0 +1,34 @@
+Attributes {
+    p {
+        Float64 _FillValue -9999.0000000000000;
+        String origname "p";
+        String fullnamepath "/p";
+    }
+    t {
+        String origname "t";
+        String fullnamepath "/t";
+    }
+    rh {
+        Int32 _FillValue -1;
+        String origname "rh";
+        String fullnamepath "/rh";
+    }
+    lat {
+        String units "degrees_north";
+        String origname "lat";
+        String fullnamepath "/lat";
+    }
+    lon {
+        String units "degrees_east";
+        String origname "lon";
+        String fullnamepath "/lon";
+    }
+    time {
+        String units "seconds";
+        String origname "time";
+        String fullnamepath "/time";
+    }
+    DODS_EXTRA {
+        String Unlimited_Dimension "time";
+    }
+}

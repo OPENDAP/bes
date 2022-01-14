@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="acos_L2s_110419_43_Production_v110110_L2s2800_r01_PolB_110430192739" space="catalog">/data/acos_L2s_110419_43_Production_v110110_L2s2800_r01_PolB_110430192739.h5</setContainer>
+    <define name="d">
+	<container name="acos_L2s_110419_43_Production_v110110_L2s2800_r01_PolB_110430192739" />
+    </define>
+    <get type="das" definition="d" />
+</request>
