@@ -115,18 +115,18 @@ before_script:
 # but I won't know until I hear back from Travis-CI support. jhrg 7/23/21
 
 stages:
-  - name: build
+  - name: build-and-package
     if: branch = master
   - name: scan
     if:  branch = master
-  - name: package
-    if: branch = master
+  #- name: package
+  #  if: branch = master
   - name: hyrax-olfs-trigger
     if: branch = master AND type != pull_request
 
 jobs:
   include:
-    - stage: build
+    - stage: build-and-package
       name: "check"
       script:
         - export BES_BUILD=main
@@ -134,13 +134,48 @@ jobs:
         - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
         - make -j16 && make install && besctl start && make check -j16 && besctl stop
 
-    - stage: build
+    - stage: build-and-package
       name: "distcheck"
       script:
         - export BES_BUILD=distcheck
         - autoreconf --force --install --verbose
         - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
         - make distcheck -j16
+
+      # NB: ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} supplies the name of the PR branch for a PR,
+      # or the name of the branch for a regular push. The reason for this is not that we want special
+      # packages for branches, but we want to be able to test builds without making pushes to master
+      # and that means having the build-rpm.sh use the spec files on a branch.
+
+    - stage: build-and-package
+      name: "CentOS-7 RPMs"
+      script:
+        - export BES_BUILD=centos7
+        - mkdir -p $prefix/rpmbuild
+        - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
+        - docker run --volume $prefix/rpmbuild:/root/rpmbuild --volume $TRAVIS_BUILD_DIR:/root/travis
+          --env OS=centos7
+          --env DIST=el7
+          --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
+          --env BES_BUILD_NUMBER=$BES_BUILD_NUMBER
+          --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+          --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+          opendap/centos7_hyrax_builder:1.7 /root/travis/build-rpm.sh
+
+    - stage: build-and-package
+      name: "dist"
+      script:
+        - export BES_BUILD=srcdist
+        - autoreconf --force --install --verbose
+        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --with-build=$BES_BUILD_NUMBER
+        - make dist -j7
+        # Make both a bes-<version>-<build num> and bes-snapshot tar.gz. This will simplify
+        # other operations that use the bes source code. Note that the VERSION file holds a
+        # string that is the version number that is set by the configure script and the build
+        # number passed into configure when it is run. jhrg 3/23/21
+        - SOURCE_VERSION=$(cat bes_VERSION)
+        - mv bes-*.tar.gz bes-$SOURCE_VERSION.tar.gz
+        - cp bes-$SOURCE_VERSION.tar.gz bes-snapshot.tar.gz
 
     - stage: scan
       name: "scan bes"
@@ -189,41 +224,6 @@ jobs:
         - sonar-scanner -Dproject.settings=sonar-bes-hdf-handlers.properties -Dsonar.login=$SONAR_SUBMODULES_LOGIN
         # We call the hdf4/5 handlers scan opendap-bes-submodules for historical reasons. jhrg 1/13/22
         - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-submodules | grep "QUALITY GATE PASS"
-
-      # NB: ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH} supplies the name of the PR branch for a PR,
-      # or the name of the branch for a regular push. The reason for this is not that we want special
-      # packages for branches, but we want to be able to test builds without making pushes to master
-      # and that means having the build-rpm.sh use the spec files on a branch.
-
-    - stage: package
-      name: "CentOS-7 RPMs"
-      script:
-      - export BES_BUILD=centos7
-      - mkdir -p $prefix/rpmbuild
-      - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
-      - docker run --volume $prefix/rpmbuild:/root/rpmbuild --volume $TRAVIS_BUILD_DIR:/root/travis
-                   --env OS=centos7
-                   --env DIST=el7
-                   --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
-                   --env BES_BUILD_NUMBER=$BES_BUILD_NUMBER
-                   --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
-                   --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-                   opendap/centos7_hyrax_builder:1.7 /root/travis/build-rpm.sh
-
-    - stage: package
-      name: "dist"
-      script:
-        - export BES_BUILD=srcdist
-        - autoreconf --force --install --verbose
-        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --with-build=$BES_BUILD_NUMBER
-        - make dist -j7
-        # Make both a bes-<version>-<build num> and bes-snapshot tar.gz. This will simplify
-        # other operations that use the bes source code. Note that the VERSION file holds a
-        # string that is the version number that is set by the configure script and the build
-        # number passed into configure when it is run. jhrg 3/23/21
-        - SOURCE_VERSION=$(cat bes_VERSION)
-        - mv bes-*.tar.gz bes-$SOURCE_VERSION.tar.gz
-        - cp bes-$SOURCE_VERSION.tar.gz bes-snapshot.tar.gz
 
     - stage: hyrax-olfs-trigger
       name: "Hyrax OLFS Trigger"
