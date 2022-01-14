@@ -65,6 +65,11 @@ bes-tmpfiles-conf besd.logrotate README.md rapidjson pugixml
 HTML_DOCS=html
 DOXYGEN_CONF=doxy.conf
 
+framework = dispatch xmlcommand ppt server http dap dapreader
+.PHONY: framework-only
+framework-only:
+	for d in $(framework); do $(MAKE) -C $$d $(MFLAGS); done
+
 # This target only builds the documents, it does not move them to
 # github. Use the 'gh-docs' target below for that.
 .PHONY: docs
