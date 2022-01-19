@@ -1,0 +1,291 @@
+News for Hyrax 1.16.5
+ - Now based on HDF5-1.12.1
+ - Update libdap headers references.
+ - Repaired a problem with the evaluation of "hard links" in dataset dimensions.
+ - Added the use of default configuration when the user fails to specify configuration
+   values.
+
+What's new for Hyrax 1.16.4
+CF option:
+1. The DMR response can be directly generated from the hdf5 file rather from DDS and DAS.
+   To take advantage of this feature, the H5.EnableCFDMR key needs to be set to true in the configuration
+   file(h5.conf etc.)
+   The biggest advantage of this implementation is that the signed 8-bit integer mapping is kept.
+   The DMR generation from DDS and DAS maps the signed 8-bit integer to 16-bit integer because of
+   the limitation in the DAP2 data model.
+2. Bug fix: Ensure the path inside the coordinates attribute for TROPOMI AI product to be flattened.
+3. Update the handling of escaping special characters due to NASA request.
+   The '\' and the '"' are no longer escaped.
+
+News for version 1.16.3
+
+- Support GPM 3DPR level 3 new version
+- Repaired problem with memory cached object life cycles.
+- Improved attribute handling to elide the attributes of
+  variables not requested from the response.
+- Added updated timing instrumentation
+- Improved error handling.
+
+News for version 1.16.2
+
+Updates since 2020-02-20, only the CF option support is enhanced.
+Mainly add the support of correctly generating the DMRPP files and enhance
+the support to handle netCDF-4 like HDF5 files and general two dimensional 
+laitude and longitude files. See the ChangeLog for details.
+
+News for version 1.16.1
+
+Updates since 2019-07-09, 
+mainly performance improvement not to include DAS in the data access
+and minor enhancement to support the access of NASA files for the CF option.
+See the ChangeLog for details.
+
+Updated for Hyrax 1.15.3
+
+Coverity Scan for libdap4, BES, and OLFS.
+
+Updated for Hyrax 1.15.1
+
+Graceful error handling for DAP4 DMR response when the dimension name is not in
+the dimension list.
+
+News for version 2.4.1
+
+Updates since 2017-05-26, see the ChangeLog
+
+News for version 2.4.0
+
+Updates since 2017-05-15, see the ChangeLog
+
+News for Hyrax 1.13.4
+
+Updates since 2017-01-17, see the ChangeLog
+
+News for Hyrax 1.13.3
+
+Updates since 2016-11-02, see the ChangeLog
+
+News for Hyrax 1.13.2
+
+News for version 2.3.5
+
+Updates since 2016-09-26, see the ChangeLog
+
+News for version 2.3.4
+
+Updates since 2016-05-26, see the ChangeLog
+
+News for version 2.3.3
+
+Updates since 2016-01-21
+
+Add support for HDF5 scalar datasets and unlimited dimensions to
+the CF option.
+
+More information see the "What's new for version 2.3.3" under README.
+
+News for version 2.3.2
+
+Minor updates, see the ChangeLog
+
+News for version 2.3.2
+
+Add more support to make 2-D lat/lon coordinate variables follow the
+CF options.
+
+News for version 2.3.1
+
+Minor updates, see the ChangeLog
+
+News for version 2.3.0
+
+This version adds the pure DAP4(not converted from DAP2) support for
+the default option.
+
+Compound datatype mapping for the default option is also greatly improved.
+
+We also added the support of general 1D and 2D lat/lon HDF5 and
+netCDF-4-classic-like 2D lat/lon products.
+
+A BES option to check the ignored object mapping information from HDF5
+to DAP2 is also added for the CF option.
+
+News for version 2.2.3
+
+This version implement an option not to pass HDF5 file ID from DDS/DAS service
+to data service since the NcML may not work when the file ID is passed.
+
+Add the CF support for NASA GPM, OBPG l3m and MOPITT level 3 products.
+
+News for version 2.2.2
+
+This version fixes memory leak and improves performance by reducing the number
+of file open calls.
+
+News for version 2.2.1
+
+Internal code improvments.
+
+News for version 2.2.0
+
+This version corrects dimension scale handling and archive metadata handling.
+It correctly handles OMI products that have dimensoin names like "1" and "2".
+It prints the file name instead of "virtual" in DDS output.
+
+News for version 2.1.1
+
+This version changes the _FillValue datatype to be consistent with the 
+variable datatype.
+This is not required by CF, however, netCDF-3 has this requirement.
+This change makes fileout_netcdf work smoothly for some NASA products.
+
+News for version 2.1.0
+
+This version improves the performance of hdf5_handler in dealing with big files
+with thousands of datasets.
+
+News for version 2.0.0
+
+This version is the re-engineering of HDF5 OPeNDAP handler CF option.
+Please read README for what's new in version 2.0.0.
+
+News for version 1.5.1
+
+Fixed an issue with the IgnoreUnknownTypes option and a problem with
+attributes that use hdf5's varying length string type.
+
+News for version 1.5.0
+
+Added H5.IgnoreUnknownTypes which follows the behavior pattern
+established for/by the netcdf handler. When set, data types that cannot
+easily be represented in DAP2 are simply ignored. When not set, an
+error is returned when an unknown type is found in a data file.
+
+The int8 to int16 conversion is now handled correctly.
+
+News for version 1.4.4
+
+Bug fixes (Aura MLS multiple swaths and variable names to follow CF
+conventions.).
+
+Partial support of handling multiple HDF-EOS5 swaths has been added to
+the handler. It will only work when all swaths share the same
+coordinate variables. The solution is mainly for handling Aura MLS
+data. The robust and general solutions should be in the future.
+	
+Special characters inside the variable names are also handled by
+replacing them with underscores. This was discovered by HIRDLS data.
+
+News for version 1.4.3
+
+Bug fixes (Grids, etc.) and fixes for the BES 3.9 and libdap 3.11 versions.
+
+News for version 1.4.2
+
+Bug fixes
+
+News for version 1.4.1
+
+Performance improvements when using HDF5 1.8
+
+News for version 1.4.0
+
+This versionof the handler contains many documentation and
+dataset-specific improvements, particularly for datasets produced by
+NASA. Support for HDF-EOS has been greatly improved.
+
+Many fixes; see ChangeLog
+
+News for version 1.3.5
+
+This release includes bug fixes for handling HDF-EOS5 Grids and Swath
+and supports more HDF-EOS5 products when --enable-cf option is
+defined.
+
+News for version 1.3.4
+
+Repair to the --enable-cf and --enable-short-path options.
+
+This release is a special release for Hyrax 1.5.2 that contains new
+features added to the handler by THG for support of HDF-EOS5 data
+files.
+
+News for version 1.3.3
+
+Somehow, the news didn't get updated...
+
+News for version 1.3.2
+
+Repaired memory allocation issues.
+
+News for version 1.3.1
+
+Fixes for the constraint, XML responses and service interface.
+
+News for version 1.3.0.a
+
+ The--enable-cf alone doesn't shorten the DDS variables.
+ All variables will have the group path information. 
+If you turn on --enable-short-name on top of --enable-cf,
+it'll generate variables that starts with 'A??' where '??' is a unique
+number. The --enable-short-name alone doesn't do anything.
+
+  CoreMetadata will be parsed and provided as an attribute even if CF
+option is enabled. We checked with IDV and GrADS and CoreMetadata did
+not bother them so we think it's safe to turn CoreMetadata on always.
+
+
+News for version 1.3.0
+
+Many bug fixes - see ChangeLog
+
+Updates for the new versions of libdap and bes - this is important since the
+new libdap constraint evaluator now works with Arrays of Structures.
+
+The SHORT_PATH compilation option now has shorter reference names.
+
+Grids are now generated instead of Arrays for Aura Swath data.
+
+Int64 now throws an exception; DAP 3.3 will have an Int64 type.
+
+Signed Byte is now mapped to Int16 (both the DAS and DDS).
+
+If compiled with the CF option then the NC_GLOBAL attribute is produced if
+a valid Grid projection in NASA EOS AURA file is detected. Resolution, min and
+max attributes for lat/lon are extracted from structMetadata.
+
+News for version 1.2.3
+
+When built using the --enable-cf and --enable-short-path, the handler was
+dropping shared dimensions, breaking access using Ferret and GrADS.
+
+Updates for the newest BES features.
+
+News for version 1.2.2
+
+Bug fix release reading map data from EOS Grid, please refer to the
+ChangeLog file for more information.
+
+News for version 1.2.1
+
+DDX responses now contains attributes.
+
+Package Configure (pkg-config) support added.
+
+Support for HDF5 1.8.0 added.
+
+News for version 1.2.0
+
+Support for NASA EOS Grid variables has been added to the handler. See
+the README and INSTALL_EOS5_GRID files. You will need to use some
+special options when configuring the handler's build in order to get
+these features.
+
+News for version 1.1.0
+
+This version of the hdf5 data handler can be used with both server3 and
+Server4. The handler is really an alpha version of software which NASA has
+just agreed to fund via their ACCESS program. This code is being released in
+the hope it will be useful, but data providers must be aware that it is not
+complete in that not every valid HDF5 file can be served using it. See the
+README for more information.

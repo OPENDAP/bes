@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="TES-Aura_L3-CH4_r0000010410_F01_07" space="catalog">/data/TOMS-N7_L2-TOMSN7AERUV_1991m0630t0915-o64032_v02-00-2015m0918t123456.h5</setContainer>
+    <define name="d">
+	<container name="TES-Aura_L3-CH4_r0000010410_F01_07">
+	     <constraint>GEOLOCATION_DATA_Latitude[0:195:391][0:17:34],GEOLOCATION_DATA_Longitude[0:195:391][0:17:34],SCIENCE_DATA_Reflectivity331[0:195:391][0:17:34]</constraint>
+	</container>
+    </define>
+    <get type="dods" definition="d" />
+</request>

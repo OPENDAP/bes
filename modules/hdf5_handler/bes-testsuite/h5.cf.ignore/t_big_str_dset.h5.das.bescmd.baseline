@@ -1,0 +1,15 @@
+Attributes {
+    Ignored_Object_Info {
+        String Message " 
+ This page is for HDF5 CF hyrax data providers or distributors to check if any HDF5 object or attribute information are ignored during the mapping. 
+
+
+
+ The values of the following string variables  are set to empty because at least one string size in this variable exceeds netCDF Java string limit(32767 bytes).
+To obtain the values, change the BES key H5.EnableDropLongString=true at the handler BES configuration file(h5.conf)
+to H5.EnableDropLongString=false.
+
+String variable: /arr_big_dset value is set to empty.
+";
+    }
+}

@@ -1,0 +1,32 @@
+netcdf group_mlls_zonal{
+dimensions:
+        lat = 2 ;
+        zdim = 3 ;
+variables:
+        float lat(lat);
+              lat:units = "degrees_north";
+        int zdim(zdim);
+              zdim:units ="km";
+        float pres1(lat,zdim);
+              pres1:units = "hPa";
+data:
+        lat = 2,4;
+        zdim = 100,200,300;
+        pres1 =
+          900,902,904,
+          901,903,905;
+group: g1 {
+ variables:
+   float lat1(lat);
+         lat1:units = "degrees_north";
+   float lon1(lat);
+         lon1:units = "degrees_east";
+   float pres2(lat,zdim);
+         pres2:units = "hPa";
+ data:
+       lat1 = 2,2.5;
+       lon1 = -10,-8;
+       pres2 = 800,810,820,
+               803,813,823;
+ }
+}

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="BUV-Nimbus04_L3zm_v01-00-2012m0203t144121" space="catalog">/data/BUV-Nimbus04_L3zm_v01-00-2012m0203t144121.h5</setContainer>
+    <define name="d">
+	<container name="BUV-Nimbus04_L3zm_v01-00-2012m0203t144121" >
+           <constraint>
+            FakeDim0[0:19:19],nSamples[0:71:71][0:35:35],TotalCovarianceMatrix[0:19:19][0:19:19][0:35:35],Date[0:71:71],Latitude[0:35:35],AprioriTotalColumnOzone[0:71:71][0:35:35]
+           </constraint>
+	</container>
+    </define>
+    <get type="dods" definition="d" />
+</request>
+

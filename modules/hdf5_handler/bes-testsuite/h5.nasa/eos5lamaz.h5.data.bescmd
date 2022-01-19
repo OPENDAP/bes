@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="grid_1_2d" space="catalog">/data/AMSR_2_L3_DailySnow_P00_20160831.he5</setContainer>
+    <define name="d">
+	<container name="grid_1_2d" >
+        <constraint>Northern_Hemisphere_lat[0:300:720][0:300:720],Northern_Hemisphere_lon[0:300:720][0:300:720],
+                    Southern_Hemisphere_lat[0:300:720][0:300:720],Southern_Hemisphere_lon[0:300:720][0:300:720],
+                    Northern_Hemisphere_YDim[0:300:720],Northern_Hemisphere_XDim[0:300:720],
+                    Southern_Hemisphere_YDim[0:300:720],Southern_Hemisphere_XDim[0:300:720]
+        </constraint>
+	</container>
+    </define>
+    <get type="dods" definition="d" />
+</request>

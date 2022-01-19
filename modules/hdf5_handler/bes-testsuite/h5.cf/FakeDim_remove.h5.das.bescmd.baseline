@@ -1,0 +1,13 @@
+Attributes {
+    atomic {
+        String origname "atomic";
+        String fullnamepath "/atomic";
+    }
+    dima {
+        String origname "dima";
+        String fullnamepath "/dima";
+    }
+    DODS_EXTRA {
+        String Unlimited_Dimension "dima";
+    }
+}

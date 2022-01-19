@@ -24,9 +24,10 @@ set -eux
 echo "env:"
 printenv
 
-# yum install -y awscli
-# yum install -y libpng-devel
-yum -y install sqlite-devel
+# CentOS7 may not need libpng with the new hyrax-dependencies, but I'm not sure
+# if the current dependency binaries are built with the latest source and build
+# scripts. jhrg 1/19/22
+yum install -y libpng-devel sqlite-devel
 
 # Get the pre-built dependencies (all static libraries). $OS is 'centos6' or 'centos7'
 # aws s3 cp s3://opendap.travis.build/

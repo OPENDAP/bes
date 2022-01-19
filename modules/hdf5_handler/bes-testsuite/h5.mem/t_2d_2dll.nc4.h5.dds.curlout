@@ -1,0 +1,5 @@
+Dataset {
+    Float32 mydata[xc = 4][yc = 4];
+    Float32 lat[xc = 4][yc = 4];
+    Float32 lon[xc = 4][yc = 4];
+} t_2d_2dll.nc4.h5;

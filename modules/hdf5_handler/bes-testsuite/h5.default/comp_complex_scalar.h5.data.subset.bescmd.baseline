@@ -1,0 +1,12 @@
+The data:
+Structure {
+    Structure {
+        Float32 f;
+        Structure {
+            Int16 i;
+            Int32 j;
+        } x;
+        Float64 y[2];
+    } yy[2];
+} /phony_compound_var = { {{ 2.2, { 2, 40000 }, {-200000.285657, 4.1415926} }, { 5.5, { 4, 80000 }, {-400000.285657, 6.1415926} }} };
+

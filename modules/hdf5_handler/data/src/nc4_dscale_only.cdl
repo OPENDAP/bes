@@ -1,0 +1,11 @@
+netcdf nc4_dscale_sca{    
+dimensions:
+ dim= 2; 
+variables:
+  float   dim(dim);
+  int     sca;
+data:
+  dim   = 1.5, 2.5;
+  sca   = 2;
+}
+

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="GSSTF.2b.2008.01.01" space="catalog">/data/GSSTF.2b.2008.01.01.he5</setContainer>
+    <define name="d">
+	<container name="GSSTF.2b.2008.01.01">
+	    <constraint>lat[0:90:179],lon[0:180:359],SET1_Tot_Precip_Water[0][0],SET1_DQ[179][359],SET1_E[0:90:179][359:359:359],SET1_H[0:90:179][0:1:359],SET2_Tot_Precip_Water[0:89:179][0:179:359]</constraint>
+        </container>
+    </define>
+    <get type="dods" definition="d" />
+</request>

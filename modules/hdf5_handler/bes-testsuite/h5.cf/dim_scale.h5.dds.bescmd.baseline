@@ -1,0 +1,13 @@
+Dataset {
+    Float32 GeoData_proftime[dim1 = 4];
+    Float32 GeoData_v2[dim3 = 2];
+    Float32 OtherData_v3[dim4 = 2];
+    Float32 data_temp[dim1 = 4][dim2 = 2][dim3 = 2];
+    Float32 data_temp2[dim1 = 4][dim2 = 2][dim4 = 2];
+    Int32 dim1[dim1 = 4];
+    Int32 dim2[dim2 = 2];
+    Int32 dim3[dim3 = 2];
+    Int32 dim4[dim4 = 2];
+    Float32 GeoData_lat[dim1 = 4][dim2 = 2];
+    Float32 GeoData_lon[dim1 = 4][dim2 = 2];
+} dim_scale.h5;

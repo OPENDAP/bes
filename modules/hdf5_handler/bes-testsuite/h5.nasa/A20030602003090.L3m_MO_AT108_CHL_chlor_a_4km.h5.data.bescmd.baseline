@@ -1,0 +1,8 @@
+The data:
+Float32 geophysical_data_chlor_a[rows = 3][columns = 3] = {{-32767, -32767, -32767},{0.166518, 0.130951, 0.158614},{-32767, -32767, -32767}};
+String palette[rgb = 3][eightbitcolor = 3] = {{"\223", "", "\377"},{"\300", "\017", "\377"},{"", "\377", ""}};
+Float32 columns[columns = 3] = {-179.979, -0.0208282, 179.938};
+Float32 eightbitcolor[eightbitcolor = 3] = {0, 127, 254};
+Float32 rgb[rgb = 3] = {0, 1, 2};
+Float32 rows[rows = 3] = {89.9792, 0.0208435, -89.9375};
+

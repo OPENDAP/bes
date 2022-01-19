@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <request reqID="some_unique_value" >
+     <setContext name="dap_format">dap2</setContext>
+     <setContainer name="good_imerge" space="catalog">/data/good_imerge.h5</setContainer>
+     <define name="d">
+ 	<container name="good_imerge">
+            <constraint>
+HQprecipSource2[0:1799:3599][0:899:1799],IRkalmanFilterWeight[0:1799:3599][0:899:1799],HQobservationTime2[0:1799:3599][0:899:1799],precipitationCal[0:1799:3599][0:899:1799],HQobservationTime1[0:1799:3599][0:899:1799],precipitationUncal[0:1799:3599][0:899:1799],HQprecipitation[0:1799:3599][0:899:1799],probabilityLiquidPrecipitation[0:1799:3599][0:899:1799],randomError[0:1799:3599][0:899:1799],IRprecipitation[0:1799:3599][0:899:1799],HQprecipSource1[0:1799:3599][0:899:1799],lat[0:899:1799],lon[0:1799:3599]
+            </constraint>
+         </container>
+     </define>
+     <get type="dods" definition="d" />
+ </request>

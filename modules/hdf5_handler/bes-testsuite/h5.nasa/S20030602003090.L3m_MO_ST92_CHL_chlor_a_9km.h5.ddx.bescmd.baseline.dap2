@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="S20030602003090.L3m_MO_ST92_CHL_chlor_a_9km.h5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="HDF5_GLOBAL" type="Container">
+        <Attribute name="product_name" type="String">
+            <value>S20030602003090.L3m_MO_ST92_CHL_chlor_a_9km.nc</value>
+        </Attribute>
+        <Attribute name="instrument" type="String">
+            <value>SeaWiFS</value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <value>SeaWiFS Level-3 Standard Mapped Image</value>
+        </Attribute>
+        <Attribute name="project" type="String">
+            <value>Ocean Biology Processing Group (NASA/GSFC/OBPG)</value>
+        </Attribute>
+        <Attribute name="platform" type="String">
+            <value>Orbview-2</value>
+        </Attribute>
+        <Attribute name="temporal_range" type="String">
+            <value>other</value>
+        </Attribute>
+        <Attribute name="processing_version" type="String">
+            <value>2013.2NCDF</value>
+        </Attribute>
+        <Attribute name="date_created" type="String">
+            <value>2014-06-21T18:09:36.000Z</value>
+        </Attribute>
+        <Attribute name="history" type="String">
+            <value>smigen par=S20030602003090.L3m_MO_ST92_CHL_chlor_a_9km.nc.param</value>
+        </Attribute>
+        <Attribute name="l2_flag_names" type="String">
+            <value>ATMFAIL,LAND,HILT,HISATZEN,STRAYLIGHT,CLDICE,COCCOLITH,LOWLW,CHLWARN,CHLFAIL,NAVWARN,MAXAERITER,ATMWARN,HISOLZEN,NAVFAIL,FILTER,HIGLINT</value>
+        </Attribute>
+        <Attribute name="time_coverage_start" type="String">
+            <value>2003-02-28T18:30:48.000Z</value>
+        </Attribute>
+        <Attribute name="time_coverage_end" type="String">
+            <value>2003-03-30T20:00:03.000Z</value>
+        </Attribute>
+        <Attribute name="start_orbit_number" type="Int32">
+            <value>29684</value>
+        </Attribute>
+        <Attribute name="end_orbit_number" type="Int32">
+            <value>30143</value>
+        </Attribute>
+        <Attribute name="map_projection" type="String">
+            <value>Equidistant Cylindrical</value>
+        </Attribute>
+        <Attribute name="latitude_units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Attribute name="longitude_units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Attribute name="northernmost_latitude" type="Float32">
+            <value>90.00000000</value>
+        </Attribute>
+        <Attribute name="southernmost_latitude" type="Float32">
+            <value>-90.00000000</value>
+        </Attribute>
+        <Attribute name="westernmost_longitude" type="Float32">
+            <value>-180.0000000</value>
+        </Attribute>
+        <Attribute name="easternmost_longitude" type="Float32">
+            <value>180.0000000</value>
+        </Attribute>
+        <Attribute name="geospatial_lat_max" type="Float32">
+            <value>90.00000000</value>
+        </Attribute>
+        <Attribute name="geospatial_lat_min" type="Float32">
+            <value>-90.00000000</value>
+        </Attribute>
+        <Attribute name="geospatial_lon_max" type="Float32">
+            <value>-180.0000000</value>
+        </Attribute>
+        <Attribute name="geospatial_lon_min" type="Float32">
+            <value>180.0000000</value>
+        </Attribute>
+        <Attribute name="grid_mapping_name" type="String">
+            <value>latitude_longitude</value>
+        </Attribute>
+        <Attribute name="latitude_step" type="Float32">
+            <value>0.08333333582</value>
+        </Attribute>
+        <Attribute name="longitude_step" type="Float32">
+            <value>0.08333333582</value>
+        </Attribute>
+        <Attribute name="sw_point_latitude" type="Float32">
+            <value>-89.95833588</value>
+        </Attribute>
+        <Attribute name="sw_point_longitude" type="Float32">
+            <value>-179.9583282</value>
+        </Attribute>
+        <Attribute name="geospatial_lon_resolution" type="Int32">
+            <value>9</value>
+        </Attribute>
+        <Attribute name="geospatial_lat_resolution" type="Int32">
+            <value>9</value>
+        </Attribute>
+        <Attribute name="geospatial_lat_units" type="String">
+            <value>km</value>
+        </Attribute>
+        <Attribute name="geospatial_lon_units" type="String">
+            <value>km</value>
+        </Attribute>
+        <Attribute name="spatialResolution" type="String">
+            <value>9 km</value>
+        </Attribute>
+        <Attribute name="data_bins" type="Int32">
+            <value>4273313</value>
+        </Attribute>
+        <Attribute name="number_of_lines" type="Int32">
+            <value>2160</value>
+        </Attribute>
+        <Attribute name="number_of_columns" type="Int32">
+            <value>4320</value>
+        </Attribute>
+        <Attribute name="measure" type="String">
+            <value>Mean</value>
+        </Attribute>
+        <Attribute name="data_minimum" type="Float32">
+            <value>0.001994000049</value>
+        </Attribute>
+        <Attribute name="data_maximum" type="Float32">
+            <value>96.49423218</value>
+        </Attribute>
+        <Attribute name="suggested_image_scaling_minimum" type="Float32">
+            <value>0.009999999776</value>
+        </Attribute>
+        <Attribute name="suggested_image_scaling_maximum" type="Float32">
+            <value>20.00000000</value>
+        </Attribute>
+        <Attribute name="suggested_image_scaling_type" type="String">
+            <value>LOG</value>
+        </Attribute>
+        <Attribute name="suggested_image_scaling_applied" type="String">
+            <value>No</value>
+        </Attribute>
+        <Attribute name="_lastModified" type="String">
+            <value>2014-06-21T18:09:36.000Z</value>
+        </Attribute>
+        <Attribute name="Conventions" type="String">
+            <value>CF-1.6</value>
+        </Attribute>
+        <Attribute name="institution" type="String">
+            <value>NASA/GSFC OBPG</value>
+        </Attribute>
+        <Attribute name="standard_name_vocabulary" type="String">
+            <value>NetCDF Climate and Forecast (CF) Metadata Convenention</value>
+        </Attribute>
+        <Attribute name="Metadata_Conventions" type="String">
+            <value>Unidata Dataset Discovery v1.0</value>
+        </Attribute>
+        <Attribute name="naming_authority" type="String">
+            <value>gov.nasa.gsfc.sci.oceandata</value>
+        </Attribute>
+        <Attribute name="license" type="String">
+            <value>http://science.nasa.gov/earth-science/earth-science-data/data-information-policy/</value>
+        </Attribute>
+        <Attribute name="creator_name" type="String">
+            <value>NASA/GSFC/OBPG</value>
+        </Attribute>
+        <Attribute name="publisher_name" type="String">
+            <value>NASA/GSFC/OBPG</value>
+        </Attribute>
+        <Attribute name="creator_email" type="String">
+            <value>data@oceancolor.gsfc.nasa.gov</value>
+        </Attribute>
+        <Attribute name="publisher_email" type="String">
+            <value>data@oceancolor.gsfc.nasa.gov</value>
+        </Attribute>
+        <Attribute name="creator_url" type="String">
+            <value>http://oceandata.sci.gsfc.nasa.gov</value>
+        </Attribute>
+        <Attribute name="publisher_url" type="String">
+            <value>http://oceandata.sci.gsfc.nasa.gov</value>
+        </Attribute>
+        <Attribute name="processing_level" type="String">
+            <value>L3 Mapped</value>
+        </Attribute>
+        <Attribute name="cdm_data_type" type="String">
+            <value>grid</value>
+        </Attribute>
+        <Attribute name="identifier_product_doi_authority" type="String">
+            <value>http://dx.doi.org</value>
+        </Attribute>
+        <Attribute name="identifier_product_doi" type="String">
+            <value>http://dx.doi.org</value>
+        </Attribute>
+        <Attribute name="keywords" type="String">
+            <value>Oceans &gt; Ocean Chemistry &gt; Chlorophyll; Oceans &gt; Ocean Optics &gt; Ocean Color</value>
+        </Attribute>
+        <Attribute name="keywords_vocabulary" type="String">
+            <value>NASA Global Change Master Directory (GCMD) Science Keywords</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="processing_control" type="Container">
+        <Attribute name="software_name" type="String">
+            <value>smigen</value>
+        </Attribute>
+        <Attribute name="software_version" type="String">
+            <value>5.03</value>
+        </Attribute>
+        <Attribute name="input_files" type="String">
+            <value>S20030602003090.L3b_MO_ST92_CHL.nc</value>
+        </Attribute>
+        <Attribute name="l2_flag_names" type="String">
+            <value>ATMFAIL,LAND,HILT,HISATZEN,STRAYLIGHT,CLDICE,COCCOLITH,LOWLW,CHLWARN,CHLFAIL,NAVWARN,MAXAERITER,ATMWARN,HISOLZEN,NAVFAIL,FILTER,HIGLINT</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/processing_control</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="input_parameters" type="Container">
+        <Attribute name="IFILE" type="String">
+            <value>S20030602003090.L3b_MO_ST92_CHL.nc</value>
+        </Attribute>
+        <Attribute name="OFILE" type="String">
+            <value>S20030602003090.L3m_MO_ST92_CHL_chlor_a_9km.nc</value>
+        </Attribute>
+        <Attribute name="PROD" type="String">
+            <value>chlor_a</value>
+        </Attribute>
+        <Attribute name="PALFILE" type="String">
+            <value>DEFAULT</value>
+        </Attribute>
+        <Attribute name="PROCESSING" type="String">
+            <value>2013.2NCDF</value>
+        </Attribute>
+        <Attribute name="MEAS" type="String">
+            <value>1</value>
+        </Attribute>
+        <Attribute name="STYPE" type="String">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="DATAMIN" type="String">
+            <value>0.000000</value>
+        </Attribute>
+        <Attribute name="DATAMAX" type="String">
+            <value>0.000000</value>
+        </Attribute>
+        <Attribute name="LONWEST" type="String">
+            <value>-180.000000</value>
+        </Attribute>
+        <Attribute name="LONEAST" type="String">
+            <value>180.000000</value>
+        </Attribute>
+        <Attribute name="LATSOUTH" type="String">
+            <value>-90.000000</value>
+        </Attribute>
+        <Attribute name="LATNORTH" type="String">
+            <value>90.000000</value>
+        </Attribute>
+        <Attribute name="RESOLUTION" type="String">
+            <value>9km</value>
+        </Attribute>
+        <Attribute name="PROJECTION" type="String">
+            <value>RECT</value>
+        </Attribute>
+        <Attribute name="GAP_FILL" type="String">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="SEAM_LON" type="String">
+            <value>-180.000000</value>
+        </Attribute>
+        <Attribute name="MINOBS" type="String">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="DEFLATE" type="String">
+            <value>0</value>
+        </Attribute>
+        <Attribute name="OFORMAT" type="String">
+            <value>netCDF4</value>
+        </Attribute>
+        <Attribute name="PRECISION" type="String">
+            <value>F</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/input_parameters</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="geophysical_data" type="Container"/>
+    <Array name="geophysical_data_chlor_a">
+        <Attribute name="long_name" type="String">
+            <value>Chlorophyll Concentration, OC4 Algorithm</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>mg m^-3</value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <value>mass_concentration_chlorophyll_concentration_in_sea_water</value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <value>-32767.00000</value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <value>0.001000000047</value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <value>100.0000000</value>
+        </Attribute>
+        <Attribute name="display_scale" type="String">
+            <value>log</value>
+        </Attribute>
+        <Attribute name="display_min" type="Float64">
+            <value>0.010000000000000000</value>
+        </Attribute>
+        <Attribute name="display_max" type="Float64">
+            <value>20.000000000000000</value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float32">
+            <value>1.000000000</value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="reference" type="String">
+            <value>O'Reilly, J.E., and 24 Coauthors, 2000: SeaWiFS Postlaunch Calibration and Validation Analyses, Part 3. NASA Tech. Memo. 2000-206892, Vol. 11, S.B. Hooker and E.R. Firestone, Eds., NASA Goddard Space Flight Center, 49 pp.\\n
+                http://oceancolor.gsfc.nasa.gov/REPROCESSING/R2009/ocv6/</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>chlor_a</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/geophysical_data/chlor_a</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="rows" size="2160"/>
+        <dimension name="columns" size="4320"/>
+    </Array>
+    <Array name="palette">
+        <Attribute name="origname" type="String">
+            <value>palette</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/palette</value>
+        </Attribute>
+        <String/>
+        <dimension name="rgb" size="3"/>
+        <dimension name="eightbitcolor" size="256"/>
+    </Array>
+    <Array name="columns">
+        <Attribute name="units" type="String">
+            <value>degrees_east</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="columns" size="4320"/>
+    </Array>
+    <Array name="eightbitcolor">
+        <Float32/>
+        <dimension name="eightbitcolor" size="256"/>
+    </Array>
+    <Array name="rgb">
+        <Float32/>
+        <dimension name="rgb" size="3"/>
+    </Array>
+    <Array name="rows">
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="rows" size="2160"/>
+    </Array>
+    <dataBLOB href=""/>
+</Dataset>

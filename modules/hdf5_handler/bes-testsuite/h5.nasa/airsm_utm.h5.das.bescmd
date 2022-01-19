@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="grid_1_2d" space="catalog">/data/AirMSPI_ER2_GRP_ELLIPSOID_20161006_181726Z_CA-NewberrySprings_SWPF_F01_V006.he5 </setContainer>
+    <define name="d">
+	<container name="grid_1_2d" >
+	</container>
+    </define>
+    <get type="das" definition="d" />
+</request>

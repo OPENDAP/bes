@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <request reqID="some_unique_value" >
+     <setContext name="dap_format">dap2</setContext>
+     <setContainer name="2A.GPM.GMI.GPROF2014v1-4.20140921-S002001-E015234.003195.V03C" space="catalog">/data/2A.GPM.GMI.GPROF2014v1-4.20140921-S002001-E015234.003195.V03C.h5</setContainer>
+     <define name="d">
+ 	<container name="2A.GPM.GMI.GPROF2014v1-4.20140921-S002001-E015234.003195.V03C">
+            <constraint>
+GprofDHeadr_speciesDescription[0:1:4][0:5:11],GprofDHeadr_hgtTopLayer[0:13:27],GprofDHeadr_temperatureDescriptions[0:9:20],GprofDHeadr_clusterProfiles[0:49:99][0:13:27][0:9:20][0:1:4],S1_totalColumnWaterVapor[0:1480:2961][0:109:220],S1_pixelStatus[0:1480:2961][0:109:220],S1_qualityFlag[0:1480:2961][0:109:220],S1_orographicLiftIndex[0:1480:2961][0:109:220],S1_ScanTime_MilliSecond[0:1480:2961],S1_ScanTime_Minute[0:1480:2961],S1_ScanTime_Year[0:1480:2961],S1_ScanTime_SecondOfDay[0:1480:2961],S1_ScanTime_Second[0:1480:2961],S1_ScanTime_DayOfYear[0:1480:2961],S1_ScanTime_Hour[0:1480:2961],S1_ScanTime_Month[0:1480:2961],S1_ScanTime_DayOfMonth[0:1480:2961],S1_spareIndex[0:1480:2961][0:109:220],S1_profileScale[0:1480:2961][0:109:220][0:1:4],S1_databaseExpansionIndex[0:1480:2961][0:109:220],S1_precip2ndTertial[0:1480:2961][0:109:220],S1_precip1stTertial[0:1480:2961][0:109:220],S1_numOfSignificantProf[0:1480:2961][0:109:220],S1_retrievalType[0:1480:2961][0:109:220],S1_SCstatus_SCorientation[0:1480:2961],S1_SCstatus_SClatitude[0:1480:2961],S1_SCstatus_SClongitude[0:1480:2961],S1_SCstatus_SCaltitude[0:1480:2961],S1_SCstatus_FractionalGranuleNumber[0:1480:2961],S1_iceWaterPath[0:1480:2961][0:109:220],S1_sunGlintAngle[0:1480:2961][0:109:220],S1_surfacePrecipitation[0:1480:2961][0:109:220],S1_snowCoverIndex[0:1480:2961][0:109:220],S1_spare[0:1480:2961][0:109:220],S1_cloudWaterPath[0:1480:2961][0:109:220],S1_totalColumnWaterVaporIndex[0:1480:2961][0:109:220],S1_mixedWaterPath[0:1480:2961][0:109:220],S1_probabilityOfPrecip[0:1480:2961][0:109:220],S1_temp2mIndex[0:1480:2961][0:109:220],S1_mostLikelyPrecipitation[0:1480:2961][0:109:220],S1_surfaceSkinTempIndex[0:1480:2961][0:109:220],S1_surfaceTypeIndex[0:1480:2961][0:109:220],S1_liquidPrecipFraction[0:1480:2961][0:109:220],S1_rainWaterPath[0:1480:2961][0:109:220],S1_convectPrecipFraction[0:1480:2961][0:109:220],S1_profileNumber[0:1480:2961][0:109:220][0:1:4],S1_Longitude[0:1480:2961][0:109:220],S1_Latitude[0:1480:2961][0:109:220],nlyrs[0:13:27],nprf[0:49:99],nspecies[0:1:4],ntemps[0:9:20],sddim[0:5:11]
+            </constraint>
+         </container>
+     </define>
+     <get type="dods" definition="d" />
+ </request>

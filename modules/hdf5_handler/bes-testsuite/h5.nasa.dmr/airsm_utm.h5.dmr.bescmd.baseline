@@ -1,0 +1,3396 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="AirMSPI_ER2_GRP_ELLIPSOID_20161006_181726Z_CA-NewberrySprings_SWPF_F01_V006.he5">
+    <Dimension name="Channel_Information_Channel_number" size="14"/>
+    <Dimension name="_355nm_band_YDim" size="1536"/>
+    <Dimension name="_355nm_band_XDim" size="4608"/>
+    <Dimension name="FakeDim2" size="1"/>
+    <Dimension name="_380nm_band_XDim" size="4608"/>
+    <Dimension name="_380nm_band_YDim" size="1536"/>
+    <Dimension name="_445nm_band_XDim" size="4608"/>
+    <Dimension name="_445nm_band_YDim" size="1536"/>
+    <Dimension name="_470nm_band_XDim" size="4608"/>
+    <Dimension name="_470nm_band_YDim" size="1536"/>
+    <Dimension name="_555nm_band_XDim" size="4608"/>
+    <Dimension name="_555nm_band_YDim" size="1536"/>
+    <Dimension name="_660nm_band_XDim" size="4608"/>
+    <Dimension name="_660nm_band_YDim" size="1536"/>
+    <Dimension name="_865nm_band_XDim" size="4608"/>
+    <Dimension name="_865nm_band_YDim" size="1536"/>
+    <Dimension name="_935nm_band_XDim" size="4608"/>
+    <Dimension name="_935nm_band_YDim" size="1536"/>
+    <Dimension name="Ancillary_XDim" size="4608"/>
+    <Dimension name="Ancillary_YDim" size="1536"/>
+    <Dimension name="XDim" size="4608"/>
+    <Dimension name="YDim" size="1536"/>
+    <Float64 name="Channel_Information_Center_wavelength">
+        <Dim name="/Channel_Information_Channel_number"/>
+        <Attribute name="origname" type="String">
+            <Value>Center_wavelength</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Channel_Information/Center_wavelength</Value>
+        </Attribute>
+    </Float64>
+    <String name="Channel_Information_Channel_name">
+        <Dim name="/Channel_Information_Channel_number"/>
+        <Attribute name="origname" type="String">
+            <Value>Channel_name</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Channel_Information/Channel_name</Value>
+        </Attribute>
+    </String>
+    <Float64 name="Channel_Information_Effective_bandwidth">
+        <Dim name="/Channel_Information_Channel_number"/>
+        <Attribute name="origname" type="String">
+            <Value>Effective_bandwidth</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Channel_Information/Effective_bandwidth</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="Channel_Information_Effective_transmittance">
+        <Dim name="/Channel_Information_Channel_number"/>
+        <Attribute name="origname" type="String">
+            <Value>Effective_transmittance</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Channel_Information/Effective_transmittance</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="Channel_Information_Solar_irradiance_at_1_AU">
+        <Dim name="/Channel_Information_Channel_number"/>
+        <Attribute name="origname" type="String">
+            <Value>Solar_irradiance_at_1_AU</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Channel_Information/Solar_irradiance_at_1_AU</Value>
+        </Attribute>
+    </Float64>
+    <Float32 name="_355nm_band_Glint_angle">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Glint_angle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/355nm_band/Data Fields/Glint_angle</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_355nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_355nm_band_I">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>I</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/355nm_band/Data Fields/I</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_355nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="_355nm_band_I_mask">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>I.mask</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/355nm_band/Data Fields/I.mask</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_355nm_band_UTM_projection</Value>
+        </Attribute>
+    </Int32>
+    <Float32 name="_355nm_band_RDQI">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>RDQI</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/355nm_band/Data Fields/RDQI</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_355nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_355nm_band_Scattering_angle">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Scattering_angle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/355nm_band/Data Fields/Scattering_angle</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_355nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_355nm_band_Sun_azimuth">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Sun_azimuth</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/355nm_band/Data Fields/Sun_azimuth</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_355nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_355nm_band_Sun_zenith">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Sun_zenith</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/355nm_band/Data Fields/Sun_zenith</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_355nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float64 name="_355nm_band_Time_in_seconds_from_epoch">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Time_in_seconds_from_epoch</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/355nm_band/Data Fields/Time_in_seconds_from_epoch</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_355nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float64>
+    <Int8 name="_355nm_band_UTM_projection">
+        <Dim name="/FakeDim2"/>
+        <Attribute name="transform_name" type="String">
+            <Value>universal_transverse_mercator</Value>
+        </Attribute>
+        <Attribute name="utm_zone_number" type="Float64">
+            <Value>11.000000000000000</Value>
+        </Attribute>
+        <Attribute name="semi_major_axis" type="Float64">
+            <Value>6378137.0000000000</Value>
+        </Attribute>
+        <Attribute name="inverse_flattening" type="Float64">
+            <Value>298.25722356300003</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>UTM_projection</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/355nm_band/Data Fields/UTM_projection</Value>
+        </Attribute>
+    </Int8>
+    <Float32 name="_355nm_band_View_azimuth">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>View_azimuth</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/355nm_band/Data Fields/View_azimuth</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_355nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_355nm_band_View_zenith">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>View_zenith</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/355nm_band/Data Fields/View_zenith</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_355nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_380nm_band_Glint_angle">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Glint_angle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/380nm_band/Data Fields/Glint_angle</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_380nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_380nm_band_I">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>I</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/380nm_band/Data Fields/I</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_380nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="_380nm_band_I_mask">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>I.mask</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/380nm_band/Data Fields/I.mask</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_380nm_band_UTM_projection</Value>
+        </Attribute>
+    </Int32>
+    <Float32 name="_380nm_band_RDQI">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>RDQI</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/380nm_band/Data Fields/RDQI</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_380nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_380nm_band_Scattering_angle">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Scattering_angle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/380nm_band/Data Fields/Scattering_angle</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_380nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_380nm_band_Sun_azimuth">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Sun_azimuth</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/380nm_band/Data Fields/Sun_azimuth</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_380nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_380nm_band_Sun_zenith">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Sun_zenith</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/380nm_band/Data Fields/Sun_zenith</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_380nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float64 name="_380nm_band_Time_in_seconds_from_epoch">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Time_in_seconds_from_epoch</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/380nm_band/Data Fields/Time_in_seconds_from_epoch</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_380nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float64>
+    <Int8 name="_380nm_band_UTM_projection">
+        <Dim name="/FakeDim2"/>
+        <Attribute name="transform_name" type="String">
+            <Value>universal_transverse_mercator</Value>
+        </Attribute>
+        <Attribute name="utm_zone_number" type="Float64">
+            <Value>11.000000000000000</Value>
+        </Attribute>
+        <Attribute name="semi_major_axis" type="Float64">
+            <Value>6378137.0000000000</Value>
+        </Attribute>
+        <Attribute name="inverse_flattening" type="Float64">
+            <Value>298.25722356300003</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>UTM_projection</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/380nm_band/Data Fields/UTM_projection</Value>
+        </Attribute>
+    </Int8>
+    <Float32 name="_380nm_band_View_azimuth">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>View_azimuth</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/380nm_band/Data Fields/View_azimuth</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_380nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_380nm_band_View_zenith">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>View_zenith</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/380nm_band/Data Fields/View_zenith</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_380nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_445nm_band_Glint_angle">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Glint_angle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/445nm_band/Data Fields/Glint_angle</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_445nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_445nm_band_I">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>I</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/445nm_band/Data Fields/I</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_445nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="_445nm_band_I_mask">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>I.mask</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/445nm_band/Data Fields/I.mask</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_445nm_band_UTM_projection</Value>
+        </Attribute>
+    </Int32>
+    <Float32 name="_445nm_band_RDQI">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>RDQI</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/445nm_band/Data Fields/RDQI</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_445nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_445nm_band_Scattering_angle">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Scattering_angle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/445nm_band/Data Fields/Scattering_angle</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_445nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_445nm_band_Sun_azimuth">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Sun_azimuth</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/445nm_band/Data Fields/Sun_azimuth</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_445nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_445nm_band_Sun_zenith">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Sun_zenith</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/445nm_band/Data Fields/Sun_zenith</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_445nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float64 name="_445nm_band_Time_in_seconds_from_epoch">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Time_in_seconds_from_epoch</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/445nm_band/Data Fields/Time_in_seconds_from_epoch</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_445nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float64>
+    <Int8 name="_445nm_band_UTM_projection">
+        <Dim name="/FakeDim2"/>
+        <Attribute name="transform_name" type="String">
+            <Value>universal_transverse_mercator</Value>
+        </Attribute>
+        <Attribute name="utm_zone_number" type="Float64">
+            <Value>11.000000000000000</Value>
+        </Attribute>
+        <Attribute name="semi_major_axis" type="Float64">
+            <Value>6378137.0000000000</Value>
+        </Attribute>
+        <Attribute name="inverse_flattening" type="Float64">
+            <Value>298.25722356300003</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>UTM_projection</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/445nm_band/Data Fields/UTM_projection</Value>
+        </Attribute>
+    </Int8>
+    <Float32 name="_445nm_band_View_azimuth">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>View_azimuth</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/445nm_band/Data Fields/View_azimuth</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_445nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_445nm_band_View_zenith">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>View_zenith</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/445nm_band/Data Fields/View_zenith</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_445nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_470nm_band_AOLP_meridian">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AOLP_meridian</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/470nm_band/Data Fields/AOLP_meridian</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_470nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_470nm_band_AOLP_scatter">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AOLP_scatter</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/470nm_band/Data Fields/AOLP_scatter</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_470nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_470nm_band_DOLP">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>DOLP</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/470nm_band/Data Fields/DOLP</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_470nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_470nm_band_Glint_angle">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Glint_angle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/470nm_band/Data Fields/Glint_angle</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_470nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_470nm_band_I">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>I</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/470nm_band/Data Fields/I</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_470nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="_470nm_band_I_mask">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>I.mask</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/470nm_band/Data Fields/I.mask</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_470nm_band_UTM_projection</Value>
+        </Attribute>
+    </Int32>
+    <Float32 name="_470nm_band_IPOL">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>IPOL</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/470nm_band/Data Fields/IPOL</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_470nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="_470nm_band_Q_mask">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Q.mask</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/470nm_band/Data Fields/Q.mask</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_470nm_band_UTM_projection</Value>
+        </Attribute>
+    </Int32>
+    <Float32 name="_470nm_band_Q_meridian">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Q_meridian</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/470nm_band/Data Fields/Q_meridian</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_470nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_470nm_band_Q_scatter">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Q_scatter</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/470nm_band/Data Fields/Q_scatter</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_470nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_470nm_band_RDQI">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>RDQI</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/470nm_band/Data Fields/RDQI</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_470nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_470nm_band_Scattering_angle">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Scattering_angle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/470nm_band/Data Fields/Scattering_angle</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_470nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_470nm_band_Sun_azimuth">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Sun_azimuth</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/470nm_band/Data Fields/Sun_azimuth</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_470nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_470nm_band_Sun_zenith">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Sun_zenith</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/470nm_band/Data Fields/Sun_zenith</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_470nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float64 name="_470nm_band_Time_in_seconds_from_epoch">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Time_in_seconds_from_epoch</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/470nm_band/Data Fields/Time_in_seconds_from_epoch</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_470nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float64>
+    <Int32 name="_470nm_band_U_mask">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>U.mask</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/470nm_band/Data Fields/U.mask</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_470nm_band_UTM_projection</Value>
+        </Attribute>
+    </Int32>
+    <Int8 name="_470nm_band_UTM_projection">
+        <Dim name="/FakeDim2"/>
+        <Attribute name="transform_name" type="String">
+            <Value>universal_transverse_mercator</Value>
+        </Attribute>
+        <Attribute name="utm_zone_number" type="Float64">
+            <Value>11.000000000000000</Value>
+        </Attribute>
+        <Attribute name="semi_major_axis" type="Float64">
+            <Value>6378137.0000000000</Value>
+        </Attribute>
+        <Attribute name="inverse_flattening" type="Float64">
+            <Value>298.25722356300003</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>UTM_projection</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/470nm_band/Data Fields/UTM_projection</Value>
+        </Attribute>
+    </Int8>
+    <Float32 name="_470nm_band_U_meridian">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>U_meridian</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/470nm_band/Data Fields/U_meridian</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_470nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_470nm_band_U_scatter">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>U_scatter</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/470nm_band/Data Fields/U_scatter</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_470nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_470nm_band_View_azimuth">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>View_azimuth</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/470nm_band/Data Fields/View_azimuth</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_470nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_470nm_band_View_zenith">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>View_zenith</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/470nm_band/Data Fields/View_zenith</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_470nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_555nm_band_Glint_angle">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Glint_angle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/555nm_band/Data Fields/Glint_angle</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_555nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_555nm_band_I">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>I</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/555nm_band/Data Fields/I</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_555nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="_555nm_band_I_mask">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>I.mask</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/555nm_band/Data Fields/I.mask</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_555nm_band_UTM_projection</Value>
+        </Attribute>
+    </Int32>
+    <Float32 name="_555nm_band_RDQI">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>RDQI</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/555nm_band/Data Fields/RDQI</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_555nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_555nm_band_Scattering_angle">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Scattering_angle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/555nm_band/Data Fields/Scattering_angle</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_555nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_555nm_band_Sun_azimuth">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Sun_azimuth</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/555nm_band/Data Fields/Sun_azimuth</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_555nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_555nm_band_Sun_zenith">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Sun_zenith</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/555nm_band/Data Fields/Sun_zenith</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_555nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float64 name="_555nm_band_Time_in_seconds_from_epoch">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Time_in_seconds_from_epoch</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/555nm_band/Data Fields/Time_in_seconds_from_epoch</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_555nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float64>
+    <Int8 name="_555nm_band_UTM_projection">
+        <Dim name="/FakeDim2"/>
+        <Attribute name="transform_name" type="String">
+            <Value>universal_transverse_mercator</Value>
+        </Attribute>
+        <Attribute name="utm_zone_number" type="Float64">
+            <Value>11.000000000000000</Value>
+        </Attribute>
+        <Attribute name="semi_major_axis" type="Float64">
+            <Value>6378137.0000000000</Value>
+        </Attribute>
+        <Attribute name="inverse_flattening" type="Float64">
+            <Value>298.25722356300003</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>UTM_projection</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/555nm_band/Data Fields/UTM_projection</Value>
+        </Attribute>
+    </Int8>
+    <Float32 name="_555nm_band_View_azimuth">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>View_azimuth</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/555nm_band/Data Fields/View_azimuth</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_555nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_555nm_band_View_zenith">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>View_zenith</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/555nm_band/Data Fields/View_zenith</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_555nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_660nm_band_AOLP_meridian">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AOLP_meridian</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/660nm_band/Data Fields/AOLP_meridian</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_660nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_660nm_band_AOLP_scatter">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AOLP_scatter</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/660nm_band/Data Fields/AOLP_scatter</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_660nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_660nm_band_DOLP">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>DOLP</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/660nm_band/Data Fields/DOLP</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_660nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_660nm_band_Glint_angle">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Glint_angle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/660nm_band/Data Fields/Glint_angle</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_660nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_660nm_band_I">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>I</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/660nm_band/Data Fields/I</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_660nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="_660nm_band_I_mask">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>I.mask</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/660nm_band/Data Fields/I.mask</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_660nm_band_UTM_projection</Value>
+        </Attribute>
+    </Int32>
+    <Float32 name="_660nm_band_IPOL">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>IPOL</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/660nm_band/Data Fields/IPOL</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_660nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="_660nm_band_Q_mask">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Q.mask</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/660nm_band/Data Fields/Q.mask</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_660nm_band_UTM_projection</Value>
+        </Attribute>
+    </Int32>
+    <Float32 name="_660nm_band_Q_meridian">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Q_meridian</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/660nm_band/Data Fields/Q_meridian</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_660nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_660nm_band_Q_scatter">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Q_scatter</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/660nm_band/Data Fields/Q_scatter</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_660nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_660nm_band_RDQI">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>RDQI</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/660nm_band/Data Fields/RDQI</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_660nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_660nm_band_Scattering_angle">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Scattering_angle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/660nm_band/Data Fields/Scattering_angle</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_660nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_660nm_band_Sun_azimuth">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Sun_azimuth</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/660nm_band/Data Fields/Sun_azimuth</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_660nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_660nm_band_Sun_zenith">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Sun_zenith</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/660nm_band/Data Fields/Sun_zenith</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_660nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float64 name="_660nm_band_Time_in_seconds_from_epoch">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Time_in_seconds_from_epoch</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/660nm_band/Data Fields/Time_in_seconds_from_epoch</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_660nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float64>
+    <Int32 name="_660nm_band_U_mask">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>U.mask</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/660nm_band/Data Fields/U.mask</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_660nm_band_UTM_projection</Value>
+        </Attribute>
+    </Int32>
+    <Int8 name="_660nm_band_UTM_projection">
+        <Dim name="/FakeDim2"/>
+        <Attribute name="transform_name" type="String">
+            <Value>universal_transverse_mercator</Value>
+        </Attribute>
+        <Attribute name="utm_zone_number" type="Float64">
+            <Value>11.000000000000000</Value>
+        </Attribute>
+        <Attribute name="semi_major_axis" type="Float64">
+            <Value>6378137.0000000000</Value>
+        </Attribute>
+        <Attribute name="inverse_flattening" type="Float64">
+            <Value>298.25722356300003</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>UTM_projection</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/660nm_band/Data Fields/UTM_projection</Value>
+        </Attribute>
+    </Int8>
+    <Float32 name="_660nm_band_U_meridian">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>U_meridian</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/660nm_band/Data Fields/U_meridian</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_660nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_660nm_band_U_scatter">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>U_scatter</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/660nm_band/Data Fields/U_scatter</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_660nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_660nm_band_View_azimuth">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>View_azimuth</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/660nm_band/Data Fields/View_azimuth</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_660nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_660nm_band_View_zenith">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>View_zenith</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/660nm_band/Data Fields/View_zenith</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_660nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_865nm_band_AOLP_meridian">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AOLP_meridian</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/865nm_band/Data Fields/AOLP_meridian</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_865nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_865nm_band_AOLP_scatter">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>AOLP_scatter</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/865nm_band/Data Fields/AOLP_scatter</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_865nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_865nm_band_DOLP">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>DOLP</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/865nm_band/Data Fields/DOLP</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_865nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_865nm_band_Glint_angle">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Glint_angle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/865nm_band/Data Fields/Glint_angle</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_865nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_865nm_band_I">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>I</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/865nm_band/Data Fields/I</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_865nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="_865nm_band_I_mask">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>I.mask</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/865nm_band/Data Fields/I.mask</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_865nm_band_UTM_projection</Value>
+        </Attribute>
+    </Int32>
+    <Float32 name="_865nm_band_IPOL">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>IPOL</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/865nm_band/Data Fields/IPOL</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_865nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="_865nm_band_Q_mask">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Q.mask</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/865nm_band/Data Fields/Q.mask</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_865nm_band_UTM_projection</Value>
+        </Attribute>
+    </Int32>
+    <Float32 name="_865nm_band_Q_meridian">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Q_meridian</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/865nm_band/Data Fields/Q_meridian</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_865nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_865nm_band_Q_scatter">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Q_scatter</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/865nm_band/Data Fields/Q_scatter</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_865nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_865nm_band_RDQI">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>RDQI</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/865nm_band/Data Fields/RDQI</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_865nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_865nm_band_Scattering_angle">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Scattering_angle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/865nm_band/Data Fields/Scattering_angle</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_865nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_865nm_band_Sun_azimuth">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Sun_azimuth</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/865nm_band/Data Fields/Sun_azimuth</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_865nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_865nm_band_Sun_zenith">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Sun_zenith</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/865nm_band/Data Fields/Sun_zenith</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_865nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float64 name="_865nm_band_Time_in_seconds_from_epoch">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Time_in_seconds_from_epoch</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/865nm_band/Data Fields/Time_in_seconds_from_epoch</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_865nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float64>
+    <Int32 name="_865nm_band_U_mask">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>U.mask</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/865nm_band/Data Fields/U.mask</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_865nm_band_UTM_projection</Value>
+        </Attribute>
+    </Int32>
+    <Int8 name="_865nm_band_UTM_projection">
+        <Dim name="/FakeDim2"/>
+        <Attribute name="transform_name" type="String">
+            <Value>universal_transverse_mercator</Value>
+        </Attribute>
+        <Attribute name="utm_zone_number" type="Float64">
+            <Value>11.000000000000000</Value>
+        </Attribute>
+        <Attribute name="semi_major_axis" type="Float64">
+            <Value>6378137.0000000000</Value>
+        </Attribute>
+        <Attribute name="inverse_flattening" type="Float64">
+            <Value>298.25722356300003</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>UTM_projection</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/865nm_band/Data Fields/UTM_projection</Value>
+        </Attribute>
+    </Int8>
+    <Float32 name="_865nm_band_U_meridian">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>U_meridian</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/865nm_band/Data Fields/U_meridian</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_865nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_865nm_band_U_scatter">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>U_scatter</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/865nm_band/Data Fields/U_scatter</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_865nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_865nm_band_View_azimuth">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>View_azimuth</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/865nm_band/Data Fields/View_azimuth</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_865nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_865nm_band_View_zenith">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>View_zenith</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/865nm_band/Data Fields/View_zenith</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_865nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_935nm_band_Glint_angle">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Glint_angle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/935nm_band/Data Fields/Glint_angle</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_935nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_935nm_band_I">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>I</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/935nm_band/Data Fields/I</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_935nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Int32 name="_935nm_band_I_mask">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>I.mask</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/935nm_band/Data Fields/I.mask</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_935nm_band_UTM_projection</Value>
+        </Attribute>
+    </Int32>
+    <Float32 name="_935nm_band_RDQI">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>RDQI</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/935nm_band/Data Fields/RDQI</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_935nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_935nm_band_Scattering_angle">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Scattering_angle</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/935nm_band/Data Fields/Scattering_angle</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_935nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_935nm_band_Sun_azimuth">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Sun_azimuth</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/935nm_band/Data Fields/Sun_azimuth</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_935nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_935nm_band_Sun_zenith">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Sun_zenith</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/935nm_band/Data Fields/Sun_zenith</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_935nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float64 name="_935nm_band_Time_in_seconds_from_epoch">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Time_in_seconds_from_epoch</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/935nm_band/Data Fields/Time_in_seconds_from_epoch</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_935nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float64>
+    <Int8 name="_935nm_band_UTM_projection">
+        <Dim name="/FakeDim2"/>
+        <Attribute name="transform_name" type="String">
+            <Value>universal_transverse_mercator</Value>
+        </Attribute>
+        <Attribute name="utm_zone_number" type="Float64">
+            <Value>11.000000000000000</Value>
+        </Attribute>
+        <Attribute name="semi_major_axis" type="Float64">
+            <Value>6378137.0000000000</Value>
+        </Attribute>
+        <Attribute name="inverse_flattening" type="Float64">
+            <Value>298.25722356300003</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>UTM_projection</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/935nm_band/Data Fields/UTM_projection</Value>
+        </Attribute>
+    </Int8>
+    <Float32 name="_935nm_band_View_azimuth">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>View_azimuth</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/935nm_band/Data Fields/View_azimuth</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_935nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="_935nm_band_View_zenith">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>View_zenith</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/935nm_band/Data Fields/View_zenith</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>_935nm_band_UTM_projection</Value>
+        </Attribute>
+    </Float32>
+    <Float64 name="Ancillary_Elevation">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Elevation</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/Ancillary/Data Fields/Elevation</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>Ancillary_UTM_projection</Value>
+        </Attribute>
+    </Float64>
+    <Int32 name="Ancillary_Land_water_mask">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-999</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Land_water_mask</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/Ancillary/Data Fields/Land_water_mask</Value>
+        </Attribute>
+        <Attribute name="coordinates" type="String">
+            <Value>Ancillary_Latitude Ancillary_Longitude</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>Ancillary_UTM_projection</Value>
+        </Attribute>
+    </Int32>
+    <Int8 name="Ancillary_UTM_projection">
+        <Dim name="/FakeDim2"/>
+        <Attribute name="transform_name" type="String">
+            <Value>universal_transverse_mercator</Value>
+        </Attribute>
+        <Attribute name="utm_zone_number" type="Float64">
+            <Value>11.000000000000000</Value>
+        </Attribute>
+        <Attribute name="semi_major_axis" type="Float64">
+            <Value>6378137.0000000000</Value>
+        </Attribute>
+        <Attribute name="inverse_flattening" type="Float64">
+            <Value>298.25722356300003</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>UTM_projection</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/Ancillary/Data Fields/UTM_projection</Value>
+        </Attribute>
+    </Int8>
+    <String name="StructMetadata_0">
+        <Attribute name="origname" type="String">
+            <Value>StructMetadata.0</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
+        </Attribute>
+    </String>
+    <String name="StructMetadata_1">
+        <Attribute name="origname" type="String">
+            <Value>StructMetadata.1</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION/StructMetadata.1</Value>
+        </Attribute>
+    </String>
+    <Float64 name="_355nm_band_XDim">
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="long_name" type="String">
+            <Value>UTM X</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_x_coordinate</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoX</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>XDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/355nm_band/Data Fields/XDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="_355nm_band_YDim">
+        <Dim name="/_355nm_band_YDim"/>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoY</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>UTM Y</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_y_coordinate</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>YDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/355nm_band/Data Fields/YDim</Value>
+        </Attribute>
+    </Float64>
+    <Int32 name="Channel_Information_Channel_number">
+        <Dim name="/Channel_Information_Channel_number"/>
+        <Attribute name="origname" type="String">
+            <Value>Channel_number</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Channel_Information/Channel_number</Value>
+        </Attribute>
+    </Int32>
+    <Float64 name="_380nm_band_XDim">
+        <Dim name="/_380nm_band_XDim"/>
+        <Attribute name="long_name" type="String">
+            <Value>UTM X</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_x_coordinate</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoX</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>XDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/380nm_band/Data Fields/XDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="_380nm_band_YDim">
+        <Dim name="/_380nm_band_YDim"/>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoY</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>UTM Y</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_y_coordinate</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>YDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/380nm_band/Data Fields/YDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="_445nm_band_XDim">
+        <Dim name="/_445nm_band_XDim"/>
+        <Attribute name="long_name" type="String">
+            <Value>UTM X</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_x_coordinate</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoX</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>XDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/445nm_band/Data Fields/XDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="_445nm_band_YDim">
+        <Dim name="/_445nm_band_YDim"/>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoY</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>UTM Y</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_y_coordinate</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>YDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/445nm_band/Data Fields/YDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="_470nm_band_XDim">
+        <Dim name="/_470nm_band_XDim"/>
+        <Attribute name="long_name" type="String">
+            <Value>UTM X</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_x_coordinate</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoX</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>XDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/470nm_band/Data Fields/XDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="_470nm_band_YDim">
+        <Dim name="/_470nm_band_YDim"/>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoY</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>UTM Y</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_y_coordinate</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>YDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/470nm_band/Data Fields/YDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="_555nm_band_XDim">
+        <Dim name="/_555nm_band_XDim"/>
+        <Attribute name="long_name" type="String">
+            <Value>UTM X</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_x_coordinate</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoX</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>XDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/555nm_band/Data Fields/XDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="_555nm_band_YDim">
+        <Dim name="/_555nm_band_YDim"/>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoY</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>UTM Y</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_y_coordinate</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>YDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/555nm_band/Data Fields/YDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="_660nm_band_XDim">
+        <Dim name="/_660nm_band_XDim"/>
+        <Attribute name="long_name" type="String">
+            <Value>UTM X</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_x_coordinate</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoX</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>XDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/660nm_band/Data Fields/XDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="_660nm_band_YDim">
+        <Dim name="/_660nm_band_YDim"/>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoY</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>UTM Y</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_y_coordinate</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>YDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/660nm_band/Data Fields/YDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="_865nm_band_XDim">
+        <Dim name="/_865nm_band_XDim"/>
+        <Attribute name="long_name" type="String">
+            <Value>UTM X</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_x_coordinate</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoX</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>XDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/865nm_band/Data Fields/XDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="_865nm_band_YDim">
+        <Dim name="/_865nm_band_YDim"/>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoY</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>UTM Y</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_y_coordinate</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>YDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/865nm_band/Data Fields/YDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="_935nm_band_XDim">
+        <Dim name="/_935nm_band_XDim"/>
+        <Attribute name="long_name" type="String">
+            <Value>UTM X</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_x_coordinate</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoX</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>XDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/935nm_band/Data Fields/XDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="_935nm_band_YDim">
+        <Dim name="/_935nm_band_YDim"/>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoY</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>UTM Y</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_y_coordinate</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>YDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/935nm_band/Data Fields/YDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="Ancillary_XDim">
+        <Dim name="/Ancillary_XDim"/>
+        <Attribute name="long_name" type="String">
+            <Value>UTM X</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_x_coordinate</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoX</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>XDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/Ancillary/Data Fields/XDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="Ancillary_YDim">
+        <Dim name="/Ancillary_YDim"/>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoY</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>UTM Y</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_y_coordinate</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>YDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/Ancillary/Data Fields/YDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="XDim">
+        <Dim name="/XDim"/>
+        <Attribute name="long_name" type="String">
+            <Value>UTM X</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_x_coordinate</Value>
+        </Attribute>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoX</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>XDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/XDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="YDim">
+        <Dim name="/YDim"/>
+        <Attribute name="_CoordinateAxisType" type="String">
+            <Value>GeoY</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>UTM Y</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="standard_name" type="String">
+            <Value>projection_y_coordinate</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>YDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/YDim</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="Ancillary_Latitude">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>UTM_projection</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/Ancillary/Data Fields/Latitude</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="Ancillary_Longitude">
+        <Dim name="/_355nm_band_YDim"/>
+        <Dim name="/_355nm_band_XDim"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-999.00000000000000</Value>
+        </Attribute>
+        <Attribute name="grid_mapping" type="String">
+            <Value>UTM_projection</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/Ancillary/Data Fields/Longitude</Value>
+        </Attribute>
+    </Float64>
+    <Int32 name="FakeDim2">
+        <Dim name="/FakeDim2"/>
+        <Attribute name="units" type="String">
+            <Value>level</Value>
+        </Attribute>
+    </Int32>
+    <Attribute name="Channel_Information" type="Container"/>
+    <Attribute name="HDFEOS" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL_FILE_ATTRIBUTES" type="Container">
+        <Attribute name="Acquisition_end_time" type="String">
+            <Value>2016-10-06T18:17:53.700850Z</Value>
+        </Attribute>
+        <Attribute name="Acquisition_start_time" type="String">
+            <Value>2016-10-06T18:16:59.279041Z</Value>
+        </Attribute>
+        <Attribute name="Aircraft_heading__degrees_" type="Float32">
+            <Value>268.0582581</Value>
+        </Attribute>
+        <Attribute name="BRF_equation" type="String">
+            <Value>BRF = radiance * Pi * (sun_distance^2) * (1/solar_irradiance) * (1/cos(sun_zenith))</Value>
+        </Attribute>
+        <Attribute name="Epoch__UTC_" type="String">
+            <Value>2016-10-06T18:17:26.475085Z</Value>
+        </Attribute>
+        <Attribute name="Geolocation_stage" type="String">
+            <Value>Indirect</Value>
+        </Attribute>
+        <Attribute name="Gimbal_angle_average__degrees_" type="Float32">
+            <Value>1.156612277</Value>
+        </Attribute>
+        <Attribute name="Gimbal_angle_maximum__degrees_" type="Float32">
+            <Value>65.49031067</Value>
+        </Attribute>
+        <Attribute name="Gimbal_angle_minimum__degrees_" type="Float32">
+            <Value>-65.47910309</Value>
+        </Attribute>
+        <Attribute name="Gimbal_scan_direction" type="String">
+            <Value>forward</Value>
+        </Attribute>
+        <Attribute name="Lower_left_latitude" type="Float64">
+            <Value>34.816626354733316</Value>
+        </Attribute>
+        <Attribute name="Lower_left_longitude" type="Float64">
+            <Value>-116.80646181519083</Value>
+        </Attribute>
+        <Attribute name="Lower_right_latitude" type="Float64">
+            <Value>34.808104891755107</Value>
+        </Attribute>
+        <Attribute name="Lower_right_longitude" type="Float64">
+            <Value>-115.54702679532295</Value>
+        </Attribute>
+        <Attribute name="Production_time" type="String">
+            <Value>2017-06-14T10:19:04Z</Value>
+        </Attribute>
+        <Attribute name="Radiance_units" type="String">
+            <Value>W * (sr^-1) * (m^-2) * (nm^-1) : Watts per steradian per square meter per nanometer</Value>
+        </Attribute>
+        <Attribute name="Resolution" type="Float64">
+            <Value>25.000000000000000</Value>
+        </Attribute>
+        <Attribute name="Sun_distance" type="Float64">
+            <Value>0.99950062637856041</Value>
+        </Attribute>
+        <Attribute name="Target_type" type="String">
+            <Value>Land</Value>
+        </Attribute>
+        <Attribute name="Upper_left_latitude" type="Float64">
+            <Value>35.162894706720600</Value>
+        </Attribute>
+        <Attribute name="Upper_left_longitude" type="Float64">
+            <Value>-116.80564508846540</Value>
+        </Attribute>
+        <Attribute name="Upper_right_latitude" type="Float64">
+            <Value>35.154263579924802</Value>
+        </Attribute>
+        <Attribute name="Upper_right_longitude" type="Float64">
+            <Value>-115.54089787963535</Value>
+        </Attribute>
+        <Attribute name="_config__camera_pitch" type="Float64">
+            <Value>-0.99041298402936362</Value>
+        </Attribute>
+        <Attribute name="_config__camera_roll" type="Float64">
+            <Value>-1.3828724840993378</Value>
+        </Attribute>
+        <Attribute name="_config__camera_yaw" type="Float64">
+            <Value>-0.12289263819227680</Value>
+        </Attribute>
+        <Attribute name="_config__gimbal_epsilon" type="Float64">
+            <Value>1.1144565768393828</Value>
+        </Attribute>
+        <Attribute name="_config__gimbal_psi" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="_config__gimbal_theta" type="Float64">
+            <Value>-0.26483552311698755</Value>
+        </Attribute>
+        <Attribute name="_config__instrument_info_config" type="String">
+            <Value>AIRMSPI_CONFIG_INSTRUMENT_INFO_0008.config</Value>
+        </Attribute>
+        <Attribute name="_config__l1b2_diagnostic_field_map_config" type="String">
+            <Value>AIRMSPI_CONFIG_L1B2_DIAGNOSTIC_FIELD_MAP_0002.config</Value>
+        </Attribute>
+        <Attribute name="_config__l1b2_hdf_chunk_size_x" type="Int32">
+            <Value>512</Value>
+        </Attribute>
+        <Attribute name="_config__l1b2_hdf_chunk_size_y" type="Int32">
+            <Value>512</Value>
+        </Attribute>
+        <Attribute name="_config__l1b2_standard_field_map_config" type="String">
+            <Value>AIRMSPI_CONFIG_L1B2_STANDARD_FIELD_MAP_0003.config</Value>
+        </Attribute>
+        <Attribute name="_config__out_of_band_calibration_file" type="String">
+            <Value>identity_out_of_band_rdqi.hdf5</Value>
+        </Attribute>
+        <Attribute name="_config__polarization_calibration_file" type="String">
+            <Value>airmspi_polcal_20160415_v6.7.dat</Value>
+        </Attribute>
+        <Attribute name="_config__software_version_tag" type="String">
+            <Value>V10.2.3</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1A1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__instrument_info_config" type="String">
+            <Value>/data/MSPI/ANC/AirMSPI/instrument/ops/AIRMSPI_CONFIG_INSTRUMENT_INFO_0009.config</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1A1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__l1a_field_map_config" type="String">
+            <Value>/data/MSPI/ANC/AirMSPI/fieldmap/ops/AIRMSPI_CONFIG_L1A_FIELD_MAP_0003.config</Value>
+        </Attribute>
+        <Attribute name="_config__software_version_info" type="String">
+            <Value>version info created Thu Apr 20 12:49:57 PDT 2017 by mikeb
+MSPI-Shared
+Path: MSPI-Shared
+Working Copy Root Path: /export/heidrun_scr/mikeb/V10.2.3/MSPI-Shared
+URL: http://thora/svn/MSPI-Shared/trunk
+Relative URL: ^/trunk
+Repository Root: http://thora/svn/MSPI-Shared
+Repository UUID: 97c37807-0761-4561-a1ac-518373b5ef70
+Revision: 474
+Node Kind: directory
+Schedule: normal
+Last Changed Author: mikeb
+Last Changed Rev: 474
+Last Changed Date: 2017-03-28 12:51:09 -0700 (Tue, 28 Mar 2017)
+
+MSPI-Ground
+Path: MSPI-Ground
+Working Copy Root Path: /export/heidrun_scr/mikeb/V10.2.3/MSPI-Ground
+URL: http://thora/svn/MSPI-Ground/trunk
+Relative URL: ^/trunk
+Repository Root: http://thora/svn/MSPI-Ground
+Repository UUID: 5ae58e34-18c2-464d-91f1-f052dff49eff
+Revision: 2142
+Node Kind: directory
+Schedule: normal
+Last Changed Author: mikeb
+Last Changed Rev: 2142
+Last Changed Date: 2017-04-20 12:48:45 -0700 (Thu, 20 Apr 2017)
+
+</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1A1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__software_version_tag" type="String">
+            <Value>V10.2.3</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1A1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__input__L0" type="String">
+            <Value>Run.N5.20161006.171817_ORACLES1_AirMSPI_132.mspi2</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1A1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__input__override_number_frame" type="Int32">
+            <Value>-1</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1A1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__software_version_info" type="String">
+            <Value>version info created Thu Apr 20 12:49:57 PDT 2017 by mikeb
+MSPI-Shared
+Path: MSPI-Shared
+Working Copy Root Path: /export/heidrun_scr/mikeb/V10.2.3/MSPI-Shared
+URL: http://thora/svn/MSPI-Shared/trunk
+Relative URL: ^/trunk
+Repository Root: http://thora/svn/MSPI-Shared
+Repository UUID: 97c37807-0761-4561-a1ac-518373b5ef70
+Revision: 474
+Node Kind: directory
+Schedule: normal
+Last Changed Author: mikeb
+Last Changed Rev: 474
+Last Changed Date: 2017-03-28 12:51:09 -0700 (Tue, 28 Mar 2017)
+
+MSPI-Ground
+Path: MSPI-Ground
+Working Copy Root Path: /export/heidrun_scr/mikeb/V10.2.3/MSPI-Ground
+URL: http://thora/svn/MSPI-Ground/trunk
+Relative URL: ^/trunk
+Repository Root: http://thora/svn/MSPI-Ground
+Repository UUID: 5ae58e34-18c2-464d-91f1-f052dff49eff
+Revision: 2142
+Node Kind: directory
+Schedule: normal
+Last Changed Author: mikeb
+Last Changed Rev: 2142
+Last Changed Date: 2017-04-20 12:48:45 -0700 (Thu, 20 Apr 2017)
+
+</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1A2_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__dn_linearization_file" type="String">
+            <Value>/data/MSPI/ANC/AirMSPI-CalFiles/ORACLES/airmspi_lincal_20110921_v6.7.dat</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1A2_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__l1a_field_map_config" type="String">
+            <Value>/data/MSPI/ANC/AirMSPI/fieldmap/ops/AIRMSPI_CONFIG_L1A_FIELD_MAP_0003.config</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1A2_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__shielded_pixel_kernel_size" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1A2_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__software_version_info" type="String">
+            <Value>version info created Thu Apr 20 12:49:57 PDT 2017 by mikeb
+MSPI-Shared
+Path: MSPI-Shared
+Working Copy Root Path: /export/heidrun_scr/mikeb/V10.2.3/MSPI-Shared
+URL: http://thora/svn/MSPI-Shared/trunk
+Relative URL: ^/trunk
+Repository Root: http://thora/svn/MSPI-Shared
+Repository UUID: 97c37807-0761-4561-a1ac-518373b5ef70
+Revision: 474
+Node Kind: directory
+Schedule: normal
+Last Changed Author: mikeb
+Last Changed Rev: 474
+Last Changed Date: 2017-03-28 12:51:09 -0700 (Tue, 28 Mar 2017)
+
+MSPI-Ground
+Path: MSPI-Ground
+Working Copy Root Path: /export/heidrun_scr/mikeb/V10.2.3/MSPI-Ground
+URL: http://thora/svn/MSPI-Ground/trunk
+Relative URL: ^/trunk
+Repository Root: http://thora/svn/MSPI-Ground
+Repository UUID: 5ae58e34-18c2-464d-91f1-f052dff49eff
+Revision: 2142
+Node Kind: directory
+Schedule: normal
+Last Changed Author: mikeb
+Last Changed Rev: 2142
+Last Changed Date: 2017-04-20 12:48:45 -0700 (Thu, 20 Apr 2017)
+
+</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1A2_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__software_version_tag" type="String">
+            <Value>V10.2.3</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1A2_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__input__L1A1" type="String">
+            <Value>AirMSPI_ER2_L1A1_20161006_181726Z_CA-NewberrySprings_SWPF_Voracles-v10.2.3-10m.hdf</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1B1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__fill_value" type="Float64">
+            <Value>-9.9990000000000007e-09</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1B1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__instrument_info_config" type="String">
+            <Value>/data/MSPI/ANC/AirMSPI/instrument/ops/AIRMSPI_CONFIG_INSTRUMENT_INFO_0009.config</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1B1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__l1a_field_map_config" type="String">
+            <Value>/data/MSPI/ANC/AirMSPI/fieldmap/ops/AIRMSPI_CONFIG_L1A_FIELD_MAP_0003.config</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1B1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__l1b1_diagnostic_field_map_config" type="String">
+            <Value>/data/MSPI/ANC/AirMSPI/fieldmap/ops/AIRMSPI_CONFIG_L1B1_DIAGNOSTIC_FIELD_MAP_0002.config</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1B1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__l1b1_standard_field_map_config" type="String">
+            <Value>/data/MSPI/ANC/AirMSPI/fieldmap/ops/AIRMSPI_CONFIG_L1B1_STANDARD_FIELD_MAP_0001.config</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1B1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__radiometric_calibration_file" type="String">
+            <Value>/data/MSPI/ANC/AirMSPI-CalFiles/ORACLES/airmspi_radcal_lab20160330v6.7_vc20160705_update20170418.dat</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1B1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__software_version_info" type="String">
+            <Value>version info created Thu Apr 20 12:49:57 PDT 2017 by mikeb
+MSPI-Shared
+Path: MSPI-Shared
+Working Copy Root Path: /export/heidrun_scr/mikeb/V10.2.3/MSPI-Shared
+URL: http://thora/svn/MSPI-Shared/trunk
+Relative URL: ^/trunk
+Repository Root: http://thora/svn/MSPI-Shared
+Repository UUID: 97c37807-0761-4561-a1ac-518373b5ef70
+Revision: 474
+Node Kind: directory
+Schedule: normal
+Last Changed Author: mikeb
+Last Changed Rev: 474
+Last Changed Date: 2017-03-28 12:51:09 -0700 (Tue, 28 Mar 2017)
+
+MSPI-Ground
+Path: MSPI-Ground
+Working Copy Root Path: /export/heidrun_scr/mikeb/V10.2.3/MSPI-Ground
+URL: http://thora/svn/MSPI-Ground/trunk
+Relative URL: ^/trunk
+Repository Root: http://thora/svn/MSPI-Ground
+Repository UUID: 5ae58e34-18c2-464d-91f1-f052dff49eff
+Revision: 2142
+Node Kind: directory
+Schedule: normal
+Last Changed Author: mikeb
+Last Changed Rev: 2142
+Last Changed Date: 2017-04-20 12:48:45 -0700 (Thu, 20 Apr 2017)
+
+</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1B1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__software_version_tag" type="String">
+            <Value>V10.2.3</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1B1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__input__L1A" type="String">
+            <Value>AirMSPI_ER2_L1A2_20161006_181726Z_CA-NewberrySprings_SWPF_Voracles-v10.2.3-10m.hdf</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1B1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__input__cal_dark" type="String">
+            <Value>AIRMSPI_TARGET_INFO_20161006_171817_Voracles-v10.2.3-10m.caldark</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1B1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__input__l1b1_cal" type="String">
+            <Value>AIRMSPI_TARGET_INFO_20161006_171817_Voracles-v10.2.3-10m.l1b1_cal</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1B1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__input__l1b1_cal_content" type="String">
+            <Value>8 : number_band
+1 2 3 4 5 6 7 8  : band_numbers
+-9.999000e+03 -9.999000e+03 -9.999000e+03 5.065489e-03 -9.999000e+03 7.237698e-03 -7.934127e-03 -9.999000e+03  : q_y
+-9.999000e+03 -9.999000e+03 -9.999000e+03 5.065489e-03 -9.999000e+03 7.237698e-03 -7.934127e-03 -9.999000e+03  : u_y
+</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1B1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__input__modulation" type="String">
+            <Value>AIRMSPI_TARGET_INFO_20161006_171817_Voracles-v10.2.3-10m.modulation</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1B1_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__input__modulation_content" type="String">
+            <Value>8 : number_band
+          1           2           3           4           5           6           7           8 : band_numbers
+        355         380         445         470         555         660         865         935 : wavelengths
+# Modulation fitted to validator.
+ 6.0713e+00  5.6427e+00  4.7566e+00  4.4818e+00  3.7368e+00  3.0875e+00  2.2891e+00  2.1010e+00  : delta0_173013Z
+ 6.0762e+00  5.6473e+00  4.7605e+00  4.4854e+00  3.7398e+00  3.0900e+00  2.2909e+00  2.1027e+00  : delta0_174211Z
+ 6.0762e+00  5.6473e+00  4.7605e+00  4.4854e+00  3.7398e+00  3.0900e+00  2.2909e+00  2.1027e+00  : delta0_174243Z
+ 6.0762e+00  5.6473e+00  4.7605e+00  4.4854e+00  3.7398e+00  3.0900e+00  2.2909e+00  2.1027e+00  : delta0_175410Z
+ 6.0762e+00  5.6473e+00  4.7605e+00  4.4854e+00  3.7398e+00  3.0900e+00  2.2909e+00  2.1027e+00  : delta0_175442Z
+ 6.0762e+00  5.6473e+00  4.7605e+00  4.4854e+00  3.7398e+00  3.0900e+00  2.2909e+00  2.1027e+00  : delta0_180609Z
+ 6.0762e+00  5.6473e+00  4.7605e+00  4.4854e+00  3.7398e+00  3.0900e+00  2.2909e+00  2.1027e+00  : delta0_180641Z
+ 6.0762e+00  5.6473e+00  4.7605e+00  4.4854e+00  3.7398e+00  3.0900e+00  2.2909e+00  2.1027e+00  : delta0_181808Z
+ 6.0756e+00  5.6467e+00  4.7600e+00  4.4850e+00  3.7394e+00  3.0897e+00  2.2907e+00  2.1025e+00  : delta0_mean
+
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_173013Z
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_174211Z
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_174243Z
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_175410Z
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_175442Z
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_180609Z
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_180641Z
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_181808Z
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_mean
+
+-4.0000e-03 : eta_173013Z
+-4.0000e-03 : eta_174211Z
+-4.0000e-03 : eta_174243Z
+-4.0000e-03 : eta_175410Z
+-4.0000e-03 : eta_175442Z
+-4.0000e-03 : eta_180609Z
+-4.0000e-03 : eta_180641Z
+-4.0000e-03 : eta_181808Z
+-4.0000e-03 : eta_mean
+
+</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1B1_DIAG_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__fill_value" type="Float64">
+            <Value>-9.9990000000000007e-09</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1B1_DIAG_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__instrument_info_config" type="String">
+            <Value>/data/MSPI/ANC/AirMSPI/instrument/ops/AIRMSPI_CONFIG_INSTRUMENT_INFO_0009.config</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1B1_DIAG_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__l1a_field_map_config" type="String">
+            <Value>/data/MSPI/ANC/AirMSPI/fieldmap/ops/AIRMSPI_CONFIG_L1A_FIELD_MAP_0003.config</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1B1_DIAG_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__l1b1_diagnostic_field_map_config" type="String">
+            <Value>/data/MSPI/ANC/AirMSPI/fieldmap/ops/AIRMSPI_CONFIG_L1B1_DIAGNOSTIC_FIELD_MAP_0002.config</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1B1_DIAG_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__l1b1_standard_field_map_config" type="String">
+            <Value>/data/MSPI/ANC/AirMSPI/fieldmap/ops/AIRMSPI_CONFIG_L1B1_STANDARD_FIELD_MAP_0001.config</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1B1_DIAG_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__radiometric_calibration_file" type="String">
+            <Value>/data/MSPI/ANC/AirMSPI-CalFiles/ORACLES/airmspi_radcal_lab20160330v6.7_vc20160705_update20170418.dat</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1B1_DIAG_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__software_version_info" type="String">
+            <Value>version info created Thu Apr 20 12:49:57 PDT 2017 by mikeb
+MSPI-Shared
+Path: MSPI-Shared
+Working Copy Root Path: /export/heidrun_scr/mikeb/V10.2.3/MSPI-Shared
+URL: http://thora/svn/MSPI-Shared/trunk
+Relative URL: ^/trunk
+Repository Root: http://thora/svn/MSPI-Shared
+Repository UUID: 97c37807-0761-4561-a1ac-518373b5ef70
+Revision: 474
+Node Kind: directory
+Schedule: normal
+Last Changed Author: mikeb
+Last Changed Rev: 474
+Last Changed Date: 2017-03-28 12:51:09 -0700 (Tue, 28 Mar 2017)
+
+MSPI-Ground
+Path: MSPI-Ground
+Working Copy Root Path: /export/heidrun_scr/mikeb/V10.2.3/MSPI-Ground
+URL: http://thora/svn/MSPI-Ground/trunk
+Relative URL: ^/trunk
+Repository Root: http://thora/svn/MSPI-Ground
+Repository UUID: 5ae58e34-18c2-464d-91f1-f052dff49eff
+Revision: 2142
+Node Kind: directory
+Schedule: normal
+Last Changed Author: mikeb
+Last Changed Rev: 2142
+Last Changed Date: 2017-04-20 12:48:45 -0700 (Thu, 20 Apr 2017)
+
+</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1B1_DIAG_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__config__software_version_tag" type="String">
+            <Value>V10.2.3</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1B1_DIAG_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__input__L1A" type="String">
+            <Value>AirMSPI_ER2_L1A2_20161006_181726Z_CA-NewberrySprings_SWPF_Voracles-v10.2.3-10m.hdf</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1B1_DIAG_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__input__cal_dark" type="String">
+            <Value>AIRMSPI_TARGET_INFO_20161006_171817_Voracles-v10.2.3-10m.caldark</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1B1_DIAG_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__input__l1b1_cal" type="String">
+            <Value>AIRMSPI_TARGET_INFO_20161006_171817_Voracles-v10.2.3-10m.l1b1_cal</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1B1_DIAG_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__input__l1b1_cal_content" type="String">
+            <Value>8 : number_band
+1 2 3 4 5 6 7 8  : band_numbers
+-9.999000e+03 -9.999000e+03 -9.999000e+03 5.065489e-03 -9.999000e+03 7.237698e-03 -7.934127e-03 -9.999000e+03  : q_y
+-9.999000e+03 -9.999000e+03 -9.999000e+03 5.065489e-03 -9.999000e+03 7.237698e-03 -7.934127e-03 -9.999000e+03  : u_y
+</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1B1_DIAG_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__input__modulation" type="String">
+            <Value>AIRMSPI_TARGET_INFO_20161006_171817_Voracles-v10.2.3-10m.modulation</Value>
+        </Attribute>
+        <Attribute name="_history__AirMSPI_ER2_L1B1_DIAG_20161006_181726Z_CA_NewberrySprings_SWPF_Voracles_v10_2_3_10m_hdf__input__modulation_content" type="String">
+            <Value>8 : number_band
+          1           2           3           4           5           6           7           8 : band_numbers
+        355         380         445         470         555         660         865         935 : wavelengths
+# Modulation fitted to validator.
+ 6.0713e+00  5.6427e+00  4.7566e+00  4.4818e+00  3.7368e+00  3.0875e+00  2.2891e+00  2.1010e+00  : delta0_173013Z
+ 6.0762e+00  5.6473e+00  4.7605e+00  4.4854e+00  3.7398e+00  3.0900e+00  2.2909e+00  2.1027e+00  : delta0_174211Z
+ 6.0762e+00  5.6473e+00  4.7605e+00  4.4854e+00  3.7398e+00  3.0900e+00  2.2909e+00  2.1027e+00  : delta0_174243Z
+ 6.0762e+00  5.6473e+00  4.7605e+00  4.4854e+00  3.7398e+00  3.0900e+00  2.2909e+00  2.1027e+00  : delta0_175410Z
+ 6.0762e+00  5.6473e+00  4.7605e+00  4.4854e+00  3.7398e+00  3.0900e+00  2.2909e+00  2.1027e+00  : delta0_175442Z
+ 6.0762e+00  5.6473e+00  4.7605e+00  4.4854e+00  3.7398e+00  3.0900e+00  2.2909e+00  2.1027e+00  : delta0_180609Z
+ 6.0762e+00  5.6473e+00  4.7605e+00  4.4854e+00  3.7398e+00  3.0900e+00  2.2909e+00  2.1027e+00  : delta0_180641Z
+ 6.0762e+00  5.6473e+00  4.7605e+00  4.4854e+00  3.7398e+00  3.0900e+00  2.2909e+00  2.1027e+00  : delta0_181808Z
+ 6.0756e+00  5.6467e+00  4.7600e+00  4.4850e+00  3.7394e+00  3.0897e+00  2.2907e+00  2.1025e+00  : delta0_mean
+
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_173013Z
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_174211Z
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_174243Z
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_175410Z
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_175442Z
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_180609Z
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_180641Z
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_181808Z
+ 0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  : D_mean
+
+-4.0000e-03 : eta_173013Z
+-4.0000e-03 : eta_174211Z
+-4.0000e-03 : eta_174243Z
+-4.0000e-03 : eta_175410Z
+-4.0000e-03 : eta_175442Z
+-4.0000e-03 : eta_180609Z
+-4.0000e-03 : eta_180641Z
+-4.0000e-03 : eta_181808Z
+-4.0000e-03 : eta_mean
+
+</Value>
+        </Attribute>
+        <Attribute name="_input__IgcCollection" type="String">
+            <Value>AirMSPI_ER2_IGCCOL_20161006_171817-20_CA-NewberrySprings_Voracles-v10.2.3-10m.xml</Value>
+        </Attribute>
+        <Attribute name="_input__L1B1" type="String">
+            <Value>AirMSPI_ER2_L1B1_20161006_181726Z_CA-NewberrySprings_SWPF_Voracles-v10.2.3-10m.hdf</Value>
+        </Attribute>
+        <Attribute name="_input__L1B1_DIAG" type="String">
+            <Value>AirMSPI_ER2_L1B1_DIAG_20161006_181726Z_CA-NewberrySprings_SWPF_Voracles-v10.2.3-10m.hdf</Value>
+        </Attribute>
+        <Attribute name="_input__map_config" type="String">
+            <Value>1 : ProjectionInformation.proj_code
+11 : ProjectionInformation.zone_code
+8 : ProjectionInformation.sphere_code
+0.00000000000000 0.00000000000000 0.00000000000000 0.00000000000000 0.00000000000000 0.00000000000000 0.00000000000000 0.00000000000000 0.00000000000000 0.00000000000000 0.00000000000000 0.00000000000000 0.00000000000000 0.00000000000000 0.00000000000000  : ProjectionInformation.proj_param
+517700.0 : MapInformation.min_x
+632900.0 : MapInformation.max_x
+3852725.0 : MapInformation.min_y
+3891125.0 : MapInformation.max_y
+25.0 : MapInformation.res_x
+25.0 : MapInformation.res_y
+0 : MapInformation.origin_code
+0 : MapInformation.pix_reg_code
+</Value>
+        </Attribute>
+        <Attribute name="_input__utm_zone" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="granule_id" type="String">
+            <Value>AirMSPI_ER2_L1B2_ELLIPSOID_20161006_181726Z_CA-NewberrySprings_SWPF_Voracles-v10.2.3-10m.hdf</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="HDFEOS_GRIDS" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_355nm_band" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_355nm_band_Data_Fields" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_380nm_band" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_380nm_band_Data_Fields" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_445nm_band" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_445nm_band_Data_Fields" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_470nm_band" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_470nm_band_Data_Fields" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_555nm_band" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_555nm_band_Data_Fields" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_660nm_band" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_660nm_band_Data_Fields" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_865nm_band" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_865nm_band_Data_Fields" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_935nm_band" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_935nm_band_Data_Fields" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_Ancillary" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_Ancillary_Data_Fields" type="Container"/>
+    <Attribute name="HDFEOS_INFORMATION" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <Value>HDFEOS_5.1.15</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

@@ -1,0 +1,28 @@
+netcdf compound_array_complex {
+types:
+  compound cmp1 {
+    short i ;
+    int j ;
+  }; // cmp1
+  compound cmp2 {
+    cmp1 x ;
+    double y(2) ;
+  }; // cmp2
+  compound cmp3 {
+    cmp2 yy(2) ;
+  }; // cmp3
+dimensions:
+   n=2;
+
+variables:
+	cmp3 phony_compound_var(n);
+data:
+
+ phony_compound_var = 
+    
+    {{{{1, 200000}, {-100000.285657, 3.1415926}},
+     {{2,400000},  {200000.151617,273.15}}}}, 
+    {{{{3, 600000}, {-200000.285657, 6.1415926}},
+     {{4,800000},  {400000.151617,476.15}}}} 
+    ;
+}

@@ -1,0 +1,5 @@
+This repository uses the following subtrees
+
+pugixml: https://github.com/zeux/pugixml.git
+hdf4_handler: https://github.com/OPENDAP/hdf4_handler.git
+hdf5_handler: https://github.com/OPENDAP/hdf5_handler.git

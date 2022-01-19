@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="OMI-Aura_L3-OMAERUVd_2009m0109_v003-2011m1203t141123.he5">
+    <Dimension name="lat" size="180"/>
+    <Dimension name="lon" size="360"/>
+    <Float32 name="FinalAerosolAbsOpticalDepth388">
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Final Aerosol Absorption Optical Depth at 388 nm</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>FinalAerosolAbsOpticalDepth388</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/Aerosol NearUV Grid/Data Fields/FinalAerosolAbsOpticalDepth388</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="FinalAerosolAbsOpticalDepth500">
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>deg</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Final Aerosol Absorption Optical Depth at 500 nm</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>Aura-Shared</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>FinalAerosolAbsOpticalDepth500</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/Aerosol NearUV Grid/Data Fields/FinalAerosolAbsOpticalDepth500</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="FinalAerosolExtOpticalDepth388">
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Final Aerosol Extinction Optical Depth at 388 nm</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>FinalAerosolExtOpticalDepth388</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/Aerosol NearUV Grid/Data Fields/FinalAerosolExtOpticalDepth388</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="FinalAerosolExtOpticalDepth500">
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Final Aerosol Extinction Optical Depth at 500 nm</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>FinalAerosolExtOpticalDepth500</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/Aerosol NearUV Grid/Data Fields/FinalAerosolExtOpticalDepth500</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="FinalAerosolSingleScattAlb388">
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Final Aerosol Single Scattering Albedo at 388 nm</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>FinalAerosolSingleScattAlb388</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/Aerosol NearUV Grid/Data Fields/FinalAerosolSingleScattAlb388</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="FinalAerosolSingleScattAlb500">
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>Final Aerosol Single Scattering Albedo at 500 nm</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>FinalAerosolSingleScattAlb500</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/Aerosol NearUV Grid/Data Fields/FinalAerosolSingleScattAlb500</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="UVAerosolIndex">
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>NoUnits</Value>
+        </Attribute>
+        <Attribute name="title" type="String">
+            <Value>UV Aerosol Index</Value>
+        </Attribute>
+        <Attribute name="UniqueFieldDefinition" type="String">
+            <Value>OMI-Specific</Value>
+        </Attribute>
+        <Attribute name="scale_factor" type="Float64">
+            <Value>1.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="add_offset" type="Float64">
+            <Value>0.0000000000000000</Value>
+        </Attribute>
+        <Attribute name="missing_value" type="Float32">
+            <Value>-1.267650600e+30</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>UVAerosolIndex</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/Aerosol NearUV Grid/Data Fields/UVAerosolIndex</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <String name="StructMetadata_0">
+        <Attribute name="origname" type="String">
+            <Value>StructMetadata.0</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
+        </Attribute>
+    </String>
+    <Float32 name="lon">
+        <Dim name="/lon"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="lat">
+        <Dim name="/lat"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+    </Float32>
+    <Attribute name="HDFEOS" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL_FILE_ATTRIBUTES" type="Container">
+        <Attribute name="OrbitNumber" type="Int32">
+            <Value>23849</Value>
+            <Value>23850</Value>
+            <Value>23851</Value>
+            <Value>23852</Value>
+            <Value>23853</Value>
+            <Value>23854</Value>
+            <Value>23855</Value>
+            <Value>23856</Value>
+            <Value>23857</Value>
+            <Value>23858</Value>
+            <Value>23859</Value>
+            <Value>23860</Value>
+            <Value>23861</Value>
+            <Value>23862</Value>
+            <Value>23863</Value>
+            <Value>23864</Value>
+            <Value>23865</Value>
+            <Value>23866</Value>
+            <Value>23867</Value>
+            <Value>23868</Value>
+            <Value>23869</Value>
+            <Value>23870</Value>
+            <Value>23871</Value>
+            <Value>23872</Value>
+            <Value>23873</Value>
+            <Value>23874</Value>
+            <Value>23875</Value>
+            <Value>23876</Value>
+            <Value>23877</Value>
+            <Value>23878</Value>
+            <Value>23879</Value>
+            <Value>23880</Value>
+            <Value>23881</Value>
+            <Value>23882</Value>
+            <Value>23883</Value>
+            <Value>23884</Value>
+            <Value>23885</Value>
+            <Value>23886</Value>
+            <Value>23887</Value>
+            <Value>23888</Value>
+            <Value>23889</Value>
+            <Value>23890</Value>
+            <Value>23891</Value>
+            <Value>23892</Value>
+            <Value>23893</Value>
+        </Attribute>
+        <Attribute name="OrbitPeriod" type="Float64">
+            <Value>5933.0000000000000</Value>
+            <Value>5934.0000000000000</Value>
+            <Value>5933.0000000000000</Value>
+            <Value>5933.0000000000000</Value>
+            <Value>5934.0000000000000</Value>
+            <Value>5933.0000000000000</Value>
+            <Value>5933.0000000000000</Value>
+            <Value>5934.0000000000000</Value>
+            <Value>5933.0000000000000</Value>
+            <Value>5933.0000000000000</Value>
+            <Value>5934.0000000000000</Value>
+            <Value>5933.0000000000000</Value>
+            <Value>5933.0000000000000</Value>
+            <Value>5934.0000000000000</Value>
+            <Value>5933.0000000000000</Value>
+            <Value>5934.0000000000000</Value>
+            <Value>5933.0000000000000</Value>
+            <Value>5933.0000000000000</Value>
+            <Value>5933.0000000000000</Value>
+            <Value>5934.0000000000000</Value>
+            <Value>5933.0000000000000</Value>
+            <Value>5934.0000000000000</Value>
+            <Value>5933.0000000000000</Value>
+            <Value>5933.0000000000000</Value>
+            <Value>5933.0000000000000</Value>
+            <Value>5934.0000000000000</Value>
+            <Value>5933.0000000000000</Value>
+            <Value>5934.0000000000000</Value>
+            <Value>5933.0000000000000</Value>
+            <Value>5934.0000000000000</Value>
+            <Value>5933.0000000000000</Value>
+            <Value>5933.0000000000000</Value>
+            <Value>5933.0000000000000</Value>
+            <Value>5934.0000000000000</Value>
+            <Value>5933.0000000000000</Value>
+            <Value>5934.0000000000000</Value>
+            <Value>5933.0000000000000</Value>
+            <Value>5933.0000000000000</Value>
+            <Value>5934.0000000000000</Value>
+            <Value>5933.0000000000000</Value>
+            <Value>5933.0000000000000</Value>
+            <Value>5934.0000000000000</Value>
+            <Value>5933.0000000000000</Value>
+            <Value>5934.0000000000000</Value>
+            <Value>5933.0000000000000</Value>
+        </Attribute>
+        <Attribute name="InstrumentName" type="String">
+            <Value>OMI</Value>
+        </Attribute>
+        <Attribute name="ProcessLevel" type="String">
+            <Value>3</Value>
+        </Attribute>
+        <Attribute name="GranuleMonth" type="Int32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="GranuleDay" type="Int32">
+            <Value>9</Value>
+        </Attribute>
+        <Attribute name="GranuleYear" type="Int32">
+            <Value>2009</Value>
+        </Attribute>
+        <Attribute name="GranuleDayOfYear" type="Int32">
+            <Value>9</Value>
+        </Attribute>
+        <Attribute name="TAI93At0zOfGranule" type="Float64">
+            <Value>505612807.00000000</Value>
+        </Attribute>
+        <Attribute name="PGEVersion" type="String">
+            <Value>&quot;1.2.0.1&quot;</Value>
+        </Attribute>
+        <Attribute name="StartUTC" type="String">
+            <Value>2009-01-08T12:15:00.000000Z</Value>
+        </Attribute>
+        <Attribute name="EndUTC" type="String">
+            <Value>2009-01-10T11:45:00.000000Z</Value>
+        </Attribute>
+        <Attribute name="Period" type="String">
+            <Value>Daily</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="HDFEOS_GRIDS" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_Aerosol_NearUV_Grid" type="Container">
+        <Attribute name="GCTPProjectionCode" type="Int32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="Projection" type="String">
+            <Value>Geographic</Value>
+        </Attribute>
+        <Attribute name="GridOrigin" type="String">
+            <Value>Center</Value>
+        </Attribute>
+        <Attribute name="GridSpacing" type="String">
+            <Value>(1.0,1.0)</Value>
+        </Attribute>
+        <Attribute name="GridSpacingUnit" type="String">
+            <Value>deg</Value>
+        </Attribute>
+        <Attribute name="GridSpan" type="String">
+            <Value>(-180,180,-90,90)</Value>
+        </Attribute>
+        <Attribute name="GridSpanUnit" type="String">
+            <Value>deg</Value>
+        </Attribute>
+        <Attribute name="NumberOfLongitudesInGrid" type="Int32">
+            <Value>360</Value>
+        </Attribute>
+        <Attribute name="NumberOfLatitudesInGrid" type="Int32">
+            <Value>180</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/Aerosol NearUV Grid</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="HDFEOS_GRIDS_Aerosol_NearUV_Grid_Data_Fields" type="Container"/>
+    <Attribute name="HDFEOS_INFORMATION" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <Value>HDFEOS_5.1.11</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

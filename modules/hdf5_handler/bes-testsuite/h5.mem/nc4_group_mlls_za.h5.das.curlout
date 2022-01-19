@@ -1,0 +1,34 @@
+Attributes {
+    g1 {
+    }
+    g1_lat1 {
+        String units "degrees_north";
+        String origname "lat1";
+        String fullnamepath "/g1/lat1";
+    }
+    g1_lon1 {
+        String units "degrees_east";
+        String origname "lon1";
+        String fullnamepath "/g1/lon1";
+    }
+    g1_pres2 {
+        String units "hPa";
+        String origname "pres2";
+        String fullnamepath "/g1/pres2";
+    }
+    pres1 {
+        String units "hPa";
+        String origname "pres1";
+        String fullnamepath "/pres1";
+    }
+    lat {
+        String units "degrees_north";
+        String origname "lat";
+        String fullnamepath "/lat";
+    }
+    zdim {
+        String units "km";
+        String origname "zdim";
+        String fullnamepath "/zdim";
+    }
+}
