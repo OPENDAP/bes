@@ -1,0 +1,23 @@
+netcdf t_group_atomic {
+group: g1 {
+ dimensions:
+       lev = 2;
+ variables:
+   int lev(lev);
+   float d1(lev);
+ data:
+       lev = 10,20;
+       d1 = 30.0,40.0;
+ }
+group: g2 {
+ dimensions:
+       lev = 2;
+ variables:
+   int lev(lev);
+   float d2(lev);
+ data:
+       lev = 10,20;
+       d2 = 50.0,60.0;
+ }
+
+}

@@ -1,0 +1,6 @@
+Dataset {
+    Float32 d32_1[2];
+    Float32 d32_2[2][2];
+    Float64 d64_1[2][2][2];
+    Float64 d64_2[2][2][2][2][2];
+} t_float.h5;

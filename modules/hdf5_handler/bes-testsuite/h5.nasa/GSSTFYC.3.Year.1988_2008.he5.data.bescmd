@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="GSSTFYC.3.Year.1988_2008" space="catalog">/data/GSSTFYC.3.Year.1988_2008.he5</setContainer>
+    <define name="d">
+	<container name="GSSTFYC.3.Year.1988_2008">
+           <constraint>
+ NCEP_Psea_level[0:359:719][0:719:1439],
+ NCEP_Qsat[0:359:719][0:719:1439],
+ NCEP_SST[0:359:719][0:719:1439],
+ NCEP_Tair_2m[0:359:719][0:719:1439],
+ SET1_DQ[0:359:719][0:719:1439],
+ SET1_E[0:359:719][0:719:1439],
+ SET1_H[0:359:719][0:719:1439],
+ SET1_Qair[0:359:719][0:719:1439],
+ SET1_STu[0:359:719][0:719:1439],
+ SET1_STv[0:359:719][0:719:1439],
+ SET1_Tot_Precip_Water[0:359:719][0:719:1439],
+ SET1_U[0:359:719][0:719:1439],
+ lon[0:719:1439],
+ lat[0:359:719]
+           </constraint>          
+	</container>
+    </define>
+    <get type="dods" definition="d" />
+</request>

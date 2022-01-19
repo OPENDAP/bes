@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response reqID="some_unique_value" xmlns="http://xml.opendap.org/ns/bes/1.0#">
+    <getDMR>
+        <BESError>
+            <Type>2</Type>
+            <Message>An internal error was encountered in HDF5Array.cc at line 1544:
+The variable /Data_40HZ/Reflectivity/d_reflctUC has dimension /Data_40HZ/Time/d_UTCTime_40. This dimension is not under its ancestor or the current group. This is not supported.
+Please report this to support@opendap.org
+</Message>
+            <Administrator>support@opendap.org</Administrator>
+            <Location>
+                <File>HDF5RequestHandler.cc</File>
+                <Line>1398</Line>
+            </Location>
+        </BESError>
+    </getDMR>
+</response>

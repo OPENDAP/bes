@@ -1,0 +1,390 @@
+Attributes {
+    HDF5_GLOBAL {
+        Float64 GRingLatitude -30.060828000000001, -19.942433000000001, -19.883099000000001, -30.000000000000000;
+        Float64 GRingLongitude 126.62759000000000, 116.68638000000000, 127.67430000000000, 138.56406000000001;
+        String PGE_StartTime "2015-09-14 00:00:00.000";
+        String ProductionTime "2016-08-08 16:48:45.000";
+        String ProcessingEnvironment "Linux minion5580 2.6.18-410.el5 #1 SMP Wed May 11 06:00:14 EDT 2016 x86_64 x86_64 x86_64 GNU/Linux";
+        String PGE_EndTime "2015-09-22 00:00:00.000";
+        String DataResolution "Moderate";
+        String DayNumbers "262";
+        String LongName "VIIRS/NPP Surface Reflectance 8-Day L3 Global 1km SIN Grid";
+        String PGEVersion "1.0.3";
+        String InputPointer "/MODAPSlp1/archive/f5580/running/VNP_L10mc/26821592/VNP09GA.A2015262.h29v11.001.2016112235056.h5";
+        String RangeBeginningDate "2015-09-14";
+        String StartTime "2015-09-14 00:00:00";
+        String AlgorithmType "OPS";
+        String LSIPS_AlgorithmVersion "NPP_PR09A 1.0.2";
+        String TileID "51029011";
+        String Product_authority "http://dx.doi.org";
+        String HorizontalTileNumber "29";
+        String ProcessVersion "001";
+        String SatelliteInstrument "NPP_OPS";
+        String ShortName "VNP09A1";
+        String ProcessingCenter "MODAPS, NASA GSFC";
+        String RangeEndingDate "2015-09-22";
+        String RangeEndingTime "00:00:00.000";
+        String PlatformShortName "NPP";
+        String RangeBeginningTime "00:00:00.000";
+        String PGENumber "521";
+        String Product_doi "10.5067/VIIRS/VNP09A1.001";
+        String VerticalTileNumber "11";
+        String EndTime "2015-09-22 00:00:00";
+        String LocalGranuleID "VNP09A1.A2015257.h29v11.001.2016221164845.h5";
+        String SensorShortname "VIIRS";
+        String Conventions "CF-1.7";
+    }
+    HDFEOS {
+    }
+    HDFEOS_ADDITIONAL {
+    }
+    HDFEOS_ADDITIONAL_FILE_ATTRIBUTES {
+    }
+    HDFEOS_GRIDS {
+        Float32 PercentLand 98.38358307;
+        Float32 PercentWater 1.616416931;
+        Float32 PercentCloud 8.157571793;
+        Float32 QAPercentGoodQuality 100.0000000;
+        Float32 QAPercentOtherQuality 0.000000000;
+        Float32 QAPercentNotProduced 0.003472283017;
+        String fullnamepath "/HDFEOS/GRIDS";
+    }
+    HDFEOS_GRIDS_VNP_Grid_1km_L3_2d {
+    }
+    HDFEOS_GRIDS_VNP_Grid_1km_L3_2d_Data_Fields {
+    }
+    HDFEOS_INFORMATION {
+        String HDFEOSVersion "HDFEOS_5.1.13";
+        String fullnamepath "/HDFEOS INFORMATION";
+    }
+    RelativeAzimuth {
+        Int16 _FillValue 0;
+        String long_name "Relative_azimuth";
+        String units "degree";
+        Int16 valid_range -18000, 18000;
+        Float64 scale_factor 0.010000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        String origname "RelativeAzimuth";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_L3_2d/Data Fields/RelativeAzimuth";
+        String coordinates "lat lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    SensorZenith {
+        Int16 _FillValue 0;
+        String long_name "View_zenith";
+        String units "degree";
+        Int16 valid_range 0, 18000;
+        Float64 scale_factor 0.010000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        String origname "SensorZenith";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_L3_2d/Data Fields/SensorZenith";
+        String coordinates "lat lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    SolarZenith {
+        Int16 _FillValue 0;
+        String long_name "Solar_zenith";
+        String units "degree";
+        Int16 valid_range 0, 18000;
+        Float64 scale_factor 0.010000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        String origname "SolarZenith";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_L3_2d/Data Fields/SolarZenith";
+        String coordinates "lat lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    SurfReflect_Day_Of_Year {
+        UInt16 _FillValue 65535;
+        String long_name "Surface_reflectance_day_of_year";
+        String units "Julian day";
+        UInt16 valid_range 1, 366;
+        String origname "SurfReflect_Day_Of_Year";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_L3_2d/Data Fields/SurfReflect_Day_Of_Year";
+        String coordinates "lat lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    SurfReflect_M1 {
+        String long_name "Surface_reflectance_for_band_M1";
+        String units "reflectance";
+        Int16 valid_range -100, 16000;
+        Int16 _FillValue 0;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        String origname "SurfReflect_M1";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_L3_2d/Data Fields/SurfReflect_M1";
+        String coordinates "lat lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    SurfReflect_M10 {
+        Int16 _FillValue 0;
+        String long_name "Surface_reflectance_for_band_M10";
+        String units "reflectance";
+        Int16 valid_range -100, 16000;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        String origname "SurfReflect_M10";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_L3_2d/Data Fields/SurfReflect_M10";
+        String coordinates "lat lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    SurfReflect_M11 {
+        Int16 _FillValue 0;
+        String long_name "Surface_reflectance_for_band_M11";
+        String units "reflectance";
+        Int16 valid_range -100, 16000;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        String origname "SurfReflect_M11";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_L3_2d/Data Fields/SurfReflect_M11";
+        String coordinates "lat lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    SurfReflect_M2 {
+        Int16 _FillValue 0;
+        String long_name "Surface_reflectance_for_band_M2";
+        String units "reflectance";
+        Int16 valid_range -100, 16000;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        String origname "SurfReflect_M2";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_L3_2d/Data Fields/SurfReflect_M2";
+        String coordinates "lat lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    SurfReflect_M3 {
+        Int16 _FillValue 0;
+        String long_name "Surface_reflectance_for_band_M3";
+        String units "reflectance";
+        Int16 valid_range -100, 16000;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        Float64 add_offset 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        String origname "SurfReflect_M3";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_L3_2d/Data Fields/SurfReflect_M3";
+        String coordinates "lat lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    SurfReflect_M4 {
+        Int16 _FillValue 0;
+        String long_name "Surface_reflectance_for_band_M4";
+        String units "reflectance";
+        Int16 valid_range -100, 16000;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        String origname "SurfReflect_M4";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_L3_2d/Data Fields/SurfReflect_M4";
+        String coordinates "lat lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    SurfReflect_M5 {
+        Int16 _FillValue 0;
+        String long_name "Surface_reflectance_for_band_M5";
+        String units "reflectance";
+        Int16 valid_range -100, 16000;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        String origname "SurfReflect_M5";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_L3_2d/Data Fields/SurfReflect_M5";
+        String coordinates "lat lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    SurfReflect_M7 {
+        Int16 _FillValue 0;
+        String long_name "Surface_reflectance_for_band_M7";
+        String units "reflectance";
+        Int16 valid_range -100, 16000;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        String origname "SurfReflect_M7";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_L3_2d/Data Fields/SurfReflect_M7";
+        String coordinates "lat lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    SurfReflect_M8 {
+        Int16 _FillValue 0;
+        String long_name "Surface_reflectance_for_band_M8";
+        String units "reflectance";
+        Int16 valid_range -100, 16000;
+        Float64 scale_factor 0.00010000000000000000;
+        Float64 scale_factor_err 0.0000000000000000;
+        Float64 add_offset 0.0000000000000000;
+        Float64 add_offset_err 0.0000000000000000;
+        Int32 calibrated_nt 5;
+        String origname "SurfReflect_M8";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_L3_2d/Data Fields/SurfReflect_M8";
+        String coordinates "lat lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    SurfReflect_QC {
+        UInt32 _FillValue 1073741824;
+        String long_name "Surface_reflectance_500m_quality_control_flags";
+        String units "bit field";
+        UInt32 valid_range 0, 4294966531;
+        String QA_bitmap_index "
+	Bits are listed from the MSB (bit 31) to the LSB (bit 0):
+	Bit    Description
+	31     adjacency correction performed; 
+	       1 -- yes
+	       0 -- no
+	30     atmospheric correction performed; 
+	       1 -- yes
+	       0 -- no
+	26-29  band 7 data quality four bit range;
+	       0000 -- highest quality
+	       0111 -- noisy detector
+	       1000 -- dead detector, data interpolated in L1B
+	       1001 -- solar zenith >= 86 degrees
+	       1010 -- solar zenith >= 85 and < 86 degrees
+	       1011 -- missing input
+	       1100 -- internal constant used in place of climatological data 
+	               for at least one atmospheric constant
+	       1101 -- correction out of bounds pixel constrained to extreme 
+	               allowable value
+	       1110 -- L1B data faulty
+	       1111 -- not processed due to deep ocean or clouds
+	22-25  band 6 data quality four bit range;
+	       SAME AS ABOVE
+	18-21  band 5 data quality four bit range;
+	       SAME AS ABOVE
+	14-17  band 4 data quality four bit range;
+	       SAME AS ABOVE
+	10-13  band 3 data quality four bit range;
+	       SAME AS ABOVE
+	6-9    band 2 data quality four bit range;
+	       SAME AS ABOVE
+	2-5    band 1 data quality four bit range;
+	       SAME AS ABOVE
+	0-1    MODLAND QA bits; 
+	       corrected product produced at
+	       00 -- ideal quality all bands 
+	       01 -- less than ideal quality some or all bands
+	       corrected product not produced due to
+	       10 -- cloud effects all bands 
+	       11 -- other reasons some or all bands may be fill value
+	       [Note that a value of (11) overrides a value of (01)].
+";
+        String origname "SurfReflect_QC";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_L3_2d/Data Fields/SurfReflect_QC";
+        String coordinates "lat lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    SurfReflect_State {
+        UInt16 _FillValue 65535;
+        String long_name "Surface_reflectance_500m_state_flags";
+        String units "bit field";
+        UInt16 valid_range 0, 57343;
+        String QA_bitmap_index "
+	Bits are listed from the MSB (bit 15) to the LSB (bit 0):
+	Bit    Description
+	15     internal snow algorithm flag; 
+	       1 -- yes
+	       0 -- no
+	14     BRDF correction performed;
+	       1 -- yes
+	       0 -- no
+	13     Pixel is adjacent to cloud;
+	       1 -- yes
+	       0 -- no
+	12     MOD35 snow/ice flag;
+	       1 -- yes
+	       0 -- no
+	11     internal fire algorithm flag;
+	       1 -- fire
+	       0 -- no fire
+	10    internal cloud algorithm flag;
+	       1 -- cloud
+	       0 -- no cloud
+	8-9    cirrus detected;
+	       00 -- none
+	       01 -- small
+	       10 -- average
+	       11 -- high
+	6-7    aerosol quantity;
+	       00 -- climatology
+	       01 -- low
+	       10 -- average
+	       11 -- high
+	3-5    land/water flag;
+	       000 -- shallow ocean
+	       001 -- land
+	       010 -- ocean coastlines and lake shorelines
+	       011 -- shallow inland water
+	       100 -- ephemeral water
+	       101 -- deep inland water
+	       110 -- continental/moderate ocean
+	       111 -- deep ocean
+	2      cloud shadow;
+	       1 -- yes
+	       0 -- no
+	0-1    cloud state;
+	       00 -- clear
+	       01 -- cloudy
+	       10 -- mixed
+	       11 -- not set, assumed clear
+";
+        String origname "SurfReflect_State";
+        String fullnamepath "/HDFEOS/GRIDS/VNP_Grid_1km_L3_2d/Data Fields/SurfReflect_State";
+        String coordinates "lat lon";
+        String grid_mapping "eos_cf_projection";
+    }
+    StructMetadata_0 {
+        String origname "StructMetadata.0";
+        String fullnamepath "/HDFEOS INFORMATION/StructMetadata.0";
+    }
+    lon {
+        String units "degrees_east";
+    }
+    lat {
+        String units "degrees_north";
+    }
+    YDim {
+        String standard_name "projection_y_coordinate";
+        String long_name "y coordinate of projection ";
+        String units "meter";
+        String _CoordinateAxisType "GeoY";
+    }
+    XDim {
+        String standard_name "projection_x_coordinate";
+        String long_name "x coordinate of projection ";
+        String units "meter";
+        String _CoordinateAxisType "GeoX";
+    }
+    eos_cf_projection {
+        String grid_mapping_name "sinusoidal";
+        Float64 longitude_of_central_meridian 0.0;
+        Float64 earth_radius 6371007.181;
+        String _CoordinateAxisTypes "GeoX GeoY";
+    }
+}

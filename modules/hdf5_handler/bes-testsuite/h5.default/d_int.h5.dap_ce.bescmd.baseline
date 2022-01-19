@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="d_int.h5">
+    <Int32 name="d32_1">
+        <Dim size="1"/>
+        <Dim size="1"/>
+        <Dim size="2"/>
+        <Attribute name="minimum" type="Int32">
+            <Value>-2147483648</Value>
+        </Attribute>
+        <Attribute name="maximum" type="Int32">
+            <Value>2147483647</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>35b277fa</Value>
+        </Attribute>
+    </Int32>
+</Dataset>
+
+The data:
+Int32 d32_1[1][1][2] = {{{2, 3}}};
+

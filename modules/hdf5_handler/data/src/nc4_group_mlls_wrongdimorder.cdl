@@ -1,0 +1,39 @@
+netcdf group_mlls_wrong_dim_order{
+group: g1 {
+ dimensions:
+       dim1 = 2;
+       dim2 = 3;
+ variables:
+   int dim1(dim1);
+   int dim2(dim2);
+   float lat1(dim1,dim2);
+         lat1:units = "degrees_north";
+   float lon1(dim1,dim2);
+         lon1:units = "degrees_east";
+   float lat2(dim1,dim2);
+         lat2:units = "degrees_north";
+   float lon2(dim2,dim1);
+         lon2:units = "degrees_east";
+   float pres(dim1,dim2);
+         pres:units = "hPa";
+   float temp(dim1,dim2);
+         temp:units = "K";
+data:
+       dim1 = 1,2;
+       dim2 = 1,2,3;
+       lat1 = 2,2.5,3,
+              2.1,2.6,3.1;
+       lon1 = -10,-8,-6,
+              -9,-7,-5;
+       lat2 = 3.5,5,6,
+              3.6,5.1,6.1;
+       lon2 = -4,3,4,
+              -3,4,5;
+
+       pres = 800,810,820,
+              801,811,821;
+
+       temp = 250,255,260,
+              261,265,270;
+ }
+}

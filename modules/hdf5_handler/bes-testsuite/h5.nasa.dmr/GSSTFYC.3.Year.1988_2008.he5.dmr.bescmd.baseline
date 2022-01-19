@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="GSSTFYC.3.Year.1988_2008.he5">
+    <Dimension name="lat" size="720"/>
+    <Dimension name="lon" size="1440"/>
+    <Float32 name="NCEP_Psea_level">
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="LongName" type="String">
+            <Value>sea level pressure</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>hPa</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Psea_level</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NCEP/Data Fields/Psea_level</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="NCEP_Qsat">
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="LongName" type="String">
+            <Value>sea surface saturation humidity</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>g/kg</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Qsat</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NCEP/Data Fields/Qsat</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="NCEP_SST">
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="LongName" type="String">
+            <Value>sea surface skin temperature</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>C</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>SST</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NCEP/Data Fields/SST</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="NCEP_Tair_2m">
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="LongName" type="String">
+            <Value>2m air temperature</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>C</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Tair_2m</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/NCEP/Data Fields/Tair_2m</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SET1_DQ">
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>sea-air humidity difference</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>g/kg</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>DQ</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SET1/Data Fields/DQ</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SET1_E">
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>latent heat flux</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>W/m^^2</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>E</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SET1/Data Fields/E</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SET1_H">
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>sensible heat flux</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>W/m^^2</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>H</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SET1/Data Fields/H</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SET1_Qair">
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>surface air (~10-m) specific humidity</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>g/kg</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Qair</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SET1/Data Fields/Qair</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SET1_STu">
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>zonal wind stress</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>N/m^^2</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>STu</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SET1/Data Fields/STu</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SET1_STv">
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>meridional wind stress</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>N/m^^2</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>STv</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SET1/Data Fields/STv</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SET1_Tot_Precip_Water">
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>total precipitable water</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>g/cm^^2</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>Tot_Precip_Water</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SET1/Data Fields/Tot_Precip_Water</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="SET1_U">
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-999.0000000</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>10-m wind speed</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>m/s</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>U</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/SET1/Data Fields/U</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>YDim XDim</Value>
+        </Attribute>
+    </Float32>
+    <String name="StructMetadata_0">
+        <Attribute name="origname" type="String">
+            <Value>StructMetadata.0</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
+        </Attribute>
+    </String>
+    <Float32 name="lon">
+        <Dim name="/lon"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="lat">
+        <Dim name="/lat"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+    </Float32>
+    <Attribute name="HDFEOS" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL_FILE_ATTRIBUTES" type="Container">
+        <Attribute name="BeginDate" type="String">
+            <Value>1988-01-01</Value>
+        </Attribute>
+        <Attribute name="EndDate" type="String">
+            <Value>2008-12-31</Value>
+        </Attribute>
+        <Attribute name="DurationUnit" type="String">
+            <Value>Year</Value>
+        </Attribute>
+        <Attribute name="DurationValue" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="PeriodCycleDurationUnit" type="String">
+            <Value>YEAR</Value>
+        </Attribute>
+        <Attribute name="PeriodCycleDurationValue" type="String">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="ShortName" type="String">
+            <Value>GSSTFYC</Value>
+        </Attribute>
+        <Attribute name="VersionID" type="String">
+            <Value>3</Value>
+        </Attribute>
+        <Attribute name="CollectionDescription" type="String">
+            <Value>Goddard Satellite-Based Surface Turbulent Fluxes Climatology, 0.25x0.25 degree Yearly Grid, 1998-2008, Set1 and NCEP Variables, V3, (GSSTFYC), at GES DISC</Value>
+        </Attribute>
+        <Attribute name="LongName" type="String">
+            <Value>Goddard Satellite-Based Surface Turbulent Fluxes Climatology, 0.25x0.25 deg, Yearly Grid, V3, (GSSTFYC), at GES DISC</Value>
+        </Attribute>
+        <Attribute name="DOI" type="String">
+            <Value>10.5067/MEASURES/GSSTF/DATA311</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="HDFEOS_GRIDS" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_NCEP" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_NCEP_Data_Fields" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_SET1" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_SET1_Data_Fields" type="Container"/>
+    <Attribute name="HDFEOS_INFORMATION" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <Value>HDFEOS_5.1.11</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

@@ -1,0 +1,34 @@
+
+  This supplementary document explains how to use HDF5 handler to serve NASA 
+HDF5/HDF-EOS5 products in a manner that follows the CF conventions.
+
+1. Please refer to h5.conf.in for the descriptions of different BES keys for 
+   the CF option. Especially check the descriptions for the H5.CheckIgnoreObj
+   key to how to use this key to check if there are any ignored objects mapping
+   from HDF5 to DAP2.
+
+2. Using the NcML handler to modify attributes that do not follow the CF 
+conventions 
+
+  Although the HDF5 handler tries to make attributes follow the CF conventions 
+ automatically, to reduce the long-term maintenance effort, the handler may not
+ check or correct all attributes. For example,the units of variable time (Time)
+ may not follow CF conventions.  
+
+  For example, CF expects the units of time is something like "minutes since
+2002-12-01 00:00:00". The units for variable time in the HDF5 file may be "s".
+ 
+  To correct the attribute value, one can use OPeNDAP's NcML handler. With this
+ module, a data provider can augment datasets served on their local Hyrax 
+server in the following ways:
+
+  o Add, modify, or remove both attributes and variables
+  o Combine multiple datasets into a single "virtual" data set using "union", 
+  "joinNew", or "joinExisting" aggregations.
+
+ Writing an NcML file is as easy as writing an HTML file. Please refer to 
+ the NcML example page [1] at the HDF-EOS Tools and Information Center website.
+
+References
+
+[1] http://hdfeos.org/examples/ncml.php

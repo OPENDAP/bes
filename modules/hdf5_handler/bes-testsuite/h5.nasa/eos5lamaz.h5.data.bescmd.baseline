@@ -1,0 +1,10 @@
+The data:
+Float64 Northern_Hemisphere_lon[Northern_Hemisphere_YDim = 3][Northern_Hemisphere_XDim = 3] = {{1e+51, -170.537677791974, 146.30993247402},{-99.4623222080256, -135, 104.036243467926},{-56.3099324740202, -14.0362434679265, 45}};
+Float64 Northern_Hemisphere_lat[Northern_Hemisphere_YDim = 3][Northern_Hemisphere_XDim = 3] = {{1e+51, -1.7796789112295, -26.6828803415802},{-1.77967891122951, 70.780994267488, 31.7538759460316},{-26.6828803415802, 31.7538759460315, 6.21592474656625}};
+Float64 Southern_Hemisphere_lon[Southern_Hemisphere_YDim = 3][Southern_Hemisphere_XDim = 3] = {{1e+51, -9.46232220802562, 33.6900675259798},{-80.5376777919744, -45, 75.9637565320735},{-123.69006752598, -165.963756532074, 135}};
+Float64 Southern_Hemisphere_lat[Southern_Hemisphere_YDim = 3][Southern_Hemisphere_XDim = 3] = {{1e+51, 1.77967891122953, 26.6828803415802},{1.77967891122952, -70.780994267488, -31.7538759460315},{26.6828803415802, -31.7538759460316, -6.21592474656627}};
+Float64 Northern_Hemisphere_YDim[Northern_Hemisphere_YDim = 3] = {9036843, 1516585.30235791, -6003672.39528423};
+Float64 Northern_Hemisphere_XDim[Northern_Hemisphere_XDim = 3] = {-9036843, -1516585.30235791, 6003672.39528423};
+Float64 Southern_Hemisphere_YDim[Southern_Hemisphere_YDim = 3] = {9036843, 1516585.30235791, -6003672.39528423};
+Float64 Southern_Hemisphere_XDim[Southern_Hemisphere_XDim = 3] = {-9036843, -1516585.30235791, 6003672.39528423};
+

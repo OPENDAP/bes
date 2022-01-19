@@ -1,0 +1,255 @@
+Attributes {
+    HDF5_GLOBAL {
+        String Conventions "CF-1.7";
+    }
+    HDFEOS {
+    }
+    HDFEOS_ADDITIONAL {
+    }
+    HDFEOS_ADDITIONAL_FILE_ATTRIBUTES {
+    }
+    HDFEOS_GRIDS {
+    }
+    HDFEOS_GRIDS_Northern_Hemisphere {
+    }
+    HDFEOS_GRIDS_Northern_Hemisphere_Data_Fields {
+    }
+    HDFEOS_GRIDS_Southern_Hemisphere {
+    }
+    HDFEOS_GRIDS_Southern_Hemisphere_Data_Fields {
+    }
+    HDFEOS_INFORMATION {
+        String HDFEOSVersion "HDFEOS_5.1.15";
+        String fullnamepath "/HDFEOS INFORMATION";
+    }
+    Northern_Hemisphere_Flags_NorthernDaily {
+        Byte _FillValue 255;
+        String origname "Flags_NorthernDaily";
+        String fullnamepath "/HDFEOS/GRIDS/Northern Hemisphere/Data Fields/Flags_NorthernDaily";
+        String coordinates "Northern_Hemisphere_lat Northern_Hemisphere_lon";
+        String grid_mapping "eos_cf_projection_1";
+    }
+    Northern_Hemisphere_SWE_NorthernDaily {
+        Byte _FillValue 255;
+        String long_name "Daily snow water equivalent (SWE)";
+        String units "mm";
+        String format "f3.0";
+        Float32 scale_factor 2.000000000;
+        String origname "SWE_NorthernDaily";
+        String fullnamepath "/HDFEOS/GRIDS/Northern Hemisphere/Data Fields/SWE_NorthernDaily";
+        String coordinates "Northern_Hemisphere_lat Northern_Hemisphere_lon";
+        String grid_mapping "eos_cf_projection_1";
+    }
+    Southern_Hemisphere_Flags_SouthernDaily {
+        Byte _FillValue 255;
+        String origname "Flags_SouthernDaily";
+        String fullnamepath "/HDFEOS/GRIDS/Southern Hemisphere/Data Fields/Flags_SouthernDaily";
+        String coordinates "Southern_Hemisphere_lat Southern_Hemisphere_lon";
+        String grid_mapping "eos_cf_projection_2";
+    }
+    Southern_Hemisphere_SWE_SouthernDaily {
+        Byte _FillValue 255;
+        String long_name "Daily snow water equivalent (SWE)";
+        String units "mm";
+        String format "f3.0";
+        Float32 scale_factor 2.000000000;
+        String origname "SWE_SouthernDaily";
+        String fullnamepath "/HDFEOS/GRIDS/Southern Hemisphere/Data Fields/SWE_SouthernDaily";
+        String coordinates "Southern_Hemisphere_lat Southern_Hemisphere_lon";
+        String grid_mapping "eos_cf_projection_2";
+    }
+    CoreMetadata_0 {
+        String origname "CoreMetadata.0";
+        String fullnamepath "/HDFEOS INFORMATION/CoreMetadata.0";
+    }
+    StructMetadata_0 {
+        String origname "StructMetadata.0";
+        String fullnamepath "/HDFEOS INFORMATION/StructMetadata.0";
+    }
+    Northern_Hemisphere_lon {
+        String units "degrees_east";
+        Float64 valid_min -180.0;
+        Float64 valid_max 180.0;
+    }
+    Northern_Hemisphere_lat {
+        String units "degrees_north";
+        Float64 valid_min -90.0;
+        Float64 valid_max 90.0;
+    }
+    Southern_Hemisphere_lon {
+        String units "degrees_east";
+        Float64 valid_min -180.0;
+        Float64 valid_max 180.0;
+    }
+    Southern_Hemisphere_lat {
+        String units "degrees_north";
+        Float64 valid_min -90.0;
+        Float64 valid_max 90.0;
+    }
+    Northern_Hemisphere_YDim {
+        String standard_name "projection_y_coordinate";
+        String long_name "y coordinate of projection ";
+        String units "meter";
+        String _CoordinateAxisType "GeoY";
+    }
+    Northern_Hemisphere_XDim {
+        String standard_name "projection_x_coordinate";
+        String long_name "x coordinate of projection ";
+        String units "meter";
+        String _CoordinateAxisType "GeoX";
+    }
+    eos_cf_projection_1 {
+        String grid_mapping_name "lambert_azimuthal_equal_area";
+        Float64 longitude_of_projection_origin 0;
+        Float64 latitude_of_projection_origin 90;
+        Float64 false_easting 0.0;
+        Float64 false_northing 0.0;
+        String _CoordinateAxisTypes "GeoX GeoY";
+    }
+    Southern_Hemisphere_YDim {
+        String standard_name "projection_y_coordinate";
+        String long_name "y coordinate of projection ";
+        String units "meter";
+        String _CoordinateAxisType "GeoY";
+    }
+    Southern_Hemisphere_XDim {
+        String standard_name "projection_x_coordinate";
+        String long_name "x coordinate of projection ";
+        String units "meter";
+        String _CoordinateAxisType "GeoX";
+    }
+    eos_cf_projection_2 {
+        String grid_mapping_name "lambert_azimuthal_equal_area";
+        Float64 longitude_of_projection_origin 0;
+        Float64 latitude_of_projection_origin -90;
+        Float64 false_easting 0.0;
+        Float64 false_northing 0.0;
+        String _CoordinateAxisTypes "GeoX GeoY";
+    }
+    CoreMetadata {
+        INVENTORYMETADATA {
+            String GROUPTYPE "MASTERGROUP";
+            ECSDATAGRANULE {
+                LOCALGRANULEID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "AMSR_2_L3_DailySnow_P00_20160831.he5";
+                }
+                PRODUCTIONDATETIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2016-08-31T15:42:53Z";
+                }
+            }
+            MEASUREDPARAMETER {
+                MEASUREDPARAMETERCONTAINER {
+                    String CLASS "1";
+                    PARAMETERNAME {
+                        Int32 NUM_VAL 1;
+                        String CLASS "1";
+                        String VALUE "Snow Water Equivalent";
+                    }
+                    QASTATS {
+                        String CLASS "1";
+                        QAPERCENTMISSINGDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 45;
+                        }
+                        QAPERCENTOUTOFBOUNDSDATA {
+                            Int32 NUM_VAL 1;
+                            String CLASS "1";
+                            Int32 VALUE 0;
+                        }
+                    }
+                }
+            }
+            COLLECTIONDESCRIPTIONCLASS {
+                SHORTNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "A2_DySno_NRT";
+                }
+                LONGNAME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "NRT AMSR2 Daily L3 Global Snow Water Equivalent EASE-Grids";
+                }
+                VERSIONID {
+                    Int32 NUM_VAL 1;
+                    String VALUE "0";
+                }
+                COLLECTIONDATATYPE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "NEAR_REAL_TIME";
+                }
+            }
+            INPUTGRANULE {
+                INPUTPOINTER {
+                    Int32 NUM_VAL 8;
+                    String VALUE "GW1AM2_201608310105_191D_L1SNRTBR_2220220.h5", "GW1AM2_201608310244_207D_L1SNRTBR_2220220.h5", "GW1AM2_201608310420_223D_L1SNRTBR_2220220.h5", "GW1AM2_201608310559_006D_L1SNRTBR_2220220.h5", "GW1AM2_201608310735_022D_L1SNRTBR_2220220.h5", "GW1AM2_201608310914_038D_L1SNRTBR_2220220.h5", "GW1AM2_201608311053_054D_L1SNRTBR_2220220.h5", "GW1AM2_201608311229_070D_L1SNRTBR_2220220.h5";
+                }
+            }
+            SPATIALDOMAINCONTAINER {
+                HORIZONTALSPATIALDOMAINCONTAINER {
+                    BOUNDINGRECTANGLE {
+                        WESTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -180.0;
+                        }
+                        NORTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 90.0;
+                        }
+                        EASTBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE 180.0;
+                        }
+                        SOUTHBOUNDINGCOORDINATE {
+                            Int32 NUM_VAL 1;
+                            Float64 VALUE -90.0;
+                        }
+                    }
+                }
+            }
+            RANGEDATETIME {
+                RANGEBEGINNINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2016-08-31";
+                }
+                RANGEBEGINNINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "01:05:20.572041Z";
+                }
+                RANGEENDINGDATE {
+                    Int32 NUM_VAL 1;
+                    String VALUE "2016-08-31";
+                }
+                RANGEENDINGTIME {
+                    Int32 NUM_VAL 1;
+                    String VALUE "13:19:19.335593Z";
+                }
+            }
+            PGEVERSIONCLASS {
+                PGEVERSION {
+                    Int32 NUM_VAL 1;
+                    String VALUE "00";
+                }
+            }
+            ADDITIONALATTRIBUTES {
+                ADDITIONALATTRIBUTESCONTAINER {
+                    String CLASS "1", "2";
+                    ADDITIONALATTRIBUTENAME {
+                        String CLASS "1", "2";
+                        Int32 NUM_VAL 1, 1;
+                        String VALUE "identifier_product_doi", "identifier_product_doi_authority";
+                    }
+                    INFORMATIONCONTENT {
+                        String CLASS "1", "2";
+                        PARAMETERVALUE {
+                            Int32 NUM_VAL 1, 1;
+                            String CLASS "1", "2";
+                            String VALUE "10.5067/AMSR2/A2_DySno_NRT", "http://dx.doi.org";
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

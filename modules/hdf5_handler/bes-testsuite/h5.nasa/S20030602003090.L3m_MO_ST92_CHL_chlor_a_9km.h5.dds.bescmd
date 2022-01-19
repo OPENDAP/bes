@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="S20030602003090.L3m_MO_ST92_CHL_chlor_a_9km" space="catalog">/data/S20030602003090.L3m_MO_ST92_CHL_chlor_a_9km.h5</setContainer>
+    <define name="d">
+	<container name="S20030602003090.L3m_MO_ST92_CHL_chlor_a_9km" />
+    </define>
+    <get type="dds" definition="d" />
+</request>

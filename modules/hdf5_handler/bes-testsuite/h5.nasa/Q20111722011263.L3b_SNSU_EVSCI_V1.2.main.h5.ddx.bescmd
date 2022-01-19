@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="Q20111722011263.L3b_SNSU_EVSCI_V1.2.main" space="catalog">/data/Q20111722011263.L3b_SNSU_EVSCI_V1.2.main.h5</setContainer>
+    <define name="d">
+	<container name="Q20111722011263.L3b_SNSU_EVSCI_V1.2.main" />
+    </define>
+    <get type="ddx" definition="d" />
+</request>

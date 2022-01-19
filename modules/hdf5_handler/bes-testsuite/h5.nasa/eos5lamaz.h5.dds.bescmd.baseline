@@ -1,0 +1,18 @@
+Dataset {
+    Byte Northern_Hemisphere_Flags_NorthernDaily[Northern_Hemisphere_YDim = 721][Northern_Hemisphere_XDim = 721];
+    Byte Northern_Hemisphere_SWE_NorthernDaily[Northern_Hemisphere_YDim = 721][Northern_Hemisphere_XDim = 721];
+    Byte Southern_Hemisphere_Flags_SouthernDaily[Southern_Hemisphere_YDim = 721][Southern_Hemisphere_XDim = 721];
+    Byte Southern_Hemisphere_SWE_SouthernDaily[Southern_Hemisphere_YDim = 721][Southern_Hemisphere_XDim = 721];
+    String CoreMetadata_0;
+    String StructMetadata_0;
+    Float64 Northern_Hemisphere_lon[Northern_Hemisphere_YDim = 721][Northern_Hemisphere_XDim = 721];
+    Float64 Northern_Hemisphere_lat[Northern_Hemisphere_YDim = 721][Northern_Hemisphere_XDim = 721];
+    Float64 Southern_Hemisphere_lon[Southern_Hemisphere_YDim = 721][Southern_Hemisphere_XDim = 721];
+    Float64 Southern_Hemisphere_lat[Southern_Hemisphere_YDim = 721][Southern_Hemisphere_XDim = 721];
+    Float64 Northern_Hemisphere_YDim[Northern_Hemisphere_YDim = 721];
+    Float64 Northern_Hemisphere_XDim[Northern_Hemisphere_XDim = 721];
+    Byte eos_cf_projection_1;
+    Float64 Southern_Hemisphere_YDim[Southern_Hemisphere_YDim = 721];
+    Float64 Southern_Hemisphere_XDim[Southern_Hemisphere_XDim = 721];
+    Byte eos_cf_projection_2;
+} AMSR_2_L3_DailySnow_P00_20160831.he5;

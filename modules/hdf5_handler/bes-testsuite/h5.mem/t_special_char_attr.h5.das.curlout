@@ -1,0 +1,6 @@
+Attributes {
+    HDF5_GLOBAL {
+        String special_char_attr "~`!@#%^&*()-_+={}[]|\\:;\"'?,<>/\013
+	";
+    }
+}

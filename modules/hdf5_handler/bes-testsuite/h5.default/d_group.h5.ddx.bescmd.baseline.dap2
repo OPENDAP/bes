@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="virtual" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xml.opendap.org/ns/DAP2" xsi:schemaLocation="http://xml.opendap.org/ns/DAP2 http://xml.opendap.org/dap/dap2.xsd">
+    <Attribute name="HDF5_ROOT_GROUP" type="Container">
+        <Attribute name="a" type="Container">
+            <Attribute name="b" type="Container">
+                <Attribute name="c" type="Container"/>
+            </Attribute>
+        </Attribute>
+    </Attribute>
+    <Attribute name="/a/" type="Container">
+        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
+            <value>/a/</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="/a/b/" type="Container">
+        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
+            <value>/a/b/</value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="/a/b/c/" type="Container">
+        <Attribute name="HDF5_OBJ_FULLPATH" type="String">
+            <value>/a/b/c/</value>
+        </Attribute>
+    </Attribute>
+    <dataBLOB href=""/>
+</Dataset>

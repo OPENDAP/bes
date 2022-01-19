@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="swath_1_2d_xyzz" space="catalog">/data/swath_1_2d_xyzz.h5</setContainer>
+    <define name="d">
+	<container name="swath_1_2d_xyzz" />
+    </define>
+    <get type="ddx" definition="d" />
+</request>

@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="Q20103372010343.L3m_7D_SCIB1_V1.0_SSS_1deg.h5">
+    <Dimension name="lat" size="180"/>
+    <Dimension name="lon" size="360"/>
+    <Float32 name="l3m_data">
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="Scaling" type="String">
+            <Value>linear</Value>
+        </Attribute>
+        <Attribute name="Scaling_Equation" type="String">
+            <Value>(Slope*l3m_data) + Intercept = Parameter value</Value>
+        </Attribute>
+        <Attribute name="Slope" type="Float32">
+            <Value>1.000000000</Value>
+        </Attribute>
+        <Attribute name="Intercept" type="Float32">
+            <Value>0.000000000</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>l3m_data</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/l3m_data</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>Sea Surface Salinity</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>psu</Value>
+        </Attribute>
+        <Attribute name="valid_min" type="Float32">
+            <Value>29.37887955</Value>
+        </Attribute>
+        <Attribute name="valid_max" type="Float32">
+            <Value>38.47634125</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-32767.00000</Value>
+        </Attribute>
+    </Float32>
+    <Byte name="palette">
+        <Dim size="3"/>
+        <Dim size="256"/>
+        <Attribute name="origname" type="String">
+            <Value>palette</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/palette</Value>
+        </Attribute>
+    </Byte>
+    <Float32 name="lat">
+        <Dim name="/lat"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="lon">
+        <Dim name="/lon"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+    </Float32>
+    <Attribute name="Product_Name" type="String">
+        <Value>Q20103372010343.L3m_7D_SCIB1_V1.0_SSS_1deg</Value>
+    </Attribute>
+    <Attribute name="Sensor_Name" type="Int8">
+        <Value>0</Value>
+    </Attribute>
+    <Attribute name="Sensor" type="String">
+        <Value>Aquarius</Value>
+    </Attribute>
+    <Attribute name="Title" type="String">
+        <Value> Level-3 Standard Mapped Image</Value>
+    </Attribute>
+    <Attribute name="Data_Center" type="Int8">
+        <Value>0</Value>
+    </Attribute>
+    <Attribute name="Station_Name" type="Int8">
+        <Value>0</Value>
+    </Attribute>
+    <Attribute name="Station_Latitude" type="Float32">
+        <Value>0.000000000</Value>
+    </Attribute>
+    <Attribute name="Station_Longitude" type="Float32">
+        <Value>0.000000000</Value>
+    </Attribute>
+    <Attribute name="Mission" type="String">
+        <Value>SAC-D Aquarius</Value>
+    </Attribute>
+    <Attribute name="Mission_Characteristics" type="String">
+        <Value>Nominal orbit: inclination=98.0 (Sun-synchronous); node=6PM (ascending); eccentricity=&lt;0.002; altitude=657 km; ground speed=6.825 km/sec</Value>
+    </Attribute>
+    <Attribute name="Sensor_Characteristics" type="Int8">
+        <Value>0</Value>
+    </Attribute>
+    <Attribute name="Product_Type" type="Int8">
+        <Value>0</Value>
+    </Attribute>
+    <Attribute name="Processing_Version" type="String">
+        <Value>V1.0</Value>
+    </Attribute>
+    <Attribute name="Software_Name" type="String">
+        <Value>smigen</Value>
+    </Attribute>
+    <Attribute name="Software_Version" type="String">
+        <Value>4.17</Value>
+    </Attribute>
+    <Attribute name="Processing_Time" type="String">
+        <Value>2011152054115000</Value>
+    </Attribute>
+    <Attribute name="Input_Files" type="String">
+        <Value>Q20103372010343.L3b_7D_SCIB1_V1.0.main</Value>
+    </Attribute>
+    <Attribute name="Processing_Control" type="String">
+        <Value>smigen par=Q20103372010343.L3m_7D_SCIB1_V1.0_SSS_1deg.param</Value>
+    </Attribute>
+    <Attribute name="Input_Parameters" type="String">
+        <Value>IFILE = /data1/sdpsoper/vdc/vpu4/workbuf/Q20103372010343.L3b_7D_SCIB1_V1.0.main|OFILE = Q20103372010343.L3m_7D_SCIB1_V1.0_SSS_1deg|PFILE = |PROD = SSS|PALFILE = /sdps/sdpsoper/Science/OCSSW/V2011.3/data/common/palette/sst.pal|PROCESSING VERSION = V1.0|MEAS = 1|STYPE = 0|DATAMIN = 0.000000|DATAMAX = 0.000000|LONWEST = -180.000000|LONEAST = 180.000000|LATSOUTH = -90.000000|LATNORTH = 90.000000|RESOLUTION = 1deg|PROJECTION = RECT|GAP_FILL = 0|SEAM_LON = -180.000000|PRECISION=F</Value>
+    </Attribute>
+    <Attribute name="L2_Flag_Names" type="Int8">
+        <Value>0</Value>
+    </Attribute>
+    <Attribute name="Period_Start_Year" type="Int16">
+        <Value>0</Value>
+    </Attribute>
+    <Attribute name="Period_Start_Day" type="Int16">
+        <Value>0</Value>
+    </Attribute>
+    <Attribute name="Period_End_Year" type="Int16">
+        <Value>0</Value>
+    </Attribute>
+    <Attribute name="Period_End_Day" type="Int16">
+        <Value>0</Value>
+    </Attribute>
+    <Attribute name="Start_Time" type="String">
+        <Value>2010340010554840</Value>
+    </Attribute>
+    <Attribute name="End_Time" type="String">
+        <Value>2010341011151960</Value>
+    </Attribute>
+    <Attribute name="Start_Year" type="Int16">
+        <Value>2010</Value>
+    </Attribute>
+    <Attribute name="Start_Day" type="Int16">
+        <Value>340</Value>
+    </Attribute>
+    <Attribute name="Start_Millisec" type="Int32">
+        <Value>3954840</Value>
+    </Attribute>
+    <Attribute name="End_Year" type="Int16">
+        <Value>2010</Value>
+    </Attribute>
+    <Attribute name="End_Day" type="Int16">
+        <Value>341</Value>
+    </Attribute>
+    <Attribute name="End_Millisec" type="Int32">
+        <Value>4311960</Value>
+    </Attribute>
+    <Attribute name="Start_Orbit" type="Int32">
+        <Value>0</Value>
+    </Attribute>
+    <Attribute name="End_Orbit" type="Int32">
+        <Value>0</Value>
+    </Attribute>
+    <Attribute name="Orbit" type="Int32">
+        <Value>0</Value>
+    </Attribute>
+    <Attribute name="Map_Projection" type="String">
+        <Value>Equidistant Cylindrical</Value>
+    </Attribute>
+    <Attribute name="Latitude_Units" type="String">
+        <Value>degrees North</Value>
+    </Attribute>
+    <Attribute name="Longitude_Units" type="String">
+        <Value>degrees East</Value>
+    </Attribute>
+    <Attribute name="Northernmost_Latitude" type="Float32">
+        <Value>90.00000000</Value>
+    </Attribute>
+    <Attribute name="Southernmost_Latitude" type="Float32">
+        <Value>-90.00000000</Value>
+    </Attribute>
+    <Attribute name="Westernmost_Longitude" type="Float32">
+        <Value>-180.0000000</Value>
+    </Attribute>
+    <Attribute name="Easternmost_Longitude" type="Float32">
+        <Value>180.0000000</Value>
+    </Attribute>
+    <Attribute name="Latitude_Step" type="Float32">
+        <Value>1.000000000</Value>
+    </Attribute>
+    <Attribute name="Longitude_Step" type="Float32">
+        <Value>1.000000000</Value>
+    </Attribute>
+    <Attribute name="SW_Point_Latitude" type="Float32">
+        <Value>-89.50000000</Value>
+    </Attribute>
+    <Attribute name="SW_Point_Longitude" type="Float32">
+        <Value>-179.5000000</Value>
+    </Attribute>
+    <Attribute name="Data_Bins" type="Int32">
+        <Value>0</Value>
+    </Attribute>
+    <Attribute name="Number_of_Lines" type="Int32">
+        <Value>180</Value>
+    </Attribute>
+    <Attribute name="Number_of_Columns" type="Int32">
+        <Value>360</Value>
+    </Attribute>
+    <Attribute name="Parameter" type="String">
+        <Value>Sea Surface Salinity</Value>
+    </Attribute>
+    <Attribute name="Measure" type="String">
+        <Value>Mean</Value>
+    </Attribute>
+    <Attribute name="Units" type="String">
+        <Value>psu</Value>
+    </Attribute>
+    <Attribute name="Scaling" type="String">
+        <Value>linear</Value>
+    </Attribute>
+    <Attribute name="Scaling_Equation" type="String">
+        <Value>(Slope*l3m_data) + Intercept = Parameter value</Value>
+    </Attribute>
+    <Attribute name="Slope" type="Float32">
+        <Value>1.000000000</Value>
+    </Attribute>
+    <Attribute name="Intercept" type="Float32">
+        <Value>0.000000000</Value>
+    </Attribute>
+    <Attribute name="Data_Minimum" type="Float32">
+        <Value>29.37887955</Value>
+    </Attribute>
+    <Attribute name="Data_Maximum" type="Float32">
+        <Value>38.47634125</Value>
+    </Attribute>
+    <Attribute name="Suggested_Image_Scaling_Minimum" type="Float32">
+        <Value>32.00000000</Value>
+    </Attribute>
+    <Attribute name="Suggested_Image_Scaling_Maximum" type="Float32">
+        <Value>38.00000000</Value>
+    </Attribute>
+    <Attribute name="Suggested_Image_Scaling_Type" type="String">
+        <Value>LINEAR</Value>
+    </Attribute>
+    <Attribute name="Suggested_Image_Scaling_Applied" type="String">
+        <Value>No</Value>
+    </Attribute>
+</Dataset>
