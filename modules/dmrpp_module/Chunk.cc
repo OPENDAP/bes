@@ -850,10 +850,16 @@ void Chunk::read_chunk() {
         throw BESInternalError(prolog + "No more libcurl handles.", __FILE__, __LINE__);
 
     try {
-        handle->read_data();  // throws if error
+        handle->read_data();  // retries until success when apropriate, else throws
         DmrppRequestHandler::curl_handle_pool->release_handle(handle);
     }
-    catch(...) {
+    catch (...) {
+        // TODO See https://bugs.earthdata.nasa.gov/browse/HYRAX-378
+        //  It may be that this is the code that catches throws from
+        //  chunk_write_data and based on read_data()'s behavior, the
+        //  code should probably stop _all_ transfers, reclaim all
+        //  handles and send a failure message up the call stack.
+        //  jhrg 4/7/21
         DmrppRequestHandler::curl_handle_pool->release_handle(handle);
         throw;
     }
