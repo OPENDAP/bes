@@ -24,7 +24,9 @@ set -eux
 echo "env:"
 printenv
 
-# yum install -y awscli
+# CentOS7 may not need libpng with the new hyrax-dependencies, but I'm not sure
+# if the current dependency binaries are built with the latest source and build
+# scripts. jhrg 1/19/22
 yum install -y libpng-devel sqlite-devel
 
 # Get the pre-built dependencies (all static libraries). $OS is 'centos6' or 'centos7'
@@ -59,7 +61,7 @@ autoreconf -fiv
 mkdir -pv $HOME/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
 
 # This will leave the package in $HOME/rpmbuild/RPMS/x86_64/*.rpm
-make -j4 all-static-rpm
+make -j16 all-static-rpm
 
 # Just a little reassurance... jhrg 3/23/21
 ls -l $HOME/rpmbuild/RPMS/x86_64/
