@@ -65,10 +65,14 @@ $(H5_LDFLAGS) $(H5_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) -ltest-types
 bin_PROGRAMS = build_dmrpp check_dmrpp merge_dmrpp reduce_mdf
 noinst_PROGRAMS = retriever superchunky
 
+STATIC_DAP_MODULE = $(top_builddir)/dap/.libs/libdap_module.a
+
 # build_dmrpp config
 build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS) -I$(srcdir)/../hdf5_handler
 build_dmrpp_SOURCES = $(BES_SRCS) $(BES_HDRS) $(BUILD_DMRPP) build_dmrpp.cc $(srcdir)/../hdf5_handler/h5common.cc
-build_dmrpp_LDFLAGS = $(BES_DAP_LIB_LDFLAGS)
+build_dmrpp_LDFLAGS = $(STATIC_DAP_MODULE)
+# Was using $(BES_DAP_LIB_LDFLAGS) which caused linking to the .so library. On linux
+# this is flagged as not portable. jhrg 1/21/2
 build_dmrpp_LDADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) \
 $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) \
 $(OPENSSL_LIBS) $(XML2_LIBS) $(BYTESWAP_LIBS) -lz
@@ -89,7 +93,7 @@ reduce_mdf_LDADD = $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) -lz
 # retriever config
 retriever_CPPFLAGS = $(AM_CPPFLAGS)
 retriever_SOURCES = $(BES_SRCS) $(BES_HDRS) $(BUILD_DMRPP) retriever.cc
-retriever_LDFLAGS = $(BES_DAP_LIB_LDFLAGS)
+retriever_LDFLAGS = $(STATIC_DAP_MODULE)
 retriever_LDADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) \
 $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) \
 $(OPENSSL_LIBS) $(XML2_LIBS) $(BYTESWAP_LIBS) -lz
@@ -97,7 +101,7 @@ $(OPENSSL_LIBS) $(XML2_LIBS) $(BYTESWAP_LIBS) -lz
 # superchunky config
 superchunky_CPPFLAGS = $(AM_CPPFLAGS)
 superchunky_SOURCES = $(BES_SRCS) $(BES_HDRS) $(BUILD_DMRPP) SuperChunky.cc
-superchunky_LDFLAGS = $(BES_DAP_LIB_LDFLAGS)
+superchunky_LDFLAGS = $(STATIC_DAP_MODULE)
 superchunky_LDADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(BES_EXTRA_LIBS) \
 $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) \
 $(OPENSSL_LIBS) $(XML2_LIBS) $(BYTESWAP_LIBS) -lz
