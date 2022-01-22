@@ -59,7 +59,9 @@ using std::istringstream;
 #include <DapFunctionUtils.h>
 #include "FoDapCovJsonTransform.h"
 #include "focovjson_utils.h"
+#include "FoCovJsonRequestHandler.h"
 
+using std::map;
 #define FoDapCovJsonTransform_debug_key "focovjson"
 
 
@@ -71,6 +73,18 @@ bool FoDapCovJsonTransform::canConvert()
     //    - shapeVals[1] = y axis
     //    - shapeVals[2] = z axis
     //    - shapeVals[3] = t axis
+#if 1
+cerr<<"Before X and Y and Z and T"<<endl;
+cerr<<"Number of parameters is  "<<this->parameters.size() <<endl;
+cerr<<"shapeVals is "<<shapeVals.size() <<endl;
+cerr<<"Number of Axis is "<<this->axes.size() <<endl;
+for (int i = 0; i <this->axes.size(); i++) {
+cerr<<"Axis name is "<<this->axes[i]->name << endl;
+cerr<<"Axis value is "<<this->axes[i]->values << endl;
+
+}
+    
+#endif
     if(xExists && yExists && zExists && tExists) {
 
         if (shapeVals.size() < 4)
@@ -105,6 +119,7 @@ bool FoDapCovJsonTransform::canConvert()
             domainType = "Point";
             return true;
         }
+cerr<<"Before X and Y and T"<<endl;
     }
 
     // If just x, y, and t exist
@@ -117,9 +132,14 @@ bool FoDapCovJsonTransform::canConvert()
         if (shapeVals.size() < 3)
             return false;
 
+cerr <<"shapeVals[0] is "<< shapeVals[0] <<endl;
+cerr <<"shapeVals[1] is "<< shapeVals[1] <<endl;
+cerr <<"shapeVals[2] is "<< shapeVals[2] <<endl;
+
         // A domain with Grid domain type MUST have the axes "x" and "y"
         // and MAY have the axes "z" and "t".
-        if((shapeVals[0] > 1) && (shapeVals[1] > 1) && (shapeVals[2] >= 0)) {
+        // The issue here is that shapeVals[0], shapeVals[1],shapeVals[2] may not be exactly x,y,z/t. 
+        if((shapeVals[0] >= 1) && (shapeVals[1] >= 1) && (shapeVals[2] >= 0)) {
             domainType = "Grid";
             return true;
         }
@@ -139,6 +159,7 @@ bool FoDapCovJsonTransform::canConvert()
             domainType = "Point";
             return true;
         }
+cerr<<"Before X and Y "<<endl;
     }
 
     // If just x and y exist
@@ -164,6 +185,7 @@ bool FoDapCovJsonTransform::canConvert()
             return true;
         }
     }
+cerr<<"Coming to the last step."<<endl;
 
     return false; // This source DDS is not valid as CovJSON
 }
@@ -215,11 +237,12 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
     currDataType = a->var()->type_name();
 
     // FOR TESTING AND DEBUGGING PURPOSES
-    // *strm << "\"type_name\": \"" << a->var()->type_name() << "\"" << endl;
+    *strm << "\"type_name\": \"" << a->var()->type_name() << "\"" << endl;
+    *strm << "\"name\": \"" << a->var()->name() << "\"" << endl;
 
     getAttributes(strm, a->get_attr_table(), a->name(), &axisRetrieved, &parameterRetrieved);
 
-    // a->print_val(*strm, "\n", true); // For testing purposes
+    //a->print_val(*strm, "\n", true); // For testing purposes
 
     // sendData = false; // For testing purposes
 
@@ -249,6 +272,7 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
 
                 currAxis->values += "]";
 
+cerr<<"currAxis value at covjsonSimpleTypeArray is "<<currAxis->values <<endl;
                 if (length != indx) {
                     BESDEBUG(FoDapCovJsonTransform_debug_key,
                         "covjsonSimpleTypeArray(Axis) - indx NOT equal to content length! indx:  " << indx << "  length: " << length << endl);
@@ -266,6 +290,7 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
         struct Parameter *currParameter;
         currParameter = parameters[parameterCount - 1];
 
+cerr<<"Parameter name is "<< currParameter->name<<endl;
         int numDim = a->dimensions(true);
         vector<unsigned int> shape(numDim);
         long length = focovjson::computeConstrainedShape(a, &shape);
@@ -288,6 +313,7 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
             otemp << shape[i];
             istringstream (otemp.str());
             istringstream (otemp.str()) >> tempVal;
+cerr<<"tempVal is "<<tempVal <<endl;
             shapeVals.push_back(tempVal);
 
             // t may only have 1 value: the origin timestamp
@@ -443,7 +469,8 @@ void FoDapCovJsonTransform::addAxis(string name, string values)
 
     newAxis->name = name;
     newAxis->values = values;
-
+cerr << "axis name is "<< name <<endl;
+cerr << "axis value is "<< values <<endl;
     this->axes.push_back(newAxis);
     this->axisCount++;
 }
@@ -621,10 +648,14 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
             addAxis(currAxisName, "\"values\": [\"" + sanitizeTimeOriginString(currAxisTimeOrigin) + "\"]");
         }
         else {
+cerr<<"addAxis 1 "<<endl;
             addAxis(currAxisName, "");
         }
 
         // See https://covjson.org/spec/#projected-coordinate-reference-systems
+        // KENT: The below "if block" is wrong. If the units of lat/lon includes east, north, it may be geographic projection.
+        // The ProjectedCRS may imply the 2-D lat/lon. If the variable name is the same as the axis name, and the lat/lon
+        // are 1-D, this is a geographic system.
         if((currUnit.find("east") != string::npos) || (currUnit.find("East") != string::npos) || 
             (currUnit.find("north") != string::npos) || (currUnit.find("North") != string::npos)) {
             coordRefType = "ProjectedCRS";
@@ -681,7 +712,7 @@ string FoDapCovJsonTransform::sanitizeTimeOriginString(string timeOrigin)
 FoDapCovJsonTransform::FoDapCovJsonTransform(libdap::DDS *dds) :
     _dds(dds), _returnAs(""), _indent_increment("  "), atomicVals(""), currDataType(""), domainType("Unknown"),
     coordRefType("GeographicCRS"), xExists(false), yExists(false), zExists(false), tExists(false), isParam(false),
-    isAxis(false), canConvertToCovJson(false), axisCount(0), parameterCount(0)
+    isAxis(false), canConvertToCovJson(false), axisCount(0), parameterCount(0),is_simple_cf_geographic(false)
 {
     if (!_dds) throw BESInternalError("File out COVJSON, null DDS passed to constructor", __FILE__, __LINE__);
 }
@@ -709,6 +740,7 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::Constructor *cnstrc
     libdap::DDS::Vars_iter vi = cnstrctr->var_begin();
     libdap::DDS::Vars_iter ve = cnstrctr->var_end();
 
+cerr<<"coming to the loop before " <<endl;
     for(; vi != ve; vi++) {
         if((*vi)->send_p()) {
             libdap::BaseType *v = *vi;
@@ -1127,6 +1159,189 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
         }
     }
 
+    // Sort the variables into two sets
+    vi = dds->var_begin();
+    ve = dds->var_end();
+
+    // Kent: We need to do pre-processing to handle more grid GES DISC stuff.
+    // First search CF units from 1-D array. 
+    
+    bool has_axis_var_x = false;
+    short axis_var_x_count = 0;
+    bool has_axis_var_y = false;
+    short axis_var_y_count = 0;
+    bool has_axis_var_z = false;
+    short axis_var_z_count = 0;
+    bool has_axis_var_t = false;
+    short axis_var_t_count = 0;
+
+    string units_name ="units";
+    for(; vi != ve; vi++) {
+cerr<<"coming to the loop  " <<endl;
+        if((*vi)->send_p()) {
+            libdap::BaseType *v = *vi;
+            libdap::Type type = v->type();
+
+            // Check if this qualifies a simple geographic grid coverage
+            if(type == libdap::dods_array_c) {
+                libdap::Array * d_a = dynamic_cast<libdap::Array *>(v);
+                int d_ndims = d_a->dimensions();
+cerr<<"d_ndims is "<< d_ndims <<endl;
+                if(d_ndims == 1) {
+                    libdap::AttrTable &attrs = d_a->get_attr_table();
+                    unsigned int num_attrs = attrs.get_size();
+                    if (num_attrs) {
+                        libdap::AttrTable::Attr_iter i = attrs.attr_begin();
+                        libdap::AttrTable::Attr_iter e = attrs.attr_end();
+                        for (; i != e; i++) {
+                            string attr_name = attrs.get_name(i);
+cerr<<"attr_name is "<<attr_name <<endl;
+                            unsigned int num_vals = attrs.get_attr_num(i);
+                            if (num_vals == 1) {
+                                // Check if the attr_name is units. 
+                                bool is_attr_units = false;
+                                if((attr_name.size() == units_name.size()) 
+                                   && (attr_name.compare(units_name) == 0))
+                                    is_attr_units = true;
+                                if(is_attr_units == false)
+                                    if(attr_name.size() == (units_name.size()+1) &&
+                                       attr_name[units_name.size()] == '\0' &&
+                                       attr_name.compare(0,units_name.size(),units_name) ==0)
+                                        is_attr_units = true;
+
+                                if (is_attr_units) {
+                                    string val = attrs.get_attr(i,0);
+                                    vector<string> unit_candidates;
+
+                                    // Here we need to check if there are 2 latitudes or longitudes. 
+                                    // If we find this issue, we should mark it. The coverage json won't support this case.
+                                    // longitude axis x
+                                    unit_candidates.push_back("degrees_east");
+                                    has_axis_var_x = check_add_axis(d_a,val,unit_candidates,axisVar_x,false);
+                                    if (true == has_axis_var_x) {
+                                        axis_var_x_count++;
+                                        if (axis_var_x_count ==2)
+                                            break;
+                                    }
+                                    unit_candidates.clear();
+ 
+                                    // latitude axis y
+                                    unit_candidates.push_back("degrees_north");
+                                    has_axis_var_y = check_add_axis(d_a,val,unit_candidates,axisVar_y,false);
+                                    if (true == has_axis_var_y) {
+                                        axis_var_y_count++;
+                                        if (axis_var_y_count == 2)
+                                            break;
+                                    }
+                                    unit_candidates.clear();
+
+                                    // height/pressure
+                                    unit_candidates.push_back("hpa");
+                                    unit_candidates.push_back("hPa");
+                                    unit_candidates.push_back("meter");
+                                    unit_candidates.push_back("m");
+                                    unit_candidates.push_back("km");
+                                    has_axis_var_z = check_add_axis(d_a,val,unit_candidates,axisVar_z,false);
+                                    if (true == has_axis_var_z) {
+                                        axis_var_z_count++;
+                                        if (axis_var_z_count == 2)
+                                            break;
+                                    }
+                                    unit_candidates.clear();
+for(int i = 0; i <unit_candidates.size(); i++)
+    cerr<<"unit_candidates[i] is "<<unit_candidates[i] <<endl;
+
+                                    // time: CF units only
+                                    unit_candidates.push_back("seconds since ");
+                                    unit_candidates.push_back("minutes since ");
+                                    unit_candidates.push_back("hours since ");
+                                    unit_candidates.push_back("days since ");
+for(int i = 0; i <unit_candidates.size(); i++)
+cerr<<"unit_candidates[i] again is "<<unit_candidates[i] <<endl;
+
+                                    has_axis_var_t = check_add_axis(d_a,val,unit_candidates,axisVar_t,true);
+                                    // STOP
+                                    if (true == has_axis_var_t) {
+                                        axis_var_t_count++;
+                                        if (axis_var_t_count == 2)
+                                            break;
+                                    }
+                                    unit_candidates.clear();
+
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    bool is_simple_geo_candidate = true;
+    if(axis_var_x_count !=1 || axis_var_y_count !=1) 
+        is_simple_geo_candidate = false;
+    if(is_simple_geo_candidate == true) {
+
+        // Check bound variables
+        // Check if any 1-D variable has the "bounds" attribute;  
+        // we need to remember the attribute value and match the variable that
+        // holds the bound values later. KY 2022-1-21
+        map<string, string> vname_bname;
+        
+        check_bounds(dds,vname_bname);
+
+        map<string, string>::iterator it;
+for(it = vname_bname.begin(); it != vname_bname.end(); it++) {
+cerr<<it->first <<endl;
+cerr<<it->second <<endl;
+}
+
+        for(it = vname_bname.begin(); it != vname_bname.end(); it++) {
+            cerr<<it->first <<endl;
+            cerr<<it->second <<endl;
+            if(axisVar_x.name == it->first)
+                axisVar_x.bound_name = it->second;
+            else if(axisVar_y.name == it->first)
+                axisVar_y.bound_name = it->second;
+            else if(axisVar_z.name == it->first)
+                axisVar_z.bound_name = it->second;
+            else if(axisVar_t.name == it->first)
+                axisVar_t.bound_name = it->second;
+        }
+cerr<<"axisVar_x.name is "<<axisVar_x.name <<endl;
+cerr<<"axisVar_x.dim_name is "<<axisVar_x.dim_name <<endl;
+cerr<<"axisVar_x.dim_size is "<<axisVar_x.dim_size <<endl;
+cerr<<"axisVar_x.bound_name is "<<axisVar_x.bound_name <<endl;
+
+cerr<<"axisVar_y.name is "<<axisVar_y.name <<endl;
+cerr<<"axisVar_y.dim_name is "<<axisVar_y.dim_name <<endl;
+cerr<<"axisVar_y.dim_size is "<<axisVar_y.dim_size <<endl;
+cerr<<"axisVar_y.bound_name is "<<axisVar_y.bound_name <<endl;
+
+cerr<<"axisVar_z.name is "<<axisVar_z.name <<endl;
+cerr<<"axisVar_z.dim_name is "<<axisVar_z.dim_name <<endl;
+cerr<<"axisVar_z.dim_size is "<<axisVar_z.dim_size <<endl;
+cerr<<"axisVar_z.bound_name is "<<axisVar_z.bound_name <<endl;
+
+cerr<<"axisVar_t.name is "<<axisVar_t.name <<endl;
+cerr<<"axisVar_t.dim_name is "<<axisVar_t.dim_name <<endl;
+cerr<<"axisVar_t.dim_size is "<<axisVar_t.dim_size <<endl;
+cerr<<"axisVar_t.bound_name is "<<axisVar_t.bound_name <<endl;
+
+
+
+        if(FoCovJsonRequestHandler::get_may_ignore_z_axis()== true) { 
+            //ignore all 3D if 2D presents.
+
+
+        }
+        else {// if both 2D and 3D present, simple_geo is false.
+
+        }
+
+    }
+
     // Read through the source DDS leaves and nodes, extract all axes and
     // parameter data, and store that data as Axis and Parameters
     transformNodeWorker(strm, leaves, nodes, indent + _indent_increment + _indent_increment, sendData);
@@ -1191,6 +1406,7 @@ void FoDapCovJsonTransform::transformAtomic(libdap::BaseType *b, string indent, 
     string childindent = indent + _indent_increment;
     struct Axis *newAxis = new Axis;
 
+    // Why assigning the name as "test" and why assigning the string type value? KY 2022-01-18
     newAxis->name = "test";
     if(sendData) {
         newAxis->values += "\"values\": [";
@@ -1287,5 +1503,91 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::Array *a, string in
 
     default:
         throw BESInternalError("File out COVJSON, Unrecognized type.", __FILE__, __LINE__);
+    }
+}
+
+bool FoDapCovJsonTransform::check_add_axis(libdap::Array *d_a,const string & unit_value, const vector<string> & CF_unit_values, axisVar & this_axisVar, bool is_t_axis) {
+
+    bool ret_value = false;
+    for (unsigned i = 0; i < CF_unit_values.size(); i++) {
+cerr<<"CF_unit_values "<<CF_unit_values[i] << endl;
+        bool is_cf_units = false;
+        if(is_t_axis == false) {
+            if((unit_value.size() == CF_unit_values[i].size() || unit_value.size() == (CF_unit_values[i].size() +1)) && unit_value.compare(0,CF_unit_values[i].size(),CF_unit_values[i])==0) 
+                is_cf_units = true;    
+        }
+        else {
+            if(unit_value.compare(0,CF_unit_values[i].size(),CF_unit_values[i])==0) 
+                is_cf_units = true; 
+        }
+       
+        if (is_cf_units) {
+            libdap::Array::Dim_iter di = d_a->dim_begin();
+            this_axisVar.dim_size = d_a->dimension_size(di, true);
+            this_axisVar.name = d_a->name();
+            this_axisVar.dim_name = d_a->dimension_name(di);
+            this_axisVar.bound_name="";
+            ret_value = true;
+cerr<<"axis size "<< this_axisVar.dim_size <<endl;
+cerr<<"axis name "<< this_axisVar.name <<endl;
+cerr<<"axis dim_name "<< this_axisVar.dim_name <<endl;
+            break;
+        }
+
+    }
+    return ret_value;
+
+}
+
+
+void FoDapCovJsonTransform::check_bounds(libdap::DDS *dds, map<string,string>& vname_bname) {
+
+    string bound_name = "bounds";
+    libdap::DDS::Vars_iter vi = dds->var_begin();
+    libdap::DDS::Vars_iter ve = dds->var_end();
+ 
+    for(; vi != ve; vi++) {
+cerr<<"coming to the loop  " <<endl;
+        if((*vi)->send_p()) {
+            libdap::BaseType *v = *vi;
+            libdap::Type type = v->type();
+
+            // Check if this qualifies a simple geographic grid coverage
+            if(type == libdap::dods_array_c) {
+                libdap::Array * d_a = dynamic_cast<libdap::Array *>(v);
+                int d_ndims = d_a->dimensions();
+cerr<<"d_ndims is "<< d_ndims <<endl;
+                if(d_ndims == 1) {
+                    libdap::AttrTable &attrs = d_a->get_attr_table();
+                    unsigned int num_attrs = attrs.get_size();
+                    if (num_attrs) {
+                        libdap::AttrTable::Attr_iter i = attrs.attr_begin();
+                        libdap::AttrTable::Attr_iter e = attrs.attr_end();
+                        for (; i != e; i++) {
+                            string attr_name = attrs.get_name(i);
+cerr<<"attr_name is "<<attr_name <<endl;
+                            unsigned int num_vals = attrs.get_attr_num(i);
+                            if (num_vals == 1) {
+                                // Check if the attr_name is units. 
+                                bool is_attr_bounds = false;
+                                if((attr_name.size() == bound_name.size()) 
+                                   && (attr_name.compare(bound_name) == 0))
+                                    is_attr_bounds = true;
+                                if(is_attr_bounds == false)
+                                    if(attr_name.size() == (bound_name.size()+1) &&
+                                       attr_name[bound_name.size()] == '\0' &&
+                                       attr_name.compare(0,bound_name.size(),bound_name) ==0)
+                                        is_attr_bounds = true;
+
+                                if (is_attr_bounds) {
+                                    string val = attrs.get_attr(i,0);
+                                    vname_bname[d_a->name()] = val;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

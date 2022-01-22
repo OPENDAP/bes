@@ -88,6 +88,28 @@ private:
     std::vector<Parameter *> parameters;
     std::vector<int> shapeVals;
 
+#if 0
+    std::string axis_x_varname;
+    std::string axis_y_varname;
+    std::string axis_z_varname;
+    std::string axis_t_varname;
+#endif
+
+    struct axisVar {
+        int dim_size;
+        std::string name;
+        std::string dim_name;
+        std::string bound_name;
+    };
+    axisVar axisVar_x;
+    axisVar axisVar_y;
+    axisVar axisVar_z;
+    axisVar axisVar_t;
+
+    bool is_simple_cf_geographic;
+
+    bool check_add_axis(libdap::Array *d_a, const std::string &, const std::vector<std::string> &, axisVar &, bool is_t_axis);
+    void check_bounds(libdap::DDS *dds, std::map<std::string,std::string>& vname_b_name);
     /**
      * @brief Checks the spacial/temporal dimensions that we've obtained, if we've
      *    obtained any at all, can be used to convert to a CovJSON file. If x, y,

@@ -30,6 +30,9 @@
 #define I_FoCovJsonRequestHandler_H 1
 
 #include "BESRequestHandler.h"
+#include <BESUtil.h>
+#include <TheBESKeys.h>
+
 
 /** @brief A Request Handler for the Fileout NetCDF request
  *
@@ -39,12 +42,17 @@
  * here.
  */
 class FoCovJsonRequestHandler: public BESRequestHandler {
+
+private:
+    static bool _may_ignore_z_axis;
 public:
     FoCovJsonRequestHandler(const std::string &name);
     virtual ~FoCovJsonRequestHandler(void);
 
     virtual void dump(std::ostream &strm) const;
-
+    
+    static bool check_beskeys(const std::string & key);
+    static bool get_may_ignore_z_axis() { return _may_ignore_z_axis; }
     static bool build_help(BESDataHandlerInterface &dhi);
     static bool build_version(BESDataHandlerInterface &dhi);
 };
