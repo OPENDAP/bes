@@ -1,0 +1,45 @@
+Currently there are a few tests that the normal "make check" doesn't cover. Depending on one's need, they can be easily tested manually. Eventually if it is necessary, a kind of automatic tests should be implemented.
+
+1. HDF-EOS2 configuration option with NASA data
+1) Obtain the NASA HDF4 data
+cd ../data.nasa
+./download.sh
+cd ../data
+ln -s ../data.nasa . 
+cd ..
+2) make check
+All tests should get passed.
+
+2. Valgrind tests
+
+mv hdf4_handlerTest.with_hdfeos2.at hdf4_handlerTest.with_hdfeos2.at.orig
+1) fake data test
+(1) cp hdf4_handlerTest.with_hdfeos2.valgrind.at hdf4_handlerTest.with_hdfeos2.at
+(2) cd ..
+(3) make check
+(4) pushd /tmp
+(5) grep "definitely lost: " h4.valgrind.log
+You should only see ""definitely lost: 0 bytes in 0 blocks"
+
+2) NASA data test
+(1) Make sure to obtain the NASA HDF4 data stated in section 1. 
+(2) cp hdf4_handlerTest.nasa.with_hdfeos2.valgrind.at hdf4_handlerTest.with_hdfeos2.at
+(2) cd ..
+(3) make check
+(4) pushd /tmp
+(5) grep "definitely lost: " h4.nasa.valgrind.log
+You should only see ""definitely lost: 0 bytes in 0 blocks"
+
+
+3. HDF4 only configuration option 
+For this test, the handler is configured by using the HDF4 library only.
+1) make distclean
+2) configure the HDF4 handler with the HDF4 library only option.
+3) make 
+4) make check  
+All tests should get passed.
+
+At the end of all the tests,
+cd bes-testsuite
+mv hdf5_handlerTest.with_hdfeos2.at.orig hdf5_handlerTest.with_hdfeos2.at
+
