@@ -98,7 +98,10 @@ developing applications that use %{name}.
 chmod a-x dispatch/BESStreamResponseHandler*
 
 %build
-%configure --disable-static --disable-dependency-tracking --with-dependencies=$prefix/deps --with-build=@PACKAGE_BUILD_NUMBER@
+%configure --disable-dependency-tracking --with-dependencies=$prefix/deps --with-build=@PACKAGE_BUILD_NUMBER@
+# Try removing --disable-static from the above so that libdap_module.a is built.
+# The code links with this to avoid linking to a Shared Object library that is
+# really a run-time loaded module. jhrg 1/21/22
 make %{?_smp_mflags}
 
 # make docs
@@ -127,6 +130,10 @@ sed -i.dist -e 's:=/tmp:=%{bescachedir}:' \
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
+# Static libraries are now built so the code can link against libdap_module.a in
+# some special cases. But, those should not be part of the RPM package so remove
+# them here (along with the libtool archives). jhrg 1/21/22
+find $RPM_BUILD_ROOT -name '*.a' -exec rm -f {} ';'
 mkdir -p $RPM_BUILD_ROOT%{bescachedir}
 chmod g+w $RPM_BUILD_ROOT%{bescachedir}
 mkdir -p $RPM_BUILD_ROOT%{bespkidir}/{cacerts,public}
