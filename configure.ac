@@ -240,6 +240,8 @@ AC_PROG_MAKE_SET
 AC_PROG_INSTALL
 dnl AC_PROG_LEX
 AM_PROG_LEX
+AM_PATH_PYTHON
+
 
 dnl NB: CentOS 6 does not support C++-11 but does support some features:
 dnl https://gcc.gnu.org/gcc-4.4/cxx0x_status.html.

@@ -47,7 +47,7 @@ CLEANFILES = testout .dodsrc *.gcda *.gcno
 DISTCLEANFILES = *.strm *.file *.Po tmp.txt bes.conf test_config.h
 
 test_config.h: $(srcdir)/test_config.h.in Makefile
-	@my_topdir=`python -c "import os.path; print(os.path.abspath('${abs_srcdir}'))"`; \
+	@my_topdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_srcdir}'))"`; \
 	sed -e "s%[@]abs_srcdir[@]%$${my_topdir}%" \
 		-e "s%[@]abs_top_srcdir[@]%${abs_top_srcdir}%" $< > test_config.h
 
@@ -57,8 +57,8 @@ test_config.h: $(srcdir)/test_config.h.in Makefile
 bes.conf: $(srcdir)/bes.conf.in Makefile
 
 %.conf: %.conf.in
-	@my_topdir=`python -c "import os.path; print(os.path.abspath('${abs_srcdir}'))"`; \
-	mod_abs_top_srcdir=`python -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
+	@my_topdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_srcdir}'))"`; \
+	mod_abs_top_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$${mod_abs_top_srcdir}%" \
     -e "s%[@]abs_srcdir[@]%$${my_topdir}%" $< > bes.conf
 
