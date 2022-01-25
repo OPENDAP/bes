@@ -1329,8 +1329,6 @@ cerr<<"axisVar_t.dim_name is "<<axisVar_t.dim_name <<endl;
 cerr<<"axisVar_t.dim_size is "<<axisVar_t.dim_size <<endl;
 cerr<<"axisVar_t.bound_name is "<<axisVar_t.bound_name <<endl;
 
-
-
         if(FoCovJsonRequestHandler::get_may_ignore_z_axis()== true) { 
             //ignore all 3D if 2D presents.
 
@@ -1338,6 +1336,19 @@ cerr<<"axisVar_t.bound_name is "<<axisVar_t.bound_name <<endl;
         }
         else {// if both 2D and 3D present, simple_geo is false.
 
+        }
+
+        if(true == is_simple_cf_geographic) {
+
+            // We should handle the bound value
+            // ignore 1-D bound dimension variable, 
+            // Retrieve the values of the 2-D bound variable, 
+            // Will save as the bound value in the coverage            
+            obtain_bound_values(dds,axisVar_x,axisVar_x_bnd_val);
+            obtain_bound_values(dds,axisVar_y,axisVar_y_bnd_val);
+            obtain_bound_values(dds,axisVar_z,axisVar_z_bnd_val);
+            obtain_bound_values(dds,axisVar_t,axisVar_t_bnd_val);
+            
         }
 
     }
@@ -1590,4 +1601,62 @@ cerr<<"attr_name is "<<attr_name <<endl;
             }
         }
     }
+}
+
+void FoDapCovJsonTransform::obtain_bound_values(libdap::DDS *dds, const axisVar & av, std::vector<float>& av_bnd_val) {
+
+    libdap::Array * d_a = nullptr;
+    bool has_bound_values = obtain_bound_values_worker(dds, d_a, av.bound_name); 
+    if (has_bound_values) {// float, now we just handle this way 
+     // SSTOP FILL IN
+     
+    }
+}
+
+void FoDapCovJsonTransform::obtain_bound_values(libdap::DDS *dds, const axisVar & av, std::vector<double>& av_bnd_val) {
+
+    libdap::Array * d_a = nullptr;
+    bool has_bound_values = obtain_bound_values_worker(dds, d_a, av.bound_name); 
+    if (has_bound_values) {// double, now we just handle this way 
+     // SSTOP FILL IN
+     
+    }
+}
+
+bool FoDapCovJsonTransform::obtain_bound_values_worker(libdap::DDS *dds,libdap::Array * d_a, const string& bnd_name) {
+
+    bool ret_value = false;
+    if(bnd_name!="") {
+    
+        libdap::DDS::Vars_iter vi = dds->var_begin();
+        libdap::DDS::Vars_iter ve = dds->var_end();
+     
+        for(; vi != ve; vi++) {
+    cerr<<"coming to the loop  " <<endl;
+            if((*vi)->send_p()) {
+                libdap::BaseType *v = *vi;
+                libdap::Type type = v->type();
+    
+                // Check if this qualifies a simple geographic grid coverage
+                if(type == libdap::dods_array_c) {
+                    libdap::Array * td_a = dynamic_cast<libdap::Array *>(v);
+                    int d_ndims = td_a->dimensions();
+    cerr<<"d_ndims is "<< d_ndims <<endl;
+                    if(d_ndims == 1) {
+                        if(td_a->name() == bnd_name) {
+                            d_a = td_a;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        if (d_a)
+            ret_value = true;
+        else
+            ret_value = false;
+        
+    }
+    return ret_value;
+
 }

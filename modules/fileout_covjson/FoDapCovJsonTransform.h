@@ -106,10 +106,18 @@ private:
     axisVar axisVar_z;
     axisVar axisVar_t;
 
+    std::vector<float> axisVar_x_bnd_val;
+    std::vector<float> axisVar_y_bnd_val;
+    std::vector<float> axisVar_z_bnd_val;
+    std::vector<double> axisVar_t_bnd_val;
+
     bool is_simple_cf_geographic;
 
     bool check_add_axis(libdap::Array *d_a, const std::string &, const std::vector<std::string> &, axisVar &, bool is_t_axis);
     void check_bounds(libdap::DDS *dds, std::map<std::string,std::string>& vname_b_name);
+    void obtain_bound_values(libdap::DDS *dds, const axisVar& av, std::vector<float>& av_bnd_val);
+    void obtain_bound_values(libdap::DDS *dds, const axisVar& av, std::vector<double>& av_bnd_val);
+    bool obtain_bound_values_worker(libdap::DDS *dds, libdap::Array *d_a, const std::string & bound_name);
     /**
      * @brief Checks the spacial/temporal dimensions that we've obtained, if we've
      *    obtained any at all, can be used to convert to a CovJSON file. If x, y,
