@@ -427,7 +427,9 @@ string TheBESKeys::read_string_key(const string &key, const string &default_valu
     TheBESKeys::TheKeys()->get_value(key, value, found);
     // 'value' holds the string value at this point if found is true
     if (found) {
-      if (value.length() > 0 && value[value.length() - 1] == '/') value.erase(value.length() - 1);
+        if (value.length() > 0 && value[value.length() - 1] == '/')
+            value.erase(value.length() - 1);
+
         return value;
     }
     else {

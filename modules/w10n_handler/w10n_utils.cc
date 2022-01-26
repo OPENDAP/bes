@@ -113,16 +113,19 @@ void eval_resource_path(const string &w10nResourceId, const string &catalogRoot,
     remainder = rem;
 
     // Remove leading slash
-    if (rem[0] == '/') rem = rem.substr(1, rem.length() - 1);
+    if (rem.length() > 0 && rem[0] == '/') rem = rem.substr(1, rem.length() - 1);
 
-    // Remove trailing slash
-    if (rem[rem.length() - 1] == '/') rem = rem.substr(0, rem.length() - 1);
+    // Remove trailing slash. Use: key.erase(key.length() - 1);
+    if (rem.length() > 0 && rem[rem.length() - 1] == '/')
+        rem.erase(rem.length() -1);
+        //rem = rem.substr(0, rem.length() - 1);
 
     // full path of the thing to check
     string fullpath = catalogRoot;
     // Remove leading slash
-    if (fullpath[fullpath.length() - 1] == '/') {
-        fullpath = fullpath.substr(0, fullpath.length() - 1);
+    if (fullpath.length() > 0 && fullpath[fullpath.length() - 1] == '/') {
+        fullpath.erase(fullpath.length() - 1);
+        // fullpath = fullpath.substr(0, fullpath.length() - 1);
     }
 
     // path checked so far

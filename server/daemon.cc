@@ -1075,7 +1075,7 @@ int main(int argc, char *argv[])
         // was passed, then use the -i option to construct
         // the path to the config file
         if (config_file.empty() && !install_dir.empty()) {
-            if (install_dir[install_dir.length() - 1] != '/') {
+            if (install_dir.length() > 0 && install_dir[install_dir.length() - 1] != '/') {
                 install_dir += '/';
             }
             string conf_file = install_dir + "etc/bes/bes.conf";

@@ -137,7 +137,7 @@ void get_type_from_disposition(const string &disp, string &type)
             if (filename[0] == '"') {
                 filename = filename.substr(1);
             }
-            if (filename[filename.length() - 1] == '"') {
+            if (filename.length() > 0 && filename[filename.length() - 1] == '"') {
                 filename = filename.substr(0, filename.length() - 1);
             }
 

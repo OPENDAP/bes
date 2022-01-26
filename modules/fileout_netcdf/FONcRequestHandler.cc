@@ -106,7 +106,8 @@ static void read_key_value(const string &key_name, string &key, const string &de
     TheBESKeys::TheKeys()->get_value(key_name, key, key_found);
     // 'key' holds the string value at this point if key_found is true
     if (key_found) {
-        if (key[key.length() - 1] == '/') key.erase(key.length() - 1);
+        if (key.length() > 0 && key[key.length() - 1] == '/')
+            key.erase(key.length() - 1);
     }
     else {
         key = default_value;
