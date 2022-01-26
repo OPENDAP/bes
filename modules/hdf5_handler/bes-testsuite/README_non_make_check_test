@@ -18,17 +18,17 @@ cd data.nasa
 cd ../data
 ln -s ../data.nasa .
 
-1) CF DMR from DDS and DAS option test with NASA data
+2) CF DMR from DDS and DAS option test with NASA data
 cd ../bes-testsuite
 cp hdf5_handlerTest.nasa.at hdf5_handlerTest.at
 cd ..
 make check
 All tests should get passed.
 
-2) CF DMR option test with NASA data
+3) CF DMR option test with NASA data
 (1) DAS and DDS generation with CFDMR key on/missing  
 cd bes-testsuite
-cp hdf5_handlerTest.cfdmr.at hdf5_handlerTest.at
+cp hdf5_handlerTest.nasa.cfdmr.at hdf5_handlerTest.at
 cd ..
 make check
 All tests should get passed.
@@ -40,7 +40,7 @@ cd ..
 make check
 All tests should get passed.
 
-) Non-CF option test with NASA data
+4) Non-CF option test with NASA data
 This test is for when the EnableCF=false
 cd bes-testsuite
 cp hdf5_handlerTest.default.dap4.at hdf5_handlerTest.at
