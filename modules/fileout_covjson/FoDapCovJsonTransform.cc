@@ -1188,6 +1188,7 @@ cerr<<"coming to the loop  " <<endl;
                 int d_ndims = d_a->dimensions();
 cerr<<"d_ndims is "<< d_ndims <<endl;
                 if(d_ndims == 1) {
+cerr<<"d_a name is "<<d_a->name() <<endl;
                     libdap::AttrTable &attrs = d_a->get_attr_table();
                     unsigned int num_attrs = attrs.get_size();
                     if (num_attrs) {
@@ -1277,7 +1278,8 @@ cerr<<"unit_candidates[i] again is "<<unit_candidates[i] <<endl;
             }
         }
     }
-
+cerr<<"axis_var_x_count is "<< axis_var_x_count <<endl;
+cerr<<"axis_var_y_count is "<< axis_var_y_count <<endl;
     bool is_simple_geo_candidate = true;
     if(axis_var_x_count !=1 || axis_var_y_count !=1) 
         is_simple_geo_candidate = false;
@@ -1329,14 +1331,22 @@ cerr<<"axisVar_t.dim_name is "<<axisVar_t.dim_name <<endl;
 cerr<<"axisVar_t.dim_size is "<<axisVar_t.dim_size <<endl;
 cerr<<"axisVar_t.bound_name is "<<axisVar_t.bound_name <<endl;
 
+#if 0
         if(FoCovJsonRequestHandler::get_may_ignore_z_axis()== true) { 
             //ignore all 3D if 2D presents.
-
+            // TODO: MORE code
+            is_simple_cf_geographic = obtain_valid_vars(dds);
 
         }
         else {// if both 2D and 3D present, simple_geo is false.
+            // TODO: MORE code
+            //is_simple_cf_geographic = true;
+            is_simple_cf_geographic = check_valid_vars(dds,vname_bname);
 
         }
+#endif
+
+        is_simple_cf_geographic = obtain_valid_vars(dds,axis_var_z_count,axis_var_t_count);
 
         if(true == is_simple_cf_geographic) {
 
@@ -1344,11 +1354,25 @@ cerr<<"axisVar_t.bound_name is "<<axisVar_t.bound_name <<endl;
             // ignore 1-D bound dimension variable, 
             // Retrieve the values of the 2-D bound variable, 
             // Will save as the bound value in the coverage            
-            obtain_bound_values(dds,axisVar_x,axisVar_x_bnd_val);
-            obtain_bound_values(dds,axisVar_y,axisVar_y_bnd_val);
-            obtain_bound_values(dds,axisVar_z,axisVar_z_bnd_val);
-            obtain_bound_values(dds,axisVar_t,axisVar_t_bnd_val);
+
+            string x_bnd_dim_name;
+            string y_bnd_dim_name;
+            string z_bnd_dim_name;
+            string t_bnd_dim_name;
+
+            obtain_bound_values(dds,axisVar_x,axisVar_x_bnd_val, x_bnd_dim_name,sendData);
+            obtain_bound_values(dds,axisVar_y,axisVar_y_bnd_val, y_bnd_dim_name,sendData);
+            obtain_bound_values(dds,axisVar_z,axisVar_z_bnd_val, z_bnd_dim_name,sendData);
+            obtain_bound_values(dds,axisVar_t,axisVar_t_bnd_val, t_bnd_dim_name,sendData);
             
+            if(x_bnd_dim_name!="")
+                bnd_dim_names.push_back(x_bnd_dim_name);
+            else if(y_bnd_dim_name!="")
+                bnd_dim_names.push_back(y_bnd_dim_name);
+            else if(z_bnd_dim_name!="")
+                bnd_dim_names.push_back(z_bnd_dim_name);
+            else if(t_bnd_dim_name!="")
+                bnd_dim_names.push_back(t_bnd_dim_name);
         }
 
     }
@@ -1603,36 +1627,85 @@ cerr<<"attr_name is "<<attr_name <<endl;
     }
 }
 
-void FoDapCovJsonTransform::obtain_bound_values(libdap::DDS *dds, const axisVar & av, std::vector<float>& av_bnd_val) {
+void FoDapCovJsonTransform::obtain_bound_values(libdap::DDS *dds, const axisVar & av, std::vector<float>& av_bnd_val, std::string& bnd_dim_name, bool sendData) {
 
-    libdap::Array * d_a = nullptr;
-    bool has_bound_values = obtain_bound_values_worker(dds, d_a, av.bound_name); 
-    if (has_bound_values) {// float, now we just handle this way 
+cerr<<"coming to the obtain_bound_values "<<endl;
+    libdap::Array* d_a = obtain_bound_values_worker(dds, av.bound_name,bnd_dim_name); 
+    if (d_a) {// float, now we just handle this way 
      // SSTOP FILL IN
+cerr<<"d_a->name in obtain_bound_values is "<<d_a->name() <<endl;
+cerr<<"in obtain_bound_values bnd_dim_name is "<<bnd_dim_name <<endl;
+        if(d_a->var()->type_name() == "Float64") {
+            if(sendData) {
+                int num_lengths = d_a->length();
+                vector<double>temp_val;
+                temp_val.resize(num_lengths);
+                d_a->value(&temp_val[0]);
+                
+                av_bnd_val.resize(num_lengths);
+                for (unsigned i = 0; i <av_bnd_val.size();i++)
+                    av_bnd_val[i] =(float)temp_val[i];
+ 
+for (int i = 0; i <av_bnd_val.size();i++)
+cerr<<"av_bnd_val["<<i<<"] = "<<av_bnd_val[i] <<endl;
+            }
+        }
+        else if(d_a->var()->type_name() == "Float32") {
+            if(sendData) {
+                int num_lengths = d_a->length();
+                av_bnd_val.resize(num_lengths);
+                d_a->value(&av_bnd_val[0]);
+for (int i = 0; i <av_bnd_val.size();i++)
+cerr<<"av_bnd_val["<<i<<"] = "<<av_bnd_val[i] <<endl;
+            }
+        }
+
      
     }
 }
 
-void FoDapCovJsonTransform::obtain_bound_values(libdap::DDS *dds, const axisVar & av, std::vector<double>& av_bnd_val) {
+void FoDapCovJsonTransform::obtain_bound_values(libdap::DDS *dds, const axisVar & av, std::vector<double>& av_bnd_val, std::string& bnd_dim_name, bool sendData) {
 
-    libdap::Array * d_a = nullptr;
-    bool has_bound_values = obtain_bound_values_worker(dds, d_a, av.bound_name); 
-    if (has_bound_values) {// double, now we just handle this way 
-     // SSTOP FILL IN
-     
-    }
+    libdap::Array* d_a = obtain_bound_values_worker(dds, av.bound_name,bnd_dim_name); 
+    if(d_a) {
+cerr<<"d_a->name in obtain_bound_values is "<<d_a->name() <<endl;
+cerr<<"in obtain_bound_values bnd_dim_name is "<<bnd_dim_name <<endl;
+        if(d_a->var()->type_name() == "Float64") {
+            if(sendData) {
+                int num_lengths = d_a->length();
+                av_bnd_val.resize(num_lengths);
+                d_a->value(&av_bnd_val[0]);
+for (int i = 0; i <av_bnd_val.size();i++)
+cerr<<"av_bnd_val["<<i<<"] = "<<av_bnd_val[i] <<endl;
+            }
+        }
+        else if(d_a->var()->type_name() == "Float32") {
+            if(sendData) {
+                int num_lengths = d_a->length();
+                vector<float>temp_val;
+                temp_val.resize(num_lengths);
+                d_a->value(&temp_val[0]);
+                av_bnd_val.resize(num_lengths);
+                for (unsigned i = 0; i <av_bnd_val.size();i++)
+                    av_bnd_val[i] =(double)temp_val[i];
+ 
+for (int i = 0; i <av_bnd_val.size();i++)
+cerr<<"av_bnd_val["<<i<<"] = "<<av_bnd_val[i] <<endl;
+            }
+        }
+   }
 }
 
-bool FoDapCovJsonTransform::obtain_bound_values_worker(libdap::DDS *dds,libdap::Array * d_a, const string& bnd_name) {
+libdap::Array* FoDapCovJsonTransform::obtain_bound_values_worker(libdap::DDS *dds, const string& bnd_name, string & bnd_dim_name) {
 
-    bool ret_value = false;
+    libdap::Array* d_a = nullptr;
     if(bnd_name!="") {
     
         libdap::DDS::Vars_iter vi = dds->var_begin();
         libdap::DDS::Vars_iter ve = dds->var_end();
      
         for(; vi != ve; vi++) {
-    cerr<<"coming to the loop  " <<endl;
+    cerr<<"In worker: coming to the loop  " <<endl;
             if((*vi)->send_p()) {
                 libdap::BaseType *v = *vi;
                 libdap::Type type = v->type();
@@ -1641,22 +1714,186 @@ bool FoDapCovJsonTransform::obtain_bound_values_worker(libdap::DDS *dds,libdap::
                 if(type == libdap::dods_array_c) {
                     libdap::Array * td_a = dynamic_cast<libdap::Array *>(v);
                     int d_ndims = td_a->dimensions();
-    cerr<<"d_ndims is "<< d_ndims <<endl;
-                    if(d_ndims == 1) {
-                        if(td_a->name() == bnd_name) {
+    cerr<<"In worker: d_ndims is "<< d_ndims <<endl;
+                    if(d_ndims == 2) {
+                        string tmp_bnd_dim_name;
+                        int bound_dim_size = 0;
+                        int dim_count = 0;
+                        libdap::Array::Dim_iter di = td_a->dim_begin();
+                        libdap::Array::Dim_iter de = td_a->dim_end();
+                        for (; di != de; di++) {
+                            if(dim_count == 1) {
+                                bound_dim_size = td_a->dimension_size(di, true);
+                                tmp_bnd_dim_name = td_a->dimension_name(di);
+cerr<<"tmp_bnd_dim_name is "<<tmp_bnd_dim_name <<endl;
+                            }
+                            dim_count++;
+                        }
+                        
+                        // For 1-D coordinate bound, the bound size should always be 2.
+                        if((bound_dim_size == 2) && (td_a->name() == bnd_name)) {
                             d_a = td_a;
+                            bnd_dim_name = tmp_bnd_dim_name;
+cerr<<"bnd_dim_name is "<<bnd_dim_name <<endl;
                             break;
                         }
                     }
                 }
             }
         }
-        if (d_a)
-            ret_value = true;
-        else
-            ret_value = false;
         
+    }
+    return d_a;
+
+}
+
+bool FoDapCovJsonTransform::obtain_valid_vars(libdap::DDS *dds, short axis_var_z_count, short axis_var_t_count ) {
+
+cerr<<"coming to obtain_valid_vars "<<endl;
+    bool ret_value = true;
+    std::vector<std::string> temp_x_y_vars;
+    std::vector<std::string> temp_x_y_z_vars;
+    std::vector<std::string> temp_x_y_t_vars;
+    std::vector<std::string> temp_x_y_z_t_vars;
+
+    libdap::DDS::Vars_iter vi = dds->var_begin();
+    libdap::DDS::Vars_iter ve = dds->var_end();
+    for(; vi != ve; vi++) {
+        if((*vi)->send_p()) {
+            libdap::BaseType *v = *vi;
+            libdap::Type type = v->type();
+            if(type == libdap::dods_array_c) {
+                libdap::Array * d_a = dynamic_cast<libdap::Array *>(v);
+                int d_ndims = d_a->dimensions();
+
+                if(d_ndims >=2) {
+
+                    short axis_x_count = 0;
+                    short axis_y_count = 0;
+                    short axis_z_count = 0;
+                    short axis_t_count = 0;
+                    bool  non_xyzt_dim = false;
+                    bool  supported_var = true;
+
+                    libdap::Array::Dim_iter di = d_a->dim_begin();
+                    libdap::Array::Dim_iter de = d_a->dim_end();
+
+                    for (; di != de; di++) {
+                       // check x,y,z,t dimensions 
+                       if((d_a->dimension_size(di,true) == axisVar_x.dim_size) && 
+                           (d_a->dimension_name(di) == axisVar_x.dim_name))
+                          axis_x_count++;
+                       else if((d_a->dimension_size(di,true) == axisVar_y.dim_size) && 
+                           (d_a->dimension_name(di) == axisVar_y.dim_name))
+                          axis_y_count++;
+                       else if((d_a->dimension_size(di,true) == axisVar_z.dim_size) && 
+                           (d_a->dimension_name(di) == axisVar_z.dim_name))
+                          axis_z_count++;
+                       else if((d_a->dimension_size(di,true) == axisVar_t.dim_size) && 
+                           (d_a->dimension_name(di) == axisVar_t.dim_name))
+                          axis_t_count++;
+                       else 
+                          non_xyzt_dim = true;
+                       
+                       // Non-x,y,z,t dimension or duplicate x,y,z,t dimensions are not supported.
+                       // Here for the "strict" case, I need to return false for the conversion to grid when
+                       // a non-conform > 1D var appears except the "bound" variables.
+                       if(non_xyzt_dim || axis_x_count >1 || axis_y_count >1 || axis_z_count >1 || axis_t_count >1) {
+                          supported_var = false;
+cerr<<"Obtain: d_a->name() is "<<d_a->name() <<endl;
+                          if (FoCovJsonRequestHandler::get_may_ignore_z_axis() == false) { 
+                              if(d_a->name()!=axisVar_x.bound_name && d_a->name()!=axisVar_y.bound_name &&
+                                 d_a->name()!=axisVar_z.bound_name && d_a->name()!=axisVar_t.bound_name)
+                                 ret_value = false;
+                          }
+                          break;
+                       }
+                    }
+                    
+                    if(supported_var) {
+                        // save the var names to the vars that hold (x,y),(x,y,z),(x,y,t),(x,y,z,t)
+                        if(axis_x_count == 1 & axis_y_count == 1 && axis_z_count == 0 && axis_t_count == 0)
+                            temp_x_y_vars.push_back(d_a->name());
+                        else if(axis_x_count == 1 & axis_y_count == 1 && axis_z_count == 1 && axis_t_count == 0)
+                            temp_x_y_z_vars.push_back(d_a->name());
+                        else if(axis_x_count == 1 & axis_y_count == 1 && axis_z_count == 0 && axis_t_count == 1)
+                            temp_x_y_t_vars.push_back(d_a->name());
+                        else if(axis_x_count == 1 & axis_y_count == 1 && axis_z_count == 1 && axis_t_count == 1)
+                            temp_x_y_z_t_vars.push_back(d_a->name());
+                    }
+                    else if(ret_value == false) 
+                        break;
+                }
+            }
+        }
+    }
+cerr<<"obtain: after loop "<<endl;
+
+    if (ret_value == true) {
+    if(FoCovJsonRequestHandler::get_may_ignore_z_axis()== true) { 
+cerr<<"coming to ignore mode "<<endl;
+
+    // Select the common factor of (x,y),(x,y,z),(x,y,t),(x,y,z,t) among variables
+    // If having vars that only holds x,y; these vars are only vars that will appear at the final coverage.
+    if(axis_var_z_count <=1 && axis_var_t_count <=1) {
+        //Cover all variables that have (x,y) or (x,y,z) or (x,y,t) or (x,y,z,t)
+        for (unsigned i = 0; i <temp_x_y_vars.size(); i++)
+            par_vars.push_back(temp_x_y_vars[i]);
+        for (unsigned i = 0; i <temp_x_y_z_vars.size(); i++)
+            par_vars.push_back(temp_x_y_z_vars[i]);
+        for (unsigned i = 0; i <temp_x_y_t_vars.size(); i++)
+            par_vars.push_back(temp_x_y_t_vars[i]);
+        for (unsigned i = 0; i <temp_x_y_z_t_vars.size(); i++)
+            par_vars.push_back(temp_x_y_z_t_vars[i]);
+    }
+    else if (axis_var_z_count >1 && axis_var_t_count <=1) {
+        //Cover all variables that have (x,y) or (x,y,t) 
+        for (unsigned i = 0; i <temp_x_y_vars.size(); i++)
+            par_vars.push_back(temp_x_y_vars[i]);
+        for (unsigned i = 0; i <temp_x_y_t_vars.size(); i++)
+            par_vars.push_back(temp_x_y_t_vars[i]);
+    }
+    else if (axis_var_z_count <=1 && axis_var_t_count >1) {
+        //Cover all variables that have (x,y) or (x,y,z) 
+        for (unsigned i = 0; i <temp_x_y_vars.size(); i++)
+            par_vars.push_back(temp_x_y_vars[i]);
+        for (unsigned i = 0; i <temp_x_y_z_vars.size(); i++)
+            par_vars.push_back(temp_x_y_z_vars[i]);
+    }
+    else {
+        // Select the common factor of (x,y),(x,y,z),(x,y,t),(x,y,z,t) among variables
+        // If having vars that only holds x,y; these vars are only vars that will appear at the final coverage.
+        for (unsigned i = 0; i <temp_x_y_vars.size(); i++)
+            par_vars.push_back(temp_x_y_vars[i]);
+    }
+    }
+    else {
+cerr<<"coming to strict mode "<<endl;
+        if(axis_var_z_count >1 || axis_var_t_count >1) 
+            ret_value = false;
+        else {
+            //Cover all variables that have (x,y) or (x,y,z) or (x,y,t) or (x,y,z,t)
+            for (unsigned i = 0; i <temp_x_y_vars.size(); i++)
+                par_vars.push_back(temp_x_y_vars[i]);
+            for (unsigned i = 0; i <temp_x_y_z_vars.size(); i++)
+                par_vars.push_back(temp_x_y_z_vars[i]);
+            for (unsigned i = 0; i <temp_x_y_t_vars.size(); i++)
+                par_vars.push_back(temp_x_y_t_vars[i]);
+            for (unsigned i = 0; i <temp_x_y_z_t_vars.size(); i++)
+                par_vars.push_back(temp_x_y_z_t_vars[i]);
+        }
+    }
+
+cerr<<"Parameter Names: "<<endl;
+for(unsigned i = 0; i <par_vars.size(); i++)
+    cerr<<par_vars[i]<<endl;
+
+    
+    if(par_vars.size() == 0)
+        ret_value = false;
+
     }
     return ret_value;
 
 }
+

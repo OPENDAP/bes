@@ -73,6 +73,10 @@ FoCovJsonRequestHandler::FoCovJsonRequestHandler(const string &name) :
     add_handler( HELP_RESPONSE, FoCovJsonRequestHandler::build_help);
     add_handler( VERS_RESPONSE, FoCovJsonRequestHandler::build_version);
     _may_ignore_z_axis = check_beskeys("FoCovJson.MAY_IGNORE_Z_AXIS");   
+if(_may_ignore_z_axis == true) 
+std::cerr<<"IGNORE mode "<<endl;
+else
+std::cerr<<"Strict mode "<<endl;
 }
 
 /** @brief Any cleanup that needs to take place

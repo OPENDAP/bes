@@ -111,13 +111,20 @@ private:
     std::vector<float> axisVar_z_bnd_val;
     std::vector<double> axisVar_t_bnd_val;
 
+    std::vector<std::string>bnd_dim_names;
+    std::vector<std::string>par_vars;
+
     bool is_simple_cf_geographic;
 
     bool check_add_axis(libdap::Array *d_a, const std::string &, const std::vector<std::string> &, axisVar &, bool is_t_axis);
     void check_bounds(libdap::DDS *dds, std::map<std::string,std::string>& vname_b_name);
-    void obtain_bound_values(libdap::DDS *dds, const axisVar& av, std::vector<float>& av_bnd_val);
-    void obtain_bound_values(libdap::DDS *dds, const axisVar& av, std::vector<double>& av_bnd_val);
-    bool obtain_bound_values_worker(libdap::DDS *dds, libdap::Array *d_a, const std::string & bound_name);
+    void obtain_bound_values(libdap::DDS *dds, const axisVar& av, std::vector<float>& av_bnd_val,std::string &bnd_dim_name,bool);
+    void obtain_bound_values(libdap::DDS *dds, const axisVar& av, std::vector<double>& av_bnd_val,std::string &bnd_dim_name,bool);
+    //bool obtain_bound_values_worker(libdap::DDS *dds, libdap::Array *d_a, const std::string & bound_name, std::string &bound_dim_name);
+    libdap::Array *  obtain_bound_values_worker(libdap::DDS *dds, const std::string & bound_name, std::string &bound_dim_name);
+
+    bool obtain_valid_vars(libdap::DDS *dds, short axis_var_z_count, short axis_var_t_count);
+    
     /**
      * @brief Checks the spacial/temporal dimensions that we've obtained, if we've
      *    obtained any at all, can be used to convert to a CovJSON file. If x, y,
