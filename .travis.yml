@@ -119,8 +119,6 @@ stages:
     if: branch = master
   - name: scan
     if:  branch = master
-  #- name: package
-  #  if: branch = master
   - name: hyrax-olfs-trigger
     if: branch = master AND type != pull_request
 
