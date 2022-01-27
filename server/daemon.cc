@@ -1077,11 +1077,6 @@ int main(int argc, char *argv[])
         // the path to the config file
         if (config_file.empty() && !install_dir.empty()) {
             BESUtil::trim_if_trailing_slash(install_dir);
-#if 0
-            if (install_dir.length() > 0 && install_dir[install_dir.length() - 1] != '/') {
-                install_dir += '/';
-            }
-#endif
             string conf_file = install_dir + "etc/bes/bes.conf";
             TheBESKeys::ConfigFile = conf_file;
         }

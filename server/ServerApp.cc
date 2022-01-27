@@ -340,11 +340,6 @@ int ServerApp::initialize(int argc, char **argv)
     // the path to the config file
     if (dashc.empty() && !dashi.empty()) {
         BESUtil::trim_if_trailing_slash(dashi);
-#if 0
-        if (dashi[dashi.length() - 1] != '/') {
-            dashi += '/';
-        }
-#endif
         string conf_file = dashi + "etc/bes/bes.conf";
         TheBESKeys::ConfigFile = conf_file;
     }
