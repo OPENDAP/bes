@@ -132,7 +132,7 @@ string BESStoredDapResultCache::getSubDirFromConfig()
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
     else {
-        while (*subdir.begin() == '/' && subdir.length() > 0) {
+        while (*subdir.begin() == '/' && !subdir.empty()) {
             subdir = subdir.substr(1);
         }
         // So if it's value is "/" or the empty string then the subdir will default to the root

@@ -68,6 +68,7 @@ using std::string;
 #include "BESMemoryManager.h"
 #include "BESDebug.h"
 #include "BESCatalogUtils.h"
+#include "BESUtil.h"
 #include "BESServerUtils.h"
 
 #include "BESDefaultModule.h"
@@ -338,9 +339,7 @@ int ServerApp::initialize(int argc, char **argv)
     // was passed, then use the -i option to construct
     // the path to the config file
     if (dashc.empty() && !dashi.empty()) {
-        if (dashi[dashi.length() - 1] != '/') {
-            dashi += '/';
-        }
+        BESUtil::trim_if_trailing_slash(dashi);
         string conf_file = dashi + "etc/bes/bes.conf";
         TheBESKeys::ConfigFile = conf_file;
     }

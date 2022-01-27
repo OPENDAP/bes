@@ -427,7 +427,9 @@ string TheBESKeys::read_string_key(const string &key, const string &default_valu
     TheBESKeys::TheKeys()->get_value(key, value, found);
     // 'value' holds the string value at this point if found is true
     if (found) {
-      if (value.length() > 0 && value[value.length() - 1] == '/') value.erase(value.length() - 1);
+        // Wrote and used this in place of the more cumbersome if(...) since this
+        // same operation is performed in many places in our software. jhrg 1/26/22
+        BESUtil::trim_if_trailing_slash(value);
         return value;
     }
     else {

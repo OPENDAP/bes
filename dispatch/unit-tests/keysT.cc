@@ -32,70 +32,52 @@
 
 #include "config.h"
 
+#include <cstdlib>
+#include <iostream>
+#include <unistd.h>
+#include <libdap/debug.h>
+
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
-
-#include <cstdlib>
-#include <iostream>
-
-using std::cerr;
-using std::cout;
-using std::endl;
 
 #include "TheBESKeys.h"
 #include "BESError.h"
 #include "BESDebug.h"
 
-#include <unistd.h>
-#include <libdap/debug.h>
-
 #include "test_config.h"
 
 using namespace std;
+using namespace CppUnit;
 
 static bool debug = false;
 static bool debug_2 = false;
 string HR = "*****************************************";
-string BEGIN ="() - BEGIN";
-string END ="() - END";
-
+string BEGIN = "() - BEGIN";
+string END = "() - END";
 
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 #undef DBG2
 #define DBG2(x) do { if (debug_2) (x); } while(false);
 
-using namespace CppUnit;
-
-//string KeyFile;
-
-class keysT: public TestFixture {
+class keysT : public TestFixture {
 private:
 
 public:
-    keysT()
-    {
-    }
-    ~keysT()
-    {
-    }
+    keysT() = default;
 
-    void setUp()
-    {
+    ~keysT() = default;
+
+    void setUp() {
         if (debug_2) BESDebug::SetUp("cerr,bes");
     }
-
-    void tearDown()
-    {
-    }
-
 
     /**
      *
      */
-    void bad_keys_test(){
-        if(debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
+    void bad_keys_test() {
+        if (debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
         string bes_conf = (string) TEST_SRC_DIR + "/bad_keys1.ini";
         TheBESKeys::ConfigFile = bes_conf;
         try {
@@ -103,20 +85,20 @@ public:
             CPPUNIT_FAIL("loaded keys, should have failed");
         }
         catch (BESError &e) {
-            if(debug) cout << "Unable to create BESKeys, which is good. Message: " <<  e.get_message() << endl;
+            if (debug) cout << "Unable to create BESKeys, which is good. Message: " << e.get_message() << endl;
         }
-        if(debug) cout << __func__ << END << endl;
+        if (debug) cout << __func__ << END << endl;
     }
 
     /**
      *
      */
     void good_keys_test() {
-        if(debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
+        if (debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
         string bes_conf = (string) TEST_SRC_DIR + "/keys_test.ini";
         TheBESKeys::ConfigFile = bes_conf;
 
-        if(debug) cout << "TheBESKeys::ConfigFile: " << TheBESKeys::ConfigFile << endl;
+        if (debug) cout << "TheBESKeys::ConfigFile: " << TheBESKeys::ConfigFile << endl;
 
         try {
             TheBESKeys::TheKeys();
@@ -126,14 +108,14 @@ public:
             cerr << "TheBESKeys::ConfigFile: " << TheBESKeys::ConfigFile << endl;
             CPPUNIT_FAIL("Unable to create BESKeys: " + e.get_message());
         }
-        if(debug) cout << __func__ << END << endl;
+        if (debug) cout << __func__ << END << endl;
     }
 
     /**
      *
      */
-    void get_keys_test(){
-        if(debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
+    void get_keys_test() {
+        if (debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
         bool found = false;
         string ret = "";
         for (int i = 1; i < 5; i++) {
@@ -141,125 +123,127 @@ public:
             sprintf(key, "BES.KEY%d", i);
             char val[32];
             sprintf(val, "val%d", i);
-            if(debug) cout << "Looking for " << key << " with value '" << val << "'" << endl;
+            if (debug) cout << "Looking for " << key << " with value '" << val << "'" << endl;
             ret = "";
             TheBESKeys::TheKeys()->get_value(key, ret, found);
             CPPUNIT_ASSERT(found);
             CPPUNIT_ASSERT(!ret.empty());
             CPPUNIT_ASSERT(ret == val);
         }
-        if(debug) cout << __func__ << END << endl;
+        if (debug) cout << __func__ << END << endl;
     }
 
     /**
      *
      */
-    void get_multi_for_single_value_key_test(){
-        if(debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
+    void get_multi_for_single_value_key_test() {
+        if (debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
         bool found = false;
-        vector<string> vals;
+        vector <string> vals;
         TheBESKeys::TheKeys()->get_values("BES.KEY1", vals, found);
         CPPUNIT_ASSERT(found);
         CPPUNIT_ASSERT(vals.size() == 1);
         CPPUNIT_ASSERT(vals[0] == "val1");
-        if(debug) cout << __func__ << END << endl;
+        if (debug) cout << __func__ << END << endl;
     }
 
     /**
      *
      */
-    void get_multi_valued_key_test(){
-        if(debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
+    void get_multi_valued_key_test() {
+        if (debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
         bool found = false;
-        vector<string> vals;
+        vector <string> vals;
         TheBESKeys::TheKeys()->get_values("BES.KEY.MULTI", vals, found);
         CPPUNIT_ASSERT(found);
         CPPUNIT_ASSERT(vals.size() == 5);
         for (int i = 0; i < 5; i++) {
             char val[32];
             sprintf(val, "val_multi_%d", i);
-            if(debug) cout << "Looking for value '" << val << "'"  << endl;
+            if (debug) cout << "Looking for value '" << val << "'" << endl;
             CPPUNIT_ASSERT(vals[i] == val);
         }
-        if(debug) cout << __func__ << END << endl;
+        if (debug) cout << __func__ << END << endl;
     }
 
     /**
      *
      */
-    void get_value_on_multi_valued_key_test(){
-        if(debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
+    void get_value_on_multi_valued_key_test() {
+        if (debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
         string ret = "";
         bool found = false;
         try {
             TheBESKeys::TheKeys()->get_value("BES.KEY.MULTI", ret, found);
         }
         catch (BESError &e) {
-            if(debug) cout << "Using TheBESKeys::get_value() on a multi-value key failed, good. Message: " << e.get_message() << endl;
+            if (debug)
+                cout << "Using TheBESKeys::get_value() on a multi-value key failed, good. Message: " << e.get_message()
+                     << endl;
         }
-        if(debug) cout << __func__ << END << endl;
+        if (debug) cout << __func__ << END << endl;
     }
 
     /**
      *
      */
-    void get_missing_key_test(){
-        if(debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
+    void get_missing_key_test() {
+        if (debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
         string ret = "";
         bool found = false;
         TheBESKeys::TheKeys()->get_value("BES.NOTFOUND", ret, found);
         CPPUNIT_ASSERT(found == false);
         CPPUNIT_ASSERT(ret.empty());
-        if(debug) cout << __func__ << END << endl;
+        if (debug) cout << __func__ << END << endl;
     }
 
     /**
      *
      */
-    void get_empty_valued_key_test(){
-        if(debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
+    void get_empty_valued_key_test() {
+        if (debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
         string ret = "";
         bool found = false;
         TheBESKeys::TheKeys()->get_value("BES.KEY5", ret, found);
         CPPUNIT_ASSERT(found);
         CPPUNIT_ASSERT(ret.empty());
-        if(debug) cout << __func__ << END << endl;
+        if (debug) cout << __func__ << END << endl;
     }
 
     /**
      *
      */
-    void get_empty_valued_key_from_included_file_test(){
-        if(debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
+    void get_empty_valued_key_from_included_file_test() {
+        if (debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
         string ret = "";
         bool found = false;
         TheBESKeys::TheKeys()->get_value("BES.KEY6", ret, found);
         CPPUNIT_ASSERT(found);
         CPPUNIT_ASSERT(ret.empty());
-        if(debug) cout << __func__ << END << endl;
+        if (debug) cout << __func__ << END << endl;
     }
 
     /**
      *
      */
-    void set_bad_key_missing_equals_test(){
-        if(debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
+    void set_bad_key_missing_equals_test() {
+        if (debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
         try {
             TheBESKeys::TheKeys()->set_key("BES.NOEQS");
             CPPUNIT_ASSERT(!"TheBESKeys::set_key() successful, should have failed");
         }
         catch (BESError &e) {
-            if(debug) cout << "Unable to set the key, which is good. Message: " << e.get_message() << endl;
+            if (debug) cout << "Unable to set the key, which is good. Message: " << e.get_message() << endl;
             CPPUNIT_ASSERT(true);
         }
-        if(debug) cout << __func__ << END << endl;
+        if (debug) cout << __func__ << END << endl;
     }
 
     /**
      *
      */
-    void set_bad_key_double_equals_test(){
-        if(debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
+    void set_bad_key_double_equals_test() {
+        if (debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
         string ret = "";
         bool found = false;
         try {
@@ -272,14 +256,14 @@ public:
             cerr << e.get_message() << endl;
             CPPUNIT_ASSERT(!"failed to set key where value has multiple =");
         }
-        if(debug) cout << __func__ << END << endl;
+        if (debug) cout << __func__ << END << endl;
     }
 
     /**
      *
      */
-    void set_key7_to_val7_test(){
-        if(debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
+    void set_key7_to_val7_test() {
+        if (debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
         string ret = "";
         bool found = false;
         try {
@@ -292,14 +276,14 @@ public:
             cerr << e.get_message();
             CPPUNIT_ASSERT(!"unable to set the key");
         }
-        if(debug) cout << __func__ << END << endl;
+        if (debug) cout << __func__ << END << endl;
     }
 
     /**
      *
      */
-    void set_key8_to_val8_test(){
-        if(debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
+    void set_key8_to_val8_test() {
+        if (debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
         string ret = "";
         bool found = false;
         try {
@@ -312,15 +296,15 @@ public:
             cerr << e.get_message();
             CPPUNIT_ASSERT(!"unable to set the key");
         }
-        if(debug) cout << __func__ << END << endl;
+        if (debug) cout << __func__ << END << endl;
     }
 
     /**
      *
      */
-    void add_val_multi_5_to_bes_key_multi_test(){
-        if(debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
-        vector<string> vals;
+    void add_val_multi_5_to_bes_key_multi_test() {
+        if (debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
+        vector <string> vals;
         string ret = "";
         bool found = false;
         try {
@@ -333,7 +317,7 @@ public:
             for (int i = 0; i < 6; i++) {
                 char val[32];
                 sprintf(val, "val_multi_%d", i);
-                if(debug) cout << "Looking for value '" << val << "'" << endl;
+                if (debug) cout << "Looking for value '" << val << "'" << endl;
                 CPPUNIT_ASSERT(vals[i] == val);
             }
         }
@@ -341,12 +325,12 @@ public:
             cerr << e.get_message();
             CPPUNIT_ASSERT(!"unable to set the key");
         }
-        if(debug) cout << __func__ << END << endl;
+        if (debug) cout << __func__ << END << endl;
     }
 
-    void get_keys_from_regex_include_test(){
-        if(debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
-        vector<string> vals;
+    void get_keys_from_regex_include_test() {
+        if (debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
+        vector <string> vals;
         string ret = "";
         bool found = false;
         TheBESKeys::TheKeys()->get_values("BES.KEY.MI", vals, found);
@@ -355,12 +339,12 @@ public:
         CPPUNIT_ASSERT(vals[0] == "val_multi_2");
         CPPUNIT_ASSERT(vals[1] == "val_multi_1");
         CPPUNIT_ASSERT(vals[2] == "val_multi_3");
-        if(debug) cout << __func__ << END << endl;
+        if (debug) cout << __func__ << END << endl;
     }
 
-    void check_keys_test(){
-        if(debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
-        vector<string> vals;
+    void check_keys_test() {
+        if (debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
+        vector <string> vals;
         string ret = "";
         bool found = false;
         for (int i = 1; i < 7; i++) {
@@ -371,13 +355,13 @@ public:
                 sprintf(val, "%s", "");
             else
                 sprintf(val, "val%d", i);
-            if(debug) cout << "Looking for " << key << " with value '" << val << "'" << endl;
+            if (debug) cout << "Looking for " << key << " with value '" << val << "'" << endl;
             ret = "";
             TheBESKeys::TheKeys()->get_value(key, ret, found);
             CPPUNIT_ASSERT(found);
             CPPUNIT_ASSERT(ret == val);
         }
-        if(debug) cout << __func__ << "() - END" << endl;
+        if (debug) cout << __func__ << "() - END" << endl;
     }
 
 
@@ -385,28 +369,28 @@ public:
      *
      */
     void vector_values_test() {
-        if(debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
+        if (debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
         string bes_conf = (string) TEST_SRC_DIR + "/keys_test_vector.ini";
-        if(debug) cout << "Using TheBESKeys::ConfigFile: " << bes_conf << endl;
+        if (debug) cout << "Using TheBESKeys::ConfigFile: " << bes_conf << endl;
         try {
-            if(debug) cout << "Calling TheBESKeys()" << endl;
+            if (debug) cout << "Calling TheBESKeys()" << endl;
             TheBESKeys besKeys(bes_conf);
 
-            if(debug) cout << "Keys size: " << besKeys.d_the_keys->size() << endl;
+            if (debug) cout << "Keys size: " << besKeys.d_the_keys->size() << endl;
             CPPUNIT_ASSERT(besKeys.d_the_keys->size() == 1);
 
-            if(debug) besKeys.dump(cout);
+            if (debug) besKeys.dump(cout);
 
-            vector<string> values;
+            vector <string> values;
             bool found;
             string vector_key = "BES.TestVector";
-            besKeys.get_values(vector_key,values, found);
+            besKeys.get_values(vector_key, values, found);
             CPPUNIT_ASSERT(found);
-            CPPUNIT_ASSERT( values.size() == 5 );
+            CPPUNIT_ASSERT(values.size() == 5);
 
             string expected_values[] = {"foo", "bar", "baz", "moo", "noo"};
-            for(size_t i=0; i< values.size(); i++){
-                CPPUNIT_ASSERT( values[i] == expected_values[i]);
+            for (size_t i = 0; i < values.size(); i++) {
+                CPPUNIT_ASSERT(values[i] == expected_values[i]);
             }
         }
         catch (BESError &e) {
@@ -414,41 +398,41 @@ public:
             cerr << "TheBESKeys::ConfigFile: " << TheBESKeys::ConfigFile << endl;
             CPPUNIT_FAIL("Unable to create BESKeys: " + e.get_message());
         }
-        if(debug) cout << __func__ << END << endl;
+        if (debug) cout << __func__ << END << endl;
     }
 
     /**
      *
      */
     void map_values_test() {
-        if(debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
+        if (debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
         string bes_conf = (string) TEST_SRC_DIR + "/keys_test_map.ini";
-        if(debug) cout << "Using TheBESKeys::ConfigFile: " << bes_conf << endl;
+        if (debug) cout << "Using TheBESKeys::ConfigFile: " << bes_conf << endl;
         try {
-            if(debug) cout << "Calling TheBESKeys()" << endl;
+            if (debug) cout << "Calling TheBESKeys()" << endl;
             TheBESKeys besKeys(bes_conf);
 
-            if(debug) cout << "Keys size: " << besKeys.d_the_keys->size() << endl;
+            if (debug) cout << "Keys size: " << besKeys.d_the_keys->size() << endl;
             CPPUNIT_ASSERT(besKeys.d_the_keys->size() == 1);
 
-            if(debug) besKeys.dump(cout);
+            if (debug) besKeys.dump(cout);
 
             string map_key = "BES.TestMap";
-            map<string, string> values;
+            map <string, string> values;
             bool found;
-            besKeys.get_values(map_key,values, true, found);
+            besKeys.get_values(map_key, values, true, found);
             CPPUNIT_ASSERT(found);
-            if(debug) cout << "Map Size: " << values.size() << endl;
-            CPPUNIT_ASSERT( values.size() == 4 );
+            if (debug) cout << "Map Size: " << values.size() << endl;
+            CPPUNIT_ASSERT(values.size() == 4);
             // foo:bar boo:hoo mo:betta weasel:bites
-            string expected_map_keys[] {"foo", "boo", "mo",    "weasel"};
-            string expected_map_vals[] {"bar", "hoo", "betta", "bites"};
+            string expected_map_keys[]{"foo", "boo", "mo", "weasel"};
+            string expected_map_vals[]{"bar", "hoo", "betta", "bites"};
 
-            for(size_t i=0; i<4; i++){
+            for (size_t i = 0; i < 4; i++) {
                 std::map<string, string>::iterator it;
                 it = values.find(expected_map_keys[i]);
-                CPPUNIT_ASSERT( it != values.end() );
-                CPPUNIT_ASSERT( it->second == expected_map_vals[i] );
+                CPPUNIT_ASSERT(it != values.end());
+                CPPUNIT_ASSERT(it->second == expected_map_vals[i]);
             }
 
         }
@@ -458,24 +442,28 @@ public:
             CPPUNIT_FAIL("Unable to create BESKeys: " + e.get_message());
         }
 
-        if(debug) cout << __func__ << END << endl;
+        if (debug) cout << __func__ << END << endl;
     }
 
 
-
     void check_map_map(
-            const map<string, map<string, vector<string>>> &primary_map,
-            const string &primary_key,
-            const map<string, vector<string>> &check_map){
+            const map <string, map<string, vector < string>>
 
-        map<string, map<string, vector<string>>>::const_iterator pit;
+    > &primary_map,
+    const string &primary_key,
+    const map <string, vector<string>> &check_map
+    ){
+
+        map < string, map < string, vector < string>>>::const_iterator pit;
         pit = primary_map.find(primary_key);
-        if(pit != primary_map.end()) {
+        if (pit != primary_map.end()) {
             if (debug) cout << "Found primary key '" << primary_key << "'" << endl;
             CPPUNIT_ASSERT(pit->second.size() == check_map.size());
 
-            map<string, vector<string>>::const_iterator cmit;
-            map<string, vector<string>>::const_iterator sit;
+            map < string, vector < string >> ::const_iterator
+            cmit;
+            map < string, vector < string >> ::const_iterator
+            sit;
             for (cmit = check_map.begin(); cmit != check_map.end(); cmit++) {
                 sit = pit->second.find(cmit->first);
                 if (sit != pit->second.end()) {
@@ -489,7 +477,8 @@ public:
                                  << endl;
                         CPPUNIT_ASSERT(sit->second[i] == cmit->second[i]);
                     }
-                } else {
+                }
+                else {
                     CPPUNIT_FAIL("The expected secondary key '" + cmit->first + "' was not found");
                 }
             }
@@ -514,44 +503,46 @@ public:
      *
      */
     void map_map_test() {
-        if(debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
+        if (debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
 
         size_t primary_size = 3;
 
         // Baseline values for DynamicConfiguration key 'data_services'
         string data_services_key("data_services");
-        map<string, vector<string>> data_services_check_map;
-        vector<string>  data_services_regex_value = {"^some_reg(ular)?ex(pression)?$"};
-        data_services_check_map.insert(pair<string,vector<string>>(DC_REGEX_KEY,data_services_regex_value));
-        vector<string>  data_services_config_values = {"H5.EnableDMR64bitInt=false", "H5.EnableCF=false", "FONc.ClassicModel=false"};
-        data_services_check_map.insert(pair<string,vector<string>>(DC_CONFIG_KEY, data_services_config_values));
+        map <string, vector<string>> data_services_check_map;
+        vector <string> data_services_regex_value = {"^some_reg(ular)?ex(pression)?$"};
+        data_services_check_map.insert(pair < string, vector < string >> (DC_REGEX_KEY, data_services_regex_value));
+        vector <string> data_services_config_values = {"H5.EnableDMR64bitInt=false", "H5.EnableCF=false",
+                                                       "FONc.ClassicModel=false"};
+        data_services_check_map.insert(pair < string, vector < string >> (DC_CONFIG_KEY, data_services_config_values));
 
         // Baseline values for DynamicConfiguration key 'ghrc'
         string ghrc_key("ghrc");
-        map<string, vector<string>> ghrc_check_map;
-        vector<string> ghrc_regex_value = {"^some_OTHER_reg(ular)?ex(pression)?$"};
-        ghrc_check_map.insert(pair<string,vector<string>>(DC_REGEX_KEY,ghrc_regex_value));
-        vector<string> ghrc_config_values = {"H5.EnableDMR64bitInt=true", "H5.EnableCF=true", "FONc.ClassicModel=true"};
-        ghrc_check_map.insert(pair<string,vector<string>>(DC_CONFIG_KEY, ghrc_config_values));
+        map <string, vector<string>> ghrc_check_map;
+        vector <string> ghrc_regex_value = {"^some_OTHER_reg(ular)?ex(pression)?$"};
+        ghrc_check_map.insert(pair < string, vector < string >> (DC_REGEX_KEY, ghrc_regex_value));
+        vector <string> ghrc_config_values = {"H5.EnableDMR64bitInt=true", "H5.EnableCF=true",
+                                              "FONc.ClassicModel=true"};
+        ghrc_check_map.insert(pair < string, vector < string >> (DC_CONFIG_KEY, ghrc_config_values));
 
 
         string bes_conf = (string) TEST_SRC_DIR + "/keys_test_map_map.ini";
-        if(debug) cout << "Using TheBESKeys::ConfigFile: " << bes_conf << endl;
+        if (debug) cout << "Using TheBESKeys::ConfigFile: " << bes_conf << endl;
         try {
-            if(debug) cout << "Calling TheBESKeys()" << endl;
+            if (debug) cout << "Calling TheBESKeys()" << endl;
             TheBESKeys besKeys(bes_conf);
 
-            if(debug) cout << "Keys size: " << besKeys.d_the_keys->size() << endl;
+            if (debug) cout << "Keys size: " << besKeys.d_the_keys->size() << endl;
             CPPUNIT_ASSERT(besKeys.d_the_keys->size() == 6);
 
-            if(debug) besKeys.dump(cout);
+            if (debug) besKeys.dump(cout);
 
             string map_key = "DynamicConfig";
-            map<string, map<string, vector<string>>> primary_map;
+            map < string, map < string, vector < string>>> primary_map;
             bool found;
             besKeys.get_values(map_key, primary_map, true, found);
             CPPUNIT_ASSERT(found);
-            if(debug) cout << "Primary Map Size: " << primary_map.size() << endl;
+            if (debug) cout << "Primary Map Size: " << primary_map.size() << endl;
             CPPUNIT_ASSERT(primary_map.size() == primary_size);
 
             check_map_map(primary_map, ghrc_key, ghrc_check_map);
@@ -563,14 +554,11 @@ public:
             CPPUNIT_FAIL("Unable to create BESKeys: " + e.get_message());
         }
 
-        if(debug) cout << __func__ << END << endl;
+        if (debug) cout << __func__ << END << endl;
     }
 
-
-
-
 #if DYNAMIC_CONFIG_ENABLED
-void dynamic_config_test(){
+    void dynamic_config_test()  {
         if(debug) cout << endl << HR << endl << __func__ << BEGIN << endl;
 
 
@@ -700,10 +688,6 @@ void dynamic_config_test(){
             if(debug) cout << h5_enable_cf_key << ": '" << value << "'" << endl;
             CPPUNIT_ASSERT(found_h5_enable_cf_key);
             CPPUNIT_ASSERT(value == "false");
-
-
-
-
         }
         catch (BESError &e) {
             //cerr << "Error: " << e.get_message() << endl;
@@ -712,11 +696,10 @@ void dynamic_config_test(){
         }
 
         if(debug) cout << __func__ << END << endl;
-
     }
 #endif
 
-CPPUNIT_TEST_SUITE( keysT );
+    CPPUNIT_TEST_SUITE( keysT );
 
     // I broke up the monolithic do_test() function, but
     // I did not resolve the test independence so they must be run in
@@ -768,44 +751,34 @@ CPPUNIT_TEST_SUITE( keysT );
             }
         }
 #endif
-
     }
-
-
-
-
-
-
-
-
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(keysT);
 
-int main(int argc, char*argv[])
-{
+int main(int argc, char *argv[]) {
     int option_char;
     while ((option_char = getopt(argc, argv, "dDh")) != -1)
         switch (option_char) {
-        case 'd':
-            debug = 1;  // debug is a static global
-            break;
-        case 'D':
-            debug_2 = 1;
-            break;
+            case 'd':
+                debug = 1;  // debug is a static global
+                break;
+            case 'D':
+                debug_2 = 1;
+                break;
 
-        case 'h': {     // help - show test names
-            cerr << "Usage: keysT has the following tests:" << endl;
-            const std::vector<Test*> &tests = keysT::suite()->getTests();
-            unsigned int prefix_len = keysT::suite()->getName().append("::").length();
-            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
-                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            case 'h': {     // help - show test names
+                cerr << "Usage: keysT has the following tests:" << endl;
+                const std::vector<Test *> &tests = keysT::suite()->getTests();
+                unsigned int prefix_len = keysT::suite()->getName().append("::").length();
+                for (std::vector<Test *>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                    cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+                }
+                break;
             }
-            break;
+            default:
+                break;
         }
-        default:
-            break;
-    }
 
     argc -= optind;
     argv += optind;

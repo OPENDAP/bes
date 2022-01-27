@@ -47,6 +47,9 @@ private:
     static std::string entity(char c);
 
 public:
+    static void trim_if_trailing_slash(std::string &value);
+    static void trim_if_surrounding_quotes(std::string &value);
+
     /** These functions are used to create the MIME headers for a message
      from a server to a client.
 

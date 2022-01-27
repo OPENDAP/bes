@@ -78,6 +78,7 @@ using std::vector;
 #include "TheBESKeys.h"
 #include "BESLog.h"
 #include "BESDaemonConstants.h"
+#include "BESUtil.h"
 
 #define BES_SERVER "/beslistener"
 #define BES_SERVER_PID "/bes.pid"
@@ -1075,9 +1076,7 @@ int main(int argc, char *argv[])
         // was passed, then use the -i option to construct
         // the path to the config file
         if (config_file.empty() && !install_dir.empty()) {
-            if (install_dir[install_dir.length() - 1] != '/') {
-                install_dir += '/';
-            }
+            BESUtil::trim_if_trailing_slash(install_dir);
             string conf_file = install_dir + "etc/bes/bes.conf";
             TheBESKeys::ConfigFile = conf_file;
         }

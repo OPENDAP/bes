@@ -901,14 +901,14 @@ void FoDapCovJsonTransform::printReference(ostream *strm, string indent)
     }
 
     if(yExists) {
-        if(coordVars.length() > 0) {
+        if(!coordVars.empty()) {
             coordVars += ", ";
         }
         coordVars += "\"y\"";
     }
 
     if(zExists) {
-        if(coordVars.length() > 0) {
+        if(!coordVars.empty()) {
             coordVars += ", ";
         }
         coordVars += "\"z\"";
@@ -1044,21 +1044,21 @@ void FoDapCovJsonTransform::printRanges(ostream *strm, string indent)
     }
 
     if(zExists) {
-        if(axisNames.length() > 0) {
+        if(!axisNames.empty()) {
             axisNames += ", ";
         }
         axisNames += "\"z\"";
     }
 
     if(yExists) {
-        if(axisNames.length() > 0) {
+        if(!axisNames.empty()) {
             axisNames += ", ";
         }
         axisNames += "\"y\"";
     }
 
     if(xExists) {
-        if(axisNames.length() > 0) {
+        if(!axisNames.empty()) {
             axisNames += ", ";
         }
         axisNames += "\"x\"";
