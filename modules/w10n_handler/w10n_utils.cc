@@ -115,18 +115,25 @@ void eval_resource_path(const string &w10nResourceId, const string &catalogRoot,
     // Remove leading slash
     if (rem.length() > 0 && rem[0] == '/') rem = rem.substr(1, rem.length() - 1);
 
-    // Remove trailing slash. Use: key.erase(key.length() - 1);
+    // Remove trailing slash.
+    BESUtil::trim_if_trailing_slash(rem);
+#if 0
     if (rem.length() > 0 && rem[rem.length() - 1] == '/')
         rem.erase(rem.length() -1);
         //rem = rem.substr(0, rem.length() - 1);
+#endif
 
     // full path of the thing to check
     string fullpath = catalogRoot;
     // Remove leading slash
+    BESUtil::trim_if_trailing_slash(fullpath);
+
+#if 0
     if (fullpath.length() > 0 && fullpath[fullpath.length() - 1] == '/') {
         fullpath.erase(fullpath.length() - 1);
         // fullpath = fullpath.substr(0, fullpath.length() - 1);
     }
+#endif
 
     // path checked so far
     string checking;

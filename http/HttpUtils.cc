@@ -39,16 +39,17 @@
 
 #include <curl/curl.h>
 
-#include <BESUtil.h>
-#include <BESCatalogUtils.h>
-#include <BESCatalogList.h>
-#include <BESCatalog.h>
-#include <BESRegex.h>
-#include <TheBESKeys.h>
-#include <BESInternalError.h>
-#include <BESNotFoundError.h>
-#include <BESSyntaxUserError.h>
-#include <BESDebug.h>
+#include "BESUtil.h"
+#include "BESCatalogUtils.h"
+#include "BESCatalogList.h"
+#include "BESCatalog.h"
+#include "BESRegex.h"
+#include "TheBESKeys.h"
+#include "BESInternalError.h"
+#include "BESNotFoundError.h"
+#include "BESSyntaxUserError.h"
+#include "BESDebug.h"
+#include "BESUtil.h"
 
 #include "HttpNames.h"
 #include "HttpUtils.h"
@@ -133,6 +134,9 @@ void get_type_from_disposition(const string &disp, string &type)
                 filename = disp.substr(pos + 1);
             }
 
+            BESUtil::trim_if_surrounding_quotes(filename);
+
+#if 0
             // now see if it's wrapped in quotes
             if (filename[0] == '"') {
                 filename = filename.substr(1);
@@ -140,6 +144,7 @@ void get_type_from_disposition(const string &disp, string &type)
             if (filename.length() > 0 && filename[filename.length() - 1] == '"') {
                 filename = filename.substr(0, filename.length() - 1);
             }
+#endif
 
             // we have the filename now, run it through
             // the type match to get the file type.

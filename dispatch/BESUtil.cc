@@ -73,6 +73,35 @@ using namespace std;
 
 const string BES_KEY_TIMEOUT_CANCEL = "BES.CancelTimeoutOnSend";
 
+/**
+ * @brief If the string ends in a slash, remove it
+ * This function works for empty strings (doing nothing). If the string
+ * ends in a '/' it will be removed.
+ * @note See https://stackoverflow.com/questions/2310939/remove-last-character-from-c-string
+ * @param value The string, modified in place
+ */
+void BESUtil::trim_if_trailing_slash(string &value)
+{
+    if (!value.empty() && value.back() == '/')
+        value.pop_back();   // requires C++-11
+    // value.erase(value.end () -1);
+}
+
+/**
+ * @brief Remove double quotes around a string
+ * This function will remove a leading and/or trailing double quote surrounding a
+ * string.
+ * @param value The string, modified
+ */
+void BESUtil::trim_if_surrounding_quotes(std::string &value)
+{
+    if (!value.empty() && value[0] == '"')
+        value.erase(0, 1);
+    if (!value.empty() && value.back() == '"')
+        value.pop_back();   // requires C++-11
+    // value.erase(value.end () -1);
+}
+
 /** @brief Generate an HTTP 1.0 response header for a text document.
 
  @param strm Write the MIME header to this ostream.

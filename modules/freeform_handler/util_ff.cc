@@ -67,6 +67,7 @@ static char rcsid[] not_used =
 #include <libdap/debug.h>
 
 #include "BESRegex.h"
+#include "BESUtil.h"
 #include "BESDebug.h"
 
 #include "FFRequestHandler.h"
@@ -585,8 +586,11 @@ find_ancillary_rss_formats(const string & dataset, const string & /* delimiter *
     // Now determine if this is files holds averaged or daily data.
     string DatePart = FileName.substr(delim+1, FileName.length()-delim+1);
 
+    BESUtil::trim_if_trailing_slash(FormatPath);
+#if 0
     if (FormatPath[FormatPath.length()-1] != '/')
         FormatPath.append("/");
+#endif
 
     if ( (DatePart.find("_") != string::npos) || (DatePart.length() < 10) )
         FormatFile = FormatPath + BaseName + "averaged.fmt";
@@ -639,9 +643,12 @@ find_ancillary_rss_das(const string & dataset, const string & /* delimiter */,
     }
 
     string DatePart = FileName.substr(delim+1, FileName.length()-delim+1);
+    BESUtil::trim_if_trailing_slash(FormatPath);
 
+#if 0
     if (FormatPath[FormatPath.length()-1] != '/')
         FormatPath.append("/");
+#endif
 
     if ( (DatePart.find("_") != string::npos) || (DatePart.length() < 10) )
         FormatFile = FormatPath + BaseName + "averaged.das";
