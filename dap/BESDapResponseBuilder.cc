@@ -755,7 +755,7 @@ bool BESDapResponseBuilder::store_dap2_result(ostream &out, DDS &dds, Constraint
     bool found;
     string *stylesheet_ref = 0, ss_ref_value;
     TheBESKeys::TheKeys()->get_value(D4AsyncUtil::STYLESHEET_REFERENCE_KEY, ss_ref_value, found);
-    if (found && ss_ref_value.length() > 0) {
+    if (found && !ss_ref_value.empty()) {
         stylesheet_ref = &ss_ref_value;
     }
 
@@ -1603,7 +1603,7 @@ bool BESDapResponseBuilder::store_dap4_result(ostream &out, libdap::DMR &dmr)
         bool found;
         string *stylesheet_ref = 0, ss_ref_value;
         TheBESKeys::TheKeys()->get_value(D4AsyncUtil::STYLESHEET_REFERENCE_KEY, ss_ref_value, found);
-        if (found && ss_ref_value.length() > 0) {
+        if (found && !ss_ref_value.empty()) {
             stylesheet_ref = &ss_ref_value;
         }
 

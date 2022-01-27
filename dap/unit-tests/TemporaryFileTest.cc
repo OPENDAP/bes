@@ -114,7 +114,7 @@ public:
             CPPUNIT_ASSERT(false);
         }
         // The name should be set to something.
-        CPPUNIT_ASSERT(tmp_file_name.length() > 0);
+        CPPUNIT_ASSERT(!tmp_file_name.empty());
 
         struct stat buf;
         int statret = stat(tmp_file_name.c_str(), &buf);
@@ -155,7 +155,7 @@ public:
 
         for (int i = 0; i < count; i++) {
             // The name should be set to something.
-            CPPUNIT_ASSERT(tmp_file_names[i].length() > 0);
+            CPPUNIT_ASSERT(!tmp_file_names[i].empty());
 
             struct stat buf;
             int statret = stat(tmp_file_names[i].c_str(), &buf);
@@ -188,7 +188,7 @@ public:
             DBG(cerr << __func__ << "() - Caught BESInternalError (Expected)  Message: " << bie.get_message() << endl);
         }
         // The name should be set to something.
-        CPPUNIT_ASSERT(tmp_file_name.length() > 0);
+        CPPUNIT_ASSERT(!tmp_file_name.empty());
 
         struct stat buf;
         int statret = stat(tmp_file_name.c_str(), &buf);

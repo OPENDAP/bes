@@ -866,7 +866,7 @@ string BESUtil::assemblePath(const string &firstPart, const string &secondPart, 
     }
 
     // make sure there are not multiple slashes at the end of the first part...
-    while (*first.rbegin() == '/' && first.length() > 0) {
+    while (*first.rbegin() == '/' && !first.empty()) {
         first = first.substr(0, first.length() - 1);
     }
 
@@ -876,7 +876,7 @@ string BESUtil::assemblePath(const string &firstPart, const string &secondPart, 
     }
 
     // make sure second part does not BEGIN with a slash
-    while (*second.begin() == '/' && second.length() > 0) {
+    while (*second.begin() == '/' && !second.empty()) {
         second = second.substr(1);
     }
 
