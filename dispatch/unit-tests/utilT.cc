@@ -77,6 +77,59 @@ public:
             cerr << "  " << s << endl;
     }
 
+    // string BESUtil::assemblePath(const string &firstPart, const string &secondPart, bool leadingSlash, bool trailingSlash)
+    void test_assemblePath_1() {
+        string path = BESUtil::assemblePath("/first_part", "/second_part", true, true);
+        CPPUNIT_ASSERT(path == "/first_part/second_part/");
+    }
+
+    void test_assemblePath_2() {
+        string path = BESUtil::assemblePath("/first_part/", "/second_part/", true, true);
+        CPPUNIT_ASSERT(path == "/first_part/second_part/");
+    }
+
+    void test_assemblePath_3() {
+        string path = BESUtil::assemblePath("first_part", "second_part", true, true);
+        CPPUNIT_ASSERT(path == "/first_part/second_part/");
+    }
+
+    // Note that 'false' for leadingSlash means leave the initial character unaltered.
+    // jhrg 1/27/22
+    void test_assemblePath_4() {
+        string path = BESUtil::assemblePath("/first_part", "/second_part", false, false);
+        CPPUNIT_ASSERT_MESSAGE(string("path = ") + path, path == "/first_part/second_part");
+    }
+
+    void test_assemblePath_5() {
+        string path = BESUtil::assemblePath("/first_part/", "/second_part/", false, false);
+        CPPUNIT_ASSERT_MESSAGE(string("path = ") + path, path == "/first_part/second_part");
+    }
+
+    void test_assemblePath_6() {
+        string path = BESUtil::assemblePath("first_part", "second_part", false, false);
+        CPPUNIT_ASSERT_MESSAGE(string("path = ") + path, path == "first_part/second_part");
+    }
+
+    void test_assemblePath_7() {
+        string path = BESUtil::assemblePath("/", "/", false, false);
+        CPPUNIT_ASSERT_MESSAGE(string("path = ") + path, path == "/");
+    }
+
+    void test_assemblePath_8() {
+        string path = BESUtil::assemblePath("/", "/", true, true);
+        CPPUNIT_ASSERT_MESSAGE(string("path = ") + path, path == "/");
+    }
+
+    void test_assemblePath_9() {
+        string path = BESUtil::assemblePath("", "", false, false);
+        CPPUNIT_ASSERT_MESSAGE(string("path = ") + path, path == "");
+    }
+
+    void test_assemblePath_10() {
+        string path = BESUtil::assemblePath("", "", true, true);
+        CPPUNIT_ASSERT_MESSAGE(string("path = ") + path, path == "/");
+    }
+
     void test_unescape() {
         string s = BESUtil::unescape("\\\"This is a test, this is \\\"ONLY\\\" a test\\\"");
         string result = "\"This is a test, this is \"ONLY\" a test\"";
@@ -386,6 +439,17 @@ public:
     }
 
     CPPUNIT_TEST_SUITE( utilT );
+
+    CPPUNIT_TEST( test_assemblePath_1 );
+    CPPUNIT_TEST( test_assemblePath_2 );
+    CPPUNIT_TEST( test_assemblePath_3 );
+    CPPUNIT_TEST( test_assemblePath_4 );
+    CPPUNIT_TEST( test_assemblePath_5 );
+    CPPUNIT_TEST( test_assemblePath_6 );
+    CPPUNIT_TEST_FAIL( test_assemblePath_7 );
+    CPPUNIT_TEST( test_assemblePath_8 );
+    CPPUNIT_TEST( test_assemblePath_9 );
+    CPPUNIT_TEST( test_assemblePath_10 );
 
     CPPUNIT_TEST( test_unescape );
 

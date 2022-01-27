@@ -766,126 +766,38 @@ string BESUtil::pathConcat(const string &firstPart, const string &secondPart, ch
  * @param secondPart The second string to concatenate.
  * @param leadingSlash If this bool value is true then the returned string will have a leading slash.
  *  If the value of leadingSlash is false then the first character  of the returned string will
- *  be the first character of the passed firstPart. Default False.
+ *  be the first character of the passed firstPart, which _may_ be a slash. Default False.
  *  @param trailingSlash If this bool is true then the returned string will end it a slash. If
  *   trailingSlash is false, then the returned string will not end with a slash. If trailing
  *   slash(es) need to be removed to accomplish this, then they will be removed. Default False.
  */
 string BESUtil::assemblePath(const string &firstPart, const string &secondPart, bool leadingSlash, bool trailingSlash)
 {
-#if 0
-    assert(!firstPart.empty());
-
-    // This version works but does not remove duplicate slashes
-    string first = firstPart;
-    string second = secondPart;
-
-    // add a leading slash if needed
-    if (ensureLeadingSlash && first[0] != '/')
-    first = "/" + first;
-
-    // if 'second' start with a slash, remove it
-    if (second[0] == '/')
-    second = second.substr(1);
-
-    // glue the two parts together, adding a slash if needed
-    if (first.back() == '/')
-    return first.append(second);
-    else
-    return first.append("/").append(second);
-#endif
-
-#if 1
     BESDEBUG(MODULE, prolog << "firstPart:  '" << firstPart << "'" << endl);
     BESDEBUG(MODULE, prolog << "secondPart: '" << secondPart << "'" << endl);
-
-#if 0
-    // assert(!firstPart.empty()); // I dropped this because I had to ask, why? Why does it matter? ndp 2017
-
-    string first = firstPart;
-    string second = secondPart;
-
-    // make sure there are not multiple slashes at the end of the first part...
-    // Note that this removes all of the slashes. jhrg 9/27/16
-    while (!first.empty() && *first.rbegin() == '/') {
-        // C++-11 first.pop_back();
-        first = first.substr(0, first.length() - 1);
-    }
-
-    // make sure second part does not BEGIN with a slash
-    while (!second.empty() && second[0] == '/') {
-        // erase is faster? second = second.substr(1);
-        second.erase(0, 1);
-    }
-
-    string newPath;
-
-    if (first.empty()) {
-        newPath = second;
-    }
-    else if (second.empty()) {
-        newPath = first;
-    }
-    else {
-        newPath = first.append("/").append(second);
-    }
-#endif
 
     string newPath = BESUtil::pathConcat(firstPart, secondPart);
     if (leadingSlash) {
         if (newPath.empty()) {
             newPath = "/";
         }
-        else if (newPath.compare(0, 1, "/")) {
+        else if (newPath.front() != '/') {
             newPath = "/" + newPath;
         }
     }
 
     if (trailingSlash) {
-        if (newPath.compare(newPath.length(), 1, "/")) {
-            newPath = newPath.append("/");
+        if (newPath.empty() || newPath.back() != '/') {
+            newPath.append("/");
         }
     }
     else {
-        while(newPath.length()>1 &&  *newPath.rbegin() == '/')
-            newPath = newPath.substr(0,newPath.length()-1);
+        while (!newPath.empty() && newPath.back() == '/')
+            newPath.erase(newPath.length()-1);
     }
+
     BESDEBUG(MODULE, prolog << "newPath: " << newPath << endl);
     return newPath;
-#endif
-
-#if 0
-    BESDEBUG("util", "BESUtil::assemblePath() -  firstPart: "<< firstPart << endl);
-    BESDEBUG("util", "BESUtil::assemblePath() -  secondPart: "<< secondPart << endl);
-
-    string first = firstPart;
-    string second = secondPart;
-
-    if (ensureLeadingSlash) {
-        if (*first.begin() != '/') first = "/" + first;
-    }
-
-    // make sure there are not multiple slashes at the end of the first part...
-    while (*first.rbegin() == '/' && !first.empty()) {
-        first = first.substr(0, first.length() - 1);
-    }
-
-    // make sure first part ends with a "/"
-    if (*first.rbegin() != '/') {
-        first += "/";
-    }
-
-    // make sure second part does not BEGIN with a slash
-    while (*second.begin() == '/' && !second.empty()) {
-        second = second.substr(1);
-    }
-
-    string newPath = first + second;
-
-    BESDEBUG("util", "BESUtil::assemblePath() -  newPath: "<< newPath << endl);
-
-    return newPath;
-#endif
 }
 
 /**
