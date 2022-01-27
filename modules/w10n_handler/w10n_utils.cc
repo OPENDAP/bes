@@ -113,7 +113,7 @@ void eval_resource_path(const string &w10nResourceId, const string &catalogRoot,
     remainder = rem;
 
     // Remove leading slash
-    if (!rem.empty()) && rem[0] == '/') rem.erase(0, 1);
+    if (!rem.empty() && rem[0] == '/') rem.erase(0, 1);
 
     BESUtil::trim_if_trailing_slash(rem);
 
