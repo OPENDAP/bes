@@ -37,7 +37,7 @@ All tests should get passed.
 
 (2) DMR generation with CFDMR key on/missing
 cd bes-testsuite
-cp hdf5_handlerTest.cfdmr_only.at hdf5_handlerTest.at
+cp hdf5_handlerTest.nasa.cfdmr_only.at hdf5_handlerTest.at
 cd ..
 make check
 All tests should get passed.
