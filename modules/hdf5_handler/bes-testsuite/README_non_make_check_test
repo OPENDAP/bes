@@ -15,8 +15,10 @@ All tests should get passed.
 cd data.nasa
 ./download.sh
 ./download_dap4.sh
-cd ../data
-ln -s ../data.nasa .
+cd ..
+cp data/grid_1_2d.h5 data.nasa/
+mv data data.orig
+mv data.nasa data
 
 2) CF DMR from DDS and DAS option test with NASA data
 cd ../bes-testsuite
