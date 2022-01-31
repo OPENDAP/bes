@@ -45,7 +45,7 @@ All tests should get passed.
 4) Non-CF option test with NASA data
 This test is for when the EnableCF=false
 cd bes-testsuite
-cp hdf5_handlerTest.default.dap4.at hdf5_handlerTest.at
+cp hdf5_handlerTest.nasa.default.dap4.at hdf5_handlerTest.at
 cd ..
 make check
 All tests should get passed.
