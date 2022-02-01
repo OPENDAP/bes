@@ -45,6 +45,7 @@ class FoCovJsonRequestHandler: public BESRequestHandler {
 
 private:
     static bool _may_ignore_z_axis;
+    static bool _simple_geo;
 public:
     FoCovJsonRequestHandler(const std::string &name);
     virtual ~FoCovJsonRequestHandler(void);
@@ -53,6 +54,7 @@ public:
     
     static bool check_beskeys(const std::string & key);
     static bool get_may_ignore_z_axis() { return _may_ignore_z_axis; }
+    static bool get_simple_geo() { return _simple_geo; }
     static bool build_help(BESDataHandlerInterface &dhi);
     static bool build_version(BESDataHandlerInterface &dhi);
 };

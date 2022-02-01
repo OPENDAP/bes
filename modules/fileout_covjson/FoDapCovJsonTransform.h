@@ -84,6 +84,7 @@ private:
 
     unsigned int axisCount;
     std::vector<Axis *> axes;
+    std::string axis_t_units;
     unsigned int parameterCount;
     std::vector<Parameter *> parameters;
     std::vector<int> shapeVals;
@@ -124,6 +125,8 @@ private:
     libdap::Array *  obtain_bound_values_worker(libdap::DDS *dds, const std::string & bound_name, std::string &bound_dim_name);
 
     bool obtain_valid_vars(libdap::DDS *dds, short axis_var_z_count, short axis_var_t_count);
+    // Current only support the double precision for time.
+    std::string cf_time_to_greg(double time);
     
     /**
      * @brief Checks the spacial/temporal dimensions that we've obtained, if we've
@@ -162,6 +165,10 @@ private:
     void getAttributes(std::ostream *strm, libdap::AttrTable &attr_table, std::string name,
         bool *axisRetrieved, bool *parameterRetrieved);
 
+    void getAttributes_simple_cf_geographic(std::ostream *strm, libdap::AttrTable &attr_table, std::string name,
+        bool *axisRetrieved, bool *parameterRetrieved);
+
+   
     /**
      * @brief Attemps to sanitize the time origin string by reformatting and removing
      *    unnecessary words when appropriate
@@ -468,7 +475,7 @@ private:
      */
     template<typename T>
     unsigned int covjsonSimpleTypeArrayWorker(std::ostream *strm, T *values, unsigned int indx,
-        std::vector<unsigned int> *shape, unsigned int currentDim);
+        std::vector<unsigned int> *shape, unsigned int currentDim, bool is_axis_t_sgeo);
 
     /**
      * @brief Adds a new Axis

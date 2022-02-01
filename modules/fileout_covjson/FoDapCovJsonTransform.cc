@@ -85,6 +85,11 @@ cerr<<"Axis value is "<<this->axes[i]->values << endl;
 }
     
 #endif
+
+    if(true == is_simple_cf_geographic) {
+        domainType = "Grid";   
+        return true;
+    }
     if(xExists && yExists && zExists && tExists) {
 
         if (shapeVals.size() < 4)
@@ -192,7 +197,7 @@ cerr<<"Coming to the last step."<<endl;
 
 template<typename T>
 unsigned int FoDapCovJsonTransform::covjsonSimpleTypeArrayWorker(ostream *strm, T *values, unsigned int indx,
-    vector<unsigned int> *shape, unsigned int currentDim)
+    vector<unsigned int> *shape, unsigned int currentDim, bool is_axis_t_sgeo)
 {
     unsigned int currentDimSize = (*shape)[currentDim];
 
@@ -204,7 +209,7 @@ unsigned int FoDapCovJsonTransform::covjsonSimpleTypeArrayWorker(ostream *strm, 
         if(currentDim < shape->size() - 1) {
             BESDEBUG(FoDapCovJsonTransform_debug_key,
                 "covjsonSimpleTypeArrayWorker() - Recursing! indx:  " << indx << " currentDim: " << currentDim << " currentDimSize: " << currentDimSize << endl);
-            indx = covjsonSimpleTypeArrayWorker<T>(strm, values, indx, shape, currentDim + 1);
+            indx = covjsonSimpleTypeArrayWorker<T>(strm, values, indx, shape, currentDim + 1,is_axis_t_sgeo);
             if(i + 1 != currentDimSize) {
                 *strm << ", ";
             }
@@ -219,7 +224,19 @@ unsigned int FoDapCovJsonTransform::covjsonSimpleTypeArrayWorker(ostream *strm, 
                 *strm << "\"" << focovjson::escape_for_covjson(val) << "\"";
             }
             else {
-                *strm << values[indx++];
+                // We need to convert CF time to greg time.
+                if(is_axis_t_sgeo) { 
+                     string axis_t_value;
+                    //string axis_t_value = cf_to_greg((double)values[indx++]);
+#if 1
+                    axis_t_value = "CF to greg";
+cerr<<"CF time unit is "<<axis_t_units <<endl;
+                    indx++;
+#endif
+                    *strm << "\"" << focovjson::escape_for_covjson(axis_t_value) << "\"";
+                }
+                else 
+                    *strm << values[indx++];
             }
         }
     }
@@ -259,7 +276,11 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
         // *strm << "\"numDimensions\": \"" << numDim << "\"" << endl;
         // *strm << "\"length\": \"" << length << "\"" << endl << endl;
 
-        if (currAxis->name.compare("t") != 0) {
+        bool handle_axis_t_here = true;
+        if(!is_simple_cf_geographic  && currAxis->name.compare("t") == 0)
+            handle_axis_t_here = false;
+        if (handle_axis_t_here) {
+        //if (currAxis->name.compare("t") != 0) {
             if (sendData) {
                 currAxis->values += "\"values\": [";
                 unsigned int indx = 0;
@@ -267,7 +288,12 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
                 a->value(&src[0]);
 
                 ostringstream astrm;
-                indx = covjsonSimpleTypeArrayWorker(&astrm, &src[0], 0, &shape, 0);
+                bool is_time_axis_for_sgeo = false;
+                if(is_simple_cf_geographic && currAxis->name.compare("t") == 0)
+                    is_time_axis_for_sgeo = true;
+
+
+                indx = covjsonSimpleTypeArrayWorker(&astrm, &src[0], 0, &shape, 0,is_time_axis_for_sgeo);
                 currAxis->values += astrm.str();
 
                 currAxis->values += "]";
@@ -318,7 +344,8 @@ cerr<<"tempVal is "<<tempVal <<endl;
 
             // t may only have 1 value: the origin timestamp
             // DANGER: t may not yet be defined
-            if((i == 0) && tExists) {
+            if((i == 0) && tExists && is_simple_cf_geographic == false) {
+            //if((i == 0) && tExists) {
                 currParameter->shape += "1";
             }
             else {
@@ -334,7 +361,7 @@ cerr<<"tempVal is "<<tempVal <<endl;
             a->value(&src[0]);
 
             ostringstream pstrm;
-            indx = covjsonSimpleTypeArrayWorker(&pstrm, &src[0], 0, &shape, 0);
+            indx = covjsonSimpleTypeArrayWorker(&pstrm, &src[0], 0, &shape, 0,false);
             currParameter->values += pstrm.str();
 
             currParameter->values += "]";
@@ -380,7 +407,11 @@ void FoDapCovJsonTransform::covjsonStringArray(ostream *strm, libdap::Array *a, 
         vector<unsigned int> shape(numDim);
         long length = focovjson::computeConstrainedShape(a, &shape);
 
-        if (currAxis->name.compare("t") != 0) {
+        bool handle_axis_t_here = true;
+        if(!is_simple_cf_geographic  && currAxis->name.compare("t") == 0)
+            handle_axis_t_here = false;
+        if (handle_axis_t_here) {
+        //if (currAxis->name.compare("t") != 0) {
             if (sendData) {
                 currAxis->values += "\"values\": ";
                 unsigned int indx = 0;
@@ -389,7 +420,7 @@ void FoDapCovJsonTransform::covjsonStringArray(ostream *strm, libdap::Array *a, 
                 a->value(sourceValues);
 
                 ostringstream astrm;
-                indx = covjsonSimpleTypeArrayWorker(&astrm, (string *) (&sourceValues[0]), 0, &shape, 0);
+                indx = covjsonSimpleTypeArrayWorker(&astrm, (string *) (&sourceValues[0]), 0, &shape, 0,false);
                 currAxis->values += astrm.str();
 
                 if (length != indx) {
@@ -431,7 +462,8 @@ void FoDapCovJsonTransform::covjsonStringArray(ostream *strm, libdap::Array *a, 
 
             // t may only have 1 value: the origin timestamp
             // DANGER: t may not yet be defined
-            if((i == 0) && tExists) {
+            if((i == 0) && tExists && is_simple_cf_geographic == false) {
+            //if((i == 0) && tExists) {
                 currParameter->shape += "1";
             }
             else {
@@ -448,7 +480,7 @@ void FoDapCovJsonTransform::covjsonStringArray(ostream *strm, libdap::Array *a, 
             a->value(sourceValues);
 
             ostringstream pstrm;
-            indx = covjsonSimpleTypeArrayWorker(&pstrm, (string *) (&sourceValues[0]), 0, &shape, 0);
+            indx = covjsonSimpleTypeArrayWorker(&pstrm, (string *) (&sourceValues[0]), 0, &shape, 0,false);
             currParameter->values += pstrm.str();
 
             if (length != indx) {
@@ -512,6 +544,12 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
     // FOR TESTING AND DEBUGGING PURPOSES
     //*strm << "\"attr_tableName\": \"" << name << "\"" << endl;
 
+    
+  if(is_simple_cf_geographic) {
+        getAttributes_simple_cf_geographic(strm,attr_table,name,axisRetrieved,parameterRetrieved);
+
+  }
+  else {
     // Using CF-1.6 naming conventions -- Also checks for Coads Climatology conventions
     // http://cfconventions.org/Data/cf-conventions/cf-conventions-1.7/cf-conventions.html
     if((name.compare("lon") == 0) || (name.compare("LON") == 0)
@@ -651,6 +689,8 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
 cerr<<"addAxis 1 "<<endl;
             addAxis(currAxisName, "");
         }
+cerr<<"currAxisName is "<<currAxisName <<endl;
+cerr<<"currUnit is "<<currUnit <<endl;
 
         // See https://covjson.org/spec/#projected-coordinate-reference-systems
         // KENT: The below "if block" is wrong. If the units of lat/lon includes east, north, it may be geographic projection.
@@ -670,7 +710,161 @@ cerr<<"addAxis 1 "<<endl;
     else {
         // Do nothing
     }
+  }
 }
+
+void FoDapCovJsonTransform::
+    getAttributes_simple_cf_geographic(ostream *strm, libdap::AttrTable &attr_table, string name,
+    bool *axisRetrieved, bool *parameterRetrieved)
+{
+    string currAxisName;
+    string currUnit;
+    string currLongName;
+    string currStandardName;
+
+    isAxis = false;
+    isParam = false;
+
+    *axisRetrieved = false;
+    *parameterRetrieved = false;
+
+    // FOR TESTING AND DEBUGGING PURPOSES
+    //*strm << "\"attr_tableName\": \"" << name << "\"" << endl;
+    
+    if(axisVar_x.name == name) {
+        // FOR TESTING AND DEBUGGING PURPOSES
+        // *strm << "\"Found X-Axis\": \"" << name << "\"" << endl;
+
+        if(!xExists) {
+            xExists = true;
+            isAxis = true;
+            currAxisName = "x";
+        }
+    }
+    else if(axisVar_y.name == name) {
+        // FOR TESTING AND DEBUGGING PURPOSES
+        // *strm << "\"Found Y-Axis\": \"" << name << "\"" << endl;
+
+        if(!yExists) {
+            yExists = true;
+            isAxis = true;
+            currAxisName = "y";
+        }
+    }
+    else if(axisVar_z.name == name) {
+        // FOR TESTING AND DEBUGGING PURPOSES
+        // *strm << "\"Found Z-Axis\": \"" << name << "\"" << endl;
+
+        if(!zExists) {
+            zExists = true;
+            isAxis = true;
+            currAxisName = "z";
+        }
+    }
+    else if(axisVar_t.name == name) {
+        // FOR TESTING AND DEBUGGING PURPOSES
+        // *strm << "\"Found T-Axis\": \"" << name << "\"" << endl;
+
+        if(!tExists) {
+            tExists = true;
+            isAxis = true;
+            currAxisName = "t";
+        }
+    }
+    else {
+        // TODO: We should manage to remove this loop when improving the whole module.
+        for (int i = 0; i <par_vars.size(); i++) {
+            if(par_vars[i] == name){
+                isParam = true;
+                break;
+            }
+        }
+    }
+
+    // Only do more if there are actually attributes in the table
+    if(attr_table.get_size() != 0) {
+        libdap::AttrTable::Attr_iter begin = attr_table.attr_begin();
+        libdap::AttrTable::Attr_iter end = attr_table.attr_end();
+
+        for(libdap::AttrTable::Attr_iter at_iter = begin; at_iter != end; at_iter++) {
+            // FOR TESTING AND DEBUGGING PURPOSES 
+            // attr_table.print(*strm);
+
+            switch (attr_table.get_attr_type(at_iter)) {
+            case libdap::Attr_container: {
+                libdap::AttrTable *atbl = attr_table.get_attr_table(at_iter);
+                // Recursive call for child attribute table
+                getAttributes_simple_cf_geographic(strm, *atbl, name, axisRetrieved, parameterRetrieved);
+                break;
+            }
+            default: {
+                vector<string> *values = attr_table.get_attr_vector(at_iter);
+
+                for(vector<string>::size_type i = 0; i < values->size(); i++) {
+                    string currName = attr_table.get_name(at_iter);
+                    string currValue = (*values)[i];
+
+                    // FOR TESTING AND DEBUGGING PURPOSES
+                    //*strm << "\"currName\": \"" << currName << "\", \"currValue\": \"" << currValue << "\"" << endl;
+
+                    // From Climate and Forecast (CF) Conventions:
+                    // http://cfconventions.org/Data/cf-conventions/cf-conventions-1.7/cf-conventions.html#_description_of_the_data
+
+                    // We continue to support the use of the units and long_name attributes as defined in COARDS.
+                    // We extend COARDS by adding the optional standard_name attribute which is used to provide unique
+                    // identifiers for variables. This is important for data exchange since one cannot necessarily
+                    // identify a particular variable based on the name assigned to it by the institution that provided
+                    // the data.
+
+                    // The standard_name attribute can be used to identify variables that contain coordinate data. But since it is an
+                    // optional attribute, applications that implement these standards must continue to be able to identify coordinate
+                    // types based on the COARDS conventions.
+
+                    // See http://cfconventions.org/Data/cf-conventions/cf-conventions-1.7/cf-conventions.html#units
+                    if(currName.compare("units") == 0) 
+                        currUnit = currValue;
+
+                    // Per Jon Blower:
+                    // observedProperty->label comes from:
+                    //    - The CF long_name, if it exists
+                    //    - If not, the CF standard_name, perhaps with underscores removed
+                    //    - If the standard_name doesn’t exist, use the variable ID
+                    // See http://cfconventions.org/Data/cf-conventions/cf-conventions-1.7/cf-conventions.html#long-name
+                    else if(currName.compare("long_name") == 0) {
+                        currLongName = currValue;
+                    }
+                    // See http://cfconventions.org/Data/cf-conventions/cf-conventions-1.7/cf-conventions.html#standard-name
+                    else if(currName.compare("standard_name") == 0) {
+                        currStandardName = currValue;
+                    }
+                }
+
+                break;
+            }
+            }
+        }
+    }
+
+    if(isAxis) {
+        addAxis(currAxisName, "");
+cerr<<"currAxisName is "<<currAxisName <<endl;
+cerr<<"currUnit is "<<currUnit <<endl;
+        if(currAxisName.compare("t") == 0)
+            axis_t_units = currUnit;
+        *axisRetrieved = true;
+    }
+    else if(isParam) {
+        addParameter("", name, "", currDataType, currUnit, currLongName, currStandardName, "", "");
+        *parameterRetrieved = true;
+    }
+    else {
+        // Do nothing
+    }
+  
+}
+
+
+
 
 string FoDapCovJsonTransform::sanitizeTimeOriginString(string timeOrigin) 
 {
@@ -802,6 +996,7 @@ void FoDapCovJsonTransform::printCoverageJSON(ostream *strm, string indent, bool
     // Only print if this file can be converted to CovJSON
     if(canConvertToCovJson) {
         // Prints the entire Coverage to stream
+cerr<< "Can convert to CovJSON "<<endl;
         printCoverage(strm, indent);
     }
     else {
@@ -973,11 +1168,13 @@ void FoDapCovJsonTransform::printReference(ostream *strm, string indent)
     else {
         if(xExists && yExists && zExists) {
             // 3-Dimensional Geographic Coordinate Reference System (lat/lon/height): http://www.opengis.net/def/crs/EPSG/0/4979
-            *strm << child_indent2 << "\"id\": \"http://www.opengis.net/def/crs/EPSG/0/4979\"" << endl;
+            if(!is_simple_cf_geographic)
+               *strm << child_indent2 << "\"id\": \"http://www.opengis.net/def/crs/EPSG/0/4979\"" << endl;
         }
         else {
             // 2-Dimensional Geographic Coordinate Reference System (lat/lon): http://www.opengis.net/def/crs/OGC/1.3/CRS84
-            *strm << child_indent2 << "\"id\": \"http://www.opengis.net/def/crs/OGC/1.3/CRS84\"" << endl;
+            if(!is_simple_cf_geographic)
+               *strm << child_indent2 << "\"id\": \"http://www.opengis.net/def/crs/OGC/1.3/CRS84\"" << endl;
         }
     }
 
@@ -1159,6 +1356,7 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
         }
     }
 
+  if(FoCovJsonRequestHandler::get_simple_geo()) {
     // Sort the variables into two sets
     vi = dds->var_begin();
     ve = dds->var_end();
@@ -1280,9 +1478,23 @@ cerr<<"unit_candidates[i] again is "<<unit_candidates[i] <<endl;
     }
 cerr<<"axis_var_x_count is "<< axis_var_x_count <<endl;
 cerr<<"axis_var_y_count is "<< axis_var_y_count <<endl;
+cerr<<"axis_var_z_count is "<< axis_var_z_count <<endl;
+cerr<<"axis_var_t_count is "<< axis_var_t_count <<endl;
     bool is_simple_geo_candidate = true;
     if(axis_var_x_count !=1 || axis_var_y_count !=1) 
         is_simple_geo_candidate = false;
+    // Single coverage for the time being
+    // make z axis and t axis be empty if multiple z or t.
+    if(axis_var_z_count > 1) {
+        axisVar_z.name="";
+        axisVar_z.dim_name = "";
+        axisVar_z.bound_name = "";
+    }
+    if(axis_var_t_count > 1) {
+        axisVar_t.name="";
+        axisVar_t.dim_name = "";
+        axisVar_t.bound_name = "";
+    }
     if(is_simple_geo_candidate == true) {
 
         // Check bound variables
@@ -1331,25 +1543,12 @@ cerr<<"axisVar_t.dim_name is "<<axisVar_t.dim_name <<endl;
 cerr<<"axisVar_t.dim_size is "<<axisVar_t.dim_size <<endl;
 cerr<<"axisVar_t.bound_name is "<<axisVar_t.bound_name <<endl;
 
-#if 0
-        if(FoCovJsonRequestHandler::get_may_ignore_z_axis()== true) { 
-            //ignore all 3D if 2D presents.
-            // TODO: MORE code
-            is_simple_cf_geographic = obtain_valid_vars(dds);
-
-        }
-        else {// if both 2D and 3D present, simple_geo is false.
-            // TODO: MORE code
-            //is_simple_cf_geographic = true;
-            is_simple_cf_geographic = check_valid_vars(dds,vname_bname);
-
-        }
-#endif
 
         is_simple_cf_geographic = obtain_valid_vars(dds,axis_var_z_count,axis_var_t_count);
 
         if(true == is_simple_cf_geographic) {
 
+cerr<<"this is a simple CF geographic grid we can handle" <<endl;
             // We should handle the bound value
             // ignore 1-D bound dimension variable, 
             // Retrieve the values of the 2-D bound variable, 
@@ -1375,6 +1574,7 @@ cerr<<"axisVar_t.bound_name is "<<axisVar_t.bound_name <<endl;
                 bnd_dim_names.push_back(t_bnd_dim_name);
         }
 
+    }
     }
 
     // Read through the source DDS leaves and nodes, extract all axes and
@@ -1897,3 +2097,9 @@ for(unsigned i = 0; i <par_vars.size(); i++)
 
 }
 
+std::string FoDapCovJsonTransform::cf_time_to_greg(double time) {
+
+
+
+
+} 

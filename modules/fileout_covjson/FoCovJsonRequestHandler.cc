@@ -41,6 +41,7 @@ using std::string;
 using std::map;
 
 bool FoCovJsonRequestHandler::_may_ignore_z_axis   = false;
+bool FoCovJsonRequestHandler::_simple_geo   = false;
 
 bool FoCovJsonRequestHandler::check_beskeys(const string & key) {
 
@@ -73,6 +74,7 @@ FoCovJsonRequestHandler::FoCovJsonRequestHandler(const string &name) :
     add_handler( HELP_RESPONSE, FoCovJsonRequestHandler::build_help);
     add_handler( VERS_RESPONSE, FoCovJsonRequestHandler::build_version);
     _may_ignore_z_axis = check_beskeys("FoCovJson.MAY_IGNORE_Z_AXIS");   
+    _simple_geo = check_beskeys("FoCovJson.SIMPLE_GEO");   
 if(_may_ignore_z_axis == true) 
 std::cerr<<"IGNORE mode "<<endl;
 else
