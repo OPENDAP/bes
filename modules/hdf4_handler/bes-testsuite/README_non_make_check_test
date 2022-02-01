@@ -1,4 +1,6 @@
-Currently there are a few tests that the normal "make check" doesn't cover. Depending on one's need, they can be easily tested manually. Eventually if it is necessary, a kind of automatic tests should be implemented.
+Currently, there are a few tests that the normal "make check" doesn't cover. 
+Depending on one's need, they can be easily tested manually. 
+Eventually, if it is necessary, a kind of automatic tests should be implemented.
 
 1. HDF-EOS2 configuration option with NASA data
 1) Obtain the NASA HDF4 data
@@ -8,7 +10,7 @@ cd ../data
 ln -s ../data.nasa . 
 cd ..
 2) make check
-All tests should get passed.
+All tests should pass.
 
 2. Valgrind tests
 
