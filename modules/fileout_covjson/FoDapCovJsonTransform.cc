@@ -40,6 +40,7 @@
 #include <sstream> // stringstream
 #include <vector>
 #include <ctime>
+#include <time.h>
 
 using std::ostringstream;
 using std::istringstream;
@@ -227,11 +228,27 @@ unsigned int FoDapCovJsonTransform::covjsonSimpleTypeArrayWorker(ostream *strm, 
                 // We need to convert CF time to greg time.
                 if(is_axis_t_sgeo) { 
                      string axis_t_value;
-                    //string axis_t_value = cf_to_greg((double)values[indx++]);
+                    std::ostringstream tmp_stream; 
+                    //tmp_stream <<values[indx++];
+                  // TODO: have to do the datatype conversion and use unsigned 64-bit integer.
+                  double tmp_double_value = reinterpret_cast<double*>(values)[indx++];
+cerr<<"tmp_double_value is "<<(unsigned long long)tmp_double_value <<endl;
+                  unsigned long long tmp_value = (unsigned long long)tmp_double_value;
+#if 0
+                  tmp_stream <<tmp_double_value;
+                    string tmp_value_str = tmp_stream.str(); 
+cerr<<"tmp_value_str is "<<tmp_value_str <<endl;
+                    double tmp_value = stod(tmp_value_str);
+                    uint64_t tmp_value_u64 = stol(tmp_value_str);
+cerr<<"tmp_value is "<<tmp_value <<endl;
+cerr<<"tmp_value_u64 is "<<tmp_value_u64 <<endl;
+#endif
+                    axis_t_value = cf_time_to_greg(tmp_value);
 #if 1
+cerr<<"time value is " <<axis_t_value <<endl;
                     axis_t_value = "CF to greg";
 cerr<<"CF time unit is "<<axis_t_units <<endl;
-                    indx++;
+                    //indx++;
 #endif
                     *strm << "\"" << focovjson::escape_for_covjson(axis_t_value) << "\"";
                 }
@@ -2097,9 +2114,168 @@ for(unsigned i = 0; i <par_vars.size(); i++)
 
 }
 
-std::string FoDapCovJsonTransform::cf_time_to_greg(double time) {
+std::string FoDapCovJsonTransform::cf_time_to_greg(unsigned long long time_val) {
+
+    tm ycf_1 = {0};
+
+    // Here obtain the cf_time from the axis_t_units.
+    string cf_time= axis_t_units ;
+
+    // Check the time unit,day,hour, minute or second.
+    short time_unit_length = -1;
+    if(cf_time.compare(0,3,"day") == 0)
+        time_unit_length = 0;
+    else if(cf_time.compare(0,4,"hour") == 0)
+        time_unit_length = 1;
+    else if(cf_time.compare(0,6,"minute") == 0)
+        time_unit_length = 2;
+    else if(cf_time.compare(0,6,"second") == 0)
+        time_unit_length = 3;
+
+cerr<<"time_unit_length is "<<time_unit_length <<endl;        
+
+    // Remove any commonly found words from the origin timestamp
+    vector<string> subStrs = { "days", "day", "hours", "hour", "minutes", "minute",
+                        "seconds", "second", "since", "  " };
+
+    for(unsigned int i = 0; i < subStrs.size(); i++)
+        focovjson::removeSubstring(cf_time, subStrs[i]);
+
+cerr<<"cf_time stripped is "<<cf_time <<endl;
+
+    // Separate the date from the hms.
+    size_t cf_time_space_pos = cf_time.find(' ');
+    string cf_date,cf_hms;
+
+    if(cf_time_space_pos!=string::npos) { 
+        cf_date= cf_time.substr(0,cf_time_space_pos);
+        cf_hms = cf_time.substr(cf_time_space_pos+1);
+    }
+    // If without hours/minutes/seconds, we need to set them to 0.
+    if(cf_hms==" " || cf_hms=="")
+        cf_hms ="00:00:00";
+   
+cerr<<"cf_date is "<<cf_date <<endl;
+cerr<<"cf_hms is "<<cf_hms <<endl;
+
+    // We need to obtain year,month,date,hour,minute and second 
+    // of the time.
+
+    string cf_y,cf_mo,cf_d;
+    size_t cf_date_dash_pos = cf_date.find('-');
+    if(cf_date_dash_pos !=string::npos) {
+        string cf_md;
+        cf_y = cf_date.substr(0,cf_date_dash_pos);
+        cf_md = cf_date.substr(cf_date_dash_pos+1);
+        size_t cf_md_dash_pos = cf_md.find("-");
+        if(cf_md_dash_pos !=string::npos) {
+            cf_mo = cf_md.substr(0,cf_md_dash_pos);
+            cf_d = cf_md.substr(cf_md_dash_pos+1);
+        }
+    }
+
+    string cf_h,cf_ms,cf_m,cf_s;
+    size_t cf_hms_colon_pos = cf_hms.find(':');
+    if(cf_hms_colon_pos !=string::npos) {
+        cf_h = cf_hms.substr(0,cf_hms_colon_pos);
+        cf_ms = cf_hms.substr(cf_hms_colon_pos+1);
+        size_t cf_ms_colon_pos = cf_ms.find(":");
+        if(cf_ms_colon_pos !=string::npos) {
+            cf_m = cf_ms.substr(0,cf_ms_colon_pos);
+            cf_s = cf_ms.substr(cf_ms_colon_pos+1);
+        }
+    }
+
+    
+cerr<<"cf_y is "<<cf_y <<endl;
+cerr<<"cf_mo is "<<cf_mo <<endl;
+cerr<<"cf_d is "<<cf_d <<endl;
+
+cerr<<"cf_h is "<<cf_h <<endl;
+cerr<<"cf_m is "<<cf_m <<endl;
+cerr<<"cf_s is "<<cf_s <<endl;
+
+    // We need to convert the time from string to integer.
+    int cf_y_i,cf_mo_i,cf_d_i,cf_h_i,cf_m_i,cf_s_i;
+    cf_y_i = stoi(cf_y);
+    cf_mo_i = stoi(cf_mo);
+    cf_d_i = stoi(cf_d);
+    cf_h_i = stoi(cf_h);
+    cf_m_i = stoi(cf_m);
+    cf_s_i = stoi(cf_s);
+cerr<<"cf_y_i " <<cf_y_i <<endl;
+cerr<<"cf_mo_i " <<cf_mo_i <<endl;
+cerr<<"cf_d_i " <<cf_d_i <<endl;
+cerr<<"cf_h_i " <<cf_h_i <<endl;
+cerr<<"cf_m_i " <<cf_m_i <<endl;
+cerr<<"cf_s_i " <<cf_s_i <<endl;
+
+    // Now we want to assign these time info to struct tm
+    // Note: the mktime() and localtime() may only work for the date after 1970.
+    // This should be sufficient for the data we serve now. 
+    ycf_1.tm_hour = cf_h_i;   ycf_1.tm_min = cf_m_i; ycf_1.tm_sec = cf_s_i;
+    ycf_1.tm_year = cf_y_i-1900; ycf_1.tm_mon = cf_mo_i; ycf_1.tm_mday = cf_d_i;
+    time_t t_ycf_1 = mktime(&ycf_1);
+
+cerr<<"t_ycf_1 is "<<t_ycf_1 <<endl;
+cerr<<"time_val is "<<time_val <<endl;
+  //time_val = 11046060;
+  // Here is the value to calculate the new time. We need to convert them to seconds.
+  //double val = 1.000000000001;
+  time_t t_ycf_2 ;
+  // Here we need to convert days, hours, minutes to seconds
+  if(time_unit_length == 0)
+        t_ycf_2 = t_ycf_1 + 86400*time_val;
+  else if (time_unit_length == 1)
+        t_ycf_2 = t_ycf_1 + 3600*time_val;
+  else if (time_unit_length == 2)
+        t_ycf_2 = t_ycf_1 + 60*time_val;
+  else if (time_unit_length == 3)
+        t_ycf_2 = t_ycf_1 + time_val;
 
 
+  //time_t t_ycf_2 = t_ycf_1 + 86340;
+cerr<<"t_ycf_2 is "<<t_ycf_2 <<endl;
+  struct tm *t_new_ycf;
+  // The use of localtime() is to calcuate the time based on the CF time unit.
+  // So the value actually represents the GMT time. 
+  // Note: we didn't consider the use of local time in the CF. 
+  // Our currently supported product uses GMT. Will consider the other cases later.
+  t_new_ycf = localtime(&t_ycf_2);
+
+cerr<< "t_new_ycf.tm_year is " <<t_new_ycf->tm_year <<endl;
+cerr<< "t_new_ycf.tm_mon is " <<t_new_ycf->tm_mon <<endl;
+cerr<< "t_new_ycf.tm_day is " <<t_new_ycf->tm_mday <<endl;
+cerr<< "t_new_ycf.tm_hour is " <<t_new_ycf->tm_hour <<endl;
+cerr<< "t_new_ycf.tm_min is " <<t_new_ycf->tm_min <<endl;
+cerr<< "t_new_ycf.tm_sec is " <<t_new_ycf->tm_sec <<endl;
+
+   // Now, we need to change the time from int to string.
+    string covjson_mon = (t_new_ycf->tm_mon<10)?
+                         ("0"+to_string(t_new_ycf->tm_mon)):
+                          to_string(t_new_ycf->tm_mon);
+    string covjson_mday = (t_new_ycf->tm_mday<10)?
+                         ("0"+to_string(t_new_ycf->tm_mday)):
+                          to_string(t_new_ycf->tm_mday);
+
+    string covjson_hour = (t_new_ycf->tm_hour<10)?
+                         ("0"+to_string(t_new_ycf->tm_hour)):
+                          to_string(t_new_ycf->tm_hour);
+
+    string covjson_min = (t_new_ycf->tm_min<10)?
+                         ("0"+to_string(t_new_ycf->tm_min)):
+                          to_string(t_new_ycf->tm_min);
+
+    string covjson_sec = (t_new_ycf->tm_sec<10)?
+                         ("0"+to_string(t_new_ycf->tm_sec)):
+                          to_string(t_new_ycf->tm_sec);
 
 
+    // This is the final time. 
+    string covjson_time = to_string(1900+t_new_ycf->tm_year)+"-"+
+                          covjson_mon+"-"+covjson_mday+"T"+
+                          covjson_hour+":"+covjson_min+":"+
+                          covjson_sec+"Z";
+
+    return covjson_time;
 } 

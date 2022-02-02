@@ -126,7 +126,8 @@ private:
 
     bool obtain_valid_vars(libdap::DDS *dds, short axis_var_z_count, short axis_var_t_count);
     // Current only support the double precision for time.
-    std::string cf_time_to_greg(double time);
+    //std::string cf_time_to_greg(double time);
+    std::string cf_time_to_greg(unsigned long long time);
     
     /**
      * @brief Checks the spacial/temporal dimensions that we've obtained, if we've
