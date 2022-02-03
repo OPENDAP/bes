@@ -198,7 +198,7 @@ cerr<<"Coming to the last step."<<endl;
 
 template<typename T>
 unsigned int FoDapCovJsonTransform::covjsonSimpleTypeArrayWorker(ostream *strm, T *values, unsigned int indx,
-    vector<unsigned int> *shape, unsigned int currentDim, bool is_axis_t_sgeo)
+    vector<unsigned int> *shape, unsigned int currentDim, bool is_axis_t_sgeo,libdap::Type a_type)
 {
     unsigned int currentDimSize = (*shape)[currentDim];
 
@@ -210,7 +210,7 @@ unsigned int FoDapCovJsonTransform::covjsonSimpleTypeArrayWorker(ostream *strm, 
         if(currentDim < shape->size() - 1) {
             BESDEBUG(FoDapCovJsonTransform_debug_key,
                 "covjsonSimpleTypeArrayWorker() - Recursing! indx:  " << indx << " currentDim: " << currentDim << " currentDimSize: " << currentDimSize << endl);
-            indx = covjsonSimpleTypeArrayWorker<T>(strm, values, indx, shape, currentDim + 1,is_axis_t_sgeo);
+            indx = covjsonSimpleTypeArrayWorker<T>(strm, values, indx, shape, currentDim + 1,is_axis_t_sgeo,a_type);
             if(i + 1 != currentDimSize) {
                 *strm << ", ";
             }
@@ -227,26 +227,64 @@ unsigned int FoDapCovJsonTransform::covjsonSimpleTypeArrayWorker(ostream *strm, 
             else {
                 // We need to convert CF time to greg time.
                 if(is_axis_t_sgeo) { 
-                     string axis_t_value;
+                    string axis_t_value;
                     std::ostringstream tmp_stream; 
                     //tmp_stream <<values[indx++];
                   // TODO: have to do the datatype conversion and use unsigned 64-bit integer.
-                  double tmp_double_value = reinterpret_cast<double*>(values)[indx++];
-cerr<<"tmp_double_value is "<<(unsigned long long)tmp_double_value <<endl;
-                  unsigned long long tmp_value = (unsigned long long)tmp_double_value;
-#if 0
-                  tmp_stream <<tmp_double_value;
-                    string tmp_value_str = tmp_stream.str(); 
-cerr<<"tmp_value_str is "<<tmp_value_str <<endl;
-                    double tmp_value = stod(tmp_value_str);
-                    uint64_t tmp_value_u64 = stol(tmp_value_str);
-cerr<<"tmp_value is "<<tmp_value <<endl;
-cerr<<"tmp_value_u64 is "<<tmp_value_u64 <<endl;
-#endif
+
+                    long long tmp_value = 0;
+                    //TODO: add error check.
+                    switch (a_type) {
+                    case libdap::dods_byte_c:
+                    {
+                        unsigned char tmp_byte_value = reinterpret_cast<unsigned char *>(values)[indx++];                       
+                        tmp_value = (long long) tmp_byte_value; 
+                    }
+                        break;
+                    case libdap::dods_uint16_c:
+                    {
+                        unsigned short tmp_uint16_value = reinterpret_cast<unsigned short *>(values)[indx++];                       
+                        tmp_value = (long long) tmp_uint16_value; 
+                    }
+                        break;
+                    case libdap::dods_int16_c:
+                    {
+                        short tmp_int16_value = reinterpret_cast<short *>(values)[indx++];                       
+                        tmp_value = (long long) tmp_int16_value; 
+                    }
+                        break;
+                    case libdap::dods_uint32_c:
+                    {
+                        unsigned int tmp_uint_value = reinterpret_cast<unsigned int *>(values)[indx++];                       
+                        tmp_value = (long long) tmp_uint_value; 
+                    }
+                        break;
+                    case libdap::dods_int32_c:
+                    {
+                        int tmp_int_value = reinterpret_cast<int *>(values)[indx++];                       
+                        tmp_value = (long long) tmp_int_value; 
+                    }
+                        break;
+                    case libdap::dods_float32_c:
+                    {
+                        float tmp_float_value = reinterpret_cast<float *>(values)[indx++];                       
+                        // In theory, it may cause overflow. In reality, the time in seconds will never be that large.
+                        tmp_value = (long long) tmp_float_value; 
+                    }
+                        break;
+                    case libdap::dods_float64_c:
+                    {
+                        double tmp_double_value = reinterpret_cast<double *>(values)[indx++];                       
+                        // In theory, it may cause overflow. In reality, the time in seconds will never be that large.
+                        tmp_value = (long long) tmp_double_value; 
+                    }
+                        break;
+                    }
+                  
                     axis_t_value = cf_time_to_greg(tmp_value);
 #if 1
 cerr<<"time value is " <<axis_t_value <<endl;
-                    axis_t_value = "CF to greg";
+                    //axis_t_value = "CF to greg";
 cerr<<"CF time unit is "<<axis_t_units <<endl;
                     //indx++;
 #endif
@@ -310,7 +348,7 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
                     is_time_axis_for_sgeo = true;
 
 
-                indx = covjsonSimpleTypeArrayWorker(&astrm, &src[0], 0, &shape, 0,is_time_axis_for_sgeo);
+                indx = covjsonSimpleTypeArrayWorker(&astrm, &src[0], 0, &shape, 0,is_time_axis_for_sgeo,a->var()->type());
                 currAxis->values += astrm.str();
 
                 currAxis->values += "]";
@@ -378,7 +416,7 @@ cerr<<"tempVal is "<<tempVal <<endl;
             a->value(&src[0]);
 
             ostringstream pstrm;
-            indx = covjsonSimpleTypeArrayWorker(&pstrm, &src[0], 0, &shape, 0,false);
+            indx = covjsonSimpleTypeArrayWorker(&pstrm, &src[0], 0, &shape, 0,false,a->var()->type());
             currParameter->values += pstrm.str();
 
             currParameter->values += "]";
@@ -437,7 +475,7 @@ void FoDapCovJsonTransform::covjsonStringArray(ostream *strm, libdap::Array *a, 
                 a->value(sourceValues);
 
                 ostringstream astrm;
-                indx = covjsonSimpleTypeArrayWorker(&astrm, (string *) (&sourceValues[0]), 0, &shape, 0,false);
+                indx = covjsonSimpleTypeArrayWorker(&astrm, (string *) (&sourceValues[0]), 0, &shape, 0,false,a->var()->type());
                 currAxis->values += astrm.str();
 
                 if (length != indx) {
@@ -497,7 +535,7 @@ void FoDapCovJsonTransform::covjsonStringArray(ostream *strm, libdap::Array *a, 
             a->value(sourceValues);
 
             ostringstream pstrm;
-            indx = covjsonSimpleTypeArrayWorker(&pstrm, (string *) (&sourceValues[0]), 0, &shape, 0,false);
+            indx = covjsonSimpleTypeArrayWorker(&pstrm, (string *) (&sourceValues[0]), 0, &shape, 0,false,a->var()->type());
             currParameter->values += pstrm.str();
 
             if (length != indx) {
@@ -1067,6 +1105,19 @@ void FoDapCovJsonTransform::printAxes(ostream *strm, string indent)
 
     BESDEBUG(FoDapCovJsonTransform_debug_key, "Printing AXES" << endl);
 
+    // Obtain bound values if having them
+    // First handle the t-axis because of GLADS
+    std::vector<std::string> t_bnd_val;
+    bool has_t_bnd = (axisVar_t.bound_name!="");
+    if(axisVar_t_bnd_val.size() >0) {
+        t_bnd_val.resize(axisVar_t_bnd_val.size());
+        for (unsigned i = 0; i < axisVar_t_bnd_val.size();i++) {
+           t_bnd_val[i] = cf_time_to_greg((long long)(axisVar_t_bnd_val[i]));
+cerr<<"time bound value is "<<t_bnd_val[i] <<endl;
+        }
+    }
+    
+    
     // FOR TESTING AND DEBUGGING PURPOSES
     // *strm << "\"type_name\": \"" << a->var()->type_name() << "\"" << endl;
 
@@ -2114,7 +2165,7 @@ for(unsigned i = 0; i <par_vars.size(); i++)
 
 }
 
-std::string FoDapCovJsonTransform::cf_time_to_greg(unsigned long long time_val) {
+std::string FoDapCovJsonTransform::cf_time_to_greg(long long time_val) {
 
     tm ycf_1 = {0};
 
@@ -2249,7 +2300,10 @@ cerr<< "t_new_ycf.tm_day is " <<t_new_ycf->tm_mday <<endl;
 cerr<< "t_new_ycf.tm_hour is " <<t_new_ycf->tm_hour <<endl;
 cerr<< "t_new_ycf.tm_min is " <<t_new_ycf->tm_min <<endl;
 cerr<< "t_new_ycf.tm_sec is " <<t_new_ycf->tm_sec <<endl;
-
+    if(t_new_ycf->tm_mon == 0) {
+        t_new_ycf->tm_year--;
+        t_new_ycf->tm_mon = 12;
+    }
    // Now, we need to change the time from int to string.
     string covjson_mon = (t_new_ycf->tm_mon<10)?
                          ("0"+to_string(t_new_ycf->tm_mon)):

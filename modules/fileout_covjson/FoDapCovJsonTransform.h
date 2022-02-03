@@ -127,7 +127,7 @@ private:
     bool obtain_valid_vars(libdap::DDS *dds, short axis_var_z_count, short axis_var_t_count);
     // Current only support the double precision for time.
     //std::string cf_time_to_greg(double time);
-    std::string cf_time_to_greg(unsigned long long time);
+    std::string cf_time_to_greg(long long time);
     
     /**
      * @brief Checks the spacial/temporal dimensions that we've obtained, if we've
@@ -476,7 +476,7 @@ private:
      */
     template<typename T>
     unsigned int covjsonSimpleTypeArrayWorker(std::ostream *strm, T *values, unsigned int indx,
-        std::vector<unsigned int> *shape, unsigned int currentDim, bool is_axis_t_sgeo);
+        std::vector<unsigned int> *shape, unsigned int currentDim, bool is_axis_t_sgeo,libdap::Type a_type);
 
     /**
      * @brief Adds a new Axis
