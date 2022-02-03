@@ -18,7 +18,7 @@ AT_KEYWORDS([bescmd])
 #AT_CHECK([besstandalone -c $abs_builddir/bes.ignore.conf -i $1 > $2 || true], [], [stdout], [stderr])
 
 # This is the original.
-AT_CHECK([valgrind --leak-check=full --log-file=valgrind.txt besstandalone -c $abs_builddir/bes.ignore.conf -i $1 || true], [], [stdout], [stderr])
+AT_CHECK([valgrind --trace-children=yes --leak-check=full --log-file=valgrind.txt besstandalone -c $abs_builddir/bes.ignore.conf -i $1 || true], [], [stdout], [stderr])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_CHECK([cat valgrind.txt >> /tmp/h5.valgrind.nasa.ignore.log], [], [ignore],[],[])
 AT_CLEANUP])

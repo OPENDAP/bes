@@ -19,7 +19,7 @@ AT_KEYWORDS([bescmd])
 # Use the following AT_CHECK to generate baseline file.
 #AT_CHECK([besstandalone -c $abs_builddir/bes.ignore.conf -i $1 > $2|| true], [], [stdout], [stderr])
 
-AT_CHECK([valgrind --leak-check=full --log-file=valgrind-cf-ignored.txt besstandalone -c $abs_builddir/bes.ignore.conf -i $1 || true], [], [stdout], [stderr])
+AT_CHECK([valgrind --trace-children=yes --leak-check=full --log-file=valgrind-cf-ignored.txt besstandalone -c $abs_builddir/bes.ignore.conf -i $1 || true], [], [stdout], [stderr])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_CHECK([cat valgrind-cf-ignored.txt >> /tmp/h5.valgrind.cf.ignored.log], [], [ignore],[],[])
 AT_CLEANUP])
