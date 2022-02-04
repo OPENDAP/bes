@@ -19,3 +19,6 @@ BES.module.focovjson=@bes_modules_dir@/libfocovjson_module.so
 # FoCovJson.Reference: URL to the FoCovJson Reference Page at docs.opendap.org"
 FoCovJson.Tempdir=/tmp
 FoCovJson.Reference=http://docs.opendap.org/index.php/BES_-_Modules_-_FileOut_CovJSON
+#Uncomment the following two lines to serve GES DISC's AIRS level 3 and GLDAS level 4 products
+#FoCovJson.MAY_IGNORE_Z_AXIS=true 
+#FoCovJson.SIMPLE_GEO=true

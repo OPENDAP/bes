@@ -55,8 +55,8 @@ private:
     std::string _indent_increment;
     std::string atomicVals;
     std::string currDataType;
-    std::string coordRefType;
     std::string domainType;
+    std::string coordRefType;
     bool xExists;
     bool yExists;
     bool zExists;
@@ -84,10 +84,52 @@ private:
 
     unsigned int axisCount;
     std::vector<Axis *> axes;
+    std::string axis_t_units;
     unsigned int parameterCount;
     std::vector<Parameter *> parameters;
     std::vector<int> shapeVals;
 
+#if 0
+    std::string axis_x_varname;
+    std::string axis_y_varname;
+    std::string axis_z_varname;
+    std::string axis_t_varname;
+#endif
+
+    struct axisVar {
+        int dim_size;
+        std::string name;
+        std::string dim_name;
+        std::string bound_name;
+    };
+    axisVar axisVar_x;
+    axisVar axisVar_y;
+    axisVar axisVar_z;
+    axisVar axisVar_t;
+
+    std::vector<float> axisVar_x_bnd_val;
+    std::vector<float> axisVar_y_bnd_val;
+    std::vector<float> axisVar_z_bnd_val;
+    std::vector<double> axisVar_t_bnd_val;
+
+    std::vector<std::string>bnd_dim_names;
+    std::vector<std::string>par_vars;
+
+    bool is_simple_cf_geographic;
+
+    bool check_add_axis(libdap::Array *d_a, const std::string &, const std::vector<std::string> &, axisVar &, bool is_t_axis);
+    void check_bounds(libdap::DDS *dds, std::map<std::string,std::string>& vname_b_name);
+    void obtain_bound_values(libdap::DDS *dds, const axisVar& av, std::vector<float>& av_bnd_val,std::string &bnd_dim_name,bool);
+    void obtain_bound_values(libdap::DDS *dds, const axisVar& av, std::vector<double>& av_bnd_val,std::string &bnd_dim_name,bool);
+    //bool obtain_bound_values_worker(libdap::DDS *dds, libdap::Array *d_a, const std::string & bound_name, std::string &bound_dim_name);
+    libdap::Array *  obtain_bound_values_worker(libdap::DDS *dds, const std::string & bound_name, std::string &bound_dim_name);
+
+    bool obtain_valid_vars(libdap::DDS *dds, short axis_var_z_count, short axis_var_t_count);
+    // Current only support the double precision for time.
+    //std::string cf_time_to_greg(double time);
+    std::string cf_time_to_greg(long long time);
+    void print_bound(std::ostream *strm, const std::vector<std::string> & t_bnd_val,const std::string & indent);
+    
     /**
      * @brief Checks the spacial/temporal dimensions that we've obtained, if we've
      *    obtained any at all, can be used to convert to a CovJSON file. If x, y,
@@ -125,6 +167,10 @@ private:
     void getAttributes(std::ostream *strm, libdap::AttrTable &attr_table, std::string name,
         bool *axisRetrieved, bool *parameterRetrieved);
 
+    void getAttributes_simple_cf_geographic(std::ostream *strm, libdap::AttrTable &attr_table, std::string name,
+        bool *axisRetrieved, bool *parameterRetrieved);
+
+   
     /**
      * @brief Attemps to sanitize the time origin string by reformatting and removing
      *    unnecessary words when appropriate
@@ -431,7 +477,7 @@ private:
      */
     template<typename T>
     unsigned int covjsonSimpleTypeArrayWorker(std::ostream *strm, T *values, unsigned int indx,
-        std::vector<unsigned int> *shape, unsigned int currentDim);
+        std::vector<unsigned int> *shape, unsigned int currentDim, bool is_axis_t_sgeo,libdap::Type a_type);
 
     /**
      * @brief Adds a new Axis
