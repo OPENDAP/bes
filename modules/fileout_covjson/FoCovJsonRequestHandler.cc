@@ -75,10 +75,13 @@ FoCovJsonRequestHandler::FoCovJsonRequestHandler(const string &name) :
     add_handler( VERS_RESPONSE, FoCovJsonRequestHandler::build_version);
     _may_ignore_z_axis = check_beskeys("FoCovJson.MAY_IGNORE_Z_AXIS");   
     _simple_geo = check_beskeys("FoCovJson.SIMPLE_GEO");   
+
+#if 0
 if(_may_ignore_z_axis == true) 
 std::cerr<<"IGNORE mode "<<endl;
 else
 std::cerr<<"Strict mode "<<endl;
+#endif
 }
 
 /** @brief Any cleanup that needs to take place

@@ -74,7 +74,7 @@ bool FoDapCovJsonTransform::canConvert()
     //    - shapeVals[1] = y axis
     //    - shapeVals[2] = z axis
     //    - shapeVals[3] = t axis
-#if 1
+#if 0
 cerr<<"Before X and Y and Z and T"<<endl;
 cerr<<"Number of parameters is  "<<this->parameters.size() <<endl;
 cerr<<"shapeVals is "<<shapeVals.size() <<endl;
@@ -282,7 +282,7 @@ unsigned int FoDapCovJsonTransform::covjsonSimpleTypeArrayWorker(ostream *strm, 
                     }
                   
                     axis_t_value = cf_time_to_greg(tmp_value);
-#if 1
+#if 0
 cerr<<"time value is " <<axis_t_value <<endl;
                     //axis_t_value = "CF to greg";
 cerr<<"CF time unit is "<<axis_t_units <<endl;
@@ -309,8 +309,8 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
     currDataType = a->var()->type_name();
 
     // FOR TESTING AND DEBUGGING PURPOSES
-    *strm << "\"type_name\": \"" << a->var()->type_name() << "\"" << endl;
-    *strm << "\"name\": \"" << a->var()->name() << "\"" << endl;
+    //*strm << "\"type_name\": \"" << a->var()->type_name() << "\"" << endl;
+    //*strm << "\"name\": \"" << a->var()->name() << "\"" << endl;
 
     getAttributes(strm, a->get_attr_table(), a->name(), &axisRetrieved, &parameterRetrieved);
 
@@ -353,7 +353,7 @@ void FoDapCovJsonTransform::covjsonSimpleTypeArray(ostream *strm, libdap::Array 
 
                 currAxis->values += "]";
 
-cerr<<"currAxis value at covjsonSimpleTypeArray is "<<currAxis->values <<endl;
+//cerr<<"currAxis value at covjsonSimpleTypeArray is "<<currAxis->values <<endl;
                 if (length != indx) {
                     BESDEBUG(FoDapCovJsonTransform_debug_key,
                         "covjsonSimpleTypeArray(Axis) - indx NOT equal to content length! indx:  " << indx << "  length: " << length << endl);
@@ -371,7 +371,7 @@ cerr<<"currAxis value at covjsonSimpleTypeArray is "<<currAxis->values <<endl;
         struct Parameter *currParameter;
         currParameter = parameters[parameterCount - 1];
 
-cerr<<"Parameter name is "<< currParameter->name<<endl;
+//cerr<<"Parameter name is "<< currParameter->name<<endl;
         int numDim = a->dimensions(true);
         vector<unsigned int> shape(numDim);
         long length = focovjson::computeConstrainedShape(a, &shape);
@@ -394,7 +394,7 @@ cerr<<"Parameter name is "<< currParameter->name<<endl;
             otemp << shape[i];
             istringstream (otemp.str());
             istringstream (otemp.str()) >> tempVal;
-cerr<<"tempVal is "<<tempVal <<endl;
+//cerr<<"tempVal is "<<tempVal <<endl;
             shapeVals.push_back(tempVal);
 
             // t may only have 1 value: the origin timestamp
@@ -556,8 +556,10 @@ void FoDapCovJsonTransform::addAxis(string name, string values)
 
     newAxis->name = name;
     newAxis->values = values;
+#if 0
 cerr << "axis name is "<< name <<endl;
 cerr << "axis value is "<< values <<endl;
+#endif
     this->axes.push_back(newAxis);
     this->axisCount++;
 }
@@ -741,11 +743,11 @@ void FoDapCovJsonTransform::getAttributes(ostream *strm, libdap::AttrTable &attr
             addAxis(currAxisName, "\"values\": [\"" + sanitizeTimeOriginString(currAxisTimeOrigin) + "\"]");
         }
         else {
-cerr<<"addAxis 1 "<<endl;
+//cerr<<"addAxis 1 "<<endl;
             addAxis(currAxisName, "");
         }
-cerr<<"currAxisName is "<<currAxisName <<endl;
-cerr<<"currUnit is "<<currUnit <<endl;
+//cerr<<"currAxisName is "<<currAxisName <<endl;
+//cerr<<"currUnit is "<<currUnit <<endl;
 
         // See https://covjson.org/spec/#projected-coordinate-reference-systems
         // KENT: The below "if block" is wrong. If the units of lat/lon includes east, north, it may be geographic projection.
@@ -902,8 +904,8 @@ void FoDapCovJsonTransform::
 
     if(isAxis) {
         addAxis(currAxisName, "");
-cerr<<"currAxisName is "<<currAxisName <<endl;
-cerr<<"currUnit is "<<currUnit <<endl;
+//cerr<<"currAxisName is "<<currAxisName <<endl;
+//cerr<<"currUnit is "<<currUnit <<endl;
         if(currAxisName.compare("t") == 0)
             axis_t_units = currUnit;
         *axisRetrieved = true;
@@ -989,7 +991,8 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::Constructor *cnstrc
     libdap::DDS::Vars_iter vi = cnstrctr->var_begin();
     libdap::DDS::Vars_iter ve = cnstrctr->var_end();
 
-cerr<<"coming to the loop before " <<endl;
+//cerr<<"coming to the loop before " <<endl;
+
     for(; vi != ve; vi++) {
         if((*vi)->send_p()) {
             libdap::BaseType *v = *vi;
@@ -1051,7 +1054,7 @@ void FoDapCovJsonTransform::printCoverageJSON(ostream *strm, string indent, bool
     // Only print if this file can be converted to CovJSON
     if(canConvertToCovJson) {
         // Prints the entire Coverage to stream
-cerr<< "Can convert to CovJSON "<<endl;
+//cerr<< "Can convert to CovJSON "<<endl;
         printCoverage(strm, indent);
     }
     else {
@@ -1113,7 +1116,7 @@ void FoDapCovJsonTransform::printAxes(ostream *strm, string indent)
         t_bnd_val.resize(axisVar_t_bnd_val.size());
         for (unsigned i = 0; i < axisVar_t_bnd_val.size();i++) {
            t_bnd_val[i] = cf_time_to_greg((long long)(axisVar_t_bnd_val[i]));
-cerr<<"time bound value is "<<t_bnd_val[i] <<endl;
+//cerr<<"time bound value is "<<t_bnd_val[i] <<endl;
         }
     }
     
@@ -1445,7 +1448,7 @@ void FoDapCovJsonTransform::transform(ostream *strm, libdap::DDS *dds, string in
 
     string units_name ="units";
     for(; vi != ve; vi++) {
-cerr<<"coming to the loop  " <<endl;
+//cerr<<"coming to the loop  " <<endl;
         if((*vi)->send_p()) {
             libdap::BaseType *v = *vi;
             libdap::Type type = v->type();
@@ -1454,9 +1457,9 @@ cerr<<"coming to the loop  " <<endl;
             if(type == libdap::dods_array_c) {
                 libdap::Array * d_a = dynamic_cast<libdap::Array *>(v);
                 int d_ndims = d_a->dimensions();
-cerr<<"d_ndims is "<< d_ndims <<endl;
+//cerr<<"d_ndims is "<< d_ndims <<endl;
                 if(d_ndims == 1) {
-cerr<<"d_a name is "<<d_a->name() <<endl;
+//cerr<<"d_a name is "<<d_a->name() <<endl;
                     libdap::AttrTable &attrs = d_a->get_attr_table();
                     unsigned int num_attrs = attrs.get_size();
                     if (num_attrs) {
@@ -1464,7 +1467,7 @@ cerr<<"d_a name is "<<d_a->name() <<endl;
                         libdap::AttrTable::Attr_iter e = attrs.attr_end();
                         for (; i != e; i++) {
                             string attr_name = attrs.get_name(i);
-cerr<<"attr_name is "<<attr_name <<endl;
+//cerr<<"attr_name is "<<attr_name <<endl;
                             unsigned int num_vals = attrs.get_attr_num(i);
                             if (num_vals == 1) {
                                 // Check if the attr_name is units. 
@@ -1517,16 +1520,20 @@ cerr<<"attr_name is "<<attr_name <<endl;
                                             break;
                                     }
                                     unit_candidates.clear();
+#if 0
 for(int i = 0; i <unit_candidates.size(); i++)
     cerr<<"unit_candidates[i] is "<<unit_candidates[i] <<endl;
+#endif
 
                                     // time: CF units only
                                     unit_candidates.push_back("seconds since ");
                                     unit_candidates.push_back("minutes since ");
                                     unit_candidates.push_back("hours since ");
                                     unit_candidates.push_back("days since ");
+#if 0
 for(int i = 0; i <unit_candidates.size(); i++)
 cerr<<"unit_candidates[i] again is "<<unit_candidates[i] <<endl;
+#endif
 
                                     has_axis_var_t = check_add_axis(d_a,val,unit_candidates,axisVar_t,true);
                                     // STOP
@@ -1546,10 +1553,12 @@ cerr<<"unit_candidates[i] again is "<<unit_candidates[i] <<endl;
             }
         }
     }
+#if 0
 cerr<<"axis_var_x_count is "<< axis_var_x_count <<endl;
 cerr<<"axis_var_y_count is "<< axis_var_y_count <<endl;
 cerr<<"axis_var_z_count is "<< axis_var_z_count <<endl;
 cerr<<"axis_var_t_count is "<< axis_var_t_count <<endl;
+#endif
     bool is_simple_geo_candidate = true;
     if(axis_var_x_count !=1 || axis_var_y_count !=1) 
         is_simple_geo_candidate = false;
@@ -1576,14 +1585,16 @@ cerr<<"axis_var_t_count is "<< axis_var_t_count <<endl;
         check_bounds(dds,vname_bname);
 
         map<string, string>::iterator it;
+#if 0
 for(it = vname_bname.begin(); it != vname_bname.end(); it++) {
 cerr<<it->first <<endl;
 cerr<<it->second <<endl;
 }
+#endif
 
         for(it = vname_bname.begin(); it != vname_bname.end(); it++) {
-            cerr<<it->first <<endl;
-            cerr<<it->second <<endl;
+//            cerr<<it->first <<endl;
+//            cerr<<it->second <<endl;
             if(axisVar_x.name == it->first)
                 axisVar_x.bound_name = it->second;
             else if(axisVar_y.name == it->first)
@@ -1593,6 +1604,7 @@ cerr<<it->second <<endl;
             else if(axisVar_t.name == it->first)
                 axisVar_t.bound_name = it->second;
         }
+#if 0
 cerr<<"axisVar_x.name is "<<axisVar_x.name <<endl;
 cerr<<"axisVar_x.dim_name is "<<axisVar_x.dim_name <<endl;
 cerr<<"axisVar_x.dim_size is "<<axisVar_x.dim_size <<endl;
@@ -1612,13 +1624,14 @@ cerr<<"axisVar_t.name is "<<axisVar_t.name <<endl;
 cerr<<"axisVar_t.dim_name is "<<axisVar_t.dim_name <<endl;
 cerr<<"axisVar_t.dim_size is "<<axisVar_t.dim_size <<endl;
 cerr<<"axisVar_t.bound_name is "<<axisVar_t.bound_name <<endl;
+#endif
 
 
         is_simple_cf_geographic = obtain_valid_vars(dds,axis_var_z_count,axis_var_t_count);
 
         if(true == is_simple_cf_geographic) {
 
-cerr<<"this is a simple CF geographic grid we can handle" <<endl;
+//cerr<<"this is a simple CF geographic grid we can handle" <<endl;
             // We should handle the bound value
             // ignore 1-D bound dimension variable, 
             // Retrieve the values of the 2-D bound variable, 
@@ -1815,7 +1828,7 @@ bool FoDapCovJsonTransform::check_add_axis(libdap::Array *d_a,const string & uni
 
     bool ret_value = false;
     for (unsigned i = 0; i < CF_unit_values.size(); i++) {
-cerr<<"CF_unit_values "<<CF_unit_values[i] << endl;
+//cerr<<"CF_unit_values "<<CF_unit_values[i] << endl;
         bool is_cf_units = false;
         if(is_t_axis == false) {
             if((unit_value.size() == CF_unit_values[i].size() || unit_value.size() == (CF_unit_values[i].size() +1)) && unit_value.compare(0,CF_unit_values[i].size(),CF_unit_values[i])==0) 
@@ -1833,9 +1846,11 @@ cerr<<"CF_unit_values "<<CF_unit_values[i] << endl;
             this_axisVar.dim_name = d_a->dimension_name(di);
             this_axisVar.bound_name="";
             ret_value = true;
+#if 0
 cerr<<"axis size "<< this_axisVar.dim_size <<endl;
 cerr<<"axis name "<< this_axisVar.name <<endl;
 cerr<<"axis dim_name "<< this_axisVar.dim_name <<endl;
+#endif
             break;
         }
 
@@ -1852,7 +1867,7 @@ void FoDapCovJsonTransform::check_bounds(libdap::DDS *dds, map<string,string>& v
     libdap::DDS::Vars_iter ve = dds->var_end();
  
     for(; vi != ve; vi++) {
-cerr<<"coming to the loop  " <<endl;
+//cerr<<"coming to the loop  " <<endl;
         if((*vi)->send_p()) {
             libdap::BaseType *v = *vi;
             libdap::Type type = v->type();
@@ -1861,7 +1876,7 @@ cerr<<"coming to the loop  " <<endl;
             if(type == libdap::dods_array_c) {
                 libdap::Array * d_a = dynamic_cast<libdap::Array *>(v);
                 int d_ndims = d_a->dimensions();
-cerr<<"d_ndims is "<< d_ndims <<endl;
+//cerr<<"d_ndims is "<< d_ndims <<endl;
                 if(d_ndims == 1) {
                     libdap::AttrTable &attrs = d_a->get_attr_table();
                     unsigned int num_attrs = attrs.get_size();
@@ -1870,7 +1885,7 @@ cerr<<"d_ndims is "<< d_ndims <<endl;
                         libdap::AttrTable::Attr_iter e = attrs.attr_end();
                         for (; i != e; i++) {
                             string attr_name = attrs.get_name(i);
-cerr<<"attr_name is "<<attr_name <<endl;
+//cerr<<"attr_name is "<<attr_name <<endl;
                             unsigned int num_vals = attrs.get_attr_num(i);
                             if (num_vals == 1) {
                                 // Check if the attr_name is units. 
@@ -1899,12 +1914,12 @@ cerr<<"attr_name is "<<attr_name <<endl;
 
 void FoDapCovJsonTransform::obtain_bound_values(libdap::DDS *dds, const axisVar & av, std::vector<float>& av_bnd_val, std::string& bnd_dim_name, bool sendData) {
 
-cerr<<"coming to the obtain_bound_values "<<endl;
+//cerr<<"coming to the obtain_bound_values "<<endl;
     libdap::Array* d_a = obtain_bound_values_worker(dds, av.bound_name,bnd_dim_name); 
     if (d_a) {// float, now we just handle this way 
      // SSTOP FILL IN
-cerr<<"d_a->name in obtain_bound_values is "<<d_a->name() <<endl;
-cerr<<"in obtain_bound_values bnd_dim_name is "<<bnd_dim_name <<endl;
+//cerr<<"d_a->name in obtain_bound_values is "<<d_a->name() <<endl;
+//cerr<<"in obtain_bound_values bnd_dim_name is "<<bnd_dim_name <<endl;
         if(d_a->var()->type_name() == "Float64") {
             if(sendData) {
                 int num_lengths = d_a->length();
@@ -1916,8 +1931,10 @@ cerr<<"in obtain_bound_values bnd_dim_name is "<<bnd_dim_name <<endl;
                 for (unsigned i = 0; i <av_bnd_val.size();i++)
                     av_bnd_val[i] =(float)temp_val[i];
  
+#if 0
 for (int i = 0; i <av_bnd_val.size();i++)
 cerr<<"av_bnd_val["<<i<<"] = "<<av_bnd_val[i] <<endl;
+#endif
             }
         }
         else if(d_a->var()->type_name() == "Float32") {
@@ -1925,8 +1942,10 @@ cerr<<"av_bnd_val["<<i<<"] = "<<av_bnd_val[i] <<endl;
                 int num_lengths = d_a->length();
                 av_bnd_val.resize(num_lengths);
                 d_a->value(&av_bnd_val[0]);
+#if 0
 for (int i = 0; i <av_bnd_val.size();i++)
 cerr<<"av_bnd_val["<<i<<"] = "<<av_bnd_val[i] <<endl;
+#endif
             }
         }
 
@@ -1938,15 +1957,19 @@ void FoDapCovJsonTransform::obtain_bound_values(libdap::DDS *dds, const axisVar 
 
     libdap::Array* d_a = obtain_bound_values_worker(dds, av.bound_name,bnd_dim_name); 
     if(d_a) {
+#if 0
 cerr<<"d_a->name in obtain_bound_values is "<<d_a->name() <<endl;
 cerr<<"in obtain_bound_values bnd_dim_name is "<<bnd_dim_name <<endl;
+#endif
         if(d_a->var()->type_name() == "Float64") {
             if(sendData) {
                 int num_lengths = d_a->length();
                 av_bnd_val.resize(num_lengths);
                 d_a->value(&av_bnd_val[0]);
+#if 0
 for (int i = 0; i <av_bnd_val.size();i++)
 cerr<<"av_bnd_val["<<i<<"] = "<<av_bnd_val[i] <<endl;
+#endif
             }
         }
         else if(d_a->var()->type_name() == "Float32") {
@@ -1958,9 +1981,10 @@ cerr<<"av_bnd_val["<<i<<"] = "<<av_bnd_val[i] <<endl;
                 av_bnd_val.resize(num_lengths);
                 for (unsigned i = 0; i <av_bnd_val.size();i++)
                     av_bnd_val[i] =(double)temp_val[i];
- 
+#if 0 
 for (int i = 0; i <av_bnd_val.size();i++)
 cerr<<"av_bnd_val["<<i<<"] = "<<av_bnd_val[i] <<endl;
+#endif
             }
         }
    }
@@ -1975,7 +1999,7 @@ libdap::Array* FoDapCovJsonTransform::obtain_bound_values_worker(libdap::DDS *dd
         libdap::DDS::Vars_iter ve = dds->var_end();
      
         for(; vi != ve; vi++) {
-    cerr<<"In worker: coming to the loop  " <<endl;
+//    cerr<<"In worker: coming to the loop  " <<endl;
             if((*vi)->send_p()) {
                 libdap::BaseType *v = *vi;
                 libdap::Type type = v->type();
@@ -1984,7 +2008,7 @@ libdap::Array* FoDapCovJsonTransform::obtain_bound_values_worker(libdap::DDS *dd
                 if(type == libdap::dods_array_c) {
                     libdap::Array * td_a = dynamic_cast<libdap::Array *>(v);
                     int d_ndims = td_a->dimensions();
-    cerr<<"In worker: d_ndims is "<< d_ndims <<endl;
+//    cerr<<"In worker: d_ndims is "<< d_ndims <<endl;
                     if(d_ndims == 2) {
                         string tmp_bnd_dim_name;
                         int bound_dim_size = 0;
@@ -1995,7 +2019,7 @@ libdap::Array* FoDapCovJsonTransform::obtain_bound_values_worker(libdap::DDS *dd
                             if(dim_count == 1) {
                                 bound_dim_size = td_a->dimension_size(di, true);
                                 tmp_bnd_dim_name = td_a->dimension_name(di);
-cerr<<"tmp_bnd_dim_name is "<<tmp_bnd_dim_name <<endl;
+//cerr<<"tmp_bnd_dim_name is "<<tmp_bnd_dim_name <<endl;
                             }
                             dim_count++;
                         }
@@ -2004,7 +2028,7 @@ cerr<<"tmp_bnd_dim_name is "<<tmp_bnd_dim_name <<endl;
                         if((bound_dim_size == 2) && (td_a->name() == bnd_name)) {
                             d_a = td_a;
                             bnd_dim_name = tmp_bnd_dim_name;
-cerr<<"bnd_dim_name is "<<bnd_dim_name <<endl;
+//cerr<<"bnd_dim_name is "<<bnd_dim_name <<endl;
                             break;
                         }
                     }
@@ -2019,7 +2043,7 @@ cerr<<"bnd_dim_name is "<<bnd_dim_name <<endl;
 
 bool FoDapCovJsonTransform::obtain_valid_vars(libdap::DDS *dds, short axis_var_z_count, short axis_var_t_count ) {
 
-cerr<<"coming to obtain_valid_vars "<<endl;
+//cerr<<"coming to obtain_valid_vars "<<endl;
     bool ret_value = true;
     std::vector<std::string> temp_x_y_vars;
     std::vector<std::string> temp_x_y_z_vars;
@@ -2070,7 +2094,7 @@ cerr<<"coming to obtain_valid_vars "<<endl;
                        // a non-conform > 1D var appears except the "bound" variables.
                        if(non_xyzt_dim || axis_x_count >1 || axis_y_count >1 || axis_z_count >1 || axis_t_count >1) {
                           supported_var = false;
-cerr<<"Obtain: d_a->name() is "<<d_a->name() <<endl;
+//cerr<<"Obtain: d_a->name() is "<<d_a->name() <<endl;
                           if (FoCovJsonRequestHandler::get_may_ignore_z_axis() == false) { 
                               if(d_a->name()!=axisVar_x.bound_name && d_a->name()!=axisVar_y.bound_name &&
                                  d_a->name()!=axisVar_z.bound_name && d_a->name()!=axisVar_t.bound_name)
@@ -2097,11 +2121,11 @@ cerr<<"Obtain: d_a->name() is "<<d_a->name() <<endl;
             }
         }
     }
-cerr<<"obtain: after loop "<<endl;
+//cerr<<"obtain: after loop "<<endl;
 
     if (ret_value == true) {
     if(FoCovJsonRequestHandler::get_may_ignore_z_axis()== true) { 
-cerr<<"coming to ignore mode "<<endl;
+//cerr<<"coming to ignore mode "<<endl;
 
     // Select the common factor of (x,y),(x,y,z),(x,y,t),(x,y,z,t) among variables
     // If having vars that only holds x,y; these vars are only vars that will appear at the final coverage.
@@ -2138,7 +2162,7 @@ cerr<<"coming to ignore mode "<<endl;
     }
     }
     else {
-cerr<<"coming to strict mode "<<endl;
+//cerr<<"coming to strict mode "<<endl;
         if(axis_var_z_count >1 || axis_var_t_count >1) 
             ret_value = false;
         else {
@@ -2154,9 +2178,11 @@ cerr<<"coming to strict mode "<<endl;
         }
     }
 
+#if 0
 cerr<<"Parameter Names: "<<endl;
 for(unsigned i = 0; i <par_vars.size(); i++)
     cerr<<par_vars[i]<<endl;
+#endif
 
     
     if(par_vars.size() == 0)
@@ -2185,7 +2211,7 @@ std::string FoDapCovJsonTransform::cf_time_to_greg(long long time_val) {
     else if(cf_time.compare(0,6,"second") == 0)
         time_unit_length = 3;
 
-cerr<<"time_unit_length is "<<time_unit_length <<endl;        
+//cerr<<"time_unit_length is "<<time_unit_length <<endl;        
 
     // Remove any commonly found words from the origin timestamp
     vector<string> subStrs = { "days", "day", "hours", "hour", "minutes", "minute",
@@ -2194,7 +2220,7 @@ cerr<<"time_unit_length is "<<time_unit_length <<endl;
     for(unsigned int i = 0; i < subStrs.size(); i++)
         focovjson::removeSubstring(cf_time, subStrs[i]);
 
-cerr<<"cf_time stripped is "<<cf_time <<endl;
+//cerr<<"cf_time stripped is "<<cf_time <<endl;
 
     // Separate the date from the hms.
     size_t cf_time_space_pos = cf_time.find(' ');
@@ -2208,8 +2234,10 @@ cerr<<"cf_time stripped is "<<cf_time <<endl;
     if(cf_hms==" " || cf_hms=="")
         cf_hms ="00:00:00";
    
+#if 0
 cerr<<"cf_date is "<<cf_date <<endl;
 cerr<<"cf_hms is "<<cf_hms <<endl;
+#endif
 
     // We need to obtain year,month,date,hour,minute and second 
     // of the time.
@@ -2240,6 +2268,7 @@ cerr<<"cf_hms is "<<cf_hms <<endl;
     }
 
     
+#if 0
 cerr<<"cf_y is "<<cf_y <<endl;
 cerr<<"cf_mo is "<<cf_mo <<endl;
 cerr<<"cf_d is "<<cf_d <<endl;
@@ -2247,6 +2276,7 @@ cerr<<"cf_d is "<<cf_d <<endl;
 cerr<<"cf_h is "<<cf_h <<endl;
 cerr<<"cf_m is "<<cf_m <<endl;
 cerr<<"cf_s is "<<cf_s <<endl;
+#endif
 
     // We need to convert the time from string to integer.
     int cf_y_i,cf_mo_i,cf_d_i,cf_h_i,cf_m_i,cf_s_i;
@@ -2256,12 +2286,15 @@ cerr<<"cf_s is "<<cf_s <<endl;
     cf_h_i = stoi(cf_h);
     cf_m_i = stoi(cf_m);
     cf_s_i = stoi(cf_s);
+
+#if 0
 cerr<<"cf_y_i " <<cf_y_i <<endl;
 cerr<<"cf_mo_i " <<cf_mo_i <<endl;
 cerr<<"cf_d_i " <<cf_d_i <<endl;
 cerr<<"cf_h_i " <<cf_h_i <<endl;
 cerr<<"cf_m_i " <<cf_m_i <<endl;
 cerr<<"cf_s_i " <<cf_s_i <<endl;
+#endif
 
     // Now we want to assign these time info to struct tm
     // Note: the mktime() and localtime() may only work for the date after 1970.
@@ -2270,8 +2303,11 @@ cerr<<"cf_s_i " <<cf_s_i <<endl;
     ycf_1.tm_year = cf_y_i-1900; ycf_1.tm_mon = cf_mo_i; ycf_1.tm_mday = cf_d_i;
     time_t t_ycf_1 = mktime(&ycf_1);
 
+#if 0
 cerr<<"t_ycf_1 is "<<t_ycf_1 <<endl;
 cerr<<"time_val is "<<time_val <<endl;
+#endif
+
   //time_val = 11046060;
   // Here is the value to calculate the new time. We need to convert them to seconds.
   //double val = 1.000000000001;
@@ -2288,7 +2324,7 @@ cerr<<"time_val is "<<time_val <<endl;
 
 
   //time_t t_ycf_2 = t_ycf_1 + 86340;
-cerr<<"t_ycf_2 is "<<t_ycf_2 <<endl;
+//cerr<<"t_ycf_2 is "<<t_ycf_2 <<endl;
   struct tm *t_new_ycf;
   // The use of localtime() is to calcuate the time based on the CF time unit.
   // So the value actually represents the GMT time. 
@@ -2296,12 +2332,14 @@ cerr<<"t_ycf_2 is "<<t_ycf_2 <<endl;
   // Our currently supported product uses GMT. Will consider the other cases later.
   t_new_ycf = localtime(&t_ycf_2);
 
+#if 0
 cerr<< "t_new_ycf.tm_year is " <<t_new_ycf->tm_year <<endl;
 cerr<< "t_new_ycf.tm_mon is " <<t_new_ycf->tm_mon <<endl;
 cerr<< "t_new_ycf.tm_day is " <<t_new_ycf->tm_mday <<endl;
 cerr<< "t_new_ycf.tm_hour is " <<t_new_ycf->tm_hour <<endl;
 cerr<< "t_new_ycf.tm_min is " <<t_new_ycf->tm_min <<endl;
 cerr<< "t_new_ycf.tm_sec is " <<t_new_ycf->tm_sec <<endl;
+#endif 
     if(t_new_ycf->tm_mon == 0) {
         t_new_ycf->tm_year--;
         t_new_ycf->tm_mon = 12;
