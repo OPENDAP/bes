@@ -125,7 +125,7 @@ cerr<<"Axis value is "<<this->axes[i]->values << endl;
             domainType = "Point";
             return true;
         }
-cerr<<"Before X and Y and T"<<endl;
+//cerr<<"Before X and Y and T"<<endl;
     }
 
     // If just x, y, and t exist
@@ -138,9 +138,11 @@ cerr<<"Before X and Y and T"<<endl;
         if (shapeVals.size() < 3)
             return false;
 
-cerr <<"shapeVals[0] is "<< shapeVals[0] <<endl;
-cerr <<"shapeVals[1] is "<< shapeVals[1] <<endl;
-cerr <<"shapeVals[2] is "<< shapeVals[2] <<endl;
+#if 0
+//cerr <<"shapeVals[0] is "<< shapeVals[0] <<endl;
+//cerr <<"shapeVals[1] is "<< shapeVals[1] <<endl;
+//cerr <<"shapeVals[2] is "<< shapeVals[2] <<endl;
+#endif
 
         // A domain with Grid domain type MUST have the axes "x" and "y"
         // and MAY have the axes "z" and "t".
@@ -165,7 +167,7 @@ cerr <<"shapeVals[2] is "<< shapeVals[2] <<endl;
             domainType = "Point";
             return true;
         }
-cerr<<"Before X and Y "<<endl;
+//cerr<<"Before X and Y "<<endl;
     }
 
     // If just x and y exist
@@ -191,7 +193,7 @@ cerr<<"Before X and Y "<<endl;
             return true;
         }
     }
-cerr<<"Coming to the last step."<<endl;
+//cerr<<"Coming to the last step."<<endl;
 
     return false; // This source DDS is not valid as CovJSON
 }
@@ -830,7 +832,7 @@ void FoDapCovJsonTransform::
     }
     else {
         // TODO: We should manage to remove this loop when improving the whole module.
-        for (int i = 0; i <par_vars.size(); i++) {
+        for (unsigned int i = 0; i <par_vars.size(); i++) {
             if(par_vars[i] == name){
                 isParam = true;
                 break;
@@ -1111,7 +1113,6 @@ void FoDapCovJsonTransform::printAxes(ostream *strm, string indent)
     // Obtain bound values if having them
     // First handle the t-axis because of GLADS
     std::vector<std::string> t_bnd_val;
-    bool has_t_bnd = (axisVar_t.bound_name!="");
     if(axisVar_t_bnd_val.size() >0) {
         t_bnd_val.resize(axisVar_t_bnd_val.size());
         for (unsigned i = 0; i < axisVar_t_bnd_val.size();i++) {
@@ -2195,7 +2196,7 @@ for(unsigned i = 0; i <par_vars.size(); i++)
 
 std::string FoDapCovJsonTransform::cf_time_to_greg(long long time_val) {
 
-    tm ycf_1 = {0};
+    tm ycf_1;
 
     // Here obtain the cf_time from the axis_t_units.
     string cf_time= axis_t_units ;

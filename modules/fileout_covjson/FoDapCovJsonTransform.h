@@ -55,8 +55,8 @@ private:
     std::string _indent_increment;
     std::string atomicVals;
     std::string currDataType;
-    std::string coordRefType;
     std::string domainType;
+    std::string coordRefType;
     bool xExists;
     bool yExists;
     bool zExists;
