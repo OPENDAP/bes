@@ -1144,6 +1144,7 @@ cerr<<"time bound value is "<<t_bnd_val[i] <<endl;
                 else if((i == 3) && (axes[j]->name.compare("t") == 0)) {
                     *strm << child_indent1 << "\"" << axes[j]->name << "\": {" << endl;
                     *strm << child_indent2 << axes[j]->values << endl;
+                    print_bound(strm, t_bnd_val,child_indent2);
                 }
             }
             // If just x, y, and t exist (x, y, t)
@@ -1159,6 +1160,7 @@ cerr<<"time bound value is "<<t_bnd_val[i] <<endl;
                 else if((i == 2) && (axes[j]->name.compare("t") == 0)) {
                     *strm << child_indent1 << "\"" << axes[j]->name << "\": {" << endl;
                     *strm << child_indent2 << axes[j]->values << endl;
+                    print_bound(strm, t_bnd_val,child_indent2);
                 }
             }
             // If just x and y exist (x, y)
@@ -2333,3 +2335,26 @@ cerr<< "t_new_ycf.tm_sec is " <<t_new_ycf->tm_sec <<endl;
 
     return covjson_time;
 } 
+
+void FoDapCovJsonTransform::print_bound(ostream *strm, const std::vector<std::string> & t_bnd_val, const std::string & indent) {
+
+    if(axisVar_t.bound_name !="") {
+        std::string print_values;
+        if(t_bnd_val.size() >0) {
+            print_values = "\"bounds\": [";
+            for(unsigned i = 0; i <t_bnd_val.size(); i++) {   
+                string tmpString = t_bnd_val[i];
+                print_values +="\"";  
+                print_values +=focovjson::escape_for_covjson(tmpString);
+                print_values +="\"";  
+                if(i !=(t_bnd_val.size()-1))
+                    print_values +=", ";
+            }
+            print_values += "]";
+        }
+        else 
+            print_values= "\"bounds\": []";
+        *strm << indent << print_values <<endl;
+   }
+
+}
