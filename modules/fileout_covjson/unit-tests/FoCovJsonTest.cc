@@ -104,20 +104,13 @@ public:
     }
 
     // Called at the end of the test
-    ~FoCovJsonTest()
-    {
-        DBG(cerr << "FoCovJsonTest - Destructor" << endl);
-    }
+    virtual ~FoCovJsonTest() = default;
 
-    // Called before each test
-    void setUp()
-    {
-    }
+    // Called before each test - use the default impls for these
+    // void setUp()
 
     // Called after each test
-    void tearDown()
-    {
-    }
+    // void tearDown()
 
     CPPUNIT_TEST_SUITE(FoCovJsonTest);
 
@@ -182,11 +175,11 @@ public:
             cerr << "BESInternalError: " << e.get_message() << endl;
             CPPUNIT_ASSERT(false);
         }
-        catch (libdap::Error &e) {
+        catch (const libdap::Error &e) {
             cerr << "Error: " << e.get_error_message() << endl;
             CPPUNIT_ASSERT(false);
         }
-        catch (std::exception &e) {
+        catch (const std::exception &e) {
             DBG(cerr << "std::exception: " << e.what() << endl);
             CPPUNIT_FAIL("Caught std::exception");
         }
@@ -944,15 +937,20 @@ int main(int argc, char*argv[])
     while ((option_char = getopt(argc, argv, "dh")) != -1)
         switch (option_char) {
         case 'd':
-            debug = 1;  // debug is a static global
+            debug = true;  // debug is a static global
             cerr << "##### DEBUG is ON" << endl;
             break;
         case 'h': {     // Help - show test names
             std::cerr << "Usage: FoCovJsonTest has the following tests:" << std::endl;
             const std::vector<CppUnit::Test*> &tests = focovjson::FoCovJsonTest::suite()->getTests();
-            unsigned int prefix_len = focovjson::FoCovJsonTest::suite()->getName().append("::").length();
-            for (std::vector<CppUnit::Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+            size_t prefix_len = focovjson::FoCovJsonTest::suite()->getName().append("::").length();
+#if 0
+            for (auto i = tests.begin(), e = tests.end(); i != e; ++i) {
                 std::cerr << (*i)->getName().replace(0, prefix_len, "") << std::endl;
+            }
+#endif
+            for (auto &test: tests) {
+                std::cerr << test->getName().replace(0, prefix_len, "") << std::endl;
             }
             break;
         }

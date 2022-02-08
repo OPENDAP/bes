@@ -16,6 +16,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
 LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
+AM_CPPFLAGS += -Wno-vla-extension
 
 AM_CXXFLAGS=
 AM_LDFLAGS =

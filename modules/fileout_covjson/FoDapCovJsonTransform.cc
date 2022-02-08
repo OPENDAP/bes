@@ -231,64 +231,61 @@ unsigned int FoDapCovJsonTransform::covjsonSimpleTypeArrayWorker(ostream *strm, 
                 if(is_axis_t_sgeo) { 
                     string axis_t_value;
                     std::ostringstream tmp_stream; 
-                    //tmp_stream <<values[indx++];
-                  // TODO: have to do the datatype conversion and use unsigned 64-bit integer.
-
                     long long tmp_value = 0;
-                    //TODO: add error check.
                     switch (a_type) {
-                    case libdap::dods_byte_c:
-                    {
+                    case libdap::dods_byte_c: {
                         unsigned char tmp_byte_value = reinterpret_cast<unsigned char *>(values)[indx++];                       
-                        tmp_value = (long long) tmp_byte_value; 
-                    }
+                        tmp_value = (long long) tmp_byte_value;
                         break;
-                    case libdap::dods_uint16_c:
-                    {
+                    }
+
+                    case libdap::dods_uint16_c:  {
                         unsigned short tmp_uint16_value = reinterpret_cast<unsigned short *>(values)[indx++];                       
-                        tmp_value = (long long) tmp_uint16_value; 
-                    }
+                        tmp_value = (long long) tmp_uint16_value;
                         break;
-                    case libdap::dods_int16_c:
-                    {
+                    }
+
+                    case libdap::dods_int16_c: {
                         short tmp_int16_value = reinterpret_cast<short *>(values)[indx++];                       
-                        tmp_value = (long long) tmp_int16_value; 
-                    }
+                        tmp_value = (long long) tmp_int16_value;
                         break;
-                    case libdap::dods_uint32_c:
-                    {
+                    }
+
+                    case libdap::dods_uint32_c: {
                         unsigned int tmp_uint_value = reinterpret_cast<unsigned int *>(values)[indx++];                       
-                        tmp_value = (long long) tmp_uint_value; 
-                    }
+                        tmp_value = (long long) tmp_uint_value;
                         break;
-                    case libdap::dods_int32_c:
-                    {
+                    }
+
+                    case libdap::dods_int32_c: {
                         int tmp_int_value = reinterpret_cast<int *>(values)[indx++];                       
-                        tmp_value = (long long) tmp_int_value; 
-                    }
+                        tmp_value = (long long) tmp_int_value;
                         break;
-                    case libdap::dods_float32_c:
-                    {
+                    }
+
+                    case libdap::dods_float32_c: {
                         float tmp_float_value = reinterpret_cast<float *>(values)[indx++];                       
                         // In theory, it may cause overflow. In reality, the time in seconds will never be that large.
-                        tmp_value = (long long) tmp_float_value; 
-                    }
+                        tmp_value = (long long) tmp_float_value;
                         break;
-                    case libdap::dods_float64_c:
-                    {
+                    }
+
+                    case libdap::dods_float64_c: {
                         double tmp_double_value = reinterpret_cast<double *>(values)[indx++];                       
                         // In theory, it may cause overflow. In reality, the time in seconds will never be that large.
-                        tmp_value = (long long) tmp_double_value; 
-                    }
+                        tmp_value = (long long) tmp_double_value;
                         break;
                     }
-                  
+
+                    default:
+                        throw BESInternalError("Attempt to extract CF time information from an invalid source", __FILE__, __LINE__);
+                    }
+
+
                     axis_t_value = cf_time_to_greg(tmp_value);
 #if 0
-cerr<<"time value is " <<axis_t_value <<endl;
-                    //axis_t_value = "CF to greg";
-cerr<<"CF time unit is "<<axis_t_units <<endl;
-                    //indx++;
+                    cerr<<"time value is " <<axis_t_value <<endl;
+                    cerr<<"CF time unit is "<<axis_t_units <<endl;
 #endif
                     *strm << "\"" << focovjson::escape_for_covjson(axis_t_value) << "\"";
                 }
