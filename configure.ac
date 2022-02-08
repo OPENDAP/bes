@@ -69,45 +69,30 @@ AC_SUBST(host)
 
 dnl This is the default. If the caller uses --enable-developer, that option
 dnl will override these values
-cxx_debug_flags="-g -O2"
+cxx_debug_flags=
 
-dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-dnl I moved this up to here from the tail end of the file
-dnl because it needs to run before the AC_PROG_CXX macro
-dnl which will also set CXXFLAGS
-dnl jhrg 3/4/15
-dnl AC_ARG_ENABLE([developer], [AS_HELP_STRING([--enable-developer], [Developer mode; won't override CXXFLAGS on the command line])],
-dnl   [AM_CONDITIONAL([BES_DEVELOPER], [true])  cxx_debug_flags="-g3 -O0  -Wall -W -Wcast-align"],
-dnl   [AM_CONDITIONAL([BES_DEVELOPER], [false]) AC_DEFINE([NDEBUG], [1], [Define this to suppress assert() statements.])])
+dnl Removed "-g -O2" jhrg 2/8/22
 
 AC_ARG_ENABLE([developer],
     [AS_HELP_STRING([--enable-developer],
-    [Developer mode: Won't override CXXFLAGS on the command line])]
-)
+    [Developer mode: Won't override CXXFLAGS on the command line])])
+
 AM_CONDITIONAL([BES_DEVELOPER], [test "x$enable_developer" = "xyes"])
 AM_COND_IF([BES_DEVELOPER],
-    [cxx_debug_flags="-g3 -O0  -Wall -W -Wcast-align"
+    [cxx_debug_flags="-g3 -O0 -fno-inline -Wall"
       AC_MSG_NOTICE([Developer Mode is enabled.]) ],
     [AC_DEFINE([NDEBUG], [1], [Define this to suppress assert() statements.])
-      AC_MSG_NOTICE([Developer Mode is disabled.])]
-)
-dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-dnl AC_ARG_ENABLE([asan], [AS_HELP_STRING([--enable-asan], [Use the address sanitizer; won't override CXXFLAGS on the command line])],
-dnl     [AM_CONDITIONAL([USE_ASAN], [true])
-dnl      cxx_debug_flags="$cxx_debug_flags -fsanitize=address -fno-omit-frame-pointer -fno-common"],
-dnl     [AM_CONDITIONAL([USE_ASAN], [false])])
+      AC_MSG_NOTICE([Developer Mode is disabled.])])
 
 AC_ARG_ENABLE([asan],
     [AS_HELP_STRING([--enable-asan],
-    [Use the address sanitizer. Won't override CXXFLAGS on the command line])]
-)
+    [Use the address sanitizer. Won't override CXXFLAGS on the command line])])
+
 AM_CONDITIONAL([USE_ASAN], [test "x$enable_asan" = "xyes"])
 AM_COND_IF([USE_ASAN],
     [cxx_debug_flags="$cxx_debug_flags -fsanitize=address -fno-omit-frame-pointer -fno-common"
         AC_MSG_NOTICE([Address Sanitizer (ASAN) is enabled.])],
-    [AC_MSG_NOTICE([Address Sanitizer (ASAN) is disabled.])]
-)
+    [AC_MSG_NOTICE([Address Sanitizer (ASAN) is disabled.])])
 
 AC_ARG_ENABLE([coverage],
     [AS_HELP_STRING([--enable-coverage], [Build so tests emit coverage data and enable coverage target (default: no)])])
@@ -126,25 +111,16 @@ AS_IF([test x$enable_coverage = xyes && which gcov],
              [AC_MSG_NOTICE([Check that gcov is on your PATH])])
        AM_CONDITIONAL([ENABLE_COVERAGE], [false])])
 
-# --xml-pretty -o gcovr_ouput.xml
-
 AC_SUBST([GCOVR_FLAGS])
-
-
-dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-dnl AC_ARG_WITH([cmr], [AS_HELP_STRING([--with-cmr], [Build the CMR Module (built by default in developer mode)])],
-dnl    [AM_CONDITIONAL([WITH_CMR], [true])],
-dnl    [AM_CONDITIONAL([WITH_CMR], [AM_COND_IF([BES_DEVELOPER], [true], [false])])])
 
 AC_ARG_WITH([cmr],
     [AS_HELP_STRING([--without-cmr],
-    [Disable support for the CMR Module (Built by default)])]
-)
+    [Disable support for the CMR Module (Built by default)])])
+
 AM_CONDITIONAL([WITH_CMR], [test "x$with_cmr" != "xno"])
 AM_COND_IF([WITH_CMR],
     [AC_MSG_NOTICE([Building support for the CMR Module])],
-    [AC_MSG_NOTICE([Disabled support for the CMR Module])]
-)
+    [AC_MSG_NOTICE([Disabled support for the CMR Module])])
 
 dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 dnl Enable/Disable new categorized logging output
@@ -182,10 +158,6 @@ dnl  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  
 
 AS_IF([test "$CC" = "gcc"], [AM_CONDITIONAL([COMPILER_IS_GCC],[true])],
     [AM_CONDITIONAL([COMPILER_IS_GCC],[false])])
-
-dnl Only set CXXFLAGS if the caller didn't supply a value
-
-AS_IF([test -z "${CXXFLAGS+set}"], [CXXFLAGS=])
 
 dnl library visioning: Update these when the interface changes.
 dnl
@@ -249,19 +221,16 @@ dnl For now, I'm counting 0x as supporting C++-11 in our code.
 
 CXX11_FLAG=""
 
-CXX_FLAGS_CHECK([--std=c++11], [CXX11_FLAG=--std=c++11], [])
-
-AS_IF([test -z "$CXX11_FLAG"],
-      [CXX_FLAGS_CHECK([--std=c++0x], [CXX11_FLAG=--std=c++0x], [])])
-
-AS_IF([test -z "$CXX11_FLAG"],
-      [AC_MSG_ERROR([Not using C++11 (or C++0x)])],
-      [AC_MSG_NOTICE([Using $CXX11_FLAG for C++11 support])
-       cxx_debug_flags="$cxx_debug_flags --pedantic $CXX11_FLAG"])
+CXX_FLAGS_CHECK([--std=c++11], [CXX11_FLAG=--std=c++11], [AC_MSG_ERROR([C++11 required.])])
 
 AC_SUBST(CXX11_FLAG)
 
-AS_IF([test -n "$cxx_debug_flags"], [CXXFLAGS="$cxx_debug_flags"])
+dnl If CXXFLAGS is not set, set it to the empty string.
+AS_IF([test -z ${CXXFLAGS+set}], [CXXFLAGS=])
+
+AS_IF([test -n "$cxx_debug_flags"],
+      [CXXFLAGS="$CXXFLAGS $cxx_debug_flags $CXX11_FLAG"],
+      [CXXFLAGS="$CXXFLAGS $CXX11_FLAG"])
 
 dnl We really need bison and not yacc. If you use AC_PROG_YACC, the resulting 
 dnl Makefile will call bison -y which does not know how to make the parsers 
