@@ -65,6 +65,15 @@ yum install -y /tmp/*.rpm
 # using the docker run --volume option and set it to $TRAVIS_BUILD_DIR.
 cd $HOME/travis
 
+# The build needs these environment variables because CentOS 8 lacks the stock
+# XDR/RPC libraries. Those were added to the docker image via the tirpc package.
+# jhrg 2/11/22
+if test -n $OS -a $OS = centos-stream8
+then
+  export CPPFLAGS=-I/usr/include/tirpc
+  export LDFLAGS=-ltirpc
+fi
+
 autoreconf -fiv
 
 echo "BES_BUILD_NUMBER: $BES_BUILD_NUMBER"
