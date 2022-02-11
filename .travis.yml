@@ -116,6 +116,8 @@ before_script:
 # but I won't know until I hear back from Travis-CI support. jhrg 7/23/21
 
 stages:
+  - name: not-now
+    if: branch = not-now
   - name: build-and-package
     if: branch = master OR cs8-rpms   # FIXME As above. jhrg 2/11/22
   - name: scan
@@ -125,7 +127,7 @@ stages:
 
 jobs:
   include:
-    - stage: build-and-package
+    - stage: not-now # FIXME build-and-package
       name: "check"
       script:
         - export BES_BUILD=main
@@ -133,7 +135,7 @@ jobs:
         - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
         - make -j16 && make install && besctl start && make check -j16 && besctl stop
 
-    - stage: build-and-package
+    - stage: not-now # FIXME build-and-package
       name: "distcheck"
       script:
         - export BES_BUILD=distcheck
@@ -146,7 +148,7 @@ jobs:
       # packages for branches, but we want to be able to test builds without making pushes to master
       # and that means having the build-rpm.sh use the spec files on a branch.
 
-    - stage: build-and-package
+    - stage: not-now # FIXME build-and-package
       name: "CentOS-7 RPMs"
       script:
         - export BES_BUILD=centos7
@@ -177,7 +179,7 @@ jobs:
             --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
             opendap/centos-stream8_hyrax_builder:1.1 /root/travis/travis/build-rpm.sh
 
-    - stage: build-and-package
+    - stage: not-now # FIXME build-and-package
       name: "dist"
       script:
         - export BES_BUILD=srcdist
