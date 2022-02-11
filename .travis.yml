@@ -114,17 +114,20 @@ before_script:
 # Update: it's back in. There may be a way to skip the scan for a DRAFT pull request,
 # but I won't know until I hear back from Travis-CI support. jhrg 7/23/21
 
+# TODO: Replace parts I've removed while testing CS8 RPM builds. jhrg 2/11/22
 stages:
+  - name: never
+    if: branch = never
   - name: build-and-package
     if: branch = master
   - name: scan
-    if:  branch = master
+    if:  branch = never # master
   - name: hyrax-olfs-trigger
-    if: branch = master AND type != pull_request
+    if: branch = never # master AND type != pull_request
 
 jobs:
   include:
-    - stage: build-and-package
+    - stage: never # build-and-package
       name: "check"
       script:
         - export BES_BUILD=main
@@ -132,7 +135,7 @@ jobs:
         - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
         - make -j16 && make install && besctl start && make check -j16 && besctl stop
 
-    - stage: build-and-package
+    - stage: never # build-and-package
       name: "distcheck"
       script:
         - export BES_BUILD=distcheck
@@ -160,7 +163,7 @@ jobs:
           --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
           opendap/centos7_hyrax_builder:1.7 /root/travis/build-rpm.sh
 
-    - stage: build-and-package
+    - stage: never # build-and-package
       name: "dist"
       script:
         - export BES_BUILD=srcdist
