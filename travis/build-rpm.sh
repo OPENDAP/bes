@@ -39,8 +39,17 @@ fi
 # aws s3 cp s3://opendap.travis.build/
 aws s3 cp s3://opendap.travis.build/hyrax-dependencies-$OS-static.tar.gz /tmp/
 
+
 # This dumps the dependencies in $HOME/install/deps/{lib,bin,...}
-tar -xzvf /tmp/hyrax-dependencies-$OS-static.tar.gz
+# The Contos7 dependencies are tarred so they include /root for a reason
+# that escapes me. For CentOS Stream8, we have to CD to /root before expanding
+# the tar ball to get the dependencies in /root/install. jhrg 2/11/22
+if test -n $OS -a $OS = centos-stream8
+then
+  tar -C /$HOME -xzvf /tmp/hyrax-dependencies-$OS-static.tar.gz
+else
+  tar -xzvf /tmp/hyrax-dependencies-$OS-static.tar.gz
+fi
 
 ls -lR $HOME/install/deps
 
