@@ -25,6 +25,7 @@ compiler: gcc
 branches:
   only:
   - master
+  - cs8-rpms    # FIXME Remove once tested. jhrg 2/11/22
 
 # This cache is used to speed up sonar scan runs. See https://docs.travis-ci.com/user/caching.
 # Each branch gets its own cache. The three different sonar scan runs each use their own cache
@@ -115,14 +116,12 @@ before_script:
 # but I won't know until I hear back from Travis-CI support. jhrg 7/23/21
 
 stages:
-  - name: never
-    if: branch = never
   - name: build-and-package
-    if: branch = master
+    if: branch = master OR cs8-rpms   # FIXME As above. jhrg 2/11/22
   - name: scan
-    if:  branch = never # master
+    if:  branch = master
   - name: hyrax-olfs-trigger
-    if: branch = never # master AND type != pull_request
+    if: branch = master AND type != pull_request
 
 jobs:
   include:
