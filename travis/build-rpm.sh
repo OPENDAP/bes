@@ -21,13 +21,19 @@ set -eux
 # set to include $prefix/bin and $prefix/deps/bin; $prefix will be
 # $HOME/install. $HOME is /root for the build container.
 
-echo "env:"
-printenv
+echo "Inside the docker container, prefix HOME PATH:"
+printenv prefix HOME PATH
 
 # CentOS7 may not need libpng with the new hyrax-dependencies, but I'm not sure
 # if the current dependency binaries are built with the latest source and build
 # scripts. jhrg 1/19/22
-yum install -y libpng-devel sqlite-devel
+#
+# Hopefully the CentOS Stream8 docker image we use to build the RPMs has all we need.
+# jhrg 2/11/22
+if test -n $OS -a $OS = centos7
+then
+  yum install -y libpng-devel sqlite-devel
+fi
 
 # Get the pre-built dependencies (all static libraries). $OS is 'centos6' or 'centos7'
 # aws s3 cp s3://opendap.travis.build/
@@ -36,11 +42,11 @@ aws s3 cp s3://opendap.travis.build/hyrax-dependencies-$OS-static.tar.gz /tmp/
 # This dumps the dependencies in $HOME/install/deps/{lib,bin,...}
 tar -xzvf /tmp/hyrax-dependencies-$OS-static.tar.gz
 
-# ls -lR $HOME/install/deps
+ls -lR $HOME/install/deps
 
 # Then get the libdap RPMs packages
 # libdap-3.20.0-1.el6.x86_64.rpm libdap-devel-3.20.0-1.el6.x86_64.rpm
-# $DIST is 'el6' or 'el7'; $LIBDAP_RPM_VERSION is 3.20.0-1 (set by Travis)
+# $DIST is 'el6', 'el7', or 'el8'; $LIBDAP_RPM_VERSION is 3.20.0-1 (set by Travis)
 aws s3 cp s3://opendap.travis.build/libdap-$LIBDAP_RPM_VERSION.$DIST.x86_64.rpm /tmp/
 aws s3 cp s3://opendap.travis.build/libdap-devel-$LIBDAP_RPM_VERSION.$DIST.x86_64.rpm /tmp/
 
@@ -52,6 +58,7 @@ cd $HOME/travis
 
 autoreconf -fiv
 
+echo "BES_BUILD_NUMBER: $BES_BUILD_NUMBER"
 ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --with-build=$BES_BUILD_NUMBER
 
 # set up the rpm tree in $HOME. We didn't need to do this for libdap because 
