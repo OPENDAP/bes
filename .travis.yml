@@ -261,6 +261,8 @@ before_deploy:
   - if test "$BES_BUILD" = "srcdist"; then cp bes-*.tar.gz $TRAVIS_BUILD_DIR/package; fi
   # CentOS-7  distribution prep
   - if test "$BES_BUILD" = "centos7"; then ./travis/rpm-to-package-dir.sh "el7"; fi
+  # CentOS-Stream8  distribution prep
+  - if test "$BES_BUILD" = "centos-stream8"; then ./travis/rpm-to-package-dir.sh "el8"; fi
   # Check for the stuff...
   - ls -l $TRAVIS_BUILD_DIR/package
 
