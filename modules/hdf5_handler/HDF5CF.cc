@@ -1667,7 +1667,60 @@ void File::Adjust_Duplicate_FakeDim_Name(Dimension * dim)
     // Need to prepare for the next unique FakeDim. 
     addeddimindex++;
 }
+// 1. See the function comments of Add_One_FakeDim_Name
+// 2. This is for the case when we have foo[100][100],foo2[100][100]. 
+// The Adjust_Duplicate_FakeDim_Name assures the uniqueness of Dimension
+// names for each var,like foo[FakeDim0][FakeDim1],foo2[FakeDim0][FakeDim3].. 
+// but the dimension names are not desirable for products like SMAP level 3.
+// For similar vars, the dimension names like foo[FakeDim0][FakeDim1] and
+// foo2[FakeDim0][FakeDim1] are the way to go.
+//#if 0
+void File::Adjust_Duplicate_FakeDim_Name2(Dimension * dim, int dup_dim_size_index) 
+{
 
+    // Search if vector of (dup dimsize dimname) pair has the current size
+    // if yes,  insert the dim name from the vector. 
+    // Note, in case we have foo[100][100][100] etc., we need to remember the
+    // vector index, to obtain the correct dup_dim_size, dup_dim_name pair.
+    // if no, build up the new FakeDim. 
+    
+    bool dup_dim_size_exist = false;
+    int temp_dup_dim_size_index = 0;
+    for (unsigned i = 0; i <dup_dimsize_dimname.size();i++) {
+        if(dim->size ==  dup_dimsize_dimname[i].first) { 
+            temp_dup_dim_size_index++;
+            if(dup_dim_size_index == temp_dup_dim_size_index) {
+                  dup_dim_size_exist = true;
+                  dim->name = dup_dimsize_dimname[i].second;
+                  dim->newname = dim->name;
+                  break;
+            }
+        }
+    }
+
+    if(dup_dim_size_exist == false) {
+
+    stringstream sfakedimindex;
+    pair<set<string>::iterator, bool> setret;
+
+    //addeddimindex++;
+    sfakedimindex << addeddimindex;
+    string added_dimname = "FakeDim" + sfakedimindex.str();
+    setret = dimnamelist.insert(added_dimname);
+    if (false == setret.second) {
+        throw2("Inside Adjust_Duplicate_FakeDim_Name2(), Fail to insert the unique dim name ", dim->name);
+    }
+    dim->name = added_dimname;
+    dim->newname = dim->name;
+    Insert_One_NameSizeMap_Element(dim->name, dim->size, dim->unlimited_dim);
+    // push back to the duplicate size, name vector.
+    dup_dimsize_dimname.push_back(make_pair(dim->size,dim->name));
+    
+
+    }
+
+}
+//#endif
 // Replace all dimension names, this function is currently not used. So comment out. May delete it in the future.
 #if 0
 void File::Replace_Dim_Name_All(const string orig_dim_name, const string new_dim_name)  {

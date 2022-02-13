@@ -740,6 +740,7 @@ protected:
 
     void Add_One_FakeDim_Name(Dimension *dim) ;
     void Adjust_Duplicate_FakeDim_Name(Dimension * dim) ;
+    void Adjust_Duplicate_FakeDim_Name2(Dimension * dim,int dup_dim_size_index) ;
     void Insert_One_NameSizeMap_Element(std::string name, hsize_t size, bool unlimited) ;
     void Insert_One_NameSizeMap_Element2(std::map<std::string, hsize_t> &, std::map<std::string, bool>&, std::string name, hsize_t size,
         bool unlimited) ;
@@ -832,6 +833,7 @@ protected:
     /// Handle added dimension names
     std::map<hsize_t, std::string> dimsize_to_fakedimname;
     int addeddimindex;
+    std::vector<std::pair<hsize_t, std::string>>dup_dimsize_dimname;
 
     bool check_ignored;
     bool have_ignored;
