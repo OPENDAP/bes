@@ -8805,8 +8805,8 @@
         </Attribute>
     </Attribute>
     <Attribute name="Metadata_SeriesIdentification" type="Container">
-        <Attribute name="otherCitationDetails" type="String">
-            <Value>The Calibration and Validation Version 2 Release of the SMAP Level 3 Daily Global Composite Passive Soil Moisture Science Processing Software.</Value>
+        <Attribute name="identifier_product_DOI" type="String">
+            <Value>doi:10.5067/4DQ54OUIJ9DL</Value>
         </Attribute>
         <Attribute name="shortName" type="String">
             <Value>SPL3SMP_E</Value>
@@ -8857,16 +8857,16 @@
         <Attribute name="spatialRepresentationType" type="String">
             <Value>grid</Value>
         </Attribute>
-        <Attribute name="identifier_product_DOI" type="String">
-            <Value>doi:10.5067/4DQ54OUIJ9DL</Value>
+        <Attribute name="otherCitationDetails" type="String">
+            <Value>The Calibration and Validation Version 2 Release of the SMAP Level 3 Daily Global Composite Passive Soil Moisture Science Processing Software.</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/Metadata/SeriesIdentification</Value>
         </Attribute>
     </Attribute>
     <Attribute name="Metadata_DatasetIdentification" type="Container">
-        <Attribute name="otherCitationDetails" type="String">
-            <Value>The Calibration and Validation Version 2 Release of the SMAP Level 3 Daily Global Composite Passive Soil Moisture Science Processing Software.</Value>
+        <Attribute name="shortName" type="String">
+            <Value>SPL3SMP_E</Value>
         </Attribute>
         <Attribute name="characterSet" type="String">
             <Value>utf8</Value>
@@ -8925,8 +8925,8 @@
         <Attribute name="spatialRepresentationType" type="String">
             <Value>grid</Value>
         </Attribute>
-        <Attribute name="shortName" type="String">
-            <Value>SPL3SMP_E</Value>
+        <Attribute name="otherCitationDetails" type="String">
+            <Value>The Calibration and Validation Version 2 Release of the SMAP Level 3 Daily Global Composite Passive Soil Moisture Science Processing Software.</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/Metadata/DatasetIdentification</Value>
@@ -9226,8 +9226,8 @@
         </Attribute>
     </Attribute>
     <Attribute name="Metadata_ProcessStep" type="Container">
-        <Attribute name="documentVersion" type="String">
-            <Value>Preliminary</Value>
+        <Attribute name="processDescription" type="String">
+            <Value>Soil moisture retrieved using default retrieval algorithm from brightness temperatures acquired by the SMAP radiometer during the spacecraft descending pass.  Level 2 granule data are then mosaicked on a daily basis to form the Level 3 product.</Value>
         </Attribute>
         <Attribute name="stepDateTime" type="String">
             <Value>2021-11-02T15:55:24.869Z</Value>
@@ -9286,8 +9286,8 @@
         <Attribute name="algorithmTitle" type="String">
             <Value>Soil Moisture Active Passive (SMAP) Radiometer processing algorithm</Value>
         </Attribute>
-        <Attribute name="processDescription" type="String">
-            <Value>Soil moisture retrieved using default retrieval algorithm from brightness temperatures acquired by the SMAP radiometer during the spacecraft descending pass.  Level 2 granule data are then mosaicked on a daily basis to form the Level 3 product.</Value>
+        <Attribute name="documentVersion" type="String">
+            <Value>Preliminary</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/Metadata/ProcessStep</Value>
