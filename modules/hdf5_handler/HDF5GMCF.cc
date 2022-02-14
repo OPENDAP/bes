@@ -2700,14 +2700,19 @@ void GMFile::Add_Dim_Name_LatLon1D_Or_CoordAttr_General_Product()  {
         int num_dup_dim_size = 0;
         for (vector<Dimension *>::iterator ird= (*irv)->dims.begin();
             ird != (*irv)->dims.end(); ++ird) {
-                Add_One_FakeDim_Name(*ird);
-                setsizeret = fakedimsize.insert((*ird)->size);
-                // Avoid the same size dimension sharing the same dimension name.
-                if (false == setsizeret.second){   
-                    num_dup_dim_size++;
-                    Adjust_Duplicate_FakeDim_Name2(*ird,num_dup_dim_size);
-                }
-                // TODO: the above is just for SMAP case, need to make a key,now for debugging
+            Add_One_FakeDim_Name(*ird);
+            setsizeret = fakedimsize.insert((*ird)->size);
+            // Avoid the same size dimension sharing the same dimension name.
+            // HYRAX-629, we not only want to have the unique dimension name for
+            // the same dimension size of different dimensions in a var, we also
+            // want to reduce the number of dimension names.
+            // So foo[100][100], foo2[100][100][100] should be something like
+            // foo[FakeDim0][FakeDim1] foo2[FakeDim0][FakeDim1][FakeDim2]
+            if (false == setsizeret.second){   
+                num_dup_dim_size++;
+                Adjust_Duplicate_FakeDim_Name2(*ird,num_dup_dim_size);
+            }
+            // Comment out the original code for the time being.
 #if 0
                 if (false == setsizeret.second){   
                     num_dup_dim_size++;
@@ -2717,6 +2722,8 @@ void GMFile::Add_Dim_Name_LatLon1D_Or_CoordAttr_General_Product()  {
         }
     }
 
+// leave it here for debugging purpose
+#if 0
 for (vector<Var *>::iterator irv = this->vars.begin();
         irv != this->vars.end(); ++irv) {
 cerr<<"Var name is "<<(*irv)->newname<<endl;
@@ -2724,6 +2731,7 @@ cerr<<"Var name is "<<(*irv)->newname<<endl;
             ird != (*irv)->dims.end(); ++ird) 
 cerr<<"Dimension name is "<<(*ird)->newname <<endl;
 }
+#endif
 
 }
 
