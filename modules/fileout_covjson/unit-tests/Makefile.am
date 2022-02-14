@@ -6,6 +6,8 @@ AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
 -I$(top_srcdir)/modules/fileout_covjson $(DAP_CFLAGS)
 LIBADD = $(BES_DISPATCH_LIB) $(BES_EXTRA_LIBS) $(DAP_SERVER_LIBS)
 
+AM_CPPFLAGS += -Wno-vla-extension
+
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
 LIBADD += $(CPPUNIT_LIBS)
@@ -66,7 +68,10 @@ check-local:
 	@echo ""
 endif
 
-OBJS = ../FoDapCovJsonTransform.o ../focovjson_utils.o
+# Instead of using explict object code, use the static archive version of the
+# module. See below. This reduces linker errors as the test(s) are expanded.
+# jhrg 2/5/22
+# OBJS = ../FoCovJsonRequestHandler.o ../FoDapCovJsonTransform.o ../focovjson_utils.o
 
 FoCovJsonTest_SOURCES = FoCovJsonTest.cc
-FoCovJsonTest_LDADD = $(OBJS) $(LIBADD)
+FoCovJsonTest_LDADD = ../.libs/libfocovjson_module.a $(LIBADD)
