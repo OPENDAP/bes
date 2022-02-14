@@ -149,3 +149,5 @@ $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/ORNL/da
 #f16ssmi
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/others/f16_ssmis_20031026v7.nc.h5
 
+#SMAP_L3_SM_P_E
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/NSIDC/SMAP_L3_SM_P_E_20211030_R18240_001.h5
