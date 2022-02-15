@@ -1,0 +1,8 @@
+Dataset {
+    Float32 temp[lat = 3][FakeDim1 = 3];
+    Float32 temp2[lat = 3][FakeDim1 = 3][FakeDim2 = 3];
+    Float32 lat[lat = 3];
+    Float32 lon[lat = 3];
+    Int32 FakeDim1[FakeDim1 = 3];
+    Int32 FakeDim2[FakeDim2 = 3];
+} cf_1dll_same_dimsize.h5;
