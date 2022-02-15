@@ -2538,14 +2538,22 @@ void GMFile::Add_Dim_Name_LatLon2D_General_Product()  {
  
         set<hsize_t> fakedimsize;
         pair<set<hsize_t>::iterator,bool> setsizeret;
+        int num_dup_dim_size = 0;
         for (vector<Dimension *>::iterator ird= (*irv)->dims.begin();
             ird != (*irv)->dims.end(); ++ird) {
                 Add_One_FakeDim_Name(*ird);
                 setsizeret = fakedimsize.insert((*ird)->size);
 
                 // Avoid the same size dimension sharing the same dimension name.
+            if (false == setsizeret.second){   
+                num_dup_dim_size++;
+                Adjust_Duplicate_FakeDim_Name2(*ird,num_dup_dim_size);
+            }
+ 
+#if 0
                 if (false == setsizeret.second)   
                     Adjust_Duplicate_FakeDim_Name(*ird);
+#endif
         }
 
         // Find variable name that is latitude or lat or Latitude
@@ -2694,7 +2702,6 @@ void GMFile::Add_Dim_Name_LatLon1D_Or_CoordAttr_General_Product()  {
     // Only need to add the fake dimension names
     for (vector<Var *>::iterator irv = this->vars.begin();
         irv != this->vars.end(); ++irv) {
- 
         set<hsize_t> fakedimsize;
         pair<set<hsize_t>::iterator,bool> setsizeret;
         int num_dup_dim_size = 0;
