@@ -731,12 +731,19 @@ void gen_gmh5_cfdmr(D4Group* d4_root,HDF5CF::GMFile *f) {
     for (it_v = vars.begin(); it_v !=vars.end();++it_v) {
         BESDEBUG("h5","variable full path= "<< (*it_v)->getFullPath() <<endl);
         gen_dap_onevar_dmr(d4_root,*it_v,fileid, filename);
+
     }
 
     for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
         BESDEBUG("h5","variable full path= "<< (*it_cv)->getFullPath() <<endl);
         gen_dap_onegmcvar_dmr(d4_root,*it_cv,fileid, filename);
     }
+
+    // GPM needs to be handled in a special way(mostly _FillValue)
+    if(GPMS_L3 == f->getProductType() || GPMM_L3 == f->getProductType() 
+                                      || GPM_L1 == f->getProductType())
+        update_GPM_special_attrs_cfdmr(d4_root,cvars);
+    
 
     for (it_spv = spvars.begin(); it_spv !=spvars.end();it_spv++) {
         BESDEBUG("h5","variable full path= "<< (*it_spv)->getFullPath() <<endl);
@@ -843,7 +850,6 @@ void gen_gmh5_cfdmr(D4Group* d4_root,HDF5CF::GMFile *f) {
             }
         }
    }
-   
 
 }
 
@@ -1226,6 +1232,78 @@ void update_GPM_special_attrs(DAS& das, const HDF5CF::Var *var,bool is_cvar) {
             }
         }
     }
+}
+
+// This routine is following the DAP2 way,except we map HDF5 8-bit integer to DAP4 8-bit integer. 
+// When we add floating point fill value at HDF5CF.cc, the value will be changed
+// a little bit when it changes to string representation. 
+// For example, -9999.9 becomes -9999.9000123. To reduce the misunderstanding,we
+// just add fillvalue in the string type here. KY 2014-04-02
+void update_GPM_special_attrs_cfdmr(libdap::D4Group* d4_root, const vector<HDF5CF::GMCVar *>& cvars) {
+
+    BESDEBUG("h5","Coming to update_GPM_special_attrs_cfdmr()  "<<endl);
+
+    // We need to loop through all the variables.
+    Constructor::Vars_iter vi = d4_root->var_begin();
+    Constructor::Vars_iter ve = d4_root->var_end();
+
+    for (; vi != ve; vi++) {
+        
+        // The _FillValue datatype only applies to 
+        // 32-bit and 64-bit floating-point data and
+        // 8-bit and 16-bit integer. 
+
+        Type var_type = (*vi)->type();
+        if ((*vi)->type() == dods_array_c) 
+            var_type = (*vi)->var()->type();
+        if (dods_float64_c == var_type ||
+            dods_float32_c == var_type ||
+            dods_int16_c == var_type ||
+            dods_int8_c == var_type) {
+ 
+            D4Attribute *d4_attr = (*vi)->attributes()->find("_FillValue");
+
+            // If we don't find the _FillValue, according to DAP2 implementation,
+            // we need to add the corresponding fill values.
+            if(!d4_attr) {
+                bool is_cvar = false;
+                vector<HDF5CF::GMCVar *>::const_iterator   it_cv;
+                for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
+                    if ((*it_cv)->getNewName() == (*vi)->name()) {
+                        is_cvar = true;
+                        break;
+                    }
+                }
+
+                // Add fillvalue for real variables not for the coordinate variables.
+                if(false == is_cvar) {
+                    // Add a DAP4 attribute
+                    D4Attribute *d4_fv = NULL;
+                    if (dods_float64_c == var_type ) {
+                        d4_fv = new D4Attribute("_FillValue",attr_float64_c);
+                        d4_fv->add_value("-9999.9");
+                    }
+                    else if (dods_float32_c == var_type) {
+                        d4_fv = new D4Attribute("_FillValue",attr_float32_c);
+                        d4_fv->add_value("-9999.9");
+                    }
+                    else if (dods_int16_c == var_type) {
+                        d4_fv = new D4Attribute("_FillValue",attr_int16_c);
+                        d4_fv->add_value("-9999");
+                    } 
+                    else if (dods_int8_c == var_type) {
+                        d4_fv = new D4Attribute("_FillValue",attr_int8_c);
+                        d4_fv->add_value("-99");
+                    }
+                    (*vi)->attributes()->add_attribute_nocopy(d4_fv);
+                }
+            }
+            // Currently there is no function to delete/replace a DAP4 attribute.
+            // We need to correct the fillvalue by deleting and adding a DAP4 attribute.
+            // else TODO: when James implements the deletion of a DAP4 attribute
+        }
+    }
+
 }
 
 void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid, const string &filename) {              
