@@ -1298,9 +1298,31 @@ void update_GPM_special_attrs_cfdmr(libdap::D4Group* d4_root, const vector<HDF5C
                     (*vi)->attributes()->add_attribute_nocopy(d4_fv);
                 }
             }
-            // Currently there is no function to delete/replace a DAP4 attribute.
-            // We need to correct the fillvalue by deleting and adding a DAP4 attribute.
-            // else TODO: when James implements the deletion of a DAP4 attribute
+            else {
+                D4Attribute *d4_fv = NULL;
+                if (dods_float64_c == var_type ) {
+                    const string cor_fill_value = "-9999.9";
+                    const string exist_fill_value_substr = "-9999.8999";
+                    string fillvalue = d4_attr->value(0);
+                    if((fillvalue.find(exist_fill_value_substr) == 0) && (fillvalue!= cor_fill_value)) {
+                        (*vi)->attributes()->erase("_FillValue");
+                        d4_fv = new D4Attribute("_FillValue",attr_float64_c);
+                        d4_fv->add_value(cor_fill_value);
+                        (*vi)->attributes()->add_attribute_nocopy(d4_fv);
+                    }
+                }
+                else if (dods_float32_c == var_type) {
+                    const string cor_fill_value = "-9999.9";
+                    string fillvalue = d4_attr->value(0);
+                    // Somehow the fillvalue changes to "-9999.90??", we want to turn it back.
+                    if((fillvalue.find(cor_fill_value) == 0) && (fillvalue!= cor_fill_value)) {
+                        (*vi)->attributes()->erase("_FillValue");
+                        d4_fv = new D4Attribute("_FillValue",attr_float32_c);
+                        d4_fv->add_value(cor_fill_value);
+                        (*vi)->attributes()->add_attribute_nocopy(d4_fv);
+                    }
+                }
+            }
         }
     }
 
