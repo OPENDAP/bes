@@ -1204,6 +1204,21 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS **dds, Cons
 #endif
     }
 
+    // get the request size in kilobytes
+    long req_size = (*dds)->get_request_size_kb(true);
+
+    struct rusage usage;
+    int usage_val;
+    usage_val = getrusage(RUSAGE_SELF, &usage);
+
+    if (usage_val == 0){ //if getrusage() was successful, out put both sizes
+        long mem_size = usage.ru_maxrss; // get the max size (man page says it is in kilobytes)
+        INFO_LOG(prolog << "request size: "<< req_size << "KB -|- memory used by process: " << mem_size << "KB" << endl);
+    }
+    else { //if the getrusage() wasn't successful, only output the request size
+        INFO_LOG(prolog << "request size: "<< req_size << "KB" << endl );
+    }
+
     data_stream << flush;
 
     BESDEBUG(MODULE, prolog << "END"<< endl);
@@ -1315,10 +1330,10 @@ void BESDapResponseBuilder::send_dap2_data(BESDataHandlerInterface &dhi, DDS **d
 
     if (usage_val == 0){ //if getrusage() was successful, out put both sizes
         long mem_size = usage.ru_maxrss; // get the max size (man page says it is in kilobytes)
-        INFO_LOG(prolog << "request size: "<< req_size << "-|- memory used by process: " << mem_size );
+        INFO_LOG(prolog << "request size: "<< req_size << "KB -|- memory used by process: " << mem_size << "KB" << endl );
     }
     else { //if the getrusage() wasn't successful, only output the request size
-        INFO_LOG(prolog << "request size: "<< req_size );
+        INFO_LOG(prolog << "request size: "<< req_size << "KB" << endl );
     }
 
     data_stream << flush;
