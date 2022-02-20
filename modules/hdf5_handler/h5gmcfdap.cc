@@ -1298,6 +1298,7 @@ void update_GPM_special_attrs_cfdmr(libdap::D4Group* d4_root, const vector<HDF5C
                     (*vi)->attributes()->add_attribute_nocopy(d4_fv);
                 }
             }
+//#if 0
             else {
                 D4Attribute *d4_fv = NULL;
                 if (dods_float64_c == var_type ) {
@@ -1323,6 +1324,7 @@ void update_GPM_special_attrs_cfdmr(libdap::D4Group* d4_root, const vector<HDF5C
                     }
                 }
             }
+//#endif
         }
     }
 
