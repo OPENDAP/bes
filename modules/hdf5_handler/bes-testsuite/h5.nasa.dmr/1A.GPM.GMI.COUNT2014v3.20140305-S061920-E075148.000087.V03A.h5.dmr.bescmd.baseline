@@ -93,14 +93,14 @@
         <Attribute name="Units" type="String">
             <Value>s</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float64">
-            <Value>-9999.8999999999996</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>SecondOfDay</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S2/ScanTime/SecondOfDay</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float64>
     <Int8 name="S2_ScanTime_Second">
@@ -202,14 +202,14 @@
         <Attribute name="Units" type="String">
             <Value>counts</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>moonVectorInstFrame</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S2/moonVectorInstFrame</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Byte name="S2_ephemerisUsed">
@@ -254,9 +254,6 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>sunGlintAngle</Value>
         </Attribute>
@@ -265,6 +262,9 @@
         </Attribute>
         <Attribute name="coordinates" type="String">
             <Value>S2_Longitude S2_Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S2_navigation_scPos">
@@ -276,14 +276,14 @@
         <Attribute name="Units" type="String">
             <Value>m</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>scPos</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S2/navigation/scPos</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float64 name="S2_navigation_timeMidScanOffset">
@@ -294,14 +294,14 @@
         <Attribute name="Units" type="String">
             <Value>s</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float64">
-            <Value>-9999.8999999999996</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>timeMidScanOffset</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S2/navigation/timeMidScanOffset</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float64>
     <Float32 name="S2_navigation_scAttPitchGeod">
@@ -312,14 +312,14 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>scAttPitchGeod</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S2/navigation/scAttPitchGeod</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S2_navigation_scVel">
@@ -331,14 +331,14 @@
         <Attribute name="Units" type="String">
             <Value>m/s</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>scVel</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S2/navigation/scVel</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S2_navigation_scAttRollGeod">
@@ -349,14 +349,14 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>scAttRollGeod</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S2/navigation/scAttRollGeod</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S2_navigation_scAttRollGeoc">
@@ -367,14 +367,14 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>scAttRollGeoc</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S2/navigation/scAttRollGeoc</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S2_navigation_scAlt">
@@ -385,14 +385,14 @@
         <Attribute name="Units" type="String">
             <Value>m</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>scAlt</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S2/navigation/scAlt</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S2_navigation_scLon">
@@ -403,14 +403,14 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>scLon</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S2/navigation/scLon</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S2_navigation_scAttYawGeoc">
@@ -421,14 +421,14 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>scAttYawGeoc</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S2/navigation/scAttYawGeoc</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S2_navigation_scAttPitchGeoc">
@@ -439,14 +439,14 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>scAttPitchGeoc</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S2/navigation/scAttPitchGeoc</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S2_navigation_dprAlt">
@@ -457,14 +457,14 @@
         <Attribute name="Units" type="String">
             <Value>m</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>dprAlt</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S2/navigation/dprAlt</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S2_navigation_greenHourAng">
@@ -475,14 +475,14 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>greenHourAng</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S2/navigation/greenHourAng</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S2_navigation_scLat">
@@ -493,14 +493,14 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>scLat</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S2/navigation/scLat</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S2_navigation_scAttYawGeod">
@@ -511,14 +511,14 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>scAttYawGeod</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S2/navigation/scAttYawGeod</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float64 name="S2_navigation_timeMidScan">
@@ -529,14 +529,14 @@
         <Attribute name="Units" type="String">
             <Value>s</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float64">
-            <Value>-9999.8999999999996</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>timeMidScan</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S2/navigation/timeMidScan</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float64>
     <UInt16 name="S2_hotLoad">
@@ -585,9 +585,6 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>solarAzimuthAngle</Value>
         </Attribute>
@@ -596,6 +593,9 @@
         </Attribute>
         <Attribute name="coordinates" type="String">
             <Value>S2_Longitude S2_Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S2_sunData_phaseFromOrbitMidnight">
@@ -606,14 +606,14 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>phaseFromOrbitMidnight</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S2/sunData/phaseFromOrbitMidnight</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S2_sunData_sunEarthSeparation">
@@ -624,14 +624,14 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>sunEarthSeparation</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S2/sunData/sunEarthSeparation</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S2_sunData_earthAngularRadius">
@@ -642,14 +642,14 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>earthAngularRadius</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S2/sunData/earthAngularRadius</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S2_sunData_phaseOfEclipseExit">
@@ -660,14 +660,14 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>phaseOfEclipseExit</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S2/sunData/phaseOfEclipseExit</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S2_sunData_solarBetaAngle">
@@ -678,14 +678,14 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>solarBetaAngle</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S2/sunData/solarBetaAngle</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S2_sunData_timeSinceEclipseEntry">
@@ -696,14 +696,14 @@
         <Attribute name="Units" type="String">
             <Value>s</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>timeSinceEclipseEntry</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S2/sunData/timeSinceEclipseEntry</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S2_sunData_orbitRate">
@@ -714,14 +714,14 @@
         <Attribute name="Units" type="String">
             <Value>degrees/s</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>orbitRate</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S2/sunData/orbitRate</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S2_sunData_sunVectorInBodyFrame">
@@ -730,14 +730,14 @@
         <Attribute name="DimensionNames" type="String">
             <Value>nscan2,</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>sunVectorInBodyFrame</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S2/sunData/sunVectorInBodyFrame</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S2_satAzimuthAngle">
@@ -749,9 +749,6 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>satAzimuthAngle</Value>
         </Attribute>
@@ -760,6 +757,9 @@
         </Attribute>
         <Attribute name="coordinates" type="String">
             <Value>S2_Longitude S2_Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S2_solarZenAngle">
@@ -771,9 +771,6 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>solarZenAngle</Value>
         </Attribute>
@@ -782,6 +779,9 @@
         </Attribute>
         <Attribute name="coordinates" type="String">
             <Value>S2_Longitude S2_Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Int8 name="S2_scanStatus_operationalMode">
@@ -924,14 +924,14 @@
         <Attribute name="DimensionNames" type="String">
             <Value>nscan2</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float64">
-            <Value>-9999.8999999999996</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>FractionalGranuleNumber</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S2/scanStatus/FractionalGranuleNumber</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float64>
     <Int16 name="S2_scanStatus_SCorientation">
@@ -961,9 +961,6 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>incidenceAngle</Value>
         </Attribute>
@@ -972,6 +969,9 @@
         </Attribute>
         <Attribute name="coordinates" type="String">
             <Value>S2_Longitude S2_Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <UInt16 name="S3_SMPL_INFO_EARTH_18G_STRT">
@@ -1642,14 +1642,14 @@
         <Attribute name="Units" type="String">
             <Value>s</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>timeOffset</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S3/TAM2/timeOffset</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <UInt16 name="S3_TAM2_Vx">
@@ -2284,14 +2284,14 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>Longitude</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S3/Longitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Int8 name="S3_type">
@@ -3571,14 +3571,14 @@
         <Attribute name="Units" type="String">
             <Value>s</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float64">
-            <Value>-9999.8999999999996</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>SecondOfDay</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S3/ScanTime/SecondOfDay</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float64>
     <Int8 name="S3_ScanTime_Second">
@@ -4880,14 +4880,14 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>Latitude</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S3/Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <UInt16 name="S3_IEHSK_TEMP_TEMP_CALRES_6">
@@ -5573,14 +5573,14 @@
         <Attribute name="Units" type="String">
             <Value>s</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>timeOffset</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S3/TORQUE_BAR/timeOffset</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <UInt16 name="S3_TORQUE_BAR_Vx">
@@ -6170,14 +6170,14 @@
         <Attribute name="Units" type="String">
             <Value>s</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>timeOffset</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S3/TAM1/timeOffset</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <UInt16 name="S3_TAM1_Vx">
@@ -6722,14 +6722,14 @@
         <Attribute name="Units" type="String">
             <Value>s</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>timeOffset</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S3/GMI_TEMPERATURES/timeOffset</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <UInt16 name="S3_GMI_TEMPERATURES_SMA_PT_TEMP">
@@ -7530,9 +7530,6 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>incidenceAngle</Value>
         </Attribute>
@@ -7541,6 +7538,9 @@
         </Attribute>
         <Attribute name="coordinates" type="String">
             <Value>S4_Longitude S4_Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Int16 name="S4_ScanTime_MilliSecond">
@@ -7605,14 +7605,14 @@
         <Attribute name="Units" type="String">
             <Value>s</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float64">
-            <Value>-9999.8999999999996</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>SecondOfDay</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S4/ScanTime/SecondOfDay</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float64>
     <Int8 name="S4_ScanTime_Second">
@@ -7803,14 +7803,14 @@
         <Attribute name="Units" type="String">
             <Value>s</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float64">
-            <Value>-9999.8999999999996</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>SecondOfDay</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S5/ScanTime/SecondOfDay</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float64>
     <Int8 name="S5_ScanTime_Second">
@@ -7932,9 +7932,6 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>incidenceAngle</Value>
         </Attribute>
@@ -7943,6 +7940,9 @@
         </Attribute>
         <Attribute name="coordinates" type="String">
             <Value>S5_Longitude S5_Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Byte name="S1_hotLoadBlanking">
@@ -8024,14 +8024,14 @@
         <Attribute name="Units" type="String">
             <Value>s</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float64">
-            <Value>-9999.8999999999996</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>SecondOfDay</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S1/ScanTime/SecondOfDay</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float64>
     <Int8 name="S1_ScanTime_Second">
@@ -8133,14 +8133,14 @@
         <Attribute name="Units" type="String">
             <Value>counts</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>moonVectorInstFrame</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S1/moonVectorInstFrame</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Byte name="S1_ephemerisUsed">
@@ -8185,9 +8185,6 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>sunGlintAngle</Value>
         </Attribute>
@@ -8196,6 +8193,9 @@
         </Attribute>
         <Attribute name="coordinates" type="String">
             <Value>S1_Longitude S1_Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S1_navigation_scPos">
@@ -8207,14 +8207,14 @@
         <Attribute name="Units" type="String">
             <Value>m</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>scPos</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S1/navigation/scPos</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float64 name="S1_navigation_timeMidScanOffset">
@@ -8225,14 +8225,14 @@
         <Attribute name="Units" type="String">
             <Value>s</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float64">
-            <Value>-9999.8999999999996</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>timeMidScanOffset</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S1/navigation/timeMidScanOffset</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float64>
     <Float32 name="S1_navigation_scAttPitchGeod">
@@ -8243,14 +8243,14 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>scAttPitchGeod</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S1/navigation/scAttPitchGeod</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S1_navigation_scVel">
@@ -8262,14 +8262,14 @@
         <Attribute name="Units" type="String">
             <Value>m/s</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>scVel</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S1/navigation/scVel</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S1_navigation_scAttRollGeod">
@@ -8280,14 +8280,14 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>scAttRollGeod</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S1/navigation/scAttRollGeod</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S1_navigation_scAttRollGeoc">
@@ -8298,14 +8298,14 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>scAttRollGeoc</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S1/navigation/scAttRollGeoc</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S1_navigation_scAlt">
@@ -8316,14 +8316,14 @@
         <Attribute name="Units" type="String">
             <Value>m</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>scAlt</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S1/navigation/scAlt</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S1_navigation_scLon">
@@ -8334,14 +8334,14 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>scLon</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S1/navigation/scLon</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S1_navigation_scAttYawGeoc">
@@ -8352,14 +8352,14 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>scAttYawGeoc</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S1/navigation/scAttYawGeoc</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S1_navigation_scAttPitchGeoc">
@@ -8370,14 +8370,14 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>scAttPitchGeoc</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S1/navigation/scAttPitchGeoc</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S1_navigation_dprAlt">
@@ -8388,14 +8388,14 @@
         <Attribute name="Units" type="String">
             <Value>m</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>dprAlt</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S1/navigation/dprAlt</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S1_navigation_greenHourAng">
@@ -8406,14 +8406,14 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>greenHourAng</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S1/navigation/greenHourAng</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S1_navigation_scLat">
@@ -8424,14 +8424,14 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>scLat</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S1/navigation/scLat</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S1_navigation_scAttYawGeod">
@@ -8442,14 +8442,14 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>scAttYawGeod</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S1/navigation/scAttYawGeod</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float64 name="S1_navigation_timeMidScan">
@@ -8460,14 +8460,14 @@
         <Attribute name="Units" type="String">
             <Value>s</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float64">
-            <Value>-9999.8999999999996</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>timeMidScan</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S1/navigation/timeMidScan</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float64>
     <UInt16 name="S1_hotLoad">
@@ -8516,9 +8516,6 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>solarAzimuthAngle</Value>
         </Attribute>
@@ -8527,6 +8524,9 @@
         </Attribute>
         <Attribute name="coordinates" type="String">
             <Value>S1_Longitude S1_Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S1_sunData_phaseFromOrbitMidnight">
@@ -8537,14 +8537,14 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>phaseFromOrbitMidnight</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S1/sunData/phaseFromOrbitMidnight</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S1_sunData_sunEarthSeparation">
@@ -8555,14 +8555,14 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>sunEarthSeparation</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S1/sunData/sunEarthSeparation</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S1_sunData_earthAngularRadius">
@@ -8573,14 +8573,14 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>earthAngularRadius</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S1/sunData/earthAngularRadius</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S1_sunData_phaseOfEclipseExit">
@@ -8591,14 +8591,14 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>phaseOfEclipseExit</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S1/sunData/phaseOfEclipseExit</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S1_sunData_solarBetaAngle">
@@ -8609,14 +8609,14 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>solarBetaAngle</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S1/sunData/solarBetaAngle</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S1_sunData_timeSinceEclipseEntry">
@@ -8627,14 +8627,14 @@
         <Attribute name="Units" type="String">
             <Value>s</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>timeSinceEclipseEntry</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S1/sunData/timeSinceEclipseEntry</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S1_sunData_orbitRate">
@@ -8645,14 +8645,14 @@
         <Attribute name="Units" type="String">
             <Value>degrees/s</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>orbitRate</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S1/sunData/orbitRate</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S1_sunData_sunVectorInBodyFrame">
@@ -8661,14 +8661,14 @@
         <Attribute name="DimensionNames" type="String">
             <Value>nscan1,</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>sunVectorInBodyFrame</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S1/sunData/sunVectorInBodyFrame</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S1_satAzimuthAngle">
@@ -8680,9 +8680,6 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>satAzimuthAngle</Value>
         </Attribute>
@@ -8691,6 +8688,9 @@
         </Attribute>
         <Attribute name="coordinates" type="String">
             <Value>S1_Longitude S1_Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="S1_solarZenAngle">
@@ -8702,9 +8702,6 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>solarZenAngle</Value>
         </Attribute>
@@ -8713,6 +8710,9 @@
         </Attribute>
         <Attribute name="coordinates" type="String">
             <Value>S1_Longitude S1_Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Int8 name="S1_scanStatus_operationalMode">
@@ -8855,14 +8855,14 @@
         <Attribute name="DimensionNames" type="String">
             <Value>nscan1</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float64">
-            <Value>-9999.8999999999996</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>FractionalGranuleNumber</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/S1/scanStatus/FractionalGranuleNumber</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float64>
     <Int16 name="S1_scanStatus_SCorientation">
@@ -8892,9 +8892,6 @@
         <Attribute name="Units" type="String">
             <Value>degrees</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>incidenceAngle</Value>
         </Attribute>
@@ -8903,6 +8900,9 @@
         </Attribute>
         <Attribute name="coordinates" type="String">
             <Value>S1_Longitude S1_Latitude</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Byte name="S1_coldSkyBlanking">
@@ -8948,9 +8948,6 @@
         <Attribute name="DimensionNames" type="String">
             <Value>nscan2,npixelev</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>Longitude</Value>
         </Attribute>
@@ -8960,15 +8957,15 @@
         <Attribute name="units" type="String">
             <Value>degrees_east</Value>
         </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
     </Float32>
     <Float32 name="S2_Latitude">
         <Dim name="/nscan2"/>
         <Dim name="/npixelev"/>
         <Attribute name="DimensionNames" type="String">
             <Value>nscan2,npixelev</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
         </Attribute>
         <Attribute name="origname" type="String">
             <Value>Latitude</Value>
@@ -8979,15 +8976,15 @@
         <Attribute name="units" type="String">
             <Value>degrees_north</Value>
         </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
     </Float32>
     <Float32 name="S4_Longitude">
         <Dim name="/nscan2"/>
         <Dim name="/npixelfr"/>
         <Attribute name="DimensionNames" type="String">
             <Value>nscan2,npixelfr</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
         </Attribute>
         <Attribute name="origname" type="String">
             <Value>Longitude</Value>
@@ -8998,15 +8995,15 @@
         <Attribute name="units" type="String">
             <Value>degrees_east</Value>
         </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
     </Float32>
     <Float32 name="S4_Latitude">
         <Dim name="/nscan2"/>
         <Dim name="/npixelfr"/>
         <Attribute name="DimensionNames" type="String">
             <Value>nscan2,npixelfr</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
         </Attribute>
         <Attribute name="origname" type="String">
             <Value>Latitude</Value>
@@ -9017,15 +9014,15 @@
         <Attribute name="units" type="String">
             <Value>degrees_north</Value>
         </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
     </Float32>
     <Float32 name="S5_Longitude">
         <Dim name="/nscan2"/>
         <Dim name="/npixelfr"/>
         <Attribute name="DimensionNames" type="String">
             <Value>nscan2,npixelfr</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
         </Attribute>
         <Attribute name="origname" type="String">
             <Value>Longitude</Value>
@@ -9036,15 +9033,15 @@
         <Attribute name="units" type="String">
             <Value>degrees_east</Value>
         </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
     </Float32>
     <Float32 name="S5_Latitude">
         <Dim name="/nscan2"/>
         <Dim name="/npixelfr"/>
         <Attribute name="DimensionNames" type="String">
             <Value>nscan2,npixelfr</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
         </Attribute>
         <Attribute name="origname" type="String">
             <Value>Latitude</Value>
@@ -9055,15 +9052,15 @@
         <Attribute name="units" type="String">
             <Value>degrees_north</Value>
         </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
     </Float32>
     <Float32 name="S1_Longitude">
         <Dim name="/nscan1"/>
         <Dim name="/npixelev"/>
         <Attribute name="DimensionNames" type="String">
             <Value>nscan1,npixelev</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
         </Attribute>
         <Attribute name="origname" type="String">
             <Value>Longitude</Value>
@@ -9074,15 +9071,15 @@
         <Attribute name="units" type="String">
             <Value>degrees_east</Value>
         </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
+        </Attribute>
     </Float32>
     <Float32 name="S1_Latitude">
         <Dim name="/nscan1"/>
         <Dim name="/npixelev"/>
         <Attribute name="DimensionNames" type="String">
             <Value>nscan1,npixelev</Value>
-        </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
         </Attribute>
         <Attribute name="origname" type="String">
             <Value>Latitude</Value>
@@ -9092,6 +9089,9 @@
         </Attribute>
         <Attribute name="units" type="String">
             <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Int32 name="FakeDim0">
