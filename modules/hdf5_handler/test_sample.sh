@@ -80,7 +80,12 @@ besstandalone -c bes-testsuite/bes.conf -i bes-testsuite/h5.cf/grid_1_2d.h5.dmr.
 #besstandalone -c tests/bes.conf -i tests/bescmd/simpleT00.2.bescmd >test.nc
 #besstandalone -c tests/bes.conf -i tests/bescmd/simpleT00.3.bescmd >test.nc4
 
+#For the netCDF handler test. This should be done under modules/netcdf_handler ,they are from the netcdf handler testsuite.
+#besstandalone -c tests/bes.conf -i tests/nc/coads_climatology.nc.dmr.bescmd
+#besstandalone -c tests/bes.conf -i tests/nc/coads_climatology.nc.2.bescmd | getdap -M -
 
-
+#For the fileout coverage json test. This should be done under modules/fileout_covjson,they are from the fileout covjson module. 
+#besstandalone -c tests/bes.conf -i tests/covjson/coads_climatology_abstract_object_METADATA.bescmd 
+#besstandalone -c tests/bes.conf -i tests/covjson/fnoc1_abstract_object_DATA.bescmd 
 
 
