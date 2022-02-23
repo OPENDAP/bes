@@ -12,14 +12,14 @@
         <Attribute name="Units" type="String">
             <Value>percent</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>fractionQuality2</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/Grid/fractionQuality2</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="fractionQuality1">
@@ -31,14 +31,14 @@
         <Attribute name="Units" type="String">
             <Value>percent</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>fractionQuality1</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/Grid/fractionQuality1</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="mixedWater">
@@ -51,14 +51,14 @@
         <Attribute name="Units" type="String">
             <Value>g/m^3</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>mixedWater</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/Grid/mixedWater</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="iceWaterPath">
@@ -70,14 +70,14 @@
         <Attribute name="Units" type="String">
             <Value>kg/m^2</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>iceWaterPath</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/Grid/iceWaterPath</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="surfacePrecipitation">
@@ -89,14 +89,14 @@
         <Attribute name="Units" type="String">
             <Value>mm/hr</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>surfacePrecipitation</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/Grid/surfacePrecipitation</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="fractionQuality0">
@@ -108,14 +108,14 @@
         <Attribute name="Units" type="String">
             <Value>percent</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>fractionQuality0</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/Grid/fractionQuality0</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Int32 name="npixTotal">
@@ -143,14 +143,14 @@
         <Attribute name="Units" type="String">
             <Value>kg/m^2</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>cloudWaterPath</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/Grid/cloudWaterPath</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Int32 name="npixPrecipitation">
@@ -178,14 +178,14 @@
         <Attribute name="Units" type="String">
             <Value>kg/m^2</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>mixedWaterPath</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/Grid/mixedWaterPath</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="rainWater">
@@ -198,14 +198,14 @@
         <Attribute name="Units" type="String">
             <Value>g/m^3</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>rainWater</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/Grid/rainWater</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="cloudWater">
@@ -218,14 +218,14 @@
         <Attribute name="Units" type="String">
             <Value>g/m^3</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>cloudWater</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/Grid/cloudWater</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="iceWater">
@@ -238,14 +238,14 @@
         <Attribute name="Units" type="String">
             <Value>g/m^3</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>iceWater</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/Grid/iceWater</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Int32 name="surfaceTypeIndex">
@@ -270,14 +270,14 @@
         <Attribute name="DimensionNames" type="String">
             <Value>nlon,nlat</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>liquidPrecipFraction</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/Grid/liquidPrecipFraction</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="rainWaterPath">
@@ -289,14 +289,14 @@
         <Attribute name="Units" type="String">
             <Value>kg/m^2</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>rainWaterPath</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/Grid/rainWaterPath</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="convectPrecipFraction">
@@ -305,14 +305,14 @@
         <Attribute name="DimensionNames" type="String">
             <Value>nlon,nlat</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>convectPrecipFraction</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/Grid/convectPrecipFraction</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="latentHeat">
@@ -325,14 +325,14 @@
         <Attribute name="Units" type="String">
             <Value>C/hr</Value>
         </Attribute>
-        <Attribute name="_FillValue" type="Float32">
-            <Value>-9999.900391</Value>
-        </Attribute>
         <Attribute name="origname" type="String">
             <Value>latentHeat</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/Grid/latentHeat</Value>
+        </Attribute>
+        <Attribute name="_FillValue" type="Float32">
+            <Value>-9999.9</Value>
         </Attribute>
     </Float32>
     <Float32 name="nlat">

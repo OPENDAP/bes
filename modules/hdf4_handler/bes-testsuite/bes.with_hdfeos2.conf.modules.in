@@ -21,6 +21,11 @@ BES.Catalog.catalog.TypeMatch=h4:.*\.(hdf|HDF|eos)(\.bz2|\.gz|\.Z)?$;
 BES.Catalog.catalog.Include=;
 BES.Catalog.catalog.Exclude=^\..*;
 
+BES.FollowSymLinks=Yes
+BES.Catalog.catalog.FollowSymLinks=Yes
+
+
+
 BES.ServerPort=10002
 BES.ServerSecure=no
 BES.ServerSecurePort=10003
@@ -79,7 +84,7 @@ BES.DefaultResponseMethod=POST
 # important key to turn it on first.
 H4.EnableCF=true
 
-H4.EnablePassFileID=false
+H4.EnablePassFileID=true
 
 
 # When turning on this key, the handler will handle AIRS level 3 version 6 products
@@ -207,4 +212,5 @@ H4.EnableVgroupAttr=true
 ## Note: swath and grid object attributes are not the same as the swath/grid field attributes. We have supported
 ## the mapping of swath and grid field attributes since the beginning of CF option support.
 H4.EnableSwathGridAttr=true
+H4.DisableSwathDimMap=false
 #
