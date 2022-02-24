@@ -203,6 +203,8 @@ show_usage() {
  -r: The path to the file that contains missing variable information for sets of input data files that share
      common missing variables. The file will be created if it doesn't exist and the result may be used in subsequent
      invocations of get_dmrpp (using -r) to identify the missing variable file.
+ -U: If present, and if the input data file is an AWS S3 URL (s3://...) the presence of this paramter will cause
+     get_dmrpp to copy the finished dmr++ file to the same S3 bucket location as the input data file.
 
  Limitations:
  * The name of the hdf5 file must be expressed relative to the BES_DATA_ROOT
@@ -226,8 +228,9 @@ reduce_missing_files=
 MASTER_SHA256=
 BES_DATA_ROOT="/tmp"
 existing_dmrpp=
+S3_UPLOAD=
 
-while getopts "h?vVDu:o:c:b:s:p:r:e:zTIFM" opt; do
+while getopts "h?vVDu:o:c:b:s:p:r:e:zTIFMU" opt; do
   case "$opt" in
   h | \?)
     show_usage >&2
@@ -288,6 +291,9 @@ while getopts "h?vVDu:o:c:b:s:p:r:e:zTIFM" opt; do
     ;;
   e)
     existing_dmrpp="$OPTARG"
+    ;;
+  U)
+    S3_UPLOAD="yes"
     ;;
   esac
 done
@@ -1073,10 +1079,69 @@ function dmrpp_value_test() {
   done
   return $?
 }
+
+
+########################################################################################################################
+# check_aws_config()
+#
+# Verify that the AWS CLI has been configured with credentials and default region
+# Returns non-zero if the AWS CLI is not configured
+#
+function check_aws_config() {
+    aws configure list | grep "access_key" | grep -v "<not set>"
+    ret=$?
+    if test $ret != 0 ; then return $ret; fi
+    aws configure list | grep "secret_key" | grep -v "<not set>"
+    ret=$?
+    if test $ret != 0 ; then return $ret; fi
+    aws configure list | grep "region" | grep -v "<not set>"
+    ret=$?
+    if test $ret != 0 ; then return $ret; fi
+}
+
 ########################################################################################################################
 ########################################################################################################################
 ########################################################################################################################
 ########################################################################################################################
+#
+# main() (such as it is in bashlandia)
+#
+#
+#
+
+# Here we test to see if the input file name is actually an S3 URL
+# and if it is we adjust the input_data_file and go out and get the
+# object from S3.
+s3_granule=
+if [[ "${input_data_file}" =~ ^s3:\/\/.* ]]
+then
+    s3_granule="${input_data_file}"
+    echo "Detected S3 URL as data input: ${s3_granule}" >&2
+
+    check_aws_config
+    ret=$?
+    if test $ret != 0
+    then
+        echo "ERROR - The AWS CLI is not configured. Exiting." >&2
+        exit 1
+    fi
+
+    input_data_file=$(basename "${s3_granule}")
+    echo "input_data_file: ${input_data_file}" >&2
+
+    local_file="${BES_DATA_ROOT}/${input_data_file}"
+    echo "Copying S3 object to: ${local_file}" >&2
+
+    aws s3 cp ${s3_granule} ${local_file}
+    result=$?
+    if test $result != 0
+    then
+        echo "OUCH! Failed to acquire S3 object. Exiting..." >&2
+        exit 1
+    fi
+fi
+
+
 
 BES_CONF=$(make_bes_conf "${bes_conf_file}" "${site_conf_file}")
 SOURCE_DMR=$(mkDapRequest "${input_data_file}" dmr)
@@ -1098,6 +1163,12 @@ fi
 mk_dmrpp "${input_data_file}"
 retval=$?
 #echo "retval: ${retval}";
+
+if test -n s3_granule && test -n S3_UPLOAD
+then
+    aws s3 cp "${output_file}" "${s3_granule}.dmrpp"
+fi
+
 
 if test -z "${verbose}"; then
     #if test -f "${BES_CONF}" ; then rm -f "${BES_CONF}"; fi
