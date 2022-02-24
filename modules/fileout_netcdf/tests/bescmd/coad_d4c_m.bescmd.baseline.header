@@ -1,0 +1,35 @@
+netcdf test {
+dimensions:
+	COADSX = 3 ;
+	COADSY = 2 ;
+	TIME = 3 ;
+variables:
+	double COADSX(COADSX) ;
+		COADSX:units = "degrees_east" ;
+		COADSX:modulo = " " ;
+		COADSX:point_spacing = "even" ;
+	double COADSY(COADSY) ;
+		COADSY:units = "degrees_north" ;
+		COADSY:point_spacing = "even" ;
+	double TIME(TIME) ;
+		TIME:units = "hour since removed date-time" ;
+		TIME:time_origin = "1-JAN-0000 00:00:00" ;
+		TIME:modulo = " " ;
+	float SST(TIME, COADSY, COADSX) ;
+		SST:missing_value = -1.e+34f ;
+		SST:_FillValue = -1.e+34f ;
+		SST:long_name = "SEA SURFACE TEMPERATURE" ;
+		SST:history = "From coads_climatology" ;
+		SST:units = "Deg C" ;
+	float UWND(TIME, COADSY, COADSX) ;
+		UWND:missing_value = -1.e+34f ;
+		UWND:_FillValue = -1.e+34f ;
+		UWND:long_name = "ZONAL WIND" ;
+		UWND:history = "From coads_climatology" ;
+		UWND:units = "M/S" ;
+
+// global attributes:
+		:history = "FERRET V4.30 (debug/no GUI) 15-Aug-96\nremoved date-timex coads_climatology_subset.nc\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"coads_climatology_subset.nc\"}]}]" ;
+		:DODS_EXTRA.Unlimited_Dimension = "TIME" ;
+}
