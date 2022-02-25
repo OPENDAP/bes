@@ -1091,13 +1091,22 @@ function dmrpp_value_test() {
 function check_aws_config() {
     aws configure list | grep "access_key" | grep -v "<not set>" > /dev/null
     ret=$?
-    if test $ret != 0 ; then return $ret; fi
+    if test $ret != 0 ; then
+        echo "ERROR - The AWS_ACCESS_KEY_ID is not set."
+        return $ret;
+    fi
     aws configure list | grep "secret_key" | grep -v "<not set>" > /dev/null
     ret=$?
-    if test $ret != 0 ; then return $ret; fi
+    if test $ret != 0 ; then
+        echo "ERROR - The AWS_SECRET_ACCESS_KEY is not set."
+        return $ret;
+    fi
     aws configure list | grep "region" | grep -v "<not set>" > /dev/null
     ret=$?
-    if test $ret != 0 ; then return $ret; fi
+    if test $ret != 0 ; then
+        echo "WARNING - The AWS_DEFAULT_REGION is not set."
+        return 0;
+    fi
 }
 
 
@@ -1235,6 +1244,7 @@ then
     s3_granule="${input_data_file}"
     echo "Detected S3 URL as data input: ${s3_granule}" >&2
 
+    set +e
     check_aws_config
     ret=$?
     if test $ret != 0
@@ -1253,9 +1263,11 @@ then
     result=$?
     if test $result != 0
     then
-        echo "ERROR - Failed to acquire S3 object. Exiting..." >&2
-        exit 1
+        echo "ERROR - Failed to acquire S3 object. (status: $result) Exiting..." >&2
+        exit $result
     fi
+
+    set -e
 fi
 
 
@@ -1307,7 +1319,15 @@ then
     fi
     s3_dmrpp="${s3_granule}.dmrpp"
     echo "Uploading dmr++ file (${output_file}) to: ${s3_dmrpp}" >&2
+    set +e
     aws s3 cp "${output_file}" "${s3_dmrpp}"
+    result=$?
+    if test $result != 0
+    then
+        echo "ERROR - Failed to upload S3 object. Exiting..." >&2
+        exit 1
+    fi
+    set -e
 fi
 
 
