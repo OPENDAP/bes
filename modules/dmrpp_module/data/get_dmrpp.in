@@ -155,7 +155,7 @@ EOF
 #
 show_usage() {
     echo ""
-    echo " ["`version`"]"
+    echo " [${GET_DMRPP_VERSION}]"
     cat <<EOF
 
  Usage: $0 [options] <hdf5 file>
@@ -1136,7 +1136,7 @@ then
     result=$?
     if test $result != 0
     then
-        echo "OUCH! Failed to acquire S3 object. Exiting..." >&2
+        echo "ERROR - Failed to acquire S3 object. Exiting..." >&2
         exit 1
     fi
 fi
@@ -1164,9 +1164,21 @@ mk_dmrpp "${input_data_file}"
 retval=$?
 #echo "retval: ${retval}";
 
-if test -n s3_granule && test -n S3_UPLOAD
+if test -n "${s3_granule}" && test -n "${S3_UPLOAD}"
 then
-    aws s3 cp "${output_file}" "${s3_granule}.dmrpp"
+    if test -z "${output_file}"
+    then
+        echo "#---------------------------------------------------------------------" >&2
+        echo "ERROR - Unable to upload dmr++ file because the output file name has not been set!" >&2
+        echo "        Use the -o parameter. To set the output file name" >&2
+        echo "-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -" >&2
+        show_usage >&2
+        echo "#---------------------------------------------------------------------" >&2
+     exit 1
+    fi
+    s3_dmrpp="${s3_granule}.dmrpp"
+    echo "Uploading dmr++ file (${output_file}) to: ${s3_dmrpp}" >&2
+    aws s3 cp "${output_file}" "${s3_dmrpp}"
 fi
 
 
