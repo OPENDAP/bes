@@ -79,3 +79,6 @@ AT_BESCMD_RESPONSE_TEST([nc/string_attribute_values.nc.1.bescmd])
 # ByteToPromote test
 AT_BESCMD_BTS_RESPONSE_TEST([nc/nc_int8.nc.dds.bescmd])
 AT_BESCMD_BTS_BINARYDATA_RESPONSE_TEST([nc/nc_int8.nc.dods.bescmd])
+
+# N44W103.SRTMGL1_NC.nc test regarding the MDS caching of the DAS response
+

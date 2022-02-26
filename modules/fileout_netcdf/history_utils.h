@@ -24,23 +24,38 @@
 #ifndef HYRAX_GIT_HISTORY_UTILS_H
 #define HYRAX_GIT_HISTORY_UTILS_H
 
+#if 0
 #include <libdap/DDS.h>
 #include <libdap/DMR.h>
 #include <libdap/D4Attributes.h>
+#endif
+
+namespace libdap {
+class DDS;
+class DMR;
+}
+namespace fonc_history_util {
 
 // OLD
-void updateHistoryAttributes(libdap::DDS *dds, const string &ce);
+void updateHistoryAttributes(libdap::DDS *dds, const std::string &ce);
 
 // NEW
 void updateHistoryAttributes(libdap::DMR *dmr, const std::string &ce);
 
-void update_cf_history_attr(libdap::D4Attribute *global_attribute, const std::string &request_url);
-void update_history_json_attr(libdap::D4Attribute *global_attribute, const std::string &request_url);
-
+// These are
+std::string get_time_now();
 std::string create_cf_history_txt(const std::string &request_url);
-std::string get_cf_history_entry (const std::string &request_url);
+template<typename RJSON_WRITER> void create_json_history_obj(const std::string &request_url, RJSON_WRITER &writer);
 
-std::string get_history_json_entry (const std::string &request_url);
+// jhrg void update_cf_history_attr(libdap::D4Attribute *global_attribute, const std::string &request_url);
+// jhrg void update_history_json_attr(libdap::D4Attribute *global_attribute, const std::string &request_url);
+
+// jhrg std::string create_cf_history_txt(const std::string &request_url);
+// jhrg std::string get_cf_history_entry (const std::string &request_url);
+
+// jhrg std::string get_history_json_entry (const std::string &request_url);
 
 std::string json_append_entry_to_array(const std::string &current_doc_str, const std::string &new_entry_str);
 #endif //HYRAX_GIT_HISTORY_UTILS_H
+
+}

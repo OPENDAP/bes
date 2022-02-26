@@ -35,6 +35,15 @@
 
 #include <sstream>
 
+#include <libdap/DDS.h>
+#include <libdap/DMR.h>
+#include <libdap/D4Group.h>
+#include <libdap/D4Attributes.h>
+#include <libdap/Structure.h>
+#include <libdap/Array.h>
+#include <libdap/Grid.h>
+#include <libdap/Sequence.h>
+
 #include <BESResponseObject.h>
 #include <BESDapResponseBuilder.h>
 #include <BESDataHandlerInterface.h>
@@ -46,6 +55,11 @@
 #include <BESDMRResponse.h>
 #include <BESRequestHandlerList.h>
 #include <BESDapFunctionResponseCache.h>
+#include <BESDebug.h>
+#include <BESInternalError.h>
+#include <BESInternalFatalError.h>
+
+#include "DapFunctionUtils.h"
 
 #include "FONcRequestHandler.h" // for the keys
 
@@ -55,20 +69,6 @@
 #include "FONcAttributes.h"
 #include "FONcTransmitter.h"
 #include "history_utils.h"
-
-#include <libdap/DDS.h>
-#include <libdap/DMR.h>
-#include <libdap/D4Group.h>
-#include <libdap/D4Attributes.h>
-#include <libdap/Structure.h>
-#include <libdap/Array.h>
-#include <libdap/Grid.h>
-#include <libdap/Sequence.h>
-#include <BESDebug.h>
-#include <BESInternalError.h>
-#include <BESInternalFatalError.h>
-
-#include "DapFunctionUtils.h"
 
 using std::ostringstream;
 using std::istringstream;
@@ -480,7 +480,7 @@ void FONcTransform::transform_dap2(ostream &strm)
         }
     }
 
-    updateHistoryAttributes(_dds, d_dhi->data[POST_CONSTRAINT]);
+    fonc_history_util::updateHistoryAttributes(_dds, d_dhi->data[POST_CONSTRAINT]);
 
     // Open the file for writing
     int stax;
@@ -858,7 +858,7 @@ void FONcTransform::transform_dap4_no_group()
        BESDEBUG("fonc", "FONcTransform::transform_dap4() - group name:  " << (*gi)->name() << endl);
 #endif
 
-    updateHistoryAttributes(_dmr, d_dhi->data[POST_CONSTRAINT]);
+    fonc_history_util::updateHistoryAttributes(_dmr, d_dhi->data[POST_CONSTRAINT]);
 
     // Open the file for writing
     int stax = -1;
@@ -1005,7 +1005,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
     int grp_id = -1;
     int stax = -1;
 
-    updateHistoryAttributes(_dmr, d_dhi->data[POST_CONSTRAINT]);
+    fonc_history_util::updateHistoryAttributes(_dmr, d_dhi->data[POST_CONSTRAINT]);
 
     if (is_root_grp == true) 
         grp_id = _ncid;
