@@ -68,6 +68,10 @@ using namespace std;
 #define HISTORY_JSON_KEY "history_json"
 #define HISTORY_JSON_CONTEXT "history_json_entry"
 
+// Define this to keep the JSON history attribute out of the DAS and
+// drop it into the netCDF file directly. jhrg 2/28/22
+#define HISTORY_JSON_DIRECT_TO_NETCDF 0
+
 #define MODULE "fonc"
 #define prolog string("history_utils::").append(__func__).append("() - ")
 
@@ -475,7 +479,11 @@ void updateHistoryAttributes(DDS *dds, const string &ce) {
 
                 AttrTable *global_attr_tbl = globals.get_attr_table(i);
                 update_cf_history_attr(global_attr_tbl, request_url);
+#if !HISTORY_JSON_DIRECT_TO_NETCDF
+                // if we do not plan on writing the attribute directly using the netcdf API
+                // put the JSON in as a DAP attribute. jhrg 2/28/22
                 update_history_json_attr(global_attr_tbl, request_url);
+#endif
                 added_history = true;
                 BESDEBUG(MODULE, prolog << "Added history entries to " << attr_name << endl);
             }
@@ -492,7 +500,9 @@ void updateHistoryAttributes(DDS *dds, const string &ce) {
             dap_global_at->set_is_global_attribute(true);
 
             update_cf_history_attr(dap_global_at, request_url);
+#if !HISTORY_JSON_DIRECT_TO_NETCDF
             update_history_json_attr(dap_global_at, request_url);
+#endif
             BESDEBUG(MODULE, prolog << "No top level AttributeTable name matched '*_GLOBAL'. "
                                        "Created DAP_GLOBAL AttributeTable and added history attributes to it." << endl);
         }
@@ -526,17 +536,21 @@ void updateHistoryAttributes(DMR *dmr, const string &ce) {
             added_cf_history = true;
 
             // Update NASA's history_json attribute
+#if !HISTORY_JSON_DIRECT_TO_NETCDF
             update_history_json_attr(*attrs, request_url);
             added_json_history = true;
+#endif
         }
         else if (name == CF_HISTORY_KEY) { // A top level cf history attribute
             update_cf_history_attr(*attrs, request_url);
             added_cf_history = true;
         }
+#if !HISTORY_JSON_DIRECT_TO_NETCDF
         else if (name == HISTORY_JSON_KEY) { // A top level history_json attribute
             update_cf_history_attr(*attrs, request_url);
             added_json_history = true;
         }
+#endif
     }
     if (!added_cf_history || !added_json_history) {
         auto *dap_global = new D4Attribute("DAP_GLOBAL", attr_container_c);
@@ -546,9 +560,11 @@ void updateHistoryAttributes(DMR *dmr, const string &ce) {
             update_cf_history_attr(dap_global, request_url);
         }
         // NASA's history_json attribute
+#if !HISTORY_JSON_DIRECT_TO_NETCDF
         if (!added_json_history) {
             update_history_json_attr(dap_global, request_url);
         }
+#endif
     }
 }
 

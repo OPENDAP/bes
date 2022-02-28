@@ -62,7 +62,7 @@
 #include "nc_util.h"
 
 #define ATTR_STRING_QUOTE_FIX 1
-#define STOP_ESCAPING_STRING_ATTRS 1
+#define STOP_ESCAPING_STRING_ATTRS 0
 
 #define NETCDF_VERSION 4
 
@@ -342,6 +342,9 @@ static void append_values(int ncid, int v, int len, nc_type datatype, char *attr
     }
 }
 
+#if 0
+// TODO Remove this since it's not used. jhrg 2/28/22
+
 /** Given the netcdf file id, variable id, number of attributes for the
  variable, and an attribute table pointer, read the attributes and store
  their names and values in the attribute table.
@@ -396,6 +399,7 @@ static void read_attributes_netcdf3(int ncid, int v, int natts, AttrTable *at)
         }
     }
 }
+#endif
 
 #if NETCDF_VERSION >= 4
 

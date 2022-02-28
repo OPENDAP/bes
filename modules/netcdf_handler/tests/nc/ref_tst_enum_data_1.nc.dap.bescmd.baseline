@@ -39,7 +39,7 @@
             <Value>cloud_class_t</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>a505df1b</Value>
+            removed checksum
         </Attribute>
     </Byte>
 </Dataset>

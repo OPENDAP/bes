@@ -24,12 +24,6 @@
 #ifndef HYRAX_GIT_HISTORY_UTILS_H
 #define HYRAX_GIT_HISTORY_UTILS_H
 
-#if 0
-#include <libdap/DDS.h>
-#include <libdap/DMR.h>
-#include <libdap/D4Attributes.h>
-#endif
-
 namespace libdap {
 class DDS;
 class DMR;
