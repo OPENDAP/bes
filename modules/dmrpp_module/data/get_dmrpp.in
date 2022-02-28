@@ -155,7 +155,7 @@ EOF
 #
 show_usage() {
     echo ""
-    echo " ["`version`"]"
+    echo " [${GET_DMRPP_VERSION}]"
     cat <<EOF
 
  Usage: $0 [options] <hdf5 file>
@@ -203,9 +203,12 @@ show_usage() {
  -r: The path to the file that contains missing variable information for sets of input data files that share
      common missing variables. The file will be created if it doesn't exist and the result may be used in subsequent
      invocations of get_dmrpp (using -r) to identify the missing variable file.
+ -U: If present, and if the input data file is an AWS S3 URL (s3://...), and if the output data file has been set (using
+     the -o option) the presence of this parameter will cause get_dmrpp to copy the finished dmr++ file to the same S3
+     bucket location as the input data file.
 
  Limitations:
- * The name of the hdf5 file must be expressed relative to the BES_DATA_ROOT
+ * The name of the hdf5 file must be expressed relative to the BES_DATA_ROOT, or as an S3 URL (s3://...)
 
 EOF
 }
@@ -226,8 +229,9 @@ reduce_missing_files=
 MASTER_SHA256=
 BES_DATA_ROOT="/tmp"
 existing_dmrpp=
+S3_UPLOAD=
 
-while getopts "h?vVDu:o:c:b:s:p:r:e:zTIFM" opt; do
+while getopts "h?vVDu:o:c:b:s:p:r:e:zTIFMU" opt; do
   case "$opt" in
   h | \?)
     show_usage >&2
@@ -288,6 +292,9 @@ while getopts "h?vVDu:o:c:b:s:p:r:e:zTIFM" opt; do
     ;;
   e)
     existing_dmrpp="$OPTARG"
+    ;;
+  U)
+    S3_UPLOAD="yes"
     ;;
   esac
 done
@@ -1073,10 +1080,196 @@ function dmrpp_value_test() {
   done
   return $?
 }
+
+
+########################################################################################################################
+# check_aws_config()
+#
+# Verify that the AWS CLI has been configured with credentials and default region
+# Returns non-zero if the AWS CLI is not configured
+#
+function check_aws_config() {
+    aws configure list | grep "access_key" | grep -v "<not set>" > /dev/null
+    ret=$?
+    if test $ret != 0 ; then
+        echo "ERROR - The AWS_ACCESS_KEY_ID is not set."
+        return $ret;
+    fi
+    aws configure list | grep "secret_key" | grep -v "<not set>" > /dev/null
+    ret=$?
+    if test $ret != 0 ; then
+        echo "ERROR - The AWS_SECRET_ACCESS_KEY is not set."
+        return $ret;
+    fi
+    aws configure list | grep "region" | grep -v "<not set>" > /dev/null
+    ret=$?
+    if test $ret != 0 ; then
+        echo "WARNING - The AWS_DEFAULT_REGION is not set."
+        return 0;
+    fi
+}
+
+
+########################################################################################################################
+# merge_missing()
+#
+# This function merges the missing variables (or not, depending on the state of
+# the merge_missing_vars env var.
+#
+function merge_missing() {
+    if test -n "${merge_missing_vars}"; then
+
+      # use $PATH/check_dmrpp to query dmrpp for missing CF domain variables [requires ${output_file}; -o option]
+      ck_dmrpp
+      retval=$(echo "${retval} + ${?}" | bc)
+      #echo "retval: ${retval}";
+
+      # check-dmrpp will create missing_vars_file if there are any missing variables.
+      if test -s ${missing_vars_file}; then
+        MISSING_VARS=$(cat ${missing_vars_file})
+        if test -n "$very_verbose"; then echo "The missing vars: ${MISSING_VARS}" >&2; fi
+
+        # augment bes_conf_file with additional H5 parameters necessary to synthesize missing_variables from input_data_file.
+        BES_CONF=$(make_missing_conf "${bes_conf_file}")
+
+        # insert '_missing' into input_data_file name and use for sidecar_missing_file name
+        sidecar_missing_file="${input_data_file}.missing"
+        if test -n "$very_verbose"; then echo "  MISSING_FILE: ${sidecar_missing_file}" >&2; fi
+
+        # use besstandalone to generate sidecar_missing_file
+        MISSING_FILE_BESCMD=$(mkDapRequest "${input_data_file}" dods "${MISSING_VARS}" "${sidecar_missing_file}")
+        source_data_path="${sidecar_missing_file}"
+
+        BES_CONF=$(make_bes_conf "${bes_conf_file}" "${site_conf_file}")  # reset bes_conf_file; removing additional H5 parameters
+
+        SOURCE_DMR=$(mkDapRequest "${sidecar_missing_file}" dmr)  # use besstandalone to generate dmr for sidecar_missing_file
+        master_dmrpp_file="${output_file}"  # save original dmrpp filename
+
+        if test -n "$reduce_missing_files"; then
+          if test ! -s ${MASTER_SHA256}; then
+            output_file="${BES_DATA_ROOT}/${sidecar_missing_file}.dmrpp"
+          else
+            output_file=$(mktemp -t dmrpp_XXXX) # generate temporary dmrpp filename for sidecar_missing_file
+          fi
+        else
+          output_file=$(mktemp -t dmrpp_XXXX) # generate temporary dmrpp filename for sidecar_missing_file
+        fi
+
+        mk_dmrpp "${sidecar_missing_file}"  # use $PATH/build_dmrpp to generate dmrpp for sidecar_missing_file
+        retval=$?
+        #echo "retval: ${retval}";
+
+        missing_dmrpp_file="${output_file}"
+
+        if test -n "$reduce_missing_files"; then
+          tempstore_file=$(mktemp -t tmpstore_XXXX) # generate temporary filename for tempstore to hold missing_dmrpp info
+          if test -n "$very_verbose"; then
+            echo "missing_dmrpp_file: ${missing_dmrpp_file}" >&2;
+            echo " missing_vars_file: ${sidecar_missing_file}" >&2;
+            echo "     master_sha256: ${MASTER_SHA256}" >&2;
+            echo "         tempstore: ${tempstore_file}" >&2;
+          fi
+
+          reduce_dmrpp "${sidecar_missing_file}" # use $PATH/reduce_mdf to merge sidecar_missing_file dmrpp with master_dmrpp_file
+          retval=$?
+          #echo "reduce_dmrpp: ${retval}"
+
+          if test -s ${tempstore_file}; then # if tempstore_file is not empty then there will be temp that need to be removed.
+            temp_sidecar_dmrpp=${missing_dmrpp_file}
+            temp_sidecar_file="${BES_DATA_ROOT}/${sidecar_missing_file}"
+            missing_dmrpp_file=$(echo `awk -F'[ ]' '{print $2}' "${tempstore_file}"`)
+          fi
+
+        fi
+
+        if test -n "$very_verbose"; then
+          echo "missing_dmrpp_file: ${missing_dmrpp_file}" >&2;
+          echo " master_dmrpp_file: ${master_dmrpp_file}" >&2;
+          echo "       target_path: ${target_path}" >&2;
+          echo " missing_vars_file: ${missing_vars_file}" >&2;
+        fi
+
+        # set 'href' content to use when merging chunks from sidecar_missing_file dmrpp into master_dmrpp_file
+        if test -n "${MISSING_DATA_HREF}"; then
+          target_path=$(echo "${MISSING_DATA_HREF}")
+        else
+          target_path=$(echo "OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL")
+        fi
+
+        mg_dmrpp  # use $PATH/merge_dmrpp to merge sidecar_missing_file dmrpp with master_dmrpp_file
+        retval=$(echo "${retval} + ${?}" | bc)
+        #echo "retval: ${retval}"
+
+      else
+        echo " There are no missing variables to merge."
+      fi
+    fi
+}
+
+########################################################################################################################
+# run_tests()
+#
+# This function conditionally runs the dmr++ sanity checking tests
+#
+function run_tests(){
+    if test -n "${run_inventory_tests}"; then
+        dmrpp_inventory_test
+        retval=$(echo "${retval} + ${?}" | bc)
+        #echo "retval: ${retval}";
+    fi
+
+    if test -n "${run_value_tests}"; then
+        dmrpp_value_test
+        retval=$(echo "${retval} + ${?}" | bc)
+        #echo "retval: ${retval}";
+    fi
+}
+
 ########################################################################################################################
 ########################################################################################################################
 ########################################################################################################################
 ########################################################################################################################
+#
+# main() (such as it is in bashlandia)
+#
+#
+#
+
+# Here we test to see if the input file name is actually an S3 URL
+# and if it is we adjust the input_data_file and go out and get the
+# object from S3.
+s3_granule=
+if [[ "${input_data_file}" =~ ^s3:\/\/.* ]]
+then
+    s3_granule="${input_data_file}"
+    echo "Detected S3 URL as data input: ${s3_granule}" >&2
+
+    set +e
+    check_aws_config
+    ret=$?
+    if test $ret != 0
+    then
+        echo "ERROR - The AWS CLI is not configured. Exiting." >&2
+        exit 1
+    fi
+
+    input_data_file=$(basename "${s3_granule}")
+    echo "input_data_file: ${input_data_file}" >&2
+
+    local_file="${BES_DATA_ROOT}/${input_data_file}"
+    echo "Copying S3 object to: ${local_file}" >&2
+
+    aws s3 cp ${s3_granule} ${local_file}
+    result=$?
+    if test $result != 0
+    then
+        echo "ERROR - Failed to acquire S3 object. (status: $result) Exiting..." >&2
+        exit $result
+    fi
+
+    set -e
+fi
+
 
 BES_CONF=$(make_bes_conf "${bes_conf_file}" "${site_conf_file}")
 SOURCE_DMR=$(mkDapRequest "${input_data_file}" dmr)
@@ -1099,111 +1292,46 @@ mk_dmrpp "${input_data_file}"
 retval=$?
 #echo "retval: ${retval}";
 
+
 if test -z "${verbose}"; then
     #if test -f "${BES_CONF}" ; then rm -f "${BES_CONF}"; fi
     if test -f "${DAP_CMD}" ; then rm -f "${DAP_CMD}"; fi
 fi
 
-if test -n "${merge_missing_vars}"; then
+# Merge the missing variable data (conditional)
+merge_missing
 
-  # use $PATH/check_dmrpp to query dmrpp for missing CF domain variables [requires ${output_file}; -o option]
-  ck_dmrpp
-  retval=$(echo "${retval} + ${?}" | bc)
-  #echo "retval: ${retval}";
+# Run the dmr++ tests (conditional)
+run_tests
 
-  # check-dmrpp will create missing_vars_file if there are any missing variables.
-  if test -s ${missing_vars_file}; then
-    MISSING_VARS=$(cat ${missing_vars_file})
-    if test -n "$very_verbose"; then echo "The missing vars: ${MISSING_VARS}" >&2; fi
-
-    # augment bes_conf_file with additional H5 parameters necessary to synthesize missing_variables from input_data_file.
-    BES_CONF=$(make_missing_conf "${bes_conf_file}")
-
-    # insert '_missing' into input_data_file name and use for sidecar_missing_file name
-    sidecar_missing_file="${input_data_file}.missing"
-    if test -n "$very_verbose"; then echo "  MISSING_FILE: ${sidecar_missing_file}" >&2; fi
-
-    # use besstandalone to generate sidecar_missing_file
-    MISSING_FILE_BESCMD=$(mkDapRequest "${input_data_file}" dods "${MISSING_VARS}" "${sidecar_missing_file}")
-    source_data_path="${sidecar_missing_file}"
-
-    BES_CONF=$(make_bes_conf "${bes_conf_file}" "${site_conf_file}")  # reset bes_conf_file; removing additional H5 parameters
-
-    SOURCE_DMR=$(mkDapRequest "${sidecar_missing_file}" dmr)  # use besstandalone to generate dmr for sidecar_missing_file
-    master_dmrpp_file="${output_file}"  # save original dmrpp filename
-
-    if test -n "$reduce_missing_files"; then
-      if test ! -s ${MASTER_SHA256}; then
-        output_file="${BES_DATA_ROOT}/${sidecar_missing_file}.dmrpp"
-      else
-        output_file=$(mktemp -t dmrpp_XXXX) # generate temporary dmrpp filename for sidecar_missing_file
-      fi
-    else
-      output_file=$(mktemp -t dmrpp_XXXX) # generate temporary dmrpp filename for sidecar_missing_file
+# Push the dmr++ to S3 traget (conditional)
+if test -n "${s3_granule}" && test -n "${S3_UPLOAD}"
+then
+    if test -z "${output_file}"
+    then
+        echo "#---------------------------------------------------------------------" >&2
+        echo "ERROR - Unable to upload dmr++ file because the output file name has not been set!" >&2
+        echo "        Use the -o parameter. To set the output file name" >&2
+        echo "-  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -" >&2
+        show_usage >&2
+        echo "#---------------------------------------------------------------------" >&2
+     exit 1
     fi
-
-    mk_dmrpp "${sidecar_missing_file}"  # use $PATH/build_dmrpp to generate dmrpp for sidecar_missing_file
-    retval=$?
-    #echo "retval: ${retval}";
-
-    missing_dmrpp_file="${output_file}"
-
-    if test -n "$reduce_missing_files"; then
-      tempstore_file=$(mktemp -t tmpstore_XXXX) # generate temporary filename for tempstore to hold missing_dmrpp info
-      if test -n "$very_verbose"; then
-        echo "missing_dmrpp_file: ${missing_dmrpp_file}" >&2;
-        echo " missing_vars_file: ${sidecar_missing_file}" >&2;
-        echo "     master_sha256: ${MASTER_SHA256}" >&2;
-        echo "         tempstore: ${tempstore_file}" >&2;
-      fi
-
-      reduce_dmrpp "${sidecar_missing_file}" # use $PATH/reduce_mdf to merge sidecar_missing_file dmrpp with master_dmrpp_file
-      retval=$?
-      #echo "reduce_dmrpp: ${retval}"
-
-      if test -s ${tempstore_file}; then # if tempstore_file is not empty then there will be temp that need to be removed.
-        temp_sidecar_dmrpp=${missing_dmrpp_file}
-        temp_sidecar_file="${BES_DATA_ROOT}/${sidecar_missing_file}"
-        missing_dmrpp_file=$(echo `awk -F'[ ]' '{print $2}' "${tempstore_file}"`)
-      fi
-
+    s3_dmrpp="${s3_granule}.dmrpp"
+    echo "Uploading dmr++ file (${output_file}) to: ${s3_dmrpp}" >&2
+    set +e
+    aws s3 cp "${output_file}" "${s3_dmrpp}"
+    result=$?
+    if test $result != 0
+    then
+        echo "ERROR - Failed to upload S3 object. Exiting..." >&2
+        exit 1
     fi
-
-    if test -n "$very_verbose"; then
-      echo "missing_dmrpp_file: ${missing_dmrpp_file}" >&2;
-      echo " master_dmrpp_file: ${master_dmrpp_file}" >&2;
-      echo "       target_path: ${target_path}" >&2;
-      echo " missing_vars_file: ${missing_vars_file}" >&2;
-    fi
-
-    # set 'href' content to use when merging chunks from sidecar_missing_file dmrpp into master_dmrpp_file
-    if test -n "${MISSING_DATA_HREF}"; then
-      target_path=$(echo "${MISSING_DATA_HREF}")
-    else
-      target_path=$(echo "OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL")
-    fi
-
-    mg_dmrpp  # use $PATH/merge_dmrpp to merge sidecar_missing_file dmrpp with master_dmrpp_file
-    retval=$(echo "${retval} + ${?}" | bc)
-    #echo "retval: ${retval}"
-
-  else
-    echo " There are no missing variables to merge."
-  fi
+    set -e
 fi
 
-if test -n "${run_inventory_tests}"; then
-  dmrpp_inventory_test
-  retval=$(echo "${retval} + ${?}" | bc)
-  #echo "retval: ${retval}";
-fi
 
-if test -n "${run_value_tests}"; then
-  dmrpp_value_test
-  retval=$(echo "${retval} + ${?}" | bc)
-  #echo "retval: ${retval}";
-fi
-
+# Cleanup the mess, or not (conditional)
 if test -z "${verbose}"; then
   if test -n "${merge_missing_vars}"; then
     echo "    main:MISSING_VARS_FILE: ${missing_vars_file}"
