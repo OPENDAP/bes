@@ -373,7 +373,10 @@ void FONcTransform::transform_dap2(ostream &strm) {
             if (FONcTransform::_returnAs == RETURN_AS_NETCDF4 && FONcRequestHandler::classic_model == false)
                 is_netCDF_enhanced = true;
             FONcAttributes::add_attributes(_ncid, NC_GLOBAL, globals, "", "", is_netCDF_enhanced);
-            // FIXME Add the json history here
+            // We could add the json history directly to the netcdf file here. For now,
+            // this code, which adds it to the global attribute table and then moves
+            // those into the netcdf file, is working. There are two other places in the
+            // file where this is true. Search for '***' jhrg 2/28/22
         }
 
         // We are done defining the variables, dimensions, and
@@ -761,7 +764,7 @@ void FONcTransform::transform_dap4_no_group() {
             if (FONcTransform::_returnAs == RETURN_AS_NETCDF4 && FONcRequestHandler::classic_model == false)
                 is_netCDF_enhanced = true;
             FONcAttributes::add_dap4_attributes(_ncid, NC_GLOBAL, d4_attrs, "", "", is_netCDF_enhanced);
-            // FIXME Add the json history here
+            // *** Add the json history here
         }
 
         // We are done defining the variables, dimensions, and
@@ -947,7 +950,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
             BESDEBUG("fonc", "FONcTransform::transform_dap4_group() - Adding Group Attributes" << endl);
             // add dap4 group attributes.
             FONcAttributes::add_dap4_attributes(grp_id, NC_GLOBAL, d4_attrs, "", "", is_netCDF_enhanced);
-            // FIXME Add the json history here
+            // *** Add the json history here
         }
 
         // Write every variable in this group. 

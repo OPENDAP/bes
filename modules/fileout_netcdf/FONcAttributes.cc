@@ -43,8 +43,6 @@
 #include "FONcAttributes.h"
 #include "FONcUtils.h"
 
-#define ADD_HISTORY_JSON_DIRECTLY 1
-
 using namespace std;
 
 /** @brief Add the attributes for an OPeNDAP variable to the netcdf file

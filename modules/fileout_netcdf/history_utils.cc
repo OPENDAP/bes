@@ -69,7 +69,11 @@ using namespace std;
 #define HISTORY_JSON_CONTEXT "history_json_entry"
 
 // Define this to keep the JSON history attribute out of the DAS and
-// drop it into the netCDF file directly. jhrg 2/28/22
+// drop it into the netCDF file directly.
+//
+// Look in FONcTransform.cc for *** in a comment for the locations
+// where the change could be made. For now, the current approach, which
+// is sort of convoluted, is working. jhrg 2/28/22
 #define HISTORY_JSON_DIRECT_TO_NETCDF 0
 
 #define MODULE "fonc"
