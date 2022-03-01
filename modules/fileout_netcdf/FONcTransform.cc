@@ -87,18 +87,18 @@ using namespace std;
  * file is not specified or failed to create the netcdf file
  */
 FONcTransform::FONcTransform(DDS *dds, BESDataHandlerInterface &dhi, const string &localfile, const string &ncVersion) :
-        _ncid(0), _dds(nullptr), _dmr(nullptr), d_obj(nullptr), d_dhi(nullptr) {
-    if (!dds) {
-        string s = (string) "File out netcdf, " + "null DDS passed to constructor";
-        throw BESInternalError(s, __FILE__, __LINE__);
+                             _dds(dds), _localfile(localfile), _returnAs(ncVersion)  {
+    if (!_dds) {
+        throw BESInternalError("File out netcdf, null DDS passed to constructor", __FILE__, __LINE__);
     }
-    if (localfile.empty()) {
-        string s = (string) "File out netcdf, " + "empty local file name passed to constructor";
-        throw BESInternalError(s, __FILE__, __LINE__);
+    if (_localfile.empty()) {
+        throw BESInternalError("File out netcdf, empty local file name passed to constructor", __FILE__, __LINE__);
     }
+#if 0
     _localfile = localfile;
     _dds = dds;
     _returnAs = ncVersion;
+#endif
 
     // if there is a variable, attribute, dimension name that is not
     // compliant with netcdf naming conventions then we will create
@@ -127,18 +127,18 @@ FONcTransform::FONcTransform(DDS *dds, BESDataHandlerInterface &dhi, const strin
  * file is not specified or failed to create the netcdf file
  */
 FONcTransform::FONcTransform(DMR *dmr, BESDataHandlerInterface &dhi, const string &localfile, const string &ncVersion) :
-        _ncid(0), _dds(nullptr), _dmr(nullptr), d_obj(nullptr), d_dhi(nullptr) {
-    if (!dmr) {
-        string s = (string) "File out netcdf, null DMR passed to constructor";
-        throw BESInternalError(s, __FILE__, __LINE__);
+                             _dmr(dmr), _localfile(localfile), _returnAs(ncVersion) {
+    if (!_dmr) {
+        throw BESInternalError("File out netcdf, null DMR passed to constructor", __FILE__, __LINE__);
     }
-    if (localfile.empty()) {
-        string s = (string) "File out netcdf, " + "empty local file name passed to constructor";
-        throw BESInternalError(s, __FILE__, __LINE__);
+    if (_localfile.empty()) {
+        throw BESInternalError("File out netcdf, empty local file name passed to constructor", __FILE__, __LINE__);
     }
+#if 0
     _localfile = localfile;
     _dmr = dmr;
     _returnAs = ncVersion;
+#endif
 
     // if there is a variable, attribute, dimension name that is not
     // compliant with netcdf naming conventions then we will create
@@ -167,16 +167,13 @@ FONcTransform::FONcTransform(DMR *dmr, BESDataHandlerInterface &dhi, const strin
  * file is not specified or failed to create the netcdf file
  */
 FONcTransform::FONcTransform(BESResponseObject *obj, BESDataHandlerInterface *dhi, const string &localfile,
-                             const string &ncVersion) :
-        _ncid(0), _dds(nullptr), _dmr(nullptr), d_obj(obj), d_dhi(dhi), _localfile(localfile),
-        _returnAs(ncVersion) {
+                             const string &ncVersion)
+                             : d_obj(obj), d_dhi(dhi), _localfile(localfile), _returnAs(ncVersion) {
     if (!d_obj) {
-        string s = (string) "File out netcdf, " + "null BESResponseObject passed to constructor";
-        throw BESInternalError(s, __FILE__, __LINE__);
+        throw BESInternalError("File out netcdf, null BESResponseObject passed to constructor", __FILE__, __LINE__);
     }
     if (_localfile.empty()) {
-        string s = (string) "File out netcdf, " + "empty local file name passed to constructor";
-        throw BESInternalError(s, __FILE__, __LINE__);
+        throw BESInternalError("File out netcdf, empty local file name passed to constructor", __FILE__, __LINE__);
     }
 
     // if there is a variable, attribute, dimension name that is not

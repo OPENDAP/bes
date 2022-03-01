@@ -58,11 +58,11 @@ class BESDataHandlerInterface;
  */
 class FONcTransform: public BESObj {
 private:
-	int _ncid;
-	libdap::DDS *_dds;
-    libdap::DMR *_dmr;
-    BESResponseObject *d_obj;
-    BESDataHandlerInterface *d_dhi;
+	int _ncid = {0};
+	libdap::DDS *_dds = {nullptr};
+    libdap::DMR *_dmr = {nullptr};
+    BESResponseObject *d_obj = {nullptr};
+    BESDataHandlerInterface *d_dhi = {nullptr};
 	std::string _localfile;
 	std::string _returnAs;
     std::vector<FONcBaseType *> _fonc_vars;
