@@ -24,6 +24,15 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([nc/test.nc.3a.bescmd])
 # These are the DAP4 tests
 
 AT_BESCMD_RESPONSE_TEST([nc/coads_climatology.nc.dmr.bescmd])
+
+# Tests for DAP4 Coverages (aka Grids) and their CEs
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([nc/coads_d4c_nm_lc.dap.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([nc/coads_d4c_nm.dap.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([nc/coads_d4c_m.dap.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([nc/coads_d4c_m_lc.dap.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([nc/coads_d4c_m_vc.dap.bescmd])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([nc/coads_d4c_m_vlc.dap.bescmd])
+
 # There's a ton of data in coads, so skip testing that
 
 AT_BESCMD_RESPONSE_TEST([nc/fnoc1.nc.dmr.bescmd])
