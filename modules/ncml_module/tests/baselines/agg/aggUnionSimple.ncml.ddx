@@ -91,24 +91,19 @@
                 <value>Cloudiness Monthly Mean at Surface</value>
             </Attribute>
             <Attribute name="dataset" type="String">
-                <value>COADS 1-degree Equatorial Enhanced
-AI</value>
+                <value>COADS 1-degree Equatorial Enhanced\012AI</value>
             </Attribute>
             <Attribute name="var_desc" type="String">
-                <value>Cloudiness
-C</value>
+                <value>Cloudiness\012C</value>
             </Attribute>
             <Attribute name="level_desc" type="String">
-                <value>Surface
-0</value>
+                <value>Surface\0120</value>
             </Attribute>
             <Attribute name="statistic" type="String">
-                <value>Mean
-M</value>
+                <value>Mean\012M</value>
             </Attribute>
             <Attribute name="parent_stat" type="String">
-                <value>Individual Obs
-I</value>
+                <value>Individual Obs\012I</value>
             </Attribute>
             <Attribute name="add_offset" type="Float32">
                 <value>3276.50000</value>
@@ -196,24 +191,19 @@ I</value>
                 <value>Latent Heat Parameter Monthly Mean at Surface</value>
             </Attribute>
             <Attribute name="dataset" type="String">
-                <value>COADS 1-degree Equatorial Enhanced
-AI</value>
+                <value>COADS 1-degree Equatorial Enhanced\012AI</value>
             </Attribute>
             <Attribute name="var_desc" type="String">
-                <value>Latent Heat Parameter
-G</value>
+                <value>Latent Heat Parameter\012G</value>
             </Attribute>
             <Attribute name="level_desc" type="String">
-                <value>Surface
-0</value>
+                <value>Surface\0120</value>
             </Attribute>
             <Attribute name="statistic" type="String">
-                <value>Mean
-M</value>
+                <value>Mean\012M</value>
             </Attribute>
             <Attribute name="parent_stat" type="String">
-                <value>Individual Obs
-I</value>
+                <value>Individual Obs\012I</value>
             </Attribute>
             <Attribute name="add_offset" type="Float32">
                 <value>2276.50000</value>
