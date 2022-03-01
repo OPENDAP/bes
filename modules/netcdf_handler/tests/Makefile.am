@@ -16,8 +16,8 @@ noinst_DATA = bes.conf bes_mds.conf bes_byte2short.conf
 
 CLEANFILES = bes.conf bes_mds.conf bes_byte2short.conf $(srcdir)/package.m4
 
-EXTRA_DIST = nc TESTSUITE TESTSUITE.at atlocal.in $(BES_CONF_IN) $(BES_MDS_CONF_IN) \
-$(BES_BTS_CONF_IN) $(srcdir)/package.m4
+EXTRA_DIST = nc $(srcdir)/testsuite $(srcdir)/testsuite.at $(srcdir)/package.m4 atlocal.in \
+$(BES_CONF_IN) $(BES_MDS_CONF_IN) $(BES_BTS_CONF_IN)
 
 DISTCLEANFILES = atconfig
 
