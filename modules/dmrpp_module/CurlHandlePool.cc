@@ -342,7 +342,6 @@ CurlHandlePool::CurlHandlePool() {
 // - ndp 12/02/20
 #endif
 
-
 CurlHandlePool::CurlHandlePool(unsigned int max_handles) : d_max_easy_handles(max_handles) {
     for (unsigned int i = 0; i < d_max_easy_handles; ++i) {
         d_easy_handles.push_back(new dmrpp_easy_handle());

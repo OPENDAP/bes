@@ -1049,7 +1049,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
     Constructor::Vars_iter vi = grp->var_begin();
     Constructor::Vars_iter ve = grp->var_end();
 
-    vector<FONcBaseType *> fonc_vars_in_grp;
+    vector<FONcBaseType*> fonc_vars_in_grp;
     for (; vi != ve; vi++) {
         if ((*vi)->send_p()) {
             BaseType *v = *vi;

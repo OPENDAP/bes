@@ -736,7 +736,7 @@ void DmrppArray::read_contiguous()
 
     // We only want to read in the Chunk concurrently if:
     // - Concurrent transfers are enabled (DmrppRequestHandler::d_use_transfer_threads)
-    // - The variables size is above the threshold value held in DmrppRequestHandler::d_contiguous_concurrent_threshold
+    // - The variable's size is above the threshold value held in DmrppRequestHandler::d_contiguous_concurrent_threshold
     if (!DmrppRequestHandler::d_use_transfer_threads || the_one_chunk_size <= DmrppRequestHandler::d_contiguous_concurrent_threshold) {
         // Read the the_one_chunk as is. This is the non-parallel I/O case
         the_one_chunk->read_chunk();
