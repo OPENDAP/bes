@@ -56,8 +56,10 @@ AT_KEYWORDS([bescmd])
 
 AS_IF([grep -q "darwin" <<< AT_PACKAGE_HOST],
       [AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1], [], [stdout])
-       AT_CHECK([diff -b -B $2 stdout])
+       AT_CHECK([ diff -b -B $2 stdout])
+       #AT_CHECK ([if test zxfail = zxfail; then exit 77; fi])
        AT_XFAIL_IF([test zxfail = zxfail])
+       
       ],
       [AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 || true], [], [stdout], [stderr])
        AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
