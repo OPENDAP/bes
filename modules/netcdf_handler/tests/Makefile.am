@@ -8,6 +8,7 @@ AM_CXXFLAGS =
 # debugging. The best way to use these is to run configure as:
 #     export CXXFLAGS='...'; ./configure --disable-shared
 # the --disable-shared is not required, but it seems to help with debuggers.
+
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
@@ -15,10 +16,8 @@ noinst_DATA = bes.conf bes_mds.conf bes_byte2short.conf
 
 CLEANFILES = bes.conf bes_mds.conf bes_byte2short.conf $(srcdir)/package.m4
 
-EXTRA_DIST = nc netcdf_handlerTest netcdf_handlerTest.at \
-nc4_netcdf_handler_tests nc4_netcdf_handler_tests.at \
-atlocal.in $(BES_CONF_IN) $(BES_MDS_CONF_IN) $(BES_BTS_CONF_IN) $(srcdir)/package.m4 \
-handler_tests_macros.m4
+EXTRA_DIST = nc $(srcdir)/testsuite $(srcdir)/testsuite.at $(srcdir)/package.m4 atlocal.in \
+$(BES_CONF_IN) $(BES_MDS_CONF_IN) $(BES_BTS_CONF_IN)
 
 DISTCLEANFILES = atconfig
 
@@ -49,24 +48,13 @@ bes_byte2short.conf: $(srcdir)/$(BES_BTS_CONF_IN) $(top_srcdir)/configure.ac
 
 AUTOM4TE = autom4te
 
-TESTSUITE_3 = $(srcdir)/netcdf_handlerTest
+TESTSUITE = $(srcdir)/testsuite
 
-if NETCDF4_TESTS
-TESTSUITE_4 = $(srcdir)/nc4_netcdf_handler_tests
-else
-TESTSUITE_4 =
-endif
-
-# TESTSUITE_3 is always built, but not TESTSUITE_4
-
-check-local: atconfig atlocal $(srcdir)/package.m4 $(TESTSUITE_3) $(TESTSUITE_4) \
-$(srcdir)/handler_tests_macros.m4
-	$(SHELL) '$(TESTSUITE_3)' $(TESTSUITEFLAGS)
-	test ! -f '$(TESTSUITE_4)' || $(SHELL) '$(TESTSUITE_4)' $(TESTSUITEFLAGS)
+check-local: atconfig atlocal $(TESTSUITE) $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
+	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 
 clean-local:
-	test ! -f '$(TESTSUITE_3)' || $(SHELL) '$(TESTSUITE_3)' --clean
-	test ! -f '$(TESTSUITE_4)' || $(SHELL) '$(TESTSUITE_4)' --clean
+	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
 	-rm -rf $(builddir)/mds_for_tests
 
 
@@ -84,5 +72,6 @@ $(srcdir)/package.m4: $(top_srcdir)/configure.ac
 	echo 'm4_define([AT_PACKAGE_VERSION],   [@PACKAGE_VERSION@])' && \
 	echo 'm4_define([AT_PACKAGE_STRING],    [@PACKAGE_STRING@])' && \
 	echo 'm4_define([AT_PACKAGE_BUGREPORT], [@PACKAGE_BUGREPORT@])'; \
+	echo 'm4_define([AT_TOP_SRCDIR],        [@top_srcdir@])'; \
 	} >'$(srcdir)/package.m4'
 

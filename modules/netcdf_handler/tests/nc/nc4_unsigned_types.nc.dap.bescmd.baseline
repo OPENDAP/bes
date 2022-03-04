@@ -9,7 +9,7 @@
             <Value>seconds</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>0381177c</Value>
+            removed checksum
         </Attribute>
     </Int32>
     <Int32 name="lat">
@@ -18,7 +18,7 @@
             <Value>degrees_north</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>535a6f2c</Value>
+            removed checksum
         </Attribute>
     </Int32>
     <Int32 name="lon">
@@ -27,7 +27,7 @@
             <Value>degrees_east</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>a793a1fc</Value>
+            removed checksum
         </Attribute>
     </Int32>
     <UInt32 name="temp">
@@ -35,7 +35,7 @@
         <Dim name="/lat"/>
         <Dim name="/lon"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>6bf004b2</Value>
+            removed checksum
         </Attribute>
         <Map name="/time"/>
         <Map name="/lat"/>
@@ -49,7 +49,7 @@
             <Value>9999</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>72b4a466</Value>
+            removed checksum
         </Attribute>
         <Map name="/time"/>
         <Map name="/lat"/>

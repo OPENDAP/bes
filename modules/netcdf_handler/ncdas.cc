@@ -62,15 +62,7 @@
 #include "nc_util.h"
 
 #define ATTR_STRING_QUOTE_FIX 1
-#define STOP_ESCAPING_STRING_ATTRS 1
-
-#define NETCDF_VERSION 4
-
-#if NETCDF_VERSION >= 4
-#define READ_ATTRIBUTES_MACRO read_attributes_netcdf4
-#else
-#define READ_ATTRIBUTES_MACRO read_attributes_netcdf3
-#endif
+#define STOP_ESCAPING_STRING_ATTRS 0    // Never do this. jhrg 2/28/22
 
 #define MODULE "nc"
 #define prolog std::string("ncdas::").append(__func__).append("() - ")
@@ -102,7 +94,6 @@ static string print_attr(nc_type type, int loc, void *vals)
     } gp;
 
     switch (type) {
-#if NETCDF_VERSION >= 4
     case NC_UBYTE:
         unsigned char uc;
         gp.cp = (char *) vals;
@@ -110,7 +101,6 @@ static string print_attr(nc_type type, int loc, void *vals)
         uc = *(gp.cp + loc);
         rep << (int) uc;
         return rep.str();
-#endif
 
     case NC_BYTE:
         if (NCRequestHandler::get_promote_byte_to_short()) {
@@ -131,45 +121,32 @@ static string print_attr(nc_type type, int loc, void *vals)
         }
 
     case NC_CHAR:
-#ifndef ATTR_STRING_QUOTE_FIX
-        rep << "\"" << escattr(static_cast<const char*>(vals)) << "\"";
-        return rep.str();
-#elif STOP_ESCAPING_STRING_ATTRS
-        return string(static_cast<const char*>(vals));
-#else
         return escattr(static_cast<const char*>(vals));
-#endif
 
-#if NETCDF_VERSION >= 4
     case NC_STRING:
         gp.stringp = (char **) vals;
         rep << *(gp.stringp + loc);
         return rep.str();
-#endif
 
     case NC_SHORT:
         gp.sp = (short *) vals;
         rep << *(gp.sp + loc);
         return rep.str();
 
-#if NETCDF_VERSION >= 4
     case NC_USHORT:
         gp.usp = (uint16_t *) vals;
         rep << *(gp.usp + loc);
         return rep.str();
-#endif
 
     case NC_INT:
         gp.i = (int32_t *) vals; // warning: long int format, int arg (arg 3)
         rep << *(gp.i + loc);
         return rep.str();
 
-#if NETCDF_VERSION >= 4
     case NC_UINT:
         gp.ui = (uint32_t *) vals;
         rep << *(gp.ui + loc);
         return rep.str();
-#endif
 
     case NC_FLOAT: {
         gp.fp = (float *) vals;
@@ -234,16 +211,13 @@ static string print_attr(nc_type type, int loc, void *vals)
 static string print_type(nc_type datatype)
 {
     switch (datatype) {
-#if NETCDF_VERSION >= 4
     case NC_STRING:
-#endif
     case NC_CHAR:
         return "String";
 
-#if NETCDF_VERSION >= 4
     case NC_UBYTE:
         return "Byte";
-#endif
+
     case NC_BYTE:
         if (NCRequestHandler::get_promote_byte_to_short()) {
             return "Int16";
@@ -258,13 +232,11 @@ static string print_type(nc_type datatype)
     case NC_INT:
         return "Int32";
 
-#if NETCDF_VERSION >= 4
     case NC_USHORT:
         return "UInt16";
 
     case NC_UINT:
         return "UInt32";
-#endif
 
     case NC_FLOAT:
         return "Float32";
@@ -272,12 +244,9 @@ static string print_type(nc_type datatype)
     case NC_DOUBLE:
         return "Float64";
 
-#if NETCDF_VERSION >= 4
     case NC_COMPOUND:
         return "NC_COMPOUND";
-#endif
 
-#if NETCDF_VERSION >= 4
         // These are all new netcdf 4 types that we don't support yet
         // as attributes. It's useful to have a print representation for
         // them so that we can return useful information about why some
@@ -294,7 +263,7 @@ static string print_type(nc_type datatype)
         return "NC_OPAQUE";
     case NC_ENUM:
         return "NC_ENUM";
-#endif
+
     default:
         if (NCRequestHandler::get_ignore_unknown_types())
             cerr << "The netcdf handler tried to print an attribute that has an unrecognized type. (2)" << endl;
@@ -313,13 +282,8 @@ static string print_type(nc_type datatype)
 static void append_values(int ncid, int v, int len, nc_type datatype, char *attrname, AttrTable *at)
 {
     size_t size;
-    int errstat;
-#if NETCDF_VERSION >= 4
-    errstat = nc_inq_type(ncid, datatype, 0, &size);
+    int errstat = nc_inq_type(ncid, datatype, 0, &size);
     if (errstat != NC_NOERR) throw Error(errstat, "Could not get the size for the type.");
-#else
-    size = nctypelen(datatype);
-#endif
 
     vector<char> value((len + 1) * size);
     errstat = nc_get_att(ncid, v, attrname, &value[0]);
@@ -341,63 +305,6 @@ static void append_values(int ncid, int v, int len, nc_type datatype, char *attr
         at->append_attr(attrname, print_type(datatype), print_rep);
     }
 }
-
-/** Given the netcdf file id, variable id, number of attributes for the
- variable, and an attribute table pointer, read the attributes and store
- their names and values in the attribute table.
-
- @note Attribute values in the DAP are stored only as strings.
- @param ncid The netcdf file id
- @param v The netcdf variable id
- @param natts The number of attributes
- @param at A value-result parameter; a point to the attribute table to which
- the new information will be added.
- */
-static void read_attributes_netcdf3(int ncid, int v, int natts, AttrTable *at)
-{
-    char attrname[MAX_NC_NAME];
-    nc_type datatype;
-    size_t len;
-    int errstat = NC_NOERR;
-
-    for (int a = 0; a < natts; ++a) {
-        errstat = nc_inq_attname(ncid, v, a, attrname);
-        if (errstat != NC_NOERR) {
-            string msg = "Could not get the name for attribute ";
-            msg += long_to_string(a);
-            throw Error(errstat, msg);
-        }
-
-        // len is the number of values. Attributes in netcdf can be scalars or
-        // vectors
-        errstat = nc_inq_att(ncid, v, attrname, &datatype, &len);
-        if (errstat != NC_NOERR) {
-            string msg = "Could not get the name for attribute '";
-            msg += attrname + string("'");
-            throw Error(errstat, msg);
-        }
-
-        switch (datatype) {
-        case NC_BYTE:
-        case NC_CHAR:
-        case NC_SHORT:
-        case NC_INT:
-        case NC_FLOAT:
-        case NC_DOUBLE:
-            append_values(ncid, v, len, datatype, attrname, at);
-            break;
-
-        default:
-            if (NCRequestHandler::get_ignore_unknown_types())
-                cerr << "Unrecognized attribute type." << endl;
-            else
-                throw InternalErr(__FILE__, __LINE__, "Unrecognized attribute type.");
-            break;
-        }
-    }
-}
-
-#if NETCDF_VERSION >= 4
 
 /** Given the netcdf file id, variable id, number of attributes for the
  variable, and an attribute table pointer, read the attributes and store
@@ -522,7 +429,7 @@ static void read_attributes_netcdf4(int ncid, int varid, int natts, AttrTable *a
 
             case NC_INT64:
             case NC_UINT64: {
-                string note = "Attribute edlided: Unsupported attribute type ";
+                string note = "Attribute elided: Unsupported attribute type ";
                 note += "(" + print_type(datatype) + ")";
                 at->append_attr(attrname, "String", note);
                 break;
@@ -541,7 +448,6 @@ static void read_attributes_netcdf4(int ncid, int varid, int natts, AttrTable *a
     }
     BESDEBUG(MODULE, prolog << "Exiting read_attributes_netcdf4" << endl);
 }
-#endif
 
 /** Given a reference to an instance of class DAS and a filename that refers
  to a netcdf file, read the netcdf file and extract all the attributes of
@@ -578,7 +484,7 @@ void nc_read_dataset_attributes(DAS &das, const string &filename)
         AttrTable *attr_table_ptr = das.get_table(varname);
         if (!attr_table_ptr) attr_table_ptr = das.add_table(varname, new AttrTable);
 
-        READ_ATTRIBUTES_MACRO(ncid, varid, natts, attr_table_ptr);
+        read_attributes_netcdf4(ncid, varid, natts, attr_table_ptr);
 
         // Add a special attribute for string lengths
         if (var_type == NC_CHAR) {
@@ -610,8 +516,6 @@ void nc_read_dataset_attributes(DAS &das, const string &filename)
                 attr_table_ptr->append_attr("string_length", print_type(NC_INT), print_rep);
             }
         }
-
-#if NETCDF_VERSION >= 4
         else if (is_user_defined_type(ncid, var_type)) {
             //var_type >= NC_FIRSTUSERTYPEID) {
             vector<char> name(MAX_NC_NAME + 1);
@@ -665,7 +569,6 @@ void nc_read_dataset_attributes(DAS &das, const string &filename)
                 break;
             }
         }
-#endif // NETCDF_VERSION >= 4
     }
 
     BESDEBUG(MODULE, prolog << "Starting global attributes" << endl);
@@ -673,7 +576,7 @@ void nc_read_dataset_attributes(DAS &das, const string &filename)
     // global attributes
     if (ngatts > 0) {
         AttrTable *attr_table_ptr = das.add_table("NC_GLOBAL", new AttrTable);
-        READ_ATTRIBUTES_MACRO(ncid, NC_GLOBAL, ngatts, attr_table_ptr);
+        read_attributes_netcdf4(ncid, NC_GLOBAL, ngatts, attr_table_ptr);
     }
 
     // Add unlimited dimension name in DODS_EXTRA attribute table

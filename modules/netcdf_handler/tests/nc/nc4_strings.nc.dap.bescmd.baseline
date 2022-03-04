@@ -5,13 +5,13 @@
     <Int32 name="lat">
         <Dim name="/lat"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>535a6f2c</Value>
+            removed checksum
         </Attribute>
     </Int32>
     <Int32 name="lon">
         <Dim name="/lon"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>a793a1fc</Value>
+            removed checksum
         </Attribute>
     </Int32>
     <String name="station">
@@ -26,7 +26,7 @@
             <Value>site_3</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>3f3eb41d</Value>
+            removed checksum
         </Attribute>
         <Map name="/lat"/>
         <Map name="/lon"/>
@@ -34,13 +34,13 @@
     <String name="scan_line">
         <Dim name="/lon"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>9e905cc5</Value>
+            removed checksum
         </Attribute>
         <Map name="/lon"/>
     </String>
     <String name="codec_name">
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>2fa19981</Value>
+            removed checksum
         </Attribute>
     </String>
     <Attribute name="NC_GLOBAL" type="Container">
