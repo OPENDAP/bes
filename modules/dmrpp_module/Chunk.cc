@@ -850,7 +850,7 @@ void Chunk::read_chunk() {
         throw BESInternalError(prolog + "No more libcurl handles.", __FILE__, __LINE__);
 
     try {
-        handle->read_data();  // retries until success when apropriate, else throws
+        handle->read_data();  // retries until success when appropriate, else throws
         DmrppRequestHandler::curl_handle_pool->release_handle(handle);
     }
     catch (...) {
