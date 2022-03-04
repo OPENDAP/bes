@@ -585,7 +585,7 @@ void BESDapResponseBuilder::send_das(ostream &out, DDS **dds, ConstraintEvaluato
         ConstraintEvaluator func_eval;
         BESDapFunctionResponseCache *responseCache = BESDapFunctionResponseCache::get_instance();
 
-        DDS *fdds = 0; // nulll_ptr
+        DDS *fdds = 0; // nullptr
         if (responseCache && responseCache->can_be_cached(*dds, get_btp_func_ce())) {
             fdds = responseCache->get_or_cache_dataset(*dds, get_btp_func_ce());
         }

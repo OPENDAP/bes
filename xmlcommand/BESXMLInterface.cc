@@ -252,7 +252,7 @@ void BESXMLInterface::execute_data_request_plan()
 
             string new_log_info = "";
 
-            // If the OLFS sent it's log info, integrate that into the log output
+            // If the OLFS sent its log info, integrate that into the log output
             bool found = false;
             string olfs_log_line = BESContextManager::TheManager()->get_context("olfsLog", found);
             if(found){
