@@ -46,23 +46,17 @@ AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_CLEANUP])
 
 # Running this macro will generate expected failure on Mac if output is different than the baseline.
-# However, if the baseline file is the same as the output, unexpected pass will show. 
+# However, if the baseline file on Mac is the same as the output, unexpected pass will show. 
+# For other platform, this test is the same as other tests because AT_XFAIL_IF is a no-op.
 m4_define([_AT_BESCMD_TEST_OS],   
 [AT_SETUP([BESCMD $1])
 AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK to generate baseline file.
 #AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 > $2|| true], [], [stdout], [stderr])
-
-AS_IF([grep -q "darwin" <<< AT_PACKAGE_HOST],
-      [AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1], [], [stdout])
-       AT_CHECK([ diff -b -B $2 stdout])
-       AT_XFAIL_IF([grep -q "darwin" <<< AT_PACKAGE_HOST])
-       
-      ],
-      [AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 || true], [], [stdout], [stderr])
-       AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
-      ])
+AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 || true], [], [stdout], [stderr])
+AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [],[],[])
+AT_XFAIL_IF([grep -q "darwin" <<< AT_PACKAGE_HOST])
 AT_CLEANUP])
 
 
