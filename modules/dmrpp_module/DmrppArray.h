@@ -79,6 +79,7 @@ private:
                                        const std::vector<unsigned long long> &array_shape, char *data);
 
     void read_contiguous();
+    void read_contiguous_string();
 
 #ifdef USE_READ_SERIAL
     virtual void insert_chunk_serial(unsigned int dim, std::vector<unsigned int> *target_element_address,

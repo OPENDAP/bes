@@ -6,7 +6,7 @@
     <Float64 name="TIME">
         <Dim name="/TIME"/>
         <Attribute name="units" type="String">
-            <Value>hour since 0000-01-01 00:00:00</Value>
+            <Value>hour since removed date-time</Value>
         </Attribute>
         <Attribute name="time_origin" type="String">
             <Value>1-JAN-0000 00:00:00</Value>
@@ -15,7 +15,7 @@
             <Value> </Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>61714e0d</Value>
+            removed checksum
         </Attribute>
     </Float64>
     <Float64 name="COADSY">
@@ -27,7 +27,7 @@
             <Value>even</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>1a0c419c</Value>
+            removed checksum
         </Attribute>
     </Float64>
     <Float64 name="COADSX">
@@ -42,7 +42,7 @@
             <Value>even</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>408945c6</Value>
+            removed checksum
         </Attribute>
     </Float64>
     <Float32 name="SST">
@@ -65,7 +65,7 @@
             <Value>Deg C</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>15e30b9f</Value>
+            removed checksum
         </Attribute>
     </Float32>
     <Float32 name="VWND">
@@ -88,7 +88,7 @@
             <Value>M/S</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>15e30b9f</Value>
+            removed checksum
         </Attribute>
     </Float32>
     <Attribute name="NC_GLOBAL" type="Container">

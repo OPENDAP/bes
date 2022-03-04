@@ -193,14 +193,6 @@ add_executable(bes
     dap/unit-tests/test_utils.cc
     dap/unit-tests/test_utils.h
     dap/unit-tests/TestFunction.h
-#    dap/unused/BESDapNullAggregationServer.cc
-#    dap/unused/BESDapNullAggregationServer.h
-#    dap/unused/BESDapResponseCache.cc
-#    dap/unused/BESDapResponseCache.h
-#    dap/unused/BESDapSequenceAggregationServer.cc
-#    dap/unused/BESDapSequenceAggregationServer.h
-#    dap/unused/BESHandlerUtil.cc
-#    dap/unused/BESHandlerUtil.h
     dap/BESDap4ResponseHandler.cc
     dap/BESDap4ResponseHandler.h
     dap/BESDapError.cc
@@ -525,112 +517,6 @@ add_executable(bes
     http/unit-tests/HttpUrlTest.cc
     http/unit-tests/RemoteResourceTest.cc
     http/unit-tests/AllowedHostsTest.cc
-
-#    functions/geo-functions/unused/NC_GOES_Dataset.cpp
-#    functions/geo-functions/unused/NC_GOES_Dataset.h
-    functions/geo-functions/AbstractDataset.cpp
-    functions/geo-functions/AbstractDataset.h
-    functions/geo-functions/BoundingBox.cpp
-    functions/geo-functions/BoundingBox.h
-    functions/geo-functions/DAP_Dataset.cpp
-    functions/geo-functions/DAP_Dataset.h
-    functions/geo-functions/Geo2DArray.cc
-    functions/geo-functions/Geo2DArray.h
-    functions/geo-functions/reproj_functions.cc
-    functions/geo-functions/reproj_functions.h
-    functions/geo-functions/wcs_error.cpp
-    functions/geo-functions/wcs_error.h
-    functions/geo-functions/wcsUtil.cpp
-    functions/geo-functions/wcsUtil.h
-
-    functions/stare/build_sidecar.cc
-    functions/stare/StareFunctions.cc
-    functions/stare/StareFunctions.h
-	functions/stare/GeoFile.cc
-	functions/stare/GeoFile.h
-    functions/stare/unit-tests/StareFunctionsTest.cc
-
-    functions/tests/gse-test.cc
-    functions/unit-tests/BBoxCombFunctionTest.cc
-    functions/unit-tests/BBoxFunctionTest.cc
-    functions/unit-tests/BBoxUnionFunctionTest.cc
-    functions/unit-tests/CEFunctionsTest.cc
-    functions/unit-tests/Dap4_CEFunctionsTest.cc
-    functions/unit-tests/Dap4_TabularFunctionTest.cc
-    functions/unit-tests/GridGeoConstraintTest.cc
-    functions/unit-tests/MakeMaskFunctionTest.cc
-    functions/unit-tests/MaskArrayFunctionTest.cc
-    functions/unit-tests/OdometerTest.cc
-    functions/unit-tests/RangeFunctionTest.cc
-    functions/unit-tests/RoiFunctionTest.cc
-    functions/unit-tests/ScaleUtilTest.cc
-    functions/unit-tests/ScaleUtilTest3D.cc
-    functions/unit-tests/TabularFunctionTest.cc
-    functions/unit-tests/test_config.h
-    functions/unit-tests/test_utils.cc
-    functions/unit-tests/test_utils.h
-    functions/BBoxCombFunction.cc
-    functions/BBoxCombFunction.h
-    functions/BBoxFunction.cc
-    functions/BBoxFunction.h
-    functions/BBoxUnionFunction.cc
-    functions/BBoxUnionFunction.h
-    functions/BindNameFunction.cc
-    functions/BindNameFunction.h
-    functions/BindShapeFunction.cc
-    functions/BindShapeFunction.h
-    functions/DapFunctions.cc
-    functions/DapFunctions.h
-    functions/DapFunctionsRequestHandler.cc
-    functions/DapFunctionsRequestHandler.h
-    functions/DilateArrayFunction.cc
-    functions/DilateArrayFunction.h
-    functions/functions_util.cc
-    functions/functions_util.h
-    functions/GeoConstraint.cc
-    functions/GeoConstraint.h
-    functions/GeoGridFunction.cc
-    functions/GeoGridFunction.h
-    functions/grid_utils.cc
-    functions/grid_utils.h
-    functions/GridFunction.cc
-    functions/GridFunction.h
-    functions/GridGeoConstraint.cc
-    functions/GridGeoConstraint.h
-    functions/gse_parser.h
-    functions/GSEClause.cc
-    functions/GSEClause.h
-
-    functions/LinearScaleFunction.cc
-    functions/LinearScaleFunction.h
-    functions/MakeArrayFunction.cc
-    functions/MakeArrayFunction.h
-    functions/MakeMaskFunction.cc
-    functions/MakeMaskFunction.h
-    functions/MaskArrayFunction.cc
-    functions/MaskArrayFunction.h
-    functions/Odometer.cc
-    functions/Odometer.h
-    functions/RangeFunction.cc
-    functions/RangeFunction.h
-    functions/roi_util.cc
-    functions/roi_util.h
-    functions/RoiFunction.cc
-    functions/RoiFunction.h
-    functions/scale_util.cc
-    functions/ScaleGrid.cc
-    functions/ScaleGrid.h
-    functions/TabularFunction.cc
-    functions/TabularFunction.h
-    functions/TabularSequence.cc
-    functions/TabularSequence.h
-    functions/VersionFunction.cc
-    functions/VersionFunction.h
-
-	functions/stare/StareFunctions.cc
-	functions/stare/StareFunctions.h
-	functions/stare/build_sidecar.cc
-	functions/stare/unit-tests/StareFunctionsTest.cc
 
 	hello_world/not_used/SampleSayCommand.cc
     hello_world/not_used/SampleSayCommand.h

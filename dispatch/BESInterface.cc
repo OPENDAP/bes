@@ -77,7 +77,6 @@
 #define EXCLUDE_FILE_INFO_FROM_LOG "BES.DoNotLogSourceFilenames"
 
 using namespace std;
-using std::endl;
 
 static jmp_buf timeout_jump;
 static bool timeout_jump_valid = false;
@@ -85,20 +84,20 @@ static bool timeout_jump_valid = false;
 // Define this to use sigwait() in a child thread to detect that SIGALRM
 // has been raised (i.e., that the timeout interval has elapsed). This
 // does not currently work, but could be a way to get information about
-// a timeout back to the BES's client if the BES itslef were structured
+// a timeout back to the BES's client if the BES itself were structured
 // differently. See my comment further down. jhrg 12/28/15
-#undef USE_SIGWAIT
+#define USE_SIGWAIT 0
 
-// timeout period in seconds; 0 --> no timeout. This is a static value so
+// timeout period in seconds; 0 --> no timeout. This is a global value so
 // that it can be accessed by the signal handler. jhrg 1/4/16
 // I've made this globally visible so that other code that might want to
-// alter the time out value can do so and this variable can be kept consistent.
+// alter the timeout value can do so and this variable can be kept consistent.
 // See BESStreamResponseHandler::execute() for an example. jhrg 1/24/17
 volatile int bes_timeout = 0;
 
 #define BES_TIMEOUT_KEY "BES.TimeOutInSeconds"
 
-// This function uses the static variables timeout_jump_valid and timeout_jump
+// This function uses the global variables timeout_jump_valid and timeout_jump
 // The code looks at the value of BES.TimeOutInSeconds and/or the timeout
 // context sent in the current request and, if that is greater than zero,
 // uses that as the maximum amount of time for the request. The system alarm
@@ -112,7 +111,7 @@ static void catch_sig_alarm(int sig)
     if (sig == SIGALRM) {
         ERROR_LOG("BES timeout after " << bes_timeout << " seconds." << endl);
 
-        // Causes setjmp() below to return 1; see the call to
+        // Causes setjump() below to return 1; see the call to
         // execute_data_request_plan() in execute_request() below.
         // jhrg 12/29/15
         if (timeout_jump_valid)
@@ -127,6 +126,14 @@ static void catch_sig_alarm(int sig)
     }
 }
 
+/**
+ * @brief register catch_sig_alarm() as the handler for SIGALRM
+ *
+ * We use SIGALRM as a scheme to timeout requests that seem 'stuck' based on
+ * some notion of how long it should take. This is configurable in the bes.conf
+ * file and also in the OLFS, which can override the bes.conf value on a per-
+ * request basis.
+ */
 static void register_signal_handler()
 {
     struct sigaction act;
@@ -138,7 +145,7 @@ static void register_signal_handler()
     // will return with an error and errno set to EINTR.
 
     act.sa_handler = catch_sig_alarm;
-    if (sigaction(SIGALRM, &act, 0))
+    if (sigaction(SIGALRM, &act, nullptr))
         throw BESInternalFatalError("Could not register a handler to catch alarm/timeout.", __FILE__, __LINE__);
 }
 
@@ -208,7 +215,6 @@ static void log_error(BESError &e)
 }
 
 #if USE_SIGWAIT
-
 // If the BES is changed so that the plan built here is run in a child thread,
 // then we can have a much more flexible signal catching scheme, including catching
 // the alarm signal used for the timeout. It's not possible to throw from a child
@@ -323,7 +329,7 @@ extern BESStopWatch *bes_timing::elapsedTimeToTransmitStart;
  * to the OLFS. The response is an XML document.
  *
  * @param e The BESError object
- * @param dhi The BESDataHandlerIterface object
+ * @param dhi The BESDataHandlerInterface object
  * @return
  */
 int BESInterface::handleException(BESError &e, BESDataHandlerInterface &dhi)
@@ -468,12 +474,12 @@ int BESInterface::execute_request(const string &from)
     }
 
     // TODO These never change for the life of a BES, so maybe they can move out of
-    // code that runs for every request? jhrg 11/8/17
+    //  code that runs for every request? jhrg 11/8/17
     d_dhi_ptr->set_output_stream(d_strm);
     d_dhi_ptr->data[REQUEST_FROM] = from;
 
     // TODO If this is only used for logging, it is not needed since the log has a copy
-    // of the BES PID. jhrg 11/13/17
+    //  of the BES PID. jhrg 11/13/17
     ostringstream ss;
     ss << getpid();
     d_dhi_ptr->data[SERVER_PID] = ss.str();
