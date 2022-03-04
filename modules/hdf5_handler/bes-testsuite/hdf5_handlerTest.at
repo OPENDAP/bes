@@ -45,6 +45,20 @@ AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 | getdap4 -D -M - 
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_CLEANUP])
 
+# Running this macro will generate expected failure on Mac if output is different than the baseline.
+# However, if the baseline file on Mac is the same as the output, unexpected pass will show. 
+# For other platform, this test is the same as other tests because AT_XFAIL_IF is a no-op.
+m4_define([_AT_BESCMD_TEST_OS],   
+[AT_SETUP([BESCMD $1])
+AT_KEYWORDS([bescmd])
+
+# Use the following AT_CHECK to generate baseline file.
+#AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 > $2|| true], [], [stdout], [stderr])
+AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 || true], [], [stdout], [stderr])
+AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [],[],[])
+AT_XFAIL_IF([grep -q "darwin" <<< AT_PACKAGE_HOST])
+AT_CLEANUP])
+
 
 m4_define([AT_BESCMD_RESPONSE_TEST],
 [_AT_BESCMD_TEST([$abs_srcdir/h5.cf/$1], [$abs_srcdir/h5.cf/$1.baseline])
@@ -64,6 +78,10 @@ m4_define([AT_BESCMD_DAP4DATA_RESPONSE_TEST],
 
 m4_define([AT_BESCMD_CFDMR_DAP4DATA_RESPONSE_TEST],
 [_AT_BESCMD_DAP4DATA_TEST([$abs_srcdir/h5.cf/$1], [$abs_srcdir/h5.cf.dmr/$1.baseline])
+])
+
+m4_define([AT_BESCMD_RESPONSE_TEST_OS],
+[_AT_BESCMD_TEST_OS([$abs_srcdir/h5.cf/$1], [$abs_srcdir/h5.cf/$1.baseline])
 ])
 
 
@@ -489,6 +507,11 @@ AT_BESCMD_CFDMR_RESPONSE_TEST([swath_unlim.h5.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST([grid_1_2d.h5.function.ddx.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([grid_1_2d.h5.function.dods.bescmd])
 
+# This is a platform-specific test. Because the HDF5 library might retrieve object attributes
+# in different orders in different platforms and since NASA uses Linux to serve, we decide
+# to ignore the tests on Mac OS to avoid the false failures since the attributes are retrieved
+# correctly. see HYRAX-595.
+AT_BESCMD_RESPONSE_TEST_OS([vfd_swmr_group_attrs.h5.dmr.bescmd])
 
 # Test default cases.
 AT_BESCMD_RESPONSE_TEST_DEFAULT([d_compound.h5.das.bescmd])
