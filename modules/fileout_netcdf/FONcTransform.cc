@@ -35,6 +35,17 @@
 
 #include <sstream>
 
+#include <netcdf.h>
+
+#include <libdap/DDS.h>
+#include <libdap/DMR.h>
+#include <libdap/D4Group.h>
+#include <libdap/D4Attributes.h>
+#include <libdap/Structure.h>
+#include <libdap/Array.h>
+#include <libdap/Grid.h>
+#include <libdap/Sequence.h>
+
 #include <BESResponseObject.h>
 #include <BESDapResponseBuilder.h>
 #include <BESDataHandlerInterface.h>
@@ -46,6 +57,11 @@
 #include <BESDMRResponse.h>
 #include <BESRequestHandlerList.h>
 #include <BESDapFunctionResponseCache.h>
+#include <BESDebug.h>
+#include <BESInternalError.h>
+#include <BESInternalFatalError.h>
+
+#include "DapFunctionUtils.h"
 
 #include "FONcRequestHandler.h" // for the keys
 
@@ -56,22 +72,8 @@
 #include "FONcTransmitter.h"
 #include "history_utils.h"
 
-#include <libdap/DDS.h>
-#include <libdap/DMR.h>
-#include <libdap/D4Group.h>
-#include <libdap/D4Attributes.h>
-#include <libdap/Structure.h>
-#include <libdap/Array.h>
-#include <libdap/Grid.h>
-#include <libdap/Sequence.h>
-#include <BESDebug.h>
-#include <BESInternalError.h>
-#include <BESInternalFatalError.h>
-
-#include "DapFunctionUtils.h"
-
-using std::ostringstream;
-using std::istringstream;
+using namespace libdap;
+using namespace std;
 
 /** @brief Constructor that creates transformation object from the specified
  * DataDDS object to the specified file
@@ -85,19 +87,18 @@ using std::istringstream;
  * file is not specified or failed to create the netcdf file
  */
 FONcTransform::FONcTransform(DDS *dds, BESDataHandlerInterface &dhi, const string &localfile, const string &ncVersion) :
-        _ncid(0), _dds(nullptr), _dmr(nullptr), d_obj(nullptr), d_dhi(nullptr)
-{
-    if (!dds) {
-        string s = (string) "File out netcdf, " + "null DDS passed to constructor";
-        throw BESInternalError(s, __FILE__, __LINE__);
+                             _dds(dds), _localfile(localfile), _returnAs(ncVersion)  {
+    if (!_dds) {
+        throw BESInternalError("File out netcdf, null DDS passed to constructor", __FILE__, __LINE__);
     }
-    if (localfile.empty()) {
-        string s = (string) "File out netcdf, " + "empty local file name passed to constructor";
-        throw BESInternalError(s, __FILE__, __LINE__);
+    if (_localfile.empty()) {
+        throw BESInternalError("File out netcdf, empty local file name passed to constructor", __FILE__, __LINE__);
     }
+#if 0
     _localfile = localfile;
     _dds = dds;
     _returnAs = ncVersion;
+#endif
 
     // if there is a variable, attribute, dimension name that is not
     // compliant with netcdf naming conventions then we will create
@@ -126,19 +127,18 @@ FONcTransform::FONcTransform(DDS *dds, BESDataHandlerInterface &dhi, const strin
  * file is not specified or failed to create the netcdf file
  */
 FONcTransform::FONcTransform(DMR *dmr, BESDataHandlerInterface &dhi, const string &localfile, const string &ncVersion) :
-        _ncid(0), _dds(nullptr), _dmr(nullptr), d_obj(nullptr), d_dhi(nullptr)
-{
-    if (!dmr) {
-        string s = (string) "File out netcdf, null DMR passed to constructor";
-        throw BESInternalError(s, __FILE__, __LINE__);
+                             _dmr(dmr), _localfile(localfile), _returnAs(ncVersion) {
+    if (!_dmr) {
+        throw BESInternalError("File out netcdf, null DMR passed to constructor", __FILE__, __LINE__);
     }
-    if (localfile.empty()) {
-        string s = (string) "File out netcdf, " + "empty local file name passed to constructor";
-        throw BESInternalError(s, __FILE__, __LINE__);
+    if (_localfile.empty()) {
+        throw BESInternalError("File out netcdf, empty local file name passed to constructor", __FILE__, __LINE__);
     }
+#if 0
     _localfile = localfile;
     _dmr = dmr;
     _returnAs = ncVersion;
+#endif
 
     // if there is a variable, attribute, dimension name that is not
     // compliant with netcdf naming conventions then we will create
@@ -167,17 +167,13 @@ FONcTransform::FONcTransform(DMR *dmr, BESDataHandlerInterface &dhi, const strin
  * file is not specified or failed to create the netcdf file
  */
 FONcTransform::FONcTransform(BESResponseObject *obj, BESDataHandlerInterface *dhi, const string &localfile,
-                             const string &ncVersion) :
-                             _ncid(0), _dds(nullptr), _dmr(nullptr), d_obj(obj), d_dhi(dhi), _localfile(localfile),
-                             _returnAs(ncVersion)
-{
+                             const string &ncVersion)
+                             : d_obj(obj), d_dhi(dhi), _localfile(localfile), _returnAs(ncVersion) {
     if (!d_obj) {
-        string s = (string) "File out netcdf, " + "null BESResponseObject passed to constructor";
-        throw BESInternalError(s, __FILE__, __LINE__);
+        throw BESInternalError("File out netcdf, null BESResponseObject passed to constructor", __FILE__, __LINE__);
     }
     if (_localfile.empty()) {
-        string s = (string) "File out netcdf, " + "empty local file name passed to constructor";
-        throw BESInternalError(s, __FILE__, __LINE__);
+        throw BESInternalError("File out netcdf, empty local file name passed to constructor", __FILE__, __LINE__);
     }
 
     // if there is a variable, attribute, dimension name that is not
@@ -195,173 +191,21 @@ FONcTransform::FONcTransform(BESResponseObject *obj, BESDataHandlerInterface *dh
     }
 }
 
-
 /** @brief Destructor
  *
  * Cleans up any temporary data created during the transformation
  */
-FONcTransform::~FONcTransform()
-{
+FONcTransform::~FONcTransform() {
     for (auto &b: _fonc_vars) {
         delete b;
     }
     for (auto &b: _total_fonc_vars_in_grp) {
         delete b;
     }
-    // _dmr is not managed by the BESDMRResponse class in this code. However
+    // _dmr is not managed by the BESDMRResponse class in this code. However,
     // _dds still is. jhrg 8/13/21
     delete _dmr;
-#if 0
-    bool done = false;
-    while (!done) {
-        vector<FONcBaseType *>::iterator i = _fonc_vars.begin();
-        vector<FONcBaseType *>::iterator e = _fonc_vars.end();
-        if (i == e) {
-            done = true;
-        }
-        else {
-            // These are the FONc types, not the actual ones
-            FONcBaseType *b = (*i);
-            delete b;
-            _fonc_vars.erase(i);
-        }
-    }
-    done = false;
-    while (!done) {
-        vector<FONcBaseType *>::iterator i = _total_fonc_vars_in_grp.begin();
-        vector<FONcBaseType *>::iterator e = _total_fonc_vars_in_grp.end();
-        if (i == e) {
-            done = true;
-        }
-        else {
-            // These are the FONc types, not the actual ones
-            FONcBaseType *b = (*i);
-            delete b;
-            _total_fonc_vars_in_grp.erase(i);
-        }
-    }
-#endif
 }
-
-// previous transform() fct, keep for rollback purposes. sbl 5.14.21
-#if 0
-/** @brief Transforms each of the variables of the DataDDS to the NetCDF
- * file
- *
- * For each variable in the DataDDS write out that variable and its
- * attributes to the netcdf file. Each OPeNDAP data type translates into a
- * particular netcdf type. Also write out any global variables stored at the
- * top level of the DataDDS.
- */
-void FONcTransform::transform()
-{
-    FONcUtils::reset();
-
-    // Convert the DDS into an internal format to keep track of
-    // variables, arrays, shared dimensions, grids, common maps,
-    // embedded structures. It only grabs the variables that are to be
-    // sent.
-    DDS::Vars_iter vi = _dds->var_begin();
-    DDS::Vars_iter ve = _dds->var_end();
-    for (; vi != ve; vi++) {
-        if ((*vi)->send_p()) {
-            BaseType *v = *vi;
-
-            BESDEBUG("fonc", "FONcTransform::transform() - Converting variable '" << v->name() << "'" << endl);
-
-            // This is a factory class call, and 'fg' is specialized for 'v'
-            FONcBaseType *fb = FONcUtils::convert(v,FONcTransform::_returnAs,FONcRequestHandler::classic_model);
-#if 0
-            fb->setVersion( FONcTransform::_returnAs );
-            if ( FONcTransform::_returnAs == RETURNAS_NETCDF4 ) {
-                if (FONcRequestHandler::classic_model)
-                    fb->setNC4DataModel("NC4_CLASSIC_MODEL");
-                else 
-                    fb->setNC4DataModel("NC4_ENHANCED");
-            }
-#endif
-            _fonc_vars.push_back(fb);
-            vector<string> embed;
-            fb->convert(embed);
-        }
-    }
-
-    // Open the file for writing
-    int stax;
-    if ( FONcTransform::_returnAs == RETURNAS_NETCDF4 ) {
-        if (FONcRequestHandler::classic_model){
-            BESDEBUG("fonc", "FONcTransform::transform() - Opening NetCDF-4 cache file in classic mode. fileName:  " << _localfile << endl);
-            stax = nc_create(_localfile.c_str(), NC_CLOBBER|NC_NETCDF4|NC_CLASSIC_MODEL, &_ncid);
-        }
-        else {
-            BESDEBUG("fonc", "FONcTransform::transform() - Opening NetCDF-4 cache file. fileName:  " << _localfile << endl);
-            stax = nc_create(_localfile.c_str(), NC_CLOBBER|NC_NETCDF4, &_ncid);
-        }
-    }
-    else {
-        BESDEBUG("fonc", "FONcTransform::transform() - Opening NetCDF-3 cache file. fileName:  " << _localfile << endl);
-        stax = nc_create(_localfile.c_str(), NC_CLOBBER, &_ncid);
-    }
-
-    if (stax != NC_NOERR) {
-        FONcUtils::handle_error(stax, "File out netcdf, unable to open: " + _localfile, __FILE__, __LINE__);
-    }
-
-    try {
-        // Here we will be defining the variables of the netcdf and
-        // adding attributes. To do this we must be in define mode.
-        nc_redef(_ncid);
-
-        // For each converted FONc object, call define on it to define
-        // that object to the netcdf file. This also adds the attributes
-        // for the variables to the netcdf file
-        vector<FONcBaseType *>::iterator i = _fonc_vars.begin();
-        vector<FONcBaseType *>::iterator e = _fonc_vars.end();
-        for (; i != e; i++) {
-            FONcBaseType *fbt = *i;
-            BESDEBUG("fonc", "FONcTransform::transform() - Defining variable:  " << fbt->name() << endl);
-            fbt->define(_ncid);
-        }
-
-        if(FONcRequestHandler::no_global_attrs == false) {
-            // Add any global attributes to the netcdf file
-            AttrTable &globals = _dds->get_attr_table();
-            BESDEBUG("fonc", "FONcTransform::transform() - Adding Global Attributes" << endl << globals << endl);
-            bool is_netCDF_enhanced = false;
-            if(FONcTransform::_returnAs == RETURNAS_NETCDF4 && FONcRequestHandler::classic_model==false)
-                is_netCDF_enhanced = true;
-            FONcAttributes::add_attributes(_ncid, NC_GLOBAL, globals, "", "",is_netCDF_enhanced);
-        }
-
-        // We are done defining the variables, dimensions, and
-        // attributes of the netcdf file. End the define mode.
-        int stax = nc_enddef(_ncid);
-
-        // Check error for nc_enddef. Handling of HDF failures
-        // can be detected here rather than later.  KY 2012-10-25
-        if (stax != NC_NOERR) {
-            FONcUtils::handle_error(stax, "File out netcdf, unable to end the define mode: " + _localfile, __FILE__, __LINE__);
-        }
-
-        // Write everything out
-        i = _fonc_vars.begin();
-        e = _fonc_vars.end();
-        for (; i != e; i++) {
-            FONcBaseType *fbt = *i;
-            BESDEBUG("fonc", "FONcTransform::transform() - Writing data for variable:  " << fbt->name() << endl);
-            fbt->write(_ncid);
-        }
-
-        stax = nc_close(_ncid);
-        if (stax != NC_NOERR)
-            FONcUtils::handle_error(stax, "File out netcdf, unable to close: " + _localfile, __FILE__, __LINE__);
-    }
-    catch (BESError &e) {
-        (void) nc_close(_ncid); // ignore the error at this point
-        throw;
-    }
-}
-#endif
 
 /** @brief Transforms each of the variables of the DataDDS to the NetCDF
  * file
@@ -371,15 +215,7 @@ void FONcTransform::transform()
  * particular netcdf type. Also write out any global variables stored at the
  * top level of the DataDDS.
  */
-void FONcTransform::transform_dap2(ostream &strm)
-{
-#if 0
-    BESDapResponseBuilder responseBuilder;
-    // Use the DDS from the ResponseObject along with the parameters
-    // from the DataHandlerInterface to load the DDS with values.
-    // Note that the BESResponseObject will manage the loaded_dds object's
-    // memory. Make this a shared_ptr<>. jhrg 9/6/16
-#endif
+void FONcTransform::transform_dap2(ostream &strm) {
     // Now that we are ready to start reading the response data we
     // cancel any pending timeout alarm according to the configuration.
     BESUtil::conditional_timeout_cancel();
@@ -403,7 +239,7 @@ void FONcTransform::transform_dap2(ostream &strm)
     besDRB.set_store_result(d_dhi->data[STORE_RESULT]);
 
 
-    // This function is used by all fileout modules and they need to include the attributes in data access.
+    // This function is used by all fileout modules, and they need to include the attributes in data access.
     // So obtain the attributes if necessary. KY 2019-10-30
     if (bdds->get_ia_flag() == false) {
         BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler(
@@ -419,7 +255,7 @@ void FONcTransform::transform_dap2(ostream &strm)
     // Use that DDS and parse the non-function ce
     // Serialize using the second ce and the second dds
     if (!besDRB.get_btp_func_ce().empty()) {
-        BESDEBUG("fonc","Found function(s) in CE: " << besDRB.get_btp_func_ce() << endl);
+        BESDEBUG("fonc", "Found function(s) in CE: " << besDRB.get_btp_func_ce() << endl);
 
         BESDapFunctionResponseCache *responseCache = BESDapFunctionResponseCache::get_instance();
 
@@ -439,8 +275,8 @@ void FONcTransform::transform_dap2(ostream &strm)
 
         // Server functions might mark (i.e. setting send_p) so variables will use their read()
         // methods. Clear that so the CE in d_dap2ce will control what is
-        // sent. If that is empty (there was only a function call) all
-        // of the variables in the intermediate DDS (i.e., the function
+        // sent. If that is empty (there was only a function call), all
+        // variables in the intermediate DDS (i.e., the function
         // result) will be sent.
         _dds->mark_all(false);
 
@@ -475,12 +311,12 @@ void FONcTransform::transform_dap2(ostream &strm)
             FONcBaseType *fb = FONcUtils::convert((*vi), FONcTransform::_returnAs, FONcRequestHandler::classic_model);
 
             _fonc_vars.push_back(fb);
-            vector<string> embed;
+            vector <string> embed;
             fb->convert(embed);
         }
     }
 
-    updateHistoryAttributes(_dds, d_dhi->data[POST_CONSTRAINT]);
+    fonc_history_util::updateHistoryAttributes(_dds, d_dhi->data[POST_CONSTRAINT]);
 
     // Open the file for writing
     int stax;
@@ -509,7 +345,8 @@ void FONcTransform::transform_dap2(ostream &strm)
 
     stax = nc_set_fill(_ncid, NC_NOFILL, &current_fill_prop_vaule);
     if (stax != NC_NOERR) {
-        FONcUtils::handle_error(stax, "File out netcdf, unable to set fill to NC_NOFILL: " + _localfile, __FILE__, __LINE__);
+        FONcUtils::handle_error(stax, "File out netcdf, unable to set fill to NC_NOFILL: " + _localfile, __FILE__,
+                                __LINE__);
     }
 
     try {
@@ -533,6 +370,10 @@ void FONcTransform::transform_dap2(ostream &strm)
             if (FONcTransform::_returnAs == RETURN_AS_NETCDF4 && FONcRequestHandler::classic_model == false)
                 is_netCDF_enhanced = true;
             FONcAttributes::add_attributes(_ncid, NC_GLOBAL, globals, "", "", is_netCDF_enhanced);
+            // We could add the json history directly to the netcdf file here. For now,
+            // this code, which adds it to the global attribute table and then moves
+            // those into the netcdf file, is working. There are two other places in the
+            // file where this is true. Search for '***' jhrg 2/28/22
         }
 
         // We are done defining the variables, dimensions, and
@@ -549,8 +390,8 @@ void FONcTransform::transform_dap2(ostream &strm)
         uint64_t byteCount = 0;
 
         if (is_streamable()) {
-        byteCount = BESUtil::file_to_stream_helper(_localfile, strm, byteCount);
-        BESDEBUG("fonc", "FONcTransform::transform() - first write data to stream, count:  " << byteCount << endl);
+            byteCount = BESUtil::file_to_stream_helper(_localfile, strm, byteCount);
+            BESDEBUG("fonc", "FONcTransform::transform() - first write data to stream, count:  " << byteCount << endl);
         }
 
         for (FONcBaseType *fbt: _fonc_vars) {
@@ -562,9 +403,8 @@ void FONcTransform::transform_dap2(ostream &strm)
             fbt->write(_ncid);
             nc_sync(_ncid);
 
-
             if (is_streamable()) {
-                // write the whats been written
+                // write the what's been written
                 byteCount = BESUtil::file_to_stream_helper(_localfile, strm, byteCount);
                 BESDEBUG("fonc", "FONcTransform::transform() - Writing data to stream, count:  " << byteCount << endl);
             }
@@ -590,12 +430,12 @@ void FONcTransform::transform_dap2(ostream &strm)
  * if file is returned as netcdf-3 then checks if the dds/dmr has a structure datatype
  * @return false if file returns as netcdf-4 OR has a structure datatype
  */
-bool FONcTransform::is_streamable(){
-    if (FONcTransform::_returnAs == RETURN_AS_NETCDF4){
+bool FONcTransform::is_streamable() {
+    if (FONcTransform::_returnAs == RETURN_AS_NETCDF4) {
         return false;
     }
 
-    if (_dds != nullptr){
+    if (_dds != nullptr) {
         return is_dds_streamable();
     }
     else {
@@ -608,7 +448,7 @@ bool FONcTransform::is_streamable(){
  * checks the variable type for a structure datatype
  * @return false if the dds contains a structure datatype
  */
-bool FONcTransform::is_dds_streamable(){
+bool FONcTransform::is_dds_streamable() {
     for (auto var = _dds->var_begin(), varEnd = _dds->var_end(); var != varEnd; ++var) {
         if ((*var)->type() == dods_structure_c) {
             return false; // cannot be streamed
@@ -623,10 +463,10 @@ bool FONcTransform::is_dds_streamable(){
  * @param group the D4Group holding the variables to search through
  * @return false if the dmr contains a structure datatype
  */
-bool FONcTransform::is_dmr_streamable(D4Group *group){
+bool FONcTransform::is_dmr_streamable(D4Group *group) {
     for (auto var = group->var_begin(), varEnd = group->var_end(); var != varEnd; ++var) {
         if ((*var)->type() == dods_structure_c)
-            return false ; // cannot be streamed
+            return false; // cannot be streamed
 
         if ((*var)->type() == dods_group_c) {
             D4Group *g = dynamic_cast<D4Group *>(*var);
@@ -647,8 +487,7 @@ bool FONcTransform::is_dmr_streamable(D4Group *group){
  * particular netcdf type. Also write out any global variables stored at the
  * top level of the DMR.
  */
-void FONcTransform::transform_dap4()
-{
+void FONcTransform::transform_dap4() {
     BESUtil::conditional_timeout_cancel();
     BESDEBUG("fonc", "FONcTransform::transform_dap4() Reading data into DataDMR" << endl);
 
@@ -699,8 +538,8 @@ void FONcTransform::transform_dap4()
         gen_included_grp_list(root_grp);
 
 #if !NDEBUG
-        for (std::set<string>::iterator it=_included_grp_names.begin(); it!=_included_grp_names.end(); ++it)
-            BESDEBUG("fonc","included group list name is: "<<*it<<endl);
+        for (std::set<string>::iterator it = _included_grp_names.begin(); it != _included_grp_names.end(); ++it)
+            BESDEBUG("fonc", "included group list name is: " << *it << endl);
 #endif
         // Build a global dimension name table for all variables if
         // the constraint is not empty!
@@ -708,16 +547,16 @@ void FONcTransform::transform_dap4()
 
         // Don't remove the following code, they are for debugging.
 #if !NDEBUG
-        map<string,unsigned long>:: iterator it;
+        map<string, unsigned long>::iterator it;
 
-        for(it=GFQN_dimname_to_dimsize.begin();it!=GFQN_dimname_to_dimsize.end();++it) {
-            BESDEBUG("fonc", "Final GFQN dim name is: "<<it->first<<endl);
-            BESDEBUG("fonc", "Final GFQN dim size is: "<<it->second<<endl);
+        for (it = GFQN_dimname_to_dimsize.begin(); it != GFQN_dimname_to_dimsize.end(); ++it) {
+            BESDEBUG("fonc", "Final GFQN dim name is: " << it->first << endl);
+            BESDEBUG("fonc", "Final GFQN dim size is: " << it->second << endl);
         }
 
-        for(it=VFQN_dimname_to_dimsize.begin();it!=VFQN_dimname_to_dimsize.end();++it) {
-            BESDEBUG("fonc", "Final VFQN dim name is: "<<it->first<<endl);
-            BESDEBUG("fonc", "Final VFQN dim size is: "<<it->second<<endl);
+        for (it = VFQN_dimname_to_dimsize.begin(); it != VFQN_dimname_to_dimsize.end(); ++it) {
+            BESDEBUG("fonc", "Final VFQN dim name is: " << it->first << endl);
+            BESDEBUG("fonc", "Final VFQN dim size is: " << it->second << endl);
         }
 #endif
 
@@ -746,7 +585,7 @@ void FONcTransform::transform_dap4()
         // We will remember them and not use these names as fake dimension names.
         //
         // Obtain the dim. names under the root group
-        vector<string> root_d4_dimname_list;
+        vector <string> root_d4_dimname_list;
         for (git = GFQN_dimname_to_dimsize.begin(); git != GFQN_dimname_to_dimsize.end(); ++git) {
             string d4_temp_dimname = git->first.substr(1);
             //BESDEBUG("fonc", "d4_temp_dimname: "<<d4_temp_dimname<<endl);
@@ -755,8 +594,8 @@ void FONcTransform::transform_dap4()
         }
 
 #if !NDEBUG
-        for(unsigned int i = 0; i <root_d4_dimname_list.size();i++)
-            BESDEBUG("fonc", "root_d4 dim name is: "<<root_d4_dimname_list[i]<<endl);
+        for (unsigned int i = 0; i < root_d4_dimname_list.size(); i++)
+            BESDEBUG("fonc", "root_d4 dim name is: " << root_d4_dimname_list[i] << endl);
 #endif
 
         // Only remember the root dimension names that are like "dim1,dim2,..."
@@ -784,18 +623,18 @@ void FONcTransform::transform_dap4()
         }
 
 #if !NDEBUG
-        for(unsigned int i = 0; i <root_dim_suffix_nums.size();i++)
-            BESDEBUG("fonc", "root_dim_suffix_nums: "<<root_dim_suffix_nums[i]<<endl);
+        for (unsigned int i = 0; i < root_dim_suffix_nums.size(); i++)
+            BESDEBUG("fonc", "root_dim_suffix_nums: " << root_dim_suffix_nums[i] << endl);
 
 
-        for(it=GFQN_dimname_to_dimsize.begin();it!=GFQN_dimname_to_dimsize.end();++it) {
-            BESDEBUG("fonc", "RFinal GFQN dim name is: "<<it->first<<endl);
-            BESDEBUG("fonc", "RFinal GFQN dim size is: "<<it->second<<endl);
+        for (it = GFQN_dimname_to_dimsize.begin(); it != GFQN_dimname_to_dimsize.end(); ++it) {
+            BESDEBUG("fonc", "RFinal GFQN dim name is: " << it->first << endl);
+            BESDEBUG("fonc", "RFinal GFQN dim size is: " << it->second << endl);
         }
 
-        for(it=VFQN_dimname_to_dimsize.begin();it!=VFQN_dimname_to_dimsize.end();++it) {
-            BESDEBUG("fonc", "RFinal VFQN dim name is: "<<it->first<<endl);
-            BESDEBUG("fonc", "RFinal VFQN dim size is: "<<it->second<<endl);
+        for (it = VFQN_dimname_to_dimsize.begin(); it != VFQN_dimname_to_dimsize.end(); ++it) {
+            BESDEBUG("fonc", "RFinal VFQN dim name is: " << it->first << endl);
+            BESDEBUG("fonc", "RFinal VFQN dim size is: " << it->second << endl);
         }
 #endif
 
@@ -817,17 +656,16 @@ void FONcTransform::transform_dap4()
  * This routine is similar to transform() that handles DAP2 objects.  However, DAP4 routines are needed.
  * So still keep a separate function. May combine this function with the transform()  in the future.
  */
-void FONcTransform::transform_dap4_no_group()
-{
+void FONcTransform::transform_dap4_no_group() {
 
     D4Group *root_grp = _dmr->root();
 #if !NDEBUG
     D4Dimensions *root_dims = root_grp->dims();
-    for(D4Dimensions::D4DimensionsIter di = root_dims->dim_begin(), de = root_dims->dim_end(); di != de; ++di) {
-        BESDEBUG("fonc", "transform_dap4() - check dimensions"<< endl);
-        BESDEBUG("fonc", "transform_dap4() - dim name is: "<<(*di)->name()<<endl);
-        BESDEBUG("fonc", "transform_dap4() - dim size is: "<<(*di)->size()<<endl);
-        BESDEBUG("fonc", "transform_dap4() - fully_qualfied_dim name is: "<<(*di)->fully_qualified_name()<<endl);
+    for (D4Dimensions::D4DimensionsIter di = root_dims->dim_begin(), de = root_dims->dim_end(); di != de; ++di) {
+        BESDEBUG("fonc", "transform_dap4() - check dimensions" << endl);
+        BESDEBUG("fonc", "transform_dap4() - dim name is: " << (*di)->name() << endl);
+        BESDEBUG("fonc", "transform_dap4() - dim size is: " << (*di)->size() << endl);
+        BESDEBUG("fonc", "transform_dap4() - fully_qualfied_dim name is: " << (*di)->fully_qualified_name() << endl);
     }
 #endif
     Constructor::Vars_iter vi = root_grp->var_begin();
@@ -844,21 +682,21 @@ void FONcTransform::transform_dap4_no_group()
             FONcBaseType *fb = FONcUtils::convert(v, FONcTransform::_returnAs, FONcRequestHandler::classic_model);
             _fonc_vars.push_back(fb);
 
-            vector<string> embed;
-            fb->convert(embed,true,false);
+            vector <string> embed;
+            fb->convert(embed, true, false);
         }
     }
 
 #if !NDEBUG
-    if(root_grp->grp_begin() == root_grp->grp_end()) 
-        BESDEBUG("fonc", "FONcTransform::transform_dap4() - No group  " <<  endl);
-    else 
-        BESDEBUG("fonc", "FONcTransform::transform_dap4() - has group  " <<  endl);
-   for (D4Group::groupsIter gi = root_grp->grp_begin(), ge = root_grp->grp_end(); gi != ge; ++gi) 
-       BESDEBUG("fonc", "FONcTransform::transform_dap4() - group name:  " << (*gi)->name() << endl);
+    if (root_grp->grp_begin() == root_grp->grp_end())
+        BESDEBUG("fonc", "FONcTransform::transform_dap4() - No group  " << endl);
+    else
+        BESDEBUG("fonc", "FONcTransform::transform_dap4() - has group  " << endl);
+    for (D4Group::groupsIter gi = root_grp->grp_begin(), ge = root_grp->grp_end(); gi != ge; ++gi)
+        BESDEBUG("fonc", "FONcTransform::transform_dap4() - group name:  " << (*gi)->name() << endl);
 #endif
 
-    updateHistoryAttributes(_dmr, d_dhi->data[POST_CONSTRAINT]);
+    fonc_history_util::updateHistoryAttributes(_dmr, d_dhi->data[POST_CONSTRAINT]);
 
     // Open the file for writing
     int stax = -1;
@@ -913,15 +751,17 @@ void FONcTransform::transform_dap4_no_group()
             BESDEBUG("fonc",
                      "FONcTransform::transform_dap4_no_group() handle GLOBAL DAP4 attributes " << d4_attrs << endl);
 #if !NDEBUG
-            for (D4Attributes::D4AttributesIter ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end(); ii != ee; ++ii) {
+            for (D4Attributes::D4AttributesIter ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end();
+                 ii != ee; ++ii) {
                 string name = (*ii)->name();
-                BESDEBUG("fonc", "FONcTransform::transform_dap4() GLOBAL attribute name is "<<name <<endl);
+                BESDEBUG("fonc", "FONcTransform::transform_dap4() GLOBAL attribute name is " << name << endl);
             }
 #endif
             bool is_netCDF_enhanced = false;
             if (FONcTransform::_returnAs == RETURN_AS_NETCDF4 && FONcRequestHandler::classic_model == false)
                 is_netCDF_enhanced = true;
             FONcAttributes::add_dap4_attributes(_ncid, NC_GLOBAL, d4_attrs, "", "", is_netCDF_enhanced);
+            // *** Add the json history here
         }
 
         // We are done defining the variables, dimensions, and
@@ -960,8 +800,7 @@ void FONcTransform::transform_dap4_no_group()
 void FONcTransform::transform_dap4_group(D4Group *grp,
                                          bool is_root_grp,
                                          int par_grp_id, map<string, int> &fdimname_to_id,
-                                         vector<int> &root_dim_suffix_nums)
-{
+                                         vector<int> &root_dim_suffix_nums) {
 
     bool included_grp = false;
 
@@ -988,7 +827,7 @@ void FONcTransform::transform_dap4_group(D4Group *grp,
 }
 
 /**
- * @ brief The internal routine to transform DMR to netCDF-4 when there are groups.
+ * @brief The internal routine to transform DMR to netCDF-4 when there are groups.
  * @param grp
  * @param is_root_grp
  * @param par_grp_id
@@ -998,16 +837,15 @@ void FONcTransform::transform_dap4_group(D4Group *grp,
 void FONcTransform::transform_dap4_group_internal(D4Group *grp,
                                                   bool is_root_grp,
                                                   int par_grp_id, map<string, int> &fdimname_to_id,
-                                                  vector<int> &rds_nums)
-{
+                                                  vector<int> &rds_nums) {
 
     BESDEBUG("fonc", "transform_dap4_group_internal() - inside" << endl);
     int grp_id = -1;
     int stax = -1;
 
-    updateHistoryAttributes(_dmr, d_dhi->data[POST_CONSTRAINT]);
+    fonc_history_util::updateHistoryAttributes(_dmr, d_dhi->data[POST_CONSTRAINT]);
 
-    if (is_root_grp == true) 
+    if (is_root_grp == true)
         grp_id = _ncid;
     else {
         stax = nc_def_grp(par_grp_id, (*grp).name().c_str(), &grp_id);
@@ -1021,10 +859,10 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
     for (D4Dimensions::D4DimensionsIter di = grp_dims->dim_begin(), de = grp_dims->dim_end(); di != de; ++di) {
 
 #if !NDEBUG
-        BESDEBUG("fonc", "transform_dap4() - check dimensions"<< endl);
-        BESDEBUG("fonc", "transform_dap4() - dim name is: "<<(*di)->name()<<endl);
-        BESDEBUG("fonc", "transform_dap4() - dim size is: "<<(*di)->size()<<endl);
-        BESDEBUG("fonc", "transform_dap4() - fully_qualfied_dim name is: "<<(*di)->fully_qualified_name()<<endl);
+        BESDEBUG("fonc", "transform_dap4() - check dimensions" << endl);
+        BESDEBUG("fonc", "transform_dap4() - dim name is: " << (*di)->name() << endl);
+        BESDEBUG("fonc", "transform_dap4() - dim size is: " << (*di)->size() << endl);
+        BESDEBUG("fonc", "transform_dap4() - fully_qualfied_dim name is: " << (*di)->fully_qualified_name() << endl);
 #endif
 
         unsigned long dimsize = (*di)->size();
@@ -1049,7 +887,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
     Constructor::Vars_iter vi = grp->var_begin();
     Constructor::Vars_iter ve = grp->var_end();
 
-    vector<FONcBaseType *> fonc_vars_in_grp;
+    vector < FONcBaseType * > fonc_vars_in_grp;
     for (; vi != ve; vi++) {
         if ((*vi)->send_p()) {
             BaseType *v = *vi;
@@ -1066,16 +904,16 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
             // This is needed to avoid the memory leak.
             _total_fonc_vars_in_grp.push_back(fb);
 
-            vector<string> embed;
-            fb->convert(embed, true,true);
+            vector <string> embed;
+            fb->convert(embed, true, true);
         }
     }
 
 #if !NDEBUG
-    if(grp->grp_begin() == grp->grp_end()) 
-        BESDEBUG("fonc", "FONcTransform::transform_dap4() - No group  " <<  endl);
-    else 
-        BESDEBUG("fonc", "FONcTransform::transform_dap4() - has group  " <<  endl);
+    if (grp->grp_begin() == grp->grp_end())
+        BESDEBUG("fonc", "FONcTransform::transform_dap4() - No group  " << endl);
+    else
+        BESDEBUG("fonc", "FONcTransform::transform_dap4() - has group  " << endl);
 #endif
 
 
@@ -1109,6 +947,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
             BESDEBUG("fonc", "FONcTransform::transform_dap4_group() - Adding Group Attributes" << endl);
             // add dap4 group attributes.
             FONcAttributes::add_dap4_attributes(grp_id, NC_GLOBAL, d4_attrs, "", "", is_netCDF_enhanced);
+            // *** Add the json history here
         }
 
         // Write every variable in this group. 
@@ -1138,8 +977,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
 
 
 // Group support is only on when netCDF-4 is in enhanced model and there are groups in the DMR.
-bool FONcTransform::check_group_support()
-{
+bool FONcTransform::check_group_support() {
     if (RETURN_AS_NETCDF4 == FONcTransform::_returnAs && false == FONcRequestHandler::classic_model &&
         (_dmr->root()->grp_begin() != _dmr->root()->grp_end()))
         return true;
@@ -1148,8 +986,7 @@ bool FONcTransform::check_group_support()
 }
 
 // Generate the final group list in the netCDF-4 file. Empty groups and their attributes will be removed.
-void FONcTransform::gen_included_grp_list(D4Group *grp)
-{
+void FONcTransform::gen_included_grp_list(D4Group *grp) {
     bool grp_has_var = false;
     if (grp) {
         BESDEBUG("fnoc", "<coming to the D4 group  has name " << grp->name() << endl);
@@ -1198,8 +1035,7 @@ void FONcTransform::gen_included_grp_list(D4Group *grp)
 
 }
 
-void FONcTransform::check_and_obtain_dimensions(D4Group *grp, bool is_root_grp)
-{
+void FONcTransform::check_and_obtain_dimensions(D4Group *grp, bool is_root_grp) {
 
     // We may not need to do this way,it may overkill.
     bool included_grp = false;
@@ -1220,8 +1056,7 @@ void FONcTransform::check_and_obtain_dimensions(D4Group *grp, bool is_root_grp)
         check_and_obtain_dimensions_internal(grp);
 }
 
-void FONcTransform::check_and_obtain_dimensions_internal(D4Group *grp)
-{
+void FONcTransform::check_and_obtain_dimensions_internal(D4Group *grp) {
 
     // Remember the Group Fully Qualified dimension Name and the corresponding dimension size.
     D4Dimensions *grp_dims = grp->dims();
@@ -1229,10 +1064,11 @@ void FONcTransform::check_and_obtain_dimensions_internal(D4Group *grp)
         for (D4Dimensions::D4DimensionsIter di = grp_dims->dim_begin(), de = grp_dims->dim_end(); di != de; ++di) {
 
 #if !NDEBUG
-            BESDEBUG("fonc", "transform_dap4() - check dimensions"<< endl);
-            BESDEBUG("fonc", "transform_dap4() - dim name is: "<<(*di)->name()<<endl);
-            BESDEBUG("fonc", "transform_dap4() - dim size is: "<<(*di)->size()<<endl);
-            BESDEBUG("fonc", "transform_dap4() - fully_qualfied_dim name is: "<<(*di)->fully_qualified_name()<<endl);
+            BESDEBUG("fonc", "transform_dap4() - check dimensions" << endl);
+            BESDEBUG("fonc", "transform_dap4() - dim name is: " << (*di)->name() << endl);
+            BESDEBUG("fonc", "transform_dap4() - dim size is: " << (*di)->size() << endl);
+            BESDEBUG("fonc",
+                     "transform_dap4() - fully_qualfied_dim name is: " << (*di)->fully_qualified_name() << endl);
 #endif
             unsigned long dimsize = (*di)->size();
             if ((*di)->constrained()) {
@@ -1265,7 +1101,7 @@ void FONcTransform::check_and_obtain_dimensions_internal(D4Group *grp)
 
                             unsigned long dimsize = t_a->dimension_size(dim_i, true);
 #if !NDEBUG
-                            BESDEBUG("fonc", "transform_dap4() check dim- final dim size is: "<< dimsize << endl);
+                            BESDEBUG("fonc", "transform_dap4() check dim- final dim size is: " << dimsize << endl);
 #endif
                             pair<map<string, unsigned long>::iterator, bool> ret_it;
                             ret_it = VFQN_dimname_to_dimsize.insert(
@@ -1287,15 +1123,15 @@ void FONcTransform::check_and_obtain_dimensions_internal(D4Group *grp)
     }
 
 #if !NDEBUG
-    map<string,unsigned long>:: iterator it;
-    for(it=GFQN_dimname_to_dimsize.begin();it!=GFQN_dimname_to_dimsize.end();++it) {
-        BESDEBUG("fonc", "GFQN dim name is: "<<it->first<<endl);
-        BESDEBUG("fonc", "GFQN dim size is: "<<it->second<<endl);
+    map<string, unsigned long>::iterator it;
+    for (it = GFQN_dimname_to_dimsize.begin(); it != GFQN_dimname_to_dimsize.end(); ++it) {
+        BESDEBUG("fonc", "GFQN dim name is: " << it->first << endl);
+        BESDEBUG("fonc", "GFQN dim size is: " << it->second << endl);
     }
 
-    for(it=VFQN_dimname_to_dimsize.begin();it!=VFQN_dimname_to_dimsize.end();++it) {
-        BESDEBUG("fonc", "VFQN dim name is: "<<it->first<<endl);
-        BESDEBUG("fonc", "VFQN dim size is: "<<it->second<<endl);
+    for (it = VFQN_dimname_to_dimsize.begin(); it != VFQN_dimname_to_dimsize.end(); ++it) {
+        BESDEBUG("fonc", "VFQN dim name is: " << it->first << endl);
+        BESDEBUG("fonc", "VFQN dim size is: " << it->second << endl);
     }
 
 #endif
@@ -1318,8 +1154,7 @@ void FONcTransform::check_and_obtain_dimensions_internal(D4Group *grp)
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void FONcTransform::dump(ostream &strm) const
-{
+void FONcTransform::dump(ostream &strm) const {
     strm << BESIndent::LMarg << "FONcTransform::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     strm << BESIndent::LMarg << "ncid = " << _ncid << endl;

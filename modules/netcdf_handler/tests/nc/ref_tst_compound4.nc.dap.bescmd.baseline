@@ -13,7 +13,7 @@
             </Float64>
         </Structure>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>6218563b</Value>
+            removed checksum
         </Attribute>
     </Structure>
     <Attribute name="phony_compound_var" type="Container"/>

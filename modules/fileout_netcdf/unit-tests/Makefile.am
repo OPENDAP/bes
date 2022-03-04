@@ -2,7 +2,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
+AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/modules -I$(top_srcdir)/rapidjson \
 -I$(top_srcdir)/modules/fileout_netcdf $(DAP_CFLAGS)
 LIBADD =  $(NC_LDFLAGS) $(NC_LIBS)  $(BES_DISPATCH_LIB) $(BES_DAP_LIB) $(BES_EXTRA_LIBS) $(DAP_SERVER_LIBS)
 
@@ -67,6 +67,7 @@ check-local:
 endif
 
 OBJS = ../history_utils.o
+LDFLAGS = -static
 
 HistoryUtilsTest_SOURCES = HistoryUtilsTest.cc
 HistoryUtilsTest_LDADD = $(OBJS) $(LIBADD)
