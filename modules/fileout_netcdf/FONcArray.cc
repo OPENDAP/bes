@@ -50,7 +50,7 @@
 using namespace libdap;
 
 // This controls whether variables' data values are deleted as soon
-// as they are written (excpet for DAP2 Grid Maps, which may be shared).
+// as they are written (except for DAP2 Grid Maps, which may be shared).
 #define CLEAR_LOCAL_DATA 1
 
 vector<FONcDim *> FONcArray::Dimensions;
@@ -99,7 +99,7 @@ FONcArray::FONcArray(BaseType *b, const vector<int> &fd4_dim_ids, const vector<b
 
 /** @brief Destructor that cleans up the array
  *
- * The destrutor cleans up by removing the array dimensions from it's
+ * The destructor cleans up by removing the array dimensions from it's
  * list. Since the dimensions can be shared by other arrays, FONcDim
  * uses reference counting, so the instances aren't actually deleted
  * here, but their reference count is decremented
@@ -155,7 +155,7 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
     d_ndims = d_a->dimensions();
     d_actual_ndims = d_ndims; //replace this with _a->dimensions(); below TODO
     if (d_array_type == NC_CHAR) {
-        // if we have array of strings then we need to add the string length
+        // if we have an array of strings then we need to add the string length
         // dimension, so add one more to ndims
         d_ndims++;
     }
@@ -789,7 +789,7 @@ void FONcArray::write_for_nc4_types(int ncid) {
 
     // create array to hold data hyperslab
     // DAP2 only supports unsigned BYTE. So here
-    // we don't inlcude NC_BYTE (the signed BYTE, the same
+    // we don't include NC_BYTE (the signed BYTE, the same
     // as 64-bit integer). KY 2020-03-20 
     // Actually 64-bit integer is supported.
     switch (d_array_type) {

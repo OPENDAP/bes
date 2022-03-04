@@ -10,7 +10,7 @@
             <Float64 name="y"/>
         </Structure>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>08f5b017</Value>
+            removed checksum
         </Attribute>
     </Structure>
     <Attribute name="phony_compound_var" type="Container"/>

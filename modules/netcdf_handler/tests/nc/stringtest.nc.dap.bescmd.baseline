@@ -9,7 +9,7 @@
             <Value>100</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>c1e264d3</Value>
+            removed checksum
         </Attribute>
     </String>
     <String name="v1">
@@ -21,7 +21,7 @@
             <Value>100</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>679bdb4a</Value>
+            removed checksum
         </Attribute>
     </String>
     <Attribute name="NC_GLOBAL" type="Container">

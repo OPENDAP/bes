@@ -23,7 +23,7 @@
             <Value>Deg C</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>15e30b9f</Value>
+            removed checksum
         </Attribute>
         <Map name="/TIME"/>
         <Map name="/COADSY"/>
@@ -49,7 +49,7 @@
             <Value>M/S</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>15e30b9f</Value>
+            removed checksum
         </Attribute>
         <Map name="/TIME"/>
         <Map name="/COADSY"/>
