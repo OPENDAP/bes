@@ -14,7 +14,6 @@ AT_TESTED([besstandalone])
 m4_define([_AT_BESCMD_TEST],   
 [AT_SETUP([BESCMD $1])
 AT_KEYWORDS([bescmd])
-# Use the following AT_CHECK to generate baseline file.
 AT_CHECK([valgrind --trace-children=yes --leak-check=full --log-file=valgrind.txt besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 || true], [], [stdout], [stderr])
 
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
@@ -42,6 +41,17 @@ AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 | getdap4 -D -M - 
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])                                
 AT_CLEANUP])    
 
+m4_define([_AT_BESCMD_TEST_OS],   
+[AT_SETUP([BESCMD $1])
+AT_KEYWORDS([bescmd])
+AT_CHECK([valgrind --trace-children=yes --leak-check=full --log-file=valgrind.txt besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 || true], [], [stdout], [stderr])
+
+AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
+AT_CHECK([cat valgrind.txt >> /tmp/h5.valgrind.nasa.dmr.log], [], [ignore],[],[])
+AT_XFAIL_IF([grep -q "darwin" <<< AT_PACKAGE_HOST])
+AT_CLEANUP])
+
+
 m4_define([AT_BESCMD_RESPONSE_TEST],
 [_AT_BESCMD_TEST([$abs_srcdir/h5.nasa/$1], [$abs_srcdir/h5.nasa/$1.baseline])
 ])
@@ -58,6 +68,11 @@ m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST],
 m4_define([AT_BESCMD_CFDMR_DAP4DATA_RESPONSE_TEST],                                                         
 [_AT_BESCMD_DAP4DATA_TEST([$abs_srcdir/h5.nasa/$1], [$abs_srcdir/h5.nasa.dmr/$1.baseline])                      
 ]) 
+
+m4_define([AT_BESCMD_CFDMR_RESPONSE_TEST_OS],
+[_AT_BESCMD_TEST_OS([$abs_srcdir/h5.nasa/$1], [$abs_srcdir/h5.nasa.dmr/$1.baseline])
+])
+
 
 # Test NASA files.
 AT_BESCMD_CFDMR_RESPONSE_TEST([DeepBlue-SeaWiFS-1.0_L3_19970903_v003-20111127T185012Z.h5.dmr.bescmd])
@@ -168,13 +183,13 @@ AT_BESCMD_CFDMR_RESPONSE_TEST([ATL08_20181014084920_02400109_003_01.h5.dmr.bescm
 AT_BESCMD_CFDMR_RESPONSE_TEST([ATL13_20190330212241_00250301_002_01.h5.dmr.bescmd])
 
 #SMAP
-AT_BESCMD_CFDMR_RESPONSE_TEST([SMAP_L3.h5.dmr.bescmd])
-AT_BESCMD_CFDMR_RESPONSE_TEST([SMAP_L1C_S0_HIRES_02298_A_20150707T160502_R13080_001.h5.dmr.bescmd])
+AT_BESCMD_CFDMR_RESPONSE_TEST_OS([SMAP_L3.h5.dmr.bescmd])
+AT_BESCMD_CFDMR_RESPONSE_TEST_OS([SMAP_L1C_S0_HIRES_02298_A_20150707T160502_R13080_001.h5.dmr.bescmd])
 
 #Other
 AT_BESCMD_CFDMR_RESPONSE_TEST([20020602090000-JPL-L4_GHRSST-SSTfnd-MUR-GLOB-v02.0-fv04.1.h5.dmr.bescmd])
 AT_BESCMD_CFDMR_RESPONSE_TEST([daymet_v4_daily_na_prcp_2010.nc.h5.dmr.bescmd])
-AT_BESCMD_CFDMR_RESPONSE_TEST([f16_ssmis_20031026v7.nc.h5.dmr.bescmd])
+AT_BESCMD_CFDMR_RESPONSE_TEST_OS([f16_ssmis_20031026v7.nc.h5.dmr.bescmd])
 
 
-AT_BESCMD_CFDMR_RESPONSE_TEST([SMAP_L3_SM_P_E_20211030_R18240_001.h5.dmr.bescmd])
+AT_BESCMD_CFDMR_RESPONSE_TEST_OS([SMAP_L3_SM_P_E_20211030_R18240_001.h5.dmr.bescmd])
