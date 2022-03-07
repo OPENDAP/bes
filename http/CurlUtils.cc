@@ -39,9 +39,9 @@
 #include <algorithm>    // std::for_each
 #include <utility>
 
-#include "rapidjson/document.h"
+#include <document.h>
 
-#include <BESContextManager.h>
+#include "BESContextManager.h"
 #include "BESSyntaxUserError.h"
 #include "BESForbiddenError.h"
 #include "BESNotFoundError.h"
