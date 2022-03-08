@@ -123,7 +123,7 @@ void XMLSetContextsCommand::parse_request(xmlNode *node)
 #else
     // Set action_name here because the NULLResponseHandler (aka NULL_ACTION) won't know
     // which command used it (current ResponseHandlers set this because there is a 1-to-1
-    // correlation between XMLCommands and ResponseHanlders). jhrg 2/8/18
+    // correlation between XMLCommands and ResponseHandlers). jhrg 2/8/18
     d_xmlcmd_dhi.action_name = SET_CONTEXTS_STR;
     d_xmlcmd_dhi.action = NULL_ACTION;
 #endif
