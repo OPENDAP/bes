@@ -27,7 +27,7 @@
  * This file contains a templated function that serves as the body of main()
  * for a CppUnit-based unit test.
  *
- * @note This is a WIP now but is intended to cut done on duplicated code in both
+ * @note This is a WIP now but is intended to cut down on duplicated code in both
  * the BES and libdap4 software repositories. Still todo: move more of the bes_debug
  * logic into the template. And _use_ the template in other places besides
  * fileout_netcdf/unit-tests/HistoryUtilTest. jhrg 2/25/22

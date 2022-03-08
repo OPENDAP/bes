@@ -285,7 +285,7 @@ void FONcAttributes::add_attributes_worker(int ncid, int varid, const string &va
                 }
                 stax = nc_put_att_short(ncid, varid, new_name.c_str(), NC_SHORT,  num_vals, &vals[0]);
                 if (stax != NC_NOERR) {
-                    string err = (string) "File out netcdf, " + "failed to write byte attribute " + new_name;
+                    string err = (string) "File out netcdf, failed to write byte attribute " + new_name;
                     FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
                 }
             }
