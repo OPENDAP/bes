@@ -717,6 +717,9 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
  * DmrppRequestHandler::d_contiguous_concurrent_threshold, or if parallel
  * transfers are not enabled, the chunk is transferred in one I/O operation.
  *
+ * @note Currently String Arrays are handled using a different method. Do not
+ * call this with String data. jhrg 3/3/22
+ *
  * @return Always returns true, matching the libdap::Array::read() behavior.
  */
 void DmrppArray::read_contiguous()
@@ -736,13 +739,12 @@ void DmrppArray::read_contiguous()
 
     // We only want to read in the Chunk concurrently if:
     // - Concurrent transfers are enabled (DmrppRequestHandler::d_use_transfer_threads)
-    // - The variables size is above the threshold value held in DmrppRequestHandler::d_contiguous_concurrent_threshold
+    // - The variable's size is above the threshold value held in DmrppRequestHandler::d_contiguous_concurrent_threshold
     if (!DmrppRequestHandler::d_use_transfer_threads || the_one_chunk_size <= DmrppRequestHandler::d_contiguous_concurrent_threshold) {
         // Read the the_one_chunk as is. This is the non-parallel I/O case
         the_one_chunk->read_chunk();
     }
     else {
-
         // Allocate memory for the 'the_one_chunk' so the transfer threads can transfer data
         // from the child chunks to it.
         the_one_chunk->set_rbuf_to_size();
@@ -832,7 +834,7 @@ void DmrppArray::read_contiguous()
 
     // Now that the_one_chunk has been read, we do what is necessary...
     if (!is_filters_empty()){
-        the_one_chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(),var()->width());
+        the_one_chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(), var()->width());
     }
 
     // The 'the_one_chunk' now holds the data values. Transfer it to the Array.
@@ -1447,6 +1449,39 @@ DmrppArray::set_send_p(bool state)
 }
 
 /**
+ * @brief Process String Array so long as it has only one element
+ *
+ * This method is pretty limited, but this is a common case and the DMR++
+ * will need more information for the Dmrpp handler to support the general
+ * case of an N-dimensional array.
+ */
+void DmrppArray::read_contiguous_string()
+{
+    BESStopWatch sw;
+    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+name(), "");
+
+    // This is the original chunk for this 'contiguous' variable.
+    auto the_one_chunk = get_immutable_chunks()[0];
+
+    // Read the the_one_chunk as is. This is the non-parallel I/O case
+    the_one_chunk->read_chunk();
+
+    // Now that the_one_chunk has been read, we do what is necessary...
+    if (!is_filters_empty()){
+        the_one_chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(), var()->width());
+    }
+
+    // FIXME This part will only work if the array contains a single element. See below.
+    //  jhrg 3/3/22
+    vector < string > ss;      // Prepare for the general case
+    string s(reinterpret_cast<char *>(the_one_chunk->get_rbuf()));
+    ss.push_back(s);
+    set_value(ss, ss.size());
+
+    set_read_p(true);
+}
+
+/**
  * @brief Read data for the array
  *
  * This reads data for a variable and loads it into memory. The software is
@@ -1463,24 +1498,51 @@ bool DmrppArray::read()
     // reads data for HDF5 COMPACT storage, so read_p() will be true.
     // Thus, call load_chunks() before testing read_p() to cover that
     // case. jhrg 11/15/21
+    // String Arrays that use COMPACT storage appear to work. jhrg 3/3/22
     if (!get_chunks_loaded())
         load_chunks(this);
 
     if (read_p()) return true;
 
+    // FIXME Strings are a special case and, currently, we do not have enough
+    //  information in the DMR++ to cover most cases that can be present in HDF5
+    //  files. In addition, the way libdap stores string data means that we need
+    //  to build c++ string objects from the raw data we read from the source
+    //  data file. Thus, the code for strings (and URLs) is a special case.
+    //  Currently we can process only arrays with one element. jhrg 3/3/22
+
+    if ((var()->type() == dods_str_c || var()->type() == dods_url_c)) {
+        // FIXME Add support for both of these things once the DMR++ has the needed
+        //  information. jhrg 3/3/22
+        if (is_projected())
+            throw BESInternalError("Subsetting of Sting Arrays is not currently supported.", __FILE__, __LINE__);
+
+        if (length() != 1)
+            throw BESInternalError("Only one dimensional String Arrays are currently supported.", __FILE__, __LINE__);
+
+        if (get_chunks_size() == 1) {
+            read_contiguous_string();    // Throws on various errors
+        }
+        else {  // Handle the more complex case where the data is chunked.
+            //read_chunks_unconstrained();
+            // FIXME Yup, fix this, too. jhrg 3/3/22
+            throw BESInternalError("Chunked String Array data is not currently supported.", __FILE__, __LINE__);
+        }
+
+        // exit here for strings; we only 'twiddle' bytes for integer data.
+        return true;
+    }
+
     // Single chunk and 'contiguous' are the same for this code.
 
     if (get_chunks_size() == 1) {
-        BESDEBUG(dmrpp_4, "Calling read_contiguous() for " << name() << endl);
         read_contiguous();    // Throws on various errors
     }
     else {  // Handle the more complex case where the data is chunked.
         if (!is_projected()) {
-            BESDEBUG(dmrpp_4, "Calling read_chunks_unconstrained() for " << name() << endl);
             read_chunks_unconstrained();
         }
         else {
-            BESDEBUG(dmrpp_4, "Calling read_chunks() for " << name() << endl);
             read_chunks();
         }
     }
