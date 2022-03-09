@@ -526,7 +526,7 @@ static void set_filter_information(hid_t dataset_id, DmrppCommon *dc) {
                     filters.append("shuffle ");
                     break;
                 case H5Z_FILTER_FLETCHER32:
-\                    // dc->set_fletcher32(true);
+                    // dc->set_fletcher32(true);
                     filters.append("fletcher32 ");
                     break;
                 default: {
