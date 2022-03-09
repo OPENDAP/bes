@@ -325,14 +325,14 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
 
 }
 
-// Currently only when the datatype of fillvalue is not the same as the datatype of the variable, 
+// Currently, only when the datatype of fillvalue is not the same as the datatype of the variable,
 // special attribute handling is needed.
 bool need_special_attribute_handling(const HDF5CF::Attribute* attr, const HDF5CF::Var* var)
 {
     return ((("_FillValue" == attr->getNewName()) && (var->getType() != attr->getType())) ? true : false);
 }
 
-// Currently we only handle the case when the datatype of _FillValue is not the same as the variable datatype.
+// Currently, we only handle the case when the datatype of _FillValue is not the same as the variable datatype.
 void gen_dap_special_oneobj_das(AttrTable*at, const HDF5CF::Attribute* attr, const HDF5CF::Var* var)
 {
 
@@ -352,7 +352,7 @@ void gen_dap_special_oneobj_das(AttrTable*at, const HDF5CF::Attribute* attr, con
     at->append_attr(attr->getNewName(), HDF5CFDAPUtil::print_type(var_dtype), print_rep);
 }
 
-// Check if this fillvalue is in the valid datatype range when the fillvalue datatype is changed to follow the CF
+// Check if this fill value is in the valid datatype range when the fillvalue datatype is changed to follow the CF
 bool is_fvalue_valid(H5DataType var_dtype, const HDF5CF::Attribute* attr)
 {
 
@@ -794,10 +794,9 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
 
 void gen_dap_str_attr(AttrTable *at, const HDF5CF::Attribute *attr)
 {
-
-    BESDEBUG("h5", "Coming to gen_dap_str_attr()  "<<endl);
+    BESDEBUG("h5", "Coming to gen_dap_str_attr()  " << endl);
     const vector<size_t>& strsize = attr->getStrSize();
-//cerr<<"in DAS strsize is "<<strsize.size() <<endl;
+
     unsigned int temp_start_pos = 0;
     bool is_cset_ascii = attr->getCsetType();
     for (unsigned int loc = 0; loc < attr->getCount(); loc++) {
@@ -810,9 +809,11 @@ void gen_dap_str_attr(AttrTable *at, const HDF5CF::Attribute *attr)
             // string and the "EnableDropLongString" key is turned on,
             // No string is generated.
             // The above statement is no longer true. The netCDF Java can handle long string
-            // attributes. The long string can be kept and I do think the
+            // attributes. The long string can be kept, and I do think the
             // performance penalty should be small. KY 2018-02-26
-            if ((attr->getNewName() != "origname") && (attr->getNewName() != "fullnamepath") && (true == is_cset_ascii)) 
+            if (tempstring.find("UTC at Start of Observation") != string::npos)
+                BESDEBUG("attrbug", "tempstring: " << tempstring << endl);
+            if ((attr->getNewName() != "origname") && (attr->getNewName() != "fullnamepath")) //  && (true == is_cset_ascii))
                 tempstring = HDF5CFDAPUtil::escattr(tempstring);
             at->append_attr(attr->getNewName(), "String", tempstring);
         }
@@ -821,15 +822,15 @@ void gen_dap_str_attr(AttrTable *at, const HDF5CF::Attribute *attr)
 
 //#if 0
 // This function adds the 1-D horizontal coordinate variables as well as the dummy projection variable to the grid.
-//Note: Since we don't add these artifical CF variables to our main engineering at HDFEOS5CF.cc, the information
+// Note: Since we don't add these artificial CF variables to our main engineering at HDFEOS5CF.cc, the information
 // to handle DAS won't pass to DDS by the file pointer, we need to re-call the routines to check projection
-// and dimension. The time to retrieve these information is trivial compared with the whole translation.
+// and dimension. The time to retrieve this information is trivial compared with the whole translation.
 void add_cf_grid_cvs(DDS & dds, EOS5GridPCType cv_proj_code, float cv_point_lower, float cv_point_upper,
     float cv_point_left, float cv_point_right, const vector<HDF5CF::Dimension*>& dims)
 {
 
     //1. Check the projection information: we first just handled the sinusoidal projection. 
-    // We also add the LAMAZ and PS support. These 1-D varaibles are the same as the sinusoidal one.
+    // We also add the LAMAZ and PS support. These 1-D variables are the same as the sinusoidal one.
     if (HE5_GCTP_SNSOID == cv_proj_code || HE5_GCTP_LAMAZ == cv_proj_code || HE5_GCTP_PS == cv_proj_code) {
 
         //2. Obtain the dimension information from latitude and longitude(fieldtype =1 or fieldtype =2)

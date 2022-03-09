@@ -48,7 +48,7 @@
 
 // #define USE_LOG_TYPES WITH_NEWLOG
 
-#if 1 // NEW WAY is better way.  ndp - 10/1/2020
+#if 1 // NEW WAY is a better way.  ndp - 10/1/2020
 #ifdef TRACE_LOGGING
 #define MR_LOG(tag, msg) do { *(BESLog::TheLog()) << "trace-" << tag << BESLog::mark << __FILE__  << BESLog::mark << __LINE__ << BESLog::mark << msg ; BESLog::TheLog()->flush_me() ; } while( 0 )
 #else

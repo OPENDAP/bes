@@ -190,10 +190,10 @@ class Attribute {
 
 public:
     Attribute() :
-        dtype(H5UNSUPTYPE), count(0), fstrsize(0),is_cset_ascii(true)
+        dtype(H5UNSUPTYPE), count(0), fstrsize(0), is_cset_ascii(true)
     {
     }
-    ;
+
     ~Attribute();
 
     const std::string & getName() const

@@ -33,6 +33,7 @@
 #include "config.h"
 #include <mutex>
 
+#include "BESLog.h"
 #include "BESRequestHandlerList.h"
 #include "BESRequestHandler.h"
 #include "BESInternalError.h"
@@ -258,8 +259,11 @@ void BESRequestHandlerList::execute_once(BESDataHandlerInterface &dhi)
  * in the response object rather than iterating over the list of containers
  * or request handlers.
  *
- * The request is passed * off to the request handler for the current
+ * The request is passed off to the request handler for the current
  * container in the data handler interface.
+ *
+ * @note This is used only in one place (3/8/22) in the NCML module in
+ * DDSLoader::loadInto().
  *
  * @param dhi data handler interface that contains the necessary information
  * to fill in the response object
@@ -297,6 +301,8 @@ void BESRequestHandlerList::execute_current(BESDataHandlerInterface &dhi)
             throw BESInternalError(string("Request handler for '") + dhi.container->get_container_type()
                 + "' does not handle the response type '" + dhi.action + "'", __FILE__, __LINE__);
         }
+
+        VERBOSE("Found handler '" << rh->get_name() << "' for item '" << dhi.container->get_symbolic_name() << "'." << endl);
 
         request_handler_method(dhi); // This is where the request handler method is called
     }
