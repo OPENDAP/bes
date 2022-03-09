@@ -65,6 +65,8 @@ using namespace std;
 using namespace libdap;
 using namespace HDF5CF;
 
+// TODO In the code below, reduce duplication using a template and use unique_ptr
+//  to remove memory leak inside catch(...)/throw block. jhrg 3/9/22
 // Generate DDS from one variable
 void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, const string & filename)
 {
@@ -251,6 +253,7 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
 
         else {
         switch (var->getType()) {
+            // TODO Remove extra ';' jhrg 3/9/22
 #define HANDLE_CASE(tid,type)                                  \
             case tid:                                           \
                 bt = new (type)(var->getNewName(),var->getFullPath()); \
@@ -542,6 +545,7 @@ void gen_dap_oneobj_das(AttrTable*at, const HDF5CF::Attribute* attr, const HDF5C
     }
 }
 
+// TODO Use a template function in the switch() below. jhrg 3/9/22
 // Generate DMR from one variable                                                                           
 void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const hid_t file_id, const string & filename) {
 
@@ -720,6 +724,7 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
         BaseType *bt = NULL;
 
         switch (var->getType()) {
+            // TODO Remove extra ';' jhrg 3/9/22
 #define HANDLE_CASE(tid,type)                                  \
             case tid:                                           \
                 bt = new (type)(var->getNewName(),var->getFullPath()); \
@@ -786,34 +791,55 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
     }
 
     return;
-
-
-
 }
 
-
+/**
+ * @brief Transfer string attributes to a DAP2 AttrTable
+ *
+ * For an HDF5 string attribute stored in a HDF5CF::Attribute, transfer the
+ * value(s) of that attribute to a DAP2 AttrTable object. This function
+ * handles both single and multiple attribute value cases. It should
+ * only be called for string attributes. Except as noted below, the
+ * attribute values are escaped so that non-printable ASCII characters
+ * are represented by a backslash and an octal code (e.g. \005).
+ *
+ * @note If the given HDF5CF::Attribute uses UTF-8, it will still be
+ * escaped as if it were an ASCII string (or used iso-8859-1 encoding)
+ * _unless_ the BES key H5.EscapeUTF8Attr is false (default is true).
+ *
+ * @note Attributes named 'origname' or 'fullnamepath' are never escaped.
+ *
+ * @param at Put the string attribute in this DAP2 AttrTable
+ * @param attr The source attribute information
+ */
 void gen_dap_str_attr(AttrTable *at, const HDF5CF::Attribute *attr)
 {
     BESDEBUG("h5", "Coming to gen_dap_str_attr()  " << endl);
     const vector<size_t>& strsize = attr->getStrSize();
 
     unsigned int temp_start_pos = 0;
-    bool is_cset_ascii = attr->getCsetType();
     for (unsigned int loc = 0; loc < attr->getCount(); loc++) {
         if (strsize[loc] != 0) {
-            string tempstring(attr->getValue().begin() + temp_start_pos,
-                attr->getValue().begin() + temp_start_pos + strsize[loc]);
+            string tempstring(attr->getValue().begin() + temp_start_pos, attr->getValue().begin() + temp_start_pos + strsize[loc]);
             temp_start_pos += strsize[loc];
 
             // If the string size is longer than the current netCDF JAVA
             // string and the "EnableDropLongString" key is turned on,
             // No string is generated.
+            //
             // The above statement is no longer true. The netCDF Java can handle long string
             // attributes. The long string can be kept, and I do think the
             // performance penalty should be small. KY 2018-02-26
-            if (tempstring.find("UTC at Start of Observation") != string::npos)
+            //
+            if (tempstring.find("UTC at Start of Observation") != string::npos) // TODO Remove before commit jhrg 3/9/22
                 BESDEBUG("attrbug", "tempstring: " << tempstring << endl);
-            if ((attr->getNewName() != "origname") && (attr->getNewName() != "fullnamepath")) //  && (true == is_cset_ascii))
+            // Here is the logic to determine if the attribute value should be escaped.
+            // Attributes named 'origname' or 'fullnamepath' are never escaped. Attributes
+            // with values that use the UTF-8 character set _are_ encoded unless the
+            // HD.EscapeUTF8Attr is set to false. If the attribute values use ASCII
+            // (i.e., attr->getCsetType() is true), they are always escaped. jhrg 3/9/22
+            if ((attr->getNewName() != "origname") && (attr->getNewName() != "fullnamepath")
+                && (HDF5RequestHandler::get_escape_utf8_attr() || (true == attr->getCsetType())))
                 tempstring = HDF5CFDAPUtil::escattr(tempstring);
             at->append_attr(attr->getNewName(), "String", tempstring);
         }

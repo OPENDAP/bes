@@ -27,15 +27,14 @@
 #ifndef I_HDF5RequestHandler_H
 #define I_HDF5RequestHandler_H 
 
-#include<string>
-#include<map>
-#include<vector>
+#include <string>
+#include <map>
+#include <vector>
 #include "BESRequestHandler.h"
 #include "HDF5_DataMemCache.h"
 #include <BESDDSResponse.h>
 #include <BESDataDDSResponse.h>
 #include <hdf5.h>
-
 
 class ObjMemCache; // in bes/dap
 
@@ -57,7 +56,6 @@ class HDF5RequestHandler:public BESRequestHandler {
   public:
     explicit HDF5RequestHandler(const std::string & name);
     virtual ~HDF5RequestHandler(void);
-
 
     static bool hdf5_build_das(BESDataHandlerInterface & dhi);
     static bool hdf5_build_dds(BESDataHandlerInterface & dhi);
@@ -134,7 +132,10 @@ class HDF5RequestHandler:public BESRequestHandler {
     static string get_latlon_disk_cache_dir() { return _latlon_disk_cache_dir;}
     static string get_latlon_disk_cachefile_prefix() { return _latlon_disk_cachefile_prefix;}
     static long get_latlon_disk_cache_size() {return _latlon_disk_cache_size;}
- 
+
+    // jhrg 3/9/22
+    static bool get_escape_utf8_attr() {return _escape_utf8_attr;}
+
     // This handler supports the "not including attributes" in
     // the data access feature. Attributes are generated only
     // if necessary. KY 10/30/19
@@ -203,6 +204,9 @@ class HDF5RequestHandler:public BESRequestHandler {
      static std::string _latlon_disk_cachefile_prefix;
 
      static bool _common_cache_dirs;
+
+     static bool _escape_utf8_attr;   // jhrg 3/9/22
+
      static std::vector<std::string> lrd_cache_dir_list;
      static std::vector<string> lrd_non_cache_dir_list;
      static std::vector<string> lrd_var_cache_file_list;

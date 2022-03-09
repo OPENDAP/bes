@@ -28,8 +28,8 @@ BES.Group=group_name
 #-----------------------------------------------------------------------#
 # Where we log the stuff...and how much we log                          #
 #-----------------------------------------------------------------------#
-BES.LogName=./bes.log
-BES.LogVerbose=no
+BES.LogName = ./bes.log
+BES.LogVerbose = yes
 
 #-----------------------------------------------------------------------#
 # modules to load, includes data modules and command modules            #
@@ -178,8 +178,8 @@ DAP.Help.XML=@pkgdatadir@/dap_help.txt
 # Should informational response objects be buffered, or streamed        #
 # Should informational objects be formatted as text, html, or xml       #
 #-----------------------------------------------------------------------#
-BES.Info.Buffered=no
-BES.Info.Type=xml
+BES.Info.Buffered = no
+BES.Info.Type = xml
 
 #-----------------------------------------------------------------------#
 # Cache and compression configuration                                   #
@@ -315,5 +315,7 @@ H5.DiskCacheComp=true
 H5.DiskCacheFloatOnlyComp=true
 H5.DiskCacheCompThreshold=2.0
 H5.DiskCacheCompVarSize=10000
+
+H5.EscapeUTF8Attr = false
 
 #H5.EnableCFDMR=true
