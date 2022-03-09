@@ -25,6 +25,7 @@ compiler: gcc
 branches:
   only:
   - master
+  - /^(.*-test-deploy)$/
 
 # This cache is used to speed up sonar scan runs. See https://docs.travis-ci.com/user/caching.
 # Each branch gets its own cache. The three different sonar scan runs each use their own cache
@@ -113,16 +114,17 @@ before_script:
 #
 # Update: it's back in. There may be a way to skip the scan for a DRAFT pull request,
 # but I won't know until I hear back from Travis-CI support. jhrg 7/23/21
+#
+# Change: We filter branches (see line 25 above) so this script is only run for
+# the master branch or for a *-test-deploy branch. So, the conditionals for the
+# stages can be simplified. jhrg 3/2/22
 
 stages:
-  - name: not-now
-    if: branch = not-now
   - name: build-and-package
-    if: branch = master
   - name: scan
     if:  branch = master
   - name: hyrax-olfs-trigger
-    if: branch = master AND type != pull_request
+    if: type != pull_request OR branch =~ ^(.*-test-deploy)$
 
 jobs:
   include:
@@ -276,5 +278,5 @@ deploy:
     skip_cleanup: true
     local_dir: $TRAVIS_BUILD_DIR/package
     on:
-      branch: master
+      all_branches: true
       condition: $BES_BUILD =~ ^centos7|centos-stream8|srcdist$
