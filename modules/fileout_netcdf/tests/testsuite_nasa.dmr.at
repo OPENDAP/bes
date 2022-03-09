@@ -72,12 +72,14 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR_HDR(nasa-bescmd-h5cfdmr/eos5_s
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR_HDR(nasa-bescmd-h5cfdmr/eos5_sin_one_grid.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR_HDR(nasa-bescmd-h5cfdmr/eos5lamaz.h5.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR_HDR(nasa-bescmd-h5cfdmr/eos5ps.h5.bescmd)
-#When looping through the HDF5 attributes of an HDF5 object, the attribute order for f16_ssmis_20031026v7.nc.h5 different
-#on Mac. So this causes the DMR output different on Mac and thus a test failure.
-#Now we just temporarily turn off these tests. 2021-11-15
-AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR_HDR(nasa-bescmd-h5cfdmr/f16_ssmis_20031026v7.nc.h5.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR_HDR(nasa-bescmd-h5cfdmr/good_imerge.h5.bescmd)
 #AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR_HDR(nasa-bescmd-h5cfdmr/oco2_L1bScGL_05619a_150723_B7000_150723203202.h5.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR_HDR(nasa-bescmd-h5cfdmr/oco2_L2StdND_03945a_150330_B6000_150331024816.h5.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR_HDR(nasa-bescmd-h5cfdmr/oco2_LtCO2_180102_B9003r_180929105747s.nc4.h5.bescmd)
 
+#When looping through the HDF5 attributes of an HDF5 object, the attribute order for SMAP L1C,SMAP_L3 and f16ssmi are different
+#on Mac. So this causes the DMR output different on Mac and thus an expected failure.
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR_HDR_OS(nasa-bescmd-h5cfdmr/SMAP_L1C_S0_HIRES_02298_A_20150707T160502_R13080_001.h5.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR_HDR_OS(nasa-bescmd-h5cfdmr/SMAP_L3_SM_P_20150406_R14010_001.h5.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR_HDR_OS(nasa-bescmd-h5cfdmr/SMAP_L3_SM_P_E_20211030_R18240_001.h5.constraint.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR_HDR_OS(nasa-bescmd-h5cfdmr/f16_ssmis_20031026v7.nc.h5.bescmd)
