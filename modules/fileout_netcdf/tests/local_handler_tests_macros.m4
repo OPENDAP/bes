@@ -324,6 +324,44 @@ m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR],  [dnl
     AT_CLEANUP
 ])
 
+dnl platform-specific test: on Mac, output will be expected faiure. This is 
+dnl because of different attribute orders by HDF5 library on Mac and on Linux.
+
+m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR_OS],  [dnl
+
+    AT_SETUP([$1])
+    AT_KEYWORDS([nc4 enhanced binary ncdump])
+
+    input=$abs_srcdir/$1
+    baseline=$abs_srcdir/$1.baseline
+    pass=$2
+    repeat=$3
+    bes_conf=bes.nc4.grp.conf
+
+    AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+         [
+         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input > test.nc])
+
+         dnl the header
+         AT_CHECK([ncdump -h test.nc > $baseline.header.tmp])
+         REMOVE_DATE_TIME([$baseline.header.tmp])
+         ],
+         [
+         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input > test.nc])
+         AT_CHECK([ncdump -h test.nc > tmp])
+         REMOVE_DATE_TIME([tmp])
+         AT_CHECK([diff -b -B $baseline.header tmp])
+         AT_XFAIL_IF([grep -q "darwin" <<< AT_PACKAGE_HOST])
+         #AT_XFAIL_IF([test z$2 = zxfail])
+         ])
+
+    AT_CLEANUP
+])
+
 dnl Only check if the netcdf-4 file is compressed.
 
 m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_COMPRESSION],  [dnl
@@ -539,6 +577,41 @@ m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR_HDR],  [dnl
          REMOVE_DATE_TIME([tmp])
          AT_CHECK([diff -b -B $baseline.header tmp])
          AT_XFAIL_IF([test z$2 = zxfail])
+         ])
+
+    AT_CLEANUP
+])
+
+m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR_HDR_OS],  [dnl
+
+    AT_SETUP([$1])
+    AT_KEYWORDS([nc4 enhanced binary ncdump])
+
+    input=$abs_srcdir/$1
+    baseline=$abs_srcdir/$1.baseline
+    pass=$2
+    repeat=$3
+    bes_conf=bes.nc4.cfdmr.conf
+
+    AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+         [
+         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input > test.nc])
+
+         dnl the header
+         AT_CHECK([ncdump -h test.nc > $baseline.header.tmp])
+         REMOVE_DATE_TIME([$baseline.header.tmp])
+         ],
+         [
+         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input > test.nc])
+         AT_CHECK([ncdump -h test.nc > tmp])
+         REMOVE_DATE_TIME([tmp])
+         AT_CHECK([diff -b -B $baseline.header tmp])
+         AT_XFAIL_IF([grep -q "darwin" <<< AT_PACKAGE_HOST])
+         #AT_XFAIL_IF([test z$2 = zxfail])
          ])
 
     AT_CLEANUP
