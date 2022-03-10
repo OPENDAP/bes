@@ -75,7 +75,7 @@ $(srcdir)/package.m4: $(top_srcdir)/configure.ac
 	echo 'm4_define([AT_PACKAGE_STRING],    [@PACKAGE_STRING@])' && \
 	echo 'm4_define([AT_PACKAGE_BUGREPORT], [@PACKAGE_BUGREPORT@])' && \
 	echo 'm4_define([AT_TOP_SRCDIR],        [@top_srcdir@])' && \
-        echo 'm4_define([AT_PACKAGE_HOST],      [@host@])'; \
+    echo 'm4_define([AT_PACKAGE_HOST],      [@host@])'; \
 	} >'$(srcdir)/package.m4'
 
 

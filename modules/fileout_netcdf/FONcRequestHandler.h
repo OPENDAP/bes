@@ -52,12 +52,16 @@ public:
     static std::string temp_dir;
     static bool byte_to_short;
     static bool use_compression;
-    static int chunk_size;
+    static size_t chunk_size;
     static bool classic_model;
     static bool no_global_attrs;
+    static size_t request_max_size_kb;
 
     static bool build_help(BESDataHandlerInterface &dhi);
     static bool build_version(BESDataHandlerInterface &dhi);
+    static size_t get_request_max_size_kb(){
+        return request_max_size_kb;
+    }
 };
 
 #endif
