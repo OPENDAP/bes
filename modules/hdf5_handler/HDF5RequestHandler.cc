@@ -78,7 +78,9 @@
 using namespace std;
 using namespace libdap;
 
-#define DYNAMIC_CONFIG_ENABLED 0    // Added to make this explicit. jhrg 3/8/22
+// DYNAMIC_CONFIG_ENABLED is defined by TheBESKeys.h. As of 3/11/22, this
+// is 0 so the dynamic keys feature is not used. jhrg 3/8/22
+
 #define prolog std::string("HDF5RequestHandler::").append(__func__).append("() - ")
 
 // The debug function to dump all the contents of a DAS table.

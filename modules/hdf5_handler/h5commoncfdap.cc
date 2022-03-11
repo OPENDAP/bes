@@ -839,8 +839,9 @@ void gen_dap_str_attr(AttrTable *at, const HDF5CF::Attribute *attr)
             // HD.EscapeUTF8Attr is set to false. If the attribute values use ASCII
             // (i.e., attr->getCsetType() is true), they are always escaped. jhrg 3/9/22
             if ((attr->getNewName() != "origname") && (attr->getNewName() != "fullnamepath")
-                && (HDF5RequestHandler::get_escape_utf8_attr() || (true == attr->getCsetType())))
+                && (HDF5RequestHandler::get_escape_utf8_attr() || (true == attr->getCsetType()))) {
                 tempstring = HDF5CFDAPUtil::escattr(tempstring);
+            }
             at->append_attr(attr->getNewName(), "String", tempstring);
         }
     }

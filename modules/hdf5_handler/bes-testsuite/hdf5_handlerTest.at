@@ -16,9 +16,9 @@ m4_define([_AT_BESCMD_TEST],
 [AT_SETUP([BESCMD $1])
 AT_KEYWORDS([bescmd])
 
-# Use the following AT_CHECK to generate baseline file.
-#AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 > $2|| true], [], [stdout], [stderr])
-#AT_CHECK([mv stdout $2.tmp])
+# Use the following 2 AT_CHECK lines to generate baseline file.
+# AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 || true], [], [stdout], [stderr])
+# AT_CHECK([mv stdout $2.tmp])
 
 AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 || true], [], [stdout], [stderr])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])

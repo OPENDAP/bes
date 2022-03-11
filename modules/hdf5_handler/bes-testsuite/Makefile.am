@@ -26,6 +26,9 @@ bes.default.conf.modules.in bes.ignore.conf.modules.in bes.cfdmr.conf.modules.in
 # will result in a warning from distcheck
 DISTCLEANFILES = atconfig
 
+# TODO We should choose one or the other - the modules/no-modules is left over
+#  from a long time ago and results in error prone behavior. DAP_BUILTIN_MODULES
+#  is true for a default BES build. jhrg 3/11/22
 if DAP_BUILTIN_MODULES
 BES_CONF_IN = bes.conf.modules.in
 BES_DEFAULT_CONF_IN = bes.default.conf.modules.in
@@ -81,7 +84,7 @@ $(TESTSUITE): $(srcdir)/hdf5_handlerTest.at $(srcdir)/package.m4
 	mv $@.tmp $@
 
 # The `:;' works around a Bash 3.2 bug when the output is not writable.
-$(srcdir)/package.m4: $(top_srcdir)/configure.ac
+$(srcdir)/package.m4: $(top_srcdir)/configure.ac $(srcdir)/Makefile.am
 	:;{ \
 	echo '# Signature of the current package.' && \
 	echo 'm4_define([AT_PACKAGE_NAME],      [@PACKAGE_NAME@])' && \
@@ -89,7 +92,8 @@ $(srcdir)/package.m4: $(top_srcdir)/configure.ac
 	echo 'm4_define([AT_PACKAGE_VERSION],   [@PACKAGE_VERSION@])' && \
 	echo 'm4_define([AT_PACKAGE_STRING],    [@PACKAGE_STRING@])' && \
 	echo 'm4_define([AT_PACKAGE_BUGREPORT], [@PACKAGE_BUGREPORT@])' && \
-	echo 'm4_define([AT_PACKAGE_HOST], [@host@])'; \
+	echo 'm4_define([AT_TOP_SRCDIR],        [@top_srcdir@])' && \
+	echo 'm4_define([AT_PACKAGE_HOST],      [@host@])'; \
 	} >'$(srcdir)/package.m4'
 
 
