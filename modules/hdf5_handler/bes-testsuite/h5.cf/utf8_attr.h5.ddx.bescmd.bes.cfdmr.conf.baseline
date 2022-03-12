@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="unicode-simple.h5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xml.opendap.org/ns/DAP/3.2# http://xml.opendap.org/dap/dap3.2.xsd" xmlns:grddl="http://www.w3.org/2003/g/data-view#" grddl:transformation="http://xml.opendap.org/transforms/ddxToRdfTriples.xsl" xmlns="http://xml.opendap.org/ns/DAP/3.2#" xmlns:dap="http://xml.opendap.org/ns/DAP/3.2#" dapVersion="3.2">
+    <Array name="fl_string_dataset">
+        <Attribute name="utf8_attr" type="String">
+            <value>\366\241\205\267\360\230\225\211\363\232\200\200\367\245\256\263\365\231\253\266\360\274\237\252\360\230\244\226\362\251\237\245\357\222\241\363\212\202\243\366\230\271\233\360\266\242\225\362\265\233\225\364\232\234\204\360\230\276\221\364\223\252\201</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>fl_string_dataset</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/fl_string_dataset</value>
+        </Attribute>
+        <String/>
+        <dimension size="1"/>
+    </Array>
+    <blob href="cid:"/>
+</Dataset>
