@@ -89,7 +89,7 @@ AT_BESCMD_ERROR_RESPONSE_TEST(bescmd/structT02.3.bescmd)
 #AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/.3.bescmd)
 
 dnl This test reads attributes from a .das in addition to data from 
-dnl a .dods file. Its baselines are interchangable with the fnoc1.nc
+dnl a .dods file. Its baselines are interchangeable with the fnoc1.nc
 dnl data file (bescmd/but that requires the netcdf handler).
 
 AT_BESCMD_RESPONSE_SCRUB_DATES_TEST(bescmd/fnoc.0.bescmd)
@@ -197,4 +197,9 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_COMPRESSION(bescmd/gridT.3.compression.bescmd
 
 dnl Add tests for the HDF5 CF DMR direct mapping 
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR(bescmd/d_int8.h5.2.bescmd)
+
+# Added tests for the 'max response size' feature that can be used to limit the size of the
+# data feed into the netcdf file builder.
+# AT_BESCMD_BESCONF_RESPONSE_TEST([<bescmd file>], [<bes.conf>], [pass|xfail], [repeat|cached])
+
 

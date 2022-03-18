@@ -29,6 +29,10 @@ bes.nc4.cfdmr.conf: $(srcdir)/bes.nc4.cfdmr.conf.in $(top_srcdir)/configure.ac
 
 bes.functions.conf: $(srcdir)/bes.functions.conf.in $(top_srcdir)/configure.ac
 
+bes.size600.conf: $(srcdir)/bes.size600.conf.in $(top_srcdir)/configure.ac
+
+bes.size50.conf: $(srcdir)/bes.size50.conf.in $(top_srcdir)/configure.ac
+
 ############## Autotest follows #####################
 
 AUTOM4TE = autom4te
