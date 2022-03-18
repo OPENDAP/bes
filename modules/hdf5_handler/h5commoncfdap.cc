@@ -1369,23 +1369,17 @@ D4Attribute *gen_dap4_attr(const HDF5CF::Attribute *attr) {
             
         const vector<size_t>& strsize = attr->getStrSize();
 #if 0
-if(strsize.size()  == 0)
-cerr<<"vector string size is 0"<<endl;
-for(int i = 0; i<strsize.size(); i++)
-cerr<<"attr size  is "<<strsize[i] <<endl;
+        if(strsize.size()  == 0)
+            cerr << "vector string size is 0" << endl;
+        for(int i = 0; i<strsize.size(); i++)
+            cerr << "attr size  is "<<strsize[i] << endl;
 #endif
         unsigned int temp_start_pos = 0;
-        // TODO Remove/unneeded jhrg 3/18/22 bool is_cset_ascii = attr->getCsetType();
         for (unsigned int loc = 0; loc < attr->getCount(); loc++) {
             if (strsize[loc] != 0) {
                 string tempstring(attr->getValue().begin() + temp_start_pos,
                                   attr->getValue().begin() + temp_start_pos + strsize[loc]);
                 temp_start_pos += strsize[loc];
-#if 0
-                // TODO Remove jhrg
-                if ((attr->getNewName() != "origname") && (attr->getNewName() != "fullnamepath") && (true == is_cset_ascii))
-                     tempstring = HDF5CFDAPUtil::escattr(tempstring);
-#endif
                 if ((attr->getNewName() != "origname") && (attr->getNewName() != "fullnamepath")
                     && (HDF5RequestHandler::get_escape_utf8_attr() || (true == attr->getCsetType()))) {
                     tempstring = HDF5CFDAPUtil::escattr(tempstring);
@@ -1395,12 +1389,15 @@ cerr<<"attr size  is "<<strsize[i] <<endl;
         }
     }
     else {
-//cerr<<"not a string type "<<endl;
+#if 0
+        cerr << "not a string type " << endl;
+#endif
         for (unsigned int loc = 0; loc < attr->getCount(); loc++) {
             string print_rep = HDF5CFDAPUtil::print_attr(attr->getType(), loc, (void*) &(attr->getValue()[0]));
             d4_attr->add_value(print_rep);
         }
     }
+
     return d4_attr;
 }
 
