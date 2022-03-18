@@ -70,11 +70,6 @@ bes.cfdmr.conf: $(BES_CFDMR_CONF_IN) $(top_srcdir)/configure.ac
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
 		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.cfdmr.conf
 
-bes.cfdmr.conf: $(BES_CFDMR_CONF_IN) $(top_srcdir)/configure.ac
-	@clean_abs_top_srcdir=`${PYTHON} -c "import os; print(os.path.abspath('${abs_top_srcdir}'))"`; \
-	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
-		-e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" $< > bes.cfdmr.conf
-
 # Build the bes.conf used for testing so that the value substituted for
 # @abs_top_srcdir@ does not contain '../'. This happens when using
 # configure's value for the parameter when running the distcheck target.

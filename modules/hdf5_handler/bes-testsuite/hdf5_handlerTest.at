@@ -28,7 +28,7 @@ AT_ARG_OPTION_ARG([baselines b],
 # The last two params are optional.
 m4_define([AT_BESCMD_BESCONF_RESPONSE_TEST], [dnl
 
-    AT_SETUP([$1])
+    AT_SETUP([$1 $2])
     AT_KEYWORDS([bescmd])
 
     input=$abs_srcdir/$1
@@ -744,7 +744,7 @@ AT_BESCMD_CFDMR_DAP4DATA_RESPONSE_TEST([t_scalar_dset.h5.dap.bescmd])
 # tests for the H5.EscapeUTF8Attr bes key - using the default value of true first
 AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.das.bescmd], [bes.cfdmr.conf])
 AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.ddx.bescmd], [bes.cfdmr.conf])
-AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.dmr.bescmd], [bes.cfdmr.conf], [xfail])
+AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.dmr.bescmd], [bes.cfdmr.conf], [xpass])
 # and change to false
 AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.das.bescmd], [bes.e_utf8_false.conf])
 AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.ddx.bescmd], [bes.e_utf8_false.conf])

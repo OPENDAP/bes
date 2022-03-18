@@ -70,6 +70,12 @@ framework = dispatch xmlcommand ppt server http dap dapreader
 framework-only:
 	for d in $(framework); do $(MAKE) -C $$d $(MFLAGS); done
 
+# Added this as a simple way to test the framework without the modules.
+# jhrg 3.18.22
+.PHONY: framework-check
+framework-check:
+	for d in $(framework); do $(MAKE) check -C $$d $(MFLAGS); done
+
 # This target only builds the documents, it does not move them to
 # github. Use the 'gh-docs' target below for that.
 .PHONY: docs

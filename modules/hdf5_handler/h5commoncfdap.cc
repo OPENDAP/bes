@@ -1375,14 +1375,21 @@ for(int i = 0; i<strsize.size(); i++)
 cerr<<"attr size  is "<<strsize[i] <<endl;
 #endif
         unsigned int temp_start_pos = 0;
-        bool is_cset_ascii = attr->getCsetType();
+        // TODO Remove/unneeded jhrg 3/18/22 bool is_cset_ascii = attr->getCsetType();
         for (unsigned int loc = 0; loc < attr->getCount(); loc++) {
             if (strsize[loc] != 0) {
                 string tempstring(attr->getValue().begin() + temp_start_pos,
                                   attr->getValue().begin() + temp_start_pos + strsize[loc]);
                 temp_start_pos += strsize[loc];
-                if ((attr->getNewName() != "origname") && (attr->getNewName() != "fullnamepath") && (true == is_cset_ascii)) 
+#if 0
+                // TODO Remove jhrg
+                if ((attr->getNewName() != "origname") && (attr->getNewName() != "fullnamepath") && (true == is_cset_ascii))
                      tempstring = HDF5CFDAPUtil::escattr(tempstring);
+#endif
+                if ((attr->getNewName() != "origname") && (attr->getNewName() != "fullnamepath")
+                    && (HDF5RequestHandler::get_escape_utf8_attr() || (true == attr->getCsetType()))) {
+                    tempstring = HDF5CFDAPUtil::escattr(tempstring);
+                }
                 d4_attr->add_value(tempstring);
             }
         }
