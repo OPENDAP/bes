@@ -203,3 +203,4 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR(bescmd/d_int8.h5.2.bescmd)
 # AT_BESCMD_BESCONF_RESPONSE_TEST([<bescmd file>], [<bes.conf>], [pass|xfail], [repeat|cached])
 
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/coad_sst.bescmd], [bes.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/coad_sst.bescmd], [bes.size50.conf])

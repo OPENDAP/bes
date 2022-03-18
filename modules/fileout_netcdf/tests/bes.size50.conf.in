@@ -71,12 +71,3 @@ FONc.ClassicModel=true
 #FONc.NoGlobalAttrs=true
 NC.PromoteByteToShort=true
 H5.EnableCF=false
-
-# For HDF4
-
-# Note that changing H4.EnableCF will change the output of the HDF4 tests.
-# If CF is enabled, the HDF4 handler will turn Sequecnes into arrays.
-
-# H4.EnableCF=true
-# H4.DisableStructMetaAttr=true
-# H4.EnableVdata_to_Attr=true
