@@ -62,7 +62,7 @@ clean-local:
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
 $(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4 \
-$(srcdir)/local_handler_tests_macros.m4
+$(srcdir)/local_handler_tests_macros.m4 bes.size600.conf bes.size50.conf bes.conf
 
 $(TESTSUITE_FUNC): $(TESTSUITE_FUNC).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
 
