@@ -88,7 +88,11 @@ AUTOM4TE = autom4te
 
 TESTSUITE = $(srcdir)/hdf5_handlerTest
 
-check-local: atconfig atlocal $(srcdir)/package.m4 $(TESTSUITE)
+# Put the bes config file dependency here because the TESTSUITE script needs
+# autoconf to build but we cannot require users to have that. The conf file
+# can build using only what configure and this Makefile(.am) know, so the
+# dependency can go here. jhrg 3/18/22
+check-local: atconfig atlocal $(srcdir)/package.m4 $(TESTSUITE) $(builddir)/bes.e_utf8_false.conf
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 
 clean-local:
@@ -97,16 +101,18 @@ clean-local:
 
 # more general rule that can be used for the testsuite production.
 # jhrg 3/12/22
-#
-# %: %.at
-#	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
-#
-# $(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
 
 AUTOTEST = $(AUTOM4TE) --language=autotest
-$(TESTSUITE): $(srcdir)/hdf5_handlerTest.at $(srcdir)/package.m4 $(builddir)/bes.e_utf8_false.conf
-	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
-	mv $@.tmp $@
+%: %.at
+	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
+
+# Only dependencies that are part of srcdir OR are included in the dist tar ball.
+# See note above. jhrg 3/18/22
+$(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4
+
+# $(TESTSUITE): $(srcdir)/hdf5_handlerTest.at $(srcdir)/package.m4
+#	$(AUTOTEST) -I '$(srcdir)' -o $@.tmp $@.at
+#	mv $@.tmp $@
 
 # The `:;' works around a Bash 3.2 bug when the output is not writable.
 $(srcdir)/package.m4: $(top_srcdir)/configure.ac $(srcdir)/Makefile.am
