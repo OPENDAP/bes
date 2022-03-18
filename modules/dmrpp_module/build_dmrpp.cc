@@ -451,6 +451,51 @@ static void print_dataset_type_info(hid_t dataset, uint8_t layout_type) {
 // H5Z_FILTER_NBIT          5   nbit compression
 // H5Z_FILTER_SCALEOFFSET   6   scale+offset compression
 // H5Z_FILTER_RESERVED      256 filter ids below this value are reserved for library use
+// FYI: Filter IDs
+// H5Z_FILTER_ERROR         (-1) no filter
+// H5Z_FILTER_NONE          0   reserved indefinitely
+// H5Z_FILTER_DEFLATE       1   deflation like gzip
+// H5Z_FILTER_SHUFFLE       2   shuffle the data
+// H5Z_FILTER_FLETCHER32    3   fletcher32 checksum of EDC
+// H5Z_FILTER_SZIP          4   szip compression
+// H5Z_FILTER_NBIT          5   nbit compression
+// H5Z_FILTER_SCALEOFFSET   6   scale+offset compression
+// H5Z_FILTER_RESERVED      256 filter ids below this value are reserved for library use
+
+string h5_filter_name(int type){
+    string name;
+    switch(type) {
+        case H5Z_FILTER_NONE:
+            name = "H5Z_FILTER_NONE";
+            break;
+        case H5Z_FILTER_DEFLATE:
+            name = "H5Z_FILTER_DEFLATE";
+            break;
+        case H5Z_FILTER_SHUFFLE:
+            name = "H5Z_FILTER_SHUFFLE";
+            break;
+        case H5Z_FILTER_FLETCHER32:
+            name = "H5Z_FILTER_FLETCHER32";
+            break;
+        case H5Z_FILTER_SZIP:
+            name = "H5Z_FILTER_SZIP";
+            break;
+        case H5Z_FILTER_NBIT:
+            name = "H5Z_FILTER_NBIT";
+            break;
+        case H5Z_FILTER_SCALEOFFSET:
+            name = "H5Z_FILTER_SCALEOFFSET";
+            break;
+        default:
+        {
+            ostringstream oss("ERROR! Unknown HDF5 FILTER! type: ", std::ios::ate);
+            oss << type;
+            name = oss.str();
+            break;
+        }
+    }
+    return name;
+}
 
 /**
  * @brief Set compression info
@@ -470,27 +515,24 @@ static void set_filter_information(hid_t dataset_id, DmrppCommon *dc) {
             size_t nelmts = 0;
             unsigned int flags, filter_info;
             H5Z_filter_t filter_type = H5Pget_filter2(plist_id, filter, &flags, &nelmts, NULL, 0, NULL, &filter_info);
-            VERBOSE(cerr << "Filter Type: ");
-
+            VERBOSE(cerr << "Found H5 Filter Type: " << h5_filter_name(filter_type) << " (" << filter_type << ")" << endl);
             switch (filter_type) {
                 case H5Z_FILTER_DEFLATE:
-                    VERBOSE(cerr << "H5Z_FILTER_DEFLATE" << endl);
                     // dc->set_deflate(true);
                     filters.append("deflate ");
                     break;
                 case H5Z_FILTER_SHUFFLE:
-                    VERBOSE(cerr << "H5Z_FILTER_SHUFFLE" << endl);
                     // dc->set_shuffle(true);
                     filters.append("shuffle ");
                     break;
                 case H5Z_FILTER_FLETCHER32:
-                    VERBOSE(cerr << "H5Z_FILTER_FLETCHER32" << endl);
                     // dc->set_fletcher32(true);
                     filters.append("fletcher32 ");
                     break;
                 default: {
                     ostringstream oss("Unsupported HDF5 filter: ", std::ios::ate);
                     oss << filter_type;
+                    oss << " (" << h5_filter_name(filter_type) << ")";
                     throw BESInternalError(oss.str(), __FILE__, __LINE__);
                 }
             }
