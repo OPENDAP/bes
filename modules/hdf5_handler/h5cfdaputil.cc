@@ -47,19 +47,28 @@ using namespace libdap;
 // If we stick with this, there's clearly a more performant solution - eliminate
 // the calls to this code.
 // jhrg 6/25/21
-#define ESCAPE_STRING_ATTRIBUTES 0
+//
+// This may have been a mistake. Not escaping the string attributes results in
+// binary values in the attribute value and that winds up in the DMR & DDX XML
+// documents, breaking downstream parsers. It also seems to be the case that the
+// escaped double quotes do not affect the JSON parsers, esp. since the JSON in
+// question - the history_json attribute - is built only when the server builds
+// a netcdf file as the response type. Thus, that JSON is a pretty special case.
+// Reset this compile-time constant to 1. jhrg 3/8/22
+#define ESCAPE_STRING_ATTRIBUTES 1
 
 string HDF5CFDAPUtil::escattr(string s)
 {
     const string printable = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~`!@#$%^&*()_-+={[}]|\\:;<,>.?/'\"\n\t\r";
     const string ESC = "\\";
+    size_t ind = 0;
 #if ESCAPE_STRING_ATTRIBUTES
     const string DOUBLE_ESC = ESC + ESC;
     const string QUOTE = "\"";
     const string ESCQUOTE = ESC + QUOTE;
 
     // escape \ with a second backslash
-    size_t ind = 0;
+    ind = 0;
     while ((ind = s.find(ESC, ind)) != string::npos) {
         s.replace(ind, 1, DOUBLE_ESC);
         ind += DOUBLE_ESC.length();
@@ -74,7 +83,7 @@ string HDF5CFDAPUtil::escattr(string s)
 #endif
 
     // escape non-printing characters with octal escape
-    size_t ind = 0;
+    ind = 0;
     while ((ind = s.find_first_not_of(printable, ind)) != string::npos)
         s.replace(ind, 1, ESC + octstring(s[ind]));
 
@@ -264,7 +273,7 @@ HDF5CFDAPUtil:: print_attr(H5DataType type, int loc, void *vals)
             c = *(gp.cp+loc);
             // Since the character may be a special character and DAP may not be able to represent so supposedly we should escape the character
             // by calling the escattr function. However, HDF5 native char maps to DAP Int16. So the mapping assumes that users will never
-            // use HDF5 native char or HDF5 unsigned native char to represent characters. Instead HDF5 string should be used to represent characters.
+            // use HDF5 native char or HDF5 unsigned native char to represent characters. Instead, HDF5 string should be used to represent characters.
             // So don't do any escaping of H5CHAR for now. KY 2016-10-14
             rep <<(int)c;
             return rep.str();

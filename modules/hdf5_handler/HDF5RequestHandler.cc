@@ -78,6 +78,9 @@
 using namespace std;
 using namespace libdap;
 
+// DYNAMIC_CONFIG_ENABLED is defined by TheBESKeys.h. As of 3/11/22, this
+// is 0 so the dynamic keys feature is not used. jhrg 3/8/22
+
 #define prolog std::string("HDF5RequestHandler::").append(__func__).append("() - ")
 
 // The debug function to dump all the contents of a DAS table.
@@ -188,6 +191,9 @@ bool HDF5RequestHandler::_use_latlon_disk_cache        = false;
 long HDF5RequestHandler::_latlon_disk_cache_size        =0;
 string HDF5RequestHandler::_latlon_disk_cache_dir       ="";
 string HDF5RequestHandler::_latlon_disk_cachefile_prefix="";
+
+// H5.EscapeUTF8Attr jhrg 3/9/22
+bool HDF5RequestHandler::_escape_utf8_attr = true;
 
 DMR* HDF5RequestHandler::dmr_int64 = 0;
 
@@ -423,6 +429,10 @@ void HDF5RequestHandler::load_config()
     _latlon_disk_cache_size      = get_uint_key("H5.Cache.latlon.size",0);
     _latlon_disk_cache_dir       = get_beskeys("H5.Cache.latlon.path");
     _latlon_disk_cachefile_prefix= get_beskeys("H5.Cache.latlon.prefix");
+
+    key_value = obtain_beskeys_info("H5.EscapeUTF8Attr", has_key);
+    if (has_key)
+        _escape_utf8_attr = key_value;
 
 #if 0
     //_default_handle_dimension   = check_and_set_beskeys("H5.DefaultHandleDimension");
