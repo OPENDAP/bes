@@ -284,7 +284,7 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
         }
         }
 
-        vector<HDF5CF::Dimension*>::const_iterator it_d;
+        // TODO Remove jhrg vector<HDF5CF::Dimension*>::const_iterator it_d;
         vector<size_t> dimsizes;
         dimsizes.resize(var->getRank());
         for (int i = 0; i < var->getRank(); i++)
@@ -300,7 +300,7 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
             throw InternalErr(__FILE__, __LINE__, "Cannot allocate the HDF5CFStr.");
         }
 
-        for (it_d = dims.begin(); it_d != dims.end(); ++it_d) {
+        for (auto it_d = dims.begin(); it_d != dims.end(); ++it_d) {
             if ("" == (*it_d)->getNewName())
                 ar->append_dim((*it_d)->getSize());
             else
@@ -721,7 +721,7 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
 
     else {
 
-        BaseType *bt = NULL;
+        BaseType *bt = nullptr;
 
         switch (var->getType()) {
             // TODO Remove extra ';' jhrg 3/9/22
@@ -758,7 +758,7 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
 #undef HANDLE_CASE
         }
 
-        vector<HDF5CF::Dimension*>::const_iterator it_d;
+        // TODO Remove jhrg vector<HDF5CF::Dimension*>::const_iterator it_d;
         vector<size_t> dimsizes;
         dimsizes.resize(var->getRank());
         for (int i = 0; i < var->getRank(); i++)
@@ -774,7 +774,7 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
             throw InternalErr(__FILE__, __LINE__, "Cannot allocate the HDF5CFStr.");
         }
 
-        for (it_d = dims.begin(); it_d != dims.end(); ++it_d) {
+        for (auto it_d = dims.begin(); it_d != dims.end(); ++it_d) {
             if ("" == (*it_d)->getNewName())
                 ar->append_dim((*it_d)->getSize());
             else
@@ -1131,8 +1131,8 @@ void add_cf_grid_mapping_attr(DAS &das, const vector<HDF5CF::Var*>& vars, const 
 #endif
 
     // Check >=2-D fields, check if they hold the dim0name,dim0size etc., yes, add the attribute cf_projection.
-    vector<HDF5CF::Var *>::const_iterator it_v;
-    for (it_v = vars.begin(); it_v != vars.end(); ++it_v) {
+    // TODO Remove jhrg vector<HDF5CF::Var *>::const_iterator it_v;
+    for (auto it_v = vars.begin(); it_v != vars.end(); ++it_v) {
 
         if ((*it_v)->getRank() > 1) {
             bool has_dim0 = false;
@@ -1183,8 +1183,8 @@ bool need_attr_values_for_dap4(const HDF5CF::Var *var) {
 // Note: the main part of DMR still comes from DDS and DAS.
 void map_cfh5_var_attrs_to_dap4_int64(const HDF5CF::Var *var,BaseType* d4_var) {
 
-    vector<HDF5CF::Attribute *>::const_iterator it_ra;
-    for (it_ra = var->getAttributes().begin();
+    // TODO remove jhrg vector<HDF5CF::Attribute *>::const_iterator it_ra;
+    for (auto it_ra = var->getAttributes().begin();
         it_ra != var->getAttributes().end(); ++it_ra) {
         // HDF5 Native Char maps to DAP INT16(DAP doesn't have the corresponding datatype), so needs to
         // obtain the mem datatype. Keep this in DAP4 mapping.
@@ -1335,8 +1335,8 @@ void handle_coor_attr_for_int64_var(const HDF5CF::Attribute *attr,const string &
 // Hopefully this will be eventually used to build DMR. 
 void map_cfh5_var_attrs_to_dap4(const HDF5CF::Var *var,BaseType* d4_var) {
 
-    vector<HDF5CF::Attribute *>::const_iterator it_ra;
-    for (it_ra = var->getAttributes().begin();
+    // TODO Remove jhrg vector<HDF5CF::Attribute *>::const_iterator it_ra;
+    for (auto it_ra = var->getAttributes().begin();
         it_ra != var->getAttributes().end(); ++it_ra) {
      
         D4Attribute *d4_attr = gen_dap4_attr((*it_ra));
