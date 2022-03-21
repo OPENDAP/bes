@@ -12,6 +12,6 @@ BES.Include=dap.conf
 # modules to load, includes data modules and command modules            #
 #-----------------------------------------------------------------------#
 
-BES.modules+=usage
+BES.modules+=ascii
 
-BES.module.usage=@bes_modules_dir@/libusage_module.so
+BES.module.ascii=@bes_modules_dir@/libascii_module.so
