@@ -444,7 +444,7 @@ int ServerApp::initialize(int argc, char **argv)
     BESXMLDefaultCommands::initialize(argc, argv);
     BESDEBUG("beslistener", "beslistener: done initializing default commands" << endl);
 
-    // This will load and initialize all of the modules
+    // This will load and initialize all the modules
     BESDEBUG("beslistener", "beslistener: initializing loaded modules ... " << endl);
     int ret = BESModuleApp::initialize(argc, argv);
     BESDEBUG("beslistener", "beslistener: done initializing loaded modules" << endl);
@@ -457,7 +457,7 @@ int ServerApp::initialize(int argc, char **argv)
 
     // This sets the process group to be ID of this process. All children
     // will get this GID. Then use killpg() to send a signal to this process
-    // and all of the children.
+    // and all the children.
     session_id = setsid();
     BESDEBUG("beslistener", "beslistener: The master beslistener session id (group id): " << session_id << endl);
 
