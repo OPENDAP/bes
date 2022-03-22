@@ -248,7 +248,8 @@ AC_SEARCH_LIBS([uuid_generate], [uuid],
 AC_CHECK_PROG(VALGRIND, valgrind, [valgrind --logfile=memcheck])
 
 dnl Perl is used by www-interface during the build
-AC_CHECK_PROG([PERL], [perl], [`which perl`])
+dnl Removed www-interface. jhrg 3/21/22
+dnl AC_CHECK_PROG([PERL], [perl], [`which perl`])
 
 dnl We need the *-config scripts to build, so the AC_CHECK_LIB 
 dnl macro is not needed.
@@ -1035,8 +1036,6 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/httpd_catalog_module/tests/Makefile
     modules/httpd_catalog_module/tests/atlocal
 
-    modules/www-interface/Makefile
-
     modules/debug_functions/Makefile
     modules/debug_functions/unit-tests/Makefile 
     modules/debug_functions/tests/Makefile 
@@ -1144,9 +1143,9 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
 	
     AC_CONFIG_FILES([modules/hdf4_handler/bes-testsuite/generate_metadata_baseline.sh], 
         [chmod +x modules/hdf4_handler/bes-testsuite/generate_metadata_baseline.sh])
-    
+
 	dnl These can stay
-    AC_CONFIG_FILES([modules/www-interface/js2h.pl], [chmod +x modules/www-interface/js2h.pl])
+    dnl AC_CONFIG_FILES([modules/www-interface/js2h.pl], [chmod +x modules/www-interface/js2h.pl])
 
     AC_CONFIG_TESTDIR(modules/csv_handler/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/asciival/tests, [standalone])
