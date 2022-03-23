@@ -40,16 +40,16 @@ class PPTServer;
 
 class ServerApp: public BESModuleApp {
 private:
-	int _portVal;
-	bool _gotPort;
-	std::string _IPVal;
-	bool _gotIP;
-	std::string _unixSocket;
-	bool _secure;
-	pid_t _mypid;
-	TcpSocket *_ts;
-	UnixSocket *_us;
-	PPTServer *_ps;
+	int d_port {0};
+	bool d_got_port {false};
+	std::string d_ip_value;
+	bool d_got_ip {false};
+	std::string d_unix_socket_value;
+	bool d_is_secure {false};
+	pid_t d_pid {0};
+	TcpSocket *d_tcp_socket {nullptr};
+	UnixSocket *d_unix_socket {nullptr};
+	PPTServer *d_ppt_server {nullptr};
 
 public:
 	ServerApp();
