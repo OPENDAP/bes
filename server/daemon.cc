@@ -605,13 +605,14 @@ static int start_command_processor(DaemonCommandHandler &handler)
  */
 static void register_signal_handlers()
 {
-    struct sigaction act = {.sa_mask = 0, .sa_flags = 0};
+    struct sigaction act;
 
     // block child, term and hup in the handlers
     sigemptyset(&act.sa_mask);
     sigaddset(&act.sa_mask, SIGCHLD);
     sigaddset(&act.sa_mask, SIGTERM);
     sigaddset(&act.sa_mask, SIGHUP);
+    act.sa_flags = 0;
 #ifdef SA_RESTART
     BESDEBUG("besdaemon", "besdaemon: setting restart for sigchld." << endl);
     act.sa_flags |= SA_RESTART;

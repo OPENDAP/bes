@@ -215,12 +215,13 @@ static void catch_sig_term(int sig)
  */
 static void register_signal_handlers()
 {
-    struct sigaction act = {.sa_mask = 0, .sa_flags = 0};
+    struct sigaction act;
     sigemptyset(&act.sa_mask);
     sigaddset(&act.sa_mask, SIGCHLD);
     sigaddset(&act.sa_mask, SIGPIPE);
     sigaddset(&act.sa_mask, SIGTERM);
     sigaddset(&act.sa_mask, SIGHUP);
+    act.sa_flags = 0;
 #ifdef SA_RESTART
     BESDEBUG("beslistener", "beslistener: setting restart for sigchld." << endl);
     act.sa_flags |= SA_RESTART;
@@ -476,7 +477,7 @@ int ServerApp::run()
             // stdout. See daemon.cc:start_master_beslistener.
             // NB BESLISTENER_PIPE_FD is 1 (stdout)
             int status = BESLISTENER_RUNNING;
-            size_t res = write(BESLISTENER_PIPE_FD, &status, sizeof(status));
+            long res = write(BESLISTENER_PIPE_FD, &status, sizeof(status));
 
             if (res == -1) {
                 ERROR_LOG("Master listener could not send status to daemon: " << strerror(errno) << endl);
