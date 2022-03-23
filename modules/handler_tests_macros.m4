@@ -203,6 +203,44 @@ m4_define([AT_BESCMD_ERROR_RESPONSE_TEST], [dnl
     AT_CLEANUP
 ])
 
+# Usage: AT_BESCMD_BESCONF_ERROR_RESPONSE_TEST([<bescmd file>], [<bes.conf>], [pass|xfail], [repeat|cached])
+# The last two params are optional.
+m4_define([AT_BESCMD_BESCONF_ERROR_RESPONSE_TEST], [dnl
+    AT_SETUP([$1])
+    AT_KEYWORDS([bescmd error])
+
+    input=$abs_srcdir/$1
+
+    dnl By making this just $2 we can use exactly the same text as the original macro
+    dnl except for the bes_conf and baseline values - refactor.
+
+    bes_conf=$2
+    baseline=$abs_srcdir/$1.$2.baseline
+
+    repeat=$3
+
+    AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [ignore], [stdout], [ignore])
+        REMOVE_ERROR_FILE([stdout])
+        REMOVE_ERROR_LINE([stdout])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [ignore], [stdout], [ignore])
+        REMOVE_ERROR_FILE([stdout])
+        REMOVE_ERROR_LINE([stdout])
+        AT_CHECK([diff -b -B $baseline stdout])
+        AT_XFAIL_IF([test z$2 = zxfail])
+        ])
+
+    AT_CLEANUP
+])
+
 m4_define([AT_BESCMD_BINARY_DAP2_RESPONSE_TEST],  [dnl
 
     AT_SETUP([$1])
