@@ -81,7 +81,7 @@ static volatile sig_atomic_t sighup = 0;
 // Added jhrg 9/22/15
 static volatile int master_listener_pid = -1;
 
-#if 0
+#if 1
 static string bes_exit_message(int cpid, int stat)
 {
     ostringstream oss;
@@ -520,9 +520,8 @@ int ServerApp::run()
                     if (sigpipe) {
                         INFO_LOG("Master listener caught SISPIPE from child: " << cpid << endl);
                     }
-
-                    BESDEBUG("ppt2",
-                        bes_exit_message(cpid, stat) << "; num children: " << d_ppt_server->get_num_children() << endl);
+                    INFO_LOG(bes_exit_message(cpid, stat) << "; num children: " << d_ppt_server->get_num_children() << endl);
+                    BESDEBUG("ppt2", bes_exit_message(cpid, stat) << "; num children: " << d_ppt_server->get_num_children() << endl);
                 }
             }
 
