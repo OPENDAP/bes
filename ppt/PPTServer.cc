@@ -65,8 +65,7 @@ using std::ostream;
 #define PPT_SERVER_DEFAULT_TIMEOUT 1
 
 PPTServer::PPTServer(ServerHandler *handler, SocketListener *listener, bool isSecure) :
-		PPTConnection(PPT_SERVER_DEFAULT_TIMEOUT), _handler(handler), _listener(listener), _secure(isSecure),
-		_securePort(0), d_num_children(0)
+		PPTConnection(PPT_SERVER_DEFAULT_TIMEOUT), _handler(handler), _listener(listener), _secure(isSecure)
 {
 	if (!handler) {
 		string err("Null handler passed to PPTServer");
