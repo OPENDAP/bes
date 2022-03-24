@@ -207,6 +207,8 @@ m4_define([AT_GET_DMRPP_3_20],  [dnl
 AT_KEYWORDS([get_dmrpp data dap4 DAP4])
 
 GET_DMRPP="${abs_top_builddir}/modules/dmrpp_module/data/get_dmrpp"
+chmod +e "${GET_DMRPP}"
+
 DATA_DIR="modules/dmrpp_module/data/dmrpp"
 BASELINES_DIR="${abs_srcdir}/get_dmrpp"
 BES_DATA_ROOT="${abs_top_srcdir}"
