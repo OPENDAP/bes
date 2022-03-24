@@ -56,12 +56,14 @@
 class BESApp: public BESObj {
 protected:
     std::string _appName;
-    bool _debug;
-    bool _isInitialized;
+    bool _debug {false};
+    bool _isInitialized {false};
     static BESApp * _theApplication;
-    BESApp(void) : _debug(false), _isInitialized(false) { }
+
+    BESApp() = default;
+
 public:
-    virtual ~BESApp() { }
+    ~BESApp() override = default;
 
     /** @brief main routine, the main entry point for any BES applications.
      *
@@ -95,7 +97,7 @@ public:
      * It is up to the derived classes of BESApp to implement the
      * run method.
      */
-    virtual int run(void);
+    virtual int run();
 
     /** @brief Clean up after the application
      *
@@ -103,7 +105,7 @@ public:
      * terminate method. Memory cleanup, file descriptor cleanup, etc... might
      * go in this method.
      *
-     * @param sig if the applicaiton is terminating due to a signal, pass the
+     * @param sig if the application is terminating due to a signal, pass the
      * signal to terminate routine.
      */
     virtual int terminate(int sig = 0);
@@ -115,7 +117,7 @@ public:
      *
      * @param strm C++ i/o stream to dump the information to
      */
-    virtual void dump(std::ostream &strm) const = 0;
+    void dump(std::ostream &strm) const override = 0;
 
     /** @brief Returns the name of the application
      *
@@ -125,7 +127,7 @@ public:
      *
      * @return name of the application
      */
-    std::string appName(void) const
+    std::string appName() const
     {
         return _appName;
     }
@@ -134,7 +136,7 @@ public:
      *
      * @return The application object
      */
-    static BESApp * TheApplication(void)
+    static BESApp * TheApplication()
     {
         return _theApplication;
     }

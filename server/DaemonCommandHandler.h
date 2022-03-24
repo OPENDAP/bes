@@ -34,9 +34,9 @@
 #include <vector>
 
 #include "ServerHandler.h"
-#include "BESXMLWriter.h"
 
-class Connection ;
+class Connection;
+class BESXMLWriter;
 
 class DaemonCommandHandler: public ServerHandler {
 private:
@@ -53,14 +53,16 @@ private:
     } hai_command;
 
     std::string d_bes_conf;
+#if 0
     std::string d_config_dir;
     std::string d_include_dir;
+#endif
 
     // Build a map of all the various config files. This map relates the name
     // of the config file (eg 'bes.conf') to the full pathname for that file.
     // Only the name of config file is shown in responses; we use the map to
     // actually find/read/write the file.
-    std::map<string,string> d_pathnames;
+    std::map<std::string,std::string> d_pathnames;
 
     std::string d_log_file_name;
 
@@ -72,14 +74,14 @@ private:
 
 public:
     explicit DaemonCommandHandler(const std::string &config);
-    virtual ~DaemonCommandHandler() = default;
+    ~DaemonCommandHandler() override = default;
 
     std::string get_config_file() const { return d_bes_conf; }
     void set_config_file(const std::string &config) { d_bes_conf = config; }
 
-    virtual void handle(Connection *c);
+    void handle(Connection *c) override;
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 #endif // DaemonCommandHandler_h

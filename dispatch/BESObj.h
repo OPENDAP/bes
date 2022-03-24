@@ -38,7 +38,11 @@
 
 #include <iostream>
 
+#if 1
+// This ripples through the code because it is included here. Some day this should be
+// removed. jhrg 3/23/22
 #include "BESIndent.h"
+#endif
 
 /** @brief Base object for bes objects
  *
@@ -61,7 +65,7 @@ public:
      * etc...
      *
      * The inline function below can be used to dump the contents of an
-     * OPeNDAOObj object. For example, the object Animal is derived from
+     * OPeNDAPObj object. For example, the object Animal is derived from
      * BESObj. A user could do the following:
      *
      * Animal *a = new dog( "Sparky" ) ;

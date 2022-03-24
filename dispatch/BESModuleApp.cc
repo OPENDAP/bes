@@ -46,19 +46,21 @@ using namespace std;
  * Initialized the static _the Applicatioon to point to this application
  * object
  */
-BESModuleApp::BESModuleApp(void) :
+BESModuleApp::BESModuleApp() :
         BESApp()
 {
 }
 
+#if 0
 /** @brief Default destructor
  *
- * sets the static _theApplicaiton to null. Does not call terminate. It is up
+ * sets the static _theApplication to null. Does not call terminate. It is up
  * to the main method to call the terminate method.
  */
-BESModuleApp::~BESModuleApp(void)
+BESModuleApp::~BESModuleApp()
 {
 }
+#endif
 
 /** @brief Load and initialize any BES modules
  *
@@ -74,15 +76,11 @@ int BESModuleApp::initialize(int argC, char **argV)
             retVal = loadModules();
         }
         catch( BESError &e ) {
-            string newerr = "Error during module initialization: ";
-            newerr += e.get_message();
-            cerr << newerr << endl;
+            cerr << "Error during module initialization: " << e.get_message() << endl;
             retVal = 1;
         }
         catch( ... ) {
-            string newerr = "Error during module initialization: ";
-            newerr += "caught unknown exception";
-            cerr << newerr << endl;
+            cerr << "Error during module initialization: Unknown exception"  << endl;
             retVal = 1;
         }
     }

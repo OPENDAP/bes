@@ -24,6 +24,7 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI.
 // 02874-0112.
+
 #include "BESXMLWriter.h"
 
 #include <libxml/encoding.h>
@@ -89,12 +90,11 @@ void BESXMLWriter::m_cleanup()
     // make sure the buffer and writer are all cleaned up
     if (d_writer) {
         xmlFreeTextWriter(d_writer);
-        d_writer = 0;
-        //d_doc_buf = 0;
+        d_writer = nullptr;
     }
     if (d_doc_buf) {
         xmlBufferFree(d_doc_buf);
-        d_doc_buf = 0;
+        d_doc_buf = nullptr;
     }
 
     d_started = false;
@@ -116,7 +116,7 @@ const char *BESXMLWriter::get_doc()
         // must call this before getting the buffer content. Odd, but appears to be true.
         // jhrg
         xmlFreeTextWriter(d_writer);
-        d_writer = 0;
+        d_writer = nullptr;
     }
 
     // get the xml document as a string and return

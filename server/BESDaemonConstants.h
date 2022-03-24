@@ -35,6 +35,6 @@
 // to send its status back to the besdaemon telling it that the beslistener
 // has, in fact, started. NB: stdout is '1'
 
-#define BESLISTENER_PIPE_FD 1
+#define MASTER_TO_DAEMON_PIPE_FD 1
 
 #endif /* BESDAEMONCONSTANTS_H_ */

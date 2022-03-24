@@ -190,8 +190,7 @@ void BESServerHandler::execute(Connection *connection)
         if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("BESServerHandler::execute");
 
 
-        // This is where we actual save/assign the output stream used for the
-        // the response
+        // This is where we actually save/assign the output stream used for the response
         BESXMLInterface cmd(cmd_str, &my_ostrm);
 
         int status = cmd.execute_request(from);
