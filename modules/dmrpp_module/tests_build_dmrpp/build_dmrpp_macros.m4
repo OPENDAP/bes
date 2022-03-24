@@ -104,7 +104,9 @@ dnl Remove path components of DAP DMR Attributes that may vary with builds.
 dml jhrg 11/22/21
 dnl Usage: REMOVE_PATH_COMPONENTS(file_name)
 m4_define([REMOVE_PATH_COMPONENTS], [dnl
-    sed -e 's@/[[A-z0-9]][[-A-z0-9_/.]]*/dmrpp_module/@/path_removed/@g' < $1 > $1.sed
+    sed -e 's@/[[A-z0-9]][[-A-z0-9_/.]]*/dmrpp_module/@/path_removed/@g' \
+        -e 's@\/[[A-z0-9][A-z0-9_\/\-\.]]*\.so@< library_path_removed >@g' \
+        -e 's@BES.Catalog.catalog.RootDirectory=\/[[A-z0-9][A-z0-9_\/\-\.]]*@BES.Catalog.catalog.RootDirectory=< path_removed >@g' < $1 > $1.sed
     mv $1.sed $1
 ])
 
