@@ -211,7 +211,7 @@ PATH="${GET_DMRPP}":"$PATH"
 chmod +x "${GET_DMRPP}"
 ls -l "${GET_DMRPP}"
 
-BESSTANDALONE ="${abs_top_builddir}/standalone/.libs/besstandalone"
+BESSTANDALONE="${abs_top_builddir}/standalone/.libs/besstandalone"
 PATH="${BESSTANDALONE}":"$PATH"
 
 DATA_DIR="modules/dmrpp_module/data/dmrpp"
