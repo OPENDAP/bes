@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -33,21 +33,21 @@
 #ifndef ServerHandler_h
 #define ServerHandler_h 1
 
-class Connection ;
+class Connection;
 
 #include "BESObj.h"
 
-class ServerHandler : public BESObj
-{
+class ServerHandler : public BESObj {
 protected:
-    				ServerHandler() {}
+    ServerHandler() = default;
+
 public:
-    virtual			~ServerHandler() {}
+    virtual ~ServerHandler() = default;
 
-    virtual void		handle( Connection *c ) = 0 ;
+    virtual void handle(Connection *c) = 0;
 
-    virtual void		dump( std::ostream &strm ) const = 0 ;
-} ;
+    virtual void dump(std::ostream &strm) const = 0;
+};
 
 #endif // ServerHandler_h
 
