@@ -53,11 +53,11 @@ private:
 
 public:
 	ServerApp();
-	virtual ~ServerApp();
-	virtual int initialize(int argC, char **argV);
-	virtual int run();
-	virtual int terminate(int sig = 0);
+	~ServerApp() override;
+	int initialize(int argC, char **argV) override;
+	int run() override;
+	int terminate(int status = 0) override;
 
-	virtual void dump(std::ostream &strm) const;
+	void dump(std::ostream &strm) const override;
 };
 

@@ -32,14 +32,12 @@
 
 #include <iostream>
 
-using std::cerr;
-using std::endl;
-using std::ostream;
-
 #include "BESApp.h"
 #include "BESInternalError.h"
 
-BESApp *BESApp::_theApplication = 0;
+using namespace std;
+
+BESApp *BESApp::_theApplication = nullptr;
 
 /** @brief main method of the BES application
  *
@@ -83,7 +81,7 @@ int BESApp::initialize(int /*argC*/, char **/*argV*/)
  * @throws BESError if the derived class does not implement this
  * method
  */
-int BESApp::run(void)
+int BESApp::run()
 {
     throw BESInternalError("BESApp::run - run method not implemented",
     __FILE__, __LINE__);

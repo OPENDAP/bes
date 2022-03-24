@@ -38,12 +38,10 @@
 #include <pwd.h>    // for getpwnam
 
 #include <sys/wait.h>  // for waitpid
-// #include <sys/types.h>
 #include <sys/stat.h>  // for chmod
 #include <cctype> // for isdigit
 #include <csignal>
 
-// #include <fstream>
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -93,7 +91,9 @@ static string file_for_daemon_pid;
 
 // This can be used to see if HUP or TERM has been sent to the master bes
 volatile int master_beslistener_status = BESLISTENER_STOPPED;
+#if 0
 volatile int num_children = 0;
+#endif
 static volatile int master_beslistener_pid = -1; // This is also the process group id
 
 typedef map<string, string> arg_map;
@@ -344,7 +344,7 @@ int start_master_beslistener()
         // daemon process both stdin and out have been closed so these descriptors
         // are available. Using higher numbers can cause problems (see ticket
         // 1783). jhrg 7/15/11
-        if (dup2(pipefd[1], BESLISTENER_PIPE_FD) != BESLISTENER_PIPE_FD) {
+        if (dup2(pipefd[1], MASTER_TO_DAEMON_PIPE_FD) != MASTER_TO_DAEMON_PIPE_FD) {
             cerr << errno_str(": dup2 error ");
             return 0;
         }
@@ -357,7 +357,7 @@ int start_master_beslistener()
 
         // Close the socket for the besdaemon here. This keeps it from being
         // passed into the master beslistener and then entering the state
-        // CLOSE_WAIT once the besdaemon's client closes it's end.
+        // CLOSE_WAIT once the besdaemon's client closes its end.
         if (command_server) command_server->closeConnection();
 
         // This is where beslistener - the master listener - is started
@@ -922,8 +922,8 @@ static void set_user_id()
     BESDEBUG("server", "OK" << endl);
 }
 
-/** Run the daemon.
-
+/**
+ * Run the daemon.
  */
 int main(int argc, char *argv[])
 {

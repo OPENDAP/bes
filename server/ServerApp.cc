@@ -37,7 +37,6 @@
 #include <sys/wait.h> // for wait
 
 #include <iostream>
-#include <sstream>
 #include <exception>
 
 #include <cstring>
@@ -61,6 +60,7 @@
 #include "BESCatalogUtils.h"
 #include "BESUtil.h"
 #include "BESServerUtils.h"
+#include "BESIndent.h"
 
 #include "BESDefaultModule.h"
 #include "BESXMLDefaultCommands.h"
@@ -81,6 +81,7 @@ static volatile sig_atomic_t sighup = 0;
 // Added jhrg 9/22/15
 static volatile int master_listener_pid = -1;
 
+#if 0
 static string bes_exit_message(int cpid, int stat)
 {
     ostringstream oss;
@@ -100,6 +101,7 @@ static string bes_exit_message(int cpid, int stat)
 
     return oss.str();
 }
+#endif
 
 // These two functions duplicate code in daemon.cc
 static void block_signals()
@@ -252,8 +254,7 @@ static void register_signal_handlers()
     BESDEBUG("beslistener", "beslistener: OK" << endl);
 }
 
-ServerApp::ServerApp() :
-    BESModuleApp()
+ServerApp::ServerApp() : BESModuleApp()
 {
     d_pid = getpid();
 }
@@ -454,6 +455,8 @@ int ServerApp::initialize(int argc, char **argv)
     return ret;
 }
 
+// NB: when this method returns, the return value is passed to the ServerApp::terminate()
+// method. Look at BESApp.cc to see how BESApp::main() is written.
 int ServerApp::run()
 {
     try {
@@ -475,9 +478,9 @@ int ServerApp::run()
             // Write to stdout works because the besdaemon is listening on the
             // other end of a pipe where the pipe fd[1] has been dup2'd to
             // stdout. See daemon.cc:start_master_beslistener.
-            // NB BESLISTENER_PIPE_FD is 1 (stdout)
+            // NB MASTER_TO_DAEMON_PIPE_FD is 1 (stdout)
             int status = BESLISTENER_RUNNING;
-            long res = write(BESLISTENER_PIPE_FD, &status, sizeof(status));
+            long res = write(MASTER_TO_DAEMON_PIPE_FD, &status, sizeof(status));
 
             if (res == -1) {
                 ERROR_LOG("Master listener could not send status to daemon: " << strerror(errno) << endl);
@@ -527,14 +530,30 @@ int ServerApp::run()
                 BESDEBUG("ppt2", "Master listener caught SIGHUP, exiting with SERVER_EXIT_RESTART" << endl);
 
                 INFO_LOG("Master listener caught SIGHUP, exiting with SERVER_EXIT_RESTART" << endl);
+
+#if 0
+                d_ppt_server->closeConnection();
+                close(BESLISTENER_PIPE_FD);
+#endif
+                return SERVER_EXIT_RESTART;
+#if 0
                 ::exit(SERVER_EXIT_RESTART);
+#endif
             }
 
             if (sigterm) {
                 BESDEBUG("ppt2", "Master listener caught SIGTERM, exiting with SERVER_NORMAL_SHUTDOWN" << endl);
 
                 INFO_LOG("Master listener caught SIGTERM, exiting with SERVER_NORMAL_SHUTDOWN" << endl);
+
+#if 0
+                d_ppt_server->closeConnection();
+                close(BESLISTENER_PIPE_FD);
+#endif
+                return SERVER_EXIT_NORMAL_SHUTDOWN;
+#if 0
                 ::exit(SERVER_EXIT_NORMAL_SHUTDOWN);
+#endif
             }
 
             sigchild = 0;   // Only reset this signal, all others cause an exit/restart
@@ -547,35 +566,46 @@ int ServerApp::run()
             // This call blocks, using select(), until a client asks for another beslistener.
             d_ppt_server->initConnection();
         }
-
+#if 0
         d_ppt_server->closeConnection();
+#endif
     }
     catch (BESError &se) {
         BESDEBUG("beslistener", "beslistener: caught BESError (" << se.get_message() << ")" << endl);
 
         ERROR_LOG(se.get_message() << endl);
+#if 0
         int status = SERVER_EXIT_FATAL_CANNOT_START;
-        write(BESLISTENER_PIPE_FD, &status, sizeof(status));
-        close(BESLISTENER_PIPE_FD);
-        return 1;
+        write(MASTER_TO_DAEMON_PIPE_FD, &status, sizeof(status));
+        close(MASTER_TO_DAEMON_PIPE_FD);
+#endif
+        return SERVER_EXIT_FATAL_CANNOT_START;
     }
     catch (...) {
         ERROR_LOG("caught unknown exception initializing sockets" << endl);
+#if 0
         int status = SERVER_EXIT_FATAL_CANNOT_START;
-        write(BESLISTENER_PIPE_FD, &status, sizeof(status));
-        close(BESLISTENER_PIPE_FD);
-        return 1;
+        write(MASTER_TO_DAEMON_PIPE_FD, &status, sizeof(status));
+        close(MASTER_TO_DAEMON_PIPE_FD);
+#endif
+        return SERVER_EXIT_FATAL_CANNOT_START;
     }
 
+#if 0
     close(BESLISTENER_PIPE_FD);
     return 0;
+#endif
 }
 
-int ServerApp::terminate(int sig)
+// The BESApp::main() method will call terminate() with the return value of
+// run(). The return value from terminate() is the return value the BESApp::main().
+int ServerApp::terminate(int status)
 {
     pid_t apppid = getpid();
+    // is this the parent process - the master beslistener?
     if (apppid == d_pid) {
-        // These are all safe to call in a signalhandler
+        // I don't understand the following comment. jhrg 3/23/22
+        // These are all safe to call in a signal handler
         if (d_ppt_server) {
             d_ppt_server->closeConnection();
             delete d_ppt_server;
@@ -595,7 +625,7 @@ int ServerApp::terminate(int sig)
 
         // These are not safe to call in a signal handler
         BESDEBUG("beslistener", "beslistener: terminating loaded modules ...  " << endl);
-        BESModuleApp::terminate(sig);
+        BESModuleApp::terminate(status);
         BESDEBUG("beslistener", "beslistener: done terminating loaded modules" << endl);
 
         BESDEBUG("beslistener", "beslistener: terminating default commands ...  " << endl);
@@ -607,8 +637,14 @@ int ServerApp::terminate(int sig)
         BESDEBUG("beslistener", "beslistener: done terminating default module ... " << endl);
 
         xmlCleanupParser();
+
+        // Only the master listener and the daemon know about this communication channel.
+        // Once we send the status back to the daemon, close the pipe.
+        write(MASTER_TO_DAEMON_PIPE_FD, &status, sizeof(status));
+        close(MASTER_TO_DAEMON_PIPE_FD);
     }
-    return sig;
+
+    return status;
 }
 
 /** @brief dumps information about this object
@@ -670,13 +706,13 @@ int main(int argc, char **argv)
         cerr << e.get_message() << endl;
         return 1;
     }
-    catch (std::exception &e) {
-
+    catch (const std::exception &e) {
+        cerr << "Caught unhandled standard exception: " << endl;
+        cerr << e.what() << endl;
+        return 1;
     }
     catch (...) {
         cerr << "Caught unhandled, unknown exception" << endl;
         return 1;
     }
-    return 0;
 }
-

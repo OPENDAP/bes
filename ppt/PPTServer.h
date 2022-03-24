@@ -43,29 +43,30 @@ class PPTServer: public PPTConnection {
 private:
 	ServerHandler * _handler;
 	SocketListener * _listener;
-	bool _secure;
-	int _securePort;
+	bool _secure {false};
+	int _securePort {0};
 	std::string _cfile;
 	std::string _cafile;
 	std::string _kfile;
 
-	volatile int d_num_children;
+	volatile int d_num_children {0};
 
 	int welcomeClient();
 	void authenticateClient();
 	void get_secure_files();
+
 public:
 	PPTServer(ServerHandler *handler, SocketListener *listener, bool isSecure);
-	virtual ~PPTServer();
+	~PPTServer() override = default;
 
-	int get_num_children() { return d_num_children; }
+	int get_num_children() const { return d_num_children; }
 	void incr_num_children() { ++d_num_children; }
 	void decr_num_children() { --d_num_children; }
 
-	virtual void initConnection();
-	virtual void closeConnection();
+	void initConnection() override;
+	void closeConnection() override;
 
-	virtual void dump(std::ostream &strm) const;
+	void dump(std::ostream &strm) const override;
 };
 
 #endif // PPTServer_h

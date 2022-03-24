@@ -90,9 +90,11 @@ PPTServer::PPTServer(ServerHandler *handler, SocketListener *listener, bool isSe
 	}
 }
 
+#if 0
 PPTServer::~PPTServer()
 {
 }
+#endif
 
 void PPTServer::get_secure_files()
 {
