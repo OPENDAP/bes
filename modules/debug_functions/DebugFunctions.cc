@@ -25,20 +25,24 @@
 #include "config.h"
 
 #include <sstream>      // std::stringstream
-#include <stdlib.h>     /* abort, NULL */
 #include <iostream>
-#include <signal.h>
+#include <stdexcept>
+
+#include <csignal>
+#include <cstdlib>     /* abort, NULL */
+#include <ctime>
+#include <unistd.h>
 
 #include <sys/time.h>
-#include <unistd.h>
 
 #include "DebugFunctions.h"
 
 #include <libdap/ServerFunctionsList.h>
-#include "BESDebug.h"
 #include <libdap/Int32.h>
 #include <libdap/Structure.h>
 #include <libdap/Str.h>
+
+#include <BESDebug.h>
 #include <BESError.h>
 #include <BESInternalError.h>
 #include <BESInternalFatalError.h>
@@ -332,7 +336,7 @@ void error_ssf(int argc, libdap::BaseType * argv[], libdap::DDS &, libdap::BaseT
 {
 
     std::stringstream msg;
-    libdap::Str *response = new libdap::Str("info");
+    auto *response = new libdap::Str("info");
     *btpp = response;
 
     string location = "error_ssf";
@@ -341,65 +345,64 @@ void error_ssf(int argc, libdap::BaseType * argv[], libdap::DDS &, libdap::BaseT
         msg << "Missing error type parameter!  USAGE: " << error_usage;
     }
     else {
-        libdap::Int32 *param1 = dynamic_cast<libdap::Int32*>(argv[0]);
+        auto *param1 = dynamic_cast<libdap::Int32*>(argv[0]);
         if (param1) {
             libdap::dods_int32 error_type = param1->value();
 
             switch (error_type) {
 
-            case BES_INTERNAL_ERROR: {
+            case BES_INTERNAL_ERROR: {   // 1
                 msg << "A BESInternalError was requested.";
-                BESInternalError error(msg.str(), location, 0);
-                throw error;
+                throw BESInternalError(msg.str(), location, 0);
             }
-                break;
 
-            case BES_INTERNAL_FATAL_ERROR: {
+            case BES_INTERNAL_FATAL_ERROR: {   // 2
                 msg << "A BESInternalFatalError was requested.";
-                BESInternalFatalError error(msg.str(), location, 0);
-                throw error;
+                throw BESInternalFatalError(msg.str(), location, 0);
             }
-                break;
 
-            case BES_SYNTAX_USER_ERROR: {
+            case BES_SYNTAX_USER_ERROR: { // ...
                 msg << "A BESSyntaxUserError was requested.";
-                BESSyntaxUserError error(msg.str(), location, 0);
-                throw error;
+                throw BESSyntaxUserError(msg.str(), location, 0);
             }
-                break;
 
             case BES_FORBIDDEN_ERROR: {
                 msg << "A BESForbiddenError was requested.";
-                BESForbiddenError error(msg.str(), location, 0);
-                throw error;
+                throw BESForbiddenError(msg.str(), location, 0);
             }
-                break;
 
             case BES_NOT_FOUND_ERROR: {
                 msg << "A BESNotFoundError was requested.";
-                BESNotFoundError error(msg.str(), location, 0);
-                throw error;
+                throw BESNotFoundError(msg.str(), location, 0);
             }
-                break;
 
-                case BES_TIMEOUT_ERROR: {
-                    msg << "A BESTimeOutError was requested.";
-                    BESTimeoutError error(msg.str(), location, 0);
-                    throw error;
-                }
-                    break;
+            case BES_TIMEOUT_ERROR: {   // 6
+                msg << "A BESTimeOutError was requested.";
+                throw BESTimeoutError(msg.str(), location, 0);
+            }
 
-                case 666: {
-                    msg << "A Segmentation Fault has been requested.";
-                    cerr << msg.str() << endl;
-                    raise(SIGSEGV);
-                }
-                    break;
-
-                default:
-                msg << "An unrecognized error_type parameter was received. Requested error_type: " << error_type;
+            case 666: {
+                msg << "A Segmentation Fault has been requested.";
+                cerr << msg.str() << endl;
+                raise(SIGSEGV);
                 break;
             }
+
+            case 314: {
+                msg << "A PIPE signal has been requested.";
+                cerr << msg.str() << endl;
+                raise(SIGPIPE);
+                break;
+            }
+
+            case 11: {
+                throw std::bad_alloc(); // does not take a what() value (most do, however). jhrg 3/23/22
+            }
+
+            default:
+            msg << "An unrecognized error_type parameter was received. Requested error_type: " << error_type;
+            break;
+        }
 
         }
         else {
