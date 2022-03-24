@@ -310,5 +310,6 @@ m4_define([REMOVE_BUILD_DMRPP_INVOCATION_ATTR], [dnl
 
 # 0,/Apple/{s/Apple/Banana/}
 
+
 # N; /\b(\w+)\s+\1\b/{=;p} ; D
 
