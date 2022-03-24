@@ -38,6 +38,7 @@
 
 #include <iostream>
 #include <exception>
+#include <sstream>
 
 #include <cstring>
 #include <cstdlib>
