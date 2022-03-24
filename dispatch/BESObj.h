@@ -76,7 +76,7 @@ public:
      *
      * @param strm C++ i/o stream to dump the object to
      */
-    virtual void dump( std::ostream &strm ) const = 0 ;
+    virtual void dump( std::ostream &strm ) const = 0;
 } ;
 
 /** @brief dump the contents of the specified object to the specified ostream
