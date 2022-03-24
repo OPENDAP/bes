@@ -206,9 +206,14 @@ m4_define([AT_GET_DMRPP_3_20],  [dnl
         AT_SETUP([$1])
 AT_KEYWORDS([get_dmrpp data dap4 DAP4])
 
-GET_DMRPP="${abs_top_builddir}/modules/dmrpp_module/data/get_dmrpp"
+export GET_DMRPP="${abs_top_builddir}/modules/dmrpp_module/data/get_dmrpp"
+PATH="${GET_DMRPP}":"$PATH"
 chmod +x "${GET_DMRPP}"
 ls -l "${GET_DMRPP}"
+
+BESSTANDALONE ="${abs_top_builddir}/standalone/.libs/besstandalone"
+PATH="${BESSTANDALONE}":"$PATH"
+
 DATA_DIR="modules/dmrpp_module/data/dmrpp"
 BASELINES_DIR="${abs_srcdir}/get_dmrpp"
 BES_DATA_ROOT="${abs_top_srcdir}"
@@ -222,6 +227,7 @@ TEST_CMD="${GET_DMRPP} -b ${BES_DATA_ROOT} ${params} ${input_file}"
 
 AS_IF([test -z "$at_verbose"], [
     echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
+    echo "#             PATH: ${PATH}"
     echo "#   abs_top_srcdir: ${abs_top_srcdir}"
     echo "#       abs_srcdir: ${abs_srcdir}"
     echo "#       top_srcdir: ${top_srcdir}"
