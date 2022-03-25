@@ -16,9 +16,6 @@
 # find 'standalone,' try not including it... jhrg 12/29/21
 # m4_include([../../handler_tests_macros.m4])
 
-
-
-
 AT_TESTED([build_dmrpp])
 
 AT_ARG_OPTION_ARG([baselines],
@@ -38,7 +35,6 @@ AT_ARG_OPTION_ARG([conf],
 # @param $1 The command file, assumes that the baseline is $1.baseline
 # @param $2 If not null, 'xfail' means the test is expected to fail, 'xpass' ... pass
 # @param $3 If 'repeat' or 'cached', run besstandalone using '-r 3'
-
 
 m4_define([AT_BUILD_DMRPP],  [dnl
 
@@ -105,8 +101,8 @@ dml jhrg 11/22/21
 dnl Usage: REMOVE_PATH_COMPONENTS(file_name)
 m4_define([REMOVE_PATH_COMPONENTS], [dnl
     sed -e 's@/[[A-z0-9]][[-A-z0-9_/.]]*/dmrpp_module/@/path_removed/@g' \
-        -e 's@\/[[A-z0-9][A-z0-9_\/\-\.]]*\.so@< library_path_removed >@g' \
-        -e 's@BES.Catalog.catalog.RootDirectory=\/[[A-z0-9][A-z0-9_\/\-\.]]*@BES.Catalog.catalog.RootDirectory=< path_removed >@g' < $1 > $1.sed
+        -e 's@/[[A-z0-9][-A-z0-9_/.]]*\.so@< library_path_removed >@g' \
+        -e 's@BES.Catalog.catalog.RootDirectory=/[[A-z0-9][-A-z0-9_/.]]*@BES.Catalog.catalog.RootDirectory=< path_removed >@g' < $1 > $1.sed
     mv $1.sed $1
 ])
 

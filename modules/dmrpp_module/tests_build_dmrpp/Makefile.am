@@ -5,7 +5,7 @@ AM_CPPFLAGS = -I$(top_srcdir)
 
 CLEANFILES = $(TESTSUITE_DMRPP)
 
-EXTRA_DIST = $(srcdir)/package.m4 $(TESTSUITE_DMRPP) $(TESTSUITE_DMRPP).at \
+EXTRA_DIST = get_dmrpp $(srcdir)/package.m4 $(TESTSUITE_DMRPP) $(TESTSUITE_DMRPP).at \
 atlocal.in build_dmrpp_macros.m4
 
 DISTCLEANFILES = atconfig
