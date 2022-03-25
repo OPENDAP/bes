@@ -206,17 +206,19 @@ m4_define([AT_GET_DMRPP_3_20],  [dnl
         AT_SETUP([$1])
 AT_KEYWORDS([get_dmrpp data dap4 DAP4])
 
+export at_verbose="true";
 export GET_DMRPP="${abs_top_builddir}/modules/dmrpp_module/data"
-PATH="${GET_DMRPP}":"$PATH"
+export PATH="${GET_DMRPP}":"$PATH"
+export GET_DMRPP="${GET_DMRPP}/get_dmrpp"
 chmod +x "${GET_DMRPP}"
 ls -l "${GET_DMRPP}"
 
-BESSTANDALONE="${abs_top_builddir}/standalone/.libs"
-PATH="${BESSTANDALONE}":"$PATH"
+export BESSTANDALONE="${abs_top_builddir}/standalone/.libs"
+export PATH="${BESSTANDALONE}":"$PATH"
 
-DATA_DIR="modules/dmrpp_module/data/dmrpp"
-BASELINES_DIR="${abs_srcdir}/get_dmrpp"
-BES_DATA_ROOT="${abs_top_srcdir}"
+export DATA_DIR="modules/dmrpp_module/data/dmrpp"
+export BASELINES_DIR="${abs_srcdir}/get_dmrpp"
+export BES_DATA_ROOT="${abs_top_srcdir}"
 
 
 input_file="${DATA_DIR}/$1"
