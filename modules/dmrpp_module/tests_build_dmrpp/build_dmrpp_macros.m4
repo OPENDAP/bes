@@ -212,7 +212,7 @@ export GET_DMRPP="${GET_DMRPP}/get_dmrpp"
 chmod +x "${GET_DMRPP}"
 ls -l "${GET_DMRPP}"
 
-export BESSTANDALONE="${abs_top_builddir}/standalone/.libs/besstandalone"
+export BESSTANDALONE="${abs_top_builddir}/standalone"
 export PATH="${BESSTANDALONE}":"$PATH"
 
 export DATA_DIR="modules/dmrpp_module/data/dmrpp"
@@ -261,7 +261,7 @@ AS_IF([test -n "$baselines" -a x$baselines = xyes],
     REMOVE_PATH_COMPONENTS([stdout])
     REMOVE_VERSIONS([stdout])
     REMOVE_BUILD_DMRPP_INVOCATION_ATTR([stdout])
-    AS_IF([test -z "xx$at_verbose"], [echo "# get_dmrpp_baselines: Copying result to ${baseline}.tmp"])
+    AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp_baselines: Copying result to ${baseline}.tmp"])
     AT_CHECK([mv stdout ${baseline}.tmp])
 ],
 [
