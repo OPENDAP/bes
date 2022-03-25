@@ -206,7 +206,6 @@ m4_define([AT_GET_DMRPP_3_20],  [dnl
         AT_SETUP([$1])
 AT_KEYWORDS([get_dmrpp data dap4 DAP4])
 
-export at_verbose="true";
 export GET_DMRPP="${abs_top_builddir}/modules/dmrpp_module/data"
 export PATH="${GET_DMRPP}":"$PATH"
 export GET_DMRPP="${GET_DMRPP}/get_dmrpp"
@@ -227,7 +226,7 @@ params="$3"
 
 TEST_CMD="${GET_DMRPP} -b ${BES_DATA_ROOT} ${params} ${input_file}"
 
-AS_IF([test -z "$at_verbose"], [
+AS_IF([test -z "xx$at_verbose"], [
     echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
     echo "#             PATH: ${PATH}"
     echo "#   abs_top_srcdir: ${abs_top_srcdir}"
@@ -254,17 +253,17 @@ AS_IF([test -z "$at_verbose"], [
 
 AS_IF([test -n "$baselines" -a x$baselines = xyes],
 [
-    AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp_baselines: Calling get_dmrpp application."])
+    AS_IF([test -z "xx$at_verbose"], [echo "# get_dmrpp_baselines: Calling get_dmrpp application."])
     AT_CHECK([${TEST_CMD}], [], [stdout], [stderr])
     NORMAILZE_EXEC_NAME([stdout])
     REMOVE_PATH_COMPONENTS([stdout])
     REMOVE_VERSIONS([stdout])
     REMOVE_BUILD_DMRPP_INVOCATION_ATTR([stdout])
-    AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp_baselines: Copying result to ${baseline}.tmp"])
+    AS_IF([test -z "xx$at_verbose"], [echo "# get_dmrpp_baselines: Copying result to ${baseline}.tmp"])
     AT_CHECK([mv stdout ${baseline}.tmp])
 ],
 [
-    AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp: Calling get_dmrpp application."])
+    AS_IF([test -z "xx$at_verbose"], [echo "# get_dmrpp: Calling get_dmrpp application."])
     AT_CHECK([${TEST_CMD}], [], [stdout], [stderr])
     NORMAILZE_EXEC_NAME([stdout])
     REMOVE_PATH_COMPONENTS([stdout])
