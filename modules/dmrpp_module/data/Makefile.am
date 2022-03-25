@@ -44,7 +44,7 @@ EXTRA_DIST = get_dmrpp.in get_dmrpp.conf.in README README.md dmrpp mds_for_tests
 
 CLEANFILES = *~
 
-DISTCLEANFILES = get_dmrpp
+DISTCLEANFILES = get_dmrpp get_dmrpp.conf
 
 # These are defined in the top-level Makefile.am
 sample_datadir = $(datadir)/hyrax/data/dmrpp
