@@ -22,9 +22,9 @@ dist_bin_SCRIPTS = get_dmrpp ingest_filesystem ingest_s3bucket
 # Build the get_dmrpp script so that the value substituted for
 # bes_modules_dir is the path to the instll bes modules. Note that
 # when get_dmrpp is used for tests, we use a separate configuration
-# file that references local modules. See get_dmrpp.conf.in and
+# file that references local modules. See get_dmrpp_mkcheck.conf.in and
 # the rule above. jhrg 3/25/22
-get_dmrpp: get_dmrpp.in $(builddir)/get_dmrpp.conf $(top_builddir)/config.status Makefile
+get_dmrpp: get_dmrpp.in $(builddir)/get_dmrpp_mkcheck.conf $(top_builddir)/config.status Makefile
 	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
                 -e "s%[@]sysconfdir[@]%${sysconfdir}%" \
                 -e "s%[@]pkglibdir[@]%${pkglibdir}%" \
@@ -38,13 +38,13 @@ EXTRA_PROGRAMS =
 
 noinst_DATA = mds_for_tests
 
-EXTRA_DIST = get_dmrpp.in get_dmrpp.conf.in README README.md dmrpp mds_for_tests s3 s3_data
+EXTRA_DIST = get_dmrpp.in get_dmrpp_mkcheck.conf.in README README.md dmrpp mds_for_tests s3 s3_data
 # Removed from the above since they are listed in 'dist_bin_SCRIPTS: ingest_filesystem ingest_s3bucket
 # jhrg 4/1/20
 
 CLEANFILES = *~
 
-DISTCLEANFILES = get_dmrpp get_dmrpp.conf
+DISTCLEANFILES = get_dmrpp get_dmrpp_mkcheck.conf
 
 # These are defined in the top-level Makefile.am
 sample_datadir = $(datadir)/hyrax/data/dmrpp

@@ -203,7 +203,7 @@ m4_define([AT_GET_DMRPP_3_20],  [dnl
 AT_KEYWORDS([get_dmrpp data dap4 DAP4])
 
 GET_DMRPP="${abs_top_builddir}/modules/dmrpp_module/data/get_dmrpp"
-TEST_CONF="${abs_top_builddir}/modules/dmrpp_module/data/get_dmrpp.conf"
+TEST_CONF="${abs_top_builddir}/modules/dmrpp_module/data/get_dmrpp_mkcheck.conf"
 
 chmod +x "${GET_DMRPP}"
 ls -l "${GET_DMRPP}"
