@@ -7,7 +7,7 @@ CLEANFILES = bes.conf bes.nc4.conf bes.nc4.grp.conf bes.nc4.cfdmr.conf bes.funct
 
 EXTRA_DIST = bescmd $(TESTSUITE).at $(TESTSUITE) $(TESTSUITE_FUNC).at $(TESTSUITE_FUNC) \
 atlocal.in bes.conf.in bes.nc4.conf.in bes.nc4.grp.conf.in bes.nc4.cfdmr.conf.in bes.functions.conf.in \
-package.m4 local_handler_tests_macros.m4
+package.m4 local_handler_tests_macros.m4 bes.size600.conf.in bes.size50.conf.in
 
 DISTCLEANFILES = atconfig
 
