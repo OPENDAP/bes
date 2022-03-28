@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <response reqID="some_unique_value" xmlns="http://xml.opendap.org/ns/bes/1.0#">
-    <getDODS>
+    <getDAP>
         <BESError>
             <Type>3</Type>
-            <Message>The submitted DAP2 request will generate a 1525 kilobyte response, which is too large. The maximum response size for this server is limited to 50 kilobytes.</Message>
+            <Message>The submitted DAP4 request will generate a 1520 kilobyte response, which is too large. The maximum response size for this server is limited to 50 kilobytes.</Message>
             <Administrator>support@opendap.org</Administrator>
             <Location>
                 removed file
                 removed line
             </Location>
         </BESError>
-    </getDODS>
+    </getDAP>
 </response>

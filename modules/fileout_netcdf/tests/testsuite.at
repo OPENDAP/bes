@@ -205,3 +205,7 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR(bescmd/d_int8.h5.2.bescmd)
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/coad_sst.bescmd], [bes.conf])
 AT_BESCMD_BESCONF_ERROR_RESPONSE_TEST([bescmd/coad_sst_s50.bescmd], [bes.size50.conf])
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/coad_sst.bescmd], [bes.size600.conf])
+
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/coad_sst_d4.bescmd], [bes.conf])
+AT_BESCMD_BESCONF_ERROR_RESPONSE_TEST([bescmd/coad_sst_d4_s50.bescmd], [bes.size50.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/coad_sst_d4.bescmd], [bes.size600.conf])
