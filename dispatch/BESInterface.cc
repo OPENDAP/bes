@@ -32,9 +32,11 @@
 
 #include "config.h"
 
-#include <cstdlib>
+#include <sys/resource.h>
 
-#include <signal.h>
+#include <cstdlib>
+#include <csignal>
+
 #if HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -45,7 +47,7 @@
 #include <sstream>
 #include <iostream>
 
-// #include <libdap/Error.h>
+#include <libdap/Error.h>
 
 #include "BESInterface.h"
 
@@ -155,6 +157,53 @@ static inline void downcase(string &s)
         s[i] = tolower(s[i]);
 }
 
+/**
+ * @brief Get the Resident Set Size in KB
+ * @return The RSS or 0 if getrusage() returns an error
+ */
+static long
+get_current_memory_usage() noexcept
+{
+    struct rusage usage;
+    if (getrusage(RUSAGE_SELF, &usage) == 0) { // getrusage()  successful?
+        return usage.ru_maxrss; // get the max size (man page says it is in kilobytes)
+    }
+    else {
+        return 0;
+    }
+}
+
+/**
+ * @brief Write a phrase that describes the current RSS for this process
+ * @param out Write to this stream
+ */
+ostream &add_memory_info(ostream &out)
+{
+    //return out « '\t';
+    long mem_size = get_current_memory_usage();
+    if (mem_size) {
+        out << ", current memory usage is " << mem_size << " KB.";
+    }
+    else {
+        out << ", current memory usage is unknown.";
+    }
+
+    return out;
+}
+
+#if 0
+static void
+add_memory_info(ostringstream &msg) {
+    long mem_size = get_current_memory_usage();
+    if (mem_size) {
+        msg << ", current memory usage is " << mem_size << " KB.";
+    }
+    else {
+        msg << ", current memory usage is unknown.";
+    }
+}
+#endif
+
 static void log_error(BESError &e)
 {
     string error_name = "";
@@ -194,10 +243,12 @@ static void log_error(BESError &e)
     }
 
     if (TheBESKeys::TheKeys()->read_bool_key(EXCLUDE_FILE_INFO_FROM_LOG, false)) {
-        ERROR_LOG("ERROR: " << error_name << ": " << e.get_message() << endl);
+        ERROR_LOG("ERROR: " << error_name << ": " << e.get_message() << add_memory_info << endl);
     }
     else {
-        ERROR_LOG("ERROR: " << error_name << ": " << e.get_message() << " (" << e.get_file() << ":" << e.get_line() << ")" << endl);
+        ERROR_LOG("ERROR: " << error_name << ": " << e.get_message()
+            << " (" << e.get_file() << ":" << e.get_line() << ")"
+            << add_memory_info << endl);
     }
 
 #if 0
@@ -559,13 +610,13 @@ int BESInterface::execute_request(const string &from)
     }
     catch (BESError &e) {
         timeout_jump_valid = false;
-        BESDEBUG("bes",  string(__PRETTY_FUNCTION__) +  " - Caught BESError. msg: "<< e.get_message() << endl );
+        BESDEBUG("bes",  string(__PRETTY_FUNCTION__) +  " - Caught BESError. msg: " << e.get_message() << endl );
         status = handleException(e, *d_dhi_ptr);
     }
     catch (const bad_alloc &e) {
         timeout_jump_valid = false;
         stringstream msg;
-        msg << __PRETTY_FUNCTION__ <<  " - BES out of memory. msg: " << e.what() << endl;
+        msg << __PRETTY_FUNCTION__ <<  " - BES out of memory. msg: " << e.what()  << endl;
         BESDEBUG("bes", msg.str() << endl );
         BESInternalFatalError ex(msg.str(), __FILE__, __LINE__);
         status = handleException(ex, *d_dhi_ptr);
