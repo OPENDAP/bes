@@ -334,7 +334,6 @@ ErrorFunc::ErrorFunc()
 
 void error_ssf(int argc, libdap::BaseType * argv[], libdap::DDS &, libdap::BaseType **btpp)
 {
-
     std::stringstream msg;
     auto *response = new libdap::Str("info");
     *btpp = response;
@@ -345,7 +344,7 @@ void error_ssf(int argc, libdap::BaseType * argv[], libdap::DDS &, libdap::BaseT
         msg << "Missing error type parameter!  USAGE: " << error_usage;
     }
     else {
-        auto *param1 = dynamic_cast<libdap::Int32*>(argv[0]);
+        auto param1 = dynamic_cast<const libdap::Int32*>(argv[0]);
         if (param1) {
             libdap::dods_int32 error_type = param1->value();
 
@@ -396,7 +395,7 @@ void error_ssf(int argc, libdap::BaseType * argv[], libdap::DDS &, libdap::BaseT
             }
 
             case 11: {
-                throw std::bad_alloc(); // does not take a what() value (most do, however). jhrg 3/23/22
+                throw std::bad_alloc(); // does not take a 'what()' value. jhrg 3/23/22
             }
 
             default:
@@ -413,8 +412,6 @@ void error_ssf(int argc, libdap::BaseType * argv[], libdap::DDS &, libdap::BaseT
     }
 
     response->set_value(msg.str());
-    return;
-
 }
 
 } // namespace debug_function
