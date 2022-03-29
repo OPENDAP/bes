@@ -65,6 +65,8 @@ using namespace std;
 using namespace libdap;
 using namespace HDF5CF;
 
+// TODO In the code below, reduce duplication using a template and use unique_ptr
+//  to remove memory leak inside catch(...)/throw block. jhrg 3/9/22
 // Generate DDS from one variable
 void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, const string & filename)
 {
@@ -251,6 +253,7 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
 
         else {
         switch (var->getType()) {
+            // TODO Remove extra ';' jhrg 3/9/22
 #define HANDLE_CASE(tid,type)                                  \
             case tid:                                           \
                 bt = new (type)(var->getNewName(),var->getFullPath()); \
@@ -281,7 +284,7 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
         }
         }
 
-        vector<HDF5CF::Dimension*>::const_iterator it_d;
+        // TODO Remove jhrg vector<HDF5CF::Dimension*>::const_iterator it_d;
         vector<size_t> dimsizes;
         dimsizes.resize(var->getRank());
         for (int i = 0; i < var->getRank(); i++)
@@ -297,7 +300,7 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
             throw InternalErr(__FILE__, __LINE__, "Cannot allocate the HDF5CFStr.");
         }
 
-        for (it_d = dims.begin(); it_d != dims.end(); ++it_d) {
+        for (auto it_d = dims.begin(); it_d != dims.end(); ++it_d) {
             if ("" == (*it_d)->getNewName())
                 ar->append_dim((*it_d)->getSize());
             else
@@ -325,14 +328,14 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
 
 }
 
-// Currently only when the datatype of fillvalue is not the same as the datatype of the variable, 
+// Currently, only when the datatype of fillvalue is not the same as the datatype of the variable,
 // special attribute handling is needed.
 bool need_special_attribute_handling(const HDF5CF::Attribute* attr, const HDF5CF::Var* var)
 {
     return ((("_FillValue" == attr->getNewName()) && (var->getType() != attr->getType())) ? true : false);
 }
 
-// Currently we only handle the case when the datatype of _FillValue is not the same as the variable datatype.
+// Currently, we only handle the case when the datatype of _FillValue is not the same as the variable datatype.
 void gen_dap_special_oneobj_das(AttrTable*at, const HDF5CF::Attribute* attr, const HDF5CF::Var* var)
 {
 
@@ -352,7 +355,7 @@ void gen_dap_special_oneobj_das(AttrTable*at, const HDF5CF::Attribute* attr, con
     at->append_attr(attr->getNewName(), HDF5CFDAPUtil::print_type(var_dtype), print_rep);
 }
 
-// Check if this fillvalue is in the valid datatype range when the fillvalue datatype is changed to follow the CF
+// Check if this fill value is in the valid datatype range when the fillvalue datatype is changed to follow the CF
 bool is_fvalue_valid(H5DataType var_dtype, const HDF5CF::Attribute* attr)
 {
 
@@ -542,6 +545,7 @@ void gen_dap_oneobj_das(AttrTable*at, const HDF5CF::Attribute* attr, const HDF5C
     }
 }
 
+// TODO Use a template function in the switch() below. jhrg 3/9/22
 // Generate DMR from one variable                                                                           
 void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const hid_t file_id, const string & filename) {
 
@@ -717,9 +721,10 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
 
     else {
 
-        BaseType *bt = NULL;
+        BaseType *bt = nullptr;
 
         switch (var->getType()) {
+            // TODO Remove extra ';' jhrg 3/9/22
 #define HANDLE_CASE(tid,type)                                  \
             case tid:                                           \
                 bt = new (type)(var->getNewName(),var->getFullPath()); \
@@ -753,7 +758,7 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
 #undef HANDLE_CASE
         }
 
-        vector<HDF5CF::Dimension*>::const_iterator it_d;
+        // TODO Remove jhrg vector<HDF5CF::Dimension*>::const_iterator it_d;
         vector<size_t> dimsizes;
         dimsizes.resize(var->getRank());
         for (int i = 0; i < var->getRank(); i++)
@@ -769,7 +774,7 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
             throw InternalErr(__FILE__, __LINE__, "Cannot allocate the HDF5CFStr.");
         }
 
-        for (it_d = dims.begin(); it_d != dims.end(); ++it_d) {
+        for (auto it_d = dims.begin(); it_d != dims.end(); ++it_d) {
             if ("" == (*it_d)->getNewName())
                 ar->append_dim((*it_d)->getSize());
             else
@@ -786,34 +791,57 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
     }
 
     return;
-
-
-
 }
 
-
+/**
+ * @brief Transfer string attributes to a DAP2 AttrTable
+ *
+ * For an HDF5 string attribute stored in a HDF5CF::Attribute, transfer the
+ * value(s) of that attribute to a DAP2 AttrTable object. This function
+ * handles both single and multiple attribute value cases. It should
+ * only be called for string attributes. Except as noted below, the
+ * attribute values are escaped so that non-printable ASCII characters
+ * are represented by a backslash and an octal code (e.g. \005).
+ *
+ * @note If the given HDF5CF::Attribute uses UTF-8, it will still be
+ * escaped as if it were an ASCII string (or used iso-8859-1 encoding)
+ * _unless_ the BES key H5.EscapeUTF8Attr is false (default is true).
+ *
+ * @note Attributes named 'origname' or 'fullnamepath' are never escaped.
+ *
+ * @param at Put the string attribute in this DAP2 AttrTable
+ * @param attr The source attribute information
+ */
 void gen_dap_str_attr(AttrTable *at, const HDF5CF::Attribute *attr)
 {
-
-    BESDEBUG("h5", "Coming to gen_dap_str_attr()  "<<endl);
+    BESDEBUG("h5", "Coming to gen_dap_str_attr()  " << endl);
     const vector<size_t>& strsize = attr->getStrSize();
-//cerr<<"in DAS strsize is "<<strsize.size() <<endl;
+
     unsigned int temp_start_pos = 0;
-    bool is_cset_ascii = attr->getCsetType();
     for (unsigned int loc = 0; loc < attr->getCount(); loc++) {
         if (strsize[loc] != 0) {
-            string tempstring(attr->getValue().begin() + temp_start_pos,
-                attr->getValue().begin() + temp_start_pos + strsize[loc]);
+            string tempstring(attr->getValue().begin() + temp_start_pos, attr->getValue().begin() + temp_start_pos + strsize[loc]);
             temp_start_pos += strsize[loc];
 
             // If the string size is longer than the current netCDF JAVA
             // string and the "EnableDropLongString" key is turned on,
             // No string is generated.
+            //
             // The above statement is no longer true. The netCDF Java can handle long string
-            // attributes. The long string can be kept and I do think the
+            // attributes. The long string can be kept, and I do think the
             // performance penalty should be small. KY 2018-02-26
-            if ((attr->getNewName() != "origname") && (attr->getNewName() != "fullnamepath") && (true == is_cset_ascii)) 
+            //
+            if (tempstring.find("UTC at Start of Observation") != string::npos) // TODO Remove before commit jhrg 3/9/22
+                BESDEBUG("attrbug", "tempstring: " << tempstring << endl);
+            // Here is the logic to determine if the attribute value should be escaped.
+            // Attributes named 'origname' or 'fullnamepath' are never escaped. Attributes
+            // with values that use the UTF-8 character set _are_ encoded unless the
+            // HD.EscapeUTF8Attr is set to false. If the attribute values use ASCII
+            // (i.e., attr->getCsetType() is true), they are always escaped. jhrg 3/9/22
+            if ((attr->getNewName() != "origname") && (attr->getNewName() != "fullnamepath")
+                && (HDF5RequestHandler::get_escape_utf8_attr() || (true == attr->getCsetType()))) {
                 tempstring = HDF5CFDAPUtil::escattr(tempstring);
+            }
             at->append_attr(attr->getNewName(), "String", tempstring);
         }
     }
@@ -821,15 +849,15 @@ void gen_dap_str_attr(AttrTable *at, const HDF5CF::Attribute *attr)
 
 //#if 0
 // This function adds the 1-D horizontal coordinate variables as well as the dummy projection variable to the grid.
-//Note: Since we don't add these artifical CF variables to our main engineering at HDFEOS5CF.cc, the information
+// Note: Since we don't add these artificial CF variables to our main engineering at HDFEOS5CF.cc, the information
 // to handle DAS won't pass to DDS by the file pointer, we need to re-call the routines to check projection
-// and dimension. The time to retrieve these information is trivial compared with the whole translation.
+// and dimension. The time to retrieve this information is trivial compared with the whole translation.
 void add_cf_grid_cvs(DDS & dds, EOS5GridPCType cv_proj_code, float cv_point_lower, float cv_point_upper,
     float cv_point_left, float cv_point_right, const vector<HDF5CF::Dimension*>& dims)
 {
 
     //1. Check the projection information: we first just handled the sinusoidal projection. 
-    // We also add the LAMAZ and PS support. These 1-D varaibles are the same as the sinusoidal one.
+    // We also add the LAMAZ and PS support. These 1-D variables are the same as the sinusoidal one.
     if (HE5_GCTP_SNSOID == cv_proj_code || HE5_GCTP_LAMAZ == cv_proj_code || HE5_GCTP_PS == cv_proj_code) {
 
         //2. Obtain the dimension information from latitude and longitude(fieldtype =1 or fieldtype =2)
@@ -1103,8 +1131,8 @@ void add_cf_grid_mapping_attr(DAS &das, const vector<HDF5CF::Var*>& vars, const 
 #endif
 
     // Check >=2-D fields, check if they hold the dim0name,dim0size etc., yes, add the attribute cf_projection.
-    vector<HDF5CF::Var *>::const_iterator it_v;
-    for (it_v = vars.begin(); it_v != vars.end(); ++it_v) {
+    // TODO Remove jhrg vector<HDF5CF::Var *>::const_iterator it_v;
+    for (auto it_v = vars.begin(); it_v != vars.end(); ++it_v) {
 
         if ((*it_v)->getRank() > 1) {
             bool has_dim0 = false;
@@ -1155,8 +1183,8 @@ bool need_attr_values_for_dap4(const HDF5CF::Var *var) {
 // Note: the main part of DMR still comes from DDS and DAS.
 void map_cfh5_var_attrs_to_dap4_int64(const HDF5CF::Var *var,BaseType* d4_var) {
 
-    vector<HDF5CF::Attribute *>::const_iterator it_ra;
-    for (it_ra = var->getAttributes().begin();
+    // TODO remove jhrg vector<HDF5CF::Attribute *>::const_iterator it_ra;
+    for (auto it_ra = var->getAttributes().begin();
         it_ra != var->getAttributes().end(); ++it_ra) {
         // HDF5 Native Char maps to DAP INT16(DAP doesn't have the corresponding datatype), so needs to
         // obtain the mem datatype. Keep this in DAP4 mapping.
@@ -1307,8 +1335,8 @@ void handle_coor_attr_for_int64_var(const HDF5CF::Attribute *attr,const string &
 // Hopefully this will be eventually used to build DMR. 
 void map_cfh5_var_attrs_to_dap4(const HDF5CF::Var *var,BaseType* d4_var) {
 
-    vector<HDF5CF::Attribute *>::const_iterator it_ra;
-    for (it_ra = var->getAttributes().begin();
+    // TODO Remove jhrg vector<HDF5CF::Attribute *>::const_iterator it_ra;
+    for (auto it_ra = var->getAttributes().begin();
         it_ra != var->getAttributes().end(); ++it_ra) {
      
         D4Attribute *d4_attr = gen_dap4_attr((*it_ra));
@@ -1341,31 +1369,35 @@ D4Attribute *gen_dap4_attr(const HDF5CF::Attribute *attr) {
             
         const vector<size_t>& strsize = attr->getStrSize();
 #if 0
-if(strsize.size()  == 0)
-cerr<<"vector string size is 0"<<endl;
-for(int i = 0; i<strsize.size(); i++)
-cerr<<"attr size  is "<<strsize[i] <<endl;
+        if(strsize.size()  == 0)
+            cerr << "vector string size is 0" << endl;
+        for(int i = 0; i<strsize.size(); i++)
+            cerr << "attr size  is "<<strsize[i] << endl;
 #endif
         unsigned int temp_start_pos = 0;
-        bool is_cset_ascii = attr->getCsetType();
         for (unsigned int loc = 0; loc < attr->getCount(); loc++) {
             if (strsize[loc] != 0) {
                 string tempstring(attr->getValue().begin() + temp_start_pos,
                                   attr->getValue().begin() + temp_start_pos + strsize[loc]);
                 temp_start_pos += strsize[loc];
-                if ((attr->getNewName() != "origname") && (attr->getNewName() != "fullnamepath") && (true == is_cset_ascii)) 
-                     tempstring = HDF5CFDAPUtil::escattr(tempstring);
+                if ((attr->getNewName() != "origname") && (attr->getNewName() != "fullnamepath")
+                    && (HDF5RequestHandler::get_escape_utf8_attr() || (true == attr->getCsetType()))) {
+                    tempstring = HDF5CFDAPUtil::escattr(tempstring);
+                }
                 d4_attr->add_value(tempstring);
             }
         }
     }
     else {
-//cerr<<"not a string type "<<endl;
+#if 0
+        cerr << "not a string type " << endl;
+#endif
         for (unsigned int loc = 0; loc < attr->getCount(); loc++) {
             string print_rep = HDF5CFDAPUtil::print_attr(attr->getType(), loc, (void*) &(attr->getValue()[0]));
             d4_attr->add_value(print_rep);
         }
     }
+
     return d4_attr;
 }
 

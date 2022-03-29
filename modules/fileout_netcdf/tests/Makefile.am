@@ -70,7 +70,7 @@ $(TESTSUITE_FUNC): $(TESTSUITE_FUNC).at $(srcdir)/package.m4 $(top_srcdir)/modul
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
 
 # The `:;' works around a Bash 3.2 bug when the output is not writable.
-$(srcdir)/package.m4: $(top_srcdir)/configure.ac
+$(srcdir)/package.m4: $(top_srcdir)/configure.ac $(srcdir)/Makefile.am
 	:;{ \
 	echo '# Signature of the current package.' && \
 	echo 'm4_define([AT_PACKAGE_NAME],      [@PACKAGE_NAME@])' && \

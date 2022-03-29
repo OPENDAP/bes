@@ -550,7 +550,7 @@ int BESInterface::execute_request(const string &from)
 
         d_dhi_ptr->executed = true;
     }
-    catch (libdap::Error &e) {
+    catch (const libdap::Error &e) {
         timeout_jump_valid = false;
         string msg = string(__PRETTY_FUNCTION__)+  " - BES caught a libdap exception: " + e.get_error_message();
         BESDEBUG("bes", msg << endl );
@@ -562,7 +562,7 @@ int BESInterface::execute_request(const string &from)
         BESDEBUG("bes",  string(__PRETTY_FUNCTION__) +  " - Caught BESError. msg: "<< e.get_message() << endl );
         status = handleException(e, *d_dhi_ptr);
     }
-    catch (bad_alloc &e) {
+    catch (const bad_alloc &e) {
         timeout_jump_valid = false;
         stringstream msg;
         msg << __PRETTY_FUNCTION__ <<  " - BES out of memory. msg: " << e.what() << endl;
@@ -570,7 +570,7 @@ int BESInterface::execute_request(const string &from)
         BESInternalFatalError ex(msg.str(), __FILE__, __LINE__);
         status = handleException(ex, *d_dhi_ptr);
     }
-    catch (exception &e) {
+    catch (const exception &e) {
         timeout_jump_valid = false;
         stringstream msg;
         msg << __PRETTY_FUNCTION__ << " - Caught C++ Exception. msg: " << e.what() << endl;

@@ -109,4 +109,6 @@ H5.DiskCacheFloatOnlyComp=true
 H5.DiskCacheCompThreshold=2.0
 H5.DiskCacheCompVarSize=10000
 
+H5.EscapeUTF8Attr = true
+
 H5.EnableCFDMR=false

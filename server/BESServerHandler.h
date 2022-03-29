@@ -49,15 +49,14 @@ class BESServerHandler: public ServerHandler {
 private:
 	std::string _method;
     void execute(Connection *connection);
+
 public:
     BESServerHandler();
-    virtual ~BESServerHandler()
-    {
-    }
+    ~BESServerHandler() override = default;
 
-    virtual void handle(Connection *c);
+    void handle(Connection *c) override;
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 #endif // BESServerHandler_h

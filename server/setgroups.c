@@ -7,6 +7,7 @@
 
 #include <unistd.h>
 #include <stdlib.h>
+#include <grp.h>
 
 /* Returns nonzero if the two group lists are equivalent (taking into
  account that the lists may differ wrt the egid */

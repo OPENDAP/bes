@@ -51,7 +51,6 @@
  * It is up to the derived classes to implement the run method.
  *
  * @see BESApp
- * @see BESGlobalIQ
  */
 class BESModuleApp: public BESApp {
 private:
@@ -61,14 +60,15 @@ private:
 		std::string _module_library;
 	} bes_module;
 	std::list<bes_module> _module_list;
-	int loadModules(void);
-public:
-	BESModuleApp(void);
-	virtual ~BESModuleApp(void);
-	virtual int initialize(int argC, char **argV);
-	virtual int terminate(int sig = 0);
+	int loadModules();
 
-	virtual void dump(std::ostream &strm) const;
+public:
+	BESModuleApp();
+	~BESModuleApp() override = default;
+	int initialize(int argC, char **argV) override;
+	int terminate(int sig = 0) override ;
+
+	void dump(std::ostream &strm) const override;
 };
 
 #endif

@@ -16,7 +16,7 @@ echo "libdap4-snapshot record: ${LIBDAP4_SNAPSHOT}"
 BES_SNAPSHOT="bes-`cat bes_VERSION` `date \"+%FT%T%z\"`"
 echo "bes-snapshot record: ${BES_SNAPSHOT}" >&2
 
-git clone --depth 1 https://github.com/opendap/olfs
+git clone --depth 1 https://github.com/OPENDAP/olfs
 git config --global user.name "The-Robot-Travis"
 git config --global user.email "npotter@opendap.org"
 
@@ -32,4 +32,4 @@ echo "${BES_SNAPSHOT}" >> bes-snapshot
 cat bes-snapshot >&2
 
 git commit -am "${BES_SNAPSHOT} - Triggering OLFS build for snapshots.";
-git push https://$GIT_UID:$GIT_PSWD@github.com/opendap/olfs --all;
+git push https://$GIT_UID:$GIT_PSWD@github.com/OPENDAP/olfs --all;

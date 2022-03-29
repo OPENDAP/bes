@@ -7,7 +7,9 @@ AUTOMAKE_OPTIONS = foreign
 # Might move these to a child directory for testing things. jhrg 5/16/18
 EXTRA_DIST = read_test_baseline.cc read_test_baseline.h handler_tests_macros.m4 bes_run_tests_cppunit.h
 
-SUBDIRS = csv_handler usage asciival www-interface freeform_handler
+SUBDIRS = csv_handler usage asciival freeform_handler
+
+# www-interface Removed jhrg 3/21/22
 
 if WITH_CMR
 SUBDIRS += cmr_module 
@@ -25,7 +27,9 @@ if BUILD_HDF5
 SUBDIRS += hdf5_handler
 endif
 
-# Add after hdf5_handler
+# Add after hdf5_handler; Does not need the hdf5 handler to serve data, but
+# the build_dmrpp binary uses the hdf5 handler to build DMR++ metadata files.
+# jhrg 3/21/22
 SUBDIRS += dmrpp_module
 
 # fileout_netcdf needs to come after HDF4 (and maybe HDF5

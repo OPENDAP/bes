@@ -33,27 +33,18 @@
 #include "config.h"
 
 #include <unistd.h>
-#include <signal.h>
+#include <csignal>
 #include <sys/wait.h> // for wait
-#include <sys/types.h>
 
 #include <iostream>
-#include <fstream>
+#include <exception>
 #include <sstream>
+
 #include <cstring>
 #include <cstdlib>
 #include <cerrno>
 
 #include <libxml/xmlmemory.h>
-
-using std::cout;
-using std::cerr;
-using std::endl;
-using std::ios;
-using std::ostringstream;
-using std::ofstream;
-using std::ostream;
-using std::string;
 
 #include "ServerApp.h"
 #include "ServerExitConditions.h"
@@ -70,10 +61,13 @@ using std::string;
 #include "BESCatalogUtils.h"
 #include "BESUtil.h"
 #include "BESServerUtils.h"
+#include "BESIndent.h"
 
 #include "BESDefaultModule.h"
 #include "BESXMLDefaultCommands.h"
 #include "BESDaemonConstants.h"
+
+using namespace std;
 
 static int session_id = 0;
 
@@ -88,6 +82,7 @@ static volatile sig_atomic_t sighup = 0;
 // Added jhrg 9/22/15
 static volatile int master_listener_pid = -1;
 
+#if 1
 static string bes_exit_message(int cpid, int stat)
 {
     ostringstream oss;
@@ -107,6 +102,7 @@ static string bes_exit_message(int cpid, int stat)
 
     return oss.str();
 }
+#endif
 
 // These two functions duplicate code in daemon.cc
 static void block_signals()
@@ -118,7 +114,7 @@ static void block_signals()
     sigaddset(&set, SIGTERM);
     sigaddset(&set, SIGPIPE);
 
-    if (sigprocmask(SIG_BLOCK, &set, 0) < 0) {
+    if (sigprocmask(SIG_BLOCK, &set, nullptr) < 0) {
         throw BESInternalError(string("sigprocmask error: ") + strerror(errno) + " while trying to block signals.",
             __FILE__, __LINE__);
     }
@@ -133,7 +129,7 @@ static void unblock_signals()
     sigaddset(&set, SIGTERM);
     sigaddset(&set, SIGPIPE);
 
-    if (sigprocmask(SIG_UNBLOCK, &set, 0) < 0) {
+    if (sigprocmask(SIG_UNBLOCK, &set, nullptr) < 0) {
         throw BESInternalError(string("sigprocmask error: ") + strerror(errno) + " while trying to unblock signals.",
             __FILE__, __LINE__);
     }
@@ -145,8 +141,8 @@ static void unblock_signals()
 // jhrg 3/3/14
 
 // This is needed so that the master bes listener will get the exit status of
-// all of the child bes listeners (preventing them from becoming zombies).
-static void CatchSigChild(int sig)
+// all the child bes listeners (preventing them from becoming zombies).
+static void catch_sig_child(int sig)
 {
     if (sig == SIGCHLD) {
         sigchild = 1;
@@ -156,14 +152,14 @@ static void CatchSigChild(int sig)
 // If the HUP signal is sent to the master beslistener, it should exit and
 // return a value indicating to the besdaemon that it should be restarted.
 // This also has the side-affect of re-reading the configuration file.
-static void CatchSigHup(int sig)
+static void catch_sig_hup(int sig)
 {
     if (sig == SIGHUP) {
         sighup = 1;
     }
 }
 
-static void CatchSigPipe(int sig)
+static void catch_sig_pipe(int sig)
 {
     if (sig == SIGPIPE) {
         // When a child listener catches SIGPIPE it is because of a
@@ -189,7 +185,7 @@ static void CatchSigPipe(int sig)
             // listener. jhrg 9/22/15
 
             // Note that exit() is not safe for use in a signal
-            // handler, so we fallback to the default behavior, which
+            // handler, so we fall back to the default behavior, which
             // is to exit.
             signal(sig, SIG_DFL);
             raise(sig);
@@ -205,7 +201,7 @@ static void CatchSigPipe(int sig)
 // This is the default signal sent by 'kill'; when the master beslistener gets
 // this signal it should stop. besdaemon should not try to start a new
 // master beslistener.
-static void CatchSigTerm(int sig)
+static void catch_sig_term(int sig)
 {
     if (sig == SIGTERM) {
         sigterm = 1;
@@ -236,22 +232,22 @@ static void register_signal_handlers()
 
     BESDEBUG("beslistener", "beslistener: Registering signal handlers ... " << endl);
 
-    act.sa_handler = CatchSigChild;
+    act.sa_handler = catch_sig_child;
     if (sigaction(SIGCHLD, &act, 0))
         throw BESInternalFatalError("Could not register a handler to catch beslistener child process status.", __FILE__,
         __LINE__);
 
-    act.sa_handler = CatchSigPipe;
+    act.sa_handler = catch_sig_pipe;
     if (sigaction(SIGPIPE, &act, 0) < 0)
         throw BESInternalFatalError("Could not register a handler to catch beslistener pipe signal.", __FILE__,
         __LINE__);
 
-    act.sa_handler = CatchSigTerm;
+    act.sa_handler = catch_sig_term;
     if (sigaction(SIGTERM, &act, 0) < 0)
         throw BESInternalFatalError("Could not register a handler to catch beslistener terminate signal.", __FILE__,
         __LINE__);
 
-    act.sa_handler = CatchSigHup;
+    act.sa_handler = catch_sig_hup;
     if (sigaction(SIGHUP, &act, 0) < 0)
         throw BESInternalFatalError("Could not register a handler to catch beslistener hup signal.", __FILE__,
         __LINE__);
@@ -259,20 +255,14 @@ static void register_signal_handlers()
     BESDEBUG("beslistener", "beslistener: OK" << endl);
 }
 
-ServerApp::ServerApp() :
-    BESModuleApp(), _portVal(0), _gotPort(false), _IPVal(""), _gotIP(false), _unixSocket(""), _secure(false), _mypid(0), _ts(0), _us(0), _ps(0)
+ServerApp::ServerApp() : BESModuleApp()
 {
-    _mypid = getpid();
+    d_pid = getpid();
 }
 
 ServerApp::~ServerApp()
 {
     delete TheBESKeys::TheKeys();
-
-#if 0
-    BESCatalogUtils::delete_all_catalogs();
-#endif
-
 }
 
 int ServerApp::initialize(int argc, char **argv)
@@ -281,7 +271,7 @@ int ServerApp::initialize(int argc, char **argv)
     bool needhelp = false;
     string dashi;
     string dashc;
-    string dashd = "";
+    string dashd;
 
     // If you change the getopt statement below, be sure to make the
     // corresponding change in daemon.cc and besctl.in
@@ -296,25 +286,24 @@ int ServerApp::initialize(int argc, char **argv)
         case 'r':
             break; // we can ignore the /var/run directory option here
         case 'p':
-            _portVal = atoi(optarg);
-            _gotPort = true;
+            d_port = atoi(optarg);
+            d_got_port = true;
             break;
         case 'H':
-            _IPVal = optarg;
-            _gotIP = true;
+            d_ip_value = optarg;
+            d_got_ip = true;
             break;
         case 'u':
-            _unixSocket = optarg;
+            d_unix_socket_value = optarg;
             break;
         case 'd':
             dashd = optarg;
-            // BESDebug::SetUp(optarg);
             break;
         case 'v':
             BESServerUtils::show_version(BESApp::TheApplication()->appName());
             break;
         case 's':
-            _secure = true;
+            d_is_secure = true;
             break;
         case 'h':
         case '?':
@@ -357,7 +346,7 @@ int ServerApp::initialize(int argc, char **argv)
     // the user and group ids.
     bool found = false;
     string port_key = "BES.ServerPort";
-    if (!_gotPort) {
+    if (!d_got_port) {
         string sPort;
         try {
             TheBESKeys::TheKeys()->get_value(port_key, sPort, found);
@@ -369,18 +358,18 @@ int ServerApp::initialize(int argc, char **argv)
             exit(SERVER_EXIT_FATAL_CANNOT_START);
         }
         if (found) {
-            _portVal = atoi(sPort.c_str());
-            if (_portVal != 0) {
-                _gotPort = true;
+            d_port = atoi(sPort.c_str());
+            if (d_port != 0) {
+                d_got_port = true;
             }
         }
     }
 
     found = false;
     string ip_key = "BES.ServerIP";
-    if (!_gotIP) {
+    if (!d_got_ip) {
         try {
-            TheBESKeys::TheKeys()->get_value(ip_key, _IPVal, found);
+            TheBESKeys::TheKeys()->get_value(ip_key, d_ip_value, found);
         }
         catch (BESError &e) {
             string err = string("FAILED: ") + e.get_message();
@@ -390,15 +379,15 @@ int ServerApp::initialize(int argc, char **argv)
         }
 
         if (found) {
-                _gotIP = true;
+            d_got_ip = true;
         }
     }
 
     found = false;
     string socket_key = "BES.ServerUnixSocket";
-    if (_unixSocket == "") {
+    if (d_unix_socket_value.empty()) {
         try {
-            TheBESKeys::TheKeys()->get_value(socket_key, _unixSocket, found);
+            TheBESKeys::TheKeys()->get_value(socket_key, d_unix_socket_value, found);
         }
         catch (BESError &e) {
             string err = string("FAILED: ") + e.get_message();
@@ -408,7 +397,7 @@ int ServerApp::initialize(int argc, char **argv)
         }
     }
 
-    if (!_gotPort && _unixSocket == "") {
+    if (!d_got_port && d_unix_socket_value.empty()) {
         string msg = "Must specify a tcp port or a unix socket or both\n";
         msg += "Please specify on the command line with -p <port>";
         msg += " and/or -u <unix_socket>\n";
@@ -419,7 +408,7 @@ int ServerApp::initialize(int argc, char **argv)
     }
 
     found = false;
-    if (_secure == false) {
+    if (!d_is_secure) {
         string key = "BES.ServerSecure";
         string isSecure;
         try {
@@ -432,7 +421,7 @@ int ServerApp::initialize(int argc, char **argv)
             exit(SERVER_EXIT_FATAL_CANNOT_START);
         }
         if (isSecure == "Yes" || isSecure == "YES" || isSecure == "yes") {
-            _secure = true;
+            d_is_secure = true;
         }
     }
 
@@ -444,7 +433,7 @@ int ServerApp::initialize(int argc, char **argv)
     BESXMLDefaultCommands::initialize(argc, argv);
     BESDEBUG("beslistener", "beslistener: done initializing default commands" << endl);
 
-    // This will load and initialize all of the modules
+    // This will load and initialize all the modules
     BESDEBUG("beslistener", "beslistener: initializing loaded modules ... " << endl);
     int ret = BESModuleApp::initialize(argc, argv);
     BESDEBUG("beslistener", "beslistener: done initializing loaded modules" << endl);
@@ -457,7 +446,7 @@ int ServerApp::initialize(int argc, char **argv)
 
     // This sets the process group to be ID of this process. All children
     // will get this GID. Then use killpg() to send a signal to this process
-    // and all of the children.
+    // and all the children.
     session_id = setsid();
     BESDEBUG("beslistener", "beslistener: The master beslistener session id (group id): " << session_id << endl);
 
@@ -467,6 +456,8 @@ int ServerApp::initialize(int argc, char **argv)
     return ret;
 }
 
+// NB: when this method returns, the return value is passed to the ServerApp::terminate()
+// method. Look at BESApp.cc to see how BESApp::main() is written.
 int ServerApp::run()
 {
     try {
@@ -475,22 +466,22 @@ int ServerApp::run()
         BESDEBUG("beslistener", "OK" << endl);
 
         SocketListener listener;
-        if (_portVal) {
-            if (!_IPVal.empty())
-                 _ts = new TcpSocket(_IPVal, _portVal);
+        if (d_port) {
+            if (!d_ip_value.empty())
+                d_tcp_socket = new TcpSocket(d_ip_value, d_port);
             else
-                _ts = new TcpSocket(_portVal);
+                d_tcp_socket = new TcpSocket(d_port);
 
-            listener.listen(_ts);
+            listener.listen(d_tcp_socket);
 
-            BESDEBUG("beslistener", "beslistener: listening on port (" << _portVal << ")" << endl);
+            BESDEBUG("beslistener", "beslistener: listening on port (" << d_port << ")" << endl);
 
             // Write to stdout works because the besdaemon is listening on the
             // other end of a pipe where the pipe fd[1] has been dup2'd to
             // stdout. See daemon.cc:start_master_beslistener.
-            // NB BESLISTENER_PIPE_FD is 1 (stdout)
+            // NB MASTER_TO_DAEMON_PIPE_FD is 1 (stdout)
             int status = BESLISTENER_RUNNING;
-            int res = write(BESLISTENER_PIPE_FD, &status, sizeof(status));
+            long res = write(MASTER_TO_DAEMON_PIPE_FD, &status, sizeof(status));
 
             if (res == -1) {
                 ERROR_LOG("Master listener could not send status to daemon: " << strerror(errno) << endl);
@@ -498,15 +489,15 @@ int ServerApp::run()
             }
         }
 
-        if (!_unixSocket.empty()) {
-            _us = new UnixSocket(_unixSocket);
-            listener.listen(_us);
-            BESDEBUG("beslistener", "beslistener: listening on unix socket (" << _unixSocket << ")" << endl);
+        if (!d_unix_socket_value.empty()) {
+            d_unix_socket = new UnixSocket(d_unix_socket_value);
+            listener.listen(d_unix_socket);
+            BESDEBUG("beslistener", "beslistener: listening on unix socket (" << d_unix_socket_value << ")" << endl);
         }
 
         BESServerHandler handler;
 
-        _ps = new PPTServer(&handler, &listener, _secure);
+        d_ppt_server = new PPTServer(&handler, &listener, d_is_secure);
 
         register_signal_handlers();
 
@@ -526,13 +517,12 @@ int ServerApp::run()
                 int stat;
                 pid_t cpid;
                 while ((cpid = wait4(0 /*any child in the process group*/, &stat, WNOHANG, 0/*no rusage*/)) > 0) {
-                    _ps->decr_num_children();
+                    d_ppt_server->decr_num_children();
                     if (sigpipe) {
                         INFO_LOG("Master listener caught SISPIPE from child: " << cpid << endl);
                     }
-
-                    BESDEBUG("ppt2",
-                        bes_exit_message(cpid, stat) << "; num children: " << _ps->get_num_children() << endl);
+                    INFO_LOG(bes_exit_message(cpid, stat) << "; num children: " << d_ppt_server->get_num_children() << endl);
+                    BESDEBUG("ppt2", bes_exit_message(cpid, stat) << "; num children: " << d_ppt_server->get_num_children() << endl);
                 }
             }
 
@@ -540,14 +530,30 @@ int ServerApp::run()
                 BESDEBUG("ppt2", "Master listener caught SIGHUP, exiting with SERVER_EXIT_RESTART" << endl);
 
                 INFO_LOG("Master listener caught SIGHUP, exiting with SERVER_EXIT_RESTART" << endl);
+
+#if 0
+                d_ppt_server->closeConnection();
+                close(BESLISTENER_PIPE_FD);
+#endif
+                return SERVER_EXIT_RESTART;
+#if 0
                 ::exit(SERVER_EXIT_RESTART);
+#endif
             }
 
             if (sigterm) {
                 BESDEBUG("ppt2", "Master listener caught SIGTERM, exiting with SERVER_NORMAL_SHUTDOWN" << endl);
 
                 INFO_LOG("Master listener caught SIGTERM, exiting with SERVER_NORMAL_SHUTDOWN" << endl);
+
+#if 0
+                d_ppt_server->closeConnection();
+                close(BESLISTENER_PIPE_FD);
+#endif
+                return SERVER_EXIT_NORMAL_SHUTDOWN;
+#if 0
                 ::exit(SERVER_EXIT_NORMAL_SHUTDOWN);
+#endif
             }
 
             sigchild = 0;   // Only reset this signal, all others cause an exit/restart
@@ -558,48 +564,59 @@ int ServerApp::run()
             // becomes the 'child listener' that actually processes a request.
             //
             // This call blocks, using select(), until a client asks for another beslistener.
-            _ps->initConnection();
+            d_ppt_server->initConnection();
         }
-
-        _ps->closeConnection();
+#if 0
+        d_ppt_server->closeConnection();
+#endif
     }
     catch (BESError &se) {
         BESDEBUG("beslistener", "beslistener: caught BESError (" << se.get_message() << ")" << endl);
 
         ERROR_LOG(se.get_message() << endl);
+#if 0
         int status = SERVER_EXIT_FATAL_CANNOT_START;
-        write(BESLISTENER_PIPE_FD, &status, sizeof(status));
-        close(BESLISTENER_PIPE_FD);
-        return 1;
+        write(MASTER_TO_DAEMON_PIPE_FD, &status, sizeof(status));
+        close(MASTER_TO_DAEMON_PIPE_FD);
+#endif
+        return SERVER_EXIT_FATAL_CANNOT_START;
     }
     catch (...) {
         ERROR_LOG("caught unknown exception initializing sockets" << endl);
+#if 0
         int status = SERVER_EXIT_FATAL_CANNOT_START;
-        write(BESLISTENER_PIPE_FD, &status, sizeof(status));
-        close(BESLISTENER_PIPE_FD);
-        return 1;
+        write(MASTER_TO_DAEMON_PIPE_FD, &status, sizeof(status));
+        close(MASTER_TO_DAEMON_PIPE_FD);
+#endif
+        return SERVER_EXIT_FATAL_CANNOT_START;
     }
 
+#if 0
     close(BESLISTENER_PIPE_FD);
     return 0;
+#endif
 }
 
-int ServerApp::terminate(int sig)
+// The BESApp::main() method will call terminate() with the return value of
+// run(). The return value from terminate() is the return value the BESApp::main().
+int ServerApp::terminate(int status)
 {
     pid_t apppid = getpid();
-    if (apppid == _mypid) {
-        // These are all safe to call in a signalhandler
-        if (_ps) {
-            _ps->closeConnection();
-            delete _ps;
+    // is this the parent process - the master beslistener?
+    if (apppid == d_pid) {
+        // I don't understand the following comment. jhrg 3/23/22
+        // These are all safe to call in a signal handler
+        if (d_ppt_server) {
+            d_ppt_server->closeConnection();
+            delete d_ppt_server;
         }
-        if (_ts) {
-            _ts->close();
-            delete _ts;
+        if (d_tcp_socket) {
+            d_tcp_socket->close();
+            delete d_tcp_socket;
         }
-        if (_us) {
-            _us->close();
-            delete _us;
+        if (d_unix_socket) {
+            d_unix_socket->close();
+            delete d_unix_socket;
         }
 
         // Do this in the reverse order that it was initialized. So
@@ -608,7 +625,7 @@ int ServerApp::terminate(int sig)
 
         // These are not safe to call in a signal handler
         BESDEBUG("beslistener", "beslistener: terminating loaded modules ...  " << endl);
-        BESModuleApp::terminate(sig);
+        BESModuleApp::terminate(status);
         BESDEBUG("beslistener", "beslistener: done terminating loaded modules" << endl);
 
         BESDEBUG("beslistener", "beslistener: terminating default commands ...  " << endl);
@@ -620,8 +637,14 @@ int ServerApp::terminate(int sig)
         BESDEBUG("beslistener", "beslistener: done terminating default module ... " << endl);
 
         xmlCleanupParser();
+
+        // Only the master listener and the daemon know about this communication channel.
+        // Once we send the status back to the daemon, close the pipe.
+        write(MASTER_TO_DAEMON_PIPE_FD, &status, sizeof(status));
+        close(MASTER_TO_DAEMON_PIPE_FD);
     }
-    return sig;
+
+    return status;
 }
 
 /** @brief dumps information about this object
@@ -634,35 +657,35 @@ void ServerApp::dump(ostream &strm) const
 {
     strm << BESIndent::LMarg << "ServerApp::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
-    strm << BESIndent::LMarg << "got IP? " << _gotIP << endl;
-    strm << BESIndent::LMarg << "IP: " << _IPVal << endl;
-    strm << BESIndent::LMarg << "got port? " << _gotPort << endl;
-    strm << BESIndent::LMarg << "port: " << _portVal << endl;
-    strm << BESIndent::LMarg << "unix socket: " << _unixSocket << endl;
-    strm << BESIndent::LMarg << "is secure? " << _secure << endl;
-    strm << BESIndent::LMarg << "pid: " << _mypid << endl;
-    if (_ts) {
+    strm << BESIndent::LMarg << "got IP? " << d_got_ip << endl;
+    strm << BESIndent::LMarg << "IP: " << d_ip_value << endl;
+    strm << BESIndent::LMarg << "got port? " << d_got_port << endl;
+    strm << BESIndent::LMarg << "port: " << d_port << endl;
+    strm << BESIndent::LMarg << "unix socket: " << d_unix_socket_value << endl;
+    strm << BESIndent::LMarg << "is secure? " << d_is_secure << endl;
+    strm << BESIndent::LMarg << "pid: " << d_pid << endl;
+    if (d_tcp_socket) {
         strm << BESIndent::LMarg << "tcp socket:" << endl;
         BESIndent::Indent();
-        _ts->dump(strm);
+        d_tcp_socket->dump(strm);
         BESIndent::UnIndent();
     }
     else {
         strm << BESIndent::LMarg << "tcp socket: null" << endl;
     }
-    if (_us) {
+    if (d_unix_socket) {
         strm << BESIndent::LMarg << "unix socket:" << endl;
         BESIndent::Indent();
-        _us->dump(strm);
+        d_unix_socket->dump(strm);
         BESIndent::UnIndent();
     }
     else {
         strm << BESIndent::LMarg << "unix socket: null" << endl;
     }
-    if (_ps) {
+    if (d_ppt_server) {
         strm << BESIndent::LMarg << "ppt server:" << endl;
         BESIndent::Indent();
-        _ps->dump(strm);
+        d_ppt_server->dump(strm);
         BESIndent::UnIndent();
     }
     else {
@@ -683,10 +706,13 @@ int main(int argc, char **argv)
         cerr << e.get_message() << endl;
         return 1;
     }
+    catch (const std::exception &e) {
+        cerr << "Caught unhandled standard exception: " << endl;
+        cerr << e.what() << endl;
+        return 1;
+    }
     catch (...) {
         cerr << "Caught unhandled, unknown exception" << endl;
         return 1;
     }
-    return 0;
 }
-

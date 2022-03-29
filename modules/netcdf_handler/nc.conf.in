@@ -44,7 +44,7 @@ BES.Catalog.catalog.TypeMatch+=nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$;
 #   (true,yes|false,no, defaults to true for DAP 3.2 clients and earlier, 
 #    false for DAP 3.3 and later)
 #
-# When set tot true, the DAP2 Grid type will no longer have 'coordinate 
+# When set to true, the DAP2 Grid type will no longer have 'coordinate
 # variables' added outside its scope. Not doing this makes logical sense, 
 # but adding those CVs makes it easier for clients like Ferret, GrADS, etc.
 #
@@ -53,7 +53,7 @@ NC.ShowSharedDimensions=true
 # In previous versions of this handler, we used the unsigned DAP2 type
 # Byte for signed bytes in netcdf. This can be confusing for client programs
 # and people. This option, when set (true), makes the handler use a signed
-# 16-bit inerger for Bytes (so that the sign is not lost). To get the old
+# 16-bit integer for Bytes (so that the sign is not lost). To get the old
 # behavior, change true to false or comment out the line.
 
 NC.PromoteByteToShort=true
@@ -79,7 +79,7 @@ NC.CacheEntries = 100
 
 # Using MDS to parse attributes, currently only for the data access.
 # To use this feature, users need to change the key to true. 
-NC.UseMDS=false
+NC.UseMDS = false
 
 #To use MDS, Uncomment the following four lines starting with DAP.
 #Change the following four keys with the MDS directories at your own server.

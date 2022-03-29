@@ -63,9 +63,13 @@ H5.EnablePassFileID=false
 # since the handler already uses this attribute to make metadata follow CF 
 H5.DisableStructMetaAttr=true
 
-
-# DisableECSMetaAttr: Turn off HDF-EOS5 metadata such as coremetadata,archivemetada.
+# DisableECSMetaAttr: Turn off HDF-EOS5 metadata such as coremetadata, archivemetada.
 H5.DisableECSMetaAttr=false
+
+# EscapeUTF8Attr: When true (the default) attribute values that use UTF-8 character
+# encoding are escaped in the same way as values that use the ASCII encoding. To
+# enable UTF-8 in attribute values, set this to false.
+H5.EscapeUTF8Attr = true
 
 # KeepVarLeadingUnderscore: Keep the underscore(_) in the variable path.
 

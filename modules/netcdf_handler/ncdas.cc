@@ -29,12 +29,12 @@
 //      reza            Reza Nekovei (reza@intcomm.net)
 
 // This file contains functions which read the variables and their attributes
-// from a netcdf file and build the in-memeory DAS. These functions form the
+// from a netcdf file and build the in-memory DAS. These functions form the
 // core of the server-side software necessary to extract the DAS from a
 // netcdf data file.
 //
 // It also contains test code which will print the in-memory DAS to
-// stdout. It uses both the DAS class as well as the netcdf library.
+// stdout. It uses both the DAS class and the netcdf library.
 // In addition, parts of these functions were taken from the netcdf program
 // ncdump, from the netcdf standard distribution (ver 2.3.2)
 //
@@ -164,7 +164,7 @@ static string print_attr(nc_type type, int loc, void *vals)
         // If there's no decimal point and the rep does not use scientific
         // notation, add a decimal point. This little jaunt was taken because
         // this code is modeled after older code and that's what it did. I'm
-        // trying to keep the same behavior as the old code without it's
+        // trying to keep the same behavior as the old code without its
         // problems. jhrg 8/11/2006
         string tmp_value = rep.str();
         if (tmp_value.find('.') == string::npos && tmp_value.find('e') == string::npos && tmp_value.find('E') == string::npos
@@ -336,7 +336,6 @@ static void read_attributes_netcdf4(int ncid, int varid, int natts, AttrTable *a
 
         BESDEBUG(MODULE, prolog << "nc_inq_att returned datatype = " << datatype << " for '" << attrname << "'" << endl);
 
-        //if (is_user_defined_type(ncid, datatype)) {
         if (datatype >= NC_FIRSTUSERTYPEID) {
             char type_name[NC_MAX_NAME + 1];
             size_t size;
