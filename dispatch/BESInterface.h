@@ -124,10 +124,6 @@ protected:
     BESDataHandlerInterface *d_dhi_ptr; ///< Allocated by the child class
     BESTransmitter *d_transmitter;  ///< The Transmitter to use for the result
 
-#if 0
-    virtual int exception_manager(BESError &e);
-#endif
-
     virtual void end_request();
 
     virtual void build_data_request_plan() = 0;
@@ -140,9 +136,9 @@ protected:
 
     virtual void clean() = 0;
 
-    BESInterface(std::ostream *strm);
+    explicit BESInterface(std::ostream *strm);
 
-    virtual ~BESInterface() { }
+    ~BESInterface() override = default;
 
     static int handleException(BESError &e, BESDataHandlerInterface &dhi);
 
@@ -153,7 +149,7 @@ public:
 
     virtual int finish(int status);
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 #endif // BESInterface_h_

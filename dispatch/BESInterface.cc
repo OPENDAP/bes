@@ -166,7 +166,13 @@ get_current_memory_usage() noexcept
 {
     struct rusage usage;
     if (getrusage(RUSAGE_SELF, &usage) == 0) { // getrusage()  successful?
+#ifdef __APPLE__
+        // get the max size (man page says it is in bytes). This function returns the
+        // size in KB like Linux. jhrg 3/29/22
+        return usage.ru_maxrss / 1024;
+#else
         return usage.ru_maxrss; // get the max size (man page says it is in kilobytes)
+#endif
     }
     else {
         return 0;
