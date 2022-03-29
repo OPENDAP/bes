@@ -40,27 +40,21 @@
  */
 class BESSyntaxUserError: public BESError {
 protected:
-    BESSyntaxUserError()
-    {
-    }
+    BESSyntaxUserError() = default;
+
 public:
-    BESSyntaxUserError(const std::string &s, const std::string &file, unsigned int line) :
-        BESError(s, BES_SYNTAX_USER_ERROR, file, line)
-    {
-    }
+    BESSyntaxUserError(std::string s, std::string file, unsigned int line) :
+        BESError(std::move(s), BES_SYNTAX_USER_ERROR, std::move(file), line) { }
 
-    virtual ~BESSyntaxUserError()
-    {
-    }
+    ~BESSyntaxUserError() override = default;
 
-    virtual void dump(std::ostream &strm) const
+    void dump(std::ostream &strm) const override
     {
         strm << "BESSyntaxUserError::dump - (" << (void *) this << ")" << std::endl;
         BESIndent::Indent();
         BESError::dump(strm);
         BESIndent::UnIndent();
     }
-
 };
 
 #endif // BESSyntaxUserError_h_

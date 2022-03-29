@@ -34,6 +34,7 @@
 #define BESError_h_ 1
 
 #include <string>
+#include <stdexcept>
 
 #include "BESObj.h"
 
@@ -55,20 +56,20 @@
 /** @brief Abstract exception class for the BES with basic string message
  *
  */
-class BESError: public BESObj {
+class BESError: public std::exception,  public BESObj {
 protected:
-    std::string _msg;
-    unsigned int _type;
+    std::string _msg {"UNDEFINED"};
+    unsigned int _type {0};
     std::string _file;
-    unsigned int _line;
+    unsigned int _line {0};
 
-    BESError(): _msg("UNDEFINED"), _type(0), _file(""), _line(0) { }
+    BESError() = default;
 
 public:
     /** @brief constructor that takes message, type of error, source file
      * the error originated and the line number in the source file
      *
-     * @param msg error message
+     * @param msg error message. This is the information returned by what().
      * @param type type of error generated. Default list of error types are
      * defined above as internal error, internal fatal error, syntax/user
      * error, resource forbidden error, resource not found error.
@@ -76,13 +77,11 @@ public:
      * @param line the line number within the file in which this error
      * object was created
      */
-    BESError(const std::string &msg, unsigned int type, const std::string &file, unsigned int line) :
-            _msg(msg), _type(type), _file(file), _line(line)
-    {
-    }
-    virtual ~BESError()
-    {
-    }
+    BESError(std::string msg, unsigned int type, std::string file, unsigned int line) :
+            _msg(std::move(msg)), _type(type), _file(std::move(file)), _line(line)
+    { }
+
+    ~BESError() override = default;
 
     /** @brief set the error message for this exception
      *
@@ -96,7 +95,7 @@ public:
      *
      * @return error message
      */
-    virtual std::string get_message()
+    virtual std::string get_message() const
     {
         return _msg;
     }
@@ -104,7 +103,7 @@ public:
      *
      * @return file name
      */
-    virtual std::string get_file()
+    virtual std::string get_file() const
     {
         return _file;
     }
@@ -112,13 +111,13 @@ public:
      *
      * @return line number
      */
-    virtual int get_line()
+    virtual unsigned int get_line() const
     {
         return _line;
     }
 
     // Return the message, file and line
-    virtual std::string get_verbose_message();
+    virtual std::string get_verbose_message() const;
 
     /** @brief Set the return code for this particular error class
      *
@@ -140,16 +139,26 @@ public:
      * the need to terminate or do something specific base on the error
      * @return context string
      */
-    virtual int get_bes_error_type()
+    virtual unsigned int get_bes_error_type() const
     {
         return _type;
+    }
+
+    // The pointer is valid only for the lifetime of the BESError instance. jhrg 3/29/22
+
+    /**
+     * @brief Return a brief message about the exception
+     * @return A char* that points to the message and is valid for the lifetime of this instance.
+     */
+    const char* what() const noexcept override {
+        return _msg.c_str();
     }
 
     /** @brief Displays debug information about this object
      *
      * @param strm output stream to use to dump the contents of this object
      */
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 #endif // BESError_h_ 

@@ -39,7 +39,7 @@
 #include <unistd.h>
 #endif
 
-#include <setjmp.h> // Used for the timeout processing
+#include <csetjmp> // Used for the timeout processing
 
 #include <string>
 #include <sstream>

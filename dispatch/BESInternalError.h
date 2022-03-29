@@ -42,26 +42,21 @@
  */
 class BESInternalError: public BESError {
 protected:
-	BESInternalError()
-	{
-	}
-public:
-	BESInternalError(const std::string &msg, const std::string &file, unsigned int line) :
-			BESError(msg, BES_INTERNAL_ERROR, file, line)
-	{
-	}
-	virtual ~BESInternalError()
-	{
-	}
+	BESInternalError() = default;
 
-	virtual void dump(std::ostream &strm) const
+public:
+	BESInternalError(std::string msg, std::string file, unsigned int line) :
+			BESError(std::move(msg), BES_INTERNAL_ERROR, std::move(file), line) { }
+
+	~BESInternalError() override = default;
+
+	void dump(std::ostream &strm) const override
 	{
 		strm << "BESInternalError::dump - (" << (void *) this << ")" << std::endl;
 		BESIndent::Indent();
 		BESError::dump(strm);
 		BESIndent::UnIndent();
 	}
-
 };
 
 #endif // BESInternalError_h_
