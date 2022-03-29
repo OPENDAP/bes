@@ -1,9 +1,11 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-noinst_DATA = bes.conf bes.nc4.conf bes.nc4.grp.conf bes.nc4.cfdmr.conf bes.functions.conf
+noinst_DATA = bes.conf bes.nc4.conf bes.nc4.grp.conf bes.nc4.cfdmr.conf bes.functions.conf \
+bes.size600.conf bes.size50.conf
 
-CLEANFILES = bes.conf bes.nc4.conf bes.nc4.grp.conf bes.nc4.cfdmr.conf bes.functions.conf
+CLEANFILES = bes.conf bes.nc4.conf bes.nc4.grp.conf bes.nc4.cfdmr.conf bes.functions.conf \
+bes.size600.conf bes.size50.conf
 
 EXTRA_DIST = bescmd $(TESTSUITE).at $(TESTSUITE) $(TESTSUITE_FUNC).at $(TESTSUITE_FUNC) \
 atlocal.in bes.conf.in bes.nc4.conf.in bes.nc4.grp.conf.in bes.nc4.cfdmr.conf.in bes.functions.conf.in \
@@ -62,7 +64,7 @@ clean-local:
 AUTOTEST = $(AUTOM4TE) --language=autotest
 
 $(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4 \
-$(srcdir)/local_handler_tests_macros.m4 bes.size600.conf bes.size50.conf bes.conf
+$(srcdir)/local_handler_tests_macros.m4
 
 $(TESTSUITE_FUNC): $(TESTSUITE_FUNC).at $(srcdir)/package.m4 $(top_srcdir)/modules/handler_tests_macros.m4
 
