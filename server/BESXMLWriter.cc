@@ -32,9 +32,9 @@
 
 #include <BESInternalFatalError.h>
 
-constexpr char *ENCODING = "ISO-8859-1";
+static const char *ENCODING = "ISO-8859-1";
 // Hack
-constexpr char *HAI_NS = "https://xml.opendap.org/ns/bes/admin/1.0#";
+static const char *HAI_NS = "https://xml.opendap.org/ns/bes/admin/1.0#";
 constexpr int XML_BUF_SIZE = 2000000;
 
 BESXMLWriter::BESXMLWriter() // : d_ns_uri(HAI_NS)
