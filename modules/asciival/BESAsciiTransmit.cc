@@ -96,7 +96,7 @@ void BESAsciiTransmit::send_basic_ascii(BESResponseObject *obj, BESDataHandlerIn
         DDS *loaded_dds = responseBuilder.intern_dap2_data(obj, dhi);
 
         // Send data values as CSV/ASCII
-        auto_ptr<DDS> ascii_dds(datadds_to_ascii_datadds(loaded_dds));  // unique_ptr<> jhrg 9/6/16
+        unique_ptr<DDS> ascii_dds(datadds_to_ascii_datadds(loaded_dds));  // unique_ptr<> jhrg 9/6/16
 
         get_data_values_as_ascii(ascii_dds.get(), dhi.get_output_stream());
         dhi.get_output_stream() << flush;
