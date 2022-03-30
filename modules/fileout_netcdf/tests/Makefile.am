@@ -1,13 +1,15 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-noinst_DATA = bes.conf bes.nc4.conf bes.nc4.grp.conf bes.nc4.cfdmr.conf bes.functions.conf
+noinst_DATA = bes.conf bes.nc4.conf bes.nc4.grp.conf bes.nc4.cfdmr.conf bes.functions.conf \
+bes.size600.conf bes.size50.conf
 
-CLEANFILES = bes.conf bes.nc4.conf bes.nc4.grp.conf bes.nc4.cfdmr.conf bes.functions.conf
+CLEANFILES = bes.conf bes.nc4.conf bes.nc4.grp.conf bes.nc4.cfdmr.conf bes.functions.conf \
+bes.size600.conf bes.size50.conf
 
 EXTRA_DIST = bescmd $(TESTSUITE).at $(TESTSUITE) $(TESTSUITE_FUNC).at $(TESTSUITE_FUNC) \
 atlocal.in bes.conf.in bes.nc4.conf.in bes.nc4.grp.conf.in bes.nc4.cfdmr.conf.in bes.functions.conf.in \
-package.m4 local_handler_tests_macros.m4
+package.m4 local_handler_tests_macros.m4 bes.size600.conf.in bes.size50.conf.in
 
 DISTCLEANFILES = atconfig
 
@@ -28,6 +30,10 @@ bes.nc4.grp.conf: $(srcdir)/bes.nc4.grp.conf.in $(top_srcdir)/configure.ac
 bes.nc4.cfdmr.conf: $(srcdir)/bes.nc4.cfdmr.conf.in $(top_srcdir)/configure.ac
 
 bes.functions.conf: $(srcdir)/bes.functions.conf.in $(top_srcdir)/configure.ac
+
+bes.size600.conf: $(srcdir)/bes.size600.conf.in $(top_srcdir)/configure.ac
+
+bes.size50.conf: $(srcdir)/bes.size50.conf.in $(top_srcdir)/configure.ac
 
 ############## Autotest follows #####################
 

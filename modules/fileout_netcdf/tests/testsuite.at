@@ -14,9 +14,9 @@ dnl handlers that are reading the data are still working as expected.
 
 AT_BESCMD_RESPONSE_SCRUB_DATES_TEST([bescmd/simpleT00.0.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([bescmd/simpleT00.1.bescmd])
-#AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/simpleT00.2.bescmd)
+# AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/simpleT00.2.bescmd)
 AT_BESCMD_ERROR_RESPONSE_TEST(bescmd/simpleT00.2.bescmd)
-#AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/simpleT00.3.bescmd)
+# AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/simpleT00.3.bescmd)
 AT_BESCMD_ERROR_RESPONSE_TEST(bescmd/simpleT00.3.bescmd)
 
 dnl The same data (bescmd/same .dods response) but with different constraints
@@ -28,9 +28,9 @@ AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/simpleT00.7.bescmd)
 
 AT_BESCMD_RESPONSE_SCRUB_DATES_TEST(bescmd/arrayT.0.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/arrayT.1.bescmd)
-#AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/arrayT.2.bescmd)
+# AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/arrayT.2.bescmd)
 AT_BESCMD_ERROR_RESPONSE_TEST(bescmd/arrayT.2.bescmd)
-#AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/arrayT.3.bescmd)
+# AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/arrayT.3.bescmd)
 AT_BESCMD_ERROR_RESPONSE_TEST(bescmd/arrayT.3.bescmd)
 
 AT_BESCMD_RESPONSE_SCRUB_DATES_TEST(bescmd/arrayT01.0.bescmd)
@@ -55,41 +55,41 @@ AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/gridT.3.bescmd)
 
 AT_BESCMD_RESPONSE_SCRUB_DATES_TEST(bescmd/namesT.0.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/namesT.1.bescmd)
-#AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/namesT.2.bescmd)
+# AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/namesT.2.bescmd)
 AT_BESCMD_ERROR_RESPONSE_TEST(bescmd/namesT.2.bescmd)
-#AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/namesT.3.bescmd)
+# AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/namesT.3.bescmd)
 AT_BESCMD_ERROR_RESPONSE_TEST(bescmd/namesT.3.bescmd)
 
 AT_BESCMD_RESPONSE_SCRUB_DATES_TEST(bescmd/structT00.0.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/structT00.1.bescmd)
-#AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/structT00.2.bescmd)
+# AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/structT00.2.bescmd)
 AT_BESCMD_ERROR_RESPONSE_TEST(bescmd/structT00.2.bescmd)
-#AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/structT00.3.bescmd)
+# AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/structT00.3.bescmd)
 AT_BESCMD_ERROR_RESPONSE_TEST(bescmd/structT00.3.bescmd)
 
 AT_BESCMD_RESPONSE_SCRUB_DATES_TEST(bescmd/structT01.0.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/structT01.1.bescmd)
-#AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/structT01.2.bescmd)
+# AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/structT01.2.bescmd)
 AT_BESCMD_ERROR_RESPONSE_TEST(bescmd/structT01.2.bescmd)
 
-#AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/structT01.3.bescmd)
+# AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/structT01.3.bescmd)
 AT_BESCMD_ERROR_RESPONSE_TEST(bescmd/structT01.3.bescmd)
 
 AT_BESCMD_RESPONSE_SCRUB_DATES_TEST(bescmd/structT02.0.bescmd)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/structT02.1.bescmd)
-#AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/structT02.2.bescmd)
+# AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/structT02.2.bescmd)
 AT_BESCMD_ERROR_RESPONSE_TEST(bescmd/structT02.2.bescmd)
 
-#AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/structT02.3.bescmd)
+# AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/structT02.3.bescmd)
 AT_BESCMD_ERROR_RESPONSE_TEST(bescmd/structT02.3.bescmd)
 
-#AT_BESCMD_RESPONSE_SCRUB_DATES_TEST(bescmd/.0.bescmd)
-#AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/.1.bescmd)
-#AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/.2.bescmd)
-#AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/.3.bescmd)
+# AT_BESCMD_RESPONSE_SCRUB_DATES_TEST(bescmd/.0.bescmd)
+# AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/.1.bescmd)
+# AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/.2.bescmd)
+# AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/.3.bescmd)
 
 dnl This test reads attributes from a .das in addition to data from 
-dnl a .dods file. Its baselines are interchangable with the fnoc1.nc
+dnl a .dods file. Its baselines are interchangeable with the fnoc1.nc
 dnl data file (bescmd/but that requires the netcdf handler).
 
 AT_BESCMD_RESPONSE_SCRUB_DATES_TEST(bescmd/fnoc.0.bescmd)
@@ -198,3 +198,14 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_COMPRESSION(bescmd/gridT.3.compression.bescmd
 dnl Add tests for the HDF5 CF DMR direct mapping 
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR(bescmd/d_int8.h5.2.bescmd)
 
+# Added tests for the 'max response size' feature that can be used to limit the size of the
+# data feed into the netcdf file builder.
+# AT_BESCMD_BESCONF_RESPONSE_TEST([<bescmd file>], [<bes.conf>], [pass|xfail], [repeat|cached])
+
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/coad_sst.bescmd], [bes.conf])
+AT_BESCMD_BESCONF_ERROR_RESPONSE_TEST([bescmd/coad_sst_s50.bescmd], [bes.size50.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/coad_sst.bescmd], [bes.size600.conf])
+
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/coad_sst_d4.bescmd], [bes.conf])
+AT_BESCMD_BESCONF_ERROR_RESPONSE_TEST([bescmd/coad_sst_d4_s50.bescmd], [bes.size50.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/coad_sst_d4.bescmd], [bes.size600.conf])

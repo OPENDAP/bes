@@ -60,6 +60,7 @@
 #include <BESDebug.h>
 #include <BESInternalError.h>
 #include <BESInternalFatalError.h>
+#include "BESSyntaxUserError.h"
 
 #include "DapFunctionUtils.h"
 
@@ -207,6 +208,32 @@ FONcTransform::~FONcTransform() {
     delete _dmr;
 }
 
+/**
+ * @brief convenience function for the response limit test.
+ * The DDS stores the response size limit in Bytes even though the context
+ * param uses KB. The DMR uses KB throughout.
+ * @param dds
+ */
+static void
+throw_if_dap2_response_too_big(DDS *dds)
+{
+    if (dds->too_big()) {
+#if 0
+        stringstream msg;
+        msg << "The Request for " << request_size / 1024 << " kilobytes is too large; ";
+        msg << "requests on this server are limited to "
+            + long_to_string(dds->get_response_limit() /1024) + "KB.";
+        throw Error(msg.str());
+#endif
+        stringstream msg;
+        msg << "The submitted DAP2 request will generate a " << dds->get_request_size_kb(true);
+        msg <<  " kilobyte response, which is too large. ";
+        msg << "The maximum response size for this server is limited to " << dds->get_response_limit_kb();
+        msg << " kilobytes.";
+        throw BESSyntaxUserError(msg.str(),__FILE__,__LINE__);
+    }
+}
+
 /** @brief Transforms each of the variables of the DataDDS to the NetCDF
  * file
  *
@@ -292,12 +319,15 @@ void FONcTransform::transform_dap2(ostream &strm) {
         promote_function_output_structures(_dds);
     }
 
+    // set the max request size in kilobytes for testing if the request is too large
+    _dds->set_response_limit_kb(FONcRequestHandler::get_request_max_size_kb());
+
     // evaluate the rest of the CE - the part that follows the function calls.
     eval.parse_constraint(besDRB.get_ce(), *_dds);
 
     _dds->tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
 
-    //throw_if_dap2_response_too_big(_dds); // TODO Fix this, sbl 5/6/21
+    throw_if_dap2_response_too_big(_dds);
 
     // Convert the DDS into an internal format to keep track of
     // variables, arrays, shared dimensions, grids, common maps,
@@ -478,6 +508,31 @@ bool FONcTransform::is_dmr_streamable(D4Group *group) {
     return true;
 }
 
+/**
+ * @brief convenience function for the response limit test.
+ * The DDS stores the response size limit in Bytes even though the context
+ * param uses KB. The DMR uses KB throughout.
+ * @param dds
+ */
+static void
+throw_if_dap4_response_too_big(DMR *dmr)
+{
+    if (dmr->too_big()) {
+#if 0
+        stringstream msg;
+        msg << "The Request for " << request_size / 1024 << " kilobytes is too large; ";
+        msg << "requests on this server are limited to "
+            + long_to_string(dds->get_response_limit() /1024) + "KB.";
+        throw Error(msg.str());
+#endif
+        stringstream msg;
+        msg << "The submitted DAP4 request will generate a " << dmr->request_size_kb(true);
+        msg <<  " kilobyte response, which is too large. ";
+        msg << "The maximum response size for this server is limited to " << dmr->response_limit_kb();
+        msg << " kilobytes.";
+        throw BESSyntaxUserError(msg.str(),__FILE__,__LINE__);
+    }
+}
 
 /** @brief Transforms each of the variables of the DMR to the NetCDF
  * file
@@ -497,6 +552,9 @@ void FONcTransform::transform_dap4() {
 
     BESDapResponseBuilder responseBuilder;
     _dmr = responseBuilder.setup_dap4_intern_data(d_obj, *d_dhi).release();
+
+    _dmr->set_response_limit_kb(FONcRequestHandler::get_request_max_size_kb());
+    throw_if_dap4_response_too_big(_dmr);
 
     BESDapResponseBuilder besDRB;
 

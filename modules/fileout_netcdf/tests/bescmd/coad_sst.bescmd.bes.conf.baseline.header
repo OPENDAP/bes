@@ -1,0 +1,29 @@
+netcdf test {
+dimensions:
+	COADSX = 180 ;
+	COADSY = 90 ;
+	TIME = 12 ;
+variables:
+	double c.COADSX(COADSX) ;
+		c.COADSX:c.NC_GLOBAL.history = "FERRET V4.30 (debug/no GUI) 15-Aug-96" ;
+		c.COADSX:c.DODS_EXTRA.Unlimited_Dimension = "TIME" ;
+		c.COADSX:units = "degrees_east" ;
+		c.COADSX:modulo = " " ;
+		c.COADSX:point_spacing = "even" ;
+	double c.COADSY(COADSY) ;
+		c.COADSY:c.NC_GLOBAL.history = "FERRET V4.30 (debug/no GUI) 15-Aug-96" ;
+		c.COADSY:c.DODS_EXTRA.Unlimited_Dimension = "TIME" ;
+		c.COADSY:units = "degrees_north" ;
+		c.COADSY:point_spacing = "even" ;
+	double c.TIME(TIME) ;
+		c.TIME:c.NC_GLOBAL.history = "FERRET V4.30 (debug/no GUI) 15-Aug-96" ;
+		c.TIME:c.DODS_EXTRA.Unlimited_Dimension = "TIME" ;
+		c.TIME:units = "hour since removed date-time" ;
+		c.TIME:time_origin = "1-JAN-0000 00:00:00" ;
+		c.TIME:modulo = " " ;
+
+// global attributes:
+		:history = "removed date-timex coads_climatology_subset.nc?c.TIME,c.COADSY,c.COADSX\n",
+			"" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"coads_climatology_subset.nc?c.TIME,c.COADSY,c.COADSX\"}]}]" ;
+}

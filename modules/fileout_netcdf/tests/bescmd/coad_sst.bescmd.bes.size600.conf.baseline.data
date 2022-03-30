@@ -1,0 +1,54 @@
+netcdf test {
+dimensions:
+	COADSX = 180 ;
+	COADSY = 90 ;
+	TIME = 12 ;
+variables:
+	double c.COADSX(COADSX) ;
+		c.COADSX:c.NC_GLOBAL.history = "FERRET V4.30 (debug/no GUI) 15-Aug-96" ;
+		c.COADSX:c.DODS_EXTRA.Unlimited_Dimension = "TIME" ;
+		c.COADSX:units = "degrees_east" ;
+		c.COADSX:modulo = " " ;
+		c.COADSX:point_spacing = "even" ;
+	double c.COADSY(COADSY) ;
+		c.COADSY:c.NC_GLOBAL.history = "FERRET V4.30 (debug/no GUI) 15-Aug-96" ;
+		c.COADSY:c.DODS_EXTRA.Unlimited_Dimension = "TIME" ;
+		c.COADSY:units = "degrees_north" ;
+		c.COADSY:point_spacing = "even" ;
+	double c.TIME(TIME) ;
+		c.TIME:c.NC_GLOBAL.history = "FERRET V4.30 (debug/no GUI) 15-Aug-96" ;
+		c.TIME:c.DODS_EXTRA.Unlimited_Dimension = "TIME" ;
+		c.TIME:units = "hour since removed date-time" ;
+		c.TIME:time_origin = "1-JAN-0000 00:00:00" ;
+		c.TIME:modulo = " " ;
+
+// global attributes:
+		:history = "removed date-timex coads_climatology_subset.nc?c.TIME,c.COADSY,c.COADSX\n",
+			"" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"coads_climatology_subset.nc?c.TIME,c.COADSY,c.COADSX\"}]}]" ;
+data:
+
+ c.COADSX = 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 45, 47, 49, 51, 
+    53, 55, 57, 59, 61, 63, 65, 67, 69, 71, 73, 75, 77, 79, 81, 83, 85, 87, 
+    89, 91, 93, 95, 97, 99, 101, 103, 105, 107, 109, 111, 113, 115, 117, 119, 
+    121, 123, 125, 127, 129, 131, 133, 135, 137, 139, 141, 143, 145, 147, 
+    149, 151, 153, 155, 157, 159, 161, 163, 165, 167, 169, 171, 173, 175, 
+    177, 179, 181, 183, 185, 187, 189, 191, 193, 195, 197, 199, 201, 203, 
+    205, 207, 209, 211, 213, 215, 217, 219, 221, 223, 225, 227, 229, 231, 
+    233, 235, 237, 239, 241, 243, 245, 247, 249, 251, 253, 255, 257, 259, 
+    261, 263, 265, 267, 269, 271, 273, 275, 277, 279, 281, 283, 285, 287, 
+    289, 291, 293, 295, 297, 299, 301, 303, 305, 307, 309, 311, 313, 315, 
+    317, 319, 321, 323, 325, 327, 329, 331, 333, 335, 337, 339, 341, 343, 
+    345, 347, 349, 351, 353, 355, 357, 359, 361, 363, 365, 367, 369, 371, 
+    373, 375, 377, 379 ;
+
+ c.COADSY = -89, -87, -85, -83, -81, -79, -77, -75, -73, -71, -69, -67, -65, 
+    -63, -61, -59, -57, -55, -53, -51, -49, -47, -45, -43, -41, -39, -37, 
+    -35, -33, -31, -29, -27, -25, -23, -21, -19, -17, -15, -13, -11, -9, -7, 
+    -5, -3, -1, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 
+    33, 35, 37, 39, 41, 43, 45, 47, 49, 51, 53, 55, 57, 59, 61, 63, 65, 67, 
+    69, 71, 73, 75, 77, 79, 81, 83, 85, 87, 89 ;
+
+ c.TIME = 366, 1096.485, 1826.97, 2557.455, 3287.94, 4018.425, 4748.91, 
+    5479.395, 6209.88, 6940.365, 7670.85, 8401.335 ;
+}
