@@ -52,8 +52,6 @@
 #include "BESResponseHandler.h"
 #include "BESContextManager.h"
 
-//#include "BESDapError.h"
-
 #include "BESTransmitterNames.h"
 #include "BESDataNames.h"
 #include "BESReturnManager.h"
@@ -222,10 +220,12 @@ static void log_error(const BESError &e)
     }
 
     if (TheBESKeys::TheKeys()->read_bool_key(EXCLUDE_FILE_INFO_FROM_LOG, false)) {
-        ERROR_LOG("ERROR: " << error_name << ": " << e.get_message() << endl);
+        ERROR_LOG("ERROR: " << error_name << ": " << e.get_message() << add_memory_info << endl);
     }
     else {
-        ERROR_LOG("ERROR: " << error_name << ": " << e.get_message() << " (" << e.get_file() << ":" << e.get_line() << ")" << endl);
+        ERROR_LOG("ERROR: " << error_name << ": " << e.get_message()
+            << " (" << e.get_file() << ":" << e.get_line() << ")"
+            << add_memory_info << endl);
     }
 }
 
@@ -518,6 +518,7 @@ int BESInterface::execute_request(const string &from)
 
         d_dhi_ptr->executed = true;
     }
+#if 0
     catch (const libdap::Error &e) {
         timeout_jump_valid = false;
         string msg = string(__PRETTY_FUNCTION__)+  " - BES caught a libdap exception: " + e.get_error_message();
@@ -525,6 +526,7 @@ int BESInterface::execute_request(const string &from)
         BESInternalFatalError ex(msg, __FILE__, __LINE__);
         status = handleException(ex, *d_dhi_ptr);
     }
+#endif
     catch (BESError &e) {
         timeout_jump_valid = false;
         BESDEBUG("bes",  string(__PRETTY_FUNCTION__) +  " - Caught BESError. msg: " << e.get_message() << endl );
