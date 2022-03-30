@@ -18,7 +18,7 @@ AUTOTEST = $(AUTOM4TE) --language=autotest
 TESTSUITE_DMRPP = $(srcdir)/testsuite
 
 check-local: atconfig atlocal $(TESTSUITE_DMRPP)
-	$(SHELL) '$(TESTSUITE_DMRPP)' AUTOTEST_PATH='$(bindir)' $(TESTSUITEFLAGS) && echo "bindir: $(bindir)"
+	$(SHELL) '$(TESTSUITE_DMRPP)' $(TESTSUITEFLAGS) && echo "bindir: $(bindir)"
 
 clean-local:
 	test ! -f '$(TESTSUITE_DMRPP)' || $(SHELL) '$(TESTSUITE_DMRPP)' --clean
