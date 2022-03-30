@@ -86,7 +86,8 @@ public:
      * @note Define this copy constructor as noexcept. See the web for why (e.g.,
      * https://stackoverflow.com/questions/28627348/noexcept-and-copy-move-constructors)
      */
-    BESError(const BESError &src) noexcept = default;
+    BESError(const BESError &src) noexcept
+        : exception(), _msg(src._msg), _type(src._type), _file(src._file), _line(src._line) { }
 
     ~BESError() override = default;
 
