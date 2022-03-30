@@ -347,7 +347,7 @@ extern BESStopWatch *bes_timing::elapsedTimeToTransmitStart;
  * @param dhi The BESDataHandlerInterface object
  * @return
  */
-int BESInterface::handleException(BESError &e, BESDataHandlerInterface &dhi)
+int BESInterface::handleException(const BESError &e, BESDataHandlerInterface &dhi)
 {
     bool found = false;
     string context = BESContextManager::TheManager()->get_context("errors", found);
@@ -527,7 +527,7 @@ int BESInterface::execute_request(const string &from)
         status = handleException(ex, *d_dhi_ptr);
     }
 #endif
-    catch (BESError &e) {
+    catch (const BESError &e) {
         timeout_jump_valid = false;
         BESDEBUG("bes",  string(__PRETTY_FUNCTION__) +  " - Caught BESError. msg: " << e.get_message() << endl );
         status = handleException(e, *d_dhi_ptr);

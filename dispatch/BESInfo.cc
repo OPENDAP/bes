@@ -231,7 +231,7 @@ void BESInfo::add_data_from_file(const string &key, const string &name)
  * @param admin The contact information for the person
  * responsible for this error
  */
-void BESInfo::add_exception(BESError &e, const string &admin)
+void BESInfo::add_exception(const BESError &e, const string &admin)
 {
     begin_tag("BESError");
     ostringstream stype;

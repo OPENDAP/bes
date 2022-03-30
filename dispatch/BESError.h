@@ -81,12 +81,15 @@ public:
             _msg(std::move(msg)), _type(type), _file(std::move(file)), _line(line)
     { }
 
+
     /**
      * @note Define this copy constructor as noexcept. See the web for why (e.g.,
      * https://stackoverflow.com/questions/28627348/noexcept-and-copy-move-constructors)
      */
-    BESError(const BESError &src) noexcept
+    BESError(const BESError &src) noexcept = default;
+#if 0
         : exception(), _msg(src._msg), _type(src._type), _file(src._file), _line(src._line) { }
+#endif
 
     ~BESError() override = default;
 
