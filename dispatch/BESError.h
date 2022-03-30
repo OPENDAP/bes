@@ -87,9 +87,6 @@ public:
      * https://stackoverflow.com/questions/28627348/noexcept-and-copy-move-constructors)
      */
     BESError(const BESError &src) noexcept = default;
-#if 0
-        : exception(), _msg(src._msg), _type(src._type), _file(src._file), _line(src._line) { }
-#endif
 
     ~BESError() override = default;
 
