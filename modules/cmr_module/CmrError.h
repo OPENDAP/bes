@@ -32,24 +32,19 @@
 namespace cmr {
 
 class CmrError: public BESInternalError {
-protected:
-    CmrError()
-    {
-    }
+
 public:
     CmrError(const std::string &msg, const std::string &file, unsigned int line) :
-        BESInternalError("CmrError "+ msg, file, line)
-    {
-    }
-    virtual ~CmrError()
-    {
-    }
+        BESInternalError("CmrError " + msg, file, line)
+    { }
 
-    virtual void dump(std::ostream &strm) const
+    ~CmrError() override = default;
+
+    void dump(std::ostream &strm) const override
     {
         strm << "CmrError::dump - (" << (void *) this << ")" << std::endl;
         BESIndent::Indent();
-        BESError::dump(strm);
+        BESInternalError::dump(strm);
         BESIndent::UnIndent();
     }
 

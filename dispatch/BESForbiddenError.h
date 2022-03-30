@@ -39,8 +39,6 @@
  */
 class BESForbiddenError : public BESError
 {
-protected:
-    BESForbiddenError() = default;
 public:
     BESForbiddenError( std::string s, std::string file, unsigned int line )
         : BESError( std::move(s), BES_FORBIDDEN_ERROR, std::move(file), line ) {}

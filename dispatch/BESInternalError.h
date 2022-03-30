@@ -41,9 +41,6 @@
 /** @brief exception thrown if internal error encountered
  */
 class BESInternalError: public BESError {
-protected:
-	BESInternalError() = default;
-
 public:
 	BESInternalError(std::string msg, std::string file, unsigned int line) :
 			BESError(std::move(msg), BES_INTERNAL_ERROR, std::move(file), line) { }

@@ -60,9 +60,6 @@ class BESDapError: public BESError {
 private:
     libdap::ErrorCode d_dap_error_code {unknown_error};
 
-protected:
-    BESDapError() = default;
-
 public:
     BESDapError(std::string s, bool fatal, libdap::ErrorCode ec, std::string file, unsigned int line);
 

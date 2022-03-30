@@ -41,9 +41,6 @@
  * the BES
  */
 class BESInternalFatalError: public BESError {
-protected:
-    BESInternalFatalError() = default;
-
 public:
     BESInternalFatalError(std::string s, std::string file, unsigned int line) :
         BESError(std::move(s), BES_INTERNAL_FATAL_ERROR, std::move(file), line) { }

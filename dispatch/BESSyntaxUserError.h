@@ -39,9 +39,6 @@
  * any other user error
  */
 class BESSyntaxUserError: public BESError {
-protected:
-    BESSyntaxUserError() = default;
-
 public:
     BESSyntaxUserError(std::string s, std::string file, unsigned int line) :
         BESError(std::move(s), BES_SYNTAX_USER_ERROR, std::move(file), line) { }

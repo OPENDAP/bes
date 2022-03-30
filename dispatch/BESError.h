@@ -57,7 +57,7 @@
  * @brief Base exception class for the BES with basic string message
  */
 class BESError: public std::exception,  public BESObj {
-protected:
+private:
     std::string _msg {"UNDEFINED"};
     unsigned int _type {0};
     std::string _file;
@@ -81,10 +81,19 @@ public:
             _msg(std::move(msg)), _type(type), _file(std::move(file)), _line(line)
     { }
 
+    /**
+     * @note Define this copy constructor as noexcept. See the web for why (e.g.,
+     * https://stackoverflow.com/questions/28627348/noexcept-and-copy-move-constructors)
+     */
     BESError(const BESError &src) noexcept
-        : exception(), _msg(std::move(src._msg)), _type(src._type), _file(std::move(src._file)), _line(src._line) { }
+        : exception(), _msg(src._msg), _type(src._type), _file(src._file), _line(src._line) { }
 
     ~BESError() override = default;
+
+    /**
+     * @note Follow the rule of three - see https://en.cppreference.com/w/cpp/language/rule_of_three
+     */
+    BESError &operator=(const BESError &rhs) = delete;
 
     /** @brief set the error message for this exception
      *

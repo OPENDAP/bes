@@ -40,8 +40,6 @@
  */
 class BESTimeoutError : public BESError
 {
-protected:
-    BESTimeoutError() =default;
 public:
     BESTimeoutError(std::string s, std::string file, unsigned int line )
         : BESError( std::move(s), BES_TIMEOUT_ERROR, std::move(file), line ) { }

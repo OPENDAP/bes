@@ -39,9 +39,6 @@
  */
 class BESNotFoundError : public BESError
 {
-protected:
-    BESNotFoundError() = default;
-
 public:
     BESNotFoundError(std::string s, std::string file, unsigned int line )
         : BESError( std::move(s), BES_NOT_FOUND_ERROR, std::move(file), line ) {}

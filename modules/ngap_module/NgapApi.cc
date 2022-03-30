@@ -24,38 +24,40 @@
 
 #include "config.h"
 
-#include <cstdio>
-#include <cstring>
+//#include <cstdio>
+//#include <cstring>
 #include <iostream>
 #include <sstream>
 #include <memory>
 #include <time.h>
 #include <curl/curl.h>
 
-#include <libdap/util.h>
-#include <libdap/debug.h>
+//#include <libdap/util.h>
+//#include <libdap/debug.h>
 
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
-#include "rapidjson/prettywriter.h"
+//#include "rapidjson/prettywriter.h"
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/filereadstream.h"
 
-#include "BESError.h"
+//#include "BESError.h"
 #include "BESNotFoundError.h"
 #include "BESSyntaxUserError.h"
+#include "BESInternalError.h"
+
 #include "BESDebug.h"
 #include "BESUtil.h"
 #include "BESStopWatch.h"
 #include "BESLog.h"
 #include "TheBESKeys.h"
-#include "CurlUtils.h"
+//#include "CurlUtils.h"
 #include "url_impl.h"
 #include "RemoteResource.h"
 
 #include "NgapApi.h"
 #include "NgapNames.h"
-#include "NgapError.h"
+// #include "NgapError.h"
 
 using namespace std;
 
