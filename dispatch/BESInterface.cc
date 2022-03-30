@@ -32,9 +32,11 @@
 
 #include "config.h"
 
-#include <cstdlib>
+#include <sys/resource.h>
 
-#include <signal.h>
+#include <cstdlib>
+#include <csignal>
+
 #if HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -43,9 +45,9 @@
 
 #include <string>
 #include <sstream>
-#include <iostream>
+//#include <iostream>
 
-// #include <libdap/Error.h>
+#include <libdap/Error.h>
 
 #include "BESInterface.h"
 
@@ -53,13 +55,13 @@
 #include "BESResponseHandler.h"
 #include "BESContextManager.h"
 
-#include "BESDapError.h"
+//#include "BESDapError.h"
 
 #include "BESTransmitterNames.h"
 #include "BESDataNames.h"
-#include "BESTransmitterNames.h"
+//#include "BESTransmitterNames.h"
 #include "BESReturnManager.h"
-#include "BESSyntaxUserError.h"
+//#include "BESSyntaxUserError.h"
 
 #include "BESInfoList.h"
 #include "BESXMLInfo.h"
@@ -155,16 +157,48 @@ static inline void downcase(string &s)
         s[i] = tolower(s[i]);
 }
 
+/**
+ * @brief Get the Resident Set Size in KB
+ * @return The RSS or 0 if getrusage() returns an error
+ */
+static long
+get_current_memory_usage() noexcept
+{
+    struct rusage usage;
+    if (getrusage(RUSAGE_SELF, &usage) == 0) { // getrusage()  successful?
+#ifdef __APPLE__
+        // get the max size (man page says it is in bytes). This function returns the
+        // size in KB like Linux. jhrg 3/29/22
+        return usage.ru_maxrss / 1024;
+#else
+        return usage.ru_maxrss; // get the max size (man page says it is in kilobytes)
+#endif
+    }
+    else {
+        return 0;
+    }
+}
+
+/**
+ * @brief Write a phrase that describes the current RSS for this process
+ * @param out Write to this stream
+ */
+ostream &add_memory_info(ostream &out)
+{
+    long mem_size = get_current_memory_usage();
+    if (mem_size) {
+        out << ", current memory usage is " << mem_size << " KB.";
+    }
+    else {
+        out << ", current memory usage is unknown.";
+    }
+
+    return out;
+}
+
 static void log_error(BESError &e)
 {
-    string error_name = "";
-#if 0
-    // TODO This should be configurable; I'm changing the values below to always log all errors.
-    // I'm also confused about the actual intention. jhrg 11/14/17
-    //
-    // Simplified. jhrg 10/03/18
-    bool only_log_to_verbose = false;
-#endif
+    string error_name;
     switch (e.get_bes_error_type()) {
     case BES_INTERNAL_FATAL_ERROR:
         error_name = "BES Internal Fatal Error";
@@ -194,24 +228,13 @@ static void log_error(BESError &e)
     }
 
     if (TheBESKeys::TheKeys()->read_bool_key(EXCLUDE_FILE_INFO_FROM_LOG, false)) {
-        ERROR_LOG("ERROR: " << error_name << ": " << e.get_message() << endl);
+        ERROR_LOG("ERROR: " << error_name << ": " << e.get_message() << add_memory_info << endl);
     }
     else {
-        ERROR_LOG("ERROR: " << error_name << ": " << e.get_message() << " (" << e.get_file() << ":" << e.get_line() << ")" << endl);
+        ERROR_LOG("ERROR: " << error_name << ": " << e.get_message()
+            << " (" << e.get_file() << ":" << e.get_line() << ")"
+            << add_memory_info << endl);
     }
-
-#if 0
-    if (only_log_to_verbose) {
-        VERBOSE("ERROR: " << error_name << ", error code: " << e.get_bes_error_type() << ", file: " << e.get_file() << ":"
-                    << e.get_line()  << ", message: " << e.get_message() << endl);
-
-    }
-    else {
-      LOG("ERROR: " << error_name << ": " << e.get_message() << " (BES error code: " << e.get_bes_error_type() << ")." << endl);
-      VERBOSE(" at: " << e.get_file() << ":" << e.get_line() << endl);
-    }
-#endif
-
 }
 
 #if USE_SIGWAIT
@@ -342,12 +365,6 @@ int BESInterface::handleException(BESError &e, BESDataHandlerInterface &dhi)
     else
         dhi.error_info = BESInfoList::TheList()->build_info();
 
-#if 0
-    dhi.error_info = new BESXMLInfo();
-// #else
-    dhi.error_info = BESInfoList::TheList()->build_info();
-#endif
-
     log_error(e);
 
     string admin_email = "";
@@ -370,47 +387,6 @@ int BESInterface::handleException(BESError &e, BESDataHandlerInterface &dhi)
 
     return e.get_bes_error_type();
 }
-
-
-#if 0
-int BESInterface::handleException(BESError &e, BESDataHandlerInterface &dhi)
-{
-    // If we are handling errors in a dap2 context, then create a
-    // DapErrorInfo object to transmit/print the error as a dap2
-    // response.
-    bool found = false;
-    // I changed 'dap_format' to 'errors' in the following line. jhrg 10/6/08
-    string context = BESContextManager::TheManager()->get_context("errors", found);
-    if (context == "dap2" || context == "dap") {
-        libdap::ErrorCode ec = unknown_error;
-        BESDapError *de = dynamic_cast<BESDapError*>(&e);
-        if (de) {
-            ec = de->get_error_code();
-        }
-        e.set_bes_error_type(BESDapError::convert_error_code(ec, e.get_bes_error_type()));
-        dhi.error_info = new BESDapErrorInfo(ec, e.get_message());
-
-        return e.get_bes_error_type();
-    }
-    else {
-        // If we are not in a dap2 context and the exception is a dap
-        // handler exception, then convert the error message to include the
-        // error code. If it is or is not a dap exception, we simply return
-        // that the exception was not handled.
-        BESError *e_p = &e;
-        BESDapError *de = dynamic_cast<BESDapError*>(e_p);
-        if (de) {
-            ostringstream s;
-            s << "libdap exception building response: error_code = " << de->get_error_code() << ": "
-            << de->get_message();
-            e.set_message(s.str());
-            e.set_bes_error_type(BESDapError::convert_error_code(de->get_error_code(), e.get_bes_error_type()));
-        }
-    }
-    return 0;
-}
-#endif
-
 
 /** @brief The entry point for command execution; called by BESServerHandler::execute()
 
@@ -559,13 +535,13 @@ int BESInterface::execute_request(const string &from)
     }
     catch (BESError &e) {
         timeout_jump_valid = false;
-        BESDEBUG("bes",  string(__PRETTY_FUNCTION__) +  " - Caught BESError. msg: "<< e.get_message() << endl );
+        BESDEBUG("bes",  string(__PRETTY_FUNCTION__) +  " - Caught BESError. msg: " << e.get_message() << endl );
         status = handleException(e, *d_dhi_ptr);
     }
     catch (const bad_alloc &e) {
         timeout_jump_valid = false;
         stringstream msg;
-        msg << __PRETTY_FUNCTION__ <<  " - BES out of memory. msg: " << e.what() << endl;
+        msg << __PRETTY_FUNCTION__ <<  " - BES out of memory. msg: " << e.what()  << endl;
         BESDEBUG("bes", msg.str() << endl );
         BESInternalFatalError ex(msg.str(), __FILE__, __LINE__);
         status = handleException(ex, *d_dhi_ptr);
