@@ -46,16 +46,20 @@ m4_define([AT_BUILD_DMRPP],  [dnl
     baseline=$abs_top_srcdir/$1.dmrpp.baseline
     repeat=$3
 
-    AS_IF([test -z "$at_verbose"], [echo "COMMAND: build_dmrpp -f $input -r $dmr"])
+    build_dmrpp_app="${abs_top_builddir}/modules/dmrpp_module/build_dmrpp"
+    build_dmrpp_cmd="${build_dmrpp_app} -f ${input} -r ${dmr}"
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: ${build_dmrpp_cmd}"])
+
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
     [
-        AT_CHECK([build_dmrpp -f $input -r $dmr], [], [stdout])
+        AT_CHECK([${build_dmrpp_cmd}], [], [stdout])
         REMOVE_VERSIONS([stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
-        AT_CHECK([build_dmrpp -f $input -r $dmr], [], [stdout])
+        AT_CHECK([${build_dmrpp_cmd}], [], [stdout])
         REMOVE_VERSIONS([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         AT_XFAIL_IF([test z$2 = zxfail])
@@ -73,18 +77,22 @@ m4_define([AT_BUILD_DMRPP_M],  [dnl
     dmr=$abs_top_srcdir/$1.dmr
     baseline=$abs_top_srcdir/$1.dmrpp.M.baseline
 
-    AS_IF([test -z "$at_verbose"], [echo "COMMAND: build_dmrpp -M -f $input -r $dmr"])
+    build_dmrpp_app="${abs_top_builddir}/modules/dmrpp_module/build_dmrpp"
+    build_dmrpp_cmd="${build_dmrpp_app} -M -f ${input} -r ${dmr}"
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: ${build_dmrpp_cmd}"])
+
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
     [
-        AT_CHECK([build_dmrpp -M -f $input -r $dmr], [], [stdout])
+        AT_CHECK([${build_dmrpp_cmd}], [], [stdout])
         NORMAILZE_EXEC_NAME([stdout])
         REMOVE_PATH_COMPONENTS([stdout])
         REMOVE_VERSIONS([stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
-        AT_CHECK([build_dmrpp -M -f $input -r $dmr], [], [stdout])
+        AT_CHECK([${build_dmrpp_cmd}], [], [stdout])
         NORMAILZE_EXEC_NAME([stdout])
         REMOVE_PATH_COMPONENTS([stdout])
         REMOVE_VERSIONS([stdout])
