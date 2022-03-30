@@ -209,7 +209,7 @@ chmod +x "${GET_DMRPP}"
 ls -l "${GET_DMRPP}"
 DATA_DIR="modules/dmrpp_module/data/dmrpp"
 BASELINES_DIR="${abs_srcdir}/get_dmrpp"
-BES_DATA_ROOT="${abs_top_srcdir}"
+BES_DATA_ROOT=$(readlink -f "${abs_top_srcdir}")
 
 
 input_file="${DATA_DIR}/$1"
@@ -218,7 +218,8 @@ params="$3"
 
 export PATH=${abs_top_builddir}/standalone:$PATH
 
-TEST_CMD="${GET_DMRPP} -c ${TEST_CONF} -b ${BES_DATA_ROOT} ${params} ${input_file}"
+TEST_CMD="${GET_DMRPP} -A -b ${BES_DATA_ROOT} ${params} ${input_file}"
+# TEST_CMD="${GET_DMRPP} -c ${TEST_CONF} -b ${BES_DATA_ROOT} ${params} ${input_file}" # disabled in favor of a single file solution. ndp 3/28/22
 
 AS_IF([test -z "$at_verbose"], [
     echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"

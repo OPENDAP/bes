@@ -24,7 +24,7 @@ dist_bin_SCRIPTS = get_dmrpp ingest_filesystem ingest_s3bucket
 # when get_dmrpp is used for tests, we use a separate configuration
 # file that references local modules. See get_dmrpp_mkcheck.conf.in and
 # the rule above. jhrg 3/25/22
-get_dmrpp: get_dmrpp.in $(builddir)/get_dmrpp_mkcheck.conf $(top_builddir)/config.status Makefile
+get_dmrpp: get_dmrpp.in $(top_builddir)/config.status Makefile # $(builddir)/get_dmrpp_mkcheck.conf removed by ndp 3/30/22
 	sed -e "s%[@]pkgdatadir[@]%${pkgdatadir}%" \
                 -e "s%[@]sysconfdir[@]%${sysconfdir}%" \
                 -e "s%[@]pkglibdir[@]%${pkglibdir}%" \
@@ -32,19 +32,22 @@ get_dmrpp: get_dmrpp.in $(builddir)/get_dmrpp_mkcheck.conf $(top_builddir)/confi
                 -e "s%[@]datadir[@]%${datadir}%" \
                 -e "s%[@]bindir[@]%${bindir}%" \
                 -e "s%[@]get_dmrpp_version[@]%${PACKAGE_VERSION}%" \
+		        -e "s%[@]abs_top_builddir[@]%${abs_top_builddir}%" \
                 -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > get_dmrpp
 
 EXTRA_PROGRAMS = 
 
 noinst_DATA = mds_for_tests
 
-EXTRA_DIST = get_dmrpp.in get_dmrpp_mkcheck.conf.in README README.md dmrpp mds_for_tests s3 s3_data
+EXTRA_DIST = get_dmrpp.in  README README.md dmrpp mds_for_tests s3 s3_data
+# get_dmrpp_mkcheck.conf.in removed because get_dmrpp.in contains same stuff. ndp 3/30/22
+
 # Removed from the above since they are listed in 'dist_bin_SCRIPTS: ingest_filesystem ingest_s3bucket
 # jhrg 4/1/20
 
 CLEANFILES = *~
 
-DISTCLEANFILES = get_dmrpp get_dmrpp_mkcheck.conf
+DISTCLEANFILES = get_dmrpp # get_dmrpp_mkcheck.conf
 
 # These are defined in the top-level Makefile.am
 sample_datadir = $(datadir)/hyrax/data/dmrpp
