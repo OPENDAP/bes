@@ -90,7 +90,7 @@ public:
     void encode_node_test()
     {
         try {
-            auto_ptr<BESInfo> info(new BESXMLInfo);
+            unique_ptr<BESInfo> info(new BESXMLInfo);
 
             BESDataHandlerInterface dhi;
             info->begin_response("showNode", dhi);
@@ -120,7 +120,7 @@ public:
     void encode_node_text_test()
     {
         try {
-            auto_ptr<BESInfo> info(new BESTextInfo);
+            unique_ptr<BESInfo> info(new BESTextInfo);
 
             BESDataHandlerInterface dhi;
             info->begin_response("showNode", dhi);

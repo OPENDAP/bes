@@ -455,17 +455,17 @@ void TabularFunction::function_dap2_tabular(int argc, BaseType *argv[], DDS &, B
         result = dep_sv;
     }
 
-    auto_ptr<TabularSequence> response(new TabularSequence("table"));
+    unique_ptr<TabularSequence> response(new TabularSequence("table"));
 
-    if (dep_vars.size() > 0) {
+    if (!dep_vars.empty()) {
         // set the columns of the response
-        for (SequenceValues::size_type n = 0; n < dep_vars.size(); ++n) {
-            response->add_var(dep_vars[n]->var());
+        for (auto variable: dep_vars) {
+            response->add_var(variable->var());
         }
     }
 
-    for (SequenceValues::size_type n = 0; n < indep_vars.size(); ++n) {
-        response->add_var(indep_vars[n]->var());
+    for (auto variable: indep_vars) {
+        response->add_var(variable->var());
     }
 
     // set the values of the response
@@ -473,7 +473,6 @@ void TabularFunction::function_dap2_tabular(int argc, BaseType *argv[], DDS &, B
     response->set_read_p(true);
 
     *btpp = response.release();
-    return;
 }
 
 #if 0
@@ -495,7 +494,7 @@ BaseType *TabularFunction::function_dap4_tabular(D4RValueList *args, DMR &dmr)
 {
     // unique_ptr is not avialable on gcc 4.2. jhrg 2/11/15
     //unique_ptr<D4Sequence> response(new D4Sequence("table"));
-    auto_ptr<D4Sequence> response(new D4Sequence("table"));
+    unique_ptr<D4Sequence> response(new D4Sequence("table"));
 
     int num_arrays = args->size();              // Might pass in other stuff...
     vector<unsigned long> shape;            // Holds shape info; used to test array sizes for uniformity

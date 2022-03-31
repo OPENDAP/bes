@@ -198,7 +198,7 @@ public:
     void test_ctor()
     {
         try {
-            auto_ptr<BESResponseHandler> handler(TestResponseHandler::TestResponseBuilder("test"));
+            unique_ptr<BESResponseHandler> handler(TestResponseHandler::TestResponseBuilder("test"));
 
             // These values are set in bes.conf which is built from bes.conf.in
             DBG(cerr << "handler->d_annotation_service_url: " << handler->d_annotation_service_url << endl);

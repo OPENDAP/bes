@@ -99,7 +99,7 @@ public:
     void encode_item_test()
     {
         try {
-            auto_ptr<BESInfo> info(new BESXMLInfo);
+            unique_ptr<BESInfo> info(new BESXMLInfo);
 
             BESDataHandlerInterface dhi;
             // I just made this 'response' showItem to make the test interesting.
@@ -132,7 +132,7 @@ public:
     void encode_item_text_test()
     {
         try {
-            auto_ptr<BESInfo> info(new BESTextInfo);
+            unique_ptr<BESInfo> info(new BESTextInfo);
 
             BESDataHandlerInterface dhi;
             info->begin_response("showItem", dhi);
