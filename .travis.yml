@@ -132,7 +132,7 @@ jobs:
       name: "check"
       script:
         - export BES_BUILD=main
-        - export RUNTESTFLAGS="-v"
+        # - export RUNTESTFLAGS="-v"
         - autoreconf --force --install --verbose
         - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
         - make -j16 && make install && besctl start && make check -j16 && besctl stop
