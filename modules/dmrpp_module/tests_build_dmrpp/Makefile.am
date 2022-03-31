@@ -5,7 +5,7 @@ AM_CPPFLAGS = -I$(top_srcdir)
 
 CLEANFILES = $(TESTSUITE_DMRPP)
 
-EXTRA_DIST = $(srcdir)/package.m4 $(TESTSUITE_DMRPP) $(TESTSUITE_DMRPP).at \
+EXTRA_DIST = get_dmrpp $(srcdir)/package.m4 $(TESTSUITE_DMRPP) $(TESTSUITE_DMRPP).at \
 atlocal.in build_dmrpp_macros.m4
 
 DISTCLEANFILES = atconfig
@@ -18,7 +18,7 @@ AUTOTEST = $(AUTOM4TE) --language=autotest
 TESTSUITE_DMRPP = $(srcdir)/testsuite
 
 check-local: atconfig atlocal $(TESTSUITE_DMRPP)
-	$(SHELL) '$(TESTSUITE_DMRPP)' $(TESTSUITEFLAGS)
+	$(SHELL) '$(TESTSUITE_DMRPP)' $(TESTSUITEFLAGS) && echo "bindir: $(bindir)"
 
 clean-local:
 	test ! -f '$(TESTSUITE_DMRPP)' || $(SHELL) '$(TESTSUITE_DMRPP)' --clean

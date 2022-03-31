@@ -36,27 +36,30 @@ AT_ARG_OPTION_ARG([conf],
 # @param $2 If not null, 'xfail' means the test is expected to fail, 'xpass' ... pass
 # @param $3 If 'repeat' or 'cached', run besstandalone using '-r 3'
 
-
 m4_define([AT_BUILD_DMRPP],  [dnl
 
     AT_SETUP([$1])
-    AT_KEYWORDS([bescmd data dap4 DAP4])
+    AT_KEYWORDS([build_dmrpp dmrpp data dap4 DAP4])
 
     input=$abs_top_srcdir/$1
     dmr=$abs_top_srcdir/$1.dmr
     baseline=$abs_top_srcdir/$1.dmrpp.baseline
     repeat=$3
 
-    AS_IF([test -z "$at_verbose"], [echo "COMMAND: build_dmrpp -f $input -r $dmr"])
+    build_dmrpp_app="${abs_top_builddir}/modules/dmrpp_module/build_dmrpp"
+    build_dmrpp_cmd="${build_dmrpp_app} -f ${input} -r ${dmr}"
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: ${build_dmrpp_cmd}"])
+
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
     [
-        AT_CHECK([build_dmrpp -f $input -r $dmr], [], [stdout])
+        AT_CHECK([${build_dmrpp_cmd}], [], [stdout])
         REMOVE_VERSIONS([stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
-        AT_CHECK([build_dmrpp -f $input -r $dmr], [], [stdout])
+        AT_CHECK([${build_dmrpp_cmd}], [], [stdout])
         REMOVE_VERSIONS([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         AT_XFAIL_IF([test z$2 = zxfail])
@@ -68,24 +71,28 @@ m4_define([AT_BUILD_DMRPP],  [dnl
 m4_define([AT_BUILD_DMRPP_M],  [dnl
 
     AT_SETUP([$1])
-    AT_KEYWORDS([bescmd data dap4 DAP4])
+    AT_KEYWORDS([build_dmrpp dmrpp data dap4 DAP4])
 
     input=$abs_top_srcdir/$1
     dmr=$abs_top_srcdir/$1.dmr
     baseline=$abs_top_srcdir/$1.dmrpp.M.baseline
 
-    AS_IF([test -z "$at_verbose"], [echo "COMMAND: build_dmrpp -M -f $input -r $dmr"])
+    build_dmrpp_app="${abs_top_builddir}/modules/dmrpp_module/build_dmrpp"
+    build_dmrpp_cmd="${build_dmrpp_app} -M -f ${input} -r ${dmr}"
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: ${build_dmrpp_cmd}"])
+
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
     [
-        AT_CHECK([build_dmrpp -M -f $input -r $dmr], [], [stdout])
+        AT_CHECK([${build_dmrpp_cmd}], [], [stdout])
         NORMAILZE_EXEC_NAME([stdout])
         REMOVE_PATH_COMPONENTS([stdout])
         REMOVE_VERSIONS([stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
-        AT_CHECK([build_dmrpp -M -f $input -r $dmr], [], [stdout])
+        AT_CHECK([${build_dmrpp_cmd}], [], [stdout])
         NORMAILZE_EXEC_NAME([stdout])
         REMOVE_PATH_COMPONENTS([stdout])
         REMOVE_VERSIONS([stdout])
@@ -96,11 +103,14 @@ m4_define([AT_BUILD_DMRPP_M],  [dnl
     AT_CLEANUP
 ])
 
+
 dnl Remove path components of DAP DMR Attributes that may vary with builds.
 dml jhrg 11/22/21
 dnl Usage: REMOVE_PATH_COMPONENTS(file_name)
 m4_define([REMOVE_PATH_COMPONENTS], [dnl
-    sed -e 's@/[[A-z0-9]][[-A-z0-9_/.]]*/dmrpp_module/@/path_removed/@g' < $1 > $1.sed
+    sed -e 's@/[[A-z0-9]][[-A-z0-9_/.]]*/dmrpp_module/@/path_removed/@g' \
+        -e 's@/[[A-z0-9][-A-z0-9_/.]]*\.so@< library_path_removed >@g' \
+        -e 's@BES.Catalog.catalog.RootDirectory=/[[A-z0-9][-A-z0-9_/.]]*@BES.Catalog.catalog.RootDirectory=< path_removed >@g' < $1 > $1.sed
     mv $1.sed $1
 ])
 
@@ -132,4 +142,185 @@ m4_define([REMOVE_VERSIONS], [dnl
       < $1 > $1.sed
       mv $1.sed $1
   ])
+
+# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+#
+# GET_DMRPP_3_20
+#
+# Usage for get_dmrpp commandline:
+#
+# get_dmrpp -h
+#
+# [get_dmrpp-3.20.10]
+#
+# Usage: /Users/ndp/OPeNDAP/hyrax/build/bin/get_dmrpp [options] <hdf5 file>
+#
+# Write the DMR++ for hdf5_file to stdout
+#
+# By default the BES Data Root directory is set to /tmp. This
+# utility will add an entry to the bes.log specified in the
+# configuration file. The DMR++ is built using the DMR as returned
+# by the HDF5 handler, using options as set in the bes
+# configuration file found here.
+#
+# -h: Show help
+# -z: Show version information (Verbose got here first.)
+# -v: Verbose: Print the DMR too
+# -V: Very Verbose: print the DMR, the command and the configuration
+#     file used to build the DMR, and do not remove temporary files.
+# -D: Just print the DMR that will be used to build the DMR++
+# -u: The binary object URL for use in the DMR++ file. If option '-u' is
+#     not used; then dap4:Dataset/@dmrpp:href attribute will contain the template string
+#     OPeNDAP_DMRpp_DATA_ACCESS_URL which can be replaced at runtime.
+# -b: The fully qualified path to the BES_DATA_ROOT directory. May not be "/" or "/etc".
+#     The default value is /tmp if a value is not provided
+# -c: The path to the bes configuration file to use.
+# -s: The path to an optional addendum configuration file which will be appended to the
+#     default BES configuration. Much like the site.conf file works for the full server
+#     deployment it will be loaded last and the settings there-in will have an override
+#     effect on the default configuration.
+# -o: The name of the dmr++ file to create.
+# -e: The name of pre-existing dmr++ file to test.
+# -T: Run ALL hyrax tests on the resulting dmr++ file and compare the responses
+#     the ones generated by the source hdf5 file.
+# -I: Run hyrax inventory tests on the resulting dmr++ file and compare the responses
+#     the ones generated by the source hdf5 file.
+# -F: Run hyrax value probe tests on the resulting dmr++ file and compare the responses
+#     the ones generated by the source hdf5 file.
+# -M: Create and merge missing CF coordinate domain variables into the dmrpp. If there are
+#     missing variables, a sidecar file named <input_file_name>.missing will be created
+#     in the same directory location as the input_data_file.
+#     If option 'p' is not used; missing variable chunk href will contain OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL.
+#     If option 'p' is selected; missing variable chunk href will contain the argument provided to that option
+# -p: The value to use for each missing variable's dmrpp:chunk/@dmrpp:href attribute.  If option '-p' is
+#     not used; the missing variable dmrpp:chunk/@dmrpp:href attributes will contain the template string
+#     OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL which can be replaced at runtime.
+# -r: The path to the file that contains missing variable information for sets of input data files that share
+#     common missing variables. The file will be created if it doesn't exist and the result may be used in subsequent
+#     invocations of get_dmrpp (using -r) to identify the missing variable file.
+# -U: If present, and if the input data file is an AWS S3 URL (s3://...), and if the output data file has been set (using
+#     the -o option) the presence of this parameter will cause get_dmrpp to copy the finished dmr++ file to the same S3
+#     bucket location as the input data file.
+#
+# Limitations:
+# * The name of the hdf5 file must be expressed relative to the BES_DATA_ROOT, or as an S3 URL (s3://...)
+#
+
+m4_define([AT_GET_DMRPP_3_20],  [dnl
+        AT_SETUP([$1])
+AT_KEYWORDS([get_dmrpp data dap4 DAP4])
+
+GET_DMRPP="${abs_top_builddir}/modules/dmrpp_module/data/get_dmrpp"
+TEST_CONF="${abs_top_builddir}/modules/dmrpp_module/data/get_dmrpp_mkcheck.conf"
+
+chmod +x "${GET_DMRPP}"
+ls -l "${GET_DMRPP}"
+DATA_DIR="modules/dmrpp_module/data/dmrpp"
+BASELINES_DIR="${abs_srcdir}/get_dmrpp"
+BES_DATA_ROOT=$(readlink -f "${abs_top_srcdir}")
+
+
+input_file="${DATA_DIR}/$1"
+baseline="${BASELINES_DIR}/$2"
+params="$3"
+
+export PATH=${abs_top_builddir}/standalone:$PATH
+
+TEST_CMD="${GET_DMRPP} -A -b ${BES_DATA_ROOT} ${params} ${input_file}"
+# TEST_CMD="${GET_DMRPP} -c ${TEST_CONF} -b ${BES_DATA_ROOT} ${params} ${input_file}" # disabled in favor of a single file solution. ndp 3/28/22
+
+AS_IF([test -z "$at_verbose"], [
+    echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
+    echo "#   abs_top_srcdir: ${abs_top_srcdir}"
+    echo "#       abs_srcdir: ${abs_srcdir}"
+    echo "#       top_srcdir: ${top_srcdir}"
+    echo "#         builddir: ${builddir}"
+    echo "#     abs_builddir: ${abs_builddir}"
+    echo "#     top_builddir: ${top_builddir}"
+    echo "# top_build_prefix: ${top_build_prefix}"
+    echo "# abs_top_builddir: ${abs_top_builddir}"
+    echo "#        GET_DMRPP: ${GET_DMRPP}"
+    echo "#    BES_DATA_ROOT: ${BES_DATA_ROOT}"
+    echo "#         DATA_DIR: ${DATA_DIR}"
+    echo "#    BASELINES_DIR: ${BASELINES_DIR}"
+    echo "#           arg #1: $1"
+    echo "#           arg #2: $2"
+    echo "#           arg #3: $3"
+    echo "#           arg #4: $4"
+    echo "#       input_file: ${input_file}"
+    echo "#         baseline: ${baseline}"
+    echo "#           params: ${params}"
+    echo "#         TEST_CMD: ${TEST_CMD}"
+])
+
+AS_IF([test -n "$baselines" -a x$baselines = xyes],
+[
+    AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp_baselines: Calling get_dmrpp application."])
+    AT_CHECK([${TEST_CMD}], [], [stdout], [stderr])
+    NORMAILZE_EXEC_NAME([stdout])
+    REMOVE_PATH_COMPONENTS([stdout])
+    REMOVE_VERSIONS([stdout])
+    REMOVE_BUILD_DMRPP_INVOCATION_ATTR([stdout])
+    AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp_baselines: Copying result to ${baseline}.tmp"])
+    AT_CHECK([mv stdout ${baseline}.tmp])
+],
+[
+    AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp: Calling get_dmrpp application."])
+    AT_CHECK([${TEST_CMD}], [], [stdout], [stderr])
+    NORMAILZE_EXEC_NAME([stdout])
+    REMOVE_PATH_COMPONENTS([stdout])
+    REMOVE_VERSIONS([stdout])
+    REMOVE_BUILD_DMRPP_INVOCATION_ATTR([stdout])
+    AS_IF([test -z "$at_verbose"], [
+        echo ""
+        echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
+        echo "# get_dmrpp: Filtered stdout BEGIN"
+        echo "#"
+        cat stdout;
+        echo "#"
+        echo "# get_dmrpp: Filtered stdout END"
+        echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
+    ])
+    AT_CHECK([diff -b -B ${baseline} stdout])
+    AT_XFAIL_IF([test z$4 = zxfail])
+])
+
+AT_CLEANUP
+])
+
+# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+# Remove the build_dmrpp invocation attribute value
+# ndp 03/23/22
+# Usage: REMOVE_BUILD_DMRPP_INVOCATION_ATTR_VALUE(file_name)
+m4_define([REMOVE_BUILD_DMRPP_INVOCATION_ATTR_VALUE], [dnl
+    sed -e 's@<Value>build_dmrpp.*<\/Value>@<Value>Removed</Value>@g'  < $1 > $1.sed
+    mv $1.sed $1
+])
+
+# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+# Replace the DAP Attribute named "invocation" an invariant message
+# ndp 03/23/22
+# Usage: REMOVE_BUILD_DMRPP_INVOCATION_ATTR(file_name)
+m4_define([REMOVE_BUILD_DMRPP_INVOCATION_ATTR], [dnl
+    # This sed magic: '1h;2,$H;$!d;g' slurps up the entire file into a single line.
+    # Courtesy of: https://unix.stackexchange.com/users/21763/antak
+    #   Reference: https://unix.stackexchange.com/questions/26284/how-can-i-use-sed-to-replace-a-multi-line-string
+    sed \
+        -e '1h;2,$H;$!d;g' \
+        -e 's@<Attribute name="invocation" type="String">.*</Value>@<Attribute name="Removed(invocation)">@' \
+         < $1 > $1.sed
+    mv $1.sed $1
+])
+
+#
+# This one is too greedy, needit matches to the last </Attribute> closer not the next.
+# -e 's@<Attribute name="invocation" type="String">.*</Attribute>@<AttributeRemoved name="invocation" \/>@'
+#
+#
+#
+
+# 0,/Apple/{s/Apple/Banana/}
+
+
+# N; /\b(\w+)\s+\1\b/{=;p} ; D
 

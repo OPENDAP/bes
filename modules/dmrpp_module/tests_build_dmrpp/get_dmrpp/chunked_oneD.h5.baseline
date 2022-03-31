@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="chunked_oneD.h5" dmrpp:href="OPeNDAP_DMRpp_DATA_ACCESS_URL" removed dmrpp:version>
+    <Float32 name="d_4_chunks">
+        <Dim size="40000"/>
+        <dmrpp:chunks byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>10000</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="3496" nBytes="40000" chunkPositionInArray="[0]"/>
+            <dmrpp:chunk offset="43496" nBytes="40000" chunkPositionInArray="[10000]"/>
+            <dmrpp:chunk offset="83496" nBytes="40000" chunkPositionInArray="[20000]"/>
+            <dmrpp:chunk offset="123496" nBytes="40000" chunkPositionInArray="[30000]"/>
+        </dmrpp:chunks>
+    </Float32>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="build_dmrpp" type="String">
+            <Value>removed version</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>removed version</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>removed version</Value>
+        </Attribute>
+        <Attribute name="configuration" type="String">
+            <Value>
+# TheBESKeys::get_as_config()
+AllowedHosts=^https?:\/\/
+BES.Catalog.catalog.Exclude=^\..*;
+BES.Catalog.catalog.FollowSymLinks=Yes
+BES.Catalog.catalog.Include=;
+BES.Catalog.catalog.RootDirectory=< path_removed >
+BES.Catalog.catalog.TypeMatch=dmrpp:.*\.(dmrpp)$;
+BES.Catalog.catalog.TypeMatch+=h5:.*(\.bz2|\.gz|\.Z)?$;
+BES.Container.Persistence=strict
+BES.Data.RootDirectory=/dev/null
+BES.DefaultResponseMethod=POST
+BES.FollowSymLinks=Yes
+BES.Group=group_name
+BES.Info.Buffered=no
+BES.Info.Type=xml
+BES.LogName=./bes.log
+BES.LogVerbose=no
+BES.Memory.GlobalArea.ControlHeap=no
+BES.Memory.GlobalArea.EmergencyPoolSize=1
+BES.Memory.GlobalArea.MaximumHeapSize=20
+BES.Memory.GlobalArea.Verbose=no
+BES.ProcessManagerMethod=multiple
+BES.ServerAdministrator=admin.email.address@your.domain.name
+BES.Uncompress.NumTries=10
+BES.Uncompress.Retry=2000
+BES.UncompressCache.dir=/tmp/hyrax_ux
+BES.UncompressCache.prefix=ux_
+BES.UncompressCache.size=500
+BES.User=user_name
+BES.module.cmd=< library_path_removed >
+BES.module.dap=< library_path_removed >
+BES.module.dmrpp=< library_path_removed >
+BES.module.fonc=< library_path_removed >
+BES.module.h5=< library_path_removed >
+BES.module.nc=< library_path_removed >
+BES.modules=dap,cmd,h5,dmrpp,nc,fonc
+FONc.ClassicModel=false
+FONc.NoGlobalAttrs=true
+H5.Cache.latlon.path=/tmp/latlon
+H5.Cache.latlon.prefix=l
+H5.Cache.latlon.size=20000
+H5.CheckIgnoreObj=false
+H5.DefaultHandleDimension=true
+H5.DisableStructMetaAttr=true
+H5.DiskCacheComp=true
+H5.DiskCacheCompThreshold=2.0
+H5.DiskCacheCompVarSize=10000
+H5.DiskCacheDataPath=/tmp
+H5.DiskCacheFilePrefix=c
+H5.DiskCacheFloatOnlyComp=true
+H5.DiskCacheSize=10000
+H5.DiskMetaDataCachePath=/tmp
+H5.EnableAddPathAttrs=true
+H5.EnableCF=false
+H5.EnableCFDMR=true
+H5.EnableCheckNameClashing=true
+H5.EnableDiskDDSCache=false
+H5.EnableDiskDataCache=false
+H5.EnableDiskMetaDataCache=false
+H5.EnableDropLongString=true
+H5.EnableEOSGeoCacheFile=false
+H5.EnableFillValueCheck=true
+H5.KeepVarLeadingUnderscore=false
+H5.LargeDataMemCacheEntries=0
+H5.MetaDataMemCacheEntries=300
+H5.SmallDataMemCacheEntries=0
+</Value>
+        </Attribute>
+        <Attribute name="Removed(invocation)">
+        </Attribute>
+    </Attribute>
+</Dataset>
