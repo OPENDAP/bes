@@ -610,7 +610,7 @@ public:
         TheBESKeys::TheKeys()->set_key("BES.Catalog.nt1.Include=.*file.*$;");
         TheBESKeys::TheKeys()->set_key("BES.Catalog.nt1.Exclude=README;");
 
-        unique_ptr<BESCatalog> catalog(0);
+        unique_ptr<BESCatalog> catalog(nullptr);
         try {
             catalog.reset(new BESCatalogDirectory("nt1"));
             CPPUNIT_ASSERT(catalog.get());
