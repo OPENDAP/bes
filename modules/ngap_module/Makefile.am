@@ -39,8 +39,9 @@ NGAP_HDR =  NgapNames.h \
             NgapModule.h \
             NgapContainer.h \
             NgapContainerStorage.h \
-            NgapError.h \
             NgapApi.h
+
+# Not used. jhrg 3/30/22 NgapError.h
 
 EXTRA_DIST = ngap.conf.in data
 

@@ -64,6 +64,46 @@ m4_define([AT_BESCMD_RESPONSE_TEST], [dnl
     AT_CLEANUP
 ])
 
+# This new macro expects that the bes.conf file used with besstandalone will be
+# the second argument. This provides a more compact way to run tests with several
+# different bes.conf files. Using the "BES.Include = <other file>" we can tweak
+# parameters without copying the base bes.conf file. jhrg 3/11/22
+m4_define([AT_BESCMD_BESCONF_RESPONSE_TEST], [dnl
+
+    AT_SETUP([$1])
+    AT_KEYWORDS([bescmd])
+
+    input=$abs_srcdir/$1
+    baseline=$abs_srcdir/$1.baseline
+
+    # Here the bes_conf var is set using parameter number 2. This shadows the
+    # value that can be set using the optional -c (--conf) argument (see the top
+    # of this file). We might improve on this! jhrg 3/11/22
+    bes_conf=$abs_builddir/$2
+    # Oddly, setting 'pass' to $2 and then using $pass in AT_XFAIL_IF() does not work,
+    # but using $2 does. This might be a function of when the AT_XFAIL_IF() macro is
+    # expanded. jhrg 3.20.20
+    pass=$3
+    repeat=$4
+
+    AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone $repeat -c $bes_conf -i $input], [], [stdout])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone $repeat -c $bes_conf -i $input], [], [stdout])
+        AT_CHECK([diff -b -B $baseline stdout])
+        AT_XFAIL_IF([test z$2 = zxfail])
+        ])
+
+    AT_CLEANUP
+])
+
 m4_define([AT_BESCMD_REPEAT_RESPONSE_TEST],
 [AT_BESCMD_RESPONSE_TEST([$abs_srcdir/$1], [$abs_srcdir/$1.baseline], [$2], [$3])])
 
@@ -139,6 +179,44 @@ m4_define([AT_BESCMD_ERROR_RESPONSE_TEST], [dnl
 
     input=$abs_srcdir/$1
     baseline=$abs_srcdir/$1.baseline
+    repeat=$3
+
+    AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [ignore], [stdout], [ignore])
+        REMOVE_ERROR_FILE([stdout])
+        REMOVE_ERROR_LINE([stdout])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [ignore], [stdout], [ignore])
+        REMOVE_ERROR_FILE([stdout])
+        REMOVE_ERROR_LINE([stdout])
+        AT_CHECK([diff -b -B $baseline stdout])
+        AT_XFAIL_IF([test z$2 = zxfail])
+        ])
+
+    AT_CLEANUP
+])
+
+# Usage: AT_BESCMD_BESCONF_ERROR_RESPONSE_TEST([<bescmd file>], [<bes.conf>], [pass|xfail], [repeat|cached])
+# The last two params are optional.
+m4_define([AT_BESCMD_BESCONF_ERROR_RESPONSE_TEST], [dnl
+    AT_SETUP([$1])
+    AT_KEYWORDS([bescmd error])
+
+    input=$abs_srcdir/$1
+
+    dnl By making this just $2 we can use exactly the same text as the original macro
+    dnl except for the bes_conf and baseline values - refactor.
+
+    bes_conf=$2
+    baseline=$abs_srcdir/$1.$2.baseline
+
     repeat=$3
 
     AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])

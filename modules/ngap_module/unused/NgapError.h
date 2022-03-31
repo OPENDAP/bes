@@ -29,29 +29,22 @@
 
 namespace ngap {
 
-    class NgapError: public BESInternalError {
-    protected:
-        NgapError()
-        {
-        }
-    public:
-        NgapError(const std::string &msg, const std::string &file, unsigned int line) :
-                BESInternalError("NgapError "+ msg, file, line)
-        {
-        }
-        virtual ~NgapError()
-        {
-        }
+class NgapError: public BESInternalError {
+public:
+    NgapError(const std::string &msg, const std::string &file, unsigned int line) :
+            BESInternalError("NgapError " + msg, file, line)
+    { }
 
-        virtual void dump(std::ostream &strm) const
-        {
-            strm << "NgapError::dump - (" << (void *) this << ")" << std::endl;
-            BESIndent::Indent();
-            BESError::dump(strm);
-            BESIndent::UnIndent();
-        }
+    ~NgapError() override = default;
 
-    };
+    void dump(std::ostream &strm) const override
+    {
+        strm << "NgapError::dump - (" << (void *) this << ")" << std::endl;
+        BESIndent::Indent();
+        BESInternalError::dump(strm);
+        BESIndent::UnIndent();
+    }
+};
 
 } /* namespace ngap */
 

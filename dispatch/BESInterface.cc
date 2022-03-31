@@ -41,13 +41,10 @@
 #include <unistd.h>
 #endif
 
-#include <setjmp.h> // Used for the timeout processing
+#include <csetjmp> // Used for the timeout processing
 
 #include <string>
 #include <sstream>
-//#include <iostream>
-
-#include <libdap/Error.h>
 
 #include "BESInterface.h"
 
@@ -55,13 +52,9 @@
 #include "BESResponseHandler.h"
 #include "BESContextManager.h"
 
-//#include "BESDapError.h"
-
 #include "BESTransmitterNames.h"
 #include "BESDataNames.h"
-//#include "BESTransmitterNames.h"
 #include "BESReturnManager.h"
-//#include "BESSyntaxUserError.h"
 
 #include "BESInfoList.h"
 #include "BESXMLInfo.h"
@@ -196,9 +189,10 @@ ostream &add_memory_info(ostream &out)
     return out;
 }
 
-static void log_error(BESError &e)
+static void log_error(const BESError &e)
 {
     string error_name;
+
     switch (e.get_bes_error_type()) {
     case BES_INTERNAL_FATAL_ERROR:
         error_name = "BES Internal Fatal Error";
@@ -210,7 +204,6 @@ static void log_error(BESError &e)
 
     case BES_SYNTAX_USER_ERROR:
         error_name = "BES User Syntax Error";
-        // only_log_to_verbose = false; // TODO Was 'true.' jhrg 11/14/17
         break;
 
     case BES_FORBIDDEN_ERROR:
@@ -219,7 +212,6 @@ static void log_error(BESError &e)
 
     case BES_NOT_FOUND_ERROR:
         error_name = "BES Not Found Error";
-        // only_log_to_verbose = false; // TODO was 'true.' jhrg 11/14/17
         break;
 
     default:
@@ -355,7 +347,7 @@ extern BESStopWatch *bes_timing::elapsedTimeToTransmitStart;
  * @param dhi The BESDataHandlerInterface object
  * @return
  */
-int BESInterface::handleException(BESError &e, BESDataHandlerInterface &dhi)
+int BESInterface::handleException(const BESError &e, BESDataHandlerInterface &dhi)
 {
     bool found = false;
     string context = BESContextManager::TheManager()->get_context("errors", found);
@@ -526,6 +518,7 @@ int BESInterface::execute_request(const string &from)
 
         d_dhi_ptr->executed = true;
     }
+#if 0
     catch (const libdap::Error &e) {
         timeout_jump_valid = false;
         string msg = string(__PRETTY_FUNCTION__)+  " - BES caught a libdap exception: " + e.get_error_message();
@@ -533,7 +526,8 @@ int BESInterface::execute_request(const string &from)
         BESInternalFatalError ex(msg, __FILE__, __LINE__);
         status = handleException(ex, *d_dhi_ptr);
     }
-    catch (BESError &e) {
+#endif
+    catch (const BESError &e) {
         timeout_jump_valid = false;
         BESDEBUG("bes",  string(__PRETTY_FUNCTION__) +  " - Caught BESError. msg: " << e.get_message() << endl );
         status = handleException(e, *d_dhi_ptr);

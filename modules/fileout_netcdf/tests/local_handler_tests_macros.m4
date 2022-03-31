@@ -2,6 +2,112 @@
 # Additional macros for the fileout_netcdf handler to use a special bes.conf
 # file tha include new parameters for HDF5. jhrg 3/18/2020
 
+# This new macro expects that the bes.conf file used with besstandalone will be
+# the second argument. This provides a more compact way to run tests with several
+# different bes.conf files. Using the "BES.Include = <other file>" we can tweak
+# parameters without copying the base bes.conf file. jhrg 3/11/22
+#
+# Usage: AT_BESCMD_BESCONF_RESPONSE_TEST([<bescmd file>], [<bes.conf>], [pass|xfail], [repeat|cached])
+# The last two params are optional.
+m4_define([AT_BESCMD_BESCONF_RESPONSE_TEST], [dnl
+
+    AT_SETUP([$1])
+    AT_KEYWORDS([bescmd])
+
+    input=$abs_srcdir/$1
+
+    # Here the bes_conf var is set using parameter number 2. This shadows the
+    # value that can be set using the optional -c (--conf) argument (see the top
+    # of this file). We might improve on this! jhrg 3/11/22
+    bes_conf=$abs_builddir/$2
+
+    # The baseline needs to contain something to tie it to the bes conf file since
+    # the same bescmd file may produce different output with a different bes conf.
+    baseline=$abs_srcdir/$1.$2.baseline
+
+    # Oddly, setting 'pass' to $3 and then using $pass in AT_XFAIL_IF() does not work,
+    # but using $3 does. This might be a function of when the AT_XFAIL_IF() macro is
+    # expanded. jhrg 3.20.20
+    pass=$3
+    repeat=$4
+
+    AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone $repeat -c $bes_conf -i $input], [], [stdout])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone $repeat -c $bes_conf -i $input], [], [stdout])
+        AT_CHECK([diff -b -B $baseline stdout])
+        AT_XFAIL_IF([test z$3 = zxfail])
+        ])
+
+    AT_CLEANUP
+])
+
+dnl This is similar to the "binary data" macro above, but instead assumes the
+dnl output of besstandalone is a netcdf3 file. The binary stream is read using
+dnl ncdump and the output of that is compared to a baseline. Of course, this
+dnl requires ncdump be accessible.
+dnl
+dnl Modified to take a bex.conf file as the second (required) parameter. jhrg 3/18/22
+
+# Usage: AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([<bescmd file>], [<bes.conf>], [pass|xfail], [repeat|cached])
+# The last two params are optional.
+m4_define([AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST],  [dnl
+
+    AT_SETUP([$1])
+    AT_KEYWORDS([bescmd data netcdf])
+
+    input=$abs_srcdir/$1
+
+    dnl By making this just $2 we can use exactly the same text as the original macro
+    dnl except for the bes_conf and baseline values - refactor.
+
+    bes_conf=$2
+    baseline=$abs_srcdir/$1.$2.baseline
+
+    repeat=$3
+
+    AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input > test.nc])
+
+        dnl first get the version number, then the header, then the data
+        AT_CHECK([ncdump -k test.nc > $baseline.ver.tmp])
+        AT_CHECK([ncdump -h test.nc > $baseline.header.tmp])
+        REMOVE_DATE_TIME([$baseline.header.tmp])
+        AT_CHECK([ncdump test.nc > $baseline.data.tmp])
+        REMOVE_DATE_TIME([$baseline.data.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input > test.nc])
+
+        AT_CHECK([ncdump -k test.nc > tmp])
+        AT_CHECK([diff -b -B $baseline.ver tmp])
+
+        AT_CHECK([ncdump -h test.nc > tmp])
+        REMOVE_DATE_TIME([tmp])
+        AT_CHECK([diff -b -B $baseline.header tmp])
+
+        AT_CHECK([ncdump test.nc > tmp])
+        REMOVE_DATE_TIME([tmp])
+        AT_CHECK([diff -b -B $baseline.data tmp])
+
+        AT_XFAIL_IF([test z$2 = zxfail])
+        ])
+
+    AT_CLEANUP
+])
+
 dnl Add NC4 enhanced macros, mainly I have to use another BES conf for these tests.
 dnl There may be a better approach. Handle them in the future if necessary. KY 2020-02-12
 m4_define([AT_BESCMD_RESPONSE_TEST_NC4_ENHANCED], [dnl
