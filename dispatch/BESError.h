@@ -80,8 +80,7 @@ public:
     BESError(std::string msg, unsigned int type, std::string file, unsigned int line) :
             _msg(std::move(msg)), _type(type), _file(std::move(file)), _line(line)
     { }
-
-
+    
     /**
      * @note Define this copy constructor as noexcept. See the web for why (e.g.,
      * https://stackoverflow.com/questions/28627348/noexcept-and-copy-move-constructors)
