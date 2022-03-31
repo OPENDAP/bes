@@ -140,7 +140,7 @@ protected:
 
     ~BESInterface() override = default;
 
-    static int handleException(BESError &e, BESDataHandlerInterface &dhi);
+    static int handleException(const BESError &e, BESDataHandlerInterface &dhi);
 
 public:
     // This is the point where BESServerHandler::execute(Connection *c) passes control

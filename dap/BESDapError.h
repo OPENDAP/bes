@@ -58,44 +58,24 @@ typedef int (*ptr_bes_ehm)(BESError &e, BESDataHandlerInterface &dhi);
  */
 class BESDapError: public BESError {
 private:
-    libdap::ErrorCode d_dap_error_code;
-
-protected:
-    BESDapError() : d_dap_error_code(unknown_error)
-    {
-    }
-
+    libdap::ErrorCode d_dap_error_code {unknown_error};
 
 public:
-    BESDapError(const string &s, bool fatal, libdap::ErrorCode ec, const string &file, int line);
+    BESDapError(std::string s, bool fatal, libdap::ErrorCode ec, std::string file, unsigned int line);
 
-    virtual ~BESDapError()
-    {
-    }
+    ~BESDapError() override = default;
 
-    //Deprecated because it's only available in this class.
+    /// Deprecated because it's only available in this class.
     /// @deprecated
     virtual int get_dap_error_code() const
     {
         return d_dap_error_code;
     }
 
-#if 0
-    virtual int get_bes_error_type()
-    {
-        return (int)d_dap_error_code;
-    }
-#endif
+    void dump(ostream &strm) const override;
 
-    virtual void dump(ostream &strm) const;
-
-    int convert_error_code(int error_code, int current_error_type);
-    int convert_error_code(int error_code, bool fatal);
-
-#if 0
-    static int handleException(BESError &e, BESDataHandlerInterface &dhi);
-#endif
-
+    static int convert_error_code(int error_code, int current_error_type);
+    static int convert_error_code(int error_code, bool fatal);
 };
 
 #endif // BESDapError_h_

@@ -39,25 +39,19 @@
  */
 class BESNotFoundError : public BESError
 {
-protected:
-      			BESNotFoundError() {}
 public:
-      			BESNotFoundError( const std::string &s,
-					  const std::string &file,
-					  unsigned int line )
-			    : BESError( s, BES_NOT_FOUND_ERROR,
-			                file, line ) {}
-    virtual		~BESNotFoundError() {}
+    BESNotFoundError(std::string s, std::string file, unsigned int line )
+        : BESError( std::move(s), BES_NOT_FOUND_ERROR, std::move(file), line ) {}
 
-    virtual void	dump( std::ostream &strm ) const
-			{
-			    strm << "BESNotFoundError::dump - ("
-			         << (void *)this << ")" << std::endl ;
-			    BESIndent::Indent() ;
-			    BESError::dump( strm ) ;
-			    BESIndent::UnIndent() ;
-			}
+    ~BESNotFoundError() override = default;
 
+    void dump( std::ostream &strm ) const override
+    {
+        strm << "BESNotFoundError::dump - (" << (void *)this << ")" << std::endl ;
+        BESIndent::Indent() ;
+        BESError::dump( strm ) ;
+        BESIndent::UnIndent() ;
+    }
 };
 
 #endif // BESNotFoundError_h_
