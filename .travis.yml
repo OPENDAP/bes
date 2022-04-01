@@ -123,6 +123,7 @@ before_script:
 
 stages:
   - name: build-and-package
+    if: branch = never
   - name: scan
     if:  branch = master
   - name: hyrax-olfs-trigger
@@ -226,7 +227,7 @@ jobs:
             make check -j16
             make coverage
           fi
-        - sonar-scanner -Dproject.settings=sonar-bes-modules.properties -Dsonar.login=$SONAR_MODULES_LOGIN
+        - sonar-scanner -X -Dproject.settings=sonar-bes-modules.properties -Dsonar.login=$SONAR_MODULES_LOGIN
         - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-modules | grep "QUALITY GATE PASS"
 
     - stage: scan
