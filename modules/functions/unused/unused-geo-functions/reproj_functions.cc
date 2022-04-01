@@ -325,7 +325,7 @@ void read_band_data(const Grid* g, const SizeBox &g_size, GDALRasterBand* band)
  * @param g Get data and attributes from this Grid
  * @return The GDAL Dataset
  */
-auto_ptr<GDALDataset> build_src_dataset(Grid *g)
+unique_ptr<GDALDataset> build_src_dataset(Grid *g)
 {
 	// FIXME Must determine which axes are lat and lon. jhrg 10/6/16
     Array *lat = static_cast<Array*>(*g->get_map_iter(0));
@@ -339,7 +339,7 @@ auto_ptr<GDALDataset> build_src_dataset(Grid *g)
         throw Error(string("Could not get the Memory driver for GDAL: ") + CPLGetLastErrorMsg());
 
     // The MEM driver takes no creation options (I think) jhrg 10/6/16
-    auto_ptr<GDALDataset> ds(driver->Create("result", g_size.x_size, g_size.y_size,
+    unique_ptr<GDALDataset> ds(driver->Create("result", g_size.x_size, g_size.y_size,
     		1 /* nBands*/, gdal_type, NULL /* driver_options */));
 
     // Get the one band for this dataset and load it with data
@@ -412,7 +412,7 @@ void warp_raster(GDALDataset *src_ds, GDALDataset *dst_ds)
 	GDALDestroyWarpOptions(psWarpOptions);
 }
 
-auto_ptr<GDALDataset> build_dst_dataset(const Grid *g)
+unique_ptr<GDALDataset> build_dst_dataset(const Grid *g)
 {
     GDALDriver *driver = GetGDALDriverManager()->GetDriverByName("MEM");
     if(!driver)
@@ -421,7 +421,7 @@ auto_ptr<GDALDataset> build_dst_dataset(const Grid *g)
     GDALDataType gdal_type = get_grid_type(g);
 
     // The MEM driver takes no creation options (I think) jhrg 10/6/16
-    auto_ptr<GDALDataset> ds(driver->Create("result", 10, 10,
+    unique_ptr<GDALDataset> ds(driver->Create("result", 10, 10,
             1 /* nBands*/, gdal_type, NULL /* driver_options */));
 
     return ds;
@@ -440,16 +440,16 @@ auto_ptr<GDALDataset> build_dst_dataset(const Grid *g)
 Grid *scale_dap_grid(Grid *src, GeoBox &bbox, SizeBox &size, const string &crs, const int interp)
 {
 	// Build GDALDataset for src
-	auto_ptr<GDALDataset> src_ds = build_src_dataset(src);
+	unique_ptr<GDALDataset> src_ds = build_src_dataset(src);
 
 	// Build GDALDaatset for result - Assume it's a double for now (jhrg 10/6/16)
-    auto_ptr<GDALDataset> dst_ds = build_dst_dataset(src);
+    unique_ptr<GDALDataset> dst_ds = build_dst_dataset(src);
 
 	// Call the GDAL warp code
     warp_raster(src_ds.get(), dst_ds.get());
 
 	// Build the result Grid using the result GDALDataset    GDALRasterBand *poBand = satDataSet->GetRasterBand(1);
-	//auto_ptr<Grid> dest(new Grid("result"));
+	//unique_ptr<Grid> dest(new Grid("result"));
 
 #if 0
      // Supported values:

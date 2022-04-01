@@ -31,6 +31,7 @@
 #ifndef ABSTRACTDATASET_H_
 #define ABSTRACTDATASET_H_
 
+#include <string>
 #include <vector>
 #include <memory>
 
@@ -53,27 +54,27 @@
 class AbstractDataset {
 
 protected:
-    auto_ptr<GDALDataset> maptr_DS;
+    std::unique_ptr<GDALDataset> maptr_DS;
 
     // Coverage Information Related
-    string ms_CoverageID;
-    string ms_CoverageBeginTime;
-    string ms_CoverageEndTime;
-    string ms_CoverageSubType;
-    string ms_CoverageArchiveTime;
-    string ms_CoveragePlatform;
-    string ms_CoverageInstrument;
-    string ms_CoverageSensor;
-    string ms_SrcFilename;
-    string ms_DatasetName;
-    string ms_DataTypeName;
-    string ms_NativeFormat;
-    string ms_FieldQuantityDef;
-    string ms_AllowRanges;
-    string ms_ISO19115Metadata;
+    std::string ms_CoverageID;
+    std::string ms_CoverageBeginTime;
+    std::string ms_CoverageEndTime;
+    std::string ms_CoverageSubType;
+    std::string ms_CoverageArchiveTime;
+    std::string ms_CoveragePlatform;
+    std::string ms_CoverageInstrument;
+    std::string ms_CoverageSensor;
+    std::string ms_SrcFilename;
+    std::string ms_DatasetName;
+    std::string ms_DataTypeName;
+    std::string ms_NativeFormat;
+    std::string ms_FieldQuantityDef;
+    std::string ms_AllowRanges;
+    std::string ms_ISO19115Metadata;
 
-    vector<int> mv_BandList;
-    vector<string> mv_MetaDataList;
+    std::vector<int> mv_BandList;
+    std::vector<std::string> mv_MetaDataList;
 
     double md_Geotransform[6];
     double md_GeoMinMax[4]; // Order: xmin, xmax, ymin, ymax
@@ -87,13 +88,13 @@ protected:
 protected:
     AbstractDataset();
     virtual CPLErr SetNativeCRS();
-    virtual CPLErr SetNativeCRS(string mktStr);
+    virtual CPLErr SetNativeCRS(std::string mktStr);
     virtual CPLErr SetGeoTransform();
     virtual CPLErr SetGDALDataset(const int isSimple = 0);
     virtual CPLErr SetMetaDataList(GDALDataset*);
 
 public:
-    AbstractDataset(const string&, vector<int> &);
+    AbstractDataset(const std::string&, std::vector<int> &);
     virtual ~AbstractDataset();
 
     GDALDataset* GetGDALDataset();
@@ -105,33 +106,33 @@ public:
     const OGRSpatialReference& GetNativeCRS();
     const double& GetMissingValue();
     int GetGeoTransform(double geoTrans[]);
-    vector<string> GetMetaDataList();
-    vector<int> GetBandList();
+    std::vector<std::string> GetMetaDataList();
+    std::vector<int> GetBandList();
     void GetNativeBBox(double bBox[]);
     CPLErr GetGeoMinMax(double geoMinMax[]);
 
     int GetImageBandCount();
     int GetImageXSize();
     int GetImageYSize();
-    string GetResourceFileName();
-    string GetDatasetName();
-    string GetDataTypeName();
-    string GetNativeFormat();
-    string GetCoverageID();
-    string GetDatasetDescription();
-    string GetNativeCRS_URN();
-    string GetGeoCRS_URN();
-    string GetProjectionRef();
-    string GetCoverageBeginTime();
-    string GetCoverageEndTime();
-    string GetCoverageSubType();
-    string GetFieldQuantityDef();
-    string GetAllowValues();
-    string GetISO19115Metadata();
-    string GetCoverageArchiveTime();
-    string GetCoveragePlatform();
-    string GetCoverageInstrument();
-    string GetCoverageSensor();
+    std::string GetResourceFileName();
+    std::string GetDatasetName();
+    std::string GetDataTypeName();
+    std::string GetNativeFormat();
+    std::string GetCoverageID();
+    std::string GetDatasetDescription();
+    std::string GetNativeCRS_URN();
+    std::string GetGeoCRS_URN();
+    std::string GetProjectionRef();
+    std::string GetCoverageBeginTime();
+    std::string GetCoverageEndTime();
+    std::string GetCoverageSubType();
+    std::string GetFieldQuantityDef();
+    std::string GetAllowValues();
+    std::string GetISO19115Metadata();
+    std::string GetCoverageArchiveTime();
+    std::string GetCoveragePlatform();
+    std::string GetCoverageInstrument();
+    std::string GetCoverageSensor();
 
     // Fetch Variables Status Related
     int IsbGeoTransformSet();

@@ -47,18 +47,13 @@ using namespace libdap;
 
 class DDSMemCacheTest: public TestFixture {
 private:
-    ObjMemCache *dds_cache;
-    DDS *dds;
+    ObjMemCache *dds_cache = nullptr;
+    DDS *dds = nullptr;
 
 public:
-    DDSMemCacheTest() :
-        dds_cache(0), dds(0)
-    {
-    }
+    DDSMemCacheTest() = default;
 
-    ~DDSMemCacheTest()
-    {
-    }
+    ~DDSMemCacheTest() override = default;
 
     void setUp()
     {
@@ -68,7 +63,7 @@ public:
 
         // Load in 10 DDS*s and then purge
         BaseTypeFactory factory;
-        auto_ptr<DDS> dds(new DDS(&factory, "empty_DDS"));
+        unique_ptr<DDS> dds(new DDS(&factory, "empty_DDS"));
 
         ostringstream oss;
         for (int i = 0; i < 10; ++i) {
@@ -114,7 +109,7 @@ public:
 
         const string name = "first DDS";
         BaseTypeFactory factory;
-        auto_ptr<DDS> dds(new DDS(&factory, "empty_DDS"));
+        unique_ptr<DDS> dds(new DDS(&factory, "empty_DDS"));
 
         cache->add(new DDS(*dds.get()), name);
 
@@ -165,6 +160,7 @@ public:
         string name = "0_DDS";
         CPPUNIT_ASSERT(dds_cache->index.find(name)->second == 1);
 
+        // dds here is a weak pointer. jhrg 3/30/22
         DDS *dds = static_cast<DDS*>(dds_cache->get(name));
 
         CPPUNIT_ASSERT(dds != 0);
@@ -190,7 +186,7 @@ public:
         CPPUNIT_ASSERT(dds_cache->index.size() == 7);
     }
 
-CPPUNIT_TEST_SUITE( DDSMemCacheTest );
+    CPPUNIT_TEST_SUITE( DDSMemCacheTest );
 
     CPPUNIT_TEST(ctor_test);
     CPPUNIT_TEST(add_one_test);
@@ -199,8 +195,7 @@ CPPUNIT_TEST_SUITE( DDSMemCacheTest );
     CPPUNIT_TEST(test_get_obj);
     CPPUNIT_TEST(remove_test);
 
-    CPPUNIT_TEST_SUITE_END()
-    ;
+    CPPUNIT_TEST_SUITE_END();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DDSMemCacheTest);
