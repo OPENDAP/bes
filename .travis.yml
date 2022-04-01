@@ -21,8 +21,6 @@ vm:
 
 language: cpp
 compiler: gcc
-node_js:
-  - lts/*
 
 branches:
   only:
@@ -123,7 +121,6 @@ before_script:
 
 stages:
   - name: build-and-package
-    if: branch = never
   - name: scan
     if:  branch = master
   - name: hyrax-olfs-trigger
