@@ -21,6 +21,8 @@ vm:
 
 language: cpp
 compiler: gcc
+node_js:
+  - lts/*
 
 branches:
   only:
