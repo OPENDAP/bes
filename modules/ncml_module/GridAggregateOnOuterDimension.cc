@@ -115,15 +115,17 @@ void GridAggregateOnOuterDimension::createRep(const AMDList& memberDatasets)
     BESDEBUG_FUNC(DEBUG_CHANNEL, "Replacing the Grid's data Array with an ArrayAggregateOnOuterDimension..." << endl);
 
     // This is the prototype we need.  It will have been set in the ctor.
-    Array* pArr = static_cast<Array*>(array_var());
+    const auto pArr = dynamic_cast<Array&>(*array_var());
     NCML_ASSERT_MSG(pArr, "Expected to find a contained data Array but we did not!");
 
     // Create the Grid version of the read getter and make a new AAOOD from our state.
-    std::auto_ptr<ArrayGetterInterface> arrayGetter(new TopLevelGridDataArrayGetter());
+    unique_ptr<ArrayGetterInterface> arrayGetter(new TopLevelGridDataArrayGetter());
 
     // Create the subclass that does the work and replace our data array with it.
     // Note this ctor will prepend the new dimension itself, so we do not.
-    std::auto_ptr<ArrayAggregateOnOuterDimension> aggDataArray(new ArrayAggregateOnOuterDimension(*pArr, // prototype, already should be setup properly _without_ the new dim
+    //
+    // pArr is a prototype, already should be setup properly _without_ the new dim
+    unique_ptr<ArrayAggregateOnOuterDimension> aggDataArray(new ArrayAggregateOnOuterDimension(pArr,
         memberDatasets, arrayGetter, _newDim));
 
     // Make sure null since sink function

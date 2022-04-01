@@ -66,7 +66,7 @@ namespace agg_util
     ArrayAggregationBase(
         const libdap::Array& granuleProto, // prototype for granule
         const AMDList& memberDatasets, // granule descs to use for the agg
-        std::auto_ptr<ArrayGetterInterface>& arrayGetter // way to get the data array
+        std::unique_ptr<ArrayGetterInterface>& arrayGetter // way to get the data array
         );
 
     ArrayAggregationBase(const ArrayAggregationBase& rhs);
@@ -149,7 +149,7 @@ namespace agg_util
 
     /**Gets the constrained, read data out
     for aggregating into this object. */
-    std::auto_ptr<ArrayGetterInterface> _pArrayGetter;
+    std::unique_ptr<ArrayGetterInterface> _pArrayGetter;
 
     /**
      * Entries contain information on loading the individual datasets

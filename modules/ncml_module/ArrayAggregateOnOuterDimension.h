@@ -93,7 +93,7 @@ public:
      *
      */
     ArrayAggregateOnOuterDimension(const libdap::Array& proto, const AMDList& memberDatasets,
-        std::auto_ptr<ArrayGetterInterface>& arrayGetter, const Dimension& newDim);
+        std::unique_ptr<ArrayGetterInterface>& arrayGetter, const Dimension& newDim);
 
     /** Construct from a copy */
     ArrayAggregateOnOuterDimension(const ArrayAggregateOnOuterDimension& proto);

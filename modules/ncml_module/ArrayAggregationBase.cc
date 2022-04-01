@@ -48,7 +48,7 @@ using namespace libdap;
 
 namespace agg_util {
 ArrayAggregationBase::ArrayAggregationBase(const libdap::Array& proto, const AMDList& aggMembers,
-    std::auto_ptr<ArrayGetterInterface>& arrayGetter) :
+    std::unique_ptr<ArrayGetterInterface>& arrayGetter) :
     Array(proto), _pSubArrayProto(static_cast<Array*>(const_cast<Array&>(proto).ptr_duplicate())),
     _pArrayGetter(arrayGetter), _datasetDescs(aggMembers)
 {
