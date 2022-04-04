@@ -29,9 +29,10 @@
 #ifndef __AGG_UTIL__AGG_MEMBER_DATASET_USING_LOCATION_REF_H__
 #define __AGG_UTIL__AGG_MEMBER_DATASET_USING_LOCATION_REF_H__
 
+#include <string>
+
 #include "AggMemberDatasetWithDimensionCacheBase.h"
 #include "DDSLoader.h"
-#include <string>
 
 class BESDataDDSResponse;
 
@@ -65,13 +66,13 @@ public:
     AggMemberDatasetUsingLocationRef(const AggMemberDatasetUsingLocationRef& proto);
     AggMemberDatasetUsingLocationRef& operator=(const AggMemberDatasetUsingLocationRef& rhs);
 
-    virtual ~AggMemberDatasetUsingLocationRef();
+    ~AggMemberDatasetUsingLocationRef() override;
 
     /** If not loaded yet, loads the DDS response,
      * then returns it.
      * @return the DDS for the location.
      */
-    virtual const libdap::DDS* getDDS();
+    const libdap::DDS* getDDS() override;
 
 private:
     // helpers
@@ -83,14 +84,13 @@ private:
     /** copy the local data rep from rhs */
     void copyRepFrom(const AggMemberDatasetUsingLocationRef& rhs);
 
-    void cleanup() throw ();
+    void cleanup() noexcept;
 
 private:
     DDSLoader _loader; // for loading
-    BESDataDDSResponse* _pDataResponse; // holds our loaded DDS
+    BESDataDDSResponse* _pDataResponse {nullptr}; // holds our loaded DDS
 
 };
-// class AggMemberDatasetUsingLocationRef
 
 }
 

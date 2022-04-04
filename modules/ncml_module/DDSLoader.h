@@ -125,7 +125,7 @@ public:
     /**
      * @brief Load and return a new DDX or DataDDS structure for the local dataset referred to by location.
      *
-     * Ownership of the response object passes to the caller via auto_ptr.
+     * Ownership of the response object passes to the caller via unique_ptr.
      *
      * On exception, the dhi will be restored when this is destructed, or the user
      * call directly call cleanup() to ensure this if they catch the exception and need the
@@ -139,7 +139,7 @@ public:
      *
      * @exception if the underlying location cannot be loaded.
      */
-    std::auto_ptr<BESDapResponse> load(const std::string& location, ResponseType type);
+    std::unique_ptr<BESDapResponse> load(const std::string& location, ResponseType type);
 #endif
 
     /** @brief Load a DDX or DataDDS response into the given pResponse object, which must be non-null.

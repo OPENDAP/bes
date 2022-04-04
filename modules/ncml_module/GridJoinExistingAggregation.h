@@ -57,7 +57,7 @@ public:
      * The caller will likely prepend it themselves as needed.
      * @return the new object wrapped as a source return.
      */
-    auto_ptr<ArrayJoinExistingAggregation> makeAggregatedOuterMapVector() const;
+    unique_ptr<ArrayJoinExistingAggregation> makeAggregatedOuterMapVector() const;
 
 protected:
     // subclass interface

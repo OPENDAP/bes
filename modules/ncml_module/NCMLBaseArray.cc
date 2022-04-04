@@ -52,7 +52,7 @@ namespace ncml_module {
  * the data, forcing us to call read() on a rename, thus breaking constraints.  To handle this
  * error, we copy the data into our NCMLArray<T> in order to handle the constraints ourselves.
  */
-auto_ptr< NCMLBaseArray >
+unique_ptr< NCMLBaseArray >
 NCMLBaseArray::createFromArray(const libdap::Array& protoC)
 {
     // The const in the signature means semantic const.  We promise not to change protoC,
@@ -66,9 +66,9 @@ NCMLBaseArray::createFromArray(const libdap::Array& protoC)
 
     // Factory up and test result
     string ncmlArrayType = "Array<" + pTemplate->type_name() + ">";
-    auto_ptr<libdap::BaseType> pNewBT = MyBaseTypeFactory::makeVariable(ncmlArrayType, proto.name());
+    unique_ptr<libdap::BaseType> pNewBT = MyBaseTypeFactory::makeVariable(ncmlArrayType, proto.name());
     VALID_PTR(pNewBT.get());
-    auto_ptr< NCMLBaseArray > pNewArray = auto_ptr< NCMLBaseArray > (dynamic_cast< NCMLBaseArray*>(pNewBT.release()));
+    unique_ptr< NCMLBaseArray > pNewArray = unique_ptr< NCMLBaseArray > (dynamic_cast< NCMLBaseArray*>(pNewBT.release()));
     VALID_PTR(pNewArray.get());
 
     // Finally, we should be able to copy the data now.

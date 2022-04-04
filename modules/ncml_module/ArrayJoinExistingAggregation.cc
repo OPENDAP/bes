@@ -52,8 +52,9 @@ static const bool PRINT_CONSTRAINTS = false;
 namespace agg_util {
 
 ArrayJoinExistingAggregation::ArrayJoinExistingAggregation(const libdap::Array& granuleTemplate,
-    const AMDList& memberDatasets, std::auto_ptr<ArrayGetterInterface>& arrayGetter, const Dimension& joinDim) :
-    ArrayAggregationBase(granuleTemplate, memberDatasets, arrayGetter), _joinDim(joinDim)
+    AMDList memberDatasets, std::unique_ptr<ArrayGetterInterface> arrayGetter, const Dimension& joinDim) :
+    ArrayAggregationBase(granuleTemplate, std::move(memberDatasets), std::move(arrayGetter)),
+    _joinDim(joinDim)
 {
     BESDEBUG_FUNC(DEBUG_CHANNEL, "Making the aggregated outer dimension be: " + joinDim.toString() + "\n");
 

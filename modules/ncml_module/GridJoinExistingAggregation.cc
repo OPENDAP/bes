@@ -81,7 +81,7 @@ GridJoinExistingAggregation::operator=(const GridJoinExistingAggregation& rhs)
     return *this;
 }
 
-auto_ptr<ArrayJoinExistingAggregation> GridJoinExistingAggregation::makeAggregatedOuterMapVector() const
+unique_ptr<ArrayJoinExistingAggregation> GridJoinExistingAggregation::makeAggregatedOuterMapVector() const
 {
     BESDEBUG_FUNC(DEBUG_CHANNEL, "Making an aggregated map " << "as a coordinate variable..." << endl);
     Grid* pGridGranuleTemplate = const_cast<GridJoinExistingAggregation*>(this)->getSubGridTemplate();
@@ -93,10 +93,10 @@ auto_ptr<ArrayJoinExistingAggregation> GridJoinExistingAggregation::makeAggregat
     // Make an array getter that pulls out the map array we are interested in.
     // Use the basic array getter to read and get from top level DDS.
     // N.B. Must use this->name() ie the gridname since that's what it will search!
-    auto_ptr<agg_util::ArrayGetterInterface> mapArrayGetter(new agg_util::TopLevelGridMapArrayGetter(name()));
+    unique_ptr<agg_util::ArrayGetterInterface> mapArrayGetter(new agg_util::TopLevelGridMapArrayGetter(name()));
 
-    auto_ptr<ArrayJoinExistingAggregation> pNewMap = auto_ptr<ArrayJoinExistingAggregation>(
-        new ArrayJoinExistingAggregation(*pMapTemplate, getDatasetList(), mapArrayGetter, _joinDim));
+    unique_ptr<ArrayJoinExistingAggregation> pNewMap = unique_ptr<ArrayJoinExistingAggregation>(
+        new ArrayJoinExistingAggregation(*pMapTemplate, getDatasetList(), std::move(mapArrayGetter), _joinDim));
 
     return pNewMap;
 }
@@ -164,22 +164,22 @@ void GridJoinExistingAggregation::createRep(const libdap::Grid& constProtoSubGri
     NCML_ASSERT_MSG(pArr, "Expected to find a contained data Array but we did not!");
 
     // Create the Grid version of the read getter and make a new AAOOD from our state.
-    std::auto_ptr<ArrayGetterInterface> arrayGetter(new TopLevelGridDataArrayGetter());
+    std::unique_ptr<ArrayGetterInterface> arrayGetter(new TopLevelGridDataArrayGetter());
 
     // Create the subclass that does the work and replace our data array with it.
     // Note this ctor will prepend the new dimension itself, so we do not.
-    std::auto_ptr<ArrayJoinExistingAggregation> aggDataArray(new ArrayJoinExistingAggregation(*pArr, // prototype, already should be setup properly _without_ the new dim
-        memberDatasets, arrayGetter, _joinDim));
+    std::unique_ptr<ArrayJoinExistingAggregation> aggDataArray(new ArrayJoinExistingAggregation(*pArr, // prototype, already should be setup properly _without_ the new dim
+        memberDatasets, std::move(arrayGetter), _joinDim));
 
     // Make sure null since sink function
-    // called on the auto_ptr
+    // called on the unique_ptr
     NCML_ASSERT(!(arrayGetter.get()));
 
     // Replace our data Array with this one.  Will delete old one and may throw.
     set_array(aggDataArray.get());
 
     // Release here on successful set since set_array uses raw ptr only.
-    // In case we threw then auto_ptr cleans up itself.
+    // In case we threw then unique_ptr cleans up itself.
     aggDataArray.release();
 }
 

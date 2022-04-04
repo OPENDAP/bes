@@ -135,11 +135,11 @@ DDSLoader::~DDSLoader()
 
 #if 0
 // Never used. 10/16/15 jhrg
-auto_ptr<BESDapResponse> DDSLoader::load(const string& location, ResponseType type)
+unique_ptr<BESDapResponse> DDSLoader::load(const string& location, ResponseType type)
 {
     // We need to make the proper response object as well, since in this call the dhi is coming in with the
     // response object for the original ncml request.
-    std::auto_ptr<BESDapResponse> response = makeResponseForType(type);
+    std::unique_ptr<BESDapResponse> response = makeResponseForType(type);
     loadInto(location, type, response.get());
     return response; // relinquish
 }

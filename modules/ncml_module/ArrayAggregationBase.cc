@@ -29,12 +29,13 @@
 
 #include "config.h"
 
+#include <libdap/Marshaller.h>
+#include <libdap/ConstraintEvaluator.h>
+
 #include "ArrayAggregationBase.h"
 #include "NCMLDebug.h"
 #include "BESDebug.h"
 #include "BESStopWatch.h"
-#include <libdap/Marshaller.h>
-#include <libdap/ConstraintEvaluator.h>
 
 // BES debug channel we output to
 static const string DEBUG_CHANNEL("agg_util");
@@ -42,22 +43,20 @@ static const string DEBUG_CHANNEL("agg_util");
 // Local flag for whether to print constraints, to help debugging
 static const bool PRINT_CONSTRAINTS = false;
 
-//using libdap::Array;
-
 using namespace libdap;
+using namespace std;
 
 namespace agg_util {
-ArrayAggregationBase::ArrayAggregationBase(const libdap::Array& proto, const AMDList& aggMembers,
-    std::unique_ptr<ArrayGetterInterface>& arrayGetter) :
-    Array(proto), _pSubArrayProto(static_cast<Array*>(const_cast<Array&>(proto).ptr_duplicate())),
-    _pArrayGetter(arrayGetter), _datasetDescs(aggMembers)
+ArrayAggregationBase::ArrayAggregationBase(const libdap::Array& proto, AMDList aggMembers, unique_ptr<ArrayGetterInterface> arrayGetter) :
+    Array(proto), _pSubArrayProto(dynamic_cast<Array*>(const_cast<Array&>(proto).ptr_duplicate())),
+    _pArrayGetter(std::move(arrayGetter)), _datasetDescs(std::move(aggMembers))
 {
 }
 
 ArrayAggregationBase::ArrayAggregationBase(const ArrayAggregationBase& rhs) :
-    Array(rhs), _pSubArrayProto(0) // duplicate() handles this
-        , _pArrayGetter(0) // duplicate() handles this
-        , _datasetDescs()
+    Array(rhs)// , _pSubArrayProto(0) // duplicate() handles this
+        //, _pArrayGetter(0) // duplicate() handles this
+        // , _datasetDescs()
 {
     BESDEBUG(DEBUG_CHANNEL, "ArrayAggregationBase() copy ctor called!" << endl);
     duplicate(rhs);
@@ -166,13 +165,20 @@ ArrayAggregationBase::getArrayGetterInterface() const
 void ArrayAggregationBase::duplicate(const ArrayAggregationBase& rhs)
 {
     // Clone the template if it isn't null.
-    std::auto_ptr<Array> pTemplateClone(
-        ((rhs._pSubArrayProto.get()) ? (static_cast<Array*>(rhs._pSubArrayProto->ptr_duplicate())) : (0)));
+#if 0
+    unique_ptr<Array> pTemplateClone(((rhs._pSubArrayProto.get()) ? (static_cast<Array*>(rhs._pSubArrayProto->ptr_duplicate())) : (nullptr)));
     _pSubArrayProto = pTemplateClone;
+#endif
+
+    // unique_ptr<Array> pTemplateClone();
+    _pSubArrayProto.reset(((rhs._pSubArrayProto.get()) ? (static_cast<Array*>(rhs._pSubArrayProto->ptr_duplicate())) : (nullptr)));
 
     // Clone the ArrayGetterInterface as well.
-    std::auto_ptr<ArrayGetterInterface> pGetterClone((rhs._pArrayGetter.get()) ? (rhs._pArrayGetter->clone()) : (0));
+#if 0
+    unique_ptr<ArrayGetterInterface> pGetterClone((rhs._pArrayGetter.get()) ? (rhs._pArrayGetter->clone()) : (nullptr));
     _pArrayGetter = pGetterClone;
+#endif
+    _pArrayGetter.reset(((rhs._pArrayGetter.get()) ? (rhs._pArrayGetter->clone()) : (nullptr)));
 
     // full copy, will do the proper thing with refcounts.
     _datasetDescs = rhs._datasetDescs;

@@ -26,16 +26,20 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 /////////////////////////////////////////////////////////////////////////////
+
 #include "config.h"
 
 #include "AggMemberDatasetUsingLocationRef.h"
 
 #include "BESDataDDSResponse.h" // bes
 #include <libdap/DDS.h> // libdap
+
 #include "NCMLDebug.h" // ncml_module
 #include "NCMLUtil.h" // ncml_module
 #include "BESDebug.h"
 #include "BESStopWatch.h"
+
+using namespace std;
 
 namespace agg_util {
 
@@ -51,7 +55,7 @@ AggMemberDatasetUsingLocationRef::~AggMemberDatasetUsingLocationRef()
 }
 
 AggMemberDatasetUsingLocationRef::AggMemberDatasetUsingLocationRef(const AggMemberDatasetUsingLocationRef& proto) :
-    RCObjectInterface(), AggMemberDatasetWithDimensionCacheBase(proto), _loader(proto._loader), _pDataResponse(0) // force a reload as needed for a copy
+    RCObjectInterface(), AggMemberDatasetWithDimensionCacheBase(proto), _loader(proto._loader) // force a reload as needed for a copy
 {
 }
 
@@ -95,7 +99,7 @@ void AggMemberDatasetUsingLocationRef::loadDDS()
     }
 
     // Make a new response and store the raw ptr, noting that we need to delete it in dtor.
-    std::auto_ptr<BESDapResponse> newResponse = _loader.makeResponseForType(DDSLoader::eRT_RequestDataDDS);
+    unique_ptr<BESDapResponse> newResponse = _loader.makeResponseForType(DDSLoader::eRT_RequestDataDDS);
 
     // static_cast should work here, but I want to be sure since DataDDX is in the works...
     _pDataResponse = dynamic_cast<BESDataDDSResponse*>(newResponse.get());
@@ -105,7 +109,7 @@ void AggMemberDatasetUsingLocationRef::loadDDS()
 
     // release after potential for exception to avoid double delete. Coverity reports
     // this as a leak, but the _loader.loadInto() method takes ownership. jhrg 2/7/17
-    newResponse.release();
+    (void) newResponse.release();
 
     BESDEBUG("ncml", "Loading loadDDS for aggregation member location = " << getLocation() << endl);
     _loader.loadInto(getLocation(), DDSLoader::eRT_RequestDataDDS, _pDataResponse);

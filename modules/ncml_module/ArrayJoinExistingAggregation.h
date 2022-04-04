@@ -60,8 +60,8 @@ public:
      *                cardinality) for the joinExisting
      *
      */
-    ArrayJoinExistingAggregation(const libdap::Array& granuleTemplate, const AMDList& memberDatasets,
-        std::auto_ptr<ArrayGetterInterface>& arrayGetter, const Dimension& joinDim);
+    ArrayJoinExistingAggregation(const libdap::Array& granuleTemplate, AMDList memberDatasets,
+        std::unique_ptr<ArrayGetterInterface> arrayGetter, const Dimension& joinDim);
 
     ArrayJoinExistingAggregation(const ArrayJoinExistingAggregation& rhs);
 

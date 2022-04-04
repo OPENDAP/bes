@@ -57,9 +57,9 @@ extern BESStopWatch *bes_timing::elapsedTimeToTransmitStart;
 namespace agg_util {
 
 ArrayAggregateOnOuterDimension::ArrayAggregateOnOuterDimension(const libdap::Array& proto,
-    const AMDList& memberDatasets, unique_ptr<ArrayGetterInterface>& arrayGetter, const Dimension& newDim) :
-    ArrayAggregationBase(proto, memberDatasets, arrayGetter) // no new dim yet in super chain
-        , _newDim(newDim)
+    AMDList memberDatasets, unique_ptr<ArrayGetterInterface> arrayGetter, const Dimension& newDim) :
+    ArrayAggregationBase(proto, std::move(memberDatasets),std::move(arrayGetter)), // no new dim yet in super chain
+    _newDim(newDim)
 {
     BESDEBUG(DEBUG_CHANNEL, "ArrayAggregateOnOuterDimension: ctor called!" << endl);
 

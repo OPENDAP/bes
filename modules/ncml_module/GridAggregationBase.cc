@@ -60,22 +60,18 @@ static const bool PRINT_CONSTRAINTS(false);
 #undef USE_LOCAL_TIMEOUT_SCHEME
 
 namespace agg_util {
-GridAggregationBase::GridAggregationBase(const libdap::Grid& proto, const AMDList& memberDatasets,
-    const DDSLoader& loaderProto) :
-    Grid(proto), _loader(loaderProto.getDHI()), _pSubGridProto(cloneSubGridProto(proto)), _memberDatasets(
-        memberDatasets)
+GridAggregationBase::GridAggregationBase(const libdap::Grid& proto, const AMDList& memberDatasets, const DDSLoader& loaderProto) :
+    Grid(proto), _loader(loaderProto.getDHI()), _pSubGridProto(cloneSubGridProto(proto)), _memberDatasets(memberDatasets)
 {
 }
 
-GridAggregationBase::GridAggregationBase(const string& name, const AMDList& memberDatasets,
-    const DDSLoader& loaderProto) :
-    Grid(name), _loader(loaderProto.getDHI()), _pSubGridProto(0), _memberDatasets(memberDatasets)
+GridAggregationBase::GridAggregationBase(const string& name, const AMDList& memberDatasets, const DDSLoader& loaderProto) :
+    Grid(name), _loader(loaderProto.getDHI()), _memberDatasets(memberDatasets)
 {
 }
 
 GridAggregationBase::GridAggregationBase(const GridAggregationBase& proto) :
-    Grid(proto), _loader(proto._loader.getDHI()), _pSubGridProto(0) // init below
-        , _memberDatasets()
+    Grid(proto), _loader(proto._loader.getDHI())
 {
     duplicate(proto);
 }
@@ -147,7 +143,7 @@ void GridAggregationBase::setShapeFrom(const libdap::Grid& constProtoSubGrid, bo
 
     // Save a clone of the template for read() to use.
     // We always use these maps...
-    _pSubGridProto = auto_ptr<Grid>(cloneSubGridProto(protoSubGrid));
+    _pSubGridProto = unique_ptr<Grid>(cloneSubGridProto(protoSubGrid));
 
     // Pass in the data array and maps from the proto by hand.
     Array* pDataArrayTemplate = protoSubGrid.get_array();
@@ -357,9 +353,12 @@ void GridAggregationBase::duplicate(const GridAggregationBase& rhs)
 {
     _loader = DDSLoader(rhs._loader.getDHI());
 
-    std::auto_ptr<Grid> pGridTemplateClone(
+#if 0
+    std::unique_ptr<Grid> pGridTemplateClone(
         ((rhs._pSubGridProto.get()) ? (static_cast<Grid*>(rhs._pSubGridProto->ptr_duplicate())) : (0)));
     _pSubGridProto = pGridTemplateClone;
+#endif
+    _pSubGridProto.reset((rhs._pSubGridProto.get()) ? (static_cast<Grid*>(rhs._pSubGridProto->ptr_duplicate())) : (nullptr));
 
     _memberDatasets = rhs._memberDatasets;
 }

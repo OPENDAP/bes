@@ -92,21 +92,21 @@ public:
      * @param newDim the new outer dimension this instance will add to the proto Array template
      *
      */
-    ArrayAggregateOnOuterDimension(const libdap::Array& proto, const AMDList& memberDatasets,
-        std::unique_ptr<ArrayGetterInterface>& arrayGetter, const Dimension& newDim);
+    ArrayAggregateOnOuterDimension(const libdap::Array& proto, AMDList memberDatasets,
+        std::unique_ptr<ArrayGetterInterface> arrayGetter, const Dimension& newDim);
 
     /** Construct from a copy */
     ArrayAggregateOnOuterDimension(const ArrayAggregateOnOuterDimension& proto);
 
     /** Destroy any local memory */
-    virtual ~ArrayAggregateOnOuterDimension();
+    ~ArrayAggregateOnOuterDimension() override;
 
     /**
      * Virtual Constructor: Make a deep copy (clone) of the object
      * and return it.
      * @return ptr to the cloned object.
      */
-    virtual ArrayAggregateOnOuterDimension* ptr_duplicate();
+    ArrayAggregateOnOuterDimension* ptr_duplicate() override;
 
     /**
      * Assign this from rhs object.
@@ -115,7 +115,7 @@ public:
      */
     ArrayAggregateOnOuterDimension& operator=(const ArrayAggregateOnOuterDimension& rhs);
 
-    virtual bool serialize(libdap::ConstraintEvaluator &eval, libdap::DDS &dds, libdap::Marshaller &m, bool ce_eval);
+    bool serialize(libdap::ConstraintEvaluator &eval, libdap::DDS &dds, libdap::Marshaller &m, bool ce_eval) override;
 
 protected:
     // Subclass Interface
@@ -135,14 +135,13 @@ private:
     void duplicate(const ArrayAggregateOnOuterDimension& rhs);
 
     /** Clear out any used memory */
-    void cleanup() throw ();
+    void cleanup() noexcept;
 
 private:
     // Data rep
 
     // The new outer dimension description
     Dimension _newDim;
-
 };
 // class ArrayAggregateOnOuterDimension
 
