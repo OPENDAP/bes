@@ -40,8 +40,10 @@
 // BES debug channel we output to
 static const string DEBUG_CHANNEL("agg_util");
 
+#if 0
 // Local flag for whether to print constraints, to help debugging
 static const bool PRINT_CONSTRAINTS = false;
+#endif
 
 using namespace libdap;
 using namespace std;
@@ -111,18 +113,22 @@ bool ArrayAggregationBase::read()
         return true;
     }
 
+#if 0
     if (PRINT_CONSTRAINTS) {
         BESDEBUG_FUNC(DEBUG_CHANNEL, "Constraints on this Array are:" << endl);
         printConstraints(*this);
     }
+#endif
 
     // call subclass impl
     transferOutputConstraintsIntoGranuleTemplateHook();
 
+#if 0
     if (PRINT_CONSTRAINTS) {
         BESDEBUG_FUNC(DEBUG_CHANNEL, "After transfer, constraints on the member template Array are: " << endl);
         printConstraints(getGranuleTemplateArray());
     }
+#endif
 
     // Call the subclass specific algorithms to do the read
     // and stream

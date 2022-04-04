@@ -53,7 +53,9 @@ using libdap::D4Map;
 
 // Local debug flags
 static const string DEBUG_CHANNEL("agg_util");
+#if 0
 static const bool PRINT_CONSTRAINTS(false);
+#endif
 
 // Timeouts are now handled in/by the BES framework in BESInterface.
 // jhrg 12/29/15
@@ -179,9 +181,11 @@ bool GridAggregationBase::read()
         return true;
     }
 
+#if 0
     if (PRINT_CONSTRAINTS) {
         printConstraints(*(get_array()));
     }
+#endif
 
     // Call the subclass hook methods to do this work properly
     readAndAggregateConstrainedMapsHook();
@@ -233,9 +237,11 @@ GridAggregationBase::serialize(libdap::ConstraintEvaluator &eval, libdap::DDS &d
     bool status = false;
 
     if (!read_p()) {
+#if 0
         if (PRINT_CONSTRAINTS) {
             printConstraints(*(get_array()));
         }
+#endif
 #if USE_LOCAL_TIMEOUT_SCHEME
         dds.timeout_on();
 #endif
@@ -279,11 +285,13 @@ GridAggregationBase::serialize(libdap::ConstraintEvaluator &eval, libdap::DDS &d
             // We don't want to touch the aggregation dimension since it's
             // handled specially.
             if (pOutMap->name() == getAggregationDimension().name) {
+#if 0
                 if (PRINT_CONSTRAINTS) {
                     BESDEBUG_FUNC(DEBUG_CHANNEL,
                         "About to call read() on the map for the new outer dimension name=" << getAggregationDimension().name << " It's constraints are:" << endl);
                     printConstraints(*pOutMap);
                 }
+#endif
 
                 // Make sure it's read with these constraints.
 #if PIPELINING
@@ -434,11 +442,13 @@ void GridAggregationBase::copyProtoMapsIntoThisGrid(const Dimension& aggDim)
         // We don't want to touch the aggregation dimension since it's
         // handled specially.
         if (pOutMap->name() == aggDim.name) {
+#if 0
             if (PRINT_CONSTRAINTS) {
                 BESDEBUG_FUNC(DEBUG_CHANNEL,
                     "About to call read() on the map for the new outer dimension name=" << aggDim.name << " It's constraints are:" << endl);
                 printConstraints(*pOutMap);
             }
+#endif
 
             // Make sure it's read with these constraints.
             pOutMap->read();

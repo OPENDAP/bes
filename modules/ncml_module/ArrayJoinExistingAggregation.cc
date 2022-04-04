@@ -42,8 +42,10 @@
 #include "AggregationUtil.h" // agg_util
 #include "NCMLDebug.h"
 
+#if 0
 // static const string DEBUG_CHANNEL(NCML_MODULE_DBG_CHANNEL_2);
 static const bool PRINT_CONSTRAINTS = false;
+#endif
 
 #define DEBUG_CHANNEL "ncml:2"
 
@@ -73,10 +75,12 @@ ArrayJoinExistingAggregation::ArrayJoinExistingAggregation(const libdap::Array& 
 
     ostringstream oss;
     AggregationUtil::printDimensions(oss, *this);
+#if 0
     if (PRINT_CONSTRAINTS) {
         // constraints as well to ensure reset worked.
         AggregationUtil::printConstraints(oss, *this);
     }
+#endif
     BESDEBUG_FUNC(DEBUG_CHANNEL, "Constrained Dims after set are: " + oss.str());
 }
 
