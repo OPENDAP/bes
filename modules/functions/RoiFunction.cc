@@ -90,13 +90,13 @@ function_dap2_roi(int argc, BaseType *argv[], DDS &, BaseType **btpp)
         rank = roi_valid_bbox(argv[argc-1]); // throws if slice is not valid
     }
 
-    auto_ptr<Structure> response(new Structure("roi_subset_unwrap"));
+    unique_ptr<Structure> response(new Structure("roi_subset_unwrap"));
 
-    Array *bbox = static_cast<Array*>(argv[argc-1]);
+    auto bbox = static_cast<Array*>(argv[argc-1]);
     // Loop over arguments
     for (int i = 0; i < argc-1; ++i) {
         // cast is safe given the above
-        Array *the_array = static_cast<Array*>(argv[i]);
+        auto the_array = static_cast<Array*>(argv[i]);
 
         // For each dimension of the array, apply the slice constraint.
         // Assume Array[]...[][X][Y] where the slice has dims X and Y
@@ -112,7 +112,7 @@ function_dap2_roi(int argc, BaseType *argv[], DDS &, BaseType **btpp)
             // start, stop, name are value-result parameters
             roi_bbox_get_slice_data(bbox, i, start, stop, name);
             // Loop over dimensions in argument
-            for (Array::Dim_iter iter = the_array->dim_begin(); iter< the_array->dim_end(); iter++){
+            for (auto iter = the_array->dim_begin(); iter< the_array->dim_end(); iter++){
                 string cname = the_array->dimension_name(iter);
                 if (the_array->dimension_name(iter) != name) continue;
                 the_array->add_constraint(iter, start, 1 /*stride*/, stop);
@@ -137,7 +137,6 @@ function_dap2_roi(int argc, BaseType *argv[], DDS &, BaseType **btpp)
     response->set_read_p(true);
 
     *btpp = response.release();
-    return;
 }
 
 /**
@@ -152,8 +151,6 @@ function_dap2_roi(int argc, BaseType *argv[], DDS &, BaseType **btpp)
 BaseType *function_dap4_roi(D4RValueList *, DMR &)
 {
     throw Error(malformed_expr, "Not yet implemented for DAP4 functions.");
-
-    return 0;
 }
 
 } // namesspace functions

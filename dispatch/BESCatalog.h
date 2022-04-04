@@ -55,10 +55,9 @@ private:
 
     BESCatalogUtils *d_utils;
 
-    BESCatalog();
-
 public:
-    BESCatalog(const std::string &catalog_name);
+    BESCatalog() = delete;
+    explicit BESCatalog(const std::string &catalog_name);
 
     virtual ~BESCatalog();
 #if 0
