@@ -86,14 +86,14 @@ m4_define([AT_BUILD_DMRPP_M],  [dnl
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
     [
         AT_CHECK([${build_dmrpp_cmd}], [], [stdout])
-        NORMAILZE_EXEC_NAME([stdout])
+        NORMALIZE_EXEC_NAME([stdout])
         REMOVE_PATH_COMPONENTS([stdout])
         REMOVE_VERSIONS([stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
         AT_CHECK([${build_dmrpp_cmd}], [], [stdout])
-        NORMAILZE_EXEC_NAME([stdout])
+        NORMALIZE_EXEC_NAME([stdout])
         REMOVE_PATH_COMPONENTS([stdout])
         REMOVE_VERSIONS([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
@@ -118,8 +118,8 @@ dnl Normalize binary name. Sometime the build_dmrpp program is named 'build_dmrp
 dnl other times it is named 'lt-build_dmrpp.' This ensure it always has the same name
 dnl in the baselines and test output.
 dml jhrg 11/22/21
-dnl Usage: NORMAILZE_EXEC_NAME(file_name)
-m4_define([NORMAILZE_EXEC_NAME], [dnl
+dnl Usage: NORMALIZE_EXEC_NAME(file_name)
+m4_define([NORMALIZE_EXEC_NAME], [dnl
     sed -e 's@/[[A-z0-9]][[-A-z0-9_/.]]*build_dmrpp @build_dmrpp @g' < $1 > $1.sed
     mv $1.sed $1
 ])
@@ -207,85 +207,92 @@ m4_define([REMOVE_VERSIONS], [dnl
 #
 
 m4_define([AT_GET_DMRPP_3_20],  [dnl
-        AT_SETUP([$1])
-AT_KEYWORDS([get_dmrpp data dap4 DAP4])
+    AT_SETUP([$1])
+    AT_KEYWORDS([get_dmrpp data dap4 DAP4])
+    
+    GET_DMRPP="${abs_top_builddir}/modules/dmrpp_module/data/get_dmrpp"
+    TEST_CONF="${abs_top_builddir}/modules/dmrpp_module/data/get_dmrpp_mkcheck.conf"
+    
+    chmod +x "${GET_DMRPP}"
+    ls -l "${GET_DMRPP}"
+    DATA_DIR="modules/dmrpp_module/data/dmrpp"
+    BASELINES_DIR="${abs_srcdir}/get_dmrpp"
+    
+    dnl Removed "readlink -f". Does not work on OSX 11.6.4. We use python for this same 
+    dnl operation in many of the tests (including dmrpp_module/tests) but python is referenced
+    dnl using ${PYTHON} because of python 2.7 versus 3.x issues, yet it seems to work for
+    dnl me now using both 2.7 and 3.x. I'm going to try a PR using just 'python' here.
+    dnl BES_DATA_ROOT=$(readlink -f "${abs_top_srcdir}")
+    dnl jhrg 4/4/22.
 
-GET_DMRPP="${abs_top_builddir}/modules/dmrpp_module/data/get_dmrpp"
-TEST_CONF="${abs_top_builddir}/modules/dmrpp_module/data/get_dmrpp_mkcheck.conf"
+    BES_DATA_ROOT=$(python -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))")
+    
+    input_file="${DATA_DIR}/$1"
+    baseline="${BASELINES_DIR}/$2"
+    params="$3"
 
-chmod +x "${GET_DMRPP}"
-ls -l "${GET_DMRPP}"
-DATA_DIR="modules/dmrpp_module/data/dmrpp"
-BASELINES_DIR="${abs_srcdir}/get_dmrpp"
-BES_DATA_ROOT=$(readlink -f "${abs_top_srcdir}")
-
-
-input_file="${DATA_DIR}/$1"
-baseline="${BASELINES_DIR}/$2"
-params="$3"
-
-export PATH=${abs_top_builddir}/standalone:$PATH
-
-TEST_CMD="${GET_DMRPP} -A -b ${BES_DATA_ROOT} ${params} ${input_file}"
-# TEST_CMD="${GET_DMRPP} -c ${TEST_CONF} -b ${BES_DATA_ROOT} ${params} ${input_file}" # disabled in favor of a single file solution. ndp 3/28/22
-
-AS_IF([test -z "$at_verbose"], [
-    echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
-    echo "#   abs_top_srcdir: ${abs_top_srcdir}"
-    echo "#       abs_srcdir: ${abs_srcdir}"
-    echo "#       top_srcdir: ${top_srcdir}"
-    echo "#         builddir: ${builddir}"
-    echo "#     abs_builddir: ${abs_builddir}"
-    echo "#     top_builddir: ${top_builddir}"
-    echo "# top_build_prefix: ${top_build_prefix}"
-    echo "# abs_top_builddir: ${abs_top_builddir}"
-    echo "#        GET_DMRPP: ${GET_DMRPP}"
-    echo "#    BES_DATA_ROOT: ${BES_DATA_ROOT}"
-    echo "#         DATA_DIR: ${DATA_DIR}"
-    echo "#    BASELINES_DIR: ${BASELINES_DIR}"
-    echo "#           arg #1: $1"
-    echo "#           arg #2: $2"
-    echo "#           arg #3: $3"
-    echo "#           arg #4: $4"
-    echo "#       input_file: ${input_file}"
-    echo "#         baseline: ${baseline}"
-    echo "#           params: ${params}"
-    echo "#         TEST_CMD: ${TEST_CMD}"
-])
-
-AS_IF([test -n "$baselines" -a x$baselines = xyes],
-[
-    AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp_baselines: Calling get_dmrpp application."])
-    AT_CHECK([${TEST_CMD}], [], [stdout], [stderr])
-    NORMAILZE_EXEC_NAME([stdout])
-    REMOVE_PATH_COMPONENTS([stdout])
-    REMOVE_VERSIONS([stdout])
-    REMOVE_BUILD_DMRPP_INVOCATION_ATTR([stdout])
-    AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp_baselines: Copying result to ${baseline}.tmp"])
-    AT_CHECK([mv stdout ${baseline}.tmp])
-],
-[
-    AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp: Calling get_dmrpp application."])
-    AT_CHECK([${TEST_CMD}], [], [stdout], [stderr])
-    NORMAILZE_EXEC_NAME([stdout])
-    REMOVE_PATH_COMPONENTS([stdout])
-    REMOVE_VERSIONS([stdout])
-    REMOVE_BUILD_DMRPP_INVOCATION_ATTR([stdout])
+    export PATH=${abs_top_builddir}/standalone:$PATH
+    
+    TEST_CMD="${GET_DMRPP} -A -b ${BES_DATA_ROOT} ${params} ${input_file}"
+    # TEST_CMD="${GET_DMRPP} -c ${TEST_CONF} -b ${BES_DATA_ROOT} ${params} ${input_file}" # disabled in favor of a single file solution. ndp 3/28/22
+    
     AS_IF([test -z "$at_verbose"], [
-        echo ""
         echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
-        echo "# get_dmrpp: Filtered stdout BEGIN"
-        echo "#"
-        cat stdout;
-        echo "#"
-        echo "# get_dmrpp: Filtered stdout END"
-        echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
+        echo "#   abs_top_srcdir: ${abs_top_srcdir}"
+        echo "#       abs_srcdir: ${abs_srcdir}"
+        echo "#       top_srcdir: ${top_srcdir}"
+        echo "#         builddir: ${builddir}"
+        echo "#     abs_builddir: ${abs_builddir}"
+        echo "#     top_builddir: ${top_builddir}"
+        echo "# top_build_prefix: ${top_build_prefix}"
+        echo "# abs_top_builddir: ${abs_top_builddir}"
+        echo "#        GET_DMRPP: ${GET_DMRPP}"
+        echo "#    BES_DATA_ROOT: ${BES_DATA_ROOT}"
+        echo "#         DATA_DIR: ${DATA_DIR}"
+        echo "#    BASELINES_DIR: ${BASELINES_DIR}"
+        echo "#           arg #1: $1"
+        echo "#           arg #2: $2"
+        echo "#           arg #3: $3"
+        echo "#           arg #4: $4"
+        echo "#       input_file: ${input_file}"
+        echo "#         baseline: ${baseline}"
+        echo "#           params: ${params}"
+        echo "#         TEST_CMD: ${TEST_CMD}"
     ])
-    AT_CHECK([diff -b -B ${baseline} stdout])
-    AT_XFAIL_IF([test z$4 = zxfail])
-])
-
-AT_CLEANUP
+    
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+    [
+        AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp_baselines: Calling get_dmrpp application."])
+        AT_CHECK([${TEST_CMD}], [], [stdout], [stderr])
+        NORMALIZE_EXEC_NAME([stdout])
+        REMOVE_PATH_COMPONENTS([stdout])
+        REMOVE_VERSIONS([stdout])
+        REMOVE_BUILD_DMRPP_INVOCATION_ATTR([stdout])
+        AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp_baselines: Copying result to ${baseline}.tmp"])
+        AT_CHECK([mv stdout ${baseline}.tmp])
+    ],
+    [
+        AS_IF([test -z "$at_verbose"], [echo "# get_dmrpp: Calling get_dmrpp application."])
+        AT_CHECK([${TEST_CMD}], [], [stdout], [stderr])
+        NORMALIZE_EXEC_NAME([stdout])
+        REMOVE_PATH_COMPONENTS([stdout])
+        REMOVE_VERSIONS([stdout])
+        REMOVE_BUILD_DMRPP_INVOCATION_ATTR([stdout])
+        AS_IF([test -z "$at_verbose"], [
+            echo ""
+            echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
+            echo "# get_dmrpp: Filtered stdout BEGIN"
+            echo "#"
+            cat stdout;
+            echo "#"
+            echo "# get_dmrpp: Filtered stdout END"
+            echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
+        ])
+        AT_CHECK([diff -b -B ${baseline} stdout])
+        AT_XFAIL_IF([test z$4 = zxfail])
+    ])
+    
+    AT_CLEANUP
 ])
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -316,11 +323,5 @@ m4_define([REMOVE_BUILD_DMRPP_INVOCATION_ATTR], [dnl
 # This one is too greedy, needit matches to the last </Attribute> closer not the next.
 # -e 's@<Attribute name="invocation" type="String">.*</Attribute>@<AttributeRemoved name="invocation" \/>@'
 #
-#
-#
-
 # 0,/Apple/{s/Apple/Banana/}
-
-
 # N; /\b(\w+)\s+\1\b/{=;p} ; D
-
