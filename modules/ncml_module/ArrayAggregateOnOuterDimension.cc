@@ -42,10 +42,13 @@
 #include "BESStopWatch.h"
 
 // BES debug channel we output to
-static const string DEBUG_CHANNEL("agg_util");
+// static const string DEBUG_CHANNEL("agg_util");
+#define DEBUG_CHANNEL "agg_util"
 
+#if 0
 // Local flag for whether to print constraints, to help debugging
 static const bool PRINT_CONSTRAINTS = false;
+#endif
 
 extern BESStopWatch *bes_timing::elapsedTimeToReadStart;
 extern BESStopWatch *bes_timing::elapsedTimeToTransmitStart;
@@ -142,18 +145,22 @@ bool ArrayAggregateOnOuterDimension::serialize(libdap::ConstraintEvaluator &eval
 
     if (!read_p()) {
 
+#if 0
         if (PRINT_CONSTRAINTS) {
             BESDEBUG_FUNC(DEBUG_CHANNEL, "Constraints on this Array are:" << endl);
             printConstraints(*this);
         }
+#endif
 
         // call subclass impl
         transferOutputConstraintsIntoGranuleTemplateHook();
 
+#if 0
         if (PRINT_CONSTRAINTS) {
             BESDEBUG_FUNC(DEBUG_CHANNEL, "After transfer, constraints on the member template Array are: " << endl);
             printConstraints(getGranuleTemplateArray());
         }
+#endif
 
         // outer one is the first in iteration
         const Array::dimension& outerDim = *(dim_begin());

@@ -42,8 +42,10 @@
 #include "AggregationUtil.h" // agg_util
 #include "NCMLDebug.h"
 
-static const string DEBUG_CHANNEL(NCML_MODULE_DBG_CHANNEL_2);
+// static const string DEBUG_CHANNEL(NCML_MODULE_DBG_CHANNEL_2);
 static const bool PRINT_CONSTRAINTS = false;
+
+#define DEBUG_CHANNEL "ncml:2"
 
 // Timeouts are now handled in/by the BES framework in BESInterface.
 // jhrg 12/29/15
@@ -142,18 +144,22 @@ bool ArrayJoinExistingAggregation::serialize(libdap::ConstraintEvaluator &eval, 
         // *** copy lines from AggregationBase::read() into here in place
         // *** of the call to read()
 
+#if 0
         if (PRINT_CONSTRAINTS) {
             BESDEBUG_FUNC(DEBUG_CHANNEL, "Constraints on this Array are:" << endl);
             printConstraints(*this);
         }
+#endif
 
         // call subclass impl
         transferOutputConstraintsIntoGranuleTemplateHook();
 
+#if 0
         if (PRINT_CONSTRAINTS) {
             BESDEBUG_FUNC(DEBUG_CHANNEL, "After transfer, constraints on the member template Array are: " << endl);
             printConstraints(getGranuleTemplateArray());
         }
+#endif
 
         // *** Inserted code from readConstrainedGranuleArraysAndAggregateDataHook here
 

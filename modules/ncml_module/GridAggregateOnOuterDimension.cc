@@ -58,7 +58,8 @@ namespace agg_util {
 // unused jhrg 4/16/14 static const bool PRINT_CONSTRAINTS = true;
 
 // BES Debug output channel for this file.
-static const string DEBUG_CHANNEL("ncml:2");
+// static const string DEBUG_CHANNEL("ncml:2");
+#define DEBUG_CHANNEL "ncml:2"
 
 // Copy local data
 void GridAggregateOnOuterDimension::duplicate(const GridAggregateOnOuterDimension& rhs)
