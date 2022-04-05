@@ -55,8 +55,8 @@ namespace agg_util
   {
   public:
     AggMemberDatasetSharedDDSWrapper();
-    AggMemberDatasetSharedDDSWrapper(const DDSAccessRCInterface* pDDSHolder);
-    virtual ~AggMemberDatasetSharedDDSWrapper();
+    explicit AggMemberDatasetSharedDDSWrapper(const DDSAccessRCInterface* pDDSHolder);
+    ~AggMemberDatasetSharedDDSWrapper() override;
 
     AggMemberDatasetSharedDDSWrapper(const AggMemberDatasetSharedDDSWrapper& proto);
     AggMemberDatasetSharedDDSWrapper& operator=(const AggMemberDatasetSharedDDSWrapper& that);
@@ -66,7 +66,7 @@ namespace agg_util
      * If the wrapped DDS is NOT a DataDDS, we return NULL!
      * @return null or the wrapped DataDDS
      */
-    virtual const libdap::DDS* getDDS();
+    const libdap::DDS* getDDS() override;
 
   private:
 

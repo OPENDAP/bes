@@ -79,7 +79,7 @@ NCML_SRCS = \
 		ValuesElement.cc \
 		VariableAggElement.cc \
 		VariableElement.cc \
-		XMLHelpers.cc 
+		XMLHelpers.cc
 
 NCML_HDRS = \
 		AggMemberDataset.h \

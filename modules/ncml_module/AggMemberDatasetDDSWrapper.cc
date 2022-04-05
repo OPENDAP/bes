@@ -32,73 +32,72 @@
 #include "DDSAccessInterface.h"
 #include "NCMLDebug.h"
 
-namespace agg_util
+namespace agg_util {
+AggMemberDatasetDDSWrapper::AggMemberDatasetDDSWrapper()
+        : AggMemberDatasetWithDimensionCacheBase("") // empty location for the wrapper
 {
-  AggMemberDatasetDDSWrapper::AggMemberDatasetDDSWrapper()
-  : AggMemberDatasetWithDimensionCacheBase("") // empty location for the wrapper
-  , _pDDSHolder(0) // NULL, really shouldn't create a default.
-  {
-  }
+}
 
-  AggMemberDatasetDDSWrapper::AggMemberDatasetDDSWrapper(const DDSAccessInterface* pDDSHolder)
-  : AggMemberDatasetWithDimensionCacheBase("") // empty location
-  , _pDDSHolder(pDDSHolder)
-  {
-  }
+AggMemberDatasetDDSWrapper::AggMemberDatasetDDSWrapper(const DDSAccessInterface *pDDSHolder)
+        : AggMemberDatasetWithDimensionCacheBase("") // empty location
+        , _pDDSHolder(pDDSHolder)
+{
+}
 
-  AggMemberDatasetDDSWrapper::~AggMemberDatasetDDSWrapper()
-  {
+AggMemberDatasetDDSWrapper::~AggMemberDatasetDDSWrapper()
+{
     BESDEBUG("ncml:memory", "~AggMemberDatasetDDSWrapper() called..." << endl);
     cleanup(); // will unref()
-  }
+}
 
-  AggMemberDatasetDDSWrapper::AggMemberDatasetDDSWrapper(const AggMemberDatasetDDSWrapper& proto)
-  : RCObjectInterface()
-  , AggMemberDatasetWithDimensionCacheBase(proto)
-  , _pDDSHolder(0)
-  {
+AggMemberDatasetDDSWrapper::AggMemberDatasetDDSWrapper(const AggMemberDatasetDDSWrapper &proto)
+        : //RCObjectInterface()
+        AggMemberDatasetWithDimensionCacheBase(proto)
+// , _pDDSHolder(0)
+{
     copyRepFrom(proto);
-  }
+}
 
-  AggMemberDatasetDDSWrapper&
-  AggMemberDatasetDDSWrapper::operator=(const AggMemberDatasetDDSWrapper& that)
-  {
-    if (this != &that)
-      {
+AggMemberDatasetDDSWrapper &
+AggMemberDatasetDDSWrapper::operator=(const AggMemberDatasetDDSWrapper &that)
+{
+    if (this != &that) {
         // deal with old reference
         cleanup();
         // super changes
         AggMemberDatasetWithDimensionCacheBase::operator=(that);
         // local changes
         copyRepFrom(that);
-      }
+    }
     return *this;
-  }
+}
 
 
-  const libdap::DDS*
-  AggMemberDatasetDDSWrapper::getDDS()
-  {
-    const libdap::DDS* pDDS = 0;
-    if (_pDDSHolder)
-      {
+const libdap::DDS *
+AggMemberDatasetDDSWrapper::getDDS()
+{
+    const libdap::DDS *pDDS = nullptr;
+    if (_pDDSHolder) {
         pDDS = _pDDSHolder->getDDS();
-      }
+    }
+    return pDDS;
+#if 0
     return dynamic_cast<const libdap::DDS *>(pDDS);
-  }
+#endif
+}
 
-  /////////////////////////////// Private Helpers ////////////////////////////////////
+/////////////////////////////// Private Helpers ////////////////////////////////////
 
-  void
-  AggMemberDatasetDDSWrapper::cleanup() throw()
-  {
-    _pDDSHolder = 0;
-  }
+void
+AggMemberDatasetDDSWrapper::cleanup() noexcept
+{
+    _pDDSHolder = nullptr;
+}
 
-  void
-  AggMemberDatasetDDSWrapper::copyRepFrom(const AggMemberDatasetDDSWrapper& rhs)
-  {
+void
+AggMemberDatasetDDSWrapper::copyRepFrom(const AggMemberDatasetDDSWrapper &rhs)
+{
     NCML_ASSERT(!_pDDSHolder);
     _pDDSHolder = rhs._pDDSHolder;
-  }
+}
 }

@@ -60,7 +60,7 @@ public:
      * If the wrapped DDS is NOT a DataDDS, we return NULL!
      * @return null or the wrapped DataDDS
      */
-    virtual const libdap::DDS* getDDS();
+    const libdap::DDS* getDDS() override;
 
 private:
 
@@ -69,9 +69,7 @@ private:
     void copyRepFrom(const AggMemberDatasetDDSWrapper& rhs);
 
     // data rep
-
-    const DDSAccessInterface* _pDDSHolder;
-
+    const DDSAccessInterface* _pDDSHolder {nullptr};
 };
 // class AggMemberDatasetDDSWrapper
 
