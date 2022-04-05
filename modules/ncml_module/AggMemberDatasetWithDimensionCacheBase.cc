@@ -62,7 +62,7 @@ static const string BES_CATALOG_ROOT("BES.Catalog.catalog.RootDirectory");
 #define MAX_DIMENSION_COUNT_KEY "NCML.DimensionCache.maxDimensions"
 #define DEFAULT_MAX_DIMENSIONS 100
 
-static const string DEBUG_CHANNEL("agg_util");
+#define DEBUG_CHANNEL "agg_util"
 
 namespace agg_util {
 

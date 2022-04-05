@@ -115,7 +115,7 @@ void AggMemberDatasetUsingLocationRef::loadDDS()
     _loader.loadInto(getLocation(), DDSLoader::eRT_RequestDataDDS, _pDataResponse);
 }
 
-void AggMemberDatasetUsingLocationRef::cleanup() throw ()
+void AggMemberDatasetUsingLocationRef::cleanup() noexcept
 {
     SAFE_DELETE(_pDataResponse);
 }

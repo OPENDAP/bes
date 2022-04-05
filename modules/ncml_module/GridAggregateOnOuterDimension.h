@@ -122,7 +122,7 @@ private:
     void duplicate(const GridAggregateOnOuterDimension& rhs);
 
     /** Delete any heap memory */
-    void cleanup() throw ();
+    void cleanup() noexcept;
 
     /**
      * Helper for constructor to create replace our data array

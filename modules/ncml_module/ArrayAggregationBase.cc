@@ -38,7 +38,7 @@
 #include "BESStopWatch.h"
 
 // BES debug channel we output to
-static const string DEBUG_CHANNEL("agg_util");
+#define DEBUG_CHANNEL "agg_util"
 
 #if 0
 // Local flag for whether to print constraints, to help debugging
@@ -190,7 +190,7 @@ void ArrayAggregationBase::duplicate(const ArrayAggregationBase& rhs)
     _datasetDescs = rhs._datasetDescs;
 }
 
-void ArrayAggregationBase::cleanup() throw ()
+void ArrayAggregationBase::cleanup() noexcept
 {
     _datasetDescs.clear();
     _datasetDescs.resize(0);

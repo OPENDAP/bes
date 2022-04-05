@@ -37,8 +37,6 @@
 using libdap::Array;
 using libdap::Grid;
 
-// unused jhrg 4/16/14 static const bool PRINT_CONSTRAINTS = true;
-// static const string DEBUG_CHANNEL("ncml:2");
 #define DEBUG_CHANNEL "ncml:2"
 
 namespace agg_util {
@@ -128,7 +126,7 @@ void GridJoinExistingAggregation::duplicate(const GridJoinExistingAggregation& r
     _joinDim = rhs._joinDim;
 }
 
-void GridJoinExistingAggregation::cleanup() throw ()
+void GridJoinExistingAggregation::cleanup() noexcept
 {
 }
 

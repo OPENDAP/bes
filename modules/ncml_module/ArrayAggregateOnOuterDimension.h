@@ -120,13 +120,13 @@ public:
 protected:
     // Subclass Interface
     /** Subclass hook for read() to copy granule constraints properly (inner dim ones). */
-    virtual void transferOutputConstraintsIntoGranuleTemplateHook();
+    void transferOutputConstraintsIntoGranuleTemplateHook() override;
 
     /** Actually go through the constraints and stream the correctly
      * constrained data into the superclass's output buffer for
      * serializing out.
      */
-    virtual void readConstrainedGranuleArraysAndAggregateDataHook();
+    void readConstrainedGranuleArraysAndAggregateDataHook() override;
 
 private:
     // Helper interface

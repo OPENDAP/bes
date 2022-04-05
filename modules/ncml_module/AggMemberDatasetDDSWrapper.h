@@ -49,8 +49,8 @@ class DDSAccessInterface;
 class AggMemberDatasetDDSWrapper: public AggMemberDatasetWithDimensionCacheBase {
 public:
     AggMemberDatasetDDSWrapper();
-    AggMemberDatasetDDSWrapper(const DDSAccessInterface* pDDSHolder);
-    virtual ~AggMemberDatasetDDSWrapper();
+    explicit AggMemberDatasetDDSWrapper(const DDSAccessInterface* pDDSHolder);
+    ~AggMemberDatasetDDSWrapper() override;
 
     AggMemberDatasetDDSWrapper(const AggMemberDatasetDDSWrapper& proto);
     AggMemberDatasetDDSWrapper& operator=(const AggMemberDatasetDDSWrapper& that);
@@ -64,7 +64,7 @@ public:
 
 private:
 
-    void cleanup() throw ();
+    void cleanup() noexcept;
 
     void copyRepFrom(const AggMemberDatasetDDSWrapper& rhs);
 

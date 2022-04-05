@@ -232,7 +232,7 @@ void NCMLBaseArray::copyLocalRepFrom(const NCMLBaseArray& proto)
 }
 
 /** Helper to destroy all the local data to pristine state. */
-void NCMLBaseArray::destroy() throw ()
+void NCMLBaseArray::destroy() noexcept
 {
     delete _noConstraints;
     _noConstraints = 0;

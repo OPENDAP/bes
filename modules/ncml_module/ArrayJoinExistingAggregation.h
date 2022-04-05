@@ -97,7 +97,7 @@ private:
     void duplicate(const ArrayJoinExistingAggregation& rhs);
 
     /** Clear any state from this */
-    void cleanup() throw ();
+    void cleanup() noexcept;
 
     /////////////////////////////////////////////////////////////////////////////
     // Data Rep

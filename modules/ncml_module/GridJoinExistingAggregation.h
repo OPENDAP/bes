@@ -74,7 +74,7 @@ private:
     void duplicate(const GridJoinExistingAggregation& rhs);
 
     /** Delete any heap memory */
-    void cleanup() throw ();
+    void cleanup() noexcept;
 
     /** Create the representation.
      * Replaces our data Array with an aggregating one.

@@ -37,25 +37,13 @@
 
 // only NCML backlinks we want in this agg_util class.
 #include "NCMLDebug.h" // BESDEBUG and throw macros
-#include "NCMLUtil.h" // SAFE_DELETE, NCMLUtil::getVariableNoRecurse
 #include "BESDebug.h"
 #include "BESStopWatch.h"
 
-// BES debug channel we output to
-// static const string DEBUG_CHANNEL("agg_util");
 #define DEBUG_CHANNEL "agg_util"
-
-#if 0
-// Local flag for whether to print constraints, to help debugging
-static const bool PRINT_CONSTRAINTS = false;
-#endif
 
 extern BESStopWatch *bes_timing::elapsedTimeToReadStart;
 extern BESStopWatch *bes_timing::elapsedTimeToTransmitStart;
-
-// Timeouts are now handled in/by the BES framework in BESInterface.
-// jhrg 12/29/15
-#undef USE_LOCAL_TIMEOUT_SCHEME
 
 namespace agg_util {
 
@@ -144,24 +132,8 @@ bool ArrayAggregateOnOuterDimension::serialize(libdap::ConstraintEvaluator &eval
     bes_timing::elapsedTimeToReadStart = 0;
 
     if (!read_p()) {
-
-#if 0
-        if (PRINT_CONSTRAINTS) {
-            BESDEBUG_FUNC(DEBUG_CHANNEL, "Constraints on this Array are:" << endl);
-            printConstraints(*this);
-        }
-#endif
-
         // call subclass impl
         transferOutputConstraintsIntoGranuleTemplateHook();
-
-#if 0
-        if (PRINT_CONSTRAINTS) {
-            BESDEBUG_FUNC(DEBUG_CHANNEL, "After transfer, constraints on the member template Array are: " << endl);
-            printConstraints(getGranuleTemplateArray());
-        }
-#endif
-
         // outer one is the first in iteration
         const Array::dimension& outerDim = *(dim_begin());
         BESDEBUG(DEBUG_CHANNEL,
@@ -191,14 +163,8 @@ bool ArrayAggregateOnOuterDimension::serialize(libdap::ConstraintEvaluator &eval
             AggMemberDataset& dataset = *((getDatasetList())[i]);
 
             try {
-#if USE_LOCAL_TIMEOUT_SCHEME
-                dds.timeout_on();
-#endif
                 Array* pDatasetArray = AggregationUtil::readDatasetArrayDataForAggregation(getGranuleTemplateArray(),
                     name(), dataset, getArrayGetterInterface(), DEBUG_CHANNEL);
-#if USE_LOCAL_TIMEOUT_SCHEME
-                dds.timeout_off();
-#endif
 #if PIPELINING
                 delete bes_timing::elapsedTimeToTransmitStart;
                 bes_timing::elapsedTimeToTransmitStart = 0;
@@ -254,8 +220,9 @@ void ArrayAggregateOnOuterDimension::duplicate(const ArrayAggregateOnOuterDimens
     _newDim = rhs._newDim;
 }
 
-void ArrayAggregateOnOuterDimension::cleanup() throw ()
+void ArrayAggregateOnOuterDimension::cleanup() noexcept
 {
+    // not implemented
 }
 
 /* virtual */
@@ -312,14 +279,6 @@ void ArrayAggregateOnOuterDimension::readConstrainedGranuleArraysAndAggregateDat
                 name(), // aggvar name
                 dataset, // Dataset who's DDS should be searched
                 getArrayGetterInterface(), DEBUG_CHANNEL);
-#if 0
-            // The code above is conceptually similar to this, but
-            // makes more efficient use of memory. jhrg8/18/15
-            Array* pDatasetArray = AggregationUtil::readDatasetArrayDataForAggregation(getGranuleTemplateArray(),
-                name(), dataset, getArrayGetterInterface(), DEBUG_CHANNEL);
-
-            this->set_value_slice_from_row_major_vector(*pDatasetArray, nextElementIndex);
-#endif
         }
         catch (agg_util::AggregationException& ex) {
             std::ostringstream oss;

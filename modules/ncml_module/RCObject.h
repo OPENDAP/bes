@@ -379,7 +379,7 @@ public:
     {
     }
 
-    virtual ~BadWeakPtr() throw ()
+    virtual ~BadWeakPtr() noexcept
     {
     }
 };

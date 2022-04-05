@@ -150,7 +150,7 @@ private:
     void copyLocalRepFrom(const NCMLBaseArray& proto);
 
     /** Destroy the data local to this class */
-    void destroy() throw ();
+    void destroy() noexcept;
 
 protected:
     // Data rep

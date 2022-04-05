@@ -52,14 +52,7 @@ using libdap::D4Maps;
 using libdap::D4Map;
 
 // Local debug flags
-static const string DEBUG_CHANNEL("agg_util");
-#if 0
-static const bool PRINT_CONSTRAINTS(false);
-#endif
-
-// Timeouts are now handled in/by the BES framework in BESInterface.
-// jhrg 12/29/15
-#undef USE_LOCAL_TIMEOUT_SCHEME
+#define DEBUG_CHANNEL "agg_util"
 
 namespace agg_util {
 GridAggregationBase::GridAggregationBase(const libdap::Grid& proto, const AMDList& memberDatasets, const DDSLoader& loaderProto) :
@@ -181,13 +174,7 @@ bool GridAggregationBase::read()
         return true;
     }
 
-#if 0
-    if (PRINT_CONSTRAINTS) {
-        printConstraints(*(get_array()));
-    }
-#endif
-
-    // Call the subclass hook methods to do this work properly
+   // Call the subclass hook methods to do this work properly
     readAndAggregateConstrainedMapsHook();
 
     // Now make the read call on the data array.
@@ -237,14 +224,6 @@ GridAggregationBase::serialize(libdap::ConstraintEvaluator &eval, libdap::DDS &d
     bool status = false;
 
     if (!read_p()) {
-#if 0
-        if (PRINT_CONSTRAINTS) {
-            printConstraints(*(get_array()));
-        }
-#endif
-#if USE_LOCAL_TIMEOUT_SCHEME
-        dds.timeout_on();
-#endif
         // Call the subclass hook methods to do this work properly
         // *** Replace Map code readAndAggregateConstrainedMapsHook();
 
@@ -285,14 +264,6 @@ GridAggregationBase::serialize(libdap::ConstraintEvaluator &eval, libdap::DDS &d
             // We don't want to touch the aggregation dimension since it's
             // handled specially.
             if (pOutMap->name() == getAggregationDimension().name) {
-#if 0
-                if (PRINT_CONSTRAINTS) {
-                    BESDEBUG_FUNC(DEBUG_CHANNEL,
-                        "About to call read() on the map for the new outer dimension name=" << getAggregationDimension().name << " It's constraints are:" << endl);
-                    printConstraints(*pOutMap);
-                }
-#endif
-
                 // Make sure it's read with these constraints.
 #if PIPELINING
                 pOutMap->serialize(eval, dds, m, ce_eval);
@@ -328,11 +299,7 @@ GridAggregationBase::serialize(libdap::ConstraintEvaluator &eval, libdap::DDS &d
             pOutMap->set_read_p(true);
         }
 
-        // *** End replaced Map code
-#if USE_LOCAL_TIMEOUT_SCHEME
-        dds.timeout_off();
-#endif
-        // Set the cache bit.
+       // Set the cache bit.
         set_read_p(true);
 
 #if PIPELINING
@@ -361,11 +328,6 @@ void GridAggregationBase::duplicate(const GridAggregationBase& rhs)
 {
     _loader = DDSLoader(rhs._loader.getDHI());
 
-#if 0
-    std::unique_ptr<Grid> pGridTemplateClone(
-        ((rhs._pSubGridProto.get()) ? (static_cast<Grid*>(rhs._pSubGridProto->ptr_duplicate())) : (0)));
-    _pSubGridProto = pGridTemplateClone;
-#endif
     _pSubGridProto.reset((rhs._pSubGridProto.get()) ? (static_cast<Grid*>(rhs._pSubGridProto->ptr_duplicate())) : (nullptr));
 
     _memberDatasets = rhs._memberDatasets;
@@ -442,14 +404,6 @@ void GridAggregationBase::copyProtoMapsIntoThisGrid(const Dimension& aggDim)
         // We don't want to touch the aggregation dimension since it's
         // handled specially.
         if (pOutMap->name() == aggDim.name) {
-#if 0
-            if (PRINT_CONSTRAINTS) {
-                BESDEBUG_FUNC(DEBUG_CHANNEL,
-                    "About to call read() on the map for the new outer dimension name=" << aggDim.name << " It's constraints are:" << endl);
-                printConstraints(*pOutMap);
-            }
-#endif
-
             // Make sure it's read with these constraints.
             pOutMap->read();
             continue;

@@ -41,7 +41,7 @@ namespace agg_util {
 class AggregationException: public std::runtime_error {
 public:
     AggregationException(const std::string& msg);
-    virtual ~AggregationException() throw ();
+    virtual ~AggregationException() noexcept;
 };
 // struct AggregationException
 
@@ -55,7 +55,7 @@ public:
     {
     }
 
-    virtual ~DimensionNotFoundException() throw ()
+    virtual ~DimensionNotFoundException() noexcept
     {
     }
 };
