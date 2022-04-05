@@ -65,7 +65,6 @@ NCML_SRCS = \
 		NetcdfElement.cc \
 		OtherXMLParser.cc \
 		RCObject.cc \
-		RCObjectInterface.cc \
 		ReadMetadataElement.cc \
 		RemoveElement.cc \
 		RenamedArrayWrapper.cc \
@@ -80,6 +79,9 @@ NCML_SRCS = \
 		VariableAggElement.cc \
 		VariableElement.cc \
 		XMLHelpers.cc
+
+# 		RCObjectInterface.cc
+
 
 NCML_HDRS = \
 		AggMemberDataset.h \

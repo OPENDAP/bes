@@ -26,6 +26,7 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 /////////////////////////////////////////////////////////////////////////////
+
 #include "AggMemberDatasetSharedDDSWrapper.h"
 #include <libdap/DDS.h> // libdap
 #include "DDSAccessInterface.h"
@@ -33,14 +34,12 @@
 
 namespace agg_util {
 AggMemberDatasetSharedDDSWrapper::AggMemberDatasetSharedDDSWrapper()
-        : AggMemberDatasetWithDimensionCacheBase("") // empty location for the wrapper
-        , _pDDSHolder(0) // NULL, really shouldn't create a default.
+        : AggMemberDatasetWithDimensionCacheBase("")
 {
 }
 
 AggMemberDatasetSharedDDSWrapper::AggMemberDatasetSharedDDSWrapper(const DDSAccessRCInterface *pDDSHolder)
-        : AggMemberDatasetWithDimensionCacheBase("") // empty location
-        , _pDDSHolder(pDDSHolder)
+        : AggMemberDatasetWithDimensionCacheBase(""), _pDDSHolder(pDDSHolder)
 {
     if (_pDDSHolder) {
         _pDDSHolder->ref();
@@ -54,7 +53,7 @@ AggMemberDatasetSharedDDSWrapper::~AggMemberDatasetSharedDDSWrapper()
 }
 
 AggMemberDatasetSharedDDSWrapper::AggMemberDatasetSharedDDSWrapper(const AggMemberDatasetSharedDDSWrapper &proto)
-        : RCObjectInterface(), AggMemberDatasetWithDimensionCacheBase(proto), _pDDSHolder(0)
+        : RCObjectInterface(), AggMemberDatasetWithDimensionCacheBase(proto) //, _pDDSHolder(0)
 {
     copyRepFrom(proto);
 }
@@ -77,11 +76,11 @@ AggMemberDatasetSharedDDSWrapper::operator=(const AggMemberDatasetSharedDDSWrapp
 const libdap::DDS *
 AggMemberDatasetSharedDDSWrapper::getDDS()
 {
-    const libdap::DDS *pDDS = 0;
+    const libdap::DDS *pDDS = nullptr;
     if (_pDDSHolder) {
         pDDS = _pDDSHolder->getDDS();
     }
-    return dynamic_cast<const libdap::DDS *>(pDDS);
+    return pDDS;
 }
 
 /////////////////////////////// Private Helpers ////////////////////////////////////
@@ -91,7 +90,7 @@ AggMemberDatasetSharedDDSWrapper::cleanup() throw()
 {
     if (_pDDSHolder) {
         _pDDSHolder->unref();
-        _pDDSHolder = 0;
+        _pDDSHolder = nullptr;
     }
 }
 
