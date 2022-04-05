@@ -188,7 +188,7 @@ get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
 
     if (H5Sselect_hyperslab(dspace, H5S_SELECT_SET, 
                            (const hsize_t *)&dyn_offset[0], &dyn_step[0],
-                            &dyn_count[0], NULL) < 0) {
+                            &dyn_count[0], nullptr) < 0) {
         H5Tclose(dtype);
         H5Tclose(memtype);
         H5Sclose(dspace);
