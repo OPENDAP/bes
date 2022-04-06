@@ -54,6 +54,8 @@ public:
         if (this == &rhs)
             return *this;
 
+        libdap::DDS::operator=(rhs);
+
         m_duplicate(rhs);
 
         return *this;
