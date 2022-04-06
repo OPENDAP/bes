@@ -84,7 +84,7 @@ int NCMLUtil::tokenizeChars(const string& str, vector<string>& tokens)
     tokens.resize(0);
     // push each char as a token
     for (unsigned int i = 0; i < str.size(); ++i) {
-        string val = "";
+        string val;
         val += str[i];
         tokens.push_back(val);
     }

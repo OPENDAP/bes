@@ -26,10 +26,9 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 /////////////////////////////////////////////////////////////////////////////
-#include "Dimension.h"
-#include "NCMLDebug.h"// the only NCML dep we allow...
 
-#include <iostream>
+#include "Dimension.h"
+
 #include <sstream>
 
 using std::string;
@@ -38,17 +37,8 @@ using std::vector;
 using std::ws;
 
 namespace agg_util {
-Dimension::Dimension() :
-    name(""), size(0), isShared(false), isSizeConstant(false)
-{
-}
-
-Dimension::Dimension(const string& nameArg, unsigned int sizeArg, bool isSharedArg, bool isSizeConstantArg) :
-    name(nameArg), size(sizeArg), isShared(isSharedArg), isSizeConstant(isSizeConstantArg)
-{
-}
-
-Dimension::~Dimension()
+Dimension::Dimension(string nameArg, unsigned int sizeArg, bool isSharedArg, bool isSizeConstantArg) :
+    name(std::move(nameArg)), size(sizeArg), isShared(isSharedArg), isSizeConstant(isSizeConstantArg)
 {
 }
 
@@ -75,40 +65,5 @@ std::istream& operator>>(std::istream& is, Dimension& dim)
     is >> ws >> dim.size >> ws;
     return is;
 }
-
-#if 0
-bool DimensionTable::findDimension(const std::string& name, Dimension* pOut) const
-{
-    bool foundIt = false;
-    vector<Dimension>::const_iterator endIt = _dimensions.end();
-    vector<Dimension>::const_iterator it;
-    for (it = _dimensions.begin(); it != endIt; ++it) {
-        if (it->name == name) {
-            if (pOut) {
-                *pOut = *it;
-            }
-            foundIt = true;
-            break;
-        }
-    }
-    return foundIt;
-}
-
-void DimensionTable::addDimensionUnique(const Dimension& dim)
-{
-    if (!findDimension(dim.name)) {
-        _dimensions.push_back(dim);
-    }
-    else {
-        BESDEBUG("ncml", "A dimension with name=" << dim.name << " already exists.  Not adding." << endl);
-    }
-}
-
-const std::vector<Dimension>&
-DimensionTable::getDimensions() const
-{
-    return _dimensions;
-}
-#endif
 
 }

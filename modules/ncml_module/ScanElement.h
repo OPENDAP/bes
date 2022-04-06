@@ -122,7 +122,7 @@ private:
     void initSimpleDateFormats(const std::string& dateFormatMark);
 
     /** delete _pDateFormat and _pISO8601 if needed. */
-    void deleteDateFormats() throw ();
+    void deleteDateFormats() noexcept;
 
     /** Apply the dateFormatMark and DateFormatters to the given
      * filename to extract the time.  Return this time as an

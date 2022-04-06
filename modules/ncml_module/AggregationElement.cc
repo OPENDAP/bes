@@ -26,6 +26,7 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 /////////////////////////////////////////////////////////////////////////////
+
 #include "config.h"
 
 #include <sstream>
@@ -58,8 +59,6 @@
 #include "BESDebug.h"
 #include "BESStopWatch.h"
 
-
-
 using agg_util::AggregationUtil;
 using agg_util::AggMemberDataset;
 using agg_util::AMDList;
@@ -67,7 +66,8 @@ using agg_util::ArrayAggregateOnOuterDimension;
 using agg_util::GridAggregateOnOuterDimension;
 using agg_util::ArrayJoinExistingAggregation;
 using agg_util::GridJoinExistingAggregation;
-using std::auto_ptr;
+
+using namespace std;
 
 namespace ncml_module {
 const string AggregationElement::_sTypeName = "aggregation";
@@ -849,16 +849,15 @@ void AggregationElement::processAggVarJoinNewForArray(DDS& aggDDS, const libdap:
     if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("AggregationElement::processJoinExistingOnAggVar", "");
 
     // Use the basic array getter to read adn get from top level DDS.
-    auto_ptr<agg_util::ArrayGetterInterface> arrayGetter(new agg_util::TopLevelArrayGetter());
+    unique_ptr<agg_util::ArrayGetterInterface> arrayGetter(new agg_util::TopLevelArrayGetter());
 
-    auto_ptr<ArrayAggregateOnOuterDimension> pAggArray(
-        new ArrayAggregateOnOuterDimension(arrayTemplate, memberDatasets, arrayGetter, // will xfer ownership
-            dim));
+    unique_ptr<ArrayAggregateOnOuterDimension> pAggArray(
+        new ArrayAggregateOnOuterDimension(arrayTemplate, memberDatasets, std::move(arrayGetter), dim));
 
     // Make sure we xfer ownership of contained dumb ptr.
-    NCML_ASSERT_MSG(!(arrayGetter.get()), "Expected auto_ptr owner xfer, failed!");
+    NCML_ASSERT_MSG(!(arrayGetter.get()), "Expected unique_ptr owner xfer, failed!");
 
-    // This will copy, auto_ptr will clear the prototype.
+    // This will copy, unique_ptr will clear the prototype.
     // NOTE: add_var() makes a copy.
     // OPTIMIZE change to add_var_no_copy when it exists.
     BESDEBUG("ncml",
@@ -869,9 +868,6 @@ void AggregationElement::processAggVarJoinNewForArray(DDS& aggDDS, const libdap:
     // ArrayAggregateOnOuterDimension or ArrayAggreagtionBase copy constructor, which
     // triggers a memory error deep in libdap::Array::Array(const Array&). See similar
     // changes below. This and related changes fix HYRAX-803. jhrg 8/3/18
-#if 0
-    aggDDS.add_var(pAggArray.get());
-#endif
 
     aggDDS.add_var_nocopy(pAggArray.release());
 }
@@ -882,22 +878,15 @@ void AggregationElement::processAggVarJoinNewForGrid(DDS& aggDDS, const Grid& gr
     BESStopWatch sw;
     if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("AggregationElement::processAggVarJoinNewForGrid", "");
 
-    auto_ptr<GridAggregateOnOuterDimension> pAggGrid(
+    unique_ptr<GridAggregateOnOuterDimension> pAggGrid(
         new GridAggregateOnOuterDimension(gridTemplate, dim, memberDatasets, _parser->getDDSLoader()));
 
-    // This will copy, auto_ptr will clear the prototype.
+    // This will copy, unique_ptr will clear the prototype.
     // OPTIMIZE change to add_var_no_copy when it exists.
     BESDEBUG("ncml",
         "Adding new GridAggregateOnOuterDimension with name=" << gridTemplate.name() << " to aggregated dataset!" << endl);
 
-#if 0
-    aggDDS.add_var(pAggGrid.get());
-#endif
-
     aggDDS.add_var_nocopy(pAggGrid.release());
-
-    // processParentDatasetCompleteForJoinNew() will
-    // make sure the correct new map vector gets added
 }
 
 void AggregationElement::processAggVarJoinExistingForArray(DDS& aggDDS, const libdap::Array& arrayTemplate,
@@ -908,24 +897,20 @@ void AggregationElement::processAggVarJoinExistingForArray(DDS& aggDDS, const li
     if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("AggregationElement::processAggVarJoinExistingForArray", "");
 
     // Use the basic array getter to read adn get from top level DDS.
-    auto_ptr<agg_util::ArrayGetterInterface> arrayGetter(new agg_util::TopLevelArrayGetter());
+    unique_ptr<agg_util::ArrayGetterInterface> arrayGetter(new agg_util::TopLevelArrayGetter());
 
-    auto_ptr<ArrayJoinExistingAggregation> pAggArray(
-        new ArrayJoinExistingAggregation(arrayTemplate, memberDatasets, arrayGetter, // will xfer ownership
+    unique_ptr<ArrayJoinExistingAggregation> pAggArray(
+        new ArrayJoinExistingAggregation(arrayTemplate, memberDatasets, std::move(arrayGetter),
             dim));
 
     // Make sure we xfer ownership of contained dumb ptr.
-    NCML_ASSERT_MSG(!(arrayGetter.get()), "Expected auto_ptr owner xfer, failed!");
+    NCML_ASSERT_MSG(!(arrayGetter.get()), "Expected unique_ptr owner xfer, failed!");
 
-    // This will copy, auto_ptr will clear the prototype.
+    // This will copy, unique_ptr will clear the prototype.
     // NOTE: add_var() makes a copy.
     // OPTIMIZE change to add_var_no_copy when it exists.
     BESDEBUG("ncml",
         "Adding new ArrayJoinExistingAggregation with name=" << arrayTemplate.name() << " to aggregated dataset!" << endl);
-
-#if 0
-    aggDDS.add_var(pAggArray.get());
-#endif
 
     aggDDS.add_var_nocopy(pAggArray.release());
 }
@@ -937,15 +922,11 @@ void AggregationElement::processAggVarJoinExistingForGrid(DDS& aggDDS, const Gri
     BESStopWatch sw;
     if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("AggregationElement::processAggVarJoinExistingForGrid", "");
 
-    auto_ptr<GridJoinExistingAggregation> pAggGrid(
+    unique_ptr<GridJoinExistingAggregation> pAggGrid(
         new GridJoinExistingAggregation(gridTemplate, memberDatasets, _parser->getDDSLoader(), dim));
 
     BESDEBUG("ncml",
         "Adding new GridJoinExistingAggregation with name=" << gridTemplate.name() << " to aggregated dataset!" << endl);
-
-#if 0
-    aggDDS.add_var(pAggGrid.get()); // will copy
-#endif
 
     aggDDS.add_var_nocopy(pAggGrid.release());
 }
@@ -1058,18 +1039,17 @@ void AggregationElement::processParentDatasetCompleteForJoinExisting()
     }
 
     // For the scope of the next loop, this will be filled
-    // with a new aggregated map variable when we fidnt he first Grid
-    // and then pCV will refer to it until the fucntion end.
+    // with a new aggregated map variable when we didn't find the first Grid
+    // and then pCV will refer to it until the function end.
     // If created, it will be used as the map vector for all Grid's.
-    auto_ptr<ArrayJoinExistingAggregation> pNewMap(0);
+    unique_ptr<ArrayJoinExistingAggregation> pNewMap;
 
     // For each aggVar:
     //    If it's a Grid, add the coordinate variable as a new map vector
     //                    since we left it out in the actual Grid until aggregated.
     //    If it's an Array, do nothing
-    AggVarIter it;
-    AggVarIter endIt = endAggVarIter();
-    for (it = beginAggVarIter(); it != endIt; ++it) {
+    auto endIt = endAggVarIter();
+    for (auto it = beginAggVarIter(); it != endIt; ++it) {
         const string& aggVar = *it;
         BaseType* pAggVar = AggregationUtil::getVariableNoRecurse(*pAggDDS, aggVar);
 
@@ -1084,13 +1064,13 @@ void AggregationElement::processParentDatasetCompleteForJoinExisting()
                 VALID_PTR(pNewMap.get());
 
                 // If there was a placeholder, we need to
-                // grab it's metadata as a changeset and replace
+                // grab its metadata as a changeset and replace
                 // the variable in the DDS with the new one.
                 if (placeholderExists) {
                     processPlaceholderCoordinateVariableForJoinExisting(*pDimNameVar, pNewMap.get());
                 }
 
-                // this will make a copy, so the auto_ptr is ok.
+                // this will make a copy, so the unique_ptr is ok.
                 AggregationUtil::addOrReplaceVariableForName(pAggDDS, *(pNewMap.get()));
 
                 // Use the new one as the coordinate variable for the maps below
@@ -1222,7 +1202,7 @@ AggregationElement::processDeferredCoordinateVariable(libdap::BaseType* pBT, con
     // Generate the c.v. as if we had no placeholder since pBT will be a scalar (shape cannot
     // be defined on it by ncml spec defn).
     // @OPTIMIZE try to refactor this to avoid unnecessary copies.
-    auto_ptr<Array> pNewArrCV = createCoordinateVariableForNewDimension(dim);
+    unique_ptr<Array> pNewArrCV = createCoordinateVariableForNewDimension(dim);
     NCML_ASSERT_MSG(pNewArrCV.get(), " createCoordinateVariableForNewDimension()"
         " returned null.");
 
@@ -1263,7 +1243,7 @@ AggregationElement::processDeferredCoordinateVariable(libdap::BaseType* pBT, con
     return pArrCV;
 }
 
-auto_ptr<libdap::Array> AggregationElement::createCoordinateVariableForNewDimension(
+unique_ptr<libdap::Array> AggregationElement::createCoordinateVariableForNewDimension(
     const agg_util::Dimension& dim) const
 {
     // Get the netcdf@coordValue or use the netcdf@location (or auto generate if empty() ).
@@ -1280,7 +1260,7 @@ auto_ptr<libdap::Array> AggregationElement::createCoordinateVariableForNewDimens
 libdap::Array*
 AggregationElement::createAndAddCoordinateVariableForNewDimension(DDS& dds, const agg_util::Dimension& dim)
 {
-    auto_ptr<libdap::Array> pNewCV = createCoordinateVariableForNewDimension(dim);
+    unique_ptr<libdap::Array> pNewCV = createCoordinateVariableForNewDimension(dim);
 
     // Make sure it did it
     NCML_ASSERT_MSG(pNewCV.get(),
@@ -1319,7 +1299,7 @@ AggregationElement::createAndAddCoordinateVariableForNewDimension(DDS& dds, cons
     return pCV;
 }
 
-auto_ptr<libdap::Array> AggregationElement::createCoordinateVariableForNewDimensionUsingCoordValue(
+unique_ptr<libdap::Array> AggregationElement::createCoordinateVariableForNewDimensionUsingCoordValue(
     const agg_util::Dimension& dim) const
 {
     NCML_ASSERT(_datasets.size() > 0);
@@ -1334,7 +1314,7 @@ auto_ptr<libdap::Array> AggregationElement::createCoordinateVariableForNewDimens
     }
 }
 
-auto_ptr<libdap::Array> AggregationElement::createCoordinateVariableForNewDimensionUsingCoordValueAsDouble(
+unique_ptr<libdap::Array> AggregationElement::createCoordinateVariableForNewDimensionUsingCoordValueAsDouble(
     const agg_util::Dimension& dim) const
 {
     vector<dods_float64> coords;
@@ -1357,7 +1337,7 @@ auto_ptr<libdap::Array> AggregationElement::createCoordinateVariableForNewDimens
 
     // If we got here, we have the array of coords.
     // So we need to make the proper array, fill it in, and return it.
-    auto_ptr<Array> pNewCV = MyBaseTypeFactory::makeArrayTemplateVariable("Array<Float64>", dim.name, true);
+    unique_ptr<Array> pNewCV = MyBaseTypeFactory::makeArrayTemplateVariable("Array<Float64>", dim.name, true);
     NCML_ASSERT_MSG(pNewCV.get(), "createCoordinateVariableForNewDimensionUsingCoordValueAsDouble: failed to create"
         " the new Array<Float64> for variable: " + dim.name);
     pNewCV->append_dim(dim.size, dim.name);
@@ -1365,7 +1345,7 @@ auto_ptr<libdap::Array> AggregationElement::createCoordinateVariableForNewDimens
     return pNewCV;
 }
 
-auto_ptr<libdap::Array> AggregationElement::createCoordinateVariableForNewDimensionUsingCoordValueAsString(
+unique_ptr<libdap::Array> AggregationElement::createCoordinateVariableForNewDimensionUsingCoordValueAsString(
     const agg_util::Dimension& dim) const
 {
     // I feel suitably dirty for cut and pasting this.
@@ -1387,7 +1367,7 @@ auto_ptr<libdap::Array> AggregationElement::createCoordinateVariableForNewDimens
     }
     // If we got here, we have the array of coords.
     // So we need to make the proper array, fill it in, and return it.
-    auto_ptr<Array> pNewCV = MyBaseTypeFactory::makeArrayTemplateVariable("Array<String>", dim.name, true);
+    unique_ptr<Array> pNewCV = MyBaseTypeFactory::makeArrayTemplateVariable("Array<String>", dim.name, true);
     NCML_ASSERT_MSG(pNewCV.get(), "createCoordinateVariableForNewDimensionUsingCoordValueAsString: failed to create"
         " the new Array<String> for variable: " + dim.name);
     pNewCV->append_dim(dim.size, dim.name);
@@ -1395,7 +1375,7 @@ auto_ptr<libdap::Array> AggregationElement::createCoordinateVariableForNewDimens
     return pNewCV;
 }
 
-auto_ptr<libdap::Array> AggregationElement::createCoordinateVariableForNewDimensionUsingLocation(
+unique_ptr<libdap::Array> AggregationElement::createCoordinateVariableForNewDimensionUsingLocation(
     const agg_util::Dimension& dim) const
 {
     // I feel suitably dirty for cut and pasting this.
@@ -1417,7 +1397,7 @@ auto_ptr<libdap::Array> AggregationElement::createCoordinateVariableForNewDimens
     }
     // If we got here, we have the array of coords.
     // So we need to make the proper array, fill it in, and return it.
-    auto_ptr<Array> pNewCV = MyBaseTypeFactory::makeArrayTemplateVariable("Array<String>", dim.name, true);
+    unique_ptr<Array> pNewCV = MyBaseTypeFactory::makeArrayTemplateVariable("Array<String>", dim.name, true);
     NCML_ASSERT_MSG(pNewCV.get(),
         "createCoordinateVariableForNewDimensionUsingCoordValueUsingLocation: failed to create"
             " the new Array<String> for variable: " + dim.name);
@@ -1544,7 +1524,7 @@ void AggregationElement::mergeDimensions(bool checkDimensionMismatch/*=true*/, c
     }
 }
 
-static const string COORDINATE_AXIS_TYPE_ATTR("_CoordinateAxisType");
+#define COORDINATE_AXIS_TYPE_ATTR "_CoordinateAxisType"
 void AggregationElement::addCoordinateAxisType(libdap::Array& rCV, const std::string& cat)
 {
     AttrTable& rAT = rCV.get_attr_table();

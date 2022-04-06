@@ -55,7 +55,7 @@ namespace ncml_module
         /** Construct a cache object to handle caching
          * for this manager.
          */
-        static std::auto_ptr<JoinExistingDimensionCache> makeCacheInstance(const std::string& sourceFile);
+        static std::unique_ptr<JoinExistingDimensionCache> makeCacheInstance(const std::string& sourceFile);
 
     }; // class JoinExistingDimensionCacheManager
 

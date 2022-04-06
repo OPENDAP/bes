@@ -48,10 +48,9 @@ namespace agg_util {
  */
 struct Dimension {
 public:
-    Dimension();
-    Dimension(const std::string& nameArg, unsigned int sizeArg, bool isSharedArg = false,
-        bool isSizeConstantArg = true);
-    ~Dimension();
+    Dimension() = default;
+    Dimension(std::string nameArg, unsigned int sizeArg, bool isSharedArg = false, bool isSizeConstantArg = true);
+    ~Dimension() = default;
 
     /** Dump to string and return (using operator<<) */
     std::string toString() const;
@@ -60,13 +59,13 @@ public:
     std::string name;
 
     // The cardinality of the dimension (number of elements)
-    unsigned int size;
+    unsigned int size {0};
 
     // Whether the dimension in considered as shared across objects
-    bool isShared;
+    bool isShared {false};
 
     // whether the size is allowed to change or not, important for joinExisting, e.g.
-    bool isSizeConstant;
+    bool isSizeConstant {false};
 };
 
 /** Dump to stream */
@@ -74,33 +73,6 @@ std::ostream& operator<<(std::ostream& os, const Dimension& dim);
 
 /* Read back in */
 std::istream& operator>>(std::istream& is, Dimension& dim);
-
-#if 0
-/** Container class for a table of dimensions for a given dataset */
-class DimensionTable {
-public:
-    DimensionTable(unsigned int capacity = 0);
-    ~DimensionTable();
-
-    void clear();
-
-    /** Add the dimension to the table if one with the same name doesn't already exist.
-     *  If a dimension with the same name is already there, it is NOT added.
-     */
-    void addDimensionUnique(const Dimension& dim);
-
-    /** Find the dimension with the given name.  If found,
-     * place it into pOut if pOut is non-null
-     * @return whether it was found
-     */
-    bool findDimension(const std::string& name, Dimension* pOut = 0) const;
-
-    const std::vector<Dimension>& getDimensions() const;
-
-private:
-    std::vector<Dimension> _dimensions;
-};
-#endif
 }
 
 #endif /* __AGG_UTIL__DIMENSION_H__ */
