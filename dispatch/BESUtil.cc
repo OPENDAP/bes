@@ -74,6 +74,28 @@ using namespace std;
 const string BES_KEY_TIMEOUT_CANCEL = "BES.CancelTimeoutOnSend";
 
 /**
+ * @brief Get the Resident Set Size in KB
+ * @return The RSS or 0 if getrusage() returns an error
+ */
+long
+BESUtil::get_current_memory_usage() noexcept
+{
+    struct rusage usage;
+    if (getrusage(RUSAGE_SELF, &usage) == 0) { // getrusage()  successful?
+#ifdef __APPLE__
+        // get the max size (man page says it is in bytes). This function returns the
+        // size in KB like Linux. jhrg 3/29/22
+        return usage.ru_maxrss / 1024;
+#else
+        return usage.ru_maxrss; // get the max size (man page says it is in kilobytes)
+#endif
+    }
+    else {
+        return 0;
+    }
+}
+
+/**
  * @brief If the string ends in a slash, remove it
  * This function works for empty strings (doing nothing). If the string
  * ends in a '/' it will be removed.

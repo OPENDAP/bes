@@ -45,11 +45,12 @@
 
 #include <string>
 #include <sstream>
+#include <algorithm>
 
 #include "BESInterface.h"
 
 #include "TheBESKeys.h"
-#include "BESResponseHandler.h"
+// jhrg 4/6/22 #include "BESResponseHandler.h"
 #include "BESContextManager.h"
 
 #include "BESTransmitterNames.h"
@@ -59,6 +60,7 @@
 #include "BESInfoList.h"
 #include "BESXMLInfo.h"
 
+#include "BESUtil.h"
 #include "BESDebug.h"
 #include "BESStopWatch.h"
 #include "BESTimeoutError.h"
@@ -146,10 +148,16 @@ static void register_signal_handler()
 
 static inline void downcase(string &s)
 {
+#if 0
     for (unsigned int i = 0; i < s.length(); i++)
         s[i] = tolower(s[i]);
+#endif
+    transform(s.begin(), s.end(), s.begin(),
+              [](unsigned char c) -> unsigned char { return std::toupper(c); });
 }
 
+#if 0
+// moved to BESUtil. jhrg 4/6/22
 /**
  * @brief Get the Resident Set Size in KB
  * @return The RSS or 0 if getrusage() returns an error
@@ -171,6 +179,7 @@ get_current_memory_usage() noexcept
         return 0;
     }
 }
+#endif
 
 /**
  * @brief Write a phrase that describes the current RSS for this process
@@ -178,7 +187,7 @@ get_current_memory_usage() noexcept
  */
 ostream &add_memory_info(ostream &out)
 {
-    long mem_size = get_current_memory_usage();
+    long mem_size = BESUtil::get_current_memory_usage();
     if (mem_size) {
         out << ", current memory usage is " << mem_size << " KB.";
     }

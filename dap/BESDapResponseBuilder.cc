@@ -85,6 +85,8 @@
 #include <libdap/util.h>
 // #include <d4_function/D4FunctionEvaluator.h>
 
+#include "DapUtils.h"
+
 #if USE_LOCAL_TIMEOUT_SCHEME
 #ifndef WIN32
 #include <libdap/SignalHandler.h>
@@ -1110,7 +1112,6 @@ BESDapResponseBuilder::intern_dap2_data(BESResponseObject *obj, BESDataHandlerIn
     return dds;
 }
 
-
 /**
  * Build the DAP2 data response.
  *
@@ -1204,9 +1205,11 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS **dds, Cons
 #endif
     }
 
-    // get the request size in kilobytes
-    long req_size = (*dds)->get_request_size_kb(true);
+    dap_utils::log_request_and_memory_size(dds);
 
+#if 0
+    // This change addresses an issue on OSX where the size returned by getrusage() is in bytes, not kb.
+    // The BESUtil::get_current_memory_usage() function sorts the problem. jhrg 4/6/22
     struct rusage usage;
     int usage_val;
     usage_val = getrusage(RUSAGE_SELF, &usage);
@@ -1218,6 +1221,7 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS **dds, Cons
     else { //if the getrusage() wasn't successful, only output the request size
         INFO_LOG(prolog << "request size: "<< req_size << "KB" << endl );
     }
+#endif
 
     data_stream << flush;
 
@@ -1321,9 +1325,9 @@ void BESDapResponseBuilder::send_dap2_data(BESDataHandlerInterface &dhi, DDS **d
 #endif
     }
 
-    // get the request size in kilobytes
-    long req_size = (*dds)->get_request_size_kb(true);
+    dap_utils::log_request_and_memory_size(dds);
 
+#if 0
     struct rusage usage;
     int usage_val;
     usage_val = getrusage(RUSAGE_SELF, &usage);
@@ -1335,6 +1339,7 @@ void BESDapResponseBuilder::send_dap2_data(BESDataHandlerInterface &dhi, DDS **d
     else { //if the getrusage() wasn't successful, only output the request size
         INFO_LOG(prolog << "request size: "<< req_size << "KB" << endl );
     }
+#endif
 
     data_stream << flush;
 
@@ -1478,6 +1483,7 @@ void BESDapResponseBuilder::send_dap4_data_using_ce(ostream &out, DMR &dmr, bool
         dmr.root()->set_send_p(true);
     }
 
+    dap_utils::log_request_and_memory_size(dmr);
     throw_if_dap4_response_too_big(dmr);
 
     // The following block is for debugging purpose. KY 05/13/2020
