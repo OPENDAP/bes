@@ -55,8 +55,8 @@ using libdap::DataDDS;
 using libdap::DDS;
 
 #if 0
-static const string BES_DATA_ROOT("BES.Data.RootDirectory");
-static const string BES_CATALOG_ROOT("BES.Catalog.catalog.RootDirectory");
+#define BES_DATA_ROOT "BES.Data.RootDirectory"
+#define BES_CATALOG_ROOT "BES.Catalog.catalog.RootDirectory"
 #endif
 
 #define MAX_DIMENSION_COUNT_KEY "NCML.DimensionCache.maxDimensions"

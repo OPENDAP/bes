@@ -810,7 +810,7 @@ int NCMLParser::tokenizeAttrValues(vector<string>& tokens, const string& values,
         BESDEBUG("ncml", "Got non-default separators for tokenize.  separator=\"" << separator << "\"" << endl);
     }
 
-    string msg = "";
+    string msg;
     for (unsigned int i = 0; i < tokens.size(); i++) {
         if (i > 0) {
             msg += ",";

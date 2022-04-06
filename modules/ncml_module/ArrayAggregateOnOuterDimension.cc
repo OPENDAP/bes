@@ -42,9 +42,6 @@
 
 #define DEBUG_CHANNEL "agg_util"
 
-extern BESStopWatch *bes_timing::elapsedTimeToReadStart;
-extern BESStopWatch *bes_timing::elapsedTimeToTransmitStart;
-
 namespace agg_util {
 
 ArrayAggregateOnOuterDimension::ArrayAggregateOnOuterDimension(const libdap::Array& proto,

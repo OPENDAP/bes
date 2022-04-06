@@ -86,7 +86,7 @@ AggMemberDatasetSharedDDSWrapper::getDDS()
 /////////////////////////////// Private Helpers ////////////////////////////////////
 
 void
-AggMemberDatasetSharedDDSWrapper::cleanup() throw()
+AggMemberDatasetSharedDDSWrapper::cleanup() noexcept
 {
     if (_pDDSHolder) {
         _pDDSHolder->unref();

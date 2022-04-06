@@ -81,9 +81,6 @@ AggMemberDatasetDDSWrapper::getDDS()
         pDDS = _pDDSHolder->getDDS();
     }
     return pDDS;
-#if 0
-    return dynamic_cast<const libdap::DDS *>(pDDS);
-#endif
 }
 
 /////////////////////////////// Private Helpers ////////////////////////////////////

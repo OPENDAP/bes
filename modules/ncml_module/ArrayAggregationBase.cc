@@ -171,19 +171,9 @@ ArrayAggregationBase::getArrayGetterInterface() const
 void ArrayAggregationBase::duplicate(const ArrayAggregationBase& rhs)
 {
     // Clone the template if it isn't null.
-#if 0
-    unique_ptr<Array> pTemplateClone(((rhs._pSubArrayProto.get()) ? (static_cast<Array*>(rhs._pSubArrayProto->ptr_duplicate())) : (nullptr)));
-    _pSubArrayProto = pTemplateClone;
-#endif
-
-    // unique_ptr<Array> pTemplateClone();
     _pSubArrayProto.reset(((rhs._pSubArrayProto.get()) ? (static_cast<Array*>(rhs._pSubArrayProto->ptr_duplicate())) : (nullptr)));
 
     // Clone the ArrayGetterInterface as well.
-#if 0
-    unique_ptr<ArrayGetterInterface> pGetterClone((rhs._pArrayGetter.get()) ? (rhs._pArrayGetter->clone()) : (nullptr));
-    _pArrayGetter = pGetterClone;
-#endif
     _pArrayGetter.reset(((rhs._pArrayGetter.get()) ? (rhs._pArrayGetter->clone()) : (nullptr)));
 
     // full copy, will do the proper thing with refcounts.

@@ -1525,7 +1525,7 @@ void AggregationElement::mergeDimensions(bool checkDimensionMismatch/*=true*/, c
     }
 }
 
-static const string COORDINATE_AXIS_TYPE_ATTR("_CoordinateAxisType");
+#define COORDINATE_AXIS_TYPE_ATTR "_CoordinateAxisType"
 void AggregationElement::addCoordinateAxisType(libdap::Array& rCV, const std::string& cat)
 {
     AttrTable& rAT = rCV.get_attr_table();

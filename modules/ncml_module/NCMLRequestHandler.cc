@@ -76,7 +76,7 @@ using namespace ncml_module;
 using namespace libdap;
 
 bool NCMLRequestHandler::_global_attributes_container_name_set = false;
-string NCMLRequestHandler::_global_attributes_container_name = "";
+string NCMLRequestHandler::_global_attributes_container_name;
 
 NCMLRequestHandler::NCMLRequestHandler(const string &name) :
     BESRequestHandler(name)

@@ -71,7 +71,7 @@ namespace agg_util
   private:
 
       // If _pDDSHolder, unref() and null it.
-      void cleanup() throw();
+      void cleanup() noexcept;
 
       // If rhs._pDDSHodler, we ref() it
       // and maintain an alias ourselves.
@@ -82,7 +82,7 @@ namespace agg_util
 
       // Invariant: If not-null, we maintain a strong ref() to it
       // and unref() in cleanup().
-      const DDSAccessRCInterface* _pDDSHolder;
+      const DDSAccessRCInterface* _pDDSHolder {nullptr};
 
   }; // class AggMemberDatasetSharedDDSWrapper
 

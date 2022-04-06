@@ -258,20 +258,20 @@ void DDSLoader::cleanup()
     ensureClean();
 }
 
-bool is_url(std::string location){
+bool is_url(const std::string &location) {
     std::string http("http://");
     std::string https("https://");
 
     // case insensitive check
     std::string tip = location.substr(0,http.size());
     std::transform(tip.begin(), tip.end(), tip.begin(), ::tolower);
-    bool result = http.compare(tip)==0;
+    bool result = http == tip; // http.compare(tip)==0;
 
     // case insensitive check
     tip = location.substr(0,https.size());
     std::transform(tip.begin(), tip.end(), tip.begin(), ::tolower);
 
-    result = result || http.compare(tip)==0;
+    result = result || http == tip; //http.compare(tip)==0;
 
     return result;
 }
@@ -297,8 +297,6 @@ DDSLoader::addNewContainerToStorage()
     }
 
     // Make a new symbol from the ncml filename
-    // NCML_ASSERT_MSG(_dhi.container, "DDSLoader::addNewContainerToStorage(): null container!");
-    // string newSymbol = _dhi.container->get_symbolic_name() + "_location_" + _filename;
     string newSymbol = getNextContainerName() + "__" + _filename;
 
     // this will throw an exception if the location isn't found in the
