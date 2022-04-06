@@ -417,7 +417,7 @@ private:
     }
 
     /** Helper to destroy all the local data to pristine state. */
-    void destroy() throw ()
+    void destroy() noexcept
     {
         delete _allValues;
         _allValues = 0;

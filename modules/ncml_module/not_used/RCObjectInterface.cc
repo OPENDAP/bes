@@ -31,8 +31,10 @@
 
 namespace agg_util {
 
+#if 0
 RCObjectInterface::~RCObjectInterface()
 {
 }
+#endif
 
 }

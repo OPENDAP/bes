@@ -61,7 +61,6 @@ namespace agg_util {
 
 class DDSLoader {
 private:
-
     // The dhi to use for the loading, passed in on creation.
     // Rep Invariant: the dhi state is the same on call exits as it was on call entry.
     BESDataHandlerInterface& _dhi;
@@ -92,7 +91,7 @@ public:
      * It can handle a DDX load or a DataDDS load.  The returned BesDapResponse will
      * be of the proper subclass. */
     enum ResponseType {
-        eRT_RequestDDX = 0, eRT_RequestDataDDS, eRT_Num
+        eRT_RequestDDX = 0, eRT_RequestDataDDS // Not used. jhrg 3/31/22 eRT_Num
     };
 
     /**
@@ -100,7 +99,7 @@ public:
      *
      * @param dhi DHI to hijack during load, needs to be a valid object for the scope of this object's life.
      */
-    DDSLoader(BESDataHandlerInterface &dhi);
+    explicit DDSLoader(BESDataHandlerInterface &dhi);
 
     DDSLoader(const DDSLoader& proto);
     DDSLoader& operator=(const DDSLoader&);
@@ -121,11 +120,12 @@ public:
     {
         return _dhi;
     }
+
 #if 0
     /**
      * @brief Load and return a new DDX or DataDDS structure for the local dataset referred to by location.
      *
-     * Ownership of the response object passes to the caller via auto_ptr.
+     * Ownership of the response object passes to the caller via unique_ptr.
      *
      * On exception, the dhi will be restored when this is destructed, or the user
      * call directly call cleanup() to ensure this if they catch the exception and need the
@@ -139,8 +139,9 @@ public:
      *
      * @exception if the underlying location cannot be loaded.
      */
-    std::auto_ptr<BESDapResponse> load(const std::string& location, ResponseType type);
+    std::unique_ptr<BESDapResponse> load(const std::string& location, ResponseType type);
 #endif
+
     /** @brief Load a DDX or DataDDS response into the given pResponse object, which must be non-null.
      *
      *  Similar to load(), but the caller passes in the response object to fill rather than wanting a new one.
@@ -172,7 +173,7 @@ public:
     //////////////////////// Public Class Methods ////////////////////////////////////////////////////////////////
 
     /** Make a new response object for the requested type. */
-    static std::auto_ptr<BESDapResponse> makeResponseForType(ResponseType type);
+    static std::unique_ptr<BESDapResponse> makeResponseForType(ResponseType type);
 
     /** Convert the type into the action in BESResponseNames.h for the type.
      *  @param type the response type

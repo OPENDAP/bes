@@ -145,13 +145,13 @@ NCMLParser::~NCMLParser()
     cleanup();
 }
 
-auto_ptr<BESDapResponse> NCMLParser::parse(const string& ncmlFilename, DDSLoader::ResponseType responseType)
+unique_ptr<BESDapResponse> NCMLParser::parse(const string& ncmlFilename, DDSLoader::ResponseType responseType)
 {
     // Parse into a newly created object.
-    auto_ptr<BESDapResponse> response = DDSLoader::makeResponseForType(responseType);
+    unique_ptr<BESDapResponse> response = DDSLoader::makeResponseForType(responseType);
 
-    // Parse into the response.  We still got it in the auto_ptr in this scope, so we're safe
-    // on exception since the auto_ptr in this func will cleanup the memory.
+    // Parse into the response.  We still got it in the unique_ptr in this scope, so we're safe
+    // on exception since the unique_ptr in this func will cleanup the memory.
     parseInto(ncmlFilename, responseType, response.get());
 
     // Relinquish it to the caller
@@ -810,7 +810,7 @@ int NCMLParser::tokenizeAttrValues(vector<string>& tokens, const string& values,
         BESDEBUG("ncml", "Got non-default separators for tokenize.  separator=\"" << separator << "\"" << endl);
     }
 
-    string msg = "";
+    string msg;
     for (unsigned int i = 0; i < tokens.size(); i++) {
         if (i > 0) {
             msg += ",";
@@ -1230,9 +1230,9 @@ bool NCMLParser::isParsingOtherXML() const
 
 void NCMLParser::cleanup()
 {
-    // The only memory we own is the _response, which is in an auto_ptr so will
+    // The only memory we own is the _response, which is in an unique_ptr so will
     // either be returned to caller in parse() and cleared, or else
-    // delete'd by our dtor via auto_ptr
+    // delete'd by our dtor via unique_ptr
 
     // All other objects point into _response temporarily, so nothing to destroy there.
 

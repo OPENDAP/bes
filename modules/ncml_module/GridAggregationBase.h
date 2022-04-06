@@ -66,11 +66,11 @@ public:
 
     GridAggregationBase(const GridAggregationBase& proto);
 
-    virtual ~GridAggregationBase();
+    ~GridAggregationBase() override;
 
     GridAggregationBase& operator=(const GridAggregationBase& rhs);
 
-    virtual void  transform_to_dap4(libdap::D4Group *root, libdap::Constructor *container);
+    void  transform_to_dap4(libdap::D4Group *root, libdap::Constructor *container) override;
 
     /**
      * Use the data array and maps from protoSubGrid as the initial
@@ -100,9 +100,9 @@ public:
      * than overriding this function!
      * @return success.
      */
-    virtual bool read();
+    bool read() override;
 
-    virtual bool serialize(libdap::ConstraintEvaluator &eval, libdap::DDS &dds, libdap::Marshaller &m, bool ce_eval);
+    bool serialize(libdap::ConstraintEvaluator &eval, libdap::DDS &dds, libdap::Marshaller &m, bool ce_eval) override;
 
 
 protected:
@@ -164,12 +164,12 @@ private:
 private:
     // data rep
 
-    // Use this to laod the member datasets as needed
+    // Use this to load the member datasets as needed
     DDSLoader _loader;
 
     // A template for the unaggregated (sub) Grids.
     // It will be used to validate other datasets as they are loaded.
-    std::auto_ptr<Grid> _pSubGridProto;
+    std::unique_ptr<Grid> _pSubGridProto;
 
     // Maintain a copy here... we may want to move this down...
     AMDList _memberDatasets;

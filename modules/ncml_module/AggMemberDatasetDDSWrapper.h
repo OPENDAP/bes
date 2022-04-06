@@ -49,8 +49,8 @@ class DDSAccessInterface;
 class AggMemberDatasetDDSWrapper: public AggMemberDatasetWithDimensionCacheBase {
 public:
     AggMemberDatasetDDSWrapper();
-    AggMemberDatasetDDSWrapper(const DDSAccessInterface* pDDSHolder);
-    virtual ~AggMemberDatasetDDSWrapper();
+    explicit AggMemberDatasetDDSWrapper(const DDSAccessInterface* pDDSHolder);
+    ~AggMemberDatasetDDSWrapper() override;
 
     AggMemberDatasetDDSWrapper(const AggMemberDatasetDDSWrapper& proto);
     AggMemberDatasetDDSWrapper& operator=(const AggMemberDatasetDDSWrapper& that);
@@ -60,18 +60,16 @@ public:
      * If the wrapped DDS is NOT a DataDDS, we return NULL!
      * @return null or the wrapped DataDDS
      */
-    virtual const libdap::DDS* getDDS();
+    const libdap::DDS* getDDS() override;
 
 private:
 
-    void cleanup() throw ();
+    void cleanup() noexcept;
 
     void copyRepFrom(const AggMemberDatasetDDSWrapper& rhs);
 
     // data rep
-
-    const DDSAccessInterface* _pDDSHolder;
-
+    const DDSAccessInterface* _pDDSHolder {nullptr};
 };
 // class AggMemberDatasetDDSWrapper
 
