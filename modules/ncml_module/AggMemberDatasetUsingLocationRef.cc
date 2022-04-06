@@ -99,7 +99,7 @@ void AggMemberDatasetUsingLocationRef::loadDDS()
     }
 
     // Make a new response and store the raw ptr, noting that we need to delete it in dtor.
-    unique_ptr<BESDapResponse> newResponse = _loader.makeResponseForType(DDSLoader::eRT_RequestDataDDS);
+    unique_ptr<BESDapResponse> newResponse = agg_util::DDSLoader::makeResponseForType(DDSLoader::eRT_RequestDataDDS);
 
     // static_cast should work here, but I want to be sure since DataDDX is in the works...
     _pDataResponse = dynamic_cast<BESDataDDSResponse*>(newResponse.get());
@@ -123,7 +123,7 @@ void AggMemberDatasetUsingLocationRef::cleanup() noexcept
 void AggMemberDatasetUsingLocationRef::copyRepFrom(const AggMemberDatasetUsingLocationRef& rhs)
 {
     _loader = rhs._loader;
-    _pDataResponse = 0; // force this to be NULL... we want to reload if we get an assignment
+    _pDataResponse = nullptr; // force this to be NULL... we want to reload if we get an assignment
 }
 
 }

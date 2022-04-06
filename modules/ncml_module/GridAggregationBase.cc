@@ -328,7 +328,7 @@ void GridAggregationBase::duplicate(const GridAggregationBase& rhs)
 {
     _loader = DDSLoader(rhs._loader.getDHI());
 
-    _pSubGridProto.reset((rhs._pSubGridProto.get()) ? (static_cast<Grid*>(rhs._pSubGridProto->ptr_duplicate())) : (nullptr));
+    _pSubGridProto.reset((rhs._pSubGridProto.get()) ? (static_cast<Grid*>(rhs._pSubGridProto->ptr_duplicate())) : nullptr);
 
     _memberDatasets = rhs._memberDatasets;
 }

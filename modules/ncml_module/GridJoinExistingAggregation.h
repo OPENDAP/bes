@@ -74,7 +74,7 @@ private:
     void duplicate(const GridJoinExistingAggregation& rhs);
 
     /** Delete any heap memory */
-    void cleanup() noexcept;
+    void cleanup() const noexcept;
 
     /** Create the representation.
      * Replaces our data Array with an aggregating one.
@@ -88,7 +88,6 @@ private:
     void transferConstraintsToSubGridMaps(Grid* pSubGrid);
     void transferConstraintsToSubGridArray(Grid* pSubGrid);
 
-private:
     // Data Rep
 
     Dimension _joinDim;

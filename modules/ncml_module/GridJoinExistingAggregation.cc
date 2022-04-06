@@ -94,8 +94,8 @@ unique_ptr<ArrayJoinExistingAggregation> GridJoinExistingAggregation::makeAggreg
     // N.B. Must use this->name() ie the gridname since that's what it will search!
     unique_ptr<agg_util::ArrayGetterInterface> mapArrayGetter(new agg_util::TopLevelGridMapArrayGetter(name()));
 
-    unique_ptr<ArrayJoinExistingAggregation> pNewMap = unique_ptr<ArrayJoinExistingAggregation>(
-        new ArrayJoinExistingAggregation(*pMapTemplate, getDatasetList(), std::move(mapArrayGetter), _joinDim));
+    auto pNewMap = unique_ptr<ArrayJoinExistingAggregation>(
+            new ArrayJoinExistingAggregation(*pMapTemplate, getDatasetList(), std::move(mapArrayGetter), _joinDim));
 
     return pNewMap;
 }
@@ -126,7 +126,7 @@ void GridJoinExistingAggregation::duplicate(const GridJoinExistingAggregation& r
     _joinDim = rhs._joinDim;
 }
 
-void GridJoinExistingAggregation::cleanup() noexcept
+void GridJoinExistingAggregation::cleanup() const noexcept
 {
 }
 

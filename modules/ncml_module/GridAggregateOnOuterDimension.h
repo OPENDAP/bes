@@ -122,7 +122,7 @@ private:
     void duplicate(const GridAggregateOnOuterDimension& rhs);
 
     /** Delete any heap memory */
-    void cleanup() noexcept;
+    void cleanup() const noexcept;
 
     /**
      * Helper for constructor to create replace our data array
@@ -135,7 +135,6 @@ private:
     void transferConstraintsToSubGridMaps(Grid* pSubGrid);
     void transferConstraintsToSubGridArray(Grid* pSubGrid);
 
-private:
     // data rep
     // The new outer dimension description
     Dimension _newDim;

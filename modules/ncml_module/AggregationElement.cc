@@ -1042,13 +1042,12 @@ void AggregationElement::processParentDatasetCompleteForJoinExisting()
     // with a new aggregated map variable when we didn't find the first Grid
     // and then pCV will refer to it until the function end.
     // If created, it will be used as the map vector for all Grid's.
-    unique_ptr<ArrayJoinExistingAggregation> pNewMap; // (0);
+    unique_ptr<ArrayJoinExistingAggregation> pNewMap;
 
     // For each aggVar:
     //    If it's a Grid, add the coordinate variable as a new map vector
     //                    since we left it out in the actual Grid until aggregated.
     //    If it's an Array, do nothing
-    // AggVarIter it;
     auto endIt = endAggVarIter();
     for (auto it = beginAggVarIter(); it != endIt; ++it) {
         const string& aggVar = *it;

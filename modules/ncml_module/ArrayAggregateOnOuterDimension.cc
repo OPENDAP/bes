@@ -217,7 +217,7 @@ void ArrayAggregateOnOuterDimension::duplicate(const ArrayAggregateOnOuterDimens
     _newDim = rhs._newDim;
 }
 
-void ArrayAggregateOnOuterDimension::cleanup() noexcept
+void ArrayAggregateOnOuterDimension::cleanup() const noexcept
 {
     // not implemented
 }

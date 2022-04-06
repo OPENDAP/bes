@@ -135,9 +135,8 @@ private:
     void duplicate(const ArrayAggregateOnOuterDimension& rhs);
 
     /** Clear out any used memory */
-    void cleanup() noexcept;
+    void cleanup() const noexcept;
 
-private:
     // Data rep
 
     // The new outer dimension description

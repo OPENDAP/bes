@@ -86,10 +86,8 @@ private:
 
     void cleanup() noexcept;
 
-private:
     DDSLoader _loader; // for loading
     BESDataDDSResponse* _pDataResponse {nullptr}; // holds our loaded DDS
-
 };
 
 }

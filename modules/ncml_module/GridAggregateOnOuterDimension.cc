@@ -54,11 +54,6 @@ using libdap::Grid;
 
 namespace agg_util {
 
-// Local flag for whether to print constraints, to help debugging
-// unused jhrg 4/16/14 static const bool PRINT_CONSTRAINTS = true;
-
-// BES Debug output channel for this file.
-// #define DEBUG_CHANNEL "ncml:2"
 #define DEBUG_CHANNEL "ncml:2"
 
 // Copy local data
@@ -141,7 +136,7 @@ void GridAggregateOnOuterDimension::createRep(const AMDList& memberDatasets)
     aggDataArray.release();
 }
 
-void GridAggregateOnOuterDimension::cleanup() noexcept
+void GridAggregateOnOuterDimension::cleanup() const noexcept
 {
 }
 
