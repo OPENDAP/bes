@@ -142,7 +142,6 @@ url::~url()
 /**
  * @brief Parses the URL into it's components and makes some BES file system magic.
  *
- *
  * Tip of the hat to: https://stackoverflow.com/questions/2616011/easy-way-to-parse-a-url-in-c-cross-platform
  * @param source_url
  */
@@ -188,7 +187,7 @@ void url::parse() {
     d_protocol.reserve(distance(parse_url_target.begin(), prot_i));
     transform(parse_url_target.begin(), prot_i,
               back_inserter(d_protocol),
-              ptr_fun<int, int>(tolower)); // protocol is icase
+              [](int c) { return tolower(c); }); // protocol is icase
     if (prot_i == parse_url_target.end())
         return;
 
@@ -201,7 +200,7 @@ void url::parse() {
         d_host.reserve(distance(prot_i, path_i));
         transform(prot_i, path_i,
                   back_inserter(d_host),
-                  ptr_fun<int, int>(tolower)); // host is icase
+                  [](int c) { return tolower(c); });//  host is icase
         string::const_iterator query_i = find(path_i, parse_url_target.end(), '?');
         d_path.assign(path_i, query_i);
         if (query_i != parse_url_target.end())
