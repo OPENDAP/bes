@@ -73,7 +73,7 @@ void
 log_request_and_memory_size(/*const*/ DMR &dmr)
 {
     // The request_size_kb() method is not marked const. Fix. jhrg 4/6/22
-    long req_size = (long)dmr.request_size_kb(true);
+    auto req_size = (long)dmr.request_size_kb(true);
     log_request_and_memory_size_helper(req_size);
 }
 
