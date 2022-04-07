@@ -37,7 +37,7 @@ using namespace libdap;
 namespace dap_utils {
 
 static void log_request_and_memory_size_helper(long req_size) {
-    long mem_size = BESUtil::get_current_memory_usage();    // size in KB or 0. jhrg 4/6/22
+    auto mem_size = BESUtil::get_current_memory_usage();    // size in KB or 0. jhrg 4/6/22
     if (mem_size) {
         INFO_LOG("request size: " << req_size << "KB|&|memory used by process: " << mem_size << "KB" << endl);
     }
@@ -57,7 +57,7 @@ static void log_request_and_memory_size_helper(long req_size) {
 void
 log_request_and_memory_size(DDS *const *dds)
 {
-    long req_size = (long)(*dds)->get_request_size_kb(true);
+    auto req_size = (long)(*dds)->get_request_size_kb(true);
     log_request_and_memory_size_helper(req_size);
 }
 

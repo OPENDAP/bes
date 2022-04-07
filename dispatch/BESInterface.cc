@@ -152,34 +152,8 @@ static inline void downcase(string &s)
     for (unsigned int i = 0; i < s.length(); i++)
         s[i] = tolower(s[i]);
 #endif
-    transform(s.begin(), s.end(), s.begin(),
-              [](unsigned char c) -> unsigned char { return std::toupper(c); });
+    transform(s.begin(), s.end(), s.begin(), [](int c) { return std::toupper(c); });
 }
-
-#if 0
-// moved to BESUtil. jhrg 4/6/22
-/**
- * @brief Get the Resident Set Size in KB
- * @return The RSS or 0 if getrusage() returns an error
- */
-static long
-get_current_memory_usage() noexcept
-{
-    struct rusage usage;
-    if (getrusage(RUSAGE_SELF, &usage) == 0) { // getrusage()  successful?
-#ifdef __APPLE__
-        // get the max size (man page says it is in bytes). This function returns the
-        // size in KB like Linux. jhrg 3/29/22
-        return usage.ru_maxrss / 1024;
-#else
-        return usage.ru_maxrss; // get the max size (man page says it is in kilobytes)
-#endif
-    }
-    else {
-        return 0;
-    }
-}
-#endif
 
 /**
  * @brief Write a phrase that describes the current RSS for this process
