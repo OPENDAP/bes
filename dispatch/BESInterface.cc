@@ -45,11 +45,12 @@
 
 #include <string>
 #include <sstream>
+#include <algorithm>
 
 #include "BESInterface.h"
 
 #include "TheBESKeys.h"
-#include "BESResponseHandler.h"
+// jhrg 4/6/22 #include "BESResponseHandler.h"
 #include "BESContextManager.h"
 
 #include "BESTransmitterNames.h"
@@ -59,6 +60,7 @@
 #include "BESInfoList.h"
 #include "BESXMLInfo.h"
 
+#include "BESUtil.h"
 #include "BESDebug.h"
 #include "BESStopWatch.h"
 #include "BESTimeoutError.h"
@@ -146,30 +148,11 @@ static void register_signal_handler()
 
 static inline void downcase(string &s)
 {
+#if 0
     for (unsigned int i = 0; i < s.length(); i++)
         s[i] = tolower(s[i]);
-}
-
-/**
- * @brief Get the Resident Set Size in KB
- * @return The RSS or 0 if getrusage() returns an error
- */
-static long
-get_current_memory_usage() noexcept
-{
-    struct rusage usage;
-    if (getrusage(RUSAGE_SELF, &usage) == 0) { // getrusage()  successful?
-#ifdef __APPLE__
-        // get the max size (man page says it is in bytes). This function returns the
-        // size in KB like Linux. jhrg 3/29/22
-        return usage.ru_maxrss / 1024;
-#else
-        return usage.ru_maxrss; // get the max size (man page says it is in kilobytes)
 #endif
-    }
-    else {
-        return 0;
-    }
+    transform(s.begin(), s.end(), s.begin(), [](int c) { return std::toupper(c); });
 }
 
 /**
@@ -178,7 +161,7 @@ get_current_memory_usage() noexcept
  */
 ostream &add_memory_info(ostream &out)
 {
-    long mem_size = get_current_memory_usage();
+    long mem_size = BESUtil::get_current_memory_usage();
     if (mem_size) {
         out << ", current memory usage is " << mem_size << " KB.";
     }

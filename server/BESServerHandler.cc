@@ -138,7 +138,6 @@ void BESServerHandler::execute(Connection *connection)
     stringstream msg;
     msg << prolog << "Using ostream: " << (void *) &my_ostrm << " cout: " << (void *) &cout << endl;
     BESDEBUG(MODULE,  msg.str());
-    INFO_LOG( msg.str());
 #endif
 
     // we loop continuously waiting for messages. The only way we exit
