@@ -26,6 +26,7 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 /////////////////////////////////////////////////////////////////////////////
+
 #include "config.h"
 
 #include <memory>
@@ -75,7 +76,7 @@ using namespace ncml_module;
 using namespace libdap;
 
 bool NCMLRequestHandler::_global_attributes_container_name_set = false;
-string NCMLRequestHandler::_global_attributes_container_name = "";
+string NCMLRequestHandler::_global_attributes_container_name;
 
 NCMLRequestHandler::NCMLRequestHandler(const string &name) :
     BESRequestHandler(name)
@@ -169,7 +170,7 @@ bool NCMLRequestHandler::ncml_build_das(BESDataHandlerInterface &dhi)
     // to clean up dhi state, etc.
     DDSLoader loader(dhi);
     NCMLParser parser(loader);
-    auto_ptr<BESDapResponse> loaded_bdds = parser.parse(filename, DDSLoader::eRT_RequestDDX);
+    unique_ptr<BESDapResponse> loaded_bdds = parser.parse(filename, DDSLoader::eRT_RequestDDX);
 
     // Now fill in the desired DAS response object from the DDS
     DDS* dds = NCMLUtil::getDDSFromEitherResponse(loaded_bdds.get());
@@ -202,7 +203,7 @@ bool NCMLRequestHandler::ncml_build_dds(BESDataHandlerInterface &dhi)
 
     // Any exceptions winding through here will cause the loader and parser dtors
     // to clean up dhi state, etc.
-    auto_ptr<BESDapResponse> loaded_bdds(0);
+    unique_ptr<BESDapResponse> loaded_bdds(0);
     {
         DDSLoader loader(dhi);
         NCMLParser parser(loader);
@@ -326,12 +327,12 @@ bool NCMLRequestHandler::ncml_build_dmr(BESDataHandlerInterface &dhi)
     string data_path = dhi.container->access();
 
     DDS *dds = 0;	// This will be deleted when loaded_bdds goes out of scope.
-    auto_ptr<BESDapResponse> loaded_bdds(0);
+    unique_ptr<BESDapResponse> loaded_bdds;
     try {
         DDSLoader loader(dhi);
         NCMLParser parser(loader);
         loaded_bdds = parser.parse(data_path, DDSLoader::eRT_RequestDDX);
-        if (!loaded_bdds.get()) throw BESInternalError("Null BESDDSResonse in ncml DDS handler.", __FILE__, __LINE__);
+        if (!loaded_bdds.get()) throw BESInternalError("Null BESDDSResonse in the NCML DDS handler.", __FILE__, __LINE__);
         dds = NCMLUtil::getDDSFromEitherResponse(loaded_bdds.get());
         VALID_PTR(dds);
         dds->filename(data_path);

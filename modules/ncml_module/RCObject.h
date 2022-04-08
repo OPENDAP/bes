@@ -137,12 +137,12 @@ public:
  *
  * A new RCObject has a count of 0, and will only be destroyed automatically
  * if the count goes from 1 back to 0, so the caller is in charge of it unless the first
- * ref() call.  Be careful storing these in std::auto_ptr!  Instead, use a
- * RCPtr(new RCObject()) in place of auto_ptr for hanging onto
+ * ref() call.  Be careful storing these in std::unique_ptr!  Instead, use a
+ * RCPtr(new RCObject()) in place of unique_ptr for hanging onto
  * an RCOBject* in a local variable before possible early exit.
  *
  * @see RCPtr which can be used as a temporary
- * reference similar to std::auto_ptr<T>, but which uses the
+ * reference similar to std::unique_ptr<T>, but which uses the
  * reference counting system to safely handle a RCObject
  * as a temporary in a location where an exception might cause it to be
  * leaked.  This is especially useful when the object is removed from
@@ -260,7 +260,7 @@ private:
 
 /** @brief A reference to an RCObject which automatically ref() and deref() on creation and destruction.
  *
- * Use this for temporary references to an RCObject* instead of std::auto_ptr to avoid leaks or double deletion.
+ * Use this for temporary references to an RCObject* instead of std::unique_ptr to avoid leaks or double deletion.
  * It is templated to allow RCObject subclass specific pointers.
  *
  * For example,
@@ -379,7 +379,7 @@ public:
     {
     }
 
-    virtual ~BadWeakPtr() throw ()
+    virtual ~BadWeakPtr() noexcept
     {
     }
 };

@@ -42,9 +42,8 @@ private:
     unsigned long d_maxCacheSize;
 
 	AggMemberDatasetDimensionCache();
-	AggMemberDatasetDimensionCache(const AggMemberDatasetDimensionCache &src);
 
-	bool is_valid(const std::string &cache_file_name, const std::string &dataset_file_name);
+	bool is_valid(const std::string &cache_file_name, const std::string &dataset_file_name) const;
 
 
     static std::string getBesDataRootDirFromConfig();
@@ -61,14 +60,15 @@ public:
 	static const std::string CACHE_DIR_KEY;
 	static const std::string PREFIX_KEY;
 	static const std::string SIZE_KEY;
-	 // static const string CACHE_CONTROL_FILE;
 
     static AggMemberDatasetDimensionCache *get_instance(const std::string &bes_catalog_root_dir, const std::string &stored_results_subdir, const std::string &prefix, unsigned long long size);
     static AggMemberDatasetDimensionCache *get_instance();
 
+    AggMemberDatasetDimensionCache(const AggMemberDatasetDimensionCache &src) = delete;
+
     void loadDimensionCache(AggMemberDataset *amd);
 
-	virtual ~AggMemberDatasetDimensionCache();
+	~AggMemberDatasetDimensionCache() override = default;
 };
 
 } /* namespace agg_util */

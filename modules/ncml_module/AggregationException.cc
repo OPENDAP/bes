@@ -34,7 +34,7 @@ AggregationException::AggregationException(const std::string& msg) :
 {
 }
 
-AggregationException::~AggregationException() throw ()
+AggregationException::~AggregationException() noexcept
 {
 }
 } // namespace agg_util

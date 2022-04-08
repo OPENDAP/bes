@@ -490,7 +490,7 @@ std::string ScanElement::extractTimeFromFilename(const std::string& filename) co
     return result;
 }
 
-void ScanElement::deleteDateFormats() throw ()
+void ScanElement::deleteDateFormats() noexcept
 {
     SAFE_DELETE(_pDateFormatters);
 }

@@ -55,8 +55,8 @@ namespace agg_util
   {
   public:
     AggMemberDatasetSharedDDSWrapper();
-    AggMemberDatasetSharedDDSWrapper(const DDSAccessRCInterface* pDDSHolder);
-    virtual ~AggMemberDatasetSharedDDSWrapper();
+    explicit AggMemberDatasetSharedDDSWrapper(const DDSAccessRCInterface* pDDSHolder);
+    ~AggMemberDatasetSharedDDSWrapper() override;
 
     AggMemberDatasetSharedDDSWrapper(const AggMemberDatasetSharedDDSWrapper& proto);
     AggMemberDatasetSharedDDSWrapper& operator=(const AggMemberDatasetSharedDDSWrapper& that);
@@ -66,12 +66,12 @@ namespace agg_util
      * If the wrapped DDS is NOT a DataDDS, we return NULL!
      * @return null or the wrapped DataDDS
      */
-    virtual const libdap::DDS* getDDS();
+    const libdap::DDS* getDDS() override;
 
   private:
 
       // If _pDDSHolder, unref() and null it.
-      void cleanup() throw();
+      void cleanup() noexcept;
 
       // If rhs._pDDSHodler, we ref() it
       // and maintain an alias ourselves.
@@ -82,7 +82,7 @@ namespace agg_util
 
       // Invariant: If not-null, we maintain a strong ref() to it
       // and unref() in cleanup().
-      const DDSAccessRCInterface* _pDDSHolder;
+      const DDSAccessRCInterface* _pDDSHolder {nullptr};
 
   }; // class AggMemberDatasetSharedDDSWrapper
 

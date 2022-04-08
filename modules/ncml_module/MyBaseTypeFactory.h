@@ -56,8 +56,8 @@ namespace ncml_module {
 class MyBaseTypeFactory {
 protected:
     // static class for now
-    MyBaseTypeFactory();
-    virtual ~MyBaseTypeFactory();
+    MyBaseTypeFactory() = default;
+    virtual ~MyBaseTypeFactory() = default;
 
 private:
     // disallow copies
@@ -66,28 +66,28 @@ private:
 
 public:
 
-    static libdap::Type getType(const string& name);
+    static libdap::Type getType(const std::string& name);
 
     /** @return whether the typeName refers to a simple (non-container) type. */
-    static bool isSimpleType(const string& typeName);
+    static bool isSimpleType(const std::string& typeName);
 
     /** @return whether the desired type is of the form Array<T>
      * for some basic type T.  This is a special case for creating Arrays of
      * subclass NCMLArray<T> so we can handle constraints.
      */
-    static bool isArrayTemplate(const string& typeName);
+    static bool isArrayTemplate(const std::string& typeName);
 
     /** Return a new variable of the given type
      * @param type the DAP type
      * @param name the name to give the new variable
      * */
-    static std::auto_ptr<libdap::BaseType> makeVariable(const libdap::Type& type, const string& name);
+    static std::unique_ptr<libdap::BaseType> makeVariable(const libdap::Type& type, const std::string& name);
 
     /** Return a new variable of the given type name.  Return null if type is not valid.
      * @param type  the DAP type to create.
      * @param name the name to give the new variable
      * */
-    static std::auto_ptr<libdap::BaseType> makeVariable(const string& type, const string& name);
+    static std::unique_ptr<libdap::BaseType> makeVariable(const std::string& type, const std::string& name);
 
     /** Make an Array<T> where T is the DAP simple type for the values in the Array.
      * This creates the proper template class of NCMLArray<T> now rather than Array so we can handle
@@ -97,7 +97,7 @@ public:
      * @param name the name to give the new Array
      * @param addTemplateVar  whether to create and add the template var so that var() is non-null.
      */
-    static std::auto_ptr<libdap::Array> makeArrayTemplateVariable(const string& type, const string& name,
+    static std::unique_ptr<libdap::Array> makeArrayTemplateVariable(const std::string& type, const std::string& name,
         bool addTemplateVar);
 
 private:

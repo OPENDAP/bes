@@ -463,6 +463,6 @@ void SaxParserWrapper::setupParser()
 }
 
 // Leak fix. jhrg 6/21/19
-void SaxParserWrapper::cleanupParser() throw ()
+void SaxParserWrapper::cleanupParser() noexcept
 {
 }

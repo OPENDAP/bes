@@ -60,7 +60,7 @@ public:
      * the data, forcing us to call read() on a rename, thus breaking constraints.  To handle this
      * error, we copy the data into our NCMLArray<T> in order to handle the constraints ourselves.
      */
-    static auto_ptr< NCMLBaseArray > createFromArray(const libdap::Array& proto);
+    static unique_ptr< NCMLBaseArray > createFromArray(const libdap::Array& proto);
 #endif
 
 public:
@@ -150,7 +150,7 @@ private:
     void copyLocalRepFrom(const NCMLBaseArray& proto);
 
     /** Destroy the data local to this class */
-    void destroy() throw ();
+    void destroy() noexcept;
 
 protected:
     // Data rep

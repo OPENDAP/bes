@@ -62,8 +62,8 @@ namespace agg_util {
  */
 class AggMemberDataset: public RCObject {
 public:
-    AggMemberDataset(const std::string& location);
-    virtual ~AggMemberDataset();
+    explicit AggMemberDataset(std::string location);
+    ~AggMemberDataset() override;
 
     AggMemberDataset& operator=(const AggMemberDataset& rhs);
     AggMemberDataset(const AggMemberDataset& proto);
@@ -81,11 +81,6 @@ public:
      * @return the DDS ptr containing the loaded dataset or NULL.
      */
     virtual const libdap::DDS* getDDS() = 0;
-
-    // TODO Consider adding freeDDS() or equivalent
-    // to clear the memory made by getDDS if it was
-    // loaded so we can tighten up the memory usage
-    // for large AMD Lists.
 
     /**
      * Get the size of the given dimension named dimName
@@ -144,7 +139,6 @@ public:
 
     /** Load the values in the dimension cache from the input stream */
     virtual void loadDimensionCache(std::istream& istr) = 0;
-
 
 private:
     // data rep

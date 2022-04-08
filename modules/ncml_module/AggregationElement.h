@@ -29,10 +29,12 @@
 #ifndef __NCML_MODULE__AGGREGATION_ELEMENT_H__
 #define __NCML_MODULE__AGGREGATION_ELEMENT_H__
 
+#include <memory>
+
 #include "AggMemberDataset.h" // agg_util
 #include "AggregationUtil.h" // agg_util
 #include "ArrayJoinExistingAggregation.h" // agg_util
-#include <memory>
+
 #include "NCMLElement.h"
 #include "NCMLUtil.h"
 
@@ -321,7 +323,7 @@ private:
      *                       be copied in the construction of
      *                       the new aggregated variable.
      */
-    void processAggVarJoinNewForArray(DDS& aggDDS, const Array& arrayTemplate, const agg_util::Dimension& dim,
+    static void processAggVarJoinNewForArray(DDS& aggDDS, const Array& arrayTemplate, const agg_util::Dimension& dim,
         const agg_util::AMDList& memberDatasets);
 
     /**
@@ -352,7 +354,7 @@ private:
     void processAggVarJoinNewForGrid(DDS& aggDDS, const Grid& gridTemplate, const agg_util::Dimension& dim,
         const agg_util::AMDList& memberDatasets);
 
-    void processAggVarJoinExistingForArray(DDS& aggDDS, const libdap::Array& arrayTemplate,
+    static void processAggVarJoinExistingForArray(DDS& aggDDS, const libdap::Array& arrayTemplate,
         const agg_util::Dimension& dim, const agg_util::AMDList& memberDatasets);
 
     void processAggVarJoinExistingForGrid(DDS& aggDDS, const Grid& gridTemplate, const agg_util::Dimension& dim,
@@ -493,7 +495,7 @@ private:
      * @return a newly created Array with length() == dim.size() containing the
      *         values of the proper type.  (Either string or double now).
      */
-    auto_ptr<libdap::Array> createCoordinateVariableForNewDimension(const agg_util::Dimension& dim) const;
+    std::unique_ptr<libdap::Array> createCoordinateVariableForNewDimension(const agg_util::Dimension& dim) const;
 
     /**
      * Add functionality for createCoordinateVariableForNewDimension():
@@ -525,11 +527,11 @@ private:
      * @exception parse error if any datasets fail to have coordValue set.
      * @exception parse error if the first dataset coord is a number but any others are not.
      */
-    auto_ptr<libdap::Array> createCoordinateVariableForNewDimensionUsingCoordValue(
+    std::unique_ptr<libdap::Array> createCoordinateVariableForNewDimensionUsingCoordValue(
         const agg_util::Dimension& dim) const;
-    auto_ptr<libdap::Array> createCoordinateVariableForNewDimensionUsingCoordValueAsDouble(
+    std::unique_ptr<libdap::Array> createCoordinateVariableForNewDimensionUsingCoordValueAsDouble(
         const agg_util::Dimension& dim) const;
-    auto_ptr<libdap::Array> createCoordinateVariableForNewDimensionUsingCoordValueAsString(
+    std::unique_ptr<libdap::Array> createCoordinateVariableForNewDimensionUsingCoordValueAsString(
         const agg_util::Dimension& dim) const;
 
     /**
@@ -540,7 +542,7 @@ private:
      * @return the new Array of type String with the values in it.  It
      *          will have length() == dim.size().
      */
-    auto_ptr<libdap::Array> createCoordinateVariableForNewDimensionUsingLocation(const agg_util::Dimension& dim) const;
+    std::unique_ptr<libdap::Array> createCoordinateVariableForNewDimensionUsingLocation(const agg_util::Dimension& dim) const;
 
     /** Add the attribute _CoordinateAxisType with value cat to the array pCV. */
     static void addCoordinateAxisType(libdap::Array& rCV, const std::string& cat);
