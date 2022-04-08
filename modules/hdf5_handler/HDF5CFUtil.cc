@@ -397,7 +397,7 @@ void HDF5CFUtil::parser_gpm_l3_gridheader(const vector<char>& value,
         if (equal_pos < scolon_pos){
 
             string latres_str = ind_elems[2].substr(equal_pos+1,scolon_pos-equal_pos-1);
-            lat_res = strtof(latres_str.c_str(),NULL);
+            lat_res = strtof(latres_str.c_str(),nullptr);
         }
         else 
             throw InternalErr(__FILE__,__LINE__,"latitude resolution is not right for GPM level 3 products");
@@ -416,7 +416,7 @@ void HDF5CFUtil::parser_gpm_l3_gridheader(const vector<char>& value,
             throw InternalErr(__FILE__,__LINE__,"Cannot find longitude resolution for GPM level 3 products");
         if (equal_pos < scolon_pos){
             string lonres_str = ind_elems[3].substr(equal_pos+1,scolon_pos-equal_pos-1);
-            lon_res = strtof(lonres_str.c_str(),NULL);
+            lon_res = strtof(lonres_str.c_str(),nullptr);
         }
         else 
             throw InternalErr(__FILE__,__LINE__,"longitude resolution is not right for GPM level 3 products");
@@ -435,7 +435,7 @@ void HDF5CFUtil::parser_gpm_l3_gridheader(const vector<char>& value,
             throw InternalErr(__FILE__,__LINE__,"Cannot find latitude resolution for GPM level 3 products");
         if (equal_pos < scolon_pos){
             string north_bounding_str = ind_elems[4].substr(equal_pos+1,scolon_pos-equal_pos-1);
-            lat_north = strtof(north_bounding_str.c_str(),NULL);
+            lat_north = strtof(north_bounding_str.c_str(),nullptr);
         }
         else 
             throw InternalErr(__FILE__,__LINE__,"NorthBoundingCoordinate is not right for GPM level 3 products");
@@ -455,7 +455,7 @@ void HDF5CFUtil::parser_gpm_l3_gridheader(const vector<char>& value,
                 throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for GPM level 3 products");
             if (equal_pos < scolon_pos){
                 string lat_south_str = ind_elems[5].substr(equal_pos+1,scolon_pos-equal_pos-1);
-                lat_south = strtof(lat_south_str.c_str(),NULL);
+                lat_south = strtof(lat_south_str.c_str(),nullptr);
             }
             else 
                 throw InternalErr(__FILE__,__LINE__,"south bound coordinate is not right for GPM level 3 products");
@@ -475,7 +475,7 @@ void HDF5CFUtil::parser_gpm_l3_gridheader(const vector<char>& value,
             throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for GPM level 3 products");
         if (equal_pos < scolon_pos){
             string lon_east_str = ind_elems[6].substr(equal_pos+1,scolon_pos-equal_pos-1);
-            lon_east = strtof(lon_east_str.c_str(),NULL);
+            lon_east = strtof(lon_east_str.c_str(),nullptr);
         }
         else 
             throw InternalErr(__FILE__,__LINE__,"south bound coordinate is not right for GPM level 3 products");
@@ -495,7 +495,7 @@ void HDF5CFUtil::parser_gpm_l3_gridheader(const vector<char>& value,
             throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for GPM level 3 products");
         if (equal_pos < scolon_pos){
             string lon_west_str = ind_elems[7].substr(equal_pos+1,scolon_pos-equal_pos-1);
-            lon_west = strtof(lon_west_str.c_str(),NULL);
+            lon_west = strtof(lon_west_str.c_str(),nullptr);
         }
         else 
             throw InternalErr(__FILE__,__LINE__,"south bound coordinate is not right for GPM level 3 products");

@@ -162,14 +162,14 @@ bool HDF5CFStr::read()
         }
 
         char*temp_bp = &strval[0];
-        char*onestring = NULL;
+        char*onestring = nullptr;
         string final_str ="";
                
         onestring = *(char**)temp_bp;
-        if(onestring!=NULL ) 
+        if(onestring!=nullptr ) 
             final_str =string(onestring);
                  
-        else // We will add a NULL is onestring is NULL.
+        else // We will add a nullptr is onestring is nullptr.
             final_str="";
 
         if (""!=final_str) {

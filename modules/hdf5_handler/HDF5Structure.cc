@@ -152,7 +152,7 @@ void HDF5Structure::do_structure_read(hid_t dsetid, hid_t dtypeid,vector <char> 
     int                 nmembs = 0;
     size_t              memb_offset = 0;
     unsigned int        u = 0;
-    char*               memb_name = NULL;
+    char*               memb_name = nullptr;
 
     try {
         if((nmembs = H5Tget_nmembers(memtype)) < 0) {
@@ -173,7 +173,7 @@ void HDF5Structure::do_structure_read(hid_t dsetid, hid_t dtypeid,vector <char> 
 
             // Get member name
             memb_name = H5Tget_member_name(memtype,u);
-            if(memb_name == NULL) 
+            if(memb_name == nullptr) 
                 throw InternalErr (__FILE__, __LINE__, "Fail to obtain the name of an HDF5 compound datatype member.");
 
             if (memb_cls == H5T_COMPOUND) {  
@@ -275,7 +275,7 @@ void HDF5Structure::do_structure_read(hid_t dsetid, hid_t dtypeid,vector <char> 
         if(memb_id != -1)
             H5Tclose(memb_id);
 
-        if(memb_name != NULL)
+        if(memb_name != nullptr)
             free(memb_name);
         throw;
     }

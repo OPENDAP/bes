@@ -86,11 +86,6 @@ class HDF5GMCFMissLLArray:public HDF5BaseArray {
     void send_gpm_l3_ll_to_dap(const int latsize,const int lonsize,float lat_start,float lon_start,float lat_res, float lon_res, 
                                const int* offset, const int* step, const int nelms, const bool add_cache, void*buf);
 };
-    static int
-        visit_obj_cb(hid_t  group_id, const char *name, const H5O_info_t *oinfo,
-                    void *_op_data);
-    static herr_t
-        attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *_op_data);
 
 
 #endif                          // _HDF5GMCFMissLLARRAY_H

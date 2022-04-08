@@ -379,14 +379,14 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
 
         if (H5Sselect_hyperslab(dspace, H5S_SELECT_SET,
                                 &hoffset[0], &hstep[0],
-                                &hcount[0], NULL) < 0) {
+                                &hcount[0], nullptr) < 0) {
             H5Tclose(memtype);
             H5Tclose(dtypeid);
             H5Sclose(dspace);
             throw InternalErr (__FILE__, __LINE__, "Cannot generate the hyperslab of the HDF5 dataset.");
         }
 
-        mspace = H5Screate_simple(d_num_dim, &hcount[0],NULL);
+        mspace = H5Screate_simple(d_num_dim, &hcount[0],nullptr);
         if (mspace < 0) {
             H5Sclose(dspace);
             H5Tclose(memtype);
@@ -408,9 +408,9 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
         has_values = true;
     } // end of "if(false == has_values)" block
 
-    HDF5Structure *h5s = NULL;
+    HDF5Structure *h5s = nullptr;
     hid_t  memb_id  = -1;      
-    char* memb_name = NULL;
+    char* memb_name = nullptr;
 
     try {
 
@@ -442,7 +442,7 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
 
                 // Get member name
                 memb_name = H5Tget_member_name(memtype,u);
-                if(memb_name == NULL) 
+                if(memb_name == nullptr) 
                     throw InternalErr (__FILE__, __LINE__, "Fail to obtain the name of an HDF5 compound datatype member.");
 
                 BaseType *field = h5s->var(memb_name);
@@ -549,9 +549,9 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
 
         if(memb_id != -1)
             H5Tclose(memb_id);
-        if(memb_name != NULL)
+        if(memb_name != nullptr)
             H5free_memory(memb_name);
-        if(h5s != NULL)
+        if(h5s != nullptr)
             delete h5s;
         if(true == has_values) {
             if(H5Dvlen_reclaim(memtype,mspace,H5P_DEFAULT,(void*)(&values[0]))<0) {
@@ -577,7 +577,7 @@ bool HDF5Array::m_array_of_reference(hid_t dset_id,hid_t dtype_id)
 
 #if (H5_VERS_MAJOR == 1 && (H5_VERS_MINOR == 10 || H5_VERS_MINOR == 8 || H5_VERS_MINOR == 6))
     hid_t d_dset_id = dset_id;
-    hdset_reg_ref_t *rbuf = NULL;
+    hdset_reg_ref_t *rbuf = nullptr;
 
     try {
 
@@ -602,7 +602,7 @@ bool HDF5Array::m_array_of_reference(hid_t dset_id,hid_t dtype_id)
 	    BESDEBUG("h5", "=read() Got regional reference. " << endl);
             // Vector doesn't work for this case. somehow it doesn't support the type.
             rbuf = new hdset_reg_ref_t[d_num_elm];
-            if(rbuf == NULL){
+            if(rbuf == nullptr){
                 throw InternalErr(__FILE__, __LINE__, "new() failed.");
             }
 	    if (H5Dread(d_dset_id, H5T_STD_REF_DSETREG, H5S_ALL, H5S_ALL, H5P_DEFAULT, &rbuf[0]) < 0) {
@@ -785,7 +785,7 @@ bool HDF5Array::m_array_of_reference(hid_t dset_id,hid_t dtype_id)
 	return false;
     }
     catch (...) {
-        if(rbuf!= NULL)
+        if(rbuf!= nullptr)
             delete[] rbuf;
 	throw;
     }
@@ -803,7 +803,7 @@ bool HDF5Array::m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id) {
     return false;
 #else
     
-    H5R_ref_t *rbuf = NULL;
+    H5R_ref_t *rbuf = nullptr;
     hid_t  mem_space_id;
     hid_t  file_space_id;
         
@@ -835,11 +835,11 @@ bool HDF5Array::m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id) {
 
         if (H5Sselect_hyperslab(file_space_id, H5S_SELECT_SET,
                                &hoffset[0], &hstep[0],
-                               &hcount[0], NULL) < 0) 
+                               &hcount[0], nullptr) < 0) 
             throw InternalErr (__FILE__, __LINE__, "Fail to select the hyperslab for reference dataset.");
       
 
-        mem_space_id = H5Screate_simple(d_num_dim,&hcount[0],NULL);
+        mem_space_id = H5Screate_simple(d_num_dim,&hcount[0],nullptr);
         if(mem_space_id < 0) 
             throw InternalErr(__FILE__, __LINE__, "Fail to obtain reference dataset memory space.");
 
@@ -866,7 +866,7 @@ bool HDF5Array::m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id) {
                 
             vector<char> objname;
             ssize_t objnamelen = -1;
-            if ((objnamelen= H5Iget_name(obj_id,NULL,0))<=0) {
+            if ((objnamelen= H5Iget_name(obj_id,nullptr,0))<=0) {
                 H5Oclose(obj_id);
                 throw InternalErr(__FILE__, __LINE__, "Cannot obtain the name length of the object the reference points to");
             }
@@ -1014,7 +1014,7 @@ bool HDF5Array::m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id) {
         return false;
     }
     catch (...) {
-        if(rbuf!= NULL)
+        if(rbuf!= nullptr)
             delete[] rbuf;
         H5Sclose(mem_space_id);
         H5Sclose(file_space_id);
@@ -1190,7 +1190,7 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
 
                 // Get member name
                 char *child_memb_name = H5Tget_member_name(at_base_type,child_u);
-                if(child_memb_name == NULL) {
+                if(child_memb_name == nullptr) {
                     H5Tclose(child_memb_id);
                     H5Tclose(at_base_type);
                     delete h5s;
@@ -1762,8 +1762,8 @@ BaseType* HDF5Array::h5dims_transform_to_dap4(D4Group *grp,const vector<string> 
 
     BESDEBUG("h5", "<h5dims_transform_to_dap4" << endl);
 
-    if(grp == NULL)
-        return NULL;
+    if(grp == nullptr)
+        return nullptr;
 
     Array *dest = static_cast<HDF5Array*>(ptr_duplicate());
 
@@ -1780,7 +1780,7 @@ BaseType* HDF5Array::h5dims_transform_to_dap4(D4Group *grp,const vector<string> 
             BESDEBUG("h5", "<coming to the dimension loop, has dimpath group " << dimpath[k].substr(0,dimpath[k].find_last_of("/")+1) <<endl);
 
             D4Group *temp_grp   = grp;
-            D4Dimension *d4_dim = NULL;
+            D4Dimension *d4_dim = nullptr;
             bool is_dim_nonc4_grp = false;
 
             while(temp_grp) {
@@ -1820,7 +1820,7 @@ BaseType* HDF5Array::h5dims_transform_to_dap4(D4Group *grp,const vector<string> 
                     break;
                 }
                 else
-                    d4_dim = NULL;
+                    d4_dim = nullptr;
 
                 if(temp_grp->get_parent()) 
                     temp_grp = static_cast<D4Group*>(temp_grp->get_parent());
@@ -1840,7 +1840,7 @@ BaseType* HDF5Array::h5dims_transform_to_dap4(D4Group *grp,const vector<string> 
                  throw InternalErr(__FILE__,__LINE__,err); 
             }
 
-            bool d4_dim_null = ((d4_dim==NULL)?true:false);
+            bool d4_dim_null = ((d4_dim==nullptr)?true:false);
             if(d4_dim_null == true) {
                 d4_dim = new D4Dimension((*d).name, (*d).size);
                 D4Dimensions * dims = grp->dims();

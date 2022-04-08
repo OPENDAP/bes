@@ -78,12 +78,12 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
         // Adding 64-bit integer support for DMR 
         if (H5INT64 == var->getType() || H5UINT64 == var->getType()){
             DMR * dmr = HDF5RequestHandler::get_dmr_64bit_int();
-            if(dmr == NULL)
+            if(dmr == nullptr)
                 return;
             else {
                 D4Group* root_grp = dmr->root();
                 if(H5INT64 == var->getType()) {
-                    HDF5CFInt64 *sca_int64 = NULL;
+                    HDF5CFInt64 *sca_int64 = nullptr;
                     try {
                         sca_int64 = new HDF5CFInt64(var->getNewName(), var->getFullPath(), filename);
                     }
@@ -97,7 +97,7 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
  
                 }
                 else if(H5UINT64 == var->getType()) {
-                    HDF5CFUInt64 *sca_uint64 = NULL;
+                    HDF5CFUInt64 *sca_uint64 = nullptr;
                     try {
                         sca_uint64 = new HDF5CFUInt64(var->getNewName(), var->getFullPath(), filename);
                     }
@@ -113,7 +113,7 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
             }
         }
         else if (H5FSTRING == var->getType() || H5VSTRING == var->getType()) {
-            HDF5CFStr *sca_str = NULL;
+            HDF5CFStr *sca_str = nullptr;
             try {
                 sca_str = new HDF5CFStr(var->getNewName(), filename, var->getFullPath());
             }
@@ -127,7 +127,7 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
             switch (var->getType()) {
 
             case H5UCHAR: {
-                HDF5CFByte * sca_uchar = NULL;
+                HDF5CFByte * sca_uchar = nullptr;
                 try {
                     sca_uchar = new HDF5CFByte(var->getNewName(), var->getFullPath(), filename);
                 }
@@ -141,7 +141,7 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
                 break;
             case H5CHAR:
             case H5INT16: {
-                HDF5CFInt16 * sca_int16 = NULL;
+                HDF5CFInt16 * sca_int16 = nullptr;
                 try {
                     sca_int16 = new HDF5CFInt16(var->getNewName(), var->getFullPath(), filename);
                 }
@@ -153,7 +153,7 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
             }
                 break;
             case H5UINT16: {
-                HDF5CFUInt16 * sca_uint16 = NULL;
+                HDF5CFUInt16 * sca_uint16 = nullptr;
                 try {
                     sca_uint16 = new HDF5CFUInt16(var->getNewName(), var->getFullPath(), filename);
                 }
@@ -165,7 +165,7 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
             }
                 break;
             case H5INT32: {
-                HDF5CFInt32 * sca_int32 = NULL;
+                HDF5CFInt32 * sca_int32 = nullptr;
                 try {
                     sca_int32 = new HDF5CFInt32(var->getNewName(), var->getFullPath(), filename);
                 }
@@ -177,7 +177,7 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
             }
                 break;
             case H5UINT32: {
-                HDF5CFUInt32 * sca_uint32 = NULL;
+                HDF5CFUInt32 * sca_uint32 = nullptr;
                 try {
                     sca_uint32 = new HDF5CFUInt32(var->getNewName(), var->getFullPath(), filename);
                 }
@@ -189,7 +189,7 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
             }
                 break;
             case H5FLOAT32: {
-                HDF5CFFloat32 * sca_float32 = NULL;
+                HDF5CFFloat32 * sca_float32 = nullptr;
                 try {
                     sca_float32 = new HDF5CFFloat32(var->getNewName(), var->getFullPath(), filename);
                 }
@@ -201,7 +201,7 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
             }
                 break;
             case H5FLOAT64: {
-                HDF5CFFloat64 * sca_float64 = NULL;
+                HDF5CFFloat64 * sca_float64 = nullptr;
                 try {
                     sca_float64 = new HDF5CFFloat64(var->getNewName(), var->getFullPath(), filename);
                 }
@@ -226,7 +226,7 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
         bool dap4_int64 = false;
         if(var->getType() == H5INT64 || var->getType()==H5UINT64) { 
             DMR * dmr = HDF5RequestHandler::get_dmr_64bit_int();
-            if(dmr == NULL)
+            if(dmr == nullptr)
                 return;
             else 
                 dap4_int64 = true;
@@ -235,14 +235,14 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
 #if 0
             else {
                 D4Group* root_grp = dmr->root();
-                BaseType *bt = NULL;
+                BaseType *bt = nullptr;
                 bt = new(HDF5Int64)(var->getNewName(),var->getFullPath(),filename);
                 bt->transform_to_dap4(root_grp,root_grp);
                 delete bt;
                 return;
             }
 #endif
-        BaseType *bt = NULL;
+        BaseType *bt = nullptr;
 
         if(true == dap4_int64) {
             if(var->getType() == H5INT64)
@@ -290,7 +290,7 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
         for (int i = 0; i < var->getRank(); i++)
             dimsizes[i] = (dims[i])->getSize();
 
-        HDF5CFArray *ar = NULL;
+        HDF5CFArray *ar = nullptr;
         try {
             ar = new HDF5CFArray(var->getRank(), file_id, filename, var->getType(), dimsizes, var->getFullPath(),
                 var->getTotalElems(), CV_UNSUPPORTED, false, var->getCompRatio(), false,var->getNewName(), bt);
@@ -503,7 +503,7 @@ void gen_dap_oneobj_das(AttrTable*at, const HDF5CF::Attribute* attr, const HDF5C
     }
     else {
 
-        if (NULL == var) {
+        if (nullptr == var) {
 
             // HDF5 Native Char maps to DAP INT16(DAP doesn't have the corresponding datatype), so needs to
             // obtain the mem datatype. 
@@ -556,7 +556,7 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
     if (dims.empty()) {
 
         if (H5FSTRING == var->getType() || H5VSTRING == var->getType()) {
-            HDF5CFStr *sca_str = NULL;
+            HDF5CFStr *sca_str = nullptr;
             try {
                 sca_str = new HDF5CFStr(var->getNewName(), filename, var->getFullPath());
                 sca_str->set_is_dap4(true);
@@ -572,7 +572,7 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
             switch (var->getType()) {
 
             case H5UCHAR: {
-                HDF5CFByte * sca_uchar = NULL;
+                HDF5CFByte * sca_uchar = nullptr;
                 try {
                     sca_uchar = new HDF5CFByte(var->getNewName(), var->getFullPath(), filename);
                     sca_uchar->set_is_dap4(true);
@@ -586,7 +586,7 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
             }
                 break;
             case H5CHAR: {
-                HDF5CFInt8 * sca_char = NULL;
+                HDF5CFInt8 * sca_char = nullptr;
                 try {
                     sca_char = new HDF5CFInt8(var->getNewName(), var->getFullPath(), filename);
                     sca_char->set_is_dap4(true);
@@ -601,7 +601,7 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
                 break;
 
             case H5INT16: {
-                HDF5CFInt16 * sca_int16 = NULL;
+                HDF5CFInt16 * sca_int16 = nullptr;
                 try {
                     sca_int16 = new HDF5CFInt16(var->getNewName(), var->getFullPath(), filename);
                     sca_int16->set_is_dap4(true);
@@ -616,7 +616,7 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
             }
                 break;
             case H5UINT16: {
-                HDF5CFUInt16 * sca_uint16 = NULL;
+                HDF5CFUInt16 * sca_uint16 = nullptr;
                 try {
                     sca_uint16 = new HDF5CFUInt16(var->getNewName(), var->getFullPath(), filename);
                     sca_uint16->set_is_dap4(true);
@@ -630,7 +630,7 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
             }
                 break;
             case H5INT32: {
-                HDF5CFInt32 * sca_int32 = NULL;
+                HDF5CFInt32 * sca_int32 = nullptr;
                 try {
                     sca_int32 = new HDF5CFInt32(var->getNewName(), var->getFullPath(), filename);
                     sca_int32->set_is_dap4(true);
@@ -644,7 +644,7 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
             }
                 break;
             case H5UINT32: {
-                HDF5CFUInt32 * sca_uint32 = NULL;
+                HDF5CFUInt32 * sca_uint32 = nullptr;
                 try {
                     sca_uint32 = new HDF5CFUInt32(var->getNewName(), var->getFullPath(), filename);
                     sca_uint32->set_is_dap4(true);
@@ -658,7 +658,7 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
             }
                 break;
             case H5INT64: {
-                HDF5CFInt64 * sca_int64 = NULL;
+                HDF5CFInt64 * sca_int64 = nullptr;
                 try {
                     sca_int64 = new HDF5CFInt64(var->getNewName(), var->getFullPath(), filename);
                     sca_int64->set_is_dap4(true);
@@ -672,7 +672,7 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
             }
                 break;
             case H5UINT64: {
-                HDF5CFUInt64 * sca_uint64 = NULL;
+                HDF5CFUInt64 * sca_uint64 = nullptr;
                 try {
                     sca_uint64 = new HDF5CFUInt64(var->getNewName(), var->getFullPath(), filename);
                     sca_uint64->set_is_dap4(true);
@@ -686,7 +686,7 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
             }
                 break;
             case H5FLOAT32: {
-                HDF5CFFloat32 * sca_float32 = NULL;
+                HDF5CFFloat32 * sca_float32 = nullptr;
                 try {
                     sca_float32 = new HDF5CFFloat32(var->getNewName(), var->getFullPath(), filename);
                     sca_float32->set_is_dap4(true);
@@ -700,7 +700,7 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
             }
                 break;
             case H5FLOAT64: {
-                HDF5CFFloat64 * sca_float64 = NULL;
+                HDF5CFFloat64 * sca_float64 = nullptr;
                 try {
                     sca_float64 = new HDF5CFFloat64(var->getNewName(), var->getFullPath(), filename);
                     sca_float64->set_is_dap4(true);
@@ -764,7 +764,7 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
         for (int i = 0; i < var->getRank(); i++)
             dimsizes[i] = (dims[i])->getSize();
 
-        HDF5CFArray *ar = NULL;
+        HDF5CFArray *ar = nullptr;
         try {
             ar = new HDF5CFArray(var->getRank(), file_id, filename, var->getType(), dimsizes, var->getFullPath(),
                 var->getTotalElems(), CV_UNSUPPORTED, false, var->getCompRatio(), true,var->getNewName(), bt);
@@ -868,11 +868,11 @@ void add_cf_grid_cvs(DDS & dds, EOS5GridPCType cv_proj_code, float cv_point_lowe
         int dim1size = dims[1]->getSize();
 
         //3. Add the 1-D CV variables and the dummy projection variable
-        BaseType *bt_dim0 = NULL;
-        BaseType *bt_dim1 = NULL;
+        BaseType *bt_dim0 = nullptr;
+        BaseType *bt_dim1 = nullptr;
 
-        HDF5CFGeoCF1D * ar_dim0 = NULL;
-        HDF5CFGeoCF1D * ar_dim1 = NULL;
+        HDF5CFGeoCF1D * ar_dim0 = nullptr;
+        HDF5CFGeoCF1D * ar_dim1 = nullptr;
 
         try {
 
@@ -913,7 +913,7 @@ void add_cf_grid_mapinfo_var(DDS & dds, const EOS5GridPCType grid_proj_code, con
     // To handle multi-grid cases, we need to add suffixes to distinguish them.
     string cf_projection_base = "eos_cf_projection";
 
-    HDF5CFGeoCFProj * dummy_proj_cf = NULL;
+    HDF5CFGeoCFProj * dummy_proj_cf = nullptr;
     if(HE5_GCTP_SNSOID == grid_proj_code)  {
         // AFAWK, one grid_mapping variable is necessary for multi-grids. So we just leave one grid here.
         if(g_suffix == 1) {
@@ -1173,7 +1173,7 @@ void add_ll_valid_range(AttrTable* at, bool is_lat) {
 // Note: the main part of DMR still comes from DDS and DAS.
 bool need_attr_values_for_dap4(const HDF5CF::Var *var) {
     bool ret_value = false;
-    if((HDF5RequestHandler::get_dmr_64bit_int()!=NULL) && 
+    if((HDF5RequestHandler::get_dmr_64bit_int()!=nullptr) && 
         (H5INT64 == var->getType() || H5UINT64 == var->getType()))
         ret_value = true;
     return ret_value;
@@ -1244,7 +1244,7 @@ void check_update_int64_attr(const string & obj_name, const HDF5CF::Attribute * 
     if(attr->getType() == H5INT64 || attr->getType() == H5UINT64) { 
 
         DMR * dmr = HDF5RequestHandler::get_dmr_64bit_int();
-        if(dmr != NULL) {
+        if(dmr != nullptr) {
             string dap2_attrtype = HDF5CFDAPUtil::print_type(attr->getType());
             D4AttributeType dap4_attrtype = HDF5CFDAPUtil::daptype_strrep_to_dap4_attrtype(dap2_attrtype);
             D4Attribute *d4_attr = new D4Attribute(attr->getNewName(),dap4_attrtype);
@@ -1257,7 +1257,7 @@ void check_update_int64_attr(const string & obj_name, const HDF5CF::Attribute * 
             if(root_grp->attributes()->empty() == true){
 #if 0
             //D4Attribute *d4_hg_container = root_grp->attributes()->find("HDF5_GLOBAL");
-            //if(d4_hg_container == NULL) {
+            //if(d4_hg_container == nullptr) {
 #endif
                 d4_hg_container = new D4Attribute;
                 d4_hg_container->set_name("HDF5_GLOBAL_integer_64");
@@ -1281,7 +1281,7 @@ void check_update_int64_attr(const string & obj_name, const HDF5CF::Attribute * 
 #if 0
                 //D4Attribute *d4_container = d4_hg_container->attributes()->find(obj_name);
 #endif
-                if(d4_container == NULL) {
+                if(d4_container == nullptr) {
                     d4_container = new D4Attribute;
                     d4_container->set_name(obj_name);
                     d4_container->set_type(attr_container_c);
@@ -1298,7 +1298,7 @@ void check_update_int64_attr(const string & obj_name, const HDF5CF::Attribute * 
                 //root_grp->attributes()->add_attribute_nocopy(d4_container);
 #endif
 //#if 0
-                if(d4_hg_container->attributes()->get(obj_name)==NULL)
+                if(d4_hg_container->attributes()->get(obj_name)==nullptr)
                     d4_hg_container->attributes()->add_attribute_nocopy(d4_container);
 //#endif
             }
@@ -1564,11 +1564,11 @@ void add_gm_spcvs(libdap::D4Group *d4_root, EOS5GridPCType cv_proj_code, float c
         int dim1size = dims[1]->getSize();
 
         //3. Add the 1-D CV variables and the dummy projection variable
-        BaseType *bt_dim0 = NULL;
-        BaseType *bt_dim1 = NULL;
+        BaseType *bt_dim0 = nullptr;
+        BaseType *bt_dim1 = nullptr;
 
-        HDF5CFGeoCF1D * ar_dim0 = NULL;
-        HDF5CFGeoCF1D * ar_dim1 = NULL;
+        HDF5CFGeoCF1D * ar_dim0 = nullptr;
+        HDF5CFGeoCF1D * ar_dim1 = nullptr;
 
         try {
 

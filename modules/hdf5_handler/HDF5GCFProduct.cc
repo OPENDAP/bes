@@ -143,7 +143,7 @@ bool check_gpm_l1(hid_t s_root_id) {
 
                 // Query the length of object name.
                 ssize_t oname_size = 
-                          H5Lget_name_by_idx(s_root_id,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,NULL,
+                          H5Lget_name_by_idx(s_root_id,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,nullptr,
                                              dummy_name_len, H5P_DEFAULT);
                 if (oname_size <= 0)
                     throw InternalErr(__FILE__,__LINE__,"Error getting the size of the hdf5 object from the root group. ");
@@ -190,7 +190,7 @@ bool check_gpm_l1(hid_t s_root_id) {
                             throw InternalErr(__FILE__,__LINE__,"Unable to open attribute by index " );
 
                         // Obtain the size of the attribute name.
-                        ssize_t name_size =  H5Aget_name(attrid, 0, NULL);
+                        ssize_t name_size =  H5Aget_name(attrid, 0, nullptr);
                         if (name_size < 0)
                             throw InternalErr(__FILE__,__LINE__,"Unable to obtain the size of the hdf5 attribute name  " );
 
@@ -335,7 +335,7 @@ bool check_gpmm_l3(hid_t s_root_id) {
 
                     // Query the length of object name.
                     ssize_t oname_size = 
-                    H5Lget_name_by_idx(cgroup_id,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,NULL,
+                    H5Lget_name_by_idx(cgroup_id,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,nullptr,
                                                      dummy_name_len, H5P_DEFAULT);
                     if (oname_size <= 0)
                         throw InternalErr(__FILE__,__LINE__,"Error getting the size of the hdf5 object from the grid group. ");
@@ -391,7 +391,7 @@ bool check_gpmm_l3(hid_t s_root_id) {
                                     throw InternalErr(__FILE__,__LINE__,"Unable to open attribute by index " );
 
                                 // Obtain the size of the attribute name.
-                                ssize_t name_size =  H5Aget_name(attrid, 0, NULL);
+                                ssize_t name_size =  H5Aget_name(attrid, 0, nullptr);
                                 if (name_size < 0)
                                     throw InternalErr(__FILE__,__LINE__,"Unable to obtain the size of the hdf5 attribute name  " );
 
@@ -807,7 +807,7 @@ bool check_osmapl2s_acosl2s_oco2l1b(hid_t s_root_id, int which_pro) {
                     }
 
                     char *temp_bp = &temp_buf[0];
-                    char *onestring = NULL;
+                    char *onestring = nullptr;
                     string total_string="";
                         
                     for (int temp_i = 0; temp_i <num_elem; temp_i++) {
@@ -816,7 +816,7 @@ bool check_osmapl2s_acosl2s_oco2l1b(hid_t s_root_id, int which_pro) {
                         onestring =*(char **)temp_bp;
 
                         // Change the C-style string to C++ STD string just for easy handling.
-                        if (onestring !=NULL) {
+                        if (onestring !=nullptr) {
                             string tempstring(onestring);
                             total_string+=tempstring;
                         }
@@ -966,13 +966,13 @@ void obtain_gm_attr_value(hid_t s_root_id, const char* s_attr_name, string & s_a
         char *temp_bp;
         temp_bp = &temp_buf[0];
         char* onestring;
-        for (unsigned int temp_i = 0; temp_i <num_elm; temp_i++) {
+        for (int temp_i = 0; temp_i <num_elm; temp_i++) {
 
             // This line will assure that we get the real variable length string value.
             onestring =*(char **)temp_bp;
 
             // Change the C-style string to C++ STD string just for easy appending the attributes in DAP.
-            if (onestring !=NULL) 
+            if (onestring !=nullptr) 
                 string tempstring(onestring);
         }
 

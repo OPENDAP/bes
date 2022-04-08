@@ -59,9 +59,9 @@ bool HDF5CFArray::read()
     if(length() == 0)
         return true;
 
-    if((NULL == HDF5RequestHandler::get_lrdata_mem_cache()) && 
-        NULL == HDF5RequestHandler::get_srdata_mem_cache()){
-        read_data_NOT_from_mem_cache(false,NULL);
+    if((nullptr == HDF5RequestHandler::get_lrdata_mem_cache()) && 
+        nullptr == HDF5RequestHandler::get_srdata_mem_cache()){
+        read_data_NOT_from_mem_cache(false,nullptr);
         return true;
     }
 
@@ -69,7 +69,7 @@ bool HDF5CFArray::read()
     short use_cache_flag = 0;
 
     // The small data cache is checked first to reduce the resources to operate the big data cache.
-    if(HDF5RequestHandler::get_srdata_mem_cache() != NULL) {
+    if(HDF5RequestHandler::get_srdata_mem_cache() != nullptr) {
         if(((cvtype == CV_EXIST) && (islatlon != true)) || (cvtype == CV_NONLATLON_MISS) 
             || (cvtype == CV_FILLINDEX) ||(cvtype == CV_MODIFY) ||(cvtype == CV_SPECIAL)){
 
@@ -81,7 +81,7 @@ bool HDF5CFArray::read()
     // If this varible doesn't fit the small data cache, let's check if it fits the large data cache.
     if(use_cache_flag !=1) {
 
-        if(HDF5RequestHandler::get_lrdata_mem_cache() != NULL) {
+        if(HDF5RequestHandler::get_lrdata_mem_cache() != nullptr) {
 
             // This is the trival case. 
             // If no information is provided in the configuration file of large data cache,
@@ -141,7 +141,7 @@ bool HDF5CFArray::read()
     }
 
     if(0 == use_cache_flag) 
-        read_data_NOT_from_mem_cache(false,NULL);
+        read_data_NOT_from_mem_cache(false,nullptr);
     else {// memory cache cases
 
         string cache_key;
@@ -306,7 +306,7 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
 
     if (H5Sselect_hyperslab(dspace, H5S_SELECT_SET,
                                &hoffset[0], &hstep[0],
-                               &hcount[0], NULL) < 0) {
+                               &hcount[0], nullptr) < 0) {
 
             H5Sclose(dspace);
             H5Dclose(dsetid);
@@ -317,7 +317,7 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
             throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
-    mspace = H5Screate_simple(rank, &hcount[0],NULL);
+    mspace = H5Screate_simple(rank, &hcount[0],nullptr);
     if (mspace < 0) {
             H5Sclose(dspace);
             H5Dclose(dsetid); 
@@ -361,7 +361,7 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
     // Before reading the data, we will check if the memory cache is turned on, 
     // The add_mem_cache  is only true when the data memory cache keys are on and  used. 
     if(true == add_mem_cache) {
-        if(buf== NULL) {
+        if(buf== nullptr) {
             H5Sclose(mspace);
             H5Tclose(dtypeid);
             H5Sclose(dspace);
@@ -739,13 +739,13 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
             vector<string>finstrval;
             finstrval.resize(nelms);
             char*temp_bp = &strval[0];
-            char*onestring = NULL;
+            char*onestring = nullptr;
             for (int i =0;i<nelms;i++) {
                 onestring = *(char**)temp_bp;
-                if(onestring!=NULL ) 
+                if(onestring!=nullptr ) 
                     finstrval[i] =string(onestring);
                 
-                else // We will add a NULL if onestring is NULL.
+                else // We will add a nullptr if onestring is nullptr.
                     finstrval[i]="";
                 temp_bp +=ty_size;
             }
@@ -832,7 +832,7 @@ bool HDF5CFArray::valid_disk_cache() {
             long diskcache_size = HDF5RequestHandler::get_disk_cache_size();
 
             if(("" == diskcache_dir)||(""==diskcache_prefix)||(diskcache_size <=0))
-                throw InternalErr (__FILE__, __LINE__, "Either the cached dir is empty or the prefix is NULL or the cache size is not set.");
+                throw InternalErr (__FILE__, __LINE__, "Either the cached dir is empty or the prefix is nullptr or the cache size is not set.");
             else {
                 struct stat sb;
                 if(stat(diskcache_dir.c_str(),&sb) !=0) {
@@ -1645,8 +1645,8 @@ void HDF5CFArray::read_data_from_mem_cache(void*buf) {
 // We don't inherit libdap Array Class's transform_to_dap4 method since it also transforms attributes.
 BaseType* HDF5CFArray::h5cfdims_transform_to_dap4(D4Group *grp) {
 
-    if(grp == NULL)
-        return NULL;
+    if(grp == nullptr)
+        return nullptr;
     Array *dest = static_cast<HDF5CFArray*>(ptr_duplicate());
 
     // If there is just a size, don't make
@@ -1679,8 +1679,8 @@ BaseType* HDF5CFArray::h5cfdims_transform_to_dap4(D4Group *grp) {
 // DAP4 code.
 BaseType* HDF5CFArray::h5cfdims_transform_to_dap4_int64(D4Group *grp) {
 
-    if(grp == NULL)
-        return NULL;
+    if(grp == nullptr)
+        return nullptr;
     Array *dest = static_cast<HDF5CFArray*>(ptr_duplicate());
 
     // If there is just a size, don't make
@@ -1691,7 +1691,7 @@ BaseType* HDF5CFArray::h5cfdims_transform_to_dap4_int64(D4Group *grp) {
         if (false == (*d).name.empty()) {
 
             D4Group *temp_grp   = grp;
-            D4Dimension *d4_dim = NULL;
+            D4Dimension *d4_dim = nullptr;
             while(temp_grp) {
 
                 D4Dimensions *temp_dims = temp_grp->dims();
@@ -1713,9 +1713,9 @@ BaseType* HDF5CFArray::h5cfdims_transform_to_dap4_int64(D4Group *grp) {
             // Not find this dimension in any of the ancestor groups, add it to this group.
             // The following block is fine, but to avoid the complaint from sonarcloud.
             // Use a bool.
-            bool d4_dim_null = ((d4_dim==NULL)?true:false);
+            bool d4_dim_null = ((d4_dim==nullptr)?true:false);
 #if 0
-            //if(d4_dim == NULL) {
+            //if(d4_dim == nullptr) {
 #endif
             // Not find this dimension in any of the ancestor groups, add it to this group.
             if(d4_dim_null == true) {

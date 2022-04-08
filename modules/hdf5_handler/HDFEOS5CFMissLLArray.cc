@@ -53,8 +53,8 @@ bool HDFEOS5CFMissLLArray::read()
 {
 
     BESDEBUG("h5","Coming to HDFEOS5CFMissLLArray read "<<endl);
-    if(NULL == HDF5RequestHandler::get_lrdata_mem_cache())
-        read_data_NOT_from_mem_cache(false,NULL);
+    if(nullptr == HDF5RequestHandler::get_lrdata_mem_cache())
+        read_data_NOT_from_mem_cache(false,nullptr);
     else {
        	vector<string> cur_lrd_non_cache_dir_list;                                      
         HDF5RequestHandler::get_lrd_non_cache_dir_list(cur_lrd_non_cache_dir_list);     
@@ -84,7 +84,7 @@ bool HDFEOS5CFMissLLArray::read()
                     handle_data_with_mem_cache(H5FLOAT32,(size_t)xdimsize,cache_flag,cache_key,false);
         }
         else 
-	         read_data_NOT_from_mem_cache(false,NULL);
+	         read_data_NOT_from_mem_cache(false,nullptr);
     }
     return true;
 }
@@ -372,7 +372,7 @@ string HDFEOS5CFMissLLArray::obtain_ll_cache_name() {
     long cachesize = HDF5RequestHandler::get_latlon_disk_cache_size();
 
     if(("" == bescachedir)||(""==bescacheprefix)||(cachesize <=0)){
-        throw InternalErr (__FILE__, __LINE__, "Either the cached dir is empty or the prefix is NULL or the cache size is not set.");
+        throw InternalErr (__FILE__, __LINE__, "Either the cached dir is empty or the prefix is nullptr or the cache size is not set.");
     }
     else {
         struct stat sb;
