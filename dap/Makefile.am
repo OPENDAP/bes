@@ -8,7 +8,7 @@ AUTOMAKE_OPTIONS = foreign check-news
 
 ACLOCAL_AMFLAGS = -I conf
 
-AM_CPPFLAGS = $(XML2_CFLAGS) -I$(top_srcdir)/xmlcommand $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch \
+AM_CPPFLAGS = $(XML2_CFLAGS) -I$(top_srcdir) -I$(top_srcdir)/xmlcommand $(BES_CPPFLAGS) -I$(top_srcdir)/dispatch \
 $(DAP_CFLAGS)
 
 #  -I$(top_srcdir)/modules/dmrpp_module
@@ -61,6 +61,7 @@ BESDAP_SRCS = 	BESDASResponseHandler.cc \
 	BESDapFunctionResponseCache.cc \
 	BESStoredDapResultCache.cc \
 	DapFunctionUtils.cc \
+	DapUtils.cc \
 	CachedSequence.cc \
 	CacheTypeFactory.cc \
 	TempFile.cc \
@@ -95,6 +96,7 @@ BESDAP_HDRS = BESDASResponseHandler.h \
 	BESDapFunctionResponseCache.h \
 	BESStoredDapResultCache.h \
 	DapFunctionUtils.h \
+	DapUtils.h \
 	CachedSequence.h \
 	CacheTypeFactory.h \
 	TempFile.h \

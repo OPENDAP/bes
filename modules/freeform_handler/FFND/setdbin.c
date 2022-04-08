@@ -1809,7 +1809,7 @@ static int check_hidden_file_exists
 	if (os_file_exist(trial_fname))
 	{
 		*fname = memStrdup(trial_fname, "trial_fname");
-		if (*fname == '\0')
+		if (*fname == NULL /*'\0' jhrg 4/7/22*/)
 		{
 			err_push(ERR_MEM_LACK, NULL);
 			return(0);

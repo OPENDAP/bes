@@ -72,7 +72,7 @@ public:
     virtual void define(int ncid) override;
     virtual void write(int ncid) override;
 
-    virtual string name();
+    string name() override;
 
     virtual void dump(ostream &strm) const override;
 
