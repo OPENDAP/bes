@@ -73,6 +73,21 @@
 
 using namespace std;
 
+// Global atomic<bool> variables used to communicate besTimeout state between
+// main and worker thread to replace SIGALRM handling in request handling.
+//
+// atomic<bool> ignoreBesTimeout is ONLY set by worker thread in BESUtil::conditional_timeout_cancel()
+// and ONLY read by main thread in BESInterface::execute_request() to disable besTimeout
+// once data transmission has begun, and conditional on BES.CancelTimeoutOnSend setting in bes.conf
+//
+// atomic>bool> besTimeoutExceeded is ONLY set by main thread in BESInterface::execute_request()
+// when the besTimeout has been exceeded and the worker thread has not yet returned and ignoreBesTimeout==false,
+// and ONLY read by the worker thread at various points during request handling to
+// determine if the worker thread should throw exception closing out current request handling
+// and communicating its actions to the olfs.  dan 4/7/22
+std::atomic<bool> ignoreBesTimeout;
+std::atomic<bool> besTimeoutExceeded;
+
 static jmp_buf timeout_jump;
 static bool timeout_jump_valid = false;
 
@@ -324,6 +339,11 @@ BESInterface::BESInterface(ostream *output_stream) :
         iss >> d_timeout_from_keys;
     }
 
+    // Initialize global atomics for communication between main and worker thread
+    // operating in execute_request()
+    ignoreBesTimeout.store(false);
+    besTimeoutExceeded.store(false);
+
     // Install signal handler for alarm() here
     register_signal_handler();
 
@@ -470,6 +490,61 @@ int BESInterface::execute_request(const string &from)
             throw BESInternalError(string("Unable to find transmitter '") + BASIC_TRANSMITTER + "'", __FILE__, __LINE__);
 
         build_data_request_plan();
+
+        /************************************************************************/
+
+        // Set timeout? Use either the value from the keys or a context
+        bool found = false;
+        string context = BESContextManager::TheManager()->get_context("bes_timeout", found);
+        if (found) {
+            bes_timeout = strtol(context.c_str(), NULL, 10);
+            VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << "Set request timeout to " << bes_timeout << " seconds (from context)." << endl);
+        }
+        else if (d_timeout_from_keys != 0) {
+            bes_timeout = d_timeout_from_keys;
+            VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << "Set request timeout to " << bes_timeout << " seconds (from keys)." << endl);
+        }
+
+        // Set atomic<bool> besTimeoutExceeded = false;
+        besTimeoutExceeded.store(false);
+
+        // Set atomic<bool> ignoreBesTimeout = true if the bes_timeout has not been set.
+        if (bes_timeout == 0) {
+            ignoreBesTimeout.store(true);   // bes timeout is disabled
+        }
+        else {
+            ignoreBesTimeout.store(false);  // worker thread responsible for disabling timeout
+        }
+
+        BESStopWatch rt;
+        unsigned long int elapsedTime;
+        bool workerHasTimedOut = false;
+
+        auto worker = std::async(std::launch::async, execute_data_request_plan());
+
+        if ( !rt.start("worker")) {
+            throw BESInternalError("BESStopWatch request elapsed_timer didn't start", __FILE__, __LINE__);
+        }
+
+        while ( worker.sleep_for(chronos::millisecconds(100)) != std::future_status::ready
+                && !workerHasTimedOut
+                && !ignoreBesTimeout.load() )
+        {
+            if ( rt.get_elapsed_us() >= bes_timeout ) {
+                besTimeoutExceeded.store(true);
+                workerHasTimedOut = true;
+            }
+        }
+
+        // if workerHasTimedOut but is not ready, and ignoreBesTimeout is false then do we simply wait for the
+        // worker to return or set a hard limit...
+
+        worker.get();   // This will block here until worker returns.
+
+        // if worker has thrown an exception it will be rethrown and main needs to deal with it.
+
+        /************************************************************************/
+
 
         // This method does two key things: Calls the request handler to make a
         // 'response object' (the C++ object that will hold the response) and

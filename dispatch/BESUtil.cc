@@ -73,6 +73,8 @@ using namespace std;
 
 const string BES_KEY_TIMEOUT_CANCEL = "BES.CancelTimeoutOnSend";
 
+extern std::atomic<bool> ignoreBesTimeout;
+
 /**
  * @brief If the string ends in a slash, remove it
  * This function works for empty strings (doing nothing). If the string
@@ -850,7 +852,10 @@ void BESUtil::conditional_timeout_cancel()
         if ( value == false_str || value == no_str) cancel_timeout_on_send = false;
     }
     BESDEBUG(MODULE, __func__ << "() - cancel_timeout_on_send: " << (cancel_timeout_on_send ? "true" : "false") << endl);
-    if (cancel_timeout_on_send) alarm(0);
+    if (cancel_timeout_on_send) {
+        alarm(0);
+        ignoreBesTimeout.store(true);
+    }
 }
 
 /**
