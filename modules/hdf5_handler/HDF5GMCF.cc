@@ -916,7 +916,7 @@ void GMFile::Handle_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(Var* var)
 {
 
     BESDEBUG("h5", "Coming to Handle_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone()"<<endl);
-    Attribute* dimlistattr = NULL;
+    Attribute* dimlistattr = nullptr;
     bool has_dimlist = false;
     bool has_class = false;
     bool has_reflist = false;
@@ -1006,7 +1006,7 @@ void GMFile::Add_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(Var *var,Attribute*
     hid_t ref_dset = -1;
 
 
-    if(NULL == dimlistattr) 
+    if(nullptr == dimlistattr) 
         throw2("Cannot obtain the dimension list attribute for variable ",var->name);
 
     if (0==var->rank) 
@@ -1045,7 +1045,7 @@ void GMFile::Add_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(Var *var,Attribute*
         for (vector<Dimension *>::iterator ird = var->dims.begin();
                 ird != var->dims.end(); ++ird) {
 
-            if(vlbuf[vlbuf_index].p== NULL) 
+            if(vlbuf[vlbuf_index].p== nullptr) 
                 throw4("The dimension doesn't exist. Var name is ",var->name,"; the dimension index is ",vlbuf_index);
 
             rbuf =((hobj_ref_t*)vlbuf[vlbuf_index].p)[0];
@@ -1067,7 +1067,7 @@ void GMFile::Add_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(Var *var,Attribute*
             H5Rdestroy(&new_rbuf);
 
 #endif
-            if ((objnamelen= H5Iget_name(ref_dset,NULL,0))<=0) 
+            if ((objnamelen= H5Iget_name(ref_dset,nullptr,0))<=0) 
                 throw2("Cannot obtain the dataset name dereferenced from the DIMENSION_LIST attribute  for the variable ",var->name);
             objname.resize(objnamelen+1);
             if ((objnamelen= H5Iget_name(ref_dset,&objname[0],objnamelen+1))<=0) 
@@ -2774,7 +2774,7 @@ void GMFile::Add_Dim_Name_Dimscale_General_Product()  {
 void GMFile::Handle_UseDimscale_Var_Dim_Names_General_Product(Var *var)  {
 
     BESDEBUG("h5", "Coming to Handle_UseDimscale_Var_Dim_Names_General_Product()"<<endl);
-    Attribute* dimlistattr = NULL;
+    Attribute* dimlistattr = nullptr;
     bool has_dimlist = false;
     bool has_dimclass   = false;
 
@@ -2845,7 +2845,7 @@ void GMFile::Add_UseDimscale_Var_Dim_Names_General_Product(Var *var,Attribute*di
     BESDEBUG("h5", "Coming to Add_UseDimscale_Var_Dim_Names_General_Product()"<<endl);
     ssize_t objnamelen = -1;
     hobj_ref_t rbuf;
-    //hvl_t *vlbuf = NULL;
+    //hvl_t *vlbuf = nullptr;
     vector<hvl_t> vlbuf;
     
     hid_t dset_id = -1;
@@ -2855,7 +2855,7 @@ void GMFile::Add_UseDimscale_Var_Dim_Names_General_Product(Var *var,Attribute*di
     hid_t aspace_id = -1;
     hid_t ref_dset = -1;
 
-    if(NULL == dimlistattr) 
+    if(nullptr == dimlistattr) 
         throw2("Cannot obtain the dimension list attribute for variable ",var->name);
 
     else if (0==var->rank) 
@@ -2895,13 +2895,13 @@ void GMFile::Add_UseDimscale_Var_Dim_Names_General_Product(Var *var,Attribute*di
         for (vector<Dimension *>::iterator ird = var->dims.begin();
                 ird != var->dims.end(); ++ird) {
 
-            if(vlbuf[vlbuf_index].p== NULL) 
+            if(vlbuf[vlbuf_index].p== nullptr) 
                 throw4("The dimension doesn't exist. Var name is ",var->name,"; the dimension index is ",vlbuf_index);
             rbuf =((hobj_ref_t*)vlbuf[vlbuf_index].p)[0];
             if ((ref_dset = H5RDEREFERENCE(attr_id, H5R_OBJECT, &rbuf)) < 0) 
                 throw2("Cannot dereference from the DIMENSION_LIST attribute  for the variable ",var->name);
 
-            if ((objnamelen= H5Iget_name(ref_dset,NULL,0))<=0) 
+            if ((objnamelen= H5Iget_name(ref_dset,nullptr,0))<=0) 
                 throw2("Cannot obtain the dataset name dereferenced from the DIMENSION_LIST attribute  for the variable ",var->name);
             objname.resize(objnamelen+1);
             if ((objnamelen= H5Iget_name(ref_dset,&objname[0],objnamelen+1))<=0) 
@@ -5817,7 +5817,7 @@ GMFile:: Add_Aqu_Attrs()  {
                 it_v != vars.end(); ++it_v) {
         if ("l3m_data" == (*it_v)->name) {
 
-            Attribute *attr = NULL;
+            Attribute *attr = nullptr;
             // 1. Add the long_name attribute if no
             if(false == has_long_name) {
                 attr = new Attribute();
@@ -6396,7 +6396,7 @@ void GMFile:: Handle_GPM_l1_Coor_Attr() {
                         throw2("The cf dim. name of this dimension is not right.",itm->first);
                     else
                         cfdim_path= itm->first.substr(0,itm->first.size() - reduced_dimname.size());
-                    // cfdim_path will not be NULL only when the cfdim name is for the 2-D cv var.
+                    // cfdim_path will not be nullptr only when the cfdim name is for the 2-D cv var.
 
                     // Find the correct path,
                     // Note: 
@@ -6434,7 +6434,7 @@ void GMFile:: Handle_GPM_l1_Coor_Attr() {
                             throw2("The cf dim. name of this dimension is not right.",itm->first);
                         else
                             cfdim_path= itm->first.substr(0,itm->first.size() - reduced_dimname.size());
-                        // cfdim_path will not be NULL only when the cfdim name is for the 2-D cv var.
+                        // cfdim_path will not be nullptr only when the cfdim name is for the 2-D cv var.
 
                         // Find the correct path,
                         // Note: 

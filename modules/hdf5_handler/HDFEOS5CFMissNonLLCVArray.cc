@@ -52,10 +52,10 @@ bool HDFEOS5CFMissNonLLCVArray::read()
     BESDEBUG("h5","Coming to HDFEOS5CFMissNonLLCVArray read "<<endl);
 
     // Don't use cache since the calculation is fairly small.
-    read_data_NOT_from_mem_cache(false,NULL);
+    read_data_NOT_from_mem_cache(false,nullptr);
 #if 0
-    if(NULL == HDF5RequestHandler::get_srdata_mem_cache())                                          
-        read_data_NOT_from_mem_cache(false,NULL);                                                   
+    if(nullptr == HDF5RequestHandler::get_srdata_mem_cache())                                          
+        read_data_NOT_from_mem_cache(false,nullptr);                                                   
     else {                                                                                          
         // Notice for this special fake variable case, we just use the info. from DAP.
         // dataset() is the file name and name() is the HDF5 unique var name.

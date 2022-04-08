@@ -188,14 +188,14 @@ get_slabdata(hid_t dset, int *offset, int *step, int *count, int num_dim,
 
     if (H5Sselect_hyperslab(dspace, H5S_SELECT_SET, 
                            (const hsize_t *)&dyn_offset[0], &dyn_step[0],
-                            &dyn_count[0], NULL) < 0) {
+                            &dyn_count[0], nullptr) < 0) {
         H5Tclose(dtype);
         H5Tclose(memtype);
         H5Sclose(dspace);
         throw InternalErr(__FILE__, __LINE__, "could not select hyperslab");
     }
 
-    hid_t memspace = H5Screate_simple(num_dim, &dyn_count[0], NULL);
+    hid_t memspace = H5Screate_simple(num_dim, &dyn_count[0], nullptr);
     if (memspace < 0) {
         H5Tclose(dtype);
         H5Tclose(memtype);
@@ -257,7 +257,7 @@ bool read_vlen_string(hid_t dsetid, int nelms, hsize_t *hoffset, hsize_t *hstep,
     if (false == is_scalar) {
         if (H5Sselect_hyperslab(dspace, H5S_SELECT_SET,
                                hoffset, hstep,
-                               hcount, NULL) < 0) {
+                               hcount, nullptr) < 0) {
             H5Sclose(dspace);
             throw InternalErr (__FILE__, __LINE__, "Cannot generate the hyperslab of the HDF5 dataset.");
         }
@@ -268,7 +268,7 @@ bool read_vlen_string(hid_t dsetid, int nelms, hsize_t *hoffset, hsize_t *hstep,
             throw InternalErr (__FILE__, __LINE__, "Cannot obtain the number of dimensions of the data space.");
         }
 
-        mspace = H5Screate_simple(d_num_dim, hcount,NULL);
+        mspace = H5Screate_simple(d_num_dim, hcount,nullptr);
         if (mspace < 0) {
             H5Sclose(dspace);
             throw InternalErr (__FILE__, __LINE__, "Cannot create the memory space.");
@@ -324,12 +324,12 @@ bool read_vlen_string(hid_t dsetid, int nelms, hsize_t *hoffset, hsize_t *hstep,
 
     // For scalar, nelms is 1.
     char*temp_bp = &strval[0];
-    char*onestring = NULL;
+    char*onestring = nullptr;
     for (int i =0;i<nelms;i++) {
         onestring = *(char**)temp_bp;
-        if(onestring!=NULL ) 
+        if(onestring!=nullptr ) 
             finstrval[i] =string(onestring);
-        else // We will add a NULL if onestring is NULL.
+        else // We will add a nullptr if onestring is nullptr.
             finstrval[i]="";
         temp_bp +=ty_size;
     }
@@ -377,11 +377,11 @@ bool promote_char_to_short(H5T_class_t type_cls, hid_t type_id) {
 
 void get_vlen_str_data(char*temp_bp,string &finalstr_val) {
 
-    char*onestring = NULL;
+    char*onestring = nullptr;
     onestring = *(char**)temp_bp;
-    if(onestring!=NULL )
+    if(onestring!=nullptr )
         finalstr_val =string(onestring);
-    else // We will add a NULL is onestring is NULL.
+    else // We will add a nullptr is onestring is nullptr.
         finalstr_val="";
 
 }

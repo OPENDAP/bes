@@ -527,7 +527,7 @@ void HDF5BaseArray::
 handle_data_with_mem_cache(H5DataType h5_dtype, size_t total_elems,const short cache_flag, const string & cache_key, const bool is_dap4) {     
 
     // 
-    ObjMemCache * mem_data_cache= NULL;
+    ObjMemCache * mem_data_cache= nullptr;
     if(1 == cache_flag) 
         mem_data_cache = HDF5RequestHandler::get_srdata_mem_cache();
     else if(cache_flag > 1) {
@@ -544,8 +544,8 @@ handle_data_with_mem_cache(H5DataType h5_dtype, size_t total_elems,const short c
     }
 
 
-    if(mem_data_cache == NULL)
-        throw InternalErr(__FILE__,__LINE__,"The memory data cache should NOT be NULL.");
+    if(mem_data_cache == nullptr)
+        throw InternalErr(__FILE__,__LINE__,"The memory data cache should NOT be nullptr.");
 
     HDF5DataMemCache* mem_cache_ptr = static_cast<HDF5DataMemCache*>(mem_data_cache->get(cache_key));
     if(mem_cache_ptr) {
@@ -609,8 +609,8 @@ handle_data_with_mem_cache(H5DataType h5_dtype, size_t total_elems,const short c
 
 BaseType* HDF5BaseArray::h5cfdims_transform_to_dap4(D4Group *grp) {
 
-    if(grp == NULL)
-        return NULL;
+    if(grp == nullptr)
+        return nullptr;
     Array *dest = static_cast<HDF5BaseArray*>(ptr_duplicate());
 
     // If there is just a size, don't make

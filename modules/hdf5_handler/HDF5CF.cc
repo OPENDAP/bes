@@ -244,16 +244,16 @@ void File::Retrieve_H5_Obj(hid_t grp_id, const char*gname, bool include_attr)
 
         hid_t cgroup = -1;
         hid_t cdset = -1;
-        Group *group = NULL;
-        Var *var = NULL;
-        Attribute *attr = NULL;
+        Group *group = nullptr;
+        Var *var = nullptr;
+        Attribute *attr = nullptr;
 
         try {
 
             size_t dummy_name_len = 1;
 
             // Query the length of object name.
-            oname_size = H5Lget_name_by_idx(grp_id, ".", H5_INDEX_NAME, H5_ITER_NATIVE, i, NULL, dummy_name_len,
+            oname_size = H5Lget_name_by_idx(grp_id, ".", H5_INDEX_NAME, H5_ITER_NATIVE, i, nullptr, dummy_name_len,
                 H5P_DEFAULT);
             if (oname_size <= 0)
             throw2("Error getting the size of the hdf5 object from the group: ", gname);
@@ -328,7 +328,7 @@ void File::Retrieve_H5_Obj(hid_t grp_id, const char*gname, bool include_attr)
                         attr = new Attribute();
                         Retrieve_H5_Attr_Info(attr, cgroup, j, temp_unsup_attr_dtype, temp_unsup_attr_dspace);
                         group->attrs.push_back(attr);
-                        attr = NULL;
+                        attr = nullptr;
                     }
 
                     group->unsupported_attr_dtype = temp_unsup_attr_dtype;
@@ -391,7 +391,7 @@ void File::Retrieve_H5_Obj(hid_t grp_id, const char*gname, bool include_attr)
 
                         Retrieve_H5_Attr_Info(attr, cdset, j, temp_unsup_attr_dtype, temp_unsup_attr_dspace);
                         var->attrs.push_back(attr);
-                        attr = NULL;
+                        attr = nullptr;
                     }
 
                     var->unsupported_attr_dtype = temp_unsup_attr_dtype;
@@ -420,19 +420,19 @@ void File::Retrieve_H5_Obj(hid_t grp_id, const char*gname, bool include_attr)
         } // try
         catch (...) {
 
-            if (attr != NULL) {
+            if (attr != nullptr) {
                 delete attr;
-                attr = NULL;
+                attr = nullptr;
             }
 
-            if (var != NULL) {
+            if (var != nullptr) {
                 delete var;
-                var = NULL;
+                var = nullptr;
             }
 
-            if (group != NULL) {
+            if (group != nullptr) {
                 delete group;
-                group = NULL;
+                group = nullptr;
             }
 
             if (cgroup != -1) H5Gclose(cgroup);
@@ -603,7 +603,7 @@ void File::Retrieve_H5_Attr_Info(Attribute * attr, hid_t obj_id, const int j, bo
             throw1("Unable to open attribute by index ");
 
         // Obtain the size of attribute name.
-        ssize_t name_size = H5Aget_name(attrid, 0, NULL);
+        ssize_t name_size = H5Aget_name(attrid, 0, nullptr);
         if (name_size < 0)
             throw1("Unable to obtain the size of the hdf5 attribute name  ");
 
@@ -798,10 +798,10 @@ void File::Retrieve_H5_Attr_Value(Attribute *attr, string obj_name)
             if (H5Aread(attr_id, memtype_id, &temp_buf[0]) < 0)
             throw4("Cannot obtain the value of the attribute ", attr->name, " of object ", obj_name);
 
-            char *temp_bp = NULL;
+            char *temp_bp = nullptr;
             char *ptr_1stvlen_ptr = &temp_buf[0];
             temp_bp = &temp_buf[0];
-            char* onestring = NULL;
+            char* onestring = nullptr;
             string total_vstring = "";
 
             attr->strsize.resize(attr->count);
@@ -810,7 +810,7 @@ void File::Retrieve_H5_Attr_Value(Attribute *attr, string obj_name)
 
                 // This line will assure that we get the real variable length string value.
                 onestring = *(char **) temp_bp;
-                if (onestring != NULL) {
+                if (onestring != nullptr) {
                     total_vstring += string(onestring);
                     attr->strsize[temp_i] = (string(onestring)).size();
                 }
@@ -821,7 +821,7 @@ void File::Retrieve_H5_Attr_Value(Attribute *attr, string obj_name)
                 temp_bp += ty_size;
             }
 
-            if (ptr_1stvlen_ptr != NULL) {
+            if (ptr_1stvlen_ptr != nullptr) {
                 aspace_id = H5Aget_space(attr_id);
                 if (aspace_id < 0)
                 throw4("Cannot obtain space id for ", attr->name, " of object ", obj_name);
@@ -1349,9 +1349,9 @@ void File::Handle_Unsupported_Others(bool include_attr)
             }
 #endif
             for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
-                if (true == Check_DropLongStr((*irv), NULL)) {
+                if (true == Check_DropLongStr((*irv), nullptr)) {
                     this->add_ignored_droplongstr_hdr();
-                    this->add_ignored_var_longstr_info((*irv), NULL);
+                    this->add_ignored_var_longstr_info((*irv), nullptr);
                 }
                 // netCDF java doesn't have  limitation for attributes
 #if 0
@@ -1797,7 +1797,7 @@ File:: Var_Has_Attr(Var*var,const string &attrname) {
 string File::Retrieve_Str_Attr_Value(Attribute *attr, const string var_path)
 {
 
-    if (attr != NULL && var_path != "") {
+    if (attr != nullptr && var_path != "") {
         Retrieve_H5_Attr_Value(attr, var_path);
         string orig_attr_value(attr->value.begin(), attr->value.end());
         return orig_attr_value;
@@ -1941,7 +1941,7 @@ void File::Change_Attr_One_Str_to_Others(Attribute* attr, Var*var)
     }
         break;
     case H5FLOAT32: {
-        float num_sf = strtof(&(attr->value[0]), NULL);
+        float num_sf = strtof(&(attr->value[0]), nullptr);
         // Don't think it is necessary to check if floating-point is oveflowed for this routine. ignore it now. KY 2014-09-22
         attr->dtype = H5FLOAT32;
         attr->value.resize(sizeof(float));
@@ -1949,7 +1949,7 @@ void File::Change_Attr_One_Str_to_Others(Attribute* attr, Var*var)
     }
         break;
     case H5FLOAT64: {
-        double num_sd = strtod(&(attr->value[0]), NULL);
+        double num_sd = strtod(&(attr->value[0]), nullptr);
         // Don't think it is necessary to check if floating-point is oveflowed for this routine. ignore it now. KY 2014-09-22
         attr->dtype = H5FLOAT64;
         attr->value.resize(sizeof(double));
@@ -2558,7 +2558,7 @@ bool File::Check_DropLongStr(Var *var, Attribute * attr)
 {
 
     bool drop_longstr = false;
-    if (NULL == attr) {
+    if (nullptr == attr) {
         if (H5FSTRING == var->dtype || H5VSTRING == var->dtype) {
             try {
                 drop_longstr = Check_VarDropLongStr(var->fullpath, var->dims, var->dtype);
@@ -2630,10 +2630,10 @@ bool File::Check_VarDropLongStr(const string & varpath, const vector<Dimension *
         vector<string> finstrval;
         finstrval.resize(total_elms);
         char*temp_bp = &strval[0];
-        char*onestring = NULL;
+        char*onestring = nullptr;
         for (unsigned long long i = 0; i < total_elms; i++) {
             onestring = *(char**) temp_bp;
-            if (onestring != NULL) {
+            if (onestring != nullptr) {
                 finstrval[i] = string(onestring);
                 if(finstrval[i].size()>NC_JAVA_STR_SIZE_LIMIT) {
                     drop_longstr = true;
@@ -2726,10 +2726,10 @@ bool File::Check_VarDropLongStr(const string & varpath, const vector<Dimension *
             vector<string> finstrval;
             finstrval.resize(total_elms);
             char*temp_bp = &strval[0];
-            char*onestring = NULL;
+            char*onestring = nullptr;
             for (unsigned long long i = 0; i < total_elms; i++) {
                 onestring = *(char**) temp_bp;
-                if (onestring != NULL)
+                if (onestring != nullptr)
                     finstrval[i] = string(onestring);
                 else
                     // We will add a NULL if onestring is NULL.
@@ -2792,7 +2792,7 @@ void File::add_ignored_grp_longstr_info(const string& grp_path, const string & a
 void File::add_ignored_var_longstr_info(Var *var, Attribute *attr) 
 {
 
-    if (NULL == attr)
+    if (nullptr == attr)
         ignored_msg += "String variable: " + var->fullpath + " value is set to empty.\n";
     else {
         ignored_msg += "The variable: " + var->fullpath + " has an empty-set string attribute: " + attr->name + "\n";

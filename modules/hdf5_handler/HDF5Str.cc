@@ -106,7 +106,7 @@ bool HDF5Str::read()
         if(H5Tis_variable_str(dtypeid) >0){
             vector<string>finstrval;
             finstrval.resize(1);
-            read_vlen_string(dset_id,1,NULL,NULL,NULL,finstrval);
+            read_vlen_string(dset_id,1,nullptr,nullptr,nullptr,finstrval);
             string strval = finstrval[0];
             set_value(strval);
         }

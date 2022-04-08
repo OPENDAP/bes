@@ -500,13 +500,13 @@ void EOS5File::Handle_Unsupported_Others(bool include_attr)
             }
 #endif
             for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
-                if (true == Check_DropLongStr((*irv), NULL)) {
+                if (true == Check_DropLongStr((*irv), nullptr)) {
                     string ecsmeta_grp = "/HDFEOS INFORMATION";
                     // Ignored ECS metadata should not be reported.
                     if ((*irv)->fullpath.find(ecsmeta_grp) != 0
                         || ((*irv)->fullpath.rfind("/") != ecsmeta_grp.size())) {
                         this->add_ignored_droplongstr_hdr();
-                        this->add_ignored_var_longstr_info((*irv), NULL);
+                        this->add_ignored_var_longstr_info((*irv), nullptr);
                     }
                 }
 #if 0
@@ -2335,7 +2335,7 @@ bool EOS5File::Handle_Single_Nonaugment_Grid_CVar_EOS5LatLon(EOS5CFGrid *cfgrid,
                 EOS5cvar->dtype = H5FLOAT32;
             }
 
-            Dimension* eos5cvar_dim = NULL;
+            Dimension* eos5cvar_dim = nullptr;
             if (EOS5cvar->rank == 2) {
                 eos5cvar_dim = new Dimension((hsize_t) cfgrid->ydimsize);
 #if 0
@@ -2926,7 +2926,7 @@ void EOS5File::Handle_Special_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, set<str
         string eos5_vc_attr_name = "VerticalCoordinate";
         string eos5_pre_attr_name = "Pressure";
         bool has_vc_attr = false;
-        Group *vc_group = NULL;
+        Group *vc_group = nullptr;
 
         // 1. Check if having the "VerticalCoordinate" attribute in this swath and the attribute is "Pressure".
         for (vector<Group *>::iterator irg = this->groups.begin(); irg != this->groups.end(); ++irg) {

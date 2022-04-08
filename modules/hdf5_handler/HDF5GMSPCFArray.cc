@@ -54,7 +54,7 @@ bool HDF5GMSPCFArray::read()
     if(length() == 0)
         return true;
 
-    read_data_NOT_from_mem_cache(false,NULL);
+    read_data_NOT_from_mem_cache(false,nullptr);
 
     return true;
 }
@@ -138,7 +138,7 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool /*add_cache*/,void*/*buf
 
     if (H5Sselect_hyperslab(dspace, H5S_SELECT_SET,
                            &hoffset[0], &hstep[0],
-                           &hcount[0], NULL) < 0) {
+                           &hcount[0], nullptr) < 0) {
 
             H5Sclose(dspace);
             H5Dclose(dsetid);
@@ -149,7 +149,7 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool /*add_cache*/,void*/*buf
             throw InternalErr (__FILE__, __LINE__, eherr.str ());
     }
 
-    mspace = H5Screate_simple(rank, (const hsize_t*)&hcount[0],NULL);
+    mspace = H5Screate_simple(rank, (const hsize_t*)&hcount[0],nullptr);
     if (mspace < 0) {
             H5Sclose(dspace);
             H5Dclose(dsetid);

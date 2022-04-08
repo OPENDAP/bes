@@ -107,7 +107,7 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
      
     bool is_check_nameclashing = HDF5RequestHandler::get_check_name_clashing();
 
-    EOS5File *f = NULL;
+    EOS5File *f = nullptr;
 
     try {
         f = new EOS5File(filename.c_str(),file_id);
@@ -168,12 +168,12 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
         f->Add_Dim_Name(&p);
     }
     catch (HDF5CF::Exception &e){
-        if(f!=NULL) 
+        if(f!=nullptr) 
             delete f;
         throw InternalErr(e.what());
     }
     catch(...) {
-        if(f!=NULL)
+        if(f!=nullptr)
             delete f;
         throw;
     }
@@ -196,8 +196,8 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
 
         // We need to use the CV units to distinguish lat/lon from th 3rd CV when
         // memory cache is turned on.
-        if((HDF5RequestHandler::get_lrdata_mem_cache() != NULL) ||
-           (HDF5RequestHandler::get_srdata_mem_cache() != NULL)){
+        if((HDF5RequestHandler::get_lrdata_mem_cache() != nullptr) ||
+           (HDF5RequestHandler::get_srdata_mem_cache() != nullptr)){
 
             // Handle unsupported datatypes including the attributes
             f->Handle_Unsupported_Dtype(true);
@@ -224,8 +224,8 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
         // The units of CV will be used to distinguish whether this CV is 
         // latitude/longitude or a third-dimension CV. 
         // isLatLon() will use the units value.
-        if((HDF5RequestHandler::get_lrdata_mem_cache() != NULL) ||
-           (HDF5RequestHandler::get_srdata_mem_cache() != NULL))
+        if((HDF5RequestHandler::get_lrdata_mem_cache() != nullptr) ||
+           (HDF5RequestHandler::get_srdata_mem_cache() != nullptr))
             f->Adjust_Attr_Info();
 
         // May need to adjust the object names for special objects. Currently no operations
@@ -254,7 +254,7 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
         f->Handle_SpVar();
     }
     catch (HDF5CF::Exception &e){
-        if(f != NULL)
+        if(f != nullptr)
             delete f;
         throw InternalErr(e.what());
     }
@@ -264,12 +264,12 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
         gen_eos5_cfdds(dds,f);
     }
     catch(...) {
-        if (f!=NULL)
+        if (f!=nullptr)
             delete f;
         throw;
     }
 
-    if (f!=NULL)
+    if (f!=nullptr)
         delete f;
 }
 
@@ -297,7 +297,7 @@ void map_eos5_cfdas(DAS &das, hid_t file_id, const string &filename) {
 
     bool is_add_path_attrs = HDF5RequestHandler::get_add_path_attrs();
 
-    EOS5File *f = NULL;
+    EOS5File *f = nullptr;
     try {
         f = new EOS5File(filename.c_str(),file_id);
     }
@@ -341,12 +341,12 @@ void map_eos5_cfdas(DAS &das, hid_t file_id, const string &filename) {
         f->Add_Dim_Name(&p);
     }
     catch (HDF5CF::Exception &e){
-        if(f != NULL)
+        if(f != nullptr)
             delete f;
         throw InternalErr(e.what());
     }
     catch(...) {
-        if(f != NULL)
+        if(f != nullptr)
             delete f;
         throw;
     }
@@ -393,7 +393,7 @@ void map_eos5_cfdas(DAS &das, hid_t file_id, const string &filename) {
         f->Handle_SpVar_Attr();
     }
     catch (HDF5CF::Exception &e){
-        if(f != NULL)
+        if(f != nullptr)
             delete f;
         throw InternalErr(e.what());
     }
@@ -403,12 +403,12 @@ void map_eos5_cfdas(DAS &das, hid_t file_id, const string &filename) {
         gen_eos5_cfdas(das,file_id,f);
     }
     catch(...) {
-        if (f != NULL)
+        if (f != nullptr)
             delete f;
         throw;
     }
 
-    if( f != NULL) 
+    if( f != nullptr) 
         delete f;
 
 }
@@ -504,7 +504,7 @@ void gen_eos5_cf_ignored_obj_info(DAS &das, HDF5CF::EOS5File *f) {
 
     BESDEBUG("h5","Coming to gen_eos5_cf_ignored_obj_info()  "<<endl);
     AttrTable *at = das.get_table("Ignored_Object_Info");
-    if (NULL == at)
+    if (nullptr == at)
         at = das.add_table("Ignored_Object_Info", new AttrTable);
 
     at->append_attr("Message","String",f->Get_Ignored_Msg());
@@ -516,7 +516,7 @@ void gen_eos5_cf_ignored_obj_info(DAS &das, HDF5CF::EOS5File *f) {
 void gen_dap_oneeos5cvar_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar, const hid_t file_id, const string & filename) {
 
     BESDEBUG("h5","Coming to gen_dap_oneeos5cvar_dds()  "<<endl);
-    BaseType *bt = NULL;
+    BaseType *bt = nullptr;
 
     // TODO: need to handle 64-bit integer for DAP4 CF 
     if(cvar->getType()==H5INT64 || cvar->getType() == H5UINT64)
@@ -568,7 +568,7 @@ cerr<<"cvar attribute value type is "<<(*it_ra)->getType() <<endl;
 cerr<<"cvar new name exist at he s5cfdap.cc is "<<cvar->getNewName() <<endl;
 #endif
                 bool is_latlon = cvar->isLatLon();
-                HDF5CFArray *ar = NULL;
+                HDF5CFArray *ar = nullptr;
                 try {
                     ar = new HDF5CFArray (
                                           cvar->getRank(),
@@ -607,7 +607,7 @@ cerr<<"cvar new name exist at he s5cfdap.cc is "<<cvar->getNewName() <<endl;
             case CV_LON_MISS:
             {
 
-                HDFEOS5CFMissLLArray *ar = NULL;
+                HDFEOS5CFMissLLArray *ar = nullptr;
                 try {
 #if 0
 cerr<<"cvar zone here is "<<cvar->getZone() <<endl;
@@ -662,7 +662,7 @@ cerr<<"cvar getParams here 1 is "<<cvar->getParams()[0]<<endl;
                 }
                 int nelem = (cvar->getDimensions()[0])->getSize();
 
-                HDFEOS5CFMissNonLLCVArray *ar = NULL;
+                HDFEOS5CFMissNonLLCVArray *ar = nullptr;
                 try {
                     ar = new HDFEOS5CFMissNonLLCVArray(
                                                     cvar->getRank(),
@@ -699,7 +699,7 @@ cerr<<"cvar getParams here 1 is "<<cvar->getParams()[0]<<endl;
                     throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");
                 }
                 int nelem = (cvar->getDimensions()[0])->getSize();
-                HDFEOS5CFSpecialCVArray *ar = NULL;
+                HDFEOS5CFSpecialCVArray *ar = nullptr;
 
                 try {
                     ar = new HDFEOS5CFSpecialCVArray(
@@ -764,11 +764,11 @@ void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
     // The table name is "HDF_GLOBAL".
     if (false == root_attrs.empty()) {
         AttrTable *at = das.get_table(FILE_ATTR_TABLE_NAME);
-        if (NULL == at)
+        if (nullptr == at)
             at = das.add_table(FILE_ATTR_TABLE_NAME, new AttrTable);
 
         for (it_ra = root_attrs.begin(); it_ra != root_attrs.end(); it_ra++) {
-            gen_dap_oneobj_das(at,*it_ra,NULL);
+            gen_dap_oneobj_das(at,*it_ra,nullptr);
         }
     }
 
@@ -776,22 +776,22 @@ void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
         for (it_g = grps.begin();
              it_g != grps.end(); ++it_g) {
             AttrTable *at = das.get_table((*it_g)->getNewName());
-            if (NULL == at)
+            if (nullptr == at)
                 at = das.add_table((*it_g)->getNewName(), new AttrTable);
 
             for (it_ra = (*it_g)->getAttributes().begin();
                  it_ra != (*it_g)->getAttributes().end(); ++it_ra) {
-                //gen_dap_oneobj_das(at,*it_ra,NULL);
+                //gen_dap_oneobj_das(at,*it_ra,nullptr);
                 // TODO: ADDING a BES KEY
                 if((*it_ra)->getNewName()=="Conventions" &&((*it_g)->getNewName() == "HDFEOS_ADDITIONAL_FILE_ATTRIBUTES")
                         && (true==HDF5RequestHandler::get_eos5_rm_convention_attr_path())) {
                     AttrTable *at_das = das.get_table(FILE_ATTR_TABLE_NAME);
-                    if (NULL == at_das)
+                    if (nullptr == at_das)
                         at_das = das.add_table(FILE_ATTR_TABLE_NAME, new AttrTable);
-                    gen_dap_oneobj_das(at_das,*it_ra,NULL);
+                    gen_dap_oneobj_das(at_das,*it_ra,nullptr);
                 }
                 else 
-                    gen_dap_oneobj_das(at,*it_ra,NULL);
+                    gen_dap_oneobj_das(at,*it_ra,nullptr);
             }
         }
     }
@@ -806,7 +806,7 @@ void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
             }
 
             AttrTable *at = das.get_table((*it_v)->getNewName());
-            if (NULL == at)
+            if (nullptr == at)
                 at = das.add_table((*it_v)->getNewName(), new AttrTable);
 
             for (it_ra = (*it_v)->getAttributes().begin();
@@ -826,7 +826,7 @@ void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
             }
 
             AttrTable *at = das.get_table((*it_cv)->getNewName());
-            if (NULL == at)
+            if (nullptr == at)
                 at = das.add_table((*it_cv)->getNewName(), new AttrTable);
 
             for (it_ra = (*it_cv)->getAttributes().begin();
@@ -852,7 +852,7 @@ void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
         if((*it_cv)->getProjCode() == HE5_GCTP_LAMAZ) {
             if((*it_cv)->getCVType() == CV_LAT_MISS || (*it_cv)->getCVType() == CV_LON_MISS) {
                 AttrTable *at = das.get_table((*it_cv)->getNewName());
-                if (NULL == at)
+                if (nullptr == at)
                     at = das.add_table((*it_cv)->getNewName(), new AttrTable);
                 if((*it_cv)->getCVType() == CV_LAT_MISS)
                     add_ll_valid_range(at,true);
@@ -903,7 +903,7 @@ if(other_str!="") "h5","Final othermetadata "<<other_str <<endl;
         if (false == is_check_disable_smetadata) {
 
             AttrTable *at = das.get_table("StructMetadata");
-            if (NULL == at)
+            if (nullptr == at)
                 at = das.add_table("StructMetadata", new AttrTable);
             parser_arg arg(at);
 
@@ -922,7 +922,7 @@ if(other_str!="") "h5","Final othermetadata "<<other_str <<endl;
 
     if(core_str != ""){
         AttrTable *at = das.get_table("CoreMetadata");
-        if (NULL == at)
+        if (nullptr == at)
             at = das.add_table("CoreMetadata", new AttrTable);
         parser_arg arg(at);
         he5das_scan_string((const char*) core_str.c_str());
@@ -937,7 +937,7 @@ if(other_str!="") "h5","Final othermetadata "<<other_str <<endl;
     }
     if(arch_str != ""){
         AttrTable *at = das.get_table("ArchiveMetadata");
-        if (NULL == at)
+        if (nullptr == at)
             at = das.add_table("ArchiveMetadata", new AttrTable);
         parser_arg arg(at);
         he5das_scan_string((const char*) arch_str.c_str());
@@ -955,7 +955,7 @@ if(other_str!="") "h5","Final othermetadata "<<other_str <<endl;
     // XML attribute cannot parsed. So just pass the string.
     if(xml_str != ""){
         AttrTable *at = das.get_table("XMLMetadata");
-        if (NULL == at)
+        if (nullptr == at)
             at = das.add_table("XMLMetadata", new AttrTable);
         HDF5CFDAPUtil::replace_double_quote(xml_str);
         at->append_attr("Contents","String",xml_str);
@@ -966,7 +966,7 @@ if(other_str!="") "h5","Final othermetadata "<<other_str <<endl;
     // but will keep an eye on it. KY 2012-3-6
     if(subset_str != ""){
         AttrTable *at = das.get_table("SubsetMetadata");
-        if (NULL == at)
+        if (nullptr == at)
             at = das.add_table("SubsetMetadata", new AttrTable);
         parser_arg arg(at);
         he5das_scan_string((const char*) subset_str.c_str());
@@ -980,7 +980,7 @@ if(other_str!="") "h5","Final othermetadata "<<other_str <<endl;
     }
     if(product_str != ""){
         AttrTable *at = das.get_table("ProductMetadata");
-        if (NULL == at)
+        if (nullptr == at)
             at = das.add_table("ProductMetadata", new AttrTable);
         parser_arg arg(at);
         he5das_scan_string((const char*) product_str.c_str());
@@ -997,7 +997,7 @@ if(other_str!="") "h5","Final othermetadata "<<other_str <<endl;
     // We will simply pass a string to the DAS.
     if (other_str != ""){
         AttrTable *at = das.get_table("OtherMetadata");
-        if (NULL == at)
+        if (nullptr == at)
             at = das.add_table("OtherMetadata", new AttrTable);
         at->append_attr("Contents","String",other_str);
     }
@@ -1007,7 +1007,7 @@ if(other_str!="") "h5","Final othermetadata "<<other_str <<endl;
     if(f->HaveUnlimitedDim() == true) {
 
         AttrTable *at = das.get_table("DODS_EXTRA");
-        if (NULL == at)
+        if (nullptr == at)
             at = das.add_table("DODS_EXTRA", new AttrTable);
         string unlimited_names;
 
@@ -1131,7 +1131,7 @@ void read_ecs_metadata(hid_t s_file_id,
 
         // Query the length of the object name.
         oname_size =
-            H5Lget_name_by_idx(ecs_grp_id,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,NULL,
+            H5Lget_name_by_idx(ecs_grp_id,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,nullptr,
                 0, H5P_DEFAULT); 
         if (oname_size <= 0) {
             string msg = "hdf5 object name error from: ";
@@ -1534,7 +1534,7 @@ else "h5","xmlmeta data has the suffix" <<endl;
         s_buf.clear();
         size_t temp_null_pos = tempstr.find_first_of('\0');
 
-        // temp_null_pos returns the position of NULL,which is the last character of the string. 
+        // temp_null_pos returns the position of nullptr,which is the last character of the string. 
         // so the length of string before null is EQUAL to
         // temp_null_pos since pos starts at 0.
         string finstr = tempstr.substr(0,temp_null_pos);
@@ -1874,7 +1874,7 @@ void map_eos5_cfdmr(D4Group *d4_root, hid_t file_id, const string &filename) {
 
     bool is_add_path_attrs = HDF5RequestHandler::get_add_path_attrs();
 
-    EOS5File *f = NULL;
+    EOS5File *f = nullptr;
 
     try {
         f = new EOS5File(filename.c_str(),file_id);
@@ -1938,12 +1938,12 @@ void map_eos5_cfdmr(D4Group *d4_root, hid_t file_id, const string &filename) {
         f->Add_Dim_Name(&p);
     }
     catch (HDF5CF::Exception &e){
-        if(f!=NULL) 
+        if(f!=nullptr) 
             delete f;
         throw InternalErr(e.what());
     }
     catch(...) {
-        if(f!=NULL)
+        if(f!=nullptr)
             delete f;
         throw;
     }
@@ -1967,8 +1967,8 @@ void map_eos5_cfdmr(D4Group *d4_root, hid_t file_id, const string &filename) {
         // Old comments, leave them for the time being:
         // We need to use the CV units to distinguish lat/lon from th 3rd CV when
         // memory cache is turned on.
-        //if((HDF5RequestHandler::get_lrdata_mem_cache() != NULL) ||
-        //   (HDF5RequestHandler::get_srdata_mem_cache() != NULL)){
+        //if((HDF5RequestHandler::get_lrdata_mem_cache() != nullptr) ||
+        //   (HDF5RequestHandler::get_srdata_mem_cache() != nullptr)){
 
         // Handle unsupported datatypes including the attributes
         f->Handle_Unsupported_Dtype(true);
@@ -2004,8 +2004,8 @@ void map_eos5_cfdmr(D4Group *d4_root, hid_t file_id, const string &filename) {
         // The units of CV will be used to distinguish whether this CV is 
         // latitude/longitude or a third-dimension CV. 
         // isLatLon() will use the units value.
-        //if((HDF5RequestHandler::get_lrdata_mem_cache() != NULL) ||
-        //   (HDF5RequestHandler::get_srdata_mem_cache() != NULL))
+        //if((HDF5RequestHandler::get_lrdata_mem_cache() != nullptr) ||
+        //   (HDF5RequestHandler::get_srdata_mem_cache() != nullptr))
         f->Adjust_Attr_Info();
 
         // May need to adjust the object names for special objects. Currently no operations
@@ -2040,7 +2040,7 @@ void map_eos5_cfdmr(D4Group *d4_root, hid_t file_id, const string &filename) {
         //f->Handle_SpVar_Attr();
     }
     catch (HDF5CF::Exception &e){
-        if(f != NULL)
+        if(f != nullptr)
             delete f;
         throw InternalErr(e.what());
     }
@@ -2050,12 +2050,12 @@ void map_eos5_cfdmr(D4Group *d4_root, hid_t file_id, const string &filename) {
         gen_eos5_cfdmr(d4_root,f);
     }
     catch(...) {
-        if (f!=NULL)
+        if (f!=nullptr)
             delete f;
         throw;
     }
 
-    if (f!=NULL)
+    if (f!=nullptr)
         delete f;
 
 }
@@ -2119,8 +2119,8 @@ void gen_eos5_cfdmr(D4Group *d4_root,  HDF5CF::EOS5File *f) {
         string dods_extra = "DODS_EXTRA";
 
         // If DODS_EXTRA exists, we will not create the unlimited dimensions. 
-        if(d4_root->attributes() != NULL) {
-        //if((d4_root->attributes()->find(dods_extra))==NULL) {
+        if(d4_root->attributes() != nullptr) {
+        //if((d4_root->attributes()->find(dods_extra))==nullptr) {
 
             string unlimited_dim_names ="";
 
@@ -2168,7 +2168,7 @@ void gen_eos5_cfdmr(D4Group *d4_root,  HDF5CF::EOS5File *f) {
 void gen_dap_oneeos5cvar_dmr(D4Group* d4_root,const EOS5CVar* cvar,const hid_t file_id,const string & filename){
 
     BESDEBUG("h5","Coming to gen_dap_oneeos5cvar_dmr()  "<<endl);
-    BaseType *bt = NULL;
+    BaseType *bt = nullptr;
 
     switch(cvar->getType()) {
 #define HANDLE_CASE(tid,type)                                  \
@@ -2211,7 +2211,7 @@ void gen_dap_oneeos5cvar_dmr(D4Group* d4_root,const EOS5CVar* cvar,const hid_t f
             {
 
                 bool is_latlon = cvar->isLatLon();
-                HDF5CFArray *ar = NULL;
+                HDF5CFArray *ar = nullptr;
                 try {
                     bool is_dap4 = true;
                     ar = new HDF5CFArray (
@@ -2255,7 +2255,7 @@ void gen_dap_oneeos5cvar_dmr(D4Group* d4_root,const EOS5CVar* cvar,const hid_t f
             case CV_LON_MISS:
             {
 
-                HDFEOS5CFMissLLArray *ar = NULL;
+                HDFEOS5CFMissLLArray *ar = nullptr;
                 try {
 #if 0
 cerr<<"cvar zone here is "<<cvar->getZone() <<endl;
@@ -2315,7 +2315,7 @@ cerr<<"cvar getParams here 1 is "<<cvar->getParams()[0]<<endl;
                 }
                 int nelem = (cvar->getDimensions()[0])->getSize();
 
-                HDFEOS5CFMissNonLLCVArray *ar = NULL;
+                HDFEOS5CFMissNonLLCVArray *ar = nullptr;
                 try {
                     ar = new HDFEOS5CFMissNonLLCVArray(
                                                     cvar->getRank(),
@@ -2357,7 +2357,7 @@ cerr<<"cvar getParams here 1 is "<<cvar->getParams()[0]<<endl;
                     throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");
                 }
                 int nelem = (cvar->getDimensions()[0])->getSize();
-                HDFEOS5CFSpecialCVArray *ar = NULL;
+                HDFEOS5CFSpecialCVArray *ar = nullptr;
 
                 try {
                     ar = new HDFEOS5CFSpecialCVArray(
@@ -2459,7 +2459,7 @@ void  gen_gm_oneproj_var(libdap::D4Group*d4_root,
         string cf_projection_base = "eos_cf_projection";                                                        
         string cf_projection_name;                           
                                                                                                             
-        HDF5CFGeoCFProj * dummy_proj_cf = NULL;                                                                 
+        HDF5CFGeoCFProj * dummy_proj_cf = nullptr;                                                                 
 
         if(HE5_GCTP_SNSOID == cv_proj_code)  {                                                                
 
@@ -2476,7 +2476,7 @@ void  gen_gm_oneproj_var(libdap::D4Group*d4_root,
             dummy_proj_cf = new HDF5CFGeoCFProj(cf_projection_name, cf_projection_name);                        
         }                                                                                                       
 
-        if(dummy_proj_cf != NULL) {
+        if(dummy_proj_cf != nullptr) {
             dummy_proj_cf->set_is_dap4(true); 
             add_gm_oneproj_var_dap4_attrs(dummy_proj_cf,cv_proj_code,cvar->getParams());
             d4_root->add_var_nocopy(dummy_proj_cf);

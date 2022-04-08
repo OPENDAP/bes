@@ -51,7 +51,7 @@ bool HDF5GMCFSpecialCVArray::read()
 
     BESDEBUG("h5", "Coming to HDF5GMCFSpecialCVArray read "<<endl);
 
-    read_data_NOT_from_mem_cache(false, NULL);
+    read_data_NOT_from_mem_cache(false, nullptr);
 
     return true;
 }
