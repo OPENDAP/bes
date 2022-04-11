@@ -315,7 +315,7 @@
             <value>0.000000000</value>
         </Attribute>
         <Attribute name="reference" type="String">
-            <value>O'Reilly, J.E., and 24 Coauthors, 2000: SeaWiFS Postlaunch Calibration and Validation Analyses, Part 3. NASA Tech. Memo. 2000-206892, Vol. 11, S.B. Hooker and E.R. Firestone, Eds., NASA Goddard Space Flight Center, 49 pp.\n
+            <value>O'Reilly, J.E., and 24 Coauthors, 2000: SeaWiFS Postlaunch Calibration and Validation Analyses, Part 3. NASA Tech. Memo. 2000-206892, Vol. 11, S.B. Hooker and E.R. Firestone, Eds., NASA Goddard Space Flight Center, 49 pp.\\n
                 http://oceancolor.gsfc.nasa.gov/REPROCESSING/R2009/ocv6/</value>
         </Attribute>
         <Attribute name="origname" type="String">

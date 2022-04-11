@@ -13,7 +13,7 @@ Attributes {
         Int32 GranuleYear 2012;
         Int32 GranuleDayOfYear 44;
         Float64 TAI93At0zOfGranule 603244807.00000000;
-        String PGEVersion "1.1.0.1";
+        String PGEVersion "\"1.1.0.1\"";
         String StartUTC "2012-02-12T12:15:00.000000Z";
         String EndUTC "2012-02-14T11:45:00.000000Z";
         String Period "Daily";
