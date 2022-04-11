@@ -329,7 +329,7 @@ static void wait_for_timeout()
 * @param args A unique_ptr to an instance of .
 * @return True unless an exception is throw in which case neither true or false apply.
 */
-void worker_data_plan_request_thread(unique_ptr<worker_data_request_plan_args> args)
+void worker_data_request_plan_thread(unique_ptr<worker_data_request_plan_args> args)
 {
     args->besInterface->execute_data_request_plan();
 }
@@ -553,8 +553,7 @@ int BESInterface::execute_request(const string &from)
         // is false, we wait one additional second for the worker thread
         // to return ready before throwing an exception.
         if (!ignoreBesTimeout.load()) {
-            timeout_ms += chrono::milliseconds(1000);
-            if (worker.wait_for(timeout_ms) == std::future_status::timeout) {
+            if (worker.wait_for(chrono::milliseconds(1000)) == std::future_status::timeout) {
                 throw BESInternalError(string("\"The std::future has failed!\"", __FILE__, __LINE__);
             }
         }
