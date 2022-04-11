@@ -324,6 +324,16 @@ static void wait_for_timeout()
 }
 #endif
 
+/**
+* @brief A single argument wrapper for execute_data_request_plan() for use with std::async().
+* @param args A unique_ptr to an instance of .
+* @return True unless an exception is throw in which case neither true or false apply.
+*/
+void worker_data_plan_request_thread(unique_ptr<worker_data_request_plan_args> args)
+{
+    args->besInterface->execute_data_request_plan();
+}
+
 BESInterface::BESInterface(ostream *output_stream) :
     d_strm(output_stream), d_timeout_from_keys(0), d_dhi_ptr(0), d_transmitter(0)
 {
@@ -721,12 +731,3 @@ void BESInterface::dump(ostream & strm) const
     BESIndent::UnIndent();
 }
 
-/**
-* @brief A single argument wrapper for execute_data_request_plan() for use with std::async().
-* @param args A unique_ptr to an instance of .
-* @return True unless an exception is throw in which case neither true or false apply.
-*/
-void worker_data_plan_request_thread(unique_ptr<worker_data_request_plan_args> args)
-{
-    args->besInterface->execute_data_request_plan();
-}
