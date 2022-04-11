@@ -45,8 +45,9 @@
 
 #include <string>
 #include <sstream>
-#include <future>
-#include <thread>
+#include <future>         // std::async, std::future
+#include <chrono>         // std::chrono::milliseconds
+
 
 #include "BESInterface.h"
 
@@ -519,14 +520,13 @@ int BESInterface::execute_request(const string &from)
         }
 
         BESStopWatch rt;
-        unsigned long int elapsedTime;
         bool workerHasTimedOut = false;
 
         if ( !rt.start("worker")) {
             throw BESInternalError("BESStopWatch request elapsed_timer didn't start", __FILE__, __LINE__);
         }
 
-        auto worker = std::async(std::launch::async, execute_data_request_plan());
+        auto worker = std::async(std::launch::async, execute_data_request_plan);
 
         while ( worker.sleep_for(chrono::milliseconds(100)) != std::future_status::ready
                 && workerHasTimedOut == false
