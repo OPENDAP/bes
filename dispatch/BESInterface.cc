@@ -73,6 +73,7 @@
 
 // If not defined, this is false (source code file names are logged). jhrg 10/4/18
 #define EXCLUDE_FILE_INFO_FROM_LOG "BES.DoNotLogSourceFilenames"
+#define prolog std::string("BESInterface::").append(__func__).append("() - ")
 
 using namespace std;
 
@@ -508,7 +509,7 @@ int BESInterface::execute_request(const string &from)
             VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << "Set request timeout to " << bes_timeout << " seconds (from keys)." << endl);
         }
 
-        // Set atomic<bool> besTimeoutExceeded = false;
+        // Initialize atomic<bool> besTimeoutExceeded = false;
         besTimeoutExceeded.store(false);
 
         // Set atomic<bool> ignoreBesTimeout = true if the bes_timeout has not been set.
@@ -519,29 +520,35 @@ int BESInterface::execute_request(const string &from)
             ignoreBesTimeout.store(false);  // worker thread responsible for disabling timeout
         }
 
-        BESStopWatch rt;
-        bool workerHasTimedOut = false;
+        std::chrono::milliseconds timeout_ms (bes_timeout);
+        unique_ptr<worker_data_request_plan_args> args;
+        auto worker = std::async(std::launch::async, worker_data_request_plan_thread, std::move(args));
 
-        if ( !rt.start("worker")) {
-            throw BESInternalError("BESStopWatch request elapsed_timer didn't start", __FILE__, __LINE__);
-        }
+        // We set the maximum wait time equal to bes_timeout
+        //
+        // If the worker thread returns status::timeout we check ignoreBesTimeout
+        // before storing true in besTimeoutExceeded.
+        //
+        // The worker thread polls besTimeoutExceeded and will return once
+        // that has been set regardless of whether the worker thread had set
+        // ignoreBesTimeout.
 
-        auto worker = std::async(std::launch::async, execute_data_request_plan);
-
-        while ( worker.sleep_for(chrono::milliseconds(100)) != std::future_status::ready
-                && workerHasTimedOut == false
-                && ignoreBesTimeout.load() == false)
-        {
-            if ( rt.get_elapsed_us() >= bes_timeout ) {
+        if (worker.wait_for(timeout_ms) == std::future_status::timeout) {
+            if (!ignoreBesTimeout.load()) {
                 besTimeoutExceeded.store(true);
-                workerHasTimedOut = true;
             }
         }
 
-        // if workerHasTimedOut but is not ready, and ignoreBesTimeout is false then do we simply wait for the
-        // worker to return or set a hard limit...
-
-        worker.get();   // This will block here until worker returns.
+        // If the worker thread has exceeded the bes_timeout AND ignoreBesTimeout
+        // is false, we wait one additional second for the worker thread
+        // to return ready before throwing an exception.
+        if (!ignoreBesTimeout.load()) {
+            timeout_ms += chrono::milliseconds(1000);
+            if (worker.wait_for(timeout_ms) == std::future_status::timeout) {
+                throw BESInternalError(string("\"The std::future has failed!\"", __FILE__, __LINE__);
+            }
+        }
+        worker.get();
 
         // if worker has thrown an exception it will be rethrown and main needs to deal with it.
 
@@ -712,4 +719,14 @@ void BESInterface::dump(ostream & strm) const
     }
 
     BESIndent::UnIndent();
+}
+
+/**
+* @brief A single argument wrapper for execute_data_request_plan() for use with std::async().
+* @param args A unique_ptr to an instance of .
+* @return True unless an exception is throw in which case neither true or false apply.
+*/
+void worker_data_plan_request_thread(unique_ptr<worker_data_request_plan_args> args)
+{
+    args->besInterface->execute_data_request_plan();
 }

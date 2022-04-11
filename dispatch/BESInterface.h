@@ -152,5 +152,15 @@ public:
     void dump(std::ostream &strm) const override;
 };
 
-#endif // BESInterface_h_
+/**
+ * Args for threads that process BESXMLInterface::execute_data_request_plan.
+ */
+struct worker_data_request_plan_args {
+    std::thread::id parent_thread_id;
+    std::shared_ptr<BESInterface> besInterface;
 
+    worker_data_request_plan_args(std::shared_ptr<BESInterface> sc)
+            : parent_thread_id(std::this_thread::get_id()), besInterface(std::move(sc)) {}
+};
+
+#endif // BESInterface_h_
