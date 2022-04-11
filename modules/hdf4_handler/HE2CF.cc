@@ -444,12 +444,12 @@ void HE2CF::obtain_SD_attr_value(const string& attrname, string &cur_data) {
         throw InternalErr(__FILE__, __LINE__,error.str());
 
     }
-    // Remove the last NULL character
+    // Remove the last nullptr character
     //        string temp_data(attrvalue.begin(),attrvalue.end()-1);
     //       cur_data = temp_data;
 
     if(attrvalue[count] != '\0') 
-        throw InternalErr(__FILE__,__LINE__,"the last character of the attribute buffer should be NULL");
+        throw InternalErr(__FILE__,__LINE__,"the last character of the attribute buffer should be nullptr");
 
     // No need to escape the special characters since they are ECS metadata. Will see. KY 2013-10-14
     cur_data.resize(attrvalue.size()-1);
@@ -919,7 +919,7 @@ HE2CF::HE2CF()
     sd_id = -1;
     metadata = "";
     gname = "";
-    das = NULL;
+    das = nullptr;
 }
 
 HE2CF::~HE2CF()
@@ -1053,7 +1053,7 @@ HE2CF::write_attribute_FillValue(const string& _varname,
                                  int _type,
                                  float value)
 {
-    void* v_ptr = NULL;
+    void* v_ptr = nullptr;
     // Casting between pointers of different types may generate unexpected behavior.
     // gcc 4.8.2 reveals this problem in one test(SwathFile.HDF).
     // So what we should do is to use char* or vector<char> in this case and memcpy the value to the vector<char>. 

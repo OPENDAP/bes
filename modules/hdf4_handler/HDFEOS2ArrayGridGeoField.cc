@@ -171,7 +171,7 @@ HDFEOS2ArrayGridGeoField::read ()
 
             if(("" == bescachedir)||(""==bescacheprefix)||(cachesize <=0)){
                 HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                throw InternalErr (__FILE__, __LINE__, "Either the cached dir is empty or the prefix is NULL or the cache size is not set.");
+                throw InternalErr (__FILE__, __LINE__, "Either the cached dir is empty or the prefix is nullptr or the cache size is not set.");
             }
             else {
                 struct stat sb;
@@ -395,7 +395,7 @@ else
                     // ONLY READ the subset
                     FILE *pFile;
                     pFile = fopen(cache_fpath.c_str(),"rb");
-                    if(NULL == pFile)
+                    if(nullptr == pFile)
                         break;
                     
                     int ret_value = fseek(pFile,sizeof(double)*offset_1d,SEEK_SET);
@@ -930,7 +930,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
 
                     r = readfieldfunc(gridid,
                         const_cast < char *>(fieldname.c_str ()),
-                        NULL, NULL, NULL, (void *)(&temp_total_val[0]));
+                        nullptr, nullptr, nullptr, (void *)(&temp_total_val[0]));
 
                     if (r != 0) {
                         detachfunc(gridid);
@@ -1006,7 +1006,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
 
                     r = readfieldfunc(gridid,
                         const_cast < char *>(fieldname.c_str ()),
-                        NULL, NULL, NULL, (void *)(&temp_total_val[0]));
+                        nullptr, nullptr, nullptr, (void *)(&temp_total_val[0]));
 
                     if (r != 0) {
                         detachfunc(gridid);
@@ -1066,7 +1066,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
 
                     r = readfieldfunc(gridid,
                         const_cast < char *>(fieldname.c_str ()),
-                        NULL, NULL, NULL, (void *)(&temp_total_val[0]));
+                        nullptr, nullptr, nullptr, (void *)(&temp_total_val[0]));
 
                     if (r != 0) {
                         detachfunc(gridid);
@@ -1127,7 +1127,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
 
                     r = readfieldfunc(gridid,
                         const_cast < char *>(fieldname.c_str ()),
-                        NULL, NULL, NULL, (void *)(&temp_total_val[0]));
+                        nullptr, nullptr, nullptr, (void *)(&temp_total_val[0]));
 
                     if (r != 0) {
                         detachfunc(gridid);
@@ -1188,7 +1188,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
 
                     r = readfieldfunc(gridid,
                         const_cast < char *>(fieldname.c_str ()),
-                        NULL, NULL, NULL, (void *)(&temp_total_val[0]));
+                        nullptr, nullptr, nullptr, (void *)(&temp_total_val[0]));
 
                     if (r != 0) {
                         ostringstream eherr;
@@ -1249,7 +1249,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
                     temp_total_val.resize(xdim*ydim);
                     r = readfieldfunc(gridid,
                         const_cast < char *>(fieldname.c_str ()),
-                        NULL, NULL, NULL, (void *)(&temp_total_val[0]));
+                        nullptr, nullptr, nullptr, (void *)(&temp_total_val[0]));
 
                     if (r != 0) {
                         detachfunc(gridid);
@@ -1314,7 +1314,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
 
                     r = readfieldfunc(gridid,
                         const_cast < char *>(fieldname.c_str ()),
-                        NULL, NULL, NULL, (void *)(&temp_total_val[0]));
+                        nullptr, nullptr, nullptr, (void *)(&temp_total_val[0]));
 
                     if (r != 0) {
                         detachfunc(gridid);
@@ -1375,7 +1375,7 @@ cerr<<"latlon_1d["<<i<<"]"<<latlon_1d[i]<<endl;
                     temp_total_val.resize(xdim*ydim);
                     r = readfieldfunc(gridid,
                         const_cast < char *>(fieldname.c_str ()),
-                        NULL, NULL, NULL, (void *)(&temp_total_val[0]));
+                        nullptr, nullptr, nullptr, (void *)(&temp_total_val[0]));
 
                     if (r != 0) {
                         detachfunc(gridid);
@@ -2153,7 +2153,7 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, int *start, int *coun
 
     int iflg = 0;
     int (*inv_trans[MAXPROJ+1])(double, double, double*, double*);
-    inv_init((long)projcode, (long)zone, (double*)params, (long)sphere, NULL, NULL, (int*)&iflg, inv_trans);
+    inv_init((long)projcode, (long)zone, (double*)params, (long)sphere, nullptr, nullptr, (int*)&iflg, inv_trans);
     if(iflg) 
         throw InternalErr(__FILE__,__LINE__,"inv_init doesn't return correct values");
 
@@ -2262,7 +2262,7 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, int *start, int *coun
                     set_value ((dods_float64 *) &latlon[0], nelms); //(180*xdim*ydim)); //nelms);
         }
     } 
-    //if (latlon != NULL)
+    //if (latlon != nullptr)
     //   delete [] latlon;
 }
 
