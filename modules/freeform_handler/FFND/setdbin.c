@@ -1955,12 +1955,18 @@ static int find_files
 		++num_found;
 
 	/* Check for file_base.ext in data home directory */
-	if (home_dir &&
-	    check_file_exists(&filenames[num_found], home_dir, filename, ext))
-		++num_found;
+#if 0
+    // home_dir is an array on the stack, so its address will always be non-zero. jhrg 4/8/22
+    if (home_dir &&
+        check_file_exists(&filenames[num_found], home_dir, filename, ext))
+        ++num_found;
+#endif
+    if (check_file_exists(&filenames[num_found], home_dir, filename, ext))
+        ++num_found;
 
 	/* Check for file_base's extension.ext in data home directory */
-	if (fileext && home_dir &&
+    /* As above, 'home_dir' removed from the test. jhrg 4/8/22 */
+	if (fileext &&
 	    check_file_exists(&filenames[num_found], home_dir, fileext, ext))
 		++num_found;
 

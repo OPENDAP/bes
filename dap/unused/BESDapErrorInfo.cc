@@ -38,12 +38,8 @@ using std::map;
 /** @brief constructs an informational object that doesn't
  *         write any output to the stream
  */
-BESDapErrorInfo::BESDapErrorInfo(ErrorCode ec, const string &msg) :
-    BESInfo(), _error_code(ec), _error_msg(msg)
-{
-}
-
-BESDapErrorInfo::~BESDapErrorInfo()
+BESDapErrorInfo::BESDapErrorInfo(ErrorCode ec, string msg) :
+    BESInfo(), _error_code(ec), _error_msg(std::move(msg))
 {
 }
 
@@ -136,7 +132,7 @@ void BESDapErrorInfo::add_data_from_file(const string & /*key*/, const string & 
  * @param admin The contact information for the person
  * responsible for this error
  */
-void BESDapErrorInfo::add_exception(BESError & /*e*/, const string & /*admin*/)
+void BESDapErrorInfo::add_exception(const BESError & /*e*/, const string & /*admin*/)
 {
 }
 
