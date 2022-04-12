@@ -530,7 +530,6 @@ int BESInterface::execute_request(const string &from)
             ignoreBesTimeout.store(false);  // worker thread responsible for disabling timeout
         }
 
-        std::chrono::milliseconds timeout_ms (bes_timeout);
         unique_ptr<worker_data_request_plan_args> args;
         auto worker = std::async(std::launch::async, worker_data_request_plan_thread, std::move(args));
 
@@ -543,18 +542,20 @@ int BESInterface::execute_request(const string &from)
         // that has been set regardless of whether the worker thread had set
         // ignoreBesTimeout.
 
-        if (worker.wait_for(timeout_ms) == std::future_status::timeout) {
+        if (worker.wait_for(chrono::seconds(bes_timeout)) == std::future_status::timeout) {
             if (!ignoreBesTimeout.load()) {
                 besTimeoutExceeded.store(true);
             }
         }
 
         // If the worker thread has exceeded the bes_timeout AND ignoreBesTimeout
-        // is false, we wait one additional second for the worker thread
+        // is false, we wait one additional minute for the worker thread
         // to return ready before throwing an exception.
         if (!ignoreBesTimeout.load()) {
-            if (worker.wait_for(chrono::milliseconds(1000)) == std::future_status::timeout) {
-                throw BESInternalError(string("\"The std::future has failed!\"", __FILE__, __LINE__);
+            if (worker.wait_for(chrono::seconds(60)) == std::future_status::timeout) {
+                if (!ignoreBesTimeout.load()) { // check again if data started streaming while waiting
+                    throw BESInternalError("The std::future has failed!", __FILE__, __LINE__);
+                }
             }
         }
         worker.get();

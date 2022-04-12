@@ -35,6 +35,7 @@
 
 #include <string>
 #include <ostream>
+#include <thread>
 
 #include "BESObj.h"
 
@@ -126,12 +127,6 @@ protected:
 
     virtual void end_request();
 
-    virtual void build_data_request_plan() = 0;
-
-    virtual void execute_data_request_plan() = 0;
-
-    virtual void transmit_data() = 0;
-
     virtual void log_status() = 0;
 
     virtual void clean() = 0;
@@ -148,6 +143,12 @@ public:
     virtual int execute_request(const std::string &from);
 
     virtual int finish(int status);
+
+    virtual void build_data_request_plan() = 0;
+
+    virtual void execute_data_request_plan() = 0;
+
+    virtual void transmit_data() = 0;
 
     void dump(std::ostream &strm) const override;
 };
