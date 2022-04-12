@@ -524,7 +524,7 @@ int BESInterface::execute_request(const string &from)
 
         // Set atomic<bool> ignoreBesTimeout = true if the bes_timeout has not been set.
         if (bes_timeout == 0) {
-            ignoreBesTimeout.store(true);   // bes timeout is disabled
+            ignoreBesTimeout.store(true);   // timeout is disabled
         }
         else {
             ignoreBesTimeout.store(false);  // worker thread responsible for disabling timeout
@@ -542,22 +542,26 @@ int BESInterface::execute_request(const string &from)
         // that has been set regardless of whether the worker thread had set
         // ignoreBesTimeout.
 
-        if (worker.wait_for(chrono::seconds(bes_timeout)) == std::future_status::timeout) {
+        std::future_status worker_state = worker.wait_for(chrono::seconds(bes_timeout));
+
+        if (worker_state == std::future_status::timeout) {
             if (!ignoreBesTimeout.load()) {
                 besTimeoutExceeded.store(true);
             }
-        }
 
-        // If the worker thread has exceeded the bes_timeout AND ignoreBesTimeout
-        // is false, we wait one additional minute for the worker thread
-        // to return ready before throwing an exception.
-        if (!ignoreBesTimeout.load()) {
-            if (worker.wait_for(chrono::seconds(60)) == std::future_status::timeout) {
-                if (!ignoreBesTimeout.load()) { // check again if data started streaming while waiting
-                    throw BESInternalError("The std::future has failed!", __FILE__, __LINE__);
+            // If the worker thread has exceeded the bes_timeout AND ignoreBesTimeout
+            // is false, we wait one additional minute for the worker thread
+            // to return ready before throwing an exception.
+            if (!ignoreBesTimeout.load()) {
+                if (worker.wait_for(chrono::seconds(60)) == std::future_status::timeout) {
+                    if (!ignoreBesTimeout.load()) { // check again if data started streaming while waiting
+                        throw BESInternalError("The std::future has failed!", __FILE__, __LINE__);
+                    }
                 }
             }
         }
+
+        // The worker must be READY or the timeout disabled to get here.
         worker.get();
 
         // if worker has thrown an exception it will be rethrown and main needs to deal with it.
