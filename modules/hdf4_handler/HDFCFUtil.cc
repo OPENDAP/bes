@@ -731,7 +731,7 @@ bool HDFCFUtil::change_data_type(DAS & das, SOType scaletype, const string &new_
     // Otherwise, continue checking the scale and offset names.
     // KY 2013-12-13
 
-    if(scaletype!=DEFAULT_CF_EQU && at!=NULL)
+    if(scaletype!=DEFAULT_CF_EQU && at!=nullptr)
     {
         AttrTable::Attr_iter it = at->attr_begin();
         string  scale_factor_value="";
@@ -865,10 +865,10 @@ void HDFCFUtil::obtain_dimmap_info(const string& filename,HDFEOS2::Dataset*datas
     
                         // Go through the directory to see if we have the corresponding MODIS geolocation file
                         dirp = opendir(dirfilename.c_str());
-                        if (NULL == dirp) 
+                        if (nullptr == dirp) 
                             throw InternalErr(__FILE__,__LINE__,"opendir fails.");
 
-                        while ((dirs = readdir(dirp))!= NULL){
+                        while ((dirs = readdir(dirp))!= nullptr){
                             if(strncmp(dirs->d_name,geofnamefp.c_str(),geofnamefp.size())==0){
                                 modis_geofilename = dirfilename + "/"+ dirs->d_name;
                                 int num_dimmap = HDFCFUtil::check_geofile_dimmap(modis_geofilename);
@@ -1795,14 +1795,14 @@ void HDFCFUtil::add_cf_grid_cvs(DDS & dds, HDFEOS2::GridDataset *gdset) {
         //3. Add the 1-D CV variables and the dummy projection variable
         // Note: we just need to pass the parameters that calculate 1-D cv to the data reading function,
         // in that way, we save the open cost of HDF-EOS2.
-        BaseType *bt_dim0 = NULL;
-        BaseType *bt_dim1 = NULL;
+        BaseType *bt_dim0 = nullptr;
+        BaseType *bt_dim1 = nullptr;
 
-        HDFEOS2GeoCF1D * ar_dim0 = NULL;
-        HDFEOS2GeoCF1D * ar_dim1 = NULL;
+        HDFEOS2GeoCF1D * ar_dim0 = nullptr;
+        HDFEOS2GeoCF1D * ar_dim1 = nullptr;
 
-        float64 *upleft = NULL;
-        float64 *lowright = NULL;
+        float64 *upleft = nullptr;
+        float64 *lowright = nullptr;
 
         try {
 
@@ -2402,7 +2402,7 @@ HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
                                 scale_factor_type = at->get_type(it);
 
                                 if(scale_factor_type == "Float64") {
-                                    double new_scale = 1.0/strtod(scale_factor_value.c_str(),NULL);
+                                    double new_scale = 1.0/strtod(scale_factor_value.c_str(),nullptr);
                                     at->del_attr("scale_factor");
                                     string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT64,0,(void*)(&new_scale));
                                     at->append_attr("scale_factor", scale_factor_type,print_rep);
@@ -2410,7 +2410,7 @@ HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
                                 }
                                
                                 if(scale_factor_type == "Float32") {
-                                    float new_scale = 1.0/strtof(scale_factor_value.c_str(),NULL);
+                                    float new_scale = 1.0/strtof(scale_factor_value.c_str(),nullptr);
                                     at->del_attr("scale_factor");
                                     string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&new_scale));
                                     at->append_attr("scale_factor", scale_factor_type,print_rep);
@@ -2533,9 +2533,9 @@ HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
                                  
                         // Here just use 32-bit floating-point for the scale_factor, should be okay.
                         if(true == has_rainrate) 
-                            valid_max = (short)(300*strtof(scale_factor_value.c_str(),NULL));
+                            valid_max = (short)(300*strtof(scale_factor_value.c_str(),nullptr));
                         else if(true == has_dBZ) 
-                            valid_max = (short)(80*strtof(scale_factor_value.c_str(),NULL));
+                            valid_max = (short)(80*strtof(scale_factor_value.c_str(),nullptr));
 
                         string print_rep1 = HDFCFUtil::print_attr(DFNT_INT16,0,(void*)(&valid_min));
                         at->append_attr("valid_min","Int16",print_rep1);
@@ -2544,14 +2544,14 @@ HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
 
                         at->del_attr("scale_factor");
                         if(scale_factor_type == "Float64") {
-                            double new_scale = 1.0/strtod(scale_factor_value.c_str(),NULL);
+                            double new_scale = 1.0/strtod(scale_factor_value.c_str(),nullptr);
                             string print_rep2 = HDFCFUtil::print_attr(DFNT_FLOAT64,0,(void*)(&new_scale));
                             at->append_attr("scale_factor", scale_factor_type,print_rep2);
 
                         }
                                
                         if(scale_factor_type == "Float32") {
-                            float new_scale = 1.0/strtof(scale_factor_value.c_str(),NULL);
+                            float new_scale = 1.0/strtof(scale_factor_value.c_str(),nullptr);
                             string print_rep3 = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&new_scale));
                             at->append_attr("scale_factor", scale_factor_type,print_rep3);
 
@@ -2612,8 +2612,8 @@ HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
                                     string scale_value = *at->get_attr_vector(it)->begin();
                             
                                     if(true == has_dBm) {
-                                       short valid_min = (short)(-120 *strtof(scale_value.c_str(),NULL));
-                                       short valid_max = (short)(-20 *strtof(scale_value.c_str(),NULL));
+                                       short valid_min = (short)(-120 *strtof(scale_value.c_str(),nullptr));
+                                       short valid_max = (short)(-20 *strtof(scale_value.c_str(),nullptr));
                                        string print_rep = HDFCFUtil::print_attr(DFNT_INT16,0,(void*)(&valid_min));
                                        at->append_attr("valid_min","Int16",print_rep);
                                        print_rep = HDFCFUtil::print_attr(DFNT_INT16,0,(void*)(&valid_max));
@@ -2623,8 +2623,8 @@ HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
                                     }
 
                                     else if(true == has_dBZ){
-                                       short valid_min = (short)(-20 *strtof(scale_value.c_str(),NULL));
-                                       short valid_max = (short)(80 *strtof(scale_value.c_str(),NULL));
+                                       short valid_min = (short)(-20 *strtof(scale_value.c_str(),nullptr));
+                                       short valid_max = (short)(80 *strtof(scale_value.c_str(),nullptr));
                                        string print_rep = HDFCFUtil::print_attr(DFNT_INT16,0,(void*)(&valid_min));
                                        at->append_attr("valid_min","Int16",print_rep);
                                        print_rep = HDFCFUtil::print_attr(DFNT_INT16,0,(void*)(&valid_max));
@@ -2666,7 +2666,7 @@ HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
                             scale_factor_type = at->get_type(it);
 
                             if(scale_factor_type == "Float64") {
-                                double new_scale = 1.0/strtod(scale_factor_value.c_str(),NULL);
+                                double new_scale = 1.0/strtod(scale_factor_value.c_str(),nullptr);
                                 at->del_attr("scale_factor");
                                 string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT64,0,(void*)(&new_scale));
                                 at->append_attr("scale_factor", scale_factor_type,print_rep);
@@ -2674,7 +2674,7 @@ HDFCFUtil::add_missing_cf_attrs(HDFSP::File*f,DAS &das) {
                             }
                                
                             if(scale_factor_type == "Float32") {
-                                float new_scale = 1.0/strtof(scale_factor_value.c_str(),NULL);
+                                float new_scale = 1.0/strtof(scale_factor_value.c_str(),nullptr);
                                 at->del_attr("scale_factor");
                                 string print_rep = HDFCFUtil::print_attr(DFNT_FLOAT32,0,(void*)(&new_scale));
                                 at->append_attr("scale_factor", scale_factor_type,print_rep);
@@ -3021,7 +3021,7 @@ void HDFCFUtil::map_eos2_objects_attrs(libdap::DAS &das,const string &filename) 
     //Get and print the names and class names of all the lone vgroups.
     // First, call Vlone with num_of_lones set to 0 to get the number of
     // lone vgroups in the file, but not to get their reference numbers.
-    num_of_lones = Vlone (file_id, NULL, num_of_lones );
+    num_of_lones = Vlone (file_id, nullptr, num_of_lones );
 
     //
     // Then, if there are any lone vgroups, 
@@ -3232,7 +3232,7 @@ void HDFCFUtil::map_eos2_one_object_attrs(libdap:: DAS &das,int32 file_id, int32
                 }
 
                 char* fieldname = VFfieldname(vdata_id,0);
-                if(fieldname == NULL) {
+                if(fieldname == nullptr) {
                     VSdetach(vdata_id);
                     throw InternalErr(__FILE__,__LINE__,"Failed to obtain EOS2 object vdata field name.");
                 }
@@ -3257,7 +3257,7 @@ void HDFCFUtil::map_eos2_one_object_attrs(libdap:: DAS &das,int32 file_id, int32
                 // Map the attributes to DAP2.
                 if(fieldtype == DFNT_UCHAR || fieldtype == DFNT_CHAR){
                     string tempstring(vdata_value.begin(),vdata_value.end());
-                    // Remove the NULL term
+                    // Remove the nullptr term
                     string tempstring2 = string(tempstring.c_str());
                     at->append_attr(vdataname_cfstr,"String",HDFCFUtil::escattr(tempstring2));
                 }
@@ -3356,7 +3356,7 @@ void HDFCFUtil::parser_trmm_v7_gridheader(const vector<char>& value,
         if (equal_pos < scolon_pos){
 
             string latres_str = ind_elems[2].substr(equal_pos+1,scolon_pos-equal_pos-1);
-            lat_res = strtof(latres_str.c_str(),NULL);
+            lat_res = strtof(latres_str.c_str(),nullptr);
         }
         else 
             throw InternalErr(__FILE__,__LINE__,"latitude resolution is not right for TRMM level 3 products");
@@ -3375,7 +3375,7 @@ void HDFCFUtil::parser_trmm_v7_gridheader(const vector<char>& value,
             throw InternalErr(__FILE__,__LINE__,"Cannot find longitude resolution for TRMM level 3 products");
         if (equal_pos < scolon_pos){
             string lonres_str = ind_elems[3].substr(equal_pos+1,scolon_pos-equal_pos-1);
-            lon_res = strtof(lonres_str.c_str(),NULL);
+            lon_res = strtof(lonres_str.c_str(),nullptr);
         }
         else 
             throw InternalErr(__FILE__,__LINE__,"longitude resolution is not right for TRMM level 3 products");
@@ -3394,7 +3394,7 @@ void HDFCFUtil::parser_trmm_v7_gridheader(const vector<char>& value,
             throw InternalErr(__FILE__,__LINE__,"Cannot find latitude resolution for TRMM level 3 products");
         if (equal_pos < scolon_pos){
             string north_bounding_str = ind_elems[4].substr(equal_pos+1,scolon_pos-equal_pos-1);
-            lat_north = strtof(north_bounding_str.c_str(),NULL);
+            lat_north = strtof(north_bounding_str.c_str(),nullptr);
         }
         else 
             throw InternalErr(__FILE__,__LINE__,"NorthBoundingCoordinate is not right for TRMM level 3 products");
@@ -3414,7 +3414,7 @@ void HDFCFUtil::parser_trmm_v7_gridheader(const vector<char>& value,
                 throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for TRMM level 3 products");
             if (equal_pos < scolon_pos){
                 string lat_south_str = ind_elems[5].substr(equal_pos+1,scolon_pos-equal_pos-1);
-                lat_south = strtof(lat_south_str.c_str(),NULL);
+                lat_south = strtof(lat_south_str.c_str(),nullptr);
             }
             else 
                 throw InternalErr(__FILE__,__LINE__,"south bound coordinate is not right for TRMM level 3 products");
@@ -3434,7 +3434,7 @@ void HDFCFUtil::parser_trmm_v7_gridheader(const vector<char>& value,
                 throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for TRMM level 3 products");
             if (equal_pos < scolon_pos){
                 string lon_east_str = ind_elems[6].substr(equal_pos+1,scolon_pos-equal_pos-1);
-                lon_east = strtof(lon_east_str.c_str(),NULL);
+                lon_east = strtof(lon_east_str.c_str(),nullptr);
             }
             else 
                 throw InternalErr(__FILE__,__LINE__,"south bound coordinate is not right for TRMM level 3 products");
@@ -3454,7 +3454,7 @@ void HDFCFUtil::parser_trmm_v7_gridheader(const vector<char>& value,
                 throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for TRMM level 3 products");
             if (equal_pos < scolon_pos){
                 string lon_west_str = ind_elems[7].substr(equal_pos+1,scolon_pos-equal_pos-1);
-                lon_west = strtof(lon_west_str.c_str(),NULL);
+                lon_west = strtof(lon_west_str.c_str(),nullptr);
             }
             else 
                 throw InternalErr(__FILE__,__LINE__,"south bound coordinate is not right for TRMM level 3 products");
@@ -3957,7 +3957,7 @@ void HDFCFUtil::read_sp_sds_dds_cache(FILE* dds_file,libdap::DDS * dds_ptr,
             varnewname = varname;
         // Assemble DDS. 
         // 1. Create a basetype
-        BaseType *bt = NULL;
+        BaseType *bt = nullptr;
         switch(sds_dtype) { 
 #define HANDLE_CASE(tid, type) \
     case tid: \
@@ -3982,7 +3982,7 @@ void HDFCFUtil::read_sp_sds_dds_cache(FILE* dds_file,libdap::DDS * dds_ptr,
 #undef HANDLE_CASE 
         } 
 
-        if(NULL == bt)
+        if(nullptr == bt)
             throw InternalErr(__FILE__,__LINE__,"Cannot create the basetype when creating DDS from a cache file.");
 
         SPType sptype = OTHERHDF;
@@ -3990,7 +3990,7 @@ void HDFCFUtil::read_sp_sds_dds_cache(FILE* dds_file,libdap::DDS * dds_ptr,
         // sds_ftype indicates if this is a general data field or geolocation field.
         // 4 indicates this is a missing non-latlon geo-location fields.
         if(sds_ftype != 4){
-            HDFSPArray_RealField *ar = NULL;
+            HDFSPArray_RealField *ar = nullptr;
             try {
                 // pass sds id as 0 since the sds id will be retrieved from SDStart if necessary.
                 ar = new HDFSPArray_RealField(
@@ -4017,7 +4017,7 @@ void HDFCFUtil::read_sp_sds_dds_cache(FILE* dds_file,libdap::DDS * dds_ptr,
             delete ar;
         }
         else {
-            HDFSPArrayMissGeoField *ar = NULL;
+            HDFSPArrayMissGeoField *ar = nullptr;
             if(sds_rank == 1) {
                 try {
                     ar = new HDFSPArrayMissGeoField(

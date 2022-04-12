@@ -109,7 +109,7 @@ File::~File ()
 
     // Release SD resources
     if (this->sdfd != -1) {
-        if (sd != NULL)
+        if (sd != nullptr)
             delete sd;
         // No need to close SD interface since for performance reasons
         // it is handled(opened/closed) at the top level(HDF4RequestHandler.cc)
@@ -259,7 +259,7 @@ throw (Exception)
 {
     // New File 
     File *file = new File (path);
-    if(file == NULL)
+    if(file == nullptr)
         throw1("Memory allocation for file class failed. ");
 //cerr<<"File is opened for HDF4 "<<endl;
 
@@ -288,7 +288,7 @@ throw (Exception)
         throw2 ("Cannot start vdata/vgroup interface", path);
     }
 
-    //if(file != NULL) {// Coverity doesn't recongize the throw macro, see if this makes it happy.
+    //if(file != nullptr) {// Coverity doesn't recongize the throw macro, see if this makes it happy.
     try {
 
         // Retrieve extra SDS info.
@@ -323,7 +323,7 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
 #endif
 
     // Obtain number of lone vdata.
-    int num_lone_vdata = VSlone (file->fileid, NULL, 0);
+    int num_lone_vdata = VSlone (file->fileid, nullptr, 0);
 
     if (num_lone_vdata == FAIL)
         throw2 ("Fail to obtain lone vdata number", path);
@@ -382,7 +382,7 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
             }	
 
             else {
-                VDATA*vdataobj = NULL;
+                VDATA*vdataobj = nullptr;
 
                 try {
                     // Read vdata information
@@ -428,7 +428,7 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
                 if (false == strncmp
                     (vdata_name, CERE_META_NAME, strlen (CERE_META_NAME))) {
 
-                    char *fieldname = NULL;
+                    char *fieldname = nullptr;
 
                     // Obtain number of vdata fields
                     int num_field = VFnfields (vdata_id);
@@ -441,10 +441,10 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
                     for (int j = 0; j < num_field; j++) {
 
                         fieldname = VFfieldname (vdata_id, j);
-                        if (fieldname == NULL) {
+                        if (fieldname == nullptr) {
                             VSdetach (vdata_id);
                             throw5 ("vdata ", vdata_name, " field index ", j,
-									" field name is NULL.");
+									" field name is nullptr.");
                         }
 
                         // If the field name matches CERES's specific field name"LOCALGRANULEID"
@@ -474,7 +474,7 @@ File::ReadLoneVdatas(File *file) throw(Exception) {
 
                             // Allocate data buf
                             char *databuf = (char *) malloc (fieldsize * nelms);
-                            if (databuf == NULL) {
+                            if (databuf == nullptr) {
                                 err_msg = string(ERR_LOC) + "No enough memory to allocate buffer.";
                                 data_buf_err = true;
                                 goto cleanFail;
@@ -576,10 +576,10 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
     char vgroup_class[VGNAMELENMAX*4];
 
     // Full path of this vgroup
-    char *full_path      = NULL;
+    char *full_path      = nullptr;
 
     // Copy of a full path of this vgroup 
-    char *cfull_path     = NULL;
+    char *cfull_path     = nullptr;
 
     // Obtain H interface ID
     file_id = file->fileid;
@@ -595,7 +595,7 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
     // No NASA HDF4 files have the vgroup that forms a ring; so ignore this case.
     // First, call Vlone with num_of_lones set to 0 to get the number of
     // lone vgroups in the file, but not to get their reference numbers.
-    num_of_lones = Vlone (file_id, NULL, 0);
+    num_of_lones = Vlone (file_id, nullptr, 0);
     if (num_of_lones == FAIL)
         throw3 ("Fail to obtain lone vgroup number", "file id is", file_id);
 
@@ -670,7 +670,7 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
             // to cover any HDF4 object path for all NASA HDF4 products.
             // We replace strcpy and strcat with strncpy and strncat as suggested. KY 2013-08-29
             full_path = (char *) malloc (MAX_FULL_PATH_LEN);
-            if (full_path == NULL) {
+            if (full_path == nullptr) {
                 err_msg = "No enough memory to allocate the buffer for full_path.";
                 VS_or_mem_err = true;
                 goto cleanFail;
@@ -688,7 +688,7 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
 
             // Make a copy the current vgroup full path since full path may be passed to a recursive routine
             cfull_path = (char *) malloc (MAX_FULL_PATH_LEN);
-            if (cfull_path == NULL) {
+            if (cfull_path == nullptr) {
                 //Vdetach (vgroup_id);
                 //free (full_path);
                 err_msg = "No enough memory to allocate the buffer for cfull_path.";
@@ -779,7 +779,7 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
                     // Now user-defined vdata
                     else {
 
-                        VDATA *vdataobj = NULL;
+                        VDATA *vdataobj = nullptr;
                         try {
                             vdataobj = VDATA::Read (vdata_id, obj_ref);
                         }
@@ -791,7 +791,7 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
                             throw;
                         }
 
-                        if(full_path != NULL)//Make coverity happy since it doesn't understand the throw macro
+                        if(full_path != nullptr)//Make coverity happy since it doesn't understand the throw macro
                             vdataobj->newname = full_path +vdataobj->name;
 
                         //We want to map fields of vdata with more than 10 records to DAP variables
@@ -836,9 +836,9 @@ File::ReadHybridNonLoneVdatas(File *file) throw(Exception) {
             }
 // STOP: add error handling
 cleanFail:            
-            if(full_path != NULL)
+            if(full_path != nullptr)
                 free (full_path);
-            if(cfull_path != NULL)
+            if(cfull_path != nullptr)
                 free (cfull_path);
 
             status = Vdetach (vgroup_id);
@@ -1890,7 +1890,7 @@ throw (Exception)
                 throw3 ("SDattrinfo failed ", "SDS name ", sds_name);
             }
 
-           if(attr != NULL) {//Make coverity happy(it doesn't understand the throw macro.
+           if(attr != nullptr) {//Make coverity happy(it doesn't understand the throw macro.
             string tempname4 (attr_name);
             attr->name = tempname4;
             tempname4 = HDFCFUtil::get_CF_string(tempname4);
@@ -1926,7 +1926,7 @@ throw (Exception)
             delete sd;
             throw3 ("SDattrinfo failed ", "SD id ", sdfd);
         }
-       if(attr != NULL) {//Make coverity happy because it doesn't understand throw3
+       if(attr != nullptr) {//Make coverity happy because it doesn't understand throw3
         std::string tempname5 (attr_name);
         attr->name = tempname5;
 
@@ -2033,11 +2033,11 @@ throw (Exception)
     //std::string full_path;
 
     // full path of an object
-    char *full_path = NULL;
+    char *full_path = nullptr;
    // char full_path[MAX_FULL_PATH_LEN];
 
     // copy of the full path
-    char *cfull_path = NULL;
+    char *cfull_path = nullptr;
 //    char cfull_path[MAX_FULL_PATH_LEN];
 
     // Obtain a SD instance
@@ -2045,7 +2045,7 @@ throw (Exception)
 
     // Obtain number of SDS objects and number of SD(file) attributes
     if (SDfileinfo (sdfd, &n_sds, &n_sd_attrs) == FAIL) {
-        if(sd != NULL)
+        if(sd != nullptr)
             delete sd;
         throw2 ("SDfileinfo failed ", sdfd);
     }
@@ -2056,7 +2056,7 @@ throw (Exception)
         sds_id = SDselect (sdfd, sds_index);
 
         if (sds_id == FAIL) {
-            if(sd != NULL)
+            if(sd != nullptr)
                 delete sd;
             // We only need to close SDS ID. SD ID will be closed when 
             // the destructor is called.
@@ -2066,7 +2066,7 @@ throw (Exception)
 
         sds_ref = SDidtoref (sds_id);
         if (sds_ref == FAIL) {
-            if(sd != NULL)
+            if(sd != nullptr)
                 delete sd;
             SDendaccess (sds_id);
             throw3 ("Cannot obtain SDS reference number", " SDS ID is ",
@@ -2082,9 +2082,9 @@ throw (Exception)
     // First, call Vlone with num_of_lones set to 0 to get the number of
     // lone vgroups in the file, but not to get their reference numbers.
 
-    num_of_lones = Vlone (fileid, NULL, 0);
+    num_of_lones = Vlone (fileid, nullptr, 0);
     if (num_of_lones == FAIL){
-        if(sd != NULL)
+        if(sd != nullptr)
             delete sd;
         throw3 ("Fail to obtain lone vgroup number", "file id is", fileid);
     }
@@ -2101,7 +2101,7 @@ throw (Exception)
         // the buffer ref_array.
         num_of_lones = Vlone (fileid, &ref_array[0], num_of_lones);
         if (num_of_lones == FAIL) {
-            if(sd != NULL)
+            if(sd != nullptr)
                 delete sd;
             throw3 ("Cannot obtain lone vgroup reference arrays ",
                     "file id is ", fileid);
@@ -2114,7 +2114,7 @@ throw (Exception)
             // Attach to the current vgroup 
             vgroup_id = Vattach (fileid, ref_array[lone_vg_number], "r");
             if (vgroup_id == FAIL) {
-                if(sd != NULL)
+                if(sd != nullptr)
                     delete sd;
                 throw3 ("Vattach failed ", "Reference number is ",
                          ref_array[lone_vg_number]);
@@ -2122,7 +2122,7 @@ throw (Exception)
 
             status = Vgetname (vgroup_id, vgroup_name);
             if (status == FAIL) {
-                if(sd != NULL)
+                if(sd != nullptr)
                     delete sd;
                 Vdetach (vgroup_id);
                 throw3 ("Vgetname failed ", "vgroup_id is ", vgroup_id);
@@ -2130,7 +2130,7 @@ throw (Exception)
 
             status = Vgetclass (vgroup_id, vgroup_class);
             if (status == FAIL) {
-                if(sd != NULL)
+                if(sd != nullptr)
                     delete sd;
                 Vdetach (vgroup_id);
                 throw3 ("Vgetclass failed ", "vgroup_name is ", vgroup_name);
@@ -2151,7 +2151,7 @@ throw (Exception)
             // Obtain the number of objects of this vgroup
             num_gobjects = Vntagrefs (vgroup_id);
             if (num_gobjects < 0) {
-                if(sd != NULL)
+                if(sd != nullptr)
                     delete sd;
                 Vdetach (vgroup_id);
                 throw3 ("Vntagrefs failed ", "vgroup_name is ", vgroup_name);
@@ -2168,8 +2168,8 @@ throw (Exception)
             // We replace strcpy and strcat with strncpy and strncat as suggested. KY 2013-08-29
             
             full_path = (char *) malloc (MAX_FULL_PATH_LEN);
-            if (full_path == NULL) {
-                if(sd!= NULL)
+            if (full_path == nullptr) {
+                if(sd!= nullptr)
                     delete sd;
                 Vdetach (vgroup_id);
                 //throw;
@@ -2181,11 +2181,11 @@ throw (Exception)
             strncat(full_path, vgroup_name,strlen(vgroup_name));
 
             cfull_path = (char *) malloc (MAX_FULL_PATH_LEN);
-            if (cfull_path == NULL) {
-                if(sd != NULL)
+            if (cfull_path == nullptr) {
+                if(sd != nullptr)
                     delete sd;
                 Vdetach (vgroup_id);
-                if(full_path != NULL)
+                if(full_path != nullptr)
                     free (full_path);
                 //throw;
                 throw1 ("No enough memory to allocate the buffer.");
@@ -2199,12 +2199,12 @@ throw (Exception)
 
                 // Obtain the object reference and tag of this object
                 if (Vgettagref (vgroup_id, i, &obj_tag, &obj_ref) == FAIL) {
-                    if(sd != NULL)
+                    if(sd != nullptr)
                         delete sd;
                     Vdetach (vgroup_id);
-                    if(full_path != NULL)
+                    if(full_path != nullptr)
                         free (full_path);
-                    if(cfull_path != NULL)
+                    if(cfull_path != nullptr)
                         free (cfull_path);
                     throw5 ("Vgettagref failed ", "vgroup_name is ",
                              vgroup_name, " reference number is ", obj_ref);
@@ -2236,15 +2236,15 @@ throw (Exception)
 
                 }
             }
-            //if(full_path != NULL)
+            //if(full_path != nullptr)
                 free (full_path);
-            //if(cfull_path != NULL)
+            //if(cfull_path != nullptr)
                 free (cfull_path);
 
             status = Vdetach (vgroup_id);
 
             if (status == FAIL) {
-                if(sd != NULL)
+                if(sd != nullptr)
                     delete sd;
                 throw3 ("Vdetach failed ", "vgroup_name is ", vgroup_name);
             }
@@ -2399,7 +2399,7 @@ throw (Exception)
     int32 fieldorder  = 0;
 
     // Vdata field name
-    char *fieldname   = NULL;
+    char *fieldname   = nullptr;
 
      // In the future, we may use the latest HDF4 APIs to obtain the length of object names etc. dynamically.
     // Documented in a jira ticket HFRHANDLER-168. 
@@ -2459,7 +2459,7 @@ throw (Exception)
 
         VDField *field = new VDField ();
 
-        if(field == NULL) {
+        if(field == nullptr) {
             delete vdata;
             //throw;
             throw1("Memory allocation for field class failed.");
@@ -2475,7 +2475,7 @@ throw (Exception)
         }
 
         fieldname = VFfieldname (vdata_id, i);
-        if (fieldname == NULL) {
+        if (fieldname == nullptr) {
             string temp_vdata_name = vdata->name;
             delete field;
             delete vdata;
@@ -2501,7 +2501,7 @@ throw (Exception)
                      temp_vdata_name, " index is ", i);
         }
 
-        if(fieldname !=NULL) // Only make coverity happy
+        if(fieldname !=nullptr) // Only make coverity happy
             field->name = fieldname;
         field->newname = HDFCFUtil::get_CF_string(field->name);
         field->type = fieldtype;
@@ -2517,18 +2517,18 @@ throw (Exception)
 
             field->value.resize (num_record * fieldsize);
             if (VSseek (vdata_id, 0) == FAIL) {
-                if(field != NULL)
+                if(field != nullptr)
                     delete field;
-                if(vdata != NULL)
+                if(vdata != nullptr)
                     delete vdata;
                 throw5 ("vdata ", vdata_name, "field ", fieldname,
                         " VSseek failed.");
             }
 
             if (VSsetfields (vdata_id, fieldname) == FAIL) {
-                if(field != NULL)
+                if(field != nullptr)
                     delete field;
-                if(vdata != NULL)
+                if(vdata != nullptr)
                     delete vdata;
                 throw3 ("vdata field ", fieldname, " VSsetfields failed.");
             }
@@ -2536,16 +2536,16 @@ throw (Exception)
             if (VSread
                 (vdata_id, (uint8 *) & field->value[0], num_record,
                  FULL_INTERLACE) == FAIL){
-                if(field != NULL)
+                if(field != nullptr)
                     delete field;
-                if(vdata != NULL)
+                if(vdata != nullptr)
                     delete vdata;
                 throw3 ("vdata field ", fieldname, " VSread failed.");
             }
 
         }
 
-       if(field != NULL) {// Coverity doesn't know the throw macro. See if this makes it happy.
+       if(field != nullptr) {// Coverity doesn't know the throw macro. See if this makes it happy.
         try {
             // Read field attributes
             field->ReadAttributes (vdata_id, i);
@@ -2616,7 +2616,7 @@ throw (Exception)
 
             // Checking and handling the special characters for the vdata attribute name.
             string tempname(attr_name);
-            if(attr != NULL) {
+            if(attr != nullptr) {
                 attr->name = tempname;
                 attr->newname = HDFCFUtil::get_CF_string(attr->name);
                 attr->value.resize (attrsize);
@@ -2678,7 +2678,7 @@ throw (Exception)
                          fieldindex, " attr index is ", i);
             }
 
-           if(attr != NULL) { // Make coverity happy since it doesn't understand throw5.
+           if(attr != nullptr) { // Make coverity happy since it doesn't understand throw5.
             string tempname(attr_name);
             attr->name = tempname;
 
@@ -2703,7 +2703,7 @@ File::ReadVgattrs(int32 vgroup_id,char*fullpath) throw(Exception) {
     intn status_n;
     //int  n_attr_value = 0;
     char attr_name[H4_MAX_NC_NAME];
-    AttrContainer *vg_attr = NULL;
+    AttrContainer *vg_attr = nullptr;
 
     intn n_attrs = Vnattrs(vgroup_id);
     if(n_attrs == FAIL) 
@@ -2727,7 +2727,7 @@ File::ReadVgattrs(int32 vgroup_id,char*fullpath) throw(Exception) {
         int value_size = value_size_32;
 
 	string tempname (attr_name);
-        if(attr != NULL) {// See if I can make coverity happy
+        if(attr != nullptr) {// See if I can make coverity happy
             attr->name = tempname;
             tempname = HDFCFUtil::get_CF_string(tempname);
             attr->newname = tempname;
@@ -2735,7 +2735,7 @@ File::ReadVgattrs(int32 vgroup_id,char*fullpath) throw(Exception) {
 
         status_n = Vgetattr(vgroup_id,(intn)attr_index,&attr->value[0]);
         if(status_n == FAIL) {
-            if(attr!=NULL)
+            if(attr!=nullptr)
                 delete attr;
             throw3("Vgetattr failed. ","The attribute name is ",attr->name);
         }
@@ -2743,7 +2743,7 @@ File::ReadVgattrs(int32 vgroup_id,char*fullpath) throw(Exception) {
         }
     }
 
-    if(vg_attr !=NULL)
+    if(vg_attr !=nullptr)
         vg_attrs.push_back(vg_attr);
 
 
@@ -2798,10 +2798,10 @@ throw (Exception)
     char vgroup_class[VGNAMELENMAX*4];
 
     // Full path of an object
-    char *full_path = NULL;
+    char *full_path = nullptr;
 
     // Copy of a full path of an object
-    char *cfull_path = NULL;
+    char *cfull_path = nullptr;
 
     // SD interface ID
     int32 sd_id;
@@ -2812,7 +2812,7 @@ throw (Exception)
     // No NASA HDF4 files have the vgroup that forms a ring; so ignore this case.
     // First, call Vlone with num_of_lones set to 0 to get the number of
     // lone vgroups in the file, but not to get their reference numbers.
-    num_of_lones = Vlone (file_id, NULL, 0);
+    num_of_lones = Vlone (file_id, nullptr, 0);
     if (num_of_lones == FAIL)
         throw3 ("Fail to obtain lone vgroup number", "file id is", file_id);
 
@@ -2879,7 +2879,7 @@ throw (Exception)
             // KY 2013-07-12
             //
             full_path = (char *) malloc (MAX_FULL_PATH_LEN);
-            if (full_path == NULL) {
+            if (full_path == nullptr) {
                 Vdetach (vgroup_id);
                 //throw;
                 throw1 ("No enough memory to allocate the buffer.");
@@ -2901,7 +2901,7 @@ throw (Exception)
             strncat(full_path,_BACK_SLASH,strlen(_BACK_SLASH));
 
             cfull_path = (char *) malloc (MAX_FULL_PATH_LEN);
-            if (cfull_path == NULL) {
+            if (cfull_path == nullptr) {
                 Vdetach (vgroup_id);
                 free (full_path);
                 //throw;
@@ -2996,7 +2996,7 @@ throw (Exception)
                     }
                     else {
 
-                        VDATA*vdataobj = NULL;
+                        VDATA*vdataobj = nullptr;
                         try {
                             vdataobj = VDATA::Read (vdata_id, obj_ref);
                         }
@@ -3056,7 +3056,7 @@ throw (Exception)
                         // coverity cannot recognize the macro of throw(throw1,2,3..), so
                         // it claims that full_path is freed. The coverity is wrong. 
                         // To make coverity happy, here I will have a check.
-                        if(full_path != NULL) {
+                        if(full_path != nullptr) {
                               this->sd->sdfields[this->sd->refindexlist[obj_ref]]->newname =
                               full_path +
                               this->sd->sdfields[this->sd->refindexlist[obj_ref]]->name;
@@ -3074,9 +3074,9 @@ throw (Exception)
 
                 }
             }
-            //if(full_path != NULL)
+            //if(full_path != nullptr)
             free (full_path);
-            //if(cfull_path != NULL)
+            //if(cfull_path != nullptr)
             free (cfull_path);
 
             status = Vdetach (vgroup_id);
@@ -3132,7 +3132,7 @@ throw (Exception)
     int32 obj_ref = 0;
 
     // full path of the child group
-    char *cfull_path = NULL;
+    char *cfull_path = nullptr;
 
     bool unexpected_fail = false;
 
@@ -3161,7 +3161,7 @@ throw (Exception)
     // We use strncpy and strncat to replace strcpy and strcat. KY 2013-09-06
 
     cfull_path = (char *) malloc (MAX_FULL_PATH_LEN);
-    if (cfull_path == NULL)
+    if (cfull_path == nullptr)
         throw1 ("No enough memory to allocate the buffer");
     else 
         memset(cfull_path,'\0',MAX_FULL_PATH_LEN);
@@ -3225,7 +3225,7 @@ throw (Exception)
                            (vdata_class, _HDF_CHK_TBL_CLASS,
                             strlen (_HDF_CHK_TBL_CLASS))) {
 
-                    VDATA *vdataobj = NULL;
+                    VDATA *vdataobj = nullptr;
 
                     try {
                         vdataobj = VDATA::Read (vdata_id, obj_ref);
@@ -3341,7 +3341,7 @@ throw (Exception)
 
     int32 obj_tag =0;
     int32 obj_ref = 0;
-    char *cfull_path = NULL;
+    char *cfull_path = nullptr;
 
     bool unexpected_fail = false;
 
@@ -3369,7 +3369,7 @@ throw (Exception)
     // We use strncpy and strncat to replace strcpy and strcat. KY 2013-09-06
 
     cfull_path = (char *) malloc (MAX_FULL_PATH_LEN);
-    if (cfull_path == NULL)
+    if (cfull_path == nullptr)
         throw1 ("No enough memory to allocate the buffer");
     else 
         memset(cfull_path,'\0',MAX_FULL_PATH_LEN);
@@ -3452,7 +3452,7 @@ throw (Exception)
     int32 vdata_id = -1;
     int32 obj_tag = -1;
     int32 obj_ref = -1;
-    char *cfull_path = NULL;
+    char *cfull_path = nullptr;
 
     string temp_str;
     bool unexpected_fail = false;
@@ -3467,7 +3467,7 @@ throw (Exception)
     // We replace strcpy and strcat with strncpy and strncat as suggested. KY 2013-08-29
 
     cfull_path = (char *) malloc (MAX_FULL_PATH_LEN);
-    if (cfull_path == NULL)
+    if (cfull_path == nullptr)
         throw1 ("No enough memory to allocate the buffer");
     else 
         memset(cfull_path,'\0',MAX_FULL_PATH_LEN);
@@ -3589,7 +3589,7 @@ throw (Exception)
             }
             else {
  
-                VDATA *vdataobj = NULL;
+                VDATA *vdataobj = nullptr;
                 try {
                     vdataobj = VDATA::Read (vdata_id, obj_ref);
                 }
@@ -4470,7 +4470,7 @@ void File::PrepareTRMML2_V7() throw(Exception) {
 
 
     if(base_filename.find("2A12")!=string::npos) {
-    SDField *nlayer = NULL;
+    SDField *nlayer = nullptr;
     string nlayer_name ="nlayer";
 
     for (vector < SDField * >::iterator i =
@@ -4508,7 +4508,7 @@ void File::PrepareTRMML2_V7() throw(Exception) {
           break;
     }
 
-    if(nlayer !=NULL) {
+    if(nlayer !=nullptr) {
         file->sd->sdfields.push_back(nlayer);
         file->sd->nonmisscvdimnamelist.insert (nlayer_name);
     }
@@ -4543,7 +4543,7 @@ File::PrepareTRMML3S_V7() throw(Exception) {
     }
 
     
-    SDField *nlayer = NULL;
+    SDField *nlayer = nullptr;
     string nlayer_name ="nlayer";
 
     for (vector < SDField * >::iterator i =
@@ -4581,7 +4581,7 @@ File::PrepareTRMML3S_V7() throw(Exception) {
           break;
     }
 
-    if(nlayer !=NULL) {
+    if(nlayer !=nullptr) {
         file->sd->sdfields.push_back(nlayer);
         file->sd->nonmisscvdimnamelist.insert (nlayer_name);
     }
@@ -4661,9 +4661,9 @@ File::PrepareTRMML3S_V7() throw(Exception) {
         string nthrsh_hb_name ="nthrshHB";
         string nthrsh_srt_name ="nthrshSRT";
 
-        SDField* nthrsh_zo = NULL;
-        SDField* nthrsh_hb = NULL;
-        SDField* nthrsh_srt = NULL;
+        SDField* nthrsh_zo = nullptr;
+        SDField* nthrsh_hb = nullptr;
+        SDField* nthrsh_srt = nullptr;
         
         for (vector < SDField * >::iterator i =
             file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
@@ -4675,7 +4675,7 @@ File::PrepareTRMML3S_V7() throw(Exception) {
                          k != (*i)->getDimensions ().end (); ++k) {
 
                         if((*k)->getSize() == 6  && (*k)->name == nthrsh_base_name) {
-                            if(nthrsh_zo == NULL) {// Not necessary for this product, this only makes coverity scan happy.
+                            if(nthrsh_zo == nullptr) {// Not necessary for this product, this only makes coverity scan happy.
                                 nthrsh_zo = new SDField();
                                 nthrsh_zo->name = nthrsh_zo_name;
                                 nthrsh_zo->rank = 1;
@@ -4707,7 +4707,7 @@ File::PrepareTRMML3S_V7() throw(Exception) {
                          k != (*i)->getDimensions ().end (); ++k) {
 
                         if((*k)->getSize() == 6  && (*k)->name == nthrsh_base_name) {
-                            if(nthrsh_srt == NULL) { // Not necessary for this product, this only makes coverity scan happy.
+                            if(nthrsh_srt == nullptr) { // Not necessary for this product, this only makes coverity scan happy.
                                 nthrsh_srt = new SDField();
                                 nthrsh_srt->name = nthrsh_srt_name;
                                 nthrsh_srt->rank = 1;
@@ -4738,7 +4738,7 @@ File::PrepareTRMML3S_V7() throw(Exception) {
 
                         if((*k)->getSize() == 6  && (*k)->name == nthrsh_base_name) {
 
-                            if(nthrsh_hb == NULL) {// Not necessary for this product, only makes coverity scan happy.
+                            if(nthrsh_hb == nullptr) {// Not necessary for this product, only makes coverity scan happy.
                                 nthrsh_hb = new SDField();
                                 nthrsh_hb->name = nthrsh_hb_name;
                                 nthrsh_hb->rank = 1;
@@ -4833,17 +4833,17 @@ File::PrepareTRMML3S_V7() throw(Exception) {
 
         }
 
-        if(nthrsh_zo !=NULL) {
+        if(nthrsh_zo !=nullptr) {
             file->sd->sdfields.push_back(nthrsh_zo);
             file->sd->nonmisscvdimnamelist.insert (nthrsh_zo_name);
         }
 
-        if(nthrsh_hb !=NULL) {
+        if(nthrsh_hb !=nullptr) {
             file->sd->sdfields.push_back(nthrsh_hb);
             file->sd->nonmisscvdimnamelist.insert (nthrsh_hb_name);
         }
 
-        if(nthrsh_srt !=NULL) {
+        if(nthrsh_srt !=nullptr) {
             file->sd->sdfields.push_back(nthrsh_srt);
             file->sd->nonmisscvdimnamelist.insert (nthrsh_srt_name);
         }
@@ -5021,8 +5021,8 @@ throw (Exception)
 
     int32 tempdimsize1;
     int32 tempdimsize2;
-    SDField *longitude = NULL;
-    SDField *latitude = NULL;
+    SDField *longitude = nullptr;
+    SDField *latitude = nullptr;
 
     // Create a temporary map from the dimension size to the dimension name
     std::set < int32 > tempdimsizeset;
@@ -5066,7 +5066,7 @@ throw (Exception)
             // However, coverity scan doesn't know this and complain about
             // the re-allocation of latitude and longitude that may cause the
             // potential resource leaks.  KY 2015-05-12
-            if(latitude == NULL) {
+            if(latitude == nullptr) {
 
                 latitude = new SDField ();
                 latitude->name = "latitude";
@@ -5092,7 +5092,7 @@ throw (Exception)
                 latitude->correcteddims.push_back (dim);
             }
 
-            if(longitude == NULL) {
+            if(longitude == nullptr) {
                 longitude = new SDField ();
                 longitude->name = "longitude";
                 longitude->rank = 2;
@@ -5138,7 +5138,7 @@ throw (Exception)
     file->sd->sdfields.push_back (longitude);
 
     // 3. Remove the geolocation field from the field list
-    SDField *origeo = NULL;
+    SDField *origeo = nullptr;
 
     std::vector < SDField * >::iterator toeraseit;
     for (std::vector < SDField * >::iterator i = file->sd->sdfields.begin ();
@@ -5151,7 +5151,7 @@ throw (Exception)
     }
 
     file->sd->sdfields.erase (toeraseit);
-    if (origeo != NULL)
+    if (origeo != nullptr)
         delete (origeo);
 
     // 4. Create the <dimname,coordinate variable> map from the corresponding dimension names to the latitude and the longitude
@@ -5171,8 +5171,8 @@ throw (Exception)
     int lonflag = 0;
 
     std::string temppath;
-    SDField *latitude = NULL;
-    SDField *longitude = NULL;
+    SDField *latitude = nullptr;
+    SDField *longitude = nullptr;
     File *file = this;
 
     for (std::vector < SDField * >::const_iterator i =
@@ -5190,7 +5190,7 @@ throw (Exception)
                 // KY 2010-7-13
                 if ((*k)->getSize () == 1440 && (*k)->getType () == 0) {//No dimension scale
 
-                    if(longitude == NULL) { // Not necessary for this product, only makes coverity happy.
+                    if(longitude == nullptr) { // Not necessary for this product, only makes coverity happy.
                         longitude = new SDField ();
                         longitude->name = "longitude";
                         longitude->rank = 1;
@@ -5212,7 +5212,7 @@ throw (Exception)
 
                 if ((*k)->getSize () == 400 && (*k)->getType () == 0) {
 
-                    if(latitude == NULL) {
+                    if(latitude == nullptr) {
                         latitude = new SDField ();
                         latitude->name = "latitude";
                         latitude->rank = 1;
@@ -5251,9 +5251,9 @@ throw (Exception)
     }
 
     if (latflag != 1 || lonflag != 1) {
-        if(latitude != NULL)
+        if(latitude != nullptr)
             delete latitude;
-        if(longitude != NULL)
+        if(longitude != nullptr)
             delete longitude;
         throw5 ("Either latitude or longitude doesn't exist.", "lat. flag= ",
                  latflag, "lon. flag= ", lonflag);
@@ -5278,8 +5278,8 @@ throw (Exception)
     bool latflag = false;
     bool lonflag = false;
 
-    SDField *latitude = NULL;
-    SDField *longitude = NULL;
+    SDField *latitude = nullptr;
+    SDField *longitude = nullptr;
     File *file = this;
 
     for (std::vector < SDField * >::const_iterator i =
@@ -5324,7 +5324,7 @@ throw (Exception)
                 // KY 2010-7-13
                 if ((*k)->getSize () == 360 && (*k)->getType () == 0) {//No dimension scale
 
-                    if(longitude == NULL) {
+                    if(longitude == nullptr) {
                         longitude = new SDField ();
                         longitude->name = "longitude";
                         longitude->rank = 1;
@@ -5346,7 +5346,7 @@ throw (Exception)
 
                 if ((*k)->getSize () == 180 && (*k)->getType () == 0) {
 
-                    if(latitude == NULL) {
+                    if(latitude == nullptr) {
                         latitude = new SDField ();
                         latitude->name = "latitude";
                         latitude->rank = 1;
@@ -5386,9 +5386,9 @@ throw (Exception)
     }
 
     if (latflag !=true  || lonflag != true) {
-        if(latitude != NULL)
+        if(latitude != nullptr)
             delete latitude;
-        if(longitude != NULL)
+        if(longitude != nullptr)
             delete longitude;
         throw5 ("Either latitude or longitude doesn't exist.", "lat. flag= ",
                  latflag, "lon. flag= ", lonflag);
@@ -5451,9 +5451,9 @@ throw (Exception)
     bool lonflag = false;
     bool heiflag = false;
 
-    SDField *latitude = NULL;
-    SDField *longitude = NULL;
-    SDField *height = NULL;
+    SDField *latitude = nullptr;
+    SDField *longitude = nullptr;
+    SDField *height = nullptr;
 
     File *file = this;
 
@@ -5474,7 +5474,7 @@ throw (Exception)
                 if ((*k)->getSize () == 720 && (*k)->getType () == 0) {//No dimension scale
 
                     // TRMM only has one longitude and latitude. The following if only makes coverity happy.
-                    if(longitude == NULL) {
+                    if(longitude == nullptr) {
                         longitude = new SDField ();
                         longitude->name = "longitude";
                         longitude->rank = 1;
@@ -5496,7 +5496,7 @@ throw (Exception)
 
                 if ((*k)->getSize () == 148 && (*k)->getType () == 0) {
 
-                    if(latitude == NULL) {
+                    if(latitude == nullptr) {
                         latitude = new SDField ();
                         latitude->name = "latitude";
                         latitude->rank = 1;
@@ -5523,7 +5523,7 @@ throw (Exception)
 
                 if ((*k)->getSize () == 19 && (*k)->getType () == 0) {
 
-                    if(height == NULL) {
+                    if(height == nullptr) {
                         height = new SDField ();
                         height->name = "height";
                         height->rank = 1;
@@ -5562,15 +5562,15 @@ throw (Exception)
     }
 
     if (latflag != true || lonflag != true) {
-        if(latitude != NULL)
+        if(latitude != nullptr)
             delete latitude;
-        if(longitude != NULL)
+        if(longitude != nullptr)
             delete longitude;
         throw5 ("Either latitude or longitude doesn't exist.", "lat. flag= ",
                  latflag, "lon. flag= ", lonflag);
     }
 
-    if(height!=NULL && heiflag !=true) {
+    if(height!=nullptr && heiflag !=true) {
        delete height;
        throw1("Height is allocated but the flag is not true");
     }
@@ -5579,7 +5579,7 @@ throw (Exception)
     file->sd->sdfields.push_back (latitude);
     file->sd->sdfields.push_back (longitude);
 
-    if(height!=NULL) {
+    if(height!=nullptr) {
 
         if(heiflag != true) {
             delete height;
@@ -5723,7 +5723,7 @@ throw (Exception)
 
     // Longitude
     SDField *longitude = new SDField ();
-    if(longitude == NULL)
+    if(longitude == nullptr)
         throw1("Allocate memory for longitude failed .");
 
     longitude->name = "longitude";
@@ -5739,28 +5739,28 @@ throw (Exception)
     }
 
     Dimension *dim = new Dimension (num_lon_name, num_lon, 0);
-    if(dim == NULL) {
+    if(dim == nullptr) {
         delete longitude;
         throw1("Allocate memory for dim failed .");
     }
 
-    //if(longitude != NULL) 
+    //if(longitude != nullptr) 
     //// make coverity happy
     longitude->dims.push_back (dim);
 
-    dim = NULL;
+    dim = nullptr;
     // Add the corrected dimension name only to be consistent with general handling of other cases.
     dim = new Dimension (num_lon_name, num_lon, 0);
-    if(dim == NULL) {
+    if(dim == nullptr) {
         delete longitude;
         throw1("Allocate memory for dim failed .");
     }
-    //if(longitude != NULL) 
+    //if(longitude != nullptr) 
     longitude->correcteddims.push_back (dim);
 
     // Latitude
     SDField *latitude = new SDField ();
-    if(latitude == NULL) {
+    if(latitude == nullptr) {
         delete latitude;
         throw1("Allocate memory for dim failed .");
     }
@@ -5777,35 +5777,35 @@ throw (Exception)
         throw3("The size of the dimension of the latitude ",latitude->name," is 0.");
     }
             
-    dim = NULL;
+    dim = nullptr;
     dim = new Dimension (num_lat_name, num_lat, 0);
-    if( dim == NULL) {
+    if( dim == nullptr) {
         delete longitude;
         delete latitude;
         throw1("Allocate memory for dim failed .");
     }
     
-    if(latitude != NULL) 
+    if(latitude != nullptr) 
         latitude->dims.push_back (dim);
 
-    dim = NULL;
+    dim = nullptr;
     // Add the corrected dimension name only to be consistent with general handling of other cases.
     dim = new Dimension (num_lat_name, num_lat, 0);
-    if(dim == NULL) {
+    if(dim == nullptr) {
         delete longitude;
         delete latitude;
         throw1("Allocate memory for dim failed .");
     }
-    //if(latitude != NULL) 
+    //if(latitude != nullptr) 
     latitude->correcteddims.push_back (dim);
 
     // The dimension names of the SDS are fakeDim, so need to change them to dimension names of latitude and longitude
     for (std::vector < SDField * >::const_iterator i =
         file->sd->sdfields.begin (); i != file->sd->sdfields.end (); ++i) {
         if ((*i)->getRank () != 2) {
-            //if(latitude !=NULL)
+            //if(latitude !=nullptr)
             delete latitude;
-            //if(longitude !=NULL)
+            //if(longitude !=nullptr)
             delete longitude;
             throw3 ("The lat/lon rank must be 2", (*i)->getName (),
                     (*i)->getRank ());

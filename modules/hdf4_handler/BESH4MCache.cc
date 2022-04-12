@@ -21,7 +21,7 @@
 
 using namespace std;
 
-BESH4Cache *BESH4Cache::d_instance = 0;
+BESH4Cache *BESH4Cache::d_instance = nullptr;
 bool BESH4Cache::d_enabled = true;
 
 const string BESH4Cache::PATH_KEY = "HDF4.Cache.latlon.path";
@@ -111,7 +111,7 @@ BESH4Cache::get_instance()
                 d_enabled = d_instance->cache_enabled();
                 if(!d_enabled){
                     delete d_instance;
-                    d_instance = NULL;
+                    d_instance = nullptr;
                     BESDEBUG("cache", "BESH4Cache::"<<__func__ << "() - " <<
                         "Cache is DISABLED"<< endl);
                 }

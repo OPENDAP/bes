@@ -127,7 +127,7 @@ File * File::Read(const char *path, int32 mygridfd, int32 myswathfd) throw(Excep
 {
 
     File *file = new File(path);
-    if(file == NULL)
+    if(file == nullptr)
         throw1("Memory allocation for file class failed. ");
 
     file->gridfd = mygridfd;
@@ -288,7 +288,7 @@ void File::_find_geodim_names()
     const size_t ss = swaths.size();
     for(size_t i=0; ;i++)
     {
-        Dataset *dataset=NULL;
+        Dataset *dataset=nullptr;
         if(i<gs)
             dataset = static_cast<Dataset*>(grids[i]);
         else if(i < gs + ss)
@@ -314,7 +314,7 @@ void File::_find_geodim_names()
     // For performance, we're checking this for the first grid 
     if(gs >0)
     {
-        Dataset *dataset=NULL;
+        Dataset *dataset=nullptr;
         dataset = static_cast<Dataset*>(grids[0]);
 
         const vector<Dimension *>& dims = dataset->getDimensions();
@@ -361,8 +361,8 @@ void File::_find_latlonfield_names()
     //for(size_t i=0; ;i++)
     for(size_t i=0;i<1 ;i++)
     {
-        Dataset *dataset = NULL;
-        SwathDataset *sw = NULL;
+        Dataset *dataset = nullptr;
+        SwathDataset *sw = nullptr;
         if(i<gs)
             dataset = static_cast<Dataset*>(grids[i]);
         else if(i < gs + ss)
@@ -493,7 +493,7 @@ void File::handle_one_grid_zdim(GridDataset* gdset) {
     string DIMYNAME = this->get_geodim_y_name();   
 
     bool missingfield_unlim_flag = false;
-    Field *missingfield_unlim = NULL;
+    Field *missingfield_unlim = nullptr;
 
     // This is a big assumption, it may be wrong since not every 1-D field 
     // with the third dimension(name and size) is a coordinate
@@ -584,7 +584,7 @@ void File::handle_one_grid_zdim(GridDataset* gdset) {
                 // The data will be retrieved in HDFEOS2ArrayMissGeoField.cc. KY 2013-06-14
 #if 0
 //                LightVector<char>inputdata;
-//                missingfield->data = NULL;
+//                missingfield->data = nullptr;
                 //missingfield->data = new MissingFieldData(missingdatarank,missingdatatypesize,missingdimsize,inputdata);
                 // The data will be handled separately, we don't need to provide data.
 #endif
@@ -2432,7 +2432,7 @@ void File:: create_swath_nonll_dim_cvar_map() throw(Exception)
         // Loop through all dimensions of this swath to search the missing fields
         //
         bool missingfield_unlim_flag = false;
-        Field *missingfield_unlim = NULL;
+        Field *missingfield_unlim = nullptr;
 
         for (vector<Dimension *>::const_iterator j =
             (*i)->getDimensions().begin(); j!= (*i)->getDimensions().end();++j){
@@ -3928,7 +3928,7 @@ void Dataset::ReadFields(int32 (*entries)(int32, int32, int32 *),
         namelist.resize(bufsize + 1);
 
         // Inquiry fieldname list of the current object
-        if (inq(this->datasetid, &namelist[0], NULL, NULL) == -1)
+        if (inq(this->datasetid, &namelist[0], nullptr, nullptr) == -1)
             throw2("inquire field", this->name);
 
         vector<string> fieldnames;
@@ -3940,8 +3940,8 @@ void Dataset::ReadFields(int32 (*entries)(int32, int32, int32 *),
             i != fieldnames.end(); ++i) {
 
             Field *field = new Field();
-            if(field == NULL)
-                throw1("The field is NULL");
+            if(field == nullptr)
+                throw1("The field is nullptr");
             field->name = *i;
 
             bool throw_error = false;
@@ -4012,7 +4012,7 @@ void Dataset::ReadAttributes(int32 (*inq)(int32, char *, int32 *),
     int32 bufsize = 0;
 
     // Obtain the number of attributes in a Grid or Swath
-    if ((numattrs = inq(this->datasetid, NULL, &bufsize)) == -1)
+    if ((numattrs = inq(this->datasetid, nullptr, &bufsize)) == -1)
         throw2("inquire attribute", this->name);
 
     // Obtain the list of  "name, type, value" tuple
@@ -4343,7 +4343,7 @@ SwathDataset * SwathDataset::Read(int32 fd, const string &swathname)
     throw(Exception)
 {
     SwathDataset *swath = new SwathDataset(swathname);
-    if(swath == NULL)
+    if(swath == nullptr)
         throw1("Cannot allocate HDF5 Swath object");
 
     // Open this Swath object
@@ -4354,7 +4354,7 @@ SwathDataset * SwathDataset::Read(int32 fd, const string &swathname)
         throw2("attach swath", swathname);
     }
 
-    //if(swath != NULL) {// See if I can make coverity happy.coverity doesn't know I call throw already.
+    //if(swath != nullptr) {// See if I can make coverity happy.coverity doesn't know I call throw already.
 
     try {
 
@@ -4451,7 +4451,7 @@ void SwathDataset::ReadIndexMaps(vector<IndexMap *> &swath_indexmaps)
         vector<char> namelist;
 
         namelist.resize(bufsize + 1);
-        if (SWinqidxmaps(this->datasetid, &namelist[0], NULL) == -1)
+        if (SWinqidxmaps(this->datasetid, &namelist[0], nullptr) == -1)
             throw2("inquire indexmap", this->name);
 
         vector<string> mapnames;
@@ -4510,7 +4510,7 @@ bool Utility::ReadNamelist(const char *path,
     int32 bufsize;
     int numobjs;
 
-    if ((numobjs = inq(fname, NULL, &bufsize)) == -1) return false;
+    if ((numobjs = inq(fname, nullptr, &bufsize)) == -1) return false;
     if (numobjs > 0) {
         vector<char> buffer;
         buffer.resize(bufsize + 1);
