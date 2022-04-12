@@ -36,15 +36,15 @@
 
 void get_data(hid_t dset, void *buf);
 
-int get_slabdata(hid_t dset, int *, int *, int *, int num_dim, void *);
+int get_slabdata(hid_t dset, const int *, const int *, const int *, const int num_dim, void *);
 
 void get_strdata(int, char *, char *, int);
 
-bool read_vlen_string(hid_t d_dset_id, int nelms, hsize_t *offset, hsize_t *step, hsize_t *count,std::vector<std::string> &finstrval);
+bool read_vlen_string(hid_t d_dset_id, const int nelms, const hsize_t *offset, const hsize_t *step, const hsize_t *count,std::vector<std::string> &finstrval);
 
 bool promote_char_to_short(H5T_class_t type_cls, hid_t type_id);
 
-void get_vlen_str_data(char*src,std::string &finalstrval);
+void get_vlen_str_data(const char*src,std::string &finalstrval);
 
 
 

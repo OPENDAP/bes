@@ -36,7 +36,7 @@
  */
 class HDF5DDS : public libdap::DDS {
 private:
-    hid_t fileid;
+    hid_t fileid = -1;
 
     void m_duplicate(const HDF5DDS &src) 
     { 
@@ -44,7 +44,7 @@ private:
     }
 
 public:
-    explicit HDF5DDS(libdap::DDS *ddsIn) : libdap::DDS(*ddsIn), fileid(-1) {}
+    explicit HDF5DDS(libdap::DDS *ddsIn) : libdap::DDS(*ddsIn) {}
 
     HDF5DDS(const HDF5DDS &rhs) : libdap::DDS(rhs) {
         m_duplicate(rhs);
@@ -61,7 +61,7 @@ public:
         return *this;
     }
 
-    virtual ~HDF5DDS() {
+    ~HDF5DDS() override {
 
         if (fileid != -1)
             H5Fclose(fileid);

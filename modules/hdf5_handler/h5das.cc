@@ -407,12 +407,9 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 
             hid_t memtype = H5Tget_native_type(ty_id, H5T_DIR_ASCEND);
             // Read HDF5 attribute data.
-            //if (H5Aread(attr_id, ty_id, (void *) (&value[0])) < 0) {
-            if (H5Aread(attr_id, memtype, (void *) (&value[0])) < 0) {
-                // value is deleted in the catch block below so
-                // shouldn't be deleted here. pwest Mar 18, 2009
+            if (H5Aread(attr_id, memtype, (void *) (&value[0])) < 0) 
                 throw InternalErr(__FILE__, __LINE__, "unable to read HDF5 attribute data");
-            }
+            
             H5Aclose(memtype);
 
             // For scalar data, just read data once.
@@ -586,19 +583,20 @@ void get_softlink(DAS & das, hid_t pgroup, const char *gname, const string & ona
 
     // Get the link target information. We always return the link value in a string format.
 
-    char *buf = 0;
+    //char *buf = null;
     try {
-        buf = new char[(val_size + 1) * sizeof(char)];
+        //buf = new char[(val_size + 1) * sizeof(char)];
+        vector<char>buf((val_size + 1) * sizeof(char));
         // get link target name
-        if (H5Lget_val(pgroup, oname.c_str(), (void*) buf, val_size + 1, H5P_DEFAULT) < 0) {
-            delete[] buf;
+        if (H5Lget_val(pgroup, oname.c_str(), (void*) &buf[0], val_size + 1, H5P_DEFAULT) < 0) {
+            //delete[] buf;
             throw InternalErr(__FILE__, __LINE__, "unable to get link value");
         }
-        attr_softlink_ptr->append_attr(softlink_value_name, STRING, buf);
-        delete[] buf;
+        attr_softlink_ptr->append_attr(softlink_value_name, STRING, &buf[0]);
+        //delete[] buf;
     }
     catch (...) {
-        delete[] buf;
+        //delete[] buf;
         throw;
     }
 }

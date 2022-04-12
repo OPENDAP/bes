@@ -203,7 +203,7 @@ bool depth_first(hid_t pid, char *gname,  D4Group* par_grp, const char *fname)
                 string grp_name = string(oname.begin(),oname.end()-1);
 
                 // Check the hard link loop and break the loop if it exists.
-		string oid = get_hardlink_dmr(cgroup, full_path_name.c_str());
+                string oid = get_hardlink_dmr(cgroup, full_path_name.c_str());
                 if (oid == "") {
                     try {
                         D4Group* tem_d4_cgroup = new D4Group(grp_name);
@@ -295,7 +295,7 @@ bool depth_first(hid_t pid, char *gname,  D4Group* par_grp, const char *fname)
 }
 #endif
 //////////////////////////////////////////////////////////////////////////////////////////
-/// bool breadth_first(const hid_t file_id,hid_t pid, char *gname, DMR & dmr, D4Group* par_grp, const char *fname,bool use_dimscale, vector <link_info_t> & hdf5_hls)
+/// bool breadth_first(const hid_t file_id,hid_t pid, const char *gname, DMR & dmr, D4Group* par_grp, const char *fname,bool use_dimscale, vector <link_info_t> & hdf5_hls)
 /// \param file_id file_id(this is necessary for searching the hardlinks of a dataset)
 /// \param pid group id
 /// \param gname group name (the absolute path from the root group)
@@ -318,7 +318,7 @@ bool depth_first(hid_t pid, char *gname,  D4Group* par_grp, const char *fname)
 // The reason to use breadth_first is that the DMR representation needs to show the dimension names and the variables under the group first and then the group names.
 // So we use this search. In the future, we may just use the breadth_first search for all cases.?? 
 //bool breadth_first(hid_t pid, char *gname, DMR & dmr, D4Group* par_grp, const char *fname,bool use_dimscale)
-bool breadth_first(const hid_t file_id, hid_t pid, char *gname, D4Group* par_grp, const char *fname,bool use_dimscale,vector<link_info_t> & hdf5_hls )
+bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* par_grp, const char *fname,bool use_dimscale,vector<link_info_t> & hdf5_hls )
 {
     BESDEBUG("h5",
         ">breadth_first() for dmr " 
@@ -534,7 +534,7 @@ bool breadth_first(const hid_t file_id, hid_t pid, char *gname, D4Group* par_grp
                 throw InternalErr(__FILE__, __LINE__, "h5_dmr handler: H5Gopen() failed.");
             }
 
-            string grp_name = string(oname.begin(),oname.end()-1);
+            auto grp_name = string(oname.begin(),oname.end()-1);
 
             // Check the hard link loop and break the loop if it exists.
             string oid = get_hardlink_dmr(cgroup, full_path_name.c_str());
@@ -1102,7 +1102,7 @@ void get_softlink(D4Group* par_grp, hid_t h5obj_id,  const string & oname, int i
     string softlink_value_name ="LINKTARGET";
    
     // Get the link target information. We always return the link value in a string format.
-    D4Attribute *softlink_tgt = 0;
+    D4Attribute *softlink_tgt = nullptr;
 
     try {
         vector<char> buf;
@@ -1113,7 +1113,7 @@ void get_softlink(D4Group* par_grp, hid_t h5obj_id,  const string & oname, int i
             throw InternalErr(__FILE__, __LINE__, "unable to get link value");
         }
         softlink_tgt = new D4Attribute(softlink_value_name, attr_str_c);
-        string link_target_name = string(buf.begin(), buf.end());
+        auto link_target_name = string(buf.begin(), buf.end());
         softlink_tgt->add_value(link_target_name);
 
         d4_slinfo->attributes()->add_attribute_nocopy(softlink_tgt);

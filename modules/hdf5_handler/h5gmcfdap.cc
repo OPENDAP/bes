@@ -447,16 +447,18 @@ void gen_gmh5_cfdds( DDS & dds, HDF5CF:: GMFile *f) {
 
     // Read Variable info.
 
-    vector<HDF5CF::Var *>::const_iterator       it_v;
-    vector<HDF5CF::GMCVar *>::const_iterator   it_cv;
-    vector<HDF5CF::GMSPVar *>::const_iterator it_spv;
+#if 0
+    //vector<HDF5CF::Var *>::const_iterator       it_v;
+    //vector<HDF5CF::GMCVar *>::const_iterator   it_cv;
+    //vector<HDF5CF::GMSPVar *>::const_iterator it_spv;
+#endif
 
     // Since we need to use dds to add das for 64-bit dmr,we need to check if
     // this case includes 64-bit integer variables and this is for dmr response.
     bool dmr_64bit_support = false;
     if(HDF5RequestHandler::get_dmr_long_int()==true &&
         HDF5RequestHandler::get_dmr_64bit_int()!=nullptr) {
-        for (it_v = vars.begin(); it_v !=vars.end();++it_v) {
+        for (auto it_v = vars.begin(); it_v !=vars.end();++it_v) {
             if (H5INT64 == (*it_v)->getType() || H5UINT64 == (*it_v)->getType()){
                 dmr_64bit_support = true;
                 break;
@@ -474,19 +476,19 @@ void gen_gmh5_cfdds( DDS & dds, HDF5CF:: GMFile *f) {
 
     }
 
-    for (it_v = vars.begin(); it_v !=vars.end();++it_v) {
+    for (auto it_v = vars.begin(); it_v !=vars.end();++it_v) {
         BESDEBUG("h5","variable full path= "<< (*it_v)->getFullPath() <<endl);
         // Handle 64-integer DAP4 CF mapping
         if(need_attr_values_for_dap4(*it_v) == true) 
             f->Retrieve_H5_Var_Attr_Values(*it_v);
         gen_dap_onevar_dds(dds,*it_v,fileid, filename);
     }
-    for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
+    for (auto it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
         BESDEBUG("h5","variable full path= "<< (*it_cv)->getFullPath() <<endl);
         gen_dap_onegmcvar_dds(dds,*it_cv,fileid, filename);
     }
 
-    for (it_spv = spvars.begin(); it_spv !=spvars.end();it_spv++) {
+    for (auto it_spv = spvars.begin(); it_spv !=spvars.end();it_spv++) {
         BESDEBUG("h5","variable full path= "<< (*it_spv)->getFullPath() <<endl);
         gen_dap_onegmspvar_dds(dds,*it_spv,fileid, filename);
     }
@@ -510,12 +512,13 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
     const vector<HDF5CF::Group *>& grps           = f->getGroups();
     const vector<HDF5CF::Attribute *>& root_attrs = f->getAttributes();
 
-
+#if 0
     vector<HDF5CF::Var *>::const_iterator it_v;
     vector<HDF5CF::GMCVar *>::const_iterator it_cv;
     vector<HDF5CF::GMSPVar *>::const_iterator it_spv;
     vector<HDF5CF::Group *>::const_iterator it_g;
     vector<HDF5CF::Attribute *>::const_iterator it_ra;
+#endif
 
     // Handling the file attributes(attributes under the root group)
     // The table name is "HDF_GLOBAL".
@@ -526,7 +529,7 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
         if (nullptr == at) 
             at = das.add_table(FILE_ATTR_TABLE_NAME, new AttrTable);
 
-        for (it_ra = root_attrs.begin(); it_ra != root_attrs.end(); ++it_ra) {
+        for (auto it_ra = root_attrs.begin(); it_ra != root_attrs.end(); ++it_ra) {
             // Check and may update the 64-bit integer attributes in DAP4.
             check_update_int64_attr("",*it_ra);
             gen_dap_oneobj_das(at,*it_ra,nullptr);
@@ -534,13 +537,13 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
     }
 
     if (false == grps.empty()) {
-        for (it_g = grps.begin();
+        for (auto it_g = grps.begin();
              it_g != grps.end(); ++it_g) {
             AttrTable *at = das.get_table((*it_g)->getNewName());
             if (nullptr == at)
                 at = das.add_table((*it_g)->getNewName(), new AttrTable);
 
-            for (it_ra = (*it_g)->getAttributes().begin();
+            for (auto it_ra = (*it_g)->getAttributes().begin();
                  it_ra != (*it_g)->getAttributes().end(); ++it_ra) {
                 check_update_int64_attr((*it_g)->getNewName(),*it_ra);
                 gen_dap_oneobj_das(at,*it_ra,nullptr);
@@ -548,7 +551,7 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
         }
     }
 
-    for (it_v = vars.begin();
+    for (auto it_v = vars.begin();
          it_v != vars.end(); ++it_v) {
         if (false == ((*it_v)->getAttributes().empty())) {
 
@@ -564,7 +567,7 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
             if (nullptr == at)
                 at = das.add_table((*it_v)->getNewName(), new AttrTable);
 
-            for (it_ra = (*it_v)->getAttributes().begin();
+            for (auto it_ra = (*it_v)->getAttributes().begin();
                  it_ra != (*it_v)->getAttributes().end(); ++it_ra) {
                 gen_dap_oneobj_das(at,*it_ra,*it_v);
             }
@@ -582,7 +585,7 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
         
     }
 
-    for (it_cv = cvars.begin();
+    for (auto it_cv = cvars.begin();
          it_cv != cvars.end(); ++it_cv) {
         if (false == ((*it_cv)->getAttributes().empty())) {
 
@@ -595,7 +598,7 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
             if (nullptr == at)
                 at = das.add_table((*it_cv)->getNewName(), new AttrTable);
 
-            for (it_ra = (*it_cv)->getAttributes().begin();
+            for (auto it_ra = (*it_cv)->getAttributes().begin();
                  it_ra != (*it_cv)->getAttributes().end(); ++it_ra){ 
                 gen_dap_oneobj_das(at,*it_ra,*it_cv);
             }
@@ -609,7 +612,7 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
     }
 
     // Currently the special variables are only limited to the ACOS/OCO2 64-bit integer variables
-    for (it_spv = spvars.begin();
+    for (auto it_spv = spvars.begin();
          it_spv != spvars.end(); ++it_spv) {
         if (false == ((*it_spv)->getAttributes().empty())) {
 
@@ -620,7 +623,7 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
             // cerr<<"spv coordinate variable name "<<(*it_spv)->getNewName() <<endl;
 #endif
 
-            for (it_ra = (*it_spv)->getAttributes().begin();
+            for (auto it_ra = (*it_spv)->getAttributes().begin();
                  it_ra != (*it_spv)->getAttributes().end(); ++it_ra) 
                 gen_dap_oneobj_das(at,*it_ra,*it_spv);
         }
@@ -639,10 +642,10 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
             // First check if we do have unlimited dimension in the coordinate variables.
             // Since unsupported fakedims are removed, we may not have unlimited dimensions.
             bool still_has_unlimited = false;
-            for (it_cv = cvars.begin();
+            for (auto it_cv = cvars.begin();
                 it_cv != cvars.end(); ++it_cv) {
                 // Check unlimited dimension names.
-                for (vector<Dimension*>::const_iterator ird = (*it_cv)->getDimensions().begin();
+                for (auto ird = (*it_cv)->getDimensions().begin();
                      ird != (*it_cv)->getDimensions().end(); ++ird) {
 
                     // Currently we only check one unlimited dimension, which is the most
@@ -664,13 +667,13 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
          
             string unlimited_names;
 
-            for (it_cv = cvars.begin();
+            for (auto it_cv = cvars.begin();
                 it_cv != cvars.end(); ++it_cv) {
 #if 0
                 bool has_unlimited_dim = false;
 #endif
                 // Check unlimited dimension names.
-                for (vector<Dimension*>::const_iterator ird = (*it_cv)->getDimensions().begin();
+                for (auto ird = (*it_cv)->getDimensions().begin();
                      ird != (*it_cv)->getDimensions().end(); ++ird) {
 
                     // Currently we only check one unlimited dimension, which is the most
@@ -703,7 +706,7 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
     }
 }
 
-void gen_gmh5_cfdmr(D4Group* d4_root,HDF5CF::GMFile *f) {
+void gen_gmh5_cfdmr(D4Group* d4_root,const HDF5CF::GMFile *f) {
 
     BESDEBUG("h5","Coming to GM DDS generation function gen_gmh5_cfdmr()  "<<endl);
 
@@ -786,7 +789,7 @@ void gen_gmh5_cfdmr(D4Group* d4_root,HDF5CF::GMFile *f) {
             for (it_cv = cvars.begin();
                 it_cv != cvars.end(); ++it_cv) {
                 // Check unlimited dimension names.
-                for (vector<Dimension*>::const_iterator ird = (*it_cv)->getDimensions().begin();
+                for (auto ird = (*it_cv)->getDimensions().begin();
                      ird != (*it_cv)->getDimensions().end(); ++ird) {
 
                     // Currently we only check one unlimited dimension, which is the most
@@ -816,7 +819,7 @@ void gen_gmh5_cfdmr(D4Group* d4_root,HDF5CF::GMFile *f) {
                         it_cv != cvars.end(); it_cv++) {
             
                         // Check unlimited dimension names.
-                        for (vector<Dimension*>::const_iterator ird = (*it_cv)->getDimensions().begin();
+                        for (auto ird = (*it_cv)->getDimensions().begin();
                              ird != (*it_cv)->getDimensions().end(); ++ird) {
             
                             // Currently we only check one unlimited dimension, which is the most
@@ -880,16 +883,16 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
             bt = new (type)(cvar->getNewName(),cvar->getFullPath());  \
             break;
 
-        HANDLE_CASE(H5FLOAT32, HDF5CFFloat32);
-        HANDLE_CASE(H5FLOAT64, HDF5CFFloat64);
-        HANDLE_CASE(H5CHAR,HDF5CFInt16);
-        HANDLE_CASE(H5UCHAR, HDF5CFByte);
-        HANDLE_CASE(H5INT16, HDF5CFInt16);
-        HANDLE_CASE(H5UINT16, HDF5CFUInt16);
-        HANDLE_CASE(H5INT32, HDF5CFInt32);
-        HANDLE_CASE(H5UINT32, HDF5CFUInt32);
-        HANDLE_CASE(H5FSTRING, Str);
-        HANDLE_CASE(H5VSTRING, Str);
+        HANDLE_CASE(H5FLOAT32, HDF5CFFloat32)
+        HANDLE_CASE(H5FLOAT64, HDF5CFFloat64)
+        HANDLE_CASE(H5CHAR,HDF5CFInt16)
+        HANDLE_CASE(H5UCHAR, HDF5CFByte)
+        HANDLE_CASE(H5INT16, HDF5CFInt16)
+        HANDLE_CASE(H5UINT16, HDF5CFUInt16)
+        HANDLE_CASE(H5INT32, HDF5CFInt32)
+        HANDLE_CASE(H5UINT32, HDF5CFUInt32)
+        HANDLE_CASE(H5FSTRING, Str)
+        HANDLE_CASE(H5VSTRING, Str)
 
         default:
             throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
@@ -1112,16 +1115,16 @@ void gen_dap_onegmspvar_dds(DDS &dds,const HDF5CF::GMSPVar* spvar, const hid_t f
             bt = new (type)(spvar->getNewName(),spvar->getFullPath());  \
         break;
 
-        HANDLE_CASE(H5FLOAT32, HDF5CFFloat32);
-        HANDLE_CASE(H5FLOAT64, HDF5CFFloat64);
-        HANDLE_CASE(H5CHAR,HDF5CFInt16);
-        HANDLE_CASE(H5UCHAR, HDF5CFByte);
-        HANDLE_CASE(H5INT16, HDF5CFInt16);
-        HANDLE_CASE(H5UINT16, HDF5CFUInt16);
-        HANDLE_CASE(H5INT32, HDF5CFInt32);
-        HANDLE_CASE(H5UINT32, HDF5CFUInt32);
-        HANDLE_CASE(H5FSTRING, Str);
-        HANDLE_CASE(H5VSTRING, Str);
+        HANDLE_CASE(H5FLOAT32, HDF5CFFloat32)
+        HANDLE_CASE(H5FLOAT64, HDF5CFFloat64)
+        HANDLE_CASE(H5CHAR,HDF5CFInt16)
+        HANDLE_CASE(H5UCHAR, HDF5CFByte)
+        HANDLE_CASE(H5INT16, HDF5CFInt16)
+        HANDLE_CASE(H5UINT16, HDF5CFUInt16)
+        HANDLE_CASE(H5INT32, HDF5CFInt32)
+        HANDLE_CASE(H5UINT32, HDF5CFUInt32)
+        HANDLE_CASE(H5FSTRING, Str)
+        HANDLE_CASE(H5VSTRING, Str)
         default:
             throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
 #undef HANDLE_CASE
@@ -1342,18 +1345,18 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
             bt = new (type)(cvar->getNewName(),cvar->getFullPath());  \
             break;
 
-        HANDLE_CASE(H5FLOAT32, HDF5CFFloat32);
-        HANDLE_CASE(H5FLOAT64, HDF5CFFloat64);
-        HANDLE_CASE(H5CHAR,HDF5CFInt8);
-        HANDLE_CASE(H5UCHAR, HDF5CFByte);
-        HANDLE_CASE(H5INT16, HDF5CFInt16);
-        HANDLE_CASE(H5UINT16, HDF5CFUInt16);
-        HANDLE_CASE(H5INT32, HDF5CFInt32);
-        HANDLE_CASE(H5UINT32, HDF5CFUInt32);
-        HANDLE_CASE(H5INT64, HDF5CFInt64);
-        HANDLE_CASE(H5UINT64, HDF5CFUInt64);
-        HANDLE_CASE(H5FSTRING, Str);
-        HANDLE_CASE(H5VSTRING, Str);
+        HANDLE_CASE(H5FLOAT32, HDF5CFFloat32)
+        HANDLE_CASE(H5FLOAT64, HDF5CFFloat64)
+        HANDLE_CASE(H5CHAR,HDF5CFInt8)
+        HANDLE_CASE(H5UCHAR, HDF5CFByte)
+        HANDLE_CASE(H5INT16, HDF5CFInt16)
+        HANDLE_CASE(H5UINT16, HDF5CFUInt16)
+        HANDLE_CASE(H5INT32, HDF5CFInt32)
+        HANDLE_CASE(H5UINT32, HDF5CFUInt32)
+        HANDLE_CASE(H5INT64, HDF5CFInt64)
+        HANDLE_CASE(H5UINT64, HDF5CFUInt64)
+        HANDLE_CASE(H5FSTRING, Str)
+        HANDLE_CASE(H5VSTRING, Str)
 
         default:
             throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
@@ -1598,16 +1601,16 @@ void gen_dap_onegmspvar_dmr(D4Group*d4_root,const GMSPVar*spvar,const hid_t file
             bt = new (type)(spvar->getNewName(),spvar->getFullPath());  \
         break;
 
-        HANDLE_CASE(H5FLOAT32, HDF5CFFloat32);
-        HANDLE_CASE(H5FLOAT64, HDF5CFFloat64);
-        HANDLE_CASE(H5CHAR,HDF5CFByte);
-        HANDLE_CASE(H5UCHAR, HDF5CFByte);
-        HANDLE_CASE(H5INT16, HDF5CFInt16);
-        HANDLE_CASE(H5UINT16, HDF5CFUInt16);
-        HANDLE_CASE(H5INT32, HDF5CFInt32);
-        HANDLE_CASE(H5UINT32, HDF5CFUInt32);
-        HANDLE_CASE(H5FSTRING, Str);
-        HANDLE_CASE(H5VSTRING, Str);
+        HANDLE_CASE(H5FLOAT32, HDF5CFFloat32)
+        HANDLE_CASE(H5FLOAT64, HDF5CFFloat64)
+        HANDLE_CASE(H5CHAR,HDF5CFByte)
+        HANDLE_CASE(H5UCHAR, HDF5CFByte)
+        HANDLE_CASE(H5INT16, HDF5CFInt16)
+        HANDLE_CASE(H5UINT16, HDF5CFUInt16)
+        HANDLE_CASE(H5INT32, HDF5CFInt32)
+        HANDLE_CASE(H5UINT32, HDF5CFUInt32)
+        HANDLE_CASE(H5FSTRING, Str)
+        HANDLE_CASE(H5VSTRING, Str)
         default:
             throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
 #undef HANDLE_CASE

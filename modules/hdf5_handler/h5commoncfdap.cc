@@ -284,7 +284,6 @@ void gen_dap_onevar_dds(DDS &dds, const HDF5CF::Var* var, const hid_t file_id, c
         }
         }
 
-        // TODO Remove jhrg vector<HDF5CF::Dimension*>::const_iterator it_d;
         vector<size_t> dimsizes;
         dimsizes.resize(var->getRank());
         for (int i = 0; i < var->getRank(); i++)
@@ -724,41 +723,27 @@ void gen_dap_onevar_dmr(libdap::D4Group* d4_grp, const HDF5CF::Var* var, const h
         BaseType *bt = nullptr;
 
         switch (var->getType()) {
-            // TODO Remove extra ';' jhrg 3/9/22
 #define HANDLE_CASE(tid,type)                                  \
             case tid:                                           \
                 bt = new (type)(var->getNewName(),var->getFullPath()); \
             break;
         HANDLE_CASE(H5FLOAT32, HDF5CFFloat32)
-            ;
         HANDLE_CASE(H5FLOAT64, HDF5CFFloat64)
-            ;
         HANDLE_CASE(H5CHAR, HDF5CFInt8)
-            ;
         HANDLE_CASE(H5UCHAR, HDF5CFByte)
-            ;
         HANDLE_CASE(H5INT16, HDF5CFInt16)
-            ;
         HANDLE_CASE(H5UINT16, HDF5CFUInt16)
-            ;
         HANDLE_CASE(H5INT32, HDF5CFInt32)
-            ;
         HANDLE_CASE(H5UINT32, HDF5CFUInt32)
-            ;
         HANDLE_CASE(H5INT64, HDF5CFInt64)
-            ;
         HANDLE_CASE(H5UINT64, HDF5CFUInt64)
-            ;
         HANDLE_CASE(H5FSTRING, Str)
-            ;
         HANDLE_CASE(H5VSTRING, Str)
-            ;
         default:
             throw InternalErr(__FILE__, __LINE__, "unsupported data type.");
 #undef HANDLE_CASE
         }
 
-        // TODO Remove jhrg vector<HDF5CF::Dimension*>::const_iterator it_d;
         vector<size_t> dimsizes;
         dimsizes.resize(var->getRank());
         for (int i = 0; i < var->getRank(); i++)
@@ -831,8 +816,6 @@ void gen_dap_str_attr(AttrTable *at, const HDF5CF::Attribute *attr)
             // attributes. The long string can be kept, and I do think the
             // performance penalty should be small. KY 2018-02-26
             //
-            if (tempstring.find("UTC at Start of Observation") != string::npos) // TODO Remove before commit jhrg 3/9/22
-                BESDEBUG("attrbug", "tempstring: " << tempstring << endl);
             // Here is the logic to determine if the attribute value should be escaped.
             // Attributes named 'origname' or 'fullnamepath' are never escaped. Attributes
             // with values that use the UTF-8 character set _are_ encoded unless the
@@ -1131,14 +1114,13 @@ void add_cf_grid_mapping_attr(DAS &das, const vector<HDF5CF::Var*>& vars, const 
 #endif
 
     // Check >=2-D fields, check if they hold the dim0name,dim0size etc., yes, add the attribute cf_projection.
-    // TODO Remove jhrg vector<HDF5CF::Var *>::const_iterator it_v;
     for (auto it_v = vars.begin(); it_v != vars.end(); ++it_v) {
 
         if ((*it_v)->getRank() > 1) {
             bool has_dim0 = false;
             bool has_dim1 = false;
             const vector<HDF5CF::Dimension*>& dims = (*it_v)->getDimensions();
-            for (vector<HDF5CF::Dimension *>::const_iterator j = dims.begin(); j != dims.end(); ++j) {
+            for (auto j = dims.begin(); j != dims.end(); ++j) {
                 if ((*j)->getNewName() == dim0name && (*j)->getSize() == dim0size)
                     has_dim0 = true;
                 else if ((*j)->getNewName() == dim1name && (*j)->getSize() == dim1size) 
@@ -1183,7 +1165,6 @@ bool need_attr_values_for_dap4(const HDF5CF::Var *var) {
 // Note: the main part of DMR still comes from DDS and DAS.
 void map_cfh5_var_attrs_to_dap4_int64(const HDF5CF::Var *var,BaseType* d4_var) {
 
-    // TODO remove jhrg vector<HDF5CF::Attribute *>::const_iterator it_ra;
     for (auto it_ra = var->getAttributes().begin();
         it_ra != var->getAttributes().end(); ++it_ra) {
         // HDF5 Native Char maps to DAP INT16(DAP doesn't have the corresponding datatype), so needs to
@@ -1335,7 +1316,6 @@ void handle_coor_attr_for_int64_var(const HDF5CF::Attribute *attr,const string &
 // Hopefully this will be eventually used to build DMR. 
 void map_cfh5_var_attrs_to_dap4(const HDF5CF::Var *var,BaseType* d4_var) {
 
-    // TODO Remove jhrg vector<HDF5CF::Attribute *>::const_iterator it_ra;
     for (auto it_ra = var->getAttributes().begin();
         it_ra != var->getAttributes().end(); ++it_ra) {
      
