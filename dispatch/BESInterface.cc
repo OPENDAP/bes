@@ -540,12 +540,12 @@ int BESInterface::execute_request(const string &from)
         // storing true in besTimeoutExceeded. The worker thread polls besTimeoutExceeded and
         // will commence returning once that has been set regardless of whether the worker thread
         // had previously set ignoreBesTimeout. The worker thread will set ignoreBesTimeout when data
-        // streaming begins if BES.CancelTimeoutOnSend is set to true in bes.conf.
+        // streaming begins if BES.CancelTimeoutOnSend = true in bes.conf.
         if (worker.wait_for(chrono::seconds(bes_timeout)) == std::future_status::timeout) {
 
             // If the worker thread has exceeded the bes_timeout AND ignoreBesTimeout
-            // is false set the timeout flag for the worker thread to see AND wait_for
-            // one additional minute for the worker thread to return ready before throwing an exception.
+            // is false set the timeout flag for the worker thread to see AND wait_for()
+            // one additional minute for the worker thread to return ready.
             if (!ignoreBesTimeout.load()) {
                 besTimeoutExceeded.store(true);
 
