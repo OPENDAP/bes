@@ -158,10 +158,10 @@ public:
  */
 struct worker_data_request_plan_args {
     std::thread::id parent_thread_id;
-    std::shared_ptr<BESInterface> besInterface;
+    BESInterface *besInterface {nullptr};
 
-    worker_data_request_plan_args(std::shared_ptr<BESInterface> sc)
-            : parent_thread_id(std::this_thread::get_id()), besInterface(std::move(sc)) {}
+    explicit worker_data_request_plan_args(BESInterface *sc)
+            : parent_thread_id(std::this_thread::get_id()), besInterface(sc) {}
 };
 
 #endif // BESInterface_h_
