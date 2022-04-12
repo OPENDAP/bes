@@ -5,11 +5,16 @@
 AUTOMAKE_OPTIONS = foreign
 
 # Might move these to a child directory for testing things. jhrg 5/16/18
-EXTRA_DIST = read_test_baseline.cc read_test_baseline.h handler_tests_macros.m4 bes_run_tests_cppunit.h
+EXTRA_DIST = data/README read_test_baseline.cc read_test_baseline.h handler_tests_macros.m4 bes_run_tests_cppunit.h
+
+toplevel_datadir = $(datadir)/hyrax/data
+toplevel_data_DATA = data/README
+
 
 SUBDIRS = csv_handler usage asciival freeform_handler
 
 # www-interface Removed jhrg 3/21/22
+
 
 if WITH_CMR
 SUBDIRS += cmr_module 
