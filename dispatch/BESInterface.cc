@@ -533,26 +533,22 @@ int BESInterface::execute_request(const string &from)
         unique_ptr<worker_data_request_plan_args> args;
         auto worker = std::async(std::launch::async, worker_data_request_plan_thread, std::move(args));
 
-        // We set the maximum wait time equal to bes_timeout
+        // Set the maximum wait_for() time equal to bes_timeout, because the worker thread
+        // is launched using the launch::async policy wait_for() can only return ready or timeout
         //
-        // If the worker thread returns status::timeout we check ignoreBesTimeout
-        // before storing true in besTimeoutExceeded.
-        //
-        // The worker thread polls besTimeoutExceeded and will return once
-        // that has been set regardless of whether the worker thread had set
-        // ignoreBesTimeout.
-
-        std::future_status worker_state = worker.wait_for(chrono::seconds(bes_timeout));
-
-        if (worker_state == std::future_status::timeout) {
-            if (!ignoreBesTimeout.load()) {
-                besTimeoutExceeded.store(true);
-            }
+        // If worker thread returns status::timeout check ignoreBesTimeout before
+        // storing true in besTimeoutExceeded. The worker thread polls besTimeoutExceeded and
+        // will commence returning once that has been set regardless of whether the worker thread
+        // had previously set ignoreBesTimeout. The worker thread will set ignoreBesTimeout when data
+        // streaming begins if BES.CancelTimeoutOnSend is set to true in bes.conf.
+        if (worker.wait_for(chrono::seconds(bes_timeout)) == std::future_status::timeout) {
 
             // If the worker thread has exceeded the bes_timeout AND ignoreBesTimeout
-            // is false, we wait one additional minute for the worker thread
-            // to return ready before throwing an exception.
+            // is false set the timeout flag for the worker thread to see AND wait_for
+            // one additional minute for the worker thread to return ready before throwing an exception.
             if (!ignoreBesTimeout.load()) {
+                besTimeoutExceeded.store(true);
+
                 if (worker.wait_for(chrono::seconds(60)) == std::future_status::timeout) {
                     if (!ignoreBesTimeout.load()) { // check again if data started streaming while waiting
                         throw BESInternalError("The std::future has failed!", __FILE__, __LINE__);
