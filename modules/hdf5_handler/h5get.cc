@@ -524,11 +524,11 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
-    hsize_t size[ndims];
-    hsize_t maxsize[ndims];
+    vector<hsize_t>size(ndims);
+    vector<hsize_t>maxsize(ndims);
 
     // Retrieve size. DAP4 doesn't have a convention to support multi-unlimited dimension yet.
-    if (H5Sget_simple_extent_dims(dspace, size, maxsize)<0){
+    if (H5Sget_simple_extent_dims(dspace, &size[0], &maxsize[0])<0){
         string msg = "cannot obtain the dim. info for the dataset ";
         msg += dname;
         H5Tclose(dtype);
@@ -682,11 +682,11 @@ void get_dataset_dmr(const hid_t file_id, hid_t pid, const string &dname, DS_t *
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
-    hsize_t size[DODS_MAX_RANK];
-    hsize_t maxsize[DODS_MAX_RANK];
+    vector<hsize_t>size(ndims);
+    vector<hsize_t>maxsize(ndims);
 
     // Retrieve size. DAP4 doesn't have a convention to support multi-unlimited dimension yet.
-    if (H5Sget_simple_extent_dims(dspace, size, maxsize)<0){
+    if (H5Sget_simple_extent_dims(dspace, &size[0], &maxsize[0])<0){
         string msg = "cannot obtain the dim. info for the dataset ";
         msg += dname;
         H5Tclose(dtype);
