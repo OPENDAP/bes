@@ -1250,9 +1250,14 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
 
     try {
 
+        // DDS from disk cache is not currently supported. It may be supported in the future.
+        // We will leave the code as commented. 
+#if 0
         bool dds_from_dc = false;
-        bool das_from_dc = false;
         bool build_data  = true;
+#endif
+
+        bool das_from_dc = false;
         string dds_cache_fname;
         string das_cache_fname;
 
@@ -1268,7 +1273,9 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
 
         }
 
-        //get_dds_with_attributes(nullptr,bdds, container_name,filename, dds_cache_fname,das_cache_fname,dds_from_dc,das_from_dc,build_data);
+#if 0
+        get_dds_with_attributes(nullptr,bdds, container_name,filename, dds_cache_fname,das_cache_fname,dds_from_dc,das_from_dc,build_data);
+#endif
         get_dds_without_attributes_datadds(bdds,container_name,filename);
 
         bdds->set_constraint( dhi ) ;

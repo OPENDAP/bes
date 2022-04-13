@@ -368,7 +368,7 @@ HDF5CFDAPUtil:: print_attr(H5DataType type, int loc, void *vals)
 
 // This helper function is used for 64-bit integer DAP4 support.
 // We need to support the attributes of all types for 64-bit integer variables.
-D4AttributeType HDF5CFDAPUtil::daptype_strrep_to_dap4_attrtype(std::string s){
+D4AttributeType HDF5CFDAPUtil::daptype_strrep_to_dap4_attrtype(const std::string &s){
     
     if (s == "Byte")
         return attr_byte_c;

@@ -66,7 +66,7 @@ using namespace libdap;
 static DS_t dt_inst; 
 
 ///////////////////////////////////////////////////////////////////////////////
-/// \fn depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
+/// \fn depth_first(hid_t pid, const char *gname, DDS & dds, const char *fname)
 /// will fill DDS table.
 ///
 /// This function will walk through hdf5 \a gname group
@@ -86,7 +86,7 @@ static DS_t dt_inst;
 /// \remarks will return error message to the DAP interface.
 /// \see depth_first(hid_t pid, char *gname, DAS & das, const char *fname) in h5das.cc
 ///////////////////////////////////////////////////////////////////////////////
-bool depth_first(hid_t pid, char *gname, DDS & dds, const char *fname)
+bool depth_first(hid_t pid,const  char *gname, DDS & dds, const char *fname)
 {
     BESDEBUG("h5",
         ">depth_first()" 

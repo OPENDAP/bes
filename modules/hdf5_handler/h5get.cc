@@ -213,12 +213,12 @@ hid_t get_attr_info(hid_t dset, int index, bool is_dap4, DSattr_t * attr_inst_pt
         throw InternalErr(__FILE__, __LINE__, msg);
     }
       
-    hsize_t size[DODS_MAX_RANK];
-    hsize_t maxsize[DODS_MAX_RANK];
+    vector<hsize_t> size(ndims);
+    vector<hsize_t> maxsize(ndims);
 
     //The HDF5 attribute should not have unlimited dimension,
     // maxsize is only a place holder.
-    if (H5Sget_simple_extent_dims(aspace_id, size, maxsize)<0){
+    if (H5Sget_simple_extent_dims(aspace_id, &size[0], &maxsize[0])<0){
         string msg = "cannot obtain the dim. info for the attribute ";
         string attrnamestr(attr_name.begin(),attr_name.end());
         msg += attrnamestr;
@@ -524,11 +524,11 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
-    hsize_t size[DODS_MAX_RANK];
-    hsize_t maxsize[DODS_MAX_RANK];
+    vector<hsize_t>size(ndims);
+    vector<hsize_t>maxsize(ndims);
 
     // Retrieve size. DAP4 doesn't have a convention to support multi-unlimited dimension yet.
-    if (H5Sget_simple_extent_dims(dspace, size, maxsize)<0){
+    if (H5Sget_simple_extent_dims(dspace, &size[0], &maxsize[0])<0){
         string msg = "cannot obtain the dim. info for the dataset ";
         msg += dname;
         H5Tclose(dtype);
@@ -682,11 +682,11 @@ void get_dataset_dmr(const hid_t file_id, hid_t pid, const string &dname, DS_t *
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
-    hsize_t size[DODS_MAX_RANK];
-    hsize_t maxsize[DODS_MAX_RANK];
+    vector<hsize_t>size(ndims);
+    vector<hsize_t>maxsize(ndims);
 
     // Retrieve size. DAP4 doesn't have a convention to support multi-unlimited dimension yet.
-    if (H5Sget_simple_extent_dims(dspace, size, maxsize)<0){
+    if (H5Sget_simple_extent_dims(dspace, &size[0], &maxsize[0])<0){
         string msg = "cannot obtain the dim. info for the dataset ";
         msg += dname;
         H5Tclose(dtype);
@@ -857,8 +857,6 @@ bool check_h5str(hid_t h5type)
 /// \param loc    the number of array number
 /// \param sm_buf pointer to an attribute
 /// \return a string
-/// \todo Due to the priority of the handler work, this function will not be 
-/// \todo re-written in this re-engineering process. KY 2011-Nov. 14th
 ///////////////////////////////////////////////////////////////////////////////
 string print_attr(hid_t type, int loc, void *sm_buf) {
     union {
@@ -1015,11 +1013,25 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
             }
             BESDEBUG("h5", "=print_attr(): H5T_STRING sm_buf=" << (char *) sm_buf
                 << " size=" << str_size << endl);
+            // Not sure why the original code add 1 byte to the buffer, perhaps to keep the c-style? KY 2021-04-12
+#if 0
+            //rep.resize(str_size+1);
+#endif
+            rep.resize(str_size);
+            strncpy(&rep[0], (char *) sm_buf, str_size);
+
+            //Also should add the NULL term at the end. We just need the data in C++.
+#if 0
+            //rep[str_size] = '\0';
+#endif
+#if 0
             char *buf = nullptr;
             // This try/catch block is here to protect the allocation of buf.
             try {
+
+                
                 buf = new char[str_size + 1];
-                strncpy(buf, (char *) sm_buf, str_size);
+                strncpy(&buf[0], (char *) sm_buf, str_size);
                 buf[str_size] = '\0';
                 // Not necessarily allocate 3 more bytes. 
                 rep.resize(str_size+3);
@@ -1031,6 +1043,7 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
                 if( buf ) delete[] buf;
                 throw;
             }
+#endif
             break;
         }
 
@@ -1042,7 +1055,7 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
     return rep_str;
 }
 
-D4AttributeType daptype_strrep_to_dap4_attrtype(std::string s){
+D4AttributeType daptype_strrep_to_dap4_attrtype(const string & s){
     
     if (s == "Byte")
         return attr_byte_c;
@@ -1963,7 +1976,6 @@ void obtain_dimnames(const hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_ptr
 
                 rbuf =((hobj_ref_t*)vlbuf[i].p)[0];
 
-                // Note: TODO: H5Rget_name may be used to replace H5RDEREFERENCE and H5Iget_name in the future. KY 2016-06-28
                 if ((ref_dset = H5RDEREFERENCE(attr_id, H5R_OBJECT, &rbuf)) < 0) {
                     string msg = "Cannot dereference from the DIMENSION_LIST attribute  for the variable " + string(dt_inst_ptr->name);
                     throw InternalErr(__FILE__, __LINE__, msg);
@@ -1982,7 +1994,7 @@ void obtain_dimnames(const hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_ptr
                     throw InternalErr(__FILE__,__LINE__,msg);
                 }
 
-                string objname_str = string(objname.begin(),objname.end());
+                auto objname_str = string(objname.begin(),objname.end());
 
                 // Must trim the string delimter.
                 string trim_objname = objname_str.substr(0,objnamelen);
@@ -2137,7 +2149,7 @@ for(int i = 0; i<t_li_info.hl_names.size();i++)
     return ;
 }
 
-void write_vlen_str_attrs(hid_t attr_id,hid_t ty_id, DSattr_t * attr_inst_ptr,D4Attribute *d4_attr, AttrTable* d2_attr,bool is_dap4){
+void write_vlen_str_attrs(hid_t attr_id,hid_t ty_id, const DSattr_t * attr_inst_ptr,D4Attribute *d4_attr, AttrTable* d2_attr,bool is_dap4){
 
     BESDEBUG("h5","attribute name " << attr_inst_ptr->name <<endl);
     BESDEBUG("h5","attribute size " <<attr_inst_ptr->need <<endl);
@@ -2168,11 +2180,10 @@ void write_vlen_str_attrs(hid_t attr_id,hid_t ty_id, DSattr_t * attr_inst_ptr,D4
 
     char *temp_bp;
     temp_bp = &temp_buf[0];
-    char* onestring;
     for (unsigned int temp_i = 0; temp_i <attr_inst_ptr->nelmts; temp_i++) {
 
         // This line will assure that we get the real variable length string value.
-        onestring =*(char **)temp_bp;
+        char* onestring =*(char **)temp_bp;
 
         // Change the C-style string to C++ STD string just for easy appending the attributes in DAP.
         if (onestring !=nullptr) {
@@ -2261,12 +2272,11 @@ bool check_str_attr_value(hid_t attr_id,hid_t atype_id,const string & value_to_c
 
         char *temp_bp = nullptr;
         temp_bp = &temp_buf[0];
-        char* onestring = nullptr;
 
         for (unsigned int temp_i = 0; temp_i <nelmts; temp_i++) {
 
             // This line will assure that we get the real variable length string value.
-            onestring =*(char **)temp_bp;
+            char* onestring =*(char **)temp_bp;
 
             if(onestring!= nullptr) 
                 total_vstring +=string(onestring);

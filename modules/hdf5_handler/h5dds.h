@@ -50,5 +50,5 @@
 #include <libdap/DDS.h>
 
 
-bool depth_first(hid_t, char *, libdap::DDS &, const char *);
+bool depth_first(hid_t, const char *, libdap::DDS &, const char *);
 void read_objects(libdap::DDS & dds, const std::string & varname, const std::string & filename);

@@ -702,7 +702,7 @@ public:
         return _is_dap4;
     }
     /// Obtain the flag to see if ignored objects should be generated.
-    virtual bool Get_IgnoredInfo_Flag() = 0;
+    virtual const bool Get_IgnoredInfo_Flag() = 0;
 
     /// Obtain the message that contains the ignored object info.
     virtual const std::string & Get_Ignored_Msg() = 0;
@@ -746,8 +746,8 @@ protected:
         bool unlimited) ;
 
     virtual std::string get_CF_string(std::string);
-    virtual void Replace_Var_Info(Var* src, Var *target);
-    virtual void Replace_Var_Attrs(Var *src, Var*target);
+    void Replace_Var_Info(Var* src, Var *target);
+    void Replace_Var_Attrs(Var *src, Var*target);
 
     void Add_Str_Attr(Attribute* attr, const std::string &attrname, const std::string& strvalue) ;
     std::string Retrieve_Str_Attr_Value(Attribute *attr, const std::string var_path);
@@ -946,7 +946,7 @@ public:
     void Add_Path_Coord_Attr();
 
     /// Obtain ignored info. flag
-    virtual bool Get_IgnoredInfo_Flag()
+    virtual const bool Get_IgnoredInfo_Flag()
     {
         return check_ignored;
     }
@@ -1303,7 +1303,7 @@ public:
     bool Have_EOS5_Grids() {
         return (this->eos5cfgrids.size()!=0);
     }
-    virtual bool Get_IgnoredInfo_Flag()
+    virtual const bool Get_IgnoredInfo_Flag()
     {
         return check_ignored;
     }
@@ -1379,8 +1379,8 @@ protected:
     void Handle_Aura_Special_Attr() ;
 
     virtual std::string get_CF_string(std::string s);
-    void Replace_Var_Info(EOS5CVar *src, EOS5CVar *target);
-    void Replace_Var_Attrs(EOS5CVar *src, EOS5CVar *target);
+    void Replace_Var_Info_EOS(EOS5CVar *src, EOS5CVar *target);
+    void Replace_Var_Attrs_EOS(EOS5CVar *src, EOS5CVar *target);
     void Handle_EOS5CVar_NameClashing(std::set<std::string> &) ;
     void Handle_EOS5CVar_AttrNameClashing() ;
     template<typename T> void EOS5Handle_General_NameClashing(std::set<std::string>&objnameset, std::vector<T*>& objvec)
