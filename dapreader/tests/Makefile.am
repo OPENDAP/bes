@@ -5,8 +5,10 @@ AM_CPPFLAGS = -I$(top_srcdir)
 
 noinst_DATA = bes.conf bes.mds.conf mds
 
-CLEANFILES = bes.conf bes.mds.conf mds_ledger.txt bes.log $(srcdir)/package.m4 \
-$(TESTSUITE) 
+CLEANFILES = bes.conf bes.mds.conf mds_ledger.txt bes.log
+
+# Remove these to avoid 'make clean -j12' failure. jhrg 4/13/22
+# $(srcdir)/package.m4 $(TESTSUITE)
 
 EXTRA_DIST = dap $(TESTSUITE) $(TESTSUITE).at atlocal.in \
 bes.conf.in bes.mds.conf.in $(srcdir)/package.m4
