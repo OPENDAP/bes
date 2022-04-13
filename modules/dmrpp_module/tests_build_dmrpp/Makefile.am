@@ -3,7 +3,9 @@ AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir)
 
-CLEANFILES = $(TESTSUITE_DMRPP)
+CLEANFILES =
+
+# Parallel make clean fail. jhrg 4/13/22 $(TESTSUITE_DMRPP)
 
 EXTRA_DIST = get_dmrpp $(srcdir)/package.m4 $(TESTSUITE_DMRPP) $(TESTSUITE_DMRPP).at \
 atlocal.in build_dmrpp_macros.m4
