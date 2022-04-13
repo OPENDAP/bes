@@ -400,9 +400,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
         }
         else {
             vector<char> value;
-            // TODO: I think the second line is right. Will check this later. 
-            value.resize(attr_inst.need + sizeof(char));
-            //value.resize(attr_inst.need);
+            value.resize(attr_inst.need);
             BESDEBUG("h5", "arttr_inst.need=" << attr_inst.need << endl);
 
             hid_t memtype = H5Tget_native_type(ty_id, H5T_DIR_ASCEND);

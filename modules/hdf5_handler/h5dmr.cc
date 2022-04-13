@@ -934,8 +934,8 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
         else {
 
             vector<char> value;
-            value.resize(attr_inst.need + sizeof(char));
-            //value.resize(attr_inst.need);
+            //value.resize(attr_inst.need + sizeof(char));
+            value.resize(attr_inst.need);
             BESDEBUG("h5", "arttr_inst.need=" << attr_inst.need << endl);
   
             // Need to obtain the memtype since we still find BE data.

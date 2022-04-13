@@ -1014,9 +1014,16 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
             BESDEBUG("h5", "=print_attr(): H5T_STRING sm_buf=" << (char *) sm_buf
                 << " size=" << str_size << endl);
             // Not sure why the original code add 1 byte to the buffer, perhaps to keep the c-style? KY 2021-04-12
-            rep.resize(str_size+1);
+#if 0
+            //rep.resize(str_size+1);
+#endif
+            rep.resize(str_size);
             strncpy(&rep[0], (char *) sm_buf, str_size);
-            rep[str_size] = '\0';
+
+            //Also should add the NULL term at the end. We just need the data in C++.
+#if 0
+            //rep[str_size] = '\0';
+#endif
 #if 0
             char *buf = nullptr;
             // This try/catch block is here to protect the allocation of buf.

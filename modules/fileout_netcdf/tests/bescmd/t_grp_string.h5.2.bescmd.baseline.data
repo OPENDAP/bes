@@ -11,9 +11,9 @@ dimensions:
 	scalar_len9 = 31 ;
 variables:
 	char array_1d(dim4, array_1d_len1) ;
-		array_1d:value = "Parting\000\000\000\nis so  \000\000\000\nswe    \000\000\000\n       " ;
+		array_1d:value = "Parting\nis so  \nswe    \n       " ;
 	char array_2d(dim5, dim6, array_2d_len2) ;
-		array_2d:value = "Parting\000\000\000\nis so  \000\000\000\nswe    \000\000\000\n       " ;
+		array_2d:value = "Parting\nis so  \nswe    \n       " ;
 	char array_special_case(dim7, dim8, array_special_case_len3) ;
 		array_special_case:value = "A" ;
 	char scalar(scalar_len9) ;
