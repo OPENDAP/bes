@@ -1523,7 +1523,7 @@ add_executable(bes
     modules/ncml_module/OtherXMLParser.h
     modules/ncml_module/RCObject.cc
     modules/ncml_module/RCObject.h
-    modules/ncml_module/RCObjectInterface.cc
+    # modules/ncml_module/RCObjectInterface.cc
     modules/ncml_module/RCObjectInterface.h
     modules/ncml_module/ReadMetadataElement.cc
     modules/ncml_module/ReadMetadataElement.h
@@ -1602,7 +1602,7 @@ add_executable(bes
 	modules/ngap_module/NgapContainerStorage.h
 	modules/ngap_module/NgapContainer.cc
 	modules/ngap_module/NgapContainer.h
-	modules/ngap_module/NgapError.h
+	# modules/ngap_module/NgapError.h
 	modules/ngap_module/NgapModule.cc
 	modules/ngap_module/NgapModule.h
 	modules/ngap_module/NgapNames.h
