@@ -3,8 +3,10 @@
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
 
-// Copyright (c) 2004-2009 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
+// Copyright (c) 2022 OPeNDAP, Inc
+// Authors:
+//      ndp         Nathan Potter <ndp@opendap.org>
+//      dan         Dan Holloway  <dholloway@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -20,17 +22,7 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
-// You can contact University Corporation for Atmospheric Research at
-// 3080 Center Green Drive, Boulder, CO 80301
-
-// (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
-// Please read the full copyright statement in the file COPYRIGHT_UCAR.
-//
-// Authors:
-//      ndp         Nathan Potter <ndp@opendap.org>
-//      pwest       Patrick West  <pwest@ucar.edu>
-//      jgarcia     Jose Garcia  <jgarcia@ucar.edu>
-
+// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 #include "config.h"
 #include <mutex>
 
@@ -95,8 +87,7 @@ duration<int> RequestServiceTimer::elapsed() const {
     return duration<int>(0);
 }
 
-std::chrono::duration<int>
-RequestServiceTimer::remaining() const {
+duration<int> RequestServiceTimer::remaining() const {
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
     std::chrono::duration<int> remaining = duration<int>(DEFAULT_BES_TIMEOUT_SECONDS);
     if (timeout_enabled) {
@@ -121,8 +112,6 @@ void RequestServiceTimer::disable_timeout(){
     timeout_enabled = false;
 }
 
-
-
 string RequestServiceTimer::dump() const {
     std::stringstream ss;
     ss << "[RequestServiceTimer: " << bes_timeout.count() << "s ";
@@ -134,9 +123,7 @@ string RequestServiceTimer::dump() const {
     ss << "is_expired: " <<  (is_expired()?"true ":"false ");
     ss << "]";
     return ss.str();
-
 }
-
 
 /** @brief dumps information about this object
  *
@@ -144,8 +131,7 @@ string RequestServiceTimer::dump() const {
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-RequestServiceTimer::dump( ostream &strm ) const
+void RequestServiceTimer::dump( ostream &strm ) const
 {
     strm << BESIndent::LMarg << "RequestServiceTimer::dump - ("
          << (void *)this << ")" << endl ;
