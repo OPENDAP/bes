@@ -491,6 +491,8 @@ add_executable(bes
     dispatch/ShowNodeResponseHandler.h
     dispatch/TheBESKeys.cc
     dispatch/TheBESKeys.h
+	dispatch/RequestServiceTimer.cc
+	dispatch/RequestServiceTimer.h
 
     http/AllowedHosts.cc
     http/AllowedHosts.h

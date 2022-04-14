@@ -37,6 +37,7 @@
 #include <map>
 #include <string>
 #include <mutex>
+#include <chrono>
 
 #include "sys/time.h"
 #include "sys/resource.h"
@@ -46,102 +47,47 @@
 
 #include "BESObj.h"
 
-#define TIMING_LOG_KEY "timing"
-#define MISSING_LOG_PARAM ""
-
 /** @brief The master request service timer for this server; a singleton
  *
  */
+#define DEFAULT_BES_TIMEOUT_SECONDS 600
+
 class RequestServiceTimer : public BESObj{
 private:
     static RequestServiceTimer *d_instance;
-    mutable std::recursive_mutex d_cache_lock_mutex;
+    mutable std::recursive_mutex d_rst_lock_mutex;
 
-    std::string d_timer_name;
-    std::string d_req_id;
-    std::string d_log_name;
-    bool d_started ;
-    bool d_stopped ;
+    std::chrono::duration<int> bes_timeout;
+    std::chrono::steady_clock::time_point start_time;
+    bool timeout_enabled;
+    bool is_started;
 
-    struct timeval d_start_usage;
-    struct timeval d_stop_usage;
-    struct timeval d_result;
+     explicit RequestServiceTimer():
+            bes_timeout(std::chrono::seconds(DEFAULT_BES_TIMEOUT_SECONDS)),
+            is_started(false),
+            timeout_enabled(false),
+            start_time(std::chrono::steady_clock::now()) {
+    }
 
-    unsigned long int d_duration;
-    bool d_timeout_enabled;
-
-    static void initialize_instance();
     static void delete_instance();
-
-    bool get_time_of_day(struct timeval &time_val);
-
-    unsigned long int get_elapsed_us();
-    unsigned long int get_start_us();
-    unsigned long int get_stop_us();
+    static void initialize_instance();
 
 public:
-    /**
-     * Makes a new BESStopWatch with a logName of TIMING_LOG_KEY
-     */
-    RequestServiceTimer() : d_timer_name(MISSING_LOG_PARAM),
-                            d_req_id(MISSING_LOG_PARAM),
-                            d_log_name(TIMING_LOG_KEY),
-                            d_started(false),
-                            d_stopped(false),
-                            d_timeout_enabled(false)
-    {
-    }
-
-    /**
-     * Makes a new BESStopWatch.
-     *
-     * @param logName The name of the log to use in the logging output.
-     */
-    RequestServiceTimer(std::string logName) :  d_timer_name(MISSING_LOG_PARAM),
-                                                d_req_id(MISSING_LOG_PARAM),
-                                                d_log_name(logName),
-                                                d_started(false),
-                                                d_stopped(false),
-                                                d_timeout_enabled(false)
-    {
-    }
-
-    /**
-     * This destructor is "special" in that it's execution signals the
-     * timer to stop if it has been started. Stopping the timer will
-     * initiate an attempt to write logging information to the
-     * BESDebug::GetStrm() stream. If the start method has not been
-     * called then the method exits silently.
-     */
-    virtual ~RequestServiceTimer();
-
     static RequestServiceTimer *TheTimer();
 
-    unsigned long int remaining();
-    unsigned long int elapsed();
+    std::chrono::steady_clock::time_point start(int timeout_seconds);
 
-    bool isTimeoutEnabled();
-    void disableTimeout();
+    std::chrono::duration<int> elapsed() const;
 
-    /**
-     * Starts the timer.
-     * NB: This method will attempt to write logging
-     * information to the BESDebug::GetStrm() stream.
-     * @param name The name of the timer.
-     */
-    virtual bool		start(std::string name) ;
+    std::chrono::duration<int> remaining() const;
 
-    /**
-     * Starts the timer. NB: This method will attempt to write logging
-     * information to the BESDebug::GetStrm() stream. @param name The
-     * name of the timer.
-     *
-     * @param reqID The client's request ID associated with this
-     * activity. Available from the DataHandlerInterfact object.
-     */
-    virtual bool		start(std::string name, std::string reqID) ;
+    bool is_expired() const;
 
-    virtual void dump( std::ostream &strm ) const ;
+    void disable_timeout();
+
+    std::string dump() const ;
+
+    void dump( std::ostream &strm ) const ;
 
 };
 
