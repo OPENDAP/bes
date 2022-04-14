@@ -79,21 +79,6 @@
 
 using namespace std;
 
-// Global atomic<bool> variables used to communicate besTimeout state between
-// main and worker thread to replace SIGALRM handling in request handling.
-//
-// atomic<bool> ignoreBesTimeout is ONLY set by worker thread in BESUtil::conditional_timeout_cancel()
-// and ONLY read by main thread in BESInterface::execute_request() to disable besTimeout
-// once data transmission has begun, and conditional on BES.CancelTimeoutOnSend setting in bes.conf
-//
-// atomic>bool> besTimeoutExceeded is ONLY set by main thread in BESInterface::execute_request()
-// when the besTimeout has been exceeded and the worker thread has not yet returned and ignoreBesTimeout==false,
-// and ONLY read by the worker thread at various points during request handling to
-// determine if the worker thread should throw exception closing out current request handling
-// and communicating its actions to the olfs.  dan 4/7/22
-std::atomic<bool> ignoreBesTimeout;
-std::atomic<bool> besTimeoutExceeded;
-
 static jmp_buf timeout_jump;
 static bool timeout_jump_valid = false;
 
@@ -307,16 +292,6 @@ static void wait_for_timeout()
 }
 #endif
 
-/**
-* @brief A single argument wrapper for execute_data_request_plan() for use with std::async().
-* @param args A unique_ptr to an instance of .
-* @return True unless an exception is throw in which case neither true or false apply.
-*/
-void worker_data_request_plan_thread(const worker_data_request_plan_args &args)
-{
-    args.besInterface->execute_data_request_plan();
-}
-
 BESInterface::BESInterface(ostream *output_stream) :
     d_strm(output_stream), d_timeout_from_keys(0), d_dhi_ptr(0), d_transmitter(0)
 {
@@ -335,11 +310,6 @@ BESInterface::BESInterface(ostream *output_stream) :
         istringstream iss(timeout_key_value);
         iss >> d_timeout_from_keys;
     }
-
-    // Initialize global atomics for communication between main and worker thread
-    // operating in execute_request()
-    ignoreBesTimeout.store(false);
-    besTimeoutExceeded.store(false);
 
     // Install signal handler for alarm() here
     register_signal_handler();
@@ -488,70 +458,6 @@ int BESInterface::execute_request(const string &from)
 
         build_data_request_plan();
 
-        /************************************************************************/
-
-        // Set timeout? Use either the value from the keys or a context
-        bool found = false;
-        string context = BESContextManager::TheManager()->get_context("bes_timeout", found);
-        if (found) {
-            bes_timeout = strtol(context.c_str(), NULL, 10);
-            VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << "Set request timeout to " << bes_timeout << " seconds (from context)." << endl);
-        }
-        else if (d_timeout_from_keys != 0) {
-            bes_timeout = d_timeout_from_keys;
-            VERBOSE(d_dhi_ptr->data[REQUEST_FROM] << "Set request timeout to " << bes_timeout << " seconds (from keys)." << endl);
-        }
-
-#if 0
-        // Initialize atomic<bool> besTimeoutExceeded = false;
-        besTimeoutExceeded.store(false);
-
-        // Set atomic<bool> ignoreBesTimeout = true if the bes_timeout has not been set.
-        if (bes_timeout == 0) {
-            ignoreBesTimeout.store(true);   // timeout is disabled
-        }
-        else {
-            ignoreBesTimeout.store(false);  // worker thread responsible for disabling timeout
-        }
-
-        worker_data_request_plan_args args(this);
-        auto worker = std::async(std::launch::async, worker_data_request_plan_thread, args);
-        // auto worker = std::async(std::launch::async, &BESInterface::execute_data_request_plan, this);
-
-        // Set the maximum wait_for() time equal to bes_timeout, because the worker thread
-        // is launched using the launch::async policy wait_for() can only return ready or timeout
-        //
-        // If worker thread returns status::timeout check ignoreBesTimeout before
-        // storing true in besTimeoutExceeded. The worker thread polls besTimeoutExceeded and
-        // will commence returning once that has been set regardless of whether the worker thread
-        // had previously set ignoreBesTimeout. The worker thread will set ignoreBesTimeout when data
-        // streaming begins if BES.CancelTimeoutOnSend = true in bes.conf.
-#if 0 // for now...
-        if (worker.wait_for(chrono::seconds(bes_timeout)) == std::future_status::timeout) {
-
-            // If the worker thread has exceeded the bes_timeout AND ignoreBesTimeout
-            // is false set the timeout flag for the worker thread to see AND wait_for()
-            // one additional minute for the worker thread to return ready.
-            if (!ignoreBesTimeout.load()) {
-                besTimeoutExceeded.store(true);
-
-                if (worker.wait_for(chrono::seconds(60)) == std::future_status::timeout) {
-                    if (!ignoreBesTimeout.load()) { // check again if data started streaming while waiting
-                        throw BESInternalError("The std::future has failed!", __FILE__, __LINE__);
-                    }
-                }
-            }
-        }
-#endif
-
-        // The worker must be READY or the timeout disabled to get here.
-        worker.get();
-
-        // if worker has thrown an exception it will be rethrown and main needs to deal with it.
-
-        /************************************************************************/
-
-
         // This method does two key things: Calls the request handler to make a
         // 'response object' (the C++ object that will hold the response) and
         // then calls the transmitter to actually send it or build and send it.
@@ -559,7 +465,6 @@ int BESInterface::execute_request(const string &from)
         // The timeout is also set in execute_data_request_plan(). The alarm signal
         // handler (above), run when the timeout expires, will call longjmp with a
         // return value of 1.
-#else
         if (setjmp(timeout_jump) == 0) {
             timeout_jump_valid = true;
 
@@ -600,7 +505,6 @@ int BESInterface::execute_request(const string &from)
             BESDEBUG("bes", oss.str() << endl );
             throw BESTimeoutError(oss.str(), __FILE__, __LINE__);
         }
-#endif
 
         d_dhi_ptr->executed = true;
     }
