@@ -488,7 +488,6 @@ int BESInterface::execute_request(const string &from)
 
             std::chrono::steady_clock::time_point start_time = RequestServiceTimer::TheTimer()->start(bes_timeout);
             BESDEBUG("request_timer",prolog << RequestServiceTimer::TheTimer()->dump() << endl);
-            cerr << "is_expired: " <<  (RequestServiceTimer::TheTimer()->is_expired()?"true ":"false ");
             execute_data_request_plan();
 
             // Only clear the timeout if it has been set.
