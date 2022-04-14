@@ -457,6 +457,7 @@ BESStopWatch::timeval_subtract()
 }
 
 #endif
+
 /** @brief dumps information about this object
  *
  * Displays the pointer value of this instance

@@ -5,7 +5,9 @@ AM_CPPFLAGS = -I$(top_srcdir)
 
 noinst_DATA = bes.conf
 
-CLEANFILES = bes.conf bes.log bes_serial.conf $(TESTSUITE) $(TESTSUITE_S3) $(srcdir)/package.m4
+CLEANFILES = bes.conf bes.log bes_serial.conf
+
+# Parallel make clean fail. jhrg 4/13/22 $(TESTSUITE) $(TESTSUITE_S3) $(srcdir)/package.m4
 
 EXTRA_DIST = contiguous chunked compact new_types s3 $(TESTSUITE) $(TESTSUITE).at \
 $(TESTSUITE_S3)  $(TESTSUITE_S3).at atlocal.in bes.conf.in bes_serial.conf.in \

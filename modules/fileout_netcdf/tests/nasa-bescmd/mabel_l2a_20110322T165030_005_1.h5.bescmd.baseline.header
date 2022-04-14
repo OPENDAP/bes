@@ -4,7 +4,7 @@ netcdf test {
 		:title = "MABEL HDF5 Data Granule" ;
 		:institution = "NASA Goddard Space Flight Center" ;
 		:source = "Aircraft Observations" ;
-		:history = "Described in Metadata group\000\000\000\000\nremoved date-timex mabel_l2a_20110322T165030_005_1.h5\n" ;
+		:history = "Described in Metadata group\000\nremoved date-timex mabel_l2a_20110322T165030_005_1.h5\n" ;
 		:references = "http://icesat.gsfc.nasa.gov/icesat2/data/mabel/mabel_docs.php" ;
 		:comment = "Please direct comments to David.W.Hancock@nasa.gov" ;
 		:Conventions = "CF-1.6" ;

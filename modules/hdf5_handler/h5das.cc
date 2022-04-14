@@ -82,7 +82,7 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
     for (hsize_t i = 0; i < nelems; i++) {
 
         // Query the length of object name.
-        oname_size = H5Lget_name_by_idx(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE, i, NULL, (size_t) DODS_NAMELEN,
+        oname_size = H5Lget_name_by_idx(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE, i, nullptr, (size_t) DODS_NAMELEN,
             H5P_DEFAULT);
 
         if (oname_size <= 0) {
@@ -341,7 +341,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
         // We have to handle variable length string differently. 
         if (H5Tis_variable_str(ty_id)) {
 
-            write_vlen_str_attrs(attr_id,ty_id,&attr_inst,NULL,attr_table_ptr,false);
+            write_vlen_str_attrs(attr_id,ty_id,&attr_inst,nullptr,attr_table_ptr,false);
 
 #if 0
             BESDEBUG("h5", "attribute name " << attr_name <<endl);
@@ -377,7 +377,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
                 onestring = *(char **) temp_bp;
 
                 // Change the C-style string to C++ STD string just for easy appending the attributes in DAP.
-                if (onestring != NULL) {
+                if (onestring != nullptr) {
                     string tempstring(onestring);
                     attr_table_ptr->append_attr(attr_name, dap_type, tempstring);
                 }
@@ -400,26 +400,21 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
         }
         else {
             vector<char> value;
-            // TODO: I think the second line is right. Will check this later. 
-            value.resize(attr_inst.need + sizeof(char));
-            //value.resize(attr_inst.need);
+            value.resize(attr_inst.need);
             BESDEBUG("h5", "arttr_inst.need=" << attr_inst.need << endl);
 
             hid_t memtype = H5Tget_native_type(ty_id, H5T_DIR_ASCEND);
             // Read HDF5 attribute data.
-            //if (H5Aread(attr_id, ty_id, (void *) (&value[0])) < 0) {
-            if (H5Aread(attr_id, memtype, (void *) (&value[0])) < 0) {
-                // value is deleted in the catch block below so
-                // shouldn't be deleted here. pwest Mar 18, 2009
+            if (H5Aread(attr_id, memtype, (void *) (&value[0])) < 0) 
                 throw InternalErr(__FILE__, __LINE__, "unable to read HDF5 attribute data");
-            }
+            
             H5Aclose(memtype);
 
             // For scalar data, just read data once.
             if (attr_inst.ndims == 0) {
                 for (int loc = 0; loc < (int) attr_inst.nelmts; loc++) {
                     print_rep = print_attr(ty_id, loc, &value[0]);
-                    if (print_rep.c_str() != NULL) {
+                    if (print_rep.c_str() != nullptr) {
                         attr_table_ptr->append_attr(attr_name, dap_type, print_rep.c_str());
                     }
                 }
@@ -447,7 +442,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
                 // tempvalue will be moved to the next value.
                 for (hsize_t temp_index = 0; temp_index < attr_inst.nelmts; temp_index++) {
                     print_rep = print_attr(ty_id, 0/*loc*/, tempvalue);
-                    if (print_rep.c_str() != NULL) {
+                    if (print_rep.c_str() != nullptr) {
                         attr_table_ptr->append_attr(attr_name, dap_type, print_rep.c_str());
                         tempvalue = tempvalue + elesize;
 
@@ -586,19 +581,20 @@ void get_softlink(DAS & das, hid_t pgroup, const char *gname, const string & ona
 
     // Get the link target information. We always return the link value in a string format.
 
-    char *buf = 0;
+    //char *buf = null;
     try {
-        buf = new char[(val_size + 1) * sizeof(char)];
+        //buf = new char[(val_size + 1) * sizeof(char)];
+        vector<char>buf((val_size + 1) * sizeof(char));
         // get link target name
-        if (H5Lget_val(pgroup, oname.c_str(), (void*) buf, val_size + 1, H5P_DEFAULT) < 0) {
-            delete[] buf;
+        if (H5Lget_val(pgroup, oname.c_str(), (void*) &buf[0], val_size + 1, H5P_DEFAULT) < 0) {
+            //delete[] buf;
             throw InternalErr(__FILE__, __LINE__, "unable to get link value");
         }
-        attr_softlink_ptr->append_attr(softlink_value_name, STRING, buf);
-        delete[] buf;
+        attr_softlink_ptr->append_attr(softlink_value_name, STRING, &buf[0]);
+        //delete[] buf;
     }
     catch (...) {
-        delete[] buf;
+        //delete[] buf;
         throw;
     }
 }
@@ -635,7 +631,7 @@ string get_hardlink(hid_t pgroup, const string & oname)
         string objno;
 
 #if (H5_VERS_MAJOR == 1 && ((H5_VERS_MINOR == 12) || (H5_VERS_MINOR == 13)))
-        char *obj_tok_str = NULL;
+        char *obj_tok_str = nullptr;
         if(H5Otoken_to_str(pgroup, &(obj_info.token), &obj_tok_str) <0) {
             throw InternalErr(__FILE__, __LINE__, "H5Otoken_to_str failed.");
         } 
@@ -677,7 +673,7 @@ void read_comments(DAS & das, const string & varname, hid_t oid)
 
     // Obtain the comment size
     int comment_size;
-    comment_size = (int) (H5Oget_comment(oid, NULL, 0));
+    comment_size = (int) (H5Oget_comment(oid, nullptr, 0));
     if (comment_size < 0) {
         throw InternalErr(__FILE__, __LINE__, "Could not retrieve the comment size.");
     }
@@ -723,7 +719,7 @@ void add_group_structure_info(DAS & das, const char *gname, char *oname, bool is
     string dap_notion(".");
     string::size_type pos = 1;
 
-    if (gname == NULL) {
+    if (gname == nullptr) {
         throw InternalErr(__FILE__, __LINE__, "The wrong HDF5 group name.");
     }
 
@@ -752,7 +748,7 @@ void add_group_structure_info(DAS & das, const char *gname, char *oname, bool is
     BESDEBUG("h5", full_path << endl);
     // TODO: Not sure if we need to create a table for each group. KY 2015-07-08
     AttrTable *at = das.get_table(full_path);
-    if (at == NULL) {
+    if (at == nullptr) {
         throw InternalErr(__FILE__, __LINE__,
             "Failed to add group structure information for " + full_path + " attribute table."
                 + "This happens when a group name has . character.");

@@ -42,6 +42,9 @@
 using namespace std;
 using namespace libdap;
 
+static int visit_obj_cb(hid_t  group_id, const char *name, const H5O_info_t *oinfo, void *_op_data);
+static herr_t attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *_op_data);
+
 BaseType *HDF5GMCFMissLLArray::ptr_duplicate()
 {
     return new HDF5GMCFMissLLArray(*this);
@@ -52,8 +55,8 @@ bool HDF5GMCFMissLLArray::read()
 
     BESDEBUG("h5", "Coming to HDF5GMCFMissLLArray read "<<endl);
 
-    if (NULL == HDF5RequestHandler::get_lrdata_mem_cache())
-        read_data_NOT_from_mem_cache(false, NULL);
+    if (nullptr == HDF5RequestHandler::get_lrdata_mem_cache())
+        read_data_NOT_from_mem_cache(false, nullptr);
 
     else {
 
@@ -93,7 +96,7 @@ bool HDF5GMCFMissLLArray::read()
             handle_data_with_mem_cache(dtype, total_elems, cache_flag, cache_key,false);
         }
         else
-            read_data_NOT_from_mem_cache(false, NULL);
+            read_data_NOT_from_mem_cache(false, nullptr);
     }
     return true;
 }
@@ -549,8 +552,8 @@ void HDF5GMCFMissLLArray::obtain_gpm_l3_new_grid_info(hid_t file,
    } attr_info_t;
 
    attr_info_t attr_na;
-   attr_na.name = NULL;
-   attr_na.value = NULL;
+   attr_na.name = nullptr;
+   attr_na.value = nullptr;
 
    herr_t ret_o= H5OVISIT(file, H5_INDEX_NAME, H5_ITER_INC, visit_obj_cb, (void*)&attr_na);
    if(ret_o < 0){
@@ -677,8 +680,8 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *_op_dat
     attr_info_t *op_data = (attr_info_t *)_op_data;
 
     // Attribute name is GridHeader
-    if(strstr(name,GPM_ATTR2_NAME)!=NULL)  {
-        hid_t attr, atype, aspace;  
+    if(strstr(name,GPM_ATTR2_NAME)!=nullptr)  {
+        hid_t attr, atype;  
         attr = H5Aopen(loc_id, name, H5P_DEFAULT);
         if(attr<0) 
             return -1;
@@ -719,12 +722,12 @@ attr_info(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *_op_dat
                     // There are two grids in the file. This "if clause" is for the second one.
                     if(strncmp(cur_attr_value,op_data->value,strlen(op_data->value))!=0) {
                         free(op_data->name);
-                        op_data->name = NULL;
+                        op_data->name = nullptr;
                         op_data->name = (char*)malloc(strlen(name)+1);
                         strncpy(op_data->name,name,strlen(name));
                         if(op_data->value)
                             free(op_data->value);
-                        op_data->value = NULL;
+                        op_data->value = nullptr;
                         op_data->value=(char*)malloc(num_elms+1);
                         strncpy(op_data->value,cur_attr_value,strlen(cur_attr_value));
                         ret = 1;
@@ -794,7 +797,7 @@ visit_obj_cb(hid_t  group_id, const char *name, const H5O_info_t *oinfo,
         grp = H5Gopen2(group_id,name,H5P_DEFAULT);
         if(grp < 0) 
             return -1;
-        ret = H5Aiterate2(grp, H5_INDEX_NAME, H5_ITER_INC, NULL, attr_info, op_data);
+        ret = H5Aiterate2(grp, H5_INDEX_NAME, H5_ITER_INC, nullptr, attr_info, op_data);
 #if 0
     if(ret > 0) {
     printf("object: attr name is %s\n",op_data->name);

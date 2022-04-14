@@ -33,24 +33,11 @@
 
 #include "config.h"
 
-#include <unistd.h>
 #include <getopt.h>
-#include <signal.h>
 
 #include <iostream>
 #include <string>
 #include <vector>
-#include <fstream>
-
-using std::cout;
-using std::cerr;
-using std::endl;
-using std::flush;
-using std::string;
-using std::vector;
-using std::ofstream;
-using std::ostream;
-using std::ifstream;
 
 #include "StandAloneApp.h"
 #include "StandAloneClient.h"
@@ -59,16 +46,12 @@ using std::ifstream;
 #include "BESDefaultModule.h"
 #include "BESXMLDefaultCommands.h"
 #include "TheBESKeys.h"
-#include "BESCatalogUtils.h"
 #include "CmdTranslation.h"
 
 #define MODULE "standalone"
 #define prolog string("StandAloneApp::").append(__func__).append("() - ")
 
-StandAloneApp::StandAloneApp() :
-    BESModuleApp(), _cmd(""), _outputStrm(0),  _repeat(0)
-{
-}
+using namespace std;
 
 StandAloneApp::~StandAloneApp()
 {
@@ -105,14 +88,6 @@ int StandAloneApp::initialize(int argc, char **argv)
 {
     CmdTranslation::initialize(argc, argv);
 
-    string outputStr = "";
-//    string inputStr = "";
-    string repeatStr = "";
-
-    bool badUsage = false;
-
-    int c;
-
     static struct option longopts[] = {
             {     "config", 1, 0, 'c' },
             {      "debug", 0, 0, 'd' },
@@ -124,58 +99,59 @@ int StandAloneApp::initialize(int argc, char **argv)
             {       "help", 0, 0, '?' },
             {            0, 0, 0,  0  }
     };
-    int option_index = 0;
 
+    string outputStr;
+    string repeatStr;
+    int option_index = 0;
+    int c;
     while ((c = getopt_long(argc, argv, "?vc:d:x:f:i:r:", longopts, &option_index)) != -1) {
         switch (c) {
-        case 'c':
-            TheBESKeys::ConfigFile = optarg;
-            break;
-        case 'd':
-            BESDebug::SetUp(optarg);
-            break;
-        case 'v': {
-            showVersion();
-            exit(0);
-        }
-            break;
-        case 'x':
-            _cmd = optarg;
-            break;
-        case 'f':
-            outputStr = optarg;
-            break;
-        case 'i':
-            _command_file_names.push_back(optarg);
-            break;
-        case 'r':
-            repeatStr = optarg;
-            break;
-        case '?': {
-            showUsage();
-            exit(0);
-        }
-            break;
+            case 'c':
+                TheBESKeys::ConfigFile = optarg;
+                break;
+            case 'd':
+                BESDebug::SetUp(optarg);
+                break;
+            case 'x':
+                _cmd = optarg;
+                break;
+            case 'f':
+                outputStr = optarg;
+                break;
+            case 'i':
+                _command_file_names.emplace_back(optarg);
+                break;
+            case 'r':
+                repeatStr = optarg;
+                break;
+            case 'v':
+                showVersion();
+                exit(0);
+            case '?':
+            default:
+                showUsage();
+                exit(0);
         }
     }
 
-    if (outputStr != "") {
-        if (_cmd == "" && _command_file_names.empty()) {
+    bool badUsage = false;
+    if (!outputStr.empty()) {
+        if (_cmd.empty() && _command_file_names.empty()) {
             cerr << "When specifying an output file you must either specify a command or an input file" << endl;
             badUsage = true;
         }
-        else if (_cmd != "" &&  !_command_file_names.empty()) {
+        else if (!_cmd.empty() &&  !_command_file_names.empty()) {
             cerr << "You must specify either a command or an input file on the command line, not both" << endl;
             badUsage = true;
         }
     }
 
-    if (badUsage == true) {
+    if (badUsage) {
         showUsage();
         return 1;
     }
 
-    if (outputStr != "") {
+    if (!outputStr.empty()) {
         _outputStrm = new ofstream(outputStr.c_str());
         if (!(*_outputStrm)) {
             cerr << "could not open the output file " << outputStr << endl;
@@ -194,7 +170,7 @@ int StandAloneApp::initialize(int argc, char **argv)
         }
     }
 
-    if (badUsage == true) {
+    if (badUsage) {
         showUsage();
         return 1;
     }
@@ -248,16 +224,15 @@ int StandAloneApp::run()
     }
 
     try {
-        if (_cmd != "") {
+        if (!_cmd.empty()) {
             sac.executeCommands(_cmd, _repeat);
         }
         else if (!_command_file_names.empty()) {
             BESDEBUG(MODULE, prolog << "Found " << _command_file_names.size() << " command files." << endl);
-            for(unsigned index=0; index<_command_file_names.size(); index++){
-                string command_filename = _command_file_names[index];
+            for (auto &command_filename: _command_file_names) {
                 BESDEBUG(MODULE, prolog << "Processing BES command file: " << command_filename<< endl);
                 if (!command_filename.empty()) {
-                    ifstream cmdStrm(command_filename.c_str());
+                    ifstream cmdStrm(command_filename);
                     if (!cmdStrm.is_open()) {
                         cerr << prolog << "FAILED to open the input file '" << command_filename << "' SKIPPING." << endl;
                     }

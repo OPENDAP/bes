@@ -42,11 +42,13 @@
 
 class BESUtil {
 private:
-    static std::string rfc822_date(const time_t t);
+    static std::string rfc822_date(time_t t);
 
     static std::string entity(char c);
 
 public:
+    static long get_current_memory_usage() noexcept;
+
     static void trim_if_trailing_slash(std::string &value);
     static void trim_if_surrounding_quotes(std::string &value);
 

@@ -126,7 +126,7 @@ bool depth_first(hid_t pid, char *gname,  D4Group* par_grp, const char *fname)
 
         // Query the length of object name.
         oname_size =
- 	    H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,NULL,
+ 	    H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,nullptr,
                 (size_t)DODS_NAMELEN, H5P_DEFAULT);
         if (oname_size <= 0) {
             string msg = "h5_dmr handler: Error getting the size of the hdf5 object from the group: ";
@@ -203,13 +203,13 @@ bool depth_first(hid_t pid, char *gname,  D4Group* par_grp, const char *fname)
                 string grp_name = string(oname.begin(),oname.end()-1);
 
                 // Check the hard link loop and break the loop if it exists.
-		string oid = get_hardlink_dmr(cgroup, full_path_name.c_str());
+                string oid = get_hardlink_dmr(cgroup, full_path_name.c_str());
                 if (oid == "") {
                     try {
                         D4Group* tem_d4_cgroup = new D4Group(grp_name);
                         // Map the HDF5 cgroup attributes to DAP4 group attributes.
                         // Note the last flag of map_h5_attrs_to_dap4 must be 0 for the group attribute mapping.
-                        map_h5_attrs_to_dap4(cgroup,tem_d4_cgroup,NULL,NULL,0);
+                        map_h5_attrs_to_dap4(cgroup,tem_d4_cgroup,nullptr,nullptr,0);
 
                         // Add this new DAP4 group 
                         par_grp->add_group_nocopy(tem_d4_cgroup);
@@ -295,7 +295,7 @@ bool depth_first(hid_t pid, char *gname,  D4Group* par_grp, const char *fname)
 }
 #endif
 //////////////////////////////////////////////////////////////////////////////////////////
-/// bool breadth_first(const hid_t file_id,hid_t pid, char *gname, DMR & dmr, D4Group* par_grp, const char *fname,bool use_dimscale, vector <link_info_t> & hdf5_hls)
+/// bool breadth_first(const hid_t file_id,hid_t pid, const char *gname, DMR & dmr, D4Group* par_grp, const char *fname,bool use_dimscale, vector <link_info_t> & hdf5_hls)
 /// \param file_id file_id(this is necessary for searching the hardlinks of a dataset)
 /// \param pid group id
 /// \param gname group name (the absolute path from the root group)
@@ -318,7 +318,7 @@ bool depth_first(hid_t pid, char *gname,  D4Group* par_grp, const char *fname)
 // The reason to use breadth_first is that the DMR representation needs to show the dimension names and the variables under the group first and then the group names.
 // So we use this search. In the future, we may just use the breadth_first search for all cases.?? 
 //bool breadth_first(hid_t pid, char *gname, DMR & dmr, D4Group* par_grp, const char *fname,bool use_dimscale)
-bool breadth_first(const hid_t file_id, hid_t pid, char *gname, D4Group* par_grp, const char *fname,bool use_dimscale,vector<link_info_t> & hdf5_hls )
+bool breadth_first(const hid_t file_id, hid_t pid, const char *gname, D4Group* par_grp, const char *fname,bool use_dimscale,vector<link_info_t> & hdf5_hls )
 {
     BESDEBUG("h5",
         ">breadth_first() for dmr " 
@@ -351,7 +351,7 @@ bool breadth_first(const hid_t file_id, hid_t pid, char *gname, D4Group* par_grp
 
         // Query the length of object name.
         oname_size =
-        H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,NULL,
+        H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,nullptr,
                 (size_t)DODS_NAMELEN, H5P_DEFAULT);
         if (oname_size <= 0) {
             string msg = "h5_dmr handler: Error getting the size of the hdf5 object from the group: ";
@@ -443,7 +443,7 @@ bool breadth_first(const hid_t file_id, hid_t pid, char *gname, D4Group* par_grp
                 D4Dimensions *d4_dims = par_grp->dims();
                 string d4dim_name = string(oname.begin(),oname.end()-1);   
                 D4Dimension *d4_dim = d4_dims->find_dim(d4dim_name);
-                if(d4_dim == NULL) {
+                if(d4_dim == nullptr) {
                     d4_dim = new D4Dimension(d4dim_name,dt_inst.nelmts);
                     d4_dims->add_dim_nocopy(d4_dim);
                 }
@@ -457,7 +457,7 @@ bool breadth_first(const hid_t file_id, hid_t pid, char *gname, D4Group* par_grp
     }
    
     // The attributes of this group. Doing this order to follow ncdump's way (variable,attribute then groups)
-    map_h5_attrs_to_dap4(pid,par_grp,NULL,NULL,0);
+    map_h5_attrs_to_dap4(pid,par_grp,nullptr,nullptr,0);
 
     // Then HDF5 child groups
     for (hsize_t i = 0; i < nelems; i++) {
@@ -466,7 +466,7 @@ bool breadth_first(const hid_t file_id, hid_t pid, char *gname, D4Group* par_grp
 
         // Query the length of object name.
         oname_size =
-        H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,NULL,
+        H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,nullptr,
                 (size_t)DODS_NAMELEN, H5P_DEFAULT);
         if (oname_size <= 0) {
             string msg = "h5_dmr handler: Error getting the size of the hdf5 object from the group: ";
@@ -534,7 +534,7 @@ bool breadth_first(const hid_t file_id, hid_t pid, char *gname, D4Group* par_grp
                 throw InternalErr(__FILE__, __LINE__, "h5_dmr handler: H5Gopen() failed.");
             }
 
-            string grp_name = string(oname.begin(),oname.end()-1);
+            auto grp_name = string(oname.begin(),oname.end()-1);
 
             // Check the hard link loop and break the loop if it exists.
             string oid = get_hardlink_dmr(cgroup, full_path_name.c_str());
@@ -662,9 +662,9 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
         BaseType* new_var = d4_grp->var(bt->name());
         if(new_var){
             // Map the HDF5 dataset attributes to DAP4
-            map_h5_attrs_to_dap4(dset_id,NULL,new_var,NULL,1);
+            map_h5_attrs_to_dap4(dset_id,nullptr,new_var,nullptr,1);
             // If this variable is a hardlink, stores the HARDLINK info. as an attribute.
-            map_h5_dset_hardlink_to_d4(dset_id,varname,new_var,NULL,1);
+            map_h5_dset_hardlink_to_d4(dset_id,varname,new_var,nullptr,1);
         }
         delete bt; 
         bt = 0;
@@ -714,7 +714,7 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
         }
 
         // We need to transform dimension info. to DAP4 group
-        BaseType* new_var = NULL;
+        BaseType* new_var = nullptr;
         try {
             new_var = ar->h5dims_transform_to_dap4(d4_grp,dt_inst.dimnames_path);
         }
@@ -727,10 +727,10 @@ read_objects_base_type(D4Group * d4_grp,const string & varname,
         dt_inst.dimnames_path.clear();
 
         // Map HDF5 dataset attributes to DAP4
-        map_h5_attrs_to_dap4(dset_id,NULL,new_var,NULL,1);
+        map_h5_attrs_to_dap4(dset_id,nullptr,new_var,nullptr,1);
 
         // If this is a hardlink, map the Hardlink info. as an DAP4 attribute.
-        map_h5_dset_hardlink_to_d4(dset_id,varname,new_var,NULL,1);
+        map_h5_dset_hardlink_to_d4(dset_id,varname,new_var,nullptr,1);
 #if 0
         // Test the attribute
         D4Attribute *test_attr = new D4Attribute("DAP4_test",attr_str_c);
@@ -822,10 +822,10 @@ read_objects_structure(D4Group *d4_grp, const string & varname,
             dt_inst.dimnames_path.clear();
 
             // Map HDF5 dataset attributes to DAP4
-            map_h5_attrs_to_dap4(dset_id,NULL,new_var,NULL,1);
+            map_h5_attrs_to_dap4(dset_id,nullptr,new_var,nullptr,1);
 
             // If this is a hardlink, map the Hardlink info. as an DAP4 attribute.
-            map_h5_dset_hardlink_to_d4(dset_id,varname,new_var,NULL,1);
+            map_h5_dset_hardlink_to_d4(dset_id,varname,new_var,nullptr,1);
 
             // Add this var to DAP4 group
             if(new_var) 
@@ -835,8 +835,8 @@ read_objects_structure(D4Group *d4_grp, const string & varname,
         else {// A scalar structure
 
             structure->set_is_dap4(true);
-            map_h5_attrs_to_dap4(dset_id,NULL,NULL,structure,2);
-            map_h5_dset_hardlink_to_d4(dset_id,varname,NULL,structure,2);
+            map_h5_attrs_to_dap4(dset_id,nullptr,nullptr,structure,2);
+            map_h5_dset_hardlink_to_d4(dset_id,varname,nullptr,structure,2);
             if(structure) 
                 d4_grp->add_var_nocopy(structure);
         }
@@ -853,11 +853,11 @@ read_objects_structure(D4Group *d4_grp, const string & varname,
 ///// Map HDF5 attributes to DAP4 
 ///// 
 /////    \param h5_objid  HDF5 object ID(either group or dataset)
-/////    \param d4g DAP4 group if the object is group, flag must be 0 if d4_grp is not NULL.
+/////    \param d4g DAP4 group if the object is group, flag must be 0 if d4_grp is not nullptr.
 /////    \param d4b DAP BaseType if the object is dataset and the datatype of the object is atomic datatype.  
-/////               The flag must be 1 if d4b is not NULL.
+/////               The flag must be 1 if d4b is not nullptr.
 /////    \param d4s DAP Structure if the object is dataset and the datatype of the object is compound. 
-/////               The flag must be 2 if d4s is not NULL.
+/////               The flag must be 2 if d4s is not nullptr.
 ////     \param flag flag to determine what kind of objects to map. The value must be 0,1 or 2.
 /////    \throw error a string of error message to the dods interface. 
 /////////////////////////////////////////////////////////////////////////////////
@@ -929,13 +929,13 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
 
         // We have to handle variable length string differently. 
         if (H5Tis_variable_str(ty_id)) { 
-            write_vlen_str_attrs(attr_id,ty_id,&attr_inst,d4_attr,NULL,true);
+            write_vlen_str_attrs(attr_id,ty_id,&attr_inst,d4_attr,nullptr,true);
         }// if (H5Tis_variable_str(ty_id)
         else {
 
             vector<char> value;
-            value.resize(attr_inst.need + sizeof(char));
-            //value.resize(attr_inst.need);
+            //value.resize(attr_inst.need + sizeof(char));
+            value.resize(attr_inst.need);
             BESDEBUG("h5", "arttr_inst.need=" << attr_inst.need << endl);
   
             // Need to obtain the memtype since we still find BE data.
@@ -951,7 +951,7 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
             if (attr_inst.ndims == 0) {
                 for (int loc = 0; loc < (int) attr_inst.nelmts; loc++) {
                     print_rep = print_attr(ty_id, loc, &value[0]);
-                    if (print_rep.c_str() != NULL) {
+                    if (print_rep.c_str() != nullptr) {
                         d4_attr->add_value(print_rep);
                     }
                 }
@@ -977,7 +977,7 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
                 for( hsize_t temp_index = 0; temp_index < attr_inst.nelmts; temp_index ++) {
                      //print_rep = print_attr(ty_id, 0, (void*)&value[0]);
                      print_rep = print_attr(ty_id, 0, tempvalue);
-                    if (print_rep.c_str() != NULL) {
+                    if (print_rep.c_str() != nullptr) {
 
                         BESDEBUG("h5", "print_rep= " << print_rep << endl);
 
@@ -1034,9 +1034,9 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
 /////    \param h5_dsetid  HDF5 dataset ID
 /////    \param full_path  full_path of the HDF5 dataset
 /////    \param d4b DAP BaseType if the object is dataset and the datatype of the object is atomic datatype.  
-/////               The flag must be 1 if d4b is not NULL.
+/////               The flag must be 1 if d4b is not nullptr.
 /////    \param d4s DAP Structure if the object is dataset and the datatype of the object is compound. 
-/////               The flag must be 2 if d4s is not NULL.
+/////               The flag must be 2 if d4s is not nullptr.
 ////     \param flag flag to determine what kind of objects to map. The value must be 1 or 2.
 /////    \throw error a string of error message to the dods interface. 
 /////////////////////////////////////////////////////////////////////////////////
@@ -1102,7 +1102,7 @@ void get_softlink(D4Group* par_grp, hid_t h5obj_id,  const string & oname, int i
     string softlink_value_name ="LINKTARGET";
    
     // Get the link target information. We always return the link value in a string format.
-    D4Attribute *softlink_tgt = 0;
+    D4Attribute *softlink_tgt = nullptr;
 
     try {
         vector<char> buf;
@@ -1113,7 +1113,7 @@ void get_softlink(D4Group* par_grp, hid_t h5obj_id,  const string & oname, int i
             throw InternalErr(__FILE__, __LINE__, "unable to get link value");
         }
         softlink_tgt = new D4Attribute(softlink_value_name, attr_str_c);
-        string link_target_name = string(buf.begin(), buf.end());
+        auto link_target_name = string(buf.begin(), buf.end());
         softlink_tgt->add_value(link_target_name);
 
         d4_slinfo->attributes()->add_attribute_nocopy(softlink_tgt);
@@ -1158,7 +1158,7 @@ string get_hardlink_dmr( hid_t h5obj_id, const string & oname) {
         string objno;
 
 #if (H5_VERS_MAJOR == 1 && ((H5_VERS_MINOR == 12) || (H5_VERS_MINOR == 13)))
-        char *obj_tok_str = NULL;
+        char *obj_tok_str = nullptr;
         if(H5Otoken_to_str(h5obj_id, &(obj_info.token), &obj_tok_str) <0) {
             throw InternalErr(__FILE__, __LINE__, "H5Otoken_to_str failed.");
         } 

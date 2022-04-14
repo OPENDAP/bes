@@ -55,7 +55,7 @@ bool HDF5GMCFFillIndexArray::read()
 
     BESDEBUG("h5","Coming to HDF5GMCFFillIndexArray read "<<endl);
 
-    read_data_NOT_from_mem_cache(false,NULL);
+    read_data_NOT_from_mem_cache(false,nullptr);
 
     return true;
 }

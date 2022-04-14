@@ -821,7 +821,7 @@ Attributes {
     }
     Metadata_ActualGoodRetrievals {
         String Shape "Scalar";
-        String Description "Actual number of reported retrievals with a "Good" quality flag";
+        String Description "Actual number of reported retrievals with a \"Good\" quality flag";
         String Type "Signed32";
         String origname "ActualGoodRetrievals";
         String fullnamepath "/Metadata/ActualGoodRetrievals";
@@ -1310,7 +1310,7 @@ Attributes {
         Int16 Minimum -2;
         Int16 Maximum 3;
         String Shape "Retrieval_Array";
-        String Description "Cloud flag derived from IMAP-DOAS algorithm:  -2 - 'Measurement unusable', -1 - 'Did not converge', 0 - "Definitely cloudy', 1 - 'Probably cloudy', 2 - 'Probably clear', 3 - 'Very clear', all other values undefined.";
+        String Description "Cloud flag derived from IMAP-DOAS algorithm:  -2 - 'Measurement unusable', -1 - 'Did not converge', 0 - \"Definitely cloudy', 1 - 'Probably cloudy', 2 - 'Probably clear', 3 - 'Very clear', all other values undefined.";
         String Type "Signed8";
         String origname "cloud_flag_idp";
         String fullnamepath "/PreprocessingResults/cloud_flag_idp";

@@ -258,7 +258,7 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
             int32 sdfd    = -1;
             int32 fileid  = -1;
 
-            HDFSP::File *h4file = NULL;
+            HDFSP::File *h4file = nullptr;
 
             // Obtain HDF4 file IDs
             //SDstart
@@ -284,7 +284,7 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
 
             int32 gridfd  = -1;
             int32 swathfd = -1;
-            HDFEOS2::File *eosfile = NULL;
+            HDFEOS2::File *eosfile = nullptr;
             // Obtain HDF-EOS2 file IDs  with the file open APIs. 
             
             // Grid open 
@@ -327,7 +327,7 @@ cerr<<"Don't output ecs metadata "<<endl;
                 //throw InternalErr(__FILE__,__LINE__,"read_das_use_eos2lib error");
 #endif
             }
-            if(eosfile != NULL)
+            if(eosfile != nullptr)
                 delete eosfile;
             GDclose(gridfd);
             SWclose(swathfd);
@@ -405,7 +405,7 @@ bool HDF4RequestHandler::hdf4_build_dds(BESDataHandlerInterface & dhi) {
 // This is for the performance check. Leave it now for future use. KY 2014-10-23
 #ifdef KENT2
 struct timeval start_time,end_time;
-gettimeofday(&start_time,NULL);
+gettimeofday(&start_time,nullptr);
 #endif
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
@@ -431,7 +431,7 @@ gettimeofday(&start_time,NULL);
 
             int32 sdfd   = -1;
             int32 fileid = -1;
-            HDFSP::File *h4file = NULL;
+            HDFSP::File *h4file = nullptr;
 
             // Obtain HDF4 file IDs
             //SDstart
@@ -458,7 +458,7 @@ gettimeofday(&start_time,NULL);
             int32 gridfd  = -1;
             int32 swathfd = -1;
  
-            HDFEOS2::File *eosfile = NULL;
+            HDFEOS2::File *eosfile = nullptr;
 
             // Obtain HDF-EOS2 file IDs  with the file open APIs. 
             // Grid open 
@@ -497,7 +497,7 @@ gettimeofday(&start_time,NULL);
                 throw;
             }
 
-            if(eosfile != NULL)
+            if(eosfile != nullptr)
                 delete eosfile;
 
             GDclose(gridfd);
@@ -527,7 +527,7 @@ gettimeofday(&start_time,NULL);
 
 // Leave it for future performance tests. KY 2014-10-23
 #ifdef KENT2
-gettimeofday(&end_time,NULL);
+gettimeofday(&end_time,nullptr);
 int total_time_spent = (end_time.tv_sec - start_time.tv_sec)*1000000 +end_time.tv_usec-start_time.tv_usec;
 cerr<<"total time spent for DDS buld is "<<total_time_spent<< "micro seconds "<<endl;
 #endif
@@ -628,7 +628,7 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
 
         if (true == _usecf) {
 
-             HDFSP::File *h4file = NULL;
+             HDFSP::File *h4file = nullptr;
 
             // Obtain HDF4 file IDs
             //SDstart
@@ -655,7 +655,7 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
 
             int32 gridfd  = -1;
             int32 swathfd = -1;
-            HDFEOS2::File *eosfile = NULL;
+            HDFEOS2::File *eosfile = nullptr;
             // Obtain HDF-EOS2 file IDs  with the file open APIs. 
             
             // Grid open 
@@ -708,7 +708,7 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
                 throw;
             }
 
-            if(eosfile != NULL)
+            if(eosfile != nullptr)
                 delete eosfile;
             GDclose(gridfd);
             SWclose(swathfd);
@@ -768,11 +768,11 @@ bool HDF4RequestHandler::hdf4_build_data_with_IDs(BESDataHandlerInterface & dhi)
 
     int32 sdfd   = -1;
     int32 fileid = -1;
-    HDFSP::File *h4file = NULL;
+    HDFSP::File *h4file = nullptr;
 #ifdef USE_HDFEOS2_LIB
     int32 gridfd  = -1;
     int32 swathfd = -1;
-    HDFEOS2::File *eosfile = NULL;
+    HDFEOS2::File *eosfile = nullptr;
 #endif
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
@@ -876,7 +876,7 @@ bool HDF4RequestHandler::hdf4_build_data_with_IDs(BESDataHandlerInterface & dhi)
         // Pass file pointer(h4file, eosfile) from DAS to DDS.
         read_dds_use_eos2lib(*hdds, accessed,sdfd,fileid,gridfd,swathfd,h4file,eosfile);
 
-        if(eosfile != NULL)
+        if(eosfile != nullptr)
             delete eosfile;
 
 #else
@@ -887,7 +887,7 @@ bool HDF4RequestHandler::hdf4_build_data_with_IDs(BESDataHandlerInterface & dhi)
         // Pass file pointer(h4file) from DAS to DDS.
         read_dds_hdfsp(*hdds, accessed,sdfd,fileid,h4file);
 #endif
-        if(h4file != NULL)
+        if(h4file != nullptr)
             delete h4file;
 
         Ancillary::read_ancillary_dds(*hdds, accessed);
@@ -939,7 +939,7 @@ bool HDF4RequestHandler::hdf4_build_data_with_IDs(BESDataHandlerInterface & dhi)
 bool HDF4RequestHandler::hdf4_build_dds_cf_sds(BESDataHandlerInterface &dhi){
 
     int32 sdfd   = -1;
-    HDFSP::File *h4file = NULL;
+    HDFSP::File *h4file = nullptr;
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESDDSResponse *bdds = dynamic_cast<BESDDSResponse *> (response);
@@ -1057,14 +1057,14 @@ bool HDF4RequestHandler::hdf4_build_dds_cf_sds(BESDataHandlerInterface &dhi){
 
         bdds->clear_container();
 
-        if(h4file != NULL)
+        if(h4file != nullptr)
             delete h4file;
 
         if(sdfd != -1)
             SDend(sdfd); 
 #if 0
         // Cannot(should not) delete factory here. factory will be released by DAP? or errors occur.
-        //if(factory != NULL)
+        //if(factory != nullptr)
         //    delete factory;
 #endif
 
@@ -1084,7 +1084,7 @@ bool HDF4RequestHandler::hdf4_build_dds_cf_sds(BESDataHandlerInterface &dhi){
     catch (...) {
         if(sdfd != -1)
             SDend(sdfd);
-        if(h4file != NULL)
+        if(h4file != nullptr)
             delete h4file;
         string s = "unknown exception caught building HDF4 DataDDS";
         throw BESDapError(s, true, unknown_error, __FILE__, __LINE__);
@@ -1098,7 +1098,7 @@ bool HDF4RequestHandler::hdf4_build_dds_cf_sds(BESDataHandlerInterface &dhi){
 bool HDF4RequestHandler::hdf4_build_das_cf_sds(BESDataHandlerInterface &dhi){
 
     int32 sdfd   = -1;
-    HDFSP::File *h4file = NULL;
+    HDFSP::File *h4file = nullptr;
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESDASResponse *bdas = dynamic_cast<BESDASResponse *> (response);
@@ -1180,7 +1180,7 @@ bool HDF4RequestHandler::hdf4_build_das_cf_sds(BESDataHandlerInterface &dhi){
 
         bdas->clear_container();
 
-        if(h4file != NULL)
+        if(h4file != nullptr)
             delete h4file;
 
         if(sdfd != -1)
@@ -1202,7 +1202,7 @@ bool HDF4RequestHandler::hdf4_build_das_cf_sds(BESDataHandlerInterface &dhi){
     catch (...) {
         if(sdfd != -1)
             SDend(sdfd);
-        if(h4file != NULL)
+        if(h4file != nullptr)
             delete h4file;
         string s = "unknown exception caught building HDF4 DataDDS";
         throw BESDapError(s, true, unknown_error, __FILE__, __LINE__);
@@ -1214,7 +1214,7 @@ bool HDF4RequestHandler::hdf4_build_das_cf_sds(BESDataHandlerInterface &dhi){
 bool HDF4RequestHandler::hdf4_build_data_cf_sds(BESDataHandlerInterface &dhi){
 
     int32 sdfd   = -1;
-    HDFSP::File *h4file = NULL;
+    HDFSP::File *h4file = nullptr;
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *> (response);
@@ -1321,7 +1321,7 @@ bool HDF4RequestHandler::hdf4_build_data_cf_sds(BESDataHandlerInterface &dhi){
 
         bdds->clear_container();
 
-        if(h4file != NULL)
+        if(h4file != nullptr)
             delete h4file;
 
         if(sdfd != -1)
@@ -1342,7 +1342,7 @@ bool HDF4RequestHandler::hdf4_build_data_cf_sds(BESDataHandlerInterface &dhi){
     catch (...) {
         if(sdfd != -1)
             SDend(sdfd);
-        if(h4file != NULL)
+        if(h4file != nullptr)
             delete h4file;
         string s = "unknown exception caught building HDF4 DataDDS";
         throw BESDapError(s, true, unknown_error, __FILE__, __LINE__);
@@ -1360,7 +1360,7 @@ bool HDF4RequestHandler::hdf4_build_data_cf_sds(BESDataHandlerInterface &dhi){
 bool HDF4RequestHandler::hdf4_build_data_cf_sds_with_IDs(BESDataHandlerInterface &dhi){
 
     int32 sdfd   = -1;
-    HDFSP::File *h4file = NULL;
+    HDFSP::File *h4file = nullptr;
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
     BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *> (response);
@@ -1418,7 +1418,7 @@ bool HDF4RequestHandler::hdf4_build_data_cf_sds_with_IDs(BESDataHandlerInterface
         // Pass file pointer(h4file, eosfile) from DAS to DDS.
         read_dds_sds(*hdds, accessed,sdfd,h4file,false);
 
-        if(h4file != NULL)
+        if(h4file != nullptr)
             delete h4file;
 
         Ancillary::read_ancillary_dds(*hdds, accessed);
@@ -1445,7 +1445,7 @@ bool HDF4RequestHandler::hdf4_build_data_cf_sds_with_IDs(BESDataHandlerInterface
     catch (...) {
         if(sdfd != -1)
             SDend(sdfd);
-        if(h4file != NULL)
+        if(h4file != nullptr)
             delete h4file;
         string s = "unknown exception caught building HDF4 DataDDS";
         throw BESDapError(s, true, unknown_error, __FILE__, __LINE__);
@@ -1490,7 +1490,7 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
 
         if (true == _usecf) {
 
-            HDFSP::File *h4file = NULL;
+            HDFSP::File *h4file = nullptr;
 
             // Obtain HDF4 file IDs
             //SDstart
@@ -1517,7 +1517,7 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
            int32 gridfd  = -1;
            int32 swathfd = -1;
 
-           HDFEOS2::File *eosfile = NULL;
+           HDFEOS2::File *eosfile = nullptr;
 
             // Obtain HDF-EOS2 file IDs  with the file open APIs. 
             // Grid open 
@@ -1575,7 +1575,7 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
                 close_fileid(sdfd,fileid,gridfd,swathfd,h4file,eosfile);
                 throw;
             }
-            if(eosfile != NULL)
+            if(eosfile != nullptr)
                 delete eosfile;
             GDclose(gridfd);
             SWclose(swathfd);
@@ -1678,7 +1678,7 @@ bool HDF4RequestHandler::hdf4_build_dmr_with_IDs(BESDataHandlerInterface & dhi) 
     int32 sdfd   = -1;
     int32 fileid = -1;
 
-    HDFSP::File *h4file = NULL;
+    HDFSP::File *h4file = nullptr;
 
     // Obtain HDF4 file IDs
     //SDstart
@@ -1706,7 +1706,7 @@ bool HDF4RequestHandler::hdf4_build_dmr_with_IDs(BESDataHandlerInterface & dhi) 
    int32 gridfd  = -1;
    int32 swathfd = -1;
 
-   HDFEOS2::File *eosfile = NULL;
+   HDFEOS2::File *eosfile = nullptr;
     // Obtain HDF-EOS2 file IDs  with the file open APIs. 
     // Grid open 
     gridfd = GDopen(const_cast < char *>(data_path.c_str()), DFACC_READ);
@@ -1764,7 +1764,7 @@ bool HDF4RequestHandler::hdf4_build_dmr_with_IDs(BESDataHandlerInterface & dhi) 
         close_fileid(sdfd,fileid,gridfd,swathfd,h4file,eosfile);
         throw;
     }
-    if(eosfile != NULL)
+    if(eosfile != nullptr)
         delete eosfile;
 
 #else
@@ -1780,7 +1780,7 @@ bool HDF4RequestHandler::hdf4_build_dmr_with_IDs(BESDataHandlerInterface & dhi) 
         throw;
     }
 #endif
-    if(h4file != NULL)
+    if(h4file != nullptr)
         delete h4file;
 
     Ancillary::read_ancillary_dds(dds, data_path);
@@ -1872,7 +1872,7 @@ bool HDF4RequestHandler::hdf4_build_version(BESDataHandlerInterface & dhi) {
 
 #ifdef USE_HDFEOS2_LIB
 void close_fileid(int sdfd, int fileid,int gridfd, int swathfd,HDFSP:: File* h4file, HDFEOS2::File*eosfile) {
-    if(h4file !=NULL)
+    if(h4file !=nullptr)
         delete h4file;
     if(sdfd != -1)
         SDend(sdfd);
@@ -1880,7 +1880,7 @@ void close_fileid(int sdfd, int fileid,int gridfd, int swathfd,HDFSP:: File* h4f
         Hclose(fileid);
 
 
-    if(eosfile !=NULL)
+    if(eosfile !=nullptr)
         delete eosfile;
     if(gridfd != -1)
         GDclose(gridfd);
@@ -1891,7 +1891,7 @@ void close_fileid(int sdfd, int fileid,int gridfd, int swathfd,HDFSP:: File* h4f
 #endif
 void close_hdf4_fileid(int sdfd, int fileid,HDFSP::File*h4file) {
 
-    if(h4file !=NULL)
+    if(h4file !=nullptr)
         delete h4file;
 
     if(sdfd != -1)
@@ -1906,14 +1906,14 @@ void close_hdf4_fileid(int sdfd, int fileid,HDFSP::File*h4file) {
 bool rw_das_cache_file(const string & filename, DAS *das_ptr,bool w_flag) {
 
     bool das_set_cache = false;
-    FILE *das_file = NULL;
+    FILE *das_file = nullptr;
     
     if(false == w_flag)  // open a cache file for reading.
         das_file = fopen(filename.c_str(),"r");
     else 
         das_file = fopen(filename.c_str(),"w");
 
-    if(NULL == das_file) {
+    if(nullptr == das_file) {
         if(ENOENT == errno) {
             // Since the das service always tries to read the data from a cache and if the cache file doesn't exist,
             // it will generates a cache file, so here we set a flag to indicate if a cache file needs to be generated.
@@ -1993,10 +1993,10 @@ bool rw_das_cache_file(const string & filename, DAS *das_ptr,bool w_flag) {
 bool r_dds_cache_file(const string & cache_filename, DDS *dds_ptr,const string & hdf4_filename) {
 
     bool dds_set_cache = false;
-    FILE *dds_file = NULL;
+    FILE *dds_file = nullptr;
     dds_file = fopen(cache_filename.c_str(),"rb");
 
-    if(NULL == dds_file) {
+    if(nullptr == dds_file) {
         if(ENOENT == errno) {
             // Since the das service always tries to read the data from a cache and if the cache file doesn't exist,
             // it is supposed that the handler should  generate a cache file, 
@@ -2090,7 +2090,7 @@ int get_cachekey_int(const string key) {
 #endif
 #if 0
 void test_func(HDFSP::File**h4file) {
-cerr<<"OK to pass pointer of a NULL pointer "<<endl;
+cerr<<"OK to pass pointer of a nullptr pointer "<<endl;
 
 }
 #endif

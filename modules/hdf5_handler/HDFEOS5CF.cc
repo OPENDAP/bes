@@ -500,13 +500,13 @@ void EOS5File::Handle_Unsupported_Others(bool include_attr)
             }
 #endif
             for (vector<Var *>::iterator irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
-                if (true == Check_DropLongStr((*irv), NULL)) {
+                if (true == Check_DropLongStr((*irv), nullptr)) {
                     string ecsmeta_grp = "/HDFEOS INFORMATION";
                     // Ignored ECS metadata should not be reported.
                     if ((*irv)->fullpath.find(ecsmeta_grp) != 0
                         || ((*irv)->fullpath.rfind("/") != ecsmeta_grp.size())) {
                         this->add_ignored_droplongstr_hdr();
-                        this->add_ignored_var_longstr_info((*irv), NULL);
+                        this->add_ignored_var_longstr_info((*irv), nullptr);
                     }
                 }
 #if 0
@@ -2335,7 +2335,7 @@ bool EOS5File::Handle_Single_Nonaugment_Grid_CVar_EOS5LatLon(EOS5CFGrid *cfgrid,
                 EOS5cvar->dtype = H5FLOAT32;
             }
 
-            Dimension* eos5cvar_dim = NULL;
+            Dimension* eos5cvar_dim = nullptr;
             if (EOS5cvar->rank == 2) {
                 eos5cvar_dim = new Dimension((hsize_t) cfgrid->ydimsize);
 #if 0
@@ -2926,7 +2926,7 @@ void EOS5File::Handle_Special_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, set<str
         string eos5_vc_attr_name = "VerticalCoordinate";
         string eos5_pre_attr_name = "Pressure";
         bool has_vc_attr = false;
-        Group *vc_group = NULL;
+        Group *vc_group = nullptr;
 
         // 1. Check if having the "VerticalCoordinate" attribute in this swath and the attribute is "Pressure".
         for (vector<Group *>::iterator irg = this->groups.begin(); irg != this->groups.end(); ++irg) {
@@ -4009,7 +4009,7 @@ void EOS5File::Handle_SpVar()
 
                                     //find the duplicate dimension name 
                                     string dup_var_name = (*irv2)->newname;
-                                    Replace_Var_Info((*ircv), (*irv2));
+                                    Replace_Var_Info_EOS((*ircv), (*irv2));
                                     // The following two lines are key to make sure duplicate CV
                                     //  using a different name but keep all other info.
                                     (*irv2)->newname = dup_var_name;
@@ -4065,7 +4065,7 @@ void EOS5File::Handle_SpVar()
                                             // Obtain the fake CV that has the duplicate dimension.
                                             if((*irv2)->cfdimname == (*itmm).second) {
                                                 string dup_var_name = (*irv2)->newname;
-                                                Replace_Var_Info((*ircv),(*irv2));
+                                                Replace_Var_Info_EOS((*ircv),(*irv2));
                                                 (*irv2)->newname = dup_var_name;
                                                 (*irv2)->getDimensions()[0]->newname = dup_var_name;
                                             }
@@ -4119,7 +4119,7 @@ void EOS5File::Handle_SpVar_Attr()
 
                                 // Obtain the fake CV that has the duplicate dimension.
                                 //if((*irv2)->cfdimname == (*ircv)->cfdimname) 
-                                if ((*irv2)->cfdimname == (*itmm).second) Replace_Var_Attrs((*ircv), (*irv2));
+                                if ((*irv2)->cfdimname == (*itmm).second) Replace_Var_Attrs_EOS((*ircv), (*irv2));
 
                             }
                         }
@@ -4166,10 +4166,10 @@ void EOS5File::Handle_SpVar_DMR()
                                 //if((*irv2)->cfdimname == (*ircv)->cfdimname) {
                                 if ((*irv2)->cfdimname == (*itmm).second) {
 
-                                    Replace_Var_Attrs((*ircv), (*irv2));
+                                    Replace_Var_Attrs_EOS((*ircv), (*irv2));
                                     //find the duplicate dimension name 
                                     string dup_var_name = (*irv2)->newname;
-                                    Replace_Var_Info((*ircv), (*irv2));
+                                    Replace_Var_Info_EOS((*ircv), (*irv2));
                                     
                                     // The following two lines are key to make sure duplicate CV
                                     //  using a different name but keep all other info.
@@ -4201,10 +4201,10 @@ void EOS5File::Handle_Grid_Mapping_Vars() {
 
 
 // Sometimes need to replace informaton of a variable with the information of another variable.
-void EOS5File::Replace_Var_Info(EOS5CVar *src, EOS5CVar*target)
+void EOS5File::Replace_Var_Info_EOS(EOS5CVar *src, EOS5CVar*target)
 {
 
-    BESDEBUG("h5", "Coming to Replace_Var_Info()"<<endl);
+    BESDEBUG("h5", "Coming to Replace_Var_Info_EOS()"<<endl);
     File::Replace_Var_Info(src, target);
     target->cfdimname = src->cfdimname;
     target->cvartype = src->cvartype;
@@ -4214,10 +4214,10 @@ void EOS5File::Replace_Var_Info(EOS5CVar *src, EOS5CVar*target)
 }
 
 //Sometimes the attributes of a variable need to replace with the attribute of another variable.
-void EOS5File::Replace_Var_Attrs(EOS5CVar *src, EOS5CVar*target)
+void EOS5File::Replace_Var_Attrs_EOS(EOS5CVar *src, EOS5CVar*target)
 {
 
-    BESDEBUG("h5", "Coming to Replace_Var_Attrs()"<<endl);
+    BESDEBUG("h5", "Coming to Replace_Var_Attrs_EOS()"<<endl);
     File::Replace_Var_Attrs(src, target);
 
 }

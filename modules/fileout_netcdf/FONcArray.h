@@ -116,7 +116,7 @@ public:
     virtual void define(int ncid) override;
     virtual void write(int ncid)override ;
 
-    virtual std::string name() override;
+    std::string name() override;
     virtual libdap::Array *array()
     {
         return d_a;

@@ -327,10 +327,10 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
     // MODIS level 1B reflectance and radiance fields have scale/offset arrays rather 
     // than one scale/offset value.
     // So we need to handle these fields specially.
-    float *reflectance_offsets =NULL;
-    float *reflectance_scales  =NULL;
-    float *radiance_offsets    =NULL;
-    float *radiance_scales     =NULL;
+    float *reflectance_offsets =nullptr;
+    float *reflectance_scales  =nullptr;
+    float *radiance_offsets    =nullptr;
+    float *radiance_scales     =nullptr;
 
     // Attribute datatype, reused for several attributes
     int32 attr_dtype = 0; 
@@ -1419,7 +1419,7 @@ cerr<<"tmp_rank 2 is "<<tmp_rank <<endl;
         bool special_case = false; \
         if(scale_factor_attr_index==FAIL) \
             if(num_eles_of_an_attr==1) \
-                if(radiance_scales!=NULL && radiance_offsets!=NULL) \
+                if(radiance_scales!=nullptr && radiance_offsets!=nullptr) \
                 { \
                     scale = radiance_scales[0]; \
                     field_offset = radiance_offsets[0];\
@@ -1450,7 +1450,7 @@ cerr<<"tmp_rank 2 is "<<tmp_rank <<endl;
             } \
             change_data_value = true; \
             set_value((dods_float32 *)&tmpval[0], nelms); \
-        } else 	if(num_eles_of_an_attr>1 && (radiance_scales!=NULL && radiance_offsets!=NULL) || (reflectance_scales!=NULL && reflectance_offsets!=NULL)) \
+        } else 	if(num_eles_of_an_attr>1 && (radiance_scales!=nullptr && radiance_offsets!=nullptr) || (reflectance_scales!=nullptr && reflectance_offsets!=nullptr)) \
         { \
             size_t dimindex=0; \
             if( num_eles_of_an_attr!=tmp_dims[dimindex]) \
@@ -1538,7 +1538,7 @@ cerr<<"tmp_rank 2 is "<<tmp_rank <<endl;
         bool special_case = false; \
         if(scale_factor_attr_index==FAIL) \
             if(num_eles_of_an_attr==1) \
-                if((radiance_scales!=NULL) && (radiance_offsets!=NULL)) \
+                if((radiance_scales!=nullptr) && (radiance_offsets!=nullptr)) \
                 { \
                     scale = radiance_scales[0]; \
                     field_offset = radiance_offsets[0];\
@@ -1573,7 +1573,7 @@ cerr<<"tmp_rank 2 is "<<tmp_rank <<endl;
             } \
             change_data_value = true; \
             set_value((dods_float32 *)&tmpval[0], nelms); \
-        } else 	if((num_eles_of_an_attr>1) && (((radiance_scales!=NULL) && (radiance_offsets!=NULL)) || ((reflectance_scales!=NULL) && (reflectance_offsets!=NULL)))) \
+        } else 	if((num_eles_of_an_attr>1) && (((radiance_scales!=nullptr) && (radiance_offsets!=nullptr)) || ((reflectance_scales!=nullptr) && (reflectance_offsets!=nullptr)))) \
         { \
             size_t dimindex=0; \
             if( num_eles_of_an_attr!=tmp_dims[dimindex]) \
@@ -1825,13 +1825,13 @@ if (r != 0) {
 
     release_mod1b_res(reflectance_scales,reflectance_offsets,radiance_scales,radiance_offsets);
 #if 0
-    if(reflectance_scales!=NULL)
+    if(reflectance_scales!=nullptr)
     {
         delete[] reflectance_offsets;
         delete[] reflectance_scales;
     }
 
-    if(radiance_scales!=NULL)
+    if(radiance_scales!=nullptr)
     {
         delete[] radiance_offsets;
         delete[] radiance_scales;
@@ -2143,13 +2143,13 @@ void HDFEOS2Array_RealField::release_mod1b_res(float*ref_scale,
                                                float*rad_scale,
                                                float*rad_offset) {
 
-    if(ref_scale != NULL)
+    if(ref_scale != nullptr)
         delete[] ref_scale;
-    if(ref_offset != NULL)
+    if(ref_offset != nullptr)
         delete[] ref_offset;
-    if(rad_scale != NULL)
+    if(rad_scale != nullptr)
         delete[] rad_scale;
-    if(rad_offset != NULL)
+    if(rad_offset != nullptr)
         delete[] rad_offset;
 
 }

@@ -102,7 +102,7 @@ hid_t get_attr_info(hid_t dset, int index, bool is_dap4, DSattr_t * attr_inst_pt
     }
 
     // Obtain the size of attribute name.
-    ssize_t name_size =  H5Aget_name(attrid, 0, NULL);
+    ssize_t name_size =  H5Aget_name(attrid, 0, nullptr);
     if (name_size < 0) {
         H5Aclose(attrid);
         string msg = "unable to obtain the size of the hdf5 attribute name ";
@@ -169,7 +169,7 @@ hid_t get_attr_info(hid_t dset, int index, bool is_dap4, DSattr_t * attr_inst_pt
 
     // Here we ignore netCDF-4 specific attributes for DAP4 to make filenetCDF-4 work
     if (true == is_dap4 && HDF5RequestHandler::get_default_handle_dimension() == true) {
-        // Remove the NULLTERM etc.
+        // Remove the nullptrTERM etc.
         string attr_name_str(attr_name.begin(),attr_name.end()-1);
         if(attr_name_str == "CLASS" || attr_name_str == "NAME" || attr_name_str == "_Netcdf4Dimid" 
            || attr_name_str == "_nc3_strict" || attr_name_str=="_NCProperties" || attr_name_str=="_Netcdf4Coordinates") {
@@ -213,12 +213,12 @@ hid_t get_attr_info(hid_t dset, int index, bool is_dap4, DSattr_t * attr_inst_pt
         throw InternalErr(__FILE__, __LINE__, msg);
     }
       
-    hsize_t size[DODS_MAX_RANK];
-    hsize_t maxsize[DODS_MAX_RANK];
+    vector<hsize_t> size(ndims);
+    vector<hsize_t> maxsize(ndims);
 
     //The HDF5 attribute should not have unlimited dimension,
     // maxsize is only a place holder.
-    if (H5Sget_simple_extent_dims(aspace_id, size, maxsize)<0){
+    if (H5Sget_simple_extent_dims(aspace_id, &size[0], &maxsize[0])<0){
         string msg = "cannot obtain the dim. info for the attribute ";
         string attrnamestr(attr_name.begin(),attr_name.end());
         msg += attrnamestr;
@@ -524,11 +524,11 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
-    hsize_t size[DODS_MAX_RANK];
-    hsize_t maxsize[DODS_MAX_RANK];
+    vector<hsize_t>size(ndims);
+    vector<hsize_t>maxsize(ndims);
 
     // Retrieve size. DAP4 doesn't have a convention to support multi-unlimited dimension yet.
-    if (H5Sget_simple_extent_dims(dspace, size, maxsize)<0){
+    if (H5Sget_simple_extent_dims(dspace, &size[0], &maxsize[0])<0){
         string msg = "cannot obtain the dim. info for the dataset ";
         msg += dname;
         H5Tclose(dtype);
@@ -682,11 +682,11 @@ void get_dataset_dmr(const hid_t file_id, hid_t pid, const string &dname, DS_t *
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
-    hsize_t size[DODS_MAX_RANK];
-    hsize_t maxsize[DODS_MAX_RANK];
+    vector<hsize_t>size(ndims);
+    vector<hsize_t>maxsize(ndims);
 
     // Retrieve size. DAP4 doesn't have a convention to support multi-unlimited dimension yet.
-    if (H5Sget_simple_extent_dims(dspace, size, maxsize)<0){
+    if (H5Sget_simple_extent_dims(dspace, &size[0], &maxsize[0])<0){
         string msg = "cannot obtain the dim. info for the dataset ";
         msg += dname;
         H5Tclose(dtype);
@@ -766,8 +766,8 @@ void get_dataset_dmr(const hid_t file_id, hid_t pid, const string &dname, DS_t *
                     dim_attr_mark[i] = 0;
 
             // This will check if "NAME" and "REFERENCE_LIST" exists.
-            //herr_t ret = H5Aiterate2(dset, H5_INDEX_NAME, H5_ITER_INC, NULL, attr_info, &dim_attr_mark[0]);
-            herr_t ret = H5Aiterate2(dset, H5_INDEX_NAME, H5_ITER_INC, NULL, attr_info_dimscale, dim_attr_mark);
+            //herr_t ret = H5Aiterate2(dset, H5_INDEX_NAME, H5_ITER_INC, nullptr, attr_info, &dim_attr_mark[0]);
+            herr_t ret = H5Aiterate2(dset, H5_INDEX_NAME, H5_ITER_INC, nullptr, attr_info_dimscale, dim_attr_mark);
             if(ret < 0) {
                 string msg = "cannot interate the attributes of the dataset ";
                 msg += dname;
@@ -857,8 +857,6 @@ bool check_h5str(hid_t h5type)
 /// \param loc    the number of array number
 /// \param sm_buf pointer to an attribute
 /// \return a string
-/// \todo Due to the priority of the handler work, this function will not be 
-/// \todo re-written in this re-engineering process. KY 2011-Nov. 14th
 ///////////////////////////////////////////////////////////////////////////////
 string print_attr(hid_t type, int loc, void *sm_buf) {
     union {
@@ -1015,11 +1013,25 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
             }
             BESDEBUG("h5", "=print_attr(): H5T_STRING sm_buf=" << (char *) sm_buf
                 << " size=" << str_size << endl);
-            char *buf = NULL;
+            // Not sure why the original code add 1 byte to the buffer, perhaps to keep the c-style? KY 2021-04-12
+#if 0
+            //rep.resize(str_size+1);
+#endif
+            rep.resize(str_size);
+            strncpy(&rep[0], (char *) sm_buf, str_size);
+
+            //Also should add the NULL term at the end. We just need the data in C++.
+#if 0
+            //rep[str_size] = '\0';
+#endif
+#if 0
+            char *buf = nullptr;
             // This try/catch block is here to protect the allocation of buf.
             try {
+
+                
                 buf = new char[str_size + 1];
-                strncpy(buf, (char *) sm_buf, str_size);
+                strncpy(&buf[0], (char *) sm_buf, str_size);
                 buf[str_size] = '\0';
                 // Not necessarily allocate 3 more bytes. 
                 rep.resize(str_size+3);
@@ -1031,6 +1043,7 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
                 if( buf ) delete[] buf;
                 throw;
             }
+#endif
             break;
         }
 
@@ -1042,7 +1055,7 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
     return rep_str;
 }
 
-D4AttributeType daptype_strrep_to_dap4_attrtype(std::string s){
+D4AttributeType daptype_strrep_to_dap4_attrtype(const string & s){
     
     if (s == "Byte")
         return attr_byte_c;
@@ -1096,7 +1109,7 @@ BaseType *Get_bt(const string &vname,
                  const string &dataset,
                  hid_t datatype, bool is_dap4)
 {
-    BaseType *btp = NULL;
+    BaseType *btp = nullptr;
 
     try {
 
@@ -1300,8 +1313,8 @@ Structure *Get_structure(const string &varname,const string &vpath,
                                 const string &dataset,
                                 hid_t datatype,bool is_dap4)
 {
-    HDF5Structure *structure_ptr = NULL;
-    char* memb_name = NULL;
+    HDF5Structure *structure_ptr = nullptr;
+    char* memb_name = nullptr;
     hid_t memb_type = -1;
 
     BESDEBUG("h5", ">Get_structure()" << datatype << endl);
@@ -1324,7 +1337,7 @@ Structure *Get_structure(const string &varname,const string &vpath,
             memb_name = H5Tget_member_name(datatype, i);
             H5T_class_t memb_cls = H5Tget_member_class(datatype, i);
             memb_type = H5Tget_member_type(datatype, i);
-            if (memb_name == NULL){
+            if (memb_name == nullptr){
                 throw InternalErr(__FILE__, __LINE__, "cannot retrieve the name of the member");
             }
             if ((memb_cls < 0) || (memb_type < 0)) {
@@ -1437,18 +1450,18 @@ Structure *Get_structure(const string &varname,const string &vpath,
             }
             else {
                 free(memb_name);
-                memb_name = NULL;
+                memb_name = nullptr;
                 throw InternalErr(__FILE__, __LINE__, "unsupported field datatype inside a compound datatype");
             }
             // Caller needs to free the memory allocated by the library for memb_name.
-            if(memb_name != NULL)
+            if(memb_name != nullptr)
                 free(memb_name);
         }
     }
     catch (...) {
         if( structure_ptr ) 
             delete structure_ptr;
-        if(memb_name!= NULL) 
+        if(memb_name!= nullptr) 
             free(memb_name);
         if(memb_type != -1)
             H5Tclose(memb_type);
@@ -1481,7 +1494,7 @@ Structure *Get_structure(const string &varname,const string &vpath,
 bool check_dimscale(hid_t fileid) {
 
     bool ret_value = false;
-    herr_t ret_o= H5OVISIT(fileid, H5_INDEX_NAME, H5_ITER_INC, visit_obj_cb, NULL);
+    herr_t ret_o= H5OVISIT(fileid, H5_INDEX_NAME, H5_ITER_INC, visit_obj_cb, nullptr);
     if(ret_o < 0)
         throw InternalErr(__FILE__, __LINE__, "H5OVISIT fails");
     else 
@@ -1531,9 +1544,9 @@ visit_obj_cb(hid_t  group_id, const char *name, const H5O_info_t *oinfo,
                 dim_attr_mark[i] = 0;
             //int count = 0;
             // Check if having "class = DIMENSION_SCALE" and REFERENCE_LIST attributes.
-            //herr_t ret = H5Aiterate2(dataset, H5_INDEX_NAME, H5_ITER_INC, NULL, attr_info, &count);
-            //herr_t ret = H5Aiterate2(dataset, H5_INDEX_NAME, H5_ITER_INC, NULL, attr_info, &dim_attr_mark[0]);
-            herr_t ret = H5Aiterate2(dataset, H5_INDEX_NAME, H5_ITER_INC, NULL, attr_info, dim_attr_mark);
+            //herr_t ret = H5Aiterate2(dataset, H5_INDEX_NAME, H5_ITER_INC, nullptr, attr_info, &count);
+            //herr_t ret = H5Aiterate2(dataset, H5_INDEX_NAME, H5_ITER_INC, nullptr, attr_info, &dim_attr_mark[0]);
+            herr_t ret = H5Aiterate2(dataset, H5_INDEX_NAME, H5_ITER_INC, nullptr, attr_info, dim_attr_mark);
             if(ret < 0) {
                 H5Sclose(dspace);
                 H5Dclose(dataset);
@@ -1748,7 +1761,7 @@ attr_info_dimscale(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void
                     // netCDF save the variable name in the "NAME" attribute.
                     // We need to retrieve the variable name first.
                     ssize_t objnamelen = -1;
-                    if ((objnamelen= H5Iget_name(loc_id,NULL,0))<=0) {
+                    if ((objnamelen= H5Iget_name(loc_id,nullptr,0))<=0) {
                         string msg = "Cannot obtain the variable name length." ;
                         throw InternalErr(__FILE__,__LINE__,msg);
                     }
@@ -1826,23 +1839,23 @@ attr_info_dimscale(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void
                     throw InternalErr(__FILE__,__LINE__,"Cannot read the attribute in the H5Aiterate2 call back function");
                 }
 
-                char *temp_bp = NULL;
+                char *temp_bp = nullptr;
                 temp_bp = &temp_buf[0];
-                char* onestring = NULL;
+                char* onestring = nullptr;
 
                 for (unsigned int temp_i = 0; temp_i <nelmts; temp_i++) {
 
                     // This line will assure that we get the real variable length string value.
                     onestring =*(char **)temp_bp;
 
-                    if(onestring!= NULL) 
+                    if(onestring!= nullptr) 
                         total_vstring +=string(onestring);
 
                     // going to the next value.
                     temp_bp +=ty_size;
                 }
 
-                if ((&temp_buf[0]) != NULL) {
+                if ((&temp_buf[0]) != nullptr) {
                     // Reclaim any VL memory if necessary.
                     if (H5Dvlen_reclaim(atype_id,aspace_id,H5P_DEFAULT,&temp_buf[0]) < 0) {
                         H5Sclose(aspace_id);
@@ -1953,7 +1966,7 @@ void obtain_dimnames(const hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_ptr
             // The dimension names of variables will be the HDF5 dataset names dereferenced from the DIMENSION_LIST attribute.
             for (int i = 0; i < ndims; i++) {
 
-                if(vlbuf[i].p == NULL) {
+                if(vlbuf[i].p == nullptr) {
                     stringstream sindex ;
                     sindex <<i;
                     string msg = "For variable " + string(dt_inst_ptr->name) + "; "; 
@@ -1963,14 +1976,13 @@ void obtain_dimnames(const hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_ptr
 
                 rbuf =((hobj_ref_t*)vlbuf[i].p)[0];
 
-                // Note: TODO: H5Rget_name may be used to replace H5RDEREFERENCE and H5Iget_name in the future. KY 2016-06-28
                 if ((ref_dset = H5RDEREFERENCE(attr_id, H5R_OBJECT, &rbuf)) < 0) {
                     string msg = "Cannot dereference from the DIMENSION_LIST attribute  for the variable " + string(dt_inst_ptr->name);
                     throw InternalErr(__FILE__, __LINE__, msg);
                 }
 
                 ssize_t objnamelen = -1;
-                if ((objnamelen= H5Iget_name(ref_dset,NULL,0))<=0) {
+                if ((objnamelen= H5Iget_name(ref_dset,nullptr,0))<=0) {
                     string msg = "Cannot obtain the dimension name length for the variable " + string(dt_inst_ptr->name);
                     throw InternalErr(__FILE__,__LINE__,msg);
                 }
@@ -1982,7 +1994,7 @@ void obtain_dimnames(const hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_ptr
                     throw InternalErr(__FILE__,__LINE__,msg);
                 }
 
-                string objname_str = string(objname.begin(),objname.end());
+                auto objname_str = string(objname.begin(),objname.end());
 
                 // Must trim the string delimter.
                 string trim_objname = objname_str.substr(0,objnamelen);
@@ -2010,7 +2022,7 @@ void obtain_dimnames(const hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_ptr
                     bool link_find = false;
 
                     // If finding the object in the hdf5_hls, obtain the hardlink and make it the dimension name(trim_objname).
-                    for (int i = 0; i <hdf5_hls.size();i++) {
+                    for (unsigned int i = 0; i <hdf5_hls.size();i++) {
 #if (H5_VERS_MAJOR == 1 && ((H5_VERS_MINOR == 12) || (H5_VERS_MINOR == 13)))
                         int token_cmp = -1;                                                                                 
                         if(H5Otoken_cmp(ref_dset,&(obj_info.token),&(hdf5_hls[i].link_addr),&token_cmp) <0)                   
@@ -2137,7 +2149,7 @@ for(int i = 0; i<t_li_info.hl_names.size();i++)
     return ;
 }
 
-void write_vlen_str_attrs(hid_t attr_id,hid_t ty_id, DSattr_t * attr_inst_ptr,D4Attribute *d4_attr, AttrTable* d2_attr,bool is_dap4){
+void write_vlen_str_attrs(hid_t attr_id,hid_t ty_id, const DSattr_t * attr_inst_ptr,D4Attribute *d4_attr, AttrTable* d2_attr,bool is_dap4){
 
     BESDEBUG("h5","attribute name " << attr_inst_ptr->name <<endl);
     BESDEBUG("h5","attribute size " <<attr_inst_ptr->need <<endl);
@@ -2168,14 +2180,13 @@ void write_vlen_str_attrs(hid_t attr_id,hid_t ty_id, DSattr_t * attr_inst_ptr,D4
 
     char *temp_bp;
     temp_bp = &temp_buf[0];
-    char* onestring;
     for (unsigned int temp_i = 0; temp_i <attr_inst_ptr->nelmts; temp_i++) {
 
         // This line will assure that we get the real variable length string value.
-        onestring =*(char **)temp_bp;
+        char* onestring =*(char **)temp_bp;
 
         // Change the C-style string to C++ STD string just for easy appending the attributes in DAP.
-        if (onestring !=NULL) {
+        if (onestring !=nullptr) {
             string tempstring(onestring);
             if(true == is_dap4)
                 d4_attr->add_value(tempstring);
@@ -2230,7 +2241,7 @@ bool check_str_attr_value(hid_t attr_id,hid_t atype_id,const string & value_to_c
 
         vector<hsize_t> asize;
         asize.resize(ndims);
-        if (H5Sget_simple_extent_dims(aspace_id, &asize[0], NULL)<0) {
+        if (H5Sget_simple_extent_dims(aspace_id, &asize[0], nullptr)<0) {
             H5Sclose(aspace_id);
             throw InternalErr(__FILE__, __LINE__, "Fail to obtain the dimension info.");
         }
@@ -2259,23 +2270,22 @@ bool check_str_attr_value(hid_t attr_id,hid_t atype_id,const string & value_to_c
             throw InternalErr(__FILE__,__LINE__,"Fail to read the attribute.");
         }
 
-        char *temp_bp = NULL;
+        char *temp_bp = nullptr;
         temp_bp = &temp_buf[0];
-        char* onestring = NULL;
 
         for (unsigned int temp_i = 0; temp_i <nelmts; temp_i++) {
 
             // This line will assure that we get the real variable length string value.
-            onestring =*(char **)temp_bp;
+            char* onestring =*(char **)temp_bp;
 
-            if(onestring!= NULL) 
+            if(onestring!= nullptr) 
                 total_vstring +=string(onestring);
 
             // going to the next value.
             temp_bp +=ty_size;
         }
 
-        if ((&temp_buf[0]) != NULL) {
+        if ((&temp_buf[0]) != nullptr) {
             // Reclaim any VL memory if necessary.
             if (H5Dvlen_reclaim(atype_id,aspace_id,H5P_DEFAULT,&temp_buf[0]) < 0) {
                 H5Sclose(aspace_id);

@@ -37,25 +37,16 @@
 
 class PPTStreamBuf: public std::streambuf {
 private:
-    unsigned d_bufsize;
-    int d_fd;
-    char * d_buffer;
-    unsigned int count;
+    unsigned d_bufsize {0};
+    int d_fd {-1};
+    char * d_buffer {nullptr};
+    unsigned int count {0};
 
-    PPTStreamBuf() :
-        d_bufsize(0), d_fd(-1), d_buffer(nullptr), count(0)
-    {
-    }
+    PPTStreamBuf() = default;
+
 public:
     explicit PPTStreamBuf(int fd, unsigned bufsize = 1);
     ~PPTStreamBuf() override;
-
-#if 0
-    unsigned int how_many() const
-    {
-        return count;
-    }
-#endif
 
     void open(int fd, unsigned bufsize = 1);
 

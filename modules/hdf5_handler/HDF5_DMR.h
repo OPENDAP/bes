@@ -15,11 +15,7 @@
 #include "hdf5.h"
 
 
-//#define USE_DAP4 1
-//#undef USE_DAP4
-//#ifdef USE_DAP4
 #include <libdap/DMR.h>
-//#include <libdap/InternalErr.h>
 
 
 /**
@@ -39,7 +35,7 @@
  */
 class HDF5DMR : public libdap::DMR {
 private:
-    hid_t fileid;
+    hid_t fileid = -1;
 
     void m_duplicate(const HDF5DMR &src) 
     { 
@@ -47,7 +43,7 @@ private:
     }
 
 public:
-    explicit HDF5DMR(libdap::DMR *dmr) : libdap::DMR(*dmr), fileid(-1) {}
+    explicit HDF5DMR(libdap::DMR *dmr) : libdap::DMR(*dmr) {}
     HDF5DMR(libdap::D4BaseTypeFactory *factory,const string &name):libdap::DMR(factory,name),fileid(-1) {}
 
     HDF5DMR(const HDF5DMR &rhs) : libdap::DMR(rhs) {
@@ -55,16 +51,21 @@ public:
     }
 
     HDF5DMR & operator= (const HDF5DMR &rhs) {
+
         if (this == &rhs)
             return *this;
 
+#if 0
         dynamic_cast<libdap::DMR &>(*this) = rhs;
+#endif
+        libdap::DMR::operator=(rhs);
+
         m_duplicate(rhs);
 
         return *this;
     }
 
-    virtual ~HDF5DMR() {
+    ~HDF5DMR() override{
 
         if (fileid != -1)
             H5Fclose(fileid);
@@ -77,7 +78,6 @@ public:
 
 };
 
-//#endif
 #endif
 
 

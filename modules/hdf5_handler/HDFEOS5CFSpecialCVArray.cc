@@ -51,7 +51,7 @@ bool HDFEOS5CFSpecialCVArray::read(){
 
     BESDEBUG("h5","Coming to HDFEOS5CFSpecialCVArray read "<<endl);
 
-    read_data_NOT_from_mem_cache(false,NULL);
+    read_data_NOT_from_mem_cache(false,nullptr);
 
     return true;
 }
@@ -241,7 +241,7 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
         total_val[i] = orig_val[i-1];
 
   
-    // Note: offset and step in this case will never be NULL since the total number of elements will be
+    // Note: offset and step in this case will never be nullptr since the total number of elements will be
     // greater than 1. This is enforced in line 180. KY 2014-02-27
     for (int i = 0; i <nelms; i++)
         val[i] = total_val[offset[0]+i*step[0]];

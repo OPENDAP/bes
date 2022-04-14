@@ -254,6 +254,8 @@ add_executable(bes
     dap/ShowPathInfoResponseHandler.h
     dap/TempFile.cc
     dap/TempFile.h
+		dap/DapUtils.cc
+		dap/DapUtils.h
 
     dapreader/DapModule.cc
     dapreader/DapModule.h

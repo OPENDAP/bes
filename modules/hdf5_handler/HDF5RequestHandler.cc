@@ -554,7 +554,7 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
             }
 
             else {// Need to build from the HDF5 file
-                H5Eset_auto2(H5E_DEFAULT,NULL,NULL);
+                H5Eset_auto2(H5E_DEFAULT,nullptr,nullptr);
                 if (true == _usecf) {//CF option
 
                     cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
@@ -567,8 +567,8 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
                         throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
                     }
                     // Need to check if DAP4 DMR CF 64-bit integer mapping is on. 
-                    if(HDF5RequestHandler::get_dmr_64bit_int()!=NULL)
-                        HDF5RequestHandler::set_dmr_64bit_int(NULL);
+                    if(HDF5RequestHandler::get_dmr_64bit_int()!=nullptr)
+                        HDF5RequestHandler::set_dmr_64bit_int(nullptr);
                     read_cfdas( *das,filename,cf_fileid);
                     H5Fclose(cf_fileid);
                 }
@@ -693,7 +693,7 @@ void HDF5RequestHandler::get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDS
         }
         else {
             BESDEBUG(HDF5_NAME, prolog << "Build DDS from the HDF5 file. " << filename << endl);
-            H5Eset_auto2(H5E_DEFAULT,NULL,NULL);
+            H5Eset_auto2(H5E_DEFAULT,nullptr,nullptr);
             dds->filename(filename);
 
             // For the time being, not mess up CF's fileID with Default's fileID
@@ -710,8 +710,8 @@ void HDF5RequestHandler::get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDS
                 }
                 // The following is for DAP4 CF(DMR) 64-bit mapping, we need to set the flag
                 // to let the handler map the 64-bit integer.
-                if(HDF5RequestHandler::get_dmr_64bit_int() != NULL)
-                    HDF5RequestHandler::set_dmr_64bit_int(NULL);
+                if(HDF5RequestHandler::get_dmr_64bit_int() != nullptr)
+                    HDF5RequestHandler::set_dmr_64bit_int(nullptr);
                 read_cfdds(*dds,filename,cf_fileid);
             }
             else {
@@ -826,7 +826,7 @@ void HDF5RequestHandler::get_dds_without_attributes_datadds(BESDataDDSResponse*d
         }
         else {
             BESDEBUG(HDF5_NAME, prolog << "Build DDS from the HDF5 file. " << filename << endl);
-            H5Eset_auto2(H5E_DEFAULT,NULL,NULL);
+            H5Eset_auto2(H5E_DEFAULT,nullptr,nullptr);
             dds->filename(filename);
 
             // For the time being, not mess up CF's fileID with Default's fileID
@@ -843,8 +843,8 @@ void HDF5RequestHandler::get_dds_without_attributes_datadds(BESDataDDSResponse*d
                 }
                 // The following is for DAP4 CF(DMR) 64-bit mapping, we need to set the flag
                 // to let the handler map the 64-bit integer.
-                if(HDF5RequestHandler::get_dmr_64bit_int() != NULL)
-                    HDF5RequestHandler::set_dmr_64bit_int(NULL);
+                if(HDF5RequestHandler::get_dmr_64bit_int() != nullptr)
+                    HDF5RequestHandler::set_dmr_64bit_int(nullptr);
                 read_cfdds(*dds,filename,cf_fileid);
             }
             else {
@@ -957,7 +957,7 @@ void HDF5RequestHandler::get_dds_with_attributes(const string &filename, const s
 
         else {
 
-            H5Eset_auto2(H5E_DEFAULT,NULL,NULL);
+            H5Eset_auto2(H5E_DEFAULT,nullptr,nullptr);
             if (!container_name.empty()) 
                 dds->container_name(container_name);
             dds->filename(filename);
@@ -977,7 +977,7 @@ tdds.filename(filename);
                 tdds.parse(dds_file);
                 //DDS *cache_dds = new DDS(tdds);
                 cache_dds = new DDS(tdds);
-if(dds!=NULL)
+if(dds!=nullptr)
    delete dds;
 dds = cache_dds;
 tdds.print(cout);
@@ -1176,7 +1176,7 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
 
         }
 
-        get_dds_with_attributes(bdds, NULL,container_name,filename, dds_cache_fname,das_cache_fname,dds_from_dc,das_from_dc,build_data);
+        get_dds_with_attributes(bdds, nullptr,container_name,filename, dds_cache_fname,das_cache_fname,dds_from_dc,das_from_dc,build_data);
 
         // The following block reads dds from a dds cache file.   
 #if 0
@@ -1192,7 +1192,7 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
         tdds.parse(dds_file);
 //cerr<<"before parsing "<<endl;
         DDS* cache_dds = new DDS(tdds);
-        if(dds != NULL)
+        if(dds != nullptr)
             delete dds;
         bdds->set_dds(cache_dds);
         fclose(dds_file);
@@ -1250,9 +1250,14 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
 
     try {
 
+        // DDS from disk cache is not currently supported. It may be supported in the future.
+        // We will leave the code as commented. 
+#if 0
         bool dds_from_dc = false;
-        bool das_from_dc = false;
         bool build_data  = true;
+#endif
+
+        bool das_from_dc = false;
         string dds_cache_fname;
         string das_cache_fname;
 
@@ -1268,7 +1273,9 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
 
         }
 
-        //get_dds_with_attributes(NULL,bdds, container_name,filename, dds_cache_fname,das_cache_fname,dds_from_dc,das_from_dc,build_data);
+#if 0
+        get_dds_with_attributes(nullptr,bdds, container_name,filename, dds_cache_fname,das_cache_fname,dds_from_dc,das_from_dc,build_data);
+#endif
         get_dds_without_attributes_datadds(bdds,container_name,filename);
 
         bdds->set_constraint( dhi ) ;
@@ -1312,7 +1319,7 @@ bool HDF5RequestHandler::hdf5_build_data_with_IDs(BESDataHandlerInterface & dhi)
 
     string filename = dhi.container->access();
     
-    H5Eset_auto2(H5E_DEFAULT,NULL,NULL);
+    H5Eset_auto2(H5E_DEFAULT,nullptr,nullptr);
     cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
     if (cf_fileid < 0){
         string invalid_file_msg="Could not open this HDF5 file ";
@@ -1426,7 +1433,7 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
         }
         else {// No cache
 
-            H5Eset_auto2(H5E_DEFAULT,NULL,NULL);
+            H5Eset_auto2(H5E_DEFAULT,nullptr,nullptr);
             D4BaseTypeFactory MyD4TypeFactory;
             dmr->set_factory(&MyD4TypeFactory);
  
@@ -1627,7 +1634,7 @@ bool HDF5RequestHandler::hdf5_build_dmr_with_IDs(BESDataHandlerInterface & dhi)
     string filename = dhi.container->access();
     hid_t cf_fileid = -1;
 
-    H5Eset_auto2(H5E_DEFAULT,NULL,NULL);
+    H5Eset_auto2(H5E_DEFAULT,nullptr,nullptr);
     cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
     if (cf_fileid < 0){
         string invalid_file_msg="Could not open this HDF5 file ";
@@ -1892,10 +1899,10 @@ bool HDF5RequestHandler::read_das_from_disk_cache(const string & cache_filename,
 
     BESDEBUG(HDF5_NAME, prolog << "Coming to read_das_from_disk_cache() " << cache_filename << endl);
     bool ret_value = true;
-    FILE *md_file = NULL;
+    FILE *md_file = nullptr;
     md_file = fopen(cache_filename.c_str(),"rb");
 
-    if(NULL == md_file) {
+    if(nullptr == md_file) {
         string bes_error = "An error occurred trying to open a metadata cache file  " + cache_filename;
         throw BESInternalError( bes_error, __FILE__, __LINE__);
     }
@@ -1934,7 +1941,7 @@ bool HDF5RequestHandler::read_das_from_disk_cache(const string & cache_filename,
 
             char* temp_pointer =&buf[0];
 
-            AttrTable*at = NULL;
+            AttrTable*at = nullptr;
             // recursively build DAS
 //#if 0
             temp_pointer = get_attr_info_from_dc(temp_pointer,das_ptr,at);
@@ -1969,7 +1976,7 @@ bool HDF5RequestHandler::write_dds_to_disk_cache(const string& dds_cache_fname,D
     BESDEBUG(HDF5_NAME, prolog << "Write DDS to disk cache " << dds_cache_fname << endl);
     FILE *dds_file = fopen(dds_cache_fname.c_str(),"w");
 
-    if(NULL == dds_file) {
+    if(nullptr == dds_file) {
         string bes_error = "An error occurred trying to open a metadata cache file  " + dds_cache_fname;
         throw BESInternalError( bes_error, __FILE__, __LINE__);
     }
@@ -2016,7 +2023,7 @@ bool HDF5RequestHandler::write_das_to_disk_cache(const string & das_cache_fname,
 
     BESDEBUG(HDF5_NAME, prolog << "Write DAS to disk cache " << das_cache_fname << endl);
     FILE *das_file = fopen(das_cache_fname.c_str(),"wb");
-    if(NULL == das_file) {
+    if(nullptr == das_file) {
         string bes_error = "An error occurred trying to open a metadata cache file  " + das_cache_fname;
         throw BESInternalError( bes_error, __FILE__, __LINE__);
     }
@@ -2076,7 +2083,7 @@ void write_das_to_file(DAS*das_ptr,FILE* das_file) {
 // The main function to write DAS to a file
 void write_das_table_to_file(AttrTable*temp_table,FILE* das_file) {
 
-    if(temp_table !=NULL) {
+    if(temp_table !=nullptr) {
 
         // 2 is the end mark of an attribute table
         uint8_t category_flag = 2;
@@ -2224,7 +2231,7 @@ cerr<<"before tdds "<<endl;
 cache_dds->dump(cerr);
 cerr<<"after tdds "<<endl;
 #endif
-     if(dds != NULL)
+     if(dds != nullptr)
         delete dds;
 
      Ancillary::read_ancillary_dds( *cache_dds, h5_fname ) ;
@@ -2463,7 +2470,7 @@ char* get_attr_info_from_dc(char*temp_pointer,DAS *das,AttrTable *at_par) {
 
             // Remember the current Attribute table state
             AttrTable*temp_at_par = at_par;
-            if(at_par == NULL)
+            if(at_par == nullptr)
                 at_par = das->add_table(container_name, new AttrTable);
             else 
                 at_par = at_par->append_container(container_name);
@@ -2475,7 +2482,7 @@ char* get_attr_info_from_dc(char*temp_pointer,DAS *das,AttrTable *at_par) {
         }
         else if(flag == 0) {
             // The attribute must have a table.
-            if(at_par ==NULL) 
+            if(at_par ==nullptr) 
                 throw BESInternalError( "The AttrTable  must exist for DAS attributes", __FILE__, __LINE__ ) ;
             
             // Attribute name
@@ -2512,7 +2519,7 @@ char* get_attr_info_from_dc(char*temp_pointer,DAS *das,AttrTable *at_par) {
 
 // The debugging function to get attribute info.
 void get_attr_contents(AttrTable*temp_table) {
-    if(temp_table !=NULL) {
+    if(temp_table !=nullptr) {
         AttrTable::Attr_iter top_startit = temp_table->attr_begin();
         AttrTable::Attr_iter top_endit = temp_table->attr_end();
         AttrTable::Attr_iter top_it = top_startit;

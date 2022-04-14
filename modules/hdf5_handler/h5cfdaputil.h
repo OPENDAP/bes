@@ -64,7 +64,7 @@ class HDF5CFDAPUtil {
 
     /// Helper function to obtain the DAP4 attribute type. 
     /// We deliberately duplicates the same function for the default option to separate the handling of CF .
-    static D4AttributeType daptype_strrep_to_dap4_attrtype(std::string s);
+    static D4AttributeType daptype_strrep_to_dap4_attrtype(const string &s);
     static D4AttributeType print_type_dap4(H5DataType h5type);
 };
 #endif

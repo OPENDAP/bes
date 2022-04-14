@@ -192,7 +192,7 @@ void HE5Parser::add_projparams(const string & st_str) {
         HDF5CFUtil::Split(projparms_raw_values.c_str(),',',projparms_values);
 
         for(unsigned int i = 0; i<projparms_values.size();i++) {
-            grid_list[grid_index].param[i] = strtod(projparms_values[i].c_str(),NULL);
+            grid_list[grid_index].param[i] = strtod(projparms_values[i].c_str(),nullptr);
         }
 #if 0
 for(vector<string>::iterator istr=projparms_values.begin();istr!=projparms_values.end();++istr)
