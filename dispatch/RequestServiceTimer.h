@@ -87,7 +87,8 @@ public:
                             d_req_id(MISSING_LOG_PARAM),
                             d_log_name(TIMING_LOG_KEY),
                             d_started(false),
-                            d_stopped(false)
+                            d_stopped(false),
+                            d_timeout_enabled(false)
     {
     }
 
@@ -100,7 +101,8 @@ public:
                                                 d_req_id(MISSING_LOG_PARAM),
                                                 d_log_name(logName),
                                                 d_started(false),
-                                                d_stopped(false)
+                                                d_stopped(false),
+                                                d_timeout_enabled(false)
     {
     }
 
