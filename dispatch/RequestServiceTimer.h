@@ -60,7 +60,6 @@ private:
     std::chrono::duration<int> bes_timeout;
     std::chrono::steady_clock::time_point start_time;
     bool timeout_enabled;
-    bool is_started;
 
      explicit RequestServiceTimer():
             bes_timeout(std::chrono::seconds(DEFAULT_BES_TIMEOUT_SECONDS)),

@@ -75,24 +75,21 @@ void RequestServiceTimer::delete_instance() {
     d_instance = nullptr;
 }
 
+
 steady_clock::time_point RequestServiceTimer::start(int timeout_seconds){
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
-    if(is_started)
-        return start_time;
 
     if(timeout_seconds > 0){
         timeout_enabled = true;
         bes_timeout = std::chrono::seconds(timeout_seconds);
     }
     start_time = steady_clock::now();
-    is_started = true;
     return start_time;
 }
 
 duration<int> RequestServiceTimer::elapsed() const {
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
 
-    if(is_started)
         return duration_cast<duration<int>>(steady_clock::now() - start_time);
 
     return duration<int>(0);
@@ -102,7 +99,7 @@ std::chrono::duration<int>
 RequestServiceTimer::remaining() const {
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
     std::chrono::duration<int> remaining = duration<int>(DEFAULT_BES_TIMEOUT_SECONDS);
-    if (is_started && timeout_enabled) {
+    if (timeout_enabled) {
         remaining = duration_cast<duration<int>>(bes_timeout - elapsed());
     }
     else {
@@ -115,9 +112,6 @@ RequestServiceTimer::remaining() const {
 
 bool RequestServiceTimer::is_expired() const {
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
-
-    if(!is_started)
-        return false;
 
     return timeout_enabled && (remaining() <= duration<int>(0));
 }
@@ -135,12 +129,9 @@ string RequestServiceTimer::dump() const {
     ss << "bes_timeout: " << bes_timeout.count() << "s ";
     ss << "start_time: " << start_time.time_since_epoch().count() << "s ";
     ss << "timeout_enabled: " << (timeout_enabled?"true ":"false ");
-    ss << "is_started: " << (is_started?"true ":"false ");
-    if(is_started){
-        ss << "elapsed: " << elapsed().count() << "s ";
-        ss << "remaining: " << remaining().count() << "s ";
-        ss << "is_expired: " <<  (is_expired()?"true ":"false ");
-    }
+    ss << "elapsed: " << elapsed().count() << "s ";
+    ss << "remaining: " << remaining().count() << "s ";
+    ss << "is_expired: " <<  (is_expired()?"true ":"false ");
     ss << "]";
     return ss.str();
 
