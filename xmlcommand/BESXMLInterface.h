@@ -56,6 +56,12 @@ private:
     BESDataHandlerInterface d_xml_interface_dhi;
 
 protected:
+    virtual void build_data_request_plan();
+
+    virtual void execute_data_request_plan();
+
+    virtual void transmit_data();
+
     virtual void log_status();
 
     virtual void clean();
@@ -66,12 +72,6 @@ public:
     virtual ~BESXMLInterface();
 
     virtual void dump(std::ostream &strm) const;
-
-    virtual void build_data_request_plan();
-
-    virtual void execute_data_request_plan();
-
-    virtual void transmit_data();
 };
 
 #endif // BESXMLInterface_h_

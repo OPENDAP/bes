@@ -75,8 +75,6 @@ using namespace std;
 
 const string BES_KEY_TIMEOUT_CANCEL = "BES.CancelTimeoutOnSend";
 
-extern std::atomic<bool> ignoreBesTimeout;
-
 /**
  * @brief Get the Resident Set Size in KB
  * @return The RSS or 0 if getrusage() returns an error
@@ -876,10 +874,7 @@ void BESUtil::conditional_timeout_cancel()
         if ( value == false_str || value == no_str) cancel_timeout_on_send = false;
     }
     BESDEBUG(MODULE, __func__ << "() - cancel_timeout_on_send: " << (cancel_timeout_on_send ? "true" : "false") << endl);
-    if (cancel_timeout_on_send) {
-        alarm(0);
-        ignoreBesTimeout.store(true);
-    }
+    if (cancel_timeout_on_send) alarm(0);
 }
 
 /**

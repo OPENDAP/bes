@@ -66,14 +66,13 @@ class BESStopWatch : public BESObj
     struct timeval d_result ;
 
     // bool timeval_subtract() ;
+    unsigned long int get_elapsed_us();
+    unsigned long int get_start_us();
+    unsigned long int get_stop_us();
     bool get_time_of_day(struct timeval &time_val);
 	void report();
 
  public:
-
-    unsigned long int get_elapsed_us();
-    unsigned long int get_start_us();
-    unsigned long int get_stop_us();
 
     /**
      * Makes a new BESStopWatch with a logName of TIMING_LOG_KEY

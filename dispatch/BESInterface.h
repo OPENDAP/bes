@@ -35,7 +35,6 @@
 
 #include <string>
 #include <ostream>
-#include <thread>
 
 #include "BESObj.h"
 
@@ -127,6 +126,12 @@ protected:
 
     virtual void end_request();
 
+    virtual void build_data_request_plan() = 0;
+
+    virtual void execute_data_request_plan() = 0;
+
+    virtual void transmit_data() = 0;
+
     virtual void log_status() = 0;
 
     virtual void clean() = 0;
@@ -144,24 +149,8 @@ public:
 
     virtual int finish(int status);
 
-    virtual void build_data_request_plan() = 0;
-
-    virtual void execute_data_request_plan() = 0;
-
-    virtual void transmit_data() = 0;
-
     void dump(std::ostream &strm) const override;
 };
 
-/**
- * Args for threads that process BESXMLInterface::execute_data_request_plan.
- */
-struct worker_data_request_plan_args {
-    std::thread::id parent_thread_id;
-    BESInterface *besInterface {nullptr};
-
-    explicit worker_data_request_plan_args(BESInterface *sc)
-            : parent_thread_id(std::this_thread::get_id()), besInterface(sc) {}
-};
-
 #endif // BESInterface_h_
+
