@@ -137,7 +137,7 @@ public:
         }
         DBG(cerr << prolog << "END" << endl);
     }
-    void test_restart()
+    void test_restart_1()
     {
         DBG(cerr << prolog << "BEGIN" << endl);
         try {
@@ -169,12 +169,45 @@ public:
         DBG(cerr << prolog << "END" << endl);
     }
 
+    void test_restart_2()
+    {
+        DBG(cerr << prolog << "BEGIN" << endl);
+        try {
+            milliseconds time_out{100};
+            RequestServiceTimer::TheTimer()->start(time_out);
+            DBG(cerr << RequestServiceTimer::TheTimer()->dump(true) << endl);
+            sleep(1);
+            DBG(cerr << RequestServiceTimer::TheTimer()->dump(true) << endl);
+            CPPUNIT_ASSERT(RequestServiceTimer::TheTimer()->is_expired() == true);
+
+            time_out=seconds{0};
+            RequestServiceTimer::TheTimer()->start(time_out);
+            CPPUNIT_ASSERT(RequestServiceTimer::TheTimer()->is_expired() == false);
+            DBG(cerr << RequestServiceTimer::TheTimer()->dump(true) << endl);
+            sleep(1);
+            DBG(cerr << RequestServiceTimer::TheTimer()->dump(true) << endl);
+            CPPUNIT_ASSERT(RequestServiceTimer::TheTimer()->is_expired() == false);
+
+        }
+        catch(std::exception &se){
+            ostringstream msg;
+            msg << prolog << "Caught std::exception! Message: " << se.what();
+            cerr << msg.str() << endl;
+            CPPUNIT_FAIL(msg.str());
+        }
+        catch(...){
+            CPPUNIT_FAIL(prolog + "Caught unknown exception.");
+        }
+        DBG(cerr << prolog << "END" << endl);
+    }
+
 CPPUNIT_TEST_SUITE( RequestTimerTest );
 
         CPPUNIT_TEST(test_dump);
         CPPUNIT_TEST(test_disable_timeout);
         CPPUNIT_TEST(test_is_expired);
-        CPPUNIT_TEST(test_restart);
+        CPPUNIT_TEST(test_restart_1);
+        CPPUNIT_TEST(test_restart_2);
         //CPPUNIT_TEST_EXCEPTION(test_ingest_chunk_dimension_sizes_4, BESError);
 
     CPPUNIT_TEST_SUITE_END();
