@@ -87,13 +87,17 @@ steady_clock::time_point RequestServiceTimer::start(milliseconds timeout_seconds
         timeout_enabled = true;
         bes_timeout = timeout_seconds;
     }
+    else {
+        timeout_enabled = false;
+        bes_timeout = seconds{0};
+    }
     start_time = steady_clock::now();
     return start_time;
 }
 
-std::chrono::steady_clock::duration RequestServiceTimer::elapsed() const {
+std::chrono::seconds RequestServiceTimer::elapsed() const {
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
-    return steady_clock::now() - start_time;
+    return duration_cast<seconds>(steady_clock::now() - start_time);
 }
 
 std::chrono::milliseconds RequestServiceTimer::elapsed_ms() const {
@@ -101,7 +105,7 @@ std::chrono::milliseconds RequestServiceTimer::elapsed_ms() const {
     return duration_cast<milliseconds>(steady_clock::now() - start_time);
 }
 
-std::chrono::steady_clock::duration RequestServiceTimer::remaining() const {
+std::chrono::seconds RequestServiceTimer::remaining() const {
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
     steady_clock::duration remaining = std::chrono::steady_clock::duration(DEFAULT_BES_TIMEOUT_SECONDS);
     if (timeout_enabled) {
@@ -112,7 +116,7 @@ std::chrono::steady_clock::duration RequestServiceTimer::remaining() const {
             remaining = bes_timeout;
         }
     }
-    return remaining;
+    return duration_cast<seconds>(remaining);
 }
 
 std::chrono::milliseconds RequestServiceTimer::remaining_ms() const {
@@ -133,7 +137,7 @@ void RequestServiceTimer::disable_timeout(){
 
 string RequestServiceTimer::dump(bool pretty) const {
     std::stringstream ss;
-    if(!pretty){ ss<<"["; }
+    if(!pretty){ ss<<"[ "; }
     ss << "RequestServiceTimer(" << (void *)this << ") - ";
     if(pretty){ ss << endl << "  "; }
     ss << "bes_timeout: " << bes_timeout.count() << "ms ";
@@ -144,7 +148,11 @@ string RequestServiceTimer::dump(bool pretty) const {
     if(pretty){ ss << endl << "  "; }
     ss << "elapsed: " << elapsed().count() << "s ";
     if(pretty){ ss << endl << "  "; }
+    ss << "elapsed_ms: " << elapsed_ms().count() << "s ";
+    if(pretty){ ss << endl << "  "; }
     ss << "remaining: " << remaining().count() << "s ";
+    if(pretty){ ss << endl << "  "; }
+    ss << "remaining_ms: " << remaining_ms().count() << "s ";
     if(pretty){ ss << endl << "  "; }
     ss << "is_expired: " <<  (is_expired()?"true ":"false ");
     if(pretty){ ss << endl; }else{ ss << "]"; }
