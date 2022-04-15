@@ -855,7 +855,7 @@ void gen_gmh5_cfdmr(D4Group* d4_root,const HDF5CF::GMFile *f) {
         }
     }
 
-    // Add DAP4 Map here 
+    // Add DAP4 Map for coverage 
     if (HDF5RequestHandler::get_add_dap4_coverage() == true) {
 
         // We need to construct the var name to Array map,using unordered_map for quick search.
