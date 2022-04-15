@@ -39,12 +39,17 @@
 #include "AsciiArray.h"
 #include "AsciiOutputFactory.h"
 #include "test_config.h"
+
+#include "modules/run_tests_cppunit.h"
+
+#if 0
 #include <GetOpt.h>
 
 static bool debug = false;
 
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
+#endif
 
 bool translate = false;
 using namespace CppUnit;
@@ -256,7 +261,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(AsciiArrayTest);
 
 int main(int argc, char*argv[])
 {
-
+    return run_tests<AsciiArrayTest>(argc, argv, "cerr,bes") ? 0: 1;
+#if 0
     GetOpt getopt(argc, argv, "dh");
     int option_char;
     while ((option_char = getopt()) != EOF)
@@ -296,5 +302,6 @@ int main(int argc, char*argv[])
     }
 
     return wasSuccessful ? 0 : 1;
+#endif
 }
 

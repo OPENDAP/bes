@@ -3,7 +3,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
 -I$(top_srcdir)/modules//asciival $(DAP_CFLAGS)
 LIBADD =  $(BES_DISPATCH_LIB) $(BES_EXTRA_LIBS) $(DAP_CLIENT_LIBS)
 
