@@ -10,3 +10,4 @@ uncompressT
 /BESCatalogListTest
 /ServerAdministratorTest
 /kvp_utils_test
+/RequestTimerTest

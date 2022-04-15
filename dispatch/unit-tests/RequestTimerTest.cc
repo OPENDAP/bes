@@ -24,6 +24,7 @@
 
 #include <memory>
 #include <sstream>
+#include <chrono>
 
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
@@ -42,8 +43,8 @@
 #include "test_config.h"
 
 using namespace std;
+using namespace std::chrono;
 using namespace libdap;
-//using namespace bes;
 
 static bool debug = false;
 static bool bes_debug = false;
@@ -79,19 +80,27 @@ public:
     void tearDown()
     {
     }
+    void dump_test() {
+        DBG(cerr << prolog << "BEGIN" << endl);
+        auto start_time = RequestServiceTimer::TheTimer()->start(1);
+        DBG(cerr << RequestServiceTimer::TheTimer()->dump(true) << endl);
+        sleep(1);
+        DBG(cerr << RequestServiceTimer::TheTimer()->dump(true) << endl);
+        RequestServiceTimer::TheTimer()->dump(cerr);
+        DBG(cerr << prolog << "END" << endl);
+    }
 
-    void test_is_expired()
-    {
+    void test_disable_timeout() {
+        DBG(cerr << prolog << "BEGIN" << endl);
         try {
-            std::chrono::steady_clock::time_point start_time = RequestServiceTimer::TheTimer()->start(2);
-            sleep(3);
-            CPPUNIT_ASSERT(RequestServiceTimer::TheTimer()->is_expired() == true);
-        }
-        catch(BESError &be){
-            ostringstream msg;
-            msg << prolog << "Caught BESError! Message: " << be.get_verbose_message();
-            cerr << msg.str() << endl;
-            CPPUNIT_FAIL(msg.str());
+            seconds time_out{2};
+            auto start_time = RequestServiceTimer::TheTimer()->start(time_out);
+            DBG(cerr << RequestServiceTimer::TheTimer()->dump(true) << endl);
+            sleep(1);
+            RequestServiceTimer::TheTimer()->disable_timeout();
+            sleep(1);
+            CPPUNIT_ASSERT(RequestServiceTimer::TheTimer()->is_expired() == false);
+            DBG(cerr << RequestServiceTimer::TheTimer()->dump(true) << endl);
         }
         catch(std::exception &se){
             ostringstream msg;
@@ -102,11 +111,38 @@ public:
         catch(...){
             CPPUNIT_FAIL(prolog + "Caught unknown exception.");
         }
+        DBG(cerr << prolog << "END" << endl);
+    }
+
+
+    void test_is_expired()
+    {
+        DBG(cerr << prolog << "BEGIN" << endl);
+        try {
+            seconds time_out{2};
+            auto start_time = RequestServiceTimer::TheTimer()->start(time_out);
+            DBG(cerr << RequestServiceTimer::TheTimer()->dump(true) << endl);
+            sleep(3);
+            DBG(cerr << RequestServiceTimer::TheTimer()->dump(true) << endl);
+            CPPUNIT_ASSERT(RequestServiceTimer::TheTimer()->is_expired() == true);
+        }
+        catch(std::exception &se){
+            ostringstream msg;
+            msg << prolog << "Caught std::exception! Message: " << se.what();
+            cerr << msg.str() << endl;
+            CPPUNIT_FAIL(msg.str());
+        }
+        catch(...){
+            CPPUNIT_FAIL(prolog + "Caught unknown exception.");
+        }
+        DBG(cerr << prolog << "END" << endl);
     }
 
 CPPUNIT_TEST_SUITE( RequestTimerTest );
 
+        CPPUNIT_TEST(dump_test);
         CPPUNIT_TEST(test_is_expired);
+        CPPUNIT_TEST(test_disable_timeout);
         //CPPUNIT_TEST_EXCEPTION(test_ingest_chunk_dimension_sizes_4, BESError);
 
     CPPUNIT_TEST_SUITE_END();

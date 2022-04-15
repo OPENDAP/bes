@@ -76,40 +76,54 @@ void RequestServiceTimer::delete_instance() {
     d_instance = nullptr;
 }
 
+std::chrono::steady_clock::time_point RequestServiceTimer::start(unsigned int timeout_seconds){
+    return start(seconds{timeout_seconds});
+}
 
-steady_clock::time_point RequestServiceTimer::start(int timeout_seconds){
+steady_clock::time_point RequestServiceTimer::start(milliseconds timeout_seconds){
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
 
-    if(timeout_seconds > 0){
+    if(timeout_seconds > seconds{0}){
         timeout_enabled = true;
-        bes_timeout = std::chrono::seconds(timeout_seconds);
+        bes_timeout = timeout_seconds;
     }
     start_time = steady_clock::now();
     return start_time;
 }
 
-duration<int> RequestServiceTimer::elapsed() const {
+std::chrono::steady_clock::duration RequestServiceTimer::elapsed() const {
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
-    return duration_cast<duration<int>>(steady_clock::now() - start_time);
+    return steady_clock::now() - start_time;
 }
 
-duration<int> RequestServiceTimer::remaining() const {
+std::chrono::milliseconds RequestServiceTimer::elapsed_ms() const {
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
-    std::chrono::duration<int> remaining = duration<int>(DEFAULT_BES_TIMEOUT_SECONDS);
+    return duration_cast<milliseconds>(steady_clock::now() - start_time);
+}
+
+std::chrono::steady_clock::duration RequestServiceTimer::remaining() const {
+    std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
+    steady_clock::duration remaining = std::chrono::steady_clock::duration(DEFAULT_BES_TIMEOUT_SECONDS);
     if (timeout_enabled) {
-        remaining = duration_cast<duration<int>>(bes_timeout - elapsed());
+        remaining = bes_timeout - elapsed();
     }
     else {
-        if (bes_timeout > duration<int>(0)) {
+        if (bes_timeout > steady_clock::duration(0)) {
             remaining = bes_timeout;
         }
     }
     return remaining;
 }
 
+std::chrono::milliseconds RequestServiceTimer::remaining_ms() const {
+    std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
+    return duration_cast<milliseconds>(remaining());
+}
+
+
 bool RequestServiceTimer::is_expired() const {
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
-    return timeout_enabled && (remaining() <= duration<int>(0));
+    return timeout_enabled && (remaining() <= steady_clock::duration(0));
 }
 
 void RequestServiceTimer::disable_timeout(){
@@ -117,16 +131,23 @@ void RequestServiceTimer::disable_timeout(){
     timeout_enabled = false;
 }
 
-string RequestServiceTimer::dump() const {
+string RequestServiceTimer::dump(bool pretty) const {
     std::stringstream ss;
-    ss << "[RequestServiceTimer(" << (void *)this << ") - ";
-    ss << "bes_timeout: " << bes_timeout.count() << "s ";
+    if(!pretty){ ss<<"["; }
+    ss << "RequestServiceTimer(" << (void *)this << ") - ";
+    if(pretty){ ss << endl << "  "; }
+    ss << "bes_timeout: " << bes_timeout.count() << "ms ";
+    if(pretty){ ss << endl << "  "; }
     ss << "start_time: " << start_time.time_since_epoch().count() << "s ";
+    if(pretty){ ss << endl << "  "; }
     ss << "timeout_enabled: " << (timeout_enabled?"true ":"false ");
+    if(pretty){ ss << endl << "  "; }
     ss << "elapsed: " << elapsed().count() << "s ";
+    if(pretty){ ss << endl << "  "; }
     ss << "remaining: " << remaining().count() << "s ";
+    if(pretty){ ss << endl << "  "; }
     ss << "is_expired: " <<  (is_expired()?"true ":"false ");
-    ss << "]";
+    if(pretty){ ss << endl; }else{ ss << "]"; }
     return ss.str();
 }
 
@@ -138,6 +159,6 @@ string RequestServiceTimer::dump() const {
  */
 void RequestServiceTimer::dump( ostream &strm ) const
 {
-    strm << dump() << endl;
+    strm << dump(false) << endl;
 }
 

@@ -48,7 +48,7 @@ private:
     static RequestServiceTimer *d_instance;
     mutable std::recursive_mutex d_rst_lock_mutex;
 
-    std::chrono::duration<int> bes_timeout;
+    std::chrono::steady_clock::duration bes_timeout;
     std::chrono::steady_clock::time_point start_time;
     bool timeout_enabled;
 
@@ -60,17 +60,20 @@ private:
 public:
     static RequestServiceTimer *TheTimer();
 
-    std::chrono::steady_clock::time_point start(int timeout_seconds);
+    std::chrono::steady_clock::time_point start(unsigned int timeout_seconds);
+    std::chrono::steady_clock::time_point start(std::chrono::milliseconds timeout_seconds);
 
-    std::chrono::duration<int> elapsed() const;
+    std::chrono::steady_clock::duration elapsed() const;
+    std::chrono::milliseconds elapsed_ms() const;
 
-    std::chrono::duration<int> remaining() const;
+    std::chrono::steady_clock::duration remaining() const;
+    std::chrono::milliseconds remaining_ms() const;
 
     bool is_expired() const;
 
     void disable_timeout();
 
-    std::string dump() const ;
+    std::string dump(bool pretty=false) const ;
 
     void dump( std::ostream &strm ) const ;
 
