@@ -919,8 +919,7 @@ void gen_gmh5_cfdmr(D4Group* d4_root,const HDF5CF::GMFile *f) {
                     if(d4_attr->type() == attr_str_c && d4_attr->num_values() == 1) {
                         string tempstring = d4_attr->value(0);
                         char sep=' ';
-                        vector<string>cvalue_vec;
-                        HDF5CFUtil::Split_helper(cvalue_vec,tempstring,sep);
+                        HDF5CFUtil::Split_helper(coord_names,tempstring,sep);
                     }
                 }
 #if 0
