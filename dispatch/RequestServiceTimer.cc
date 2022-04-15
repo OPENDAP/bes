@@ -45,15 +45,16 @@ using namespace std::chrono;
 #define MODULE "bes"
 #define prolog string("RequestServiceTimer::").append(__func__).append("() - ")
 
-#define DEFAULT_BES_TIMEOUT_SECONDS 600
+// 100 seconds of milliseconds
+#define DEFAULT_BES_TIMEOUT_MILLISECONDS 100000
 
 RequestServiceTimer *RequestServiceTimer::d_instance = nullptr;
 static std::once_flag d_rst_init_once;
 
 
 RequestServiceTimer::RequestServiceTimer():
-        bes_timeout(std::chrono::seconds(DEFAULT_BES_TIMEOUT_SECONDS)),
-        start_time(std::chrono::steady_clock::now()),
+        bes_timeout(milliseconds (DEFAULT_BES_TIMEOUT_MILLISECONDS)),
+        start_time(steady_clock::now()),
         timeout_enabled(false) {
 }
 
@@ -76,7 +77,7 @@ void RequestServiceTimer::delete_instance() {
     d_instance = nullptr;
 }
 
-std::chrono::steady_clock::time_point RequestServiceTimer::start(unsigned int timeout_seconds){
+steady_clock::time_point RequestServiceTimer::start(unsigned int timeout_seconds){
     return start(seconds{timeout_seconds});
 }
 
@@ -95,33 +96,37 @@ steady_clock::time_point RequestServiceTimer::start(milliseconds timeout_seconds
     return start_time;
 }
 
-std::chrono::seconds RequestServiceTimer::elapsed() const {
+seconds RequestServiceTimer::elapsed() const {
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
     return duration_cast<seconds>(steady_clock::now() - start_time);
 }
 
-std::chrono::milliseconds RequestServiceTimer::elapsed_ms() const {
+milliseconds RequestServiceTimer::elapsed_ms() const {
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
     return duration_cast<milliseconds>(steady_clock::now() - start_time);
 }
 
-std::chrono::seconds RequestServiceTimer::remaining() const {
+seconds RequestServiceTimer::remaining() const {
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
-    steady_clock::duration remaining = std::chrono::steady_clock::duration(DEFAULT_BES_TIMEOUT_SECONDS);
+    return duration_cast<seconds>(remaining_ms());
+}
+
+milliseconds RequestServiceTimer::remaining_ms() const {
+    std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
+    milliseconds remaining{DEFAULT_BES_TIMEOUT_MILLISECONDS};
+    BESDEBUG(MODULE, prolog << "init remaining: " << remaining.count() <<  endl);
     if (timeout_enabled) {
+        BESDEBUG(MODULE, prolog << "timeout enabled" << endl);
         remaining = bes_timeout - elapsed();
     }
     else {
-        if (bes_timeout > steady_clock::duration(0)) {
+        BESDEBUG(MODULE, prolog << "timeout disabled" << endl);
+        if (bes_timeout > milliseconds{0}) {
+            BESDEBUG(MODULE, prolog << "bes_timeout is set" << endl);
             remaining = bes_timeout;
         }
     }
-    return duration_cast<seconds>(remaining);
-}
-
-std::chrono::milliseconds RequestServiceTimer::remaining_ms() const {
-    std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
-    return duration_cast<milliseconds>(remaining());
+    return remaining;
 }
 
 
@@ -146,15 +151,15 @@ string RequestServiceTimer::dump(bool pretty) const {
     if(pretty){ ss << endl << "  "; }
     ss << "timeout_enabled: " << (timeout_enabled?"true ":"false ");
     if(pretty){ ss << endl << "  "; }
-    ss << "elapsed: " << elapsed().count() << "s ";
+    ss << "elapsed(): " << elapsed().count() << "s ";
     if(pretty){ ss << endl << "  "; }
-    ss << "elapsed_ms: " << elapsed_ms().count() << "s ";
+    ss << "elapsed_ms(): " << elapsed_ms().count() << "ms ";
     if(pretty){ ss << endl << "  "; }
-    ss << "remaining: " << remaining().count() << "s ";
+    ss << "remaining(): " << remaining().count() << "s ";
     if(pretty){ ss << endl << "  "; }
-    ss << "remaining_ms: " << remaining_ms().count() << "s ";
+    ss << "remaining_ms(): " << remaining_ms().count() << "ms ";
     if(pretty){ ss << endl << "  "; }
-    ss << "is_expired: " <<  (is_expired()?"true ":"false ");
+    ss << "is_expired(): " <<  (is_expired()?"true":"false");
     if(pretty){ ss << endl; }else{ ss << "]"; }
     return ss.str();
 }
@@ -167,6 +172,6 @@ string RequestServiceTimer::dump(bool pretty) const {
  */
 void RequestServiceTimer::dump( ostream &strm ) const
 {
-    strm << dump(false) << endl;
+    strm << dump() << endl;
 }
 

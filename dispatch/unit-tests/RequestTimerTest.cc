@@ -73,7 +73,7 @@ public:
     void setUp()
     {
         if(debug) cerr << endl;
-        if (bes_debug) BESDebug::SetUp("cerr,request_timer");
+        if (bes_debug) BESDebug::SetUp("cerr,bes");
     }
 
     // Called after each test
@@ -86,7 +86,9 @@ public:
         DBG(cerr << RequestServiceTimer::TheTimer()->dump(true) << endl);
         sleep(1);
         DBG(cerr << RequestServiceTimer::TheTimer()->dump(true) << endl);
-        RequestServiceTimer::TheTimer()->dump(cerr);
+        stringstream ss;
+        RequestServiceTimer::TheTimer()->dump(ss);
+        DBG(cerr << prolog << "dump(ostream): "<< ss.str() << endl);
         DBG(cerr << prolog << "END" << endl);
     }
 
@@ -99,6 +101,28 @@ public:
             sleep(1);
             RequestServiceTimer::TheTimer()->disable_timeout();
             sleep(2);
+            CPPUNIT_ASSERT(RequestServiceTimer::TheTimer()->is_expired() == false);
+            DBG(cerr << RequestServiceTimer::TheTimer()->dump(true) << endl);
+        }
+        catch(std::exception &se){
+            ostringstream msg;
+            msg << prolog << "Caught std::exception! Message: " << se.what();
+            cerr << msg.str() << endl;
+            CPPUNIT_FAIL(msg.str());
+        }
+        catch(...){
+            CPPUNIT_FAIL(prolog + "Caught unknown exception.");
+        }
+        DBG(cerr << prolog << "END" << endl);
+    }
+
+    void test_no_timeout() {
+        DBG(cerr << prolog << "BEGIN" << endl);
+        try {
+            seconds time_out{0};
+            RequestServiceTimer::TheTimer()->start(time_out);
+            DBG(cerr << RequestServiceTimer::TheTimer()->dump(true) << endl);
+            sleep(1);
             CPPUNIT_ASSERT(RequestServiceTimer::TheTimer()->is_expired() == false);
             DBG(cerr << RequestServiceTimer::TheTimer()->dump(true) << endl);
         }
@@ -180,7 +204,7 @@ public:
             DBG(cerr << RequestServiceTimer::TheTimer()->dump(true) << endl);
             CPPUNIT_ASSERT(RequestServiceTimer::TheTimer()->is_expired() == true);
 
-            time_out=seconds{0};
+            time_out=seconds{2};
             RequestServiceTimer::TheTimer()->start(time_out);
             CPPUNIT_ASSERT(RequestServiceTimer::TheTimer()->is_expired() == false);
             DBG(cerr << RequestServiceTimer::TheTimer()->dump(true) << endl);
@@ -205,6 +229,7 @@ CPPUNIT_TEST_SUITE( RequestTimerTest );
 
         CPPUNIT_TEST(test_dump);
         CPPUNIT_TEST(test_disable_timeout);
+        CPPUNIT_TEST(test_no_timeout);
         CPPUNIT_TEST(test_is_expired);
         CPPUNIT_TEST(test_restart_1);
         CPPUNIT_TEST(test_restart_2);
