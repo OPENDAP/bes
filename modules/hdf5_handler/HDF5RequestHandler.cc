@@ -169,6 +169,7 @@ bool HDF5RequestHandler::_no_zero_size_fullnameattr   = false;
 bool HDF5RequestHandler::_enable_coord_attr_add_path  = true;
 
 bool HDF5RequestHandler::_usecfdmr                    = true;
+bool HDF5RequestHandler::_add_dap4_coverage           = false;
 
 bool HDF5RequestHandler::_common_cache_dirs            = false;
 
@@ -384,6 +385,11 @@ void HDF5RequestHandler::load_config()
     if(has_key) 
         _usecfdmr  = key_value;
     BESDEBUG(HDF5_NAME, prolog << "H5.EnableCFDMR: " << (_usecfdmr?"true":"false") << endl);
+
+    key_value = obtain_beskeys_info("H5.EnableDAP4Coverage",has_key);
+    if(has_key) 
+        _add_dap4_coverage  = key_value;
+    BESDEBUG(HDF5_NAME, prolog << "H5.EnableDAP4Coverage: " << (_add_dap4_coverage?"true":"false") << endl);
  
     //_use_disk_cache              = check_and_set_beskeys("H5.EnableDiskDataCache");
     key_value = obtain_beskeys_info("H5.EnableDiskDataCache",has_key);

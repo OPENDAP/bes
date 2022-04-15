@@ -36,6 +36,7 @@
 #include <unistd.h>
 #include <iostream>
 #include <sstream>
+#include <unordered_map>
 
 #include <BESDebug.h>
 #include <libdap/InternalErr.h>
@@ -852,7 +853,148 @@ void gen_gmh5_cfdmr(D4Group* d4_root,const HDF5CF::GMFile *f) {
         
             }
         }
-   }
+    }
+
+    // Add DAP4 Map here 
+    if (HDF5RequestHandler::get_add_dap4_coverage() == true) {
+
+        // We need to construct the coordinate variables unordered set
+        
+        unordered_map<string, Array*> d4map_array_maps;
+        vector<Array*> has_map_arrays;
+      
+
+        Constructor::Vars_iter vi = d4_root->var_begin();
+        Constructor::Vars_iter ve = d4_root->var_end();
+
+        for (; vi != ve; vi++) {
+
+            BaseType *v = *vi;
+
+            if (libdap::dods_array_c == v->type()) {
+
+                Array *t_a = static_cast<Array *>(*vi);
+                bool is_cv = false;
+                for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
+                    if ((*it_cv)->getNewName() == v->name()) {
+                        is_cv = true;
+                        d4map_array_maps.emplace(v->name(),t_a); 
+                        break;
+                    }
+                }
+
+                if (is_cv == false) 
+                    has_map_arrays.emplace_back(t_a);
+            }
+        }
+
+        // loop through has_map_arrays to add the maps.
+        if (f->getIsCOARD()) {// The grid case. 
+            for ( auto it_hm = has_map_arrays.begin(); it_hm != has_map_arrays.end(); ++it_hm) {
+
+                Array::Dim_iter dim_i = (*it_hm)->dim_begin();
+                Array::Dim_iter dim_e = (*it_hm)->dim_end();
+                for (; dim_i != dim_e; dim_i++) {
+
+                    // The dimension name is the same as a map name(A Grid case) 
+                    libdap::Array *the_map_array = d4map_array_maps[dim_i->name]; 
+                    D4Map *d4_map = new D4Map(the_map_array->FQN(), the_map_array, *it_hm);
+                    (*it_hm)->maps()->add_map(d4_map);
+         
+                }
+                // Need to set the has_map_arrays to 0 to avoid calling ~Array() when the vector goes out of loop.
+                *it_hm = nullptr;
+            }
+        }
+        else { // A Swath case, need to find coordinates and retrieve the values.
+
+            for ( auto it_hm = has_map_arrays.begin(); it_hm != has_map_arrays.end(); ++it_hm) {
+
+                // TODO: Obtain coordinate attribute names. 
+                // If we cannot find the "coordinates",then this var doesn't have a map.
+                vector<string> coord_names;
+                D4Attributes *d4_attrs = (*it_hm)->attributes();
+                D4Attribute *d4_attr = d4_attrs->find("coordinates");
+                if (d4_attr != NULL) {
+                    if(d4_attr->type() == attr_str_c && d4_attr->num_values() == 1) {
+                        string tempstring = d4_attr->value(0);
+                        char sep=' ';
+                        vector<string>cvalue_vec;
+                        HDF5CFUtil::Split_helper(cvalue_vec,tempstring,sep);
+                    }
+                }
+#if 0
+                for (D4Attributes::D4AttributesIter ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end();
+                     ii != ee; ++ii) {
+                    if((*ii)->name() == "coordinates") {
+                        
+
+                    }
+                 }
+#endif
+
+ 
+                for(auto it_c = coord_names.begin(); it_c != coord_names.end(); ++it_c) {
+                    libdap::Array *the_map_array = d4map_array_maps[*it_c]; 
+                    D4Map *d4_map = new D4Map(the_map_array->FQN(), the_map_array, *it_hm);
+                    (*it_hm)->maps()->add_map(d4_map);
+                }
+
+                // Need to set the has_map_arrays to 0 to avoid calling ~Array() when the vector goes out of loop.
+                *it_hm = nullptr;
+            }
+        }
+        // We need to set the second element of the d4map_array_maps to 0 to avoid the ~Array() is called
+        // when this map goes out of loop.
+        for (auto it_dm = d4map_array_maps.begin(); it_dm != d4map_array_maps.end(); ++it_dm) 
+            it_dm->second = nullptr;
+
+ 
+    }
+
+#if 0
+        Constructor::Vars_iter vi = d4_root->var_begin();
+        Constructor::Vars_iter ve = d4_root->var_end();
+
+        for (; vi != ve; vi++) {
+
+            libdap::BaseType *v = *vi;
+            if (libdap::dods_array_c == v->type()) {
+                // Add map here. 
+cerr<<"v name is "<<v->name() <<endl;
+                bool is_cv = false;
+                for (it_cv = cvars.begin(); it_cv !=cvars.end();++it_cv) {
+                    if ((*it_cv)->getNewName() == v->name()) {
+                        is_cv = true;
+                        break;
+                    }
+                }
+                if (false == is_cv) {// add coverage maps
+                    Array *t_a = static_cast<Array *>(*vi);
+                    Array::Dim_iter dim_i = t_a->dim_begin();
+                Array::Dim_iter dim_e = t_a->dim_end();
+                for (; dim_i != dim_e; dim_i++) {
+
+                      if (f->getIsCOARD()) { 
+                          // The dimension names are the same as map names(A Grid case) 
+                          libdap::Array *the_map_array = d4map_array_maps[dim_i->name]; 
+                          D4Map *d4_map = new D4Map(the_map_array->FQN(), the_map_array, coverage);
+
+
+                      }
+                      else { // A Swath case, need to find coordinates and retrieve the values.
+
+
+                      }
+
+
+                }
+            }
+        }
+                 
+    }
+#endif
+
 
 }
 

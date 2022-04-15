@@ -81,6 +81,7 @@ class HDF5RequestHandler:public BESRequestHandler {
     static bool get_enable_coord_attr_add_path() { return _enable_coord_attr_add_path;}
 
     static bool get_usecfdmr() { return _usecfdmr;}
+    static bool get_add_dap4_coverage() { return _add_dap4_coverage;}
 
     // Default Handle dimension key, only valid when the default option is on.
     static bool get_default_handle_dimension() { return _default_handle_dimension;}
@@ -177,6 +178,7 @@ class HDF5RequestHandler:public BESRequestHandler {
      static bool _enable_coord_attr_add_path;
 
      static bool _usecfdmr;
+     static bool _add_dap4_coverage;
 
      // For the default option
      static bool _default_handle_dimension;
