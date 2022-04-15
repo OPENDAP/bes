@@ -125,7 +125,7 @@ void RequestServiceTimer::disable_timeout(){
 
 string RequestServiceTimer::dump() const {
     std::stringstream ss;
-    ss << "[RequestServiceTimer: " << bes_timeout.count() << "s ";
+    ss << "[RequestServiceTimer(" << (void *)this << ") - ";
     ss << "bes_timeout: " << bes_timeout.count() << "s ";
     ss << "start_time: " << start_time.time_since_epoch().count() << "s ";
     ss << "timeout_enabled: " << (timeout_enabled?"true ":"false ");
@@ -147,8 +147,6 @@ string RequestServiceTimer::dump() const {
 void
 RequestServiceTimer::dump( ostream &strm ) const
 {
-    strm << BESIndent::LMarg << "RequestServiceTimer::dump - ("
-         << (void *)this << ")" << endl ;
     strm << dump() << endl;
 }
 
