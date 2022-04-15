@@ -118,7 +118,6 @@ void RequestServiceTimer::disable_timeout(){
 }
 
 string RequestServiceTimer::dump() const {
-    std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
     std::stringstream ss;
     ss << "[RequestServiceTimer(" << (void *)this << ") - ";
     ss << "bes_timeout: " << bes_timeout.count() << "s ";
