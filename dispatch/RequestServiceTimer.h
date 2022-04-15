@@ -42,7 +42,6 @@
 /** @brief The master request service timer for this server; a singleton
  *
  */
-#define DEFAULT_BES_TIMEOUT_SECONDS 600
 
 class RequestServiceTimer : public BESObj{
 private:
@@ -53,11 +52,7 @@ private:
     std::chrono::steady_clock::time_point start_time;
     bool timeout_enabled;
 
-     explicit RequestServiceTimer():
-            bes_timeout(std::chrono::seconds(DEFAULT_BES_TIMEOUT_SECONDS)),
-            start_time(std::chrono::steady_clock::now()),
-            timeout_enabled(false) {
-    }
+    RequestServiceTimer();
 
     static void delete_instance();
     static void initialize_instance();

@@ -24,12 +24,12 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 #include "config.h"
-#include <mutex>
 
 #include <cerrno>
 #include <string>
 #include <iostream>
 #include <cstring>
+#include <mutex>
 #include <sstream>
 
 #include "BESDebug.h"
@@ -45,8 +45,17 @@ using namespace std::chrono;
 #define MODULE "bes"
 #define prolog string("RequestServiceTimer::").append(__func__).append("() - ")
 
+#define DEFAULT_BES_TIMEOUT_SECONDS 600
+
 RequestServiceTimer *RequestServiceTimer::d_instance = nullptr;
 static std::once_flag d_rst_init_once;
+
+
+RequestServiceTimer::RequestServiceTimer():
+        bes_timeout(std::chrono::seconds(DEFAULT_BES_TIMEOUT_SECONDS)),
+        start_time(std::chrono::steady_clock::now()),
+        timeout_enabled(false) {
+}
 
 RequestServiceTimer *
 RequestServiceTimer::TheTimer()
@@ -81,10 +90,7 @@ steady_clock::time_point RequestServiceTimer::start(int timeout_seconds){
 
 duration<int> RequestServiceTimer::elapsed() const {
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
-
-        return duration_cast<duration<int>>(steady_clock::now() - start_time);
-
-    return duration<int>(0);
+    return duration_cast<duration<int>>(steady_clock::now() - start_time);
 }
 
 duration<int> RequestServiceTimer::remaining() const {
@@ -103,7 +109,6 @@ duration<int> RequestServiceTimer::remaining() const {
 
 bool RequestServiceTimer::is_expired() const {
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
-
     return timeout_enabled && (remaining() <= duration<int>(0));
 }
 
@@ -113,6 +118,7 @@ void RequestServiceTimer::disable_timeout(){
 }
 
 string RequestServiceTimer::dump() const {
+    std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
     std::stringstream ss;
     ss << "[RequestServiceTimer(" << (void *)this << ") - ";
     ss << "bes_timeout: " << bes_timeout.count() << "s ";
