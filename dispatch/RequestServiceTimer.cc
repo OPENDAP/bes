@@ -132,7 +132,7 @@ milliseconds RequestServiceTimer::remaining_ms() const {
 
 bool RequestServiceTimer::is_expired() const {
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
-    return timeout_enabled && (remaining() <= steady_clock::duration(0));
+    return timeout_enabled && (remaining_ms() <= milliseconds {0});
 }
 
 void RequestServiceTimer::disable_timeout(){
@@ -147,7 +147,7 @@ string RequestServiceTimer::dump(bool pretty) const {
     if(pretty){ ss << endl << "  "; }
     ss << "bes_timeout: " << bes_timeout.count() << "ms ";
     if(pretty){ ss << endl << "  "; }
-    ss << "start_time: " << start_time.time_since_epoch().count() << "s ";
+    ss << "start_time: " << duration_cast<seconds>(start_time.time_since_epoch()).count() << "s ";
     if(pretty){ ss << endl << "  "; }
     ss << "timeout_enabled: " << (timeout_enabled?"true ":"false ");
     if(pretty){ ss << endl << "  "; }

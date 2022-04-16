@@ -168,6 +168,7 @@ public:
             milliseconds time_out{100};
             RequestServiceTimer::TheTimer()->start(time_out);
             DBG(cerr << RequestServiceTimer::TheTimer()->dump(true) << endl);
+            CPPUNIT_ASSERT(RequestServiceTimer::TheTimer()->is_expired() == false);
             sleep(1);
             DBG(cerr << RequestServiceTimer::TheTimer()->dump(true) << endl);
             CPPUNIT_ASSERT(RequestServiceTimer::TheTimer()->is_expired() == true);
