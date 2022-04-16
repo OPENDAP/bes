@@ -25,15 +25,12 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 #include "config.h"
 
-#include <cerrno>
 #include <string>
 #include <iostream>
-#include <cstring>
 #include <mutex>
 #include <sstream>
 
 #include "BESDebug.h"
-#include "BESLog.h"
 #include "RequestServiceTimer.h"
 
 using std::string;
@@ -98,7 +95,7 @@ steady_clock::time_point RequestServiceTimer::start(milliseconds timeout_seconds
 
 seconds RequestServiceTimer::elapsed() const {
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
-    return duration_cast<seconds>(steady_clock::now() - start_time);
+    return duration_cast<seconds>(elapsed_ms());
 }
 
 milliseconds RequestServiceTimer::elapsed_ms() const {
