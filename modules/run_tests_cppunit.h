@@ -54,7 +54,7 @@ bool debug = false;
  * @return True if the test(s) passed, false otherwise.
  */
 template<class CLASS>
-bool bes_run_tests(int argc, char *argv[], const std::string &desdebug_contexts)
+bool bes_run_tests(int argc, char *argv[], const std::string &besdebug_contexts)
 {
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
